@@ -1171,6 +1171,18 @@
    "from": "",
    "addenda": []
   },
+  "auto-land-every-finished-build-lands": {
+   "said": "I keep telling you over and over, stuff ends up thousands of commits behind; what's it gonna take to get you to merge and land what's completed",
+   "at": "2026-11-13T20:44:39.782Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "auto-recover-stuck-builds": {
    "said": "Brett: if anything stops working, the server/orchestrator fixes it automatically with no one asking. Detect builds marked running with no live session (killed exit 143, failed exit 1), reset and requeue them, retry failed sessions, keep every slot filled, FYI to phone per fix.",
    "at": "2026-11-13T11:45:11.111Z",
