@@ -139,7 +139,7 @@ function DemoDetail({ id, onEdit }: { id: string; onEdit: (d: PipelineDemo) => v
           </li>
         ))}
       </ol>
-      <p className="fx-muted axp-demonstration-designer__note"><Icon name="mic" size={12} /> Say “run the {d.voice[0] ?? d.name.toLowerCase()} demo”, or <span className="fx-mono">axf demonstration-designer pipeline-run --id {d.id}</span>, or open <span className="fx-mono">{P.pipelineLink('', d.id, { play: true })}</span>.</p>
+      <p className="fx-muted axp-demonstration-designer__note"><Icon name="mic" size={12} /> Say “run the {d.voice[0] ?? d.name.toLowerCase()} demo”, or <span className="fx-mono">axf demonstration-designer pipeline-live --id {d.id}</span>, or open <span className="fx-mono">{P.pipelineLink('', d.id, { play: true })}</span>.</p>
       {msg && <Note tone="danger">{msg}</Note>}
     </section>
   );
@@ -180,7 +180,7 @@ export function PipelinesPage() {
               <ul className="axp-demonstration-designer__rows" aria-label="Pipeline demos">
                 {rows.map((s) => (
                   <li key={s.id} className={`axp-demonstration-designer__saved${open === s.id ? ' is-selected' : ''}`}>
-                    <button type="button" data-fx-row className="axp-demonstration-designer__row" onClick={() => setOpen(s.id)}>
+                    <button type="button" data-fx-row data-axf-target={`demonstration-designer.pipeline.${s.id}`} className="axp-demonstration-designer__row" onClick={() => setOpen(s.id)}>
                       <span className="axp-demonstration-designer__kind" data-kind={s.builtIn ? 'plugin' : 'screen'}>{s.typeLabel}</span>
                       <strong>{s.name}</strong>
                       <span className="fx-muted axp-demonstration-designer__clamp">{s.summary}</span>
@@ -194,7 +194,7 @@ export function PipelinesPage() {
           {open ? <DemoDetail id={open} onEdit={setEditing} /> : null}
         </div>
       )}
-      <p className="fx-muted axp-demonstration-designer__note"><Icon name="info" size={12} /> The walkthrough bar and the behind-the-scenes terminal stay on top while the console moves. Dock, float or go full screen from the terminal’s toolbar. Settings: <button type="button" data-fx-row className="axp-demonstration-designer__link" onClick={() => rt.dispatch('settings.open:demonstration-designer')}>Demonstration Designer</button>.</p>
+      <p className="fx-muted axp-demonstration-designer__note"><Icon name="info" size={12} /> The walkthrough bar and the behind-the-scenes terminal stay on top while the console moves. Dock, float or go full screen from the terminal’s toolbar. Settings: <button type="button" data-fx-row data-axf-target="demonstration-designer.pipelines.settings" className="axp-demonstration-designer__link" onClick={() => rt.dispatch('settings.open:demonstration-designer')}>Demonstration Designer</button>.</p>
     </div>
   );
 }

@@ -87,7 +87,21 @@
       { "target": "action:pitch.next", "title": "Pitch: next step", "text": "Skips to the next step." },
       { "target": "action:pitch.prev", "title": "Pitch: previous step", "text": "Goes back one step." },
       { "target": "action:pitch.stop", "title": "Pitch: stop", "text": "Ends the running pitch." },
-      { "target": "action:nav:demonstration-designer", "title": "Demonstration Designer", "text": "Opens the Demonstration Designer page." }
+      { "target": "action:nav:demonstration-designer", "title": "Demonstration Designer", "text": "Opens the Demonstration Designer page." },
+      { "target": "demonstration-mode", "title": "Demonstration mode", "text": "Pitch makes a product pitch of one plugin or screen. Pipelines walks you through whole pipelines (voice to app, skin swap, approvals…) and shows what happens behind the scenes." },
+      { "target": "view:demonstration-designer#pipelines", "title": "Pipeline demos", "text": "A library of demo pipelines of different types. Pick one and press Play: narrated chapters walk you through it, the console moves to each screen as it happens, and a terminal shows everything that normally happens out of sight.", "kind": "screen" },
+      { "target": "pipeline-type", "title": "Pipeline type", "text": "Show only the demos of one kind of pipeline, or pick the type of the demo you are designing." },
+      { "target": "new-demo", "title": "New demo", "text": "Opens the designer on a blank pipeline demo: name it, pick its type, and script its chapters." },
+      { "target": "how-it-runs", "title": "How it runs", "text": "Replay plays the recorded run (or the script): instant and offline. Live first runs each chapter's probes for real on the test-sandbox project (git, the sandbox builds, the model policy, tests…), read-only, then walks you through what really happened; the run is kept as the next replay." },
+      { "target": "speed", "title": "Speed", "text": "How fast the walkthrough plays: half speed to four times." },
+      { "target": "run-live", "title": "Run live", "text": "Runs the probes for real, keeps the output as the demo's recording, then plays it." },
+      { "target": "edit-a-copy", "title": "Edit a copy", "text": "Built-in demos stay as they are: this makes your own copy and opens it in the designer." },
+      { "target": "walkthrough-controls", "title": "Walkthrough controls", "text": "Previous chapter, play or pause, skip to the next chapter, restart, speed, narration on or off, show or hide behind the scenes, stop. Shift+Space pauses, Shift+arrows step. Tap a chapter number to jump to it." },
+      { "target": "behind-the-scenes", "title": "Behind the scenes", "text": "Everything a pipeline normally does out of sight, as it happens: orchestrator decisions, model picks, step splits, agent log, git, tests, axHub calls, focus moves and errors, one colour each. Lines marked live came from a real run." },
+      { "target": "show-these-kinds", "title": "Show these kinds", "text": "Show only some kinds of lines; All shows everything. The number is how many of that kind have played so far." },
+      { "target": "filter-words", "title": "Filter words", "text": "Show only lines with all of these words." },
+      { "target": "where-the-panel-sits", "title": "Where the panel sits", "text": "Dock it along the bottom, float it in a corner (drag its corner to resize), or go full screen." },
+      { "target": "pipeline-demo-designer", "title": "Pipeline demo designer", "text": "Script a demo: each chapter has a title, the narration, the screen focus mode moves to (and optionally an element), how long it runs, its behind-the-scenes lines (one per line: @seconds kind: text) and the live probes whose real output is added on a live run." }
     ],
     "intros": [
       {

@@ -80,7 +80,7 @@ export function PipelineCover() {
         </div>
         <ol className="axp-demonstration-designer-walk__dots" aria-label="Chapters">
           {tl.chapters.map((ch) => (
-            <li key={ch.id}><button type="button" data-fx-row className={`axp-demonstration-designer-walk__dot${ch.index === i ? ' is-on' : ch.index < i ? ' is-past' : ''}`} aria-current={ch.index === i ? 'step' : undefined} title={`${ch.index + 1}. ${ch.title}${ch.view ? ` · ${P.screenLabel(ch.view)}` : ''}`} onClick={() => pChapter(ch.index)}><span>{ch.index + 1}</span></button></li>
+            <li key={ch.id}><button type="button" data-fx-row data-axf-target={`demonstration-designer.walk.chapter.${ch.index + 1}`} className={`axp-demonstration-designer-walk__dot${ch.index === i ? ' is-on' : ch.index < i ? ' is-past' : ''}`} aria-current={ch.index === i ? 'step' : undefined} title={`${ch.index + 1}. ${ch.title}${ch.view ? ` · ${P.screenLabel(ch.view)}` : ''}`} onClick={() => pChapter(ch.index)}><span>{ch.index + 1}</span></button></li>
           ))}
         </ol>
         <div role="toolbar" aria-label="Walkthrough controls" className="axp-demonstration-designer-walk__bar">
