@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4770,
- "updatedAt": "2026-11-13T19:14:32.671Z",
+ "rev": 4771,
+ "updatedAt": "2026-11-13T19:15:20.882Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -202682,15 +202682,15 @@
    "title": "Land project-duplicate-boilerplate: resolve clash in status.json and PORTING.md",
    "category": "",
    "detail": "Branch claude/project-duplicate-boilerplate clashed with main in framework/catalog/status.json and framework/spec/PORTING.md (merge aborted, main untouched). Merge origin/main into the branch, resolve by keeping both sides' entries (additive), run tests, push, then land on main. No feature changes. If the project-create-mcp clash fix landed first, merge after it.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/land-project-duplicate-boilerplate",
-   "pr": "",
+   "branch": "claude/project-duplicate-boilerplate",
+   "pr": "#621",
    "priority": "P0",
    "createdAt": "2026-11-13T19:03:35.763Z",
-   "updatedAt": "2026-11-13T19:08:13.740Z",
+   "updatedAt": "2026-11-13T19:15:17.887Z",
    "builtAt": "",
    "notes": [
     {
@@ -202727,12 +202727,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T19:03:39.310Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-land-project-duplicate-boilerplate--gina",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Fable",
-    "launchedAt": "2026-11-13T19:08:08.553Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T19:07:47.374Z",
@@ -202742,18 +202742,12 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"6c0ab83b-8cbd-4e20-912b-32970857880a\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "2026-11-13T19:08:08.553Z",
-    "planned": {
-     "model": "Fable",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-13T19:07:52.870Z",
-     "why": "subscription account mossesx-max-"
-    },
+    "dispatchedAt": "",
+    "planned": null,
     "tried": [],
-    "pickedAt": "2026-11-13T19:08:08.553Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""

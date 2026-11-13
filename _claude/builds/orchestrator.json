@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T19:14:32.671Z",
+ "updatedAt": "2026-11-13T19:15:20.882Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -130507,15 +130507,15 @@
    "title": "Land project-duplicate-boilerplate: resolve clash in status.json and PORTING.md",
    "category": "",
    "detail": "Branch claude/project-duplicate-boilerplate clashed with main in framework/catalog/status.json and framework/spec/PORTING.md (merge aborted, main untouched). Merge origin/main into the branch, resolve by keeping both sides' entries (additive), run tests, push, then land on main. No feature changes. If the project-create-mcp clash fix landed first, merge after it.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/land-project-duplicate-boilerplate",
-   "pr": "",
+   "branch": "claude/project-duplicate-boilerplate",
+   "pr": "#621",
    "priority": "P0",
    "createdAt": "2026-11-13T19:03:35.763Z",
-   "updatedAt": "2026-11-13T19:08:13.740Z",
+   "updatedAt": "2026-11-13T19:15:17.887Z",
    "builtAt": "",
    "notes": [
     {
