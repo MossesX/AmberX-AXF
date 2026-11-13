@@ -3494,6 +3494,20 @@
       "file": "src/consoleSearch.ts"
     },
     {
+      "address": "function:console.settings.open",
+      "kind": "function",
+      "id": "console.settings.open",
+      "label": "Console settings",
+      "detail": "Action",
+      "keywords": [
+        "console.settings.open",
+        "console",
+        "settings",
+        "open"
+      ],
+      "file": "src/consoleSettingsMenu.ts"
+    },
+    {
       "address": "function:console.search",
       "kind": "function",
       "id": "console.search",
