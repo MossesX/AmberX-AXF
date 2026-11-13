@@ -49,7 +49,8 @@ import { WatchLiveFor } from '@console/watchLive';
 import './approvals-banner.css';
 import { appMenu, WAITING, WAITING_LIST } from './menu';
 import { nextPopup, POPUP_GONE_CLOSE_MS, vetoGone } from './popup';
-import { EDGES, EXPANDS, nativeOverlayConfig, OVERLAY_DEFAULTS, OVERLAY_KEYS, overlayConfig, PAGES, parseOverlayChange, parsePageCommand, SHOWS, SIZES } from './overlay';
+import { EDGES, EXPANDS, nativeOverlayConfig, OVERLAY_DEFAULTS, OVERLAY_KEYS, overlayConfig, OVERLAY_TAB, PAGES, parseOverlayChange, parsePageCommand, SHOWS, SIZES } from './overlay';
+import { OverlayPreview } from './overlay-preview';
 
 const ID = 'ai.amberx.axf.console.approvals-banner';
 const FOLDER = 'approvals-banner';
@@ -483,7 +484,7 @@ function StatusPanel() {
 export const plugin: AxfWebLibrary = {
   id: ID, // equals plugin.json "id"
   label: 'Approvals banner',
-  version: '0.6.1',
+  version: '0.8.0',
   appMenu,
   appMenuProviders: {
     [WAITING_LIST]: {
@@ -619,7 +620,7 @@ export const plugin: AxfWebLibrary = {
       ],
     },
     {
-      id: 'approvals-banner.overlay', label: 'Approval overlay (phone)', icon: 'layers', tab: 'approvals-banner', order: 12,
+      id: 'approvals-banner.overlay', label: 'Approval overlay (phone)', icon: 'layers', tab: OVERLAY_TAB, order: 12,
       description: 'A small toolbar floating over every app on the AmberX phone app. It opens into the full approval card (what, why, countdown, Approve / Deny) the moment one arrives and shrinks back when none is left. Its colours follow the active skin. Needs "Display over other apps" and approvals watching on.',
       settings: [
         { key: OVERLAY_KEYS.on, label: 'Overlay', kind: 'toggle', default: OVERLAY_DEFAULTS.on },
@@ -635,9 +636,14 @@ export const plugin: AxfWebLibrary = {
       ],
     },
   ],
-  settingsTabs: [{ id: 'approvals-banner', label: 'Approvals banner', icon: 'shield', order: 8, parent: 'plugins' }],
+  settingsTabs: [
+    { id: 'approvals-banner', label: 'Approvals banner', icon: 'shield', order: 8, parent: 'plugins' },
+    // the phone overlay's own tab: its preview (three design options, every state) above its settings
+    { id: OVERLAY_TAB, label: 'Overlay', icon: 'layers', order: 8.5, parent: 'plugins' },
+  ],
   settingsPanels: [
     { id: 'approvals-banner.status', tab: 'approvals-banner', title: 'Approvals', icon: 'shield', order: 5, render: () => <StatusPanel /> },
+    { id: 'approvals-overlay.preview', tab: OVERLAY_TAB, title: 'Preview', icon: 'smartphone', order: 5, render: () => <OverlayPreview /> },
     { id: 'approvals-banner.alarm.panel', tab: 'approvals-banner', title: 'Alarm sound and test', icon: 'bell', order: 11, render: () => <AlarmPanel get={(k) => runtime?.settings.get(k)} set={(k, v) => runtime?.settings.set(k, v)} /> },
     { id: 'approvals-banner.lifecycle', tab: 'approvals-banner', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],

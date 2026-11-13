@@ -12,5 +12,8 @@ export const appMenu: NonNullable<AxfWebLibrary['appMenu']> = [
     { id: 'waiting', label: 'Waiting for approval', icon: 'shield', provider: WAITING_LIST, badge: WAITING },
     { id: 'check', label: 'Check approvals now', icon: 'refresh', action: 'approvals.check' },
   ] },
-  { id: 'approvals-banner.menu', menu: 'plugins', menuLabel: 'Plugins', menuOrder: 40, order: 50, items: [{ id: 'approvals-banner', label: 'Approvals banner', icon: 'shield', action: 'settings.open:approvals-banner' }] },
+  { id: 'approvals-banner.menu', menu: 'plugins', menuLabel: 'Plugins', menuOrder: 40, order: 50, items: [
+    { id: 'approvals-banner', label: 'Approvals banner', icon: 'shield', action: 'settings.open:approvals-banner' },
+    { id: 'approvals-overlay', label: 'Overlay (phone) preview', icon: 'smartphone', action: 'settings.open:approvals-overlay' },
+  ] },
 ];

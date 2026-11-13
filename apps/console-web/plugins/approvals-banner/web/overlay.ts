@@ -10,6 +10,9 @@
  * the veto host (`VetoHost.overlay`); its colours follow the active skin (the theme tokens AmberX sends natively).
  */
 
+/** Settings → Plugins → Overlay: the overlay's preview and settings. */
+export const OVERLAY_TAB = 'approvals-overlay';
+
 export const OVERLAY_KEYS = {
   on: 'approvals-banner.overlay.on',
   edge: 'approvals-banner.overlay.edge',
