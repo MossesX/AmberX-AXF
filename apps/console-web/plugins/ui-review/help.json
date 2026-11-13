@@ -21,7 +21,7 @@
       {
         "target": "waiting",
         "title": "Waiting",
-        "text": "Items still waiting for your decision.",
+        "text": "Items you have not looked at yet. Optional feedback: no PR or build waits on them.",
         "kind": "button"
       },
       {
