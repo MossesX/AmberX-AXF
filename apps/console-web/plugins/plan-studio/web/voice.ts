@@ -76,7 +76,7 @@ export function intentOf(text: string): Intent {
 export interface TurnResult {
   /** what to say back */
   say: string;
-  /** apply this when confirmed (big edits: new plans, removals, Turn into a build) */
+  /** apply this when confirmed (big edits: new plans, removals, deleting plans) */
   confirm?: { question: string; run: () => Promise<TurnResult> };
   /** undo for what this turn applied */
   undo?: () => Promise<string>;

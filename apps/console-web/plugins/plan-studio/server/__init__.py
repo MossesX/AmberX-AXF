@@ -2,16 +2,18 @@
 never on the console MCP). Every read and write goes through the plugin's CLI (plans.mjs api), so the console, the CLI,
 claude.ai sessions (axHub memory_write on the same files) and the AmberX app share one set of rules.
 
-  GET  state        plans, categories, templates, saved views, build profiles (+ live build progress synced)
-  POST api          {op, …} one change: get | save | delete | restore | bulk | category | template-save | template-delete
-                    | view-save | view-delete | import | export | catalog | feature | plan-feature | build | sync-builds
+  GET  state        plans, categories, templates, saved views, profiles
+  POST api          {op, …} one change: get | save | delete | delete-all | restore | bulk | category | template-save
+                    | template-delete | view-save | view-delete | import | export | catalog | feature | plan-feature
                     | ai-apply
+  POST delete       {id} one plan, or {all: true, status?} every plan (history kept: api restore brings one back)
   GET  catalog      every plugin / app / library / module / axHub with its features (have / partial / planned / idea)
   GET  ai/status    is an AI provider there (axf.llm@1, the AI assistant's providers)?
   POST ai           {text, plan?} plain English → edits (not applied: the page shows them as a diff, then ai-apply).
                     Rules first (no model); anything else goes to axf.llm@1 with the plugin's prompt.
 
 Capability plans@1: other plugins read and add plans through plugin_services.get("plans@1") (list/get/save/ai).
+Plan Studio is standalone: it is not linked to builds (no build creation, no build progress sync).
 """
 from __future__ import annotations
 
@@ -28,8 +30,8 @@ router = APIRouter()
 FOLDER = "plan-studio"
 CLI = Path(__file__).resolve().parent.parent / "plans.mjs"
 ROOT = CLI.parents[4]
-OPS = {"get", "save", "delete", "restore", "bulk", "category", "template-save", "template-delete", "view-save", "view-delete",
-       "import", "export", "catalog", "feature", "plan-feature", "build", "sync-builds", "ai-apply"}
+OPS = {"get", "save", "delete", "delete-all", "restore", "bulk", "category", "template-save", "template-delete", "view-save",
+       "view-delete", "import", "export", "catalog", "feature", "plan-feature", "ai-apply"}
 
 
 def run(req: dict[str, Any], timeout: int = 90) -> dict[str, Any]:
@@ -69,6 +71,19 @@ async def api(request: Request) -> dict[str, Any]:
     if not isinstance(body, dict) or body.get("op") not in OPS:
         raise HTTPException(400, f"op must be one of {', '.join(sorted(OPS))}")
     return run({**body, "by": _by(request)})
+
+
+@router.post("/delete")
+async def delete(request: Request) -> dict[str, Any]:
+    """Delete one plan ({id}) or every plan ({all: true}, optionally only one status). History is kept."""
+    body = await request.json()
+    body = body if isinstance(body, dict) else {}
+    if body.get("all") is True:
+        return run({"op": "delete-all", "confirm": "all", "status": str(body.get("status") or ""), "by": _by(request)})
+    plan_id = str(body.get("id") or "")
+    if not plan_id:
+        raise HTTPException(400, "give id, or all: true")
+    return run({"op": "delete", "id": plan_id, "by": _by(request)})
 
 
 @router.get("/ai/status")
@@ -124,6 +139,12 @@ class PlansService:
     def park(self, title: str, summary: str = "", category: str = "", by: str = "") -> dict[str, Any]:
         """"Put it in a plan for later": a parked plan, never a build."""
         return run({"op": "save", "plan": {"title": title, "summary": summary, "category": category, "status": "parked"}, "by": by, "force": True})
+
+    def delete(self, plan_id: str) -> dict[str, Any]:
+        return run({"op": "delete", "id": plan_id})
+
+    def delete_all(self, status: str = "") -> dict[str, Any]:
+        return run({"op": "delete-all", "confirm": "all", "status": status})
 
     def ai(self, text: str, plan_id: str = "") -> dict[str, Any]:
         return run({"op": "ai", "text": text, "plan": plan_id})

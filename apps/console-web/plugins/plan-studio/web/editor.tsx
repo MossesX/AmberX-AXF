@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { Button, Checkbox, Chip, Icon, IconButton, Markdown, PriorityTag, SelectField, Segmented, TextField, useRuntime } from '@console/axf/react';
+import { Button, Checkbox, Chip, Icon, IconButton, Markdown, SelectField, Segmented, TextField, useRuntime } from '@console/axf/react';
 import * as pc from './plan-core.mjs';
 import type { History, ListId, Plan, Step, TextItem } from './plan-core.mjs';
-import { call, deletePlan, fmtWhen, getPlan, KEYS, restorePlan, savePlan, statusInfo, turnIntoBuild, useBusy, useStudio, type SaveResult } from './api';
+import { call, deletePlan, fmtWhen, getPlan, KEYS, restorePlan, savePlan, statusInfo, useBusy, useStudio, type SaveResult } from './api';
 import { CommandBox, VoicePanel } from './ai';
 import { canListen } from './voice';
 
@@ -15,7 +15,7 @@ import { canListen } from './voice';
 const SECTIONS = [
   { id: 'basics', label: 'Basics', icon: 'edit' }, { id: 'filing', label: 'Filing', icon: 'folder' }, { id: 'steps', label: 'Steps', icon: 'list' },
   { id: 'lists', label: 'Requirements & risks', icon: 'check-circle' }, { id: 'links', label: 'Links & catalog', icon: 'external' }, { id: 'notes', label: 'Notes', icon: 'file' },
-  { id: 'files', label: 'Attachments', icon: 'upload' }, { id: 'build', label: 'Build', icon: 'play' }, { id: 'history', label: 'History', icon: 'clock' }, { id: 'comments', label: 'Comments', icon: 'info' },
+  { id: 'files', label: 'Attachments', icon: 'upload' }, { id: 'history', label: 'History', icon: 'clock' }, { id: 'comments', label: 'Comments', icon: 'info' },
 ] as const;
 const draftKey = (id: string) => `plan-studio.draft.${id}`;
 const setting = (rt: ReturnType<typeof useRuntime>, k: string, d: unknown) => { try { const v = rt.settings.get(k); return v === undefined || v === null ? d : v; } catch { return d; } };
@@ -157,10 +157,6 @@ export function PlanEditor({ initial, isNew, onClose, onOpen }: { initial: Plan;
 
       <Sec id="files" title={`Attachments (${plan.attachments.length})`} icon="upload">
         <Attachments plan={plan} onChange={(attachments) => edit({ attachments })} />
-      </Sec>
-
-      <Sec id="build" title="Build" icon="play">
-        {isNew ? <p className="fx-muted">Save the plan first.</p> : <BuildPanel plan={saved ?? plan} dirty={dirty} />}
       </Sec>
 
       <Sec id="history" title={`History${hist ? ` (${hist.versions.length})` : ''}`} icon="clock">
@@ -346,45 +342,6 @@ function Attachments({ plan, onChange }: { plan: Plan; onChange: (a: Plan['attac
           </li>
         ))}
       </ul>
-    </div>
-  );
-}
-
-function BuildPanel({ plan, dirty }: { plan: Plan; dirty: boolean }) {
-  const rt = useRuntime();
-  const { state } = useStudio();
-  const [profile, setProfile] = useState(plan.profile || state?.activeProfile || '');
-  const [preview, setPreview] = useState<Awaited<ReturnType<typeof turnIntoBuild>> | null>(null);
-  const { busy, error, run } = useBusy();
-  if (plan.build) {
-    return (
-      <div className="axp-plan-studio__build">
-        <p><b>Orchestrator build</b> <span className="fx-mono">{plan.build.profile}:{plan.build.id}</span> · {plan.build.status} · {plan.build.progress ?? 0}% <PriorityTag build={plan.build.id} /></p>
-        <div className="axp-plan-studio__bar" role="progressbar" aria-valuenow={plan.build.progress ?? 0} aria-valuemin={0} aria-valuemax={100}><span style={{ width: `${plan.build.progress ?? 0}%` }} /></div>
-        <div className="fx-row"><Button size="sm" icon="layers" onClick={() => rt.dispatch('nav:build-orchestrator')}>Open the orchestrator</Button><Button size="sm" tone="quiet" icon="refresh" busy={busy} onClick={() => run(async () => { await call('sync-builds'); })}>Check progress</Button></div>
-        <p className="fx-muted axp-plan-studio__hint">The plan ticks its steps as the build does, and turns done (its planned features to have) when the build completes.</p>
-      </div>
-    );
-  }
-  return (
-    <div className="axp-plan-studio__build">
-      <div className="axp-plan-studio__grid2">
-        <SelectField label="Build profile" value={profile} onChange={setProfile} options={(state?.profiles ?? []).map((p) => ({ value: p.id, label: p.label }))} />
-        <div className="fx-row axp-plan-studio__bottom"><Button size="sm" icon="eye" busy={busy} disabled={dirty || !plan.steps.length} onClick={() => run(async () => { const r = await turnIntoBuild(plan.id, profile, true); if (!r.ok) throw new Error(r.error); setPreview(r); })}>Preview steps</Button></div>
-      </div>
-      {dirty && <p className="fx-muted axp-plan-studio__hint">Save first.</p>}
-      {!plan.steps.length && <p className="fx-muted axp-plan-studio__hint">Add steps first: each one becomes an orchestrator step with its model and estimate.</p>}
-      {error && <p className="fx-error">{error}</p>}
-      {preview?.change && (
-        <div className="axp-plan-studio__diff">
-          <p className="axp-plan-studio__difftitle">Build <span className="fx-mono">{preview.change.id}</span> in {profile} · {preview.change.steps.length} steps · {pc.fmtMinutes(preview.minutes ?? 0)}</p>
-          <ol>{preview.change.steps.map((s, i) => <li key={i}>{s.text} <span className="fx-muted">({s.model}, {s.estimate})</span></li>)}</ol>
-          <div className="fx-row">
-            <Button size="sm" tone="primary" icon="play" busy={busy} onClick={() => run(async () => { const r = await turnIntoBuild(plan.id, profile, false); if (!r.ok) throw new Error(r.error); setPreview(null); rt.toast(`Build ${r.build?.id} added to the ${profile} orchestrator`, 'success'); })}>Add to the orchestrator</Button>
-            <Button size="sm" tone="quiet" icon="x" onClick={() => setPreview(null)}>Cancel</Button>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

@@ -119,7 +119,7 @@ function EntryRow({ e, tree, onPlanThis, onAddTo, onOpenPlan }: { e: CatalogEntr
                 <input type="checkbox" className="fx-check" checked={f.state === 'have'} readOnly aria-label={`${f.title}: ${f.state}`} />
                 <span className="axp-plan-studio__ftitle">{f.title}</span>
                 <Chip tone={STATE_TONE[f.state]}><Icon name={STATE_ICON[f.state]} size={10} /> {f.state}</Chip>
-                {f.plan ? <button type="button" className="fx-btn fx-btn--quiet fx-btn--sm" onClick={() => onOpenPlan(f.plan!)} title={f.planTitle}>{f.build ? 'build' : 'plan'}</button>
+                {f.plan ? <button type="button" className="fx-btn fx-btn--quiet fx-btn--sm" onClick={() => onOpenPlan(f.plan!)} title={f.planTitle}>plan</button>
                   : f.state !== 'have' && <span className="axp-plan-studio__fact"><Button size="sm" tone="quiet" icon="plus" onClick={() => onPlanThis(e, f)}>Plan this</Button><IconButton icon="layers" label="Add to a plan" onClick={() => onAddTo(e, f)} /></span>}
               </li>
             ))}

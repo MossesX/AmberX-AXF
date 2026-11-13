@@ -247,30 +247,6 @@
         "kind": "tab"
       },
       {
-        "target": "open-the-orchestrator",
-        "title": "Open the orchestrator",
-        "text": "Opens the build this plan turned into.",
-        "kind": "button"
-      },
-      {
-        "target": "check-progress",
-        "title": "Check progress",
-        "text": "How far its build has got.",
-        "kind": "button"
-      },
-      {
-        "target": "preview-steps",
-        "title": "Preview steps",
-        "text": "Shows the steps the orchestrator would split it into, before you commit.",
-        "kind": "button"
-      },
-      {
-        "target": "add-to-the-orchestrator",
-        "title": "Turn into a build",
-        "text": "Sends the plan to the Build orchestrator. Only then does it become a build.",
-        "kind": "button"
-      },
-      {
         "target": "restore-v",
         "title": "Restore v",
         "text": "Restores v. What is there now is kept in the history. Part of Plan Studio.",

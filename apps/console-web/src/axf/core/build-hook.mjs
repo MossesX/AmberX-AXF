@@ -3,7 +3,7 @@
  *
  * Brett, Nov 4 2026: "As soon as a prompt goes through that plans on building the features, they go into that list."
  * Every way a build comes to exist or moves (vps.build_start → deploy/claude-headless.sh, orchestrator add,
- * MCP pending_change add, Plan Studio "Turn into a build", a hired agent taking a job, the reconciler marking a PR
+ * MCP pending_change add, a hired agent taking a job, the reconciler marking a PR
  * merged) ends in one write of the builds store (builds@1, framework/cli/builds-store.mjs saveStore). This module
  * turns one store change (before → after of one build) into the events listeners need, so no creator has to fire
  * anything itself and no creator can forget to:
@@ -12,7 +12,7 @@
  *     id:     '<build>:<rev>:<event>[:<step uid>]'   stable: replaying the same change gives the same ids
  *     event:  created | steps-added | step-done | status | pr-opened | pr-merged | addendum | cancelled | restored
  *     at:     when the store saw it (ISO, UTC)
- *     by:     who wrote the store (cli | console | mcp | headless | reconcile | plan-studio | agent:<name> | …)
+ *     by:     who wrote the store (cli | console | mcp | headless | reconcile | agent:<name> | …)
  *     build:  { id, profile, profiles, title, category, status, branch, pr, mergedAt, createdAt, rev, repo }
  *     from / to:  the status before and after (status, cancelled, restored)
  *     steps:  the steps the event is about: { id, uid, title, text, files, model, done, doneAt }

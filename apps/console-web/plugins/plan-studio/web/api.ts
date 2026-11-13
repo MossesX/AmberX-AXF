@@ -69,11 +69,8 @@ export async function applyAi(ops: Op[], text: string, plan?: string): Promise<{
   for (const p of r.saved ?? []) putPlan(p);
   return r;
 }
-export async function turnIntoBuild(id: string, profile: string, preview: boolean, buildId?: string) {
-  const r = await call<{ ok: boolean; preview?: boolean; change?: ReturnType<typeof pc.toBuild>; minutes?: number; plan?: Plan; build?: { profile: string; id: string }; error?: string }>('build', { id, profile, preview, buildId });
-  if (r.plan) putPlan(r.plan);
-  return r;
-}
+/** Delete every plan (history kept: restore brings one back). */
+export async function deleteAllPlans(status = '') { const r = await call<{ ok: boolean; deleted: string[]; error?: string }>('delete-all', { confirm: 'all', status }); for (const id of r.deleted ?? []) dropPlan(id); return r; }
 
 /** Undo for an applied AI edit: put every changed plan back as it was, remove the plans it created. */
 export function undoFor(before: Plan[], saved: Plan[], text: string): () => Promise<string> {

@@ -41,7 +41,7 @@
     "attachments": { "type": "array", "items": { "type": "object", "required": ["id", "kind"], "properties": { "id": { "type": "string" }, "kind": { "enum": ["image", "file", "voice"] }, "name": { "type": "string" }, "url": { "type": "string" }, "size": { "type": "number" }, "transcript": { "type": "string" } } } },
     "body": { "type": "string", "description": "Markdown" },
     "comments": { "type": "array", "items": { "type": "object", "required": ["id", "text"], "properties": { "id": { "type": "string" }, "by": { "type": "string" }, "at": { "type": "string" }, "text": { "type": "string" } } } },
-    "build": { "type": ["object", "null"], "properties": { "profile": { "type": "string" }, "id": { "type": "string" }, "linkedAt": { "type": "string" }, "status": { "type": "string" }, "progress": { "type": "integer" } } },
+    "build": { "type": "null", "description": "Always null: Plan Studio is not linked to builds (Nov 12 2026). Kept so older plan@1 files still validate after normalize." },
     "createdAt": { "type": "string" }, "updatedAt": { "type": "string" }, "createdBy": { "type": "string" },
     "version": { "type": "integer", "minimum": 1 }
   }

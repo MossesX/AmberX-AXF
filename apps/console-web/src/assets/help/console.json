@@ -216,7 +216,7 @@
       {
         "target": "view:plan-studio",
         "title": "Plan Studio",
-        "text": "Every plan in one place. 'Put it in a plan for later' lands here, parked — it only becomes a build when you say Turn into a build.",
+        "text": "Every plan in one place. 'Put it in a plan for later' lands here, parked. Plan Studio stands alone: plans are never linked to builds.",
         "tryIt": "Switch between Tree, Grid, Board and Roadmap at the top.",
         "related": [
           "view:builds"
@@ -1093,7 +1093,7 @@
             "target": ""
           },
           {
-            "say": "A plan only becomes a build when you hit Turn into a build.",
+            "say": "Plans stand alone: builds never make, change or sync plans.",
             "target": ""
           }
         ]

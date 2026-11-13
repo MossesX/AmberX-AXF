@@ -10,14 +10,14 @@ Plugin: `apps/console-web/plugins/plan-studio/` (plugin-lifecycle@1; targets `ax
 
 | Part | Where |
 | --- | --- |
-| Contract `plan@1` (JSON + Markdown body) | `web/plan-core.mjs` (normalize/migrate/validate, categories, totals, diff, versions, templates, Markdown, build link, catalog overlay), `schema/plan.schema.json`, `fixtures/cases.json` → `fixtures/plan.json` |
+| Contract `plan@1` (JSON + Markdown body) | `web/plan-core.mjs` (normalize/migrate/validate, categories, totals, diff, versions, templates, Markdown, catalog overlay), `schema/plan.schema.json`, `fixtures/cases.json` → `fixtures/plan.json` |
 | Migrations | plan@0 drafts (`name/description/state/tasks`), pending@1 items (`subPrompts` → steps), loose notes; unknown fields kept |
-| Store + CLI | `plans.mjs` (`add | list | show [--md] | status | import | export | ai | categories | catalog | sync-builds | api`), one file per plan |
+| Store + CLI | `plans.mjs` (`add | list | show [--md] | status | import | export | ai | categories | catalog | delete <id>… / delete --all | api`), one file per plan |
 | Catalog discovery | `catalog.mjs`: builtPlugins + plugins.json, every `apps/*` with a project manifest, libraries.json + framework/libs, tracker modules, axHub; gone = seen before, missing now |
-| Server | `server/__init__.py`: `state`, `api`, `catalog`, `ai/status`, `ai`; capability **`plans@1`** (`list/get/save/park/ai`) |
+| Server | `server/__init__.py`: `state`, `api`, `delete` ({id} or {all: true}), `catalog`, `ai/status`, `ai`; capability **`plans@1`** (`list/get/save/park/delete/delete_all/ai`) |
 | Web | `ui.tsx` (Plans · Catalog · Categories; tree, grid, sub-grids, board with drag, roadmap, reader; search every field, filters, sort, saved views, counts, bulk), `editor.tsx` (sectioned editor), `catalog.tsx`, `capture.tsx` (quick capture), `ai.tsx` (command box + voice panel), `voice.ts` |
 | AI | `web/plan-ai.mjs`: rules for common phrasings, the console's `axf.llm@1` for the rest; edits shown as a diff (Apply / Discard), optional apply-at-once with Undo; history note `AI, from: <what was said>` |
-| Voice | `web/voice.ts`: turn loop until "I'm done", "undo that", "say that again", yes/no confirm for big edits and Turn into a build; mic through **mic-lease@1** (`globalThis.__axfMicLease`), listening via AmberX native speech else Web Speech; replies via **agent-voice@1** (`axf:agent-voice.say`) when installed, else AmberX native speak / Web Speech |
+| Voice | `web/voice.ts`: turn loop until "I'm done", "undo that", "say that again", yes/no confirm for big edits and "delete this plan" / "delete all plans"; mic through **mic-lease@1** (`globalThis.__axfMicLease`), listening via AmberX native speech else Web Speech; replies via **agent-voice@1** (`axf:agent-voice.say`) when installed, else AmberX native speak / Web Speech |
 
 Where plans live: the hub's shared data `/projects/amberx-axf/_data/plan-studio/` (`plans/<id>.json`,
 `history/<id>.json`, `categories.json`, `templates.json`, `views.json`, `catalog-seen.json`). claude.ai sessions:
@@ -26,29 +26,25 @@ it's the plugin data folder `.axf-console/plugins/plan-studio/`. <!-- axf-plugin
 
 Quick capture: banner **+ Plan**, Builds ▸ New plan…, right-click ▸ New plan…, the global search ("New plan").
 
-Turn into a build: preview the steps (dependency order, model, estimate), then the plan's build is written into the
-chosen profile's orchestrator tracker (orchestrator@1 file through `persist.mjs orchestratorPath`, never the
-orchestrator plugin's folder); the build carries a note naming the plan, the plan carries `build` + a build link. Every
-state load syncs progress: the plan's steps tick as the build's do, and when the build completes the plan is done and its
-planned features become have.
+Not linked to builds (Brett, Nov 12 2026: "I don't want this plan studio to be linked to the build at all"): Plan
+Studio never creates, reads, syncs or updates orchestrator builds, and builds never write plans. There is no Turn into a
+build and no build progress sync; plan@1 `build` is always null. Deleting: one plan or every plan (history kept, restore
+brings one back) through `POST /api/plugins/plan-studio/delete`, `plans.mjs delete <id>… | --all`, MCP/CLI plugin command <!-- axf-plugin:plan-studio -->
+`plan-studio delete`, control@1 `remove planner.plans <id>`, and voice ("delete this plan", "delete all plans").
 
 Catalog features are read, not copied: plugin.json `provides`/`features`/`targets`, app plugins, tracker items (by
-module), and the feature matrix items of a plan's build. Plans add planned features on top. Planned tracker items are
+module). Plans add planned features on top. Planned tracker items are
 written back through the tracker's path (`framework/catalog/status.json` gets `plan: <id>`, `status: built` once the
 plan is done; `tracker.mjs` regenerates).
 
-## Imported (parked)
+## Seed plans
 
-- **Docs Studio** (`docs-studio`): all 15 steps from `docs-engine-plan.md` on `claude/project-thread-y4x54r` (Fable s1–s3,
-  Opus s4–s15, 7 h), the 5 layouts as decisions, category Framework > Docs. Draft PR #159 to be closed with "Moved to
-  Plan Studio as the parked plan Docs Studio" (branch kept). Not built.
-- **AmberX — Selling It: Product + Installer Plan** (`amberx-selling-it`): the claude.ai artifact couldn't be read from
-  the VPS session, so it's the title, the link and a question to paste the text in. Category Product > Installer.
-- **ClipX** (`clipx`): the parked clipboard-manager plan from `claude/clipx-plan` (16 steps), category Apps > ClipX.
+None ship. The three imported parked plans (Docs Studio, AmberX Selling It, ClipX) were deleted with every other
+plan on Nov 12 2026 (Brett: "I want to delete all the plans"); their history stays in the store.
 
 ## Checks
 
-`python3 apps/console-web/plugins/plan-studio/test.py` (15 server checks, then `test.mjs`: 26 checks) · <!-- axf-plugin:plan-studio -->
+`python3 apps/console-web/plugins/plan-studio/test.py` (21 server checks, then `test.mjs`: 26 checks) · <!-- axf-plugin:plan-studio -->
 `npx -y tsx apps/console-web/plugins/plan-studio/test.mjs` · console `tsc --noEmit` + `vite build` · AmberX `tsc`, <!-- axf-plugin:plan-studio -->
 `test.mjs` (1990/1990), `vite build` (bundles plan-studio) and a typecheck of the plugin against AmberX's baked
 framework · `check-theme`, `check-controls`, `check-plugin-pages`, `plugin-lifecycle check plan-studio`, `menu-reach`,

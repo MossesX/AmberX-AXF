@@ -10,7 +10,7 @@
  *   … set <build>… <urgent|high|normal|low|P0-P3> [--by who] [--json]      <build> = id or (spoken) name
  *   … slot --name n [--brief file]                                         prints "<slot level> <build id>" (launcher)
  *
- * --sources reads extra sources as JSON on stdin (slots, mergeQueue, pulls, ui, plans): the console passes what its
+ * --sources reads extra sources as JSON on stdin (slots, mergeQueue, pulls, ui): the console passes what its
  * plugins know. Without it the CLI has only the store, agent-slots and the plan's dependencies; the whole list comes from
  * the console's orchestrator plugin (its priority routes, the MCP and voice commands).
  */

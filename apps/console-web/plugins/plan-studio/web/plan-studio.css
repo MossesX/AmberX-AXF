@@ -65,7 +65,6 @@
 .axp-plan-studio .is-done { color: var(--fx-muted); } .axp-plan-studio__psteps .is-done { text-decoration: line-through; }
 .axp-plan-studio__bar { display: inline-block; flex: 0 0 calc(var(--fx-font-size) * 4); height: calc(var(--fx-space) * 0.45); border-radius: 999px; background: var(--fx-surface2); overflow: hidden; }
 .axp-plan-studio__bar > span { display: block; height: 100%; background: var(--fx-success); }
-.axp-plan-studio__build .axp-plan-studio__bar { display: block; width: 100%; }
 .axp-plan-studio__sub { min-width: 0; }
 .axp-plan-studio__subh { width: 100%; display: flex; align-items: center; gap: var(--fx-dens-gap-md); margin: 0; padding: var(--fx-dens-gap-md) var(--fx-dens-gap-xs); background: none; border: 0; color: inherit; font: inherit; font-size: var(--axp-ps-fs); cursor: pointer; text-align: start; }
 
@@ -143,8 +142,6 @@
 .axp-plan-studio__hbody ul { margin: 0 0 var(--fx-dens-gap-sm); padding-inline-start: var(--fx-dens-gap-2xl); }
 .axp-plan-studio__comments li p { margin: var(--fx-dens-gap-xs) 0 0; }
 .axp-plan-studio__danger { padding-top: var(--fx-dens-gap-xl); border-top: var(--axp-ps-hair); flex-wrap: wrap; }
-.axp-plan-studio__build { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); font-size: var(--axp-ps-fs); }
-.axp-plan-studio__build p { margin: 0; }
 
 /* catalog coverage matrix */
 .axp-plan-studio__matrix { display: flex; flex-direction: column; font-size: var(--axp-ps-fs); border-top: var(--axp-ps-hair); overflow-x: auto; }

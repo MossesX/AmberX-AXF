@@ -5,14 +5,13 @@
  * app by name, so a new one appears with no code change; one that was seen before and is gone now is marked "gone".
  *
  * Features are read, never copied: the tracker (tracker.json, statuses from catalog/status.json) by module, each
- * plugin's `provides` (its pages, settings tab, banner, services) and the feature matrices of builds linked to plans.
+ * plugin's `provides` (its pages, settings tab, banner, services). Plans are not linked to builds.
  * Plans add what they plan (plan.features) on top (plan-core overlayCatalog). Planned features that are tracker items
  * are written back through the tracker's path (catalog/status.json → `plan` on the item, tracker.mjs regenerates).
  */
 import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { join, resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { resolveProfile } from '../../../../framework/plan/builds-store-core.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const ROOT = resolve(HERE, '../../../..');
@@ -88,7 +87,7 @@ function pluginFeatures(m) {
  * Every entry, newest discovery: [{key, kind, name, version, status (built|planned|gone), description, profile, links,
  * folder, features:[{id,title,state,source}]}]. `seen` (keys found before) marks the missing ones gone.
  */
-export async function discover({ root = ROOT, seen = [], matrices = [], plans = [] } = {}) {
+export async function discover({ root = ROOT, seen = [], plans = [] } = {}) {
   const apps = scanApps(root);
   const libIndex = readJson(join(root, 'framework/catalog/libraries.json'), { items: [] }).items ?? [];
   const webLibs = existsSync(join(root, 'framework/libs')) ? readdirSync(join(root, 'framework/libs'), { withFileTypes: true }).filter((d) => d.isDirectory()).map((d) => d.name) : [];
@@ -125,28 +124,8 @@ export async function discover({ root = ROOT, seen = [], matrices = [], plans = 
     }
     entries.get(key).features.push({ id: `tracker:${it.id}`, title: it.title, state: STATE[st] ?? 'idea', source: 'tracker', trackerId: it.id, plan: status[it.id]?.plan ?? '' });
   }
-  // feature matrices of builds linked to plans: the kept items are the plan's planned features on the entries it touches
-  for (const p of plans) {
-    if (!p.build) continue;
-    const mx = matrices.find((m) => m.ref?.kind === 'orchestrator' && m.ref.id === p.build.id && (!p.build.profile || m.profile === resolveProfile(p.build.profile)));
-    if (!mx) continue;
-    for (const t of p.touches) {
-      const e = entries.get(t.key); if (!e) continue;
-      for (const it of mx.items ?? []) if (it.state !== 'skip') e.features.push({ id: `matrix:${mx.id}:${it.id}`, title: it.name, state: p.status === 'done' ? 'have' : 'planned', source: 'feature matrix', plan: p.id, build: `${p.build.profile}:${p.build.id}` });
-    }
-  }
   for (const k of seen) if (!entries.has(k)) add({ key: k, kind: k.split(':')[0], id: k.split(':').slice(1).join(':'), name: k.split(':').slice(1).join(':'), version: '', status: 'gone', description: 'Was in the catalog before; not found any more (removed or renamed).', folder: '', features: [] });
   return [...entries.values()].sort((a, b) => a.kind.localeCompare(b.kind) || a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }));
-}
-
-/** Every profile's feature matrices (the feature-matrix plugin's files; read only). */
-export function readMatrices(root = ROOT) {
-  const out = [];
-  const add = (f, profile) => { const j = readJson(f); for (const m of j?.matrices ?? []) out.push({ ...m, profile: resolveProfile(m.profile ?? profile) }); };
-  add(join(root, '_claude/builds/matrices.json'), 'all'); // the base profile's (all since Nov 7 2026)
-  const pd = join(root, '_claude/builds/profiles');
-  for (const d of existsSync(pd) ? readdirSync(pd) : []) add(join(pd, d, 'matrices.json'), d);
-  return out;
 }
 
 /**

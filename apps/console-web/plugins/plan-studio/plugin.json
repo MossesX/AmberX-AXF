@@ -6,7 +6,7 @@
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Every plan in one place (plan@1: JSON + a Markdown body). Enter plans by hand in a full sectioned editor (templates, autosave, quick capture), file them in nested categories, and view them as a tree, grid, sub-grids, board, roadmap or reader. Plain-English AI edits plans as a diff to apply or undo, and AmberX talks plans through by voice. Turn a plan into an orchestrator build and follow its progress. The Catalog lists every plugin, app, library, framework module and axHub with its features checked off as have, partial, planned or idea. Plans live in the hub's shared data (plan-studio/), so claude.ai and VPS sessions read and write them through axhub.memory_read / memory_write; plans.mjs is the CLI.",
+  "description": "Every plan in one place (plan@1: JSON + a Markdown body). Enter plans by hand in a full sectioned editor (templates, autosave, quick capture), file them in nested categories, and view them as a tree, grid, sub-grids, board, roadmap or reader. Plain-English AI edits plans as a diff to apply or undo, and AmberX talks plans through by voice. A standalone tool: plans are never linked to builds. The Catalog lists every plugin, app, library, framework module and axHub with its features checked off as have, partial, planned or idea. Plans live in the hub's shared data (plan-studio/), so claude.ai and VPS sessions read and write them through axhub.memory_read / memory_write; plans.mjs is the CLI.",
   "targets": [
     "axf-console",
     "amberx-droid"

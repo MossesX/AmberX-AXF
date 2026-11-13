@@ -31,7 +31,7 @@ export const ADD_LISTS = ['steps', ...pc.LIST_IDS, 'links', 'comments', 'tags'];
 /** Edits that never ask first even when "apply small edits straight away" is off are none; these count as small. */
 export const SMALL_OPS = new Set(['set', 'category', 'tag', 'add', 'step']);
 /** Edits voice always confirms before applying. */
-export const BIG_OPS = new Set(['new-plan', 'remove', 'build']);
+export const BIG_OPS = new Set(['new-plan', 'remove']);
 
 const LIST_WORDS = {
   step: 'steps', task: 'steps', requirement: 'requirements', req: 'requirements', acceptance: 'acceptance', check: 'acceptance', criterion: 'acceptance', criteria: 'acceptance',
@@ -353,7 +353,6 @@ export function modelPrompt(text, ctx = {}) {
     categories: arr(ctx.categories).slice(0, 200),
     plans: arr(ctx.plans).slice(0, 300).map((x) => ({ id: x.id, title: x.title, status: x.status, left: x.steps.filter((s) => !s.done).length })),
     catalog: arr(ctx.catalog).slice(0, 300).map((e) => ({ key: e.key, name: e.name, features: arr(e.features).slice(0, 40).map((f) => `${f.id}: ${f.title} [${f.state}]`) })),
-    builds: arr(ctx.builds).slice(0, 60).map((b) => ({ id: b.id, title: b.title, status: b.status })),
   };
   return { system, messages: [{ role: 'user', content: `Context:\n${JSON.stringify(context)}\n\nRequest: ${str(text, 4000)}` }] };
 }

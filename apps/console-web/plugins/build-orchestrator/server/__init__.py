@@ -92,7 +92,6 @@ def _priority_sources() -> dict[str, Any]:
         "mergeQueue": ("axf.merge-queue@1", lambda s: s.queue()),
         "pulls": ("axf.merge-queue@1", lambda s: s.stacked()),
         "ui": ("ui-review@1", lambda s: s.items()),
-        "plans": ("plans@1", lambda s: s.list()),
     }
     for key, (cap, read) in calls.items():
         svc = plugin_services.get(cap)
