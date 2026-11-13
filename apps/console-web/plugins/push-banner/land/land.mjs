@@ -6,7 +6,8 @@
  *
  * Runs on the VPS host (cron every 3 minutes, deploy/install-console.sh), where the build worktrees and the GitHub
  * token broker are; the console container reads what it writes (the push banner's data folder) and does the merging
- * itself (push banner auto-merge: oldest first → this file's landing order, one merge per round; UI Review is not a gate, Nov 13 2026).
+ * itself (push banner auto-merge: oldest first → this file's landing order, one merge per round; UI Review holds only
+ * while its switch 'UI Review is a merge gate' is on, default off since Nov 13 2026).
  *
  *   node apps/console-web/plugins/push-banner/land/land.mjs run [--dry-run] [--only <build>] [--json]   one round
  *   … list | blocked [--json]            what the last round found (landing order, PR, state, reason)
@@ -44,6 +45,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from './land-core.mjs';
 import { queueRound, readQueue, readQueueConfig, main as queueMain } from './merge-queue.mjs';
+import { uiGate } from './merge-queue-core.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const SELF_REPO = resolve(HERE, '../../../../..');
@@ -141,7 +143,7 @@ export function crewSay(section, event, text, { ref = '', repo = SELF_REPO, dedu
   return spawnSync(process.execPath, args, { cwd: repo, encoding: 'utf8', timeout: 30000 }).status === 0;
 }
 /** Which chat event a landing reason is: Brett's move, a code fix, or something in the way. */
-export const reasonEvent = (kind) => (['held', 'code'].includes(kind) ? 'waiting' : ['conflict', 'ci', 'error'].includes(kind) ? 'failed' : 'blocked');
+export const reasonEvent = (kind) => (['held', 'ui', 'code'].includes(kind) ? 'waiting' : ['conflict', 'ci', 'error'].includes(kind) ? 'failed' : 'blocked');
 
 export const stateFile = (s) => join(s.dataDir, 'land.json');
 export const controlFile = (s) => join(s.dataDir, 'land-control.json');
@@ -292,6 +294,7 @@ export async function round({ s = settings(), git = makeGit(s.repo), gh = makeGi
   if (!cfg.autoLand) { const st = { ...prev, $axf: core.LAND_FRAME, at, on: false, items: prev.items || [] }; if (!dry) writeJson(stateFile(s), st); return st; }
   const f = git(['fetch', '-q', '--prune', s.remote], { timeout: 180000 });
   if (f.code) log(`fetch: ${f.err.slice(-200)}`);
+  const waitUi = await uiGate(api); // UI Review's switch 'UI Review is a merge gate' (default off): asked once a round
   const storeText = git(['show', `${s.remote}/${s.base}:_claude/builds/store.json`]);
   const store = storeText.code ? { builds: [] } : JSON.parse(storeText.out);
   const builds = (store.builds || []).filter((b) => !b.deleted);
@@ -319,7 +322,7 @@ export async function round({ s = settings(), git = makeGit(s.repo), gh = makeGi
     const b = candById.get(o.id);
     const it = { id: b.id, title: String(b.title || b.id).slice(0, 200), branch: b.branch, after: o.after, ...(b.alsoBuilds ? { alsoBuilds: b.alsoBuilds } : {}), pr: null, head: '', state: 'waiting', reason: null, since: '', checkedAt: at };
     const old = prevItems.get(b.id) || {};
-    const facts = { held: ctl.holds?.[b.id] ? ctl.holds[b.id].why || true : '' };
+    const facts = { held: ctl.holds?.[b.id] ? ctl.holds[b.id].why || true : '', waitUi };
     try {
       if (!facts.held) {
         const wt = wts[b.branch];
@@ -352,7 +355,7 @@ export async function round({ s = settings(), git = makeGit(s.repo), gh = makeGi
             else if (m.merged) { it.mergedMain = { sha: m.sha, resolved: m.resolved || [] }; git(['fetch', '-q', s.remote, `+refs/heads/${b.branch}:refs/remotes/${s.remote}/${b.branch}`]); }
           }
           if (!pr && !facts.conflicts && !dry) {
-            try { pr = await gh('POST', `/repos/${s.slug}/pulls`, { title: it.title.slice(0, 120), head: b.branch, base: s.base, body: `Build \`${b.id}\` is finished (every step done). Opened by auto-land: it merges by itself once CI is green on its head.\n\n${String(b.detail || '').slice(0, 1500)}` }); if (pr?.number) crewSay('landing', 'start', `${b.id} is finished. Opened PR #${pr.number} and CI is on it.`, { ref: b.id, repo: s.repo }); }
+            try { pr = await gh('POST', `/repos/${s.slug}/pulls`, { title: it.title.slice(0, 120), head: b.branch, base: s.base, draft: false, body: `Build \`${b.id}\` is finished (every step done). Opened by auto-land: it merges by itself once CI is green on its head.\n\n${String(b.detail || '').slice(0, 1500)}` }); if (pr?.number) crewSay('landing', 'start', `${b.id} is finished. Opened PR #${pr.number} and CI is on it.`, { ref: b.id, repo: s.repo }); }
             catch (e) { facts.prError = e.message; }
           }
         }
@@ -370,6 +373,7 @@ export async function round({ s = settings(), git = makeGit(s.repo), gh = makeGi
             try { await gh('POST', `/repos/${s.slug}/actions/workflows/${s.workflow}/dispatches`, { ref: b.branch }); it.dispatched = it.head; } catch (e) { log(`dispatch ${b.id}: ${e.message}`); }
           } else if (old.dispatched === it.head) it.dispatched = it.head;
         }
+        if (waitUi && it.pr) { const u = await api('GET', `/api/plugins/push-banner/ui-hold?branch=${encodeURIComponent(b.branch)}&pr=${it.pr}`); facts.ui = u ? String(u.hold || '') : 'unknown'; } // only while UI Review is a merge gate
         facts.deps = o.after.filter((d) => { const x = byId.get(d); return x && !x.mergedAt && x.status !== 'complete' && x.status !== 'archived'; });
       }
       it.reason = core.blockReason(b.id, facts);
@@ -402,7 +406,7 @@ export async function round({ s = settings(), git = makeGit(s.repo), gh = makeGi
   // builds that left the list (merged, or no longer finished): their alert goes
   const gone = [...prevItems.keys()].filter((id) => !items.some((x) => x.id === id) && prevItems.get(id)?.pushed);
   if (gone.length && !dry && !only) await api('POST', '/api/alerts/resolve', { keys: gone.map(core.alertKey) });
-  const st = { $axf: core.LAND_FRAME, at, on: true, waitUi: false, mainSha, order: items.map((x) => x.pr).filter(Boolean), managed: items.map((x) => x.pr).filter(Boolean),
+  const st = { $axf: core.LAND_FRAME, at, on: true, waitUi, mainSha, order: items.map((x) => x.pr).filter(Boolean), managed: items.map((x) => x.pr).filter(Boolean),
     items: only ? [...items, ...(prev.items || []).filter((x) => x.id !== only)] : items };
   if (!dry) { writeJson(stateFile(s), st); const c = readControl(s); if (c.now?.length) writeJson(controlFile(s), { ...c, now: c.now.filter((id) => !items.some((x) => x.id === id)) }); }
   return st;

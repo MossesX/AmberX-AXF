@@ -15,10 +15,13 @@ const t = async (name, fn) => { await fn(); n++; console.log(`ok ${name}`); };
 
 // ------------------------------------------------------------------ pure rules
 
-await t('not ready: draft, removed, kicked at the same head, PR checks (UI Review is not a gate)', () => {
+await t('not ready: draft, removed, kicked at the same head, PR checks, UI Review only while its gate switch is on', () => {
   const pr = { number: 5, head: 'a', ci: 'success' };
   assert.equal(q.notReady(pr), '');
   assert.match(q.notReady({ ...pr, draft: true }), /draft/);
+  // UI Review's gate switch (default off): off, a waiting / rejected review never keeps a PR out; on, it does
+  for (const ui of ['waiting', 'changes', 'rejected', 'unknown']) { assert.equal(q.notReady({ ...pr, ui }), ''); assert.equal(q.notReady({ ...pr, ui }, {}, { waitUi: false }), ''); assert.match(q.notReady({ ...pr, ui }, {}, { waitUi: true }), /merge gate/); }
+  assert.equal(q.notReady({ ...pr, ui: '' }, {}, { waitUi: true }), '');
   assert.match(q.notReady(pr, { removed: { 5: { head: 'a' } } }), /by hand/);
   assert.equal(q.notReady({ ...pr, head: 'b' }, { removed: { 5: { head: 'a' } } }), '', 'a new commit puts it back');
   assert.match(q.notReady(pr, { kicked: { 5: { head: 'a', why: 'x' } } }), /kicked out/);

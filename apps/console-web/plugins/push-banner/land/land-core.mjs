@@ -6,7 +6,7 @@
  *   clean its worktree (synced files committed on its own branch, scratch files skipped, untracked duplicates of hub
  *   files backed up) → merge origin/main in (builds files newer-wins, union files unioned, generated files taken from
  *   main and regenerated) → push → its PR is opened / linked → the push banner merges it once CI is green on that head
- *   in dependency order, one per round (UI Review is not a gate, Nov 13 2026).
+ *   in dependency order, one per round (UI Review holds only while its gate switch is on, default off since Nov 13 2026).
  * Anything that needs judgement (a code conflict, CI red) is reported in plain words; only those two create an agent
  * job. Everything else waits by itself (CI running, a dependency not merged yet).
  */
@@ -154,9 +154,9 @@ export function statusOnly(commits, files) {
 /**
  * Why a landing can't go on, in plain words, or null when nothing holds it. `s` is what the runner found:
  *   { code: [files], conflicts: [files], ci: 'success'|'failure'|'running'|'none', failing: [check names],
- *     deps: [build ids not merged], held: why,
+ *     ui: '' | 'waiting' | 'changes' | 'rejected' | 'unknown', waitUi (UI Review's gate switch on), deps: [build ids not merged], held: why,
  *     pushError, prError }
- * kind = held | code | conflict | ci | dependency | push | pr | running. `agent` = needs a code change (only
+ * kind = held | code | conflict | ci | ui | dependency | push | pr | running. `agent` = needs a code change (only
  * conflict and ci): those, and only those, may create an agent job.
  */
 export function blockReason(id, s = {}) {
@@ -168,7 +168,11 @@ export function blockReason(id, s = {}) {
   if (s.prError) return r('pr', `its pull request couldn't be opened (${str(s.prError, 160)}).`);
   if (s.deps?.length) return r('dependency', `waits for ${s.deps.join(', ')} to land first.`);
   if (s.ci === 'failure') return r('ci', `CI is red${s.failing?.length ? ` (${s.failing.slice(0, 3).join(', ')})` : ''}. Needs a code fix.`, { checks: (s.failing || []).slice(0, 10) });
-  // UI Review is not a gate (Nov 13 2026): its state never blocks a landing
+  // UI Review blocks a landing only while its switch 'UI Review is a merge gate' is on (default off, Nov 13 2026)
+  if (s.waitUi === true && s.ui && s.ui !== '') {
+    const words = { waiting: 'UI Review is a merge gate and its screenshots are waiting. Approve them and it merges by itself.', changes: 'UI Review is a merge gate and asked for changes.', rejected: 'UI Review is a merge gate and rejected it.', unknown: "UI Review is a merge gate and couldn't be read, so it waits." };
+    return r('ui', words[s.ui] || `UI Review holds it (${str(s.ui, 40)}).`);
+  }
   if (s.ci === 'running' || s.ci === 'none') return r('running', s.ci === 'running' ? 'CI is running on its head.' : 'CI has not run on its head yet; started it.', { quiet: true });
   return null;
 }

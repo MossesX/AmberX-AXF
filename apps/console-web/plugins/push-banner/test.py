@@ -637,19 +637,26 @@ check(r["status"] == "error" and "AXHUB_TOKEN" in r["summary"], "health: no rout
 plugin_services.withdraw("fake-github")
 plugin_services.withdraw("fake-health")
 
-# UI Review is not a gate (Nov 13 2026): a PR whose review is waiting, rejected or has changes asked still merges
+# UI Review's gate switch ('UI Review is a merge gate', default off, Brett Nov 13 2026): off, a PR whose review is
+# waiting, rejected or has changes asked still merges and UI Review isn't even asked; on, it holds
 class FakeReview:
-    def __init__(self): self.st, self.asked = {}, []
+    def __init__(self): self.st, self.asked, self.on = {}, [], False
+    def gate_on(self): return self.on
     def state(self, branch="", pr=None):
         self.asked.append((branch, pr))
         s = self.st.get(branch) or self.st.get(pr) or "none"
-        return {"state": s, "holds": False}
+        return {"state": s, "review": s, "holds": self.on and s in ("waiting", "changes", "rejected")}
 fr = FakeReview()
 plugin_services.provide("ui-review@1", fr, "fake-ui-review")
 os.environ["GITHUB_TOKEN"] = TOKEN
 fr.st["feat/a"] = "waiting"
-check(mod.PUSHES.ui_hold("MossesX/AmberX-AXF", 18, "feat/a") == "", "UI Review waiting = free (not a gate)")
-check(c.get("/p/ui-hold", params={"branch": "feat/a", "pr": 18}).json() == {"hold": "", "reason": "UI Review is not a gate (Nov 2026)"}, "GET ui-hold answers free, with the reason")
+check(mod.PUSHES.ui_gate() is False and mod.PUSHES.ui_hold("MossesX/AmberX-AXF", 18, "feat/a") == "", "gate off: UI Review waiting = free")
+check(c.get("/p/ui-hold", params={"branch": "feat/a", "pr": 18}).json() == {"hold": "", "gate": False, "reason": "UI Review is not a merge gate (switch off): items are filed, PRs never wait"}, "GET ui-hold answers free, gate off, with the reason")
+fr.on = True
+check(mod.PUSHES.ui_hold("MossesX/AmberX-AXF", 18, "feat/a") == "waiting" and c.get("/p/ui-hold", params={"branch": "feat/a", "pr": 18}).json()["hold"] == "waiting", "gate on: UI Review waiting holds the PR")
+check(c.get("/p/ui-hold").json() == {"hold": "", "gate": True, "reason": "UI Review is a merge gate"}, "GET ui-hold with no PR = just the gate")
+fr.on = False
+fr.asked.clear()
 x18 = next(x for x in STATE["pulls"] if x["number"] == 18)
 STATE["checks"][x18["head"]["sha"]] = [{"status": "completed", "conclusion": "success", "name": "CI"}]
 STATE["behind"]["feat/a"] = 0
@@ -657,8 +664,8 @@ n_merged = len(STATE["merged"])
 clock["t"] += 999
 res = mod.PUSHES.auto_merge()
 check(len(STATE["merged"]) == n_merged + 1 and STATE["merged"][-1][0] == R + "/pulls/18/merge" and not any(x.get("held") for x in res),
-      "auto-merge: a PR whose UI Review is waiting still lands")
-check(fr.asked == [], "the merge never asks UI Review")
+      "auto-merge, gate off: a PR whose UI Review is waiting still lands")
+check(fr.asked == [], "gate off: the merge never asks UI Review for a state")
 plugin_services.withdraw("fake-ui-review")
 
 # ---------------------------------------------------------------- auto-land (Nov 3 2026)

@@ -12,7 +12,8 @@
  * One round (batch mode, the default since Nov 10 2026: batchRound below): finished builds without a PR get one; the
  * open PRs line up; the batch on queue/batch is checked (green: main becomes that one commit; red: split in half, or the
  * one PR to blame kicked out); a new batch is combined and pushed. The stack round (queueMode 'stack'):
- *   1. the open PRs into main: ready ones (PR checks green, not a draft, not held by hand, not kicked
+ *   1. the open PRs into main: ready ones (PR checks green, not a draft, not held by hand or, while its gate switch is
+ *      on, by UI Review, not kicked
  *      out at this head) line up in queue order;
  *   2. last round's stack is kept as far as it still holds (same PRs in the same order, same heads, main unchanged
  *      in code outside the queue);
@@ -173,7 +174,9 @@ async function roundOnce({ s, git, gh, api, dry = false, now = () => new Date(),
   // but has no PR gets one here, whether auto-land is on or not; the PR's light checks run and it joins the next batch
   const enlisted = dry ? [] : await enlist({ s, git, gh, builds, pulls, log });
 
-  // 1. the open PRs, what holds each, and the ready ones in queue order
+  // 1. the open PRs, what holds each, and the ready ones in queue order. UI Review is asked per PR only while its
+  // switch 'UI Review is a merge gate' is on (default off): off, nothing waits for it.
+  const waitUi = await q.uiGate(api);
   const prs = [];
   for (const p of pulls) {
     const b = buildOf(p.head.ref); const old = prevAll.get(p.number) || {};
@@ -182,8 +185,9 @@ async function roundOnce({ s, git, gh, api, dry = false, now = () => new Date(),
     else { try { fact.ci = ciOf((await gh('GET', `/repos/${s.slug}/commits/${fact.head}/check-runs?per_page=100`))?.check_runs || []).ci; } catch { fact.ci = 'running'; } }
     // no PR checks at all: does it conflict with main? (git, no API call)
     if (fact.ci === 'none') fact.conflicted = git(['merge-tree', '--write-tree', '--quiet', `${s.remote}/${s.base}`, fact.head]).code === 1;
+    if (waitUi) { const u = await api('GET', `/api/plugins/push-banner/ui-hold?branch=${encodeURIComponent(fact.branch)}&pr=${fact.number}`); fact.ui = u ? String(u.hold || '') : 'unknown'; }
     if (b && landCtl.holds?.[b.id]) fact.landHeld = landCtl.holds[b.id].why || 'held';
-    fact.why = q.notReady(fact, ctl, { redJoins: cfg.mode === 'batch' });
+    fact.why = q.notReady(fact, ctl, { waitUi, redJoins: cfg.mode === 'batch' });
     prs.push(fact);
   }
   ctl = q.pruneControl(ctl, prs.map((p) => p.number));
@@ -318,7 +322,7 @@ export async function enlist({ s, git, gh, builds, pulls, log = () => {} }) {
     if (git(['rev-parse', '-q', '--verify', `refs/remotes/${s.remote}/${b.branch}`]).code) continue; // not pushed yet
     if (git(['rev-list', '--count', `${s.remote}/${s.base}..${s.remote}/${b.branch}`]).out === '0') continue; // nothing to land
     try {
-      const pr = await gh('POST', `/repos/${s.slug}/pulls`, { title: String(b.title || b.id).slice(0, 120), head: b.branch, base: s.base, body: `Build \`${b.id}\` is finished. Opened by the merge queue: every finished build goes into the queue, is combined with the other ready ones into one batch build, and lands when that batch's one CI run is green.\n\n${String(b.detail || '').slice(0, 1500)}` });
+      const pr = await gh('POST', `/repos/${s.slug}/pulls`, { title: String(b.title || b.id).slice(0, 120), head: b.branch, base: s.base, draft: false, body: `Build \`${b.id}\` is finished. Opened by the merge queue: every finished build goes into the queue, is combined with the other ready ones into one batch build, and lands when that batch's one CI run is green.\n\n${String(b.detail || '').slice(0, 1500)}` });
       out.push({ build: b.id, pr: pr?.number || 0 });
       log(`queue: opened #${pr?.number} for finished build ${b.id}`);
     } catch (e) { if (e.status !== 422) log(`queue: couldn't open a PR for ${b.id}: ${e.message}`); }

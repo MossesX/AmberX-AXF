@@ -74,7 +74,9 @@ check(core.statusOnly(['Builds live: a [skip ci]'], ['_claude/builds/store.json'
 const kinds = [['held', { held: 'later' }], ['code', { code: ['a.ts'] }], ['conflict', { conflicts: ['a.ts'] }], ['push', { pushError: 'x' }], ['pr', { prError: 'x' }], ['dependency', { deps: ['y'] }], ['ci', { ci: 'failure', failing: ['Gradle'] }], ['running', { ci: 'running' }]];
 for (const [k, f] of kinds) check(core.blockReason('b', f)?.kind === k, `reason ${k}: ${core.blockReason('b', f)?.text}`);
 check(core.blockReason('b', { ci: 'success' }) === null, 'green = nothing holds it');
-for (const ui of ['waiting', 'changes', 'rejected', 'unknown']) check(core.blockReason('b', { ci: 'success', ui }) === null, `UI Review ${ui} never holds a landing (not a gate)`);
+for (const ui of ['waiting', 'changes', 'rejected', 'unknown']) check(core.blockReason('b', { ci: 'success', ui }) === null && core.blockReason('b', { ci: 'success', ui, waitUi: false }) === null, `gate off: UI Review ${ui} never holds a landing`);
+for (const ui of ['waiting', 'changes', 'rejected', 'unknown']) check(core.blockReason('b', { ci: 'success', ui, waitUi: true })?.kind === 'ui' && /merge gate/.test(core.blockReason('b', { ci: 'success', ui, waitUi: true }).text), `gate on: UI Review ${ui} holds a landing`);
+check(core.blockReason('b', { ci: 'success', ui: '', waitUi: true }) === null && reasonEvent('ui') === 'waiting', "gate on, nothing in UI Review: free; a UI hold is Brett's move");
 check(core.blockReason('b', { conflicts: ['a'] }).agent && core.blockReason('b', { ci: 'failure' }).agent && !core.blockReason('b', { held: 'x' }).agent && !core.blockReason('b', { deps: ['y'] }).agent, 'only a code conflict or red CI asks for an agent');
 const r1 = core.blockReason('b', { held: 'later' });
 check(core.shouldPush(null, r1, 'h1') && !core.shouldPush({ kind: 'held', head: 'h1' }, r1, 'h1') && core.shouldPush({ kind: 'held', head: 'h1' }, r1, 'h2') && !core.shouldPush(null, core.blockReason('b', { ci: 'running' }), 'h'), 'one push per reason and head; never for a quiet wait');
@@ -183,8 +185,16 @@ check(by.logs?.mergedMain && /logs thread/.test(logsThreads) && /main thread/.te
 check(sh(['show', 'origin/claude/logs:shared.ts'], repo).includes('main'), 'logs: it now has main\'s code');
 check(by.later?.reason?.kind === 'dependency' && /waits for ok/.test(by.later.reason.text), 'later: waits for its dependency (before its red CI is even looked at)');
 check(by.held?.reason?.kind === 'held' && /Brett wants to look first/.test(by.held.reason.text) && !calls.gh.some((c) => c.includes('claude%2Fheld')), 'held: held by hand, nothing done to it');
-check(by.ui?.state === 'ready' && by.ui.reason === null && by.ui.pr === 51, 'ui: CI green, UI Review waiting = still lands (not a gate)');
-check(!calls.api.some((c) => c.path.includes('/ui-hold')), 'auto-land never asks UI Review');
+check(by.ui?.state === 'ready' && by.ui.reason === null && by.ui.pr === 51, 'ui: CI green, UI Review waiting, gate off = still lands');
+check(calls.api.filter((c) => c.path === '/api/plugins/push-banner/ui-hold').length === 1 && !calls.api.some((c) => c.path.includes('/ui-hold?')), 'gate off: auto-land asks the gate once a round and never asks UI Review about a PR');
+{
+  // the same round with UI Review's switch 'UI Review is a merge gate' on: the waiting review holds the ui build
+  const asked = [];
+  const apiOn = async (method, path, body) => { asked.push(path); if (path === '/api/plugins/push-banner/ui-hold') return { hold: '', gate: true }; if (path.includes('/ui-hold')) return path.includes('claude%2Fui') ? { hold: 'waiting', gate: true } : { hold: '', gate: true }; return api(method, path, body); };
+  const on = await round({ s, git, gh, api: apiOn, dry: true, only: 'ui', agentJob: () => ({ exit: 0 }) });
+  const u = on.items.find((x) => x.id === 'ui');
+  check(u?.reason?.kind === 'ui' && /merge gate/.test(u.reason.text) && on.waitUi === true && asked.some((p) => p.includes('/ui-hold?branch=claude%2Fui')), 'gate on: auto-land asks UI Review per PR and a waiting review holds the landing');
+}
 check(by.green?.state === 'ready' && by.green.reason === null && by.green.pr === 52, 'green: CI green = ready (the push banner merges it)');
 check(st.order[0] && st.managed.includes(52), 'land.json gives the push banner the order and the PRs it manages');
 check(!existsSync(join(wtDir, '_claude/dropped.md')) && readFileSync(join(s.archive, 'wt/_claude/dropped.md'), 'utf8') === 'hub copy\n', 'wt: claude-sync\'s copy backed up to the archive and removed');

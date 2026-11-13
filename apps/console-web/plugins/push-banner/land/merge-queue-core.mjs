@@ -51,11 +51,12 @@ export const STATES = Object.freeze({
 
 /**
  * Why an open PR can't be in the queue (plain words), or '' when it can. `pr` is what the runner knows about it:
- *   { number, draft, head, ci: PR checks on its head (success|failure|running|none),
+ *   { number, draft, head, ci: PR checks on its head (success|failure|running|none), ui: UI Review hold ('' = none),
  *     landHeld: auto-land hold reason, conflicts: [code files] }
+ * `waitUi` = UI Review's switch 'UI Review is a merge gate' is on (uiGate(); default off, Brett Nov 13 2026).
  * `ctl` is the control document: removed[pr] = {head} (Remove from queue, until a new commit), kicked[pr] = {head}.
  */
-export function notReady(pr, ctl = {}, { redJoins = false } = {}) {
+export function notReady(pr, ctl = {}, { waitUi = false, redJoins = false } = {}) {
   const n = num(pr?.number);
   if (!n) return 'not a pull request';
   if (pr.draft) return 'it is a draft';
@@ -65,7 +66,9 @@ export function notReady(pr, ctl = {}, { redJoins = false } = {}) {
   const kicked = ctl.kicked?.[n];
   if (kicked && kicked.head === pr.head && !(ctl.added || []).includes(n)) return `kicked out: ${str(kicked.why, 300)} Push a fix and it rejoins by itself.`;
   if (pr.landHeld) return `held by hand in auto-land (${str(String(pr.landHeld), 120)})`;
-  // UI Review is not a gate (Nov 13 2026): a PR whose review is waiting, has changes asked or is rejected still lands
+  // UI Review holds only while its gate switch is on (default off): off, a PR whose review is waiting, has changes asked
+  // or is rejected still lands, its items only filed
+  if (waitUi && pr.ui) return pr.ui === 'waiting' ? 'UI Review is a merge gate and its screenshots wait for Brett' : `UI Review is a merge gate and holds it (${str(pr.ui, 40)})`;
   if (pr.conflicts?.length) return `it conflicts with main in code (${pr.conflicts.slice(0, 3).join(', ')})`;
   // batch mode: the batch's one full run is the gate, so red light checks (often red only because main was, Nov 10 2026)
   // don't keep a finished build out; it goes behind the green ones and a split finds it if it really breaks CI
@@ -217,10 +220,19 @@ export function etaMinutes(index, { depth = 3, avg = DEFAULT_RUN_MIN, startedMin
   return Math.round(avg * (1 + Math.floor((index - depth) / depth) + 1));
 }
 
+/**
+ * Is UI Review a merge gate right now? One ask a round through the push banner (GET ui-hold with no PR answers
+ * {gate}); no answer = the switch's default, off. `api` is the console caller (null when there is none).
+ */
+export async function uiGate(api) {
+  if (typeof api !== 'function') return false;
+  try { return (await api('GET', '/api/plugins/push-banner/ui-hold'))?.gate === true; } catch { return false; }
+}
+
 /** The commands, declared once: the CLI, the push banner's REST routes and (through plugin-commands@1) MCP. */
 export const QUEUE_COMMANDS = Object.freeze([
   { id: 'mergequeue-list', method: 'GET', path: '/queue', cli: 'list', title: 'Merge queue: the line', description: 'Every PR in the merge queue in order: title, agent, test state (waiting, testing, passed, kicked out and why), ETA; and the open PRs not in it, with why.', effect: 'read' },
-  { id: 'mergequeue-add', method: 'POST', path: '/queue/add', cli: 'add', title: 'Merge queue: add a PR', description: 'Put a PR (back) in the merge queue: undoes Remove from queue or a kick-out at the same head. It still has to be ready (PR checks green).', effect: 'write', input: { pr: 'PR number' } },
+  { id: 'mergequeue-add', method: 'POST', path: '/queue/add', cli: 'add', title: 'Merge queue: add a PR', description: 'Put a PR (back) in the merge queue: undoes Remove from queue or a kick-out at the same head. It still has to be ready (PR checks green; not held by UI Review while its gate switch is on).', effect: 'write', input: { pr: 'PR number' } },
   { id: 'mergequeue-remove', method: 'POST', path: '/queue/remove', cli: 'remove', title: 'Merge queue: remove a PR', description: 'Take a PR out of the merge queue until it gets a new commit or is added again; the ones behind it are retested without it.', effect: 'write', input: { pr: 'PR number', why: 'optional reason' } },
   { id: 'mergequeue-settings', method: 'POST', path: '/queue/settings', cli: 'settings', title: 'Merge queue: settings', description: "Batch mode (one build, one CI run, lands as one commit) or the per-PR stack, the batch size, the queue on. Off is Brett's own click.", effect: 'write', input: { on: 'true | false', mode: 'batch | stack', batchSize: '1-20' } },
   { id: 'mergequeue-move', method: 'POST', path: '/queue/move', cli: 'move', title: 'Merge queue: move a PR', description: "Move a PR to a place in the merge queue (0 = front). Jump to front from the console is Brett's own click.", effect: 'write', input: { pr: 'PR number', to: 'new index, 0 = front' } },
