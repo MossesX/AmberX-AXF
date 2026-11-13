@@ -142,10 +142,11 @@ check(stored_ok(), "items.json conforms after submits")
 
 # ---- state + capability
 s = c.get("/p/state", params={"pr": "42"}).json()
-check(s["state"] == "waiting" and s["holds"] and s["counts"]["waiting"] == 1, "state: waiting holds")
+check(s["state"] == "waiting" and s["holds"] is False and s["counts"]["waiting"] == 1, "state: waiting, for information only (never holds)")
 check(c.get("/p/state").status_code == 400, "state needs a branch or PR")
 svc = plugin_services.get("ui-review@1")
-check(svc is not None and svc.holds("claude/t") is True, "capability ui-review@1 provided, holds the branch")
+check(svc is not None and svc.holds("claude/t") is False and svc.isHeld("claude/t") is False, "capability ui-review@1 provided, never holds a branch")
+check(svc.hold("claude/t") == {"held": False, "reason": "UI Review is not a gate (Nov 2026)", "state": "waiting"}, "hold() answers not held, with the reason")
 check(len(svc.items(branch="claude/t")) == 2, "capability lists a branch's items")
 
 # ---- decide (single, bulk, packs) + history
@@ -480,7 +481,7 @@ check(sets["multi"] is True and [o["id"] for o in sets["options"]] == ["a", "b",
 check(sum("opt-a--" in s["src"] or "opt-a--" in s.get("file", "") for s in ci["files"]["after"]) == 1 or "opt-a--" in json.dumps(ci["files"]), "an option's picture joins the item")
 got = c.get("/p/choices/assets?type=toolbar").json()["assets"]
 check(len(got) == 3 and not any(a["picked"] for a in got) and "ui-choice" in got[0]["tags"] and got[0]["data"] == {"density": "a"}, f"every option is an asset ({len(got)})")
-check(c.get(f"/p/state?branch=claude/c").json()["holds"] is True, "the build waits on the pick like any hold")
+check(c.get(f"/p/state?branch=claude/c").json()["holds"] is False, "a pick still to make never holds the build (UI Review is not a gate)")
 d = c.get(f"/p/choices/decision?id={ci['id']}").json()
 check(d["decided"] is False and d["status"] == "waiting", "no decision yet")
 check(c.post("/p/choices/choose", json={"id": ci["id"], "chosen": ["zz"]}).status_code == 400, "an unknown option refused")

@@ -29,7 +29,7 @@
  * Screenshots named …-phone.png / …-desktop.png get their device from the name. Default: writes the plugin's data
  * folder in this checkout (AXF_UI_REVIEW_DIR overrides). --console posts to the running console instead
  * (AXF_CONSOLE_URL + AXF_TOKEN), which is what a build on the VPS uses so Brett sees it at once.
- * state --exit-code exits 3 when the branch / PR is held (waiting, changes asked or rejected).
+ * state prints the review state for information only: UI Review is not a gate (Nov 2026), so --exit-code always exits 0.
  */
 import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, renameSync, statSync, writeFileSync } from 'node:fs';
 import { basename, dirname, join, resolve } from 'node:path';
@@ -234,8 +234,8 @@ export async function main(argv = process.argv.slice(2)) {
     const branch = val(flags.branch), pr = val(flags.pr).replace(/^#/, '') || null;
     if (!branch && !pr) throw new Error('state needs --branch and/or --pr');
     const s = remote ? await consoleCall(`state?branch=${encodeURIComponent(branch)}&pr=${encodeURIComponent(pr ?? '')}`) : core.reviewState(submitted(loadDoc()), { branch, pr });
-    out(s, `${s.state}${s.holds ? ' (holds the merge)' : ''} · waiting ${s.counts.waiting} · changes ${s.counts.changes} · rejected ${s.counts.rejected} · approved ${s.counts.approved}`);
-    if (flags['exit-code'] && s.holds) process.exitCode = 3;
+    out(s, `${s.state} (not a gate) · waiting ${s.counts.waiting} · changes ${s.counts.changes} · rejected ${s.counts.rejected} · approved ${s.counts.approved}`);
+    // --exit-code is accepted for old scripts and always exits 0: UI Review never holds a PR (core.GATE)
     return;
   }
   if (cmd === 'decide') {
