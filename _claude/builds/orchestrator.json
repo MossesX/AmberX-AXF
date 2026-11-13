@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T17:35:27.559Z",
+ "updatedAt": "2026-11-13T17:35:49.114Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -79742,7 +79742,7 @@
    ]
   },
   {
-   "id": "orchestrator-checks-shipped-features-before-spli",
+   "id": "orchestrator-checks-shipped-features",
    "title": "Orchestrator checks Shipped features before splitting any job",
    "category": "",
    "detail": "When the orchestrator receives a job and splits it into steps, it first checks the Shipped features ledger (which must hold every feature the orchestrator has ever built). It must: not build anything twice; not break or redo anything already done; and if a step would conflict with or change something already built, notify Brett (AmberX notification) and wait before going on. Make the Shipped features ledger complete (backfill every landed build) and keep it updated on every land. Also standing rule: ONLY the orchestrator launches builds, picks model and account, owns pending/queue and monitors status; voice/chat sessions only hand it requests.",
@@ -79750,10 +79750,10 @@
    "hidden": false,
    "source": "mcp",
    "pendingId": "orchestrator-checks-shipped-features-before-spli",
-   "branch": "claude/orchestrator-checks-shipped-features-before-spli",
-   "pr": "#515",
+   "branch": "claude/orchestrator-checks-shipped-features",
+   "pr": "#599",
    "createdAt": "2026-11-08T17:22:53.861Z",
-   "updatedAt": "2026-11-12T03:38:03.038Z",
+   "updatedAt": "2026-11-13T17:35:27.231Z",
    "builtAt": "2026-11-12T03:37:07.380Z",
    "notes": [
     {
@@ -79795,6 +79795,10 @@
     {
      "text": "Session axf-orchestrator-checks-shipped-features-before-spli--rhonda on mossesx-max- ended (exit 0); the build was already built.",
      "at": "2026-11-12T03:38:03.038Z"
+    },
+    {
+     "text": "Renamed from orchestrator-checks-shipped-features-before-spli (build names are at most 40 characters). By build-rename.",
+     "at": "2026-11-13T17:35:27.231Z"
     }
    ],
    "approvals": [],
@@ -110099,7 +110103,7 @@
    ]
   },
   {
-   "id": "one-source-of-truth-console-shows-only-what-the-server-says-is-running",
+   "id": "one-source-truth-console-shows-only-what",
    "title": "One source of truth: console shows only what the server says is running",
    "category": "orchestrator",
    "detail": "URGENT, boss order from Brett, Nov 12. The console showed 15 in progress while the server (agent-slots, tmux axf-* sessions) had exactly 8 running: the console counts stale build records (killed, requeued, double-launched) as active. Make the VPS the single source of truth: the server's live list of running sessions/slots (agent-slots queue + actual tmux/claude processes) is the only thing that decides running/active. Console Active tab, in-progress counts, slot meter, orchestrator and Build Manager all read from it; any build record marked running with no live session is reconciled to its real state on every read and by the dispatcher. Same truth via REST/MCP/CLI/voice. Tests: kill a session, console count drops within seconds; stale record never shows as active.",
@@ -110107,10 +110111,10 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/one-source-of-truth-console-shows-only-what-the-server-says-is-running",
-   "pr": "#562",
+   "branch": "claude/one-source-truth-console-shows-only-what",
+   "pr": "#598",
    "createdAt": "2026-11-12T02:37:57.927Z",
-   "updatedAt": "2026-11-13T11:26:50.690Z",
+   "updatedAt": "2026-11-13T17:35:13.047Z",
    "builtAt": "",
    "notes": [
     {
@@ -110152,6 +110156,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-13T11:26:50.690Z"
+    },
+    {
+     "text": "Renamed from one-source-of-truth-console-shows-only-what-the-server-says-is-running (build names are at most 40 characters). By build-rename.",
+     "at": "2026-11-13T17:35:13.047Z"
     }
    ],
    "approvals": [],

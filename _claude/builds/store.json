@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4527,
- "updatedAt": "2026-11-13T17:35:27.559Z",
+ "rev": 4528,
+ "updatedAt": "2026-11-13T17:35:49.114Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -121273,13 +121273,13 @@
    "category": "",
    "detail": "When the orchestrator receives a job and splits it into steps, it first checks the Shipped features ledger (which must hold every feature the orchestrator has ever built). It must: not build anything twice; not break or redo anything already done; and if a step would conflict with or change something already built, notify Brett (AmberX notification) and wait before going on. Make the Shipped features ledger complete (backfill every landed build) and keep it updated on every land. Also standing rule: ONLY the orchestrator launches builds, picks model and account, owns pending/queue and monitors status; voice/chat sessions only hand it requests.",
    "status": "built",
-   "hidden": false,
+   "hidden": true,
    "source": "mcp",
    "pendingId": "orchestrator-checks-shipped-features-before-spli",
    "branch": "claude/orchestrator-checks-shipped-features-before-spli",
    "pr": "#515",
    "createdAt": "2026-11-08T17:22:53.861Z",
-   "updatedAt": "2026-11-12T03:38:03.038Z",
+   "updatedAt": "2026-11-13T17:35:27.231Z",
    "builtAt": "2026-11-12T03:37:07.380Z",
    "notes": [
     {
@@ -121321,6 +121321,10 @@
     {
      "text": "Session axf-orchestrator-checks-shipped-features-before-spli--rhonda on mossesx-max- ended (exit 0); the build was already built.",
      "at": "2026-11-12T03:38:03.038Z"
+    },
+    {
+     "text": "Renamed to orchestrator-checks-shipped-features: this record is kept as a tombstone, use orchestrator-checks-shipped-features.",
+     "at": "2026-11-13T17:35:27.231Z"
     }
    ],
    "approvals": [],
@@ -121366,77 +121370,7 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "steps": [
-    {
-     "id": "s1",
-     "uid": "st-mw881k0l04w3j0",
-     "title": "",
-     "text": "When the orchestrator receives a job and splits it into steps, it first checks the Shipped features ledger (which must hold every feature the orchestrator has ever built). It must: not build anything twice; not break or redo anything already done; and if a step would conflict with or change something already built, notify Brett (AmberX notification) and wait before going on. Make the Shipped features ledger complete (backfill every landed build) and keep it updated on every land. Also standing rule: ONLY the orchestrator launches builds, picks model and account, owns pending/queue and monitors status; voice/chat sessions only hand it requests.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-12T03:35:20.606Z",
-     "note": "",
-     "rev": 2,
-     "createdAt": "2026-11-08T19:24:43.797Z",
-     "updatedAt": "2026-11-12T03:35:20.808Z"
-    },
-    {
-     "id": "s2",
-     "uid": "st-mw881k0l05pr9h",
-     "title": "",
-     "text": "when he get receives a job, he splits it up into steps. And when he does that, he needs to make sure he needs to check with the shipped features... he needs to make sure he's not doing something twice or fucking up something that's already been done and if it's gonna conflict with something or change something that's already built he's gonna let me know",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-12T03:35:59.259Z",
-     "note": "",
-     "rev": 2,
-     "createdAt": "2026-11-08T19:24:43.797Z",
-     "updatedAt": "2026-11-12T03:35:59.423Z"
-    },
-    {
-     "id": "s3",
-     "uid": "st-mw881k0l063dsm",
-     "title": "",
-     "text": "Tests green, report _claude/builds/reports/orchestrator-checks-shipped-features-before-spli.md, THREADS row, commit, push, PR",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "20 min",
-     "files": [
-      "_claude/builds/reports/orchestrator-checks-shipped-features-before-spli.md",
-      "_claude/THREADS.md"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-12T03:36:52.965Z",
-     "note": "",
-     "rev": 2,
-     "createdAt": "2026-11-08T19:24:43.797Z",
-     "updatedAt": "2026-11-12T03:36:53.154Z"
-    }
-   ],
+   "steps": [],
    "profiles": [
     "all"
    ],
@@ -121445,9 +121379,9 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 66,
-   "deleted": false,
-   "deletedAt": "",
+   "rev": 67,
+   "deleted": true,
+   "deletedAt": "2026-11-13T17:35:27.231Z",
    "pending": {
     "model": "Opus",
     "status": "pending",
@@ -161191,13 +161125,13 @@
    "category": "orchestrator",
    "detail": "URGENT, boss order from Brett, Nov 12. The console showed 15 in progress while the server (agent-slots, tmux axf-* sessions) had exactly 8 running: the console counts stale build records (killed, requeued, double-launched) as active. Make the VPS the single source of truth: the server's live list of running sessions/slots (agent-slots queue + actual tmux/claude processes) is the only thing that decides running/active. Console Active tab, in-progress counts, slot meter, orchestrator and Build Manager all read from it; any build record marked running with no live session is reconciled to its real state on every read and by the dispatcher. Same truth via REST/MCP/CLI/voice. Tests: kill a session, console count drops within seconds; stale record never shows as active.",
    "status": "pending",
-   "hidden": false,
+   "hidden": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/one-source-of-truth-console-shows-only-what-the-server-says-is-running",
    "pr": "#562",
    "createdAt": "2026-11-12T02:37:57.927Z",
-   "updatedAt": "2026-11-13T11:26:50.690Z",
+   "updatedAt": "2026-11-13T17:35:13.047Z",
    "builtAt": "",
    "notes": [
     {
@@ -161239,6 +161173,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-13T11:26:50.690Z"
+    },
+    {
+     "text": "Renamed to one-source-truth-console-shows-only-what: this record is kept as a tombstone, use one-source-truth-console-shows-only-what.",
+     "at": "2026-11-13T17:35:13.047Z"
     }
    ],
    "approvals": [],
@@ -161283,74 +161221,7 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "steps": [
-    {
-     "id": "s1",
-     "uid": "st-mwcxu9fb047t37",
-     "title": "",
-     "text": "Server endpoint that returns the live truth: running sessions/slots from agent-slots + actual tmux/claude processes; reconcile stale 'running' records to their real state.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-12T02:47:14.854Z",
-     "note": "",
-     "rev": 2,
-     "createdAt": "2026-11-12T02:37:57.931Z",
-     "updatedAt": "2026-11-12T02:47:15.100Z"
-    },
-    {
-     "id": "s2",
-     "uid": "st-mwcxu9fb05mm7x",
-     "title": "",
-     "text": "Console (Active tab, in-progress count, slot meter, orchestrator, Build Manager) reads only from that endpoint; remove other counts. Same data via REST/MCP/CLI/voice.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-12T02:51:28.316Z",
-     "note": "",
-     "rev": 2,
-     "createdAt": "2026-11-12T02:37:57.931Z",
-     "updatedAt": "2026-11-12T02:51:28.503Z"
-    },
-    {
-     "id": "s3",
-     "uid": "st-mwcxu9fb06sfrj",
-     "title": "",
-     "text": "Tests (killed session drops from count within seconds; stale record never active), PR, land through the gate, redeploy, AmberX FYI when live.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "20 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-12T02:37:57.931Z",
-     "updatedAt": "2026-11-12T02:37:57.931Z"
-    }
-   ],
+   "steps": [],
    "profiles": [
     "all"
    ],
@@ -161359,9 +161230,9 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
-   "deleted": false,
-   "deletedAt": "",
+   "rev": 34,
+   "deleted": true,
+   "deletedAt": "2026-11-13T17:35:13.047Z",
    "pending": {
     "model": "Opus",
     "status": "pending",
@@ -192210,6 +192081,416 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-12T20:31:23.289Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "one-source-truth-console-shows-only-what",
+   "title": "One source of truth: console shows only what the server says is running",
+   "category": "orchestrator",
+   "detail": "URGENT, boss order from Brett, Nov 12. The console showed 15 in progress while the server (agent-slots, tmux axf-* sessions) had exactly 8 running: the console counts stale build records (killed, requeued, double-launched) as active. Make the VPS the single source of truth: the server's live list of running sessions/slots (agent-slots queue + actual tmux/claude processes) is the only thing that decides running/active. Console Active tab, in-progress counts, slot meter, orchestrator and Build Manager all read from it; any build record marked running with no live session is reconciled to its real state on every read and by the dispatcher. Same truth via REST/MCP/CLI/voice. Tests: kill a session, console count drops within seconds; stale record never shows as active.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/one-source-truth-console-shows-only-what",
+   "pr": "#598",
+   "createdAt": "2026-11-12T02:37:57.927Z",
+   "updatedAt": "2026-11-13T17:35:13.047Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-12T02:39:55.826Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-one-source-of-truth-console-shows-only-what-the---sully.",
+     "at": "2026-11-12T02:42:38.803Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-one-source-of-truth-console-shows-only-what-the---sully, own login copy)",
+     "at": "2026-11-12T02:42:45.576Z"
+    },
+    {
+     "text": "Headless run axf-one-source-of-truth-console-shows-only-what-the---sully: brief only · start 10.8K tokens ($0.03) · cost $7.99 · 91 turns · 6 tools, MCP none",
+     "at": "2026-11-12T03:04:46.058Z"
+    },
+    {
+     "text": "s1 and s2 done; s3 code and tests done and pushed (branch claude/one-source-of-truth-console-shows-only-what-the-server-says-is-running, 3 commits: check-live-truth 27/27, pipeline 46/46, agent-slots 19/19, orchestrator 33/33, tsc clean). Not done: the PR. GitHub returned 'secondary rate limit, blocked from content creation' for this token on 7 tries over 12 min (gh GraphQL and REST), so there's no PR, no landing, no redeploy and no AmberX FYI. Next: open the PR with the body in .axf-pr-body.md in the worktree (or let auto-land open it), link it, then tick s3 once it's live. UI Review shots weren't taken (headless, no branch build of the console); the PR says so.",
+     "at": "2026-11-12T03:04:33.083Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-12T03:32:08.467Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T10:35:16.881Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-one-source-of-truth-console-shows-only-what-the---gina, own login copy)",
+     "at": "2026-11-13T10:38:11.819Z"
+    },
+    {
+     "text": "Headless run axf-one-source-of-truth-console-shows-only-what-the---gina: brief only · start 11.2K tokens ($0.03) · cost $1.13 · 44 turns · 6 tools, MCP none",
+     "at": "2026-11-13T10:50:37.051Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-13T11:26:50.690Z"
+    },
+    {
+     "text": "Renamed from one-source-of-truth-console-shows-only-what-the-server-says-is-running (build names are at most 40 characters). By build-rename.",
+     "at": "2026-11-13T17:35:13.047Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "one-source-of-truth-console-shows-only-what-the-server-says-is-running",
+    "brief": "# Build: one-source-of-truth-console-shows-only-what-the-server-says-is-running\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"One source of truth: console shows only what the server says is running\" (one-source-of-truth-console-shows-only-what-the-server-says-is-running) [orchestrator] — Phase 1, model Opus.\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/one-source-of-truth-console-shows-only-what-the-server-says-is-running\nSteps in this phase (1 left, ~20 min):\n[x] s1 (~30 min) Server endpoint that returns the live truth: running sessions/slots from agent-slots + actual tmux/claude processes; reconcile stale 'running' records to their real state.\n[x] s2 (~30 min) Console (Active tab, in-progress count, slot meter, orchestrator, Build Manager) reads only from that endpoint; remove other counts. Same data via REST/MCP/CLI/voice.\n[ ] s3 (~20 min) Tests (killed session drops from count within seconds; stale record never active), PR, land through the gate, redeploy, AmberX FYI when live.\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step one-source-of-truth-console-shows-only-what-the-server-says-is-running <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link one-source-of-truth-console-shows-only-what-the-server-says-is-running --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step one-source-of-truth-console-shows-only-what-the-server-says-is-running <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note one-source-of-truth-console-shows-only-what-the-server-says-is-running \"…\"); the build goes back to Pending for Brett.\n",
+    "verbatim": false,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "2026-11-13T10:35:16.334Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-12T19:43:03.226Z",
+     "why": "subscription account mossesx-max-"
+    },
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwcxu9fb047t37",
+     "title": "",
+     "text": "Server endpoint that returns the live truth: running sessions/slots from agent-slots + actual tmux/claude processes; reconcile stale 'running' records to their real state.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-12T02:47:14.854Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-12T02:37:57.931Z",
+     "updatedAt": "2026-11-12T02:47:15.100Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwcxu9fb05mm7x",
+     "title": "",
+     "text": "Console (Active tab, in-progress count, slot meter, orchestrator, Build Manager) reads only from that endpoint; remove other counts. Same data via REST/MCP/CLI/voice.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-12T02:51:28.316Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-12T02:37:57.931Z",
+     "updatedAt": "2026-11-12T02:51:28.503Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwcxu9fb06sfrj",
+     "title": "",
+     "text": "Tests (killed session drops from count within seconds; stale record never active), PR, land through the gate, redeploy, AmberX FYI when live.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-12T02:37:57.931Z",
+     "updatedAt": "2026-11-12T02:37:57.931Z"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 722
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 33,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-12T02:37:57.927Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwcxu9fb047t37": "2026-11-12T02:37:57.931Z",
+     "st-mwcxu9fb05mm7x": "2026-11-12T02:37:57.931Z",
+     "st-mwcxu9fb06sfrj": "2026-11-12T02:37:57.931Z"
+    }
+   },
+   "queue": null,
+   "defaultAt": "2026-11-12T02:37:57.931Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "orchestrator-checks-shipped-features",
+   "title": "Orchestrator checks Shipped features before splitting any job",
+   "category": "",
+   "detail": "When the orchestrator receives a job and splits it into steps, it first checks the Shipped features ledger (which must hold every feature the orchestrator has ever built). It must: not build anything twice; not break or redo anything already done; and if a step would conflict with or change something already built, notify Brett (AmberX notification) and wait before going on. Make the Shipped features ledger complete (backfill every landed build) and keep it updated on every land. Also standing rule: ONLY the orchestrator launches builds, picks model and account, owns pending/queue and monitors status; voice/chat sessions only hand it requests.",
+   "status": "built",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "orchestrator-checks-shipped-features-before-spli",
+   "branch": "claude/orchestrator-checks-shipped-features",
+   "pr": "#599",
+   "createdAt": "2026-11-08T17:22:53.861Z",
+   "updatedAt": "2026-11-13T17:35:27.231Z",
+   "builtAt": "2026-11-12T03:37:07.380Z",
+   "notes": [
+    {
+     "text": "Conflict flow (Brett): a conflicting step is moved to a special Conflicts section and removed from the build; the other steps still build. Brett gets an AmberX notification-panel item that explains the conflict and offers suggested resolutions; he taps a suggestion or types a prompt, which goes to the orchestrator, and the orchestrator makes a new build from it. Then test it: Brett will send a 3-4 step build that deliberately overlaps existing shipped features to confirm the orchestrator catches it.",
+     "at": "2026-11-08T17:24:49.918Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-08T19:24:43.797Z"
+    },
+    {
+     "text": "Brett (Nov 9): \"needs a way to go through all the pending builds and the build queue and search for steps that are gonna break existing work or conflict with it, or it's already done, or it doesn't need it anymore.\" Add a Sweep: a button on the builds page (and API/voice: 'sweep the builds') plus an automatic run on every land. It checks every step of every pending and queued build against the Shipped features ledger, main's code, and the other pending/queued builds, and flags each step: Already done (shipped by build X), Conflicts (would change/break feature Y, shows the files and lines), Duplicate (same as a step in build Z), Obsolete (no longer needed: superseded or its target was removed), OK. Results: badges on each build and step, a Sweep report with a filter per flag, and one-tap fixes per flag: drop step, merge into the other build, move to Conflicts for Brett, keep. Nothing is changed without Brett's tap. Cheap first pass in plain code (ledger + file overlap); Claude only for the unclear ones.",
+     "at": "2026-11-09T02:54:04.225Z"
+    },
+    {
+     "text": "Correction (Brett): the Sweep does NOT run automatically on every land. It runs only (1) when Brett runs it (button / API / voice), and (2) by the orchestrator on a single build at two points: when it receives the job, and again right before it dispatches it (launches the session). Flags found at dispatch hold the build for Brett instead of launching.",
+     "at": "2026-11-09T02:54:50.404Z"
+    },
+    {
+     "text": "Merged with orchestrator-checks-each-build-against-main-righ for the 'never build twice' part: every build is now checked against main (Shipped features, its PR, its branch, the files its steps create) right before it is queued and again at dispatch; done = closed, partly done = only what is left is queued. Still open here: the check at split time, the AmberX conflict notice and the ledger backfill.",
+     "at": "2026-11-10T19:09:46.307Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-12T01:44:19.349Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-orchestrator-checks-shipped-features-before-spli--rhonda.",
+     "at": "2026-11-12T03:13:33.396Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-orchestrator-checks-shipped-features-before-spli--rhonda, own login copy)",
+     "at": "2026-11-12T03:13:39.515Z"
+    },
+    {
+     "text": "Headless run axf-orchestrator-checks-shipped-features-before-spli--rhonda: brief only · start 11.2K tokens ($0.03) · cost $3.20 · 60 turns · 6 tools, MCP none",
+     "at": "2026-11-12T03:37:07.380Z"
+    },
+    {
+     "text": "Session axf-orchestrator-checks-shipped-features-before-spli--rhonda on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-12T03:38:03.038Z"
+    },
+    {
+     "text": "Renamed from orchestrator-checks-shipped-features-before-spli (build names are at most 40 characters). By build-rename.",
+     "at": "2026-11-13T17:35:27.231Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "when he get receives a job, he splits it up into steps. And when he does that, he needs to make sure he needs to check with the shipped features... he needs to make sure he's not doing something twice or fucking up something that's already been done and if it's gonna conflict with something or change something that's already built he's gonna let me know",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "orchestrator-checks-shipped-features-before-spli",
+    "brief": "# Build: orchestrator-checks-shipped-features-before-spli\n\n## Brett said (verbatim)\n> when he get receives a job, he splits it up into steps. And when he does that, he needs to make sure he needs to check with the shipped features... he needs to make sure he's not doing something twice or fucking up something that's already been done and if it's gonna conflict with something or change something that's already built he's gonna let me know\n\n## What to build\nContinue build \"Orchestrator checks Shipped features before splitting any job\" (orchestrator-checks-shipped-features-before-spli) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said:\n\"when he get receives a job, he splits it up into steps. And when he does that, he needs to make sure he needs to check with the shipped features... he needs to make sure he's not doing something twice or fucking up something that's already been done and if it's gonna conflict with something or change something that's already built he's gonna let me know\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) When the orchestrator receives a job and splits it into steps, it first checks the Shipped features ledger (which must hold every feature the orchestrator has ever built). It must: not build anything twice; not break or redo anything already done; and if a step would conflict with or change something already built, notify Brett (AmberX notification) and wait before going on. Make the Shipped features ledger complete (backfill every landed build) and keep it updated on every land. Also standing rule: ONLY the orchestrator launches builds, picks model and account, owns pending/queue and monitors status; voice/chat sessions only hand it requests.\n[ ] s2 (~30 min) when he get receives a job, he splits it up into steps. And when he does that, he needs to make sure he needs to check with the shipped features... he needs to make sure he's not doing something twice or fucking up something that's already been done and if it's gonna conflict with something or change something that's already built he's gonna let me know\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/orchestrator-checks-shipped-features-before-spli.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/orchestrator-checks-shipped-features-before-spli.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step orchestrator-checks-shipped-features-before-spli <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link orchestrator-checks-shipped-features-before-spli --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step orchestrator-checks-shipped-features-before-spli <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note orchestrator-checks-shipped-features-before-spli \"…\"); the build goes back to Pending for Brett.\n",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "2026-11-12T01:44:16.578Z",
+    "queuedBy": "console",
+    "account": "mossesx-max-",
+    "session": "",
+    "slot": "",
+    "model": "Opus",
+    "launchedAt": "2026-11-12T03:13:32.895Z",
+    "runs": 1,
+    "lastRun": {
+     "at": "2026-11-12T03:38:02.383Z",
+     "exit": 0,
+     "outcome": "finished",
+     "stepsLeft": 0,
+     "account": "mossesx-max-",
+     "session": "axf-orchestrator-checks-shipped-features-before-spli--rhonda"
+    },
+    "split": null,
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": "2026-11-12T03:13:32.895Z",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mw881k0l04w3j0",
+     "title": "",
+     "text": "When the orchestrator receives a job and splits it into steps, it first checks the Shipped features ledger (which must hold every feature the orchestrator has ever built). It must: not build anything twice; not break or redo anything already done; and if a step would conflict with or change something already built, notify Brett (AmberX notification) and wait before going on. Make the Shipped features ledger complete (backfill every landed build) and keep it updated on every land. Also standing rule: ONLY the orchestrator launches builds, picks model and account, owns pending/queue and monitors status; voice/chat sessions only hand it requests.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-12T03:35:20.606Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-08T19:24:43.797Z",
+     "updatedAt": "2026-11-12T03:35:20.808Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mw881k0l05pr9h",
+     "title": "",
+     "text": "when he get receives a job, he splits it up into steps. And when he does that, he needs to make sure he needs to check with the shipped features... he needs to make sure he's not doing something twice or fucking up something that's already been done and if it's gonna conflict with something or change something that's already built he's gonna let me know",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-12T03:35:59.259Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-08T19:24:43.797Z",
+     "updatedAt": "2026-11-12T03:35:59.423Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mw881k0l063dsm",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/orchestrator-checks-shipped-features-before-spli.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/orchestrator-checks-shipped-features-before-spli.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-12T03:36:52.965Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-08T19:24:43.797Z",
+     "updatedAt": "2026-11-12T03:36:53.154Z"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 541
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 66,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "2 h",
+    "source": "mcp",
+    "planId": "",
+    "createdAt": "2026-11-08T17:22:53.861Z",
+    "builtAt": "2026-11-12T03:37:07.380Z",
+    "prefixSteps": false,
+    "stepAt": {
+     "st-mw881k0l04w3j0": "2026-11-08T19:24:43.797Z",
+     "st-mw881k0l05pr9h": "2026-11-08T19:24:43.797Z",
+     "st-mw881k0l063dsm": "2026-11-08T19:24:43.797Z"
+    }
+   },
+   "queue": null,
+   "defaultAt": "2026-11-08T19:24:43.797Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

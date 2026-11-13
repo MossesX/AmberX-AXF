@@ -785,10 +785,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 10:40 UTC · `orchestrator-hold-status-archive-tab-deleted-tab` s3 done, → complete (all) · orchestrator
-- 2026-11-13 10:42 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` s11 done (all) · orchestrator
-- 2026-11-13 10:41 UTC · `every-skin-ships-a-light-and-a-dark-colour-theme-studio-pro-executive-field` note (all) · builds-live
-- 2026-11-13 10:41 UTC · `android-approval-overlay-a-small-always-on-float` added (0 steps) (all) · builds-live
 - 2026-11-13 10:42 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` s14 done, → running (all) · orchestrator
 - 2026-11-13 10:43 UTC · `every-skin-ships-a-light-and-a-dark-colour-theme` note (all) · orchestrator
 - 2026-11-13 10:43 UTC · `orchestrator-hold-status-archive-tab-deleted-tab` note (all) · pipeline
@@ -1185,6 +1181,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 17:35 UTC · `move-amberx-web-app-console-amberx-andr` added (15 steps) (all) · foreign-write
 - 2026-11-13 17:35 UTC · `github-client-plugin-see-control-every` added (9 steps) (all) · foreign-write
 - 2026-11-13 17:35 UTC · `merges-are-only-merged-once-github` added (13 steps) (all) · foreign-write
+- 2026-11-13 17:35 UTC · `one-source-truth-console-shows-only-what` added (3 steps) (all) · build-rename
+- 2026-11-13 17:35 UTC · `one-source-of-truth-console-shows-only-what-the-server-says-is-running` note, removed (all) · build-rename
+- 2026-11-13 17:35 UTC · `orchestrator-checks-shipped-features` added (3 steps) (all) · build-rename
+- 2026-11-13 17:35 UTC · `orchestrator-checks-shipped-features-before-spli` note, removed (all) · build-rename
 
 ## Token passes (log)
 
