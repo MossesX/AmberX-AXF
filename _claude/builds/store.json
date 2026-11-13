@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4172,
- "updatedAt": "2026-11-13T08:43:37.245Z",
+ "rev": 4173,
+ "updatedAt": "2026-11-13T08:44:04.569Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -176032,7 +176032,7 @@
    "pr": "#557",
    "priority": "P0",
    "createdAt": "2026-11-12T23:32:23.494Z",
-   "updatedAt": "2026-11-13T08:43:35.744Z",
+   "updatedAt": "2026-11-13T08:44:03.188Z",
    "builtAt": "2026-11-13T08:42:58.405Z",
    "notes": [
     {
@@ -176110,6 +176110,10 @@
     {
      "text": "Headless run axf-professional-skins-that-rebuild-the-whole-app-fa--sully: brief only · start 17.5K tokens ($0.16) · cost $63.99 · 556 turns · 6 tools, MCP none",
      "at": "2026-11-13T08:43:35.744Z"
+    },
+    {
+     "text": "Session axf-professional-skins-that-rebuild-the-whole-app-fa--sully on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-13T08:44:03.188Z"
     }
    ],
    "approvals": [],
@@ -176130,12 +176134,19 @@
     "queuedAt": "2026-11-13T06:12:08.295Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-professional-skins-that-rebuild-the-whole-app-fa--sully",
+    "session": "",
     "slot": "",
     "model": "Fable",
     "launchedAt": "2026-11-13T06:14:47.983Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-13T08:44:01.956Z",
+     "exit": 0,
+     "outcome": "finished",
+     "stepsLeft": 0,
+     "account": "mossesx-max-",
+     "session": "axf-professional-skins-that-rebuild-the-whole-app-fa--sully"
+    },
     "split": {
      "at": "2026-11-13T06:14:22.635Z",
      "by": "orchestrator",
@@ -176614,7 +176625,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
