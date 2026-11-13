@@ -8,6 +8,8 @@ recordings are clip@1 assets with their files under media/. No model, no tokens.
 Routes: GET registry · GET demos · GET demo · POST generate · POST demo · DELETE demo · GET script · POST script ·
 POST chain · GET walkthrough · GET share · GET settings · POST settings · GET media · POST media · GET media/file ·
 POST export · GET narrators · POST narrate.
+Pipeline demos: GET pipelines · GET/POST/DELETE pipeline · POST pipeline/copy · GET pipeline/timeline · GET pipeline/lines ·
+POST pipeline/live · GET pipeline/recording · GET pipeline/match · GET pipeline/link · GET pipeline/types · GET/POST pipeline/state.
 Cloud narrators come from the speech capability (axf.speech@1, optional): narrator "agent:<id>" speaks a step in that
 agent's cloud voice, so an exported video carries the voice (browser speech never reaches tab capture).
 Capability demonstrations@1: topics(q), demos(), demo(id), generate(topic, minutes, save), walkthrough(id) for other
@@ -335,6 +337,146 @@ def post_narrate(body: dict[str, Any]) -> Response:
     return Response(audio, media_type="audio/mpeg")
 
 
+# ---------------- pipeline demos (pipeline-demo@1, pipeline-demos.mjs) ----------------
+
+PIPES = HERE / "pipeline-demos.mjs"
+_PLAYER: dict[str, Any] = {"status": "idle", "demo": "", "at": 0, "reportedAt": ""}
+
+
+def _pipes(*args: str, timeout: int = 120) -> Any:
+    """Run pipeline-demos.mjs with --json; its error line becomes the HTTP error (exit 2 = not found)."""
+    env = {**os.environ, "AXF_REPO_ROOT": str(ROOT), "AXF_DEMO_DESIGNER_DIR": str(data_dir())}
+    try:
+        p = subprocess.run(["node", str(PIPES), *args, "--json"], cwd=str(ROOT), capture_output=True, text=True, timeout=timeout, env=env)
+    except (OSError, subprocess.TimeoutExpired) as e:
+        raise HTTPException(503, f"the pipeline demo tools didn't answer: {type(e).__name__}") from e
+    out, err = p.stdout.strip(), p.stderr.strip()
+    if p.returncode != 0:
+        msg = (err or out or "the pipeline demo tool failed").splitlines()[-1][-400:].replace("pipeline-demos: ", "")
+        raise HTTPException(404 if p.returncode == 2 else 400, msg)
+    try:
+        return json.loads(out.splitlines()[-1]) if out else None
+    except json.JSONDecodeError:
+        return {"text": out[-2000:]}
+
+
+@router.get("/pipelines")
+def get_pipelines() -> dict[str, Any]:
+    """Every pipeline demo: the built-in library (one per pipeline type) and the ones made in the designer."""
+    return {"items": _pipes("list") or []}
+
+
+@router.get("/pipeline")
+def get_pipeline(id: str) -> dict[str, Any]:  # noqa: A002
+    """One pipeline demo (pipeline-demo@1): chapters, narration, screens, behind-the-scenes lines, live probes."""
+    return _pipes("get", _check_id(id))
+
+
+@router.post("/pipeline")
+def post_pipeline(body: dict[str, Any]) -> dict[str, Any]:
+    """Save a pipeline demo made or edited in the designer (validated; a built-in id saves a copy that shadows it)."""
+    demo = body.get("demo", body)
+    if not isinstance(demo, dict):
+        raise HTTPException(400, "demo must be a pipeline-demo@1 object")
+    f = _tmp_json(demo)
+    try:
+        return _pipes("save", str(f))
+    finally:
+        f.unlink(missing_ok=True)
+
+
+@router.delete("/pipeline")
+def delete_pipeline(id: str) -> dict[str, Any]:  # noqa: A002
+    """Delete a saved pipeline demo and its recording (built-ins stay)."""
+    _pipes("delete", _check_id(id))
+    return {"removed": id}
+
+
+@router.post("/pipeline/copy")
+def post_pipeline_copy(body: dict[str, Any]) -> dict[str, Any]:
+    """Copy a demo (a built-in or a saved one) so it can be edited; as = the new id (default <id>-copy)."""
+    args = ["copy", _check_id(str(body.get("id") or ""))]
+    if body.get("as"):
+        args += ["--as", _check_id(str(body["as"]))]
+    return _pipes(*args)
+
+
+@router.get("/pipeline/timeline")
+def get_pipeline_timeline(id: str, script: bool = False, speed: float = 1) -> dict[str, Any]:  # noqa: A002
+    """What the player plays: the demo, its timeline (chapters with start seconds, every line with its second) and when its live recording was made."""
+    args = ["timeline", _check_id(id), "--speed", str(max(0.25, min(8.0, speed)))]
+    if script:
+        args.append("--script")
+    return _pipes(*args)
+
+
+@router.get("/pipeline/lines")
+def get_pipeline_lines(id: str, kind: str = "", q: str = "", script: bool = False) -> dict[str, Any]:  # noqa: A002
+    """The behind-the-scenes lines of a demo, filtered: kind = orchestrator,model,split,agent,git,test,axhub,focus,error; q = words."""
+    args = ["lines", _check_id(id)]
+    if kind:
+        args += ["--kind", re.sub(r"[^a-z,]", "", kind)[:120]]
+    if q:
+        args += ["--q", q[:120]]
+    if script:
+        args.append("--script")
+    return {"items": _pipes(*args) or []}
+
+
+@router.post("/pipeline/live")
+def post_pipeline_live(body: dict[str, Any]) -> dict[str, Any]:
+    """Run a demo live: each chapter's probes run for real (read-only) on the test-sandbox project; the output is kept as its recording."""
+    args = ["live", _check_id(str(body.get("id") or ""))]
+    if body.get("chapter"):
+        args += ["--chapter", _check_id(str(body["chapter"]))]
+    r = _pipes(*args, timeout=300)
+    return {"demo": r.get("demo"), "recordedAt": r.get("recordedAt"), "live": r.get("live"), "total": (r.get("timeline") or {}).get("total")}
+
+
+@router.get("/pipeline/recording")
+def get_pipeline_recording(id: str) -> dict[str, Any]:  # noqa: A002
+    """The recording of the last live run (pipeline-recording@1): what an offline replay plays."""
+    return _pipes("recording", _check_id(id))
+
+
+@router.get("/pipeline/match")
+def get_pipeline_match(q: str) -> dict[str, Any]:
+    """The demo a phrase names ("run the voice-to-app demo"): its id and name."""
+    return _pipes("match", q[:200])
+
+
+@router.get("/pipeline/link")
+def get_pipeline_link(id: str, request: Request, play: bool = False, live: bool = False) -> dict[str, Any]:  # noqa: A002
+    """The deep link that opens the designer on a pipeline demo (?axf-pipeline=<id>), optionally playing it, optionally live."""
+    args = ["link", _check_id(id)] + (["--play"] if play else []) + (["--live"] if live else [])
+    r = _pipes(*args)
+    r["url"] = f"{str(request.base_url).rstrip('/')}{r['path']}"
+    return r
+
+
+@router.get("/pipeline/types")
+def get_pipeline_types() -> dict[str, Any]:
+    """The pipeline types, the screens a chapter can move to, and the live probes a chapter can run."""
+    return {"types": _pipes("types"), "screens": _pipes("screens"), "probes": _pipes("probes")}
+
+
+@router.get("/pipeline/state")
+def get_pipeline_state() -> dict[str, Any]:
+    """What the open console's player is doing: demo, status, second, chapter, speed, dock, filter (reported by the console)."""
+    return dict(_PLAYER)
+
+
+@router.post("/pipeline/state")
+def post_pipeline_state(body: dict[str, Any]) -> dict[str, Any]:
+    """The open console reports its player state here (so the API can read it); the player itself is driven by console actions."""
+    from datetime import datetime, timezone
+
+    keep = {k: body[k] for k in ("mode", "demo", "status", "at", "total", "speed", "playMode", "dock", "panel", "chapter", "lines", "kinds", "q", "follow", "recordedAt") if k in body}
+    _PLAYER.clear()
+    _PLAYER.update(keep, reportedAt=datetime.now(timezone.utc).isoformat(timespec="seconds"))
+    return dict(_PLAYER)
+
+
 class Service:
     """demonstrations@1 for other plugins: topics, demos, one demo, generate, walkthrough."""
 
@@ -352,6 +494,12 @@ class Service:
 
     def walkthrough(self, demo_id: str) -> dict[str, Any]:
         return get_walkthrough(demo_id)
+
+    def pipelines(self) -> list[dict[str, Any]]:
+        return get_pipelines()["items"]
+
+    def pipeline(self, demo_id: str) -> dict[str, Any]:
+        return get_pipeline(demo_id)
 
 
 plugin_services.provide(SELF, Service(), HERE.name)
