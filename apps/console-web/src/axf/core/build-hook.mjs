@@ -10,7 +10,7 @@
  *
  *   build-event@1 = {
  *     id:     '<build>:<rev>:<event>[:<step uid>]'   stable: replaying the same change gives the same ids
- *     event:  created | steps-added | step-done | status | pr-opened | pr-merged | addendum | cancelled | restored
+ *     event:  created | steps-added | step-done | status | pr-opened | pr-merged | addendum | cancelled | restored | shipped
  *     at:     when the store saw it (ISO, UTC)
  *     by:     who wrote the store (cli | console | mcp | headless | reconcile | plan-studio | agent:<name> | …)
  *     build:  { id, profile, profiles, title, category, status, branch, pr, mergedAt, createdAt, rev, repo }
@@ -18,6 +18,8 @@
  *     steps:  the steps the event is about: { id, uid, title, text, files, model, done, doneAt }
  *             (created: every step; steps-added: the new ones; step-done: the ones just ticked)
  *     prompt: build-origin@1's words for created / addendum: { said, at, source, session, link, verbatim, index }
+ *     shipped: (shipped only) the shipped-manifest@1 ref { id, rev, at, landedCommit }; the manifest is the sidecar
+ *             _claude/builds/shipped/<build>.json (framework/core/shipped-manifest.mjs)
  *   }
  *
  * Listeners (the Shipped features ledger first) consume events in order and must be idempotent on `id`.
@@ -26,11 +28,12 @@
  */
 
 import { ALLOWED_MODELS, DEFAULT_MODEL, coerceModel } from './model-policy.mjs';
+import { normRef as normShippedRef } from './shipped-manifest.mjs';
 
 export const SCHEMA = 'build-hook@1';
 export const RECORD = 'build-event@1';
 export const VERSION = 1;
-export const EVENTS = ['created', 'steps-added', 'step-done', 'status', 'pr-opened', 'pr-merged', 'addendum', 'cancelled', 'restored'];
+export const EVENTS = ['created', 'steps-added', 'step-done', 'status', 'pr-opened', 'pr-merged', 'addendum', 'cancelled', 'restored', 'shipped'];
 /** builds@1 statuses, mirrored so a port does not need the store core. */
 export const BUILD_STATUSES = ['pending', 'queued', 'running', 'waiting', 'blocked', 'failed', 'built', 'complete', 'archived'];
 export const REPOS = ['amberx-axf', 'axhub'];
@@ -102,8 +105,10 @@ export function normEvent(v) {
   const build = normBuildRef(o.build); if (!build.id) return null;
   const steps = list(o.steps).map(normStep);
   const prompt = o.prompt ? normPrompt(o.prompt, Number(o.prompt.index) || 0) : null;
-  const ev = { $axf: RECORD, id: '', event: o.event, at: iso(o.at), by: str(o.by, 80) || 'cli', build, from: str(o.from, 20), to: str(o.to, 20), steps, prompt };
-  ev.id = str(o.id, 200) || eventId(build.id, build.rev, ev.event, ev.event === 'step-done' && steps.length === 1 ? steps[0].uid : '');
+  const shipped = o.event === 'shipped' ? normShippedRef(o.shipped) : null;
+  if (o.event === 'shipped' && !shipped) return null;
+  const ev = { $axf: RECORD, id: '', event: o.event, at: iso(o.at), by: str(o.by, 80) || 'cli', build, from: str(o.from, 20), to: str(o.to, 20), steps, prompt, ...(shipped ? { shipped } : {}) };
+  ev.id = str(o.id, 200) || eventId(build.id, build.rev, ev.event, ev.event === 'step-done' && steps.length === 1 ? steps[0].uid : ev.event === 'shipped' ? String(shipped.rev) : '');
   return ev;
 }
 export function validateEvent(v) {
@@ -114,6 +119,8 @@ export function validateEvent(v) {
   return { ok: !errors.length, errors };
 }
 
+/** A shipped ref that is new or moved on (another manifest id or rev) since `before`. */
+const newShipped = (a, b) => { const x = normShippedRef(a?.shipped); if (!x) return null; const y = normShippedRef(b?.shipped); return y && y.id === x.id && y.rev === x.rev ? null : x; };
 const isCancel = (b) => !!b && (b.deleted === true || (b.status === 'archived' && !iso(b.mergedAt)));
 const origins = (b) => {
   const o = isObj(b?.origin) ? b.origin : null; if (!o) return [];
@@ -140,6 +147,7 @@ export function eventsFromChange(change, { at = '', by = 'cli' } = {}) {
     for (const p of prompts.slice(1)) push('addendum', { prompt: p, id: eventId(ref.id, ref.rev, 'addendum', String(p.index)) });
     if (isCancel(a)) push('cancelled', { from: '', to: a.deleted ? 'deleted' : a.status });
     else if (prNumber(a.pr)) push(iso(a.mergedAt) ? 'pr-merged' : 'pr-opened');
+    const sh = newShipped(a, null); if (sh) push('shipped', { shipped: sh });
     return out;
   }
   const wasCancel = isCancel(b); const nowCancel = isCancel(a);
@@ -154,6 +162,7 @@ export function eventsFromChange(change, { at = '', by = 'cli' } = {}) {
   if (str(b.status) !== str(a.status)) push('status', { from: str(b.status), to: str(a.status) });
   if (prNumber(a.pr) && prNumber(a.pr) !== prNumber(b.pr)) push('pr-opened');
   if (iso(a.mergedAt) && !iso(b.mergedAt)) push('pr-merged');
+  const sh = newShipped(a, b); if (sh) push('shipped', { shipped: sh });
   return out;
 }
 
@@ -177,6 +186,7 @@ export function jsonSchemas() {
         build: { type: 'object', required: ['id'], additionalProperties: false, properties: { id: { type: 'string' }, profile: { type: 'string' }, profiles: { type: 'array', items: { type: 'string' } }, title: { type: 'string' }, category: { type: 'string' }, status: { enum: BUILD_STATUSES }, branch: { type: 'string' }, pr: { type: 'integer' }, mergedAt: { type: 'string' }, createdAt: { type: 'string' }, rev: { type: 'integer' }, repo: { enum: REPOS } } },
         from: { type: 'string' }, to: { type: 'string' }, steps: { type: 'array', items: step },
         prompt: { type: ['object', 'null'], properties: { said: { type: 'string' }, at: { type: 'string' }, source: { type: 'string' }, session: { type: 'string' }, link: { type: 'string' }, verbatim: { type: 'boolean' }, index: { type: 'integer' } } },
+        shipped: { type: 'object', required: ['id'], additionalProperties: false, properties: { id: { type: 'string' }, rev: { type: 'integer', minimum: 1 }, at: { type: 'string' }, landedCommit: { type: 'string' } } },
       },
     },
   };

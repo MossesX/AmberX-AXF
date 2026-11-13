@@ -1,0 +1,47 @@
+{
+  "$axf": "asset@1",
+  "type": "skin",
+  "id": "ledger",
+  "name": "Ledger",
+  "version": "1.0.0",
+  "description": "Finance and accounting: a dense data grid layout, crisp enterprise controls in slate and steel, precise motion with no flourish, compact type and spacing so more rows fit.",
+  "author": "AmberX AXF",
+  "tags": [
+    "finance",
+    "enterprise",
+    "dense",
+    "skin",
+    "professional"
+  ],
+  "data": {
+    "layoutTheme": "data-grid",
+    "colorTheme": "slate-steel",
+    "styleTheme": "enterprise",
+    "behaviorTheme": "precise",
+    "assets": {
+      "banner": "amberx-thin",
+      "app-menu": "standard-desktop",
+      "nav-menu": "sidebar-list",
+      "button": "enterprise-crisp",
+      "dialog": "enterprise-crisp",
+      "context-menu": "enterprise-standard",
+      "toolbar": "data-grid-tools",
+      "container": "enterprise-crisp",
+      "typography": "compact",
+      "density": "compact",
+      "sizing": "compact"
+    },
+    "preview": {
+      "caption": "Dense grid, slate colours, precise motion."
+    },
+    "extras": {
+      "hidden": {
+        "toolbar": false,
+        "nav-menu": false,
+        "banner": false,
+        "app-menu": false
+      }
+    },
+    "iconPack": "amberx-outline"
+  }
+}

@@ -31,7 +31,7 @@ import { rollAssetIncluded, rollAssetKey, rollNever, rollPlan, rollSlotIncluded,
 import { SearchIndex } from './engines/search';
 import { STYLE_PACKAGE_TYPE, stepPackage, stylePackageSlots, type StylePackageData } from './engines/stylepackage';
 import { appMenuSearchEntries, chromeToggleItems, compileAppMenu, compileProviderItems, mergeAppMenu, resolveChecked, type AppMenuContribution, type AppMenuEnv, type CompiledAppMenu, type CompiledMenuItem, type MergedAppMenu, type MenuSearchEntry, type ProviderOptions } from './engines/appmenu';
-import { backToSkin, composeLookAt, globalSkinOf, isSubScopeKey, lookAfterChange, newAppLook, normalizeSkin, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, setInheritSkin, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorOf, skinCoverage, skinCovers, skinEntries, skinFromDesignPackage, skinScopeDomId, skinScopeOf, snapshotLook, undoRestore, SKIN_COLOR_SLOT, SKIN_ICON_PACK_KEY, SKIN_TYPE, type AppLookDocument, type AppLookStore, type ComposedLook, type CoverageRow, type ResolvedSkin, type SkinColor, type SkinData, type SkinEntry, type SkinScope, type SkinScopeState } from './engines/skin';
+import { backToSkin, composeLookAt, globalSkinOf, isSubScopeKey, lookAfterChange, newAppLook, normalizeSkin, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, setInheritSkin, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorOf, skinCoverage, skinCovers, skinEntries, skinFromDesignPackage, skinScopeDomId, skinScopeOf, snapshotLook, undoRestore, SKIN_COLOR_SLOT, SKIN_ICON_PACK_KEY, SKIN_TYPE, type AppLookDocument, type AppLookStore, type ComposedLook, type CoverageRow, type ResolvedSkin, type SkinColor, type SkinData, type SkinEntry, type SkinScope, type SkinScopeState, foldLegacyPicks, isFoldedPickType, lookNeedsMigration, migrateLookSettings, parseLegacyLook, settingsNeedMigration, skinSlots, isRetiredLookKey, LEGACY_LOOK_KEY, SKIN_SWAPPABLE_SECTION } from './engines/skin';
 import { DESIGN_APPLIED_KEY, DESIGN_OVERRIDABLE, DESIGN_OVERRIDES_KEY, DESIGN_PACKAGE_TYPE, PACKAGE_APPLIED_KEY, captureDesignPackage, designLookSlots, isRetiredLookSetting, designPackageSlots, isAppearanceSetting, normalizeDesignOverrides, normalizeDesignPackage, overrideAfterPick, packageSettingsPlan, type DesignOverrides } from './engines/designpackage';
 import { behaviorStyle, confirmBeforeDelete, normalizeBehavior, vibrationPattern } from './engines/behavior';
 import { navStyleOutput, normalizeNavStyle, type NavStyleData } from './engines/navstyle';
@@ -549,10 +549,24 @@ export class AxfRuntime {
     try {
       const active = { ...this.state.active };
       for (const t of ASSET_TYPES) {
-        if (t === 'uac-policy') continue;
+        if (t === 'uac-policy' || t === SKIN_TYPE) continue; // never slots of a document: the policy is the account's, the skin is the look document's
         const want = r.slots[t] ?? this.manifest.defaults[t];
         if (want && this.registry.has(t, want)) active[t] = want;
         else if (!want && (OPTIONAL_TYPES as readonly string[]).includes(t)) active[t] = '';
+      }
+      // Skins only (Nov 10 2026): a design package in force is the skin of that id, so the `design-package` slot names
+      // the skin in force when it is a package (what `appliedDesignPackage` and older readers of the slot see); and a
+      // style package the skin names brings its member controls (engines/stylepackage.ts), under the skin's own slots
+      // and its overrides, as loading the package used to.
+      const inForce = composed?.skin.id;
+      const skinOn = inForce ? this.skinData(inForce) : null;
+      if (inForce && this.registry.has(DESIGN_PACKAGE_TYPE as AssetType, inForce)) active[DESIGN_PACKAGE_TYPE as AssetType] = inForce;
+      if (skinOn) {
+        const own = skinSlots(skinOn);
+        const sp = own[STYLE_PACKAGE_TYPE] ? this.registry.get(STYLE_PACKAGE_TYPE as AssetType, own[STYLE_PACKAGE_TYPE]!) : undefined;
+        if (sp) for (const [t, id] of Object.entries(stylePackageSlots(sp.data as StylePackageData))) {
+          if (!(t in own) && !(t in (composed?.skin.overrides ?? {})) && this.registry.has(t as AssetType, id)) active[t as AssetType] = id;
+        }
       }
       for (const t of ASSET_TYPES) {
         if (!hideable(t)) continue;
@@ -566,8 +580,11 @@ export class AxfRuntime {
       // Look settings: a document that lists them owns them all (keys it doesn't list are cleared here); an older one
       // without the field leaves this app's own alone (they are sent up once, below, so the hub takes them over).
       // Retired look settings (Sliders, per-asset tokens, rolls, banners' Apply to all) are never applied (Nov 1 2026).
+      // Skins only (Nov 10 2026): with the app's look document in hand, the retired theme / style / layout keys
+      // (look-migration@1) are never applied either; the skin composes its sections.
+      const isRetired = (k: string) => isRetiredLookSetting(k) || (!!look && isRetiredLookKey(k));
       if (doc?.settings) {
-        const shared = Object.fromEntries(Object.entries(doc.settings).filter(([k]) => !isRetiredLookSetting(k)));
+        const shared = Object.fromEntries(Object.entries(doc.settings).filter(([k]) => !isRetired(k)));
         const saved = this.settings.savedValues();
         for (const [k, v] of Object.entries(shared)) {
           if (isAppearanceSetting(k) && JSON.stringify(saved[k]) !== JSON.stringify(v)) this.settings.set(k, v as SettingValue);
@@ -575,9 +592,11 @@ export class AxfRuntime {
         for (const k of Object.keys(saved)) if (isAppearanceSetting(k) && !Object.hasOwn(shared, k)) this.settings.clear(k);
         retired = Object.keys(doc.settings).filter(isRetiredLookSetting);
       }
-      // A loaded design package decides the style and colour theme; only a recorded override beats it (Nov 1 2026).
+      // Older sources without an app-look document (the shared document alone is the look): a loaded design package
+      // decides the style and colour theme; only a recorded override beats it (Nov 1 2026). With a look document the
+      // skin's sections are final (skins only, Nov 10 2026): nothing re-reads a package or an override here.
       const pkgId = active[DESIGN_PACKAGE_TYPE as AssetType];
-      const pkgAsset = pkgId ? this.registry.get(DESIGN_PACKAGE_TYPE as AssetType, pkgId) : undefined;
+      const pkgAsset = pkgId && !look ? this.registry.get(DESIGN_PACKAGE_TYPE as AssetType, pkgId) : undefined;
       if (pkgAsset) {
         const overrides = normalizeDesignOverrides(doc?.settings ? doc.settings[DESIGN_OVERRIDES_KEY] : this.settings.get(DESIGN_OVERRIDES_KEY));
         const look = designLookSlots(normalizeDesignPackage(pkgAsset.data), overrides, { 'style-theme': active['style-theme' as AssetType], 'color-theme': active['color-theme' as AssetType] }, (t, id) => this.registry.has(t as AssetType, id));
@@ -659,11 +678,14 @@ export class AxfRuntime {
 
   /** The app's look document; the first read saves the snapshot, so the app's current look is its default from then on. */
   private ensureLook(): AppLookDocument | null {
+    this.migrateLocalLook();
     if (!this.lookLayerOn()) return null;
     const store = this.lookStore();
     const cur = store.get();
-    if (cur || store.status() !== 'missing') return cur;
-    const doc = newAppLook(this.manifest.app.id, snapshotLook(this.lookStoreRef ? this.lastAppearance : this.currentAppearance()));
+    if (cur) return this.migrateLookDocument(cur);
+    if (store.status() !== 'missing') return cur;
+    // a fresh snapshot is folded before it is saved: it says what the screen shows (look-migration@1), no second pass
+    const doc = this.foldLook(newAppLook(this.manifest.app.id, snapshotLook(this.lookStoreRef ? this.lastAppearance : this.currentAppearance()))).look;
     this.saveLook(doc);
     this.terminal.ok('appearance', 'saved the current look as this app\'s default');
     return doc;
@@ -671,6 +693,52 @@ export class AxfRuntime {
 
   private saveLook(doc: AppLookDocument): void {
     this.lookStore().save({ ...doc, updatedBy: this.manifest.app.id, updatedAt: new Date().toISOString() });
+  }
+
+  /* ---- look-migration@1 (skins only, Nov 10 2026): once per profile on load, engines/look-migration.mjs ---- */
+
+  private localLookMigrated = false;
+  /** The document already folded this session (the store may hand it back before its save lands). */
+  private foldedLookJson = '';
+
+  /** The local half: the retired theme / style / layout settings are backed up (`axf.legacy.look`) and cleared, the profile stamped. */
+  private migrateLocalLook(): void {
+    if (this.localLookMigrated) return;
+    this.localLookMigrated = true;
+    const values = this.settings.savedValues();
+    if (!settingsNeedMigration(values)) return;
+    const r = migrateLookSettings(values, new Date().toISOString());
+    if (!r.changed) return;
+    for (const k of r.clear) this.settings.clear(k);
+    for (const [k, v] of Object.entries(r.set)) this.settings.set(k, v);
+    if (r.clear.length) this.terminal.ok('appearance', `skins only: ${r.clear.length} retired look setting(s) backed up under ${LEGACY_LOOK_KEY}: ${r.clear.join(', ')}`);
+  }
+
+  /** The pure fold of one document against this app's skins and registry (engines/look-migration.mjs). */
+  private foldLook(doc: AppLookDocument): ReturnType<typeof foldLegacyPicks> {
+    const designPick = parseLegacyLook(this.settings.get(LEGACY_LOOK_KEY))?.settings['axf.appearance.design'];
+    return foldLegacyPicks(doc, {
+      skinOf: (id) => this.skinData(id),
+      skinIds: this.skinList().map((s) => s.id),
+      has: (t, id) => this.registry.has(t as AssetType, id),
+      designPick: typeof designPick === 'string' ? designPick : '',
+      now: new Date().toISOString(),
+      by: this.manifest.app.id,
+    });
+  }
+
+  /** The document half: the picks of a folded type move under the skin in force (or the package they named); the document is stamped. */
+  private migrateLookDocument(doc: AppLookDocument): AppLookDocument {
+    if (!lookNeedsMigration(doc)) return doc;
+    const json = JSON.stringify(doc);
+    if (json === this.foldedLookJson) return doc;
+    this.foldedLookJson = json;
+    const r = this.foldLook(doc);
+    if (r.look === doc) return doc;
+    this.saveLook(r.look);
+    const kept = Object.keys(r.kept);
+    this.terminal.ok('appearance', `skins only: look document folded (${r.reason}${r.skin ? `, skin ${r.skin}` : ''}${Object.keys(r.folded).length ? `, moved ${Object.keys(r.folded).join(', ')}` : ''}${kept.length ? `, kept ${kept.join(', ')}` : ''})`);
+    return r.look;
   }
 
   private bumpLook(): void { this.set({ swaps: this.state.swaps + 1 }); }
@@ -738,6 +806,7 @@ export class AxfRuntime {
 
   /** The 'Use skin' switch. `id` picks the skin too; on with none picked takes the first skin. */
   useSkin(on: boolean, id?: string): boolean {
+    if (id === 'next' || id === 'prev') id = this.stepSkin(id === 'next' ? 1 : -1);
     const pick = id ?? this.appLook()?.skin.id ?? '';
     const skin = pick || (on ? this.skinList()[0]?.id ?? '' : '');
     if (on && !this.skinData(skin)) { this.toast(`No skin "${skin}" in this app.`, 'warning', 'Skin'); return false; }
@@ -745,6 +814,14 @@ export class AxfRuntime {
     this.terminal.ok('hot-swap', on ? `skin ${skin} on for this app` : 'skin off: back to this app\'s own look');
     this.lookApplied('default', skin);
     return true;
+  }
+
+  /** The skin one step after (1) or before (-1) the one in force, wrapping; replaces the retired Next layout / style picks. */
+  stepSkin(dir: 1 | -1): string {
+    const list = this.skinList();
+    if (!list.length) return '';
+    const at = list.findIndex((e) => e.id === this.skinInForce().id);
+    return list[(at + dir + list.length) % list.length]!.id;
   }
 
   /** Pick a skin; it shows only while Use skin is on. */
@@ -847,16 +924,8 @@ export class AxfRuntime {
       const composed = composeLookAt(this.lastAppearance, this.appLook() ?? look, (id) => this.skinData(id), skinScopeOf(key, this.manifest.app.id));
       const has = (t: string, id: string) => this.registry.has(t as AssetType, id);
       const r = resolveAppearance(composed.doc, has);
+      // the skin in force at this level composes its sections: nothing re-reads a design package here (skins only, Nov 10 2026)
       const active: Record<string, string> = { ...r.slots };
-      // the same precedence applyAppearance gives the app: a loaded design package decides style and colour, a recorded override beats it
-      const pkgId = active[DESIGN_PACKAGE_TYPE] ?? this.state.active[DESIGN_PACKAGE_TYPE as AssetType];
-      const pkgAsset = pkgId ? this.registry.get(DESIGN_PACKAGE_TYPE as AssetType, pkgId) : undefined;
-      if (pkgAsset) {
-        const overrides = normalizeDesignOverrides(composed.doc.settings?.[DESIGN_OVERRIDES_KEY]);
-        const cur = { 'style-theme': active['style-theme'] ?? this.state.active['style-theme'], 'color-theme': active['color-theme'] ?? this.state.active['color-theme'] };
-        const look = designLookSlots(normalizeDesignPackage(pkgAsset.data), overrides, cur, has);
-        for (const t of DESIGN_OVERRIDABLE) { const v = look[t]; if (v) active[t] = v; }
-      }
       return { active, spacing: r.spacing ?? this.spacing(), hidden: r.hidden, settings: (composed.doc.settings ?? {}) as Record<string, unknown>, branding: '', design: '', missing: [], parts: composed.parts } as ResolvedInterface & { parts: ComposedLook['parts'] };
     };
     return this.scopedView(scopeId, `skin:${key}`, resolve, 'skin');
@@ -1439,6 +1508,14 @@ export class AxfRuntime {
       this.toast(`Your role needs "${need}" to change the ${assetTypeSpecs[type].label.toLowerCase()}.`, 'danger', 'Permission denied');
       return false;
     }
+    // Skins only (Nov 10 2026, Brett: "remove all the styling and theme and layout stuff"): the style, layout and
+    // behaviour themes, the scale assets and the packages are parts of the skin; only its colour theme is still swapped
+    // here (an override of the skin's colours section). A design package is the skin of the same id.
+    if (this.lookLayerOn() && isFoldedPickType(type) && type !== SKIN_SWAPPABLE_SECTION && type !== DESIGN_PACKAGE_TYPE) {
+      this.terminal.warn('hot-swap', `${type} → "${target}": picked by the skin now (Settings → Appearance → Skin)`);
+      this.toast(`${assetTypeSpecs[type]?.label ?? type} is part of the skin now. Pick a skin in Settings → Appearance.`, 'info', 'Skin');
+      return false;
+    }
     const list = this.registry.list(type);
     const idx = list.findIndex((a) => a.id === this.state.active[type]);
     let next: string | undefined;
@@ -1478,8 +1555,11 @@ export class AxfRuntime {
     return true;
   }
 
-  /** The style / colour theme overrides on top of the loaded design package (engines/designpackage.ts, precedence rule). */
-  designOverrides(): DesignOverrides { return this.loadedDesignPackage() ? normalizeDesignOverrides(this.settings.get(DESIGN_OVERRIDES_KEY)) : {}; }
+  /**
+   * The style / colour theme overrides on top of the loaded design package (engines/designpackage.ts, precedence rule).
+   * Older sources without a look document only: with one, the skin's overrides are `skinOverrides()` (skins only).
+   */
+  designOverrides(): DesignOverrides { return !this.lookLayerOn() && this.loadedDesignPackage() ? normalizeDesignOverrides(this.settings.get(DESIGN_OVERRIDES_KEY)) : {}; }
 
   /** The design package in force (its data), or null when none is loaded. */
   private loadedDesignPackage() {
@@ -1490,6 +1570,7 @@ export class AxfRuntime {
 
   /** A style or colour pick while a package is loaded: record (or drop) its override. Returns the new overrides, or null when nothing changed. */
   private recordDesignOverride(type: string, id: string): DesignOverrides | null {
+    if (this.lookLayerOn()) return null; // skins only: the retired `axf.appearance.overrides` key is never written again
     const next = overrideAfterPick(this.loadedDesignPackage(), normalizeDesignOverrides(this.settings.get(DESIGN_OVERRIDES_KEY)), type, id);
     if (!next) return null;
     if (Object.keys(next).length) this.settings.set(DESIGN_OVERRIDES_KEY, next as unknown as SettingValue);
@@ -1651,7 +1732,9 @@ export class AxfRuntime {
   /** "Randomize all": rolls every included slot over its included assets. Excluded and hidden slots keep their asset. */
   randomize() {
     if (!this.can('assets.swap')) return this.toast('Your role cannot swap assets.', 'danger', 'Permission denied');
-    const plan = rollPlan(ASSET_TYPES.filter((t) => !this.slotHidden(t) && !attachable(t)), (t) => this.registry.list(t as AssetType), this.rollRules());
+    // skins only: a roll never moves a part of the skin (its colour theme may still roll)
+    const rollable = (t: AssetType) => !this.lookLayerOn() || !isFoldedPickType(t) || t === SKIN_SWAPPABLE_SECTION;
+    const plan = rollPlan(ASSET_TYPES.filter((t) => !this.slotHidden(t) && !attachable(t) && rollable(t)), (t) => this.registry.list(t as AssetType), this.rollRules());
     const targets: Partial<ActiveAssets> = {};
     for (const [t, ids] of Object.entries(plan) as [AssetType, string[]][]) {
       targets[t] = ids[Math.floor(Math.random() * ids.length)];
@@ -1696,15 +1779,13 @@ export class AxfRuntime {
    * that is a known package always wins over it, Nov 3 2026). After Restore default appearance: the app's default package.
    */
   appliedDesignPackage(): string | undefined {
-    const active = this.state.active[DESIGN_PACKAGE_TYPE as AssetType];
-    if (active && this.registry.has(DESIGN_PACKAGE_TYPE as AssetType, active)) return active;
-    let v = this.settings.get(DESIGN_APPLIED_KEY);
-    if (typeof v !== 'string') {
-      // the retired appearance package's pick: the shipped packages kept their ids, so move it over once
-      const old = this.settings.get(PACKAGE_APPLIED_KEY);
-      if (typeof old === 'string' && this.registry.has(DESIGN_PACKAGE_TYPE as AssetType, old)) { this.settings.set(DESIGN_APPLIED_KEY, old); this.settings.clear(PACKAGE_APPLIED_KEY); v = old; }
+    // skins only (Nov 10 2026): the skin in force is the look; a design package in force is the skin of that id
+    if (this.lookLayerOn()) {
+      const skin = this.skinInForce().id;
+      if (skin && this.registry.has(DESIGN_PACKAGE_TYPE as AssetType, skin)) return skin;
     }
-    return typeof v === 'string' && this.registry.has(DESIGN_PACKAGE_TYPE as AssetType, v) ? v : undefined;
+    const active = this.state.active[DESIGN_PACKAGE_TYPE as AssetType];
+    return active && this.registry.has(DESIGN_PACKAGE_TYPE as AssetType, active) ? active : undefined;
   }
 
   /**
@@ -1715,6 +1796,17 @@ export class AxfRuntime {
     if (!this.can('assets.swap')) { this.toast('Your role cannot change the look.', 'danger', 'Permission denied'); return false; }
     const a = this.registry.get(DESIGN_PACKAGE_TYPE as AssetType, id);
     if (!a) { this.toast(`No design package "${id}".`, 'warning', 'Design package'); return false; }
+    // Skins only (Nov 10 2026): a design package is the skin of the same id; applying one is Use skin on with it.
+    // One look event per apply (hosts bring the app into view on it), as loading the package used to send.
+    if (this.lookLayerOn()) {
+      this.muteLookEvents++;
+      let on = false;
+      try { on = this.useSkin(true, id); } finally { this.muteLookEvents--; }
+      if (!on) return false;
+      if (!opts.quiet) this.toast(`${a.name} applied.`, 'success', 'Skin');
+      this.lookApplied('design-package', id);
+      return true;
+    }
     const pkg = normalizeDesignPackage(a.data);
     const plan = packageSettingsPlan(pkg, Object.keys(this.settings.savedValues()));
     for (const k of plan.clear) this.settings.clear(k);
@@ -1734,8 +1826,7 @@ export class AxfRuntime {
     for (const [t, sid] of Object.entries(slots)) if (!this.registry.has(t as AssetType, sid)) { this.terminal.warn('hot-swap', `design package ${id}: no ${t} "${sid}" in this app, kept the current one`); delete slots[t]; }
     this.swapAll({ ...(slots as Partial<ActiveAssets>), [DESIGN_PACKAGE_TYPE]: id } as Partial<ActiveAssets>);
     if (pkg.extras) this.pushAppearance({ hidden });
-    this.settings.set(DESIGN_APPLIED_KEY, id);
-    if (this.settings.get(PACKAGE_APPLIED_KEY) !== null) this.settings.clear(PACKAGE_APPLIED_KEY);
+    // the retired local notes (`axf.appearance.design`, `axf.appearance.package`) are never written again (look-migration@1)
     this.terminal.ok('hot-swap', `design package ${id} applied (${Object.keys(slots).length} slots, ${Object.keys(plan.set).length} settings)`);
     if (opts.quiet) return true; // part of a bigger step (Restore default): that step says what happened
     this.toast(`${a.name} applied.`, 'success', 'Design package');
@@ -1754,7 +1845,11 @@ export class AxfRuntime {
     return () => { this.lookAppliedListeners.delete(fn); };
   }
 
+  /** While above zero, look events are held back (a bigger step sends its own one). */
+  private muteLookEvents = 0;
+
   private lookApplied(kind: 'design-package' | 'interface' | 'default' | 'hub', id: string): void {
+    if (this.muteLookEvents > 0) return;
     for (const fn of [...this.lookAppliedListeners]) { try { fn({ kind, id }); } catch (e) { this.terminal.warn('hot-swap', `look listener failed: ${(e as Error).message}`); } }
   }
 
@@ -2798,6 +2893,8 @@ export class AxfRuntime {
       a.register(id, () => this.toast(`${meta.label} has no handler in this app yet.`, 'info', meta.label), { ...meta, stub: true });
     }
     a.register('swap', ([type, target = 'next']) => {
+      // the retired Next style / layout / behaviour picks in older menus and toolbars step the skin instead (skins only)
+      if (type && (target === 'next' || target === 'prev') && this.lookLayerOn() && isFoldedPickType(type as AssetType) && type !== SKIN_SWAPPABLE_SECTION && type !== DESIGN_PACKAGE_TYPE) { this.useSkin(true, target); return; }
       if (type && (ASSET_TYPES as readonly string[]).includes(type)) this.swap(type as AssetType, target);
       else this.toast(`Unknown asset type "${type}".`, 'warning');
     }, { label: 'Swap asset', params: true });

@@ -1,0 +1,47 @@
+{
+  "$axf": "asset@1",
+  "type": "skin",
+  "id": "control-room",
+  "name": "Control room",
+  "version": "1.0.0",
+  "description": "Operations and monitoring: a command-center layout on deep obsidian, industrial controls, an ops monitor toolbar and alert-first behaviour so changes stand out. Dense, dark and fast.",
+  "author": "AmberX AXF",
+  "tags": [
+    "operations",
+    "dark",
+    "dense",
+    "skin",
+    "professional"
+  ],
+  "data": {
+    "layoutTheme": "command-center",
+    "colorTheme": "obsidian",
+    "styleTheme": "industrial",
+    "behaviorTheme": "alert",
+    "assets": {
+      "banner": "amberx-branded",
+      "app-menu": "developer",
+      "nav-menu": "ops-monitor",
+      "button": "dense-ops",
+      "dialog": "dense-ops",
+      "context-menu": "developer-tools",
+      "toolbar": "ops-monitor",
+      "container": "dense-ops",
+      "typography": "compact",
+      "density": "dense",
+      "sizing": "compact"
+    },
+    "preview": {
+      "caption": "Dark command center, alert-first, dense."
+    },
+    "extras": {
+      "hidden": {
+        "toolbar": false,
+        "nav-menu": false,
+        "banner": false,
+        "app-menu": false
+      }
+    },
+    "iconPack": "amberx-outline"
+  }
+}

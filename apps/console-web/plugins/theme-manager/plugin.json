@@ -6,7 +6,7 @@
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Roll colour, style and layout themes, or every themeable part at once. A tree of every token (built from the asset types, so new types show up by themselves) with tri-state ticks, locks, presets and search picks what a roll may change; rolls stay readable (contrast-checked palettes, sizes within the range the known themes use). Live preview, undo/redo, pin favourites, edit any value by hand, save a roll as standard asset@1 themes and manage them (apply, rename, duplicate, export, import, delete). Phone: drill-down tree. Nav → Plugins → Theme manager; Settings → Plugins → Themes.",
+  "description": "Roll colour themes, or every themeable part a skin leaves open (style, layout and behaviour are the skin's sections). A tree of every token (built from the asset types, so new types show up by themselves) with tri-state ticks, locks, presets and search picks what a roll may change; rolls stay readable (contrast-checked palettes, sizes within the range the known themes use). Live preview, undo/redo, pin favourites, edit any value by hand, save a roll as standard asset@1 themes and manage them (apply, rename, duplicate, export, import, delete). Phone: drill-down tree. Nav → Plugins → Theme manager; Settings → Plugins → Themes.",
   "targets": [
     "axf-console"
   ],
@@ -17,9 +17,7 @@
     "service:axf.token-tree@1"
   ],
   "uiEditor": [
-    "theme",
-    "style",
-    "layout"
+    "theme"
   ],
   "scopes": [
     "ROUTES"
