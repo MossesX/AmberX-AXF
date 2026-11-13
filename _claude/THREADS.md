@@ -781,7 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 21:52 UTC · `one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx` → running, note (all) · pipeline
 - 2026-11-12 21:52 UTC · `one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx` branch claude/one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx (all) · pipeline
 - 2026-11-12 21:52 UTC · `one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx` note (all) · orchestrator
 - 2026-11-12 21:53 UTC · `projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone` note (all) · pipeline
@@ -1181,6 +1180,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 06:32 UTC · `amberx-approval-pop-up-not-showing-only-the-android-notification` note (all) · orchestrator
 - 2026-11-13 06:32 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` note (all) · orchestrator
 - 2026-11-13 06:32 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` note (all) · orchestrator
+- 2026-11-13 06:33 UTC · `everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the` note (all) · orchestrator
 
 ## Token passes (log)
 

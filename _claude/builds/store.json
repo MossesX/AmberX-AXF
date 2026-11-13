@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4031,
- "updatedAt": "2026-11-13T06:32:23.951Z",
+ "rev": 4032,
+ "updatedAt": "2026-11-13T06:33:07.689Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -176618,7 +176618,7 @@
    "mergedAt": "2026-11-13T06:14:12Z",
    "priority": "P0",
    "createdAt": "2026-11-12T23:40:00.983Z",
-   "updatedAt": "2026-11-13T06:31:06.529Z",
+   "updatedAt": "2026-11-13T06:33:04Z",
    "builtAt": "2026-11-13T01:48:25.940Z",
    "notes": [
     {
@@ -176680,6 +176680,10 @@
     {
      "text": "Reconciler: PR #538 merged",
      "at": "2026-11-13T06:31:06.529Z"
+    },
+    {
+     "text": "Shipped manifest sm-everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the rev 1 sent to Shipped features (orchestrator): PR #538, 67 file(s), 1 test line(s), 2 open.",
+     "at": "2026-11-13T06:33:04Z"
     }
    ],
    "approvals": [],
@@ -176731,6 +176735,12 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "shipped": {
+    "id": "sm-everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the",
+    "rev": 1,
+    "at": "2026-11-13T06:33:04Z",
+    "landedCommit": ""
    },
    "steps": [
     {
@@ -176789,7 +176799,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
