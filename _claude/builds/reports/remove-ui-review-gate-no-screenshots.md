@@ -1,6 +1,6 @@
 # Remove UI Review as a gate
 
-Build `remove-ui-review-as-a-gate-no-screenshots-required-prs-never-held-as-draft-for` (Opus, Nov 13 2026).
+Build `remove-ui-review-gate-no-screenshots` (Opus, Nov 13 2026).
 UI Review stays as optional feedback (items, Screenshots, Choices, approve / reject). Nothing waits on it any more:
 no PR is held, no PR is kept as a draft for it, no build is required to submit screenshots.
 
