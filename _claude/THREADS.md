@@ -781,7 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 08:42 UTC · `professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e` s15 done (all) · orchestrator
 - 2026-11-13 08:42 UTC · `professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e` s17 done, → built (all) · orchestrator
 - 2026-11-13 08:43 UTC · `professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e` note (all) · orchestrator
 - 2026-11-13 08:44 UTC · `professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e` note (all) · pipeline
@@ -1181,6 +1180,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 12:47 UTC · `assets-menu-hide-any-asset-visible-and-hidden-li` s3 done (all) · orchestrator
 - 2026-11-13 12:47 UTC · `assets-menu-hide-any-asset-visible-and-hidden-li` s4 done (all) · orchestrator
 - 2026-11-13 12:49 UTC · `assets-menu-hide-any-asset-visible-and-hidden-li` s5 done (all) · orchestrator
+- 2026-11-13 12:56 UTC · `assets-menu-hide-any-asset-visible-and-hidden-li` s6 done (all) · orchestrator
 
 ## Token passes (log)
 
