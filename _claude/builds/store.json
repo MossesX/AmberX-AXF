@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3942,
- "updatedAt": "2026-11-13T01:54:01.638Z",
+ "rev": 3943,
+ "updatedAt": "2026-11-13T01:54:16.268Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -174016,8 +174016,8 @@
    "branch": "claude/server-every-failed-merge-alerts-brett-immediately-and-retries-by-itself-until",
    "pr": "#539",
    "createdAt": "2026-11-12T21:53:13.014Z",
-   "updatedAt": "2026-11-13T01:53:30.294Z",
-   "builtAt": "2026-11-13T01:53:30.294Z",
+   "updatedAt": "2026-11-13T01:54:04.392Z",
+   "builtAt": "2026-11-13T01:54:04.392Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -174058,6 +174058,10 @@
     {
      "text": "Headless run axf-server-every-failed-merge-alerts-brett-immediate--joey: brief only · start 10.9K tokens ($0.03) · cost $2.21 · 50 turns · 6 tools, MCP none",
      "at": "2026-11-13T01:53:30.294Z"
+    },
+    {
+     "text": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
+     "at": "2026-11-13T01:54:04.392Z"
     }
    ],
    "approvals": [],
@@ -174078,15 +174082,22 @@
     "queuedAt": "2026-11-12T21:53:16.955Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-server-every-failed-merge-alerts-brett-immediate--joey",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-13T01:46:09.134Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-13T01:54:03.558Z",
+     "exit": 0,
+     "outcome": "returned",
+     "stepsLeft": 1,
+     "account": "mossesx-max-",
+     "session": "axf-server-every-failed-merge-alerts-brett-immediate--joey"
+    },
     "split": null,
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "2026-11-13T01:46:09.134Z",
     "planned": {

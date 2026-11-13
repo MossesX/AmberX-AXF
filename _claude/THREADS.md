@@ -778,7 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 17:47 UTC · `plugin-review-map-what-each-plugin-does-depends-on-and-breaks` added (3 steps) (all) · claude-voice
 - 2026-11-12 17:48 UTC · `plugin-review-map-what-each-plugin-does-depends-on-and-breaks` → queued, note (all) · console
 - 2026-11-12 17:49 UTC · `plugin-review-map-what-each-plugin-does-depends-on-and-breaks` → running, note (all) · pipeline
 - 2026-11-12 17:49 UTC · `plugin-review-map-what-each-plugin-does-depends-on-and-breaks` branch claude/plugin-review-map-what-each-plugin-does-depends-on-and-breaks (all) · pipeline
@@ -1178,6 +1177,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 01:53 UTC · `server-every-failed-merge-alerts-brett-immediately-and-retries-by-itself-until` note (all) · orchestrator
 - 2026-11-13 01:53 UTC · `server-every-failed-merge-alerts-brett-immediately-and-retries-by-itself-until` s3 done, → built (all) · orchestrator
 - 2026-11-13 01:53 UTC · `full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app` s2 done (all) · orchestrator
+- 2026-11-13 01:54 UTC · `server-every-failed-merge-alerts-brett-immediately-and-retries-by-itself-until` → pending, note (all) · pipeline
 
 ## Token passes (log)
 
