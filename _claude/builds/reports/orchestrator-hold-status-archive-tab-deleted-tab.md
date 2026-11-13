@@ -52,6 +52,11 @@ Build `orchestrator-hold-status-archive-tab-deleted-tab`, Phase 1 (Opus), branch
 - check-theme, check-controls, check-toolbars and check-chrome-assets pass. `check-help.mts`: 262 checks pass.
 - `plugin-lifecycle check build-orchestrator` still flags only the old references: `framework/cli/dispatch-gate.mjs`, plus this worktree's untracked brief files.
 
+## Status (Nov 13 2026, s3)
+- PR #463 merged on Nov 11 (merge commit `7c211d233`). The feature is live on main.
+- Re-run on current main: `pipeline.test.mjs` 46 passed, orchestrator `test.mjs` 35 passed, `test.py` 41 passed, `test_upgrade.py` 12 passed.
+- check-theme, check-controls, check-toolbars and check-chrome-assets pass.
+
 ## Gaps
 - **No screenshots, so no UI Review submission yet.**
   - Tried: a scratch console via `rebuild-shots.mjs` on a copy of the builds store, with one queued build put on hold there.
