@@ -1,6 +1,6 @@
 # Orchestrator: Hold status, Archive tab, Deleted tab (deleted builds kept forever)
 
-Build `orchestrator-hold-status-archive-tab-deleted-tab`, Phase 1 (Opus), branch `claude/orchestrator-hold-status-archive-tab-deleted-tab`. Amends `retire-build-manager-the-orchestrator-is-the-onl` (its tabs).
+Build `orchestrator-hold-status-archive-tab`, Phase 1 (Opus), branch `claude/orchestrator-hold-status-archive-tab`. Amends `retire-build-manager-the-orchestrator-is-the-onl` (its tabs).
 
 ## Brett said (verbatim, 2026-11-10 17:07)
 > Make a hold status. Anything in the queue you can send back to pending, leave in queue on hold, move to the archive, or delete. All completed builds go to the archive, add an archive tab. A deleted tab where all deleted builds stay saved forever.
