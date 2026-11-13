@@ -788,8 +788,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 18:26 UTC · `transparency-token-works-every-dialog` added (0 steps) (all) · console
-- 2026-11-13 18:26 UTC · `transparency-token-works-every-dialog` → queued, note (all) · console
 - 2026-11-13 18:26 UTC · `vps-builds-get-console-token-ui-review` s4 done (all) · orchestrator
 - 2026-11-13 18:27 UTC · `transparency-token-works-every-dialog` note (all) · claude-voice
 - 2026-11-13 18:28 UTC · `transparency-token-works-every-dialog` note (all) · orchestrator
@@ -1188,6 +1186,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 20:03 UTC · `demo-pipelines-guided-walkthrough-live` s4 done (all) · orchestrator
 - 2026-11-13 20:04 UTC · `orchestrator-custom-groups-custom-tabs` s10 done, → built (all) · orchestrator
 - 2026-11-13 20:04 UTC · `orchestrator-custom-groups-custom-tabs` note (all) · orchestrator
+- 2026-11-13 20:05 UTC · `orchestrator-custom-groups-custom-tabs` note (all) · orchestrator
+- 2026-11-13 20:06 UTC · `token-registry-skin-editor-live-sandbox` note (all) · claude-voice
 
 ## Token passes (log)
 

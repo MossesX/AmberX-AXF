@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T20:05:55.227Z",
+ "updatedAt": "2026-11-13T20:06:24.320Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -129907,8 +129907,8 @@
    "pr": "#644",
    "priority": "P1",
    "createdAt": "2026-11-13T18:50:33.284Z",
-   "updatedAt": "2026-11-13T20:04:44.608Z",
-   "builtAt": "2026-11-13T20:04:39.984Z",
+   "updatedAt": "2026-11-13T20:05:03.288Z",
+   "builtAt": "2026-11-13T20:05:03.288Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -129925,6 +129925,10 @@
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-orchestrator-custom-groups-custom-tabs--joey.",
      "at": "2026-11-13T19:31:49.059Z"
+    },
+    {
+     "text": "Headless run axf-orchestrator-custom-groups-custom-tabs--joey: brief only · start 11.5K tokens ($0.03) · cost $6.04 · 114 turns · 6 tools, MCP none",
+     "at": "2026-11-13T20:05:03.288Z"
     },
     {
      "text": "Phase 1 done, PR #644 is a draft: no UI Review shots yet (the scratch console never loaded the orchestrator's web part). Needed: desktop and phone shots of the Groups tab and a custom Pending tab. A broad pkill during cleanup may also have stopped another session's local vite/uvicorn.",
@@ -132866,12 +132870,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T20:04:16.679Z",
-   "updatedAt": "2026-11-13T20:04:19.478Z",
+   "updatedAt": "2026-11-13T20:06:10.987Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-13T20:04:19.478Z"
+    },
+    {
+     "text": "Brett: not just individual toolbars, tab groups and menus. Every UI as a whole (each screen, plugin, dialog and app) also gets its own settings interface that changes only that UI, and a DEFAULT STATE: a saved, known-good baseline of its layout, style, colours and behaviour. 'Reset to default' snaps it back, and the default state is itself snapshotted and versioned like skins. Hierarchy: skin -> UI default -> per-UI settings -> per-instance (toolbar/tab group/menu) settings; each level shows what it overrides. Registered in the token registry. Full API and voice.",
+     "at": "2026-11-13T20:06:10.987Z"
     }
    ],
    "approvals": [],
