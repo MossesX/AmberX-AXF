@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4606,
- "updatedAt": "2026-11-13T18:13:55.509Z",
+ "rev": 4607,
+ "updatedAt": "2026-11-13T18:14:08.896Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -195725,7 +195725,7 @@
    "pr": "#625",
    "priority": "P1",
    "createdAt": "2026-11-13T17:44:36.515Z",
-   "updatedAt": "2026-11-13T18:13:26.145Z",
+   "updatedAt": "2026-11-13T18:14:04.050Z",
    "builtAt": "",
    "notes": [
     {
@@ -195743,6 +195743,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-chrome-settings-actually-apply-toolbars--paulie, own login copy)",
      "at": "2026-11-13T17:47:00.587Z"
+    },
+    {
+     "text": "Headless run axf-chrome-settings-actually-apply-toolbars--paulie: brief only · start 11.3K tokens ($0.03) · cost $3.44 · 95 turns · 6 tools, MCP none",
+     "at": "2026-11-13T18:14:04.050Z"
     }
    ],
    "approvals": [],
@@ -195872,7 +195876,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -197088,6 +197092,83 @@
    ],
    "order": {
     "all": 798
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 3,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "vps-builds-get-console-token-ui-review",
+   "title": "VPS builds get the console token so UI Review works, banner alert when it fails",
+   "category": "",
+   "detail": "Headless builds on the VPS have no AXF_TOKEN / AXF_CONSOLE_URL, so UI Review submits are refused and screenshots stay stuck in worktrees, silently.\n1. Launcher (claude-headless.sh / dispatcher / agent-slots) passes AXF_CONSOLE_URL and a scoped build console token (vault, never logged) into every build session.\n2. Headless screenshot tool authenticates to console/axHub (fix 'Waiting for axHub' and 401).\n3. Any failed UI Review submit, missing token, or stuck shots raises a banner alert immediately (errors banner).\n4. Re-submit stuck shots found in /root/axf-builds and /root/axf-review-shots.\n5. Remove the duplicate pending item builds-get-console-token-banner-alert (filed without an id).\n6. Tests, Shipped features.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-13T18:13:51.274Z",
+   "updatedAt": "2026-11-13T18:13:53.577Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T18:13:53.577Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "the VPS builds, the UI reviews, does that have anything to do with it",
+    "at": "2026-11-13T18:13:51.274Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "2026-11-13T18:13:53.194Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 799
    },
    "kind": "build",
    "planRef": "",

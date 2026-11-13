@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T18:13:55.509Z",
+ "updatedAt": "2026-11-13T18:14:08.896Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -125599,7 +125599,7 @@
    "pr": "#625",
    "priority": "P1",
    "createdAt": "2026-11-13T17:44:36.515Z",
-   "updatedAt": "2026-11-13T18:13:26.145Z",
+   "updatedAt": "2026-11-13T18:14:04.050Z",
    "builtAt": "",
    "notes": [
     {
@@ -125617,6 +125617,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-chrome-settings-actually-apply-toolbars--paulie, own login copy)",
      "at": "2026-11-13T17:47:00.587Z"
+    },
+    {
+     "text": "Headless run axf-chrome-settings-actually-apply-toolbars--paulie: brief only · start 11.3K tokens ($0.03) · cost $3.44 · 95 turns · 6 tools, MCP none",
+     "at": "2026-11-13T18:14:04.050Z"
     }
    ],
    "approvals": [],
@@ -126522,6 +126526,43 @@
    "origin": {
     "said": "I don't want drop-down bars anymore. They are gonna be animated. It's gonna be a row with a name and a little arrow; when you press that arrow it expands a subgrid; you got to press it again to apply it and close it.",
     "at": "2026-11-13T18:13:23.702Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "vps-builds-get-console-token-ui-review",
+   "title": "VPS builds get the console token so UI Review works, banner alert when it fails",
+   "category": "",
+   "detail": "Headless builds on the VPS have no AXF_TOKEN / AXF_CONSOLE_URL, so UI Review submits are refused and screenshots stay stuck in worktrees, silently.\n1. Launcher (claude-headless.sh / dispatcher / agent-slots) passes AXF_CONSOLE_URL and a scoped build console token (vault, never logged) into every build session.\n2. Headless screenshot tool authenticates to console/axHub (fix 'Waiting for axHub' and 401).\n3. Any failed UI Review submit, missing token, or stuck shots raises a banner alert immediately (errors banner).\n4. Re-submit stuck shots found in /root/axf-builds and /root/axf-review-shots.\n5. Remove the duplicate pending item builds-get-console-token-banner-alert (filed without an id).\n6. Tests, Shipped features.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-13T18:13:51.274Z",
+   "updatedAt": "2026-11-13T18:13:53.577Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T18:13:53.577Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "the VPS builds, the UI reviews, does that have anything to do with it",
+    "at": "2026-11-13T18:13:51.274Z",
     "source": "",
     "session": "",
     "link": "",
