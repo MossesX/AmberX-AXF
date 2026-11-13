@@ -19,6 +19,8 @@
  *   chrome.pick:<type>:<instance>                open the asset picker
  *   chrome.move:<type>:<instance>:<position>     move it (tab group: its own position; toolbar / nav: the layout)
  *   chrome.set:<type>:<instance>:<field>:<value> set one field for that instance (value: on/off, a word, a number)
+ *   chrome.set:tab-group:<instance>:rows:<1-6|auto>   stack a tab group's tabs on that many rows ("three" works too)
+ *   tabs.rows:<tab group id or words>:<1-6|auto|three…>   the same, naming the row the way a person does ("settings")
  *   chrome.reset:<type>:<instance>               drop every override + the instance's own asset pick
  *   chrome.swap:<type>:<instance>:<asset|next>   use another asset (tab groups: for this row; the rest: the app's slot)
  *   chrome.interface:<type>:<settings id|default|custom|reset>   which settings interface the dialog uses
@@ -32,7 +34,7 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { CONTROLLED_COLORS, CONTROLLED_COLOR_KEY, chromeOverrideList, controlledColorOf, CHROME_FIELDS, CHROME_ICONS, CHROME_INSTANCE_ASSET_KEY, CHROME_INSTANCE_KEY, CHROME_LABELS, CHROME_MANY, CHROME_MOVES, CHROME_SETTINGS_PATCH_KEY, CHROME_SETTINGS_PICK_KEY, CHROME_SETTINGS_TABS, CHROME_TYPES, FRAMEWORK_MODULE, POSITION_LABELS, SETTINGS_LEVEL_KEY, SETTINGS_LEVELS, SETTINGS_LEVEL_LABEL, chromeFieldValue, chromeLabel, chromeSettingsChoices, chromeSettingsCustomId, chromeSettingsDefaultId, chromeSettingsPick, chromeTypeOfTarget, isChromeInstanceId, isChromeType, normalizeInstanceOverride, normalizeSettingsUi, resolveSettingsChain, settingsLevelOf, settingsLevelRank, type AssetType, type AxfRuntime, type ChromeField, type ChromeType, type SettingsLevel, type SettingsUi, type SettingSpec, type SettingValue } from '../../core';
 import { TAP_KEYS, TAP_KINDS, isTapKind, tapArmMs, tapKindKey } from '../../core/engines/tapconfirm';
-import { CHROME_TAP_FIELD, CHROME_TAP_OPTIONS } from '../../core/engines/chrome-settings-rules.mjs';
+import { CHROME_TAP_FIELD, CHROME_TAP_OPTIONS, TAB_ROWS_FIELD, matchTabGroup, parseTabRows } from '../../core/engines/chrome-settings-rules.mjs';
 import { CONTROL_TOKEN_SLOTS, withTokenOverride, withoutTokenOverride } from '../../core/engines/control-tokens.mjs';
 import type { MenuEntry } from '../../core/engines/windows';
 import { useAxfState, useRuntime } from '../AxfProvider';
@@ -92,6 +94,7 @@ export function setChromeField(rt: AxfRuntime, type: ChromeType, instance: strin
 function parseValue(type: ChromeType, key: string, raw: string): string | number | boolean | null {
   const f = CHROME_FIELDS[type].find((x) => x.key === key);
   if (!f) return null;
+  if (type === 'tab-group' && key === TAB_ROWS_FIELD) return parseTabRows(raw);
   if (f.kind === 'toggle') return /^(on|true|yes|1)$/i.test(raw) ? true : /^(off|false|no|0)$/i.test(raw) ? false : null;
   if (f.kind === 'number') { const n = Number(raw); return Number.isFinite(n) ? n : null; }
   return f.options?.includes(raw) ? raw : null;
@@ -188,6 +191,18 @@ export function installChrome(rt: AxfRuntime): void {
       if (!isTapKind(type) || !/^(on|off)$/i.test(value)) { rt.toast(`Use tapconfirm.kind:<${TAP_KINDS.join('|')}>:<on|off>.`, 'warning', 'Tap to confirm'); return; }
       if (/^on$/i.test(value)) rt.settings.clear(tapKindKey(type)); else rt.settings.set(tapKindKey(type), false);
     }, { label: 'Tap to confirm for a whole kind (tapconfirm.kind:<type>:<on|off>)', params: true });
+    // Rows (build tab-groups-choose-how-many-rows-tabs): "make the settings tabs three rows" → tabs.rows:settings:3.
+    // The row is named by its id or by words from its id / label; the tab groups on screen are searched.
+    rt.actions.register('tabs.rows', (args, ctx) => {
+      const value = args.length > 1 ? args[args.length - 1]! : '';
+      const name = args.slice(0, -1).join(':') || (typeof ctx?.payload === 'string' ? ctx.payload : '');
+      const rows = parseTabRows(value);
+      if (!rows) { rt.toast(`Rows takes 1 to 6 or auto (not "${value}").`, 'warning', 'Tab rows'); return; }
+      const onScreen = typeof document === 'undefined' ? [] : Array.from(document.querySelectorAll<HTMLElement>('[data-axf-tab-group]')).map((el) => ({ id: el.dataset.axfTabGroup ?? '', label: el.getAttribute('aria-label') ?? '', visible: el.offsetParent !== null }));
+      const id = isChromeInstanceId(name) && !onScreen.length ? name : matchTabGroup(onScreen, name) ?? (isChromeInstanceId(name) ? name : null);
+      if (!id) { rt.toast(`No tab group called "${name}" on this screen.`, 'warning', 'Tab rows'); return; }
+      setChromeField(rt, 'tab-group', id, TAB_ROWS_FIELD, rows);
+    }, { label: 'How many rows a tab group stacks its tabs on (tabs.rows:<tab group id or name>:<1-6|auto>)', params: true });
     rt.actions.register('tapconfirm.window', ([ms = '']) => { rt.settings.set(TAP_KEYS.armMs, String(tapArmMs(ms))); }, { label: 'Tap to confirm: how long an armed item waits (tapconfirm.window:<ms>)', params: true });
   });
   // The shared block, after the kind's own items (window tab groups: Undock / Split…; banners: Hide…).
