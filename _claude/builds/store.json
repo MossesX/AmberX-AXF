@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4199,
- "updatedAt": "2026-11-13T10:35:05.813Z",
+ "rev": 4200,
+ "updatedAt": "2026-11-13T10:35:20.061Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -148497,7 +148497,7 @@
    "title": "Orchestrator: Hold status, Archive tab, Deleted tab (deleted builds kept forever)",
    "category": "",
    "detail": "Amends Retire Build Manager tabs. Actions on any queued build: Send back to Pending, Hold (stays in the queue, skipped by the dispatcher until released), Move to Archive, Delete. Archive tab: all completed and retired builds go there. Deleted tab: deleted builds are kept saved forever (soft delete, restorable). Bulk select. Full API/CLI control, no AI.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -148506,7 +148506,7 @@
    "mergedAt": "2026-11-11T00:48:50Z",
    "priority": "P0",
    "createdAt": "2026-11-10T17:07:33.143Z",
-   "updatedAt": "2026-11-12T03:31:20Z",
+   "updatedAt": "2026-11-13T10:35:18.168Z",
    "builtAt": "",
    "notes": [
     {
@@ -148540,6 +148540,10 @@
     {
      "text": "Shipped manifest sm-orchestrator-hold-status-archive-tab-deleted-tab rev 1 sent to Shipped features (backfill): landed 7c211d233, 19 file(s), 8 test line(s), 8 open.",
      "at": "2026-11-12T03:31:20Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T10:35:18.168Z"
     }
    ],
    "approvals": [],
@@ -148557,8 +148561,8 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
+    "queuedAt": "2026-11-13T10:35:17.750Z",
+    "queuedBy": "console",
     "account": "",
     "session": "",
     "slot": "",
@@ -148669,7 +148673,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 55,
+   "rev": 56,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -160712,14 +160716,14 @@
    "title": "Owner recognized everywhere + veto countdown only on shell commands",
    "category": "axhub",
    "detail": "URGENT, boss order from Brett, Nov 12. Two problems: 1) The console and axHub do not recognize Brett as the owner, so owner-only settings (Claude settings > Approvals & veto tab, policy changes) don't work for him. Fix owner detection so Brett's admin console login and his axHub session count as owner everywhere (check the earlier owner-only-settings-brett-s-admin-console-login-counts-as-owner build and claude-settings-tabs-veto s4, axHub owner-only policy API GET/PUT /auth/api/policy; finish whatever is missing). 2) Change the axHub approval policies: a veto countdown ONLY on shell commands that run on the VPS (vps.run and anything executing a shell). Everything in the console/orchestrator (axf-console control_add, control_set, control_act, build_orchestrator_pipeline_queue, priority_set, agent_slots settings, console_open/show, etc.) becomes allow, no countdown. Keep confirm on the few owner-only items that already need it (model upgrades). Repos: axHub and AmberX-AXF. Tests: Brett's session is owner; vps.run still held on veto; console/orchestrator tools run immediately. PR, land through the gate, redeploy, AmberX FYI when live. Don't stop to ask.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/owner-recognized-everywhere-veto-countdown-only-on-shell-commands",
    "pr": "",
    "createdAt": "2026-11-12T02:04:11.564Z",
-   "updatedAt": "2026-11-12T03:13:58.304Z",
+   "updatedAt": "2026-11-13T10:35:15.469Z",
    "builtAt": "",
    "notes": [
     {
@@ -160773,6 +160777,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-12T03:13:58.304Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T10:35:15.469Z"
     }
    ],
    "approvals": [],
@@ -160790,7 +160798,7 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "2026-11-12T02:04:31.419Z",
+    "queuedAt": "2026-11-13T10:35:15.013Z",
     "queuedBy": "console",
     "account": "",
     "session": "",
@@ -160808,7 +160816,7 @@
     },
     "split": null,
     "splitRequested": "",
-    "note": "released by the self-check (nothing ran): back in the Queue",
+    "note": "",
     "route": "",
     "dispatchedAt": "2026-11-12T02:16:25.728Z",
     "planned": {
@@ -160900,7 +160908,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -161175,14 +161183,14 @@
    "title": "One source of truth: console shows only what the server says is running",
    "category": "orchestrator",
    "detail": "URGENT, boss order from Brett, Nov 12. The console showed 15 in progress while the server (agent-slots, tmux axf-* sessions) had exactly 8 running: the console counts stale build records (killed, requeued, double-launched) as active. Make the VPS the single source of truth: the server's live list of running sessions/slots (agent-slots queue + actual tmux/claude processes) is the only thing that decides running/active. Console Active tab, in-progress counts, slot meter, orchestrator and Build Manager all read from it; any build record marked running with no live session is reconciled to its real state on every read and by the dispatcher. Same truth via REST/MCP/CLI/voice. Tests: kill a session, console count drops within seconds; stale record never shows as active.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/one-source-of-truth-console-shows-only-what-the-server-says-is-running",
    "pr": "",
    "createdAt": "2026-11-12T02:37:57.927Z",
-   "updatedAt": "2026-11-12T03:32:08.467Z",
+   "updatedAt": "2026-11-13T10:35:16.881Z",
    "builtAt": "",
    "notes": [
     {
@@ -161208,6 +161216,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-12T03:32:08.467Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T10:35:16.881Z"
     }
    ],
    "approvals": [],
@@ -161225,7 +161237,7 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "2026-11-12T02:39:55.011Z",
+    "queuedAt": "2026-11-13T10:35:16.334Z",
     "queuedBy": "console",
     "account": "",
     "session": "",
@@ -161328,7 +161340,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -161628,14 +161640,14 @@
    "title": "Server gate: one session per build, no duplicate launches",
    "category": "orchestrator",
    "detail": "URGENT, boss order from Brett, Nov 12. The dispatcher double/triple-launched builds: owner-recognized-everywhere ran 3 sessions and molly-gap-console-token-handoff ran 2, in the same worktree folders, clobbering each other and wasting slots. Add a SERVER GATE on the VPS, enforced by the server itself: only ONE live session per build ID and per worktree folder, ever. Every launch path (vps build_start, dispatcher, agent-slots, any claude -p/tmux axf-* launcher) takes an exclusive lock per build ID + folder (flock), and refuses a second launch while a session for that build is alive. A watchdog finds any duplicates that slip through, keeps the oldest, stops the rest, and logs it in 'Automatic fixes' with an AmberX FYI. Also fix the dispatcher's double-launch root cause (see pending dispatcher-a-worktree-store-write-can-erase-a-fr: store write erases the fresh launch record). Tests: second launch of the same build refused; duplicates reaped.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/server-gate-one-session-per-build-no-duplicate-launches",
    "pr": "",
    "createdAt": "2026-11-12T02:42:15.357Z",
-   "updatedAt": "2026-11-12T03:40:41.113Z",
+   "updatedAt": "2026-11-13T10:35:14.147Z",
    "builtAt": "",
    "notes": [
     {
@@ -161657,6 +161669,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-12T03:40:41.113Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T10:35:14.147Z"
     }
    ],
    "approvals": [],
@@ -161674,7 +161690,7 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "2026-11-12T02:42:18.688Z",
+    "queuedAt": "2026-11-13T10:35:13.717Z",
     "queuedBy": "console",
     "account": "",
     "session": "",
@@ -161821,7 +161837,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 26,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -175200,26 +175216,30 @@
    "title": "Stop the Molly guide from popping up and talking every time the console loads: no auto-open, it only opens when Brett asks. Carry out the Nov 3 decision: Molly is no longer an agent, so swap the Molly guide, Ask Molly and walkthrough texts over to Gizmo. Android twin too.",
    "category": "",
    "detail": "",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-12T23:14:47.128Z",
-   "updatedAt": "2026-11-12T23:16:42.326Z",
+   "updatedAt": "2026-11-13T10:35:12.435Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-12T23:16:42.326Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T10:35:12.435Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
    "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
+    "queuedAt": "2026-11-13T10:35:11.989Z",
+    "queuedBy": "console",
     "account": "",
     "session": "",
     "slot": "",
@@ -175235,7 +175255,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
     "dispatchedAt": "",
     "planned": {
@@ -175352,7 +175372,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -178097,7 +178117,7 @@
    "title": "Merges are only 'merged' once GitHub confirms: every merge path (console auto-merge, auto-land, github client plugin, server gate, scripts) shows 'Pending GitHub confirmation' right after a merge call, then reads the PR back from GitHub (state MERGED and the merge commit on main) before marking it m",
    "category": "",
    "detail": "",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -178105,7 +178125,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T06:21:11.993Z",
-   "updatedAt": "2026-11-13T10:10:30.018Z",
+   "updatedAt": "2026-11-13T10:35:10.525Z",
    "builtAt": "",
    "notes": [
     {
@@ -178155,6 +178175,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-13T10:10:30.018Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T10:35:10.525Z"
     }
    ],
    "approvals": [
@@ -178181,7 +178205,7 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "2026-11-13T09:32:50.225Z",
+    "queuedAt": "2026-11-13T10:35:10.080Z",
     "queuedBy": "console",
     "account": "",
     "session": "",
@@ -178554,7 +178578,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -180265,7 +180289,7 @@
    "title": "Always fill every slot: when slots are free, run independent steps of running builds in parallel across them, and auto-queue pending builds",
    "category": "",
    "detail": "",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -180273,7 +180297,7 @@
    "pr": "#554",
    "priority": "P0",
    "createdAt": "2026-11-13T06:57:42.497Z",
-   "updatedAt": "2026-11-13T10:10:30.018Z",
+   "updatedAt": "2026-11-13T10:35:08.541Z",
    "builtAt": "",
    "notes": [
     {
@@ -180351,6 +180375,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-13T10:10:30.018Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T10:35:08.541Z"
     }
    ],
    "approvals": [],
@@ -180368,7 +180396,7 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "2026-11-13T09:32:48.552Z",
+    "queuedAt": "2026-11-13T10:35:08.117Z",
     "queuedBy": "console",
     "account": "",
     "session": "",
@@ -181059,7 +181087,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -181430,7 +181458,7 @@
    "title": "Full API and voice control of the entire console: every tab, screen, setting, button, function and plugin (incl. enable/disable plugins); scroll up/down; bring any row or step of any table or grid into focus; search screens and everything loaded and pull it into focus",
    "category": "",
    "detail": "",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -181438,7 +181466,7 @@
    "pr": "#556",
    "priority": "P0",
    "createdAt": "2026-11-13T07:12:21.823Z",
-   "updatedAt": "2026-11-13T10:10:30.018Z",
+   "updatedAt": "2026-11-13T10:35:06.663Z",
    "builtAt": "",
    "notes": [
     {
@@ -181492,6 +181520,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-13T10:10:30.018Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T10:35:06.663Z"
     }
    ],
    "approvals": [
@@ -181518,7 +181550,7 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "2026-11-13T09:32:46.810Z",
+    "queuedAt": "2026-11-13T10:35:05.962Z",
     "queuedBy": "console",
     "account": "",
     "session": "",
@@ -182332,7 +182364,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
