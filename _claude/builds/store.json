@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3940,
- "updatedAt": "2026-11-13T01:53:41.850Z",
+ "rev": 3941,
+ "updatedAt": "2026-11-13T01:53:51.777Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -174009,7 +174009,7 @@
    "title": "Server: every failed merge alerts Brett immediately and retries by itself until merged",
    "category": "merge",
    "detail": "Brett said: \"anytime you try to merge something, this needs to go on the server. Anytime you try to merge something and it fails, I need to know right away because you need to try again.\" Server-side, not left to Claude. Builds on auto-rebuild-failed-merges-r6 if present.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -174017,7 +174017,7 @@
    "pr": "#539",
    "createdAt": "2026-11-12T21:53:13.014Z",
    "updatedAt": "2026-11-13T01:53:30.294Z",
-   "builtAt": "",
+   "builtAt": "2026-11-13T01:53:30.294Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -174162,12 +174162,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T01:53:18.673Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T21:53:13.015Z",
-     "updatedAt": "2026-11-12T21:53:13.015Z"
+     "updatedAt": "2026-11-13T01:53:19.088Z"
     }
    ],
    "profiles": [
@@ -174178,7 +174178,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
