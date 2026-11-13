@@ -1547,7 +1547,8 @@
       {
         "target": "preview",
         "title": "Preview",
-        "text": "A small live sample at the top of every toolbar, tab group, navigation menu, application menu and context menu settings dialog: a few toolbar icons with a badge, two tab groups with one tab active, a short nav with one item selected, or a menu bar with an open menu and a submenu. It draws with this one's settings, so every change shows as you make it. Light / Dark shows it in the other colours, Hover / Press marks one item as hovered or pressed, Hide folds it away (kept for every dialog). Voice and API: chrome.preview:<open|close|toggle|scheme:<app|light|dark>|demo:<none|hover|press>>; its state is panel:chrome.preview."
+        "text": "A small live sample at the top of every toolbar, tab group, navigation menu, application menu and context menu settings dialog: a few toolbar icons with a badge, two tab groups with one tab active, a short nav with one item selected, or a menu bar with an open menu and a submenu. It draws with this one's settings, so every change shows as you make it. Light / Dark shows other colours, Hover / Press marks one item, Hide folds it away.",
+        "more": "The pane's choices are kept for every settings dialog on this device. Voice and API: chrome.preview:<open|close|toggle|scheme:<app|light|dark>|demo:<none|hover|press>>; its state is panel:chrome.preview."
       }
     ],
     "intros": [

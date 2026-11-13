@@ -47,3 +47,20 @@ Build `per-instance-settings-small-live-preview` · Phase 1 (Opus) · branch `cl
 
 ## Tests
 See the s3 section below.
+
+## Tests (s3)
+- `spec/check-chrome-settings.mts` 364 checks (new `preview` section: keys, defaults, junk, every change word, toggle
+  both ways, model = asset + overrides, seed has two tab groups with an active tab, a submenu, one selected nav item,
+  a badge, and only shipped icons); fixtures regenerate with no drift.
+- `check-chrome.mts` 130, `check-tab-group.mts` 445, `check-tapconfirm.mts` 80, `spec/check-console-control.mts` 290.
+- CLI: check-theme, check-controls, check-toolbars, check-chrome-assets, check-console-control all green.
+- console-web `tsc --noEmit` (baked from this branch): no errors in changed files.
+- `check-help.mts`: the new entry validates and the four app copies match; it then stops at help-coverage on the
+  `gizmo-guide` tab (molly-guide plugin), which fails on main too.
+
+## Still open
+- Banner: no pane here (Banner settings has its own preview). `dialog` chrome kind and the per-instance transparency
+  field are still open on Fable (per-toolbar-settings follow-up); the pane will draw them once they exist.
+- Kotlin twin of the pane and engine functions: deferred (PORTING.md).
+- UI Review: captures are in Screenshots (group `per-instance-settings-small-live-preview`); submitted to the review
+  queue with the PR.
