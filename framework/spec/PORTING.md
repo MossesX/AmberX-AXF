@@ -207,3 +207,11 @@ The 286 Kotlin findings stay on the baseline, Android on hold: 285 `.dp` spacing
 `Axf.shapes.*`) and one `Color(0x…)` literal (→ `Axf.colors.*`), in `framework/android` (230) and `apps/console` (56).
 `Axf.space` is a `@Composable` getter, so each call site needs a compiler to confirm it sits in a composable scope:
 do it with the Android build, then run `node framework/cli/check-theme.mjs --update-baseline` to empty the file.
+
+## Deferred: skin-modes@1, every skin's light and dark (Nov 13 2026)
+
+Build `every-skin-ships-a-light-and-a-dark-colour-theme`. Web only; the Kotlin twin is deferred (Android on hold):
+`framework/core/engines/skin-modes.mjs` (`skinModePair`, `effectiveScheme`, `skinModeColor`, `skinSchemeOf`,
+`skinModeProblems`, `skinModeRows`), the required `colorThemes: { light, dark }` on skin@1 and the runtime's
+`setSkinMode` / `skin.mode:light|dark|system` (system follows `prefers-color-scheme`). A port maps `system` to the
+device's night mode (`isSystemInDarkTheme()`) and replays the engine cases in `spec/check-skin-modes.mjs`.

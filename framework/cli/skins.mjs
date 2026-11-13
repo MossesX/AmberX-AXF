@@ -21,6 +21,9 @@
  *   node framework/cli/skins.mjs undo <app>                undo the last restore
  *   node framework/cli/skins.mjs coverage                  how a skin reaches every registered asset type (CI: spec/check-skin-coverage.mjs)
  *   node framework/cli/skins.mjs covers <skin>             what one skin sets or styles, type by type
+ *   node framework/cli/skins.mjs modes                     every skin's light and dark colour themes, and any skin missing one
+ *   node framework/cli/skins.mjs mode <app> [light|dark|system] [--system light|dark] [--scope …]   read or switch the skin in force to
+ *                                                          its light / dark colour theme, or follow the device (same skin, a colour pick)
  *   add --json for machine output. An app is its id (axf-console) or its folder (console-web), or `console`, `axhub`, `amberx`, `molly`.
  *
  * Files are written where /projects is mounted (the hub's data folder), so open apps follow through the hub's change
@@ -31,6 +34,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { backToSkin, newAppLook, normalizeAppLook, normalizeLookPart, overriddenSlots, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, setInheritSkin, setLookSlot, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorTheme, undoRestore, SKIN_COLOR_SLOT, SKIN_NEVER } from '../core/engines/skin-rules.mjs';
 import { coverageSummary, coverageTable, isSubScopeKey, partElements, skinScopeOf } from '../core/engines/skin-coverage.mjs';
+import { effectiveScheme, isSkinMode, skinModeColor, skinModeProblems, skinModeRows, skinSchemeOf, SKIN_MODES } from '../core/engines/skin-modes.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const ALIASES = { console: 'axf-console', 'console-web': 'axf-console', axhub: 'axhub-web', amberx: 'amberx-droid' };
@@ -129,6 +133,7 @@ export function snapshot(app, force = false) {
 const need = (app) => { const l = readLook(app); if (!l) throw new Error(`${app} has no look document yet: run snapshot first`); return l; };
 const skinKnown = (id) => skinRows().some((s) => s.id === id);
 const colorThemeKnown = (id) => assetsOf(SKIN_COLOR_SLOT).some((a) => a.id === id);
+const optArg = (argv, flag) => { const i = argv.indexOf(flag); return i >= 0 ? argv[i + 1] ?? '' : ''; };
 const scopeArg = (argv) => { const i = argv.indexOf('--scope'); const v = i >= 0 ? argv[i + 1] : ''; if (v && !isSubScopeKey(v)) throw new Error(`"${v}" is not a scope: ui:<id> or plugin:<id>`); return v || ''; };
 
 export const status = (app) => {
@@ -194,6 +199,55 @@ export function color(app, scopeKey = '') {
   return { app, scope: scopeKey || 'app', skin: inForce.id, from: inForce.from, colorTheme: shows, own, picked: !!shows && shows !== own, pickedHere: l ? skinColorTheme(l, scopeKey || undefined) : '' };
 }
 
+/* ---------------------------------------------------------------- light / dark (skin-modes@1) */
+
+/** Where the light / dark / system choice is kept, per app and level: `{ "<app>": { "app": "system", "ui:x": "dark" } }`. */
+export const modesFile = () => process.env.AXF_SKIN_MODES_FILE || join(dirname(sharedFile()), 'skin-modes.json');
+const readModes = () => readJson(modesFile()) ?? {};
+function writeModes(doc) {
+  mkdirSync(dirname(modesFile()), { recursive: true });
+  const tmp = `${modesFile()}.${process.pid}.tmp`;
+  writeFileSync(tmp, `${JSON.stringify(doc)}\n`);
+  renameSync(tmp, modesFile());
+  chownLike(modesFile());
+}
+const skinAsset = (id) => assetsOf('skin').find((a) => a.id === id) ?? null;
+
+/** Every skin's light and dark colour themes (`skins.mjs modes`). */
+export const modeRows = () => skinModeRows(assetsOf('skin'));
+
+/** Skins missing a light or a dark colour theme (empty = every skin covered). */
+export const modeProblems = () => skinModeProblems(assetsOf('skin'), assetsOf('color-theme'));
+
+/** The light / dark state at a place: the stored mode, the scheme showing and the skin's pair. */
+export function mode(app, scopeKey = '') {
+  const c = color(app, scopeKey);
+  const skin = c.skin ? skinAsset(c.skin) : null;
+  const stored = readModes()[app]?.[scopeKey || 'app'] ?? '';
+  const pair = skin ? { light: skin.data?.colorThemes?.light ?? '', dark: skin.data?.colorThemes?.dark ?? '' } : { light: '', dark: '' };
+  return { app, scope: scopeKey || 'app', skin: c.skin, mode: stored || skinSchemeOf(skin, c.colorTheme) || '', scheme: skinSchemeOf(skin, c.colorTheme), colorTheme: c.colorTheme, ...pair, modes: SKIN_MODES };
+}
+
+/**
+ * Switch the skin in force to its light or dark colour theme, or follow the device (`system`; `prefers` = the device's
+ * scheme when the caller knows it, else light). A colour pick inside the skin: the skin stays the same skin.
+ */
+export function setMode(app, value, scopeKey = '', prefers = '') {
+  if (!isSkinMode(value)) throw new Error(`"${value}" is not a mode: ${SKIN_MODES.join(', ')}`);
+  const l = need(app);
+  const scope = scopeKey ? skinScopeOf(scopeKey, app) : { app };
+  const inForce = resolveLookSkin(l, readGlobal(), scope);
+  if (!inForce.id) throw new Error(`${app}${scopeKey ? ` ${scopeKey}` : ''} has no skin in force: use a skin first`);
+  const skin = skinAsset(inForce.id);
+  if (!skin) throw new Error(`"${inForce.id}" is a design package, not a skin: pick its day or night package instead`);
+  const { pick } = skinModeColor(skin, value, prefers === 'dark');
+  writeLook(setSkinColorTheme(l, pick, scopeKey || undefined));
+  const modes = readModes();
+  modes[app] = { ...(modes[app] ?? {}), [scopeKey || 'app']: value };
+  writeModes(modes);
+  return { ...mode(app, scopeKey), applied: effectiveScheme(value, prefers === 'dark') };
+}
+
 /** control@1 tokens.slots: a slot set from outside reaches every app's look (the colour theme lands inside a skin in force; never a new skin). */
 export function setSlotEverywhere(slot, id, by) {
   const global = readGlobal();
@@ -231,7 +285,7 @@ export function covers(skinId) {
 
 function main(argv) {
   const json = argv.includes('--json');
-  const args = argv.filter((a, i) => !a.startsWith('--') && argv[i - 1] !== '--scope');
+  const args = argv.filter((a, i) => !a.startsWith('--') && argv[i - 1] !== '--scope' && argv[i - 1] !== '--system');
   const [cmd, app, arg] = args;
   const scope = scopeArg(argv);
   let out;
@@ -245,6 +299,8 @@ function main(argv) {
   else if (cmd === 'at') out = at(appId(app), scope);
   else if (cmd === 'global') { if (!app) out = { global: readGlobal() }; else out = global(app); }
   else if (cmd === 'coverage') out = coverage();
+  else if (cmd === 'modes') out = { skins: modeRows(), problems: modeProblems() };
+  else if (cmd === 'mode') { if (!app) throw new Error('mode needs <app> [light | dark | system] [--system light|dark]'); out = arg ? setMode(appId(app), arg, scope, optArg(argv, '--system')) : mode(appId(app), scope); }
   else if (cmd === 'covers') { if (!app) throw new Error('covers needs a skin id'); out = covers(app); }
   else throw new Error(`unknown command ${cmd}`);
   if (json) console.log(JSON.stringify({ ok: true, result: out }));
