@@ -788,7 +788,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 18:43 UTC · `console-app-part-3-native-bridge-mic` note (all) · builds-live
 - 2026-11-13 18:43 UTC · `console-app-part-4-console-side-safe` note (all) · orchestrator
 - 2026-11-13 18:43 UTC · `console-android-app-thin-webview-wrapper` → running, note (all) · pipeline
 - 2026-11-13 18:43 UTC · `console-android-app-thin-webview-wrapper` note (all) · orchestrator
@@ -1188,6 +1187,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 20:19 UTC · `skin-axhub-override-switch-greyed-out` PR #641, note (all) · reconciler
 - 2026-11-13 20:19 UTC · `skins-plugin-merge-main-and-land` PR #647, note (all) · reconciler
 - 2026-11-13 20:20 UTC · `demo-pipelines-guided-walkthrough-live` note (all) · orchestrator
+- 2026-11-13 20:19 UTC · `demo-pipelines-guided-walkthrough-live` s9 done, → built (all) · orchestrator
 
 ## Token passes (log)
 

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T20:20:35.868Z",
+ "updatedAt": "2026-11-13T20:20:53.991Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -130519,7 +130519,7 @@
    "title": "Demo pipelines: guided walkthrough with live behind-the-scenes output",
    "category": "",
    "detail": "Demo mode for pitching (Demonstration Designer).\n- A library of ready-made demo pipelines of different types, e.g.: voice-to-app (say an idea, get an Android app), add a feature to an existing app, skin swap across the whole app, parallel split build (several slots at once), fix a failing build automatically, create a new project from a template, and the approval flow (veto, approve by voice).\n- Each demo is a guided walkthrough: narrated chapters you can skip, and the console follows along live (focus mode moves to each screen as it happens: orchestrator, steps, UI Review, landing).\n- A behind-the-scenes panel: a scrolling terminal-style window streaming everything normally hidden (orchestrator decisions, model picks, step splits, agent logs, git, tests, axHub calls), colour-coded and filterable, which can be docked, floated or full-screen.\n- Runs for real in the test-sandbox project, or as a recorded replay for offline/fast demos. Speed control, pause, restart.\n- Create and edit demos in a Demonstration Designer (pick a pipeline type, script the narration, choose screens).\n- Full API: REST/MCP/CLI/voice ('run the voice-to-app demo'). Tests, help, Shipped features.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -130528,7 +130528,7 @@
    "priority": "P1",
    "createdAt": "2026-11-13T19:01:19.839Z",
    "updatedAt": "2026-11-13T20:20:33.465Z",
-   "builtAt": "",
+   "builtAt": "2026-11-13T20:20:33.465Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -130734,8 +130734,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T20:19:56.128Z",
      "note": "",
      "uid": "st-mwfckoe509n7c6",
      "createdAt": "2026-11-13T19:05:57.629Z"

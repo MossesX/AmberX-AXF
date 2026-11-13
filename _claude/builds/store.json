@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4947,
- "updatedAt": "2026-11-13T20:20:35.868Z",
+ "rev": 4948,
+ "updatedAt": "2026-11-13T20:20:53.991Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -202629,7 +202629,7 @@
    "title": "Demo pipelines: guided walkthrough with live behind-the-scenes output",
    "category": "",
    "detail": "Demo mode for pitching (Demonstration Designer).\n- A library of ready-made demo pipelines of different types, e.g.: voice-to-app (say an idea, get an Android app), add a feature to an existing app, skin swap across the whole app, parallel split build (several slots at once), fix a failing build automatically, create a new project from a template, and the approval flow (veto, approve by voice).\n- Each demo is a guided walkthrough: narrated chapters you can skip, and the console follows along live (focus mode moves to each screen as it happens: orchestrator, steps, UI Review, landing).\n- A behind-the-scenes panel: a scrolling terminal-style window streaming everything normally hidden (orchestrator decisions, model picks, step splits, agent logs, git, tests, axHub calls), colour-coded and filterable, which can be docked, floated or full-screen.\n- Runs for real in the test-sandbox project, or as a recorded replay for offline/fast demos. Speed control, pause, restart.\n- Create and edit demos in a Demonstration Designer (pick a pipeline type, script the narration, choose screens).\n- Full API: REST/MCP/CLI/voice ('run the voice-to-app demo'). Tests, help, Shipped features.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -202638,7 +202638,7 @@
    "priority": "P1",
    "createdAt": "2026-11-13T19:01:19.839Z",
    "updatedAt": "2026-11-13T20:20:33.465Z",
-   "builtAt": "",
+   "builtAt": "2026-11-13T20:20:33.465Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -202904,12 +202904,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T20:19:56.128Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T19:05:57.629Z",
-     "updatedAt": "2026-11-13T19:05:57.629Z"
+     "updatedAt": "2026-11-13T20:19:56.611Z"
     }
    ],
    "profiles": [
