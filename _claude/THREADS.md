@@ -785,10 +785,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 10:37 UTC · `server-gate-one-session-per-build-no-duplicate-launches` note (all) · orchestrator
-- 2026-11-13 10:38 UTC · `all-banners-hide-when-empty` s3 undone, → running (all) · builds-live
-- 2026-11-13 10:37 UTC · `owner-recognized-everywhere-veto-countdown-only-on-shell-commands` → running, note (all) · pipeline
-- 2026-11-13 10:37 UTC · `owner-recognized-everywhere-veto-countdown-only-on-shell-commands` note (all) · orchestrator
 - 2026-11-13 10:38 UTC · `one-source-of-truth-console-shows-only-what-the-server-says-is-running` → running, note (all) · pipeline
 - 2026-11-13 10:38 UTC · `one-source-of-truth-console-shows-only-what-the-server-says-is-running` → running, note (all) · orchestrator
 - 2026-11-13 10:38 UTC · `orchestrator-hold-status-archive-tab-deleted-tab` → running, note (all) · pipeline
@@ -1185,6 +1181,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 17:32 UTC · `claude-badge-can-claude-build-green-when-at-least-one-build-account-in-the-or` note, removed (all) · build-rename
 - 2026-11-13 17:32 UTC · `collapse-auto-collapse-buttons-every-tab` added (3 steps) (all) · build-rename
 - 2026-11-13 17:32 UTC · `collapse-and-auto-collapse-buttons-on-every-tab` note, removed (all) · build-rename
+- 2026-11-13 17:32 UTC · `console-axhub-retry-failed-calls` added (5 steps) (all) · build-rename
+- 2026-11-13 17:32 UTC · `console-and-axhub-retry-failed-calls-themselves-no-claude-needed` note, removed (all) · build-rename
+- 2026-11-13 17:32 UTC · `drag-anything-api-voice-after-pr-556` added (20 steps) (all) · build-rename
+- 2026-11-13 17:32 UTC · `drag-anything-by-api-and-voice-after-pr-556-land` note, removed (all) · build-rename
 
 ## Token passes (log)
 
