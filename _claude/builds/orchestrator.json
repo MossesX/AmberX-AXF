@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T10:51:27.183Z",
+ "updatedAt": "2026-11-13T10:51:42.759Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -115087,14 +115087,14 @@
    "title": "Stop the Molly guide from popping up and talking every time the console loads: no auto-open, it only opens when Brett asks. Carry out the Nov 3 decision: Molly is no longer an agent, so swap the Molly guide, Ask Molly and walkthrough texts over to Gizmo. Android twin too.",
    "category": "",
    "detail": "",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/stop-the-molly-guide-from-popping-up-and-talking-every-time-the-console-loads-n",
    "pr": "",
    "createdAt": "2026-11-12T23:14:47.128Z",
-   "updatedAt": "2026-11-13T10:51:12.195Z",
+   "updatedAt": "2026-11-13T10:51:19.681Z",
    "builtAt": "",
    "notes": [
     {
@@ -115104,6 +115104,14 @@
     {
      "text": "Queued by console.",
      "at": "2026-11-13T10:35:12.435Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-stop-the-molly-guide-from-popping-up-and-talking--rhonda.",
+     "at": "2026-11-13T10:51:16.119Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-stop-the-molly-guide-from-popping-up-and-talking--rhonda, own login copy)",
+     "at": "2026-11-13T10:51:19.681Z"
     }
    ],
    "approvals": [],

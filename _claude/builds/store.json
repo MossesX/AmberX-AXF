@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4247,
- "updatedAt": "2026-11-13T10:51:27.183Z",
+ "rev": 4248,
+ "updatedAt": "2026-11-13T10:51:42.759Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -175348,14 +175348,14 @@
    "title": "Stop the Molly guide from popping up and talking every time the console loads: no auto-open, it only opens when Brett asks. Carry out the Nov 3 decision: Molly is no longer an agent, so swap the Molly guide, Ask Molly and walkthrough texts over to Gizmo. Android twin too.",
    "category": "",
    "detail": "",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/stop-the-molly-guide-from-popping-up-and-talking-every-time-the-console-loads-n",
    "pr": "",
    "createdAt": "2026-11-12T23:14:47.128Z",
-   "updatedAt": "2026-11-13T10:51:12.195Z",
+   "updatedAt": "2026-11-13T10:51:19.681Z",
    "builtAt": "",
    "notes": [
     {
@@ -175365,6 +175365,14 @@
     {
      "text": "Queued by console.",
      "at": "2026-11-13T10:35:12.435Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-stop-the-molly-guide-from-popping-up-and-talking--rhonda.",
+     "at": "2026-11-13T10:51:16.119Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-stop-the-molly-guide-from-popping-up-and-talking--rhonda, own login copy)",
+     "at": "2026-11-13T10:51:19.681Z"
     }
    ],
    "approvals": [],
@@ -175384,12 +175392,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T10:35:11.989Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-stop-the-molly-guide-from-popping-up-and-talking--rhonda",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-13T10:51:15.510Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T23:16:42.326Z",
@@ -175401,7 +175409,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-13T10:51:15.511Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -175410,7 +175418,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-13T10:51:15.511Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -175516,7 +175524,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
