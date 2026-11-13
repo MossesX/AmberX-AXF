@@ -13,6 +13,7 @@ import type { AxfRuntime } from '../axf/core';
 import { intentCommand, voiceIntent, voiceReply, type VoiceIntent } from '../axf/core/engines/console-control-voice.mjs';
 import { executeControl, type ControlAnswer } from '../control/executor';
 import { consoleSearch, type ConsoleSearchHit } from '../control/search';
+import { controlRegistry } from '../axf/react/controlTargets';
 
 export const VOICE_ACTION = 'console.control.voice';
 
@@ -21,6 +22,7 @@ export interface VoiceRun { heard: string; intent: VoiceIntent | null; hit?: Con
 /** The best hit for an intent's words: inside `within` first (a settings tab), then anywhere. */
 export function resolveIntent(rt: AxfRuntime, intent: VoiceIntent): ConsoleSearchHit | null {
   if (!intent.find) return null;
+  controlRegistry(rt).refreshNow(); // fields and buttons of the dialog in front (fieldControl.ts) are searchable now
   const hits = consoleSearch(rt, { q: intent.find.q, kinds: intent.find.kinds, limit: 10 });
   if (intent.within) return hits.find((h) => h.address.startsWith(`${intent.within}/`)) ?? hits[0] ?? null;
   return hits[0] ?? null;

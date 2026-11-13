@@ -383,17 +383,8 @@ def screen(by: str = "api", audience: str = OWNER, grants: set[str] | None = Non
 
 
 def say_screen(sc: dict[str, Any]) -> str:
-    """One or two plain lines for a voice to speak: where we are, what can be filled in and pressed."""
-    where = f"{sc.get('dialog', {}).get('title')} dialog on {sc.get('title')}" if sc.get("dialog") else str(sc.get("title") or sc.get("view") or "the console")
-    fields = sc.get("fields") or []
-    buttons = [b for b in sc.get("buttons") or [] if not b.get("disabled")]
-    parts = [f"You're on {where}."]
-    if fields:
-        shown = ", ".join(f"{f.get('label')}{' (required, empty)' if f.get('required') and f.get('value') in ('', None, []) else ''}" for f in fields[:6])
-        parts.append(f"{len(fields)} field{'s' if len(fields) != 1 else ''}: {shown}{' and more' if len(fields) > 6 else ''}.")
-    if buttons:
-        parts.append(f"Buttons: {', '.join(str(b.get('label')) for b in buttons[:6])}{' and more' if len(buttons) > 6 else ''}.")
-    return " ".join(parts)
+    """One or two plain lines for a voice to speak (console_control.screen_line = screenLine)."""
+    return cc.screen_line(sc)
 
 
 def _resolve_field(key: str, by: str, audience: str, grants: set[str], to: str) -> str:
@@ -444,6 +435,9 @@ def voice(text: str, by: str = "voice", audience: str = OWNER, grants: set[str] 
     intent = cc.voice_intent(text)
     if intent is None:
         return {"$axf": cc.FRAME, "ok": False, "code": "invalid", "message": "not a console command", "heard": text, "intent": None, "say": "That isn't a console command I know."}
+    if intent.get("screen"):
+        sc = screen(by, audience, g, to)
+        return {**sc, "heard": text, "intent": intent, "command": {"verb": "state"}, **({} if sc.get("ok") else {"say": cc.voice_reply(intent, sc)})}
     hit: dict[str, Any] | None = None
     if intent.get("find"):
         r = guarded({"$axf": cc.FRAME, "verb": "search", "query": {"q": intent["find"]["q"], "kinds": intent["find"]["kinds"], "limit": 10}}, by, audience, g, to)

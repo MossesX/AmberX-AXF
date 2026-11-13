@@ -166,6 +166,25 @@ re-discovers the surface before every command, so a wizard's next page is addres
 `buttons [{ address, id, label, role, disabled, selected? }]` and `text` (the surface's visible text, 1200 characters at most), so
 a voice assistant can say what is open and check what it typed before it presses Create.
 
+### Decisions hands-free
+
+A deciding press (approve, deny, reject, veto, shelve, decide, sign off: by the button's word or the inventory's `personOnly`) is
+Brett's own decision. It is refused (`denied`, `requires: person`) for every caller **except Brett's own signed-in session**: a
+person signed in to axHub as an admin on his browser or phone (the wall caller), never the shared console token that agents, scripts
+and MCP connectors hold (`owner_of` in `server/console_control_api.py`). From that session the press runs (REST `/do`, `/fill`
+submit, `/voice` "approve", "veto it", "deny"), the answer carries `decidedBy: owner:<name>` and the audit line records it, so
+a veto countdown or a confirm in front of him is approved by voice with no tap. In-console voice runs in his own session too.
+A claude.ai chat reaches the console through the shared token today, so it still can't decide: an owner OAuth identity on the MCP
+connector is the gap (report of the build).
+
+### Voice
+
+`console-control-voice.mjs` (Python twin `console_control.voice_intent`) adds: "type <text> into <field>", "enter <text> in
+<field>", "fill <field> with <text>" (the text keeps its case: matched on the raw words), "what's on screen" / "read the screen" /
+"where am I" / "what can I press" (`{ verb: state, screen: true }`, answered with `screenLine`), "approve [<x>]" / "veto it" /
+"deny" / "reject <x>" / "sign off" (`decision`), and one-word presses (submit, next, create, save, continue, finish, done, confirm,
+cancel, back, close, ok, apply, send, start, retry). Fixture rows in `spec/fixtures/console-control-voice.json`.
+
 ## Answers
 
 Success: `{ $axf: 'console-control@1', ok: true, verb, address?: <full address>, …data, audit? }` with `data` per verb as in the

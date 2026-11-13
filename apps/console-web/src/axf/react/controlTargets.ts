@@ -129,6 +129,8 @@ export class ControlRegistry {
   /** Refreshers run before every command (fieldControl.ts re-discovers the surface in front). `addRefresher(null, fn)` removes one. */
   private readonly refreshers = new Set<() => void>();
   addRefresher(fn: (() => void) | null, remove?: () => void): void { if (fn) this.refreshers.add(fn); if (remove) this.refreshers.delete(remove); }
+  /** Re-discover the surface in front now (a caller that searches before it runs a command: in-console voice). */
+  refreshNow(): void { this.refresh(); }
   private refresh(): void { for (const fn of this.refreshers) { try { fn(); } catch (e) { this.rt.terminal.warn('control', `refresh failed: ${e instanceof Error ? e.message : String(e)}`); } } }
 
   /** What is on screen (fieldControl.ts `screenReport`): `state` with no address answers it as `screen`. */

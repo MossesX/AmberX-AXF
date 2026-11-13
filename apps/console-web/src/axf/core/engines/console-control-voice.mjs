@@ -12,6 +12,11 @@
  *   "disable plugin <y>" · "turn off the <y> plugin" · "turn the <y> plugin off" · "enable <y> plugin"
  *   "press <button>" · "click <button>" · "tap <button>"
  *   "set <setting> to <value>" · "turn <setting> on|off"
+ *   "type <text> into <field>" · "enter <text> in <field>" · "fill <field> with <text>"   (the text keeps its case)
+ *   "what's on screen" · "read the screen" · "where am I" · "what can I press"           (the screen read back)
+ *   "approve" · "approve <x>" · "veto <x>" · "deny" · "reject <x>" · "sign off"            (a decision: Brett's own session only)
+ *   "submit" · "next" · "create" · "save" · "continue" · "finish" · "confirm" · "cancel" · "back" (press that button)
+ * Build full-voice-api-control-type-fields-press (Nov 13 2026) added the last four rows.
  */
 
 export const VOICE_FRAME = 'console-control-voice@1';
@@ -34,6 +39,25 @@ export function cleanPhrase(text) {
 const strip = (s) => s.replace(/^(the|a|an|my)\s+/, '').replace(/\s+(screen|page|view)$/, '').trim();
 const num = (w) => (/^\d+$/.test(w) ? Number(w) : NUMBERS[w] ?? null);
 
+const WAKE = /^\s*(?:(?:hey|ok|okay)\s+)?(?:amberx|amber)\b[\s,]*/i;
+const POLITE = /^(?:please\s+|can you\s+|could you\s+|would you\s+)+/i;
+const unquote = (s) => s.trim().replace(/^["“'‘]+|["”'’]+$/g, '').trim();
+const fieldWords = (s) => strip(s.toLowerCase().replace(/[“”"'’,!?;:.]+/g, ' ').replace(/\s+(?:field|box|input)$/, '').replace(/\s+/g, ' ').trim());
+
+/** "type <text> into <field>" on the raw words (the text keeps its case and punctuation), else null. */
+export function typeIntent(text) {
+  const raw = String(text ?? '').replace(WAKE, '').replace(POLITE, '').trim().replace(/[.!?]+$/, '');
+  let m;
+  if ((m = /^(?:type|enter|write|put)\s+([\s\S]+?)\s+(?:into|in|as)\s+(?:the\s+)?(.+?)$/i.exec(raw))) return { verb: 'set', find: { q: fieldWords(m[2]), kinds: ['setting'] }, value: unquote(m[1]) };
+  if ((m = /^fill(?:\s+in)?\s+(?:the\s+)?(.+?)\s+with\s+([\s\S]+)$/i.exec(raw))) return { verb: 'set', find: { q: fieldWords(m[1]), kinds: ['setting'] }, value: unquote(m[2]) };
+  return null;
+}
+
+/** Words that decide (approve / deny …): only Brett's own signed-in session may press them (CONSOLE-CONTROL.md → Decisions). */
+export const DECISION_WORDS = ['approve', 'veto', 'deny', 'reject', 'sign off'];
+/** One-word presses on the dialog or screen in front. */
+export const PRESS_WORDS = ['submit', 'next', 'create', 'save', 'continue', 'finish', 'done', 'confirm', 'cancel', 'back', 'close', 'ok', 'apply', 'send', 'start', 'retry'];
+
 /**
  * A phrase → an intent, or null when it is not a console command.
  * Intent: { verb, address?, find?: { q, kinds }, step?: number, value?, scroll?, query? }. `find` = resolve the address
@@ -43,6 +67,19 @@ export function voiceIntent(text) {
   const p = cleanPhrase(text);
   if (!p) return null;
   let m;
+
+  // typing into a field (raw words, so the text keeps its case)
+  const typed = typeIntent(text);
+  if (typed && typed.find.q) return typed;
+
+  // the screen read back
+  if (/^(?:what(?: s| is)?|whats) (?:on|in front of me on) (?:the )?screen$|^(?:read|describe)(?: me)? (?:the |this )?(?:screen|page|dialog)$|^where am i$|^what can i (?:press|tap|fill(?: in)?|do here)$|^what(?: s| is)? open$/.test(p)) return { verb: 'state', screen: true };
+
+  // decisions (Brett's own session only; the server refuses every other caller)
+  if ((m = /^(approve|veto|deny|reject|sign off)(?: (?:it|this|that))?(?: (.+))?$/.exec(p))) return { verb: 'press', find: { q: strip([m[1], m[2] ?? ''].join(' ').trim()), kinds: ['button', 'function'] }, decision: m[1] };
+
+  // one-word presses
+  if ((m = /^(?:yes )?(submit|next|create|save|continue|finish|done|confirm|cancel|back|close|ok|apply|send|start|retry)(?: it| this)?$/.exec(p))) return { verb: 'press', find: { q: m[1], kinds: ['button', 'function'] } };
 
   // scrolling
   if ((m = /^(?:scroll|go|jump)(?: all the way)?(?: to)?(?: the)? (top|bottom|start|end)(?: of(?: the)? (?:page|list|screen))?$/.exec(p))) {
@@ -97,6 +134,7 @@ export function intentAddress(intent, hit) {
 /** The command an intent is, given the address its words resolved to (null for a search / scroll: none needed). */
 export function intentCommand(intent, hit = null) {
   const cmd = { verb: intent.verb };
+  if (intent.screen) return cmd;
   if (intent.verb === 'search') cmd.query = intent.query;
   else if (intent.verb === 'scroll') cmd.scroll = intent.scroll;
   else cmd.address = intentAddress(intent, hit);
@@ -119,10 +157,27 @@ export function voiceReply(intent, answer, label = '') {
     case 'search': { const n = answer.hits?.length ?? 0; return n ? `${n} result${n === 1 ? '' : 's'}. Top: ${answer.hits[0].label}.` : 'Nothing found.'; }
     case 'open': return `Opened ${what}.`;
     case 'focus': return `Showing ${what}.`;
-    case 'press': return `Pressed ${what}.`;
+    case 'press': return intent.decision ? `${what || intent.decision}: done, as your decision.` : `Pressed ${what}.`;
+    case 'state': return intent.screen ? screenLine(answer.state?.screen ?? answer.screen) : 'Done.';
     case 'set': return `Set ${what} to ${typeof answer.value === 'boolean' ? (answer.value ? 'on' : 'off') : String(answer.value ?? intent.value)}.`;
     case 'plugin.enable': return `${what} is on.`;
     case 'plugin.disable': return `${what} is off.${answer.effects?.loses?.length ? ` ${answer.effects.loses.map((d) => d.name).join(', ')} lose${answer.effects.loses.length === 1 ? 's' : ''} a feature.` : ''}`;
     default: return 'Done.';
   }
+}
+
+/** One or two plain lines for a screen report (= say_screen in server/console_control_api.py). */
+export function screenLine(sc) {
+  if (!sc) return 'I can not see the screen.';
+  const where = sc.dialog ? `${sc.dialog.title} dialog on ${sc.title}` : String(sc.title || sc.view || 'the console');
+  const fields = sc.fields ?? [];
+  const buttons = (sc.buttons ?? []).filter((b) => !b.disabled);
+  const parts = [`You're on ${where}.`];
+  if (fields.length) {
+    const empty = (f) => f.value === '' || f.value === null || f.value === undefined || (Array.isArray(f.value) && !f.value.length);
+    const shown = fields.slice(0, 6).map((f) => `${f.label}${f.required && empty(f) ? ' (required, empty)' : ''}`).join(', ');
+    parts.push(`${fields.length} field${fields.length === 1 ? '' : 's'}: ${shown}${fields.length > 6 ? ' and more' : ''}.`);
+  }
+  if (buttons.length) parts.push(`Buttons: ${buttons.slice(0, 6).map((b) => b.label).join(', ')}${buttons.length > 6 ? ' and more' : ''}.`);
+  return parts.join(' ');
 }
