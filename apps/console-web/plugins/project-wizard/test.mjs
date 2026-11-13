@@ -49,6 +49,8 @@ const env = {
   AXF_WIZARD_WORKSPACE: ws, AXF_WIZARD_ROOTS: tmp, AXF_WIZARD_STORE: join(tmp, 'store.json'), AXF_VPS_GIT_DIR: vpsGit, AXF_VPS_HOST: '', AXF_DATA_DIR: join(tmp, 'data'), AXF_APPEARANCE_FILE: join(tmp, 'appearance.json'), AXF_ACTOR: 'test',
   GIT_AUTHOR_NAME: 't', GIT_AUTHOR_EMAIL: 't@t', GIT_COMMITTER_NAME: 't', GIT_COMMITTER_EMAIL: 't@t', HOME: tmp,
 };
+// CI pins AXF_BUILD_PROFILE=all for the whole workflow; this test switches projects, so the pin must not reach the wizard
+delete env.AXF_BUILD_PROFILE;
 // the wizard runs as a child process, like the console's server part runs it
 const callP = async (req) => {
   const { spawn } = await import('node:child_process');
