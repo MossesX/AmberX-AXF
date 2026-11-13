@@ -613,7 +613,7 @@ export const sweepFile = (s) => join(s.dataDir, 'land-sweep.json');
  * CI → requestFix (P0 fix build, FYI); stuck on a push, a PR or a failed round for 30 min → first in line again. Also
  * drops fix records of builds that landed and clears the data folder's leftover *.tmp-* files.
  */
-export async function sweep({ s, api = makeConsole(s), nowMs = Date.now(), dry = false, force = false, agentJob = defaultAgentJob(s), log = () => {} } = {}) {
+export async function sweep({ s, api = makeConsole(s), nowMs = Date.now(), dry = false, force = false, agentJob = defaultAgentJob(s), git = null, merge = mergeMain, log = () => {} } = {}) {
   const prev = readJson(sweepFile(s), {}) || {};
   if (!force && nowMs - (Date.parse(prev.at || 0) || 0) < core.SWEEP_MS) return { ...prev, skipped: true };
   const at = new Date(nowMs).toISOString();
@@ -621,10 +621,20 @@ export async function sweep({ s, api = makeConsole(s), nowMs = Date.now(), dry =
   const items = st.on === false ? [] : (st.items || []);
   const plan = core.sweepPlan(items, mq.waiting || [], nowMs);
   const fixes = readFixes(s); const done = [];
+  const regen = { ...(prev.regen || {}) }; // build id → the head a regenerate merge was last tried on
   for (const p of plan) {
     const it = items.find((x) => x.id === p.id) || { id: p.id };
     const b = { id: p.id, title: it.title || p.id, branch: it.branch || '' };
     if (p.act === 'retry') { if (!dry) control(s, 'now', p.id); done.push({ id: p.id, act: 'retry' }); continue; }
+    // a clash only in generated / data files: merge main again with the generated-files@1 regenerate step first
+    if (b.branch && core.regenFirst(p.reason, p.head, regen[p.id])) {
+      if (dry) { done.push({ id: p.id, act: 'regen', dry: true }); continue; }
+      regen[p.id] = p.head || at;
+      const m = merge({ s, git: git || makeGit(s.repo), b, dry: false, log });
+      if (m.merged) { control(s, 'now', p.id); done.push({ id: p.id, act: 'regen', sha: m.sha, regenerated: m.regenerated || [] }); log(`sweep ${p.id}: main merged, generated files regenerated; back in line`); continue; }
+      log(`sweep ${p.id}: regenerate merge did not land (${m.conflicts?.length ? `code: ${m.conflicts.join(', ')}` : m.pushError || 'not merged'}); fix build`);
+      if (m.conflicts?.length) p.reason = core.blockReason(p.id, { conflicts: m.conflicts });
+    }
     if (dry) { if (core.fixDue(fixes[p.id], p.reason, p.head, nowMs)) done.push({ id: p.id, act: 'fix', dry: true }); continue; }
     const f = await requestFix({ s, api, b, reason: p.reason, head: p.head, pr: p.pr, prev: fixes[p.id], at, nowMs, agentJob });
     if (f) { fixes[p.id] = f; done.push({ id: p.id, act: 'fix', attempt: f.attempt, fix: f.id || f.via }); }
@@ -643,7 +653,8 @@ export async function sweep({ s, api = makeConsole(s), nowMs = Date.now(), dry =
       }
     } catch { /* no folder */ }
   }
-  const out = { $axf: 'auto-land-sweep@1', at, acted: done, stuck: core.stuckItems(items, nowMs), tmpCleared };
+  for (const id of Object.keys(regen)) if (!live.has(id)) delete regen[id];
+  const out = { $axf: 'auto-land-sweep@1', at, acted: done, stuck: core.stuckItems(items, nowMs), tmpCleared, regen };
   if (!dry) writeJson(sweepFile(s), out);
   log(`sweep: ${done.length} acted, ${out.stuck.length} stuck over 30 min`);
   return out;

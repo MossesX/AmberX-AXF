@@ -384,6 +384,17 @@ export function kickReason(id, why) {
   return blockReason(id, { ci: 'failure', failing: checks ? checks.split(/,\s*/).filter(Boolean) : [] });
 }
 
+/**
+ * A clash the sweeper settles itself before filing a fix build: every clashing file is data or generated
+ * (generated-files@1: builds, union, union-json, generated), none is code. Main is merged in again by land.mjs
+ * mergeMain, whose resolveConflicts regenerates the generated files. Only once per head (`tried` is that head).
+ */
+export function regenFirst(reason, head = '', tried = '') {
+  if (reason?.kind !== 'conflict' || !reason.files?.length) return false;
+  if (head && tried === head) return false;
+  return planConflicts(reason.files).code.length === 0;
+}
+
 /** What the sweeper does for each finished, unlanded build: fix | retry | none. */
 export function sweepPlan(items = [], waiting = [], nowMs = Date.now()) {
   const kicked = new Map(); for (const w of waiting || []) if (w?.build && /^kicked out/i.test(w.why || '')) kicked.set(w.build, w);
