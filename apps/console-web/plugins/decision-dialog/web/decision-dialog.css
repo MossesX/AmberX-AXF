@@ -1,0 +1,18 @@
+/* Decision dialog: layout only; every size and colour comes from the theme's tokens, controls are the framework's. */
+.axp-decision { gap: var(--fx-dens-gap-lg) }
+.axp-decision__head { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--fx-dens-gap-lg); flex-wrap: wrap }
+.axp-decision__what { min-width: 0; flex: 1 1 auto }
+.axp-decision__what > .fx-eyebrow { margin: 0; text-transform: capitalize }
+.axp-decision__title { margin: 0; font-size: var(--fx-type-scale-md) }
+.axp-decision__count { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm); flex: 0 0 auto; color: var(--fx-muted) }
+.axp-decision__body { margin: 0; white-space: pre-wrap }
+.axp-decision__options { display: grid; grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr)); gap: var(--fx-dens-gap-lg) }
+.axp-decision__option { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-lg); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md) }
+.axp-decision__optlabel { margin: 0 }
+.axp-decision__shots { display: flex; gap: var(--fx-dens-gap-md); align-items: flex-start; overflow-x: auto }
+.axp-decision__shot { margin: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); flex: 1 1 0; min-width: 0 }
+.axp-decision__shot--phone { flex: 0 0 auto; max-width: 30% }
+.axp-decision__shot img { display: block; max-width: 100%; max-height: 50vh; object-fit: contain; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm) }
+.axp-decision__acts { gap: var(--fx-dens-gap-md); flex-wrap: wrap }
+.axp-decision-settings__row { display: flex; align-items: center; gap: var(--fx-dens-gap-lg); flex-wrap: wrap }
+.axp-decision-settings__what { display: flex; flex-direction: column; flex: 1 1 14rem; min-width: 0 }

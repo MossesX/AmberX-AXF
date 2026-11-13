@@ -537,5 +537,41 @@ before = len(raised)
 n.ready({"items": [item("g-1")], "groups": [group]}, group)
 check(len(raised) == before, "setting off: no notification")
 
+# ---- the decision dialog (decisions@1): a submit pops it up, his answer comes back, deciding here takes it back
+class FakeDecisions:
+    def __init__(self) -> None:
+        self.raised: list[dict] = []
+        self.withdrawn: list[tuple[str, str]] = []
+
+    def raise_decision(self, f: dict) -> dict:
+        self.raised.append(f)
+        return {"id": "dec-1", **f}
+
+    def withdraw(self, source: str, ref: str) -> dict:
+        self.withdrawn.append((source, ref))
+        return {"withdrawn": [ref]}
+
+
+fd = FakeDecisions()
+plugin_services.provide("decisions@1", fd, "test-decisions")
+r = c.post("/p/submit", json={"kind": "dialog", "name": "Decision pop-up", "app": "Console", "screen": "Any", "build": "decision-dialog-ui-review-other", **WHO, "files": SET})
+check(r.status_code == 200, f"submit with the decision dialog on ({r.text[:160]})")
+did = r.json()["item"]["id"]
+check(len(fd.raised) == 1 and fd.raised[0]["type"] == "ui-review" and fd.raised[0]["ref"] == did and fd.raised[0]["handler"] == "ui-review@1", "a submit raises a ui-review decision")
+check(fd.raised[0]["openAction"] == f"ui-review.item:{did}" and {s["device"] for s in fd.raised[0]["shots"]} == {"phone", "desktop"}, "it carries Open in UI Review and both devices' pictures")
+svc = plugin_services.get("ui-review@1")
+f0 = fd.raised[0]["shots"][0]["src"]
+check(svc.shot_file(f0) is not None and svc.shot_file("../../etc/passwd") is None, "pictures served by src only, nothing outside the folder")
+try:
+    svc.answer_decision(did, "launch", "", "", "brett")
+    check(False, "unknown answer refused")
+except ValueError:
+    check(True, "unknown answer refused")
+res = svc.answer_decision(did, "changes", "", "Bigger buttons", "brett")
+check(res["status"] == "changes", "Request changes from the dialog lands on the item")
+got = next(x for x in c.get("/p/items").json()["items"] if x.get("id") == did)
+check(got["status"] in ("changes", "changes-requested") and "Bigger buttons" in json.dumps(got), "the note is on the item")
+check(("ui-review", did) in fd.withdrawn, "decided: the dialog stops asking")
+
 print(f"ui-review: {ok} checks ok" + (f", {len(fails)} failed" if fails else ""))
 sys.exit(1 if fails else 0)

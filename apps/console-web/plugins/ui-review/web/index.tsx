@@ -33,6 +33,8 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('ui-review.open', () => rt.navigate(VIEW), { label: 'Open UI Review' });
     rt.actions.register('ui-review.design-packs', () => rt.navigate(PACKS_VIEW), { label: 'Open Design packs' });
     rt.actions.register('ui-review.screenshots', () => rt.navigate(SHOTS_VIEW), { label: 'Open Screenshots' });
+    // ui-review.item:<id> — the decision dialog's "Open in UI Review" (only on his tap): the queue page
+    rt.actions.register('ui-review.item', () => rt.navigate(VIEW), { label: 'Open a UI Review item', params: true, searchable: false, effect: 'navigate' });
     // a copied screenshot link (?ui-shot=<id>) lands on the Screenshots tab, which opens that picture
     // AmberX's "ready for review" notification (?axf-review-group=<id>) lands on the queue, filtered to that group
     if (new URLSearchParams(globalThis.location?.search ?? '').get(GROUP_PARAM)) setTimeout(() => rt.navigate(VIEW), 0);

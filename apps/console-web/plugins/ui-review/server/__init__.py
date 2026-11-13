@@ -47,6 +47,7 @@ from . import screenshots as shots_mod
 from . import choices as choices_mod
 from . import predicted as predicted_mod
 from . import notify
+from . import decisions as decisions_mod
 
 router = APIRouter()
 FOLDER = "ui-review"
@@ -289,6 +290,7 @@ def submit(fields: dict, shots: list[tuple[str, str, bytes]] | None = None) -> d
         _save_items(doc)
         snapshot = {"items": list(doc["items"]), "groups": list(doc["groups"])}
     notify.ready(snapshot, g)  # outside the lock: AmberX shows it, a tap opens this group
+    decisions_mod.raised(item)  # and the decision dialog pops up on whatever screen Brett is on (decisions@1)
     return stored
 
 
@@ -312,6 +314,7 @@ def decide_many(ids: list[str], decision: str, comment: str = "", by: str = "bre
         decided = [doc["items"][by_id[x]] for x in changed if x in by_id]
         snapshot = {"items": list(doc["items"]), "groups": list(doc["groups"])}
     notify.decided(snapshot, [str(it.get("group") or "") for it in decided])
+    decisions_mod.decided(decided)  # decided here: the decision dialog stops asking
     after_decide(decided)  # Ask changes on a predicted look → the build gets the comment
     return {"changed": changed, "missing": [x for x in ids if x not in changed], "at": at}
 
@@ -338,6 +341,14 @@ class UiReviewService:
 
     def submit(self, fields: dict, shots: list[tuple[str, str, bytes]] | None = None) -> dict:
         return submit(fields, shots)
+
+    def answer_decision(self, ref: str, button: str, option: str = "", note: str = "", by: str = "brett") -> dict:
+        """decisions@1 handler: Brett's answer in the decision dialog (Approve / Request changes / Reject / Pick option N)."""
+        return decisions_mod.answer(_sys.modules[__name__], ref, button, option, note, by)
+
+    def shot_file(self, src: str):
+        """decisions@1 handler: the file behind one of this plugin's screenshot srcs, or None."""
+        return decisions_mod.shot_file(_sys.modules[__name__], src)
 
 
 shots = ShotStore(data_dir)
