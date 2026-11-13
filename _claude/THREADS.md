@@ -788,10 +788,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 18:19 UTC · `full-voice-api-control-type-fields-press` s7 done (all) · orchestrator
-- 2026-11-13 18:19 UTC · `prompting-engine-control-panel-to-create` note (all) · builds-live
-- 2026-11-13 18:19 UTC · `prompting-engine-control-panel-to-create` note (all) · orchestrator
-- 2026-11-13 18:19 UTC · `prompting-engine-control-panel-events` note (all) · orchestrator
 - 2026-11-13 18:19 UTC · `decision-dialog-ui-review-other` → running, note (all) · pipeline
 - 2026-11-13 18:19 UTC · `decision-dialog-ui-review-other` branch claude/decision-dialog-ui-review-other (all) · pipeline
 - 2026-11-13 18:20 UTC · `full-voice-api-control-type-fields-press` PR #627 (all) · builds-live
@@ -1188,6 +1184,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 19:58 UTC · `icon-map-icon-packs-every-icon-badge-app` note (all) · orchestrator
 - 2026-11-13 19:58 UTC · `per-instance-settings-picker-merge-main` note (all) · pipeline
 - 2026-11-13 19:58 UTC · `own-token-sets-for-grids-and-tab-groups` note (all) · claude-voice
+- 2026-11-13 19:59 UTC · `own-token-sets-for-grids-and-tab-groups` note (all) · claude-voice
+- 2026-11-13 19:59 UTC · `full-voice-control-merge-main-and-land` → running, note (all) · pipeline
+- 2026-11-13 19:59 UTC · `full-voice-control-merge-main-and-land` branch claude/full-voice-control-merge-main-and-land (all) · pipeline
+- 2026-11-13 19:59 UTC · `full-voice-control-merge-main-and-land` note (all) · orchestrator
 
 ## Token passes (log)
 
