@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T07:19:04.225Z",
+ "updatedAt": "2026-11-13T07:19:16.389Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -119081,7 +119081,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T07:12:21.823Z",
-   "updatedAt": "2026-11-13T07:15:26.016Z",
+   "updatedAt": "2026-11-13T07:19:14.358Z",
    "builtAt": "",
    "notes": [
     {
@@ -119097,16 +119097,16 @@
      "at": "2026-11-13T07:12:34.159Z"
     },
     {
+     "text": "Split by Claude into 31 steps (8 Fable).",
+     "at": "2026-11-13T07:14:57.750Z"
+    },
+    {
      "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-full-api-and-voice-control-of-the-entire-console--sully.",
      "at": "2026-11-13T07:15:22.841Z"
     },
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-full-api-and-voice-control-of-the-entire-console--sully, own login copy)",
      "at": "2026-11-13T07:15:26.016Z"
-    },
-    {
-     "text": "Split by Claude into 31 steps (8 Fable).",
-     "at": "2026-11-13T07:14:57.750Z"
     }
    ],
    "approvals": [],
@@ -119123,7 +119123,686 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Design the console-control@1 contract. Define one address grammar for screen, tab, sub-tab, setting, button, function, plugin, grid row and build step (e.g. view:builds/tab:pipeline/grid:queue/row:<id>). Define the verbs open, state, press, set, scroll (up/down/page/top/bottom/to), focus, search, plugin.enable and plugin.disable. Write it up in framework/spec/CONSOLE-CONTROL.md.",
+     "model": "Fable",
+     "why": "Cross-app GUI behaviour contract that every console and framework view must follow",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/spec/CONSOLE-CONTROL.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-13T07:19:14.358Z",
+     "note": "",
+     "uid": "st-mwen6bti01z4e6",
+     "createdAt": "2026-11-13T07:14:57.750Z"
+    },
+    {
+     "id": "s2",
+     "text": "Add the console-control@1 JSON schema (address, command, result and state shapes) to framework/schemas, and regenerate the JSON Schemas with axf.mjs schemas.",
+     "model": "Fable",
+     "why": "Schema design for a cross-port contract",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/schemas/console-control.json",
+      "framework/schemas/json/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwen6bti022b0n",
+     "createdAt": "2026-11-13T07:14:57.750Z"
+    },
+    {
+     "id": "s3",
+     "text": "Write the reference engine framework/core/engines/console-control.ts. It parses and formats addresses, validates commands against the schema, resolves an address against a target registry snapshot, and returns typed errors with stable wire codes.",
+     "model": "Fable",
+     "why": "Engine internals of the cross-port contract",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/engines/console-control.ts",
+      "framework/core/index.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwen6bti031ak0",
+     "createdAt": "2026-11-13T07:14:57.750Z"
+    },
+    {
+     "id": "s4",
+     "text": "Add golden fixtures for console-control (parsing, resolving, errors and scroll maths) to gen-fixtures.mts and a check script. Record the Kotlin twin as a deferred gap in PORTING.md (Android on hold).",
+     "model": "Fable",
+     "why": "Conformance fixtures for the contract",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/spec/gen-fixtures.mts",
+      "framework/spec/fixtures/console-control.json",
+      "framework/spec/check-console-control.mts",
+      "framework/spec/PORTING.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwen6bti04atiy",
+     "createdAt": "2026-11-13T07:14:57.750Z"
+    },
+    {
+     "id": "s5",
+     "text": "Add the framework target registry framework/react/controlTargets.ts: a useControlTarget hook and a data-axf-target convention. Buttons, tabs, settings and views register their address, label, keywords and an invoke/get/set handler. AxfProvider installs the registry.",
+     "model": "Fable",
+     "why": "Changes how GUIs work across every app on the framework",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/controlTargets.ts",
+      "framework/react/AxfProvider.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwen6bti0553ir",
+     "createdAt": "2026-11-13T07:14:57.750Z"
+    },
+    {
+     "id": "s6",
+     "text": "Wire TabGroup, Button and the settings rows to register targets automatically, using their existing settings ids and labels as addresses, so most of the UI is addressable with no per-view code.",
+     "model": "Fable",
+     "why": "Framework control behaviour shared by every app",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/components/TabGroup.tsx",
+      "framework/react/components/Button.tsx",
+      "framework/libs/settings/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwen6bti065pdn",
+     "createdAt": "2026-11-13T07:14:57.750Z"
+    },
+    {
+     "id": "s7",
+     "text": "Add the scroll contract framework/react/scrollControl.ts. It finds the active or named scroll container and runs scroll up/down/page/top/bottom/to-address, and reports the scroll position and extent as state.",
+     "model": "Fable",
+     "why": "Cross-app GUI behaviour",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/react/scrollControl.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwen6bti072uoo",
+     "createdAt": "2026-11-13T07:14:57.750Z"
+    },
+    {
+     "id": "s8",
+     "text": "Grid and table focus: DataGrid and the build step lists register every row and step as a target. focus(address) scrolls the row into view, selects it, highlights it through theme tokens (opacityTint) and works on virtualised rows.",
+     "model": "Fable",
+     "why": "Framework grid behaviour across apps",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/components/DataGrid.tsx",
+      "framework/ui/axf.css"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwen6bti08q8ii",
+     "createdAt": "2026-11-13T07:14:57.750Z"
+    },
+    {
+     "id": "s9",
+     "text": "Re-bake the framework into the console and check that it still typechecks and builds.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "6 min",
+     "files": [
+      "apps/console-web/src/axf/",
+      "apps/console-web/axf.lock.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwen6bti091zk2",
+     "createdAt": "2026-11-13T07:14:57.750Z"
+    },
+    {
+     "id": "s10",
+     "text": "Console screen and tab inventory: build a static index of every console view, nav entry and tab group, with addresses, labels and keywords, from the view registry, and export it for the server.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src/control/inventory.ts",
+      "apps/console-web/scripts/control-inventory.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwen6bti0a6quh",
+     "createdAt": "2026-11-13T07:14:57.750Z"
+    },
+    {
+     "id": "s11",
+     "text": "Settings inventory: every setting in the SettingsRegistry and in every plugin sub-tab gets an address with get/set and type and range validation. Owner-only Claude settings are marked personOnly and refused.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src/control/settings.ts",
+      "framework/libs/settings/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwen6bti0bald7",
+     "createdAt": "2026-11-13T07:14:57.750Z"
+    },
+    {
+     "id": "s12",
+     "text": "Button and function inventory: expose the existing console action registry, toolbar buttons and context-menu items as press targets. Destructive ones need an explicit confirm flag, and deciding actions (approve/deny) stay personOnly.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src/control/actions.ts",
+      "apps/console-web/src/actions/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwen6bti0cf0e6",
+     "createdAt": "2026-11-13T07:14:57.750Z"
+    },
+    {
+     "id": "s13",
+     "text": "Plugin targets: address every plugin, its UI and settings tab, and add enable/disable through the plugin-manager engine. Report dependency effects (what needs it) in the result. Core plugins refuse disable with a reason.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src/control/plugins.ts",
+      "apps/console-web/plugins/plugin-manager/server/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwen6bti0dgybm",
+     "createdAt": "2026-11-13T07:14:57.750Z"
+    },
+    {
+     "id": "s14",
+     "text": "Search index: one ranked search over screens, tabs, settings, buttons, plugins, help and everything currently loaded (grid rows, build steps, UI Review items, chat lines). Each hit carries its address so it can be pulled into focus.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src/control/search.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwen6bti0eeg92",
+     "createdAt": "2026-11-13T07:14:57.750Z"
+    },
+    {
+     "id": "s15",
+     "text": "Browser executor: the console page receives console-control commands over the existing relay channel and runs open/press/set/scroll/focus/search through the target registry. It highlights the result and returns a result plus a live state snapshot (screen, tab, scroll, focused row).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src/control/executor.ts",
+      "apps/console-web/src/App.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwen6bti0fcc12",
+     "createdAt": "2026-11-13T07:14:57.750Z"
+    },
+    {
+     "id": "s16",
+     "text": "Server REST: add /api/console-control/targets, /state, /do, /search, /focus, /scroll and /plugins/{id}/enable|disable. Commands go to the open console session (Follow Amber channel), with a clear 'no console open' error and an open_url fallback link. Settings and plugin toggles that need no browser run server-side.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/server/console_control.py",
+      "apps/console-web/server/main.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwen6bti0goc5q",
+     "createdAt": "2026-11-13T07:14:57.750Z"
+    },
+    {
+     "id": "s17",
+     "text": "Server-side guards: personOnly and owner-only refusal, confirm for destructive actions, an audit log line per command, and a rate limit. Send veto-policy tags to axHub for state-changing verbs and leave navigation read-only.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/server/console_control.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwen6bti0hniqk",
+     "createdAt": "2026-11-13T07:14:57.750Z"
+    },
+    {
+     "id": "s18",
+     "text": "MCP tools in mcp_server.py: console_control_targets, _state, _do, _search, _focus, _scroll and _plugin (enable/disable). Extend console_show/console_open to accept the new addresses.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/server/mcp_server.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwen6bti0iczpm",
+     "createdAt": "2026-11-13T07:14:57.750Z"
+    },
+    {
+     "id": "s19",
+     "text": "CLI: add axf console do|state|targets|search|focus|scroll|plugin enable|disable to framework/cli/axf.mjs, calling the REST routes, with --json output.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/cli/axf.mjs",
+      "framework/cli/console-control.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwen6bti0j54as",
+     "createdAt": "2026-11-13T07:14:57.750Z"
+    },
+    {
+     "id": "s20",
+     "text": "Voice (AmberX): map phrases to console-control commands ('scroll down', 'open plugins settings', 'find <x>', 'show step 3 of <build>', 'disable plugin <y>', 'press <button>') through the console actions registry, with spoken confirmation of the result.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src/actions/voice-control.ts",
+      "apps/amberx-droid/web/src/voice/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwen6bti0khb2z",
+     "createdAt": "2026-11-13T07:14:57.750Z"
+    },
+    {
+     "id": "s21",
+     "text": "control@1 integration: register the console-control targets so that control@1 tokens and planner items can point at addresses, and add console actions console.control.* with descriptions.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/core/engines/control.ts",
+      "apps/console-web/src/actions/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwen6bti0l8lxu",
+     "createdAt": "2026-11-13T07:14:57.750Z"
+    },
+    {
+     "id": "s22",
+     "text": "Search palette UI: a framework command-palette (Ctrl+K or a banner chip) listing search hits. Picking one pulls it into focus. Use tokens and TabGroup/Button only. Its API is the search route: deep link ?axf-cmd=search&q=, state via console_control_state.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src/control/SearchPalette.tsx",
+      "apps/console-web/src/console.css"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwen6bti0mj65o",
+     "createdAt": "2026-11-13T07:14:57.750Z"
+    },
+    {
+     "id": "s23",
+     "text": "Backfill batch 1: add data-axf-target and settings ids to hand-drawn elements in the banner, nav, Settings and Terminal views that the framework hooks don't reach.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src/views/",
+      "apps/console-web/src/banner/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwen6bti0nid0f",
+     "createdAt": "2026-11-13T07:14:57.750Z"
+    },
+    {
+     "id": "s24",
+     "text": "Backfill batch 2: Builds views (orchestrator, Pipeline, Pending, Queue, Build manager), so that every build row and step is focusable.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/web/",
+      "apps/console-web/plugins/codebase-changes/web/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwen6bti0o2iot",
+     "createdAt": "2026-11-13T07:14:57.750Z"
+    },
+    {
+     "id": "s25",
+     "text": "Backfill batch 3: the remaining plugin UIs (UI Review, Plan Studio, Breakroom, Shipped features, Glossary and others) and their grids.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwen6bti0pavwt",
+     "createdAt": "2026-11-13T07:14:57.750Z"
+    },
+    {
+     "id": "s26",
+     "text": "Coverage CI check framework/cli/check-console-control.mjs. It fails when a view, tab group, toolbar, setting, plugin or DataGrid has no address. The ratchet baseline framework/spec/console-control-baseline.json can only go down. Wire it into CI.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/cli/check-console-control.mjs",
+      "framework/spec/console-control-baseline.json",
+      ".github/workflows/android.yml"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwen6bti0qm6by",
+     "createdAt": "2026-11-13T07:14:57.750Z"
+    },
+    {
+     "id": "s27",
+     "text": "Server tests: pytest for the REST routes and MCP tools (targets, state, do, search, plugin enable/disable, personOnly refusal, no-console error).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/server/tests/test_console_control.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwen6bti0rk6h0",
+     "createdAt": "2026-11-13T07:14:57.750Z"
+    },
+    {
+     "id": "s28",
+     "text": "Executor tests: Playwright against vite preview. Open a tab, scroll, focus a grid row and a build step, set a setting, press a button and search-then-focus, asserting the reported state.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/scripts/console-control.e2e.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwen6bti0ss5d0",
+     "createdAt": "2026-11-13T07:14:57.750Z"
+    },
+    {
+     "id": "s29",
+     "text": "Parity test: the same command through REST, MCP, CLI and the voice intent gives identical results and state.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/scripts/console-control-parity.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwen6bti0tv8cn",
+     "createdAt": "2026-11-13T07:14:57.750Z"
+    },
+    {
+     "id": "s30",
+     "text": "Docs: help entries and glossary descriptions for the new actions, CLI and MCP tools; _claude/memory/docs/console-control.md; a CLAUDE.md conventions line.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "_claude/memory/docs/console-control.md",
+      "apps/console-web/src/help/",
+      "CLAUDE.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwen6bti0ue2y9",
+     "createdAt": "2026-11-13T07:14:57.750Z"
+    },
+    {
+     "id": "s31",
+     "text": "Run all the checks (fixtures, check-console-control, theme, controls, toolbars, chrome-assets, pytest, e2e, parity). Write the report _claude/builds/reports/full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu.md, add a THREADS.md row and open the PR stating how each feature is reached (deep link, state, actions, settings via REST, MCP, CLI and voice).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwen6bti0vfhvg",
+     "createdAt": "2026-11-13T07:14:57.750Z"
+    }
+   ]
   }
  ]
 }
