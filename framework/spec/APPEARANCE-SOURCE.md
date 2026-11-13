@@ -145,6 +145,49 @@ derived from skin-coverage@1 the same way, so once both land each category gains
 axis, from `behaviourAxes`) with no hand-written list; the registry blocks sit on the same type entries (`skinConfig`
 beside `behaviour`) and do not conflict. Recorded as the follow-up for that build.
 
+### Skins: what ships, how the shell follows, every way to reach it
+
+**The shipped skins** (`framework/assets/skin/`, each a full skin@2: every slot, parts for every widget, every axis):
+
+| skin | what it rebuilds | own assets |
+| --- | --- | --- |
+| `studio-pro` Studio Pro | dense IDE desktop: rail nav left, underline tabs on top, full menu bar, dialogs as a right side panel, compact sticky grid tables, flyout context menus, confirm dialogs | layout, colour theme `studio-pro-slate`, style theme, table |
+| `executive` Executive | clean, minimal: top bar nav, pill tabs with a More menu, one Menu button instead of a menu bar, roomy upper-case tables, centred modals, quiet icon toolbar | layout, colour theme `executive-ivory`, table |
+| `field` Field | phone-first: bottom-tab nav, toolbar at the bottom with tap to confirm on, bottom sheets for dialogs / context menus / the app menu, card tables with swipe actions, segmented tabs folding to a dropdown, tap-twice buttons | layout, colour theme `field-day`, style theme, table |
+| `command` Command | keyboard-first: command-palette app menu (Ctrl / Cmd+K), hidden nav drawer, tabs docked at the bottom, inline Confirm / Cancel buttons, palette context menus, terminal-style tables, labels-only toolbar with tap to confirm off | layout, colour theme `command-phosphor`, table |
+| `windows` Windows | the Windows 11 look, migrated to skin@2 with today's behaviour | (as before) |
+
+**The shell follows the skin** (`rt.shellLayout()`, `AppShell`): nav mode `sidebar | rail | drawer | bottom-tabs |
+top-bar` and side move or narrow the nav region (the layout gained `nav: bottom`; a drawer leaves the grid and opens
+over the page, `nav.drawer` action, Menu button), an app-menu form other than `menubar` replaces the bar with one Menu
+button that opens every menu as a menu, a palette or a sheet through the context-menu host, the toolbar sits where its
+placement says, the banner may sit under the page. Every view root and plugin root is a `SkinScope`, so each place
+reads its own skin's behaviour (`rt.behaviour(type, axis)`, `rt.behaviourOf(type)`, `rt.withBehaviour(type, data)`).
+
+**The controls follow the skin**: `TabGroup` (position / overflow / style / display over the asset, the row's own
+chrome-settings override still first), `Toolbar` (labels), `Button` (press feedback; which buttons ask first and how:
+confirm dialog, inline Confirm / Cancel, press and hold for `holdMs`, tap twice), the context-menu host (menu, bottom
+sheet or searchable palette; flyout or inline sub menus), the dialog host (modal, sheet, side panel on either side,
+full screen), `DataGrid` and every `fx-table` (form grid / cards / terminal, density, row actions, sticky header), tap to
+confirm (the skin's pick between a row's own choice and the kind's switch).
+
+**Every way to reach it (API parity, Brett Nov 8 2026):**
+
+| | |
+| --- | --- |
+| UI | Settings → Appearance → *Skin gallery…*: live preview cards (desktop + phone frames), *What this skin changes*, *Where* (this app / hub-wide / a screen / a plugin), *Use skin*, *Back to skin* (slots and behaviour), *Turn skin off*, *Restore to default* + *Undo*; the Appearance panel's *Behaviour* row lists overridden axes |
+| Deep link | `console_show` / `console_open` target `settings/appearance/skin/<id>` (or `skin:<id>`, or `action:skin.gallery:<id>`) opens the gallery on that skin |
+| State | `skins.mjs at <app> [--scope …]` = the skin in force, the look (every slot) and the behaviour (picks, overrides, every axis resolved); REST `GET skins/{app}/at`, `GET skins/{app}/behaviour`, `GET skins/axes`, `GET skins/compare/{a}/{b}`, `GET skins/covers/{skin}` |
+| Actions | console actions `skin.use:<id>`, `skin.off`, `skin.preview:<id|off>`, `skin.gallery[:<id>]`, `skin.behaviour:<type>:<axis>:<value|default>` (and `skin.behaviour:<ui|plugin>:<id>:…`), `skin.behaviour.reset[:<type>]`, `skin.global:<id|off>`, `skin.scope:…`, `skin.inherit:…`, `skin.color:…`, `nav.drawer:open|close|toggle`; AmberX voice runs the same ids |
+| REST (theme-manager, `/api/plugins/theme-manager/`) | `skins/{app}/use`, `off`, `inherit`, `follow`, `at`, `behaviour` (GET / POST `{type, axis, value, scope?}` / `behaviour/reset`), `preview` (`{skin}`), `gallery` (`{skin?}`), `console-action` (`{spec}`), `skins/global`, `skins/axes`, `skins/compare/{a}/{b}`, `skins/coverage`, `skins/covers/{skin}` |
+| MCP | the same routes as plugin commands (plugin-commands@1 `auto`), plus `console_show` for the deep link |
+| CLI | `skins.mjs use | off | inherit | follow | global | at | behaviour | compare | preview | gallery | coverage | covers | axes` |
+
+**CI**: `check-skin-coverage.mjs` fails on a shipped skin that leaves a type or an axis uncovered (`--lenient-skins`
+warns); `check-chrome-assets.mjs` refuses a behaviour attribute written by hand outside the framework's drawers;
+`theme-swap.mjs` switches every skin through the gallery and fails on a colour, size or behaviour that does not follow
+it; `check-skin.mts` replays the `behaviour` fixture block and drives the runtime.
+
 ## The document: `appearance@1`
 
 Project `shared`, path `settings/appearance.json` on the hub's data server (`/projects/_shared/_data/settings/appearance.json`,

@@ -320,7 +320,8 @@
   "k.theme": {
     "status": "built",
     "wave": 1,
-    "module": "axf-kernel"
+    "module": "axf-kernel",
+    "notes": "skin@2 (Nov 13 2026): a skin is a look and a behaviour; behaviour axes per asset type compile to --fx-bhv-* tokens; four professional skins (Studio Pro, Executive, Field, Command) ship."
   },
   "k.layout": {
     "status": "built",
