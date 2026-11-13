@@ -8,7 +8,7 @@
     "tabs": 76,
     "settingsTabs": 67,
     "settings": 85,
-    "functions": 236,
+    "functions": 237,
     "buttons": 62,
     "plugins": 67
   },
@@ -3721,6 +3721,21 @@
         "device.recorder",
         "device",
         "recorder"
+      ],
+      "effect": "write",
+      "params": true,
+      "file": "src/native/deviceApi.ts"
+    },
+    {
+      "address": "function:device.slots",
+      "kind": "function",
+      "id": "device.slots",
+      "label": "Console slots on the phone, up to four at once: status, open:<target>[:<slot>], close:<slot>, focus:<slot>",
+      "detail": "Action",
+      "keywords": [
+        "device.slots",
+        "device",
+        "slots"
       ],
       "effect": "write",
       "params": true,

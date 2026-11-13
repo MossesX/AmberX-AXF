@@ -1069,6 +1069,11 @@
         "target": "action:device.recorder",
         "title": "Phone recorder",
         "text": "Starts, stops or checks the phone recorder. AmberX still records until its capture service moves to the console app."
+      },
+      {
+        "target": "action:device.slots",
+        "title": "Console slots on the phone",
+        "text": "Runs up to four consoles side by side in the phone app: device.slots:open:<address>[:<slot>] opens one, close:<slot> and focus:<slot> manage them, status lists them. The focused slot has the keyboard and the mic."
       }
     ],
     "intros": [

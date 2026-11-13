@@ -26,9 +26,10 @@ export const CALL_TIMEOUT_MS = 120000;
 export const TOOLS = [
   'bridge.ping', 'bridge.info', 'bridge.capabilities', 'permissions.status', 'permissions.request', 'mic.status', 'mic.set',
   'recorder.start', 'recorder.stop', 'recorder.status', 'browser.open', 'console.wake', 'notify.show', 'notify.cancel', 'notify.status',
+  'slots.status', 'slots.open', 'slots.close', 'slots.focus',
 ];
 /** Mirrors BridgeContract.EVENTS. */
-export const EVENTS = ['recorder', 'mic', 'permission', 'wake', 'link'];
+export const EVENTS = ['recorder', 'mic', 'permission', 'wake', 'link', 'slots'];
 /** Mirrors BridgeContract.CODES, plus the two the page side adds. */
 export const ERROR_CODES = ['unknown_tool', 'bad_args', 'denied', 'permission', 'unavailable', 'not_implemented', 'timeout', 'no_bridge'];
 
@@ -49,6 +50,10 @@ const ALIASES = {
   'bridge.info': ['info', 'bridge_info', 'version'],
   'bridge.ping': ['ping'],
   'bridge.capabilities': ['capabilities', 'bridge_capabilities'],
+  'slots.status': ['slots', 'amberx.slots', 'slot.status'],
+  'slots.open': ['slot.open', 'slot_open'],
+  'slots.close': ['slot.close', 'slot_close'],
+  'slots.focus': ['slot.focus', 'slot_focus'],
 };
 const ALIAS = new Map(Object.entries(ALIASES).flatMap(([tool, names]) => names.map((n) => [n, tool])));
 

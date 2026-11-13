@@ -22,8 +22,8 @@ export function installDeviceApi(rt: AxfRuntime): () => void {
   const refresh = async () => {
     if (!inApp()) { snapshot = { available: false, reason: 'The Android console app is not running this page.' }; return; }
     const get = (tool: string) => nativeTool(window, tool).catch((e: { code?: string; message?: string }) => ({ error: e?.code ?? 'unavailable', message: e?.message }));
-    const [info, mic, permissions, notify, recorder] = await Promise.all(['bridge.info', 'mic.status', 'permissions.status', 'notify.status', 'recorder.status'].map(get));
-    snapshot = { available: true, bridge: BRIDGE_VERSION, info, mic, permissions, notify, recorder, at: new Date().toISOString() };
+    const [info, mic, permissions, notify, recorder, slots] = await Promise.all(['bridge.info', 'mic.status', 'permissions.status', 'notify.status', 'recorder.status', 'slots.status'].map(get));
+    snapshot = { available: true, bridge: BRIDGE_VERSION, info, mic, permissions, notify, recorder, slots, at: new Date().toISOString() };
   };
   void refresh();
   const native = (window as unknown as { axfNative?: { on?: (e: string, fn: () => void) => () => void } }).axfNative;
@@ -49,9 +49,11 @@ export function installDeviceApi(rt: AxfRuntime): () => void {
   offs.push(rt.actions.register('device.notify-cancel', (a) => run('device.notify-cancel', a), { label: 'Clear a phone notification by id, or list them (device.notify-cancel[:<id>])', params: true, module: 'console.native', effect: 'write' }));
   offs.push(rt.actions.register('device.recorder', (a) => run('device.recorder', a), { label: 'Phone recorder: start[:<session>], stop, status (AmberX records until its capture service moves)', params: true, module: 'console.native', effect: 'write' }));
 
+  offs.push(rt.actions.register('device.slots', (a) => run('device.slots', a), { label: 'Console slots on the phone, up to four at once: status, open:<target>[:<slot>], close:<slot>, focus:<slot>', params: true, module: 'console.native', effect: 'write' }));
+
   offs.push(controlRegistry(rt).register({
-    address: DEVICE_ADDRESS, kind: 'panel', label: 'Phone native bridge', detail: 'Phone · mic, permissions, notifications, open_url, wake, recorder',
-    icon: 'smartphone', keywords: ['phone', 'android', 'native', 'bridge', 'mic', 'permissions', 'notifications', 'wake', 'recorder', 'device'], can: ['state'],
+    address: DEVICE_ADDRESS, kind: 'panel', label: 'Phone native bridge', detail: 'Phone · mic, permissions, notifications, open_url, wake, recorder, four console slots',
+    icon: 'smartphone', keywords: ['phone', 'android', 'native', 'bridge', 'mic', 'permissions', 'notifications', 'wake', 'recorder', 'slots', 'split', 'device'], can: ['state'],
     state: () => ({ device: snapshot }),
   }));
   return () => offs.forEach((f) => f());

@@ -28,6 +28,16 @@ test('every action maps onto bridge tools', () => {
   assert.deepEqual(deviceCall('device.recorder', ['start', 'Build night']), { tool: 'recorder.start', args: { session_name: 'Build night' } });
   assert.deepEqual(deviceCall('device.recorder', ['stop']), { tool: 'recorder.stop', args: {} });
   assert.deepEqual(deviceCall('device.recorder', []), { tool: 'recorder.status', args: {} });
+  // four console slots (s6)
+  assert.deepEqual(deviceCall('device.slots', []), { tool: 'slots.status', args: {} });
+  assert.deepEqual(deviceCall('device.slots', ['open', 'settings']), { tool: 'slots.open', args: { target: 'settings' } });
+  assert.deepEqual(deviceCall('device.slots', ['open', 'panel', 'phone-bridge', '3']), { tool: 'slots.open', args: { target: 'panel:phone-bridge', slot: 3 } });
+  assert.deepEqual(deviceCall('device.slots', ['open', 'https', '//axhub.amberxai.com/', '2']), { tool: 'slots.open', args: { url: 'https://axhub.amberxai.com/', slot: 2 } });
+  assert.deepEqual(deviceCall('device.slots', ['open']), { tool: 'slots.open', args: {} });
+  assert.deepEqual(deviceCall('device.slots', ['focus', '2']), { tool: 'slots.focus', args: { slot: 2 } });
+  assert.deepEqual(deviceCall('device.slots', ['close', '4']), { tool: 'slots.close', args: { slot: 4 } });
+  for (const bad of [['close', '1'], ['close', '5'], ['focus'], ['split']]) assert.ok('error' in deviceCall('device.slots', bad), bad.join(':'));
+  assert.match(describeDevice('slots.open', { count: 3, max: 4, layout: 'grid', focused: 3 }), /3 of 4 console slots open \(grid\), slot 3/);
   assert.deepEqual(deviceCall('device.tool', ['amberx.open_url', '{"url"', '"https://console.amberxai.com/"}']), { tool: 'browser.open', args: { url: 'https://console.amberxai.com/' } });
   assert.deepEqual(deviceCall('device.tool', ['bridge.capabilities']), { tool: 'bridge.capabilities', args: {} });
 });
@@ -45,6 +55,7 @@ test('every tool is reachable from an action', () => {
     'device.state': [[]], 'device.mic': [[], ['on']], 'device.permission': [[], ['mic']], 'device.open': [['https', '//console.amberxai.com/']],
     'device.wake': [[]], 'device.notify': [['t']], 'device.notify-cancel': [[], ['n']], 'device.recorder': [[], ['start'], ['stop']],
     'device.tool': [['bridge.ping'], ['bridge.capabilities']],
+    'device.slots': [[], ['open', 'settings'], ['close', '2'], ['focus', '1']],
   };
   for (const [id, list] of Object.entries(samples)) for (const a of list) reached.add(deviceCall(id, a).tool);
   assert.deepEqual(TOOLS.filter((t) => !reached.has(t)), []);

@@ -21,6 +21,7 @@ export const DEVICE_ACTIONS = [
   { id: 'device.notify', params: true, effect: 'write' },
   { id: 'device.notify-cancel', params: true, effect: 'write' },
   { id: 'device.recorder', params: true, effect: 'write' },
+  { id: 'device.slots', params: true, effect: 'write' },
 ];
 
 const PERMISSIONS = ['mic', 'notifications', 'overlay'];
@@ -87,6 +88,30 @@ export function deviceCall(id, rawArgs = []) {
       }
       return err('device.recorder takes start[:<session>], stop or status.');
     }
+    case 'device.slots': {
+      // device.slots[:status] · device.slots:open:<target>[:<slot>] · device.slots:close:<slot> · device.slots:focus:<slot>
+      const [verb = 'status', ...rest] = args;
+      const v = verb.trim().toLowerCase();
+      const slotArg = (s) => (/^[1-4]$/.test(String(s ?? '').trim()) ? Number(String(s).trim()) : null);
+      if (v === '' || v === 'status' || v === 'state') return { tool: 'slots.status', args: {} };
+      if (v === 'close' || v === 'focus') {
+        const slot = slotArg(rest.join(':'));
+        if (!slot) return err(`device.slots:${v} takes a slot, 1 to 4.`);
+        if (v === 'close' && slot === 1) return err('Slot 1 is the main console and stays open.');
+        return { tool: `slots.${v}`, args: { slot } };
+      }
+      if (v === 'open') {
+        // the last part is the slot when it is 1-4; the rest is a console address or an https page
+        let parts = rest;
+        const last = slotArg(parts[parts.length - 1]);
+        if (last && parts.length > 1) parts = parts.slice(0, -1);
+        const target = parts.join(':').trim();
+        const a = /^https:\/\//i.test(target) ? { url: target } : target ? { target } : {};
+        if (last && parts.length < rest.length) a.slot = last;
+        return { tool: 'slots.open', args: a };
+      }
+      return err('device.slots takes status, open:<target>[:<slot>], close:<slot> or focus:<slot>.');
+    }
     default: return err(`Unknown device action ${id}.`);
   }
 }
@@ -107,6 +132,8 @@ export function describeDevice(tool, data) {
     case 'recorder.status': return d.running ? `Recording: ${d.session ?? ''}` : 'Not recording';
     case 'recorder.start': return d.awaitingConsent ? 'Recording waits for your yes on the phone' : 'Recording';
     case 'recorder.stop': return 'Recording stopped';
+    case 'slots.status': case 'slots.open': case 'slots.close': case 'slots.focus':
+      return `${d.count ?? 1} of ${d.max ?? 4} console slots open (${d.layout ?? 'single'}), slot ${d.focused ?? 1} has the focus`;
     default: return 'Done on the phone';
   }
 }

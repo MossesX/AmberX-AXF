@@ -154,6 +154,7 @@ tested), so it is reached the same four ways as any console action; the bridge's
 | `device.notify:<title>[:<text>]` | `notify.show` |
 | `device.notify-cancel[:<id>]` | `notify.cancel` / `notify.status` |
 | `device.recorder[:start[:<session>]\|stop\|status]` | `recorder.*` |
+| `device.slots[:status\|open:<target>[:<slot>]\|close:<slot>\|focus:<slot>]` | `slots.*` |
 
 - REST: `POST /api/console/action {"action":"device.mic:off"}`; state: `/api/console/control` `state panel:phone-bridge`.
 - MCP: `console_action { action: "device.wake:panel:phone-app" }`, `console_control { verb: "state", address: "panel:phone-bridge" }`.
@@ -163,6 +164,33 @@ tested), so it is reached the same four ways as any console action; the bridge's
 
 A tool that answers `permission` is asked for and retried once (`callWithPermissions`). Outside the app every action
 says the phone app isn't here. Part 1's `native.*` actions (overlay, safe area, update) stay as they are.
+
+## Four console slots (s6)
+
+Brett: "split the console wrapper so it runs on four slots at the same time". The app runs up to four consoles at once,
+each in its own WebView with its own `window.axfNative` (`SlotRules.java`, JUnit `SlotRulesTest`; `SlotHost.java`).
+
+- Slot 1 is the main console and always open; slots 2-4 open and close. One open slot fills the screen, two split it
+  (side by side in landscape, stacked in portrait), three or four share a 2x2 grid in slot order.
+- One slot has the focus (a tap moves it): it gets the keyboard, the mic (only the focused page may capture audio)
+  and the hub's calls. Phone-wide events (`mic`, `permission`, `recorder`, `link`, `slots`) reach every slot.
+- Each slot opens a console address (the `?axf-open=` target `console.wake` takes) or one of Brett's https pages;
+  any other page is refused (`bad_args`), and neither opens the console's home. The set is saved and comes back when the app starts.
+
+| Tool | Args | Answer |
+| --- | --- | --- |
+| `slots.status` (`slots`) | | `{ max: 4, count, layout: single\|split\|grid, focused, slots: [{ slot, open, url, focused }] }` |
+| `slots.open` | `target` or `url`, `slot?` (else the first free one), `focus?` (default true) | the status; `bad_args` when all four are open |
+| `slots.close` | `slot` (2-4; default the focused one) | the status; slot 1 answers `bad_args` |
+| `slots.focus` | `slot` (an open one) | the status |
+
+Capability `console-slots@1`; axHub reaches them as `amberx.slots_status|open|close|focus`. Without the UI:
+`device.slots:open:settings:2`, `device.slots:focus:2`, `device.slots:close:2`, `device.slots` (REST, MCP, CLI and
+voice as above); the state is under `slots` on `panel:phone-bridge`.
+
+Wiring: `ConsoleActivity` builds `new SlotHost(this, container, slot -> /* part 1's WebView setup, DeviceBridge.attach,
+DeviceTools/MicTools.register */)` and calls `restore()`; `WebHost.onPermissionRequest` also checks
+`host.micAllowed(view)`; back goes to `host.focusedWeb()`.
 
 ## Wiring in `ConsoleActivity` (part 1's file; the integration adds these lines)
 

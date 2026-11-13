@@ -2292,6 +2292,6 @@
     "status": "built",
     "wave": 1,
     "module": "app-console",
-    "notes": "apps/console-droid (DeviceBridge, BridgeContract, HubLink, DeviceTools, MicTools; JUnit) + apps/console-web/src/native (bridgeClient.mjs window.axfNative, deviceApi.ts device.* actions, panel:phone-bridge state; Node tests in CI). Recorder stays in AmberX until its capture service moves (recorder@1 not advertised). Kotlin twin deferred."
+    "notes": "apps/console-droid (DeviceBridge, BridgeContract, HubLink, DeviceTools, MicTools; JUnit) + apps/console-web/src/native (bridgeClient.mjs window.axfNative, deviceApi.ts device.* actions, panel:phone-bridge state; Node tests in CI). Recorder stays in AmberX until its capture service moves (recorder@1 not advertised). Four console slots at once (SlotRules/SlotHost, slots.* tools, device.slots action, console-slots@1). Kotlin twin deferred."
   }
 }

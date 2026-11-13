@@ -62,15 +62,21 @@ final class BridgeContract {
     static final String NOTIFY_SHOW = "notify.show";
     static final String NOTIFY_CANCEL = "notify.cancel";
     static final String NOTIFY_STATUS = "notify.status";
+    /** Up to four consoles side by side in the one app (Brett, Nov 13 2026: "runs on four slots at the same time"). */
+    static final String SLOTS_STATUS = "slots.status";
+    static final String SLOTS_OPEN = "slots.open";
+    static final String SLOTS_CLOSE = "slots.close";
+    static final String SLOTS_FOCUS = "slots.focus";
 
     static final List<String> TOOLS = Arrays.asList(
         PING, INFO, CAPABILITIES, PERM_STATUS, PERM_REQUEST, MIC_STATUS, MIC_SET,
-        REC_START, REC_STOP, REC_STATUS, OPEN, WAKE, NOTIFY_SHOW, NOTIFY_CANCEL, NOTIFY_STATUS);
+        REC_START, REC_STOP, REC_STATUS, OPEN, WAKE, NOTIFY_SHOW, NOTIFY_CANCEL, NOTIFY_STATUS,
+        SLOTS_STATUS, SLOTS_OPEN, SLOTS_CLOSE, SLOTS_FOCUS);
 
     /** Tools axHub may call through the device service; the rest need the page (they prompt or change a phone setting). */
     static final List<String> HUB_TOOLS = Arrays.asList(
         PING, INFO, CAPABILITIES, PERM_STATUS, MIC_STATUS, REC_START, REC_STOP, REC_STATUS, OPEN, WAKE,
-        NOTIFY_SHOW, NOTIFY_CANCEL, NOTIFY_STATUS);
+        NOTIFY_SHOW, NOTIFY_CANCEL, NOTIFY_STATUS, SLOTS_STATUS, SLOTS_OPEN, SLOTS_CLOSE, SLOTS_FOCUS);
 
     /** Starting a recording is never auto-approved anywhere (axHub decision #108); every other tool may be. */
     static final List<String> NEVER_AUTO = Arrays.asList(REC_START);
@@ -93,6 +99,10 @@ final class BridgeContract {
         alias(INFO, "info", "bridge_info", "version");
         alias(PING, "ping");
         alias(CAPABILITIES, "capabilities", "bridge_capabilities");
+        alias(SLOTS_STATUS, "slots", "amberx.slots", "slot.status");
+        alias(SLOTS_OPEN, "slot.open", "slot_open");
+        alias(SLOTS_CLOSE, "slot.close", "slot_close");
+        alias(SLOTS_FOCUS, "slot.focus", "slot_focus");
     }
 
     private static void alias(String tool, String... names) {
@@ -146,7 +156,8 @@ final class BridgeContract {
     static final String CAP_WAKE = "console-wake@1";
     static final String CAP_MIC = "mic@1";
     static final String CAP_NOTIFY = "notify@1";
-    static final List<String> CAPABILITIES_ALL = Arrays.asList(CAP_RECORDER, CAP_OPEN_URL, CAP_WAKE, CAP_MIC, CAP_NOTIFY);
+    static final String CAP_SLOTS = "console-slots@1";
+    static final List<String> CAPABILITIES_ALL = Arrays.asList(CAP_RECORDER, CAP_OPEN_URL, CAP_WAKE, CAP_MIC, CAP_NOTIFY, CAP_SLOTS);
 
     /** The capability a tool belongs to (its state travels with every AXPP answer), or null for the bridge's own. */
     static String capabilityOf(String tool) {
@@ -156,6 +167,7 @@ final class BridgeContract {
             case WAKE: return CAP_WAKE;
             case MIC_STATUS: case MIC_SET: return CAP_MIC;
             case NOTIFY_SHOW: case NOTIFY_CANCEL: case NOTIFY_STATUS: return CAP_NOTIFY;
+            case SLOTS_STATUS: case SLOTS_OPEN: case SLOTS_CLOSE: case SLOTS_FOCUS: return CAP_SLOTS;
             default: return null;
         }
     }
@@ -288,7 +300,9 @@ final class BridgeContract {
     static final String EV_WAKE = "wake";
     /** The axHub device link went up or down ({@code data.up}). */
     static final String EV_LINK = "link";
-    static final List<String> EVENTS = Arrays.asList(EV_RECORDER, EV_MIC, EV_PERMISSION, EV_WAKE, EV_LINK);
+    /** The slots changed (opened, closed, focused, laid out again): {@code slots.status}'s answer. */
+    static final String EV_SLOTS = "slots";
+    static final List<String> EVENTS = Arrays.asList(EV_RECORDER, EV_MIC, EV_PERMISSION, EV_WAKE, EV_LINK, EV_SLOTS);
 
     static JSONObject event(String name, JSONObject data) {
         if (!EVENTS.contains(name)) throw new IllegalArgumentException("unknown event " + name);

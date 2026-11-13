@@ -38,8 +38,10 @@ final class DeviceBridge {
     private final WebView web;
     private final Handler main = new Handler(Looper.getMainLooper());
     private final Map<String, Tool> tools = new LinkedHashMap<>();
-    /** The bridge on screen, for the hub link and the overlay (null when the activity is gone). */
+    /** The bridge on screen, for the hub link and the overlay (null when the activity is gone): the focused slot's. */
     static volatile DeviceBridge current;
+    /** Every slot's bridge (up to four, {@link SlotHost}); phone-wide events reach all of them. */
+    private static final List<DeviceBridge> live = new java.util.concurrent.CopyOnWriteArrayList<>();
 
     private DeviceBridge(Activity activity, WebView web) {
         this.activity = activity;
@@ -54,13 +56,20 @@ final class DeviceBridge {
         b.register(BridgeContract.INFO, args -> b.info());
         b.register(BridgeContract.CAPABILITIES, args -> b.capabilities());
         b.register(BridgeContract.PERM_STATUS, args -> permissions(activity));
+        live.add(b);
         current = b;
         return b;
     }
 
     void detach() {
-        if (current == this) current = null;
+        live.remove(this);
+        if (current == this) current = live.isEmpty() ? null : live.get(0);
     }
+
+    /** The focused slot's bridge takes the hub's calls and the overlay ({@link SlotHost#focus}). */
+    void makeCurrent() { current = this; }
+
+    WebView web() { return web; }
 
     /** A later step plugs a tool in; the name must be in the contract. */
     void register(String tool, Tool t) {
@@ -132,9 +141,11 @@ final class DeviceBridge {
         });
     }
 
-    /** A native event ({@link BridgeContract#EVENTS}) for {@code axfNative.on(name, fn)}. */
+    /** A native event ({@link BridgeContract#EVENTS}) for {@code axfNative.on(name, fn)}, in every open slot. */
     void emit(String event, JSONObject data) {
-        send(BridgeContract.event(event, data));
+        JSONObject message = BridgeContract.event(event, data);
+        if (!live.contains(this)) { send(message); return; }
+        for (DeviceBridge b : live) b.send(message);
     }
 
     /* ------------------------------------------------------------------ the bridge's own tools */
