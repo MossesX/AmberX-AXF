@@ -5,9 +5,11 @@
 import type { AxfRuntime } from '../axf/core';
 import { installActionTargets } from './actions';
 import { installPluginTargets } from './plugins';
+import { installControlSearch } from './search';
 
 export function installConsoleControl(rt: AxfRuntime): () => void {
   const actions = installActionTargets(rt);
   const plugins = installPluginTargets(rt);
-  return () => { actions.off(); plugins(); };
+  const search = installControlSearch(rt);
+  return () => { actions.off(); plugins(); search(); };
 }

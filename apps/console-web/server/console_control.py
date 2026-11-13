@@ -78,6 +78,79 @@ def view_of(address: str) -> str | None:
     return None
 
 
+# ---------------------------------------------------------------------- search (no console open)
+
+KIND_LABELS = {"view": "Page", "tab": "Tab", "subtab": "Tab", "setting": "Setting", "button": "Button", "function": "Action", "plugin": "Plugin",
+               "grid": "Grid", "row": "Row", "step": "Step", "panel": "Panel", "scroll": "Pane"}
+# same boosts as src/control/search.ts (the inventory source; kinds rank places before things)
+KIND_BOOST = {"view": 6, "tab": 4, "subtab": 3, "setting": 3, "plugin": 3, "row": 2, "step": 2, "panel": 1}
+SEARCH_DEFAULT_LIMIT = 20
+SEARCH_MAX_LIMIT = 200
+
+
+def _norm(s: str) -> str:
+    import unicodedata
+    return "".join(c for c in unicodedata.normalize("NFKD", (s or "").lower()) if not unicodedata.combining(c))
+
+
+def score_entry(label: str, detail: str | None, keywords: list[str] | None, kind: str, query: str) -> float:
+    """Port of core/engines/search.ts scoreEntry: every word must match; label hits rank highest. 0 = no match."""
+    words = [w for w in _norm(query).split() if w]
+    if not words:
+        return 0.0
+    lab = _norm(label)
+    rest = _norm(" ".join([detail or "", *[str(k) for k in (keywords or []) if k], KIND_LABELS.get(kind, kind)]))
+    full = _norm(query).strip()
+    score = 0.0
+    for w in words:
+        if lab == w:
+            s = 100
+        elif lab.startswith(w):
+            s = 60
+        elif re.search(r"(^|[^a-z0-9])" + re.escape(w), lab):
+            s = 40
+        elif w in lab:
+            s = 25
+        elif w in rest:
+            s = 10
+        else:
+            return 0.0
+        score += s
+    if len(words) > 1 and full in lab:
+        score += 30
+    return score - min(len(lab), 60) / 60
+
+
+def _address_ids(address: str) -> list[str]:
+    return [re.sub(r"[-_.=]", " ", seg.split(":", 1)[1]) for seg in (address or "").split("/") if ":" in seg]
+
+
+def search(q: str, kinds: list[str] | None = None, limit: int | None = None, targets: list[dict[str, Any]] | None = None) -> list[dict[str, Any]]:
+    """Rank the static inventory (or the given targets) for words; each hit carries its address. Raises invalid on no words."""
+    q = str(q or "").strip()
+    if not q:
+        raise ControlError("invalid", "search needs words (query.q)", field="query.q")
+    lim = max(1, min(int(limit or SEARCH_DEFAULT_LIMIT), SEARCH_MAX_LIMIT))
+    pool = targets if targets is not None else static_targets() + [
+        _target(t["address"], "subtab" if "/subtab:" in t["address"] else "tab", t.get("label") or t.get("id"), detail="Settings", keywords=[t.get("id"), "settings"], virtual=True)
+        for t in inventory().get("settingsTabs", []) or [] if t.get("address")]
+    best: dict[str, dict[str, Any]] = {}
+    for t in pool:
+        kind = t.get("kind", "")
+        if kinds and kind not in kinds:
+            continue
+        s = score_entry(t.get("label", ""), t.get("detail"), [*(t.get("keywords") or []), *(t.get("aliases") or []), *_address_ids(t["address"])], kind, q)
+        if s <= 0:
+            continue
+        hit = {"address": t["address"], "kind": kind, "label": t.get("label", ""), "score": round(s + KIND_BOOST.get(kind, 0), 3), "source": "inventory"}
+        for k in ("detail", "icon"):
+            if t.get(k):
+                hit[k] = t[k]
+        if t["address"] not in best or hit["score"] > best[t["address"]]["score"]:
+            best[t["address"]] = hit
+    return sorted(best.values(), key=lambda h: (-h["score"], h["label"], h["address"]))[:lim]
+
+
 # ---------------------------------------------------------------------- answers
 
 STATUS = {"invalid": 400, "validation": 422, "denied": 403, "not_found": 404, "ambiguous": 409, "confirmation_required": 409,

@@ -25,7 +25,7 @@ import type { AxfRuntime, SettingSpec } from '../core';
 import {
   CONSOLE_CONTROL_FRAME, CONSOLE_CONTROL_TARGETS_FRAME, CONSOLE_CONTROL_VERBS, CONSOLE_CONTROL_WIRE, ConsoleControlError, childAddress, consoleControlResult, failureOf, focusOptions, formatAddress, listTargets,
   normalizeConsoleControl, parseAddress, resolveForVerb, searchTargets, targetCan,
-  type Address, type ConsoleControlCommand, type ConsoleControlKind, type ConsoleControlResult, type ConsoleControlVerb, type ControlTarget, type ScrollSpec, type ScrollState, type TargetSnapshot,
+  type Address, type ConsoleControlCommand, type ConsoleControlKind, type ConsoleControlResult, type ConsoleControlVerb, type ControlTarget, type ScrollSpec, type ScrollState, type SearchHitOut, type SearchQuery, type TargetSnapshot,
 } from '../core/engines/console-control';
 import { consoleFieldValue } from '../core/engines/console-commands.mjs';
 import { useOptionalRuntime, useRuntime } from './AxfProvider';
@@ -78,6 +78,9 @@ export interface ControlScroller {
   containerOf(el: Element | null): Element | null;
 }
 
+/** Ranks search hits for the `search` verb (an app's own, wider search: ControlRegistry.setSearcher). */
+export type ControlSearcher = (query: SearchQuery) => (SearchHitOut & Record<string, unknown>)[];
+
 export const CONTROL_ACTION = 'console-control';
 export const CONTROL_ACTIONS = { focus: 'control.focus', open: 'control.open', press: 'control.press', set: 'control.set', scroll: 'control.scroll', search: 'control.search', state: 'control.state' } as const;
 export const CONTROL_HIGHLIGHT_CLASS = 'fx-control-focus';
@@ -120,6 +123,10 @@ export class ControlRegistry {
   private changed() { this.rev++; for (const fn of this.listeners) fn(); }
 
   setScroller(s: ControlScroller | null): void { this.scroller = s; }
+
+  /** An app-wide search (static inventory, help, loaded data) that replaces the built-in ranking of the `search` verb. */
+  private searcher: ControlSearcher | null = null;
+  setSearcher(s: ControlSearcher | null): void { this.searcher = s; }
   get hasScroller(): boolean { return !!this.scroller; }
 
   /** One registered entry by full address, else null. */
@@ -330,6 +337,7 @@ export class ControlRegistry {
 
   private search(cmd: ConsoleControlCommand) {
     const q = cmd.query!;
+    if (this.searcher) return consoleControlResult(cmd, { hits: this.searcher(q) });
     const snap = this.snapshot();
     const hits = searchTargets(snap, q);
     const have = new Set(hits.map((h) => h.address));
