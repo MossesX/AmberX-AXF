@@ -702,6 +702,14 @@ write('spacing.json', {
     },
     plan: cs.chromeSettingsPlan('molly'),
     missing: cs.chromeSettingsMissing('molly', ['chrome-tab-group', 'chrome-tab-group-molly', 'chrome-toolbar']),
+    // rows (Nov 13 2026): what a person says → the stored value, and the layout a row of N tabs gets
+    rows: {
+      parse: Object.fromEntries(['1', '3', 'three', '3 rows', 'Two', 'auto', 'Automatic', '0', '7', 'many', ''].map((v) => [v || '(empty)', cs.parseTabRows(v)])),
+      parseNumbers: [1, 3, 6, 7, 2.5].map((v) => cs.parseTabRows(v)),
+      override: cs.normalizeInstanceOverride('tab-group', { rows: 3, style: 'pills' }),
+      match: Object.fromEntries(['settings', 'the settings tabs', 'ui-review.sections', 'sections', 'review', 'nothing', ''].map((w) => [w || '(empty)', cs.matchTabGroup([{ id: 'ui-review.sections', label: 'Sections' }, { id: 'settings.tabs', label: 'Settings sections', visible: false }, { id: 'settings.main', label: 'Settings', visible: true }], w)])),
+      layout: Object.fromEntries([[10, '1'], [10, '3'], [10, '2'], [7, '3'], [2, '3'], [0, '3'], [10, 'auto'], [10, 'bogus']].map(([n, r]) => [`${n}x${r}`, cs.tabRowsLayout(n as number, r)])),
+    },
   });
 }
 write('components.json', {

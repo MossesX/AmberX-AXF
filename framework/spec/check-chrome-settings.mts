@@ -103,6 +103,18 @@ eq(f.overrides, { clean: cs.normalizeInstanceOverride('tab-group', { style: 'pil
 eq(cs.normalizeInstanceOverride('tab-group', { style: 'pills', position: 'left', badges: false, bogus: 1, density: 'huge', sticky: 'yes' }), { style: 'pills', position: 'left', badges: false }, 'unknown fields and bad values dropped');
 eq(cs.normalizeInstanceOverride('banner', { height: 999.6, surface: 'raised' }), { height: 48, surface: 'raised' }, 'numbers clamped + rounded');
 
+/* ---- rows (Nov 13 2026: stack a tab group's tabs on N rows) ---- */
+eq(f.rows.parse, Object.fromEntries(['1', '3', 'three', '3 rows', 'Two', 'auto', 'Automatic', '0', '7', 'many', ''].map((v) => [v || '(empty)', cs.parseTabRows(v)])), 'rows parse fixture');
+eq(f.rows.layout, Object.fromEntries([[10, '1'], [10, '3'], [10, '2'], [7, '3'], [2, '3'], [0, '3'], [10, 'auto'], [10, 'bogus']].map(([n, r]) => [`${n}x${r}`, cs.tabRowsLayout(n as number, r)])), 'rows layout fixture');
+eq(f.rows.match, Object.fromEntries(['settings', 'the settings tabs', 'ui-review.sections', 'sections', 'review', 'nothing', ''].map((w) => [w || '(empty)', cs.matchTabGroup([{ id: 'ui-review.sections', label: 'Sections' }, { id: 'settings.tabs', label: 'Settings sections', visible: false }, { id: 'settings.main', label: 'Settings', visible: true }], w)])), 'rows match fixture');
+eq(cs.matchTabGroup([{ id: 'settings.tabs', label: 'Settings sections', visible: false }, { id: 'settings.main', label: 'Settings', visible: true }], 'the settings tabs'), 'settings.main', '"the settings tabs" = the Settings row on screen');
+eq(cs.parseTabRows('three'), '3', '"three" = 3 rows'); eq(cs.parseTabRows(7), null, 'more than six rows refused');
+eq(cs.normalizeInstanceOverride('tab-group', { rows: 3 }), { rows: '3' }, 'a numeric rows override is kept as its option');
+eq(cs.tabRowsLayout(10, '3'), { rows: 3, perRow: 4, wrap: true, vars: { '--fx-tabs-per-row': '4' }, attrs: { 'data-fx-tabs-rows': '3' } }, '10 tabs on 3 rows: 4 a row');
+eq(cs.tabRowsLayout(10, '1').wrap, false, 'one row = today (the asset overflow applies)');
+eq(cs.tabRowsLayout(2, '3').rows, 2, 'never more rows than tabs');
+ok(cs.CHROME_FIELDS['tab-group'].some((x) => x.key === 'rows' && x.instanceOnly && x.default === '1'), 'every tab group offers Rows (default 1)');
+
 /* ---- errors ---- */
 eq(f.errors, { ok: cs.chromeSettingsErrors(copy), badFor: cs.chromeSettingsErrors({ id: 'chrome-x', data: { for: 'clock' } }), self: cs.chromeSettingsErrors({ id: 'chrome-toolbar-a', data: { for: 'toolbar', extends: 'chrome-toolbar-a' } }), badName: cs.chromeSettingsErrors({ id: 'my-settings', data: { for: 'toolbar' } }), notAsset: cs.chromeSettingsErrors(null) }, 'errors fixture');
 ok(cs.chromeSettingsErrors({ id: 'chrome-x', data: { for: 'clock' } }).length === 2 && cs.chromeSettingsErrors({ id: 'chrome-toolbar-a', data: { for: 'toolbar', extends: 'chrome-toolbar-a' } }).length === 1, 'error counts');

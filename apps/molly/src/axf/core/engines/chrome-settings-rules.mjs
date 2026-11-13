@@ -164,6 +164,66 @@ for (const t of CHROME_TYPES) {
   CHROME_FIELDS[t].push({ key: CHROME_TAP_FIELD, label: 'Tap to confirm (touch)', kind: 'choice', options: [...CHROME_TAP_OPTIONS], labels: { inherit: 'Same as all', on: 'On', off: 'Off' }, default: 'inherit', group: 'behaviour', level: 'simple', instanceOnly: true });
 }
 
+/**
+ * Rows (Brett, Nov 13 2026, build tab-groups-choose-how-many-rows-tabs: "I want to be able to select how many rows it
+ * is so you can stack tab groups, so it fits on the page without scrolling to the right, you can say three and it will
+ * list three rows of tabs"). One instance-only choice per tab group: '1' (default, one row: the asset's overflow
+ * applies), '2'…'6' (the tabs wrap evenly over that many rows, so no row scrolls sideways) or 'auto' (as many rows as
+ * the tabs need to fit). Left / right rails and dropdown rows ignore it (they never scroll sideways).
+ */
+export const TAB_ROWS_FIELD = 'rows';
+export const TAB_ROWS_MAX = 6;
+export const TAB_ROWS_OPTIONS = ['1', '2', '3', '4', '5', '6', 'auto'];
+const ROW_WORDS = { one: 1, single: 1, two: 2, double: 2, three: 3, triple: 3, four: 4, five: 5, six: 6, auto: 'auto', automatic: 'auto', fit: 'auto', 'as needed': 'auto', default: 1, reset: 1 };
+/** A rows value from anything a person or a caller says ("3", 3, "three", "3 rows", "auto"): '1'…'6' | 'auto', else null. */
+export function parseTabRows(v) {
+  if (typeof v === 'number') return Number.isInteger(v) && v >= 1 && v <= TAB_ROWS_MAX ? String(v) : null;
+  if (typeof v !== 'string') return null;
+  const s = v.trim().toLowerCase().replace(/\s+rows?$/, '').trim();
+  const w = ROW_WORDS[s] ?? (/^\d+$/.test(s) ? Number(s) : null);
+  if (w === 'auto') return 'auto';
+  return typeof w === 'number' && w >= 1 && w <= TAB_ROWS_MAX ? String(w) : null;
+}
+/**
+ * How a row lays its tabs out for a rows value: `rows` = 1…6 | 'auto'; `perRow` = tabs on each full row (the tabs
+ * share the rows evenly: ceil(count / rows)); `wrap` = the row wraps instead of scrolling. Fewer tabs than rows =
+ * one row per tab is never forced: the row count drops to the tab count. `vars` / `attrs` go on the row element.
+ */
+export function tabRowsLayout(count, value) {
+  const n = Math.max(0, Math.floor(Number(count) || 0));
+  const r = parseTabRows(value ?? '1') ?? '1';
+  if (r === 'auto') return { rows: 'auto', perRow: 0, wrap: true, vars: {}, attrs: { 'data-fx-tabs-rows': 'auto' } };
+  const rows = Math.max(1, Math.min(Number(r), Math.max(1, n)));
+  if (rows <= 1) return { rows: 1, perRow: n, wrap: false, vars: {}, attrs: {} };
+  const perRow = Math.ceil(n / rows);
+  return { rows, perRow, wrap: true, vars: { '--fx-tabs-per-row': String(perRow) }, attrs: { 'data-fx-tabs-rows': String(rows) } };
+}
+/**
+ * Which tab group a person means ("the settings tabs", "ui-review.sections", "sections"): `rows` = the tab groups on
+ * screen ({ id, label, visible }); the exact id wins, then an id or label made of the words, then one containing them;
+ * on screen beats hidden. "tabs" / "tab" / "row" / "the" are dropped. null when nothing matches.
+ */
+export function matchTabGroup(rows, words) {
+  const list = (Array.isArray(rows) ? rows : []).filter((r) => r && typeof r.id === 'string');
+  const raw = String(words ?? '').trim();
+  if (!raw) return null;
+  const exact = list.find((r) => r.id === raw);
+  if (exact) return exact.id;
+  const norm = (v) => String(v ?? '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').replace(/\b(the|tabs?|rows?|bar|group)\b/g, ' ').replace(/\s+/g, ' ').trim();
+  const want = norm(raw);
+  if (!want) return null;
+  const score = (r) => {
+    const id = norm(r.id), label = norm(r.label);
+    if (id === want || label === want) return 3;
+    if (id.split(' ').includes(want) || label.split(' ').includes(want)) return 2;
+    if (id.includes(want) || label.includes(want)) return 1;
+    return 0;
+  };
+  const best = list.map((r, i) => ({ r, i, s: score(r) })).filter((x) => x.s > 0).sort((a, b) => b.s - a.s || Number(!!b.r.visible) - Number(!!a.r.visible) || a.i - b.i)[0];
+  return best ? best.r.id : null;
+}
+CHROME_FIELDS['tab-group'].push({ key: TAB_ROWS_FIELD, label: 'Rows', kind: 'choice', options: [...TAB_ROWS_OPTIONS], labels: { 1: '1 (one row)', auto: 'Auto (as many as fit)' }, default: '1', group: 'look', level: 'simple', instanceOnly: true });
+
 /** The tabs every chrome settings interface starts with (a settings asset may relabel, reorder or hide them). */
 export const CHROME_SETTINGS_TABS = [
   { id: 'look', label: 'Look', icon: 'palette', order: 10 },
@@ -181,6 +241,7 @@ export function normalizeInstanceOverride(type, raw) {
   for (const f of CHROME_FIELDS[type]) {
     const v = raw[f.key];
     if (v === undefined || v === null) continue;
+    if (type === 'tab-group' && f.key === TAB_ROWS_FIELD) { const r = parseTabRows(v); if (r) out[f.key] = r; continue; }
     if (f.kind === 'toggle' && typeof v === 'boolean') out[f.key] = v;
     else if (f.kind === 'choice' && typeof v === 'string' && f.options.includes(v)) out[f.key] = v;
     else if (f.kind === 'number' && typeof v === 'number' && Number.isFinite(v)) out[f.key] = Math.min(f.max ?? v, Math.max(f.min ?? v, Math.round(v)));
