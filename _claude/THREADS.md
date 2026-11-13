@@ -781,7 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 02:00 UTC · `remove-the-no-new-android-or-kotlin-work-rule-build-android-twins-in-parallel` s1 done (all) · orchestrator
 - 2026-11-13 02:02 UTC · `remove-the-no-new-android-or-kotlin-work-rule-build-android-twins-in-parallel` PR #542 (all) · builds-live
 - 2026-11-13 02:02 UTC · `remove-the-no-new-android-or-kotlin-work-rule-build-android-twins-in-parallel` note (all) · orchestrator
 - 2026-11-13 02:02 UTC · `remove-the-no-new-android-or-kotlin-work-rule-build-android-twins-in-parallel` s2 done, → built (all) · orchestrator
@@ -1181,6 +1180,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 10:58 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` s17 done (all) · orchestrator
 - 2026-11-13 11:00 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` s18 done (all) · orchestrator
 - 2026-11-13 11:01 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` s20 done (all) · orchestrator
+- 2026-11-13 11:03 UTC · `stop-the-molly-guide-from-popping-up-and-talking-every-time-the-console-loads-n` PR #564 (all) · builds-live
 
 ## Token passes (log)
 
