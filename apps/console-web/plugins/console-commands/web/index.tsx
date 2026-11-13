@@ -73,7 +73,7 @@ function pickedCommand(): string {
   try {
     const u = new URL(window.location.href);
     const id = u.searchParams.get('axf-cmd') ?? '';
-    if (!id) return '';
+    if (!id || id === 'search') return ''; // ?axf-cmd=search&q= is the console's search palette deep link, not a queued command
     u.searchParams.delete('axf-cmd');
     window.history.replaceState(window.history.state, '', u.toString());
     return /^[A-Za-z0-9_-]{1,40}$/.test(id) ? id : '';

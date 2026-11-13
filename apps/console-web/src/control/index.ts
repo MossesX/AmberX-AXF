@@ -9,6 +9,7 @@ import { installControlSearch } from './search';
 import { installControlExecutor } from './executor';
 import { installVoiceControl } from '../actions/voice-control';
 import { installConsoleControlActions } from '../actions/console-control';
+import { installSearchPalette } from './SearchPalette';
 
 export function installConsoleControl(rt: AxfRuntime): () => void {
   const actions = installActionTargets(rt);
@@ -17,5 +18,6 @@ export function installConsoleControl(rt: AxfRuntime): () => void {
   const executor = installControlExecutor(rt);
   const voice = installVoiceControl(rt);
   const verbs = installConsoleControlActions(rt);
-  return () => { actions.off(); plugins(); search(); executor(); voice(); verbs(); };
+  const palette = installSearchPalette(rt);
+  return () => { actions.off(); plugins(); search(); executor(); voice(); verbs(); palette(); };
 }
