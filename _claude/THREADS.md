@@ -792,9 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 18:54 UTC · `quick-settings-pinned-collapsible-pane` → pending, note (all) · reconciler
-- 2026-11-13 18:55 UTC · `transparency-token-works-every-dialog` PR #632 (all) · builds-live
-- 2026-11-13 18:56 UTC · `console-android-app-thin-webview-wrapper` s2 done (all) · orchestrator
 - 2026-11-13 18:55 UTC · `transparency-token-works-every-dialog` s4 done, → built (all) · orchestrator
 - 2026-11-13 18:56 UTC · `transparency-token-works-every-dialog` note (all) · orchestrator
 - 2026-11-13 18:56 UTC · `skin-axhub-override-switch-greyed-out` added (0 steps) (all) · console
@@ -1192,6 +1189,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 20:45 UTC · `land-overlay-preview-ui-review-resolve` PR #653 (all) · builds-live
 - 2026-11-13 20:45 UTC · `land-overlay-preview-ui-review-resolve` s3 done, → built (all) · orchestrator
 - 2026-11-13 20:45 UTC · `per-instance-settings-small-live-preview` added (0 steps) (all) · console
+- 2026-11-13 20:45 UTC · `per-instance-settings-small-live-preview` → queued, note (all) · console
+- 2026-11-13 20:45 UTC · `full-voice-control-resolve-inventory` added (0 steps) (all) · console
+- 2026-11-13 20:46 UTC · `full-voice-control-resolve-inventory` → queued, note (all) · console
 
 ## Token passes (log)
 

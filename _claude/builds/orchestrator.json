@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T20:46:01.895Z",
+ "updatedAt": "2026-11-13T20:46:19.070Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -133949,21 +133949,64 @@
    "title": "Per-instance settings: small live preview pane",
    "category": "",
    "detail": "Follow-up to the landed per-toolbar settings (per-toolbar-settings-fix-failing-chrome). In the settings interface of every individual toolbar, nav menu, application menu and tab group (and dialog), add a small live preview pane at the top: a compact sample of that element type rendered with seed data (e.g. 2-3 toolbar icons with a badge, 2 tab groups of a few tabs with one active, a short nav menu with one selected item, an app menu with a submenu). It hot-renders every setting change in real time (style, colours, transparency, layout, density, hover/active states, with a hover/press demo toggle), before Apply. Collapsible, light/dark toggle, and it uses the real framework components and the instance's tokens. Full API. Tests, help, Shipped features.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P1",
    "createdAt": "2026-11-13T20:45:51.589Z",
-   "updatedAt": "2026-11-13T20:45:51.589Z",
+   "updatedAt": "2026-11-13T20:45:55.511Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T20:45:55.511Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
     "said": "on the per toolbar, per nav menu, per application menu, per tab group settings I need a small preview pane, a couple of icons or two tab groups with some seed data, showing what the settings look like",
     "at": "2026-11-13T20:45:51.589Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "full-voice-control-resolve-inventory",
+   "title": "Full voice control: resolve inventory.json and land",
+   "category": "",
+   "detail": "Branch claude/full-voice-control-merge-main-and-land clashed with main only in apps/console-web/src/control/inventory.json (generated control inventory). Merge origin/main, regenerate the inventory from the controls (or union both sides' entries), run the tests, push, then land on main right away.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-13T20:45:58.911Z",
+   "updatedAt": "2026-11-13T20:46:11.530Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T20:46:11.530Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "land everything that's completed",
+    "at": "2026-11-13T20:45:58.911Z",
     "source": "",
     "session": "",
     "link": "",
