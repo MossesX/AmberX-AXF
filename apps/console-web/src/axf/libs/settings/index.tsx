@@ -146,7 +146,7 @@ function SettingControl({ spec, off = false }: { spec: SettingSpec; off?: boolea
     case 'section':
       return <h3 className="axf-settings__section">{spec.label}</h3>;
     case 'toggle':
-      control = <Switch hideLabel className="axf-settings__switch" label={spec.label} text={value === true ? 'On' : 'Off'} checked={value === true} disabled={locked} onChange={(on) => set(on)} />;
+      control = <Switch hideLabel className="axf-settings__switch" label={spec.label} text={value === true ? 'On' : 'Off'} checked={value === true} disabled={locked} onChange={(on) => { if (on && spec.confirm && typeof globalThis.confirm === 'function' && !globalThis.confirm(spec.confirm)) return; set(on); }} />;
       break;
     case 'slider':
       return (

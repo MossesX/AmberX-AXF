@@ -644,9 +644,9 @@
     "src/axf/core/project.ts": "84be834f0c45169c",
     "src/axf/core/registry.ts": "8cf580aca5b3988e",
     "src/axf/core/rules-brief.mjs": "08110b73aa902026",
-    "src/axf/core/runtime.ts": "7fd8f9b5f0e36f2a",
+    "src/axf/core/runtime.ts": "39a95eb64413b309",
     "src/axf/core/session-schema.mjs": "1f8a8e1e3cd76d04",
-    "src/axf/core/settings.ts": "32c55a5d2df989c1",
+    "src/axf/core/settings.ts": "b53d99068b7a9b42",
     "src/axf/core/shipped-manifest.d.mts": "74953e3d3940936f",
     "src/axf/core/shipped-manifest.mjs": "64607346406d57c5",
     "src/axf/core/sse.ts": "08f145e37866aba1",
@@ -731,7 +731,7 @@
     "src/axf/libs/recorder/index.tsx": "e21b40fcbae20d5a",
     "src/axf/libs/recorder/library.json": "a66898197518cad3",
     "src/axf/libs/recorder/recorder.css": "a39f75631eec52f0",
-    "src/axf/libs/settings/index.tsx": "a982375a69b4294e",
+    "src/axf/libs/settings/index.tsx": "a006a8d08007ff74",
     "src/axf/libs/settings/levels.tsx": "2fa6f39d1df720ac",
     "src/axf/libs/settings/skinwhere.tsx": "048217833e5a7830",
     "src/axf/libs/toolbars/index.tsx": "e7cd441bccf38be3",
@@ -791,7 +791,7 @@
     "src/axf/react/editorSync.ts": "4d2dfe9847350acb",
     "src/axf/react/hubAppLook.ts": "5e9a996b10ea76a0",
     "src/axf/react/hubAppearance.ts": "355ca539e1bed83b",
-    "src/axf/react/index.ts": "78b8197123a81cd2",
+    "src/axf/react/index.ts": "fbbb1797324be62e",
     "src/axf/react/library.ts": "a1e3ee41389eca00",
     "src/axf/react/placeTip.ts": "72554dc0b42e13a3",
     "src/axf/react/placement.tsx": "e50243526c856169",
@@ -918,6 +918,7 @@
     "src/axf/schemas/shipped-manifest.json": "b0ed855f1141e630",
     "src/axf/schemas/swarm.json": "35dd72b97f7a4a89",
     "src/axf/schemas/ui-review.json": "0a34b5e29eb76cca",
-    "src/axf/ui/axf.css": "bfe11bb05529b392"
+    "src/axf/ui/axf.css": "bfe11bb05529b392",
+    "src/axf/react/components/HubSkinLock.tsx": "60a7fc04cfa84809"
   }
 }

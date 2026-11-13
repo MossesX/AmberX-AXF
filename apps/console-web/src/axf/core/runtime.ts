@@ -138,6 +138,19 @@ export const APPEARANCE_LOCK_KEY = 'axf.lock.appearance';
 export const HUB_SKIN_ONLY_KEY = 'axf.lock.hubskin';
 /** The settings group holding the switch; Settings → Appearance draws it first. */
 export const HUB_SKIN_ONLY_GROUP = 'axf.appearance.hubskin';
+/**
+ * Override (setting, true = on; drawn under "Get my skin only from axHub"; Brett, Nov 13 2026: "clicking it automatically
+ * turns off axHub mode, you only have one or the other"). The two are mutually exclusive whichever way either is set:
+ * Override on clears Skin from axHub only, axHub-only on clears Override. On = the skin and assets are editable here and
+ * no longer refresh or inherit from axHub; every look change made while it is on is recorded in HUB_SKIN_OVERRIDDEN_KEY.
+ */
+export const HUB_SKIN_OVERRIDE_KEY = 'axf.lock.hubskin.override';
+/** What was edited while Override is on (`asset:<type>`, `setting:<key>`, `skin`): the parts marked as overridden. */
+export const HUB_SKIN_OVERRIDDEN_KEY = 'axf.lock.hubskin.overridden';
+/** The note on every area Skin from axHub only greys out (Brett's wording, Nov 13 2026). */
+export const HUB_SKIN_LOCK_NOTE = 'This is locked: your skin and assets come from axHub. You can still edit it, but if you do it will no longer refresh or inherit any of its data from axHub.';
+/** The one confirm before Override goes on (the note's link, the switch). */
+export const HUB_SKIN_OVERRIDE_CONFIRM = 'Override axHub? "Get my skin only from axHub" goes off and you can edit the skin and assets here. What you edit will no longer refresh or inherit any of its data from axHub.';
 /** app-look@1 of an app without a hub source (engines/skin.ts). Not an appearance setting: it holds them. */
 export const APP_LOOK_KEY = 'axf.skin.look';
 /** The app whose colours the shared document's palette follows (axHub's own pages draw with it). */
@@ -381,10 +394,18 @@ export class AxfRuntime {
     this.settings.onChange(SPACING_KEY, () => { this.terminal.ok('hot-swap', `spacing: ${this.spacing()}`); });
     // Skin from axHub only, however it was switched (the setting row, settings.set, an action): redraw from the hub now
     this.settings.onChange(HUB_SKIN_ONLY_KEY, () => this.hubSkinOnlyChanged());
+    // Override and axHub-only are one or the other, however either was set (row, settings.set, action, voice)
+    this.settings.onChange(HUB_SKIN_OVERRIDE_KEY, () => {
+      if (this.hubSkinOverride() && this.hubSkinOnly()) this.settings.clear(HUB_SKIN_ONLY_KEY);
+      this.terminal.ok('appearance', this.hubSkinOverride() ? 'axHub skin overridden: edits here stop refreshing from axHub' : 'axHub skin override off');
+    });
     // Look settings (Sliders, per-asset tokens, banner looks, rolls…) are shared through the axHub look like the slots
     // (Nov 1 2026, Brett: "Any theme change applies to all"): every local change goes to the hub document.
     this.settings.onAnyChange((key, value) => {
       if (isAppearanceSetting(key) && !isRetiredLookSetting(key)) this.pushAppearance({ settings: { [key]: value ?? null } });
+      // Override on: every look change made here marks that part as overridden (it no longer follows axHub)
+      if (key === APP_LOOK_KEY) this.markHubOverridden('skin');
+      else if (key.startsWith('axf.custom.') || (isAppearanceSetting(key) && !isRetiredLookSetting(key))) this.markHubOverridden(`setting:${key}`);
     });
     // Hot render (Brett, Oct 23 2026): "whenever settings are changed that affect the UI, render immediately". Any
     // settings change is a state change, so everything that reads a setting while it renders (banners, chrome, plugin
@@ -1569,6 +1590,7 @@ export class AxfRuntime {
     }
     this.set(patch, true);
     this.recordDesignOverride(type, next); // a look setting: it reaches the hub with the other look settings
+    if (type !== 'uac-policy') this.markHubOverridden(`asset:${type}`);
     if (type !== 'uac-policy') this.pushAppearance({ slots: { [type]: next }, ...(type === 'color-theme' ? { palette: this.appearancePalette() } : {}) });
     return true;
   }
@@ -2025,8 +2047,48 @@ export class AxfRuntime {
     return true;
   }
 
+  /** Is Override on (Settings → Appearance, under the axHub-only switch; default off)? */
+  hubSkinOverride(): boolean { return this.settings.get(HUB_SKIN_OVERRIDE_KEY) === true; }
+
+  /**
+   * Switch Override. On turns "Get my skin only from axHub" off and unlocks editing; off leaves the app's own look
+   * (turn axHub-only on to follow axHub again, which clears the overridden marks). The UI asks once first
+   * (HUB_SKIN_OVERRIDE_CONFIRM); the API calls this directly.
+   */
+  setHubSkinOverride(on: boolean): boolean {
+    if (on && !this.mayChangeLook()) {
+      this.toast('Your role cannot change the look, so it cannot override axHub either.', 'danger', 'Permission denied');
+      return false;
+    }
+    if (on === this.hubSkinOverride()) return true;
+    if (on) this.settings.set(HUB_SKIN_OVERRIDE_KEY, true); else this.settings.clear(HUB_SKIN_OVERRIDE_KEY);
+    this.toast(on ? 'Overriding axHub: you can edit the skin and assets here. What you edit no longer refreshes from axHub.' : 'Override off.', 'info', 'Appearance');
+    return true;
+  }
+
+  /** The parts edited while Override was on (`asset:<type>`, `setting:<key>`, `skin`), oldest first. */
+  hubOverridden(): string[] {
+    const v = this.settings.get(HUB_SKIN_OVERRIDDEN_KEY);
+    return Array.isArray(v) ? v.filter((x): x is string => typeof x === 'string') : [];
+  }
+
+  /** Is this asset type (or setting key, or 'skin') marked as overridden? */
+  isHubOverridden(part: string): boolean {
+    const all = this.hubOverridden();
+    return all.includes(part) || all.includes(`asset:${part}`) || all.includes(`setting:${part}`);
+  }
+
+  private markHubOverridden(part: string): void {
+    if (!this.hubSkinOverride()) return;
+    const all = this.hubOverridden();
+    if (!all.includes(part)) this.settings.set(HUB_SKIN_OVERRIDDEN_KEY, [...all, part] as unknown as SettingValue);
+  }
+
   private hubSkinOnlyChanged(): void {
     const on = this.hubSkinOnly();
+    // one or the other: following axHub again ends the override and its marks (the hub's data is drawn again)
+    if (on && this.hubSkinOverride()) this.settings.clear(HUB_SKIN_OVERRIDE_KEY);
+    if (on && this.hubOverridden().length) this.settings.clear(HUB_SKIN_OVERRIDDEN_KEY);
     this.lookPreview = null;
     this.applyAppearance(this.lastAppearance);
     this.bumpLook();
@@ -3049,6 +3111,7 @@ export class AxfRuntime {
     const turn = (arg: string | undefined, cur: boolean) => (arg === 'on' ? true : arg === 'off' ? false : !cur);
     a.register('appearance.lock', ([v]) => { this.setAppearanceLocked(turn(v, this.settings.get(APPEARANCE_LOCK_KEY) === true)); }, { label: 'Lock the look', params: true });
     a.register('appearance.hubskin', ([v]) => { this.setHubSkinOnly(turn(v, this.hubSkinOnly())); }, { label: 'Get my skin only from axHub', params: true, effect: 'write' });
+    a.register('appearance.hubskin.override', ([v]) => { this.setHubSkinOverride(turn(v, this.hubSkinOverride())); }, { label: 'Override axHub skin', params: true, effect: 'write' });
     a.register('inspector', ([v]) => { this.setInspectorShown(turn(v, this.inspectorShown())); }, { label: 'Active assets pane', params: true });
     a.register('asset.json', ([type, id]) => this.openDialog('asset-json', { type, id }), { label: 'View asset JSON', params: true });
     a.register('asset.copy', ([type, id]) => {
