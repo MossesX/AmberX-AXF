@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T18:23:56.209Z",
+ "updatedAt": "2026-11-13T18:25:37.270Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -127007,7 +127007,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:14:45.988Z",
-   "updatedAt": "2026-11-13T18:20:42.356Z",
+   "updatedAt": "2026-11-13T18:25:35.557Z",
    "builtAt": "",
    "notes": [
     {
@@ -127021,6 +127021,10 @@
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-decision-dialog-ui-review-other--paulie.",
      "at": "2026-11-13T18:19:55.254Z"
+    },
+    {
+     "text": "Duplicate dispatch: two headless Opus sessions (Ping Paulie, Snap Sully; slots hl-mwfaxg9r-jh and hl-mwfayc64-ji) were started at 18:20 on the same worktree and branch and were overwriting each other's files (decision-dialog/server/__init__.py, ui-review/server/decisions.py). One session stepped back without committing so the other can finish. Nothing committed from it. Dispatcher should not launch two sessions per build/worktree.",
+     "at": "2026-11-13T18:25:35.557Z"
     },
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-decision-dialog-ui-review-other--sully.",

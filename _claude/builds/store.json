@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4635,
- "updatedAt": "2026-11-13T18:23:56.209Z",
+ "rev": 4636,
+ "updatedAt": "2026-11-13T18:25:37.270Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -197694,7 +197694,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:14:45.988Z",
-   "updatedAt": "2026-11-13T18:20:42.356Z",
+   "updatedAt": "2026-11-13T18:25:35.557Z",
    "builtAt": "",
    "notes": [
     {
@@ -197708,6 +197708,10 @@
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-decision-dialog-ui-review-other--paulie.",
      "at": "2026-11-13T18:19:55.254Z"
+    },
+    {
+     "text": "Duplicate dispatch: two headless Opus sessions (Ping Paulie, Snap Sully; slots hl-mwfaxg9r-jh and hl-mwfayc64-ji) were started at 18:20 on the same worktree and branch and were overwriting each other's files (decision-dialog/server/__init__.py, ui-review/server/decisions.py). One session stepped back without committing so the other can finish. Nothing committed from it. Dispatcher should not launch two sessions per build/worktree.",
+     "at": "2026-11-13T18:25:35.557Z"
     },
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-decision-dialog-ui-review-other--sully.",
@@ -197740,10 +197744,10 @@
     "queuedAt": "2026-11-13T18:14:48.668Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-decision-dialog-ui-review-other--sully",
+    "session": "axf-decision-dialog-ui-review-other--paulie",
     "slot": "",
     "model": "Opus",
-    "launchedAt": "2026-11-13T18:20:36.175Z",
+    "launchedAt": "2026-11-13T18:19:54.760Z",
     "runs": 1,
     "lastRun": null,
     "split": {
@@ -197756,7 +197760,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-13T18:20:36.175Z",
+    "dispatchedAt": "2026-11-13T18:19:54.760Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -197765,7 +197769,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-13T18:20:36.175Z",
+    "pickedAt": "2026-11-13T18:19:54.760Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
