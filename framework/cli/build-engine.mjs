@@ -22,6 +22,7 @@ import { REGISTRY as LEDGER_REGISTRY, jsonSchemas as ledgerJsonSchemas } from '.
 import { REGISTRY as DEPLOY_LOG_REGISTRY, jsonSchemas as deployLogJsonSchemas } from '../core/deploy-log.mjs';
 import { REGISTRY as BUILD_HOOK_REGISTRY, jsonSchemas as buildHookJsonSchemas } from '../core/build-hook.mjs';
 import { REGISTRY as SHIPPED_MANIFEST_REGISTRY, jsonSchemas as shippedManifestJsonSchemas } from '../core/shipped-manifest.mjs';
+import { REGISTRY as MERGE_CONFIRM_REGISTRY, jsonSchemas as mergeConfirmJsonSchemas } from '../core/merge-confirm.mjs';
 import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 import { applyOptions, readOptions, resolveOptions } from './build-options.mjs';
@@ -898,6 +899,9 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
   // shipped-manifest@1: what the orchestrator sends Shipped features when a build lands
   for (const [n, schema] of Object.entries(shippedManifestJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
   const smreg = join(FRAMEWORK_DIR, 'schemas/shipped-manifest.json'); writeFileSync(smreg, JSON.stringify(SHIPPED_MANIFEST_REGISTRY, null, 2) + '\n'); written.push(smreg);
+  // merge-confirm@1: a merge is merged only once GitHub, read back, confirms it (states, evidence, backoff, the record every merge path writes)
+  for (const [n, schema] of Object.entries(mergeConfirmJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
+  const mcreg = join(FRAMEWORK_DIR, 'schemas/merge-confirm.json'); writeFileSync(mcreg, JSON.stringify(MERGE_CONFIRM_REGISTRY, null, 2) + '\n'); written.push(mcreg);
   return written;
 }
 
