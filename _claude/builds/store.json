@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4002,
- "updatedAt": "2026-11-13T04:21:05.799Z",
+ "rev": 4003,
+ "updatedAt": "2026-11-13T06:12:06.112Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -174433,7 +174433,7 @@
    "title": "Fix conflicts and land Build Plan 1 (skins, one-row tables, backgrounds, asset overrides)",
    "category": "merge",
    "detail": "Branch claude/build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides conflicts with main in 7 files: ChromeContext.tsx (framework + amberx-droid, axhub-web, console-web, molly copies), build-orchestrator/web/pipeline.tsx, framework/spec/PORTING.md. Brett: pull main in and merge it right away. Keep both sides' intent (tap-to-confirm #524 and skins).",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -174441,7 +174441,7 @@
    "pr": "#532",
    "priority": "P0",
    "createdAt": "2026-11-12T22:16:05.972Z",
-   "updatedAt": "2026-11-13T00:00:56.565Z",
+   "updatedAt": "2026-11-13T06:12:04.295Z",
    "builtAt": "",
    "notes": [
     {
@@ -174491,6 +174491,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-13T00:00:56.565Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T06:12:04.295Z"
     }
    ],
    "approvals": [],
@@ -174508,7 +174512,7 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "2026-11-12T23:29:01.857Z",
+    "queuedAt": "2026-11-13T06:12:03.824Z",
     "queuedBy": "console",
     "account": "",
     "session": "",
@@ -174589,7 +174593,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
