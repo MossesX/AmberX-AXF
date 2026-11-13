@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4454,
- "updatedAt": "2026-11-13T12:35:39.318Z",
+ "rev": 4455,
+ "updatedAt": "2026-11-13T12:35:45.796Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -187792,7 +187792,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-13T12:26:26.762Z",
-     "updatedAt": "2026-11-13T12:35:31.246Z"
+     "updatedAt": "2026-11-13T12:35:41.707Z"
     },
     {
      "id": "s5",
@@ -188188,7 +188188,13 @@
     "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-13T12:35:39.971Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -188318,7 +188324,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -188385,7 +188391,13 @@
     "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-13T12:35:39.971Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -188515,7 +188527,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -188539,7 +188551,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T12:33:30.406Z",
-   "updatedAt": "2026-11-13T12:33:39.641Z",
+   "updatedAt": "2026-11-13T12:35:38.612Z",
    "builtAt": "",
    "notes": [
     {
@@ -188549,11 +188561,97 @@
     {
      "text": "Queued by console.",
      "at": "2026-11-13T12:33:37.587Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"8f7fbe97-fde1-4b96-af0a-afa6f55a15f8\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-13T12:35:38.612Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-13T12:35:38.612Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 2,
+     "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"8f7fbe97-fde1-4b96-af0a-afa6f55a15f8\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-13T12:35:39.971Z",
+     "why": "subscription account mossesx-max-"
+    },
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mweymq5w0bo4z3",
+     "title": "",
+     "text": "Fix step splitter claude exit 1",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T12:35:38.612Z",
+     "updatedAt": "2026-11-13T12:35:38.612Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mweymq5w0cj0r3",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/fix-step-splitter-claude-exit-1.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/fix-step-splitter-claude-exit-1.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T12:35:38.612Z",
+     "updatedAt": "2026-11-13T12:35:38.612Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -188562,12 +188660,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-13T12:35:38.612Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
