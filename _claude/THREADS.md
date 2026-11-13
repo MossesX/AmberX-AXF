@@ -778,7 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 19:46 UTC · `move-amberx-web-app-into-the-console-amberx-andr` added (0 steps) (all) · console
 - 2026-11-12 19:47 UTC · `move-amberx-web-app-into-the-console-amberx-andr` note (all) · orchestrator
 - 2026-11-12 19:54 UTC · `collapse-and-auto-collapse-buttons-on-every-tab` s1 done, → running (all) · orchestrator
 - 2026-11-12 19:56 UTC · `collapse-and-auto-collapse-buttons-on-every-tab` s2 done (all) · orchestrator
@@ -1178,6 +1177,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 03:38 UTC · `badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad` note (all) · orchestrator
 - 2026-11-13 03:38 UTC · `change-to-move-amberx-web-app-into-the-console-amberx-andr-pr-528-brett-do` note (all) · orchestrator
 - 2026-11-13 03:38 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` note (all) · orchestrator
+- 2026-11-13 03:39 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` → queued, note (all) · pipeline
 
 ## Token passes (log)
 
