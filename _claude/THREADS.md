@@ -781,10 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 01:48 UTC · `everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the` s2 done, → built (all) · orchestrator
-- 2026-11-13 01:48 UTC · `everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the` note (all) · orchestrator
-- 2026-11-13 01:49 UTC · `full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app` s1 done, → running (all) · orchestrator
-- 2026-11-13 01:51 UTC · `server-every-failed-merge-alerts-brett-immediately-and-retries-by-itself-until` s1 done (all) · orchestrator
 - 2026-11-13 01:52 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` → running, note (all) · pipeline
 - 2026-11-13 01:52 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` branch claude/one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds (all) · pipeline
 - 2026-11-13 01:52 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` note (all) · orchestrator
@@ -1181,6 +1177,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 10:49 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` s16 done (all) · orchestrator
 - 2026-11-13 10:50 UTC · `one-source-of-truth-console-shows-only-what-the-server-says-is-running` PR #562 (all) · builds-live
 - 2026-11-13 10:50 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` s13 done (all) · orchestrator
+- 2026-11-13 10:50 UTC · `android-approval-overlay-a-small-always-on-float` → running, note (all) · pipeline
+- 2026-11-13 10:50 UTC · `android-approval-overlay-a-small-always-on-float` branch claude/android-approval-overlay-a-small-always-on-float (all) · pipeline
+- 2026-11-13 10:50 UTC · `android-approval-overlay-a-small-always-on-float` note (all) · orchestrator
+- 2026-11-13 10:50 UTC · `one-source-of-truth-console-shows-only-what-the-server-says-is-running` note (all) · orchestrator
 
 ## Token passes (log)
 

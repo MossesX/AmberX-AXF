@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T10:50:41.435Z",
+ "updatedAt": "2026-11-13T10:50:53.787Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -110106,7 +110106,7 @@
    "branch": "claude/one-source-of-truth-console-shows-only-what-the-server-says-is-running",
    "pr": "#562",
    "createdAt": "2026-11-12T02:37:57.927Z",
-   "updatedAt": "2026-11-13T10:50:07.570Z",
+   "updatedAt": "2026-11-13T10:50:37.051Z",
    "builtAt": "",
    "notes": [
     {
@@ -110140,6 +110140,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-one-source-of-truth-console-shows-only-what-the---gina, own login copy)",
      "at": "2026-11-13T10:38:11.819Z"
+    },
+    {
+     "text": "Headless run axf-one-source-of-truth-console-shows-only-what-the---gina: brief only · start 11.2K tokens ($0.03) · cost $1.13 · 44 turns · 6 tools, MCP none",
+     "at": "2026-11-13T10:50:37.051Z"
     }
    ],
    "approvals": [],
@@ -120792,15 +120796,15 @@
    "title": "Android approval overlay: a small always-on floating toolbar (draw-over-other-apps) on Brett's phone that expands into the full approval card (what, why, countdown, Approve/Deny) the moment an approval is sent, then shrinks back; settings for position, size and on/off; full API and voice",
    "category": "",
    "detail": "",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/android-approval-overlay-a-small-always-on-float",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T10:41:19.479Z",
-   "updatedAt": "2026-11-13T10:50:19.197Z",
+   "updatedAt": "2026-11-13T10:50:28.489Z",
    "builtAt": "",
    "notes": [
     {
@@ -120814,6 +120818,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"60728966-2298-423c-8b7a-216f211f3a96\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-13T10:45:18.367Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-android-approval-overlay-a-small-always-on-float--gina.",
+     "at": "2026-11-13T10:50:25.022Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-android-approval-overlay-a-small-always-on-float--gina, own login copy)",
+     "at": "2026-11-13T10:50:28.489Z"
     }
    ],
    "approvals": [],
