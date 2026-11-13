@@ -778,9 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 18:35 UTC · `skins-as-packages-of-slices-every-section-its-ow` → queued, note (all) · console
-- 2026-11-12 18:36 UTC · `skins-as-packages-of-slices-every-section-its-ow` → running, note (all) · pipeline
-- 2026-11-12 18:36 UTC · `skins-as-packages-of-slices-every-section-its-ow` note (all) · orchestrator
 - 2026-11-12 18:38 UTC · `new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans` s4 done (all) · orchestrator
 - 2026-11-12 18:39 UTC · `skins-as-packages-of-slices-every-section-its-ow` s2 done, → running (all) · orchestrator
 - 2026-11-12 18:40 UTC · `collapse-and-auto-collapse-buttons-on-every-tab` added (0 steps) (all) · console
@@ -1178,6 +1175,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 03:28 UTC · `change-to-one-to-do-notes-and-tasks-plugin-pr-527-brett-notes-tasks-and-to` → running, note (all) · pipeline
 - 2026-11-13 03:28 UTC · `change-to-one-to-do-notes-and-tasks-plugin-pr-527-brett-notes-tasks-and-to` branch claude/change-to-one-to-do-notes-and-tasks-plugin-pr-527-brett-notes-tasks-and-to (all) · pipeline
 - 2026-11-13 03:28 UTC · `change-to-one-to-do-notes-and-tasks-plugin-pr-527-brett-notes-tasks-and-to` note (all) · orchestrator
+- 2026-11-13 03:29 UTC · `change-to-move-amberx-web-app-into-the-console-amberx-andr-pr-528-brett-do` → running, note (all) · pipeline
+- 2026-11-13 03:29 UTC · `change-to-move-amberx-web-app-into-the-console-amberx-andr-pr-528-brett-do` branch claude/change-to-move-amberx-web-app-into-the-console-amberx-andr-pr-528-brett-do (all) · pipeline
+- 2026-11-13 03:29 UTC · `change-to-move-amberx-web-app-into-the-console-amberx-andr-pr-528-brett-do` note (all) · orchestrator
 
 ## Token passes (log)
 
