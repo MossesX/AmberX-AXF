@@ -778,7 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 19:00 UTC · `add-a-tap-to-confirm-option-to-every-settings-in` note (all) · orchestrator
 - 2026-11-12 19:43 UTC · `collapse-and-auto-collapse-buttons-on-every-tab` → running, note (all) · pipeline
 - 2026-11-12 19:43 UTC · `collapse-and-auto-collapse-buttons-on-every-tab` branch claude/collapse-and-auto-collapse-buttons-on-every-tab (all) · pipeline
 - 2026-11-12 19:43 UTC · `collapse-and-auto-collapse-buttons-on-every-tab` note (all) · orchestrator
@@ -1178,6 +1177,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 03:37 UTC · `change-to-move-amberx-web-app-into-the-console-amberx-andr-pr-528-brett-do` s4 done (all) · orchestrator
 - 2026-11-13 03:36 UTC · `change-to-one-to-do-notes-and-tasks-plugin-pr-527-brett-notes-tasks-and-to` s3 done, → built (all) · orchestrator
 - 2026-11-13 03:37 UTC · `badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad` s2 done, s3 done (all) · foreign-write
+- 2026-11-13 03:38 UTC · `change-to-move-amberx-web-app-into-the-console-amberx-andr-pr-528-brett-do` PR #546 (all) · builds-live
 
 ## Token passes (log)
 
