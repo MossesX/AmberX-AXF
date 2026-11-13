@@ -788,7 +788,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 18:44 UTC · `restore-asset-designer-plugin-merged-nov` branch claude/restore-asset-designer-plugin-merged-nov, PR #631 (all) · builds-live
 - 2026-11-13 18:44 UTC · `console-app-part-2-native-floating` note (all) · orchestrator
 - 2026-11-13 18:44 UTC · `restore-asset-designer-plugin-merged-nov` s1 done, → running (all) · orchestrator
 - 2026-11-13 18:44 UTC · `console-app-part-2-native-floating` note (all) · builds-live
@@ -1188,6 +1187,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 20:21 UTC · `token-registry-skin-editor-live-sandbox` note (all) · orchestrator
 - 2026-11-13 20:25 UTC · `skin-animations-swatches-skin-switch` s6 done (all) · orchestrator
 - 2026-11-13 20:25 UTC · `skin-animations-swatches-skin-switch` s7 done (all) · orchestrator
+- 2026-11-13 20:27 UTC · `dispatcher-gate-never-launch-build` s1 done (all) · orchestrator
 
 ## Token passes (log)
 
