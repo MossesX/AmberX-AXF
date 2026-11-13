@@ -786,13 +786,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 17:37 UTC · `remove-console-s-own-notes-manager` added (3 steps) (all) · build-rename
-- 2026-11-13 17:37 UTC · `remove-the-console-s-own-notes-manager-console-u` note, removed (all) · build-rename
-- 2026-11-13 17:37 UTC · `remove-no-new-android-kotlin-work-rule` added (2 steps) (all) · build-rename
-- 2026-11-13 17:37 UTC · `remove-the-no-new-android-or-kotlin-work-rule-build-android-twins-in-parallel` note, removed (all) · build-rename
-- 2026-11-13 17:37 UTC · `remove-ui-review-gate-no-screenshots` added (12 steps) (all) · build-rename
-- 2026-11-13 17:37 UTC · `remove-ui-review-as-a-gate-no-screenshots-required-prs-never-held-as-draft-for` note, removed (all) · build-rename
-- 2026-11-13 17:37 UTC · `server-every-failed-merge-alerts-brett` added (3 steps) (all) · build-rename
 - 2026-11-13 17:37 UTC · `server-every-failed-merge-alerts-brett-immediately-and-retries-by-itself-until` note, removed (all) · build-rename
 - 2026-11-13 17:37 UTC · `server-gate-one-session-per-build-no` added (5 steps) (all) · build-rename
 - 2026-11-13 17:37 UTC · `server-gate-one-session-per-build-no-duplicate-launches` note, removed (all) · build-rename
@@ -1186,6 +1179,13 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 19:34 UTC · `land-rename-long-builds-resolve-clash` note (all) · builds-live
 - 2026-11-13 19:35 UTC · `skin-axhub-override-switch-greyed-out` s1 done (all) · orchestrator
 - 2026-11-13 19:35 UTC · `land-overlay-preview-ui-review-resolve` note (all) · orchestrator
+- 2026-11-13 19:35 UTC · `console-android-app-thin-webview-wrapper` note (all) · pipeline
+- 2026-11-13 19:35 UTC · `skin-axhub-override-switch-greyed-out` s1 done (all) · foreign-write
+- 2026-11-13 19:35 UTC · `transparency-token-works-every-dialog` note (all) · claude-voice
+- 2026-11-13 19:35 UTC · `land-rename-long-builds-resolve-clash` → running, note (all) · pipeline
+- 2026-11-13 19:35 UTC · `land-per-instance-settings-picker` added (0 steps) (all) · console
+- 2026-11-13 19:35 UTC · `land-rename-long-builds-resolve-clash` branch claude/land-rename-long-builds-resolve-clash (all) · pipeline
+- 2026-11-13 19:35 UTC · `land-rename-long-builds-resolve-clash` note (all) · orchestrator
 
 ## Token passes (log)
 

@@ -3792,6 +3792,18 @@
    "from": "",
    "addenda": []
   },
+  "land-per-instance-settings-picker": {
+   "said": "I definitely need that; every tab group, application menu, navigation menu, toolbar can have its own settings interface that changes only it, and they all have transparency",
+   "at": "2026-11-13T19:35:42.374Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "land-project-create-mcp-resolve-clash": {
    "said": "land create projects by API",
    "at": "2026-11-13T19:01:01.567Z",
