@@ -139,6 +139,12 @@
     "wave": 1,
     "module": "axf-kernel"
   },
+  "f.tokenregistry": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel",
+    "notes": "Build token-registry-skin-editor-live-sandbox (Nov 13 2026): framework/schemas/token-registry.json, spec/check-token-registry.mjs, console plugin skin-editor (web + Python twin), REST / MCP / CLI / voice. Kotlin twin deferred (PORTING.md)."
+  },
   "f.locals": {
     "status": "built",
     "wave": 1,

@@ -334,6 +334,14 @@
               "suggests": []
             },
             {
+              "id": "f.tokenregistry",
+              "title": "Token registry and Skin editor: every token registered (element, area, state, scheme, level, description, default, source), new UIs register theirs in the manifest, CI fails unregistered or unread tokens; Skin editor sandboxes any UI with live hot render, snapshot chain with revert, export as a new skin; full API",
+              "note": "token-registry@1 + skin-snapshot@1 (core/engines/token-registry.mjs), console plugin skin-editor",
+              "tag": "lock",
+              "recommended": true,
+              "suggests": []
+            },
+            {
               "id": "f.tokenset",
               "title": "Complete token vocabulary fixed now (color, type, shape, space, elevation, motion, opacity, z-index, icon, breakpoints)",
               "note": "",
