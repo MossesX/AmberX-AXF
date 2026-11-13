@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5084,
- "updatedAt": "2026-11-13T23:40:58.841Z",
+ "rev": 5085,
+ "updatedAt": "2026-11-13T23:41:14.109Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -209158,7 +209158,13 @@
     "note": "",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-13T23:40:58.904Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -209399,7 +209405,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -209447,6 +209453,83 @@
    },
    "pipeline": {
     "queuedAt": "2026-11-13T23:39:31.127Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 844
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 3,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "console-app-land-parts-1-4-build-apk",
+   "title": "Console app: land parts 1-4 and build the APK",
+   "category": "",
+   "detail": "Brett wants the new console Android app APK ready to download. Merge origin/main into each and land, in order: console-android-app-thin-webview-wrapper (part 1, shell), console-app-part-2-native-floating-2, console-app-part-3-native-bridge-mic (part 2 notes a NativeBridge.java clash with part 3: keep both and make them compile together), console-app-part-4-console-side-safe, then console-app-wake-word-voice-listener. Regenerate generated files on clash, and run the JUnit and web tests. Then trigger the Android CI build for the console app, put the APK download link in the report, and send Brett a phone notification through AmberX with the link.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-13T23:41:07.780Z",
+   "updatedAt": "2026-11-13T23:41:10.358Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T23:41:10.358Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "is that new APK ready for download",
+    "at": "2026-11-13T23:41:07.780Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "2026-11-13T23:41:09.848Z",
     "queuedBy": "console",
     "account": "",
     "session": "",
