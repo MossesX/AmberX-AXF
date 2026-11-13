@@ -786,7 +786,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 17:22 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` note (all) · orchestrator
 - 2026-11-13 17:23 UTC · `android-approval-overlay-a-small-always-on-float` note (all) · orchestrator
 - 2026-11-13 17:23 UTC · `overlay-opens-pages-the-floating-toolbar-expands` note (all) · orchestrator
 - 2026-11-13 17:30 UTC · `merge-all-ready-buttons-server-side` added (5 steps) (all) · build-rename
@@ -1186,6 +1185,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 19:15 UTC · `console-android-app-thin-webview-wrapper` → queued, note (all) · pipeline
 - 2026-11-13 19:15 UTC · `land-project-duplicate-boilerplate` s1 done, → running (all) · orchestrator
 - 2026-11-13 19:16 UTC · `land-project-duplicate-boilerplate` s1 done, → running (all) · foreign-write
+- 2026-11-13 19:17 UTC · `ui-manager-floating-window-to-select-any` s3 done, → running (all) · orchestrator
 
 ## Token passes (log)
 
