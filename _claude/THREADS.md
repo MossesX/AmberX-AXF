@@ -785,8 +785,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 10:57 UTC · `android-approval-overlay-a-small-always-on-float` s1 done, → running (all) · orchestrator
-- 2026-11-13 10:58 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` s17 done (all) · orchestrator
 - 2026-11-13 11:00 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` s18 done (all) · orchestrator
 - 2026-11-13 11:01 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` s20 done (all) · orchestrator
 - 2026-11-13 11:03 UTC · `stop-the-molly-guide-from-popping-up-and-talking-every-time-the-console-loads-n` PR #564 (all) · builds-live
@@ -1185,6 +1183,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 17:51 UTC · `tab-groups-choose-how-many-rows-tabs` added (0 steps) (all) · console
 - 2026-11-13 17:51 UTC · `tab-groups-choose-how-many-rows-tabs` → queued, note (all) · console
 - 2026-11-13 17:53 UTC · `tab-groups-choose-how-many-rows-tabs` note (all) · orchestrator
+- 2026-11-13 17:53 UTC · `per-instance-settings-window-picker` → running, note (all) · pipeline
+- 2026-11-13 17:53 UTC · `per-instance-settings-window-picker` note (all) · orchestrator
 
 ## Token passes (log)
 
