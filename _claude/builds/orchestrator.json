@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T19:47:45.936Z",
+ "updatedAt": "2026-11-13T19:48:00.549Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -131368,21 +131368,64 @@
    "title": "Skin config panel: merge main and land",
    "category": "",
    "detail": "Branch claude/skin-configuration-panel-before-ai-makes (800 behind) clashed with main in 10 files: .github/workflows/android.yml, settings libs (framework/libs/settings plus the amberx-droid, axhub-web, console-web and molly copies), the theme-manager plugin.json and web/index.tsx, framework/cli/build-engine.mjs and framework/spec/PORTING.md. Merge origin/main and keep main's newer code plus this branch's skin configuration panel (Brett picks what the AI may change before it makes a skin). Edit framework first and re-bake the app copies. Run tests, push, land on main.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P0",
    "createdAt": "2026-11-13T19:47:38.941Z",
-   "updatedAt": "2026-11-13T19:47:38.941Z",
+   "updatedAt": "2026-11-13T19:47:41.639Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T19:47:41.639Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
     "said": "land the skin config panel",
     "at": "2026-11-13T19:47:38.941Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "skins-plugin-merge-main-and-land",
+   "title": "Skins plugin: merge main and land",
+   "category": "",
+   "detail": "Branch claude/skins-plugin-own-removable-console clashed with main in framework/spec/gen-fixtures.mts (merge aborted, main untouched). Merge origin/main and keep both sides' fixture entries, regenerate fixtures, run tests, push, then land on main. The Skins plugin is its own removable console plugin and screen for changing skins.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-13T19:47:44.815Z",
+   "updatedAt": "2026-11-13T19:47:47.663Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T19:47:47.663Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "land the skins plugin",
+    "at": "2026-11-13T19:47:44.815Z",
     "source": "",
     "session": "",
     "link": "",

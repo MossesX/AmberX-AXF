@@ -787,9 +787,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 18:02 UTC · `per-instance-settings-window-picker` → queued, note (all) · pipeline
-- 2026-11-13 18:03 UTC · `all-settings-interfaces-open-floating` added (0 steps) (all) · console
-- 2026-11-13 18:03 UTC · `all-settings-interfaces-open-floating` → queued, note (all) · console
 - 2026-11-13 18:04 UTC · `per-instance-settings-window-picker` s2 done (all) · orchestrator
 - 2026-11-13 18:04 UTC · `all-settings-interfaces-open-floating` note (all) · orchestrator
 - 2026-11-13 18:04 UTC · `per-instance-settings-window-picker` note (all) · pipeline
@@ -1187,6 +1184,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 19:44 UTC · `land-overlay-preview-ui-review-resolve` branch claude/land-overlay-preview-ui-review-resolve (all) · builds-live
 - 2026-11-13 19:45 UTC · `console-app-part-4-console-side-safe` s6 done (all) · orchestrator
 - 2026-11-13 19:47 UTC · `skin-config-panel-merge-main-and-land` added (0 steps) (all) · console
+- 2026-11-13 19:47 UTC · `skin-config-panel-merge-main-and-land` → queued, note (all) · console
+- 2026-11-13 19:47 UTC · `skins-plugin-merge-main-and-land` added (0 steps) (all) · console
+- 2026-11-13 19:47 UTC · `skins-plugin-merge-main-and-land` → queued, note (all) · console
 
 ## Token passes (log)
 
