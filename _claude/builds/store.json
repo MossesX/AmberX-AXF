@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4171,
- "updatedAt": "2026-11-13T08:43:13.643Z",
+ "rev": 4172,
+ "updatedAt": "2026-11-13T08:43:37.245Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -176032,7 +176032,7 @@
    "pr": "#557",
    "priority": "P0",
    "createdAt": "2026-11-12T23:32:23.494Z",
-   "updatedAt": "2026-11-13T08:42:58.404Z",
+   "updatedAt": "2026-11-13T08:43:35.744Z",
    "builtAt": "2026-11-13T08:42:58.405Z",
    "notes": [
     {
@@ -176106,6 +176106,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-13T08:40:31.974Z"
+    },
+    {
+     "text": "Headless run axf-professional-skins-that-rebuild-the-whole-app-fa--sully: brief only · start 17.5K tokens ($0.16) · cost $63.99 · 556 turns · 6 tools, MCP none",
+     "at": "2026-11-13T08:43:35.744Z"
     }
    ],
    "approvals": [],
@@ -176610,7 +176614,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 36,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
