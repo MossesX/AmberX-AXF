@@ -37,6 +37,7 @@ import { loadStore, withStore } from '../../../../framework/cli/builds-store.mjs
 import * as slots from '../../../../framework/cli/agent-slots.mjs';
 import { liveness, planArgs } from '../../../../framework/cli/session-liveness.mjs';
 import { settingsFile as claudeSettingsFile } from '../../../../framework/cli/upgrade-policy.mjs';
+import { hitOf, route as workerRoute } from '../../../../deploy/claude-workers.mjs';
 
 const nowIso = () => new Date().toISOString();
 const str = (v, max = 400) => (typeof v === 'string' ? v.slice(0, max) : v == null ? '' : String(v).slice(0, max));
@@ -128,6 +129,33 @@ function withRunLock(fn, env = process.env) {
   try { return fn(); } finally { rmSync(f.lock, { recursive: true, force: true }); }
 }
 
+// ------------------------------------------------------------------ another worker after a usage limit or a login error
+
+const HIT_WORDS = { usage: 'usage limit', auth: 'login error' };
+/** The last lines of a run's log, '' when unreadable. */
+function logTail(file, bytes = 16 * 1024) {
+  try { const t = readFileSync(file, 'utf8'); return t.slice(-bytes); } catch { return ''; }
+}
+/**
+ * Did this session stop on its account (usage limit, login error)? Reads the run's log the exit record names and asks
+ * claude-workers hitOf(). Returns { kind, from, to } (to = the worker claude-workers would route a job to now, without
+ * `from`; '' = the next free one) or null.
+ */
+export function accountHit(a, row, { read = logTail, route = (ex) => { try { return workerRoute({ exclude: ex }); } catch { return ''; } } } = {}) {
+  if (!row || a.exit == null || a.exit === 0 || !row.log) return null;
+  const from = row.account || a.account;
+  if (!from) return null;
+  const kind = hitOf(read(row.log), a.exit);
+  return kind ? { kind, from, to: route([from]) || '' } : null;
+}
+/** Put the hint on the action: the dispatcher routes the retry to another worker (pipeline-core recoveryHint / hinted). */
+export function withHint(a, hint) {
+  if (!hint) return a;
+  const tail = ` Moved off ${hint.from} (${HIT_WORDS[hint.kind] || hint.kind})${hint.to ? ` to ${hint.to}` : ' to the next free worker'}.`;
+  const line = `${a.line}${tail}`.slice(0, 300);
+  return { ...a, hint, line, event: a.event ? { ...a.event, line } : a.event };
+}
+
 // ------------------------------------------------------------------ applying an action to a build record (pure on the copy)
 
 const openStep = (b) => (b.steps ?? []).find((s) => s && !s.done && !s.skip) ?? null;
@@ -146,7 +174,9 @@ export function applyToBuild(b, a, policy = R.POLICY, now = nowIso()) {
     b.pipeline = BP.normPipeline({ ...p, ...cleared, queuedAt: '', queuedBy: '', note: `parked by auto-recovery after ${a.attempt} retries: ${a.state}${a.exit == null ? '' : ` (exit ${a.exit})`}` }) ?? undefined;
   } else {
     b.status = 'queued';
-    b.pipeline = BP.normPipeline({ ...p, ...cleared, queuedAt: now, queuedBy: 'auto-recovery', note: `auto-recovery try ${a.attempt} of ${a.max}: ${a.state}${a.exit == null ? '' : ` (exit ${a.exit})`}${a.delayMs ? `, next launch after ${a.nextAt}` : ''}` }) ?? undefined;
+    // a usage limit / login error: the retry goes to another worker (the hint rides on pipeline.planned)
+    const planned = a.hint ? { planned: { model: p.model || p.planned?.model || '', account: a.hint.to, kind: 'subscription', at: now, why: `auto-recovery: ${a.hint.from} stopped (${HIT_WORDS[a.hint.kind] || a.hint.kind}); retry on ${a.hint.to || 'the next free worker'}` } } : {};
+    b.pipeline = BP.normPipeline({ ...p, ...cleared, ...planned, queuedAt: now, queuedBy: 'auto-recovery', note: `auto-recovery try ${a.attempt} of ${a.max}: ${a.state}${a.exit == null ? '' : ` (exit ${a.exit})`}${a.hint ? `, ${a.hint.from} hit a ${HIT_WORDS[a.hint.kind] || a.hint.kind}` : ''}${a.delayMs ? `, next launch after ${a.nextAt}` : ''}` }) ?? undefined;
   }
   if (!b.pipeline) delete b.pipeline;
   b.recovery = R.applyToRecovery(b.recovery, a, policy);
@@ -180,7 +210,8 @@ export function run(opts = {}) {
     // a session that ended with exit 0 stopped on purpose (its phase is done): the dispatcher's session-end pass closes
     // it (next phase, or back to Pending). Only when nobody did for NORMAL_END_GRACE_MS is it a stuck build.
     const ended0 = (a) => { const r = l.rows.find((x) => x.build === a.build); return !!r && r.recorded && !r.alive && r.exit === 0 && t - Date.parse(r.endedAt || 0) < NORMAL_END_GRACE_MS; };
-    const actions = R.plan(...planArgs(l), policy).filter((a) => (a.action === 'release-slot' ? !liveNames.has(a.session) && !young(a.slot) : !ended0(a)));
+    const actions = R.plan(...planArgs(l), policy).filter((a) => (a.action === 'release-slot' ? !liveNames.has(a.session) && !young(a.slot) : !ended0(a)))
+      .map((a) => (a.action === 'retry' ? withHint(a, accountHit(a, l.rows.find((x) => x.build === a.build), opts.hit ?? {})) : a));
     const out = { ...base, ran: true, actions };
     if (opts.dryRun || !actions.length) return out;
     const kill = opts.kill ?? tmuxKill; const release = opts.release ?? releaseSlot;

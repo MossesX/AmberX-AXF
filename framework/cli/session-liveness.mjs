@@ -90,7 +90,7 @@ export function liveness(facts = {}) {
     return {
       build: b.id, title: b.title, status: b.status, session: name, account: rec?.account || b.pipeline?.account || '', host: rec?.host || '',
       pid: rec?.pid ?? null, alive: live, recorded: !!rec, startedAt: rec?.startedAt || '', endedAt: rec?.endedAt || '',
-      exit: rec && !live ? rec.exit : null, signal: rec && !live ? rec.signal : '', heartbeatAgeSec: hb,
+      exit: rec && !live ? rec.exit : null, signal: rec && !live ? rec.signal : '', heartbeatAgeSec: hb, log: rec?.log || '',
       slot: slots.running.find((s) => s.build === b.id || (name && s.session === name))?.id ?? '', state: v.state, why: v.why,
     };
   });

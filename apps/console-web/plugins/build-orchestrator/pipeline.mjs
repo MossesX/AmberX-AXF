@@ -635,7 +635,7 @@ export function tick({ env = process.env } = {}) {
       if (!r) throw lastErr ?? new Error('no account accepted the launch');
       const runs = (b.pipeline?.runs ?? 0) + 1;
       const moved = tried.length ? ` after ${tried.join(', ')} refused` : '';
-      setPipeline(b.id, { account: l.account, session: r.session, slot: r.slot, model: l.model, launchedAt: nowIso(), dispatchedAt: nowIso(), pickedAt: nowIso(), tried, runs, note: r.queuedInSlots ? 'in the agent-slots queue (starts when the VPS cap frees)' : r.lookWait ? 'waiting for the predicted look approval in UI Review' : '' },
+      setPipeline(b.id, { ...(P.recoveryHint(b).from ? { planned: null } : {}), account: l.account, session: r.session, slot: r.slot, model: l.model, launchedAt: nowIso(), dispatchedAt: nowIso(), pickedAt: nowIso(), tried, runs, note: r.queuedInSlots ? 'in the agent-slots queue (starts when the VPS cap frees)' : r.lookWait ? 'waiting for the predicted look approval in UI Review' : '' },
         { status: 'running', note: `Started run ${runs} on ${l.account}${moved}${l.kind === 'api' ? ` (API key, ${l.rule === 'override' ? 'this build is set to API' : 'subscriptions first, then API'})` : ''} (${l.model}${l.phase ? `, ${l.phase}` : ''}): ${r.session || 'queued in agent slots'}.`, action: 'pipeline:launch' });
       if (!b.branch) withStore((s) => { const rec = storeCore.findBuild(s, b.id); if (rec && !rec.branch) rec.branch = `claude/${b.id}`; return s; }, { by: 'pipeline', action: 'pipeline:branch', note: b.id });
       alert('launched', { id: b.id, title: b.title, account: l.account, model: l.model, phase: l.phase, session: r.session });
@@ -716,8 +716,9 @@ export function planAhead(store, accounts, settings = loadSettings()) {
   const want = new Map();
   for (const b of live(store)) {
     if ((b.status !== 'pending' && b.status !== 'queued') || b.hidden || !BP.openSteps(b).length) continue;
-    const p = P.planFor(b, accounts, settings);
     const cur = b.pipeline?.planned;
+    if (P.recoveryHint(b).from) continue;   // auto-recovery's account hint stands until the build launches
+    const p = P.planFor(b, accounts, settings);
     if (!p || (cur && cur.model === p.model && cur.account === p.account && cur.kind === p.kind)) continue;
     want.set(b.id, p);
   }

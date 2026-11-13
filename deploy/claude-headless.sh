@@ -289,7 +289,7 @@ status_on() { [[ "${AXF_SESSION_STATUS:-on}" != off ]] && command -v node >/dev/
 status_ses="" status_hb="" status_done=""
 status_start() {   # $1 = tmux session; never stops the run
   status_on || return 0
-  node "$SLOTS" session start "$1" --name "$name" ${run_build:+--build "$run_build"} ${slot:+--slot "$slot"} ${login_account:+--account "$login_account"} ${model:+--model "$model"} --pid "$$" --cwd "$(pwd)" >/dev/null 2>&1 || return 0
+  node "$SLOTS" session start "$1" --name "$name" ${run_build:+--build "$run_build"} ${slot:+--slot "$slot"} ${login_account:+--account "$login_account"} ${model:+--model "$model"} --pid "$$" --cwd "$(pwd)" --log "$(pwd)/$log" >/dev/null 2>&1 || return 0
   status_ses="$1"
   local d; d="$(node "$SLOTS" session dir 2>/dev/null)"; [[ -n "$d" && -d "$d" ]] || return 0
   local started; started="$(date +%s)"

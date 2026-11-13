@@ -484,7 +484,7 @@ export function normSessionStatus(r) {
   return {
     $axf: SESSION_SCHEMA, session: r.session, name: s(r.name, 80), build: s(r.build, 80), slot: s(r.slot, 60), account: s(r.account, 40),
     model: s(r.model, 40), pid: intOrNull(r.pid), host: s(r.host, 80), state: r.state === 'ended' ? 'ended' : 'running',
-    startedAt: s(r.startedAt, 40), heartbeatAt: s(r.heartbeatAt, 40), endedAt: s(r.endedAt, 40), exit, signal: s(r.signal, 12) || signalOf(exit), cwd: s(r.cwd, 300),
+    startedAt: s(r.startedAt, 40), heartbeatAt: s(r.heartbeatAt, 40), endedAt: s(r.endedAt, 40), exit, signal: s(r.signal, 12) || signalOf(exit), cwd: s(r.cwd, 300), log: s(r.log, 400),
   };
 }
 
@@ -606,7 +606,7 @@ async function cli(argv) {
     case 'sweep': return json(sweep());
     case 'session': {   // session-status@1: start | beat | end | list | dir
       const [sub, ses] = f._;
-      const o = { name: f.name, build: f.build, slot: f.slot, account: f.account, model: f.model, pid: f.pid, cwd: f.cwd };
+      const o = { name: f.name, build: f.build, slot: f.slot, account: f.account, model: f.model, pid: f.pid, cwd: f.cwd, log: f.log };
       if (sub === 'dir') return console.log(sessionsDir());
       if (sub === 'list') return json(readSessionStatuses());
       if (sub === 'start') return void sessionStart(ses, o);
