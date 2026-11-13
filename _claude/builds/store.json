@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4671,
- "updatedAt": "2026-11-13T18:37:17.033Z",
+ "rev": 4672,
+ "updatedAt": "2026-11-13T18:37:37.823Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -197401,7 +197401,7 @@
    "pr": "#629",
    "priority": "P0",
    "createdAt": "2026-11-13T18:13:51.274Z",
-   "updatedAt": "2026-11-13T18:37:13.790Z",
+   "updatedAt": "2026-11-13T18:37:34.546Z",
    "builtAt": "",
    "notes": [
     {
@@ -197423,6 +197423,10 @@
     {
      "text": "s6: removed the duplicate build builds-get-console-token-banner-alert (same request and steps, filed 17:34 without a pending id); this build covers it.",
      "at": "2026-11-13T18:28:43.110Z"
+    },
+    {
+     "text": "Headless run axf-vps-builds-get-console-token-ui-review--lenny: brief only · start 11.4K tokens ($0.03) · cost $4.48 · 114 turns · 6 tools, MCP none",
+     "at": "2026-11-13T18:37:34.546Z"
     }
    ],
    "approvals": [],
