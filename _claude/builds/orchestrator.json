@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T12:34:45.033Z",
+ "updatedAt": "2026-11-13T12:35:21.618Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -119593,7 +119593,7 @@
    "title": "Full API and voice control of the entire console: every tab, screen, setting, button, function and plugin (incl. enable/disable plugins); scroll up/down; bring any row or step of any table or grid into focus; search screens and everything loaded and pull it into focus",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -119601,8 +119601,8 @@
    "pr": "#556",
    "priority": "P0",
    "createdAt": "2026-11-13T07:12:21.823Z",
-   "updatedAt": "2026-11-13T12:26:13.857Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-13T12:35:19.912Z",
+   "builtAt": "2026-11-13T12:35:19.912Z",
    "notes": [
     {
      "text": "Brett (verbatim-ish): We need every fucking thing to be controlled by the API. Every tab, every screen, every setting, every button, every function. I need to be able to scroll up and down. I need you to be able to bring any step of any table or any grid into focus. I need you to be able to search the screens and search everywhere and pull stuff up into focus, whatever's on the screen now loaded. Make that API completely voice control everything. In the console, everything, every plugin. Trigger: Claude couldn't disable the molly-guide plugin through the API.",
@@ -120393,8 +120393,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T12:35:19.912Z",
      "note": "",
      "uid": "st-mwen6bti0vfhvg",
      "createdAt": "2026-11-13T07:14:57.750Z"
