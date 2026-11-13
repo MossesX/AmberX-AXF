@@ -786,7 +786,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 16:58 UTC · `axhub-raise-per-project-memory-file-cap-from-500-to-750` added (3 steps) (all) · Claude voice (Gizmo)
 - 2026-11-13 17:18 UTC · `test-sandbox-sample-shipped-build` added (3 steps) (test-sandbox) · project-seed
 - 2026-11-13 17:18 UTC · `test-sandbox-sample-shipped-build` added (3 steps) (test-sandbox) · foreign-write
 - 2026-11-13 17:18 UTC · `test-sandbox-sample-pending-build` added (3 steps) (test-sandbox) · foreign-write
@@ -1186,6 +1185,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 19:10 UTC · `console-android-app-thin-webview-wrapper` → running, note (all) · orchestrator
 - 2026-11-13 19:10 UTC · `ui-manager-floating-window-to-select-any` → running, note (all) · pipeline
 - 2026-11-13 19:10 UTC · `ui-manager-floating-window-to-select-any` note (all) · orchestrator
+- 2026-11-13 19:10 UTC · `console-android-app-thin-webview-wrapper` note (all) · pipeline
 
 ## Token passes (log)
 
