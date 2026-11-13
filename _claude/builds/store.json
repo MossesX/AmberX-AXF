@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4200,
- "updatedAt": "2026-11-13T10:35:20.061Z",
+ "rev": 4201,
+ "updatedAt": "2026-11-13T10:35:32.756Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -160938,14 +160938,14 @@
    "title": "Console and axHub retry failed calls themselves (no Claude needed)",
    "category": "orchestrator",
    "detail": "URGENT, boss order from Brett, Nov 12. When a call from Claude/MCP/voice/CLI fails for a transient reason (e.g. 'builds store is locked', timeout, console client asleep, rate limit, 5xx), the console and axHub must retry it THEMSELVES on the server, whether or not the Claude session is still connected. Retry with backoff until it succeeds (bounded, e.g. 10 tries over ~10 min), then the result is stored on the job so get_job shows success. Only permanent errors (validation, not found) fail, and those send Brett an AmberX FYI with what's missing. Fix the root cause of store.json.lock contention too (stale lock cleanup, short waits for the lock instead of failing). Applies to control_add/set/act, pipeline_queue, console_open/show and all axf-console write tools. Tests: locked store -> call waits/retries and succeeds; session disconnect mid-retry -> still completes.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/console-and-axhub-retry-failed-calls-themselves-no-claude-needed",
    "pr": "#510",
    "createdAt": "2026-11-12T02:37:24.132Z",
-   "updatedAt": "2026-11-12T03:40:41.113Z",
+   "updatedAt": "2026-11-13T10:35:19.896Z",
    "builtAt": "",
    "notes": [
     {
@@ -160987,6 +160987,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-12T03:40:41.113Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T10:35:19.896Z"
     }
    ],
    "approvals": [],
@@ -161004,7 +161008,7 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "2026-11-12T02:38:58.631Z",
+    "queuedAt": "2026-11-13T10:35:19.015Z",
     "queuedBy": "console",
     "account": "",
     "session": "",
@@ -161151,7 +161155,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -182380,18 +182384,50 @@
    "title": "Fix: a build whose session finishes its phase (e.g. the Fable steps) with steps left goes back to Pending instead of the Queue, so the next phase never starts and slots sit empty. Send it back to the Queue and launch the next phase automatically",
    "category": "",
    "detail": "",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P0",
    "createdAt": "2026-11-13T10:35:03.675Z",
-   "updatedAt": "2026-11-13T10:35:03.675Z",
+   "updatedAt": "2026-11-13T10:35:26.761Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T10:35:21.262Z"
+    },
+    {
+     "text": "Split asked for by console.",
+     "at": "2026-11-13T10:35:26.761Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
+   "pipeline": {
+    "queuedAt": "2026-11-13T10:35:20.815Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "2026-11-13T10:35:26.313Z",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
    "steps": [],
    "profiles": [
     "all"
@@ -182401,7 +182437,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
