@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T01:48:41.654Z",
+ "updatedAt": "2026-11-13T01:48:51.227Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -111450,8 +111450,8 @@
    "pr": "#538",
    "priority": "P0",
    "createdAt": "2026-11-12T23:40:00.983Z",
-   "updatedAt": "2026-11-13T01:48:14.815Z",
-   "builtAt": "2026-11-13T01:48:14.815Z",
+   "updatedAt": "2026-11-13T01:48:25.940Z",
+   "builtAt": "2026-11-13T01:48:25.940Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -111504,6 +111504,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-everything-on-tokens-before-skins-fix-the-27-ope--paulie, own login copy)",
      "at": "2026-11-13T01:42:11.195Z"
+    },
+    {
+     "text": "Headless run axf-everything-on-tokens-before-skins-fix-the-27-ope--paulie: brief only · start 11.1K tokens ($0.03) · cost $2.40 · 67 turns · 6 tools, MCP none",
+     "at": "2026-11-13T01:48:25.940Z"
     }
    ],
    "approvals": [],

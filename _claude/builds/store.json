@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3931,
- "updatedAt": "2026-11-13T01:48:41.654Z",
+ "rev": 3932,
+ "updatedAt": "2026-11-13T01:48:51.227Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -175970,8 +175970,8 @@
    "pr": "#538",
    "priority": "P0",
    "createdAt": "2026-11-12T23:40:00.983Z",
-   "updatedAt": "2026-11-13T01:48:14.815Z",
-   "builtAt": "2026-11-13T01:48:14.815Z",
+   "updatedAt": "2026-11-13T01:48:25.940Z",
+   "builtAt": "2026-11-13T01:48:25.940Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -176024,6 +176024,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-everything-on-tokens-before-skins-fix-the-27-ope--paulie, own login copy)",
      "at": "2026-11-13T01:42:11.195Z"
+    },
+    {
+     "text": "Headless run axf-everything-on-tokens-before-skins-fix-the-27-ope--paulie: brief only · start 11.1K tokens ($0.03) · cost $2.40 · 67 turns · 6 tools, MCP none",
+     "at": "2026-11-13T01:48:25.940Z"
     }
    ],
    "approvals": [],
