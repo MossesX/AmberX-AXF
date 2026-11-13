@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T16:53:15.387Z",
+ "updatedAt": "2026-11-13T16:53:22.743Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -65737,7 +65737,7 @@
     },
     {
      "id": "s5",
-     "text": "Python port: `framework/python/axf/extensions.py` (`ExtensionRegistry`, standard points, placeholders) replacing the `MemoryKernel` stand-in in `library.py`; `axf compile-library` smoke test uses it; fixture replay test `framework/python/axf/test_extensions.py`.",
+     "text": "Services: typed service registry on web (`rt.services.register/get` with `service:<cap>` names as `plugin-inventory@1` uses); inventory engine reads providers from it; one fixture case.",
      "model": "Fable",
      "why": "",
      "phase": "",
@@ -65756,7 +65756,7 @@
     },
     {
      "id": "s6",
-     "text": "Services: typed service registry on web (`rt.services.register/get` with `service:<cap>` names as `plugin-inventory@1` uses); inventory engine reads providers from it; one fixture case.",
+     "text": "Docs + status: `framework/spec/PORTING.md` section \"Extension points on every port\", plan port web → built, `status.json` features for the epic's capabilities, `tracker.mjs`, `build_step complete`.",
      "model": "Fable",
      "why": "",
      "phase": "",
@@ -65775,25 +65775,6 @@
     },
     {
      "id": "s7",
-     "text": "Docs + status: `framework/spec/PORTING.md` section \"Extension points on every port\", plan ports web/python → built, `status.json` features for the epic's capabilities, `tracker.mjs`, `build_step complete`.",
-     "model": "Fable",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-plof5d",
-     "createdAt": "2026-10-31T23:41:15.585Z"
-    },
-    {
-     "id": "s8",
      "text": "Template + console: `react-ts`/`next-ts` templates and the console register one custom extension point each (proves \"add modules without rebuilding the kernel\"); console tsc + vite build; CI template sweep passes.",
      "model": "Fable",
      "why": "",
@@ -65808,7 +65789,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-ccvi5v",
+     "uid": "st-plof5d",
      "createdAt": "2026-10-31T23:41:15.585Z"
     }
    ]
