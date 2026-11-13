@@ -8,7 +8,7 @@
  * search, voice "find <words>"); the palette's open state is the `dialog` field of console_control_state.
  * Look: framework controls only (TextField, TabGroup, Button); layout in console.css (.cc-palette*), tokens only.
  */
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Button, Icon, TabGroup, TextField, useRuntime, type TabDef } from '../axf/react';
 import type { AxfRuntime } from '../axf/core';
 import type { ConsoleControlKind } from '../axf/core/engines/console-control';
@@ -46,6 +46,13 @@ export function SearchPalette({ initial = '', close }: { initial?: string; close
   }, [rt, q, filter]);
   const [active, setActive] = useState(0);
   useEffect(() => setActive(0), [q, filter]);
+  // the field keeps the keyboard: a screen that mounts under the palette (an autofocus field) must not take it
+  const box = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const grab = () => { const input = box.current?.querySelector('input'); if (input && document.activeElement !== input) input.focus(); };
+    const timers = [0, 120, 400].map((ms) => setTimeout(grab, ms));
+    return () => timers.forEach(clearTimeout);
+  }, []);
   const pick = (h: ConsoleSearchHit | undefined) => { if (!h) return; close(); void pickHit(rt, h); };
   const onKey = (e: React.KeyboardEvent) => {
     if (e.key === 'ArrowDown') { e.preventDefault(); setActive((i) => Math.min(hits.length - 1, i + 1)); }
@@ -53,7 +60,7 @@ export function SearchPalette({ initial = '', close }: { initial?: string; close
     else if (e.key === 'Enter') { e.preventDefault(); pick(hits[active]); }
   };
   return (
-    <div className="cc-palette" onKeyDown={onKey}>
+    <div ref={box} className="cc-palette" onKeyDown={onKey}>
       <TextField label="Search the console" value={q} onChange={setQ} placeholder="Screens, settings, buttons, plugins, rows, steps…" autoFocus name="console-control-search" />
       <TabGroup id="console-control.search.filter" label="What to search" value={filter} onChange={setFilter} tabs={FILTERS} size="sm" />
       <div className="cc-palette__hits" role="listbox" aria-label="Search results">

@@ -97,10 +97,28 @@ export async function executeControl(rt: AxfRuntime, raw: unknown): Promise<Cont
       if (!res.ok && res.code === CONSOLE_CONTROL_WIRE.NOT_FOUND) { await wait(400); res = await reg.run(cmd); }
     }
   }
+  // a screen, tab or panel has no focus of its own: bringing it into focus is opening it (with the highlight)
+  if (!res.ok && res.code === CONSOLE_CONTROL_WIRE.NOT_IMPLEMENTED && cmd.verb === 'focus' && cmd.address) {
+    const { options: _o, ...rest } = cmd; const opened = await executeControl(rt, { ...rest, verb: 'open' });
+    if (opened.ok) { const o = opened as unknown as Record<string, unknown>; return { ...opened, verb: 'focus', focused: o.opened } as unknown as ControlAnswer; }
+  }
   if (res.ok && (cmd.verb === 'focus' || cmd.verb === 'open') && typeof res.address === 'string') {
     focused = { address: String((res as { focused?: string; opened?: string }).focused ?? (res as { opened?: string }).opened ?? res.address), view: rt.getState().view };
   }
-  return { ...res, state: controlState(rt) } as ControlAnswer;
+  return withState(rt, res);
+}
+
+/**
+ * Attach the live snapshot. A `state <address>` answer carries the target's own state (value, disabled, can…): it is
+ * kept, merged over the snapshot and also under `target`, so the caller gets both the target and where the console is.
+ */
+function withState(rt: AxfRuntime, res: ConsoleControlResult): ControlAnswer {
+  const live = controlState(rt);
+  const own = (res as { state?: unknown }).state;
+  if (res.ok && own && typeof own === 'object' && typeof (own as { address?: unknown }).address === 'string') {
+    return { ...res, state: { ...live, ...(own as Record<string, unknown>), target: own } } as unknown as ControlAnswer;
+  }
+  return { ...res, state: live } as ControlAnswer;
 }
 
 /** A short line for a toast or a spoken answer. */

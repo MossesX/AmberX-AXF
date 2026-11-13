@@ -1000,7 +1000,7 @@
       "view": null,
       "plugin": null,
       "file": "src/control/SearchPalette.tsx",
-      "line": 58,
+      "line": 65,
       "tabs": [
         {
           "address": "tab:console-control.search.filter=all",
