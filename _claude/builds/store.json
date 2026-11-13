@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4192,
- "updatedAt": "2026-11-13T09:47:17.566Z",
+ "rev": 4193,
+ "updatedAt": "2026-11-13T09:47:27.757Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -181422,7 +181422,7 @@
    "pr": "#556",
    "priority": "P0",
    "createdAt": "2026-11-13T07:12:21.823Z",
-   "updatedAt": "2026-11-13T09:47:16.043Z",
+   "updatedAt": "2026-11-13T09:47:26.367Z",
    "builtAt": "",
    "notes": [
     {
@@ -181468,6 +181468,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-full-api-and-voice-control-of-the-entire-console--earl, own login copy)",
      "at": "2026-11-13T09:33:10.257Z"
+    },
+    {
+     "text": "Headless run axf-full-api-and-voice-control-of-the-entire-console--earl: brief only · start 13.7K tokens ($0.04) · cost $3.89 · 82 turns · 6 tools, MCP none",
+     "at": "2026-11-13T09:47:26.367Z"
     }
    ],
    "approvals": [

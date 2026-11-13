@@ -781,7 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 00:21 UTC · `projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone` note (all) · pipeline
 - 2026-11-13 00:22 UTC · `projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone` note (all) · pipeline
 - 2026-11-13 00:39 UTC · `change-to-move-amberx-web-app-into-the-console-amberx-andr-pr-528-brett-do` added (0 steps) (all) · mcp
 - 2026-11-13 00:40 UTC · `change-to-one-to-do-notes-and-tasks-plugin-pr-527-brett-notes-tasks-and-to` added (0 steps) (all) · mcp
@@ -1181,6 +1180,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 09:44 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` s8 done (all) · orchestrator
 - 2026-11-13 09:46 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` s8 done (all) · orchestrator
 - 2026-11-13 09:47 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` s13 done (all) · orchestrator
+- 2026-11-13 09:47 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` note (all) · orchestrator
 
 ## Token passes (log)
 
