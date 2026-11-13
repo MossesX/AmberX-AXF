@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5078,
- "updatedAt": "2026-11-13T21:55:48.932Z",
+ "rev": 5079,
+ "updatedAt": "2026-11-13T22:20:40.116Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -205277,7 +205277,7 @@
    "title": "Icon map and icon packs: every icon and badge in the app, swappable",
    "category": "",
    "detail": "1. Icon map: a registry of EVERY icon, badge and logo slot in the whole app (every plugin, screen, dialog, menu, toolbar, tab, nav item, banner, widget and button that shows an icon). Each slot gets a stable id, its location and a role (e.g. 'save', 'approve', 'build-running'), and registers through the framework manifest so new plugins appear automatically. Add a CI check that fails on hard-coded icons not in the map.\n2. Icon map screen: a searchable, filterable, categorized tree of every slot with a live preview, where you click a slot to change its icon. Ties into the UI Manager.\n3. Icon pack template: one pack file maps every role to an icon. Applying a pack changes every icon in the app in one click. Per-slot overrides with Restore previous edit / Restore from axHub.\n4. Packs: ship a lot of packs (outline, filled, rounded, duotone, sharp, glyph, emoji-style, plus badge styles and app/plugin logos). Some are themable (follow skin tokens for colour and stroke), others are fixed-colour. Each pack declares whether it's themable. Licences must allow redistribution; prefer open icon sets.\n5. Packs are assets: swappable, per-skin defaults, shareable via the hub asset library, importable.\n6. Full API: REST/MCP/CLI/voice ('switch to the duotone icon pack'). Tests, help, Shipped features. Use Fable for the registry/schema and asset type.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -205285,7 +205285,7 @@
    "pr": "#664",
    "priority": "P1",
    "createdAt": "2026-11-13T19:55:30.979Z",
-   "updatedAt": "2026-11-13T21:55:36.504Z",
+   "updatedAt": "2026-11-13T22:20:38.558Z",
    "builtAt": "",
    "notes": [
     {
@@ -205343,6 +205343,10 @@
     {
      "text": "Headless run axf-icon-map-icon-packs-every-icon-badge-app--earl: brief only · start 11.7K tokens ($0.03) · cost $17.87 · 287 turns · 6 tools, MCP none",
      "at": "2026-11-13T21:55:36.504Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-13T22:20:38.558Z"
     }
    ],
    "approvals": [
@@ -205620,7 +205624,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -206358,7 +206362,7 @@
    "title": "Token registry and Skin Editor: live sandbox preview, snapshot history",
    "category": "",
    "detail": "Runs after the token schema step of own-token-sets-for-grids-and-tab-groups (builds on its schema).\n1. TOKEN REGISTRY: one registry listing every token in the system, with element type, area (layout/style/colour/behaviour), state, light/dark, level (basic/pro/advanced), plain-English description, default and source. Every new UI, component or plugin MUST register its tokens through its manifest. A CI check fails any UI whose tokens aren't in the registry, and any registered token that nothing uses. Browsable and searchable, with full API.\n2. SKIN EDITOR (plugin and screen): pick any UI from the list (a screen, plugin, dialog, element), or pick it on screen, and it's loaded into a sandbox live-preview window with real components and sample data. Every edit hot-renders the preview in real time. The token list comes from the registry, with Basic/Pro/Advanced views. Inline element and asset editors work inside it.\n3. DEFAULT SKIN: there is always a built-in default skin that is locked.\n4. SNAPSHOTS: every edit to a skin automatically takes a snapshot (like a disk snapshot). A timeline shows the chain of edits, each with time, who/what made it, and a diff of exactly which tokens changed (old -> new). Click any snapshot to preview it, compare any two, or revert to it (a revert is itself a new snapshot, so nothing is ever lost). No breaking skins into separate style or colour groups: the skin is the only unit.\n5. EXPORT: at any point, 'Export current to new skin' saves the current state as a brand-new skin (name, thumbnail, to the hub library).\n6. Restore previous edit / Restore from axHub work through the snapshots.\n7. Full API: REST/MCP/CLI/voice ('revert the skin to 10 minutes ago', 'export this as a new skin called Midnight'). Tests, help, Shipped features. Fable for the registry and snapshot schema.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -206366,7 +206370,7 @@
    "pr": "#657",
    "priority": "P1",
    "createdAt": "2026-11-13T20:04:16.679Z",
-   "updatedAt": "2026-11-13T21:55:24.444Z",
+   "updatedAt": "2026-11-13T22:20:38.558Z",
    "builtAt": "",
    "notes": [
     {
@@ -206396,6 +206400,10 @@
     {
      "text": "Headless run axf-token-registry-skin-editor-live-sandbox--lenny: brief only · start 13.4K tokens ($0.07) · cost $35.59 · 241 turns · 6 tools, MCP none",
      "at": "2026-11-13T21:55:24.444Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-13T22:20:38.558Z"
     }
    ],
    "approvals": [],
@@ -206679,7 +206687,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

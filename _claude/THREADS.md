@@ -792,8 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 19:35 UTC · `console-android-app-thin-webview-wrapper` note (all) · pipeline
-- 2026-11-13 19:35 UTC · `skin-axhub-override-switch-greyed-out` s1 done (all) · foreign-write
 - 2026-11-13 19:35 UTC · `transparency-token-works-every-dialog` note (all) · claude-voice
 - 2026-11-13 19:35 UTC · `land-rename-long-builds-resolve-clash` → running, note (all) · pipeline
 - 2026-11-13 19:35 UTC · `land-per-instance-settings-picker` added (0 steps) (all) · console
@@ -1192,6 +1190,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 21:55 UTC · `icon-map-icon-packs-every-icon-badge-app` s8 done (all) · orchestrator
 - 2026-11-13 21:55 UTC · `token-registry-skin-editor-live-sandbox` note (all) · orchestrator
 - 2026-11-13 21:55 UTC · `icon-map-icon-packs-every-icon-badge-app` note (all) · orchestrator
+- 2026-11-13 22:20 UTC · `icon-map-icon-packs-every-icon-badge-app` → pending, note (all) · reconciler
+- 2026-11-13 22:20 UTC · `token-registry-skin-editor-live-sandbox` → pending, note (all) · reconciler
 
 ## Token passes (log)
 
