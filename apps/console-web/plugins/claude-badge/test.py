@@ -106,27 +106,27 @@ f = Path(os.environ["AXF_CLAUDE_BADGE_DIR"]) / "status.json"
 check((f.stat().st_mode & 0o777) == 0o600, "result file is private (0600)")
 plugin_services.withdraw("fake-assistant")
 check(not c.post("/p/test").json()["ok"], "assistant removed: unavailable again")
-print("VPS connection (no model call)")
+print("Can Claude build (the dispatcher's ready read, no model call)")
 
 
-class FakeAccounts:
+class FakeDispatch:
     def __init__(self):
-        self.value = {"ready": True, "why": "", "checked": True, "active": "account-1", "login": {"email": "b@example.com", "plan": "max"}, "expiresAt": "2099-01-01T00:00:00.000Z"}
+        self.calls = 0
         self.fail = False
+        self.value = {"ok": True, "ready": 1, "total": 2, "source": "host", "from": "", "why": "", "health": "2026-11-13T01:11:59.727Z", "accounts": [
+            {"name": "worker-1", "label": "Main", "kind": "subscription", "ready": True, "signedIn": True, "credits": True, "fable": True, "healthAt": "2026-11-13T01:11:59.727Z", "why": "", "token": "SECRET"},
+            {"name": "worker-2", "label": "", "kind": "subscription", "ready": False, "signedIn": True, "credits": False, "fable": None, "healthAt": "2026-11-13T01:11:40.000Z", "why": "no credits left"}]}
 
-    def view(self):
+    def ready(self):
+        self.calls += 1
         if self.fail:
-            raise RuntimeError("ssh broke")
+            raise RuntimeError("pipeline failed")
         return self.value
 
 
-class FakeKeys:
-    at = 0
-    asked = ""
-
-    def limited_at(self, name=""):
-        self.asked = name
-        return self.at
+def fresh_build(**q):
+    mod._build.update(at=0.0, value=None)
+    return c.get("/p/build", params=q).json()
 
 
 llm = FakeLlm()
@@ -134,40 +134,44 @@ llm.model = "claude-opus-5-5"
 plugin_services.provide("axf.llm@1", llm, "fake-assistant")
 llm.calls.clear()
 before = f.read_text("utf-8")
-r = c.get("/p/vps").json()
-check(r["state"] == "error" and not r["reachable"] and "plugin is off" in r["error"], "no accounts service: grey, says why, not 'logged out'")
-fa, fk = FakeAccounts(), FakeKeys()
-plugin_services.provide("axf.claude-accounts@1", fa, "fake-accounts")
-plugin_services.provide("axf.ai-keys@1", fk, "fake-keys")
-r = c.get("/p/vps").json()
-check(r["ok"] and r["state"] == "ok" and r["email"] == "b@example.com" and r["plan"] == "max" and r["account"] == "account-1", "logged in: green, with who")
-check(fk.asked == "account-1", "the limit mark is asked for the active account")
-fk.at = 12345
-r = c.get("/p/vps").json()
-check(not r["ok"] and r["state"] == "no-credit" and r["reachable"] and r["limitedAt"] == 12345 and r["email"], "limit hit: amber, keeps the account")
-fk.at = 0
-fa.value = {**fa.value, "login": {}}
-r = c.get("/p/vps").json()
-check(r["state"] == "error" and r["reachable"] and "isn't logged in" in r["error"], "read fine, nobody logged in: red")
-fa.value = {**fa.value, "login": {"email": "b@example.com"}, "expiresAt": "2020-01-01T00:00:00.000Z"}
-check("expired" in c.get("/p/vps").json()["error"], "login past its expiry: red")
-fa.value = {**fa.value, "expiresAt": "not a date"}
-check(c.get("/p/vps").json()["state"] == "ok", "an unreadable expiry is not an expired login")
-fa.value = {**fa.value, "checked": False, "login": {}}
-r = c.get("/p/vps").json()
-check(r["state"] == "error" and not r["reachable"], "`claude auth status` gave nothing: can't read, not logged out")
-fa.value = {**fa.value, "ready": False, "why": "the VPS tab isn't set up"}
-r = c.get("/p/vps").json()
-check(not r["reachable"] and "VPS tab" in r["error"], "host unreachable: grey with the reason")
-fa.fail = True
-r = c.get("/p/vps").json()
-check(r["state"] == "error" and not r["reachable"] and "ssh broke" in r["error"], "a failing read says why")
-fa.fail = False
-fa.value = FakeAccounts().value
-plugin_services.withdraw("fake-keys")
-check(c.get("/p/vps").json()["state"] == "ok", "AI keys off: still reads the login")
-check(not llm.calls, "VPS checks never called a model")
-check(f.read_text("utf-8") == before, "VPS checks leave the console test's saved result alone")
+r = fresh_build()
+check(r["state"] == "off" and not r["ok"] and "orchestrator is off" in r["text"], "no orchestrator: grey, says why")
+check(c.get("/p/vps").json()["state"] == "off", "no orchestrator: the VPS badge is grey too")
+fd = FakeDispatch()
+plugin_services.provide("axf.build-dispatch@1", fd, "fake-orchestrator")
+r = fresh_build()
+check(r["ok"] and r["state"] == "ok" and r["ready"] == 1 and r["total"] == 2 and "1 of 2" in r["text"], "one build account ready: green, says how many")
+check([a["name"] for a in r["accounts"]] == ["worker-1", "worker-2"] and r["accounts"][1]["why"] == "no credits left" and r["accounts"][1]["credits"] is False, "every account with ready and why not")
+check("SECRET" not in json.dumps(r), "only the listed fields leave the read: nothing extra from the account")
+n = fd.calls
+c.get("/p/build")
+check(fd.calls == n, "cached: a second read within 30 s doesn't run the orchestrator again")
+fd.value = {**fd.value, "accounts": [{**a, "ready": False, "why": "cannot sign in", "signedIn": False} for a in fd.value["accounts"]]}
+r = fresh_build()
+check(r["state"] == "error" and not r["ok"] and r["ready"] == 0 and "none of 2" in r["text"], "no account can sign in with credits: red")
+fd.value = {**fd.value, "accounts": [], "why": "this process can't see the Claude logins", "source": "none"}
+r = fresh_build()
+check(r["state"] == "error" and "no build account" in r["text"] and "can't see" in r["text"], "no accounts at all: red, with the reason")
+v = c.get("/p/vps").json()
+check(v["state"] == "error" and not v["reachable"], "VPS badge: the console can't see the accounts on the host: red")
+fd.fail = True
+r = fresh_build()
+check(r["state"] == "off" and "pipeline failed" in r["text"], "a failing read: grey, says why, never green")
+fd.fail = False
+fd.value = FakeDispatch().value
+r = fresh_build(refresh=1)
+check(r["ok"] and not r["cached"], "refresh reads again")
+v = c.get("/p/vps").json()
+check(v["state"] == "ok" and v["reachable"] and v["source"] == "host", "VPS badge: accounts read live on the host: green")
+now = int(time.time() * 1000)
+iso = lambda ms: datetime.fromtimestamp(ms / 1000).astimezone().isoformat()  # noqa: E731
+check(mod.vps_classify("snapshot", iso(now - 3 * 60000), "", now)[0] == "ok", "VPS badge: a 3-minute-old host snapshot is green")
+check(mod.vps_classify("snapshot", iso(now - 30 * 60000), "", now)[0] == "warn", "VPS badge: a 30-minute-old snapshot is amber (the host tick stopped)")
+check(mod.vps_classify("none", "", "", now)[:2] == ("error", False), "VPS badge: nothing to read is red")
+check(not llm.calls, "build reads never called a model")
+check(f.read_text("utf-8") == before, "build reads leave the AI assistant test's saved result alone")
+src = (HERE / "server" / "__init__.py").read_text("utf-8")
+check("claude-accounts@1" not in src and "active_account" not in src and "limited_at" not in src and ".view()" not in src, "the VPS root `claude auth status` / .active login is not read any more")
 
 
 guest_app = FastAPI()
@@ -180,8 +184,8 @@ async def _guest(request, call_next):
 
 
 guest_app.include_router(mod.router, prefix="/p")
-g = TestClient(guest_app).get("/p/vps").json()
-check(g["state"] == "ok" and not g["email"] and not g["plan"] and not g["account"], "a non-owner gets the state, not who it is")
+g = TestClient(guest_app).get("/p/build").json()
+check(g["state"] == "ok" and g["ready"] == 1 and g["accounts"] == [], "a non-owner gets the state and counts, not the account names")
 # ---- usage meter: the read on the host
 
 import io  # noqa: E402

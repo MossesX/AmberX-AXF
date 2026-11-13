@@ -24,6 +24,8 @@
  * host tick writes (status.accountsFrom says which, and how old).
  *   … account <name> [--fable on|off|auto] [--parallel n] [--use on|off]   the pipeline's own record of an account
  *   … probe <name>                 ask the account's login whether it can run Fable (one tiny call), recorded for probeDays
+ *   … ready [--json]              can Claude build? per account: may the dispatcher use it and does its latest health check
+ *                                  say it signs in and has credits (buildReady). The Claude badge reads this.
  *   … health [--request] [--json]  the account health sweep: every account, one tiny headless Fable call each on a private
  *                                  copy of its login: can it sign in, has it credits, does it take Fable. The tick starts it
  *                                  in the background every healthEveryMin (5) minutes; it never touches a running build,
@@ -960,6 +962,10 @@ async function main(argv) {
     const r = selfCheck({ reason, by });
     if (!r.ran) return out({ ok: true, ...r, last: loadState().selfCheck ?? null }, r.why);
     return out({ ok: true, ...r }, [`self-check ${r.at}: ${r.line}`, ...r.fixes.map((f) => `  fixed: ${f}`), ...r.findings.map((f) => `  ${f.name.padEnd(16)} ${f.kind.padEnd(12)} ${f.state.padEnd(8)} ${f.running}/${f.parallel} · ${f.note}`), r.notified ? '  (AmberX told)' : ''].filter(Boolean).join('\n'));
+  }
+  if (cmd === 'ready') {
+    const settings = loadSettings(); const r = accountsRead(loadStore(), settings); const rd = P.buildReady(r.accounts, settings);
+    return out({ ok: true, ...rd, source: r.source, from: r.at, why: r.why, health: loadHealth()?.at || '' }, [`${rd.ready} of ${rd.total} build accounts ready`, ...rd.accounts.map((x) => `  ${x.name.padEnd(16)} ${x.ready ? 'ready' : `not ready: ${x.why}`}`)].join('\n'));
   }
   if (cmd === 'accounts') { const a = accountsNow(loadStore()); return out({ ok: true, accounts: a }, a.map((x) => `${x.name.padEnd(16)} ${x.role.padEnd(11)} ${x.fable ? 'Fable' : 'Opus '} (${x.fableFrom}) · ${x.running}/${x.parallel}${x.usable ? '' : ` · ${x.why}`}`).join('\n') || 'no accounts'); }
   if (cmd === 'account') {

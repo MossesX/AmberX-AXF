@@ -15,7 +15,7 @@
       {
         "target": "show-on-the-banner",
         "title": "Show on the banner",
-        "text": "Puts this badge on the banner, or takes it off. Hiding the console badge also stops its test when the console loads.",
+        "text": "Puts this badge on the banner, or takes it off. A hidden badge reads nothing.",
         "kind": "field"
       },
       {

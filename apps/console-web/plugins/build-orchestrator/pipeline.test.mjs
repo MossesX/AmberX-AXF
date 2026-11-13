@@ -347,6 +347,27 @@ t('account health: classify the call, a fresh answer decides usable and Fable, s
   assert.equal(P.healthDue('', P.normSettings({ healthEveryMin: 0 }), t0), false, '0 = off');
   assert.match(P.healthSummary([{ name: 'a', signedIn: true, credits: true, fable: true }, { name: 'b', signedIn: false, error: 'x' }]).line, /2 accounts: 1 ok, 1 not/);
 });
+t('buildReady: the Claude badge reads the dispatcher check (usable + fresh health: signs in, has credits)', () => {
+  const s = P.normSettings({ healthEveryMin: 5 }); const t0 = Date.parse(now);
+  const ok = { at: now, signedIn: true, credits: true, fable: true, error: '' };
+  const views = [
+    P.accountView({ name: 'w1', role: 'worker', plan: 'max' }, { health: ok }, { settings: s, anyWorker: true, now: t0 }),
+    P.accountView({ name: 'w2', role: 'worker', plan: 'max' }, { health: { ...ok, credits: false } }, { settings: s, anyWorker: true, now: t0 }),
+    P.accountView({ name: 'w3', role: 'worker', plan: 'max' }, {}, { settings: s, anyWorker: true, now: t0 }),
+    P.accountView({ name: 'i1', role: 'interactive', plan: 'max' }, { health: ok }, { settings: s, anyWorker: true, now: t0 }),
+    P.accountView({ name: 'w4', role: 'worker', plan: 'max' }, { health: ok, use: false }, { settings: s, anyWorker: true, now: t0 }),
+  ];
+  const r = P.buildReady(views, s, t0);
+  assert.equal(r.ready, 1); assert.equal(r.total, 5);
+  const by = Object.fromEntries(r.accounts.map((a) => [a.name, a]));
+  assert.equal(by.w1.ready, true); assert.equal(by.w1.why, '');
+  assert.equal(by.w2.ready, false); assert.match(by.w2.why, /credits/);
+  assert.equal(by.w3.ready, false); assert.match(by.w3.why, /not health-checked/);
+  assert.equal(by.i1.ready, false, 'the dispatcher does not use a non-worker while workers exist');
+  assert.equal(by.w4.ready, false); assert.match(by.w4.why, /switched off/);
+  assert.equal(P.buildReady(views, s, t0 + 3600e3).ready, 0, 'an hour-old sweep proves nothing: red');
+  assert.equal(P.buildReady([], s, t0).ready, 0);
+});
 t('every brief and the split prompt carry the API rule (deep link, state, every action and setting; REST / MCP / CLI / voice)', () => {
   assert.match(OC.API_RULE, /deep link/); assert.match(OC.API_RULE, /every action and setting/); assert.match(OC.API_RULE, /MCP/); assert.match(OC.API_RULE, /CLI/); assert.match(OC.API_RULE, /voice/);
   const b = OC.normalizeState({ builds: [build('ui-thing', 'queued', [step('s1', 'Opus')])] }).builds[0];
