@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T12:16:20.105Z",
+ "updatedAt": "2026-11-13T12:17:04.464Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -123819,12 +123819,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T12:14:42.715Z",
-   "updatedAt": "2026-11-13T12:14:45.150Z",
+   "updatedAt": "2026-11-13T12:17:01.586Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-13T12:14:45.150Z"
+    },
+    {
+     "text": "Split by Claude into 14 steps (0 Fable).",
+     "at": "2026-11-13T12:17:01.586Z"
     }
    ],
    "approvals": [],
@@ -123841,7 +123845,322 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Check out PR #555's branch (or start claude/ui-review-gate-switch from main and cherry-pick #555's commits if it can't be rebased). Read #555's failures in the 'CI build errors' issue and the PR checks, and write them down as a checklist in _claude/builds/reports/ui-review-gate-switch-default-off.md. Link the build with builds-live.mjs link. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/ui-review/",
+      "_claude/builds/reports/ui-review-gate-switch-default-off.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwexys9f01nrj3",
+     "createdAt": "2026-11-13T12:17:01.586Z"
+    },
+    {
+     "id": "s2",
+     "text": "Fix #555's CI failures, part 1: the plugin's own checks (lifecycle markers, help or glossary ratchet, plugin-commands static routes, fixtures). Rerun each failing check locally until it passes. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/ui-review/",
+      "apps/console-web/plugins/glossary-index/coverage.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwexys9f02x5h2",
+     "createdAt": "2026-11-13T12:17:01.586Z"
+    },
+    {
+     "id": "s3",
+     "text": "Fix #555's CI failures, part 2: the framework and console sweep (check-theme, check-controls, check-toolbars, check-chrome-assets, tracker --check, console typecheck after a rebake). Reproduce with AXF_DATA_DIR=off. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src/",
+      "framework/cli/",
+      "tracker.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwexys9f03rvyk",
+     "createdAt": "2026-11-13T12:17:01.586Z"
+    },
+    {
+     "id": "s4",
+     "text": "Add the setting 'UI Review is a merge gate' (key uiReview.gate, default false) to the UI Review plugin settings. Have it read and write the owner-only Claude setting 'UI Review gate', so one value drives both. A missing value counts as false, and existing installs migrate to false. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/ui-review/plugin.json",
+      "apps/console-web/plugins/ui-review/server/",
+      "apps/console-web/plugins/claude-settings/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwexys9f041bs6",
+     "createdAt": "2026-11-13T12:17:01.586Z"
+    },
+    {
+     "id": "s5",
+     "text": "Make the gate decision one function, gateOn() in the plugin server and review.mjs. When the gate is off, 'review.mjs state --pr <n> --exit-code' exits 0 with state 'filed (not a gate)', and the ui-review@1 capability's held() returns false. Submissions are still filed, never refused. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/ui-review/review.mjs",
+      "apps/console-web/plugins/ui-review/server/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwexys9f05tjmd",
+     "createdAt": "2026-11-13T12:17:01.586Z"
+    },
+    {
+     "id": "s6",
+     "text": "Make the merge queue and the push banner stop holding PRs or keeping them as drafts for UI Review when gateOn() is false. That covers the merge-queue.mjs readiness check, land.mjs, and the auto-PR draft flag. Add a unit test for both gate states. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/land/merge-queue.mjs",
+      "apps/console-web/plugins/push-banner/land/land.mjs",
+      "apps/console-web/plugins/push-banner/test/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwexys9f06p6ti",
+     "createdAt": "2026-11-13T12:17:01.586Z"
+    },
+    {
+     "id": "s7",
+     "text": "UI: add a Switch 'UI Review is a merge gate' to Settings → Plugins → UI Review, on the framework Switch with tokens only and the level toolbar's Simple level. Under it, a status line: 'Off: items are filed for you to look at, PRs never wait.' Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/ui-review/web/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwexys9f07srs7",
+     "createdAt": "2026-11-13T12:17:01.586Z"
+    },
+    {
+     "id": "s8",
+     "text": "API for the switch: REST GET/POST /api/plugins/ui-review/gate returning {on, heldPrs[]}. Turning it on is personOnly, matching the owner-only Claude setting; turning it off and reading it are open to everyone. Add the MCP plugin commands ui-review_gate_get/set, the CLI 'review.mjs gate [on|off|status]', the voice action 'uireview.gate', and the deep link console_show target 'settings:plugins/ui-review#gate'. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/ui-review/server/routes.py",
+      "apps/console-web/plugins/ui-review/review.mjs",
+      "apps/console-web/plugins/ui-review/commands.json",
+      "apps/console-web/plugins/ui-review/actions.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwexys9f08d7hd",
+     "createdAt": "2026-11-13T12:17:01.586Z"
+    },
+    {
+     "id": "s9",
+     "text": "Release command: 'review.mjs release-held [--pr n…] [--all]', REST POST /api/plugins/ui-review/release, MCP ui-review_release, voice 'uireview.release'. For each PR still held for UI Review, it marks the review item non-blocking (still filed), un-drafts the PR, and adds it to the merge queue with land.mjs queue add. It goes through the merge queue only and never merges. Has a dry-run. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/ui-review/review.mjs",
+      "apps/console-web/plugins/ui-review/server/routes.py",
+      "apps/console-web/plugins/push-banner/land/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwexys9f094c7z",
+     "createdAt": "2026-11-13T12:17:01.586Z"
+    },
+    {
+     "id": "s10",
+     "text": "Release Brett's held PRs now: run release-held for #557, #553, #541, #536, #518 and #517 (GitHub writes as axHub veto calls with a reason, where the session token can't do them). Record the result per PR in the report. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "_claude/builds/reports/ui-review-gate-switch-default-off.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwexys9f0aiccz",
+     "createdAt": "2026-11-13T12:17:01.586Z"
+    },
+    {
+     "id": "s11",
+     "text": "Tests: python and node tests for gateOn() defaults, state --exit-code in both gate states, personOnly on turning the gate on, release-held in dry-run and real mode against a fake GitHub, and REST, MCP and CLI giving the same answers. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/ui-review/test/",
+      "apps/console-web/plugins/push-banner/test/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwexys9j0bimfp",
+     "createdAt": "2026-11-13T12:17:01.586Z"
+    },
+    {
+     "id": "s12",
+     "text": "Docs and rules: update the shared rule 'Every UI change goes to UI Review' and the CLAUDE.md UI Review line to say a hold applies only while the gate switch is on (default off). Update the plugin README and help, run the glossary catalog --check, then claude-sync sync. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "_claude/shared/rules/RULES.md",
+      "CLAUDE.md",
+      "apps/console-web/plugins/ui-review/README.md",
+      "apps/console-web/plugins/glossary-index/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwexys9j0cm9fj",
+     "createdAt": "2026-11-13T12:17:01.586Z"
+    },
+    {
+     "id": "s13",
+     "text": "UI Review submission for the settings switch: 3 options as settings assets in apps/console-web/plugins/ui-review/assets/settings/, with desktop and phone shots from vite preview, submitted with review.mjs submit --choices. With the gate off it is filed but does not block. Commit the assets.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/ui-review/assets/settings/",
+      "_claude/builds/reports/ui-review-gate-switch-default-off/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwexys9j0dv2sj",
+     "createdAt": "2026-11-13T12:17:01.586Z"
+    },
+    {
+     "id": "s14",
+     "text": "Finish: run the full CI sweep locally. Write the report _claude/builds/reports/ui-review-gate-switch-default-off.md (what #555's failures were and how they were fixed, the release result per PR, and the API list: deep link, REST, MCP, CLI, voice). Add a THREADS.md row, push, open the PR (it replaces #555; close #555 with a link), add it to the merge queue, and tick the build.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/ui-review-gate-switch-default-off.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwexys9j0ewbyk",
+     "createdAt": "2026-11-13T12:17:01.586Z"
+    }
+   ]
   }
  ]
 }

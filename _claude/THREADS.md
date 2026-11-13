@@ -781,7 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 07:08 UTC · `professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e` note (all) · mcp
 - 2026-11-13 07:08 UTC · `skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga` → running, note (all) · pipeline
 - 2026-11-13 07:08 UTC · `skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga` note (all) · orchestrator
 - 2026-11-13 07:09 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` → pending, note (all) · reconciler
@@ -1181,6 +1180,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 12:14 UTC · `ui-review-gate-switch-default-off` → queued, note (all) · console
 - 2026-11-13 12:15 UTC · `combine-merge-queue-into-one-pr` s3 done (all) · orchestrator
 - 2026-11-13 12:15 UTC · `auto-recover-stuck-builds` s4 done (all) · orchestrator
+- 2026-11-13 12:17 UTC · `ui-review-gate-switch-default-off` note (all) · orchestrator
 
 ## Token passes (log)
 
