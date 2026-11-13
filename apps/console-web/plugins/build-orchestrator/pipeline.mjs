@@ -69,7 +69,7 @@ import { addendumBlock, saidBlock, subtitle } from '../../../../framework/core/b
 import { effectivePriority, priorityLabel } from '../../../../framework/core/build-priority.mjs';
 import { MODEL_IDS, modelKey } from '../../../../framework/core/model-policy.mjs';
 import * as storeCore from '../../../../framework/plan/builds-store-core.mjs';
-import { loadStore, withStore } from '../../../../framework/cli/builds-store.mjs';
+import { loadStore, migrateStepDepsNow, withStore } from '../../../../framework/cli/builds-store.mjs';
 import { activeProfile } from '../../../../framework/cli/persist.mjs';
 import { activeProject, readProjects } from '../../../../framework/cli/projects.mjs';
 import { loadUpgradePolicy, settingsFile as claudeSettingsFile } from '../../../../framework/cli/upgrade-policy.mjs';
@@ -534,6 +534,7 @@ export function briefFor(b, rules, { account, model, kind = '' }) {
     saidBlock(o), ...(addenda.length ? ['', ...addenda] : []), '',
     '## What to build', orch.brief(b, rules), '',
     `## Pipeline`,
+    `Parallel steps: steps with a dependsOn list may run in step sessions beside you (Fill every slot). Before you start a step, run \`node apps/console-web/plugins/build-orchestrator/pipeline.mjs fill status ${b.id}\`: skip any step it shows running elsewhere and every step waiting on one, and leave their files alone; their branches merge into yours by themselves.`,
     `This session was started by the orchestrator's dispatcher on Claude account ${account}${kind === 'api' ? ' (an API key: billed per token, keep it lean)' : ''} for the ${model} phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step ${b.id} <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note ${b.id} "…"); the build goes back to Pending for Brett.`,
   ].join('\n');
 }
@@ -620,6 +621,15 @@ export function checkEnds({ alert = () => {}, env = process.env } = {}) {
       if (alive !== false || Date.now() - Date.parse(b.pipeline.launchedAt || 0) < GONE_GRACE_MS) continue;
       exit = 1;
     }
+    // its own session ended while parallel step sessions still work: the build stays in Building until they are done
+    const stepLive = b.steps.filter((x) => !x.done && !x.skip && BP.claimLive(x.claim) && !str(x.claim.runId).startsWith('main:'));
+    if (!settled && exit === 0 && stepLive.length) {
+      const note = `Session ${b.pipeline.session} ended; ${stepLive.length} step${stepLive.length === 1 ? '' : 's'} still run${stepLive.length === 1 ? 's' : ''} in parallel (${stepLive.map((x) => x.id).join(', ')}): the build stays in Building and goes back to the Queue if steps are left when they finish.`;
+      setPipeline(b.id, { session: '', slot: '', note: 'waiting on parallel steps' }, { status: b.status, note, action: 'pipeline:end' });
+      logLine({ event: 'ended', build: b.id, outcome: 'parallel', exit, session: b.pipeline.session });
+      out.push({ id: b.id, outcome: 'parallel', status: b.status, exit });
+      continue;
+    }
     const r = P.endOutcome(b, { exit, account: b.pipeline.account, session: b.pipeline.session }, settings);
     if (settled) { r.outcome = 'finished'; r.status = b.status; r.run = { ...r.run, outcome: 'finished' }; r.note = `Session ${b.pipeline.session} on ${b.pipeline.account || '?'} ended (exit ${exit}); the build was already ${b.status}.`; }
     setPipeline(b.id, { lastRun: r.run, session: '', slot: '', note: r.outcome === 'finished' ? '' : r.note }, { status: r.status, note: r.note, action: 'pipeline:end' });
@@ -629,6 +639,165 @@ export function checkEnds({ alert = () => {}, env = process.env } = {}) {
     else if (r.outcome === 'returned') crewSay('dispatcher', 'waiting', `${b.id} stopped with steps left and is back in Pending. Brett, it needs you: ${r.note}`, { ref: b.id });
     else crewSay('dispatcher', 'done', `${b.id}: ${r.note}`, { ref: b.id });
     out.push({ id: b.id, outcome: r.outcome, status: r.status, exit });
+  }
+  return out;
+}
+
+// ------------------------------------------------------------------ fill every slot: parallel step sessions (BUILD-PARALLEL)
+
+/**
+ * The Claude settings the fill round follows (claude-settings registry, owner flags there): fillSlots (default on),
+ * autoQueuePending (default off, Brett's click only), maxParallelPerBuild (default 3). Missing keys = defaults.
+ */
+export function fillSettings(env = process.env) {
+  const v = claudeSettings(env);
+  const n = Number(v['builds.maxParallelPerBuild']);
+  return { fillSlots: v['builds.fillSlots'] !== false, autoQueuePending: v['builds.autoQueuePending'] === true, maxParallelPerBuild: Number.isInteger(n) && n >= 1 ? Math.min(12, n) : BP.FILL_DEFAULTS.maxParallelPerBuild };
+}
+
+/** The step sessions the dispatcher started and still watches: state.steps = { <runId>: { id, step, session, slot, account, model, dir, branch, launchedAt, merging } }. */
+const stepRecs = (state) => (state.steps && typeof state.steps === 'object' ? state.steps : (state.steps = {}));
+const runKey = (id, step) => `${id}/${step}`;
+
+/** The planner's inputs from the store, the slots, the accounts and the step sessions running now. */
+export function fillInputs({ store, state, env = process.env, settings = loadSettings(env), fill = fillSettings(env), sl = slotsNow(), launchedNow = 0, now = Date.now() } = {}) {
+  const builds = runnable(store);
+  const running = builds.filter((b) => b.status === 'running' || b.status === 'waiting').map((b) => P.withMainClaim(b, now));
+  const accounts = accountsRead(store, settings, env).accounts.map((a) => ({ ...a }));
+  // step sessions are not in pipeline.account: count them on their accounts
+  for (const r of Object.values(stepRecs(state))) { const a = accounts.find((x) => x.name === r.account); if (a && !r.merging) { a.running += 1; a.free = Math.max(0, a.free - 1); } }
+  const slotsView = { ...sl, free: Math.max(0, (Number(sl.free) || 0) - launchedNow) };
+  return { slots: slotsView, accounts, running, queue: [], pending: [], settings: { maxParallelPerBuild: fill.maxParallelPerBuild, autoQueue: false, apiOverflow: settings.apiOverflow !== false }, now };
+}
+
+/**
+ * Start one parallel step session (a planFill `step` launch): claim the step on the build (builds-live carries it to
+ * main at once), make its step worktree off the build branch, write the step-scoped brief and start
+ * `claude-headless.sh --step` there, which books its own agent slot and passes the per-step model gate. A launch that
+ * fails gives the claim back. → { runId, session, slot, dir, branch }
+ */
+export function launchStep(b, item, { rules, env = process.env, launcher = env.AXF_PIPELINE_LAUNCHER || join(REPO_ROOT, 'deploy', 'claude-headless.sh') } = {}) {
+  const runId = `step-${str(b.id, 40)}-${item.step}-${Date.now().toString(36)}`;
+  let claimed = null;
+  withStore((s) => {
+    const rec = storeCore.findBuild(s, b.id); if (!rec) { claimed = { ok: false, why: `no build ${b.id}` }; return s; }
+    claimed = BP.claimStep(rec, item.step, { runId, account: item.account, branch: item.branch, model: item.model });
+    if (claimed.ok) Object.assign(rec, claimed.build);
+    return s;
+  }, { by: 'dispatcher', action: 'pipeline:step-claim', note: `${b.id}/${item.step}` });
+  if (!claimed?.ok) throw new Error(`claim refused: ${claimed?.why ?? 'unknown'}`);
+  const release = (why) => withStore((s) => { const rec = storeCore.findBuild(s, b.id); const r = rec && BP.releaseStep(rec, item.step, { runId, note: why }); if (r?.ok) Object.assign(rec, r.build); return s; }, { by: 'dispatcher', action: 'pipeline:step-release', note: `${b.id}/${item.step}` });
+  try {
+    const fresh = storeCore.findBuild(loadStore(), b.id);
+    const w = ensureStepWorktree(fresh, item.step, env);
+    writeFileSync(join(w.dir, '.axf-brief.md'), `${stepBriefFor(fresh, item.step, rules, { account: item.account, model: item.model })}\n`);
+    const token = issueDispatch(b.id, { account: item.account, model: item.model, env });
+    const key = modelKey(item.model) || 'opus';
+    const args = ['--name', b.id, '--step', item.step, '--account', item.account, '--brief', '.axf-brief.md', '--log', `${b.id}--${item.step}.log`, '--', '--model', MODEL_IDS[key], ...CLAUDE_ARGS];
+    const e = { ...env, AXF_DISPATCH_TOKEN: token, AXF_SURFACE: 'pipeline', AXF_MODEL: key, AXF_BUILD_ID: b.id, AXF_STEP_ID: item.step, AXF_STEP_BRIEF: 'off', AXF_CLAUDE_ACCOUNT: item.account };
+    const r = spawnSync('bash', [launcher, ...args], { cwd: w.dir, encoding: 'utf8', timeout: 180e3, env: e });
+    const text = `${r.stdout || ''}\n${r.stderr || ''}`;
+    const session = /started (axf-\S+) in/.exec(text)?.[1] ?? '';
+    const slot = /\((hl-[a-z0-9-]+)/.exec(text)?.[1] ?? '';
+    if (r.status !== 0 || (!session && !/queued at position/.test(text))) throw new Error(`launcher exit ${r.status}: ${str(text.trim().split('\n').filter(Boolean).pop() || 'no output', 300)}`);
+    if (slot) withStore((s) => { const st = storeCore.findBuild(s, b.id)?.steps.find((x) => x.id === item.step); if (st?.claim?.runId === runId) st.claim.slot = slot; return s; }, { by: 'dispatcher', action: 'pipeline:step-slot', note: `${b.id}/${item.step}` });
+    return { runId, session, slot, dir: w.dir, branch: w.branch, queuedInSlots: /queued at position/.test(text) };
+  } catch (err) { release(`launch failed: ${str(err.message, 200)}`); throw err; }
+}
+
+/**
+ * Step sessions that ended (an end event, or tmux gone past the grace period): a ticked step is merged back
+ * (mergeStepBack; deferred = tried again next tick); an unticked one is a crash: its claim goes, the step is ready again,
+ * and after STEP_MAX_RUNS runs it is left to the build's own session (parallel: never) with a note. Live sessions get
+ * their claim renewed (a step may outlive the 45-minute TTL). → [{ id, step, outcome }]
+ */
+export function checkStepEnds({ state, env = process.env, alert = () => {}, now = Date.now() } = {}) {
+  const recs = stepRecs(state); const events = readEvents(env); const out = [];
+  state.stepRuns = state.stepRuns && typeof state.stepRuns === 'object' ? state.stepRuns : {};
+  for (const [runId, r] of Object.entries(recs)) {
+    const b = storeCore.findBuild(loadStore(), r.id); const st = b?.steps.find((x) => x.id === r.step);
+    if (!b || !st || b.deleted) { delete recs[runId]; continue; }
+    if (r.merging || (st.done && !r.session)) {
+      const m = mergeStepBack(r.id, r.step, { env });
+      if (!m.deferred) { delete recs[runId]; out.push({ id: r.id, step: r.step, outcome: m.merged ? 'merged' : 'conflict', why: m.why }); if (m.conflict) alert('step-conflict', { id: r.id, step: r.step, note: m.why }); }
+      continue;
+    }
+    const since = Date.parse(r.launchedAt || 0) - 5000;
+    const end = events.filter((e) => e.event === 'session-end' && Date.parse(e.at || 0) >= since && (e.session === r.session || (e.step === r.step && str(e.name).startsWith(r.id)))).pop();
+    let exit = null;
+    if (end) exit = Number.isInteger(end.exit) ? end.exit : Number(end.exit) || 0;
+    else {
+      const alive = r.session ? tmuxHas(r.session) : null;
+      if (alive !== false || now - Date.parse(r.launchedAt || 0) < GONE_GRACE_MS) {
+        // still working: keep its claim alive past the TTL
+        if (!st.done) withStore((s) => { const rec = storeCore.findBuild(s, r.id); const c = rec && BP.claimStep(rec, r.step, { runId, slot: r.slot, account: r.account, branch: r.branch, model: r.model, now }); if (c?.ok) Object.assign(rec, c.build); return s; }, { by: 'dispatcher', action: 'pipeline:step-renew', note: `${r.id}/${r.step}` });
+        continue;
+      }
+      exit = 1;
+    }
+    if (st.done) { r.merging = true; r.session = ''; const m = mergeStepBack(r.id, r.step, { env }); if (!m.deferred) delete recs[runId]; out.push({ id: r.id, step: r.step, outcome: m.deferred ? 'merge-deferred' : m.merged ? 'merged' : 'conflict', why: m.why }); if (m.conflict) alert('step-conflict', { id: r.id, step: r.step, note: m.why }); continue; }
+    const k = runKey(r.id, r.step); const runs = (state.stepRuns[k] ?? 0);
+    const last = runs >= P.STEP_MAX_RUNS;
+    const note = last ? `step session ${r.session || runId} ended (exit ${exit}) without ticking ${r.step}: ${runs} runs, left to the build's own session` : `step session ${r.session || runId} ended (exit ${exit}) without ticking ${r.step}: ready again (run ${runs} of ${P.STEP_MAX_RUNS})`;
+    withStore((s) => {
+      const rec = storeCore.findBuild(s, r.id); if (!rec) return s;
+      const rel = BP.releaseStep(rec, r.step, { runId, note }); if (rel.ok) Object.assign(rec, rel.build);
+      if (last) { const x = rec.steps.find((y) => y.id === r.step); if (x) x.parallel = 'never'; }
+      rec.notes.push({ text: `${r.step}: ${note}`, at: nowIso() }); rec.updatedAt = nowIso();
+      return s;
+    }, { by: 'dispatcher', action: 'pipeline:step-end', note: `${r.id}/${r.step}` });
+    delete recs[runId];
+    if (last) delete state.stepRuns[k];
+    out.push({ id: r.id, step: r.step, outcome: last ? 'gave-up' : 'requeued', exit });
+    logLine({ event: 'step-ended', build: r.id, step: r.step, exit, runs, last });
+  }
+  return out;
+}
+
+/**
+ * One fill round (every tick, after the build launches): planFill over the running builds, then every `step` launch it
+ * returns is started until the slots or accounts run out. Off (builds.fillSlots false) = only ends are watched.
+ * → { launched, failed, plan, ended, settings }
+ */
+export function fillRound({ state, env = process.env, alert = () => {}, rules, launchedNow = 0, now = Date.now() } = {}) {
+  const fill = fillSettings(env);
+  const ended = checkStepEnds({ state, env, alert, now });
+  if (!fill.fillSlots) return { launched: [], failed: [], plan: null, ended, settings: fill };
+  const store = loadStore();
+  const plan = BP.planFill(fillInputs({ store, state, env, fill, launchedNow, now }));
+  const launched = []; const failed = [];
+  state.stepRuns = state.stepRuns && typeof state.stepRuns === 'object' ? state.stepRuns : {};
+  for (const item of plan.launches.filter((l) => l.kind === 'step')) {
+    const b = storeCore.findBuild(loadStore(), item.id);
+    try {
+      const r = launchStep(b, item, { rules, env });
+      const k = runKey(item.id, item.step); state.stepRuns[k] = (state.stepRuns[k] ?? 0) + 1;
+      stepRecs(state)[r.runId] = { id: item.id, step: item.step, session: r.session, slot: r.slot, account: item.account, model: item.model, dir: r.dir, branch: r.branch, launchedAt: nowIso(), runs: state.stepRuns[k] };
+      withStore((s) => { const rec = storeCore.findBuild(s, item.id); if (rec) { rec.notes.push({ text: `${item.step}: started in parallel on ${item.account} (${item.model}), ${r.session || 'queued in agent slots'}, worktree ${r.dir}, branch ${r.branch} (run ${state.stepRuns[k]} of ${P.STEP_MAX_RUNS})`, at: nowIso() }); rec.updatedAt = nowIso(); } return s; }, { by: 'dispatcher', action: 'pipeline:step-launch', note: `${item.id}/${item.step}` });
+      launched.push({ ...item, session: r.session, slot: r.slot, dir: r.dir, runId: r.runId });
+      logLine({ event: 'step-launched', build: item.id, step: item.step, account: item.account, model: item.model, session: r.session, dir: r.dir });
+      crewSay('dispatcher', 'start', `Started ${item.id} ${item.step} in parallel on ${item.account}, ${item.model}.`, { ref: item.id });
+    } catch (e) {
+      failed.push({ id: item.id, step: item.step, error: e.message });
+      logLine({ event: 'step-launch-failed', build: item.id, step: item.step, account: item.account, error: str(e.message, 300) });
+    }
+  }
+  requeueAfterParallel({ now });
+  return { launched, failed, plan, ended, settings: fill };
+}
+
+/**
+ * A running build whose own session ended while step sessions worked (`waiting on parallel steps`): once no step
+ * session is left, it goes back to the Queue when steps are left (its own session picks them up), else it is built.
+ */
+export function requeueAfterParallel({ now = Date.now() } = {}) {
+  const out = [];
+  for (const b of live(loadStore())) {
+    if (b.status !== 'running' || b.pipeline?.session || b.pipeline?.note !== 'waiting on parallel steps') continue;
+    if (b.steps.some((x) => !x.done && !x.skip && BP.claimLive(x.claim, now))) continue;
+    const left = BP.openSteps(b).length;
+    if (left) { setPipeline(b.id, { note: '', queuedAt: nowIso(), queuedBy: 'dispatcher' }, { status: 'queued', note: `Parallel steps finished; ${left} step${left === 1 ? '' : 's'} left: back in the Queue for its own session.`, action: 'pipeline:requeue' }); out.push({ id: b.id, status: 'queued' }); }
+    else { setPipeline(b.id, { note: '' }, { status: b.pr && !b.mergedAt ? 'built' : 'complete', note: 'Parallel steps finished: every step is done.', action: 'pipeline:end' }); out.push({ id: b.id, status: 'built' }); }
   }
   return out;
 }
@@ -727,7 +896,9 @@ export function tick({ env = process.env } = {}) {
   const started = nowIso();
   const inta = intake({ alert });
   const ended = checkEnds({ alert, env });
-  const store = loadStore(); const settings = loadSettings(); const rules = rulesOf(store);
+  let store = loadStore(); const settings = loadSettings(); const rules = rulesOf(store);
+  // the step-dependency migration (BUILD-PARALLEL §1): once, journalled; older builds keep no dependsOn
+  if (!store.meta?.versions?.stepDeps) { try { migrateStepDepsNow('dispatcher'); store = loadStore(); } catch (e) { logLine({ event: 'migrate-step-deps-failed', error: str(e.message, 300) }); } }
   const read = accountsRead(store, settings, env); const accounts = read.accounts; const sl = slotsNow();
   // the console (in its container) can't see the logins: it reads what the host saw here
   if (read.source === 'host') { try { writeHostAccounts(read.rows, read.at || nowIso()); } catch (e) { logLine({ event: 'snapshot-failed', error: str(e.message, 300) }); } }
@@ -769,9 +940,12 @@ export function tick({ env = process.env } = {}) {
       crewSay('dispatcher', 'failed', `Couldn't start ${l.id} on ${tried.join(', ') || l.account}: ${str(e.message, 160)}`, { ref: l.id });
     }
   }
+  // fill every slot: parallel steps of running builds into the slots still free (BUILD-PARALLEL)
+  let fill = { launched: [], failed: [], plan: null, ended: [], settings: null };
+  try { fill = fillRound({ state, env, alert, rules, launchedNow: launched.length }); } catch (e) { logLine({ event: 'fill-failed', error: str(e.message, 300) }); }
   // idle: nothing running while work waits. Recorded at once; the phone hears about it after idleAfterMin, once per idle spell.
   let idle = null;
-  if (plan.idle && !launched.length) {
+  if (plan.idle && !launched.length && !fill.launched.length) {
     const since = state.idle?.kind === plan.idle.kind ? state.idle.since : started;
     idle = { ...plan.idle, since };
     const dueAt = Date.parse(since) + settings.idleAfterMin * 60e3;
@@ -786,7 +960,7 @@ export function tick({ env = process.env } = {}) {
     state.alerts = state.alerts.filter((a) => a.key !== 'pipeline:idle');
   }
   const alerts = [...state.alerts.filter((a) => a.key !== 'pipeline:idle' || idle), ...sent.filter((a) => a.kind === 'idle')].filter((a, i, arr) => arr.findIndex((x) => x.key === a.key) === i);
-  const next = { ...state, at: nowIso(), plan: { launches: plan.launches, waits: plan.waits, queue: plan.queue, running: plan.running, pending: plan.pending }, slots: { used: sl.used, cap: sl.cap, free: sl.free, ...(sl.hard?.max ? { hard: { max: sl.hard.max, live: sl.hard.live, free: sl.hard.free } } : {}) }, accounts: accounts.map((a) => ({ name: a.name, fable: a.fable, parallel: a.parallel, running: a.running, usable: a.usable, why: a.why })), idle, alerts,
+  const next = { ...state, at: nowIso(), plan: { launches: plan.launches, waits: plan.waits, queue: plan.queue, running: plan.running, pending: plan.pending }, fill: fill.plan ? { at: nowIso(), launches: fill.plan.launches, waits: fill.plan.waits, free: fill.plan.free, blocked: fill.plan.blocked, launched: fill.launched.map((l) => ({ id: l.id, step: l.step, account: l.account, session: l.session })), ended: fill.ended } : { at: nowIso(), off: !fill.settings?.fillSlots, ended: fill.ended }, slots: { used: sl.used, cap: sl.cap, free: sl.free, ...(sl.hard?.max ? { hard: { max: sl.hard.max, live: sl.hard.live, free: sl.hard.free } } : {}) }, accounts: accounts.map((a) => ({ name: a.name, fable: a.fable, parallel: a.parallel, running: a.running, usable: a.usable, why: a.why })), idle, alerts,
     recent: [...state.recent, ...launched.map((l) => ({ at: nowIso(), event: 'launched', id: l.id, account: l.account, model: l.model })), ...ended.map((e) => ({ at: nowIso(), event: e.outcome, id: e.id })), ...failed.map((f) => ({ at: nowIso(), event: 'launch-failed', id: f.id, error: f.error }))].slice(-50) };
   saveState(next);
   // self-check: asked for (console load, voice, API), or queued work waits and this tick started nothing
@@ -802,7 +976,7 @@ export function tick({ env = process.env } = {}) {
   for (const fn of TICK_HOOKS) {
     try { fn({ state: next, plan, launched, ended, failed, env }); } catch (e) { logLine({ event: 'hook-failed', error: str(e.message, 300) }); }
   }
-  return { ok: true, at: next.at, intake: inta, ended, launched, failed, plan, idle, alertsSent: sent, selfCheck: check, health };
+  return { ok: true, at: next.at, intake: inta, ended, launched, failed, plan, fill, idle, alertsSent: sent, selfCheck: check, health };
 }
 
 const MAX_PICK_TRIES = 4;

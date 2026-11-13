@@ -33,7 +33,7 @@
  *              healthOf() reads one tiny call's answer; a fresh health record (own.health) decides usable / Fable,
  *              so the dispatcher never tests an account at launch time. healthDue() says when the next sweep runs.
  */
-import { DEFAULT_MAX_RUNS, STATUS_AFTER, dependsOn as resolvedDeps, isHeld, releaseStep, stepFiles, nextModel, openSteps, outcomeLine, outcomeOf, queueOrder } from '../../../../framework/core/build-pipeline.mjs';
+import { CLAIM_TTL_MS, DEFAULT_MAX_RUNS, STATUS_AFTER, claimLive, dependsOn as resolvedDeps, isHeld, readySteps, releaseStep, stepFiles, nextModel, openSteps, outcomeLine, outcomeOf, queueOrder } from '../../../../framework/core/build-pipeline.mjs';
 import { effectivePriority, priorityLabel } from '../../../../framework/core/build-priority.mjs';
 import { FOUNDATION_MODEL, MODEL_LABELS, modelForWork, modelKey } from '../../../../framework/core/model-policy.mjs';
 import { API_RULE, estimateMinutes, maxStep, nextUp as orchNextUp, MODEL_GUIDE, STEP_MINUTES, stepLimit } from './web/orchestrator-core.mjs';
@@ -463,6 +463,37 @@ export function conflictBack(b, stepId, { files = [], branch = '', now = Date.no
   const noted = (x) => `${x.note ? `${x.note}\n` : ''}${note}`.slice(-1000);
   const build = { ...r.build, steps: r.build.steps.map((x) => (x.id === stepId ? { ...x, done: false, doneAt: '', after, parallel: 'never', note: noted(x), updatedAt: at } : x)) };
   return { ok: true, build, after, note };
+}
+
+/** Runs a parallel step session gets before the step is left to the build's own session. */
+export const STEP_MAX_RUNS = 3;
+
+/**
+ * The planner's view of a running build whose own session is alive (pipeline.session): that session holds the first
+ * ready step nobody else claims (it works in list order), as an in-memory claim `main:<session>`. planFill then counts it
+ * as the build's own session and never launches its step beside it. Never stored. Pure.
+ */
+export function withMainClaim(b, now = Date.now()) {
+  if (!b?.pipeline?.session || !list(b.steps).length) return b;
+  if (list(b.steps).some((s) => claimLive(s.claim, now) && str(s.claim.runId, 80).startsWith('main:'))) return b;
+  const first = readySteps(b, { now, files: false })[0];
+  if (!first) return b;
+  const t = typeof now === 'number' ? now : Date.parse(now) || Date.now();
+  const claim = { runId: `main:${str(b.pipeline.session, 70)}`, slot: str(b.pipeline.slot, 60), account: str(b.pipeline.account, 40), branch: str(b.branch, 200), at: new Date(t).toISOString(), model: first.model, expiresAt: new Date(t + CLAIM_TTL_MS).toISOString() };
+  return { ...b, steps: b.steps.map((s) => (s === first ? { ...s, claim } : s)) };
+}
+
+/**
+ * Where a step runs now, for views and the API: { slot, session, account, branch, worktree, since, main } from its live
+ * claim (a parallel step session) or null. `worktree` follows BUILD-PARALLEL §4 (<root>/<build>--<step>).
+ */
+export function runningIn(b, step, { now = Date.now(), root = '/root/axf-builds', sessions = {} } = {}) {
+  const c = step?.claim;
+  if (!c || !claimLive(c, now)) return null;
+  const main = str(c.runId, 80).startsWith('main:');
+  const rec = sessions[c.runId] ?? null;
+  return { runId: c.runId, slot: str(c.slot, 60) || str(rec?.slot, 60), session: main ? str(c.runId, 80).slice(5) : str(rec?.session, 80), account: c.account, branch: c.branch, model: c.model,
+    worktree: main ? `${root}/${b.id}` : `${root}/${b.id}--${step.id}`, since: c.at, main };
 }
 
 /** Is this step blocked by a merge conflict (its newest note line says so)? */
