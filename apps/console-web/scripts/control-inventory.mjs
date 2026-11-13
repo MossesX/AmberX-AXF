@@ -235,6 +235,80 @@ function serverSettings(ps, tabs) {
   return out;
 }
 
+/* ------------------------------------------------------------------ functions and buttons */
+
+/** Pressing it deletes or resets something: a command must carry `confirm`. */
+export const DESTRUCTIVE_RE = /(^|[.:_-])(delete|remove|purge|wipe|reset|uninstall|drop|clear|discard|revoke|destroy|erase|kill|force-?push|hard-?delete)([.:_-]|$)/i;
+/** A decision only a person makes (an approval, a veto): never pressed by a command. */
+export const DECIDING_RE = /(^|[.:_-])(approve|deny|reject|veto|shelve|decide|sign-?off)([.:_-]|$)/i;
+
+/** `actions.register('id', fn, { label: '…', … })` with a literal id. */
+function codeFunctions(files, ps) {
+  const out = new Map();
+  for (const f of files) {
+    const src = read(f);
+    if (!src.includes('actions.register(')) continue;
+    let i = 0;
+    while ((i = src.indexOf('actions.register(', i)) >= 0) {
+      const start = i;
+      i += 17;
+      const idM = /^'([\w.:-]+)'/.exec(src.slice(i));
+      if (!idM) continue;
+      const id = idM[1];
+      // the meta object: the last `{ label: … }` before the call closes (within a bounded window)
+      const win = src.slice(start, start + 4000);
+      const metaAt = win.search(/\{ label: /);
+      const meta = metaAt >= 0 ? win.slice(metaAt, win.indexOf('}', metaAt) + 1) : '';
+      const label = (meta.match(/label: '((?:[^'\\]|\\.)+)'/)?.[1] ?? meta.match(/label: `([^`]+)`/)?.[1]?.replace(/\$\{[^}]+\}/g, '…') ?? id).replace(/\\'/g, "'");
+      const effect = meta.match(/effect: '(\w+)'/)?.[1];
+      const personOnly = /personOnly: true/.test(meta) || DECIDING_RE.test(id);
+      const destructive = effect === 'destructive' || DESTRUCTIVE_RE.test(id);
+      const params = /params: true/.test(meta);
+      const requires = meta.match(/requires: '([^']+)'/)?.[1];
+      const owner = ownerOf(f, ps);
+      if (out.has(id)) continue;
+      out.set(id, {
+        address: `function:${enc(id)}`, kind: 'function', id, label, detail: owner ? `Action · ${owner.m.name}` : 'Action',
+        keywords: words(id, id.split(/[.:-]/)), ...(effect ? { effect } : {}), ...(params ? { params: true } : {}), ...(requires ? { requires } : {}),
+        ...(destructive ? { destructive: true } : {}), ...(personOnly ? { personOnly: true } : {}), ...(owner ? { plugin: owner.m.id } : {}), file: rel(f),
+      });
+    }
+  }
+  return [...out.values()];
+}
+
+/** Items of the console's toolbar, context-menu and app-menu assets: buttons that run an action. */
+function assetButtons() {
+  const out = [];
+  for (const type of ['toolbar', 'context-menu', 'app-menu']) {
+    const dir = join(APP, 'src/assets', type);
+    if (!existsSync(dir)) continue;
+    for (const n of readdirSync(dir).filter((x) => x.endsWith('.json')).sort()) {
+      const a = json(join(dir, n));
+      const walkItems = (items, path) => {
+        for (const it of items ?? []) {
+          if (Array.isArray(it.items)) walkItems(it.items, [...path, it.label ?? it.id]);
+          if (Array.isArray(it.children)) walkItems(it.children, [...path, it.label ?? it.id]);
+          if (Array.isArray(it.submenu)) walkItems(it.submenu, [...path, it.label ?? it.id]);
+          if (!it.action || !(it.id || it.label)) continue;
+          const id = `${a.id}.${it.id ?? it.label.toLowerCase().replace(/[^a-z0-9]+/g, '-')}`;
+          out.push({
+            address: `button:${enc(id)}`, kind: 'button', id, label: it.label ?? it.id, action: it.action, detail: `${type === 'toolbar' ? 'Toolbar' : type === 'context-menu' ? 'Context menu' : 'Menu'} · ${[a.name, ...path].filter(Boolean).join(' › ')}`,
+            keywords: words(it.id, it.action, a.name), ...(it.icon ? { icon: it.icon } : {}), source: `${type}/${a.id}`,
+            ...(DESTRUCTIVE_RE.test(it.action) || DESTRUCTIVE_RE.test(it.id ?? '') ? { destructive: true } : {}), ...(DECIDING_RE.test(it.action) ? { personOnly: true } : {}),
+          });
+        }
+      };
+      const d = a.data ?? {};
+      walkItems(d.items, []);
+      for (const g of d.groups ?? []) walkItems(g.items, g.label ? [g.label] : []);
+      for (const m of d.menus ?? []) walkItems(m.items, [m.label]);
+      for (const sct of d.sections ?? []) walkItems(sct.items, sct.label ? [sct.label] : []);
+    }
+  }
+  return out;
+}
+
 /* ------------------------------------------------------------------ build */
 
 export function buildInventory() {
@@ -279,15 +353,20 @@ export function buildInventory() {
   const sTabs = settingsTabs(files.concat(walk(join(APP, 'src/axf/libs'))), ps);
   const settings = [...codeSettings(files.concat(walk(join(APP, 'src/axf/libs'))), ps, sTabs), ...serverSettings(ps, sTabs)];
 
+  const functions = codeFunctions(files.concat(walk(join(APP, 'src/axf/libs')), walk(join(APP, 'src/axf/react'))), ps);
+  const buttons = assetButtons();
+
   const navItems = nav.flatMap((s) => (s.items ?? []).map((it) => ({ address: it.view ? `view:${enc(it.view)}` : null, id: it.id, label: it.label, section: s.label, icon: it.icon })));
 
   return {
     $axf: FRAME,
     note: 'Generated by apps/console-web/scripts/control-inventory.mjs: do not edit.',
-    counts: { views: views.length, nav: navItems.length, tabGroups: tabGroups.length, tabs: tabGroups.reduce((n, g) => n + g.tabs.length, 0), settingsTabs: sTabs.length, settings: settings.length },
+    counts: { views: views.length, nav: navItems.length, tabGroups: tabGroups.length, tabs: tabGroups.reduce((n, g) => n + g.tabs.length, 0), settingsTabs: sTabs.length, settings: settings.length, functions: functions.length, buttons: buttons.length },
     views, nav: navItems, tabGroups,
     settingsTabs: sTabs.map((t) => ({ address: t.address, id: t.id, label: t.label, parent: t.parent, plugin: t.plugin })),
     settings,
+    functions,
+    buttons,
   };
 }
 

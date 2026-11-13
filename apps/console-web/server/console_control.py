@@ -59,7 +59,7 @@ def static_targets() -> list[dict[str, Any]]:
         for t in g.get("tabs", []):
             if t.get("address"):
                 out.append(_target(t["address"], "tab", t["label"], detail=f"Tab · {where}", keywords=[t["value"], where], virtual=True))
-    for key in ("settings", "functions", "plugins"):
+    for key in ("settings", "functions", "buttons", "plugins"):
         for t in inv.get(key, []) or []:
             if isinstance(t, dict) and t.get("address"):
                 out.append({**t, "virtual": True})
@@ -222,3 +222,36 @@ def set_server_setting(spec: dict[str, Any], value: Any, by: str) -> dict[str, A
     if not r.get("ok", True):
         raise ControlError(str(r.get("code") or "denied"), str(r.get("message") or "refused"))
     return ok("set", spec["address"], changed=[spec["address"]], value=v)
+
+
+# ---------------------------------------------------------------------- functions and buttons
+
+DESTRUCTIVE_RE = re.compile(r"(^|[.:_-])(delete|remove|purge|wipe|reset|uninstall|drop|clear|discard|revoke|destroy|erase|kill|force-?push|hard-?delete)([.:_-]|$)", re.I)
+DECIDING_RE = re.compile(r"(^|[.:_-])(approve|deny|reject|veto|shelve|decide|sign-?off)([.:_-]|$)", re.I)
+
+
+def press_spec(address: str) -> dict[str, Any] | None:
+    """A function or button from the inventory by full or short address (`function:x`, `button:y`, or a bare action id)."""
+    a = (address or "").strip()
+    leaf = a.rsplit("/", 1)[-1]
+    for key in ("functions", "buttons"):
+        for t in inventory().get(key, []) or []:
+            if t.get("address") in (a, leaf) or t.get("id") == a:
+                return t
+    if leaf.startswith("function:"):
+        fid = leaf[9:]
+        return {"address": leaf, "kind": "function", "id": fid, "label": fid, "destructive": bool(DESTRUCTIVE_RE.search(fid)), "personOnly": bool(DECIDING_RE.search(fid)), "derived": True}
+    return None
+
+
+def check_press(spec: dict[str, Any] | None, address: str, confirm: Any) -> None:
+    """Deciding actions are Brett's own tap; destructive ones need `confirm` (the same rule the open console applies)."""
+    leaf = (address or "").rsplit("/", 1)[-1]
+    word = leaf.split(":", 1)[-1]
+    person = bool(spec and spec.get("personOnly")) or bool(DECIDING_RE.search(word))
+    destructive = bool(spec and spec.get("destructive")) or bool(DESTRUCTIVE_RE.search(word))
+    label = (spec or {}).get("label") or word
+    if person:
+        raise ControlError("denied", f"{label} is a decision only Brett makes with his own tap", requires="person", personOnly=True)
+    if destructive and not confirm:
+        raise ControlError("confirmation_required", f"{label} deletes or resets something: send it again with confirm", confirm="required")
