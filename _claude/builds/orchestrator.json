@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T17:49:30.057Z",
+ "updatedAt": "2026-11-13T17:50:14.495Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -125701,7 +125701,7 @@
    "title": "Per-instance settings-window picker inside every tab group and toolbar's settings",
    "category": "",
    "detail": "Every chrome instance (tab group, toolbar, banner, nav, menu bar) has its own chrome settings dialog (framework ChromeContext.tsx / chrome-settings-rules.mjs). Today the settings asset is picked per type/app (axf.chrome.settings.<type>). Add, inside each instance's settings dialog, a picker to choose which settings interface (settings asset) THAT instance uses, per instance, with the shared default preselected. Changing it re-renders the dialog live. Persist per instance, survive reload, follow skins. Expose via REST/MCP/CLI/voice and control@1. Tests, help entry, Shipped features.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -125709,7 +125709,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T17:46:43.480Z",
-   "updatedAt": "2026-11-13T17:49:25.977Z",
+   "updatedAt": "2026-11-13T17:50:11.494Z",
    "builtAt": "",
    "notes": [
     {
@@ -125731,6 +125731,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-per-instance-settings-window-picker--gina, own login copy)",
      "at": "2026-11-13T17:49:25.977Z"
+    },
+    {
+     "text": "Session on mossesx-max- ended (exit 3) with 3 steps left: back in the Queue (run 1).",
+     "at": "2026-11-13T17:50:11.494Z"
     }
    ],
    "approvals": [],
