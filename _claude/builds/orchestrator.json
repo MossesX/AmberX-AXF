@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T20:54:21.912Z",
+ "updatedAt": "2026-11-13T20:54:37.580Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -132309,7 +132309,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T19:55:30.979Z",
-   "updatedAt": "2026-11-13T20:53:24.255Z",
+   "updatedAt": "2026-11-13T20:54:13.729Z",
    "builtAt": "",
    "notes": [
     {
@@ -132335,6 +132335,14 @@
     {
      "text": "Fable phase done (s1, s2) on claude/icon-map-icon-packs-every-icon-badge-app, 2 commits, no PR yet (s8 opens it). s1: icon-map@1 engine (framework/core/engines/icon-map-rules.mjs + glyphs.mjs), 5792 slots over 8 apps and 70 plugins, CI check framework/cli/check-icons.mjs (ratchet spec/icon-map-baseline.json; Expenses frozen), icon-pack@1 gains roles / themable / covers / license, runtime setIconPack / setIconSlot, Icon slot+role props. s2: Icon map console plugin: screen View -> Icon map (deep link console_show view:icon-map), REST /api/plugins/icon-map/*, MCP icon-map_*, CLI axf icon-map ... and axf icons ..., voice 'switch to the duotone icon pack' in both twins. For the PR: reach table is in apps/console-web/plugins/icon-map/README.md. Open for the Opus phase: s3 reworks the page (submit desktop + phone shots to UI Review then), s4/s5 build packs on the roles contract, s6 hub asset library. Found pre-existing: apps/console-web/src/axf/libs/hub/veto.ts (baked copy) has overlayCommand that framework/libs/hub/veto.ts lacks, so a CI re-bake fails tsc on approvals-banner; not touched here. Fixed pre-existing: molly-guide Gizmo guide tab help (coverage was 99.9%).",
      "at": "2026-11-13T20:52:55.371Z"
+    },
+    {
+     "text": "Session on mossesx-max- ended (exit 0) with 6 steps left: back in the Queue (run 1).",
+     "at": "2026-11-13T20:54:10.090Z"
+    },
+    {
+     "text": "Dispatch gate: icon-map-icon-packs-every-icon-badge-app still has axf-icon-map-icon-packs-every-icon-badge-app--gina alive: not launched again, tracking that session.",
+     "at": "2026-11-13T20:54:13.729Z"
     }
    ],
    "approvals": [],
@@ -132831,7 +132839,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T19:57:42.157Z",
-   "updatedAt": "2026-11-13T20:53:45.369Z",
+   "updatedAt": "2026-11-13T20:54:32.696Z",
    "builtAt": "",
    "notes": [
     {
@@ -132877,6 +132885,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-own-token-sets-for-grids-and-tab-groups--rhonda, own login copy)",
      "at": "2026-11-13T20:19:23.781Z"
+    },
+    {
+     "text": "Headless run axf-own-token-sets-for-grids-and-tab-groups--rhonda: brief only · start 12.8K tokens ($0.06) · cost $15.53 · 129 turns · 6 tools, MCP none",
+     "at": "2026-11-13T20:54:32.696Z"
     }
    ],
    "approvals": [],

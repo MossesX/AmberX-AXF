@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4993,
- "updatedAt": "2026-11-13T20:54:21.912Z",
+ "rev": 4994,
+ "updatedAt": "2026-11-13T20:54:37.580Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -205265,7 +205265,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T19:55:30.979Z",
-   "updatedAt": "2026-11-13T20:53:24.255Z",
+   "updatedAt": "2026-11-13T20:54:13.729Z",
    "builtAt": "",
    "notes": [
     {
@@ -205291,6 +205291,14 @@
     {
      "text": "Fable phase done (s1, s2) on claude/icon-map-icon-packs-every-icon-badge-app, 2 commits, no PR yet (s8 opens it). s1: icon-map@1 engine (framework/core/engines/icon-map-rules.mjs + glyphs.mjs), 5792 slots over 8 apps and 70 plugins, CI check framework/cli/check-icons.mjs (ratchet spec/icon-map-baseline.json; Expenses frozen), icon-pack@1 gains roles / themable / covers / license, runtime setIconPack / setIconSlot, Icon slot+role props. s2: Icon map console plugin: screen View -> Icon map (deep link console_show view:icon-map), REST /api/plugins/icon-map/*, MCP icon-map_*, CLI axf icon-map ... and axf icons ..., voice 'switch to the duotone icon pack' in both twins. For the PR: reach table is in apps/console-web/plugins/icon-map/README.md. Open for the Opus phase: s3 reworks the page (submit desktop + phone shots to UI Review then), s4/s5 build packs on the roles contract, s6 hub asset library. Found pre-existing: apps/console-web/src/axf/libs/hub/veto.ts (baked copy) has overlayCommand that framework/libs/hub/veto.ts lacks, so a CI re-bake fails tsc on approvals-banner; not touched here. Fixed pre-existing: molly-guide Gizmo guide tab help (coverage was 99.9%).",
      "at": "2026-11-13T20:52:55.371Z"
+    },
+    {
+     "text": "Session on mossesx-max- ended (exit 0) with 6 steps left: back in the Queue (run 1).",
+     "at": "2026-11-13T20:54:10.090Z"
+    },
+    {
+     "text": "Dispatch gate: icon-map-icon-packs-every-icon-badge-app still has axf-icon-map-icon-packs-every-icon-badge-app--gina alive: not launched again, tracking that session.",
+     "at": "2026-11-13T20:54:13.729Z"
     }
    ],
    "approvals": [],
@@ -205316,7 +205324,14 @@
     "model": "Fable",
     "launchedAt": "2026-11-13T20:06:45.871Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-13T20:54:08.694Z",
+     "exit": 0,
+     "outcome": "requeued",
+     "stepsLeft": 6,
+     "account": "mossesx-max-",
+     "session": "axf-icon-map-icon-packs-every-icon-badge-app--gina"
+    },
     "split": {
      "at": "2026-11-13T19:58:41.893Z",
      "by": "orchestrator",
@@ -205325,14 +205340,14 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"391d2f97-0c8b-49cb-9814-002d6c66fd02\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- ended (exit 0) with 6 steps left: back in the Queue (run 1).",
     "route": "",
     "dispatchedAt": "2026-11-13T20:06:45.871Z",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-13T19:58:48.902Z",
+     "at": "2026-11-13T20:54:11.879Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -205530,7 +205545,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -206003,7 +206018,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T19:57:42.157Z",
-   "updatedAt": "2026-11-13T20:53:45.369Z",
+   "updatedAt": "2026-11-13T20:54:32.696Z",
    "builtAt": "",
    "notes": [
     {
@@ -206049,6 +206064,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-own-token-sets-for-grids-and-tab-groups--rhonda, own login copy)",
      "at": "2026-11-13T20:19:23.781Z"
+    },
+    {
+     "text": "Headless run axf-own-token-sets-for-grids-and-tab-groups--rhonda: brief only · start 12.8K tokens ($0.06) · cost $15.53 · 129 turns · 6 tools, MCP none",
+     "at": "2026-11-13T20:54:32.696Z"
     }
    ],
    "approvals": [],
@@ -206244,7 +206263,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
