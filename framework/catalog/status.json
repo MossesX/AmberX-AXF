@@ -2286,5 +2286,11 @@
     "wave": 1,
     "module": "app-console",
     "notes": "framework/core/build-id.mjs: ids ≤ 40 chars (^[a-z0-9][a-z0-9-]{0,39}$), filler words dropped, cut at a dash, -2/-3 on a collision; used by request, orchestrator add/import/harvest, Pending and Plan Studio. Legacy long ids get an alias (pipeline.mjs aliases, the tick for live builds); land-alias links <worktrees>/<alias> and claude/<alias> for build_land. Kotlin twin deferred."
+  },
+  "f.appearance.hubskinonly": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "Nov 13 2026 (build console-skin-axhub-only): console Settings → Appearance → Get my skin only from axHub (default off). On: the look is composed from the hub-wide skin over the default snapshot only (skin-rules.mjs hubOnlyLook, fixture skin.json scopes.hubOnly); own skin, overrides, colour pick, UI/plugin scopes, device tweaks and plugin overrides are kept, not drawn; the switch drives the appearance lock (reason hub) so every look control is locked with \"Following axHub\"; hub changes apply live. Reachable by the setting (search, console.settings, settings.set:axf.lock.hubskin), the appearance.hubskin action and voice (\"lock the console to the axHub skin\", Python twin). Kotlin twin deferred (PORTING.md)."
   }
 }

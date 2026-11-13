@@ -14,8 +14,8 @@
  */
 import { Fragment, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
 import type { SettingsPanel } from '../../core';
-import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, APPEARANCE_LOCK_KEY, ASSET_TYPES, assetTypeSpecs, hideable, PLACEMENT_LABELS, SKIN_COLOR_SLOT, arrangeSettingsTabs, filterSettingsGroup, normalizeSettingsUi, settingMatches, settingsShown, settingsUiGroups, SETTINGS_LEVEL_KEY, SETTINGS_LEVEL_BAR_KEY, SETTINGS_VISIBLE_KEY, SETTINGS_LEVEL_HINT, SETTINGS_LEVEL_LABEL, SETTINGS_LEVELS, settingsLevel, shownAtLevel, splitSettingsGroup, withSettingsVisible, hideableTypes, type SettingsLevel, type SettingsUi, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
-import { AssetsWithEdits, AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Chip, Container, ControlScope, Icon, IconButton, ModelBadge, setBannerOwnSettingsRenderer, settingTargetDef, Slider, Switch, useAsset, useAxfState, useControlTarget, useKnownBanners, useRuntime } from '../../react';
+import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, APPEARANCE_LOCK_KEY, HUB_SKIN_ONLY_GROUP, ASSET_TYPES, assetTypeSpecs, hideable, PLACEMENT_LABELS, SKIN_COLOR_SLOT, arrangeSettingsTabs, filterSettingsGroup, normalizeSettingsUi, settingMatches, settingsShown, settingsUiGroups, SETTINGS_LEVEL_KEY, SETTINGS_LEVEL_BAR_KEY, SETTINGS_VISIBLE_KEY, SETTINGS_LEVEL_HINT, SETTINGS_LEVEL_LABEL, SETTINGS_LEVELS, settingsLevel, shownAtLevel, splitSettingsGroup, withSettingsVisible, hideableTypes, type SettingsLevel, type SettingsUi, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
+import { AssetsWithEdits, AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Chip, Container, ControlScope, Icon, IconButton, ModelBadge, Note, setBannerOwnSettingsRenderer, settingTargetDef, Slider, Switch, useAsset, useAxfState, useControlTarget, useKnownBanners, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import { runtimeInventory } from '../../react/pluginRecords';
 import { TabGroup } from '../../react/components/TabGroup';
@@ -567,6 +567,11 @@ const RESTORE_DIALOG = 'axf.settings.restore-default';
 const SKIN_DIALOG = 'axf.settings.skin';
 const LOCK_PANEL_ID = 'axf.appearance.lock';
 
+/** The short note on every look control Skin from axHub only locks. */
+export function FollowingAxHubNote() {
+  return <Note tone="info" icon="lock" className="axf-settings__following">Following axHub. Your own picks here are kept; turn off "Get my skin only from axHub" to use them again.</Note>;
+}
+
 /**
  * Settings → Appearance is the skin panel in every app (Nov 4 2026, Brett; skins only since Nov 10 2026: "remove all
  * the styling and theme and layout stuff … the new thing's going to override it"): one shared panel, top to bottom: Skin
@@ -577,12 +582,16 @@ const LOCK_PANEL_ID = 'axf.appearance.lock';
  * The colour theme is the one section switched inside the skin (Brett, Nov 9 2026: "You can change the color theme
  * without changing the skin"): picking one keeps the same skin, shows no overridden dot and makes no new skin;
  * "Skin's colours" goes back to the skin's own (rt.skinColorTheme / rt.setSkinColorTheme).
+ *
+ * With "Get my skin only from axHub" on (the switch drawn above this panel) every control here is locked and says
+ * "Following axHub": the app draws the hub-wide skin only, and what is picked here is kept for when it is off.
  */
 export function AppearancePanel() {
   const rt = useRuntime();
   const st = useAxfState();
   useSettingsRevision(rt);
   const locked = !rt.can('assets.swap') || rt.lockedByAppearance('assets.swap');
+  const following = rt.appearanceLockReason() === 'hub';
   const look = rt.appLook();
   const skins = rt.skinList();
   const skinId = look?.skin.id ?? '';
@@ -617,11 +626,12 @@ export function AppearancePanel() {
   };
   return (
     <div className="axf-settings__rows" data-axf-appearance="">
+      {following && <FollowingAxHubNote />}
       <AssetsWithEdits />
       <div className="axf-settings__row">
         <div className="axf-settings__label">
           <span>Skin</span>
-          <span className="fx-muted axf-settings__hint">{skinOn ? `${skins.find((s) => s.id === skinId)?.name ?? skinId}, in this app only.` : "Off: this app's own look."}</span>
+          <span className="fx-muted axf-settings__hint">{following ? 'Following axHub.' : skinOn ? `${skins.find((s) => s.id === skinId)?.name ?? skinId}, in this app only.` : "Off: this app's own look."}</span>
         </div>
         <div className="axf-settings__control axf-skin__action"><Button size="sm" icon="palette" disabled={locked || !skins.length} onClick={() => rt.openDialog(SKIN_DIALOG, {})}>Choose…</Button></div>
       </div>
@@ -660,6 +670,7 @@ function SkinPickerDialog() {
   const colour = rt.skinColorTheme();
   const colourThemes = rt.registry.list(SKIN_COLOR_SLOT as AssetType);
   const locked = !rt.can('assets.swap') || rt.lockedByAppearance('assets.swap');
+  const following = rt.appearanceLockReason() === 'hub';
   const [picked, setPicked] = useState(applied || look?.skin.id || '');
   useEffect(() => () => { rt.previewSkin(null); }, [rt]);
   const tap = (id: string) => { setPicked(id); rt.previewSkin(id === applied ? null : id); };
@@ -671,6 +682,7 @@ function SkinPickerDialog() {
   };
   return (
     <div className="fx-stack" data-axf-skin-picker="">
+      {following && <FollowingAxHubNote />}
       <div className="axf-skin__grid" role="listbox" aria-label="Skin">
         {skins.map((s) => (
           <Button key={s.id} tone="quiet" size="sm" className={`axf-skin__tile${s.id === picked ? ' is-picked' : ''}`} aria-selected={s.id === picked} role="option" title={s.description} onClick={() => tap(s.id)}>
@@ -695,7 +707,7 @@ function SkinPickerDialog() {
         </div>
       )}
       <div className="fx-row">
-        <Button tone="primary" disabled={!picked || picked === applied} onClick={() => { if (rt.useSkin(true, picked)) close(); }}>Apply</Button>
+        <Button tone="primary" disabled={locked || !picked || picked === applied} onClick={() => { if (rt.useSkin(true, picked)) close(); }}>Apply</Button>
         {!!applied && <Button tone="quiet" onClick={() => { if (rt.useSkin(false)) close(); }}>Turn skin off</Button>}
         <Button tone="quiet" confirm="Put this app back to its default look? Skin and picks are cleared. You can undo it once in Settings → Appearance." onClick={() => { rt.previewSkin(null); rt.restoreDefaultAppearance(); close(); }}>Reset</Button>
         <Button tone="quiet" onClick={close}>Cancel</Button>
@@ -765,14 +777,18 @@ function TabBody({ id, all = false }: { id: string; all?: boolean }) {
   // Settings → Appearance: the AmberX Design Package picker on top, everything else in one collapsible container
   const design = id === 'appearance' && !all ? panels.find((p) => p.id === DESIGN_PANEL_ID) : undefined;
   const lock = design ? panels.find((p) => p.id === LOCK_PANEL_ID) : undefined;
-  const items = design ? ordered(panels.filter((p) => p !== design && p !== lock), groups) : ordered(panels, groups);
+  // "Get my skin only from axHub" (a host's group, e.g. the console's) sits at the very top of Appearance
+  const hubSkin = id === 'appearance' ? groups.find((g) => g.id === HUB_SKIN_ONLY_GROUP) : undefined;
+  const others = hubSkin ? groups.filter((g) => g !== hubSkin) : groups;
+  const items = design ? ordered(panels.filter((p) => p !== design && p !== lock), others) : ordered(panels, others);
   const shown = design ? (
     <>
+      {hubSkin && <GroupCard group={hubSkin} />}
       {lock && panelNode(lock, 'lock')}
       {panelNode(design, 'palette')}
       {items.length > 0 && <FlatSection anchor="settings-panel:axf.appearance.rest" title="Everything else" icon="sliders" collapsible defaultOpen={false} className="axf-settings__nest"><div className="axf-settings__nested">{items}</div></FlatSection>}
     </>
-  ) : items;
+  ) : hubSkin ? <><GroupCard group={hubSkin} />{items}</> : items;
   const empty = !panels.length && !groups.length;
   if (!at) return (
     <>

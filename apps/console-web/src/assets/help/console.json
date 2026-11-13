@@ -538,6 +538,16 @@
         "kind": "toggle"
       },
       {
+        "target": "get-my-skin-only-from-axhub",
+        "title": "Get my skin only from axHub",
+        "text": "On: this console takes its skin, colour theme and every token from axHub's look only, and a change made on axHub shows up here live. Skin picks, overrides, rolls, packages and Token Control changes made only in this console are kept, not used; their controls are locked and say Following axHub. Off (the default): this console's own look.",
+        "more": "Voice: \"lock the console to the axHub skin\" / \"unlock the console from the axHub skin\". REST, MCP and the CLI: the action appearance.hubskin:on|off (axf console action appearance.hubskin on), or the setting itself through console.settings / settings.set:axf.lock.hubskin:on|off.",
+        "related": [
+          "follow-the-hub-wide-skin"
+        ],
+        "kind": "toggle"
+      },
+      {
         "target": "refresh-the-list-live-builds-and-history",
         "title": "Refresh",
         "text": "Reloads the list, the live builds and the history."
