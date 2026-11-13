@@ -10,6 +10,7 @@ export declare const SAFE_TOKENS: readonly string[];
 export declare const OVERLAY_VERBS: readonly string[];
 export declare const PERMISSIONS: readonly string[];
 export declare const RECORDER_VERBS: readonly string[];
+export declare const UPDATE_VERBS: readonly string[];
 export declare function openTarget(href: string): { target: string; kind: 'address' | 'action' | 'none'; rest: string } | null;
 export declare function isAddress(s: string): boolean;
 export declare function overlayConfig(get: (key: string) => unknown): Record<string, unknown>;

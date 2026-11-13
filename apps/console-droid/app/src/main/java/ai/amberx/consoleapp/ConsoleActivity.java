@@ -57,16 +57,20 @@ public class ConsoleActivity extends Activity {
     protected void onResume() {
         super.onResume();
         WebHost.activity = this;
+        ContentUpdate.appVisible = true;
         // The overlay may have the page in its expanded window: the app on screen takes it back.
         OverlayService.collapseIfExpanded(this);
         WebHost.attach(root, this);
         Perms.resumed(this);
         NativeBridge.emit("app", "{\"visible\":true}");
+        ContentUpdate.visibility();
     }
 
     @Override
     protected void onPause() {
         NativeBridge.emit("app", "{\"visible\":false}");
+        ContentUpdate.appVisible = false;
+        ContentUpdate.visibility();
         super.onPause();
     }
 

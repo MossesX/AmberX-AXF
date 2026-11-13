@@ -258,6 +258,7 @@ public class OverlayService extends Service {
         if (OverlayRules.EXPANDED.equals(state)) openFull(); else closeFull();
         restyle();
         NativeBridge.emit("overlay", stateJson());
+        ContentUpdate.visibility(); // expanded = the console is on screen
     }
 
     /** The full-screen console window: the app's WebView, the toolbar docked top-left inside the safe area. */

@@ -51,6 +51,7 @@ final class WebHost {
         web.setWebChromeClient(new Chrome());
         NativeBridge.install(web);
         web.loadUrl(firstUrl == null ? ShellRules.HOME : firstUrl);
+        ContentUpdate.start();
         return web;
     }
 
@@ -119,6 +120,7 @@ final class WebHost {
         public void onPageFinished(WebView view, String url) {
             NativeBridge.currentUrl = url == null ? "" : url;
             Insets.push(); // the page gets the safe-area insets as soon as it can use them
+            ContentUpdate.pageLoaded(view, url);
         }
     }
 

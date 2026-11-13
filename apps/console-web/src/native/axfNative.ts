@@ -14,11 +14,14 @@
  *     floating toolbar; dragging the toolbar saves its new edge / height back into those settings.
  * - `native.*` console actions (nativeRules.mjs NATIVE_ACTIONS) run every native feature, so REST
  *   (`POST /api/console/action`), MCP (`console_action`), the CLI (`axf console action native.overlay:expand`) and voice
- *   reach the phone the same way. Outside the app they say the phone app isn't here.
+ *   reach the phone the same way.
+ * - Web content updates: the shell compares the page's entry bundle with the live console's and reloads off screen;
+ *   on screen it sends `shell.update` and the console shows its "Reload for the new version" bar (native.update). Outside the app they say the phone app isn't here.
  */
 import type { AxfRuntime } from '../axf/core';
 import { executeControl, describeAnswer } from '../control/executor';
 import { controlRegistry } from '../axf/react';
+import { loader } from '../pluginLoader';
 import {
   APPROVALS_TARGET, NATIVE_ACTIONS, OVERLAY_SETTING_PREFIX, WAITING_BADGE,
   PHONE_APP_ADDRESS, nativeCall, openTarget, overlayConfig, pageHandlesInsets, parseAnswer, themeTokens,
@@ -63,8 +66,8 @@ export function callNative(method: string, ...args: unknown[]): NativeAnswer {
 export function nativeState(): NativeAnswer {
   const info = callNative('info');
   if (!info.ok) return info;
-  const perms = callNative('permissions'), overlay = callNative('overlayState'), insets = callNative('insets');
-  return { ...info, ok: true, permissions: perms.permissions, overlay: overlay.overlay, canDraw: overlay.canDraw, insets: insets.insets };
+  const perms = callNative('permissions'), overlay = callNative('overlayState'), insets = callNative('insets'), update = callNative('update', 'state');
+  return { ...info, ok: true, permissions: perms.permissions, overlay: overlay.overlay, canDraw: overlay.canDraw, insets: insets.insets, update: update.update };
 }
 
 /** Runs `?axf-open=` once on load (any browser). */
@@ -153,6 +156,9 @@ export function installNative(rt: AxfRuntime): () => void {
     if (m.edge && rt.settings.spec(`${OVERLAY_SETTING_PREFIX}edge`)) rt.settings.set(`${OVERLAY_SETTING_PREFIX}edge`, m.edge as never);
     if (typeof m.top === 'number' && rt.settings.spec(`${OVERLAY_SETTING_PREFIX}top`)) rt.settings.set(`${OVERLAY_SETTING_PREFIX}top`, m.top as never);
   }));
+  // a newer console is live while this page is on screen: the console's own "Reload for the new version" bar
+  // (off screen the shell reloads by itself)
+  offs.push(on('shell.update', () => loader.markStale()));
   // the approval bar's link and the overlay's "approvals" verb: the approvals list opens in this page (no reload)
   offs.push(on('approvals.open', () => { if (rt.actions.list().some((a) => a.id === APPROVALS_TARGET)) rt.dispatch(APPROVALS_TARGET); }));
   return () => offs.forEach((f) => f());
@@ -162,6 +168,7 @@ function describeNative(id: string, r: NativeAnswer): string {
   switch (id) {
     case 'native.state': return `Console app ${String(r.version ?? '')}: overlay ${(r.overlay as { state?: string } | undefined)?.state ?? 'off'}`;
     case 'native.open': return `Opened ${String(r.opened ?? '')}`;
+    case 'native.update': { const u = (r.update ?? {}) as { loaded?: string; live?: string; pending?: boolean }; return u.pending ? `New console ${u.live ?? ''} ready: reloading` : `Console ${u.loaded || 'page'} is current (checking now)`; }
     default: return 'Done on the phone';
   }
 }

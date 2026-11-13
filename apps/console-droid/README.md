@@ -12,6 +12,7 @@ Native code exists only where Android requires it:
 | Native piece | Class |
 | --- | --- |
 | WebView host, deep links, outside links to the browser, offline page | `ConsoleActivity`, `ShellRules` |
+| Web content updates: a newer console deploy reloads the page off screen, or shows the console's reload bar on screen (`native.update:<check\|reload\|state>`) | `ContentUpdate`, `UpdateRules` |
 
 Deep links: `axf-console://open/<console-control address>` (e.g. `axf-console://open/settings.plugins`),
 `axf-console://search/<words>`, and any `https://console.amberxai.com/…` link.

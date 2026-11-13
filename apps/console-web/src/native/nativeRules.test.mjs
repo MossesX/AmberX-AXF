@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
-  NATIVE_ACTIONS, SAFE_TOKENS, THEME_TOKENS, isAddress, nativeCall, openTarget, overlayConfig, pageHandlesInsets, parseAnswer, themeTokens,
+  NATIVE_ACTIONS, SAFE_TOKENS, UPDATE_VERBS, THEME_TOKENS, isAddress, nativeCall, openTarget, overlayConfig, pageHandlesInsets, parseAnswer, themeTokens,
 } from './nativeRules.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..', '..', '..');
@@ -65,12 +65,16 @@ t('native.* actions → host calls', () => {
   assert.deepEqual(nativeCall('native.wake', []), { call: 'wake', args: [] });
   assert.deepEqual(nativeCall('native.recorder', ['start']), { call: 'recorder', args: ['start'] });
   assert.deepEqual(nativeCall('native.state', []), { call: 'state', args: [] });
+  assert.deepEqual(nativeCall('native.update', ['reload']), { call: 'update', args: ['reload'] });
+  assert.deepEqual(nativeCall('native.update', []), { call: 'update', args: ['check'] });
+  assert.ok('error' in nativeCall('native.update', ['install']));
   assert.ok('error' in nativeCall('native.nothing', []));
   for (const a of NATIVE_ACTIONS) assert.ok(a.id.startsWith('native.') && a.label);
 });
 
 t('tokens match the Java shell and the framework CSS', () => {
   const java = (f) => readFileSync(join(ROOT, 'apps/console-droid/app/src/main/java/ai/amberx/consoleapp', f), 'utf8');
+  for (const v of UPDATE_VERBS) assert.ok(java('UpdateRules.java').includes(`"${v}"`), `UpdateRules has ${v}`);
   for (const tok of SAFE_TOKENS) assert.ok(java('InsetsCss.java').includes(`"${tok}"`), `InsetsCss has ${tok}`);
   for (const tok of THEME_TOKENS) assert.ok(java('ShellTheme.java').includes(`"${tok}"`), `ShellTheme has ${tok}`);
   const css = readFileSync(join(ROOT, 'framework/ui/axf.css'), 'utf8');
@@ -80,7 +84,7 @@ t('tokens match the Java shell and the framework CSS', () => {
   for (const tok of THEME_TOKENS) assert.ok(css.includes(`${tok}:`), `axf.css declares ${tok}`);
   // the bridge methods the console calls exist on the Java side
   const bridge = java('NativeBridge.java');
-  for (const m of ['info', 'permissions', 'requestPermission', 'notify', 'cancelNotification', 'openUrl', 'wake', 'overlay', 'overlayState', 'overlayConfigure', 'overlayApprovals', 'theme', 'insets', 'insetsHandled']) {
+  for (const m of ['info', 'permissions', 'requestPermission', 'notify', 'cancelNotification', 'openUrl', 'wake', 'overlay', 'overlayState', 'overlayConfigure', 'overlayApprovals', 'theme', 'insets', 'insetsHandled', 'update']) {
     assert.match(bridge, new RegExp(`@JavascriptInterface public String ${m}\\(`), `NativeBridge.${m}`);
   }
 });

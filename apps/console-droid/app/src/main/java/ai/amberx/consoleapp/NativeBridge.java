@@ -111,6 +111,16 @@ final class NativeBridge {
         return ok(null);
     }
 
+    // ---- web content updates ----
+    /** check (fetch the live console now), reload (load the newest console now), state: answers the update state. */
+    @JavascriptInterface public String update(String verb) {
+        if (!allowed()) return DENIED;
+        if (!UpdateRules.verb(verb)) return fail("update verbs: check, reload, state");
+        if ("check".equals(verb)) ui.post(() -> ContentUpdate.check(true));
+        if ("reload".equals(verb)) ui.post(ContentUpdate::reload);
+        return ok("\"update\":" + ContentUpdate.stateJson());
+    }
+
     // ---- overlay ----
     @JavascriptInterface public String overlay(String verb) {
         if (!allowed()) return DENIED;

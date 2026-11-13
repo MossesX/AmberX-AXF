@@ -33,6 +33,8 @@ export const SAFE_TOKENS = ['--fx-safe-top', '--fx-safe-right', '--fx-safe-botto
 export const OVERLAY_VERBS = ['expand', 'collapse', 'toggle', 'approvals', 'dismiss'];
 export const PERMISSIONS = ['mic', 'notifications', 'overlay'];
 export const RECORDER_VERBS = ['start', 'stop', 'state'];
+/** Web content updates (= Java UpdateRules.VERBS): check the live console now, reload into it now, or read the state. */
+export const UPDATE_VERBS = ['check', 'reload', 'state'];
 
 /**
  * The deep-link target on a URL and the URL without it: `{ target, kind, rest }` or null.
@@ -95,6 +97,7 @@ export function parseAnswer(s) {
  *   native.open:<url>[|app|overlay|browser]   (the url carries its own colons: "where" is after a final "|")
  *   native.wake
  *   native.recorder:<start|stop|state>
+ *   native.update:<check|reload|state>
  *   native.state
  */
 export function nativeCall(id, args) {
@@ -118,6 +121,7 @@ export function nativeCall(id, args) {
     }
     case 'native.wake': return { call: 'wake', args: [] };
     case 'native.recorder': return RECORDER_VERBS.includes(a[0]) ? { call: 'recorder', args: [a[0]] } : { error: `native.recorder takes ${RECORDER_VERBS.join(', ')}` };
+    case 'native.update': return UPDATE_VERBS.includes(a[0] ?? 'check') ? { call: 'update', args: [a[0] ?? 'check'] } : { error: `native.update takes ${UPDATE_VERBS.join(', ')}` };
     case 'native.state': return { call: 'state', args: [] };
     default: return { error: `unknown native action ${id}` };
   }
@@ -131,5 +135,6 @@ export const NATIVE_ACTIONS = [
   { id: 'native.open', label: 'Open a page on the phone (native.open:<url>|app|overlay|browser)', params: true },
   { id: 'native.wake', label: 'Bring the console to the front on the phone and turn the screen on', params: false },
   { id: 'native.recorder', label: 'Phone recorder: start, stop, state (native.recorder:<verb>)', params: true },
+  { id: 'native.update', label: 'Phone app web content: check for a new console, reload into it, or state (native.update:<verb>)', params: true },
   { id: 'native.state', label: 'Phone app state: shell version, permissions, overlay, insets', params: false },
 ];
