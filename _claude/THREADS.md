@@ -792,7 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 19:01 UTC · `land-project-create-mcp-resolve-clash` added (0 steps) (all) · console
 - 2026-11-13 19:01 UTC · `demo-pipelines-guided-walkthrough-live` added (0 steps) (all) · console
 - 2026-11-13 19:01 UTC · `demo-pipelines-guided-walkthrough-live` → queued, note (all) · console
 - 2026-11-13 19:02 UTC · `prompting-engine-control-panel-events` s1 done, → running (all) · orchestrator
@@ -1192,6 +1191,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 20:49 UTC · `full-voice-control-resolve-inventory` note (all) · orchestrator
 - 2026-11-13 20:49 UTC · `full-voice-control-resolve-inventory` note (all) · builds-live
 - 2026-11-13 20:49 UTC · `landing-auto-resolves-generated-files-no` note (all) · orchestrator
+- 2026-11-13 20:50 UTC · `auto-land-every-finished-build-lands` s1 done, → running (all) · orchestrator
 
 ## Token passes (log)
 
