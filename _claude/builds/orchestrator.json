@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T11:43:36.309Z",
+ "updatedAt": "2026-11-13T11:44:04.878Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -122138,7 +122138,7 @@
    "pr": "#571",
    "priority": "P0",
    "createdAt": "2026-11-13T11:27:54.484Z",
-   "updatedAt": "2026-11-13T11:43:23.119Z",
+   "updatedAt": "2026-11-13T11:44:03.472Z",
    "builtAt": "2026-11-13T11:43:10.668Z",
    "notes": [
     {
@@ -122176,6 +122176,10 @@
     {
      "text": "Headless run axf-overlay-opens-pages-the-floating-toolbar-expands--earl: brief only · start 11.7K tokens ($0.03) · cost $1.60 · 52 turns · 6 tools, MCP none",
      "at": "2026-11-13T11:43:23.119Z"
+    },
+    {
+     "text": "Session axf-overlay-opens-pages-the-floating-toolbar-expands--earl on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-13T11:44:03.472Z"
     }
    ],
    "approvals": [],

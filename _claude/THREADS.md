@@ -781,7 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 06:39 UTC · `skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga` → running, note (all) · pipeline
 - 2026-11-13 06:41 UTC · `professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e` note (all) · orchestrator
 - 2026-11-13 06:42 UTC · `professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e` note (all) · orchestrator
 - 2026-11-13 06:43 UTC · `professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e` s2 done (all) · orchestrator
@@ -1181,6 +1180,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 11:43 UTC · `overlay-opens-pages-the-floating-toolbar-expands` s4 done, → complete (all) · foreign-write
 - 2026-11-13 11:43 UTC · `overlay-opens-pages-the-floating-toolbar-expands` note (all) · orchestrator
 - 2026-11-13 11:43 UTC · `overlay-opens-pages-the-floating-toolbar-expands` s4 done, → built (all) · orchestrator
+- 2026-11-13 11:44 UTC · `overlay-opens-pages-the-floating-toolbar-expands` note (all) · pipeline
 
 ## Token passes (log)
 

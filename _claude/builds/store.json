@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4353,
- "updatedAt": "2026-11-13T11:43:36.309Z",
+ "rev": 4354,
+ "updatedAt": "2026-11-13T11:44:04.878Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -185050,7 +185050,7 @@
    "pr": "#571",
    "priority": "P0",
    "createdAt": "2026-11-13T11:27:54.484Z",
-   "updatedAt": "2026-11-13T11:43:23.119Z",
+   "updatedAt": "2026-11-13T11:44:03.472Z",
    "builtAt": "2026-11-13T11:43:10.668Z",
    "notes": [
     {
@@ -185088,6 +185088,10 @@
     {
      "text": "Headless run axf-overlay-opens-pages-the-floating-toolbar-expands--earl: brief only · start 11.7K tokens ($0.03) · cost $1.60 · 52 turns · 6 tools, MCP none",
      "at": "2026-11-13T11:43:23.119Z"
+    },
+    {
+     "text": "Session axf-overlay-opens-pages-the-floating-toolbar-expands--earl on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-13T11:44:03.472Z"
     }
    ],
    "approvals": [],
@@ -185108,18 +185112,18 @@
     "queuedAt": "2026-11-13T11:27:56.125Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-overlay-opens-pages-the-floating-toolbar-expands--earl",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-13T11:37:09.309Z",
     "runs": 2,
     "lastRun": {
-     "at": "2026-11-13T11:37:03.011Z",
-     "exit": 1,
-     "outcome": "requeued",
-     "stepsLeft": 4,
+     "at": "2026-11-13T11:44:02.685Z",
+     "exit": 0,
+     "outcome": "finished",
+     "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-overlay-opens-pages-the-floating-toolbar-expands--lenny"
+     "session": "axf-overlay-opens-pages-the-floating-toolbar-expands--earl"
     },
     "split": {
      "at": "2026-11-13T11:28:36.977Z",
@@ -185246,7 +185250,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": {
