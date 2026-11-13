@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4809,
- "updatedAt": "2026-11-13T19:32:50.158Z",
+ "rev": 4810,
+ "updatedAt": "2026-11-13T19:33:05.612Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -202977,12 +202977,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T19:31:40.346Z",
-   "updatedAt": "2026-11-13T19:31:51.026Z",
+   "updatedAt": "2026-11-13T19:32:39.232Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-13T19:31:51.026Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"fd5f4797-247e-40af-b530-fe6be43f7418\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-13T19:32:39.232Z"
     }
    ],
    "approvals": [],
@@ -203009,6 +203013,165 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
+    "split": {
+     "at": "2026-11-13T19:32:39.232Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"fd5f4797-247e-40af-b530-fe6be43f7418\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": {
+     "model": "Fable",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-13T19:32:40.871Z",
+     "why": "subscription account mossesx-max-"
+    },
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwfdj07401snir",
+     "title": "",
+     "text": "Branch claude/drive-live-console-first clashed with main in 7 files (console-commands plugin console.mjs and server/__init__.py, console-commands engine .mjs/.d.mts in framework/core/engines and apps/console-web/src/axf/core/engines, framework/catalog/status.json). Merge origin/main into the branch and keep main's newer console-commands behaviour (reconnect delivery, wake) plus this branch's 'drive the live console first' path. Regenerate the baked engine copies from framework, run the console-commands self-checks and tests, push, then land on main.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T19:32:39.232Z",
+     "updatedAt": "2026-11-13T19:32:39.232Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwfdj07402dv8j",
+     "title": "",
+     "text": "land drive the live console first",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T19:32:39.232Z",
+     "updatedAt": "2026-11-13T19:32:39.232Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwfdj07403f2ha",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/land-drive-live-console-first-resolve.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/land-drive-live-console-first-resolve.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T19:32:39.232Z",
+     "updatedAt": "2026-11-13T19:32:39.232Z"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 817
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 5,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-13T19:32:39.232Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "land-rename-long-builds-resolve-clash",
+   "title": "Land rename-long-builds: resolve clash in orchestrator.mjs",
+   "category": "",
+   "detail": "Branch claude/rename-long-builds clashed with main in apps/console-web/plugins/build-orchestrator/orchestrator.mjs (merge aborted, main untouched). Merge origin/main into the branch and keep main's newer orchestrator code plus this branch's rename logic and renames.json mapping. Run the orchestrator tests, push, then land on main.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-13T19:32:22.232Z",
+   "updatedAt": "2026-11-13T19:32:25.191Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T19:32:25.191Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "land rename long builds",
+    "at": "2026-11-13T19:32:22.232Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "2026-11-13T19:32:24.638Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
     "split": null,
     "splitRequested": "",
     "note": "waiting for the split before it can start",
@@ -203026,60 +203189,11 @@
     "all"
    ],
    "order": {
-    "all": 817
-   },
-   "kind": "build",
-   "planRef": "",
-   "rev": 3,
-   "deleted": false,
-   "deletedAt": "",
-   "pending": null,
-   "queue": null,
-   "defaultAt": "",
-   "rearranged": false,
-   "removedSteps": [],
-   "legacy": [],
-   "copies": []
-  },
-  {
-   "id": "land-rename-long-builds-resolve-clash",
-   "title": "Land rename-long-builds: resolve clash in orchestrator.mjs",
-   "category": "",
-   "detail": "Branch claude/rename-long-builds clashed with main in apps/console-web/plugins/build-orchestrator/orchestrator.mjs (merge aborted, main untouched). Merge origin/main into the branch and keep main's newer orchestrator code plus this branch's rename logic and renames.json mapping. Run the orchestrator tests, push, then land on main.",
-   "status": "pending",
-   "hidden": false,
-   "source": "console",
-   "pendingId": "",
-   "branch": "",
-   "pr": "",
-   "createdAt": "2026-11-13T19:32:22.232Z",
-   "updatedAt": "2026-11-13T19:32:22.232Z",
-   "builtAt": "",
-   "notes": [],
-   "approvals": [],
-   "upgradeRequests": [],
-   "origin": {
-    "said": "land rename long builds",
-    "at": "2026-11-13T19:32:22.232Z",
-    "source": "",
-    "session": "",
-    "link": "",
-    "by": "",
-    "brief": "",
-    "verbatim": true,
-    "from": "",
-    "addenda": []
-   },
-   "steps": [],
-   "profiles": [
-    "all"
-   ],
-   "order": {
     "all": 818
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
