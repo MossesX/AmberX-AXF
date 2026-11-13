@@ -781,7 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 07:11 UTC · `skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga` s6 done (all) · orchestrator
 - 2026-11-13 07:12 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` note (all) · mcp
 - 2026-11-13 07:12 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` → queued, note (all) · console
 - 2026-11-13 07:12 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` note (all) · console
@@ -1181,6 +1180,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 12:24 UTC · `fix-toolbar-settings-doing-nothing` note (all) · mcp
 - 2026-11-13 12:25 UTC · `fix-toolbar-settings-doing-nothing` note (all) · orchestrator
 - 2026-11-13 12:25 UTC · `fix-toolbar-settings-doing-nothing` note (all) · foreign-write
+- 2026-11-13 12:25 UTC · `auto-recover-stuck-builds` s9 done (all) · orchestrator
 
 ## Token passes (log)
 
