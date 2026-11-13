@@ -411,6 +411,13 @@
         "text": "Reloads the live preview of the screen being changed."
       },
       {
+        "target": "rows",
+        "title": "Rows",
+        "text": "How many rows this tab group uses. Pick 3 and the tabs stack on three even rows, so they all fit on the page and nothing scrolls to the right. Auto wraps them onto as many rows as they need. 1 is the normal single row.",
+        "more": "Set per tab group and remembered. Right-click (or long-press) any tab row → Settings… → Look → Rows. Side rails and dropdown rows ignore it. Without the screen: chrome.set:tab-group:<row id>:rows:3, or tell Amber \"make the settings tabs three rows\".",
+        "kind": "field"
+      },
+      {
         "target": "open-in-a-new-tab",
         "title": "Open in a new tab",
         "text": "Opens it in its own browser tab."
@@ -1531,6 +1538,11 @@
         "target": "apply-layout",
         "title": "Apply layout",
         "text": "Lays the open tabs out on the layout you picked, spread evenly over its panes. The pane limit holds: a layout with more panes uses only its first ones."
+      },
+      {
+        "target": "settings-interface-for-this-one",
+        "title": "Settings interface for this one",
+        "text": "Picks which settings interface this one tab group, toolbar, banner, navigation menu or menu bar opens its settings in. Same as every … follows the kind's pick (the shared default unless the app picked its copy); any other choice is only for this one and is kept after a reload. Voice and API: chrome.instance-interface:<type>:<instance>:<id|default|custom|inherit>."
       }
     ],
     "intros": [
