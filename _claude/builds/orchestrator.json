@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T13:00:17.864Z",
+ "updatedAt": "2026-11-13T13:00:40.895Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -124390,7 +124390,7 @@
    "pr": "#573",
    "priority": "P0",
    "createdAt": "2026-11-13T12:31:20.005Z",
-   "updatedAt": "2026-11-13T12:59:49.949Z",
+   "updatedAt": "2026-11-13T13:00:38.359Z",
    "builtAt": "2026-11-13T12:59:49.949Z",
    "notes": [
     {
@@ -124424,6 +124424,10 @@
     {
      "text": "PR #573 open. UI Review shots not uploaded: this headless session has no AXF_CONSOLE_URL / AXF_TOKEN, so review.mjs submit --console refused. Resubmit desktop + phone shots from a session with the console token.",
      "at": "2026-11-13T12:59:48.187Z"
+    },
+    {
+     "text": "Headless run axf-assets-menu-hide-any-asset-visible-and-hidden-li--joey: brief only · start 12.0K tokens ($0.03) · cost $6.17 · 139 turns · 6 tools, MCP none",
+     "at": "2026-11-13T13:00:38.358Z"
     }
    ],
    "approvals": [],
