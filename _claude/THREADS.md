@@ -781,8 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 22:16 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` added (2 steps) (all) · Claude (voice)
-- 2026-11-12 22:16 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` → queued, note (all) · console
 - 2026-11-12 22:17 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` → running, note (all) · pipeline
 - 2026-11-12 22:17 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` branch claude/fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o (all) · pipeline
 - 2026-11-12 22:17 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` note (all) · orchestrator
@@ -1181,6 +1179,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 06:58 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` note (all) · console
 - 2026-11-13 06:58 UTC · `remove-ui-review-as-a-gate-no-screenshots-required-prs-never-held-as-draft-for` s1 done (all) · orchestrator
 - 2026-11-13 06:59 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` note (all) · orchestrator
+- 2026-11-13 06:59 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` note (all) · mcp
+- 2026-11-13 06:59 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` note (all) · console
 
 ## Token passes (log)
 
