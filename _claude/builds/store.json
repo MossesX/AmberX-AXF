@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4369,
- "updatedAt": "2026-11-13T11:57:38.346Z",
+ "rev": 4370,
+ "updatedAt": "2026-11-13T11:57:52.234Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -178383,7 +178383,7 @@
    "title": "Merges are only 'merged' once GitHub confirms: every merge path (console auto-merge, auto-land, github client plugin, server gate, scripts) shows 'Pending GitHub confirmation' right after a merge call, then reads the PR back from GitHub (state MERGED and the merge commit on main) before marking it m",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -178391,7 +178391,7 @@
    "pr": "#569",
    "priority": "P0",
    "createdAt": "2026-11-13T06:21:11.993Z",
-   "updatedAt": "2026-11-13T11:37:55.447Z",
+   "updatedAt": "2026-11-13T11:57:49.938Z",
    "builtAt": "",
    "notes": [
     {
@@ -178864,7 +178864,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -181773,7 +181773,7 @@
    "title": "Full API and voice control of the entire console: every tab, screen, setting, button, function and plugin (incl. enable/disable plugins); scroll up/down; bring any row or step of any table or grid into focus; search screens and everything loaded and pull it into focus",
    "category": "",
    "detail": "",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -181781,7 +181781,7 @@
    "pr": "#556",
    "priority": "P0",
    "createdAt": "2026-11-13T07:12:21.823Z",
-   "updatedAt": "2026-11-13T11:56:58.738Z",
+   "updatedAt": "2026-11-13T11:57:48.234Z",
    "builtAt": "",
    "notes": [
     {
@@ -181863,6 +181863,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-13T11:56:58.738Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T11:57:48.234Z"
     }
    ],
    "approvals": [
@@ -181889,7 +181893,7 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "2026-11-13T10:35:05.962Z",
+    "queuedAt": "2026-11-13T11:57:47.853Z",
     "queuedBy": "console",
     "account": "",
     "session": "",
@@ -182703,7 +182707,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 49,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -186456,7 +186460,13 @@
     "note": "",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-13T11:57:38.290Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -187042,7 +187052,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

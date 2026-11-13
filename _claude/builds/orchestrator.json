@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T11:57:38.346Z",
+ "updatedAt": "2026-11-13T11:57:52.234Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -117267,7 +117267,7 @@
    "title": "Merges are only 'merged' once GitHub confirms: every merge path (console auto-merge, auto-land, github client plugin, server gate, scripts) shows 'Pending GitHub confirmation' right after a merge call, then reads the PR back from GitHub (state MERGED and the merge commit on main) before marking it m",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -117275,7 +117275,7 @@
    "pr": "#569",
    "priority": "P0",
    "createdAt": "2026-11-13T06:21:11.993Z",
-   "updatedAt": "2026-11-13T11:37:55.447Z",
+   "updatedAt": "2026-11-13T11:57:49.938Z",
    "builtAt": "",
    "notes": [
     {
@@ -119577,7 +119577,7 @@
    "title": "Full API and voice control of the entire console: every tab, screen, setting, button, function and plugin (incl. enable/disable plugins); scroll up/down; bring any row or step of any table or grid into focus; search screens and everything loaded and pull it into focus",
    "category": "",
    "detail": "",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -119585,7 +119585,7 @@
    "pr": "#556",
    "priority": "P0",
    "createdAt": "2026-11-13T07:12:21.823Z",
-   "updatedAt": "2026-11-13T11:56:58.738Z",
+   "updatedAt": "2026-11-13T11:57:48.234Z",
    "builtAt": "",
    "notes": [
     {
@@ -119667,6 +119667,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-13T11:56:58.738Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T11:57:48.234Z"
     }
    ],
    "approvals": [
