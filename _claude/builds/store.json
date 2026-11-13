@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4943,
- "updatedAt": "2026-11-13T20:19:15.277Z",
+ "rev": 4944,
+ "updatedAt": "2026-11-13T20:19:29.801Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -205863,15 +205863,15 @@
    "title": "Own token sets for grids and tab groups",
    "category": "",
    "detail": "Today grids only have layout tokens (--fx-grid-areas/cols/rows and the -m mobile variants), and tab groups only have --fx-tab-py/--fx-tab-px padding and --fx-tabs-per-row. Both borrow the general colour tokens (--fx-surface, --fx-border, accent), so hover, selected and active states can't be styled on their own. Add dedicated token families in tokens.style, following skins and editable in Token Control, the UI Manager and per instance.\nGRID: header background/text/border/sort arrow/filter chip; row, alternate row, hover, selected, focused, expanded, disabled; grid lines, outer border, cell padding, row height, radius; group header, sticky column shadow, empty state; transparency (default 100%).\nTAB GROUP: bar background and border; tab text, background and border for idle, hover, active/selected, pressed, disabled and focus ring; active indicator (underline/pill) colour and thickness; badge on tab; fold/overflow button; gap; radius per style (underline, pills, boxed, segmented, plain, chips); transparency (default 100%).\nWire every grid/table and tab group to read them, and add a CI check against hard-coded colours. Per-instance overrides with Restore previous edit / Restore from axHub. Full API. Tests, help, Shipped features. Fable for the token schema.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/own-token-sets-for-grids-and-tab-groups",
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T19:57:42.157Z",
-   "updatedAt": "2026-11-13T20:03:11.292Z",
+   "updatedAt": "2026-11-13T20:19:23.781Z",
    "builtAt": "",
    "notes": [
     {
@@ -205905,6 +205905,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"0749b213-bc7e-4f25-a660-05ac6ac242f5\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-13T20:03:11.292Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-own-token-sets-for-grids-and-tab-groups--rhonda.",
+     "at": "2026-11-13T20:19:21.274Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-own-token-sets-for-grids-and-tab-groups--rhonda, own login copy)",
+     "at": "2026-11-13T20:19:23.781Z"
     }
    ],
    "approvals": [],
@@ -205915,8 +205923,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "own-token-sets-for-grids-and-tab-groups",
+    "brief": "# Build: own-token-sets-for-grids-and-tab-groups\n\n## Brett said (verbatim)\nAt: 2026-11-13T19:57:42.157Z\n> how many tokens does a grid have, colors, don't they need that to have hover colors; what about tab groups, are they the same way\n\n## What to build\nContinue build \"Own token sets for grids and tab groups\" (own-token-sets-for-grids-and-tab-groups) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-13 19:57):\n\"how many tokens does a grid have, colors, don't they need that to have hover colors; what about tab groups, are they the same way\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (1 left, ~10 min):\n[ ] s1 (~10 min) Wire every grid/table and tab group to read them, and add a CI check against hard-coded colours. Per-instance overrides with Restore previous edit / Restore from axHub. Full API. Tests, help, Shipped features. Fable for the token schema.\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step own-token-sets-for-grids-and-tab-groups <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link own-token-sets-for-grids-and-tab-groups --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step own-token-sets-for-grids-and-tab-groups <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note own-token-sets-for-grids-and-tab-groups \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -205924,12 +205932,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T19:57:44.822Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-own-token-sets-for-grids-and-tab-groups--rhonda",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Fable",
+    "launchedAt": "2026-11-13T20:19:20.790Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T20:03:11.292Z",
@@ -205939,9 +205947,9 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"0749b213-bc7e-4f25-a660-05ac6ac242f5\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-13T20:19:20.790Z",
     "planned": {
      "model": "Fable",
      "account": "mossesx-max-",
@@ -205950,7 +205958,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-13T20:19:20.790Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -206100,7 +206108,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

@@ -788,9 +788,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 18:41 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · console
-- 2026-11-13 18:41 UTC · `console-app-part-2-native-floating` added (0 steps) (all) · console
-- 2026-11-13 18:41 UTC · `console-app-part-3-native-bridge-mic` added (0 steps) (all) · console
 - 2026-11-13 18:41 UTC · `console-app-part-3-native-bridge-mic` → queued, note (all) · console
 - 2026-11-13 18:41 UTC · `console-app-part-4-console-side-safe` added (0 steps) (all) · console
 - 2026-11-13 18:41 UTC · `console-app-part-4-console-side-safe` → queued, note (all) · console
@@ -1188,6 +1185,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 20:18 UTC · `per-toolbar-settings-fix-failing-chrome` → running, note (all) · pipeline
 - 2026-11-13 20:18 UTC · `per-toolbar-settings-fix-failing-chrome` branch claude/per-toolbar-settings-fix-failing-chrome (all) · pipeline
 - 2026-11-13 20:18 UTC · `per-toolbar-settings-fix-failing-chrome` note (all) · orchestrator
+- 2026-11-13 20:19 UTC · `own-token-sets-for-grids-and-tab-groups` → running, note (all) · pipeline
+- 2026-11-13 20:19 UTC · `own-token-sets-for-grids-and-tab-groups` branch claude/own-token-sets-for-grids-and-tab-groups (all) · pipeline
+- 2026-11-13 20:19 UTC · `own-token-sets-for-grids-and-tab-groups` note (all) · orchestrator
 
 ## Token passes (log)
 
