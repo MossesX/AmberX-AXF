@@ -54,6 +54,13 @@
         }
       },
       {
+        "id": "apps",
+        "route": "GET /apps",
+        "title": "Apps with a look",
+        "description": "The apps whose skin can be switched, and whether each has its look document yet.",
+        "readOnly": true
+      },
+      {
         "id": "scopes",
         "route": "GET /scopes",
         "title": "Skin scopes",

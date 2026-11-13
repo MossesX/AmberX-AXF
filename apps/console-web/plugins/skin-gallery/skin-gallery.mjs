@@ -5,6 +5,7 @@
  * The plugin's REST routes, its MCP commands and voice all call this file, so every way in makes the same change.
  *
  *   node apps/console-web/plugins/skin-gallery/skin-gallery.mjs list                         every skin, for the gallery
+ *   node apps/console-web/plugins/skin-gallery/skin-gallery.mjs apps                         the apps that have a look to switch
  *   node apps/console-web/plugins/skin-gallery/skin-gallery.mjs scopes [--app <app>]         the scopes that can be switched
  *   node apps/console-web/plugins/skin-gallery/skin-gallery.mjs state [--scope <s>] [--app <app>]   one scope: own state, skin in force, undo
  *   node apps/console-web/plugins/skin-gallery/skin-gallery.mjs use <skin> [--scope <s>] [--app <app>]
@@ -141,7 +142,8 @@ export function writeSettings(patch) {
 /** The console deep link (console_open target) for the gallery, one skin, or one scope. */
 export function open(skin = '', scope = '', view = '') {
   const q = new URLSearchParams({ ...(skin ? { skin } : {}), ...(scope ? { scope } : {}), ...(view === 'phone' ? { view } : {}) }).toString();
-  return { kind: 'screen', target: 'skin-gallery', ...(q ? { arg: q } : {}), link: `/#/skin-gallery${q ? `?${q}` : ''}` };
+  const focus = skin ? `${view === 'phone' ? 'preview' : 'skin'}/${skin}${scope ? `?scope=${scope}` : ''}${view === 'phone' ? `${scope ? '&' : '?'}view=phone` : ''}` : scope ? `scope/${scope}` : '';
+  return { kind: 'screen', target: 'skin-gallery', ...(focus ? { focus } : {}), link: `/#/skin-gallery${q ? `?${q}` : ''}` };
 }
 
 function main(argv) {
@@ -154,6 +156,7 @@ function main(argv) {
   let out;
   if (cmd === 'list') out = list(app);
   else if (cmd === 'scopes') out = scopes(app);
+  else if (cmd === 'apps') out = appIds().map((id) => ({ id, look: !!readLook(id) }));
   else if (cmd === 'state') out = state(scope, app);
   else if (cmd === 'use') { if (!arg) throw new Error('use needs a skin id'); out = run('use', { scope, skin: arg, app }); }
   else if (cmd === 'back') out = run('back-to-skin', { scope, slot: arg ?? '', app });
@@ -166,7 +169,7 @@ function main(argv) {
     out = kv.length ? writeSettings(Object.fromEntries(kv.flatMap((x, i) => (i % 2 ? [] : [[x, kv[i + 1]]])))) : readSettings();
   }
   else if (cmd === 'open') out = open(arg ?? '', opt('scope') ?? '', opt('view') ?? '');
-  else throw new Error(`unknown command ${cmd}: list | scopes | state | use | back | restore | undo | scope | settings | open`);
+  else throw new Error(`unknown command ${cmd}: list | apps | scopes | state | use | back | restore | undo | scope | settings | open`);
   if (json) console.log(JSON.stringify({ ok: true, result: out }));
   else console.log(Array.isArray(out) ? out.map((x) => (typeof x === 'string' ? x : JSON.stringify(x))).join('\n') : JSON.stringify(out, null, 1));
 }

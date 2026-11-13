@@ -3,10 +3,12 @@
  * route as the screen, the CLI and the MCP plugin commands, so every way in makes the same change.
  *   skin.use <skin> [scope]   skin.back [scope]   skin.restore [scope]   skin.undo   skin.open [skin] [scope]
  *   skin.scope <scope> [follow|own]
+ *   skin-gallery.focus:<path>  the deep link console_open … focus runs: skin/<id> | scope/<scope> | preview/<id>?view=phone
  * Scope: hub | app | ui:<view> | plugin:<id>; default the plugin's default scope (settings), else app.
  */
 import type { AxfRuntime } from '@console/axf/core';
 import { backAt, followAt, restoreAt, undoLast, useSkinAt, type ScopeView } from './api';
+import { setLink } from './link';
 import { defaultScope } from './settings';
 
 const SCOPE = /^(hub|app|app:[a-z0-9-]+|(ui|plugin):[a-z0-9][a-z0-9._-]*)$/;
@@ -37,8 +39,11 @@ export function registerActions(rt: AxfRuntime): void {
   }, { label: 'Skin scope: follow or own' });
   rt.actions.register('skin.open', (args?: string[]) => {
     const [skin = '', scope = ''] = args ?? [];
-    const q = new URLSearchParams({ ...(skin ? { skin } : {}), ...(SCOPE.test(scope) ? { scope } : {}) }).toString();
-    location.hash = `#/skin-gallery${q ? `?${q}` : ''}`;
+    setLink(skin ? `skin/${skin}${SCOPE.test(scope) ? `?scope=${scope}` : ''}` : SCOPE.test(scope) ? `scope/${scope}` : '');
     rt.navigate('skin-gallery');
   }, { label: 'Open Skins' });
+  rt.actions.register('skin-gallery.focus', (args?: string[]) => {
+    setLink((args ?? []).join(':'));
+    rt.navigate('skin-gallery');
+  }, { label: 'Open Skins at a skin, scope or preview' });
 }

@@ -5,6 +5,7 @@ the REST API, MCP plugin commands, the CLI and voice make the same change. No se
 app's app-look@1 file and the shared appearance document, as the framework skins CLI writes them.
 
   GET  /skins                    every skin for the gallery (coverage {covered, total} and the scopes each is in force at)
+  GET  /apps                     the apps that have a look to switch
   GET  /scopes?app=              the scopes that can be switched
   GET  /state?scope=&app=        one scope: its own state, the skin in force and the level that decided, the undo
   POST /use      {skin, scope?, app?}
@@ -82,6 +83,11 @@ def _str(b: dict[str, Any], k: str) -> str:
 def skins(app: str = "") -> JSONResponse:
     args = _common("", app)
     return args if isinstance(args, JSONResponse) else _run("list", *args)
+
+
+@router.get("/apps")
+def apps() -> JSONResponse:
+    return _run("apps")
 
 
 @router.get("/scopes")
