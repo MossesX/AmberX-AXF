@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T19:55:20.893Z",
+ "updatedAt": "2026-11-13T19:55:39.775Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -131299,7 +131299,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T19:37:14.557Z",
-   "updatedAt": "2026-11-13T19:53:43.276Z",
+   "updatedAt": "2026-11-13T19:55:12.571Z",
    "builtAt": "",
    "notes": [
     {
@@ -131317,6 +131317,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-per-instance-settings-picker-merge-main--lenny, own login copy)",
      "at": "2026-11-13T19:43:18.403Z"
+    },
+    {
+     "text": "Follow-up needed (pin Fable: chrome-settings@1 contract + renderers): (1) per-instance transparency is not in any chrome kind yet. Add an instanceOnly 'transparency' field (0-90%) to every CHROME_TYPES kind like tapConfirm, regenerate chrome-settings fixtures, and apply it in the tab group, toolbar, nav, app menu, banner and context menu renderers through an --fx-* opacity token. Only TabGroup reads instance overrides today. (2) Dialogs are not a chrome kind: add 'dialog' with its own settings-ui asset (framework + console/molly/axhub copies) so each dialog gets its own settings interface and transparency. Too big for one 10-min Opus step; this build only merges and lands the picker.",
+     "at": "2026-11-13T19:55:12.571Z"
     }
    ],
    "approvals": [],
