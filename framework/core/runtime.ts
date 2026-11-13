@@ -3004,6 +3004,8 @@ export class AxfRuntime {
       this.setSkinBehaviour(type, axis, v, scoped ? `${p[0]}:${p[1]}` : undefined);
     }, { label: 'Change one behaviour inside the skin', requires: 'assets.swap', params: true });
     a.register('skin.behaviour.reset', ([type]) => { this.backToSkinBehaviour(type || ''); }, { label: "Back to the skin's behaviour", requires: 'assets.swap', params: true });
+    // skin.preview:<id|off> shows a skin on this screen without saving anything (the gallery's live preview, for voice / API)
+    a.register('skin.preview', ([id]) => { this.previewSkin(!id || id === 'off' || id === 'none' ? null : id); }, { label: 'Preview a skin without saving', requires: 'assets.swap', params: true });
     // skin.global:<id|off> sets or clears the hub-wide skin (the global level) on the shared document
     a.register('skin.global', ([id]) => { this.setGlobalSkin(!id || id === 'off' || id === 'none' ? null : id); }, { label: 'Set the hub-wide skin', requires: 'assets.swap', params: true });
     // the navigation drawer (nav mode drawer): nav.drawer:open | close | toggle
