@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4857,
- "updatedAt": "2026-11-13T19:48:53.084Z",
+ "rev": 4858,
+ "updatedAt": "2026-11-13T19:49:20.709Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -200903,7 +200903,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:32.589Z",
-   "updatedAt": "2026-11-13T19:45:47.328Z",
+   "updatedAt": "2026-11-13T19:49:14.183Z",
    "builtAt": "",
    "notes": [
     {
@@ -200921,6 +200921,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-console-app-part-4-console-side-safe--rhonda, own login copy)",
      "at": "2026-11-13T19:30:36.861Z"
+    },
+    {
+     "text": "Headless run axf-console-app-part-4-console-side-safe--rhonda: brief only · start 11.4K tokens ($0.03) · cost $2.98 · 80 turns · 6 tools, MCP none",
+     "at": "2026-11-13T19:49:14.183Z"
     }
    ],
    "approvals": [],
@@ -201138,7 +201142,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
