@@ -612,6 +612,192 @@ export function skinConfigBrief(config, tree) {
   return lines;
 }
 
+/* ---------------------------------------------------------------- the AI skin maker */
+
+/**
+ * The skin maker (build skin-configuration-panel s4): the AI gets a brief that carries only what it may change and the
+ * limits it must keep, writes a skin, and the skin is held to the config before anything is saved. Anything outside the
+ * allowed set (a locked option, an option Brett wants asked about, an asset over a limit, a slot or part the tree does
+ * not know, a field skin@1 does not have) is dropped and listed back to Brett, each with the reason.
+ */
+export const SKIN_MAKER_CONTRACT = 'skin-maker@1';
+/** The fields of skin@1 data the maker may return; anything else in its output is dropped. */
+export const SKIN_DATA_FIELDS = ['layoutTheme', 'colorTheme', 'styleTheme', 'assets', 'iconPack', 'parts', 'extras', 'preview'];
+const EXTRAS_FIELDS = ['spacing', 'hidden', 'settings'];
+const ASSET_ID = /^[a-z0-9][a-z0-9-]{1,47}$/;
+
+/**
+ * The allowed part of the tree, compact: a whole category when every option in it is allowed, else whole groups, else
+ * single options. `[{ path, label }]`, tree order. Locked and ask options are not in it: the AI never hears of them.
+ */
+export function allowedOptions(config, tree) {
+  const out = [];
+  for (const c of tree?.categories ?? []) {
+    const modes = c.groups.flatMap((g) => g.options.map((o) => optionMode(config, c.type, g.id, o.id)));
+    if (modes.length && modes.every((m) => m === 'allow')) { out.push({ path: c.type, label: c.label }); continue; }
+    for (const g of c.groups) {
+      const gm = g.options.map((o) => optionMode(config, c.type, g.id, o.id));
+      if (gm.length && gm.every((m) => m === 'allow')) { out.push({ path: `${c.type}/${g.id}`, label: `${c.label} · ${g.label}` }); continue; }
+      for (const o of g.options) if (optionMode(config, c.type, g.id, o.id) === 'allow') out.push({ path: `${c.type}/${g.id}/${o.id}`, label: `${c.label} · ${g.label} · ${o.label}` });
+    }
+  }
+  return out;
+}
+
+/** Is a category reachable at all under the config (any option in it allowed)? Limits are only briefed for those. */
+const categoryOpen = (config, c) => c.groups.some((g) => g.options.some((o) => optionMode(config, c.type, g.id, o.id) === 'allow'));
+
+/**
+ * The generation brief: `{ contract, app, wish, allowed, limits, base, lines, output }`. `base` = the Default skin's
+ * data (what the AI starts from; everything it does not change stays as it is). `allowed` and `limits` carry only what
+ * the AI may change; `lines` is the same in words, ready to paste into a prompt.
+ */
+export function skinMakerBrief(config, tree, baseSkin, wish = '') {
+  const allowed = allowedOptions(config, tree);
+  const limits = [];
+  for (const c of tree?.categories ?? []) if (categoryOpen(config, c)) for (const l of c.limits) limits.push({ path: `${c.type}/${l.id}`, label: `${c.label}: ${l.label.charAt(0).toLowerCase()}${l.label.slice(1)}`, measure: l.measure, max: limitValue(config, tree, c.type, l.id) });
+  const base = isObj(baseSkin) && isObj(baseSkin.data) ? baseSkin.data : isObj(baseSkin) ? baseSkin : {};
+  const lines = [
+    `Make a skin (skin@1 data) for ${str(config?.app, 120) || SKIN_CONFIG_GLOBAL}${wish ? `: ${str(wish, 600)}` : ''}.`,
+    'Start from the Default skin below and change only what is allowed; leave everything else exactly as it is.',
+    allowed.length ? `You may change only: ${allowed.map((a) => a.label).join('; ')}.` : 'Nothing is allowed to change: return the Default skin unchanged.',
+    ...limits.map((l) => `${l.label} at most ${l.max}.`),
+    'Return JSON: { "skin": <skin@1 data>, "assets": [{ "type", "id", "name", "data" }] } where assets are any new assets the skin names. Anything outside the allowed set is dropped.',
+  ];
+  return { contract: SKIN_MAKER_CONTRACT, app: str(config?.app, 120) || SKIN_CONFIG_GLOBAL, wish: str(wish, 600), allowed, limits, base, lines, output: { skin: 'skin@1 data', assets: 'asset@1 list (type, id, name, data)' } };
+}
+
+/**
+ * The maker's output, shape-checked: only skin@1 data fields, slots the tree knows with valid ids, parts for known
+ * categories and their tokens, extras' own fields, new assets of known types. `{ skin, assets, dropped }`; each
+ * dropped row `{ path, what, why: 'unknown' }`.
+ */
+export function sanitizeMakerOutput(raw, tree) {
+  const dropped = [];
+  const drop = (path, what) => dropped.push({ path, what, why: 'unknown', mode: '' });
+  const r = isObj(raw) ? raw : {};
+  const src = isObj(r.skin) ? r.skin : {};
+  const skin = {};
+  for (const [k, v] of Object.entries(src)) {
+    if (!SKIN_DATA_FIELDS.includes(k)) { drop(`skin/${k}`, `${k}: not a skin@1 field`); continue; }
+    if (['layoutTheme', 'colorTheme', 'styleTheme', 'iconPack'].includes(k)) { if (typeof v === 'string' && ASSET_ID.test(v)) skin[k] = v; else drop(`skin/${k}`, `${k}: not an asset id`); continue; }
+    if (k === 'preview') { if (isObj(v)) skin.preview = { ...(typeof v.caption === 'string' ? { caption: str(v.caption, 200) } : {}) }; continue; }
+    if (k === 'assets') {
+      skin.assets = {};
+      for (const [type, id] of Object.entries(isObj(v) ? v : {})) {
+        if (!findCategory(tree, type) || !findGroup(tree, type, 'pick')) drop(`${type}/pick/asset`, `assets.${type}: not a slot a skin can set`);
+        else if (typeof id !== 'string' || !ASSET_ID.test(id)) drop(`${type}/pick/asset`, `assets.${type}: not an asset id`);
+        else skin.assets[type] = id;
+      }
+      continue;
+    }
+    if (k === 'parts') {
+      const parts = {};
+      for (const [type, tokens] of Object.entries(isObj(v) ? v : {})) {
+        const cat = findCategory(tree, type);
+        if (!cat || !isObj(tokens)) { drop(`${type}/parts`, `parts.${type}: not a type with style parts`); continue; }
+        for (const [token, value] of Object.entries(tokens)) {
+          if (cat.groups.some((g) => g.kind === 'parts' && g.options.some((o) => o.id === token)) && ['string', 'number', 'boolean'].includes(typeof value)) (parts[type] ??= {})[token] = value;
+          else drop(`${type}/parts/${token}`, `parts.${type}.${token}: not a style part of ${type}`);
+        }
+      }
+      if (Object.keys(parts).length) skin.parts = parts;
+      continue;
+    }
+    if (k === 'extras') {
+      const x = {};
+      for (const [ek, ev] of Object.entries(isObj(v) ? v : {})) {
+        if (!EXTRAS_FIELDS.includes(ek)) { drop(`${SKIN_CONFIG_EXTRAS}/look/${ek}`, `extras.${ek}: not a skin extra`); continue; }
+        if (ek === 'spacing') { if (SPACINGS.includes(ev)) x.spacing = ev; else drop(`${SKIN_CONFIG_EXTRAS}/look/spacing`, 'extras.spacing: tight, compact or regular'); }
+        else if (ek === 'settings') { if (isObj(ev)) x.settings = ev; else drop(`${SKIN_CONFIG_EXTRAS}/look/settings`, 'extras.settings: not an object'); }
+        else for (const [type, h] of Object.entries(isObj(ev) ? ev : {})) {
+          if (findGroup(tree, type, 'chrome') && typeof h === 'boolean') (x.hidden ??= {})[type] = h;
+          else drop(`${type}/chrome/hidden`, `extras.hidden.${type}: not a type that can be hidden`);
+        }
+      }
+      if (Object.keys(x).length) skin.extras = x;
+    }
+  }
+  const assets = [];
+  for (const a of Array.isArray(r.assets) ? r.assets : []) {
+    if (!isObj(a) || typeof a.type !== 'string' || !findCategory(tree, a.type) || typeof a.id !== 'string' || !ASSET_ID.test(a.id) || !isObj(a.data)) { drop(`assets/${isObj(a) ? str(a.type, 40) || '?' : '?'}`, `new asset ${isObj(a) ? `${str(a.type, 40)} ${str(a.id, 60)}` : ''}: needs a known type, an id and data`.replace(/\s+:/, ':')); continue; }
+    assets.push({ type: a.type, id: a.id, name: str(a.name, 120) || a.id, data: a.data });
+  }
+  return { skin, assets, dropped };
+}
+
+/** The config with every `ask` read as `lock`: the maker applies only what is allowed. */
+function asksLocked(config) {
+  const m = (v) => (v === 'ask' ? 'lock' : v);
+  const out = { ...(config ?? {}), default: m(mode(config?.default) || SKIN_CONFIG_DEFAULT_MODE), categories: {} };
+  for (const [t, c] of Object.entries(isObj(config?.categories) ? config.categories : {})) {
+    const n = { ...c };
+    if (c.mode) n.mode = m(c.mode);
+    if (isObj(c.groups)) n.groups = Object.fromEntries(Object.entries(c.groups).map(([gid, g]) => [gid, { ...g, ...(g.mode ? { mode: m(g.mode) } : {}), ...(isObj(g.options) ? { options: Object.fromEntries(Object.entries(g.options).map(([o, v]) => [o, m(v)])) } : {}) }]));
+    out.categories[t] = n;
+  }
+  return out;
+}
+
+/**
+ * Hold the maker's output to the config. `raw` = `{ skin, assets? }`, `base` = the Default skin (asset or its data),
+ * `assetOf(type, id)` reads an existing asset's data (the maker's new assets are read first). Returns
+ * `{ contract, skin, assets, applied, dropped, patches }`: `skin` is what may be saved (every change outside the allowed
+ * set put back the way the Default has it), `assets` the new assets the saved skin still names (with locked field
+ * patches applied), `applied` the allowed changes, `dropped` every change that was not applied with `why`
+ * (`unknown`, `locked`, `ask`: Brett decides, `limit`: over a limit).
+ */
+export function holdGeneratedSkin(raw, base, config, tree, assetOf = null) {
+  const clean = sanitizeMakerOutput(raw, tree);
+  const baseData = isObj(base) && isObj(base.data) ? base.data : isObj(base) ? base : {};
+  const fresh = new Map(clean.assets.map((a) => [`${a.type}/${a.id}`, a.data]));
+  const read = (type, id) => fresh.get(`${type}/${id}`) ?? (assetOf ? assetOf(type, id) : null);
+  // the AI's skin starts from the Default: whatever it left out (a field, a slot, a part, an extra) is the Default's
+  const bx = isObj(baseData.extras) ? baseData.extras : {}; const gx = clean.skin.extras ?? {};
+  const bp = isObj(baseData.parts) ? baseData.parts : {}; const gp = clean.skin.parts ?? {};
+  const generated = { ...baseData, ...clean.skin, assets: { ...(isObj(baseData.assets) ? baseData.assets : {}), ...(clean.skin.assets ?? {}) } };
+  const parts = Object.fromEntries([...new Set([...Object.keys(bp), ...Object.keys(gp)])].map((t) => [t, { ...(isObj(bp[t]) ? bp[t] : {}), ...(gp[t] ?? {}) }]));
+  if (Object.keys(parts).length) generated.parts = parts;
+  const extras = { ...bx, ...gx, ...(isObj(bx.hidden) || gx.hidden ? { hidden: { ...(isObj(bx.hidden) ? bx.hidden : {}), ...(gx.hidden ?? {}) } } : {}) };
+  if (Object.keys(extras).length) generated.extras = extras;
+  const merged = mergeWithDefault(generated, baseData, asksLocked(config), tree, read);
+  const dropped = [...clean.dropped];
+  // a slot that went back takes its field changes with it: one row, not one per field
+  const slotBack = new Set(merged.kept.filter((r) => r.path.split('/')[1] === 'pick' || r.limit).map((r) => r.path.split('/')[0]));
+  for (const r of merged.kept) {
+    if (r.path.split('/')[1] === 'fields' && slotBack.has(r.path.split('/')[0])) continue;
+    const real = r.limit ? 'lock' : optionMode(config, ...r.path.split('/'));
+    dropped.push({ path: r.path, what: r.what, why: r.limit ? 'limit' : real === 'ask' ? 'ask' : 'locked', mode: real, from: r.from, to: r.to, ...(r.limit ? { limit: r.limit, value: r.value, max: r.max } : {}) });
+  }
+  const finalSlots = slotsOfSkin(merged.skin);
+  const assets = [];
+  for (const a of clean.assets) {
+    if (finalSlots[a.type] !== a.id) { dropped.push({ path: `${a.type}/pick/asset`, what: `new ${a.type} ${a.id}: the skin no longer names it`, why: 'unused', mode: '' }); continue; }
+    let data = a.data;
+    for (const p of merged.patches.filter((x) => x.type === a.type && x.id === a.id)) data = setPath(data, p.field, p.value);
+    assets.push({ ...a, data });
+  }
+  // an allowed change to a slot that went back (locked, asked or over a limit) did not happen
+  const applied = merged.allowed.filter((r) => { const [type, group] = r.path.split('/'); return !(slotBack.has(type) && (group === 'pick' || group === 'fields')); }).map((r) => ({ path: r.path, what: r.what }));
+  return { contract: SKIN_MAKER_CONTRACT, skin: merged.skin, assets, applied, dropped, patches: merged.patches };
+}
+
+function setPath(obj, path, value) {
+  const keys = path.split('.');
+  const out = { ...obj };
+  let at = out;
+  for (let i = 0; i < keys.length - 1; i++) { at[keys[i]] = isObj(at[keys[i]]) ? { ...at[keys[i]] } : {}; at = at[keys[i]]; }
+  const last = keys[keys.length - 1];
+  if (value === null || value === undefined) delete at[last]; else at[last] = value;
+  return out;
+}
+
+/** Plain lines listing what was dropped, for Brett. */
+export function droppedLines(dropped) {
+  const why = { unknown: 'not part of a skin', locked: 'locked', ask: 'needs your OK (ask)', limit: 'over the limit', unused: 'not used' };
+  return (dropped ?? []).map((d) => `${d.what} (${why[d.why] ?? d.why})`);
+}
+
 /** The JSON Schema of a skin-config@1 document over a tree (every category, group, option and limit enumerated). */
 export function skinConfigSchema(tree) {
   const modeSchema = { $ref: '#/$defs/mode' };

@@ -23,13 +23,25 @@
  *   node framework/cli/skins.mjs migrate [--all | <app>|global] [--dry]   write every Default skin that is missing or stale (idempotent:
  *                                                           a second run keeps everything); snapshots an app with no look document first
  *   node framework/cli/skins.mjs delete <skin>             refuse to delete a Default skin (framework skins are repo files, not deleted here)
+ *   node framework/cli/skins.mjs config get|tree|schema|brief|made <app>|global   the skin config (skin-config@1): what the AI may change
+ *   node framework/cli/skins.mjs config allow|lock|ask|inherit <app> <type>[/<group>[/<option>]]   one category, group or option
+ *   node framework/cli/skins.mjs config depth <app> <type> <n>|default [limit]   a limit (menu levels, toolbar groups)
+ *   node framework/cli/skins.mjs config mode <app> allow|lock|ask   the mode of everything not set · config reset <app>
+ *   node framework/cli/skins.mjs config put <app> <file> | --json-doc '{…}'   the whole document (checked first)
+ *   node framework/cli/skins.mjs config default <app>      save the current look as the Default skin
+ *   node framework/cli/skins.mjs config make <app> [--wish "…"] [--from out.json] [--dry]   make a skin with AI under the config:
+ *                                                           the brief carries only the allowed options and limits; the result is held
+ *                                                           to the config (anything outside it dropped and listed) and saved as ai-<app>-…
+ *   node framework/cli/skins.mjs config hold <app> --from out.json   check a generator's output against the config (nothing saved)
  *   node framework/cli/skins.mjs coverage                  how a skin reaches every registered asset type (CI: spec/check-skin-coverage.mjs)
  *   node framework/cli/skins.mjs covers <skin>             what one skin sets or styles, type by type
  *   add --json for machine output. An app is its id (axf-console) or its folder (console-web), or `console`, `axhub`, `amberx`, `molly`.
  *
  * Files are written where /projects is mounted (the hub's data folder), so open apps follow through the hub's change
  * feed. AXF_LOOKS_DIR points elsewhere (tests, local development); AXF_APPEARANCE_FILE is the shared document;
- * AXF_SKINS_DIR holds the Default skins (`shared/settings/skins/<app>.json`, skin-config-rules.mjs).
+ * AXF_SKINS_DIR holds the Default skins (`shared/settings/skins/<app>.json`, skin-config-rules.mjs); AXF_SKIN_CONFIG_DIR the
+ * skin configs (`shared/settings/skin-config/<app>.json`) and what the maker made (`made/`). AXF_SKIN_MAKER_CMD = the
+ * generator (brief on stdin, JSON on stdout; `off` = none), else `claude -p` on Opus under the agent cap.
  */
 import { chownSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
@@ -37,6 +49,8 @@ import { fileURLToPath } from 'node:url';
 import { backToSkin, newAppLook, normalizeAppLook, normalizeLookPart, overriddenSlots, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, setInheritSkin, setLookSlot, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorTheme, undoRestore, SKIN_COLOR_SLOT, SKIN_NEVER } from '../core/engines/skin-rules.mjs';
 import { coverageSummary, coverageTable, isSubScopeKey, partElements, skinScopeOf } from '../core/engines/skin-coverage.mjs';
 import { defaultSkinMigration, isDefaultSkin, skinDeleteError, SKIN_CONFIG_GLOBAL } from '../core/engines/skin-config-rules.mjs';
+import * as SC from '../core/engines/skin-config-rules.mjs';
+import { spawnSync } from 'node:child_process';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const ALIASES = { console: 'axf-console', 'console-web': 'axf-console', axhub: 'axhub-web', amberx: 'amberx-droid' };
@@ -137,6 +151,7 @@ export const skinRows = () => [
   ...defaultSkins().map((a) => ({ id: a.id, name: `${a.name} (${a.app})`, kind: 'skin', description: a.description ?? '', iconPack: '', parts: [], protected: true, app: a.app })),
   ...assetsOf('skin').map((a) => ({ id: a.id, name: a.name, kind: 'skin', description: a.description ?? '', iconPack: a.data?.iconPack ?? '', parts: Object.keys(a.data?.parts ?? {}) })),
   ...assetsOf('design-package').map((a) => ({ id: a.id, name: a.name, kind: 'design-package', description: a.description ?? '', iconPack: '', parts: [] })),
+  ...madeSkins().map((a) => ({ id: a.id, name: a.name, kind: 'skin', description: a.description ?? '', iconPack: a.data?.iconPack ?? '', parts: Object.keys(a.data?.parts ?? {}), madeBy: 'ai', app: a.app })),
 ];
 
 /** The three themes an app's look falls back to when its saved slots name none: the default design package's. */
@@ -299,13 +314,195 @@ export function covers(skinId) {
   });
 }
 
+/* ---------------------------------------------------------------- skin-config@1: what the AI may change */
+
+export const configDir = () => process.env.AXF_SKIN_CONFIG_DIR || join(dirname(sharedFile()), 'skin-config');
+const configFile = (app) => join(configDir(), `${app}.json`);
+export const madeDir = () => join(configDir(), 'made');
+let treeCache = null;
+/** The permission tree over the real registry (asset-types.json + customize.json, the slots a skin never sets). */
+export function configTree() {
+  if (!treeCache) treeCache = SC.skinConfigTree(readJson(join(ROOT, 'framework/schemas/asset-types.json')), readJson(join(ROOT, 'framework/schemas/customize.json')) ?? {}, SKIN_NEVER);
+  return treeCache;
+}
+const configApp = (name) => (name === SKIN_CONFIG_GLOBAL ? name : appId(name));
+export const readConfig = (app) => SC.normalizeSkinConfig(readJson(configFile(app)), configTree()) ?? SC.newSkinConfig(app);
+
+function writeAtomic(f, doc) {
+  mkdirSync(dirname(f), { recursive: true });
+  const tmp = `${f}.${process.pid}.tmp`;
+  writeFileSync(tmp, `${JSON.stringify(doc)}\n`);
+  renameSync(tmp, f);
+  chownLike(f);
+}
+export function writeConfig(doc, by = 'skins-cli') {
+  const clean = SC.normalizeSkinConfig({ ...doc, $axf: SC.SKIN_CONFIG_FRAME }, configTree());
+  if (!clean) throw new Error('not a skin-config@1 document');
+  const out = { ...clean, updatedBy: by, updatedAt: new Date().toISOString() };
+  writeAtomic(configFile(clean.app), out);
+  return out;
+}
+
+/** What a reader gets: the document, every option's mode and every limit, counts, and the Default skin it is held to. */
+export function configState(app) {
+  const tree = configTree();
+  const config = readConfig(app);
+  const eff = SC.effectiveConfig(config, tree);
+  let def = null;
+  try { const d = defaultSkin(app); def = { id: d.id, derived: d.derived, name: d.name }; } catch (e) { def = { id: '', derived: true, error: e.message }; }
+  return { app, path: configFile(app), config, default: eff.default, counts: eff.counts, limits: eff.limits, options: eff.options, summary: SC.treeSummary(tree), defaultSkin: def, brief: SC.skinConfigBrief(config, tree) };
+}
+
+/**
+ * One move on an app's config; every transport (panel, REST, MCP, CLI, voice) comes through here.
+ * `allow | lock | ask | inherit <path>`, `depth <type> <n> [limit]`, `mode <allow|lock|ask>` (the document's default),
+ * `reset`, `put <doc>` (whole document, checked first).
+ */
+export function configChange(op, app, a = '', b = '', c = '', by = 'skins-cli') {
+  const tree = configTree();
+  const cur = readConfig(app);
+  let next;
+  if (['allow', 'lock', 'ask', 'inherit'].includes(op)) { if (!a) throw new Error(`${op} needs a path: <type>[/<group>[/<option>]]`); next = SC.setConfigMode(cur, tree, a, op === 'inherit' ? null : op); }
+  else if (op === 'depth' || op === 'limit') {
+    if (!a) throw new Error('depth needs <type> <n> [limit id]');
+    const lim = c || (SC.findLimit(tree, a, 'depth') ? 'depth' : SC.findCategory(tree, a)?.limits[0]?.id ?? 'depth');
+    const v = b === 'default' || b === '' ? null : Number(b);
+    if (v !== null && !Number.isInteger(v)) throw new Error(`${a}/${lim}: a whole number or default`);
+    next = SC.setConfigLimit(cur, tree, a, lim, v);
+  }
+  else if (op === 'mode') next = SC.setConfigDefault(cur, a);
+  else if (op === 'reset') next = SC.resetSkinConfig(cur);
+  else if (op === 'put') {
+    const doc = typeof a === 'string' ? JSON.parse(a) : a;
+    const errors = SC.skinConfigErrors({ ...doc, app }, tree);
+    if (errors.length) throw new Error(`skin-config@1: ${errors.slice(0, 8).join('; ')}`);
+    next = { ...doc, app };
+  } else throw new Error(`unknown config move ${op}`);
+  writeConfig({ ...next, app }, by);
+  return configState(app);
+}
+
+/** Save the app's current look (its saved default with its own changes on top) as the Default skin. */
+export function saveCurrentAsDefault(app, by = 'skins-cli') {
+  if (app !== SKIN_CONFIG_GLOBAL) {
+    const l = readLook(app);
+    if (!l) snapshot(app);
+    else {
+      const d = l.default; const o = l.own ?? {};
+      const merged = normalizeLookPart({ slots: { ...(d.slots ?? {}), ...(o.slots ?? {}) }, spacing: o.spacing ?? d.spacing, hidden: { ...(d.hidden ?? {}), ...(o.hidden ?? {}) }, settings: { ...(d.settings ?? {}), ...(o.settings ?? {}) } });
+      writeLook({ ...l, default: merged, own: {} }, by);
+    }
+  }
+  return migrate(app, false, by);
+}
+
+/** An existing asset's data: the framework's, the console's, a skin the maker saved before. */
+function assetData(type, id) {
+  for (const dir of [join(ROOT, 'framework/assets', type), join(ROOT, 'apps/console-web/src/assets', type), join(madeDir(), 'assets', type)]) {
+    const a = readJson(join(dir, `${id}.json`));
+    if (a?.data) return a.data;
+  }
+  return null;
+}
+
+/** The generation brief for an app: allowed options, limits, the Default skin, and the asset ids each allowed slot can pick. */
+export function makerBrief(app, wish = '') {
+  const tree = configTree();
+  const config = readConfig(app);
+  const base = defaultSkin(app);
+  const brief = SC.skinMakerBrief(config, tree, base, wish);
+  const open = new Set(brief.allowed.map((a) => a.path.split('/')[0]));
+  const choices = {};
+  for (const c of tree.categories) {
+    if (!open.has(c.type) || !SC.findGroup(tree, c.type, 'pick') || SC.optionMode(config, c.type, 'pick', SC.findGroup(tree, c.type, 'pick').options[0].id) !== 'allow') continue;
+    const ids = assetsOf(c.type).map((a) => a.id).filter(Boolean);
+    if (ids.length) choices[c.type] = ids.slice(0, 40);
+  }
+  return { ...brief, defaultSkin: base.id, choices };
+}
+
+/** Hold a maker's output (`{ skin, assets }`) to the app's config. */
+export function holdOutput(app, output) {
+  return SC.holdGeneratedSkin(output, defaultSkin(app), readConfig(app), configTree(), assetData);
+}
+
+/** The command that turns a brief into skin JSON: $AXF_SKIN_MAKER_CMD (brief on stdin, JSON on stdout), else `claude -p` on Opus. */
+function makerCommand() {
+  const env = process.env.AXF_SKIN_MAKER_CMD;
+  if (env === 'off') return null;
+  if (env) return ['sh', ['-c', env]];
+  const has = spawnSync('sh', ['-c', 'command -v claude'], { encoding: 'utf8' });
+  if (has.status !== 0) return null;
+  return [process.execPath, [join(ROOT, 'framework/cli/agent-slots.mjs'), 'heavy', '--label', 'skin-maker', '--', 'claude', '-p', '--model', 'opus', '--output-format', 'text']];
+}
+const firstJson = (text) => { const s = String(text ?? ''); const i = s.indexOf('{'); const j = s.lastIndexOf('}'); if (i < 0 || j <= i) return null; try { return JSON.parse(s.slice(i, j + 1)); } catch { return null; } };
+
+const madeId = (app, at) => `ai-${app}-${at.replace(/[^0-9]/g, '').slice(2, 14)}`.slice(0, 48);
+export function madeJobs(app = '') {
+  if (!existsSync(madeDir())) return [];
+  return readdirSync(madeDir()).filter((f) => f.endsWith('.json')).map((f) => readJson(join(madeDir(), f))).filter((j) => j && (!app || j.app === app)).sort((a, b) => String(b.at).localeCompare(String(a.at)));
+}
+
+/**
+ * Make a skin with AI under the app's config: brief → generator → held to the config → saved as a skin@1 asset (made by
+ * AI, never the Default) with the new assets it names. `from` = a file (or JSON text) with the generator's output
+ * instead of running it; `dry` = the brief only. The job record lists what was applied and what was dropped and why.
+ */
+export function make(app, { wish = '', from = '', dry = false, by = 'skins-cli' } = {}) {
+  const brief = makerBrief(app, wish);
+  const at = new Date().toISOString();
+  const id = madeId(app, at);
+  if (dry) return { id, app, status: 'brief', brief };
+  let output = null; let error = '';
+  if (from) output = firstJson(existsSync(from) ? readFileSync(from, 'utf8') : from);
+  else {
+    const cmd = makerCommand();
+    if (!cmd) return { id, app, status: 'brief', brief, error: 'no skin maker here: set AXF_SKIN_MAKER_CMD or install the claude CLI; run make --from <output.json> with the result' };
+    const prompt = `${brief.lines.join('\n')}\n\nAllowed paths: ${JSON.stringify(brief.allowed.map((a) => a.path))}\nLimits: ${JSON.stringify(brief.limits)}\nAsset ids you can pick: ${JSON.stringify(brief.choices)}\nThe Default skin: ${JSON.stringify(brief.base)}\n\nAnswer with the JSON only.`;
+    const r = spawnSync(cmd[0], cmd[1], { input: prompt, encoding: 'utf8', timeout: 10 * 60_000, maxBuffer: 8 * 1024 * 1024 });
+    output = firstJson(r.stdout);
+    if (!output) error = `the skin maker returned no JSON (exit ${r.status ?? 'timeout'})${r.stderr ? `: ${r.stderr.trim().slice(0, 200)}` : ''}`;
+  }
+  if (!output) { const job = { id, app, at, status: 'failed', wish: brief.wish, error: error || 'no JSON in the output', by }; writeAtomic(join(madeDir(), `${id}.json`), job); return { ...job, brief }; }
+  const held = holdOutput(app, output);
+  const asset = { $axf: 'asset@1', type: 'skin', id, name: str(wish) || `AI skin for ${app}`, version: '1.0.0', description: `Made by AI from the Default skin of ${app} under its skin config${wish ? `: ${wish}` : ''}.`, author: 'AI skin maker', tags: ['skin', 'ai'], app, madeBy: 'ai', data: { ...held.skin, preview: { caption: str(wish) || 'Made by AI under the skin config.' } } };
+  for (const a of held.assets) writeAtomic(join(madeDir(), 'assets', a.type, `${a.id}.json`), { $axf: 'asset@1', type: a.type, id: a.id, name: a.name, version: '1.0.0', author: 'AI skin maker', tags: ['ai'], data: a.data });
+  writeAtomic(join(madeDir(), 'skins', `${id}.json`), asset);
+  const job = { id, app, at, status: 'done', wish: brief.wish, skin: id, applied: held.applied, dropped: held.dropped, droppedLines: SC.droppedLines(held.dropped), assets: held.assets.map((a) => `${a.type}/${a.id}`), by };
+  writeAtomic(join(madeDir(), `${id}.json`), job);
+  return job;
+}
+const str = (v) => (typeof v === 'string' ? v.slice(0, 120) : '');
+/** The skins the maker saved (skin@1 assets, usable like any skin). */
+export const madeSkins = () => (existsSync(join(madeDir(), 'skins')) ? readdirSync(join(madeDir(), 'skins')).filter((f) => f.endsWith('.json')).map((f) => readJson(join(madeDir(), 'skins', f))).filter((a) => a?.type === 'skin') : []);
+
+/** `skins.mjs config <move> <app> …` */
+function configMain(args, argv) {
+  const [sub = 'get', app, a, b, c] = args;
+  const flag = (k) => { const i = argv.indexOf(`--${k}`); return i >= 0 ? argv[i + 1] ?? '' : ''; };
+  if (sub === 'tree') return configTree();
+  if (sub === 'schema') return SC.skinConfigSchema(configTree());
+  if (!app) throw new Error(`config ${sub} needs <app> (or global)`);
+  const id = configApp(app);
+  if (sub === 'get') return configState(id);
+  if (sub === 'brief') return makerBrief(id, flag('wish'));
+  if (sub === 'default') return saveCurrentAsDefault(id);
+  if (sub === 'make') return make(id, { wish: flag('wish'), from: flag('from'), dry: argv.includes('--dry') });
+  if (sub === 'made') return madeJobs(id);
+  if (sub === 'hold') { const f = flag('from') || a; if (!f) throw new Error('hold needs --from <output.json>'); return holdOutput(id, firstJson(existsSync(f) ? readFileSync(f, 'utf8') : f)); }
+  if (sub === 'put') return configChange('put', id, flag('json-doc') || (a && existsSync(a) ? readFileSync(a, 'utf8') : a));
+  return configChange(sub, id, a, b, c);
+}
+
 function main(argv) {
   const json = argv.includes('--json');
-  const args = argv.filter((a, i) => !a.startsWith('--') && argv[i - 1] !== '--scope');
+  const valued = ['--scope', '--wish', '--from', '--json-doc'];
+  const args = argv.filter((a, i) => !a.startsWith('--') && !valued.includes(argv[i - 1]));
   const [cmd, app, arg] = args;
-  const scope = scopeArg(argv);
+  const scope = cmd === 'config' ? '' : scopeArg(argv);
   let out;
   if (!cmd || cmd === 'apps') out = appIds().map(status);
+  else if (cmd === 'config') out = configMain(args.slice(1), argv);
   else if (cmd === 'list') out = skinRows();
   else if (cmd === 'snapshot') out = (argv.includes('--all') ? appIds() : [appId(app)]).map((a) => snapshot(a, argv.includes('--force')));
   else if (cmd === 'migrate') out = (argv.includes('--all') || !app ? [SKIN_CONFIG_GLOBAL, ...appIds()] : [app === SKIN_CONFIG_GLOBAL ? app : appId(app)]).map((a) => migrate(a, argv.includes('--dry')));

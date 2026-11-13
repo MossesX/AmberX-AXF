@@ -3322,6 +3322,861 @@
     "skin": null,
     "why": "data.layoutTheme: the saved look names no layout and the app's default design package gives none; data.colorTheme: the saved look names no color-theme and the app's default design package gives none; data.styleTheme: the saved look names no style-theme and the app's default design package gives none"
    }
+  },
+  "maker": {
+   "allowed": {
+    "config": [
+     {
+      "path": "menu/fields",
+      "label": "Menu · Fields of a new menu"
+     },
+     {
+      "path": "menu/parts.text",
+      "label": "Menu · Style parts · Text"
+     },
+     {
+      "path": "menu/parts.colour",
+      "label": "Menu · Style parts · Colour"
+     },
+     {
+      "path": "menu/parts.shape",
+      "label": "Menu · Style parts · Shape"
+     },
+     {
+      "path": "menu/parts.hover",
+      "label": "Menu · Style parts · Hover"
+     },
+     {
+      "path": "menu/parts.other",
+      "label": "Menu · Style parts · Other"
+     },
+     {
+      "path": "menu/chrome",
+      "label": "Menu · Shown or hidden"
+     },
+     {
+      "path": "context-menu",
+      "label": "Context menu"
+     },
+     {
+      "path": "toolbar/pick",
+      "label": "Toolbar · Pick another toolbar"
+     },
+     {
+      "path": "toolbar/fields",
+      "label": "Toolbar · Fields of a new toolbar"
+     },
+     {
+      "path": "toolbar/parts.text",
+      "label": "Toolbar · Style parts · Text"
+     },
+     {
+      "path": "toolbar/parts.colour",
+      "label": "Toolbar · Style parts · Colour"
+     },
+     {
+      "path": "toolbar/parts.shape",
+      "label": "Toolbar · Style parts · Shape"
+     },
+     {
+      "path": "toolbar/parts.layout",
+      "label": "Toolbar · Style parts · Layout"
+     },
+     {
+      "path": "toolbar/parts.hover",
+      "label": "Toolbar · Style parts · Hover"
+     },
+     {
+      "path": "toolbar/parts.other",
+      "label": "Toolbar · Style parts · Other"
+     },
+     {
+      "path": "button",
+      "label": "Button"
+     },
+     {
+      "path": "badge",
+      "label": "Badge"
+     },
+     {
+      "path": "icon-pack",
+      "label": "Icon pack"
+     },
+     {
+      "path": "logo-mark",
+      "label": "Logo mark"
+     },
+     {
+      "path": "branding",
+      "label": "Branding"
+     },
+     {
+      "path": "extras/look/spacing",
+      "label": "Look extras · The look as a whole · Spacing (tight, compact or regular)"
+     }
+    ],
+    "fresh": [
+     {
+      "path": "color-theme",
+      "label": "Colour theme"
+     },
+     {
+      "path": "menu",
+      "label": "Menu"
+     },
+     {
+      "path": "context-menu",
+      "label": "Context menu"
+     },
+     {
+      "path": "toolbar",
+      "label": "Toolbar"
+     },
+     {
+      "path": "button",
+      "label": "Button"
+     },
+     {
+      "path": "badge",
+      "label": "Badge"
+     },
+     {
+      "path": "icon-pack",
+      "label": "Icon pack"
+     },
+     {
+      "path": "logo-mark",
+      "label": "Logo mark"
+     },
+     {
+      "path": "branding",
+      "label": "Branding"
+     },
+     {
+      "path": "extras",
+      "label": "Look extras"
+     }
+    ],
+    "lockAll": []
+   },
+   "brief": {
+    "contract": "skin-maker@1",
+    "app": "demo",
+    "wish": "darker, calmer",
+    "allowed": [
+     {
+      "path": "menu/fields",
+      "label": "Menu · Fields of a new menu"
+     },
+     {
+      "path": "menu/parts.text",
+      "label": "Menu · Style parts · Text"
+     },
+     {
+      "path": "menu/parts.colour",
+      "label": "Menu · Style parts · Colour"
+     },
+     {
+      "path": "menu/parts.shape",
+      "label": "Menu · Style parts · Shape"
+     },
+     {
+      "path": "menu/parts.hover",
+      "label": "Menu · Style parts · Hover"
+     },
+     {
+      "path": "menu/parts.other",
+      "label": "Menu · Style parts · Other"
+     },
+     {
+      "path": "menu/chrome",
+      "label": "Menu · Shown or hidden"
+     },
+     {
+      "path": "context-menu",
+      "label": "Context menu"
+     },
+     {
+      "path": "toolbar/pick",
+      "label": "Toolbar · Pick another toolbar"
+     },
+     {
+      "path": "toolbar/fields",
+      "label": "Toolbar · Fields of a new toolbar"
+     },
+     {
+      "path": "toolbar/parts.text",
+      "label": "Toolbar · Style parts · Text"
+     },
+     {
+      "path": "toolbar/parts.colour",
+      "label": "Toolbar · Style parts · Colour"
+     },
+     {
+      "path": "toolbar/parts.shape",
+      "label": "Toolbar · Style parts · Shape"
+     },
+     {
+      "path": "toolbar/parts.layout",
+      "label": "Toolbar · Style parts · Layout"
+     },
+     {
+      "path": "toolbar/parts.hover",
+      "label": "Toolbar · Style parts · Hover"
+     },
+     {
+      "path": "toolbar/parts.other",
+      "label": "Toolbar · Style parts · Other"
+     },
+     {
+      "path": "button",
+      "label": "Button"
+     },
+     {
+      "path": "badge",
+      "label": "Badge"
+     },
+     {
+      "path": "icon-pack",
+      "label": "Icon pack"
+     },
+     {
+      "path": "logo-mark",
+      "label": "Logo mark"
+     },
+     {
+      "path": "branding",
+      "label": "Branding"
+     },
+     {
+      "path": "extras/look/spacing",
+      "label": "Look extras · The look as a whole · Spacing (tight, compact or regular)"
+     }
+    ],
+    "limits": [
+     {
+      "path": "menu/depth",
+      "label": "Menu: menu levels the AI may build (1 = flat)",
+      "measure": "depth",
+      "max": 1
+     },
+     {
+      "path": "context-menu/depth",
+      "label": "Context menu: depth",
+      "measure": "depth",
+      "max": 3
+     },
+     {
+      "path": "toolbar/groups",
+      "label": "Toolbar: toolbar groups",
+      "measure": "count",
+      "max": 3
+     }
+    ],
+    "base": {
+     "layoutTheme": "classic",
+     "colorTheme": "night",
+     "styleTheme": "hub",
+     "assets": {
+      "menu": "standard",
+      "context-menu": "flat",
+      "toolbar": "icons",
+      "button": "rounded",
+      "branding": "amberx"
+     },
+     "iconPack": "outline",
+     "parts": {
+      "menu": {
+       "itemGap": 2,
+       "fontSize": 100
+      },
+      "button": {
+       "radius": "md"
+      }
+     },
+     "extras": {
+      "spacing": "tight",
+      "hidden": {
+       "toolbar": false
+      },
+      "settings": {
+       "axf.tokens.button": {
+        "radius": "md"
+       }
+      }
+     }
+    },
+    "lines": [
+     "Make a skin (skin@1 data) for demo: darker, calmer.",
+     "Start from the Default skin below and change only what is allowed; leave everything else exactly as it is.",
+     "You may change only: Menu · Fields of a new menu; Menu · Style parts · Text; Menu · Style parts · Colour; Menu · Style parts · Shape; Menu · Style parts · Hover; Menu · Style parts · Other; Menu · Shown or hidden; Context menu; Toolbar · Pick another toolbar; Toolbar · Fields of a new toolbar; Toolbar · Style parts · Text; Toolbar · Style parts · Colour; Toolbar · Style parts · Shape; Toolbar · Style parts · Layout; Toolbar · Style parts · Hover; Toolbar · Style parts · Other; Button; Badge; Icon pack; Logo mark; Branding; Look extras · The look as a whole · Spacing (tight, compact or regular).",
+     "Menu: menu levels the AI may build (1 = flat) at most 1.",
+     "Context menu: depth at most 3.",
+     "Toolbar: toolbar groups at most 3.",
+     "Return JSON: { \"skin\": <skin@1 data>, \"assets\": [{ \"type\", \"id\", \"name\", \"data\" }] } where assets are any new assets the skin names. Anything outside the allowed set is dropped."
+    ],
+    "output": {
+     "skin": "skin@1 data",
+     "assets": "asset@1 list (type, id, name, data)"
+    }
+   },
+   "briefLocked": {
+    "contract": "skin-maker@1",
+    "app": "demo",
+    "wish": "",
+    "allowed": [],
+    "limits": [],
+    "base": {
+     "layoutTheme": "classic",
+     "colorTheme": "night",
+     "styleTheme": "hub",
+     "assets": {
+      "menu": "standard",
+      "context-menu": "flat",
+      "toolbar": "icons",
+      "button": "rounded",
+      "branding": "amberx"
+     },
+     "iconPack": "outline",
+     "parts": {
+      "menu": {
+       "itemGap": 2,
+       "fontSize": 100
+      },
+      "button": {
+       "radius": "md"
+      }
+     },
+     "extras": {
+      "spacing": "tight",
+      "hidden": {
+       "toolbar": false
+      },
+      "settings": {
+       "axf.tokens.button": {
+        "radius": "md"
+       }
+      }
+     }
+    },
+    "lines": [
+     "Make a skin (skin@1 data) for demo.",
+     "Start from the Default skin below and change only what is allowed; leave everything else exactly as it is.",
+     "Nothing is allowed to change: return the Default skin unchanged.",
+     "Return JSON: { \"skin\": <skin@1 data>, \"assets\": [{ \"type\", \"id\", \"name\", \"data\" }] } where assets are any new assets the skin names. Anything outside the allowed set is dropped."
+    ],
+    "output": {
+     "skin": "skin@1 data",
+     "assets": "asset@1 list (type, id, name, data)"
+    }
+   },
+   "sanitized": {
+    "skin": {
+     "layoutTheme": "classic",
+     "colorTheme": "day",
+     "styleTheme": "hub",
+     "assets": {
+      "menu": "deep",
+      "toolbar": "wide",
+      "button": "rounded",
+      "branding": "amberx"
+     },
+     "iconPack": "filled",
+     "parts": {
+      "menu": {
+       "itemGap": 4,
+       "fontSize": 110
+      },
+      "button": {
+       "radius": "lg",
+       "hover": "lift"
+      }
+     },
+     "extras": {
+      "spacing": "regular",
+      "hidden": {
+       "toolbar": true,
+       "menu": true
+      },
+      "settings": {
+       "axf.tokens.button": {
+        "radius": "lg"
+       }
+      }
+     }
+    },
+    "assets": [
+     {
+      "type": "menu",
+      "id": "deep",
+      "name": "Deep",
+      "data": {
+       "menus": [
+        {
+         "id": "file",
+         "items": [
+          {
+           "id": "recent",
+           "items": [
+            {
+             "id": "a"
+            }
+           ]
+          }
+         ]
+        }
+       ],
+       "compact": true
+      }
+     },
+     {
+      "type": "toolbar",
+      "id": "unused-bar",
+      "name": "unused-bar",
+      "data": {
+       "groups": []
+      }
+     }
+    ],
+    "dropped": [
+     {
+      "path": "context-menu/pick/asset",
+      "what": "assets.context-menu: not an asset id",
+      "why": "unknown",
+      "mode": ""
+     },
+     {
+      "path": "ghost/pick/asset",
+      "what": "assets.ghost: not a slot a skin can set",
+      "why": "unknown",
+      "mode": ""
+     },
+     {
+      "path": "menu/parts/sparkle",
+      "what": "parts.menu.sparkle: not a style part of menu",
+      "why": "unknown",
+      "mode": ""
+     },
+     {
+      "path": "ghost/parts",
+      "what": "parts.ghost: not a type with style parts",
+      "why": "unknown",
+      "mode": ""
+     },
+     {
+      "path": "nothing/chrome/hidden",
+      "what": "extras.hidden.nothing: not a type that can be hidden",
+      "why": "unknown",
+      "mode": ""
+     },
+     {
+      "path": "extras/look/glow",
+      "what": "extras.glow: not a skin extra",
+      "why": "unknown",
+      "mode": ""
+     },
+     {
+      "path": "skin/wallpaper",
+      "what": "wallpaper: not a skin@1 field",
+      "why": "unknown",
+      "mode": ""
+     },
+     {
+      "path": "assets/ghost",
+      "what": "new asset ghost g: needs a known type, an id and data",
+      "why": "unknown",
+      "mode": ""
+     },
+     {
+      "path": "assets/?",
+      "what": "new asset: needs a known type, an id and data",
+      "why": "unknown",
+      "mode": ""
+     }
+    ]
+   },
+   "held": {
+    "contract": "skin-maker@1",
+    "skin": {
+     "layoutTheme": "classic",
+     "colorTheme": "night",
+     "styleTheme": "hub",
+     "assets": {
+      "menu": "standard",
+      "context-menu": "flat",
+      "toolbar": "icons",
+      "button": "rounded",
+      "branding": "amberx"
+     },
+     "iconPack": "filled",
+     "parts": {
+      "menu": {
+       "itemGap": 2,
+       "fontSize": 110
+      },
+      "button": {
+       "radius": "lg",
+       "hover": "lift"
+      }
+     },
+     "extras": {
+      "spacing": "regular",
+      "hidden": {
+       "toolbar": false,
+       "menu": true
+      },
+      "settings": {
+       "axf.tokens.button": {
+        "radius": "md"
+       }
+      }
+     }
+    },
+    "assets": [],
+    "applied": [
+     {
+      "path": "icon-pack/pick/iconPack",
+      "what": "icon pack: outline → filled"
+     },
+     {
+      "path": "menu/parts.text/fontSize",
+      "what": "menu part fontSize: 100 → 110"
+     },
+     {
+      "path": "button/parts.shape/radius",
+      "what": "button part radius: md → lg"
+     },
+     {
+      "path": "button/parts.hover/hover",
+      "what": "button part hover: theme → lift"
+     },
+     {
+      "path": "menu/chrome/hidden",
+      "what": "menu: as the app has it → hidden"
+     },
+     {
+      "path": "extras/look/spacing",
+      "what": "spacing: tight → regular"
+     }
+    ],
+    "dropped": [
+     {
+      "path": "context-menu/pick/asset",
+      "what": "assets.context-menu: not an asset id",
+      "why": "unknown",
+      "mode": ""
+     },
+     {
+      "path": "ghost/pick/asset",
+      "what": "assets.ghost: not a slot a skin can set",
+      "why": "unknown",
+      "mode": ""
+     },
+     {
+      "path": "menu/parts/sparkle",
+      "what": "parts.menu.sparkle: not a style part of menu",
+      "why": "unknown",
+      "mode": ""
+     },
+     {
+      "path": "ghost/parts",
+      "what": "parts.ghost: not a type with style parts",
+      "why": "unknown",
+      "mode": ""
+     },
+     {
+      "path": "nothing/chrome/hidden",
+      "what": "extras.hidden.nothing: not a type that can be hidden",
+      "why": "unknown",
+      "mode": ""
+     },
+     {
+      "path": "extras/look/glow",
+      "what": "extras.glow: not a skin extra",
+      "why": "unknown",
+      "mode": ""
+     },
+     {
+      "path": "skin/wallpaper",
+      "what": "wallpaper: not a skin@1 field",
+      "why": "unknown",
+      "mode": ""
+     },
+     {
+      "path": "assets/ghost",
+      "what": "new asset ghost g: needs a known type, an id and data",
+      "why": "unknown",
+      "mode": ""
+     },
+     {
+      "path": "assets/?",
+      "what": "new asset: needs a known type, an id and data",
+      "why": "unknown",
+      "mode": ""
+     },
+     {
+      "path": "menu/pick/asset",
+      "what": "menu: standard → deep",
+      "why": "ask",
+      "mode": "ask",
+      "from": "standard",
+      "to": "deep"
+     },
+     {
+      "path": "menu/limits/depth",
+      "what": "menu deep: menu levels the ai may build (1 = flat) 2 is over the limit 1",
+      "why": "limit",
+      "mode": "lock",
+      "from": "standard",
+      "to": "deep",
+      "limit": "depth",
+      "value": 2,
+      "max": 1
+     },
+     {
+      "path": "toolbar/limits/groups",
+      "what": "toolbar wide: toolbar groups 4 is over the limit 3",
+      "why": "limit",
+      "mode": "lock",
+      "from": "icons",
+      "to": "wide",
+      "limit": "groups",
+      "value": 4,
+      "max": 3
+     },
+     {
+      "path": "color-theme/pick/asset",
+      "what": "color-theme: night → day",
+      "why": "locked",
+      "mode": "lock",
+      "from": "night",
+      "to": "day"
+     },
+     {
+      "path": "menu/parts.layout/itemGap",
+      "what": "menu part itemGap: 2 → 4",
+      "why": "locked",
+      "mode": "lock",
+      "from": 2,
+      "to": 4
+     },
+     {
+      "path": "toolbar/chrome/hidden",
+      "what": "toolbar: shown → hidden",
+      "why": "locked",
+      "mode": "lock",
+      "from": false,
+      "to": true
+     },
+     {
+      "path": "extras/look/settings",
+      "what": "look settings and token overrides changed",
+      "why": "locked",
+      "mode": "lock",
+      "from": {
+       "axf.tokens.button": {
+        "radius": "md"
+       }
+      },
+      "to": {
+       "axf.tokens.button": {
+        "radius": "lg"
+       }
+      }
+     },
+     {
+      "path": "menu/pick/asset",
+      "what": "new menu deep: the skin no longer names it",
+      "why": "unused",
+      "mode": ""
+     },
+     {
+      "path": "toolbar/pick/asset",
+      "what": "new toolbar unused-bar: the skin no longer names it",
+      "why": "unused",
+      "mode": ""
+     }
+    ],
+    "patches": []
+   },
+   "heldAllAllowed": {
+    "contract": "skin-maker@1",
+    "skin": {
+     "layoutTheme": "classic",
+     "colorTheme": "day",
+     "styleTheme": "hub",
+     "assets": {
+      "menu": "deep",
+      "context-menu": "flat",
+      "toolbar": "icons",
+      "button": "rounded",
+      "branding": "amberx"
+     },
+     "iconPack": "filled",
+     "parts": {
+      "menu": {
+       "itemGap": 4,
+       "fontSize": 110
+      },
+      "button": {
+       "radius": "lg",
+       "hover": "lift"
+      }
+     },
+     "extras": {
+      "spacing": "regular",
+      "hidden": {
+       "toolbar": true,
+       "menu": true
+      },
+      "settings": {
+       "axf.tokens.button": {
+        "radius": "lg"
+       }
+      }
+     }
+    },
+    "assets": [],
+    "applied": [
+     {
+      "path": "menu/pick/asset",
+      "what": "menu: standard → deep"
+     },
+     {
+      "path": "menu/fields/menus",
+      "what": "menu.menus changed"
+     },
+     {
+      "path": "menu/fields/compact",
+      "what": "menu.compact changed"
+     },
+     {
+      "path": "color-theme/pick/asset",
+      "what": "color-theme: night → day"
+     },
+     {
+      "path": "icon-pack/pick/iconPack",
+      "what": "icon pack: outline → filled"
+     },
+     {
+      "path": "menu/parts.layout/itemGap",
+      "what": "menu part itemGap: 2 → 4"
+     },
+     {
+      "path": "menu/parts.text/fontSize",
+      "what": "menu part fontSize: 100 → 110"
+     },
+     {
+      "path": "button/parts.shape/radius",
+      "what": "button part radius: md → lg"
+     },
+     {
+      "path": "button/parts.hover/hover",
+      "what": "button part hover: theme → lift"
+     },
+     {
+      "path": "toolbar/chrome/hidden",
+      "what": "toolbar: shown → hidden"
+     },
+     {
+      "path": "menu/chrome/hidden",
+      "what": "menu: as the app has it → hidden"
+     },
+     {
+      "path": "extras/look/spacing",
+      "what": "spacing: tight → regular"
+     },
+     {
+      "path": "extras/look/settings",
+      "what": "look settings and token overrides changed"
+     }
+    ],
+    "dropped": [
+     {
+      "path": "context-menu/limits/depth",
+      "what": "context-menu nested: depth 3 is over the limit 1",
+      "why": "limit",
+      "mode": "lock",
+      "from": "flat",
+      "to": "nested",
+      "limit": "depth",
+      "value": 3,
+      "max": 1
+     },
+     {
+      "path": "toolbar/limits/groups",
+      "what": "toolbar wide: toolbar groups 4 is over the limit 3",
+      "why": "limit",
+      "mode": "lock",
+      "from": "icons",
+      "to": "wide",
+      "limit": "groups",
+      "value": 4,
+      "max": 3
+     }
+    ],
+    "patches": []
+   },
+   "heldEmpty": {
+    "contract": "skin-maker@1",
+    "skin": {
+     "layoutTheme": "classic",
+     "colorTheme": "night",
+     "styleTheme": "hub",
+     "assets": {
+      "menu": "standard",
+      "context-menu": "flat",
+      "toolbar": "icons",
+      "button": "rounded",
+      "branding": "amberx"
+     },
+     "iconPack": "outline",
+     "parts": {
+      "menu": {
+       "itemGap": 2,
+       "fontSize": 100
+      },
+      "button": {
+       "radius": "md"
+      }
+     },
+     "extras": {
+      "spacing": "tight",
+      "hidden": {
+       "toolbar": false
+      },
+      "settings": {
+       "axf.tokens.button": {
+        "radius": "md"
+       }
+      }
+     }
+    },
+    "assets": [],
+    "applied": [],
+    "dropped": [],
+    "patches": []
+   },
+   "lines": [
+    "assets.context-menu: not an asset id (not part of a skin)",
+    "assets.ghost: not a slot a skin can set (not part of a skin)",
+    "parts.menu.sparkle: not a style part of menu (not part of a skin)",
+    "parts.ghost: not a type with style parts (not part of a skin)",
+    "extras.hidden.nothing: not a type that can be hidden (not part of a skin)",
+    "extras.glow: not a skin extra (not part of a skin)",
+    "wallpaper: not a skin@1 field (not part of a skin)",
+    "new asset ghost g: needs a known type, an id and data (not part of a skin)",
+    "new asset: needs a known type, an id and data (not part of a skin)",
+    "menu: standard → deep (needs your OK (ask))",
+    "menu deep: menu levels the ai may build (1 = flat) 2 is over the limit 1 (over the limit)",
+    "toolbar wide: toolbar groups 4 is over the limit 3 (over the limit)",
+    "color-theme: night → day (locked)",
+    "menu part itemGap: 2 → 4 (locked)",
+    "toolbar: shown → hidden (locked)",
+    "look settings and token overrides changed (locked)",
+    "new menu deep: the skin no longer names it (not used)",
+    "new toolbar unused-bar: the skin no longer names it (not used)"
+   ]
   }
  }
 }
