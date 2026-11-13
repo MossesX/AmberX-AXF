@@ -25,7 +25,8 @@
       "panel"
     ],
     "subtab": [
-      "tab"
+      "tab",
+      "subtab"
     ],
     "setting": [
       null,

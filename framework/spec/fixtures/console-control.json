@@ -374,7 +374,7 @@
       "$axf": "console-control@1",
       "ok": false,
       "code": "invalid",
-      "message": "subtab cannot open an address; it follows tab",
+      "message": "subtab cannot open an address; it follows tab or subtab",
       "field": "address",
       "segment": "subtab:x=y"
     },

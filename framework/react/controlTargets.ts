@@ -83,9 +83,10 @@ export const CONTROL_ACTIONS = { focus: 'control.focus', open: 'control.open', p
 export const CONTROL_HIGHLIGHT_CLASS = 'fx-control-focus';
 export const CONTROL_TARGET_ATTR = 'data-axf-target';
 export const CONTROL_SCOPE_ATTR = 'data-axf-scope';
-/** The settings view and its tab row, as the settings library names them (libs/settings: view `settings`, tab key `axf.settings.lastTab`). */
+/** The settings view and its tab rows, as the settings library names them (libs/settings: view `settings`, TabGroup ids `settings.tabs` / `settings.subtabs`). */
 export const SETTINGS_VIEW_ADDRESS = 'view:settings';
-export const SETTINGS_TAB_ROW = 'axf.settings.tabs';
+export const SETTINGS_TAB_ROW = 'settings.tabs';
+export const SETTINGS_SUBTAB_ROW = 'settings.subtabs';
 /** The scroll container of the main pane. */
 export const MAIN_SCROLL_ADDRESS = 'scroll:main';
 
@@ -150,17 +151,21 @@ export class ControlRegistry {
     const tabRow = childAddress(SETTINGS_VIEW_ADDRESS, 'tab', SETTINGS_TAB_ROW);
     push({ address: SETTINGS_VIEW_ADDRESS, kind: 'view', label: 'Settings', keywords: ['preferences', 'options'], open: () => rt.dispatch('app.settings') });
     const tabs = s.listTabs();
-    push({ address: tabRow, kind: 'tab', label: 'Settings tabs', get: () => s.get('axf.settings.lastTab'), set: (v) => rt.dispatch(`settings.open:${String(v)}`), state: () => ({ tabs: tabs.map((t) => ({ value: t.id, label: t.label })) }) });
+    const top = tabs.filter((t) => !t.parent || !tabs.some((x) => x.id === t.parent));
+    push({ address: tabRow, kind: 'tab', label: 'Settings tabs', get: () => s.get('axf.settings.lastTab'), set: (v) => rt.dispatch(`settings.open:${String(v)}`), state: () => ({ tabs: top.map((t) => ({ value: t.id, label: t.label })) }) });
     for (const tab of tabs) {
-      const tabAddr = `${tabRow}=${tab.id}`;
+      // a sub tab (tab.parent) lives under its parent's tab: view:settings/tab:settings.tabs=<parent>/subtab:settings.subtabs=<id>
+      const parent = tab.parent && tabs.some((x) => x.id === tab.parent) ? tab.parent : null;
+      const tabAddr = parent ? `${tabRow}=${parent}/${formatAddress([{ kind: 'subtab', id: `${SETTINGS_SUBTAB_ROW}=${tab.id}` }])}` : `${tabRow}=${tab.id}`;
       const open = () => rt.dispatch(`settings.open:${tab.id}`);
-      push({ address: tabAddr, kind: 'tab', label: tab.label, detail: 'Settings', icon: tab.icon, keywords: [tab.description ?? ''], open, element: () => document.querySelector(`[data-axf-settings-tab="${cssEscape(tab.id)}"]`) });
-      for (const p of s.panelsIn(tab.id)) push({ address: childAddress(tabAddr, 'panel', `settings-panel:${p.id}`), kind: 'panel', label: p.title, detail: `Settings › ${tab.label}`, open, element: () => byAnchor(`settings-panel:${p.id}`) });
+      const where = parent ? `Settings › ${tabs.find((x) => x.id === parent)?.label ?? parent} › ${tab.label}` : `Settings › ${tab.label}`;
+      push({ address: tabAddr, kind: parent ? 'subtab' : 'tab', label: tab.label, detail: 'Settings', icon: tab.icon, keywords: [tab.description ?? ''], open, element: () => document.querySelector(`[data-axf-settings-tab="${cssEscape(tab.id)}"]`) });
+      for (const p of s.panelsIn(tab.id)) push({ address: childAddress(tabAddr, 'panel', `settings-panel:${p.id}`), kind: 'panel', label: p.title, detail: where, open, element: () => byAnchor(`settings-panel:${p.id}`) });
       for (const g of s.groupsIn(tab.id)) {
-        push({ address: childAddress(tabAddr, 'panel', `settings-group:${g.id}`), kind: 'panel', label: g.label, detail: `Settings › ${tab.label}`, open, element: () => byAnchor(`settings-group:${g.id}`) });
+        push({ address: childAddress(tabAddr, 'panel', `settings-group:${g.id}`), kind: 'panel', label: g.label, detail: where, open, element: () => byAnchor(`settings-group:${g.id}`) });
         for (const spec of g.settings) {
           if (spec.kind === 'section') continue;
-          push(settingTargetDef(rt, spec, childAddress(tabAddr, 'setting', spec.key), `Settings › ${tab.label} › ${g.label}`, open));
+          push(settingTargetDef(rt, spec, childAddress(tabAddr, 'setting', spec.key), `${where} › ${g.label}`, open));
         }
       }
     }
@@ -463,6 +468,10 @@ export function settingTargetDef(rt: AxfRuntime, spec: SettingSpec, address: str
   };
 }
 
+/** A string safe inside a CSS attribute selector. */
+export const escapeSelector = (s: string) => cssEscape(s);
+/** A label as an address id: `Restore defaults` → `restore-defaults`. */
+export const controlSlug = (s: string) => s.toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80);
 const cssEscape = (s: string) => (typeof CSS !== 'undefined' && typeof CSS.escape === 'function' ? CSS.escape(s) : s.replace(/["\\]/g, '\\$&'));
 const byAnchor = (anchor: string): Element | null => (typeof document === 'undefined' ? null : document.querySelector(`[data-axf-anchor="${cssEscape(anchor)}"]`));
 const maybe = async (v: unknown) => (isPromise(v) ? await v : v);
@@ -535,6 +544,31 @@ export function useControlTarget(def: ControlTargetDef | null, deps: readonly un
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rt, scope, def?.address, def?.kind, def?.label, def?.destructive, def?.virtual, ...deps]);
   return setEl;
+}
+
+/** Register a list of targets (a tab row's tabs, a grid's rows) for the component's lifetime; re-registers when `key` changes. Handlers read the latest defs. */
+export function useControlTargets(defs: ControlTargetDef[], key: string): void {
+  const rt = useOptionalRuntime();
+  const scope = useContext(ScopeContext);
+  const defsRef = useRef(defs);
+  defsRef.current = defs;
+  useLayoutEffect(() => {
+    if (!rt) return;
+    const reg = controlRegistry(rt);
+    const offs = defsRef.current.map((d, i) => {
+      const at = () => defsRef.current[i] ?? d;
+      const live: ControlTargetDef = {
+        ...d,
+        element: () => at().element?.() ?? null,
+        get: d.get ? () => at().get?.() : undefined, set: d.set ? (v) => at().set?.(v) : undefined, invoke: d.invoke ? (v) => at().invoke?.(v) : undefined, open: d.open ? () => at().open?.() : undefined,
+        materialize: d.materialize ? () => at().materialize?.() : undefined, select: d.select ? () => at().select?.() : undefined, expand: d.expand ? () => at().expand?.() : undefined,
+        isDisabled: d.isDisabled ? () => at().isDisabled?.() ?? false : undefined, state: d.state ? () => at().state?.() ?? {} : undefined,
+      };
+      return reg.register(live, scope);
+    });
+    return () => offs.forEach((off) => off());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rt, scope, key]);
 }
 
 /** Register every view of the shell as a target (open = navigate). AppShell calls it. */

@@ -18,7 +18,7 @@ export const CONSOLE_CONTROL_KINDS = ['view', 'tab', 'subtab', 'setting', 'butto
 export const CONSOLE_CONTROL_PARENTS = {
   view: [null],
   tab: [null, 'view', 'panel'],
-  subtab: ['tab'],
+  subtab: ['tab', 'subtab'],
   setting: [null, 'view', 'tab', 'subtab', 'panel'],
   button: [null, 'view', 'tab', 'subtab', 'panel', 'row', 'step'],
   function: [null, 'view', 'tab', 'subtab', 'panel'],

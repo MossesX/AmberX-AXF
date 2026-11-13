@@ -42,7 +42,7 @@ view:plan-studio/function:plan-studio.focus
 |---|---|---|
 | `view` | a screen (a view the shell renders, a plugin's tab page) | the view id (`builds`, `settings`, `plan-studio`) |
 | `tab` | a row of tabs, or one tab of it: `tab:<row>` is the row, `tab:<row>=<value>` one tab | the TabGroup's settings id, with `=<tab value>` for one tab |
-| `subtab` | a tab row nested in a tab (Settings → Plugins → Skins) | the same as `tab` |
+| `subtab` | a tab row nested in a tab (Settings → Plugins → Skins: `view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=skins`); the framework TabGroup picks `subtab` by itself when it renders inside another tab's panel | the same as `tab` |
 | `setting` | one setting with a value (toggle, text, number, choice, …) | the settings key (`axf.display.fontScale`) |
 | `button` | a button, icon button or menu item that does one thing | the button's id, else its label slug (`save`, `restore-defaults`) |
 | `function` | a registered action, with or without an argument | the action id (`plan-studio.focus`, `settings.open`) |
@@ -58,7 +58,7 @@ Rules:
 - A segment is `kind:id`; `kind` is one of the twelve above (`CONSOLE_CONTROL_KINDS`, append-only); `id` is 1 to 160 characters,
   any character but `/` (a `/` inside an id is written `%2F`, a literal `%` as `%25`; `formatAddress` encodes, `parseAddress` decodes).
 - Order is outermost first and each kind may follow only its parents (`CONSOLE_CONTROL_PARENTS`): `row` under `grid`, `step` under
-  `row` or `grid`, `subtab` under `tab`, everything else under `view` or at the top. The reference parser refuses the wrong order
+  `row` or `grid`, `subtab` under `tab` (or a deeper `subtab`), everything else under `view` or at the top. The reference parser refuses the wrong order
   with `invalid`, naming the segment.
 - An address need not be complete: `button:save` alone means "the Save button on the screen that is open"; `row:<id>` alone means
   "that row in any grid on this screen". The resolver matches the trailing segments against the registry, so a voice command can
