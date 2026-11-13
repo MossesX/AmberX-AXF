@@ -128,7 +128,9 @@ export function ToastHost() {
 export function ContextMenuHost() {
   const rt = useRuntime();
   const state = useAxfState();
-  const cm = useAsset('context-menu').data;
+  // chrome-settings@1: the context menu's settings-dialog overrides (instance `app`) over its asset
+  const cmAsset = useAsset('context-menu').data;
+  const cm = rt.chromeData('context-menu', 'app', cmAsset) ?? cmAsset;
   const ref = useRef<HTMLDivElement>(null);
   const scope = useScopeId();
 
