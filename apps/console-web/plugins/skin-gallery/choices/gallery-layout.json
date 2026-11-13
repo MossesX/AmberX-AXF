@@ -7,7 +7,10 @@
       "id": "split",
       "label": "Gallery beside the preview",
       "notes": "Cards on the left, desktop and phone previews on the right. Default today. Phone: stacked.",
-      "shots": [],
+      "shots": [
+        "_claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga/shots/opt-split--gallery-desktop.png",
+        "_claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga/shots/opt-split--gallery-phone.png"
+      ],
       "data": {
         "variant": "card",
         "header": "divided",
@@ -23,7 +26,10 @@
       "id": "stage",
       "label": "Preview on top, gallery under it",
       "notes": "A wide preview stage first, then the cards in a full-width grid. Best on big screens.",
-      "shots": [],
+      "shots": [
+        "_claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga/shots/opt-stage--gallery-desktop.png",
+        "_claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga/shots/opt-stage--gallery-phone.png"
+      ],
       "data": {
         "variant": "panel",
         "header": "accent",
@@ -39,7 +45,10 @@
       "id": "list",
       "label": "Compact list with the preview beside it",
       "notes": "One row per skin (name, icon pack, coverage), so many skins fit. Preview beside it on desktop.",
-      "shots": [],
+      "shots": [
+        "_claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga/shots/opt-list--gallery-desktop.png",
+        "_claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga/shots/opt-list--gallery-phone.png"
+      ],
       "data": {
         "variant": "outline",
         "header": "plain",

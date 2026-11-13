@@ -43,9 +43,10 @@ export function SkinChip() {
   };
   const open = () => {
     const r = btn.current?.getBoundingClientRect();
-    if (!r) return;
     const w = Math.min(280, globalThis.innerWidth - 16);
-    setAt(at ? null : { top: r.bottom, left: Math.max(8, Math.min(r.right - w, globalThis.innerWidth - w - 8)) });
+    // a chip folded into the banner's overflow has no box: open under the banner's right end instead
+    const anchor = r && r.width ? r : { bottom: 48, right: globalThis.innerWidth - 8 };
+    setAt(at ? null : { top: anchor.bottom, left: Math.max(8, Math.min(anchor.right - w, globalThis.innerWidth - w - 8)) });
   };
 
   return (

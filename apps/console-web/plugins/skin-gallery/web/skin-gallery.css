@@ -1,23 +1,26 @@
 /* Layout only: every control keeps its own asset look. */
-.axp-skin-gallery__target { display: grid; grid-template-columns: repeat(auto-fit, minmax(calc(var(--fx-layout-nav-width) * 0.8), 1fr)); gap: var(--fx-dens-gap-md); }
+.axp-skin-gallery__target { display: grid; grid-template-columns: repeat(auto-fit, minmax(calc(var(--fx-space) * 24), 1fr)); gap: var(--fx-dens-gap-md); }
 .axp-skin-gallery__actions, .axp-skin-gallery__frames { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-md); }
 .axp-skin-gallery__now, .axp-skin-gallery__msg { margin-top: 0; }
 .axp-skin-gallery__snack { display: flex; align-items: center; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-sm) var(--fx-dens-gap-md); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface); }
 .axp-skin-gallery__body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--fx-dens-gap-md); align-items: start; }
-.axp-skin-gallery__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--fx-layout-nav-width) * 0.6), 1fr)); gap: var(--fx-dens-gap-md); }
-.axp-skin-gallery__card { display: flex; flex-direction: column; align-items: flex-start; gap: var(--fx-dens-gap-sm); text-align: start; height: auto; }
+.axp-skin-gallery__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--fx-space) * 36), 1fr)); gap: var(--fx-dens-gap-md); }
+.axp-skin-gallery__card { display: flex; flex-direction: column; align-items: flex-start; gap: var(--fx-dens-gap-sm); text-align: start; height: auto; min-width: 0; white-space: normal; }
 .axp-skin-gallery__card.is-picked { outline: var(--fx-border-w) solid var(--fx-accent); }
 .axp-skin-gallery__frameset { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); gap: var(--fx-dens-gap-md); margin-top: var(--fx-dens-gap-md); align-items: start; }
 .axp-skin-gallery__frameset.is-desktop, .axp-skin-gallery__frameset.is-phone { grid-template-columns: minmax(0, 1fr); }
 .axp-skin-gallery__frame { padding: var(--fx-dens-gap-lg); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-lg); background: var(--fx-bg); }
-.axp-skin-gallery__frame.is-phone { max-width: calc(var(--fx-layout-nav-width) * 1.6); width: 100%; justify-self: center; }
+.axp-skin-gallery__frame.is-phone { max-width: calc(var(--fx-space) * 48); width: 100%; justify-self: center; }
 :where([data-fx-narrow]) .axp-skin-gallery__body, :where([data-fx-narrow]) .axp-skin-gallery__frameset { grid-template-columns: minmax(0, 1fr); }
 .axp-skin-gallery-chip { display: inline-flex; }
-.axp-skin-gallery-chip__pop { position: fixed; min-width: calc(var(--fx-layout-nav-width) * 0.9); }
+.axp-skin-gallery-chip__pop { position: fixed; min-width: calc(var(--fx-space) * 28); max-height: calc(var(--fx-space) * 60); overflow: auto; }
 .axp-skin-gallery-chip__head { margin: var(--fx-dens-gap-sm) var(--fx-dens-gap-md); }
 .axp-skin-gallery-chip__bar { display: flex; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-sm) var(--fx-dens-gap-md); border-top: var(--fx-border-w) solid var(--fx-border); }
 /* Gallery layouts (UI Review choices/gallery-layout.json): split (default), stage (preview first), list (one row per skin). */
 .axp-skin-gallery__body.is-stage { grid-template-columns: minmax(0, 1fr); }
 .axp-skin-gallery__body.is-stage .axp-skin-gallery__preview { order: -1; }
 .axp-skin-gallery__body.is-list .axp-skin-gallery__grid { grid-template-columns: minmax(0, 1fr); gap: var(--fx-dens-gap-sm); }
-.axp-skin-gallery__body.is-list .axp-skin-gallery__card { flex-direction: row; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md); }
+.axp-skin-gallery__body.is-list .axp-skin-gallery__card { flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: flex-start; gap: var(--fx-dens-gap-md); }
+.axp-skin-gallery__card { justify-content: flex-start; }
+.axp-skin-gallery__line { display: block; }
+.axp-skin-gallery__body.is-list .axp-skin-gallery__line { display: inline; margin-inline-end: var(--fx-dens-gap-md); }

@@ -18,7 +18,8 @@ const targetOf = (scope: string) => (scope.includes(':') && !scope.startsWith('a
 
 export function SkinsScreen() {
   const rt = useRuntime();
-  const first = getLink().seq ? getLink() : linkFromHash();
+  const given = getLink();
+  const first = given.seq && (given.skin || given.scope || given.view || given.layout) ? given : linkFromHash();
   const start = first.scope || defaultScope();
   const [skins, setSkins] = useState<SkinRow[]>([]);
   const [known, setKnown] = useState<string[]>([]);
@@ -78,9 +79,9 @@ export function SkinsScreen() {
         <div className="axp-skin-gallery__grid" role="listbox" aria-label="Skins" data-help="skin-gallery.grid">
           {skins.map((s) => (
             <Button key={s.id} tone="quiet" className={`axp-skin-gallery__card${s.id === picked ? ' is-picked' : ''}`} role="option" aria-selected={s.id === picked} title={s.description} data-skin={s.id} onClick={() => setPicked(s.id === picked ? '' : s.id)}>
-              <strong>{s.name}</strong>
-              <span className="fx-muted">{s.kind === 'design-package' ? 'Design package' : s.iconPack ? `Icons: ${s.iconPack}` : 'Skin'}</span>
-              <span className="fx-muted">Covers {s.coverage?.covered ?? 0} of {s.coverage?.total ?? 0} asset types{s.parts.length ? ` · styles ${s.parts.length} part(s)` : ''}</span>
+              <strong className="axp-skin-gallery__line">{s.name}</strong>
+              <span className="fx-muted axp-skin-gallery__line">{s.kind === 'design-package' ? 'Design package' : s.iconPack ? `Icons: ${s.iconPack}` : 'Skin'}</span>
+              <span className="fx-muted axp-skin-gallery__line">Covers {s.coverage?.covered ?? 0} of {s.coverage?.total ?? 0} asset types{s.parts.length ? ` · styles ${s.parts.length} part(s)` : ''}</span>
               {s.inForceAt.length > 0 && <Chip tone="accent">In use: {s.inForceAt.map(scopeLabel).join(', ')}</Chip>}
             </Button>
           ))}

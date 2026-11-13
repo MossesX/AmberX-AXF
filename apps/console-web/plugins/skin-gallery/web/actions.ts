@@ -40,7 +40,7 @@ export function registerActions(rt: AxfRuntime): void {
   }, { label: 'Skin scope: follow or own' });
   rt.actions.register('skin.open', (args?: string[]) => {
     const [skin = '', scope = ''] = args ?? [];
-    setLink(skin ? `skin/${skin}${SCOPE.test(scope) ? `?scope=${scope}` : ''}` : SCOPE.test(scope) ? `scope/${scope}` : '');
+    if (skin || SCOPE.test(scope)) setLink(skin ? `skin/${skin}${SCOPE.test(scope) ? `?scope=${scope}` : ''}` : `scope/${scope}`);
     rt.navigate('skin-gallery');
   }, { label: 'Open Skins' });
   rt.actions.register('skin.setting', (args?: string[]) => {
