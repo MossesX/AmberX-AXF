@@ -785,7 +785,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 11:35 UTC · `unlink-plan-studio-from-builds-delete-all-plan-s` note (all) · orchestrator
 - 2026-11-13 11:36 UTC · `unlink-plan-studio-from-builds-delete-all-plan-s` note (all) · pipeline
 - 2026-11-13 11:36 UTC · `overlay-opens-pages-the-floating-toolbar-expands` note (all) · orchestrator
 - 2026-11-13 11:37 UTC · `overlay-opens-pages-the-floating-toolbar-expands` → queued, note (all) · pipeline
@@ -1185,6 +1184,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 18:26 UTC · `transparency-token-works-every-dialog` → queued, note (all) · console
 - 2026-11-13 18:26 UTC · `vps-builds-get-console-token-ui-review` s4 done (all) · orchestrator
 - 2026-11-13 18:27 UTC · `transparency-token-works-every-dialog` note (all) · claude-voice
+- 2026-11-13 18:28 UTC · `transparency-token-works-every-dialog` note (all) · orchestrator
 
 ## Token passes (log)
 

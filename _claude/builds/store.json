@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4642,
- "updatedAt": "2026-11-13T18:27:39.932Z",
+ "rev": 4643,
+ "updatedAt": "2026-11-13T18:28:06.378Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -198767,7 +198767,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:26:12.039Z",
-   "updatedAt": "2026-11-13T18:27:38.403Z",
+   "updatedAt": "2026-11-13T18:28:04.217Z",
    "builtAt": "",
    "notes": [
     {
@@ -198781,6 +198781,10 @@
     {
      "text": "CORRECTION from Brett (replaces the previous note): NO on/off switch. Every surface reads its own transparency token value; the default value is 100% (fully opaque/visible). To make a surface see-through you lower its value. Per surface type tokens in tokens.style, overridable per instance (Quick settings).",
      "at": "2026-11-13T18:27:38.403Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"d911adcb-4f63-48f9-93a7-9befa9d2e8dc\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-13T18:28:04.217Z"
     }
    ],
    "approvals": [],
@@ -198807,9 +198811,15 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
-    "split": null,
+    "split": {
+     "at": "2026-11-13T18:28:04.217Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 4,
+     "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"d911adcb-4f63-48f9-93a7-9befa9d2e8dc\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
+    },
     "splitRequested": "",
-    "note": "waiting for the split before it can start",
+    "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
     "planned": null,
@@ -198819,7 +198829,99 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwfb7y7t01rnqg",
+     "title": "",
+     "text": "Root cause: --fx-opacity-glass / opacityGlass only applies where a component's customization has glass:true (framework/core/engines/customize.ts case 'glass'). Settings dialogs and most panels never set it, so the transparency token does nothing there.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T18:28:04.217Z",
+     "updatedAt": "2026-11-13T18:28:04.217Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwfb7y7t02xkfs",
+     "title": "",
+     "text": "Fix: every dialog, settings interface, panel, popover and floating surface uses a token-driven glass background by default (surface mixed with opacityGlass + blur). Add per-surface-type tokens (glass on/off and opacity per surface type: dialog, settings, panel, menu, toolbar, banner) in tokens.style, editable in Token Control and per instance in Quick settings. Rule: everything visual is driven by a token; add a check that fails on hard-coded backgrounds/opacity. Follows skins. Tests, Shipped features.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T18:28:04.217Z",
+     "updatedAt": "2026-11-13T18:28:04.217Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwfb7y7t039h8u",
+     "title": "",
+     "text": "how come I can't see the transparency of a settings interface dialog? Everything needs to have a token",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T18:28:04.217Z",
+     "updatedAt": "2026-11-13T18:28:04.217Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mwfb7y7t04czdq",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/transparency-token-works-every-dialog.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/transparency-token-works-every-dialog.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T18:28:04.217Z",
+     "updatedAt": "2026-11-13T18:28:04.217Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -198828,12 +198930,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-13T18:28:04.217Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
