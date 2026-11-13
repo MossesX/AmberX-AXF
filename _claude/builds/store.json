@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5057,
- "updatedAt": "2026-11-13T21:27:31.131Z",
+ "rev": 5058,
+ "updatedAt": "2026-11-13T21:27:47.613Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -208955,7 +208955,7 @@
    "title": "Main CI red: test-sandbox profile export leaks onto main",
    "category": "",
    "detail": "Main's CI is red, so the merge queue kicks out every PR with the same failure (\"Build engine sweep (Node)\" → framework/spec/check-profiles.mjs):\n\n  _claude/builds/profiles/test-sandbox/ exists but \"test-sandbox\" is not in framework/plan/profiles.json\n\nThe folder first reached main in 84c62e2e2 (Nov 13 17:18, \"Builds live: test-sandbox-sample-shipped-build added (3 steps) (test-sandbox) [skip ci]\"). project-seed.mjs made the sample build with profiles ['test-sandbox'], and every orchestrator write since then re-exports _claude/builds/profiles/test-sandbox/orchestrator.json, which builds-live publishes to main.\n\nFix: (1) orchestrator / builds-store exports write only registered profiles (framework/plan/profiles.json; test projects such as test-sandbox never get a repo export), (2) delete _claude/builds/profiles/test-sandbox/ from the repo, (3) make check-profiles.mjs say where the folder came from. Then run node framework/spec/check-profiles.mjs and the builds-store checks. Found by auto-land-every-finished-build-lands (s9).\n",
-   "status": "queued",
+   "status": "built",
    "hidden": false,
    "source": "auto-land",
    "pendingId": "",
@@ -208963,8 +208963,8 @@
    "pr": "#663",
    "priority": "P0",
    "createdAt": "2026-11-13T21:13:28.338Z",
-   "updatedAt": "2026-11-13T21:27:14.675Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-13T21:27:16.800Z",
+   "builtAt": "2026-11-13T21:27:16.800Z",
    "notes": [
     {
      "text": "Queued by auto-land-every-finished-build-lands.",
@@ -209035,12 +209035,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T21:27:16.800Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T21:27:14.676Z",
-     "updatedAt": "2026-11-13T21:27:14.928Z"
+     "updatedAt": "2026-11-13T21:27:17.023Z"
     }
    ],
    "profiles": [
@@ -209051,7 +209051,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
