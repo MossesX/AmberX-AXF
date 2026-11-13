@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4379,
- "updatedAt": "2026-11-13T12:11:21.082Z",
+ "rev": 4380,
+ "updatedAt": "2026-11-13T12:11:37.550Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -186435,7 +186435,7 @@
    "title": "Combine merge queue into one PR",
    "category": "",
    "detail": "",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -186443,7 +186443,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T11:55:36.143Z",
-   "updatedAt": "2026-11-13T12:11:19.482Z",
+   "updatedAt": "2026-11-13T12:11:28.638Z",
    "builtAt": "",
    "notes": [
     {
@@ -186465,6 +186465,14 @@
     {
      "text": "Brett (clarified): YES run this combine now as a one-time catch-up for today's queue. Don't wait for #556; include it only if done. After this, the merge queue stays one at a time, in order.",
      "at": "2026-11-13T12:11:19.482Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T12:11:21.784Z"
+    },
+    {
+     "text": "Brett: start with the skins. Merge #566 (professional skins / #557) and #563 (light/dark) into the combined branch FIRST, before the others.",
+     "at": "2026-11-13T12:11:28.638Z"
     }
    ],
    "approvals": [],
@@ -186482,8 +186490,8 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
+    "queuedAt": "2026-11-13T12:11:21.244Z",
+    "queuedBy": "console",
     "account": "",
     "session": "",
     "slot": "",
@@ -187094,7 +187102,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
