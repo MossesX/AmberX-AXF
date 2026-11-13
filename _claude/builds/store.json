@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4331,
- "updatedAt": "2026-11-13T11:32:00.660Z",
+ "rev": 4332,
+ "updatedAt": "2026-11-13T11:32:38.166Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -181746,7 +181746,7 @@
    "pr": "#556",
    "priority": "P0",
    "createdAt": "2026-11-13T07:12:21.823Z",
-   "updatedAt": "2026-11-13T11:23:16.914Z",
+   "updatedAt": "2026-11-13T11:32:36.585Z",
    "builtAt": "",
    "notes": [
     {
@@ -181820,6 +181820,10 @@
     {
      "text": "CORRECTION from Brett: do NOT add drag/move to this build. Finish and land this build as planned (s23-s31). Drag/move is a separate follow-up build that starts after this one lands.",
      "at": "2026-11-13T11:13:18.710Z"
+    },
+    {
+     "text": "Headless run axf-full-api-and-voice-control-of-the-entire-console--lenny: brief only · start 13.5K tokens ($0.04) · cost $9.95 · 223 turns · 6 tools, MCP none",
+     "at": "2026-11-13T11:32:36.585Z"
     }
    ],
    "approvals": [
@@ -182660,7 +182664,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 47,
+   "rev": 48,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
