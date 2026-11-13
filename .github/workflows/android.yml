@@ -274,6 +274,7 @@ jobs:
             node framework/spec/check-skin-sections.mjs                 # every shipped skin's look / layout / behaviour sections and asset slots ship; the professional skins set all four
             node framework/spec/check-asset-overrides.mjs               # asset overrides: the Assets with edits list (chrome-settings@1 instance overrides) and the controlled-item colour
             npx -y tsx framework/spec/check-look-migration.mts         # look-migration@1 (skins only): retired theme / style / layout picks and settings fold into the active skin; idempotent, look-preserving, backed up
+            node framework/spec/check-designer.mjs                     # designer@1: add-on model, designer + embed types, designed@1 manifests + registration, asset-context@1 section, document round trips / ops / drops / history / menu (fixtures/designer.json)
             npx -y tsx framework/spec/check-settings-ui.mts            # settings interface asset: fixture replay, starters, enums
             npx -y tsx framework/spec/check-design-package.mts         # design-package@1 + behavior-theme@1 rules, starters, the Amber context menu
             npx -y tsx framework/spec/check-scale.mts                  # typography@1 + density@1 + sizing@1: registry, defaults, tokens, fixture, starters, validators agree, hub slots

@@ -350,7 +350,11 @@ export interface TabDrag { tabId: string; fromGroup: string; x: number; y: numbe
 export interface WindowState { windows: WindowSpec[]; groups: Record<string, TabGroup>; layouts: Record<string, Pane>; focused: string | null; drag: TabDrag | null; /** the snap / split preview of a window drag in progress (s18) */ preview?: DragPreview | null; /** where the dragged tab would land (dock@1 drop zones: header, centre, pane edge, host edge) */ dockPreview?: DockDropPreview | null }
 
 /** `checked` = check-mark binding, same forms as MenuItem.checked (`setting:<key>` | `counter:<name>` | `slot:<type>` | `hidden:<type>`). */
-export interface MenuEntry { id: string; label?: string; icon?: string; action?: string; separator?: boolean; checked?: string; items?: MenuEntry[] }
+export interface MenuEntry {
+  id: string; label?: string; icon?: string; action?: string; separator?: boolean; checked?: string; items?: MenuEntry[];
+  /* asset-context@1 / designer@1 (Nov 7 2026): a tooltip, a live asset preview on hover (`<type>/<id>`), an entry shown but not runnable */
+  tip?: string; preview?: string; disabled?: boolean;
+}
 
 /** Even distribution: the first `size % n` groups get one extra tab (5 → 3 + 2, 7 in four → 2,2,2,1). Empty parts are kept so the grid has every cell. */
 export function distribute<T>(items: T[], n: number): T[][] {

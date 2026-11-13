@@ -1,0 +1,171 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "axf/embed.schema.json",
+  "title": "AmberX AXF Embed asset",
+  "type": "object",
+  "required": [
+    "$axf",
+    "type",
+    "id",
+    "name",
+    "version",
+    "data"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "asset@1"
+    },
+    "type": {
+      "const": "embed"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{1,47}$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "data": {
+      "type": "object",
+      "required": [
+        "target"
+      ],
+      "properties": {
+        "target": {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "enum": [
+                "ui",
+                "plugin",
+                "command",
+                "url",
+                "asset"
+              ]
+            },
+            "id": {
+              "type": "string"
+            },
+            "url": {
+              "type": "string",
+              "pattern": "^https://"
+            },
+            "params": {
+              "type": "object"
+            }
+          }
+        },
+        "manifest": {
+          "type": "string",
+          "description": "a link to a JSON manifest with the configuration (https:// or a .json path)"
+        },
+        "label": {
+          "type": "string",
+          "maxLength": 80
+        },
+        "icon": {
+          "type": "string"
+        },
+        "size": {
+          "type": "object",
+          "properties": {
+            "width": {
+              "oneOf": [
+                {
+                  "const": "auto"
+                },
+                {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 4096
+                }
+              ]
+            },
+            "height": {
+              "oneOf": [
+                {
+                  "const": "auto"
+                },
+                {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 4096
+                }
+              ]
+            },
+            "minHeight": {
+              "oneOf": [
+                {
+                  "const": "auto"
+                },
+                {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 4096
+                }
+              ]
+            },
+            "maxHeight": {
+              "oneOf": [
+                {
+                  "const": "auto"
+                },
+                {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 4096
+                }
+              ]
+            }
+          }
+        },
+        "hosts": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "toolbar",
+              "tab-group",
+              "grid-row",
+              "banner",
+              "region",
+              "dialog"
+            ]
+          }
+        },
+        "load": {
+          "enum": [
+            "live",
+            "lazy",
+            "snapshot"
+          ]
+        },
+        "expand": {
+          "enum": [
+            "inline",
+            "side",
+            "popout"
+          ]
+        },
+        "sandbox": {
+          "type": "boolean"
+        },
+        "passData": {
+          "type": "boolean"
+        },
+        "remember": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

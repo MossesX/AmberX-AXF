@@ -1,0 +1,38 @@
+{
+  "$axf": "asset@1",
+  "type": "embed",
+  "id": "build-row-details",
+  "name": "Build details row",
+  "version": "1.0.0",
+  "description": "The build orchestrator view of one build, opened in the expanded row of any builds grid; the row passes its build id as params (embed-asset@1).",
+  "author": "AmberX AXF",
+  "tags": [
+    "embed",
+    "starter"
+  ],
+  "data": {
+    "target": {
+      "kind": "plugin",
+      "id": "build-orchestrator/build",
+      "params": {
+        "from": "row"
+      }
+    },
+    "label": "Build details",
+    "icon": "hammer",
+    "size": {
+      "width": "auto",
+      "height": "auto",
+      "maxHeight": 640
+    },
+    "hosts": [
+      "grid-row",
+      "dialog"
+    ],
+    "load": "lazy",
+    "sandbox": false,
+    "expand": "inline",
+    "passData": true,
+    "remember": true
+  }
+}

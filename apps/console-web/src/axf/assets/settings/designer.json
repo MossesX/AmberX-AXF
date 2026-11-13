@@ -1,0 +1,71 @@
+{
+  "$axf": "asset@1",
+  "type": "settings",
+  "id": "designer",
+  "name": "UI asset designer settings",
+  "version": "1.0.0",
+  "description": "The UI asset designer's settings interface (designer@1, settings-ui@1): how its Settings (Settings → Plugins → UI asset designer, and the right-click Settings of every designer) are laid out — tabs Canvas / Panels / Preview / Info / Output / Add-ons, levels on with Output at Developer. Every designer add-on has its own copy (designer-<addon>) that follows this one until edited.",
+  "author": "AmberX AXF",
+  "tags": [
+    "default",
+    "designer",
+    "settings-interface"
+  ],
+  "data": {
+    "for": "designer",
+    "layout": "tabs-top",
+    "header": "compact",
+    "search": true,
+    "descriptions": true,
+    "tabs": [
+      {
+        "id": "canvas",
+        "label": "Canvas",
+        "icon": "grid",
+        "order": 10
+      },
+      {
+        "id": "panels",
+        "label": "Panels",
+        "icon": "layout",
+        "order": 20
+      },
+      {
+        "id": "preview",
+        "label": "Preview",
+        "icon": "eye",
+        "order": 30
+      },
+      {
+        "id": "info",
+        "label": "Info",
+        "icon": "info",
+        "order": 40
+      },
+      {
+        "id": "output",
+        "label": "Output",
+        "icon": "save",
+        "order": 50
+      },
+      {
+        "id": "addons",
+        "label": "Add-ons",
+        "icon": "package",
+        "order": 60
+      }
+    ],
+    "hide": [],
+    "groups": [],
+    "levels": true,
+    "defaultLevel": "basic",
+    "levelOf": {
+      "canvas": "simple",
+      "panels": "simple",
+      "preview": "simple",
+      "info": "basic",
+      "output": "developer",
+      "addons": "basic"
+    }
+  }
+}

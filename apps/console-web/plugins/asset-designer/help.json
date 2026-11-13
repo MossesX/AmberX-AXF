@@ -1,0 +1,57 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "asset-designer-help",
+  "name": "Asset designer help",
+  "version": "0.3.0",
+  "description": "Help mode entries (help@1) for the Asset designer plugin: the page, its toolbar, the envelope fields, the tabs and the settings.",
+  "author": "Brett",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:asset-designer",
+    "entries": [
+      { "target": "view:asset-designer", "title": "Asset designer", "text": "Design any asset type without code: pick the type, open a saved asset or start a new one, fill in its fields, and save once the validation gate is clean.", "kind": "screen" },
+      { "target": "asset-designer", "title": "Asset designer settings", "text": "The designer's own settings under Settings → Plugins: the type it opens on and whether live preview starts on." },
+      { "target": "asset-type", "title": "Asset type", "text": "Every asset type the framework registers, grouped. Changing it starts a blank asset of that type." },
+      { "target": "open", "title": "Open", "text": "The assets you have saved of this type. Pick one to edit it, or New asset to start again." },
+      { "target": "start-from", "title": "Start from", "text": "Copies a built-in asset of this type into a new draft so you can change it. The built-in itself is never touched." },
+      { "target": "new", "title": "New", "text": "Starts a blank asset of the chosen type with every required field at its default." },
+      { "target": "duplicate", "title": "Duplicate", "text": "Makes a new draft from the current asset under a fresh id; it gets its own identifier when saved." },
+      { "target": "reload", "title": "Reload", "text": "Re-reads the saved assets from the server and registers them into the running console." },
+      { "target": "delete", "title": "Delete", "text": "Removes this saved asset from the designer's data folder. Built-in assets cannot be deleted here." },
+      { "target": "save", "title": "Save", "text": "Writes the asset as a standard asset@1 file with its designed@1 manifest. Off while the validation gate lists problems; the server validates again before writing." },
+      { "target": "live-preview", "title": "Live preview", "text": "Puts the draft on the real chrome while it is valid; turning it off puts the previous asset back." },
+      { "target": "settings-interface", "title": "Settings interface", "text": "Opens the settings interface asset of this chrome type (toolbar, tab group, banner, menu), with every one of its tokens as a field." },
+      { "target": "toolbar-settings-interface", "title": "Toolbar settings interface", "text": "Opens the designer on the settings interface every toolbar's right-click Settings dialog renders through." },
+      { "target": "tab-group-settings-interface", "title": "Tab group settings interface", "text": "Opens the designer on the settings interface every tab row's right-click Settings dialog renders through." },
+      { "target": "open-the-designer", "title": "Open the designer", "text": "Goes to the Asset designer page." },
+      { "target": "action:asset-designer.open", "title": "Design an asset…", "text": "Opens the Asset designer from any right-click menu." },
+      { "target": "design-an-asset", "title": "Design an asset…", "text": "Opens the Asset designer from any right-click menu." },
+      { "target": "id", "title": "Id", "text": "The asset's id: 2–48 lowercase letters, digits and dashes. A built-in id is refused on save." },
+      { "target": "name", "title": "Name", "text": "The name shown in pickers; suggests an id while the asset is new." },
+      { "target": "version", "title": "Version", "text": "Semantic version; bumped by the designed@1 manifest on every save." },
+      { "target": "tags", "title": "Tags", "text": "Comma-separated tags kept in the asset envelope." },
+      { "target": "description", "title": "Description", "text": "A sentence on what this asset is for." },
+      { "target": "fields", "title": "Fields", "text": "Every field the asset type registers: chrome settings fields, required fields and optional fields, each with its own control and inline error." },
+      { "target": "json", "title": "JSON", "text": "The whole data object as JSON for anything the fields do not reach. Apply runs the validation gate." },
+      { "target": "apply-json", "title": "Apply JSON", "text": "Parses the JSON text into the asset's data and runs the validation gate." },
+      { "target": "data-json", "title": "Data (JSON)", "text": "The asset's data object. Edit it here when a field is a list or an object." },
+      { "target": "preview", "title": "Preview", "text": "Draws the asset as its host would; with Live preview on it is also on the real chrome." },
+      { "target": "manifest", "title": "Manifest", "text": "The designed@1 manifest a saved asset carries: its identifier (uid), revision, hash and times." },
+      { "target": "starting-asset-type", "title": "Starting asset type", "text": "The asset type the designer opens on." }
+    ],
+    "intros": [
+      {
+        "screen": "asset-designer",
+        "title": "Asset designer",
+        "steps": [
+          { "say": "Pick an asset type, then open a saved asset or start from a built-in one.", "target": "asset-type" },
+          { "say": "Fill in the fields; problems show next to the field they are about, and Save turns on when the asset is clean.", "target": "save" },
+          { "say": "Toolbars, tab groups, banners and menus also have a settings interface asset you can edit here.", "target": "settings-interface" }
+        ]
+      }
+    ]
+  }
+}

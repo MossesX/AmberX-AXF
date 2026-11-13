@@ -1,0 +1,72 @@
+{
+  "$axf": "asset@1",
+  "type": "settings",
+  "id": "designer-app-menu",
+  "name": "App menu designer settings",
+  "version": "1.0.0",
+  "description": "The app menu designer's settings interface (designer@1): its own copy of the UI asset designer's settings interface (designer), following it until edited. Reached from the add-on's Settings → Plugins tab, the host's add-on list and the right-click menu of its designer.",
+  "author": "AmberX AXF",
+  "tags": [
+    "designer",
+    "settings-interface",
+    "app-menu"
+  ],
+  "data": {
+    "for": "designer:app-menu",
+    "layout": "tabs-top",
+    "header": "compact",
+    "search": true,
+    "descriptions": true,
+    "tabs": [
+      {
+        "id": "canvas",
+        "label": "Canvas",
+        "icon": "grid",
+        "order": 10
+      },
+      {
+        "id": "panels",
+        "label": "Panels",
+        "icon": "layout",
+        "order": 20
+      },
+      {
+        "id": "preview",
+        "label": "Preview",
+        "icon": "eye",
+        "order": 30
+      },
+      {
+        "id": "info",
+        "label": "Info",
+        "icon": "info",
+        "order": 40
+      },
+      {
+        "id": "output",
+        "label": "Output",
+        "icon": "save",
+        "order": 50
+      },
+      {
+        "id": "addons",
+        "label": "Add-ons",
+        "icon": "package",
+        "order": 60
+      }
+    ],
+    "hide": [],
+    "groups": [],
+    "levels": true,
+    "defaultLevel": "basic",
+    "levelOf": {
+      "canvas": "simple",
+      "panels": "simple",
+      "preview": "simple",
+      "info": "basic",
+      "output": "developer",
+      "addons": "basic"
+    },
+    "extends": "designer"
+  }
+}
