@@ -781,7 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 22:03 UTC · `one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx` note (all) · orchestrator
 - 2026-11-12 22:04 UTC · `new-project-wizard-name-linked-repo-required-starter-code-skin-accounts` s1 done, → running (all) · orchestrator
 - 2026-11-12 22:04 UTC · `new-project-wizard-name-linked-repo-required-starter-code-skin-accounts` s9 done (all) · orchestrator
 - 2026-11-12 22:04 UTC · `new-project-wizard-name-linked-repo-required-starter-code-skin-accounts` s2 done (all) · orchestrator
@@ -1181,6 +1180,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 06:43 UTC · `skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga` s1 done (all) · orchestrator
 - 2026-11-13 06:45 UTC · `skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga` → built (all) · orchestrator
 - 2026-11-13 06:47 UTC · `skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga` note (all) · orchestrator
+- 2026-11-13 06:47 UTC · `skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga` s2 done, → running (all) · orchestrator
 
 ## Token passes (log)
 
