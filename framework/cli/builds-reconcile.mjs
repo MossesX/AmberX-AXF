@@ -28,6 +28,7 @@ import { REPO_ROOT, persistRoot } from './persist.mjs';
 import { loadStore, withStore } from './builds-store.mjs';
 import { liveStatus, syncAll, install } from './builds-live.mjs';
 import { createGitHub, parseRepo } from './github.mjs';
+import { confirm as confirmMerge } from './merge-confirm.mjs';
 import { loadState as slotState, tmuxSessions } from './agent-slots.mjs';
 
 export const reportFile = () => {
@@ -121,7 +122,27 @@ export function applyPlan(p, by = 'reconciler') {
   return { changes: r.changes };
 }
 
-export async function reconcile({ apply = false, gh, repo } = {}) {
+/**
+ * merge-confirm@1: a build is complete only on a confirmed merge. GitHub's list saying "merged" is not enough: each PR
+ * about to give a build its mergedAt is read back (path reconcile: state MERGED, merge_commit_sha on main); one that
+ * isn't proven keeps the build where it is this round, with the reason in `why`. Mutates `changes`.
+ */
+export async function confirmMerged(changes, { repo, confirm = confirmMerge } = {}) {
+  for (const c of changes) {
+    if (!c.set?.mergedAt) continue;
+    const pr = Number(String(c.set.pr ?? c.pr ?? '').replace(/\D/g, '')) || Number((c.why.join(' ').match(/PR #(\d+) merged/) || [])[1]) || 0;
+    let rec = null;
+    try { rec = pr ? await confirm(repo, pr, { path: 'reconcile', by: 'builds-reconcile', build: c.id }) : null; } catch (e) { rec = { state: 'unknown', why: String(e.message || e).slice(0, 160) }; }
+    if (rec?.state === 'merged') { c.set.mergedAt = rec.evidence?.mergedAt || c.set.mergedAt; c.why.push(`merge confirmed by GitHub (${String(rec.evidence?.mergeCommitSha || '').slice(0, 7)} on main)`); continue; }
+    delete c.set.mergedAt;
+    c.why.push(`PR${pr ? ` #${pr}` : ''} not complete yet: ${rec?.label || 'Pending GitHub confirmation'}${rec?.why ? ` (${rec.why})` : ''}`);
+  }
+  // a change left with nothing to write (only the unconfirmed merge) is dropped: no note every round while it waits
+  for (let i = changes.length - 1; i >= 0; i--) if (!Object.keys(changes[i].set || {}).length && !(changes[i].steps || []).length) changes.splice(i, 1);
+  return changes;
+}
+
+export async function reconcile({ apply = false, gh, repo, mcConfirm } = {}) {
   const at = new Date().toISOString();
   install(); // the merge driver for builds files, once per clone
   const pulled = apply ? syncAll() : { ok: true, skipped: 'dry run' };
@@ -130,6 +151,7 @@ export async function reconcile({ apply = false, gh, repo } = {}) {
   let gathered; let error = '';
   try { gathered = await gather({ gh, repo }); } catch (e) { error = String(e.message ?? e).slice(0, 300); gathered = { prs: [], branches: [] }; }
   const p = error ? { changes: [], suggestions: [], orphans: { prs: [], branches: [] } } : plan(builds, gathered.prs, gathered.branches, { now: at });
+  if (!error) await confirmMerged(p.changes, { repo: repo ?? repoName(), confirm: mcConfirm });
   // running = a live process runs it (zero tokens: tmux, agent slots and build-log heartbeats on this host)
   const alive = liveBuilds();
   const idle = idlePlan(builds, alive, { now: at, skip: p.changes.filter((c) => c.steps.length).map((c) => c.id) });

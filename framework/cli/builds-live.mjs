@@ -42,6 +42,8 @@ import * as core from '../plan/builds-store-core.mjs';
 import * as merge from '../plan/builds-merge-core.mjs';
 import { REPO_ROOT } from './persist.mjs';
 import { gitAuthEnv, githubToken, scrub } from './github.mjs';
+import { confirm as confirmMerge } from './merge-confirm.mjs';
+import { normRepo, prNumber } from '../core/merge-confirm.mjs';
 import { adoptStore, adoptedChanges, journalDir, journalMax, mergeOriginsText, orchestratorExports, originsFile, readStoreNow, storeFile, storeText, withStore } from './builds-store.mjs';
 import { emitChangesTo } from './build-hooks.mjs';
 import { readManifest } from './shipped-files.mjs';
@@ -483,7 +485,17 @@ async function main(argv) {
   if (cmd === 'link') {
     const id = rest[0]; if (!id || id.startsWith('--')) throw new Error('link <build> [--branch b] [--pr n] [--merged [iso]]');
     const merged = opt('merged');
-    const r = linkBuild(id, { branch: typeof opt('branch') === 'string' ? opt('branch') : undefined, pr: typeof opt('pr') === 'string' ? opt('pr') : undefined, mergedAt: merged === true ? new Date().toISOString() : typeof merged === 'string' ? merged : undefined });
+    let mergedAt;
+    if (merged !== undefined) {
+      // merge-confirm@1: a build is merged only once GitHub confirms its PR (state MERGED, merge commit on main)
+      const pr = prNumber(typeof opt('pr') === 'string' ? opt('pr') : (readStoreNow()?.builds || []).find((b) => b.id === id)?.pr);
+      if (!pr) throw new Error('--merged needs the build\'s PR (--pr n): a build is merged only once GitHub confirms its PR');
+      const repo = normRepo(process.env.AXF_BUILDS_LIVE_REPO || git(['remote', 'get-url', remote()]).out || '') || 'mossesx/amberx-axf';
+      const rec = await confirmMerge(repo, pr, { path: 'reconcile', by: 'builds-live', build: id });
+      if (rec.state !== 'merged') { process.exitCode = 3; return out({ ok: false, build: id, confirm: rec }, `${id}: not marked merged: ${rec.label} for ${rec.id}${rec.why ? ` (${rec.why})` : ''}`); }
+      mergedAt = rec.evidence?.mergedAt || (typeof merged === 'string' ? merged : new Date().toISOString());
+    }
+    const r = linkBuild(id, { branch: typeof opt('branch') === 'string' ? opt('branch') : undefined, pr: typeof opt('pr') === 'string' ? opt('pr') : undefined, mergedAt });
     return out({ ok: true, build: { id: r.build.id, status: r.build.status, branch: r.build.branch, pr: r.build.pr, mergedAt: r.build.mergedAt } }, `${r.build.id}: ${r.build.status} · branch ${r.build.branch || '-'} · PR ${r.build.pr || '-'}${r.build.mergedAt ? ` · merged ${r.build.mergedAt}` : ''}`);
   }
   if (cmd === 'install') { const r = install(); return out(r, r.ok ? `merge driver ${DRIVER} registered` : 'git config failed'); }
