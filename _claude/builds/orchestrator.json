@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T18:09:44.088Z",
+ "updatedAt": "2026-11-13T18:09:59.101Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -125709,8 +125709,8 @@
    "pr": "#622",
    "priority": "P1",
    "createdAt": "2026-11-13T17:46:43.480Z",
-   "updatedAt": "2026-11-13T18:09:08.109Z",
-   "builtAt": "2026-11-13T18:09:08.109Z",
+   "updatedAt": "2026-11-13T18:09:55.996Z",
+   "builtAt": "2026-11-13T18:09:55.996Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -125763,6 +125763,10 @@
     {
      "text": "Headless run axf-per-instance-settings-window-picker--sully: brief only · start 11.2K tokens ($0.03) · cost $2.81 · 71 turns · 6 tools, MCP none",
      "at": "2026-11-13T18:09:08.109Z"
+    },
+    {
+     "text": "Headless run axf-per-instance-settings-window-picker--lenny: brief only · start 11.2K tokens ($0.03) · cost $0.70 · 33 turns · 6 tools, MCP none",
+     "at": "2026-11-13T18:09:55.996Z"
     },
     {
      "text": "Phase 1 done, PR #622 draft. Gap: UI Review shots not taken (headless console rendered blank in the worktree); desktop + phone shots of a toolbar and tab-group dialog still needed.",
