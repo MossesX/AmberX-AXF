@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T19:02:36.378Z",
+ "updatedAt": "2026-11-13T19:03:00.171Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -127824,7 +127824,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:30:38.922Z",
-   "updatedAt": "2026-11-13T18:57:51.438Z",
+   "updatedAt": "2026-11-13T19:01:25.369Z",
    "builtAt": "",
    "notes": [
     {
@@ -127882,6 +127882,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-ui-manager-floating-window-to-select-any--paulie, own login copy)",
      "at": "2026-11-13T18:53:18.539Z"
+    },
+    {
+     "text": "Two headless sessions (Greenlight Gina and Ping Paulie) are running Phase 1 in the same worktree at once; both edit the same files. Gina committed s1 (ad1da7487) and is finishing s2 while taking Paulie's on-disk edits as-is; the dispatcher double-launched this phase.",
+     "at": "2026-11-13T19:01:25.369Z"
     }
    ],
    "approvals": [],
