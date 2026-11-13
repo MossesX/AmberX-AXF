@@ -12,7 +12,7 @@ Native code exists only where Android requires it:
 | Native piece | Class |
 | --- | --- |
 | WebView host, deep links, outside links to the browser, offline page | `ConsoleActivity`, `ShellRules` |
-| Floating toolbar over every app (draw-over-apps): expands to the full-screen console with the toolbar docked top-left, approval bar with an "Open approvals" link | `OverlayService`, `OverlayRules` |
+| Floating toolbar over every app (draw-over-apps): expands to the full-screen console with the toolbar docked top-left, approval bar with an "Open approvals" link; its names (states, verbs, settings, events, the four API ways in) are the `overlay@1` contract, [OVERLAY.md](OVERLAY.md) | `OverlayService`, `OverlayRules`, `OverlayContract` |
 | Safe area: status bar, display cutout, navigation bar and keyboard from WindowInsets, set on the page as `--fx-safe-*` | `Insets`, `InsetsCss` |
 | `window.axfNativeHost` bridge (the console wraps it as `window.axfNative` and `native.*` actions) | `NativeBridge` |
 | Notifications, permissions (mic, notifications, overlay), wake, native look from the console's `--fx-*` tokens | `Notifier`, `Perms`, `Wake`, `ShellTheme` |

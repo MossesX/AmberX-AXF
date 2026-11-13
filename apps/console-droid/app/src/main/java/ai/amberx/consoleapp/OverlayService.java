@@ -39,8 +39,8 @@ import java.util.Map;
  * {@link #ACTION_VERB} (expand / collapse / toggle / approvals) from deep links and the CLI's adb path.
  */
 public class OverlayService extends Service {
-    static final String ACTION_VERB = "ai.amberx.consoleapp.OVERLAY";
-    static final String EXTRA_VERB = "verb";
+    static final String ACTION_VERB = OverlayContract.INTENT_ACTION;
+    static final String EXTRA_VERB = OverlayContract.INTENT_EXTRA;
     static final String CHANNEL = "overlay";
     static final int NOTE_ID = 1;
 
@@ -80,16 +80,16 @@ public class OverlayService extends Service {
         if (running == null) {
             startIfWanted(c);
             if (running == null) { // no overlay (off or not allowed): the app itself is the full-screen console
-                if (!"collapse".equals(verb) && !"dismiss".equals(verb)) c.startActivity(new Intent(c, ConsoleActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                if (!OverlayContract.PASSIVE_VERBS.contains(verb)) c.startActivity(new Intent(c, ConsoleActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                 return;
             }
         }
-        if ("dismiss".equals(verb)) dismissedAt = waiting;
-        if ("approvals".equals(verb)) {
+        if (OverlayContract.DISMISS.equals(verb)) dismissedAt = waiting;
+        if (OverlayContract.APPROVALS_VERB.equals(verb)) {
             // in the running console the list opens without a reload (the page runs approvals.view on this event);
             // anywhere else (offline page, another site) the deep link loads the console on the approvals page
-            if (ShellRules.bridgeAllowed(NativeBridge.currentUrl)) NativeBridge.emit("approvals.open", "{\"target\":\"" + OverlayRules.APPROVALS_PAGE + "\"}");
-            else WebHost.open(c, ShellRules.SCHEME + "://open/" + OverlayRules.APPROVALS_PAGE);
+            if (ShellRules.bridgeAllowed(NativeBridge.currentUrl)) NativeBridge.emit(OverlayContract.EV_APPROVALS_OPEN, "{\"target\":\"" + OverlayRules.APPROVALS_PAGE + "\"}");
+            else WebHost.open(c, OverlayContract.approvalsLink());
         }
         running.show(OverlayRules.verb(state, verb));
     }
@@ -113,11 +113,9 @@ public class OverlayService extends Service {
         if (running != null) running.show(OverlayRules.afterApprovals(state, config, waiting, held, dismissedAt));
     }
 
-    /** {"running":true,"state":"toolbar","waiting":2,"held":0,"on":true,"edge":"end","top":30,"size":"small","expand":"every","idleOpacity":85} */
+    /** The overlay's state for every API ({@link OverlayContract#stateJson}: the {@code overlay} event, {@code overlayState()}, {@code native.state}). */
     static String stateJson() {
-        return "{\"running\":" + (running != null) + ",\"state\":\"" + state + "\",\"waiting\":" + waiting + ",\"held\":" + held + ",\"dismissedAt\":" + dismissedAt
-            + ",\"on\":" + config.on + ",\"edge\":\"" + config.edge + "\",\"top\":" + config.top + ",\"size\":\"" + config.size
-            + "\",\"expand\":\"" + config.expand + "\",\"idleOpacity\":" + config.idleOpacity + "}";
+        return OverlayContract.stateJson(running != null, state, waiting, held, dismissedAt, config);
     }
 
     static void loadConfig(Context c) {
