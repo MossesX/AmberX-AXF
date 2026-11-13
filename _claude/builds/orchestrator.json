@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T21:20:52.842Z",
+ "updatedAt": "2026-11-13T21:21:10.923Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -132325,7 +132325,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T19:55:30.979Z",
-   "updatedAt": "2026-11-13T21:20:21.541Z",
+   "updatedAt": "2026-11-13T21:20:31.598Z",
    "builtAt": "",
    "notes": [
     {
@@ -132559,6 +132559,25 @@
      "note": "",
      "uid": "st-mwfeghye0813dh",
      "createdAt": "2026-11-13T19:58:41.893Z"
+    },
+    {
+     "id": "s9",
+     "text": "icon-pack@1 colour layers (Fable: schema + engine): glyphs may carry layers [{d, color, opacity}] so fixed-colour packs (themable:false: emoji-style, brand-coloured logos) draw in their own colours; normalizeIconPack + glyphSvg (brand-rules.mjs, brand.ts) + asset-types optional_fields + fixtures; the s5 fixed-colour packs already ship layers with a one-colour d fallback",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfhdqyp01kax0",
+     "createdAt": "2026-11-13T21:20:31.599Z"
     }
    ]
   },

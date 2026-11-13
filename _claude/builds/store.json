@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5044,
- "updatedAt": "2026-11-13T21:20:52.842Z",
+ "rev": 5045,
+ "updatedAt": "2026-11-13T21:21:10.923Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -205281,7 +205281,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T19:55:30.979Z",
-   "updatedAt": "2026-11-13T21:20:21.541Z",
+   "updatedAt": "2026-11-13T21:20:31.598Z",
    "builtAt": "",
    "notes": [
     {
@@ -205364,7 +205364,7 @@
     "queuedAt": "2026-11-13T19:55:38.790Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-icon-map-icon-packs-every-icon-badge-app--earl",
+    "session": "",
     "slot": "",
     "model": "Fable",
     "launchedAt": "2026-11-13T20:06:45.871Z",
@@ -205580,6 +205580,28 @@
      "rev": 1,
      "createdAt": "2026-11-13T19:58:41.893Z",
      "updatedAt": "2026-11-13T19:58:41.893Z"
+    },
+    {
+     "id": "s9",
+     "uid": "st-mwfhdqyp01kax0",
+     "title": "",
+     "text": "icon-pack@1 colour layers (Fable: schema + engine): glyphs may carry layers [{d, color, opacity}] so fixed-colour packs (themable:false: emoji-style, brand-coloured logos) draw in their own colours; normalizeIconPack + glyphSvg (brand-rules.mjs, brand.ts) + asset-types optional_fields + fixtures; the s5 fixed-colour packs already ship layers with a one-colour d fallback",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T21:20:31.599Z",
+     "updatedAt": "2026-11-13T21:20:32.449Z"
     }
    ],
    "profiles": [
