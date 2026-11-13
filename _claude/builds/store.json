@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4133,
- "updatedAt": "2026-11-13T07:20:09.928Z",
+ "rev": 4134,
+ "updatedAt": "2026-11-13T07:20:24.570Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -179751,8 +179751,8 @@
    "pr": "#555",
    "priority": "P0",
    "createdAt": "2026-11-13T06:54:48.788Z",
-   "updatedAt": "2026-11-13T07:19:48.368Z",
-   "builtAt": "2026-11-13T07:19:48.368Z",
+   "updatedAt": "2026-11-13T07:20:11.774Z",
+   "builtAt": "2026-11-13T07:20:11.774Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -179793,6 +179793,10 @@
     {
      "text": "Headless run axf-remove-ui-review-as-a-gate-no-screenshots-requir--gina: brief only · start 15.6K tokens ($0.05) · cost $9.81 · 165 turns · 6 tools, MCP none",
      "at": "2026-11-13T07:19:48.368Z"
+    },
+    {
+     "text": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
+     "at": "2026-11-13T07:20:11.774Z"
     }
    ],
    "approvals": [],
@@ -179813,12 +179817,19 @@
     "queuedAt": "2026-11-13T06:54:51.848Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-remove-ui-review-as-a-gate-no-screenshots-requir--gina",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-13T06:56:46.988Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-13T07:20:09.682Z",
+     "exit": 0,
+     "outcome": "returned",
+     "stepsLeft": 1,
+     "account": "mossesx-max-",
+     "session": "axf-remove-ui-review-as-a-gate-no-screenshots-requir--gina"
+    },
     "split": {
      "at": "2026-11-13T06:56:37.518Z",
      "by": "orchestrator",
@@ -179827,7 +179838,7 @@
      "note": "Split by Claude into 12 steps (0 Fable)."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "2026-11-13T06:56:46.988Z",
     "planned": {

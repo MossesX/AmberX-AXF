@@ -781,7 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 23:12 UTC · `banners-page-focus-scroll-to-and-highlight-any-banner-or-badge` added (2 steps) (all) · Claude (voice)
 - 2026-11-12 23:12 UTC · `banners-page-focus-scroll-to-and-highlight-any-banner-or-badge` → queued, note (all) · console
 - 2026-11-12 23:13 UTC · `banners-page-focus-scroll-to-and-highlight-any-banner-or-badge` → running, note (all) · pipeline
 - 2026-11-12 23:13 UTC · `banners-page-focus-scroll-to-and-highlight-any-banner-or-badge` branch claude/banners-page-focus-scroll-to-and-highlight-any-banner-or-badge (all) · pipeline
@@ -1181,6 +1180,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 07:19 UTC · `remove-ui-review-as-a-gate-no-screenshots-required-prs-never-held-as-draft-for` PR #555 (all) · builds-live
 - 2026-11-13 07:19 UTC · `remove-ui-review-as-a-gate-no-screenshots-required-prs-never-held-as-draft-for` note (all) · orchestrator
 - 2026-11-13 07:19 UTC · `remove-ui-review-as-a-gate-no-screenshots-required-prs-never-held-as-draft-for` s12 done, → built (all) · orchestrator
+- 2026-11-13 07:20 UTC · `remove-ui-review-as-a-gate-no-screenshots-required-prs-never-held-as-draft-for` → pending, note (all) · pipeline
 
 ## Token passes (log)
 
