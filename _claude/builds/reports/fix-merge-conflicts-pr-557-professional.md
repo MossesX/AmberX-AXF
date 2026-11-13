@@ -1,4 +1,4 @@
-# fix-merge-conflicts-on-pr-557-professional-skins (Opus, phase 1)
+# fix-merge-conflicts-pr-557-professional (Opus, phase 1)
 
 Brett (Nov 13 2026): "Alright, land that shit."
 
@@ -6,7 +6,7 @@ PR #557 (professional skins, skin@2) was 260 commits behind main with 12 conflic
 look-migration@1 / skins-only (the theme, style and layout pickers folded into the skin) and five professional skins of
 its own while the PR built skin@2 behaviour and four other professional skins. Merge commit `49cc956c1`, pushed to the
 PR branch `claude/professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e` (fast-forward) and to
-`claude/fix-merge-conflicts-on-pr-557-professional-skins`. Landing is the merge queue's job; nothing was merged by hand.
+`claude/fix-merge-conflicts-pr-557-professional`. Landing is the merge queue's job; nothing was merged by hand.
 
 ## Conflicts and how they were resolved
 
