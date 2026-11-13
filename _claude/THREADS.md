@@ -786,9 +786,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 12:18 UTC · `auto-recover-stuck-builds` s5 done (all) · orchestrator
-- 2026-11-13 12:18 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` s28 done, → running (all) · orchestrator
-- 2026-11-13 12:19 UTC · `combine-merge-queue-into-one-pr` s5 done (all) · orchestrator
 - 2026-11-13 12:19 UTC · `ui-review-gate-switch-default-off` s1 done (all) · orchestrator
 - 2026-11-13 12:20 UTC · `auto-recover-stuck-builds` s6 done (all) · orchestrator
 - 2026-11-13 12:22 UTC · `ui-review-gate-switch-default-off` s2 done (all) · orchestrator
@@ -1186,6 +1183,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 18:43 UTC · `console-app-part-4-console-side-safe` note (all) · orchestrator
 - 2026-11-13 18:43 UTC · `console-android-app-thin-webview-wrapper` → running, note (all) · pipeline
 - 2026-11-13 18:43 UTC · `console-android-app-thin-webview-wrapper` note (all) · orchestrator
+- 2026-11-13 18:43 UTC · `orchestrator-settings-collapsible-split` → running, note (all) · pipeline
+- 2026-11-13 18:43 UTC · `orchestrator-settings-collapsible-split` branch claude/orchestrator-settings-collapsible-split (all) · pipeline
+- 2026-11-13 18:43 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
 
 ## Token passes (log)
 
