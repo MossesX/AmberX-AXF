@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T11:59:07.438Z",
+ "updatedAt": "2026-11-13T11:59:26.475Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -119577,7 +119577,7 @@
    "title": "Full API and voice control of the entire console: every tab, screen, setting, button, function and plugin (incl. enable/disable plugins); scroll up/down; bring any row or step of any table or grid into focus; search screens and everything loaded and pull it into focus",
    "category": "",
    "detail": "",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -119585,7 +119585,7 @@
    "pr": "#556",
    "priority": "P0",
    "createdAt": "2026-11-13T07:12:21.823Z",
-   "updatedAt": "2026-11-13T11:59:05.370Z",
+   "updatedAt": "2026-11-13T11:59:12.332Z",
    "builtAt": "",
    "notes": [
     {
@@ -119671,6 +119671,14 @@
     {
      "text": "Queued by console.",
      "at": "2026-11-13T11:57:48.234Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 2): axf-full-api-and-voice-control-of-the-entire-console--paulie.",
+     "at": "2026-11-13T11:59:10.432Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-full-api-and-voice-control-of-the-entire-console--paulie, own login copy)",
+     "at": "2026-11-13T11:59:12.332Z"
     }
    ],
    "approvals": [
