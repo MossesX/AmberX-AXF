@@ -785,7 +785,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 11:26 UTC · `one-source-of-truth-console-shows-only-what-the-server-says-is-running` → pending, note (all) · reconciler
 - 2026-11-13 11:27 UTC · `change-to-move-amberx-web-app-into-the-console-amberx-andr-pr-528-brett-do` note (all) · orchestrator
 - 2026-11-13 11:27 UTC · `overlay-opens-pages-the-floating-toolbar-expands` added (0 steps) (all) · console
 - 2026-11-13 11:27 UTC · `overlay-opens-pages-the-floating-toolbar-expands` → queued, note (all) · console
@@ -1185,6 +1184,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 18:15 UTC · `prompting-engine-control-panel-to-create` added (0 steps) (all) · console
 - 2026-11-13 18:16 UTC · `prompting-engine-control-panel-events` added (0 steps) (all) · console
 - 2026-11-13 18:16 UTC · `prompting-engine-control-panel-events` → queued, note (all) · console
+- 2026-11-13 18:16 UTC · `vps-builds-get-console-token-ui-review` note (all) · orchestrator
 
 ## Token passes (log)
 
