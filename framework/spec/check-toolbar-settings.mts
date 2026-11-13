@@ -40,7 +40,7 @@ const { AxfProvider } = await import('../react/AxfProvider.tsx');
 const { AppShell } = await import('../react/AppShell.tsx');
 const { Button, Segmented } = await import('../react/components/Controls.tsx');
 const { Checkbox, SelectField, TextField } = await import('../react/components/Forms.tsx');
-const { TOOLBAR_AS_BUILT, TOOLBAR_LOOK_FIELDS, installToolbarLook, toolbarFoldKey, toolbarInstanceOf } = await import('../react/toolbarLook.ts');
+const { TOOLBAR_AS_BUILT, TOOLBAR_LOOK_FIELDS, installToolbarLook, toolbarFoldKey, toolbarInstanceOf, toolbarStates } = await import('../react/toolbarLook.ts');
 
 let ok = 0, fail = 0;
 const check = (cond: unknown, msg: string) => { if (cond) ok++; else { fail++; console.log(`✗ ${msg}`); } };
@@ -210,6 +210,20 @@ for (const label of [ACTIONS, VIEW, FILTERS]) {
     await act(async () => { rt.dispatch('chrome.reset:toolbar:app'); });
     await settle();
   } else console.log('· the app toolbar is hidden in this layout (skipped)');
+}
+
+/* ---- state readable for the API (console catalog) ---- */
+{
+  await act(async () => { rt.dispatch('chrome.set:toolbar:shipped-features-actions:variant:labels'); rt.dispatch('toolbar.fold:offscreen-bar:on'); rt.dispatch('chrome.set:toolbar:offscreen-bar:collapsible:on'); });
+  await settle();
+  const st = toolbarStates(doc, rt.settings);
+  const a = st.find((t) => t.instance === 'shipped-features-actions');
+  check(a?.onScreen && a.settings.variant === 'labels' && a.label === ACTIONS, 'toolbarStates reads a toolbar on screen with what is set for it');
+  check(st.some((t) => t.instance === 'shipped-features-filters' && t.onScreen && !Object.keys(t.settings).length), 'and lists toolbars with nothing set');
+  const off = st.find((t) => t.instance === 'offscreen-bar');
+  check(off && !off.onScreen && off.folded && off.settings.collapsible === true, 'and toolbars with saved settings that are not on screen (folded too)');
+  await act(async () => { rt.dispatch('chrome.reset:toolbar:shipped-features-actions'); rt.dispatch('chrome.reset:toolbar:offscreen-bar'); rt.dispatch('toolbar.fold:offscreen-bar:off'); });
+  await settle();
 }
 
 /* ---- persists: a fresh runtime on the same storage draws the same toolbar ---- */

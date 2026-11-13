@@ -171,3 +171,30 @@ export function installToolbarLook(doc: Document, settings: ToolbarLookSettings)
   applyAll();
   return { dispose: () => { offSettings(); mo?.disconnect(); }, refresh: applyAll };
 }
+
+/** One toolbar's state for the API: its instance, name, the settings set for it and whether it is folded. */
+export interface ToolbarState { instance: string; label: string; settings: Record<string, string | boolean>; folded: boolean; onScreen: boolean }
+
+/**
+ * Every toolbar on the screen plus every toolbar with saved settings (read state for REST / MCP / CLI / voice: the
+ * console client lists these in its catalog; `chrome.set` / `chrome.unset` / `chrome.reset` / `toolbar.fold` change them).
+ */
+export function toolbarStates(doc: Document | null, settings: { get(key: string): unknown; savedValues?(): Record<string, unknown> }): ToolbarState[] {
+  const out = new Map<string, ToolbarState>();
+  const add = (instance: string, label: string, onScreen: boolean) => {
+    const hit = out.get(instance);
+    if (hit) { hit.onScreen ||= onScreen; return; }
+    out.set(instance, { instance, label, settings: normalizeInstanceOverride('toolbar', settings.get(CHROME_INSTANCE_KEY('toolbar', instance))) as Record<string, string | boolean>, folded: settings.get(toolbarFoldKey(instance)) === true, onScreen });
+  };
+  for (const el of Array.from(doc?.querySelectorAll<HTMLElement>('[role="toolbar"]') ?? [])) {
+    if (el.closest('[data-axf-toolbars-panel]')) continue;
+    add(toolbarInstanceOf(el), el.getAttribute('aria-label') || toolbarInstanceOf(el), true);
+  }
+  const prefix = CHROME_INSTANCE_KEY('toolbar', '');
+  for (const k of Object.keys(settings.savedValues?.() ?? {})) {
+    if (!k.startsWith(prefix) || k.endsWith('.asset')) continue;
+    const id = k.slice(prefix.length);
+    if (id) add(id, id, false);
+  }
+  return [...out.values()].sort((a, b) => a.instance.localeCompare(b.instance));
+}

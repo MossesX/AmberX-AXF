@@ -51,3 +51,20 @@ The three bars Brett named are plain plugin toolbars, so they get it with no plu
 `framework/spec/check-toolbar-settings.mts` renders the same three bars from the same framework controls inside the
 real AppShell and changes every setting on each of them. Buttons Icons / Labels only has something to switch where a
 button has an icon; on the filter bar (checkboxes, chips) the other six settings are the visible ones.
+
+## s4 Every toolbar, persisted, by API
+
+- Every toolbar in every app on the framework (console, axHub web, AmberX, Molly, walkthrough-studio, demo) gets it
+  through `<AxfProvider>`; no plugin change. Settings live in the settings store (`axf.chrome.toolbar.<instance>`,
+  fold `axf.toolbars.<instance>.folded`), so they survive a reload and sync like every other setting.
+
+| What | Console API (REST) / MCP `console_action` | CLI / voice (AmberX) |
+|---|---|---|
+| Open a toolbar's settings (deep link) | `chrome.settings:toolbar:<instance>`, e.g. `chrome.settings:toolbar:shipped-features-actions` | same action ("open toolbar settings") |
+| Set one setting | `chrome.set:toolbar:<instance>:<variant\|align\|density\|surface\|divider\|showSearch\|collapsible\|tapConfirm>:<value>` | same |
+| Put one back | `chrome.unset:toolbar:<instance>:<field>`; all of them `chrome.reset:toolbar:<instance>` | same |
+| Fold / unfold | `toolbar.fold:<instance>:<on\|off\|toggle>` (new) | same |
+| Read state | console catalog `field` "Toolbar: <name>" per toolbar on screen or with saved settings (`console_list settings`): what is set, folded, on screen | same |
+
+Values: variant `icons | icons-labels | labels`, align `start | center | spread`, density `compact | regular | roomy`,
+surface `flat | raised | glass`, toggles `on | off`.
