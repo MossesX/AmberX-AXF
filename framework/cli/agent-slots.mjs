@@ -16,7 +16,7 @@
  * only judged on the host that started an entry, so the console never drops the VPS's sessions.
  *
  *   node framework/cli/agent-slots.mjs status [--json]           slots used / cap, the queue, heavy lock, memory
- *   … enqueue --name n [--kind headless|swarm] [--priority boss|urgent|high|normal|low] [--build id] [--pid N] [--cwd d] [--agent id] [--json|--sh]
+ *   … enqueue --name n [--kind headless|swarm] [--priority boss|urgent|high|normal|low] [--build id] [--step sN] [--pid N] [--cwd d] [--agent id] [--json|--sh]
  *   … wait <id> [--pid N]          block until the entry starts (exit 0) or is cancelled (exit 4)
  *   … claim <id>                   one try: exit 0 started, 3 still waiting, 4 gone
  *   … bind <id> --pid N [--session s] · finish <id> [--exit N] · release <id>
@@ -312,7 +312,7 @@ export function enqueue(opts = {}, facts = {}) {
     const mem = prune(st, settings, facts);
     const id = newId(st, opts.kind);
     const nowIso = new Date(facts.now ?? Date.now()).toISOString();
-    st.queue.push({ id, name: clip(opts.name || 'run', 60), kind: opts.kind === 'swarm' ? 'swarm' : 'headless', priority: levelFor(opts.name, opts.priority, settings), ...(opts.build ? { build: clip(opts.build, 80) } : {}),
+    st.queue.push({ id, name: clip(opts.name || 'run', 60), kind: opts.kind === 'swarm' ? 'swarm' : 'headless', priority: levelFor(opts.name, opts.priority, settings), ...(opts.build ? { build: clip(opts.build, 80) } : {}), ...(opts.build && /^[a-z0-9][a-z0-9-]{0,39}$/.test(String(opts.step ?? '')) ? { step: String(opts.step) } : {}),
       seq: st.seq, state: 'waiting', enqueuedAt: nowIso, pid: Number(opts.pid) || process.ppid, host: HOST(), cwd: clip(opts.cwd ?? process.cwd(), 300), agent: clip(opts.agent, 60), by: clip(opts.by || process.env.AXF_SURFACE || '', 40) });
     return { id, ...tryStart(st, settings, id, mem.avail, facts) };
   });
@@ -333,7 +333,7 @@ function tryStart(st, settings, id, avail, facts = {}) {
   if (!d.go) return { started: false, position: d.position, reason: d.reason, used: holding(st).length, cap: settings.maxAgents };
   const q = st.queue.find((x) => x.id === id);
   st.queue = st.queue.filter((x) => x.id !== id);
-  st.running.push({ id, name: q.name, kind: q.kind, priority: q.priority, ...(q.build ? { build: q.build } : {}), state: 'starting', host: q.host, pid: q.pid, session: '', cwd: q.cwd, agent: q.agent, by: q.by,
+  st.running.push({ id, name: q.name, kind: q.kind, priority: q.priority, ...(q.build ? { build: q.build } : {}), ...(q.step ? { step: q.step } : {}), state: 'starting', host: q.host, pid: q.pid, session: '', cwd: q.cwd, agent: q.agent, by: q.by,
     enqueuedAt: q.enqueuedAt, startedAt: new Date(now).toISOString(), waitedMs: now - Date.parse(q.enqueuedAt) });
   return { started: true, position: 0, reason: '', used: holding(st).length, cap: settings.maxAgents };
 }
@@ -497,7 +497,7 @@ async function cli(argv) {
       return;
     }
     case 'enqueue': {
-      const r = enqueue({ name: f.name, kind: f.kind, priority: f.priority, build: f.build, pid: f.pid, cwd: f.cwd, agent: f.agent, by: f.by });
+      const r = enqueue({ name: f.name, kind: f.kind, priority: f.priority, build: f.build, step: f.step, pid: f.pid, cwd: f.cwd, agent: f.agent, by: f.by });
       if (f.sh) return console.log(`slot_id=${r.id} slot_started=${r.started ? 1 : 0} slot_pos=${r.position} slot_reason=${r.reason || 'none'}`);
       return f.json ? json(r) : console.log(r.started ? `started ${r.id}` : `queued at position ${r.position} (${r.id}${r.reason === 'memory' ? ', waiting for memory' : ''})`);
     }

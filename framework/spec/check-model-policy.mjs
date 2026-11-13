@@ -10,7 +10,7 @@ import { JOB_DEFAULTS, JOB_ENUMS, jobTypeErrors, normalizeJobType } from '../cor
 import { MODELS as STORE_MODELS } from '../plan/builds-store-core.mjs';
 import { suggestModel } from '../cli/plan.mjs';
 import * as SW from '../core/model-switch.mjs';
-import { audit, findBuild, launchCheck } from '../cli/model-gate.mjs';
+import { audit, findBuild, launchCheck, stepLaunchCheck } from '../cli/model-gate.mjs';
 import { readUpgradePolicy } from '../cli/upgrade-policy.mjs';
 import { mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -90,6 +90,16 @@ t('launch gate: an unapproved upgrade phase or a model above the step is refused
   assert.equal(launchCheck(LB([], 0), 'opus').ok, true); assert.equal(launchCheck(null, 'fable').ok, true, 'not an orchestrator build');
   const store = { builds: [LB()] };
   assert.equal(findBuild(store, { name: 'axf-lb' })?.id, 'lb'); assert.equal(findBuild(store, { brief: 'Continue build "L" (lb) — Phase 2' })?.id, 'lb'); assert.equal(findBuild(store, { name: 'other' }), null);
+});
+t('step launch gate (fill every slot): checked per step; never above the step pin; a settled or missing step is refused', () => {
+  const ok = [{ phase: 1, from: 'Opus', to: 'Fable', by: 'brett', via: 'console' }];
+  assert.equal(stepLaunchCheck(LB(ok), 's3', 'opus').ok, true, 'an Opus step on Opus');
+  assert.equal(stepLaunchCheck(LB(ok), 's3', 'fable').ok, false, 'an Opus step never on Fable, even beside an approved Fable phase');
+  assert.match(stepLaunchCheck(LB(ok), 's3', 'fable').why, /raise the step first/);
+  assert.equal(stepLaunchCheck(LB(ok), 's2', 'opus').ok, true, 'a Fable step on Opus is a downgrade');
+  assert.equal(stepLaunchCheck(LB(), 's2', 'fable').ok, false, 'its phase upgrade not approved');
+  assert.equal(stepLaunchCheck(LB(), 's1', 'opus').ok, false, 'done'); assert.equal(stepLaunchCheck(LB(), 's9', 'opus').ok, false, 'missing');
+  assert.equal(stepLaunchCheck(null, 's1', 'opus').ok, false, 'a step launch needs its build');
 });
 t('audit lists upgrades with who approved them (Brett or not)', () => {
   const rows = audit({ builds: [LB([{ phase: 1, from: 'Opus', to: 'Fable', at: 'a' }]), { id: 'ok', steps: [{ id: 's1', model: 'Opus' }, { id: 's2', model: 'Fable' }], approvals: [{ phase: 1, from: 'Opus', to: 'Fable', at: 'b', by: 'brett', via: 'axhub' }] }] });

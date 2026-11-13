@@ -538,6 +538,38 @@ export function briefFor(b, rules, { account, model, kind = '' }) {
   ].join('\n');
 }
 
+/**
+ * The brief of a step-scoped launch (a parallel step, `claude-headless.sh --step`): only that step, what each of its
+ * dependsOn steps produced (text, files, note, done) and the files it touches, plus the standing rules. The session works
+ * in its step worktree on `<build-branch>--<step>`, ticks that one step and stops; the dispatcher merges it back.
+ */
+export function stepBriefFor(b, stepId, rules, { account = '', model = '' } = {}) {
+  const st = (b.steps ?? []).find((x) => x.id === stepId);
+  if (!st) throw Object.assign(new Error(`${b.id} has no step ${stepId}`), { code: 2 });
+  const deps = BP.dependsOn(b, st).map((id) => b.steps.find((x) => x.id === id)).filter(Boolean);
+  const branch = BP.stepBranch(b, st, { parallel: true }); const buildBranch = BP.stepBranch(b, st);
+  const o = b.origin ?? {};
+  const files = BP.stepFiles(st);
+  return [
+    `# Build: ${b.id} · step ${st.id} only`, '',
+    saidBlock(o), '',
+    '## What to build',
+    `Continue build "${b.title}" (${b.id}) — one step only: ${st.id}, model ${st.model}. Other steps of this build run in other sessions at the same time; do only this one.`,
+    `Rules: stay in this one session; no sub-agents; ≤ ${Math.min(10, Number(rules?.maxStepMinutes) || 10)} min; read only the files listed; stop when this step is done.`,
+    `Look: ${orch.ASSET_RULE}`,
+    `API: ${orch.API_RULE}`,
+    '', `## Your step`,
+    `[ ] ${st.id}${st.estimate ? ` (~${st.estimate})` : ''} ${st.text}`,
+    files.length ? `Files it touches: ${files.join(', ')}. Change nothing else unless the step cannot be done without it; then say which file in a step note.` : 'Files it touches: not listed. Keep the change small and say which files you changed in a step note.',
+    st.checks?.length ? `Checks: ${st.checks.join(' · ')}` : '',
+    '', `## What it builds on (dependsOn)`,
+    ...(deps.length ? deps.map((d) => `- ${d.id} ${d.done ? 'done' : d.skip ? 'skipped' : 'OPEN'}: ${d.text}${BP.stepFiles(d).length ? ` · files: ${BP.stepFiles(d).join(', ')}` : ''}${d.note ? ` · note: ${str(d.note, 400).replace(/\n/g, ' / ')}` : ''}`) : ['- nothing: this step starts from the build branch as it is']),
+    `Their work is merged into ${buildBranch}, which this branch was made from.`,
+    '', `## Pipeline`,
+    `This step session was started by the orchestrator's dispatcher${account ? ` on Claude account ${account}` : ''}${model ? ` (${model})` : ''} in its own worktree on branch ${branch}. Commit on that branch and push it; never merge it into ${buildBranch} or main yourself: the dispatcher merges it back. When the step is done, tick it (node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step ${b.id} ${st.id} done) and stop. If you cannot finish, say why in a step note (orchestrator.mjs act note ${b.id} "${st.id}: …") and stop: the step goes back to ready.`,
+  ].filter((l) => l !== '').join('\n').replace(/\n(## )/g, '\n\n$1');
+}
+
 /** Start one headless session for a queued build on an account. */
 export function launch(b, { account, model, kind = '' }, { rules, env = process.env, launcher = env.AXF_PIPELINE_LAUNCHER || join(REPO_ROOT, 'deploy', 'claude-headless.sh') } = {}) {
   const { dir } = ensureWorktree(b.id, env);
@@ -977,6 +1009,12 @@ async function main(argv) {
     if (!r.done.length) throw Object.assign(new Error(r.refused.map((x) => x.error).join('; ')), { code: 2 });
     const one = r.done.length === 1 ? { id: r.done[0].id, status: r.done[0].status } : {};
     return out({ ok: true, ...one, ...r }, [...r.done.map((d) => `${d.id} → ${BP.TAB_LABEL[d.tab] || d.status}${cmd === 'hold' ? ' (on hold)' : ''}`), ...r.refused.map((x) => `refused ${x.id}: ${x.error}`)].join('\n'));
+  }
+  if (cmd === 'step-brief') { // step-brief <build> <step>: the brief of a step-scoped launch (claude-headless.sh --step)
+    const store = loadStore(); const b = storeCore.findBuild(store, rest[0]);
+    if (!b) throw Object.assign(new Error(`no build "${rest[0]}"`), { code: 2 });
+    const text = stepBriefFor(b, rest[1], rulesOf(store), { account: flag('account'), model: flag('model') });
+    return out({ ok: true, id: b.id, step: rest[1], brief: text }, text);
   }
   if (cmd === 'split') {
     if (has('request')) { const b = setPipeline(rest[0], { splitRequested: nowIso() }, { note: `Split asked for by ${by}.`, by, action: 'pipeline:split-request' }); return out({ ok: true, id: b.id, requested: b.pipeline.splitRequested }, `${b.id}: split on the next tick`); }

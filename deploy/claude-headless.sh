@@ -26,6 +26,11 @@
 # when the session ends; the brief gets a line asking the session to `axf focus` the screen it works on.
 # AXF_WATCH_LIVE=off turns it off. Its log: .axf-watch-live.log.
 # Prints one line: "started <tmux session> in <folder>" (or "started pid …").
+# Step-scoped launches (fill every slot, BUILD-PARALLEL, Nov 13 2026): `--step <id>` starts a session for ONE step of
+# the build named by --name (a parallel step, in its own step worktree). The brief is rewritten to carry only that step,
+# what its dependsOn steps produced and the files it touches (pipeline.mjs step-brief; AXF_STEP_BRIEF=off keeps the
+# given brief); the session is axf-<build>--<step>, books its own agent slot (agent-slots enqueue --step) and the model
+# gate checks the step's own pin (model-gate launch --step). Events carry "step".
 # Model upgrades (Brett, Nov 3 2026): before anything starts, framework/cli/model-gate.mjs checks the model against the
 # orchestrator build the run belongs to (--name, AXF_BUILD_ID or the brief's "Continue build … (<id>)"): a higher model
 # than its step, or an upgrade phase Brett hasn't approved, is refused with exit 3 and one line saying why. Every brief
@@ -92,7 +97,7 @@ ORIG_ARGS=("$@")
 export PATH="$HOME/.local/bin:$PATH"   # vps.run / cron shells don't load the profile; Claude Code installs here
 
 inner_skip_still="${AXF_STILL_CHECK_OFF:-}"
-name="" brief="" log=".axf-headless.log" inner="" envfile="" mcp="" slot="" queued="" priority="${AXF_PRIORITY:-}" agent="${AXF_AGENT_NAME:-${AXF_AGENT:-}}" agent_line="" account="${AXF_CLAUDE_ACCOUNT:-}" login_line=""
+step="" name="" brief="" log=".axf-headless.log" inner="" envfile="" mcp="" slot="" queued="" priority="${AXF_PRIORITY:-}" agent="${AXF_AGENT_NAME:-${AXF_AGENT:-}}" agent_line="" account="${AXF_CLAUDE_ACCOUNT:-}" login_line=""
 while [[ $# -gt 0 ]]; do
   case "$1" in
     --name) name="$2"; shift 2 ;;
@@ -105,6 +110,7 @@ while [[ $# -gt 0 ]]; do
     --priority) priority="$2"; shift 2 ;;
     --agent) agent="$2"; shift 2 ;;
     --account) account="$2"; shift 2 ;;
+    --step) step="$2"; shift 2 ;;
     --) shift; break ;;
     *) echo "claude-headless: unknown option $1" >&2; exit 2 ;;
   esac
@@ -112,6 +118,8 @@ done
 [[ -n "$brief" && -f "$brief" ]] || { echo "claude-headless: --brief <file> is required" >&2; exit 2; }
 [[ "$log" =~ ^[A-Za-z0-9._-]{1,200}$ ]] || { echo "claude-headless: --log is a plain file name" >&2; exit 2; }
 [[ -z "$account" || "$account" =~ ^[a-z0-9][a-z0-9-]{0,31}$ ]] || { echo "claude-headless: --account is a saved account name (or active / live)" >&2; exit 2; }
+[[ -z "$step" || "$step" =~ ^[a-z0-9][a-z0-9-]{0,39}$ ]] || { echo "claude-headless: --step is a step id (s3)" >&2; exit 2; }
+[[ -n "$step" ]] && export AXF_STEP_ID="$step"
 raw="${log%.log}.jsonl"
 HDIR="${AXF_HEADLESS_DIR:-/var/tmp/axf-headless}"
 model="${AXF_MODEL:-}"
@@ -124,7 +132,7 @@ event() {   # $1 = session-start | session-end, $2 = tmux session, $3 = exit (en
   EV="$1" SES="$2" EXITC="${3:-}" AGENT="$agent" MODEL="$model" NAME="$name" LOGF="$(pwd)/$log" ACCT="${login_account:-}" ACCT_EMAIL="${login_email:-}" node -e '
     const e = process.env; const fs = require("fs"); const path = require("path");
     let cost = 0; try { cost = Number(JSON.parse(fs.readFileSync(path.join(e.HDIR, `${e.SES}.meter.json`), "utf8")).costUsd) || 0; } catch {}
-    const line = { event: e.EV, session: e.SES, name: e.NAME, agent: e.AGENT, model: e.MODEL, cwd: process.cwd(), log: e.LOGF,
+    const line = { event: e.EV, session: e.SES, name: e.NAME, ...(e.AXF_STEP_ID ? { step: e.AXF_STEP_ID } : {}), agent: e.AGENT, model: e.MODEL, cwd: process.cwd(), log: e.LOGF,
       surface: e.AXF_SURFACE || "", at: new Date().toISOString(), ...(e.EXITC !== "" ? { exit: Number(e.EXITC) } : {}),
       ...(e.ACCT ? { account: e.ACCT, email: e.ACCT_EMAIL } : {}), ...(/^session-(part|end)$/.test(e.EV) && cost ? { costUsd: cost } : {}) };
     fs.appendFileSync(path.join(e.HDIR, "events.jsonl"), JSON.stringify(line) + "\n");' 2>/dev/null || true
@@ -217,9 +225,14 @@ if [[ -z "$inner" && -z "$queued" ]] && command -v node >/dev/null && [[ -f "$GA
   model="${AXF_MODEL:-}"; prev=""
   for a in "$@"; do [[ "$prev" == --model ]] && model="$a"; prev="$a"; done
   if [[ -n "$model" ]]; then
-    verdict="$(node "$GATE" launch --model "$model" --name "$name" --brief "$brief" 2>&1)"; gate_st=$?
+    verdict="$(node "$GATE" launch --model "$model" --name "$name" --brief "$brief" ${step:+--step "$step"} 2>&1)"; gate_st=$?
     if (( gate_st == 3 )); then echo "claude-headless: $verdict" >&2; echo "$verdict"; exit 3; fi
   fi
+fi
+# A step launch carries only its step: the brief is rewritten from the store (the step, its dependsOn results, its files).
+PIPE_JS="$HERE/../apps/console-web/plugins/build-orchestrator/pipeline.mjs"  # axf-plugin:build-orchestrator
+if [[ -n "$step" && -z "$inner" && -z "$queued" && "${AXF_STEP_BRIEF:-on}" != off ]] && command -v node >/dev/null && [[ -f "$PIPE_JS" ]]; then
+  sbrief="$(node "$PIPE_JS" step-brief "${AXF_BUILD_ID:-$name}" "$step" 2>/dev/null)" && [[ -n "$sbrief" ]] && printf '%s\n' "$sbrief" > "$brief"  # axf-plugin:build-orchestrator
 fi
 # One way to start builds (framework/cli/dispatch-gate.mjs, Brett, Nov 9 2026: "It has to be the orchestrator"): a launch
 # that belongs to a build starts only with the orchestrator dispatcher's token for that build (AXF_DISPATCH_TOKEN, set by
@@ -250,7 +263,7 @@ if [[ -z "$inner" && -z "$queued" ]] && look_on; then
   if (( look_st == 5 )); then echo "claude-headless: $look_line" >&2; echo "$look_line"; exit 3; fi
   if (( look_st == 4 )); then
     ${SETSID:-$(command -v setsid)} nohup bash -c 'node "$1" wait --name "$2" --brief "$3" && exec bash "${@:4}"' _ "$LOOK" "$name" "$brief" \
-      "$HERE/claude-headless.sh" --name "$name" --agent "$agent" ${account:+--account "$account"} --brief "$brief" --log "$log" ${priority:+--priority "$priority"} -- "$@" > .axf-look-wait.log 2>&1 &
+      "$HERE/claude-headless.sh" --name "$name" --agent "$agent" ${account:+--account "$account"} ${step:+--step "$step"} --brief "$brief" --log "$log" ${priority:+--priority "$priority"} -- "$@" > .axf-look-wait.log 2>&1 &
     echo "queued for look approval in $(pwd): $look_line (starts by itself once Brett approves the look in UI Review)"
     exit 0
   fi
@@ -452,6 +465,8 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
 fi
 
 slug="$(printf '%s' "${name:-run}" | tr -c 'A-Za-z0-9._-' '-' | sed 's/^-*//; s/-*$//' | cut -c1-48)"
+# a step session: axf-<build>--<step> (the build part shortened so the step always fits); the inner run gets it as is
+if [[ -n "$step" && "$slug" != *"--$step" ]]; then slug="$(printf '%s' "$slug" | cut -c1-$(( 46 - ${#step} )))--$step"; fi
 session="axf-${slug:-run}"
 # axHub 109: the build's name, sent as X-Axhub-Session (letters, digits, . _ - only; at most 48 here, 60 on the hub).
 export AXF_SESSION="${AXF_SESSION:-${slug:-run}}"
@@ -488,13 +503,13 @@ elif slots_on; then
   slot_build=""
   read -r tag_level slot_build < <(node "$HERE/../framework/cli/build-priority.mjs" slot --name "$slug" --brief "$brief" 2>/dev/null) || true
   [[ -z "$priority" && -n "${tag_level:-}" ]] && priority="$tag_level"
-  eval "$(node "$SLOTS" enqueue --name "$slug" --kind headless ${priority:+--priority "$priority"} ${slot_build:+--build "$slot_build"} --pid "$$" --cwd "$(pwd)" --sh 2>/dev/null | grep -E '^slot_id=[A-Za-z0-9-]+ slot_started=[01] slot_pos=[0-9]+ slot_reason=[a-z]+$')"
+  eval "$(node "$SLOTS" enqueue --name "$slug" --kind headless ${priority:+--priority "$priority"} ${slot_build:+--build "$slot_build"} ${step:+--step "$step"} --pid "$$" --cwd "$(pwd)" --sh 2>/dev/null | grep -E '^slot_id=[A-Za-z0-9-]+ slot_started=[01] slot_pos=[0-9]+ slot_reason=[a-z]+$')"
   if [[ "$slot_reason" == notqueued ]]; then   # only Queued builds take slots
     [[ -n "$limit_res" ]] && node "$LIMIT_JS" release "$limit_res" >/dev/null 2>&1
     echo "claude-headless: refused: this build is not Queued (only a Queued build takes a slot)" >&2; echo "refused: this build is not Queued (only a Queued build takes a slot)"; exit 3
   fi
   if [[ -n "$slot_id" && "$slot_started" == 0 ]]; then
-    ${SETSID:-$(command -v setsid)} nohup bash "$HERE/claude-headless.sh" --queued "$slot_id" --name "$name" --agent "$agent" ${account:+--account "$account"} --brief "$brief" --log "$log" -- "$@" > .axf-queue.log 2>&1 &
+    ${SETSID:-$(command -v setsid)} nohup bash "$HERE/claude-headless.sh" --queued "$slot_id" --name "$name" --agent "$agent" ${account:+--account "$account"} ${step:+--step "$step"} --brief "$brief" --log "$log" -- "$@" > .axf-queue.log 2>&1 &
     why=""; [[ "$slot_reason" == memory ]] && why=", waiting for free memory"
     [[ -n "$limit_res" ]] && node "$LIMIT_JS" release "$limit_res" >/dev/null 2>&1
     echo "queued at position $slot_pos ($slot_id$why) in $(pwd): starts by itself when a slot frees"
@@ -514,7 +529,7 @@ if ! command -v tmux >/dev/null; then
 fi
 tmux has-session -t "=$session" 2>/dev/null && session="$session-$(date +%H%M%S)"
 envs=()   # tmux starts the command in its server's environment: pass what the run needs explicitly
-for v in PATH HOME AXF_BUILD_LIMIT AXF_BUILD_SLICE AXF_BUILD_LIMIT_ONLY AXF_BUILD_LIMIT_POLL AXF_SURFACE AXF_MODEL AXF_AGENT AXF_AGENT_NAME AXF_AGENT_BOOKED AXF_HEADLESS_DIR AXF_ADOPT_CHANGE AXF_CLAUDE_AUTH AXF_SESSION AXHUB_URL AXF_SLOTS AXF_SLOTS_DIR AXF_SLOTS_PREFIX AXF_SLOTS_HOST AXF_WATCH_LIVE AXF_CLAUDE_ACCOUNT AXF_OWN_LOGIN AXF_CLAUDE_ACCOUNTS AXF_CLAUDE_HOME AXF_CLAUDE_GLOBAL AXF_CLAUDE_SEEN AXF_LOGIN_NOTE AXF_WORKERS AXF_CLAUDE_WORKERS AXF_WORKER_POLL AXF_WORKERS_ALIVE AXF_BUILD_PROFILE AXF_JOB_TYPE; do
+for v in PATH HOME AXF_BUILD_LIMIT AXF_BUILD_SLICE AXF_BUILD_LIMIT_ONLY AXF_BUILD_LIMIT_POLL AXF_SURFACE AXF_MODEL AXF_AGENT AXF_AGENT_NAME AXF_AGENT_BOOKED AXF_HEADLESS_DIR AXF_ADOPT_CHANGE AXF_CLAUDE_AUTH AXF_SESSION AXHUB_URL AXF_SLOTS AXF_SLOTS_DIR AXF_SLOTS_PREFIX AXF_SLOTS_HOST AXF_WATCH_LIVE AXF_CLAUDE_ACCOUNT AXF_OWN_LOGIN AXF_CLAUDE_ACCOUNTS AXF_CLAUDE_HOME AXF_CLAUDE_GLOBAL AXF_CLAUDE_SEEN AXF_LOGIN_NOTE AXF_WORKERS AXF_CLAUDE_WORKERS AXF_WORKER_POLL AXF_WORKERS_ALIVE AXF_BUILD_PROFILE AXF_JOB_TYPE AXF_STEP_ID; do
   [[ -n "${!v:-}" ]] && envs+=(-e "$v=${!v}")
 done
 envs+=(-e "AXF_BUILD_ID=${AXF_BUILD_ID:-}")   # always set: never the tmux server's stale value from an older launch
@@ -528,7 +543,7 @@ secret="$(umask 077; mktemp "${TMPDIR:-/tmp}/axf-headless-env-XXXXXX")"
   [[ -n "$tok" ]] && printf 'export AXHUB_TOKEN=%q\n' "$tok"
 } > "$secret"
 tmux new-session -d -s "$session" -x 200 -y 50 -c "$(pwd)" "${envs[@]}" \
-  bash "$HERE/claude-headless.sh" --inner --name "$slug" --agent "$agent" ${account:+--account "$account"} --envfile "$secret" --brief "$brief" --log "$log" ${slot:+--slot "$slot"} ${priority:+--priority "$priority"} -- "$@"
+  bash "$HERE/claude-headless.sh" --inner --name "$slug" --agent "$agent" ${account:+--account "$account"} ${step:+--step "$step"} --envfile "$secret" --brief "$brief" --log "$log" ${slot:+--slot "$slot"} ${priority:+--priority "$priority"} -- "$@"
 tmux set-option -t "$session" history-limit 50000 >/dev/null 2>&1 || true
 # Headless tabs: what the console's Terminal shows on the tab (one `tmux ls` reads them all)
 for kv in "@axf_kind=headless" "@axf_agent=$agent" "@axf_model=$model" "@axf_cwd=$(pwd)" "@axf_meter=$HDIR/$session.meter.json" "@axf_chain=$HDIR/$session.chain.json"; do
