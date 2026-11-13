@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5051,
- "updatedAt": "2026-11-13T21:24:35.985Z",
+ "rev": 5052,
+ "updatedAt": "2026-11-13T21:26:16.754Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -208042,10 +208042,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/per-instance-settings-small-live-preview",
-   "pr": "",
+   "pr": "#662",
    "priority": "P1",
    "createdAt": "2026-11-13T20:45:51.589Z",
-   "updatedAt": "2026-11-13T21:24:34.196Z",
+   "updatedAt": "2026-11-13T21:26:15.193Z",
    "builtAt": "",
    "notes": [
     {
@@ -208192,7 +208192,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
