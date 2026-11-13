@@ -175,15 +175,36 @@
       {
         "target": "action:app.settings",
         "title": "Settings",
-        "text": "Opens Settings: the look, your account, connections, plugins and Help mode.",
+        "text": "Opens Settings in a floating dialog over the screen you're on: the look, your account, connections, plugins and Help mode.",
         "related": [
-          "view:settings"
-        ]
+          "view:settings",
+          "action:settings.page",
+          "action:settings.opensAs"
+        ],
+        "more": "Every settings interface opens this way unless you pick the page in Appearance → Display → Settings open in. Open as page, at the top of the dialog, moves the same settings onto the full Settings page."
       },
       {
         "target": "action:settings.open",
         "title": "Settings",
-        "text": "Opens Settings on the tab this item names."
+        "text": "Opens the settings tab this item names in a floating dialog over the screen you're on (or on the Settings page, if you picked the page)."
+      },
+      {
+        "target": "action:settings.page",
+        "title": "Open as page",
+        "text": "Moves these settings from the floating dialog onto the full Settings page, on the same tab.",
+        "related": [
+          "action:app.settings",
+          "action:settings.opensAs"
+        ]
+      },
+      {
+        "target": "action:settings.opensAs",
+        "title": "Settings open in",
+        "text": "Where every settings interface opens: a floating dialog over the screen you're on (the default) or the Settings page. Your own choice; it follows you to every device.",
+        "tryIt": "Say \"settings open as a page\" or \"settings open in a dialog\".",
+        "related": [
+          "action:settings.page"
+        ]
       },
       {
         "target": "action:help.docs",

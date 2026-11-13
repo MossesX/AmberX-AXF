@@ -13,6 +13,10 @@ export interface DialogDef {
   render: (props: Record<string, unknown>, close: () => void) => ReactNode;
   /** false keeps it out of search (dialogs that only make sense with props, e.g. asset-json) */
   searchable?: boolean;
+  /** glass = see-through surface (--fx-opacity-glass + --fx-blur), used by every settings dialog */
+  surface?: 'glass';
+  /** wide = room for a settings interface (two thirds of the screen, up to the page width) */
+  size?: 'wide';
 }
 export type DialogMap = Record<string, DialogDef>;
 
@@ -81,7 +85,7 @@ export function DialogHost({ dialogs }: { dialogs: DialogMap }) {
   const brandHost = brandHostProps(brand);
   return (
     <div className="fx-backdrop" onPointerDown={(e) => d.closeOnBackdrop && rt.behavior().windows.closeOnBackdrop && e.target === e.currentTarget && close()}>
-      <div className={`fx-dialog ${brandHost.className}`.trim()} role="dialog" aria-modal="true" aria-label={def.title} tabIndex={-1} ref={panelRef} data-fx-brand-mode={brandHost['data-fx-brand-mode']} style={pull ? { transform: `translateY(${pull}px)` } : undefined}>
+      <div className={`fx-dialog ${brandHost.className}`.trim()} data-fx-dialog-surface={def.surface} data-fx-dialog-size={def.size} role="dialog" aria-modal="true" aria-label={def.title} tabIndex={-1} ref={panelRef} data-fx-brand-mode={brandHost['data-fx-brand-mode']} style={pull ? { transform: `translateY(${pull}px)` } : undefined}>
         <header className="fx-dialog__head" onPointerDown={onHeadDown} onPointerMove={onHeadMove} onPointerUp={onHeadUp} onPointerCancel={onHeadUp}>
           {brand?.svg && <BrandMark slot="dialog" height={16} className="fx-dialog__brand" />}
           {def.icon && <Icon name={def.icon} size={18} />}

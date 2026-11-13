@@ -2286,5 +2286,11 @@
     "wave": 1,
     "module": "app-console",
     "notes": "framework/core/build-id.mjs: ids ≤ 40 chars (^[a-z0-9][a-z0-9-]{0,39}$), filler words dropped, cut at a dash, -2/-3 on a collision; used by request, orchestrator add/import/harvest, Pending and Plan Studio. Legacy long ids get an alias (pipeline.mjs aliases, the tick for live builds); land-alias links <worktrees>/<alias> and claude/<alias> for build_land. Kotlin twin deferred."
+  },
+  "cx.settings.opendialog": {
+    "status": "built",
+    "wave": 1,
+    "module": "lib-settings",
+    "notes": "Every settings interface opens in a floating glass dialog by default (core/engines/settingsopen.ts; Brett Nov 13 2026). app.settings / settings.open[:tab] → dialog; per-user axf.settings.opensAs = page keeps the page; settings.page[:tab] (Open as page button) and settings.opensAs:<words>; CI framework/spec/check-settings-open.mts fails any code that navigates to the Settings page instead. Kotlin twin deferred."
   }
 }
