@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3871,
- "updatedAt": "2026-11-13T00:45:21.068Z",
+ "rev": 3872,
+ "updatedAt": "2026-11-13T00:45:58.816Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -170610,7 +170610,7 @@
    "title": "AmberX: approval pop-up not showing, only the Android notification",
    "category": "bug",
    "detail": "Brett said: \"Why isn't the approval thing popping up on my phone? Only the notification is. The Android notification.\"\n\nWhen axHub holds a vps.run call on the veto countdown, AmberX shows only the Android notification; the in-app approval pop-up (approve/deny with the command) does not appear. Find why (Follow Amber / approvals-banner relay, AXPP event, background start limits), fix it so the pop-up appears over any screen like before, keep the notification, add a test, and confirm on the phone.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -170618,14 +170618,19 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-12T15:33:08.904Z",
-   "updatedAt": "2026-11-12T21:55:54.411Z",
+   "updatedAt": "2026-11-13T00:45:57.884Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T00:45:57.884Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
+    "queuedAt": "2026-11-13T00:45:57.567Z",
+    "queuedBy": "console",
     "account": "",
     "session": "",
     "slot": "",
@@ -170705,7 +170710,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
