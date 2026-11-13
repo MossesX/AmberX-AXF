@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T20:01:36.260Z",
+ "updatedAt": "2026-11-13T20:01:57.394Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -132613,7 +132613,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T19:57:42.157Z",
-   "updatedAt": "2026-11-13T20:00:39.486Z",
+   "updatedAt": "2026-11-13T20:01:37.836Z",
    "builtAt": "",
    "notes": [
     {
@@ -132639,6 +132639,10 @@
     {
      "text": "Brett: EXHAUSTIVE. Every element gets every possible token: every visual or behavioural property that could ever vary is a token, not just the ones in use today. For style, behaviour, colours, layout, typography, spacing, borders, shadows, effects (blur, glass, gradients, opacity), icons, cursor, motion, sound/haptics where relevant, and every state (idle, hover, focus, active, pressed, selected, disabled, loading, error, empty, dragging) in light and dark. Generate the token families from one schema per element type, so a full set is guaranteed and gaps are caught by CI. Defaults still point at today's values, so nothing looks different.",
      "at": "2026-11-13T20:00:39.486Z"
+    },
+    {
+     "text": "Brett: the full token set will be overwhelming, so add experience-level views wherever skins/tokens/settings are edited (Token Control, the skin builder/config panel, the UI Manager, per-instance settings, Quick settings, the overrides dialog). BASIC: a handful of friendly controls per element (main colour, accent, roundness, density, transparency, animation on/off), each driving many tokens behind the scenes. PRO: grouped by area (colour, style, layout, behaviour) with the common tokens per state. ADVANCED: every single token, raw, searchable and filterable. Every token in the schema carries a 'level' (basic/pro/advanced) and a plain-English description. There is a global level picker plus a per-screen override, remembered per user; a change made in a higher level shows as 'customised' in lower levels. Full API and voice ('switch to advanced view').",
+     "at": "2026-11-13T20:01:37.836Z"
     }
    ],
    "approvals": [],
