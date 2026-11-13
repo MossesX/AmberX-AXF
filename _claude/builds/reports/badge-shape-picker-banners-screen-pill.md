@@ -1,7 +1,7 @@
 # Badge shape picker on the Banners screen
 
-Build: `badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad` · Phase 1 (Opus) · Nov 13 2026
-Branch: `claude/badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad`
+Build: `badge-shape-picker-banners-screen-pill` · Phase 1 (Opus) · Nov 13 2026
+Branch: `claude/badge-shape-picker-banners-screen-pill`
 
 ## Result
 Every badge on the top bar can now be shown as a **pill** (icon + text), **icon** only or a **dot**, or kept as its **own** shape (the
