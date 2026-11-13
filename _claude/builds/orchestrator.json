@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T21:15:26.357Z",
+ "updatedAt": "2026-11-13T21:15:55.636Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -134691,7 +134691,7 @@
    "title": "HOTFIX: desktop console draws app menu, banners and nav twice",
    "category": "",
    "detail": "Right after per-toolbar-settings-fix-failing-chrome landed on main (merge ec579ee23, 20:44 Nov 13) and the console redeployed, Brett's DESKTOP console shows TWO app menus, TWO banners and TWO navigation menus (the phone looks fine). Keep the per-toolbar/per-instance settings feature: fix forward, don't revert it. Likely cause: the per-instance chrome (ChromeContext.tsx / Overlays.tsx / chrome-settings-rules) now renders a per-instance copy of each chrome element in addition to the default one on wide layouts, or the merge kept both sides of a render block. Find it, render exactly one of each chrome element, add an e2e/visual test that counts app menus, banners and nav menus on desktop and phone (must be 1 each), run all tests, then LAND it on main immediately and redeploy the console. Note: commit 237a293af was an accidental revert that only re-added 24 lines to one file; check it and drop it if it's wrong.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -134699,7 +134699,7 @@
    "pr": "#658",
    "priority": "P0",
    "createdAt": "2026-11-13T20:53:50.393Z",
-   "updatedAt": "2026-11-13T21:13:38.691Z",
+   "updatedAt": "2026-11-13T21:14:49.474Z",
    "builtAt": "",
    "notes": [
     {
@@ -134737,6 +134737,14 @@
     {
      "text": "Headless run axf-hotfix-desktop-console-draws-app-menu--lenny: brief only · start 11.4K tokens ($0.03) · cost $4.86 · 85 turns · 6 tools, MCP none",
      "at": "2026-11-13T21:13:38.691Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"b91717a9-c832-49af-9ac7-5fd5a4873a0a\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-13T21:14:45.379Z"
+    },
+    {
+     "text": "Dispatch gate: hotfix-desktop-console-draws-app-menu still has axf-hotfix-desktop-console-draws-app-menu--lenny alive: not launched again, tracking that session.",
+     "at": "2026-11-13T21:14:49.474Z"
     }
    ],
    "approvals": [],
@@ -134753,7 +134761,68 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Right after per-toolbar-settings-fix-failing-chrome landed on main (merge ec579ee23, 20:44 Nov 13) and the console redeployed, Brett's DESKTOP console shows TWO app menus, TWO banners and TWO navigation menus (the phone looks fine). Keep the per-toolbar/per-instance settings feature: fix forward, don't revert it. Likely cause: the per-instance chrome (ChromeContext.tsx / Overlays.tsx / chrome-settings-rules) now renders a per-instance copy of each chrome element in addition to the default one on wide layouts, or the merge kept both sides of a render block. Find it, render exactly one of each chrome element, add an e2e/visual test that counts app menus, banners and nav menus on desktop and phone (must be 1 each), run all tests, then LAND it on main immediately and redeploy the console. Note: commit 237a293af was an accidental revert that only re-added 24 lines to one file; check it and drop it if it's wrong.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfh6b5v01xt2m",
+     "createdAt": "2026-11-13T21:14:45.379Z"
+    },
+    {
+     "id": "s2",
+     "text": "there's two app menus, two banners, two navigation menus; I don't want to lose the toolbar settings",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfh6b5v02i90y",
+     "createdAt": "2026-11-13T21:14:45.379Z"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/hotfix-desktop-console-draws-app-menu.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/hotfix-desktop-console-draws-app-menu.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfh6b5v03nbza",
+     "createdAt": "2026-11-13T21:14:45.379Z"
+    }
+   ]
   },
   {
    "id": "main-ci-red-test-sandbox-profile-export",

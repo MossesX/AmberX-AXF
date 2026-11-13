@@ -792,8 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 19:25 UTC · `ui-manager-floating-window-to-select-any` s4 done (all) · foreign-write
-- 2026-11-13 19:26 UTC · `console-app-part-3-native-bridge-mic` → queued, note (all) · pipeline
 - 2026-11-13 19:25 UTC · `console-android-app-thin-webview-wrapper` note (all) · orchestrator
 - 2026-11-13 19:27 UTC · `console-android-app-thin-webview-wrapper` s9 done (all) · orchestrator
 - 2026-11-13 19:27 UTC · `ui-manager-floating-window-to-select-any` s5 done (all) · orchestrator
@@ -1192,6 +1190,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 21:14 UTC · `console-app-wake-word-voice-listener` → pending, note (all) · reconciler
 - 2026-11-13 21:14 UTC · `skin-animations-swatches-skin-switch` → pending, note (all) · reconciler
 - 2026-11-13 21:14 UTC · `context-menus-plugin-one-true-source` branch claude/context-menus-plugin-one-true-source, PR #659 (all) · builds-live
+- 2026-11-13 21:14 UTC · `hotfix-desktop-console-draws-app-menu` note (all) · orchestrator
+- 2026-11-13 21:14 UTC · `hotfix-desktop-console-draws-app-menu` → running, note (all) · pipeline
 
 ## Token passes (log)
 
