@@ -778,7 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 10:52 UTC · `claude-settings-tabs-veto` → archived (all) · claude-voice
 - 2026-11-12 10:53 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` note (all) · orchestrator
 - 2026-11-12 10:54 UTC · `plugin-floatable` → archived (all) · claude-voice
 - 2026-11-12 10:54 UTC · `claude-accounts-edit` → archived (all) · claude-voice
@@ -1178,6 +1177,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 00:43 UTC · `everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the` note (all) · pipeline
 - 2026-11-13 00:43 UTC · `full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app` note (all) · pipeline
 - 2026-11-13 00:44 UTC · `full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app` note (all) · pipeline
+- 2026-11-13 00:45 UTC · `full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app` note (all) · pipeline
 
 ## Token passes (log)
 
