@@ -788,13 +788,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 18:13 UTC · `chrome-settings-actually-apply-toolbars` s3 done, → built (all) · orchestrator
-- 2026-11-13 18:14 UTC · `decision-dialog-ui-review-other` added (0 steps) (all) · console
-- 2026-11-13 18:14 UTC · `new-asset-type-animated-expanding-row` note (all) · orchestrator
-- 2026-11-13 18:14 UTC · `decision-dialog-ui-review-other` → queued, note (all) · console
-- 2026-11-13 18:15 UTC · `prompting-engine-control-panel-to-create` added (0 steps) (all) · console
-- 2026-11-13 18:16 UTC · `prompting-engine-control-panel-events` added (0 steps) (all) · console
-- 2026-11-13 18:16 UTC · `prompting-engine-control-panel-events` → queued, note (all) · console
 - 2026-11-13 18:16 UTC · `vps-builds-get-console-token-ui-review` note (all) · orchestrator
 - 2026-11-13 18:16 UTC · `vps-builds-get-console-token-ui-review` → running, note (all) · pipeline
 - 2026-11-13 18:16 UTC · `vps-builds-get-console-token-ui-review` branch claude/vps-builds-get-console-token-ui-review (all) · pipeline
@@ -1188,6 +1181,13 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 19:55 UTC · `per-instance-settings-picker-merge-main` note (all) · orchestrator
 - 2026-11-13 19:55 UTC · `per-instance-settings-picker-merge-main` s2 done (all) · orchestrator
 - 2026-11-13 19:56 UTC · `per-instance-settings-picker-merge-main` PR #642 (all) · builds-live
+- 2026-11-13 19:54 UTC · `full-voice-control-merge-main-and-land` note (all) · orchestrator
+- 2026-11-13 19:55 UTC · `skin-axhub-override-switch-greyed-out` → pending, note (all) · pipeline
+- 2026-11-13 19:55 UTC · `land-drive-live-console-first-resolve` note (all) · pipeline
+- 2026-11-13 19:55 UTC · `icon-map-icon-packs-every-icon-badge-app` added (0 steps) (all) · console
+- 2026-11-13 19:55 UTC · `skin-config-panel-merge-main-and-land` → running, note (all) · pipeline
+- 2026-11-13 19:55 UTC · `icon-map-icon-packs-every-icon-badge-app` → queued, note (all) · console
+- 2026-11-13 19:55 UTC · `skin-config-panel-merge-main-and-land` note (all) · orchestrator
 
 ## Token passes (log)
 

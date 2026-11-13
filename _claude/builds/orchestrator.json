@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T19:56:24.954Z",
+ "updatedAt": "2026-11-13T19:56:40.891Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -130142,7 +130142,7 @@
    "title": "Skin from axHub: Override switch, greyed-out editors with notes",
    "category": "",
    "detail": "Follow-up to console-skin-axhub-only (the 'Get my skin only from axHub' switch in Settings > Appearance).\n- Under that switch add an 'Override' switch, off by default. The two are mutually exclusive: turning Override on turns 'Inherit from axHub only' off right away, and turning axHub-only back on turns Override off.\n- While axHub-only is on and Override is off, nothing about the skin or its assets can be edited anywhere: every screen, panel, inline editor, UI Manager row and property/token field that would change the skin or an asset is greyed out (disabled, not hidden).\n- Each greyed-out area shows a note: 'This is locked: your skin and assets come from axHub. You can still edit it, but if you do it will no longer refresh or inherit any of its data from axHub.' with a 'Click here to override' link.\n- Clicking the link (or the Override switch) asks for one confirm, then turns Override on (axHub-only off) and unlocks editing. Edited assets are marked as overridden.\n- Full API: REST/MCP/CLI/voice/control@1. Tests, help, Shipped features.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -130150,7 +130150,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:56:15.400Z",
-   "updatedAt": "2026-11-13T19:54:12.466Z",
+   "updatedAt": "2026-11-13T19:55:05.674Z",
    "builtAt": "",
    "notes": [
     {
@@ -130192,6 +130192,10 @@
     {
      "text": "Headless run axf-skin-axhub-override-switch-greyed-out--sully: brief only · start 11.7K tokens ($0.03) · cost $4.15 · 115 turns · 6 tools, MCP none",
      "at": "2026-11-13T19:54:12.466Z"
+    },
+    {
+     "text": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
+     "at": "2026-11-13T19:55:05.674Z"
     }
    ],
    "approvals": [],
@@ -130819,7 +130823,7 @@
    "pr": "#620",
    "priority": "P0",
    "createdAt": "2026-11-13T19:31:40.346Z",
-   "updatedAt": "2026-11-13T19:53:26.496Z",
+   "updatedAt": "2026-11-13T19:55:13.365Z",
    "builtAt": "2026-11-13T19:53:16.613Z",
    "notes": [
     {
@@ -130869,6 +130873,10 @@
     {
      "text": "Headless run axf-land-drive-live-console-first-resolve--paulie: brief only · start 12.9K tokens ($0.06) · cost $2.49 · 53 turns · 6 tools, MCP none",
      "at": "2026-11-13T19:53:26.496Z"
+    },
+    {
+     "text": "Session axf-land-drive-live-console-first-resolve--paulie on mossesx-max- ended (exit 3); the build was already built.",
+     "at": "2026-11-13T19:55:13.365Z"
     }
    ],
    "approvals": [
@@ -131405,7 +131413,7 @@
    "title": "Skin config panel: merge main and land",
    "category": "",
    "detail": "Branch claude/skin-configuration-panel-before-ai-makes (800 behind) clashed with main in 10 files: .github/workflows/android.yml, settings libs (framework/libs/settings plus the amberx-droid, axhub-web, console-web and molly copies), the theme-manager plugin.json and web/index.tsx, framework/cli/build-engine.mjs and framework/spec/PORTING.md. Merge origin/main and keep main's newer code plus this branch's skin configuration panel (Brett picks what the AI may change before it makes a skin). Edit framework first and re-bake the app copies. Run tests, push, land on main.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -131413,7 +131421,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T19:47:38.941Z",
-   "updatedAt": "2026-11-13T19:51:53.669Z",
+   "updatedAt": "2026-11-13T19:55:47.144Z",
    "builtAt": "",
    "notes": [
     {
@@ -131435,6 +131443,14 @@
     {
      "text": "Session on mossesx-max- ended (exit 3) with 3 steps left: back in the Queue (run 1).",
      "at": "2026-11-13T19:51:53.669Z"
+    },
+    {
+     "text": "Started run 2 on mossesx-max- (Fable, Phase 1): axf-skin-config-panel-merge-main-and-land--sully.",
+     "at": "2026-11-13T19:55:34.423Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-skin-config-panel-merge-main-and-land--sully, own login copy)",
+     "at": "2026-11-13T19:55:47.144Z"
     }
    ],
    "approvals": [],
@@ -131527,7 +131543,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T19:47:44.815Z",
-   "updatedAt": "2026-11-13T19:49:27.897Z",
+   "updatedAt": "2026-11-13T19:55:56.292Z",
    "builtAt": "",
    "notes": [
     {
@@ -131551,8 +131567,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "skins-plugin-merge-main-and-land",
+    "brief": "# Build: skins-plugin-merge-main-and-land\n\n## Brett said (verbatim)\nAt: 2026-11-13T19:47:44.815Z\n> land the skins plugin\n\n## What to build\nContinue build \"Skins plugin: merge main and land\" (skins-plugin-merge-main-and-land) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-13 19:47):\n\"land the skins plugin\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (1 left, ~10 min):\n[ ] s1 (~10 min) Branch claude/skins-plugin-own-removable-console clashed with main in framework/spec/gen-fixtures.mts (merge aborted, main untouched). Merge origin/main and keep both sides' fixture entries, regenerate fixtures, run tests, push, then land on main. The Skins plugin is its own removable console plugin and screen for changing skins.\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step skins-plugin-merge-main-and-land <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link skins-plugin-merge-main-and-land --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step skins-plugin-merge-main-and-land <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note skins-plugin-merge-main-and-land \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -132023,12 +132039,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T19:53:48.014Z",
-   "updatedAt": "2026-11-13T19:53:51.729Z",
+   "updatedAt": "2026-11-13T19:54:58.989Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-13T19:53:51.729Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"c50f7854-925c-4485-9bb3-d615879da39d\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-13T19:54:58.989Z"
     }
    ],
    "approvals": [],
@@ -132036,6 +132056,104 @@
    "origin": {
     "said": "land full voice and API control",
     "at": "2026-11-13T19:53:48.014Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Branch claude/full-voice-api-control-type-fields-press clashed with main only in framework/catalog/status.json (merge aborted, main untouched). Merge origin/main and keep both sides' catalog entries (additive), run tests, push, then land on main.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfebpyl01wdcp",
+     "createdAt": "2026-11-13T19:54:58.989Z"
+    },
+    {
+     "id": "s2",
+     "text": "land full voice and API control",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfebpyl02mpg5",
+     "createdAt": "2026-11-13T19:54:58.989Z"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/full-voice-control-merge-main-and-land.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/full-voice-control-merge-main-and-land.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfebpyl03zwem",
+     "createdAt": "2026-11-13T19:54:58.989Z"
+    }
+   ]
+  },
+  {
+   "id": "icon-map-icon-packs-every-icon-badge-app",
+   "title": "Icon map and icon packs: every icon and badge in the app, swappable",
+   "category": "",
+   "detail": "1. Icon map: a registry of EVERY icon, badge and logo slot in the whole app (every plugin, screen, dialog, menu, toolbar, tab, nav item, banner, widget and button that shows an icon). Each slot gets a stable id, its location and a role (e.g. 'save', 'approve', 'build-running'), and registers through the framework manifest so new plugins appear automatically. Add a CI check that fails on hard-coded icons not in the map.\n2. Icon map screen: a searchable, filterable, categorized tree of every slot with a live preview, where you click a slot to change its icon. Ties into the UI Manager.\n3. Icon pack template: one pack file maps every role to an icon. Applying a pack changes every icon in the app in one click. Per-slot overrides with Restore previous edit / Restore from axHub.\n4. Packs: ship a lot of packs (outline, filled, rounded, duotone, sharp, glyph, emoji-style, plus badge styles and app/plugin logos). Some are themable (follow skin tokens for colour and stroke), others are fixed-colour. Each pack declares whether it's themable. Licences must allow redistribution; prefer open icon sets.\n5. Packs are assets: swappable, per-skin defaults, shareable via the hub asset library, importable.\n6. Full API: REST/MCP/CLI/voice ('switch to the duotone icon pack'). Tests, help, Shipped features. Use Fable for the registry/schema and asset type.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-13T19:55:30.979Z",
+   "updatedAt": "2026-11-13T19:55:44.116Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T19:55:44.116Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I need a shitload of icon packs, badges, logos, the works; a map of every single icon and badge for the whole entire app, every plugin, every screen, every UI; a template so I can change every single one with a click; some packs must be themable, others don't have to be; just need a lot of them",
+    "at": "2026-11-13T19:55:30.979Z",
     "source": "",
     "session": "",
     "link": "",
