@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T17:23:17.809Z",
+ "updatedAt": "2026-11-13T17:30:24.480Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -110581,7 +110581,7 @@
    ]
   },
   {
-   "id": "merge-all-ready-buttons-server-side-lander",
+   "id": "merge-all-ready-buttons-server-side",
    "title": "Merge all ready: buttons + server-side lander",
    "category": "orchestrator",
    "detail": "URGENT, boss order from Brett, Nov 12. The merge banner shows PRs 'ready for merge' but there's no way to merge them. Add: a 'Merge all ready' button on the merge banner and merge queue page, plus a Merge button on each row. Every merge goes through the main gate (tests must pass, rebase if behind, no force-push); conflicts get auto-rebased, and anything that can't land is marked with why. Progress shows live in the banner (merging 3 of 12...). Also a server-side lander that works through the whole backlog (~168 PRs) by itself, oldest first, one at a time, through the gate. Each merge and failure logged in the Server gate log / Automatic fixes. Full API: REST/MCP/CLI and voice ('merge everything ready').",
@@ -110589,10 +110589,10 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/merge-all-ready-buttons-server-side-lander",
-   "pr": "#514",
+   "branch": "claude/merge-all-ready-buttons-server-side",
+   "pr": "#580",
    "createdAt": "2026-11-12T02:47:57.796Z",
-   "updatedAt": "2026-11-12T03:35:07.490Z",
+   "updatedAt": "2026-11-13T17:30:20.420Z",
    "builtAt": "2026-11-12T03:34:10.885Z",
    "notes": [
     {
@@ -110622,6 +110622,10 @@
     {
      "text": "Session axf-merge-all-ready-buttons-server-side-lander--paulie on mossesx-max- ended (exit 0); the build was already built.",
      "at": "2026-11-12T03:35:07.490Z"
+    },
+    {
+     "text": "Renamed from merge-all-ready-buttons-server-side-lander (build names are at most 40 characters). By build-rename.",
+     "at": "2026-11-13T17:30:20.420Z"
     }
    ],
    "approvals": [],

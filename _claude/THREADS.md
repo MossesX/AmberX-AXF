@@ -785,8 +785,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 10:10 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` → pending, note (all) · reconciler
-- 2026-11-13 10:35 UTC · `fix-a-build-whose-session-finishes-its-phase-e-g-the-fable-steps-with-steps` added (0 steps) (all) · mcp
 - 2026-11-13 10:35 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` → queued, note (all) · console
 - 2026-11-13 10:35 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` → queued, note (all) · console
 - 2026-11-13 10:35 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` → queued, note (all) · console
@@ -1185,6 +1183,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 17:22 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` note (all) · orchestrator
 - 2026-11-13 17:23 UTC · `android-approval-overlay-a-small-always-on-float` note (all) · orchestrator
 - 2026-11-13 17:23 UTC · `overlay-opens-pages-the-floating-toolbar-expands` note (all) · orchestrator
+- 2026-11-13 17:30 UTC · `merge-all-ready-buttons-server-side` added (5 steps) (all) · build-rename
+- 2026-11-13 17:30 UTC · `merge-all-ready-buttons-server-side-lander` note, removed (all) · build-rename
 
 ## Token passes (log)
 
