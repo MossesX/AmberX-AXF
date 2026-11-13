@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T18:14:36.761Z",
+ "updatedAt": "2026-11-13T18:14:55.657Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -126567,6 +126567,37 @@
    "origin": {
     "said": "the VPS builds, the UI reviews, does that have anything to do with it",
     "at": "2026-11-13T18:13:51.274Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "decision-dialog-ui-review-other",
+   "title": "Decision dialog: UI Review and other approvals pop up on any screen with approve/deny/pick",
+   "category": "",
+   "detail": "Generalise the approval popup into one 'decision dialog' type used for anything that needs Brett, starting with UI Review.\n- Whenever an item is submitted to UI Review, Brett gets a notification AND a dialog pops up on whatever console screen he is on (and on the phone overlay toolbar when built), without navigating away.\n- The dialog shows the item (title, build, screenshots/options side by side, desktop + phone), with buttons: pick option N / Approve, Reject, Request changes (with a note), Later, and 'Open in UI Review' (only navigates if tapped).\n- Same dialog type reused for other decisions: veto countdowns, confirms, model upgrade approvals, merge clashes, keys needed, passes. Each source registers its buttons; one queue so several waiting items stack with a counter.\n- Voice/MCP/API: list waiting decisions, answer one by id ('pick option 2', 'approve it').\n- Notification settings to choose which decision types pop up.\n- Tests, help entry, Shipped features.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-13T18:14:45.988Z",
+   "updatedAt": "2026-11-13T18:14:45.988Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "anytime something goes to UI review I'm gonna get a notification, and another type of dialogue just pops up like approve, for other types of things, an approve deny control panel",
+    "at": "2026-11-13T18:14:45.988Z",
     "source": "",
     "session": "",
     "link": "",
