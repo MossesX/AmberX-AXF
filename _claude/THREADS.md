@@ -781,7 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 06:38 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` note (all) · orchestrator
 - 2026-11-13 06:38 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` s2 undone, note (all) · builds-live
 - 2026-11-13 06:39 UTC · `skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga` note (all) · orchestrator
 - 2026-11-13 06:39 UTC · `skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga` → running, note (all) · pipeline
@@ -1181,6 +1180,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 11:41 UTC · `overlay-opens-pages-the-floating-toolbar-expands` s3 done (all) · orchestrator
 - 2026-11-13 11:42 UTC · `overlay-opens-pages-the-floating-toolbar-expands` s3 done (all) · foreign-write
 - 2026-11-13 11:43 UTC · `overlay-opens-pages-the-floating-toolbar-expands` PR #571 (all) · builds-live
+- 2026-11-13 11:43 UTC · `overlay-opens-pages-the-floating-toolbar-expands` s4 done, → complete (all) · foreign-write
 
 ## Token passes (log)
 

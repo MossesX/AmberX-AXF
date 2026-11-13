@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T11:43:10.771Z",
+ "updatedAt": "2026-11-13T11:43:23.227Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -122130,7 +122130,7 @@
    "title": "Overlay opens pages: the floating toolbar expands into a full browser window when Claude or Brett opens a page (open_url, console_show, voice), then shrinks back to the toolbar when the browser is closed; works from the background via draw-over-other-apps; follows the skin; full API and voice",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -122138,8 +122138,8 @@
    "pr": "#571",
    "priority": "P0",
    "createdAt": "2026-11-13T11:27:54.484Z",
-   "updatedAt": "2026-11-13T11:43:09.401Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-13T11:43:10.667Z",
+   "builtAt": "2026-11-13T11:43:10.668Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -122262,8 +122262,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T11:43:10.667Z",
      "note": "",
      "uid": "st-mwew8j1u04bhak",
      "createdAt": "2026-11-13T11:28:36.977Z"
