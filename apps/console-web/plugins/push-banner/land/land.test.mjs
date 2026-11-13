@@ -14,6 +14,7 @@ import { fileURLToPath } from 'node:url';
 import * as core from './land-core.mjs';
 import { makeGit, round, control, readState, readControl, ciOf, reasonEvent, badJson, takeLandLock, dropLandLock, serial, lockOwner, requestFix, refreshRunning, sweep, readFixes } from './land.mjs';
 import { finishedBy, onBuildEvents } from './hook.mjs';
+import * as mq from './merge-queue-core.mjs';
 process.env.AXF_CREW_SAY = 'off'; // group-chat posts (crew-say.mjs) stay out of the real Breakroom
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -373,6 +374,73 @@ console.log('sweeper: every 10 minutes, each finished build not on main is lande
   check((await sweep({ s: sd, api: fapi, nowMs: T + 60000 })).skipped, 'not again within 10 minutes');
   const again = await sweep({ s: sd, api: fapi, nowMs: T + core.SWEEP_MS, force: true });
   check(!again.acted.some((a) => a.act === 'fix'), 'the same kick at the same head is not filed twice');
+  rmSync(sd.dataDir, { recursive: true, force: true });
+}
+console.log('sweeper + generated-files@1: a clash only in generated files is regenerated and lands; a code clash gets its fix build');
+{
+  check(core.regenFirst(core.blockReason('x', { conflicts: ['tracker.json', '_claude/THREADS.md'] }), 'h1', '') && !core.regenFirst(core.blockReason('x', { conflicts: ['tracker.json', 'src/a.ts'] }), 'h1', ''), 'regenFirst: only when every clashing file is generated or data');
+  check(!core.regenFirst(core.blockReason('x', { conflicts: ['tracker.json'] }), 'h1', 'h1') && !core.regenFirst(core.blockReason('x', { ci: 'failure' }), 'h1', ''), 'regenFirst: once per head, and never for red CI');
+  const t = mkdtempSync(join(tmpdir(), 'axf-sweep-regen-'));
+  const sh2 = (args, cwd) => { const r = spawnSync('git', args, { cwd, encoding: 'utf8' }); if (r.status) throw new Error(`git ${args.join(' ')}: ${r.stderr}`); return r.stdout.trim(); };
+  const o = join(t, 'origin.git'); const rp = join(t, 'repo');
+  sh2(['init', '-q', '--bare', '-b', 'main', o], t); sh2(['clone', '-q', o, rp], t);
+  const c2 = ['-c', 'user.name=t', '-c', 'user.email=t@t'];
+  const put2 = (p, x) => { mkdirSync(dirname(join(rp, p)), { recursive: true }); writeFileSync(join(rp, p), x); };
+  const commit2 = (m) => { sh2(['add', '-A'], rp); sh2([...c2, 'commit', '-q', '-m', m], rp); };
+  // stand-in generators at the manifest's paths: the tracker rebuilds tracker.json from status.txt; the land tests pass
+  put2('framework/cli/tracker.mjs', "import { readFileSync, writeFileSync } from 'node:fs';\nif (!process.argv.includes('--check')) writeFileSync('tracker.json', JSON.stringify({ regenerated: true, status: readFileSync('status.txt', 'utf8').trim() }) + '\\n');\n");
+  put2('apps/console-web/scripts/control-inventory.mjs', '\n'); put2('framework/spec/check-project-fixtures.mjs', '\n');
+  put2('status.txt', 'base\n'); put2('tracker.json', '{"v":"base"}\n'); put2('shared.ts', 'export const a = 1;\n');
+  commit2('base'); sh2(['push', '-q', 'origin', 'main'], rp);
+  const br = (id, fn) => { sh2(['checkout', '-q', '-b', `claude/${id}`, 'main'], rp); fn(); commit2(`${id} work`); sh2(['push', '-q', 'origin', `claude/${id}`], rp); sh2(['checkout', '-q', 'main'], rp); };
+  br('gen', () => { put2('tracker.json', '{"v":"gen branch"}\n'); put2('gen.ts', 'x\n'); });
+  br('src', () => { put2('shared.ts', 'export const a = 2; // src branch\n'); });
+  br('hidden', () => { put2('tracker.json', '{"v":"hidden branch"}\n'); put2('shared.ts', 'export const a = 4; // hidden\n'); });
+  put2('status.txt', 'main\n'); put2('tracker.json', '{"v":"main"}\n'); put2('shared.ts', 'export const a = 3; // main\n'); commit2('main moves'); sh2(['push', '-q', 'origin', 'main'], rp);
+  const g2 = makeGit(rp); g2(['fetch', '-q', 'origin']);
+  const s2 = { repo: rp, slug: 'MossesX/AmberX-AXF', dataDir: join(t, 'data'), console: 'off', remote: 'origin', base: 'main' };
+  mkdirSync(s2.dataDir, { recursive: true });
+  const T = Date.parse('2026-11-13T20:00:00Z');
+  const head = (b) => sh2(['rev-parse', `origin/claude/${b}`], rp);
+  const items = [
+    { id: 'gen', branch: 'claude/gen', head: head('gen'), pr: 701, state: 'blocked', since: '2026-11-13T19:00:00Z', reason: core.blockReason('gen', { conflicts: ['tracker.json'] }) },
+    { id: 'src', branch: 'claude/src', head: head('src'), pr: 702, state: 'blocked', since: '2026-11-13T19:00:00Z', reason: core.blockReason('src', { conflicts: ['shared.ts'] }) },
+    { id: 'hidden', branch: 'claude/hidden', head: head('hidden'), pr: 703, state: 'blocked', since: '2026-11-13T19:00:00Z', reason: core.blockReason('hidden', { conflicts: ['tracker.json'] }) },
+  ];
+  writeFileSync(join(s2.dataDir, 'land.json'), JSON.stringify({ on: true, items }));
+  const sent = []; const fapi = async (m, p, b) => { sent.push({ p, b }); return p.endsWith('/land/fix') ? { ok: true, id: `merge-main-and-land-${b.build || 'x'}` } : { ok: true }; };
+  const r = await sweep({ s: s2, api: fapi, git: g2, nowMs: T, force: true });
+  const act = (id) => r.acted.find((a) => a.id === id);
+  g2(['fetch', '-q', 'origin']);
+  const genTracker = JSON.parse(sh2(['show', 'origin/claude/gen:tracker.json'], rp));
+  check(act('gen')?.act === 'regen' && act('gen').regenerated.includes('tracker') && genTracker.regenerated && genTracker.status === 'main', '(a) a clash only in tracker.json: main merged in, tracker regenerated on the merged tree, pushed');
+  check(sh2(['show', 'origin/claude/gen:gen.ts'], rp) === 'x' && readControl(s2).now.includes('gen') && !sent.some((x) => x.p.endsWith('/land/fix') && x.b.build === 'gen'), '(a) the build keeps its own work, goes first in line to land, and no fix build is filed');
+  check(act('src')?.act === 'fix' && sent.some((x) => x.p.endsWith('/land/fix') && x.b.build === 'src') && reasonEvent(items[1].reason.kind) === 'failed', '(b) a real source clash: no regenerate, kicked to failed with a P0 fix build');
+  const hid = sent.find((x) => x.p.endsWith('/land/fix') && x.b.build === 'hidden');
+  check(act('hidden')?.act === 'fix' && hid && /shared\.ts/.test(hid.b.detail || '') && sh2(['rev-parse', 'origin/claude/hidden'], rp) === items[2].head, '(b) a clash that turns out to be in code too: nothing pushed, the fix build names the code file');
+  const again = await sweep({ s: s2, api: fapi, git: g2, nowMs: T + 60000, force: true });
+  check(!again.acted.some((a) => a.id === 'hidden' && a.act === 'regen'), 'the regenerate merge is tried once per head');
+  // pause: the timed sweep stands still; an asked-for one still runs
+  control(s2, 'pause', '', { why: 'test' });
+  check((await sweep({ s: s2, api: fapi, git: g2, nowMs: T + 3 * core.SWEEP_MS })).paused?.why === 'test', 'paused: the timed sweep does nothing');
+  writeFileSync(join(s2.dataDir, 'land-sweep.json'), JSON.stringify({ at: null, requested: new Date(T).toISOString() }));
+  check(!(await sweep({ s: s2, api: fapi, git: g2, nowMs: T + 4 * core.SWEEP_MS })).skipped, 'paused: a sweep asked for through REST / MCP still runs');
+  control(s2, 'resume', '');
+  check(!readControl(s2).sweepPaused, 'resume: the sweeper is on again');
+  rmSync(t, { recursive: true, force: true });
+}
+console.log('sweeper + merge queue: every finished build with a green PR goes in as one stack, never one at a time');
+{
+  const T = Date.parse('2026-11-13T20:00:00Z');
+  const ready = ['a', 'b', 'c', 'd'].map((id, i) => ({ id, branch: `claude/${id}`, head: `h${i}`, pr: 801 + i, state: 'ready', ci: 'success', reason: null, since: '2026-11-13T19:00:00Z' }));
+  const sd = { repo: process.cwd(), dataDir: mkdtempSync(join(tmpdir(), 'axf-sweep-stack-')) };
+  writeFileSync(join(sd.dataDir, 'land.json'), JSON.stringify({ on: true, order: ready.map((x) => x.pr), managed: ready.map((x) => x.pr), items: ready }));
+  const sent = []; const r = await sweep({ s: sd, api: async (m, p, b) => { sent.push(p); return { ok: true }; }, nowMs: T, force: true, merge: () => { throw new Error('the sweeper never merges a green build by itself'); } });
+  check(!r.acted.length && !sent.length && !(readControl(sd).now || []).length, 'the sweeper leaves green builds to the merge queue: no merge, no one-at-a-time push');
+  const prs = ready.map((x) => ({ number: x.pr, head: x.head, ci: x.ci, title: x.id, branch: x.branch, createdAt: '2026-11-13T19:00:00Z' }));
+  const order = mq.queueOrder(prs.filter((p) => !mq.notReady(p, {}, { waitUi: false, redJoins: true })), {}, Object.fromEntries(ready.map((x, i) => [x.pr, i])));
+  const batch = mq.batchMembers(order, { size: mq.QUEUE_DEFAULTS.batchSize });
+  check(batch.length === ready.length && batch.map((p) => p.number).join() === '801,802,803,804', 'every built build with a green PR joins one batch (one stack, one CI run), in landing order');
   rmSync(sd.dataDir, { recursive: true, force: true });
 }
 console.log('group chat: a landing reason is Brett\'s move, a code fix, or something in the way');
