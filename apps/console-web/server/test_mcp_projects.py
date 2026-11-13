@@ -121,4 +121,39 @@ finally:
     shutil.rmtree(tmp, ignore_errors=True)
     shutil.rmtree(leak, ignore_errors=True)
 
+# ---- the Projects plugin: systems check item for axHub's policy, and its mark-done command (scratch ROOT)
+import types  # noqa: E402
+
+import console_context as cx  # noqa: E402
+import plugin_services  # noqa: E402
+
+scratch = Path(tempfile.mkdtemp(prefix="axf-projects-plugin-"))
+try:
+    cx.set_context(ROOT=scratch)
+    plugin_dir = ROOT / "apps" / "console-web" / "plugins" / "project-switcher" / "server"
+    sys.modules.setdefault("axf_console_plugins", types.ModuleType("axf_console_plugins")).__path__ = []
+    spec = importlib.util.spec_from_file_location("axf_console_plugins.project_switcher_test", plugin_dir / "__init__.py", submodule_search_locations=[str(plugin_dir)])
+    plug = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = plug
+    spec.loader.exec_module(plug)
+
+    class Reg:
+        def __init__(self) -> None:
+            self.got: dict = {}
+
+        def register(self, spec: dict, owner: str = "") -> str:
+            self.got = {**spec, "owner": owner}
+            return spec["id"]
+
+    reg = Reg()
+    plugin_services.provide("axf.health@1", reg, "systems-check")
+    ok(plug.ensure_health() and reg.got.get("id") == "projects-axhub-policy" and reg.got["owner"] == "project-switcher", "registers its systems check item")
+    ok(any("project_create" in i and "Allow" in i for i in reg.got["instructions"]), "the item gives Brett the exact steps")
+    ok(reg.got["run"]()["status"] == "warn", "amber until the policy is set")
+    ok(plug.axhub_policy({"done": True})["check"]["status"] == "ok", "marked done → green")
+    ok(reg.got["run"]()["status"] == "ok", "stays green")
+    ok(plug.axhub_policy({"done": False})["check"]["status"] == "warn", "done false shows it again")
+finally:
+    shutil.rmtree(scratch, ignore_errors=True)
+
 print(f"mcp projects: {checks} checks passed")
