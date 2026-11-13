@@ -778,9 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 10:55 UTC · `x.work` → archived (all) · claude-voice
-- 2026-11-12 10:55 UTC · `x.showcase.packs` → archived (all) · claude-voice
-- 2026-11-12 10:55 UTC · `x.lib.media` → archived (all) · claude-voice
 - 2026-11-12 10:55 UTC · `x.lib.location` → archived (all) · claude-voice
 - 2026-11-12 10:55 UTC · `x.lib.editor` → archived (all) · claude-voice
 - 2026-11-12 10:55 UTC · `x.lib.ai` → archived (all) · claude-voice
@@ -1178,6 +1175,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 01:12 UTC · `everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the` → pending, note (all) · console
 - 2026-11-13 01:12 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` → pending, note (all) · console
 - 2026-11-13 01:12 UTC · `full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app` → pending, note (all) · console
+- 2026-11-13 01:13 UTC · `claude-badge-can-claude-build-green-when-at-least-one-build-account-in-the-or` → running, note (all) · pipeline
+- 2026-11-13 01:13 UTC · `claude-badge-can-claude-build-green-when-at-least-one-build-account-in-the-or` branch claude/claude-badge-can-claude-build-green-when-at-least-one-build-account-in-the-or (all) · pipeline
+- 2026-11-13 01:13 UTC · `claude-badge-can-claude-build-green-when-at-least-one-build-account-in-the-or` note (all) · orchestrator
 
 ## Token passes (log)
 

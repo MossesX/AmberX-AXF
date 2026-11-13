@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3898,
- "updatedAt": "2026-11-13T01:13:14.514Z",
+ "rev": 3899,
+ "updatedAt": "2026-11-13T01:13:26.357Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -175533,14 +175533,14 @@
    "title": "Claude badge = can Claude build: green when at least one build account in the orchestrator's account health sweep can sign in and has credits (the same check the dispatcher uses), red when none can. Stop using the VPS root `claude auth status` / .active login. Tap shows which accounts are ready. And",
    "category": "",
    "detail": "",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/claude-badge-can-claude-build-green-when-at-least-one-build-account-in-the-or",
    "pr": "",
    "createdAt": "2026-11-12T23:30:16.119Z",
-   "updatedAt": "2026-11-13T01:13:13.193Z",
+   "updatedAt": "2026-11-13T01:13:19.501Z",
    "builtAt": "",
    "notes": [
     {
@@ -175550,6 +175550,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-12T23:31:24.959Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-claude-badge-can-claude-build-green-when-at-leas--rhonda.",
+     "at": "2026-11-13T01:13:16.204Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-claude-badge-can-claude-build-green-when-at-leas--rhonda, own login copy)",
+     "at": "2026-11-13T01:13:19.501Z"
     }
    ],
    "approvals": [],
@@ -175569,12 +175577,12 @@
    "pipeline": {
     "queuedAt": "2026-11-12T23:30:19.678Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-claude-badge-can-claude-build-green-when-at-leas--rhonda",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-13T01:13:15.758Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T23:31:24.959Z",
@@ -175584,9 +175592,9 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-13T01:13:15.758Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -175595,7 +175603,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-13T01:13:15.758Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -175701,7 +175709,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
