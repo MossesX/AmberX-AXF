@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4994,
- "updatedAt": "2026-11-13T20:54:37.580Z",
+ "rev": 4995,
+ "updatedAt": "2026-11-13T20:54:51.510Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -206010,12 +206010,12 @@
    "title": "Own token sets for grids and tab groups",
    "category": "",
    "detail": "Today grids only have layout tokens (--fx-grid-areas/cols/rows and the -m mobile variants), and tab groups only have --fx-tab-py/--fx-tab-px padding and --fx-tabs-per-row. Both borrow the general colour tokens (--fx-surface, --fx-border, accent), so hover, selected and active states can't be styled on their own. Add dedicated token families in tokens.style, following skins and editable in Token Control, the UI Manager and per instance.\nGRID: header background/text/border/sort arrow/filter chip; row, alternate row, hover, selected, focused, expanded, disabled; grid lines, outer border, cell padding, row height, radius; group header, sticky column shadow, empty state; transparency (default 100%).\nTAB GROUP: bar background and border; tab text, background and border for idle, hover, active/selected, pressed, disabled and focus ring; active indicator (underline/pill) colour and thickness; badge on tab; fold/overflow button; gap; radius per style (underline, pills, boxed, segmented, plain, chips); transparency (default 100%).\nWire every grid/table and tab group to read them, and add a CI check against hard-coded colours. Per-instance overrides with Restore previous edit / Restore from axHub. Full API. Tests, help, Shipped features. Fable for the token schema.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/own-token-sets-for-grids-and-tab-groups",
-   "pr": "",
+   "pr": "#654",
    "priority": "P1",
    "createdAt": "2026-11-13T19:57:42.157Z",
    "updatedAt": "2026-11-13T20:54:32.696Z",
@@ -206134,12 +206134,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T20:54:04.694Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T20:03:11.292Z",
-     "updatedAt": "2026-11-13T20:03:11.292Z"
+     "updatedAt": "2026-11-13T20:54:05.433Z"
     },
     {
      "id": "s2",
