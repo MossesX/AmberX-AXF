@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4559,
- "updatedAt": "2026-11-13T17:49:15.663Z",
+ "rev": 4560,
+ "updatedAt": "2026-11-13T17:49:30.057Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -195888,15 +195888,15 @@
    "title": "Per-instance settings-window picker inside every tab group and toolbar's settings",
    "category": "",
    "detail": "Every chrome instance (tab group, toolbar, banner, nav, menu bar) has its own chrome settings dialog (framework ChromeContext.tsx / chrome-settings-rules.mjs). Today the settings asset is picked per type/app (axf.chrome.settings.<type>). Add, inside each instance's settings dialog, a picker to choose which settings interface (settings asset) THAT instance uses, per instance, with the shared default preselected. Changing it re-renders the dialog live. Persist per instance, survive reload, follow skins. Expose via REST/MCP/CLI/voice and control@1. Tests, help entry, Shipped features.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/per-instance-settings-window-picker",
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T17:46:43.480Z",
-   "updatedAt": "2026-11-13T17:49:13.657Z",
+   "updatedAt": "2026-11-13T17:49:25.977Z",
    "builtAt": "",
    "notes": [
     {
@@ -195910,6 +195910,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"b6d527f6-7e3c-46c2-b1ed-2ba93d1e986c\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-13T17:47:52.425Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-per-instance-settings-window-picker--gina.",
+     "at": "2026-11-13T17:49:21.191Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-per-instance-settings-window-picker--gina, own login copy)",
+     "at": "2026-11-13T17:49:25.977Z"
     }
    ],
    "approvals": [],
@@ -195929,12 +195937,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T17:46:45.998Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-per-instance-settings-window-picker--gina",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-13T17:49:19.495Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T17:47:52.425Z",
@@ -195944,9 +195952,9 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"b6d527f6-7e3c-46c2-b1ed-2ba93d1e986c\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-13T17:49:19.495Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -195955,7 +195963,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-13T17:49:19.495Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -196039,7 +196047,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
