@@ -16,7 +16,7 @@ Branch `claude/overlay-preview-ui-review` (PR #626) clashed with main in
   entry's list of settings now names main's fields (the "where pages go" setting is gone on main).
 - Choice-set assets (`assets/overlay-toolbar/overlay-toolbar-shape-{pill,rail,bubble}.json`) came over unchanged.
 
-Main itself was not touched: the branch goes through the merge queue (rules: never push to main).
+Main itself was not touched: PR #653 (supersedes #626) goes through the merge queue (rules: never push to main).
 
 ## s2: overlay preview in UI Review
 
