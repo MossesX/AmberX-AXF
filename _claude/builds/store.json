@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4676,
- "updatedAt": "2026-11-13T18:38:40.223Z",
+ "rev": 4677,
+ "updatedAt": "2026-11-13T18:38:52.916Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -197051,10 +197051,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/new-asset-type-animated-expanding-row",
-   "pr": "",
+   "pr": "#630",
    "priority": "P1",
    "createdAt": "2026-11-13T18:13:23.703Z",
-   "updatedAt": "2026-11-13T18:37:45.128Z",
+   "updatedAt": "2026-11-13T18:38:39.272Z",
    "builtAt": "",
    "notes": [
     {
@@ -197373,7 +197373,7 @@
     "all"
    ],
    "order": {
-    "all": 797
+    "all": 798
    },
    "kind": "build",
    "planRef": "",

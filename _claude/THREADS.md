@@ -785,7 +785,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 11:57 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` → queued, note (all) · console
 - 2026-11-13 11:57 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` → pending (all) · mcp
 - 2026-11-13 11:59 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` → running, note (all) · pipeline
 - 2026-11-13 11:59 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` note (all) · orchestrator
@@ -1185,6 +1184,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 18:38 UTC · `ui-manager-floating-window-to-select-any` → running, note (all) · pipeline
 - 2026-11-13 18:38 UTC · `ui-manager-floating-window-to-select-any` note (all) · orchestrator
 - 2026-11-13 18:37 UTC · `vps-builds-get-console-token-ui-review` s9 done, → built (all) · orchestrator
+- 2026-11-13 18:38 UTC · `new-asset-type-animated-expanding-row` PR #630 (all) · builds-live
 
 ## Token passes (log)
 
