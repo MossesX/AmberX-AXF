@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4834,
- "updatedAt": "2026-11-13T19:41:21.261Z",
+ "rev": 4835,
+ "updatedAt": "2026-11-13T19:41:34.877Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -203172,8 +203172,8 @@
    "pr": "#638",
    "priority": "P0",
    "createdAt": "2026-11-13T19:32:22.232Z",
-   "updatedAt": "2026-11-13T19:39:26.134Z",
-   "builtAt": "2026-11-13T19:39:26.134Z",
+   "updatedAt": "2026-11-13T19:40:19.880Z",
+   "builtAt": "2026-11-13T19:40:19.880Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -203190,6 +203190,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-land-rename-long-builds-resolve-clash--gina, own login copy)",
      "at": "2026-11-13T19:35:46.927Z"
+    },
+    {
+     "text": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
+     "at": "2026-11-13T19:40:19.880Z"
     },
     {
      "text": "Headless run axf-land-rename-long-builds-resolve-clash--gina: brief only · start 11.1K tokens ($0.03) · cost $0.46 · 22 turns · 6 tools, MCP none",
@@ -203214,12 +203218,19 @@
     "queuedAt": "2026-11-13T19:32:24.638Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-land-rename-long-builds-resolve-clash--gina",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-13T19:35:33.966Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-13T19:40:17.010Z",
+     "exit": 0,
+     "outcome": "returned",
+     "stepsLeft": 1,
+     "account": "mossesx-max-",
+     "session": "axf-land-rename-long-builds-resolve-clash--gina"
+    },
     "split": {
      "at": "2026-11-13T19:34:28.140Z",
      "by": "orchestrator",
@@ -203228,7 +203239,7 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"1ec17e03-ec45-4061-9c9d-84bf5aef7664\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "2026-11-13T19:35:33.966Z",
     "planned": {

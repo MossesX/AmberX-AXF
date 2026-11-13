@@ -786,7 +786,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 17:39 UTC · `full-voice-api-control-type-fields-press` → queued, note (all) · console
 - 2026-11-13 17:41 UTC · `full-voice-api-control-type-fields-press` note (all) · orchestrator
 - 2026-11-13 17:41 UTC · `full-voice-api-control-type-fields-press` → running, note (all) · pipeline
 - 2026-11-13 17:41 UTC · `full-voice-api-control-type-fields-press` branch claude/full-voice-api-control-type-fields-press (all) · pipeline
@@ -1186,6 +1185,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 19:40 UTC · `land-drive-live-console-first-resolve` s1 done (all) · orchestrator
 - 2026-11-13 19:40 UTC · `console-app-part-3-native-bridge-mic` s7 done, → built (all) · orchestrator
 - 2026-11-13 19:40 UTC · `orchestrator-custom-groups-custom-tabs` s1 done, → running (all) · orchestrator
+- 2026-11-13 19:40 UTC · `land-rename-long-builds-resolve-clash` → pending, note (all) · pipeline
 
 ## Token passes (log)
 
