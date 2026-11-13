@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4340,
- "updatedAt": "2026-11-13T11:35:34.129Z",
+ "rev": 4341,
+ "updatedAt": "2026-11-13T11:36:06.464Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -170151,7 +170151,7 @@
    "branch": "claude/unlink-plan-studio-from-builds-delete-all-plan-s",
    "pr": "#570",
    "createdAt": "2026-11-12T10:49:12.963Z",
-   "updatedAt": "2026-11-13T11:35:09.515Z",
+   "updatedAt": "2026-11-13T11:36:04.425Z",
    "builtAt": "2026-11-13T11:34:54.213Z",
    "notes": [
     {
@@ -170193,6 +170193,10 @@
     {
      "text": "Headless run axf-unlink-plan-studio-from-builds-delete-all-plan-s--rhonda: brief only · start 12.4K tokens ($0.03) · cost $1.31 · 46 turns · 6 tools, MCP none",
      "at": "2026-11-13T11:35:09.515Z"
+    },
+    {
+     "text": "Session axf-unlink-plan-studio-from-builds-delete-all-plan-s--rhonda on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-13T11:36:04.425Z"
     }
    ],
    "approvals": [],
@@ -170213,12 +170217,19 @@
     "queuedAt": "2026-11-13T11:24:27.918Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-unlink-plan-studio-from-builds-delete-all-plan-s--rhonda",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-13T11:25:46.013Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-13T11:36:03.318Z",
+     "exit": 0,
+     "outcome": "finished",
+     "stepsLeft": 0,
+     "account": "mossesx-max-",
+     "session": "axf-unlink-plan-studio-from-builds-delete-all-plan-s--rhonda"
+    },
     "split": {
      "at": "2026-11-12T10:50:36.976Z",
      "by": "orchestrator",
@@ -170322,7 +170333,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": {

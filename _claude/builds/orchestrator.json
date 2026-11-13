@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T11:35:34.129Z",
+ "updatedAt": "2026-11-13T11:36:06.464Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -111354,7 +111354,7 @@
    "branch": "claude/unlink-plan-studio-from-builds-delete-all-plan-s",
    "pr": "#570",
    "createdAt": "2026-11-12T10:49:12.963Z",
-   "updatedAt": "2026-11-13T11:35:09.515Z",
+   "updatedAt": "2026-11-13T11:36:04.425Z",
    "builtAt": "2026-11-13T11:34:54.213Z",
    "notes": [
     {
@@ -111396,6 +111396,10 @@
     {
      "text": "Headless run axf-unlink-plan-studio-from-builds-delete-all-plan-s--rhonda: brief only · start 12.4K tokens ($0.03) · cost $1.31 · 46 turns · 6 tools, MCP none",
      "at": "2026-11-13T11:35:09.515Z"
+    },
+    {
+     "text": "Session axf-unlink-plan-studio-from-builds-delete-all-plan-s--rhonda on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-13T11:36:04.425Z"
     }
    ],
    "approvals": [],
