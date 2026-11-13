@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T06:38:28.232Z",
+ "updatedAt": "2026-11-13T06:39:06.350Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -117344,7 +117344,7 @@
    "pr": "#553",
    "priority": "P0",
    "createdAt": "2026-11-13T06:25:11.720Z",
-   "updatedAt": "2026-11-13T06:36:54.031Z",
+   "updatedAt": "2026-11-13T06:39:04.188Z",
    "builtAt": "",
    "notes": [
     {
@@ -117362,6 +117362,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-skins-plugin-its-own-removable-console-plugin-an--paulie, own login copy)",
      "at": "2026-11-13T06:27:30.457Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"acd1fe16-ad55-4437-bfba-91bdb55f813c\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-13T06:39:04.188Z"
     }
    ],
    "approvals": [],
@@ -117378,7 +117382,68 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Skins plugin: its own removable console plugin and screen for changing skins.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwelw64c015wg7",
+     "createdAt": "2026-11-13T06:39:04.188Z"
+    },
+    {
+     "id": "s2",
+     "text": "Gallery of every skin with live preview (desktop and phone), one-tap Use skin, Back and Restore to Default with undo, per-scope switching (whole hub, one app, one screen, one plugin), a quick skin switcher on the banner an",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwelw64c02pcf8",
+     "createdAt": "2026-11-13T06:39:04.188Z"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwelw64c035md3",
+     "createdAt": "2026-11-13T06:39:04.188Z"
+    }
+   ]
   }
  ]
 }

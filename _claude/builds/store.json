@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4039,
- "updatedAt": "2026-11-13T06:38:28.232Z",
+ "rev": 4040,
+ "updatedAt": "2026-11-13T06:39:06.350Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -178498,7 +178498,7 @@
    "pr": "#553",
    "priority": "P0",
    "createdAt": "2026-11-13T06:25:11.720Z",
-   "updatedAt": "2026-11-13T06:36:54.031Z",
+   "updatedAt": "2026-11-13T06:39:04.188Z",
    "builtAt": "",
    "notes": [
     {
@@ -178516,6 +178516,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-skins-plugin-its-own-removable-console-plugin-an--paulie, own login copy)",
      "at": "2026-11-13T06:27:30.457Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"acd1fe16-ad55-4437-bfba-91bdb55f813c\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-13T06:39:04.188Z"
     }
    ],
    "approvals": [],
@@ -178542,9 +178546,15 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
-    "split": null,
+    "split": {
+     "at": "2026-11-13T06:39:04.188Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"acd1fe16-ad55-4437-bfba-91bdb55f813c\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
+    },
     "splitRequested": "",
-    "note": "waiting for the split before it can start",
+    "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
     "planned": null,
@@ -178554,7 +178564,77 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwelw64c015wg7",
+     "title": "",
+     "text": "Skins plugin: its own removable console plugin and screen for changing skins.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T06:39:04.188Z",
+     "updatedAt": "2026-11-13T06:39:04.188Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwelw64c02pcf8",
+     "title": "",
+     "text": "Gallery of every skin with live preview (desktop and phone), one-tap Use skin, Back and Restore to Default with undo, per-scope switching (whole hub, one app, one screen, one plugin), a quick skin switcher on the banner an",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T06:39:04.188Z",
+     "updatedAt": "2026-11-13T06:39:04.188Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwelw64c035md3",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T06:39:04.188Z",
+     "updatedAt": "2026-11-13T06:39:04.188Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -178563,12 +178643,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-13T06:39:04.188Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
