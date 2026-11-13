@@ -21,6 +21,11 @@
  *     `checks` are the plugin's declared self-checks: run after install, by `checks <folder>`, and by the systems check.
  *  6. The plugin ships install.mjs + uninstall.mjs (thin wrappers around this file) and shows the shared lifecycle panel
  *     in its settings tab.
+ *  7. Optional project data hooks (project-template@1, framework/cli/project-templates.mjs), for a plugin that keeps a
+ *     project's own data: exportProjectData(ctx) → JSON (null = nothing) and importProjectData(ctx, data) → { note }.
+ *     ctx adds project (the projects@1 entry), projectDir(dir) (that project's copy of a data folder) and
+ *     carry { items: structure|all|none, builds }. Import only adds to a new project: it never overwrites data.
+ *     `projectDataLabel` (a string export) names the part ("Lists and to-dos").
  * So uninstall --all leaves nothing behind: no code, no data, no state, no doc lines. `check --after-uninstall` proves it.
  */
 import { chmodSync, cpSync, existsSync, lstatSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from 'node:fs';
@@ -194,6 +199,23 @@ async function hooks(p) {
 
 function ctxFor(p, log) {
   return { root: ROOT, folder: p.folder, dir: p.dir, dataDir: safeDataDir(p), manifest: p.manifest, log };
+}
+
+/**
+ * The plugins that carry a project's own data into a copy (hooks.mjs exports exportProjectData and importProjectData;
+ * see the header, point 7). Each entry: { folder, name, label, ctx(log), exportProjectData, importProjectData }.
+ */
+export async function projectDataPlugins() {
+  const out = [];
+  for (const { folder, error } of list()) {
+    if (error) continue;
+    const p = readManifest(folder);
+    let h;
+    try { h = await hooks(p); } catch { continue; }
+    if (typeof h.exportProjectData !== 'function' || typeof h.importProjectData !== 'function') continue;
+    out.push({ folder, name: p.manifest?.name ?? folder, label: h.projectDataLabel ?? p.manifest?.name ?? folder, ctx: (log = () => {}) => ctxFor(p, log), exportProjectData: h.exportProjectData, importProjectData: h.importProjectData });
+  }
+  return out;
 }
 
 /* ------------------------------------------------------------------ actions */

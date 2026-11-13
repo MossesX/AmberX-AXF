@@ -11,11 +11,14 @@
  *
  *   node framework/cli/projects.mjs                       list (★ = active)
  *   node framework/cli/projects.mjs current               the active project
- *   node framework/cli/projects.mjs new "<name>" [--id x] [--description "…"] [--no-select]   an empty workspace
+ *   node framework/cli/projects.mjs new "<name>" [--id x] [--description "…"] [--no-select] [--boilerplate <id>]
+ *                                                         an empty workspace, or one started from a saved boilerplate
  *   node framework/cli/projects.mjs select <id|name>      make it the active project (saved for everyone)
  *   node framework/cli/projects.mjs rename <id> "<name>" [--description "…"]
  *   node framework/cli/projects.mjs archive <id> --confirm <id> | unarchive <id>
  *   node framework/cli/projects.mjs delete <id> --confirm <id>   off the list (data stays on disk)
+ *   node framework/cli/projects.mjs duplicate [<id>] [--name "…"] [--id x] [--items structure|all|none] [--builds]
+ *                                                         a copy: settings, rules, setup, list structure (project-templates.mjs)
  *   node framework/cli/projects.mjs migrate               record the base project (AmberX AXF) and one project per
  *                                                         existing build profile; safe to run again
  *   node framework/cli/projects.mjs act '{"action":"create","name":"…"}'   any change (console server, MCP, voice)
@@ -95,8 +98,15 @@ async function profileChange(pc) {
   return profiles.act(pc);
 }
 
-/** One change. Returns { project, log, state }. */
+/**
+ * One change. Returns { project, log, state }. `duplicate` and `create` with a `boilerplate` start the new project
+ * from a template (framework/cli/project-templates.mjs); every other change is the registry's own.
+ */
 export async function act(change) {
+  if (change?.action === 'duplicate' || (change?.action === 'create' && change.boilerplate)) {
+    const t = await import('./project-templates.mjs');
+    return change.action === 'duplicate' ? t.duplicate(change) : t.createFromBoilerplate(change);
+  }
   const reg = readProjects();
   const ctx = { now: now(), by: process.env.AXF_ACTOR || 'cli', activeProfile: activeProfile().id, profileIds: readProfiles().profiles.map((p) => p.id) };
   const r = core.applyChange(reg, change, ctx);
@@ -122,10 +132,11 @@ export async function migrate() {
   return { log, state: s };
 }
 
-if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+/** The command line (not a top-level await: project-templates.mjs imports this module back while a command runs). */
+async function cli() {
   const args = process.argv.slice(2);
   const json = args.includes('--json');
-  const VALUED = ['--id', '--description', '--confirm', '--name'];
+  const VALUED = ['--id', '--description', '--confirm', '--name', '--items', '--boilerplate'];
   const flag = (n) => { const i = args.indexOf(n); return i >= 0 ? args[i + 1] : undefined; };
   const pos = args.filter((a, i) => !a.startsWith('--') && !(i > 0 && VALUED.includes(args[i - 1])));
   const out = (v) => console.log(json ? JSON.stringify({ ok: true, ...v }) : v.text ?? JSON.stringify(v, null, 2));
@@ -141,7 +152,8 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     } else {
       let change;
       if (cmd === 'act') change = JSON.parse(pos[1] ?? flag('--json') ?? '{}');
-      else if (cmd === 'new' || cmd === 'create') change = { action: 'create', name: pos[1], id: flag('--id'), description: flag('--description'), select: !args.includes('--no-select') };
+      else if (cmd === 'new' || cmd === 'create') change = { action: 'create', name: pos[1], id: flag('--id'), description: flag('--description'), select: !args.includes('--no-select'), ...(flag('--boilerplate') ? { boilerplate: flag('--boilerplate') } : {}) };
+      else if (cmd === 'duplicate') change = { action: 'duplicate', from: pos[1], name: flag('--name'), id: flag('--id'), description: flag('--description'), items: flag('--items'), builds: args.includes('--builds'), select: !args.includes('--no-select') };
       else if (cmd === 'select' || cmd === 'switch') change = { action: 'select', id: pos[1] };
       else if (cmd === 'rename') change = { action: 'update', id: pos[1], name: pos[2], description: flag('--description') };
       else if (cmd === 'archive' || cmd === 'unarchive' || cmd === 'delete') change = { action: cmd, id: pos[1], confirm: flag('--confirm') };
@@ -154,3 +166,5 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     process.exit(1);
   }
 }
+
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) cli();

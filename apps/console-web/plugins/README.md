@@ -135,6 +135,11 @@ Fable rebuild of an Opus plugin) can be installed cleanly.
 7. **Ship `install.mjs` and `uninstall.mjs`** (thin wrappers around `framework/cli/plugin-lifecycle.mjs`), optional
    `hooks.mjs` (`onInstall`, `onUninstall`, `checks`), and show the shared **Install & uninstall** panel
    (`import { PluginLifecyclePanel } from '@console/pluginLifecycle'`) in the plugin's settings tab.
+8. **A plugin that keeps a project's own data** (lists, notes, plans, setup) exports `exportProjectData(ctx)` and
+   `importProjectData(ctx, data)` from `hooks.mjs`, so Duplicate project and boilerplates carry it
+   (`framework/cli/project-templates.mjs`, project-template@1). `ctx.project` is the projects@1 entry,
+   `ctx.projectDir(dir)` its copy of a data folder, `ctx.carry.items` structure | all | none. Import only adds to a new
+   project, never overwrites; `projectDataLabel` names the part.
 
 ```bash
 node apps/console-web/plugins/<folder>/install.mjs                 # data folder + hooks + enable
