@@ -1518,7 +1518,7 @@ textarea.fx-input { resize: vertical; white-space: pre; }
 /* toast corners the pop-up asset doesn't have */
 [data-fx-toast-pos='top-left'] .fx-toasts { top: 16px; left: 16px; }
 [data-fx-toast-pos='bottom-left'] .fx-toasts { bottom: 16px; left: 16px; flex-direction: column-reverse; }
-:where([data-fx-narrow]) [data-fx-toast-pos='top-left'] .fx-toasts, :where([data-fx-narrow]) [data-fx-toast-pos='bottom-left'] .fx-toasts { bottom: auto; top: calc(var(--fx-layout-phone-edge) * 1.5); left: 50%; transform: translateX(-50%); flex-direction: column; }
+:where([data-fx-narrow]) [data-fx-toast-pos='top-left'] .fx-toasts, :where([data-fx-narrow]) [data-fx-toast-pos='bottom-left'] .fx-toasts { bottom: auto; top: calc(var(--fx-safe-top) + var(--fx-layout-phone-edge) * 1.5); left: 50%; transform: translateX(-50%); flex-direction: column; }
 
 /* ---------------- branding@1: brand marks on chrome (core/engines/brand.ts, react/components/Brand.tsx) ----------------
    `.fx-brand` wraps the engine's SVG (path data + one text node, colours as tokens). Hosts carry `is-brand-edge`
@@ -1847,3 +1847,21 @@ html[data-axf-help='on'] button[data-axf-help-id], html[data-axf-help='on'] [rol
 .axf-controlled--success { border-inline-start-color: var(--fx-success); }
 .axf-controlled--danger { border-inline-start-color: var(--fx-danger); }
 .axf-controlled__note { align-items: center; gap: var(--fx-dens-gap-xs); }
+
+/* ---------------- Safe area for what is fixed to a screen edge (console app part 4, Brett Nov 13 2026: "AmberX's banner
+   was behind the camera, the clock and the notification panel") ----------------
+   .fx-frame pads the top bar, banners, menu bar, toolbars and side rail; the phone's bottom nav pads itself. These are
+   the layers that sit outside the frame: each keeps its own offset and adds the matching --fx-safe-* inset. In a desktop
+   browser every inset is zero, so nothing moves there. check-safe-area.mjs keeps this list honest. */
+.fx-backdrop { padding: calc(var(--fx-dens-gap-3xl) + var(--fx-safe-top)) calc(var(--fx-dens-gap-3xl) + var(--fx-safe-right)) calc(var(--fx-dens-gap-3xl) + var(--fx-safe-bottom)) calc(var(--fx-dens-gap-3xl) + var(--fx-safe-left)); }
+[data-fx-dialog='drawer'] .fx-backdrop { padding: var(--fx-safe-top) var(--fx-safe-right) var(--fx-safe-bottom) 0; }
+[data-fx-dialog='drawer'] .fx-dialog { height: auto; }
+[data-fx-dialog='sheet'] .fx-backdrop { padding: var(--fx-safe-top) var(--fx-safe-right) 0 var(--fx-safe-left); }
+html:not([data-fx-narrow]) [data-fx-toast-pos^='top'] .fx-toasts { margin-top: var(--fx-safe-top); }
+html:not([data-fx-narrow]) [data-fx-toast-pos^='bottom'] .fx-toasts { margin-bottom: var(--fx-safe-bottom); }
+.fx-corner--top-left, .fx-corner--top-right { margin-top: var(--fx-safe-top); }
+.fx-corner--bottom-left, .fx-corner--bottom-right { margin-bottom: var(--fx-safe-bottom); }
+.fx-corner--top-left, .fx-corner--bottom-left { margin-left: var(--fx-safe-left); }
+.fx-corner--top-right, .fx-corner--bottom-right { margin-right: var(--fx-safe-right); }
+.fx-help-panel, .fx-help-intro, .fx-watchlive.is-float { margin-bottom: var(--fx-safe-bottom); }
+.fx-help-panel, .fx-watchlive.is-float { margin-right: var(--fx-safe-right); }
