@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T11:24:24.324Z",
+ "updatedAt": "2026-11-13T11:24:37.639Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -110964,14 +110964,14 @@
    "title": "Show commits behind main on every build table and the orchestrator",
    "category": "",
    "detail": "Every build grid/table (All builds, Pending, Queued, Building, landing queue) and Build orchestrator cards show a 'behind main' count for the build's branch (git rev-list --count branch..origin/main), plus ahead count in the expanded row. Refresh on each main push and periodically; sortable/filterable column; highlight when far behind; expanded row links to the compare view and has a 'pull in main / rebuild' command. Expose via REST/MCP/CLI (build list includes behindMain). Builds with no branch show a dash.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "mcp",
    "pendingId": "show-commits-behind-main-on-every-build-table-an",
    "branch": "claude/show-commits-behind-main-on-every-build-table-an",
    "pr": "",
    "createdAt": "2026-11-12T10:39:34.736Z",
-   "updatedAt": "2026-11-12T11:15:05.812Z",
+   "updatedAt": "2026-11-13T11:24:26.722Z",
    "builtAt": "",
    "notes": [
     {
@@ -111013,6 +111013,10 @@
     {
      "text": "Headless run axf-show-commits-behind-main-on-every-build-table-an--earl: brief only · start 11.2K tokens ($0.03) · cost $1.17 · 45 turns · 6 tools, MCP none",
      "at": "2026-11-12T11:14:40.613Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T11:24:26.722Z"
     }
    ],
    "approvals": [],
@@ -111319,14 +111323,14 @@
    "title": "Unlink Plan Studio from builds; delete all Plan Studio plans",
    "category": "",
    "detail": "1) Delete every Plan Studio plan (planner.plans), plus a delete action on plans via REST/MCP/CLI/voice (none exists today). 2) Builds must never create, sync or update Plan Studio plans: remove build-plan@1 per-build plans (plan-studio-backfill-12h), any build-todo-sync plan creation, the 'every build goes to Plan Studio' rule in briefs/RULES, and any sync hooks between the builds store and plans. Plan Studio stays as a standalone tool only. Tests: adding/finishing a build creates no plan.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "mcp",
    "pendingId": "unlink-plan-studio-from-builds-delete-all-plan-s",
    "branch": "claude/unlink-plan-studio-from-builds-delete-all-plan-s",
    "pr": "",
    "createdAt": "2026-11-12T10:49:12.963Z",
-   "updatedAt": "2026-11-12T11:40:35.817Z",
+   "updatedAt": "2026-11-13T11:24:28.383Z",
    "builtAt": "",
    "notes": [
     {
@@ -111348,6 +111352,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-12T11:40:35.817Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T11:24:28.383Z"
     }
    ],
    "approvals": [],
@@ -114951,14 +114959,14 @@
    "title": "Badge shape picker on the Banners screen: pill (text), icon or dot for every badge, like Following AmberX. Shape already exists in code (types.ts, Banner.tsx), it just isn't shown. Android twin too.",
    "category": "",
    "detail": "",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad",
    "pr": "",
    "createdAt": "2026-11-12T23:14:26.317Z",
-   "updatedAt": "2026-11-13T04:00:48.570Z",
+   "updatedAt": "2026-11-13T11:24:24.942Z",
    "builtAt": "",
    "notes": [
     {
@@ -114984,6 +114992,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-13T04:00:48.570Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T11:24:24.942Z"
     }
    ],
    "approvals": [],
