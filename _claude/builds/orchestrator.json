@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T18:57:05.143Z",
+ "updatedAt": "2026-11-13T18:57:23.614Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -127650,7 +127650,7 @@
    "pr": "#632",
    "priority": "P1",
    "createdAt": "2026-11-13T18:26:12.039Z",
-   "updatedAt": "2026-11-13T18:56:28.230Z",
+   "updatedAt": "2026-11-13T18:56:47.280Z",
    "builtAt": "2026-11-13T18:55:46.655Z",
    "notes": [
     {
@@ -127692,6 +127692,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-transparency-token-works-every-dialog--sully, own login copy)",
      "at": "2026-11-13T18:36:18.638Z"
+    },
+    {
+     "text": "Headless run axf-transparency-token-works-every-dialog--sully: brief only · start 11.3K tokens ($0.03) · cost $4.97 · 121 turns · 6 tools, MCP none",
+     "at": "2026-11-13T18:56:47.280Z"
     },
     {
      "text": "Phase 2 done, PR #632. UI Review item r-20261113-1u5fq01 and the before/after shots were saved in the worktree only: AXF_CONSOLE_URL / AXF_TOKEN were not set in this headless session, so they never reached the console. Next step: re-submit them with --console from a session that has console credentials (files: /tmp/tt-shots/before.png, after.png, after-phone.png), or take live desktop + phone shots once a console runs this branch.",
@@ -129848,16 +129852,26 @@
    "title": "Skin from axHub: Override switch, greyed-out editors with notes",
    "category": "",
    "detail": "Follow-up to console-skin-axhub-only (the 'Get my skin only from axHub' switch in Settings > Appearance).\n- Under that switch add an 'Override' switch, off by default. The two are mutually exclusive: turning Override on turns 'Inherit from axHub only' off right away, and turning axHub-only back on turns Override off.\n- While axHub-only is on and Override is off, nothing about the skin or its assets can be edited anywhere: every screen, panel, inline editor, UI Manager row and property/token field that would change the skin or an asset is greyed out (disabled, not hidden).\n- Each greyed-out area shows a note: 'This is locked: your skin and assets come from axHub. You can still edit it, but if you do it will no longer refresh or inherit any of its data from axHub.' with a 'Click here to override' link.\n- Clicking the link (or the Override switch) asks for one confirm, then turns Override on (axHub-only off) and unlocks editing. Edited assets are marked as overridden.\n- Full API: REST/MCP/CLI/voice/control@1. Tests, help, Shipped features.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P1",
    "createdAt": "2026-11-13T18:56:15.400Z",
-   "updatedAt": "2026-11-13T18:56:15.400Z",
+   "updatedAt": "2026-11-13T18:57:14.075Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T18:56:21.445Z"
+    },
+    {
+     "text": "Brett: reuse the existing overridden-settings dialog (the 'N assets controlled by own settings' notice/dialog), don't build a new one. Next to the Override switch, show a hook/link with the count, e.g. '3 tokens overridden', that opens that dialog listing every overridden token and asset, with reset to axHub per item and reset all.",
+     "at": "2026-11-13T18:57:14.075Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
