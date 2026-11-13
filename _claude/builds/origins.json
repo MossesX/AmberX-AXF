@@ -4347,6 +4347,18 @@
    "from": "",
    "addenda": []
   },
+  "new-asset-type-animated-expanding-row": {
+   "said": "I don't want drop-down bars anymore. They are gonna be animated. It's gonna be a row with a name and a little arrow; when you press that arrow it expands a subgrid; you got to press it again to apply it and close it.",
+   "at": "2026-11-13T18:13:23.702Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans": {
    "said": "",
    "at": "",
