@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T17:39:36.245Z",
+ "updatedAt": "2026-11-13T17:39:47.906Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -125386,16 +125386,22 @@
    "title": "Full voice and API control: type into fields, press buttons, approve hands-free",
    "category": "",
    "detail": "Goal: Brett controls absolutely everything in the console by voice/API (Claude via axHub MCP), never touching the phone.\n1. control@1 console.fields: list the fields of the open screen/dialog (id, label, type, value, required, options), set a field's value, and press any button/control by id or label (submit, Create, Save, Approve, tabs, toggles, menu items). Works on every screen, dialog and plugin, including the New Project wizard.\n2. Read back what is on screen (current screen, open dialog, visible fields and buttons) so the AI can narrate and verify.\n3. Approvals hands-free: veto countdowns and confirms can be approved by voice from Brett's own session (owner-recognized voice/claude.ai sign-in), no tap needed.\n4. Every action audited (by, reason).\n5. Expose on REST, MCP, CLI and voice. Tests (drive the New Project wizard end to end via API). Shipped features entry.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P0",
    "createdAt": "2026-11-13T17:39:25.266Z",
-   "updatedAt": "2026-11-13T17:39:25.266Z",
+   "updatedAt": "2026-11-13T17:39:28.090Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T17:39:28.090Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
