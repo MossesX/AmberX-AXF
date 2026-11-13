@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T19:43:06.118Z",
+ "updatedAt": "2026-11-13T19:43:21.369Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -129006,7 +129006,7 @@
    "pr": "#633",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:27.359Z",
-   "updatedAt": "2026-11-13T19:42:08.702Z",
+   "updatedAt": "2026-11-13T19:43:04.738Z",
    "builtAt": "2026-11-13T19:41:04.838Z",
    "notes": [
     {
@@ -129076,6 +129076,10 @@
     {
      "text": "Headless run axf-console-app-part-3-native-bridge-mic--gina: brief only · start 11.5K tokens ($0.03) · cost $3.57 · 47 turns · 6 tools, MCP none",
      "at": "2026-11-13T19:42:08.702Z"
+    },
+    {
+     "text": "Session axf-console-app-part-3-native-bridge-mic--gina on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-13T19:43:04.738Z"
     }
    ],
    "approvals": [
@@ -129439,7 +129443,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:46.237Z",
-   "updatedAt": "2026-11-13T19:33:06.881Z",
+   "updatedAt": "2026-11-13T19:43:06.693Z",
    "builtAt": "",
    "notes": [
     {
@@ -129461,6 +129465,10 @@
     {
      "text": "Brett: from now on UI Review items launch from the floating overlay. When a review is waiting, the overlay pops it up (preview plus pick/approve/deny), with a link to the full UI Review screen. The overlay gets its own settings interface with a section to manage what pops up in it (UI reviews, approvals, decisions, build done/failed, landing blocked, banners), each with a switch and a priority/sound option. The settings are also in the API and voice.",
      "at": "2026-11-13T19:33:06.881Z"
+    },
+    {
+     "text": "Headless run axf-console-app-part-2-native-floating-2--lenny: brief only · start 12.7K tokens ($0.06) · cost $4.70 · 39 turns · 6 tools, MCP none",
+     "at": "2026-11-13T19:43:06.693Z"
     }
    ],
    "approvals": [],
