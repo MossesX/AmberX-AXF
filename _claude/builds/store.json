@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4411,
- "updatedAt": "2026-11-13T12:25:47.165Z",
+ "rev": 4412,
+ "updatedAt": "2026-11-13T12:25:52.407Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -187605,7 +187605,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T12:23:34.932Z",
-   "updatedAt": "2026-11-13T12:25:43.405Z",
+   "updatedAt": "2026-11-13T12:25:47.282Z",
    "builtAt": "",
    "notes": [
     {
@@ -187627,6 +187627,10 @@
     {
      "text": "Brett: probably app menus too. Check and fix settings on application menus as well (toolbars, tab groups, nav menu, app menus).",
      "at": "2026-11-13T12:25:43.405Z"
+    },
+    {
+     "text": "Split asked for by console.",
+     "at": "2026-11-13T12:25:47.282Z"
     }
    ],
    "approvals": [],
@@ -187660,7 +187664,7 @@
      "steps": 6,
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"d9093dd3-a080-4406-84d8-88197b2a18e3\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
-    "splitRequested": "",
+    "splitRequested": "2026-11-13T12:25:46.817Z",
     "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
@@ -187951,7 +187955,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
