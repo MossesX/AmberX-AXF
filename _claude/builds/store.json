@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4935,
- "updatedAt": "2026-11-13T20:16:47.450Z",
+ "rev": 4936,
+ "updatedAt": "2026-11-13T20:17:08.120Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -204199,7 +204199,7 @@
    "title": "Skins plugin: merge main and land",
    "category": "",
    "detail": "Branch claude/skins-plugin-own-removable-console clashed with main in framework/spec/gen-fixtures.mts (merge aborted, main untouched). Merge origin/main and keep both sides' fixture entries, regenerate fixtures, run tests, push, then land on main. The Skins plugin is its own removable console plugin and screen for changing skins.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -204207,7 +204207,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T19:47:44.815Z",
-   "updatedAt": "2026-11-13T19:56:20.761Z",
+   "updatedAt": "2026-11-13T20:17:05.412Z",
    "builtAt": "",
    "notes": [
     {
@@ -204229,6 +204229,14 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-skins-plugin-merge-main-and-land--rhonda, own login copy)",
      "at": "2026-11-13T19:56:20.761Z"
+    },
+    {
+     "text": "Headless run axf-skins-plugin-merge-main-and-land--rhonda: brief only · start 12.7K tokens ($0.06) · cost $2.18 · 39 turns · 6 tools, MCP none",
+     "at": "2026-11-13T20:16:53.475Z"
+    },
+    {
+     "text": "Session on mossesx-max- stopped on its own with 3 steps left: back in Pending for Brett.",
+     "at": "2026-11-13T20:17:05.412Z"
     }
    ],
    "approvals": [],
@@ -204249,12 +204257,19 @@
     "queuedAt": "2026-11-13T19:47:47.082Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-skins-plugin-merge-main-and-land--rhonda",
+    "session": "",
     "slot": "",
     "model": "Fable",
     "launchedAt": "2026-11-13T19:56:14.274Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-13T20:17:04.505Z",
+     "exit": 0,
+     "outcome": "returned",
+     "stepsLeft": 3,
+     "account": "mossesx-max-",
+     "session": "axf-skins-plugin-merge-main-and-land--rhonda"
+    },
     "split": {
      "at": "2026-11-13T19:49:27.897Z",
      "by": "orchestrator",
@@ -204263,7 +204278,7 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"5c4edfd5-147d-4274-a380-ce2150667637\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- stopped on its own with 3 steps left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "2026-11-13T19:56:14.274Z",
     "planned": {
@@ -204358,7 +204373,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
