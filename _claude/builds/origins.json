@@ -6186,6 +6186,18 @@
    "from": "",
    "addenda": []
   },
+  "prompting-engine-control-panel-to-create": {
+   "said": "like a veto approve control panel, we'll be able to create a prompting event, it could be for anything, a general prompting engine which will run set tools and maybe some macros or pipelines",
+   "at": "2026-11-13T18:15:41.449Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "push-banner-merge-all": {
    "said": "add pending merges to the push banner, a button to fix conflicts and merge all, and a button to fix conflicts and pull main into all. Every merge goes to axHub for approval (github.pulls/merge). Conflicts get a Copy fix brief for a Claude session (automatic Claude conflict fixing was refused by the session safety check).",
    "at": "2026-10-22",
