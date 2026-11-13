@@ -785,9 +785,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 11:19 UTC · `drag-anything-by-api-and-voice-after-pr-556-land` note (all) · orchestrator
-- 2026-11-13 11:20 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` s25 done (all) · orchestrator
-- 2026-11-13 11:20 UTC · `drag-anything-by-api-and-voice-after-pr-556-land` → pending, note (all) · pipeline
 - 2026-11-13 11:20 UTC · `drag-anything-by-api-and-voice-after-pr-556-land` note (all) · orchestrator
 - 2026-11-13 11:21 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` s26 done (all) · orchestrator
 - 2026-11-13 11:21 UTC · `drag-anything-by-api-and-voice-after-pr-556-land` → pending (all) · orchestrator
@@ -1185,6 +1182,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 18:10 UTC · `all-settings-interfaces-open-floating` note (all) · orchestrator
 - 2026-11-13 18:08 UTC · `tab-groups-choose-how-many-rows-tabs` s2 done (all) · orchestrator
 - 2026-11-13 18:11 UTC · `tab-groups-choose-how-many-rows-tabs` PR #623 (all) · builds-live
+- 2026-11-13 18:12 UTC · `quick-settings-pinned-collapsible-pane` → running, note (all) · pipeline
+- 2026-11-13 18:12 UTC · `quick-settings-pinned-collapsible-pane` branch claude/quick-settings-pinned-collapsible-pane (all) · pipeline
+- 2026-11-13 18:12 UTC · `quick-settings-pinned-collapsible-pane` note (all) · orchestrator
 
 ## Token passes (log)
 

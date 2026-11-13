@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4599,
- "updatedAt": "2026-11-13T18:12:11.656Z",
+ "rev": 4600,
+ "updatedAt": "2026-11-13T18:12:24.524Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -196719,15 +196719,15 @@
    "title": "Quick settings: pinned, collapsible pane at the top of every settings interface",
    "category": "",
    "detail": "Every settings interface (console Settings, plugin settings, chrome settings for tab groups/toolbars/banners/nav/menu bar, and future ones - framework default, enforced by a check) gets a 'Quick settings' pane at the very top:\n- Pinned: does not scroll; everything else scrolls underneath it.\n- Collapses vertically with a small handle/arrow button; the handle style is configurable in settings; collapsed state remembered.\n- Contents, in order: (1) Skin: shows the current skin; checkbox 'Override console skin' to apply a different skin to just this interface. (2) Default assets for this interface (navigation menu, toolbar, tab group, settings interface, etc.): shows the current asset for each; picker greyed out until 'Override console default' is ticked. (3) Override notice: when anything here overrides the skin or console defaults, show 'This is overriding the current skin/defaults' and reuse the existing 'N assets are controlled by their own settings' (chrome.edits) line that expands to list every override, each with reset.\n- Any picked asset must have a manifest and pass schema conformance before applying.\n- Reachable by REST/MCP/CLI/voice/control@1. Tests, help entries, Shipped features.\nWorks together with the 'all settings interfaces open in a floating dialog' and per-instance settings-window picker builds.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/quick-settings-pinned-collapsible-pane",
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:07:49.026Z",
-   "updatedAt": "2026-11-13T18:12:10.097Z",
+   "updatedAt": "2026-11-13T18:12:16.315Z",
    "builtAt": "",
    "notes": [
     {
@@ -196737,6 +196737,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"0e58d584-7406-4f42-a59a-4a1f07ef9547\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-13T18:08:41.600Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-quick-settings-pinned-collapsible-pane--rhonda.",
+     "at": "2026-11-13T18:12:13.293Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-quick-settings-pinned-collapsible-pane--rhonda, own login copy)",
+     "at": "2026-11-13T18:12:16.315Z"
     }
    ],
    "approvals": [],
@@ -196756,12 +196764,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T18:07:51.532Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-quick-settings-pinned-collapsible-pane--rhonda",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Fable",
+    "launchedAt": "2026-11-13T18:12:12.767Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T18:08:41.600Z",
@@ -196771,9 +196779,9 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"0e58d584-7406-4f42-a59a-4a1f07ef9547\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-13T18:12:12.767Z",
     "planned": {
      "model": "Fable",
      "account": "mossesx-max-",
@@ -196782,7 +196790,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-13T18:12:12.767Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -196998,7 +197006,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
