@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T18:41:06.575Z",
+ "updatedAt": "2026-11-13T18:41:22.856Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -128358,6 +128358,75 @@
      "createdAt": "2026-11-13T18:39:44.852Z"
     }
    ]
+  },
+  {
+   "id": "orchestrator-settings-collapsible-split",
+   "title": "Orchestrator settings: collapsible Split section with parallel-split option",
+   "category": "",
+   "detail": "Build Orchestrator settings get a collapsible 'Split' section holding every option for how a request is split into steps and builds.\n- Gathers all existing split options (one step per line, step size/estimate, model per step, phases, etc.) into this one section.\n- New option: Parallel split. The orchestrator splits a request into independent sub-builds that run at the same time in separate slots. Settings: max parallel slots (default 4), an auto/ask/off mode, and a shared contract or interface step that runs first so the parts don't clash, plus an integration step at the end that merges and tests them together.\n- Sub-builds are linked to their parent build (grouped in the builds list, parent shows combined progress, lands together or in order).\n- Per-build override when filing ('split into N parallel').\n- Full API: REST/MCP/CLI/voice/control@1. Tests, help, Shipped features.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-13T18:41:12.834Z",
+   "updatedAt": "2026-11-13T18:41:15.848Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T18:41:15.848Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "orchestrator settings needs a collapsible section for split, with all the splitting options, and one option splits it so it runs multiple parallel builds simultaneously to speed it up",
+    "at": "2026-11-13T18:41:12.834Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "console-app-part-2-native-floating",
+   "title": "Console app part 2: native floating overlay and approvals bar",
+   "category": "",
+   "detail": "Parallel part 2 of 4 of console-android-app-thin-webview-wrapper (parent). Builds only in the wrapper's Android module, following the shell contract (package, module layout, window.axfNative bridge names) from the parent build. If the contract isn't there yet, define the overlay side against the names in the parent's detail and note them.\n- Draw-over-apps floating toolbar/bubble, ported from overlay-toolbar-v2. It keeps the app in front, expands to the full-screen console with the toolbar top-left, and pops up an approvals bar with a link to the approvals page.\n- Permission flow for 'display over other apps'.\n- Respects safe areas (status bar, cutout, nav bar).\n- Tests, help, Shipped features.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-13T18:41:19.067Z",
+   "updatedAt": "2026-11-13T18:41:20.664Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "split the console wrapper so it runs on four slots at the same time",
+    "at": "2026-11-13T18:41:19.067Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }
