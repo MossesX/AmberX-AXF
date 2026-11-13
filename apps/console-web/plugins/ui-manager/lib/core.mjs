@@ -18,11 +18,27 @@ export function world({ fresh = false, targets = null } = {}) {
     const elements = [...R.frameworkElements(catalog), ...pluginManifests().flatMap((m) => R.elementsFromManifest(m, catalog.types))];
     cache = { at: Date.now(), catalog, elements };
   }
-  const extra = targets ? R.elementsFromTargets(targets, cache.catalog.types).filter((t) => !cache.elements.some((e) => e.id === t.id)) : [];
+  // live console targets (passed in, or named by a saved override) resolve on the server too: `target:<address>` is enough
+  const named = Object.keys(readOverrides().elements ?? {}).filter((id) => id.startsWith('target:')).map(targetOf);
+  const extra = R.elementsFromTargets([...(targets ? (Array.isArray(targets) ? targets : targets.targets ?? []) : []), ...named], cache.catalog.types)
+    .filter((t, i, all) => !cache.elements.some((e) => e.id === t.id) && all.findIndex((x) => x.id === t.id) === i);
   return { catalog: cache.catalog, elements: [...cache.elements, ...extra] };
 }
 
+/**
+ * A console-control target from its element id alone (`target:view:builds/button:save` → kind button): every live
+ * element the floating window shows can be read, set and reset through the API without the window being open.
+ */
+export function targetOf(id) {
+  const address = String(id).replace(/^target:/, '');
+  const last = address.split('/').pop() ?? '';
+  const kind = last.includes(':') ? last.slice(0, last.indexOf(':')) : 'element';
+  const name = last.includes(':') ? last.slice(last.indexOf(':') + 1) : last;
+  return { address, kind, label: name.replace(/[-_.]+/g, ' ').replace(/^./, (c) => c.toUpperCase()) };
+}
+
 export function element(id, w = world()) {
+  if (String(id).startsWith('target:') && !R.resolveElement(id, w.elements)) w = { ...w, elements: [...w.elements, ...R.elementsFromTargets([targetOf(id)], w.catalog.types)] };
   const e = R.resolveElement(id, w.elements) ?? w.elements.find((x) => x.label.toLowerCase() === String(id).toLowerCase() || x.id.endsWith(`:${id}`));
   if (!e) throw new UiManagerError('not_found', `no element ${id}; try: ${R.filterElements(w.elements, String(id).split(/[:/]/).pop()).slice(0, 5).map((x) => x.id).join(', ') || 'ui-manager elements'}`);
   return e;
