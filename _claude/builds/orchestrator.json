@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T17:34:30.850Z",
+ "updatedAt": "2026-11-13T17:34:50.659Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -112670,7 +112670,7 @@
    ]
   },
   {
-   "id": "move-amberx-web-app-into-the-console-amberx-andr",
+   "id": "move-amberx-web-app-console-amberx-andr",
    "title": "Move AmberX web app into the console; AmberX Android reads the console",
    "category": "",
    "detail": "Move every AmberX web app feature (notes, to-dos, lists, approvals, recorder, open_url, notifications, settings) into the console. Repoint the AmberX Android app to read and call the console instead of the AmberX web app. Keep old AmberX web addresses forwarding to the console until the phone app is switched, so nothing breaks. Each feature moved is its own step.",
@@ -112678,11 +112678,11 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/move-amberx-web-app-into-the-console-amberx-andr",
-   "pr": "#528",
+   "branch": "claude/move-amberx-web-app-console-amberx-andr",
+   "pr": "#596",
    "priority": "P2",
    "createdAt": "2026-11-12T19:46:41.501Z",
-   "updatedAt": "2026-11-12T23:18:12.065Z",
+   "updatedAt": "2026-11-13T17:34:42.809Z",
    "builtAt": "2026-11-12T23:17:54.369Z",
    "notes": [
     {
@@ -112804,6 +112804,10 @@
     {
      "text": "s3–s14 built and pushed (PR #528, now draft). Left: desktop + phone screenshots of the new screens (Notes, To-dos, Lists, Approvals page, Recordings panel, Open a page on the phone, Notification history, Settings → Plugins → AmberX) into UI Review; Android code compiles in CI only (no JDK here). Follow-ups in the report: approvals feed / AXPP / voice inside the console page, amberx-ai plugin, control@1 amberx.settings (Fable).",
      "at": "2026-11-12T23:17:56.097Z"
+    },
+    {
+     "text": "Renamed from move-amberx-web-app-into-the-console-amberx-andr (build names are at most 40 characters). By build-rename.",
+     "at": "2026-11-13T17:34:42.809Z"
     }
    ],
    "approvals": [
@@ -113618,7 +113622,7 @@
    ]
   },
   {
-   "id": "github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro",
+   "id": "github-client-plugin-see-control-every",
    "title": "GitHub client plugin: see and control every PR (status, merge, pull main in, group, bulk)",
    "category": "github",
    "detail": "Brett said: \"We need to build that GitHub plugin that shows all the PRs and everything, where you can completely control them, see their status, merge and pull them in, group them into one... You need a full, powerful GitHub plugin-based client.\" Console plugin, full API (REST, MCP, CLI, voice), works per project.",
@@ -113626,11 +113630,11 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro",
-   "pr": "#530",
+   "branch": "claude/github-client-plugin-see-control-every",
+   "pr": "#594",
    "priority": "P1",
    "createdAt": "2026-11-12T20:40:19.258Z",
-   "updatedAt": "2026-11-12T23:16:43.572Z",
+   "updatedAt": "2026-11-13T17:34:16.679Z",
    "builtAt": "2026-11-12T23:08:14.129Z",
    "notes": [
     {
@@ -113684,6 +113688,10 @@
     {
      "text": "Phase 2 (Opus) done: s2-s9 on PR #530 (commits 8999ea1f2, fc2dac71a). test.py 97 checks, plugin-commands 53, push-banner 183, tsc/build/theme/controls/toolbars green. UI Review item r-20261112-hodh501 (6 shots, desktop+phone) is only in this worktree: this headless session had no AXF_CONSOLE_URL / AXF_TOKEN. To put it in front of Brett: from a shell with those set, run: node apps/console-web/plugins/ui-review/review.mjs submit --kind screen --name 'GitHub client: pull requests, batches, git log' --app console-web --screen github-client --viewport mixed --group 'github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro - Nov 12 11:20 PM' --single-option 'new plugin page on framework controls' --shots /root/axf-review-shots/github-client/prs-desktop.png,/root/axf-review-shots/github-client/prs-phone.png,/root/axf-review-shots/github-client/batches-desktop.png,/root/axf-review-shots/github-client/batches-phone.png,/root/axf-review-shots/github-client/log-desktop.png,/root/axf-review-shots/github-client/log-phone.png --branch claude/github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro --pr 530 --console. Lasting fix: give dispatched sessions AXF_CONSOLE_URL and AXF_TOKEN.",
      "at": "2026-11-12T23:16:07.924Z"
+    },
+    {
+     "text": "Renamed from github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro (build names are at most 40 characters). By build-rename.",
+     "at": "2026-11-13T17:34:16.679Z"
     }
    ],
    "approvals": [
@@ -117321,7 +117329,7 @@
    ]
   },
   {
-   "id": "merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me",
+   "id": "merges-are-only-merged-once-github",
    "title": "Merges are only 'merged' once GitHub confirms: every merge path (console auto-merge, auto-land, github client plugin, server gate, scripts) shows 'Pending GitHub confirmation' right after a merge call, then reads the PR back from GitHub (state MERGED and the merge commit on main) before marking it m",
    "category": "",
    "detail": "",
@@ -117329,11 +117337,11 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me",
-   "pr": "#569",
+   "branch": "claude/merges-are-only-merged-once-github",
+   "pr": "#595",
    "priority": "P0",
    "createdAt": "2026-11-13T06:21:11.993Z",
-   "updatedAt": "2026-11-13T12:28:11.498Z",
+   "updatedAt": "2026-11-13T17:34:29.407Z",
    "builtAt": "2026-11-13T12:28:11.498Z",
    "notes": [
     {
@@ -117423,6 +117431,10 @@
     {
      "text": "Headless run axf-merges-are-only-merged-once-github-confirms-ever--sully: brief only · start 13.7K tokens ($0.04) · cost $2.43 · 82 turns · 6 tools, MCP none",
      "at": "2026-11-13T12:28:11.498Z"
+    },
+    {
+     "text": "Renamed from merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me (build names are at most 40 characters). By build-rename.",
+     "at": "2026-11-13T17:34:29.407Z"
     }
    ],
    "approvals": [
