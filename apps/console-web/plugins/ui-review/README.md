@@ -172,7 +172,7 @@ approved; `none` when nothing was submitted. `holds` is always false.
 
 **Merges never wait for UI Review (Nov 13 2026; it held them Nov 1 – Nov 13):** the push banner, auto-land and the
 merge queue no longer ask UI Review; a PR whose items are waiting, have changes asked or are rejected lands like any
-other. `GET /api/plugins/push-banner/ui-hold` stays for old scripts and always answers `{hold: ""}`.
+other. The push banner's `ui-hold` route stays for old scripts and always answers `{hold: ""}`.
 
 ## Checks
 
