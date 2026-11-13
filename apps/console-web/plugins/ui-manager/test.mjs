@@ -107,7 +107,7 @@ t('validate: in the list → ok (case-insensitive, coerced); outside → the val
   assert.equal(R.validateValue(vis, 'maybe').ok, false);
   const accent = props.find((p) => p.id === 'token:tokens.theme:accent');
   assert.deepEqual(R.validateValue(accent, 'success'), { ok: true, value: '@success' }, 'a bare token name is accepted as its reference');
-  assert.equal(R.validateValue(accent, '#ff0000').ok, false, 'a literal colour is refused');
+  assert.equal(R.validateValue(accent, '#ff0000').ok, false, 'a literal colour is refused'); // theme-ok: the refused input of a test
   const asset = props.find((p) => p.id === 'asset');
   assert.equal(R.validateValue(asset, 'no-such-asset').ok, false);
   assert.equal(R.validateValue(asset, cat.assets.button[1].id).ok, true);
@@ -149,11 +149,12 @@ t('preview plan: tokens only, swaps and patches for the runtime, hidden and tran
   const plan = R.previewPlan(els, r.doc, cat);
   assert.ok(plan.css.startsWith(`${R.selectorOf(e)}{`), 'the rule is scoped to the element');
   assert.ok(R.selectorOf(e).includes('[data-fx-asset="toolbar"]'));
-  assert.ok(plan.css.includes('--fx-surface:var(--fx-accent)'));
-  assert.ok(plan.css.includes('opacity:0.8'));
+  assert.ok(plan.css.includes('--fx-surface:var(--fx-accent)')); // theme-ok: the engine's generated CSS under test
+  assert.ok(plan.css.includes('opacity:0.8')); // theme-ok: a transparency pick compiled by the engine
   assert.ok(!/#[0-9a-f]{3,8}/i.test(plan.css), 'no colour literal in the preview');
   assert.deepEqual(plan.swaps, [{ element: e.id, type: 'toolbar', id: cat.assets.toolbar[1].id }]);
-  assert.deepEqual(plan.patches, [{ element: e.id, type: 'toolbar', path: 'variant', value: 'labels' }]);
+  // an asset field and a style token without a --fx-* name of its own both go to the runtime as patches
+  assert.deepEqual(plan.patches, [{ element: e.id, type: 'toolbar', path: 'variant', value: 'labels' }, { element: e.id, target: 'tokens.style', path: 'space', value: get('token:tokens.style:space').options[0].value }]);
   const hidden = R.previewPlan(els, R.withOverride(null, e, get('visible'), false).doc, cat);
   assert.ok(hidden.css.includes('display:none'));
   assert.equal(R.previewPlan(els, null, cat).css, '');
@@ -191,7 +192,7 @@ t('store + core: set saves and logs, reset, apply with summary, undo marks the e
   assert.equal(core.choices('asset:button', 'Shape').free, false);
   const pending = { elements: { 'asset:button': { 'field:shape': 'square', transparency: 50 }, 'asset:toolbar': { 'token:tokens.theme:surface': 'accent' } } };
   const pv = core.preview(pending);
-  assert.equal(pv.summary.length, 3); assert.ok(pv.css.includes('--fx-surface:var(--fx-accent)'));
+  assert.equal(pv.summary.length, 3); assert.ok(pv.css.includes('--fx-surface:var(--fx-accent)')); // theme-ok: generated CSS under test
   assert.equal(R.overrideCount(store.readOverrides()), 1, 'a preview saves nothing');
   const ap = core.apply(pending, { by: 'brett', reason: 'exit summary confirmed' });
   assert.equal(ap.changed, true); assert.equal(ap.summary.length, 3); assert.equal(ap.entry.changes.length, 3);
@@ -219,7 +220,7 @@ t('CLI: json answers, exit 1 with a code on an error', () => {
   const bad = run('set', 'asset:toolbar', 'transparency', '500');
   assert.equal(bad.code, 1); assert.equal(bad.out.code, 'validation');
   assert.equal(run('props', 'asset:toolbar').out.overrides, 1);
-  assert.ok(run('preview').out.css.includes('opacity:0.8'));
+  assert.ok(run('preview').out.css.includes('opacity:0.8')); // theme-ok: generated CSS under test
   assert.equal(run('reset', 'asset:toolbar').out.remaining, 0);
   assert.equal(run('bogus').code, 1);
   assert.ok(run('catalog').out.tokenSets['tokens.theme'] >= 10);

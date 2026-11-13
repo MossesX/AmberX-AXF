@@ -116,6 +116,7 @@ jobs:
       - run: node framework/spec/check-github-app.mjs                # github-app@1 broker: manifest, callback exchange, file modes, JWT, token cache, git/gh helpers, user refresh, health
       - run: node framework/spec/check-ui-review.mjs                 # ui-review-item@1: fixtures, schema snapshots, migration, every UI Review submitter names + times its items
       - run: node framework/spec/check-ui-predict.mjs                # ui-prediction@1 / ui-mockup@1: predicted looks before a build runs, look gate, CLI offline
+      - run: node framework/spec/check-ui-manager.mjs                # ui-element@1 / ui-overrides@1 / ui-change@1: every property's predetermined choices, validation, reset, preview plan on tokens, change log, fixture current
       - run: node framework/spec/check-session.mjs                   # session@1 (Chat viewer): fixtures, redaction, chain hash, schema snapshots
       - run: node framework/spec/check-refs.mjs                      # ref@1: mentions in banner text → links (fixtures/refs.json: names, kind words, explicit touches, PRs, files, peek)
       - run: node framework/spec/check-build-hook.mjs               # build-hook@1: one event per builds store change (created with steps + his words, steps-added, step-done, status, PR, merge, addendum, cancelled), stable ids, journal replay
@@ -144,6 +145,8 @@ jobs:
         run: node apps/console-web/plugins/project-wizard/test.mjs
       - name: Token control plugin (control@1 runner — tokens in the look, AmberX, planner, gate, confirm, CLI, client forms)  # axf-plugin:token-control
         run: node apps/console-web/plugins/token-control/test.mjs  # axf-plugin:token-control
+      - name: UI Manager plugin (element registry on the real catalog, choices never free, validation, overrides + change log store, CLI)  # axf-plugin:ui-manager
+        run: node apps/console-web/plugins/ui-manager/test.mjs  # axf-plugin:ui-manager
       - name: Console commands plugin (control@1 console domain — CLI words, runner gate + resolve + deliver, confirm, send to a console)  # axf-plugin:console-commands
         run: node apps/console-web/plugins/console-commands/test.mjs  # axf-plugin:console-commands
       - name: Reference links plugin (ref@1 runner — builds store + plugin targets, find, explicit touches, ambiguous, missing, resolve, CLI)  # axf-plugin:ref-links

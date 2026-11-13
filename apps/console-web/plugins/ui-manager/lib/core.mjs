@@ -70,8 +70,19 @@ export function reset(id = '', propId = '', { by = 'brett', reason = '' } = {}, 
 
 /** The live-preview plan for a pending document (or the saved one): CSS on tokens only, asset swaps, asset patches. */
 export function preview(pending = null, w = world()) {
-  const doc = pending ? R.normalizeOverrides(pending) : readOverrides();
-  return { ...R.previewPlan(w.elements, doc, w.catalog), summary: R.summarize(R.diffOverrides(readOverrides(), doc), w.elements, w.catalog) };
+  const doc = pending ? coerce(R.normalizeOverrides(pending), w) : readOverrides();
+  return { ...R.previewPlan(w.elements, doc, w.catalog), summary: R.summarize(R.diffOverrides(readOverrides(), doc), w.elements, w.catalog), errors: R.overridesErrors(doc, w.elements, w.catalog) };
+}
+
+/** Every value of a pending document written as its choice ('accent' → '@accent', '80 %' → 80); what no choice accepts is left as sent. */
+function coerce(doc, w) {
+  for (const [id, props] of Object.entries(doc.elements)) {
+    const e = R.resolveElement(id, w.elements);
+    if (!e) continue;
+    const all = R.propsOf(e, w.catalog);
+    for (const [pid, v] of Object.entries(props)) { const p = all.find((x) => x.id === pid); const r = p ? R.validateValue(p, v) : null; if (r?.ok) props[pid] = r.value; }
+  }
+  return doc;
 }
 
 /** Apply a whole pending document (the floating window's Apply): one entry listing every change. */

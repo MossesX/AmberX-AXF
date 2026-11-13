@@ -2286,5 +2286,11 @@
     "wave": 1,
     "module": "app-console",
     "notes": "framework/core/build-id.mjs: ids ≤ 40 chars (^[a-z0-9][a-z0-9-]{0,39}$), filler words dropped, cut at a dash, -2/-3 on a collision; used by request, orchestrator add/import/harvest, Pending and Plan Studio. Legacy long ids get an alias (pipeline.mjs aliases, the tick for live builds); land-alias links <worktrees>/<alias> and claude/<alias> for build_land. Kotlin twin deferred."
+  },
+  "cx.uimanager": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "framework/core/engines/ui-manager-rules.mjs (ui-element@1, ui-catalog@1, ui-overrides@1, ui-change@1) + plugin ui-manager: every selectable element, On screen now shortcuts to one element, every property / token with predetermined choices from the asset types, assets, skin / look and control@1 token sets, validation, reset to skin / default, override marking, preview plan on --fx-* tokens, change log with undo; CLI, REST, MCP via plugin-commands@1. Floating window UI: Opus phase. Kotlin twin deferred."
   }
 }
