@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5034,
- "updatedAt": "2026-11-13T21:16:47.839Z",
+ "rev": 5035,
+ "updatedAt": "2026-11-13T21:17:04.882Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -208660,7 +208660,7 @@
    "title": "HOTFIX: desktop console draws app menu, banners and nav twice",
    "category": "",
    "detail": "Right after per-toolbar-settings-fix-failing-chrome landed on main (merge ec579ee23, 20:44 Nov 13) and the console redeployed, Brett's DESKTOP console shows TWO app menus, TWO banners and TWO navigation menus (the phone looks fine). Keep the per-toolbar/per-instance settings feature: fix forward, don't revert it. Likely cause: the per-instance chrome (ChromeContext.tsx / Overlays.tsx / chrome-settings-rules) now renders a per-instance copy of each chrome element in addition to the default one on wide layouts, or the merge kept both sides of a render block. Find it, render exactly one of each chrome element, add an e2e/visual test that counts app menus, banners and nav menus on desktop and phone (must be 1 each), run all tests, then LAND it on main immediately and redeploy the console. Note: commit 237a293af was an accidental revert that only re-added 24 lines to one file; check it and drop it if it's wrong.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -208668,7 +208668,7 @@
    "pr": "#658",
    "priority": "P0",
    "createdAt": "2026-11-13T20:53:50.393Z",
-   "updatedAt": "2026-11-13T21:14:49.474Z",
+   "updatedAt": "2026-11-13T21:16:23.568Z",
    "builtAt": "",
    "notes": [
     {
@@ -208714,6 +208714,10 @@
     {
      "text": "Dispatch gate: hotfix-desktop-console-draws-app-menu still has axf-hotfix-desktop-console-draws-app-menu--lenny alive: not launched again, tracking that session.",
      "at": "2026-11-13T21:14:49.474Z"
+    },
+    {
+     "text": "Session stopped on its own with 3 steps left: back in Pending for Brett.",
+     "at": "2026-11-13T21:16:23.568Z"
     }
    ],
    "approvals": [],
@@ -208734,12 +208738,19 @@
     "queuedAt": "",
     "queuedBy": "",
     "account": "",
-    "session": "axf-hotfix-desktop-console-draws-app-menu--lenny",
+    "session": "",
     "slot": "",
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-13T21:16:22.820Z",
+     "exit": 0,
+     "outcome": "returned",
+     "stepsLeft": 3,
+     "account": "",
+     "session": "axf-hotfix-desktop-console-draws-app-menu--lenny"
+    },
     "split": {
      "at": "2026-11-13T21:14:45.379Z",
      "by": "orchestrator",
@@ -208748,7 +208759,7 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"b91717a9-c832-49af-9ac7-5fd5a4873a0a\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "Session stopped on its own with 3 steps left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "",
     "planned": {
@@ -208843,7 +208854,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -208867,16 +208878,32 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T21:13:28.338Z",
-   "updatedAt": "2026-11-13T21:13:31.014Z",
+   "updatedAt": "2026-11-13T21:16:35.962Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by auto-land-every-finished-build-lands.",
      "at": "2026-11-13T21:13:31.014Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"3887ca86-c7c6-4bd5-aad2-ab43b87f09c4\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-13T21:16:20.570Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "main-ci-red-test-sandbox-profile-export",
+    "brief": "# Build: main-ci-red-test-sandbox-profile-export\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"Main CI red: test-sandbox profile export leaks onto main\" (main-ci-red-test-sandbox-profile-export) — Phase 1, model Fable.\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (1 left, ~10 min):\n[ ] s1 (~10 min) Main's CI is red, so the merge queue kicks out every PR with the same failure (\"Build engine sweep (Node)\" → framework/spec/check-profiles.mjs):\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step main-ci-red-test-sandbox-profile-export <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link main-ci-red-test-sandbox-profile-export --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step main-ci-red-test-sandbox-profile-export <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note main-ci-red-test-sandbox-profile-export \"…\"); the build goes back to Pending for Brett.\n",
+    "verbatim": false,
+    "from": "",
+    "addenda": []
+   },
    "pipeline": {
     "queuedAt": "2026-11-13T21:13:30.340Z",
     "queuedBy": "auto-land-every-finished-build-lands",
@@ -208887,19 +208914,145 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
-    "split": null,
+    "split": {
+     "at": "2026-11-13T21:16:20.570Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 5,
+     "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"3887ca86-c7c6-4bd5-aad2-ab43b87f09c4\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
+    },
     "splitRequested": "",
-    "note": "waiting for the split before it can start",
+    "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Fable",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-13T21:16:27.613Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwfh8cm301hvl3",
+     "title": "",
+     "text": "Main's CI is red, so the merge queue kicks out every PR with the same failure (\"Build engine sweep (Node)\" → framework/spec/check-profiles.mjs):",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T21:16:20.570Z",
+     "updatedAt": "2026-11-13T21:16:20.570Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwfh8cm302n7of",
+     "title": "",
+     "text": "_claude/builds/profiles/test-sandbox/ exists but \"test-sandbox\" is not in framework/plan/profiles.json",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T21:16:20.570Z",
+     "updatedAt": "2026-11-13T21:16:20.570Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwfh8cm3034qk3",
+     "title": "",
+     "text": "The folder first reached main in 84c62e2e2 (Nov 13 17:18, \"Builds live: test-sandbox-sample-shipped-build added (3 steps) (test-sandbox) [skip ci]\"). project-seed.mjs made the sample build with profiles ['test-sandbox'], and every orchestrator write since then re-exports _claude/builds/profiles/test-sandbox/orchestrator.json, which builds-live publishes to main.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T21:16:20.570Z",
+     "updatedAt": "2026-11-13T21:16:20.570Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mwfh8cm30449wb",
+     "title": "",
+     "text": "Fix: (1) orchestrator / builds-store exports write only registered profiles (framework/plan/profiles.json; test projects such as test-sandbox never get a repo export), (2) delete _claude/builds/profiles/test-sandbox/ from the repo, (3) make check-profiles.mjs say where the folder came from. Then run node framework/spec/check-profiles.mjs and the builds-store checks. Found by auto-land-every-finished-build-lands (s9).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T21:16:20.570Z",
+     "updatedAt": "2026-11-13T21:16:20.570Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mwfh8cm305lg2w",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/main-ci-red-test-sandbox-profile-export.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/main-ci-red-test-sandbox-profile-export.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T21:16:20.570Z",
+     "updatedAt": "2026-11-13T21:16:20.570Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -208908,12 +209061,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-13T21:16:20.570Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
