@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4855,
- "updatedAt": "2026-11-13T19:48:00.549Z",
+ "rev": 4856,
+ "updatedAt": "2026-11-13T19:48:37.171Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -204015,12 +204015,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T19:47:44.815Z",
-   "updatedAt": "2026-11-13T19:47:47.663Z",
+   "updatedAt": "2026-11-13T19:48:35.732Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-13T19:47:47.663Z"
+    },
+    {
+     "text": "Brett: keep BOTH the built-in skins panel (Settings > Appearance / theme-manager) and the Skins plugin. When the Skins plugin is installed or enabled, it automatically disables and hides the built-in skins panel. When the plugin is removed or disabled, the built-in panel comes back. No duplicate skin UI is ever shown.",
+     "at": "2026-11-13T19:48:35.732Z"
     }
    ],
    "approvals": [],
@@ -204068,7 +204072,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

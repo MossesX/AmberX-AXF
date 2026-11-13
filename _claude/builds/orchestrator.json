@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T19:48:00.549Z",
+ "updatedAt": "2026-11-13T19:48:37.171Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -131413,12 +131413,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T19:47:44.815Z",
-   "updatedAt": "2026-11-13T19:47:47.663Z",
+   "updatedAt": "2026-11-13T19:48:35.732Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-13T19:47:47.663Z"
+    },
+    {
+     "text": "Brett: keep BOTH the built-in skins panel (Settings > Appearance / theme-manager) and the Skins plugin. When the Skins plugin is installed or enabled, it automatically disables and hides the built-in skins panel. When the plugin is removed or disabled, the built-in panel comes back. No duplicate skin UI is ever shown.",
+     "at": "2026-11-13T19:48:35.732Z"
     }
    ],
    "approvals": [],
