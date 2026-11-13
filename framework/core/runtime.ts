@@ -384,6 +384,8 @@ export class AxfRuntime {
       this.settingsBump = true;
       queueMicrotask(() => { this.settingsBump = false; this.set({}); });
     });
+    // the skin-switch ripple starts where the last tap was (withSkinSwitchFx)
+    this.trackTaps();
     // Another frame or tab of this app saved (a host's Settings tab, its banner strip, a second window): read it now.
     globalThis.addEventListener?.('storage', (e: StorageEvent) => {
       if (e.key !== null && e.key !== this.settings.savedUnder && e.key !== this.storageKey) return;
@@ -1620,9 +1622,13 @@ export class AxfRuntime {
         queueMicrotask(() => this.toast(`This policy has no "${this.state.role}" role, so you're now ${label}.`, 'info', 'Role changed'));
       }
     }
-    this.set(patch, true);
-    this.recordDesignOverride(type, next); // a look setting: it reaches the hub with the other look settings
-    if (type !== 'uac-policy') this.pushAppearance({ slots: { [type]: next }, ...(type === 'color-theme' ? { palette: this.appearancePalette() } : {}) });
+    const commit = () => {
+      this.set(patch, true);
+      this.recordDesignOverride(type, next); // a look setting: it reaches the hub with the other look settings
+      if (type !== 'uac-policy') this.pushAppearance({ slots: { [type]: next }, ...(type === 'color-theme' ? { palette: this.appearancePalette() } : {}) });
+    };
+    // new colours ripple / sweep in from the tap point (skin animations); everything else just paints
+    if (type === 'color-theme') this.withSkinSwitchFx(commit); else commit();
     return true;
   }
 
