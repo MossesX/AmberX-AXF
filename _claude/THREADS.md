@@ -786,9 +786,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 17:35 UTC · `owner-recognized-everywhere-veto-countdown-only-on-shell-commands` note, removed (all) · build-rename
-- 2026-11-13 17:36 UTC · `pending-tab-one-collapsed-row-per-build` added (3 steps) (all) · build-rename
-- 2026-11-13 17:36 UTC · `pending-tab-one-collapsed-row-per-build-tap-to-e` note, removed (all) · build-rename
 - 2026-11-13 17:36 UTC · `plugin-review-map-what-each-plugin-does` added (3 steps) (all) · build-rename
 - 2026-11-13 17:36 UTC · `plugin-review-map-what-each-plugin-does-depends-on-and-breaks` note, removed (all) · build-rename
 - 2026-11-13 17:36 UTC · `professional-skins-rebuild-whole-app` added (17 steps) (all) · build-rename
@@ -1186,6 +1183,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 19:33 UTC · `console-android-app-thin-webview-wrapper` note (all) · orchestrator
 - 2026-11-13 19:33 UTC · `land-overlay-preview-ui-review-resolve` added (0 steps) (all) · console
 - 2026-11-13 19:33 UTC · `skin-axhub-override-switch-greyed-out` note (all) · orchestrator
+- 2026-11-13 19:33 UTC · `land-overlay-preview-ui-review-resolve` → queued, note (all) · console
+- 2026-11-13 19:33 UTC · `skin-axhub-override-switch-greyed-out` → running, note (all) · pipeline
+- 2026-11-13 19:33 UTC · `skin-axhub-override-switch-greyed-out` branch claude/skin-axhub-override-switch-greyed-out (all) · pipeline
 
 ## Token passes (log)
 
