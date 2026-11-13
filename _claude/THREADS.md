@@ -788,8 +788,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 18:17 UTC · `new-asset-type-animated-expanding-row` note (all) · orchestrator
-- 2026-11-13 18:18 UTC · `vps-builds-get-console-token-ui-review` s1 done, → running (all) · orchestrator
 - 2026-11-13 18:18 UTC · `decision-dialog-ui-review-other` note (all) · orchestrator
 - 2026-11-13 18:18 UTC · `decision-dialog-ui-review-other` note (all) · builds-live
 - 2026-11-13 18:19 UTC · `prompting-engine-control-panel-events` note (all) · claude-voice
@@ -1188,6 +1186,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 19:56 UTC · `per-instance-settings-picker-merge-main` note (all) · orchestrator
 - 2026-11-13 19:57 UTC · `grids-get-their-own-full-token-set` added (0 steps) (all) · console
 - 2026-11-13 19:57 UTC · `grid-token-set-colours-hover-selected` added (0 steps) (all) · console
+- 2026-11-13 19:57 UTC · `own-token-sets-for-grids-and-tab-groups` added (0 steps) (all) · console
+- 2026-11-13 19:57 UTC · `own-token-sets-for-grids-and-tab-groups` → queued, note (all) · console
 
 ## Token passes (log)
 
