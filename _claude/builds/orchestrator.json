@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T06:56:19.362Z",
+ "updatedAt": "2026-11-13T06:56:38.761Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -117895,7 +117895,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T06:54:48.788Z",
-   "updatedAt": "2026-11-13T06:55:27.385Z",
+   "updatedAt": "2026-11-13T06:56:37.518Z",
    "builtAt": "",
    "notes": [
     {
@@ -117905,11 +117905,297 @@
     {
      "text": "Split asked for by console.",
      "at": "2026-11-13T06:55:27.385Z"
+    },
+    {
+     "text": "Split by Claude into 12 steps (0 Fable).",
+     "at": "2026-11-13T06:56:37.518Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Map every place UI Review acts as a gate: grep the repo for review.mjs state --exit-code, ui-review@1 hold/held, draft PRs for UI Review, the 'UI Review gate' Claude setting (ui.reviewGate or similar), merge-queue checks on UI Review, pipeline/orchestrator splitter prompts and briefs that add UI Review steps, and check scripts that require screenshots. Write the list with file:line into _claude/builds/reports/remove-ui-review-as-a-gate-no-screenshots-required-prs-never-held-as-draft-for.md (inventory section) and commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/ui-review/",
+      "apps/console-web/plugins/push-banner/",
+      "apps/console-web/plugins/build-orchestrator/",
+      "apps/console-web/plugins/claude-settings/",
+      "deploy/claude-headless.sh",
+      "_claude/builds/BRIEF-TEMPLATE.md",
+      "_claude/builds/reports/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwemiqvi01ari6",
+     "createdAt": "2026-11-13T06:56:37.518Z"
+    },
+    {
+     "id": "s2",
+     "text": "Make the gate a no-op in the UI Review plugin: review.mjs state --pr <n> --exit-code always exits 0 (prints the review state for information only), and the capability ui-review@1 hold/isHeld answers not-held with reason 'UI Review is not a gate (Nov 2026)'. Review items, Screenshots and Choices stay as they are. Update the plugin's tests to match.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/ui-review/review.mjs",
+      "apps/console-web/plugins/ui-review/server/",
+      "apps/console-web/plugins/ui-review/test*"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwemiqvi02z4pg",
+     "createdAt": "2026-11-13T06:56:37.518Z"
+    },
+    {
+     "id": "s3",
+     "text": "Remove the UI Review hold from the merge queue and push banner: merge-queue.mjs / land.mjs no longer skip or kick a PR whose review is waiting, rejected or has changes asked, and a review submit no longer holds the queue. Drop the matching test cases and add one asserting a PR with a waiting review still lands.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/land/merge-queue.mjs",
+      "apps/console-web/plugins/push-banner/land/land.mjs",
+      "apps/console-web/plugins/push-banner/test*"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwemiqvi038hsu",
+     "createdAt": "2026-11-13T06:56:37.518Z"
+    },
+    {
+     "id": "s4",
+     "text": "Stop opening or keeping PRs as drafts for UI Review: in the push banner's Open PR / auto-PR path, deploy/claude-headless.sh and builds-live/pipeline code, remove any 'draft until UI Review approves' logic and any un-draft-on-approve hook; PRs open ready for review. Update the tests that expect drafts.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/",
+      "deploy/claude-headless.sh",
+      "framework/cli/builds-live.mjs",
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwemiqvi04pfri",
+     "createdAt": "2026-11-13T06:56:37.518Z"
+    },
+    {
+     "id": "s5",
+     "text": "Retire the owner-only Claude setting 'UI Review gate': keep the key readable for old documents but mark it deprecated in the claude-settings schema (always false, shown greyed with 'UI Review is no longer a gate'), and remove its effect everywhere it is read. claude_settings_get and claude-settings.mjs get report it as deprecated.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/claude-settings/",
+      "apps/console-web/plugins/claude-settings/claude-settings.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwemiqvi05la7k",
+     "createdAt": "2026-11-13T06:56:37.518Z"
+    },
+    {
+     "id": "s6",
+     "text": "API for the change (Everything comes with an API): expose the gate state as read-only info, GET /api/plugins/ui-review/gate → {gate:false, since, why}, MCP plugin command ui-review_gate, CLI review.mjs gate, and a voice/console action ui-review.gate that answers the same; console_show target 'ui-review' unchanged. Add a test that all four return the same object.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/ui-review/server/",
+      "apps/console-web/plugins/ui-review/review.mjs",
+      "apps/console-web/plugins/ui-review/plugin.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwemiqvi06tfa9",
+     "createdAt": "2026-11-13T06:56:37.518Z"
+    },
+    {
+     "id": "s7",
+     "text": "Drop UI Review steps from build splitting: the orchestrator splitter prompt and pipeline.mjs intake no longer require or add a 'submit to UI Review' / screenshots step; briefs from orchestrator.mjs brief stop listing it as a done condition. Update the splitter's tests and fixtures.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/orchestrator.mjs",
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
+      "apps/console-web/plugins/build-orchestrator/test*"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwemiqvi07hhto",
+     "createdAt": "2026-11-13T06:56:37.518Z"
+    },
+    {
+     "id": "s8",
+     "text": "Remove UI Review steps from existing builds in the store: a one-shot migration through the store's own writer (builds-store.mjs / orchestrator act) marks pending steps whose only job is UI Review submission or screenshots as skipped with note 'UI Review no longer a gate', journalled; done steps are left alone. Dry-run first, then apply; commit the store via builds-live.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "framework/cli/builds-store.mjs",
+      "_claude/builds/store.json",
+      "_claude/builds/journal/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwemiqvi08uvdb",
+     "createdAt": "2026-11-13T06:56:37.518Z"
+    },
+    {
+     "id": "s9",
+     "text": "Remove the screenshots requirement from CI and build checks: any check that fails a build or PR without UI Review shots (rebuild-shots requirement, review.mjs state in workflows, check-build-steps rules about UI Review) becomes optional; the build-defaults or headless launcher no longer refuses a UI build without submissions.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      ".github/workflows/",
+      "framework/spec/check-build-steps.mjs",
+      "framework/schemas/build-defaults.json",
+      "framework/cli/rebuild-shots.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwemiqvi09k5bf",
+     "createdAt": "2026-11-13T06:56:37.518Z"
+    },
+    {
+     "id": "s10",
+     "text": "Update the UI Review plugin UI: drop 'holds the PR' / 'blocking' badges and wording on review items and in its settings tab, keep approve/reject/Choices as optional feedback; settings get a read-only line 'Not a gate' linked to the new gate API.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/ui-review/web/",
+      "apps/console-web/plugins/ui-review/README.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwemiqvi0at1bo",
+     "createdAt": "2026-11-13T06:56:37.518Z"
+    },
+    {
+     "id": "s11",
+     "text": "Rewrite the rules and docs: shared RULES.md 'Every UI change goes to UI Review' and the options rule become optional feedback (no hold, no required screenshots, no draft PRs), add the decision to memory/decisions.md, update CLAUDE.md conventions line, _claude/rules/RULES.md, _claude/builds/BRIEF-TEMPLATE.md and the ui-review help. Run claude-sync sync.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "_claude/shared/rules/RULES.md",
+      "_claude/rules/RULES.md",
+      "_claude/memory/decisions.md",
+      "CLAUDE.md",
+      "_claude/builds/BRIEF-TEMPLATE.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwemiqvi0b0jcd",
+     "createdAt": "2026-11-13T06:56:37.518Z"
+    },
+    {
+     "id": "s12",
+     "text": "Tests, report, THREADS row and PR: run the ui-review, push-banner, build-orchestrator and claude-settings tests, node framework/spec/check-build-steps.mjs, node framework/spec/check-builds-store.mjs, node framework/cli/builds-store.mjs verify and tracker --check; finish _claude/builds/reports/remove-ui-review-as-a-gate-no-screenshots-required-prs-never-held-as-draft-for.md (before/after, API: REST GET /api/plugins/ui-review/gate, MCP ui-review_gate, CLI review.mjs gate, voice ui-review.gate), add the THREADS.md row, open the PR and link it with builds-live.mjs link.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/remove-ui-review-as-a-gate-no-screenshots-required-prs-never-held-as-draft-for.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwemiqvi0cnmfj",
+     "createdAt": "2026-11-13T06:56:37.518Z"
+    }
+   ]
   }
  ]
 }

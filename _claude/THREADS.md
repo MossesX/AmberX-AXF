@@ -781,7 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 22:06 UTC · `move-amberx-web-app-into-the-console-amberx-andr` → running, note (all) · pipeline
 - 2026-11-12 22:06 UTC · `move-amberx-web-app-into-the-console-amberx-andr` note (all) · orchestrator
 - 2026-11-12 22:09 UTC · `new-project-wizard-name-linked-repo-required-starter-code-skin-accounts` PR #529 (all) · builds-live
 - 2026-11-12 22:10 UTC · `new-project-wizard-name-linked-repo-required-starter-code-skin-accounts` note (all) · orchestrator
@@ -1181,6 +1180,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 06:55 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` s9 done, → built (all) · orchestrator
 - 2026-11-13 06:56 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` → pending, note (all) · reconciler
 - 2026-11-13 06:56 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` note (all) · orchestrator
+- 2026-11-13 06:56 UTC · `remove-ui-review-as-a-gate-no-screenshots-required-prs-never-held-as-draft-for` note (all) · orchestrator
 
 ## Token passes (log)
 
