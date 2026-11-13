@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T20:47:13.913Z",
+ "updatedAt": "2026-11-13T20:47:30.699Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -125570,7 +125570,7 @@
    "mergedAt": "2026-11-13T20:44:56Z",
    "priority": "P1",
    "createdAt": "2026-11-13T17:46:43.480Z",
-   "updatedAt": "2026-11-13T20:46:27.757Z",
+   "updatedAt": "2026-11-13T20:47:03Z",
    "builtAt": "2026-11-13T18:09:55.996Z",
    "notes": [
     {
@@ -125640,6 +125640,10 @@
     {
      "text": "Reconciler: PR #622 merged",
      "at": "2026-11-13T20:46:27.757Z"
+    },
+    {
+     "text": "Shipped manifest sm-per-instance-settings-window-picker rev 1 sent to Shipped features (orchestrator): landed 9d806c2b6, 42 file(s), 2 test line(s), 2 open.",
+     "at": "2026-11-13T20:47:03Z"
     }
    ],
    "approvals": [],
@@ -131391,7 +131395,7 @@
    "mergedAt": "2026-11-13T20:44:56Z",
    "priority": "P0",
    "createdAt": "2026-11-13T19:37:14.557Z",
-   "updatedAt": "2026-11-13T20:46:27.757Z",
+   "updatedAt": "2026-11-13T20:47:18Z",
    "builtAt": "2026-11-13T19:56:25.055Z",
    "notes": [
     {
@@ -131425,6 +131429,10 @@
     {
      "text": "Reconciler: PR #642 merged",
      "at": "2026-11-13T20:46:27.757Z"
+    },
+    {
+     "text": "Shipped manifest sm-per-instance-settings-picker-merge-main rev 1 sent to Shipped features (orchestrator): landed 617aa0a7d, 2 file(s), 0 test line(s), 3 open.",
+     "at": "2026-11-13T20:47:18Z"
     }
    ],
    "approvals": [],
@@ -133250,7 +133258,7 @@
    "mergedAt": "2026-11-13T20:44:13Z",
    "priority": "P0",
    "createdAt": "2026-11-13T20:07:27.626Z",
-   "updatedAt": "2026-11-13T20:46:27.757Z",
+   "updatedAt": "2026-11-13T20:47:23Z",
    "builtAt": "2026-11-13T20:31:16.091Z",
    "notes": [
     {
@@ -133296,6 +133304,10 @@
     {
      "text": "Reconciler: PR #651 merged",
      "at": "2026-11-13T20:46:27.757Z"
+    },
+    {
+     "text": "Shipped manifest sm-dispatcher-gate-never-launch-build rev 1 sent to Shipped features (orchestrator): landed 6138f9d15, 8 file(s), 0 test line(s), 2 open.",
+     "at": "2026-11-13T20:47:23Z"
     }
    ],
    "approvals": [],
@@ -134280,16 +134292,22 @@
    "title": "Lander regenerates generated files on clash",
    "category": "",
    "detail": "Most Nov 13 land failures were clashes only in GENERATED or additive files: apps/console-web/src/control/inventory.json, framework/assets/help/framework.json and its baked copies in apps/*, framework/catalog/status.json, framework/spec/PORTING.md, framework/spec/fixtures/*.json, apps/*/axf.lock.json, and the baked framework copies under apps/*/src/axf/. Fix the land path (/opt/axf-batch/resolve.py used by vps.build_land, and the orchestrator lander): (1) list generated files in one manifest; (2) on a clash in a generated file, take main's side, then run the matching generator (control inventory, help bake, fixtures, lock, framework re-bake) on the merged tree and commit; (3) union-merge additive docs/catalogs (PORTING.md, catalog status.json) by key; (4) only real source clashes stop the land; (5) run tests after regenerating. Then re-land: full-voice-control-merge-main-and-land, skin-config-panel-merge-main-and-land, skins-plugin-merge-main-and-land, project-create-mcp, project-duplicate-boilerplate, drive-live-console-first, rename-long-builds, overlay-preview-ui-review. Must land before auto-land-every-finished-build-lands.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P0",
    "createdAt": "2026-11-13T20:47:11.569Z",
-   "updatedAt": "2026-11-13T20:47:11.569Z",
+   "updatedAt": "2026-11-13T20:47:24.799Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T20:47:24.799Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {

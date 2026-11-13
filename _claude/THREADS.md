@@ -792,10 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 18:58 UTC · `skin-axhub-override-switch-greyed-out` note (all) · claude-voice
-- 2026-11-13 18:58 UTC · `skin-axhub-override-switch-greyed-out` note (all) · claude-voice
-- 2026-11-13 18:58 UTC · `console-android-app-thin-webview-wrapper` s3 done (all) · orchestrator
-- 2026-11-13 18:59 UTC · `skin-axhub-override-switch-greyed-out` note (all) · claude-voice
 - 2026-11-13 18:59 UTC · `console-android-app-thin-webview-wrapper` → running, note (all) · pipeline
 - 2026-11-13 18:59 UTC · `console-android-app-thin-webview-wrapper` s3 undone, note (all) · foreign-write
 - 2026-11-13 18:59 UTC · `console-android-app-thin-webview-wrapper` note (all) · orchestrator
@@ -1192,6 +1188,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 20:47 UTC · `auto-land-every-finished-build-lands` branch claude/auto-land-every-finished-build-lands (all) · pipeline
 - 2026-11-13 20:47 UTC · `auto-land-every-finished-build-lands` note (all) · orchestrator
 - 2026-11-13 20:47 UTC · `lander-regenerates-generated-files-clash` added (0 steps) (all) · console
+- 2026-11-13 20:47 UTC · `per-instance-settings-window-picker` note (all) · orchestrator
+- 2026-11-13 20:47 UTC · `per-instance-settings-picker-merge-main` note (all) · orchestrator
+- 2026-11-13 20:47 UTC · `lander-regenerates-generated-files-clash` → queued, note (all) · console
+- 2026-11-13 20:47 UTC · `dispatcher-gate-never-launch-build` note (all) · orchestrator
 
 ## Token passes (log)
 
