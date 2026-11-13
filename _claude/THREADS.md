@@ -785,12 +785,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 10:38 UTC · `orchestrator-hold-status-archive-tab-deleted-tab` → running, note (all) · pipeline
-- 2026-11-13 10:38 UTC · `orchestrator-hold-status-archive-tab-deleted-tab` note (all) · orchestrator
-- 2026-11-13 10:38 UTC · `console-and-axhub-retry-failed-calls-themselves-no-claude-needed` → running, note (all) · pipeline
-- 2026-11-13 10:38 UTC · `console-and-axhub-retry-failed-calls-themselves-no-claude-needed` note (all) · orchestrator
-- 2026-11-13 10:39 UTC · `console-and-axhub-retry-failed-calls-themselves-no-claude-needed` → queued, note (all) · pipeline
-- 2026-11-13 10:39 UTC · `all-banners-hide-when-empty` note (all) · pipeline
 - 2026-11-13 10:39 UTC · `every-skin-ships-a-light-and-a-dark-colour-theme-studio-pro-executive-field` added (0 steps) (all) · mcp
 - 2026-11-13 10:39 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` s9 done, → running (all) · orchestrator
 - 2026-11-13 10:39 UTC · `every-skin-ships-a-light-and-a-dark-colour-theme` added (0 steps) (all) · console
@@ -1185,6 +1179,12 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 17:32 UTC · `drag-anything-by-api-and-voice-after-pr-556-land` note, removed (all) · build-rename
 - 2026-11-13 17:33 UTC · `every-skin-ships-light-dark-colour-theme` added (2 steps) (all) · build-rename
 - 2026-11-13 17:33 UTC · `every-skin-ships-a-light-and-a-dark-colour-theme` note, removed (all) · build-rename
+- 2026-11-13 17:33 UTC · `fix-build-whose-session-finishes-phase-e` added (12 steps) (all) · build-rename
+- 2026-11-13 17:33 UTC · `fix-a-build-whose-session-finishes-its-phase-e-g-the-fable-steps-with-steps` note, removed (all) · build-rename
+- 2026-11-13 17:33 UTC · `fix-merge-conflicts-pr-557-professional` added (2 steps) (all) · build-rename
+- 2026-11-13 17:33 UTC · `fix-merge-conflicts-on-pr-557-professional-skins` note, removed (all) · build-rename
+- 2026-11-13 17:33 UTC · `fix-step-splitter-claude-exit-1-input` added (8 steps) (all) · build-rename
+- 2026-11-13 17:33 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` note, removed (all) · build-rename
 
 ## Token passes (log)
 
