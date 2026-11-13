@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3910,
- "updatedAt": "2026-11-13T01:20:55.135Z",
+ "rev": 3911,
+ "updatedAt": "2026-11-13T01:21:05.998Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -176586,7 +176586,7 @@
    "title": "10-minute steps: the splitter cuts every build into steps of 10 minutes or less (was 30). Steps are checkpoints inside ONE session: the session ticks each one done and commits as it goes, so nothing is lost if it dies, and there is no new prompt or relaunch per step. Update the splitter prompt, the ",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -176595,7 +176595,7 @@
    "priority": "P0",
    "createdAt": "2026-11-13T01:09:38.633Z",
    "updatedAt": "2026-11-13T01:20:53.464Z",
-   "builtAt": "",
+   "builtAt": "2026-11-13T01:20:53.464Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -176745,12 +176745,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T01:20:40.925Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T01:11:10.433Z",
-     "updatedAt": "2026-11-13T01:11:10.433Z"
+     "updatedAt": "2026-11-13T01:20:41.184Z"
     }
    ],
    "profiles": [
@@ -176761,7 +176761,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
