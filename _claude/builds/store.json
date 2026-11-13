@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3929,
- "updatedAt": "2026-11-13T01:48:19.197Z",
+ "rev": 3930,
+ "updatedAt": "2026-11-13T01:48:30.421Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -173361,14 +173361,14 @@
    "title": "Tap-to-confirm follows label visibility + quick-switches pane at top of every chrome settings",
    "category": "ui",
    "detail": "Follow-up to PR #524 (tap-to-confirm). Brett: \"By default, if you turn text on or off, it switches that tap to confirm on or off. If there's no text, it turns double tap on.\" and \"a collapsible pane at the top of the settings interface that has switches like override or double tap... at the top, easy to see.\"",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch",
    "pr": "",
    "createdAt": "2026-11-12T20:45:12.311Z",
-   "updatedAt": "2026-11-13T01:48:07.339Z",
+   "updatedAt": "2026-11-13T01:48:15.036Z",
    "builtAt": "",
    "notes": [
     {
@@ -173434,6 +173434,14 @@
     {
      "text": "Launch failed on mossesx-max-: launcher exit 2: claude-headless: --log is a plain file name",
      "at": "2026-11-13T00:51:07.848Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-tap-to-confirm-follows-label-visibility-quick-sw--earl.",
+     "at": "2026-11-13T01:48:11.309Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-tap-to-confirm-follows-label-visibility-quick-sw--earl, own login copy)",
+     "at": "2026-11-13T01:48:15.036Z"
     }
    ],
    "approvals": [],
@@ -173453,18 +173461,18 @@
    "pipeline": {
     "queuedAt": "2026-11-12T20:45:18.841Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-tap-to-confirm-follows-label-visibility-quick-sw--earl",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-13T01:48:10.772Z",
+    "runs": 1,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
-    "note": "launch failed: launcher exit 2: claude-headless: --log is a plain file name",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-13T01:48:10.772Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -173472,10 +173480,8 @@
      "at": "2026-11-12T20:46:05.543Z",
      "why": "subscription account mossesx-max-"
     },
-    "tried": [
-     "mossesx-max-"
-    ],
-    "pickedAt": "",
+    "tried": [],
+    "pickedAt": "2026-11-13T01:48:10.772Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -173556,7 +173562,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
