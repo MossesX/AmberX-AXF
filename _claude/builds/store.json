@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4265,
- "updatedAt": "2026-11-13T11:03:34.755Z",
+ "rev": 4266,
+ "updatedAt": "2026-11-13T11:04:11.504Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -175355,7 +175355,7 @@
    "branch": "claude/stop-the-molly-guide-from-popping-up-and-talking-every-time-the-console-loads-n",
    "pr": "#564",
    "createdAt": "2026-11-12T23:14:47.128Z",
-   "updatedAt": "2026-11-13T11:03:30.699Z",
+   "updatedAt": "2026-11-13T11:03:51.335Z",
    "builtAt": "",
    "notes": [
     {
@@ -175373,6 +175373,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-stop-the-molly-guide-from-popping-up-and-talking--rhonda, own login copy)",
      "at": "2026-11-13T10:51:19.681Z"
+    },
+    {
+     "text": "Headless run axf-stop-the-molly-guide-from-popping-up-and-talking--rhonda: brief only · start 11.3K tokens ($0.03) · cost $2.23 · 61 turns · 6 tools, MCP none",
+     "at": "2026-11-13T11:03:51.335Z"
     }
    ],
    "approvals": [],
