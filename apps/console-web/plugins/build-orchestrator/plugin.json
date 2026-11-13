@@ -528,6 +528,99 @@
           }
         },
         "output": "{ settings }"
+      },
+      {
+        "id": "recovery-status",
+        "route": "GET /recovery",
+        "title": "Auto-recovery status",
+        "description": "The Recovery log: auto-recovery settings, the last recovery round, every build auto-recovery touched (attempts, last cause and exit, backoff, parked) and the latest recovery events (cause, exit, action, attempt), plus the Builds stuck systems check item. Say 'what did recovery fix'.",
+        "readOnly": true,
+        "output": "{ settings, lastRun, builds, events, health }"
+      },
+      {
+        "id": "recovery-run",
+        "route": "POST /recovery/run",
+        "title": "Run auto-recovery now",
+        "description": "One auto-recovery round now: stuck builds (no live session, killed exit 143, failed exit 1, hung) go back to the Queue, leaked slots are released, a build at the retry cap is parked in Pending. dry_run plans and answers without changing anything. From the console container the round runs on the VPS dispatcher's next tick.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "dry_run": {
+              "type": "boolean",
+              "description": "Plan only, change nothing"
+            }
+          }
+        },
+        "output": "{ state, message } or, dry run, { actions }"
+      },
+      {
+        "id": "recovery-settings",
+        "route": "POST /recovery/settings",
+        "title": "Recovery settings",
+        "description": "Change auto-recovery settings (Claude settings builds.recovery.*): enabled, maxRetries (0-10, default 3), staleHeartbeatMin (5-240, default 20), backoffMin (minutes, comma separated, default 1,5,15), fyi (one phone line per fix).",
+        "input": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "maxRetries": {
+              "type": "integer"
+            },
+            "staleHeartbeatMin": {
+              "type": "integer"
+            },
+            "backoffMin": {
+              "type": "string"
+            },
+            "fyi": {
+              "type": "boolean"
+            }
+          }
+        },
+        "output": "{ ok, settings }"
+      },
+      {
+        "id": "recovery-retry",
+        "route": "POST /recovery/retry/{build}",
+        "title": "Retry a stuck build",
+        "description": "Put a stuck, failed or parked build back in the Queue now; its automatic retry count starts over. Refused while it has a live session.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "Build id"
+            }
+          },
+          "required": [
+            "build"
+          ]
+        },
+        "output": "{ ok, id, status }"
+      },
+      {
+        "id": "recovery-park",
+        "route": "POST /recovery/park/{build}",
+        "title": "Park a build",
+        "description": "Stop retrying a build: back to Pending with the reason, for Brett to decide.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "Build id"
+            },
+            "why": {
+              "type": "string",
+              "description": "Why it is parked"
+            }
+          },
+          "required": [
+            "build"
+          ]
+        },
+        "output": "{ ok, id, status }"
       }
     ]
   },

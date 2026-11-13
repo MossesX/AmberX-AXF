@@ -774,17 +774,17 @@ async def recovery_settings_set(request: Request) -> dict[str, Any]:
     return _recover("settings", "set", *pairs, "--by", (brett_click(request) or "console")[:80])
 
 
-@router.post("/recovery/retry/{build_id}")
-async def recovery_retry(build_id: str, request: Request) -> dict[str, Any]:
+@router.post("/recovery/retry/{build}")
+async def recovery_retry(build: str, request: Request) -> dict[str, Any]:
     """Put a stuck, failed or parked build back in the Queue now; its retry count starts over."""
-    return _recover("retry", _build_id(build_id), "--by", (brett_click(request) or "console")[:80])
+    return _recover("retry", _build_id(build), "--by", (brett_click(request) or "console")[:80])
 
 
-@router.post("/recovery/park/{build_id}")
-async def recovery_park(build_id: str, request: Request) -> dict[str, Any]:
+@router.post("/recovery/park/{build}")
+async def recovery_park(build: str, request: Request) -> dict[str, Any]:
     """{why?}: stop retrying a build: back to Pending with the reason."""
     body = await _json_body(request)
-    args = ["park", _build_id(build_id), "--by", (brett_click(request) or "console")[:80]]
+    args = ["park", _build_id(build), "--by", (brett_click(request) or "console")[:80]]
     why = str(body.get("why") or "").strip()[:300]
     if why:
         args += ["--why", why]
