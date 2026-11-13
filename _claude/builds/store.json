@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4700,
- "updatedAt": "2026-11-13T18:48:05.034Z",
+ "rev": 4701,
+ "updatedAt": "2026-11-13T18:48:18.607Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -198785,7 +198785,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:26:12.039Z",
-   "updatedAt": "2026-11-13T18:36:18.638Z",
+   "updatedAt": "2026-11-13T18:48:11.592Z",
    "builtAt": "",
    "notes": [
     {
@@ -198829,7 +198829,16 @@
      "at": "2026-11-13T18:36:18.638Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-13T18:48:11.592Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "how come I can't see the transparency of a settings interface dialog? Everything needs to have a token",
@@ -198922,12 +198931,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T18:48:11.592Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T18:28:04.217Z",
-     "updatedAt": "2026-11-13T18:28:04.217Z"
+     "updatedAt": "2026-11-13T18:48:11.844Z"
     },
     {
      "id": "s3",
@@ -198985,7 +198994,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

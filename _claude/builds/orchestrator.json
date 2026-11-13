@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T18:48:05.034Z",
+ "updatedAt": "2026-11-13T18:48:18.607Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -127642,7 +127642,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:26:12.039Z",
-   "updatedAt": "2026-11-13T18:36:18.638Z",
+   "updatedAt": "2026-11-13T18:48:11.592Z",
    "builtAt": "",
    "notes": [
     {
@@ -127686,7 +127686,16 @@
      "at": "2026-11-13T18:36:18.638Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-13T18:48:11.592Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "how come I can't see the transparency of a settings interface dialog? Everything needs to have a token",
@@ -127733,8 +127742,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T18:48:11.592Z",
      "note": "",
      "uid": "st-mwfb7y7t02xkfs",
      "createdAt": "2026-11-13T18:28:04.217Z"
