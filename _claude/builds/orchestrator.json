@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T07:20:24.570Z",
+ "updatedAt": "2026-11-13T07:20:40.550Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -117915,7 +117915,7 @@
    "pr": "#555",
    "priority": "P0",
    "createdAt": "2026-11-13T06:54:48.788Z",
-   "updatedAt": "2026-11-13T07:20:11.774Z",
+   "updatedAt": "2026-11-13T07:20:39.186Z",
    "builtAt": "2026-11-13T07:20:11.774Z",
    "notes": [
     {
@@ -117961,6 +117961,10 @@
     {
      "text": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
      "at": "2026-11-13T07:20:11.774Z"
+    },
+    {
+     "text": "Reconciler: PR #555 names s1, s2, s3, s4, s5, s6, s7, s8, s10, s11, s12 done",
+     "at": "2026-11-13T07:20:39.186Z"
     }
    ],
    "approvals": [],

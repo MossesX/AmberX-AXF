@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4134,
- "updatedAt": "2026-11-13T07:20:24.570Z",
+ "rev": 4135,
+ "updatedAt": "2026-11-13T07:20:40.550Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -179751,7 +179751,7 @@
    "pr": "#555",
    "priority": "P0",
    "createdAt": "2026-11-13T06:54:48.788Z",
-   "updatedAt": "2026-11-13T07:20:11.774Z",
+   "updatedAt": "2026-11-13T07:20:39.186Z",
    "builtAt": "2026-11-13T07:20:11.774Z",
    "notes": [
     {
@@ -179797,6 +179797,10 @@
     {
      "text": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
      "at": "2026-11-13T07:20:11.774Z"
+    },
+    {
+     "text": "Reconciler: PR #555 names s1, s2, s3, s4, s5, s6, s7, s8, s10, s11, s12 done",
+     "at": "2026-11-13T07:20:39.186Z"
     }
    ],
    "approvals": [],
@@ -180181,7 +180185,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 26,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
