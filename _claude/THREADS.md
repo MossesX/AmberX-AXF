@@ -781,10 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 00:46 UTC · `amberx-approval-pop-up-not-showing-only-the-android-notification` → running, note (all) · pipeline
-- 2026-11-13 00:46 UTC · `amberx-approval-pop-up-not-showing-only-the-android-notification` branch claude/amberx-approval-pop-up-not-showing-only-the-android-notification (all) · pipeline
-- 2026-11-13 00:46 UTC · `server-every-failed-merge-alerts-brett-immediately-and-retries-by-itself-until` note (all) · pipeline
-- 2026-11-13 00:46 UTC · `amberx-approval-pop-up-not-showing-only-the-android-notification` note (all) · orchestrator
 - 2026-11-13 00:47 UTC · `server-every-failed-merge-alerts-brett-immediately-and-retries-by-itself-until` note (all) · pipeline
 - 2026-11-13 00:48 UTC · `tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch` note (all) · pipeline
 - 2026-11-13 00:48 UTC · `amberx-approval-pop-up-not-showing-only-the-android-notification` s1 done (all) · orchestrator
@@ -1181,6 +1177,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 10:37 UTC · `fix-a-build-whose-session-finishes-its-phase-e-g-the-fable-steps-with-steps` note (all) · orchestrator
 - 2026-11-13 10:37 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` → running, note (all) · pipeline
 - 2026-11-13 10:37 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` note (all) · orchestrator
+- 2026-11-13 10:37 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` → running, note (all) · orchestrator
+- 2026-11-13 10:37 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` note (all) · pipeline
+- 2026-11-13 10:37 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` → running, note (all) · pipeline
+- 2026-11-13 10:37 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` note (all) · orchestrator
 
 ## Token passes (log)
 
