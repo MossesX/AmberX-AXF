@@ -1,7 +1,7 @@
 # Move AmberX web app into the console; the phone app reads the console
 
-Build `move-amberx-web-app-into-the-console-amberx-andr`, phase 4 (Opus), steps s3–s14. Branch
-`claude/move-amberx-web-app-into-the-console-amberx-andr`, PR #528. Contract: `docs/contracts/amberx-console-api.md`
+Build `move-amberx-web-app-console-amberx-andr`, phase 4 (Opus), steps s3–s14. Branch
+`claude/move-amberx-web-app-console-amberx-andr`, PR #528. Contract: `docs/contracts/amberx-console-api.md`
 (amberx-console-api@1; each step adds a "Built in sN" note under its section).
 
 Brett (Nov 12 2026): "Now what we're gonna end up doing is just moving everything over the console and making AmberX
