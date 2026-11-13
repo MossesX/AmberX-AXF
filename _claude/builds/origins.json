@@ -7108,6 +7108,18 @@
    "from": "",
    "addenda": []
   },
+  "skin-config-panel-merge-main-and-land": {
+   "said": "land the skin config panel",
+   "at": "2026-11-13T19:47:38.941Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "skin-configuration-panel-before-ai-makes": {
    "said": "",
    "at": "",
@@ -7245,6 +7257,18 @@
    "by": "skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga",
    "brief": "# Build: skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"Skins plugin: its own removable console plugin and screen for changing skins. Gallery of every skin with live preview (desktop and phone), one-tap Use skin, Back and Restore to Default with undo, per-scope switching (whole hub, one app, one screen, one plugin), a quick skin switcher on the banner an\" (skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga) — Phase 1, model Fable.\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (2 left, ~18 min):\n[ ] s1 (~10 min) Define the skin-switch@1 action contract in framework/core/engines/skin-switch.mjs: use / back-to-skin / restore-default / undo for each scope (hub, app:<id>, ui:<view>, plugin:<id>), built on resolveLookSkin and the app-look@1 snapshot, with a one-step undo record kept in the look document. Add a fixture in framework/spec/fixtures/skin-switch.json, and record the Android twin as a deferred gap in PORTING.md\n[ ] s2 (~8 min) Add check framework/spec/check-skin-switch.mts (engine vs fixture: scope precedence, undo after restore, back clears only the overridden part) and wire it into CI\nRead first: framework/core/engines/skin-switch.mjs, framework/spec/fixtures/skin-switch.json, framework/spec/PORTING.md, framework/spec/check-skin-switch.mts, .github/workflows/android.yml\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga \"…\"); the build goes back to Pending for Brett.\n",
    "verbatim": false,
+   "from": "",
+   "addenda": []
+  },
+  "skins-plugin-merge-main-and-land": {
+   "said": "land the skins plugin",
+   "at": "2026-11-13T19:47:44.815Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
    "from": "",
    "addenda": []
   },
