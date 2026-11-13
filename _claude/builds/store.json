@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4474,
- "updatedAt": "2026-11-13T12:56:58.479Z",
+ "rev": 4475,
+ "updatedAt": "2026-11-13T12:59:20.678Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -187879,10 +187879,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/assets-menu-hide-any-asset-visible-and-hidden-li",
-   "pr": "",
+   "pr": "#573",
    "priority": "P0",
    "createdAt": "2026-11-13T12:31:20.005Z",
-   "updatedAt": "2026-11-13T12:56:56.287Z",
+   "updatedAt": "2026-11-13T12:59:18.982Z",
    "builtAt": "",
    "notes": [
     {
@@ -188129,7 +188129,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
