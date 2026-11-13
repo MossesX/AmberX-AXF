@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4913,
- "updatedAt": "2026-11-13T20:09:12.436Z",
+ "rev": 4914,
+ "updatedAt": "2026-11-13T20:09:50.490Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -206564,12 +206564,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T20:08:02.821Z",
-   "updatedAt": "2026-11-13T20:08:10.000Z",
+   "updatedAt": "2026-11-13T20:09:48.693Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-13T20:08:10.000Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"10fa6368-1e76-4d56-842f-c7f4c7e9219d\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-13T20:09:48.693Z"
     }
    ],
    "approvals": [],
@@ -206596,9 +206600,15 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
-    "split": null,
+    "split": {
+     "at": "2026-11-13T20:09:48.693Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"10fa6368-1e76-4d56-842f-c7f4c7e9219d\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
+    },
     "splitRequested": "",
-    "note": "waiting for the split before it can start",
+    "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
     "planned": null,
@@ -206608,7 +206618,77 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwfeusgl04i1yw",
+     "title": "",
+     "text": "Branch claude/per-instance-settings-picker-merge-main (worktree /root/axf-builds/per-instance-settings-picker-merge-main) now has origin/main merged (commit 617aa0a7d). The fixture clash in framework/spec/fixtures/chrome-settings.json was resolved by taking main's version and regenerating the fixtures, but framework/spec/check-chrome-settings.mts now fails with a deepStrictEqual. Find which expectation differs (likely the per-instance fields vs main's tab-rows fields), fix the rules or regenerate the fixtures so both features' expectations hold, run the full chrome-settings and theme/control checks, commit, push, then land on main. Feature: every individual toolbar, tab group, menu and dialog instance gets its own settings interface (including transparency) that changes only that instance.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T20:09:48.693Z",
+     "updatedAt": "2026-11-13T20:09:48.693Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwfeusgl05ifaz",
+     "title": "",
+     "text": "land the per-toolbar, tab group and menu settings",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T20:09:48.693Z",
+     "updatedAt": "2026-11-13T20:09:48.693Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwfeusgl064gdm",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/per-toolbar-settings-fix-failing-chrome.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/per-toolbar-settings-fix-failing-chrome.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T20:09:48.693Z",
+     "updatedAt": "2026-11-13T20:09:48.693Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -206617,12 +206697,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-13T20:09:48.693Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
