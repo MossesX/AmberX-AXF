@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T10:43:14.521Z",
+ "updatedAt": "2026-11-13T10:43:28.625Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -100730,7 +100730,7 @@
    "mergedAt": "2026-11-11T00:48:50Z",
    "priority": "P0",
    "createdAt": "2026-11-10T17:07:33.143Z",
-   "updatedAt": "2026-11-13T10:40:35.231Z",
+   "updatedAt": "2026-11-13T10:43:02.676Z",
    "builtAt": "2026-11-13T10:40:35.231Z",
    "notes": [
     {
@@ -100780,6 +100780,10 @@
     {
      "text": "Headless run axf-orchestrator-hold-status-archive-tab-deleted-tab--rhonda: brief only · start 11.6K tokens ($0.03) · cost $0.30 · 14 turns · 6 tools, MCP none",
      "at": "2026-11-13T10:40:35.231Z"
+    },
+    {
+     "text": "Session axf-orchestrator-hold-status-archive-tab-deleted-tab--rhonda on mossesx-max- ended (exit 0); the build was already complete.",
+     "at": "2026-11-13T10:43:02.676Z"
     }
    ],
    "approvals": [],
@@ -109739,14 +109743,14 @@
    "title": "Console and axHub retry failed calls themselves (no Claude needed)",
    "category": "orchestrator",
    "detail": "URGENT, boss order from Brett, Nov 12. When a call from Claude/MCP/voice/CLI fails for a transient reason (e.g. 'builds store is locked', timeout, console client asleep, rate limit, 5xx), the console and axHub must retry it THEMSELVES on the server, whether or not the Claude session is still connected. Retry with backoff until it succeeds (bounded, e.g. 10 tries over ~10 min), then the result is stored on the job so get_job shows success. Only permanent errors (validation, not found) fail, and those send Brett an AmberX FYI with what's missing. Fix the root cause of store.json.lock contention too (stale lock cleanup, short waits for the lock instead of failing). Applies to control_add/set/act, pipeline_queue, console_open/show and all axf-console write tools. Tests: locked store -> call waits/retries and succeeds; session disconnect mid-retry -> still completes.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/console-and-axhub-retry-failed-calls-themselves-no-claude-needed",
    "pr": "#510",
    "createdAt": "2026-11-12T02:37:24.132Z",
-   "updatedAt": "2026-11-13T10:39:05.221Z",
+   "updatedAt": "2026-11-13T10:43:12.156Z",
    "builtAt": "",
    "notes": [
     {
@@ -109804,6 +109808,14 @@
     {
      "text": "Session on mossesx-max- ended (exit 3) with 1 step left: back in the Queue (run 1).",
      "at": "2026-11-13T10:39:05.221Z"
+    },
+    {
+     "text": "Started run 2 on mossesx-max- (Opus, Phase 1): axf-console-and-axhub-retry-failed-calls-themselves---joey.",
+     "at": "2026-11-13T10:43:09.982Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-console-and-axhub-retry-failed-calls-themselves---joey, own login copy)",
+     "at": "2026-11-13T10:43:12.156Z"
     }
    ],
    "approvals": [],
@@ -120170,15 +120182,15 @@
    "title": "Fix: a build whose session finishes its phase (e.g. the Fable steps) with steps left goes back to Pending instead of the Queue, so the next phase never starts and slots sit empty. Send it back to the Queue and launch the next phase automatically",
    "category": "",
    "detail": "",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/fix-a-build-whose-session-finishes-its-phase-e-g-the-fable-steps-with-steps",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T10:35:03.675Z",
-   "updatedAt": "2026-11-13T10:37:10.223Z",
+   "updatedAt": "2026-11-13T10:43:24.079Z",
    "builtAt": "",
    "notes": [
     {
@@ -120192,10 +120204,30 @@
     {
      "text": "Split by Claude into 12 steps (2 Fable).",
      "at": "2026-11-13T10:37:10.223Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-fix-a-build-whose-session-finishes-its-phase-e-g--paulie.",
+     "at": "2026-11-13T10:43:20.937Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-fix-a-build-whose-session-finishes-its-phase-e-g--paulie, own login copy)",
+     "at": "2026-11-13T10:43:24.079Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "fix-a-build-whose-session-finishes-its-phase-e-g-the-fable-steps-with-steps",
+    "brief": "# Build: fix-a-build-whose-session-finishes-its-phase-e-g-the-fable-steps-with-steps\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"Fix: a build whose session finishes its phase (e.g. the Fable steps) with steps left goes back to Pending instead of the Queue, so the next phase never starts and slots sit empty. Send it back to the Queue and launch the next phase automatically\" (fix-a-build-whose-session-finishes-its-phase-e-g-the-fable-steps-with-steps) — Phase 1, model Opus.\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (1 left, ~8 min):\n[ ] s1 (~8 min) Trace the bug: read framework/core/build-pipeline.mjs (build-pipeline@1 transitions), apps/console-web/plugins/build-orchestrator/pipeline.mjs (tick, session-exit handling) and deploy/claude-headless.sh exit path, then write a short repro with the exact code path that sends a phase-done build with steps left to Pending to _claude/builds/reports/<build id>.md (notes section)\nRead first: framework/core/build-pipeline.mjs, apps/console-web/plugins/build-orchestrator/pipeline.mjs, deploy/claude-headless.sh, _claude/builds/reports/fix-a-build-whose-session-finishes-its-phase-e-g-the-fable-steps-with-steps.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step fix-a-build-whose-session-finishes-its-phase-e-g-the-fable-steps-with-steps <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link fix-a-build-whose-session-finishes-its-phase-e-g-the-fable-steps-with-steps --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step fix-a-build-whose-session-finishes-its-phase-e-g-the-fable-steps-with-steps <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note fix-a-build-whose-session-finishes-its-phase-e-g-the-fable-steps-with-steps \"…\"); the build goes back to Pending for Brett.\n",
+    "verbatim": false,
+    "from": "",
+    "addenda": []
+   },
    "steps": [
     {
      "id": "s1",
