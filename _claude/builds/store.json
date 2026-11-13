@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4055,
- "updatedAt": "2026-11-13T06:48:49.912Z",
+ "rev": 4056,
+ "updatedAt": "2026-11-13T06:49:09.222Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -178510,7 +178510,7 @@
    "pr": "#553",
    "priority": "P0",
    "createdAt": "2026-11-13T06:25:11.720Z",
-   "updatedAt": "2026-11-13T06:48:48.273Z",
+   "updatedAt": "2026-11-13T06:49:05.723Z",
    "builtAt": "",
    "notes": [
     {
@@ -178544,6 +178544,10 @@
     {
      "text": "Phase 1 (Fable) done on PR #553: skin-switch@1 engine + fixture (s1) and check-skin-switch wired into CI (s2). Pipeline fault: the 20-step Claude split was lost on main (the branch worktree published a stepless copy of this build, newer-wins), intake re-split it by rules into 3 Opus steps and dispatched a second session (earl, Opus) into the same worktree and branch while this Fable session was still running. The 20-step plan was put back from the journal; the earl session is still running the plugin work (its commit e17b86283 is on the branch). Brett: decide whether earl continues as Phase 2 or is stopped and re-dispatched; the split-loss race needs a pipeline fix.",
      "at": "2026-11-13T06:47:24.519Z"
+    },
+    {
+     "text": "Opus phase 1 done: skin-gallery plugin (REST, plugin commands, CLI, deep link), gallery with live preview, per-scope Use/Back/Restore/Undo, banner switcher. Open: screenshots + UI Review choices, settings sub-tab, context menu, AppearancePanel hook (see report).",
+     "at": "2026-11-13T06:48:50.720Z"
     }
    ],
    "approvals": [
@@ -178759,30 +178763,6 @@
      "updatedAt": "2026-11-13T06:46:13.484Z"
     },
     {
-     "id": "s7",
-     "uid": "st-mwem5g4x01fcj3",
-     "title": "",
-     "text": "Live preview pane: the selected skin is drawn in a scoped desktop frame and a phone-width frame side by side (SkinScope with the preview skin, no write until Use), with a desktop/phone toggle on a role=toolbar",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "apps/console-web/plugins/skins/web/SkinPreview.tsx"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-13T06:46:16.376Z",
-     "updatedAt": "2026-11-13T06:46:17.073Z"
-    },
-    {
      "id": "s8",
      "uid": "st-mwem5ilk016sp0",
      "title": "",
@@ -178829,128 +178809,6 @@
      "rev": 1,
      "createdAt": "2026-11-13T06:46:22.518Z",
      "updatedAt": "2026-11-13T06:46:22.815Z"
-    },
-    {
-     "id": "s10",
-     "uid": "st-mwem5qjl01f80q",
-     "title": "",
-     "text": "Context-menu entries (rt.addContextItems): Change skin here… on any view root and plugin root, opening the scope picker on that scope. Banner chip right-click gives Settings… / Change… / Move",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "8 min",
-     "files": [
-      "apps/console-web/plugins/skins/web/contextItems.ts"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-13T06:46:30.364Z",
-     "updatedAt": "2026-11-13T06:46:30.563Z"
-    },
-    {
-     "id": "s11",
-     "uid": "st-mwem5szt01xndd",
-     "title": "",
-     "text": "Settings sub-tab (Settings → Plugins → Skins) with the level toolbar: show the banner chip, default scope, undo window, preview viewport. Each setting is readable and settable through REST, MCP, CLI and voice",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "9 min",
-     "files": [
-      "apps/console-web/plugins/skins/web/SkinsSettings.tsx",
-      "apps/console-web/plugins/skins/settings.json"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-13T06:46:33.406Z",
-     "updatedAt": "2026-11-13T06:46:33.737Z"
-    },
-    {
-     "id": "s12",
-     "uid": "st-mwem5uzz0150o0",
-     "title": "",
-     "text": "Hook AppearancePanel in framework/libs/settings to the skin-switch engine, so its Use / Back / Restore match the plugin's, and add an Open Skins gallery link when the plugin is installed (capability check, no folder name)",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "8 min",
-     "files": [
-      "framework/libs/settings/AppearancePanel.tsx"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-13T06:46:35.745Z",
-     "updatedAt": "2026-11-13T06:46:36.335Z"
-    },
-    {
-     "id": "s13",
-     "uid": "st-mwem5wpo01x9ec",
-     "title": "",
-     "text": "UI Review choices: build at least 3 options for the gallery layout and for the banner chip as assets under apps/console-web/plugins/skins/assets/<type>/, with a choices JSON",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "apps/console-web/plugins/skins/assets/",
-      "apps/console-web/plugins/skins/choices/"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-13T06:46:38.359Z",
-     "updatedAt": "2026-11-13T06:46:38.556Z"
-    },
-    {
-     "id": "s14",
-     "uid": "st-mwem5xyx0156ov",
-     "title": "",
-     "text": "Lifecycle and conformance: run uninstall --all and plugin-lifecycle check --after-uninstall, check-theme, check-controls, check-toolbars, check-chrome-assets and the glossary-index catalog --check. Fix any findings",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "9 min",
-     "files": [
-      "apps/console-web/plugins/skins/"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-13T06:46:39.975Z",
-     "updatedAt": "2026-11-13T06:46:40.185Z"
     }
    ],
    "profiles": [
@@ -178961,7 +178819,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -179109,6 +178967,182 @@
       "updatedAt": "2026-11-13T06:46:41.739Z"
      },
      "at": "2026-11-13T06:48:30.019Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
+    },
+    {
+     "step": {
+      "id": "s14",
+      "uid": "st-mwem5xyx0156ov",
+      "title": "",
+      "text": "Lifecycle and conformance: run uninstall --all and plugin-lifecycle check --after-uninstall, check-theme, check-controls, check-toolbars, check-chrome-assets and the glossary-index catalog --check. Fix any findings",
+      "model": "Opus",
+      "why": "",
+      "phase": "",
+      "group": "",
+      "estimate": "9 min",
+      "files": [
+       "apps/console-web/plugins/skins/"
+      ],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": false,
+      "doneAt": "",
+      "note": "",
+      "rev": 1,
+      "createdAt": "2026-11-13T06:46:39.975Z",
+      "updatedAt": "2026-11-13T06:46:40.185Z"
+     },
+     "at": "2026-11-13T06:48:49.468Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
+    },
+    {
+     "step": {
+      "id": "s13",
+      "uid": "st-mwem5wpo01x9ec",
+      "title": "",
+      "text": "UI Review choices: build at least 3 options for the gallery layout and for the banner chip as assets under apps/console-web/plugins/skins/assets/<type>/, with a choices JSON",
+      "model": "Opus",
+      "why": "",
+      "phase": "",
+      "group": "",
+      "estimate": "10 min",
+      "files": [
+       "apps/console-web/plugins/skins/assets/",
+       "apps/console-web/plugins/skins/choices/"
+      ],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": false,
+      "doneAt": "",
+      "note": "",
+      "rev": 1,
+      "createdAt": "2026-11-13T06:46:38.359Z",
+      "updatedAt": "2026-11-13T06:46:38.556Z"
+     },
+     "at": "2026-11-13T06:48:51.899Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
+    },
+    {
+     "step": {
+      "id": "s12",
+      "uid": "st-mwem5uzz0150o0",
+      "title": "",
+      "text": "Hook AppearancePanel in framework/libs/settings to the skin-switch engine, so its Use / Back / Restore match the plugin's, and add an Open Skins gallery link when the plugin is installed (capability check, no folder name)",
+      "model": "Opus",
+      "why": "",
+      "phase": "",
+      "group": "",
+      "estimate": "8 min",
+      "files": [
+       "framework/libs/settings/AppearancePanel.tsx"
+      ],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": false,
+      "doneAt": "",
+      "note": "",
+      "rev": 1,
+      "createdAt": "2026-11-13T06:46:35.745Z",
+      "updatedAt": "2026-11-13T06:46:36.335Z"
+     },
+     "at": "2026-11-13T06:48:53.848Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
+    },
+    {
+     "step": {
+      "id": "s11",
+      "uid": "st-mwem5szt01xndd",
+      "title": "",
+      "text": "Settings sub-tab (Settings → Plugins → Skins) with the level toolbar: show the banner chip, default scope, undo window, preview viewport. Each setting is readable and settable through REST, MCP, CLI and voice",
+      "model": "Opus",
+      "why": "",
+      "phase": "",
+      "group": "",
+      "estimate": "9 min",
+      "files": [
+       "apps/console-web/plugins/skins/web/SkinsSettings.tsx",
+       "apps/console-web/plugins/skins/settings.json"
+      ],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": false,
+      "doneAt": "",
+      "note": "",
+      "rev": 1,
+      "createdAt": "2026-11-13T06:46:33.406Z",
+      "updatedAt": "2026-11-13T06:46:33.737Z"
+     },
+     "at": "2026-11-13T06:48:55.587Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
+    },
+    {
+     "step": {
+      "id": "s10",
+      "uid": "st-mwem5qjl01f80q",
+      "title": "",
+      "text": "Context-menu entries (rt.addContextItems): Change skin here… on any view root and plugin root, opening the scope picker on that scope. Banner chip right-click gives Settings… / Change… / Move",
+      "model": "Opus",
+      "why": "",
+      "phase": "",
+      "group": "",
+      "estimate": "8 min",
+      "files": [
+       "apps/console-web/plugins/skins/web/contextItems.ts"
+      ],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": false,
+      "doneAt": "",
+      "note": "",
+      "rev": 1,
+      "createdAt": "2026-11-13T06:46:30.364Z",
+      "updatedAt": "2026-11-13T06:46:30.563Z"
+     },
+     "at": "2026-11-13T06:48:57.054Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
+    },
+    {
+     "step": {
+      "id": "s7",
+      "uid": "st-mwem5g4x01fcj3",
+      "title": "",
+      "text": "Live preview pane: the selected skin is drawn in a scoped desktop frame and a phone-width frame side by side (SkinScope with the preview skin, no write until Use), with a desktop/phone toggle on a role=toolbar",
+      "model": "Opus",
+      "why": "",
+      "phase": "",
+      "group": "",
+      "estimate": "10 min",
+      "files": [
+       "apps/console-web/plugins/skins/web/SkinPreview.tsx"
+      ],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": false,
+      "doneAt": "",
+      "note": "",
+      "rev": 1,
+      "createdAt": "2026-11-13T06:46:16.376Z",
+      "updatedAt": "2026-11-13T06:46:17.073Z"
+     },
+     "at": "2026-11-13T06:49:05.728Z",
      "why": "removed in the orchestrator",
      "by": "orchestrator"
     }
