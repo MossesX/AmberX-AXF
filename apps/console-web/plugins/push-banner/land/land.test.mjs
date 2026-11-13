@@ -12,7 +12,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from './land-core.mjs';
-import { makeGit, round, control, readState, readControl, ciOf, reasonEvent, badJson, takeLandLock, dropLandLock, serial, lockOwner, requestFix } from './land.mjs';
+import { makeGit, round, control, readState, readControl, ciOf, reasonEvent, badJson, takeLandLock, dropLandLock, serial, lockOwner, requestFix, refreshRunning } from './land.mjs';
 import { finishedBy, onBuildEvents } from './hook.mjs';
 process.env.AXF_CREW_SAY = 'off'; // group-chat posts (crew-say.mjs) stay out of the real Breakroom
 
@@ -220,6 +220,27 @@ check(dflt.on === true, 'Auto-land is on by default for every build (Nov 13 2026
 writeFileSync(join(s.dataDir, 'config.json'), JSON.stringify({ autoLand: false }));
 check((await round({ s, git, gh, api, agentJob: () => ({ exit: 0 }) })).on === true, 'an off written before autoLandRev 2 (the Nov 4 off) reads as on');
 
+// running builds: main merged in every 30 minutes, in their own clean worktree
+{
+  sh(['checkout', '-q', 'main'], repo); sh(['pull', '-q', 'origin', 'main'], repo);
+  branch('run', () => put('run.ts', 'x\n'));
+  branch('dirty', () => put('dirty.ts', 'x\n'));
+  const runWt = join(tmp, 'wt-run'); const dirtyWt = join(tmp, 'wt-dirty');
+  sh(['worktree', 'add', '-q', runWt, 'claude/run'], repo); sh(['worktree', 'add', '-q', dirtyWt, 'claude/dirty'], repo);
+  put('dirty.ts', 'session mid-edit\n', dirtyWt);
+  put('main2.ts', 'new main code\n'); commit('main moves in code again'); sh(['push', '-q', 'origin', 'main'], repo);
+  git(['fetch', '-q', 'origin']);
+  const running = [{ id: 'run', status: 'running', branch: 'claude/run', steps: [{ id: 's1', done: true }, { id: 's2', done: false }] },
+    { id: 'dirty', status: 'running', branch: 'claude/dirty', steps: [{ id: 's1', done: false }] }];
+  check(core.refreshDue(running, {}, Date.now()).length === 2 && core.refreshDue(running, { run: { at: new Date().toISOString() } }, Date.now()).map((b) => b.id).join() === 'dirty', 'refresh due: never refreshed, or 30 min ago');
+  const r = refreshRunning({ s, git, builds: running });
+  check(r.builds.run?.state === 'merged' && existsSync(join(runWt, 'main2.ts')) && sh(['show', 'origin/claude/run:main2.ts'], repo) === 'new main code', 'run: main merged into its own worktree and pushed');
+  check(r.builds.dirty?.state === 'skipped' && /uncommitted/.test(r.builds.dirty.why) && !existsSync(join(dirtyWt, 'main2.ts')), 'dirty: a session mid-edit is left alone until next turn');
+  const r2 = refreshRunning({ s, git, builds: running });
+  check(r2.builds.run.at === r.builds.run.at, 'not again within 30 minutes');
+  const r3 = refreshRunning({ s, git, builds: [] });
+  check(!Object.keys(r3.builds).length, 'a build that stopped running is forgotten');
+}
 rmSync(tmp, { recursive: true, force: true });
 console.log('per-build switch: on unless switched off');
 {

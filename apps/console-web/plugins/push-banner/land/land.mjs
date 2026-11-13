@@ -268,14 +268,17 @@ export function codeBehind({ s, git, br }) {
  * Merge main into the branch in a temporary worktree and push the merge commit. Data conflicts are resolved by
  * land-core's rules; any code conflict aborts. Returns { merged, sha, conflicts: [code files], resolved, pushError }.
  */
-export function mergeMain({ s, git, b, dry }) {
-  const dir = mkdtempSync(join(tmpdir(), 'axf-land-')); const wt = join(dir, 'wt');
+export function mergeMain({ s, git, b, dry, inPlace = '' }) {
+  // inPlace: a running build's own clean worktree (s5); otherwise a temporary worktree that is removed afterwards
+  const dir = mkdtempSync(join(tmpdir(), 'axf-land-')); const wt = inPlace || join(dir, 'wt');
   const g = (a, o = {}) => git(a, { ...o, cwd: wt });
   const live = join(s.repo, 'framework/cli/builds-live.mjs');
   const drv = ['-c', `merge.axf-builds.driver=node "${live}" merge-driver %O %A %B %P`, '-c', 'user.name=AXF auto-land', '-c', 'user.email=auto-land@amberxai.com'];
   try {
-    let r = git(['worktree', 'add', '-q', '--detach', wt, `${s.remote}/${b.branch}`]);
-    if (r.code) return { merged: false, conflicts: [], pushError: `worktree: ${r.err.slice(-200)}` };
+    if (!inPlace) {
+      const r = git(['worktree', 'add', '-q', '--detach', wt, `${s.remote}/${b.branch}`]);
+      if (r.code) return { merged: false, conflicts: [], pushError: `worktree: ${r.err.slice(-200)}` };
+    }
     const m = g([...drv, 'merge', '--no-edit', '-m', `Merge main into ${b.branch} (auto-land: builds files newer-wins, logs unioned)`, `${s.remote}/${s.base}`], { timeout: 180000 });
     const resolved = [];
     if (m.code) {
@@ -306,7 +309,48 @@ export function mergeMain({ s, git, b, dry }) {
     if (dry) return { merged: true, sha, conflicts: [], resolved, dry: true };
     const p = g(['push', '-q', s.remote, `HEAD:refs/heads/${b.branch}`], { timeout: 90000 });
     return p.code ? { merged: false, conflicts: [], resolved, pushError: p.err.slice(-200) || 'push failed' } : { merged: true, sha, conflicts: [], resolved };
-  } finally { git(['worktree', 'remove', '--force', wt]); rmSync(dir, { recursive: true, force: true }); }
+  } finally { if (!inPlace) git(['worktree', 'remove', '--force', wt]); rmSync(dir, { recursive: true, force: true }); }
+}
+
+// ------------------------------------------------------------------ running builds: main merged in every 30 minutes
+
+export const refreshFile = (s) => join(s.dataDir, 'land-refresh.json');
+
+/**
+ * A build that is still running gets origin/main merged into its branch every REFRESH_MS (Brett, Nov 13 2026: so it
+ * never falls far behind). Only in its own worktree when that is clean and not behind GitHub (a session mid-edit is
+ * left for the next turn), only when main moved in code, and at most MAX_REFRESH a round. The same merge rules as a
+ * landing: builds files newer-wins, THREADS / STATUS / decisions unioned, JSON checked; a code clash is aborted and noted
+ * (the build's own session resolves it when it finishes; the landing then files the fix build if it still clashes).
+ */
+export function refreshRunning({ s, git, builds, wts = worktrees(git), dry = false, nowMs = Date.now(), log = () => {} }) {
+  const prev = readJson(refreshFile(s), { $axf: 'auto-land-refresh@1', builds: {} }) || { builds: {} };
+  const out = { $axf: 'auto-land-refresh@1', at: new Date(nowMs).toISOString(), builds: { ...(prev.builds || {}) } };
+  let n = 0;
+  const due = core.refreshDue(builds, prev.builds || {}, nowMs);
+  for (const b of due) {
+    if (n >= core.MAX_REFRESH) break;
+    const rec = { at: out.at, state: 'skipped' };
+    const wt = wts[b.branch];
+    const remote = git(['rev-parse', '-q', '--verify', `refs/remotes/${s.remote}/${b.branch}`]).code === 0;
+    if (!wt || !existsSync(wt) || !remote) { rec.why = 'no worktree or branch on GitHub here'; out.builds[b.id] = rec; continue; }
+    if (!codeBehind({ s, git, br: b.branch })) { rec.state = 'current'; out.builds[b.id] = rec; continue; }
+    const dirty = core.strayPlan(git(['status', '--porcelain', '--untracked-files=no'], { cwd: wt }).out);
+    if (dirty.code.length || dirty.commit.length) { rec.why = 'its session has uncommitted changes; next turn'; rec.at = prev.builds?.[b.id]?.at || ''; out.builds[b.id] = rec; continue; }
+    if (git(['rev-list', '--count', `HEAD..${s.remote}/${b.branch}`], { cwd: wt }).out !== '0') { rec.why = 'its worktree is behind GitHub; next turn'; out.builds[b.id] = rec; continue; }
+    n++;
+    const m = mergeMain({ s, git, b, dry, inPlace: wt });
+    if (m.merged) Object.assign(rec, { state: 'merged', sha: m.sha, resolved: m.resolved || [] });
+    else Object.assign(rec, { state: m.conflicts?.length ? 'clash' : 'failed', files: (m.conflicts || []).slice(0, 20), why: m.pushError || (m.conflicts?.length ? 'main clashes with it in code; its session resolves it' : '') });
+    if (rec.state === 'merged') crewSay('landing', 'done', `${b.id} is still running: merged main into ${b.branch} so it stays current.`, { ref: b.id, repo: s.repo, dedupeMin: 25 });
+    log(`refresh ${b.id}: ${rec.state}${rec.why ? ` (${rec.why})` : ''}`);
+    out.builds[b.id] = rec;
+  }
+  // forget builds that are no longer running
+  const live = new Set(builds.filter(core.isRunning).map((b) => b.id));
+  for (const id of Object.keys(out.builds)) if (!live.has(id)) delete out.builds[id];
+  if (!dry) writeJson(refreshFile(s), out);
+  return out;
 }
 
 /** The .json files among `paths` that don't parse (a merge that settled them badly). */
@@ -443,6 +487,8 @@ export async function round({ s = settings(), git = makeGit(s.repo), gh = makeGi
     if (!it.reason && old.state !== 'ready' && !dry) crewSay('landing', 'done', `${b.id}${it.pr ? ` (#${it.pr})` : ''} is ready: CI green, nothing holds it. It joins the merge queue.`, { ref: b.id, repo: s.repo });
     items.push(it);
   }
+  // running builds: main merged in every 30 minutes (never on a one-build round)
+  if (!only) { try { refreshRunning({ s, git, builds, wts, dry, nowMs: now().getTime(), log }); } catch (e) { log(`refresh: ${e.message}`); } }
   // builds that left the list (merged, or no longer finished): their alert goes
   const gone = [...prevItems.keys()].filter((id) => !items.some((x) => x.id === id) && prevItems.get(id)?.pushed);
   if (gone.length && !dry && !only) await api('POST', '/api/alerts/resolve', { keys: gone.map(core.alertKey) });

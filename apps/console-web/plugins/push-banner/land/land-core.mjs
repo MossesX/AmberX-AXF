@@ -126,6 +126,21 @@ export function uniqueByBranch(cands) {
   return [...first.values()];
 }
 
+/** A running build (s5): status running / waiting / blocked with a branch, steps left, not merged. */
+export function isRunning(b) {
+  if (!b || b.deleted || b.hidden || b.mergedAt) return false;
+  if (!str(b.branch) || b.branch === 'main') return false;
+  return ['running', 'waiting'].includes(b.status) && !ALL_DONE(b);
+}
+/** Running builds get main merged in this often, at most MAX_REFRESH a round. */
+export const REFRESH_MS = 30 * 60 * 1000;
+export const MAX_REFRESH = 2;
+/** Running builds whose last refresh is REFRESH_MS old or more, oldest first. */
+export function refreshDue(builds, last = {}, nowMs = Date.now()) {
+  const t = (id) => Date.parse(last[id]?.at || 0) || 0;
+  return (builds || []).filter(isRunning).filter((b) => nowMs - t(b.id) >= REFRESH_MS).sort((a, b) => t(a.id) - t(b.id));
+}
+
 /** At most this many branches get main merged in per round, so CI isn't flooded; the rest wait their turn (quiet). */
 export const MAX_MAIN_MERGES = 3;
 
