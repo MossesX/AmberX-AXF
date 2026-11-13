@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T18:47:29.831Z",
+ "updatedAt": "2026-11-13T18:48:05.034Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -116657,14 +116657,15 @@
    "title": "CHANGE to one-to-do-notes-and-tasks-plugin (PR #527), Brett: notes, tasks and to-dos are ONE item type, not separate things. Any item can hold any other, nested to any depth: a note can contain task lists and to-do lists, a task or to-do list can contain notes, and lists nest inside lists inside not",
    "category": "",
    "detail": "",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/change-to-one-to-do-notes-and-tasks-plugin-pr-527-brett-notes-tasks-and-to",
    "pr": "#545",
+   "mergedAt": "2026-11-13T18:42:37Z",
    "createdAt": "2026-11-13T00:40:38.452Z",
-   "updatedAt": "2026-11-13T03:37:05.912Z",
+   "updatedAt": "2026-11-13T18:48:00.955Z",
    "builtAt": "2026-11-13T03:37:05.912Z",
    "notes": [
     {
@@ -116686,6 +116687,10 @@
     {
      "text": "Headless run axf-change-to-one-to-do-notes-and-tasks-plugin-pr-52--sully: brief only · start 11.3K tokens ($0.03) · cost $1.39 · 31 turns · 6 tools, MCP none",
      "at": "2026-11-13T03:37:05.912Z"
+    },
+    {
+     "text": "Reconciler: PR #545 merged",
+     "at": "2026-11-13T18:48:00.955Z"
     }
    ],
    "approvals": [],
