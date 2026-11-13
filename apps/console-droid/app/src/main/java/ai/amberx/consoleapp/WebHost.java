@@ -52,6 +52,7 @@ final class WebHost {
         NativeBridge.install(web);
         web.loadUrl(firstUrl == null ? ShellRules.HOME : firstUrl);
         ContentUpdate.start();
+        DeviceLink.ensure(c); // axHub's amberx device service (amberx.open_url) answers from here
         return web;
     }
 

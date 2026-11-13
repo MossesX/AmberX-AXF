@@ -134,7 +134,7 @@ export const NATIVE_ACTIONS = [
   { id: 'native.notify', label: 'Phone notification (native.notify:<title>:<text>)', params: true },
   { id: 'native.open', label: 'Open a page on the phone (native.open:<url>|app|overlay|browser)', params: true },
   { id: 'native.wake', label: 'Bring the console to the front on the phone and turn the screen on', params: false },
-  { id: 'native.recorder', label: 'Phone recorder: start, stop, state (native.recorder:<verb>)', params: true },
+  { id: 'native.recorder', label: 'Phone recorder: start, stop, state (native.recorder:<verb>; AmberX records until its capture service moves to the console app)', params: true },
   { id: 'native.update', label: 'Phone app web content: check for a new console, reload into it, or state (native.update:<verb>)', params: true },
   { id: 'native.state', label: 'Phone app state: shell version, permissions, overlay, insets', params: false },
 ];
