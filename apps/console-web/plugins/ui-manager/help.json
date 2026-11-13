@@ -1,0 +1,91 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "ui-manager-help",
+  "name": "UI Manager help",
+  "version": "0.1.0",
+  "description": "Help mode entries (help@1) for the UI Manager: the element tree, the expanding row, the choices, preview, apply and the change log.",
+  "author": "Brett",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:ui-manager",
+    "entries": [
+      {
+        "target": "view:ui-manager",
+        "title": "UI Manager",
+        "text": "Select any UI element in the console and change what it reads: its asset, its properties and every colour, size and spacing token. Every change is a pick from a list the console and the framework supply.",
+        "kind": "screen"
+      },
+      {
+        "target": "ui-manager",
+        "title": "UI Manager settings",
+        "text": "The UI Manager's settings under Settings → Plugins: where its overrides and change log are kept, and the install / uninstall panel.",
+        "kind": "screen"
+      },
+      {
+        "target": "ui-manager.tree",
+        "title": "Element categories",
+        "text": "Collapsible categories of every selectable element. 'On screen now' lists what is visible right now as shortcuts: a shortcut and its entry in the normal category are the same element, so editing either changes both.",
+        "kind": "nav"
+      },
+      {
+        "target": "ui-manager.row",
+        "title": "Properties and tokens",
+        "text": "The expanding row of the selected element: every property and every token it reads, its value, where the value comes from (your override, the skin, the asset or the framework default) and the choices you can pick from.",
+        "kind": "card"
+      },
+      {
+        "target": "ui-manager.choice",
+        "title": "Pick a value",
+        "text": "Choose from the valid values only: the assets the framework ships, the words the asset type allows, the colour tokens of the theme, or a step on a range. Nothing is typed in, so nothing invalid can be saved.",
+        "kind": "field"
+      },
+      {
+        "target": "ui-manager.reset",
+        "title": "Reset",
+        "text": "Drops your override so the property goes back to what the skin or the framework default gives. Reset on the element clears every override it carries.",
+        "kind": "button"
+      },
+      {
+        "target": "ui-manager.apply",
+        "title": "Apply",
+        "text": "Shows a summary of everything you changed (element, property, old → new) and saves it as one entry of the change log when you confirm. Closing without Apply discards every pending change.",
+        "kind": "button"
+      },
+      {
+        "target": "ui-manager.changes",
+        "title": "Change log",
+        "text": "Every applied change with who made it and when. Undo on an entry puts its properties back to their previous values; the undo is logged too.",
+        "kind": "card"
+      },
+      {
+        "target": "refresh",
+        "title": "Refresh",
+        "text": "Reads the elements and their values again from the server.",
+        "kind": "button"
+      }
+    ],
+    "intros": [
+      {
+        "screen": "ui-manager",
+        "title": "UI Manager",
+        "steps": [
+          {
+            "say": "Pick any element of the console from the categories on the left. On screen now lists what you are looking at.",
+            "target": "ui-manager.tree"
+          },
+          {
+            "say": "Its row opens with every property and token. Each one is changed by picking from the valid values the framework supplies.",
+            "target": "ui-manager.row"
+          },
+          {
+            "say": "Changes preview live. Apply shows the summary and saves; Reset returns a value to the skin or default.",
+            "target": "ui-manager.apply"
+          }
+        ]
+      }
+    ]
+  }
+}
