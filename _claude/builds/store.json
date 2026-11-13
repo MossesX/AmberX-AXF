@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4962,
- "updatedAt": "2026-11-13T20:32:15.832Z",
+ "rev": 4963,
+ "updatedAt": "2026-11-13T20:32:32.123Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -201498,7 +201498,7 @@
    "pr": "#643",
    "priority": "P1",
    "createdAt": "2026-11-13T18:44:52.063Z",
-   "updatedAt": "2026-11-13T20:19:48.032Z",
+   "updatedAt": "2026-11-13T20:30:49.247Z",
    "builtAt": "",
    "notes": [
     {
@@ -201516,6 +201516,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-console-app-wake-word-voice-listener--earl, own login copy)",
      "at": "2026-11-13T19:31:20.212Z"
+    },
+    {
+     "text": "UI Review: no shots from this headless session (no console token; a local preview is gated on axHub cross-origin). To review: open Settings → Plugins → Wake listener on the live console after the PR lands (desktop + phone) and the banner mic light; or run framework/cli/rebuild-shots.mjs with AXF_TOKEN against this branch.",
+     "at": "2026-11-13T20:30:49.247Z"
     },
     {
      "text": "Reconciler: PR #643 names s1, s2 done",

@@ -788,7 +788,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 18:48 UTC · `decision-dialog-ui-review-other` s4 done (all) · orchestrator
 - 2026-11-13 18:49 UTC · `decision-dialog-ui-review-other` s5 done (all) · orchestrator
 - 2026-11-13 18:50 UTC · `console-android-app-thin-webview-wrapper` s1 done, → running (all) · orchestrator
 - 2026-11-13 18:50 UTC · `orchestrator-custom-groups-custom-tabs` added (0 steps) (all) · console
@@ -1188,6 +1187,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 20:31 UTC · `dispatcher-gate-never-launch-build` PR #651, note (all) · reconciler
 - 2026-11-13 20:31 UTC · `per-toolbar-settings-fix-failing-chrome` PR #650, note (all) · reconciler
 - 2026-11-13 20:31 UTC · `per-toolbar-settings-fix-failing-chrome` → pending, note (all) · pipeline
+- 2026-11-13 20:30 UTC · `console-app-wake-word-voice-listener` note (all) · orchestrator
 
 ## Token passes (log)
 
