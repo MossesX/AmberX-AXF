@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T20:08:05.939Z",
+ "updatedAt": "2026-11-13T20:08:21.633Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -133150,16 +133150,22 @@
    "title": "Per-toolbar settings: fix failing chrome-settings check and land",
    "category": "",
    "detail": "Branch claude/per-instance-settings-picker-merge-main (worktree /root/axf-builds/per-instance-settings-picker-merge-main) now has origin/main merged (commit 617aa0a7d). The fixture clash in framework/spec/fixtures/chrome-settings.json was resolved by taking main's version and regenerating the fixtures, but framework/spec/check-chrome-settings.mts now fails with a deepStrictEqual. Find which expectation differs (likely the per-instance fields vs main's tab-rows fields), fix the rules or regenerate the fixtures so both features' expectations hold, run the full chrome-settings and theme/control checks, commit, push, then land on main. Feature: every individual toolbar, tab group, menu and dialog instance gets its own settings interface (including transparency) that changes only that instance.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P0",
    "createdAt": "2026-11-13T20:08:02.821Z",
-   "updatedAt": "2026-11-13T20:08:02.821Z",
+   "updatedAt": "2026-11-13T20:08:10.000Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T20:08:10.000Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
