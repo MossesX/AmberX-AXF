@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T08:10:33.234Z",
+ "updatedAt": "2026-11-13T08:13:35.702Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -115477,15 +115477,15 @@
    "title": "Professional skins that rebuild the whole app (Fable, ultrathink, every step): each skin is a complete restyle AND rebehave of the entire console UI. Every asset (theme, layout, toolbars, tab groups and where tabs go, buttons and how they behave, context menus, nav menu, app menus, dialogs, tables, ",
    "category": "",
    "detail": "",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e",
-   "pr": "",
+   "pr": "#557",
    "priority": "P0",
    "createdAt": "2026-11-12T23:32:23.494Z",
-   "updatedAt": "2026-11-13T08:10:31.883Z",
+   "updatedAt": "2026-11-13T08:13:34.240Z",
    "builtAt": "",
    "notes": [
     {
