@@ -781,8 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 08:13 UTC · `professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e` PR #557 (all) · builds-live
-- 2026-11-13 08:20 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` → pending, note (all) · reconciler
 - 2026-11-13 08:40 UTC · `professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e` → pending, note (all) · reconciler
 - 2026-11-13 08:42 UTC · `professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e` s15 done (all) · orchestrator
 - 2026-11-13 08:42 UTC · `professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e` s17 done, → built (all) · orchestrator
@@ -1181,6 +1179,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 12:46 UTC · `ui-review-gate-switch-default-off` s10 done (all) · orchestrator
 - 2026-11-13 12:47 UTC · `assets-menu-hide-any-asset-visible-and-hidden-li` s2 done (all) · orchestrator
 - 2026-11-13 12:47 UTC · `ui-review-gate-switch-default-off` s11 done (all) · orchestrator
+- 2026-11-13 12:47 UTC · `assets-menu-hide-any-asset-visible-and-hidden-li` s3 done (all) · orchestrator
+- 2026-11-13 12:47 UTC · `assets-menu-hide-any-asset-visible-and-hidden-li` s4 done (all) · orchestrator
 
 ## Token passes (log)
 
