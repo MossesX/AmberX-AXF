@@ -293,6 +293,15 @@ final class ApprovalOverlay {
                 openOutside(u); // a link off Brett's sites: Chrome, the window stays as it is
                 return true;
             }
+            @android.annotation.TargetApi(26)
+            @Override public boolean onRenderProcessGone(WebView view, android.webkit.RenderProcessGoneDetail detail) {
+                // The page's renderer died: drop the window (just the toolbar again) instead of taking AmberX down.
+                main.post(() -> {
+                    if (view == web) closePage();
+                    else { try { view.destroy(); } catch (Exception ignored) {} }
+                });
+                return true;
+            }
             @Override public void onPageFinished(WebView view, String u) {
                 if (view != web) return;
                 if (OverlayPageRules.staysInside(u)) pageUrl = u;
