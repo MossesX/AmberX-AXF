@@ -786,7 +786,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 12:14 UTC · `ui-review-gate-switch-default-off` added (0 steps) (all) · console
 - 2026-11-13 12:15 UTC · `combine-merge-queue-into-one-pr` branch combine/merge-queue-2026-11-13 (all) · builds-live
 - 2026-11-13 12:14 UTC · `ui-review-gate-switch-default-off` → queued, note (all) · console
 - 2026-11-13 12:15 UTC · `combine-merge-queue-into-one-pr` s3 done (all) · orchestrator
@@ -1186,6 +1185,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 18:41 UTC · `all-settings-interfaces-open-floating` note (all) · orchestrator
 - 2026-11-13 18:41 UTC · `console-app-part-2-native-floating-2` added (0 steps) (all) · console
 - 2026-11-13 18:41 UTC · `console-app-part-2-native-floating-2` → queued, note (all) · console
+- 2026-11-13 18:42 UTC · `console-android-app-thin-webview-wrapper` note (all) · builds-live
 
 ## Token passes (log)
 
