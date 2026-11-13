@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T13:33:09.157Z",
+ "updatedAt": "2026-11-13T13:34:04.651Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -123831,7 +123831,7 @@
    "pr": "#575",
    "priority": "P0",
    "createdAt": "2026-11-13T12:14:42.715Z",
-   "updatedAt": "2026-11-13T13:33:06.829Z",
+   "updatedAt": "2026-11-13T13:34:03.312Z",
    "builtAt": "2026-11-13T13:32:49.084Z",
    "notes": [
     {
@@ -123853,6 +123853,10 @@
     {
      "text": "Headless run axf-ui-review-gate-switch-default-off--lenny: brief only · start 15.5K tokens ($0.05) · cost $18.87 · 314 turns · 6 tools, MCP none",
      "at": "2026-11-13T13:33:06.829Z"
+    },
+    {
+     "text": "Session axf-ui-review-gate-switch-default-off--lenny on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-13T13:34:03.312Z"
     }
    ],
    "approvals": [],

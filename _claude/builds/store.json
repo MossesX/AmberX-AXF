@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4487,
- "updatedAt": "2026-11-13T13:33:09.157Z",
+ "rev": 4488,
+ "updatedAt": "2026-11-13T13:34:04.651Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -187159,7 +187159,7 @@
    "pr": "#575",
    "priority": "P0",
    "createdAt": "2026-11-13T12:14:42.715Z",
-   "updatedAt": "2026-11-13T13:33:06.829Z",
+   "updatedAt": "2026-11-13T13:34:03.312Z",
    "builtAt": "2026-11-13T13:32:49.084Z",
    "notes": [
     {
@@ -187181,6 +187181,10 @@
     {
      "text": "Headless run axf-ui-review-gate-switch-default-off--lenny: brief only · start 15.5K tokens ($0.05) · cost $18.87 · 314 turns · 6 tools, MCP none",
      "at": "2026-11-13T13:33:06.829Z"
+    },
+    {
+     "text": "Session axf-ui-review-gate-switch-default-off--lenny on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-13T13:34:03.312Z"
     }
    ],
    "approvals": [],
@@ -187201,12 +187205,19 @@
     "queuedAt": "2026-11-13T12:14:44.721Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-ui-review-gate-switch-default-off--lenny",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-13T12:17:15.710Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-13T13:34:02.785Z",
+     "exit": 0,
+     "outcome": "finished",
+     "stepsLeft": 0,
+     "account": "mossesx-max-",
+     "session": "axf-ui-review-gate-switch-default-off--lenny"
+    },
     "split": {
      "at": "2026-11-13T12:17:01.586Z",
      "by": "orchestrator",
@@ -187597,7 +187608,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 26,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
