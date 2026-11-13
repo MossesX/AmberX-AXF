@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5025,
- "updatedAt": "2026-11-13T21:13:30.298Z",
+ "rev": 5026,
+ "updatedAt": "2026-11-13T21:13:46.666Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -208652,7 +208652,7 @@
    "pr": "#658",
    "priority": "P0",
    "createdAt": "2026-11-13T20:53:50.393Z",
-   "updatedAt": "2026-11-13T21:12:30.801Z",
+   "updatedAt": "2026-11-13T21:13:38.691Z",
    "builtAt": "",
    "notes": [
     {
@@ -208686,6 +208686,10 @@
     {
      "text": "Dispatch gate: hotfix-desktop-console-draws-app-menu still has axf-hotfix-desktop-console-draws-app-menu--lenny alive: not launched again, tracking that session.",
      "at": "2026-11-13T21:00:34.312Z"
+    },
+    {
+     "text": "Headless run axf-hotfix-desktop-console-draws-app-menu--lenny: brief only · start 11.4K tokens ($0.03) · cost $4.86 · 85 turns · 6 tools, MCP none",
+     "at": "2026-11-13T21:13:38.691Z"
     }
    ],
    "approvals": [],
@@ -208711,7 +208715,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
