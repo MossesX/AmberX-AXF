@@ -1,7 +1,7 @@
 # Skin configuration panel: before AI makes a skin, Brett picks what it may change
 
 Built Nov 13 2026. Phase 1 on Fable (contract, engine, Default skin, fixture), phase 2 on Opus (maker, server, API
-parity, panel, UI options, tests). Branch `claude/skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change`,
+parity, panel, UI options, tests). Branch `claude/skin-configuration-panel-before-ai-makes`,
 PR #547. UI Review item `r-20261113-46228a31` (three layouts) is waiting.
 
 ## What it does
