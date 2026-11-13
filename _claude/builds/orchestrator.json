@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T19:41:34.877Z",
+ "updatedAt": "2026-11-13T19:41:49.363Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -125837,7 +125837,7 @@
    "title": "Restore the Asset Designer plugin (merged Nov 10, now missing)",
    "category": "",
    "detail": "_claude/builds/shipped/asset-designer.json says the Asset Designer plugin (no-code; apps/console-web/plugins/asset-designer, id ai.amberx.axf.console.asset-designer) merged 2026-11-10T04:39Z, but the folder is not in main now and branch claude/asset-designer is deleted.\n1. Find it in git history (git log --all -- apps/console-web/plugins/asset-designer, reflog, any branch/PR/combine branch), find the commit that removed it and why.\n2. Restore it onto current main, update to current framework (tokens, chrome, skins, control@1), make it able to edit every asset type including the chrome settings interface for toolbars and tab groups (all its tokens), with the validation gate.\n3. If history is gone, rebuild from the shipped spec's steps.\n4. Installed and enabled by default, in nav and console.actions, REST/MCP/CLI/voice. Tests, Shipped features. Report what removed it so it doesn't happen again.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -125845,7 +125845,7 @@
    "pr": "#631",
    "priority": "P1",
    "createdAt": "2026-11-13T17:59:17.167Z",
-   "updatedAt": "2026-11-13T18:47:27.935Z",
+   "updatedAt": "2026-11-13T19:41:04.838Z",
    "builtAt": "",
    "notes": [
     {
@@ -125871,6 +125871,10 @@
     {
      "text": "Headless run axf-restore-asset-designer-plugin-merged-nov--earl: brief only · start 12.8K tokens ($0.10) · cost $14.00 · 80 turns · 6 tools, MCP none",
      "at": "2026-11-13T18:47:27.935Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-13T19:41:04.838Z"
     }
    ],
    "approvals": [],
@@ -126031,7 +126035,7 @@
    "title": "All settings interfaces open in a floating dialog by default",
    "category": "",
    "detail": "Every settings interface (console Settings sections, plugin settings, chrome settings for tab groups/toolbars/banners/nav/menu bar, and any future one) opens by default in a floating dialog over the current screen instead of navigating to the Settings page. Make it a framework default so new settings interfaces get it automatically (template + check that fails if a settings interface navigates away by default). Keep a per-user option to open it as a page instead, and a 'pop out to page' button in the dialog. Dialogs use the glass/transparency tokens (opacityGlass, blur). Deep links and voice/MCP/API still work. Tests, help entry, Shipped features.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -126039,7 +126043,7 @@
    "pr": "#628",
    "priority": "P1",
    "createdAt": "2026-11-13T18:03:04.047Z",
-   "updatedAt": "2026-11-13T18:41:40.218Z",
+   "updatedAt": "2026-11-13T19:41:04.838Z",
    "builtAt": "",
    "notes": [
     {
@@ -126065,6 +126069,10 @@
     {
      "text": "Headless run axf-all-settings-interfaces-open-floating--gina: brief only · start 11.2K tokens ($0.03) · cost $8.59 · 121 turns · 6 tools, MCP none",
      "at": "2026-11-13T18:41:40.218Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-13T19:41:04.838Z"
     }
    ],
    "approvals": [],
@@ -128998,8 +129006,8 @@
    "pr": "#633",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:27.359Z",
-   "updatedAt": "2026-11-13T19:40:18.103Z",
-   "builtAt": "2026-11-13T19:40:18.103Z",
+   "updatedAt": "2026-11-13T19:41:04.838Z",
+   "builtAt": "2026-11-13T19:41:04.838Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -129060,6 +129068,10 @@
     {
      "text": "Headless run axf-console-app-part-3-native-bridge-mic--paulie: brief only · start 11.3K tokens ($0.03) · cost $3.82 · 88 turns · 6 tools, MCP none",
      "at": "2026-11-13T19:29:20.233Z"
+    },
+    {
+     "text": "Reconciler: PR #633 names s1, s2, s3, s4, s5, s6, s7 done",
+     "at": "2026-11-13T19:41:04.838Z"
     }
    ],
    "approvals": [
@@ -129217,8 +129229,8 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-13T19:40:18.103Z",
-     "note": "",
+     "doneAt": "2026-11-13T19:41:04.838Z",
+     "note": "PR #633 (claude/console-app-part-3-native-bridge-mic)",
      "uid": "st-mwfbrawt0fprpt",
      "createdAt": "2026-11-13T18:43:07.133Z"
     }
@@ -130649,7 +130661,7 @@
    "title": "Land project-duplicate-boilerplate: resolve clash in status.json and PORTING.md",
    "category": "",
    "detail": "Branch claude/project-duplicate-boilerplate clashed with main in framework/catalog/status.json and framework/spec/PORTING.md (merge aborted, main untouched). Merge origin/main into the branch, resolve by keeping both sides' entries (additive), run tests, push, then land on main. No feature changes. If the project-create-mcp clash fix landed first, merge after it.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -130657,7 +130669,7 @@
    "pr": "#621",
    "priority": "P0",
    "createdAt": "2026-11-13T19:03:35.763Z",
-   "updatedAt": "2026-11-13T19:17:30.283Z",
+   "updatedAt": "2026-11-13T19:41:04.838Z",
    "builtAt": "",
    "notes": [
     {
@@ -130679,6 +130691,10 @@
     {
      "text": "Headless run axf-land-project-duplicate-boilerplate--gina: brief only · start 12.8K tokens ($0.06) · cost $1.95 · 54 turns · 6 tools, MCP none",
      "at": "2026-11-13T19:17:30.283Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-13T19:41:04.838Z"
     }
    ],
    "approvals": [],
@@ -130881,7 +130897,7 @@
    "pr": "#638",
    "priority": "P0",
    "createdAt": "2026-11-13T19:32:22.232Z",
-   "updatedAt": "2026-11-13T19:40:19.880Z",
+   "updatedAt": "2026-11-13T19:41:04.838Z",
    "builtAt": "2026-11-13T19:40:19.880Z",
    "notes": [
     {
@@ -130907,6 +130923,10 @@
     {
      "text": "Headless run axf-land-rename-long-builds-resolve-clash--gina: brief only · start 11.1K tokens ($0.03) · cost $0.46 · 22 turns · 6 tools, MCP none",
      "at": "2026-11-13T19:39:26.133Z"
+    },
+    {
+     "text": "Reconciler: PR #638",
+     "at": "2026-11-13T19:41:04.838Z"
     }
    ],
    "approvals": [],
