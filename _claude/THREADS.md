@@ -778,7 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 11:12 UTC · `show-commits-behind-main-on-every-build-table-an` s2 done (all) · foreign-write
 - 2026-11-12 11:14 UTC · `show-commits-behind-main-on-every-build-table-an` note (all) · orchestrator
 - 2026-11-12 11:14 UTC · `show-commits-behind-main-on-every-build-table-an` note (all) · foreign-write
 - 2026-11-12 11:15 UTC · `show-commits-behind-main-on-every-build-table-an` → pending, note (all) · pipeline
@@ -1178,6 +1177,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 01:48 UTC · `everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the` s2 done, → built (all) · orchestrator
 - 2026-11-13 01:48 UTC · `everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the` note (all) · orchestrator
 - 2026-11-13 01:49 UTC · `full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app` s1 done, → running (all) · orchestrator
+- 2026-11-13 01:51 UTC · `server-every-failed-merge-alerts-brett-immediately-and-retries-by-itself-until` s1 done (all) · orchestrator
 
 ## Token passes (log)
 

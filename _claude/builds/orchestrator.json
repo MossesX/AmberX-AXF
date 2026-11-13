@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T01:49:35.632Z",
+ "updatedAt": "2026-11-13T01:51:30.316Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -110218,7 +110218,7 @@
    "branch": "claude/server-every-failed-merge-alerts-brett-immediately-and-retries-by-itself-until",
    "pr": "",
    "createdAt": "2026-11-12T21:53:13.014Z",
-   "updatedAt": "2026-11-13T01:46:14.059Z",
+   "updatedAt": "2026-11-13T01:51:28.441Z",
    "builtAt": "",
    "notes": [
     {
@@ -110286,8 +110286,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T01:51:28.441Z",
      "note": "",
      "uid": "st-mwe33x7204rqhu"
     },
