@@ -62,7 +62,8 @@
       "view",
       "tab",
       "subtab",
-      "panel"
+      "panel",
+      "row"
     ],
     "row": [
       null,

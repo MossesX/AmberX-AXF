@@ -23,7 +23,7 @@ export const CONSOLE_CONTROL_PARENTS = {
   button: [null, 'view', 'tab', 'subtab', 'panel', 'row', 'step'],
   function: [null, 'view', 'tab', 'subtab', 'panel'],
   plugin: [null, 'view', 'tab', 'subtab'],
-  grid: [null, 'view', 'tab', 'subtab', 'panel'],
+  grid: [null, 'view', 'tab', 'subtab', 'panel', 'row'],
   row: [null, 'grid'],
   step: [null, 'row', 'grid'],
   panel: [null, 'view', 'tab', 'subtab'],

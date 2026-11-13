@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
-import { AgentAvatar, BuildOrigin, Button, Icon, PriorityTag, Segmented, Slot, TabGroup, flashWhenReady, originSubtitle, useRuntime } from '@console/axf/react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { AgentAvatar, BuildOrigin, Button, ControlScope, Icon, PriorityTag, Segmented, Slot, TabGroup, flashWhenReady, originSubtitle, useControlTarget, useRuntime } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import * as consoleApi from '@console/api';
 import { WatchLiveFor } from '@console/watchLive';
@@ -226,7 +226,7 @@ function BuildCard({ b, rules, busy, act, embedded }: { b: Build; rules: Rules; 
         </div>
       ) : b.detail && <p className="pd-detail">{b.detail}</p>}
       {!embedded && ps.map((ph) => (
-        <div key={ph.index} className="pd-thread">
+        <ControlScope key={ph.index} address={`panel:${b.id}`}><div className="pd-thread">
           <h3>{ph.name} · <span className={`oc-model is-${ph.model.toLowerCase()}`}>{ph.model}</span>{ph.gate && <span className="fx-muted fx-small"> · {switchNote(ph)}</span>}{ph.minutesLeft ? <span className="pd-est"> · {core.formatMinutes(ph.minutesLeft)} left</span> : null}</h3>
           {ph.groups.map((g, gi) => (
             <div key={gi} className="oc-group">
@@ -234,7 +234,7 @@ function BuildCard({ b, rules, busy, act, embedded }: { b: Build; rules: Rules; 
               {g.steps.map((s) => <StepRow key={s.id} b={b} s={s as Step & { index: number }} locked={!ph.approved} busy={busy} act={act} last={b.steps.length - 1} />)}
             </div>
           ))}
-        </div>
+        </div></ControlScope>
       ))}
       {headlessRuns(b).length > 0 && (
         <div className="pd-thread"><h3>Headless runs</h3>{headlessRuns(b).map((r, i) => (
@@ -285,8 +285,17 @@ function BuildCard({ b, rules, busy, act, embedded }: { b: Build; rules: Rules; 
 
 function StepRow({ b, s, locked, busy, act, last }: { b: Build; s: Step & { index: number }; locked: boolean; busy: boolean; act: Act; last: number }) {
   const other = s.model === 'Fable' ? 'Opus' : 'Fable';
+  // console-control@1: `step:<id>` under the build's panel (focus scrolls to it and highlights it; set marks it done / not done)
+  const el = useRef<HTMLDivElement | null>(null);
+  const finished = core.isFinished(b.status);
+  const setTarget = useControlTarget({
+    address: `step:${s.id}`, kind: 'step', label: `${s.id} ${s.text}`.slice(0, 160), detail: b.title, keywords: [s.model, s.done ? 'done' : 'to do', b.id], element: () => el.current,
+    can: ['open', 'state', 'focus', 'set'], get: () => (s.done ? 'done' : 'to do'),
+    set: (v) => { const t = String(v ?? '').trim().toLowerCase(); const done = ['done', 'true', 'on', 'yes', '1'].includes(t) ? true : ['to do', 'todo', 'false', 'off', 'no', '0', 'undone'].includes(t) ? false : null; if (done === null) return `"${String(v)}" is not done or to do`; if (busy || finished || (locked && !s.done)) return locked ? 'approve the model switch first' : 'this build is finished'; void act({ action: 'step', id: b.id, step: s.id, done }); return undefined; },
+    isDisabled: () => busy || finished, state: () => ({ done: s.done, model: s.model, estimate: s.estimate ?? '', text: s.text, doneAt: s.doneAt ?? null, index: s.index }),
+  }, [s.done, s.model, busy, locked, finished]);
   return (
-    <div className={`pd-entry is-mono ${s.done ? 'is-done' : ''}`}>
+    <div ref={(d) => { el.current = d; setTarget(d); }} className={`pd-entry is-mono ${s.done ? 'is-done' : ''}`}>
       <input type="checkbox" className="pd-tick" checked={s.done} disabled={busy || core.isFinished(b.status) || (locked && !s.done)} onChange={(ev) => void act({ action: 'step', id: b.id, step: s.id, done: ev.target.checked })} aria-label={`Step ${s.id} done`} title={locked ? 'Approve the model switch first' : s.done && s.doneAt ? `Done ${fmtTime(s.doneAt)}` : 'Mark this step done'} />
       <time>{s.id}{s.estimate && <span className="pd-est"> · ~{s.estimate}</span>}</time>
       <p>{s.text}{s.why && <span className="fx-muted"> — {s.why}</span>}{s.session === 'new' && <span className="oc-flag"> new session</span>}{s.agent && <span className="oc-flag"> sub-agent ok</span>}</p>
