@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4743,
- "updatedAt": "2026-11-13T19:04:58.089Z",
+ "rev": 4744,
+ "updatedAt": "2026-11-13T19:05:48.884Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -200409,7 +200409,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:27.359Z",
-   "updatedAt": "2026-11-13T18:48:31.646Z",
+   "updatedAt": "2026-11-13T19:04:46.223Z",
    "builtAt": "",
    "notes": [
     {
@@ -200427,6 +200427,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-console-app-part-3-native-bridge-mic--joey, own login copy)",
      "at": "2026-11-13T18:48:31.646Z"
+    },
+    {
+     "text": "Headless run axf-console-app-part-3-native-bridge-mic--joey: brief only · start 12.7K tokens ($0.06) · cost $4.94 · 36 turns · 6 tools, MCP none",
+     "at": "2026-11-13T19:04:46.223Z"
     }
    ],
    "approvals": [],
@@ -200644,7 +200648,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
