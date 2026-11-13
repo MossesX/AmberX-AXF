@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T08:13:35.702Z",
+ "updatedAt": "2026-11-13T08:20:32.892Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -119219,7 +119219,7 @@
    "title": "Full API and voice control of the entire console: every tab, screen, setting, button, function and plugin (incl. enable/disable plugins); scroll up/down; bring any row or step of any table or grid into focus; search screens and everything loaded and pull it into focus",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -119227,7 +119227,7 @@
    "pr": "#556",
    "priority": "P0",
    "createdAt": "2026-11-13T07:12:21.823Z",
-   "updatedAt": "2026-11-13T07:51:54.045Z",
+   "updatedAt": "2026-11-13T08:20:31.526Z",
    "builtAt": "",
    "notes": [
     {
@@ -119257,6 +119257,10 @@
     {
      "text": "Headless run axf-full-api-and-voice-control-of-the-entire-console--sully: brief only · start 13.9K tokens ($0.08) · cost $15.91 · 109 turns · 6 tools, MCP none",
      "at": "2026-11-13T07:51:54.045Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-13T08:20:31.526Z"
     }
    ],
    "approvals": [],
