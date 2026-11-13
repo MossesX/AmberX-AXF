@@ -781,9 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 22:45 UTC · `github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro` → queued, note (all) · pipeline
-- 2026-11-12 22:46 UTC · `github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro` → running, note (all) · pipeline
-- 2026-11-12 22:46 UTC · `github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro` note (all) · orchestrator
 - 2026-11-12 22:47 UTC · `tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch` note (all) · pipeline
 - 2026-11-12 22:48 UTC · `move-amberx-web-app-into-the-console-amberx-andr` s6 done (all) · orchestrator
 - 2026-11-12 22:49 UTC · `tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch` note (all) · pipeline
@@ -1181,6 +1178,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 07:12 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` added (0 steps) (all) · mcp
 - 2026-11-13 07:11 UTC · `remove-ui-review-as-a-gate-no-screenshots-required-prs-never-held-as-draft-for` s8 done (all) · orchestrator
 - 2026-11-13 07:11 UTC · `skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga` s6 done (all) · orchestrator
+- 2026-11-13 07:12 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` note (all) · mcp
+- 2026-11-13 07:12 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` → queued, note (all) · console
+- 2026-11-13 07:12 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` note (all) · console
 
 ## Token passes (log)
 
