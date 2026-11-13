@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T06:50:21.947Z",
+ "updatedAt": "2026-11-13T06:52:10.466Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -117348,7 +117348,7 @@
    "title": "Skins plugin: its own removable console plugin and screen for changing skins. Gallery of every skin with live preview (desktop and phone), one-tap Use skin, Back and Restore to Default with undo, per-scope switching (whole hub, one app, one screen, one plugin), a quick skin switcher on the banner an",
    "category": "",
    "detail": "",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -117356,7 +117356,7 @@
    "pr": "#553",
    "priority": "P0",
    "createdAt": "2026-11-13T06:25:11.720Z",
-   "updatedAt": "2026-11-13T06:50:11.596Z",
+   "updatedAt": "2026-11-13T06:52:08.440Z",
    "builtAt": "",
    "notes": [
     {
@@ -117429,46 +117429,49 @@
    },
    "steps": [
     {
-     "id": "s8",
-     "text": "Action toolbar on the screen: one-tap Use skin, Back to skin, Restore to Default (confirm) and Undo (snackbar plus a button), wired to the REST routes. Toolbar has role=toolbar, aria-label and tap-to-confirm",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "9 min",
-     "files": [
-      "apps/console-web/plugins/skins/web/SkinActions.tsx"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwem5ilk016sp0",
-     "createdAt": "2026-11-13T06:46:19.897Z"
-    },
-    {
-     "id": "s9",
-     "text": "Per-scope picker: pick the app, the screen (ui:<view>) or the plugin from registries, show the inherited skin and where it comes from, with an Inherit / Follow hub switch per scope",
-     "model": "Opus",
-     "why": "",
+     "id": "s1",
+     "text": "Define the skin-switch@1 action contract in framework/core/engines/skin-switch.mjs: use / back-to-skin / restore-default / undo for each scope (hub, app:<id>, ui:<view>, plugin:<id>), built on resolveLookSkin and the app-look@1 snapshot, with a one-step undo record kept in the look document. Add a fixture in framework/spec/fixtures/skin-switch.json, and record the Android twin as a deferred gap in PORTING.md",
+     "model": "Fable",
+     "why": "Shared engine contract that AppearancePanel in every app and the new plugin both read, so it changes how skin GUIs work across apps",
      "phase": "",
      "group": "",
      "estimate": "10 min",
      "files": [
-      "apps/console-web/plugins/skins/web/ScopePicker.tsx"
+      "framework/core/engines/skin-switch.mjs",
+      "framework/spec/fixtures/skin-switch.json",
+      "framework/spec/PORTING.md"
      ],
      "checks": [],
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwem5kkf01urej",
-     "createdAt": "2026-11-13T06:46:22.518Z"
+     "done": true,
+     "doneAt": "2026-11-13T06:52:08.422Z",
+     "note": "skin-switch@1 engine + fixture, PR #553 (7ed5d3a2d)",
+     "uid": "st-mwemczh801rt30",
+     "createdAt": "2026-11-13T06:52:08.440Z"
+    },
+    {
+     "id": "s2",
+     "text": "Add check framework/spec/check-skin-switch.mts (engine vs fixture: scope precedence, undo after restore, back clears only the overridden part) and wire it into CI",
+     "model": "Fable",
+     "why": "Conformance check for the new cross-app contract",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/spec/check-skin-switch.mts",
+      ".github/workflows/android.yml"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-13T06:52:08.440Z",
+     "note": "check-skin-switch.mts wired into CI, PR #553 (8b7424a18)",
+     "uid": "st-mwemczh802ajkq",
+     "createdAt": "2026-11-13T06:52:08.440Z"
     },
     {
      "id": "s3",
@@ -117494,6 +117497,372 @@
      "note": "",
      "uid": "st-mwem9g9z018p14",
      "createdAt": "2026-11-13T06:49:23.645Z"
+    },
+    {
+     "id": "s4",
+     "text": "Server routes in apps/console-web/plugins/skins/server/routes.py: GET skins (gallery list with coverage), GET state?scope=, POST use / back / restore / undo / scope. They go through the theme-manager routes and the skin-switch engine, with no second store",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/skins/server/routes.py",
+      "apps/console-web/plugins/skins/server/__init__.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwem9hut01zfm1",
+     "createdAt": "2026-11-13T06:49:25.681Z"
+    },
+    {
+     "id": "s5",
+     "text": "Server tests for the routes: list, state per scope, use → back → restore → undo round trip, refusal of unknown scope or skin",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/skins/test.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwem9j5201q7q5",
+     "createdAt": "2026-11-13T06:49:27.315Z"
+    },
+    {
+     "id": "s6",
+     "text": "CLI apps/console-web/plugins/skins/skins-plugin.mjs (list | state | use | back | restore | undo | scope | open), calling the same REST routes, and register it so `axf skins-ui …` works",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/skins/skins-plugin.mjs",
+      "framework/cli/axf.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwem9kn501cuf8",
+     "createdAt": "2026-11-13T06:49:29.291Z"
+    },
+    {
+     "id": "s7",
+     "text": "MCP plugin commands (skins_list, skins_state, skins_use, skins_back, skins_restore, skins_undo, skins_scope) through plugin-commands, plus console actions skin.use / skin.back / skin.restore / skin.undo for AmberX voice",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "apps/console-web/plugins/skins/commands.json",
+      "apps/console-web/plugins/skins/actions.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwem9mfj01xu0g",
+     "createdAt": "2026-11-13T06:49:31.590Z"
+    },
+    {
+     "id": "s8",
+     "text": "Gallery screen apps/console-web/plugins/skins/web/SkinsScreen.tsx: a grid of every skin card (name, icon pack, coverage), built from framework controls and tokens only, with a TabGroup for scope (Hub / App / Screen / Plugin) and a SkinScope root",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/skins/web/SkinsScreen.tsx",
+      "apps/console-web/plugins/skins/web/skins.css"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwem5ilk016sp0",
+     "createdAt": "2026-11-13T06:46:19.897Z"
+    },
+    {
+     "id": "s9",
+     "text": "Live preview pane: the selected skin is drawn in a scoped desktop frame and a phone-width frame side by side (SkinScope with the preview skin, no write until Use), with a desktop/phone toggle on a role=toolbar",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/skins/web/SkinPreview.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwem5kkf01urej",
+     "createdAt": "2026-11-13T06:46:22.518Z"
+    },
+    {
+     "id": "s10",
+     "text": "Action toolbar on the screen: one-tap Use skin, Back to skin, Restore to Default (confirm) and Undo (snackbar plus a button), wired to the REST routes. Toolbar has role=toolbar, aria-label and tap-to-confirm",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "apps/console-web/plugins/skins/web/SkinActions.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwem9rm301awkl",
+     "createdAt": "2026-11-13T06:49:38.202Z"
+    },
+    {
+     "id": "s11",
+     "text": "Per-scope picker: pick the app, the screen (ui:<view>) or the plugin from registries, show the inherited skin and where it comes from, with an Inherit / Follow hub switch per scope",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/skins/web/ScopePicker.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwem9th501e8jn",
+     "createdAt": "2026-11-13T06:49:40.685Z"
+    },
+    {
+     "id": "s12",
+     "text": "Deep links: console_show / console_open targets skins, skins/skin/<id>, skins/scope/<scope> and skins/preview/<id>?view=phone. Register them in the plugin's nav and help entries",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "7 min",
+     "files": [
+      "apps/console-web/plugins/skins/web/index.tsx",
+      "apps/console-web/plugins/skins/help.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwem9up201uz2e",
+     "createdAt": "2026-11-13T06:49:42.360Z"
+    },
+    {
+     "id": "s13",
+     "text": "Quick skin switcher on the banner: a status-widget chip (current skin for this scope) whose popover lists skins with one-tap Use, Back and Undo. Add it to KNOWN_BANNERS with banner settings (label, icon, settingsTab)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/skins/web/SkinChip.tsx",
+      "apps/console-web/plugins/skins/assets/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwem9wqc0171f6",
+     "createdAt": "2026-11-13T06:49:44.889Z"
+    },
+    {
+     "id": "s14",
+     "text": "Context-menu entries (rt.addContextItems): Change skin here… on any view root and plugin root, opening the scope picker on that scope. Banner chip right-click gives Settings… / Change… / Move",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/skins/web/contextItems.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwema3ya01ociz",
+     "createdAt": "2026-11-13T06:49:54.045Z"
+    },
+    {
+     "id": "s15",
+     "text": "Settings sub-tab (Settings → Plugins → Skins) with the level toolbar: show the banner chip, default scope, undo window, preview viewport. Each setting is readable and settable through REST, MCP, CLI and voice",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "apps/console-web/plugins/skins/web/SkinsSettings.tsx",
+      "apps/console-web/plugins/skins/settings.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwema69v014s4q",
+     "createdAt": "2026-11-13T06:49:57.155Z"
+    },
+    {
+     "id": "s16",
+     "text": "Hook AppearancePanel in framework/libs/settings to the skin-switch engine, so its Use / Back / Restore match the plugin's, and add an Open Skins gallery link when the plugin is installed (capability check, no folder name)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/libs/settings/AppearancePanel.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwema8ti013a2a",
+     "createdAt": "2026-11-13T06:50:00.412Z"
+    },
+    {
+     "id": "s17",
+     "text": "UI Review choices: build at least 3 options for the gallery layout and for the banner chip as assets under apps/console-web/plugins/skins/assets/<type>/, with a choices JSON",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/skins/assets/",
+      "apps/console-web/plugins/skins/choices/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwemad9401two1",
+     "createdAt": "2026-11-13T06:50:06.068Z"
+    },
+    {
+     "id": "s18",
+     "text": "Lifecycle and conformance: run uninstall --all and plugin-lifecycle check --after-uninstall, check-theme, check-controls, check-toolbars, check-chrome-assets and the glossary-index catalog --check. Fix any findings",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "apps/console-web/plugins/skins/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwemah9t01m7ag",
+     "createdAt": "2026-11-13T06:50:11.173Z"
+    },
+    {
+     "id": "s19",
+     "text": "Screenshots of the gallery, the previews, the scope picker and the banner chip on desktop and phone (vite preview with the hub look mocked). Submit them to UI Review with the choices",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga/shots/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwemczh8036k0q",
+     "createdAt": "2026-11-13T06:52:08.440Z"
+    },
+    {
+     "id": "s20",
+     "text": "Tests (check-skin-switch, check-skin-coverage, plugin test.py, typecheck), report _claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga.md (with how every feature is reached by deep link, REST, MCP, CLI and voice), THREADS.md row, builds-live link, and PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwemczh804rthi",
+     "createdAt": "2026-11-13T06:52:08.440Z"
     }
    ]
   }
