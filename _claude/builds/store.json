@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4338,
- "updatedAt": "2026-11-13T11:35:08.933Z",
+ "rev": 4339,
+ "updatedAt": "2026-11-13T11:35:23.368Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -170208,12 +170208,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T11:24:27.918Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-unlink-plan-studio-from-builds-delete-all-plan-s--rhonda",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-13T11:25:46.013Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T10:50:36.976Z",
@@ -170225,7 +170225,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-13T11:25:46.013Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -170234,7 +170234,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-13T11:25:46.013Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -170318,17 +170318,17 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": {
     "model": "Opus",
-    "status": "complete",
+    "status": "pending",
     "estimate": "1 h",
     "source": "mcp",
     "planId": "",
     "createdAt": "2026-11-12T10:49:12.963Z",
-    "builtAt": "2026-11-13T11:34:54.213Z",
+    "builtAt": "",
     "prefixSteps": false,
     "stepAt": {
      "st-mwdfft4g011xgy": "2026-11-12T10:50:36.976Z",
