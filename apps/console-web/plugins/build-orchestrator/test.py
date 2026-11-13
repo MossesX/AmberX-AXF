@@ -160,4 +160,36 @@ check(fx.resolve("console-commands-reliable") == {"screen": "build-orchestrator"
 check(fx.resolve("plan studio") is None and fx.resolve("no-such-build") is None and fx.resolve("build:") is None, "anything else is not a build")
 check(srv.plugin_services.get("console-focus@1") is not None, "provided as console-focus@1")
 
+# custom groups and custom tabs (Nov 13 2026): the routes run groups.mjs on a scratch store and pipeline dir
+import asyncio  # noqa: E402
+import os  # noqa: E402
+
+_gd = Path(tempfile.mkdtemp())
+(_gd / "store.json").write_text(json.dumps({"$axf": "builds@1", "rev": 1, "builds": [
+    {"id": "console-app-a", "title": "Console app A", "status": "pending", "profiles": ["all"], "steps": [{"id": "s1", "text": "x", "model": "Opus"}]}]}))
+_env = {"AXF_BUILDS_STORE": str(_gd / "store.json"), "AXF_PIPELINE_DIR": str(_gd / "pipe"), "AXF_BUILD_PROFILE": "all", "AXF_BUILDS_LIVE": "0",
+        "AXF_BUILD_HOOKS": "off", "AXF_SHIPPED": "off", "AXF_DATA_DIR": "off", "AXF_CREW_SAY": "off", "AXF_PIPELINE_CONSOLE": "off"}
+_saved = {k: os.environ.get(k) for k in _env}
+os.environ.update(_env)
+try:
+    made = asyncio.run(srv.groups_change(_Req({"op": "create", "name": "Console app", "tab": "pending", "rule": {"titleContains": "console app"}})))
+    check(made["group"]["id"] == "console-app" and made["group"]["total"] == 1, "POST groups create: a smart group with its own Pending tab")
+    check([t["id"] for t in srv.groups_tabs()["tabs"]] == ["group:console-app"], "GET groups/tabs: the custom Pending tab")
+    check(srv.groups_get("Console app")["group"]["counts"]["pending"] == 1, "GET groups/{group} by name: counts per state")
+    for body, want in (({"op": "explode"}, 400), ({"op": "delete", "group": "nope"}, 404)):
+        try:
+            asyncio.run(srv.groups_change(_Req(body)))
+            code = 200
+        except srv.HTTPException as e:
+            code = e.status_code
+        check(code == want, f"groups {body}: {want}")
+    done = asyncio.run(srv.groups_action("console-app", _Req({"action": "queue"})))
+    check(done["done"] == ["console-app-a"], "POST groups/{group}/action queue: the group's Pending build is queued")
+finally:
+    for k, v in _saved.items():
+        if v is None:
+            os.environ.pop(k, None)
+        else:
+            os.environ[k] = v
+
 print(f"build-orchestrator: {n} checks passed")

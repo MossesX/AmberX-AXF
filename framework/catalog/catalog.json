@@ -2506,6 +2506,10 @@
                   "title": "Build names fit the VPS tools: every new build id is at most 40 characters (build-id@1), the full title stays the display name, older long ids get a short alias that every command and build_land accept"
                 },
                 {
+                  "id": "cx.buildengine.groups",
+                  "title": "Custom groups and custom tabs on the builds board: user-made and smart groups sorted by state (partial to landed) with counts, pinned as tabs next to Pending and the other stages, group actions, saved per project"
+                },
+                {
                   "id": "cx.buildengine.sectionowners",
                   "title": "Section owners: every section that acts on its own has one employee who posts its key events in the group chat (crew-sections@1, framework/cli/crew-say.mjs, CI owner check)"
                 }
