@@ -43,6 +43,14 @@ export const plugin: AxfWebLibrary = {
     };
     rt.actions.register('ui-review.gate', gate, { label: 'Is UI Review a merge gate?' });
     rt.actions.register('uireview.gate', gate, { label: 'UI Review gate: status, on or off (voice)' });
+    // release-held (voice uireview.release 557 553 | all): items non-blocking, un-draft, merge queue add; never merges
+    const release = (args: string[] = []) => {
+      const all = args.includes('all'); const prs = args.flatMap((a) => a.split(/[ ,]+/)).map((a) => Number(a.replace(/^#/, ''))).filter((n) => Number.isInteger(n) && n > 0);
+      if (!all && !prs.length) { rt.toast('Say which PRs (uireview.release 557 553) or all.', 'info'); return undefined; }
+      return pluginApi(FOLDER, 'UI Review').post<{ prs: { pr: number; queue: string }[] }>('release', { prs, all }).then((r) => { rt.toast(r.prs.map((x) => `#${x.pr}: ${x.queue}`).join(' · '), 'success'); return r; }, (e: Error) => { rt.toast(e.message, 'danger'); return { ok: false, error: e.message }; });
+    };
+    rt.actions.register('ui-review.release', release, { label: 'Release PRs held for UI Review into the merge queue' });
+    rt.actions.register('uireview.release', release, { label: 'Release PRs held for UI Review (voice)' });
     // a copied screenshot link (?ui-shot=<id>) lands on the Screenshots tab, which opens that picture
     // AmberX's "ready for review" notification (?axf-review-group=<id>) lands on the queue, filtered to that group
     if (new URLSearchParams(globalThis.location?.search ?? '').get(GROUP_PARAM)) setTimeout(() => rt.navigate(VIEW), 0);

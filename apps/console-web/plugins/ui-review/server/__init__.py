@@ -11,6 +11,8 @@ Every UI a build makes is submitted here for Brett's approval (review-item@1), o
   GET  picks / PUT picks {picked: [ids]}             design-pack picks (the page allows 3)
   GET  gate / POST gate {on}  "UI Review is a merge gate" (uiReview.gate, default off): {on, heldPrs, openReviews, line};
                               on is Brett's own click only, off is open to everyone (server/gate.py)
+  POST release {prs|all, dryRun}  release-held (review.mjs): items nonBlocking (still filed), un-draft, merge queue add; never merges
+  POST release/items {prs|all, dryRun}  its UI Review half only
   GET  state?branch=&pr=      ui-review@1: the strictest status of that branch's / PR's items; holds only while the gate is on
   …    settings, predicted, predict, predict/real, approve-look
   …    choices/*                  the options a build shipped, Brett's pick, option assets (ui-choices@1, choices.py)
@@ -375,6 +377,32 @@ def decide_many(ids: list[str], decision: str, comment: str = "", by: str = "bre
     return {"changed": changed, "missing": [x for x in ids if x not in changed], "at": at}
 
 
+def release_items(prs: list[int], dry_run: bool = False, by: str = "release-held") -> dict:
+    """release-held, the UI Review half: every open review item of these PRs becomes nonBlocking (still filed, Brett
+    still looks, its status unchanged) with a history line. It never approves anything and never merges.
+    Answers {dryRun, prs: [{pr, items: [ids], review}]}."""
+    at = _now()
+    out: list[dict] = []
+    with _lock:
+        doc = _items_doc()
+        for n in prs:
+            ids = []
+            for i, it in enumerate(doc["items"]):
+                if not isinstance(it, dict) or it.get("pr") != n or it.get("nonBlocking"):
+                    continue
+                if it.get("status") not in ("waiting", "pending", "changes", "rejected") or (predicted_mod.prediction_of(it) or {}).get("state") == "predicted":
+                    continue
+                ids.append(it.get("id"))
+                if not dry_run:
+                    hist = list(it.get("history") or [])
+                    hist.append({"at": at, "by": by, "action": "released", "comment": "Not a merge gate: still filed for Brett to look at, the PR no longer waits for it."})
+                    doc["items"][i] = {**it, "nonBlocking": True, "history": hist, "updatedAt": at}
+            out.append({"pr": n, "items": ids, "review": review_state(_submitted(doc), "", n, True)["review"]})
+        if not dry_run:
+            _save_items(doc)
+    return {"dryRun": dry_run, "at": at, "prs": out}
+
+
 def after_decide(items: list[dict]) -> None:
     """Replaced by predicted.router_for (sends Ask changes comments on predicted looks to their builds)."""
 
@@ -675,6 +703,44 @@ async def post_gate(request: Request) -> dict:
     body = await _json(request, 4096)
     r = set_gate(request, body.get("on"), _s(body.get("by"), 80))
     return {**gate_view(), "changed": r.get("changed", False)}
+
+
+def _release_prs(body: dict) -> list[int]:
+    prs = [int(str(x).lstrip("#")) for x in (body.get("prs") or []) if str(x).lstrip("#").isdigit()]
+    if body.get("all") is True:
+        prs = sorted(set(prs) | {p["pr"] for p in held_prs(gate=True)})
+    if not prs:
+        raise HTTPException(400, "send {prs: [PR numbers]} or {all: true}")
+    return prs[:100]
+
+
+@router.post("/release/items")
+async def post_release_items(request: Request) -> dict:
+    """{prs?: [n], all?: bool, dryRun?: bool}: release-held's UI Review half. The open review items of these PRs become
+    non-blocking: still filed, never holding. Open to everyone: it only stops UI Review from holding."""
+    body = await _json(request, 8192)
+    return release_items(_release_prs(body), body.get("dryRun") is True, _s(body.get("by"), 80) or "release-held")
+
+
+@router.post("/release")
+def post_release(body: dict | None = None) -> dict:
+    """{prs?: [n], all?: bool, dryRun?: bool}: release every PR still held for UI Review, the same as review.mjs
+    release-held (which this runs): items non-blocking (still filed), the PR un-drafted, then added to the merge queue
+    (queue add). Only through the merge queue: it never merges."""
+    body = body if isinstance(body, dict) else {}
+    prs = _release_prs(body)
+    port = os.environ.get("AXF_CONSOLE_PORT", "7090")
+    env = {**os.environ, "AXF_CONSOLE_URL": os.environ.get("AXF_CONSOLE_SELF_URL", f"http://127.0.0.1:{port}"), "AXF_TOKEN": os.environ.get("AXF_TOKEN", "")}
+    args = ["node", str(HERE / "review.mjs"), "release-held", *[x for n in prs for x in ("--pr", str(n))], "--json"] + (["--dry-run"] if body.get("dryRun") is True else [])
+    try:
+        r = subprocess.run(args, capture_output=True, text=True, timeout=120, env=env, cwd=str(HERE))
+    except (OSError, subprocess.TimeoutExpired) as e:
+        raise HTTPException(503, f"release-held could not run: {str(e)[:200]}") from None
+    lines = (r.stdout or "").strip().splitlines()
+    try:
+        return {"ok": r.returncode == 0, **json.loads(lines[-1])}
+    except (IndexError, ValueError):
+        raise HTTPException(502, f"release-held: {(r.stderr or r.stdout).strip()[-300:]}") from None
 
 
 @router.get("/state")

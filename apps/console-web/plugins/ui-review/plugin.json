@@ -243,6 +243,28 @@
         "output": "{ on, heldPrs, openReviews, line, changed }"
       },
       {
+        "id": "release",
+        "route": "POST /release",
+        "title": "Release PRs held for UI Review into the merge queue",
+        "description": "For each PR (prs, or all = every PR with an open review): its UI Review items become non-blocking (still filed for Brett to look at), a draft PR is marked ready for review, and the PR is added to the merge queue (queue add). Only through the merge queue: it never merges. dryRun says what it would do. Same as review.mjs release-held and voice uireview.release.",
+        "input": { "type": "object", "properties": { "prs": { "type": "array", "items": { "type": "integer" } }, "all": { "type": "boolean" }, "dryRun": { "type": "boolean" } }, "additionalProperties": false },
+        "output": "{ ok, dryRun, prs: [{ pr, items, draft, queue }] }"
+      },
+      {
+        "id": "release-items",
+        "route": "POST /release/items",
+        "title": "Mark PRs' UI Review items non-blocking (still filed)",
+        "description": "release-held's UI Review half only: the open review items of these PRs (or all) become non-blocking. They stay filed and keep their status; nothing is approved.",
+        "input": { "type": "object", "properties": { "prs": { "type": "array", "items": { "type": "integer" } }, "all": { "type": "boolean" }, "dryRun": { "type": "boolean" } }, "additionalProperties": false },
+        "output": "{ dryRun, prs: [{ pr, items: [ids], review }] }"
+      },
+      {
+        "id": "action-voice-release",
+        "action": "uireview.release",
+        "title": "Voice: release PRs held for UI Review",
+        "description": "AmberX voice name for release-held: 'uireview.release 557 553' or 'uireview.release all' runs POST release (items non-blocking, un-draft, merge queue add; never merges)."
+      },
+      {
         "id": "action-gate",
         "action": "ui-review.gate",
         "title": "Is UI Review a merge gate?",
