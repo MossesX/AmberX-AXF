@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T17:37:17.526Z",
+ "updatedAt": "2026-11-13T17:37:35.303Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -111153,7 +111153,7 @@
    ]
   },
   {
-   "id": "remove-the-console-s-own-notes-manager-console-u",
+   "id": "remove-console-s-own-notes-manager",
    "title": "Don't install the Notes plugin in the console (keep its code)",
    "category": "",
    "detail": "Do NOT remove or delete the console's Notes plugin code. Just don't install it in the console: take it off the console's installed/enabled plugin list so the Notes screen and nav entry are gone. Notes and to-dos live in AmberX's notes/to-do manager. Nothing else changes.",
@@ -111161,10 +111161,10 @@
    "hidden": false,
    "source": "mcp",
    "pendingId": "remove-the-console-s-own-notes-manager-console-u",
-   "branch": "claude/remove-the-console-s-own-notes-manager-console-u",
-   "pr": "#519",
+   "branch": "claude/remove-console-s-own-notes-manager",
+   "pr": "#606",
    "createdAt": "2026-11-12T10:43:54.592Z",
-   "updatedAt": "2026-11-12T11:03:13.773Z",
+   "updatedAt": "2026-11-13T17:37:09.269Z",
    "builtAt": "2026-11-12T11:03:13.773Z",
    "notes": [
     {
@@ -111182,6 +111182,10 @@
     {
      "text": "Headless run axf-remove-the-console-s-own-notes-manager-console-u--joey: brief only · start 11.0K tokens ($0.03) · cost $3.60 · 93 turns · 6 tools, MCP none",
      "at": "2026-11-12T11:03:13.773Z"
+    },
+    {
+     "text": "Renamed from remove-the-console-s-own-notes-manager-console-u (build names are at most 40 characters). By build-rename.",
+     "at": "2026-11-13T17:37:09.269Z"
     }
    ],
    "approvals": [],
@@ -114569,7 +114573,7 @@
    ]
   },
   {
-   "id": "remove-the-no-new-android-or-kotlin-work-rule-build-android-twins-in-parallel",
+   "id": "remove-no-new-android-kotlin-work-rule",
    "title": "Remove the 'no new Android or Kotlin work' rule; build Android twins in parallel",
    "category": "rules",
    "detail": "Brett said: \"just get rid of that rule, period. Get rid of it... right away. It's parallel.\" Remove the standing rule \"No new Android or Kotlin work: record the twin as a deferred gap in framework/spec/PORTING.md\" from the rules brief and every rules file (CLAUDE.md, _claude/rules, shared rules, headless rules brief). Android/Kotlin twins are built in parallel with the web side from now on.",
@@ -114577,11 +114581,11 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/remove-the-no-new-android-or-kotlin-work-rule-build-android-twins-in-parallel",
-   "pr": "#542",
+   "branch": "claude/remove-no-new-android-kotlin-work-rule",
+   "pr": "#607",
    "priority": "P0",
    "createdAt": "2026-11-12T21:54:49.855Z",
-   "updatedAt": "2026-11-13T02:03:04.281Z",
+   "updatedAt": "2026-11-13T17:37:21.526Z",
    "builtAt": "2026-11-13T02:03:04.281Z",
    "notes": [
     {
@@ -114651,6 +114655,10 @@
     {
      "text": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
      "at": "2026-11-13T02:03:04.281Z"
+    },
+    {
+     "text": "Renamed from remove-the-no-new-android-or-kotlin-work-rule-build-android-twins-in-parallel (build names are at most 40 characters). By build-rename.",
+     "at": "2026-11-13T17:37:21.526Z"
     }
    ],
    "approvals": [],
@@ -118346,7 +118354,7 @@
    ]
   },
   {
-   "id": "remove-ui-review-as-a-gate-no-screenshots-required-prs-never-held-as-draft-for",
+   "id": "remove-ui-review-gate-no-screenshots",
    "title": "Remove UI Review as a gate: no screenshots required, PRs never held as draft for UI Review, drop UI Review steps from builds",
    "category": "",
    "detail": "",
@@ -118354,11 +118362,11 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/remove-ui-review-as-a-gate-no-screenshots-required-prs-never-held-as-draft-for",
-   "pr": "#555",
+   "branch": "claude/remove-ui-review-gate-no-screenshots",
+   "pr": "#608",
    "priority": "P0",
    "createdAt": "2026-11-13T06:54:48.788Z",
-   "updatedAt": "2026-11-13T07:20:39.186Z",
+   "updatedAt": "2026-11-13T17:37:33.259Z",
    "builtAt": "2026-11-13T07:20:11.774Z",
    "notes": [
     {
@@ -118408,6 +118416,10 @@
     {
      "text": "Reconciler: PR #555 names s1, s2, s3, s4, s5, s6, s7, s8, s10, s11, s12 done",
      "at": "2026-11-13T07:20:39.186Z"
+    },
+    {
+     "text": "Renamed from remove-ui-review-as-a-gate-no-screenshots-required-prs-never-held-as-draft-for (build names are at most 40 characters). By build-rename.",
+     "at": "2026-11-13T17:37:33.259Z"
     }
    ],
    "approvals": [],

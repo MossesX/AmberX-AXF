@@ -785,12 +785,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 10:45 UTC · `owner-recognized-everywhere-veto-countdown-only-on-shell-commands` note (all) · orchestrator
-- 2026-11-13 10:45 UTC · `owner-recognized-everywhere-veto-countdown-only-on-shell-commands` → pending, note (all) · pipeline
-- 2026-11-13 10:45 UTC · `fix-a-build-whose-session-finishes-its-phase-e-g-the-fable-steps-with-steps` note (all) · orchestrator
-- 2026-11-13 10:45 UTC · `fix-a-build-whose-session-finishes-its-phase-e-g-the-fable-steps-with-steps` branch claude/fix-a-build-whose-session-finishes-its-phase-e-g-the-fable-steps-with-steps (all) · builds-live
-- 2026-11-13 10:44 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` s10 done, → running (all) · orchestrator
-- 2026-11-13 10:46 UTC · `server-gate-one-session-per-build-no-duplicate-launches` note (all) · orchestrator
 - 2026-11-13 10:46 UTC · `server-gate-one-session-per-build-no-duplicate-launches` → pending, note (all) · pipeline
 - 2026-11-13 10:46 UTC · `fix-a-build-whose-session-finishes-its-phase-e-g-the-fable-steps-with-steps` → pending, note (all) · pipeline
 - 2026-11-13 10:46 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` s11 done (all) · orchestrator
@@ -1185,6 +1179,12 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 17:36 UTC · `professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e` note, removed (all) · build-rename
 - 2026-11-13 17:36 UTC · `projects-own-everything-per-project` added (5 steps) (all) · build-rename
 - 2026-11-13 17:36 UTC · `projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone` note, removed (all) · build-rename
+- 2026-11-13 17:37 UTC · `remove-console-s-own-notes-manager` added (3 steps) (all) · build-rename
+- 2026-11-13 17:37 UTC · `remove-the-console-s-own-notes-manager-console-u` note, removed (all) · build-rename
+- 2026-11-13 17:37 UTC · `remove-no-new-android-kotlin-work-rule` added (2 steps) (all) · build-rename
+- 2026-11-13 17:37 UTC · `remove-the-no-new-android-or-kotlin-work-rule-build-android-twins-in-parallel` note, removed (all) · build-rename
+- 2026-11-13 17:37 UTC · `remove-ui-review-gate-no-screenshots` added (12 steps) (all) · build-rename
+- 2026-11-13 17:37 UTC · `remove-ui-review-as-a-gate-no-screenshots-required-prs-never-held-as-draft-for` note, removed (all) · build-rename
 
 ## Token passes (log)
 
