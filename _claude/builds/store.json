@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4721,
- "updatedAt": "2026-11-13T18:56:05.245Z",
+ "rev": 4722,
+ "updatedAt": "2026-11-13T18:56:22.089Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -198791,7 +198791,7 @@
    "title": "Transparency token works on every dialog and settings window",
    "category": "",
    "detail": "Root cause: --fx-opacity-glass / opacityGlass only applies where a component's customization has glass:true (framework/core/engines/customize.ts case 'glass'). Settings dialogs and most panels never set it, so the transparency token does nothing there.\nFix: every dialog, settings interface, panel, popover and floating surface uses a token-driven glass background by default (surface mixed with opacityGlass + blur). Add per-surface-type tokens (glass on/off and opacity per surface type: dialog, settings, panel, menu, toolbar, banner) in tokens.style, editable in Token Control and per instance in Quick settings. Rule: everything visual is driven by a token; add a check that fails on hard-coded backgrounds/opacity. Follows skins. Tests, Shipped features.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -198799,8 +198799,8 @@
    "pr": "#632",
    "priority": "P1",
    "createdAt": "2026-11-13T18:26:12.039Z",
-   "updatedAt": "2026-11-13T18:55:43.466Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-13T18:55:46.655Z",
+   "builtAt": "2026-11-13T18:55:46.655Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -198992,12 +198992,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T18:55:46.655Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T18:28:04.217Z",
-     "updatedAt": "2026-11-13T18:28:04.217Z"
+     "updatedAt": "2026-11-13T18:55:47.073Z"
     }
    ],
    "profiles": [
@@ -199008,7 +199008,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
