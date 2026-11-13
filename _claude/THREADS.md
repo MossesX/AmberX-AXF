@@ -786,7 +786,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 17:53 UTC · `tab-groups-choose-how-many-rows-tabs` note (all) · orchestrator
 - 2026-11-13 17:53 UTC · `per-instance-settings-window-picker` → running, note (all) · pipeline
 - 2026-11-13 17:53 UTC · `per-instance-settings-window-picker` note (all) · orchestrator
 - 2026-11-13 17:53 UTC · `full-voice-api-control-type-fields-press` s4 done (all) · orchestrator
@@ -1186,6 +1185,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 19:43 UTC · `per-instance-settings-picker-merge-main` → running, note (all) · pipeline
 - 2026-11-13 19:43 UTC · `per-instance-settings-picker-merge-main` branch claude/per-instance-settings-picker-merge-main (all) · pipeline
 - 2026-11-13 19:43 UTC · `per-instance-settings-picker-merge-main` note (all) · orchestrator
+- 2026-11-13 19:42 UTC · `skin-axhub-override-switch-greyed-out` s4 done (all) · orchestrator
 
 ## Token passes (log)
 
