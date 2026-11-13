@@ -781,7 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 06:33 UTC · `10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less` note (all) · orchestrator
 - 2026-11-13 06:34 UTC · `professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e` s1 done (all) · orchestrator
 - 2026-11-13 06:36 UTC · `skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga` branch claude/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga, PR #553 (all) · builds-live
 - 2026-11-13 06:37 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` s1 done, → running (all) · orchestrator
@@ -1181,6 +1180,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 11:37 UTC · `overlay-opens-pages-the-floating-toolbar-expands` → running, note (all) · pipeline
 - 2026-11-13 11:37 UTC · `overlay-opens-pages-the-floating-toolbar-expands` note (all) · orchestrator
 - 2026-11-13 11:37 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` PR #569, note (all) · reconciler
+- 2026-11-13 11:39 UTC · `overlay-opens-pages-the-floating-toolbar-expands` s1 done (all) · orchestrator
 
 ## Token passes (log)
 
