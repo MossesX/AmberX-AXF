@@ -778,7 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 18:18 UTC · `one-to-do-list-amberx-and-console-read-the-same-source` added (0 steps) (all) · claude-voice
 - 2026-11-12 18:19 UTC · `one-to-do-list-amberx-and-console-read-the-same-source` added (0 steps) (all) · builds-live
 - 2026-11-12 18:19 UTC · `new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans` → queued, note (all) · console
 - 2026-11-12 18:20 UTC · `one-to-do-list-amberx-and-console-read-the-same-source` note (all) · orchestrator
@@ -1178,6 +1177,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 02:02 UTC · `remove-the-no-new-android-or-kotlin-work-rule-build-android-twins-in-parallel` PR #542 (all) · builds-live
 - 2026-11-13 02:02 UTC · `remove-the-no-new-android-or-kotlin-work-rule-build-android-twins-in-parallel` note (all) · orchestrator
 - 2026-11-13 02:02 UTC · `remove-the-no-new-android-or-kotlin-work-rule-build-android-twins-in-parallel` s2 done, → built (all) · orchestrator
+- 2026-11-13 02:03 UTC · `remove-the-no-new-android-or-kotlin-work-rule-build-android-twins-in-parallel` → pending, note (all) · pipeline
 
 ## Token passes (log)
 

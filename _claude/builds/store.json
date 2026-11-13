@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3959,
- "updatedAt": "2026-11-13T02:02:57.183Z",
+ "rev": 3960,
+ "updatedAt": "2026-11-13T02:03:15.447Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -174215,8 +174215,8 @@
    "pr": "#542",
    "priority": "P0",
    "createdAt": "2026-11-12T21:54:49.855Z",
-   "updatedAt": "2026-11-13T02:02:28.504Z",
-   "builtAt": "2026-11-13T02:02:28.504Z",
+   "updatedAt": "2026-11-13T02:03:04.281Z",
+   "builtAt": "2026-11-13T02:03:04.281Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -174281,6 +174281,10 @@
     {
      "text": "Headless run axf-remove-the-no-new-android-or-kotlin-work-rule-bu--rhonda: brief only · start 10.9K tokens ($0.03) · cost $0.83 · 30 turns · 6 tools, MCP none",
      "at": "2026-11-13T02:02:28.504Z"
+    },
+    {
+     "text": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
+     "at": "2026-11-13T02:03:04.281Z"
     }
    ],
    "approvals": [],
@@ -174301,15 +174305,22 @@
     "queuedAt": "2026-11-12T21:54:53.808Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-remove-the-no-new-android-or-kotlin-work-rule-bu--rhonda",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-13T01:58:11.445Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-13T02:03:03.526Z",
+     "exit": 0,
+     "outcome": "returned",
+     "stepsLeft": 1,
+     "account": "mossesx-max-",
+     "session": "axf-remove-the-no-new-android-or-kotlin-work-rule-bu--rhonda"
+    },
     "split": null,
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "2026-11-13T01:58:11.445Z",
     "planned": {

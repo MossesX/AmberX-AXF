@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T02:02:57.183Z",
+ "updatedAt": "2026-11-13T02:03:15.447Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -110374,8 +110374,8 @@
    "pr": "#542",
    "priority": "P0",
    "createdAt": "2026-11-12T21:54:49.855Z",
-   "updatedAt": "2026-11-13T02:02:28.504Z",
-   "builtAt": "2026-11-13T02:02:28.504Z",
+   "updatedAt": "2026-11-13T02:03:04.281Z",
+   "builtAt": "2026-11-13T02:03:04.281Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -110440,6 +110440,10 @@
     {
      "text": "Headless run axf-remove-the-no-new-android-or-kotlin-work-rule-bu--rhonda: brief only · start 10.9K tokens ($0.03) · cost $0.83 · 30 turns · 6 tools, MCP none",
      "at": "2026-11-13T02:02:28.504Z"
+    },
+    {
+     "text": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
+     "at": "2026-11-13T02:03:04.281Z"
     }
    ],
    "approvals": [],
