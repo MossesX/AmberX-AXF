@@ -26,6 +26,33 @@
         "keyPrefix": "queue:"
       },
       "priority": "high"
+    },
+    {
+      "id": "merge.failed",
+      "label": "Merge failed",
+      "group": "merge",
+      "app": "console",
+      "source": "Server lander",
+      "description": "A merge attempt failed (console, auto-merge, Claude, CLI, MCP or a merge queue kick): what failed, why and what the server tries next; also when it is blocked on you or every way failed (with exactly what is missing). Resolved when it merges.",
+      "match": {
+        "source": "push-banner",
+        "keyPrefix": "merge:"
+      },
+      "push": true,
+      "priority": "high"
+    },
+    {
+      "id": "merge.retry",
+      "label": "Merge retry (FYI)",
+      "group": "merge",
+      "app": "console",
+      "source": "Server lander",
+      "description": "Each retry the server makes on a failed merge (pull main in, Claude Code, re-run CI, merge again) and its result. Information only.",
+      "match": {
+        "source": "push-banner",
+        "keyPrefix": "merge-fyi:"
+      },
+      "priority": "low"
     }
   ]
 }
