@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3977,
- "updatedAt": "2026-11-13T03:30:35.663Z",
+ "rev": 3978,
+ "updatedAt": "2026-11-13T03:32:12.636Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -176289,7 +176289,7 @@
    "branch": "claude/change-to-move-amberx-web-app-into-the-console-amberx-andr-pr-528-brett-do",
    "pr": "",
    "createdAt": "2026-11-13T00:39:39.304Z",
-   "updatedAt": "2026-11-13T03:29:50.592Z",
+   "updatedAt": "2026-11-13T03:32:06.900Z",
    "builtAt": "",
    "notes": [
     {
@@ -176330,12 +176330,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T03:28:02.740Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-change-to-move-amberx-web-app-into-the-console-a--earl",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-13T03:29:35.267Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T00:41:27.700Z",
@@ -176347,7 +176347,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-13T03:29:35.267Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -176356,7 +176356,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-13T03:29:35.267Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -176377,12 +176377,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T03:32:06.900Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T00:41:27.700Z",
-     "updatedAt": "2026-11-13T00:41:27.700Z"
+     "updatedAt": "2026-11-13T03:32:07.879Z"
     },
     {
      "id": "s2",
