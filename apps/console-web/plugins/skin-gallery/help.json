@@ -17,12 +17,12 @@
       { "target": "skin-gallery.back", "title": "Back to skin", "text": "Drops every change made on top of the skin at this scope, so it shows as it ships. The skin stays." },
       { "target": "skin-gallery.restore", "title": "Restore to Default", "text": "Puts this scope back to its default: no hub-wide skin, the app's saved look, or the screen / plugin following its parent. Undo puts it back." },
       { "target": "skin-gallery.undo", "title": "Undo", "text": "Takes back the last Use, Back or Restore. Only one step is kept." },
-      { "target": "skin-gallery., "title": "Skins settings", "text": "Install and uninstall for the Skins plugin, under Settings → Plugins." }
+      { "target": "settings-tab:skin-gallery", "title": "Skins settings", "text": "Whether the banner chip shows, the default scope, how long Undo stays offered and the preview size; install and uninstall. Settings → Plugins → Skins." }
     ],
     "intros": [
       { "screen": "skin-gallery", "title": "Skins", "steps": [
         { "say": "Pick where to switch: the hub, this app, one screen or one plugin.", "target": "skin-gallery.scope" },
-        { "say": "Tap a skin to preview it, on desktop or phone width.", "target": "" },
+        { "say": "Tap a skin to preview it, on desktop or phone width.", "target": "skin-gallery.grid" },
         { "say": "Use skin switches it. Undo takes it back.", "target": "skin-gallery.use" }
       ] }
     ]
