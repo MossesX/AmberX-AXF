@@ -788,8 +788,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 18:43 UTC · `orchestrator-settings-collapsible-split` → running, note (all) · pipeline
-- 2026-11-13 18:43 UTC · `orchestrator-settings-collapsible-split` branch claude/orchestrator-settings-collapsible-split (all) · pipeline
 - 2026-11-13 18:43 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
 - 2026-11-13 18:44 UTC · `orchestrator-settings-collapsible-split` → running, branch claude/orchestrator-settings-collapsible-split, note (all) · builds-live
 - 2026-11-13 18:44 UTC · `restore-asset-designer-plugin-merged-nov` branch claude/restore-asset-designer-plugin-merged-nov, PR #631 (all) · builds-live
@@ -1188,6 +1186,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 20:21 UTC · `token-registry-skin-editor-live-sandbox` → running, note (all) · pipeline
 - 2026-11-13 20:21 UTC · `token-registry-skin-editor-live-sandbox` branch claude/token-registry-skin-editor-live-sandbox (all) · pipeline
 - 2026-11-13 20:21 UTC · `tab-groups-choose-how-many-rows-tabs` note (all) · orchestrator
+- 2026-11-13 20:21 UTC · `transparency-token-works-every-dialog` note (all) · orchestrator
+- 2026-11-13 20:21 UTC · `token-registry-skin-editor-live-sandbox` note (all) · orchestrator
 
 ## Token passes (log)
 

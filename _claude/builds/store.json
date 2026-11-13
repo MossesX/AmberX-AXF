@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4950,
- "updatedAt": "2026-11-13T20:21:30.640Z",
+ "rev": 4951,
+ "updatedAt": "2026-11-13T20:21:45.208Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -198854,7 +198854,7 @@
    "mergedAt": "2026-11-13T19:46:42Z",
    "priority": "P1",
    "createdAt": "2026-11-13T18:26:12.039Z",
-   "updatedAt": "2026-11-13T20:19:48.032Z",
+   "updatedAt": "2026-11-13T20:21:28Z",
    "builtAt": "2026-11-13T18:55:46.655Z",
    "notes": [
     {
@@ -198916,6 +198916,10 @@
     {
      "text": "Reconciler: PR #632 merged",
      "at": "2026-11-13T20:19:48.032Z"
+    },
+    {
+     "text": "Shipped manifest sm-transparency-token-works-every-dialog rev 1 sent to Shipped features (orchestrator): landed dbddb1503, 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-13T20:21:28Z"
     }
    ],
    "approvals": [
@@ -198981,6 +198985,12 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "shipped": {
+    "id": "sm-transparency-token-works-every-dialog",
+    "rev": 1,
+    "at": "2026-11-13T20:21:28Z",
+    "landedCommit": "dbddb1503634fe4c00aa0da1700d50704710e17a"
    },
    "steps": [
     {
@@ -199083,7 +199093,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -206184,7 +206194,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T20:04:16.679Z",
-   "updatedAt": "2026-11-13T20:21:23.587Z",
+   "updatedAt": "2026-11-13T20:21:33.063Z",
    "builtAt": "",
    "notes": [
     {
@@ -206202,6 +206212,10 @@
     {
      "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-token-registry-skin-editor-live-sandbox--lenny.",
      "at": "2026-11-13T20:21:23.587Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-token-registry-skin-editor-live-sandbox--lenny, own login copy)",
+     "at": "2026-11-13T20:21:33.063Z"
     }
    ],
    "approvals": [],

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T20:21:30.640Z",
+ "updatedAt": "2026-11-13T20:21:45.208Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -127692,7 +127692,7 @@
    "mergedAt": "2026-11-13T19:46:42Z",
    "priority": "P1",
    "createdAt": "2026-11-13T18:26:12.039Z",
-   "updatedAt": "2026-11-13T20:19:48.032Z",
+   "updatedAt": "2026-11-13T20:21:28Z",
    "builtAt": "2026-11-13T18:55:46.655Z",
    "notes": [
     {
@@ -127754,6 +127754,10 @@
     {
      "text": "Reconciler: PR #632 merged",
      "at": "2026-11-13T20:19:48.032Z"
+    },
+    {
+     "text": "Shipped manifest sm-transparency-token-works-every-dialog rev 1 sent to Shipped features (orchestrator): landed dbddb1503, 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-13T20:21:28Z"
     }
    ],
    "approvals": [
@@ -132960,7 +132964,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T20:04:16.679Z",
-   "updatedAt": "2026-11-13T20:21:23.587Z",
+   "updatedAt": "2026-11-13T20:21:33.063Z",
    "builtAt": "",
    "notes": [
     {
@@ -132978,6 +132982,10 @@
     {
      "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-token-registry-skin-editor-live-sandbox--lenny.",
      "at": "2026-11-13T20:21:23.587Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-token-registry-skin-editor-live-sandbox--lenny, own login copy)",
+     "at": "2026-11-13T20:21:33.063Z"
     }
    ],
    "approvals": [],
