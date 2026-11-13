@@ -2762,6 +2762,18 @@
    "from": "",
    "addenda": []
   },
+  "fix-the-step-splitter-crash": {
+   "said": "Step splitter keeps failing with 'claude exit 1' (stop_sequence, 0 tokens) and falls back to one step per sentence of the request. Seen on fix-toolbar-settings, assets-menu, auto-recover today. PR #526 (pass the split prompt on stdin) was kicked out of CI. Find the real cause, fix it, rebase/replace #526 and get it green, add a test that a real split returns proper steps.",
+   "at": "2026-11-13T12:33:19.347Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "fix-toolbar-settings-doing-nothing": {
    "said": "Brett: when I long-press / right-click a toolbar and open toolbar settings, none of the settings change anything. Selecting icons, text, collapsible etc. has no effect. Seen on Shipped features (Sync/CSV/Markdown bar, group-by tabs, filter checkboxes, status chips, edit status). Fix it so every toolbar setting actually applies live to that toolbar, on every toolbar in the console, persists, and is controllable by API (REST, MCP, CLI, voice). Add a test that changing each setting changes the rendered toolbar.",
    "at": "2026-11-13T12:23:34.932Z",

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4441,
- "updatedAt": "2026-11-13T12:33:15.362Z",
+ "rev": 4442,
+ "updatedAt": "2026-11-13T12:33:21.719Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -188123,6 +188123,56 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-13T12:32:26.587Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "fix-the-step-splitter-crash",
+   "title": "Fix the step splitter crash",
+   "category": "",
+   "detail": "",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-13T12:33:19.347Z",
+   "updatedAt": "2026-11-13T12:33:20.299Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Step splitter keeps failing with 'claude exit 1' (stop_sequence, 0 tokens) and falls back to one step per sentence of the request. Seen on fix-toolbar-settings, assets-menu, auto-recover today. PR #526 (pass the split prompt on stdin) was kicked out of CI. Find the real cause, fix it, rebase/replace #526 and get it green, add a test that a real split returns proper steps.",
+    "at": "2026-11-13T12:33:19.347Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 786
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 2,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
