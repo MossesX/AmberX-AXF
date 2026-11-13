@@ -598,6 +598,8 @@ def run(command: dict[str, Any], grants: list[str] | None = None, by: str = "", 
     command = {k: v for k, v in (command or {}).items() if v not in (None, "")}
     grants = grants if grants is not None else ["*"]
     by = by or str(command.get("by") or "")
+    if command.get("target") == "console.control":
+        return control_target(command, grants, by, audience)
     command = focus_rewrite(command, audience)
     _late_prune()
     r = _runner(command, grants, by, ready_clients(audience))
@@ -747,6 +749,37 @@ def control(command: dict[str, Any], by: str = "", audience: str = OWNER, to: st
     out = {**res, "client": who, "delivery": {"how": "live" if who == tried[0] else "after retry", "tried": tried}}
     _recent.appendleft({"at": _iso(_now()), "by": by or "api", "target": "console.control", "path": command.get("address") or "", "action": command.get("verb"), "ok": bool(out.get("ok")),
                         "code": out.get("code", ""), "message": out.get("message", ""), "audience": audience, "how": out["delivery"]["how"], "delivered": [{"client": who, "ok": bool(out.get("ok")), "message": a.get("message", "")}]})
+    return out
+
+
+CONTROL_VERBS = ("open", "state", "press", "set", "scroll", "focus", "search", "list", "plugin.enable", "plugin.disable")
+
+
+def control_target(command: dict[str, Any], grants: list[str], by: str, audience: str) -> dict[str, Any]:
+    """control@1 `console.control` (core/engines/control-rules.mjs): list / get / act <verb> on a console-control@1 address,
+    through the console server's console-control guards (permission, policy tag, rate limit, audit)."""
+    import console_control_api as api  # the console server's /api/console-control half
+    op, path = str(command.get("op") or ""), str(command.get("path") or "")
+    inp = command.get("input") if isinstance(command.get("input"), dict) else {}
+    if op == "list":
+        sel = command.get("select") if isinstance(command.get("select"), dict) else {}
+        kinds = [k for k in str(sel.get("kinds") or "").split(",") if k] or None
+        r = api.targets(path, kinds, str(sel.get("source") or "auto"), by or "control", audience, set(grants))
+    elif op in ("get", "act"):
+        verb = "state" if op == "get" else str(command.get("action") or "")
+        if verb not in CONTROL_VERBS:
+            return {"$axf": "control@1", "ok": False, "code": "invalid", "message": f"console.control act takes one of {', '.join(CONTROL_VERBS)}"}
+        body = {"verb": verb, **({"address": path} if path else {}), **{k: inp[k] for k in ("value", "options", "scroll", "query", "reason") if k in inp}}
+        if inp.get("confirm") or command.get("confirm"):
+            body["confirm"] = True
+        r = api.command({**body, "to": str(inp.get("to") or "recent")}, by or "control", audience, set(grants))
+    else:
+        return {"$axf": "control@1", "ok": False, "code": "invalid", "message": "console.control takes list, get or act"}
+    out = {"$axf": "control@1", "ok": bool(r.get("ok")), "target": "console.control", "op": op, **({"path": path} if path else {}), "data": r}
+    if not r.get("ok"):
+        out.update({k: r[k] for k in ("code", "message", "openUrl") if k in r})
+    _recent.appendleft({"at": _iso(_now()), "by": by, "target": "console.control", "path": path, "action": command.get("action") or op, "ok": out["ok"],
+                        "code": out.get("code", ""), "message": out.get("message", ""), "audience": audience, "how": "control@1", "delivered": []})
     return out
 
 
