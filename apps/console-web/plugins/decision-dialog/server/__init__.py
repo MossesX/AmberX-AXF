@@ -17,7 +17,7 @@ back to the source.
   POST withdraw {id} | {source, ref} the source no longer needs it (decided elsewhere, ran out, gone)
   GET  settings / PUT settings {popup: {<type>: bool}, notify: {<type>: bool}, laterMinutes}
 
-Sources answer through capabilities, never folders: a decision names `handler` (e.g. "ui-review@1"); its provider's
+Sources answer through capabilities, never folders: a decision names `handler` (a capability such as "<plugin>@1"); its provider's
 `answer_decision(ref, button, option, note, by)` does the work and `shot_file(src)` serves its pictures. A decision
 without a handler is answered here only (browser sources run the console action named by the button's `action`).
 
@@ -238,7 +238,7 @@ def _later_passed(d: dict, now: float) -> bool:
 def view(d: dict, s: dict | None = None, now: float | None = None) -> dict:
     s = s or settings()
     now = time.time() if now is None else now
-    return {**d, "popup": d["status"] == "waiting" and s["popup"].get(d["type"], True) and _later_passed(d, now)}
+    return {**d, "typeLabel": _type(d["type"]).get("label") or d["type"], "popup": d["status"] == "waiting" and s["popup"].get(d["type"], True) and _later_passed(d, now)}
 
 
 def listing(status: str = "waiting", tid: str = "") -> dict:

@@ -124,8 +124,12 @@ function Shots({ id, shots }: { id: string; shots: DecisionShot[] }) {
   return <div className="axp-decision__shots">{ordered.map((s) => <Shot key={s.src} id={id} s={s} />)}</div>;
 }
 
-/** 'model-upgrade' → 'Model upgrade'; UI Review keeps its name. */
-export function typeLabel(t: string): string { return t === 'ui-review' ? 'UI Review' : (t.charAt(0).toUpperCase() + t.slice(1)).replace(/-/g, ' '); }
+/** A type id as words: 'model-upgrade' → 'Model upgrade'; a leading 'ui' is an acronym and makes it a name ('UI Review'). */
+export function typeLabel(t: string): string {
+  const [first = '', ...rest] = t.split('-');
+  const cap = (w: string) => w.charAt(0).toUpperCase() + w.slice(1);
+  return first === 'ui' ? ['UI', ...rest.map(cap)].join(' ') : [cap(first), ...rest].join(' ');
+}
 
 const TONE: Record<DecisionButton['kind'], 'primary' | 'danger' | 'neutral'> = { primary: 'primary', danger: 'danger', neutral: 'neutral' };
 
@@ -156,7 +160,7 @@ export function DecisionView({ id }: { id: string }) {
     <div className="fx-stack axp-decision" data-decision={d.id}>
       <div className="axp-decision__head">
         <div className="axp-decision__what">
-          <p className="fx-eyebrow">{typeLabel(d.type)}{d.build ? ` · ${d.build}` : ''}{d.app ? ` · ${d.app}` : ''}</p>
+          <p className="fx-eyebrow">{d.typeLabel || typeLabel(d.type)}{d.build ? ` · ${d.build}` : ''}{d.app ? ` · ${d.app}` : ''}</p>
           <h2 className="axp-decision__title">{d.title}</h2>
         </div>
         {p.of > 1 && (
@@ -245,7 +249,7 @@ function QueuePanel() {
       {(q.error || err) && <Note tone="danger">{q.error || err}</Note>}
       {!w.length ? <p className="fx-small fx-muted">Nothing is waiting for you.</p> : w.map((d) => (
         <div key={d.id} className="fx-row axp-decision-settings__row">
-          <span className="axp-decision-settings__what"><strong>{d.title}</strong><span className="fx-small fx-muted">{typeLabel(d.type)}{d.build ? ` · ${d.build}` : ''}</span></span>
+          <span className="axp-decision-settings__what"><strong>{d.title}</strong><span className="fx-small fx-muted">{d.typeLabel || typeLabel(d.type)}{d.build ? ` · ${d.build}` : ''}</span></span>
           <span className="fx-row axp-decision__acts" role="toolbar" aria-label={`Decide: ${d.title}`}>
             {!d.options.length && d.buttons.filter((b) => !b.note).map((b) => (
               <Button key={b.id} size="sm" tone={TONE[b.kind]} icon={b.icon || undefined} disabled={busy === d.id} onClick={() => { setBusy(d.id); void answer(d, b.id).then((r) => { setBusy(''); if (!r.ok) setErr(r.message); }); }}>{b.label}</Button>

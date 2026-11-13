@@ -3,7 +3,7 @@
   "note": "Every kind of decision that pops up the one decision dialog. A source may send its own buttons; these are the defaults. popup / notify are the defaults for Settings \u2192 Plugins \u2192 Decision dialog.",
   "types": [
     {
-      "id": "ui-review",
+      "id": "review",
       "label": "UI Review",
       "icon": "eye",
       "popup": true,

@@ -10,6 +10,8 @@ export interface Decision {
   $axf: 'decision@1';
   id: string;
   type: string;
+  /** the type's label from the types registry ('UI Review', 'Model upgrade') */
+  typeLabel?: string;
   source: string;
   ref: string;
   handler: string;

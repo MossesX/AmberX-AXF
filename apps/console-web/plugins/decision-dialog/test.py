@@ -55,10 +55,10 @@ c = TestClient(app)
 
 ok(plugin_services.get("decisions@1") is not None, "decisions@1 is provided")
 types = c.get("/types").json()["types"]
-ok({"ui-review", "veto", "confirm", "model-upgrade", "merge-clash", "key-needed", "pass"} <= {t["id"] for t in types}, "every decision type is registered")
+ok({"review", "veto", "confirm", "model-upgrade", "merge-clash", "key-needed", "pass"} <= {t["id"] for t in types}, "every decision type is registered")
 
 # A UI Review item with three options: notification + pop-up.
-r = c.post("/raise", json={"type": "ui-review", "title": "Settings page", "build": "b1", "ref": "item-1", "handler": "ui-review@1",
+r = c.post("/raise", json={"type": "review", "title": "Settings page", "build": "b1", "ref": "item-1", "handler": "ui-review@1",
                            "options": [{"label": "A", "shots": [{"src": "/x/a.png", "device": "desktop"}]}, {"label": "B"}, {"label": "C"}],
                            "shots": [{"src": "/x/p.png", "device": "phone"}]})
 ok(r.status_code == 200, r.text)
@@ -67,7 +67,7 @@ ok(d1["$axf"] == "decision@1" and d1["status"] == "waiting", "stored as decision
 ok([b["id"] for b in d1["buttons"]] == ["approve", "changes", "reject"], "UI Review gets its registered buttons")
 ok(len(alerts) == 1 and alerts[0]["meta"]["decision"] == d1["id"], "a notification was raised")
 # The same source + ref refreshes, never stacks twice.
-d1b = c.post("/raise", json={"type": "ui-review", "title": "Settings page v2", "ref": "item-1", "handler": "ui-review@1", "options": [{"label": "A"}, {"label": "B"}, {"label": "C"}]}).json()
+d1b = c.post("/raise", json={"type": "review", "title": "Settings page v2", "ref": "item-1", "handler": "ui-review@1", "options": [{"label": "A"}, {"label": "B"}, {"label": "C"}]}).json()
 ok(d1b["id"] == d1["id"] and len(alerts) == 1, "same ref refreshes in place")
 # A second, different source: the queue stacks.
 d2 = c.post("/raise", json={"type": "model-upgrade", "title": "Step s3 wants Fable", "ref": "b2:s3"}).json()
@@ -101,7 +101,7 @@ ok(c.post("/withdraw", json={"source": "test", "ref": "r3"}).json()["withdrawn"]
 
 # Settings: a type switched off doesn't pop up; bad values refused.
 s = c.put("/settings", json={"popup": {"confirm": False}, "laterMinutes": 30}).json()
-ok(s["popup"]["confirm"] is False and s["popup"]["ui-review"] is True and s["laterMinutes"] == 30, "settings saved")
+ok(s["popup"]["confirm"] is False and s["popup"]["review"] is True and s["laterMinutes"] == 30, "settings saved")
 d4 = c.post("/raise", json={"type": "confirm", "title": "Again?"}).json()
 ok(c.get("/item", params={"id": d4["id"]}).json()["popup"] is False, "switched-off type stays in the queue without popping up")
 ok(c.put("/settings", json={"popup": {"zzz": True}}).status_code == 400, "unknown type in settings refused")
@@ -124,16 +124,16 @@ ok(r["action"] == "approvals.deny:h1", "the console tap gets the action to run")
 ok(srv.parse_answer("Pick option two.") == {"button": "pick", "option": "2"} and srv.parse_answer("approve it") == {"button": "approve"}, "words parse")
 ok(srv.parse_answer("request changes: bigger buttons") == {"button": "changes", "note": "bigger buttons"} and srv.parse_answer("hello") is None, "notes and non-answers")
 Review.calls.clear()
-w1 = c.post("/raise", json={"type": "ui-review", "title": "Picker", "ref": "item-9", "handler": "ui-review@1", "options": [{"label": "A"}, {"label": "B"}, {"label": "C"}]}).json()
+w1 = c.post("/raise", json={"type": "review", "title": "Picker", "ref": "item-9", "handler": "ui-review@1", "options": [{"label": "A"}, {"label": "B"}, {"label": "C"}]}).json()
 r = c.post("/answer", json={"text": "pick option 2"})
 ok(r.status_code == 200 and Review.calls[-1][:3] == ("item-9", "pick", "2"), f"'pick option 2' answers the latest ({r.text[:120]})")
-w2 = c.post("/raise", json={"type": "ui-review", "title": "Plain", "ref": "item-10", "handler": "ui-review@1"}).json()
+w2 = c.post("/raise", json={"type": "review", "title": "Plain", "ref": "item-10", "handler": "ui-review@1"}).json()
 ok(c.post("/answer", json={"id": w2["id"], "text": "deny"}).json()["button"] == "reject", "deny means reject on UI Review")
 ok(c.post("/answer", json={"text": "make me a sandwich"}).status_code == 400, "not an answer: refused in words")
 
 # A source that notifies by itself (UI Review: one alert per group) asks for no second one.
 n0 = len(alerts)
-c.post("/raise", json={"type": "ui-review", "title": "Quiet", "ref": "q1", "notify": False})
+c.post("/raise", json={"type": "review", "title": "Quiet", "ref": "q1", "notify": False})
 ok(len(alerts) == n0, "notify: false = no second notification")
 
 print(f"decision-dialog: {checks} checks passed")

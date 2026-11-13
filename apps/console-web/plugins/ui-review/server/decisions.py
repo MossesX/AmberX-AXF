@@ -1,7 +1,7 @@
 """UI Review in the decision dialog (decisions@1; build decision-dialog-ui-review-other, Nov 13 2026).
 
 Brett: "anytime something goes to UI review I'm gonna get a notification, and another type of dialogue just pops up".
-A submitted item raises a `ui-review` decision through the capability decisions@1 (absent = nothing happens, the queue
+A submitted item raises a `review` decision through the capability decisions@1 (absent = nothing happens, the queue
 and its own notification stay as they are); deciding it in UI Review takes the decision back. His answer in the dialog
 comes back through `answer`: Approve / Request changes / Reject on the item, or Pick option N on its choices.
 
@@ -44,7 +44,7 @@ def fields(item: dict) -> dict:
     shots = _shots(item)
     options = _options(item, shots)
     picked = {s["src"] for o in options for s in o["shots"]}
-    return {"type": "ui-review", "source": SOURCE, "ref": item["id"], "handler": HANDLER, "title": item.get("title") or "UI Review item",
+    return {"type": "review", "source": SOURCE, "ref": item["id"], "handler": HANDLER, "title": item.get("title") or "UI Review item",
             "body": str(item.get("notes") or "")[:2000], "build": item.get("build", ""), "app": item.get("app", ""), "openAction": f"ui-review.item:{item['id']}",
             "openLabel": "Open in UI Review", "shots": [s for s in shots if s["src"] not in picked], "options": options,
             "notify": False}  # notify.py already sends one notification per group

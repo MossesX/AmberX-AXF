@@ -557,7 +557,7 @@ plugin_services.provide("decisions@1", fd, "test-decisions")
 r = c.post("/p/submit", json={"kind": "dialog", "name": "Decision pop-up", "app": "Console", "screen": "Any", "build": "decision-dialog-ui-review-other", **WHO, "files": SET})
 check(r.status_code == 200, f"submit with the decision dialog on ({r.text[:160]})")
 did = r.json()["item"]["id"]
-check(len(fd.raised) == 1 and fd.raised[0]["type"] == "ui-review" and fd.raised[0]["ref"] == did and fd.raised[0]["handler"] == "ui-review@1", "a submit raises a ui-review decision")
+check(len(fd.raised) == 1 and fd.raised[0]["type"] == "review" and fd.raised[0]["ref"] == did and fd.raised[0]["handler"] == "ui-review@1", "a submit raises a review decision")
 check(fd.raised[0]["openAction"] == f"ui-review.item:{did}" and {s["device"] for s in fd.raised[0]["shots"]} == {"phone", "desktop"}, "it carries Open in UI Review and both devices' pictures")
 svc = plugin_services.get("ui-review@1")
 f0 = fd.raised[0]["shots"][0]["src"]
