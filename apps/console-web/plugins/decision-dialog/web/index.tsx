@@ -123,6 +123,9 @@ function Shots({ id, shots }: { id: string; shots: DecisionShot[] }) {
   return <div className="axp-decision__shots">{ordered.map((s) => <Shot key={s.src} id={id} s={s} />)}</div>;
 }
 
+/** 'model-upgrade' → 'Model upgrade'; UI Review keeps its name. */
+export function typeLabel(t: string): string { return t === 'ui-review' ? 'UI Review' : (t.charAt(0).toUpperCase() + t.slice(1)).replace(/-/g, ' '); }
+
 const TONE: Record<DecisionButton['kind'], 'primary' | 'danger' | 'neutral'> = { primary: 'primary', danger: 'danger', neutral: 'neutral' };
 
 export function DecisionView({ id }: { id: string }) {
@@ -152,7 +155,7 @@ export function DecisionView({ id }: { id: string }) {
     <div className="fx-stack axp-decision" data-decision={d.id}>
       <div className="axp-decision__head">
         <div className="axp-decision__what">
-          <p className="fx-eyebrow">{d.type === 'ui-review' ? 'UI Review' : d.type.replace(/-/g, ' ')}{d.build ? ` · ${d.build}` : ''}{d.app ? ` · ${d.app}` : ''}</p>
+          <p className="fx-eyebrow">{typeLabel(d.type)}{d.build ? ` · ${d.build}` : ''}{d.app ? ` · ${d.app}` : ''}</p>
           <h2 className="axp-decision__title">{d.title}</h2>
         </div>
         {p.of > 1 && (
