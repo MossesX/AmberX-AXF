@@ -2280,5 +2280,11 @@
     "wave": 1,
     "module": "app-console",
     "notes": "11 sections (orchestrator, dispatcher, watchdog, shipped, account failover, landing, merge queue, nightly deploy, backups, health monitor, notification rules), one owner each from the crew; registry agents/sections.json, reassign in Settings → Agent swarm → Section owners; posts start/done/failed/blocked/waiting as the owner, respects the chat switch, deduped; crew-say.mjs check in CI. Kotlin twin deferred."
+  },
+  "cx.buildengine.buildids": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "framework/core/build-id.mjs: ids ≤ 40 chars (^[a-z0-9][a-z0-9-]{0,39}$), filler words dropped, cut at a dash, -2/-3 on a collision; used by request, orchestrator add/import/harvest, Pending and Plan Studio. Legacy long ids get an alias (pipeline.mjs aliases, the tick for live builds); land-alias links <worktrees>/<alias> and claude/<alias> for build_land. Kotlin twin deferred."
   }
 }
