@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4600,
- "updatedAt": "2026-11-13T18:12:24.524Z",
+ "rev": 4601,
+ "updatedAt": "2026-11-13T18:12:38.062Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -196114,7 +196114,7 @@
    "title": "Tab groups: choose how many rows of tabs (stack tabs instead of side-scrolling)",
    "category": "",
    "detail": "Add a 'Rows' setting to every tab group's chrome settings (per instance): 1 (default, today's behaviour), 2, 3, ... or Auto (as many rows as needed to fit). Tabs wrap evenly across that many rows so all tabs fit on the page without horizontal scrolling. Works on desktop and phone, follows skins/tokens, persists per instance, survives reload. Active tab stays visible; drag-reorder works across rows. Expose via REST/MCP/CLI/voice/control@1 ('make the settings tabs three rows'). Tests, help entry, Shipped features.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -196122,8 +196122,8 @@
    "pr": "#623",
    "priority": "P2",
    "createdAt": "2026-11-13T17:51:25.212Z",
-   "updatedAt": "2026-11-13T18:11:23.331Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-13T18:12:28.097Z",
+   "builtAt": "2026-11-13T18:12:28.097Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -196253,12 +196253,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T18:12:28.097Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T17:53:12.928Z",
-     "updatedAt": "2026-11-13T17:53:12.928Z"
+     "updatedAt": "2026-11-13T18:12:28.407Z"
     }
    ],
    "profiles": [
@@ -196269,7 +196269,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
