@@ -146,6 +146,23 @@ t('splitPrompt carries the title, detail, his words and the JSON shape', () => {
   assert.match(P.splitPrompt(raw, { maxStepMinutes: 30 }), /every step 10 minutes or less/, 'a stored 30 reads as the 10-minute ceiling');
   assert.match(P.splitPrompt(raw, { maxStepMinutes: 5 }), /every step 5 minutes or less/, 'the rule can lower it');
 });
+t('splitPrompt asks for dependsOn (default: the previous step) and files', () => {
+  const p = P.splitPrompt(raw);
+  assert.match(p, /"dependsOn":\["s1"\]/); assert.match(p, /by default that is the step right before it/); assert.match(p, /"files"/);
+});
+t('parseSplit: dependsOn by id or number, self dropped; unknown, later and cyclic dependencies refused', () => {
+  const st = (x) => ({ text: `Step text ${JSON.stringify(x)}`, model: 'Opus', estimate: '5 min', ...x });
+  const ok = P.parseSplit(JSON.stringify({ steps: [st({ dependsOn: [] }), st({ dependsOn: ['s1', 2] }), st({ dependsOn: [1, 's1'], files: ['a.mjs'] }), st({})] }));
+  assert.equal(ok.error, '');
+  assert.deepEqual(ok.steps.map((s) => s.dependsOn), [[], ['s1'], ['s1'], undefined], 'self and duplicates dropped; absent stays absent');
+  assert.deepEqual(ok.steps[2].files, ['a.mjs']);
+  assert.match(P.parseSplit(JSON.stringify({ steps: [st({}), st({ dependsOn: ['s9'] })] })).error, /"s9", which is not a step of the split/);
+  assert.match(P.parseSplit(JSON.stringify({ steps: [st({ dependsOn: ['s2'] }), st({})] })).error, /depends on a later step \(s2\)/);
+  assert.match(P.parseSplit(JSON.stringify({ steps: [st({}), st({ dependsOn: 's1' })] })).error, /not a list/);
+  assert.deepEqual(P.splitCycle([{ id: 's1', dependsOn: ['s3'] }, { id: 's2' }, { id: 's3', dependsOn: ['s2'] }]), ['s1', 's3', 's2', 's1']);
+  assert.equal(P.splitCycle(ok.steps), null);
+  assert.equal(P.rulesSplit(raw).some((s) => 'dependsOn' in s), false, 'rules splits stay sequential');
+});
 t('parseSplit: JSON inside prose, models coerced, estimates checked', () => {
   const ok = P.parseSplit('Here you go:\n{"steps":[{"text":"Design the icon-pack schema","model":"fable","estimate":"10 min","why":"schema"},{"text":"Write the docs","model":"Opus","estimate":"8"},{"text":"Wire the route","model":"Opus 5.5","estimate":9}]}\nDone.');
   assert.equal(ok.error, ''); assert.equal(ok.steps.length, 3); ok.steps.splice(1, 1); assert.equal(ok.steps[0].model, 'Fable'); assert.equal(ok.steps[1].model, 'Opus'); assert.equal(ok.steps[1].estimate, '9 min'); assert.equal(ok.steps[0].id, 's1');

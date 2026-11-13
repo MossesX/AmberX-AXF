@@ -33,7 +33,7 @@
  *              healthOf() reads one tiny call's answer; a fresh health record (own.health) decides usable / Fable,
  *              so the dispatcher never tests an account at launch time. healthDue() says when the next sweep runs.
  */
-import { DEFAULT_MAX_RUNS, STATUS_AFTER, isHeld, nextModel, openSteps, outcomeLine, outcomeOf, queueOrder } from '../../../../framework/core/build-pipeline.mjs';
+import { DEFAULT_MAX_RUNS, STATUS_AFTER, dependsOn as resolvedDeps, isHeld, nextModel, openSteps, outcomeLine, outcomeOf, queueOrder } from '../../../../framework/core/build-pipeline.mjs';
 import { effectivePriority, priorityLabel } from '../../../../framework/core/build-priority.mjs';
 import { FOUNDATION_MODEL, MODEL_LABELS, modelForWork, modelKey } from '../../../../framework/core/model-policy.mjs';
 import { API_RULE, estimateMinutes, maxStep, nextUp as orchNextUp, MODEL_GUIDE, STEP_MINUTES, stepLimit } from './web/orchestrator-core.mjs';
@@ -369,7 +369,9 @@ export function splitPrompt(b, rules = { maxStepMinutes: STEP_MINUTES }) {
     `Rules: every step ${max} minutes or less, with an estimate; 3 to 40 steps; each step is one concrete piece of work naming the files or folders it touches and ending in something that can be committed; anything bigger than ${max} minutes is cut into several steps; the last step is tests, report (_claude/builds/reports/<build id>.md), THREADS row and PR.`,
     `API rule: ${API_RULE} So every step that adds or changes UI names its API part (deep link, state read, actions, settings; REST + MCP + CLI + voice) in the same step or the step right after it.`,
     `Model per step, Opus by default. Fable ONLY for: ${MODEL_GUIDE.Fable} Opus for: ${MODEL_GUIDE.Opus} Put Fable steps first when the work allows, so the build switches model at most once.`,
-    `Answer with JSON only, no prose: {"steps":[{"text":"…","model":"Fable|Opus","estimate":"<n> min","why":"<one line when Fable>","files":["…"]}]}`,
+    `Dependencies: steps are numbered s1, s2, … in your order. Give every step "dependsOn", the ids of the steps it needs finished first; by default that is the step right before it (["s3"] for s4), and [] for the first step. Only when a step truly needs none of the steps before it (it touches other files and does not use their results), list just the ones it needs, so idle agent slots can run it beside them. Never name a later step or the step itself; no cycles.`,
+    `Files: give every step "files", the repo paths (files or folders) it changes. Two steps sharing a file never run at once.`,
+    `Answer with JSON only, no prose: {"steps":[{"text":"…","model":"Fable|Opus","estimate":"<n> min","why":"<one line when Fable>","dependsOn":["s1"],"files":["…"]}]}`,
     '', `Build id: ${b.id}`, `Title: ${str(b.title, 300)}`, b.category ? `Category: ${str(b.category, 60)}` : '', b.detail ? `Details:\n${str(b.detail, 8000)}` : '',
     said ? `Brett said (verbatim):\n${said}` : '', addenda,
   ].filter(Boolean).join('\n');
@@ -395,9 +397,44 @@ export function parseSplit(text, rules = { maxStepMinutes: STEP_MINUTES }) {
     const m = EST_RE.exec(est); const minutes = m ? Math.round(Number(m[1]) * (/^h/i.test(m[2] || '') ? 60 : 1)) : null;
     if (minutes == null) problems.push(`step ${i + 1} has no estimate`); else if (minutes > max) problems.push(`step ${i + 1} is ${minutes} min (limit ${max})`);
     const model = modelKey(r?.model) === FOUNDATION_MODEL ? 'Fable' : 'Opus';
-    steps.push({ id: `s${i + 1}`, text, model, estimate: minutes != null ? `${minutes} min` : '', why: str(r?.why, 300), files: list(r?.files).map((f) => str(f, 300)).filter(Boolean).slice(0, 30), checks: list(r?.checks).map((f) => str(f, 300)).filter(Boolean).slice(0, 20) });
+    const deps = splitDeps(r?.dependsOn ?? r?.after, i, raw.length, problems);
+    steps.push({ id: `s${i + 1}`, text, model, estimate: minutes != null ? `${minutes} min` : '', why: str(r?.why, 300), ...(deps ? { dependsOn: deps } : {}), files: list(r?.files).map((f) => str(f, 300)).filter(Boolean).slice(0, 30), checks: list(r?.checks).map((f) => str(f, 300)).filter(Boolean).slice(0, 20) });
   });
+  if (!problems.length) { const cyc = splitCycle(steps); if (cyc) problems.push(`dependency cycle: ${cyc.join(' → ')}`); }
   return problems.length ? { steps, error: problems.join('; ') } : { steps, error: '' };
+}
+
+/**
+ * One step's `dependsOn` from the splitter's answer (build-pipeline@1): ids `s<n>` or step numbers, deduplicated, the
+ * step itself dropped. Absent = undefined (the step keeps the implicit "previous step" order). An id outside the split
+ * or a later step is a problem (the split is refused and falls back to rules).
+ */
+export function splitDeps(v, i, total, problems = []) {
+  if (v === undefined || v === null) return undefined;
+  if (!Array.isArray(v)) { problems.push(`step ${i + 1} dependsOn is not a list`); return undefined; }
+  const out = [];
+  for (const x of v) {
+    const n = typeof x === 'number' ? x : /^s?(\d+)$/i.test(str(x, 20).trim()) ? Number(/(\d+)/.exec(str(x, 20))[1]) : NaN;
+    if (!Number.isInteger(n) || n < 1 || n > total) { problems.push(`step ${i + 1} depends on "${str(x, 20)}", which is not a step of the split`); continue; }
+    if (n === i + 1) continue;
+    if (n > i + 1) { problems.push(`step ${i + 1} depends on a later step (s${n})`); continue; }
+    if (!out.includes(`s${n}`)) out.push(`s${n}`);
+  }
+  return out.slice(0, 20);
+}
+
+/** The first cycle in a split's resolved graph (explicit dependsOn plus the implicit previous step), or null. */
+export function splitCycle(steps) {
+  const b = { steps: steps.map((x) => (x.dependsOn ? { ...x, after: x.dependsOn } : x)) };
+  const deps = new Map(b.steps.map((x) => [x.id, resolvedDeps(b, x)]));
+  const state = new Map(); let found = null;
+  const walk = (id, path) => {
+    if (found || state.get(id) === 'done') return;
+    if (state.get(id) === 'open') { found = [...path.slice(path.indexOf(id)), id]; return; }
+    state.set(id, 'open'); for (const d of deps.get(id) ?? []) walk(d, [...path, id]); state.set(id, 'done');
+  };
+  for (const x of b.steps) walk(x.id, []);
+  return found;
 }
 
 /**

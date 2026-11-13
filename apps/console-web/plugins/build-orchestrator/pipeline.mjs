@@ -357,7 +357,7 @@ export function splitBuild(id, { provider = '', by = 'orchestrator' } = {}) {
     if (!a.error) { const p = P.parseSplit(a.text, rules); if (!p.error && p.steps.length) { steps = p.steps; used = 'claude'; } else error = p.error || 'empty answer'; } else error = a.error;
   }
   if (!steps.length) { steps = P.rulesSplit(b, rules); used = 'rules'; note = `Split by rules${error ? ` (Claude: ${str(error, 200)})` : ''}: one step per line of the request, review the steps.`; }
-  else note = `Split by Claude into ${steps.length} steps (${steps.filter((s) => s.model === 'Fable').length} Fable).`;
+  else { const par = steps.filter((s, i) => i > 0 && Array.isArray(s.dependsOn) && !(s.dependsOn.length === 1 && s.dependsOn[0] === `s${i}`)).length; note = `Split by Claude into ${steps.length} steps (${steps.filter((s) => s.model === 'Fable').length} Fable${par ? `, ${par} can run beside earlier steps` : ''}).`; }
   const done = new Map(b.steps.filter((s) => s.done).map((s) => [s.text.trim().toLowerCase(), s]));
   let out = null;
   withStore((s) => {
@@ -365,6 +365,9 @@ export function splitBuild(id, { provider = '', by = 'orchestrator' } = {}) {
     const next = steps.map((st, i) => { const old = done.get(st.text.trim().toLowerCase()); return storeCore.normStep({ ...st, id: `s${i + 1}`, done: !!old, doneAt: old?.doneAt ?? '', uid: old?.uid }, i, { now }); });
     // a done step the new split dropped is kept at the top so nothing done is lost
     const kept = rec.steps.filter((x) => x.done && !next.some((n) => n.uid === x.uid)).map((x, i) => ({ ...x, id: `d${i + 1}` }));
+    // renumber s1… with the kept done steps first; the split's dependency ids move with their steps
+    const ren = new Map(next.map((x, i) => [x.id, `s${kept.length + i + 1}`]));
+    for (const x of next) if (Array.isArray(x.after)) x.after = x.after.map((d) => ren.get(d)).filter(Boolean);
     rec.steps = [...kept, ...next]; rec.steps.forEach((x, i) => { x.id = `s${i + 1}`; });
     if (!rec.rearranged) { rec.defaultSteps = rec.steps.map((x) => ({ ...x })); rec.defaultAt = now; }
     rec.pipeline = BP.normPipeline({ ...(rec.pipeline ?? {}), split: { at: now, by, provider: used, steps: rec.steps.length, note: str(note, 400) }, splitRequested: '', note: used === 'rules' ? 'steps made by rules: review them' : '' });
