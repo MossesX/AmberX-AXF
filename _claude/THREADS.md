@@ -785,7 +785,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 10:49 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` s12 done (all) · orchestrator
 - 2026-11-13 10:49 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` s16 done (all) · orchestrator
 - 2026-11-13 10:50 UTC · `one-source-of-truth-console-shows-only-what-the-server-says-is-running` PR #562 (all) · builds-live
 - 2026-11-13 10:50 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` s13 done (all) · orchestrator
@@ -1185,6 +1184,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 17:38 UTC · `unlink-plan-studio-from-builds-delete-all-plan-s` note, removed (all) · build-rename
 - 2026-11-13 17:38 UTC · `vps-badge-shows-shell-commands-work` added (3 steps) (all) · build-rename
 - 2026-11-13 17:38 UTC · `vps-badge-shows-shell-commands-work-banner-widgets-for-disk-cpu-load-and-memor` note, removed (all) · build-rename
+- 2026-11-13 17:39 UTC · `full-voice-api-control-type-fields-press` added (0 steps) (all) · console
 
 ## Token passes (log)
 
