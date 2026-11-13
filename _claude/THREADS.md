@@ -786,7 +786,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 17:33 UTC · `fix-build-whose-session-finishes-phase-e` added (12 steps) (all) · build-rename
 - 2026-11-13 17:33 UTC · `fix-a-build-whose-session-finishes-its-phase-e-g-the-fable-steps-with-steps` note, removed (all) · build-rename
 - 2026-11-13 17:33 UTC · `fix-merge-conflicts-pr-557-professional` added (2 steps) (all) · build-rename
 - 2026-11-13 17:33 UTC · `fix-merge-conflicts-on-pr-557-professional-skins` note, removed (all) · build-rename
@@ -1186,6 +1185,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 19:29 UTC · `console-app-part-3-native-bridge-mic` note (all) · orchestrator
 - 2026-11-13 19:29 UTC · `console-android-app-thin-webview-wrapper` note (all) · orchestrator
 - 2026-11-13 19:29 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-13 19:30 UTC · `ui-manager-floating-window-to-select-any` note (all) · orchestrator
 
 ## Token passes (log)
 
