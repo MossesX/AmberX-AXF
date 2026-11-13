@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4205,
- "updatedAt": "2026-11-13T10:37:53.284Z",
+ "rev": 4206,
+ "updatedAt": "2026-11-13T10:38:08.529Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -161929,21 +161929,21 @@
    "pipeline": {
     "queuedAt": "2026-11-12T02:45:11.466Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-all-banners-hide-when-empty--joey",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-12T02:52:13.861Z",
+    "runs": 1,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-12T02:52:13.861Z",
     "planned": null,
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-12T02:52:13.861Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
