@@ -1,6 +1,6 @@
 # Professional skins that rebuild the whole app (professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e)
 
-Built Nov 13 2026 on Fable (phase 1, every step), branch `claude/professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e`.
+Built Nov 13 2026 on Fable (phase 1, every step), branch `claude/professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e`, PR [#557](https://github.com/MossesX/AmberX-AXF/pull/557). UI Review: one choice set of the four skins (desktop + phone shots of settings, home, builds, a dialog and a context menu under each), waiting for Brett's pick in priority order.
 
 Brett: "each skin is a complete restyle AND rebehave of the entire console UI. Every asset (theme, layout, toolbars, tab
 groups and where tabs go, buttons and how they behave, context menus, nav menu, app menus, dialogs, tables, …)."
