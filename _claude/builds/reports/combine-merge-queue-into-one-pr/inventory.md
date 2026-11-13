@@ -399,3 +399,12 @@ Released in s18 (`land.mjs release <build>`) once the combined PR replaces them.
 
 `combine/merge-queue-2026-11-13` from origin/main `501e246f8`, worktree `/root/axf-builds/combine-mq-2026-11-13`, the
 builds merge driver installed there (`builds-live.mjs install`). PR heads fetched as `pr/<n>`; all 13 match the table.
+
+## Conflict log
+
+- #513: `framework/spec/PORTING.md` both sides added a Deferred section: kept both (union).
+- #515: `build-orchestrator/pipeline-core.mjs` splitPrompt/parseSplit: main's step limit (`STEP_MINUTES`/`maxStep`, 60
+  steps max) + #515's shipped-features argument, `alreadyShipped` and flags. `pipeline.mjs`: main's project scope
+  (`runnable`, `inProfile`) and crew-chat lines kept, #515's shipped checks (`loadChecks`, `shippedHolds`, alert) added
+  to each. #515's new parseSplit test used a 20-min step; main's limit is now 10, so the test's estimate is 10 min.
+  pipeline.test.mjs: 51 checks pass.
