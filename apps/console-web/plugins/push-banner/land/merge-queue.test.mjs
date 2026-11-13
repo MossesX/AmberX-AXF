@@ -219,12 +219,12 @@ await t('batch rules: members, holds, decide (land all / split in half / kick th
   sh(repo2, 'fetch', '-q', 'origin');
   const s2 = { repo: repo2, slug: 'o/r', dataDir: data2, remote: 'origin', base: 'main', archive: join(root2, 'archive') };
   const git2 = makeGit(repo2);
-  const ci2 = {}; const opened = []; const comments2 = []; const deleted = [];
+  const ci2 = {}; const opened = []; const openedDraft = []; const comments2 = []; const deleted = [];
   const onMain = (sha) => spawnSync('git', ['merge-base', '--is-ancestor', sha, 'main'], { cwd: origin2 }).status === 0;
   const open2 = () => [1, 2, 3].filter((x) => !onMain(h[x])).map((x) => ({ number: x, title: `PR ${x}`, html_url: `u/${x}`, created_at: `2026-11-0${x}`, base: { ref: 'main' }, head: { ref: `b${x}`, sha: h[x], repo: { full_name: 'o/r' } }, user: { login: 'bot' } }));
   const gh2 = async (method, path, body) => {
     if (method === 'GET' && path.startsWith('/repos/o/r/pulls?')) return open2();
-    if (method === 'POST' && path === '/repos/o/r/pulls') { opened.push(body.head); return { number: 40 + opened.length }; }
+    if (method === 'POST' && path === '/repos/o/r/pulls') { opened.push(body.head); openedDraft.push(!!body.draft); return { number: 40 + opened.length }; }
     const m = path.match(/commits\/([0-9a-f]+)\/check-runs/);
     if (m) return { check_runs: Object.values(h).includes(m[1]) ? runs('failure') : runs(ci2[m[1]] || 'running') }; // every PR's own light checks are red
     if (path.includes('/issues/') && method === 'POST') { comments2.push(body.body); return {}; }
@@ -242,6 +242,7 @@ await t('batch rules: members, holds, decide (land all / split in half / kick th
     assert.deepEqual(st.items.map((x) => [x.pr, x.state, x.inBatch]), [[1, 'testing', true], [2, 'testing', true], [3, 'testing', true]]);
     assert.deepEqual(files('queue/batch'), ['_claude', 'a.txt', 'one.txt', 'three.txt', 'two.txt']);
     assert.deepEqual(opened, ['b4'], 'every finished build goes into the queue');
+    assert.deepEqual(openedDraft, [false], 'its PR opens ready for review, never as a draft for UI Review');
   });
 
   await t('batch round 2: the batch is red, so it is split; the first half is tested as the next batch', async () => {
