@@ -71,13 +71,13 @@ check(ord2.map((o) => o.id).join() === 'base,top', 'a branch built on top of ano
 const cyc = core.landOrder([B('p', { builtAt: '1', notes: [{ text: 'land after q' }] }), B('q', { builtAt: '2', notes: [{ text: 'land after p' }] })], {});
 check(cyc.length === 2, 'a cycle still lands both (oldest first)');
 check(core.statusOnly(['Builds live: a [skip ci]'], ['_claude/builds/store.json']) && !core.statusOnly(['Fix [skip ci]'], ['framework/x.ts']) && !core.statusOnly(['Fix'], ['_claude/x']), 'status-only = all [skip ci] and all under _claude/');
-const kinds = [['held', { held: 'later' }], ['code', { code: ['a.ts'] }], ['conflict', { conflicts: ['a.ts'] }], ['push', { pushError: 'x' }], ['pr', { prError: 'x' }], ['dependency', { deps: ['y'] }], ['ci', { ci: 'failure', failing: ['Gradle'] }], ['ui', { ci: 'success', ui: 'waiting' }], ['running', { ci: 'running' }]];
+const kinds = [['held', { held: 'later' }], ['code', { code: ['a.ts'] }], ['conflict', { conflicts: ['a.ts'] }], ['push', { pushError: 'x' }], ['pr', { prError: 'x' }], ['dependency', { deps: ['y'] }], ['ci', { ci: 'failure', failing: ['Gradle'] }], ['running', { ci: 'running' }]];
 for (const [k, f] of kinds) check(core.blockReason('b', f)?.kind === k, `reason ${k}: ${core.blockReason('b', f)?.text}`);
-check(core.blockReason('b', { ci: 'success', ui: '' }) === null, 'green + UI free = nothing holds it');
-check(core.blockReason('b', { ci: 'success', ui: 'waiting', waitUi: false }) === null, 'Wait for UI Review off = UI Review does not hold it');
-check(core.blockReason('b', { conflicts: ['a'] }).agent && core.blockReason('b', { ci: 'failure' }).agent && !core.blockReason('b', { ui: 'waiting', ci: 'success' }).agent && !core.blockReason('b', { deps: ['y'] }).agent, 'only a code conflict or red CI asks for an agent');
-const r1 = core.blockReason('b', { ui: 'waiting', ci: 'success' });
-check(core.shouldPush(null, r1, 'h1') && !core.shouldPush({ kind: 'ui', head: 'h1' }, r1, 'h1') && core.shouldPush({ kind: 'ui', head: 'h1' }, r1, 'h2') && !core.shouldPush(null, core.blockReason('b', { ci: 'running' }), 'h'), 'one push per reason and head; never for a quiet wait');
+check(core.blockReason('b', { ci: 'success' }) === null, 'green = nothing holds it');
+for (const ui of ['waiting', 'changes', 'rejected', 'unknown']) check(core.blockReason('b', { ci: 'success', ui }) === null, `UI Review ${ui} never holds a landing (not a gate)`);
+check(core.blockReason('b', { conflicts: ['a'] }).agent && core.blockReason('b', { ci: 'failure' }).agent && !core.blockReason('b', { held: 'x' }).agent && !core.blockReason('b', { deps: ['y'] }).agent, 'only a code conflict or red CI asks for an agent');
+const r1 = core.blockReason('b', { held: 'later' });
+check(core.shouldPush(null, r1, 'h1') && !core.shouldPush({ kind: 'held', head: 'h1' }, r1, 'h1') && core.shouldPush({ kind: 'held', head: 'h1' }, r1, 'h2') && !core.shouldPush(null, core.blockReason('b', { ci: 'running' }), 'h'), 'one push per reason and head; never for a quiet wait');
 const al = core.alertFor(core.blockReason('b', { ci: 'failure', failing: ['Gradle'] }), { pr: '#9' });
 check(al.key === 'land:b' && al.severity === 'error' && /CI is red \(Gradle\)/.test(al.title) && /PR #9/.test(al.body), 'the alert says what broke in plain words, one key per build');
 check(core.agentJobFor(B('b'), core.blockReason('b', { conflicts: ['a'] }))?.type === 'land-build' && core.agentJobFor(B('b'), r1) === null, 'agent job only for conflict / red CI');
@@ -182,8 +182,9 @@ check(by.logs?.mergedMain && /logs thread/.test(logsThreads) && /main thread/.te
 check(sh(['show', 'origin/claude/logs:shared.ts'], repo).includes('main'), 'logs: it now has main\'s code');
 check(by.later?.reason?.kind === 'dependency' && /waits for ok/.test(by.later.reason.text), 'later: waits for its dependency (before its red CI is even looked at)');
 check(by.held?.reason?.kind === 'held' && /Brett wants to look first/.test(by.held.reason.text) && !calls.gh.some((c) => c.includes('claude%2Fheld')), 'held: held by hand, nothing done to it');
-check(by.ui?.state === 'blocked' && by.ui.reason.kind === 'ui' && by.ui.pr === 51, 'ui: CI green, UI Review waiting = held, says so');
-check(by.green?.state === 'ready' && by.green.reason === null && by.green.pr === 52, 'green: CI green, UI free = ready (the push banner merges it)');
+check(by.ui?.state === 'ready' && by.ui.reason === null && by.ui.pr === 51, 'ui: CI green, UI Review waiting = still lands (not a gate)');
+check(!calls.api.some((c) => c.path.includes('/ui-hold')), 'auto-land never asks UI Review');
+check(by.green?.state === 'ready' && by.green.reason === null && by.green.pr === 52, 'green: CI green = ready (the push banner merges it)');
 check(st.order[0] && st.managed.includes(52), 'land.json gives the push banner the order and the PRs it manages');
 check(!existsSync(join(wtDir, '_claude/dropped.md')) && readFileSync(join(s.archive, 'wt/_claude/dropped.md'), 'utf8') === 'hub copy\n', 'wt: claude-sync\'s copy backed up to the archive and removed');
 check(existsSync(join(wtDir, '.brief.md')) && sh(['log', '--name-only', '--format=', '-5', 'origin/claude/wt'], repo).includes('_claude/memory/docs/wt.md'), 'wt: the report it left was committed on its branch and pushed; .brief.md skipped');
@@ -219,7 +220,7 @@ check(dflt.on === false && calls.gh.length === n, 'Auto-land is off by default (
 
 rmSync(tmp, { recursive: true, force: true });
 console.log('group chat: a landing reason is Brett\'s move, a code fix, or something in the way');
-check(['held', 'ui', 'code'].every((k) => reasonEvent(k) === 'waiting'), 'held, UI Review and uncommitted code wait for Brett');
+check(['held', 'code'].every((k) => reasonEvent(k) === 'waiting'), 'held and uncommitted code wait for Brett');
 check(['conflict', 'ci', 'error'].every((k) => reasonEvent(k) === 'failed') && ['push', 'pr', 'dependency'].every((k) => reasonEvent(k) === 'blocked'), 'conflicts and red CI failed; push, PR and dependencies blocked');
 console.log(`auto-land: ${ok} checks passed${bad ? `, ${bad} FAILED` : ''}`);
 if (bad) process.exitCode = 1;

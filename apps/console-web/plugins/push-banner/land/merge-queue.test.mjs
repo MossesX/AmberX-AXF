@@ -15,7 +15,7 @@ const t = async (name, fn) => { await fn(); n++; console.log(`ok ${name}`); };
 
 // ------------------------------------------------------------------ pure rules
 
-await t('not ready: draft, removed, kicked at the same head, UI Review, PR checks', () => {
+await t('not ready: draft, removed, kicked at the same head, PR checks (UI Review is not a gate)', () => {
   const pr = { number: 5, head: 'a', ci: 'success' };
   assert.equal(q.notReady(pr), '');
   assert.match(q.notReady({ ...pr, draft: true }), /draft/);
@@ -24,8 +24,7 @@ await t('not ready: draft, removed, kicked at the same head, UI Review, PR check
   assert.match(q.notReady(pr, { kicked: { 5: { head: 'a', why: 'x' } } }), /kicked out/);
   assert.equal(q.notReady({ ...pr, head: 'b' }, { kicked: { 5: { head: 'a' } } }), '', 'a fix rejoins by itself');
   assert.equal(q.notReady(pr, { kicked: { 5: { head: 'a' } }, added: [5] }), '', 'Add puts a kicked PR back');
-  assert.match(q.notReady({ ...pr, ui: 'waiting' }), /UI Review/);
-  assert.equal(q.notReady({ ...pr, ui: 'waiting' }, {}, { waitUi: false }), '');
+  for (const ui of ['waiting', 'changes', 'rejected', 'unknown']) assert.equal(q.notReady({ ...pr, ui }), '', `UI Review ${ui} never keeps a PR out (not a gate)`);
   assert.match(q.notReady({ ...pr, ci: 'failure' }), /red/);
   assert.match(q.notReady({ ...pr, ci: 'running' }), /running/);
   assert.match(q.notReady({ ...pr, ci: 'none' }), /not run yet/);

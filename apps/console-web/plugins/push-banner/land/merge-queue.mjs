@@ -12,7 +12,7 @@
  * One round (batch mode, the default since Nov 10 2026: batchRound below): finished builds without a PR get one; the
  * open PRs line up; the batch on queue/batch is checked (green: main becomes that one commit; red: split in half, or the
  * one PR to blame kicked out); a new batch is combined and pushed. The stack round (queueMode 'stack'):
- *   1. the open PRs into main: ready ones (PR checks green, not a draft, not held by UI Review or by hand, not kicked
+ *   1. the open PRs into main: ready ones (PR checks green, not a draft, not held by hand, not kicked
  *      out at this head) line up in queue order;
  *   2. last round's stack is kept as far as it still holds (same PRs in the same order, same heads, main unchanged
  *      in code outside the queue);
@@ -48,7 +48,7 @@ export function readQueueConfig(s) {
   const depth = Number.isInteger(c.queueDepth) ? Math.min(q.QUEUE_DEPTH_MAX, Math.max(1, c.queueDepth)) : q.QUEUE_DEFAULTS.queueDepth;
   const mode = q.QUEUE_MODES.includes(c.queueMode) ? c.queueMode : q.QUEUE_DEFAULTS.queueMode;
   const batchSize = Number.isInteger(c.batchSize) ? Math.min(q.BATCH_SIZE_MAX, Math.max(1, c.batchSize)) : q.QUEUE_DEFAULTS.batchSize;
-  return { mergeQueue: c.mergeQueue !== false, depth, mode, batchSize, waitUi: c.landWaitUi !== false };
+  return { mergeQueue: c.mergeQueue !== false, depth, mode, batchSize };
 }
 export function queueControl(s, cmd, pr, opts = {}) {
   const cur = (readQueue(s).items || []).map((x) => x.pr);
@@ -182,9 +182,8 @@ async function roundOnce({ s, git, gh, api, dry = false, now = () => new Date(),
     else { try { fact.ci = ciOf((await gh('GET', `/repos/${s.slug}/commits/${fact.head}/check-runs?per_page=100`))?.check_runs || []).ci; } catch { fact.ci = 'running'; } }
     // no PR checks at all: does it conflict with main? (git, no API call)
     if (fact.ci === 'none') fact.conflicted = git(['merge-tree', '--write-tree', '--quiet', `${s.remote}/${s.base}`, fact.head]).code === 1;
-    if (cfg.waitUi) { const u = await api('GET', `/api/plugins/push-banner/ui-hold?branch=${encodeURIComponent(fact.branch)}&pr=${fact.number}`); fact.ui = u ? String(u.hold || '') : 'unknown'; }
     if (b && landCtl.holds?.[b.id]) fact.landHeld = landCtl.holds[b.id].why || 'held';
-    fact.why = q.notReady(fact, ctl, { waitUi: cfg.waitUi, redJoins: cfg.mode === 'batch' });
+    fact.why = q.notReady(fact, ctl, { redJoins: cfg.mode === 'batch' });
     prs.push(fact);
   }
   ctl = q.pruneControl(ctl, prs.map((p) => p.number));
