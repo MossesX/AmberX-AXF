@@ -1,7 +1,7 @@
 # Claude badge = can Claude build
 
-Build `claude-badge-can-claude-build-green-when-at-least-one-build-account-in-the-or`, phase 1 (Opus), branch
-`claude/claude-badge-can-claude-build-green-when-at-least-one-build-account-in-the-or`.
+Build `claude-badge-can-claude-build-green-when`, phase 1 (Opus), branch
+`claude/claude-badge-can-claude-build-green-when`.
 
 ## Result
 
