@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3870,
- "updatedAt": "2026-11-13T00:45:09.893Z",
+ "rev": 3871,
+ "updatedAt": "2026-11-13T00:45:21.068Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -173880,7 +173880,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-12T21:53:13.014Z",
-   "updatedAt": "2026-11-12T23:25:05.572Z",
+   "updatedAt": "2026-11-13T00:45:09.223Z",
    "builtAt": "",
    "notes": [
     {
@@ -173898,6 +173898,10 @@
     {
      "text": "Launch failed on mossesx-max-: launcher exit 2: claude-headless: --log is a plain file name",
      "at": "2026-11-12T23:25:05.572Z"
+    },
+    {
+     "text": "Launch failed on mossesx-max-: launcher exit 2: claude-headless: --log is a plain file name",
+     "at": "2026-11-13T00:45:09.223Z"
     }
    ],
    "approvals": [],
@@ -174008,7 +174012,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -174357,12 +174361,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-12T22:31:52.977Z",
-   "updatedAt": "2026-11-12T22:33:34.355Z",
+   "updatedAt": "2026-11-13T00:45:15.077Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-12T22:31:56.645Z"
+    },
+    {
+     "text": "Launch failed on mossesx-max-: launcher exit 2: claude-headless: --log is a plain file name",
+     "at": "2026-11-13T00:45:15.077Z"
     }
    ],
    "approvals": [],
@@ -174379,7 +174387,7 @@
     "lastRun": null,
     "split": null,
     "splitRequested": "",
-    "note": "",
+    "note": "launch failed: launcher exit 2: claude-headless: --log is a plain file name",
     "route": "",
     "dispatchedAt": "",
     "planned": {
@@ -174389,7 +174397,9 @@
      "at": "2026-11-12T22:32:05.114Z",
      "why": "subscription account mossesx-max-"
     },
-    "tried": [],
+    "tried": [
+     "mossesx-max-"
+    ],
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
@@ -174471,7 +174481,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T00:45:09.893Z",
+ "updatedAt": "2026-11-13T00:45:21.068Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -110109,7 +110109,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-12T21:53:13.014Z",
-   "updatedAt": "2026-11-12T23:25:05.572Z",
+   "updatedAt": "2026-11-13T00:45:09.223Z",
    "builtAt": "",
    "notes": [
     {
@@ -110127,6 +110127,10 @@
     {
      "text": "Launch failed on mossesx-max-: launcher exit 2: claude-headless: --log is a plain file name",
      "at": "2026-11-12T23:25:05.572Z"
+    },
+    {
+     "text": "Launch failed on mossesx-max-: launcher exit 2: claude-headless: --log is a plain file name",
+     "at": "2026-11-13T00:45:09.223Z"
     }
    ],
    "approvals": [],
@@ -110416,12 +110420,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-12T22:31:52.977Z",
-   "updatedAt": "2026-11-12T22:33:34.355Z",
+   "updatedAt": "2026-11-13T00:45:15.077Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-12T22:31:56.645Z"
+    },
+    {
+     "text": "Launch failed on mossesx-max-: launcher exit 2: claude-headless: --log is a plain file name",
+     "at": "2026-11-13T00:45:15.077Z"
     }
    ],
    "approvals": [],
