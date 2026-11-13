@@ -785,9 +785,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 12:09 UTC · `auto-recover-stuck-builds` → queued, note (all) · console
-- 2026-11-13 12:10 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` → running, note (all) · pipeline
-- 2026-11-13 12:10 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` note (all) · orchestrator
 - 2026-11-13 12:10 UTC · `auto-recover-stuck-builds` → running, note (all) · orchestrator
 - 2026-11-13 12:10 UTC · `auto-recover-stuck-builds` note (all) · pipeline
 - 2026-11-13 12:11 UTC · `combine-merge-queue-into-one-pr` note (all) · mcp
@@ -1185,6 +1182,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 18:39 UTC · `console-android-app-thin-webview-wrapper` added (0 steps) (all) · builds-live
 - 2026-11-13 18:38 UTC · `new-asset-type-animated-expanding-row` s2 done (all) · orchestrator
 - 2026-11-13 18:39 UTC · `console-android-app-thin-webview-wrapper` note (all) · orchestrator
+- 2026-11-13 18:39 UTC · `console-android-app-thin-webview-wrapper` → running, note (all) · pipeline
+- 2026-11-13 18:39 UTC · `console-android-app-thin-webview-wrapper` branch claude/console-android-app-thin-webview-wrapper (all) · pipeline
+- 2026-11-13 18:40 UTC · `console-android-app-thin-webview-wrapper` note (all) · orchestrator
 
 ## Token passes (log)
 
