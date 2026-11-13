@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4299,
- "updatedAt": "2026-11-13T11:20:10.958Z",
+ "rev": 4300,
+ "updatedAt": "2026-11-13T11:20:24.825Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -184249,7 +184249,7 @@
    "title": "Drag anything by API and voice, after PR 556 lands: banner widgets, toolbar items, tabs, panes, grid rows and columns; move, reorder, add and remove",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -184257,7 +184257,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T11:13:29.147Z",
-   "updatedAt": "2026-11-13T11:19:29.721Z",
+   "updatedAt": "2026-11-13T11:20:08.945Z",
    "builtAt": "",
    "notes": [
     {
@@ -184295,6 +184295,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-drag-anything-by-api-and-voice-after-pr-556-land--joey, own login copy)",
      "at": "2026-11-13T11:19:14.850Z"
+    },
+    {
+     "text": "Session on mossesx-max- stopped on its own with 20 steps left: back in Pending for Brett.",
+     "at": "2026-11-13T11:20:08.945Z"
     }
    ],
    "approvals": [],
@@ -184315,12 +184319,19 @@
     "queuedAt": "2026-11-13T11:13:30.493Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-drag-anything-by-api-and-voice-after-pr-556-land--lenny",
+    "session": "",
     "slot": "",
     "model": "Fable",
     "launchedAt": "2026-11-13T11:17:35.907Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-13T11:20:08.054Z",
+     "exit": 0,
+     "outcome": "returned",
+     "stepsLeft": 20,
+     "account": "mossesx-max-",
+     "session": "axf-drag-anything-by-api-and-voice-after-pr-556-land--lenny"
+    },
     "split": {
      "at": "2026-11-13T11:15:09.567Z",
      "by": "orchestrator",
@@ -184329,7 +184340,7 @@
      "note": "Split by Claude into 20 steps (5 Fable)."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- stopped on its own with 20 steps left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "2026-11-13T11:17:35.908Z",
     "planned": {
@@ -184865,7 +184876,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
