@@ -785,7 +785,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 11:39 UTC · `overlay-opens-pages-the-floating-toolbar-expands` s1 done (all) · orchestrator
 - 2026-11-13 11:40 UTC · `overlay-opens-pages-the-floating-toolbar-expands` s2 done (all) · orchestrator
 - 2026-11-13 11:40 UTC · `overlay-opens-pages-the-floating-toolbar-expands` s2 done (all) · foreign-write
 - 2026-11-13 11:41 UTC · `overlay-opens-pages-the-floating-toolbar-expands` s3 done (all) · orchestrator
@@ -1185,6 +1184,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 18:28 UTC · `transparency-token-works-every-dialog` branch claude/transparency-token-works-every-dialog (all) · pipeline
 - 2026-11-13 18:28 UTC · `vps-builds-get-console-token-ui-review` note (all) · orchestrator
 - 2026-11-13 18:29 UTC · `vps-builds-get-console-token-ui-review` s6 done (all) · orchestrator
+- 2026-11-13 18:29 UTC · `quick-settings-pinned-collapsible-pane` branch claude/quick-settings-pinned-collapsible-pane (all) · builds-live
 
 ## Token passes (log)
 
