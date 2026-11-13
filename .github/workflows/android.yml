@@ -126,6 +126,8 @@ jobs:
         run: node framework/cli/check-controls.mjs
       - name: Toolbars — every toolbar is a framework toolbar (role="toolbar" + settings id; tap-to-confirm off in code only with a recorded reason)
         run: node framework/cli/check-toolbars.mjs
+      - name: Console control — every view, tab row, setting, plugin, toolbar, grid and button has a console-control address (ratchet framework/spec/console-control-baseline.json only goes down)
+        run: node framework/cli/check-console-control.mjs
       - name: Banner widgets — every banner chip comes through the one widget registry, none hard-coded
         run: node framework/cli/check-banner-widgets.mjs
       - name: Asset conformance — the checker and the adopter agree (scale-adopt self-test)

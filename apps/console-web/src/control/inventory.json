@@ -4,8 +4,8 @@
   "counts": {
     "views": 61,
     "nav": 16,
-    "tabGroups": 21,
-    "tabs": 70,
+    "tabGroups": 22,
+    "tabs": 76,
     "settingsTabs": 67,
     "settings": 85,
     "functions": 218,
@@ -993,6 +993,47 @@
     }
   ],
   "tabGroups": [
+    {
+      "address": "tab:console-control.search.filter",
+      "id": "console-control.search.filter",
+      "dynamic": false,
+      "view": null,
+      "plugin": null,
+      "file": "src/control/SearchPalette.tsx",
+      "line": 58,
+      "tabs": [
+        {
+          "address": "tab:console-control.search.filter=all",
+          "value": "all",
+          "label": "All"
+        },
+        {
+          "address": "tab:console-control.search.filter=places",
+          "value": "places",
+          "label": "Screens & tabs"
+        },
+        {
+          "address": "tab:console-control.search.filter=settings",
+          "value": "settings",
+          "label": "Settings"
+        },
+        {
+          "address": "tab:console-control.search.filter=buttons",
+          "value": "buttons",
+          "label": "Buttons"
+        },
+        {
+          "address": "tab:console-control.search.filter=plugins",
+          "value": "plugins",
+          "label": "Plugins"
+        },
+        {
+          "address": "tab:console-control.search.filter=loaded",
+          "value": "loaded",
+          "label": "Rows & steps"
+        }
+      ]
+    },
     {
       "address": "view:agent-manager/tab:agent-manager.tabs",
       "id": "agent-manager.tabs",
