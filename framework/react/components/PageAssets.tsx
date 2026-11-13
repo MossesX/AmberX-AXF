@@ -43,24 +43,36 @@ const FIND: [PageAssetType, string][] = [
   ['container', 'section.fx-card'],
 ];
 /** Not part of the page: menus, popovers, dialogs, previews. */
-const SKIP = '.fx-ctx, .fx-popover, [role="menu"], [role="dialog"], [data-axf-banner-preview], [inert], [data-axf-asset="off"]';
+const SKIP = '.fx-ctx, .fx-popover, [role="menu"], [role="dialog"], [data-axf-banner-preview], [inert], [hidden], [data-axf-asset="off"]';
 
 const text = (el: Element | null | undefined) => (el?.textContent ?? '').replace(/\s+/g, ' ').trim().slice(0, 80);
 
-function labelOf(type: PageAssetType, el: Element): string {
+const cardTitle = (el: Element | null | undefined) => text(el?.querySelector(':scope > .fx-card__head h3'));
+
+/**
+ * An asset's stable key (its id's instance) and its shown name. The key comes from what names the element (its settings
+ * id, its data id, its accessible name), never from text that changes on its own (a clock, a counter).
+ */
+function nameOf(type: PageAssetType, el: Element): { key: string; label: string } {
   const a = (k: string) => el.getAttribute(k) ?? '';
   const own = a('data-axf-asset-label') || a('aria-label');
   switch (type) {
-    case 'toolbar': return a('data-axf-toolbar') || a('data-axf-toolbar-asset') || own;
-    case 'tab-group': return a('data-axf-tab-group') || own;
-    case 'nav-menu': return a('data-axf-nav') || own;
-    case 'app-menu': return own || 'Menu bar';
-    case 'banner': return a('data-fx-banner-id') || own || 'App banner';
-    case 'widget': return a('data-axf-banner-item') || a('data-axf-widget') || own;
-    case 'grid': return own || a('data-axf-dataset');
-    case 'container': return own || text(el.querySelector(':scope > .fx-card__head h3'));
+    case 'toolbar': { const k = a('data-axf-toolbar') || a('data-axf-toolbar-asset') || own; return { key: k, label: own || k }; }
+    case 'tab-group': { const k = a('data-axf-tab-group') || own; return { key: k, label: own || k }; }
+    case 'nav-menu': { const k = a('data-axf-nav') || own; return { key: k, label: own || k }; }
+    case 'app-menu': return { key: a('data-fx-ctx-payload') || own || 'app', label: own || 'Menu bar' };
+    case 'banner': { const k = a('data-fx-banner-id') || own || 'app'; return { key: k, label: own || (k === 'app' ? 'App banner' : k) }; }
+    case 'widget': {
+      const k = a('data-axf-banner-item') || a('data-axf-widget') || own;
+      // its own words when it has a steady name; a clock / counter / bare control reads by its id (`clock:digital-12h` → "clock digital 12h")
+      const t = text(el).slice(0, 40);
+      const pretty = k.replace(/[:_-]+/g, ' ').trim();
+      return { key: k, label: own || a('title') || (/^(clock|counter|search-bar|theme-switch|action-button|spacer|divider):/.test(k) || !/[a-z]{2}/i.test(t) ? pretty : t) || pretty };
+    }
+    case 'grid': { const t = cardTitle(el.closest('section.fx-card')); const k = own || a('data-axf-dataset') || (t ? `${t} table` : ''); return { key: k, label: k }; }
+    case 'container': { const k = own || cardTitle(el); return { key: k, label: k }; }
   }
-  return own;
+  return { key: own, label: own };
 }
 
 /** Every asset on the page now, in page order, each with a stable id (its type + its name, numbered when it has none). */
@@ -73,8 +85,8 @@ export function scanPageAssets(rt: AxfRuntime, root: ParentNode = document): Pag
   const add = (type: PageAssetType, el: Element, explicit?: string) => {
     if (seen.has(el) || el.closest(SKIP)) return;
     seen.add(el);
-    const label = labelOf(type, el);
-    const base = pageAssetSlug(explicit || label) || `${type}-${out.filter((x) => x.type === type).length + 1}`;
+    const { key, label } = nameOf(type, el);
+    const base = pageAssetSlug(explicit || key) || `${type}-${out.filter((x) => x.type === type).length + 1}`;
     let instance = base;
     for (let n = 2; ids.has(pageAssetId(type, instance)); n++) instance = `${base}-${n}`;
     const id = pageAssetId(type, instance);
