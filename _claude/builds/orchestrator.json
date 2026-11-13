@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T18:20:16.407Z",
+ "updatedAt": "2026-11-13T18:20:33.312Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -125386,7 +125386,7 @@
    "title": "Full voice and API control: type into fields, press buttons, approve hands-free",
    "category": "",
    "detail": "Goal: Brett controls absolutely everything in the console by voice/API (Claude via axHub MCP), never touching the phone.\n1. control@1 console.fields: list the fields of the open screen/dialog (id, label, type, value, required, options), set a field's value, and press any button/control by id or label (submit, Create, Save, Approve, tabs, toggles, menu items). Works on every screen, dialog and plugin, including the New Project wizard.\n2. Read back what is on screen (current screen, open dialog, visible fields and buttons) so the AI can narrate and verify.\n3. Approvals hands-free: veto countdowns and confirms can be approved by voice from Brett's own session (owner-recognized voice/claude.ai sign-in), no tap needed.\n4. Every action audited (by, reason).\n5. Expose on REST, MCP, CLI and voice. Tests (drive the New Project wizard end to end via API). Shipped features entry.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -125394,8 +125394,8 @@
    "pr": "#627",
    "priority": "P0",
    "createdAt": "2026-11-13T17:39:25.266Z",
-   "updatedAt": "2026-11-13T18:20:08.371Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-13T18:20:11.524Z",
+   "builtAt": "2026-11-13T18:20:11.524Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -125578,8 +125578,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T18:20:11.524Z",
      "note": "",
      "uid": "st-mwf9jg1a08akod",
      "createdAt": "2026-11-13T17:41:01.294Z"

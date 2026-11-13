@@ -785,7 +785,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 11:30 UTC · `overlay-opens-pages-the-floating-toolbar-expands` added (4 steps) (all) · foreign-write
 - 2026-11-13 11:30 UTC · `badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad` PR #568 (all) · builds-live
 - 2026-11-13 11:30 UTC · `badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad` s4 done, → complete (all) · foreign-write
 - 2026-11-13 11:31 UTC · `show-commits-behind-main-on-every-build-table-an` → pending, note (all) · pipeline
@@ -1185,6 +1184,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 18:19 UTC · `decision-dialog-ui-review-other` → running, note (all) · pipeline
 - 2026-11-13 18:19 UTC · `decision-dialog-ui-review-other` branch claude/decision-dialog-ui-review-other (all) · pipeline
 - 2026-11-13 18:20 UTC · `full-voice-api-control-type-fields-press` PR #627 (all) · builds-live
+- 2026-11-13 18:20 UTC · `full-voice-api-control-type-fields-press` s8 done, → built (all) · orchestrator
 
 ## Token passes (log)
 
