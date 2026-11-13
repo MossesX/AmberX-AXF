@@ -1,0 +1,126 @@
+{
+  "schema": "builds@1",
+  "record": "build-record@1",
+  "step": "step-record@1",
+  "version": 1,
+  "note": "The one builds store (_claude/builds/store.json). Reference: framework/plan/builds-store-core.mjs (validateStore is the contract), framework/spec/BUILDS.md. Step dependencies and claims: framework/core/build-pipeline.mjs, framework/spec/BUILD-PARALLEL.md.",
+  "statuses": [
+    "pending",
+    "queued",
+    "running",
+    "waiting",
+    "blocked",
+    "failed",
+    "built",
+    "complete",
+    "archived"
+  ],
+  "finished": [
+    "built",
+    "complete"
+  ],
+  "stepModels": [
+    "Fable",
+    "Opus"
+  ],
+  "buildFields": [
+    "id",
+    "title",
+    "category",
+    "detail",
+    "status",
+    "hidden",
+    "source",
+    "pendingId",
+    "branch",
+    "pr",
+    "mergedAt",
+    "priority",
+    "createdAt",
+    "updatedAt",
+    "builtAt",
+    "notes",
+    "approvals",
+    "upgradeRequests",
+    "origin",
+    "pipeline",
+    "shipped",
+    "steps",
+    "profiles",
+    "order",
+    "fromProfile",
+    "kind",
+    "planRef",
+    "rev",
+    "deleted",
+    "deletedAt",
+    "pending",
+    "queue",
+    "defaultSteps",
+    "defaultAt",
+    "rearranged",
+    "removedSteps",
+    "legacy",
+    "copies"
+  ],
+  "stepFields": [
+    "id",
+    "uid",
+    "title",
+    "text",
+    "model",
+    "why",
+    "phase",
+    "group",
+    "estimate",
+    "files",
+    "checks",
+    "session",
+    "agent",
+    "skip",
+    "done",
+    "doneAt",
+    "note",
+    "fm",
+    "rev",
+    "createdAt",
+    "updatedAt",
+    "origin",
+    "after",
+    "claim"
+  ],
+  "stepDependencies": {
+    "since": "2026-11-13",
+    "after": {
+      "type": "string[] | absent",
+      "items": "step ids of the same build",
+      "absent": "implicitly sequential: the step waits for the previous step in the list (every build from before this contract, and every step the splitter does not mark)",
+      "empty": "no dependency: the step may start as soon as the build runs",
+      "maxItems": 20,
+      "rules": [
+        "an id must name a step of the same build (a missing id is dropped on normalisation and reported by the store check)",
+        "a step never names itself",
+        "no cycles: a build whose `after` lists form a cycle is refused by the store check",
+        "a skipped step counts as done for the steps after it"
+      ]
+    },
+    "claim": {
+      "type": "object | null",
+      "fields": {
+        "runId": "the dispatch / run id of the session working the step (string, ≤ 80)",
+        "slot": "the agent-slots entry id of that session (string, ≤ 60)",
+        "account": "the Claude account it runs on (saved account name)",
+        "branch": "the branch the step is worked on: <build-branch>--s<n> for a parallel step, the build branch for a sequential one (string, ≤ 200)",
+        "at": "ISO: when the claim was taken",
+        "model": "the step's pinned model the session was launched on (Fable | Opus)",
+        "expiresAt": "ISO: at + the claim TTL; a claim past it is dead and the step is ready again"
+      },
+      "ttlMinutes": 45,
+      "rules": [
+        "a live claim (now < expiresAt) keeps the step out of readySteps",
+        "a done step never carries a claim: ticking a step releases it",
+        "a claim is never launched on a model higher than the step's pinned model (raise the step first)"
+      ]
+    }
+  }
+}

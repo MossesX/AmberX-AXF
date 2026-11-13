@@ -92,6 +92,24 @@ pending to queue … If he has slots open, he grabs the next build in the queue 
 - Contract: `framework/core/build-pipeline.mjs` (build-pipeline@1, the `pipeline` record on a build). Rules:
   `apps/console-web/plugins/build-orchestrator/pipeline-core.mjs`. Report: `reports/pipeline-rebuild.md`.
 
+## Step dependencies and claims: fill every slot (since Nov 13 2026)
+
+Brett: "Always fill every slot: when slots are free, run independent steps of running builds in parallel across them,
+and auto-queue pending builds." Two optional fields on a step (builds@1, `framework/schemas/builds.json`; contract
+`framework/core/build-pipeline.mjs`; spec `framework/spec/BUILD-PARALLEL.md`):
+
+- **`after: [stepId]`** — the steps of the same build that must be done (or skipped) first. A step **without** the
+  field is implicitly sequential: it waits for the step before it, so every older build runs exactly as before.
+  `after: []` means independent. Ids name steps of the same build; a step never names itself; cycles and ids that
+  point at no step are refused by the store check.
+- **`claim: { runId, slot, account, branch, at, model, expiresAt }`** — the session working the step right now.
+  Model-aware (`model` = the step's pinned model, never higher); a claim expires after a TTL (45 min) so a dead session
+  frees its step; ticking a step done releases it. `branch` is the step's worktree branch for a parallel step
+  (`<build-branch>--s<n>`) or the build branch.
+
+The dispatcher's fill planner (`planFill`) uses them to put a ready step of a running build in every free slot before it
+takes the next Queue build, and Pending builds last when auto-queue is on.
+
 ## Own Claude login per build (since Nov 5 2026)
 
 Every headless build runs on its own copy of a Claude login (`deploy/claude-login.mjs`, build `build-own-login`):

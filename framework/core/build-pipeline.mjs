@@ -32,6 +32,21 @@
  *              in the Queue, keeps its place, and the dispatcher skips it until it is released. '' = not held.
  *
  * The orchestrator's tabs (Brett, Nov 10 2026: "Tabs: pending, active, incomplete, complete, errors, queue"): tabOf().
+ *
+ * Step dependencies and claims (Nov 13 2026, build always-fill-every-slot: "when slots are free, run independent steps
+ * of running builds in parallel across them"). Two optional fields on a builds@1 step (spec/BUILD-PARALLEL.md):
+ *   after   [stepId]  the steps of the same build that must be done (or skipped) before this one may start.
+ *                     NO `after` field = implicitly sequential: the step waits for the step before it in the list, so
+ *                     every build from before this contract runs exactly as it did. `after: []` = independent: it may
+ *                     start as soon as the build runs. Ids name steps of the same build; a step never names itself;
+ *                     cycles and unknown ids are refused by the store check (builds-store.mjs).
+ *   claim   { runId, slot, account, branch, at, model, expiresAt } | null  the session working the step right now.
+ *                     Model-aware: `model` is the step's pinned model the session was launched on (never higher).
+ *                     A claim lives CLAIM_TTL_MS from `at` (expiresAt); past it the step is ready again (a session that
+ *                     died without releasing). Ticking a step done releases its claim. `branch` is the parallel step's
+ *                     worktree branch (<build-branch>--s<n>) or the build branch for a sequential step.
+ * Helpers: normAfter / normClaim (shape), dependsOn(build, step) (the resolved list, implicit sequential included),
+ * claimLive(claim, now), stepBranch(build, step).
  */
 
 export const SCHEMA = 'build-pipeline@1';
@@ -148,6 +163,56 @@ export function actionsFor(b) {
 export function queueOrder(builds, priorityOf = () => 'P2') {
   const rank = (p) => { const n = parseInt(String(p).replace(/^P/, ''), 10); return Number.isInteger(n) ? n : 2; };
   return [...builds].filter((b) => b.status === 'queued').sort((a, b) => rank(priorityOf(a)) - rank(priorityOf(b)) || str(a.pipeline?.queuedAt).localeCompare(str(b.pipeline?.queuedAt)) || str(a.createdAt).localeCompare(str(b.createdAt)));
+}
+
+// ------------------------------------------------------------------ step dependencies and claims (Nov 13 2026)
+
+/** A claim lives this long unless released (steps are ≤ 10 min; the rest is the merge back and session start-up). */
+export const CLAIM_TTL_MS = 45 * 60e3;
+export const CLAIM_MODELS = ['Fable', 'Opus'];
+const AFTER_MAX = 20;
+
+/**
+ * The `after` list in shape, or undefined when the step carries none. Absent and empty differ on purpose: absent =
+ * implicitly sequential (old builds), [] = independent. `self` is never kept; with `ids` (the build's step ids) unknown
+ * ids are dropped (the store check names them first).
+ */
+export function normAfter(v, { self = '', ids = null } = {}) {
+  if (!Array.isArray(v)) return undefined;
+  const seen = new Set();
+  return v.map((x) => str(x, 40).trim()).filter((id) => id && id !== self && !seen.has(id) && (seen.add(id), true) && (!ids || ids.includes(id))).slice(0, AFTER_MAX);
+}
+
+/** The claim record in shape, or null for nothing (a claim without runId is none). `model` defaults to the step's. */
+export function normClaim(c, { model = '' } = {}) {
+  if (!c || typeof c !== 'object' || !str(c.runId, 80).trim()) return null;
+  const at = iso(c.at);
+  return {
+    runId: str(c.runId, 80).trim(), slot: str(c.slot, 60), account: accountName(c.account), branch: str(c.branch, 200), at,
+    model: CLAIM_MODELS.includes(c.model) ? c.model : CLAIM_MODELS.includes(model) ? model : '',
+    expiresAt: iso(c.expiresAt) || (at ? new Date(Date.parse(at) + CLAIM_TTL_MS).toISOString() : ''),
+  };
+}
+
+/** Is this claim alive at `now`? A claim without a time is dead; one past expiresAt is dead. */
+export function claimLive(c, now = Date.now()) {
+  if (!c?.runId) return false;
+  const t = Date.parse(c.expiresAt || '');
+  return Number.isFinite(t) && t > (typeof now === 'number' ? now : Date.parse(now));
+}
+
+/** The step ids `step` really waits on: its `after` list, or the previous step in the build when it has none. */
+export function dependsOn(b, step) {
+  const steps = b?.steps ?? [];
+  if (Array.isArray(step?.after)) return step.after.filter((id) => id !== step.id && steps.some((s) => s.id === id));
+  const i = steps.findIndex((s) => s === step || (step?.uid && s.uid === step.uid) || s.id === step?.id);
+  return i > 0 ? [steps[i - 1].id] : [];
+}
+
+/** The branch a step is worked on: the build branch for a sequential step, `<build-branch>--<stepId>` for a parallel one. */
+export function stepBranch(b, step, { parallel = false } = {}) {
+  const base = str(b?.branch, 200) || `claude/${str(b?.id, 80)}`;
+  return parallel ? `${base}--${str(step?.id, 40)}` : base;
 }
 
 /** The steps still to do (not done, not skipped). */
