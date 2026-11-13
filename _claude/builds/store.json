@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4241,
- "updatedAt": "2026-11-13T10:49:44.073Z",
+ "rev": 4242,
+ "updatedAt": "2026-11-13T10:50:11.422Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -161274,9 +161274,9 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/one-source-of-truth-console-shows-only-what-the-server-says-is-running",
-   "pr": "",
+   "pr": "#562",
    "createdAt": "2026-11-12T02:37:57.927Z",
-   "updatedAt": "2026-11-13T10:38:11.819Z",
+   "updatedAt": "2026-11-13T10:50:07.570Z",
    "builtAt": "",
    "notes": [
     {
@@ -161430,7 +161430,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": {

@@ -781,7 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 01:48 UTC · `tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch` branch claude/tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch (all) · pipeline
 - 2026-11-13 01:48 UTC · `tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch` note (all) · orchestrator
 - 2026-11-13 01:48 UTC · `everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the` s2 done, → built (all) · orchestrator
 - 2026-11-13 01:48 UTC · `everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the` note (all) · orchestrator
@@ -1181,6 +1180,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 10:49 UTC · `server-gate-one-session-per-build-no-duplicate-launches` PR #560, note (all) · reconciler
 - 2026-11-13 10:49 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` s12 done (all) · orchestrator
 - 2026-11-13 10:49 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` s16 done (all) · orchestrator
+- 2026-11-13 10:50 UTC · `one-source-of-truth-console-shows-only-what-the-server-says-is-running` PR #562 (all) · builds-live
 
 ## Token passes (log)
 
