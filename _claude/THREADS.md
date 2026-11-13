@@ -792,7 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 19:08 UTC · `decision-dialog-ui-review-other` PR #635 (all) · builds-live
 - 2026-11-13 19:08 UTC · `orchestrator-settings-collapsible-split` branch claude/orchestrator-settings-collapsible-split (all) · builds-live
 - 2026-11-13 19:08 UTC · `ui-manager-floating-window-to-select-any` → running, note (all) · orchestrator
 - 2026-11-13 19:09 UTC · `decision-dialog-ui-review-other` s9 done, → built (all) · orchestrator
@@ -1192,6 +1191,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 20:54 UTC · `own-token-sets-for-grids-and-tab-groups` note (all) · orchestrator
 - 2026-11-13 20:53 UTC · `own-token-sets-for-grids-and-tab-groups` branch claude/own-token-sets-for-grids-and-tab-groups, PR #654 (all) · builds-live
 - 2026-11-13 20:54 UTC · `own-token-sets-for-grids-and-tab-groups` s1 done, → running (all) · orchestrator
+- 2026-11-13 20:54 UTC · `auto-land-every-finished-build-lands` s3 done (all) · orchestrator
 
 ## Token passes (log)
 
