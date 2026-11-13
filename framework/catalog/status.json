@@ -2300,6 +2300,24 @@
     "module": "app-console",
     "notes": "context-lead@1: rt.contextExtras keys '^:<name>' lead every context menu above one separator (core/engines/windows.ts withContextLead, react Overlays ContextMenuHost; any target, even contributions:false, right-click and long-press). The console registers Console settings (app.settings, folding the asset's own Settings in) plus console.settings.open for search, voice, MCP and CLI; help entries; checks spec/check-context-lead.mts + apps/console-web/scripts/console-settings-menu.mts. Kotlin twin deferred."
   },
+  "cx.icons.packs": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "41 icon-pack@1 assets in framework/assets/icon-pack (38 new, build icon-map-icon-packs-every-icon-badge-app s5): 23 from open sets (ISC / MIT / Apache-2.0), Twemoji emoji-style (CC-BY-4.0), 7 badge styles, 6 logo marks, 2 tile packs; themable or fixed colour; licence per pack. Colour layers drawn as a one-colour fallback until the Fable step s9."
+  },
+  "cx.icons.template": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "Template (every role mapped, valid icon-pack@1) on the page, REST GET /template, MCP, CLI (icon-map.mjs template) and voice; per-slot and pack restore (previous edit from the history, axHub from the hub copy the console sends)."
+  },
+  "cx.icons.assets": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "Pack library with previews (glyphSvg), per-skin defaults (hand pick -> skin default -> skin's pack -> branding), import validated by icon-map.mjs validate-pack, export, share / take via axHub's shared icon-pack table; all on REST, MCP, CLI and voice."
+  },
   "cx.icons.map": {
     "status": "built",
     "wave": 1,

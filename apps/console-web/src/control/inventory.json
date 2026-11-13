@@ -1474,7 +1474,7 @@
       "view": "icon-map",
       "plugin": "ai.amberx.axf.console.icon-map",
       "file": "plugins/icon-map/web/IconMapView.tsx",
-      "line": 200,
+      "line": 202,
       "tabs": [
         {
           "address": "view:icon-map/tab:icon-map.section=slots",
@@ -1495,7 +1495,7 @@
       "view": "icon-map",
       "plugin": "ai.amberx.axf.console.icon-map",
       "file": "plugins/icon-map/web/IconMapView.tsx",
-      "line": 207,
+      "line": 209,
       "tabs": [
         {
           "address": "view:icon-map/tab:icon-map.mode=tree",
