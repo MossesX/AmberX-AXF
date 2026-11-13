@@ -17,20 +17,26 @@
  *   node framework/cli/skins.mjs back <app> <slot>         drop one override ("Back to skin")
  *   node framework/cli/skins.mjs color <app> <colour theme>|default [--scope …]   switch the colour theme inside the skin in force (same skin,
  *                                                           no new skin; default = the skin's own colours); --scope = inside one screen / plugin only
- *   node framework/cli/skins.mjs restore <app>             back to the snapshot (keeps one undo)
+ *   node framework/cli/skins.mjs restore <app>             back to the snapshot = the Default skin (keeps one undo)
  *   node framework/cli/skins.mjs undo <app>                undo the last restore
+ *   node framework/cli/skins.mjs default <app>|global      the app's Default skin (its saved look as a skin@1 asset, default-<app>)
+ *   node framework/cli/skins.mjs migrate [--all | <app>|global] [--dry]   write every Default skin that is missing or stale (idempotent:
+ *                                                           a second run keeps everything); snapshots an app with no look document first
+ *   node framework/cli/skins.mjs delete <skin>             refuse to delete a Default skin (framework skins are repo files, not deleted here)
  *   node framework/cli/skins.mjs coverage                  how a skin reaches every registered asset type (CI: spec/check-skin-coverage.mjs)
  *   node framework/cli/skins.mjs covers <skin>             what one skin sets or styles, type by type
  *   add --json for machine output. An app is its id (axf-console) or its folder (console-web), or `console`, `axhub`, `amberx`, `molly`.
  *
  * Files are written where /projects is mounted (the hub's data folder), so open apps follow through the hub's change
- * feed. AXF_LOOKS_DIR points elsewhere (tests, local development); AXF_APPEARANCE_FILE is the shared document.
+ * feed. AXF_LOOKS_DIR points elsewhere (tests, local development); AXF_APPEARANCE_FILE is the shared document;
+ * AXF_SKINS_DIR holds the Default skins (`shared/settings/skins/<app>.json`, skin-config-rules.mjs).
  */
 import { chownSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { backToSkin, newAppLook, normalizeAppLook, normalizeLookPart, overriddenSlots, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, setInheritSkin, setLookSlot, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorTheme, undoRestore, SKIN_COLOR_SLOT, SKIN_NEVER } from '../core/engines/skin-rules.mjs';
 import { coverageSummary, coverageTable, isSubScopeKey, partElements, skinScopeOf } from '../core/engines/skin-coverage.mjs';
+import { defaultSkinMigration, isDefaultSkin, skinDeleteError, SKIN_CONFIG_GLOBAL } from '../core/engines/skin-config-rules.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const ALIASES = { console: 'axf-console', 'console-web': 'axf-console', axhub: 'axhub-web', amberx: 'amberx-droid' };
@@ -39,7 +45,9 @@ const ID = /^[a-z0-9][a-z0-9-]*$/;
 
 export const sharedFile = () => process.env.AXF_APPEARANCE_FILE || '/projects/_shared/_data/settings/appearance.json';
 export const looksDir = () => process.env.AXF_LOOKS_DIR || join(dirname(sharedFile()), 'looks');
+export const skinsDir = () => process.env.AXF_SKINS_DIR || join(dirname(sharedFile()), 'skins');
 const lookFile = (app) => join(looksDir(), `${app}.json`);
+const skinFile = (app) => join(skinsDir(), `${app}.json`);
 
 /** The apps with a look document: the shared-assets apps, plus any document already on the hub. */
 export function appIds() {
@@ -111,10 +119,68 @@ function assetsOf(type) {
   const dir = join(ROOT, 'framework/assets', type);
   return existsSync(dir) ? readdirSync(dir).filter((f) => f.endsWith('.json')).map((f) => readJson(join(dir, f))).filter(Boolean) : [];
 }
+/** The Default skins on the hub (`skins/<app>.json`), the hub-wide one first. */
+export function defaultSkins() {
+  if (!existsSync(skinsDir())) return [];
+  return readdirSync(skinsDir()).filter((f) => f.endsWith('.json')).map((f) => readJson(join(skinsDir(), f))).filter(isDefaultSkin).sort((a, b) => (a.app === SKIN_CONFIG_GLOBAL ? -1 : b.app === SKIN_CONFIG_GLOBAL ? 1 : a.app.localeCompare(b.app)));
+}
+export const readDefaultSkin = (app) => { const s = readJson(skinFile(app)); return isDefaultSkin(s) && s.app === app ? s : null; };
+export function writeDefaultSkin(skin, by = 'skins-cli') {
+  mkdirSync(skinsDir(), { recursive: true });
+  const f = skinFile(skin.app);
+  const tmp = `${f}.${process.pid}.tmp`;
+  writeFileSync(tmp, `${JSON.stringify({ ...skin, updatedBy: by, updatedAt: new Date().toISOString() })}\n`);
+  renameSync(tmp, f);
+  chownLike(f);
+}
 export const skinRows = () => [
+  ...defaultSkins().map((a) => ({ id: a.id, name: `${a.name} (${a.app})`, kind: 'skin', description: a.description ?? '', iconPack: '', parts: [], protected: true, app: a.app })),
   ...assetsOf('skin').map((a) => ({ id: a.id, name: a.name, kind: 'skin', description: a.description ?? '', iconPack: a.data?.iconPack ?? '', parts: Object.keys(a.data?.parts ?? {}) })),
   ...assetsOf('design-package').map((a) => ({ id: a.id, name: a.name, kind: 'design-package', description: a.description ?? '', iconPack: '', parts: [] })),
 ];
+
+/** The three themes an app's look falls back to when its saved slots name none: the default design package's. */
+function themeFill(shared) {
+  const id = shared?.slots?.['design-package'] || 'hub-default';
+  const pkg = assetsOf('design-package').find((p) => p.id === id) ?? assetsOf('design-package').find((p) => p.id === 'hub-default');
+  return pkg ? { layout: pkg.data?.layout ?? '', 'color-theme': pkg.data?.['color-theme'] ?? '', 'style-theme': pkg.data?.['style-theme'] ?? '' } : {};
+}
+
+/**
+ * The Default skin of one app (or `global`) brought up to date with its saved look: written when missing or stale,
+ * kept when it already matches, so running it twice changes nothing. An app with no look document is snapshotted
+ * first. `dry` decides without writing. Returns the migration row `{ app, action, skin, why }`.
+ */
+export function migrate(app, dry = false, by = 'skins-cli') {
+  const shared = readJson(sharedFile());
+  if (!shared) throw new Error(`can't read the shared look at ${sharedFile()}`);
+  let lookPart;
+  if (app === SKIN_CONFIG_GLOBAL) lookPart = normalizeLookPart(shared);
+  else { if (!readLook(app) && !dry) snapshot(app); lookPart = (readLook(app) ?? newAppLook(app, shared)).default; }
+  const row = defaultSkinMigration(app, lookPart, readDefaultSkin(app), themeFill(shared), SKIN_NEVER);
+  if (!dry && (row.action === 'create' || row.action === 'update')) writeDefaultSkin(row.skin, by);
+  return { ...row, skin: row.skin?.id ?? '', path: skinFile(app), written: !dry && (row.action === 'create' || row.action === 'update') };
+}
+
+/** The Default skin as the hub has it, or as it would be written (`derived: true`). */
+export function defaultSkin(app) {
+  const have = readDefaultSkin(app);
+  if (have) return { ...have, derived: false };
+  const shared = readJson(sharedFile());
+  if (!shared) throw new Error(`can't read the shared look at ${sharedFile()}`);
+  const lookPart = app === SKIN_CONFIG_GLOBAL ? normalizeLookPart(shared) : (readLook(app) ?? newAppLook(app, shared)).default;
+  const row = defaultSkinMigration(app, lookPart, null, themeFill(shared), SKIN_NEVER);
+  if (!row.skin) throw new Error(`${app}: ${row.why}`);
+  return { ...row.skin, derived: true };
+}
+
+/** `skins.mjs delete <skin>`: a Default skin is never deleted; a framework skin is a repo file this CLI does not remove. */
+export function deleteSkin(id) {
+  const d = defaultSkins().find((s) => s.id === id);
+  if (d) throw new Error(skinDeleteError(d));
+  if (!skinKnown(id)) throw new Error(`no skin "${id}"`);
+  throw new Error(`${id} is a framework skin (framework/assets/skin): remove the file from the repository, this CLI does not delete it`);
+}
 
 /** Save the app's current look as its default. Never replaces a snapshot unless forced. */
 export function snapshot(app, force = false) {
@@ -134,7 +200,7 @@ const scopeArg = (argv) => { const i = argv.indexOf('--scope'); const v = i >= 0
 export const status = (app) => {
   const l = readLook(app);
   const inForce = resolveLookSkin(l, readGlobal(), null);
-  return { app, snapshot: !!l, useSkin: !!l?.skin.use, follow: !!l?.skin.inherit, skin: l?.skin.id ?? '', inForce: inForce.id, from: inForce.from, colorTheme: inForce.colorTheme ?? '', overrides: overriddenSlots(l), scopes: scopeEntries(l), canUndo: !!l?.undo, own: Object.keys(l?.own.slots ?? {}) };
+  return { app, snapshot: !!l, defaultSkin: readDefaultSkin(app)?.id ?? '', useSkin: !!l?.skin.use, follow: !!l?.skin.inherit, skin: l?.skin.id ?? '', inForce: inForce.id, from: inForce.from, colorTheme: inForce.colorTheme ?? '', overrides: overriddenSlots(l), scopes: scopeEntries(l), canUndo: !!l?.undo, own: Object.keys(l?.own.slots ?? {}) };
 };
 
 /** Which skin is in force at a place and which level decided. */
@@ -162,7 +228,11 @@ export function change(op, app, arg, scopeKey = '') {
     if (!resolveLookSkin(l, readGlobal(), scope).id) throw new Error(`${app}${scopeKey ? ` ${scopeKey}` : ''} has no skin in force: pick the colour theme with the app's own look (control@1 tokens.slots) or use a skin first`);
     writeLook(setSkinColorTheme(l, pick, scopeKey || undefined));
   }
-  else if (op === 'restore') writeLook(restoreAppDefault(l, new Date().toISOString()));
+  else if (op === 'restore') {
+    // Restore to default = back to the saved look, which is the Default skin's source: the skin is brought up to date with it
+    writeLook(restoreAppDefault(l, new Date().toISOString()));
+    try { migrate(app); } catch { /* a look without the three themes has no Default skin yet; restore still happened */ }
+  }
   else if (op === 'undo') { if (!l.undo) throw new Error(`${app} has nothing to undo`); writeLook(undoRestore(l)); } else throw new Error(`unknown change ${op}`);
   return status(app);
 }
@@ -238,6 +308,9 @@ function main(argv) {
   if (!cmd || cmd === 'apps') out = appIds().map(status);
   else if (cmd === 'list') out = skinRows();
   else if (cmd === 'snapshot') out = (argv.includes('--all') ? appIds() : [appId(app)]).map((a) => snapshot(a, argv.includes('--force')));
+  else if (cmd === 'migrate') out = (argv.includes('--all') || !app ? [SKIN_CONFIG_GLOBAL, ...appIds()] : [app === SKIN_CONFIG_GLOBAL ? app : appId(app)]).map((a) => migrate(a, argv.includes('--dry')));
+  else if (cmd === 'default') { if (!app) throw new Error('default needs <app> or global'); out = defaultSkin(app === SKIN_CONFIG_GLOBAL ? app : appId(app)); }
+  else if (cmd === 'delete') { if (!app) throw new Error('delete needs a skin id'); out = deleteSkin(app); }
   else if (['use', 'back', 'inherit', 'follow'].includes(cmd)) { if (!arg) throw new Error(`${cmd} needs <app> and ${cmd === 'use' ? 'a skin' : cmd === 'back' ? 'a slot' : cmd === 'inherit' ? 'a scope' : 'on | off'}`); out = change(cmd, appId(app), arg, scope); }
   else if (cmd === 'color' || cmd === 'colour') { if (!app) throw new Error('color needs <app> [colour theme | default]'); out = arg ? change('color', appId(app), arg, scope) : color(appId(app), scope); }
   else if (cmd === 'global-color' || cmd === 'global-colour') { if (!app) throw new Error('global-color needs a colour theme or default'); out = globalColor(app); }

@@ -27,8 +27,8 @@
  * group over category over the document's `default`, which starts at allow).
  *
  * `skinChangeReport` compares a generated skin with the Default skin (the app's saved look as a skin@1 asset,
- * skin-rules.mjs) under the config, `mergeWithDefault` puts every locked change back the way the Default has it and
- * lists what needs asking. Plain JS, pure, no I/O: shared by the CLI, the console server and the runtime.
+ * `defaultSkinOf` below) under the config, `mergeWithDefault` puts every locked change back the way the Default has it
+ * and lists what needs asking. Plain JS, pure, no I/O: shared by the CLI, the console server and the runtime.
  */
 import { coverageTable } from './skin-coverage.mjs';
 
@@ -488,6 +488,99 @@ export function mergeWithDefault(skin, base, config, tree, assetOf = null) {
   const livePatches = patches.filter((p) => p.id && finalSlots[p.type] === p.id);
   if (out.extras && !Object.keys(out.extras).length) delete out.extras;
   return { skin: out, kept, asks, patches: livePatches, allowed };
+}
+
+/* ---------------------------------------------------------------- the Default skin */
+
+/**
+ * The Default skin (Brett: "the current look is saved as the Default skin"): each app's saved look (app-look@1
+ * `default`: slots, spacing, hidden chrome, look settings and token overrides) as a skin@1 asset, `default-<app>`,
+ * named "Default", on the hub at `settings/skins/<app>.json`; the hub-wide level's is `default-global`, from the shared
+ * appearance@1 document. It is derived, never edited by hand: the migration (`defaultSkinMigration`) writes it when it
+ * is missing or differs from the look, and keeps it when it matches, so running it again changes nothing. It can't be
+ * deleted (`skinDeleteError`); Restore to default puts the app back on the look it was made from (`restoreAppDefault`
+ * resets to `default`, which is this skin's source), and the AI's generated skins are compared with it
+ * (`skinChangeReport`, `mergeWithDefault`).
+ */
+export const DEFAULT_SKIN_NAME = 'Default';
+export const DEFAULT_SKIN_PREFIX = 'default-';
+export const DEFAULT_SKIN_PROJECT = 'shared';
+const SKIN_ID = /^[a-z0-9][a-z0-9-]{1,47}$/;
+const SKIN_THEMES = { layoutTheme: 'layout', colorTheme: 'color-theme', styleTheme: 'style-theme' };
+const SPACINGS = ['tight', 'compact', 'regular'];
+
+export const defaultSkinId = (app) => `${DEFAULT_SKIN_PREFIX}${str(app, 40)}`;
+export const defaultSkinPath = (app) => `settings/skins/${app}.json`;
+/** Is this asset an app's Default skin? (The marker, the type and the id all agree.) */
+export function isDefaultSkin(asset) {
+  return isObj(asset) && asset.type === 'skin' && asset.protected === true && typeof asset.id === 'string' && asset.id.startsWith(DEFAULT_SKIN_PREFIX) && asset.id === defaultSkinId(asset.app);
+}
+/** Why a skin can't be deleted ('' = it can). */
+export function skinDeleteError(asset) {
+  return isDefaultSkin(asset) ? `${asset.id} is the Default skin of ${asset.app}: the saved look Restore to default goes back to. It can't be deleted; save the current look as the Default again to replace it.` : '';
+}
+export const canDeleteSkin = (asset) => !skinDeleteError(asset);
+
+/**
+ * The Default skin of one app from a look part (`{ slots, spacing, hidden, settings }`: app-look@1 `default`, or the
+ * shared appearance@1 document for `global`). `fill` gives the three themes when the look part has no slot for one
+ * (the app's default design package); `never` = the slots a skin never sets. Deterministic: no clock, no author
+ * stamp, so two runs over the same look are the same document.
+ */
+export function defaultSkinOf(app, lookPart, fill = {}, never = []) {
+  const id = SKIN_ID.test(str(app, 40)) ? app : SKIN_CONFIG_GLOBAL;
+  const lp = isObj(lookPart) ? lookPart : {};
+  const slots = isObj(lp.slots) ? lp.slots : {};
+  const data = {};
+  for (const [field, type] of Object.entries(SKIN_THEMES)) { const v = slots[type] ?? (isObj(fill) ? fill[type] : ''); if (typeof v === 'string' && SKIN_ID.test(v)) data[field] = v; }
+  data.assets = {};
+  const themeTypes = Object.values(SKIN_THEMES);
+  for (const [type, v] of Object.entries(slots)) if (typeof v === 'string' && SKIN_ID.test(v) && SKIN_ID.test(type) && !themeTypes.includes(type) && !never.includes(type)) data.assets[type] = v;
+  const extras = {};
+  if (SPACINGS.includes(lp.spacing)) extras.spacing = lp.spacing;
+  if (isObj(lp.hidden)) { const h = {}; for (const [t, v] of Object.entries(lp.hidden)) if (typeof v === 'boolean') h[t] = v; if (Object.keys(h).length) extras.hidden = h; }
+  if (isObj(lp.settings) && Object.keys(lp.settings).length) extras.settings = { ...lp.settings };
+  if (Object.keys(extras).length) data.extras = extras;
+  data.preview = { caption: id === SKIN_CONFIG_GLOBAL ? 'The hub-wide look as it was saved.' : `The look ${id} had when it was saved.` };
+  return {
+    $axf: 'asset@1',
+    type: 'skin',
+    id: defaultSkinId(id),
+    name: DEFAULT_SKIN_NAME,
+    version: '1.0.0',
+    description: id === SKIN_CONFIG_GLOBAL ? 'The saved hub-wide look. Restore to default goes back to it; it cannot be deleted.' : `The saved look of ${id}. Restore to default goes back to it; it cannot be deleted.`,
+    author: 'AmberX AXF',
+    tags: ['default', 'skin'],
+    roll: false,
+    protected: true,
+    app: id,
+    data,
+  };
+}
+
+/** What a Default skin lacks to be a skin@1 asset (the three themes). */
+export function defaultSkinErrors(asset) {
+  const d = isObj(asset) && isObj(asset.data) ? asset.data : {};
+  const out = [];
+  for (const [field, type] of Object.entries(SKIN_THEMES)) if (!SKIN_ID.test(str(d[field], 60))) out.push(`data.${field}: the saved look names no ${type} and the app's default design package gives none`);
+  if (!isDefaultSkin(asset)) out.push('not a Default skin: protected, app and id default-<app> must agree');
+  return out;
+}
+
+const sameJson = (a, b) => JSON.stringify(a ?? null) === JSON.stringify(b ?? null);
+/**
+ * One app's idempotent migration step: `{ app, action, skin, why }` with `action` create (nothing on the hub yet),
+ * update (the hub's copy differs from the look), keep (same document), or skip (the look can't make a skin: `why`).
+ * `lookPart` = the look the Default is made from, `existing` = the hub's current Default skin document or null.
+ */
+export function defaultSkinMigration(app, lookPart, existing, fill = {}, never = []) {
+  const skin = defaultSkinOf(app, lookPart, fill, never);
+  const errors = defaultSkinErrors(skin);
+  if (errors.length) return { app, action: 'skip', skin: null, why: errors.join('; ') };
+  if (!isObj(existing)) return { app, action: 'create', skin, why: 'no Default skin on the hub yet' };
+  const { updatedAt: _a, updatedBy: _b, ...rest } = existing;
+  if (sameJson(rest, skin)) return { app, action: 'keep', skin: existing, why: 'the hub already has this look as the Default skin' };
+  return { app, action: 'update', skin, why: isDefaultSkin(existing) ? 'the saved look changed since the Default skin was written' : 'the document on the hub is not a Default skin' };
 }
 
 /* ---------------------------------------------------------------- words for the AI and the API */
