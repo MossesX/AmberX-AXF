@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4475,
- "updatedAt": "2026-11-13T12:59:20.678Z",
+ "rev": 4476,
+ "updatedAt": "2026-11-13T12:59:50.050Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -187882,7 +187882,7 @@
    "pr": "#573",
    "priority": "P0",
    "createdAt": "2026-11-13T12:31:20.005Z",
-   "updatedAt": "2026-11-13T12:59:18.982Z",
+   "updatedAt": "2026-11-13T12:59:48.188Z",
    "builtAt": "",
    "notes": [
     {
@@ -187912,6 +187912,10 @@
     {
      "text": "Brett: the highlight (asset lit up while hovering its name in the Assets menu, and the right-clicked asset) must be configurable in settings: colour, style (outline/fill/glow), thickness, opacity, animation on/off. Via API too.",
      "at": "2026-11-13T12:33:13.811Z"
+    },
+    {
+     "text": "PR #573 open. UI Review shots not uploaded: this headless session has no AXF_CONSOLE_URL / AXF_TOKEN, so review.mjs submit --console refused. Resubmit desktop + phone shots from a session with the console token.",
+     "at": "2026-11-13T12:59:48.187Z"
     }
    ],
    "approvals": [],
@@ -188129,7 +188133,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
