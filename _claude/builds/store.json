@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4071,
- "updatedAt": "2026-11-13T06:56:51.240Z",
+ "rev": 4072,
+ "updatedAt": "2026-11-13T06:57:12.455Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -179731,7 +179731,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T06:54:48.788Z",
-   "updatedAt": "2026-11-13T06:56:49.205Z",
+   "updatedAt": "2026-11-13T06:57:10.659Z",
    "builtAt": "",
    "notes": [
     {
@@ -179753,6 +179753,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-remove-ui-review-as-a-gate-no-screenshots-requir--gina, own login copy)",
      "at": "2026-11-13T06:56:49.205Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-remove-ui-review-as-a-gate-no-screenshots-requir--lenny.",
+     "at": "2026-11-13T06:57:10.659Z"
     }
    ],
    "approvals": [],
@@ -179773,10 +179777,10 @@
     "queuedAt": "2026-11-13T06:54:51.848Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-remove-ui-review-as-a-gate-no-screenshots-requir--gina",
+    "session": "axf-remove-ui-review-as-a-gate-no-screenshots-requir--lenny",
     "slot": "",
     "model": "Opus",
-    "launchedAt": "2026-11-13T06:56:46.988Z",
+    "launchedAt": "2026-11-13T06:57:10.063Z",
     "runs": 1,
     "lastRun": null,
     "split": {
@@ -179789,7 +179793,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-13T06:56:46.988Z",
+    "dispatchedAt": "2026-11-13T06:57:10.064Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -179798,7 +179802,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-13T06:56:46.988Z",
+    "pickedAt": "2026-11-13T06:57:10.064Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -180130,7 +180134,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

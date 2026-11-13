@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T06:56:51.240Z",
+ "updatedAt": "2026-11-13T06:57:12.455Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -117895,7 +117895,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T06:54:48.788Z",
-   "updatedAt": "2026-11-13T06:56:49.205Z",
+   "updatedAt": "2026-11-13T06:57:10.659Z",
    "builtAt": "",
    "notes": [
     {
@@ -117917,6 +117917,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-remove-ui-review-as-a-gate-no-screenshots-requir--gina, own login copy)",
      "at": "2026-11-13T06:56:49.205Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-remove-ui-review-as-a-gate-no-screenshots-requir--lenny.",
+     "at": "2026-11-13T06:57:10.659Z"
     }
    ],
    "approvals": [],
