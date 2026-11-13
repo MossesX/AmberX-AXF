@@ -2269,6 +2269,12 @@
     "module": "app-console",
     "notes": "Orchestrator tick ships each landed build's manifest; ledger shows it per entry; API/MCP/CLI/voice/deep link; backfill --since. Kotlin twin deferred."
   },
+  "cx.buildengine.renames": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "Nov 13 2026: framework/cli/build-rename.mjs moves a build with an id over 40 characters to a short id (worktree, branch, PR, store, report, THREADS rows); _claude/builds/renames.json keeps old ids resolving in the orchestrator, pipeline and builds-live CLIs. Host-only: no Kotlin twin."
+  },
   "cx.buildengine.hardlimit": {
     "status": "built",
     "wave": 1,

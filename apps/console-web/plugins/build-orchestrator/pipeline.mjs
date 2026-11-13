@@ -69,7 +69,7 @@ import { addendumBlock, saidBlock, subtitle } from '../../../../framework/core/b
 import { effectivePriority, priorityLabel } from '../../../../framework/core/build-priority.mjs';
 import { MODEL_IDS, modelKey } from '../../../../framework/core/model-policy.mjs';
 import * as storeCore from '../../../../framework/plan/builds-store-core.mjs';
-import { loadStore, withStore } from '../../../../framework/cli/builds-store.mjs';
+import { loadStore, resolveBuildId, withStore } from '../../../../framework/cli/builds-store.mjs';
 import { activeProfile } from '../../../../framework/cli/persist.mjs';
 import { activeProject, readProjects } from '../../../../framework/cli/projects.mjs';
 import { loadUpgradePolicy, settingsFile as claudeSettingsFile } from '../../../../framework/cli/upgrade-policy.mjs';
@@ -858,6 +858,8 @@ async function main(argv) {
   const has = (n) => args.includes(`--${n}`);
   const out = (o, text) => console.log(json ? JSON.stringify(o) : text);
   const [cmd = 'status', ...rest] = args;
+  // a build moved to a short id is still found by its old id (build-renames@1)
+  if (['queue', 'split', 'show', 'route', ...BP.BUILD_ACTIONS].includes(cmd)) rest.forEach((a, i) => { if (!a.startsWith('--') && !(i > 0 && rest[i - 1].startsWith('--'))) rest[i] = resolveBuildId(a); });
   const by = flag('by', process.env.AXF_ACTOR || 'cli');
   if (cmd === 'status') {
     const s = status();

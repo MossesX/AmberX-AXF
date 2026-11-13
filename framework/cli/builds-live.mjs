@@ -42,7 +42,7 @@ import * as core from '../plan/builds-store-core.mjs';
 import * as merge from '../plan/builds-merge-core.mjs';
 import { REPO_ROOT } from './persist.mjs';
 import { gitAuthEnv, githubToken, scrub } from './github.mjs';
-import { adoptStore, adoptedChanges, journalDir, journalMax, mergeOriginsText, orchestratorExports, originsFile, readStoreNow, storeFile, storeText, withStore } from './builds-store.mjs';
+import { adoptStore, adoptedChanges, journalDir, journalMax, mergeOriginsText, orchestratorExports, originsFile, readStoreNow, resolveBuildId, storeFile, storeText, withStore } from './builds-store.mjs';
 import { emitChangesTo } from './build-hooks.mjs';
 import { readManifest } from './shipped-files.mjs';
 
@@ -397,6 +397,7 @@ export function pullMain() {
 
 /** Set a build's branch / PR / merged time in whatever profile it is in; status follows (built ↔ complete). */
 export function linkBuild(id, { branch: br, pr, mergedAt } = {}, by = 'builds-live') {
+  id = resolveBuildId(id); // an old id still works (build-renames@1)
   let found = null;
   const r = withStore((s) => {
     const b = core.findBuild(s, id); if (!b) throw new Error(`no build "${id}"`);
