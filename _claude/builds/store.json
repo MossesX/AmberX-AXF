@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5019,
- "updatedAt": "2026-11-13T21:09:37.332Z",
+ "rev": 5020,
+ "updatedAt": "2026-11-13T21:10:20.974Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -205265,7 +205265,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T19:55:30.979Z",
-   "updatedAt": "2026-11-13T21:09:09.006Z",
+   "updatedAt": "2026-11-13T21:10:18.379Z",
    "builtAt": "",
    "notes": [
     {
@@ -205311,6 +205311,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-icon-map-icon-packs-every-icon-badge-app--earl, own login copy)",
      "at": "2026-11-13T20:56:29.947Z"
+    },
+    {
+     "text": "Self-check: icon-map-icon-packs-every-icon-badge-app had no session on record but axf-icon-map-icon-packs-every-icon-badge-app--earl is alive: kept running and tracking it.",
+     "at": "2026-11-13T21:10:18.379Z"
     }
    ],
    "approvals": [
@@ -205340,7 +205344,7 @@
     "queuedAt": "2026-11-13T19:55:38.790Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "",
+    "session": "axf-icon-map-icon-packs-every-icon-badge-app--earl",
     "slot": "",
     "model": "Fable",
     "launchedAt": "2026-11-13T20:06:45.871Z",
@@ -205566,7 +205570,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
