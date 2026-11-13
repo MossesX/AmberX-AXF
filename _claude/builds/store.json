@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4027,
- "updatedAt": "2026-11-13T06:30:51.383Z",
+ "rev": 4028,
+ "updatedAt": "2026-11-13T06:31:09.354Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -170610,15 +170610,16 @@
    "title": "AmberX: approval pop-up not showing, only the Android notification",
    "category": "bug",
    "detail": "Brett said: \"Why isn't the approval thing popping up on my phone? Only the notification is. The Android notification.\"\n\nWhen axHub holds a vps.run call on the veto countdown, AmberX shows only the Android notification; the in-app approval pop-up (approve/deny with the command) does not appear. Find why (Follow Amber / approvals-banner relay, AXPP event, background start limits), fix it so the pop-up appears over any screen like before, keep the notification, add a test, and confirm on the phone.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/amberx-approval-pop-up-not-showing-only-the-android-notification",
    "pr": "#533",
+   "mergedAt": "2026-11-13T06:14:16Z",
    "priority": "P0",
    "createdAt": "2026-11-12T15:33:08.904Z",
-   "updatedAt": "2026-11-13T00:51:05.153Z",
+   "updatedAt": "2026-11-13T06:31:06.529Z",
    "builtAt": "2026-11-13T00:50:28.107Z",
    "notes": [
     {
@@ -170640,6 +170641,10 @@
     {
      "text": "Session axf-amberx-approval-pop-up-not-showing-only-the-andr--earl on mossesx-max- ended (exit 0); the build was already built.",
      "at": "2026-11-13T00:51:05.153Z"
+    },
+    {
+     "text": "Reconciler: PR #533 merged",
+     "at": "2026-11-13T06:31:06.529Z"
     }
    ],
    "approvals": [],
@@ -170745,7 +170750,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -173592,15 +173597,16 @@
    "title": "One account picker: choose the single Claude account the console and VPS builds use",
    "category": "accounts",
    "detail": "Brett said: \"I need to be able to select in the console what account the console uses and the VPS uses for builds. I need to just be able to select one and that's it, just one.\"",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds",
    "pr": "#543",
+   "mergedAt": "2026-11-13T06:14:22Z",
    "priority": "P0",
    "createdAt": "2026-11-12T21:49:00.405Z",
-   "updatedAt": "2026-11-13T02:06:04.112Z",
+   "updatedAt": "2026-11-13T06:31:06.529Z",
    "builtAt": "2026-11-13T02:06:04.112Z",
    "notes": [
     {
@@ -173682,6 +173688,10 @@
     {
      "text": "PR #543 (draft). Picker, REST/MCP/CLI/voice, launcher and dispatcher done; tests pass. UI Review shots still missing: the scratch console can't reach axHub from the build sandbox, so captures only showed 'Waiting for axHub'. Take desktop + phone shots of Settings → Claude accounts → One account and the banner dialog, submit to UI Review, then mark the PR ready.",
      "at": "2026-11-13T02:05:36.975Z"
+    },
+    {
+     "text": "Reconciler: PR #543 merged",
+     "at": "2026-11-13T06:31:06.529Z"
     }
    ],
    "approvals": [],
@@ -173809,7 +173819,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -174439,9 +174449,10 @@
    "pendingId": "",
    "branch": "claude/fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o",
    "pr": "#532",
+   "mergedAt": "2026-11-13T06:23:47Z",
    "priority": "P0",
    "createdAt": "2026-11-12T22:16:05.972Z",
-   "updatedAt": "2026-11-13T06:23:33.887Z",
+   "updatedAt": "2026-11-13T06:31:06.529Z",
    "builtAt": "",
    "notes": [
     {
@@ -174515,6 +174526,10 @@
     {
      "text": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
      "at": "2026-11-13T06:23:33.887Z"
+    },
+    {
+     "text": "Reconciler: PR #532 merged",
+     "at": "2026-11-13T06:31:06.529Z"
     }
    ],
    "approvals": [],
@@ -174620,7 +174635,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 25,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -176564,15 +176579,16 @@
    "title": "Everything on tokens before skins: fix the 27 open check-theme problems and the 1 check-controls finding (apps/player Home.tsx raw button), burn down all 1,209 frozen findings in framework/spec/conform-baseline.json (use framework/cli/scale-adopt.mjs, then hand-fix the rest) and empty the baseline, ",
    "category": "",
    "detail": "",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the",
    "pr": "#538",
+   "mergedAt": "2026-11-13T06:14:12Z",
    "priority": "P0",
    "createdAt": "2026-11-12T23:40:00.983Z",
-   "updatedAt": "2026-11-13T01:48:25.940Z",
+   "updatedAt": "2026-11-13T06:31:06.529Z",
    "builtAt": "2026-11-13T01:48:25.940Z",
    "notes": [
     {
@@ -176630,6 +176646,10 @@
     {
      "text": "Headless run axf-everything-on-tokens-before-skins-fix-the-27-ope--paulie: brief only · start 11.1K tokens ($0.03) · cost $2.40 · 67 turns · 6 tools, MCP none",
      "at": "2026-11-13T01:48:25.940Z"
+    },
+    {
+     "text": "Reconciler: PR #538 merged",
+     "at": "2026-11-13T06:31:06.529Z"
     }
    ],
    "approvals": [],
@@ -176739,7 +176759,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -177155,15 +177175,16 @@
    "title": "Full voice and AI control of EVERYTHING in the console, before the Android app: every action, setting, tab, dialog, menu, list, item and field gets an API (REST, MCP, CLI, voice). Add find-by-content deep links down to the item: 'jump to the plan about X, the step that mentions Y' searches inside pl",
    "category": "",
    "detail": "",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app",
    "pr": "#540",
+   "mergedAt": "2026-11-13T06:14:28Z",
    "priority": "P0",
    "createdAt": "2026-11-13T00:42:24.765Z",
-   "updatedAt": "2026-11-13T01:55:36.584Z",
+   "updatedAt": "2026-11-13T06:31:06.529Z",
    "builtAt": "2026-11-13T01:55:36.584Z",
    "notes": [
     {
@@ -177213,6 +177234,10 @@
     {
      "text": "Headless run axf-full-voice-and-ai-control-of-everything-in-the-c--sully: brief only · start 11.1K tokens ($0.03) · cost $3.91 · 86 turns · 6 tools, MCP none",
      "at": "2026-11-13T01:55:36.584Z"
+    },
+    {
+     "text": "Reconciler: PR #540 merged",
+     "at": "2026-11-13T06:31:06.529Z"
     }
    ],
    "approvals": [],
@@ -177344,7 +177369,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -177360,15 +177385,16 @@
    "title": "10-minute steps: the splitter cuts every build into steps of 10 minutes or less (was 30). Steps are checkpoints inside ONE session: the session ticks each one done and commits as it goes, so nothing is lost if it dies, and there is no new prompt or relaunch per step. Update the splitter prompt, the ",
    "category": "",
    "detail": "",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less",
    "pr": "#535",
+   "mergedAt": "2026-11-13T06:14:32Z",
    "priority": "P0",
    "createdAt": "2026-11-13T01:09:38.633Z",
-   "updatedAt": "2026-11-13T01:20:53.464Z",
+   "updatedAt": "2026-11-13T06:31:06.529Z",
    "builtAt": "2026-11-13T01:20:53.464Z",
    "notes": [
     {
@@ -177390,6 +177416,10 @@
     {
      "text": "Headless run axf-10-minute-steps-the-splitter-cuts-every-build-in--gina: brief only · start 11.2K tokens ($0.03) · cost $2.05 · 62 turns · 6 tools, MCP none",
      "at": "2026-11-13T01:20:53.464Z"
+    },
+    {
+     "text": "Reconciler: PR #535 merged",
+     "at": "2026-11-13T06:31:06.529Z"
     }
    ],
    "approvals": [],
@@ -177535,7 +177565,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

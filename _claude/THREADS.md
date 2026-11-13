@@ -781,12 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 21:50 UTC · `projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone` → queued, note (all) · console
-- 2026-11-12 21:51 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` note (all) · pipeline
-- 2026-11-12 21:51 UTC · `new-project-wizard-name-linked-repo-required-starter-code-skin-accounts` → running, note (all) · pipeline
-- 2026-11-12 21:51 UTC · `new-project-wizard-name-linked-repo-required-starter-code-skin-accounts` branch claude/new-project-wizard-name-linked-repo-required-starter-code-skin-accounts (all) · pipeline
-- 2026-11-12 21:51 UTC · `new-project-wizard-name-linked-repo-required-starter-code-skin-accounts` note (all) · orchestrator
-- 2026-11-12 21:51 UTC · `projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone` note (all) · pipeline
 - 2026-11-12 21:51 UTC · `one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx` added (5 steps) (all) · Claude (voice)
 - 2026-11-12 21:51 UTC · `one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx` → queued, note (all) · console
 - 2026-11-12 21:52 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` note (all) · pipeline
@@ -1181,6 +1175,12 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 06:30 UTC · `professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e` note (all) · orchestrator
 - 2026-11-13 06:30 UTC · `professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e` → queued, note (all) · pipeline
 - 2026-11-13 06:30 UTC · `professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e` → running, note (all) · pipeline
+- 2026-11-13 06:31 UTC · `amberx-approval-pop-up-not-showing-only-the-android-notification` → complete, merged, note (all) · reconciler
+- 2026-11-13 06:31 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` → complete, merged, note (all) · reconciler
+- 2026-11-13 06:31 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` merged, note (all) · reconciler
+- 2026-11-13 06:31 UTC · `everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the` → complete, merged, note (all) · reconciler
+- 2026-11-13 06:31 UTC · `full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app` → complete, merged, note (all) · reconciler
+- 2026-11-13 06:31 UTC · `10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less` → complete, merged, note (all) · reconciler
 
 ## Token passes (log)
 
