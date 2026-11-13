@@ -11,6 +11,9 @@
  *   … migrate --dry [--report <file>]                      what the migration would do (report, nothing written)
  *   … migrate --apply                                       build the store from every older data set (once)
  *   … verify                                                every build, step, status and note of the old files is in the store
+ *                                                           (plus step dependencies: missing ids and cycles)
+ *   … migrate-deps [--dry]                                  step-dependency migration (build-pipeline@1): older builds get
+ *                                                           no dependsOn; stamps meta.versions.stepDeps in one journal line
  *   … export                                                regenerate the old files (read-only exports of the store)
  *   … history <id>                                          every journal revision of one build
  *   … restore <id> <rev>                                    put a build back as it was at journal revision <rev>
@@ -401,6 +404,13 @@ export function restoreBuild(id, rev, by = 'cli') {
   return withStore((s) => { s.builds = s.builds.filter((b) => b.id !== id); s.builds.push(core.normBuild(h.after)); return s; }, { by, action: 'restore', note: `${id} restored to journal rev ${rev}` });
 }
 
+/** Run the step-dependency migration under the store lock (journalled once as `migrate-step-deps`). */
+export function migrateStepDepsNow(by = 'migration') {
+  let report;
+  const r = withStore((s) => { const m = core.migrateStepDeps(s, { by }); report = m.report; return m.store; }, { by, action: 'migrate-step-deps', note: `step dependencies v${core.STEP_DEPS_VERSION} (build-pipeline@1): older builds keep no dependsOn and run one step at a time` });
+  return { report, rev: r.rev };
+}
+
 export const currentProfile = () => activeProfile().id;
 
 async function main(argv) {
@@ -415,6 +425,12 @@ async function main(argv) {
     return out({ ok: r.report.verify.failed.length === 0, report: r.report }, `${dry ? 'dry run' : 'migrated'}: ${r.report.counts.builds} builds, ${r.report.counts.steps} steps; ${r.report.merges.length} merges, ${r.report.conflicts.length} conflicts, ${r.report.recovered.length} recovered; verify ${r.report.verify.total - r.report.verify.failed.length}/${r.report.verify.total}`);
   }
   if (cmd === 'export') { exportNow(); return out({ ok: true }, 'exports written'); }
+  if (cmd === 'migrate-deps') {
+    const dry = rest.includes('--dry');
+    const r = dry ? core.migrateStepDeps(loadStore()) : migrateStepDepsNow();
+    const what = `${r.report.builds} builds, ${r.report.steps} steps; ${r.report.withDeps} with a dependency list (older builds keep none and run in order); ${r.report.aliasMoved} stored dependsOn moved to after`;
+    return out({ ok: true, dry, report: r.report, rev: r.rev }, `${dry ? 'dry run' : r.report.stamped ? `step deps v${r.report.version} stamped (rev ${r.rev})` : `step deps already at v${r.report.version}`}: ${what}`);
+  }
   if (cmd === 'verify') {
     // 1. the store itself is a valid builds@1 (names what is wrong); 2. nothing from the old files is missing
     const store = loadStore();
@@ -422,8 +438,15 @@ async function main(argv) {
     const checks = core.verifyNothingLost(gatherSources({ history: false }), store);
     const bad = checks.filter((c) => !c.ok);
     if (bad.length || !v.ok) process.exitCode = 1;
-    const lines = [...v.errors.map((e) => `✗ store ${e.path} ${e.message}`), ...bad.map((b) => `✗ ${b.what}`)];
-    return out({ ok: !bad.length && v.ok, store: v, total: checks.length, failed: bad }, lines.length ? lines.join('\n') : `ok: the store is a valid builds@1 (${store.builds.length} records); ${checks.length} checks, everything from the old files is in the store`);
+    // 3. step dependencies: an `after` / `dependsOn` id naming no step of its build, and dependency cycles
+    const deps = core.stepDepsReport(store);
+    if (deps.missing.length || deps.cycles.length) process.exitCode = 1;
+    const lines = [...v.errors.map((e) => `✗ store ${e.path} ${e.message}`), ...bad.map((b) => `✗ ${b.what}`),
+      ...deps.missing.map((m) => `✗ deps ${m.build}/${m.step} depends on "${m.missing}", which is not a step of the build`),
+      ...deps.cycles.map((c) => `✗ deps ${c.build} dependency cycle: ${c.cycle.join(' → ')}`)];
+    const ok = !bad.length && v.ok && !deps.missing.length && !deps.cycles.length;
+    const depsLine = `step deps v${store.meta?.versions?.stepDeps?.version ?? 0}: ${deps.withDeps} build(s) with a dependency list, no missing ids, no cycles`;
+    return out({ ok, store: v, total: checks.length, failed: bad, deps }, lines.length ? lines.join('\n') : `ok: the store is a valid builds@1 (${store.builds.length} records); ${checks.length} checks, everything from the old files is in the store\n${depsLine}`);
   }
   const s = loadStore();
   if (cmd === 'status') {

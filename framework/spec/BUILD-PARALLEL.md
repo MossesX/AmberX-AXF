@@ -30,6 +30,10 @@ Rules (`normAfter`, `validateStore`):
 - a skipped step counts as done for the steps after it;
 - the migration is a no-op: nothing adds `after` to an older step. Absent and `[]` are kept distinct through
   normalisation, the orchestrator export and absorb, and the newer-wins merge.
+- the migration (`builds-store.mjs migrate-deps [--dry]`, `migrateStepDeps`) leaves every older build without a list
+  (one step at a time), moves a stray stored `dependsOn` to `after`, and stamps `meta.versions.stepDeps = { version: 1,
+  at, by }` once, in one journal line (`migrate-step-deps`). The dispatcher runs it on its first tick. `verify` names a
+  dependency on a missing step and every cycle (`stepDepsReport`) and exits 1.
 
 ### 1a. `dependsOn`, `parallel` and `files`
 

@@ -311,4 +311,36 @@ t('newer-wins merge: a released claim on the newer copy wins; a claim on the new
   assert.equal(m.mergeBuild(older, a).steps[1].claim.runId, 'run-1'); assert.deepEqual(m.mergeBuild(older, a).steps[2].after, ['s1', 's2']);
 });
 
+t('migrateStepDeps: older builds get no dependency list, a stray dependsOn moves to after, meta.versions stamped once', () => {
+  const raw = { ...c.emptyStore(at), builds: [
+    { id: 'old', title: 'Old', steps: [step('s1', 'a'), step('s2', 'b')] },
+    { id: 'stray', title: 'Stray', steps: [step('s1', 'a'), step('s2', 'b', { dependsOn: ['s1'] })] },
+  ] };
+  const r = c.migrateStepDeps(raw, { now: at, by: 'test' });
+  assert.equal(r.store.builds[0].steps.some((x) => 'after' in x || 'dependsOn' in x), false, 'old steps stay sequential');
+  assert.deepEqual(r.store.builds[1].steps[1].after, ['s1']);
+  assert.deepEqual(r.report, { builds: 2, steps: 4, withDeps: 1, aliasMoved: 1, stamped: true, version: c.STEP_DEPS_VERSION });
+  assert.deepEqual(r.store.meta.versions.stepDeps, { version: 1, at, by: 'test' });
+  assert.deepEqual(c.normalizeStore(r.store).meta.versions, r.store.meta.versions, 'versions survive normalisation');
+  assert.equal(c.migrateStepDeps(r.store, { now: '2026-12-01T00:00:00.000Z' }).report.stamped, false, 'second run is a no-op');
+  assert.equal('versions' in c.normalizeStore(c.emptyStore(at)).meta, false, 'an unstamped store carries no versions');
+});
+t('stepDepsReport (verify): names a dependsOn on a missing step and every cycle', () => {
+  const s = { ...c.emptyStore(at), builds: [depBuild(),
+    c.normBuild({ id: 'miss', title: 'M', steps: [step('s1', 'a'), step('s2', 'b', { after: ['s9'] })] }),
+    c.normBuild({ id: 'cyc', title: 'C', steps: [step('s1', 'a', { after: ['s3'] }), step('s2', 'b'), step('s3', 'c', { after: ['s2'] })] })] };
+  const r = c.stepDepsReport(s);
+  assert.deepEqual(r.missing, [{ build: 'miss', step: 's2', missing: 's9' }]);
+  assert.deepEqual(r.cycles, [{ build: 'cyc', cycle: ['s1', 's3', 's2', 's1'] }]);
+  assert.equal(r.withDeps, 3);
+  assert.deepEqual(c.stepDepsReport({ builds: [depBuild()] }).missing, []);
+});
+t('builds-store migrateStepDepsNow writes one journalled stamp; a second run writes nothing', () => {
+  const r1 = io.migrateStepDepsNow('test'); assert.equal(r1.report.stamped, true);
+  assert.equal(io.loadStore().meta.versions.stepDeps.version, c.STEP_DEPS_VERSION);
+  const lines = readdirSync(io.journalDir()).flatMap((f) => readFileSync(join(io.journalDir(), f), 'utf8').trim().split('\n')).map((l) => JSON.parse(l));
+  assert.equal(lines.filter((l) => l.action === 'migrate-step-deps').length, 1);
+  const r2 = io.migrateStepDepsNow('test'); assert.equal(r2.report.stamped, false); assert.equal(r2.rev, r1.rev);
+});
+
 console.log(`builds-store: ${n} checks passed`);

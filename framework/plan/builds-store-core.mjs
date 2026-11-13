@@ -208,7 +208,7 @@ export function normalizeStore(s) {
     rev: Number.isInteger(o.rev) ? o.rev : 0,
     migratedAt: str(o.migratedAt, 40),
     rules: foldRetired(o.rules && typeof o.rules === 'object' ? clone(o.rules) : {}),
-    meta: { queue: foldRetired(clone(o.meta?.queue ?? {}), mergeQueueMeta), pending: foldRetired(clone(o.meta?.pending ?? {})) },
+    meta: { queue: foldRetired(clone(o.meta?.queue ?? {}), mergeQueueMeta), pending: foldRetired(clone(o.meta?.pending ?? {})), ...normVersions(o.meta?.versions) },
     drafts: foldRetired(o.drafts && typeof o.drafts === 'object' ? clone(o.drafts) : {}, (a, b) => ({ ...a, ops: [...(a.ops ?? []), ...(b.ops ?? [])] })),
     builds: (Array.isArray(o.builds) ? o.builds : []).map((b) => normBuild(b)),
   };
@@ -358,6 +358,55 @@ export function dependencyCycles(b) {
     state.set(id, 'done');
   };
   for (const s of steps) walk(s.id, []);
+  return out;
+}
+
+/**
+ * Store-level data versions (`meta.versions`): { <change>: { version, at, by } }, written once by the migration that
+ * introduces the change, so the journal line of that write records it. Absent = no versioned change applied yet.
+ */
+function normVersions(v) {
+  if (!v || typeof v !== 'object' || Array.isArray(v)) return {};
+  const out = {};
+  for (const [k, x] of Object.entries(v)) if (/^[a-zA-Z][\w-]{0,40}$/.test(k) && Number.isInteger(x?.version) && x.version > 0) out[k] = { version: x.version, at: str(x.at, 40), by: str(x.by, 60) };
+  return Object.keys(out).length ? { versions: out } : {};
+}
+
+/** Step dependencies (build-pipeline@1): the data version the step-deps migration stamps. */
+export const STEP_DEPS_VERSION = 1;
+
+/**
+ * The step-dependency migration (Nov 13 2026). Existing builds get NO dependency list: a step without `after` stays
+ * implicitly sequential, so every older build keeps running one step at a time. The only rewrite is a stray stored
+ * `dependsOn` (an input alias) moved to `after` by normBuild. Stamps meta.versions.stepDeps once, which makes the write
+ * a journalled change. Returns { store, report: { builds, steps, withDeps, aliasMoved, stamped, version } }.
+ */
+export function migrateStepDeps(store, { now = nowIso(), by = 'migration' } = {}) {
+  const raw = store && typeof store === 'object' ? store : {};
+  let aliasMoved = 0;
+  for (const b of Array.isArray(raw.builds) ? raw.builds : []) for (const st of Array.isArray(b?.steps) ? b.steps : []) if (st && st.dependsOn !== undefined) aliasMoved++;
+  const s = normalizeStore(raw);
+  const prev = s.meta.versions?.stepDeps?.version ?? 0;
+  const stamped = prev < STEP_DEPS_VERSION;
+  if (stamped) s.meta.versions = { ...(s.meta.versions ?? {}), stepDeps: { version: STEP_DEPS_VERSION, at: now, by: str(by, 60) } };
+  const r = stepDepsReport(s);
+  return { store: s, report: { builds: s.builds.length, steps: r.steps, withDeps: r.withDeps, aliasMoved, stamped, version: STEP_DEPS_VERSION } };
+}
+
+/**
+ * What `verify` says about step dependencies: how many builds / steps carry a list, every `after` id that names no step
+ * of its build ({ build, step, missing }) and every dependency cycle ({ build, cycle }).
+ */
+export function stepDepsReport(store) {
+  const out = { steps: 0, withDeps: 0, missing: [], cycles: [] };
+  for (const b of Array.isArray(store?.builds) ? store.builds : []) {
+    const steps = Array.isArray(b?.steps) ? b.steps.filter((x) => x && typeof x === 'object') : [];
+    out.steps += steps.length;
+    const ids = new Set(steps.map((x) => x.id));
+    if (steps.some((x) => explicitAfter(x) !== undefined)) out.withDeps++;
+    for (const st of steps) for (const d of explicitAfter(st) ?? []) if (!ids.has(d)) out.missing.push({ build: b.id, step: st.id, missing: d });
+    for (const cycle of dependencyCycles(b)) out.cycles.push({ build: b.id, cycle });
+  }
   return out;
 }
 
