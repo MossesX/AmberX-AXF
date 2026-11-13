@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4229,
- "updatedAt": "2026-11-13T10:46:30.207Z",
+ "rev": 4230,
+ "updatedAt": "2026-11-13T10:46:43.775Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -161714,14 +161714,14 @@
    "title": "Server gate: one session per build, no duplicate launches",
    "category": "orchestrator",
    "detail": "URGENT, boss order from Brett, Nov 12. The dispatcher double/triple-launched builds: owner-recognized-everywhere ran 3 sessions and molly-gap-console-token-handoff ran 2, in the same worktree folders, clobbering each other and wasting slots. Add a SERVER GATE on the VPS, enforced by the server itself: only ONE live session per build ID and per worktree folder, ever. Every launch path (vps build_start, dispatcher, agent-slots, any claude -p/tmux axf-* launcher) takes an exclusive lock per build ID + folder (flock), and refuses a second launch while a session for that build is alive. A watchdog finds any duplicates that slip through, keeps the oldest, stops the rest, and logs it in 'Automatic fixes' with an AmberX FYI. Also fix the dispatcher's double-launch root cause (see pending dispatcher-a-worktree-store-write-can-erase-a-fr: store write erases the fresh launch record). Tests: second launch of the same build refused; duplicates reaped.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/server-gate-one-session-per-build-no-duplicate-launches",
    "pr": "",
    "createdAt": "2026-11-12T02:42:15.357Z",
-   "updatedAt": "2026-11-13T10:37:44.975Z",
+   "updatedAt": "2026-11-13T10:46:07.776Z",
    "builtAt": "",
    "notes": [
     {
@@ -161755,6 +161755,14 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-server-gate-one-session-per-build-no-duplicate-l--sully, own login copy)",
      "at": "2026-11-13T10:37:44.975Z"
+    },
+    {
+     "text": "Headless run axf-server-gate-one-session-per-build-no-duplicate-l--sully: brief only · start 11.3K tokens ($0.03) · cost $0.83 · 40 turns · 6 tools, MCP none",
+     "at": "2026-11-13T10:46:05.626Z"
+    },
+    {
+     "text": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
+     "at": "2026-11-13T10:46:07.776Z"
     }
    ],
    "approvals": [],
@@ -161775,15 +161783,22 @@
     "queuedAt": "2026-11-13T10:35:13.717Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-server-gate-one-session-per-build-no-duplicate-l--sully",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-13T10:37:41.673Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-13T10:46:04.955Z",
+     "exit": 0,
+     "outcome": "returned",
+     "stepsLeft": 1,
+     "account": "mossesx-max-",
+     "session": "axf-server-gate-one-session-per-build-no-duplicate-l--sully"
+    },
     "split": null,
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "2026-11-13T10:37:41.673Z",
     "planned": {
@@ -161919,7 +161934,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -182506,7 +182521,7 @@
    "title": "Fix: a build whose session finishes its phase (e.g. the Fable steps) with steps left goes back to Pending instead of the Queue, so the next phase never starts and slots sit empty. Send it back to the Queue and launch the next phase automatically",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -182514,7 +182529,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T10:35:03.675Z",
-   "updatedAt": "2026-11-13T10:45:37.868Z",
+   "updatedAt": "2026-11-13T10:46:10.014Z",
    "builtAt": "",
    "notes": [
     {
@@ -182536,6 +182551,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-fix-a-build-whose-session-finishes-its-phase-e-g--paulie, own login copy)",
      "at": "2026-11-13T10:43:24.079Z"
+    },
+    {
+     "text": "Session on mossesx-max- stopped on its own with 12 steps left: back in Pending for Brett.",
+     "at": "2026-11-13T10:46:10.014Z"
     },
     {
      "text": "Headless run axf-fix-a-build-whose-session-finishes-its-phase-e-g--paulie: brief only · start 11.3K tokens ($0.03) · cost $0.56 · 20 turns · 6 tools, MCP none",
@@ -182560,12 +182579,19 @@
     "queuedAt": "2026-11-13T10:35:20.815Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-fix-a-build-whose-session-finishes-its-phase-e-g--paulie",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-13T10:43:20.478Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-13T10:46:09.181Z",
+     "exit": 0,
+     "outcome": "returned",
+     "stepsLeft": 12,
+     "account": "mossesx-max-",
+     "session": "axf-fix-a-build-whose-session-finishes-its-phase-e-g--paulie"
+    },
     "split": {
      "at": "2026-11-13T10:37:10.223Z",
      "by": "orchestrator",
@@ -182574,7 +182600,7 @@
      "note": "Split by Claude into 12 steps (2 Fable)."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- stopped on its own with 12 steps left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "2026-11-13T10:43:20.478Z",
     "planned": {
