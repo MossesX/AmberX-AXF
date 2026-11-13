@@ -189,6 +189,48 @@
         "title": "Deleted builds",
         "text": "Opens the Deleted tab: every deleted build, kept for good and restorable.",
         "kind": "menu"
+      },
+      {
+        "kind": "button",
+        "target": "fill-now",
+        "title": "Fill now",
+        "text": "Runs one dispatcher round now: ready steps of running builds start in the free agent slots (then Queue builds, and Pending ones when auto-queue is on). From the console it is filed and runs within a minute. Same as the pipeline-fill-run command, `pipeline.mjs fill run` and the voice action."
+      },
+      {
+        "kind": "toggle",
+        "target": "fill-every-slot",
+        "title": "Fill every slot",
+        "text": "On (default): when slots are free, the independent steps of running builds (their dependsOn done, no file shared with a running step) run in parallel, each in its own step worktree, and merge back into the build branch. Anyone may switch it off; only Brett switches it on."
+      },
+      {
+        "kind": "menu",
+        "target": "max-parallel-steps-per-build",
+        "title": "Max parallel steps per build",
+        "text": "How many step sessions one build may run beside its own session (1-12, default 3; a build's own pipeline.maxParallel overrides it). Anyone may lower it; only Brett raises it."
+      },
+      {
+        "kind": "toggle",
+        "target": "auto-queue-pending-builds",
+        "title": "Auto-queue pending builds",
+        "text": "Off by default. On: when slots are still free after every ready step and Queue build has one, split Pending builds that clash with nothing running move to the Queue in priority order (note 'auto-queued: slots free', one alert). Owner-only: greyed out unless it is Brett's own console session."
+      },
+      {
+        "kind": "menu",
+        "target": "slots-strip-layout",
+        "title": "Slots strip layout",
+        "text": "How the Pipeline tab draws the agent slots: chips in a row, a grid, or a list (this browser)."
+      },
+      {
+        "kind": "button",
+        "target": "sequential",
+        "title": "Sequential",
+        "text": "Takes the step's dependency list away: it waits for the step before it, as builds always did, and never runs in parallel."
+      },
+      {
+        "kind": "button",
+        "target": "edit-step-deps",
+        "title": "Edit",
+        "text": "Opens the step's dependencies: pick the earlier steps it waits for (none = independent, it may run in parallel as soon as the build runs), then Save."
       }
     ],
     "intros": []

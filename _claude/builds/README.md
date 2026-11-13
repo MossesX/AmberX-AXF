@@ -115,6 +115,39 @@ The dispatcher's fill planner (`planFill`) uses them to put a ready step of a ru
 takes the next Queue build, and Pending builds last when auto-queue is on. Per build, `pipeline.maxParallel` caps its
 parallel sessions and `pipeline.budgetUsd` / `spentUsd` cap what its API runs may cost.
 
+## Pipeline: fill every slot (since Nov 13 2026)
+
+<!-- axf-plugin:build-orchestrator -->
+The dispatcher (`pipeline.mjs tick`, every minute) runs a **fill round** after its build launches: `planFill` puts a
+ready step of a running build in every free agent slot, then the next Queue build, then (auto-queue on) Pending builds.
+
+- **Parallel step session**: a step with a `dependsOn` list whose dependencies are done is claimed on the build
+  (builds-live carries the claim to main), gets its own worktree `/root/axf-builds/<build>--<step>` on branch
+  `<build-branch>--<step>`, and starts with `claude-headless.sh --step <step>`: a step-scoped brief (only that step, what
+  its dependencies produced, its files), its own agent slot and a per-step model gate. When it ticks the step, the
+  dispatcher merges the branch back (`git merge --no-ff` in the build's worktree, under the store lock); a conflict
+  sends the step back `blocked` to re-run after the steps it clashed with, in the build's own session (branch kept). A
+  step session that ends without ticking goes back to ready, at most 3 runs.
+- **Reconciler**: a step session that is no longer alive is reset to ready (worktree kept); a build counts as built only
+  when every done parallel step's branch has merged back.
+- **Settings** (Claude settings, Settings → Plugins → Build orchestrator → Fill every slot): `builds.fillSlots` (on;
+  anyone switches it off, only Brett on), `builds.maxParallelPerBuild` (3; only Brett raises it), `builds.autoQueuePending`
+  (off; owner-only).
+- **Splitter**: the Opus split asks for `dependsOn` (default: the previous step) and `files` per step; an unknown id, a
+  later step or a cycle refuses the split. Hand-written steps are left as they are.
+- **Migration**: `builds-store.mjs migrate-deps [--dry]` (run by the dispatcher's first tick) leaves older builds without
+  a list and stamps `meta.versions.stepDeps` in the journal; `verify` names missing dependencies and cycles.
+
+| Reach it | Read the slots and the plan | One round now | Set a step's dependsOn | Fill settings |
+|---|---|---|---|---|
+| REST (`/api/plugins/build-orchestrator`) | `GET /pipeline/fill[?build=]` | `POST /pipeline/fill/run` | `POST /builds/:id/steps/:step/deps` `{dependsOn}` | `POST /pipeline/fill/settings` (also `POST /pipeline/settings`) |
+| MCP (plugin commands) | `pipeline-fill-status` | `pipeline-fill-run` | `pipeline-step-deps` | `pipeline-fill-settings` |
+| CLI | `pipeline.mjs fill status [build]`, `agent-slots.mjs fill` | `pipeline.mjs fill run` | `pipeline.mjs fill deps <build> <step> <s1,s2\|none\|sequential>` | `pipeline.mjs fill set k=v…` |
+| Voice / console actions | `build-orchestrator.pipeline-fill-status[:build]` | `build-orchestrator.pipeline-fill-run` | `build-orchestrator.pipeline-step-deps:<build>/<step>/<deps>` | `build-orchestrator.pipeline-fill-settings:<k=v,…>` |
+| Deep link (`console_show`) | `build-orchestrator/pipeline/slots` | | `build-orchestrator/<id>/steps` | `settings/plugins/build-orchestrator#fill` |
+
+Auto-queue pending builds is refused on every path unless the request is Brett's own console session.
+
 ## Own Claude login per build (since Nov 5 2026)
 
 Every headless build runs on its own copy of a Claude login (`deploy/claude-login.mjs`, build `build-own-login`):
