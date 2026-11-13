@@ -786,8 +786,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-10 18:08 UTC · `shipped-features-show-each-landed-build-s-screen` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
-- 2026-11-13 12:49 UTC · `ui-review-gate-switch-default-off` s12 done (all) · orchestrator
 - 2026-11-13 13:23 UTC · `ui-review-gate-switch-default-off` s13 done (all) · orchestrator
 - 2026-11-13 13:23 UTC · `auto-recover-stuck-builds` s15 done, → built (all) · orchestrator
 - 2026-11-13 13:23 UTC · `auto-recover-stuck-builds` note (all) · orchestrator
@@ -1186,6 +1184,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 19:08 UTC · `orchestrator-settings-collapsible-split` branch claude/orchestrator-settings-collapsible-split (all) · builds-live
 - 2026-11-13 19:08 UTC · `ui-manager-floating-window-to-select-any` → running, note (all) · orchestrator
 - 2026-11-13 19:09 UTC · `decision-dialog-ui-review-other` s9 done, → built (all) · orchestrator
+- 2026-11-13 19:09 UTC · `ui-manager-floating-window-to-select-any` → queued, note (all) · pipeline
+- 2026-11-13 19:09 UTC · `console-android-app-thin-webview-wrapper` → queued, note (all) · pipeline
 
 ## Token passes (log)
 

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4756,
- "updatedAt": "2026-11-13T19:09:29.275Z",
+ "rev": 4757,
+ "updatedAt": "2026-11-13T19:09:44.386Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -199040,7 +199040,7 @@
    "title": "UI Manager: floating window to select any element in the console and edit all its tokens",
    "category": "",
    "detail": "UI Manager (console plugin), opens in a floating window.\n- Lets Brett select ANY UI element in the whole console (every screen, plugin, dialog, toolbar, tab group, banner, nav, widget, control).\n- Left: collapsible categorized tree of all elements. Top category 'On screen now' lists every element currently visible; these are references (like Windows shortcuts / symlinks) to the same element that also lives in its normal category - both point to one shared source, edit either and both change.\n- Selecting an element (or picking it on screen with an inspector/picker mode) opens it according to the chosen view (several views: expanding row, side panel, grid...). Default: an expanding row listing all its properties and every token it reads.\n- Each property/token is edited by choosing from predetermined, valid values supplied by the console/framework integration (token sets, skins, assets, enums, ranges) - never free text where a valid list exists; schema-validated; live preview; reset to skin/default; shows overrides.\n- Searchable, sortable, multi-filter lists everywhere (thousands of elements).\n- Full API: REST/MCP/CLI/voice/control@1 ('select the main toolbar, set its transparency to 80').\n- Elements register via the framework (manifest) so new plugins appear automatically.\n- Tests, help, Shipped features. Fable for the element registry/schema core, Opus for UI.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -199048,7 +199048,7 @@
    "pr": "#634",
    "priority": "P1",
    "createdAt": "2026-11-13T18:30:38.922Z",
-   "updatedAt": "2026-11-13T19:08:37.129Z",
+   "updatedAt": "2026-11-13T19:09:09.624Z",
    "builtAt": "",
    "notes": [
     {
@@ -199126,6 +199126,10 @@
     {
      "text": "Headless run axf-ui-manager-floating-window-to-select-any--gina: brief only · start 13.1K tokens ($0.07) · cost $12.14 · 135 turns · 6 tools, MCP none",
      "at": "2026-11-13T19:08:37.129Z"
+    },
+    {
+     "text": "Self-check: ui-manager-floating-window-to-select-any was marked running on mossesx-max- with no session: released and back in the Queue.",
+     "at": "2026-11-13T19:09:09.624Z"
     }
    ],
    "approvals": [],
@@ -199145,7 +199149,7 @@
    "pipeline": {
     "queuedAt": "2026-11-13T18:30:41.004Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
+    "account": "",
     "session": "",
     "slot": "",
     "model": "Fable",
@@ -199167,7 +199171,7 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"579404e5-a10e-46f4-a7ce-8a0d0f0faa44\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "Session on mossesx-max- stopped on its own with 13 steps left: back in Pending for Brett.",
+    "note": "released by the self-check (nothing ran): back in the Queue",
     "route": "",
     "dispatchedAt": "2026-11-13T18:53:11.620Z",
     "planned": {
@@ -199504,7 +199508,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -199520,7 +199524,7 @@
    "title": "Console Android app: thin WebView wrapper with overlay, replaces AmberX",
    "category": "",
    "detail": "New Android app that replaces AmberX: a thin native shell that runs the AXF console web app in a WebView. Not a native rewrite.\n- Native only where Android requires it: draw-over-apps floating toolbar/bubble (port from overlay-toolbar-v2), approvals bar, notifications, mic/recorder, open_url, wake, permissions. Everything else is the web console.\n- SAFE AREA (Brett's screenshots, Nov 13): AmberX drew its top bar under the status bar, so the clock, camera cutout, call pill, notification icons and signal sat on top of the title/search/menu. The wrapper must handle WindowInsets (status bar, display cutout, navigation bar, IME), pass them into the WebView as CSS env(safe-area-inset-*) with viewport-fit=cover, and the console must pad every top bar, banner, toolbar and bottom nav with them. Nothing is ever drawn under the clock, camera or notification shade. Test on cutout and punch-hole phones, portrait and landscape.\n- The floating toolbar expands to the full-screen console with the toolbar top-left, keeps the app in front, and pops up approvals with a link to the approvals page.\n- A JS bridge exposes the native features to the console (window.axfNative), with full API parity: REST/MCP/CLI/voice.\n- Auto-updates the web content from the live console. The shell rarely needs a rebuild.\n- Migrate AmberX's axHub device service (amberx.open_url, recorder) to the new app.\n- Tests, help, Shipped features.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -199528,7 +199532,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:38:53.122Z",
-   "updatedAt": "2026-11-13T19:03:23.736Z",
+   "updatedAt": "2026-11-13T19:09:10.673Z",
    "builtAt": "",
    "notes": [
     {
@@ -199590,6 +199594,10 @@
     {
      "text": "Self-check: console-android-app-thin-webview-wrapper was marked running on mossesx-max- with no session: released and back in the Queue.",
      "at": "2026-11-13T19:00:39.073Z"
+    },
+    {
+     "text": "Self-check: console-android-app-thin-webview-wrapper was marked running on mossesx-max- with no session: released and back in the Queue.",
+     "at": "2026-11-13T19:09:10.673Z"
     }
    ],
    "approvals": [],
@@ -199609,7 +199617,7 @@
    "pipeline": {
     "queuedAt": "2026-11-13T18:38:55.070Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
+    "account": "",
     "session": "",
     "slot": "",
     "model": "Opus",
@@ -199631,7 +199639,7 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"42523f40-ad67-40c7-a2c7-fbb1f4b209fc\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "Session on mossesx-max- ended (exit 3) with 10 steps left: back in the Queue (run 1).",
+    "note": "released by the self-check (nothing ran): back in the Queue",
     "route": "",
     "dispatchedAt": "2026-11-13T18:39:57.071Z",
     "planned": {
@@ -199880,7 +199888,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
