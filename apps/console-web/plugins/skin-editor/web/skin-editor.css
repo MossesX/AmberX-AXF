@@ -1,7 +1,8 @@
 /* Skin editor — layout only. Every colour, size, spacing, radius and border is a token; controls are framework controls. */
 .axp-skin { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); min-height: 0; }
 .axp-skin__bar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm); }
-.axp-skin__bar .fx-input { flex: 1 1 12em; min-width: 8em; }
+.axp-skin__bar > .fx-input { flex: 1 1 12em; min-width: 8em; }
+.axp-skin__bar > .fx-field { flex: 0 1 24em; min-width: 12em; }
 .axp-skin__grow { flex: 1 1 auto; }
 .axp-skin__body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(16em, 22em); gap: var(--fx-dens-gap-md); min-height: 0; align-items: start; }
 :root[data-fx-narrow] .axp-skin__body, :root[data-fx-small] .axp-skin__body, :root[data-fx-tiny] .axp-skin__body { grid-template-columns: minmax(0, 1fr); }
@@ -10,7 +11,7 @@
 .axp-skin__sandbox { position: relative; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface); padding: var(--fx-dens-pad-card); min-height: 16em; overflow: auto; max-height: 70vh; }
 .axp-skin__sandbox--picking { cursor: crosshair; }
 .axp-skin__sandbox--picking * { cursor: crosshair !important; }
-.axp-skin__sandbox-label { position: absolute; top: 0; right: 0; display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); padding: var(--fx-dens-gap-xs) var(--fx-dens-gap-sm); font-size: var(--fx-type-scale-xs); color: var(--fx-muted); background: var(--fx-surface2); border-bottom-left-radius: var(--fx-radius-sm); border-top-right-radius: var(--fx-radius-md); }
+.axp-skin__sandbox-label { display: flex; align-items: center; justify-content: flex-end; gap: var(--fx-dens-gap-xs); margin-bottom: var(--fx-dens-gap-sm); font-size: var(--fx-type-scale-xs); color: var(--fx-muted); }
 .axp-skin__sandbox-inner { min-height: 12em; }
 .axp-skin__sandbox-inner .fx-dialog { position: static; transform: none; margin: 0 auto; }
 .axp-skin__gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(14em, 1fr)); gap: var(--fx-dens-gap-md); }
