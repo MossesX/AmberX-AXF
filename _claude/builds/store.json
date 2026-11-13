@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4077,
- "updatedAt": "2026-11-13T06:58:29.530Z",
+ "rev": 4078,
+ "updatedAt": "2026-11-13T06:58:40.794Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -180162,7 +180162,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T06:57:42.497Z",
-   "updatedAt": "2026-11-13T06:58:27.919Z",
+   "updatedAt": "2026-11-13T06:58:30.761Z",
    "builtAt": "",
    "notes": [
     {
@@ -180174,12 +180174,16 @@
      "at": "2026-11-13T06:58:23.176Z"
     },
     {
-     "text": "Brett: also by how big a build is, and an on/off switch for the whole thing. Make it its own removable console plugin (settings screen, API and voice).",
-     "at": "2026-11-13T06:58:27.919Z"
-    },
-    {
      "text": "Brett: I need a way to set how many slots an individual build can take up. Per-build max slots setting (in the build's row/settings, API and voice), with a default.",
      "at": "2026-11-13T06:58:17.539Z"
+    },
+    {
+     "text": "Split asked for by console.",
+     "at": "2026-11-13T06:58:30.761Z"
+    },
+    {
+     "text": "Brett: also by how big a build is, and an on/off switch for the whole thing. Make it its own removable console plugin (settings screen, API and voice).",
+     "at": "2026-11-13T06:58:27.919Z"
     }
    ],
    "approvals": [],
@@ -180195,7 +180199,7 @@
     "runs": 0,
     "lastRun": null,
     "split": null,
-    "splitRequested": "",
+    "splitRequested": "2026-11-13T06:58:30.264Z",
     "note": "waiting for the split before it can start",
     "route": "",
     "dispatchedAt": "",

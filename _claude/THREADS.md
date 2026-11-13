@@ -781,7 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 22:15 UTC · `move-amberx-web-app-into-the-console-amberx-andr` → queued, note (all) · pipeline
 - 2026-11-12 22:15 UTC · `move-amberx-web-app-into-the-console-amberx-andr` → running, note (all) · pipeline
 - 2026-11-12 22:15 UTC · `move-amberx-web-app-into-the-console-amberx-andr` note (all) · orchestrator
 - 2026-11-12 22:16 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` added (2 steps) (all) · Claude (voice)
@@ -1181,6 +1180,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 06:57 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` added (0 steps) (all) · mcp
 - 2026-11-13 06:57 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` → queued, note (all) · console
 - 2026-11-13 06:58 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` note (all) · mcp
+- 2026-11-13 06:58 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` note (all) · console
 
 ## Token passes (log)
 
