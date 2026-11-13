@@ -30,7 +30,7 @@ const spec = read('framework/schemas/asset-types.json');
 eq([...CONTROL_OPS], ['list', 'get', 'set', 'reset', 'add', 'remove', 'act'], 'seven ops');
 eq(CONTROL_EFFECT.remove, 'destructive', 'remove is destructive');
 eq(CONTROL_EFFECT.act, 'write', 'act writes');
-ok(CONTROL_TARGET_IDS.length === 23, `23 targets (${CONTROL_TARGET_IDS.length})`);
+ok(CONTROL_TARGET_IDS.length === 24, `24 targets (${CONTROL_TARGET_IDS.length})`);
 eq(CONTROL_TARGET_IDS.slice(0, 13), ['tokens.theme', 'tokens.style', 'tokens.layout', 'tokens.typography', 'tokens.density', 'tokens.sizing', 'tokens.look', 'tokens.custom', 'tokens.slots', 'amberx.items', 'amberx.lists', 'planner.plans', 'planner.builds'], 'targets are append-only');
 for (const [id, t] of Object.entries(CONTROL_TARGETS)) {
   ok(/^(tokens|amberx|planner|console|pass|plugins)\.[a-z]+$/.test(id) && id.startsWith(`${t.domain}.`), `${id} is <domain>.<kind>`);
@@ -45,9 +45,14 @@ eq(Object.keys(CONTROL_PERMISSIONS).length, 19, 'six domains × read / write / d
 eq(controlPermission('plugins.reads', 'act', 'read'), 'control.plugins.read', 'a plugin read only reads');
 eq(controlPermission('plugins.commands', 'act', 'run'), 'control.plugins.write', 'a plugin command writes (a deleting one asks for more)');
 eq(CONTROL_TARGET_IDS.slice(20, 22), ['plugins.commands', 'plugins.reads'], 'plugin targets come after the console and pass ones (append-only)');
-eq(CONTROL_TARGET_IDS.slice(22), ['tokens.nav'], 'the nav-style token set comes after the plugin ones (append-only, build molly-nav-submenus)');
+eq(CONTROL_TARGET_IDS.slice(22, 23), ['tokens.nav'], 'the nav-style token set comes after the plugin ones (append-only, build molly-nav-submenus)');
+eq(CONTROL_TARGET_IDS.slice(23), ['console.control'], 'console control by address comes last (append-only, build full-api-and-voice-control)');
 eq(controlPermission('console.screens', 'act', 'open'), 'control.console.navigate', 'opening a screen only navigates');
 eq(controlPermission('console.nav', 'act', 'back'), 'control.console.navigate', 'going back only navigates');
+// console.control (console-control@1 by address): focus / scroll navigate, press / set / plugins write
+eq(controlPermission('console.control', 'act', 'focus'), 'control.console.navigate', 'focusing an address only navigates');
+eq(controlPermission('console.control', 'act', 'scroll'), 'control.console.navigate', 'scrolling only navigates');
+eq(controlPermission('console.control', 'act', 'press'), 'control.console.write', 'pressing a button by address writes');
 eq(controlPermission('console.actions', 'act', 'run'), 'control.console.write', 'running an action writes (the host may ask for more)');
 eq(controlPermission('console.actions', 'list'), 'control.console.read', 'listing reads');
 eq(controlPermission('amberx.items', 'act', 'done'), 'control.amberx.write', 'other acts keep the op effect');
