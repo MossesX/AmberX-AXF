@@ -1,6 +1,6 @@
 /** Shell chrome: application menu bar, toolbar, navigation menu, status bar. */
 import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent, type ReactNode } from 'react';
-import { ASSET_TYPES, assetTypeSpecs, FRAMEWORK_VERSION, type NavItem } from '../../core';
+import { ASSET_TYPES, assetTypeSpecs, CHROME_INSTANCE_KEY, FRAMEWORK_VERSION, chromeFieldValue, chromeLabelsHidden, type AxfRuntime, type ChromeType, type NavItem } from '../../core';
 import { useAsset, useAxfState, useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
 import { NavTree } from './NavTree';
@@ -13,6 +13,19 @@ import { WidgetView } from './Widgets';
 import { ArrangeBar, arrangedSide, useArrange } from './Arrange';
 import type { PlacedAttachment } from '../../core/engines/widgets';
 import type { CompiledMenuItem } from '../../core/engines/appmenu';
+
+/* ---------------- label visibility (tap-to-confirm follows it: core/engines/tapconfirm.ts) ---------------- */
+
+/** One field of the app's chrome instance (`axf.chrome.<type>.app`): its override, else the asset, else the default; live. */
+function useChromeField(rt: AxfRuntime, type: ChromeType, base: unknown, key: string): unknown {
+  const k = CHROME_INSTANCE_KEY(type, 'app');
+  const [, setTick] = useState(0);
+  useEffect(() => rt.settings.onChange(k, () => setTick((n) => n + 1)), [rt, k]);
+  return chromeFieldValue(type, base as Record<string, unknown> | null, rt.settings.get(k), key);
+}
+
+/** `data-axf-labels` for a chrome element: hidden = icons only (tap-to-confirm turns on by default). */
+export const labelsMark = (type: string, data: unknown): 'hidden' | 'shown' => (chromeLabelsHidden(type, data as Record<string, unknown>) ? 'hidden' : 'shown');
 
 /* ---------------- MenuBar (app-menu asset) ---------------- */
 
@@ -47,7 +60,7 @@ export function MenuBar() {
   };
 
   return (
-    <div className="fx-menubar" ref={ref} role="menubar" onKeyDown={onKey} data-fx-ctx-target="app-menu" data-fx-ctx-payload="app">
+    <div className="fx-menubar" ref={ref} role="menubar" onKeyDown={onKey} data-fx-ctx-target="app-menu" data-fx-ctx-payload="app" data-axf-labels="shown">
       <div className="fx-brand">
         {/* the app's own name (manifest): the branding package is one look shared by every app through axHub, so it gives the
             mark, not the name (Nov 1 2026: the console is GizmoX AI Studio, axHub web is AXHub, AmberX is AmberX) */}
@@ -102,7 +115,7 @@ export function Toolbar({ views }: { views: ViewMap }) {
   const fold = (on: boolean) => rt.setToolbarCollapsed(on);
   if (collapsible && collapsed) {
     return (
-      <div className={`fx-toolbar fx-toolbar--${tb.data.variant} is-collapsed`} data-align={tb.data.align} role="toolbar" aria-label="Toolbar (folded)" data-axf-toolbar="app">
+      <div className={`fx-toolbar fx-toolbar--${tb.data.variant} is-collapsed`} data-align={tb.data.align} role="toolbar" aria-label="Toolbar (folded)" data-axf-toolbar="app" data-axf-labels="hidden">
         <button type="button" className="fx-toolbtn fx-toolbar__fold" aria-label="Unfold the toolbar" aria-expanded="false" onClick={() => fold(false)}><Icon name="chevron-down" size={14} /></button>
       </div>
     );
@@ -131,7 +144,7 @@ export function Toolbar({ views }: { views: ViewMap }) {
   };
 
   return (
-    <div className={`fx-toolbar fx-toolbar--${tb.data.variant}${arrange.on ? ' is-arranging' : ''} ${brandHost.className}`.trim()} data-align={tb.data.align} role="toolbar" aria-label="Toolbar" data-axf-toolbar="app" data-fx-ctx-target="toolbar" data-fx-ctx-payload="app" data-axf-arrange-host="toolbar" data-fx-brand-mode={brandHost['data-fx-brand-mode']}>
+    <div className={`fx-toolbar fx-toolbar--${tb.data.variant}${arrange.on ? ' is-arranging' : ''} ${brandHost.className}`.trim()} data-align={tb.data.align} role="toolbar" aria-label="Toolbar" data-axf-toolbar="app" data-axf-labels={labelsMark('toolbar', tb.data)} data-fx-ctx-target="toolbar" data-fx-ctx-payload="app" data-axf-arrange-host="toolbar" data-fx-brand-mode={brandHost['data-fx-brand-mode']}>
       <ArrangeBar host="toolbar" label="toolbar" />
       {brand?.svg && <span className="fx-toolbar__brand"><BrandMark slot="toolbar" height={20} /></span>}
       {(arrange.on || widgets.start.length > 0) && <span className="fx-toolbar__widgets is-start" {...arrange.sideProps('start')}>{arrangedSide(arrange, 'start', widgets.start, drawWidget)}</span>}
@@ -224,7 +237,7 @@ export function AssetToolbar({ id, search, label = 'Page toolbar' }: { id: strin
   if (!tb) return null;
   const data = tb.data as { variant: string; align?: string; showSearch?: boolean; groups: ToolbarGroup[] };
   return (
-    <div className={`fx-toolbar fx-toolbar--${data.variant}`} data-align={data.align} role="toolbar" aria-label={label} data-axf-toolbar-asset={tb.id}>
+    <div className={`fx-toolbar fx-toolbar--${data.variant}`} data-align={data.align} role="toolbar" aria-label={label} data-axf-toolbar-asset={tb.id} data-axf-labels={labelsMark('toolbar', data)}>
       {data.groups.map((g) => <ToolbarGroupView key={g.id} group={g} variant={data.variant} />)}
       {data.showSearch && search}
     </div>
@@ -286,10 +299,12 @@ export function NavMenu({ views }: { views: ViewMap }) {
   const orient = layout.data.nav === 'top' ? 'horizontal' : 'vertical';
   // a nav-menu that opts in to nav-style@1 draws sub menus (NavTree); every other nav is drawn as it always was
   const navStyle = rt.navStyleData();
-  if (navStyle) return <NavTree sections={mergeNavSections([...nav.data.sections, ...rt.navExtras])} views={views} style={navStyle} orient={orient} header={nav.data.header} />;
+  // Labels (chrome-settings@1 nav-menu `showLabels`): off = icons only, and tap-to-confirm follows it
+  const labels = useChromeField(rt, 'nav-menu', nav.data, 'showLabels') === false ? 'hidden' : 'shown';
+  if (navStyle) return <NavTree sections={mergeNavSections([...nav.data.sections, ...rt.navExtras])} views={views} style={navStyle} orient={orient} header={nav.data.header} labels={labels} />;
 
   return (
-    <nav className={`fx-nav fx-nav--${nav.data.style}`} data-orient={orient} aria-label="Main" data-axf-nav="app" data-fx-ctx-target="nav" data-fx-ctx-payload="app">
+    <nav className={`fx-nav fx-nav--${nav.data.style}`} data-orient={orient} aria-label="Main" data-axf-nav="app" data-axf-labels={labels} data-fx-ctx-target="nav" data-fx-ctx-payload="app">
       {nav.data.header && orient === 'vertical' && <div className="fx-nav__header">{nav.data.header}</div>}
       {mergeNavSections([...nav.data.sections, ...rt.navExtras]).map((sec, i) => {
         const items = sec.items.filter((it) => views[it.view] && rt.gate(it.requires) !== 'hide' && !rt.takenByHost({ view: it.view }));

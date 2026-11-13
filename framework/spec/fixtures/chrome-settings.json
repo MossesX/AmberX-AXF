@@ -163,7 +163,8 @@
         },
         "default": "both",
         "group": "look",
-        "level": "simple"
+        "level": "simple",
+        "quick": true
       },
       {
         "key": "density",
@@ -285,7 +286,8 @@
         "default": "inherit",
         "group": "behaviour",
         "level": "simple",
-        "instanceOnly": true
+        "instanceOnly": true,
+        "quick": true
       }
     ],
     "toolbar": [
@@ -305,7 +307,8 @@
         },
         "default": "icons",
         "group": "look",
-        "level": "simple"
+        "level": "simple",
+        "quick": true
       },
       {
         "key": "align",
@@ -387,7 +390,8 @@
         "default": "inherit",
         "group": "behaviour",
         "level": "simple",
-        "instanceOnly": true
+        "instanceOnly": true,
+        "quick": true
       }
     ],
     "banner": [
@@ -492,6 +496,15 @@
         "level": "basic"
       },
       {
+        "key": "showLabels",
+        "label": "Labels",
+        "kind": "toggle",
+        "default": true,
+        "group": "look",
+        "level": "simple",
+        "quick": true
+      },
+      {
         "key": "navStyle",
         "label": "Sub menus (nav-style)",
         "kind": "toggle",
@@ -516,7 +529,8 @@
         "default": "inherit",
         "group": "behaviour",
         "level": "simple",
-        "instanceOnly": true
+        "instanceOnly": true,
+        "quick": true
       }
     ],
     "app-menu": [
@@ -563,7 +577,8 @@
         "default": "inherit",
         "group": "behaviour",
         "level": "simple",
-        "instanceOnly": true
+        "instanceOnly": true,
+        "quick": true
       }
     ],
     "context-menu": [

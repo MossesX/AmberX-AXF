@@ -12,8 +12,24 @@
 
 import { CHROME_INSTANCE_KEY, CHROME_TAP_FIELD } from './chrome-settings-rules.mjs';
 
+/**
+ * Where it reaches (Brett, Nov 12 2026: "tab group settings, navigation menus, application menus, toolbars, put tap to
+ * confirm option in all of them"): every chrome kind in TAP_KINDS; one item's choice is the `tapConfirm` field of its
+ * chrome settings dialog (`axf.chrome.<type>.<instance>`, chrome-settings@1).
+ *
+ * Default link to label visibility (Brett, Nov 2026, build tap-to-confirm-follows-label-visibility): an item that hides
+ * its labels (icons only) gets tap-to-confirm, because an icon alone doesn't say what it does; one that shows its labels
+ * doesn't. A manual setting always wins, most specific first:
+ *   1. the item's chrome instance field `tapConfirm` in `axf.chrome.<type>.<instance>` (its settings dialog): on / off
+ *   2. a toolbar's older override `axf.toolbar.<id>.tapConfirm` (Settings → Plugins → Toolbars): on / off
+ *   3. the switch for its kind (`axf.toolbars.tapConfirm` for toolbars, `axf.tapConfirm.<kind>` for the rest):
+ *      'on' / true = every one of that kind, 'off' / false = none
+ *   4. otherwise (unset, 'labels', 'inherit', 'auto'): on exactly where the labels are hidden
+ */
+
 /** Settings keys. The per-toolbar override lives at `${TAP_KEYS.perToolbar}<toolbar id>.tapConfirm`. */
 export const TAP_KEYS = {
+  /** the toolbars' mode: 'labels' (default) | 'on' | 'off'; the older booleans read as on / off */
   enabled: 'axf.toolbars.tapConfirm',
   armMs: 'axf.toolbars.armMs',
   perToolbar: 'axf.toolbar.',
@@ -22,14 +38,39 @@ export const TAP_KEYS = {
 export const TAP_ARM_DEFAULT_MS = 3000;
 export const TAP_ARM_RANGE: readonly [number, number] = [1000, 10000];
 
-/** Per-toolbar override, chosen in that toolbar's settings. */
+/** One item's own choice (its settings dialog, or a toolbar's override): 'inherit' follows its kind. */
 export const TAP_OVERRIDES = ['inherit', 'on', 'off'] as const;
 export type TapOverride = (typeof TAP_OVERRIDES)[number];
+
+/** A kind's mode: follow label visibility (default), or force on / off for every one of that kind. */
+export const TAP_MODES = ['labels', 'on', 'off'] as const;
+export type TapMode = (typeof TAP_MODES)[number];
+export const TAP_MODE_LABELS: Record<TapMode, string> = { labels: 'Follow labels', on: 'Always', off: 'Never' };
+
+/** Every kind of chrome that taps to confirm; the names are the chrome-settings@1 types. */
+export const TAP_KINDS = ['toolbar', 'tab-group', 'nav-menu', 'app-menu', 'context-menu', 'banner'] as const;
+export type TapKind = (typeof TAP_KINDS)[number];
+export const TAP_KIND_LABELS: Record<TapKind, string> = { toolbar: 'Toolbars', 'tab-group': 'Tabs and tab groups', 'nav-menu': 'Navigation menus', 'app-menu': 'Application menus', 'context-menu': 'Context menus', banner: 'Banners' };
+export const isTapKind = (v: unknown): v is TapKind => typeof v === 'string' && (TAP_KINDS as readonly string[]).includes(v);
+
+/** The chrome kinds tap-to-confirm reaches (same list as TAP_KINDS), and the instance field that overrides it. */
+export const TAP_CHROME_TYPES = TAP_KINDS;
+export type TapChromeType = TapKind;
+export const TAP_FIELD = CHROME_TAP_FIELD;
+/** The instance field's values (chrome-settings@1 CHROME_TAP_OPTIONS): 'inherit' follows the kind's mode / labels. */
+export const TAP_FIELD_OPTIONS = TAP_OVERRIDES;
+export type TapFieldValue = TapOverride;
+
+/** Which of the settings decided (shown next to the switch, and readable through the API). */
+export type TapSource = 'toolbar' | 'instance' | 'global' | 'labels';
 
 /** How the press that produced a click was made. Only `touch` arms. */
 export type TapPointer = 'touch' | 'mouse' | 'pen' | 'keyboard';
 
-export interface TapConfig { enabled: boolean; armMs: number }
+export interface TapConfig { enabled: boolean; armMs: number; source?: TapSource }
+
+/** Where a tap landed: the chrome kind + instance (for its settings field) and whether its labels are hidden. */
+export interface TapScope { type?: TapKind; instance?: string; labelsHidden?: boolean }
 
 export interface TapState {
   /** The armed button (toolbar id + button key), or null. */
@@ -54,39 +95,59 @@ export function tapArmMs(v: unknown): number {
   return Math.round(Math.min(TAP_ARM_RANGE[1], Math.max(TAP_ARM_RANGE[0], n)));
 }
 
-/** Global settings plus one toolbar's override → whether tap-to-confirm is on for that toolbar, and its window. */
-export function tapConfig(get: (key: string) => unknown, toolbarId: string): TapConfig {
-  const global = get(TAP_KEYS.enabled) !== false; // on unless switched off
-  const raw = get(`${TAP_KEYS.perToolbar}${toolbarId}.tapConfirm`);
-  const override: TapOverride = (TAP_OVERRIDES as readonly string[]).includes(raw as string) ? (raw as TapOverride) : 'inherit';
-  return { enabled: override === 'inherit' ? global : override === 'on', armMs: tapArmMs(get(TAP_KEYS.armMs)) };
+/** A kind's mode from its stored value: true / 'on' → on, false / 'off' → off, anything else → follow labels. */
+export function tapMode(v: unknown): TapMode {
+  if (v === true || v === 'on') return 'on';
+  if (v === false || v === 'off') return 'off';
+  return 'labels';
+}
+
+/** The switch for a whole kind (toolbars keep their original key). */
+export const tapKindKey = (kind: TapKind): string => (kind === 'toolbar' ? TAP_KEYS.enabled : `axf.tapConfirm.${kind}`);
+
+/** The settings key of a chrome instance's overrides (chrome-settings@1 CHROME_INSTANCE_KEY). */
+export const tapInstanceKey = (type: string, instance: string): string => CHROME_INSTANCE_KEY(type, instance);
+
+/** A chrome instance's manual tap-to-confirm field ('on' / 'off'), or null when it follows ('inherit' / unset). */
+export function tapInstanceField(raw: unknown): 'on' | 'off' | null {
+  const v = raw && typeof raw === 'object' && !Array.isArray(raw) ? (raw as Record<string, unknown>)[TAP_FIELD] : undefined;
+  return v === 'on' || v === 'off' ? v : null;
 }
 
 /**
- * Every kind of chrome that taps to confirm (Brett, Nov 12 2026: "tab group settings, navigation menus, application
- * menus, toolbars, put tap to confirm option in all of them"). The names are the chrome-settings@1 types, so one
- * item's choice is the `tapConfirm` field of its chrome settings dialog (`axf.chrome.<type>.<instance>`).
+ * The chrome instance field, a toolbar's older override, the kind's mode and the scope's label visibility → whether
+ * tap-to-confirm is on there, its window, and which of them decided. `scope.type` unset = a toolbar;
+ * `scope.labelsHidden` unset counts as shown.
  */
-export const TAP_KINDS = ['toolbar', 'tab-group', 'nav-menu', 'app-menu', 'context-menu', 'banner'] as const;
-export type TapKind = (typeof TAP_KINDS)[number];
-export const TAP_KIND_LABELS: Record<TapKind, string> = { toolbar: 'Toolbars', 'tab-group': 'Tabs and tab groups', 'nav-menu': 'Navigation menus', 'app-menu': 'Application menus', 'context-menu': 'Context menus', banner: 'Banners' };
-export const isTapKind = (v: unknown): v is TapKind => typeof v === 'string' && (TAP_KINDS as readonly string[]).includes(v);
-
-/** The switch for a whole kind (toolbars keep their original key). On unless switched off. */
-export const tapKindKey = (kind: TapKind): string => (kind === 'toolbar' ? TAP_KEYS.enabled : `axf.tapConfirm.${kind}`);
-
-const overrideOf = (raw: unknown): TapOverride => ((TAP_OVERRIDES as readonly string[]).includes(raw as string) ? (raw as TapOverride) : 'inherit');
+export function tapConfig(get: (key: string) => unknown, toolbarId: string, scope: TapScope = {}): TapConfig {
+  const armMs = tapArmMs(get(TAP_KEYS.armMs));
+  const kind: TapKind = scope.type ?? 'toolbar';
+  if (scope.instance) {
+    const f = tapInstanceField(get(tapInstanceKey(kind, scope.instance)));
+    if (f) return { enabled: f === 'on', armMs, source: 'instance' };
+  }
+  const raw = kind === 'toolbar' && toolbarId ? get(`${TAP_KEYS.perToolbar}${toolbarId}.tapConfirm`) : null;
+  if (raw === 'on' || raw === 'off') return { enabled: raw === 'on', armMs, source: 'toolbar' };
+  const mode = tapMode(get(tapKindKey(kind)));
+  if (mode !== 'labels') return { enabled: mode === 'on', armMs, source: 'global' };
+  return { enabled: scope.labelsHidden === true, armMs, source: 'labels' };
+}
 
 /**
- * One item's config: its own choice (the `tapConfirm` field of its chrome settings, `axf.chrome.<kind>.<instance>`;
- * a toolbar also honours its older `axf.toolbar.<id>.tapConfirm`), else the switch for its kind.
+ * One item's config by kind and chrome instance (the settings dialog's id). A toolbar also honours its older
+ * `axf.toolbar.<id>.tapConfirm`. `labelsHidden` = whether that item shows icons only right now.
  */
-export function tapConfigFor(get: (key: string) => unknown, kind: TapKind, instance: string): TapConfig {
-  const inst = get(CHROME_INSTANCE_KEY(kind, instance));
-  let own = overrideOf(inst && typeof inst === 'object' ? (inst as Record<string, unknown>)[CHROME_TAP_FIELD] : undefined);
-  if (own === 'inherit' && kind === 'toolbar') own = overrideOf(get(`${TAP_KEYS.perToolbar}${toolbarIdOf({ id: instance })}.tapConfirm`));
-  const global = get(tapKindKey(kind)) !== false;
-  return { enabled: own === 'inherit' ? global : own === 'on', armMs: tapArmMs(get(TAP_KEYS.armMs)) };
+export function tapConfigFor(get: (key: string) => unknown, kind: TapKind, instance: string, labelsHidden = false): TapConfig {
+  return tapConfig(get, kind === 'toolbar' ? toolbarIdOf({ id: instance }) : '', { type: kind, instance, labelsHidden });
+}
+
+/** Whether a chrome kind's asset data hides its labels (icons only); the renderers mark this as data-axf-labels. */
+export function chromeLabelsHidden(type: string, data: Record<string, unknown> | null | undefined): boolean {
+  const d = data ?? {};
+  if (type === 'toolbar') return (d.variant ?? 'icons') === 'icons';
+  if (type === 'tab-group') return d.display === 'icons';
+  if (type === 'nav-menu') return d.showLabels === false;
+  return false; // menus and banners always show their words: they follow labels as "shown" (off) unless set
 }
 
 /** The tip under an armed item (Brett, Addendum 2: the first tap shows what it is and "tap to confirm"). */
