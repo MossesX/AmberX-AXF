@@ -785,7 +785,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 11:29 UTC · `overlay-opens-pages-the-floating-toolbar-expands` branch claude/overlay-opens-pages-the-floating-toolbar-expands (all) · pipeline
 - 2026-11-13 11:29 UTC · `overlay-opens-pages-the-floating-toolbar-expands` note (all) · orchestrator
 - 2026-11-13 11:29 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` s26 done (all) · orchestrator
 - 2026-11-13 11:29 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` note (all) · orchestrator
@@ -1185,6 +1184,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 18:17 UTC · `new-asset-type-animated-expanding-row` → running, note (all) · pipeline
 - 2026-11-13 18:17 UTC · `new-asset-type-animated-expanding-row` branch claude/new-asset-type-animated-expanding-row (all) · pipeline
 - 2026-11-13 18:17 UTC · `new-asset-type-animated-expanding-row` note (all) · orchestrator
+- 2026-11-13 18:18 UTC · `vps-builds-get-console-token-ui-review` s1 done, → running (all) · orchestrator
 
 ## Token passes (log)
 

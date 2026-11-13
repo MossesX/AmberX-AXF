@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4618,
- "updatedAt": "2026-11-13T18:17:46.844Z",
+ "rev": 4619,
+ "updatedAt": "2026-11-13T18:18:32.933Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -197385,7 +197385,7 @@
    "title": "VPS builds get the console token so UI Review works, banner alert when it fails",
    "category": "",
    "detail": "Headless builds on the VPS have no AXF_TOKEN / AXF_CONSOLE_URL, so UI Review submits are refused and screenshots stay stuck in worktrees, silently.\n1. Launcher (claude-headless.sh / dispatcher / agent-slots) passes AXF_CONSOLE_URL and a scoped build console token (vault, never logged) into every build session.\n2. Headless screenshot tool authenticates to console/axHub (fix 'Waiting for axHub' and 401).\n3. Any failed UI Review submit, missing token, or stuck shots raises a banner alert immediately (errors banner).\n4. Re-submit stuck shots found in /root/axf-builds and /root/axf-review-shots.\n5. Remove the duplicate pending item builds-get-console-token-banner-alert (filed without an id).\n6. Tests, Shipped features.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -197393,7 +197393,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T18:13:51.274Z",
-   "updatedAt": "2026-11-13T18:17:00.636Z",
+   "updatedAt": "2026-11-13T18:18:30.978Z",
    "builtAt": "",
    "notes": [
     {
@@ -197448,13 +197448,7 @@
     "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-13T18:16:40.268Z",
-     "why": "subscription account mossesx-max-"
-    },
+    "planned": null,
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -197477,12 +197471,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T18:18:30.978Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T18:16:38.686Z",
-     "updatedAt": "2026-11-13T18:16:38.686Z"
+     "updatedAt": "2026-11-13T18:18:31.211Z"
     },
     {
      "id": "s2",
