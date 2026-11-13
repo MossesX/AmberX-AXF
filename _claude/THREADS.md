@@ -781,27 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 21:47 UTC · `tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch` note (all) · pipeline
-- 2026-11-12 21:48 UTC · `tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch` note (all) · pipeline
-- 2026-11-12 21:49 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` added (3 steps) (all) · Claude (voice)
-- 2026-11-12 21:49 UTC · `tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch` note (all) · pipeline
-- 2026-11-12 21:49 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` → queued, note (all) · console
-- 2026-11-12 21:50 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` note (all) · pipeline
-- 2026-11-12 21:50 UTC · `new-project-wizard-name-linked-repo-required-starter-code-skin-accounts` → queued, note (all) · console
-- 2026-11-12 21:50 UTC · `projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone` → queued, note (all) · console
-- 2026-11-12 21:51 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` note (all) · pipeline
-- 2026-11-12 21:51 UTC · `new-project-wizard-name-linked-repo-required-starter-code-skin-accounts` → running, note (all) · pipeline
-- 2026-11-12 21:51 UTC · `new-project-wizard-name-linked-repo-required-starter-code-skin-accounts` branch claude/new-project-wizard-name-linked-repo-required-starter-code-skin-accounts (all) · pipeline
-- 2026-11-12 21:51 UTC · `new-project-wizard-name-linked-repo-required-starter-code-skin-accounts` note (all) · orchestrator
-- 2026-11-12 21:51 UTC · `projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone` note (all) · pipeline
-- 2026-11-12 21:51 UTC · `one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx` added (5 steps) (all) · Claude (voice)
-- 2026-11-12 21:51 UTC · `one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx` → queued, note (all) · console
-- 2026-11-12 21:52 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` note (all) · pipeline
-- 2026-11-12 21:52 UTC · `projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone` note (all) · pipeline
-- 2026-11-12 21:52 UTC · `one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx` → running, note (all) · pipeline
-- 2026-11-12 21:52 UTC · `one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx` branch claude/one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx (all) · pipeline
-- 2026-11-12 21:52 UTC · `one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx` note (all) · orchestrator
-- 2026-11-12 21:53 UTC · `projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone` note (all) · pipeline
 - 2026-11-12 21:53 UTC · `server-every-failed-merge-alerts-brett-immediately-and-retries-by-itself-until` added (3 steps) (all) · Claude (voice)
 - 2026-11-12 21:53 UTC · `server-every-failed-merge-alerts-brett-immediately-and-retries-by-itself-until` → queued, note (all) · console
 - 2026-11-12 21:54 UTC · `move-amberx-web-app-into-the-console-amberx-andr` note (all) · console
@@ -1181,6 +1160,27 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 06:25 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` → running, note (all) · pipeline
 - 2026-11-13 06:25 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` branch claude/merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me (all) · pipeline
 - 2026-11-13 06:27 UTC · `skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga` note (all) · orchestrator
+- 2026-11-13 06:27 UTC · `skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga` → running, note (all) · pipeline
+- 2026-11-13 06:27 UTC · `skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga` branch claude/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga (all) · pipeline
+- 2026-11-13 06:29 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` s6 done (all) · orchestrator
+- 2026-11-13 06:29 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` s7 done (all) · orchestrator
+- 2026-11-13 06:30 UTC · `professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e` note (all) · orchestrator
+- 2026-11-13 06:30 UTC · `professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e` → queued, note (all) · pipeline
+- 2026-11-13 06:30 UTC · `professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e` → running, note (all) · pipeline
+- 2026-11-13 06:31 UTC · `amberx-approval-pop-up-not-showing-only-the-android-notification` → complete, merged, note (all) · reconciler
+- 2026-11-13 06:31 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` → complete, merged, note (all) · reconciler
+- 2026-11-13 06:31 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` merged, note (all) · reconciler
+- 2026-11-13 06:31 UTC · `everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the` → complete, merged, note (all) · reconciler
+- 2026-11-13 06:31 UTC · `full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app` → complete, merged, note (all) · reconciler
+- 2026-11-13 06:31 UTC · `10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less` → complete, merged, note (all) · reconciler
+- 2026-11-13 06:31 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` s8 done, note (all) · orchestrator
+- 2026-11-13 06:32 UTC · `amberx-approval-pop-up-not-showing-only-the-android-notification` note (all) · orchestrator
+- 2026-11-13 06:32 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` note (all) · orchestrator
+- 2026-11-13 06:32 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` note (all) · orchestrator
+- 2026-11-13 06:33 UTC · `everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the` note (all) · orchestrator
+- 2026-11-13 06:33 UTC · `full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app` note (all) · orchestrator
+- 2026-11-13 06:33 UTC · `10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less` note (all) · orchestrator
+- 2026-11-13 06:34 UTC · `professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e` s1 done (all) · orchestrator
 
 ## Token passes (log)
 

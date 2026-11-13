@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4020,
- "updatedAt": "2026-11-13T06:27:09.250Z",
+ "rev": 4034,
+ "updatedAt": "2026-11-13T06:34:35.884Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -170610,15 +170610,16 @@
    "title": "AmberX: approval pop-up not showing, only the Android notification",
    "category": "bug",
    "detail": "Brett said: \"Why isn't the approval thing popping up on my phone? Only the notification is. The Android notification.\"\n\nWhen axHub holds a vps.run call on the veto countdown, AmberX shows only the Android notification; the in-app approval pop-up (approve/deny with the command) does not appear. Find why (Follow Amber / approvals-banner relay, AXPP event, background start limits), fix it so the pop-up appears over any screen like before, keep the notification, add a test, and confirm on the phone.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/amberx-approval-pop-up-not-showing-only-the-android-notification",
    "pr": "#533",
+   "mergedAt": "2026-11-13T06:14:16Z",
    "priority": "P0",
    "createdAt": "2026-11-12T15:33:08.904Z",
-   "updatedAt": "2026-11-13T00:51:05.153Z",
+   "updatedAt": "2026-11-13T06:32:06Z",
    "builtAt": "2026-11-13T00:50:28.107Z",
    "notes": [
     {
@@ -170640,6 +170641,14 @@
     {
      "text": "Session axf-amberx-approval-pop-up-not-showing-only-the-andr--earl on mossesx-max- ended (exit 0); the build was already built.",
      "at": "2026-11-13T00:51:05.153Z"
+    },
+    {
+     "text": "Reconciler: PR #533 merged",
+     "at": "2026-11-13T06:31:06.529Z"
+    },
+    {
+     "text": "Shipped manifest sm-amberx-approval-pop-up-not-showing-only-the-android-notification rev 1 sent to Shipped features (orchestrator): PR #533, 11 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-13T06:32:06Z"
     }
    ],
    "approvals": [],
@@ -170690,6 +170699,12 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "shipped": {
+    "id": "sm-amberx-approval-pop-up-not-showing-only-the-android-notification",
+    "rev": 1,
+    "at": "2026-11-13T06:32:06Z",
+    "landedCommit": ""
    },
    "steps": [
     {
@@ -170745,7 +170760,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -173592,15 +173607,16 @@
    "title": "One account picker: choose the single Claude account the console and VPS builds use",
    "category": "accounts",
    "detail": "Brett said: \"I need to be able to select in the console what account the console uses and the VPS uses for builds. I need to just be able to select one and that's it, just one.\"",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds",
    "pr": "#543",
+   "mergedAt": "2026-11-13T06:14:22Z",
    "priority": "P0",
    "createdAt": "2026-11-12T21:49:00.405Z",
-   "updatedAt": "2026-11-13T02:06:04.112Z",
+   "updatedAt": "2026-11-13T06:32:08Z",
    "builtAt": "2026-11-13T02:06:04.112Z",
    "notes": [
     {
@@ -173682,6 +173698,14 @@
     {
      "text": "PR #543 (draft). Picker, REST/MCP/CLI/voice, launcher and dispatcher done; tests pass. UI Review shots still missing: the scratch console can't reach axHub from the build sandbox, so captures only showed 'Waiting for axHub'. Take desktop + phone shots of Settings → Claude accounts → One account and the banner dialog, submit to UI Review, then mark the PR ready.",
      "at": "2026-11-13T02:05:36.975Z"
+    },
+    {
+     "text": "Reconciler: PR #543 merged",
+     "at": "2026-11-13T06:31:06.529Z"
+    },
+    {
+     "text": "Shipped manifest sm-one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds rev 1 sent to Shipped features (orchestrator): PR #543, 20 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-13T06:32:08Z"
     }
    ],
    "approvals": [],
@@ -173732,6 +173756,12 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "shipped": {
+    "id": "sm-one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds",
+    "rev": 1,
+    "at": "2026-11-13T06:32:08Z",
+    "landedCommit": ""
    },
    "steps": [
     {
@@ -173809,7 +173839,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -174439,9 +174469,10 @@
    "pendingId": "",
    "branch": "claude/fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o",
    "pr": "#532",
+   "mergedAt": "2026-11-13T06:23:47Z",
    "priority": "P0",
    "createdAt": "2026-11-12T22:16:05.972Z",
-   "updatedAt": "2026-11-13T06:23:33.887Z",
+   "updatedAt": "2026-11-13T06:32:10Z",
    "builtAt": "",
    "notes": [
     {
@@ -174515,6 +174546,14 @@
     {
      "text": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
      "at": "2026-11-13T06:23:33.887Z"
+    },
+    {
+     "text": "Reconciler: PR #532 merged",
+     "at": "2026-11-13T06:31:06.529Z"
+    },
+    {
+     "text": "Shipped manifest sm-fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o rev 1 sent to Shipped features (orchestrator): PR #532, 88 file(s), 0 test line(s), 1 open.",
+     "at": "2026-11-13T06:32:10Z"
     }
    ],
    "approvals": [],
@@ -174565,6 +174604,12 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "shipped": {
+    "id": "sm-fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o",
+    "rev": 1,
+    "at": "2026-11-13T06:32:10Z",
+    "landedCommit": ""
    },
    "steps": [
     {
@@ -174620,7 +174665,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 26,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -175987,7 +176032,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-12T23:32:23.494Z",
-   "updatedAt": "2026-11-13T06:15:58.468Z",
+   "updatedAt": "2026-11-13T06:34:33.040Z",
    "builtAt": "",
    "notes": [
     {
@@ -176011,6 +176056,14 @@
      "at": "2026-11-13T06:14:22.635Z"
     },
     {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-professional-skins-that-rebuild-the-whole-app-fa--sully.",
+     "at": "2026-11-13T06:14:48.710Z"
+    },
+    {
+     "text": "Dispatcher launched two Fable sessions on this build in the same worktree (Snap Sully 06:14, Landin' Lenny 06:16); both edited the same files. Sully stopped Lenny's process group at 06:31 and continues alone. Needs a dispatcher fix: one build, one session.",
+     "at": "2026-11-13T06:30:09.548Z"
+    },
+    {
      "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-professional-skins-that-rebuild-the-whole-app-fa--lenny.",
      "at": "2026-11-13T06:15:42.947Z"
     },
@@ -176019,8 +176072,16 @@
      "at": "2026-11-13T06:15:58.468Z"
     },
     {
-     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-professional-skins-that-rebuild-the-whole-app-fa--sully.",
-     "at": "2026-11-13T06:14:48.710Z"
+     "text": "Session on mossesx-max- ended (exit 1) with 17 steps left: back in the Queue (run 1).",
+     "at": "2026-11-13T06:30:12.839Z"
+    },
+    {
+     "text": "Started run 2 on mossesx-max- (Fable, Phase 1): axf-professional-skins-that-rebuild-the-whole-app-fa--sully-063028.",
+     "at": "2026-11-13T06:30:29.417Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-professional-skins-that-rebuild-the-whole-app-fa--sully-063028, own login copy)",
+     "at": "2026-11-13T06:30:32.292Z"
     }
    ],
    "approvals": [],
@@ -176041,10 +176102,10 @@
     "queuedAt": "2026-11-13T06:12:08.295Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-professional-skins-that-rebuild-the-whole-app-fa--lenny",
+    "session": "axf-professional-skins-that-rebuild-the-whole-app-fa--sully",
     "slot": "",
     "model": "Fable",
-    "launchedAt": "2026-11-13T06:15:37.493Z",
+    "launchedAt": "2026-11-13T06:14:47.983Z",
     "runs": 1,
     "lastRun": null,
     "split": {
@@ -176057,7 +176118,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-13T06:15:37.493Z",
+    "dispatchedAt": "2026-11-13T06:14:47.983Z",
     "planned": {
      "model": "Fable",
      "account": "mossesx-max-",
@@ -176066,7 +176127,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-13T06:15:37.493Z",
+    "pickedAt": "2026-11-13T06:14:47.983Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -176091,12 +176152,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T06:34:33.040Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T06:14:22.635Z",
-     "updatedAt": "2026-11-13T06:14:22.635Z"
+     "updatedAt": "2026-11-13T06:34:33.318Z"
     },
     {
      "id": "s2",
@@ -176525,7 +176586,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -176541,15 +176602,16 @@
    "title": "Everything on tokens before skins: fix the 27 open check-theme problems and the 1 check-controls finding (apps/player Home.tsx raw button), burn down all 1,209 frozen findings in framework/spec/conform-baseline.json (use framework/cli/scale-adopt.mjs, then hand-fix the rest) and empty the baseline, ",
    "category": "",
    "detail": "",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the",
    "pr": "#538",
+   "mergedAt": "2026-11-13T06:14:12Z",
    "priority": "P0",
    "createdAt": "2026-11-12T23:40:00.983Z",
-   "updatedAt": "2026-11-13T01:48:25.940Z",
+   "updatedAt": "2026-11-13T06:33:04Z",
    "builtAt": "2026-11-13T01:48:25.940Z",
    "notes": [
     {
@@ -176607,6 +176669,14 @@
     {
      "text": "Headless run axf-everything-on-tokens-before-skins-fix-the-27-ope--paulie: brief only · start 11.1K tokens ($0.03) · cost $2.40 · 67 turns · 6 tools, MCP none",
      "at": "2026-11-13T01:48:25.940Z"
+    },
+    {
+     "text": "Reconciler: PR #538 merged",
+     "at": "2026-11-13T06:31:06.529Z"
+    },
+    {
+     "text": "Shipped manifest sm-everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the rev 1 sent to Shipped features (orchestrator): PR #538, 67 file(s), 1 test line(s), 2 open.",
+     "at": "2026-11-13T06:33:04Z"
     }
    ],
    "approvals": [],
@@ -176658,6 +176728,12 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "shipped": {
+    "id": "sm-everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the",
+    "rev": 1,
+    "at": "2026-11-13T06:33:04Z",
+    "landedCommit": ""
    },
    "steps": [
     {
@@ -176716,7 +176792,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -177132,15 +177208,16 @@
    "title": "Full voice and AI control of EVERYTHING in the console, before the Android app: every action, setting, tab, dialog, menu, list, item and field gets an API (REST, MCP, CLI, voice). Add find-by-content deep links down to the item: 'jump to the plan about X, the step that mentions Y' searches inside pl",
    "category": "",
    "detail": "",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app",
    "pr": "#540",
+   "mergedAt": "2026-11-13T06:14:28Z",
    "priority": "P0",
    "createdAt": "2026-11-13T00:42:24.765Z",
-   "updatedAt": "2026-11-13T01:55:36.584Z",
+   "updatedAt": "2026-11-13T06:33:06Z",
    "builtAt": "2026-11-13T01:55:36.584Z",
    "notes": [
     {
@@ -177190,6 +177267,14 @@
     {
      "text": "Headless run axf-full-voice-and-ai-control-of-everything-in-the-c--sully: brief only · start 11.1K tokens ($0.03) · cost $3.91 · 86 turns · 6 tools, MCP none",
      "at": "2026-11-13T01:55:36.584Z"
+    },
+    {
+     "text": "Reconciler: PR #540 merged",
+     "at": "2026-11-13T06:31:06.529Z"
+    },
+    {
+     "text": "Shipped manifest sm-full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app rev 1 sent to Shipped features (orchestrator): PR #540, 42 file(s), 4 test line(s), 3 open.",
+     "at": "2026-11-13T06:33:06Z"
     }
    ],
    "approvals": [],
@@ -177241,6 +177326,12 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "shipped": {
+    "id": "sm-full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app",
+    "rev": 1,
+    "at": "2026-11-13T06:33:06Z",
+    "landedCommit": ""
    },
    "steps": [
     {
@@ -177321,7 +177412,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -177337,15 +177428,16 @@
    "title": "10-minute steps: the splitter cuts every build into steps of 10 minutes or less (was 30). Steps are checkpoints inside ONE session: the session ticks each one done and commits as it goes, so nothing is lost if it dies, and there is no new prompt or relaunch per step. Update the splitter prompt, the ",
    "category": "",
    "detail": "",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less",
    "pr": "#535",
+   "mergedAt": "2026-11-13T06:14:32Z",
    "priority": "P0",
    "createdAt": "2026-11-13T01:09:38.633Z",
-   "updatedAt": "2026-11-13T01:20:53.464Z",
+   "updatedAt": "2026-11-13T06:33:07Z",
    "builtAt": "2026-11-13T01:20:53.464Z",
    "notes": [
     {
@@ -177367,6 +177459,14 @@
     {
      "text": "Headless run axf-10-minute-steps-the-splitter-cuts-every-build-in--gina: brief only · start 11.2K tokens ($0.03) · cost $2.05 · 62 turns · 6 tools, MCP none",
      "at": "2026-11-13T01:20:53.464Z"
+    },
+    {
+     "text": "Reconciler: PR #535 merged",
+     "at": "2026-11-13T06:31:06.529Z"
+    },
+    {
+     "text": "Shipped manifest sm-10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less rev 1 sent to Shipped features (orchestrator): PR #535, 23 file(s), 5 test line(s), 4 open.",
+     "at": "2026-11-13T06:33:07Z"
     }
    ],
    "approvals": [],
@@ -177410,6 +177510,12 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "shipped": {
+    "id": "sm-10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less",
+    "rev": 1,
+    "at": "2026-11-13T06:33:07Z",
+    "landedCommit": ""
    },
    "steps": [
     {
@@ -177512,7 +177618,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -177536,7 +177642,7 @@
    "pr": "#547",
    "priority": "P0",
    "createdAt": "2026-11-13T01:13:53.464Z",
-   "updatedAt": "2026-11-13T06:23:48.776Z",
+   "updatedAt": "2026-11-13T06:31:38.011Z",
    "builtAt": "",
    "notes": [
     {
@@ -177602,6 +177708,10 @@
     {
      "text": "Self-check: skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change was marked running on mossesx-max- with no session: released and back in the Queue.",
      "at": "2026-11-13T06:23:40.622Z"
+    },
+    {
+     "text": "Model switch: phase 3 Opus → Fable. Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself.",
+     "at": "2026-11-13T06:31:38.011Z"
     }
    ],
    "approvals": [
@@ -177612,6 +177722,16 @@
      "at": "2026-11-13T06:21:20.578Z",
      "by": "auto",
      "kind": "downgrade"
+    },
+    {
+     "phase": 2,
+     "from": "Opus",
+     "to": "Fable",
+     "at": "2026-11-13T06:31:38.011Z",
+     "by": "auto",
+     "via": "policy",
+     "kind": "upgrade",
+     "note": "Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself"
     }
    ],
    "upgradeRequests": [],
@@ -177630,7 +177750,7 @@
    "pipeline": {
     "queuedAt": "2026-11-13T03:27:51.167Z",
     "queuedBy": "console",
-    "account": "",
+    "account": "mossesx-max-",
     "session": "",
     "slot": "",
     "model": "Fable",
@@ -177652,7 +177772,7 @@
      "note": "Split by Claude into 9 steps (3 Fable)."
     },
     "splitRequested": "",
-    "note": "released by the self-check (nothing ran): back in the Queue",
+    "note": "Session on mossesx-max- ended (exit 1) with 9 steps left: back in the Queue (run 1).",
     "route": "",
     "dispatchedAt": "2026-11-13T03:28:15.605Z",
     "planned": {
@@ -177804,7 +177924,7 @@
      "uid": "st-mweacucb06uek3",
      "title": "",
      "text": "Wire the API parity: CLI `skins.mjs config get|allow|lock|depth|reset|default|make`, MCP plugin commands from the routes, console actions skin.config.* for voice (AmberX), and the console_show deep link target `settings/appearance/skin-config`.",
-     "model": "Fable",
+     "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
@@ -177819,19 +177939,19 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T06:29:31.150Z",
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-13T01:16:06.682Z",
-     "updatedAt": "2026-11-13T06:23:27.500Z"
+     "updatedAt": "2026-11-13T06:29:31.353Z"
     },
     {
      "id": "s7",
      "uid": "st-mweacucb07r7xq",
      "title": "",
      "text": "Build the Skin configuration panel in Settings → Appearance (shared AppearancePanel): a collapsible categorized tree from the engine with allow/lock switches per option and category, depth steppers for context and nav menus, a 'Default skin' row, and a 'Make skin with AI' button. Use TabGroup and framework controls only, tokens only, and the settings level toolbar.",
-     "model": "Fable",
+     "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
@@ -177845,12 +177965,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T06:29:32.680Z",
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-13T01:16:06.682Z",
-     "updatedAt": "2026-11-13T06:23:49.024Z"
+     "updatedAt": "2026-11-13T06:29:32.885Z"
     },
     {
      "id": "s8",
@@ -177871,12 +177991,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T06:31:38.011Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-13T01:16:06.682Z",
-     "updatedAt": "2026-11-13T06:23:37.220Z"
+     "updatedAt": "2026-11-13T06:31:38.222Z"
     },
     {
      "id": "s9",
@@ -177914,7 +178034,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -178366,15 +178486,15 @@
    "title": "Skins plugin: its own removable console plugin and screen for changing skins. Gallery of every skin with live preview (desktop and phone), one-tap Use skin, Back and Restore to Default with undo, per-scope switching (whole hub, one app, one screen, one plugin), a quick skin switcher on the banner an",
    "category": "",
    "detail": "",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T06:25:11.720Z",
-   "updatedAt": "2026-11-13T06:27:07.243Z",
+   "updatedAt": "2026-11-13T06:27:30.457Z",
    "builtAt": "",
    "notes": [
     {
@@ -178384,19 +178504,39 @@
     {
      "text": "Split by Claude into 20 steps (2 Fable).",
      "at": "2026-11-13T06:27:07.243Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-skins-plugin-its-own-removable-console-plugin-an--paulie.",
+     "at": "2026-11-13T06:27:24.652Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-skins-plugin-its-own-removable-console-plugin-an--paulie, own login copy)",
+     "at": "2026-11-13T06:27:30.457Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga",
+    "brief": "# Build: skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"Skins plugin: its own removable console plugin and screen for changing skins. Gallery of every skin with live preview (desktop and phone), one-tap Use skin, Back and Restore to Default with undo, per-scope switching (whole hub, one app, one screen, one plugin), a quick skin switcher on the banner an\" (skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga) — Phase 1, model Fable.\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (2 left, ~18 min):\n[ ] s1 (~10 min) Define the skin-switch@1 action contract in framework/core/engines/skin-switch.mjs: use / back-to-skin / restore-default / undo for each scope (hub, app:<id>, ui:<view>, plugin:<id>), built on resolveLookSkin and the app-look@1 snapshot, with a one-step undo record kept in the look document. Add a fixture in framework/spec/fixtures/skin-switch.json, and record the Android twin as a deferred gap in PORTING.md\n[ ] s2 (~8 min) Add check framework/spec/check-skin-switch.mts (engine vs fixture: scope precedence, undo after restore, back clears only the overridden part) and wire it into CI\nRead first: framework/core/engines/skin-switch.mjs, framework/spec/fixtures/skin-switch.json, framework/spec/PORTING.md, framework/spec/check-skin-switch.mts, .github/workflows/android.yml\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga \"…\"); the build goes back to Pending for Brett.\n",
+    "verbatim": false,
+    "from": "",
+    "addenda": []
+   },
    "pipeline": {
     "queuedAt": "2026-11-13T06:25:16.919Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-skins-plugin-its-own-removable-console-plugin-an--paulie",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Fable",
+    "launchedAt": "2026-11-13T06:27:23.856Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T06:27:07.243Z",
@@ -178408,10 +178548,16 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
-    "planned": null,
+    "dispatchedAt": "2026-11-13T06:27:23.856Z",
+    "planned": {
+     "model": "Fable",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-13T06:27:09.119Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-13T06:27:23.856Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -178922,7 +179068,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
