@@ -781,7 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 02:05 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` note (all) · orchestrator
 - 2026-11-13 02:05 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` s3 done, → built (all) · orchestrator
 - 2026-11-13 02:06 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` → pending, note (all) · pipeline
 - 2026-11-13 02:07 UTC · `tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch` s2 done (all) · orchestrator
@@ -1181,6 +1180,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 11:07 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` s21 done (all) · orchestrator
 - 2026-11-13 11:07 UTC · `android-approval-overlay-a-small-always-on-float` s2 done (all) · orchestrator
 - 2026-11-13 11:08 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` s21 done (all) · orchestrator
+- 2026-11-13 11:08 UTC · `android-approval-overlay-a-small-always-on-float` PR #565 (all) · builds-live
 
 ## Token passes (log)
 

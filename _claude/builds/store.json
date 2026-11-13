@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4272,
- "updatedAt": "2026-11-13T11:08:10.276Z",
+ "rev": 4273,
+ "updatedAt": "2026-11-13T11:08:30.328Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -183429,10 +183429,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/android-approval-overlay-a-small-always-on-float",
-   "pr": "",
+   "pr": "#565",
    "priority": "P0",
    "createdAt": "2026-11-13T10:41:19.479Z",
-   "updatedAt": "2026-11-13T11:07:35.677Z",
+   "updatedAt": "2026-11-13T11:08:28.601Z",
    "builtAt": "",
    "notes": [
     {
@@ -183583,7 +183583,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

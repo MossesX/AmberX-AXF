@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T11:08:10.276Z",
+ "updatedAt": "2026-11-13T11:08:30.328Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -120837,10 +120837,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/android-approval-overlay-a-small-always-on-float",
-   "pr": "",
+   "pr": "#565",
    "priority": "P0",
    "createdAt": "2026-11-13T10:41:19.479Z",
-   "updatedAt": "2026-11-13T11:07:35.677Z",
+   "updatedAt": "2026-11-13T11:08:28.601Z",
    "builtAt": "",
    "notes": [
     {
