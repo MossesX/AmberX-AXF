@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4174,
- "updatedAt": "2026-11-13T09:32:48.364Z",
+ "rev": 4175,
+ "updatedAt": "2026-11-13T09:33:00.683Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -178097,7 +178097,7 @@
    "title": "Merges are only 'merged' once GitHub confirms: every merge path (console auto-merge, auto-land, github client plugin, server gate, scripts) shows 'Pending GitHub confirmation' right after a merge call, then reads the PR back from GitHub (state MERGED and the merge commit on main) before marking it m",
    "category": "",
    "detail": "",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -178105,7 +178105,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T06:21:11.993Z",
-   "updatedAt": "2026-11-13T07:09:02.464Z",
+   "updatedAt": "2026-11-13T09:32:50.685Z",
    "builtAt": "",
    "notes": [
     {
@@ -178135,6 +178135,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-13T07:09:02.464Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T09:32:50.685Z"
     }
    ],
    "approvals": [],
@@ -178152,7 +178156,7 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "2026-11-13T06:21:16.887Z",
+    "queuedAt": "2026-11-13T09:32:50.225Z",
     "queuedBy": "console",
     "account": "",
     "session": "",
@@ -178525,7 +178529,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -180236,7 +180240,7 @@
    "title": "Always fill every slot: when slots are free, run independent steps of running builds in parallel across them, and auto-queue pending builds",
    "category": "",
    "detail": "",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -180244,7 +180248,7 @@
    "pr": "#554",
    "priority": "P0",
    "createdAt": "2026-11-13T06:57:42.497Z",
-   "updatedAt": "2026-11-13T07:42:03.981Z",
+   "updatedAt": "2026-11-13T09:32:48.944Z",
    "builtAt": "",
    "notes": [
     {
@@ -180302,6 +180306,10 @@
     {
      "text": "Split by Claude into 21 steps (3 Fable).",
      "at": "2026-11-13T07:42:03.981Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T09:32:48.944Z"
     }
    ],
    "approvals": [],
@@ -180319,7 +180327,7 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "2026-11-13T06:57:47.148Z",
+    "queuedAt": "2026-11-13T09:32:48.552Z",
     "queuedBy": "console",
     "account": "",
     "session": "",
@@ -181010,7 +181018,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
