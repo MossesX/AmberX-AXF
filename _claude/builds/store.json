@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5055,
- "updatedAt": "2026-11-13T21:27:09.402Z",
+ "rev": 5056,
+ "updatedAt": "2026-11-13T21:27:20.253Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -208037,7 +208037,7 @@
    "title": "Per-instance settings: small live preview pane",
    "category": "",
    "detail": "Follow-up to the landed per-toolbar settings (per-toolbar-settings-fix-failing-chrome). In the settings interface of every individual toolbar, nav menu, application menu and tab group (and dialog), add a small live preview pane at the top: a compact sample of that element type rendered with seed data (e.g. 2-3 toolbar icons with a badge, 2 tab groups of a few tabs with one active, a short nav menu with one selected item, an app menu with a submenu). It hot-renders every setting change in real time (style, colours, transparency, layout, density, hover/active states, with a hover/press demo toggle), before Apply. Collapsible, light/dark toggle, and it uses the real framework components and the instance's tokens. Full API. Tests, help, Shipped features.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -208046,7 +208046,7 @@
    "priority": "P1",
    "createdAt": "2026-11-13T20:45:51.589Z",
    "updatedAt": "2026-11-13T21:27:07.106Z",
-   "builtAt": "",
+   "builtAt": "2026-11-13T21:27:07.106Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -208184,12 +208184,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T21:26:45.962Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T20:48:36.828Z",
-     "updatedAt": "2026-11-13T20:48:36.828Z"
+     "updatedAt": "2026-11-13T21:26:46.234Z"
     }
    ],
    "profiles": [

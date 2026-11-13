@@ -792,7 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 19:32 UTC · `console-app-part-3-native-bridge-mic` s5 done (all) · orchestrator
 - 2026-11-13 19:32 UTC · `land-rename-long-builds-resolve-clash` → queued, note (all) · console
 - 2026-11-13 19:32 UTC · `land-drive-live-console-first-resolve` note (all) · orchestrator
 - 2026-11-13 19:32 UTC · `console-app-part-4-console-side-safe` s1 done, → running (all) · orchestrator
@@ -1192,6 +1191,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 21:26 UTC · `per-instance-settings-small-live-preview` note (all) · orchestrator
 - 2026-11-13 21:26 UTC · `main-ci-red-test-sandbox-profile-export` branch claude/main-ci-red-test-sandbox-profile-export, PR #663 (all) · builds-live
 - 2026-11-13 21:27 UTC · `per-instance-settings-small-live-preview` note (all) · orchestrator
+- 2026-11-13 21:26 UTC · `per-instance-settings-small-live-preview` s3 done, → built (all) · orchestrator
 
 ## Token passes (log)
 
