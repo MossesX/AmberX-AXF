@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4065,
- "updatedAt": "2026-11-13T06:55:00.846Z",
+ "rev": 4066,
+ "updatedAt": "2026-11-13T06:55:28.723Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -179723,12 +179723,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T06:54:48.788Z",
-   "updatedAt": "2026-11-13T06:54:53.605Z",
+   "updatedAt": "2026-11-13T06:55:27.385Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-13T06:54:52.283Z"
+    },
+    {
+     "text": "Split asked for by console.",
+     "at": "2026-11-13T06:55:27.385Z"
     }
    ],
    "approvals": [],
@@ -179744,7 +179748,7 @@
     "runs": 0,
     "lastRun": null,
     "split": null,
-    "splitRequested": "",
+    "splitRequested": "2026-11-13T06:55:26.099Z",
     "note": "waiting for the split before it can start",
     "route": "",
     "dispatchedAt": "",
@@ -179764,7 +179768,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

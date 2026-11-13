@@ -781,7 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 22:05 UTC · `move-amberx-web-app-into-the-console-amberx-andr` PR #528 (all) · builds-live
 - 2026-11-12 22:05 UTC · `move-amberx-web-app-into-the-console-amberx-andr` s1 done (all) · orchestrator
 - 2026-11-12 22:05 UTC · `move-amberx-web-app-into-the-console-amberx-andr` note (all) · orchestrator
 - 2026-11-12 22:06 UTC · `move-amberx-web-app-into-the-console-amberx-andr` → queued, note (all) · pipeline
@@ -1181,6 +1180,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 06:54 UTC · `skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga` → running, note (all) · orchestrator
 - 2026-11-13 06:54 UTC · `remove-ui-review-as-a-gate-no-screenshots-required-prs-never-held-as-draft-for` added (0 steps) (all) · mcp
 - 2026-11-13 06:54 UTC · `remove-ui-review-as-a-gate-no-screenshots-required-prs-never-held-as-draft-for` → queued, note (all) · console
+- 2026-11-13 06:55 UTC · `remove-ui-review-as-a-gate-no-screenshots-required-prs-never-held-as-draft-for` note (all) · console
 
 ## Token passes (log)
 
