@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T07:10:59.299Z",
+ "updatedAt": "2026-11-13T07:11:12.692Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -117829,10 +117829,10 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "skip": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
-     "note": "",
+     "note": "UI Review no longer a gate",
      "uid": "st-mwemad9401two1",
      "createdAt": "2026-11-13T06:50:06.068Z"
     },
@@ -117871,10 +117871,10 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "skip": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
-     "note": "",
+     "note": "UI Review no longer a gate",
      "uid": "st-mwemczh8036k0q",
      "createdAt": "2026-11-13T06:52:08.440Z"
     },
@@ -118737,10 +118737,10 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "skip": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
-     "note": "",
+     "note": "UI Review no longer a gate",
      "uid": "st-mwemm4yg0j7pjf",
      "createdAt": "2026-11-13T06:59:15.736Z"
     },

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4104,
- "updatedAt": "2026-11-13T07:10:59.299Z",
+ "rev": 4105,
+ "updatedAt": "2026-11-13T07:11:12.692Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -179074,13 +179074,13 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "skip": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
-     "note": "",
-     "rev": 2,
+     "note": "UI Review no longer a gate",
+     "rev": 3,
      "createdAt": "2026-11-13T06:50:06.068Z",
-     "updatedAt": "2026-11-13T06:52:08.741Z"
+     "updatedAt": "2026-11-13T07:10:49.965Z"
     },
     {
      "id": "s18",
@@ -179122,13 +179122,13 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "skip": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "note": "UI Review no longer a gate",
+     "rev": 2,
      "createdAt": "2026-11-13T06:52:08.440Z",
-     "updatedAt": "2026-11-13T06:52:08.732Z"
+     "updatedAt": "2026-11-13T07:10:49.965Z"
     },
     {
      "id": "s20",
@@ -180751,13 +180751,13 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "skip": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "note": "UI Review no longer a gate",
+     "rev": 2,
      "createdAt": "2026-11-13T06:59:15.736Z",
-     "updatedAt": "2026-11-13T06:59:15.736Z"
+     "updatedAt": "2026-11-13T07:10:49.965Z"
     },
     {
      "id": "s20",
@@ -180819,7 +180819,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
