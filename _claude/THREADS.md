@@ -781,7 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 01:52 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` → running, note (all) · pipeline
 - 2026-11-13 01:52 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` branch claude/one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds (all) · pipeline
 - 2026-11-13 01:52 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` note (all) · orchestrator
 - 2026-11-13 01:52 UTC · `server-every-failed-merge-alerts-brett-immediately-and-retries-by-itself-until` s2 done (all) · orchestrator
@@ -1181,6 +1180,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 10:50 UTC · `android-approval-overlay-a-small-always-on-float` branch claude/android-approval-overlay-a-small-always-on-float (all) · pipeline
 - 2026-11-13 10:50 UTC · `android-approval-overlay-a-small-always-on-float` note (all) · orchestrator
 - 2026-11-13 10:50 UTC · `one-source-of-truth-console-shows-only-what-the-server-says-is-running` note (all) · orchestrator
+- 2026-11-13 10:50 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` s17 done (all) · orchestrator
 
 ## Token passes (log)
 
