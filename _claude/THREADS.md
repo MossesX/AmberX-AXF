@@ -785,9 +785,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 11:17 UTC · `drag-anything-by-api-and-voice-follow-up-to-full` note (all) · orchestrator
-- 2026-11-13 11:17 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` s24 done (all) · orchestrator
-- 2026-11-13 11:17 UTC · `fix-merge-conflicts-on-pr-557-professional-skins` note (all) · pipeline
 - 2026-11-13 11:17 UTC · `drag-anything-by-api-and-voice-after-pr-556-land` → running, note (all) · pipeline
 - 2026-11-13 11:17 UTC · `drag-anything-by-api-and-voice-after-pr-556-land` branch claude/drag-anything-by-api-and-voice-after-pr-556-land (all) · pipeline
 - 2026-11-13 11:17 UTC · `drag-anything-by-api-and-voice-after-pr-556-land` note (all) · orchestrator
@@ -1185,6 +1182,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 18:08 UTC · `quick-settings-pinned-collapsible-pane` note (all) · orchestrator
 - 2026-11-13 18:08 UTC · `per-instance-settings-window-picker` → queued, note (all) · pipeline
 - 2026-11-13 18:09 UTC · `per-instance-settings-window-picker` note (all) · orchestrator
+- 2026-11-13 18:09 UTC · `restore-asset-designer-plugin-merged-nov` → running, note (all) · pipeline
+- 2026-11-13 18:09 UTC · `restore-asset-designer-plugin-merged-nov` branch claude/restore-asset-designer-plugin-merged-nov (all) · pipeline
+- 2026-11-13 18:09 UTC · `restore-asset-designer-plugin-merged-nov` note (all) · orchestrator
 
 ## Token passes (log)
 

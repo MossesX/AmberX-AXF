@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4591,
- "updatedAt": "2026-11-13T18:09:15.519Z",
+ "rev": 4592,
+ "updatedAt": "2026-11-13T18:09:32.038Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -196273,15 +196273,15 @@
    "title": "Restore the Asset Designer plugin (merged Nov 10, now missing)",
    "category": "",
    "detail": "_claude/builds/shipped/asset-designer.json says the Asset Designer plugin (no-code; apps/console-web/plugins/asset-designer, id ai.amberx.axf.console.asset-designer) merged 2026-11-10T04:39Z, but the folder is not in main now and branch claude/asset-designer is deleted.\n1. Find it in git history (git log --all -- apps/console-web/plugins/asset-designer, reflog, any branch/PR/combine branch), find the commit that removed it and why.\n2. Restore it onto current main, update to current framework (tokens, chrome, skins, control@1), make it able to edit every asset type including the chrome settings interface for toolbars and tab groups (all its tokens), with the validation gate.\n3. If history is gone, rebuild from the shipped spec's steps.\n4. Installed and enabled by default, in nav and console.actions, REST/MCP/CLI/voice. Tests, Shipped features. Report what removed it so it doesn't happen again.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/restore-asset-designer-plugin-merged-nov",
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T17:59:17.167Z",
-   "updatedAt": "2026-11-13T18:02:00.272Z",
+   "updatedAt": "2026-11-13T18:09:25.430Z",
    "builtAt": "",
    "notes": [
     {
@@ -196295,6 +196295,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"c35d172d-5489-40cd-9973-a48ce90e9a68\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-13T18:02:00.272Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-restore-asset-designer-plugin-merged-nov--earl.",
+     "at": "2026-11-13T18:09:21.370Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-restore-asset-designer-plugin-merged-nov--earl, own login copy)",
+     "at": "2026-11-13T18:09:25.430Z"
     }
    ],
    "approvals": [],
@@ -196305,8 +196313,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "restore-asset-designer-plugin-merged-nov",
+    "brief": "# Build: restore-asset-designer-plugin-merged-nov\n\n## Brett said (verbatim)\nAt: 2026-11-13T17:59:17.167Z\n> find the archive build for it and rebuild it, branches should still be around somewhere\n\n## What to build\nContinue build \"Restore the Asset Designer plugin (merged Nov 10, now missing)\" (restore-asset-designer-plugin-merged-nov) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-13 17:59):\n\"find the archive build for it and rebuild it, branches should still be around somewhere\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (1 left, ~10 min):\n[ ] s1 (~10 min) Restore it onto current main, update to current framework (tokens, chrome, skins, control@1), make it able to edit every asset type including the chrome settings interface for toolbars and tab groups (all its tokens), with the validation gate.\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step restore-asset-designer-plugin-merged-nov <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link restore-asset-designer-plugin-merged-nov --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step restore-asset-designer-plugin-merged-nov <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note restore-asset-designer-plugin-merged-nov \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -196314,12 +196322,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T17:59:19.826Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-restore-asset-designer-plugin-merged-nov--earl",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Fable",
+    "launchedAt": "2026-11-13T18:09:20.676Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T18:02:00.272Z",
@@ -196329,9 +196337,9 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"c35d172d-5489-40cd-9973-a48ce90e9a68\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-13T18:09:20.676Z",
     "planned": {
      "model": "Fable",
      "account": "mossesx-max-",
@@ -196340,7 +196348,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-13T18:09:20.676Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -196512,7 +196520,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
