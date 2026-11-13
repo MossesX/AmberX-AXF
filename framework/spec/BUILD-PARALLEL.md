@@ -128,3 +128,16 @@ merge commands live in the dispatcher, not here.
 `fixtures/build-pipeline-fill.json`: `ready` (readySteps with implicit and explicit edges, claims live and expired),
 `claims` (claimStep / releaseStep accept and refuse cases) and `fill` (planFill scenarios: mixed slots, memory floor,
 hard limit, auto-queue off and on, budget cap). Every block is `in` → `out`; a port replays `in` and must answer `out`.
+
+Golden cases for the §1a rules and the planner's caps:
+
+| Case | `ready` | `claims` | `fill` |
+|---|---|---|---|
+| linear steps unchanged (no `after` anywhere) | `linearUnchanged`, `oldBuildSequential` | | `linearUnchanged` (nothing launched beside the main session) |
+| fan-out / fan-in DAG (`after` and `dependsOn`) | `fanOutFanIn`, `fanInDone` | | `fanOutFanIn` (s3 and s4 fill two slots, s4 on the Fable account; s5 waits) |
+| file-overlap clash held back | `fileClashHeld` | `fileClashRefused` | `fileClashHeld` (s3 beside the session's s2, s6 beside s5) |
+| `parallel: never` | `parallelNever` | | checked as an invariant (never a parallel launch) |
+| a Fable step with no Fable account free | `fableOnly` | | `fableNoFableAccount` (the Opus step launches, both Fable items wait) |
+| auto-queue off vs on | | | `autoQueueOff`, `autoQueueOn`, `autoQueueClash` (unsplit and clashing Pending builds wait) |
+| caps reached | | | `capsReached` (per-build `maxParallel`, the default 3, then the agent cap), `parallelCapAndClaimedMain`, `memoryFloor`, `hardLimit`, `apiOverflowWithinBudget` |
+| a priority order tie | | | `priorityTie` (same priority: queue time, then creation time; P2 last) |
