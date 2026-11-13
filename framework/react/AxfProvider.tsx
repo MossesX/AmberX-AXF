@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useLayoutEffect, useSyncExternalStore, type ReactNode } from 'react';
 import type { AssetType, AxfRuntime, MenuItem } from '../core';
 import { installTapConfirm } from './tapConfirm';
+import { installToolbarLook } from './toolbarLook';
 import { installMenuFit } from './components/menuFit';
 
 export const AxfContext = createContext<AxfRuntime | null>(null);
@@ -131,6 +132,12 @@ export function AxfProvider({ runtime, children }: { runtime: AxfRuntime; childr
   // Tap-to-confirm on every toolbar (framework/react/tapConfirm.ts): touch arms first, a second tap runs; mouse clicks once.
   useEffect(() => {
     const host = installTapConfirm(document, (key) => runtime.settings.get(key));
+    return () => host.dispose();
+  }, [runtime]);
+
+  // Toolbar settings on every toolbar (framework/react/toolbarLook.ts): what its settings dialog saves, drawn live.
+  useEffect(() => {
+    const host = installToolbarLook(document, runtime.settings);
     return () => host.dispose();
   }, [runtime]);
 

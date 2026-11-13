@@ -541,6 +541,34 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 .fx-toolbar.is-collapsed { padding-top: 0; padding-bottom: 0; min-height: 0; justify-content: flex-end; }
 .fx-toolbar.is-collapsed .fx-toolbar__fold { height: calc(var(--fx-row-h) * 0.6); }
 .fx-toolbar__group:last-of-type { border-right: 0; }
+/* Toolbar settings on every toolbar (framework/react/toolbarLook.ts writes data-axf-tb-* from the toolbar's own
+   settings, right-click → Toolbar settings). Only what the person set is written; an unset field keeps the plugin's look. */
+[role='toolbar'][data-axf-tb-variant='icons'] :is(button, [role='button']):has(> .fx-icon) > span:not(.fx-icon) {
+  position: absolute; width: var(--fx-border-w); height: var(--fx-border-w); overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+}
+[role='toolbar'][data-axf-tb-variant='icons'] :is(button, [role='button']):has(> .fx-icon):has(> span:not(.fx-icon)) { gap: 0; }
+[role='toolbar'][data-axf-tb-variant='labels'] :is(button, [role='button']):has(> span:not(.fx-icon)) > .fx-icon,
+[role='toolbar'][data-axf-tb-variant='labels'] .fx-seg__opt > .fx-icon { display: none; }
+[role='toolbar'][data-axf-tb-align] { display: flex; flex-wrap: wrap; align-items: center; }
+[role='toolbar'][data-axf-tb-align='start'] { justify-content: flex-start; }
+[role='toolbar'][data-axf-tb-align='center'] { justify-content: center; }
+[role='toolbar'][data-axf-tb-align='spread'] { justify-content: space-between; }
+[role='toolbar'][data-axf-tb-density='compact'] { gap: var(--fx-dens-gap-xs); padding-block: var(--fx-dens-gap-2xs); }
+[role='toolbar'][data-axf-tb-density='regular'] { gap: var(--fx-dens-gap-md); }
+[role='toolbar'][data-axf-tb-density='roomy'] { gap: var(--fx-dens-gap-xl); padding-block: var(--fx-dens-gap-md); }
+[role='toolbar'][data-axf-tb-surface='flat'] { background: transparent; box-shadow: none; }
+[role='toolbar'][data-axf-tb-surface='raised'] { background: var(--fx-surface); box-shadow: var(--fx-shadow-sm); border-radius: var(--fx-radius-md); padding-inline: var(--fx-dens-gap-md); }
+[role='toolbar'][data-axf-tb-surface='glass'] {
+  background: color-mix(in srgb, var(--fx-surface) calc(var(--fx-opacity-glass) * 100%), transparent);
+  backdrop-filter: blur(var(--fx-blur)); -webkit-backdrop-filter: blur(var(--fx-blur)); border-radius: var(--fx-radius-md); padding-inline: var(--fx-dens-gap-md);
+}
+[role='toolbar']:not(.fx-toolbar)[data-axf-tb-divider='on'] > :not([data-axf-tb-own]) ~ :not([data-axf-tb-own]):not([data-axf-tb-filtered]) { border-inline-start: var(--fx-border-w) solid var(--fx-border); padding-inline-start: var(--fx-dens-gap-md); }
+[role='toolbar'][data-axf-tb-divider='off'] .fx-toolbar__group { border-right: 0; }
+[role='toolbar'][data-axf-tb-divider='off'] > [role='separator'] { display: none; }
+[role='toolbar'][data-axf-tb-folded='on'] > :not([data-axf-tb-own='fold']) { display: none; }
+[role='toolbar'] > [data-axf-tb-filtered='out'], [role='toolbar'] > [role='group'] > [data-axf-tb-filtered='out'] { display: none; }
+[role='toolbar'] > .axf-tb-fold { flex: none; }
+[role='toolbar'] > .axf-tb-search { flex: 0 1 calc(var(--fx-font-size) * 10); min-width: 0; margin-inline-start: auto; }
 .fx-toolbtn {
   display: inline-flex; align-items: center; gap: var(--fx-dens-gap-lg); white-space: nowrap;
   border: 0; background: transparent; color: var(--fx-muted);
