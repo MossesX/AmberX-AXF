@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4374,
- "updatedAt": "2026-11-13T12:09:17.838Z",
+ "rev": 4375,
+ "updatedAt": "2026-11-13T12:09:32.507Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -185921,7 +185921,7 @@
    "title": "Auto-recover stuck builds",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -185929,7 +185929,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T11:45:11.111Z",
-   "updatedAt": "2026-11-13T11:59:57.013Z",
+   "updatedAt": "2026-11-13T12:09:25.683Z",
    "builtAt": "",
    "notes": [
     {
@@ -185959,6 +185959,10 @@
     {
      "text": "CORRECTION from Brett: IGNORE the earlier merge-queue note (skip head PR / don't merge one at a time). Do NOT change merge queue order or behaviour in this build. The combine was a one-time job for today's queue only.",
      "at": "2026-11-13T11:56:14.183Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T12:09:25.683Z"
     }
    ],
    "approvals": [],
@@ -185976,7 +185980,7 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "2026-11-13T11:45:12.715Z",
+    "queuedAt": "2026-11-13T12:09:25.180Z",
     "queuedBy": "console",
     "account": "",
     "session": "",
@@ -186393,7 +186397,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

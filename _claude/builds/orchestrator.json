@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T12:09:17.838Z",
+ "updatedAt": "2026-11-13T12:09:32.507Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -122808,7 +122808,7 @@
    "title": "Auto-recover stuck builds",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -122816,7 +122816,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T11:45:11.111Z",
-   "updatedAt": "2026-11-13T11:59:57.013Z",
+   "updatedAt": "2026-11-13T12:09:25.683Z",
    "builtAt": "",
    "notes": [
     {
@@ -122846,6 +122846,10 @@
     {
      "text": "CORRECTION from Brett: IGNORE the earlier merge-queue note (skip head PR / don't merge one at a time). Do NOT change merge queue order or behaviour in this build. The combine was a one-time job for today's queue only.",
      "at": "2026-11-13T11:56:14.183Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T12:09:25.683Z"
     }
    ],
    "approvals": [],
