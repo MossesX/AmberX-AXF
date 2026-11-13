@@ -786,7 +786,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 17:30 UTC · `merge-all-ready-buttons-server-side-lander` note, removed (all) · build-rename
 - 2026-11-13 17:30 UTC · `test-sandbox-sample-shipped-build` added (3 steps) (test-sandbox) · foreign-write
 - 2026-11-13 17:30 UTC · `test-sandbox-sample-pending-build` added (3 steps) (test-sandbox) · foreign-write
 - 2026-11-13 17:30 UTC · `account-order-hulu-moses-x-api-account` added (3 steps) (all) · build-rename
@@ -1186,6 +1185,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 19:17 UTC · `land-project-duplicate-boilerplate` note (all) · orchestrator
 - 2026-11-13 19:19 UTC · `console-android-app-thin-webview-wrapper` → running, note (all) · pipeline
 - 2026-11-13 19:19 UTC · `console-android-app-thin-webview-wrapper` note (all) · orchestrator
+- 2026-11-13 19:19 UTC · `console-android-app-thin-webview-wrapper` s6 done (all) · orchestrator
 
 ## Token passes (log)
 
