@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T20:49:16.394Z",
+ "updatedAt": "2026-11-13T20:49:53.948Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -134398,9 +134398,14 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-13T20:46:48.502Z",
-   "updatedAt": "2026-11-13T20:46:48.502Z",
+   "updatedAt": "2026-11-13T20:49:51.654Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"5eea7043-f1b3-4a95-8af4-eabe22b8280f\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-13T20:49:51.654Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -134415,7 +134420,68 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Most Nov 13 land failures were clashes only in GENERATED or additive files: apps/console-web/src/control/inventory.json, framework/assets/help/framework.json and every baked copy (apps/*/src/assets/help/framework.json, apps/*/src/axf/assets/help/framework.json), framework/catalog/status.json, framework/spec/PORTING.md, framework/spec/fixtures/*.json, framework/spec/gen-fixtures.mts outputs, apps/*/axf.lock.json, and the baked framework copies under apps/*/src/axf/. Fix the land path (/opt/axf-batch/resolve.py used by vps.build_land, and the orchestrator lander): (1) list generated files in one manifest; (2) on a clash in a generated file, take main's side, then run the matching generator (control inventory, help bake, fixtures, lock, framework re-bake) on the merged tree and commit; (3) additive docs/catalogs (PORTING.md, catalog status.json) are union-merged by key; (4) only real source clashes stop the land; (5) run tests after regeneration. Then re-land these waiting branches: full-voice-control-merge-main-and-land, skin-config-panel-merge-main-and-land, skins-plugin-merge-main-and-land, project-create-mcp, project-duplicate-boilerplate, drive-live-console-first, rename-long-builds, overlay-preview-ui-review. Must land before auto-land-every-finished-build-lands.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfgaali07of9i",
+     "createdAt": "2026-11-13T20:49:51.654Z"
+    },
+    {
+     "id": "s2",
+     "text": "the voice control still isn't done; land what's completed",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfgaali08gdhi",
+     "createdAt": "2026-11-13T20:49:51.654Z"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/landing-auto-resolves-generated-files-no.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/landing-auto-resolves-generated-files-no.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfgaali09omvp",
+     "createdAt": "2026-11-13T20:49:51.654Z"
+    }
+   ]
   },
   {
    "id": "lander-regenerates-generated-files-clash",
