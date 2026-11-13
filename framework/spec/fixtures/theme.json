@@ -170,7 +170,7 @@
     "--fx-muted": "#4a5561",
     "--fx-border": "#c9d1d9",
     "--fx-accent": "#e8590c",
-    "--fx-accent-text": "#ffffff",
+    "--fx-accent-text": "#101418",
     "--fx-accent-soft": "rgba(232,89,12,0.14)",
     "--fx-danger": "#c81e1e",
     "--fx-success": "#1b7f3b",

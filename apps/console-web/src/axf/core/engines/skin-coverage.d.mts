@@ -48,7 +48,7 @@ export interface SkinCoversRow {
   why: string;
 }
 /** The skin@2 data shape the coverage functions read (normalizeSkin output or a design package read as a skin). */
-export interface SkinLike { layoutTheme?: string; colorTheme?: string; styleTheme?: string; assets?: Record<string, string>; iconPack?: string; parts?: Record<string, unknown>; behaviour?: unknown }
+export interface SkinLike { layoutTheme?: string; colorTheme?: string; styleTheme?: string; behaviorTheme?: string; assets?: Record<string, string>; iconPack?: string; parts?: Record<string, unknown>; behaviour?: unknown }
 
 export type TypeSpecs = Record<string, Record<string, unknown>>;
 export type StyleTargets = Record<string, { root: string; item?: string }>;

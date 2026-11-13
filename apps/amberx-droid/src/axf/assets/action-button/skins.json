@@ -1,0 +1,19 @@
+{
+  "$axf": "asset@1",
+  "type": "action-button",
+  "id": "skins",
+  "name": "Skins",
+  "version": "1.0.0",
+  "description": "Opens the skin picker. Hidden on the banner until picked in Widgets…; the banner's right-click menu always has Skins with every skin.",
+  "author": "AmberX AXF",
+  "tags": [
+    "action-button",
+    "skin"
+  ],
+  "data": {
+    "icon": "sparkles",
+    "label": "Skins",
+    "action": "dialog:axf.settings.skin",
+    "show": "icon"
+  }
+}

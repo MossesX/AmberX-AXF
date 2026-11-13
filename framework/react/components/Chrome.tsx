@@ -384,15 +384,16 @@ export function NavDrawer({ views, side, open, onClose }: { views: ViewMap; side
 export function StatusBar() {
   const rt = useRuntime();
   const state = useAxfState();
-  const name = (t: 'color-theme' | 'style-theme' | 'layout') => rt.asset(t).name;
+  // skins only (Nov 10 2026): the look is the skin in force and its colour theme; style and layout are the skin's
+  const skinId = rt.skinInForce().id;
+  const skin = skinId ? rt.skinList().find((s) => s.id === skinId)?.name ?? skinId : "This app's own look";
   return (
     <footer className="fx-status">
       <span className="fx-status__dot" aria-hidden="true" />
       <span>AmberX AXF {FRAMEWORK_VERSION}</span>
       <span className="fx-status__sep" />
-      <span title="Color theme">{name('color-theme')}</span>
-      <span title="Style theme">{name('style-theme')}</span>
-      <span title="Layout">{name('layout')}</span>
+      <span title="Skin">{skin}</span>
+      <span title="Colour theme">{rt.asset('color-theme').name}</span>
       <span className="fx-status__grow" />
       <span>{rt.registry.count()} assets</span>
       <span>{state.swaps} swaps</span>

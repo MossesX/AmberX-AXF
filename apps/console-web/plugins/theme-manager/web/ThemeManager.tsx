@@ -11,6 +11,9 @@ import { PRESETS, allLeafIds, buildTree, getAt, leaves, readability, rollType, s
 import { call, del, post, put, type SavedTheme } from './api';
 import { MoreMenu } from './MoreMenu';
 
+/** The skin's own sections: picked through a skin, never rolled here (only the colour theme swaps inside a skin). */
+const SKIN_ONLY_TYPES = ['style-theme', 'layout', 'behavior-theme'];
+
 const P = 'axp-theme-manager';
 type Data = Record<string, Json>;
 type Snap = Record<string, Data>;
@@ -50,7 +53,8 @@ export function ThemeManager() {
   const ax = useAxfState();
   const hist = useHistory();
   const narrow = useNarrow();
-  const types = useMemo(() => Object.keys(assetTypeSpecs).filter((t) => t !== 'uac-policy'), []);
+  // skins only (Nov 10 2026): style, layout and behaviour themes are a skin's sections and are not rolled on their own
+  const types = useMemo(() => Object.keys(assetTypeSpecs).filter((t) => t !== 'uac-policy' && !SKIN_ONLY_TYPES.includes(t)), []);
   const active = useMemo(() => Object.fromEntries(types.map((t) => [t, (rt.asset(t as never) as unknown as { data: Data }).data])) as Snap, [rt, types, ax.active]); // eslint-disable-line react-hooks/exhaustive-deps
   const assets = useMemo(() => Object.fromEntries(types.map((t) => [t, rt.registry.list(t as never).filter((a) => !String(a.id).startsWith('tm-preview-')) as unknown as { data: Data }[]])), [rt, types, ax.active]); // eslint-disable-line react-hooks/exhaustive-deps
   const tree = useMemo(() => buildTree(assetTypeSpecs as unknown as Record<string, TypeSpec>, assets, active, types), [assets, active, types]);
@@ -164,8 +168,6 @@ export function ThemeManager() {
         <IconButton icon="redo" label="Redo" disabled={hist.index >= hist.history.length - 1} onClick={redo} />
         <IconButton icon="star" label="Pin this roll" disabled={!changed.length} onClick={() => setPins([{ name: `Favourite ${pins.length + 1}`, at: Date.now(), snap: snapshot() }, ...pins].slice(0, 12))} />
         <MoreMenu label="More roll actions" items={[
-          { id: 'style', label: 'Roll style theme', icon: 'type', disabled: !rollable('style-theme'), onSelect: () => roll(['style-theme']) },
-          { id: 'layout', label: 'Roll layout', icon: 'layout', disabled: !rollable('layout'), onSelect: () => roll(['layout']) },
           { id: 'revert', label: 'Back to the saved look', icon: 'x', disabled: !changed.length, onSelect: revert },
         ]} />
         <span className="fx-grow" />

@@ -1882,3 +1882,10 @@ html[data-axf-help='on'] button[data-axf-help-id], html[data-axf-help='on'] [rol
 .fx-frame[data-fx-banner-placement='bottom'] > .fx-banner { order: 99; border-top: var(--fx-border-w) solid var(--fx-border); }
 /* a bottom toolbar keeps its top rule on a phone (the phone grid puts it under the main area, above the nav strip) */
 :where([data-fx-narrow]) .fx-region--toolbar[data-pos='bottom'] { border-bottom: 0 !important; border-top: var(--fx-border-w) solid var(--fx-border) !important; }
+/* Asset overrides: a setting an asset overrides is marked in the controlled-item colour (Settings → Appearance) */
+.axf-controlled { border-inline-start: calc(var(--fx-border-w) * 3) solid var(--fx-warning); padding-inline-start: var(--fx-dens-gap-sm); }
+.axf-controlled--accent { border-inline-start-color: var(--fx-accent); }
+.axf-controlled--info { border-inline-start-color: var(--fx-info); }
+.axf-controlled--success { border-inline-start-color: var(--fx-success); }
+.axf-controlled--danger { border-inline-start-color: var(--fx-danger); }
+.axf-controlled__note { align-items: center; gap: var(--fx-dens-gap-xs); }

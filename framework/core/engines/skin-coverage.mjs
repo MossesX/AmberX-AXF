@@ -221,11 +221,11 @@ export function coverageSummary(rows) {
   return out;
 }
 
-/** Every slot a skin sets, themes included (skin@2 data: layoutTheme / colorTheme / styleTheme / assets). */
+/** Every slot a skin sets: its `assets` plus the four section presets (layoutTheme / colorTheme / styleTheme / behaviorTheme); a named section wins over an `assets` entry of that type. */
 export function skinSlotMap(skin) {
   const s = isObj(skin) ? skin : {};
   const out = { ...(isObj(s.assets) ? s.assets : {}) };
-  for (const [k, t] of [['layoutTheme', 'layout'], ['colorTheme', 'color-theme'], ['styleTheme', 'style-theme']]) if (typeof s[k] === 'string' && s[k]) out[t] = s[k];
+  for (const [k, t] of [['layoutTheme', 'layout'], ['colorTheme', 'color-theme'], ['styleTheme', 'style-theme'], ['behaviorTheme', 'behavior-theme']]) if (typeof s[k] === 'string' && s[k]) out[t] = s[k];
   return out;
 }
 

@@ -37,11 +37,14 @@ import { spacingOf } from './spacing';
 import { CUSTOM_TARGETS, customizable, normalizeCustomValues, type CustomValues } from './customize';
 import spec from '../../schemas/asset-types.json';
 import { SKIN_COLOR_SLOT, SKIN_NEVER, normalizeLookPart, resolveLookSkin, setSkinColorTheme, type AppLookDocument, type GlobalSkin, type LookPart } from './skin-rules.mjs';
-import { coverageSummary, coverageTable, partsErrors, partsTypes, skinCoversTable, skinScopeKey, skinUncoveredBy, uncoveredTypes, type CoverageRow, type CoverageSummary, type ResolvedSkin, type SkinCoversRow, type SkinScope, type TypeSpecs } from './skin-coverage.mjs';
+import { coverageSummary, coverageTable, partsErrors, partsTypes, skinCoversTable, skinScopeKey, skinSlotMap, skinUncoveredBy, uncoveredTypes, type CoverageRow, type CoverageSummary, type ResolvedSkin, type SkinCoversRow, type SkinScope, type TypeSpecs } from './skin-coverage.mjs';
 import { applyBehaviourToAsset, behaviourAxes, behaviourErrors, behaviourFieldsOf, behaviourKey, behaviourTable, behaviourTokens, behaviourValue, describeBehaviour, isBehaviourKey, mergeBehaviour, normalizeBehaviour, resolveBehaviour, type BehaviourAxis, type BehaviourDescription, type BehaviourMap, type BehaviourRow, type BehaviourSources, type BehaviourTokenInfo, type BehaviourValue } from './skin-behaviour.mjs';
 
-export { APP_LOOK_FRAME, APP_LOOK_MAX_BYTES, APP_LOOK_PROJECT, SKIN_COLOR_SLOT, SKIN_NEVER, SKIN_USES, appLookPath, backToSkin, backToSkinBehaviour, newAppLook, normalizeAppLook, normalizeScopeState, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, scopeState, setInheritSkin, setLookSlot, setScopeOverride, setScopeSkin, setSkinBehaviour, setSkinColorTheme, setUseSkin, skinBehaviourOverrides, skinColorTheme, undoRestore } from './skin-rules.mjs';
-export type { AppLookDocument, AppSkinState, GlobalSkin, LookPart } from './skin-rules.mjs';
+export { APP_LOOK_FRAME, APP_LOOK_MAX_BYTES, APP_LOOK_PROJECT, SKIN_COLOR_SLOT, SKIN_NEVER, SKIN_USES, appLookPath, backToSkin, backToSkinBehaviour, newAppLook, normalizeAppLook, normalizeScopeState, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, scopeState, setInheritSkin, setLookSlot, setScopeOverride, setScopeSkin, setSkinBehaviour, setSkinColorTheme, setUseSkin, skinBehaviourOverrides, skinColorTheme, undoRestore, RETIRED_PACKAGE_TYPES, SKIN_SCALE_TYPES, SKIN_SECTIONS, SKIN_SECTION_FIELDS, SKIN_SWAPPABLE_SECTION, isSkinSectionType, sectionOfType } from './skin-rules.mjs';
+export type { AppLookDocument, AppSkinState, GlobalSkin, LookPart, LegacyLook, LookMigrated, SkinSection } from './skin-rules.mjs';
+// look-migration@1 (skins only, Nov 10 2026): the one-run fold of the retired theme / style / layout picks and settings
+export { DESIGN_OVERRIDES_SETTING, FOLDED_PICK_TYPES, LEGACY_LOOK_KEY, LOOK_MIGRATED_KEY, LOOK_MIGRATION_FRAME, LOOK_MIGRATION_VERSION, RETIRED_LOOK_KEYS, RETIRED_LOOK_PREFIXES, foldLegacyPicks, isFoldedPickType, isRetiredLookKey, legacyLookSettings, legacyPicks, legacyThemesInForce, lookMigrated, lookNeedsMigration, migrateLook, migrateLookSettings, parseLegacyLook, resolveLegacyLook, settingsNeedMigration } from './look-migration.mjs';
+export type { FoldContext, FoldReason, FoldReport, FoldSkin, LegacyLookBackup } from './look-migration.mjs';
 // named, not `export *`: tsx links a star re-export of a .mjs module as empty when the importer is a .mts file
 export { COVERAGE_KINDS, PART_ELEMENTS, SKIN_COVERAGE_CONTRACT, SKIN_SCOPE_APP, SKIN_SCOPE_GLOBAL, SKIN_SCOPE_KINDS, coverageOf, coverageSummary, coverageTable, declarationErrors, declaredCoverage, isSubScopeKey, normalizeSkinScope, partElements, partsErrors, partsTypes, resolveSkinChain, skinScopeChain, skinScopeDomId, skinScopeKey, skinScopeKind, skinScopeOf, skinScopeSelector, uncoveredTypes } from './skin-coverage.mjs';
 export type { CoverageKind, CoverageRow, CoverageSummary, PartElement, ResolvedSkin, SkinCoversRow, SkinLike, SkinScope, SkinScopeKind, SkinScopeState, StyleTargets, TypeSpecs } from './skin-coverage.mjs';
@@ -63,6 +66,8 @@ export interface SkinData {
   layoutTheme: string;
   colorTheme: string;
   styleTheme: string;
+  /** The behaviour section's preset (skin@2 name); absent = `assets['behavior-theme']` or the app's default. */
+  behaviorTheme?: string;
   /** Appearance slot → asset id, for everything but the three themes. */
   assets: Record<string, string>;
   /** The icon pack the skin draws its icons from (icon-pack asset id); absent = the branding's. */
@@ -127,6 +132,7 @@ export function normalizeSkin(raw: unknown): SkinData {
   const id = (k: keyof typeof THEMES) => (typeof d[k] === 'string' && ID.test(d[k] as string) ? (d[k] as string) : '');
   const out: SkinData = { layoutTheme: id('layoutTheme'), colorTheme: id('colorTheme'), styleTheme: id('styleTheme'), assets: idMap(d.assets) };
   for (const t of Object.values(THEMES)) delete out.assets[t];
+  if (typeof d.behaviorTheme === 'string' && ID.test(d.behaviorTheme)) out.behaviorTheme = d.behaviorTheme;
   if (typeof d.iconPack === 'string' && ID.test(d.iconPack)) out.iconPack = d.iconPack;
   const parts = partsMap(d.parts);
   if (Object.keys(parts).length) out.parts = parts;
@@ -153,6 +159,7 @@ export function skinErrors(raw: unknown): string[] {
   if (!isObj(raw)) return ['data must be an object'];
   const errors: string[] = [];
   for (const [k, t] of Object.entries(THEMES)) if (typeof raw[k] !== 'string' || !ID.test(raw[k] as string)) errors.push(`data.${k} must be a ${t} asset id`);
+  if ('behaviorTheme' in raw && (typeof raw.behaviorTheme !== 'string' || !ID.test(raw.behaviorTheme))) errors.push('data.behaviorTheme must be a behavior-theme asset id');
   if (!isObj(raw.assets)) errors.push('data.assets must be an object (slot → asset id)');
   else for (const [t, id] of Object.entries(raw.assets)) {
     if (SKIN_NEVER.includes(t) || (Object.values(THEMES) as string[]).includes(t)) errors.push(`data.assets.${t}: a skin never sets ${t} here`);
@@ -176,9 +183,7 @@ export function skinErrors(raw: unknown): string[] {
 
 /** Every slot a skin sets, themes included. Empty ids are skipped. */
 export function skinSlots(skin: SkinData): Record<string, string> {
-  const out = { ...skin.assets };
-  for (const [k, t] of Object.entries(THEMES)) { const v = skin[k as keyof typeof THEMES]; if (v) out[t] = v; }
-  return out;
+  return skinSlotMap(skin);
 }
 
 /** A design package read as a skin: same bundle, so the Skin picker lists them without a second copy of any look. */

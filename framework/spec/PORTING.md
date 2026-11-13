@@ -148,6 +148,16 @@ Regenerate fixtures after changing a reference engine: `npx -y tsx framework/spe
 
 Build professional-skins-that-rebuild-the-whole-app (Fable) made a skin a look **and** a behaviour: `framework/core/engines/skin-behaviour.mjs` (axes declared on the registry entry or its style target, kinds choice / switch / number, `field` / `of` / `map`, `normalizeBehaviour`, `behaviourErrors`, `resolveBehaviour`, `behaviourValue`, `applyBehaviourToAsset`, `behaviourFieldsOf`, `mergeBehaviour`, `behaviourMissing`, the `--fx-bhv-*` / `data-fx-bhv-*` / `axf.behaviour.*` token names), `skin-coverage.mjs` (`behaviour` on every coverage row, `skinCoversTable`, `skinUncoveredBy`, behaviour merged along the chain in `resolveSkinChain`), `skin-rules.mjs` (`behaviour` overrides per level, `setSkinBehaviour`, `backToSkinBehaviour`, `skinBehaviourOverrides`), `skin.ts` (`behaviour` on skin data and `ComposedLook`, the picks as `axf.behaviour.<type>.<axis>` settings of the composed document) and the new `table` asset type (table@1). The runtime compiles the axes to root vars and attributes and reads them through the nearest skin scope (`behaviour`, `behaviourOf`, `withBehaviour`, `behaviourFieldsOf`, `setSkinBehaviour`); `swap('skin', …)` turns a skin on. All pinned by the `behaviour` block of `spec/fixtures/skin.json` (its own small registry under `input`, the document part on the real one) and `spec/check-skin.mts`. No Kotlin twin (Android on hold): a port carries the same pure functions, reads the same axes from `schemas/asset-types.json`, stamps the same attributes and answers `Axf.behaviour(type, axis)` the same way. Until then an Android app draws a skin's look and ignores its behaviour.
 
+## Deferred: look-migration@1 and the skin sections (Nov 10 2026)
+
+Build remove-the-old-theme-manager-style-and-layout-se (Fable): `framework/core/engines/look-migration.mjs` (the one-run
+fold of the retired theme / style / layout picks and settings into the active skin: `migrateLook`, `foldLegacyPicks`,
+`migrateLookSettings`, `legacyPicks`, `parseLegacyLook`), the `SKIN_SECTIONS` / `SKIN_SWAPPABLE_SECTION` /
+`RETIRED_PACKAGE_TYPES` / `SKIN_SCALE_TYPES` / `skinSlotMap` rules in `skin-rules.mjs`, the optional `behaviorTheme` on
+skin@1 and the `migrated` / `legacy` fields of app-look@1 have no Kotlin twin (Android on hold). A port runs the same
+fold once per profile against `spec/fixtures/look-migration.json` (`fold`, `settings`, `combined` blocks) and keeps the
+two fields through its document rules. Until then an Android app keeps reading `appearance@1` directly.
+
 ## Deferred: build-pipeline@1 route + dispatch (Nov 9 2026)
 
 `framework/core/build-pipeline.mjs` gained `pipeline.route` ('' | api | subscription: the per-build override that lets
@@ -167,6 +177,14 @@ Web only (Android on hold), Kotlin twins when the Android side resumes:
 - `console.nav` act `refresh` and `console-command@1` op `refresh` (`hard?`).
 - `ui-choices@1` (`framework/core/ui-choices.mjs`): the `choices` and `singleOption` fields of ui-review-item@1.
 
+
+## Deferred: skin stepping, banner Skins menu, asset overrides list (Nov 12 2026)
+
+Build `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides`. Web only; the Kotlin twin is deferred (Android on hold):
+- `rt.stepSkin(±1)` and `skin.use:next|prev`; the retired `swap:<style-theme|layout|behavior-theme>:next|prev` step the skin.
+- Banner right-click → Skins (every skin, `skin.use:<id>`), the Skins action-button widget hidden by default.
+- `chromeOverrideList(saved)`, `CONTROLLED_COLOR_KEY` / `controlledColorOf()` (chrome-settings-rules.mjs), actions `chrome.unset`, `chrome.edits`, `settings.controlled-colour`; spec `check-asset-overrides.mjs`.
+- look-migration@1: a folded colour pick lands as the skin's `colorTheme`, never `overrides['color-theme']` (fixture regenerated).
 
 ## Deferred: reliable console delivery + screen focus (Nov 11 2026)
 Web only (Android on hold, build `console-commands-reliable`), Kotlin twins when the Android side resumes:

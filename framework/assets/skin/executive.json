@@ -16,6 +16,7 @@
     "layoutTheme": "executive",
     "colorTheme": "executive-ivory",
     "styleTheme": "executive",
+    "behaviorTheme": "executive",
     "assets": {
       "banner": "amberx-branded",
       "app-menu": "minimal-picker",
@@ -34,7 +35,6 @@
       "settings": "standard",
       "dock-layout": "two-columns",
       "nav-style": "soft-fade",
-      "behavior-theme": "executive",
       "branding": "amberx",
       "agent-card": "license",
       "typography": "classic",

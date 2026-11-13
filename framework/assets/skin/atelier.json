@@ -1,0 +1,48 @@
+{
+  "$axf": "asset@1",
+  "type": "skin",
+  "id": "atelier",
+  "name": "Atelier",
+  "version": "1.0.0",
+  "description": "Design and creative work: a canvas-studio layout in orchid mist, soft studio controls with glass panels, a design-studio nav and fluid motion. Roomy enough to think in.",
+  "author": "AmberX AXF",
+  "tags": [
+    "creative",
+    "glass",
+    "studio",
+    "skin",
+    "professional",
+    "partial"
+  ],
+  "data": {
+    "layoutTheme": "canvas-studio",
+    "colorTheme": "orchid-mist",
+    "styleTheme": "soft-studio",
+    "behaviorTheme": "fluid",
+    "assets": {
+      "banner": "amberx-accent",
+      "app-menu": "standard-desktop",
+      "nav-menu": "design-studio",
+      "button": "glass-air",
+      "dialog": "glass-air",
+      "context-menu": "glass-flyout",
+      "toolbar": "minimal-glass",
+      "container": "frosted-glass",
+      "typography": "standard",
+      "density": "roomy",
+      "sizing": "standard"
+    },
+    "preview": {
+      "caption": "Canvas studio, soft glass, fluid motion."
+    },
+    "extras": {
+      "hidden": {
+        "toolbar": false,
+        "nav-menu": false,
+        "banner": false,
+        "app-menu": false
+      }
+    },
+    "iconPack": "amberx-outline"
+  }
+}

@@ -1604,6 +1604,7 @@
       "optional_fields": {
         "preview": "{ caption, image }: what the picker shows",
         "extras": "{ spacing: tight | compact | regular, hidden: asset type → true / false, settings: appearance settings key → value }",
+        "behaviorTheme": "behavior-theme asset id — the preset of the skin's behaviour section (skins only, Nov 10 2026); absent = today's behaviour",
         "iconPack": "icon-pack asset id — the icon pack the skin draws with (sets axf.icons.pack.<scope>); absent = the branding's",
         "parts": "{ <asset type>: { <customize token>: value } } — style parts for any type with a style target (schemas/customize.json): the type's box, text, icon and items under this skin",
         "behaviour": "{ <asset type>: { <axis>: value } } — the behaviour pick per type with behaviour axes (the `behaviour` block of its registry entry, kinds choice | switch | number). Unset = the asset's own field where the axis layers on one, else today's behaviour. Compiles to --fx-bhv-<type>-<axis> tokens, data-fx-bhv-* root attributes and axf.behaviour.<type>.<axis> runtime values; the user's per-row overrides (axf.chrome.<type>.<instance>) still win."

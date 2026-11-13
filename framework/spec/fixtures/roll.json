@@ -8,7 +8,6 @@
     "nav-menu": true,
     "context-menu": false,
     "tab-group": true,
-    "table": true,
     "dialog": true,
     "popup": true,
     "button": true,
@@ -16,6 +15,7 @@
     "container": true,
     "gauge": true,
     "meter": true,
+    "table": true,
     "banner": true,
     "clock": false,
     "search-bar": false,
@@ -245,13 +245,6 @@
           "underline",
           "warm-craft"
         ],
-        "table": [
-          "command",
-          "executive",
-          "field",
-          "standard",
-          "studio-pro"
-        ],
         "dialog": [
           "amber-signature",
           "boardroom",
@@ -418,6 +411,13 @@
           "segments",
           "steps",
           "striped-pill"
+        ],
+        "table": [
+          "command",
+          "executive",
+          "field",
+          "standard",
+          "studio-pro"
         ],
         "banner": [
           "amberx-accent",
@@ -680,13 +680,6 @@
           "underline",
           "warm-craft"
         ],
-        "table": [
-          "command",
-          "executive",
-          "field",
-          "standard",
-          "studio-pro"
-        ],
         "dialog": [
           "amber-signature",
           "boardroom",
@@ -853,6 +846,13 @@
           "segments",
           "steps",
           "striped-pill"
+        ],
+        "table": [
+          "command",
+          "executive",
+          "field",
+          "standard",
+          "studio-pro"
         ],
         "banner": [
           "amberx-accent",
@@ -1121,13 +1121,6 @@
           "underline",
           "warm-craft"
         ],
-        "table": [
-          "command",
-          "executive",
-          "field",
-          "standard",
-          "studio-pro"
-        ],
         "dialog": [
           "amber-signature",
           "boardroom",
@@ -1294,6 +1287,13 @@
           "segments",
           "steps",
           "striped-pill"
+        ],
+        "table": [
+          "command",
+          "executive",
+          "field",
+          "standard",
+          "studio-pro"
         ],
         "banner": [
           "amberx-accent",
@@ -1556,13 +1556,6 @@
           "underline",
           "warm-craft"
         ],
-        "table": [
-          "command",
-          "executive",
-          "field",
-          "standard",
-          "studio-pro"
-        ],
         "dialog": [
           "amber-signature",
           "boardroom",
@@ -1729,6 +1722,13 @@
           "segments",
           "steps",
           "striped-pill"
+        ],
+        "table": [
+          "command",
+          "executive",
+          "field",
+          "standard",
+          "studio-pro"
         ],
         "banner": [
           "amberx-accent",
@@ -1962,13 +1962,6 @@
           "underline",
           "warm-craft"
         ],
-        "table": [
-          "command",
-          "executive",
-          "field",
-          "standard",
-          "studio-pro"
-        ],
         "dialog": [
           "amber-signature",
           "boardroom",
@@ -2135,6 +2128,13 @@
           "segments",
           "steps",
           "striped-pill"
+        ],
+        "table": [
+          "command",
+          "executive",
+          "field",
+          "standard",
+          "studio-pro"
         ],
         "banner": [
           "amberx-accent",
@@ -2397,13 +2397,6 @@
           "underline",
           "warm-craft"
         ],
-        "table": [
-          "command",
-          "executive",
-          "field",
-          "standard",
-          "studio-pro"
-        ],
         "dialog": [
           "amber-signature",
           "boardroom",
@@ -2570,6 +2563,13 @@
           "segments",
           "steps",
           "striped-pill"
+        ],
+        "table": [
+          "command",
+          "executive",
+          "field",
+          "standard",
+          "studio-pro"
         ],
         "banner": [
           "amberx-accent",

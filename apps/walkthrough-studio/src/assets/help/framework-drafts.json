@@ -336,6 +336,76 @@
         "title": "Change",
         "text": "Opens Where the skin applies: give one screen or plugin its own skin, switch skins off inside it, or let it inherit again; and see what a skin covers.",
         "kind": "button"
+      },
+      {
+        "target": "action:skin.off",
+        "title": "Skin off",
+        "text": "Shows “Skin off”.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "action:dialog:axf.settings.skin",
+        "title": "Skin picker",
+        "text": "Shows “Skin picker”.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "controlled-item-colour",
+        "title": "Controlled item colour",
+        "text": "Where you set “Controlled item colour”. Change it and the app uses the new value.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "asset-controlled-by-own-settings",
+        "title": "asset controlled by own settings",
+        "text": "Opens the asset controlled by own settings.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "changed",
+        "title": "· changed",
+        "text": "Shows “· changed”.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "asset-settings",
+        "title": "Asset settings",
+        "text": "Opens the asset settings.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "reset-all",
+        "title": "Reset all",
+        "text": "Resets all. Your own changes go.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "tap-to-confirm-touch",
+        "title": "Tap to confirm (touch)",
+        "text": "Where you set “Tap to confirm (touch)”. Change it and the app uses the new value.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "menu",
+        "title": "Menu",
+        "text": "Opens the menu.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "restore-to-default",
+        "title": "Restore to default",
+        "text": "Restores to default. What is there now is kept in the history.",
+        "kind": "button",
+        "draft": true
       }
     ],
     "intros": []

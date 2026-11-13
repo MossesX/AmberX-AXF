@@ -68,7 +68,8 @@
       "positions": [
         "left",
         "right",
-        "top"
+        "top",
+        "bottom"
       ],
       "via": "layout",
       "field": "nav"

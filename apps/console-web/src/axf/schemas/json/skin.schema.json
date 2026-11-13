@@ -45,6 +45,11 @@
         "colorTheme": {},
         "styleTheme": {},
         "assets": {},
+        "behaviorTheme": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]*$",
+          "description": "behavior-theme asset id: the preset of the skin behaviour section"
+        },
         "iconPack": {
           "type": "string",
           "pattern": "^[a-z0-9][a-z0-9-]*$",

@@ -1,0 +1,48 @@
+{
+  "$axf": "asset@1",
+  "type": "skin",
+  "id": "clinic",
+  "name": "Clinic",
+  "version": "1.0.0",
+  "description": "Healthcare and service desks: a calm top-portal layout in porcelain whites, large readable type, roomy touch targets and gentle, steady motion. Built for shared screens and long shifts.",
+  "author": "AmberX AXF",
+  "tags": [
+    "healthcare",
+    "calm",
+    "touch",
+    "skin",
+    "professional",
+    "partial"
+  ],
+  "data": {
+    "layoutTheme": "portal-top",
+    "colorTheme": "porcelain",
+    "styleTheme": "humanist",
+    "behaviorTheme": "calm",
+    "assets": {
+      "banner": "amberx-accent",
+      "app-menu": "minimal-picker",
+      "nav-menu": "essentials-list",
+      "button": "touch-friendly",
+      "dialog": "bottom-sheet",
+      "context-menu": "touch-large",
+      "toolbar": "touch-dock",
+      "container": "soft-card",
+      "typography": "reader",
+      "density": "roomy",
+      "sizing": "touch"
+    },
+    "preview": {
+      "caption": "Calm porcelain, large type, touch-sized."
+    },
+    "extras": {
+      "hidden": {
+        "toolbar": false,
+        "nav-menu": false,
+        "banner": false,
+        "app-menu": false
+      }
+    },
+    "iconPack": "amberx-outline"
+  }
+}

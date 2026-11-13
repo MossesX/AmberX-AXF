@@ -52,4 +52,4 @@ export { TapConfirmChoice } from './components/TapConfirmChoice';
 export { RefText, REFS_SETTING, addRefSource, refSourcesChanged, refIndexOf, openRef, refLink, type RefTextProps, type RefHow } from './components/RefText';
 export { TabGroup, useTabGroupData, tabGroupDataFor, type TabDef, type TabGroupProps } from './components/TabGroup';
 export { BannerWidgetsPanel, BannerMore, bannerItemAttrs, bannerWidgetsDialog, useBannerOverflow } from './components/BannerWidgets';
-export { CHROME_SETTINGS_DIALOG, CHROME_PICK_DIALOG, CHROME_APP_INSTANCE, CHROME_ACTION_IDS, ChromeSettingsPanel, ChromeAssetPicker, chromeDialogs, chromeMenu, chromeSettingsUi, installChrome, moveChrome, setChromeField, swapChrome } from './components/ChromeContext';
+export { CHROME_SETTINGS_DIALOG, CHROME_PICK_DIALOG, CHROME_APP_INSTANCE, CHROME_ACTION_IDS, AssetsWithEdits, ChromeSettingsPanel, ChromeAssetPicker, chromeDialogs, chromeMenu, chromeSettingsUi, installChrome, moveChrome, setChromeField, swapChrome } from './components/ChromeContext';

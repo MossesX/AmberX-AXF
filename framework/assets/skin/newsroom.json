@@ -1,0 +1,48 @@
+{
+  "$axf": "asset@1",
+  "type": "skin",
+  "id": "newsroom",
+  "name": "Newsroom",
+  "version": "1.0.0",
+  "description": "Editorial and publishing: a document-reader layout in mono paper, Swiss grid controls, reader typography and a review-flow toolbar. Quiet motion keeps the attention on the text.",
+  "author": "AmberX AXF",
+  "tags": [
+    "editorial",
+    "reader",
+    "swiss",
+    "skin",
+    "professional",
+    "partial"
+  ],
+  "data": {
+    "layoutTheme": "document-reader",
+    "colorTheme": "mono-paper",
+    "styleTheme": "swiss",
+    "behaviorTheme": "quiet",
+    "assets": {
+      "banner": "amberx-thin",
+      "app-menu": "standard-desktop",
+      "nav-menu": "text-only",
+      "button": "swiss-grid",
+      "dialog": "side-drawer",
+      "context-menu": "reader-minimal",
+      "toolbar": "review-flow",
+      "container": "swiss-grid",
+      "typography": "reader",
+      "density": "standard",
+      "sizing": "standard"
+    },
+    "preview": {
+      "caption": "Paper and ink, Swiss grid, reader type."
+    },
+    "extras": {
+      "hidden": {
+        "toolbar": false,
+        "nav-menu": false,
+        "banner": false,
+        "app-menu": false
+      }
+    },
+    "iconPack": "amberx-outline"
+  }
+}
