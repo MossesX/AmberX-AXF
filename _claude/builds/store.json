@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4522,
- "updatedAt": "2026-11-13T17:34:09.789Z",
+ "rev": 4523,
+ "updatedAt": "2026-11-13T17:34:21.976Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -191478,6 +191478,43 @@
    },
    "queue": null,
    "defaultAt": "2026-11-12T10:53:18.716Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "builds-get-console-token-banner-alert",
+   "title": "Builds get the console token + banner alert when UI Review submit fails",
+   "category": "pipeline",
+   "detail": "Many headless builds report no AXF_TOKEN / AXF_CONSOLE_URL so UI Review submits are refused and shots stay stuck in worktrees, silently.\n1. Launcher (claude-headless.sh / dispatcher / agent-slots) passes AXF_CONSOLE_URL and a scoped build console token (vault, never logged) into every build session.\n2. Headless screenshot tool authenticates to console/axHub (fix 'Waiting for axHub' and 401).\n3. Any failed UI Review submit, missing token, or stuck shots raises a banner alert immediately (errors banner), not just a line in the report.\n4. Re-submit stuck shots found in /root/axf-builds and /root/axf-review-shots.\n5. Tests, Shipped features.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-13T17:34:18.599Z",
+   "updatedAt": "2026-11-13T17:34:18.599Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 790
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
