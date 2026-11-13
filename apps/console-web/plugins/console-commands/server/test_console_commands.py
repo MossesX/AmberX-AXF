@@ -467,5 +467,32 @@ eq((awake_got[-1]["target"], awake_got[-1].get("focus"), j.get("focus")), ("buil
 j = svc.run({"op": "act", "target": "console.screens", "path": "build-orchestrator", "action": "open", "input": {"focus": "queue"}}, ["*"], "mcp")
 eq(awake_got[-1].get("focus"), "queue", "input.focus")
 
+# console first (drive-live-console-first): open_url reaches the live console; live-only never queues or wakes
+j = client.post("/api/console/open-url", json={"url": "https://axhub.amberxai.com/auth/admin/approvals/c_9", "live": True, "popup": True, "by": "axhub"}).json()
+eq((j["status"], awake_got[-1]["op"], awake_got[-1]["url"], awake_got[-1].get("arg")), ("delivered", "url", "https://axhub.amberxai.com/auth/admin/approvals/c_9", "popup"), f"open-url → the live console ({j.get('delivery')})")
+eq(client.post("/api/console/open-url", json={"url": "https://evil.com/"}).status_code, 403, "another site is refused")
+eq(client.post("/api/console/open-url", json={"url": "http://console.amberxai.com/"}).status_code, 422, "http is refused")
+eq(client.post("/api/console/open-url", json={}).status_code, 422, "no url is refused")
+for cid in [c["id"] for c in client.get("/api/console/clients").json()["items"]]:
+    client.post("/api/console/bye", json={"client": cid})
+woken, queued = len(WOKEN), len(client.get("/api/console/queue").json()["items"])
+t0 = time.time()
+r = client.post("/api/console/open-url", json={"url": "https://amberxai.com/", "live": True})
+j = r.json()
+eq((r.status_code, j.get("noConsole"), j.get("status")), (404, True, "failed"), f"live only, nothing open → noConsole at once ({j.get('message')})")
+ok(time.time() - t0 < 5, "and without waiting for a console")
+time.sleep(cc.WAKE_AFTER_S + 0.3)
+eq((len(WOKEN), len(client.get("/api/console/queue").json()["items"])), (woken, queued), "nothing queued, no AmberX wake")
+# a live console that never answers (a frozen tab): live only fails over to nobody, not to the queue
+client.post("/api/console/hello", json={"client": "frozen-0001", "catalog": CATALOG, "used": True})
+r = cc.run({"op": "act", "target": "console.nav", "path": "here", "action": "open_url", "input": {"url": "https://amberxai.com/", "live": True}}, ["*"], "axhub", cc.OWNER)
+eq((r["ok"], r.get("noConsole"), r["delivery"].get("tried")), (False, True, ["frozen-0001"]), f"a frozen console: noConsole after trying it ({r.get('message')})")
+time.sleep(cc.WAKE_AFTER_S + 0.3)
+eq(len(WOKEN), woken, "still no wake")
+# without live, open_url queues like any navigate command (and the console opens it when it connects)
+client.post("/api/console/bye", json={"client": "frozen-0001"})
+r = cc.run({"op": "act", "target": "console.nav", "path": "here", "action": "open_url", "input": {"url": "https://console.amberxai.com/?view=builds"}}, ["*"], "Amber", cc.OWNER, wait=0.5)
+eq((r.get("queued"), r["status"]), (True, "pending"), "open_url without live is queued")
+
 print(f"✓ console commands server — {checks} checks", flush=True)
 os._exit(0)  # the fake consoles' streams are still open

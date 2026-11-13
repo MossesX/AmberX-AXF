@@ -7,12 +7,13 @@
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Tell Amber (any Claude session) to load a screen and your open console goes there: open any screen, dialog or settings tab (sub-tabs too) by id, title or a few words, run any registered action, go back or home, and list what the console has. The control@1 console domain over REST (/api/console), MCP tools console_open, console_dialog, console_settings, console_action, console_back, console_where, console_list and console_clients on the console's /mcp (and through axHub), and the CLI `axf console …`. Opening and moving only navigate; an action that changes data keeps its own permission, and one that deletes or resets needs a confirm token. Commands go to the console you used last (or all of them, or one).",
+  "description": "Tell Amber (any Claude session) to load a screen and your open console goes there: open any screen, dialog or settings tab (sub-tabs too) by id, title or a few words, run any registered action, go back or home, open one of your own amberxai.com pages right in the console (an axHub approval in its Approve / Deny dialog), and list what the console has. The control@1 console domain over REST (/api/console), MCP tools console_open, console_dialog, console_settings, console_action, console_back, console_where, console_list, console_clients and console_open_url on the console's /mcp (and through axHub), and the CLI `axf console …`. Opening and moving only navigate; an action that changes data keeps its own permission, and one that deletes or resets needs a confirm token. Commands go to the console you used last (or all of them, or one).",
   "targets": [
     "axf-console"
   ],
   "provides": [
     "settings-tab:console-commands",
+    "dialog:console-commands.open-url",
     "service:console-commands@1"
   ],
   "scopes": [

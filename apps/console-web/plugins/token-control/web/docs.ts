@@ -133,6 +133,7 @@ Reads are marked read-only, removes destructive. A failure raises a tool error w
 | run an action | \`console_action {action: "terminal.open"}\` | \`POST /api/console/action {"id": …}\` | \`axf console action terminal.open\` |
 | back / home / close | \`console_back {move: "back"}\` | \`POST /api/console/back\` | \`axf console back\` |
 | reload the page | \`console_refresh {hard?}\` | \`POST /api/console/refresh\` | \`axf console refresh [--hard]\` |
+| show one of Brett's pages here | \`console_open_url {url, live?}\` | \`POST /api/console/open-url {"url": …}\` | \`axf console open-url <url> [--live]\` |
 | where is it | \`console_where\` | \`GET /api/console/where\` | \`axf console where\` |
 | what can it open | \`console_list {kind: "screens", q: "build"}\` | \`GET /api/console/list?kind=screens&q=build\` | \`axf console list screens build\` |
 

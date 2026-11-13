@@ -2280,5 +2280,11 @@
     "wave": 1,
     "module": "app-console",
     "notes": "11 sections (orchestrator, dispatcher, watchdog, shipped, account failover, landing, merge queue, nightly deploy, backups, health monitor, notification rules), one owner each from the crew; registry agents/sections.json, reassign in Settings → Agent swarm → Section owners; posts start/done/failed/blocked/waiting as the owner, respects the chat switch, deduped; crew-say.mjs check in CI. Kotlin twin deferred."
+  },
+  "cx.consolefirst": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "Build drive-live-console-first (Nov 13 2026). control@1 console.nav act open_url + console-command@1 op url (consoleOwnUrl, consoleUrlRoute); MCP console_open_url, REST POST /api/console/open-url, CLI axf console open-url; input.live = never queued or woken. The console opens its own ?view / ?dialog / ?settings in place, axHub approval links in approvals.view / approvals.popup (Approve / Deny), anything else in a tab (a one-tap Open dialog when the browser blocks it). axHub PR #44: amberx.open_url tries the live console first; new approvals and held calls pop up there; needs AXHUB_CONSOLE_URL + AXHUB_CONSOLE_TOKEN. Kotlin twin deferred (PORTING.md)."
   }
 }

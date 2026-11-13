@@ -18,6 +18,11 @@
  * after it was sent (the tab was asleep and the server moved on) is skipped, not run twice. A screen command can carry
  * `focus` (a tab or an item); the screen's own `<screen>.focus:<focus>` action brings it forward.
  *
+ * Console first (drive-live-console-first, Nov 13 2026): op `url` opens one of Brett's own pages here instead of on his
+ * phone (consoleUrlRoute): the console's own ?view= / ?dialog= / ?settings= in place, an axHub approval in its approvals
+ * dialog (approvals.view, or approvals.popup for a new one the hub pushed), any other page in a new tab. A browser that
+ * blocks a tab nobody clicked for gets the `console-commands.open-url` dialog instead: one tap opens it.
+ *
  * Settings → Plugins → Console commands: on / off for this console, a toast per command, waking through AmberX, how long
  * a command waits, the browser AmberX opens, the open consoles, waiting and last commands.
  */
@@ -29,11 +34,13 @@ import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
 import './console-commands.css';
-import { CONSOLE_FIELD_TYPES, CONSOLE_HEARTBEAT_MS, consoleCatalogFrom, consoleFieldValue, consoleMessageErrors, consoleMessageLate, type ConsoleHere, type ConsoleMessage } from '@console/axf/core/engines/console-commands.mjs';
+import { CONSOLE_FIELD_TYPES, CONSOLE_HEARTBEAT_MS, consoleCatalogFrom, consoleFieldValue, consoleMessageErrors, consoleMessageLate, consoleUrlRoute, type ConsoleHere, type ConsoleMessage } from '@console/axf/core/engines/console-commands.mjs';
+import { HUB_DEFAULT, normalizeHub } from '@console/axf/libs/hub/hub';
 
 const FOLDER = 'console-commands';
 const ID = 'ai.amberx.axf.console.console-commands';
 const KEYS = { on: 'console-commands.enabled', toast: 'console-commands.toast' } as const;
+const OPEN_URL_DIALOG = 'console-commands.open-url';
 const HEARTBEAT_MS = CONSOLE_HEARTBEAT_MS;
 /** The server sends a keep-alive every 15 s: nothing for this long = the stream is dead without saying so. */
 const STREAM_IDLE_MS = 45_000;
@@ -150,6 +157,62 @@ async function reloadPage(hard: boolean): Promise<void> {
   location.reload();
 }
 
+/** axHub's address (the console's /api/me, AXF_WALL_HUB on the server), read once; the default until it answers. */
+let hubOrigin = HUB_DEFAULT;
+let hubAsked = false;
+function learnHub(): void {
+  if (hubAsked) return;
+  hubAsked = true;
+  void fetch('/api/me', { cache: 'no-store', credentials: 'same-origin' }).then((r) => r.json()).then((j: { hub?: string }) => { const h = normalizeHub(j.hub); if (h) hubOrigin = h; }, () => undefined);
+}
+
+/** A new tab for a page nobody clicked for; → false when the browser blocked it. The opener link is cut. */
+function openTab(url: string): boolean {
+  const w = window.open(url, '_blank');
+  if (!w) return false;
+  try { w.opener = null; } catch { /* cross-origin already */ }
+  return true;
+}
+
+/** op url: one of Brett's own pages, here (consoleUrlRoute says where). */
+function runUrl(rt: AxfRuntime, m: ConsoleMessage, history: string[]): [boolean, string] {
+  const r = consoleUrlRoute(m.url, { console: window.location.origin, hub: hubOrigin }, { popup: m.arg === 'popup' });
+  if (r.error !== undefined) return [false, r.error];
+  const named = m.label && m.label !== r.url ? m.label : '';
+  const tab = (): [boolean, string] => {
+    if (openTab(r.url)) return [true, `opened ${named || r.label} in a new tab`];
+    rt.openDialog(OPEN_URL_DIALOG, { url: r.url, label: named });
+    return [true, `the browser held back a new tab: tap Open to see ${named || 'the page'}`];
+  };
+  switch (r.how) {
+    case 'here': return [true, 'the console is already open here'];
+    case 'screen': case 'dialog': case 'settings':
+      return runMessage(rt, { ...m, op: 'open', kind: r.how, target: r.target, label: r.label, anchor: r.anchor, arg: r.arg }, history);
+    case 'action': {
+      const id = r.spec!.split(':')[0]!;
+      // the approvals plugin isn't installed here (or this role can't): the page itself, in a tab
+      if (!rt.actions.list().some((a) => a.id === id)) return tab();
+      return rt.dispatch(r.spec!) ? [true, `showing ${r.label}`] : tab();
+    }
+    default: return tab();
+  }
+}
+
+/** Opens a page the browser didn't let the console open by itself: one tap (a click is what browsers allow). */
+function OpenUrlDialog({ url, label }: { url: string; label: string }) {
+  const rt = useRuntime();
+  return (
+    <div className="fx-stack">
+      <p>Amber wants to show you {label ? <strong>{label}</strong> : 'a page'}. Your browser only opens new tabs on a tap.</p>
+      <p className="axf-cc__id">{url}</p>
+      <div className="fx-row fx-row--end" role="toolbar" aria-label="Open the page">
+        <Button tone="ghost" onClick={() => rt.closeDialog()}>Not now</Button>
+        <Button tone="primary" icon="external" onClick={() => { openTab(url); rt.closeDialog(); }}>Open</Button>
+      </div>
+    </div>
+  );
+}
+
 /** Run one message; → [ok, what happened]. */
 function runMessage(rt: AxfRuntime, m: ConsoleMessage, history: string[]): [boolean, string] {
   const errors = consoleMessageErrors(m);
@@ -194,6 +257,7 @@ function runMessage(rt: AxfRuntime, m: ConsoleMessage, history: string[]): [bool
       return [true, `closed ${m.label ?? open.id}`];
     }
     case 'home': rt.navigate(rt.manifest.startView ?? 'home'); return [true, `went home (${rt.getState().view})`];
+    case 'url': return runUrl(rt, m, history);
     case 'refresh': return [true, m.hard ? 'hard reloading (caches cleared)' : 'reloading']; // after the ack: see reloadPage
     case 'back': {
       if (rt.getState().dialog) { rt.closeDialog(); return [true, 'closed the dialog']; }
@@ -215,6 +279,7 @@ function ConsoleCommandsClient() {
   useEffect(() => {
     if (!on || typeof window === 'undefined') return;
     const id = clientId();
+    learnHub();
     // Inside a host (Molly) this console says so: app `molly/console-web`, and whether the host shows its frame now
     // (`front`), so a command for "the console Brett is using" comes here only while he can see it.
     const host = rt.embedded?.host ?? '';
@@ -385,7 +450,7 @@ function ConsolesPanel() {
         )}
       </Container>
       <Note tone="info">
-        Claude sessions call <code>console_open</code>, <code>console_settings</code>, <code>console_dialog</code>, <code>console_action</code>, <code>console_back</code>, <code>console_where</code>, <code>console_list</code> and <code>console_clients</code> (the console's MCP, also through axHub). REST: <code>POST /api/console/open</code> with <code>{'{"screen": "plan studio"}'}</code>. CLI: <code>axf console open plan studio</code>.
+        Claude sessions call <code>console_open</code>, <code>console_settings</code>, <code>console_dialog</code>, <code>console_action</code>, <code>console_back</code>, <code>console_where</code>, <code>console_list</code>, <code>console_clients</code> and <code>console_open_url</code> (the console's MCP, also through axHub; axHub's <code>amberx.open_url</code> comes here first and uses the phone only when no console answers). REST: <code>POST /api/console/open</code> with <code>{'{"screen": "plan studio"}'}</code>. CLI: <code>axf console open plan studio</code>.
       </Note>
     </div>
   );
@@ -398,6 +463,9 @@ export const plugin: AxfWebLibrary = {
   builtWith: { model: 'opus', builtAt: '2026-11-03' },
   appMenu,
   slots: { 'app.frame.cover': [{ id: 'console-commands.client', order: 99, render: () => <ConsoleCommandsClient /> }] },
+  dialogs: {
+    [OPEN_URL_DIALOG]: { title: 'Open a page', icon: 'external', render: (p) => <OpenUrlDialog url={typeof p.url === 'string' ? p.url : ''} label={typeof p.label === 'string' ? p.label : ''} /> },
+  },
   settingsTabs: [{ id: FOLDER, label: 'Console commands', icon: 'radio', order: 92, parent: 'plugins', description: 'Let Claude sessions open screens, dialogs and settings in this console' }],
   settings: [{
     id: 'console-commands.prefs', label: 'Console commands', icon: 'radio', tab: FOLDER, order: 10,

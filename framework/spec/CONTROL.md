@@ -64,7 +64,7 @@ builds store; every write journalled). Verbs are the orchestrator's own actions 
 **Console** (`console.*`, build console-commands, Nov 3 2026): Brett tells a Claude session "open Plan Studio" and his open console
 goes there. `console.screens`, `console.dialogs` and `console.settings` (tabs and sub-tabs, `plugins/<id>`) take `act open` with
 `path` = the id, the title or words to search for; `console.actions` takes `act run` (input `args`); `console.nav` (path `here`)
-takes `get` (where the console is) and `act back | home | close`; `console.clients` lists the consoles open for the caller. Every
+takes `get` (where the console is) and `act back | home | close | refresh | open_url`; `console.clients` lists the consoles open for the caller. Every
 list and resolve runs against the catalog the open consoles report (their search index: views, settings tabs, dialogs, actions),
 so plugins' screens are found too. Every act takes `input.to`: `recent` (default, the console Brett is looking at: a client in front wins, then the one used last), `all`, or a client id.
 A console inside a host says so (Nov 3 2026, build `molly-console-commands`): `app: molly/console-web`, `host: molly`, and `front` (its page is visible
@@ -88,6 +88,18 @@ used last; no ack within 3.5 s → the next live console of the same app (up to 
 beats again. Nobody answered: a navigate-only command is queued and AmberX is asked at once; a command that changes data is not
 re-sent and answers `failed`. A console that gets a live command more than `CONSOLE_LATE_MS` (30 s) after it was sent skips it
 (`consoleMessageLate`) and acks `skipped`; a late ack from the console asked first settles the queued copy (`how: late ack`).
+
+Console first (build drive-live-console-first, Nov 13 2026). `console.nav` act `open_url` (input `url`; MCP `console_open_url`, REST
+`POST /api/console/open-url {url, live?, popup?}`, CLI `axf console open-url <url> [--live]`) shows one of Brett's own pages
+(`consoleOwnUrl`: https on amberxai.com or a subdomain, no user info, port 443, 2000 characters) in the open console, as
+console-command@1 op `url`. The console routes it with `consoleUrlRoute`: its own `?view=` / `?dialog=` (`&arg=`) / `?settings=`
+(`&anchor=`) in place, its bare root = already here, an axHub approval link (`<hub>/auth/admin/approvals/<id>`) to
+`approvals.view:<id>` (the approvals dialog with Approve / Deny; `approvals.veto` for a held call) or, with `popup`, to
+`approvals.popup:<id>` (once, unless pop-ups are off in that browser), the approvals list to `approvals.check`, anything else in a new
+tab (a browser that blocks a tab nobody clicked for gets a one-tap Open dialog). Another site answers `denied`. `input.live: true`
+= a console open now or nothing: never queued, never woken; no console (or none acking) answers `noConsole: true` at once. axHub
+uses exactly that: `amberx.open_url` asks the console live first and launches the page on the phone only when it comes back
+`noConsole`, and it sends each new approval request and held call as a `popup` (axHub `AXHUB_CONSOLE_URL` + `AXHUB_CONSOLE_TOKEN`).
 Every act answer carries `status`: `delivered` (a console acked it as done) · `pending` (nobody acked yet) · `failed`, and
 `delivery.tried` (the consoles asked, in turn) with `delivery.how` `live` · `after retry` · the ones above.
 Single settings (build full-voice-and-ai-control, Nov 13 2026): every console reports each setting with a value as a catalog item of kind
@@ -303,7 +315,7 @@ for token set / reset, `all` for every other write, `null` for the pass target) 
 | Tool kind | Policy | Why |
 |---|---|---|
 | `readOnlyHint: true` (every `*_list`, `*_get`, `*_status`, `*_find`, `overview`, `build_queue`, `build_next`, `pending_list`, `pending_steps`, `project_*` reads, `tracker_summary`, `libraries`, `build_options`, `app_validate`, `terminal_tail`, `pass_status`, `token_pass_status`) | **allow**: run at once, no veto | they change nothing; `apps/console-web/server/test_mcp_tools.py` fails CI if a read tool loses the hint |
-| navigation (`console_open`, `console_dialog`, `console_settings`, `console_back`, `console_refresh`, `console_show`, `console_follow`: `readOnlyHint: true`) | **allow**: run at once, no veto | they only open or move the screen, never change data (Brett, Nov 3 2026: navigation never waits 90 s); `console_action` stays a write because an action can change data |
+| navigation (`console_open`, `console_dialog`, `console_settings`, `console_back`, `console_refresh`, `console_open_url`, `console_show`, `console_follow`: `readOnlyHint: true`) | **allow**: run at once, no veto | they only open or move the screen, never change data (Brett, Nov 3 2026: navigation never waits 90 s); `console_action` stays a write because an action can change data |
 | writes (`readOnlyHint: false`, `destructiveHint: false`) | **veto** (90 s), skipped while an `all` pass (or a narrow pass covering the call) is on | normal changes |
 | `destructiveHint: true` (`control_remove`, `amberx_remove`) | **confirm**; skipped while an `all` pass is on, unless the call is irreversible and the pass doesn't include irreversible | deletes; the runner applies the same rule to its confirm token |
 | `pass_grant`, `token_pass_grant` | **approval** (straight, not veto), forwarded as the signed approval above; never skipped | a pass must trace to Brett |
