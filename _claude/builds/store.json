@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4063,
- "updatedAt": "2026-11-13T06:54:11.582Z",
+ "rev": 4064,
+ "updatedAt": "2026-11-13T06:54:48.510Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -178502,7 +178502,7 @@
    "title": "Skins plugin: its own removable console plugin and screen for changing skins. Gallery of every skin with live preview (desktop and phone), one-tap Use skin, Back and Restore to Default with undo, per-scope switching (whole hub, one app, one screen, one plugin), a quick skin switcher on the banner an",
    "category": "",
    "detail": "",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -178510,7 +178510,7 @@
    "pr": "#553",
    "priority": "P0",
    "createdAt": "2026-11-13T06:25:11.720Z",
-   "updatedAt": "2026-11-13T06:53:04.958Z",
+   "updatedAt": "2026-11-13T06:54:46.819Z",
    "builtAt": "",
    "notes": [
     {
@@ -178560,6 +178560,10 @@
     {
      "text": "Session on mossesx-max- stopped on its own with 18 steps left: back in Pending for Brett.",
      "at": "2026-11-13T06:53:04.958Z"
+    },
+    {
+     "text": "Headless run axf-skins-plugin-its-own-removable-console-plugin-an--paulie: brief only · start 13.3K tokens ($0.07) · cost $10.51 · 108 turns · 6 tools, MCP none",
+     "at": "2026-11-13T06:54:46.819Z"
     }
    ],
    "approvals": [
@@ -179132,7 +179136,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 69,
+   "rev": 70,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
