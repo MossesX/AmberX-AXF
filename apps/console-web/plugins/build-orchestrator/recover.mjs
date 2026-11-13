@@ -170,7 +170,12 @@ export function run(opts = {}) {
   const go = () => {
     const policy = policyOf(settings);
     const l = liveness({ ...(opts.facts ?? {}), now: opts.now ?? Date.now() });
-    const actions = R.plan(...planArgs(l), policy);
+    const t = Date.parse(at);
+    const liveNames = new Set(l.sessions.filter((s) => s.alive).map((s) => s.name));
+    const young = (id) => { const s = l.slots.running.find((x) => x.id === id); return !!s && t - Date.parse(s.startedAt || s.enqueuedAt || 0) < policy.graceMs; };
+    // a slot whose session still runs, or that was taken a moment ago, is not leaked: its build record is only behind
+    // (the dispatcher takes the slot before it marks the build running); never free a slot under a live session
+    const actions = R.plan(...planArgs(l), policy).filter((a) => a.action !== 'release-slot' || (!liveNames.has(a.session) && !young(a.slot)));
     const out = { ...base, ran: true, actions };
     if (opts.dryRun || !actions.length) return out;
     const kill = opts.kill ?? tmuxKill; const release = opts.release ?? releaseSlot;
