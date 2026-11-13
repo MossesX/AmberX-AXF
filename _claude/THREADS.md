@@ -785,8 +785,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 10:41 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` s10 done (all) · orchestrator
-- 2026-11-13 10:41 UTC · `android-approval-overlay-a-small-always-on-float` added (0 steps) (all) · console
 - 2026-11-13 10:41 UTC · `android-approval-overlay-a-small-always-on-float` → queued, note (all) · console
 - 2026-11-13 10:41 UTC · `every-skin-ships-a-light-and-a-dark-colour-theme-studio-pro-executive-field` note (all) · orchestrator
 - 2026-11-13 10:41 UTC · `android-approval-overlay-a-small-always-on-float` note (all) · mcp
@@ -1185,6 +1183,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 17:34 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` note, removed (all) · build-rename
 - 2026-11-13 17:34 UTC · `move-amberx-web-app-console-amberx-andr` added (15 steps) (all) · build-rename
 - 2026-11-13 17:34 UTC · `move-amberx-web-app-into-the-console-amberx-andr` note, removed (all) · build-rename
+- 2026-11-13 17:34 UTC · `new-project-wizard-name-linked-repo` added (10 steps) (all) · build-rename
+- 2026-11-13 17:34 UTC · `new-project-wizard-name-linked-repo-required-starter-code-skin-accounts` note, removed (all) · build-rename
 
 ## Token passes (log)
 

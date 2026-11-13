@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T17:34:50.659Z",
+ "updatedAt": "2026-11-13T17:35:08.765Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -113195,7 +113195,7 @@
    ]
   },
   {
-   "id": "new-project-wizard-name-linked-repo-required-starter-code-skin-accounts",
+   "id": "new-project-wizard-name-linked-repo",
    "title": "New project wizard: name, linked repo (required), starter code, skin, accounts, first plan",
    "category": "projects",
    "detail": "Step-by-step New project wizard (console, voice, API). Linking a repo is required (new GitHub repo, existing repo, or server folder). Builds on merged Projects (#523). Brett said: \"No, we definitely need to link a repo to it. There's no doubt about that.\"",
@@ -113203,10 +113203,10 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/new-project-wizard-name-linked-repo-required-starter-code-skin-accounts",
-   "pr": "#529",
+   "branch": "claude/new-project-wizard-name-linked-repo",
+   "pr": "#597",
    "createdAt": "2026-11-12T20:31:23.288Z",
-   "updatedAt": "2026-11-12T22:10:44.782Z",
+   "updatedAt": "2026-11-13T17:34:55.834Z",
    "builtAt": "2026-11-12T22:10:44.782Z",
    "notes": [
     {
@@ -113228,6 +113228,10 @@
     {
      "text": "Headless run axf-new-project-wizard-name-linked-repo-required-sta--lenny: brief only · start 11.3K tokens ($0.03) · cost $6.71 · 124 turns · 6 tools, MCP none",
      "at": "2026-11-12T22:10:44.782Z"
+    },
+    {
+     "text": "Renamed from new-project-wizard-name-linked-repo-required-starter-code-skin-accounts (build names are at most 40 characters). By build-rename.",
+     "at": "2026-11-13T17:34:55.834Z"
     }
    ],
    "approvals": [],
