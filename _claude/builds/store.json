@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4939,
- "updatedAt": "2026-11-13T20:17:55.448Z",
+ "rev": 4940,
+ "updatedAt": "2026-11-13T20:18:19.994Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -204017,7 +204017,7 @@
    "pr": "#648",
    "priority": "P0",
    "createdAt": "2026-11-13T19:47:38.941Z",
-   "updatedAt": "2026-11-13T20:17:11.280Z",
+   "updatedAt": "2026-11-13T20:17:52.648Z",
    "builtAt": "",
    "notes": [
     {
@@ -204047,6 +204047,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-skin-config-panel-merge-main-and-land--sully, own login copy)",
      "at": "2026-11-13T19:55:47.144Z"
+    },
+    {
+     "text": "Headless run axf-skin-config-panel-merge-main-and-land--sully: brief only · start 12.8K tokens ($0.06) · cost $4.04 · 70 turns · 6 tools, MCP none",
+     "at": "2026-11-13T20:17:52.648Z"
     }
    ],
    "approvals": [],
