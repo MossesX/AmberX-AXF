@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T06:46:49.258Z",
+ "updatedAt": "2026-11-13T06:47:26.017Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -117356,7 +117356,7 @@
    "pr": "#553",
    "priority": "P0",
    "createdAt": "2026-11-13T06:25:11.720Z",
-   "updatedAt": "2026-11-13T06:46:43.065Z",
+   "updatedAt": "2026-11-13T06:47:24.519Z",
    "builtAt": "2026-11-13T06:45:47.460Z",
    "notes": [
     {
@@ -117386,6 +117386,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-skins-plugin-its-own-removable-console-plugin-an--earl, own login copy)",
      "at": "2026-11-13T06:39:16.730Z"
+    },
+    {
+     "text": "Phase 1 (Fable) done on PR #553: skin-switch@1 engine + fixture (s1) and check-skin-switch wired into CI (s2). Pipeline fault: the 20-step Claude split was lost on main (the branch worktree published a stepless copy of this build, newer-wins), intake re-split it by rules into 3 Opus steps and dispatched a second session (earl, Opus) into the same worktree and branch while this Fable session was still running. The 20-step plan was put back from the journal; the earl session is still running the plugin work (its commit e17b86283 is on the branch). Brett: decide whether earl continues as Phase 2 or is stopped and re-dispatched; the split-loss race needs a pipeline fix.",
+     "at": "2026-11-13T06:47:24.519Z"
     }
    ],
    "approvals": [],
