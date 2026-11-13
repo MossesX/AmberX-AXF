@@ -2280,5 +2280,11 @@
     "wave": 1,
     "module": "app-console",
     "notes": "11 sections (orchestrator, dispatcher, watchdog, shipped, account failover, landing, merge queue, nightly deploy, backups, health monitor, notification rules), one owner each from the crew; registry agents/sections.json, reassign in Settings → Agent swarm → Section owners; posts start/done/failed/blocked/waiting as the owner, respects the chat switch, deduped; crew-say.mjs check in CI. Kotlin twin deferred."
+  },
+  "cx.boilerplates.projects": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "framework/plan/project-templates-core.mjs (pure: project-template@1, project-boilerplates@1, carry options) + framework/cli/project-templates.mjs (capture, apply, duplicate, boilerplates on the hub's _shared/_data/projects/boilerplates.json); plugin hooks exportProjectData/importProjectData (todo-manager lists, notes-browser notes, plan-studio plans, project-wizard setup/manifest/rules/instructions); projects.mjs duplicate + new --boilerplate; /api/projects duplicate; MCP project_duplicate, project_boilerplate_list, project_boilerplate_save, project-switcher_* commands; voice; switcher Duplicate / Save as boilerplate / Boilerplates tab; wizard Start from. Checks: spec/check-project-templates.mjs, project-wizard/test.mjs. Kotlin twin deferred (PORTING)."
   }
 }

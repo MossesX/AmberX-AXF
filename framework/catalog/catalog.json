@@ -2469,6 +2469,10 @@
                 {
                   "id": "cx.boilerplates.publish",
                   "title": "Publish a boilerplate to the repo / store"
+                },
+                {
+                  "id": "cx.boilerplates.projects",
+                  "title": "Duplicate a project and save projects as boilerplates: settings, build rules, setup, rules and instructions, list structure (items and builds history optional), shared across projects; New project wizard Start from blank / current / boilerplate (project-template@1)"
                 }
               ]
             }
