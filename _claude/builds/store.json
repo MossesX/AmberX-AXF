@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4946,
- "updatedAt": "2026-11-13T20:20:19.226Z",
+ "rev": 4968,
+ "updatedAt": "2026-11-13T20:42:23.307Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -196150,7 +196150,7 @@
    "mergedAt": "2026-11-13T19:53:40Z",
    "priority": "P2",
    "createdAt": "2026-11-13T17:51:25.212Z",
-   "updatedAt": "2026-11-13T20:19:48.032Z",
+   "updatedAt": "2026-11-13T20:21:26Z",
    "builtAt": "2026-11-13T18:12:28.097Z",
    "notes": [
     {
@@ -196180,6 +196180,10 @@
     {
      "text": "Reconciler: PR #623 merged",
      "at": "2026-11-13T20:19:48.032Z"
+    },
+    {
+     "text": "Shipped manifest sm-tab-groups-choose-how-many-rows-tabs rev 1 sent to Shipped features (orchestrator): landed 240263ee9, 40 file(s), 0 test line(s), 3 open.",
+     "at": "2026-11-13T20:21:26Z"
     }
    ],
    "approvals": [],
@@ -196229,6 +196233,12 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "shipped": {
+    "id": "sm-tab-groups-choose-how-many-rows-tabs",
+    "rev": 1,
+    "at": "2026-11-13T20:21:26Z",
+    "landedCommit": "240263ee909377d097cc888265f6faf6037040dc"
    },
    "steps": [
     {
@@ -196309,7 +196319,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -198672,15 +198682,15 @@
    "title": "Toolbar widgets: attach any banner-style widget to any toolbar",
    "category": "",
    "detail": "Let every toolbar (and tab group bar) host widgets the same way the banner does: use the same widget assets and registry as banner widgets (status badges, counters, CPU/disk, account, clocks, etc.). Add/remove/arrange widgets per toolbar instance from its right-click menu and its chrome settings (drag to arrange, like widgets.arrange). Widgets follow skins/tokens, collapse into an overflow when space is short, persist per instance. Reachable by REST/MCP/CLI/voice/control@1 ('add the CPU widget to the main toolbar'). Tests, help, Shipped features.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/toolbar-widgets-attach-any-banner-style",
    "pr": "",
    "priority": "P2",
    "createdAt": "2026-11-13T18:20:19.790Z",
-   "updatedAt": "2026-11-13T18:21:42.427Z",
+   "updatedAt": "2026-11-13T20:32:13.894Z",
    "builtAt": "",
    "notes": [
     {
@@ -198690,6 +198700,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"c1b8438b-1190-4f06-8b0a-509987186c99\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-13T18:21:42.427Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-toolbar-widgets-attach-any-banner-style--joey.",
+     "at": "2026-11-13T20:31:59.008Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-toolbar-widgets-attach-any-banner-style--joey, own login copy)",
+     "at": "2026-11-13T20:32:13.894Z"
     }
    ],
    "approvals": [],
@@ -198700,8 +198718,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "toolbar-widgets-attach-any-banner-style",
+    "brief": "# Build: toolbar-widgets-attach-any-banner-style\n\n## Brett said (verbatim)\nAt: 2026-11-13T18:20:19.790Z\n> I can attach widgets to the toolbar right, just like the banner widgets\n\n## What to build\nContinue build \"Toolbar widgets: attach any banner-style widget to any toolbar\" (toolbar-widgets-attach-any-banner-style) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-13 18:20):\n\"I can attach widgets to the toolbar right, just like the banner widgets\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (1 left, ~10 min):\n[ ] s1 (~10 min) Let every toolbar (and tab group bar) host widgets the same way the banner does: use the same widget assets and registry as banner widgets (status badges, counters, CPU/disk, account, clocks, etc.). Add/remove/arrange widgets per toolbar instance from its right-click menu and its chrome settings (drag to arrange, like widgets.arrange). Widgets follow skins/tokens, collapse into an overflow when space is short, persist per instance. Reachable by REST/MCP/CLI/voice/control@1 ('add the CPU widget to the main toolbar'). Tests, help, Shipped features.\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step toolbar-widgets-attach-any-banner-style <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link toolbar-widgets-attach-any-banner-style --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step toolbar-widgets-attach-any-banner-style <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note toolbar-widgets-attach-any-banner-style \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -198709,12 +198727,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T18:20:21.723Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-toolbar-widgets-attach-any-banner-style--joey",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Fable",
+    "launchedAt": "2026-11-13T20:31:58.163Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T18:21:42.427Z",
@@ -198724,9 +198742,9 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"c1b8438b-1190-4f06-8b0a-509987186c99\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-13T20:31:58.163Z",
     "planned": {
      "model": "Fable",
      "account": "mossesx-max-",
@@ -198735,7 +198753,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-13T20:31:58.163Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -198819,7 +198837,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -198844,7 +198862,7 @@
    "mergedAt": "2026-11-13T19:46:42Z",
    "priority": "P1",
    "createdAt": "2026-11-13T18:26:12.039Z",
-   "updatedAt": "2026-11-13T20:19:48.032Z",
+   "updatedAt": "2026-11-13T20:21:28Z",
    "builtAt": "2026-11-13T18:55:46.655Z",
    "notes": [
     {
@@ -198906,6 +198924,10 @@
     {
      "text": "Reconciler: PR #632 merged",
      "at": "2026-11-13T20:19:48.032Z"
+    },
+    {
+     "text": "Shipped manifest sm-transparency-token-works-every-dialog rev 1 sent to Shipped features (orchestrator): landed dbddb1503, 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-13T20:21:28Z"
     }
    ],
    "approvals": [
@@ -198971,6 +198993,12 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "shipped": {
+    "id": "sm-transparency-token-works-every-dialog",
+    "rev": 1,
+    "at": "2026-11-13T20:21:28Z",
+    "landedCommit": "dbddb1503634fe4c00aa0da1700d50704710e17a"
    },
    "steps": [
     {
@@ -199073,7 +199101,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -199089,7 +199117,7 @@
    "title": "UI Manager: floating window to select any element in the console and edit all its tokens",
    "category": "",
    "detail": "UI Manager (console plugin), opens in a floating window.\n- Lets Brett select ANY UI element in the whole console (every screen, plugin, dialog, toolbar, tab group, banner, nav, widget, control).\n- Left: collapsible categorized tree of all elements. Top category 'On screen now' lists every element currently visible; these are references (like Windows shortcuts / symlinks) to the same element that also lives in its normal category - both point to one shared source, edit either and both change.\n- Selecting an element (or picking it on screen with an inspector/picker mode) opens it according to the chosen view (several views: expanding row, side panel, grid...). Default: an expanding row listing all its properties and every token it reads.\n- Each property/token is edited by choosing from predetermined, valid values supplied by the console/framework integration (token sets, skins, assets, enums, ranges) - never free text where a valid list exists; schema-validated; live preview; reset to skin/default; shows overrides.\n- Searchable, sortable, multi-filter lists everywhere (thousands of elements).\n- Full API: REST/MCP/CLI/voice/control@1 ('select the main toolbar, set its transparency to 80').\n- Elements register via the framework (manifest) so new plugins appear automatically.\n- Tests, help, Shipped features. Fable for the element registry/schema core, Opus for UI.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -199097,7 +199125,7 @@
    "pr": "#634",
    "priority": "P1",
    "createdAt": "2026-11-13T18:30:38.922Z",
-   "updatedAt": "2026-11-13T20:06:58.873Z",
+   "updatedAt": "2026-11-13T20:31:16.091Z",
    "builtAt": "",
    "notes": [
     {
@@ -199195,6 +199223,10 @@
     {
      "text": "Brett: in the UI Manager list of every UI element: (1) every row/entry has its own Reset/Restore button (Restore previous edit / Restore to default / Restore from axHub); (2) every row shows its PARENT: the page and the app/plugin/feature it belongs to, with a link to it, plus a column filter and group-by on parent; (3) cascading restore at four levels, each available from its row, the parent rows and the API: RESTORE APP (every page, interface, toolbar, tab group, menu and asset customisation in that app back to default), RESTORE PAGE (that screen/feature and everything in it), RESTORE INTERFACE (one toolbar, tab group, menu or dialog instance), and RESTORE ASSET (the asset itself). Before restoring, show what will be reset (count and list); every restore is snapshotted so it can be undone. Voice: 'restore the whole Build orchestrator', 'reset this toolbar'.",
      "at": "2026-11-13T20:06:58.873Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-13T20:31:16.091Z"
     }
    ],
    "approvals": [
@@ -199249,10 +199281,10 @@
     "route": "",
     "dispatchedAt": "2026-11-13T18:53:11.620Z",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-13T18:31:38.517Z",
+     "at": "2026-11-13T20:31:22.787Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -199582,7 +199614,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -200122,10 +200154,10 @@
     "route": "",
     "dispatchedAt": "",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-13T18:43:39.359Z",
+     "at": "2026-11-13T20:21:05.828Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -200323,7 +200355,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -201474,7 +201506,7 @@
    "pr": "#643",
    "priority": "P1",
    "createdAt": "2026-11-13T18:44:52.063Z",
-   "updatedAt": "2026-11-13T20:19:48.032Z",
+   "updatedAt": "2026-11-13T20:32:34.162Z",
    "builtAt": "",
    "notes": [
     {
@@ -201496,6 +201528,14 @@
     {
      "text": "Reconciler: PR #643 names s1, s2 done",
      "at": "2026-11-13T20:19:48.032Z"
+    },
+    {
+     "text": "Headless run axf-console-app-wake-word-voice-listener--earl: brief only · start 13.1K tokens ($0.07) · cost $18.94 · 126 turns · 6 tools, MCP none",
+     "at": "2026-11-13T20:32:34.162Z"
+    },
+    {
+     "text": "UI Review: no shots from this headless session (no console token; a local preview is gated on axHub cross-origin). To review: open Settings → Plugins → Wake listener on the live console after the PR lands (desktop + phone) and the banner mic light; or run framework/cli/rebuild-shots.mjs with AXF_TOKEN against this branch.",
+     "at": "2026-11-13T20:30:49.247Z"
     }
    ],
    "approvals": [],
@@ -201801,7 +201841,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -202629,7 +202669,7 @@
    "title": "Demo pipelines: guided walkthrough with live behind-the-scenes output",
    "category": "",
    "detail": "Demo mode for pitching (Demonstration Designer).\n- A library of ready-made demo pipelines of different types, e.g.: voice-to-app (say an idea, get an Android app), add a feature to an existing app, skin swap across the whole app, parallel split build (several slots at once), fix a failing build automatically, create a new project from a template, and the approval flow (veto, approve by voice).\n- Each demo is a guided walkthrough: narrated chapters you can skip, and the console follows along live (focus mode moves to each screen as it happens: orchestrator, steps, UI Review, landing).\n- A behind-the-scenes panel: a scrolling terminal-style window streaming everything normally hidden (orchestrator decisions, model picks, step splits, agent logs, git, tests, axHub calls), colour-coded and filterable, which can be docked, floated or full-screen.\n- Runs for real in the test-sandbox project, or as a recorded replay for offline/fast demos. Speed control, pause, restart.\n- Create and edit demos in a Demonstration Designer (pick a pipeline type, script the narration, choose screens).\n- Full API: REST/MCP/CLI/voice ('run the voice-to-app demo'). Tests, help, Shipped features.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -202637,8 +202677,8 @@
    "pr": "#646",
    "priority": "P1",
    "createdAt": "2026-11-13T19:01:19.839Z",
-   "updatedAt": "2026-11-13T20:19:47.641Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-13T20:20:33.465Z",
+   "builtAt": "2026-11-13T20:20:33.465Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -202655,6 +202695,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-demo-pipelines-guided-walkthrough-live--gina, own login copy)",
      "at": "2026-11-13T19:44:42.845Z"
+    },
+    {
+     "text": "Headless run axf-demo-pipelines-guided-walkthrough-live--gina: brief only · start 11.7K tokens ($0.03) · cost $13.52 · 122 turns · 6 tools, MCP none",
+     "at": "2026-11-13T20:20:33.465Z"
     }
    ],
    "approvals": [],
@@ -202900,12 +202944,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T20:19:56.128Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T19:05:57.629Z",
-     "updatedAt": "2026-11-13T19:05:57.629Z"
+     "updatedAt": "2026-11-13T20:19:56.611Z"
     }
    ],
    "profiles": [
@@ -202916,7 +202960,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -204709,10 +204753,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/skin-animations-swatches-skin-switch",
-   "pr": "",
+   "pr": "#652",
    "priority": "P1",
    "createdAt": "2026-11-13T19:49:31.102Z",
-   "updatedAt": "2026-11-13T20:17:32.580Z",
+   "updatedAt": "2026-11-13T20:31:16.091Z",
    "builtAt": "",
    "notes": [
     {
@@ -204730,6 +204774,14 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-skin-animations-swatches-skin-switch--earl, own login copy)",
      "at": "2026-11-13T19:59:27.044Z"
+    },
+    {
+     "text": "Headless run axf-skin-animations-swatches-skin-switch--earl: brief only · start 11.3K tokens ($0.03) · cost $7.37 · 170 turns · 6 tools, MCP none",
+     "at": "2026-11-13T20:30:54.280Z"
+    },
+    {
+     "text": "Reconciler: PR #652",
+     "at": "2026-11-13T20:31:16.091Z"
     }
    ],
    "approvals": [],
@@ -204906,12 +204958,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T20:25:09.680Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T19:50:55.023Z",
-     "updatedAt": "2026-11-13T19:50:55.023Z"
+     "updatedAt": "2026-11-13T20:25:10.085Z"
     },
     {
      "id": "s7",
@@ -204928,12 +204980,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T20:25:43.559Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T19:50:55.023Z",
-     "updatedAt": "2026-11-13T19:50:55.023Z"
+     "updatedAt": "2026-11-13T20:25:44.054Z"
     },
     {
      "id": "s8",
@@ -204969,7 +205021,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -205179,7 +205231,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T19:55:30.979Z",
-   "updatedAt": "2026-11-13T20:06:51.193Z",
+   "updatedAt": "2026-11-13T20:35:41.242Z",
    "builtAt": "",
    "notes": [
     {
@@ -205263,12 +205315,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T20:35:41.242Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T19:58:41.893Z",
-     "updatedAt": "2026-11-13T19:58:41.893Z"
+     "updatedAt": "2026-11-13T20:35:41.488Z"
     },
     {
      "id": "s2",
@@ -205436,7 +205488,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -206162,15 +206214,15 @@
    "title": "Token registry and Skin Editor: live sandbox preview, snapshot history",
    "category": "",
    "detail": "Runs after the token schema step of own-token-sets-for-grids-and-tab-groups (builds on its schema).\n1. TOKEN REGISTRY: one registry listing every token in the system, with element type, area (layout/style/colour/behaviour), state, light/dark, level (basic/pro/advanced), plain-English description, default and source. Every new UI, component or plugin MUST register its tokens through its manifest. A CI check fails any UI whose tokens aren't in the registry, and any registered token that nothing uses. Browsable and searchable, with full API.\n2. SKIN EDITOR (plugin and screen): pick any UI from the list (a screen, plugin, dialog, element), or pick it on screen, and it's loaded into a sandbox live-preview window with real components and sample data. Every edit hot-renders the preview in real time. The token list comes from the registry, with Basic/Pro/Advanced views. Inline element and asset editors work inside it.\n3. DEFAULT SKIN: there is always a built-in default skin that is locked.\n4. SNAPSHOTS: every edit to a skin automatically takes a snapshot (like a disk snapshot). A timeline shows the chain of edits, each with time, who/what made it, and a diff of exactly which tokens changed (old -> new). Click any snapshot to preview it, compare any two, or revert to it (a revert is itself a new snapshot, so nothing is ever lost). No breaking skins into separate style or colour groups: the skin is the only unit.\n5. EXPORT: at any point, 'Export current to new skin' saves the current state as a brand-new skin (name, thumbnail, to the hub library).\n6. Restore previous edit / Restore from axHub work through the snapshots.\n7. Full API: REST/MCP/CLI/voice ('revert the skin to 10 minutes ago', 'export this as a new skin called Midnight'). Tests, help, Shipped features. Fable for the registry and snapshot schema.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/token-registry-skin-editor-live-sandbox",
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T20:04:16.679Z",
-   "updatedAt": "2026-11-13T20:06:18.849Z",
+   "updatedAt": "2026-11-13T20:42:08.378Z",
    "builtAt": "",
    "notes": [
     {
@@ -206184,6 +206236,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"4b7efff5-4c77-4aa5-ab01-49e9bcff0668\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-13T20:06:18.849Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-token-registry-skin-editor-live-sandbox--lenny.",
+     "at": "2026-11-13T20:21:23.587Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-token-registry-skin-editor-live-sandbox--lenny, own login copy)",
+     "at": "2026-11-13T20:21:33.063Z"
     }
    ],
    "approvals": [],
@@ -206194,8 +206254,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "token-registry-skin-editor-live-sandbox",
+    "brief": "# Build: token-registry-skin-editor-live-sandbox\n\n## Brett said (verbatim)\nAt: 2026-11-13T20:04:16.679Z\n> list every token in a registry; any time a new UI is made add its tokens to the registry; an editor that takes whatever UI you pick and throws it in a sandbox with live preview, hot render as you edit; a default skin; every edit takes a snapshot, you see the chain of edits like a disk snapshot and can revert to any point; at any point export current to a new skin\n\n## What to build\nContinue build \"Token registry and Skin Editor: live sandbox preview, snapshot history\" (token-registry-skin-editor-live-sandbox) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-13 20:04):\n\"list every token in a registry; any time a new UI is made add its tokens to the registry; an editor that takes whatever UI you pick and throws it in a sandbox with live preview, hot render as you edit; a default skin; every edit takes a snapshot, you see the chain of edits like a disk snapshot and can revert to any point; at any point export current to a new skin\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (5 left, ~50 min):\n[ ] s1 (~10 min) Runs after the token schema step of own-token-sets-for-grids-and-tab-groups (builds on its schema).\n[ ] s2 (~10 min) TOKEN REGISTRY: one registry listing every token in the system, with element type, area (layout/style/colour/behaviour), state, light/dark, level (basic/pro/advanced), plain-English description, default and source. Every new UI, component or plugin MUST register its tokens through its manifest. A CI check fails any UI whose tokens aren't in the registry, and any registered token that nothing uses. Browsable and searchable, with full API.\n[ ] s3 (~10 min) SKIN EDITOR (plugin and screen): pick any UI from the list (a screen, plugin, dialog, element), or pick it on screen, and it's loaded into a sandbox live-preview window with real components and sample data. Every edit hot-renders the preview in real time. The token list comes from the registry, with Basic/Pro/Advanced views. Inline element and asset editors work inside it.\n[ ] s4 (~10 min) Full API: REST/MCP/CLI/voice ('revert the skin to 10 minutes ago', 'export this as a new skin called Midnight'). Tests, help, Shipped features. Fable for the registry and snapshot schema.\n[ ] s5 (~10 min) list every token in a registry; any time a new UI is made add its tokens to the registry; an editor that takes whatever UI you pick and throws it in a sandbox with live preview, hot render as you edit; a default skin; every edit takes a snapshot, you see the chain of edits like a disk snapshot and can revert to any point; at any point export current to a new skin\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step token-registry-skin-editor-live-sandbox <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link token-registry-skin-editor-live-sandbox --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step token-registry-skin-editor-live-sandbox <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note token-registry-skin-editor-live-sandbox \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -206250,12 +206310,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T20:42:06.501Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T20:06:18.849Z",
-     "updatedAt": "2026-11-13T20:06:18.849Z"
+     "updatedAt": "2026-11-13T20:42:06.823Z"
     },
     {
      "id": "s2",
@@ -206467,7 +206527,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -206483,16 +206543,16 @@
    "title": "Dispatcher gate: never launch a build that already has a live session",
    "category": "",
    "detail": "Bug seen three times on Nov 13 (ui-manager-floating-window-to-select-any: Earl/Gina, Gina/Paulie, Lenny/Paulie): the orchestrator's dispatcher launched the same build phase twice on the same worktree, so two headless sessions wrote the same files at once. Also 'Self-check: marked running with no session' releases builds back to the Queue while a session is still alive. Fix: (1) a dispatch gate that refuses a launch while ANY live tmux/claude session exists for that build id or worktree (check tmux axf-<build>--*, claude -p pids and a lock file in the worktree); (2) the self-check must confirm a session is really dead (pid + tmux) before releasing; (3) a per-build lock file with heartbeat, where stale locks expire; (4) tests that simulate double dispatch. This must land BEFORE parallel split (orchestrator-settings-collapsible-split) goes live, since parallel sub-builds must each get their own worktree and branch and never share one.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/dispatcher-gate-never-launch-build",
-   "pr": "",
+   "pr": "#651",
    "priority": "P0",
    "createdAt": "2026-11-13T20:07:27.626Z",
-   "updatedAt": "2026-11-13T20:18:18.401Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-13T20:31:16.091Z",
+   "builtAt": "2026-11-13T20:31:16.091Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -206521,6 +206581,18 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-dispatcher-gate-never-launch-build--paulie, own login copy)",
      "at": "2026-11-13T20:18:18.401Z"
+    },
+    {
+     "text": "Headless run axf-dispatcher-gate-never-launch-build--paulie: brief only · start 11.3K tokens ($0.03) · cost $2.34 · 53 turns · 6 tools, MCP none",
+     "at": "2026-11-13T20:31:08.704Z"
+    },
+    {
+     "text": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
+     "at": "2026-11-13T20:31:11.323Z"
+    },
+    {
+     "text": "Reconciler: PR #651",
+     "at": "2026-11-13T20:31:16.091Z"
     }
    ],
    "approvals": [],
@@ -206541,18 +206613,18 @@
     "queuedAt": "2026-11-13T20:07:30.376Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-dispatcher-gate-never-launch-build--paulie",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-13T20:18:14.562Z",
     "runs": 2,
     "lastRun": {
-     "at": "2026-11-13T20:17:07.061Z",
-     "exit": 3,
-     "outcome": "requeued",
-     "stepsLeft": 3,
+     "at": "2026-11-13T20:31:05.476Z",
+     "exit": 0,
+     "outcome": "returned",
+     "stepsLeft": 1,
      "account": "mossesx-max-",
-     "session": "axf-dispatcher-gate-never-launch-build--joey"
+     "session": "axf-dispatcher-gate-never-launch-build--paulie"
     },
     "split": {
      "at": "2026-11-13T20:08:53.774Z",
@@ -206562,7 +206634,7 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"1e700143-c0b8-4a7f-adbe-5b601ff47212\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "2026-11-13T20:18:14.562Z",
     "planned": {
@@ -206594,12 +206666,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T20:27:38.141Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T20:08:53.774Z",
-     "updatedAt": "2026-11-13T20:08:53.774Z"
+     "updatedAt": "2026-11-13T20:27:38.369Z"
     },
     {
      "id": "s2",
@@ -206616,12 +206688,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T20:29:16.739Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T20:08:53.774Z",
-     "updatedAt": "2026-11-13T20:08:53.774Z"
+     "updatedAt": "2026-11-13T20:29:17.084Z"
     },
     {
      "id": "s3",
@@ -206641,12 +206713,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T20:30:17.177Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T20:08:53.774Z",
-     "updatedAt": "2026-11-13T20:08:53.774Z"
+     "updatedAt": "2026-11-13T20:30:18.215Z"
     }
    ],
    "profiles": [
@@ -206657,7 +206729,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -206673,15 +206745,15 @@
    "title": "Per-toolbar settings: fix failing chrome-settings check and land",
    "category": "",
    "detail": "Branch claude/per-instance-settings-picker-merge-main (worktree /root/axf-builds/per-instance-settings-picker-merge-main) now has origin/main merged (commit 617aa0a7d). The fixture clash in framework/spec/fixtures/chrome-settings.json was resolved by taking main's version and regenerating the fixtures, but framework/spec/check-chrome-settings.mts now fails with a deepStrictEqual. Find which expectation differs (likely the per-instance fields vs main's tab-rows fields), fix the rules or regenerate the fixtures so both features' expectations hold, run the full chrome-settings and theme/control checks, commit, push, then land on main. Feature: every individual toolbar, tab group, menu and dialog instance gets its own settings interface (including transparency) that changes only that instance.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/per-toolbar-settings-fix-failing-chrome",
-   "pr": "",
+   "pr": "#650",
    "priority": "P0",
    "createdAt": "2026-11-13T20:08:02.821Z",
-   "updatedAt": "2026-11-13T20:18:36.592Z",
+   "updatedAt": "2026-11-13T20:31:20.161Z",
    "builtAt": "",
    "notes": [
     {
@@ -206699,6 +206771,18 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-per-toolbar-settings-fix-failing-chrome--sully, own login copy)",
      "at": "2026-11-13T20:18:36.592Z"
+    },
+    {
+     "text": "Headless run axf-per-toolbar-settings-fix-failing-chrome--sully: brief only · start 13.0K tokens ($0.06) · cost $2.73 · 42 turns · 6 tools, MCP none",
+     "at": "2026-11-13T20:31:06.272Z"
+    },
+    {
+     "text": "Reconciler: PR #650",
+     "at": "2026-11-13T20:31:16.091Z"
+    },
+    {
+     "text": "Session on mossesx-max- stopped on its own with 3 steps left: back in Pending for Brett.",
+     "at": "2026-11-13T20:31:20.161Z"
     }
    ],
    "approvals": [],
@@ -206719,12 +206803,19 @@
     "queuedAt": "2026-11-13T20:08:07.159Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-per-toolbar-settings-fix-failing-chrome--sully",
+    "session": "",
     "slot": "",
     "model": "Fable",
     "launchedAt": "2026-11-13T20:18:30.099Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-13T20:31:14.141Z",
+     "exit": 0,
+     "outcome": "returned",
+     "stepsLeft": 3,
+     "account": "mossesx-max-",
+     "session": "axf-per-toolbar-settings-fix-failing-chrome--sully"
+    },
     "split": {
      "at": "2026-11-13T20:09:48.693Z",
      "by": "orchestrator",
@@ -206733,14 +206824,14 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"10fa6368-1e76-4d56-842f-c7f4c7e9219d\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- stopped on its own with 3 steps left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "2026-11-13T20:18:30.099Z",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-13T20:09:50.639Z",
+     "at": "2026-11-13T20:33:09.896Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -206765,12 +206856,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T20:30:35.656Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T20:09:48.693Z",
-     "updatedAt": "2026-11-13T20:09:48.693Z"
+     "updatedAt": "2026-11-13T20:30:36.103Z"
     },
     {
      "id": "s2",
@@ -206828,7 +206919,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -207139,15 +207230,15 @@
    "title": "Context menus plugin: one true source on axHub, Claude-generated by skill level",
    "category": "",
    "detail": "Replaces the archived context-menu-plugin-ai-generated-slim.\n- New console plugin 'Context menus', integrated with the UI Manager (its menus show there per element/zone).\n- ONE TRUE SOURCE: every context menu definition is stored on axHub (not local), as context-menu@1 assets, readable and writable by every plugin and app through the hub API. Plugins register the actions/hooks they offer; menus reference them.\n- The plugin lists every context menu in the app (per zone/element/page, with its parent app, plugin or page), searchable, with preview, edit and Restore per row, snapshots and restore like skins.\n- AI generation (needs Claude; greyed out with a clear error when the Claude badge isn't green): generate the context menus for the whole app at a chosen level. BEGINNER: a few big, obvious actions. AMATEUR: common actions. PRO: full working set grouped. ADVANCED CODER: meticulous map of every zone with deep actions (tokens, API, inspect, copy ids, run commands). Higher levels map the app more meticulously. Menus are slim by default (no wasted space, rarely used items folded away). The user picks the level, and it can differ per app/page.\n- Preview before applying. Full API and voice ('generate pro context menus'). Tests, help, Shipped features. Fable for the context-menu@1 schema and the hub source.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/context-menus-plugin-one-true-source",
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T20:14:18.034Z",
-   "updatedAt": "2026-11-13T20:16:04.552Z",
+   "updatedAt": "2026-11-13T20:31:47.158Z",
    "builtAt": "",
    "notes": [
     {
@@ -207161,6 +207252,14 @@
     {
      "text": "Brett adds: (1) a visible, EDITABLE MAP of every context-menu zone in the app (add, remove, merge or split zones, assign menus). (2) A context menu entry 'Context menu developer mode' (toggle): when on, every zone on the current page is highlighted with an outline and label. (3) A tooltip in developer mode: 'Double-click a zone to manage its context menu.' (4) Double-clicking a zone opens the context menu manager on that zone: a sorted, collapsible, categorized tree of its menu items and tokens, filterable by page, app, plugin or element, easily readable, editable and manageable (add, reorder, hide, rename, level per item, restore). Full API and voice ('turn on context menu developer mode').",
      "at": "2026-11-13T20:15:47.807Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-context-menus-plugin-one-true-source--gina.",
+     "at": "2026-11-13T20:31:40.846Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-context-menus-plugin-one-true-source--gina, own login copy)",
+     "at": "2026-11-13T20:31:47.158Z"
     }
    ],
    "approvals": [],
@@ -207171,8 +207270,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "context-menus-plugin-one-true-source",
+    "brief": "# Build: context-menus-plugin-one-true-source\n\n## Brett said (verbatim)\nAt: 2026-11-13T20:14:18.033Z\n> integrated with the UI manager; stores its data in one true source on axHub accessible from any plugin; contains the context menus, which are effectively assets; lists all the context menus; uses Claude to generate a context menu at advanced, pro, amateur, beginner coder levels, mapped out more meticulously depending on level\n\n## What to build\nContinue build \"Context menus plugin: one true source on axHub, Claude-generated by skill level\" (context-menus-plugin-one-true-source) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-13 20:14):\n\"integrated with the UI manager; stores its data in one true source on axHub accessible from any plugin; contains the context menus, which are effectively assets; lists all the context menus; uses Claude to generate a context menu at advanced, pro, amateur, beginner coder levels, mapped out more meticulously depending on level\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (1 left, ~10 min):\n[ ] s1 (~10 min) Preview before applying. Full API and voice ('generate pro context menus'). Tests, help, Shipped features. Fable for the context-menu@1 schema and the hub source.\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step context-menus-plugin-one-true-source <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link context-menus-plugin-one-true-source --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step context-menus-plugin-one-true-source <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note context-menus-plugin-one-true-source \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -207180,12 +207279,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T20:14:20.134Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-context-menus-plugin-one-true-source--gina",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Fable",
+    "launchedAt": "2026-11-13T20:31:39.895Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T20:16:04.552Z",
@@ -207195,9 +207294,9 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"e779dc8d-8b62-458d-945b-c6275886b2ea\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-13T20:31:39.895Z",
     "planned": {
      "model": "Fable",
      "account": "mossesx-max-",
@@ -207206,7 +207305,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-13T20:31:39.895Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -207400,7 +207499,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
