@@ -189,6 +189,72 @@
         "title": "Deleted builds",
         "text": "Opens the Deleted tab: every deleted build, kept for good and restorable.",
         "kind": "menu"
+      },
+      {
+        "target": "run-now",
+        "title": "Run now",
+        "text": "Runs auto-recovery now: stuck builds go back to the Queue, leaked slots are freed, a build at the retry cap is parked. Same as recovery.run, POST recovery/run, recover.mjs run.",
+        "kind": "button"
+      },
+      {
+        "target": "dry-run",
+        "title": "Dry run",
+        "text": "Shows what auto-recovery would fix now without changing anything (recover.mjs run --dry-run).",
+        "kind": "button"
+      },
+      {
+        "target": "retry-now",
+        "title": "Retry now",
+        "text": "Puts this build back in the Queue at once and starts its automatic retry count over (recovery.retry, POST recovery/retry/<id>).",
+        "kind": "button"
+      },
+      {
+        "target": "park",
+        "title": "Park",
+        "text": "Stops retrying this build: it goes back to Pending with the reason, for you to decide (POST recovery/park/<id>).",
+        "kind": "button"
+      },
+      {
+        "target": "open-build",
+        "title": "Open build",
+        "text": "Opens the build in its orchestrator tab, scrolled into view and highlighted.",
+        "kind": "button"
+      },
+      {
+        "target": "auto-recover-stuck-builds",
+        "title": "Auto-recover stuck builds",
+        "text": "On: every minute the dispatcher fixes stuck builds by itself (no live session, killed exit 143, failed exit 1, hung with no heartbeat, leaked slots) and fills every free slot. Claude setting builds.recovery.enabled.",
+        "kind": "toggle"
+      },
+      {
+        "target": "fyi-per-fix",
+        "title": "FYI per fix",
+        "text": "On: one plain line to the phone for every automatic fix. A build parked after the retry cap is always sent. Claude setting builds.recovery.fyi.",
+        "kind": "toggle"
+      },
+      {
+        "target": "max-retries",
+        "title": "Max retries",
+        "text": "Automatic retries per build before it is parked in Pending for you (default 3). Claude setting builds.recovery.maxRetries.",
+        "kind": "field"
+      },
+      {
+        "target": "stale-heartbeat-minutes",
+        "title": "Stale heartbeat (minutes)",
+        "text": "A session whose stream has not moved this long counts as hung: it is ended and the build retried (default 20).",
+        "kind": "field"
+      },
+      {
+        "target": "backoff-minutes",
+        "title": "Backoff (minutes)",
+        "text": "Wait before each automatic retry, comma separated; the last number repeats (default 1,5,15).",
+        "kind": "field"
+      },
+      {
+        "target": "action:build-orchestrator.tab:recovery",
+        "title": "Recovery log",
+        "text": "The latest automatic fix per build (cause, exit code, action, attempt), parked builds first, with Retry and Park. Deep link builds/orchestrator/recovery.",
+        "kind": "menu-item"
       }
     ],
     "intros": []

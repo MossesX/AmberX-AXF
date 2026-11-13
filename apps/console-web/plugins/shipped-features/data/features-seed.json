@@ -1,6 +1,22 @@
 {
   "$axf": "feature-ledger@1",
   "note": "AI split of AmberX-AXF and axHub history into individual features, merged last by the importer (ledger.mjs import). Each entry is a feature@1 (name, description, type, app, plugin, repo, prs, builds, commits, plannedAt, mergedAt) or, under edits, a feature-edit@1. Empty until a model pass fills it: `node apps/console-web/plugins/shipped-features/ledger/ledger.mjs seed-draft` writes the input for that pass.",
-  "features": [],
+  "features": [
+    {
+      "id": "auto-recover-stuck-builds",
+      "name": "Auto-recover stuck builds",
+      "description": "The orchestrator fixes stuck builds by itself every minute: builds marked running with no live session (killed exit 143, failed exit 1, hung with no heartbeat) go back to the Queue with a retry counter and backoff, a run that hit a usage limit retries on another worker, leaked agent slots are released, every free slot is refilled, a build at the retry cap is parked in Pending, and the phone gets one FYI line per fix. Recovery log + settings in the orchestrator; REST, MCP, CLI (recover.mjs), voice (recovery.*) and the deep link builds/orchestrator/recovery.",
+      "type": "new-feature",
+      "app": "console-web",
+      "repo": "amberx-axf",
+      "builds": [
+        "auto-recover-stuck-builds"
+      ],
+      "prs": [],
+      "commits": [],
+      "said": "if anything stops working, the server/orchestrator fixes it automatically with no one asking. Detect builds marked running with no live session (killed exit 143, failed exit 1), reset and requeue them, retry failed sessions, keep every slot filled, FYI to phone per fix.",
+      "plannedAt": "2026-11-13T11:45:11.111Z"
+    }
+  ],
   "edits": []
 }

@@ -2504,6 +2504,10 @@
                 {
                   "id": "cx.buildengine.sectionowners",
                   "title": "Section owners: every section that acts on its own has one employee who posts its key events in the group chat (crew-sections@1, framework/cli/crew-say.mjs, CI owner check)"
+                },
+                {
+                  "id": "cx.buildengine.autorecover",
+                  "title": "Auto-recover stuck builds: the dispatcher requeues builds with no live session (killed 143, failed 1, hung), retries on another worker after a usage limit, parks at the cap, refills every slot, FYI per fix (build-recovery@1)"
                 }
               ]
             },

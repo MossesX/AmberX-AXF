@@ -2280,5 +2280,11 @@
     "wave": 1,
     "module": "app-console",
     "notes": "11 sections (orchestrator, dispatcher, watchdog, shipped, account failover, landing, merge queue, nightly deploy, backups, health monitor, notification rules), one owner each from the crew; registry agents/sections.json, reassign in Settings → Agent swarm → Section owners; posts start/done/failed/blocked/waiting as the owner, respects the chat switch, deduped; crew-say.mjs check in CI. Kotlin twin deferred."
+  },
+  "cx.buildengine.autorecover": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "framework/core/build-recovery.mjs plan(); session-status@1 exit records + heartbeats from claude-headless.sh; framework/cli/session-liveness.mjs; build-orchestrator recover.mjs executor run first on every pipeline tick, then every free slot filled; usage-limit retries routed to another worker; FYI per fix (build-recovered / build-recovery-parked); systems check builds-stuck-recovery with auto-fix; Recovery log + settings (builds.recovery.*); REST/MCP/CLI/voice/deep link builds/orchestrator/recovery. Kotlin twin deferred (PORTING)."
   }
 }
