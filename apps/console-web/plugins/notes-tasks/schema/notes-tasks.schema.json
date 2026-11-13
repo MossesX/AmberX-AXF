@@ -2,24 +2,79 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://amberx.ai/axf/schemas/notes-tasks.schema.json",
   "title": "notes-tasks@1",
-  "description": "One store for notes, to-dos and tasks per project on axHub (hub-table@1 tables `lists` and `items`, hub-settings@1 document `types`). A strict superset of amberx-notes@1: every row AmberX has written is valid here. Design: apps/console-web/plugins/notes-tasks/DESIGN.md.",
+  "description": "One store per project on axHub (hub-table@1 tables `items` and `lists`, hub-settings@1 document key `looks`). Notes, to-dos, tasks and lists are ONE item type: every node is an `item`; what it shows (body, checkbox, status, priority, due) is its `look`, a preset that can change at any time without losing data. Any item can hold any other through `parent`, nested to any depth. Every amberx-notes@1 row stays readable: `kind` is read as the look, a `lists` row is read as an item that holds the items whose `list` names it. Design: apps/console-web/plugins/notes-tasks/DESIGN.md.",
   "type": "object",
-  "required": ["$axf", "lists", "items"],
+  "required": ["$axf", "items"],
   "properties": {
     "$axf": { "const": "notes-tasks@1" },
     "project": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{0,39}$", "description": "projects@1 id the store belongs to (amberx-axf = the base project, folder amberx-notes/)." },
-    "lists": { "type": "object", "additionalProperties": { "$ref": "#/$defs/list" } },
     "items": { "type": "object", "additionalProperties": { "$ref": "#/$defs/item" } },
-    "types": { "$ref": "#/$defs/types" }
+    "lists": { "type": "object", "additionalProperties": { "$ref": "#/$defs/legacyList" }, "description": "amberx-notes@1 `lists` rows. Read as items (see legacyList); the console writes new containers to `items` and only updates rows that already exist here, so the phone stays in step until it moves to the engine." },
+    "looks": { "$ref": "#/$defs/looks" }
   },
   "$defs": {
     "iso": { "type": "string", "description": "ISO 8601 date-time; '' where a field allows none." },
     "tone": { "enum": ["accent", "info", "success", "warning", "danger", "neutral"] },
-    "kind": { "enum": ["note", "todo", "task"] },
+    "lookId": { "type": "string", "pattern": "^[a-z][a-z0-9-]{0,23}$", "description": "A key of `looks`: the built-ins `note`, `todo`, `task`, `list`, or one Brett added. Unknown → `note`." },
     "status": { "enum": ["open", "doing", "blocked", "done"] },
     "priority": { "type": "integer", "minimum": 0, "maximum": 3, "description": "0 none · 1 low · 2 medium · 3 high" },
-    "list": {
+    "checklistItem": {
       "type": "object",
+      "required": ["id", "text", "done"],
+      "properties": {
+        "id": { "type": "string", "maxLength": 40 },
+        "text": { "type": "string", "maxLength": 300 },
+        "done": { "type": "boolean" }
+      },
+      "additionalProperties": false
+    },
+    "item": {
+      "type": "object",
+      "description": "The one item type. Every field is valid on every item whatever its look; the look only decides what is shown and asked for.",
+      "required": ["id", "parent", "order", "title", "text", "createdAt", "updatedAt"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "parent": { "type": "string", "maxLength": 120, "description": "The item (or legacy list) that holds this one; '' = the project's root. Any item may hold any other, to any depth; the engine refuses a move that would make an item its own ancestor." },
+        "order": { "type": "number", "description": "Position among its siblings." },
+        "look": { "$ref": "#/$defs/lookId" },
+        "childLook": { "$ref": "#/$defs/lookId", "description": "The look a new child gets: a to-do list is an item with childLook `todo`, a task list one with `task`. Absent = `note`." },
+        "collapsed": { "type": "boolean", "description": "Children folded in the tree (view state, shared by every client)." },
+        "title": { "type": "string", "maxLength": 160 },
+        "text": { "type": "string", "maxLength": 20000, "description": "Body (Markdown). Children render after it, in order." },
+        "summary": { "type": "string", "maxLength": 2000 },
+        "transcript": { "type": "string", "maxLength": 20000 },
+        "tags": { "type": "array", "maxItems": 20, "items": { "type": "string", "maxLength": 30 } },
+        "pinned": { "type": "boolean" },
+        "starred": { "type": "boolean" },
+        "icon": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{0,39}$" },
+        "tone": { "$ref": "#/$defs/tone" },
+        "aliases": { "type": "array", "maxItems": 10, "items": { "type": "string", "maxLength": 80 }, "description": "Spoken names, so voice can find any item (a list or not) to add to." },
+        "system": { "enum": ["inbox", "plugins", "voice-notes", "documents", "plugin"], "description": "System items: renamed, never removed or moved off the root." },
+        "pluginId": { "type": "string", "maxLength": 120 },
+        "status": { "$ref": "#/$defs/status", "description": "Any item may carry one. Shown when the look has a checkbox; '' is not allowed, absent = open." },
+        "priority": { "$ref": "#/$defs/priority" },
+        "due": { "type": "string", "description": "YYYY-MM-DD, an ISO date-time, or '' for none" },
+        "checklist": { "type": "array", "maxItems": 100, "items": { "$ref": "#/$defs/checklistItem" }, "description": "Legacy (amberx-notes@1). Read as checkable children; the console's first write to the item turns the entries into child items with look `todo` and empties this." },
+        "source": { "enum": ["voice", "typed", "ai", "web", "import", "console"] },
+        "url": { "type": "string", "maxLength": 2000 },
+        "fields": {
+          "type": "object",
+          "description": "Custom fields by key. A field belongs to the item, not its look: changing the look hides fields the new look does not show and never deletes them.",
+          "additionalProperties": { "type": ["string", "number", "boolean", "null", "array"] }
+        },
+        "createdAt": { "$ref": "#/$defs/iso" },
+        "updatedAt": { "$ref": "#/$defs/iso" },
+        "doneAt": { "$ref": "#/$defs/iso" },
+        "by": { "type": "string", "maxLength": 80 },
+        "device": { "type": "string", "maxLength": 80 },
+        "kind": { "enum": ["note", "todo", "task"], "description": "Legacy mirror for amberx-notes@1 readers. Read as `look` when `look` is absent; the engine writes it from the look (note for anything that is not todo or task) and never reads it when `look` is set." },
+        "list": { "type": "string", "maxLength": 120, "description": "Legacy mirror for amberx-notes@1 readers: the nearest ancestor that is a `lists` row (else `inbox`). Read as `parent` when `parent` is ''." }
+      },
+      "additionalProperties": false
+    },
+    "legacyList": {
+      "type": "object",
+      "description": "amberx-notes@1 list row. The engine reads it as an item: name → title, the rest as named, look `list`, childLook from its rows' kinds.",
       "required": ["id", "name", "parent", "order", "createdAt", "updatedAt"],
       "properties": {
         "id": { "type": "string", "minLength": 1, "maxLength": 120 },
@@ -36,52 +91,7 @@
       },
       "additionalProperties": false
     },
-    "checklistItem": {
-      "type": "object",
-      "required": ["id", "text", "done"],
-      "properties": {
-        "id": { "type": "string", "maxLength": 40 },
-        "text": { "type": "string", "maxLength": 300 },
-        "done": { "type": "boolean" }
-      },
-      "additionalProperties": false
-    },
-    "item": {
-      "type": "object",
-      "required": ["id", "kind", "list", "title", "text", "tags", "status", "priority", "due", "checklist", "parent", "order", "createdAt", "updatedAt"],
-      "properties": {
-        "id": { "type": "string", "minLength": 1, "maxLength": 120 },
-        "kind": { "$ref": "#/$defs/kind" },
-        "list": { "type": "string", "maxLength": 120 },
-        "title": { "type": "string", "maxLength": 160 },
-        "text": { "type": "string", "maxLength": 20000 },
-        "summary": { "type": "string", "maxLength": 2000 },
-        "transcript": { "type": "string", "maxLength": 20000 },
-        "tags": { "type": "array", "maxItems": 20, "items": { "type": "string", "maxLength": 30 } },
-        "pinned": { "type": "boolean" },
-        "starred": { "type": "boolean" },
-        "status": { "$ref": "#/$defs/status" },
-        "priority": { "$ref": "#/$defs/priority" },
-        "due": { "type": "string", "description": "YYYY-MM-DD, an ISO date-time, or '' for none" },
-        "checklist": { "type": "array", "maxItems": 100, "items": { "$ref": "#/$defs/checklistItem" } },
-        "parent": { "type": "string", "description": "id of the task this is a subtask of; '' = top level" },
-        "order": { "type": "number" },
-        "source": { "enum": ["voice", "typed", "ai", "web", "import", "console"] },
-        "url": { "type": "string", "maxLength": 2000 },
-        "fields": {
-          "type": "object",
-          "description": "Custom fields by key as the kind's type schema declares them.",
-          "additionalProperties": { "type": ["string", "number", "boolean", "null", "array"] }
-        },
-        "createdAt": { "$ref": "#/$defs/iso" },
-        "updatedAt": { "$ref": "#/$defs/iso" },
-        "doneAt": { "$ref": "#/$defs/iso" },
-        "by": { "type": "string", "maxLength": 80 },
-        "device": { "type": "string", "maxLength": 80 }
-      },
-      "additionalProperties": false
-    },
-    "coreRule": { "enum": ["required", "optional", "hidden"] },
+    "showRule": { "enum": ["required", "optional", "hidden"] },
     "field": {
       "type": "object",
       "required": ["key", "label", "type"],
@@ -96,46 +106,44 @@
       },
       "additionalProperties": false
     },
-    "kindType": {
+    "look": {
       "type": "object",
-      "required": ["label", "icon", "tone", "core", "statuses", "defaultStatus", "defaultPriority", "fields"],
+      "description": "A preset over the one item type: what an item with this look shows and asks for. Never a type: no field is only valid under some look.",
+      "required": ["label", "icon", "tone", "checkbox", "show", "statuses", "defaultStatus", "defaultPriority", "fields"],
       "properties": {
         "label": { "type": "string", "maxLength": 30 },
         "icon": { "type": "string", "pattern": "^[a-z0-9][a-z0-9-]{0,39}$" },
         "tone": { "$ref": "#/$defs/tone" },
-        "core": {
+        "checkbox": { "type": "boolean", "description": "The item shows a tick box (counts towards its holder's done / total)." },
+        "show": {
           "type": "object",
-          "required": ["body", "status", "priority", "due", "tags", "checklist", "subtasks"],
+          "required": ["body", "status", "priority", "due", "tags"],
           "properties": {
-            "body": { "$ref": "#/$defs/coreRule" },
-            "status": { "$ref": "#/$defs/coreRule" },
-            "priority": { "$ref": "#/$defs/coreRule" },
-            "due": { "$ref": "#/$defs/coreRule" },
-            "tags": { "$ref": "#/$defs/coreRule" },
-            "checklist": { "$ref": "#/$defs/coreRule" },
-            "subtasks": { "$ref": "#/$defs/coreRule" }
+            "body": { "$ref": "#/$defs/showRule" },
+            "status": { "$ref": "#/$defs/showRule" },
+            "priority": { "$ref": "#/$defs/showRule" },
+            "due": { "$ref": "#/$defs/showRule" },
+            "tags": { "$ref": "#/$defs/showRule" }
           },
           "additionalProperties": false
         },
-        "statuses": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/status" }, "description": "The statuses this kind may use, a subset of the four canonical ones." },
+        "statuses": { "type": "array", "minItems": 1, "uniqueItems": true, "items": { "$ref": "#/$defs/status" }, "description": "The statuses the UI offers for this look (a subset of the four). A stored status outside it is kept and shown as is." },
         "statusLabels": { "type": "object", "additionalProperties": { "type": "string", "maxLength": 30 } },
         "priorityLabels": { "type": "array", "minItems": 4, "maxItems": 4, "items": { "type": "string", "maxLength": 20 } },
         "defaultStatus": { "$ref": "#/$defs/status" },
         "defaultPriority": { "$ref": "#/$defs/priority" },
+        "childLook": { "$ref": "#/$defs/lookId", "description": "Default childLook for a new item of this look." },
         "fields": { "type": "array", "maxItems": 24, "items": { "$ref": "#/$defs/field" } }
       },
       "additionalProperties": false
     },
-    "types": {
+    "looks": {
       "type": "object",
-      "description": "Per-kind type schema (hub-settings@1 document settings/notes-tasks[-<project>].json, key `types`).",
-      "required": ["note", "todo", "task"],
-      "properties": {
-        "note": { "$ref": "#/$defs/kindType" },
-        "todo": { "$ref": "#/$defs/kindType" },
-        "task": { "$ref": "#/$defs/kindType" }
-      },
-      "additionalProperties": false
+      "description": "Looks by id (hub-settings@1 document settings/notes-tasks[-<project>].json, key `looks`). The four built-ins are always present (they can be edited, not removed); Brett may add up to 12 more.",
+      "required": ["note", "todo", "task", "list"],
+      "propertyNames": { "$ref": "#/$defs/lookId" },
+      "maxProperties": 16,
+      "additionalProperties": { "$ref": "#/$defs/look" }
     }
   }
 }
