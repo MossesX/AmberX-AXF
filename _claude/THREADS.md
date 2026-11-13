@@ -786,11 +786,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 17:34 UTC · `merges-are-only-merged-once-github` added (13 steps) (all) · build-rename
-- 2026-11-13 17:34 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` note, removed (all) · build-rename
-- 2026-11-13 17:34 UTC · `move-amberx-web-app-console-amberx-andr` added (15 steps) (all) · build-rename
-- 2026-11-13 17:34 UTC · `move-amberx-web-app-into-the-console-amberx-andr` note, removed (all) · build-rename
-- 2026-11-13 17:34 UTC · `new-project-wizard-name-linked-repo` added (10 steps) (all) · build-rename
 - 2026-11-13 17:34 UTC · `new-project-wizard-name-linked-repo-required-starter-code-skin-accounts` note, removed (all) · build-rename
 - 2026-11-13 17:35 UTC · `move-amberx-web-app-console-amberx-andr` added (15 steps) (all) · foreign-write
 - 2026-11-13 17:35 UTC · `github-client-plugin-see-control-every` added (9 steps) (all) · foreign-write
@@ -1186,6 +1181,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 19:31 UTC · `console-app-wake-word-voice-listener` → running, note (all) · pipeline
 - 2026-11-13 19:31 UTC · `console-app-wake-word-voice-listener` branch claude/console-app-wake-word-voice-listener (all) · pipeline
 - 2026-11-13 19:31 UTC · `console-app-wake-word-voice-listener` note (all) · orchestrator
+- 2026-11-13 19:31 UTC · `land-drive-live-console-first-resolve` added (0 steps) (all) · console
+- 2026-11-13 19:31 UTC · `orchestrator-custom-groups-custom-tabs` note (all) · orchestrator
+- 2026-11-13 19:31 UTC · `orchestrator-custom-groups-custom-tabs` → running, note (all) · pipeline
+- 2026-11-13 19:31 UTC · `land-drive-live-console-first-resolve` → queued, note (all) · console
+- 2026-11-13 19:31 UTC · `orchestrator-custom-groups-custom-tabs` branch claude/orchestrator-custom-groups-custom-tabs (all) · pipeline
 
 ## Token passes (log)
 
