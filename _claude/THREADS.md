@@ -786,9 +786,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 17:33 UTC · `focus-on-every-screen-console-open-console-show-` note, removed (all) · build-rename
-- 2026-11-13 17:34 UTC · `github-client-plugin-see-control-every` added (9 steps) (all) · build-rename
-- 2026-11-13 17:34 UTC · `github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro` note, removed (all) · build-rename
 - 2026-11-13 17:34 UTC · `merges-are-only-merged-once-github` added (13 steps) (all) · build-rename
 - 2026-11-13 17:34 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` note, removed (all) · build-rename
 - 2026-11-13 17:34 UTC · `move-amberx-web-app-console-amberx-andr` added (15 steps) (all) · build-rename
@@ -1186,6 +1183,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 19:30 UTC · `console-app-part-2-native-floating-2` → running, note (all) · pipeline
 - 2026-11-13 19:30 UTC · `console-app-part-2-native-floating-2` branch claude/console-app-part-2-native-floating-2 (all) · pipeline
 - 2026-11-13 19:30 UTC · `console-app-part-2-native-floating-2` note (all) · orchestrator
+- 2026-11-13 19:31 UTC · `console-app-wake-word-voice-listener` → running, note (all) · pipeline
+- 2026-11-13 19:31 UTC · `console-app-wake-word-voice-listener` branch claude/console-app-wake-word-voice-listener (all) · pipeline
+- 2026-11-13 19:31 UTC · `console-app-wake-word-voice-listener` note (all) · orchestrator
 
 ## Token passes (log)
 
