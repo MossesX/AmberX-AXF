@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T20:53:49.832Z",
+ "updatedAt": "2026-11-13T20:54:07.448Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -132823,7 +132823,7 @@
    "title": "Own token sets for grids and tab groups",
    "category": "",
    "detail": "Today grids only have layout tokens (--fx-grid-areas/cols/rows and the -m mobile variants), and tab groups only have --fx-tab-py/--fx-tab-px padding and --fx-tabs-per-row. Both borrow the general colour tokens (--fx-surface, --fx-border, accent), so hover, selected and active states can't be styled on their own. Add dedicated token families in tokens.style, following skins and editable in Token Control, the UI Manager and per instance.\nGRID: header background/text/border/sort arrow/filter chip; row, alternate row, hover, selected, focused, expanded, disabled; grid lines, outer border, cell padding, row height, radius; group header, sticky column shadow, empty state; transparency (default 100%).\nTAB GROUP: bar background and border; tab text, background and border for idle, hover, active/selected, pressed, disabled and focus ring; active indicator (underline/pill) colour and thickness; badge on tab; fold/overflow button; gap; radius per style (underline, pills, boxed, segmented, plain, chips); transparency (default 100%).\nWire every grid/table and tab group to read them, and add a CI check against hard-coded colours. Per-instance overrides with Restore previous edit / Restore from axHub. Full API. Tests, help, Shipped features. Fable for the token schema.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -132831,7 +132831,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T19:57:42.157Z",
-   "updatedAt": "2026-11-13T20:19:23.781Z",
+   "updatedAt": "2026-11-13T20:53:45.369Z",
    "builtAt": "",
    "notes": [
     {
@@ -132865,6 +132865,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"0749b213-bc7e-4f25-a660-05ac6ac242f5\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-13T20:03:11.292Z"
+    },
+    {
+     "text": "s1 (Fable) done on branch claude/own-token-sets-for-grids-and-tab-groups: component-tokens@1 schema (32 grid + 58 tab tokens, defaults = today's look), axf.css + lib-datagrid wired, per-instance overrides with Restore previous edit / Restore from axHub (tab-group dialog + chrome.token* actions), control@1 tokens.style paths + new target tokens.instances (REST/MCP/CLI/page), CI check spec/check-component-tokens.mjs, help, docs. Not done: UI Review shots (no Playwright in the worktree; needs a rebuild-shots run before ready). Steps s2-s6 were split one-per-line and are out of order; s1 is the foundation they describe. Pre-existing on main: glossary ratchet 389/388, tracker 1 item without status.",
+     "at": "2026-11-13T20:53:45.369Z"
     },
     {
      "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-own-token-sets-for-grids-and-tab-groups--rhonda.",
