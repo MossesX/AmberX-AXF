@@ -551,15 +551,80 @@ def pipeline_settings() -> dict[str, Any]:
     return _pipeline("settings")
 
 
+# Fill every slot (BUILD-PARALLEL): the three Claude settings the fill round follows, by their pipeline names
+FILL_KEYS = {"fillSlots": "builds.fillSlots", "maxParallelPerBuild": "builds.maxParallelPerBuild", "autoQueuePending": "builds.autoQueuePending"}
+STEP_RE = re.compile(r"^[a-z0-9][a-z0-9-]{0,39}$")
+
+
+def fill_settings_set(request: Request, body: dict[str, Any]) -> dict[str, Any]:
+    """The fill settings part of POST /pipeline/settings: written as Claude settings through axf.claude-settings@1,
+    which derives the owner approval from the request itself. autoQueuePending is refused here unless the request is
+    Brett's own click (owner-only); fillSlots on and a higher maxParallelPerBuild need him too (claude-settings says so)."""
+    values = {FILL_KEYS[k]: v for k, v in body.items() if k in FILL_KEYS}
+    if not values:
+        return {}
+    if "autoQueuePending" in body and not brett_click(request):
+        raise HTTPException(403, "Auto-queue pending builds is owner-only: only Brett's own click in the console changes it")
+    if "maxParallelPerBuild" in body and not (isinstance(body["maxParallelPerBuild"], int) and 1 <= body["maxParallelPerBuild"] <= 12):
+        raise HTTPException(400, "maxParallelPerBuild is a whole number from 1 to 12")
+    if "fillSlots" in body and not isinstance(body["fillSlots"], bool):
+        raise HTTPException(400, "fillSlots is true or false")
+    svc = plugin_services.get("axf.claude-settings@1")
+    if svc is None:
+        raise HTTPException(503, "the Claude settings plugin is not installed: fill settings can't be changed")
+    r = svc.set_for(request, values) if hasattr(svc, "set_for") else svc.set(values, brett_click(request) or "console")
+    if not r.get("ok"):
+        raise HTTPException(403 if r.get("code") == "denied" else 400, str(r.get("message") or "refused")[:400])
+    return {"changed": r.get("changed", [])}
+
+
+@router.get("/pipeline/fill")
+def pipeline_fill(build: str = "") -> dict[str, Any]:
+    """Fill every slot, read-only: the slots (one row per slot: which build and step, or free), the ready steps, what the
+    next round would launch (planFill dry run, with why the rest waits), the settings; ?build=<id> adds that build's
+    steps with their dependency state (done / running in slot N / ready / waiting on …)."""
+    return _pipeline("fill", "status", *([_build_id(build)] if build else []))
+
+
+@router.post("/pipeline/fill/run")
+async def pipeline_fill_run(request: Request) -> dict[str, Any]:
+    """One dispatcher round now (on the VPS host it runs at once; from the console's container it is filed for the host's
+    next minute)."""
+    return _pipeline("fill", "run", "--by", (brett_click(request) or "console")[:80], who=(brett_click(request) or "console")[:80])
+
+
+@router.post("/builds/{build_id}/steps/{step}/deps")
+async def step_deps(build_id: str, step: str, request: Request) -> dict[str, Any]:
+    """{dependsOn: [stepId…]} sets the step's dependencies ([] = independent: it may run in parallel as soon as the build
+    runs); {dependsOn: null} or {sequential: true} = no list (it waits for the step before it). Unknown ids, the step
+    itself and cycles are refused."""
+    body = await _json_body(request)
+    if not STEP_RE.match(step):
+        raise HTTPException(400, "bad step id")
+    deps = body.get("dependsOn", None)
+    if body.get("sequential") is True or deps is None:
+        arg = "sequential"
+    elif isinstance(deps, list) and all(isinstance(x, str) and STEP_RE.match(x) for x in deps):
+        arg = json.dumps(deps)
+    else:
+        raise HTTPException(400, "dependsOn is a list of step ids, or null")
+    who = (brett_click(request) or "console")[:80]
+    return _pipeline("fill", "deps", _build_id(build_id), step, arg, "--by", who, who=who)
+
+
 @router.post("/pipeline/settings")
 async def pipeline_settings_set(request: Request) -> dict[str, Any]:
     """{key: value…} for pipeline-settings@1 (parallelPerAccount, fablePlans, useConsoleAccount, maxRuns, idleAfterMin, probeDays,
-    splitProvider, apiOverflow, apiAccounts). Turning the API overflow rule on spends money per token: only Brett's own click
-    does that (a session, MCP or voice may turn it off)."""
+    splitProvider, apiOverflow, apiAccounts) and the fill settings (fillSlots, maxParallelPerBuild, autoQueuePending: Claude
+    settings, see fill_settings_set). Turning the API overflow rule on spends money per token: only Brett's own click
+    does that (a session, MCP or voice may turn it off); so is Auto-queue pending builds, either way."""
     body = await _json_body(request)
     allowed = {"parallelPerAccount", "fablePlans", "useConsoleAccount", "maxRuns", "idleAfterMin", "probeDays", "splitProvider", "apiOverflow", "apiAccounts"}
     if body.get("apiOverflow") is True and not brett_click(request):
         raise HTTPException(403, "turning the API overflow rule on is Brett's own click in the console (it bills per token)")
+    fill = fill_settings_set(request, body)
+    if fill and not any(k in allowed for k in body):
+        return {"ok": True, **fill, "fill": _pipeline("fill", "status").get("settings")}
 
     def val(v: Any) -> str:
         if isinstance(v, bool):
@@ -569,7 +634,8 @@ async def pipeline_settings_set(request: Request) -> dict[str, Any]:
     pairs = [f"{k}={val(v)}" for k, v in body.items() if k in allowed]
     if not pairs:
         raise HTTPException(400, "nothing to change")
-    return _pipeline("set", *pairs)
+    res = _pipeline("set", *pairs)
+    return {**res, **fill} if fill else res
 
 
 @router.post("/pipeline/route")

@@ -101,7 +101,7 @@ export function pipeDir(env = process.env) {
   const hub = join(env.AXHUB_PROJECTS_DIR || '/projects', 'amberx-axf', '_data');
   return existsSync(hub) ? join(hub, 'pipeline') : join(homedir(), '.axf', 'pipeline');
 }
-const files = () => { const d = pipeDir(); return { dir: d, settings: join(d, 'settings.json'), accounts: join(d, 'accounts.json'), state: join(d, 'state.json'), log: join(d, 'log.jsonl'), host: join(d, 'accounts-host.json'), checkRequest: join(d, 'selfcheck-request.json'), health: join(d, 'health.json'), healthLock: join(d, 'health.lock'), healthRequest: join(d, 'health-request.json') }; };
+const files = () => { const d = pipeDir(); return { dir: d, settings: join(d, 'settings.json'), accounts: join(d, 'accounts.json'), state: join(d, 'state.json'), log: join(d, 'log.jsonl'), host: join(d, 'accounts-host.json'), checkRequest: join(d, 'selfcheck-request.json'), health: join(d, 'health.json'), healthLock: join(d, 'health.lock'), healthRequest: join(d, 'health-request.json'), fillRequest: join(d, 'fill-request.json') }; };
 
 /** The Claude settings document's values (owner-only ones included), {} when unreadable. */
 export function claudeSettings(env = process.env) { return readJson(claudeSettingsFile(env))?.values ?? {}; }
@@ -686,6 +686,51 @@ export function fillStatus({ env = process.env, build = '', now = Date.now() } =
   };
 }
 
+/**
+ * One dispatcher round now (REST POST /pipeline/fill/run, pipeline-fill-run, `pipeline.mjs fill run`, voice). On the VPS
+ * host (it sees the Claude logins) the tick runs at once and its fill part is returned; elsewhere (the console's
+ * container) the request is filed and the host's dispatcher runs it on its next minute. → { ok, ran, requested, fill }
+ */
+export function fillRun({ env = process.env, by = process.env.AXF_ACTOR || 'console' } = {}) {
+  if (!seesAccounts(env) && !env.AXF_PIPELINE_FILL_RUN_HERE) {
+    const r = { at: nowIso(), by: str(by, 80) }; writeJson(files().fillRequest, r);
+    return { ok: true, ran: false, requested: r.at, note: "filed: the dispatcher on the VPS runs a round within a minute" };
+  }
+  const t = tick({ env });
+  try { rmSync(files().fillRequest, { force: true }); } catch { /* none */ }
+  return { ok: true, ran: true, at: t.at, launched: t.launched.map((l) => ({ id: l.id, account: l.account, model: l.model })), fill: { launched: t.fill.launched.map((l) => ({ id: l.id, step: l.step, account: l.account, session: l.session })), ended: t.fill.ended, autoQueued: t.fill.autoQueued ?? [], plan: t.fill.plan ? { launches: t.fill.plan.launches, waits: t.fill.plan.waits, free: t.fill.plan.free, blocked: t.fill.plan.blocked } : null } };
+}
+
+/**
+ * Set one step's dependsOn (REST POST /builds/:id/steps/:step/deps, pipeline-step-deps, `pipeline.mjs fill deps`,
+ * voice). `deps` = step ids of the same build ([] = independent), or null / 'sequential' = no list (it waits for the
+ * step before it, as before). Refused: an unknown id, the step itself, a settled step's list, or a cycle.
+ */
+export function setStepDeps(id, stepId, deps, { by = process.env.AXF_ACTOR || 'console' } = {}) {
+  let out = null;
+  withStore((s) => {
+    const rec = storeCore.findBuild(s, id); if (!rec) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
+    const st = rec.steps.find((x) => x.id === stepId); if (!st) throw Object.assign(new Error(`${id} has no step ${stepId}`), { code: 2 });
+    if (st.done || st.skip) throw Object.assign(new Error(`${id} ${stepId} is ${st.done ? 'done' : 'skipped'}: its dependencies no longer matter`), { code: 2 });
+    const seq = deps == null || deps === 'sequential';
+    const list = seq ? null : (Array.isArray(deps) ? deps : String(deps).split(/[\s,]+/)).map((x) => str(x, 40).trim()).filter(Boolean);
+    if (list) {
+      if (list.includes(stepId)) throw Object.assign(new Error(`${stepId} cannot wait on itself`), { code: 2 });
+      const bad = list.filter((x) => !rec.steps.some((y) => y.id === x)); if (bad.length) throw Object.assign(new Error(`${bad.join(', ')} ${bad.length === 1 ? 'is' : 'are'} not a step of ${id}`), { code: 2 });
+    }
+    const before = BP.dependsOn(rec, st);
+    if (seq) delete st.after; else st.after = [...new Set(list)].slice(0, 20);
+    const cyc = storeCore.dependencyCycles(rec);
+    if (cyc.length) throw Object.assign(new Error(`that makes a dependency cycle: ${cyc[0].join(' → ')}`), { code: 2 });
+    const now = nowIso(); st.updatedAt = now; rec.updatedAt = now;
+    const after = BP.dependsOn(rec, st);
+    rec.notes.push({ text: `${stepId} dependencies set by ${str(by, 80)}: ${seq ? `sequential (after ${after.join(', ') || 'nothing'})` : after.length ? `after ${after.join(', ')}` : 'independent'} (was ${before.join(', ') || 'none'})`, at: now });
+    out = { ok: true, id: rec.id, step: stepId, dependsOn: after, explicit: seq ? null : st.after, parallel: BP.isParallelStep(st) };
+    return s;
+  }, { by, action: 'pipeline:step-deps', note: `${id}/${stepId}` });
+  return out;
+}
+
 /** One line per slot and per planned launch, for the CLI and agent-slots' `fill` view. */
 export function fillLines(f) {
   const L = [`slots ${f.slots.used}/${f.slots.cap} · ${f.slots.free} free · fill every slot ${f.settings.fillSlots ? 'on' : 'off'} · max ${f.settings.maxParallelPerBuild} parallel steps per build · auto-queue pending ${f.settings.autoQueuePending ? 'on' : 'off'}`];
@@ -1044,6 +1089,7 @@ export function tick({ env = process.env } = {}) {
     recent: [...state.recent, ...launched.map((l) => ({ at: nowIso(), event: 'launched', id: l.id, account: l.account, model: l.model })), ...ended.map((e) => ({ at: nowIso(), event: e.outcome, id: e.id })), ...failed.map((f) => ({ at: nowIso(), event: 'launch-failed', id: f.id, error: f.error }))].slice(-50) };
   saveState(next);
   // self-check: asked for (console load, voice, API), or queued work waits and this tick started nothing
+  try { if (existsSync(files().fillRequest)) { logLine({ event: 'fill-run', request: readJson(files().fillRequest) }); rmSync(files().fillRequest, { force: true }); } } catch { /* a courtesy */ }
   const asked = readJson(files().checkRequest);
   let check = null;
   if (asked || (plan.queue.length && !launched.length && plan.waits.length)) {
@@ -1265,6 +1311,13 @@ async function main(argv) {
     return out({ ok: true, ...one, ...r }, [...r.done.map((d) => `${d.id} → ${BP.TAB_LABEL[d.tab] || d.status}${cmd === 'hold' ? ' (on hold)' : ''}`), ...r.refused.map((x) => `refused ${x.id}: ${x.error}`)].join('\n'));
   }
   if (cmd === 'fill' && (rest[0] ?? 'status') === 'status') { const f = fillStatus({ build: rest[1] ?? '' }); return out(f, fillLines(f)); }
+  if (cmd === 'fill' && rest[0] === 'run') { const r = fillRun({ by }); return out(r, r.ran ? `ran a round: ${r.launched.length} build(s), ${r.fill.launched.length} parallel step(s) started${r.fill.autoQueued.length ? `, auto-queued ${r.fill.autoQueued.join(', ')}` : ''}` : r.note); }
+  if (cmd === 'fill' && rest[0] === 'deps') {
+    // fill deps <build> <step> <s1,s2 | none | sequential>   (none = independent: [])
+    const raw = rest[3] ?? ''; const deps = raw === 'sequential' ? null : raw === 'none' || raw === '[]' ? [] : raw.startsWith('[') ? JSON.parse(raw) : raw;
+    const r = setStepDeps(rest[1], rest[2], deps, { by });
+    return out(r, `${r.id} ${r.step}: ${r.explicit === null ? 'sequential' : r.dependsOn.length ? `after ${r.dependsOn.join(', ')}` : 'independent'}${r.parallel ? ' (may run in parallel)' : ''}`);
+  }
   if (cmd === 'step-brief') { // step-brief <build> <step>: the brief of a step-scoped launch (claude-headless.sh --step)
     const store = loadStore(); const b = storeCore.findBuild(store, rest[0]);
     if (!b) throw Object.assign(new Error(`no build "${rest[0]}"`), { code: 2 });

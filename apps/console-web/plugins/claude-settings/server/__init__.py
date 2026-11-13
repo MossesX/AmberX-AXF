@@ -186,6 +186,18 @@ class ClaudeSettings:
     def set(self, values: dict[str, Any], by: str) -> dict[str, Any]:
         return cli("owner-set", stdin={"patch": values, "owner": None, "by": by})
 
+    def set_for(self, request: Any, values: dict[str, Any]) -> dict[str, Any]:
+        """Change settings on behalf of a console request: the owner approval is derived HERE from the request (Brett's
+        signed-in session, the same test PUT /settings uses), never handed over by the caller. Keys with a pass effect
+        (No wait) are refused: they change only through PUT /settings, which handles the pass."""
+        reg = cli("registry")
+        if any(s.get("effect") for s in reg.get("settings", []) if s.get("key") in values):
+            return {"ok": False, "code": "invalid", "message": "No wait settings change only in Settings → Plugins → Claude"}
+        c = control()
+        owner = c.owner(request) if c is not None and hasattr(c, "owner") else None
+        user = getattr(request.state, "axf_user", None)
+        return cli("owner-set", stdin={"patch": values, "owner": owner, "by": str(getattr(user, "name", "") or "console")})
+
 
 plugin_services.provide("axf.claude-settings@1", ClaudeSettings(), FOLDER)
 
