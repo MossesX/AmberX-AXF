@@ -537,5 +537,29 @@ before = len(raised)
 n.ready({"items": [item("g-1")], "groups": [group]}, group)
 check(len(raised) == before, "setting off: no notification")
 
+# ---- stuck build work (ui-review-stuck health check, GET stuck): items / shots / failure markers in build worktrees
+st = mod.stuck_mod
+roots_dir = TMP / "builds"
+wt = roots_dir / "some-build" / st.REL
+(wt / "screenshots").mkdir(parents=True)
+(roots_dir / "clean-build" / st.REL).mkdir(parents=True)
+(roots_dir / "no-review-data").mkdir()
+(wt / "items.json").write_text(json.dumps({"items": [{"id": "r-1", "name": "Stuck item"}, {"id": "r-known", "name": "In console"}]}))
+(wt / "screenshots" / "index.json").write_text(json.dumps({"shots": [{"id": "s-1", "name": "Stuck shot"}]}))
+check(st.roots({"AXF_UI_REVIEW_STUCK_ROOTS": f"{roots_dir},{TMP / 'missing'}"}) == [roots_dir], "stuck roots: only folders that exist")
+found = st.scan([roots_dir], {"r-known"}, set())
+check(len(found) == 1 and [i["id"] for i in found[0]["items"]] == ["r-1"] and [s["id"] for s in found[0]["shots"]] == ["s-1"], "stuck: unknown items + shots found, console ids skipped, clean worktrees silent")
+pr = st.probe(found)
+check(pr["status"] == "error" and "1 review item(s) and 1 screenshot(s) stuck in 1 build worktree(s)" in pr["summary"], f"stuck probe is red with counts: {pr['summary']}")
+(wt / st.SENT).write_text(json.dumps({"ids": ["r-1", "s-1"]}))
+check(st.scan([roots_dir], {"r-known"}, set()) == [] and st.probe([])["status"] == "ok", "sent.json: re-sent work is not stuck any more")
+(wt / st.MARKER).write_text(json.dumps({"at": "2026-11-13T18:00:00Z", "code": "unauthorized", "reason": "console 401: the console token was refused"}))
+pr = st.probe(st.scan([roots_dir], {"r-known"}, set()))
+check(pr["status"] == "error" and "submit fail" in pr["summary"] and "401" in pr["summary"], "a failed-submit marker alone turns it red with the reason")
+os.environ["AXF_UI_REVIEW_STUCK_ROOTS"] = str(roots_dir)
+r = c.get("/p/stuck")
+check(r.status_code == 200 and r.json()["probe"]["status"] == "error" and r.json()["found"][0]["worktree"] == "some-build", "GET stuck lists them")
+del os.environ["AXF_UI_REVIEW_STUCK_ROOTS"]
+
 print(f"ui-review: {ok} checks ok" + (f", {len(fails)} failed" if fails else ""))
 sys.exit(1 if fails else 0)

@@ -81,3 +81,15 @@ item's are skipped. Run on the VPS, 13 Nov 2026:
 
 `builds-get-console-token-banner-alert` (filed 17:34 from the console, no pending id, same request and the same
 five steps as this build) removed with `orchestrator.mjs act remove`; builds-live put it on main (`afcad03f8`).
+
+## s7 Tests, Shipped features
+
+- `apps/console-web/plugins/ui-review/test.py` (CI glob): stuck scanner roots, unknown items/shots found and console
+  ids skipped, red probe with counts, `sent.json` clears it, a failure marker alone turns it red, `GET stuck`. 235 ok.
+- `apps/console-web/plugins/ui-review/test.mts` (CI glob): console call failure codes (no-token, 401, web page,
+  redirect, unreachable, 5xx), Bearer + no redirects; `reported()` writes the marker and raises the alert, never on a
+  refused token, clears on success; resubmit plan flags, skip without pictures, dedup of known items and loose
+  duplicates, `sent.json`, marker cleared, second run empty. 32 ok.
+- `deploy/claude-login.test.mjs`: the build session sees `AXF_TOKEN` and `AXF_CONSOLE_URL`; the token is printed nowhere.
+- `plugin-lifecycle.mjs check ui-review`: clean.
+- Shipped features: `cx.buildengine.reviewtoken` in `framework/catalog/catalog.json` + `status.json` (built).

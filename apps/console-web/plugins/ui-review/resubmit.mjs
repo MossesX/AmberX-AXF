@@ -108,7 +108,7 @@ export function run(roots = DEFAULT_ROOTS, { dryRun = false, log = console.log, 
   for (const w of found) {
     const ok = [];
     for (const c of w.calls) {
-      if (c.skip) { res.skipped.push({ where: w.where, id: c.id, why: c.skip }); continue; }
+      if (c.skip) { if (c.loose) ok.push(...c.files.map((f) => f.split('/').pop())); res.skipped.push({ where: w.where, id: c.id, why: c.skip }); continue; }  // a loose duplicate is done for good
       if (c.already) { ok.push(c.id); res.skipped.push({ where: w.where, id: c.id, why: 'already in UI Review' }); log(`already in UI Review: ${c.label}`); continue; }
       if (dryRun) { log(`would send ${c.label} (${c.files.length} file(s)) from ${w.where}`); continue; }
       const r = spawn(process.execPath, c.argv, { encoding: 'utf8', env: { ...process.env, AXF_UI_REVIEW_DIR: '' } });
