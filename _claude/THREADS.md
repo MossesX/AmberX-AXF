@@ -785,7 +785,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 11:08 UTC · `android-approval-overlay-a-small-always-on-float` s3 done, → built (all) · orchestrator
 - 2026-11-13 11:10 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` s22 done (all) · orchestrator
 - 2026-11-13 11:10 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` → pending, note (all) · reconciler
 - 2026-11-13 11:10 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` s23 done (all) · orchestrator
@@ -1185,6 +1184,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 18:00 UTC · `per-instance-settings-window-picker` s1 done, → running (all) · orchestrator
 - 2026-11-13 18:00 UTC · `chrome-settings-actually-apply-toolbars` s1 done (all) · foreign-write
 - 2026-11-13 18:02 UTC · `restore-asset-designer-plugin-merged-nov` note (all) · orchestrator
+- 2026-11-13 18:02 UTC · `tab-groups-choose-how-many-rows-tabs` s1 done, → running (all) · orchestrator
 
 ## Token passes (log)
 
