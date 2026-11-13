@@ -778,7 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 11:04 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` branch claude/fix-the-step-splitter-claude-exit-1-input-must-b (all) · pipeline
 - 2026-11-12 11:04 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` note (all) · orchestrator
 - 2026-11-12 11:04 UTC · `show-commits-behind-main-on-every-build-table-an` s1 done (all) · orchestrator
 - 2026-11-12 11:05 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` s1 done, → running (all) · orchestrator
@@ -1178,6 +1177,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 01:26 UTC · `claude-badge-can-claude-build-green-when-at-least-one-build-account-in-the-or` note (all) · orchestrator
 - 2026-11-13 01:27 UTC · `projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone` branch claude/projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone, PR #537 (all) · builds-live
 - 2026-11-13 01:27 UTC · `projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone` s1 done, → running (all) · orchestrator
+- 2026-11-13 01:28 UTC · `projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone` note (all) · orchestrator
 
 ## Token passes (log)
 
