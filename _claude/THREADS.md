@@ -778,7 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 10:52 UTC · `remove-the-console-s-own-notes-manager-console-u` branch claude/remove-the-console-s-own-notes-manager-console-u (all) · pipeline
 - 2026-11-12 10:52 UTC · `remove-the-console-s-own-notes-manager-console-u` note (all) · orchestrator
 - 2026-11-12 10:52 UTC · `handoff-2-addenda-r2` → archived (all) · claude-voice
 - 2026-11-12 10:52 UTC · `console-account-picker` → archived (all) · claude-voice
@@ -1178,6 +1177,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 00:41 UTC · `change-to-one-to-do-notes-and-tasks-plugin-pr-527-brett-notes-tasks-and-to` note (all) · orchestrator
 - 2026-11-13 00:41 UTC · `everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the` note (all) · pipeline
 - 2026-11-13 00:42 UTC · `everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the` note (all) · pipeline
+- 2026-11-13 00:42 UTC · `full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app` added (0 steps) (all) · mcp
 
 ## Token passes (log)
 

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T00:42:13.145Z",
+ "updatedAt": "2026-11-13T00:42:26.018Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -111520,6 +111520,25 @@
      "uid": "st-mwe94qjs0844sf"
     }
    ]
+  },
+  {
+   "id": "full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app",
+   "title": "Full voice and AI control of EVERYTHING in the console, before the Android app: every action, setting, tab, dialog, menu, list, item and field gets an API (REST, MCP, CLI, voice). Add find-by-content deep links down to the item: 'jump to the plan about X, the step that mentions Y' searches inside pl",
+   "category": "",
+   "detail": "",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-13T00:42:24.765Z",
+   "updatedAt": "2026-11-13T00:42:24.765Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": []
   }
  ]
 }
