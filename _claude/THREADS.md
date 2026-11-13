@@ -781,7 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 23:22 UTC · `banners-page-focus-scroll-to-and-highlight-any-banner-or-badge` note (all) · orchestrator
 - 2026-11-12 23:22 UTC · `banners-page-focus-scroll-to-and-highlight-any-banner-or-badge` s2 done, → built (all) · orchestrator
 - 2026-11-12 23:22 UTC · `demonstration-designer-demos-must-actually-show-things-when-a-demo-plays-the-c` added (0 steps) (all) · mcp
 - 2026-11-12 23:23 UTC · `demonstration-designer-demos-must-actually-show-things-when-a-demo-plays-the-c` note (all) · orchestrator
@@ -1181,6 +1180,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 07:39 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` s5 done (all) · orchestrator
 - 2026-11-13 07:40 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` → pending, note (all) · reconciler
 - 2026-11-13 07:42 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` note (all) · orchestrator
+- 2026-11-13 07:42 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` s6 done (all) · orchestrator
 
 ## Token passes (log)
 
