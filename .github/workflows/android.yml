@@ -120,6 +120,7 @@ jobs:
       - run: node framework/spec/check-refs.mjs                      # ref@1: mentions in banner text → links (fixtures/refs.json: names, kind words, explicit touches, PRs, files, peek)
       - run: node framework/spec/check-build-hook.mjs               # build-hook@1: one event per builds store change (created with steps + his words, steps-added, step-done, status, PR, merge, addendum, cancelled), stable ids, journal replay
       - run: node framework/spec/check-feature-ledger.mjs            # feature-ledger@1 + deploy-log@1: one status lifecycle for features and edits, merge never loses a date / build / PR / prompt, live from the deploy log, grouping / sort / filter / export projections, schema snapshots
+      - run: node framework/spec/check-prompt-engine.mjs            # prompt-engine@1: registry from manifests, context-aware builder options, rule / macro / pipeline validation, every condition op, limits (cooldown / dedupe / rate), prompts + answers (veto timeout, pick by id / number / label), plans (macros, cycles, pipeline gates + resume, keys needed), templates, schema snapshots
       - run: node framework/cli/help-coverage.mjs --check            # Help mode: every control in the framework chrome, the console + plugins and axHub web has help; fails if coverage drops below framework/spec/help-coverage.json
       - run: node framework/cli/axf.mjs libraries
       - name: Asset conformance — every web CSS/TSX and Kotlin UI (handwritten or generated) takes its look from asset tokens; file:line + token to use
@@ -156,6 +157,8 @@ jobs:
         run: node apps/console-web/plugins/demonstration-designer/test.mjs  # axf-plugin:demonstration-designer
       - name: Plugin commands plugin (control@1 plugins domain — runner gate, reads, dispatch, confirm, CLI)  # axf-plugin:plugin-commands
         run: node apps/console-web/plugins/plugin-commands/test.mjs  # axf-plugin:plugin-commands
+      - name: Prompt engine plugin (prompt-engine@1 runner — rules / macros / pipelines CRUD, fire → ask → answer → run, dedupe, dry test-fire, gates resume, tick expiries + schedules, chain cap, build-hook listener, CLI)  # axf-plugin:prompt-engine
+        run: node apps/console-web/plugins/prompt-engine/test.mjs  # axf-plugin:prompt-engine
       - name: Claude plugin (claude-settings@1 — open registry, owner-only rules, No wait ↔ pass decisions)  # axf-plugin:claude-settings
         run: node apps/console-web/plugins/claude-settings/test.mjs  # axf-plugin:claude-settings
       - name: AmberX listeners plugin (listener@1 on the console — devices from the hub table, policies as hub-settings@1, restart requests, CLI)  # axf-plugin:amberx-listeners
@@ -347,6 +350,7 @@ jobs:
             python apps/console-web/plugins/console-commands/server/test_console_commands.py  # console commands: consoles announce + stream, resolve, deliver + ack, per-user mailbox, confirm, liveness, failover to the next live console, wake, late acks, build focus  # axf-plugin:console-commands
             python apps/console-web/plugins/output-recorder/test_transcripts.py  # axf-plugin:output-recorder
             python apps/console-web/plugins/claude-session/test.py  # axf-plugin:claude-session
+            python apps/console-web/plugins/prompt-engine/test.py  # axf-plugin:prompt-engine
             python apps/console-web/plugins/follow-amber/test.py  # axf-plugin:follow-amber
             python apps/console-web/plugins/ref-links/server/test_ref_links.py  # reference links: targets (catalog, agents, UI Review), find, resolve, open → refs.<how> through console-commands@1  # axf-plugin:ref-links
             python apps/console-web/server/test_mcp_tools.py         # console MCP: read tools read-only, deletes destructive, veto pass tools

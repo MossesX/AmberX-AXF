@@ -1,0 +1,55 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amberx.ai/axf/schemas/prompt-audit.schema.json",
+  "title": "prompt-audit@1: one line of the prompting engine's history",
+  "type": "object",
+  "required": [
+    "at",
+    "kind"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "$axf": {
+      "const": "prompt-audit@1"
+    },
+    "at": {
+      "type": "string"
+    },
+    "kind": {
+      "enum": [
+        "fired",
+        "skipped",
+        "asked",
+        "answered",
+        "expired",
+        "shelved",
+        "planned",
+        "ran",
+        "failed",
+        "dry-run",
+        "rule",
+        "macro",
+        "pipeline",
+        "keys-needed"
+      ]
+    },
+    "rule": {
+      "type": "string"
+    },
+    "instance": {
+      "type": "string"
+    },
+    "event": {
+      "type": "string"
+    },
+    "reason": {
+      "type": "string"
+    },
+    "by": {
+      "type": "string"
+    },
+    "detail": {
+      "type": "object"
+    }
+  }
+}

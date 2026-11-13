@@ -1,0 +1,103 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amberx.ai/axf/schemas/prompt-macro.schema.json",
+  "title": "prompt-macro@1: a saved sequence of actions with parameters",
+  "type": "object",
+  "required": [
+    "id",
+    "steps"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "$axf": {
+      "const": "prompt-macro@1"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]{0,79}$"
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "params": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "enum": [
+              "string",
+              "number",
+              "boolean",
+              "enum",
+              "object",
+              "list",
+              "build",
+              "plugin",
+              "macro",
+              "pipeline",
+              "rule",
+              "command",
+              "address",
+              "duration",
+              "cron",
+              "text"
+            ]
+          },
+          "title": {
+            "type": "string"
+          },
+          "default": {},
+          "required": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "action"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "action": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9._-]{0,79}$"
+          },
+          "input": {
+            "type": "object"
+          },
+          "title": {
+            "type": "string"
+          },
+          "continueOnError": {
+            "type": "boolean"
+          }
+        }
+      },
+      "minItems": 1
+    },
+    "createdAt": {
+      "type": "string"
+    },
+    "updatedAt": {
+      "type": "string"
+    },
+    "by": {
+      "type": "string"
+    }
+  }
+}

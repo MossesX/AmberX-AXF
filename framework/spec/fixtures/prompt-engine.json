@@ -1,0 +1,1518 @@
+{
+  "$axf": "prompt-engine@1",
+  "note": "Expected outputs of framework/spec/check-prompt-engine.mjs; regenerate with --write after a deliberate engine change.",
+  "expected": {
+    "registry": {
+      "sources": [
+        "builds",
+        "ui-review",
+        "approvals",
+        "merge-queue",
+        "watchdog",
+        "schedule",
+        "voice",
+        "webhook",
+        "custom",
+        "engine",
+        "deploy"
+      ],
+      "events": 33,
+      "actions": 23,
+      "connectors": {
+        "email": {
+          "id": "email",
+          "available": true
+        }
+      },
+      "deployFields": [
+        "target",
+        "ok",
+        "durationSec"
+      ],
+      "missing": [
+        "ssh"
+      ],
+      "emailOk": [],
+      "smsMissing": [
+        "sms"
+      ]
+    },
+    "options": {
+      "none": {
+        "sources": 11,
+        "events": 33,
+        "fields": 0,
+        "actions": 23
+      },
+      "source": {
+        "events": [
+          "deploy.done"
+        ]
+      },
+      "field": {
+        "ops": [
+          "eq",
+          "ne",
+          "in",
+          "nin"
+        ],
+        "values": [
+          "pending",
+          "queued",
+          "running",
+          "waiting",
+          "blocked",
+          "failed",
+          "built",
+          "complete",
+          "archived"
+        ]
+      },
+      "number": [
+        "eq",
+        "ne",
+        "gt",
+        "gte",
+        "lt",
+        "lte",
+        "exists",
+        "missing"
+      ],
+      "bool": [
+        "truthy",
+        "falsy"
+      ],
+      "ask": {
+        "approve": [
+          "approve",
+          "deny",
+          "later"
+        ],
+        "veto": [
+          "approve",
+          "deny",
+          "timeout",
+          "later"
+        ],
+        "pick": [
+          "pick",
+          "deny",
+          "later"
+        ],
+        "none": [
+          "fire"
+        ]
+      },
+      "outputs": [
+        {
+          "id": "dialog",
+          "available": true
+        },
+        {
+          "id": "push",
+          "available": true
+        },
+        {
+          "id": "email",
+          "available": true
+        },
+        {
+          "id": "sms",
+          "available": false
+        },
+        {
+          "id": "call",
+          "available": false
+        }
+      ],
+      "action": [
+        {
+          "name": "plugin",
+          "choices": [
+            {
+              "id": "ui-review",
+              "title": "UI Review"
+            },
+            {
+              "id": "other",
+              "title": "other"
+            }
+          ]
+        },
+        {
+          "name": "command",
+          "choices": [
+            {
+              "id": "list",
+              "title": "list"
+            },
+            {
+              "id": "decide",
+              "title": "decide"
+            }
+          ]
+        },
+        {
+          "name": "input",
+          "choices": null
+        }
+      ],
+      "build": [
+        {
+          "name": "build",
+          "choices": [
+            {
+              "id": "b1",
+              "title": "Grid"
+            }
+          ]
+        }
+      ]
+    },
+    "validate": {
+      "templates": {
+        "ui-review-popup": true,
+        "build-failed-retry": true,
+        "approval-veto": true,
+        "merge-clash-pick": true,
+        "upgrade-approve": true,
+        "watchdog-danger": true,
+        "service-down-call": true,
+        "daily-digest": true,
+        "build-shipped-note": true
+      },
+      "noEvent": [
+        "trigger.event",
+        "on.fire"
+      ],
+      "unknownEvent": [
+        "trigger.event"
+      ],
+      "wrongSource": [
+        "trigger.source"
+      ],
+      "badCond": [
+        "when.all.0.field",
+        "when.all.0.op",
+        "when.all.1.value",
+        "when.all.2.value"
+      ],
+      "pickNeedsTwo": [
+        "ask.options"
+      ],
+      "wrongBranch": [
+        "on.pick",
+        "on.timeout"
+      ],
+      "unknownOption": [
+        "on.pick.c"
+      ],
+      "unknownAction": [
+        "on.approve.0.action",
+        "on.approve.1.input.build",
+        "on.approve.1.input.text",
+        "on.approve.2.input.status"
+      ],
+      "noneNeedsFire": [
+        "on.fire"
+      ],
+      "vetoMin": [
+        "ask.countdownSec"
+      ],
+      "limits": [
+        "limits.cooldownSec",
+        "limits.maxPerHour"
+      ],
+      "macroOk": {
+        "ok": true,
+        "errors": []
+      },
+      "macroBad": [
+        "id",
+        "steps"
+      ],
+      "macroUnknownAction": [
+        "steps.0.action"
+      ],
+      "pipelineOk": true,
+      "pipelineBad": [
+        "stages.0.actions",
+        "stages.1.gate.title",
+        "stages.1.gate.options"
+      ],
+      "manifestOk": true,
+      "manifestBad": [
+        "source",
+        "events.1.id",
+        "events.2.id",
+        "actions.0.effect",
+        "actions.0.input.0.name"
+      ],
+      "rejection": "trigger.event: a rule fires on an event (trigger.event, e.g. build.failed); on.fire: a rule that asks nothing does something on fire"
+    },
+    "norm": {
+      "failed": {
+        "$axf": "prompt-event@1",
+        "id": "build-failed-retry",
+        "title": "Build failed: retry or archive",
+        "description": "A failed build asks whether to queue it again or archive it; one prompt per build per day.",
+        "enabled": true,
+        "trigger": {
+          "source": "builds",
+          "event": "build.status",
+          "filter": {
+            "build.status": "failed"
+          }
+        },
+        "when": null,
+        "limits": {
+          "cooldownSec": 0,
+          "dedupeKey": "{{build.id}}",
+          "dedupeSec": 86400,
+          "maxPerHour": 0,
+          "retries": 0,
+          "retryDelaySec": 30
+        },
+        "ask": {
+          "kind": "pick",
+          "title": "Build failed: {{build.title}}",
+          "text": "{{build.id}} on {{build.branch|or:no branch}}",
+          "options": [
+            {
+              "id": "retry",
+              "label": "Queue it again"
+            },
+            {
+              "id": "archive",
+              "label": "Archive it"
+            },
+            {
+              "id": "leave",
+              "label": "Leave it"
+            }
+          ],
+          "countdownSec": 0,
+          "outputs": [
+            "dialog",
+            "push"
+          ]
+        },
+        "on": {
+          "pick": {
+            "retry": [
+              {
+                "action": "build.status",
+                "input": {
+                  "build": "{{build.id}}",
+                  "status": "queued"
+                }
+              }
+            ],
+            "archive": [
+              {
+                "action": "build.archive",
+                "input": {
+                  "build": "{{build.id}}"
+                }
+              }
+            ],
+            "leave": [
+              {
+                "action": "log.note",
+                "input": {
+                  "text": "Left {{build.id}} failed."
+                }
+              }
+            ]
+          }
+        },
+        "template": "build-failed-retry",
+        "tags": [],
+        "createdAt": "2026-11-13T18:00:00.000Z",
+        "updatedAt": "2026-11-13T18:00:00.000Z",
+        "by": ""
+      },
+      "cond": {
+        "$axf": "prompt-event@1",
+        "id": "slow-deploy",
+        "title": "Slow deploy",
+        "description": "",
+        "enabled": true,
+        "trigger": {
+          "source": "",
+          "event": "deploy.done",
+          "filter": {}
+        },
+        "when": {
+          "all": [
+            {
+              "field": "ok",
+              "op": "truthy"
+            },
+            {
+              "any": [
+                {
+                  "field": "durationSec",
+                  "op": "gt",
+                  "value": 300
+                },
+                {
+                  "field": "target",
+                  "op": "eq",
+                  "value": "hub"
+                }
+              ]
+            },
+            {
+              "not": {
+                "field": "target",
+                "op": "eq",
+                "value": "skip"
+              }
+            }
+          ]
+        },
+        "limits": {
+          "cooldownSec": 600,
+          "dedupeKey": "",
+          "dedupeSec": 0,
+          "maxPerHour": 2,
+          "retries": 0,
+          "retryDelaySec": 30
+        },
+        "ask": {
+          "kind": "none",
+          "title": "",
+          "text": "",
+          "options": [],
+          "countdownSec": 0,
+          "outputs": [
+            "dialog"
+          ]
+        },
+        "on": {
+          "fire": [
+            {
+              "action": "notify.email",
+              "input": {
+                "subject": "Slow deploy to {{target}}",
+                "text": "{{durationSec}}s"
+              }
+            },
+            {
+              "action": "deploy.rollback",
+              "input": {
+                "target": "{{target}}"
+              }
+            }
+          ]
+        },
+        "template": "",
+        "tags": [],
+        "createdAt": "2026-11-13T18:00:00.000Z",
+        "updatedAt": "2026-11-13T18:00:00.000Z",
+        "by": ""
+      },
+      "slug": [
+        "build-failed-retry",
+        "",
+        "a.b-c_d",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+      ],
+      "summary": {
+        "failed": "On Build status changed (build.status = failed): asks to pick from 3 \"Build failed: {{build.title}}\" → pick: 3",
+        "cond": "On Deploy finished, with conditions: runs → fire: 2; cooldown 600s",
+        "veto": "On A call is held on its countdown: asks (veto, 90s) \"{{approval.tool}} runs in {{approval.secondsLeft}}s\" → deny: 1"
+      }
+    },
+    "paths": {
+      "get": [
+        "b1",
+        null,
+        null,
+        1
+      ],
+      "render": [
+        "b1 on claude/grid FAILED none {\"id\":\"b1\",\"title\":\"Grid\",\"status\":\"failed\",\"branch\":\"claude/grid\"}",
+        "plain"
+      ],
+      "deep": {
+        "a": "b1",
+        "b": [
+          "",
+          "x failed"
+        ],
+        "c": {
+          "d": ""
+        }
+      }
+    },
+    "conditions": {
+      "leaves": [
+        [
+          "eq build.status",
+          true
+        ],
+        [
+          "eq build.status",
+          false
+        ],
+        [
+          "ne build.status",
+          true
+        ],
+        [
+          "in build.status",
+          true
+        ],
+        [
+          "nin build.status",
+          false
+        ],
+        [
+          "contains build.title",
+          true
+        ],
+        [
+          "startsWith build.branch",
+          true
+        ],
+        [
+          "endsWith build.branch",
+          true
+        ],
+        [
+          "matches build.branch",
+          true
+        ],
+        [
+          "matches build.branch",
+          false
+        ],
+        [
+          "gt build.steps.total",
+          false
+        ],
+        [
+          "gte build.steps.total",
+          true
+        ],
+        [
+          "lt build.steps.total",
+          true
+        ],
+        [
+          "lte build.steps.total",
+          true
+        ],
+        [
+          "gt build.title",
+          false
+        ],
+        [
+          "exists build.pr",
+          false
+        ],
+        [
+          "missing build.pr",
+          true
+        ],
+        [
+          "exists build.id",
+          true
+        ],
+        [
+          "truthy build.id",
+          true
+        ],
+        [
+          "falsy build.pr",
+          true
+        ],
+        [
+          "zz build.id",
+          false
+        ]
+      ],
+      "groups": [
+        true,
+        true,
+        false,
+        false,
+        true,
+        true,
+        false,
+        true
+      ]
+    },
+    "trigger": {
+      "match": {
+        "match": true,
+        "reason": ""
+      },
+      "filterMiss": {
+        "match": false,
+        "reason": "filter"
+      },
+      "otherEvent": {
+        "match": false,
+        "reason": "no-match"
+      },
+      "noSource": {
+        "match": true,
+        "reason": ""
+      },
+      "wildcard": {
+        "match": false,
+        "reason": "no-match"
+      },
+      "listFilter": {
+        "match": true,
+        "reason": ""
+      }
+    },
+    "evaluate": {
+      "first": {
+        "fire": true,
+        "kind": "pick",
+        "title": "Build failed: Grid",
+        "text": "b1 on claude/grid",
+        "options": [
+          {
+            "id": "retry",
+            "label": "Queue it again"
+          },
+          {
+            "id": "archive",
+            "label": "Archive it"
+          },
+          {
+            "id": "leave",
+            "label": "Leave it"
+          }
+        ],
+        "id": "build-failed-retry-20261113180000-mzdy9w",
+        "answers": [
+          "pick",
+          "deny",
+          "later"
+        ]
+      },
+      "dedupe": "dedupe",
+      "otherBuild": true,
+      "nextDay": true,
+      "cond": [
+        true,
+        "cooldown",
+        true,
+        "rate",
+        "conditions"
+      ],
+      "off": "disabled",
+      "forced": true,
+      "stateKeys": [
+        "lastFired",
+        "seen",
+        "fires"
+      ],
+      "pruned": {
+        "lastFired": {
+          "build-failed-retry": "2026-11-14T19:00:00.000Z"
+        },
+        "seen": {},
+        "fires": {}
+      },
+      "all": [
+        [
+          "build-failed-retry",
+          true,
+          ""
+        ],
+        [
+          "slow-deploy",
+          false,
+          "no-match"
+        ],
+        [
+          "ui-review-popup",
+          false,
+          "no-match"
+        ]
+      ]
+    },
+    "answers": {
+      "pickId": {
+        "ok": true,
+        "status": "answered",
+        "branch": "pick",
+        "option": "archive",
+        "actions": [
+          "build.archive"
+        ],
+        "answer": {
+          "kind": "pick",
+          "option": "archive",
+          "optionLabel": "Archive it"
+        }
+      },
+      "pickNumber": {
+        "ok": true,
+        "status": "answered",
+        "branch": "pick",
+        "option": "retry",
+        "actions": [
+          "build.status"
+        ],
+        "answer": {
+          "kind": "pick",
+          "option": "retry",
+          "optionLabel": "Queue it again"
+        }
+      },
+      "pickLabel": {
+        "ok": true,
+        "status": "answered",
+        "branch": "pick",
+        "option": "leave",
+        "actions": [
+          "log.note"
+        ],
+        "answer": {
+          "kind": "pick",
+          "option": "leave",
+          "optionLabel": "Leave it"
+        }
+      },
+      "pickBad": {
+        "ok": false,
+        "code": "validation",
+        "error": "no option nope; the options are 1 Queue it again (retry), 2 Archive it (archive), 3 Leave it (leave)"
+      },
+      "approveOnPick": {
+        "ok": false,
+        "code": "validation",
+        "error": "a pick prompt takes pick, deny, later, not approve"
+      },
+      "deny": {
+        "ok": true,
+        "status": "answered",
+        "branch": "deny",
+        "option": null,
+        "actions": [],
+        "answer": {
+          "kind": "deny"
+        }
+      },
+      "later": {
+        "ok": true,
+        "status": "shelved",
+        "branch": "later",
+        "option": null,
+        "actions": []
+      },
+      "timeoutNoDefault": {
+        "ok": true,
+        "status": "expired",
+        "branch": "timeout",
+        "option": null,
+        "actions": [],
+        "answer": {
+          "kind": "timeout"
+        }
+      },
+      "text": {
+        "ok": true,
+        "status": "answered",
+        "branch": "text",
+        "option": null,
+        "actions": [
+          "log.note"
+        ],
+        "answer": {
+          "kind": "text",
+          "text": "some words"
+        }
+      },
+      "veto": {
+        "fields": {
+          "kind": "veto",
+          "countdownSec": 90,
+          "expiresAt": "2026-11-13T18:01:30.000Z",
+          "title": "vps.build_start runs in 90s",
+          "answers": [
+            "approve",
+            "deny",
+            "timeout",
+            "later"
+          ]
+        },
+        "timeout": {
+          "ok": true,
+          "status": "expired",
+          "branch": "approve",
+          "option": null,
+          "actions": [],
+          "answer": {
+            "kind": "timeout"
+          }
+        },
+        "deny": {
+          "ok": true,
+          "status": "answered",
+          "branch": "deny",
+          "option": null,
+          "actions": [
+            "log.note"
+          ],
+          "answer": {
+            "kind": "deny"
+          }
+        },
+        "approve": {
+          "ok": true,
+          "status": "answered",
+          "branch": "approve",
+          "option": null,
+          "actions": [],
+          "answer": {
+            "kind": "approve"
+          }
+        }
+      },
+      "withDefault": {
+        "ok": true,
+        "status": "expired",
+        "branch": "pick",
+        "option": "retry",
+        "actions": [
+          "build.status"
+        ],
+        "answer": {
+          "kind": "timeout",
+          "option": "retry",
+          "optionLabel": "Queue it again"
+        }
+      },
+      "alreadyAnswered": {
+        "ok": false,
+        "code": "validation",
+        "error": "this prompt is already answered"
+      },
+      "normAnswer": [
+        {
+          "kind": "approve"
+        },
+        {
+          "kind": "deny"
+        },
+        {
+          "kind": "pick",
+          "option": "2"
+        },
+        {
+          "kind": "later"
+        },
+        {
+          "kind": "text",
+          "text": "Call it Bob"
+        },
+        {
+          "kind": "pick",
+          "option": "a"
+        },
+        {
+          "kind": "text",
+          "text": "x"
+        },
+        null,
+        null
+      ],
+      "expire": [
+        [
+          "approval-veto-20261113180000-1j2sak0",
+          "approve",
+          0
+        ]
+      ],
+      "notYet": 0
+    },
+    "plan": {
+      "direct": {
+        "steps": [
+          {
+            "action": "build.archive",
+            "input": {
+              "build": "b1"
+            }
+          },
+          {
+            "action": "build.delete",
+            "input": {
+              "build": "x"
+            },
+            "confirm": true
+          },
+          {
+            "action": "build.approve-upgrade",
+            "input": {
+              "build": "x",
+              "phase": 1
+            },
+            "brettOnly": true
+          }
+        ],
+        "errors": [],
+        "keysNeeded": [],
+        "gate": null,
+        "runnable": 3,
+        "ok": true
+      },
+      "macro": {
+        "steps": [
+          {
+            "action": "macro.run",
+            "input": {
+              "macro": "cleanup",
+              "params": {
+                "note": "done",
+                "build": "b7"
+              }
+            },
+            "marker": "macro-start"
+          },
+          {
+            "action": "build.note",
+            "input": {
+              "build": "b7",
+              "note": "done",
+              "text": "done for b7"
+            }
+          },
+          {
+            "action": "log.note",
+            "input": {
+              "text": "cleaned b7"
+            }
+          }
+        ],
+        "errors": [],
+        "keysNeeded": [],
+        "gate": null,
+        "runnable": 2,
+        "ok": true
+      },
+      "macroMissingParam": {
+        "steps": [],
+        "errors": [
+          {
+            "at": "run > macro:cleanup",
+            "message": "macro cleanup needs build"
+          }
+        ],
+        "keysNeeded": [],
+        "gate": null,
+        "runnable": 0,
+        "ok": false
+      },
+      "macroUnknown": {
+        "steps": [],
+        "errors": [
+          {
+            "at": "run > macro.run",
+            "message": "no macro nope"
+          }
+        ],
+        "keysNeeded": [],
+        "gate": null,
+        "runnable": 0,
+        "ok": false
+      },
+      "cycle": {
+        "steps": [
+          {
+            "action": "macro.run",
+            "input": {
+              "macro": "loop-a",
+              "params": {}
+            },
+            "marker": "macro-start"
+          },
+          {
+            "action": "macro.run",
+            "input": {
+              "macro": "loop-b",
+              "params": {}
+            },
+            "marker": "macro-start"
+          }
+        ],
+        "errors": [
+          {
+            "at": "run > macro:loop-a > macro:loop-b > macro:loop-a",
+            "message": "macro loop-a runs itself"
+          }
+        ],
+        "keysNeeded": [],
+        "gate": null,
+        "runnable": 0,
+        "ok": false
+      },
+      "pipelineGate": {
+        "steps": [
+          {
+            "action": "pipeline.run",
+            "input": {
+              "pipeline": "ship",
+              "stage": 0,
+              "params": {
+                "build": "b7"
+              }
+            },
+            "marker": "stage"
+          },
+          {
+            "action": "log.note",
+            "input": {
+              "text": "prep b7"
+            }
+          },
+          {
+            "action": "prompt.ask",
+            "input": {
+              "kind": "approve",
+              "title": "Go live with b7?",
+              "text": "",
+              "options": [],
+              "countdownSec": 0,
+              "outputs": [
+                "dialog"
+              ],
+              "resume": {
+                "pipeline": "ship",
+                "stage": 1,
+                "params": {
+                  "build": "b7"
+                }
+              }
+            },
+            "marker": "gate"
+          }
+        ],
+        "errors": [],
+        "keysNeeded": [],
+        "gate": {
+          "pipeline": "ship",
+          "stage": 1
+        },
+        "runnable": 1,
+        "ok": true
+      },
+      "pipelineResume": {
+        "steps": [
+          {
+            "action": "pipeline.run",
+            "input": {
+              "pipeline": "ship",
+              "stage": 1,
+              "params": {
+                "build": "b7"
+              }
+            },
+            "marker": "stage"
+          },
+          {
+            "action": "notify.push",
+            "input": {
+              "title": "Live: b7"
+            }
+          },
+          {
+            "action": "pipeline.run",
+            "input": {
+              "pipeline": "ship",
+              "stage": 2,
+              "params": {
+                "build": "b7"
+              }
+            },
+            "marker": "stage"
+          },
+          {
+            "action": "macro.run",
+            "input": {
+              "macro": "cleanup",
+              "params": {
+                "note": "done",
+                "build": "b7"
+              }
+            },
+            "marker": "macro-start"
+          },
+          {
+            "action": "build.note",
+            "input": {
+              "build": "b7",
+              "note": "done",
+              "text": "done for b7"
+            }
+          },
+          {
+            "action": "log.note",
+            "input": {
+              "text": "cleaned b7"
+            }
+          }
+        ],
+        "errors": [],
+        "keysNeeded": [],
+        "gate": null,
+        "runnable": 3,
+        "ok": true
+      },
+      "keysNeeded": {
+        "steps": [
+          {
+            "action": "notify.email",
+            "input": {
+              "subject": "Slow deploy to hub",
+              "text": "400s"
+            }
+          },
+          {
+            "action": "deploy.rollback",
+            "input": {
+              "target": "hub"
+            },
+            "blocked": "needs connector ssh"
+          }
+        ],
+        "errors": [],
+        "keysNeeded": [
+          "ssh"
+        ],
+        "gate": null,
+        "runnable": 1,
+        "ok": true
+      },
+      "smsBlocked": {
+        "steps": [
+          {
+            "action": "notify.sms",
+            "input": {
+              "text": "hi"
+            },
+            "blocked": "needs connector sms"
+          },
+          {
+            "action": "notify.email",
+            "input": {
+              "subject": "s"
+            }
+          }
+        ],
+        "errors": [],
+        "keysNeeded": [
+          "sms"
+        ],
+        "gate": null,
+        "runnable": 1,
+        "ok": true
+      },
+      "missingInput": {
+        "steps": [],
+        "errors": [
+          {
+            "at": "run > build.note",
+            "message": "Add a note to a build needs text"
+          },
+          {
+            "at": "run > nope",
+            "message": "no action nope in the registry"
+          },
+          {
+            "at": "run",
+            "message": "not an action"
+          }
+        ],
+        "keysNeeded": [],
+        "gate": null,
+        "runnable": 0,
+        "ok": false
+      },
+      "ask": {
+        "steps": [
+          {
+            "action": "prompt.ask",
+            "input": {
+              "kind": "approve",
+              "title": "Sure?"
+            },
+            "marker": "gate"
+          }
+        ],
+        "errors": [],
+        "keysNeeded": [],
+        "gate": {},
+        "runnable": 0,
+        "ok": true
+      }
+    },
+    "instanceKeys": {
+      "keysNeeded": [
+        "sms"
+      ],
+      "noneKind": {
+        "$axf": "prompt-instance@1",
+        "id": "service-down-call-20261113180000-1op7rn8",
+        "rule": "service-down-call",
+        "ruleTitle": "Service down over 10 min: call Brett",
+        "event": {
+          "source": "watchdog",
+          "event": "health.down",
+          "id": "watchdog:health.down:2026-11-13T18:00:00.000Z",
+          "at": "2026-11-13T18:00:00.000Z",
+          "payload": {
+            "service": "hub"
+          }
+        },
+        "kind": "none",
+        "title": "Service down over 10 min: call Brett",
+        "text": "",
+        "options": [],
+        "countdownSec": 0,
+        "askedAt": "2026-11-13T18:00:00.000Z",
+        "expiresAt": "",
+        "status": "waiting",
+        "outputs": [
+          "dialog"
+        ],
+        "answers": [
+          "fire"
+        ],
+        "keysNeeded": []
+      },
+      "resume": {
+        "pipeline": "ship",
+        "stage": 1
+      }
+    },
+    "audit": {
+      "entry": {
+        "$axf": "prompt-audit@1",
+        "at": "2026-11-13T18:00:00.000Z",
+        "kind": "answered",
+        "rule": "r",
+        "instance": "i",
+        "event": "e",
+        "reason": "why",
+        "by": "brett",
+        "detail": {
+          "extra": 1
+        }
+      },
+      "unknownKind": "rule",
+      "history": [
+        {
+          "kind": "fired",
+          "rule": "a",
+          "at": "3"
+        },
+        {
+          "kind": "fired",
+          "rule": "a",
+          "at": "1"
+        }
+      ],
+      "limited": [
+        {
+          "kind": "z"
+        },
+        {
+          "kind": "y"
+        }
+      ]
+    },
+    "templates": [
+      {
+        "id": "ui-review-popup",
+        "group": "Review",
+        "event": "ui-review.submitted",
+        "ask": "pick"
+      },
+      {
+        "id": "build-failed-retry",
+        "group": "Builds",
+        "event": "build.status",
+        "ask": "pick"
+      },
+      {
+        "id": "approval-veto",
+        "group": "Review",
+        "event": "approval.held",
+        "ask": "veto"
+      },
+      {
+        "id": "merge-clash-pick",
+        "group": "Builds",
+        "event": "merge.clash",
+        "ask": "pick"
+      },
+      {
+        "id": "upgrade-approve",
+        "group": "Builds",
+        "event": "build.upgrade-requested",
+        "ask": "approve"
+      },
+      {
+        "id": "watchdog-danger",
+        "group": "Systems",
+        "event": "watchdog.alert",
+        "ask": "none"
+      },
+      {
+        "id": "service-down-call",
+        "group": "Systems",
+        "event": "health.down",
+        "ask": "none"
+      },
+      {
+        "id": "daily-digest",
+        "group": "Time",
+        "event": "schedule.tick",
+        "ask": "none"
+      },
+      {
+        "id": "build-shipped-note",
+        "group": "Builds",
+        "event": "build.shipped",
+        "ask": "none"
+      }
+    ],
+    "fromTemplate": {
+      "override": {
+        "id": "my-watch",
+        "title": "Mine",
+        "enabled": false,
+        "template": "watchdog-danger",
+        "createdAt": "2026-11-13T18:00:00.000Z"
+      },
+      "unknown": null
+    },
+    "registrySnapshot": {
+      "schema": "prompt-engine@1",
+      "version": 1,
+      "records": [
+        "prompt-event@1",
+        "prompt-macro@1",
+        "prompt-pipeline@1",
+        "prompt-manifest@1",
+        "prompt-instance@1",
+        "prompt-audit@1"
+      ],
+      "askKinds": [
+        "none",
+        "approve",
+        "veto",
+        "pick",
+        "text"
+      ],
+      "outputs": [
+        "dialog",
+        "push",
+        "email",
+        "sms",
+        "call"
+      ],
+      "connectorOutputs": [
+        "email",
+        "sms",
+        "call"
+      ],
+      "answers": [
+        "approve",
+        "deny",
+        "pick",
+        "text",
+        "timeout",
+        "later"
+      ],
+      "instanceStatuses": [
+        "waiting",
+        "answered",
+        "expired",
+        "shelved",
+        "ran",
+        "failed"
+      ],
+      "auditKinds": [
+        "fired",
+        "skipped",
+        "asked",
+        "answered",
+        "expired",
+        "shelved",
+        "planned",
+        "ran",
+        "failed",
+        "dry-run",
+        "rule",
+        "macro",
+        "pipeline",
+        "keys-needed"
+      ],
+      "skipReasons": [
+        "disabled",
+        "no-match",
+        "filter",
+        "conditions",
+        "cooldown",
+        "dedupe",
+        "rate"
+      ],
+      "ops": [
+        "eq",
+        "ne",
+        "in",
+        "nin",
+        "contains",
+        "startsWith",
+        "endsWith",
+        "matches",
+        "gt",
+        "gte",
+        "lt",
+        "lte",
+        "exists",
+        "missing",
+        "truthy",
+        "falsy"
+      ],
+      "effects": [
+        "read",
+        "write",
+        "destructive",
+        "navigate",
+        "ask"
+      ],
+      "sourceKinds": [
+        "app",
+        "plugin",
+        "tool",
+        "service",
+        "framework"
+      ],
+      "fieldTypes": [
+        "string",
+        "number",
+        "boolean",
+        "enum",
+        "object",
+        "list",
+        "build",
+        "plugin",
+        "macro",
+        "pipeline",
+        "rule",
+        "command",
+        "address",
+        "duration",
+        "cron",
+        "text"
+      ],
+      "defaultVetoSec": 90,
+      "maxDepth": 8,
+      "maxSteps": 200,
+      "maxOptions": 12,
+      "idPattern": "^[a-z0-9][a-z0-9._-]{0,79}$",
+      "builtinSources": [
+        "builds",
+        "ui-review",
+        "approvals",
+        "merge-queue",
+        "watchdog",
+        "schedule",
+        "voice",
+        "webhook",
+        "custom",
+        "engine"
+      ],
+      "builtinEvents": [
+        "build.created",
+        "build.steps-added",
+        "build.step-done",
+        "build.status",
+        "build.failed",
+        "build.blocked",
+        "build.pr-opened",
+        "build.pr-merged",
+        "build.addendum",
+        "build.cancelled",
+        "build.restored",
+        "build.shipped",
+        "build.upgrade-requested",
+        "ui-review.submitted",
+        "ui-review.decided",
+        "approval.held",
+        "approval.waiting",
+        "approval.decided",
+        "merge.clash",
+        "merge.landed",
+        "merge.ci-failed",
+        "watchdog.alert",
+        "health.down",
+        "health.up",
+        "session.idle",
+        "keys.needed",
+        "schedule.tick",
+        "voice.phrase",
+        "webhook.received",
+        "custom.event",
+        "prompt.answered",
+        "prompt.expired"
+      ],
+      "builtinActions": [
+        "build.create",
+        "build.note",
+        "build.status",
+        "build.archive",
+        "build.delete",
+        "build.approve-upgrade",
+        "ui-review.decide",
+        "voice.say",
+        "webhook.send",
+        "tool.run",
+        "console.command",
+        "macro.run",
+        "pipeline.run",
+        "event.fire",
+        "rule.enable",
+        "rule.disable",
+        "notify.push",
+        "notify.email",
+        "notify.sms",
+        "notify.call",
+        "prompt.ask",
+        "log.note"
+      ],
+      "templates": [
+        "ui-review-popup",
+        "build-failed-retry",
+        "approval-veto",
+        "merge-clash-pick",
+        "upgrade-approve",
+        "watchdog-danger",
+        "service-down-call",
+        "daily-digest",
+        "build-shipped-note"
+      ]
+    },
+    "schemas": [
+      "prompt-event.schema.json",
+      "prompt-macro.schema.json",
+      "prompt-pipeline.schema.json",
+      "prompt-manifest.schema.json",
+      "prompt-instance.schema.json",
+      "prompt-audit.schema.json"
+    ]
+  }
+}
