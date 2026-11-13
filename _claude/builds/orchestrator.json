@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T10:39:50.058Z",
+ "updatedAt": "2026-11-13T10:40:07.497Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -120476,6 +120476,37 @@
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
+   "steps": []
+  },
+  {
+   "id": "every-skin-ships-a-light-and-a-dark-colour-theme",
+   "title": "Every skin ships a light and a dark colour theme (Studio Pro, Executive, Field, Command, Default and any future skin): quick light/dark switch per skin, follow-system option, coverage check fails if a skin lacks either; full API and voice",
+   "category": "",
+   "detail": "",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-13T10:39:51.656Z",
+   "updatedAt": "2026-11-13T10:39:51.656Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Yo, every skin needs a light and dark.",
+    "at": "2026-11-13T10:39:51.656Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
    "steps": []
   }
  ]
