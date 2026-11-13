@@ -5,7 +5,9 @@
     "views": 61,
     "nav": 16,
     "tabGroups": 21,
-    "tabs": 70
+    "tabs": 70,
+    "settingsTabs": 67,
+    "settings": 85
   },
   "views": [
     {
@@ -1563,6 +1565,1872 @@
       "file": "plugins/ui-review/web/ui.tsx",
       "line": 272,
       "tabs": []
+    }
+  ],
+  "settingsTabs": [
+    {
+      "address": "view:settings/tab:settings.tabs=appearance",
+      "id": "appearance",
+      "label": "Appearance",
+      "parent": null,
+      "plugin": null
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=account",
+      "id": "account",
+      "label": "Account & security",
+      "parent": null,
+      "plugin": null
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=connections",
+      "id": "connections",
+      "label": "Connections",
+      "parent": null,
+      "plugin": null
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins",
+      "id": "plugins",
+      "label": "Plugins",
+      "parent": null,
+      "plugin": null
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=banners",
+      "id": "banners",
+      "label": "Banners",
+      "parent": "plugins",
+      "plugin": null
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=about",
+      "id": "about",
+      "label": "About",
+      "parent": null,
+      "plugin": null
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=general",
+      "id": "general",
+      "label": "General",
+      "parent": null,
+      "plugin": null
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=activity",
+      "id": "activity",
+      "label": "Activity",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.activity"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=agent-manager",
+      "id": "agent-manager",
+      "label": "Agent manager",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.agent-manager"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=agent-slots",
+      "id": "agent-slots",
+      "label": "Agent cap",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.agent-slots"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=agent-swarm",
+      "id": "agent-swarm",
+      "label": "Agent swarm",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.agent-swarm"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=agent-voice",
+      "id": "agent-voice",
+      "label": "Agent voice",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.agent-voice"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=ai-assistant",
+      "id": "ai-assistant",
+      "label": "AI assistant",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.ai-assistant"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=ai-keys",
+      "id": "ai-keys",
+      "label": "AI keys",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.ai-keys"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=alerts-bell",
+      "id": "alerts-bell",
+      "label": "Alerts bell",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.alerts-bell"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=amberx-listeners",
+      "id": "amberx-listeners",
+      "label": "AmberX listeners",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.amberx-listeners"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=approvals-banner",
+      "id": "approvals-banner",
+      "label": "Approvals banner",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.approvals-banner"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=audio-extract",
+      "id": "audio-extract",
+      "label": "Audio Extract",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.audio-extract"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=basic-filter",
+      "id": "basic-filter",
+      "label": "Basic filter",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.basic-filter"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=build-orchestrator",
+      "id": "build-orchestrator",
+      "label": "Build orchestrator",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.build-orchestrator"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=build-profiles",
+      "id": "build-profiles",
+      "label": "Build profiles",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.build-profiles"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=changes-grid",
+      "id": "changes-grid",
+      "label": "Changes & features grid",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.changes-grid"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=chat-viewer",
+      "id": "chat-viewer",
+      "label": "Chat viewer",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.chat-viewer"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-accounts",
+      "id": "claude-accounts",
+      "label": "Claude accounts",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.claude-accounts"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-badge",
+      "id": "claude-badge",
+      "label": "Badges",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.claude-badge"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-handoff",
+      "id": "claude-handoff",
+      "label": "Claude handoff",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.claude-handoff"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-settings",
+      "id": "claude-settings",
+      "label": "Claude",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.claude-settings"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=codebase-changes",
+      "id": "codebase-changes",
+      "label": "Codebase changes",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.codebase-changes"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=console-commands",
+      "id": "console-commands",
+      "label": "Console commands",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.console-commands"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=terminal",
+      "id": "terminal",
+      "label": "Terminal",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.terminal"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=container-access",
+      "id": "container-access",
+      "label": "Container access",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.container-access"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=context-menu-designer",
+      "id": "context-menu-designer",
+      "label": "Context menu designer",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.context-menu-designer"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=crew-live",
+      "id": "crew-live",
+      "label": "Crew",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.crew-live"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=fable-rebuilds",
+      "id": "fable-rebuilds",
+      "label": "Fable rebuilds",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.fable-rebuilds"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=feature-assist",
+      "id": "feature-assist",
+      "label": "Feature assistant",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.feature-assist"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=feature-matrix",
+      "id": "feature-matrix",
+      "label": "Feature matrix",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.feature-matrix"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=follow-amber",
+      "id": "follow-amber",
+      "label": "Follow Amber",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.follow-amber"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=github-app",
+      "id": "github-app",
+      "label": "GitHub",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.github-app"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=glossary-index",
+      "id": "glossary-index",
+      "label": "Glossary & Index",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.glossary-index"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=main-build-status",
+      "id": "main-build-status",
+      "label": "Main build status",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.main-build-status"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=maintenance",
+      "id": "maintenance",
+      "label": "Maintenance",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.maintenance"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=molly-guide",
+      "id": "molly-guide",
+      "label": "Molly guide",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.molly-guide"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=notes-browser",
+      "id": "notes-browser",
+      "label": "Notes",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.notes-browser"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=notify-control",
+      "id": "notify-control",
+      "label": "Notifications",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.notify-control"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=output-recorder",
+      "id": "output-recorder",
+      "label": "Audio Output Recorder",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.output-recorder"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=plugin-commands",
+      "id": "plugin-commands",
+      "label": "Plugin commands",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.plugin-commands"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=plugin-manager",
+      "id": "plugin-manager",
+      "label": "Plugin Manager",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.plugin-manager"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=plugin-switches",
+      "id": "plugin-switches",
+      "label": "Plugin switches",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.plugin-switches"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=plugin-update",
+      "id": "plugin-update",
+      "label": "Plugin Update",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.plugin-update"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=projects",
+      "id": "projects",
+      "label": "Projects",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.project-switcher"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=project-wizard",
+      "id": "project-wizard",
+      "label": "Project wizard",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.project-wizard"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=push-banner",
+      "id": "push-banner",
+      "label": "Push banner",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.push-banner"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=ref-links",
+      "id": "ref-links",
+      "label": "Reference links",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.ref-links"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=session-checkin",
+      "id": "session-checkin",
+      "label": "Session check-in",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.session-checkin"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=snapshots",
+      "id": "snapshots",
+      "label": "Snapshots",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.snapshot-manager"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=systems-check",
+      "id": "systems-check",
+      "label": "Systems check",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.systems-check"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=theme-editor",
+      "id": "theme-editor",
+      "label": "Theme editor",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.theme-editor"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=theme-manager",
+      "id": "theme-manager",
+      "label": "Themes",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.theme-manager"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=todo-manager",
+      "id": "todo-manager",
+      "label": "Todo manager",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.todo-manager"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=token-control",
+      "id": "token-control",
+      "label": "Token control",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.token-control"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=voice-notes",
+      "id": "voice-notes",
+      "label": "Voice notes",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.voice-notes"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=alerts",
+      "id": "alerts",
+      "label": "Alerts",
+      "parent": null,
+      "plugin": null
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=ashes",
+      "id": "ashes",
+      "label": "AshesUI",
+      "parent": "plugins",
+      "plugin": null
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=hubstatus",
+      "id": "hubstatus",
+      "label": "axHub status",
+      "parent": "plugins",
+      "plugin": null
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=hubsync",
+      "id": "hubsync",
+      "label": "axHub sync",
+      "parent": "plugins",
+      "plugin": null
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=mcp",
+      "id": "mcp",
+      "label": "MCP servers",
+      "parent": null,
+      "plugin": null
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=toolbars",
+      "id": "toolbars",
+      "label": "Toolbars",
+      "parent": "plugins",
+      "plugin": null
+    }
+  ],
+  "settings": [
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=agent-voice/setting:agent-voice.banner",
+      "kind": "setting",
+      "label": "On the banner",
+      "key": "agent-voice.banner",
+      "type": "choice",
+      "detail": "Settings › Plugins › Agent voice",
+      "keywords": [
+        "agent-voice.banner",
+        "Agent voice"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.agent-voice",
+      "file": "plugins/agent-voice/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=agent-voice/setting:agent-voice.assistantLight",
+      "kind": "setting",
+      "label": "In the Assistant title bar",
+      "key": "agent-voice.assistantLight",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Agent voice",
+      "keywords": [
+        "agent-voice.assistantLight",
+        "Agent voice"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.agent-voice",
+      "file": "plugins/agent-voice/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=alerts-bell/setting:alerts-bell.show",
+      "kind": "setting",
+      "label": "Show the alerts bell on the banner",
+      "key": "alerts-bell.show",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Alerts bell",
+      "keywords": [
+        "alerts-bell.show",
+        "Alerts bell"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.alerts-bell",
+      "file": "plugins/alerts-bell/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=alerts-bell/setting:alerts-bell.side",
+      "kind": "setting",
+      "label": "Side",
+      "key": "alerts-bell.side",
+      "type": "choice",
+      "options": [
+        "right",
+        "left"
+      ],
+      "detail": "Settings › Plugins › Alerts bell",
+      "keywords": [
+        "alerts-bell.side",
+        "Alerts bell"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.alerts-bell",
+      "file": "plugins/alerts-bell/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=amberx-listeners/setting:amberx-listeners.refreshSec",
+      "kind": "setting",
+      "label": "Re-read the hub every (seconds)",
+      "key": "amberx-listeners.refreshSec",
+      "type": "number",
+      "min": 5,
+      "max": 300,
+      "detail": "Settings › Plugins › AmberX listeners",
+      "keywords": [
+        "amberx-listeners.refreshSec",
+        "AmberX listeners"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.amberx-listeners",
+      "file": "plugins/amberx-listeners/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=amberx-listeners/setting:amberx-listeners.open",
+      "kind": "setting",
+      "label": "Open the page",
+      "key": "amberx-listeners.open",
+      "type": "link",
+      "detail": "Settings › Plugins › AmberX listeners",
+      "keywords": [
+        "amberx-listeners.open",
+        "AmberX listeners"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.amberx-listeners",
+      "file": "plugins/amberx-listeners/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=console-commands/setting:console-commands.enabled",
+      "kind": "setting",
+      "label": "Let Claude sessions move this console",
+      "key": "console-commands.enabled",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Console commands",
+      "keywords": [
+        "console-commands.enabled",
+        "Console commands"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.console-commands",
+      "file": "plugins/console-commands/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=console-commands/setting:console-commands.toast",
+      "kind": "setting",
+      "label": "Show a note for each command",
+      "key": "console-commands.toast",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Console commands",
+      "keywords": [
+        "console-commands.toast",
+        "Console commands"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.console-commands",
+      "file": "plugins/console-commands/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=follow-amber/setting:follow-amber.on",
+      "kind": "setting",
+      "label": "Follow Amber",
+      "key": "follow-amber.on",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Follow Amber",
+      "keywords": [
+        "follow-amber.on",
+        "Follow Amber"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.follow-amber",
+      "file": "plugins/follow-amber/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=follow-amber/setting:follow-amber.chip",
+      "kind": "setting",
+      "label": "Show the banner chip while following",
+      "key": "follow-amber.chip",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Follow Amber",
+      "keywords": [
+        "follow-amber.chip",
+        "Follow Amber"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.follow-amber",
+      "file": "plugins/follow-amber/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=main-build-status/setting:main-build-status.show",
+      "kind": "setting",
+      "label": "Show the build status on the banner",
+      "key": "main-build-status.show",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Main build status",
+      "keywords": [
+        "main-build-status.show",
+        "Main build status"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.main-build-status",
+      "file": "plugins/main-build-status/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=maintenance/setting:axf.maintenance.nightly",
+      "kind": "setting",
+      "label": "Clean up every night",
+      "key": "axf.maintenance.nightly",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Maintenance",
+      "keywords": [
+        "axf.maintenance.nightly",
+        "Maintenance"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.maintenance",
+      "file": "plugins/maintenance/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=maintenance/setting:axf.maintenance.nightlyJobs",
+      "kind": "setting",
+      "label": "Jobs",
+      "key": "axf.maintenance.nightlyJobs",
+      "type": "multi_choice",
+      "detail": "Settings › Plugins › Maintenance",
+      "keywords": [
+        "axf.maintenance.nightlyJobs",
+        "Maintenance"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.maintenance",
+      "file": "plugins/maintenance/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=maintenance/setting:axf.maintenance.profileMode",
+      "kind": "setting",
+      "label": "Mode",
+      "key": "axf.maintenance.profileMode",
+      "type": "choice",
+      "options": [
+        "auto",
+        "basic"
+      ],
+      "detail": "Settings › Plugins › Maintenance",
+      "keywords": [
+        "axf.maintenance.profileMode",
+        "Maintenance"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.maintenance",
+      "file": "plugins/maintenance/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=maintenance/setting:axf.maintenance.profileSchedule",
+      "kind": "setting",
+      "label": "Scheduled preview",
+      "key": "axf.maintenance.profileSchedule",
+      "type": "choice",
+      "options": [
+        "off",
+        "daily",
+        "weekly"
+      ],
+      "detail": "Settings › Plugins › Maintenance",
+      "keywords": [
+        "axf.maintenance.profileSchedule",
+        "Maintenance"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.maintenance",
+      "file": "plugins/maintenance/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=maintenance/setting:axf.maintenance.profileWeekday",
+      "kind": "setting",
+      "label": "Day (weekly)",
+      "key": "axf.maintenance.profileWeekday",
+      "type": "choice",
+      "detail": "Settings › Plugins › Maintenance",
+      "keywords": [
+        "axf.maintenance.profileWeekday",
+        "Maintenance"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.maintenance",
+      "file": "plugins/maintenance/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=molly-guide/setting:molly-guide.speak",
+      "kind": "setting",
+      "label": "Read each step out loud",
+      "key": "molly-guide.speak",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Molly guide",
+      "keywords": [
+        "molly-guide.speak",
+        "Molly guide"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.molly-guide",
+      "file": "plugins/molly-guide/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=molly-guide/setting:molly-guide.runSteps",
+      "kind": "setting",
+      "label": "Move the console to each step (run its action)",
+      "key": "molly-guide.runSteps",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Molly guide",
+      "keywords": [
+        "molly-guide.runSteps",
+        "Molly guide"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.molly-guide",
+      "file": "plugins/molly-guide/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=molly-guide/setting:molly-guide.autoOpen",
+      "kind": "setting",
+      "label": "Open walkthroughs Molly makes from AmberX by themselves",
+      "key": "molly-guide.autoOpen",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Molly guide",
+      "keywords": [
+        "molly-guide.autoOpen",
+        "Molly guide"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.molly-guide",
+      "file": "plugins/molly-guide/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=ashes/setting:axf.ashes.on",
+      "kind": "setting",
+      "label": "AshesUI on",
+      "key": "axf.ashes.on",
+      "type": "toggle",
+      "detail": "Settings › Plugins › AshesUI",
+      "keywords": [
+        "axf.ashes.on",
+        "AshesUI"
+      ],
+      "runs": "console",
+      "file": "src/axf/libs/ashes/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=ashes/setting:axf.ashes.fields",
+      "kind": "setting",
+      "label": "Show in the tooltip",
+      "key": "axf.ashes.fields",
+      "type": "multi_choice",
+      "detail": "Settings › Plugins › AshesUI",
+      "keywords": [
+        "axf.ashes.fields",
+        "AshesUI"
+      ],
+      "runs": "console",
+      "file": "src/axf/libs/ashes/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=ashes/setting:axf.ashes.offset",
+      "kind": "setting",
+      "label": "Distance from the pointer",
+      "key": "axf.ashes.offset",
+      "type": "slider",
+      "min": 4,
+      "max": 48,
+      "detail": "Settings › Plugins › AshesUI",
+      "keywords": [
+        "axf.ashes.offset",
+        "AshesUI"
+      ],
+      "runs": "console",
+      "file": "src/axf/libs/ashes/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=ashes/setting:axf.ashes.delay",
+      "kind": "setting",
+      "label": "Wait before updating (ms)",
+      "key": "axf.ashes.delay",
+      "type": "slider",
+      "min": 0,
+      "max": 400,
+      "detail": "Settings › Plugins › AshesUI",
+      "keywords": [
+        "axf.ashes.delay",
+        "AshesUI"
+      ],
+      "runs": "console",
+      "file": "src/axf/libs/ashes/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=ashes/setting:axf.ashes.touch",
+      "kind": "setting",
+      "label": "Follow touches too (phones)",
+      "key": "axf.ashes.touch",
+      "type": "toggle",
+      "detail": "Settings › Plugins › AshesUI",
+      "keywords": [
+        "axf.ashes.touch",
+        "AshesUI"
+      ],
+      "runs": "console",
+      "file": "src/axf/libs/ashes/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=ashes/setting:axf.ashes.box",
+      "kind": "setting",
+      "label": "Outline the element",
+      "key": "axf.ashes.box",
+      "type": "toggle",
+      "detail": "Settings › Plugins › AshesUI",
+      "keywords": [
+        "axf.ashes.box",
+        "AshesUI"
+      ],
+      "runs": "console",
+      "file": "src/axf/libs/ashes/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=ashes/setting:axf.ashes.boxModel",
+      "kind": "setting",
+      "label": "Shade margin and padding",
+      "key": "axf.ashes.boxModel",
+      "type": "toggle",
+      "detail": "Settings › Plugins › AshesUI",
+      "keywords": [
+        "axf.ashes.boxModel",
+        "AshesUI"
+      ],
+      "runs": "console",
+      "file": "src/axf/libs/ashes/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=ashes/setting:axf.ashes.maxNodes",
+      "kind": "setting",
+      "label": "Most elements in the tree",
+      "key": "axf.ashes.maxNodes",
+      "type": "number",
+      "min": 200,
+      "max": 20000,
+      "detail": "Settings › Plugins › AshesUI",
+      "keywords": [
+        "axf.ashes.maxNodes",
+        "AshesUI"
+      ],
+      "runs": "console",
+      "file": "src/axf/libs/ashes/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=ashes/setting:axf.ashes.hiddenNodes",
+      "kind": "setting",
+      "label": "Include elements off screen",
+      "key": "axf.ashes.hiddenNodes",
+      "type": "toggle",
+      "detail": "Settings › Plugins › AshesUI",
+      "keywords": [
+        "axf.ashes.hiddenNodes",
+        "AshesUI"
+      ],
+      "runs": "console",
+      "file": "src/axf/libs/ashes/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=ashes/setting:axf.ashes.tokens",
+      "kind": "setting",
+      "label": "Read theme tokens",
+      "key": "axf.ashes.tokens",
+      "type": "toggle",
+      "detail": "Settings › Plugins › AshesUI",
+      "keywords": [
+        "axf.ashes.tokens",
+        "AshesUI"
+      ],
+      "runs": "console",
+      "file": "src/axf/libs/ashes/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=hubstatus/setting:hubstatus.show",
+      "kind": "setting",
+      "label": "Show the axHub badge on the banner",
+      "key": "hubstatus.show",
+      "type": "toggle",
+      "detail": "Settings › Plugins › axHub status",
+      "keywords": [
+        "hubstatus.show",
+        "axHub status"
+      ],
+      "runs": "console",
+      "file": "src/axf/libs/hubstatus/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=hubstatus/setting:hubstatus.side",
+      "kind": "setting",
+      "label": "Side",
+      "key": "hubstatus.side",
+      "type": "choice",
+      "options": [
+        "left",
+        "right"
+      ],
+      "detail": "Settings › Plugins › axHub status",
+      "keywords": [
+        "hubstatus.side",
+        "axHub status"
+      ],
+      "runs": "console",
+      "file": "src/axf/libs/hubstatus/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=hubstatus/setting:hubstatus.dot",
+      "kind": "setting",
+      "label": "Show the dot",
+      "key": "hubstatus.dot",
+      "type": "toggle",
+      "detail": "Settings › Plugins › axHub status",
+      "keywords": [
+        "hubstatus.dot",
+        "axHub status"
+      ],
+      "runs": "console",
+      "file": "src/axf/libs/hubstatus/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=hubstatus/setting:hubstatus.liveLabel",
+      "kind": "setting",
+      "label": "Words while live (green)",
+      "key": "hubstatus.liveLabel",
+      "type": "text",
+      "detail": "Settings › Plugins › axHub status",
+      "keywords": [
+        "hubstatus.liveLabel",
+        "axHub status"
+      ],
+      "runs": "console",
+      "file": "src/axf/libs/hubstatus/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=hubstatus/setting:hubstatus.notLiveLabel",
+      "kind": "setting",
+      "label": "Words while not live (red)",
+      "key": "hubstatus.notLiveLabel",
+      "type": "text",
+      "detail": "Settings › Plugins › axHub status",
+      "keywords": [
+        "hubstatus.notLiveLabel",
+        "axHub status"
+      ],
+      "runs": "console",
+      "file": "src/axf/libs/hubstatus/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=hubstatus/setting:hubstatus.popup",
+      "kind": "setting",
+      "label": "Pop-up note",
+      "key": "hubstatus.popup",
+      "type": "choice",
+      "options": [
+        "banner",
+        "toast",
+        "off"
+      ],
+      "detail": "Settings › Plugins › axHub status",
+      "keywords": [
+        "hubstatus.popup",
+        "axHub status"
+      ],
+      "runs": "console",
+      "file": "src/axf/libs/hubstatus/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=hubstatus/setting:hubstatus.popupSeconds",
+      "kind": "setting",
+      "label": "Seconds it stays",
+      "key": "hubstatus.popupSeconds",
+      "type": "number",
+      "min": 1,
+      "max": 60,
+      "detail": "Settings › Plugins › axHub status",
+      "keywords": [
+        "hubstatus.popupSeconds",
+        "axHub status"
+      ],
+      "runs": "console",
+      "file": "src/axf/libs/hubstatus/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=hubstatus/setting:hubstatus.every",
+      "kind": "setting",
+      "label": "Check every (seconds)",
+      "key": "hubstatus.every",
+      "type": "number",
+      "min": 10,
+      "max": 600,
+      "detail": "Settings › Plugins › axHub status",
+      "keywords": [
+        "hubstatus.every",
+        "axHub status"
+      ],
+      "runs": "console",
+      "file": "src/axf/libs/hubstatus/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=hubstatus/setting:hubstatus.hub",
+      "kind": "setting",
+      "label": "axHub address (used when the app has no hub of its own)",
+      "key": "hubstatus.hub",
+      "type": "text",
+      "detail": "Settings › Plugins › axHub status",
+      "keywords": [
+        "hubstatus.hub",
+        "axHub status"
+      ],
+      "runs": "console",
+      "file": "src/axf/libs/hubstatus/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/setting:axf.pluginTheme.toolbar",
+      "kind": "setting",
+      "label": "Theme override button on the toolbar",
+      "key": "axf.pluginTheme.toolbar",
+      "type": "toggle",
+      "detail": "Settings › Plugins",
+      "keywords": [
+        "axf.pluginTheme.toolbar",
+        "Plugins"
+      ],
+      "runs": "console",
+      "file": "src/axf/libs/plugintheme/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=appearance/setting:axf.display.fontScale",
+      "kind": "setting",
+      "label": "Text size",
+      "key": "axf.display.fontScale",
+      "type": "slider",
+      "min": 80,
+      "max": 140,
+      "requires": "assets.swap",
+      "detail": "Settings › Appearance",
+      "keywords": [
+        "axf.display.fontScale",
+        "Appearance"
+      ],
+      "runs": "console",
+      "file": "src/axf/libs/settings/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=appearance/setting:axf.display.animations",
+      "kind": "setting",
+      "label": "Animations",
+      "key": "axf.display.animations",
+      "type": "toggle",
+      "requires": "assets.swap",
+      "detail": "Settings › Appearance",
+      "keywords": [
+        "axf.display.animations",
+        "Appearance"
+      ],
+      "runs": "console",
+      "file": "src/axf/libs/settings/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=about/setting:axf.help.intros.reset",
+      "kind": "setting",
+      "label": "Show all screen intros again",
+      "key": "axf.help.intros.reset",
+      "type": "action",
+      "detail": "Settings › About",
+      "keywords": [
+        "axf.help.intros.reset",
+        "About"
+      ],
+      "runs": "console",
+      "file": "src/axf/libs/settings/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-settings/setting:noWait.enabled",
+      "kind": "setting",
+      "label": "No wait",
+      "key": "noWait.enabled",
+      "type": "toggle",
+      "personOnly": true,
+      "detail": "Settings › Plugins › Claude › No wait",
+      "keywords": [
+        "noWait.enabled",
+        "no-wait",
+        "Claude"
+      ],
+      "runs": "server",
+      "service": "axf.claude-settings@1",
+      "plugin": "ai.amberx.axf.console.claude-settings"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-settings/setting:noWait.includeIrreversible",
+      "kind": "setting",
+      "label": "Include irreversible",
+      "key": "noWait.includeIrreversible",
+      "type": "toggle",
+      "personOnly": true,
+      "detail": "Settings › Plugins › Claude › No wait",
+      "keywords": [
+        "noWait.includeIrreversible",
+        "no-wait",
+        "Claude"
+      ],
+      "runs": "server",
+      "service": "axf.claude-settings@1",
+      "plugin": "ai.amberx.axf.console.claude-settings"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-settings/setting:noWait.duration",
+      "kind": "setting",
+      "label": "Stay on for",
+      "key": "noWait.duration",
+      "type": "choice",
+      "options": [
+        "1h",
+        "4h",
+        "untilOff"
+      ],
+      "personOnly": true,
+      "detail": "Settings › Plugins › Claude › No wait",
+      "keywords": [
+        "noWait.duration",
+        "no-wait",
+        "Claude"
+      ],
+      "runs": "server",
+      "service": "axf.claude-settings@1",
+      "plugin": "ai.amberx.axf.console.claude-settings"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-settings/setting:noWait.autoOffAtNight",
+      "kind": "setting",
+      "label": "Turn off at night",
+      "key": "noWait.autoOffAtNight",
+      "type": "toggle",
+      "personOnly": true,
+      "detail": "Settings › Plugins › Claude › No wait",
+      "keywords": [
+        "noWait.autoOffAtNight",
+        "no-wait",
+        "Claude"
+      ],
+      "runs": "server",
+      "service": "axf.claude-settings@1",
+      "plugin": "ai.amberx.axf.console.claude-settings"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-settings/setting:noWait.nightStart",
+      "kind": "setting",
+      "label": "Night starts",
+      "key": "noWait.nightStart",
+      "type": "time",
+      "personOnly": true,
+      "detail": "Settings › Plugins › Claude › No wait",
+      "keywords": [
+        "noWait.nightStart",
+        "no-wait",
+        "Claude"
+      ],
+      "runs": "server",
+      "service": "axf.claude-settings@1",
+      "plugin": "ai.amberx.axf.console.claude-settings"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-settings/setting:noWait.nightEnd",
+      "kind": "setting",
+      "label": "Night ends",
+      "key": "noWait.nightEnd",
+      "type": "time",
+      "personOnly": true,
+      "detail": "Settings › Plugins › Claude › No wait",
+      "keywords": [
+        "noWait.nightEnd",
+        "no-wait",
+        "Claude"
+      ],
+      "runs": "server",
+      "service": "axf.claude-settings@1",
+      "plugin": "ai.amberx.axf.console.claude-settings"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-settings/setting:followAmber.enabled",
+      "kind": "setting",
+      "label": "Follow Amber",
+      "key": "followAmber.enabled",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Claude › Follow Amber",
+      "keywords": [
+        "followAmber.enabled",
+        "follow",
+        "Claude"
+      ],
+      "runs": "server",
+      "service": "axf.claude-settings@1",
+      "plugin": "ai.amberx.axf.console.claude-settings"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-settings/setting:builds.defaultModel",
+      "kind": "setting",
+      "label": "Default model",
+      "key": "builds.defaultModel",
+      "type": "choice",
+      "options": [
+        "split",
+        "opus",
+        "fable"
+      ],
+      "personOnly": true,
+      "detail": "Settings › Plugins › Claude › Builds",
+      "keywords": [
+        "builds.defaultModel",
+        "builds",
+        "Claude"
+      ],
+      "runs": "server",
+      "service": "axf.claude-settings@1",
+      "plugin": "ai.amberx.axf.console.claude-settings"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-settings/setting:builds.fableUpgradeApproval",
+      "kind": "setting",
+      "label": "Fable upgrades need my approval",
+      "key": "builds.fableUpgradeApproval",
+      "type": "toggle",
+      "personOnly": true,
+      "detail": "Settings › Plugins › Claude › Builds",
+      "keywords": [
+        "builds.fableUpgradeApproval",
+        "builds",
+        "Claude"
+      ],
+      "runs": "server",
+      "service": "axf.claude-settings@1",
+      "plugin": "ai.amberx.axf.console.claude-settings"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-settings/setting:builds.launchWithoutAsking",
+      "kind": "setting",
+      "label": "Launch builds without asking",
+      "key": "builds.launchWithoutAsking",
+      "type": "toggle",
+      "personOnly": true,
+      "detail": "Settings › Plugins › Claude › Builds",
+      "keywords": [
+        "builds.launchWithoutAsking",
+        "builds",
+        "Claude"
+      ],
+      "runs": "server",
+      "service": "axf.claude-settings@1",
+      "plugin": "ai.amberx.axf.console.claude-settings"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-settings/setting:builds.maxParallel",
+      "kind": "setting",
+      "label": "Max parallel builds",
+      "key": "builds.maxParallel",
+      "type": "number",
+      "min": 1,
+      "max": 12,
+      "ownerRaise": true,
+      "detail": "Settings › Plugins › Claude › Builds",
+      "keywords": [
+        "builds.maxParallel",
+        "builds",
+        "Claude"
+      ],
+      "runs": "server",
+      "service": "axf.claude-settings@1",
+      "plugin": "ai.amberx.axf.console.claude-settings"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-settings/setting:builds.budgetPerBuildUsd",
+      "kind": "setting",
+      "label": "Budget per build (USD)",
+      "key": "builds.budgetPerBuildUsd",
+      "type": "number",
+      "min": 0,
+      "max": 500,
+      "ownerRaise": true,
+      "detail": "Settings › Plugins › Claude › Builds",
+      "keywords": [
+        "builds.budgetPerBuildUsd",
+        "builds",
+        "Claude"
+      ],
+      "runs": "server",
+      "service": "axf.claude-settings@1",
+      "plugin": "ai.amberx.axf.console.claude-settings"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-settings/setting:builds.budgetDailyUsd",
+      "kind": "setting",
+      "label": "Daily budget (USD)",
+      "key": "builds.budgetDailyUsd",
+      "type": "number",
+      "min": 0,
+      "max": 2000,
+      "ownerRaise": true,
+      "detail": "Settings › Plugins › Claude › Builds",
+      "keywords": [
+        "builds.budgetDailyUsd",
+        "builds",
+        "Claude"
+      ],
+      "runs": "server",
+      "service": "axf.claude-settings@1",
+      "plugin": "ai.amberx.axf.console.claude-settings"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-settings/setting:builds.alwaysNamedAgent",
+      "kind": "setting",
+      "label": "Always assign a named agent",
+      "key": "builds.alwaysNamedAgent",
+      "type": "toggle",
+      "locked": true,
+      "detail": "Settings › Plugins › Claude › Builds",
+      "keywords": [
+        "builds.alwaysNamedAgent",
+        "builds",
+        "Claude"
+      ],
+      "runs": "server",
+      "service": "axf.claude-settings@1",
+      "plugin": "ai.amberx.axf.console.claude-settings"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-settings/setting:builds.uiReviewGate",
+      "kind": "setting",
+      "label": "UI Review gate",
+      "key": "builds.uiReviewGate",
+      "type": "toggle",
+      "personOnly": true,
+      "detail": "Settings › Plugins › Claude › Builds",
+      "keywords": [
+        "builds.uiReviewGate",
+        "builds",
+        "Claude"
+      ],
+      "runs": "server",
+      "service": "axf.claude-settings@1",
+      "plugin": "ai.amberx.axf.console.claude-settings"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-settings/setting:verification.mode",
+      "kind": "setting",
+      "label": "Verify builds",
+      "key": "verification.mode",
+      "type": "choice",
+      "options": [
+        "on-conflict",
+        "always"
+      ],
+      "detail": "Settings › Plugins › Claude › Verification",
+      "keywords": [
+        "verification.mode",
+        "verification",
+        "Claude"
+      ],
+      "runs": "server",
+      "service": "axf.claude-settings@1",
+      "plugin": "ai.amberx.axf.console.claude-settings"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-settings/setting:talking.persona",
+      "kind": "setting",
+      "label": "Amber persona",
+      "key": "talking.persona",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Claude › Talking",
+      "keywords": [
+        "talking.persona",
+        "talking",
+        "Claude"
+      ],
+      "runs": "server",
+      "service": "axf.claude-settings@1",
+      "plugin": "ai.amberx.axf.console.claude-settings"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-settings/setting:talking.tone",
+      "kind": "setting",
+      "label": "Tone level",
+      "key": "talking.tone",
+      "type": "number",
+      "min": 1,
+      "max": 5,
+      "detail": "Settings › Plugins › Claude › Talking",
+      "keywords": [
+        "talking.tone",
+        "talking",
+        "Claude"
+      ],
+      "runs": "server",
+      "service": "axf.claude-settings@1",
+      "plugin": "ai.amberx.axf.console.claude-settings"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-settings/setting:talking.addressTerms",
+      "kind": "setting",
+      "label": "Call Brett",
+      "key": "talking.addressTerms",
+      "type": "text",
+      "detail": "Settings › Plugins › Claude › Talking",
+      "keywords": [
+        "talking.addressTerms",
+        "talking",
+        "Claude"
+      ],
+      "runs": "server",
+      "service": "axf.claude-settings@1",
+      "plugin": "ai.amberx.axf.console.claude-settings"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-settings/setting:talking.swearing",
+      "kind": "setting",
+      "label": "Swearing",
+      "key": "talking.swearing",
+      "type": "choice",
+      "options": [
+        "none",
+        "light",
+        "heavy"
+      ],
+      "detail": "Settings › Plugins › Claude › Talking",
+      "keywords": [
+        "talking.swearing",
+        "talking",
+        "Claude"
+      ],
+      "runs": "server",
+      "service": "axf.claude-settings@1",
+      "plugin": "ai.amberx.axf.console.claude-settings"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-settings/setting:talking.length",
+      "kind": "setting",
+      "label": "Response length",
+      "key": "talking.length",
+      "type": "choice",
+      "options": [
+        "short",
+        "normal",
+        "detailed"
+      ],
+      "detail": "Settings › Plugins › Claude › Talking",
+      "keywords": [
+        "talking.length",
+        "talking",
+        "Claude"
+      ],
+      "runs": "server",
+      "service": "axf.claude-settings@1",
+      "plugin": "ai.amberx.axf.console.claude-settings"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-settings/setting:talking.sayCosts",
+      "kind": "setting",
+      "label": "Say costs out loud",
+      "key": "talking.sayCosts",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Claude › Talking",
+      "keywords": [
+        "talking.sayCosts",
+        "talking",
+        "Claude"
+      ],
+      "runs": "server",
+      "service": "axf.claude-settings@1",
+      "plugin": "ai.amberx.axf.console.claude-settings"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-settings/setting:talking.reports",
+      "kind": "setting",
+      "label": "Build reports",
+      "key": "talking.reports",
+      "type": "choice",
+      "options": [
+        "summary",
+        "aloud"
+      ],
+      "detail": "Settings › Plugins › Claude › Talking",
+      "keywords": [
+        "talking.reports",
+        "talking",
+        "Claude"
+      ],
+      "runs": "server",
+      "service": "axf.claude-settings@1",
+      "plugin": "ai.amberx.axf.console.claude-settings"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-settings/setting:notify.buildDone",
+      "kind": "setting",
+      "label": "Build done",
+      "key": "notify.buildDone",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Claude › Notifications",
+      "keywords": [
+        "notify.buildDone",
+        "notifications",
+        "Claude"
+      ],
+      "runs": "server",
+      "service": "axf.claude-settings@1",
+      "plugin": "ai.amberx.axf.console.claude-settings"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-settings/setting:notify.blocked",
+      "kind": "setting",
+      "label": "Build blocked",
+      "key": "notify.blocked",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Claude › Notifications",
+      "keywords": [
+        "notify.blocked",
+        "notifications",
+        "Claude"
+      ],
+      "runs": "server",
+      "service": "axf.claude-settings@1",
+      "plugin": "ai.amberx.axf.console.claude-settings"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-settings/setting:notify.approvalWaiting",
+      "kind": "setting",
+      "label": "Approval waiting",
+      "key": "notify.approvalWaiting",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Claude › Notifications",
+      "keywords": [
+        "notify.approvalWaiting",
+        "notifications",
+        "Claude"
+      ],
+      "runs": "server",
+      "service": "axf.claude-settings@1",
+      "plugin": "ai.amberx.axf.console.claude-settings"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-settings/setting:notify.quietHours",
+      "kind": "setting",
+      "label": "Quiet hours",
+      "key": "notify.quietHours",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Claude › Notifications",
+      "keywords": [
+        "notify.quietHours",
+        "notifications",
+        "Claude"
+      ],
+      "runs": "server",
+      "service": "axf.claude-settings@1",
+      "plugin": "ai.amberx.axf.console.claude-settings"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-settings/setting:notify.quietStart",
+      "kind": "setting",
+      "label": "Quiet from",
+      "key": "notify.quietStart",
+      "type": "time",
+      "detail": "Settings › Plugins › Claude › Notifications",
+      "keywords": [
+        "notify.quietStart",
+        "notifications",
+        "Claude"
+      ],
+      "runs": "server",
+      "service": "axf.claude-settings@1",
+      "plugin": "ai.amberx.axf.console.claude-settings"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-settings/setting:notify.quietEnd",
+      "kind": "setting",
+      "label": "Quiet until",
+      "key": "notify.quietEnd",
+      "type": "time",
+      "detail": "Settings › Plugins › Claude › Notifications",
+      "keywords": [
+        "notify.quietEnd",
+        "notifications",
+        "Claude"
+      ],
+      "runs": "server",
+      "service": "axf.claude-settings@1",
+      "plugin": "ai.amberx.axf.console.claude-settings"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-settings/setting:notify.uiReview",
+      "kind": "setting",
+      "label": "UI Review ready",
+      "key": "notify.uiReview",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Claude › Notifications",
+      "keywords": [
+        "notify.uiReview",
+        "notifications",
+        "Claude"
+      ],
+      "runs": "server",
+      "service": "axf.claude-settings@1",
+      "plugin": "ai.amberx.axf.console.claude-settings"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-settings/setting:recording.autoStart",
+      "kind": "setting",
+      "label": "Record every session",
+      "key": "recording.autoStart",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Claude › Session recording",
+      "keywords": [
+        "recording.autoStart",
+        "recording",
+        "Claude"
+      ],
+      "runs": "server",
+      "service": "axf.claude-settings@1",
+      "plugin": "ai.amberx.axf.console.claude-settings"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-settings/setting:recording.transcribe",
+      "kind": "setting",
+      "label": "Transcribe every part",
+      "key": "recording.transcribe",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Claude › Session recording",
+      "keywords": [
+        "recording.transcribe",
+        "recording",
+        "Claude"
+      ],
+      "runs": "server",
+      "service": "axf.claude-settings@1",
+      "plugin": "ai.amberx.axf.console.claude-settings"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-settings/setting:memory.sessionNotes",
+      "kind": "setting",
+      "label": "Save session notes to Notes Vault",
+      "key": "memory.sessionNotes",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Claude › Memory and notes",
+      "keywords": [
+        "memory.sessionNotes",
+        "memory",
+        "Claude"
+      ],
+      "runs": "server",
+      "service": "axf.claude-settings@1",
+      "plugin": "ai.amberx.axf.console.claude-settings"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-settings/setting:nightly.enabled",
+      "kind": "setting",
+      "label": "Nightly console deploy",
+      "key": "nightly.enabled",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Claude › Nightly deploy",
+      "keywords": [
+        "nightly.enabled",
+        "deploy",
+        "Claude"
+      ],
+      "runs": "server",
+      "service": "axf.claude-settings@1",
+      "plugin": "ai.amberx.axf.console.claude-settings"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-settings/setting:nightly.time",
+      "kind": "setting",
+      "label": "Deploy at",
+      "key": "nightly.time",
+      "type": "time",
+      "detail": "Settings › Plugins › Claude › Nightly deploy",
+      "keywords": [
+        "nightly.time",
+        "deploy",
+        "Claude"
+      ],
+      "runs": "server",
+      "service": "axf.claude-settings@1",
+      "plugin": "ai.amberx.axf.console.claude-settings"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-settings/setting:memory.handoffNote",
+      "kind": "setting",
+      "label": "Handoff note at end of session",
+      "key": "memory.handoffNote",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Claude › Memory and notes",
+      "keywords": [
+        "memory.handoffNote",
+        "memory",
+        "Claude"
+      ],
+      "runs": "server",
+      "service": "axf.claude-settings@1",
+      "plugin": "ai.amberx.axf.console.claude-settings"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-settings/setting:headless.briefOnly",
+      "kind": "setting",
+      "label": "Brief only",
+      "key": "headless.briefOnly",
+      "type": "toggle",
+      "personOnly": true,
+      "detail": "Settings › Plugins › Claude › Headless sessions",
+      "keywords": [
+        "headless.briefOnly",
+        "headless",
+        "Claude"
+      ],
+      "runs": "server",
+      "service": "axf.claude-settings@1",
+      "plugin": "ai.amberx.axf.console.claude-settings"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-settings/setting:headless.tools",
+      "kind": "setting",
+      "label": "Built-in tools",
+      "key": "headless.tools",
+      "type": "text",
+      "detail": "Settings › Plugins › Claude › Headless sessions",
+      "keywords": [
+        "headless.tools",
+        "headless",
+        "Claude"
+      ],
+      "runs": "server",
+      "service": "axf.claude-settings@1",
+      "plugin": "ai.amberx.axf.console.claude-settings"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-settings/setting:headless.mcp",
+      "kind": "setting",
+      "label": "MCP servers for every run",
+      "key": "headless.mcp",
+      "type": "text",
+      "detail": "Settings › Plugins › Claude › Headless sessions",
+      "keywords": [
+        "headless.mcp",
+        "headless",
+        "Claude"
+      ],
+      "runs": "server",
+      "service": "axf.claude-settings@1",
+      "plugin": "ai.amberx.axf.console.claude-settings"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-settings/setting:headless.disallowedTools",
+      "kind": "setting",
+      "label": "Tools never given",
+      "key": "headless.disallowedTools",
+      "type": "text",
+      "detail": "Settings › Plugins › Claude › Headless sessions",
+      "keywords": [
+        "headless.disallowedTools",
+        "headless",
+        "Claude"
+      ],
+      "runs": "server",
+      "service": "axf.claude-settings@1",
+      "plugin": "ai.amberx.axf.console.claude-settings"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-settings/setting:headless.hooks",
+      "kind": "setting",
+      "label": "Hooks",
+      "key": "headless.hooks",
+      "type": "choice",
+      "options": [
+        "quiet",
+        "none",
+        "all"
+      ],
+      "detail": "Settings › Plugins › Claude › Headless sessions",
+      "keywords": [
+        "headless.hooks",
+        "headless",
+        "Claude"
+      ],
+      "runs": "server",
+      "service": "axf.claude-settings@1",
+      "plugin": "ai.amberx.axf.console.claude-settings"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-settings/setting:headless.briefBudgetChars",
+      "kind": "setting",
+      "label": "Brief budget (characters)",
+      "key": "headless.briefBudgetChars",
+      "type": "number",
+      "min": 1000,
+      "max": 200000,
+      "detail": "Settings › Plugins › Claude › Headless sessions",
+      "keywords": [
+        "headless.briefBudgetChars",
+        "headless",
+        "Claude"
+      ],
+      "runs": "server",
+      "service": "axf.claude-settings@1",
+      "plugin": "ai.amberx.axf.console.claude-settings"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-settings/setting:headless.startTokenWarn",
+      "kind": "setting",
+      "label": "Start tokens warning",
+      "key": "headless.startTokenWarn",
+      "type": "number",
+      "min": 1000,
+      "max": 500000,
+      "detail": "Settings › Plugins › Claude › Headless sessions",
+      "keywords": [
+        "headless.startTokenWarn",
+        "headless",
+        "Claude"
+      ],
+      "runs": "server",
+      "service": "axf.claude-settings@1",
+      "plugin": "ai.amberx.axf.console.claude-settings"
     }
   ]
 }

@@ -134,6 +134,107 @@ function viewOfCoreFile(f) {
   return map[name] ?? null;
 }
 
+/* ------------------------------------------------------------------ settings */
+
+const SETTINGS_VIEW = 'view:settings';
+const TAB_ROW = 'tab:settings.tabs';
+const SUB_ROW = 'subtab:settings.subtabs';
+
+/** Settings tabs: the framework's standard ones (libs/settings SETTINGS_TABS) and every `settingsTabs: [...]` in code. */
+function settingsTabs(files, ps) {
+  const out = new Map();
+  const std = read(join(APP, 'src/axf/libs/settings/index.tsx'));
+  const block = std.slice(std.indexOf('export const SETTINGS_TABS = {'), std.indexOf('} as const;', std.indexOf('export const SETTINGS_TABS = {')));
+  for (const m of block.matchAll(/\{ id: '([\w.-]+)', label: '([^']+)'(?:, icon: '[^']+')?(?:, parent: '([\w-]+)')?/g)) out.set(m[1], { id: m[1], label: m[2], parent: m[3] ?? null, plugin: null });
+  out.set('general', out.get('general') ?? { id: 'general', label: 'General', parent: null, plugin: null });
+  for (const f of files) {
+    const src = read(f);
+    const consts = constsOf(src);
+    for (const m of src.matchAll(/settingsTabs: \[([\s\S]*?)\]/g)) {
+      for (const t of m[1].matchAll(/\{ id: (?:'([\w.-]+)'|(\w+)), label: (?:'([^']+)'|`([^`]+)`)(?:[^}]*?parent: '([\w-]+)')?/g)) {
+        const id = t[1] ?? consts.get(t[2]);
+        if (!id || out.has(id)) continue;
+        const owner = ownerOf(f, ps);
+        // every plugin settings tab is a sub-tab of Settings → Plugins (App.tsx underPlugins)
+        out.set(id, { id, label: t[3] ?? t[4].replace(/\$\{[^}]+\}/g, '').trim(), parent: owner ? 'plugins' : t[5] ?? null, plugin: owner?.m.id ?? null });
+      }
+    }
+  }
+  return [...out.values()].map((t) => ({ ...t, address: tabAddress(t.id, t.parent) }));
+}
+
+const tabAddress = (id, parent) => (parent ? `${SETTINGS_VIEW}/${TAB_ROW}=${enc(parent)}/${SUB_ROW}=${enc(id)}` : `${SETTINGS_VIEW}/${TAB_ROW}=${enc(id)}`);
+
+/** `const X = 'a.b'` and `const K = { show: 'a.b', … }` in one file. */
+function constsOf(src) {
+  const m = new Map();
+  for (const c of src.matchAll(/(?:export )?const (\w+) = '([\w.:-]+)'/g)) m.set(c[1], c[2]);
+  for (const o of src.matchAll(/(?:export )?const (\w+) = \{([^{}]*)\}( as const)?;/g)) for (const kv of o[2].matchAll(/(\w+): '([\w.:-]+)'/g)) m.set(`${o[1]}.${kv[1]}`, kv[2]);
+  // template prefixes: const P = 'axf.x'; key: `${P}.y`
+  return m;
+}
+
+const SPEC_RE = /\{ key: (?:'([\w.:-]+)'|(\w+(?:\.\w+)?)|`\$\{(\w+)\}([\w.:-]+)`), label: (?:'((?:[^'\\]|\\.)+)'|`([^`]+)`), kind: '(\w+)'([^{}]*(?:\{[^{}]*\}[^{}]*)*?)\}/g;
+
+/** Every SettingSpec declared with a literal (or same-file constant) key. */
+function codeSettings(files, ps, tabs) {
+  const out = new Map();
+  for (const f of files) {
+    const src = read(f);
+    if (!src.includes('kind: \'')) continue;
+    const consts = constsOf(src);
+    for (const m of src.matchAll(SPEC_RE)) {
+      const key = m[1] ?? consts.get(m[2]) ?? (m[3] && consts.get(m[3]) ? consts.get(m[3]) + m[4] : null);
+      const kind = m[7];
+      if (!key || kind === 'section' || kind === 'custom' || out.has(key)) continue;
+      const rest = m[8] ?? '';
+      const label = (m[5] ?? m[6]).replace(/\\'/g, "'").replace(/\$\{[^}]+\}/g, '…');
+      // the group's tab: the nearest `tab: '…'` before the enclosing `settings: [`
+      const before = src.slice(0, m.index);
+      const g = before.lastIndexOf('settings: [');
+      const head = g >= 0 ? before.slice(Math.max(0, g - 600), g) : '';
+      const tabM = [...head.matchAll(/\btab: (?:'([\w.-]+)'|(\w+))/g)].pop();
+      const tabId = tabM ? (tabM[1] ?? consts.get(tabM[2]) ?? null) : g >= 0 ? 'general' : null;
+      const tab = tabId ? tabs.find((t) => t.id === tabId) : null;
+      const num = (n) => { const x = rest.match(new RegExp(`\\b${n}: (-?[\\d.]+)`)); return x ? Number(x[1]) : undefined; };
+      const opts = [...(rest.match(/options: \[([^\]]*)\]/)?.[1] ?? '').matchAll(/value: '([^']+)'/g)].map((o) => o[1]);
+      const requires = rest.match(/requires: '([^']+)'/)?.[1];
+      const owner = ownerOf(f, ps);
+      const spec = { key, label, type: kind, ...(opts.length ? { options: opts } : {}), ...(num('min') !== undefined ? { min: num('min') } : {}), ...(num('max') !== undefined ? { max: num('max') } : {}), ...(requires ? { requires } : {}) };
+      out.set(key, {
+        address: tab ? `${tab.address}/setting:${enc(key)}` : `setting:${enc(key)}`, kind: 'setting', label, ...spec,
+        detail: tab ? `Settings › ${tab.parent ? 'Plugins › ' : ''}${tab.label}` : 'Setting', keywords: words(key, tab?.label), runs: 'console',
+        ...(owner ? { plugin: owner.m.id } : {}), file: rel(f),
+      });
+    }
+  }
+  return [...out.values()];
+}
+
+/** Server-side settings: the Claude settings registry (owner: true = personOnly, only Brett's own click changes it). */
+function serverSettings(ps, tabs) {
+  const out = [];
+  for (const p of ps) {
+    const reg = join(p.dir, 'registry.json');
+    if (!existsSync(reg)) continue;
+    let r; try { r = json(reg); } catch { continue; }
+    if (r.$axf !== 'claude-settings-registry@1') continue;
+    const tab = tabs.find((t) => t.plugin === p.m.id) ?? { address: tabAddress(p.folder, 'plugins'), label: p.m.name };
+    const groups = new Map((r.groups ?? []).map((g) => [g.id, g.label]));
+    for (const s of r.settings ?? []) {
+      out.push({
+        address: `${tab.address}/setting:${enc(s.key)}`, kind: 'setting', label: s.label, key: s.key, type: s.kind,
+        ...(Array.isArray(s.options) ? { options: s.options.map((o) => (typeof o === 'object' ? o.value : o)) } : {}),
+        ...(typeof s.min === 'number' ? { min: s.min } : {}), ...(typeof s.max === 'number' ? { max: s.max } : {}),
+        ...(s.owner === true ? { personOnly: true } : {}), ...(s.owner === 'raise' ? { ownerRaise: true } : {}), ...(s.locked ? { locked: true } : {}),
+        detail: `Settings › Plugins › ${tab.label} › ${groups.get(s.group) ?? s.group}`, keywords: words(s.key, s.group, tab.label),
+        runs: 'server', service: 'axf.claude-settings@1', plugin: p.m.id,
+      });
+    }
+  }
+  return out;
+}
+
 /* ------------------------------------------------------------------ build */
 
 export function buildInventory() {
@@ -175,13 +276,18 @@ export function buildInventory() {
       tabs: r.tabs.map((t) => ({ ...(address ? { address: `${address}=${enc(t.value)}` } : {}), value: t.value, label: t.label })) };
   });
 
+  const sTabs = settingsTabs(files.concat(walk(join(APP, 'src/axf/libs'))), ps);
+  const settings = [...codeSettings(files.concat(walk(join(APP, 'src/axf/libs'))), ps, sTabs), ...serverSettings(ps, sTabs)];
+
   const navItems = nav.flatMap((s) => (s.items ?? []).map((it) => ({ address: it.view ? `view:${enc(it.view)}` : null, id: it.id, label: it.label, section: s.label, icon: it.icon })));
 
   return {
     $axf: FRAME,
     note: 'Generated by apps/console-web/scripts/control-inventory.mjs: do not edit.',
-    counts: { views: views.length, nav: navItems.length, tabGroups: tabGroups.length, tabs: tabGroups.reduce((n, g) => n + g.tabs.length, 0) },
+    counts: { views: views.length, nav: navItems.length, tabGroups: tabGroups.length, tabs: tabGroups.reduce((n, g) => n + g.tabs.length, 0), settingsTabs: sTabs.length, settings: settings.length },
     views, nav: navItems, tabGroups,
+    settingsTabs: sTabs.map((t) => ({ address: t.address, id: t.id, label: t.label, parent: t.parent, plugin: t.plugin })),
+    settings,
   };
 }
 
