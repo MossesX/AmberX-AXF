@@ -53,7 +53,8 @@
     ],
     "mentions": [
       "CLAUDE.md",
-      "_claude/memory/STATUS.md"
+      "_claude/memory/STATUS.md",
+      "_claude/THREADS.md"
     ]
   },
   "opens": "main"
