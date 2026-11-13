@@ -288,6 +288,7 @@ jobs:
             npx -y tsx framework/spec/check-swarm.mts                  # agent swarm contracts (agent@1 … swarm-run@1): fixture replay, field-naming validators, model policy, schema snapshots, shipped roster, plugin uses the framework's
             npx -y tsx framework/spec/check-help.mts                   # help@1 + Help mode: registry, fixture replay (auto ids, index, intros, coverage, ratchet), validators agree, every shipped pack, runtime switch
             npx -y tsx framework/spec/check-help-mode.mts              # Help mode in the DOM (jsdom): switch, hover / long-press / badge tooltips, dismiss, No help yet, What is this?, intro once per screen
+            npx -y tsx framework/spec/check-toolbar-settings.mts       # toolbar settings (jsdom): every field x value changes the rendered toolbar, right-click dialog, fold, search, API, persists
             npx -y tsx framework/spec/check-brand.mts                  # logo-mark / animated-logo / icon-pack / branding rules, SVG output, starters
             npx -y tsx framework/spec/check-design-language.mts        # DESIGN-LANGUAGE.md quality bar over every starter + the brand generators
             npx -y tsx framework/spec/check-toolbars.mts               # toolbar library: live groups (providers), toggles, widgets, TOOLBARS.md + asset-library.mjs --check
