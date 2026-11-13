@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T11:28:38.907Z",
+ "updatedAt": "2026-11-13T11:28:54.944Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -116319,7 +116319,7 @@
    "branch": "claude/change-to-move-amberx-web-app-into-the-console-amberx-andr-pr-528-brett-do",
    "pr": "#546",
    "createdAt": "2026-11-13T00:39:39.304Z",
-   "updatedAt": "2026-11-13T11:27:29.582Z",
+   "updatedAt": "2026-11-13T11:28:44.251Z",
    "builtAt": "2026-11-13T11:25:24.180Z",
    "notes": [
     {
@@ -116365,6 +116365,10 @@
     {
      "text": "Headless run axf-change-to-move-amberx-web-app-into-the-console-a--paulie: brief only · start 11.5K tokens ($0.03) · cost $0.13 · 4 turns · 6 tools, MCP none",
      "at": "2026-11-13T11:27:29.582Z"
+    },
+    {
+     "text": "Session axf-change-to-move-amberx-web-app-into-the-console-a--paulie on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-13T11:28:44.251Z"
     }
    ],
    "approvals": [],

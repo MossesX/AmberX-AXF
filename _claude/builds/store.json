@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4320,
- "updatedAt": "2026-11-13T11:28:38.907Z",
+ "rev": 4321,
+ "updatedAt": "2026-11-13T11:28:54.944Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -177070,7 +177070,7 @@
    "branch": "claude/change-to-move-amberx-web-app-into-the-console-amberx-andr-pr-528-brett-do",
    "pr": "#546",
    "createdAt": "2026-11-13T00:39:39.304Z",
-   "updatedAt": "2026-11-13T11:27:29.582Z",
+   "updatedAt": "2026-11-13T11:28:44.251Z",
    "builtAt": "2026-11-13T11:25:24.180Z",
    "notes": [
     {
@@ -177116,6 +177116,10 @@
     {
      "text": "Headless run axf-change-to-move-amberx-web-app-into-the-console-a--paulie: brief only · start 11.5K tokens ($0.03) · cost $0.13 · 4 turns · 6 tools, MCP none",
      "at": "2026-11-13T11:27:29.582Z"
+    },
+    {
+     "text": "Session axf-change-to-move-amberx-web-app-into-the-console-a--paulie on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-13T11:28:44.251Z"
     }
    ],
    "approvals": [],
@@ -177136,12 +177140,19 @@
     "queuedAt": "2026-11-13T11:24:22.395Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-change-to-move-amberx-web-app-into-the-console-a--paulie",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-13T11:25:18.500Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-13T11:28:43.716Z",
+     "exit": 0,
+     "outcome": "finished",
+     "stepsLeft": 0,
+     "account": "mossesx-max-",
+     "session": "axf-change-to-move-amberx-web-app-into-the-console-a--paulie"
+    },
     "split": {
      "at": "2026-11-13T00:41:27.700Z",
      "by": "orchestrator",
@@ -177289,7 +177300,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -185027,7 +185038,13 @@
     "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-13T11:28:46.050Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -185135,7 +185152,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
