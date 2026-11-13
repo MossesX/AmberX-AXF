@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5028,
- "updatedAt": "2026-11-13T21:14:30.481Z",
+ "rev": 5029,
+ "updatedAt": "2026-11-13T21:14:53.859Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -201513,7 +201513,7 @@
    "title": "Console app: wake-word voice listener, voice approvals, every console command by voice",
    "category": "",
    "detail": "Voice control for the console Android app (wrapper, parts 1-4), working offline where possible.\n- Always-on wake-word listener, with a wake phrase Brett sets in Settings (several allowed). Runs on-device (offline engine, e.g. Vosk/whisper.cpp + a local intent matcher), with a mic-on indicator and an off switch.\n- After the wake phrase the app answers out loud ('What's up?') and listens for a command.\n- Voice approvals: 'approve' reads pending approvals one at a time (who asked, what it does); Brett says approve, deny, skip or details. 'Approve all pending' and 'deny all' ask for one spoken confirm. Works from the floating overlay and the lock screen.\n- Settings by voice, e.g. 'change the veto timer to two hours' (the axHub veto countdown, so he has that long to veto something before it runs/builds), with the value read back.\n- Command catalog: every console action, plugin command, control@1 target and pipeline gets a voice entry, built from the API registry so new plugins appear automatically. Multi-field actions run as a spoken wizard that asks for each missing field ('create a new project' -> 'name?' -> 'Gizmo Johnson' -> confirm). Covers projects, builds/pipelines (file, split, prioritise, land, stop), approvals, settings, tokens/skins, notes/tasks, navigation.\n- A Voice commands screen lists every command and its phrasings, searchable, with custom phrases Brett adds.\n- Destructive commands always need a spoken confirm.\n- Full API parity. Tests, help, Shipped features.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -201521,7 +201521,7 @@
    "pr": "#643",
    "priority": "P1",
    "createdAt": "2026-11-13T18:44:52.063Z",
-   "updatedAt": "2026-11-13T20:32:34.162Z",
+   "updatedAt": "2026-11-13T21:14:33.106Z",
    "builtAt": "",
    "notes": [
     {
@@ -201551,6 +201551,10 @@
     {
      "text": "UI Review: no shots from this headless session (no console token; a local preview is gated on axHub cross-origin). To review: open Settings → Plugins → Wake listener on the live console after the PR lands (desktop + phone) and the banner mic light; or run framework/cli/rebuild-shots.mjs with AXF_TOKEN against this branch.",
      "at": "2026-11-13T20:30:49.247Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-13T21:14:33.106Z"
     }
    ],
    "approvals": [],
@@ -201856,7 +201860,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -204782,7 +204786,7 @@
    "title": "Skin animations: swatches, skin-switch sweep, picker",
    "category": "",
    "detail": "Cool animations for skins, all token-driven (duration, easing, intensity tokens) and respecting reduced-motion:\n- Skins gallery (Skins plugin and the built-in skins panel): each skin card shows a row of animated colour swatches that ripple/wave on hover or tap.\n- Switching skins: the new colours sweep or ripple across the screen from where you tapped, instead of snapping.\n- Colour pickers in token editors, UI Manager and Quick settings: swatches pop and fan out into their shades when picked, with a smooth morph to the new colour.\n- Animations are assets, so they're swappable and per-skin, with an Animations section in settings (on/off per animation, speed).\n- Full API: REST/MCP/CLI/voice. Tests, help, Shipped features.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -204790,7 +204794,7 @@
    "pr": "#652",
    "priority": "P1",
    "createdAt": "2026-11-13T19:49:31.102Z",
-   "updatedAt": "2026-11-13T20:31:16.091Z",
+   "updatedAt": "2026-11-13T21:14:33.106Z",
    "builtAt": "",
    "notes": [
     {
@@ -204816,6 +204820,10 @@
     {
      "text": "Reconciler: PR #652",
      "at": "2026-11-13T20:31:16.091Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-13T21:14:33.106Z"
     }
    ],
    "approvals": [],
@@ -205055,7 +205063,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
