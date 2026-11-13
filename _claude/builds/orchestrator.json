@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T12:34:26.536Z",
+ "updatedAt": "2026-11-13T12:34:45.033Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -124712,9 +124712,14 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T12:33:25.261Z",
-   "updatedAt": "2026-11-13T12:33:26.262Z",
+   "updatedAt": "2026-11-13T12:34:43.631Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"d7b4d892-d996-42ad-bbcc-29444b2a227d\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-13T12:34:43.631Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -124729,7 +124734,106 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Step splitter keeps failing with 'claude exit 1' (stop_sequence, 0 tokens) and falls back to one step per sentence.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mweyljqn06iexz",
+     "createdAt": "2026-11-13T12:34:43.631Z"
+    },
+    {
+     "id": "s2",
+     "text": "Seen today on toolbar fix, assets menu.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mweyljqo07opav",
+     "createdAt": "2026-11-13T12:34:43.631Z"
+    },
+    {
+     "id": "s3",
+     "text": "PR #526 was kicked out of CI.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mweyljqo083z75",
+     "createdAt": "2026-11-13T12:34:43.631Z"
+    },
+    {
+     "id": "s4",
+     "text": "Find the cause, fix it, replace #526 and get it green, add a test.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mweyljqo0924gl",
+     "createdAt": "2026-11-13T12:34:43.631Z"
+    },
+    {
+     "id": "s5",
+     "text": "Tests green, report _claude/builds/reports/splitter-crash-fix.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/splitter-crash-fix.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mweyljqo0ak60j",
+     "createdAt": "2026-11-13T12:34:43.631Z"
+    }
+   ]
   },
   {
    "id": "fix-step-splitter-claude-exit-1",
