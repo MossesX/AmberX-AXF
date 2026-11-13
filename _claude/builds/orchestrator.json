@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T23:39:45.803Z",
+ "updatedAt": "2026-11-13T23:40:58.841Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -135029,12 +135029,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T23:38:56.061Z",
-   "updatedAt": "2026-11-13T23:38:58.487Z",
+   "updatedAt": "2026-11-13T23:40:57.282Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-13T23:38:58.487Z"
+    },
+    {
+     "text": "Split by Claude into 9 steps (0 Fable).",
+     "at": "2026-11-13T23:40:57.282Z"
     }
    ],
    "approvals": [],
@@ -135051,7 +135055,205 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Check out claude/auto-land-every-finished-build-lands, fetch origin, run `git merge origin/main` and list the conflicted files (expect apps/console-web/plugins/push-banner/land/land.mjs). Read both sides: main's generated-files@1 regenerate-on-clash path and this branch's auto-land queue/sweeper. No commit yet, just a note of what each side adds.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "6 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/land/land.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfmeblu01g0aq",
+     "createdAt": "2026-11-13T23:40:57.282Z"
+    },
+    {
+     "id": "s2",
+     "text": "Resolve land.mjs so it keeps both: main's regenerate-generated-files-on-clash logic (generated-files@1 call sites, imports) and the branch's auto-land queue + sweeper entry points. Keep imports to built-ins and land/ siblings only. Commit the merge resolution.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/land/land.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfmeblu02c5eq",
+     "createdAt": "2026-11-13T23:40:57.282Z"
+    },
+    {
+     "id": "s3",
+     "text": "Settle the other files the merge touched: take main's copy for generated/status files (_claude/builds/store.json, journal, exports, THREADS.md live log) and regenerate them where a generator exists (tracker.mjs, builds-store verify) instead of hand-merging; check that no sweeper or regenerate helper in other push-banner/land files is now duplicated or orphaned. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/land/",
+      "_claude/builds/",
+      "tracker.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfmeblu03635d",
+     "createdAt": "2026-11-13T23:40:57.282Z"
+    },
+    {
+     "id": "s4",
+     "text": "Wire the sweeper to use the regenerate path: when the sweeper lands a finished build and the merge clashes only on generated files, call main's generated-files@1 regenerate step before giving up, so a finished build doesn't stall on a clash in generated files. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/land/land.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfmeblu04ctui",
+     "createdAt": "2026-11-13T23:40:57.282Z"
+    },
+    {
+     "id": "s5",
+     "text": "API parity check for the auto-land sweeper (no new UI, so this is read and wire only): confirm sweeper state is readable and run/pause works the same through REST (push-banner routes), MCP (push_banner_* plugin commands, read statically), CLI (`land.mjs sweep|status`) and voice (console action). Add whatever is missing to the plugin's routes and commands. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/server/",
+      "apps/console-web/plugins/push-banner/plugin.json",
+      "apps/console-web/plugins/push-banner/land/land.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfmeblu05tq05",
+     "createdAt": "2026-11-13T23:40:57.282Z"
+    },
+    {
+     "id": "s6",
+     "text": "Tests: add or extend push-banner land tests covering (a) a clash only on generated files regenerates and lands, (b) a real source clash is kicked to Pull failed, (c) the sweeper picks up every `built` build with a green PR and queues it as a stack (never one at a time). Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/land/",
+      "apps/console-web/plugins/push-banner/test/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfmeblu06bc2e",
+     "createdAt": "2026-11-13T23:40:57.282Z"
+    },
+    {
+     "id": "s7",
+     "text": "Run the push-banner and build-orchestrator test suites plus plugin-lifecycle check, check-builds-store.mjs, builds-store verify and tracker --check; fix whatever fails, then commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/",
+      "apps/console-web/plugins/build-orchestrator/",
+      "framework/spec/check-builds-store.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfmeblu07991h",
+     "createdAt": "2026-11-13T23:40:57.282Z"
+    },
+    {
+     "id": "s8",
+     "text": "Push the branch, link it (`builds-live.mjs link auto-land-merge-main-land-land-mjs-clash --branch claude/auto-land-every-finished-build-lands --pr <n>`), make sure PR CI started (dispatch android.yml once if no pull_request run appeared), and add the PR to the merge queue (`land.mjs queue add <n>`); no direct merge.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "6 min",
+     "files": [
+      "_claude/builds/store.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfmeblu08vvwe",
+     "createdAt": "2026-11-13T23:40:57.282Z"
+    },
+    {
+     "id": "s9",
+     "text": "Write _claude/builds/reports/auto-land-merge-main-land-land-mjs-clash.md (what clashed, how both sides were kept, tests before/after, how the sweeper is reached through REST/MCP/CLI/voice, and what happens after it lands: the sweeper lands every finished build by itself). Update the THREADS.md row (branch, PR, waiting on the queue), add Brett's verbatim words ('land what finished') to the PR body, commit, push.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "_claude/builds/reports/auto-land-merge-main-land-land-mjs-clash.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfmeblu096m5z",
+     "createdAt": "2026-11-13T23:40:57.282Z"
+    }
+   ]
   },
   {
    "id": "land-batch-merge-main-each-finished",
