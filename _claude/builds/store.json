@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4102,
- "updatedAt": "2026-11-13T07:10:31.953Z",
+ "rev": 4103,
+ "updatedAt": "2026-11-13T07:10:49.618Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -180843,7 +180843,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T07:10:15.600Z",
-   "updatedAt": "2026-11-13T07:10:26.365Z",
+   "updatedAt": "2026-11-13T07:10:48.488Z",
    "builtAt": "",
    "notes": [
     {
@@ -180853,6 +180853,10 @@
     {
      "text": "Split asked for by console.",
      "at": "2026-11-13T07:10:26.365Z"
+    },
+    {
+     "text": "Brett narrowed it: ONLY remove the molly-guide plugin (the thing that pops up on every load). Leave the Molly agent add-on in agent-manager alone.",
+     "at": "2026-11-13T07:10:48.488Z"
     }
    ],
    "approvals": [],
@@ -180888,7 +180892,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
