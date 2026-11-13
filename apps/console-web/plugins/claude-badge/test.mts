@@ -1,19 +1,19 @@
 /** Badges: the pure model. `npx -y tsx apps/console-web/plugins/claude-badge/test.mts` */
-import { BADGES, ICONS, KINDS, STATE_IDS, iconKey, iconOf, keyOf, labelOf, meterText, orderOf, shapeOf, shownOf, sideOf, tapPlan } from './web/model.ts';
-import type { UsageResult } from './web/model.ts';
+import { BADGES, HEALTH_KINDS, ICONS, KINDS, STATE_IDS, healthState, healthText, healthTip, pingText, worst, iconKey, iconOf, keyOf, labelOf, meterText, orderOf, shapeOf, shownOf, sideOf, tapPlan } from './web/model.ts';
+import type { HealthResult, UsageResult } from './web/model.ts';
 
 let n = 0;
 const ok = (v: unknown, what: string) => { n += 1; if (!v) throw new Error(`FAILED: ${what}`); };
 const settings = (o: Record<string, unknown>) => (k: string) => o[k];
 const none = settings({});
 
-ok(KINDS.length === 5 && ['console', 'vps', 'axhub', 'amberx', 'usage'].every((k) => k in BADGES), 'five badges');
-ok(new Set(KINDS.map((k) => BADGES[k].id)).size === 5 && KINDS.every((k) => !BADGES[k].id.includes('.')), 'ids are unique and plain (a dotted id is dropped silently)');
+ok(KINDS.length === 8 && ['console', 'vps', 'axhub', 'amberx', 'usage', 'disk', 'cpu', 'memory'].every((k) => k in BADGES), 'eight badges');
+ok(new Set(KINDS.map((k) => BADGES[k].id)).size === 8 && KINDS.every((k) => !BADGES[k].id.includes('.')), 'ids are unique and plain (a dotted id is dropped silently)');
 for (const k of KINDS) for (const st of STATE_IDS) ok(ICONS.includes(BADGES[k].states[st].icon), `${k} ${st}: its default icon can be picked`);
 ok(iconKey('console', 'ok') === 'claude-badge.icon.ok' && iconKey('console', 'warn') === 'claude-badge.icon.no-credit', 'the console keeps its old icon keys');
 ok(iconKey('vps', 'warn') === 'claude-badge.vps.icon.no-credit', 'the VPS badge too');
 ok(keyOf('console', 'show') === 'claude-badge.console.show' && keyOf('vps', 'icon-only') === 'claude-badge.vps.icon-only', 'and its show and icons-only keys');
-ok(new Set(KINDS.flatMap((k) => STATE_IDS.map((st) => iconKey(k, st)))).size === 20, 'no two icons share a key');
+ok(new Set(KINDS.flatMap((k) => STATE_IDS.map((st) => iconKey(k, st)))).size === 32, 'no two icons share a key');
 ok(iconOf(settings({ [iconKey('axhub', 'error')]: 'bell' }), 'axhub', 'error') === 'bell', 'a picked icon');
 ok(iconOf(settings({ [iconKey('axhub', 'error')]: 'nope' }), 'axhub', 'error') === 'alert', 'an unknown icon falls back');
 ok(shownOf(none, 'usage') && !shownOf(settings({ [keyOf('usage', 'show')]: false }), 'usage'), 'show or hide');
@@ -42,4 +42,20 @@ ok(meterText(r({ fiveHour: win(12.4), weekly: win(13) })) === '5h 12% · wk 13%'
 ok(meterText(r({ weekly: win(13) })) === '5h – · wk 13%', 'no 5-hour window open');
 ok(meterText(r({ weekly: win(13) }), 'Max') === 'Max 5h – · wk 13%', 'a label in front');
 ok(meterText(null) === 'no reading' && meterText(r({ status: 'no-meter' })) === 'no reading', 'nothing to read');
+
+ok(tapPlan(none, 'vps').spec === 'nav:server-health' && HEALTH_KINDS.every((k) => tapPlan(none, k).spec === 'nav:server-health'), 'VPS and the health widgets open server health');
+ok(BADGES.vps.title === 'VPS (ping)' && !/login|claude/i.test(BADGES.vps.about), 'the VPS badge is a ping, nothing about the login');
+ok(worst('ok', 'warn') === 'warn' && worst('error', 'ok') === 'error' && worst('off', 'off') === 'off' && worst('off', 'ok') === 'ok', 'the worse state wins');
+const th = { warn: 80, red: 90 };
+const h: HealthResult = {
+  at: 0, ready: true, why: '', thresholds: { disk: th, cpu: th, memory: th, swap: th }, states: { disk: 'warn', cpu: 'ok', memory: 'ok', swap: 'error' },
+  disk: { total: 100 * 1024 ** 3, used: 84 * 1024 ** 3, free: 16 * 1024 ** 3, pct: 84, path: '/' }, cpu: { load1: 0.42, load5: 0.3, load15: 0.2, cores: 4, pct: 10.5 },
+  memory: { total: 8 * 1024 ** 3, used: 3 * 1024 ** 3, pct: 37.5 }, swap: { total: 1024 ** 3, used: 0.9 * 1024 ** 3, pct: 90, none: false },
+};
+ok(healthText(h, 'disk') === 'Disk 84%' && healthText(h, 'cpu') === 'CPU 0.42' && healthText(h, 'memory') === 'Mem 38% · swap 90%', 'widget words');
+ok(healthText(h, 'disk', 'D') === 'D 84%' && healthText(null, 'cpu') === 'CPU –', 'a label in front; nothing read yet');
+ok(healthState(h, 'memory') === 'error' && healthState(h, 'disk') === 'warn' && healthState(null, 'disk') === 'off', 'memory takes the worse of memory and swap');
+ok(healthText({ ...h, swap: { ...h.swap!, none: true } }, 'memory') === 'Mem 38%', 'no swap: memory alone');
+ok(healthTip(h, 'disk').includes('16.0 GB free') && healthTip(h, 'cpu').includes('4 cores'), 'tooltips carry the numbers');
+ok(pingText(null).startsWith('Pinging') && pingText({ at: 0, ok: true, state: 'ok', reachable: true, host: '10.0.0.1', source: '', method: 'icmp', ms: 1.4, error: '' }) === 'VPS answers a ping in 1 ms · 10.0.0.1', 'ping words');
 console.log(`claude-badge model: ${n} checks passed`);
