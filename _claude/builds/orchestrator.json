@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T13:23:41.303Z",
+ "updatedAt": "2026-11-13T13:23:47.819Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -122824,7 +122824,7 @@
    "title": "Auto-recover stuck builds",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -122832,8 +122832,8 @@
    "pr": "#574",
    "priority": "P0",
    "createdAt": "2026-11-13T11:45:11.111Z",
-   "updatedAt": "2026-11-13T13:23:05.446Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-13T13:23:41.683Z",
+   "builtAt": "2026-11-13T13:23:41.684Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -123229,8 +123229,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T13:23:41.683Z",
      "note": "",
      "uid": "st-mwewxu2m10s2ye",
      "createdAt": "2026-11-13T11:48:17.662Z"
