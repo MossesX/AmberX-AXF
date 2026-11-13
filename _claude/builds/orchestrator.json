@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T19:58:43.995Z",
+ "updatedAt": "2026-11-13T19:58:57.918Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -131307,7 +131307,7 @@
    "pr": "#642",
    "priority": "P0",
    "createdAt": "2026-11-13T19:37:14.557Z",
-   "updatedAt": "2026-11-13T19:56:25.055Z",
+   "updatedAt": "2026-11-13T19:58:47.332Z",
    "builtAt": "2026-11-13T19:56:25.055Z",
    "notes": [
     {
@@ -131333,6 +131333,10 @@
     {
      "text": "Headless run axf-per-instance-settings-picker-merge-main--lenny: brief only · start 11.3K tokens ($0.03) · cost $1.14 · 51 turns · 6 tools, MCP none",
      "at": "2026-11-13T19:56:25.055Z"
+    },
+    {
+     "text": "Session axf-per-instance-settings-picker-merge-main--lenny on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-13T19:58:47.332Z"
     }
    ],
    "approvals": [],
@@ -132413,12 +132417,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T19:57:42.157Z",
-   "updatedAt": "2026-11-13T19:57:45.282Z",
+   "updatedAt": "2026-11-13T19:58:49.599Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-13T19:57:45.282Z"
+    },
+    {
+     "text": "Brett: it's not just colours. The style variants (tab styles underline/pills/boxed/segmented/plain/chips, grid styles, and every other component's variants) are hard-coded CSS rules with no tokens of their own. Scope is now EVERY component, not just grids and tab groups. Approach, which is additive with no engine or skin rebuild: (1) audit every component and variant in framework/ui/axf.css and the components engine, and list each hard-coded value (radius, border width/style, shadow, padding, gap, font weight/size, indicator thickness, opacity, colours, transitions); (2) give each component its own token family (--fx-<component>-*), and each style variant its own overrides, whose DEFAULT value points at today's general token (e.g. --fx-tab-radius: var(--fx-radius-sm)), so every existing skin looks identical with zero changes; (3) skins and per-instance settings can then override any of them; (4) a CI check that fails on any literal value in component CSS that isn't a token. Show the new tokens in Token Control, the UI Manager and per-instance settings. Fable for the token schema.",
+     "at": "2026-11-13T19:58:49.599Z"
     }
    ],
    "approvals": [],
