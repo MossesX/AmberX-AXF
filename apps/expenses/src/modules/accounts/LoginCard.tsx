@@ -88,26 +88,26 @@ export default function LoginCard({ me }: { me: AccountMe | null }) {
         sx={{
           width: "min(400px, 92vw)",
           background: token("panel"),
-          border: `1px solid ${token("edge")}`,
+          border: `var(--fx-border-w) solid ${token("edge")}`,
           borderRadius: token("radius"),
           p: 3.5,
-          gap: 2,
+          gap: 'var(--fx-dens-gap-3xl)',
         }}
       >
-        <Stack direction="row" sx={{ alignItems: "center", gap: 1.5 }}>
+        <Stack direction="row" sx={{ alignItems: "center", gap: 'var(--fx-dens-gap-2xl)' }}>
           <Glyph id="icon-account" size={26} />
           <Box>
             <Typography
               sx={{
                 fontFamily: token("mono"),
-                fontSize: 13,
+                fontSize: 'var(--fx-type-root-md)',
                 fontWeight: 700,
                 letterSpacing: "0.16em",
               }}
             >
               ACCOUNTS
             </Typography>
-            <Typography sx={{ fontSize: 11, color: token("dim") }}>
+            <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim") }}>
               {step === "signin" ? "Sign in to the studio" : (me?.screenname ?? me?.username)}
             </Typography>
           </Box>
@@ -141,7 +141,7 @@ export default function LoginCard({ me }: { me: AccountMe | null }) {
             >
               {busy ? <CircularProgress size={18} /> : "Sign in"}
             </Button>
-            <Typography sx={{ fontSize: 11, color: token("dim") }}>
+            <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim") }}>
               No account? An administrator creates one and hands you a temp password — you choose
               your own on first sign-in.
             </Typography>
@@ -150,7 +150,7 @@ export default function LoginCard({ me }: { me: AccountMe | null }) {
 
         {step === "change" && (
           <>
-            <Alert severity="info" variant="outlined" sx={{ fontSize: 12 }}>
+            <Alert severity="info" variant="outlined" sx={{ fontSize: 'var(--fx-type-root-sm)' }}>
               A temp password is in force — choose your own before entering.
             </Alert>
             <TextField
@@ -194,7 +194,7 @@ export default function LoginCard({ me }: { me: AccountMe | null }) {
         )}
 
         {error && (
-          <Alert severity="error" variant="outlined" sx={{ fontSize: 12 }}>
+          <Alert severity="error" variant="outlined" sx={{ fontSize: 'var(--fx-type-root-sm)' }}>
             {error}
           </Alert>
         )}

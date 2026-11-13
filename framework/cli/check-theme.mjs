@@ -34,7 +34,9 @@
  * --fx-* defaults and optional component-token fallbacks, axf-ui's theme/ package that turns tokens into Compose
  * values). Frozen code (all Android work is on hold) is held to a ratchet baseline,
  * framework/spec/conform-baseline.json: it may only shrink (`--update-baseline` rewrites it after a fix).
- * Put `theme-ok` in a comment on a line to allow a deliberate exception (e.g. a colour input's default value).
+ * Put `theme-ok` in a comment on a line to allow a deliberate exception (e.g. a colour input's default value);
+ * `theme-ok-begin` … `theme-ok-end` comments allow a whole block (a standalone exported document's baked stylesheet,
+ * which has no theme engine to read tokens from).
  */
 import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { join, relative, resolve, dirname } from 'node:path';
@@ -197,8 +199,12 @@ for (const { path, profile: base } of scans) {
     files += 1;
     const profile = DEFINITION_FILES.has(relative(ROOT, f)) ? 'definition' : base;
     const lines = readFileSync(f, 'utf8').split('\n');
+    let okBlock = false;
     lines.forEach((line, i) => {
-      if (/theme-ok/.test(line)) return;
+      // theme-ok-begin … theme-ok-end: a whole block is a deliberate exception (a standalone exported document's baked stylesheet)
+      if (/theme-ok-begin/.test(line)) { okBlock = true; return; }
+      if (/theme-ok-end/.test(line)) { okBlock = false; return; }
+      if (okBlock || /theme-ok/.test(line)) return;
       const scaleOk = /scale-ok/.test(line);
       const report = (msg) => found(f, i, line, msg);
       for (const r of RULES) {
