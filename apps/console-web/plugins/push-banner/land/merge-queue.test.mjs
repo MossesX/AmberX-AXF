@@ -10,6 +10,9 @@ import { chatLines, queueRound, readQueue, queueControl } from './merge-queue.mj
 import { makeGit } from './land.mjs';
 process.env.AXF_CREW_SAY = 'off'; // group-chat posts (crew-say.mjs) stay out of the real Breakroom
 
+// main gate hits land in a scratch server gate log, never the real one
+process.env.AXF_GATE_DIR = mkdtempSync(join(tmpdir(), 'mq-gate-'));
+
 let n = 0;
 const t = async (name, fn) => { await fn(); n++; console.log(`ok ${name}`); };
 

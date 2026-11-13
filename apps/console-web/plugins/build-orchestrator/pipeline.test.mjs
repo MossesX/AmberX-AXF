@@ -441,7 +441,10 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
 `); chmodSync(splitter, 0o755);
   const env = { ...process.env, AXF_BUILDS_STORE: storeFile, AXF_BUILD_HOOKS: 'off', AXF_BUILDS_LIVE: '0', AXF_SHIPPED: 'off', AXF_PIPELINE_DIR: pipeDir, AXF_SLOTS_DIR: slotsDir, AXF_SLOTS_TMUX: 'off', AXF_SLOTS_MEM_GB: '8', AXF_HEADLESS_DIR: hdir,
     AXF_CLAUDE_ACCOUNTS: accountsDir, AXF_CLAUDE_SEEN: join(workersDir, 'seen.json'), AXF_CLAUDE_WORKERS: workersDir, AXF_CLAUDE_HOME: join(tmp, 'claude-home'), AXF_CLAUDE_GLOBAL: join(tmp, 'claude.json'),
-    AXF_PIPELINE_LAUNCHER: launcher, AXF_PIPELINE_SPLITTER: splitter, AXF_PIPELINE_WORKTREES: wtRoot, AXF_PIPELINE_WORKTREE_MODE: 'mkdir', AXF_PIPELINE_CONSOLE: 'off', AXF_PIPELINE_SETTINGS: JSON.stringify({ parallelPerAccount: 1, idleAfterMin: 0 }), AXF_DATA_DIR: 'off', AXF_BUILD_PROFILE: 'all' };
+    AXF_PIPELINE_LAUNCHER: launcher, AXF_PIPELINE_SPLITTER: splitter, AXF_PIPELINE_WORKTREES: wtRoot, AXF_PIPELINE_WORKTREE_MODE: 'mkdir', AXF_PIPELINE_CONSOLE: 'off', AXF_PIPELINE_SETTINGS: JSON.stringify({ parallelPerAccount: 1, idleAfterMin: 0 }), AXF_DATA_DIR: 'off', AXF_BUILD_PROFILE: 'all',
+    // server-gate: the VPS's tmux sessions, as a file the tests write; no FYI to the console
+    AXF_GATE_SESSIONS: join(tmp, 'gate-sessions.json'), AXF_GATE_ALERTS: 'off' };
+  writeFileSync(env.AXF_GATE_SESSIONS, '[]');
   mkdirSync(join(tmp, 'claude-home'), { recursive: true }); writeFileSync(join(tmp, 'claude.json'), '{}');
   const run = (file, ...args) => { const r = spawnSync(process.execPath, [join(HERE, file), ...args], { cwd: ROOT, env, encoding: 'utf8', timeout: 120000 }); if (r.status !== 0 && !args.includes('--expect-fail')) throw new Error(`${file} ${args.join(' ')} failed (${r.status}):\n${r.stdout}\n${r.stderr}`); return r; };
   const pipe = (...a) => run('pipeline.mjs', ...a);
@@ -633,6 +636,28 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     assert.ok(!json(pipe('status', '--json')).plan.waits.some((w) => w.id === 'alpha-again' && /waiting for Brett/.test(w.why)));
     assert.notEqual(pipe('shipped-ack', 'alpha-again', '--json', '--expect-fail').status, 0, 'a second go-ahead is refused');
     json(pipe('unqueue', 'alpha-again', '--json'));
+  });
+  const gateLog = () => { try { return readFileSync(join(pipeDir, 'server-gate-log.jsonl'), 'utf8').split('\n').filter(Boolean).map((l) => JSON.parse(l)); } catch { return []; } };
+  t('e2e server gate: a queued build whose session is still alive is not launched again; its run record comes back', () => {
+    orch('act', JSON.stringify({ action: 'add', id: 'omega', title: 'Omega', steps: [{ text: 'one step', model: 'Opus', estimate: '20 min' }] }));
+    json(pipe('queue', 'omega', '--json'));
+    // the double-launch case: the store lost omega's session (a stale copy won a merge) while it still runs on the VPS
+    writeFileSync(env.AXF_GATE_SESSIONS, JSON.stringify([{ name: 'axf-omega--fake', cwd: '', created: 100, build: 'omega' }]));
+    const before = readFileSync(join(tmp, 'launches.log'), 'utf8');
+    const r = json(pipe('tick', '--json'));
+    assert.ok(!r.launched.some((l) => l.id === 'omega'), 'not launched a second time');
+    assert.equal(readFileSync(join(tmp, 'launches.log'), 'utf8').slice(before.length).includes('--name omega'), false, 'the launcher was never called for it');
+    const o = find('omega'); assert.equal(o.status, 'running'); assert.equal(o.pipeline.session, 'axf-omega--fake');
+    const hit = gateLog().filter((e) => e.gate === 'duplicate-launch' && e.build === 'omega').pop();
+    assert.ok(hit, 'logged in the server gate log'); assert.equal(hit.by, 'dispatcher');
+  });
+  t('e2e server gate: the tick watchdog reaps duplicate sessions of a build and keeps the oldest', () => {
+    writeFileSync(env.AXF_GATE_SESSIONS, JSON.stringify([{ name: 'axf-omega-031522', cwd: '', created: 300, build: 'omega' }, { name: 'axf-omega--fake', cwd: '', created: 100, build: 'omega' }]));
+    json(pipe('tick', '--json'));
+    assert.deepEqual(JSON.parse(readFileSync(env.AXF_GATE_SESSIONS, 'utf8')).map((x) => x.name), ['axf-omega--fake']);
+    const hit = gateLog().filter((e) => e.gate === 'duplicate-reaped' && e.build === 'omega').pop();
+    assert.ok(hit); assert.match(hit.action, /ended duplicate session axf-omega-031522, kept axf-omega--fake/);
+    writeFileSync(env.AXF_GATE_SESSIONS, '[]');
   });
 }
 

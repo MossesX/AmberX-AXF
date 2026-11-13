@@ -74,6 +74,9 @@ export function mergeBuild(a, b) {
   const have = new Set(out.steps.map((s) => s.uid));
   lose.steps.forEach((s, i) => { if (!have.has(s.uid) && str(s.createdAt) > str(win.updatedAt)) { combined = true; out.steps.splice(Math.min(i, out.steps.length), 0, clone(s)); } });
   for (const k of ['branch', 'pr', 'mergedAt', 'category', 'priority']) if (!str(out[k]) && str(lose[k])) { out[k] = lose[k]; combined = true; }
+  // the run record (who runs it, which session): from the copy with the later launch, never from the newer copy alone
+  const run = mergeRun(win.pipeline, lose.pipeline);
+  if (run) { out.pipeline = run; combined = true; }
   // what Brett said that started it: never blanked or replaced by a copy that has less (build-origin@1)
   if (win.origin || lose.origin) { const og = mergeOrigin(win.origin, lose.origin); if (og) out.origin = og; }
   const key = (n) => `${n.at}|${n.text}`;
@@ -82,6 +85,27 @@ export function mergeBuild(a, b) {
   out.rev = Math.max(num(a.rev), num(b.rev));
   // a status set by hand on the newer copy stays; one derived from steps that came from both copies is derived again
   if (combined) settleStatus(out, out.updatedAt);
+  return out;
+}
+
+/** The run record's fields on build.pipeline: one launch's account, session, slot, model and times, taken together. */
+export const RUN_KEYS = Object.freeze(['account', 'session', 'slot', 'model', 'launchedAt', 'dispatchedAt', 'pickedAt', 'runs', 'tried', 'lastRun']);
+
+/**
+ * The double-launch root cause (Nov 12 2026): a build session's worktree copy of the store was taken before the
+ * dispatcher wrote the launch record (pipeline.session / slot / launchedAt). The session's first step tick made that
+ * copy the newer one, it won wholesale on main, and the launch record was erased: a build running with no session,
+ * which the dispatcher's reaper put back in the Queue and started a second time. The run record now comes from the
+ * copy with the later launch (launchedAt, then runs); on a tie the newer copy keeps it (a run that ended clears it).
+ * Returns the merged pipeline when the losing copy's run record is the later one, else null (keep the winner's).
+ */
+export function mergeRun(winP, loseP) {
+  if (!loseP || typeof loseP !== 'object') return null;
+  const wl = str(winP?.launchedAt); const ll = str(loseP.launchedAt);
+  const later = ll > wl || (ll === wl && num(loseP.runs) > num(winP?.runs));
+  if (!later) return null;
+  const out = clone(winP ?? {});
+  for (const k of RUN_KEYS) if (k in loseP) out[k] = clone(loseP[k]);
   return out;
 }
 

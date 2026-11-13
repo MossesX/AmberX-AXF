@@ -708,3 +708,60 @@ class ConsoleFocus:
 
 
 plugin_services.provide("console-focus@1", ConsoleFocus(), Path(__file__).resolve().parents[1].name)
+# ------------------------------------------------------------------ server gate log (server-gate-log@1, Nov 12 2026)
+
+GATE_CLI = ROOT / "framework" / "cli" / "server-gate.mjs"
+GATES = ("duplicate-launch", "duplicate-reaped", "slot-limit", "dispatch", "main")
+
+
+@router.get("/gate-log")
+def gate_log(gate: str = "", build: str = "", limit: int = 200) -> dict[str, Any]:
+    """The server gate log: every hit of a VPS server gate (duplicate launch refused, duplicate session reaped, slot
+    limit, orchestrator-ID (dispatch) gate, main gate), newest first, with counts per gate. Filter by gate and build."""
+    args = ["log", "--limit", str(max(1, min(int(limit or 200), 2000)))]
+    if gate:
+        if gate not in GATES:
+            raise HTTPException(400, f"gate is one of {', '.join(GATES)}")
+        args += ["--gate", gate]
+    if build:
+        args += ["--build", _build_id(build)]
+    proc = subprocess.run(["node", str(GATE_CLI), *args, "--json"], cwd=ROOT, capture_output=True, text=True, timeout=30)
+    try:
+        res = json.loads(proc.stdout)
+    except json.JSONDecodeError:
+        raise HTTPException(500, (proc.stderr or proc.stdout).strip()[-400:] or "server gate log unreadable")
+    return {"ok": True, **res}
+
+
+PLACE_RE = re.compile(r"^[A-Za-z0-9][A-Za-z0-9._:-]{0,79}$")
+
+
+def _gate(*args: str) -> dict[str, Any]:
+    proc = subprocess.run(["node", str(GATE_CLI), *args, "--json"], cwd=ROOT, capture_output=True, text=True, timeout=30)
+    if proc.returncode == 2:
+        raise HTTPException(400, (proc.stderr or "bad request").strip()[-300:])
+    try:
+        return json.loads(proc.stdout)
+    except json.JSONDecodeError:
+        raise HTTPException(500, (proc.stderr or proc.stdout).strip()[-400:] or "server gate unreadable")
+
+
+@router.get("/gate-banner")
+def gate_banner() -> dict[str, Any]:
+    """Where the Server gate log widget shows: own (its own banner strip, only while it has hits), bar (the app banner
+    bar), off, or the id of an existing banner it is snapped into."""
+    return {"ok": True, **_gate("banner")}
+
+
+@router.post("/gate-banner")
+async def gate_banner_set(request: Request) -> dict[str, Any]:
+    """{place: own | bar | off | <banner id>}: move the Server gate log widget. Every open console follows within seconds."""
+    try:
+        body = await request.json()
+    except (ValueError, UnicodeDecodeError):
+        body = {}
+    place = str((body or {}).get("place") or "").strip() if isinstance(body, dict) else ""
+    if not PLACE_RE.match(place):
+        raise HTTPException(400, "place is own, bar, off or a banner id")
+    who = (brett_click(request) or request.headers.get("x-axhub-session") or "console")[:80]
+    return {"ok": True, **_gate("banner", "--place", place, "--by", who)}
