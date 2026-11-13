@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T06:58:59.592Z",
+ "updatedAt": "2026-11-13T06:59:17.447Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -118238,7 +118238,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T06:57:42.497Z",
-   "updatedAt": "2026-11-13T06:58:53.898Z",
+   "updatedAt": "2026-11-13T06:59:15.736Z",
    "builtAt": "",
    "notes": [
     {
@@ -118264,11 +118264,476 @@
     {
      "text": "Brett: build every step on Fable.",
      "at": "2026-11-13T06:58:53.898Z"
+    },
+    {
+     "text": "Split by Claude into 21 steps (5 Fable).",
+     "at": "2026-11-13T06:59:15.736Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Add the step-dependency contract to builds@1. Steps get an optional `after: [stepId]` list and a `claim: {runId, slot, account, branch, at}` record. Old builds with no `after` stay sequential, so each step waits for the previous one. Update the schema, `framework/core/build-pipeline.mjs` header docs and `_claude/builds/README.md`.",
+     "model": "Fable",
+     "why": "Schema and contract change to the shared builds@1 record that every builds writer reads",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/schemas/builds.json",
+      "framework/core/build-pipeline.mjs",
+      "_claude/builds/README.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwemm4yg01fic4",
+     "createdAt": "2026-11-13T06:59:15.736Z"
+    },
+    {
+     "id": "s2",
+     "text": "Make `framework/cli/builds-store.mjs` keep `after` and `claim` on steps through normBuild and the newer-wins merge. Add a migration that leaves old steps implicitly sequential. Check for dependency cycles and for `after` ids that point at missing steps.",
+     "model": "Fable",
+     "why": "Store migration and merge semantics for new step fields",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/cli/builds-store.mjs",
+      "framework/cli/builds-live.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwemm4yg021510",
+     "createdAt": "2026-11-13T06:59:15.736Z"
+    },
+    {
+     "id": "s3",
+     "text": "Add `readySteps(build)` and `claimStep` / `releaseStep` to `framework/core/build-pipeline.mjs`. A step is ready when everything in its `after` list is done and it has no live claim. Claims are model-aware (the step's pinned model) and expire after a TTL.",
+     "model": "Fable",
+     "why": "Core engine logic for parallel step scheduling",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/build-pipeline.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwemm4yg032sk1",
+     "createdAt": "2026-11-13T06:59:15.736Z"
+    },
+    {
+     "id": "s4",
+     "text": "Add the fill-slots planner `planFill({slots, accounts, running, queue, pending, settings})` to `framework/core/build-pipeline.mjs`. It fills every free slot in this order: ready steps of running builds, then Queue builds by priority, then Pending builds when auto-queue is on. It respects the agent cap, the memory floor, per-account model limits (Fable phases only to accounts with Fable) and budget caps. It returns the list of launches with the reason for each.",
+     "model": "Fable",
+     "why": "Core scheduling contract that the dispatcher, console and CLI all share",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/build-pipeline.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwemm4yg04x3o7",
+     "createdAt": "2026-11-13T06:59:15.736Z"
+    },
+    {
+     "id": "s5",
+     "text": "Write the contract for merging parallel steps back. Each parallel step runs on branch `<build-branch>--s<n>` in its own worktree off the build branch, then merges into the build branch when done. A merge conflict releases the claim and turns the step into a sequential retry with a note. Put the spec in `framework/spec/BUILD-PARALLEL.md` and add fixtures for `readySteps`, claims and `planFill` in `framework/spec/fixtures/build-pipeline-fill.json`.",
+     "model": "Fable",
+     "why": "Cross-session contract plus conformance fixtures",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/spec/BUILD-PARALLEL.md",
+      "framework/spec/fixtures/build-pipeline-fill.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwemm4yg05twz8",
+     "createdAt": "2026-11-13T06:59:15.736Z"
+    },
+    {
+     "id": "s6",
+     "text": "Add the check script `framework/spec/check-build-pipeline-fill.mjs`. It covers `readySteps`, claim expiry, the `planFill` order, account and model limits and cycle refusal against the fixtures. Wire it into CI.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/spec/check-build-pipeline-fill.mjs",
+      ".github/workflows/android.yml"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwemm4yg06gf64",
+     "createdAt": "2026-11-13T06:59:15.736Z"
+    },
+    {
+     "id": "s7",
+     "text": "Make the orchestrator splitter emit `after` dependencies. Change the intake prompt in `pipeline.mjs` and keep the dependencies it returns. Hand-written steps without `after` stay sequential. *Split now* can re-derive dependencies.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwemm4yg076zqt",
+     "createdAt": "2026-11-13T06:59:15.736Z"
+    },
+    {
+     "id": "s8",
+     "text": "Add a `--step <id>` mode to `deploy/claude-headless.sh`. It makes a worktree on the step branch off the build branch, writes a brief with only that step plus Brett's verbatim words, takes the step claim before the run and releases it on exit or crash. It still takes an agent slot through `agent-slots.mjs` and goes through `model-gate.mjs`.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "deploy/claude-headless.sh",
+      "framework/cli/model-gate.mjs",
+      "framework/cli/agent-slots.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwemm4yg08xzf2",
+     "createdAt": "2026-11-13T06:59:15.736Z"
+    },
+    {
+     "id": "s9",
+     "text": "Add the step merge-back: `pipeline.mjs merge-step <build> <step>`. It merges the step branch into the build branch, ticks the step through the store (builds-live), and removes the worktree. On a conflict it releases the claim, adds a note and leaves the step ready for a sequential run.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
+      "framework/cli/builds-live.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwemm4yg09k1i7",
+     "createdAt": "2026-11-13T06:59:15.736Z"
+    },
+    {
+     "id": "s10",
+     "text": "Make the dispatcher `pipeline.mjs tick` use `planFill` and launch every planned item in one tick. Ready steps launch with `claude-headless.sh --step`; builds launch as now. Log each launch with its reason. `tick --dry-run` prints the plan.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwemm4yg0ahggn",
+     "createdAt": "2026-11-13T06:59:15.736Z"
+    },
+    {
+     "id": "s11",
+     "text": "Clear stale claims in `framework/cli/builds-reconcile.mjs`. A claim whose run or process is gone, or whose TTL has passed, is released, and the step goes back to ready. Keep the 3-run crash limit per step.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/cli/builds-reconcile.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwemm4yg0bluct",
+     "createdAt": "2026-11-13T06:59:15.736Z"
+    },
+    {
+     "id": "s12",
+     "text": "Add the owner-only Claude setting `pipeline.autoQueue` (*Auto-queue Pending builds when slots are free*), a `pipeline.fillSlots` on/off switch, and a parallel-steps-per-build cap. Register them in the claude-settings plugin with their level-toolbar levels. Only Brett's console click changes the owner-only ones.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/claude-settings/claude-settings.mjs",
+      "apps/console-web/plugins/claude-settings/settings.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwemm4yg0co32u",
+     "createdAt": "2026-11-13T06:59:15.736Z"
+    },
+    {
+     "id": "s13",
+     "text": "Wire auto-queue into the dispatcher. When `planFill` still has free slots and the Queue is empty, it moves split Pending builds to the Queue in priority order. Each move is recorded on the build (`queuedBy: auto, via: autoQueue`), journalled and logged in the THREADS Live build log. Builds that aren't split yet are never auto-queued.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs",
+      "framework/core/build-pipeline.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwemm4yg0dt59w",
+     "createdAt": "2026-11-13T06:59:15.736Z"
+    },
+    {
+     "id": "s14",
+     "text": "Show who holds each slot in `agent-slots.mjs status` and in the Agent cap settings: build, step, account and model. Free slots show why `planFill` leaves them empty (no ready step, model or account, budget).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/cli/agent-slots.mjs",
+      "apps/console-web/plugins/agent-slots"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwemm4yg0eayvf",
+     "createdAt": "2026-11-13T06:59:15.736Z"
+    },
+    {
+     "id": "s15",
+     "text": "Add slot lanes to the Pipeline tab UI. Show one lane per slot with its claim, ready steps per running build, an auto-queue chip, and a *Fill slots now* button. Use framework controls and tokens only (`TabGroup`, `Button`, `fx-chip`), and put `role=toolbar` with a settings id on the action row.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/ui"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwemm4yg0fuwzv",
+     "createdAt": "2026-11-13T06:59:15.736Z"
+    },
+    {
+     "id": "s16",
+     "text": "Add the API for the new UI. REST: `GET /api/plugins/build-orchestrator/pipeline/fill` (state plus a dry-run plan), `POST .../fill` (fill now), `GET/POST .../autoqueue`, `GET .../slots`. MCP through plugin-commands. CLI: `pipeline.mjs fill [--dry-run]`, `autoqueue`, `slots`. Voice actions: `pipeline.fill`, `pipeline.slots`. Add a `console_show` deep link `builds/pipeline#slots`.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/server",
+      "apps/console-web/plugins/build-orchestrator/plugin.json",
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwemm4yg0gsboz",
+     "createdAt": "2026-11-13T06:59:15.736Z"
+    },
+    {
+     "id": "s17",
+     "text": "Add notifications to `notify.json` (notify-types@1): a build was auto-queued, a step merge conflicted, and slots sit idle while work is waiting. Push them through `axf.notify@1`.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "5 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/notify.json",
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwemm4yg0hd4bh",
+     "createdAt": "2026-11-13T06:59:15.736Z"
+    },
+    {
+     "id": "s18",
+     "text": "Add integration tests that use a fake claude in `HOME/.local/bin`. Cover: two independent steps launch in parallel on 2 free slots; a dependent step waits; a merge-back conflict falls back to a sequential run; auto-queue fills an empty Queue; a stale claim is cleared. Also test the REST/CLI/MCP parity.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/test",
+      "framework/spec/check-build-pipeline-fill.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwemm4yg0ikjsg",
+     "createdAt": "2026-11-13T06:59:15.736Z"
+    },
+    {
+     "id": "s19",
+     "text": "Submit the slot lanes view to UI Review with 3 asset options (ui-choices@1) and desktop and phone screenshots, using `review.mjs submit --choices`. Put the option assets in `plugins/build-orchestrator/assets/`.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/assets",
+      "apps/console-web/plugins/ui-review/review.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwemm4yg0j7pjf",
+     "createdAt": "2026-11-13T06:59:15.736Z"
+    },
+    {
+     "id": "s20",
+     "text": "Update the docs and rules. Amend the pipeline rule in `_claude/rules/RULES.md`: parallel steps, filling every slot, and auto-queue only while Brett's owner setting is on. Update the plugin README, help, the glossary descriptions, and the Pipeline section of CLAUDE.md.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/rules/RULES.md",
+      "apps/console-web/plugins/build-orchestrator/README.md",
+      "CLAUDE.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwemm4yg0k46m8",
+     "createdAt": "2026-11-13T06:59:15.736Z"
+    },
+    {
+     "id": "s21",
+     "text": "Wrap up. Run the checks: check-build-pipeline-fill, check-builds-store, `builds-store verify`, the plugin tests, check-theme, check-controls, check-toolbars and tracker `--check`. Write `_claude/builds/reports/always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu.md`, including how each feature is reached through REST, MCP, CLI and voice. Add the THREADS.md row, open the PR and link it with `builds-live.mjs link`.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwemm4yg0lm62y",
+     "createdAt": "2026-11-13T06:59:15.736Z"
+    }
+   ]
   }
  ]
 }
