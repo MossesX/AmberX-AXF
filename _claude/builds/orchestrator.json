@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T19:52:02.832Z",
+ "updatedAt": "2026-11-13T19:52:20.703Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -131381,7 +131381,7 @@
    "title": "Skin config panel: merge main and land",
    "category": "",
    "detail": "Branch claude/skin-configuration-panel-before-ai-makes (800 behind) clashed with main in 10 files: .github/workflows/android.yml, settings libs (framework/libs/settings plus the amberx-droid, axhub-web, console-web and molly copies), the theme-manager plugin.json and web/index.tsx, framework/cli/build-engine.mjs and framework/spec/PORTING.md. Merge origin/main and keep main's newer code plus this branch's skin configuration panel (Brett picks what the AI may change before it makes a skin). Edit framework first and re-bake the app copies. Run tests, push, land on main.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -131389,7 +131389,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T19:47:38.941Z",
-   "updatedAt": "2026-11-13T19:49:49.376Z",
+   "updatedAt": "2026-11-13T19:51:53.669Z",
    "builtAt": "",
    "notes": [
     {
@@ -131407,6 +131407,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-skin-config-panel-merge-main-and-land--joey, own login copy)",
      "at": "2026-11-13T19:49:49.376Z"
+    },
+    {
+     "text": "Session on mossesx-max- ended (exit 3) with 3 steps left: back in the Queue (run 1).",
+     "at": "2026-11-13T19:51:53.669Z"
     }
    ],
    "approvals": [],
@@ -131605,9 +131609,14 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T19:49:22.438Z",
-   "updatedAt": "2026-11-13T19:49:23.715Z",
+   "updatedAt": "2026-11-13T19:51:51.749Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"89c39c0e-3ed6-4f0a-91fa-32fcbf885271\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-13T19:51:51.749Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -131622,7 +131631,163 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Cool animations for skins, all token-driven (duration, easing, intensity tokens) and respecting reduced-motion:",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfe7phh09keem",
+     "createdAt": "2026-11-13T19:51:51.749Z"
+    },
+    {
+     "id": "s2",
+     "text": "Skins gallery (Skins plugin and the built-in skins panel): each skin card shows a row of animated colour swatches that ripple/wave on hover or tap.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfe7phh0abuec",
+     "createdAt": "2026-11-13T19:51:51.749Z"
+    },
+    {
+     "id": "s3",
+     "text": "Switching skins: the new colours sweep or ripple across the screen from where you tapped, instead of snapping.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfe7phh0bo42n",
+     "createdAt": "2026-11-13T19:51:51.749Z"
+    },
+    {
+     "id": "s4",
+     "text": "Colour pickers in token editors, UI Manager and Quick settings: swatches pop and fan out into their shades when picked, with a smooth morph to the new colour.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfe7phh0c0l55",
+     "createdAt": "2026-11-13T19:51:51.749Z"
+    },
+    {
+     "id": "s5",
+     "text": "Animations are assets, so they're swappable and per-skin, with an Animations section in settings (on/off per animation, speed).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfe7phh0d88b5",
+     "createdAt": "2026-11-13T19:51:51.749Z"
+    },
+    {
+     "id": "s6",
+     "text": "Full API: REST/MCP/CLI/voice. Tests, help, Shipped features.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfe7phh0e7xkz",
+     "createdAt": "2026-11-13T19:51:51.749Z"
+    },
+    {
+     "id": "s7",
+     "text": "where can I put some cool animations, like color swatches; make a separate build right now",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfe7phh0fbrcx",
+     "createdAt": "2026-11-13T19:51:51.749Z"
+    },
+    {
+     "id": "s8",
+     "text": "Tests green, report _claude/builds/reports/skin-animations-animated-colour-swatches.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/skin-animations-animated-colour-swatches.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfe7phh0ggxdn",
+     "createdAt": "2026-11-13T19:51:51.749Z"
+    }
+   ]
   },
   {
    "id": "skin-animations-swatches-skin-switch",
