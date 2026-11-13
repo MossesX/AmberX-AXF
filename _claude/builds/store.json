@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4580,
- "updatedAt": "2026-11-13T18:03:06.142Z",
+ "rev": 4581,
+ "updatedAt": "2026-11-13T18:03:21.514Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -196512,16 +196512,22 @@
    "title": "All settings interfaces open in a floating dialog by default",
    "category": "",
    "detail": "Every settings interface (console Settings sections, plugin settings, chrome settings for tab groups/toolbars/banners/nav/menu bar, and any future one) opens by default in a floating dialog over the current screen instead of navigating to the Settings page. Make it a framework default so new settings interfaces get it automatically (template + check that fails if a settings interface navigates away by default). Keep a per-user option to open it as a page instead, and a 'pop out to page' button in the dialog. Dialogs use the glass/transparency tokens (opacityGlass, blur). Deep links and voice/MCP/API still work. Tests, help entry, Shipped features.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P1",
    "createdAt": "2026-11-13T18:03:04.047Z",
-   "updatedAt": "2026-11-13T18:03:04.047Z",
+   "updatedAt": "2026-11-13T18:03:09.123Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T18:03:09.123Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -196536,6 +196542,28 @@
     "from": "",
     "addenda": []
    },
+   "pipeline": {
+    "queuedAt": "2026-11-13T18:03:06.496Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
    "steps": [],
    "profiles": [
     "all"
@@ -196545,7 +196573,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
