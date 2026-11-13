@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3982,
- "updatedAt": "2026-11-13T03:36:51.664Z",
+ "rev": 3983,
+ "updatedAt": "2026-11-13T03:37:01.679Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -176289,7 +176289,7 @@
    "branch": "claude/change-to-move-amberx-web-app-into-the-console-amberx-andr-pr-528-brett-do",
    "pr": "",
    "createdAt": "2026-11-13T00:39:39.304Z",
-   "updatedAt": "2026-11-13T03:32:06.900Z",
+   "updatedAt": "2026-11-13T03:36:58.964Z",
    "builtAt": "",
    "notes": [
     {
@@ -176399,12 +176399,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T03:36:58.964Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T00:41:27.700Z",
-     "updatedAt": "2026-11-13T00:41:27.700Z"
+     "updatedAt": "2026-11-13T03:36:59.162Z"
     },
     {
      "id": "s3",
@@ -176484,7 +176484,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
