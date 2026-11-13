@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T19:37:55.350Z",
+ "updatedAt": "2026-11-13T19:38:36.899Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -131190,12 +131190,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T19:37:14.557Z",
-   "updatedAt": "2026-11-13T19:37:17.272Z",
+   "updatedAt": "2026-11-13T19:38:35.332Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-13T19:37:17.272Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"ea667ee6-2076-42f6-ad21-216fdcee3cda\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-13T19:38:35.332Z"
     }
    ],
    "approvals": [],
@@ -131212,7 +131216,68 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Branch claude/per-instance-settings-window-picker clashed with main in apps/console-web/axf.lock.json, apps/console-web/src/axf/react/components/Overlays.tsx and framework/react/components/Overlays.tsx (merge aborted, main untouched). Merge origin/main and keep both sides' Overlays changes; edit framework first and re-bake the console copy, then regenerate axf.lock.json. Brett: every instance of every tab group, application menu, navigation menu, toolbar and dialog gets its own settings interface (including its own transparency) that changes only that one. Run tests, push, land on main.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfdqmys01hugg",
+     "createdAt": "2026-11-13T19:38:35.332Z"
+    },
+    {
+     "id": "s2",
+     "text": "I definitely need that; every tab group, application menu, navigation menu, toolbar can have its own settings interface that changes only it, and they all have transparency",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfdqmys02ibv8",
+     "createdAt": "2026-11-13T19:38:35.332Z"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/per-instance-settings-picker-merge-main.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/per-instance-settings-picker-merge-main.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfdqmys03xi4y",
+     "createdAt": "2026-11-13T19:38:35.332Z"
+    }
+   ]
   }
  ]
 }
