@@ -387,3 +387,10 @@ Base: origin/main at 9bfb04d0a.
 - apps/console-web/src/axf/react/components/Banner.tsx
 - … and 74 more
 
+## Hold (s2)
+
+The merge queue has no pause of its own short of switching it off (Brett's click), so each of the 13 builds is held by
+hand in auto-land: `land.mjs hold <build> --why "Combine merge queue …"` (land-control.json `holds`). The queue reads
+that hold as `landHeld` and takes the PR out of the line-up at its next round ("held by hand in auto-land"), so none of
+them can land one at a time. Nothing is removed from the queue yet. #554, #556 and #571 keep running on their own.
+Released in s18 (`land.mjs release <build>`) once the combined PR replaces them.
