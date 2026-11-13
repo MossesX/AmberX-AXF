@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4179,
- "updatedAt": "2026-11-13T09:36:48.563Z",
+ "rev": 4180,
+ "updatedAt": "2026-11-13T09:37:05.060Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -178175,12 +178175,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T09:32:50.225Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-merges-are-only-merged-once-github-confirms-ever--rhonda",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-13T09:33:21.626Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T06:25:16.456Z",
@@ -178192,7 +178192,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-13T09:33:21.626Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -178201,7 +178201,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-13T09:33:21.626Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -178281,7 +178281,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-13T06:25:16.456Z",
-     "updatedAt": "2026-11-13T09:36:42.618Z"
+     "updatedAt": "2026-11-13T09:37:03.193Z"
     },
     {
      "id": "s4",
@@ -178546,7 +178546,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
