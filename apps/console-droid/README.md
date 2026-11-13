@@ -12,6 +12,10 @@ Native code exists only where Android requires it:
 | Native piece | Class |
 | --- | --- |
 | WebView host, deep links, outside links to the browser, offline page | `ConsoleActivity`, `ShellRules` |
+| Floating toolbar over every app (draw-over-apps): expands to the full-screen console with the toolbar docked top-left, approval bar with an "Open approvals" link | `OverlayService`, `OverlayRules` |
+| Safe area: status bar, display cutout, navigation bar and keyboard from WindowInsets, set on the page as `--fx-safe-*` | `Insets`, `InsetsCss` |
+| `window.axfNativeHost` bridge (the console wraps it as `window.axfNative` and `native.*` actions) | `NativeBridge` |
+| Notifications, permissions (mic, notifications, overlay), wake, native look from the console's `--fx-*` tokens | `Notifier`, `Perms`, `Wake`, `ShellTheme` |
 | Web content updates: a newer console deploy reloads the page off screen, or shows the console's reload bar on screen (`native.update:<check\|reload\|state>`) | `ContentUpdate`, `UpdateRules` |
 | axHub's `amberx` device service: `amberx.open_url` (`browser.open`, `open-url@1`) over AXPP, with the WebView's hub sign-in; `?axf-overlay=expand\|collapse` verbs, pages open in the expanded overlay (overlay off: the app) | `DeviceLink`, `DeviceRules` |
 
