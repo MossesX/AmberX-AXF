@@ -4,7 +4,7 @@
  * a roll as a standard asset (asset@1) and manage saved ones. Works only with the existing asset types and engines.
  */
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
-import { Button, Chip, Icon, IconButton, Switch, useAxfState, useEditorSync, useRuntime } from '@console/axf/react';
+import { Button, Chip, Icon, IconButton, Switch, SwatchFan, useAxfState, useEditorSync, useRuntime } from '@console/axf/react';
 import { assetTypeSpecs, hideable } from '@console/axf/core';
 import type { AssetType, AxfRuntime } from '@console/axf/core';
 import { PRESETS, allLeafIds, buildTree, getAt, leaves, readability, rollType, setAt, toggle, triState, type Json, type Node, type TypeSpec } from './rollEngine';
@@ -246,7 +246,7 @@ function ValueEditor({ node, value, onChange }: { node: Node; value: Json; onCha
       )}
       {f.kind === 'color' && (
         <div className={`${P}__bar`}>
-          {hex && <input type="color" value={hex} onChange={(e) => commit(e.target.value)} aria-label={`${node.label} colour`} />}
+          {hex && <SwatchFan value={hex} onChange={commit} label={`${node.label} colour`} />}
           <input className="fx-input fx-mono fx-grow" value={String(v ?? '')} onChange={(e) => setV(e.target.value)} onBlur={() => commit(String(v))} />
         </div>
       )}

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, Chip, ChoiceGrid, Container, Icon, LibraryParamField, Markdown, Note, Section, SelectField, Slider, Switch, TextField, useAsset, useAxfState, useRuntime, useWindowManager, useWindowSpec, type TabRenderers } from '../axf/react';
+import { Button, Chip, ChoiceGrid, Container, Icon, LibraryParamField, Markdown, Note, Section, SelectField, Slider, Switch, SwatchFan, TextField, useAsset, useAxfState, useRuntime, useWindowManager, useWindowSpec, type TabRenderers } from '../axf/react';
 import type { AssetType, AssetEnvelope } from '../axf/core';
 import { useStore } from '../store';
 import { UI_LIBRARIES } from './Libraries';
@@ -161,7 +161,7 @@ function TokenRow({ token, what, available }: { token: string; what: string; ava
     <div className="cx-row" title={`${what} — color-theme token "${token}" (${value || 'derived'})`}>
       <span className="cx-swatch" style={{ background: value ? `var(--fx-${token.replace(/[A-Z]/g, (m) => '-' + m.toLowerCase())})` : 'transparent' }} />
       <span className="fx-grow">{what} <span className="fx-muted fx-mono fx-small">{token}</span></span>
-      {available && value ? <input type="color" value={/^#[0-9a-f]{6}$/i.test(value) ? value : '#888888' /* theme-ok: data value */} onChange={(e) => edit('color-theme', ['tokens', token], e.target.value)} /> : <span className="fx-muted fx-small">{value ? '—' : 'derived'}</span>}
+      {available && value ? <SwatchFan label={`${what} colour`} value={/^#[0-9a-f]{6}$/i.test(value) ? value : '#888888' /* theme-ok: data value */} onChange={(v) => edit('color-theme', ['tokens', token], v)} /> : <span className="fx-muted fx-small">{value ? '—' : 'derived'}</span>}
     </div>
   );
 }

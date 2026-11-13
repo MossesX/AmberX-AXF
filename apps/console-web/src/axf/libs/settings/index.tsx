@@ -22,7 +22,7 @@ import { TabGroup } from '../../react/components/TabGroup';
 import { LEVEL_EDITOR_ACTIONS, LEVEL_EDITOR_CTX, LEVEL_EDITOR_DIALOG, LEVELS_CSS, LevelEditor, levelEditorAct } from './levels';
 import { FollowHubSwitch, SKIN_WHERE_CSS, SKIN_WHERE_DIALOG, SkinWhere, SkinWhereDialog } from './skinwhere';
 import { SkinScope } from '../../react/components/SkinScope';
-import { Swatches } from '../../react/components/Swatches';
+import { SwatchFan, Swatches } from '../../react/components/Swatches';
 import { consoleFieldValue } from '../../core/engines/console-commands.mjs';
 
 export const SETTINGS_LIBRARY_ID = 'ai.amberx.axf.settings';
@@ -164,7 +164,7 @@ function SettingControl({ spec, off = false }: { spec: SettingSpec; off?: boolea
       control = <input className="axf-settings__field" type={spec.kind === 'secret' ? 'password' : 'text'} autoComplete="off" value={typeof value === 'string' ? value : ''} disabled={locked} onChange={(e) => set(e.target.value)} />;
       break;
     case 'color':
-      control = <input type="color" value={typeof value === 'string' ? value : '#000000' /* theme-ok: data value, not styling */} disabled={locked} onChange={(e) => set(e.target.value)} />;
+      control = <SwatchFan label={spec.label} value={typeof value === 'string' && /^#[0-9a-f]{6}$/i.test(value) ? value : '#000000' /* theme-ok: data value, not styling */} disabled={locked} onChange={(v) => set(v)} />;
       break;
     case 'choice':
       // Up to three options read better as a three-way switch (radio group) than a drop-down.

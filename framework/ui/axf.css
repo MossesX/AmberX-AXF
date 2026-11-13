@@ -1124,7 +1124,7 @@ textarea.fx-input { resize: vertical; white-space: pre; }
 /* a plugin UI root (plugin theme override, libs/plugintheme): carries data-axf-plugin, adds no box of its own */
 .fx-plugin-scope { display: contents; }
 .fx-colorfield__row { gap: var(--fx-dens-gap-md); align-items: center; flex-wrap: nowrap; }
-.fx-colorfield__pick { flex: none; width: calc(var(--fx-row-h) * 1.2); height: var(--fx-row-h); padding: var(--fx-dens-gap-xs); cursor: pointer; }
+.fx-colorfield__pick { flex: none; width: calc(var(--fx-row-h) * 1.2); height: var(--fx-row-h); cursor: pointer; }
 .fx-colorfield__row .fx-field__input { flex: 1; min-width: 0; }
 .fx-check:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: 2px; }
 .fx-switchrow__hint { color: var(--fx-muted); font-size: var(--fx-type-root-sm); }
