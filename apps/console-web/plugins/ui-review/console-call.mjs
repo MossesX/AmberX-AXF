@@ -9,7 +9,14 @@
  *   await consoleCall('items?status=open')       // GET
  *
  * Failures throw an Error with `.code` (`no-token` | `unauthorized` | `not-api` | `unreachable` | `http`) and `.status`.
+ *
+ * reported(call, { what, markerDir }) wraps a call so a failure is never silent: it writes `<markerDir>/submit-failed.json`
+ * (the console's ui-review-stuck health check reads it from build worktrees: red systems check banner item + one phone
+ * alert) and, when the console still takes the token, raises a console alert at once (POST /api/alerts, key
+ * ui-review:submit-failed:<session>). A later success removes the marker.
  */
+import { mkdirSync, rmSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
 
 export const PREFIX = '/api/plugins/ui-review/';
 
@@ -47,4 +54,40 @@ export async function consoleCall(path, body, { env = process.env, fetch: f = gl
   }
   if (!r.ok) throw fail('http', `console ${r.status}: ${typeof j.detail === 'string' ? j.detail : r.statusText || 'failed'}`, r.status);
   return j;
+}
+
+export const MARKER = 'submit-failed.json';
+
+/** Raise the failure as a console alert (best effort: a refused or missing token can't, the marker covers that). */
+export async function raiseAlert(err, what, { env = process.env, fetch: f = globalThis.fetch } = {}) {
+  const { url, token } = consoleEnv(env);
+  if (!url || !token || err?.code === 'unauthorized' || err?.code === 'no-token') return false;
+  const who = String(env.AXF_BUILD_ID || env.AXF_SESSION || 'session').toLowerCase().replace(/[^a-z0-9._-]+/g, '-').slice(0, 80);
+  try {
+    const r = await f(`${url}/api/alerts`, {
+      method: 'POST', redirect: 'manual', signal: AbortSignal.timeout(15_000),
+      headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ source: 'ui-review', severity: 'error', key: `ui-review:submit-failed:${who}`, link: 'view:ui-review',
+        title: `UI Review ${what || 'submit'} failed (${who})`.slice(0, 120), body: String(err?.message ?? err).slice(0, 900) }),
+    });
+    return r.ok;
+  } catch { return false; }
+}
+
+/** Run a console call; on failure leave the marker + raise the alert, then rethrow. On success clear the marker. */
+export async function reported(call, { what = 'submit', markerDir = '', env = process.env, fetch: f = globalThis.fetch } = {}) {
+  try {
+    const out = await call();
+    if (markerDir) rmSync(join(markerDir, MARKER), { force: true });
+    return out;
+  } catch (e) {
+    if (markerDir) {
+      try {
+        mkdirSync(markerDir, { recursive: true });
+        writeFileSync(join(markerDir, MARKER), JSON.stringify({ at: new Date().toISOString(), what, code: e?.code || 'error', reason: String(e?.message ?? e).slice(0, 300), build: env.AXF_BUILD_ID || '' }, null, 2) + '\n');
+      } catch { /* the alert below still goes */ }
+    }
+    await raiseAlert(e, what, { env, fetch: f });
+    throw e;
+  }
 }

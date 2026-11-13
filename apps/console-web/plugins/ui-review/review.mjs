@@ -34,7 +34,7 @@
 import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, renameSync, statSync, writeFileSync } from 'node:fs';
 import { basename, dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { consoleCall as remoteCall } from './console-call.mjs';
+import { consoleCall as remoteCall, reported } from './console-call.mjs';
 import * as core from './web/review-core.mjs';
 import * as cf from './web/conform.mjs';
 import * as gc from './web/groups-core.mjs';
@@ -132,7 +132,7 @@ export function decideLocal(ids, decision, { comment = '', by = 'brett' } = {}) 
 }
 
 /** A linked git worktree has a .git file (not a folder) at its root. */
-const isWorktree = () => { try { return statSync(join(ROOT, '.git')).isFile(); } catch { return false; } };
+export const isWorktree = () => { try { return statSync(join(ROOT, '.git')).isFile(); } catch { return false; } };
 
 /* -------------------------------------------------------------- choices (ui-choices@1) */
 
@@ -159,7 +159,8 @@ function writeOptionAssets({ choices, data }) {
 }
 
 /* -------------------------------------------------------------- console API (--console) */
-const consoleCall = (path, body) => remoteCall(path, body);
+// writes (POST) from a build worktree that fail leave a marker the console's ui-review-stuck check reads, and raise an alert
+const consoleCall = (path, body) => (body ? reported(() => remoteCall(path, body), { what: `submit (${path.split('?')[0]})`, markerDir: isWorktree() ? dataDir() : '' }) : remoteCall(path, body));
 
 /* -------------------------------------------------------------- CLI */
 export function parseArgs(argv) {

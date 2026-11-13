@@ -541,6 +541,10 @@ secret="$(umask 077; mktemp "${TMPDIR:-/tmp}/axf-headless-env-XXXXXX")"
   if [[ -z "$ctok" && -r "$CONSOLE_ENV" ]]; then ctok="$(sed -n 's/^AXF_TOKEN=//p' "$CONSOLE_ENV" | head -1 | tr -d '"'"'"'\r')"; fi
   [[ -n "$ctok" ]] && printf 'export AXF_TOKEN=%q\n' "$ctok"
 } > "$secret"
+if [[ -z "$ctok" ]]; then   # said once, where Brett sees it; the console's ui-review-stuck check catches what it leaves behind
+  echo "warning: no console token (AXF_TOKEN, or $CONSOLE_ENV): UI Review submits from this build stay in its worktree" >&2
+  build_note "No console token for this build (AXF_TOKEN / console env file): UI Review submits will stay in the worktree until it is fixed."
+fi
 tmux new-session -d -s "$session" -x 200 -y 50 -c "$(pwd)" "${envs[@]}" \
   bash "$HERE/claude-headless.sh" --inner --name "$slug" --agent "$agent" ${account:+--account "$account"} --envfile "$secret" --brief "$brief" --log "$log" ${slot:+--slot "$slot"} ${priority:+--priority "$priority"} -- "$@"
 tmux set-option -t "$session" history-limit 50000 >/dev/null 2>&1 || true

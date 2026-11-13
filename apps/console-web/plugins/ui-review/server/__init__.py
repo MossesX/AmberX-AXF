@@ -47,6 +47,7 @@ from . import screenshots as shots_mod
 from . import choices as choices_mod
 from . import predicted as predicted_mod
 from . import notify
+from . import stuck as stuck_mod
 
 router = APIRouter()
 FOLDER = "ui-review"
@@ -432,6 +433,22 @@ def health_probe() -> dict:
             "details": [f"{b['id']}: {b['src']}" for b in a["broken"][:40]]}
 
 
+STUCK_ID = "ui-review-stuck"
+
+
+def stuck_found() -> list[dict]:
+    """Build worktrees holding UI Review items / screenshots the console doesn't have, or a failed-submit marker."""
+    doc = _read(data_dir() / "items.json", None)
+    known_items = {str(it.get("id")) for it in (doc.get("items") or [] if isinstance(doc, dict) else []) if isinstance(it, dict)}
+    idx = _read(data_dir() / "screenshots" / "index.json", None)
+    known_shots = {str(s.get("id")) for s in (idx.get("shots") or [] if isinstance(idx, dict) else []) if isinstance(s, dict)}
+    return stuck_mod.scan(stuck_mod.roots(), known_items, known_shots)
+
+
+def stuck_probe() -> dict:
+    return stuck_mod.probe(stuck_found())
+
+
 def ensure_health() -> bool:
     """Registers the check on the systems check once it provides axf.health@1 (plugins load in any order)."""
     global _health_done
@@ -446,6 +463,12 @@ def ensure_health() -> bool:
                       "breaks": "Brett sees UI Review items without their pictures and can't approve them.",
                       "instructions": ["Open UI Review: a broken picture shows 'Shot missing' with Re-capture.",
                                        "On the VPS: `curl -H 'Authorization: Bearer …' …/api/plugins/ui-review/audit` lists them."]}, FOLDER)
+        reg.register({"id": STUCK_ID, "label": "Build screenshots reach UI Review", "service": "console", "order": 63, "severity": "error",
+                      "interval": 60, "run": stuck_probe,
+                      "breaks": "A build's UI Review items and screenshots stay in its worktree: Brett never sees them and they are deleted with it.",
+                      "instructions": ["On the VPS, in the repo: `node apps/console-web/plugins/ui-review/review.mjs resubmit --console` sends every stuck item and screenshot to UI Review.",
+                                       "`GET /api/plugins/ui-review/stuck` lists them; a failed submit names its reason (missing or refused console token, wrong console URL).",
+                                       "Builds get the console token from deploy/claude-headless.sh (the console env file); a reset token reaches the next build."]}, FOLDER)
     except Exception:  # noqa: BLE001 — UI Review works without its health item
         return False
     _health_done = True
@@ -473,6 +496,13 @@ async def _json(request: Request, limit: int = 65536) -> dict:
     if not isinstance(body, dict):
         raise HTTPException(400, "send a JSON object")
     return body
+
+
+@router.get("/stuck")
+def get_stuck() -> dict:
+    """UI Review work stuck in build worktrees (what the ui-review-stuck health check reports)."""
+    found = stuck_found()
+    return {"ok": True, "found": found, "probe": stuck_mod.probe(found)}
 
 
 @router.get("/kinds")

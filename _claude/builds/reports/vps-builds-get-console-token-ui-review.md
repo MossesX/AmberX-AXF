@@ -44,3 +44,16 @@ Yes. Headless builds on the VPS start without `AXF_TOKEN` and `AXF_CONSOLE_URL`:
 - `review.mjs` in a build worktree with the console address + token now posts to the console by default
   (as `axf shot` already did); `--local` keeps the old behaviour.
 - Checked against the live console: `review.mjs state --console` answers; a wrong token says 401 plainly.
+
+## s4 Failures raise a banner alert
+
+- New health check `ui-review-stuck` ("Build screenshots reach UI Review", every 60 s, severity error) in the
+  UI Review plugin (`server/stuck.py`). It scans build worktrees (`/hostfs/axf-builds` in the console container =
+  the host's `/root/axf-builds`; `AXF_UI_REVIEW_STUCK_ROOTS` overrides) for UI Review items and screenshots the
+  console doesn't have and for failed-submit markers. Red = systems check banner item + one phone alert
+  (`system:ui-review-stuck`), the systems check's normal path. `GET /api/plugins/ui-review/stuck` lists them.
+- `console-call.mjs` `reported()`: a failed write from a build worktree writes `submit-failed.json` in its UI
+  Review data folder (read by the check) and, when the console still takes the token, raises a console alert at
+  once (`POST /api/alerts`, source `ui-review`, key `ui-review:submit-failed:<build>`). A later success clears it.
+- The launcher warns and leaves a build note when it has no console token to hand over.
+- First scan of the VPS: 6 review items and 4 screenshots stuck in 6 build worktrees.
