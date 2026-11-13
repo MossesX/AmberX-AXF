@@ -13,7 +13,7 @@ export interface VoiceIntent {
   options?: { expand?: boolean; select?: boolean };
   /** search inside this address first (a settings tab) */
   within?: string;
-  /** read the screen back (state with no address → state.screen) */
+  /** read the screen back (state with no address → state.report) */
   screen?: boolean;
   /** a deciding press (approve, veto, deny, reject, sign off): only Brett's own signed-in session may run it */
   decision?: string;

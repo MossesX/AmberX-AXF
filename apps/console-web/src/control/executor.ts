@@ -119,8 +119,8 @@ function withState(rt: AxfRuntime, res: ConsoleControlResult): ControlAnswer {
     return { ...res, state: { ...live, ...(own as Record<string, unknown>), target: own } } as unknown as ControlAnswer;
   }
   // `state` with no address: the screen read back (fieldControl.ts screenReport) rides along with the snapshot
-  const screen = res.ok && own && typeof own === 'object' ? (own as { screen?: unknown }).screen : undefined;
-  return { ...res, state: { ...live, ...(screen ? { screen } : {}) } } as ControlAnswer;
+  const report = res.ok && own && typeof own === 'object' ? (own as { report?: unknown }).report : undefined;
+  return { ...res, state: { ...live, ...(report ? { report } : {}) } } as ControlAnswer;
 }
 
 /** A short line for a toast or a spoken answer. */

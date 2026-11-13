@@ -133,16 +133,22 @@ export class ControlRegistry {
   refreshNow(): void { this.refresh(); }
   private refresh(): void { for (const fn of this.refreshers) { try { fn(); } catch (e) { this.rt.terminal.warn('control', `refresh failed: ${e instanceof Error ? e.message : String(e)}`); } } }
 
-  /** What is on screen (fieldControl.ts `screenReport`): `state` with no address answers it as `screen`. */
+  /** What is on screen (fieldControl.ts `screenReport`): `state` with no address answers it as `report`. */
   private screenReporter: (() => unknown) | null = null;
   setScreenReporter(fn: (() => unknown) | null): void { this.screenReporter = fn; }
 
-  /** The elements registered (not discovered) targets point at right now: discovery never doubles them. */
+  /** The elements registered (not discovered) leaf controls point at right now: discovery never doubles them. Containers
+   *  (views, panels, grids, rows, scroll panes) don't count: what is inside them is still discovered. */
   ownedElements(): Set<Element> {
     const out = new Set<Element>();
+    // a setting owns its row (the row's switch / input is that setting); a button, function or tab owns only a control
+    // element (a plugin's or a placed dialog's target points at a whole section: what is inside is still discovered)
+    const CONTROL = 'button, [role=button], [role=tab], [role^=menuitem], [role=switch], [role=checkbox], [role=radio], a[href], input, select, textarea';
     for (const e of this.entries.values()) {
       if (e.auto || e.def.virtual) continue;
-      try { const el = e.def.element?.(); if (el) out.add(el); } catch { /* a getter may run before render */ }
+      const k = e.def.kind;
+      if (k !== 'setting' && k !== 'button' && k !== 'function' && k !== 'tab' && k !== 'subtab') continue;
+      try { const el = e.def.element?.(); if (el && (k === 'setting' || el.matches(CONTROL))) out.add(el); } catch { /* a getter may run before render */ }
     }
     for (const e of this.derivedSettings()) { try { const el = e.def.element?.(); if (el) out.add(el); } catch { /* same */ } }
     return out;
@@ -281,7 +287,7 @@ export class ControlRegistry {
       const snap = this.snapshot();
       let screen: unknown;
       if (this.screenReporter) { try { screen = this.screenReporter(); } catch (e) { this.rt.terminal.warn('control', `screen report failed: ${e instanceof Error ? e.message : String(e)}`); } }
-      return consoleControlResult(cmd, { state: { view: snap.view, targets: snap.targets.length, ...(snap.scroll ? { scroll: snap.scroll } : {}), ...(screen ? { screen } : {}) } });
+      return consoleControlResult(cmd, { state: { view: snap.view, targets: snap.targets.length, ...(snap.scroll ? { scroll: snap.scroll } : {}), ...(screen ? { report: screen } : {}) } });
     }
     const { entry, target, address } = this.resolveEntry(cmd.address, 'state');
     const d = entry.def;

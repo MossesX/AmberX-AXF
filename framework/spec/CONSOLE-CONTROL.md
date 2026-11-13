@@ -161,7 +161,7 @@ re-discovers the surface before every command, so a wizard's next page is addres
 
 ### Reading the screen back
 
-`state` with no address answers `state.screen` (`ScreenReport`): `view`, `title`, `dialog { id, title, address } | null`,
+`state` with no address answers `state.report` (`ScreenReport`; `state.screen` stays the view id): `view`, `title`, `dialog { id, title, address } | null`,
 `surface`, `headings`, `fields [{ address, id, label, type, value, required, disabled, options?, placeholder?, error? }]`,
 `buttons [{ address, id, label, role, disabled, selected? }]` and `text` (the surface's visible text, 1200 characters at most), so
 a voice assistant can say what is open and check what it typed before it presses Create.
@@ -181,7 +181,7 @@ connector is the gap (report of the build).
 
 `console-control-voice.mjs` (Python twin `console_control.voice_intent`) adds: "type <text> into <field>", "enter <text> in
 <field>", "fill <field> with <text>" (the text keeps its case: matched on the raw words), "what's on screen" / "read the screen" /
-"where am I" / "what can I press" (`{ verb: state, screen: true }`, answered with `screenLine`), "approve [<x>]" / "veto it" /
+"where am I" / "what can I press" (`{ verb: state, screen: true }`, answered with `screenLine` from `state.report`), "approve [<x>]" / "veto it" /
 "deny" / "reject <x>" / "sign off" (`decision`), and one-word presses (submit, next, create, save, continue, finish, done, confirm,
 cancel, back, close, ok, apply, send, start, retry). Fixture rows in `spec/fixtures/console-control-voice.json`.
 

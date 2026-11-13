@@ -2294,7 +2294,7 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
       noConsole: voiceReply({ verb: 'open' }, { ok: false, code: 'unavailable', message: 'x', openUrl: 'https://c/' }),
       failed: voiceReply({ verb: 'press' }, { ok: false, code: 'denied', message: 'needs Brett' }),
       decided: voiceReply({ verb: 'press', decision: 'approve' }, { ok: true }, 'Approve'),
-      screen: voiceReply({ verb: 'state', screen: true }, { ok: true, state: { screen: { view: 'projects', title: 'Projects', dialog: { id: 'new-project', title: 'New project', address: 'view:projects/panel:dialog:new-project' }, fields: [{ label: 'Name', required: true, value: '' }, { label: 'Template', value: 'blank' }], buttons: [{ label: 'Create' }, { label: 'Cancel' }, { label: 'Off', disabled: true }] } } }),
+      screen: voiceReply({ verb: 'state', screen: true }, { ok: true, state: { report: { view: 'projects', title: 'Projects', dialog: { id: 'new-project', title: 'New project', address: 'view:projects/panel:dialog:new-project' }, fields: [{ label: 'Name', required: true, value: '' }, { label: 'Template', value: 'blank' }], buttons: [{ label: 'Create' }, { label: 'Cancel' }, { label: 'Off', disabled: true }] } } }),
     },
   });
 }

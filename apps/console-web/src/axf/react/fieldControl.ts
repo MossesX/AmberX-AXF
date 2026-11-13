@@ -15,7 +15,7 @@
  * The kinds are the contract's own (`setting` = a control with a value, `button` = a control that does one thing, `panel`
  * = the dialog), so no transport changes: `list` lists them, `state` reads them (type, value, required, options),
  * `set` types / picks / toggles, `press` clicks, `focus` scrolls to and highlights. `screenReport()` is the read-back
- * (what is on screen: view, dialog, fields with values, buttons, tabs, headings) that `state` with no address answers.
+ * (what is on screen: view, dialog, fields with values, buttons, tabs, headings) that `state` with no address answers (`state.report`).
  *
  * Values are typed the way a person would: the native value setter plus `input` and `change` events, so React-controlled
  * inputs see the change. A password's value is never read back (`••••`). Nothing here is styled: the highlight is the
@@ -181,7 +181,9 @@ export function discover(rt: AxfRuntime, owned: Set<Element>, doc: Document = do
   const dialogId = dialog ? (st.dialog?.id ?? controlSlug(labelOf(dialog) || 'dialog')) : '';
   const dialogTitle = dialog ? (labelOf(dialog) || textOf(dialog.querySelector('h1, h2, h3')) || dialogId) : '';
   const surface = dialog ? `view:${st.view}/panel:dialog:${dialogId}` : `view:${st.view}`;
-  const isOwned = (el: Element) => { for (let n: Element | null = el; n && n !== root.parentElement; n = n.parentElement) if (owned.has(n)) return true; return false; };
+  // owned = the element itself or an ancestor below the surface is a registered control (a settings row, a Button with an id);
+  // the surface and what holds it (a view's pane, a dialog panel) never count, or nothing on a screen would be found
+  const isOwned = (el: Element) => { for (let n: Element | null = el; n && n !== root; n = n.parentElement) if (owned.has(n)) return true; return false; };
   const used = new Map<string, number>();
   const unique = (base: string) => { const b = base || 'control'; const n = (used.get(b) ?? 0) + 1; used.set(b, n); return n === 1 ? b : `${b}-${n}`; };
   const idOf = (el: Element, label: string) => {
@@ -343,7 +345,7 @@ export function installFieldControl(rt: AxfRuntime, doc: Document = document): (
   return () => { mo?.disconnect(); if (pending) clearTimeout(pending); reg.addRefresher(null, refresh); reg.setScreenReporter(null); for (const off of offs) off(); offs = []; installed.delete(reg); };
 }
 
-/** What is on screen right now, for narration and verification (the `state` verb with no address answers it as `screen`). */
+/** What is on screen right now, for narration and verification (the `state` verb with no address answers it as `report`). */
 export function screenReport(rt: AxfRuntime, reg: ControlRegistry = controlRegistry(rt), doc: Document = document): ScreenReport {
   installed.get(reg)?.refresh();
   const d = discover(rt, reg.ownedElements(), doc);
@@ -378,8 +380,14 @@ export function screenReport(rt: AxfRuntime, reg: ControlRegistry = controlRegis
     headings,
     fields: [...regFields, ...d.fields.map(strip)] as FieldInfo[],
     buttons: [...regButtons, ...d.buttons.map(strip)] as ButtonInfo[],
-    text: textOf(d.root).slice(0, 1200),
+    text: visibleText(d.root).slice(0, 1200),
   };
+}
+
+/** The text a person sees (innerText keeps line breaks between blocks; textContent runs words together). */
+function visibleText(el: Element): string {
+  const t = el instanceof HTMLElement && typeof el.innerText === 'string' && el.innerText ? el.innerText : el.textContent ?? '';
+  return t.replace(/[ \t]+/g, ' ').replace(/\s*\n\s*/g, ' · ').replace(/( · )+/g, ' · ').trim();
 }
 
 const cssEscape = (s: string) => (typeof CSS !== 'undefined' && typeof CSS.escape === 'function' ? CSS.escape(s) : s.replace(/["\\]/g, '\\$&'));

@@ -399,10 +399,10 @@ def button_address(key: str) -> str:
 
 
 def screen(by: str = "api", audience: str = OWNER, grants: set[str] | None = None, to: str = "recent", text: bool = True) -> dict[str, Any]:
-    """What is on screen in the open console (state with no address → state.screen): view, title, open dialog, fields
+    """What is on screen in the open console (state with no address → state.report): view, title, open dialog, fields
     with their values, buttons, headings and (text=True) the visible text. No console open: unavailable + openUrl."""
     r = guarded({"$axf": cc.FRAME, "verb": "state"}, by, audience, grants if grants is not None else {"*"}, to)
-    sc = ((r.get("state") or {}) if isinstance(r.get("state"), dict) else {}).get("screen")
+    sc = ((r.get("state") or {}) if isinstance(r.get("state"), dict) else {}).get("report")
     if not r.get("ok") or not isinstance(sc, dict):
         if r.get("ok"):
             return {**r, "ok": False, "code": "unavailable", "because": "no screen report", "message": "the open console does not report its screen yet (reload it to pick up the new build)"}

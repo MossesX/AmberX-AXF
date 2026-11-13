@@ -255,6 +255,160 @@ def test_mcp_tools() -> None:
     assert r["code"] == "unavailable" and r["openUrl"], "no console: unavailable with the link, not an exception"
 
 
+
+class WizardConsole(FakeConsole):
+    """The Projects dialog with its New project form, as the open console's field discovery reports it."""
+
+    def __init__(self) -> None:
+        super().__init__()
+        self.form: dict[str, Any] = {"name": "", "description": "", "switch-to-it-right-away": True}
+        self.created: list[dict[str, Any]] = []
+        self.pressed: list[str] = []
+
+    def report(self) -> dict[str, Any]:
+        base = "view:home/panel:dialog:projects"
+        fields = [{"address": f"{base}/setting:field.name", "id": "field.name", "label": "Name", "type": "text", "value": self.form["name"], "required": False, "disabled": False},
+                  {"address": f"{base}/setting:field.description", "id": "field.description", "label": "Description", "type": "textarea", "value": self.form["description"], "required": False, "disabled": False},
+                  {"address": f"{base}/setting:field.switch-to-it-right-away", "id": "field.switch-to-it-right-away", "label": "Switch to it right away", "type": "switch", "value": self.form["switch-to-it-right-away"], "required": False, "disabled": False}]
+        buttons = [{"address": f"{base}/button:create", "id": "create", "label": "Create", "role": "button", "disabled": not self.form["name"].strip()},
+                   {"address": f"{base}/button:cancel", "id": "cancel", "label": "Cancel", "role": "button", "disabled": False},
+                   {"address": f"{base}/button:approve", "id": "approve", "label": "Approve", "role": "button", "disabled": False}]
+        return {"view": "home", "title": "Home", "dialog": {"id": "projects", "title": "Projects", "address": base}, "surface": base, "headings": ["Projects"], "fields": fields, "buttons": buttons, "text": "Projects New project"}
+
+    def control(self, cmd: dict[str, Any], by: str = "", audience: str = "owner", to: str = "recent") -> dict[str, Any]:
+        out = super().control(cmd, by, audience, to)
+        verb, address = cmd["verb"], str(cmd.get("address") or "")
+        leaf = address.rsplit("/", 1)[-1]
+        if verb == "state" and not address:
+            out["state"] = {**out["state"], "report": self.report()}
+        elif verb == "set" and leaf.startswith("setting:field."):
+            key = leaf[len("setting:field."):]
+            if key not in self.form:
+                return {"$axf": cc.FRAME, "ok": False, "code": "not_found", "message": f"{address} is not on the screen", "nearest": []}
+            v = cmd.get("value")
+            self.form[key] = (str(v).lower() in ("on", "true", "yes", "1")) if isinstance(self.form[key], bool) and not isinstance(v, bool) else v
+            out["value"] = self.form[key]
+        elif verb == "search":
+            words = cc.slug(str((cmd.get("query") or {}).get("q") or ""))
+            out["hits"] = [{"address": f["address"], "kind": "setting", "label": f["label"], "score": 100} for f in self.report()["fields"] if words and words in f["id"]] + \
+                          [{"address": b["address"], "kind": "button", "label": b["label"], "score": 90} for b in self.report()["buttons"] if words and words in b["id"]]
+        elif verb == "press":
+            self.pressed.append(leaf)
+            if leaf == "button:create":
+                if not self.form["name"].strip():
+                    return {"$axf": cc.FRAME, "ok": False, "code": "unavailable", "because": "disabled", "message": f"{address} is disabled right now"}
+                self.created.append(dict(self.form))
+        return out
+
+
+def test_new_project_wizard_by_api() -> None:
+    """Drive the New project form end to end through REST: read the screen, fill it by label, press Create, read back."""
+    global fake
+    reset()
+    wiz = WizardConsole()
+    api._relay = lambda: wiz  # type: ignore[assignment]
+    try:
+        r = client.get(f"{U}/screen")
+        assert r.status_code == 200 and r.json()["screen"]["dialog"]["id"] == "projects", r.text
+        assert [f["label"] for f in r.json()["screen"]["fields"]] == ["Name", "Description", "Switch to it right away"]
+        assert r.json()["say"].startswith("You're on Projects dialog on Home."), r.json()["say"]
+        assert "text" not in client.get(f"{U}/fields").json()["screen"], "fields: the same report without the text"
+        # Create is disabled while the name is empty
+        r = client.post(f"{U}/fill", json={"values": {}, "submit": "Create"})
+        assert r.status_code != 200 and r.json()["pressed"]["ok"] is False and not wiz.created
+        # by label (slug), by a label that needs search, and a switch
+        r = client.post(f"{U}/fill", json={"values": {"Name": "Garden planner", "description": "Beds and seeds", "Switch to it right away": "off"}, "submit": "Create", "reason": "e2e: new project by API"})
+        assert r.status_code == 200 and r.json()["ok"], r.text
+        assert [f["address"].rsplit("/", 1)[-1] for f in r.json()["filled"]] == ["setting:field.name", "setting:field.description", "setting:field.switch-to-it-right-away"]
+        assert wiz.created == [{"name": "Garden planner", "description": "Beds and seeds", "switch-to-it-right-away": False}], wiz.created
+        assert r.json()["pressed"] == {"button": "Create", "address": "button:create", "ok": True} and r.json()["screen"]["fields"][0]["value"] == "Garden planner"
+        # an unknown field stops the fill and names it
+        r = client.post(f"{U}/fill", json={"values": {"Colour": "red"}})
+        assert r.json()["ok"] is False and r.json()["filled"][0]["field"] == "Colour" and r.json()["message"].startswith("Colour:")
+        # voice: type into a field (case kept), read the screen back, press a one-word button
+        r = client.post(f"{U}/voice", json={"text": "Amber, type Seed Tracker into the name field"})
+        assert r.json()["ok"] and wiz.form["name"] == "Seed Tracker", r.text
+        r = client.post(f"{U}/voice", json={"text": "what's on the screen"})
+        assert r.json()["ok"] and r.json()["say"].startswith("You're on Projects dialog"), r.text
+        r = client.post(f"{U}/voice", json={"text": "create"})
+        assert r.json()["ok"] and wiz.created[-1]["name"] == "Seed Tracker", r.text
+        # every write is audited with who and why
+        lines = client.get(f"{U}/audit?writes=true&limit=20").json()["lines"]
+        sets = [x for x in lines if x.get("verb") == "set"]
+        assert sets and all(x.get("by") and x.get("reason") for x in sets), sets[:3]
+        assert any(x.get("reason") == "e2e: new project by API" for x in sets)
+        assert any(str(x.get("reason", "")).startswith("said: ") for x in lines), "a voice command's reason is what was said"
+        # the CLI maps to the same requests
+        import subprocess
+        out = subprocess.run(["node", "-e", "import('./framework/cli/console-control.mjs').then(m => console.log(JSON.stringify([m.toRequest(['fill', 'Name=Garden planner', '--submit', 'Create']), m.toRequest(['press', 'Create']), m.toRequest(['read'])])))"],
+                             cwd=ROOT, capture_output=True, text=True, check=True).stdout
+        fill_req, press_req, read_req = json.loads(out)
+        assert fill_req["path"] == "/fill" and fill_req["body"]["values"] == {"Name": "Garden planner"} and fill_req["body"]["submit"] == "Create"
+        assert press_req["body"]["address"] == api.button_address("Create") and read_req["path"] == "/screen"
+    finally:
+        api._relay = lambda: fake  # type: ignore[assignment]
+
+
+def test_decisions_only_from_owner_session() -> None:
+    reset()
+    wiz = WizardConsole()
+    api._relay = lambda: wiz  # type: ignore[assignment]
+    try:
+        r = api.command({"verb": "press", "address": "button:approve"}, "mcp")
+        assert r["code"] == "denied" and r.get("personOnly") and "button:approve" not in wiz.pressed, "the shared token never decides"
+        r = api.voice("approve", "voice")
+        assert r["ok"] is False and r["code"] == "denied", "voice without Brett's own session is refused"
+        r = api.voice("approve", "voice", owner="brett")
+        assert r["ok"] and r["decidedBy"] == "owner:brett" and "button:approve" in wiz.pressed, r
+        assert r["say"].endswith("done, as your decision."), r["say"]
+        r = api.command({"verb": "press", "address": "button:approve"}, "web", audience="user:guest", owner="brett")
+        assert r["code"] == "denied", "only the owner audience decides"
+        last = [json.loads(x) for x in api.AUDIT_FILE.read_text().splitlines() if '"decidedBy"' in x]
+        assert last and last[-1]["decidedBy"] == "owner:brett"
+
+        class Req:
+            class state:  # noqa: N801
+                axf_user = None
+        Req.state.axf_user = api._TOKEN_CALLER
+        assert api.owner_of(Req) is None, "the console token is never a person"
+        Req.state.axf_user = type("C", (), {"admin": True, "name": "brett"})()
+        assert api.owner_of(Req) == "brett"
+        Req.state.axf_user = type("C", (), {"admin": False, "name": "guest"})()
+        assert api.owner_of(Req) is None
+    finally:
+        api._relay = lambda: fake  # type: ignore[assignment]
+
+
+def test_mcp_fields_tools() -> None:
+    reset()
+    wiz = WizardConsole()
+    api._relay = lambda: wiz  # type: ignore[assignment]
+    try:
+        srv = mcp_server.build_server(lambda op, **a: {}, console=lambda c: {"ok": True}, console_control=mcp_server.console_control_runner())
+        tools = {t.name: t for t in asyncio.run(srv.list_tools())}
+        assert tools["console_control_screen"].annotations.read_only_hint is True and tools["console_control_audit"].annotations.read_only_hint is True
+        assert tools["console_control_fill"].annotations.read_only_hint is not True
+
+        def call(name: str, args: dict[str, Any]) -> dict[str, Any]:
+            res = asyncio.run(srv.call_tool(name, args))
+            if isinstance(res, tuple):
+                res = res[1]
+            if isinstance(res, dict):
+                return res.get("result", res)
+            assert not getattr(res, "is_error", False), f"{name} failed: {res.content[0].text if res.content else ''}"
+            if getattr(res, "structured_content", None):
+                return res.structured_content.get("result", res.structured_content)
+            return json.loads(res.content[0].text)
+        r = call("console_control_screen", {})
+        assert r["screen"]["dialog"]["id"] == "projects", r
+        r = call("console_control_fill", {"values": {"Name": "From MCP"}, "submit": "Create", "reason": "mcp test"})
+        assert r["ok"] and wiz.created[-1]["name"] == "From MCP", r
+        r = call("console_control_audit", {"limit": 5})
+        assert r["lines"] and r["lines"][0]["by"] == "mcp", r["lines"][:2]
+    finally:
+        api._relay = lambda: fake  # type: ignore[assignment]
+
+
 if __name__ == "__main__":
     n = 0
     for name, fn in list(globals().items()):

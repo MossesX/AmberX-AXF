@@ -591,7 +591,7 @@ def voice_reply(intent: dict[str, Any], answer: dict[str, Any] | None, label: st
     if v == "focus":
         return f"Showing {what}."
     if v == "state":
-        return screen_line((answer.get("state") or {}).get("screen") or answer.get("screen")) if intent.get("screen") else "Done."
+        return screen_line((answer.get("state") or {}).get("report") or answer.get("screen")) if intent.get("screen") else "Done."
     if v == "press":
         return f"{what or intent['decision']}: done, as your decision." if intent.get("decision") else f"Pressed {what}."
     if v == "set":

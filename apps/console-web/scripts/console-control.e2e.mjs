@@ -68,6 +68,7 @@ try {
   browser = await playwright.chromium.launch(process.env.PW_CHROMIUM ? { executablePath: process.env.PW_CHROMIUM } : {});
   const page = await browser.newPage({ viewport: { width: 1400, height: 900 } });
   const errors = [];
+  const created = [];
   page.on('pageerror', (e) => errors.push(String(e)));
   await page.route('**/api/**', (r) => {
     const u = new URL(r.request().url());
@@ -75,6 +76,11 @@ try {
     if (u.pathname === '/api/me') return json(ME);
     if (u.pathname.endsWith('/build-orchestrator/state')) return json(state);
     if (u.pathname.endsWith('/build-orchestrator/pipeline')) return json(pipeline);
+    // the Projects plugin: one project; a create is recorded (the New project form, driven by field control below)
+    if (u.pathname.startsWith('/api/plugins/project-switcher')) {
+      if (r.request().method() === 'POST') { try { created.push({ path: u.pathname, body: JSON.parse(r.request().postData() || '{}') }); } catch { created.push({ path: u.pathname }); } return json({ ok: true, project: { id: 'garden-planner', name: 'Garden planner' } }); }
+      return json({ ok: true, projects: [{ id: 'base', name: 'AXF', active: true, base: true, counts: {} }] });
+    }
     if (r.request().method() === 'GET' && u.pathname === '/api/events') return r.abort();
     return json({ ok: false, error: 'offline (e2e)' }, 503);
   });
@@ -171,8 +177,42 @@ try {
   ok(!phone.url().includes('axf-cmd'), 'the deep link is taken off the address');
   if (shots) await phone.screenshot({ path: join(shots, 'palette-phone.png') });
 
+  // fields and buttons on any screen (fieldControl.ts): the New project form, filled in and created without a tap
+  if (await page.evaluate(() => typeof window.axfConsoleControl === 'function')) {
+    a = await run({ verb: 'press', address: 'function:projects.new' });
+    if (a.ok) {
+      await sleep(400);
+      a = await run({ verb: 'state' });
+      const rep = a.state?.report;
+      // the Projects dialog opens as a modal or placed in the main area (a placed dialog is its own view): either way it is the surface
+      ok(a.ok && typeof a.state.screen === 'string' && rep && (rep.dialog?.id === 'projects' || /projects/.test(rep.view)), `state reads the screen back with the Projects form (${JSON.stringify(rep?.dialog ?? rep?.view ?? null)})`);
+      ok(typeof rep.text === 'string' && !/ProjectsEach/.test(rep.text), 'the read-back text keeps word breaks');
+      const name = rep.fields.find((f) => f.label === 'Name' && f.address.includes(rep.surface));
+      ok(name && name.address.includes('/setting:field.'), `the Name field has an address (${name?.address}; fields: ${rep.fields.map((f) => f.address).join(', ')})`);
+      const create = rep.buttons.find((b) => b.label === 'Create');
+      ok(create && create.disabled === true, 'Create is disabled while the name is empty');
+      a = await run({ verb: 'set', address: name.address, value: 'Garden planner', by: 'e2e', reason: 'new project by API' });
+      ok(a.ok && a.value === 'Garden planner', `type into Name (${a.message ?? a.value})`);
+      ok((await page.inputValue('input[placeholder="e.g. Garden planner"]')) === 'Garden planner', 'the input shows the typed name (React saw it)');
+      const sw = rep.fields.find((f) => f.type === 'switch');
+      ok(sw && sw.value === true, 'the switch reads on');
+      a = await run({ verb: 'set', address: sw.address, value: 'off' });
+      ok(a.ok && a.value === false, `switch it off (${a.message ?? a.value})`);
+      a = await run({ verb: 'state', address: name.address });
+      ok(a.ok && a.state.value === 'Garden planner' && a.state.type === 'text', 'the field reads back with its type');
+      const createNow = (await run({ verb: 'state' })).state.report.buttons.find((b) => b.label === 'Create');
+      ok(createNow && !createNow.disabled, 'Create is enabled once the name is typed');
+      a = await run({ verb: 'press', address: createNow.address });
+      ok(a.ok, `press Create (${a.message ?? ''})`);
+      for (let i = 0; i < 20 && !created.length; i++) await sleep(100);
+      ok(created.length === 1 && JSON.stringify(created[0].body).includes('Garden planner'), `Create posted the new project (${JSON.stringify(created)})`);
+      a = await run({ verb: 'press', address: 'button:no-such-button' });
+      ok(!a.ok && a.code === 'not_found', 'an unknown button is not_found');
+    } else console.log(`  (fields: the Projects plugin is not in this build: ${a.message})`);
+  }
+
   ok(!errors.length, `no page errors (${errors.slice(0, 3).join(' | ')})`);
-  console.log(`✓ console-control e2e — ${checks} checks (open, set, scroll, focus row + step, press, search → focus, voice, palette)`);
+  console.log(`✓ console-control e2e — ${checks} checks (open, set, scroll, focus row + step, press, search → focus, voice, palette, fields: New project)`);
 } catch (e) {
   console.error(e instanceof Error ? e.message : e);
   process.exitCode = 1;

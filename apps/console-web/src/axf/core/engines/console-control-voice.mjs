@@ -158,7 +158,7 @@ export function voiceReply(intent, answer, label = '') {
     case 'open': return `Opened ${what}.`;
     case 'focus': return `Showing ${what}.`;
     case 'press': return intent.decision ? `${what || intent.decision}: done, as your decision.` : `Pressed ${what}.`;
-    case 'state': return intent.screen ? screenLine(answer.state?.screen ?? answer.screen) : 'Done.';
+    case 'state': return intent.screen ? screenLine(answer.state?.report ?? answer.screen) : 'Done.';
     case 'set': return `Set ${what} to ${typeof answer.value === 'boolean' ? (answer.value ? 'on' : 'off') : String(answer.value ?? intent.value)}.`;
     case 'plugin.enable': return `${what} is on.`;
     case 'plugin.disable': return `${what} is off.${answer.effects?.loses?.length ? ` ${answer.effects.loses.map((d) => d.name).join(', ')} lose${answer.effects.loses.length === 1 ? 's' : ''} a feature.` : ''}`;

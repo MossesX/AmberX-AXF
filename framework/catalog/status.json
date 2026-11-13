@@ -2286,5 +2286,11 @@
     "wave": 1,
     "module": "app-console",
     "notes": "framework/core/build-id.mjs: ids ≤ 40 chars (^[a-z0-9][a-z0-9-]{0,39}$), filler words dropped, cut at a dash, -2/-3 on a collision; used by request, orchestrator add/import/harvest, Pending and Plan Studio. Legacy long ids get an alias (pipeline.mjs aliases, the tick for live builds); land-alias links <worktrees>/<alias> and claude/<alias> for build_land. Kotlin twin deferred."
+  },
+  "cx.console.fieldcontrol": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "Full voice and API control of fields and buttons (build full-voice-api-control-type-fields-press, Nov 13 2026): every input, select, switch, choice group, button, menu item and tab on the screen or dialog in front gets a console-control@1 address (framework/react/fieldControl.ts), set types / picks / toggles and press clicks, state reads the screen back (state.report); REST /api/console-control/screen, /fields, /fill, /audit; MCP console_control_screen / _fill / _audit; CLI axf console read / fields / fill / press / type / audit; voice 'type X into Y', 'what's on screen', 'approve', one-word presses. Decisions (approve, veto, deny) only from Brett's own signed-in session (decidedBy, audited). New project form driven end to end in tests. Kotlin twin deferred."
   }
 }
