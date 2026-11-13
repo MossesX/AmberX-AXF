@@ -787,7 +787,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 18:08 UTC · `per-instance-settings-window-picker` s3 done, → built (all) · orchestrator
 - 2026-11-13 18:08 UTC · `per-instance-settings-window-picker` note (all) · orchestrator
 - 2026-11-13 18:10 UTC · `all-settings-interfaces-open-floating` → running, note (all) · pipeline
 - 2026-11-13 18:10 UTC · `all-settings-interfaces-open-floating` branch claude/all-settings-interfaces-open-floating (all) · pipeline
@@ -1187,6 +1186,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 19:49 UTC · `skin-config-panel-merge-main-and-land` branch claude/skin-config-panel-merge-main-and-land (all) · pipeline
 - 2026-11-13 19:49 UTC · `skin-config-panel-merge-main-and-land` note (all) · orchestrator
 - 2026-11-13 19:50 UTC · `skin-animations-swatches-skin-switch` note (all) · orchestrator
+- 2026-11-13 19:51 UTC · `skin-animations-swatches-skin-switch` note (all) · builds-live
 
 ## Token passes (log)
 
