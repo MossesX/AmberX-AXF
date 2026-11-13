@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T12:59:50.050Z",
+ "updatedAt": "2026-11-13T12:59:57.666Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -124382,7 +124382,7 @@
    "title": "Assets menu: hide any asset, visible and hidden lists",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -124390,8 +124390,8 @@
    "pr": "#573",
    "priority": "P0",
    "createdAt": "2026-11-13T12:31:20.005Z",
-   "updatedAt": "2026-11-13T12:59:48.188Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-13T12:59:49.949Z",
+   "builtAt": "2026-11-13T12:59:49.949Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -124571,8 +124571,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T12:59:49.949Z",
      "note": "",
      "uid": "st-mweyilzv076yme",
      "createdAt": "2026-11-13T12:32:26.587Z"

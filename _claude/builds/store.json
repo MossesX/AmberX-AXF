@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4476,
- "updatedAt": "2026-11-13T12:59:50.050Z",
+ "rev": 4477,
+ "updatedAt": "2026-11-13T12:59:57.666Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -187874,7 +187874,7 @@
    "title": "Assets menu: hide any asset, visible and hidden lists",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -187882,8 +187882,8 @@
    "pr": "#573",
    "priority": "P0",
    "createdAt": "2026-11-13T12:31:20.005Z",
-   "updatedAt": "2026-11-13T12:59:48.188Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-13T12:59:49.949Z",
+   "builtAt": "2026-11-13T12:59:49.949Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -188117,12 +188117,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T12:59:49.949Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T12:32:26.587Z",
-     "updatedAt": "2026-11-13T12:32:26.587Z"
+     "updatedAt": "2026-11-13T12:59:50.224Z"
     }
    ],
    "profiles": [
@@ -188133,7 +188133,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
