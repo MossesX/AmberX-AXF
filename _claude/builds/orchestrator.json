@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T17:20:38.671Z",
+ "updatedAt": "2026-11-13T17:21:14.122Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -114220,8 +114220,9 @@
    "pendingId": "",
    "branch": "claude/one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx",
    "pr": "#527",
+   "mergedAt": "2026-11-13T17:18:08Z",
    "createdAt": "2026-11-12T21:51:44.012Z",
-   "updatedAt": "2026-11-12T22:30:43.223Z",
+   "updatedAt": "2026-11-13T17:21:11.994Z",
    "builtAt": "",
    "notes": [
     {
@@ -114247,6 +114248,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-12T22:30:43.223Z"
+    },
+    {
+     "text": "Reconciler: PR #527 merged; PR #527 names s1 done",
+     "at": "2026-11-13T17:21:11.994Z"
     }
    ],
    "approvals": [],
@@ -115159,14 +115164,15 @@
    "title": "Stop the Molly guide from popping up and talking every time the console loads: no auto-open, it only opens when Brett asks. Carry out the Nov 3 decision: Molly is no longer an agent, so swap the Molly guide, Ask Molly and walkthrough texts over to Gizmo. Android twin too.",
    "category": "",
    "detail": "",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/stop-the-molly-guide-from-popping-up-and-talking-every-time-the-console-loads-n",
    "pr": "#564",
+   "mergedAt": "2026-11-13T17:20:15Z",
    "createdAt": "2026-11-12T23:14:47.128Z",
-   "updatedAt": "2026-11-13T11:03:51.335Z",
+   "updatedAt": "2026-11-13T17:21:11.994Z",
    "builtAt": "2026-11-13T11:03:51.335Z",
    "notes": [
     {
@@ -115188,6 +115194,10 @@
     {
      "text": "Headless run axf-stop-the-molly-guide-from-popping-up-and-talking--rhonda: brief only · start 11.3K tokens ($0.03) · cost $2.23 · 61 turns · 6 tools, MCP none",
      "at": "2026-11-13T11:03:51.335Z"
+    },
+    {
+     "text": "Reconciler: PR #564 merged",
+     "at": "2026-11-13T17:21:11.994Z"
     }
    ],
    "approvals": [],
@@ -119593,15 +119603,16 @@
    "title": "Full API and voice control of the entire console: every tab, screen, setting, button, function and plugin (incl. enable/disable plugins); scroll up/down; bring any row or step of any table or grid into focus; search screens and everything loaded and pull it into focus",
    "category": "",
    "detail": "",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu",
    "pr": "#556",
+   "mergedAt": "2026-11-13T17:16:09Z",
    "priority": "P0",
    "createdAt": "2026-11-13T07:12:21.823Z",
-   "updatedAt": "2026-11-13T12:35:33.007Z",
+   "updatedAt": "2026-11-13T17:21:11.994Z",
    "builtAt": "2026-11-13T12:35:19.912Z",
    "notes": [
     {
@@ -119699,6 +119710,10 @@
     {
      "text": "Headless run axf-full-api-and-voice-control-of-the-entire-console--paulie: brief only · start 13.2K tokens ($0.04) · cost $5.50 · 136 turns · 6 tools, MCP none",
      "at": "2026-11-13T12:35:33.007Z"
+    },
+    {
+     "text": "Reconciler: PR #556 merged",
+     "at": "2026-11-13T17:21:11.994Z"
     }
    ],
    "approvals": [
@@ -121004,15 +121019,16 @@
    "title": "Android approval overlay: a small always-on floating toolbar (draw-over-other-apps) on Brett's phone that expands into the full approval card (what, why, countdown, Approve/Deny) the moment an approval is sent, then shrinks back; settings for position, size and on/off; full API and voice",
    "category": "",
    "detail": "",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/android-approval-overlay-a-small-always-on-float",
    "pr": "#565",
+   "mergedAt": "2026-11-13T17:20:20Z",
    "priority": "P0",
    "createdAt": "2026-11-13T10:41:19.479Z",
-   "updatedAt": "2026-11-13T11:08:46.725Z",
+   "updatedAt": "2026-11-13T17:21:11.994Z",
    "builtAt": "2026-11-13T11:08:46.725Z",
    "notes": [
     {
@@ -121038,6 +121054,10 @@
     {
      "text": "Headless run axf-android-approval-overlay-a-small-always-on-float--gina: brief only · start 11.3K tokens ($0.03) · cost $2.95 · 64 turns · 6 tools, MCP none",
      "at": "2026-11-13T11:08:46.725Z"
+    },
+    {
+     "text": "Reconciler: PR #565 merged",
+     "at": "2026-11-13T17:21:11.994Z"
     }
    ],
    "approvals": [],
@@ -122170,15 +122190,16 @@
    "title": "Overlay opens pages: the floating toolbar expands into a full browser window when Claude or Brett opens a page (open_url, console_show, voice), then shrinks back to the toolbar when the browser is closed; works from the background via draw-over-other-apps; follows the skin; full API and voice",
    "category": "",
    "detail": "",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/overlay-opens-pages-the-floating-toolbar-expands",
    "pr": "#571",
+   "mergedAt": "2026-11-13T17:20:38Z",
    "priority": "P0",
    "createdAt": "2026-11-13T11:27:54.484Z",
-   "updatedAt": "2026-11-13T11:44:03.472Z",
+   "updatedAt": "2026-11-13T17:21:11.994Z",
    "builtAt": "2026-11-13T11:43:10.668Z",
    "notes": [
     {
@@ -122220,6 +122241,10 @@
     {
      "text": "Session axf-overlay-opens-pages-the-floating-toolbar-expands--earl on mossesx-max- ended (exit 0); the build was already built.",
      "at": "2026-11-13T11:44:03.472Z"
+    },
+    {
+     "text": "Reconciler: PR #571 merged",
+     "at": "2026-11-13T17:21:11.994Z"
     }
    ],
    "approvals": [],

@@ -785,11 +785,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 09:44 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` s12 done (all) · orchestrator
-- 2026-11-13 09:44 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` s8 done (all) · orchestrator
-- 2026-11-13 09:46 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` s8 done (all) · orchestrator
-- 2026-11-13 09:47 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` s13 done (all) · orchestrator
-- 2026-11-13 09:47 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` note (all) · orchestrator
 - 2026-11-13 09:47 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` s9 done (all) · orchestrator
 - 2026-11-13 09:47 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` note (all) · orchestrator
 - 2026-11-13 09:48 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` note (all) · orchestrator
@@ -1185,6 +1180,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 17:18 UTC · `test-sandbox-sample-pending-build` added (3 steps) (test-sandbox) · project-seed
 - 2026-11-13 17:20 UTC · `test-sandbox-sample-shipped-build` note (test-sandbox) · foreign-write
 - 2026-11-13 17:20 UTC · `test-sandbox-sample-shipped-build` note (test-sandbox) · orchestrator
+- 2026-11-13 17:21 UTC · `one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx` merged, note (all) · reconciler
+- 2026-11-13 17:21 UTC · `stop-the-molly-guide-from-popping-up-and-talking-every-time-the-console-loads-n` → complete, merged, note (all) · reconciler
+- 2026-11-13 17:21 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` → complete, merged, note (all) · reconciler
+- 2026-11-13 17:21 UTC · `android-approval-overlay-a-small-always-on-float` → complete, merged, note (all) · reconciler
+- 2026-11-13 17:21 UTC · `overlay-opens-pages-the-floating-toolbar-expands` → complete, merged, note (all) · reconciler
 
 ## Token passes (log)
 
