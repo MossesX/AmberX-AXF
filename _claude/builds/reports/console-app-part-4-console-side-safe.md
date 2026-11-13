@@ -17,3 +17,14 @@ the PR diff includes the parent's commits.
 ## Steps
 
 - s1: stacked on the parent; control inventory regenerated after the merge.
+- s2: every layer fixed to a screen edge (dialogs, drawers, sheets, toasts, corners, help panel and intro, watch-live
+  float, "new version" bar) adds its `--fx-safe-*` inset; the frame already pads the top bars and bottom nav.
+- s3: `wrapperEnv()` (browserFallback.mjs) treats part 1's `axfNativeHost` or part 3's `axfBridgeHost` as the app and
+  sets `<html data-axf-wrapper="app|browser">`; `native.*` actions use the browser's own features without part 1's host.
+- s4: index.html is served `cache-control: no-cache`; an open page compares its entry bundle with the live one (on
+  return to screen, every 30 min) when the shell has no native update check.
+- s5: `framework/cli/check-safe-area.mjs` + test in CI; it caught the UI Review full-screen viewer under the status
+  bar (fixed). Help for `native.*` in a browser; catalog `cx.phoneweb.*` built.
+- s6: the four parts run side by side: routing keys on part 1's host, detection on either host, so a shell with
+  only part 3's bridge never dead-ends. Measured with a simulated 48px status bar on a 412px phone viewport: the
+  frame pads 48px and its first bar starts at y=48; desktop stays at 0.

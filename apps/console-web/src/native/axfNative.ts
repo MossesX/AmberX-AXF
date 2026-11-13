@@ -102,7 +102,9 @@ export function installNative(rt: AxfRuntime): () => void {
   // native.* actions everywhere: outside the app they answer that the app isn't here
   for (const a of NATIVE_ACTIONS) {
     offs.push(rt.actions.register(a.id, (args) => {
-      if (!wrapperEnv(window).wrapper) { void runInBrowser(rt, a.id, args); return; }
+      // part 1's synchronous host runs native.*; without it (a browser, or a shell with only part 3's bridge) the
+      // browser's own way is used, so no action ever dead-ends on a missing host
+      if (!nativeHost()) { void runInBrowser(rt, a.id, args); return; }
       const c = nativeCall(a.id, args);
       if ('error' in c) { rt.toast(c.error, 'warning', 'Phone'); return; }
       const r = c.call === 'state' ? nativeState() : callNative(c.call, ...c.args);
