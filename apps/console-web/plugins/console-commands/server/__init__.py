@@ -73,6 +73,7 @@ POLICY = ROOT / "apps" / "console-web" / "src" / "assets" / "uac-policy" / "cons
 STATUS = {"invalid": 400, "validation": 422, "denied": 403, "not_found": 404, "confirmation_required": 409, "not_implemented": 501, "unexpected": 500}
 CLIENT_RE = re.compile(r"^[A-Za-z0-9_-]{6,64}$")
 STALE_S = 45.0          # = CONSOLE_CLIENT_STALE_MS in core/engines/console-commands.mjs
+ACK_RESULT_MAX = 256_000  # bytes of a console-control answer kept from an ack (search hits, a long target list)
 KEEPALIVE_S = 15.0      # a comment down every stream this often (the client drops a stream silent for 45 s)
 LIVE_TRY_S = 3.5        # how long one live console gets to ack before the next live one is tried
 MAX_TRIES = 3           # live consoles tried in turn for one command
@@ -842,6 +843,9 @@ async def ack(request: Request) -> dict[str, Any]:
             return {"ok": True, "skipped": True}
         a = _acks.get(mid)
         res = {"client": cid, "ok": bool(b.get("ok")), "message": str(b.get("message") or "")[:300], "here": b.get("here") if isinstance(b.get("here"), dict) else {}}
+        # op control: the console-control@1 answer (result + live state), kept whole up to a size cap
+        if isinstance(b.get("result"), dict):
+            res["result"] = b["result"] if len(json.dumps(b["result"], default=str)) <= ACK_RESULT_MAX else {"ok": bool(b.get("ok")), "truncated": True, "message": res["message"]}
         if a is not None and cid in a["want"]:
             a["results"][cid] = res
             if a.get("any") or set(a["results"]) >= a["want"]:
