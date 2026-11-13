@@ -52,6 +52,10 @@ try {
   ok(after.status === 0, `scale-adopt makes them conform${after.status ? `\n${after.stdout}` : ''}`);
   ok(adoptLine('font-family: var(--fx-font-mono);') === 'font-family: var(--fx-font-mono);' && adoptLine("fontFamily: 'basic'") === "fontFamily: 'basic'", 'adopt leaves tokens and non-font values alone');
   ok(adoptLine('push(`font-family: ${f}`)') === 'push(`font-family: ${f}`)', 'adopt leaves template-literal CSS builders alone');
+  // a theme-ok-begin … theme-ok-end block is skipped; lines after it are checked again
+  writeFileSync(join(tmp, 'src/a.css'), ['/* theme-ok-begin: standalone export */', '.p { color: #fff; padding: 6px }', '/* theme-ok-end */', '.q { color: #000 }'].join('\n'));
+  const block = theme(tmp);
+  ok(block.status === 1 && !block.stdout.includes('src/a.css:2') && block.stdout.includes('src/a.css:4'), 'a theme-ok block is allowed and ends at theme-ok-end');
 } finally {
   rmSync(tmp, { recursive: true, force: true });
 }

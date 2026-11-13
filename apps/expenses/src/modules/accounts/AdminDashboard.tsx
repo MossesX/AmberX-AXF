@@ -366,7 +366,7 @@ export default function AdminDashboard() {
         opacity: 0,
         transition: "opacity 120ms",
         background: token("accent"),
-        borderRadius: "2px",
+        borderRadius: "var(--fx-radius-sm)",
         ...(g === "e" ? { top: 8, bottom: 8, right: -1, width: 4, cursor: "ew-resize" } : null),
         ...(g === "s" ? { left: 8, right: 8, bottom: -1, height: 4, cursor: "ns-resize" } : null),
         ...(g === "se"
@@ -379,16 +379,16 @@ export default function AdminDashboard() {
   /* ── render ─────────────────────────────────────────────────────────────── */
 
   return (
-    <Stack sx={{ gap: 1.5, minHeight: 0 }}>
+    <Stack sx={{ gap: 'var(--fx-dens-gap-2xl)', minHeight: 0 }}>
       <style>{`
-        .axs-admin-card:hover .axs-admin-grip { opacity: 0.55; }
-        .axs-admin-card[data-dragging="true"] .axs-admin-grip { opacity: 0.55; }
+        .axs-admin-card:hover .axs-admin-grip { opacity: var(--fx-opacity-muted); }
+        .axs-admin-card[data-dragging="true"] .axs-admin-grip { opacity: var(--fx-opacity-muted); }
       `}</style>
 
       {/* The canvas toolbar. */}
-      <Stack direction="row" sx={{ alignItems: "center", gap: 1, flexWrap: "wrap" }}>
-        <Typography sx={{ fontSize: 13.5, fontWeight: 700 }}>Administration</Typography>
-        <Typography sx={{ fontSize: 10.5, color: token("dim"), fontFamily: token("mono") }}>
+      <Stack direction="row" sx={{ alignItems: "center", gap: 'var(--fx-dens-gap-xl)', flexWrap: "wrap" }}>
+        <Typography sx={{ fontSize: 'var(--fx-type-root-md)', fontWeight: 700 }}>Administration</Typography>
+        <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim"), fontFamily: token("mono") }}>
           {facts ? `read ${new Date(facts.generatedAt).toLocaleTimeString()}` : "reading…"}
         </Typography>
         <Box sx={{ flex: 1 }} />
@@ -418,7 +418,7 @@ export default function AdminDashboard() {
       </Stack>
 
       {error && (
-        <Alert severity="error" variant="outlined" sx={{ fontSize: 12 }}>
+        <Alert severity="error" variant="outlined" sx={{ fontSize: 'var(--fx-type-root-sm)' }}>
           {error}
           {facts ? " — the figures below are the last good read." : ""}
         </Alert>
@@ -469,7 +469,7 @@ export default function AdminDashboard() {
                 p: 1.25,
                 background: token("panel"),
                 backgroundImage: "none",
-                border: `1px solid ${
+                border: `var(--fx-border-w) solid ${
                   dragging && blocked ? token("err") : dragging ? token("accent") : token("edge")
                 }`,
                 borderRadius: token("radius"),
@@ -484,7 +484,7 @@ export default function AdminDashboard() {
                 onPointerDown={startGesture("move", spec.id)}
                 sx={{
                   alignItems: "center",
-                  gap: 0.75,
+                  gap: 'var(--fx-dens-gap-lg)',
                   mb: 0.75,
                   flexShrink: 0,
                   cursor: dragging ? "grabbing" : "grab",
@@ -496,7 +496,7 @@ export default function AdminDashboard() {
                   <Typography
                     component="span"
                     sx={{
-                      fontSize: 10.5,
+                      fontSize: 'var(--fx-type-root-xs)',
                       fontWeight: 700,
                       letterSpacing: "0.08em",
                       textTransform: "uppercase",
@@ -514,7 +514,7 @@ export default function AdminDashboard() {
                   >
                     <Typography
                       component="span"
-                      sx={{ fontSize: 9.5, color: token("warn"), fontFamily: token("mono") }}
+                      sx={{ fontSize: 'var(--fx-type-root-2xs)', color: token("warn"), fontFamily: token("mono") }}
                     >
                       {spec.shapes} only
                     </Typography>
@@ -524,7 +524,7 @@ export default function AdminDashboard() {
                 <Typography
                   component="span"
                   aria-hidden
-                  sx={{ color: token("dim"), opacity: 0.5, fontSize: 11, letterSpacing: "1px" }}
+                  sx={{ color: token("dim"), opacity: "var(--fx-opacity-muted)", fontSize: 'var(--fx-type-root-xs)', letterSpacing: "1px" }}
                 >
                   ⋮⋮
                 </Typography>
@@ -543,7 +543,7 @@ export default function AdminDashboard() {
         })}
       </Box>
 
-      <Typography sx={{ fontSize: 10.5, color: token("dim") }}>
+      <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim") }}>
         Drag a card by its header, resize from its edges. A card dropped in a differently-shaped
         slot re-composes; one that only has a single shape says so and keeps it. The arrangement is
         yours alone and follows you between browsers.
