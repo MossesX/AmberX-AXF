@@ -92,10 +92,10 @@ const build = (id, extra = {}) => ({ id, title: id, status: 'running', steps: [{
     { id: 'hl-b', build: 'two', name: 'two', session: 'axf-two--gina', state: 'running', startedAt: iso(10 * MIN) },
   ], queue: [] };
   const tmux = new Map([['axf-one--earl', { pid: 21, created: now - 10 * MIN }], ['axf-two--gina', { pid: 22, created: now - 10 * MIN }]]);
-  const before = lt.publish(lt.collect({ builds, tmux, claude: () => true, state, settings: { maxAgents: 8 }, now }));
+  const before = lt.publish(lt.collect({ builds, tmux, claude: () => true, state, settings: { maxAgents: 8 }, now: Date.now() })); // wall clock: read() judges freshness by it
   tmux.delete('axf-two--gina'); // kill-session
   const t0 = Date.now();
-  const after = lt.publish(lt.collect({ builds, tmux, claude: () => true, state, settings: { maxAgents: 8 }, now }));
+  const after = lt.publish(lt.collect({ builds, tmux, claude: () => true, state, settings: { maxAgents: 8 }, now: Date.now() })); // wall clock: read() judges freshness by it
   check(before.count === 2 && after.count === 1, `killed session leaves the count on the next look (${before.count} -> ${after.count})`);
   check(after.stale.some((x) => x.id === 'two' && x.status === 'pending') && !after.builds.active.includes('two'), 'its build is a stale record, not active');
   process.env.AXF_SLOTS_TMUX = 'off'; // the console container: no tmux, reads the host's file
