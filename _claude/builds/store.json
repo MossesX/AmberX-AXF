@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4194,
- "updatedAt": "2026-11-13T09:47:54.560Z",
+ "rev": 4195,
+ "updatedAt": "2026-11-13T09:48:07.004Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -178105,7 +178105,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T06:21:11.993Z",
-   "updatedAt": "2026-11-13T09:47:53.019Z",
+   "updatedAt": "2026-11-13T09:47:58.301Z",
    "builtAt": "",
    "notes": [
     {
@@ -178147,6 +178147,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-merges-are-only-merged-once-github-confirms-ever--rhonda, own login copy)",
      "at": "2026-11-13T09:33:23.469Z"
+    },
+    {
+     "text": "Headless run axf-merges-are-only-merged-once-github-confirms-ever--rhonda: brief only · start 14.7K tokens ($0.04) · cost $5.80 · 109 turns · 6 tools, MCP none",
+     "at": "2026-11-13T09:47:58.301Z"
     }
    ],
    "approvals": [
