@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T03:29:58.318Z",
+ "updatedAt": "2026-11-13T03:30:35.663Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -110847,14 +110847,14 @@
    "title": "Badge shape picker on the Banners screen: pill (text), icon or dot for every badge, like Following AmberX. Shape already exists in code (types.ts, Banner.tsx), it just isn't shown. Android twin too.",
    "category": "",
    "detail": "",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad",
    "pr": "",
    "createdAt": "2026-11-12T23:14:26.317Z",
-   "updatedAt": "2026-11-13T03:29:55.835Z",
+   "updatedAt": "2026-11-13T03:30:09.470Z",
    "builtAt": "",
    "notes": [
     {
@@ -110864,6 +110864,14 @@
     {
      "text": "Queued by console.",
      "at": "2026-11-13T03:28:19.401Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-badge-shape-picker-on-the-banners-screen-pill-te--gina.",
+     "at": "2026-11-13T03:30:00.024Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-badge-shape-picker-on-the-banners-screen-pill-te--gina, own login copy)",
+     "at": "2026-11-13T03:30:09.470Z"
     }
    ],
    "approvals": [],
