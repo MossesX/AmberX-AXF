@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4957,
- "updatedAt": "2026-11-13T20:30:33.017Z",
+ "rev": 4958,
+ "updatedAt": "2026-11-13T20:30:46.948Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -206710,10 +206710,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/per-toolbar-settings-fix-failing-chrome",
-   "pr": "",
+   "pr": "#650",
    "priority": "P0",
    "createdAt": "2026-11-13T20:08:02.821Z",
-   "updatedAt": "2026-11-13T20:18:36.592Z",
+   "updatedAt": "2026-11-13T20:30:10.065Z",
    "builtAt": "",
    "notes": [
     {
@@ -206860,7 +206860,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
