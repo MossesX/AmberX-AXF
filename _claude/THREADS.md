@@ -781,7 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 06:59 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` note (all) · console
 - 2026-11-13 06:59 UTC · `remove-ui-review-as-a-gate-no-screenshots-required-prs-never-held-as-draft-for` note (all) · orchestrator
 - 2026-11-13 06:59 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` → running, note (all) · pipeline
 - 2026-11-13 06:59 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` branch claude/always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu (all) · pipeline
@@ -1181,6 +1180,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 12:10 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` note (all) · orchestrator
 - 2026-11-13 12:10 UTC · `auto-recover-stuck-builds` → running, note (all) · orchestrator
 - 2026-11-13 12:10 UTC · `auto-recover-stuck-builds` note (all) · pipeline
+- 2026-11-13 12:11 UTC · `combine-merge-queue-into-one-pr` note (all) · mcp
 
 ## Token passes (log)
 

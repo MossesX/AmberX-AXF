@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4378,
- "updatedAt": "2026-11-13T12:10:49.202Z",
+ "rev": 4379,
+ "updatedAt": "2026-11-13T12:11:21.082Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -186443,7 +186443,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T11:55:36.143Z",
-   "updatedAt": "2026-11-13T11:57:37.071Z",
+   "updatedAt": "2026-11-13T12:11:19.482Z",
    "builtAt": "",
    "notes": [
     {
@@ -186461,6 +186461,10 @@
     {
      "text": "Split by Claude into 22 steps (0 Fable).",
      "at": "2026-11-13T11:57:37.071Z"
+    },
+    {
+     "text": "Brett (clarified): YES run this combine now as a one-time catch-up for today's queue. Don't wait for #556; include it only if done. After this, the merge queue stays one at a time, in order.",
+     "at": "2026-11-13T12:11:19.482Z"
     }
    ],
    "approvals": [],
@@ -187090,7 +187094,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
