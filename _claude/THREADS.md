@@ -786,7 +786,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 17:31 UTC · `always-fill-every-slot-when-slots-are` added (26 steps) (all) · build-rename
 - 2026-11-13 17:31 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` note, removed (all) · build-rename
 - 2026-11-13 17:31 UTC · `assets-menu-hide-any-asset-visible` added (7 steps) (all) · build-rename
 - 2026-11-13 17:31 UTC · `assets-menu-hide-any-asset-visible-and-hidden-li` note, removed (all) · build-rename
@@ -1186,6 +1185,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 19:21 UTC · `console-app-part-3-native-bridge-mic` → queued, note (all) · pipeline
 - 2026-11-13 19:21 UTC · `console-android-app-thin-webview-wrapper` s6 done (all) · orchestrator
 - 2026-11-13 19:22 UTC · `console-android-app-thin-webview-wrapper` s7 done (all) · orchestrator
+- 2026-11-13 19:23 UTC · `console-app-part-3-native-bridge-mic` s3 done (all) · orchestrator
 
 ## Token passes (log)
 
