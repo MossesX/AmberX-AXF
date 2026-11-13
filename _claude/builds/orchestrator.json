@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T20:04:28.795Z",
+ "updatedAt": "2026-11-13T20:04:41.172Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -132854,16 +132854,22 @@
    "title": "Token registry and Skin Editor: live sandbox preview, snapshot history",
    "category": "",
    "detail": "Runs after the token schema step of own-token-sets-for-grids-and-tab-groups (builds on its schema).\n1. TOKEN REGISTRY: one registry listing every token in the system, with element type, area (layout/style/colour/behaviour), state, light/dark, level (basic/pro/advanced), plain-English description, default and source. Every new UI, component or plugin MUST register its tokens through its manifest. A CI check fails any UI whose tokens aren't in the registry, and any registered token that nothing uses. Browsable and searchable, with full API.\n2. SKIN EDITOR (plugin and screen): pick any UI from the list (a screen, plugin, dialog, element), or pick it on screen, and it's loaded into a sandbox live-preview window with real components and sample data. Every edit hot-renders the preview in real time. The token list comes from the registry, with Basic/Pro/Advanced views. Inline element and asset editors work inside it.\n3. DEFAULT SKIN: there is always a built-in default skin that is locked.\n4. SNAPSHOTS: every edit to a skin automatically takes a snapshot (like a disk snapshot). A timeline shows the chain of edits, each with time, who/what made it, and a diff of exactly which tokens changed (old -> new). Click any snapshot to preview it, compare any two, or revert to it (a revert is itself a new snapshot, so nothing is ever lost). No breaking skins into separate style or colour groups: the skin is the only unit.\n5. EXPORT: at any point, 'Export current to new skin' saves the current state as a brand-new skin (name, thumbnail, to the hub library).\n6. Restore previous edit / Restore from axHub work through the snapshots.\n7. Full API: REST/MCP/CLI/voice ('revert the skin to 10 minutes ago', 'export this as a new skin called Midnight'). Tests, help, Shipped features. Fable for the registry and snapshot schema.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P1",
    "createdAt": "2026-11-13T20:04:16.679Z",
-   "updatedAt": "2026-11-13T20:04:16.679Z",
+   "updatedAt": "2026-11-13T20:04:19.478Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T20:04:19.478Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
