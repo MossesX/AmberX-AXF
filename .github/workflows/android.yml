@@ -150,6 +150,8 @@ jobs:
         run: node apps/console-web/src/native/nativeRules.test.mjs
       - name: Console outside the Android console app (wrapper detection, browser fallbacks for native.* actions)
         run: node apps/console-web/src/native/browserFallback.test.mjs
+      - name: Open console follows the live deploy (entry bundle check, reload off screen, page never cached)
+        run: node apps/console-web/src/native/liveUpdate.test.mjs
       - name: Reference links plugin (ref@1 runner — builds store + plugin targets, find, explicit touches, ambiguous, missing, resolve, CLI)  # axf-plugin:ref-links
         run: node apps/console-web/plugins/ref-links/test.mjs  # axf-plugin:ref-links
       - name: Glossary & Index plugin (glossary-catalog@1 — every plugin, feature, screen, control, setting, command, asset and tool has an entry; undescribed items never grow)  # axf-plugin:glossary-index

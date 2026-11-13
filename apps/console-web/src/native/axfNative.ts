@@ -26,6 +26,7 @@ import {
   APPROVALS_TARGET, NATIVE_ACTIONS, OVERLAY_SETTING_PREFIX, WAITING_BADGE,
   PHONE_APP_ADDRESS, nativeCall, openTarget, overlayConfig, pageHandlesInsets, parseAnswer, themeTokens,
 } from './nativeRules.mjs';
+import { PERIOD_MS, decide, due, entryOf, pathOf } from './liveUpdate.mjs';
 import { WRAPPER_ATTR, browserCapabilities, browserPlan, wrapperEnv } from './browserFallback.mjs';
 
 /** The shell's Java bridge (`NativeBridge`): every method answers a JSON string. */
@@ -117,6 +118,9 @@ export function installNative(rt: AxfRuntime): () => void {
     state: () => ({ native: nativeState(), env: wrapperEnv(window), browser: browserCapabilities(window) }),
   }));
 
+  // an open page follows the live deploy by itself unless the shell does it natively (part 1's ContentUpdate)
+  if (typeof nativeHost()?.update !== 'function') offs.push(installLiveUpdate());
+
   const host = nativeHost();
   if (!host) return () => offs.forEach((f) => f());
 
@@ -168,6 +172,40 @@ export function installNative(rt: AxfRuntime): () => void {
   return () => offs.forEach((f) => f());
 }
 
+/** The page's own update check (liveUpdate.mjs): what it runs, what is live, when it last looked. */
+const liveState = { loaded: '', live: '', checkedAt: 0, action: 'none' as string };
+
+function loadedEntry(): string {
+  const el = document.querySelector<HTMLScriptElement>('script[type="module"][src]');
+  return el ? pathOf(el.getAttribute('src')) : '';
+}
+
+/** Reads the live index.html (never from a cache) and acts on a newer entry bundle. */
+async function checkLive(forced = false): Promise<typeof liveState> {
+  const now = Date.now();
+  if (!due(liveState.checkedAt, now, forced)) return liveState;
+  liveState.checkedAt = now;
+  liveState.loaded ||= loadedEntry();
+  try {
+    const r = await fetch(import.meta.env.BASE_URL, { cache: 'no-store', credentials: 'same-origin' });
+    if (r.ok) liveState.live = entryOf(await r.text());
+  } catch { return liveState; }
+  liveState.action = decide({ loaded: liveState.loaded, live: liveState.live, hidden: document.hidden, wrapper: wrapperEnv(window).wrapper });
+  if (liveState.action === 'reload') window.location.reload();
+  else if (liveState.action === 'notify') loader.markStale();
+  return liveState;
+}
+
+/** Checks when the page comes back on screen and every PERIOD_MS; returns a remover. */
+function installLiveUpdate(): () => void {
+  liveState.loaded = loadedEntry();
+  liveState.checkedAt = Date.now();
+  const onVis = () => { void checkLive(); };
+  document.addEventListener('visibilitychange', onVis);
+  const timer = window.setInterval(() => { void checkLive(); }, PERIOD_MS);
+  return () => { document.removeEventListener('visibilitychange', onVis); window.clearInterval(timer); };
+}
+
 /** A native.* action in a plain browser: the web's own way where there is one, a plain "needs the app" where not. */
 async function runInBrowser(rt: AxfRuntime, id: string, args: unknown): Promise<void> {
   const say = (msg: string, ok: boolean) => rt.toast(msg, ok ? 'success' : 'warning', 'Browser');
@@ -199,7 +237,8 @@ async function runInBrowser(rt: AxfRuntime, id: string, args: unknown): Promise<
       case 'focus': { window.focus(); return; }
       case 'update': {
         if (p.verb === 'reload') { window.location.reload(); return; }
-        say('A browser loads the live console on every reload', true); return;
+        const u = p.verb === 'check' ? await checkLive(true) : liveState;
+        say(u.live && u.live !== u.loaded ? `A newer console is live (${u.live})` : `This console is current (${u.loaded || 'page'})`, true); return;
       }
       case 'state': {
         const c = browserCapabilities(window);

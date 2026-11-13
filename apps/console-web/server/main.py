@@ -1843,4 +1843,8 @@ if DIST.exists():
             is_file = bool(path) and f.is_relative_to(_DIST_ROOT) and f.is_file()
         except (OSError, ValueError, RuntimeError):  # a path too long, with a NUL byte or a symlink loop is simply not a file
             is_file = False
-        return FileResponse(f if is_file else _DIST_ROOT / "index.html")
+        target = f if is_file else _DIST_ROOT / "index.html"
+        # The page itself is never cached (the hashed /assets are): a browser or the Android console app's WebView then
+        # always starts from the live deploy's entry bundle (console app part 4).
+        headers = {"cache-control": "no-cache"} if target.suffix == ".html" else None
+        return FileResponse(target, headers=headers)
