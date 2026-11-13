@@ -8070,6 +8070,18 @@
    "from": "",
    "addenda": []
   },
+  "vps-builds-get-console-token-ui-review": {
+   "said": "the VPS builds, the UI reviews, does that have anything to do with it",
+   "at": "2026-11-13T18:13:51.274Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "vps-orchestrator-only-rule-vps-settings-console": {
    "said": "I need a rule on the VPS that refuses any job that doesn't come from the orchestrator. ... Now how would I manage that setting? I need a console plugin to manage the VPS settings. ... Put it in the same build.",
    "at": "2026-11-09T19:10:08.745Z",
