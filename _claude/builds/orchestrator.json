@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T20:56:33.049Z",
+ "updatedAt": "2026-11-13T20:56:47.707Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -127590,15 +127590,15 @@
    "title": "Toolbar widgets: attach any banner-style widget to any toolbar",
    "category": "",
    "detail": "Let every toolbar (and tab group bar) host widgets the same way the banner does: use the same widget assets and registry as banner widgets (status badges, counters, CPU/disk, account, clocks, etc.). Add/remove/arrange widgets per toolbar instance from its right-click menu and its chrome settings (drag to arrange, like widgets.arrange). Widgets follow skins/tokens, collapse into an overflow when space is short, persist per instance. Reachable by REST/MCP/CLI/voice/control@1 ('add the CPU widget to the main toolbar'). Tests, help, Shipped features.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/toolbar-widgets-attach-any-banner-style",
-   "pr": "",
+   "pr": "#656",
    "priority": "P2",
    "createdAt": "2026-11-13T18:20:19.790Z",
-   "updatedAt": "2026-11-13T20:32:13.894Z",
+   "updatedAt": "2026-11-13T20:56:45.086Z",
    "builtAt": "",
    "notes": [
     {

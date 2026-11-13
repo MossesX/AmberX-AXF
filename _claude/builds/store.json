@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5001,
- "updatedAt": "2026-11-13T20:56:33.049Z",
+ "rev": 5002,
+ "updatedAt": "2026-11-13T20:56:47.707Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -198697,15 +198697,15 @@
    "title": "Toolbar widgets: attach any banner-style widget to any toolbar",
    "category": "",
    "detail": "Let every toolbar (and tab group bar) host widgets the same way the banner does: use the same widget assets and registry as banner widgets (status badges, counters, CPU/disk, account, clocks, etc.). Add/remove/arrange widgets per toolbar instance from its right-click menu and its chrome settings (drag to arrange, like widgets.arrange). Widgets follow skins/tokens, collapse into an overflow when space is short, persist per instance. Reachable by REST/MCP/CLI/voice/control@1 ('add the CPU widget to the main toolbar'). Tests, help, Shipped features.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/toolbar-widgets-attach-any-banner-style",
-   "pr": "",
+   "pr": "#656",
    "priority": "P2",
    "createdAt": "2026-11-13T18:20:19.790Z",
-   "updatedAt": "2026-11-13T20:32:13.894Z",
+   "updatedAt": "2026-11-13T20:56:45.086Z",
    "builtAt": "",
    "notes": [
     {
@@ -198742,12 +198742,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T18:20:21.723Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-toolbar-widgets-attach-any-banner-style--joey",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Fable",
-    "launchedAt": "2026-11-13T20:31:58.163Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T18:21:42.427Z",
@@ -198757,9 +198757,9 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"c1b8438b-1190-4f06-8b0a-509987186c99\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "2026-11-13T20:31:58.163Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Fable",
      "account": "mossesx-max-",
@@ -198768,7 +198768,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-13T20:31:58.163Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
