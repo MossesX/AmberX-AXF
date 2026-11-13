@@ -8,6 +8,7 @@ import * as pendingCore from '@console/axf/plan/pending-core.mjs';
 import pricing from '@console/axf/schemas/model-pricing.json';
 import { DataGrid, RowHookButtons, registerRowRefTarget, type GridColumn, type GridGroup, type GridSort } from '@console/axf/libs/datagrid';
 import { PipelineTab, type PipelineView } from './pipeline';
+import { SplitSettings } from './split-settings';
 import { buildRowSelector, settleFocus, useFocusedBuild } from './focus';
 import './orchestrator.css';
 
@@ -370,6 +371,7 @@ function RulesTab({ rules, busy, act }: { rules: Rules; busy: boolean; act: Act 
         <p className="fx-small fx-muted">Steps are checkpoints inside one session: it commits and ticks each one as it goes, with no new prompt or launch per step.</p>
         <div><Button tone="primary" icon="save" disabled={busy} onClick={() => act({ action: 'rules', rules: r })}>Save rules</Button></div>
       </article>
+      <SplitSettings api={api} />
       <article className="pd-card">
         <h2 className="pd-card__title">Which model a step gets</h2>
         {core.MODELS.map((m) => <p key={m}><span className={`oc-model is-${m.toLowerCase()}`}>{m}</span> {(core.MODEL_GUIDE as Record<string, string>)[m]}</p>)}

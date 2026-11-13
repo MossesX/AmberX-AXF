@@ -189,6 +189,54 @@
         "title": "Deleted builds",
         "text": "Opens the Deleted tab: every deleted build, kept for good and restorable.",
         "kind": "menu"
+      },
+      {
+        "target": "split-section",
+        "title": "Split",
+        "text": "How every build is cut into steps as soon as it is filed, and when a request is cut into parallel builds that run at the same time. Tap the heading to open or close it. The same settings: pipeline.mjs set …, REST and MCP pipeline-settings-set, voice.",
+        "kind": "card"
+      },
+      {
+        "target": "how-a-build-is-split",
+        "title": "How a build is split",
+        "text": "Claude: a one-shot call cuts the build into steps of 10 minutes or less, Fable only where needed. Rules: no model, one step per line of the request (review them). Off: steps are written by hand.",
+        "kind": "field"
+      },
+      {
+        "target": "parallel-split",
+        "title": "Parallel split",
+        "text": "When a request falls into independent parts that touch different files, the splitter cuts it into sub-builds that run at the same time in separate slots, to speed it up. Auto: the parts are filed and queued by themselves. Ask: they wait in Pending until you queue them. Off: one build, one session.",
+        "kind": "field"
+      },
+      {
+        "target": "max-parallel-slots",
+        "title": "Max parallel slots",
+        "text": "The most parts one request is split into (2 to 12, default 4). Each part takes one agent slot while it runs.",
+        "kind": "field"
+      },
+      {
+        "target": "apply-slots",
+        "title": "Apply slots",
+        "text": "Saves the new slot count.",
+        "kind": "button"
+      },
+      {
+        "target": "shared-contract-step-first",
+        "title": "Shared contract step first",
+        "text": "The lead build's first step writes and pushes the names, schemas, routes and interfaces every part builds against, so the parts don't clash. The dispatcher starts the parts only once that step is done.",
+        "kind": "toggle"
+      },
+      {
+        "target": "integration-step-last",
+        "title": "Integration step last",
+        "text": "The lead build's last step merges every part's branch, runs the tests together and fixes what clashes. The dispatcher holds it until every part is finished. Off: each part lands on its own PR and the lead only closes out.",
+        "kind": "toggle"
+      },
+      {
+        "target": "action:build-orchestrator.split-settings",
+        "title": "Split settings",
+        "text": "Opens the orchestrator's Rules tab with the Split section open.",
+        "kind": "menu"
       }
     ],
     "intros": []
