@@ -8,7 +8,7 @@ import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { ATTACHABLE_TYPES, BADGE_TONE_TOKEN, BANNER_SIDES, bannerVars, formatClock, placeAttachments } from '../core/engines/banner';
-import { BANNER_WIDGET_WIDTH, bannerWidgetCapCss, bannerWidgetEmpty, bannerWidgetNumber, bannerWidgetView, findBannerWidget, normalizeBannerWidgetPrefs, overflowWidgets, patchBannerWidget } from '../core/engines/bannerwidgets';
+import { BANNER_WIDGET_WIDTH, bannerBadgeShape, bannerWidgetCapCss, bannerWidgetShapes, bannerWidgetEmpty, bannerWidgetNumber, bannerWidgetView, findBannerWidget, normalizeBannerWidgetPrefs, overflowWidgets, patchBannerWidget } from '../core/engines/bannerwidgets';
 import { ATTACHABLE_ASSET_TYPES, AVATAR_SIZE, LOGO_SIZE, PROGRESS_WIDTH, SEARCH_BAR_WIDTH, SPACER_UNITS, TOOLBAR_SIDES, WIDGET_TONES, WIDGET_TYPES, avatarInitials, counterText, hostSpecs, imageSrc, linkHref, moveOnHost, normalizeArrangement, placeOnHost, placeToolbarWidgets, snapIndex, progressPercent, searchBarConfig, statusOn, themeSwitchNext, validateHostAttachments, widgetTone } from '../core/engines/widgets';
 import { validateAsset } from '../core/validate';
 import { AxfRuntime } from '../core/runtime';
@@ -51,6 +51,19 @@ const eq = (a: unknown, b: unknown, msg: string) => { assert.deepEqual(a, b, msg
   eq(overflowWidgets([it('a', 5), it('b', 5), it('c', 5)], 300, 30, 10), ['c'], 'then the last on the bar');
   eq(overflowWidgets([it('a', 1, false), it('b', 5), it('c', 5)], 100, 30, 10), ['c', 'b'], 'pinned stays');
   eq(overflowWidgets([it('a', 1, false)], 10, 30, 10), [], 'nothing may leave: nothing leaves');
+  // badge shape (Nov 13 2026): pill / icon / dot per badge, pill / dot per status; a type without one ignores it
+  eq(bannerWidgetView('badge', null, null).shape, null, 'a badge keeps its own shape');
+  eq(bannerWidgetView('badge', null, { shape: 'dot' }).shape, 'dot', 'a picked shape');
+  eq(bannerWidgetView('status', null, { shape: 'icon' }).shape, null, 'a status has no icon shape');
+  eq(bannerWidgetView('clock', null, { shape: 'dot' }).shape, null, 'a clock has no shape');
+  eq(bannerBadgeShape('badge', 'icon', null), 'icon', 'own shape when none picked');
+  eq(bannerBadgeShape('badge', 'icon', { shape: 'dot' }), 'dot', 'the pick beats the asset');
+  eq(bannerBadgeShape('badge', 'square', null), 'pill', 'a damaged shape is a pill');
+  eq(bannerBadgeShape('status', true, { shape: 'dot' }), 'dot', 'status as a dot');
+  eq([...bannerWidgetShapes('status')], ['pill', 'dot'], 'status shapes');
+  eq(bannerWidgetShapes('clock').length, 0, 'clock has no shapes');
+  eq(normalizeBannerWidgetPrefs({ 'badge:a': { shape: 'dot' }, 'badge:b': { shape: 'star' } }), { 'badge:a': { shape: 'dot' } }, 'shape normalized');
+  eq(patchBannerWidget({ 'badge:a': { shape: 'dot' } }, 'badge:a', { shape: null }), {}, 'shape back to its own');
   const list = [{ key: 'clock:x', id: 'x', label: 'Clock' }, { key: 'status:y', id: 'y', label: "What's new ticker", aliases: ['ticker'] }];
   eq(findBannerWidget(list, 'the clock')?.key, 'clock:x', 'find by name');
   eq(findBannerWidget(list, 'ticker')?.key, 'status:y', 'find by alias');
