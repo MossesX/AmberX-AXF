@@ -785,7 +785,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 11:45 UTC · `auto-recover-stuck-builds` added (0 steps) (all) · console
 - 2026-11-13 11:45 UTC · `auto-recover-stuck-builds` → queued, note (all) · console
 - 2026-11-13 11:45 UTC · `auto-recover-stuck-builds` note (all) · mcp
 - 2026-11-13 11:47 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` note (all) · orchestrator
@@ -1185,6 +1184,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 18:31 UTC · `ui-manager-floating-window-to-select-any` note (all) · claude-voice
 - 2026-11-13 18:31 UTC · `ui-manager-floating-window-to-select-any` note (all) · claude-voice
 - 2026-11-13 18:31 UTC · `ui-manager-floating-window-to-select-any` note (all) · orchestrator
+- 2026-11-13 18:31 UTC · `ui-manager-floating-window-to-select-any` → running, note (all) · pipeline
 
 ## Token passes (log)
 
