@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3937,
- "updatedAt": "2026-11-13T01:52:42.077Z",
+ "rev": 3938,
+ "updatedAt": "2026-11-13T01:53:13.384Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -172772,14 +172772,14 @@
    "title": "Projects own everything: per-project Claude accounts and credentials, plus Clone project (settings only)",
    "category": "projects",
    "detail": "Brett said: \"every project will have its own set of Claude accounts and own everything. Basically, the console and axHub and all that runs on the project. So if you change project, everything is fresh. The Claude credentials, all the credentials for everything... let's create a new project that copies all the stuff over, everything except for the builds and the notes and the to-do manager.\"",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone",
    "pr": "#537",
    "createdAt": "2026-11-12T20:35:05.081Z",
-   "updatedAt": "2026-11-13T01:28:26.477Z",
+   "updatedAt": "2026-11-13T01:53:11.496Z",
    "builtAt": "",
    "notes": [
     {
@@ -172833,6 +172833,10 @@
     {
      "text": "Headless run axf-projects-own-everything-per-project-claude-accou--lenny: brief only · start 12.7K tokens ($0.10) · cost $2.92 · 21 turns · 6 tools, MCP none",
      "at": "2026-11-13T01:28:26.477Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-13T01:53:11.496Z"
     }
    ],
    "approvals": [],
@@ -172999,7 +173003,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
