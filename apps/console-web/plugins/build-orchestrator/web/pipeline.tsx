@@ -5,6 +5,7 @@ import { WatchLiveFor } from '@console/watchLive';
 import { DataGrid, type GridColumn, type GridGroup } from '@console/axf/libs/datagrid';
 import { TAB_LABEL, type BuildAction, type PipelineTab as BuildTab } from '@console/axf/core/build-pipeline.mjs';
 import { ParallelBadge, SlotsStrip, type SlotsLayout } from './SlotsStrip';
+import { StepDeps } from './StepDeps';
 import type { FillStatus } from './fill';
 
 /*
@@ -222,7 +223,7 @@ export function PipelineTab({ api, log, view, slotsLayout = 'chips' }: { api: Ap
             )}
             {rows.length === 0 ? <div className="fx-empty">{EMPTY[view]}</div>
               : <PipelineTable view={view} rows={rows} sel={sel} toggle={toggle} focusId={focusId}
-                  detail={(r) => <PipelineCard embedded parallel={parallel[r.id] ?? 0} r={r} busy={busy === r.id || busy === 'bulk'} wait={waitsFor(r.id)} launch={launchFor(r.id)} act={act} run={runAction} selected={sel.has(r.id)} onSelect={(on) => toggle(r.id, on)} showSteps focused={r.id === focusId} />} />}
+                  detail={(r) => <PipelineCard embedded api={api} parallel={parallel[r.id] ?? 0} r={r} busy={busy === r.id || busy === 'bulk'} wait={waitsFor(r.id)} launch={launchFor(r.id)} act={act} run={runAction} selected={sel.has(r.id)} onSelect={(on) => toggle(r.id, on)} showSteps focused={r.id === focusId} />} />}
           </section>
         );
       })()}
@@ -297,7 +298,7 @@ function StepsGrid({ r }: { r: Row }) {
   return <DataGrid<StepRow> id="build-orchestrator.steps" label={`${r.id} steps`} groups={[{ id: r.id, title: `${r.steps.done}/${r.steps.total} steps`, rows: r.stepList, groups: [], fixed: true }]} columns={cols} rowId={(x) => x.id} rowLabel={(x) => x.id} hidden={[]} />;
 }
 
-function PipelineCard({ r, busy, wait, launch, act, run, selected, onSelect, showSteps, embedded, focused = false, parallel = 0 }: { parallel?: number; embedded?: boolean; focused?: boolean; r: Row; busy: boolean; wait: string; launch?: { account: string; model: string; phase: string; kind?: string; rule?: string }; act: (path: string, body: Record<string, unknown>, what: string) => Promise<void>; run: (action: BuildAction, ids: string[]) => Promise<void>; selected: boolean; onSelect: (on: boolean) => void; showSteps: boolean }) {
+function PipelineCard({ r, busy, wait, launch, act, run, selected, onSelect, showSteps, embedded, focused = false, parallel = 0, api }: { api?: Api; parallel?: number; embedded?: boolean; focused?: boolean; r: Row; busy: boolean; wait: string; launch?: { account: string; model: string; phase: string; kind?: string; rule?: string }; act: (path: string, body: Record<string, unknown>, what: string) => Promise<void>; run: (action: BuildAction, ids: string[]) => Promise<void>; selected: boolean; onSelect: (on: boolean) => void; showSteps: boolean }) {
   const p = r.pipeline;
   const table = r.deleted ? 'done' : r.status === 'queued' ? 'queued' : r.status === 'running' || r.status === 'waiting' ? 'building' : r.status === 'pending' ? 'pending' : 'done';
   const pl = p?.planned ?? null;
@@ -326,6 +327,7 @@ function PipelineCard({ r, busy, wait, launch, act, run, selected, onSelect, sho
       {p?.account && p.pickedAt && (table === 'building' || table === 'done') && <p className="fx-small" title={`Picked ${fmtTime(p.pickedAt)}`}><Icon name="user" size={13} /> Taken by <b>{p.account}</b>{pl && pl.account && pl.account !== p.account ? ` (planned ${pl.account})` : ''}{p.tried?.length ? ` · refused: ${p.tried.join(', ')}` : ''}</p>}
       {table === 'done' && p?.tried?.length ? <p className="fx-small oc-flag"><Icon name="alert" size={13} /> Refused by {p.tried.join(', ')}</p> : null}
       {embedded && r.stepList.length > 0 && <StepsGrid r={r} />}
+      {embedded && api && r.stepList.length > 1 && !r.deleted && <StepDeps api={api} build={r.id} />}
       {!embedded && showSteps && r.stepList.length > 0 && (
         <ol className="pl-steps" aria-label={`${r.id} steps`}>
           {r.stepList.map((x) => <li key={x.id} className={x.done || x.skip ? 'oc-done' : ''}><span className={`oc-model is-${x.model.toLowerCase()}`}>{x.model}</span> <span className="fx-small">{x.id} · {x.text}{x.estimate ? ` · ${x.estimate}` : ''}</span></li>)}
