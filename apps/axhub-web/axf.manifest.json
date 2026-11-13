@@ -46,6 +46,7 @@
     "badge": "new",
     "gauge": "classic-arc",
     "meter": "striped-pill",
+    "table": "standard",
     "settings": "console",
     "uac-policy": "standard",
     "design-package": "hub-default",

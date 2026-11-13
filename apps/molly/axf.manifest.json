@@ -33,6 +33,7 @@
     "container": "soft-card",
     "gauge": "classic-arc",
     "meter": "striped-pill",
+    "table": "standard",
     "banner": "amberx-thin",
     "branding": "amberx",
     "clock": "digital-12h",
