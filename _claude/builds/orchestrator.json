@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T11:56:59.500Z",
+ "updatedAt": "2026-11-13T11:57:14.736Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -118591,7 +118591,7 @@
    "title": "Always fill every slot: when slots are free, run independent steps of running builds in parallel across them, and auto-queue pending builds",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -118599,7 +118599,7 @@
    "pr": "#554",
    "priority": "P0",
    "createdAt": "2026-11-13T06:57:42.497Z",
-   "updatedAt": "2026-11-13T11:29:35.961Z",
+   "updatedAt": "2026-11-13T11:56:58.738Z",
    "builtAt": "",
    "notes": [
     {
@@ -118697,6 +118697,10 @@
     {
      "text": "Headless run axf-always-fill-every-slot-when-slots-are-free-run-i--joey: brief only · start 13.6K tokens ($0.07) · cost $25.96 · 307 turns · 6 tools, MCP none",
      "at": "2026-11-13T11:29:35.961Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-13T11:56:58.738Z"
     }
    ],
    "approvals": [
@@ -119573,7 +119577,7 @@
    "title": "Full API and voice control of the entire console: every tab, screen, setting, button, function and plugin (incl. enable/disable plugins); scroll up/down; bring any row or step of any table or grid into focus; search screens and everything loaded and pull it into focus",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -119581,7 +119585,7 @@
    "pr": "#556",
    "priority": "P0",
    "createdAt": "2026-11-13T07:12:21.823Z",
-   "updatedAt": "2026-11-13T11:32:36.585Z",
+   "updatedAt": "2026-11-13T11:56:58.738Z",
    "builtAt": "",
    "notes": [
     {
@@ -119659,6 +119663,10 @@
     {
      "text": "Headless run axf-full-api-and-voice-control-of-the-entire-console--lenny: brief only · start 13.5K tokens ($0.04) · cost $9.95 · 223 turns · 6 tools, MCP none",
      "at": "2026-11-13T11:32:36.585Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-13T11:56:58.738Z"
     }
    ],
    "approvals": [
@@ -123181,7 +123189,7 @@
    "title": "Combine merge queue into one PR",
    "category": "",
    "detail": "",
-   "status": "queued",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -123189,12 +123197,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T11:55:36.143Z",
-   "updatedAt": "2026-11-13T11:56:17.859Z",
+   "updatedAt": "2026-11-13T11:56:57.332Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-13T11:55:37.746Z"
+    },
+    {
+     "text": "Back to Pending (console).",
+     "at": "2026-11-13T11:56:57.332Z"
     },
     {
      "text": "Brett: one-time job for today's queue only. Do NOT change merge queue rules or ordering going forward.",
