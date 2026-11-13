@@ -528,6 +528,210 @@
           }
         },
         "output": "{ settings }"
+      },
+      {
+        "id": "groups-list",
+        "route": "GET /groups",
+        "title": "Build groups",
+        "description": "Every custom group on the builds board of the active project: name, colour, tab, sort, filter, smart rule, its builds sorted by state (partial, pending, queued, running, failed, done, landed) and the count per state, plus the Pending builds in no group. Say 'what's in my console app group'.",
+        "readOnly": true,
+        "output": "{ profile, groups: [{ id, name, color, tab, sort, filter, rule, counts, total, rows, tabRows }], loose }"
+      },
+      {
+        "id": "groups-tabs",
+        "route": "GET /groups/tabs",
+        "title": "Custom build tabs",
+        "description": "The groups pinned as tabs next to Pending, Queue, Active … and the builds each tab shows (a custom Pending tab is a group pinned next to Pending). Deep link: build-orchestrator.tab:group:<id>.",
+        "readOnly": true,
+        "output": "{ tabs: [{ id: 'group:<id>', group, label, stage, color, count, rows }] }"
+      },
+      {
+        "id": "groups-get",
+        "route": "GET /groups/{group}",
+        "title": "One build group",
+        "description": "One group by id or name with its builds sorted the group's way and the count per state.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "group": {
+              "type": "string",
+              "description": "Group id or name ('console app')"
+            }
+          },
+          "required": [
+            "group"
+          ]
+        },
+        "output": "{ group }"
+      },
+      {
+        "id": "groups-change",
+        "route": "POST /groups",
+        "title": "Create, edit, reorder, delete or fill a build group",
+        "description": "op=create {name, color?, tab?, sort?, filter?, rule?, builds?} makes a group ('make a group called UI with its own pending tab'); op=update {group, name?, color?, tab?, sort?, filter?, rule?} renames, recolours, pins it as a tab (tab = pending, queue, active, incomplete, complete, errors, archive, all or none), changes the sort or the states shown, or sets a smart rule (rule = {titleContains, behindMoreThan, filedWithinDays, states, priorities}; null clears it); op=move {group, to: index|up|down|first|last}; op=delete {group} (its builds stay); op=assign {groups, builds, mode: add|remove|set} puts builds in one or several groups ('put skins and banner widgets in Urgent'). Saved per project.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "op": {
+              "type": "string",
+              "enum": [
+                "create",
+                "update",
+                "move",
+                "delete",
+                "assign"
+              ]
+            },
+            "group": {
+              "type": "string",
+              "description": "Group id or name (update, move, delete)"
+            },
+            "groups": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Group ids or names (assign)"
+            },
+            "builds": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "Build ids (assign, create)"
+            },
+            "mode": {
+              "type": "string",
+              "enum": [
+                "add",
+                "remove",
+                "set"
+              ]
+            },
+            "name": {
+              "type": "string"
+            },
+            "color": {
+              "type": "string",
+              "enum": [
+                "neutral",
+                "accent",
+                "info",
+                "success",
+                "warning",
+                "danger"
+              ]
+            },
+            "tab": {
+              "type": "string",
+              "enum": [
+                "none",
+                "pending",
+                "queue",
+                "active",
+                "incomplete",
+                "complete",
+                "errors",
+                "archive",
+                "all"
+              ]
+            },
+            "sort": {
+              "type": "string",
+              "enum": [
+                "state",
+                "priority",
+                "updated",
+                "title"
+              ]
+            },
+            "filter": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              },
+              "description": "States shown: partial, pending, queued, running, failed, done, landed (empty = all)"
+            },
+            "rule": {
+              "type": [
+                "object",
+                "null"
+              ],
+              "properties": {
+                "titleContains": {
+                  "type": "string"
+                },
+                "behindMoreThan": {
+                  "type": "integer"
+                },
+                "filedWithinDays": {
+                  "type": "integer",
+                  "description": "0 = filed today"
+                },
+                "states": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "priorities": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "to": {
+              "type": [
+                "string",
+                "integer"
+              ],
+              "description": "move: index, up, down, first or last"
+            }
+          },
+          "required": [
+            "op"
+          ]
+        },
+        "output": "{ group, groups, deleted? }"
+      },
+      {
+        "id": "groups-action",
+        "route": "POST /groups/{group}/action",
+        "title": "Run an action on a whole build group",
+        "description": "queue = every Pending build of the group goes to the Queue; land = every Done build goes first in the merge queue (tagged Urgent); archive = every build without a live session goes to the Archive; priority = every build gets the priority. Say 'queue all of console app', 'make the UI group urgent'.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "group": {
+              "type": "string",
+              "description": "Group id or name"
+            },
+            "action": {
+              "type": "string",
+              "enum": [
+                "queue",
+                "land",
+                "archive",
+                "priority"
+              ]
+            },
+            "priority": {
+              "type": "string",
+              "description": "urgent, high, normal, low or P0-P3 (action priority)"
+            },
+            "why": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "group",
+            "action"
+          ]
+        },
+        "output": "{ group, action, done: [id], refused: [{ id, error }], skipped: [{ id, state }] }"
       }
     ]
   },
