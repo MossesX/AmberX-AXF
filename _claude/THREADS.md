@@ -788,12 +788,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 18:39 UTC · `console-android-app-thin-webview-wrapper` note (all) · orchestrator
-- 2026-11-13 18:39 UTC · `console-android-app-thin-webview-wrapper` → running, note (all) · pipeline
-- 2026-11-13 18:39 UTC · `console-android-app-thin-webview-wrapper` branch claude/console-android-app-thin-webview-wrapper (all) · pipeline
-- 2026-11-13 18:40 UTC · `console-android-app-thin-webview-wrapper` note (all) · orchestrator
-- 2026-11-13 18:41 UTC · `console-android-app-thin-webview-wrapper` → queued, note (all) · pipeline
-- 2026-11-13 18:41 UTC · `orchestrator-settings-collapsible-split` added (0 steps) (all) · console
 - 2026-11-13 18:41 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · console
 - 2026-11-13 18:41 UTC · `console-app-part-2-native-floating` added (0 steps) (all) · console
 - 2026-11-13 18:41 UTC · `console-app-part-3-native-bridge-mic` added (0 steps) (all) · console
@@ -1188,6 +1182,12 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 20:17 UTC · `skin-config-panel-merge-main-and-land` PR #648 (all) · builds-live
 - 2026-11-13 20:17 UTC · `skin-config-panel-merge-main-and-land` note (all) · orchestrator
 - 2026-11-13 20:17 UTC · `skin-config-panel-merge-main-and-land` s1 done (all) · orchestrator
+- 2026-11-13 20:18 UTC · `skin-config-panel-merge-main-and-land` → pending, note (all) · pipeline
+- 2026-11-13 20:18 UTC · `dispatcher-gate-never-launch-build` → running, note (all) · pipeline
+- 2026-11-13 20:18 UTC · `dispatcher-gate-never-launch-build` note (all) · orchestrator
+- 2026-11-13 20:18 UTC · `per-toolbar-settings-fix-failing-chrome` → running, note (all) · pipeline
+- 2026-11-13 20:18 UTC · `per-toolbar-settings-fix-failing-chrome` branch claude/per-toolbar-settings-fix-failing-chrome (all) · pipeline
+- 2026-11-13 20:18 UTC · `per-toolbar-settings-fix-failing-chrome` note (all) · orchestrator
 
 ## Token passes (log)
 
