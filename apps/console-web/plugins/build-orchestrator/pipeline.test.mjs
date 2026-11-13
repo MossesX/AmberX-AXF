@@ -163,6 +163,24 @@ t('parseSplit: dependsOn by id or number, self dropped; unknown, later and cycli
   assert.equal(P.splitCycle(ok.steps), null);
   assert.equal(P.rulesSplit(raw).some((s) => 'dependsOn' in s), false, 'rules splits stay sequential');
 });
+t('stepStates: done, running in a slot, ready, waiting on, own session; fillIdle fires on free slots with ready steps', () => {
+  const now = Date.parse('2026-11-13T12:00:00Z');
+  const claim = { runId: 'step-x-s2-1', slot: 'hl-1', account: 'w', branch: 'claude/x--s2', at: '2026-11-13T11:50:00Z', model: 'Opus', expiresAt: '2026-11-13T12:35:00Z' };
+  const b = { id: 'x', pipeline: { session: 'axf-x' }, steps: [
+    { id: 's1', text: 'a', model: 'Opus', done: true }, { id: 's2', text: 'b', model: 'Opus', after: ['s1'], claim }, { id: 's3', text: 'c', model: 'Opus', after: ['s1'] },
+    { id: 's4', text: 'd', model: 'Opus', after: ['s2', 's3'] }, { id: 's5', text: 'e', model: 'Opus' }] };
+  const st = P.stepStates(P.withMainClaim(b, now), { now, slotOf: (ri) => (ri.slot === 'hl-1' ? 4 : 0) });
+  assert.deepEqual(st.map((x) => x.state), ['done', 'running', 'running', 'waiting', 'waiting']);
+  assert.equal(st[1].why, 'in slot 4'); assert.equal(st[1].runningIn.worktree, '/root/axf-builds/x--s2');
+  assert.equal(st[2].runningIn.main, true, "the build's own session holds the first ready step"); assert.equal(st[2].why, "in the build's own session");
+  assert.deepEqual(st[3].waitingOn, ['s2', 's3']); assert.deepEqual(st[4].dependsOn, ['s4']); assert.equal(st[4].explicit, null);
+  assert.equal(P.stepStates(b, { now })[2].state, 'ready', 'without the own-session claim s3 is ready');
+  assert.match(P.fillIdle({ free: 2, waits: [{ id: 'x', step: 's3', why: 'every account is full' }] }, 0).reason, /2 agent slots free while 1 ready step wait/);
+  assert.equal(P.fillIdle({ free: 2, waits: [{ id: 'x', step: 's3', why: 'w' }] }, 1), null, 'something launched: not idle');
+  assert.equal(P.fillIdle({ free: 0, waits: [{ id: 'x', step: 's3', why: 'w' }] }, 0), null);
+  assert.equal(P.alertFor('idle', { kind: 'slots', reason: 'r' }).title, 'Agent slots free while ready steps wait');
+  assert.match(P.alertFor('autoqueue', { ids: ['a', 'b'] }).key, /^pipeline:autoqueue:a,b$/);
+});
 t('parseSplit: JSON inside prose, models coerced, estimates checked', () => {
   const ok = P.parseSplit('Here you go:\n{"steps":[{"text":"Design the icon-pack schema","model":"fable","estimate":"10 min","why":"schema"},{"text":"Write the docs","model":"Opus","estimate":"8"},{"text":"Wire the route","model":"Opus 5.5","estimate":9}]}\nDone.');
   assert.equal(ok.error, ''); assert.equal(ok.steps.length, 3); ok.steps.splice(1, 1); assert.equal(ok.steps[0].model, 'Fable'); assert.equal(ok.steps[1].model, 'Opus'); assert.equal(ok.steps[1].estimate, '9 min'); assert.equal(ok.steps[0].id, 's1');

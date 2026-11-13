@@ -655,6 +655,48 @@ export function fillSettings(env = process.env) {
   return { fillSlots: v['builds.fillSlots'] !== false, autoQueuePending: v['builds.autoQueuePending'] === true, maxParallelPerBuild: Number.isInteger(n) && n >= 1 ? Math.min(12, n) : BP.FILL_DEFAULTS.maxParallelPerBuild };
 }
 
+/**
+ * Fill every slot, read-only (the one handler behind REST GET /pipeline/fill, the plugin command pipeline-fill-status,
+ * `pipeline.mjs fill status`, the voice action and agent-slots' `fill` view): the slots (one row per slot: which build
+ * and step runs there, or free), the ready steps, what planFill would launch next (dry run), the settings and, with
+ * `build`, that build's steps with their dependency state.
+ */
+export function fillStatus({ env = process.env, build = '', now = Date.now() } = {}) {
+  const store = loadStore(); const state = loadState(); const fill = fillSettings(env); const sl = slotsNow();
+  const inputs = fillInputs({ store, state, env, fill, sl, now });
+  const plan = BP.planFill(inputs);
+  const sessions = stepRecs(state);
+  const rows = (sl.running ?? []).map((r, i) => {
+    const rec = Object.values(sessions).find((x) => (r.session && x.session === r.session) || (r.build && x.id === r.build && r.step && x.step === r.step));
+    return { n: i + 1, id: r.id, name: r.name, build: r.build || rec?.id || '', step: r.step || rec?.step || '', state: r.state, session: r.session || '', since: r.startedAt || '', main: !(r.step || rec) };
+  });
+  const cap = Number(sl.cap) || rows.length;
+  for (let i = rows.length; i < cap; i++) rows.push({ n: i + 1, id: '', name: '', build: '', step: '', state: 'free', session: '', since: '', main: false });
+  const slotOf = (ri) => rows.find((r) => (ri.slot && r.id === ri.slot) || (ri.session && r.session === ri.session))?.n ?? 0;
+  const ready = inputs.running.flatMap((b) => BP.readySteps(b, { now }).map((st) => ({ id: b.id, step: st.id, text: str(st.text, 200), model: st.model, parallel: BP.isParallelStep(st), files: BP.stepFiles(st) })));
+  const parallelOf = (b) => b.steps.filter((x) => !x.done && !x.skip && BP.claimLive(x.claim, now) && !str(x.claim.runId).startsWith('main:')).length;
+  const builds = inputs.running.map((b) => ({ id: b.id, title: str(b.title, 160), parallel: parallelOf(b), cap: b.pipeline?.maxParallel > 0 ? b.pipeline.maxParallel : fill.maxParallelPerBuild }));
+  const one = build ? storeCore.findBuild(store, build) : null;
+  if (build && !one) throw Object.assign(new Error(`no build "${build}"`), { code: 2 });
+  return {
+    ok: true, at: new Date(now).toISOString(), settings: fill,
+    slots: { cap, used: Number(sl.used) || 0, free: Number(sl.free) || 0, ...(sl.hard?.max ? { hard: { max: sl.hard.max, live: sl.hard.live, free: sl.hard.free } } : {}), rows },
+    ready, builds, plan: { launches: plan.launches, waits: plan.waits, free: plan.free, blocked: plan.blocked }, sessions: Object.entries(sessions).map(([runId, r]) => ({ runId, ...r })),
+    ...(one ? { build: { id: one.id, title: one.title, status: one.status, branch: BP.stepBranch(one, null), steps: P.stepStates(P.withMainClaim(one, now), { now, root: worktreesRoot(env), sessions, slotOf }) } } : {}),
+  };
+}
+
+/** One line per slot and per planned launch, for the CLI and agent-slots' `fill` view. */
+export function fillLines(f) {
+  const L = [`slots ${f.slots.used}/${f.slots.cap} · ${f.slots.free} free · fill every slot ${f.settings.fillSlots ? 'on' : 'off'} · max ${f.settings.maxParallelPerBuild} parallel steps per build · auto-queue pending ${f.settings.autoQueuePending ? 'on' : 'off'}`];
+  for (const r of f.slots.rows) L.push(`  slot ${r.n}: ${r.state === 'free' ? 'free' : `${r.build || r.name}${r.step ? ` ${r.step}` : ''} (${r.state})`}`);
+  L.push(f.plan.launches.length ? 'next (dry run):' : `next (dry run): nothing${f.plan.blocked ? ` (${f.plan.blocked})` : ''}`);
+  for (const l of f.plan.launches) L.push(`  ${l.kind} ${l.id}${l.step ? ` ${l.step}` : ''} on ${l.account} (${l.model}): ${l.why}`);
+  for (const w of f.plan.waits.slice(0, 12)) L.push(`  waits ${w.id}${w.step ? ` ${w.step}` : ''}: ${w.why}`);
+  if (f.build) for (const st of f.build.steps) L.push(`  ${f.build.id} ${st.id} ${st.state}${st.why ? ` (${st.why})` : ''}${st.dependsOn.length ? ` after ${st.dependsOn.join(', ')}` : ''}`);
+  return L.join('\n');
+}
+
 /** The step sessions the dispatcher started and still watches: state.steps = { <runId>: { id, step, session, slot, account, model, dir, branch, launchedAt, merging } }. */
 const stepRecs = (state) => (state.steps && typeof state.steps === 'object' ? state.steps : (state.steps = {}));
 const runKey = (id, step) => `${id}/${step}`;
@@ -982,15 +1024,16 @@ export function tick({ env = process.env } = {}) {
   try { fill = fillRound({ state, env, alert, rules, launchedNow: launched.length }); } catch (e) { logLine({ event: 'fill-failed', error: str(e.message, 300) }); }
   // idle: nothing running while work waits. Recorded at once; the phone hears about it after idleAfterMin, once per idle spell.
   let idle = null;
-  if (plan.idle && !launched.length && !fill.launched.length) {
-    const since = state.idle?.kind === plan.idle.kind ? state.idle.since : started;
-    idle = { ...plan.idle, since };
+  const idleNow = (plan.idle && !launched.length && !fill.launched.length) ? plan.idle : P.fillIdle(fill.plan, launched.length + fill.launched.length);
+  if (idleNow) {
+    const since = state.idle?.kind === idleNow.kind ? state.idle.since : started;
+    idle = { ...idleNow, since };
     const dueAt = Date.parse(since) + settings.idleAfterMin * 60e3;
     const already = state.alerts.find((a) => a.key === 'pipeline:idle');
     if (!already && Date.now() >= dueAt) {
-      alert('idle', { kind: plan.idle.kind, reason: plan.idle.reason });
-      if (plan.idle.kind === 'empty') crewSay('dispatcher', 'waiting', `Nothing to run. ${plan.idle.reason}.`, { dedupeMin: 360 });
-      else crewSay('dispatcher', 'blocked', `Stuck: ${plan.idle.reason}.`, { dedupeMin: 360 });
+      alert('idle', { kind: idleNow.kind, reason: idleNow.reason });
+      if (idleNow.kind === 'empty') crewSay('dispatcher', 'waiting', `Nothing to run. ${idleNow.reason}.`, { dedupeMin: 360 });
+      else crewSay('dispatcher', 'blocked', `Stuck: ${idleNow.reason}.`, { dedupeMin: 360 });
     }
   } else if (state.alerts.some((a) => a.key === 'pipeline:idle')) {
     consoleApi('POST', '/api/alerts/resolve', { keys: ['pipeline:idle'] });
@@ -1221,6 +1264,7 @@ async function main(argv) {
     const one = r.done.length === 1 ? { id: r.done[0].id, status: r.done[0].status } : {};
     return out({ ok: true, ...one, ...r }, [...r.done.map((d) => `${d.id} → ${BP.TAB_LABEL[d.tab] || d.status}${cmd === 'hold' ? ' (on hold)' : ''}`), ...r.refused.map((x) => `refused ${x.id}: ${x.error}`)].join('\n'));
   }
+  if (cmd === 'fill' && (rest[0] ?? 'status') === 'status') { const f = fillStatus({ build: rest[1] ?? '' }); return out(f, fillLines(f)); }
   if (cmd === 'step-brief') { // step-brief <build> <step>: the brief of a step-scoped launch (claude-headless.sh --step)
     const store = loadStore(); const b = storeCore.findBuild(store, rest[0]);
     if (!b) throw Object.assign(new Error(`no build "${rest[0]}"`), { code: 2 });

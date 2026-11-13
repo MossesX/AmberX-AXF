@@ -33,7 +33,7 @@
  *              healthOf() reads one tiny call's answer; a fresh health record (own.health) decides usable / Fable,
  *              so the dispatcher never tests an account at launch time. healthDue() says when the next sweep runs.
  */
-import { CLAIM_TTL_MS, DEFAULT_MAX_RUNS, STATUS_AFTER, claimLive, dependsOn as resolvedDeps, isHeld, readySteps, releaseStep, stepFiles, nextModel, openSteps, outcomeLine, outcomeOf, queueOrder } from '../../../../framework/core/build-pipeline.mjs';
+import { CLAIM_TTL_MS, DEFAULT_MAX_RUNS, STATUS_AFTER, claimLive, dependsOn as resolvedDeps, explicitAfter, fileClashes, isHeld, isParallelStep, readySteps, releaseStep, stepFiles, nextModel, openSteps, outcomeLine, outcomeOf, queueOrder } from '../../../../framework/core/build-pipeline.mjs';
 import { effectivePriority, priorityLabel } from '../../../../framework/core/build-priority.mjs';
 import { FOUNDATION_MODEL, MODEL_LABELS, modelForWork, modelKey } from '../../../../framework/core/model-policy.mjs';
 import { API_RULE, estimateMinutes, maxStep, nextUp as orchNextUp, MODEL_GUIDE, STEP_MINUTES, stepLimit } from './web/orchestrator-core.mjs';
@@ -334,6 +334,7 @@ export function plan({ builds, accounts, slots, settings = normSettings(), rules
   }
   let idle = null;
   const nothingRunning = !running.length && !(Number(slots?.used) > 0);
+  // (fill every slot: the dispatcher adds kind 'slots' when slots are free while ready steps wait, see fillIdle)
   if (nothingRunning && !launches.length) {
     const active = queue.filter((b) => !isHeld(b)); const firstWait = waits.find((w) => !w.held);
     if (active.length) idle = { reason: `${active.length} build${active.length === 1 ? '' : 's'} in the Queue, nothing running: ${firstWait?.why ?? 'no launch this tick'}`, kind: 'stuck' };
@@ -496,6 +497,34 @@ export function runningIn(b, step, { now = Date.now(), root = '/root/axf-builds'
     worktree: main ? `${root}/${b.id}` : `${root}/${b.id}--${step.id}`, since: c.at, main };
 }
 
+/**
+ * Every step of a build with its dependency state, for the Steps view and the API (pure):
+ * { id, text, model, estimate, done, skip, dependsOn (resolved), explicit (the stored list or null), parallel, files,
+ *   state: done | skipped | running | ready | waiting | blocked, waitingOn: [ids], why, runningIn }.
+ * `slotOf(runningIn)` may number the slot (the Slots strip's chip number).
+ */
+export function stepStates(b, { now = Date.now(), root = '/root/axf-builds', sessions = {}, slotOf = () => 0 } = {}) {
+  const steps = list(b?.steps);
+  const settled = (id) => { const x = steps.find((y) => y.id === id); return !!x && (x.done || x.skip); };
+  const ready = new Set(readySteps(b, { now }).map((x) => x.id));
+  return steps.map((st) => {
+    const deps = resolvedDeps(b, st);
+    const waitingOn = deps.filter((id) => !settled(id));
+    const ri = runningIn(b, st, { now, root, sessions });
+    let state = 'waiting'; let why = '';
+    if (st.done) state = 'done';
+    else if (st.skip) state = 'skipped';
+    else if (ri) { state = 'running'; why = ri.main ? "in the build's own session" : `in slot ${slotOf(ri) || ri.slot || '?'}`; }
+    else if (isConflictBlocked(st)) { state = waitingOn.length ? 'blocked' : 'ready'; why = str(st.note, 1000).split('\n').filter(Boolean).pop(); }
+    else if (waitingOn.length) why = `waiting on ${waitingOn.join(', ')}`;
+    else if (ready.has(st.id)) state = 'ready';
+    else { const c = fileClashes(b, st, { now }); why = c.length ? `files clash with ${c.map((x) => x.step).join(', ')}` : ''; }
+    const explicit = explicitAfter(st);
+    return { id: st.id, text: str(st.text, 400), model: st.model, estimate: str(st.estimate, 20), done: !!st.done, skip: !!st.skip, dependsOn: deps, explicit: explicit ? [...explicit] : null,
+      parallel: isParallelStep(st), files: stepFiles(st), state, waitingOn, why, runningIn: ri ? { ...ri, n: slotOf(ri) || 0 } : null };
+  });
+}
+
 /** Is this step blocked by a merge conflict (its newest note line says so)? */
 export const isConflictBlocked = (step) => str(step?.note, 1000).split('\n').filter(Boolean).pop()?.startsWith(BLOCKED_PREFIX) === true && !step?.done;
 
@@ -582,10 +611,21 @@ export function checkNotify(cur, prev) {
   return String(cur?.signature || '').split('|').filter(Boolean).some((s) => !was.has(s)) || (!list(cur?.findings).length && list(prev?.findings).length > 0);
 }
 
+/**
+ * The idle alert's other case (fill every slot): agent slots are free and ready steps of running builds wait, yet the
+ * fill round started nothing. → { kind: 'slots', reason } or null.
+ */
+export function fillIdle(fillPlan, launchedCount = 0) {
+  if (!fillPlan || launchedCount > 0 || !(Number(fillPlan.free) > 0)) return null;
+  const waiting = list(fillPlan.waits).filter((w) => w.step);
+  if (!waiting.length) return null;
+  return { kind: 'slots', reason: `${fillPlan.free} agent slot${fillPlan.free === 1 ? '' : 's'} free while ${waiting.length} ready step${waiting.length === 1 ? '' : 's'} wait: ${waiting[0].id} ${waiting[0].step}: ${waiting[0].why}` };
+}
+
 export function alertFor(kind, d = {}) {
   const base = { source: ALERT_SOURCE, link: ALERT_LINK, meta: { kind, build: d.id ?? '', account: d.account ?? '' } };
   switch (kind) {
-    case 'idle': return { ...base, key: 'pipeline:idle', severity: d.kind === 'empty' ? 'info' : 'warning', title: d.kind === 'empty' ? 'Nothing is building: the Queue is empty' : 'Nothing is building while the Queue has work', body: str(d.reason, 1500) };
+    case 'idle': return { ...base, key: 'pipeline:idle', severity: d.kind === 'empty' ? 'info' : 'warning', title: d.kind === 'empty' ? 'Nothing is building: the Queue is empty' : d.kind === 'slots' ? 'Agent slots free while ready steps wait' : 'Nothing is building while the Queue has work', body: str(d.reason, 1500) };
     case 'launched': return { ...base, key: `pipeline:run:${d.id}`, severity: 'info', title: `Building: ${str(d.title, 120)}`, body: `Started on ${d.account} (${d.model}${d.phase ? `, ${d.phase}` : ''}) · session ${d.session || ''}`.trim() };
     case 'ended': return { ...base, key: `pipeline:end:${d.id}`, severity: d.outcome === 'finished' ? 'success' : 'warning', title: `${d.outcome === 'finished' ? 'Built' : d.outcome === 'requeued' ? 'Back in the Queue' : 'Back in Pending'}: ${str(d.title, 120)}`, body: str(d.note, 1500) };
     case 'failed': return { ...base, key: `pipeline:end:${d.id}`, severity: 'error', title: `Build failed: ${str(d.title, 120)}`, body: str(d.note, 1500) };

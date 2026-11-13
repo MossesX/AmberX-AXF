@@ -25,6 +25,8 @@
  *   … settings [--json] · set key=value… | set --json '{…}' · get <key>
  *   … heavy [--label l] -- <cmd…>  run a heavy step under the test/build lock
  *   … sweep                        close finished tmux sessions, count unregistered axf-* ones
+ *   … fill [--json]                free slots and what the dispatcher's fill round would launch next (dry run): the
+ *                                  build pipeline's fill status when its plugin is installed, else free slots only
  *
  * Hard limit (build-limit@1, Nov 12 2026): framework/cli/build-limit.mjs counts what really runs on the host and refuses
  * the N+1st build whatever this queue thinks. Here maxAgents is capped at that limit (settings keep the value asked for
@@ -35,7 +37,7 @@
  */
 import { existsSync, mkdirSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { homedir, hostname } from 'node:os';
-import { dirname, join } from 'node:path';
+import { dirname, join, resolve } from 'node:path';
 import { spawn, spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { loadLimit, scopePrefix, usage as hardUsage } from './build-limit.mjs';
@@ -487,6 +489,17 @@ async function cli(argv) {
   const f = flags(rest);
   const json = (v) => console.log(JSON.stringify(v, null, f.json ? 2 : 0));
   switch (cmd) {
+    case 'fill': {
+      // the build pipeline answers (planFill dry run) when it is installed; without it, the slots alone
+      const pipe = resolve(dirname(fileURLToPath(import.meta.url)), '../../apps/console-web/plugins/build-orchestrator/pipeline.mjs'); // axf-plugin:build-orchestrator
+      if (existsSync(pipe)) {
+        const r = spawnSync(process.execPath, [pipe, 'fill', 'status', ...(f.json ? ['--json'] : [])], { encoding: 'utf8', timeout: 60000 });
+        if (r.status === 0) return process.stdout.write(r.stdout);
+      }
+      const s = status();
+      if (f.json) return json({ ok: true, slots: { cap: s.cap, used: s.used, free: Math.max(0, s.cap - s.used) }, plan: null });
+      return console.log(`slots ${s.used}/${s.cap} · ${Math.max(0, s.cap - s.used)} free · no build pipeline installed: no fill plan`);
+    }
     case 'status': {
       if (!f['no-sweep']) sweep();
       const s = status();
