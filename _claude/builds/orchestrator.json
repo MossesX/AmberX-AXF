@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T10:56:59.657Z",
+ "updatedAt": "2026-11-13T10:57:25.983Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -120575,12 +120575,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-13T10:39:34.330Z",
-   "updatedAt": "2026-11-13T10:41:23.599Z",
+   "updatedAt": "2026-11-13T10:56:48.048Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"c575e85b-102f-4b6f-8805-0fec90217ed0\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-13T10:41:23.599Z"
+    },
+    {
+     "text": "Duplicate of every-skin-ships-a-light-and-a-dark-colour-theme (PR #563), which does this work. Close this one or keep it for the Skins-menu light/dark toggle follow-up.",
+     "at": "2026-11-13T10:56:48.048Z"
     }
    ],
    "approvals": [],
@@ -120634,7 +120638,7 @@
    "title": "Every skin ships a light and a dark colour theme (Studio Pro, Executive, Field, Command, Default and any future skin): quick light/dark switch per skin, follow-system option, coverage check fails if a skin lacks either; full API and voice",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -120642,8 +120646,8 @@
    "pr": "#563",
    "priority": "P0",
    "createdAt": "2026-11-13T10:39:51.656Z",
-   "updatedAt": "2026-11-13T10:56:33.990Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-13T10:56:37.917Z",
+   "builtAt": "2026-11-13T10:56:37.917Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -120712,8 +120716,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T10:56:37.917Z",
      "note": "",
      "uid": "st-mweulv7e04h5kk",
      "createdAt": "2026-11-13T10:43:00.026Z"
@@ -120733,7 +120737,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T10:40:45.569Z",
-   "updatedAt": "2026-11-13T10:48:30.138Z",
+   "updatedAt": "2026-11-13T10:56:41.587Z",
    "builtAt": "",
    "notes": [
     {
@@ -120751,6 +120755,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-fix-merge-conflicts-on-pr-557-professional-skins--earl, own login copy)",
      "at": "2026-11-13T10:48:30.138Z"
+    },
+    {
+     "text": "PR #563 makes skin@1 require colorThemes {light, dark}: the four #557 skins (studio-pro, executive, field, command) need a light and a dark colour theme each, or check-skin-modes fails.",
+     "at": "2026-11-13T10:56:41.586Z"
     }
    ],
    "approvals": [],
