@@ -70,7 +70,7 @@ export default function ReportTab({ tab }: { tab: TabState }) {
 
   if (!report) {
     return (
-      <Typography sx={{ fontSize: 12, color: token("err") }}>
+      <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("err") }}>
         This report tab carries no document — close it and generate a new one.
       </Typography>
     );
@@ -129,7 +129,7 @@ export default function ReportTab({ tab }: { tab: TabState }) {
   };
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", gap: 1, flex: 1, minHeight: 0 }}>
+    <Box sx={{ display: "flex", flexDirection: "column", gap: 'var(--fx-dens-gap-xl)', flex: 1, minHeight: 0 }}>
       <Stack direction="row" spacing={1} useFlexGap sx={{ alignItems: "center", flexWrap: "wrap" }}>
         <Chip
           size="small"
@@ -145,7 +145,7 @@ export default function ReportTab({ tab }: { tab: TabState }) {
           value={name}
           placeholder={sanitizeName(tab.title, report.format)}
           onChange={(e) => setName(e.target.value)}
-          sx={{ width: 280, "& input": { ...MONO, fontSize: 12 } }}
+          sx={{ width: 280, "& input": { ...MONO, fontSize: 'var(--fx-type-root-sm)' } }}
         />
         <Button size="small" variant="contained" disabled={busy} onClick={() => void save()}>
           {saved ? "Save a copy" : "Save to reports"}
@@ -187,11 +187,11 @@ export default function ReportTab({ tab }: { tab: TabState }) {
             m: 0,
             p: 2,
             overflow: "auto",
-            border: `1px solid ${token("edge")}`,
+            border: `var(--fx-border-w) solid ${token("edge")}`,
             borderRadius: "var(--axf-radius-tight)",
             background: token("panel"),
             ...MONO,
-            fontSize: 12,
+            fontSize: 'var(--fx-type-root-sm)',
             whiteSpace: "pre-wrap"
           }}
         >
@@ -208,7 +208,7 @@ export default function ReportTab({ tab }: { tab: TabState }) {
             flex: 1,
             width: "100%",
             minHeight: 480,
-            border: `1px solid ${token("edge")}`,
+            border: `var(--fx-border-w) solid ${token("edge")}`,
             borderRadius: "var(--axf-radius-tight)",
             background: token("page")
           }}

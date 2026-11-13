@@ -232,6 +232,54 @@ next write by any app (`mergeAppearance` normalizes). Fixture row `retired-slot`
 **Default look:** design package `hub-default` (style theme `hub`, colour theme `hub-night`) is the default of the Dev
 Console (GizmoX AI Studio), axHub web and AmberX.
 
+## Skins only: the retired picks and look-migration@1 (Nov 10 2026)
+
+Brett: "We need to remove all the styling and theme and layout stuff. Remove it all because the new thing's going to
+override it." The skin is the only thing that applies look and layout. Engine: `core/engines/skin-rules.mjs`
+(`SKIN_SECTIONS`, `SKIN_SWAPPABLE_SECTION`, `RETIRED_PACKAGE_TYPES`, `SKIN_SCALE_TYPES`, `skinSlotMap`),
+`core/engines/look-migration.mjs`; fixture `spec/fixtures/look-migration.json`, check `spec/check-look-migration.mts`.
+
+1. **A skin has four sections**: colours (`colorTheme`), style (`styleTheme`), layout (`layoutTheme`) and behaviour
+   (`behaviorTheme`, new, optional; `assets['behavior-theme']` still reads). The former theme asset types are the
+   sections' presets, never picked on their own. Only the **colour theme** is still swapped inside a skin
+   (`SKIN_SWAPPABLE_SECTION`: the theme switch, "Next colour theme", `swap:color-theme:*`); the swap is an override of
+   the skin's colours section (`skin.overrides['color-theme']`), "Back to skin" drops it. The scale assets
+   (`typography`, `density`, `sizing`) are the skin's `assets`; spacing and hidden chrome its `extras`.
+2. **Retired settings**: `axf.appearance.design`, `axf.appearance.package`, `axf.appearance.overrides`,
+   `axf.appearance.interface`, `axf.look`, `axf.look.*`, `axf.hub.appearance.follow` (`RETIRED_LOOK_KEYS`,
+   `RETIRED_LOOK_PREFIXES`). The design-package precedence rule above is history: the skin composes its sections. The
+   control@1 token overrides (`axf.tokens.*`) stay: they are skin-level hand tuning, the API's one path to a value.
+3. **Retired picks in a look document**: `own.slots` of a section type, a bundle type (`design-package`,
+   `appearance-package`) or a scale type (`FOLDED_PICK_TYPES`). A style package (one matched set of controls) stays a
+   swappable set until skin@2 (PR #430) makes every style package a skin.
+   **Step one of the fold** resolves the retired precedence rule into the document (`resolveLegacyLook`,
+   `legacyThemesInForce`): the style and colour the screen showed (override over package over slot) are written into
+   the slot that carried them, and every retired setting leaves `default.settings` / `own.settings` into
+   `legacy.settings`, so the document composes to the same screen without the rule.
+4. **The fold (`migrateLook`), once per profile on load**, idempotent, look-preserving, nothing lost:
+   - with a skin on: a pick of a section the skin draws was inert and is dropped; a section or scale pick the skin
+     leaves alone becomes an override; a bundle pick is a label (its members are slots of their own) and is dropped;
+   - with no skin: the package the picks or the local `axf.appearance.design` note name becomes the skin (`package`),
+     with every slot it would draw differently kept as a skin-level override; else the first skin that draws the very
+     same screen (`match`, no snapshot value changed); a skin whose extras would change the spacing, a hidden flag or a
+     look setting is never adopted; when none fits the picks stay the app's own (`kept`, reported) and only a skin
+     pick replaces them from then on. Nothing changes on screen in any case;
+   - the local settings are backed up into `axf.legacy.look` (`look-migration@1`: first value kept, later runs add
+     keys) and cleared; the document gets `legacy.own` (the moved picks) and `migrated { version, at, by }`; the
+     profile gets `axf.skin.migrated`. `normalizeAppLook` keeps both fields through every writer (runtime, skins CLI).
+5. **Today's hub documents** (console on `enterprise-day` with a layout override, axHub with the skin off, Molly and
+   AmberX untouched) fold to nothing but the stamp (pinned in the check).
+6. **The runtime** (`AxfRuntime`, every app with a look document, which is every real app): `ensureLook` runs the
+   local half once per runtime and the document half when a document arrives, saving the folded document back
+   (`migrateLocalLook`, `migrateLookDocument`); `swap` refuses a folded type other than `color-theme` with the skin
+   hint (`swap:design-package:<id>` is `skin.use:<id>`); `applyDesignPackage` is Use skin on with that id;
+   `appliedDesignPackage` is the skin in force; `designOverrides` is empty and `axf.appearance.overrides` is never
+   written; a roll never moves a part of the skin; `applyAppearance` and `skinScoped` take the composed skin's
+   sections as final (no package precedence pass). Settings → Appearance keeps Skin, Colour theme, Visible parts,
+   Navigation menu, Where the skin applies and Restore; the status bar shows the skin and its colour theme. An older
+   source without a look document (the fixture-pinned legacy path, `check-hub-look`, `check-appearance`) keeps the
+   design-package behaviour until those checks move to the skin model (s10 of the build).
+
 ## When axHub is down
 
 The developer app shows the waiting screen and retries (1 s → 30 s). The console is behind the hub's wall anyway, so

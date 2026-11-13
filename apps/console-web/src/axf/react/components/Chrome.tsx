@@ -13,6 +13,7 @@ import { WidgetView } from './Widgets';
 import { ArrangeBar, arrangedSide, useArrange } from './Arrange';
 import type { PlacedAttachment } from '../../core/engines/widgets';
 import type { CompiledMenuItem } from '../../core/engines/appmenu';
+import { controlSlug } from '../controlTargets';
 
 /* ---------------- MenuBar (app-menu asset) ---------------- */
 
@@ -59,6 +60,7 @@ export function MenuBar() {
           <div key={m.id} className="fx-menubar__item">
             <button
               type="button"
+              data-axf-target={`button:menu.${controlSlug(m.id)}`}
               className={`fx-menubar__btn ${open === m.id ? 'is-open' : ''}`}
               aria-haspopup="menu"
               aria-expanded={open === m.id}
@@ -74,7 +76,7 @@ export function MenuBar() {
       </div>
       {/* Help mode's switch (Brett, Nov 1 2026): a ? that lights up while it's on */}
       <HelpModeButton />
-      <button type="button" className="fx-rolechip" onClick={() => rt.navigate('account')} title="User account control">
+      <button type="button" data-axf-target="button:chrome.account" className="fx-rolechip" onClick={() => rt.navigate('account')} title="User account control">
         <Icon name="shield" size={13} />
         {role?.label ?? state.role}
       </button>
@@ -103,7 +105,7 @@ export function Toolbar({ views }: { views: ViewMap }) {
   if (collapsible && collapsed) {
     return (
       <div className={`fx-toolbar fx-toolbar--${tb.data.variant} is-collapsed`} data-align={tb.data.align} role="toolbar" aria-label="Toolbar (folded)" data-axf-toolbar="app">
-        <button type="button" className="fx-toolbtn fx-toolbar__fold" aria-label="Unfold the toolbar" aria-expanded="false" onClick={() => fold(false)}><Icon name="chevron-down" size={14} /></button>
+        <button type="button" data-axf-target="button:toolbar.unfold" className="fx-toolbtn fx-toolbar__fold" aria-label="Unfold the toolbar" aria-expanded="false" onClick={() => fold(false)}><Icon name="chevron-down" size={14} /></button>
       </div>
     );
   }
@@ -144,7 +146,7 @@ export function Toolbar({ views }: { views: ViewMap }) {
           <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Go to view or swap asset…" aria-label="Search views and assets" />
         </form>
       )}
-      {collapsible && <button type="button" className="fx-toolbtn fx-toolbar__fold" aria-label="Fold the toolbar" aria-expanded="true" onClick={() => fold(true)}><Icon name="chevron-up" size={14} /></button>}
+      {collapsible && <button type="button" data-axf-target="button:toolbar.fold" className="fx-toolbtn fx-toolbar__fold" aria-label="Fold the toolbar" aria-expanded="true" onClick={() => fold(true)}><Icon name="chevron-up" size={14} /></button>}
     </div>
   );
 }
@@ -304,6 +306,7 @@ export function NavMenu({ views }: { views: ViewMap }) {
                 <button
                   key={it.id}
                   type="button"
+                  data-axf-target={`button:tabbar.${controlSlug(it.id)}`}
                   className={`fx-nav__item ${state.view === it.view ? 'is-active' : ''}`}
                   aria-current={state.view === it.view ? 'page' : undefined}
                   disabled={locked}
@@ -331,15 +334,16 @@ export function NavMenu({ views }: { views: ViewMap }) {
 export function StatusBar() {
   const rt = useRuntime();
   const state = useAxfState();
-  const name = (t: 'color-theme' | 'style-theme' | 'layout') => rt.asset(t).name;
+  // skins only (Nov 10 2026): the look is the skin in force and its colour theme; style and layout are the skin's
+  const skinId = rt.skinInForce().id;
+  const skin = skinId ? rt.skinList().find((s) => s.id === skinId)?.name ?? skinId : "This app's own look";
   return (
     <footer className="fx-status">
       <span className="fx-status__dot" aria-hidden="true" />
       <span>AmberX AXF {FRAMEWORK_VERSION}</span>
       <span className="fx-status__sep" />
-      <span title="Color theme">{name('color-theme')}</span>
-      <span title="Style theme">{name('style-theme')}</span>
-      <span title="Layout">{name('layout')}</span>
+      <span title="Skin">{skin}</span>
+      <span title="Colour theme">{rt.asset('color-theme').name}</span>
       <span className="fx-status__grow" />
       <span>{rt.registry.count()} assets</span>
       <span>{state.swaps} swaps</span>

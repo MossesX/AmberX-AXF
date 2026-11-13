@@ -7,6 +7,7 @@ import { readdirSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { colorThemeVars, styleThemeVars } from '../core/engines/theme';
 import { backToSkin, composeLook, composeLookAt, coverageSummary, coverageTable, declarationErrors, globalSkinOf, lookAfterChange, newAppLook, normalizeAppLook, normalizeSkin, normalizeSkinScope, overriddenSlots, parseAppLook, partElements, partsErrors, partsTypes, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, scopeState, setInheritSkin, setLookSlot, setScopeOverride, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorOf, skinCovers, skinErrors, skinFromDesignPackage, skinScopeChain, skinScopeKey, skinScopeKind, skinScopeSelector, skinSlots, snapshotLook, uncoveredTypes, undoRestore } from '../core/engines/skin';
+import { foldLegacyPicks, legacyPicks, lookNeedsMigration, migrateLook, migrateLookSettings, parseLegacyLook, settingsNeedMigration } from '../core/engines/look-migration.mjs';
 import { SCALE_TYPES, normalizeScale, scaleErrors, scaleThemeVars, scaleVars } from '../core/engines/scale';
 import { AGENT_CARD_SAMPLE, agentCardErrors, avatarColors, avatarModel, barcodeBars, cardModel, employeeId, normalizeCard } from '../core/engines/agent-card-rules.mjs';
 import { AVATAR_FACES, AVATAR_GEAR } from '../core/engines/swarm-rules.mjs';
@@ -47,6 +48,8 @@ import { NAV_STYLE_FIELDS, NAV_STYLE_FRAME, navArrange, navFollow, navPathTo, na
 import { navFieldErrors } from '../core/engines/navstyle-rules.mjs';
 import { CHROME_KINDS, DEFAULT_MERGE, DEFAULT_PRESETS, MERGE_MODES, OPEN_TARGETS, TOOLBAR_LOCATIONS, TOOLBAR_SLOT_COUNT, XLAYOUT_CONTRACT, XLAYOUT_LIMITS, dockRulesOf, guestHidden, guestTakes, guestUrl, guestUserAgent, idePresets, normalizeXLayout, nsId as xNsId, openTargetFor, parseToolbarItem, splitNs, stripNs, visibleToolbars, xlayoutErrors } from '../core/engines/xlayout';
 import { CHROME_CONTRACT, CHROME_LIMITS, WIDGET_TONES as CHROME_WIDGET_TONES, WIDGET_TYPES as CHROME_WIDGET_TYPES, activeNav, chromePicks, emptyChrome, mergeChrome, parseChromeBundle, routePick, type ChromeBundle } from '../core/engines/chrome';
+import { intentCommand, voiceIntent, voiceReply } from '../core/engines/console-control-voice.mjs';
+import { CONSOLE_CONTROL_CODES, CONSOLE_CONTROL_DEFAULT_CAN, CONSOLE_CONTROL_KINDS, CONSOLE_CONTROL_TARGETS_FRAME, CONSOLE_CONTROL_VERB_IDS, childAddress, consoleControlErrors, consoleControlFailure, consoleControlResult, failureOf, focusOptions, formatAddress, listTargets, nearestRegisteredParent, nearestTargets, normalizeConsoleControl, parseAddress, resolveAddress, resolveForVerb, scrollState, scrollStep, searchTargets, splitTabId, tabAddressId, type AddressSegment, type ConsoleControlScrollDir, type ConsoleControlVerb, type ScrollState, type TargetSnapshot } from '../core/engines/console-control';
 import { addonRisks, agentToAddon, bm25Rank, chunkText, composeSystemPrompt, fillToolTemplate, fillWorkflowTemplate, memoryTokens, parseRouterPick, resolveMemory, stripAddonRisks, trimMemory, validateAddon, validateAgentItem, type AddonBundle, type AgentCollection } from '../core/agents';
 
 const root = new URL('..', import.meta.url).pathname;
@@ -2087,5 +2090,206 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
         roundTrip: parseAppLook(JSON.stringify(pluginSkin)),
       };
     })(),
+  });
+}
+
+/* ---- look-migration@1 (skins only, Nov 10 2026): the one-run fold of the retired theme / style / layout picks ---- */
+{
+  const skins: Record<string, unknown> = {
+    'hub-default': { layoutTheme: 'classic-ide', colorTheme: 'hub-night', styleTheme: 'hub', assets: { 'behavior-theme': 'standard', button: 'rounded-solid', toolbar: 'standard-icons', typography: 'compact' }, extras: { spacing: 'tight', hidden: { toolbar: true } } },
+    windows: { layoutTheme: 'windows-explorer', colorTheme: 'windows-light', styleTheme: 'windows', assets: { button: 'windows' }, extras: { spacing: 'compact' } },
+    aurora: { layoutTheme: 'focus-top', colorTheme: 'aurora-night', styleTheme: 'hub', assets: {} },
+  };
+  const skinOf = (id: string) => (skins[id] as never) ?? null;
+  const ctx = { skinOf, skinIds: Object.keys(skins), has: () => true, now: '2026-11-10T00:00:00Z', by: 'app' };
+  const snapshot = { slots: { layout: 'focus-top', 'color-theme': 'arctic-daylight', 'style-theme': 'hub', 'behavior-theme': 'standard', 'design-package': 'hub-default', button: 'rounded-solid', toolbar: 'standard-icons', typography: 'compact' }, spacing: 'tight', hidden: { toolbar: true } };
+  const base = newAppLook('app', snapshot);
+  // an own pick of a style or colour theme always came with the recorded precedence override (the old picker wrote both)
+  const own = (slots: Record<string, string>, more: Record<string, unknown> = {}) => {
+    const over = Object.fromEntries(['style-theme', 'color-theme'].filter((t) => slots[t]).map((t) => [t, slots[t]]));
+    const settings = { ...(Object.keys(over).length ? { 'axf.appearance.overrides': over } : {}), ...((more.settings as Record<string, unknown> | undefined) ?? {}) };
+    return { ...base, own: { slots, ...more, ...(Object.keys(settings).length ? { settings } : {}) } };
+  };
+  const cases: Record<string, { look: AppLookDocument; ctx?: Record<string, unknown> }> = {
+    nothing: { look: base },
+    // a skin in force: the picks under it were inert, except a section the skin leaves alone (behaviour) which becomes an override; a style package is not folded yet
+    skinOn: { look: { ...own({ 'color-theme': 'coral-studio', 'behavior-theme': 'brisk', 'style-package': 'amber-signature' }), skin: { use: true, inherit: false, id: 'windows', overrides: { toolbar: 'labeled-actions' } } } },
+    // the old picker applied a package (its themes and extras landed in own), then a colour theme was picked over it
+    package: { look: own({ 'design-package': 'hub-default', layout: 'classic-ide', 'color-theme': 'coral-studio', 'style-theme': 'hub', 'behavior-theme': 'standard', button: 'rounded-solid', toolbar: 'standard-icons', typography: 'compact' }, { spacing: 'tight', hidden: { toolbar: true } }) },
+    // the local note (axf.appearance.design) names the package; the document holds one colour pick
+    designPick: { look: own({ 'color-theme': 'coral-studio' }), ctx: { designPick: 'aurora' } },
+    // one colour pick that is exactly a skin: that skin, no overrides
+    match: { look: own({ 'color-theme': 'aurora-night' }) },
+    // a style pick no skin can carry without changing the screen: kept as the app's own
+    noSkin: { look: own({ 'style-theme': 'glass-orbit' }) },
+    // a skin the app does not have reads as off: nothing to fold onto
+    unknownSkinOn: { look: { ...own({ 'color-theme': 'coral-studio' }), skin: { use: true, inherit: false, id: 'nope', overrides: {} } } },
+    // a package the app lacks and a scale pick: the scale pick rides the matched skin as an override
+    scale: { look: own({ 'design-package': 'gone', 'color-theme': 'aurora-night', density: 'spacious' }) },
+    // the retired precedence rule: the snapshot names Hub Default and a colour slot it did not show (the package's
+    // colour won, a recorded override kept the style); the fold writes what the screen showed and moves the setting
+    precedence: { look: newAppLook('app', { ...snapshot, settings: { 'axf.appearance.overrides': { 'style-theme': 'hub' }, 'axf.banners.group': 'a' } }) },
+    // the same with the pick in own and the override there too: the own pick takes the shown value
+    precedenceOwn: { look: { ...base, own: { slots: { 'design-package': 'hub-default', 'color-theme': 'coral-studio' }, settings: { 'axf.appearance.overrides': { 'color-theme': 'coral-studio' }, 'axf.appearance.design': 'hub-default' } } } },
+  };
+  const fold = Object.fromEntries(Object.entries(cases).map(([name, c]) => {
+    const first = foldLegacyPicks(c.look, { ...ctx, ...(c.ctx ?? {}) });
+    const again = foldLegacyPicks(first.look, { ...ctx, ...(c.ctx ?? {}), now: '2026-12-01T00:00:00Z' });
+    return [name, { before: c.look, picks: legacyPicks(c.look), needs: lookNeedsMigration(c.look), ...first, again: again.look, needsAfter: lookNeedsMigration(first.look) }];
+  }));
+  const values = { 'axf.appearance.design': 'hub-default', 'axf.appearance.overrides': { 'color-theme': 'coral-studio' }, 'axf.look': { space: 2 }, 'axf.look.sliders': 1, 'axf.hub.appearance.follow': false, 'axf.tokens.theme': { accent: '#ff8800' }, 'axf.skin.look': 'kept', 'axf.hide.toolbar': true };
+  const s1 = migrateLookSettings(values, '2026-11-10T00:00:00Z');
+  const applied: Record<string, unknown> = { ...values, ...s1.set };
+  for (const k of s1.clear) delete applied[k];
+  const s2 = migrateLookSettings(applied, '2026-12-01T00:00:00Z');
+  const back = { ...applied, 'axf.appearance.design': 'windows', 'axf.appearance.interface': 'amber' };
+  const s3 = migrateLookSettings(back, '2026-12-02T00:00:00Z');
+  const combined = migrateLook(cases.designPick!.look, { 'axf.appearance.design': 'aurora', 'axf.look': 1 }, ctx);
+  write('look-migration.json', {
+    contract: 'look-migration@1', version: 1,
+    keys: { legacy: 'axf.legacy.look', migrated: 'axf.skin.migrated', retired: ['axf.appearance.design', 'axf.appearance.package', 'axf.appearance.overrides', 'axf.appearance.interface', 'axf.look', 'axf.hub.appearance.follow'], retiredPrefixes: ['axf.look.'] },
+    skins, snapshot, fold,
+    settings: {
+      values, first: s1, needsBefore: settingsNeedMigration(values), applied, again: s2, needsAfter: settingsNeedMigration(applied),
+      back: { values: back, result: s3, backup: parseLegacyLook(s3.set['axf.legacy.look']) },
+      junkBackup: parseLegacyLook('not json'), wrongFrame: parseLegacyLook({ $axf: 'appearance@1', settings: {} }),
+    },
+    combined: { ...combined, again: migrateLook(combined.look, (() => { const v: Record<string, unknown> = { 'axf.appearance.design': 'aurora', 'axf.look': 1, ...combined.settings.set }; for (const k of combined.settings.clear) delete v[k]; return v; })(), ctx) },
+  });
+}
+
+// console-control@1 (core/engines/console-control.ts; build full-api-and-voice-control, Nov 13 2026): address grammar (parse / format
+// round trips, every refused shape with its wire code), command errors, resolving against one target snapshot (full, trailing,
+// tab value, ambiguous, not_found with nearest, verb checks), search ranking, scroll maths and the answer envelopes.
+{
+  const snapshot = {
+    $axf: CONSOLE_CONTROL_TARGETS_FRAME, view: 'builds', targets: [
+      { address: 'view:builds', kind: 'view', label: 'Builds', keywords: ['orchestrator', 'pipeline'] },
+      { address: 'view:settings', kind: 'view', label: 'Settings' },
+      { address: 'view:builds/tab:orchestrator.sections', kind: 'tab', label: 'Sections', value: 'pipeline' },
+      { address: 'view:builds/tab:orchestrator.sections=pipeline', kind: 'tab', label: 'Pipeline' },
+      { address: 'view:builds/tab:orchestrator.sections=shipped', kind: 'tab', label: 'Shipped' },
+      { address: 'view:builds/tab:orchestrator.sections=pipeline/grid:queue', kind: 'grid', label: 'Queue', value: 'abc' },
+      { address: 'view:builds/tab:orchestrator.sections=pipeline/grid:queue/row:abc', kind: 'row', label: 'Full API and voice control', keywords: ['fable', 'running'] },
+      { address: 'view:builds/tab:orchestrator.sections=pipeline/grid:queue/row:abc/step:s3', kind: 'step', label: 'Reference engine', detail: 'Full API and voice control' },
+      { address: 'view:builds/tab:orchestrator.sections=pipeline/grid:queue/row:abc/button:save', kind: 'button', label: 'Save' },
+      { address: 'view:builds/tab:orchestrator.sections=pipeline/grid:queue/row:def', kind: 'row', label: 'Skins plugin', virtual: true },
+      { address: 'view:builds/button:save', kind: 'button', label: 'Save', disabled: true },
+      { address: 'view:builds/button:refresh', kind: 'button', label: 'Refresh', keywords: ['reload'] },
+      { address: 'view:builds/button:delete-build', kind: 'button', label: 'Delete build', destructive: true },
+      { address: 'view:settings/tab:axf.settings.tabs=plugins/setting:axf.display.fontScale', kind: 'setting', label: 'Font scale', value: '1', can: ['open', 'state', 'set', 'focus'] },
+      { address: 'plugin:skins', kind: 'plugin', label: 'Skins', value: 'enabled' },
+      { address: 'view:builds/function:build-orchestrator.focus', kind: 'function', label: 'Focus a build' },
+      { address: 'view:builds/scroll:main', kind: 'scroll', label: 'Main pane' },
+      { address: 'nonsense', kind: 'row', label: 'A bad registered address never matches' },
+    ],
+  } satisfies TargetSnapshot;
+  const addresses: Record<string, string | { path: AddressSegment[] }> = {
+    view: 'view:builds', tab: 'view:builds/tab:orchestrator.sections=pipeline', deep: 'view:builds/tab:pipeline/grid:queue/row:abc/step:s3',
+    'upper-kind': 'VIEW:Builds/Tab:x=y', encoded: 'grid:a%2Fb/row:100%25', spaced: '  view:builds / row:abc '.replace(/ \/ /, '/'), object: { path: [{ kind: 'view', id: 'builds' }, { kind: 'button', id: 'save' }] },
+    'short-row': 'row:abc', 'short-step': 'step:s3', 'row-step': 'row:abc/step:s3', 'setting-only': 'setting:axf.display.fontScale', 'subtab': 'view:settings/tab:a=b/subtab:c=d', 'panel-button': 'view:x/panel:p/button:b', 'row-button': 'grid:g/row:r/button:b',
+  };
+  const badAddresses: Record<string, unknown> = {
+    empty: '', missing: null, 'no-colon': 'builds', 'bad-kind': 'screen:builds', 'empty-id': 'view:', 'row-first-is-fine-step-after-row': 'row:a/step:s1',
+    'step-then-row': 'step:s3/row:abc', 'subtab-at-top': 'subtab:x=y', 'row-under-view': 'view:builds/row:abc', 'view-under-tab': 'tab:a=b/view:c', 'too-deep': Array.from({ length: 9 }, (_, i) => `panel:p${i}`).join('/'),
+    'long-id': `view:${'x'.repeat(161)}`, 'object-bad-kind': { path: [{ kind: 'nope', id: 'x' }] }, 'object-no-id': { path: [{ kind: 'view' }] }, 'number': 7,
+  };
+  const tryParse = (a: unknown) => { try { return { ok: true, parts: parseAddress(a), text: formatAddress(parseAddress(a)) }; } catch (e) { return failureOf(e); } };
+  const commands: Record<string, unknown> = {
+    'open-tab': { verb: 'open', address: 'tab:orchestrator.sections=shipped' },
+    'state-no-address': { verb: 'state' },
+    'press-button': { verb: 'press', address: 'button:refresh', by: 'claude', reason: 'reload the list' },
+    'press-function-arg': { verb: 'press', address: 'function:build-orchestrator.focus', value: 'abc' },
+    'set-setting': { verb: 'set', address: 'setting:axf.display.fontScale', value: 1.2 },
+    'set-no-value': { verb: 'set', address: 'setting:axf.display.fontScale' },
+    'scroll-down': { verb: 'scroll', scroll: { dir: 'down' } },
+    'scroll-to': { verb: 'scroll', scroll: { dir: 'to', to: { path: [{ kind: 'row', id: 'abc' }] } }, by: ' me ' },
+    'scroll-to-missing': { verb: 'scroll', scroll: { dir: 'to' } },
+    'scroll-bad-dir': { verb: 'scroll', scroll: { dir: 'sideways', amount: -1, extra: 1 }, value: 1 },
+    'scroll-no-spec': { verb: 'scroll' },
+    'focus-no-address': { verb: 'focus' },
+    'focus-options': { verb: 'focus', address: 'step:s3', options: { expand: true, highlightMs: 500 } },
+    'focus-bad-options': { verb: 'focus', address: 'step:s3', options: { expand: 'yes', highlightMs: 99999, flash: true } },
+    'search': { verb: 'search', query: { q: ' voice ', kinds: ['row', 'row'] } },
+    'search-bad': { verb: 'search', query: { q: '', kinds: ['screen'], limit: 99, sort: 'x' } },
+    'search-no-query': { verb: 'search' },
+    'list': { verb: 'list', address: 'grid:queue' },
+    'plugin-disable': { verb: 'plugin.disable', address: 'plugin:skins', by: 'claude' },
+    'plugin-no-address': { verb: 'plugin.enable' },
+    'bad-verb': { verb: 'explode', address: 'view:builds' },
+    'bad-frame': { $axf: 'control@1', verb: 'state' },
+    'unknown-field': { verb: 'state', address: 'view:builds', target: 'x' },
+    'bad-address': { verb: 'open', address: 'step:s3/row:abc' },
+    'not-an-object': 'open view:builds',
+  };
+  const tryNormalize = (c: unknown) => { try { return normalizeConsoleControl(c); } catch (e) { return failureOf(e); } };
+  const resolveCases: Record<string, string> = {
+    full: 'view:builds/tab:orchestrator.sections=pipeline/grid:queue/row:abc', 'trailing-row': 'row:abc', 'trailing-step': 'step:s3', 'row-step': 'row:abc/step:s3',
+    'tab-row': 'tab:orchestrator.sections', 'tab-value': 'tab:orchestrator.sections=shipped', 'tab-value-unregistered': 'view:builds/tab:orchestrator.sections=pending',
+    'case-folded': 'ROW:ABC', 'ambiguous-button': 'button:save', 'exact-wins': 'view:builds/button:save', 'not-found': 'row:nope', 'near-miss': 'row:abd', 'near-label': 'button:refesh', 'plugin': 'plugin:skins', 'setting': 'setting:axf.display.fontScale',
+  };
+  const tryResolve = (a: string) => { try { const r = resolveAddress(snapshot, a); return { address: r.target.address, kind: r.target.kind, can: r.can }; } catch (e) { return failureOf(e); } };
+  const verbCases: Record<string, [string, ConsoleControlVerb]> = {
+    'press-disabled': ['view:builds/button:save', 'press'], 'press-step': ['step:s3', 'press'], 'set-row': ['row:abc', 'set'], 'focus-virtual': ['row:def', 'focus'], 'scroll-view': ['view:builds', 'scroll'], 'disable-plugin': ['plugin:skins', 'plugin.disable'], 'press-button-ok': ['button:refresh', 'press'], 'open-setting': ['setting:axf.display.fontScale', 'open'], 'state-scroll': ['scroll:main', 'state'], 'press-missing': ['button:nope', 'press'],
+  };
+  const tryVerb = ([a, v]: [string, ConsoleControlVerb]) => { try { const r = resolveForVerb(snapshot, a, v); return { address: r.target.address, can: r.can }; } catch (e) { return failureOf(e); } };
+  const main = scrollState('scroll:main', 100, 600, 3000);
+  const short = scrollState('scroll:main', 0, 600, 400);
+  const tryStep = (s: Pick<ScrollState, 'top' | 'height' | 'extent'>, spec: { dir: ConsoleControlScrollDir; amount?: number }, line = 0, target: number | null = null) => { try { return scrollStep(s, spec, line, target); } catch (e) { return failureOf(e); } };
+  write('console-control.json', {
+    registry: { kinds: CONSOLE_CONTROL_KINDS, verbs: CONSOLE_CONTROL_VERB_IDS, codes: CONSOLE_CONTROL_CODES, defaultCan: CONSOLE_CONTROL_DEFAULT_CAN },
+    addresses: Object.fromEntries(Object.entries(addresses).map(([k, a]) => [k, tryParse(a)])),
+    badAddresses: Object.fromEntries(Object.entries(badAddresses).map(([k, a]) => [k, tryParse(a)])),
+    tabIds: { row: splitTabId('orchestrator.sections'), valued: splitTabId('orchestrator.sections=shipped'), 'setting-never-splits': splitTabId('a=b', 'setting'), 'empty-value': splitTabId('row=') },
+    commands, errors: Object.fromEntries(Object.entries(commands).map(([k, c]) => [k, consoleControlErrors(c)])), normalize: Object.fromEntries(Object.entries(commands).map(([k, c]) => [k, tryNormalize(c)])),
+    snapshot,
+    resolveCases, resolve: Object.fromEntries(Object.entries(resolveCases).map(([k, a]) => [k, tryResolve(a)])),
+    verbCases, verbs: Object.fromEntries(Object.entries(verbCases).map(([k, c]) => [k, tryVerb(c)])),
+    list: { all: listTargets(snapshot).length, grid: listTargets(snapshot, 'grid:queue').map((t) => t.address), row: listTargets(snapshot, 'row:abc').map((t) => t.address), settings: listTargets(snapshot, 'view:settings').map((t) => t.address), missing: (() => { try { return listTargets(snapshot, 'grid:nope'); } catch (e) { return failureOf(e); } })() },
+    search: { voice: searchTargets(snapshot, { q: 'voice' }), save: searchTargets(snapshot, { q: 'save' }), 'save-buttons-only': searchTargets(snapshot, { q: 'save', kinds: ['button'] }), reload: searchTargets(snapshot, { q: 'reload' }), 'by-id-words': searchTargets(snapshot, { q: 'font scale' }), limited: searchTargets(snapshot, { q: 's', limit: 2 }), none: searchTargets(snapshot, { q: 'zzz' }), blank: searchTargets(snapshot, { q: '  ' }) },
+    nearest: { 'row-abd': nearestTargets(snapshot, parseAddress('row:abd')), 'button-refesh': nearestTargets(snapshot, parseAddress('button:refesh')), 'tab-shiped': nearestTargets(snapshot, parseAddress('tab:orchestrator.sections=shiped')), 'far': nearestTargets(snapshot, parseAddress('row:qqqqqqqq')) },
+    scroll: {
+      states: { main, short, 'clamped-top': scrollState('scroll:main', 9999, 600, 3000), 'bottom': scrollState('scroll:main', 2400, 600, 3000), 'left': scrollState('scroll:x', 10, 100, 500, 40) },
+      steps: {
+        down: tryStep(main, { dir: 'down' }), up: tryStep(main, { dir: 'up' }), 'down-px': tryStep(main, { dir: 'down', amount: 250 }), 'up-half': tryStep(main, { dir: 'up', amount: 0.5 }), 'down-one': tryStep(main, { dir: 'down', amount: 1 }),
+        'page-down': tryStep(main, { dir: 'page-down' }, 32), 'page-up': tryStep(main, { dir: 'page-up' }, 32), 'page-down-no-line': tryStep(main, { dir: 'page-down' }), top: tryStep(main, { dir: 'top' }), bottom: tryStep(main, { dir: 'bottom' }),
+        'to-centred': tryStep(main, { dir: 'to' }, 0, 1500), 'to-start': tryStep(main, { dir: 'to' }, 0, 2900), 'to-missing': tryStep(main, { dir: 'to' }), 'short-down': tryStep(short, { dir: 'down' }), 'short-bottom': tryStep(short, { dir: 'bottom' }),
+        'bad-dir': tryStep(main, { dir: 'sideways' as ConsoleControlScrollDir }),
+      },
+    },
+    focusOptions: { defaults: focusOptions(undefined), given: focusOptions({ select: false, expand: true, highlightMs: 0 }) },
+    results: {
+      press: consoleControlResult({ verb: 'press', address: 'button:refresh', by: 'claude', reason: 'reload' }, { pressed: 'view:builds/button:refresh' }, { at: '2026-11-13T12:00:00.000Z' }),
+      state: consoleControlResult({ verb: 'state', address: 'scroll:main' }, { state: main }),
+      search: consoleControlResult({ verb: 'search' }, { hits: [] }),
+      'object-address': consoleControlResult({ verb: 'focus', address: { path: [{ kind: 'row', id: 'abc' }] } }, { focused: 'view:builds/tab:orchestrator.sections=pipeline/grid:queue/row:abc' }),
+      'unknown-code': consoleControlFailure('boom', 'x'), denied: consoleControlFailure('denied', 'needs control.console.write', { requires: 'control.console.write' }), 'unknown-error': failureOf(new Error('secret details')),
+    },
+    helpers: { tabId: [tabAddressId('row'), tabAddressId('row', 'v'), tabAddressId('row', null)], child: [childAddress(null, 'view', 'builds'), childAddress('view:builds', 'row', 'a/b')], parent: nearestRegisteredParent(snapshot, parseAddress('view:builds/tab:orchestrator.sections=pipeline/grid:queue/row:abc/button:nope')), 'no-parent': nearestRegisteredParent(snapshot, parseAddress('view:nope/button:x')) },
+  });
+}
+
+// console-control@1 voice intents (core/engines/console-control-voice.mjs; Python twin server/console_control.py voice_intent): phrase → intent → command → reply
+{
+  const phrases = ['scroll down', 'Amber, scroll up a bit please', 'scroll down two pages', 'page down', 'go to the top', 'scroll to the bottom', 'open plugins settings', 'open the pipeline tab',
+    'go to plan studio', 'open settings', 'find dark mode', 'search for snapshot', 'show step 3 of the console control build', 'step three of skins', 'disable plugin skins',
+    'turn off the skins plugin', 'turn the skins plugin off', 'enable voice notes plugin', 'press save', 'click the refresh button', 'Set font scale to 1.2.', 'turn help mode on', 'what time is it', ''];
+  const intents = Object.fromEntries(phrases.map((p) => [p, voiceIntent(p)]));
+  const hit = 'view:build-orchestrator/grid:builds/row:b1';
+  write('console-control-voice.json', {
+    intents,
+    commands: Object.fromEntries(phrases.filter((p) => intents[p]).map((p) => [p, intentCommand(intents[p]!, intents[p]!.find ? hit : null)])),
+    replies: {
+      scroll: voiceReply({ verb: 'scroll', scroll: { dir: 'down' } }, { ok: true, scroll: { fraction: 0.42, atTop: false, atBottom: false } }),
+      bottom: voiceReply({ verb: 'scroll', scroll: { dir: 'bottom' } }, { ok: true, scroll: { fraction: 1, atTop: false, atBottom: true } }),
+      search: voiceReply({ verb: 'search', query: { q: 'x' } }, { ok: true, hits: [{ label: 'Plugins' }, { label: 'Plugin settings' }] }),
+      none: voiceReply({ verb: 'search', query: { q: 'x' } }, { ok: true, hits: [] }),
+      open: voiceReply({ verb: 'open', address: 'view:settings' }, { ok: true, address: 'view:settings' }, 'Settings'),
+      set: voiceReply({ verb: 'set', value: true }, { ok: true, value: true }, 'Help mode'),
+      disable: voiceReply({ verb: 'plugin.disable' }, { ok: true, effects: { loses: [{ name: 'Crew' }] } }, 'Skins'),
+      confirm: voiceReply({ verb: 'press' }, { ok: false, code: 'confirmation_required', message: 'x' }),
+      noConsole: voiceReply({ verb: 'open' }, { ok: false, code: 'unavailable', message: 'x', openUrl: 'https://c/' }),
+      failed: voiceReply({ verb: 'press' }, { ok: false, code: 'denied', message: 'needs Brett' }),
+    },
   });
 }

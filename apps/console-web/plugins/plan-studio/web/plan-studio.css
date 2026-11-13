@@ -158,3 +158,6 @@
 
 /* quick capture */
 .axp-plan-studio__capture { min-width: min(100%, calc(var(--fx-font-size) * 22)); }
+
+/* find by content: the item a deep link asked for stays marked until the next find */
+.axp-plan-studio [data-plan-found] { outline: var(--fx-border-w) solid var(--fx-accent); outline-offset: var(--fx-dens-gap-xs); border-radius: var(--fx-radius-sm); }

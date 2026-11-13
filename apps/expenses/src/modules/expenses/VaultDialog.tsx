@@ -258,13 +258,13 @@ export default function VaultDialog({
     <Paper
       key={file.name}
       variant="outlined"
-      sx={{ p: 1, display: "flex", alignItems: "center", gap: 1, flexWrap: "wrap" }}
+      sx={{ p: 1, display: "flex", alignItems: "center", gap: 'var(--fx-dens-gap-xl)', flexWrap: "wrap" }}
     >
       <Box sx={{ flex: 1, minWidth: 200 }}>
-        <Typography sx={{ fontSize: 12.6, fontWeight: 600 }} noWrap>
+        <Typography sx={{ fontSize: 'var(--fx-type-root-md)', fontWeight: 600 }} noWrap>
           {file.title}
         </Typography>
-        <Typography sx={{ ...MONO, fontSize: 10.5, color: token("dim") }} noWrap>
+        <Typography sx={{ ...MONO, fontSize: 'var(--fx-type-root-xs)', color: token("dim") }} noWrap>
           {file.name} · {humanBytes(file.bytes)} · {humanWhen(file.modified)}
         </Typography>
       </Box>
@@ -291,14 +291,14 @@ export default function VaultDialog({
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-      <DialogTitle sx={{ fontSize: 15, fontWeight: 700, pb: 1 }}>
+      <DialogTitle sx={{ fontSize: 'var(--fx-type-root-lg)', fontWeight: 700, pb: 1 }}>
         {TITLES[mode]}
-        <Typography component="span" sx={{ ...MONO, fontSize: 10.5, color: token("dim"), ml: 1 }}>
+        <Typography component="span" sx={{ ...MONO, fontSize: 'var(--fx-type-root-xs)', color: token("dim"), ml: 1 }}>
           data/axf/expenses/{kind === "save" ? "saves" : "reports"}
         </Typography>
       </DialogTitle>
 
-      <DialogContent dividers sx={{ display: "grid", gap: 1.2 }}>
+      <DialogContent dividers sx={{ display: "grid", gap: 'var(--fx-dens-gap-2xl)' }}>
         {error ? <Alert severity="error" sx={{ py: 0 }}>{error}</Alert> : null}
         {note ? <Alert severity="success" sx={{ py: 0 }}>{note}</Alert> : null}
 
@@ -310,7 +310,7 @@ export default function VaultDialog({
               label="Snapshot filename"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              sx={{ "& input": { ...MONO, fontSize: 12 } }}
+              sx={{ "& input": { ...MONO, fontSize: 'var(--fx-type-root-sm)' } }}
             />
             <Button
               variant="contained"
@@ -322,7 +322,7 @@ export default function VaultDialog({
           </Stack>
         ) : null}
         {mode === "save" && !expenses.length ? (
-          <Typography sx={{ fontSize: 11.5, color: token("dim") }}>
+          <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>
             The ledger is empty — there is nothing to snapshot yet.
           </Typography>
         ) : null}
@@ -347,7 +347,7 @@ export default function VaultDialog({
                 if (file) void importUpload(file);
               }}
             />
-            <Typography sx={{ fontSize: 11.5, color: token("dim") }}>
+            <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>
               Import copies the file into the saved directory; the scan looks through the project for
               anything report-shaped.
             </Typography>
@@ -378,12 +378,12 @@ export default function VaultDialog({
         {loading ? (
           <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
             <CircularProgress size={14} />
-            <Typography sx={{ fontSize: 12, color: token("dim") }}>Reading the saved directory…</Typography>
+            <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>Reading the saved directory…</Typography>
           </Stack>
         ) : null}
 
         {!loading && !files.length ? (
-          <Typography sx={{ fontSize: 12, color: token("dim") }}>
+          <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>
             {kind === "save"
               ? "No saved ledgers yet — snapshots you save appear here."
               : "No saved reports yet — generate one with New report, or import a file."}
@@ -396,7 +396,7 @@ export default function VaultDialog({
           <>
             <Divider />
             <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
-              <Typography sx={{ fontSize: 11, letterSpacing: "0.1em", textTransform: "uppercase", color: token("dim") }}>
+              <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', letterSpacing: "0.1em", textTransform: "uppercase", color: token("dim") }}>
                 Found in the project
               </Typography>
               <Chip size="small" variant="outlined" label={found.length} sx={{ ...MONO, height: 18 }} />
@@ -407,7 +407,7 @@ export default function VaultDialog({
               </Alert>
             ) : null}
             {!found.length ? (
-              <Typography sx={{ fontSize: 12, color: token("dim") }}>
+              <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>
                 Nothing outside the saved directory looked like an expense report.
               </Typography>
             ) : null}
@@ -416,16 +416,16 @@ export default function VaultDialog({
                 <Paper
                   key={candidate.relPath}
                   variant="outlined"
-                  sx={{ p: 1, display: "flex", alignItems: "center", gap: 1, flexWrap: "wrap" }}
+                  sx={{ p: 1, display: "flex", alignItems: "center", gap: 'var(--fx-dens-gap-xl)', flexWrap: "wrap" }}
                 >
                   <Box sx={{ flex: 1, minWidth: 220 }}>
-                    <Typography sx={{ fontSize: 12.4, fontWeight: 600 }} noWrap>
+                    <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', fontWeight: 600 }} noWrap>
                       {candidate.title}
                     </Typography>
-                    <Typography sx={{ ...MONO, fontSize: 10.3, color: token("dim") }} noWrap>
+                    <Typography sx={{ ...MONO, fontSize: 'var(--fx-type-root-xs)', color: token("dim") }} noWrap>
                       {candidate.relPath}
                     </Typography>
-                    <Typography sx={{ fontSize: 10.5, color: token("dim") }} noWrap>
+                    <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim") }} noWrap>
                       {candidate.reason} · {humanBytes(candidate.bytes)} · {humanWhen(candidate.modified)}
                     </Typography>
                   </Box>

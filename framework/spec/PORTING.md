@@ -27,6 +27,8 @@ A port is quick to write because almost everything is already shared and languag
 | Projects (`projects@1`: workspaces with their own builds, notes, to-dos, tasks, lists and plans; each owns a build profile, the base project AmberX AXF keeps every original path, plugin data in `<data dir>/projects/<id>/`, notes in `_shared/_claude/project-notes/<id>/`) | `framework/plan/projects-core.mjs` (pure) + `framework/cli/projects.mjs` (registry `framework/plan/projects.json`, CLI); console server mirror `apps/console-web/server/projects.py`; checks `spec/check-projects.mjs`, `server/test_projects.py` (Nov 12 2026, no fixture yet). **Kotlin twin deferred** (a native app reading the active project and per-project data dirs): Android port on hold, Brett Oct 21 2026. |
 | Notes & tasks (`notes-tasks@1`: one store per project for notes, to-dos, tasks and lists on axHub, a strict superset of amberx-notes@1 plus the Todo manager's per-kind type schema, custom fields, list tones and a `blocked` status; documents and Voice notes projected read-only into the same tree; intents, due buckets, tabs, bulk actions, Markdown export, the todo-store@1 import mapping) | Designed Nov 12 2026 (Fable, build one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx s1): `apps/console-web/plugins/notes-tasks/DESIGN.md`, schema `apps/console-web/plugins/notes-tasks/schema/notes-tasks.schema.json`. Engine to land as `framework/core/engines/notes-rules.mjs` (the AmberX notes + tasks cores moved into the framework), fixture `spec/fixtures/notes.json`, check `spec/check-notes.mts`, Python mirror in the plugin's `server/model.py`. **Kotlin twin deferred** (`NotesRules.kt` replaying the same fixture so a native AmberX reads and writes the same rows): Android port on hold, Brett Oct 21 2026. |
 | Shipped manifest (`shipped-manifest@1`: what the orchestrator sends Shipped features when a build lands: Brett's verbatim prompt and the full brief, models, accounts, steps with estimates and actual times, branch, PR, landed commit, commits, files and areas, tests, UI Review items, cost and tokens, report, what is still open; a small ref on the builds@1 record fires build-hook@1 `shipped`) | `framework/core/shipped-manifest.mjs` (pure) + `framework/cli/shipped.mjs` (gather from the store, git, session meters, UI Review and the report; ship through the builds store; `backfill --since`) + `framework/cli/shipped-files.mjs` (sidecar `_claude/builds/shipped/<build>.json`); fixture `spec/fixtures/shipped-manifest.json` (`spec/check-shipped-manifest.mjs`); snapshots `schemas/shipped-manifest.json`, `schemas/json/shipped-manifest.schema.json`; **Kotlin twin deferred** (Android on hold) |
+| Console control (`console-control@1`: one address for every screen, tab, sub-tab, setting, button, function, plugin, grid row and build step; verbs open / state / press / set / scroll / focus / search / list / plugin.enable / plugin.disable; parse / format, resolve full or trailing addresses against the open console's target snapshot, scroll maths, wire codes incl. `ambiguous`) | `framework/core/engines/console-control.ts` + `console-control-rules.mjs` (pure); fixture `spec/fixtures/console-control.json` (`spec/check-console-control.mts`); snapshots `schemas/console-control.json`, `schemas/json/console-control-*.schema.json`; web registry `react/controlTargets.ts`, scroll `react/scrollControl.ts`; spec `CONSOLE-CONTROL.md` (Nov 13 2026). **Kotlin twin deferred** (`ConsoleControl.kt` replaying the same fixture + a Compose target registry on semantics nodes): Android port on hold, Brett Oct 21 2026. |
+| Console-control voice intents (`console-control-voice@1`: a spoken phrase → one console-control command or a command whose target is words to search; the line spoken back) | `framework/core/engines/console-control-voice.mjs` (pure) + Python twin `apps/console-web/server/console_control.py` (`voice_intent`, `intent_command`, `voice_reply`); fixture `spec/fixtures/console-control-voice.json` (Nov 13 2026). **Kotlin twin deferred** (AmberX native would replay the same fixture): Android port on hold, Brett Oct 21 2026. |
 | Demonstrations, books, clips and docs (`demonstration@1`, `book@1`, `clip@1`, `docs@1`: four asset types built on walkthrough@1 steps — a narrated demo generated from any glossary entry, a book of chapters and items with the wizard's plan and its docs options, a generated clip with its media, recording facts, transcript and large auto-tagged keyword set, generated documentation with depth / format / interactivity and its files; generator, book planner / moves / outline, walkthrough conversion, clip tagger, docs plan) | `framework/core/engines/demo-rules.mjs` (pure, zero tokens; both validators call `demoAssetErrors`); fixture `spec/fixtures/demo.json` (`spec/check-demo.mts`); starters `assets/{demonstration,book,clip,docs}/`; schemas `schemas/json/{demonstration,book,clip,docs}.schema.json`; the Glossary & Index plugin's Demonstration Designer and Book Builder drive them (Nov 7 2026). **Kotlin twin deferred** (`DemoRules.kt` replaying the same fixture; the Kotlin type registry reads asset-types.json, so the four plain optional types validate there already): Android port on hold, Brett Oct 21 2026. |
 | Feature catalog + tracker | `framework/catalog/*.json`, `tracker.json` — the console shows every port's status from the same data; typed models + parsers for catalog@1, status, tracker@1, library@1, libraries@1, boilerplate@1, boilerplates@1 in `core/catalog.ts` = Kotlin `ai.amberx.axf.kernel.catalog` (fixture `spec/fixtures/catalog.json`) |
 
@@ -145,6 +147,16 @@ Regenerate fixtures after changing a reference engine: `npx -y tsx framework/spe
 
 `framework/core/engines/skin.ts` and `skin-rules.mjs` (web only, built on Opus, format marked for a possible Fable review: plan `skins-possible-fable-review-6xha`) have no Kotlin twin. Android work is on hold. A port needs the same pure functions, the same `skin` asset type and the same document on the hub: `normalizeSkin`, `skinFromDesignPackage`, `composeLook`, `lookAfterChange`, `pickSkin`, `setUseSkin`, `backToSkin`, `restoreAppDefault`, `undoRestore`, pinned by `spec/fixtures/skin.json` and `spec/check-skin.mts`. Build skins-asset-types (Fable, Nov 7 2026) added `skin-coverage.mjs` (coverage of every registered type from the registry, the scope chain global → app → UI → plugin with `resolveSkinChain`, `partsErrors`), `composeLookAt`, `resolveLookSkin`, per-scope states in app-look@1 (`scopes`, `skin.inherit`), the hub-wide `skin` field on appearance@1, `iconPack` + `parts` on skin@1, and the runtime's `skinScoped` views; a port carries the same functions and the `coverage` / `scopes` blocks of the fixture. Build skins-own-everything-colour-theme-swaps-independ (Fable, Nov 10 2026) added the colour theme switched inside the skin: `colorTheme` on the app level, on a scope and on the hub-wide skin (never an override, never a new skin), `setSkinColorTheme`, `skinColorTheme`, `skinColorOf`, `setLookSlot(look, slot, id, global)`, the legacy `overrides["color-theme"]` migration on read, and the `colour` block of the fixture; a port carries those too. `theme.ts`'s scrollbar tokens stay out of the output Kotlin is tested against until then. Until a port does this, an Android app keeps reading `appearance@1` directly and shows no skin.
 
+## Deferred: look-migration@1 and the skin sections (Nov 10 2026)
+
+Build remove-the-old-theme-manager-style-and-layout-se (Fable): `framework/core/engines/look-migration.mjs` (the one-run
+fold of the retired theme / style / layout picks and settings into the active skin: `migrateLook`, `foldLegacyPicks`,
+`migrateLookSettings`, `legacyPicks`, `parseLegacyLook`), the `SKIN_SECTIONS` / `SKIN_SWAPPABLE_SECTION` /
+`RETIRED_PACKAGE_TYPES` / `SKIN_SCALE_TYPES` / `skinSlotMap` rules in `skin-rules.mjs`, the optional `behaviorTheme` on
+skin@1 and the `migrated` / `legacy` fields of app-look@1 have no Kotlin twin (Android on hold). A port runs the same
+fold once per profile against `spec/fixtures/look-migration.json` (`fold`, `settings`, `combined` blocks) and keeps the
+two fields through its document rules. Until then an Android app keeps reading `appearance@1` directly.
+
 ## Deferred: build-pipeline@1 route + dispatch (Nov 9 2026)
 
 `framework/core/build-pipeline.mjs` gained `pipeline.route` ('' | api | subscription: the per-build override that lets
@@ -165,6 +177,14 @@ Web only (Android on hold), Kotlin twins when the Android side resumes:
 - `ui-choices@1` (`framework/core/ui-choices.mjs`): the `choices` and `singleOption` fields of ui-review-item@1.
 
 
+## Deferred: skin stepping, banner Skins menu, asset overrides list (Nov 12 2026)
+
+Build `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides`. Web only; the Kotlin twin is deferred (Android on hold):
+- `rt.stepSkin(±1)` and `skin.use:next|prev`; the retired `swap:<style-theme|layout|behavior-theme>:next|prev` step the skin.
+- Banner right-click → Skins (every skin, `skin.use:<id>`), the Skins action-button widget hidden by default.
+- `chromeOverrideList(saved)`, `CONTROLLED_COLOR_KEY` / `controlledColorOf()` (chrome-settings-rules.mjs), actions `chrome.unset`, `chrome.edits`, `settings.controlled-colour`; spec `check-asset-overrides.mjs`.
+- look-migration@1: a folded colour pick lands as the skin's `colorTheme`, never `overrides['color-theme']` (fixture regenerated).
+
 ## Deferred: reliable console delivery + screen focus (Nov 11 2026)
 Web only (Android on hold, build `console-commands-reliable`), Kotlin twins when the Android side resumes:
 - `console-command@1` field `focus`, `consoleSplitFocus` ("<screen> <tab or item>"), `consoleMessageLate` + `CONSOLE_LATE_MS`,
@@ -172,5 +192,21 @@ Web only (Android on hold, build `console-commands-reliable`), Kotlin twins when
 - `followSse` options `idleTimeoutMs` and the follower's `reconnect()` / `idleMs()` / `open()` (`core/sse.ts`); the Kotlin `Sse`
   parser is unchanged, only an Android stream follower would need the idle watchdog.
 
+## Deferred: single settings as console fields (Nov 13 2026)
+Web only (Android on hold, build `full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app`), Kotlin twins when
+the Android side resumes: catalog kind `field` (`type`, `value`, `options`, `min`, `max`, `secret`), `consoleResolveField`,
+`consoleFieldValue`, `CONSOLE_FIELD_TYPES` (`core/engines/console-commands.mjs`), and a `settings.set:<key>:<value>` action in the
+Compose settings host. Plan Studio's find by content (`findInPlans`) is plugin code, no Kotlin side.
+
 ## Deferred: crew-sections@1 section owners (Nov 12 2026)
 Web and host only (Android on hold, build `employee-for-every-section`): the section-owner rules (`apps/console-web/plugins/agent-swarm/web/sections-core.mjs`: `normSections`, `owners`, `assign`, `sectionLine`, `sayKey`, `recentlySaid`, `checkUsages`) and `framework/cli/crew-say.mjs` have no Kotlin twin. Section lines are ordinary swarm-state@1 `report` messages (`jobId` = `<section>` or `<section>:<ref>`), so an Android chat reader shows them unchanged. <!-- axf-plugin:agent-swarm -->
+
+## Deferred: Kotlin asset conformance (Nov 13 2026)
+
+Build everything-on-tokens-before-skins emptied the web part of `framework/spec/conform-baseline.json` (the imported
+Expense app, 923 findings: now on the --fx-* tokens, its token defaults vendored by `framework/cli/vendor-tokens.mjs`).
+The 286 Kotlin findings stay on the baseline, Android on hold: 285 `.dp` spacing / radius literals in Compose
+`padding` / `spacedBy` / `RoundedCornerShape` / `border` calls (→ `Axf.space.x(n)`, `Axf.space.borderWidth`,
+`Axf.shapes.*`) and one `Color(0x…)` literal (→ `Axf.colors.*`), in `framework/android` (230) and `apps/console` (56).
+`Axf.space` is a `@Composable` getter, so each call site needs a compiler to confirm it sits in a composable scope:
+do it with the Android build, then run `node framework/cli/check-theme.mjs --update-baseline` to empty the file.

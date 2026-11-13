@@ -595,6 +595,15 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 .fx-search-flash { animation: fx-search-flash 1.8s ease; border-radius: var(--fx-radius-sm); }
 [data-reduced-motion] .fx-search-flash { animation: none !important; outline: 3px solid var(--fx-accent); outline-offset: 2px; }
 
+/* ---------------- console-control@1 (react/controlTargets.ts): a focused target is tinted through the theme's opacity tokens ---------------- */
+.fx-control-scope { display: contents; }
+@keyframes fx-control-focus {
+  0% { box-shadow: 0 0 0 0 transparent; }
+  15%, 100% { box-shadow: 0 0 0 calc(var(--fx-border-w) * 2) var(--fx-focus); background-color: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); }
+}
+.fx-control-focus { animation: fx-control-focus 0.4s ease forwards; border-radius: var(--fx-radius-sm); }
+[data-reduced-motion] .fx-control-focus { animation: none !important; outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: 2px; background-color: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); }
+
 /* ---------------- reference links (ref@1, RefText): a mention of a real thing in banner / build text ---------------- */
 .fx-ref {
   cursor: pointer; border-radius: var(--fx-radius-sm); text-decoration: underline dotted;
@@ -1822,3 +1831,11 @@ html[data-axf-help='on'] button[data-axf-help-id], html[data-axf-help='on'] [rol
 .axf-priority-panel__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap); }
 .axf-priority-panel__row { width: 100%; justify-content: flex-start; flex-wrap: wrap; column-gap: var(--fx-dens-gap-xl); text-align: start; height: auto; }
 .axf-priority-panel__title { overflow-wrap: anywhere; }
+
+/* Asset overrides: a setting an asset overrides is marked in the controlled-item colour (Settings → Appearance) */
+.axf-controlled { border-inline-start: calc(var(--fx-border-w) * 3) solid var(--fx-warning); padding-inline-start: var(--fx-dens-gap-sm); }
+.axf-controlled--accent { border-inline-start-color: var(--fx-accent); }
+.axf-controlled--info { border-inline-start-color: var(--fx-info); }
+.axf-controlled--success { border-inline-start-color: var(--fx-success); }
+.axf-controlled--danger { border-inline-start-color: var(--fx-danger); }
+.axf-controlled__note { align-items: center; gap: var(--fx-dens-gap-xs); }

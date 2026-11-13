@@ -27,7 +27,7 @@ what it needs, and what it answers are decided here once, so the docs, the tools
 | Field | Meaning |
 |---|---|
 | `op` | `list` · `get` · `set` · `reset` · `add` · `remove` · `act` |
-| `target` | `tokens.theme` · `tokens.style` · `tokens.layout` · `tokens.typography` · `tokens.density` · `tokens.sizing` · `tokens.look` · `tokens.custom` · `tokens.slots` · `tokens.nav` · `amberx.items` · `amberx.lists` · `planner.plans` · `planner.builds` · `console.screens` · `console.dialogs` · `console.settings` · `console.actions` · `console.nav` · `console.clients` · `pass.scopes` · `plugins.commands` · `plugins.reads` |
+| `target` | `tokens.theme` · `tokens.style` · `tokens.layout` · `tokens.typography` · `tokens.density` · `tokens.sizing` · `tokens.look` · `tokens.custom` · `tokens.slots` · `tokens.nav` · `amberx.items` · `amberx.lists` · `planner.plans` · `planner.builds` · `console.screens` · `console.dialogs` · `console.settings` · `console.actions` · `console.nav` · `console.clients` · `pass.scopes` · `plugins.commands` · `plugins.reads` · `console.control` |
 | `path` | the token id (`navWidth`, `accent`, `scale.md`, `button.radius@amber`) or the record id; `get`/`set`/`remove`/`act` need it, `reset` without one resets the whole target |
 | `value` | what to set (a token value, or the fields to change on a record) · the new record for `add` |
 | `action` + `input` | the verb for `act` and what it wants (`done`, `move {list}`, `approve {phase}`, `step {step, done}` …) |
@@ -67,6 +67,9 @@ goes there. `console.screens`, `console.dialogs` and `console.settings` (tabs an
 takes `get` (where the console is) and `act back | home | close`; `console.clients` lists the consoles open for the caller. Every
 list and resolve runs against the catalog the open consoles report (their search index: views, settings tabs, dialogs, actions),
 so plugins' screens are found too. Every act takes `input.to`: `recent` (default, the console Brett is looking at: a client in front wins, then the one used last), `all`, or a client id.
+`console.control` reaches any console-control@1 address (spec/CONSOLE-CONTROL.md): path = the address, `list` the targets under it,
+`get` its state (no path: where the console is), `act <verb>` with the verb as the action (focus, scroll navigate; press, set,
+plugin.enable / plugin.disable write). A plan's `links[]` entry (or any item) may carry `{ address }` to point at a place in the console.
 A console inside a host says so (Nov 3 2026, build `molly-console-commands`): `app: molly/console-web`, `host: molly`, and `front` (its page is visible
 and the host shows its frame, embed@1 `shown`); before it runs a command while hidden it asks the host to bring it forward (embed@1 `show`), and
 Molly with xLayout opens the Console frame hidden at start (`warm`), so a command while Molly is open always lands in Molly.
@@ -90,6 +93,17 @@ re-sent and answers `failed`. A console that gets a live command more than `CONS
 (`consoleMessageLate`) and acks `skipped`; a late ack from the console asked first settles the queued copy (`how: late ack`).
 Every act answer carries `status`: `delivered` (a console acked it as done) · `pending` (nobody acked yet) · `failed`, and
 `delivery.tried` (the consoles asked, in turn) with `delivery.how` `live` · `after retry` · the ones above.
+Single settings (build full-voice-and-ai-control, Nov 13 2026): every console reports each setting with a value as a catalog item of kind
+`field` (id = its key, parent = its tab, type, current value as text, options, min / max; secrets say `secret: true` and never send a value).
+`console.settings` reaches them: `act open` with a key, `field:<key>`, `<tab>/<key>` or its name opens the tab scrolled to it (a tab of the
+same name wins); `get` reads the value; `list` with `q` lists matching fields after the tabs. `console.actions run settings.set:<key>:<value>`
+changes one (`consoleFieldValue` parses on/off/toggle, numbers in range, choices by value, comma lists; the setting's own `requires` applies;
+a refused value is the ack's message). The catalog is re-sent when a setting changes, so a `get` right after a set reads the new value.
+Find by content (same build): Plan Studio's `plan-studio.focus:<focus>` opens a plan down to one item: `<plan id>`, `<plan id>/<item ref>`
+(step id, `risks:2`, comment id, `body:4`) or words — "the plan about X, the step that mentions Y" — that its `find` resolves to the best
+hit. REST `GET /api/plugins/plan-studio/find?q=|plan=&item=&kind=` (also `plugins.reads plan-studio/find`, MCP `plan-studio_find`,
+`axf plan-studio find`), CLI `plans.mjs find <words>`; every hit carries its `focus`, and `console_open "plan-studio <focus or words>"` /
+`console_show` open it. <!-- axf-plugin:plan-studio -->
 Focus on a screen: `act open` on `console.screens` takes `input.focus` or a path "<screen id or title> <rest>" ("build-orchestrator
 pending", `consoleSplitFocus`); the message carries `focus` and the console runs the screen's own `<screen>.focus:<focus>` action.
 The console server asks the capability `console-focus@1` (the Build orchestrator provides it) to map `build:<id>` (or a bare build id that is no screen id) to its screen with that focus: the build's

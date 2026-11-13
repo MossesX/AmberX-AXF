@@ -459,6 +459,114 @@ export function searchText(p) {
     ...p.links.map((l) => `${l.ref} ${l.label}`), ...p.features.map((f) => `${f.entry} ${f.feature} ${f.title}`), ...p.touches.map((t) => t.key),
     ...p.comments.map((c) => c.text), ...p.attachments.map((a) => `${a.name} ${a.transcript}`)].join('\n').toLowerCase();
 }
+/* ------------------------------------------------------------------ find by content (deep links down to the item) */
+
+/**
+ * Find by content (build full-voice-and-ai-control, Nov 13 2026, Brett: "jump to the plan about X, the step that mentions
+ * Y"). A plan named by what it is about, then an item inside it named by what it says: a step, a list item (requirements,
+ * acceptance, decisions, questions, risks, out of scope), a comment or a paragraph of the body. Every hit carries the
+ * focus text Plan Studio's `plan-studio.focus:<focus>` opens (`<plan id>` or `<plan id>/<item ref>`), so REST, MCP, the CLI
+ * and voice all land on the same row.
+ */
+const FIND_FILLER = new Set(['the', 'a', 'an', 'that', 'which', 'about', 'on', 'for', 'with', 'of', 'to', 'in', 'my', 'me', 'please', 'one', 'and', 'it']);
+const fold = (s) => str(s, 200000).toLowerCase().normalize('NFKD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, ' ').trim();
+const findWords = (s) => fold(s).split(' ').filter((w) => w && !FIND_FILLER.has(w));
+/** Item kinds a spoken query can name → the parts of a plan they search. */
+export const FIND_KINDS = { step: ['step'], task: ['step'], item: [], line: [], requirement: ['requirements'], acceptance: ['acceptance'], check: ['acceptance'], decision: ['decisions'], question: ['questions'], risk: ['risks'], scope: ['outOfScope'], comment: ['comment'], note: ['comment'], paragraph: ['body'], section: ['body'] };
+
+/**
+ * A spoken or typed find, split: "jump to the plan about voice control, the step that mentions MCP" →
+ * { plan: 'voice control', item: 'MCP', kind: 'step' }. Without a plan/item shape the whole text is the plan words.
+ */
+export function parseFind(text) {
+  let t = str(text, 600).trim().replace(/^(please\s+)?(jump|go|take me|bring me|open|show( me)?|find|search|look)\s+(to|for|up)?\s*/i, '');
+  let item = ''; let kind = '';
+  const m = new RegExp(`(?:^|[,;.]|\\s(?:and|then))\\s*(?:(?:jump|go)\\s+to\\s+|find\\s+)?(?:the\\s+|its\\s+)?(${Object.keys(FIND_KINDS).join('|')})s?\\s+(?:that\\s+|which\\s+|where\\s+it\\s+)?(?:mentions?|mentioning|says|saying|about|with|contains?|containing|on|for|is)\\s+(.+)$`, 'i').exec(t);
+  if (m) { kind = m[1].toLowerCase(); item = m[2].trim().replace(/^["'“]|["'”.]$/g, ''); t = t.slice(0, m.index).trim(); }
+  const plan = t.replace(/^(the\s+)?plans?\s*((that\s+)?(is\s+)?(about|on|for|called|named|titled|mentioning|mentions|with))?\s*/i, '').replace(/^["'“]|["'”.,]$/g, '').trim();
+  return { plan, item, kind };
+}
+
+/** The parts of a plan an item search runs over: { kind, ref, label, text }. `ref` is what the focus names after the plan id. */
+export function planUnits(p) {
+  const out = [];
+  for (const s of arr(p.steps)) out.push({ kind: 'step', ref: s.id, label: 'Step', text: str(s.text) });
+  for (const k of LIST_IDS) arr(p[k]).forEach((x, i) => out.push({ kind: k, ref: `${k}:${i}`, label: LISTS[k].label, text: [x.text, x.answer, x.mitigation].filter(Boolean).join(' — ') }));
+  for (const c of arr(p.comments)) out.push({ kind: 'comment', ref: c.id, label: 'Comment', text: str(c.text) });
+  str(p.body, 200000).split(/\n\s*\n/).map((x) => x.trim()).forEach((para, i) => { if (para) out.push({ kind: 'body', ref: `body:${i}`, label: 'Body', text: para }); });
+  return out;
+}
+
+/** How well a text matches every word (0 = a word is missing). Whole words beat prefixes beat substrings. */
+function wordScore(text, words) {
+  if (!words.length) return 0;
+  const f = fold(text);
+  const ws = new Set(f.split(' '));
+  let score = 0;
+  for (const w of words) {
+    if (ws.has(w)) score += 3;
+    else if ([...ws].some((x) => x.startsWith(w))) score += 2;
+    else if (f.includes(w)) score += 1;
+    else return 0;
+  }
+  return score;
+}
+
+/** How well a plan is "about" the words: the title counts most, then summary / goal / category / tags, then anything in it. */
+function planScore(p, words) {
+  if (!words.length) return 1;
+  const all = wordScore(searchText(p), words);
+  if (!all) return 0;
+  return wordScore(p.title, words) * 4 + wordScore([p.summary, p.goal, p.category, p.tags.join(' '), p.id].join(' '), words) * 2 + all;
+}
+
+const snippet = (text, words, max = 160) => {
+  const t = str(text).replace(/\s+/g, ' ').trim();
+  if (t.length <= max) return t;
+  const low = t.toLowerCase();
+  const at = Math.max(0, Math.min(...words.map((w) => { const i = low.indexOf(w); return i < 0 ? Infinity : i; })) - 40);
+  return `${at > 0 ? '…' : ''}${t.slice(at === Infinity ? 0 : at, (at === Infinity ? 0 : at) + max)}…`;
+};
+
+/**
+ * Find plans and items inside them. q = a whole spoken / typed find (parseFind splits it), or plan / item / kind given
+ * apart. → { hits: [{ plan: { id, title, status }, item?: { kind, ref, label, text }, score, focus }], plan, item, kind }.
+ * Plans that match nothing are left out; with item words, only plans that hold a matching item are hits.
+ */
+export function findInPlans(plans, f = {}, { limit = 10 } = {}) {
+  const parsed = f.q ? parseFind(f.q) : { plan: '', item: '', kind: '' };
+  const planQ = str(f.plan ?? '', 400).trim() || parsed.plan;
+  const itemQ = str(f.item ?? '', 400).trim() || parsed.item;
+  const kind = str(f.kind ?? '', 40).trim().toLowerCase().replace(/s$/, '') || parsed.kind;
+  const pw = findWords(planQ);
+  const iw = findWords(itemQ);
+  const only = FIND_KINDS[kind] ?? (LIST_IDS.includes(kind) ? [kind] : []);
+  const hits = [];
+  for (const p of arr(plans)) {
+    const ps = planScore(p, pw);
+    if (!ps) continue;
+    const head = { id: p.id, title: p.title, status: p.status };
+    if (!iw.length) { hits.push({ plan: head, score: ps, focus: p.id }); continue; }
+    for (const u of planUnits(p)) {
+      if (only.length && !only.includes(u.kind)) continue;
+      const is = wordScore(u.text, iw);
+      if (!is) continue;
+      hits.push({ plan: head, item: { kind: u.kind, ref: u.ref, label: u.label, text: snippet(u.text, iw) }, score: is * 10 + (pw.length ? ps : 0), focus: `${p.id}/${u.ref}` });
+    }
+  }
+  hits.sort((a, b) => b.score - a.score || a.plan.title.localeCompare(b.plan.title));
+  return { hits: hits.slice(0, Math.max(1, Math.min(Number(limit) || 10, 100))), plan: planQ, item: itemQ, kind };
+}
+
+/** A focus text split: "<plan id>/<item ref>" → { id, ref }; anything else is a find (`find` = the text). */
+export function parseFocus(focus, plans = []) {
+  const t = str(focus, 600).trim();
+  const slash = t.indexOf('/');
+  const id = slash < 0 ? t : t.slice(0, slash);
+  if (arr(plans).some((p) => p.id === id)) return { id, ref: slash < 0 ? '' : t.slice(slash + 1) };
+  return { find: t };
+}
+
 /** filter: {q, statuses[], priorities[], categories[] (a category includes its sub-categories), tags[], projects[], profiles[], models[], hasBuild} */
 export function filterPlans(plans, f = {}) {
   const words = str(f.q).toLowerCase().split(/\s+/).filter(Boolean);

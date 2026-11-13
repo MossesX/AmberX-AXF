@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amberx.ai/axf/schemas/prompt.schema.json",
+  "title": "prompt@1 (feature-ledger@1): what Brett said",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "said",
+    "verbatim"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "prompt@1"
+    },
+    "id": {
+      "type": "string"
+    },
+    "build": {
+      "type": "string"
+    },
+    "profile": {
+      "type": "string"
+    },
+    "kind": {
+      "enum": [
+        "origin",
+        "addendum"
+      ]
+    },
+    "index": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "said": {
+      "type": "string",
+      "minLength": 1
+    },
+    "at": {
+      "type": "string"
+    },
+    "source": {
+      "type": "string"
+    },
+    "by": {
+      "type": "string"
+    },
+    "session": {
+      "type": "string"
+    },
+    "link": {
+      "type": "string"
+    },
+    "verbatim": {
+      "type": "boolean"
+    },
+    "mayBeParaphrased": {
+      "type": "boolean"
+    },
+    "from": {
+      "type": "string"
+    }
+  }
+}
