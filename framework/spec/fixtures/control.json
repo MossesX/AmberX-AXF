@@ -351,7 +351,8 @@
         "refresh": "navigate",
         "back": "navigate",
         "home": "navigate",
-        "close": "navigate"
+        "close": "navigate",
+        "open_url": "navigate"
       },
       "plugins.commands": {
         "run": "write"

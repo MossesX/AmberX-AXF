@@ -3,13 +3,14 @@
  * Checks: catalog from search entries + actions, resolve (id, sub-tab path, title, words, ambiguous, nothing), action
  * policy (navigate / write / destructive, the action's own `requires`), client picking (recent, all, id, stale), the
  * runner end to end after the gate (list, get, open, run, confirm, back, clients, no console), and the message check.
+ * Opening a URL (build drive-live-console-first): the allowlist, where each URL lands, console.nav act open_url.
  *   npx -y tsx framework/spec/check-console-commands.mts
  */
 import assert from 'node:assert/strict';
 import { controlGate } from '../core/engines/control-rules.mjs';
 import {
   CONSOLE_CLIENT_STALE_MS, CONSOLE_LATE_MS, CONSOLE_TOOLS, consoleActionConfirm, consoleActionEffect, consoleActionNeeds, consoleCatalogFrom, consoleFieldValue, consoleMessage, consoleMessageErrors,
-  consoleMessageLate, consolePickClients, consoleResolve, consoleSearch, consoleSplitFocus, normalizeConsoleCatalog, runConsoleCommand,
+  consoleMessageLate, consoleOwnUrl, consolePickClients, consoleResolve, consoleSearch, consoleSplitFocus, consoleUrlRoute, normalizeConsoleCatalog, runConsoleCommand,
 } from '../core/engines/console-commands.mjs';
 
 let n = 0;
@@ -160,7 +161,7 @@ ok(consoleMessageErrors({ $axf: 'console-command@1', op: 'open', kind: 'action',
 ok(consoleMessageErrors({ $axf: 'console-command@1', op: 'explode' }).length === 1, 'unknown op refused');
 ok(consoleMessageErrors({ op: 'back' }).length === 1, 'frame required');
 eq(consoleMessage({ op: 'back' }, { id: 'x', by: 'me', now: NOW }), { $axf: 'console-command@1', id: 'x', op: 'back', by: 'me', at: new Date(NOW).toISOString() }, 'message shape');
-eq(CONSOLE_TOOLS.length, 9, 'nine MCP shortcut tools');
+eq(CONSOLE_TOOLS.length, 10, 'ten MCP shortcut tools');
 
 /* ---- focus on a screen (console-commands-reliable, Nov 11 2026): a tab or an item after the screen's name ---- */
 {
@@ -219,6 +220,48 @@ ok(CONSOLE_CLIENT_STALE_MS <= 60_000, 'a console that stopped beating drops with
   eq(consoleMessageLate(m, NOW2 + 1_000), false, 'on time');
   eq(consoleMessageLate(m, NOW2 + CONSOLE_LATE_MS + 1), true, 'a live command that reached a waking tab late is skipped');
   eq(consoleMessageLate({ ...m, delivery: 'queued' }, NOW2 + CONSOLE_LATE_MS * 10), false, 'a queued command always runs');
+}
+
+/* ---- opening a URL in the console (console.nav act open_url) ---- */
+{
+  eq(consoleOwnUrl('https://console.amberxai.com/?view=builds').url, 'https://console.amberxai.com/?view=builds', 'own https page');
+  eq(consoleOwnUrl('https://AmberXAI.com').url, 'https://amberxai.com/', 'host folded, root path added');
+  eq(consoleOwnUrl('https://axhub.amberxai.com:443/x').url, 'https://axhub.amberxai.com/x', 'port 443 is the default');
+  for (const [bad, why] of [['http://console.amberxai.com/', 'http'], ['https://evil.com/', 'other site'], ['https://amberxai.com.evil.com/', 'suffix trick'], ['https://evilamberxai.com/', 'look-alike'],
+    ['https://a@console.amberxai.com/', 'user info'], ['https://console.amberxai.com:8443/', 'port'], ['javascript:alert(1)', 'script'], ['', 'empty'], [`https://amberxai.com/${'a'.repeat(2001)}`, 'too long'],
+    ['https://console.amberxai.com/"onload', 'quote'], ['https://console.amberxai.com./', 'trailing dot']] as const) ok(consoleOwnUrl(bad).error, `refused: ${why}`);
+  const at = { console: 'https://console.amberxai.com', hub: 'https://axhub.amberxai.com' };
+  eq(consoleUrlRoute('https://console.amberxai.com/?view=plan-studio', at).how, 'screen', 'console ?view → its screen in place');
+  const d = consoleUrlRoute('https://console.amberxai.com/?dialog=asset-json&arg=x%20y', at);
+  ok(d.how === 'dialog' && d.target === 'asset-json' && d.arg === 'x y', 'console ?dialog (+arg) → the dialog in place');
+  const st = consoleUrlRoute('https://console.amberxai.com/?settings=appearance&anchor=setting:compact', at);
+  ok(st.how === 'settings' && st.target === 'appearance' && st.anchor === 'setting:compact', 'console ?settings (+anchor) → the tab in place');
+  eq(consoleUrlRoute('https://console.amberxai.com/', at).how, 'here', 'the console root: already here');
+  eq(consoleUrlRoute('https://console.amberxai.com/docs/x', at).how, 'tab', 'another page on the console host: a tab');
+  eq(consoleUrlRoute('https://axhub.amberxai.com/auth/admin/approvals/c_123', at).spec, 'approvals.view:c_123', 'an axHub approval → its dialog in the console');
+  eq(consoleUrlRoute('https://axhub.amberxai.com/auth/admin/approvals/c_123', at, { popup: true }).spec, 'approvals.popup:c_123', 'a pushed approval pops up once');
+  eq(consoleUrlRoute('https://axhub.amberxai.com/auth/admin/approvals', at).spec, 'approvals.check', 'the approvals list → the banner');
+  eq(consoleUrlRoute('https://axhub.amberxai.com/auth/admin/approvals/a%2Fb', at).how, 'tab', 'an approval id that is no id → a tab');
+  eq(consoleUrlRoute('https://axhub.amberxai.com/auth/admin/projects', at).how, 'tab', 'another axHub page: a tab');
+  eq(consoleUrlRoute('https://www.amberxai.com/', {}).how, 'tab', 'no origins known: a tab');
+  ok(consoleUrlRoute('https://evil.com/', at).error, 'the route refuses what consoleOwnUrl refuses');
+
+  const openUrl = (url: unknown, more: Record<string, unknown> = {}) => ({ op: 'act', target: 'console.nav', path: 'here', action: 'open_url', input: { url, ...more } });
+  ok(gated(openUrl('https://axhub.amberxai.com/'), ['control.console.navigate']).ok, 'open_url passes the gate with navigate alone');
+  ok(!gated({ op: 'act', target: 'console.nav', path: 'here', action: 'open_url' }, ['*']).ok, 'open_url without input.url fails the gate');
+  const u1 = runConsoleCommand(openUrl('https://axhub.amberxai.com/auth/admin/approvals/c_1'), ctx);
+  ok(u1.ok && u1.deliver!.message.op === 'url' && u1.deliver!.message.url === 'https://axhub.amberxai.com/auth/admin/approvals/c_1' && u1.deliver!.to.join() === 'phone', 'open_url → a url message to the console used last');
+  eq(consoleMessageErrors(u1.ok ? u1.deliver!.message : null), [], 'the url message is valid');
+  const u2 = runConsoleCommand(openUrl('https://axhub.amberxai.com/auth/admin/approvals/c_1', { popup: true }), ctx);
+  ok(u2.ok && u2.deliver!.message.arg === 'popup', 'popup carries through');
+  const u3 = runConsoleCommand(openUrl('https://evil.com/'), ctx);
+  ok(!u3.ok && u3.code === 'denied', 'another site is denied');
+  const u4 = runConsoleCommand(openUrl('http://console.amberxai.com/'), ctx);
+  ok(!u4.ok && u4.code === 'validation', 'http is a validation error');
+  const u5 = runConsoleCommand(openUrl('https://amberxai.com/'), { ...ctx, clients: [] });
+  ok(!u5.ok && u5.noConsole === true, 'no console: noConsole (the server decides queue or fall back)');
+  ok(consoleMessageErrors({ ...(u1.ok ? u1.deliver!.message : {}), url: 'https://evil.com/' }).length > 0, 'a crafted url message is refused by the console');
+  ok(CONSOLE_TOOLS.includes('console_open_url'), 'console_open_url is a console tool');
 }
 
 console.log(`✓ console commands — ${n} checks`);

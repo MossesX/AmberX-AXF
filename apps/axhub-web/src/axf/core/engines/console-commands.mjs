@@ -16,9 +16,11 @@
  *            `console.settings` opens it (its tab, scrolled to it), lists and reads it; `settings.set:<key>:<value>` sets it.
  *   client   { id, app, host?, front?, title, device, user, lastUsed, here, catalog }   (one per open console tab, kept by the server;
  *            app `molly/console-web` + host `molly` inside Molly; front = visible and shown by its host)
- *   message  { $axf: 'console-command@1', id, op: open|run|back|home|close|refresh, kind?, target?, label?, spec?, anchor?, arg?, focus?, hard?, by, at }
+ *   message  { $axf: 'console-command@1', id, op: open|run|back|home|close|refresh|url, kind?, target?, label?, spec?, anchor?, arg?, focus?, hard?, url?, by, at }
  *            focus = what to bring forward on the opened screen (a tab or an item: a build id on the Build orchestrator);
  *            the console runs the screen's own `<screen>.focus:<focus>` action when it has one.
+ *            op `url` (build drive-live-console-first, Nov 13 2026): open one of Brett's own pages (consoleOwnUrl) in the
+ *            console; consoleUrlRoute says where (a screen, dialog or settings tab in place, an approval's dialog, else a tab).
  *
  * Kotlin twin deferred (Android on hold, spec/PORTING.md).
  */
@@ -46,7 +48,12 @@ export const CONSOLE_HEARTBEAT_MS = 15_000;
 /** A command a console receives later than this after it was sent live is skipped (it went to a tab that was asleep). */
 export const CONSOLE_LATE_MS = 30_000;
 /** The MCP shortcut tools every console MCP server publishes (names are a contract: Claude sessions call them through axHub). */
-export const CONSOLE_TOOLS = ['console_open', 'console_dialog', 'console_settings', 'console_action', 'console_back', 'console_where', 'console_list', 'console_clients', 'console_refresh'];
+export const CONSOLE_TOOLS = ['console_open', 'console_dialog', 'console_settings', 'console_action', 'console_back', 'console_where', 'console_list', 'console_clients', 'console_refresh', 'console_open_url'];
+/** The only sites `console.nav` act `open_url` opens (and their subdomains): the same list axHub's amberx.open_url keeps. */
+export const CONSOLE_URL_DOMAINS = ['amberxai.com'];
+export const CONSOLE_URL_MAX = 2000;
+/** The console ops a console-command@1 message carries. */
+export const CONSOLE_MESSAGE_OPS = ['open', 'run', 'back', 'home', 'close', 'refresh', 'url'];
 
 /** Action ids that only navigate (open, show, move a window): run with control.console.navigate alone. */
 const NAVIGATING = /^(nav|dialog|settings\.open|banners\.settings|windows\.[A-Za-z]+|terminal\.(open|dialog)|help(\.[A-Za-z.]+)?|help\.mode|search(\.[A-Za-z]+)?|inspector|asset\.json|plugins\.open|views?\.[A-Za-z.]+)$/;
@@ -332,7 +339,7 @@ export const consoleClientSummary = (c) => ({ id: c.id, app: c.app ?? 'console-w
 export function consoleMessage(fields, { id, by = '', now = Date.now() } = {}) {
   const m = { $axf: CONSOLE_COMMAND_FRAME, id: String(id ?? ''), op: fields.op };
   if (fields.hard === true) m.hard = true;
-  for (const k of ['kind', 'target', 'label', 'spec', 'anchor', 'arg', 'focus']) if (fields[k] !== undefined && fields[k] !== '') m[k] = String(fields[k]);
+  for (const k of ['kind', 'target', 'label', 'spec', 'anchor', 'arg', 'focus', 'url']) if (fields[k] !== undefined && fields[k] !== '') m[k] = String(fields[k]);
   m.by = by;
   m.at = new Date(now).toISOString();
   return m;
@@ -342,9 +349,10 @@ export function consoleMessage(fields, { id, by = '', now = Date.now() } = {}) {
 export function consoleMessageErrors(m) {
   const errors = [];
   if (!isObj(m) || m.$axf !== CONSOLE_COMMAND_FRAME) return [`$axf must be ${CONSOLE_COMMAND_FRAME}`];
-  if (!['open', 'run', 'back', 'home', 'close', 'refresh'].includes(m.op)) errors.push('op must be open, run, back, home, close or refresh');
+  if (!CONSOLE_MESSAGE_OPS.includes(m.op)) errors.push('op must be open, run, back, home, close, refresh or url');
   if (m.op === 'open' && (!CONSOLE_ITEM_KINDS.includes(m.kind) || m.kind === 'action' || !m.target)) errors.push('open needs a kind (screen, dialog, settings) and a target');
   if (m.op === 'run' && !m.spec) errors.push('run needs an action spec');
+  if (m.op === 'url' && consoleOwnUrl(m.url).error) errors.push(`url: ${consoleOwnUrl(m.url).error}`);
   return errors;
 }
 
@@ -357,6 +365,73 @@ export function consoleMessageLate(m, now = Date.now()) {
   if (!isObj(m) || m.delivery) return false;
   const at = Date.parse(String(m.at ?? ''));
   return Number.isFinite(at) && now - at > CONSOLE_LATE_MS;
+}
+
+/* ================================================================== opening a URL in the console */
+
+/**
+ * A URL the console may open: https on CONSOLE_URL_DOMAINS (or a subdomain), no user info, the default port, at most
+ * CONSOLE_URL_MAX characters. → { url } (normalised) or { error }. Pure: no URL global needed (the Python side and old
+ * runtimes run it too).
+ */
+export function consoleOwnUrl(raw) {
+  const text = typeof raw === 'string' ? raw.trim() : '';
+  if (!text) return { error: 'url is required' };
+  if (text.length > CONSOLE_URL_MAX) return { error: `url is longer than ${CONSOLE_URL_MAX} characters` };
+  const m = /^https:\/\/([^/?#]*)([^?#]*)(\?[^#]*)?(#.*)?$/i.exec(text);
+  if (!m) return { error: 'only https pages can be opened' };
+  const [, authority, path, query = '', hash = ''] = m;
+  if (authority.includes('@')) return { error: 'url can\'t carry a user name or password' };
+  const [hostRaw, port = ''] = authority.split(':');
+  if (port && port !== '443') return { error: 'url can\'t name a port' };
+  const host = hostRaw.toLowerCase();
+  if (!/^[a-z0-9.-]+$/.test(host) || host.endsWith('.') || !CONSOLE_URL_DOMAINS.some((d) => host === d || host.endsWith(`.${d}`))) {
+    return { error: `only Brett's own sites (${CONSOLE_URL_DOMAINS.join(', ')}) open, not "${host || text.slice(0, 80)}"` };
+  }
+  if (/[\s<>"'`\\]/.test(text)) return { error: 'url has characters a link can\'t carry' };
+  return { url: `https://${host}${path || '/'}${query}${hash}`, host, path: path || '/', query, hash };
+}
+
+const queryOf = (q) => Object.fromEntries(String(q ?? '').replace(/^\?/, '').split('&').filter(Boolean).map((kv) => {
+  const i = kv.indexOf('=');
+  const dec = (x) => { try { return decodeURIComponent(x.replace(/\+/g, ' ')); } catch { return x; } };
+  return i < 0 ? [dec(kv), ''] : [dec(kv.slice(0, i)), dec(kv.slice(i + 1))];
+}));
+const hostOf = (origin) => String(origin ?? '').replace(/^https?:\/\//i, '').replace(/[/:].*$/, '').toLowerCase();
+const APPROVAL_ID = /^[A-Za-z0-9_-]{1,80}$/;
+
+/**
+ * Where an open console shows a URL (consoleOwnUrl first). ctx = { console: its own origin, hub: axHub's origin }.
+ *   the console's own page   ?view=<screen> | ?dialog=<id>[&arg=…] | ?settings=<tab>[&anchor=…] → that, in place;
+ *                            anything else on its root → { how: 'here' } (it is already open)
+ *   axHub approvals          <hub>/auth/admin/approvals/<id> → the action approvals.view:<id> (the call's own dialog:
+ *                            approvals.veto for a held call, approvals.review for one waiting); `popup: true` (a new
+ *                            request the hub pushed) → approvals.popup:<id> (once, unless pop-ups are off)
+ *                            <hub>/auth/admin/approvals → the action approvals.check (the banner lists them)
+ *   anything else            { how: 'tab' }: a new browser tab from the console
+ * → { how: 'here'|'screen'|'dialog'|'settings'|'action'|'tab', url, target?, spec?, arg?, anchor?, label } or { error }.
+ */
+export function consoleUrlRoute(raw, ctx = {}, opts = {}) {
+  const u = consoleOwnUrl(raw);
+  if (u.error) return { error: u.error };
+  const q = queryOf(u.query);
+  const base = { url: u.url };
+  if (ctx.console && u.host === hostOf(ctx.console) && (u.path === '/' || u.path === '')) {
+    if (q.view) return { ...base, how: 'screen', target: str(q.view, 160), label: str(q.view, 160) };
+    if (q.dialog) return { ...base, how: 'dialog', target: str(q.dialog, 160), ...(q.arg ? { arg: str(q.arg, 400) } : {}), label: str(q.dialog, 160) };
+    if (q.settings) return { ...base, how: 'settings', target: str(q.settings, 160), ...(q.anchor ? { anchor: str(q.anchor, 160) } : {}), label: `${str(q.settings, 160)} settings` };
+    return { ...base, how: 'here', label: 'the console' };
+  }
+  if (ctx.hub && u.host === hostOf(ctx.hub)) {
+    const a = /^\/auth\/admin\/approvals\/?([^/]*)\/?$/.exec(u.path);
+    if (a) {
+      let id = a[1];
+      try { id = decodeURIComponent(id); } catch { /* left as sent */ }
+      if (!id) return { ...base, how: 'action', spec: 'approvals.check', label: 'axHub approvals' };
+      if (APPROVAL_ID.test(id)) return { ...base, how: 'action', spec: `approvals.${opts.popup === true ? 'popup' : 'view'}:${id}`, label: `approval ${id}` };
+    }
+  }
+  return { ...base, how: 'tab', label: u.url.length > 80 ? `${u.url.slice(0, 80)}…` : u.url };
 }
 
 /* ================================================================== the console domain of control@1 */
@@ -392,6 +467,11 @@ export function runConsoleCommand(c, ctx = {}) {
 
   if (c.target === 'console.nav') {
     if (c.op === 'get') return { ok: true, data: { value: normalizeHere(targets[0].here), client: consoleClientSummary(targets[0]) } };
+    if (c.action === 'open_url') {
+      const u = consoleOwnUrl(input.url);
+      if (u.error) return fail(u.error.startsWith('only Brett') ? CONTROL_WIRE.DENIED : CONTROL_WIRE.VALIDATION, `open_url: ${u.error}`);
+      return send({ op: 'url', url: u.url, label: str(input.label, 160) || u.url, ...(input.popup === true ? { arg: 'popup' } : {}) }, { url: u.url });
+    }
     return send(c.action === 'refresh' ? { op: 'refresh', hard: input.hard === true } : { op: c.action });
   }
   const kind = CONSOLE_KINDS[c.target];
