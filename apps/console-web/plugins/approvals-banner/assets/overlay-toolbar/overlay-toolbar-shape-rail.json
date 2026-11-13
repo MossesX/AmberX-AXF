@@ -1,0 +1,43 @@
+{
+ "$axf": "asset@1",
+ "type": "overlay-toolbar",
+ "id": "overlay-toolbar-shape-rail",
+ "name": "overlay-toolbar-shape: B · Rail",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Slim vertical rail flush with the right edge, 30 % down, rounded on the inside only. Approval: a full-width bar rises from the bottom (thumb reach). Expanded: the rail docks top-left and runs down the left side; address and page to its right.",
+ "tags": [
+  "ui-choice",
+  "choice-set:overlay-toolbar-shape",
+  "choice-option:rail"
+ ],
+ "data": {
+  "buttons": [
+   "grip",
+   "mic",
+   "approvals (count badge)",
+   "page / expand"
+  ],
+  "approval": {
+   "shows": [
+    "title",
+    "why",
+    "command",
+    "countdown (mm:ss + bar, warning colour, danger under 30 s)",
+    "Deny",
+    "Approve",
+    "Open approvals page link"
+   ],
+   "placement": "bottom bar, full width"
+  },
+  "expanded": {
+   "browser": "full screen; address bar; \"Amber is …\" strip; the element Amber is about to tap ringed in the accent",
+   "toolbar": "docked top-left, full-height rail down the left side"
+  },
+  "colours": "active skin tokens",
+  "shape": "rail",
+  "orientation": "vertical",
+  "edge": "end",
+  "top": 30
+ }
+}

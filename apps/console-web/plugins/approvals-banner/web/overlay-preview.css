@@ -1,0 +1,89 @@
+/* Overlay toolbar preview (Settings → Plugins → Overlay → Preview). Layout and the mock phone only: every colour, size,
+   gap and radius is a theme token; the buttons inside are framework controls and keep their own look. Positions on the
+   phone screen are percentages of the screen, the same numbers the Android overlay uses (top = % from the top). */
+
+.axp-overlay-preview { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xl) }
+.axp-overlay-preview__controls { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-lg) var(--fx-dens-gap-4xl); align-items: flex-end }
+.axp-overlay-preview__pick { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); min-width: 0 }
+.axp-overlay-preview__body { display: flex; gap: var(--fx-dens-gap-3xl); align-items: flex-start }
+.axp-overlay-preview__spec { flex: 1 1 0; min-width: 0; max-width: 60ch; display: flex; flex-direction: column; gap: var(--fx-dens-gap-md) }
+.axp-overlay-preview__spec h3, .axp-overlay-preview__spec p { margin: 0 }
+.axp-overlay-preview__spec dl { margin: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-md) }
+.axp-overlay-preview__spec dl > div { padding: var(--fx-dens-gap-md) var(--fx-dens-gap-lg); border-left: calc(var(--fx-border-w) * 2) solid var(--fx-border); border-radius: var(--fx-radius-sm) }
+.axp-overlay-preview__spec dl > div.is-current { border-left-color: var(--fx-accent); background: var(--fx-accent-soft) }
+.axp-overlay-preview__spec dt { font-weight: var(--fx-type-weights-strong) }
+.axp-overlay-preview__spec dd { margin: 0; color: var(--fx-muted) }
+:where([data-fx-narrow]) .axp-overlay-preview__body { flex-direction: column; align-items: stretch }
+
+/* ---- the phone ---- */
+.axp-overlay-preview__phone { flex: 0 0 auto; width: min(100%, 320px); padding: var(--fx-dens-gap-md); border-radius: calc(var(--fx-radius-lg) * 3); background: var(--fx-surface3); border: var(--fx-border-w) solid var(--fx-border); box-shadow: var(--fx-shadow-lg) }
+:where([data-fx-narrow]) .axp-overlay-preview__phone { width: 100%; max-width: 420px; align-self: center }
+.axp-overlay-preview__screen { position: relative; overflow: hidden; aspect-ratio: 9 / 19; border-radius: calc(var(--fx-radius-lg) * 2.5); background: var(--fx-bg); color: var(--fx-text); font-size: var(--fx-type-root-sm) }
+.axp-overlay-preview__status { position: absolute; inset: 0 0 auto 0; z-index: 3; display: flex; justify-content: space-between; align-items: center; padding: var(--fx-dens-gap-md) var(--fx-dens-gap-2xl); font-size: var(--fx-type-root-xs); font-weight: var(--fx-type-weights-strong); color: var(--fx-muted) }
+.axp-overlay-preview__status-icons { display: inline-flex; gap: var(--fx-dens-gap-xs) }
+.axp-overlay-preview__navbar { position: absolute; inset: auto 0 0 0; z-index: 3; display: flex; justify-content: center; padding: var(--fx-dens-gap-md) }
+.axp-overlay-preview__navbar > span { width: 34%; height: calc(var(--fx-border-w) * 4); border-radius: 999px; background: var(--fx-muted) }
+.axp-overlay-preview__home { position: absolute; inset: 12% 8% 14% 8%; display: grid; grid-template-columns: repeat(4, 1fr); align-content: start; gap: var(--fx-dens-gap-2xl) }
+.axp-overlay-preview__app { aspect-ratio: 1; border-radius: var(--fx-radius-lg); background: var(--fx-surface2) }
+
+/* ---- the toolbar: shared ---- */
+.axp-overlay-preview__bar { position: absolute; z-index: 2; display: flex; align-items: center; gap: var(--fx-dens-gap-2xs); padding: var(--fx-dens-gap-xs); background: var(--fx-surface); border: var(--fx-border-w) solid var(--fx-border); box-shadow: var(--fx-shadow-lg) }
+.axp-overlay-preview__bar.is-collapsed { opacity: var(--fx-opacity-glass) }
+.axp-overlay-preview__bar.is-approval { border-color: var(--fx-accent) }
+.axp-overlay-preview__grip { display: inline-flex; color: var(--fx-muted); cursor: grab }
+.axp-overlay-preview__badged { position: relative; display: inline-flex }
+.axp-overlay-preview__badge { position: absolute; top: calc(var(--fx-dens-gap-2xs) * -1); right: calc(var(--fx-dens-gap-2xs) * -1); min-width: var(--fx-type-root-md); padding: 0 var(--fx-dens-gap-2xs); border-radius: 999px; background: var(--fx-danger); color: var(--fx-accent-text); font-size: var(--fx-type-root-2xs); font-weight: var(--fx-type-weights-strong); text-align: center; pointer-events: none }
+
+/* A · Pill: a horizontal pill on the right edge, 30 % down */
+.axp-overlay-preview__bar--pill { right: 4%; top: 30%; border-radius: 999px }
+/* B · Rail: a vertical rail flush with the right edge, rounded on the inside */
+.axp-overlay-preview__bar--rail { right: 0; top: 30%; flex-direction: column; border-right: 0; border-radius: var(--fx-radius-lg) 0 0 var(--fx-radius-lg) }
+.axp-overlay-preview__bar--rail .axp-overlay-preview__grip { transform: rotate(90deg) }
+/* C · Bubble: one round button bottom-right; its actions fan out when expanded */
+.axp-overlay-preview__bar--bubble { right: 6%; bottom: 10%; padding: 0; background: transparent; border: 0; box-shadow: none; gap: var(--fx-dens-gap-md) }
+.axp-overlay-preview__bubble { padding: var(--fx-dens-gap-md); border-radius: 999px; background: var(--fx-surface); box-shadow: var(--fx-shadow-lg); border: calc(var(--fx-border-w) * 2) solid var(--fx-accent) }
+.axp-overlay-preview__bar--bubble.is-approval .axp-overlay-preview__bubble { border-color: var(--fx-warning) }
+.axp-overlay-preview__fan { display: inline-flex; gap: var(--fx-dens-gap-2xs); padding: var(--fx-dens-gap-2xs); border-radius: 999px; background: var(--fx-surface); border: var(--fx-border-w) solid var(--fx-border) }
+
+/* ---- the approval card / bar ---- */
+.axp-overlay-preview__approval { position: absolute; z-index: 2; display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); padding: var(--fx-card-pad); background: var(--fx-surface); border: var(--fx-border-w) solid var(--fx-accent); box-shadow: var(--fx-shadow-lg) }
+.axp-overlay-preview__approval--pill { left: 4%; right: 4%; top: 38%; border-radius: var(--fx-radius-lg) }
+.axp-overlay-preview__approval--rail { left: 0; right: 0; bottom: 0; padding-bottom: var(--fx-dens-gap-4xl); border-width: var(--fx-border-w) 0 0 0; border-radius: var(--fx-radius-lg) var(--fx-radius-lg) 0 0 }
+.axp-overlay-preview__approval--bubble { left: 3%; right: 3%; top: 6%; border-radius: var(--fx-radius-lg); gap: var(--fx-dens-gap-sm) }
+.axp-overlay-preview__approval-head { display: flex; align-items: center; gap: var(--fx-dens-gap-md); min-width: 0; color: var(--fx-accent) }
+.axp-overlay-preview__approval-title { flex: 1 1 0; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--fx-text) }
+.axp-overlay-preview__count { flex: 0 0 auto; font-family: var(--fx-font-mono); font-variant-numeric: tabular-nums; font-weight: var(--fx-type-weights-strong); color: var(--fx-warning) }
+.axp-overlay-preview__count.is-urgent { color: var(--fx-danger) }
+.axp-overlay-preview__why { margin: 0; color: var(--fx-muted) }
+.axp-overlay-preview__cmd { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: var(--fx-dens-gap-sm) var(--fx-dens-gap-md); border-radius: var(--fx-radius-sm); background: var(--fx-surface2); font-family: var(--fx-font-mono); font-size: var(--fx-type-root-xs) }
+.axp-overlay-preview__meter { height: calc(var(--fx-border-w) * 4); border-radius: 999px; background: var(--fx-surface3); overflow: hidden }
+.axp-overlay-preview__meter > span { display: block; height: 100%; background: var(--fx-warning); transition: width var(--fx-motion) linear }
+.axp-overlay-preview__meter.is-urgent > span { background: var(--fx-danger) }
+.axp-overlay-preview__acts { display: flex; gap: var(--fx-dens-gap-md) }
+.axp-overlay-preview__acts > .fx-btn { flex: 1 1 0; justify-content: center }
+.axp-overlay-preview__link { align-self: flex-start }
+
+/* ---- expanded: the full-screen browser with the toolbar docked top-left ---- */
+.axp-overlay-preview__browser { position: absolute; inset: 0; padding-top: 7%; padding-bottom: 6%; display: flex; flex-direction: column; background: var(--fx-bg) }
+.axp-overlay-preview__chrome { display: flex; align-items: center; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-sm) var(--fx-dens-gap-md); border-bottom: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface) }
+.axp-overlay-preview__chrome-top { display: flex; padding: var(--fx-dens-gap-sm) var(--fx-dens-gap-md); background: var(--fx-surface) }
+.axp-overlay-preview__chrome .axp-overlay-preview__bar, .axp-overlay-preview__chrome-top .axp-overlay-preview__bar { position: static; box-shadow: none; opacity: 1 }
+.axp-overlay-preview__address { flex: 1 1 0; min-width: 0; display: flex; align-items: center; gap: var(--fx-dens-gap-xs); padding: var(--fx-dens-gap-xs) var(--fx-dens-gap-md); border-radius: 999px; background: var(--fx-surface2); color: var(--fx-muted); font-family: var(--fx-font-mono); font-size: var(--fx-type-root-xs) }
+.axp-overlay-preview__address > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.axp-overlay-preview__driving { display: flex; align-items: center; gap: var(--fx-dens-gap-xs); padding: var(--fx-dens-gap-xs) var(--fx-dens-gap-md); background: var(--fx-accent-soft); color: var(--fx-accent); font-size: var(--fx-type-root-xs); font-weight: var(--fx-type-weights-strong) }
+.axp-overlay-preview__page { flex: 1 1 0; min-height: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); padding: var(--fx-dens-gap-2xl) var(--fx-dens-gap-xl); overflow: hidden }
+.axp-overlay-preview__sk { display: block; height: var(--fx-type-root-sm); width: 90%; border-radius: var(--fx-radius-sm); background: var(--fx-surface2) }
+.axp-overlay-preview__sk--title { height: var(--fx-type-root-2xl); width: 55% }
+.axp-overlay-preview__sk--short { width: 60% }
+.axp-overlay-preview__sk--card { width: 100%; height: calc(var(--fx-row-h) * 2.5); border-radius: var(--fx-radius-md); background: var(--fx-surface) ; border: var(--fx-border-w) solid var(--fx-border) }
+.axp-overlay-preview__sk.is-target { border-color: var(--fx-accent); box-shadow: 0 0 0 calc(var(--fx-border-w) * 3) var(--fx-accent-soft) }
+
+/* the pill sits in the browser bar next to the address */
+.axp-overlay-preview__browser--pill .axp-overlay-preview__bar--pill { border-color: var(--fx-border) }
+/* the rail docks top-left and runs down the left side; address and page to its right */
+.axp-overlay-preview__browser--rail { display: grid; grid-template-columns: auto 1fr; grid-template-rows: auto auto 1fr }
+.axp-overlay-preview__browser--rail .axp-overlay-preview__chrome { display: contents }
+.axp-overlay-preview__browser--rail .axp-overlay-preview__bar--rail { grid-column: 1; grid-row: 1 / -1; align-self: stretch; justify-content: flex-start; border-radius: 0; border-width: 0 var(--fx-border-w) 0 0; border-right: var(--fx-border-w) solid var(--fx-border) }
+.axp-overlay-preview__browser--rail .axp-overlay-preview__address { grid-column: 2; grid-row: 1; margin: var(--fx-dens-gap-sm) var(--fx-dens-gap-md) }
+.axp-overlay-preview__browser--rail .axp-overlay-preview__driving { grid-column: 2; grid-row: 2 }
+.axp-overlay-preview__browser--rail .axp-overlay-preview__page { grid-column: 2; grid-row: 3 }

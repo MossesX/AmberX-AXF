@@ -93,6 +93,27 @@
         "text": "Where you set “Alert again at 30 s left and when it runs”. Change it and the app uses the new value. Part of Approvals banner.",
         "kind": "field",
         "draft": true
+      },
+      {
+        "target": "approvals-overlay",
+        "title": "Overlay",
+        "text": "The phone overlay's tab: a preview of the floating toolbar in each design option and state, then its settings (side, height, size, when it opens, where pages go).",
+        "kind": "tab"
+      },
+      {
+        "target": "approvals-overlay.preview",
+        "title": "Overlay preview",
+        "text": "The AmberX overlay toolbar drawn in the current skin inside a phone frame. Pick a design option and a state (collapsed, approval waiting, expanded) to see it; nothing is sent, Deny and Approve here only move the preview."
+      },
+      {
+        "target": "approvals-overlay.preview.option",
+        "title": "Design option",
+        "text": "The three toolbar shapes on offer: A pill on the right edge, B slim rail flush with the edge, C round bubble in the corner. The one picked in UI Review is what the phone app builds."
+      },
+      {
+        "target": "approvals-overlay.preview.state",
+        "title": "Overlay state",
+        "text": "Collapsed: the always-on toolbar. Approval waiting: the bar it spawns with the countdown, Deny / Approve and a link to the approvals page. Expanded: full screen with the toolbar docked top-left and the browser Amber drives."
       }
     ],
     "intros": []
