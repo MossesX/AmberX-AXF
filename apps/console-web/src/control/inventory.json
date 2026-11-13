@@ -1602,7 +1602,7 @@
       "view": "skin-editor",
       "plugin": "ai.amberx.axf.console.skin-editor",
       "file": "plugins/skin-editor/web/SkinEditor.tsx",
-      "line": 194,
+      "line": 196,
       "tabs": [
         {
           "address": "view:skin-editor/tab:skin-editor-panels=tokens",
