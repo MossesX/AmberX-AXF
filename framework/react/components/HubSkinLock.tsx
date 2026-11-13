@@ -24,7 +24,7 @@ export function HubSkinLockNote({ className }: { className?: string }) {
   return (
     <Note tone="info" icon="lock" className={`axf-hubskin-lock ${className ?? ''}`}>
       <span data-axf-hubskin-lock="">{HUB_SKIN_LOCK_NOTE} </span>
-      <Button tone="ghost" size="sm" icon="edit" data-axf-hubskin-override="" disabled={!rt.mayChangeLook()} onClick={() => { askHubSkinOverride(rt); }}>Click here to override</Button>
+      <Button tone="ghost" icon="edit" data-axf-hubskin-override="" disabled={!rt.mayChangeLook()} onClick={() => { askHubSkinOverride(rt); }}>Click here to override</Button>
     </Note>
   );
 }
