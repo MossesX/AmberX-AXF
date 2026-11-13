@@ -154,6 +154,20 @@ skin@1 and the `migrated` / `legacy` fields of app-look@1 have no Kotlin twin (A
 fold once per profile against `spec/fixtures/look-migration.json` (`fold`, `settings`, `combined` blocks) and keeps the
 two fields through its document rules. Until then an Android app keeps reading `appearance@1` directly.
 
+## Deferred: skin-switch@1 (Nov 13 2026)
+
+Build skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga (Fable): `framework/core/engines/
+skin-switch.mjs`, the action contract of the Skins screen and every other entry point (gallery, banner switcher, console
+API, MCP, CLI, voice): `skinSwitch(state, command, ctx)` runs `use` / `back-to-skin` / `restore-default` / `undo` for one
+scope (`hub`, `app:<id>`, `ui:<view>`, `plugin:<id>`) over `{ look, global }` (the acting app's app-look@1 document and
+the hub-wide skin), `skinSwitchState` reads a scope (own state, the skin in force with the level that decided, the
+overridden slots, the undo on offer), `parseSwitchScope` / `switchScopeOf` / `switchScopes` / `normalizeSkinSwitch` read
+the command. The one undo record is the look document's `undo`, extended with `action`, `scope` and (hub switches) the
+`global` skin before; `normalizeAppLook` keeps the three fields. No Kotlin twin (Android on hold): a port replays
+`spec/fixtures/skin-switch.json` (`sequence` chains the steps and their edits, `views`, `parse`, `normalize`) through the
+same functions and keeps the extended undo record through its document rules. Until then an Android app keeps reading
+`appearance@1` directly and shows no skin.
+
 ## Deferred: build-pipeline@1 route + dispatch (Nov 9 2026)
 
 `framework/core/build-pipeline.mjs` gained `pipeline.route` ('' | api | subscription: the per-build override that lets

@@ -8,6 +8,7 @@ import { join } from 'node:path';
 import { colorThemeVars, styleThemeVars } from '../core/engines/theme';
 import { backToSkin, composeLook, composeLookAt, coverageSummary, coverageTable, declarationErrors, globalSkinOf, lookAfterChange, newAppLook, normalizeAppLook, normalizeSkin, normalizeSkinScope, overriddenSlots, parseAppLook, partElements, partsErrors, partsTypes, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, scopeState, setInheritSkin, setLookSlot, setScopeOverride, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorOf, skinCovers, skinErrors, skinFromDesignPackage, skinScopeChain, skinScopeKey, skinScopeKind, skinScopeSelector, skinSlots, snapshotLook, uncoveredTypes, undoRestore } from '../core/engines/skin';
 import { foldLegacyPicks, legacyPicks, lookNeedsMigration, migrateLook, migrateLookSettings, parseLegacyLook, settingsNeedMigration } from '../core/engines/look-migration.mjs';
+import { SKIN_SWITCH_ACTIONS, SKIN_SWITCH_CONTRACT, SKIN_SWITCH_ERRORS, SKIN_SWITCH_HUB, SKIN_SWITCH_SCOPES, normalizeSkinSwitch, parseSwitchScope, skinSwitch, skinSwitchState, switchScopeOf, switchScopes } from '../core/engines/skin-switch.mjs';
 import { SCALE_TYPES, normalizeScale, scaleErrors, scaleThemeVars, scaleVars } from '../core/engines/scale';
 import { AGENT_CARD_SAMPLE, agentCardErrors, avatarColors, avatarModel, barcodeBars, cardModel, employeeId, normalizeCard } from '../core/engines/agent-card-rules.mjs';
 import { AVATAR_FACES, AVATAR_GEAR } from '../core/engines/swarm-rules.mjs';
@@ -2153,5 +2154,100 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
       junkBackup: parseLegacyLook('not json'), wrongFrame: parseLegacyLook({ $axf: 'appearance@1', settings: {} }),
     },
     combined: { ...combined, again: migrateLook(combined.look, (() => { const v: Record<string, unknown> = { 'axf.appearance.design': 'aurora', 'axf.look': 1, ...combined.settings.set }; for (const k of combined.settings.clear) delete v[k]; return v; })(), ctx) },
+  });
+}
+
+/* ---- skin-switch@1 (Nov 13 2026): use / back-to-skin / restore-default / undo per scope, one undo record ---- */
+{
+  const skins: Record<string, unknown> = {
+    windows: { layoutTheme: 'windows-explorer', colorTheme: 'windows-light', styleTheme: 'windows', assets: { button: 'windows' }, extras: { spacing: 'compact' } },
+    aurora: { layoutTheme: 'focus-top', colorTheme: 'aurora-night', styleTheme: 'hub', assets: {} },
+  };
+  const ctx = { has: (id: string) => id in skins, now: '2026-11-13T00:00:00Z' };
+  const shared = { $axf: 'appearance@1', slots: { layout: 'focus-top', 'color-theme': 'arctic-daylight', 'style-theme': 'hub', button: 'rounded-solid' }, spacing: 'tight', hidden: { toolbar: true } };
+  const look0 = newAppLook('app', snapshotLook(shared as never));
+  // the edits a step may make between two commands (what the picker, control@1 or a scope override does), replayed by the check
+  const edits: Record<string, (look: AppLookDocument, ...args: string[]) => AppLookDocument> = {
+    setLookSlot: (look, slot, id) => setLookSlot(look, slot!, id!),
+    setSkinColorTheme: (look, id, key) => setSkinColorTheme(look, id!, key),
+    setScopeOverride: (look, key, slot, id) => setScopeOverride(look, key!, slot!, id!),
+    setInheritSkin: (look, on) => setInheritSkin(look, on === 'true'),
+  };
+  type Step = { name: string; edit?: { fn: string; args: string[] }[]; global?: Record<string, unknown> | null; command: Record<string, unknown> };
+  const steps: Step[] = [
+    { name: 'useApp', command: { action: 'use', scope: 'app:app', skin: 'windows' } },
+    { name: 'usePlugin', command: { action: 'use', scope: 'plugin:notes', skin: 'aurora' } },
+    { name: 'useHub', command: { action: 'use', scope: 'hub', skin: 'aurora' } },
+    { name: 'backSlot', edit: [{ fn: 'setLookSlot', args: ['button', 'terminal'] }, { fn: 'setLookSlot', args: ['dialog', 'app-dialog'] }, { fn: 'setSkinColorTheme', args: ['plum-noir'] }, { fn: 'setScopeOverride', args: ['plugin:notes', 'dialog', 'plugin-dialog'] }, { fn: 'setScopeOverride', args: ['ui:home', 'button', 'ui-button'] }], global: { id: 'aurora', overrides: { button: 'global-button' }, colorTheme: 'harbor' }, command: { action: 'back-to-skin', scope: 'app:app', slot: 'button' } },
+    { name: 'backColour', command: { action: 'back-to-skin', scope: 'app:app', slot: 'color-theme' } },
+    { name: 'backPluginAll', command: { action: 'back-to-skin', scope: 'plugin:notes' } },
+    { name: 'backHubSlot', command: { action: 'back-to-skin', scope: 'hub', slot: 'button' } },
+    { name: 'backHubAll', command: { action: 'back-to-skin', scope: 'hub' } },
+    { name: 'backAppAll', command: { action: 'back-to-skin', scope: 'app:app' } },
+    { name: 'restoreApp', command: { action: 'restore-default', scope: 'app:app' } },
+    { name: 'undoRestoreApp', command: { action: 'undo', scope: 'app:app' } },
+    { name: 'undoAgain', command: { action: 'undo', scope: 'app:app' } },
+    { name: 'restoreHub', command: { action: 'restore-default', scope: 'hub' } },
+    { name: 'undoRestoreHub', command: { action: 'undo', scope: 'hub' } },
+    { name: 'restorePlugin', command: { action: 'restore-default', scope: 'plugin:notes' } },
+    { name: 'undoRestorePlugin', command: { action: 'undo', scope: 'plugin:notes' } },
+    { name: 'restoreUi', command: { action: 'restore-default', scope: 'ui:home' } },
+    { name: 'useSameApp', command: { action: 'use', scope: 'app:app', skin: 'windows' } },
+    { name: 'useOtherApp', command: { action: 'use', scope: 'app:app', skin: 'aurora' } },
+    { name: 'undoUse', command: { action: 'undo', scope: 'app:app' } },
+    { name: 'unknownSkin', command: { action: 'use', scope: 'ui:home', skin: 'nope' } },
+    { name: 'noSkin', command: { action: 'use', scope: 'hub' } },
+    { name: 'otherApp', command: { action: 'use', scope: 'app:other', skin: 'windows' } },
+    { name: 'badScope', command: { action: 'use', scope: 'planet:mars', skin: 'windows' } },
+    { name: 'badAction', command: { action: 'flip', scope: 'hub' } },
+  ];
+  let cur: { look: AppLookDocument; global: Record<string, unknown> | null } = { look: look0, global: null };
+  const sequence = steps.map((s) => {
+    let look = cur.look;
+    for (const e of s.edit ?? []) look = edits[e.fn]!(look, ...e.args);
+    const before = { look, global: s.global === undefined ? cur.global : s.global };
+    const result = skinSwitch(before as never, s.command, ctx);
+    cur = { look: result.look!, global: result.global as never };
+    const scope = parseSwitchScope(s.command.scope)?.scope ?? '';
+    return { ...s, before, result, view: scope ? skinSwitchState(result.look, result.global, scope, ctx) : null, roundTrip: parseAppLook(JSON.stringify(result.look)) };
+  });
+  const after = (name: string) => sequence.find((s) => s.name === name)!.result;
+  const mixed = after('useHub');
+  const inherit = setInheritSkin(look0, true);
+  write('skin-switch.json', {
+    contract: SKIN_SWITCH_CONTRACT, actions: SKIN_SWITCH_ACTIONS, scopes: SKIN_SWITCH_SCOPES, errors: SKIN_SWITCH_ERRORS, hub: SKIN_SWITCH_HUB,
+    skins, shared, snapshot: look0,
+    parse: Object.fromEntries(['hub', 'global', 'app', 'app:notes', 'ui:home', 'plugin:ai.amberx.notes', 'nope', 'app:Bad Id', 'plugin:', '', 'ui:a/b'].map((s) => [s, parseSwitchScope(s)])),
+    scopeOf: { global: switchScopeOf('global', 'app'), app: switchScopeOf('app', 'app'), appNoId: switchScopeOf('app'), ui: switchScopeOf('ui:home', 'app'), plugin: switchScopeOf('plugin:notes'), junk: switchScopeOf('junk') },
+    scopesOf: { bare: switchScopes(look0), withPlugin: switchScopes(after('usePlugin').look!), none: switchScopes(null) },
+    normalize: {
+      good: normalizeSkinSwitch({ action: 'use', scope: 'app:app', skin: 'windows', slot: 'ignored', at: '2026-11-13T00:00:00Z' }),
+      back: normalizeSkinSwitch({ action: 'back-to-skin', scope: ' plugin:notes ', slot: 'button' }),
+      noSkin: normalizeSkinSwitch({ action: 'use', scope: 'hub' }),
+      badAll: normalizeSkinSwitch({ action: 'flip', scope: 'planet', skin: 'Bad Id', slot: 'Bad Slot' }),
+      junk: normalizeSkinSwitch(7),
+    },
+    sequence,
+    views: {
+      // after the hub-wide skin is set while the app has its own and the plugin its own: who decides where
+      hub: skinSwitchState(mixed.look, mixed.global, 'hub', ctx),
+      app: skinSwitchState(mixed.look, mixed.global, 'app:app', ctx),
+      appBare: skinSwitchState(mixed.look, mixed.global, 'app', ctx),
+      ui: skinSwitchState(mixed.look, mixed.global, 'ui:home', ctx),
+      plugin: skinSwitchState(mixed.look, mixed.global, 'plugin:notes', ctx),
+      otherApp: skinSwitchState(mixed.look, mixed.global, 'app:other', ctx),
+      badScope: skinSwitchState(mixed.look, mixed.global, 'nope', ctx),
+      // an app that follows the hub-wide skin
+      following: skinSwitchState(inherit, mixed.global, 'app:app', ctx),
+      followingPlugin: skinSwitchState(inherit, mixed.global, 'plugin:notes', ctx),
+      followingNoHub: skinSwitchState(inherit, null, 'app:app', ctx),
+      // a skin the app lacks
+      unknownInForce: skinSwitchState(setUseSkin(pickSkin(look0, 'gone'), true), null, 'app:app', ctx),
+      noDocument: skinSwitchState(null, mixed.global, 'app:app', ctx),
+      noDocumentHub: skinSwitchState(null, mixed.global, 'hub', ctx),
+    },
+    noDocument: skinSwitch({ look: null, global: null }, { action: 'use', scope: 'app:app', skin: 'windows' }, ctx),
+    // an older record (Restore before skin-switch@1) still undoes
+    legacyUndo: skinSwitch({ look: restoreAppDefault(after('useApp').look!, '2026-11-12T00:00:00Z'), global: null }, { action: 'undo', scope: 'app:app' }, ctx),
   });
 }
