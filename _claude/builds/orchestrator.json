@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T02:11:49.425Z",
+ "updatedAt": "2026-11-13T03:27:52.775Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -112127,14 +112127,14 @@
    "title": "Skin configuration panel: before AI makes a skin, Brett picks what it may change. The current look is saved as the Default skin. A full tree of options in categories (colors, typography, layout and tab placement, buttons and actions, behaviors, context menus with how deep to build them, nav menu, ap",
    "category": "",
    "detail": "",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-13T01:13:53.464Z",
-   "updatedAt": "2026-11-13T01:16:06.682Z",
+   "updatedAt": "2026-11-13T03:27:51.595Z",
    "builtAt": "",
    "notes": [
     {
@@ -112148,6 +112148,10 @@
     {
      "text": "Queued by console.",
      "at": "2026-11-13T01:14:04.839Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T03:27:51.595Z"
     }
    ],
    "approvals": [],
