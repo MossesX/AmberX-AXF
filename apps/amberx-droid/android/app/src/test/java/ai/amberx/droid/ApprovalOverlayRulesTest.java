@@ -2,6 +2,7 @@ package ai.amberx.droid;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Arrays;
@@ -51,6 +52,36 @@ public class ApprovalOverlayRulesTest {
         assertEquals("large", s.size);
         assertEquals("start", s.edge);
         assertFalse(s.toJson().has("bogus"));
+    }
+
+    @Test public void oneOnOffSettingTheRetiredKeysAreGone() {
+        JSONObject j = ApprovalOverlayRules.settings(null).toJson();
+        assertFalse(j.has("idleVisible"));
+        assertFalse(j.has("pages"));
+    }
+
+    @Test public void migrationKeepsWhatBrettChose() throws Exception {
+        assertNull("nothing retired saved: nothing to move", ApprovalOverlayRules.migrate(new JSONObject().put("size", "large")));
+        assertNull(ApprovalOverlayRules.migrate(null));
+        JSONObject hidden = ApprovalOverlayRules.migrate(new JSONObject().put("idleVisible", false).put("size", "large").put("top", 55));
+        assertEquals("hidden when idle → the faintest idle toolbar", 40, hidden.getInt("idleOpacity"));
+        assertEquals("large", hidden.getString("size"));
+        assertEquals(55, hidden.getInt("top"));
+        assertFalse(hidden.has("idleVisible"));
+        JSONObject chrome = ApprovalOverlayRules.migrate(new JSONObject().put("pages", "browser").put("idleVisible", true).put("idleOpacity", 70));
+        assertEquals("a visible idle toolbar keeps its opacity", 70, chrome.getInt("idleOpacity"));
+        assertFalse(chrome.has("pages"));
+        assertNull("runs once", ApprovalOverlayRules.migrate(chrome));
+    }
+
+    @Test public void aDraggedToolbarSettlesOnTheNearerSide() {
+        assertEquals("start", ApprovalOverlayRules.snapEdge(10, 200, 1080));
+        assertEquals("end", ApprovalOverlayRules.snapEdge(800, 200, 1080));
+        assertEquals("end", ApprovalOverlayRules.snapEdge(440, 200, 1080));
+        assertEquals(50, ApprovalOverlayRules.topPercent(1000, 2000));
+        assertEquals(0, ApprovalOverlayRules.topPercent(-30, 2000));
+        assertEquals(90, ApprovalOverlayRules.topPercent(1990, 2000));
+        assertEquals(0, ApprovalOverlayRules.topPercent(10, 0));
     }
 
     @Test public void itemsSoonestFirstThenShelvedThenApprovals() {
