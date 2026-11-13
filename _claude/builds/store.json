@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5043,
- "updatedAt": "2026-11-13T21:20:18.909Z",
+ "rev": 5044,
+ "updatedAt": "2026-11-13T21:20:52.842Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -205281,7 +205281,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T19:55:30.979Z",
-   "updatedAt": "2026-11-13T21:18:44.755Z",
+   "updatedAt": "2026-11-13T21:20:21.541Z",
    "builtAt": "",
    "notes": [
     {
@@ -205331,6 +205331,10 @@
     {
      "text": "Self-check: icon-map-icon-packs-every-icon-badge-app had no session on record but axf-icon-map-icon-packs-every-icon-badge-app--earl is alive: kept running and tracking it.",
      "at": "2026-11-13T21:10:18.379Z"
+    },
+    {
+     "text": "Self-check: icon-map-icon-packs-every-icon-badge-app had no session on record but axf-icon-map-icon-packs-every-icon-badge-app--earl is alive: kept running and tracking it.",
+     "at": "2026-11-13T21:20:21.541Z"
     }
    ],
    "approvals": [
@@ -205360,7 +205364,7 @@
     "queuedAt": "2026-11-13T19:55:38.790Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "",
+    "session": "axf-icon-map-icon-packs-every-icon-badge-app--earl",
     "slot": "",
     "model": "Fable",
     "launchedAt": "2026-11-13T20:06:45.871Z",
@@ -205586,7 +205590,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -208520,7 +208524,7 @@
    "title": "Lander regenerates generated files on clash",
    "category": "",
    "detail": "Most Nov 13 land failures were clashes only in GENERATED or additive files: apps/console-web/src/control/inventory.json, framework/assets/help/framework.json and its baked copies in apps/*, framework/catalog/status.json, framework/spec/PORTING.md, framework/spec/fixtures/*.json, apps/*/axf.lock.json, and the baked framework copies under apps/*/src/axf/. Fix the land path (/opt/axf-batch/resolve.py used by vps.build_land, and the orchestrator lander): (1) list generated files in one manifest; (2) on a clash in a generated file, take main's side, then run the matching generator (control inventory, help bake, fixtures, lock, framework re-bake) on the merged tree and commit; (3) union-merge additive docs/catalogs (PORTING.md, catalog status.json) by key; (4) only real source clashes stop the land; (5) run tests after regenerating. Then re-land: full-voice-control-merge-main-and-land, skin-config-panel-merge-main-and-land, skins-plugin-merge-main-and-land, project-create-mcp, project-duplicate-boilerplate, drive-live-console-first, rename-long-builds, overlay-preview-ui-review. Must land before auto-land-every-finished-build-lands.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -208528,7 +208532,7 @@
    "pr": "#661",
    "priority": "P0",
    "createdAt": "2026-11-13T20:47:11.569Z",
-   "updatedAt": "2026-11-13T21:20:05.359Z",
+   "updatedAt": "2026-11-13T21:20:13.895Z",
    "builtAt": "",
    "notes": [
     {
@@ -208546,6 +208550,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-lander-regenerates-generated-files-clash--sully, own login copy)",
      "at": "2026-11-13T20:52:33.927Z"
+    },
+    {
+     "text": "Dispatch gate: lander-regenerates-generated-files-clash still has axf-lander-regenerates-generated-files-clash--sully alive: not launched again, tracking that session.",
+     "at": "2026-11-13T21:20:13.895Z"
     }
    ],
    "approvals": [],
@@ -208566,7 +208574,7 @@
     "queuedAt": "2026-11-13T20:47:20.965Z",
     "queuedBy": "console",
     "account": "",
-    "session": "",
+    "session": "axf-lander-regenerates-generated-files-clash--sully",
     "slot": "",
     "model": "",
     "launchedAt": "",
