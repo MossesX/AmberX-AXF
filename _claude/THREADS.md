@@ -778,7 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 15:31 UTC · `session-summaries-amberx-axf-project-history-readiness-audit` added (3 steps) (all) · claude-voice
 - 2026-11-12 15:33 UTC · `amberx-approval-pop-up-not-showing-only-the-android-notification` added (2 steps) (all) · claude-voice
 - 2026-11-12 17:35 UTC · `new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans` added (6 steps) (all) · claude-voice
 - 2026-11-12 17:47 UTC · `plugin-review-map-what-each-plugin-does-depends-on-and-breaks` added (3 steps) (all) · claude-voice
@@ -1178,6 +1177,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 01:52 UTC · `server-every-failed-merge-alerts-brett-immediately-and-retries-by-itself-until` s2 done (all) · orchestrator
 - 2026-11-13 01:53 UTC · `projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone` → pending, note (all) · reconciler
 - 2026-11-13 01:53 UTC · `server-every-failed-merge-alerts-brett-immediately-and-retries-by-itself-until` PR #539 (all) · builds-live
+- 2026-11-13 01:53 UTC · `server-every-failed-merge-alerts-brett-immediately-and-retries-by-itself-until` note (all) · orchestrator
 
 ## Token passes (log)
 
