@@ -226,19 +226,34 @@
         "output": "{ waitForLook }"
       },
       {
-        "id": "gate",
+        "id": "gate-get",
         "route": "GET /gate",
-        "title": "Is UI Review a gate? (no)",
-        "description": "Read-only: UI Review is not a gate since Nov 13 2026. Answers {gate: false, since, why}; no PR is held, kept as a draft or asked for screenshots because of UI Review. The same object as review.mjs gate and the console action ui-review.gate.",
+        "title": "Is UI Review a merge gate? (default off)",
+        "description": "Reads the switch 'UI Review is a merge gate' (uiReview.gate = the Claude setting builds.uiReviewGate, default off): {on, heldPrs, openReviews, line}. Off: items are filed for Brett to look at, PRs never wait. The same object as review.mjs gate, the console action ui-review.gate and voice uireview.gate. Deep link: console_show target settings:plugins/ui-review#gate.",
         "readOnly": true,
-        "output": "{ $axf: 'ui-review-gate@1', gate: false, since, why }"
+        "output": "{ $axf: 'ui-review-gate@1', key, label, on, heldPrs: number[], openReviews: [{pr, branch, review, held}], line, who }"
+      },
+      {
+        "id": "gate-set",
+        "route": "POST /gate",
+        "title": "Turn 'UI Review is a merge gate' on or off",
+        "description": "Turns the switch off (open to everyone) or on (personOnly: only Brett's own click in the console, like the owner-only Claude setting; any other caller gets 403). Answers the gate object plus {changed}. Same as review.mjs gate on|off and voice uireview.gate on|off.",
+        "personOnly": "on",
+        "input": { "type": "object", "properties": { "on": { "type": "boolean" } }, "required": ["on"], "additionalProperties": false },
+        "output": "{ on, heldPrs, openReviews, line, changed }"
       },
       {
         "id": "action-gate",
         "action": "ui-review.gate",
-        "title": "Is UI Review a gate? (no)",
-        "description": "Read-only, in the open console (voice: AmberX says it): UI Review is not a gate. Answers {gate: false, since, why}.",
+        "title": "Is UI Review a merge gate?",
+        "description": "In the open console: reads GET gate ({on, heldPrs, line}); with 'on' or 'off' it sets the switch (on is Brett's own click only).",
         "readOnly": true
+      },
+      {
+        "id": "action-voice-gate",
+        "action": "uireview.gate",
+        "title": "Voice: UI Review gate status, on or off",
+        "description": "AmberX voice name for the gate switch: 'uireview.gate' reads it, 'uireview.gate off' turns it off, 'uireview.gate on' turns it on only when Brett himself asks in the console."
       }
     ]
   },

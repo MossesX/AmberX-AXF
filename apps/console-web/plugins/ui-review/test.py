@@ -160,14 +160,15 @@ const pc = await import(new URL('framework/core/engines/plugin-commands.mjs', ro
 const reg = (await import(new URL('framework/cli/plugin-commands.mjs', root))).registry({ folders: ['ui-review'] });
 const p = reg.plugins.find((x) => x.folder === 'ui-review');
 const cmd = (id) => p.commands.find((x) => x.id === id) || p.reads?.find((x) => x.id === id);
-const g = cmd('gate'), a = cmd('action-gate');
+const g = cmd('gate-get'), gs = cmd('gate-set'), a = cmd('action-gate'), v = cmd('action-voice-gate');
 const core = await import(new URL('web/review-core.mjs', here));
 const src = (await import('node:fs')).readFileSync(new URL('web/index.tsx', here), 'utf8');
-console.log(JSON.stringify({ tool: pc.commandToolName('ui-review', g?.id), route: g?.run?.route, action: a?.run?.action,
-  registered: /actions\.register\('ui-review\.gate', \(\) => pluginApi\(FOLDER, 'UI Review'\)\.call<core\.Gate>\('gate'\)/.test(src), gate: core.GATE }));
+console.log(JSON.stringify({ tool: pc.commandToolName('ui-review', g?.id), setTool: pc.commandToolName('ui-review', gs?.id), setRoute: gs?.run?.route, voice: v?.run?.action, route: g?.run?.route, action: a?.run?.action,
+  registered: /actions\.register\('ui-review\.gate', gate,/.test(src) && /actions\.register\('uireview\.gate', gate,/.test(src) && /api\.call<core\.Gate>\('gate'\)/.test(src) && /api\.post<core\.Gate>\('gate'/.test(src), gate: core.GATE }));
 """, (HERE.parents[3]).as_uri() + "/", HERE.as_uri() + "/"], capture_output=True, text=True, timeout=60)
 pj = json.loads(probe.stdout or "{}") if probe.returncode == 0 else {}
-check(pj.get("tool") == "ui_review_gate" and (pj.get("route") or {}).get("path") == "/gate", f"MCP ui_review_gate runs GET gate {probe.stderr[-300:]}")
+check(pj.get("tool") == "ui_review_gate_get" and (pj.get("route") or {}).get("path") == "/gate", f"MCP ui_review_gate_get runs GET gate {probe.stderr[-300:]}")
+check(pj.get("setTool") == "ui_review_gate_set" and (pj.get("setRoute") or {}).get("method") == "POST" and pj.get("voice") == "uireview.gate", f"MCP ui_review_gate_set runs POST gate; voice action uireview.gate declared ({pj.get('setRoute')})")
 check(pj.get("action") == "ui-review.gate" and pj.get("registered") is True and {k: (pj.get("gate") or {}).get(k) for k in ("$axf", "key", "on", "line")} == {k: rest.get(k) for k in ("$axf", "key", "on", "line")}, "console / voice action ui-review.gate reads GET gate (default object = the same while off)")
 check(len(svc.items(branch="claude/t")) == 2, "capability lists a branch's items")
 

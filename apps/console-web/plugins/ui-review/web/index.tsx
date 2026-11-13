@@ -35,7 +35,14 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('ui-review.design-packs', () => rt.navigate(PACKS_VIEW), { label: 'Open Design packs' });
     rt.actions.register('ui-review.screenshots', () => rt.navigate(SHOTS_VIEW), { label: 'Open Screenshots' });
     // 'UI Review is a merge gate' (default off): the same object as GET gate, MCP ui-review_gate_get and review.mjs gate
-    rt.actions.register('ui-review.gate', () => pluginApi(FOLDER, 'UI Review').call<core.Gate>('gate').catch(() => ({ ...core.GATE })), { label: 'Is UI Review a merge gate?' });
+    // with 'on' / 'off' it sets the switch (on: the server takes it only from Brett's own console session)
+    const gate = ([sub = 'status']: string[] = []) => {
+      const api = pluginApi(FOLDER, 'UI Review');
+      if (sub === 'on' || sub === 'off') return api.post<core.Gate>('gate', { on: sub === 'on' }).then((g) => { rt.toast(`${core.GATE_LABEL}: ${g.on ? 'on' : 'off'}`, 'success'); return g; }, (e: Error) => { rt.toast(e.message, 'danger'); return { ok: false, error: e.message }; });
+      return api.call<core.Gate>('gate').catch(() => ({ ...core.GATE }));
+    };
+    rt.actions.register('ui-review.gate', gate, { label: 'Is UI Review a merge gate?' });
+    rt.actions.register('uireview.gate', gate, { label: 'UI Review gate: status, on or off (voice)' });
     // a copied screenshot link (?ui-shot=<id>) lands on the Screenshots tab, which opens that picture
     // AmberX's "ready for review" notification (?axf-review-group=<id>) lands on the queue, filtered to that group
     if (new URLSearchParams(globalThis.location?.search ?? '').get(GROUP_PARAM)) setTimeout(() => rt.navigate(VIEW), 0);
