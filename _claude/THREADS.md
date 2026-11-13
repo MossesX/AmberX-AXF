@@ -786,8 +786,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 12:23 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` s29 done (all) · orchestrator
-- 2026-11-13 12:23 UTC · `fix-toolbar-settings-doing-nothing` → queued, note (all) · console
 - 2026-11-13 12:23 UTC · `auto-recover-stuck-builds` s8 done (all) · orchestrator
 - 2026-11-13 12:24 UTC · `combine-merge-queue-into-one-pr` s6 done (all) · orchestrator
 - 2026-11-13 12:24 UTC · `fix-toolbar-settings-doing-nothing` note (all) · mcp
@@ -1186,6 +1184,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 18:44 UTC · `console-app-part-2-native-floating` note (all) · orchestrator
 - 2026-11-13 18:44 UTC · `restore-asset-designer-plugin-merged-nov` s1 done, → running (all) · orchestrator
 - 2026-11-13 18:44 UTC · `console-app-part-2-native-floating` note (all) · builds-live
+- 2026-11-13 18:44 UTC · `console-app-wake-word-voice-listener` added (0 steps) (all) · console
+- 2026-11-13 18:44 UTC · `console-app-wake-word-voice-listener` → queued, note (all) · console
 
 ## Token passes (log)
 

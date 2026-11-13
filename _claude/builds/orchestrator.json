@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T18:45:22.024Z",
+ "updatedAt": "2026-11-13T18:45:58.770Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -129136,6 +129136,43 @@
    "origin": {
     "said": "split the console wrapper so it runs on four slots at the same time",
     "at": "2026-11-13T18:41:46.237Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "console-app-wake-word-voice-listener",
+   "title": "Console app: wake-word voice listener, voice approvals, every console command by voice",
+   "category": "",
+   "detail": "Voice control for the console Android app (wrapper, parts 1-4), working offline where possible.\n- Always-on wake-word listener, with a wake phrase Brett sets in Settings (several allowed). Runs on-device (offline engine, e.g. Vosk/whisper.cpp + a local intent matcher), with a mic-on indicator and an off switch.\n- After the wake phrase the app answers out loud ('What's up?') and listens for a command.\n- Voice approvals: 'approve' reads pending approvals one at a time (who asked, what it does); Brett says approve, deny, skip or details. 'Approve all pending' and 'deny all' ask for one spoken confirm. Works from the floating overlay and the lock screen.\n- Settings by voice, e.g. 'change the veto timer to two hours' (the axHub veto countdown, so he has that long to veto something before it runs/builds), with the value read back.\n- Command catalog: every console action, plugin command, control@1 target and pipeline gets a voice entry, built from the API registry so new plugins appear automatically. Multi-field actions run as a spoken wizard that asks for each missing field ('create a new project' -> 'name?' -> 'Gizmo Johnson' -> confirm). Covers projects, builds/pipelines (file, split, prioritise, land, stop), approvals, settings, tokens/skins, notes/tasks, navigation.\n- A Voice commands screen lists every command and its phrasings, searchable, with custom phrases Brett adds.\n- Destructive commands always need a spoken confirm.\n- Full API parity. Tests, help, Shipped features.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-13T18:44:52.063Z",
+   "updatedAt": "2026-11-13T18:44:55.579Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T18:44:55.579Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "set a listener in the console Android app; say a trigger and approve, it lists everything needing approval one at a time and I say approve or deny, or approve all pending; change the veto timer to two hours by voice; every custom command the console could need in wizard format with an entry, pipelines, create a new project named Gizmo Johnson",
+    "at": "2026-11-13T18:44:52.063Z",
     "source": "",
     "session": "",
     "link": "",
