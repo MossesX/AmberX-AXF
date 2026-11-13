@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5061,
- "updatedAt": "2026-11-13T21:30:25.389Z",
+ "rev": 5062,
+ "updatedAt": "2026-11-13T21:30:43.553Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -182505,9 +182505,9 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
-   "deleted": false,
-   "deletedAt": "",
+   "rev": 7,
+   "deleted": true,
+   "deletedAt": "2026-11-13T21:30:25.310Z",
    "pending": {
     "model": "Opus",
     "status": "pending",
