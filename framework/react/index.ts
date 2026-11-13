@@ -48,6 +48,7 @@ export { HubAppearanceSource, DEFAULT_HUB, type HubAppearanceOptions } from './h
 export { WaitingForHub } from './components/Waiting';
 export { WatchLiveLink, WatchLiveWindow, watchLiveSrc, type WatchLivePreview } from './components/WatchLive';
 export { installTapConfirm, toolbarOf, toolbarElementId, tipTextOf, tapSurfaceOf, TAP_SURFACES, type TapConfirmHost, type TapSurface } from './tapConfirm';
+export { installToolbarLook, applyToolbarLook, filterToolbar, toolbarInstanceOf, toolbarFoldKey, toolbarStates, TOOLBAR_AS_BUILT, TOOLBAR_LOOK_FIELDS, type ToolbarLookHost, type ToolbarState } from './toolbarLook';
 export { TapConfirmChoice } from './components/TapConfirmChoice';
 export { RefText, REFS_SETTING, addRefSource, refSourcesChanged, refIndexOf, openRef, refLink, type RefTextProps, type RefHow } from './components/RefText';
 export { TabGroup, useTabGroupData, tabGroupDataFor, type TabDef, type TabGroupProps } from './components/TabGroup';

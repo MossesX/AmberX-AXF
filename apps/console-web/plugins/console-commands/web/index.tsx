@@ -22,7 +22,7 @@
  * a command waits, the browser AmberX opens, the open consoles, waiting and last commands.
  */
 import { useEffect, useState } from 'react';
-import { Button, Container, Note, SelectField, Switch, useRuntime, type AxfWebLibrary } from '@console/axf/react';
+import { Button, Container, Note, SelectField, Switch, toolbarStates, useRuntime, type AxfWebLibrary } from '@console/axf/react';
 import type { AxfRuntime } from '@console/axf/core';
 import { followSse, sseJson } from '@console/axf/core/sse';
 import { pluginFetch } from '@console/plugins';
@@ -116,6 +116,16 @@ function fieldsOf(rt: AxfRuntime) {
         });
       }
     }
+  }
+  // every toolbar's own settings (right-click → Toolbar settings): read here, changed with chrome.set / chrome.unset /
+  // chrome.reset / toolbar.fold (build fix-toolbar-settings-doing-nothing)
+  for (const t of toolbarStates(globalThis.document ?? null, rt.settings)) {
+    const set = Object.entries(t.settings).map(([k, v]) => `${k}=${v}`).join(', ');
+    out.push({
+      kind: 'field', label: `Toolbar: ${t.label}`, detail: `Toolbar settings › ${t.instance} (chrome.set:toolbar:${t.instance}:<field>:<value>, toolbar.fold:${t.instance}:<on|off>)`, icon: 'sliders',
+      keywords: ['toolbar', t.instance, t.label], focus: { tab: 'toolbars', key: `axf.chrome.toolbar.${t.instance}` },
+      field: { type: 'text', value: `${set || 'as built'}${t.folded ? ' · folded' : ''}${t.onScreen ? '' : ' · not on screen'}` },
+    });
   }
   return out;
 }
