@@ -787,7 +787,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 18:04 UTC · `per-instance-settings-window-picker` note (all) · orchestrator
 - 2026-11-13 18:05 UTC · `per-instance-settings-window-picker` note (all) · foreign-write
 - 2026-11-13 18:07 UTC · `quick-settings-pinned-collapsible-pane` added (0 steps) (all) · console
 - 2026-11-13 18:07 UTC · `quick-settings-pinned-collapsible-pane` → queued, note (all) · console
@@ -1187,6 +1186,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 19:48 UTC · `skin-config-panel-merge-main-and-land` → queued, note (all) · builds-live
 - 2026-11-13 19:48 UTC · `skins-plugin-merge-main-and-land` added (0 steps) (all) · builds-live
 - 2026-11-13 19:48 UTC · `skins-plugin-merge-main-and-land` note (all) · claude-voice
+- 2026-11-13 19:48 UTC · `skin-config-panel-merge-main-and-land` note (all) · orchestrator
 
 ## Token passes (log)
 
