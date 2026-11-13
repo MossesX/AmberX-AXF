@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4945,
- "updatedAt": "2026-11-13T20:19:52.833Z",
+ "rev": 4946,
+ "updatedAt": "2026-11-13T20:20:19.226Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -196141,15 +196141,16 @@
    "title": "Tab groups: choose how many rows of tabs (stack tabs instead of side-scrolling)",
    "category": "",
    "detail": "Add a 'Rows' setting to every tab group's chrome settings (per instance): 1 (default, today's behaviour), 2, 3, ... or Auto (as many rows as needed to fit). Tabs wrap evenly across that many rows so all tabs fit on the page without horizontal scrolling. Works on desktop and phone, follows skins/tokens, persists per instance, survives reload. Active tab stays visible; drag-reorder works across rows. Expose via REST/MCP/CLI/voice/control@1 ('make the settings tabs three rows'). Tests, help entry, Shipped features.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/tab-groups-choose-how-many-rows-tabs",
    "pr": "#623",
+   "mergedAt": "2026-11-13T19:53:40Z",
    "priority": "P2",
    "createdAt": "2026-11-13T17:51:25.212Z",
-   "updatedAt": "2026-11-13T18:13:02.263Z",
+   "updatedAt": "2026-11-13T20:19:48.032Z",
    "builtAt": "2026-11-13T18:12:28.097Z",
    "notes": [
     {
@@ -196175,6 +196176,10 @@
     {
      "text": "PR #623 ready. UI Review item could not be uploaded: dispatched session has no AXF_CONSOLE_URL/AXF_TOKEN. Fix: give build sessions those env vars, then run the review.mjs submit line in the report with --console. check-help coverage 99.6% is from approvals-banner + molly-guide controls already on main.",
      "at": "2026-11-13T18:12:31.967Z"
+    },
+    {
+     "text": "Reconciler: PR #623 merged",
+     "at": "2026-11-13T20:19:48.032Z"
     }
    ],
    "approvals": [],
@@ -196304,7 +196309,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -198352,7 +198357,7 @@
    "title": "Prompting engine with control panel (events, macros, pipelines)",
    "category": "",
    "detail": "A general prompting/rules engine with its own control panel (console plugin), built on the decision dialog (build decision-dialog-ui-review-other).\n- Create 'prompt events': a trigger (any console/axHub/build event: UI Review submitted, build failed, merge clash, approval held, schedule, voice phrase, webhook, custom), conditions, and what to ask Brett (approve/deny, veto countdown, pick from options, text input).\n- Actions on each answer: run tools (MCP/axHub/console commands), macros (saved sequences of commands), or orchestrator pipelines; chain events.\n- Control panel to list, create, edit, enable/disable, test-fire and see history of events; templates for common ones.\n- Reachable by REST/MCP/CLI/voice/control@1.\n- Schema + manifest for events/macros, conformance tests, audit log, Shipped features.\nMODEL: Brett wants Fable for the engine, event/macro schema and contract steps; Opus is fine for UI steps. Brett pre-approves the Fable upgrade for those steps.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -198360,7 +198365,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:16:04.183Z",
-   "updatedAt": "2026-11-13T19:29:08.987Z",
+   "updatedAt": "2026-11-13T20:19:48.032Z",
    "builtAt": "",
    "notes": [
     {
@@ -198386,6 +198391,10 @@
     {
      "text": "Headless run axf-prompting-engine-control-panel-events--joey: brief only · start 12.9K tokens ($0.06) · cost $20.40 · 186 turns · 6 tools, MCP none",
      "at": "2026-11-13T19:29:08.987Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-13T20:19:48.032Z"
     }
    ],
    "approvals": [],
@@ -198647,7 +198656,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -198826,15 +198835,16 @@
    "title": "Transparency token works on every dialog and settings window",
    "category": "",
    "detail": "Root cause: --fx-opacity-glass / opacityGlass only applies where a component's customization has glass:true (framework/core/engines/customize.ts case 'glass'). Settings dialogs and most panels never set it, so the transparency token does nothing there.\nFix: every dialog, settings interface, panel, popover and floating surface uses a token-driven glass background by default (surface mixed with opacityGlass + blur). Add per-surface-type tokens (glass on/off and opacity per surface type: dialog, settings, panel, menu, toolbar, banner) in tokens.style, editable in Token Control and per instance in Quick settings. Rule: everything visual is driven by a token; add a check that fails on hard-coded backgrounds/opacity. Follows skins. Tests, Shipped features.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/transparency-token-works-every-dialog",
    "pr": "#632",
+   "mergedAt": "2026-11-13T19:46:42Z",
    "priority": "P1",
    "createdAt": "2026-11-13T18:26:12.039Z",
-   "updatedAt": "2026-11-13T19:35:34.978Z",
+   "updatedAt": "2026-11-13T20:19:48.032Z",
    "builtAt": "2026-11-13T18:55:46.655Z",
    "notes": [
     {
@@ -198892,6 +198902,10 @@
     {
      "text": "Brett: every single instance of every tab group, application menu, navigation menu and toolbar (and dialog) gets its own settings interface that changes only that one instance, and each must include its own transparency setting. Ties into per-instance-settings-window-picker.",
      "at": "2026-11-13T19:35:34.978Z"
+    },
+    {
+     "text": "Reconciler: PR #632 merged",
+     "at": "2026-11-13T20:19:48.032Z"
     }
    ],
    "approvals": [
@@ -199059,7 +199073,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 26,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -200016,7 +200030,7 @@
    "title": "Orchestrator settings: collapsible Split section with parallel-split option",
    "category": "",
    "detail": "Build Orchestrator settings get a collapsible 'Split' section holding every option for how a request is split into steps and builds.\n- Gathers all existing split options (one step per line, step size/estimate, model per step, phases, etc.) into this one section.\n- New option: Parallel split. The orchestrator splits a request into independent sub-builds that run at the same time in separate slots. Settings: max parallel slots (default 4), an auto/ask/off mode, and a shared contract or interface step that runs first so the parts don't clash, plus an integration step at the end that merges and tests them together.\n- Sub-builds are linked to their parent build (grouped in the builds list, parent shows combined progress, lands together or in order).\n- Per-build override when filing ('split into N parallel').\n- Full API: REST/MCP/CLI/voice/control@1. Tests, help, Shipped features.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -200024,7 +200038,7 @@
    "pr": "#636",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:12.834Z",
-   "updatedAt": "2026-11-13T19:30:32.174Z",
+   "updatedAt": "2026-11-13T20:19:48.032Z",
    "builtAt": "",
    "notes": [
     {
@@ -200066,6 +200080,10 @@
     {
      "text": "Headless run axf-orchestrator-settings-collapsible-split--joey: brief only · start 12.9K tokens ($0.00) · cost $1.86 · 25 turns · 6 tools, MCP none",
      "at": "2026-11-13T19:30:32.174Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-13T20:19:48.032Z"
     }
    ],
    "approvals": [],
@@ -200305,7 +200323,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -200899,16 +200917,16 @@
    "title": "Console app part 4: console-side safe areas and wrapper support",
    "category": "",
    "detail": "Parallel part 4 of 4 of console-android-app-thin-webview-wrapper (parent). Web console side only (apps/console-web, framework).\n- viewport-fit=cover, and every top bar, banner, toolbar, menu bar and bottom nav padded with env(safe-area-inset-*) through framework tokens, so nothing is ever drawn under the clock, camera cutout or notification shade (Brett's screenshots: the AmberX title/search/menu sat under the status bar).\n- Detects when it's running in the wrapper (window.axfNative) and uses native features when present, falling back gracefully in a browser.\n- Auto-update path so the wrapper always loads the live console.\n- Tests, including a CI check for safe-area padding on top and bottom bars. Help, Shipped features.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/console-app-part-4-console-side-safe",
-   "pr": "",
+   "pr": "#640",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:32.589Z",
-   "updatedAt": "2026-11-13T19:49:14.183Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-13T20:19:48.032Z",
+   "builtAt": "2026-11-13T20:19:48.032Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -200929,6 +200947,10 @@
     {
      "text": "Headless run axf-console-app-part-4-console-side-safe--rhonda: brief only · start 11.4K tokens ($0.03) · cost $2.98 · 80 turns · 6 tools, MCP none",
      "at": "2026-11-13T19:49:14.183Z"
+    },
+    {
+     "text": "Reconciler: PR #640; PR #640 names s1, s2, s3, s4, s5, s6, s7 done",
+     "at": "2026-11-13T20:19:48.032Z"
     }
    ],
    "approvals": [],
@@ -201130,12 +201152,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-13T20:19:48.032Z",
+     "note": "PR #640 (claude/console-app-part-4-console-side-safe)",
+     "rev": 2,
      "createdAt": "2026-11-13T18:43:37.409Z",
-     "updatedAt": "2026-11-13T18:43:37.409Z"
+     "updatedAt": "2026-11-13T20:19:48.035Z"
     }
    ],
    "profiles": [
@@ -201146,7 +201168,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -201162,16 +201184,16 @@
    "title": "Console app part 2: native floating overlay and approvals bar",
    "category": "",
    "detail": "Parallel part 2 of 4 of console-android-app-thin-webview-wrapper (parent). Builds only in the wrapper's Android module, following the shell contract (package, module layout, window.axfNative bridge names) from the parent build.\n- Draw-over-apps floating toolbar/bubble, ported from overlay-toolbar-v2. It keeps the app in front, expands to the full-screen console with the toolbar top-left, and pops up an approvals bar with a link to the approvals page.\n- Permission flow for 'display over other apps'.\n- Respects safe areas (status bar, cutout, nav bar).\n- Tests, help, Shipped features.",
-   "status": "pending",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/console-app-part-2-native-floating-2",
-   "pr": "",
+   "pr": "#639",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:46.237Z",
-   "updatedAt": "2026-11-13T19:44:05.562Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-13T20:19:48.032Z",
+   "builtAt": "2026-11-13T20:19:48.032Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -201200,6 +201222,10 @@
     {
      "text": "Session on mossesx-max- stopped on its own with 7 steps left: back in Pending for Brett.",
      "at": "2026-11-13T19:44:05.562Z"
+    },
+    {
+     "text": "Reconciler: PR #639; PR #639 names s1, s2, s3, s4, s5, s6, s7 done",
+     "at": "2026-11-13T20:19:48.032Z"
     }
    ],
    "approvals": [],
@@ -201273,12 +201299,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-13T20:19:48.032Z",
+     "note": "PR #639 (claude/console-app-part-2-native-floating-2)",
+     "rev": 2,
      "createdAt": "2026-11-13T18:46:01.392Z",
-     "updatedAt": "2026-11-13T18:46:01.392Z"
+     "updatedAt": "2026-11-13T20:19:48.035Z"
     },
     {
      "id": "s2",
@@ -201295,12 +201321,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-13T20:19:48.032Z",
+     "note": "PR #639 (claude/console-app-part-2-native-floating-2)",
+     "rev": 2,
      "createdAt": "2026-11-13T18:46:01.392Z",
-     "updatedAt": "2026-11-13T18:46:01.392Z"
+     "updatedAt": "2026-11-13T20:19:48.035Z"
     },
     {
      "id": "s3",
@@ -201317,12 +201343,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-13T20:19:48.032Z",
+     "note": "PR #639 (claude/console-app-part-2-native-floating-2)",
+     "rev": 2,
      "createdAt": "2026-11-13T18:46:01.392Z",
-     "updatedAt": "2026-11-13T18:46:01.392Z"
+     "updatedAt": "2026-11-13T20:19:48.035Z"
     },
     {
      "id": "s4",
@@ -201339,12 +201365,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-13T20:19:48.032Z",
+     "note": "PR #639 (claude/console-app-part-2-native-floating-2)",
+     "rev": 2,
      "createdAt": "2026-11-13T18:46:01.392Z",
-     "updatedAt": "2026-11-13T18:46:01.392Z"
+     "updatedAt": "2026-11-13T20:19:48.035Z"
     },
     {
      "id": "s5",
@@ -201361,12 +201387,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-13T20:19:48.032Z",
+     "note": "PR #639 (claude/console-app-part-2-native-floating-2)",
+     "rev": 2,
      "createdAt": "2026-11-13T18:46:01.392Z",
-     "updatedAt": "2026-11-13T18:46:01.392Z"
+     "updatedAt": "2026-11-13T20:19:48.035Z"
     },
     {
      "id": "s6",
@@ -201383,12 +201409,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-13T20:19:48.032Z",
+     "note": "PR #639 (claude/console-app-part-2-native-floating-2)",
+     "rev": 2,
      "createdAt": "2026-11-13T18:46:01.392Z",
-     "updatedAt": "2026-11-13T18:46:01.392Z"
+     "updatedAt": "2026-11-13T20:19:48.035Z"
     },
     {
      "id": "s7",
@@ -201408,12 +201434,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-13T20:19:48.032Z",
+     "note": "PR #639 (claude/console-app-part-2-native-floating-2)",
+     "rev": 2,
      "createdAt": "2026-11-13T18:46:01.392Z",
-     "updatedAt": "2026-11-13T18:46:01.392Z"
+     "updatedAt": "2026-11-13T20:19:48.035Z"
     }
    ],
    "profiles": [
@@ -201424,7 +201450,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -201448,7 +201474,7 @@
    "pr": "#643",
    "priority": "P1",
    "createdAt": "2026-11-13T18:44:52.063Z",
-   "updatedAt": "2026-11-13T20:03:35.910Z",
+   "updatedAt": "2026-11-13T20:19:48.032Z",
    "builtAt": "",
    "notes": [
     {
@@ -201466,6 +201492,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-console-app-wake-word-voice-listener--earl, own login copy)",
      "at": "2026-11-13T19:31:20.212Z"
+    },
+    {
+     "text": "Reconciler: PR #643 names s1, s2 done",
+     "at": "2026-11-13T20:19:48.032Z"
     }
    ],
    "approvals": [],
@@ -201554,12 +201584,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-13T20:19:48.032Z",
+     "note": "PR #643 (claude/console-app-wake-word-voice-listener)",
+     "rev": 2,
      "createdAt": "2026-11-13T18:48:10.123Z",
-     "updatedAt": "2026-11-13T18:48:10.123Z"
+     "updatedAt": "2026-11-13T20:19:48.035Z"
     },
     {
      "id": "s3",
@@ -201771,7 +201801,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -202125,10 +202155,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/skin-axhub-override-switch-greyed-out",
-   "pr": "",
+   "pr": "#641",
    "priority": "P1",
    "createdAt": "2026-11-13T18:56:15.400Z",
-   "updatedAt": "2026-11-13T19:55:05.674Z",
+   "updatedAt": "2026-11-13T20:19:48.032Z",
    "builtAt": "",
    "notes": [
     {
@@ -202174,6 +202204,10 @@
     {
      "text": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
      "at": "2026-11-13T19:55:05.674Z"
+    },
+    {
+     "text": "Reconciler: PR #641",
+     "at": "2026-11-13T20:19:48.032Z"
     }
    ],
    "approvals": [],
@@ -202420,7 +202454,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -204212,10 +204246,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/skins-plugin-merge-main-and-land",
-   "pr": "",
+   "pr": "#647",
    "priority": "P0",
    "createdAt": "2026-11-13T19:47:44.815Z",
-   "updatedAt": "2026-11-13T20:17:05.412Z",
+   "updatedAt": "2026-11-13T20:19:48.032Z",
    "builtAt": "",
    "notes": [
     {
@@ -204245,6 +204279,10 @@
     {
      "text": "Session on mossesx-max- stopped on its own with 3 steps left: back in Pending for Brett.",
      "at": "2026-11-13T20:17:05.412Z"
+    },
+    {
+     "text": "Reconciler: PR #647",
+     "at": "2026-11-13T20:19:48.032Z"
     }
    ],
    "approvals": [],
@@ -204381,7 +204419,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
