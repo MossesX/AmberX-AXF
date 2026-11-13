@@ -171,5 +171,11 @@ Web only (Android on hold, build `console-commands-reliable`), Kotlin twins when
 - `followSse` options `idleTimeoutMs` and the follower's `reconnect()` / `idleMs()` / `open()` (`core/sse.ts`); the Kotlin `Sse`
   parser is unchanged, only an Android stream follower would need the idle watchdog.
 
+## Deferred: single settings as console fields (Nov 13 2026)
+Web only (Android on hold, build `full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app`), Kotlin twins when
+the Android side resumes: catalog kind `field` (`type`, `value`, `options`, `min`, `max`, `secret`), `consoleResolveField`,
+`consoleFieldValue`, `CONSOLE_FIELD_TYPES` (`core/engines/console-commands.mjs`), and a `settings.set:<key>:<value>` action in the
+Compose settings host. Plan Studio's find by content (`findInPlans`) is plugin code, no Kotlin side.
+
 ## Deferred: crew-sections@1 section owners (Nov 12 2026)
 Web and host only (Android on hold, build `employee-for-every-section`): the section-owner rules (`apps/console-web/plugins/agent-swarm/web/sections-core.mjs`: `normSections`, `owners`, `assign`, `sectionLine`, `sayKey`, `recentlySaid`, `checkUsages`) and `framework/cli/crew-say.mjs` have no Kotlin twin. Section lines are ordinary swarm-state@1 `report` messages (`jobId` = `<section>` or `<section>:<ref>`), so an Android chat reader shows them unchanged. <!-- axf-plugin:agent-swarm -->

@@ -22,6 +22,7 @@ import { TabGroup } from '../../react/components/TabGroup';
 import { LEVEL_EDITOR_ACTIONS, LEVEL_EDITOR_CTX, LEVEL_EDITOR_DIALOG, LEVELS_CSS, LevelEditor, levelEditorAct } from './levels';
 import { FollowHubSwitch, SKIN_WHERE_CSS, SKIN_WHERE_DIALOG, SkinWhere, SkinWhereDialog } from './skinwhere';
 import { SkinScope } from '../../react/components/SkinScope';
+import { consoleFieldValue } from '../../core/engines/console-commands.mjs';
 
 export const SETTINGS_LIBRARY_ID = 'ai.amberx.axf.settings';
 const VIEW = 'settings';
@@ -993,6 +994,16 @@ export const library: AxfWebLibrary = {
         globalThis.dispatchEvent?.(new CustomEvent('axf:settings-tab', { detail: tab }));
       }
     }, { label: 'Open a settings tab', params: true });
+    // One setting by key, for voice, MCP, REST and the CLI (build full-voice-and-ai-control, Nov 13 2026):
+    // `settings.set:<key>:<value>` (the value may hold colons). The setting's own `requires` still applies.
+    rt.actions.register('settings.set', ([key, ...rest]) => {
+      const spec = key ? rt.settings.spec(key) : undefined;
+      if (!spec) { rt.toast(`There is no setting "${key ?? ''}".`, 'warning', 'Settings'); return; }
+      if (spec.requires && !rt.can(spec.requires)) { rt.toast(`Your role can't change "${spec.label}".`, 'danger', 'Permission denied'); return; }
+      const r = consoleFieldValue(spec, rest.join(':'), rt.settings.get(spec.key));
+      if (r.error !== undefined) { rt.toast(r.error, 'warning', spec.label); return; }
+      rt.settings.set(spec.key, r.value as SettingValue);
+    }, { label: 'Change one setting', params: true, effect: 'write' });
   },
   views: {
     [VIEW]: { title: 'Settings', icon: 'settings', render: () => <SettingsView /> },
