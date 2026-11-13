@@ -284,6 +284,20 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('decisions.show', ([id]) => { if (id) show(id); else void checkNow().then(() => (st.items[0] ? show(st.items[0].id) : rt.toast('Nothing is waiting for you.', 'info', 'Decisions'))); }, { label: 'Show a waiting decision', params: true, searchable: false, effect: 'navigate' });
     rt.actions.register('decisions.next', () => void checkNow().then(() => (st.items[0] ? show(st.items[0].id) : rt.toast('Nothing is waiting for you.', 'info', 'Decisions'))), { label: 'Show the decisions waiting for me', effect: 'navigate' });
     rt.actions.register('decisions.check', () => void checkNow(), { label: 'Check for waiting decisions' });
+    // decisions.popup:<type|all>:<on|off> and decisions.notify:<type|all>:<on|off> — the per-type switches by name (voice: "UI Review pop-ups off").
+    for (const what of ['popup', 'notify'] as const) {
+      rt.actions.register(`decisions.${what}`, async ([type = '', value = '']) => {
+        const on = /^(on|true|yes|1)$/i.test(value) ? true : /^(off|false|no|0)$/i.test(value) ? false : null;
+        if (!type || on === null) { rt.toast(`decisions.${what}:<type|all>:<on|off>`, 'warning', 'Decisions'); return; }
+        try {
+          const s = await api.call<DecisionSettings>('settings');
+          const ids = type === 'all' ? Object.keys(s[what]) : [type];
+          await api.put('settings', { [what]: Object.fromEntries(ids.map((id) => [id, on])) });
+          rt.toast(`${type === 'all' ? 'Every decision' : typeLabel(type)}: ${what === 'popup' ? 'pops up' : 'notifies'} ${on ? 'on' : 'off'}`, 'success', 'Decisions');
+          void checkNow();
+        } catch (e) { rt.toast((e as Error).message, 'danger', 'Decisions'); }
+      }, { label: `Decision ${what === 'popup' ? 'pop-up' : 'notification'} on or off per type (decisions.${what}:<type|all>:<on|off>)`, params: true });
+    }
     rt.actions.register('decisions.later', ([id]) => { const d = st.items.find((x) => x.id === id); if (d) { void later(d); if (onScreen === id) advance(id); } }, { label: 'Ask again later', params: true, searchable: false });
     // decisions.answer:<id|latest|N>:<words> — 'pick option 2', 'approve it', 'request changes: bigger'. His tap or words only.
     rt.actions.register('decisions.answer', async ([ref = 'latest', ...rest]) => {

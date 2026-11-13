@@ -1,0 +1,29 @@
+{
+  "$axf": "notify-types@1",
+  "types": [
+    {
+      "id": "decision.waiting",
+      "label": "A decision waiting for you",
+      "group": "approvals",
+      "app": "console",
+      "source": "Decision dialog",
+      "description": "Something needs your decision (a confirm, a model upgrade, a merge clash, a key, a pass …): one alert each; a tap opens it in the decision dialog; answering it clears it. Which kinds notify and which pop up are in Settings → Plugins → Decision dialog.",
+      "match": {
+        "source": "decisions"
+      },
+      "priority": "high"
+    },
+    {
+      "id": "decision.popup",
+      "label": "Decision dialog pops up",
+      "group": "approvals",
+      "app": "console",
+      "source": "Decision dialog",
+      "description": "The decision dialog opening by itself on whatever console screen you are on. Per kind in Settings → Plugins → Decision dialog.",
+      "enforced": "browser",
+      "only": [
+        "popup"
+      ]
+    }
+  ]
+}

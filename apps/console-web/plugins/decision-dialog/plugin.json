@@ -18,7 +18,9 @@
     "action:decisions.next",
     "action:decisions.answer",
     "action:decisions.later",
-    "action:decisions.check"
+    "action:decisions.check",
+    "action:decisions.popup",
+    "action:decisions.notify"
   ],
   "scopes": [
     "ROUTES"
