@@ -785,8 +785,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 11:25 UTC · `change-to-move-amberx-web-app-into-the-console-amberx-andr-pr-528-brett-do` note (all) · orchestrator
-- 2026-11-13 11:25 UTC · `badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad` → running, note (all) · pipeline
 - 2026-11-13 11:25 UTC · `badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad` → running, note (all) · orchestrator
 - 2026-11-13 11:25 UTC · `show-commits-behind-main-on-every-build-table-an` → running, note (all) · pipeline
 - 2026-11-13 11:25 UTC · `show-commits-behind-main-on-every-build-table-an` note (all) · orchestrator
@@ -1185,6 +1183,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 18:14 UTC · `chrome-settings-actually-apply-toolbars` note (all) · orchestrator
 - 2026-11-13 18:14 UTC · `chrome-settings-actually-apply-toolbars` note (all) · builds-live
 - 2026-11-13 18:14 UTC · `vps-builds-get-console-token-ui-review` added (0 steps) (all) · builds-live
+- 2026-11-13 18:13 UTC · `chrome-settings-actually-apply-toolbars` note (all) · orchestrator
+- 2026-11-13 18:13 UTC · `chrome-settings-actually-apply-toolbars` s3 done, → built (all) · orchestrator
 
 ## Token passes (log)
 

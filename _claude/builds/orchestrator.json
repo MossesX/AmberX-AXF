@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T18:14:08.896Z",
+ "updatedAt": "2026-11-13T18:14:36.761Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -125591,7 +125591,7 @@
    "title": "Chrome settings actually apply on toolbars, nav and menu bar (not just tab groups)",
    "category": "",
    "detail": "The framework chrome settings dialog (framework/react/components/ChromeContext.tsx, chrome-settings-rules.mjs, chrome.settings:<type>:<instance>) gives every tab group, toolbar, banner, nav and menu bar its own settings. Only tab groups apply the per-item settings (look, size, etc.); the main toolbar, nav and menu bar ignore most of them. Make every setting in the dialog take effect live on every chrome type and instance, persist per instance, and survive reload. Add a check that sets every value on every chrome type and verifies the render changes. Expose via REST/MCP/CLI/voice. Shipped features.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -125600,7 +125600,7 @@
    "priority": "P1",
    "createdAt": "2026-11-13T17:44:36.515Z",
    "updatedAt": "2026-11-13T18:14:04.050Z",
-   "builtAt": "",
+   "builtAt": "2026-11-13T18:14:04.050Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -125621,6 +125621,10 @@
     {
      "text": "Headless run axf-chrome-settings-actually-apply-toolbars--paulie: brief only · start 11.3K tokens ($0.03) · cost $3.44 · 95 turns · 6 tools, MCP none",
      "at": "2026-11-13T18:14:04.050Z"
+    },
+    {
+     "text": "UI Review item r-20261113-se80s01 is local to the worktree only: the session had no AXF_CONSOLE_URL/AXF_TOKEN. Re-submit with --console (shots are in _claude/builds/reports/chrome-settings-actually-apply-toolbars/shots/).",
+     "at": "2026-11-13T18:13:32.525Z"
     }
    ],
    "approvals": [],
@@ -125692,8 +125696,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T18:13:35.646Z",
      "note": "",
      "uid": "st-mwf9qj8003vi7x",
      "createdAt": "2026-11-13T17:46:32.016Z"
