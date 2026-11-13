@@ -151,6 +151,9 @@ export function scanReferences(p) {
     if (file.startsWith(REBUILDS_DIR + '/') || file.startsWith(HARVEST_DIR + '/') || file.startsWith(CHANGES_DIR + '/') || file.startsWith(HANDOFF_DIR + '/') || file.startsWith(BUILDS_DIR + '/') || file.startsWith(SESSIONS_DIR + '/') || HANDOFF_NOTE.test(relative(ROOT, file)) || BUILD_EXPORT.test(relative(ROOT, file)) || RATCHET_BASELINE.test(relative(ROOT, file)) || SNAPSHOT_FIXTURE.test(relative(ROOT, file))) continue;
     // The console's public/data is generated from the builds store and is git-ignored: build notes there are history too.
     if (file.startsWith(join(CONSOLE_APP_DIR, 'public/data') + '/')) continue;
+    // The console-control inventory is generated from the installed plugins (scripts/control-inventory.mjs, run by every
+    // dev and build), so a removed plugin drops out of it on the next build: data, not a reference.
+    if (file === join(CONSOLE_APP_DIR, 'src/control/inventory.json')) continue;
     // An app's baked framework (apps/<app>/src/axf) is a copy: `framework/` is the file checked, and a re-bake refreshes the copy.
     if (file.startsWith(APPS_DIR + '/') && file.slice(APPS_DIR.length).split('/').slice(2, 4).join('/') === 'src/axf') continue;
     // Another plugin's own tests may name plugins as data (e.g. the rebuild tracker's fixtures); only its runtime

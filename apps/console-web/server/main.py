@@ -1777,6 +1777,11 @@ def _pending_file() -> Path:
 ALERTS = alerts_hub.AlertHub(STATE.parent, log=log, github_token=_gh_token, default_repos=[GITHUB_REPO],
                              systems=_systems_checks, pending_file=_pending_file, plugins=PLUGINS)
 app.include_router(alerts_hub.router_for(ALERTS, auth_always))
+
+# ---- Console control (console-control@1, framework/spec/CONSOLE-CONTROL.md): /api/console-control/* (console_control_api.py)
+import console_control_api  # noqa: E402
+
+app.include_router(console_control_api.router_for(auth))
 console_context.set_context(raise_alert=lambda inp: ALERTS.raise_alert(inp)[0], resolve_alerts=ALERTS.resolve, alerts_changed=ALERTS.touch)
 
 

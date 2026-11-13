@@ -1,4 +1,5 @@
 import { installConsoleSearch } from './consoleSearch';
+import { installConsoleControl } from './control';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { AccountView, AppShell, AssetStudio, bannerSlotDefs, FRAME_BANNERS_SLOT, SlotsProvider, useBannerPrefsTick, useAxfState, useRuntime, type ViewMap } from './axf/react';
 import { installLibraries } from './axf/react/library';
@@ -115,6 +116,8 @@ function usePlugins() {
   }, [reload]);
   // Search bar (banner widget): plan features, tracker items, pending builds and plugins on top of the framework's own.
   useEffect(() => installConsoleSearch(rt), [rt]);
+  // console-control@1: functions, buttons, plugins and the command channel (src/control)
+  useEffect(() => installConsoleControl(rt), [rt]);
   // Inside a host that manages plugins (embed@1 take `plugins`): tell it which plugins the console has, and run
   // only the ones it enabled for the console (Brett, Oct 22 2026). The console's own switches stay as they are for when
   // it runs on its own.

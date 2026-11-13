@@ -6,6 +6,7 @@ import { BrandMark, BrandWatermark, brandHostProps } from './Brand';
 import { useScopeId } from './InterfaceScope';
 import { MenuList, MenuScroll } from './MenuList';
 import { useMenuFit } from './menuFit';
+import { CONTEXT_LEAD_PREFIX, withContextLead, type MenuEntry } from '../../core/engines/windows';
 
 export interface DialogDef {
   title: string;
@@ -222,7 +223,11 @@ export function ContextMenuHost() {
   const more = [...extra, ...chromeSep, ...chrome, ...fallback] as unknown as typeof base;
   const sep = base.length && more.length && !base[base.length - 1]?.separator ? [{ id: 'x-sep', separator: true } as unknown as (typeof base)[number]] : [];
   const tail = everywhere.length ? [{ id: 'ctx-everywhere-sep', separator: true }, ...everywhere] : [];
-  const items = [...base, ...sep, ...more, ...(tail as unknown as typeof base)];
+  // context-lead@1: entries every menu starts with (e.g. the console's Console settings), above a separator, on any
+  // target, even one whose asset turns contributions off
+  const lead = [...rt.contextExtras.entries()].filter(([k]) => k.startsWith(CONTEXT_LEAD_PREFIX)).flatMap(([, f]) => f(ctx.target, ctx.payload));
+  const rest = [...base, ...sep, ...more, ...(tail as unknown as typeof base)];
+  const items = withContextLead(lead as unknown as MenuEntry[], rest as unknown as MenuEntry[]) as unknown as typeof base;
   return (
     <div
       ref={ref}
