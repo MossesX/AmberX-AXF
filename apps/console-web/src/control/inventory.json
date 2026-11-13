@@ -8,7 +8,7 @@
     "tabs": 76,
     "settingsTabs": 67,
     "settings": 85,
-    "functions": 229,
+    "functions": 230,
     "buttons": 62,
     "plugins": 67
   },
@@ -6805,6 +6805,21 @@
       "keywords": [
         "chrome.interface",
         "chrome",
+        "interface"
+      ],
+      "params": true,
+      "file": "src/axf/react/components/ChromeContext.tsx"
+    },
+    {
+      "address": "function:chrome.instance-interface",
+      "kind": "function",
+      "id": "chrome.instance-interface",
+      "label": "Pick the settings interface one tab group / toolbar / banner / nav / menu uses (chrome.instance-interface:<type>:<instance>:<id|default|custom|inherit>)",
+      "detail": "Action",
+      "keywords": [
+        "chrome.instance-interface",
+        "chrome",
+        "instance",
         "interface"
       ],
       "params": true,
