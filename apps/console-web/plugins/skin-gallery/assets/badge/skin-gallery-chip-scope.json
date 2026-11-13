@@ -1,22 +1,22 @@
 {
-  "$axf": "asset@1",
-  "type": "badge",
-  "id": "skin-gallery-chip-scope",
-  "name": "Skins banner chip: Skin name with the scope it comes from",
-  "version": "0.1.0",
-  "author": "Skins plugin",
-  "description": "Name plus where it is decided (hub, app, screen, plugin), e.g. Atelier · app.",
-  "tags": [
-    "ui-choice",
-    "choice-set:skin-gallery-chip",
-    "choice-option:scope"
-  ],
-  "data": {
-    "icon": "palette",
-    "label": "{skin} · {from}",
-    "tone": "accent",
-    "shape": "pill",
-    "tooltip": "Skin here: {skin}, set at {from}",
-    "chip": "scope"
-  }
+ "$axf": "asset@1",
+ "type": "badge",
+ "id": "skin-gallery-chip-scope",
+ "name": "skin-gallery-chip: Skin name with the scope it comes from",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Name plus where it is decided (hub, app, screen, plugin), e.g. Atelier · app.",
+ "tags": [
+  "ui-choice",
+  "choice-set:skin-gallery-chip",
+  "choice-option:scope"
+ ],
+ "data": {
+  "icon": "palette",
+  "label": "{skin} · {from}",
+  "tone": "accent",
+  "shape": "pill",
+  "tooltip": "Skin here: {skin}, set at {from}",
+  "chip": "scope"
+ }
 }

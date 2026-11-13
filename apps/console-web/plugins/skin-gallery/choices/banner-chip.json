@@ -8,8 +8,8 @@
       "label": "Palette icon and the skin name",
       "notes": "Says which skin is in force on the screen in front. Default today.",
       "shots": [
-        "_claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga/shots/opt-name--banner-chip-desktop.png",
-        "_claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga/shots/opt-name--banner-chip-phone.png"
+        "../../../../../_claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga/shots/opt-name--banner-chip-desktop.png",
+        "../../../../../_claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga/shots/opt-name--banner-chip-phone.png"
       ],
       "data": {
         "icon": "palette",
@@ -25,8 +25,8 @@
       "label": "Icon only",
       "notes": "Smallest: the palette icon; the skin name is in the tooltip and the popover.",
       "shots": [
-        "_claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga/shots/opt-icon--banner-chip-desktop.png",
-        "_claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga/shots/opt-icon--banner-chip-phone.png"
+        "../../../../../_claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga/shots/opt-icon--banner-chip-desktop.png",
+        "../../../../../_claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga/shots/opt-icon--banner-chip-phone.png"
       ],
       "data": {
         "icon": "palette",
@@ -42,8 +42,8 @@
       "label": "Skin name with the scope it comes from",
       "notes": "Name plus where it is decided (hub, app, screen, plugin), e.g. Atelier \u00b7 app.",
       "shots": [
-        "_claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga/shots/opt-scope--banner-chip-desktop.png",
-        "_claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga/shots/opt-scope--banner-chip-phone.png"
+        "../../../../../_claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga/shots/opt-scope--banner-chip-desktop.png",
+        "../../../../../_claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga/shots/opt-scope--banner-chip-phone.png"
       ],
       "data": {
         "icon": "palette",

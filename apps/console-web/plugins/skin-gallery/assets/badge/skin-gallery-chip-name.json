@@ -1,22 +1,22 @@
 {
-  "$axf": "asset@1",
-  "type": "badge",
-  "id": "skin-gallery-chip-name",
-  "name": "Skins banner chip: Palette icon and the skin name",
-  "version": "0.1.0",
-  "author": "Skins plugin",
-  "description": "Says which skin is in force on the screen in front. Default today.",
-  "tags": [
-    "ui-choice",
-    "choice-set:skin-gallery-chip",
-    "choice-option:name"
-  ],
-  "data": {
-    "icon": "palette",
-    "label": "{skin}",
-    "tone": "neutral",
-    "shape": "pill",
-    "tooltip": "Skin here: {skin}",
-    "chip": "name"
-  }
+ "$axf": "asset@1",
+ "type": "badge",
+ "id": "skin-gallery-chip-name",
+ "name": "skin-gallery-chip: Palette icon and the skin name",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Says which skin is in force on the screen in front. Default today.",
+ "tags": [
+  "ui-choice",
+  "choice-set:skin-gallery-chip",
+  "choice-option:name"
+ ],
+ "data": {
+  "icon": "palette",
+  "label": "{skin}",
+  "tone": "neutral",
+  "shape": "pill",
+  "tooltip": "Skin here: {skin}",
+  "chip": "name"
+ }
 }
