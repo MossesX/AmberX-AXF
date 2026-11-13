@@ -788,7 +788,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 18:13 UTC · `vps-builds-get-console-token-ui-review` added (0 steps) (all) · console
 - 2026-11-13 18:13 UTC · `vps-builds-get-console-token-ui-review` → queued, note (all) · console
 - 2026-11-13 18:14 UTC · `chrome-settings-actually-apply-toolbars` note (all) · orchestrator
 - 2026-11-13 18:14 UTC · `chrome-settings-actually-apply-toolbars` note (all) · builds-live
@@ -1188,6 +1187,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 19:54 UTC · `demo-pipelines-guided-walkthrough-live` s1 done, → running (all) · orchestrator
 - 2026-11-13 19:54 UTC · `land-drive-live-console-first-resolve` note (all) · builds-live
 - 2026-11-13 19:54 UTC · `full-voice-control-merge-main-and-land` added (0 steps) (all) · builds-live
+- 2026-11-13 19:54 UTC · `skin-axhub-override-switch-greyed-out` note (all) · orchestrator
 
 ## Token passes (log)
 

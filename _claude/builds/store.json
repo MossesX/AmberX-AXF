@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4871,
- "updatedAt": "2026-11-13T19:54:22.947Z",
+ "rev": 4872,
+ "updatedAt": "2026-11-13T19:54:51.188Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -202116,7 +202116,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:56:15.400Z",
-   "updatedAt": "2026-11-13T19:52:35.692Z",
+   "updatedAt": "2026-11-13T19:54:12.466Z",
    "builtAt": "",
    "notes": [
     {
@@ -202154,6 +202154,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-skin-axhub-override-switch-greyed-out--sully, own login copy)",
      "at": "2026-11-13T19:33:20.669Z"
+    },
+    {
+     "text": "Headless run axf-skin-axhub-override-switch-greyed-out--sully: brief only · start 11.7K tokens ($0.03) · cost $4.15 · 115 turns · 6 tools, MCP none",
+     "at": "2026-11-13T19:54:12.466Z"
     }
    ],
    "approvals": [],
@@ -202393,7 +202397,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
