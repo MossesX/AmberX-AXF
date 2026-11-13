@@ -786,7 +786,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 12:33 UTC · `fix-step-splitter-claude-exit-1` note (all) · mcp
 - 2026-11-13 12:33 UTC · `fix-step-splitter-claude-exit-1` → queued, note (all) · console
 - 2026-11-13 12:34 UTC · `fix-toolbar-settings-doing-nothing` s3 done (all) · orchestrator
 - 2026-11-13 12:34 UTC · `combine-merge-queue-into-one-pr` → archived (all) · mcp
@@ -1186,6 +1185,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 18:57 UTC · `ui-manager-floating-window-to-select-any` s1 done (all) · orchestrator
 - 2026-11-13 18:57 UTC · `skin-axhub-override-switch-greyed-out` note (all) · orchestrator
 - 2026-11-13 18:57 UTC · `transparency-token-works-every-dialog` note (all) · pipeline
+- 2026-11-13 18:58 UTC · `console-android-app-thin-webview-wrapper` → queued, note (all) · pipeline
 
 ## Token passes (log)
 
