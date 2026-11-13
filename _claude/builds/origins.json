@@ -6186,6 +6186,18 @@
    "from": "",
    "addenda": []
   },
+  "quick-settings-pinned-collapsible-pane": {
+   "said": "every settings interface has a collapsible pane at the very top, header Quick settings, doesn't scroll, everything scrolls underneath it; current skin and override console skin; default assets like navigation menu; it says it's overriding the current skin",
+   "at": "2026-11-13T18:07:49.026Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "readme-rule-every-build": {
    "said": "We gotta structure the documentation engine later anyway, so leave that out. Just get basic documentation. In Markdown.\n\n(Asked whether every future build should include a basic Markdown readme:) Yeah.",
    "at": "2026-11-04T00:00:00Z",
