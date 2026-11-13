@@ -408,3 +408,7 @@ builds merge driver installed there (`builds-live.mjs install`). PR heads fetche
   (`runnable`, `inProfile`) and crew-chat lines kept, #515's shipped checks (`loadChecks`, `shippedHolds`, alert) added
   to each. #515's new parseSplit test used a 20-min step; main's limit is now 10, so the test's estimate is 10 min.
   pipeline.test.mjs: 51 checks pass.
+- #529: merged clean. Its red light check was `project-wizard/test.mjs` "switched into the new project": CI pins
+  `AXF_BUILD_PROFILE=all` for the whole workflow, which overrides the profile switch the test makes. The test now drops
+  that pin from the wizard's env (reproduced with the pin, passes with the fix).
+- #539: merged clean.
