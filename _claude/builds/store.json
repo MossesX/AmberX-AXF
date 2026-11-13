@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3926,
- "updatedAt": "2026-11-13T01:46:19.997Z",
+ "rev": 3927,
+ "updatedAt": "2026-11-13T01:47:11.130Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -175952,7 +175952,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-12T23:40:00.983Z",
-   "updatedAt": "2026-11-13T01:42:11.195Z",
+   "updatedAt": "2026-11-13T01:47:09.492Z",
    "builtAt": "",
    "notes": [
     {
@@ -176025,12 +176025,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T01:13:54.960Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-everything-on-tokens-before-skins-fix-the-27-ope--paulie",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-13T01:42:07.174Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T23:41:19.671Z",
@@ -176042,7 +176042,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-13T01:42:07.174Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -176050,8 +176050,10 @@
      "at": "2026-11-12T23:41:20.890Z",
      "why": "subscription account mossesx-max-"
     },
-    "tried": [],
-    "pickedAt": "2026-11-13T01:42:07.174Z",
+    "tried": [
+     "mossesx-max-"
+    ],
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -176072,12 +176074,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T01:47:09.492Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T23:41:19.671Z",
-     "updatedAt": "2026-11-12T23:41:19.671Z"
+     "updatedAt": "2026-11-13T01:47:09.754Z"
     },
     {
      "id": "s2",
