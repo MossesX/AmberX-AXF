@@ -37,3 +37,37 @@ Still needs Brett:
 - The live merge queue is in `stack` mode, where PRs with stale red PR checks never join. `batch` mode (the default since
   Nov 10) lets them join behind the green ones: `node apps/console-web/plugins/push-banner/land/merge-queue.mjs settings --mode batch`.
   With auto-land on, red heads also get fix builds, so either mode works once main is green.
+
+PR **#660**.
+
+## What changed (push-banner plugin, `land/`, plain Node, no model calls)
+| Step | Change |
+|---|---|
+| s1 | `autoLand` on by default. The Nov 4 off reads as on (`autoLandRev 2`). Per-build switch: `land.mjs off/on <build>`, `POST /land/off|on`. |
+| s2 | `land/hook.mjs` (build-hook@1 listener): a finished build goes first in line and a round starts for it at once. After the main merge, settled JSON that doesn't parse takes main's copy (else the merge stops). |
+| s3 | One serial landing line: `run` holds one lock (`--wait-lock` waits up to 15 min); `land.mjs serial -- <cmd>` for any other lander; `land.mjs lock`. Fetch / push that lose a ref lock are retried. |
+| s4 | Clash or red tests → P0 "Merge main and land <build>" fix build via `POST /land/fix` → `axf.build-dispatch@1` (queued). Retried when the head moves or after 90 min (backing off). FYI alert (severity info) per attempt. The agent job stays as the fallback. |
+| s5 | Running builds get origin/main merged into their own clean worktree every 30 min (2 a round). A session mid-edit is skipped; a code clash is aborted. |
+| s6 | Sweeper every 10 min (`land.mjs sweep`): queue kick-outs get their fix build, builds stuck 30 min on push / PR / errors go first in line again, leftover `.tmp-*` files are cleared. |
+| s7 | Banner chip "Landing: N · M stuck" → landing line (stuck first, with why and the fix build), Sweep now. Per-build Auto-land switch in Settings. |
+| s8 | Deep link, help, catalog `cx.buildengine.autoland`. Also drafts the molly-guide tab help that held help coverage under its ratchet. |
+
+## How each part is reached
+| What | REST (`/api/plugins/push-banner`) | MCP | CLI (`land/land.mjs`) | Voice |
+|---|---|---|---|---|
+| Landing line + stuck | `GET /land/line` | `push_banner_land_line` (plugin-commands@1) | `line` | "what's stuck landing" → land-line |
+| Every finished build | `GET /land`, `GET /land/blocked` | `push_banner_land_list/_blocked` | `list`, `blocked` | same commands |
+| Per-build switch | `POST /land/off`, `/land/on` | `push_banner_land_off/_on` | `off <b>`, `on <b>` | same |
+| Sweep now | `POST /land/sweep` | `push_banner_land_sweep` | `sweep` | same |
+| Land now / hold / release | `POST /land/now|hold|release` | as before | as before | same |
+| Global switch | `PUT /config {autoLand}` | – | – | Settings via console_control |
+| Open it | `console_show` / `console_open` target `action:push-banner.land` (Builds menu → Landing line, Settings → Plugins → Push banner → Landing line, banner chip) | | | "open the landing line" |
+
+## Tests
+`land.test.mjs` 92 → 151 · `merge-queue.test.mjs` 18 · push-banner `test.py` 185 → 192 · build-orchestrator `test.py` 41 · check-plugin-commands · help-coverage --check · check-theme · check-controls · check-toolbars · plugin-lifecycle · ci-scope · console `tsc --noEmit`: all pass.
+
+## Not done / needs Brett
+- **UI Review screenshots of the Landing chip and the landing line are not submitted.** The live console runs main, so this branch's banner can't be captured until it deploys. To do in a follow-up.
+- axHub `vps.build_land` (other repo) still pushes merges straight onto main. It should go through the queue, or at least `land.mjs serial --`.
+- The live merge queue is in `stack` mode. `merge-queue.mjs settings --mode batch` lets PRs with stale red checks join behind the green ones.
+- Nothing here takes effect until this PR lands and the console redeploys, and nothing passes the queue while main is red. The P0 main fix goes first.
