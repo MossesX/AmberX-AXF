@@ -785,8 +785,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 10:35 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` → queued, note (all) · console
-- 2026-11-13 10:35 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` → queued, note (all) · console
 - 2026-11-13 10:35 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` → queued, note (all) · console
 - 2026-11-13 10:35 UTC · `stop-the-molly-guide-from-popping-up-and-talking-every-time-the-console-loads-n` → queued, note (all) · console
 - 2026-11-13 10:35 UTC · `server-gate-one-session-per-build-no-duplicate-launches` → queued, note (all) · console
@@ -1185,6 +1183,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 17:23 UTC · `overlay-opens-pages-the-floating-toolbar-expands` note (all) · orchestrator
 - 2026-11-13 17:30 UTC · `merge-all-ready-buttons-server-side` added (5 steps) (all) · build-rename
 - 2026-11-13 17:30 UTC · `merge-all-ready-buttons-server-side-lander` note, removed (all) · build-rename
+- 2026-11-13 17:30 UTC · `test-sandbox-sample-shipped-build` added (3 steps) (test-sandbox) · foreign-write
+- 2026-11-13 17:30 UTC · `test-sandbox-sample-pending-build` added (3 steps) (test-sandbox) · foreign-write
 
 ## Token passes (log)
 
