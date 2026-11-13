@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5021,
- "updatedAt": "2026-11-13T21:12:01.562Z",
+ "rev": 5022,
+ "updatedAt": "2026-11-13T21:12:21.634Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -206309,10 +206309,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/token-registry-skin-editor-live-sandbox",
-   "pr": "",
+   "pr": "#657",
    "priority": "P1",
    "createdAt": "2026-11-13T20:04:16.679Z",
-   "updatedAt": "2026-11-13T21:08:47.373Z",
+   "updatedAt": "2026-11-13T21:12:18.475Z",
    "builtAt": "",
    "notes": [
     {
@@ -206617,7 +206617,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
