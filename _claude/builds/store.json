@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3859,
- "updatedAt": "2026-11-13T00:40:57.926Z",
+ "rev": 3860,
+ "updatedAt": "2026-11-13T00:41:29.110Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -175900,12 +175900,16 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-13T00:39:39.304Z",
-   "updatedAt": "2026-11-13T00:40:55.358Z",
+   "updatedAt": "2026-11-13T00:41:27.700Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-13T00:40:55.358Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-13T00:41:27.700Z"
     }
    ],
    "approvals": [],
@@ -175921,7 +175925,7 @@
     "runs": 0,
     "lastRun": null,
     "split": {
-     "at": "2026-11-13T00:40:55.358Z",
+     "at": "2026-11-13T00:41:27.700Z",
      "by": "orchestrator",
      "provider": "rules",
      "steps": 5,
@@ -175941,7 +175945,7 @@
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mwe93l8e01wvws",
+     "uid": "st-mwe94a6s01yt3r",
      "title": "",
      "text": "CHANGE to move-amberx-web-app-into-the-console-amberx-andr (PR #528), Brett: do NOT bring AmberX features into the console.",
      "model": "Opus",
@@ -175958,12 +175962,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-13T00:40:55.358Z",
-     "updatedAt": "2026-11-13T00:40:55.358Z"
+     "createdAt": "2026-11-13T00:41:27.700Z",
+     "updatedAt": "2026-11-13T00:41:27.700Z"
     },
     {
      "id": "s2",
-     "uid": "st-mwe93l8e02ukf3",
+     "uid": "st-mwe94a6s02xd4r",
      "title": "",
      "text": "Plan Studio is already there.",
      "model": "Opus",
@@ -175980,12 +175984,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-13T00:40:55.358Z",
-     "updatedAt": "2026-11-13T00:40:55.358Z"
+     "createdAt": "2026-11-13T00:41:27.700Z",
+     "updatedAt": "2026-11-13T00:41:27.700Z"
     },
     {
      "id": "s3",
-     "uid": "st-mwe93l8e03pfqi",
+     "uid": "st-mwe94a6s03jf43",
      "title": "",
      "text": "Only build the Console Android app with all notifications (text, approvals, alerts) going through the console.",
      "model": "Opus",
@@ -176002,12 +176006,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-13T00:40:55.358Z",
-     "updatedAt": "2026-11-13T00:40:55.358Z"
+     "createdAt": "2026-11-13T00:41:27.700Z",
+     "updatedAt": "2026-11-13T00:41:27.700Z"
     },
     {
      "id": "s4",
-     "uid": "st-mwe93l8e04nstw",
+     "uid": "st-mwe94a6s04vs4s",
      "title": "",
      "text": "Drop the rest of the AmberX port.",
      "model": "Opus",
@@ -176024,12 +176028,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-13T00:40:55.358Z",
-     "updatedAt": "2026-11-13T00:40:55.358Z"
+     "createdAt": "2026-11-13T00:41:27.700Z",
+     "updatedAt": "2026-11-13T00:41:27.700Z"
     },
     {
      "id": "s5",
-     "uid": "st-mwe93l8e05udqd",
+     "uid": "st-mwe94a6s05px8w",
      "title": "",
      "text": "Tests green, report _claude/builds/reports/change-to-move-amberx-web-app-into-the-console-amberx-andr-pr-528-brett-do.md, THREADS row, commit, push, PR",
      "model": "Opus",
@@ -176049,8 +176053,8 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-13T00:40:55.358Z",
-     "updatedAt": "2026-11-13T00:40:55.358Z"
+     "createdAt": "2026-11-13T00:41:27.700Z",
+     "updatedAt": "2026-11-13T00:41:27.700Z"
     }
    ],
    "profiles": [
@@ -176061,12 +176065,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "2026-11-13T00:40:55.358Z",
+   "defaultAt": "2026-11-13T00:41:27.700Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
