@@ -47,6 +47,10 @@
  *                     worktree branch (<build-branch>--s<n>) or the build branch for a sequential step.
  * Helpers: normAfter / normClaim (shape), dependsOn(build, step) (the resolved list, implicit sequential included),
  * claimLive(claim, now), stepBranch(build, step).
+ * Engine (pure, every call returns a new record): readySteps(build, { now, model }) = open steps whose dependencies are
+ * settled and that carry no live claim; claimStep(build, stepId, { runId, slot, account, branch, model, now, ttlMs })
+ * takes one (refused: not ready, another run's live claim, a model above the pin); releaseStep(build, stepId, { runId,
+ * note }) gives it back; expiredClaims(build, now) lists the dead ones.
  */
 
 export const SCHEMA = 'build-pipeline@1';
@@ -213,6 +217,65 @@ export function dependsOn(b, step) {
 export function stepBranch(b, step, { parallel = false } = {}) {
   const base = str(b?.branch, 200) || `claude/${str(b?.id, 80)}`;
   return parallel ? `${base}--${str(step?.id, 40)}` : base;
+}
+
+/** Model rank for the "never higher than pinned" rule: Fable above Opus. */
+const MODEL_RANK = Object.freeze({ Opus: 1, Fable: 2 });
+const settled = (s) => !!s && (s.done === true || s.skip === true);
+const stepOf = (b, stepId) => (b?.steps ?? []).find((s) => s.id === stepId || (stepId && s.uid === stepId)) ?? null;
+const nowIso = (now) => (typeof now === 'number' ? new Date(now) : now ? new Date(now) : new Date()).toISOString();
+const nowMs = (now) => (typeof now === 'number' ? now : now ? Date.parse(now) : Date.now());
+
+/**
+ * The steps a session may start now: open (not done, not skipped), every step they depend on settled (done or skipped;
+ * dependsOn() resolves the implicit "previous step" of steps without `after`), and no live claim at `now`. `model`
+ * narrows to steps pinned to that model. In list order, so the first ready step is the one the sequential rule picks.
+ */
+export function readySteps(b, { now = Date.now(), model = '' } = {}) {
+  const steps = b?.steps ?? [];
+  return steps.filter((s) => !settled(s) && (!model || s.model === model) && !claimLive(s.claim, now)
+    && dependsOn(b, s).every((id) => settled(steps.find((x) => x.id === id))));
+}
+
+/** Steps whose claim has run out at `now` (a session that died without releasing): [{ step, claim }]. */
+export const expiredClaims = (b, now = Date.now()) => (b?.steps ?? []).filter((s) => s.claim?.runId && !settled(s) && !claimLive(s.claim, now)).map((s) => ({ step: s, claim: s.claim }));
+
+/**
+ * Take a step for a session. Pure: returns { ok, build, claim, step } with a new build record, or { ok: false, why }.
+ * Refused when the step is missing, settled, not ready (a dependency open), held by another live claim (the same
+ * runId renews its own), or when `model` ranks above the step's pinned model (never launch a step higher than it is
+ * pinned: raise the step first). A lower model is a downgrade and allowed; the claim records the model it runs on.
+ */
+export function claimStep(b, stepId, { runId, slot = '', account = '', branch = '', model = '', now = Date.now(), ttlMs = CLAIM_TTL_MS } = {}) {
+  const s = stepOf(b, stepId);
+  if (!s) return { ok: false, why: `no step ${stepId}` };
+  if (!str(runId, 80).trim()) return { ok: false, why: 'a claim needs a runId' };
+  if (settled(s)) return { ok: false, why: `${s.id} is ${s.done ? 'done' : 'skipped'}` };
+  const open = dependsOn(b, s).filter((id) => !settled((b.steps ?? []).find((x) => x.id === id)));
+  if (open.length) return { ok: false, why: `${s.id} waits on ${open.join(', ')}` };
+  if (claimLive(s.claim, now) && s.claim.runId !== str(runId, 80).trim()) return { ok: false, why: `${s.id} is claimed by run ${s.claim.runId}${s.claim.account ? ` on ${s.claim.account}` : ''} until ${s.claim.expiresAt}` };
+  const m = CLAIM_MODELS.includes(model) ? model : s.model;
+  if ((MODEL_RANK[m] ?? 0) > (MODEL_RANK[s.model] ?? 0)) return { ok: false, why: `${s.id} is pinned to ${s.model}: never launched on ${m} (raise the step first)` };
+  const at = nowIso(now);
+  const claim = normClaim({ runId, slot, account, branch: branch || stepBranch(b, s, { parallel: Array.isArray(s.after) }), at, model: m, expiresAt: new Date(nowMs(now) + Math.max(60e3, Number(ttlMs) || CLAIM_TTL_MS)).toISOString() }, { model: s.model });
+  const build = { ...b, steps: b.steps.map((x) => (x === s ? { ...x, claim, updatedAt: at } : x)), updatedAt: at };
+  return { ok: true, build, claim, step: build.steps.find((x) => x.id === s.id) };
+}
+
+/**
+ * Give a step back (a session ended, a merge conflict, a crash). Pure: { ok, build, released } or { ok: false, why }.
+ * With `runId`, only that run's claim is released (another session's claim is left alone); without it, any claim.
+ * `note` is appended to the step's note (e.g. "merge conflict: sequential retry").
+ */
+export function releaseStep(b, stepId, { runId = '', now = Date.now(), note = '' } = {}) {
+  const s = stepOf(b, stepId);
+  if (!s) return { ok: false, why: `no step ${stepId}` };
+  if (!s.claim?.runId) return { ok: true, build: b, released: null };
+  if (runId && s.claim.runId !== str(runId, 80).trim()) return { ok: false, why: `${s.id} is claimed by run ${s.claim.runId}, not ${runId}` };
+  const at = nowIso(now);
+  const next = { ...s, updatedAt: at, ...(note ? { note: `${s.note ? `${s.note}\n` : ''}${str(note, 400)}`.slice(0, 1000) } : {}) };
+  delete next.claim;
+  return { ok: true, build: { ...b, steps: b.steps.map((x) => (x === s ? next : x)), updatedAt: at }, released: s.claim };
 }
 
 /** The steps still to do (not done, not skipped). */
