@@ -781,10 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 00:50 UTC · `tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch` note (all) · pipeline
-- 2026-11-13 00:50 UTC · `amberx-approval-pop-up-not-showing-only-the-android-notification` PR #533 (all) · builds-live
-- 2026-11-13 00:50 UTC · `amberx-approval-pop-up-not-showing-only-the-android-notification` note (all) · orchestrator
-- 2026-11-13 00:50 UTC · `amberx-approval-pop-up-not-showing-only-the-android-notification` s2 done, → built (all) · orchestrator
 - 2026-11-13 00:51 UTC · `amberx-approval-pop-up-not-showing-only-the-android-notification` note (all) · pipeline
 - 2026-11-13 00:51 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` note (all) · pipeline
 - 2026-11-13 00:51 UTC · `tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch` note (all) · pipeline
@@ -1181,6 +1177,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 10:37 UTC · `server-gate-one-session-per-build-no-duplicate-launches` → running, note (all) · pipeline
 - 2026-11-13 10:37 UTC · `server-gate-one-session-per-build-no-duplicate-launches` note (all) · orchestrator
 - 2026-11-13 10:38 UTC · `all-banners-hide-when-empty` s3 undone, → running (all) · builds-live
+- 2026-11-13 10:37 UTC · `owner-recognized-everywhere-veto-countdown-only-on-shell-commands` → running, note (all) · pipeline
+- 2026-11-13 10:37 UTC · `owner-recognized-everywhere-veto-countdown-only-on-shell-commands` note (all) · orchestrator
+- 2026-11-13 10:38 UTC · `one-source-of-truth-console-shows-only-what-the-server-says-is-running` → running, note (all) · pipeline
+- 2026-11-13 10:38 UTC · `one-source-of-truth-console-shows-only-what-the-server-says-is-running` → running, note (all) · orchestrator
 
 ## Token passes (log)
 
