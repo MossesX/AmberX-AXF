@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3981,
- "updatedAt": "2026-11-13T03:36:37.286Z",
+ "rev": 3982,
+ "updatedAt": "2026-11-13T03:36:51.664Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -174931,7 +174931,7 @@
    "branch": "claude/badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad",
    "pr": "",
    "createdAt": "2026-11-12T23:14:26.317Z",
-   "updatedAt": "2026-11-13T03:36:35.592Z",
+   "updatedAt": "2026-11-13T03:36:44.694Z",
    "builtAt": "",
    "notes": [
     {
@@ -175037,12 +175037,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T03:36:37.217Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T23:16:08.502Z",
-     "updatedAt": "2026-11-12T23:16:08.502Z"
+     "updatedAt": "2026-11-13T03:36:37.498Z"
     },
     {
      "id": "s3",
@@ -175059,12 +175059,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T03:36:44.694Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T23:16:08.502Z",
-     "updatedAt": "2026-11-12T23:16:08.502Z"
+     "updatedAt": "2026-11-13T03:36:44.907Z"
     },
     {
      "id": "s4",
