@@ -16,7 +16,9 @@ export interface Filter { kind?: string; status?: string; app?: string; branch?:
 export interface Counts { total: number; waiting: number; changes: number; rejected: number; approved: number }
 export interface Group { id: string; label: string; items: Item[] }
 export interface TreeKind extends Group { apps: Group[] }
-export interface ReviewState { $axf: 'ui-review@1'; branch: string; pr: number | null; state: 'none' | Status; holds: boolean; counts: Omit<Counts, 'total'>; items: { id: string; title: string; kind: string; status: Status }[] }
+export interface Gate { $axf: 'ui-review-gate@1'; gate: false; since: string; why: string }
+export const GATE: Readonly<Gate>;
+export interface ReviewState { $axf: 'ui-review@1'; branch: string; pr: number | null; state: 'none' | Status; /** always false: UI Review is not a gate (Nov 2026) */ holds: false; reason: string; counts: Omit<Counts, 'total'>; items: { id: string; title: string; kind: string; status: Status }[] }
 
 export const SCHEMA: string;
 export const MAX_PICKS: number;

@@ -9,14 +9,15 @@ Every UI a build makes is submitted here for Brett's approval (review-item@1), o
   POST remove  {ids: [..]}    take submitted items (and their screenshots) out
   GET  shot?path=r<n>/<file> | items/<id>/<file>    one screenshot (png/jpg/webp)
   GET  picks / PUT picks {picked: [ids]}             design-pack picks (the page allows 3)
-  GET  state?branch=&pr=      ui-review@1: the strictest status of that branch's / PR's items, holds = don't merge yet
+  GET  state?branch=&pr=      ui-review@1: the strictest status of that branch's / PR's items, for information only (holds is always false)
   …    settings, predicted, predict, predict/real, approve-look
   …    choices/*                  the options a build shipped, Brett's pick, option assets (ui-choices@1, choices.py)
                               predicted looks (ui-prediction@1, predicted.py): a build's mockup waits here before it runs
   …    shots/*                Screenshots tab (ui-screenshot@1, screenshots.py): ad-hoc pictures that never enter this
                               queue; shots/promote sends one in ("Send to review"), shots/migrate moves "Breakroom check:" items out
 
-Capability ui-review@1 (plugin_services): state(branch, pr), holds(branch, pr), items(branch, pr), submit(fields, shots).
+Capability ui-review@1 (plugin_services): state(branch, pr), items(branch, pr), submit(fields, shots),
+hold / holds / isHeld (always not held: UI Review is not a gate, Nov 2026), gate().
 Data folder (AXF_UI_REVIEW_DIR): items.json, shots/<id>/, picks.json, kinds.json, screenshots/ (index.json + files/). On first start the old Design
 packs data folder (its picks) moves in here.
 """
@@ -220,6 +221,10 @@ def decide(item: dict, decision: str, comment: str = "", by: str = "brett", at: 
     return out
 
 
+# UI Review is not a gate (Brett, Nov 13 2026): nothing waits on it. Same object as web/review-core.mjs GATE.
+GATE: dict[str, Any] = {"$axf": "ui-review-gate@1", "gate": False, "since": "2026-11-13", "why": "UI Review is not a gate (Nov 2026)"}
+
+
 def review_state(items: list[dict], branch: str = "", pr: int | None = None) -> dict:
     # a predicted look is approved for the look, not for merging: only real screens count for a branch / PR
     mine = [it for it in items if ((branch and it.get("branch") == branch) or (pr and it.get("pr") == pr)) and (predicted_mod.prediction_of(it) or {}).get("state") != "predicted"]
@@ -228,7 +233,7 @@ def review_state(items: list[dict], branch: str = "", pr: int | None = None) -> 
         if it.get("status") in c:
             c[it["status"]] += 1
     state = "none" if not mine else "rejected" if c["rejected"] else "changes" if c["changes"] else "waiting" if c["waiting"] else "approved"
-    return {"$axf": "ui-review@1", "branch": branch, "pr": pr, "state": state, "holds": state not in ("none", "approved"), "counts": c,
+    return {"$axf": "ui-review@1", "branch": branch, "pr": pr, "state": state, "holds": False, "reason": GATE["why"], "counts": c,
             "items": [{"id": it["id"], "title": it.get("title", ""), "kind": it.get("kind", ""), "status": it.get("status", "waiting")} for it in mine]}
 
 
@@ -321,7 +326,7 @@ def after_decide(items: list[dict]) -> None:
 
 
 class UiReviewService:
-    """ui-review@1 for other plugins (the push banner's batch merge reads holds())."""
+    """ui-review@1 for other plugins. UI Review is not a gate (Nov 2026): hold / holds / isHeld always answer not held."""
 
     name = "ui-review@1"
 
@@ -334,7 +339,17 @@ class UiReviewService:
         return review_state(_submitted(_items_doc()), branch, pr)
 
     def holds(self, branch: str = "", pr: int | None = None) -> bool:
-        return self.state(branch, pr)["holds"]
+        return False
+
+    def isHeld(self, branch: str = "", pr: int | None = None) -> bool:  # noqa: N802 — capability method name
+        return False
+
+    def hold(self, branch: str = "", pr: int | None = None) -> dict:
+        """Is this branch / PR held? Never: {held: False, reason, state} (state for information only)."""
+        return {"held": False, "reason": GATE["why"], "state": self.state(branch, pr)["state"]}
+
+    def gate(self) -> dict:
+        return dict(GATE)
 
     def submit(self, fields: dict, shots: list[tuple[str, str, bytes]] | None = None) -> dict:
         return submit(fields, shots)

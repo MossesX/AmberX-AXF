@@ -12,11 +12,11 @@ export const SCHEMA = 'review-item@1';
 export const MAX_PICKS = 3;
 export const DESIGN_KIND = 'design-pack';
 
-/** Statuses in waiting-first order. `holds` = a PR carrying it should not merge yet. */
+/** Statuses in waiting-first order. `holds` is false for every status: UI Review is not a gate (Nov 2026). */
 export const STATUSES = [
-  { id: 'waiting', label: 'Waiting', icon: 'clock', tone: 'accent', holds: true },
-  { id: 'changes', label: 'Changes asked', icon: 'edit', tone: 'warning', holds: true },
-  { id: 'rejected', label: 'Rejected', icon: 'x-circle', tone: 'danger', holds: true },
+  { id: 'waiting', label: 'Waiting', icon: 'clock', tone: 'accent', holds: false },
+  { id: 'changes', label: 'Changes asked', icon: 'edit', tone: 'warning', holds: false },
+  { id: 'rejected', label: 'Rejected', icon: 'x-circle', tone: 'danger', holds: false },
   { id: 'approved', label: 'Approved', icon: 'check-circle', tone: 'success', holds: false },
 ];
 const STATUS_IDS = STATUSES.map((s) => s.id);
@@ -192,8 +192,15 @@ export function togglePick(picked, id, max = MAX_PICKS) {
 }
 
 /**
- * ui-review@1 state for a branch and/or PR: the strictest status of its items.
- * rejected > changes > waiting > approved; 'none' when nothing was submitted. `holds` = keep the PR from merging.
+ * UI Review is not a gate (Brett, Nov 13 2026, build remove-ui-review-as-a-gate-…): nothing waits on it. No PR is held,
+ * no PR is kept as a draft for it and no build has to submit screenshots; items, Screenshots and Choices are optional
+ * feedback. GET gate, MCP ui-review_gate, `review.mjs gate` and the console action ui-review.gate all answer this.
+ */
+export const GATE = Object.freeze({ $axf: 'ui-review-gate@1', gate: false, since: '2026-11-13', why: 'UI Review is not a gate (Nov 2026)' });
+
+/**
+ * ui-review@1 state for a branch and/or PR: the strictest status of its items, for information only.
+ * rejected > changes > waiting > approved; 'none' when nothing was submitted. `holds` is always false (GATE).
  */
 export function reviewState(items, { branch = '', pr = null } = {}) {
   // a predicted look (ui-prediction@1) is approved for the look, not for merging: only real screens count
@@ -201,7 +208,7 @@ export function reviewState(items, { branch = '', pr = null } = {}) {
   const c = { waiting: 0, changes: 0, rejected: 0, approved: 0 };
   for (const it of mine) if (it.status in c) c[it.status]++;
   const state = !mine.length ? 'none' : c.rejected ? 'rejected' : c.changes ? 'changes' : c.waiting ? 'waiting' : 'approved';
-  return { $axf: 'ui-review@1', branch, pr: pr ? Number(pr) : null, state, holds: state !== 'none' && state !== 'approved', counts: c, items: mine.map((it) => ({ id: it.id, title: it.title, kind: it.kind, status: it.status })) };
+  return { $axf: 'ui-review@1', branch, pr: pr ? Number(pr) : null, state, holds: false, reason: GATE.why, counts: c, items: mine.map((it) => ({ id: it.id, title: it.title, kind: it.kind, status: it.status })) };
 }
 
 /** Distinct apps in a list (filter menu). */
