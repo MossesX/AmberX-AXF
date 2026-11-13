@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T17:36:19.909Z",
+ "updatedAt": "2026-11-13T17:36:31.844Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -100721,7 +100721,7 @@
    ]
   },
   {
-   "id": "orchestrator-hold-status-archive-tab-deleted-tab",
+   "id": "orchestrator-hold-status-archive-tab",
    "title": "Orchestrator: Hold status, Archive tab, Deleted tab (deleted builds kept forever)",
    "category": "",
    "detail": "Amends Retire Build Manager tabs. Actions on any queued build: Send back to Pending, Hold (stays in the queue, skipped by the dispatcher until released), Move to Archive, Delete. Archive tab: all completed and retired builds go there. Deleted tab: deleted builds are kept saved forever (soft delete, restorable). Bulk select. Full API/CLI control, no AI.",
@@ -100729,12 +100729,12 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/orchestrator-hold-status-archive-tab-deleted-tab",
-   "pr": "#463",
+   "branch": "claude/orchestrator-hold-status-archive-tab",
+   "pr": "#600",
    "mergedAt": "2026-11-11T00:48:50Z",
    "priority": "P0",
    "createdAt": "2026-11-10T17:07:33.143Z",
-   "updatedAt": "2026-11-13T10:43:02.676Z",
+   "updatedAt": "2026-11-13T17:35:40.975Z",
    "builtAt": "2026-11-13T10:40:35.231Z",
    "notes": [
     {
@@ -100788,6 +100788,10 @@
     {
      "text": "Session axf-orchestrator-hold-status-archive-tab-deleted-tab--rhonda on mossesx-max- ended (exit 0); the build was already complete.",
      "at": "2026-11-13T10:43:02.676Z"
+    },
+    {
+     "text": "Renamed from orchestrator-hold-status-archive-tab-deleted-tab (build names are at most 40 characters). By build-rename.",
+     "at": "2026-11-13T17:35:40.975Z"
     }
    ],
    "approvals": [],
@@ -109589,7 +109593,7 @@
    ]
   },
   {
-   "id": "owner-recognized-everywhere-veto-countdown-only-on-shell-commands",
+   "id": "owner-recognized-everywhere-veto",
    "title": "Owner recognized everywhere + veto countdown only on shell commands",
    "category": "axhub",
    "detail": "URGENT, boss order from Brett, Nov 12. Two problems: 1) The console and axHub do not recognize Brett as the owner, so owner-only settings (Claude settings > Approvals & veto tab, policy changes) don't work for him. Fix owner detection so Brett's admin console login and his axHub session count as owner everywhere (check the earlier owner-only-settings-brett-s-admin-console-login-counts-as-owner build and claude-settings-tabs-veto s4, axHub owner-only policy API GET/PUT /auth/api/policy; finish whatever is missing). 2) Change the axHub approval policies: a veto countdown ONLY on shell commands that run on the VPS (vps.run and anything executing a shell). Everything in the console/orchestrator (axf-console control_add, control_set, control_act, build_orchestrator_pipeline_queue, priority_set, agent_slots settings, console_open/show, etc.) becomes allow, no countdown. Keep confirm on the few owner-only items that already need it (model upgrades). Repos: axHub and AmberX-AXF. Tests: Brett's session is owner; vps.run still held on veto; console/orchestrator tools run immediately. PR, land through the gate, redeploy, AmberX FYI when live. Don't stop to ask.",
@@ -109597,10 +109601,10 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/owner-recognized-everywhere-veto-countdown-only-on-shell-commands",
-   "pr": "#559",
+   "branch": "claude/owner-recognized-everywhere-veto",
+   "pr": "#601",
    "createdAt": "2026-11-12T02:04:11.564Z",
-   "updatedAt": "2026-11-13T10:49:16.891Z",
+   "updatedAt": "2026-11-13T17:35:54.514Z",
    "builtAt": "",
    "notes": [
     {
@@ -109678,6 +109682,10 @@
     {
      "text": "Reconciler: PR #559",
      "at": "2026-11-13T10:49:16.891Z"
+    },
+    {
+     "text": "Renamed from owner-recognized-everywhere-veto-countdown-only-on-shell-commands (build names are at most 40 characters). By build-rename.",
+     "at": "2026-11-13T17:35:54.514Z"
     }
    ],
    "approvals": [],
