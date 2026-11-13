@@ -192,6 +192,17 @@ export function blockReason(id, s = {}) {
   return null;
 }
 
+/**
+ * The serial landing line (Brett, Nov 13 2026; fixes "cannot lock ref 'refs/remotes/origin/main'"): every landing
+ * (the cron round, the finish hook's round, `land.mjs serial -- <cmd>` for anything else that lands) holds one lock,
+ * so two never fetch, merge or push at once. A lock older than LOCK_STALE_MS belongs to a killed run and is taken over.
+ */
+export const LOCK_STALE_MS = 20 * 60 * 1000;
+/** How long a waiting landing waits for the line before it leaves its request for the next round. */
+export const LOCK_WAIT_MS = 15 * 60 * 1000;
+/** git errors that mean another git process held a ref lock at that moment: retried, never reported. */
+export const REF_LOCK_ERR = /cannot lock ref|unable to update local ref|Unable to create '[^']*\.lock'|is at [0-9a-f]+ but expected/i;
+
 /** The alert key for a blocked build (one per build; a new reason replaces the old text, never a second push). */
 export const alertKey = (id) => `land:${id}`;
 

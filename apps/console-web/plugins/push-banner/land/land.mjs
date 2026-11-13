@@ -12,6 +12,8 @@
  *   … list | blocked [--json]            what the last round found (landing order, PR, state, reason)
  *   … now <build> | hold <build> [--why "…"] | release <build> | after <build> <other>
  *   … off <build> [--why "…"] | on <build>   the per-build switch (auto-land is on for every build unless switched off)
+ *   … lock | serial -- <cmd …>           the serial landing line: who lands now | run a command in the line (waits its turn)
+ *   run takes the line's lock (skips when busy; --wait-lock waits up to 15 min, the finish hook's round)
  *   … queue list | add <pr> | remove <pr> | move <pr> <index>   the merge queue (merge-queue.mjs; it runs in every round)
  *
  * One round, per finished build (land-core.mjs isCandidate), in dependency order:
@@ -70,11 +72,41 @@ export function settings() {
 const readJson = (f, d) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return d; } };
 function writeJson(f, v) { mkdirSync(dirname(f), { recursive: true }); const t = `${f}.tmp-${process.pid}`; writeFileSync(t, `${JSON.stringify(v, null, 1)}\n`); renameSync(t, f); }
 
-export function makeGit(cwd) {
+const sleepSync = (ms) => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
+
+/** git in a checkout. A fetch / push / update-ref that lost a ref lock to another git process is tried again (3×). */
+export function makeGit(cwd, { retryWait = 2000 } = {}) {
   return (args, o = {}) => {
-    const r = spawnSync('git', args, { cwd: o.cwd || cwd, encoding: 'utf8', timeout: o.timeout || 120000, maxBuffer: 64 << 20, env: { ...process.env, GIT_TERMINAL_PROMPT: '0', ...(o.env || {}) } });
-    return { code: r.status ?? 1, out: (r.stdout || '').replace(/\s+$/, ''), err: (r.stderr || r.error?.message || '').trim() };
+    const once = () => {
+      const r = spawnSync('git', args, { cwd: o.cwd || cwd, encoding: 'utf8', timeout: o.timeout || 120000, maxBuffer: 64 << 20, env: { ...process.env, GIT_TERMINAL_PROMPT: '0', ...(o.env || {}) } });
+      return { code: r.status ?? 1, out: (r.stdout || '').replace(/\s+$/, ''), err: (r.stderr || r.error?.message || '').trim() };
+    };
+    let r = once();
+    for (let i = 0; i < 3 && r.code && ['fetch', 'push', 'update-ref'].includes(args[0]) && core.REF_LOCK_ERR.test(r.err); i++) { sleepSync(retryWait * (i + 1)); r = once(); }
+    return r;
   };
+}
+
+// ------------------------------------------------------------------ the serial landing line
+
+export const lockDir = () => env('AXF_LAND_LOCK', '/run/axf-land.lock.d');
+/** Take the landing line's lock (mkdir is atomic). `wait` ms: keep trying that long. Returns true when held. */
+export async function takeLandLock({ wait = 0, stale = core.LOCK_STALE_MS, who = '' } = {}) {
+  const d = lockDir(); const until = Date.now() + wait;
+  for (;;) {
+    try { mkdirSync(d); writeFileSync(join(d, 'owner'), `${process.pid} ${new Date().toISOString()} ${who}\n`); return true; } catch (e) { if (e.code !== 'EEXIST') { try { mkdirSync(dirname(d), { recursive: true }); continue; } catch { return false; } } }
+    try { if (Date.now() - Math.floor(statSync(d).mtimeMs) >= stale) { rmSync(d, { recursive: true, force: true }); continue; } } catch { continue; }
+    if (Date.now() >= until) return false;
+    await new Promise((r) => setTimeout(r, Math.min(5000, Math.max(50, until - Date.now()))));
+  }
+}
+export const dropLandLock = () => { try { rmSync(lockDir(), { recursive: true, force: true }); } catch { /* gone */ } };
+/** Who holds the line right now ('' = free): "<pid> <since> <what>". */
+export const lockOwner = () => { try { return readFileSync(join(lockDir(), 'owner'), 'utf8').trim(); } catch { return ''; } };
+/** Run fn while holding the line. Resolves { ran: false } when the line stayed busy for `wait` ms. */
+export async function serial(fn, { wait = core.LOCK_WAIT_MS, who = '' } = {}) {
+  if (!(await takeLandLock({ wait, who }))) return { ran: false, owner: lockOwner() };
+  try { return { ran: true, value: await fn() }; } finally { dropLandLock(); }
 }
 
 /** GitHub REST with the token broker's token (never printed, never logged).
@@ -430,6 +462,20 @@ function defaultAgentJob(s) {
   };
 }
 
+
+async function runRound({ s, dry, json, opt, print }) {
+  const gh = makeGitHub(s); // one client per run: one ETag cache, one count
+  const st = await round({ s, gh, dry, only: opt('only'), log: (m) => !json && console.error(m) });
+  // the merge queue takes its turn in the same round (same cron, same lock): it merges what auto-land made ready
+  if (!opt('only')) {
+    try { const git = makeGit(s.repo); const mq = await queueRound({ s, git, gh, api: makeConsole(s), dry, fetched: true, log: (m) => !json && console.error(m) }); st.queue = { on: mq.on, items: (mq.items || []).length, kicked: (mq.kicked || []).length }; }
+    catch (e) { if (!json) console.error(`merge queue: ${e.message}`); }
+  }
+  gh.save(); st.github = { calls: gh.calls, cached: gh.cached, left: Number.isFinite(gh.left()) ? gh.left() : null };
+  if (!json) console.error(`github: ${gh.calls} billed call(s), ${gh.cached} answered from cache (304)`);
+  return print(st, st.on === false ? 'auto-land is off (Settings → Plugins → Push banner → Auto-land)' : st.items.map(line).join('\n') || 'no finished builds to land');
+}
+
 // ------------------------------------------------------------------ CLI
 
 const line = (x) => `${x.state.padEnd(8)} ${x.id}${x.pr ? ` #${x.pr}` : ''}${x.reason ? ` · ${x.reason.text.replace(`${x.id}: `, '')}` : ' · ready: merges at the next push banner round'}`;
@@ -442,17 +488,21 @@ export async function main(argv) {
   const s = settings();
   const print = (o, text) => console.log(json ? JSON.stringify(o) : text);
   const known = core.LAND_COMMANDS.find((c) => c.cli === cmd);
+  if (cmd === 'serial') {
+    // anything else that lands (vps.build_land, a session landing by hand) waits its turn in the same line
+    const i = argv.indexOf('--'); const c = i >= 0 ? argv.slice(i + 1) : [];
+    if (!c.length) throw new Error('serial -- <command …>');
+    const r = await serial(() => spawnSync(c[0], c.slice(1), { stdio: 'inherit' }).status ?? 1, { who: c.join(' ').slice(0, 120) });
+    if (!r.ran) { console.error(`the landing line stayed busy (${r.owner || 'unknown'})`); process.exitCode = 75; return; }
+    process.exitCode = r.value; return;
+  }
+  if (cmd === 'lock') return print({ owner: lockOwner(), dir: lockDir() }, lockOwner() ? `landing now: ${lockOwner()}` : 'the landing line is free');
   if (cmd === 'run') {
-    const gh = makeGitHub(s); // one client per run: one ETag cache, one count
-    const st = await round({ s, gh, dry, only: opt('only'), log: (m) => !json && console.error(m) });
-    // the merge queue takes its turn in the same round (same cron, same lock): it merges what auto-land made ready
-    if (!opt('only')) {
-      try { const git = makeGit(s.repo); const mq = await queueRound({ s, git, gh, api: makeConsole(s), dry, fetched: true, log: (m) => !json && console.error(m) }); st.queue = { on: mq.on, items: (mq.items || []).length, kicked: (mq.kicked || []).length }; }
-      catch (e) { if (!json) console.error(`merge queue: ${e.message}`); }
+    // one landing at a time: the cron round skips when the line is busy, the finish hook's round waits for it
+    if (!dry && !(await takeLandLock({ wait: waitLock ? core.LOCK_WAIT_MS : 0, who: `run${opt('only') ? ` --only ${opt('only')}` : ''}` }))) {
+      return print({ ran: false, owner: lockOwner() }, `the landing line is busy (${lockOwner() || 'unknown'}); the build stays first in line for the next round`);
     }
-    gh.save(); st.github = { calls: gh.calls, cached: gh.cached, left: Number.isFinite(gh.left()) ? gh.left() : null };
-    if (!json) console.error(`github: ${gh.calls} billed call(s), ${gh.cached} answered from cache (304)`);
-    return print(st, st.on === false ? 'auto-land is off (Settings → Plugins → Push banner → Auto-land)' : st.items.map(line).join('\n') || 'no finished builds to land');
+    try { return await runRound({ s, dry, json, opt, print }); } finally { if (!dry) dropLandLock(); }
   }
   if (cmd === 'queue') return queueMain(argv.slice(argv.indexOf('queue') + 1));
   if (cmd === 'list' || cmd === 'blocked') {
@@ -464,7 +514,7 @@ export async function main(argv) {
     const d = control(s, cmd, id, { why: opt('why'), after: rest[1] });
     return print({ ok: true, control: d }, `${cmd}: ${id}${cmd === 'after' ? ` after ${rest[1]}` : ''}`);
   }
-  throw new Error('usage: land.mjs run [--dry-run] [--only <build>] | list | blocked | now <build> | hold <build> [--why …] | release <build> | off <build> [--why …] | on <build> | after <build> <other>');
+  throw new Error('usage: land.mjs run [--dry-run] [--only <build>] | list | blocked | now <build> | hold <build> [--why …] | release <build> | off <build> [--why …] | on <build> | after <build> <other> | lock | serial -- <cmd …>');
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

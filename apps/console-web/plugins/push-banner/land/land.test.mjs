@@ -12,7 +12,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from './land-core.mjs';
-import { makeGit, round, control, readState, readControl, ciOf, reasonEvent, badJson } from './land.mjs';
+import { makeGit, round, control, readState, readControl, ciOf, reasonEvent, badJson, takeLandLock, dropLandLock, serial, lockOwner } from './land.mjs';
 import { finishedBy, onBuildEvents } from './hook.mjs';
 process.env.AXF_CREW_SAY = 'off'; // group-chat posts (crew-say.mjs) stay out of the real Breakroom
 
@@ -252,6 +252,24 @@ console.log('finish hook: a build lands the moment it finishes');
   mkdirSync(join(dd, 'j'), { recursive: true }); writeFileSync(join(dd, 'j/a.json'), '{"ok":1}'); writeFileSync(join(dd, 'j/b.json'), '{"ok":');
   check(JSON.stringify(badJson(dd, ['j/a.json', 'j/b.json', 'j/c.md'])) === '["j/b.json"]', 'check JSON: a settled file that does not parse is found');
   rmSync(dd, { recursive: true, force: true });
+}
+console.log('serial landing line: two landings never race');
+{
+  const ld = mkdtempSync(join(tmpdir(), 'axf-land-lock-'));
+  process.env.AXF_LAND_LOCK = join(ld, 'lock.d');
+  check(await takeLandLock({ who: 'first' }), 'the first landing takes the line');
+  check(!(await takeLandLock({ wait: 0 })) && lockOwner().includes('first'), 'a second one finds it busy and sees who lands');
+  const order = [];
+  const second = serial(async () => { order.push('second'); }, { wait: 3000, who: 'second' });
+  await new Promise((r) => setTimeout(r, 200)); order.push('first done'); dropLandLock();
+  const r = await second;
+  check(r.ran && order.join(',') === 'first done,second', 'a waiting landing goes once the line is free, never alongside');
+  check(!lockOwner(), 'the line is free again after it');
+  mkdirSync(process.env.AXF_LAND_LOCK);
+  check(await takeLandLock({ stale: 0 }), 'a lock left by a killed run is taken over');
+  dropLandLock();
+  check(core.REF_LOCK_ERR.test("error: cannot lock ref 'refs/remotes/origin/main': is at 1a2b but expected 3c4d") && !core.REF_LOCK_ERR.test('fatal: not a git repository'), 'a lost ref lock is recognised (retried, not reported)');
+  delete process.env.AXF_LAND_LOCK; rmSync(ld, { recursive: true, force: true });
 }
 console.log('group chat: a landing reason is Brett\'s move, a code fix, or something in the way');
 check(['held', 'ui', 'code'].every((k) => reasonEvent(k) === 'waiting'), 'held, UI Review and uncommitted code wait for Brett');
