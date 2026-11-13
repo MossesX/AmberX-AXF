@@ -11,6 +11,7 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { BANNER_KEY, FOLDER, ID, VERSION, load, start } from './store';
 import { PushBanner, PushSettings } from './ui';
 import { MergeQueueView } from './queue';
+import { focusConfirm, loadConfirms, recheck, unconfirmedIds } from './confirm';
 import { appMenu } from './menu';
 import './push-banner.css';
 
@@ -22,6 +23,24 @@ export const plugin: AxfWebLibrary = {
   register(rt) {
     start();
     rt.actions.register('push-banner.queue', () => rt.dispatch('settings.open:push-banner'), { label: 'Merge queue' });
+    // Deep link (console_show / console_open target push-banner/merge-confirm/<owner/repo>#<pr>): push-banner.focus:<focus> opens
+    // Settings → Plugins → Push banner with that merge confirmation highlighted; 'queue' opens the merge queue.
+    rt.actions.register('push-banner.focus', ([enc = '']) => {
+      const f = decodeURIComponent(String(enc)).replace(/^push-banner\//, '');
+      rt.dispatch('settings.open:push-banner');
+      if (f.startsWith('merge-confirm')) focusConfirm(f.replace(/^merge-confirm\/?/, ''));
+    }, { label: 'Open a merge confirmation (deep link)', params: true, effect: 'navigate' });
+    // Voice (AmberX) and console action: merge.recheck[:<owner/repo>#<pr>] reads the PR back from GitHub now (never merges);
+    // with no PR, every merge GitHub hasn't confirmed. Same as REST POST merge-confirm/recheck, MCP push_banner_mergeconfirm_recheck.
+    rt.actions.register('merge.recheck', async ([enc = '']) => {
+      const one = decodeURIComponent(String(enc)).trim().toLowerCase();
+      if (!one) await loadConfirms();
+      const ids = one ? [one] : unconfirmedIds();
+      if (!ids.length) { rt.toast('Every merge is confirmed by GitHub.', 'info', 'Merge confirmations'); return; }
+      const out: string[] = [];
+      for (const id of ids.slice(0, 10)) { const r = await recheck(id); out.push(`${id}: ${r?.label || r?.state || 'no answer'}`); }
+      rt.toast(out.join('; '), 'info', 'Merge confirmations');
+    }, { label: 'Recheck a merge with GitHub', params: true });
     rt.actions.register('push-banner.check', () => { void load(true); rt.toast('Checking every branch against main…', 'info', 'Push banner'); }, { label: 'Check branches not on main' });
   },
   // After Codebase changes (4.7), before the approvals banner (5).

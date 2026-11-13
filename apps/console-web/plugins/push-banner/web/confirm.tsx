@@ -21,7 +21,7 @@ const PENDING: ConfirmState[] = ['merge-requested', 'pending-github-confirmation
 export const isPendingState = (s?: string) => PENDING.includes(s as ConfirmState);
 const FAST_MS = 10_000;
 const SLOW_MS = 60_000;
-let cstate: { data: ConfirmAnswer | null; error: string; busy: string } = { data: null, error: '', busy: '' };
+let cstate: { data: ConfirmAnswer | null; error: string; busy: string; focus: string } = { data: null, error: '', busy: '', focus: '' };
 const subs = new Set<() => void>();
 const set = (p: Partial<typeof cstate>) => { cstate = { ...cstate, ...p }; subs.forEach((f) => f()); };
 export const useConfirms = () => useSyncExternalStore((f) => { subs.add(f); return () => subs.delete(f); }, () => cstate);
@@ -40,12 +40,25 @@ export function startConfirms(): void { if (started) return; started = true; voi
 export const confirmOf = (d: ConfirmAnswer | null, repo: string, pr: number): ConfirmRecord | undefined =>
   d?.records.find((r) => r.id === `${repo.toLowerCase()}#${pr}`);
 
-export async function recheck(id: string): Promise<void> {
+export async function recheck(id: string): Promise<ConfirmRecord | null> {
   set({ busy: id });
-  try { await api.post('merge-confirm/recheck', { id }); }
+  let rec: ConfirmRecord | null = null;
+  try { rec = await api.post<ConfirmRecord>('merge-confirm/recheck', { id }); }
   catch (e) { set({ error: e instanceof Error ? e.message : String(e) }); }
   finally { set({ busy: '' }); await loadConfirms(); }
+  return rec;
 }
+
+/** The record the deep link points at ('<owner/repo>#<pr>'): highlighted, shown even when merged, scrolled into view. */
+export function focusConfirm(id: string): void {
+  const focus = id.trim().toLowerCase();
+  set({ focus });
+  startConfirms();
+  if (focus) setTimeout(() => document.getElementById(confirmDomId(focus))?.scrollIntoView({ block: 'center' }), 300);
+}
+const confirmDomId = (id: string) => `merge-confirm-${id.replace(/[^a-z0-9]+/g, '-')}`;
+/** Every merge GitHub hasn't confirmed yet (voice merge.recheck with no PR). */
+export const unconfirmedIds = () => (cstate.data?.records ?? []).filter((r) => r.state === 'merge-unconfirmed').map((r) => r.id);
 
 const commitUrl = (r: ConfirmRecord) => (r.evidence?.mergeCommitSha ? `https://github.com/${r.repo}/commit/${r.evidence.mergeCommitSha}` : '');
 
@@ -82,8 +95,9 @@ export function ConfirmWhy({ rec }: { rec?: ConfirmRecord | null }) {
 }
 
 /** Every merge call of the last day, newest first (Settings → Plugins → Push banner and the deep link). */
-export function MergeConfirmList({ focus = '' }: { focus?: string }) {
+export function MergeConfirmList() {
   const c = useConfirms();
+  const focus = c.focus;
   useEffect(() => { startConfirms(); }, []);
   const [all, setAll] = useState(false);
   const recs = (c.data?.records ?? []).filter((r) => all || r.state !== 'merged' || r.id === focus);
@@ -93,7 +107,7 @@ export function MergeConfirmList({ focus = '' }: { focus?: string }) {
       {c.error && <p className="fx-small axp-push-banner__note is-danger">{c.error}</p>}
       {recs.length
         ? <ul className="axp-push-banner__list">{recs.map((r) => (
-          <li key={r.id} className={`axp-push-banner__item${r.id === focus ? ' is-ready' : ''}`} id={`merge-confirm-${r.id.replace(/[^a-z0-9]+/g, '-')}`}>
+          <li key={r.id} className={`axp-push-banner__item${r.id === focus ? ' is-ready' : ''}`} id={confirmDomId(r.id)}>
             <span className="axp-push-banner__entry">
               <span className="axp-push-banner__line">{r.url ? <a className="axp-push-banner__name" href={r.url} target="_blank" rel="noreferrer">{r.id}</a> : <span className="axp-push-banner__name">{r.id}</span>}</span>
               <span className="axp-push-banner__line axp-push-banner__meta"><MergeConfirmChip rec={r} /><span>{r.path}{r.by ? ` · ${r.by}` : ''}</span></span>

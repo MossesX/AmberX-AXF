@@ -94,9 +94,11 @@ with `call: null`, `observe` the PR they saw merged, and mark the build complete
 | scripts (`deploy/`, `framework/cli/`) | same through `framework/cli/merge-confirm.mjs confirm <repo> <pr> --wait` | continuing after a merge |
 | builds-live / builds-reconcile | `request` (path `reconcile`, no call) + `observe` | marking a build `complete` / `mergedAt` |
 
-Every state and action is reachable without the UI: REST `GET /api/plugins/push-banner/merge-confirm` (list + one), `POST …/recheck`,
-MCP `push_banner_mergeconfirm_list | get | recheck`, CLI `merge-confirm.mjs status | list | confirm | recheck`, voice `merge.recheck`,
-deep link `console_show push-banner/merge-confirm/<repo>#<pr>` (built in the Opus phase of the same build).
+Every state and action is reachable without the UI: REST `GET /api/plugins/push-banner/merge-confirm` (list, `?state=`, `?id=` for one), <!-- axf-plugin:push-banner -->
+`GET …/merge-confirm/get?id=<repo>#<pr>`, `POST …/merge-confirm/recheck` {id | repo, pr}; MCP `push_banner_mergeconfirm_list | get | recheck`;
+CLI `merge-confirm.mjs status | list | confirm | recheck`; voice / console action `merge.recheck[:<repo>#<pr>]` (no PR = every
+unconfirmed one); deep link `console_show push-banner/merge-confirm/<repo>#<pr>` (Settings → Plugins → Push banner, the record
+highlighted; the action `push-banner.focus:merge-confirm/<repo>#<pr>`). <!-- axf-plugin:push-banner -->
 
 ## Deferred
 

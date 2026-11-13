@@ -754,4 +754,20 @@ STATE["bsha"]["feat/a"] = "feat/a-sha2"
 n3 = cmp_n(); mod.PUSHES._forget(); mod.PUSHES.branches(force=True)
 check(cmp_n() == n3 + 1, "one branch got a commit: only it is compared again")
 del STATE["bsha"]
+# merge-confirm REST (list + one, recheck): the shared store, read without a GitHub call; recheck goes through the CLI
+mcd = Path(os.environ["AXF_MERGE_CONFIRM_DIR"])
+mcd.mkdir(parents=True, exist_ok=True)
+(mcd / "records.json").write_text(json.dumps({"$axf": "merge-confirm-store@1", "records": {
+    "o/r#7": {"$axf": "merge-confirm@1", "id": "o/r#7", "repo": "o/r", "pr": 7, "state": "merge-unconfirmed", "requestedAt": "2026-11-13T10:00:00Z"},
+    "o/r#8": {"$axf": "merge-confirm@1", "id": "o/r#8", "repo": "o/r", "pr": 8, "state": "merged", "requestedAt": "2026-11-13T11:00:00Z"}}}))
+lst = c.get("/p/merge-confirm").json()
+check([r["id"] for r in lst["records"]] == ["o/r#8", "o/r#7"] and lst["counts"] == {"merged": 1, "merge-unconfirmed": 1}, "merge-confirm list: newest first, counts per state")
+check([r["id"] for r in c.get("/p/merge-confirm", params={"state": "merge-unconfirmed"}).json()["records"]] == ["o/r#7"], "merge-confirm list filters by state")
+one = c.get("/p/merge-confirm/get", params={"id": "O/R#7"}).json()
+check(one["record"]["state"] == "merge-unconfirmed" and one["deepLink"] == "push-banner/merge-confirm/o/r#7", "merge-confirm get: one record and its deep link")
+check(c.get("/p/merge-confirm/get", params={"id": "o/r#99"}).status_code == 404 and c.get("/p/merge-confirm/get", params={"id": "nope"}).status_code == 400, "merge-confirm get: 404 unknown, 400 malformed")
+MC["as"] = "merged"; MC["calls"].clear()
+rc = c.post("/p/merge-confirm/recheck", json={"repo": "o/r", "pr": 7}).json()
+check(rc["state"] == "merged" and MC["calls"][0][:3] == ["recheck", "o/r", "7"], "merge-confirm recheck reads the PR back through the CLI (never merges)")
+check(c.post("/p/merge-confirm/recheck", json={}).status_code == 400, "merge-confirm recheck needs an id")
 print(f"push-banner: {ok} checks passed")

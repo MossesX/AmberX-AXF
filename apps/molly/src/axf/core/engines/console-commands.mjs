@@ -184,7 +184,8 @@ export function consoleResolve(items, kind, path) {
   const phrase = foldWords(raw);
   hit = list.find((i) => foldWords(i.label) === phrase);
   if (hit) return { item: hit };
-  if (kind === 'screen') { const f = consoleSplitFocus(list, raw); if (f) return f; }
+  // a screen or a settings tab followed by what to focus on it ("<tab>/<item>"); the console runs its `<id>.focus:<focus>`
+  if (kind === 'screen' || kind === 'settings') { const f = consoleSplitFocus(list, raw); if (f) return f; }
   const words = wordsOf(raw);
   if (!words.length) return { candidates: [] };
   const scored = list.map((i) => [i, scoreItem(i, words, words.join(' '))]).filter(([, s]) => s > 0).sort((a, b) => b[1] - a[1]);
@@ -202,7 +203,7 @@ export function consoleSplitFocus(screens, path) {
   const raw = String(path ?? '').trim().replace(/^((open|show|go|to|the|my)\s+)+/i, '');
   let best = null;
   for (const i of Array.isArray(screens) ? screens : []) {
-    if (i?.kind !== 'screen') continue;
+    if (i?.kind !== 'screen' && i?.kind !== 'settings') continue;
     for (const name of [i.id, i.label]) {
       const n = String(name ?? '').trim();
       if (!n || raw.length <= n.length || raw.slice(0, n.length).toLowerCase() !== n.toLowerCase()) continue;
@@ -448,7 +449,7 @@ export function runConsoleCommand(c, ctx = {}) {
     }
     return send({ op: 'run', kind: 'action', target: item.id, label: item.label, spec }, { item, effect });
   }
-  const focus = kind === 'screen' ? str(input.focus, 200) || r.focus || '' : '';
+  const focus = kind === 'screen' || kind === 'settings' ? str(input.focus, 200) || r.focus || '' : '';
   return send({ op: 'open', kind, target: item.id, label: item.label, anchor: str(input.anchor, 160), arg: str(input.arg, 400), focus }, { item, ...(focus ? { focus } : {}) });
 }
 

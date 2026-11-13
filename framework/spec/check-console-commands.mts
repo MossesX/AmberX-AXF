@@ -180,7 +180,9 @@ eq(CONSOLE_TOOLS.length, 9, 'nine MCP shortcut tools');
   const b = g('build-orchestrator', { focus: 'my-build' });
   ok(b.ok && b.deliver?.message.focus === 'my-build', 'input.focus wins');
   const c = runConsoleCommand({ op: 'act', target: 'console.settings', path: 'appearance', action: 'open', input: { focus: 'x' } } as never, { clients: live, id: 'f2' });
-  ok(c.ok && c.deliver?.message.focus === undefined, 'focus only on screens');
+  ok(c.ok && c.deliver?.message.focus === 'x', 'a settings tab carries focus too (its <tab>.focus action runs it)');
+  const cs = runConsoleCommand({ op: 'act', target: 'console.settings', path: 'appearance/x#1', action: 'open' } as never, { clients: live, id: 'f3' });
+  ok(cs.ok && cs.deliver?.message.target === 'appearance' && cs.deliver.message.focus === 'x#1', 'settings "<tab>/<item>" splits the focus off');
 }
 
 /* ---- single settings (fields): open, get, list, values ---- */

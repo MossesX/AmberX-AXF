@@ -189,6 +189,8 @@ Web only (Android on hold, build `console-commands-reliable`), Kotlin twins when
   `CONSOLE_HEARTBEAT_MS`, and `CONSOLE_CLIENT_STALE_MS` down from 90 s to 45 s (`core/engines/console-commands.mjs`).
 - `followSse` options `idleTimeoutMs` and the follower's `reconnect()` / `idleMs()` / `open()` (`core/sse.ts`); the Kotlin `Sse`
   parser is unchanged, only an Android stream follower would need the idle watchdog.
+- Settings tabs carry `focus` too (Nov 13 2026, build `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me`):
+  `consoleResolve` / `consoleSplitFocus` split "<tab>/<item>" for kind `settings`, and the console runs `<tab>.focus:<focus>`.
 
 ## Deferred: single settings as console fields (Nov 13 2026)
 Web only (Android on hold, build `full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app`), Kotlin twins when

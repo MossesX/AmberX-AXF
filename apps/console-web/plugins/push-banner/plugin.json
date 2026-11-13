@@ -197,6 +197,91 @@
             }
           }
         }
+      },
+      {
+        "id": "mergeconfirm-list",
+        "title": "Merge confirmations: every merge call",
+        "description": "Every merge call any path made (merge queue, auto-land, auto-merge, GitHub plugin, server gate, scripts), newest first, with its merge-confirm@1 state: pending-github-confirmation right after the call, merged only once GitHub read back shows the PR MERGED with its merge commit on main, else merge-unconfirmed or merge-failed. Counts per state. No GitHub call.",
+        "route": "GET /merge-confirm",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "state": {
+              "type": "string",
+              "enum": [
+                "merge-requested",
+                "pending-github-confirmation",
+                "merged",
+                "merge-unconfirmed",
+                "merge-failed"
+              ],
+              "description": "only records in this state"
+            },
+            "id": {
+              "type": "string",
+              "description": "'<owner/repo>#<pr>', e.g. brettm-amberx/amberx-axf#123"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      {
+        "id": "mergeconfirm-get",
+        "title": "Merge confirmations: one PR",
+        "description": "One PR's merge-confirm@1 record (state, why, GitHub's evidence: state, merged_at, merge commit, on main) and its deep link push-banner/merge-confirm/<repo>#<pr>. No GitHub call.",
+        "route": "GET /merge-confirm/get",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "'<owner/repo>#<pr>', e.g. brettm-amberx/amberx-axf#123"
+            }
+          },
+          "required": [
+            "id"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "id": "mergeconfirm-recheck",
+        "title": "Merge confirmations: recheck a PR",
+        "description": "Read one PR back from GitHub now (one ETag-cached read): a merge GitHub hasn't confirmed turns merged only with GitHub's proof, else stays unconfirmed. Never merges anything.",
+        "route": "POST /merge-confirm/recheck",
+        "input": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "'<owner/repo>#<pr>', e.g. brettm-amberx/amberx-axf#123"
+            },
+            "repo": {
+              "type": "string",
+              "description": "owner/repo (with pr, instead of id)"
+            },
+            "pr": {
+              "type": "integer",
+              "description": "PR number"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      {
+        "action": "merge.recheck",
+        "id": "action-merge-recheck",
+        "title": "Voice: recheck a merge",
+        "description": "Voice / console action merge.recheck:<owner/repo>#<pr> (no argument: every merge GitHub hasn't confirmed): reads the PR back from GitHub in the open console and shows the result. Never merges anything."
+      },
+      {
+        "action": "push-banner.focus",
+        "id": "action-focus",
+        "navigate": true,
+        "title": "Open merge confirmations (deep link)",
+        "description": "Opens Settings → Plugins → Push banner → Merge confirmations scrolled to one PR: args 'merge-confirm/<owner/repo>#<pr>' (console_show target push-banner/merge-confirm/<repo>#<pr>), 'merge-confirm' or 'queue'."
       }
     ]
   },
@@ -222,7 +307,9 @@
       "_claude/shared/rules/RULES.md",
       "_claude/THREADS.md",
       "deploy/install-console.sh",
-      ".github/workflows/android.yml"
+      ".github/workflows/android.yml",
+      "framework/spec/CONTROL.md",
+      "framework/spec/MERGE-CONFIRM.md"
     ]
   },
   "opens": false

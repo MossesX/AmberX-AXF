@@ -169,6 +169,13 @@ function runMessage(rt: AxfRuntime, m: ConsoleMessage, history: string[]): [bool
       }
       if (m.kind === 'dialog') { rt.openDialog(m.target!, m.arg ? { arg: m.arg } : undefined); return [true, `opened ${m.label ?? m.target}`]; }
       rt.search.focus({ id: `settings-tab:${m.target}`, kind: 'setting', label: m.label ?? m.target!, focus: { kind: 'setting', tab: m.target!, ...(m.anchor ? { anchor: m.anchor } : {}) } });
+      if (m.focus) {
+        // a settings tab focuses an item itself through its own `<tab>.focus` action, like a screen
+        const act = `${m.target}.focus`;
+        if (!rt.actions.list().some((a) => a.id === act)) return [true, `opened ${m.label ?? m.target} settings; it has no way to focus "${m.focus}"`];
+        const ran = rt.dispatch(`${act}:${encodeURIComponent(m.focus)}`);
+        return [ran, ran ? `opened ${m.label ?? m.target} settings on ${m.focus}` : `opened ${m.label ?? m.target} settings; focusing "${m.focus}" didn't run here`];
+      }
       return [true, `opened ${m.label ?? m.target} settings`];
     case 'run':
       // the catalog already leaves these out; a stale catalog or a crafted message stops here

@@ -1665,6 +1665,55 @@ def _owner(request: Request) -> str:
     return str(getattr(c, "name", "") or "brett")[:120]
 
 
+def _mc_id(cid: Any) -> str:
+    """'<owner>/<repo>#<pr>' (lower-cased) or '' when it isn't one."""
+    s = str(cid or "").strip().lower()
+    repo, _, pr = s.partition("#")
+    return s if github.valid_repo(repo) and re.fullmatch(r"\d{1,9}", pr) else ""
+
+
+@router.get("/merge-confirm")
+def merge_confirm_list(id: str = "", state: str = "") -> dict[str, Any]:
+    """merge-confirm@1 records from the shared store (no GitHub call): every one newest first with counts per state, or one
+    with `?id=<owner/repo>#<pr>` (404 when there is none). `?state=` filters the list."""
+    recs = mc_records()
+    if id:
+        cid = _mc_id(id)
+        if not cid:
+            raise HTTPException(400, "id is <owner/repo>#<pr>")
+        rec = next((r for r in recs if r.get("id") == cid), None)
+        if rec is None:
+            raise HTTPException(404, f"no merge confirmation for {cid}")
+        return {"record": rec, "deepLink": f"push-banner/merge-confirm/{cid}"}
+    counts: dict[str, int] = {}
+    for r in recs:
+        counts[str(r.get("state"))] = counts.get(str(r.get("state")), 0) + 1
+    if state:
+        recs = [r for r in recs if r.get("state") == state]
+    return {"records": recs, "counts": counts, "at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
+
+
+@router.get("/merge-confirm/get")
+def merge_confirm_get(id: str) -> dict[str, Any]:
+    """One merge-confirm@1 record by id '<owner/repo>#<pr>' (no GitHub call), with its deep link."""
+    return merge_confirm_list(id=id)
+
+
+@router.post("/merge-confirm/recheck")
+def merge_confirm_recheck(body: Any = Body(None)) -> dict[str, Any]:
+    """Read one PR back from GitHub now ({id: '<owner/repo>#<pr>'} or {repo, pr}): the updated merge-confirm@1 record.
+    Never merges anything; a recheck of a PR that isn't merged leaves it unconfirmed."""
+    b = body if isinstance(body, dict) else {}
+    cid = _mc_id(b.get("id") or (f"{b.get('repo')}#{b.get('pr')}" if b.get("repo") and b.get("pr") else ""))
+    if not cid:
+        raise HTTPException(400, "send {id: '<owner/repo>#<pr>'} or {repo, pr}")
+    repo, _, pr = cid.partition("#")
+    ans = mc_cli(["recheck", repo, pr, "--by", _text(str(b.get("by") or "console"), 80)])
+    if ans.get("ok") is False:
+        raise HTTPException(404 if ans.get("error") == "no record" else 502, _text(str(ans.get("error") or "merge-confirm did not answer")))
+    return ans
+
+
 @router.get("/queue")
 def queue_list() -> dict[str, Any]:
     return PUSHES.queue()

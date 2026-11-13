@@ -103,6 +103,8 @@ hit. REST `GET /api/plugins/plan-studio/find?q=|plan=&item=&kind=` (also `plugin
 `console_show` open it. <!-- axf-plugin:plan-studio -->
 Focus on a screen: `act open` on `console.screens` takes `input.focus` or a path "<screen id or title> <rest>" ("build-orchestrator
 pending", `consoleSplitFocus`); the message carries `focus` and the console runs the screen's own `<screen>.focus:<focus>` action.
+Settings tabs too (Nov 13 2026): `console.settings` open "<tab id or title>/<rest>" (or `input.focus`) carries `focus`, and the console
+runs the tab's own `<tab>.focus:<focus>` action when it has one (`console_show push-banner/merge-confirm/<repo>#<pr>`).  <!-- axf-plugin:push-banner -->
 The console server asks the capability `console-focus@1` (the Build orchestrator provides it) to map `build:<id>` (or a bare build id that is no screen id) to its screen with that focus: the build's
 tab opens, its row scrolls into view, expands and stays highlighted.
 
