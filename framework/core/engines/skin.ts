@@ -38,9 +38,9 @@ import { CUSTOM_TARGETS, customizable, normalizeCustomValues, type CustomValues 
 import spec from '../../schemas/asset-types.json';
 import { SKIN_COLOR_SLOT, SKIN_NEVER, normalizeLookPart, resolveLookSkin, setSkinColorTheme, type AppLookDocument, type GlobalSkin, type LookPart } from './skin-rules.mjs';
 import { coverageSummary, coverageTable, partsErrors, partsTypes, skinCoversTable, skinScopeKey, skinUncoveredBy, uncoveredTypes, type CoverageRow, type CoverageSummary, type ResolvedSkin, type SkinCoversRow, type SkinScope, type TypeSpecs } from './skin-coverage.mjs';
-import { behaviourAxes, behaviourErrors, behaviourTable, behaviourTokens, normalizeBehaviour, type BehaviourAxis, type BehaviourMap, type BehaviourRow, type BehaviourTokenInfo } from './skin-behaviour.mjs';
+import { applyBehaviourToAsset, behaviourAxes, behaviourErrors, behaviourFieldsOf, behaviourKey, behaviourTable, behaviourTokens, behaviourValue, isBehaviourKey, mergeBehaviour, normalizeBehaviour, resolveBehaviour, type BehaviourAxis, type BehaviourMap, type BehaviourRow, type BehaviourSources, type BehaviourTokenInfo, type BehaviourValue } from './skin-behaviour.mjs';
 
-export { APP_LOOK_FRAME, APP_LOOK_MAX_BYTES, APP_LOOK_PROJECT, SKIN_COLOR_SLOT, SKIN_NEVER, SKIN_USES, appLookPath, backToSkin, newAppLook, normalizeAppLook, normalizeScopeState, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, scopeState, setInheritSkin, setLookSlot, setScopeOverride, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorTheme, undoRestore } from './skin-rules.mjs';
+export { APP_LOOK_FRAME, APP_LOOK_MAX_BYTES, APP_LOOK_PROJECT, SKIN_COLOR_SLOT, SKIN_NEVER, SKIN_USES, appLookPath, backToSkin, backToSkinBehaviour, newAppLook, normalizeAppLook, normalizeScopeState, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, scopeState, setInheritSkin, setLookSlot, setScopeOverride, setScopeSkin, setSkinBehaviour, setSkinColorTheme, setUseSkin, skinBehaviourOverrides, skinColorTheme, undoRestore } from './skin-rules.mjs';
 export type { AppLookDocument, AppSkinState, GlobalSkin, LookPart } from './skin-rules.mjs';
 // named, not `export *`: tsx links a star re-export of a .mjs module as empty when the importer is a .mts file
 export { COVERAGE_KINDS, PART_ELEMENTS, SKIN_COVERAGE_CONTRACT, SKIN_SCOPE_APP, SKIN_SCOPE_GLOBAL, SKIN_SCOPE_KINDS, coverageOf, coverageSummary, coverageTable, declarationErrors, declaredCoverage, isSubScopeKey, normalizeSkinScope, partElements, partsErrors, partsTypes, resolveSkinChain, skinScopeChain, skinScopeDomId, skinScopeKey, skinScopeKind, skinScopeOf, skinScopeSelector, uncoveredTypes } from './skin-coverage.mjs';
@@ -87,8 +87,8 @@ export interface AppLookStore {
 export interface SkinEntry { id: string; name: string; kind: 'skin' | 'design-package'; description: string; data: SkinData }
 /** The colour theme of a skin at a place: `id` = what shows, `own` = the skin's own, `picked` = the user switched it inside the skin. */
 export interface SkinColor { id: string; own: string; picked: boolean }
-/** What a place in an app draws: the composed document, the skin's parts and which level decided. */
-export interface ComposedLook { doc: AppearanceDocument; parts: Record<string, CustomValues>; skin: ResolvedSkin; scopeKey: string }
+/** What a place in an app draws: the composed document, the skin's parts, the behaviour picks in force (skin@2: the skin's with the chain's overrides over it) and which level decided. */
+export interface ComposedLook { doc: AppearanceDocument; parts: Record<string, CustomValues>; behaviour: BehaviourMap; skin: ResolvedSkin; scopeKey: string }
 
 const isObj = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null && !Array.isArray(v);
 const ID = /^[a-z0-9][a-z0-9-]*$/;
@@ -226,7 +226,7 @@ export function skinBehaviourTokens(): BehaviourTokenInfo[] { return behaviourTo
 
 /* ---------------- composing ---------------- */
 
-/** The hub-wide skin a shared document carries (null = none); `colorTheme` only when one was picked inside it. */
+/** The hub-wide skin a shared document carries (null = none); `colorTheme` only when one was picked inside it, `behaviour` only when it overrides axes (skin@2). */
 export function globalSkinOf(shared: AppearanceDocument | null | undefined): GlobalSkin | null {
   const s = (shared as { skin?: unknown } | null | undefined)?.skin;
   if (!isObj(s) || typeof s.id !== 'string' || !ID.test(s.id)) return null;
@@ -234,7 +234,10 @@ export function globalSkinOf(shared: AppearanceDocument | null | undefined): Glo
   // a document saved before the colour theme had its own field kept the pick among the overrides
   const pick = typeof s.colorTheme === 'string' && ID.test(s.colorTheme) ? s.colorTheme : overrides[SKIN_COLOR_SLOT] ?? '';
   delete overrides[SKIN_COLOR_SLOT];
-  return pick ? { id: s.id, overrides, colorTheme: pick } : { id: s.id, overrides };
+  const out: GlobalSkin = pick ? { id: s.id, overrides, colorTheme: pick } : { id: s.id, overrides };
+  const behaviour = normalizeBehaviour(s.behaviour, TYPE_SPECS, CUSTOM_TARGETS);
+  if (Object.keys(behaviour).length) out.behaviour = behaviour;
+  return out;
 }
 
 /**
@@ -249,14 +252,19 @@ export function skinColorOf(skin: SkinData | null, resolved: { colorTheme?: stri
 
 /**
  * The document for a look with `skin` on (or none) and `overrides` over it; `scopeKey` names where the icon pack lands;
- * `colorTheme` is the colour theme picked inside the skin ('' = the skin's own).
+ * `colorTheme` is the colour theme picked inside the skin ('' = the skin's own); `behaviour` = the chain's axis
+ * overrides (skin@2), written over the skin's own behaviour. The behaviour picks in force land in the document's
+ * settings as `axf.behaviour.<type>.<axis>` (so a scoped view's settings answer them for its place), and come back as
+ * `behaviour`. Without a skin no behaviour key survives: behaviour is the skin's, never an app's own pick.
  */
-function composeWith(shared: AppearanceDocument | null, look: AppLookDocument, skin: SkinData | null, overrides: Record<string, string>, scopeKey: string, colorTheme = ''): AppearanceDocument {
+function composeWith(shared: AppearanceDocument | null, look: AppLookDocument, skin: SkinData | null, overrides: Record<string, string>, scopeKey: string, colorTheme = '', behaviour: BehaviourMap = {}): { doc: AppearanceDocument; behaviour: BehaviourMap } {
   const slots = { ...look.default.slots, ...look.own.slots };
   const hidden = { ...look.default.hidden, ...look.own.hidden };
   let spacing = look.own.spacing ?? look.default.spacing;
   const settings: Record<string, unknown> = { ...look.default.settings, ...look.own.settings };
   for (const [k, v] of Object.entries(shared?.settings ?? {})) if (SHARED_SETTING_PREFIXES.some((p) => k.startsWith(p))) settings[k] = v;
+  for (const k of Object.keys(settings)) if (isBehaviourKey(k)) delete settings[k];
+  let picks: BehaviourMap = {};
   if (skin) {
     Object.assign(slots, skinSlots(skin), overrides);
     if (colorTheme) slots[SKIN_COLOR_SLOT] = colorTheme; // switched inside the skin: same skin, other colours
@@ -266,12 +274,15 @@ function composeWith(shared: AppearanceDocument | null, look: AppLookDocument, s
     if (skin.iconPack) settings[SKIN_ICON_PACK_KEY(scopeKey)] = skin.iconPack;
     // the design package's precedence rule must not take the skin's themes back
     settings[DESIGN_OVERRIDES_KEY] = { 'style-theme': slots['style-theme'], 'color-theme': slots['color-theme'] };
+    // skin@2: the skin's behaviour with the chain's overrides over it, one setting per axis
+    picks = normalizeBehaviour(mergeBehaviour(skin.behaviour, behaviour), TYPE_SPECS, CUSTOM_TARGETS);
+    for (const [t, axes] of Object.entries(picks)) for (const [a, v] of Object.entries(axes)) settings[behaviourKey(t, a)] = v;
   }
   for (const [k, v] of Object.entries(settings)) if (v === null) delete settings[k];
   const out: AppearanceDocument = { $axf: APPEARANCE_FRAME, slots, hidden, settings: settings as AppearanceDocument['settings'] };
   if (spacing) out.spacing = spacing as AppearanceDocument['spacing'];
   if (shared?.palette) out.palette = shared.palette;
-  return out;
+  return { doc: out, behaviour: picks };
 }
 
 /**
@@ -281,7 +292,33 @@ function composeWith(shared: AppearanceDocument | null, look: AppLookDocument, s
  */
 export function composeLook(shared: AppearanceDocument | null, look: AppLookDocument, skin: SkinData | null): AppearanceDocument {
   const on = look.skin.use && !!skin;
-  return composeWith(shared, look, on ? skin : null, on ? look.skin.overrides : {}, 'app', on ? look.skin.colorTheme : '');
+  return composeWith(shared, look, on ? skin : null, on ? look.skin.overrides : {}, 'app', on ? look.skin.colorTheme : '', on ? look.skin.behaviour ?? {} : {}).doc;
+}
+
+/** The behaviour at a place, every type and axis filled (skin@2): the picks > the asset's field (`assetField`) > today's behaviour. */
+export function skinBehaviourResolve(picks: BehaviourMap | null | undefined, assetField?: (type: string, field: string) => unknown): BehaviourMap {
+  return resolveBehaviour(picks, TYPE_SPECS, CUSTOM_TARGETS, assetField);
+}
+/** One axis at a component: the row's own override > the pick in force > the asset's field > the default (skin@2). */
+export function skinBehaviourValue(type: string, axis: string, sources: BehaviourSources): BehaviourValue | undefined {
+  return behaviourValue(type, axis, TYPE_SPECS, CUSTOM_TARGETS, sources);
+}
+/** A type's asset data with the picks written over the fields its own axes layer on (skin@2). */
+export function skinApplyBehaviour<T extends object>(type: string, data: T | null | undefined, picks: BehaviourMap | null | undefined): T {
+  return applyBehaviourToAsset(type, data, picks, TYPE_SPECS, CUSTOM_TARGETS);
+}
+/** The fields the picks set on another type's asset (`of`): the layout's nav side and toolbar position (skin@2). */
+export function skinBehaviourFieldsOf(ofType: string, picks: BehaviourMap | null | undefined): Record<string, BehaviourValue> {
+  return behaviourFieldsOf(ofType, picks, TYPE_SPECS, CUSTOM_TARGETS);
+}
+/** The picks a place carries, read back from its settings (`axf.behaviour.<type>.<axis>`, one read per registered axis). */
+export function skinBehaviourPicks(get: (key: string) => unknown): BehaviourMap {
+  const raw: Record<string, Record<string, unknown>> = {};
+  for (const row of behaviourTable(TYPE_SPECS, CUSTOM_TARGETS)) for (const a of row.axes) {
+    const v = get(behaviourKey(row.type, a.name));
+    if (v !== null && v !== undefined) (raw[row.type] ??= {})[a.name] = v;
+  }
+  return normalizeBehaviour(raw, TYPE_SPECS, CUSTOM_TARGETS);
 }
 
 /**
@@ -293,7 +330,8 @@ export function composeLookAt(shared: AppearanceDocument | null, look: AppLookDo
   const resolved = resolveLookSkin(look, globalSkinOf(shared), scope ?? null);
   const skin = resolved.id ? skinOf(resolved.id) : null;
   const scopeKey = skinScopeKey(scope ?? null);
-  return { doc: composeWith(shared, look, skin, skin ? resolved.overrides : {}, scopeKey, skin ? resolved.colorTheme : ''), parts: skin?.parts ?? {}, skin: skin ? resolved : { id: '', overrides: resolved.overrides, from: resolved.from }, scopeKey };
+  const { doc, behaviour } = composeWith(shared, look, skin, skin ? resolved.overrides : {}, scopeKey, skin ? resolved.colorTheme : '', skin ? resolved.behaviour ?? {} : {});
+  return { doc, parts: skin?.parts ?? {}, behaviour, skin: skin ? resolved : { id: '', overrides: resolved.overrides, from: resolved.from }, scopeKey };
 }
 
 /**
@@ -328,7 +366,7 @@ export function lookAfterChange(look: AppLookDocument, change: AppearanceChange,
   if (change.settings) {
     const settings = { ...next.own.settings };
     for (const [k, v] of Object.entries(change.settings)) {
-      if (k === DESIGN_OVERRIDES_KEY && skinOn) continue; // composed from the slots while a skin is on
+      if ((k === DESIGN_OVERRIDES_KEY || isBehaviourKey(k)) && skinOn) continue; // composed from the skin while one is on (its themes, its behaviour)
       if (v === null && !(k in (look.default.settings ?? {}))) delete settings[k]; else settings[k] = v;
     }
     next.own.settings = settings;

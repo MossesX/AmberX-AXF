@@ -723,6 +723,7 @@
             "textColor": "accent"
           }
         },
+        "behaviour": {},
         "skin": {
           "id": "windows",
           "overrides": {},
@@ -755,6 +756,7 @@
           "spacing": "compact"
         },
         "parts": {},
+        "behaviour": {},
         "skin": {
           "id": "aurora",
           "overrides": {
@@ -789,6 +791,7 @@
           "spacing": "compact"
         },
         "parts": {},
+        "behaviour": {},
         "skin": {
           "id": "aurora",
           "overrides": {},
@@ -816,6 +819,7 @@
           "spacing": "tight"
         },
         "parts": {},
+        "behaviour": {},
         "skin": {
           "id": "",
           "overrides": {},
@@ -843,6 +847,7 @@
           "spacing": "tight"
         },
         "parts": {},
+        "behaviour": {},
         "skin": {
           "id": "",
           "overrides": {},

@@ -14,10 +14,12 @@ export type SkinScopeKind = 'global' | 'app' | 'ui' | 'plugin';
 /** One place in an app: the app, a UI / screen in it, a plugin in it. */
 export interface SkinScope { app: string; ui: string; plugin: string }
 /** One level's skin state: on with a skin, off, or inherit from the parent level. */
-/** `colorTheme` = the colour theme picked inside the skin at this level (absent = the skin's own). */
-export interface SkinScopeState { use: 'on' | 'off' | 'inherit'; id: string; overrides: Record<string, string>; colorTheme?: string }
-/** `colorTheme` = the colour theme picked inside the skin by the nearest level that has one (absent = the skin's own). */
-export interface ResolvedSkin { id: string; overrides: Record<string, string>; from: string; colorTheme?: string }
+/** `{ <asset type>: { <axis>: value } }`: behaviour overrides inside the skin (skin@2, skin-behaviour.mjs). */
+export type BehaviourOverrides = Record<string, Record<string, string | number | boolean>>;
+/** `colorTheme` = the colour theme picked inside the skin at this level (absent = the skin's own); `behaviour` = axes this level overrides. */
+export interface SkinScopeState { use: 'on' | 'off' | 'inherit'; id: string; overrides: Record<string, string>; colorTheme?: string; behaviour?: BehaviourOverrides }
+/** `colorTheme` = the colour theme picked inside the skin by the nearest level that has one (absent = the skin's own); `behaviour` = the chain's axis overrides, child over parent. */
+export interface ResolvedSkin { id: string; overrides: Record<string, string>; from: string; colorTheme?: string; behaviour?: BehaviourOverrides }
 
 export interface CoverageRow {
   type: string;
