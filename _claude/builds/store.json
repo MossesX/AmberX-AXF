@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4958,
- "updatedAt": "2026-11-13T20:30:46.948Z",
+ "rev": 4959,
+ "updatedAt": "2026-11-13T20:31:10.389Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -204736,7 +204736,7 @@
    "pr": "#652",
    "priority": "P1",
    "createdAt": "2026-11-13T19:49:31.102Z",
-   "updatedAt": "2026-11-13T20:30:08.952Z",
+   "updatedAt": "2026-11-13T20:30:54.280Z",
    "builtAt": "",
    "notes": [
     {
@@ -204754,6 +204754,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-skin-animations-swatches-skin-switch--earl, own login copy)",
      "at": "2026-11-13T19:59:27.044Z"
+    },
+    {
+     "text": "Headless run axf-skin-animations-swatches-skin-switch--earl: brief only · start 11.3K tokens ($0.03) · cost $7.37 · 170 turns · 6 tools, MCP none",
+     "at": "2026-11-13T20:30:54.280Z"
     }
    ],
    "approvals": [],
