@@ -120,6 +120,7 @@ jobs:
       - run: node framework/spec/check-refs.mjs                      # ref@1: mentions in banner text → links (fixtures/refs.json: names, kind words, explicit touches, PRs, files, peek)
       - run: node framework/spec/check-build-hook.mjs               # build-hook@1: one event per builds store change (created with steps + his words, steps-added, step-done, status, PR, merge, addendum, cancelled), stable ids, journal replay
       - run: node framework/spec/check-feature-ledger.mjs            # feature-ledger@1 + deploy-log@1: one status lifecycle for features and edits, merge never loses a date / build / PR / prompt, live from the deploy log, grouping / sort / filter / export projections, schema snapshots
+      - run: node framework/spec/check-context-menus.mjs             # context-menu@1: coder levels, zones, slim folding, prompt / reply → menu, snapshots, voice phrases against fixtures/context-menus.json  # axf-plugin:context-menus
       - run: node framework/cli/help-coverage.mjs --check            # Help mode: every control in the framework chrome, the console + plugins and axHub web has help; fails if coverage drops below framework/spec/help-coverage.json
       - run: node framework/cli/axf.mjs libraries
       - name: Asset conformance — every web CSS/TSX and Kotlin UI (handwritten or generated) takes its look from asset tokens; file:line + token to use
@@ -156,6 +157,8 @@ jobs:
         run: node apps/console-web/plugins/demonstration-designer/test.mjs  # axf-plugin:demonstration-designer
       - name: Plugin commands plugin (control@1 plugins domain — runner gate, reads, dispatch, confirm, CLI)  # axf-plugin:plugin-commands
         run: node apps/console-web/plugins/plugin-commands/test.mjs  # axf-plugin:plugin-commands
+      - name: Context menus plugin (context-menu@1 — hub store, zone scan, prompt, fixed reply → draft → apply, snapshots / restore, voice, CLI)  # axf-plugin:context-menus
+        run: node apps/console-web/plugins/context-menus/test.mjs  # axf-plugin:context-menus
       - name: Claude plugin (claude-settings@1 — open registry, owner-only rules, No wait ↔ pass decisions)  # axf-plugin:claude-settings
         run: node apps/console-web/plugins/claude-settings/test.mjs  # axf-plugin:claude-settings
       - name: AmberX listeners plugin (listener@1 on the console — devices from the hub table, policies as hub-settings@1, restart requests, CLI)  # axf-plugin:amberx-listeners

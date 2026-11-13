@@ -1,0 +1,72 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "context-menus-help",
+  "name": "Context menus help",
+  "version": "0.1.0",
+  "description": "Help mode entries (help@1) for the Context menus plugin: the page, its tabs, every button, field, column and menu item.",
+  "author": "Brett",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:context-menus",
+    "entries": [
+      { "target": "view:context-menus", "title": "Context menus", "text": "Every right-click menu of the app, kept once on axHub so every plugin and app reads the same menus. Generate them with Claude at a coder level, preview, apply, list, edit and restore.", "kind": "screen" },
+      { "target": "generate", "title": "Generate", "text": "The Generate tab (and the Generate… shortcut that opens it): pick a coder level, an app and optionally one page, then let Claude map the zones. You always get a draft to preview first.", "kind": "tab" },
+      { "target": "drafts", "title": "Drafts", "text": "Generated menus waiting for your decision: preview each zone with the real menu renderer, see what changes, then Apply, Save without switching, or Discard.", "kind": "tab" },
+      { "target": "menus", "title": "Menus", "text": "Every context menu on the hub, grouped by app: which one is in use, its level, how many zones and items, who made it. Open a row for Preview, Edit, Restore and Delete.", "kind": "tab" },
+      { "target": "zones", "title": "Zones", "text": "Every right-click zone the code draws, with its owner plugin, weight and the pages that showed it. Rescan the code or report the current screen; with the UI Manager on, open a zone there.", "kind": "tab" },
+      { "target": "coder-level", "title": "Coder level", "text": "Beginner: a few big obvious actions. Amateur: the common actions. Pro: the full working set, grouped, with shortcuts. Advanced coder: a meticulous map of every zone with deep actions (tokens, API, inspect, copy ids, commands). Higher levels map the app more meticulously.", "kind": "field" },
+      { "target": "app", "title": "App", "text": "Which app the menus are for. The level can differ per app and page.", "kind": "field" },
+      { "target": "page-optional", "title": "Page", "text": "Leave blank to map the whole app, or name one page to map only the zones that page shows.", "kind": "field" },
+      { "target": "menu-name-optional", "title": "Menu name", "text": "A name for the generated menu; blank lets Claude name it.", "kind": "field" },
+      { "target": "generate-menus", "title": "Generate", "text": "Sends the prompt to Claude and makes a draft. Spends Claude tokens; nothing is applied until you say so. Greyed out when Claude is not ready, with the reason above.", "kind": "button" },
+      { "target": "show-the-prompt-zero-tokens", "title": "Show the prompt", "text": "Shows exactly what Claude will be asked for this level, app and page, without spending a token.", "kind": "button" },
+      { "target": "check-claude", "title": "Check Claude", "text": "Runs the same tiny connection check the Claude badge shows green for, and says whether Generate can run.", "kind": "button" },
+      { "target": "the-prompt-claude-gets", "title": "The prompt Claude gets", "text": "The system and user prompt, read-only: the level brief, the zones to map and the actions a menu item may run.", "kind": "field" },
+      { "target": "apply-and-use", "title": "Apply and use", "text": "Saves the draft as a menu on the hub and makes it the menu this app shows. Every open console follows.", "kind": "button" },
+      { "target": "save-without-switching", "title": "Save without switching", "text": "Keeps the draft as a saved menu but leaves the app on the menu it shows now.", "kind": "button" },
+      { "target": "discard", "title": "Discard", "text": "Throws the draft away. Nothing on the hub changes.", "kind": "button" },
+      { "target": "use", "title": "Use", "text": "Makes this menu the one its app shows.", "kind": "button" },
+      { "target": "preview", "title": "Preview", "text": "Shows the menu zone by zone with the real menu renderer.", "kind": "button" },
+      { "target": "edit", "title": "Edit", "text": "Edit the zones and items as JSON (zone to items; an item has id, label, icon, action, shortcut, items). Saving keeps the previous version as a snapshot.", "kind": "button" },
+      { "target": "restore", "title": "Restore", "text": "Every snapshot of this menu, newest first; Restore puts one back, like a skin.", "kind": "button" },
+      { "target": "regenerate-at-this-level", "title": "Regenerate", "text": "Asks Claude for a fresh draft at this menu's level and app.", "kind": "button" },
+      { "target": "delete", "title": "Delete", "text": "Removes the menu from the hub. The app falls back to its own default menu if this one was in use.", "kind": "button" },
+      { "target": "save", "title": "Save", "text": "Saves the edited zones and items; the previous version is kept as a snapshot.", "kind": "button" },
+      { "target": "reset", "title": "Reset", "text": "Puts the editor back to the saved zones and items.", "kind": "button" },
+      { "target": "zones-and-items-json-zone-items-an-item-has-id-label-icon-action-shortcut-items", "title": "Zones and items", "text": "The menu as JSON: each zone maps to its items; an item has id, label, icon, action, shortcut and optional sub-items.", "kind": "field" },
+      { "target": "search", "title": "Search", "text": "Filters the menus by name, zone, action, level or who made them.", "kind": "field" },
+      { "target": "level", "title": "Level filter", "text": "Shows only the menus made at one coder level.", "kind": "field" },
+      { "target": "zone", "title": "Zone", "text": "Which zone of the menu to preview.", "kind": "field" },
+      { "target": "filter-zones", "title": "Filter zones", "text": "Narrows the zone list by zone id, plugin or page.", "kind": "field" },
+      { "target": "rescan-the-code", "title": "Rescan the code", "text": "Reads the console, plugin and framework code again for every right-click zone it draws.", "kind": "button" },
+      { "target": "report-this-screen", "title": "Report this screen", "text": "Tells the registry which zones the current screen shows, so generated menus know the pages and elements.", "kind": "button" },
+      { "target": "open-in-the-ui-manager", "title": "Open in the UI Manager", "text": "Opens the zone's element in the UI Manager to edit its properties and tokens.", "kind": "button" },
+      { "target": "refresh", "title": "Refresh", "text": "Reads the menus, drafts and zones from the hub again.", "kind": "button" },
+      { "target": "open-context-menus", "title": "Open Context menus", "text": "Opens the Context menus page.", "kind": "button" },
+      { "target": "column:menu", "title": "Menu", "text": "The menu's name and id; 'in use' marks the one its app shows.", "kind": "column" },
+      { "target": "column:level", "title": "Level", "text": "The coder level the menu was mapped at.", "kind": "column" },
+      { "target": "column:zones", "title": "Zones", "text": "How many right-click zones the menu covers.", "kind": "column" },
+      { "target": "column:items", "title": "Items", "text": "How many items the menu holds across every zone.", "kind": "column" },
+      { "target": "column:made-by", "title": "Made by", "text": "Claude (with the model) or a person, and who saved it.", "kind": "column" },
+      { "target": "column:updated", "title": "Updated", "text": "When the menu was last saved.", "kind": "column" },
+      { "target": "action:context-menus.open", "title": "Context menus…", "text": "Opens the Context menus page from any right-click.", "kind": "menu-item" },
+      { "target": "action:context-menus.zones", "title": "Map this zone", "text": "Opens the zone map on this zone and reports the current screen.", "kind": "menu-item" },
+      { "target": "action:context-menus.open:generate", "title": "Generate context menus", "text": "Opens the Generate tab of the Context menus page.", "kind": "menu-item" },
+      { "target": "context-menus", "title": "Context menus settings", "text": "Where the menus live (axHub or this console's data folder), a shortcut to the page, and install / uninstall." }
+    ],
+    "intros": [
+      {
+        "screen": "context-menus",
+        "title": "Context menus",
+        "steps": [
+          { "say": "Every right-click menu of the app lives here, once, on axHub.", "target": "" },
+          { "say": "Pick a coder level and press Generate: Claude maps the zones and you preview the draft before anything is applied.", "target": "generate-menus" },
+          { "say": "Menus lists everything on the hub; Zones shows every right-click target the code draws.", "target": "menus" }
+        ]
+      }
+    ]
+  }
+}

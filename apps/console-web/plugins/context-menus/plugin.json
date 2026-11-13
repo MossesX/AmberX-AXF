@@ -1,0 +1,84 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.context-menus",
+  "name": "Context menus",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Every context menu of the app in one place, kept as ONE TRUE SOURCE on axHub (context-menu@1 documents in the hub's shared data, readable and writable by every plugin, app and Claude session through the hub API and the capability context-menus@1). Each menu is a standard context-menu asset the runtime draws; the page lists them all (search, per app / level / zone, who made them, which one each app shows) with Preview, Edit, Use, snapshots and Restore like skins. The zone registry maps every right-click target the code draws (and what open consoles report), with its owner plugin and pages; with the UI Manager on, each zone links to its elements (ui-elements@1). Generate with Claude at a coder level: BEGINNER a few big obvious actions, AMATEUR the common actions, PRO the full working set grouped with shortcuts, ADVANCED CODER a meticulous map of every zone with deep actions (tokens, API addresses, inspect, copy ids, run commands). Higher levels map the app more meticulously; menus stay slim (rare items fold under More…). The level can differ per app and page. Always a preview before applying. Greyed out with a clear reason when Claude is not ready. Full API: REST, MCP context_menus_*, `axf context-menus …`, the actions context-menus.* and voice ('generate pro context menus').",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "view:context-menus",
+    "settings-tab:context-menus",
+    "service:context-menus@1",
+    "action:context-menus.open",
+    "action:context-menus.generate",
+    "action:context-menus.preview",
+    "action:context-menus.apply",
+    "action:context-menus.use",
+    "action:context-menus.zones"
+  ],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "optional": [
+    "service:axf.llm@1",
+    "service:ui-elements@1"
+  ],
+  "banner": false,
+  "tabable": {
+    "view": "context-menus",
+    "label": "Context menus",
+    "icon": "menu"
+  },
+  "uiEditor": ["manager"],
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/context-menus",
+    "env": [
+      "AXF_CONTEXT_MENUS_DIR"
+    ],
+    "mentions": [
+      "apps/console-web/plugins/README.md",
+      "framework/spec/PORTING.md",
+      ".github/workflows/android.yml"
+    ]
+  },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      { "route": "GET /state", "id": "state", "title": "Context menus state", "description": "Every menu (and which one each app shows), the four coder levels, the zone registry, open drafts, whether Claude is ready, where the store is (the hub's shared data = one true source).", "readOnly": true },
+      { "route": "GET /menus", "id": "list", "title": "List context menus", "description": "Every context menu, filtered by words (q), app, level, zone or source.", "readOnly": true, "input": { "type": "object", "properties": { "q": { "type": "string" }, "app": { "type": "string" }, "level": { "type": "string", "enum": ["beginner", "amateur", "pro", "advanced"] }, "zone": { "type": "string" }, "source": { "type": "string" } } } },
+      { "route": "GET /menus/{mid}", "id": "get", "title": "One context menu", "description": "The context-menu@1 document (the asset inside) and its history list.", "readOnly": true },
+      { "route": "GET /menus/{mid}/history", "id": "history", "title": "Snapshots of a menu", "readOnly": true },
+      { "route": "GET /zones", "id": "zones", "title": "Zone registry", "description": "Every right-click zone the code draws (data-fx-ctx-target + the implicit toolbar / tab row / nav / anywhere), with owner, weight, pages and elements. scan=true rescans the code.", "readOnly": true },
+      { "route": "GET /levels", "id": "levels", "title": "Coder levels", "description": "beginner, amateur, pro, advanced: items per zone, depth, which zones, shortcuts, developer actions.", "readOnly": true },
+      { "route": "GET /actions", "id": "actions", "title": "Actions a menu item may run", "readOnly": true },
+      { "route": "GET /active", "id": "active", "title": "Which menu an app shows", "readOnly": true },
+      { "route": "GET /drafts", "id": "drafts", "title": "Open drafts (previews waiting for Apply)", "readOnly": true },
+      { "route": "GET /drafts/{did}", "id": "draft", "title": "One draft with its preview", "readOnly": true },
+      { "route": "GET /claude", "id": "claude", "title": "Is Claude ready to generate?", "description": "The models service is there; live=true also runs the credits check the Claude badge shows green for.", "readOnly": true },
+      { "route": "GET /prompt", "id": "prompt", "title": "The prompt Claude gets", "description": "Zero tokens: the system + user prompt for a level, app and page, with the zones and actions it lists.", "readOnly": true },
+      { "route": "PUT /menus/{mid}", "id": "save", "title": "Save a context menu", "description": "Save a context-menu@1 document (validated; the previous version is kept as a snapshot).", "input": { "type": "object", "properties": { "mid": { "type": "string" }, "menu": { "type": "object" } }, "required": ["mid", "menu"] } },
+      { "route": "DELETE /menus/{mid}", "id": "delete", "title": "Delete a context menu", "destructive": true, "confirm": true },
+      { "route": "POST /menus/{mid}/restore", "id": "restore", "title": "Restore a snapshot", "description": "Put a menu back to one of its snapshots (v), like a skin.", "input": { "type": "object", "properties": { "mid": { "type": "string" }, "v": { "type": "integer" } }, "required": ["mid", "v"] } },
+      { "route": "POST /menus/{mid}/use", "id": "use", "title": "Use a menu", "description": "Make this menu the one its app shows; every open console follows.", "input": { "type": "object", "properties": { "mid": { "type": "string" } }, "required": ["mid"] } },
+      { "route": "POST /zones/report", "id": "report-zones", "title": "Report the zones on screen", "description": "An open console tells the registry which zones its current page draws (items: [{id, label, elements}], page).", "input": { "type": "object", "properties": { "items": { "type": "array" }, "page": { "type": "string" } }, "required": ["items"] } },
+      { "route": "POST /generate", "id": "generate", "title": "Generate context menus with Claude", "description": "Map the app's zones at a coder level with Claude and return a DRAFT with a preview (the menu, warnings, what changes against the menu in force). Nothing is applied until apply, unless apply is true. Spends Claude tokens; refused with aiMissing when Claude is not ready.", "input": { "type": "object", "properties": { "level": { "type": "string", "enum": ["beginner", "amateur", "pro", "advanced"] }, "app": { "type": "string", "description": "default console-web" }, "page": { "type": "string", "description": "one page only (blank = the whole app)" }, "name": { "type": "string" }, "apply": { "type": "boolean" } }, "required": ["level"] }, "output": "{ ok, draft: ctx-draft@1 { id, menu, warnings, diff, summary }, model }" },
+      { "route": "POST /apply", "id": "apply", "title": "Apply a draft", "description": "Save the draft as a menu and make it the one its app shows (use=false saves without switching).", "input": { "type": "object", "properties": { "id": { "type": "string" }, "use": { "type": "boolean" } }, "required": ["id"] } },
+      { "route": "POST /discard", "id": "discard", "title": "Discard a draft", "input": { "type": "object", "properties": { "id": { "type": "string" } }, "required": ["id"] } },
+      { "route": "POST /voice", "id": "voice", "title": "Voice: one sentence", "description": "'generate pro context menus', 'preview beginner menus for the console', 'apply', 'list context menus', 'use menu <id>': the sentence is read and run (a generate returns the draft to preview).", "input": { "type": "object", "properties": { "text": { "type": "string" }, "applyWhenSure": { "type": "boolean" } }, "required": ["text"] } }
+    ]
+  },
+  "builtWith": {
+    "model": "fable",
+    "builtAt": "2026-11-13"
+  },
+  "help": "help.json",
+  "opens": "main"
+}
