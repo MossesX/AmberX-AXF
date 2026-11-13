@@ -263,6 +263,7 @@ public class OverlayService extends Service {
                 WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN, PixelFormat.OPAQUE);
             fullLp.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING;
             if (Build.VERSION.SDK_INT >= 28) fullLp.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;
+            if (Build.VERSION.SDK_INT >= 30) fullLp.setFitInsetsTypes(0); // the whole screen; Insets keeps the console clear of the bars
             Insets.install(this, full);
             wm.addView(full, fullLp);
         }
@@ -275,7 +276,7 @@ public class OverlayService extends Service {
         }
         WebHost.attach(full, this);
         toolbar.bringToFront();
-        Insets.dockToolbar(toolbar.getHeight());
+        toolbar.post(() -> Insets.dockToolbar(toolbar.getHeight())); // measured after layout
     }
 
     private void closeFull() {

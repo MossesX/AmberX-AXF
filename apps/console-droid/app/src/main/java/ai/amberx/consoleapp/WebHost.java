@@ -64,6 +64,7 @@ final class WebHost {
         ctx.setBaseContext(owner);
         parent.addView(w, 0, new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         w.setVisibility(View.VISIBLE);
+        Insets.attached(parent);
     }
 
     /** Takes the WebView out of {@code parent} (it keeps running, nothing shows it). */

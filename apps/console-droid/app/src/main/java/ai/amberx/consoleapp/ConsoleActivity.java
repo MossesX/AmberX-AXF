@@ -26,6 +26,7 @@ public class ConsoleActivity extends Activity {
         WebHost.activity = this;
         root = new FrameLayout(this);
         setContentView(root);
+        edgeToEdge();
         Insets.install(this, root);
         Wake.apply(this, getIntent().getBooleanExtra(Wake.EXTRA, false));
         String link = linkOf(getIntent());
@@ -33,6 +34,14 @@ public class ConsoleActivity extends Activity {
         WebHost.get(this, ShellRules.deepLink(link)); // a fresh page starts at the link
         if (!fresh && link != null && state == null) WebHost.open(this, link); // a running page goes there
         OverlayService.startIfWanted(this);
+    }
+
+    /** Draw under the bars (Insets keeps everything clear of them); Android 15 does this by itself for target 35. */
+    @SuppressWarnings("deprecation")
+    private void edgeToEdge() {
+        if (android.os.Build.VERSION.SDK_INT >= 30) getWindow().setDecorFitsSystemWindows(false);
+        else getWindow().getDecorView().setSystemUiVisibility(android.view.View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+            | android.view.View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | android.view.View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
     }
 
     /** The link an intent carries (a VIEW intent's data, or the overlay's {@code url} extra), else null. */
