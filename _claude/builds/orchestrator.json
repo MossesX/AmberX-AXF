@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T23:41:14.109Z",
+ "updatedAt": "2026-11-13T23:41:30.138Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -135021,15 +135021,15 @@
    "title": "Auto-land: merge main and land (land.mjs clash)",
    "category": "",
    "detail": "Branch claude/auto-land-every-finished-build-lands clashed with main in apps/console-web/plugins/push-banner/land/land.mjs, a real source clash with the just-landed lander-regenerates-generated-files-clash (generated-files@1). Merge origin/main, keep BOTH: main's regenerate-generated-files-on-clash logic and this branch's auto-land queue/sweeper. Run the push-banner and orchestrator tests, push, then land on main right away. After it lands, the sweeper should start landing every finished build by itself.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/auto-land-merge-main-land-land-mjs-clash",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T23:38:56.061Z",
-   "updatedAt": "2026-11-13T23:40:57.282Z",
+   "updatedAt": "2026-11-13T23:41:23.719Z",
    "builtAt": "",
    "notes": [
     {
@@ -135039,6 +135039,14 @@
     {
      "text": "Split by Claude into 9 steps (0 Fable).",
      "at": "2026-11-13T23:40:57.282Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-auto-land-merge-main-land-land-mjs-clash--paulie.",
+     "at": "2026-11-13T23:41:20.018Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-auto-land-merge-main-land-land-mjs-clash--paulie, own login copy)",
+     "at": "2026-11-13T23:41:23.719Z"
     }
    ],
    "approvals": [],
@@ -135049,8 +135057,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "auto-land-merge-main-land-land-mjs-clash",
+    "brief": "# Build: auto-land-merge-main-land-land-mjs-clash\n\n## Brett said (verbatim)\nAt: 2026-11-13T23:38:56.061Z\n> land what finished\n\n## What to build\nContinue build \"Auto-land: merge main and land (land.mjs clash)\" (auto-land-merge-main-land-land-mjs-clash) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-13 23:38):\n\"land what finished\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (9 left, ~1.2 h):\n[ ] s1 (~6 min) Check out claude/auto-land-every-finished-build-lands, fetch origin, run `git merge origin/main` and list the conflicted files (expect apps/console-web/plugins/push-banner/land/land.mjs). Read both sides: main's generated-files@1 regenerate-on-clash path and this branch's auto-land queue/sweeper. No commit yet, just a note of what each side adds.\n[ ] s2 (~10 min) Resolve land.mjs so it keeps both: main's regenerate-generated-files-on-clash logic (generated-files@1 call sites, imports) and the branch's auto-land queue + sweeper entry points. Keep imports to built-ins and land/ siblings only. Commit the merge resolution.\n[ ] s3 (~8 min) Settle the other files the merge touched: take main's copy for generated/status files (_claude/builds/store.json, journal, exports, THREADS.md live log) and regenerate them where a generator exists (tracker.mjs, builds-store verify) instead of hand-merging; check that no sweeper or regenerate helper in other push-banner/land files is now duplicated or orphaned. Commit.\n[ ] s4 (~8 min) Wire the sweeper to use the regenerate path: when the sweeper lands a finished build and the merge clashes only on generated files, call main's generated-files@1 regenerate step before giving up, so a finished build doesn't stall on a clash in generated files. Commit.\n[ ] s5 (~8 min) API parity check for the auto-land sweeper (no new UI, so this is read and wire only): confirm sweeper state is readable and run/pause works the same through REST (push-banner routes), MCP (push_banner_* plugin commands, read statically), CLI (`land.mjs sweep|status`) and voice (console action). Add whatever is missing to the plugin's routes and commands. Commit.\n[ ] s6 (~10 min) Tests: add or extend push-banner land tests covering (a) a clash only on generated files regenerates and lands, (b) a real source clash is kicked to Pull failed, (c) the sweeper picks up every `built` build with a green PR and queues it as a stack (never one at a time). Commit.\n[ ] s7 (~10 min) Run the push-banner and build-orchestrator test suites plus plugin-lifecycle check, check-builds-store.mjs, builds-store verify and tracker --check; fix whatever fails, then commit.\n[ ] s8 (~6 min) Push the branch, link it (`builds-live.mjs link auto-land-merge-main-land-land-mjs-clash --branch claude/auto-land-every-finished-build-lands --pr <n>`), make sure PR CI started (dispatch android.yml once if no pull_request run appeared), and add the PR to the merge queue (`land.mjs queue add <n>`); no direct merge.\n[ ] s9 (~8 min) Write _claude/builds/reports/auto-land-merge-main-land-land-mjs-clash.md (what clashed, how both sides were kept, tests before/after, how the sweeper is reached through REST/MCP/CLI/voice, and what happens after it lands: the sweeper lands every finished build by itself). Update the THREADS.md row (branch, PR, waiting on the queue), add Brett's verbatim words ('land what finished') to the PR body, commit, push.\nRead first: apps/console-web/plugins/push-banner/land/land.mjs, apps/console-web/plugins/push-banner/land/, _claude/builds/, tracker.json, apps/console-web/plugins/push-banner/server/, apps/console-web/plugins/push-banner/plugin.json, apps/console-web/plugins/push-banner/test/, apps/console-web/plugins/push-banner/, apps/console-web/plugins/build-orchestrator/, framework/spec/check-builds-store.mjs, _claude/builds/store.json, _claude/builds/reports/auto-land-merge-main-land-land-mjs-clash.md, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step auto-land-merge-main-land-land-mjs-clash <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link auto-land-merge-main-land-land-mjs-clash --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step auto-land-merge-main-land-land-mjs-clash <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note auto-land-merge-main-land-land-mjs-clash \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
