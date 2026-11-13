@@ -42,6 +42,7 @@ import { Icon } from './Icon';
 import type { DialogMap } from './Overlays';
 import { TabGroup } from './TabGroup';
 import { BANNER_SETTINGS_DIALOG } from './BannerSettings';
+import { contextChromeAsset } from './PageAssets';
 
 export const CHROME_SETTINGS_DIALOG = 'axf.chrome.settings';
 export const CHROME_PICK_DIALOG = 'axf.chrome.pick';
@@ -193,7 +194,14 @@ export function installChrome(rt: AxfRuntime): void {
   // The shared block, after the kind's own items (window tab groups: Undock / Split…; banners: Hide…).
   rt.contextExtras.set('*:chrome', (target, payload) => {
     const type = chromeTypeOfTarget(target);
-    if (!type) return [];
+    if (!type) {
+      // a toolbar / tab row / nav / menu bar that names a menu target of its own (e.g. the settings level toolbar) is
+      // still that kind: its own Settings / Change / Move block, for the one the menu was opened on (page-assets@1 audit)
+      const own = contextChromeAsset(rt);
+      if (!own) return [];
+      const i = instanceOf(own.type, own.instance);
+      return i ? chromeMenu(rt, own.type, i) : [];
+    }
     const instance = instanceOf(type, payload);
     return instance ? chromeMenu(rt, type, instance) : [];
   });

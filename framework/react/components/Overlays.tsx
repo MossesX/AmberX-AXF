@@ -125,6 +125,9 @@ export function ToastHost() {
 
 /* ---------------- ContextMenuHost (context-menu asset) ---------------- */
 
+/** Chrome that sits outside the shell (above it, in the frame) yet always opens the context menu: banners, the menu bar. */
+const FRAME_CHROME = '[data-fx-ctx-target="axf-banner"], [data-fx-ctx-target="banner"], .fx-frame__menubar [data-fx-ctx-target="app-menu"]';
+
 export function ContextMenuHost() {
   const rt = useRuntime();
   const state = useAxfState();
@@ -153,8 +156,9 @@ export function ContextMenuHost() {
       // A touch long-press also fires the browser's own contextmenu: the long-press timer handles it, once.
       if (start) { e.preventDefault(); return; }
       const t = e.target as Element;
-      // A banner (outside the shell, in a box that otherwise ignores the menu) is always a target: Banner settings.
-      const banner = !!t.closest('[data-fx-ctx-target="axf-banner"], [data-fx-ctx-target="banner"]') && !t.closest('input, textarea, .fx-ctx');
+      // A banner or the application menu bar (outside the shell, in a box that otherwise ignores the menu) is always a
+      // target: Banner settings / Application menu settings (page-assets@1 audit, Nov 13 2026).
+      const banner = !!t.closest(FRAME_CHROME) && !t.closest('input, textarea, .fx-ctx');
       if (!banner && t.closest('input, textarea, .fx-ctx, [data-fx-ctx-ignore]')) return;
       if (!banner && !t.closest('.fx-shell')) return;
       // hidden: the browser's own menu, unless a host that took the context menu shows it (embed@1, rt.openContext forwards)
@@ -168,7 +172,7 @@ export function ContextMenuHost() {
     const onDown = (e: PointerEvent) => {
       if (e.pointerType !== 'touch' || (rt.slotHidden('context-menu') && !rt.hostTakes('context-menu'))) return;
       const t = e.target as Element;
-      const banner = !!t.closest('[data-fx-ctx-target="axf-banner"], [data-fx-ctx-target="banner"]') && !t.closest('input, textarea, .fx-ctx');
+      const banner = !!t.closest(FRAME_CHROME) && !t.closest('input, textarea, .fx-ctx');
       if (!banner && (t.closest('input, textarea, .fx-ctx, [data-fx-ctx-ignore]') || !t.closest('.fx-shell'))) return;
       start = { x: e.clientX, y: e.clientY };
       timer = setTimeout(() => open(t, e.clientX, e.clientY), rt.behavior().interaction.longPressMs); // behaviour theme (was 550 ms)
