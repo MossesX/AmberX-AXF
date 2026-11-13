@@ -76,3 +76,8 @@ item's are skipped. Run on the VPS, 13 Nov 2026:
 | /root/axf-review-shots/github-client | 6 loose pictures | skipped: same pictures as the GitHub client item |
 
 9 sent, 0 failed. The scan is clean afterwards.
+
+## s6 Duplicate removed
+
+`builds-get-console-token-banner-alert` (filed 17:34 from the console, no pending id, same request and the same
+five steps as this build) removed with `orchestrator.mjs act remove`; builds-live put it on main (`afcad03f8`).
