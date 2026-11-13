@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4410,
- "updatedAt": "2026-11-13T12:25:41.126Z",
+ "rev": 4411,
+ "updatedAt": "2026-11-13T12:25:47.165Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -187605,7 +187605,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T12:23:34.932Z",
-   "updatedAt": "2026-11-13T12:25:39.494Z",
+   "updatedAt": "2026-11-13T12:25:43.405Z",
    "builtAt": "",
    "notes": [
     {
@@ -187623,6 +187623,10 @@
     {
      "text": "Brett confirmed: navigation menu settings are broken the same way (changes do nothing). Fix it, not just check it.",
      "at": "2026-11-13T12:25:39.494Z"
+    },
+    {
+     "text": "Brett: probably app menus too. Check and fix settings on application menus as well (toolbars, tab groups, nav menu, app menus).",
+     "at": "2026-11-13T12:25:43.405Z"
     }
    ],
    "approvals": [],
@@ -187947,7 +187951,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
