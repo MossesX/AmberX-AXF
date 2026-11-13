@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T21:37:43.420Z",
+ "updatedAt": "2026-11-13T21:38:35.962Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -132325,7 +132325,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T19:55:30.979Z",
-   "updatedAt": "2026-11-13T21:37:41.483Z",
+   "updatedAt": "2026-11-13T21:38:34.414Z",
    "builtAt": "",
    "notes": [
     {
@@ -132562,7 +132562,7 @@
     },
     {
      "id": "s9",
-     "text": "icon-pack@1 colour layers (Fable: schema + engine): glyphs may carry layers [{d, color, opacity}] so fixed-colour packs (themable:false: emoji-style, brand-coloured logos) draw in their own colours; normalizeIconPack + glyphSvg (brand-rules.mjs, brand.ts) + asset-types optional_fields + fixtures; the s5 fixed-colour packs already ship layers with a one-colour d fallback",
+     "text": "icon-pack@1 colour layers + logo packs drive brand marks (Fable: schema + engine). (1) Glyphs may carry layers [{d, color, opacity}] so fixed-colour packs (themable:false: twemoji, badges-traffic, logo-amber-gem) draw in their own colours: normalizeIconPack + glyphSvg (brand-rules.mjs, brand.ts) + asset-types optional_fields + fixtures; the s5 packs already ship layers with a one-colour d fallback. (2) The 82 logo slots are brand marks (logo-mark assets via the branding package): when the icon pack in force covers logos and maps app-mark / app-logo, BrandMark in mark mode draws that glyph (brand.ts place resolution + react/components/Brand.tsx), then re-bake the apps",
      "model": "Opus",
      "why": "",
      "phase": "",
