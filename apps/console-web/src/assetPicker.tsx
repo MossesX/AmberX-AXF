@@ -1,6 +1,6 @@
 import { useState, useSyncExternalStore } from 'react';
 import { assetTypeSpecs, type AssetType } from '@console/axf/core';
-import { Button, Chip, Note, SelectField, useAxfState, useRuntime } from '@console/axf/react';
+import { Button, Chip, HubSkinLockNote, SelectField, useAxfState, useRuntime } from '@console/axf/react';
 
 /*
  * Settings → Appearance: every UI that has assets, and every asset made for it (Brett, Nov 2026: "Every UI in the
@@ -48,7 +48,7 @@ export function AssetPickerPanel() {
   const reason = rt.appearanceLockReason();
   return (
     <div className="fx-stack">
-      {reason === 'hub' && <Note tone="info" icon="lock">Following axHub.</Note>}
+      <HubSkinLockNote />
       {types.map((t) => <AssetRow key={t} type={t} locked={reason !== ''} />)}
     </div>
   );

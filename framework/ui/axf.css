@@ -1141,6 +1141,10 @@ textarea.fx-input { resize: vertical; white-space: pre; }
 /* Note: info / warning / danger / success callout */
 .fx-note { display: flex; gap: var(--fx-dens-gap-md); align-items: flex-start; padding: var(--fx-dens-gap-lg) var(--fx-dens-gap-lg); border-radius: var(--fx-radius-sm); font-size: var(--fx-type-root-md); background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); }
 .fx-note > .fx-icon { margin-top: var(--fx-dens-gap-2xs); }
+/* Skin from axHub only: an editor that would change the skin or an asset, greyed out and disabled under the lock note */
+.axf-hubskin-area { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); }
+.axf-hubskin-area__fields { border: 0; margin: 0; padding: 0; min-width: 0; opacity: var(--fx-opacity-muted); }
+.axf-hubskin-lock .fx-note__body { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md); }
 .fx-note.is-warning { background: color-mix(in srgb, var(--fx-warning) calc(var(--fx-opacity-tint) * 100%), transparent); }
 /* a part of the page the host app manages (embed@1 lock takes, e.g. plugins): shown, greyed, not usable */
 .fx-locked { opacity: max(var(--fx-opacity-disabled), 0.5); pointer-events: none; user-select: none; }

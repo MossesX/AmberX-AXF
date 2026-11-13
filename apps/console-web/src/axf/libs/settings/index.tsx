@@ -15,7 +15,7 @@
 import { Fragment, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
 import type { SettingsPanel } from '../../core';
 import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, APPEARANCE_LOCK_KEY, HUB_SKIN_ONLY_GROUP, ASSET_TYPES, assetTypeSpecs, hideable, PLACEMENT_LABELS, SKIN_COLOR_SLOT, arrangeSettingsTabs, filterSettingsGroup, normalizeSettingsUi, settingMatches, settingsShown, settingsUiGroups, SETTINGS_LEVEL_KEY, SETTINGS_LEVEL_BAR_KEY, SETTINGS_VISIBLE_KEY, SETTINGS_LEVEL_HINT, SETTINGS_LEVEL_LABEL, SETTINGS_LEVELS, settingsLevel, shownAtLevel, splitSettingsGroup, withSettingsVisible, hideableTypes, type SettingsLevel, type SettingsUi, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
-import { AssetsWithEdits, AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Chip, Container, ControlScope, Icon, IconButton, ModelBadge, Note, setBannerOwnSettingsRenderer, settingTargetDef, Slider, Switch, useAsset, useAxfState, useControlTarget, useKnownBanners, useRuntime } from '../../react';
+import { AssetsWithEdits, AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Chip, Container, ControlScope, HubSkinLockNote, Icon, IconButton, ModelBadge, setBannerOwnSettingsRenderer, settingTargetDef, Slider, Switch, useAsset, useAxfState, useControlTarget, useKnownBanners, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import { runtimeInventory } from '../../react/pluginRecords';
 import { TabGroup } from '../../react/components/TabGroup';
@@ -567,9 +567,9 @@ const RESTORE_DIALOG = 'axf.settings.restore-default';
 const SKIN_DIALOG = 'axf.settings.skin';
 const LOCK_PANEL_ID = 'axf.appearance.lock';
 
-/** The short note on every look control Skin from axHub only locks. */
+/** The note (with its "Click here to override" link) on every look area Skin from axHub only locks. */
 export function FollowingAxHubNote() {
-  return <Note tone="info" icon="lock" className="axf-settings__following">Following axHub. Your own picks here are kept; turn off "Get my skin only from axHub" to use them again.</Note>;
+  return <HubSkinLockNote className="axf-settings__following" />;
 }
 
 /**

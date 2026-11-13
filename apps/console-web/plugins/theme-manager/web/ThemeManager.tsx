@@ -4,7 +4,7 @@
  * a roll as a standard asset (asset@1) and manage saved ones. Works only with the existing asset types and engines.
  */
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
-import { Button, Chip, Icon, IconButton, Switch, useAxfState, useEditorSync, useRuntime } from '@console/axf/react';
+import { Button, Chip, HubSkinLockArea, Icon, IconButton, Switch, useAxfState, useEditorSync, useRuntime } from '@console/axf/react';
 import { assetTypeSpecs, hideable } from '@console/axf/core';
 import type { AssetType, AxfRuntime } from '@console/axf/core';
 import { PRESETS, allLeafIds, buildTree, getAt, leaves, readability, rollType, setAt, toggle, triState, type Json, type Node, type TypeSpec } from './rollEngine';
@@ -159,6 +159,7 @@ export function ThemeManager() {
   const selNode = sel ? byId.get(sel) : null;
 
   return (
+    <HubSkinLockArea>
     <div className={`${P} fx-stack`}>
       {/* one toolbar: the two rolls used most, undo / redo / pin, the rest behind ⋯ (compact pages, Oct 30 2026) */}
       <div className={`${P}__bar ${P}__toolbar`} role="toolbar" aria-label="Roll">
@@ -223,6 +224,7 @@ export function ThemeManager() {
       </div>
       <SavedThemes onApply={(t, id) => { store.base = {}; store.history = []; store.index = -1; emit(); rt.swap(t as never, id); rememberApplied(t, id); }} />
     </div>
+    </HubSkinLockArea>
   );
 }
 
