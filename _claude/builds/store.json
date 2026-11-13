@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3986,
- "updatedAt": "2026-11-13T03:37:40.123Z",
+ "rev": 3987,
+ "updatedAt": "2026-11-13T03:37:53.175Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -176500,7 +176500,7 @@
    "title": "CHANGE to one-to-do-notes-and-tasks-plugin (PR #527), Brett: notes, tasks and to-dos are ONE item type, not separate things. Any item can hold any other, nested to any depth: a note can contain task lists and to-do lists, a task or to-do list can contain notes, and lists nest inside lists inside not",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -176508,7 +176508,7 @@
    "pr": "#545",
    "createdAt": "2026-11-13T00:40:38.452Z",
    "updatedAt": "2026-11-13T03:37:05.912Z",
-   "builtAt": "",
+   "builtAt": "2026-11-13T03:37:05.912Z",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
@@ -176642,12 +176642,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T03:36:52.360Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T00:41:48.903Z",
-     "updatedAt": "2026-11-13T00:41:48.903Z"
+     "updatedAt": "2026-11-13T03:36:52.574Z"
     }
    ],
    "profiles": [
@@ -176658,7 +176658,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

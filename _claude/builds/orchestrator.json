@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T03:37:40.123Z",
+ "updatedAt": "2026-11-13T03:37:53.175Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -111825,7 +111825,7 @@
    "title": "CHANGE to one-to-do-notes-and-tasks-plugin (PR #527), Brett: notes, tasks and to-dos are ONE item type, not separate things. Any item can hold any other, nested to any depth: a note can contain task lists and to-do lists, a task or to-do list can contain notes, and lists nest inside lists inside not",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -111833,7 +111833,7 @@
    "pr": "#545",
    "createdAt": "2026-11-13T00:40:38.452Z",
    "updatedAt": "2026-11-13T03:37:05.912Z",
-   "builtAt": "",
+   "builtAt": "2026-11-13T03:37:05.912Z",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
@@ -111923,8 +111923,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T03:36:52.360Z",
      "note": "",
      "uid": "st-mwe94qjs0844sf"
     }
