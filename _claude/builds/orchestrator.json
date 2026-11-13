@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T11:16:50.822Z",
+ "updatedAt": "2026-11-13T11:17:24.105Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -120974,9 +120974,14 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T11:13:21.086Z",
-   "updatedAt": "2026-11-13T11:13:22.238Z",
+   "updatedAt": "2026-11-13T11:17:21.962Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by Claude into 21 steps (4 Fable).",
+     "at": "2026-11-13T11:17:21.962Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -120991,7 +120996,474 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Design the drag-move@1 contract: one shape for every draggable kind (banner-widget, toolbar-item, tab, dock-pane, grid-column, grid-row, list-item, layout-slot), with source id, target container, drop zone (before/after/into/side), index and add/remove. Write the spec in framework/spec/DRAG-MOVE.md and an asset-types/schema entry if one is needed.",
+     "model": "Fable",
+     "why": "New cross-app contract for how every GUI's drag targets are addressed",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/spec/DRAG-MOVE.md",
+      "framework/schemas/asset-types.json",
+      "framework/schemas/drag-move.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwevu27e0lj25j",
+     "createdAt": "2026-11-13T11:17:21.962Z"
+    },
+    {
+     "id": "s2",
+     "text": "Write the reference engine framework/core/engines/drag-move.ts: validate a move, resolve drop zones, compute the new order (pure, no DOM), and add an open registry of draggable kinds that hosts register into.",
+     "model": "Fable",
+     "why": "Engine internals that every app's drag hosts share",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/engines/drag-move.ts",
+      "framework/core/index.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwevu27e0m418g",
+     "createdAt": "2026-11-13T11:17:21.962Z"
+    },
+    {
+     "id": "s3",
+     "text": "Add golden fixtures framework/spec/fixtures/drag-move.json covering reorder, cross-container move, add, remove, invalid zone and out-of-range index. Generate them with gen-fixtures.mts, record the deferred Kotlin twin in PORTING.md, and add npx tsx framework/spec/check-drag-move.mts.",
+     "model": "Fable",
+     "why": "Conformance fixtures for the cross-port contract",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/spec/fixtures/drag-move.json",
+      "framework/spec/gen-fixtures.mts",
+      "framework/spec/check-drag-move.mts",
+      "framework/spec/PORTING.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwevu27e0n019d",
+     "createdAt": "2026-11-13T11:17:21.962Z"
+    },
+    {
+     "id": "s4",
+     "text": "Add the runtime seam in framework/react: a useDraggableHost(kind, containerId, {list, apply}) hook that registers a host with the runtime (rt.drag.hosts) so a move can run without a pointer, and give the existing drag code paths a shared apply.",
+     "model": "Fable",
+     "why": "Changes how drag works in GUIs across every app",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/dragHost.ts",
+      "framework/core/runtime.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwevu27e0ovmyf",
+     "createdAt": "2026-11-13T11:17:21.962Z"
+    },
+    {
+     "id": "s5",
+     "text": "Wire banner widgets into the drag host: reorder, move between banner slots, and add/remove a widget through the banner widget host engine, so it is the same code path as a manual drag.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/components/Banner*.tsx",
+      "framework/core/engines/widgets.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwevu27e0pae5n",
+     "createdAt": "2026-11-13T11:17:21.962Z"
+    },
+    {
+     "id": "s6",
+     "text": "Wire toolbar items (Toolbars plugin toolbars) into the drag host: reorder, move to another toolbar, and add or remove an item or a dropped hook.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/components/Toolbar*.tsx",
+      "apps/console-web/plugins/toolbars/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwevu27e0qa702",
+     "createdAt": "2026-11-13T11:17:21.962Z"
+    },
+    {
+     "id": "s7",
+     "text": "Wire TabGroup tabs into the drag host: reorder, plus move to another group where the host allows it. Also cover the hand-drawn strips that carry data-axf-tab-group (Terminal, workspace panes).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/components/TabGroup.tsx",
+      "apps/console-web/src/views/terminal/",
+      "apps/console-web/src/workspace/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwevu27e0ry1z0",
+     "createdAt": "2026-11-13T11:17:21.962Z"
+    },
+    {
+     "id": "s8",
+     "text": "Wire dock panes and layout slots into the drag host: move a pane to a side or into a tab stack, and swap or move layout slots, all through the layout engine.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/windows/",
+      "framework/core/engines/layout.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwevu27e0sulpt",
+     "createdAt": "2026-11-13T11:17:21.962Z"
+    },
+    {
+     "id": "s9",
+     "text": "Wire DataGrid columns and rows into the drag host (column reorder, row reorder where the grid allows it) and give generic sortable lists the same hookup.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/components/DataGrid.tsx",
+      "framework/react/components/SortableList.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwevu27e0tntsp",
+     "createdAt": "2026-11-13T11:17:21.962Z"
+    },
+    {
+     "id": "s10",
+     "text": "Sweep the console and apps for other draggable things (Build manager queue rows, Plan Studio, Pipeline, asset library, banner pop-out) and register each one as a host. List anything left over in the report.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src/",
+      "apps/console-web/plugins/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwevu27e0utm3o",
+     "createdAt": "2026-11-13T11:17:21.962Z"
+    },
+    {
+     "id": "s11",
+     "text": "Add the console actions drag.list (hosts and items on the current page), drag.zones (drop zones for an item) and drag.move / drag.add / drag.remove, registered with the full-API action registry from PR #556.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src/actions/drag.ts",
+      "apps/console-web/src/actions/index.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwevu27e0v5b1e",
+     "createdAt": "2026-11-13T11:17:21.962Z"
+    },
+    {
+     "id": "s12",
+     "text": "Add REST routes: GET /api/drag/hosts, GET /api/drag/zones, and POST /api/drag/move|add|remove, relayed to the open console through the existing remote-command channel. Add a Python validator that matches the engine.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/server/routes/drag.py",
+      "apps/console-web/server/main.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwevu27e0wkovk",
+     "createdAt": "2026-11-13T11:17:21.962Z"
+    },
+    {
+     "id": "s13",
+     "text": "Add MCP tools to mcp_server.py: console_drag_list, console_drag_zones, console_drag_move, console_drag_add and console_drag_remove. Each move is a veto call with a reason, and the read tools are read-only.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/server/mcp_server.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwevu27e0x4ftb",
+     "createdAt": "2026-11-13T11:17:21.962Z"
+    },
+    {
+     "id": "s14",
+     "text": "Add the CLI command axf drag list|zones|move|add|remove (node framework/cli/drag.mjs) on the same REST routes, with help text in the header comment.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/cli/drag.mjs",
+      "framework/cli/axf.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwevu27e0yao86",
+     "createdAt": "2026-11-13T11:17:21.962Z"
+    },
+    {
+     "id": "s15",
+     "text": "Add voice/AmberX intents (\"move the clock widget to the left of the banner\", \"drag the Logs tab first\", \"remove the CPU widget\"). Each resolves names to ids through drag.list, then calls drag.move.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/voice-commands/",
+      "apps/amberx-droid/web/src/voice/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwevu27e0zxrtv",
+     "createdAt": "2026-11-13T11:17:21.962Z"
+    },
+    {
+     "id": "s16",
+     "text": "Add deep links: console_show / console_open targets like drag:<kind>:<host>:<item>, which open the page and highlight the item and its drop zones, plus a state read of the current order per host.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src/actions/show.ts",
+      "framework/react/dragHost.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwevu27e1086so",
+     "createdAt": "2026-11-13T11:17:21.962Z"
+    },
+    {
+     "id": "s17",
+     "text": "Draw drop zones with tokens only when a move is previewed by API (Follow Amber highlight). Make sure check-theme, check-controls and check-chrome-assets pass.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/ui/axf.css",
+      "framework/react/dragHost.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwevu27e11zi1v",
+     "createdAt": "2026-11-13T11:17:21.962Z"
+    },
+    {
+     "id": "s18",
+     "text": "Add tests: a vitest/tsx test for each host kind that shows an API move gives the same result as a simulated pointer drag, plus server route tests and MCP tool tests.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/spec/check-drag-hosts.mts",
+      "apps/console-web/server/tests/test_drag.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwevu27e12bb9m",
+     "createdAt": "2026-11-13T11:17:21.962Z"
+    },
+    {
+     "id": "s19",
+     "text": "Add a Playwright smoke test on the built console that runs drag.move on a banner widget, a tab and a grid column through REST, checks the order changed and survives a reload. Wrap it in agent-slots heavy.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/scripts/drag-smoke.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwevu27e13yc1v",
+     "createdAt": "2026-11-13T11:17:21.962Z"
+    },
+    {
+     "id": "s20",
+     "text": "Add glossary and help entries for the drag commands and the drag-move contract, update catalog/status.json and tracker.json, and record the API reach for each host in the help docs.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/catalog/status.json",
+      "tracker.json",
+      "apps/console-web/plugins/glossary-index/",
+      "apps/console-web/src/help/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwevu27e1430p8",
+     "createdAt": "2026-11-13T11:17:21.962Z"
+    },
+    {
+     "id": "s21",
+     "text": "Final step: run the full checks (validate, fixtures, check-theme, check-controls, check-toolbars, check-chrome-assets, tests). Write _claude/builds/reports/drag-anything-by-api-and-voice-follow-up-to-full.md, add the THREADS.md row, and open the PR, listing how each draggable is reached by deep link, REST, MCP, CLI and voice.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/drag-anything-by-api-and-voice-follow-up-to-full.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwevu27e15j3nm",
+     "createdAt": "2026-11-13T11:17:21.962Z"
+    }
+   ]
   },
   {
    "id": "drag-anything-by-api-and-voice-after-pr-556-land",
