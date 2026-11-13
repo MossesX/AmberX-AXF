@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4048,
- "updatedAt": "2026-11-13T06:46:10.919Z",
+ "rev": 4049,
+ "updatedAt": "2026-11-13T06:46:34.124Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -178510,7 +178510,7 @@
    "pr": "#553",
    "priority": "P0",
    "createdAt": "2026-11-13T06:25:11.720Z",
-   "updatedAt": "2026-11-13T06:46:06.436Z",
+   "updatedAt": "2026-11-13T06:46:30.364Z",
    "builtAt": "2026-11-13T06:45:47.460Z",
    "notes": [
     {
@@ -178694,6 +178694,152 @@
      "rev": 1,
      "createdAt": "2026-11-13T06:46:06.445Z",
      "updatedAt": "2026-11-13T06:46:06.828Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mwem5aw901khlx",
+     "title": "",
+     "text": "MCP plugin commands (skins_list, skins_state, skins_use, skins_back, skins_restore, skins_undo, skins_scope) through plugin-commands, plus console actions skin.use / skin.back / skin.restore / skin.undo for AmberX voice",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "apps/console-web/plugins/skins/commands.json",
+      "apps/console-web/plugins/skins/actions.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T06:46:09.774Z",
+     "updatedAt": "2026-11-13T06:46:10.281Z"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mwem5dd801pp6y",
+     "title": "",
+     "text": "Gallery screen apps/console-web/plugins/skins/web/SkinsScreen.tsx: a grid of every skin card (name, icon pack, coverage), built from framework controls and tokens only, with a TabGroup for scope (Hub / App / Screen / Plugin) and a SkinScope root",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/skins/web/SkinsScreen.tsx",
+      "apps/console-web/plugins/skins/web/skins.css"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T06:46:12.964Z",
+     "updatedAt": "2026-11-13T06:46:13.484Z"
+    },
+    {
+     "id": "s7",
+     "uid": "st-mwem5g4x01fcj3",
+     "title": "",
+     "text": "Live preview pane: the selected skin is drawn in a scoped desktop frame and a phone-width frame side by side (SkinScope with the preview skin, no write until Use), with a desktop/phone toggle on a role=toolbar",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/skins/web/SkinPreview.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T06:46:16.376Z",
+     "updatedAt": "2026-11-13T06:46:17.073Z"
+    },
+    {
+     "id": "s8",
+     "uid": "st-mwem5ilk016sp0",
+     "title": "",
+     "text": "Action toolbar on the screen: one-tap Use skin, Back to skin, Restore to Default (confirm) and Undo (snackbar plus a button), wired to the REST routes. Toolbar has role=toolbar, aria-label and tap-to-confirm",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "apps/console-web/plugins/skins/web/SkinActions.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T06:46:19.897Z",
+     "updatedAt": "2026-11-13T06:46:20.264Z"
+    },
+    {
+     "id": "s9",
+     "uid": "st-mwem5kkf01urej",
+     "title": "",
+     "text": "Per-scope picker: pick the app, the screen (ui:<view>) or the plugin from registries, show the inherited skin and where it comes from, with an Inherit / Follow hub switch per scope",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/skins/web/ScopePicker.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T06:46:22.518Z",
+     "updatedAt": "2026-11-13T06:46:22.815Z"
+    },
+    {
+     "id": "s10",
+     "uid": "st-mwem5qjl01f80q",
+     "title": "",
+     "text": "Context-menu entries (rt.addContextItems): Change skin here… on any view root and plugin root, opening the scope picker on that scope. Banner chip right-click gives Settings… / Change… / Move",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/skins/web/contextItems.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T06:46:30.364Z",
+     "updatedAt": "2026-11-13T06:46:30.563Z"
     }
    ],
    "profiles": [
@@ -178704,7 +178850,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
