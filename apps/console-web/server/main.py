@@ -612,7 +612,7 @@ PROJECTS_CLI = ROOT / "framework" / "cli" / "projects.mjs"
 import projects as projects_mod  # noqa: E402
 
 PROJECTS = projects_mod.Projects(ROOT, _persist_root, PROFILES.active)
-PROJECT_ACTIONS = ("select", "create", "update", "archive", "unarchive", "delete")
+PROJECT_ACTIONS = ("select", "create", "update", "archive", "unarchive", "delete", "duplicate")
 
 
 def _projects_cli(*args: str, actor: str = "console") -> dict[str, Any]:
@@ -633,8 +633,10 @@ def projects_state() -> Any:
 
 @app.post("/api/projects", dependencies=[Depends(auth)])
 async def projects_act(request: Request) -> Any:
-    """One change: {action: select|create|update|archive|unarchive|delete, id?, name?, description?, confirm?}.
-    archive and delete need confirm = the project id; the main project (AmberX AXF) can't be archived or deleted."""
+    """One change: {action: select|create|update|archive|unarchive|delete|duplicate, id?, name?, description?, confirm?}.
+    archive and delete need confirm = the project id; the main project (AmberX AXF) can't be archived or deleted.
+    duplicate {from?, name?, id?, items?: structure|all|none, builds?} copies a project (framework/cli/project-templates.mjs);
+    create with {boilerplate} starts the new project from a saved boilerplate."""
     body = await request.body()
     if len(body) > 16 * 1024:
         raise HTTPException(413, "change too large")

@@ -563,6 +563,7 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
     # ------------------------------------------------------------------ Claude settings (Claude plugin, claude-settings@1)
 
     _register_claude_settings_tools(mcp)
+    _register_project_template_tools(mcp)
     _register_expenses_tools(mcp)
 
     # ------------------------------------------------------------------ session mirror (Terminal → sessions nav)
@@ -614,6 +615,61 @@ def upgrade_via_axhub(build: str, phase: int, request: str = "") -> dict[str, An
         return json.loads(lines[-1]) if lines else {"ok": False, "error": p.stderr.strip()[-600:] or "no output"}
     except json.JSONDecodeError:
         return {"ok": False, "error": (p.stderr or p.stdout).strip()[-600:]}
+
+
+# ---------------------------------------------------------------------- project copies and boilerplates (project-template@1)
+
+PROJECT_TEMPLATES_CLI = Path(__file__).resolve().parents[3] / "framework" / "cli" / "project-templates.mjs"
+
+
+def _project_templates(change: dict[str, Any]) -> dict[str, Any]:
+    """One project-templates.mjs action (the same engine the console, the CLI and voice use)."""
+    env = {**os.environ, "AXF_ACTOR": os.environ.get("AXF_ACTOR") or "mcp"}
+    try:
+        p = subprocess.run(["node", str(PROJECT_TEMPLATES_CLI), "act", json.dumps(change), "--json"], cwd=PROJECT_TEMPLATES_CLI.parents[2],
+                           capture_output=True, text=True, timeout=180, env=env)
+    except (OSError, subprocess.TimeoutExpired) as e:
+        return {"ok": False, "error": str(e)[:200]}
+    lines = p.stdout.strip().splitlines()
+    try:
+        return json.loads(lines[-1]) if lines else {"ok": False, "error": p.stderr.strip()[-600:] or "no output"}
+    except json.JSONDecodeError:
+        return {"ok": False, "error": (p.stderr or p.stdout).strip()[-600:]}
+
+
+def _register_project_template_tools(mcp: MCPServer) -> None:
+    async def go(change: dict[str, Any]) -> dict[str, Any]:
+        r = await anyio.to_thread.run_sync(lambda: _project_templates(change))
+        if not r.get("ok"):
+            raise ToolError(r.get("error") or "failed")
+        r.pop("ok", None)
+        r.pop("state", None)
+        return r
+
+    @mcp.tool(annotations=WRITE)
+    async def project_duplicate(project: str = "", name: str = "", id: str = "", description: str | None = None,
+                                items: Literal["structure", "all", "none"] = "structure", builds: bool = False, select: bool = True) -> dict[str, Any]:
+        """Duplicate a project (voice: "duplicate this project"): a new project that starts from `project` (id or name;
+        default the active one) with its settings, build rules, skin, Claude accounts, plugin setup, manifest (under the
+        new name), rules and instructions. Lists, to-dos, notes and plans: `items` structure (default: the lists and
+        folders, no items), all, or none. `builds` true brings its builds history along (read-only; default no). Name
+        default "<project> copy"; the copy becomes the active project unless select is false."""
+        return await go({"action": "duplicate", "from": project or None, "name": name or None, "id": id or None,
+                         **({"description": description} if description is not None else {}), "items": items, "builds": builds, "select": select})
+
+    @mcp.tool(annotations=READ)
+    async def project_boilerplate_list() -> dict[str, Any]:
+        """Saved project boilerplates (shared across projects, kept on the hub): id, name, the project each came from,
+        who saved it and what it holds. A project starts from one through the New project wizard (Start from), the
+        project-switcher_boilerplate_use tool, or `projects.mjs new --boilerplate <id>`."""
+        return await go({"action": "boilerplates"})
+
+    @mcp.tool(annotations=WRITE)
+    async def project_boilerplate_save(name: str, project: str = "", description: str = "",
+                                       items: Literal["structure", "all", "none"] = "structure", builds: bool = False) -> dict[str, Any]:
+        """Save a project (default the active one) as a named boilerplate other projects can start from. Rename,
+        update or delete one with the project-switcher_boilerplate_* tools (delete needs the id typed and Brett can veto it)."""
+        return await go({"action": "boilerplate-save", "from": project or None, "name": name, "description": description, "items": items, "builds": builds})
 
 
 # ---------------------------------------------------------------------- Claude settings (claude-settings@1)
