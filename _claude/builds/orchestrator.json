@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T12:22:23.522Z",
+ "updatedAt": "2026-11-13T12:23:36.556Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -124169,6 +124169,37 @@
      "createdAt": "2026-11-13T12:17:01.586Z"
     }
    ]
+  },
+  {
+   "id": "fix-toolbar-settings-doing-nothing",
+   "title": "Fix toolbar settings doing nothing",
+   "category": "",
+   "detail": "",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-13T12:23:34.932Z",
+   "updatedAt": "2026-11-13T12:23:34.932Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Brett: when I long-press / right-click a toolbar and open toolbar settings, none of the settings change anything. Selecting icons, text, collapsible etc. has no effect. Seen on Shipped features (Sync/CSV/Markdown bar, group-by tabs, filter checkboxes, status chips, edit status). Fix it so every toolbar setting actually applies live to that toolbar, on every toolbar in the console, persists, and is controllable by API (REST, MCP, CLI, voice). Add a test that changing each setting changes the rendered toolbar.",
+    "at": "2026-11-13T12:23:34.932Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }

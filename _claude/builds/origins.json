@@ -2750,6 +2750,18 @@
    "from": "",
    "addenda": []
   },
+  "fix-toolbar-settings-doing-nothing": {
+   "said": "Brett: when I long-press / right-click a toolbar and open toolbar settings, none of the settings change anything. Selecting icons, text, collapsible etc. has no effect. Seen on Shipped features (Sync/CSV/Markdown bar, group-by tabs, filter checkboxes, status chips, edit status). Fix it so every toolbar setting actually applies live to that toolbar, on every toolbar in the console, persists, and is controllable by API (REST, MCP, CLI, voice). Add a test that changing each setting changes the rendered toolbar.",
+   "at": "2026-11-13T12:23:34.932Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "focus-on-every-screen-console-open-console-show-": {
    "said": "Everything, everything needs to plan studio, UI review, everything. What the fuck?",
    "at": "",
