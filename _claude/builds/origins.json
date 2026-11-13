@@ -2356,6 +2356,18 @@
    "from": "detail",
    "addenda": []
   },
+  "context-menu-plugin-ai-generated-slim": {
+   "said": "make a context menu plugin; adds an entry called Context menu at the very bottom of every context menu; needs Claude, greyed out if the Claude badge isn't green, submenu opens but shows an error; entries: generate a global context menu from that page, and generate advanced context menu that meticulously maps the whole app, as many zones as possible, dynamic, highly integrated, deep thinking; the menus are too big, too much wasted real estate, I never use 90% of those hooks, slim them down",
+   "at": "2026-11-13T20:11:30.018Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "conversation-rag-amendment-store-only-short-key": {
    "said": "I don't need the whole entire session quoted and plugged in, that costs me a shitload of money. Just a brief summary of what you don't do. A two field RAG format, an entry and a value, that's it.",
    "at": "2026-11-10T16:51:08.892Z",
