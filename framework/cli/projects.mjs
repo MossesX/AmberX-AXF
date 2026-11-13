@@ -12,6 +12,10 @@
  *   node framework/cli/projects.mjs                       list (★ = active)
  *   node framework/cli/projects.mjs current               the active project
  *   node framework/cli/projects.mjs new "<name>" [--id x] [--description "…"] [--no-select]   an empty workspace
+ *                                      [--repo owner/name] [--skin <skin id>] [--seed none|demo]
+ *                                      (--seed demo: clearly marked test data: nested lists, to-dos, notes, plans,
+ *                                      builds; framework/plan/project-seed-core.mjs). Every new project also gets its
+ *                                      hub home /projects/<id>/ with _claude/ and a validated project.manifest.json.
  *   node framework/cli/projects.mjs select <id|name>      make it the active project (saved for everyone)
  *   node framework/cli/projects.mjs rename <id> "<name>" [--description "…"]
  *   node framework/cli/projects.mjs archive <id> --confirm <id> | unarchive <id>
@@ -27,6 +31,7 @@ import { mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from '../plan/projects-core.mjs';
+import * as home from './project-home.mjs';
 import { BASE_PROFILE, activeProfile, baseDataPath, readProfiles } from './persist.mjs';
 
 export const { PROJECTS_REL, BASE_PROJECT, SCHEMA } = core;
@@ -95,15 +100,44 @@ async function profileChange(pc) {
   return profiles.act(pc);
 }
 
-/** One change. Returns { project, log, state }. */
+/** A create's checks that need the disk (the skin exists, the hub folder is free, the manifest passes), before any write. */
+async function checkCreate(project) {
+  if (project.skin) {
+    const { skinRows } = await import('./skins.mjs');
+    if (!skinRows().some((s) => s.id === project.skin)) throw new Error(`skin: no skin "${project.skin}" (node framework/cli/skins.mjs list)`);
+  }
+  const conflict = home.homeConflict(project.id);
+  if (conflict) throw new Error(conflict);
+  home.checkManifest(home.projectManifest(project, { seed: project.seed ?? 'none' }));
+}
+
+/**
+ * One change. Returns { project, log, state } and, for a create, `home` (its hub folder and validated manifest) and
+ * `seed` (what the demo data put where). A create is checked in full before anything is written.
+ */
 export async function act(change) {
   const reg = readProjects();
-  const ctx = { now: now(), by: process.env.AXF_ACTOR || 'cli', activeProfile: activeProfile().id, profileIds: readProfiles().profiles.map((p) => p.id) };
+  const by = process.env.AXF_ACTOR || 'cli';
+  const ctx = { now: now(), by, activeProfile: activeProfile().id, profileIds: readProfiles().profiles.map((p) => p.id) };
   const r = core.applyChange(reg, change, ctx);
+  const creating = change?.action === 'create';
+  if (creating) await checkCreate(r.project);
   const log = [...r.log];
   if (r.profile) { const pr = await profileChange(r.profile); log.push(...(pr.log ?? []).map((l) => `  ${l}`)); }
   save(r.reg);
-  return { project: r.project ? { ...r.project } : null, log, state: await state() };
+  const out = { project: r.project ? { ...r.project } : null, log };
+  if (creating) {
+    const h = home.makeHome(r.project, { by, seed: r.project.seed ?? 'none' });
+    out.home = { dir: h.dir, manifestFile: h.manifestFile, manifest: h.manifest, validation: h.validation };
+    log.push(`home: ${h.dir} (project.manifest.json passes the Standards rules${h.validation.warnings.length ? `, ${h.validation.warnings.length} warning(s)` : ''})`);
+    if (r.project.seed === 'demo') {
+      const { seedProject } = await import('./project-seed.mjs');
+      const s = await seedProject(r.project, { kind: 'demo', by });
+      out.seed = { kind: 'demo', counts: s.counts, skipped: s.skipped };
+      log.push(...s.log);
+    }
+  }
+  return { ...out, state: await state() };
 }
 
 /** Record the base project and one project per existing build profile (idempotent). */
@@ -122,10 +156,11 @@ export async function migrate() {
   return { log, state: s };
 }
 
-if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+/** The CLI. Not run as a top-level await: seeding imports plugin modules that import this one back. */
+async function main() {
   const args = process.argv.slice(2);
   const json = args.includes('--json');
-  const VALUED = ['--id', '--description', '--confirm', '--name'];
+  const VALUED = ['--id', '--description', '--confirm', '--name', '--repo', '--skin', '--seed'];
   const flag = (n) => { const i = args.indexOf(n); return i >= 0 ? args[i + 1] : undefined; };
   const pos = args.filter((a, i) => !a.startsWith('--') && !(i > 0 && VALUED.includes(args[i - 1])));
   const out = (v) => console.log(json ? JSON.stringify({ ok: true, ...v }) : v.text ?? JSON.stringify(v, null, 2));
@@ -141,7 +176,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     } else {
       let change;
       if (cmd === 'act') change = JSON.parse(pos[1] ?? flag('--json') ?? '{}');
-      else if (cmd === 'new' || cmd === 'create') change = { action: 'create', name: pos[1], id: flag('--id'), description: flag('--description'), select: !args.includes('--no-select') };
+      else if (cmd === 'new' || cmd === 'create') change = { action: 'create', name: pos[1], id: flag('--id'), description: flag('--description'), repo: flag('--repo'), skin: flag('--skin'), seed: flag('--seed'), select: !args.includes('--no-select') };
       else if (cmd === 'select' || cmd === 'switch') change = { action: 'select', id: pos[1] };
       else if (cmd === 'rename') change = { action: 'update', id: pos[1], name: pos[2], description: flag('--description') };
       else if (cmd === 'archive' || cmd === 'unarchive' || cmd === 'delete') change = { action: cmd, id: pos[1], confirm: flag('--confirm') };
@@ -151,6 +186,8 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     }
   } catch (e) {
     if (json) console.log(JSON.stringify({ ok: false, error: e.message })); else console.error(e.message);
-    process.exit(1);
+    process.exitCode = 1;
   }
 }
+
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) void main();

@@ -5,6 +5,8 @@
  *   axf init <dir> [--name "My App"] [--id my-app] [--template react-ts|next-ts|android-compose] [--targets web,desktop,android] [--boilerplate notes] [--libraries browser] [build options]
  *            project manifest: [--repo owner/name] [--repo-exists] [--visibility private] [--description "…"] [--kind app]
  *   axf project validate|init|list|rules|schema …   project manifests (same as node framework/cli/project.mjs)
+ *   axf projects [new "<name>" [--seed demo] [--repo owner/name] [--skin id] | select <id> | delete <id> --confirm <id> …]
+ *                               workspaces with their own builds, to-dos, notes and plans (framework/cli/projects.mjs)
  *   axf options [dir] [--framework] [build options]   show or change build options on an existing app
  *   axf claude-project [dir] [--where github,vps,device] [--port bake|rebuild|no] …   make any folder a Claude project
  *                               and give it a home (framework/cli/claude-project.mjs; also /claude-project in Claude Code)
@@ -94,7 +96,7 @@ if (cmd === 'console') {
 // plugin commands (control@1 plugins domain): `axf plugins [plugin]`, `axf plugin <plugin> <command> …`, and
 // `axf <plugin> <command> …` for any console plugin whose folder isn't an axf command; they go to the plugin that
 // provides plugin-commands@1 (never by folder name).
-const AXF_COMMANDS = new Set(['init', 'claude-project', 'project', 'options', 'validate', 'list', 'new-asset', 'dev', 'focus', 'import-ui', 'ported-kits', 'library-templates', 'new-library', 'compile-library', 'port-library', 'remove-library', 'libraries', 'install', 'boilerplates', 'serve', 'templates', 'new-module', 'new-demo', 'modules', 'repo', 'shot', 'schemas']);
+const AXF_COMMANDS = new Set(['init', 'claude-project', 'project', 'projects', 'options', 'validate', 'list', 'new-asset', 'dev', 'focus', 'import-ui', 'ported-kits', 'library-templates', 'new-library', 'compile-library', 'port-library', 'remove-library', 'libraries', 'install', 'boilerplates', 'serve', 'templates', 'new-module', 'new-demo', 'modules', 'repo', 'shot', 'schemas']);
 {
   const { readdirSync, readFileSync: readText, existsSync: exists } = await import('node:fs');
   const { join: joinPath } = await import('node:path');
@@ -184,6 +186,13 @@ try {
       // Delegates to framework/cli/project.mjs (validate, init, list, rules, schema).
       const { spawnSync } = await import('node:child_process');
       const r = spawnSync(process.execPath, [join(FRAMEWORK_DIR, 'cli/project.mjs'), ...process.argv.slice(3)], { stdio: 'inherit' });
+      process.exitCode = r.status ?? 1;
+      break;
+    }
+    case 'projects': {
+      // Delegates to framework/cli/projects.mjs (list, current, new "<name>" [--seed demo], select, delete …).
+      const { spawnSync } = await import('node:child_process');
+      const r = spawnSync(process.execPath, [join(FRAMEWORK_DIR, 'cli/projects.mjs'), ...process.argv.slice(3)], { stdio: 'inherit' });
       process.exitCode = r.status ?? 1;
       break;
     }
