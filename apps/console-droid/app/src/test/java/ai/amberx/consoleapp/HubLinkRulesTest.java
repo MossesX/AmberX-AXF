@@ -70,7 +70,9 @@ public class HubLinkRulesTest {
 
         JSONObject none = HubLinkRules.reply("call-3", null, null);
         assertEquals("unavailable", none.getJSONObject("payload").getString("code"));
-        assertEquals("deviceId", HubLinkRules.answerBody("d", none).keys().next());
+        JSONObject body = HubLinkRules.answerBody("d", none);
+        assertEquals("d", body.getString("deviceId"));
+        assertEquals("error", body.getJSONObject("envelope").getString("kind"));
     }
 
     @Test public void deviceRules() {

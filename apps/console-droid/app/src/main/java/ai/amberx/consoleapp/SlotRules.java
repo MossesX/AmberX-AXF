@@ -88,6 +88,9 @@ final class SlotRules {
     /** The page a slot opens: a console address, else one of Brett's https pages (any other throws), else the console's home. */
     static String urlFor(JSONObject args) {
         JSONObject a = args == null ? new JSONObject() : args;
+        String url = a.optString("url", "").trim();
+        // a slot refuses an outside page outright (a wake falls back to the console's home instead)
+        if (a.optString("target", "").trim().isEmpty() && !url.isEmpty()) return ShellRules.allowed(url);
         return DeviceRules.wakeUrl(a.optString("target", ""), a.optString("url", ""));
     }
 

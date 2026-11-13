@@ -34,8 +34,7 @@ final class DeviceRules {
             if (!validTarget(t)) throw new IllegalArgumentException("target isn't a console address: " + t);
             return ShellRules.HOME + "?" + ShellRules.OPEN_PARAM + "=" + ShellRules.encode(t);
         }
-        String u = url == null || url.trim().isEmpty() ? null : ShellRules.allowed(url.trim());
-        return u == null ? ShellRules.HOME : u;
+        return url == null || url.trim().isEmpty() ? ShellRules.HOME : ShellRules.linkOr(url.trim(), ShellRules.HOME);
     }
 
     /** A notification's id: the caller's when it is a sane one, else one derived from the title (same title replaces). */

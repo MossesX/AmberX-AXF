@@ -28,8 +28,10 @@ Brett said (2026-11-13 18:41): "split the console wrapper so it runs on four slo
 
 - `node apps/console-web/src/native/bridgeClient.test.mjs` 10/10, `node apps/console-web/src/native/deviceActions.test.mjs` 5/5 (both in CI).
 - check-theme, check-controls, check-toolbars, check-console-control: pass.
-- JUnit (`BridgeContractTest`, `HubLinkRulesTest`, `MicRulesTest`, `SlotRulesTest`) was not run here: no JDK on the VPS,
-  and part 1's `ShellRules`/`Perms`/`ConsoleActivity` live on part 1's branch. They run in the Gradle job once both land.
+- JUnit: `BridgeContractTest`, `HubLinkRulesTest`, `MicRulesTest`, `SlotRulesTest` plus part 1's `ShellRulesTest`, 34/34,
+  compiled against part 1's `ShellRules` in `eclipse-temurin:21-jdk`. That run caught two s3 bugs, now fixed: `wakeUrl`
+  threw on an outside page instead of falling back to home, and a test depended on JSON key order. The Android-side
+  classes (`DeviceBridge`, `SlotHost`, …) need android.jar and compile in the Gradle job once part 1 lands.
 
 ## Gaps / decisions
 
