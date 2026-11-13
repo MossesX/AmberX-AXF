@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T01:11:43.051Z",
+ "updatedAt": "2026-11-13T01:12:17.221Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -111326,7 +111326,7 @@
    "title": "Everything on tokens before skins: fix the 27 open check-theme problems and the 1 check-controls finding (apps/player Home.tsx raw button), burn down all 1,209 frozen findings in framework/spec/conform-baseline.json (use framework/cli/scale-adopt.mjs, then hand-fix the rest) and empty the baseline, ",
    "category": "",
    "detail": "",
-   "status": "queued",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -111334,7 +111334,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-12T23:40:00.983Z",
-   "updatedAt": "2026-11-13T00:43:28.983Z",
+   "updatedAt": "2026-11-13T01:12:15.960Z",
    "builtAt": "",
    "notes": [
     {
@@ -111372,6 +111372,10 @@
     {
      "text": "Launch failed on mossesx-max-: launcher exit 2: claude-headless: --log is a plain file name",
      "at": "2026-11-13T00:43:28.983Z"
+    },
+    {
+     "text": "Back to Pending (console).",
+     "at": "2026-11-13T01:12:15.960Z"
     }
    ],
    "approvals": [],
