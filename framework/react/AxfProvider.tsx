@@ -4,6 +4,7 @@ import { installTapConfirm } from './tapConfirm';
 import { installMenuFit } from './components/menuFit';
 import { installControlRegistry } from './controlTargets';
 import { installScrollControl } from './scrollControl';
+import { installFieldControl } from './fieldControl';
 
 export const AxfContext = createContext<AxfRuntime | null>(null);
 
@@ -109,6 +110,7 @@ export function AxfProvider({ runtime, children }: { runtime: AxfRuntime; childr
   useEffect(() => installControlRegistry(runtime), [runtime]);
   // … and the scroll contract (scrollControl.ts): scroll up / down / page / top / bottom / to on the active or a named pane.
   useEffect(() => installScrollControl(runtime), [runtime]);
+  useEffect(() => (typeof document !== 'undefined' ? installFieldControl(runtime) : undefined), [runtime]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {

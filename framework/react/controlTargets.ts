@@ -69,7 +69,7 @@ export interface ControlTargetDef {
   virtual?: boolean;
 }
 
-interface Entry { def: ControlTargetDef; address: string; parsed: Address; derived?: boolean }
+interface Entry { def: ControlTargetDef; address: string; parsed: Address; derived?: boolean; /** discovered on the screen (fieldControl.ts), not registered by a control */ auto?: boolean }
 
 /** Runs scroll commands and reports scroll state (installed by scrollControl.ts). */
 export interface ControlScroller {
@@ -107,11 +107,13 @@ export class ControlRegistry {
   constructor(readonly rt: AxfRuntime) {}
 
   /** Register (or replace) a target. Returns a remover. A rendered registration replaces a derived one of the same address. */
-  register(def: ControlTargetDef, scope?: string | null): () => void {
+  register(def: ControlTargetDef, scope?: string | null, opts?: { auto?: boolean }): () => void {
     const address = composeAddress(scope, def.address);
     let parsed: Address;
     try { parsed = parseAddress(address); } catch (e) { this.rt.terminal.warn('control', `target ${address} refused: ${e instanceof Error ? e.message : String(e)}`); return () => {}; }
-    const entry: Entry = { def, address: formatAddress(parsed), parsed };
+    const entry: Entry = { def, address: formatAddress(parsed), parsed, ...(opts?.auto ? { auto: true } : {}) };
+    const had = this.entries.get(entry.address);
+    if (opts?.auto && had && !had.auto) return () => {}; // a control's own registration always wins over a discovered one
     this.entries.set(entry.address, entry);
     this.changed();
     return () => { if (this.entries.get(entry.address) === entry) { this.entries.delete(entry.address); this.changed(); } };
@@ -123,6 +125,26 @@ export class ControlRegistry {
   private changed() { this.rev++; for (const fn of this.listeners) fn(); }
 
   setScroller(s: ControlScroller | null): void { this.scroller = s; }
+
+  /** Refreshers run before every command (fieldControl.ts re-discovers the surface in front). `addRefresher(null, fn)` removes one. */
+  private readonly refreshers = new Set<() => void>();
+  addRefresher(fn: (() => void) | null, remove?: () => void): void { if (fn) this.refreshers.add(fn); if (remove) this.refreshers.delete(remove); }
+  private refresh(): void { for (const fn of this.refreshers) { try { fn(); } catch (e) { this.rt.terminal.warn('control', `refresh failed: ${e instanceof Error ? e.message : String(e)}`); } } }
+
+  /** What is on screen (fieldControl.ts `screenReport`): `state` with no address answers it as `screen`. */
+  private screenReporter: (() => unknown) | null = null;
+  setScreenReporter(fn: (() => unknown) | null): void { this.screenReporter = fn; }
+
+  /** The elements registered (not discovered) targets point at right now: discovery never doubles them. */
+  ownedElements(): Set<Element> {
+    const out = new Set<Element>();
+    for (const e of this.entries.values()) {
+      if (e.auto || e.def.virtual) continue;
+      try { const el = e.def.element?.(); if (el) out.add(el); } catch { /* a getter may run before render */ }
+    }
+    for (const e of this.derivedSettings()) { try { const el = e.def.element?.(); if (el) out.add(el); } catch { /* same */ } }
+    return out;
+  }
 
   /** An app-wide search (static inventory, help, loaded data) that replaces the built-in ranking of the `search` verb. */
   private searcher: ControlSearcher | null = null;
@@ -185,6 +207,7 @@ export class ControlRegistry {
   async run(raw: unknown): Promise<ConsoleControlResult> {
     let cmd: ConsoleControlCommand & { address?: string };
     try { cmd = normalizeConsoleControl(raw); } catch (e) { return failureOf(e); }
+    this.refresh();
     try {
       switch (cmd.verb) {
         case 'open': return await this.open(cmd);
@@ -254,7 +277,9 @@ export class ControlRegistry {
   private state(cmd: ConsoleControlCommand & { address?: string }) {
     if (!cmd.address) {
       const snap = this.snapshot();
-      return consoleControlResult(cmd, { state: { view: snap.view, targets: snap.targets.length, ...(snap.scroll ? { scroll: snap.scroll } : {}) } });
+      let screen: unknown;
+      if (this.screenReporter) { try { screen = this.screenReporter(); } catch (e) { this.rt.terminal.warn('control', `screen report failed: ${e instanceof Error ? e.message : String(e)}`); } }
+      return consoleControlResult(cmd, { state: { view: snap.view, targets: snap.targets.length, ...(snap.scroll ? { scroll: snap.scroll } : {}), ...(screen ? { screen } : {}) } });
     }
     const { entry, target, address } = this.resolveEntry(cmd.address, 'state');
     const d = entry.def;
