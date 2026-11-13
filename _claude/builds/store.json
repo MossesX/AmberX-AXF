@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4088,
- "updatedAt": "2026-11-13T07:03:40.069Z",
+ "rev": 4089,
+ "updatedAt": "2026-11-13T07:04:27.986Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -180170,7 +180170,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T06:57:42.497Z",
-   "updatedAt": "2026-11-13T06:59:35.372Z",
+   "updatedAt": "2026-11-13T07:04:26.318Z",
    "builtAt": "",
    "notes": [
     {
@@ -180235,12 +180235,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T06:57:47.148Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-always-fill-every-slot-when-slots-are-free-run-i--joey",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Fable",
-    "launchedAt": "2026-11-13T06:59:30.052Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T06:59:15.736Z",
@@ -180252,7 +180252,7 @@
     "splitRequested": "2026-11-13T06:59:23.355Z",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-13T06:59:30.052Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Fable",
      "account": "mossesx-max-",
@@ -180261,7 +180261,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-13T06:59:30.052Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -180286,12 +180286,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T07:04:26.318Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T06:59:15.736Z",
-     "updatedAt": "2026-11-13T06:59:15.736Z"
+     "updatedAt": "2026-11-13T07:04:26.539Z"
     },
     {
      "id": "s2",
