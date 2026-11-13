@@ -692,7 +692,7 @@ async def post_remove(request: Request) -> dict:
 @router.get("/gate")
 def gate() -> dict:
     """'UI Review is a merge gate' (uiReview.gate = Claude setting builds.uiReviewGate, default off): {on, heldPrs,
-    openReviews, line}. The same object as review.mjs gate, MCP ui-review_gate_get and the voice action uireview.gate."""
+    openReviews, line}. The same object as review.mjs gate, MCP ui_review_gate_get and the voice action uireview.gate."""
     return gate_view()
 
 

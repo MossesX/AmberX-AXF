@@ -236,7 +236,7 @@ export function heldPrs(items, { gate = GATE_DEFAULT } = {}) {
   return [...out.values()].sort((a, b) => a.pr - b.pr);
 }
 
-/** ui-review-gate@1: the same object on REST (GET gate), MCP (ui-review_gate_get), the CLI (review.mjs gate) and voice. */
+/** ui-review-gate@1: the same object on REST (GET gate), MCP (ui_review_gate_get), the CLI (review.mjs gate) and voice. */
 export function gateView(on, items = [], source = 'ui-review') {
   const prs = heldPrs(items, { gate: on === true });
   return { $axf: 'ui-review-gate@1', key: GATE_KEY, label: GATE_LABEL, on: on === true, gate: on === true, source, heldPrs: prs.filter((p) => p.held).map((p) => p.pr), openReviews: prs, line: gateLine(on === true), who: 'Anyone may turn it off; only Brett turns it on, with his own click in the console.' };

@@ -167,7 +167,13 @@ function writeOptionAssets({ choices, data }) {
 /* -------------------------------------------------------------- console API (--console) */
 async function consoleCall(path, body) {
   const url = process.env.AXF_CONSOLE_URL, tok = process.env.AXF_TOKEN;
-  if (!url || !tok) throw new Error('--console needs AXF_CONSOLE_URL and AXF_TOKEN');
+  if (!url || !tok) {
+    // on the VPS host (no console token): the console container's own API, as release-held reaches it
+    const r = process.env.AXF_LAND_CONSOLE === 'off' ? null : await consoleApi(body ? 'POST' : 'GET', `/api/plugins/ui-review/${path}`, body);
+    if (!r) throw new Error('--console needs AXF_CONSOLE_URL and AXF_TOKEN (or the console container on this host)');
+    if (r.status < 200 || r.status >= 300) throw new Error(`console ${r.status}: ${typeof r.json?.detail === 'string' ? r.json.detail : JSON.stringify(r.json?.detail ?? '').slice(0, 300)}`);
+    return r.json;
+  }
   const r = await fetch(`${url.replace(/\/$/, '')}/api/plugins/ui-review/${path}`, { method: body ? 'POST' : 'GET', headers: { Authorization: `Bearer ${tok}`, 'Content-Type': 'application/json' }, body: body ? JSON.stringify(body) : undefined });
   const j = await r.json().catch(() => ({}));
   if (!r.ok) throw new Error(`console ${r.status}: ${typeof j.detail === 'string' ? j.detail : r.statusText}`);

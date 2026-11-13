@@ -1,0 +1,42 @@
+{
+ "$axf": "asset@1",
+ "type": "settings",
+ "id": "ui-review-gate-switch-with-reviews",
+ "name": "ui-review-gate-switch: Switch with the open reviews",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "The Switch plus the PRs with an open review under it (filed, not holding while off; held while on), so Brett sees what the switch would hold.",
+ "tags": [
+  "ui-choice",
+  "choice-set:ui-review-gate-switch",
+  "choice-option:with-reviews"
+ ],
+ "data": {
+  "layout": "list",
+  "header": "compact",
+  "search": true,
+  "descriptions": true,
+  "levels": true,
+  "defaultLevel": "basic",
+  "levelOf": {
+   "ui-review": "simple",
+   "ui-review.gate": "simple",
+   "ui-review.prefs": "basic",
+   "ui-review.choices": "basic",
+   "ui-review.lifecycle": "administrator"
+  },
+  "view": "gate-with-reviews",
+  "order": [
+   "gate",
+   "prefs",
+   "choices",
+   "lifecycle"
+  ],
+  "open": [
+   "gate"
+  ],
+  "gate": {
+   "openReviews": true
+  }
+ }
+}

@@ -7,7 +7,7 @@ import { FOLDER } from './keys';
 /*
  * Settings → Plugins → UI Review → Merge gate (Brett, Nov 13 2026: "UI Review must not be a gate. Add an on/off switch
  * in UI Review settings, 'UI Review is a merge gate', default OFF"). One framework Switch on the gate API (GET / POST
- * gate; also MCP ui-review_gate_get / ui-review_gate_set, review.mjs gate [on|off|status] and voice uireview.gate),
+ * gate; also MCP ui_review_gate_get / ui_review_gate_set, review.mjs gate [on|off|status] and voice uireview.gate),
  * shown from the Simple level up. Its value is the Claude setting builds.uiReviewGate: anyone may turn it off, only
  * Brett's own click turns it on, so the server refuses an "on" that isn't his and the switch shows why.
  */
@@ -31,7 +31,7 @@ export function GatePanel() {
     <div className="fx-stack" data-ui-review-gate={g.on ? 'on' : 'off'} id="gate">
       <Switch label={GATE_LABEL} checked={g.on} disabled={busy} hint={gateLine(g.on)} onChange={flip} />
       {g.on && g.heldPrs.length > 0 && <Note tone="warning" icon="clock">Held for UI Review: {g.heldPrs.map((n) => `#${n}`).join(', ')}.</Note>}
-      <p className="fx-small fx-muted">{g.who} Also: GET or POST /api/plugins/{FOLDER}/gate · MCP ui-review_gate_get / ui-review_gate_set · review.mjs gate on|off|status · voice uireview.gate.</p>
+      <p className="fx-small fx-muted">{g.who} Also: GET or POST /api/plugins/{FOLDER}/gate · MCP ui_review_gate_get / ui_review_gate_set · review.mjs gate on|off|status · voice uireview.gate.</p>
     </div>
   );
 }

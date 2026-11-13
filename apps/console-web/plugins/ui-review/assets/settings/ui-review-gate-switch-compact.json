@@ -1,0 +1,42 @@
+{
+ "$axf": "asset@1",
+ "type": "settings",
+ "id": "ui-review-gate-switch-compact",
+ "name": "ui-review-gate-switch: Switch and status only",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "The same panel without the API line: the Switch and 'Off: items are filed for you to look at, PRs never wait.' only. The API stays in help.",
+ "tags": [
+  "ui-choice",
+  "choice-set:ui-review-gate-switch",
+  "choice-option:compact"
+ ],
+ "data": {
+  "layout": "list",
+  "header": "compact",
+  "search": true,
+  "descriptions": true,
+  "levels": true,
+  "defaultLevel": "basic",
+  "levelOf": {
+   "ui-review": "simple",
+   "ui-review.gate": "simple",
+   "ui-review.prefs": "basic",
+   "ui-review.choices": "basic",
+   "ui-review.lifecycle": "administrator"
+  },
+  "view": "gate-compact",
+  "order": [
+   "gate",
+   "prefs",
+   "choices",
+   "lifecycle"
+  ],
+  "open": [
+   "gate"
+  ],
+  "gate": {
+   "apiLine": false
+  }
+ }
+}

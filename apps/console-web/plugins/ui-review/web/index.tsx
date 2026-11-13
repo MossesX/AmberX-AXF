@@ -34,7 +34,7 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('ui-review.open', () => rt.navigate(VIEW), { label: 'Open UI Review' });
     rt.actions.register('ui-review.design-packs', () => rt.navigate(PACKS_VIEW), { label: 'Open Design packs' });
     rt.actions.register('ui-review.screenshots', () => rt.navigate(SHOTS_VIEW), { label: 'Open Screenshots' });
-    // 'UI Review is a merge gate' (default off): the same object as GET gate, MCP ui-review_gate_get and review.mjs gate
+    // 'UI Review is a merge gate' (default off): the same object as GET gate, MCP ui_review_gate_get and review.mjs gate
     // with 'on' / 'off' it sets the switch (on: the server takes it only from Brett's own console session)
     const gate = ([sub = 'status']: string[] = []) => {
       const api = pluginApi(FOLDER, 'UI Review');
@@ -67,7 +67,7 @@ export const plugin: AxfWebLibrary = {
   slots: { 'app.frame.cover': [{ id: 'ui-review.ask', order: 97, render: () => <AskClient /> }] },
   dialogs: { [ASK_DIALOG]: { title: 'How many options?', icon: 'layers', render: (p) => <AskDialog ask={p.ask as Parameters<typeof AskDialog>[0]['ask']} /> } },
   nav: { label: 'Plugins', items: [{ id: 'ui-review', label: 'UI Review', icon: 'eye', view: 'ui-review' }, { id: 'design-packs', label: 'Design packs', icon: 'palette', view: 'design-packs' }, { id: 'ui-screenshots', label: 'Screenshots', icon: 'monitor', view: 'ui-screenshots' }] },
-  settingsTabs: [{ id: FOLDER, label: 'UI Review', icon: 'eye', parent: 'plugins', order: 46, description: 'Feedback on the UI builds make. Not a merge gate unless you switch it on: items are filed, PRs never wait.' }],
+  settingsTabs: [{ id: FOLDER, label: 'UI Review', icon: 'eye', parent: 'plugins', order: 46, level: 'simple', description: 'Feedback on the UI builds make. Not a merge gate unless you switch it on: items are filed, PRs never wait.' }],
   settings: [{
     id: 'ui-review.prefs', label: 'UI Review', icon: 'eye', tab: FOLDER, order: 10,
     settings: [

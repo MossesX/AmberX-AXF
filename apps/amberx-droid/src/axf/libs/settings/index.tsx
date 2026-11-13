@@ -448,7 +448,7 @@ export function SettingsView() {
   // Every tab as the settings asset arranges it (order, labels, left out), then split into top tabs and sub-tabs.
   const level = useSettingsLevel(ui);
   const levelBar = useLevelBarOn();
-  const all = arrangeSettingsTabs(rt.settings.listTabs(), ui).filter((t) => shownAtLevel(ui, t.id, level));
+  const all = arrangeSettingsTabs(rt.settings.listTabs(), ui).filter((t) => shownAtLevel(ui, t.id, level, t.level));
   const byId = new Map(all.map((t) => [t.id, t]));
   const childrenOf = (id: string) => all.filter((t) => t.parent === id);
   const tabs = all.filter((t) => !t.parent || !byId.has(t.parent)).filter((t) => !(pluginLock && t.id === 'plugins' && !childrenOf('plugins').length));

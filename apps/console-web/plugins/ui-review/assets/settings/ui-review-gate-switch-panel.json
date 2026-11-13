@@ -1,0 +1,39 @@
+{
+ "$axf": "asset@1",
+ "type": "settings",
+ "id": "ui-review-gate-switch-panel",
+ "name": "ui-review-gate-switch: Merge gate panel (built)",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Its own Merge gate panel at the top of Settings → Plugins → UI Review, shown from Simple up: the Switch, its status line, and a line naming every API.",
+ "tags": [
+  "ui-choice",
+  "choice-set:ui-review-gate-switch",
+  "choice-option:panel"
+ ],
+ "data": {
+  "layout": "list",
+  "header": "compact",
+  "search": true,
+  "descriptions": true,
+  "levels": true,
+  "defaultLevel": "basic",
+  "levelOf": {
+   "ui-review": "simple",
+   "ui-review.gate": "simple",
+   "ui-review.prefs": "basic",
+   "ui-review.choices": "basic",
+   "ui-review.lifecycle": "administrator"
+  },
+  "view": "gate-panel",
+  "order": [
+   "gate",
+   "prefs",
+   "choices",
+   "lifecycle"
+  ],
+  "open": [
+   "gate"
+  ]
+ }
+}

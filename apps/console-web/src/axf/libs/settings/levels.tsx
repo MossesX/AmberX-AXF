@@ -46,7 +46,7 @@ function buildTree(rt: ReturnType<typeof useRuntime>, ui: SettingsUi, at: Settin
       };
     });
     const panels = rt.settings.panelsIn(t.id).filter((p) => settingsShown(ui, p.id)).map((p, pi): Node => ({ id: p.id, kind: 'panel', label: p.title, icon: p.icon ?? 'layout', level: settingsItemLevel(ui, p.id, p.level), on: shownAtLevel(ui, p.id, at, p.level), order: p.order ?? 100 + pi, children: [] }));
-    return { id: t.id, kind: 'tab', label: t.label, icon: t.icon, level: settingsItemLevel(ui, t.id), on: shownAtLevel(ui, t.id, at), order: ti, children: [...groups, ...panels] };
+    return { id: t.id, kind: 'tab', label: t.label, icon: t.icon, level: settingsItemLevel(ui, t.id, t.level), on: shownAtLevel(ui, t.id, at, t.level), order: ti, children: [...groups, ...panels] };
   }).filter((t) => t.children.length > 0);
 }
 
