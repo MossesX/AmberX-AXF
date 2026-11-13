@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5047,
- "updatedAt": "2026-11-13T21:22:07.476Z",
+ "rev": 5048,
+ "updatedAt": "2026-11-13T21:23:26.881Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -208558,7 +208558,7 @@
    "pr": "#661",
    "priority": "P0",
    "createdAt": "2026-11-13T20:47:11.569Z",
-   "updatedAt": "2026-11-13T21:21:16.380Z",
+   "updatedAt": "2026-11-13T21:23:24.136Z",
    "builtAt": "",
    "notes": [
     {
@@ -208604,7 +208604,7 @@
     "queuedAt": "2026-11-13T20:47:20.965Z",
     "queuedBy": "console",
     "account": "",
-    "session": "axf-lander-regenerates-generated-files-clash--sully",
+    "session": "",
     "slot": "",
     "model": "",
     "launchedAt": "",
@@ -208651,11 +208651,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-13T21:21:16.380Z",
-     "note": "PR #661 (claude/lander-regenerates-generated-files-clash)",
+     "doneAt": "2026-11-13T21:23:24.136Z",
+     "note": "",
      "rev": 2,
      "createdAt": "2026-11-13T20:52:05.784Z",
-     "updatedAt": "2026-11-13T21:21:16.381Z"
+     "updatedAt": "2026-11-13T21:23:24.487Z"
     },
     {
      "id": "s2",
