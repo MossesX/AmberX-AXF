@@ -778,9 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 11:05 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` s5-4 done (all) · orchestrator
-- 2026-11-12 11:05 UTC · `pending-tab-one-collapsed-row-per-build-tap-to-e` s1 done, → running (all) · orchestrator
-- 2026-11-12 11:05 UTC · `pending-tab-one-collapsed-row-per-build-tap-to-e` s2 done (all) · orchestrator
 - 2026-11-12 11:06 UTC · `unlink-plan-studio-from-builds-delete-all-plan-s` s1 done, → running (all) · orchestrator
 - 2026-11-12 11:06 UTC · `pending-tab-one-collapsed-row-per-build-tap-to-e` PR #520 (all) · builds-live
 - 2026-11-12 11:06 UTC · `pending-tab-one-collapsed-row-per-build-tap-to-e` note (all) · orchestrator
@@ -1178,6 +1175,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 01:42 UTC · `everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the` → running, note (all) · pipeline
 - 2026-11-13 01:42 UTC · `everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the` branch claude/everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the (all) · pipeline
 - 2026-11-13 01:42 UTC · `everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the` note (all) · orchestrator
+- 2026-11-13 01:44 UTC · `full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app` → running, note (all) · pipeline
+- 2026-11-13 01:44 UTC · `full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app` branch claude/full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app (all) · pipeline
+- 2026-11-13 01:44 UTC · `full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app` note (all) · orchestrator
 
 ## Token passes (log)
 

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3923,
- "updatedAt": "2026-11-13T01:44:06.197Z",
+ "rev": 3924,
+ "updatedAt": "2026-11-13T01:44:17.027Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -176433,15 +176433,15 @@
    "title": "Full voice and AI control of EVERYTHING in the console, before the Android app: every action, setting, tab, dialog, menu, list, item and field gets an API (REST, MCP, CLI, voice). Add find-by-content deep links down to the item: 'jump to the plan about X, the step that mentions Y' searches inside pl",
    "category": "",
    "detail": "",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T00:42:24.765Z",
-   "updatedAt": "2026-11-13T01:44:04.812Z",
+   "updatedAt": "2026-11-13T01:44:09.613Z",
    "builtAt": "",
    "notes": [
     {
@@ -176479,6 +176479,14 @@
     {
      "text": "Queued by console.",
      "at": "2026-11-13T01:13:58.899Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-full-voice-and-ai-control-of-everything-in-the-c--sully.",
+     "at": "2026-11-13T01:44:07.678Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-full-voice-and-ai-control-of-everything-in-the-c--sully, own login copy)",
+     "at": "2026-11-13T01:44:09.613Z"
     }
    ],
    "approvals": [],
@@ -176498,12 +176506,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T01:13:58.477Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-full-voice-and-ai-control-of-everything-in-the-c--sully",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-13T01:44:07.266Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T00:43:27.498Z",
@@ -176515,7 +176523,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-13T01:44:07.266Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -176523,10 +176531,8 @@
      "at": "2026-11-13T00:43:07.723Z",
      "why": "subscription account mossesx-max-"
     },
-    "tried": [
-     "mossesx-max-"
-    ],
-    "pickedAt": "",
+    "tried": [],
+    "pickedAt": "2026-11-13T01:44:07.266Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -176610,7 +176616,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
