@@ -89,7 +89,8 @@ ok(c.post("/answer", json={"id": d1["id"], "button": "approve"}).status_code == 
 a2 = c.post("/answer", json={"id": "latest", "button": "approve"}).json()
 ok(a2["id"] == d2["id"], "'latest' answers the newest waiting one")
 ok(c.get("/list").json()["waiting"] == 0, "queue empty")
-ok(c.get("/list?status=answered").json()["items"][0]["answer"]["button"] == "approve", "answer kept")
+ans = c.get("/list?status=answered").json()["items"]
+ok(any(x["id"] == d2["id"] and x["answer"]["button"] == "approve" for x in ans), f"answer kept ({[(x["id"], x["answer"]["button"]) for x in ans]})")
 
 # Later snoozes the pop-up only; withdraw takes it out.
 d3 = c.post("/raise", json={"type": "confirm", "title": "Delete the old shots?", "source": "test", "ref": "r3"}).json()
@@ -118,5 +119,16 @@ ok(v["popup"] is False if "popup" in v else c.get("/item", params={"id": v["id"]
 ok(c.post("/answer", json={"id": v["id"], "button": "deny"}).status_code == 403, "API / MCP / voice server-side can't press a tap-only button")
 r = c.post("/answer", json={"id": v["id"], "button": "deny", "via": "console"}).json()
 ok(r["action"] == "approvals.deny:h1", "the console tap gets the action to run")
+
+# Words (voice / MCP): 'pick option 2', 'approve it', 'request changes: …', by place in the queue.
+ok(srv.parse_answer("Pick option two.") == {"button": "pick", "option": "2"} and srv.parse_answer("approve it") == {"button": "approve"}, "words parse")
+ok(srv.parse_answer("request changes: bigger buttons") == {"button": "changes", "note": "bigger buttons"} and srv.parse_answer("hello") is None, "notes and non-answers")
+Review.calls.clear()
+w1 = c.post("/raise", json={"type": "ui-review", "title": "Picker", "ref": "item-9", "handler": "ui-review@1", "options": [{"label": "A"}, {"label": "B"}, {"label": "C"}]}).json()
+r = c.post("/answer", json={"text": "pick option 2"})
+ok(r.status_code == 200 and Review.calls[-1][:3] == ("item-9", "pick", "2"), f"'pick option 2' answers the latest ({r.text[:120]})")
+w2 = c.post("/raise", json={"type": "ui-review", "title": "Plain", "ref": "item-10", "handler": "ui-review@1"}).json()
+ok(c.post("/answer", json={"id": w2["id"], "text": "deny"}).json()["button"] == "reject", "deny means reject on UI Review")
+ok(c.post("/answer", json={"text": "make me a sandwich"}).status_code == 400, "not an answer: refused in words")
 
 print(f"decision-dialog: {checks} checks passed")

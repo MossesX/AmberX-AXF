@@ -12,6 +12,7 @@ back to the source.
   GET  shot?id=&src=                 a screenshot of the decision, read from its source (handler.shot_file)
   POST raise   {decision@1 fields}   a source raises (or refreshes: same source + ref) a decision
   POST answer  {id, button, option?, note?, by?}   Brett's answer; it is handed to the source's handler capability
+               {id?, text}            the same in words: 'pick option 2', 'approve it', 'request changes: …' (id default latest)
   POST later   {id, minutes?}        snooze the pop-up (it stays in the queue and the counter)
   POST withdraw {id} | {source, ref} the source no longer needs it (decided elsewhere, ran out, gone)
   GET  settings / PUT settings {popup: {<type>: bool}, notify: {<type>: bool}, laterMinutes}
@@ -243,8 +244,9 @@ def view(d: dict, s: dict | None = None, now: float | None = None) -> dict:
 def listing(status: str = "waiting", tid: str = "") -> dict:
     s = settings()
     now = time.time()
-    items = [view(x, s, now) for x in _doc()["items"] if (status == "all" or x.get("status") == status) and (not tid or x.get("type") == tid)]
-    items.sort(key=lambda x: x.get("createdAt", ""), reverse=True)
+    rows = [(i, view(x, s, now)) for i, x in enumerate(_doc()["items"]) if (status == "all" or x.get("status") == status) and (not tid or x.get("type") == tid)]
+    rows.sort(key=lambda r: (r[1].get("createdAt", ""), r[0]), reverse=True)  # newest first; same second = later arrival first
+    items = [r[1] for r in rows]
     waiting = [x for x in items if x["status"] == "waiting"]
     counts: dict[str, int] = {}
     for x in waiting:
@@ -311,6 +313,56 @@ def answer(did: str, button: str, option: str = "", note: str = "", by: str = "b
     except OSError:
         pass
     return {"ok": True, "id": d["id"], "button": b, "option": opt, "action": btn.get("action", ""), "result": result}
+
+
+WORDS = {"one": "1", "first": "1", "two": "2", "second": "2", "three": "3", "third": "3", "four": "4", "fourth": "4", "five": "5", "fifth": "5",
+         "six": "6", "seven": "7", "eight": "8", "nine": "9"}
+
+
+def parse_answer(text: str) -> dict | None:
+    """Spoken / typed words to an answer (mirror of web/queue.ts parseAnswer): 'pick option 2', 'approve it',
+    'request changes: bigger buttons', 'reject', 'deny', 'approve now', 'shelve', 'later'. None = not an answer."""
+    t = re.sub(r"[.!?]+$", "", (text or "").strip().lower())
+    head, *rest = re.split(r"[:,\u2014-]\s*", t)
+    note = ", ".join(rest).strip()
+    m = re.search(r"\b(?:pick|choose|take|go with)\s+(?:option\s+|number\s+|the\s+)?(\w+)", head) or re.search(r"\boption\s+(\w+)", head)
+    if m:
+        n = WORDS.get(m.group(1), m.group(1))
+        return {"button": "pick", "option": n} if n.isdigit() else None
+    if re.search(r"\b(request|ask for|needs?)\s+changes?\b|\bchanges\b", head):
+        return {"button": "changes", "note": note}
+    if re.search(r"\bapprove (it )?now\b|\brun it now\b", head):
+        return {"button": "approve-now"}
+    if re.search(r"\b(approve|yes|accept|confirm|ok|okay|pass)\b", head):
+        return {"button": "approve"}
+    if re.search(r"\breject\b", head):
+        return {"button": "reject", "note": note}
+    if re.search(r"\b(deny|decline|no|cancel|stop)\b", head):
+        return {"button": "deny"}
+    if re.search(r"\bshelve\b", head):
+        return {"button": "shelve"}
+    if re.search(r"\b(later|snooze|not now)\b", head):
+        return {"button": "later"}
+    return None
+
+
+ALIAS = {"deny": ["reject", "decline"], "reject": ["deny", "decline"], "approve": ["approve-now"], "approve-now": ["approve"]}
+
+
+def answer_text(did: str, text: str, by: str = "brett", via: str = "voice") -> dict:
+    """Answer in words: the same answer a tap gives."""
+    a = parse_answer(text)
+    if not a:
+        raise ValueError("say pick option N, approve, request changes: <note>, reject, deny, approve now, shelve or later")
+    d = resolve_ref(did)
+    if not d:
+        raise LookupError("no such decision")
+    if a["button"] == "later":
+        return later(d["id"])
+    b = a["button"]
+    if b != "pick" and b not in [x["id"] for x in d["buttons"]]:
+        b = next((x for x in ALIAS.get(b, []) if x in [y["id"] for y in d["buttons"]]), b)
+    return answer(d["id"], b, a.get("option", ""), a.get("note", ""), by, via)
 
 
 def later(did: str, minutes: Any = None) -> dict:
@@ -430,6 +482,8 @@ async def post_raise(request: Request) -> dict:
 @router.post("/answer")
 async def post_answer(request: Request) -> dict:
     b = await _json(request)
+    if _s(b.get("text"), 2000) and not _s(b.get("button"), 60):
+        return _http(answer_text, _s(b.get("id"), 100) or "latest", _s(b.get("text"), 2000), _s(b.get("by"), 60) or "brett", _s(b.get("via"), 20) or "api")
     return _http(answer, _s(b.get("id"), 100), _s(b.get("button"), 60), _s(str(b.get("option") or ""), 60), _s(b.get("note"), 2000), _s(b.get("by"), 60) or "brett", _s(b.get("via"), 20) or "api")
 
 
