@@ -786,7 +786,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 17:30 UTC · `account-order-hulu-moses-x-api-account-shown-on-every-build` note, removed (all) · build-rename
 - 2026-11-13 17:31 UTC · `account-order-hulu-moses-x-api-account` added (3 steps) (all) · foreign-write
 - 2026-11-13 17:31 UTC · `always-fill-every-slot-when-slots-are` added (26 steps) (all) · build-rename
 - 2026-11-13 17:31 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` note, removed (all) · build-rename
@@ -1186,6 +1185,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 19:20 UTC · `console-app-part-3-native-bridge-mic` s2 done, → running (all) · orchestrator
 - 2026-11-13 19:20 UTC · `console-android-app-thin-webview-wrapper` → queued, note (all) · pipeline
 - 2026-11-13 19:21 UTC · `console-app-part-3-native-bridge-mic` → queued, note (all) · pipeline
+- 2026-11-13 19:21 UTC · `console-android-app-thin-webview-wrapper` s6 done (all) · orchestrator
 
 ## Token passes (log)
 
