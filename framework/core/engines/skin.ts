@@ -38,7 +38,7 @@ import { CUSTOM_TARGETS, customizable, normalizeCustomValues, type CustomValues 
 import spec from '../../schemas/asset-types.json';
 import { SKIN_COLOR_SLOT, SKIN_NEVER, normalizeLookPart, resolveLookSkin, setSkinColorTheme, type AppLookDocument, type GlobalSkin, type LookPart } from './skin-rules.mjs';
 import { coverageSummary, coverageTable, partsErrors, partsTypes, skinCoversTable, skinScopeKey, skinUncoveredBy, uncoveredTypes, type CoverageRow, type CoverageSummary, type ResolvedSkin, type SkinCoversRow, type SkinScope, type TypeSpecs } from './skin-coverage.mjs';
-import { applyBehaviourToAsset, behaviourAxes, behaviourErrors, behaviourFieldsOf, behaviourKey, behaviourTable, behaviourTokens, behaviourValue, isBehaviourKey, mergeBehaviour, normalizeBehaviour, resolveBehaviour, type BehaviourAxis, type BehaviourMap, type BehaviourRow, type BehaviourSources, type BehaviourTokenInfo, type BehaviourValue } from './skin-behaviour.mjs';
+import { applyBehaviourToAsset, behaviourAxes, behaviourErrors, behaviourFieldsOf, behaviourKey, behaviourTable, behaviourTokens, behaviourValue, describeBehaviour, isBehaviourKey, mergeBehaviour, normalizeBehaviour, resolveBehaviour, type BehaviourAxis, type BehaviourDescription, type BehaviourMap, type BehaviourRow, type BehaviourSources, type BehaviourTokenInfo, type BehaviourValue } from './skin-behaviour.mjs';
 
 export { APP_LOOK_FRAME, APP_LOOK_MAX_BYTES, APP_LOOK_PROJECT, SKIN_COLOR_SLOT, SKIN_NEVER, SKIN_USES, appLookPath, backToSkin, backToSkinBehaviour, newAppLook, normalizeAppLook, normalizeScopeState, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, scopeState, setInheritSkin, setLookSlot, setScopeOverride, setScopeSkin, setSkinBehaviour, setSkinColorTheme, setUseSkin, skinBehaviourOverrides, skinColorTheme, undoRestore } from './skin-rules.mjs';
 export type { AppLookDocument, AppSkinState, GlobalSkin, LookPart } from './skin-rules.mjs';
@@ -310,6 +310,10 @@ export function skinApplyBehaviour<T extends object>(type: string, data: T | nul
 /** The fields the picks set on another type's asset (`of`): the layout's nav side and toolbar position (skin@2). */
 export function skinBehaviourFieldsOf(ofType: string, picks: BehaviourMap | null | undefined): Record<string, BehaviourValue> {
   return behaviourFieldsOf(ofType, picks, TYPE_SPECS, CUSTOM_TARGETS);
+}
+/** What a skin changes, axis by axis (skin@2): every type with behaviour, each axis with the skin's value or today's. */
+export function skinDescribeBehaviour(picks: BehaviourMap | null | undefined): BehaviourDescription[] {
+  return describeBehaviour(picks, TYPE_SPECS, CUSTOM_TARGETS);
 }
 /** The picks a place carries, read back from its settings (`axf.behaviour.<type>.<axis>`, one read per registered axis). */
 export function skinBehaviourPicks(get: (key: string) => unknown): BehaviourMap {

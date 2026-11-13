@@ -31,7 +31,7 @@ import { rollAssetIncluded, rollAssetKey, rollNever, rollPlan, rollSlotIncluded,
 import { SearchIndex } from './engines/search';
 import { STYLE_PACKAGE_TYPE, stepPackage, stylePackageSlots, type StylePackageData } from './engines/stylepackage';
 import { appMenuSearchEntries, chromeToggleItems, compileAppMenu, compileProviderItems, mergeAppMenu, resolveChecked, type AppMenuContribution, type AppMenuEnv, type CompiledAppMenu, type CompiledMenuItem, type MergedAppMenu, type MenuSearchEntry, type ProviderOptions } from './engines/appmenu';
-import { axisValuesText, backToSkin, backToSkinBehaviour, behaviourAttrs, behaviourKey, behaviourTokenVars, composeLookAt, normalizeAxisValue, globalSkinOf, isSubScopeKey, lookAfterChange, newAppLook, normalizeSkin, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, setInheritSkin, setScopeSkin, setSkinBehaviour, setSkinColorTheme, setUseSkin, skinApplyBehaviour, skinBehaviourAxes, skinBehaviourFieldsOf, skinBehaviourOverrides, skinBehaviourPicks, skinBehaviourResolve, skinBehaviourValue, skinColorOf, skinCoverage, skinCovers, skinEntries, skinFromDesignPackage, skinScopeDomId, skinScopeOf, snapshotLook, undoRestore, SKIN_COLOR_SLOT, SKIN_ICON_PACK_KEY, SKIN_TYPE, type AppLookDocument, type AppLookStore, type BehaviourMap, type BehaviourValue, type ComposedLook, type CoverageRow, type ResolvedSkin, type SkinColor, type SkinCoversRow, type SkinData, type SkinEntry, type SkinScope, type SkinScopeState } from './engines/skin';
+import { axisValuesText, backToSkin, backToSkinBehaviour, behaviourAttrs, behaviourKey, behaviourTokenVars, composeLookAt, normalizeAxisValue, globalSkinOf, isSubScopeKey, lookAfterChange, newAppLook, normalizeSkin, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, setInheritSkin, setScopeSkin, setSkinBehaviour, setSkinColorTheme, setUseSkin, skinApplyBehaviour, skinBehaviourAxes, skinBehaviourFieldsOf, skinBehaviourOverrides, skinBehaviourPicks, skinBehaviourResolve, skinBehaviourValue, skinColorOf, skinCoverage, skinCovers, skinDescribeBehaviour, skinEntries, skinFromDesignPackage, skinScopeDomId, skinScopeOf, snapshotLook, undoRestore, SKIN_COLOR_SLOT, SKIN_ICON_PACK_KEY, SKIN_TYPE, type AppLookDocument, type AppLookStore, type BehaviourDescription, type BehaviourMap, type BehaviourValue, type ComposedLook, type CoverageRow, type ResolvedSkin, type SkinColor, type SkinCoversRow, type SkinData, type SkinEntry, type SkinScope, type SkinScopeState } from './engines/skin';
 import { DESIGN_APPLIED_KEY, DESIGN_OVERRIDABLE, DESIGN_OVERRIDES_KEY, DESIGN_PACKAGE_TYPE, PACKAGE_APPLIED_KEY, captureDesignPackage, designLookSlots, isRetiredLookSetting, designPackageSlots, isAppearanceSetting, normalizeDesignOverrides, normalizeDesignPackage, overrideAfterPick, packageSettingsPlan, type DesignOverrides } from './engines/designpackage';
 import { behaviorStyle, confirmBeforeDelete, normalizeBehavior, vibrationPattern } from './engines/behavior';
 import { navStyleOutput, normalizeNavStyle, type NavStyleData } from './engines/navstyle';
@@ -905,6 +905,24 @@ export class AxfRuntime {
   backToSkinBehaviour(type = '', key?: string): boolean { return this.changeLook((cur) => backToSkinBehaviour(cur, type, key)); }
   /** The behaviour overrides saved at a level (the "overridden" marks in Settings → Appearance). */
   skinBehaviourOverrides(key?: string): BehaviourMap { return skinBehaviourOverrides(this.appLook(), key) as BehaviourMap; }
+  /** What one skin changes, axis by axis (skin@2): every type with behaviour, the skin's value or today's. */
+  skinBehaviourDescribe(id: string): BehaviourDescription[] {
+    const s = this.skinData(id);
+    return s ? skinDescribeBehaviour(s.behaviour) : [];
+  }
+  /**
+   * Set or clear the hub-wide skin on the shared appearance document (the `global` level: every app that follows the
+   * hub takes it). Needs an axHub source: an app without one keeps its own look only.
+   */
+  setGlobalSkin(id: string | null): boolean {
+    if (this.lockedByAppearance('assets.swap')) { this.lockedToast(); return false; }
+    if (!this.can('assets.swap')) { this.toast('Your role cannot change the look.', 'danger', 'Permission denied'); return false; }
+    if (id && !this.skinData(id)) { this.toast(`No skin "${id}" in this app.`, 'warning', 'Skin'); return false; }
+    if (!this.appearanceSource || !this.appearanceRunning) { this.toast('This app has no axHub source, so there is no hub-wide skin to set here.', 'warning', 'Skin'); return false; }
+    this.appearanceSource.save({ skin: id ? { id } : null });
+    this.terminal.ok('hot-swap', id ? `hub-wide skin ${id}` : 'hub-wide skin cleared');
+    return true;
+  }
 
   /**
    * A scoped view drawn under the skin in force at a UI or plugin (`key` = `ui:<id>` | `plugin:<id>`): null when that
@@ -2986,6 +3004,8 @@ export class AxfRuntime {
       this.setSkinBehaviour(type, axis, v, scoped ? `${p[0]}:${p[1]}` : undefined);
     }, { label: 'Change one behaviour inside the skin', requires: 'assets.swap', params: true });
     a.register('skin.behaviour.reset', ([type]) => { this.backToSkinBehaviour(type || ''); }, { label: "Back to the skin's behaviour", requires: 'assets.swap', params: true });
+    // skin.global:<id|off> sets or clears the hub-wide skin (the global level) on the shared document
+    a.register('skin.global', ([id]) => { this.setGlobalSkin(!id || id === 'off' || id === 'none' ? null : id); }, { label: 'Set the hub-wide skin', requires: 'assets.swap', params: true });
     // the navigation drawer (nav mode drawer): nav.drawer:open | close | toggle
     a.register('nav.drawer', ([v]) => { this.setNavDrawer(v === 'open' ? true : v === 'close' ? false : !this.navDrawerOpen()); }, { label: 'Open or close the navigation drawer', params: true });
     a.register('skin.restore', () => this.restoreDefaultAppearance(), { label: 'Restore this app to its default look', requires: 'assets.swap' });
