@@ -1,0 +1,43 @@
+{
+ "$axf": "asset@1",
+ "type": "overlay-toolbar",
+ "id": "overlay-toolbar-shape-bubble",
+ "name": "overlay-toolbar-shape: C · Bubble",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "One round button bottom-right with Amber’s mark; a badge counts what waits; tap fans out mic, approvals, page. Approval: heads-up bar at the top of the screen. Expanded: the bubble docks top-left with its actions in a strip beside it.",
+ "tags": [
+  "ui-choice",
+  "choice-set:overlay-toolbar-shape",
+  "choice-option:bubble"
+ ],
+ "data": {
+  "buttons": [
+   "grip",
+   "mic",
+   "approvals (count badge)",
+   "page / expand"
+  ],
+  "approval": {
+   "shows": [
+    "title",
+    "why",
+    "command",
+    "countdown (mm:ss + bar, warning colour, danger under 30 s)",
+    "Deny",
+    "Approve",
+    "Open approvals page link"
+   ],
+   "placement": "heads-up bar at the top, 94 % wide (no why line)"
+  },
+  "expanded": {
+   "browser": "full screen; address bar; \"Amber is …\" strip; the element Amber is about to tap ringed in the accent",
+   "toolbar": "bubble docked top-left with an action strip beside it, above the address bar"
+  },
+  "colours": "active skin tokens",
+  "shape": "bubble",
+  "orientation": "single",
+  "edge": "end",
+  "bottom": 10
+ }
+}
