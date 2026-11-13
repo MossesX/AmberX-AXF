@@ -1,0 +1,36 @@
+{
+  "$axf": "asset@1",
+  "type": "color-theme",
+  "id": "command-phosphor",
+  "name": "Command Phosphor",
+  "version": "1.0.0",
+  "description": "Command colours: near-black surfaces, pale text, a phosphor-green accent and sharp status colours. A terminal that happens to have windows.",
+  "author": "AmberX AXF",
+  "tags": [
+    "skin",
+    "command",
+    "dark",
+    "terminal"
+  ],
+  "data": {
+    "scheme": "dark",
+    "tokens": {
+      "bg": "#0b0d0f",
+      "surface": "#101316",
+      "surface2": "#15191d",
+      "surface3": "#1d2328",
+      "text": "#d9e2dc",
+      "muted": "#8a9690",
+      "border": "#242b31",
+      "accent": "#3ddc84",
+      "accentText": "#07140c",
+      "accentSoft": "rgba(61,220,132,0.14)",
+      "danger": "#ff6b6b",
+      "success": "#3ddc84",
+      "warning": "#f0c050",
+      "info": "#4cc3ff",
+      "focus": "#3ddc84",
+      "shadow": "rgba(0,0,0,0.6)"
+    }
+  }
+}

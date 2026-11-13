@@ -39,7 +39,9 @@ export function useHubAppearance(): void {
     void hubFromServer().then((hub) => {
       if (cancelled || attachedHub === hub) return;
       attachedHub = hub;
-      if (hub === 'off') { rt.terminal.warn('appearance', 'AXF_APPEARANCE_HUB=off: no hub source, local settings only (development)'); rt.detachAppearanceSource(); return; }
+      // off = local settings only: no hub source from here, and none from a library either (hubsync's look sync honours this)
+      if (hub === 'off') { rt.terminal.warn('appearance', 'AXF_APPEARANCE_HUB=off: no hub source, local settings only (development)'); rt.setAppearanceLocalOnly(true); return; }
+      rt.setAppearanceLocalOnly(false);
       try {
         rt.attachAppearanceSource(new HubAppearanceSource({ hub, appId: manifest.app.id }));
       } catch (e) {

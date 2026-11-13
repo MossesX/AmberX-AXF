@@ -85,7 +85,7 @@ export function chromeTypeOfTarget(target) {
 export const CHROME_MOVES = {
   'tab-group': { positions: ['top', 'bottom', 'left', 'right'], via: 'instance', field: 'position' },
   toolbar: { positions: ['top', 'bottom'], via: 'layout', field: 'toolbarPosition' },
-  'nav-menu': { positions: ['left', 'right', 'top'], via: 'layout', field: 'nav' },
+  'nav-menu': { positions: ['left', 'right', 'top', 'bottom'], via: 'layout', field: 'nav' },
   banner: { positions: [], via: 'none', field: '' },
   'app-menu': { positions: [], via: 'none', field: '' },
   'context-menu': { positions: [], via: 'none', field: '' },

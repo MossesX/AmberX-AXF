@@ -86,8 +86,8 @@
       "areas": "\"menubar menubar menubar\" \"nav main inspector\" \"toolbar toolbar toolbar\" \"status status status\"",
       "columns": "64px minmax(0, 1fr) 280px",
       "rows": "auto minmax(0, 1fr) auto auto",
-      "mobileAreas": "\"menubar\" \"toolbar\" \"main\" \"nav\"",
-      "mobileRows": "auto auto minmax(0, 1fr) auto",
+      "mobileAreas": "\"menubar\" \"main\" \"toolbar\" \"nav\"",
+      "mobileRows": "auto minmax(0, 1fr) auto auto",
       "navOrientation": "vertical",
       "slots": {
         "menubar": [
@@ -145,8 +145,8 @@
       "--fx-grid-areas": "\"menubar menubar menubar\" \"nav main inspector\" \"toolbar toolbar toolbar\" \"status status status\"",
       "--fx-grid-cols": "var(--fx-layout-nav-width) minmax(0, 1fr) var(--fx-layout-inspector-width)",
       "--fx-grid-rows": "auto minmax(0, 1fr) auto auto",
-      "--fx-grid-areas-m": "\"menubar\" \"toolbar\" \"main\" \"nav\"",
-      "--fx-grid-rows-m": "auto auto minmax(0, 1fr) auto",
+      "--fx-grid-areas-m": "\"menubar\" \"main\" \"toolbar\" \"nav\"",
+      "--fx-grid-rows-m": "auto minmax(0, 1fr) auto auto",
       "--fx-content-max": "none"
     }
   },
@@ -301,6 +301,80 @@
       "--fx-grid-rows": "auto auto minmax(0, 1fr) auto",
       "--fx-grid-areas-m": "\"menubar\" \"toolbar\" \"main\" \"nav\"",
       "--fx-grid-rows-m": "auto auto minmax(0, 1fr) auto",
+      "--fx-content-max": "none"
+    }
+  },
+  "command": {
+    "compiled": {
+      "regions": [
+        "main",
+        "toolbar",
+        "nav",
+        "status"
+      ],
+      "areas": "\"toolbar toolbar\" \"nav main\" \"status status\"",
+      "columns": "240px minmax(0, 1fr)",
+      "rows": "auto minmax(0, 1fr) auto",
+      "mobileAreas": "\"toolbar\" \"main\" \"nav\"",
+      "mobileRows": "auto minmax(0, 1fr) auto",
+      "navOrientation": "vertical",
+      "slots": {
+        "menubar": [
+          "app-menu"
+        ],
+        "toolbar": [
+          "toolbar"
+        ],
+        "nav": [
+          "nav-menu"
+        ],
+        "main": [],
+        "inspector": [],
+        "status": [],
+        "fab": [],
+        "sheet": [],
+        "overlay": [
+          "dialog",
+          "popup",
+          "context-menu"
+        ]
+      },
+      "columnRegions": [
+        "nav",
+        "main"
+      ]
+    },
+    "vars": {
+      "--fx-layout-nav-width": "240px",
+      "--fx-layout-inspector-width": "300px",
+      "--fx-layout-content-max-width": "0px",
+      "--fx-layout-status-height": "22px",
+      "--fx-layout-region-gap": "calc(var(--fx-space) * 0)",
+      "--fx-layout-main-pad-top": "calc(var(--fx-space) * 1.2)",
+      "--fx-layout-main-pad-x": "calc(var(--fx-space) * 2)",
+      "--fx-layout-main-pad-bottom": "calc(var(--fx-space) * 4)",
+      "--fx-layout-phone-main-pad-top": "calc(var(--fx-space) * 1)",
+      "--fx-layout-phone-main-pad-x": "calc(var(--fx-space) * 1)",
+      "--fx-layout-phone-main-pad-bottom": "calc(var(--fx-space) * 3)",
+      "--fx-layout-phone-nav-item-min": "64px",
+      "--fx-layout-phone-edge": "8px",
+      "--fx-layout-tiny-max-width": "480px",
+      "--fx-layout-small-max-width": "640px",
+      "--fx-layout-phone-max-width": "760px",
+      "--fx-layout-medium-max-width": "900px",
+      "--fx-layout-large-max-width": "1200px",
+      "--fx-layout-nav": "left",
+      "--fx-layout-toolbar-position": "top",
+      "--fx-layout-inspector": "none",
+      "--fx-layout-show-menubar": "0",
+      "--fx-layout-show-toolbar": "1",
+      "--fx-layout-show-statusbar": "1",
+      "--fx-layout-nav-orientation": "vertical",
+      "--fx-grid-areas": "\"toolbar toolbar\" \"nav main\" \"status status\"",
+      "--fx-grid-cols": "var(--fx-layout-nav-width) minmax(0, 1fr)",
+      "--fx-grid-rows": "auto minmax(0, 1fr) auto",
+      "--fx-grid-areas-m": "\"toolbar\" \"main\" \"nav\"",
+      "--fx-grid-rows-m": "auto minmax(0, 1fr) auto",
       "--fx-content-max": "none"
     }
   },
@@ -603,6 +677,150 @@
       "--fx-content-max": "none"
     }
   },
+  "executive": {
+    "compiled": {
+      "regions": [
+        "main",
+        "nav",
+        "toolbar"
+      ],
+      "areas": "\"nav\" \"toolbar\" \"main\"",
+      "columns": "minmax(0, 1fr)",
+      "rows": "auto auto minmax(0, 1fr)",
+      "mobileAreas": "\"toolbar\" \"main\" \"nav\"",
+      "mobileRows": "auto minmax(0, 1fr) auto",
+      "navOrientation": "horizontal",
+      "slots": {
+        "menubar": [
+          "app-menu"
+        ],
+        "toolbar": [
+          "toolbar"
+        ],
+        "nav": [
+          "nav-menu"
+        ],
+        "main": [],
+        "inspector": [],
+        "status": [],
+        "fab": [],
+        "sheet": [],
+        "overlay": [
+          "dialog",
+          "popup",
+          "context-menu"
+        ]
+      },
+      "columnRegions": [
+        "main"
+      ]
+    },
+    "vars": {
+      "--fx-layout-nav-width": "240px",
+      "--fx-layout-inspector-width": "300px",
+      "--fx-layout-content-max-width": "1240px",
+      "--fx-layout-status-height": "26px",
+      "--fx-layout-region-gap": "calc(var(--fx-space) * 0)",
+      "--fx-layout-main-pad-top": "calc(var(--fx-space) * 3.2)",
+      "--fx-layout-main-pad-x": "calc(var(--fx-space) * 5)",
+      "--fx-layout-main-pad-bottom": "calc(var(--fx-space) * 8)",
+      "--fx-layout-phone-main-pad-top": "calc(var(--fx-space) * 2)",
+      "--fx-layout-phone-main-pad-x": "calc(var(--fx-space) * 2)",
+      "--fx-layout-phone-main-pad-bottom": "calc(var(--fx-space) * 5)",
+      "--fx-layout-phone-nav-item-min": "64px",
+      "--fx-layout-phone-edge": "8px",
+      "--fx-layout-tiny-max-width": "480px",
+      "--fx-layout-small-max-width": "640px",
+      "--fx-layout-phone-max-width": "760px",
+      "--fx-layout-medium-max-width": "900px",
+      "--fx-layout-large-max-width": "1200px",
+      "--fx-layout-nav": "top",
+      "--fx-layout-toolbar-position": "top",
+      "--fx-layout-inspector": "none",
+      "--fx-layout-show-menubar": "0",
+      "--fx-layout-show-toolbar": "1",
+      "--fx-layout-show-statusbar": "0",
+      "--fx-layout-nav-orientation": "horizontal",
+      "--fx-grid-areas": "\"nav\" \"toolbar\" \"main\"",
+      "--fx-grid-cols": "minmax(0, 1fr)",
+      "--fx-grid-rows": "auto auto minmax(0, 1fr)",
+      "--fx-grid-areas-m": "\"toolbar\" \"main\" \"nav\"",
+      "--fx-grid-rows-m": "auto minmax(0, 1fr) auto",
+      "--fx-content-max": "var(--fx-layout-content-max-width)"
+    }
+  },
+  "field": {
+    "compiled": {
+      "regions": [
+        "main",
+        "toolbar",
+        "nav"
+      ],
+      "areas": "\"main\" \"toolbar\" \"nav\"",
+      "columns": "minmax(0, 1fr)",
+      "rows": "minmax(0, 1fr) auto auto",
+      "mobileAreas": "\"main\" \"toolbar\" \"nav\"",
+      "mobileRows": "minmax(0, 1fr) auto auto",
+      "navOrientation": "horizontal",
+      "slots": {
+        "menubar": [
+          "app-menu"
+        ],
+        "toolbar": [
+          "toolbar"
+        ],
+        "nav": [
+          "nav-menu"
+        ],
+        "main": [],
+        "inspector": [],
+        "status": [],
+        "fab": [],
+        "sheet": [],
+        "overlay": [
+          "dialog",
+          "popup",
+          "context-menu"
+        ]
+      },
+      "columnRegions": [
+        "main"
+      ]
+    },
+    "vars": {
+      "--fx-layout-nav-width": "220px",
+      "--fx-layout-inspector-width": "280px",
+      "--fx-layout-content-max-width": "920px",
+      "--fx-layout-status-height": "26px",
+      "--fx-layout-region-gap": "calc(var(--fx-space) * 0)",
+      "--fx-layout-main-pad-top": "calc(var(--fx-space) * 2)",
+      "--fx-layout-main-pad-x": "calc(var(--fx-space) * 2.4)",
+      "--fx-layout-main-pad-bottom": "calc(var(--fx-space) * 6)",
+      "--fx-layout-phone-main-pad-top": "calc(var(--fx-space) * 1.6)",
+      "--fx-layout-phone-main-pad-x": "calc(var(--fx-space) * 1.6)",
+      "--fx-layout-phone-main-pad-bottom": "calc(var(--fx-space) * 6)",
+      "--fx-layout-phone-nav-item-min": "80px",
+      "--fx-layout-phone-edge": "10px",
+      "--fx-layout-tiny-max-width": "480px",
+      "--fx-layout-small-max-width": "640px",
+      "--fx-layout-phone-max-width": "760px",
+      "--fx-layout-medium-max-width": "900px",
+      "--fx-layout-large-max-width": "1200px",
+      "--fx-layout-nav": "bottom",
+      "--fx-layout-toolbar-position": "bottom",
+      "--fx-layout-inspector": "none",
+      "--fx-layout-show-menubar": "0",
+      "--fx-layout-show-toolbar": "1",
+      "--fx-layout-show-statusbar": "0",
+      "--fx-layout-nav-orientation": "horizontal",
+      "--fx-grid-areas": "\"main\" \"toolbar\" \"nav\"",
+      "--fx-grid-cols": "minmax(0, 1fr)",
+      "--fx-grid-rows": "minmax(0, 1fr) auto auto",
+      "--fx-grid-areas-m": "\"main\" \"toolbar\" \"nav\"",
+      "--fx-grid-rows-m": "minmax(0, 1fr) auto auto",
+      "--fx-content-max": "var(--fx-layout-content-max-width)"
+    }
+  },
   "focus-top": {
     "compiled": {
       "regions": [
@@ -821,8 +1039,8 @@
       "areas": "\"main nav\" \"toolbar toolbar\"",
       "columns": "minmax(0, 1fr) 220px",
       "rows": "minmax(0, 1fr) auto",
-      "mobileAreas": "\"toolbar\" \"main\" \"nav\"",
-      "mobileRows": "auto minmax(0, 1fr) auto",
+      "mobileAreas": "\"main\" \"toolbar\" \"nav\"",
+      "mobileRows": "minmax(0, 1fr) auto auto",
       "navOrientation": "vertical",
       "slots": {
         "menubar": [
@@ -879,8 +1097,8 @@
       "--fx-grid-areas": "\"main nav\" \"toolbar toolbar\"",
       "--fx-grid-cols": "minmax(0, 1fr) var(--fx-layout-nav-width)",
       "--fx-grid-rows": "minmax(0, 1fr) auto",
-      "--fx-grid-areas-m": "\"toolbar\" \"main\" \"nav\"",
-      "--fx-grid-rows-m": "auto minmax(0, 1fr) auto",
+      "--fx-grid-areas-m": "\"main\" \"toolbar\" \"nav\"",
+      "--fx-grid-rows-m": "minmax(0, 1fr) auto auto",
       "--fx-content-max": "none"
     }
   },
@@ -897,8 +1115,8 @@
       "areas": "\"menubar menubar menubar\" \"nav main inspector\" \"toolbar toolbar toolbar\" \"status status status\"",
       "columns": "216px minmax(0, 1fr) 280px",
       "rows": "auto minmax(0, 1fr) auto auto",
-      "mobileAreas": "\"menubar\" \"toolbar\" \"main\" \"nav\"",
-      "mobileRows": "auto auto minmax(0, 1fr) auto",
+      "mobileAreas": "\"menubar\" \"main\" \"toolbar\" \"nav\"",
+      "mobileRows": "auto minmax(0, 1fr) auto auto",
       "navOrientation": "vertical",
       "slots": {
         "menubar": [
@@ -956,8 +1174,8 @@
       "--fx-grid-areas": "\"menubar menubar menubar\" \"nav main inspector\" \"toolbar toolbar toolbar\" \"status status status\"",
       "--fx-grid-cols": "var(--fx-layout-nav-width) minmax(0, 1fr) var(--fx-layout-inspector-width)",
       "--fx-grid-rows": "auto minmax(0, 1fr) auto auto",
-      "--fx-grid-areas-m": "\"menubar\" \"toolbar\" \"main\" \"nav\"",
-      "--fx-grid-rows-m": "auto auto minmax(0, 1fr) auto",
+      "--fx-grid-areas-m": "\"menubar\" \"main\" \"toolbar\" \"nav\"",
+      "--fx-grid-rows-m": "auto minmax(0, 1fr) auto auto",
       "--fx-content-max": "none"
     }
   },
@@ -1048,8 +1266,8 @@
       "areas": "\"nav inspector main\" \"toolbar toolbar toolbar\" \"status status status\"",
       "columns": "84px 250px minmax(0, 1fr)",
       "rows": "minmax(0, 1fr) auto auto",
-      "mobileAreas": "\"toolbar\" \"main\" \"nav\"",
-      "mobileRows": "auto minmax(0, 1fr) auto",
+      "mobileAreas": "\"main\" \"toolbar\" \"nav\"",
+      "mobileRows": "minmax(0, 1fr) auto auto",
       "navOrientation": "vertical",
       "slots": {
         "menubar": [
@@ -1107,8 +1325,85 @@
       "--fx-grid-areas": "\"nav inspector main\" \"toolbar toolbar toolbar\" \"status status status\"",
       "--fx-grid-cols": "var(--fx-layout-nav-width) var(--fx-layout-inspector-width) minmax(0, 1fr)",
       "--fx-grid-rows": "minmax(0, 1fr) auto auto",
-      "--fx-grid-areas-m": "\"toolbar\" \"main\" \"nav\"",
-      "--fx-grid-rows-m": "auto minmax(0, 1fr) auto",
+      "--fx-grid-areas-m": "\"main\" \"toolbar\" \"nav\"",
+      "--fx-grid-rows-m": "minmax(0, 1fr) auto auto",
+      "--fx-content-max": "none"
+    }
+  },
+  "studio-pro": {
+    "compiled": {
+      "regions": [
+        "main",
+        "menubar",
+        "toolbar",
+        "nav",
+        "inspector",
+        "status"
+      ],
+      "areas": "\"menubar menubar menubar\" \"toolbar toolbar toolbar\" \"nav main inspector\" \"status status status\"",
+      "columns": "220px minmax(0, 1fr) 300px",
+      "rows": "auto auto minmax(0, 1fr) auto",
+      "mobileAreas": "\"menubar\" \"toolbar\" \"main\" \"nav\"",
+      "mobileRows": "auto auto minmax(0, 1fr) auto",
+      "navOrientation": "vertical",
+      "slots": {
+        "menubar": [
+          "app-menu"
+        ],
+        "toolbar": [
+          "toolbar"
+        ],
+        "nav": [
+          "nav-menu"
+        ],
+        "main": [],
+        "inspector": [],
+        "status": [],
+        "fab": [],
+        "sheet": [],
+        "overlay": [
+          "dialog",
+          "popup",
+          "context-menu"
+        ]
+      },
+      "columnRegions": [
+        "nav",
+        "main",
+        "inspector"
+      ]
+    },
+    "vars": {
+      "--fx-layout-nav-width": "220px",
+      "--fx-layout-inspector-width": "300px",
+      "--fx-layout-content-max-width": "0px",
+      "--fx-layout-status-height": "24px",
+      "--fx-layout-region-gap": "calc(var(--fx-space) * 0)",
+      "--fx-layout-main-pad-top": "calc(var(--fx-space) * 1.6)",
+      "--fx-layout-main-pad-x": "calc(var(--fx-space) * 2.4)",
+      "--fx-layout-main-pad-bottom": "calc(var(--fx-space) * 4)",
+      "--fx-layout-phone-main-pad-top": "calc(var(--fx-space) * 1.2)",
+      "--fx-layout-phone-main-pad-x": "calc(var(--fx-space) * 1.2)",
+      "--fx-layout-phone-main-pad-bottom": "calc(var(--fx-space) * 3)",
+      "--fx-layout-phone-nav-item-min": "64px",
+      "--fx-layout-phone-edge": "8px",
+      "--fx-layout-tiny-max-width": "480px",
+      "--fx-layout-small-max-width": "640px",
+      "--fx-layout-phone-max-width": "760px",
+      "--fx-layout-medium-max-width": "900px",
+      "--fx-layout-large-max-width": "1200px",
+      "--fx-layout-nav": "left",
+      "--fx-layout-toolbar-position": "top",
+      "--fx-layout-inspector": "right",
+      "--fx-layout-show-menubar": "1",
+      "--fx-layout-show-toolbar": "1",
+      "--fx-layout-show-statusbar": "1",
+      "--fx-layout-nav-orientation": "vertical",
+      "--fx-grid-areas": "\"menubar menubar menubar\" \"toolbar toolbar toolbar\" \"nav main inspector\" \"status status status\"",
+      "--fx-grid-cols": "var(--fx-layout-nav-width) minmax(0, 1fr) var(--fx-layout-inspector-width)",
+      "--fx-grid-rows": "auto auto minmax(0, 1fr) auto",
+      "--fx-grid-areas-m": "\"menubar\" \"toolbar\" \"main\" \"nav\"",
+      "--fx-grid-rows-m": "auto auto minmax(0, 1fr) auto",
       "--fx-content-max": "none"
     }
   },

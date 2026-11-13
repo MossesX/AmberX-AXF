@@ -54,7 +54,7 @@ export function useWhereLayout(rt: AxfRuntime): WhereLayout {
 }
 
 /** Screens (nav items with a view) and plugins (installed libraries) a level can be set for. */
-function candidates(rt: AxfRuntime): { screens: { id: string; label: string }[]; plugins: { id: string; label: string }[] } {
+export function candidates(rt: AxfRuntime): { screens: { id: string; label: string }[]; plugins: { id: string; label: string }[] } {
   const screens: { id: string; label: string }[] = [];
   const seen = new Set<string>();
   const walk = (items: NavItem[] | undefined) => {

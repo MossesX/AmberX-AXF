@@ -7,6 +7,7 @@ import { readdirSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { colorThemeVars, styleThemeVars } from '../core/engines/theme';
 import { backToSkin, composeLook, composeLookAt, coverageSummary, coverageTable, declarationErrors, globalSkinOf, lookAfterChange, newAppLook, normalizeAppLook, normalizeSkin, normalizeSkinScope, overriddenSlots, parseAppLook, partElements, partsErrors, partsTypes, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, scopeState, setInheritSkin, setLookSlot, setScopeOverride, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorOf, skinCovers, skinErrors, skinFromDesignPackage, skinScopeChain, skinScopeKey, skinScopeKind, skinScopeSelector, skinSlots, snapshotLook, uncoveredTypes, undoRestore } from '../core/engines/skin';
+import { BEHAVIOUR_KINDS, SKIN_BEHAVIOUR_CONTRACT, applyBehaviourToAsset, backToSkinBehaviour, behaviourAttrs, behaviourCoverage, behaviourDeclarationErrors, behaviourDefaults, behaviourErrors, behaviourFieldsOf, behaviourFromSettings, behaviourMissing, behaviourRuntimeValues, behaviourSchemaProperties, behaviourTable, behaviourTokenVars, behaviourTokens, behaviourTypes, behaviourValue, describeBehaviour, mergeBehaviour, normalizeBehaviour, parseBehaviourKey, resolveBehaviour, setSkinBehaviour, skinBehaviourOverrides, skinBehaviourResolve, skinCoversTable, skinUncoveredBy } from '../core/engines/skin';
 import { foldLegacyPicks, legacyPicks, lookNeedsMigration, migrateLook, migrateLookSettings, parseLegacyLook, settingsNeedMigration } from '../core/engines/look-migration.mjs';
 import { SCALE_TYPES, normalizeScale, scaleErrors, scaleThemeVars, scaleVars } from '../core/engines/scale';
 import { AGENT_CARD_SAMPLE, agentCardErrors, avatarColors, avatarModel, barcodeBars, cardModel, employeeId, normalizeCard } from '../core/engines/agent-card-rules.mjs';
@@ -1973,7 +1974,7 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
   const restored = restoreAppDefault(overridden, '2026-11-05T00:00:00Z');
   const movedShared = { ...shared, slots: { ...shared.slots, 'color-theme': 'other-theme' }, settings: { 'axf.tokens.button': 'y', 'axf.banners.group': 'other' } };
   write('skin.json', {
-    contract: 'skin@1',
+    contract: 'skin@2',
     normalize: { good: normalizeSkin(skin), junk: normalizeSkin({ layoutTheme: 'BAD', assets: { 'uac-policy': 'x', button: 'ok', layout: 'nope' }, extras: { spacing: 'huge' } }) },
     errors: { good: skinErrors(skin), noThemes: skinErrors({ assets: {} }), never: skinErrors({ ...skin, assets: { 'uac-policy': 'x', layout: 'y' } }), badExtras: skinErrors({ ...skin, extras: { spacing: 'huge', hidden: { a: 1 } } }) },
     slots: skinSlots(normalizeSkin(skin)),
@@ -2086,6 +2087,89 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
         },
         restored: { doc: restoreAppDefault(picked, '2026-11-09T00:00:00Z'), undone: undoRestore(restoreAppDefault(picked, '2026-11-09T00:00:00Z')).skin },
         roundTrip: parseAppLook(JSON.stringify(pluginSkin)),
+      };
+    })(),
+    // skin@2 behaviour (build professional-skins, Fable, Nov 13 2026): axes from the registry (entry + style target), a
+    // skin's picks checked against them, resolution pick > asset field (mapped) > default, tokens, coverage, and the
+    // document's per-level overrides merged along the chain. `input` is a small registry of its own, so a port replays
+    // it without the real one; `document` runs on the real registry (real axes: tab-group.position, toolbar.placement,
+    // banner.placement).
+    behaviour: (() => {
+      const types = {
+        'tab-group': { label: 'Tab group', group: 'Navigation', behaviour: { _doc: 'notes are skipped', position: { label: 'Where tab rows sit', kind: 'choice', values: ['top', 'bottom', 'left', 'right'], default: 'top', field: 'position' }, overflow: { kind: 'choice', values: ['scroll', 'wrap', 'more'], default: 'scroll', field: 'overflow' } } },
+        toolbar: { label: 'Toolbar', group: 'Navigation', behaviour: { placement: { label: 'Where the toolbar goes', kind: 'choice', values: ['top', 'bottom'], default: 'top', field: 'toolbarPosition', of: 'layout' }, tapConfirm: { kind: 'choice', values: ['default', 'on', 'off'], default: 'default' } } },
+        dialog: { label: 'Dialog', group: 'Overlays', behaviour: { presentation: { kind: 'choice', values: ['modal', 'sheet', 'side-panel'], default: 'modal', field: 'variant', map: { drawer: 'side-panel' } } } },
+        table: { label: 'Table', group: 'Controls', behaviour: { stickyHeader: { label: 'Sticky header', kind: 'switch', default: true, field: 'stickyHeader' } } },
+        button: { label: 'Button', group: 'Controls', behaviour: { holdMs: { label: 'Hold time', kind: 'number', min: 300, max: 2000, default: 600, unit: 'ms' }, confirmBy: { kind: 'choice', values: ['dialog', 'inline', 'hold'], default: 'dialog' } } },
+        layout: { label: 'Layout', group: 'Themes' },
+        banner: { label: 'Banner', group: 'Chrome' },
+        broken: { label: 'Broken', group: 'X', behaviour: { bad: { kind: 'choice', values: ['one'], default: 'two' }, 'Bad Name': { kind: 'switch', default: true }, num: { kind: 'number', min: 5, max: 1, default: 3 }, viaNowhere: { kind: 'switch', default: false, field: 'x', of: 'nope' }, odd: { kind: 'sometimes', values: ['a', 'b'], default: 'a' } } },
+      };
+      const targets = { banner: { root: '.fx-banner', behaviour: { placement: { label: 'Banner placement', kind: 'choice', values: ['top', 'bottom'], default: 'top' } } } };
+      const picks = { 'tab-group': { position: 'bottom', overflow: 'nope' }, toolbar: { placement: 'bottom' }, table: { stickyHeader: 'off' }, button: { holdMs: 900, confirmBy: 'inline' }, banner: { placement: 'bottom' }, mystery: { x: 1 }, dialog: 7 };
+      const fieldAssets: Record<string, Record<string, unknown>> = { 'tab-group': { position: 'left', overflow: 'wrap' }, layout: { toolbarPosition: 'top', nav: 'left' }, dialog: { variant: 'drawer' }, table: { stickyHeader: false } };
+      const assetField = (type: string, field: string) => fieldAssets[type]?.[field];
+      const norm = normalizeBehaviour(picks, types as never, targets as never);
+      const resolved = resolveBehaviour(norm, types as never, targets as never, assetField);
+      const place = { app: 'app', ui: 'home', plugin: 'notes' };
+      const skins2 = { windows: normalizeSkin({ ...skin, behaviour: { banner: { placement: 'top' }, 'tab-group': { position: 'top', style: 'boxed' } } }), aurora: normalizeSkin({ ...skin, colorTheme: 'aurora-night' }), plain: normalizeSkin(skin) };
+      const skinOf2 = (id: string) => (skins2 as Record<string, ReturnType<typeof normalizeSkin>>)[id] ?? null;
+      const base = setUseSkin(pickSkin(look0, 'windows'), true);
+      const appOver = setSkinBehaviour(base, 'tab-group', 'position', 'bottom');
+      const pluginOver = setSkinBehaviour(appOver, 'tab-group', 'position', 'left', 'plugin:notes');
+      const both = setSkinBehaviour(pluginOver, 'toolbar', 'placement', 'bottom', 'plugin:notes');
+      const badSkin2 = { ...skin, behaviour: { banner: { placement: 'sideways' }, nope: { a: 1 }, 'tab-group': 3 } };
+      return {
+        contract: SKIN_BEHAVIOUR_CONTRACT,
+        kinds: BEHAVIOUR_KINDS,
+        input: { types, targets, picks, assets: fieldAssets, badSkin2 },
+        axes: behaviourTable(types as never, targets as never),
+        types: behaviourTypes(types as never, targets as never),
+        declarationErrors: behaviourDeclarationErrors('broken', types as never, targets as never),
+        normalize: norm,
+        errors: { good: behaviourErrors(norm, types as never, targets as never), bad: behaviourErrors(picks, types as never, targets as never), notObject: behaviourErrors(3, types as never, targets as never), none: behaviourErrors(undefined, types as never, targets as never) },
+        defaults: behaviourDefaults(types as never, targets as never),
+        resolved,
+        resolvedNoPicks: resolveBehaviour({}, types as never, targets as never, assetField),
+        value: {
+          instanceWins: behaviourValue('tab-group', 'position', types as never, targets as never, { instance: 'right', pick: 'bottom', asset: 'left' }),
+          pick: behaviourValue('tab-group', 'position', types as never, targets as never, { pick: 'bottom', asset: 'left' }),
+          asset: behaviourValue('tab-group', 'position', types as never, targets as never, { asset: 'left' }),
+          mapped: behaviourValue('dialog', 'presentation', types as never, targets as never, { asset: 'drawer' }),
+          dflt: behaviourValue('tab-group', 'position', types as never, targets as never, {}),
+          unknown: behaviourValue('tab-group', 'nope', types as never, targets as never, {}) ?? null,
+        },
+        merge: mergeBehaviour({ 'tab-group': { position: 'top', overflow: 'wrap' } }, { 'tab-group': { position: 'bottom' }, banner: { placement: 'bottom' } }, { 'tab-group': { overflow: null } }),
+        applied: applyBehaviourToAsset('tab-group', { style: 'pills', position: 'left' }, norm, types as never, targets as never),
+        appliedMap: applyBehaviourToAsset('dialog', { variant: 'modal' }, { dialog: { presentation: 'side-panel' } }, types as never, targets as never),
+        layoutFields: behaviourFieldsOf('layout', norm, types as never, targets as never),
+        missing: behaviourMissing(norm, types as never, targets as never),
+        coverage: behaviourCoverage(norm, types as never, targets as never),
+        describe: describeBehaviour(norm, types as never, targets as never),
+        tokens: { vars: behaviourTokenVars(resolved), attrs: behaviourAttrs(resolved), values: behaviourRuntimeValues(resolved), list: behaviourTokens(types as never, targets as never) },
+        keys: { ok: parseBehaviourKey('axf.behaviour.tab-group.position'), bad: parseBehaviourKey('axf.chrome.tab-group.x'), fromSettings: behaviourFromSettings({ 'axf.behaviour.tab-group.position': 'bottom', 'axf.behaviour.table.stickyHeader': false, 'axf.behaviour.nope.x': 1, other: 2 }, types as never, targets as never) },
+        schema: behaviourSchemaProperties(types as never, targets as never),
+        coversTable: skinCoversTable({ layoutTheme: 'l', colorTheme: 'c', styleTheme: 's', assets: { 'tab-group': 'x' }, behaviour: { 'tab-group': { position: 'top' } } }, { ...types, 'color-theme': { label: 'Colour theme', group: 'Themes' } } as never, targets as never, ['uac-policy']),
+        uncoveredBy: skinUncoveredBy({ layoutTheme: 'l', colorTheme: 'c', styleTheme: 's', assets: { 'tab-group': 'x' }, behaviour: { 'tab-group': { position: 'top' } } }, { ...types, 'color-theme': { label: 'Colour theme', group: 'Themes' } } as never, targets as never, ['uac-policy']).map((r) => `${r.type}: ${r.why}`),
+        document: {
+          appOver: appOver.skin, pluginOver: pluginOver.scopes, both: both.scopes,
+          resolvedLeaf: resolveLookSkin(both, null, place), resolvedApp: resolveLookSkin(both, null, { app: 'app' }),
+          dropped: setSkinBehaviour(both, 'tab-group', 'position', null, 'plugin:notes').scopes,
+          backOne: backToSkinBehaviour(both, 'toolbar', 'plugin:notes').scopes,
+          backAll: backToSkinBehaviour(appOver).skin,
+          overrides: { app: skinBehaviourOverrides(both), plugin: skinBehaviourOverrides(both, 'plugin:notes') },
+          otherSkinDrops: pickSkin(appOver, 'aurora').skin, sameSkinKeeps: pickSkin(appOver, 'windows').skin,
+          scopeOtherSkinDrops: setScopeSkin(both, 'plugin:notes', 'on', 'aurora').scopes,
+          roundTrip: parseAppLook(JSON.stringify(both)),
+          global: globalSkinOf({ ...shared, skin: { id: 'aurora', behaviour: { banner: { placement: 'bottom' }, nope: { x: 1 } } } } as never),
+          followingGlobal: resolveLookSkin(setInheritSkin(look0, true), { id: 'aurora', overrides: {}, behaviour: { banner: { placement: 'bottom' } } }, place),
+          composed: composeLookAt(shared as never, both, skinOf2, place),
+          composedApp: composeLookAt(shared as never, appOver, skinOf2),
+          skin1ReadsAsSkin2: { normalized: normalizeSkin(skin), composedPicks: composeLookAt(shared as never, setUseSkin(pickSkin(look0, 'plain'), true), skinOf2).behaviour, resolvedIsDefaults: JSON.stringify(skinBehaviourResolve({})) === JSON.stringify(skinBehaviourResolve(undefined)) },
+          skin2: normalizeSkin({ ...skin, behaviour: { banner: { placement: 'bottom' }, 'tab-group': { position: 'bottom', overflow: 'nope' }, nope: { a: 1 } } }),
+          skin2Errors: skinErrors(badSkin2),
+          skinOff: composeLookAt(shared as never, look0, skinOf2).behaviour,
+        },
       };
     })(),
   });

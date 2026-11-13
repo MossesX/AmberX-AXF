@@ -83,6 +83,10 @@ ok(!tapConfigFor(settings({ 'axf.chrome.app-menu.app': { tapConfirm: 'off' } }),
 ok(tapConfigFor(settings({ 'axf.chrome.app-menu.app': { tapConfirm: 'bogus' } }), 'app-menu', 'app', true).enabled, 'bad item value = inherit');
 ok(!tapConfigFor(settings({ 'axf.toolbar.main-tools.tapConfirm': 'off' }), 'toolbar', 'main-tools').enabled, 'toolbar honours its older per-toolbar key');
 ok(tapConfigFor(settings({ 'axf.toolbar.main-tools.tapConfirm': 'off', 'axf.chrome.toolbar.main-tools': { tapConfirm: 'on' } }), 'toolbar', 'main-tools').enabled, 'the settings dialog choice beats the older key');
+ok(tapConfigFor(settings({}), 'tab-group', 'x', false, 'on').source === 'skin' && !tapConfigFor(settings({}), 'tab-group', 'x', true, 'off').enabled, 'skin@2 pick beats the labels');
+ok(!tapConfigFor(settings({ 'axf.tapConfirm.tab-group': 'on' }), 'tab-group', 'x', false, 'off').enabled, 'skin@2 pick beats the kind switch');
+ok(tapConfigFor(settings({ 'axf.chrome.tab-group.x': { tapConfirm: 'on' } }), 'tab-group', 'x', false, 'off').enabled, 'the item choice beats the skin');
+ok(tapConfigFor(settings({}), 'tab-group', 'x', true, 'default').source === 'labels', 'skin "default" is not the skin\'s business');
 ok(TAP_HINT === 'Tap again to confirm', 'tip says tap again to confirm');
 
 /* ---------- web host on a fake DOM ---------- */

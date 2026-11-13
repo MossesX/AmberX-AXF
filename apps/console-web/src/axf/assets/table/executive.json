@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "table",
+  "id": "executive",
+  "name": "Executive table",
+  "version": "1.0.0",
+  "description": "Roomy rows with light dividers, an upper-case header that stays, row actions on hover. Made to be read, not scanned.",
+  "author": "AmberX AXF",
+  "tags": [
+    "skin",
+    "executive"
+  ],
+  "data": {
+    "form": "grid",
+    "density": "roomy",
+    "rowActions": "hover",
+    "stickyHeader": true,
+    "zebra": false,
+    "dividers": true,
+    "headerCase": "upper"
+  }
+}

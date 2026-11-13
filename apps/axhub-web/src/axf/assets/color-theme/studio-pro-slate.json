@@ -1,0 +1,35 @@
+{
+  "$axf": "asset@1",
+  "type": "color-theme",
+  "id": "studio-pro-slate",
+  "name": "Studio Pro Slate",
+  "version": "1.0.0",
+  "description": "Studio Pro colours: cool graphite slates, a steel-blue accent, crisp status colours for long sessions in a dark room.",
+  "author": "AmberX AXF",
+  "tags": [
+    "skin",
+    "studio-pro",
+    "dark"
+  ],
+  "data": {
+    "scheme": "dark",
+    "tokens": {
+      "bg": "#141619",
+      "surface": "#1b1e22",
+      "surface2": "#21252a",
+      "surface3": "#2a2f36",
+      "text": "#e6e9ed",
+      "muted": "#98a1ad",
+      "border": "#30363e",
+      "accent": "#4c9be8",
+      "accentText": "#0b1522",
+      "accentSoft": "rgba(76,155,232,0.16)",
+      "danger": "#ef6b6b",
+      "success": "#43c98a",
+      "warning": "#e8b84a",
+      "info": "#5ab4f0",
+      "focus": "#4c9be8",
+      "shadow": "rgba(0,0,0,0.5)"
+    }
+  }
+}

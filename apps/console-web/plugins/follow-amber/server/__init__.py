@@ -33,6 +33,7 @@ from __future__ import annotations
 import asyncio
 import json
 import os
+import re
 import threading
 import time
 from collections import deque
@@ -125,6 +126,13 @@ def parse_target(target: str, kind: str = "") -> tuple[str, str]:
     k = _text(kind, 20).lower()
     if k == "build" and t:
         return "screen", f"build:{t}"
+    # the skin gallery (skin@2): settings/appearance/skin[/<skin>] or skin:<skin> opens Settings → Appearance with the
+    # gallery on that skin (the settings library's skin.gallery action)
+    m = re.match(r"^settings/appearance/skin(?:/([a-z0-9][a-z0-9-]*))?$", t.strip().lower())
+    if m and not k:
+        return "action", f"skin.gallery:{m.group(1)}" if m.group(1) else "skin.gallery"
+    if not k and t.lower().startswith("skin:") and re.match(r"^[a-z0-9][a-z0-9-]*$", t[5:].strip()):
+        return "action", f"skin.gallery:{t[5:].strip()}"
     if not k and ":" in t:
         head, rest = t.split(":", 1)
         if head.lower() == "build" and rest.strip():

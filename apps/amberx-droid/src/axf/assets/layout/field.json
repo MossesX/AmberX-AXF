@@ -1,0 +1,34 @@
+{
+  "$axf": "asset@1",
+  "type": "layout",
+  "id": "field",
+  "name": "Field",
+  "version": "1.0.0",
+  "description": "The Field grid: navigation as a bottom strip of big tabs, the toolbar at the bottom within thumb reach, no menu bar row, no side panels, no status bar; wide phone paddings and tall nav items.",
+  "author": "AmberX AXF",
+  "tags": [
+    "skin",
+    "field",
+    "phone"
+  ],
+  "data": {
+    "nav": "bottom",
+    "navWidth": 220,
+    "showMenubar": false,
+    "showToolbar": true,
+    "toolbarPosition": "bottom",
+    "showStatusbar": false,
+    "inspector": "none",
+    "inspectorWidth": 280,
+    "contentMaxWidth": 920,
+    "regionGap": 0,
+    "mainPadTop": 2,
+    "mainPadX": 2.4,
+    "mainPadBottom": 6,
+    "phoneMainPadTop": 1.6,
+    "phoneMainPadX": 1.6,
+    "phoneMainPadBottom": 6,
+    "phoneNavItemMin": 80,
+    "phoneEdge": 10
+  }
+}

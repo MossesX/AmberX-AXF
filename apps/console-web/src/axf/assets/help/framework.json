@@ -1531,6 +1531,74 @@
         "target": "apply-layout",
         "title": "Apply layout",
         "text": "Lays the open tabs out on the layout you picked, spread evenly over its panes. The pane limit holds: a layout with more panes uses only its first ones."
+      },
+      {
+        "target": "skin-gallery",
+        "title": "Skin gallery",
+        "text": "Opens every skin as a card with a predicted desktop and phone frame. Tap a card to see the skin on this app at once; nothing is saved until you press Use skin.",
+        "more": "A skin is a whole look and behaviour: themes, every chrome and control asset, icon pack, style parts, and how tabs, toolbars, buttons, menus, dialogs and tables behave. Use skin applies it where the Where row says: this app, hub-wide, one screen or one plugin.",
+        "kind": "button",
+        "link": "/settings/appearance/skin",
+        "related": [
+          "use-skin",
+          "what-this-skin-changes",
+          "where-the-skin-applies"
+        ]
+      },
+      {
+        "target": "use-skin",
+        "title": "Use skin",
+        "text": "Applies the picked skin where the Where row says. Off goes back to this app's own look and keeps your picks.",
+        "kind": "button"
+      },
+      {
+        "target": "what-this-skin-changes",
+        "title": "What this skin changes",
+        "text": "The look the skin sets per asset type (which asset, which style parts) and every behaviour axis with the value this skin gives it. A lit chip is a change; a grey one is today's behaviour.",
+        "kind": "card"
+      },
+      {
+        "target": "where-the-skin-applies",
+        "title": "Where",
+        "text": "This app only, hub-wide (every app that follows the hub), one screen or one plugin. The nearer level wins: a plugin's skin beats the screen's, the screen's beats the app's.",
+        "kind": "control"
+      },
+      {
+        "target": "turn-skin-off",
+        "title": "Turn skin off",
+        "text": "Back to this app's own look. The skin and your picks are kept, so turning it on again looks the same.",
+        "kind": "button"
+      },
+      {
+        "target": "behaviour",
+        "title": "Behaviour overrides",
+        "text": "Behaviour axes you changed inside the skin (tabs at the bottom, a different dialog form…). Each button puts that type back to the skin's behaviour; Back to skin puts them all back.",
+        "kind": "control"
+      },
+      {
+        "target": "action:skin.preview",
+        "title": "Preview a skin",
+        "text": "Shows a skin on this screen without saving anything; off puts the saved look back."
+      },
+      {
+        "target": "action:skin.behaviour",
+        "title": "Change one behaviour inside the skin",
+        "text": "skin.behaviour:<type>:<axis>:<value> overrides one axis (tab-group position bottom, dialog presentation sheet…); default goes back to the skin's. The skin stays the same skin."
+      },
+      {
+        "target": "action:skin.gallery",
+        "title": "Open the skin gallery",
+        "text": "Opens Settings → Appearance with the skin gallery, on a skin when one is named (the deep link settings/appearance/skin/<id>)."
+      },
+      {
+        "target": "action:skin.global",
+        "title": "Set the hub-wide skin",
+        "text": "Makes a skin the hub-wide one on axHub: every app that follows the hub takes it. off clears it."
+      },
+      {
+        "target": "action:nav.drawer",
+        "title": "Navigation drawer",
+        "text": "Opens, closes or toggles the navigation drawer a skin with the drawer navigation mode shows."
       }
     ],
     "intros": [

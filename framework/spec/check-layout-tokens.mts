@@ -66,7 +66,7 @@ eq(vars['--fx-layout-main-pad-x'], 'calc(var(--fx-space) * 4)', 'space unit (× 
 eq(vars['--fx-layout-nav'], 'left', 'enum → its word');
 eq(vars['--fx-layout-show-menubar'], '1', 'switch → 1 / 0');
 eq(layoutTokens().length, layoutFieldNames().length, 'the token list covers every field');
-eq(layoutTokens().find((t) => t.field === 'nav')?.options, ['left', 'right', 'top'], 'enum tokens list their words');
+eq(layoutTokens().find((t) => t.field === 'nav')?.options, ['left', 'right', 'top', 'bottom'], 'enum tokens list their words (bottom: skin@2 nav-menu mode bottom-tabs)');
 eq(layoutTokenValues({ ...grid, navWidth: 100 }).find((t) => t.field === 'navWidth')?.value, 100, 'token values for one layout');
 
 /* ---- the grid reads the tokens; the compiled struct keeps px ---- */

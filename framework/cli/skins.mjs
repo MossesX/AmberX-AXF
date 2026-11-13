@@ -19,8 +19,14 @@
  *                                                           no new skin; default = the skin's own colours); --scope = inside one screen / plugin only
  *   node framework/cli/skins.mjs restore <app>             back to the snapshot (keeps one undo)
  *   node framework/cli/skins.mjs undo <app>                undo the last restore
- *   node framework/cli/skins.mjs coverage                  how a skin reaches every registered asset type (CI: spec/check-skin-coverage.mjs)
- *   node framework/cli/skins.mjs covers <skin>             what one skin sets or styles, type by type
+ *   node framework/cli/skins.mjs coverage                  how a skin reaches every registered asset type, with each type's behaviour axes (CI: spec/check-skin-coverage.mjs)
+ *   node framework/cli/skins.mjs covers <skin>             what one skin sets or styles, type by type, and which behaviour axes it sets (✗ = uncovered)
+ *   node framework/cli/skins.mjs axes                      skin@2: every behaviour axis a skin may set (type, axis, kind, values, default, token, key)
+ *   node framework/cli/skins.mjs behaviour <app> [--scope …]                       the behaviour in force at a place: the skin's picks, the level's overrides, every axis resolved
+ *   node framework/cli/skins.mjs behaviour <app> <type> <axis> <value>|default [--scope …]   override one axis inside the skin in force (default = back to the skin's)
+ *   node framework/cli/skins.mjs compare <skin> <skin>     two skins side by side: every slot, part and behaviour axis that differs
+ *   node framework/cli/skins.mjs preview <app> <skin>|off  show a skin on the open console without saving (needs AXF_CONSOLE_URL + AXF_TOKEN; the console action skin.preview)
+ *   node framework/cli/skins.mjs gallery <app> [<skin>]    open Settings → Appearance → skin gallery on the open console (the deep link settings/appearance/skin/<id>)
  *   node framework/cli/skins.mjs modes                     every skin's light and dark colour themes, and any skin missing one
  *   node framework/cli/skins.mjs mode <app> [light|dark|system] [--system light|dark] [--scope …]   read or switch the skin in force to
  *                                                          its light / dark colour theme, or follow the device (same skin, a colour pick)
@@ -32,9 +38,10 @@
 import { chownSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { backToSkin, newAppLook, normalizeAppLook, normalizeLookPart, overriddenSlots, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, setInheritSkin, setLookSlot, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorTheme, undoRestore, SKIN_COLOR_SLOT, SKIN_NEVER } from '../core/engines/skin-rules.mjs';
-import { coverageSummary, coverageTable, isSubScopeKey, partElements, skinScopeOf } from '../core/engines/skin-coverage.mjs';
+import { backToSkin, backToSkinBehaviour, newAppLook, normalizeAppLook, normalizeLookPart, overriddenSlots, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, setInheritSkin, setLookSlot, setScopeSkin, setSkinBehaviour, setSkinColorTheme, setUseSkin, skinBehaviourOverrides, skinColorTheme, undoRestore, SKIN_COLOR_SLOT, SKIN_NEVER } from '../core/engines/skin-rules.mjs';
+import { coverageSummary, coverageTable, isSubScopeKey, partElements, skinCoversTable, skinScopeOf, skinSlotMap } from '../core/engines/skin-coverage.mjs';
 import { effectiveScheme, isSkinMode, skinModeColor, skinModeProblems, skinModeRows, skinSchemeOf, SKIN_MODES } from '../core/engines/skin-modes.mjs';
+import { axisOf, axisValuesText, behaviourTable, behaviourTokens, mergeBehaviour, normalizeAxisValue, normalizeBehaviour, resolveBehaviour } from '../core/engines/skin-behaviour.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const ALIASES = { console: 'axf-console', 'console-web': 'axf-console', axhub: 'axhub-web', amberx: 'amberx-droid' };
@@ -142,12 +149,102 @@ export const status = (app) => {
   return { app, snapshot: !!l, useSkin: !!l?.skin.use, follow: !!l?.skin.inherit, skin: l?.skin.id ?? '', inForce: inForce.id, from: inForce.from, colorTheme: inForce.colorTheme ?? '', overrides: overriddenSlots(l), scopes: scopeEntries(l), canUndo: !!l?.undo, own: Object.keys(l?.own.slots ?? {}) };
 };
 
-/** Which skin is in force at a place and which level decided. */
+/**
+ * Which skin is in force at a place and which level decided, with the look it gives (every slot, the skin's with the
+ * chain's overrides and the colour theme switched inside it) and its behaviour (the skin's picks with the chain's
+ * overrides, and every axis resolved: pick > the picked asset's field > today's behaviour).
+ */
 export function at(app, scopeKey = '') {
   const l = readLook(app);
   const scope = scopeKey ? skinScopeOf(scopeKey, app) : { app };
-  return { app, scope: scopeKey || 'app', ...resolveLookSkin(l, readGlobal(), scope) };
+  const r = resolveLookSkin(l, readGlobal(), scope);
+  const out = { app, scope: scopeKey || 'app', ...r };
+  if (r.id) {
+    const skin = skinDataOf(r.id);
+    const look = { ...skinSlotMap(skin), ...r.overrides };
+    if (r.colorTheme) look[SKIN_COLOR_SLOT] = r.colorTheme;
+    out.look = look;
+    out.behaviour = behaviourAt(skin, r.behaviour, look);
+  }
+  return out;
 }
+
+/** The behaviour a skin gives with `overrides` (the chain's) over it, resolved against the assets the look names. */
+function behaviourAt(skin, overrides, look) {
+  const { spec, targets } = registry();
+  const picks = normalizeBehaviour(mergeBehaviour(skin?.behaviour, overrides), spec, targets);
+  const assetField = (type, field) => assetsOf(type).find((a) => a.id === look?.[type])?.data?.[field];
+  return { picks, overrides: overrides ?? {}, resolved: resolveBehaviour(picks, spec, targets, assetField) };
+}
+
+/** skin@2: every behaviour axis a skin may set, from the registry. */
+export function axes() {
+  const { spec, targets } = registry();
+  return { types: behaviourTable(spec, targets), tokens: behaviourTokens(spec, targets) };
+}
+
+/** The behaviour in force at a place: `skins.mjs behaviour <app> [--scope …]`. */
+export function behaviour(app, scopeKey = '') {
+  const r = at(app, scopeKey);
+  const l = readLook(app);
+  return { app: r.app, scope: r.scope, skin: r.id, from: r.from, levelOverrides: l ? skinBehaviourOverrides(l, scopeKey || undefined) : {}, ...(r.behaviour ?? { picks: {}, overrides: {}, resolved: behaviourAt(null, {}, {}).resolved }) };
+}
+
+/** Override one axis inside the skin in force (`value` default | skin = back to the skin's): `skins.mjs behaviour <app> <type> <axis> <value>`. */
+export function setBehaviour(app, type, axis, value, scopeKey = '') {
+  const l = need(app);
+  const { spec, targets } = registry();
+  const a = axisOf(type, axis, spec, targets);
+  if (!a) throw new Error(`${type} has no behaviour axis "${axis}" (skins.mjs axes lists them)`);
+  const scope = scopeKey ? skinScopeOf(scopeKey, app) : { app };
+  if (!resolveLookSkin(l, readGlobal(), scope).id) throw new Error(`${app}${scopeKey ? ` ${scopeKey}` : ''} has no skin in force: behaviour comes from a skin (use one first)`);
+  if (value === 'default' || value === 'skin' || value === undefined) writeLook(setSkinBehaviour(l, type, axis, null, scopeKey || undefined));
+  else {
+    const v = normalizeAxisValue(a, value);
+    if (v === undefined) throw new Error(`${type}.${axis} takes ${axisValuesText(a)}`);
+    writeLook(setSkinBehaviour(l, type, axis, v, scopeKey || undefined));
+  }
+  return behaviour(app, scopeKey);
+}
+
+/** Back to the skin's behaviour at a level: every override, or one type's. */
+export function resetBehaviour(app, type = '', scopeKey = '') {
+  writeLook(backToSkinBehaviour(need(app), type, scopeKey || undefined));
+  return behaviour(app, scopeKey);
+}
+
+/** Two skins side by side: every slot, part and behaviour axis that differs. */
+export function compare(a, b) {
+  const { spec, targets } = registry();
+  const da = skinDataOf(a); const db = skinDataOf(b);
+  const slots = { a: skinSlotMap(da), b: skinSlotMap(db) };
+  const slotDiff = [...new Set([...Object.keys(slots.a), ...Object.keys(slots.b)])].filter((t) => slots.a[t] !== slots.b[t]).map((type) => ({ type, a: slots.a[type] ?? null, b: slots.b[type] ?? null }));
+  const partTypes = [...new Set([...Object.keys(da.parts ?? {}), ...Object.keys(db.parts ?? {})])];
+  const partDiff = partTypes.filter((t) => JSON.stringify(da.parts?.[t] ?? null) !== JSON.stringify(db.parts?.[t] ?? null)).map((type) => ({ type, a: da.parts?.[type] ?? null, b: db.parts?.[type] ?? null }));
+  const ba = resolveBehaviour(normalizeBehaviour(da.behaviour, spec, targets), spec, targets);
+  const bb = resolveBehaviour(normalizeBehaviour(db.behaviour, spec, targets), spec, targets);
+  const behaviourDiff = [];
+  for (const type of Object.keys(ba)) for (const axis of Object.keys(ba[type])) if (ba[type][axis] !== bb[type]?.[axis]) behaviourDiff.push({ type, axis, a: ba[type][axis], b: bb[type]?.[axis] });
+  return { a, b, iconPack: da.iconPack === db.iconPack ? null : { a: da.iconPack ?? null, b: db.iconPack ?? null }, slots: slotDiff, parts: partDiff, behaviour: behaviourDiff, same: !slotDiff.length && !partDiff.length && !behaviourDiff.length && da.iconPack === db.iconPack };
+}
+
+/**
+ * Run a console action on the open Dev Console through its REST API (AXF_CONSOLE_URL + AXF_TOKEN): the one way a CLI
+ * reaches a screen that is only alive in a browser (preview, the gallery). The REST route and the MCP command call the
+ * console-commands service directly; this is the same action.
+ */
+async function consoleAction(spec) {
+  const base = (process.env.AXF_CONSOLE_URL || '').replace(/\/$/, '');
+  const token = process.env.AXF_TOKEN;
+  if (!base || !token) throw new Error('needs AXF_CONSOLE_URL and AXF_TOKEN (the Dev Console and its token): this reaches the open console');
+  const res = await fetch(`${base}/api/plugins/theme-manager/skins/console-action`, { method: 'POST', headers: { 'content-type': 'application/json', authorization: `Bearer ${token}` }, body: JSON.stringify({ spec }) });
+  const text = await res.text();
+  let body; try { body = JSON.parse(text); } catch { body = { ok: false, error: text.slice(0, 300) }; }
+  if (!res.ok) throw new Error(body.detail || body.error || `${res.status} from the console`);
+  return body;
+}
+export const preview = (app, skin) => consoleAction(skin === 'off' || skin === 'none' ? 'skin.preview:off' : `skin.preview:${skin}`).then((r) => ({ app, skin, ...r }));
+export const gallery = (app, skin = '') => consoleAction(skin ? `skin.gallery:${skin}` : 'skin.gallery').then((r) => ({ app, skin, ...r }));
 
 /** One change to one app's look; every transport comes through here. */
 export function change(op, app, arg, scopeKey = '') {
@@ -254,42 +351,49 @@ export function setSlotEverywhere(slot, id, by) {
   for (const app of appIds()) { const l = readLook(app); if (l) writeLook(setLookSlot(l, slot, id, global), by); }
 }
 
-/** skin-coverage@1 over the real registry and style targets. */
+const registry = () => ({ spec: readJson(join(ROOT, 'framework/schemas/asset-types.json')).types, targets: readJson(join(ROOT, 'framework/schemas/customize.json')).targets ?? {} });
+
+/** skin-coverage@1 over the real registry and style targets, each row with the type's behaviour axes (skin@2). */
 export function coverage() {
-  const spec = readJson(join(ROOT, 'framework/schemas/asset-types.json')).types;
-  const targets = readJson(join(ROOT, 'framework/schemas/customize.json')).targets ?? {};
+  const { spec, targets } = registry();
   const rows = coverageTable(spec, targets, SKIN_NEVER);
-  return { summary: coverageSummary(rows), rows };
+  return { summary: coverageSummary(rows), rows, behaviour: behaviourTable(spec, targets) };
 }
 
-/** What one skin (or design package) sets or styles, type by type. */
-export function covers(skinId) {
+/** A shipped skin or design package as skin@2 data (a design package reads with today's behaviour). */
+export function skinDataOf(skinId) {
   const a = assetsOf('skin').find((s) => s.id === skinId) ?? assetsOf('design-package').find((s) => s.id === skinId);
   if (!a) throw new Error(`no skin "${skinId}"`);
   const d = a.data ?? {};
-  const slots = a.type === 'skin'
-    ? { ...(d.assets ?? {}), ...(d.layoutTheme ? { layout: d.layoutTheme } : {}), ...(d.colorTheme ? { 'color-theme': d.colorTheme } : {}), ...(d.styleTheme ? { 'style-theme': d.styleTheme } : {}) }
-    : { ...(d.extras?.slots ?? {}), ...(d.layout ? { layout: d.layout } : {}), ...(d['color-theme'] ? { 'color-theme': d['color-theme'] } : {}), ...(d['style-theme'] ? { 'style-theme': d['style-theme'] } : {}) };
-  const targets = readJson(join(ROOT, 'framework/schemas/customize.json')).targets ?? {};
-  return coverage().rows.map((r) => {
-    const how = [];
-    if (slots[r.type]) how.push(`slot ${slots[r.type]}`);
-    if (d.parts?.[r.type]) how.push(`parts ${Object.keys(d.parts[r.type]).join(', ')} (${partElements(targets[r.type]).join('/')})`);
-    if (r.by === 'reference' && r.via === 'iconPack' && d.iconPack) how.push(`iconPack ${d.iconPack}`);
-    if (r.by === 'reference' && r.via && r.via !== 'iconPack' && slots[r.via]) how.push(`via ${r.via} ${slots[r.via]}`);
-    if (r.by === 'bundle') how.push('the skin itself');
-    if (r.by === 'none') how.push('no look');
-    return { type: r.type, by: r.by, covered: r.by !== 'none' && how.length > 0, how };
-  });
+  if (a.type === 'skin') return d;
+  const assets = { ...(d.extras?.slots ?? {}) };
+  if (d['behavior-theme']) assets['behavior-theme'] = d['behavior-theme'];
+  return { layoutTheme: d.layout, colorTheme: d['color-theme'], styleTheme: d['style-theme'], assets };
 }
 
-function main(argv) {
+/** What one skin (or design package) sets or styles, type by type, with its behaviour axes set / unset (skin@2). */
+export function covers(skinId) {
+  const { spec, targets } = registry();
+  return skinCoversTable(skinDataOf(skinId), spec, targets, SKIN_NEVER).map((r) => ({ ...r, how: r.how.map((h) => (h.startsWith('parts ') ? `${h} (${partElements(targets[r.type]).join('/')})` : h)) }));
+}
+
+async function main(argv) {
   const json = argv.includes('--json');
   const args = argv.filter((a, i) => !a.startsWith('--') && argv[i - 1] !== '--scope' && argv[i - 1] !== '--system');
-  const [cmd, app, arg] = args;
+  const [cmd, app, arg, arg2, arg3] = args;
   const scope = scopeArg(argv);
   let out;
   if (!cmd || cmd === 'apps') out = appIds().map(status);
+  else if (cmd === 'axes') out = axes();
+  else if (cmd === 'behaviour' || cmd === 'behavior') {
+    if (!app) throw new Error('behaviour needs <app> [<type> <axis> <value>|default]');
+    if (arg === 'reset') out = resetBehaviour(appId(app), arg2 || '', scope);
+    else if (arg) { if (!arg2) throw new Error('behaviour needs <type> <axis> <value>|default'); out = setBehaviour(appId(app), arg, arg2, arg3, scope); }
+    else out = behaviour(appId(app), scope);
+  }
+  else if (cmd === 'compare') { if (!app || !arg) throw new Error('compare needs two skin ids'); out = compare(app, arg); }
+  else if (cmd === 'preview') { if (!app || !arg) throw new Error('preview needs <app> and a skin id or off'); if (arg !== 'off' && arg !== 'none' && !skinKnown(arg)) throw new Error(`no skin "${arg}"`); out = await preview(appId(app), arg); }
+  else if (cmd === 'gallery') { if (!app) throw new Error('gallery needs <app> [<skin>]'); if (arg && !skinKnown(arg)) throw new Error(`no skin "${arg}"`); out = await gallery(appId(app), arg || ''); }
   else if (cmd === 'list') out = skinRows();
   else if (cmd === 'snapshot') out = (argv.includes('--all') ? appIds() : [appId(app)]).map((a) => snapshot(a, argv.includes('--force')));
   else if (['use', 'back', 'inherit', 'follow'].includes(cmd)) { if (!arg) throw new Error(`${cmd} needs <app> and ${cmd === 'use' ? 'a skin' : cmd === 'back' ? 'a slot' : cmd === 'inherit' ? 'a scope' : 'on | off'}`); out = change(cmd, appId(app), arg, scope); }
@@ -304,14 +408,17 @@ function main(argv) {
   else if (cmd === 'covers') { if (!app) throw new Error('covers needs a skin id'); out = covers(app); }
   else throw new Error(`unknown command ${cmd}`);
   if (json) console.log(JSON.stringify({ ok: true, result: out }));
-  else if (cmd === 'coverage') { for (const r of out.rows) console.log(`${r.type.padEnd(16)} ${r.by.padEnd(10)}${r.also.length ? `+${r.also.join('+')}` : ''}${r.elements.length ? `  ${r.elements.join('/')}` : ''}`); const s = out.summary; console.log(`${s.total} types · slot ${s.slot} · parts ${s.parts} · reference ${s.reference} · bundle ${s.bundle} · none ${s.none} · uncovered ${s.uncovered}`); }
-  else if (cmd === 'covers') for (const c of out) console.log(`${c.covered ? '✓' : '·'} ${c.type.padEnd(16)} ${c.by.padEnd(10)} ${c.how.join('; ')}`);
+  else if (cmd === 'coverage') { for (const r of out.rows) console.log(`${r.type.padEnd(16)} ${r.by.padEnd(10)}${r.also.length ? `+${r.also.join('+')}` : ''}${r.elements.length ? `  ${r.elements.join('/')}` : ''}${r.behaviour.length ? `  behaviour: ${r.behaviour.join(', ')}` : ''}`); const s = out.summary; console.log(`${s.total} types · slot ${s.slot} · parts ${s.parts} · reference ${s.reference} · bundle ${s.bundle} · none ${s.none} · uncovered ${s.uncovered} · ${s.behaviour} with behaviour`); }
+  else if (cmd === 'covers') { for (const c of out) console.log(`${c.missing ? '✗' : c.covered ? '✓' : '·'} ${c.type.padEnd(16)} ${c.by.padEnd(10)} ${c.how.join('; ')}${c.behaviour.axes.length ? `  behaviour ${c.behaviour.set.length}/${c.behaviour.axes.length}${c.behaviour.missing.length ? ` (unset: ${c.behaviour.missing.join(', ')})` : ''}` : ''}`); const miss = out.filter((c) => c.missing); console.log(miss.length ? `${miss.length} type(s) uncovered by this skin` : 'covers every type'); }
+  else if (cmd === 'axes') { for (const t of out.types) for (const a of t.axes) console.log(`${t.type.padEnd(14)} ${a.name.padEnd(13)} ${a.kind.padEnd(7)} ${String(a.default).padEnd(12)} ${a.kind === 'choice' ? a.values.join(' | ') : a.kind === 'number' ? `${a.min}..${a.max}${a.unit ? ` ${a.unit}` : ''}` : 'true | false'}${a.field ? `  (layers on ${a.of ?? t.type}.${a.field})` : ''}`); console.log(`${out.tokens.length} axes on ${out.types.length} types · --fx-bhv-<type>-<axis> · axf.behaviour.<type>.<axis>`); }
+  else if (cmd === 'behaviour' || cmd === 'behavior') { console.log(`${out.app} ${out.scope}: skin ${out.skin || 'none'}${out.from ? ` (from ${out.from})` : ''}`); for (const [t, axes] of Object.entries(out.resolved)) console.log(`  ${t.padEnd(14)} ${Object.entries(axes).map(([a, v]) => `${a}=${String(v)}${out.levelOverrides?.[t]?.[a] !== undefined ? '*' : ''}`).join('  ')}`); console.log('  * = overridden at this level'); }
+  else if (cmd === 'compare') { console.log(`${out.a} vs ${out.b}${out.same ? ': the same' : ''}`); for (const d of out.slots) console.log(`  slot      ${d.type.padEnd(14)} ${String(d.a).padEnd(20)} ${d.b}`); for (const d of out.parts) console.log(`  parts     ${d.type.padEnd(14)} ${JSON.stringify(d.a)} → ${JSON.stringify(d.b)}`); for (const d of out.behaviour) console.log(`  behaviour ${`${d.type}.${d.axis}`.padEnd(28)} ${String(d.a).padEnd(14)} ${String(d.b)}`); if (out.iconPack) console.log(`  iconPack  ${out.iconPack.a} → ${out.iconPack.b}`); }
   else console.log(Array.isArray(out) ? out.map((x) => JSON.stringify(x)).join('\n') : JSON.stringify(out));
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  try { main(process.argv.slice(2)); } catch (e) {
+  main(process.argv.slice(2)).catch((e) => {
     console.log(process.argv.includes('--json') ? JSON.stringify({ ok: false, error: e.message }) : e.message);
     process.exitCode = 1;
-  }
+  });
 }

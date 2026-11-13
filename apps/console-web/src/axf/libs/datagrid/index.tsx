@@ -160,8 +160,12 @@ export function DataGrid<R>(p: DataGridProps<R>) {
     onPointerDown: (e: RPointerEvent) => startDrag(e, { kind: `${zone}:${kind}`, id, label, icon, trashable: !!(drag.trash && p.onTrash), onTrash: p.onTrash ? () => p.onTrash!({ kind, id, label }) : undefined }),
   } : {});
 
+  // skin@2 (table@1): the skin in force here decides the grid's form (grid / cards / terminal), density, when row
+  // actions show and whether the header sticks; the stylesheet draws them from these attributes (tokens only)
+  const tb = rt.behaviourOf('table');
   const grid = (
-    <div className={`axf-grid ${p.compact ? 'is-compact' : ''}`} style={template} role="grid" aria-label={p.label ?? 'Grid'} data-axf-dataset={dsId || undefined}>
+    <div className={`axf-grid ${p.compact ? 'is-compact' : ''}`} style={template} role="grid" aria-label={p.label ?? 'Grid'} data-axf-dataset={dsId || undefined}
+      data-fx-table={String(tb.form ?? 'grid')} data-fx-table-density={String(tb.density ?? 'regular')} data-fx-table-actions={String(tb.rowActions ?? 'hover')} data-fx-table-sticky={tb.stickyHeader === false ? 'off' : 'on'}>
       <div className="axf-grid-head" role="row">
         <span />
         {cols.map((c) => (

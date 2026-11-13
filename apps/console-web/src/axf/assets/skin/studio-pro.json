@@ -1,0 +1,151 @@
+{
+  "$axf": "asset@1",
+  "type": "skin",
+  "id": "studio-pro",
+  "name": "Studio Pro",
+  "version": "1.0.0",
+  "description": "A dense, IDE-like desktop skin: left rail navigation, top tab rows, a full menu bar, compact grid tables with a sticky header, dialogs as a right-side panel, right-click menus with flyout sub menus, confirm dialogs on destructive buttons, cool slate colours and Inter at 13 px. Built for long sessions on a big screen.",
+  "author": "AmberX AXF",
+  "tags": [
+    "skin",
+    "professional",
+    "desktop",
+    "dense"
+  ],
+  "data": {
+    "layoutTheme": "studio-pro",
+    "colorTheme": "studio-pro-slate",
+    "styleTheme": "studio-pro",
+    "assets": {
+      "banner": "amberx-thin",
+      "app-menu": "developer",
+      "toolbar": "developer-ops",
+      "nav-menu": "developer-console",
+      "context-menu": "developer-tools",
+      "tab-group": "studio-pro",
+      "dialog": "studio-pro",
+      "popup": "studio-pro",
+      "button": "studio-pro",
+      "slider": "studio-pro",
+      "gauge": "ring",
+      "meter": "hairline",
+      "table": "studio-pro",
+      "container": "studio-pro",
+      "settings": "standard",
+      "dock-layout": "ide",
+      "nav-style": "standard",
+      "behavior-theme": "focused",
+      "branding": "amberx",
+      "agent-card": "corporate-badge",
+      "typography": "compact",
+      "density": "dense",
+      "sizing": "compact"
+    },
+    "preview": {
+      "caption": "Dense desktop: rail nav, top tabs, side-panel dialogs, full menu bar."
+    },
+    "extras": {
+      "spacing": "tight",
+      "hidden": {
+        "toolbar": false,
+        "nav-menu": false,
+        "banner": false,
+        "app-menu": false
+      }
+    },
+    "iconPack": "amberx-outline",
+    "parts": {
+      "button": {
+        "radius": "sm"
+      },
+      "action-button": {
+        "radius": "sm"
+      },
+      "badge": {
+        "radius": "sm"
+      },
+      "counter": {
+        "radius": "sm",
+        "fontWeight": "600"
+      },
+      "label": {
+        "fontWeight": "500"
+      },
+      "link": {
+        "hover": "underline",
+        "textColor": "accent"
+      },
+      "avatar": {
+        "radius": "sm"
+      },
+      "progress": {
+        "radius": "none"
+      },
+      "status": {
+        "fontWeight": "500"
+      },
+      "search-bar": {
+        "radius": "sm"
+      },
+      "clock": {
+        "fontFamily": "mono",
+        "fontWeight": "500"
+      },
+      "logo": {
+        "radius": "none"
+      },
+      "theme-switch": {
+        "radius": "sm"
+      },
+      "spacer": {
+        "padding": "none"
+      },
+      "divider": {
+        "borderColor": "muted"
+      }
+    },
+    "behaviour": {
+      "app-menu": {
+        "form": "menubar"
+      },
+      "toolbar": {
+        "placement": "top",
+        "tapConfirm": "default",
+        "labels": "icons"
+      },
+      "nav-menu": {
+        "mode": "rail",
+        "side": "left"
+      },
+      "context-menu": {
+        "form": "menu",
+        "submenus": "flyout"
+      },
+      "tab-group": {
+        "position": "top",
+        "overflow": "scroll",
+        "style": "underline",
+        "display": "both"
+      },
+      "dialog": {
+        "presentation": "side-panel",
+        "panelSide": "right"
+      },
+      "button": {
+        "press": "theme",
+        "confirm": "destructive",
+        "confirmBy": "dialog",
+        "holdMs": 600
+      },
+      "table": {
+        "form": "grid",
+        "density": "compact",
+        "rowActions": "hover",
+        "stickyHeader": true
+      },
+      "banner": {
+        "placement": "top"
+      }
+    }
+  }
+}

@@ -392,6 +392,20 @@
         "text": "Where you set “Tap to confirm (touch)”. Change it and the app uses the new value.",
         "kind": "field",
         "draft": true
+      },
+      {
+        "target": "menu",
+        "title": "Menu",
+        "text": "Opens the menu.",
+        "kind": "button",
+        "draft": true
+      },
+      {
+        "target": "restore-to-default",
+        "title": "Restore to default",
+        "text": "Restores to default. What is there now is kept in the history.",
+        "kind": "button",
+        "draft": true
       }
     ],
     "intros": []

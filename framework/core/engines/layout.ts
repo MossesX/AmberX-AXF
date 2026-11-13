@@ -116,14 +116,18 @@ export function compileLayout(raw: LayoutData, hidden: readonly string[] = []): 
   if (nav === 'left' || nav === 'right') regions.push('nav');
   if (l.inspector !== 'none') regions.push('inspector');
   if (toolbar && l.toolbarPosition === 'bottom') add('toolbar', span('toolbar'), 'auto');
+  // nav at the bottom (skin@2 nav-menu mode bottom-tabs): a strip under the main area, above the status bar, on every screen
+  if (nav === 'bottom') add('nav', span('nav'), 'auto');
   if (l.showStatusbar) add('status', span('status'), 'auto');
 
-  // Phone: single column, nav becomes a bottom tab strip, inspector hidden.
+  // Phone: single column, nav becomes a bottom tab strip, inspector hidden. A toolbar placed at the bottom stays at the
+  // bottom on a phone too (above the nav strip: within thumb reach, skin@2 toolbar placement), else it sits on top.
   const mAreas: string[] = [];
   const mRows: string[] = [];
   if (menubar) { mAreas.push('"menubar"'); mRows.push('auto'); }
-  if (toolbar) { mAreas.push('"toolbar"'); mRows.push('auto'); }
+  if (toolbar && l.toolbarPosition !== 'bottom') { mAreas.push('"toolbar"'); mRows.push('auto'); }
   mAreas.push('"main"'); mRows.push('minmax(0, 1fr)');
+  if (toolbar && l.toolbarPosition === 'bottom') { mAreas.push('"toolbar"'); mRows.push('auto'); }
   if (navOn) { mAreas.push('"nav"'); mRows.push('auto'); }
 
   return {
@@ -133,7 +137,7 @@ export function compileLayout(raw: LayoutData, hidden: readonly string[] = []): 
     rows: rows.join(' '),
     mobileAreas: mAreas.join(' '),
     mobileRows: mRows.join(' '),
-    navOrientation: nav === 'top' ? 'horizontal' : 'vertical',
+    navOrientation: nav === 'top' || nav === 'bottom' ? 'horizontal' : 'vertical',
     slots,
     columnRegions: cols,
   };

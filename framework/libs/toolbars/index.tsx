@@ -52,7 +52,7 @@ export function toolbarsOnScreen(doc: Document = document): ToolbarOnScreen[] {
 const ARM_CHOICES = [1500, 2000, 3000, 4000, 5000, 7000, 10000].filter((ms) => ms >= TAP_ARM_RANGE[0] && ms <= TAP_ARM_RANGE[1]).map((ms) => ({ value: String(ms), label: `${ms / 1000} s${ms === TAP_ARM_DEFAULT_MS ? ' (default)' : ''}` }));
 
 const OVERRIDE_LABEL: Record<TapOverride, string> = { inherit: 'Same as all', on: 'On', off: 'Off' };
-const SOURCE_LABEL: Record<TapSource, string> = { toolbar: 'set here', instance: 'set in its settings', global: 'set for all', labels: 'follows its labels' };
+const SOURCE_LABEL: Record<TapSource, string> = { toolbar: 'set here', instance: 'set in its settings', skin: 'set by the skin', global: 'set for all', labels: 'follows its labels' };
 
 function AllToolbarsPanel() {
   const rt = useRuntime();

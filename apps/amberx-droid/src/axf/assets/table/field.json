@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "table",
+  "id": "field",
+  "name": "Field table",
+  "version": "1.0.0",
+  "description": "One card per row for a phone: roomy, no sticky header, row actions on swipe.",
+  "author": "AmberX AXF",
+  "tags": [
+    "skin",
+    "field"
+  ],
+  "data": {
+    "form": "cards",
+    "density": "roomy",
+    "rowActions": "swipe",
+    "stickyHeader": false,
+    "zebra": false,
+    "dividers": false,
+    "headerCase": "normal"
+  }
+}

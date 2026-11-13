@@ -1,0 +1,151 @@
+{
+  "$axf": "asset@1",
+  "type": "skin",
+  "id": "executive",
+  "name": "Executive",
+  "version": "1.0.0",
+  "description": "A clean, minimal skin: navigation as a top bar, pill tab groups with a More menu, one quiet Menu button instead of a menu bar, roomy upper-case tables, centred modal dialogs with a blurred backdrop, quiet icon toolbars, ivory and navy colours with IBM Plex at 15 px. Built for dashboards that get presented upstairs.",
+  "author": "AmberX AXF",
+  "tags": [
+    "skin",
+    "professional",
+    "minimal",
+    "light"
+  ],
+  "data": {
+    "layoutTheme": "executive",
+    "colorTheme": "executive-ivory",
+    "styleTheme": "executive",
+    "assets": {
+      "banner": "amberx-branded",
+      "app-menu": "minimal-picker",
+      "toolbar": "minimal-glass",
+      "nav-menu": "executive-overview",
+      "context-menu": "enterprise-standard",
+      "tab-group": "executive-soft",
+      "dialog": "executive-soft",
+      "popup": "executive-soft",
+      "button": "executive-soft",
+      "slider": "executive-soft",
+      "gauge": "classic-arc",
+      "meter": "gradient-soft",
+      "table": "executive",
+      "container": "executive-soft",
+      "settings": "standard",
+      "dock-layout": "two-columns",
+      "nav-style": "soft-fade",
+      "behavior-theme": "executive",
+      "branding": "amberx",
+      "agent-card": "license",
+      "typography": "classic",
+      "density": "roomy",
+      "sizing": "standard"
+    },
+    "preview": {
+      "caption": "Minimal: top bar nav, pill tabs, centred modals, quiet toolbar."
+    },
+    "extras": {
+      "spacing": "regular",
+      "hidden": {
+        "toolbar": false,
+        "nav-menu": false,
+        "banner": false,
+        "app-menu": false
+      }
+    },
+    "iconPack": "amberx-outline",
+    "parts": {
+      "button": {
+        "radius": "md"
+      },
+      "action-button": {
+        "radius": "md"
+      },
+      "badge": {
+        "radius": "md"
+      },
+      "counter": {
+        "radius": "md",
+        "fontWeight": "600"
+      },
+      "label": {
+        "fontWeight": "400",
+        "letterSpacing": "wide"
+      },
+      "link": {
+        "hover": "underline",
+        "textColor": "accent"
+      },
+      "avatar": {
+        "radius": "md"
+      },
+      "progress": {
+        "radius": "md"
+      },
+      "status": {
+        "fontWeight": "500"
+      },
+      "search-bar": {
+        "radius": "md"
+      },
+      "clock": {
+        "fontWeight": "400"
+      },
+      "logo": {
+        "opacity": 90
+      },
+      "theme-switch": {
+        "radius": "md"
+      },
+      "spacer": {
+        "padding": "xs"
+      },
+      "divider": {
+        "borderColor": "muted"
+      }
+    },
+    "behaviour": {
+      "app-menu": {
+        "form": "button"
+      },
+      "toolbar": {
+        "placement": "top",
+        "tapConfirm": "default",
+        "labels": "icons"
+      },
+      "nav-menu": {
+        "mode": "top-bar",
+        "side": "left"
+      },
+      "context-menu": {
+        "form": "menu",
+        "submenus": "flyout"
+      },
+      "tab-group": {
+        "position": "top",
+        "overflow": "more",
+        "style": "pills",
+        "display": "text"
+      },
+      "dialog": {
+        "presentation": "modal",
+        "panelSide": "right"
+      },
+      "button": {
+        "press": "theme",
+        "confirm": "destructive",
+        "confirmBy": "dialog",
+        "holdMs": 600
+      },
+      "table": {
+        "form": "grid",
+        "density": "roomy",
+        "rowActions": "hover",
+        "stickyHeader": true
+      },
+      "banner": {
+        "placement": "top"
+      }
+    }
+  }
+}

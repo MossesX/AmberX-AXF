@@ -635,6 +635,10 @@
     },
     "divider": {
       "root": ".fx-widget-divider"
+    },
+    "table": {
+      "root": ".fx-table, .axf-grid",
+      "item": ".fx-table tbody tr, .axf-grid-row"
     }
   }
 }

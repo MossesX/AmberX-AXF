@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "table",
+  "id": "studio-pro",
+  "name": "Studio Pro table",
+  "version": "1.0.0",
+  "description": "Dense data grid: compact rows, dividers, a sticky header, row actions on hover.",
+  "author": "AmberX AXF",
+  "tags": [
+    "skin",
+    "studio-pro"
+  ],
+  "data": {
+    "form": "grid",
+    "density": "compact",
+    "rowActions": "hover",
+    "stickyHeader": true,
+    "zebra": false,
+    "dividers": true,
+    "headerCase": "normal"
+  }
+}

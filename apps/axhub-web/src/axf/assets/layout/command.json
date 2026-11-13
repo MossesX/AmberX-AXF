@@ -1,0 +1,34 @@
+{
+  "$axf": "asset@1",
+  "type": "layout",
+  "id": "command",
+  "name": "Command",
+  "version": "1.0.0",
+  "description": "The Command grid: a hidden navigation drawer (the nav region leaves the grid), no menu bar row, a top toolbar, a status bar, no side panels, no content width limit; tight paddings.",
+  "author": "AmberX AXF",
+  "tags": [
+    "skin",
+    "command",
+    "keyboard",
+    "terminal"
+  ],
+  "data": {
+    "nav": "left",
+    "navWidth": 240,
+    "showMenubar": false,
+    "showToolbar": true,
+    "toolbarPosition": "top",
+    "showStatusbar": true,
+    "inspector": "none",
+    "inspectorWidth": 300,
+    "contentMaxWidth": 0,
+    "statusHeight": 22,
+    "regionGap": 0,
+    "mainPadTop": 1.2,
+    "mainPadX": 2,
+    "mainPadBottom": 4,
+    "phoneMainPadTop": 1,
+    "phoneMainPadX": 1,
+    "phoneMainPadBottom": 3
+  }
+}

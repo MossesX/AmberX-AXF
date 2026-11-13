@@ -22,6 +22,7 @@ import { CHROME_INSTANCE_KEY, CHROME_TAP_FIELD } from './chrome-settings-rules.m
  * doesn't. A manual setting always wins, most specific first:
  *   1. the item's chrome instance field `tapConfirm` in `axf.chrome.<type>.<instance>` (its settings dialog): on / off
  *   2. a toolbar's older override `axf.toolbar.<id>.tapConfirm` (Settings → Plugins → Toolbars): on / off
+ *   2b. the skin in force there (skin@2 behaviour axis `tapConfirm`: on / off; `default` or none = not the skin's business)
  *   3. the switch for its kind (`axf.toolbars.tapConfirm` for toolbars, `axf.tapConfirm.<kind>` for the rest):
  *      'on' / true = every one of that kind, 'off' / false = none
  *   4. otherwise (unset, 'labels', 'inherit', 'auto'): on exactly where the labels are hidden
@@ -62,7 +63,7 @@ export const TAP_FIELD_OPTIONS = TAP_OVERRIDES;
 export type TapFieldValue = TapOverride;
 
 /** Which of the settings decided (shown next to the switch, and readable through the API). */
-export type TapSource = 'toolbar' | 'instance' | 'global' | 'labels';
+export type TapSource = 'toolbar' | 'instance' | 'skin' | 'global' | 'labels';
 
 /** How the press that produced a click was made. Only `touch` arms. */
 export type TapPointer = 'touch' | 'mouse' | 'pen' | 'keyboard';
@@ -70,7 +71,7 @@ export type TapPointer = 'touch' | 'mouse' | 'pen' | 'keyboard';
 export interface TapConfig { enabled: boolean; armMs: number; source?: TapSource }
 
 /** Where a tap landed: the chrome kind + instance (for its settings field) and whether its labels are hidden. */
-export interface TapScope { type?: TapKind; instance?: string; labelsHidden?: boolean }
+export interface TapScope { type?: TapKind; instance?: string; labelsHidden?: boolean; skin?: unknown }
 
 export interface TapState {
   /** The armed button (toolbar id + button key), or null. */
@@ -128,6 +129,7 @@ export function tapConfig(get: (key: string) => unknown, toolbarId: string, scop
   }
   const raw = kind === 'toolbar' && toolbarId ? get(`${TAP_KEYS.perToolbar}${toolbarId}.tapConfirm`) : null;
   if (raw === 'on' || raw === 'off') return { enabled: raw === 'on', armMs, source: 'toolbar' };
+  if (scope.skin === 'on' || scope.skin === 'off') return { enabled: scope.skin === 'on', armMs, source: 'skin' };
   const mode = tapMode(get(tapKindKey(kind)));
   if (mode !== 'labels') return { enabled: mode === 'on', armMs, source: 'global' };
   return { enabled: scope.labelsHidden === true, armMs, source: 'labels' };
@@ -135,10 +137,11 @@ export function tapConfig(get: (key: string) => unknown, toolbarId: string, scop
 
 /**
  * One item's config by kind and chrome instance (the settings dialog's id). A toolbar also honours its older
- * `axf.toolbar.<id>.tapConfirm`. `labelsHidden` = whether that item shows icons only right now.
+ * `axf.toolbar.<id>.tapConfirm`. `labelsHidden` = whether that item shows icons only right now; `skin` = the skin's pick
+ * for the kind where it sits (skin@2, 'on' / 'off'; anything else = not the skin's business).
  */
-export function tapConfigFor(get: (key: string) => unknown, kind: TapKind, instance: string, labelsHidden = false): TapConfig {
-  return tapConfig(get, kind === 'toolbar' ? toolbarIdOf({ id: instance }) : '', { type: kind, instance, labelsHidden });
+export function tapConfigFor(get: (key: string) => unknown, kind: TapKind, instance: string, labelsHidden = false, skin?: unknown): TapConfig {
+  return tapConfig(get, kind === 'toolbar' ? toolbarIdOf({ id: instance }) : '', { type: kind, instance, labelsHidden, skin });
 }
 
 /** Whether a chrome kind's asset data hides its labels (icons only); the renderers mark this as data-axf-labels. */

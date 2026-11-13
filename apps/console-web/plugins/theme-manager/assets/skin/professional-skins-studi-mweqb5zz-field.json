@@ -1,0 +1,155 @@
+{
+ "$axf": "asset@1",
+ "type": "skin",
+ "id": "professional-skins-studi-mweqb5zz-field",
+ "name": "professional-skins-studi-mweqb5zz: Field",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Phone-first: bottom tabs, thumb toolbar with tap to confirm, bottom sheets for dialogs and menus, card tables with swipe actions, tap-twice buttons.",
+ "tags": [
+  "ui-choice",
+  "choice-set:professional-skins-studi-mweqb5zz",
+  "choice-option:field"
+ ],
+ "data": {
+  "layoutTheme": "field",
+  "colorTheme": "field-day",
+  "styleTheme": "field",
+  "assets": {
+   "banner": "amberx-thin",
+   "app-menu": "minimal-picker",
+   "toolbar": "touch-dock",
+   "nav-menu": "roomy-touch",
+   "context-menu": "touch-large",
+   "tab-group": "field-rugged",
+   "dialog": "bottom-sheet",
+   "popup": "field-rugged",
+   "button": "touch-friendly",
+   "slider": "field-rugged",
+   "gauge": "level-bar",
+   "meter": "striped-pill",
+   "table": "field",
+   "container": "field-rugged",
+   "settings": "standard",
+   "dock-layout": "single",
+   "nav-style": "standard",
+   "behavior-theme": "gentle",
+   "branding": "amberx",
+   "agent-card": "corporate-badge",
+   "typography": "standard",
+   "density": "roomy",
+   "sizing": "touch"
+  },
+  "preview": {
+   "caption": "Phone-first: bottom tabs, bottom sheets, thumb toolbar, card tables."
+  },
+  "extras": {
+   "spacing": "regular",
+   "hidden": {
+    "toolbar": false,
+    "nav-menu": false,
+    "banner": false,
+    "app-menu": false
+   }
+  },
+  "iconPack": "amberx-outline",
+  "parts": {
+   "button": {
+    "radius": "md",
+    "padding": "sm"
+   },
+   "action-button": {
+    "radius": "md",
+    "padding": "sm"
+   },
+   "badge": {
+    "radius": "md",
+    "fontWeight": "700"
+   },
+   "counter": {
+    "radius": "md",
+    "fontWeight": "700"
+   },
+   "label": {
+    "fontWeight": "600"
+   },
+   "link": {
+    "hover": "highlight",
+    "textColor": "accent",
+    "padding": "sm"
+   },
+   "avatar": {
+    "radius": "md"
+   },
+   "progress": {
+    "radius": "md"
+   },
+   "status": {
+    "fontWeight": "600"
+   },
+   "search-bar": {
+    "radius": "md",
+    "padding": "sm"
+   },
+   "clock": {
+    "fontWeight": "600"
+   },
+   "logo": {
+    "padding": "xs"
+   },
+   "theme-switch": {
+    "radius": "md",
+    "padding": "sm"
+   },
+   "spacer": {
+    "padding": "sm"
+   },
+   "divider": {
+    "borderColor": "text"
+   }
+  },
+  "behaviour": {
+   "app-menu": {
+    "form": "sheet"
+   },
+   "toolbar": {
+    "placement": "bottom",
+    "tapConfirm": "on",
+    "labels": "icons-labels"
+   },
+   "nav-menu": {
+    "mode": "bottom-tabs",
+    "side": "left"
+   },
+   "context-menu": {
+    "form": "sheet",
+    "submenus": "inline"
+   },
+   "tab-group": {
+    "position": "top",
+    "overflow": "dropdown",
+    "style": "segmented",
+    "display": "both"
+   },
+   "dialog": {
+    "presentation": "sheet",
+    "panelSide": "right"
+   },
+   "button": {
+    "press": "theme",
+    "confirm": "destructive",
+    "confirmBy": "tap-twice",
+    "holdMs": 600
+   },
+   "table": {
+    "form": "cards",
+    "density": "roomy",
+    "rowActions": "swipe",
+    "stickyHeader": false
+   },
+   "banner": {
+    "placement": "top"
+   }
+  }
+ }
+}

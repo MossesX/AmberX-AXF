@@ -294,3 +294,78 @@ def skin_restore(app: str) -> Any:
 def skin_undo(app: str) -> Any:
     """Undo the last restore of an app."""
     return _skins("undo", app)
+
+
+# ---- skin@2 behaviour (build professional-skins, Nov 13 2026): the same skins.mjs functions as the CLI ----
+
+@router.get("/skins/axes")
+def skin_axes() -> Any:
+    """skin@2: every behaviour axis a skin may set (type, axis, kind, values, default, the --fx-bhv-* token and axf.behaviour.* key), from the registry."""
+    return _skins("axes")
+
+
+@router.get("/skins/compare/{a}/{b}")
+def skin_compare(a: str, b: str) -> Any:
+    """Two skins side by side: every slot, style part and behaviour axis that differs ('what changes between Studio Pro and Field?')."""
+    return _skins("compare", a, b)
+
+
+@router.get("/skins/{app}/behaviour")
+def skin_behaviour(app: str, scope: str | None = None) -> Any:
+    """The behaviour in force in an app (or one screen / plugin, scope=ui:<id> | plugin:<id>): the skin's picks, the level's overrides and every axis resolved (pick > asset field > today's)."""
+    return _skins("behaviour", app, *_scope_args(scope))
+
+
+@router.post("/skins/{app}/behaviour")
+def skin_behaviour_set(app: str, body: dict[str, Any] = Body(...)) -> Any:
+    """Override one behaviour axis inside the skin in force, body {type, axis, value, scope?}: 'put the console's tabs at the bottom' = {type: tab-group, axis: position, value: bottom}. value 'default' = back to the skin's. The skin stays the same skin."""
+    t, a = str(body.get("type") or ""), str(body.get("axis") or "")
+    if not t or not a:
+        raise HTTPException(status_code=400, detail="type and axis are needed (GET /skins/axes lists them)")
+    return _skins("behaviour", app, t, a, str(body.get("value") if body.get("value") is not None else "default"), *_scope_args(body.get("scope")))
+
+
+@router.post("/skins/{app}/behaviour/reset")
+def skin_behaviour_reset(app: str, body: dict[str, Any] | None = Body(None)) -> Any:
+    """Back to the skin's behaviour, body {type?, scope?}: every override at that level, or one type's."""
+    b = body or {}
+    return _skins("behaviour", app, "reset", str(b.get("type") or ""), *_scope_args(b.get("scope")))
+
+
+def _console_action(spec: str, by: str) -> dict[str, Any]:
+    """Run a look action on the open Dev Console through the Console commands capability (the one way to reach a screen
+    that is only alive in a browser: preview a skin, open the gallery). No plugin is named: the capability is asked for."""
+    try:
+        import plugin_services  # the console's registry
+    except ImportError as e:  # pragma: no cover — only outside the console server
+        raise HTTPException(status_code=501, detail="console actions need the console server") from e
+    if not any(s["name"] == "console-commands@1" for s in plugin_services.available()):
+        raise HTTPException(status_code=501, detail="no plugin provides console-commands@1 (the Console commands plugin), so nothing can be shown")
+    svc = plugin_services.get("console-commands@1")
+    if svc is None:
+        raise HTTPException(status_code=501, detail="the Console commands plugin is turned off (Settings → Plugins)")
+    cmd = {"op": "act", "target": "console.actions", "path": spec, "action": "run", "by": by, "reason": "Theme manager: a skin action on the open console"}
+    return svc.run(cmd, ["control.console.navigate", "control.console.write", "assets.swap"], by)
+
+
+@router.post("/skins/console-action")
+def skin_console_action(body: dict[str, Any] = Body(...)) -> Any:
+    """Run one skin action on the open console (skins.mjs preview / gallery use this), body {spec}: skin.preview:<skin>|off, skin.gallery[:<skin>], skin.use:<skin>, skin.behaviour:<type>:<axis>:<value>."""
+    spec = str(body.get("spec") or "")
+    if not re.match(r"^skin\.(preview|gallery|use|off|behaviour|behaviour\.reset|global|color|scope|inherit)(:[A-Za-z0-9._:-]*)?$", spec):
+        raise HTTPException(status_code=400, detail="spec must be a skin.* console action (skin.preview:<skin>, skin.gallery[:<skin>], skin.use:<skin>, skin.behaviour:<type>:<axis>:<value>, …)")
+    return _console_action(spec, "theme-manager (api)")
+
+
+@router.post("/skins/{app}/preview")
+def skin_preview(app: str, body: dict[str, Any] = Body(...)) -> Any:
+    """Show a skin on the open console without saving anything, body {skin} ('off' puts the saved look back): 'show me the Field skin'. The console action skin.preview."""
+    skin = str(body.get("skin") or "off")
+    return {"app": app, "skin": skin, **_console_action(f"skin.preview:{skin}", "theme-manager (api)")}
+
+
+@router.post("/skins/{app}/gallery")
+def skin_gallery(app: str, body: dict[str, Any] | None = Body(None)) -> Any:
+    """Open Settings → Appearance → the skin gallery on the open console, body {skin?} preselects a card: the deep link settings/appearance/skin/<id> (console_show takes the same target)."""
+    skin = str((body or {}).get("skin") or "")
+    return {"app": app, "skin": skin, **_console_action(f"skin.gallery:{skin}" if skin else "skin.gallery", "theme-manager (api)")}

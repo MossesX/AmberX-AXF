@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "table",
+  "id": "command",
+  "name": "Command table",
+  "version": "1.0.0",
+  "description": "A terminal listing: monospace, compact, dashed header rule that stays, upper-case headers, row actions always shown.",
+  "author": "AmberX AXF",
+  "tags": [
+    "skin",
+    "command"
+  ],
+  "data": {
+    "form": "terminal",
+    "density": "compact",
+    "rowActions": "always",
+    "stickyHeader": true,
+    "zebra": false,
+    "dividers": false,
+    "headerCase": "upper"
+  }
+}

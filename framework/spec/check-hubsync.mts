@@ -73,6 +73,7 @@ const rt = {
   manifest: { app: { id: 'voice-vault' } }, settings: reg,
   terminal: { log() {}, warn() {}, ok() {} },
   hasAppearanceSource: () => cur !== null,
+  appearanceLocalOnly: () => false,
   attachAppearanceSource(src: unknown) { if (cur) attached--; cur = src; attached++; },
   detachAppearanceSource() { if (cur) attached--; cur = null; },
   appearanceSourceIs: (src: unknown) => !!src && src === cur,

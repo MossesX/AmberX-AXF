@@ -1,4 +1,4 @@
-import type { ResolvedSkin, SkinScope, SkinScopeState } from './skin-coverage.mjs';
+import type { BehaviourOverrides, ResolvedSkin, SkinScope, SkinScopeState } from './skin-coverage.mjs';
 
 export const APP_LOOK_FRAME: 'app-look@1';
 export const APP_LOOK_PROJECT: string;
@@ -16,7 +16,7 @@ export const RETIRED_PACKAGE_TYPES: readonly string[];
 export const SKIN_SCALE_TYPES: readonly string[];
 export function isSkinSectionType(type: string): boolean;
 export function sectionOfType(type: string): SkinSection | '';
-export function skinSlotMap(skin: { assets?: Record<string, string>; layoutTheme?: string; colorTheme?: string; styleTheme?: string; behaviorTheme?: string } | null | undefined): Record<string, string>;
+export { skinSlotMap } from './skin-coverage.mjs';
 /** What the skins-only fold moved out of a look (look-migration@1): never applied again, kept for an undo by hand. */
 export interface LegacyLook { at: string; own?: LookPart; settings?: Record<string, unknown> }
 /** The one-run stamp of look-migration@1 on a document. */
@@ -24,9 +24,9 @@ export interface LookMigrated { version: number; at: string; by: string; /** pic
 /** A look: what a snapshot holds and what picks add. */
 export interface LookPart { slots?: Record<string, string>; spacing?: string; hidden?: Record<string, boolean>; settings?: Record<string, unknown> }
 /** The app level: Use skin, follow the hub-wide skin while off, the skin, its overrides, and the colour theme picked inside it (absent = the skin's own; never an override, never a new skin). */
-export interface AppSkinState { use: boolean; inherit: boolean; id: string; overrides: Record<string, string>; colorTheme?: string }
+export interface AppSkinState { use: boolean; inherit: boolean; id: string; overrides: Record<string, string>; colorTheme?: string; behaviour?: BehaviourOverrides }
 /** The hub-wide skin (kept on the shared appearance document). */
-export interface GlobalSkin { id: string; overrides?: Record<string, string>; colorTheme?: string }
+export interface GlobalSkin { id: string; overrides?: Record<string, string>; colorTheme?: string; behaviour?: BehaviourOverrides }
 export interface AppLookDocument {
   $axf: typeof APP_LOOK_FRAME;
   app: string;
@@ -65,3 +65,7 @@ export function setScopeSkin(look: AppLookDocument, key: string, use: 'on' | 'of
 export function setScopeOverride(look: AppLookDocument, key: string, slot: string, id: string | null): AppLookDocument;
 export function scopeEntries(look: AppLookDocument | null): ({ key: string } & SkinScopeState)[];
 export function resolveLookSkin(look: AppLookDocument | null, global: GlobalSkin | null | undefined, scope: Partial<SkinScope> | null | undefined): ResolvedSkin;
+/** skin@2: override one behaviour axis inside the skin in force at a level (`value` null = back to the skin's). */
+export function setSkinBehaviour(look: AppLookDocument, type: string, axis: string, value: string | number | boolean | null, key?: string): AppLookDocument;
+export function backToSkinBehaviour(look: AppLookDocument, type?: string, key?: string): AppLookDocument;
+export function skinBehaviourOverrides(look: AppLookDocument | null | undefined, key?: string): BehaviourOverrides;

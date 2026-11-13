@@ -320,7 +320,7 @@ function ExtraGroup({ group }: { group: { id: string; label: string; icon?: stri
   return <Section title={group.label}>{group.description && <p className="fx-muted">{group.description}</p>}{group.settings.map(row)}</Section>;
 }
 
-const TAP_SOURCE_TEXT: Record<TapSource, string> = { labels: 'follows the labels', instance: 'set here', global: 'set for all of this kind (Settings → Plugins → Toolbars)', toolbar: "set for this toolbar in Settings → Plugins → Toolbars" };
+const TAP_SOURCE_TEXT: Record<TapSource, string> = { labels: 'follows the labels', instance: 'set here', skin: 'set by the skin in force', global: 'set for all of this kind (Settings → Plugins → Toolbars)', toolbar: "set for this toolbar in Settings → Plugins → Toolbars" };
 
 /** What tap to confirm does for one chrome instance now, and which setting decided it. */
 export function chromeTapState(rt: AxfRuntime, type: ChromeType, instance: string): { enabled: boolean; source: TapSource; labelsHidden: boolean } {

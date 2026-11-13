@@ -129,7 +129,9 @@ export function installTapConfirm(doc: Document, get: (key: string) => unknown, 
     if (!surface) return;
     const fresh = press && now() - press.at <= PRESS_MS && press.target instanceof Node && btn.contains(press.target);
     const pointer = tapPointer(fresh && e.detail > 0 ? press!.type : '');
-    const cfg = tapConfigFor(get, surface.kind, surface.instance);
+    // skin@2: the skin in force where the surface sits stamps data-fx-bhv-<kind>-tap-confirm on its root (the page or a SkinScope)
+    const skinPick = surface.el.closest(`[data-fx-bhv-${surface.kind}-tap-confirm]`)?.getAttribute(`data-fx-bhv-${surface.kind}-tap-confirm`) ?? undefined;
+    const cfg = tapConfigFor(get, surface.kind, surface.instance, skinPick);
     const d = tapDecide(state, { pointer, target: keyOf(btn), now: now() }, cfg);
     if (d.outcome === 'run') { clear(); return; }
     e.preventDefault();

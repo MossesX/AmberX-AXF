@@ -117,7 +117,8 @@
         "nav": [
           "left",
           "right",
-          "top"
+          "top",
+          "bottom"
         ],
         "toolbarPosition": [
           "top",
@@ -180,7 +181,8 @@
         "mediumMaxWidth": "viewport cut-off, px (default 900): data-fx-medium",
         "largeMaxWidth": "viewport cut-off, px (default 1200): data-fx-large",
         "slots": "region → list of asset types that region accepts. Overrides the defaults in `slots.defaults` per region; a chrome region renders only when it accepts its asset type. Keys must be a region in `slots.regions`, values known asset types.",
-        "repeat": "list of repeating slots (engine core/engines/repeat.ts): { id, dataSet, region? (a slot region, default main), style? (`repeat.styles`, default stacked), columns? (1-12, grid/cards; default grid 3, cards 2), max? (0 = all), fallback? { type?, id?, label? } }. The slot draws one item per entry of the data set the page declares under `dataSet`; when the page declares none or it is empty, the fallback slot draws instead."
+        "repeat": "list of repeating slots (engine core/engines/repeat.ts): { id, dataSet, region? (a slot region, default main), style? (`repeat.styles`, default stacked), columns? (1-12, grid/cards; default grid 3, cards 2), max? (0 = all), fallback? { type?, id?, label? } }. The slot draws one item per entry of the data set the page declares under `dataSet`; when the page declares none or it is empty, the fallback slot draws instead.",
+        "nav": "left (default) | right | top | bottom — the side the navigation menu takes; bottom = a strip under the main area on every screen size (skin@2 nav-menu mode bottom-tabs sets it)"
       },
       "repeat": {
         "styles": [
@@ -224,7 +226,22 @@
         "menus[].order": "number — placement of a menu created by a contribution (default 100; asset menus keep their order)",
         "items[].provider|badge|checked|order|before|after": "see menuItems"
       },
-      "hideable": true
+      "hideable": true,
+      "behaviour": {
+        "_doc": "skin@2 behaviour axes: the form the application menu takes (menubar = the menu bar row the layout shows).",
+        "form": {
+          "label": "Application menu form",
+          "kind": "choice",
+          "values": [
+            "menubar",
+            "button",
+            "palette",
+            "sheet"
+          ],
+          "default": "menubar",
+          "hint": "a menu bar, one menu button, a command palette (Ctrl / Cmd+K), or a bottom sheet"
+        }
+      }
     },
     "toolbar": {
       "label": "Toolbar",
@@ -279,6 +296,42 @@
           "start",
           "end"
         ]
+      },
+      "behaviour": {
+        "_doc": "skin@2 behaviour axes. placement layers on the layout asset (toolbarPosition); tapConfirm \"default\" = the Toolbars setting for the kind.",
+        "placement": {
+          "label": "Where the toolbar goes",
+          "kind": "choice",
+          "values": [
+            "top",
+            "bottom"
+          ],
+          "default": "top",
+          "field": "toolbarPosition",
+          "of": "layout"
+        },
+        "tapConfirm": {
+          "label": "Tap to confirm",
+          "kind": "choice",
+          "values": [
+            "default",
+            "on",
+            "off"
+          ],
+          "default": "default",
+          "hint": "on a touch screen the first tap arms a button and the second runs it"
+        },
+        "labels": {
+          "label": "Button labels",
+          "kind": "choice",
+          "values": [
+            "icons",
+            "icons-labels",
+            "labels"
+          ],
+          "default": "icons",
+          "field": "variant"
+        }
       }
     },
     "nav-menu": {
@@ -314,7 +367,35 @@
         "navStyle": "boolean, default false — opt in to nav-style@1: items with children (NavItem.items) open sub menus that slide open, styled, timed and arranged by the nav-style asset in force",
         "items": "per item: items?: [NavItem] — children (a sub menu; nested levels allowed). Shown as a sub menu only when navStyle is true"
       },
-      "hideable": true
+      "hideable": true,
+      "behaviour": {
+        "_doc": "skin@2 behaviour axes: how the navigation menu is shown and on which side (side layers on the layout asset's nav).",
+        "mode": {
+          "label": "Navigation mode",
+          "kind": "choice",
+          "values": [
+            "sidebar",
+            "rail",
+            "drawer",
+            "bottom-tabs",
+            "top-bar"
+          ],
+          "default": "sidebar",
+          "hint": "sidebar = the full list; rail = icons only; drawer = hidden until opened; bottom-tabs = a phone strip; top-bar = across the top"
+        },
+        "side": {
+          "label": "Navigation side",
+          "kind": "choice",
+          "values": [
+            "left",
+            "right",
+            "top"
+          ],
+          "default": "left",
+          "field": "nav",
+          "of": "layout"
+        }
+      }
     },
     "context-menu": {
       "label": "Context menu",
@@ -345,6 +426,29 @@
       "hideable": true,
       "optional_fields": {
         "contributions": "boolean — false = the targets this asset defines show only its own items (no plugin contributions, no everywhere items); default true"
+      },
+      "behaviour": {
+        "_doc": "skin@2 behaviour axes: the form a right-click / long-press menu takes.",
+        "form": {
+          "label": "Menu form",
+          "kind": "choice",
+          "values": [
+            "menu",
+            "sheet",
+            "palette"
+          ],
+          "default": "menu",
+          "hint": "a menu at the pointer, a bottom sheet, or a searchable palette"
+        },
+        "submenus": {
+          "label": "Sub menus",
+          "kind": "choice",
+          "values": [
+            "flyout",
+            "inline"
+          ],
+          "default": "flyout"
+        }
       }
     },
     "tab-group": {
@@ -409,7 +513,60 @@
         "rememberLast": "boolean, default false — the row reopens on the tab it was on last time (per device)"
       },
       "hideable": true,
-      "optional": true
+      "optional": true,
+      "behaviour": {
+        "_doc": "skin@2 behaviour axes (core/engines/skin-behaviour.mjs). Each layers on the tab-group asset field of the same name: unset in the skin = the asset decides.",
+        "position": {
+          "label": "Where tab rows sit",
+          "kind": "choice",
+          "values": [
+            "top",
+            "bottom",
+            "left",
+            "right"
+          ],
+          "default": "top",
+          "field": "position",
+          "hint": "top / bottom against the panel; left / right = a vertical rail"
+        },
+        "overflow": {
+          "label": "When tabs do not fit",
+          "kind": "choice",
+          "values": [
+            "scroll",
+            "wrap",
+            "more",
+            "dropdown"
+          ],
+          "default": "scroll",
+          "field": "overflow"
+        },
+        "style": {
+          "label": "Tab style",
+          "kind": "choice",
+          "values": [
+            "underline",
+            "pills",
+            "boxed",
+            "segmented",
+            "plain",
+            "chips"
+          ],
+          "default": "underline",
+          "field": "style"
+        },
+        "display": {
+          "label": "What a tab shows",
+          "kind": "choice",
+          "values": [
+            "both",
+            "text",
+            "icons"
+          ],
+          "default": "both",
+          "field": "display"
+        }
+      }
     },
     "dialog": {
       "label": "Dialog",
@@ -444,6 +601,33 @@
           "accent-bar",
           "filled"
         ]
+      },
+      "behaviour": {
+        "_doc": "skin@2 behaviour axes: presentation layers on the dialog asset's variant (drawer reads as side-panel).",
+        "presentation": {
+          "label": "How dialogs open",
+          "kind": "choice",
+          "values": [
+            "modal",
+            "sheet",
+            "side-panel",
+            "full-screen"
+          ],
+          "default": "modal",
+          "field": "variant",
+          "map": {
+            "drawer": "side-panel"
+          }
+        },
+        "panelSide": {
+          "label": "Side panel side",
+          "kind": "choice",
+          "values": [
+            "right",
+            "left"
+          ],
+          "default": "right"
+        }
       }
     },
     "popup": {
@@ -500,6 +684,52 @@
           "md",
           "lg"
         ]
+      },
+      "behaviour": {
+        "_doc": "skin@2 behaviour axes: how every framework Button answers a press and confirms.",
+        "press": {
+          "label": "Press feedback",
+          "kind": "choice",
+          "values": [
+            "theme",
+            "none",
+            "shrink",
+            "darken",
+            "ripple"
+          ],
+          "default": "theme",
+          "hint": "theme = the behaviour theme decides"
+        },
+        "confirm": {
+          "label": "Which buttons ask first",
+          "kind": "choice",
+          "values": [
+            "destructive",
+            "none",
+            "all"
+          ],
+          "default": "destructive"
+        },
+        "confirmBy": {
+          "label": "How a button confirms",
+          "kind": "choice",
+          "values": [
+            "dialog",
+            "inline",
+            "hold",
+            "tap-twice"
+          ],
+          "default": "dialog",
+          "hint": "a confirm dialog, an inline Confirm / Cancel pair, press and hold, or tap twice"
+        },
+        "holdMs": {
+          "label": "Hold time",
+          "kind": "number",
+          "min": 300,
+          "max": 2000,
+          "default": 600,
+          "unit": "ms"
+        }
       }
     },
     "slider": {
@@ -627,6 +857,89 @@
       },
       "optional": true
     },
+    "table": {
+      "label": "Table",
+      "group": "Controls",
+      "icon": "grid",
+      "description": "How every table and data grid looks and behaves (table@1, engine normalizeTable / tableStyle in core/engines/components.ts): its form (a grid of rows, a stack of cards, or a terminal-style monospace listing), density, when row actions show (on hover, always, behind a menu, on swipe), a sticky header, zebra striping, row dividers and the header case. Every table on the framework (the fx-table element and lib-datagrid) follows the active table asset; a skin picks one and sets its behaviour axes (skin@2). Every field has a default equal to the framework's own look, so an asset may set only what it changes.",
+      "required": [],
+      "enums": {
+        "form": [
+          "grid",
+          "cards",
+          "terminal"
+        ],
+        "density": [
+          "compact",
+          "regular",
+          "roomy"
+        ],
+        "rowActions": [
+          "hover",
+          "always",
+          "menu",
+          "swipe"
+        ],
+        "headerCase": [
+          "normal",
+          "upper"
+        ]
+      },
+      "optional_fields": {
+        "form": "grid (default) | cards | terminal",
+        "density": "compact | regular (default) | roomy — row padding",
+        "rowActions": "hover (default) | always | menu | swipe — when a row's actions show",
+        "stickyHeader": "boolean, default true — the header stays while the body scrolls",
+        "zebra": "boolean, default false — every other row tinted",
+        "dividers": "boolean, default true — a rule between rows",
+        "headerCase": "normal (default) | upper"
+      },
+      "optional": true,
+      "behaviour": {
+        "_doc": "skin@2 behaviour axes; each layers on the table asset field of the same name.",
+        "form": {
+          "label": "Table form",
+          "kind": "choice",
+          "values": [
+            "grid",
+            "cards",
+            "terminal"
+          ],
+          "default": "grid",
+          "field": "form",
+          "hint": "rows in a grid, one card per row, or a monospace terminal listing"
+        },
+        "density": {
+          "label": "Density",
+          "kind": "choice",
+          "values": [
+            "compact",
+            "regular",
+            "roomy"
+          ],
+          "default": "regular",
+          "field": "density"
+        },
+        "rowActions": {
+          "label": "Row actions show",
+          "kind": "choice",
+          "values": [
+            "hover",
+            "always",
+            "menu",
+            "swipe"
+          ],
+          "default": "hover",
+          "field": "rowActions"
+        },
+        "stickyHeader": {
+          "label": "Sticky header",
+          "kind": "switch",
+          "default": true,
+          "field": "stickyHeader"
+        }
+      }
+    },
     "banner": {
       "label": "Banner",
       "group": "Chrome",
@@ -664,6 +977,18 @@
       "optional_fields": {
         "divider": "boolean — line under the banner (default true)",
         "height": "number — px, 16 to 48 (thin = 24)"
+      },
+      "behaviour": {
+        "_doc": "skin@2 behaviour axes: where the banner sits.",
+        "placement": {
+          "label": "Banner placement",
+          "kind": "choice",
+          "values": [
+            "top",
+            "bottom"
+          ],
+          "default": "top"
+        }
       }
     },
     "clock": {
@@ -1196,7 +1521,11 @@
         "asset": false
       },
       "shared": false,
-      "optional": true
+      "optional": true,
+      "skin": {
+        "by": "none",
+        "why": "The cross-app host layout is Molly's structure, not a look: the apps it frames each take their own skin."
+      }
     },
     "nav-style": {
       "label": "Navigation style",
@@ -1265,7 +1594,7 @@
       "label": "Skin",
       "group": "System",
       "icon": "palette",
-      "description": "A skin (skin@1, engine core/engines/skin.ts) is a whole look for one place: a layout theme, a colour theme, a style theme, the assets that fill the other slots, an optional icon pack and style parts for any drawn type. Apps keep their own look unless Use skin is on (Settings → Appearance); a skin applies hub-wide, per app, per UI / screen or per plugin (the chain plugin → ui → app → global, the child overrides the parent). How a skin reaches every registered type is worked out from this registry (skin-coverage@1, core/engines/skin-coverage.mjs): a type declares `skin: { by: slot | parts | reference | bundle | none, via?, why? }` only when its flags do not say (widgets and attachables are styled through their style target in schemas/customize.json; everything else is a slot); CI fails on a type a skin cannot reach.",
+      "description": "A skin (skin@2, engine core/engines/skin.ts; behaviour in skin-behaviour.mjs) is a whole look AND behaviour for one place: a layout theme, a colour theme, a style theme, the assets that fill the other slots, an optional icon pack, style parts for any drawn type, and a behaviour pick for every asset type that declares behaviour axes (where tab rows sit and overflow, toolbar placement and tap-confirm, how buttons confirm, the form of context and application menus, the navigation mode, how dialogs are presented, table density and row actions, banner placement). Apps keep their own look unless Use skin is on (Settings → Appearance); a skin applies hub-wide, per app, per UI / screen or per plugin (the chain plugin → ui → app → global, the child overrides the parent). How a skin reaches every registered type is worked out from this registry (skin-coverage@1, core/engines/skin-coverage.mjs): a type declares `skin: { by: slot | parts | reference | bundle | none, via?, why? }` only when its flags do not say (widgets and attachables are styled through their style target in schemas/customize.json; everything else is a slot), and declares its behaviour axes in a `behaviour` block (or its style target does); CI fails on a type a skin cannot reach, and on a shipped skin that leaves a type's look or behaviour unset. A skin@1 (no `behaviour`) reads as a skin@2 whose behaviour is today's: nothing changes visually.",
       "required": [
         "layoutTheme",
         "colorTheme",
@@ -1275,8 +1604,10 @@
       "optional_fields": {
         "preview": "{ caption, image }: what the picker shows",
         "extras": "{ spacing: tight | compact | regular, hidden: asset type → true / false, settings: appearance settings key → value }",
+        "behaviorTheme": "behavior-theme asset id — the preset of the skin's behaviour section (skins only, Nov 10 2026); absent = today's behaviour",
         "iconPack": "icon-pack asset id — the icon pack the skin draws with (sets axf.icons.pack.<scope>); absent = the branding's",
-        "parts": "{ <asset type>: { <customize token>: value } } — style parts for any type with a style target (schemas/customize.json): the type's box, text, icon and items under this skin"
+        "parts": "{ <asset type>: { <customize token>: value } } — style parts for any type with a style target (schemas/customize.json): the type's box, text, icon and items under this skin",
+        "behaviour": "{ <asset type>: { <axis>: value } } — the behaviour pick per type with behaviour axes (the `behaviour` block of its registry entry, kinds choice | switch | number). Unset = the asset's own field where the axis layers on one, else today's behaviour. Compiles to --fx-bhv-<type>-<axis> tokens, data-fx-bhv-* root attributes and axf.behaviour.<type>.<axis> runtime values; the user's per-row overrides (axf.chrome.<type>.<instance>) still win."
       },
       "roll": {
         "slot": false,
@@ -1745,6 +2076,10 @@
         "keywords": "auto-tagged words for search and the clip tagger (up to 200)",
         "generated": "{ from: glossary | manual | book | help-intro | recorder, at: ISO time, build: the build that made it }",
         "editable": "false = a generated demo that is rebuilt from its entry (edits are lost); default true"
+      },
+      "skin": {
+        "by": "none",
+        "why": "A demonstration is narrated steps, not drawn: the UI it plays in takes the skin."
       }
     },
     "book": {
@@ -1772,6 +2107,10 @@
         "docs": "{ enabled, depth, format, interactive, includeApi, includeScreens } — the documentation generated alongside the book",
         "outputs": "{ video: the narrated walkthrough video, chapterClips: one clip asset per chapter }",
         "keywords": "words for search (up to 200)"
+      },
+      "skin": {
+        "by": "none",
+        "why": "A book is a plan of chapters, not drawn: the Book Builder that shows it takes the skin."
       }
     },
     "clip": {
@@ -1812,6 +2151,10 @@
         "chain": "clip ids played after this one",
         "entries": "glossary entry ids shown in the clip",
         "keywords": "the auto-extracted tag set (up to 200)"
+      },
+      "skin": {
+        "by": "none",
+        "why": "A clip is recorded media, not drawn: the player that shows it takes the skin."
       }
     },
     "docs": {
@@ -1860,6 +2203,10 @@
         "sourceHash": "hash of the sources it was generated from (a different hash = out of sync)",
         "build": "the build that generated it",
         "keywords": "words for search (up to 200)"
+      },
+      "skin": {
+        "by": "none",
+        "why": "Generated documentation is content, not drawn: the pages that show it take the skin."
       }
     },
     "uac-policy": {
@@ -1898,6 +2245,17 @@
   },
   "attachDefaults": {
     "_doc": "Attachable types (\"attachable\": true) aren't slots you pick in Appearance → Assets: their assets are attached to a host by the host's data or by modules at run time, and they're never rolled. Widgets (\"widget\": true) attach to every host (banners, toolbars); badges to hosts with an `attach` block (banners). A host's `attach` block without `types` takes every attachable type; a `widgets` block takes every widget type."
+  },
+  "behaviour": {
+    "_doc": "skin@2 behaviour axes (core/engines/skin-behaviour.mjs). A type declares the axes a skin may set on its own entry (`behaviour`: { <axis>: { label, kind: choice | switch | number, values?, default, field?, of?, map?, min?, max?, unit?, hint? } }; `_` keys are notes), or its style target in schemas/customize.json does. `default` = today's behaviour. `field` names the asset field the axis layers on (of this type, or of the type `of` names); unset in a skin = that asset's value (`map` translates its words), else the default. Every axis compiles to --fx-bhv-<type>-<axis>, data-fx-bhv-<type>-<axis> and axf.behaviour.<type>.<axis>. Nothing names a type by hand: a new type gets behaviour coverage the moment it declares axes, and check-skin-coverage fails a shipped skin that leaves an axis unset.",
+    "kinds": [
+      "choice",
+      "switch",
+      "number"
+    ],
+    "tokenPrefix": "bhv",
+    "keyPrefix": "axf.behaviour.",
+    "rules": "core/engines/skin-behaviour.mjs"
   },
   "menuItems": {
     "_doc": "Menu items (app-menu menus[].items, context-menu targets.*, nested `items`) take these optional fields on top of id/label/icon/action/shortcut/requires/items/separator. `provider` names a live-list provider registered at run time (runtime.registerAppMenuProvider): the item becomes a submenu whose entries are asked for on open, capped at providerMax with a More… entry. `badge` names a runtime counter shown as a badge (hidden at 0), like toolbar items. `checked` binds a check mark: setting:<key> (truthy value), counter:<name> (> 0), slot:<type> (chrome slot shown), hidden:<type> (chrome slot hidden). `order` / `before` / `after` place a contributed item among its siblings (engines/appmenu.ts; fixture spec/fixtures/app-menu.json; Android twin deferred, port on hold Oct 21 2026).",

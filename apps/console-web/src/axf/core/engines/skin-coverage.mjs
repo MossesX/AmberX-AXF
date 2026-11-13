@@ -27,8 +27,14 @@
  * (`app`), one UI / screen (`ui:<id>`) or one plugin (`plugin:<id>`); the chain from the most specific place to the root
  * is [plugin, ui, app, global] and the child overrides the parent.
  *
+ * Behaviour (skin@2, build professional-skins, Nov 13 2026): a type that declares behaviour axes (`behaviour` on its
+ * registry entry or its style target, `skin-behaviour.mjs`) is also covered on behaviour. Each row carries the axis
+ * names; `skinCoversTable()` says per skin whether its look reaches the type AND whether every axis is set, and
+ * `skinUncoveredBy()` is what CI fails a shipped skin on. Worked out from the registry: no list of types here.
+ *
  * Plain JS shared by the TS engine (skin.ts), the build engine, the CLI and the console server. Pure.
  */
+import { behaviourAxes, behaviourMissing, mergeBehaviour, normalizeBehaviour } from './skin-behaviour.mjs';
 
 export const SKIN_COVERAGE_CONTRACT = 'skin-coverage@1';
 /** The ways a skin reaches a type, in the order a table lists them. */
@@ -109,11 +115,13 @@ export function skinScopeSelector(key) {
 
 /**
  * Walk a chain of per-level skin states and say which skin is in force at the leaf. Each state is
- * `{ use: 'on' | 'off' | 'inherit', id, overrides }` (a missing level reads as inherit); the first level from the leaf
- * that isn't `inherit` decides. Overrides of the deciding level and of every level nearer the leaf apply, the child's
- * over the parent's; so does the colour theme picked inside the skin (`colorTheme`, the nearest level that has one).
- * Result: `{ id, overrides, from }` (`from` = the deciding key), plus `colorTheme` when a level picked one, or
- * `{ id: '', overrides: {}, from }` when that level says off, or `from: ''` when every level inherits.
+ * `{ use: 'on' | 'off' | 'inherit', id, overrides, colorTheme?, behaviour? }` (a missing level reads as inherit); the
+ * first level from the leaf that isn't `inherit` decides. Overrides of the deciding level and of every level nearer
+ * the leaf apply, the child's over the parent's; so does the colour theme picked inside the skin (`colorTheme`, the
+ * nearest level that has one) and so do behaviour overrides (skin@2 `behaviour`, merged axis by axis, child over parent).
+ * Result: `{ id, overrides, from }` (`from` = the deciding key), plus `colorTheme` when a level picked one and
+ * `behaviour` when a level overrides an axis, or `{ id: '', overrides: {}, from }` when that level says off, or
+ * `from: ''` when every level inherits.
  */
 export function resolveSkinChain(chain, stateOf) {
   const seen = [];
@@ -124,11 +132,16 @@ export function resolveSkinChain(chain, stateOf) {
     if (st.use !== 'on' || !st.id) return { id: '', overrides: {}, from: key };
     const overrides = {};
     let colorTheme = '';
+    let behaviour = {};
     for (let i = seen.length - 1; i >= 0; i--) {
       Object.assign(overrides, seen[i].st.overrides ?? {});
       if (seen[i].st.colorTheme) colorTheme = seen[i].st.colorTheme;
+      behaviour = mergeBehaviour(behaviour, seen[i].st.behaviour);
     }
-    return colorTheme ? { id: st.id, overrides, from: key, colorTheme } : { id: st.id, overrides, from: key };
+    const out = { id: st.id, overrides, from: key };
+    if (colorTheme) out.colorTheme = colorTheme;
+    if (Object.keys(behaviour).length) out.behaviour = behaviour;
+    return out;
   }
   return { id: '', overrides: {}, from: '' };
 }
@@ -170,7 +183,8 @@ export function coverageOf(type, spec, targets = {}, never = []) {
   const t = isObj(spec) ? spec[type] : null;
   const target = isObj(targets) ? targets[type] : null;
   const elements = partElements(target);
-  const base = { type, label: str(t?.label, 80) || type, group: str(t?.group, 40), also: [], elements, declared: false, via: '', why: '' };
+  const behaviour = Object.keys(behaviourAxes(type, spec, targets));
+  const base = { type, label: str(t?.label, 80) || type, group: str(t?.group, 40), also: [], elements, behaviour, declared: false, via: '', why: '' };
   if (!t) return { ...base, by: 'uncovered', why: 'not a registered asset type' };
   const errors = declarationErrors(type, t);
   if (errors.length) return { ...base, by: 'uncovered', declared: true, why: errors.join('; ') };
@@ -198,12 +212,54 @@ export function uncoveredTypes(spec, targets = {}, never = []) {
   return coverageTable(spec, targets, never).filter((r) => r.by === 'uncovered');
 }
 
-/** Counts per kind for a summary line. */
+/** Counts per kind for a summary line, plus how many types have behaviour axes. */
 export function coverageSummary(rows) {
   const out = { total: rows.length, uncovered: 0 };
   for (const k of COVERAGE_KINDS) out[k] = 0;
-  for (const r of rows) { if (r.by in out) out[r.by]++; else out.uncovered++; }
+  out.behaviour = 0;
+  for (const r of rows) { if (r.by in out) out[r.by]++; else out.uncovered++; if (r.behaviour?.length) out.behaviour++; }
   return out;
+}
+
+/** Every slot a skin sets: its `assets` plus the four section presets (layoutTheme / colorTheme / styleTheme / behaviorTheme); a named section wins over an `assets` entry of that type. */
+export function skinSlotMap(skin) {
+  const s = isObj(skin) ? skin : {};
+  const out = { ...(isObj(s.assets) ? s.assets : {}) };
+  for (const [k, t] of [['layoutTheme', 'layout'], ['colorTheme', 'color-theme'], ['styleTheme', 'style-theme'], ['behaviorTheme', 'behavior-theme']]) if (typeof s[k] === 'string' && s[k]) out[t] = s[k];
+  return out;
+}
+
+/**
+ * What one skin covers, type by type: `how` = the means its look uses (slot, parts, iconPack, via, the skin itself,
+ * no look), `covered` = its look reaches the type (a `none` type has no look and is never "covered"), `behaviour` =
+ * `{ axes, set, missing }` for the type's behaviour axes, and `missing` = what CI fails a shipped skin on: a slot /
+ * parts / reference type its look does not reach, or a behaviour axis it leaves unset. `skin` is skin@2 data
+ * (`normalizeSkin` output, or a design package read as a skin).
+ */
+export function skinCoversTable(skin, spec, targets = {}, never = []) {
+  const slots = skinSlotMap(skin);
+  const parts = isObj(skin?.parts) ? skin.parts : {};
+  const picked = normalizeBehaviour(skin?.behaviour, spec, targets);
+  const unset = behaviourMissing(picked, spec, targets);
+  return coverageTable(spec, targets, never).map((r) => {
+    const how = [];
+    if (slots[r.type]) how.push(`slot ${slots[r.type]}`);
+    if (isObj(parts[r.type]) && Object.keys(parts[r.type]).length) how.push(`parts ${Object.keys(parts[r.type]).join(', ')}`);
+    if (r.by === 'reference' && r.via === 'iconPack' && typeof skin?.iconPack === 'string' && skin.iconPack) how.push(`iconPack ${skin.iconPack}`);
+    if (r.by === 'reference' && r.via && r.via !== 'iconPack' && slots[r.via]) how.push(`via ${r.via} ${slots[r.via]}`);
+    if (r.by === 'bundle') how.push('the skin itself');
+    if (r.by === 'none') how.push('no look');
+    const missingAxes = unset[r.type] ?? [];
+    const behaviour = { axes: r.behaviour, set: r.behaviour.filter((a) => !missingAxes.includes(a)), missing: missingAxes };
+    const lookMissing = (r.by === 'slot' || r.by === 'parts' || r.by === 'reference') && how.length === 0;
+    const covered = r.by !== 'none' && how.length > 0;
+    return { type: r.type, by: r.by, covered, how, behaviour, missing: lookMissing || missingAxes.length > 0, why: lookMissing ? (r.by === 'parts' ? `no parts for ${r.type}` : r.by === 'reference' ? `no ${r.via}` : `no ${r.type} asset`) : missingAxes.length ? `behaviour unset: ${missingAxes.join(', ')}` : '' };
+  });
+}
+
+/** The rows a shipped skin fails CI on: a type its look does not reach, or a behaviour axis it leaves unset. */
+export function skinUncoveredBy(skin, spec, targets = {}, never = []) {
+  return skinCoversTable(skin, spec, targets, never).filter((r) => r.missing);
 }
 
 /** The types a skin's `parts` may name: everything with a style target, registry order. */

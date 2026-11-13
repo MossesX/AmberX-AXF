@@ -20,7 +20,8 @@ import type { AxfWebLibrary } from '../../react/library';
 import { runtimeInventory } from '../../react/pluginRecords';
 import { TabGroup } from '../../react/components/TabGroup';
 import { LEVEL_EDITOR_ACTIONS, LEVEL_EDITOR_CTX, LEVEL_EDITOR_DIALOG, LEVELS_CSS, LevelEditor, levelEditorAct } from './levels';
-import { FollowHubSwitch, SKIN_WHERE_CSS, SKIN_WHERE_DIALOG, SkinWhere, SkinWhereDialog } from './skinwhere';
+import { candidates as skinCandidates, FollowHubSwitch, SKIN_WHERE_CSS, SKIN_WHERE_DIALOG, SkinWhere, SkinWhereDialog } from './skinwhere';
+import { Segmented } from '../../react/components/Controls';
 import { SkinScope } from '../../react/components/SkinScope';
 import { consoleFieldValue } from '../../core/engines/console-commands.mjs';
 
@@ -621,10 +622,11 @@ export function AppearancePanel() {
           <span>Skin</span>
           <span className="fx-muted axf-settings__hint">{skinOn ? `${skins.find((s) => s.id === skinId)?.name ?? skinId}, in this app only.` : "Off: this app's own look."}</span>
         </div>
-        <div className="axf-settings__control axf-skin__action"><Button size="sm" icon="palette" disabled={locked || !skins.length} onClick={() => rt.openDialog(SKIN_DIALOG, {})}>Choose…</Button></div>
+        <div className="axf-settings__control axf-skin__action"><Button size="sm" icon="palette" disabled={locked || !skins.length} onClick={() => rt.openDialog(SKIN_DIALOG, {})}>Skin gallery…</Button></div>
       </div>
       <Switch label="Use skin" hint={skinOn ? 'Off goes back to this app\'s own look and keeps your picks.' : 'On applies the last skin you picked.'} checked={skinOn} disabled={locked || !skins.length} onChange={(on) => { rt.useSkin(on, skinId || undefined); }} />
       <FollowHubSwitch locked={locked} />
+      <BehaviourOverridesRow locked={locked} />
       {row('Colour theme', 'color-theme')}
       <p className="fx-eyebrow">Visible parts</p>
       {hideableTypes().map((t) => (
@@ -643,12 +645,107 @@ export function AppearancePanel() {
   );
 }
 
+/** The behaviour axes the user overrode inside the skin (skin@2), with Back to skin per type and for all. */
+function BehaviourOverridesRow({ locked }: { locked: boolean }) {
+  const rt = useRuntime();
+  const over = rt.skinBehaviourOverrides();
+  const types = Object.keys(over);
+  if (!types.length) return null;
+  return (
+    <div className="axf-settings__row" data-axf-skin-section="behaviour">
+      <div className="axf-settings__label">
+        <span>Behaviour<span className="axf-skin__dot" title="Overridden: this behaviour isn't the skin's" aria-label="Overridden" /></span>
+        <span className="fx-muted axf-settings__hint">{types.map((t) => `${assetTypeSpecs[t as AssetType]?.label ?? t}: ${Object.entries(over[t]!).map(([a, v]) => `${a} ${String(v)}`).join(', ')}`).join(' · ')}</span>
+      </div>
+      <div className="axf-settings__control axf-skin__action">
+        {types.map((t) => <Button key={t} size="sm" tone="quiet" disabled={locked} title={`Back to the skin's ${assetTypeSpecs[t as AssetType]?.label ?? t} behaviour`} onClick={() => rt.backToSkinBehaviour(t)}>{assetTypeSpecs[t as AssetType]?.label ?? t}</Button>)}
+        {types.length > 1 && <Button size="sm" tone="quiet" disabled={locked} onClick={() => rt.backToSkinBehaviour()}>Back to skin</Button>}
+      </div>
+    </div>
+  );
+}
+
+type SkinEntryLike = ReturnType<AxfRuntime['skinList']>[number];
+type ScopeKind = 'app' | 'global' | 'ui' | 'plugin';
+const SCOPE_OPTIONS: { value: ScopeKind; label: string; title: string }[] = [
+  { value: 'app', label: 'This app', title: 'Use the skin in this app' },
+  { value: 'global', label: 'Hub-wide', title: 'Set it as the hub-wide skin every app that follows the hub takes' },
+  { value: 'ui', label: 'A screen', title: 'Use it on one screen of this app only' },
+  { value: 'plugin', label: 'A plugin', title: 'Use it inside one plugin only' },
+];
+
 /**
- * The skin picker: tap a skin to see it on the real app (nothing is saved), Apply keeps it in this app, Cancel or closing
- * the dialog puts the look back. Reset is Restore to default, and it asks first. Under the grid, the colour theme inside
- * the applied skin: switching it keeps the skin and adds nothing to the grid.
+ * A skin's live preview card (skin@2): its name, colour swatches, and two predicted frames drawn from the skin's colour
+ * tokens and behaviour picks (nav mode and side, tab position, toolbar and banner placement, menu form, dialog form), a
+ * desktop and a phone. Every box is a token-sized flex child; colours are the skin's own theme tokens, no literals.
  */
-function SkinPickerDialog() {
+function SkinCard({ s, picked, onTap }: { s: SkinEntryLike; picked: boolean; onTap: () => void }) {
+  const rt = useRuntime();
+  const tokens = (rt.registry.get('color-theme', s.data.colorTheme)?.data as { tokens?: Record<string, string> } | undefined)?.tokens ?? {};
+  const b = (type: string, axis: string, dflt: string) => String((s.data.behaviour?.[type] as Record<string, unknown> | undefined)?.[axis] ?? dflt);
+  const navMode = b('nav-menu', 'mode', 'sidebar');
+  const navSide = navMode === 'top-bar' ? 'top' : navMode === 'bottom-tabs' ? 'bottom' : b('nav-menu', 'side', 'left');
+  const tabs = b('tab-group', 'position', 'top');
+  const toolbar = b('toolbar', 'placement', 'top');
+  const banner = b('banner', 'placement', 'top');
+  const menu = b('app-menu', 'form', 'menubar');
+  const dialog = b('dialog', 'presentation', 'modal');
+  const table = b('table', 'form', 'grid');
+  const c = { bg: tokens.bg, surface: tokens.surface, surface2: tokens.surface2 ?? tokens.surface, accent: tokens.accent, border: tokens.border, text: tokens.text };
+  const frame = (device: 'desktop' | 'phone') => (
+    <span className={`axf-skin__frame axf-skin__frame--${device}`} style={{ background: c.bg, borderColor: c.border }} data-nav={device === 'phone' && navMode !== 'drawer' && navMode !== 'top-bar' ? 'bottom' : navMode === 'drawer' ? 'none' : navSide} data-tabs={tabs} data-toolbar={toolbar} data-banner={banner} data-dialog={dialog} data-rail={navMode === 'rail' ? 'on' : 'off'} aria-hidden="true">
+      <span className="axf-skin__mini axf-skin__mini--head" style={{ background: c.surface, borderColor: c.border }} />
+      {menu === 'menubar' && device === 'desktop' && <span className="axf-skin__mini axf-skin__mini--menu" style={{ background: c.surface2, borderColor: c.border }} />}
+      <span className="axf-skin__mini axf-skin__mini--bar2" style={{ background: c.surface2, borderColor: c.border }} />
+      <span className="axf-skin__mini axf-skin__mini--nav" style={{ background: c.surface, borderColor: c.border }}><i style={{ background: c.accent }} /><i style={{ background: c.border }} /><i style={{ background: c.border }} /></span>
+      <span className="axf-skin__mini axf-skin__mini--main">
+        <span className="axf-skin__mini axf-skin__mini--tabs"><i style={{ background: c.accent }} /><i style={{ background: c.border }} /><i style={{ background: c.border }} /></span>
+        <span className={`axf-skin__mini axf-skin__mini--table is-${table}`} style={{ borderColor: c.border }}><i style={{ background: c.surface2 }} /><i style={{ background: c.surface }} /><i style={{ background: c.surface2 }} /></span>
+        <span className="axf-skin__mini axf-skin__mini--dialog" style={{ background: c.surface, borderColor: c.accent }} />
+      </span>
+    </span>
+  );
+  return (
+    <Button tone="quiet" size="sm" className={`axf-skin__tile axf-skin__card${picked ? ' is-picked' : ''}`} aria-selected={picked} role="option" title={s.description} onClick={onTap}>
+      <span className="axf-skin__frames">{frame('desktop')}{frame('phone')}</span>
+      <span className="axf-skin__swatches" aria-hidden="true">{[c.bg, c.surface, c.accent, c.text].filter(Boolean).map((x, i) => <span key={i} style={{ background: x }} />)}</span>
+      <span className="axf-skin__name">{s.name}{s.kind === 'design-package' ? ' (design package)' : ''}</span>
+    </Button>
+  );
+}
+
+/** What this skin changes: its look per type (how the skin reaches it) and its behaviour per axis (skin@2). */
+function SkinChanges({ skinId }: { skinId: string }) {
+  const rt = useRuntime();
+  const covers = rt.skinCovers(skinId).filter((c) => c.covered && c.by !== 'bundle');
+  const behaviour = rt.skinBehaviourDescribe(skinId);
+  const label = (t: string) => assetTypeSpecs[t as AssetType]?.label ?? t;
+  return (
+    <div className="axf-skin__changes" data-axf-skin-changes="">
+      <p className="fx-eyebrow">Look</p>
+      <div className="axf-skin__chips">
+        {covers.map((c) => <span key={c.type} className="fx-chip axf-skin__chip is-set" title={c.how.join('; ')}>{label(c.type)}<span className="fx-muted"> {c.how[0]?.replace(/^(slot|parts) /, '')}</span></span>)}
+      </div>
+      <p className="fx-eyebrow">Behaviour</p>
+      <div className="axf-skin__axes">
+        {behaviour.map((row) => (
+          <div key={row.type} className="axf-skin__axisrow">
+            <span className="axf-skin__axistype">{row.label}</span>
+            <span className="axf-skin__chips">{row.picks.map((p) => <span key={p.axis} className={`fx-chip axf-skin__chip${p.isDefault ? '' : ' is-set'}`} title={`${p.label}: ${String(p.value)}${p.isDefault ? " (today's behaviour)" : ''}`}>{p.label} <span className="fx-muted">{String(p.value)}</span></span>)}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * The skin gallery (skin@2): live preview cards (tap one to see it on the real app, nothing saved), what the skin changes
+ * (look per type, behaviour per axis), the scope picker (this app, hub-wide, one screen, one plugin), Use skin, Back to
+ * skin for every override, Turn skin off, Restore to default with one undo. `skin` preselects a card (the deep link
+ * settings/appearance/skin/<id>, the skin.gallery action).
+ */
+function SkinGalleryDialog({ skin: preselect }: { skin?: string }) {
   const rt = useRuntime();
   useAxfState();
   useSettingsRevision(rt);
@@ -658,26 +755,50 @@ function SkinPickerDialog() {
   const colour = rt.skinColorTheme();
   const colourThemes = rt.registry.list(SKIN_COLOR_SLOT as AssetType);
   const locked = !rt.can('assets.swap') || rt.lockedByAppearance('assets.swap');
-  const [picked, setPicked] = useState(applied || look?.skin.id || '');
-  useEffect(() => () => { rt.previewSkin(null); }, [rt]);
+  const [picked, setPicked] = useState(preselect && skins.some((s) => s.id === preselect) ? preselect : applied || look?.skin.id || skins[0]?.id || '');
+  const [scope, setScope] = useState<ScopeKind>('app');
+  const [scopeId, setScopeId] = useState('');
+  const cands = skinCandidates(rt);
+  useEffect(() => { if (preselect && preselect !== applied && skins.some((s) => s.id === preselect)) rt.previewSkin(preselect); return () => { rt.previewSkin(null); }; }, [rt]); // eslint-disable-line react-hooks/exhaustive-deps
   const tap = (id: string) => { setPicked(id); rt.previewSkin(id === applied ? null : id); };
   const close = () => rt.closeDialog();
   const current = skins.find((s) => s.id === picked);
-  const swatches = (colorTheme: string) => {
-    const tokens = (rt.registry.get('color-theme', colorTheme)?.data as { tokens?: Record<string, string> } | undefined)?.tokens;
-    return tokens ? [tokens.bg, tokens.surface, tokens.accent, tokens.text] : [];
+  const slotOver = rt.skinOverrides();
+  const behaviourOver = Object.keys(rt.skinBehaviourOverrides());
+  const scopeKey = scope === 'ui' ? `ui:${scopeId}` : scope === 'plugin' ? `plugin:${scopeId}` : '';
+  const canApply = !!picked && !locked && (scope === 'app' ? picked !== applied : scope === 'global' ? true : !!scopeId);
+  const apply = () => {
+    if (!picked) return;
+    rt.previewSkin(null);
+    const ok = scope === 'app' ? rt.useSkin(true, picked) : scope === 'global' ? rt.setGlobalSkin(picked) : rt.scopeSkin(scopeKey, 'on', picked);
+    if (ok) close();
   };
   return (
-    <div className="fx-stack" data-axf-skin-picker="">
-      <div className="axf-skin__grid" role="listbox" aria-label="Skin">
-        {skins.map((s) => (
-          <Button key={s.id} tone="quiet" size="sm" className={`axf-skin__tile${s.id === picked ? ' is-picked' : ''}`} aria-selected={s.id === picked} role="option" title={s.description} onClick={() => tap(s.id)}>
-            <span className="axf-skin__swatches" aria-hidden="true">{swatches(s.data.colorTheme).map((c, i) => <span key={i} style={{ background: c }} />)}</span>
-            <span className="axf-skin__name">{s.name}</span>
-          </Button>
-        ))}
+    <div className="fx-stack" data-axf-skin-picker="" data-axf-skin-gallery="">
+      <div className="axf-skin__gallery" role="listbox" aria-label="Skin">
+        {skins.map((s) => <SkinCard key={s.id} s={s} picked={s.id === picked} onTap={() => tap(s.id)} />)}
       </div>
-      <p className="fx-muted axf-settings__desc">{current ? (current.data.preview?.caption || current.description || current.name) : 'Tap a skin to see it on this app.'} Only this app changes.</p>
+      <p className="fx-muted axf-settings__desc">{current ? (current.data.preview?.caption || current.description || current.name) : 'Tap a skin to see it on this app.'}</p>
+      {!!current && (
+        <Container title="What this skin changes" icon="layers" collapsible defaultOpen={false}>
+          <SkinChanges skinId={current.id} />
+        </Container>
+      )}
+      <div className="axf-settings__row" data-axf-skin-scope="">
+        <div className="axf-settings__label">
+          <span>Where</span>
+          <span className="fx-muted axf-settings__hint">{scope === 'app' ? 'This app only; other apps keep their own look.' : scope === 'global' ? 'The hub-wide skin: every app that follows the hub takes it.' : scope === 'ui' ? 'One screen of this app; the rest keeps its skin.' : 'Inside one plugin only.'}</span>
+        </div>
+        <div className="axf-settings__control axf-skin__action">
+          <Segmented size="sm" label="Where the skin applies" value={scope} options={SCOPE_OPTIONS} disabled={locked} onChange={(v) => { setScope(v); setScopeId(''); }} />
+          {(scope === 'ui' || scope === 'plugin') && (
+            <select className="axf-settings__field" aria-label={scope === 'ui' ? 'Which screen' : 'Which plugin'} value={scopeId} disabled={locked} onChange={(e) => setScopeId(e.target.value)}>
+              <option value="">Choose…</option>
+              {(scope === 'ui' ? cands.screens : cands.plugins).map((x) => <option key={x.id} value={x.id}>{x.label}</option>)}
+            </select>
+          )}
+        </div>
+      </div>
       {!!applied && (
         <div className="axf-settings__row" data-axf-skin-section="color-theme">
           <div className="axf-settings__label">
@@ -692,10 +813,22 @@ function SkinPickerDialog() {
           </div>
         </div>
       )}
-      <div className="fx-row">
-        <Button tone="primary" disabled={!picked || picked === applied} onClick={() => { if (rt.useSkin(true, picked)) close(); }}>Apply</Button>
-        {!!applied && <Button tone="quiet" onClick={() => { if (rt.useSkin(false)) close(); }}>Turn skin off</Button>}
-        <Button tone="quiet" confirm="Put this app back to its default look? Skin and picks are cleared. You can undo it once in Settings → Appearance." onClick={() => { rt.previewSkin(null); rt.restoreDefaultAppearance(); close(); }}>Reset</Button>
+      {!!applied && (slotOver.length > 0 || behaviourOver.length > 0) && (
+        <div className="axf-settings__row" data-axf-skin-section="overrides">
+          <div className="axf-settings__label">
+            <span>Your picks over the skin</span>
+            <span className="fx-muted axf-settings__hint">{[...slotOver.map((t) => assetTypeSpecs[t as AssetType]?.label ?? t), ...behaviourOver.map((t) => `${assetTypeSpecs[t as AssetType]?.label ?? t} behaviour`)].join(', ')}</span>
+          </div>
+          <div className="axf-settings__control axf-skin__action">
+            <Button size="sm" tone="quiet" disabled={locked} onClick={() => { for (const t of slotOver) rt.backToSkin(t); rt.backToSkinBehaviour(); }}>Back to skin</Button>
+          </div>
+        </div>
+      )}
+      <div className="fx-row" role="toolbar" aria-label="Skin gallery actions">
+        <Button tone="primary" disabled={!canApply} onClick={apply}>Use skin</Button>
+        {!!applied && <Button tone="quiet" disabled={locked} onClick={() => { if (rt.useSkin(false)) close(); }}>Turn skin off</Button>}
+        <Button tone="quiet" disabled={locked} confirm="Put this app back to its default look? Skin and picks are cleared. You can undo it once." onClick={() => { rt.previewSkin(null); rt.restoreDefaultAppearance(); close(); }}>Restore to default</Button>
+        {!!look?.undo && <Button tone="quiet" disabled={locked} onClick={() => { rt.undoRestoreDefault(); }}>Undo</Button>}
         <Button tone="quiet" onClick={close}>Cancel</Button>
       </div>
     </div>
@@ -844,6 +977,52 @@ const CSS = `
 .axf-skin__swatches{display:flex;height:calc(var(--fx-space)*4);border-radius:var(--fx-radius-sm);overflow:hidden;border:var(--fx-border-w) solid var(--fx-border)}
 .axf-skin__swatches>span{flex:1}
 .axf-skin__name{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center;font-size:var(--fx-type-scale-xs)}
+.axf-skin__gallery{display:grid;grid-template-columns:repeat(auto-fill,minmax(calc(var(--fx-space)*30),1fr));gap:var(--fx-dens-gap-lg);max-height:calc(var(--fx-space)*80);overflow-y:auto;padding:var(--fx-border-w)}
+.axf-skin__card{align-items:stretch}
+.axf-skin__frames{display:flex;gap:var(--fx-dens-gap-sm);align-items:flex-end;justify-content:center;width:100%}
+.axf-skin__frame{position:relative;display:flex;flex-direction:column;border:var(--fx-border-w) solid;border-radius:var(--fx-radius-sm);overflow:hidden;flex:0 0 auto}
+.axf-skin__frame--desktop{width:calc(var(--fx-space)*17);height:calc(var(--fx-space)*11)}
+.axf-skin__frame--phone{width:calc(var(--fx-space)*6);height:calc(var(--fx-space)*11);border-radius:var(--fx-radius-md)}
+.axf-skin__mini{display:block;flex:none}
+.axf-skin__mini--head,.axf-skin__mini--menu,.axf-skin__mini--bar2{height:calc(var(--fx-space)*.9);border-bottom:var(--fx-border-w) solid}
+.axf-skin__frame[data-banner='bottom'] .axf-skin__mini--head{order:9;border-bottom:0;border-top:var(--fx-border-w) solid}
+.axf-skin__frame[data-toolbar='bottom'] .axf-skin__mini--bar2{order:8;border-bottom:0;border-top:var(--fx-border-w) solid}
+.axf-skin__frame .axf-skin__mini--nav{display:flex;gap:var(--fx-dens-gap-xs);padding:var(--fx-dens-gap-xs)}
+.axf-skin__frame .axf-skin__mini--nav i{display:block;flex:1 1 auto;border-radius:calc(var(--fx-border-w)*2)}
+.axf-skin__frame[data-nav='none'] .axf-skin__mini--nav{display:none}
+.axf-skin__frame[data-nav='top'] .axf-skin__mini--nav{flex-direction:row;height:calc(var(--fx-space)*1.1);border-bottom:var(--fx-border-w) solid}
+.axf-skin__frame[data-nav='bottom'] .axf-skin__mini--nav{flex-direction:row;height:calc(var(--fx-space)*1.4);order:7;border-top:var(--fx-border-w) solid}
+.axf-skin__frame[data-nav='left'],.axf-skin__frame[data-nav='right']{display:grid;grid-template-columns:auto minmax(0,1fr);grid-template-rows:auto auto auto minmax(0,1fr) auto auto}
+.axf-skin__frame[data-nav='right']{grid-template-columns:minmax(0,1fr) auto}
+.axf-skin__frame[data-nav='left'] .axf-skin__mini--head,.axf-skin__frame[data-nav='right'] .axf-skin__mini--head,.axf-skin__frame[data-nav='left'] .axf-skin__mini--menu,.axf-skin__frame[data-nav='right'] .axf-skin__mini--menu,.axf-skin__frame[data-nav='left'] .axf-skin__mini--bar2,.axf-skin__frame[data-nav='right'] .axf-skin__mini--bar2{grid-column:1 / -1}
+.axf-skin__frame[data-nav='left'] .axf-skin__mini--nav,.axf-skin__frame[data-nav='right'] .axf-skin__mini--nav{flex-direction:column;width:calc(var(--fx-space)*3.5);grid-row:4;border-right:var(--fx-border-w) solid}
+.axf-skin__frame[data-nav='right'] .axf-skin__mini--nav{grid-column:2;border-right:0;border-left:var(--fx-border-w) solid}
+.axf-skin__frame[data-nav='right'] .axf-skin__mini--main{grid-column:1;grid-row:4}
+.axf-skin__frame[data-nav='left'] .axf-skin__mini--main{grid-row:4}
+.axf-skin__frame[data-rail='on'] .axf-skin__mini--nav{width:calc(var(--fx-space)*1.4)}
+.axf-skin__frame[data-nav='left'] .axf-skin__mini--nav i,.axf-skin__frame[data-nav='right'] .axf-skin__mini--nav i{flex:0 0 calc(var(--fx-space)*.6)}
+.axf-skin__frame[data-banner='bottom'][data-nav='left'] .axf-skin__mini--head,.axf-skin__frame[data-toolbar='bottom'][data-nav='left'] .axf-skin__mini--bar2{grid-row:auto}
+.axf-skin__mini--main{position:relative;display:flex;flex-direction:column;flex:1 1 auto;min-height:0;padding:var(--fx-dens-gap-sm);gap:var(--fx-dens-gap-xs)}
+.axf-skin__mini--tabs{display:flex;gap:var(--fx-dens-gap-xs);height:var(--fx-dens-gap-lg)}
+.axf-skin__mini--tabs i{display:block;flex:1;border-radius:calc(var(--fx-border-w)*2)}
+.axf-skin__frame[data-tabs='bottom'] .axf-skin__mini--tabs{order:9}
+.axf-skin__frame[data-tabs='left'] .axf-skin__mini--main,.axf-skin__frame[data-tabs='right'] .axf-skin__mini--main{flex-direction:row}
+.axf-skin__frame[data-tabs='left'] .axf-skin__mini--tabs,.axf-skin__frame[data-tabs='right'] .axf-skin__mini--tabs{flex-direction:column;height:auto;width:calc(var(--fx-space)*1.2)}
+.axf-skin__frame[data-tabs='right'] .axf-skin__mini--tabs{order:9}
+.axf-skin__mini--table{display:flex;flex-direction:column;flex:1 1 auto;gap:calc(var(--fx-border-w)*2);border:var(--fx-border-w) solid;border-radius:calc(var(--fx-border-w)*2);overflow:hidden}
+.axf-skin__mini--table i{display:block;flex:1}
+.axf-skin__mini--table.is-cards{gap:var(--fx-dens-gap-xs);border:0}
+.axf-skin__mini--table.is-cards i{border-radius:calc(var(--fx-border-w)*3)}
+.axf-skin__mini--table.is-terminal{border-style:dashed}
+.axf-skin__mini--dialog{position:absolute;border:var(--fx-border-w) solid;border-radius:calc(var(--fx-border-w)*2);box-shadow:var(--fx-shadow-sm)}
+.axf-skin__frame[data-dialog='modal'] .axf-skin__mini--dialog{left:25%;right:25%;top:30%;bottom:30%}
+.axf-skin__frame[data-dialog='sheet'] .axf-skin__mini--dialog{left:8%;right:8%;top:45%;bottom:0;border-bottom:0;border-radius:calc(var(--fx-border-w)*3) calc(var(--fx-border-w)*3) 0 0}
+.axf-skin__frame[data-dialog='side-panel'] .axf-skin__mini--dialog{right:0;top:0;bottom:0;left:60%;border-radius:0}
+.axf-skin__frame[data-dialog='full-screen'] .axf-skin__mini--dialog{inset:calc(var(--fx-space)*.3);border-radius:0}
+.axf-skin__changes{display:flex;flex-direction:column;gap:var(--fx-dens-gap-md)}
+.axf-skin__axes{display:flex;flex-direction:column;gap:var(--fx-dens-gap-sm)}
+.axf-skin__axisrow{display:flex;gap:var(--fx-dens-gap-md);align-items:baseline;flex-wrap:wrap}
+.axf-skin__axistype{flex:0 0 calc(var(--fx-space)*18);font-size:var(--fx-type-scale-sm);font-weight:600}
 .axf-settings__control.axf-skin__action{flex:0 0 auto;min-width:0;display:flex;gap:var(--fx-dens-gap-xs)}
 .axf-skin__dot{display:inline-block;width:calc(var(--fx-space)*.75);height:calc(var(--fx-space)*.75);margin-left:var(--fx-dens-gap-xs);border-radius:999px;background:var(--fx-accent)}
 .axf-settings__rows{display:flex;flex-direction:column;gap:var(--fx-dens-gap-2xl)}
@@ -960,6 +1139,13 @@ export const library: AxfWebLibrary = {
     applyDisplay(rt);
     applyAppLook(rt);
     rt.actions.register('skin.restore.ask', () => rt.openDialog(RESTORE_DIALOG, {}), { label: 'Restore to default…', requires: 'assets.swap' });
+    // skin.gallery[:<skin>] opens Settings → Appearance with the skin gallery (the deep link settings/appearance/skin/<id>)
+    rt.actions.register('skin.gallery', ([id]) => {
+      rt.navigate(VIEW);
+      rt.settings.set(TAB_KEY, 'appearance');
+      globalThis.dispatchEvent?.(new CustomEvent('axf:settings-tab', { detail: 'appearance' }));
+      rt.openDialog(SKIN_DIALOG, id ? { skin: id } : {});
+    }, { label: 'Open the skin gallery', params: true });
     rt.settings.onChange(APP_LOOK_KEY, () => applyAppLook(rt));
     rt.settings.onChange(APPEARANCE_LOCK_KEY, () => applyAppLook(rt));
     rt.settings.onChange('axf.display.fontScale', () => applyDisplay(rt));
@@ -1012,7 +1198,7 @@ export const library: AxfWebLibrary = {
   },
   dialogs: {
     [TAB_DIALOG]: { title: 'Settings', icon: 'settings', searchable: false, render: (p: Record<string, unknown>) => <TabDialog id={String(p.tab ?? '')} /> },
-    [SKIN_DIALOG]: { title: 'Choose a skin', icon: 'palette', searchable: false, render: () => <SkinPickerDialog /> },
+    [SKIN_DIALOG]: { title: 'Skin gallery', icon: 'palette', searchable: false, render: (p) => <SkinGalleryDialog skin={typeof p.skin === 'string' ? p.skin : undefined} /> },
     [SKIN_WHERE_DIALOG]: { title: 'Where the skin applies', icon: 'layers', searchable: false, render: () => <SkinWhereDialog /> },
     [RESTORE_DIALOG]: { title: 'Restore to default', icon: 'refresh', searchable: false, render: () => <RestoreDefaultDialog /> },
     [LEVEL_EDITOR_DIALOG]: { title: 'Settings levels', icon: 'sliders', searchable: true, render: () => <LevelEditor /> },

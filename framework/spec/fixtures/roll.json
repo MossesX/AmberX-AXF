@@ -15,6 +15,7 @@
     "container": true,
     "gauge": true,
     "meter": true,
+    "table": true,
     "banner": true,
     "clock": false,
     "search-bar": false,
@@ -65,9 +66,12 @@
           "arctic-daylight",
           "aurora-night",
           "carbon-amber",
+          "command-phosphor",
           "coral-studio",
           "crimson-dusk",
           "deep-ocean",
+          "executive-ivory",
+          "field-day",
           "forest-night",
           "fresh-dark",
           "fresh-light",
@@ -91,12 +95,14 @@
           "sage-paper",
           "sandstone",
           "slate-steel",
+          "studio-pro-slate",
           "windows-light"
         ],
         "style-theme": [
           "dense-grid",
           "enterprise",
           "executive",
+          "field",
           "fresh",
           "geometric",
           "glass-orbit",
@@ -107,6 +113,7 @@
           "sharp-terminal",
           "soft-studio",
           "soft-touch",
+          "studio-pro",
           "swiss",
           "terminal-pro",
           "windows"
@@ -116,10 +123,13 @@
           "canvas-studio",
           "classic-ide",
           "command-center",
+          "command",
           "console-pro",
           "data-grid",
           "document-reader",
           "enterprise-shell",
+          "executive",
+          "field",
           "focus-top",
           "kiosk",
           "portal-top",
@@ -127,6 +137,7 @@
           "signature-dock",
           "split-review",
           "studio-dock",
+          "studio-pro",
           "windows-explorer"
         ],
         "app-menu": [
@@ -400,6 +411,13 @@
           "segments",
           "steps",
           "striped-pill"
+        ],
+        "table": [
+          "command",
+          "executive",
+          "field",
+          "standard",
+          "studio-pro"
         ],
         "banner": [
           "amberx-accent",
@@ -483,9 +501,12 @@
           "arctic-daylight",
           "aurora-night",
           "carbon-amber",
+          "command-phosphor",
           "coral-studio",
           "crimson-dusk",
           "deep-ocean",
+          "executive-ivory",
+          "field-day",
           "forest-night",
           "fresh-dark",
           "fresh-light",
@@ -509,12 +530,14 @@
           "sage-paper",
           "sandstone",
           "slate-steel",
+          "studio-pro-slate",
           "windows-light"
         ],
         "style-theme": [
           "dense-grid",
           "enterprise",
           "executive",
+          "field",
           "fresh",
           "geometric",
           "glass-orbit",
@@ -525,6 +548,7 @@
           "sharp-terminal",
           "soft-studio",
           "soft-touch",
+          "studio-pro",
           "swiss",
           "terminal-pro",
           "windows"
@@ -534,10 +558,13 @@
           "canvas-studio",
           "classic-ide",
           "command-center",
+          "command",
           "console-pro",
           "data-grid",
           "document-reader",
           "enterprise-shell",
+          "executive",
+          "field",
           "focus-top",
           "kiosk",
           "portal-top",
@@ -545,6 +572,7 @@
           "signature-dock",
           "split-review",
           "studio-dock",
+          "studio-pro",
           "windows-explorer"
         ],
         "app-menu": [
@@ -818,6 +846,13 @@
           "segments",
           "steps",
           "striped-pill"
+        ],
+        "table": [
+          "command",
+          "executive",
+          "field",
+          "standard",
+          "studio-pro"
         ],
         "banner": [
           "amberx-accent",
@@ -904,9 +939,12 @@
           "arctic-daylight",
           "aurora-night",
           "carbon-amber",
+          "command-phosphor",
           "coral-studio",
           "crimson-dusk",
           "deep-ocean",
+          "executive-ivory",
+          "field-day",
           "forest-night",
           "fresh-dark",
           "fresh-light",
@@ -930,12 +968,14 @@
           "sage-paper",
           "sandstone",
           "slate-steel",
+          "studio-pro-slate",
           "windows-light"
         ],
         "style-theme": [
           "dense-grid",
           "enterprise",
           "executive",
+          "field",
           "fresh",
           "geometric",
           "glass-orbit",
@@ -946,6 +986,7 @@
           "sharp-terminal",
           "soft-studio",
           "soft-touch",
+          "studio-pro",
           "swiss",
           "terminal-pro",
           "windows"
@@ -955,10 +996,13 @@
           "canvas-studio",
           "classic-ide",
           "command-center",
+          "command",
           "console-pro",
           "data-grid",
           "document-reader",
           "enterprise-shell",
+          "executive",
+          "field",
           "focus-top",
           "kiosk",
           "portal-top",
@@ -966,6 +1010,7 @@
           "signature-dock",
           "split-review",
           "studio-dock",
+          "studio-pro",
           "windows-explorer"
         ],
         "app-menu": [
@@ -1243,6 +1288,13 @@
           "steps",
           "striped-pill"
         ],
+        "table": [
+          "command",
+          "executive",
+          "field",
+          "standard",
+          "studio-pro"
+        ],
         "banner": [
           "amberx-accent",
           "amberx-branded",
@@ -1325,9 +1377,12 @@
           "arctic-daylight",
           "aurora-night",
           "carbon-amber",
+          "command-phosphor",
           "coral-studio",
           "crimson-dusk",
           "deep-ocean",
+          "executive-ivory",
+          "field-day",
           "forest-night",
           "fresh-dark",
           "fresh-light",
@@ -1351,12 +1406,14 @@
           "sage-paper",
           "sandstone",
           "slate-steel",
+          "studio-pro-slate",
           "windows-light"
         ],
         "style-theme": [
           "dense-grid",
           "enterprise",
           "executive",
+          "field",
           "fresh",
           "geometric",
           "glass-orbit",
@@ -1367,6 +1424,7 @@
           "sharp-terminal",
           "soft-studio",
           "soft-touch",
+          "studio-pro",
           "swiss",
           "terminal-pro",
           "windows"
@@ -1376,10 +1434,13 @@
           "canvas-studio",
           "classic-ide",
           "command-center",
+          "command",
           "console-pro",
           "data-grid",
           "document-reader",
           "enterprise-shell",
+          "executive",
+          "field",
           "focus-top",
           "kiosk",
           "portal-top",
@@ -1387,6 +1448,7 @@
           "signature-dock",
           "split-review",
           "studio-dock",
+          "studio-pro",
           "windows-explorer"
         ],
         "app-menu": [
@@ -1660,6 +1722,13 @@
           "segments",
           "steps",
           "striped-pill"
+        ],
+        "table": [
+          "command",
+          "executive",
+          "field",
+          "standard",
+          "studio-pro"
         ],
         "banner": [
           "amberx-accent",
@@ -1745,9 +1814,12 @@
           "arctic-daylight",
           "aurora-night",
           "carbon-amber",
+          "command-phosphor",
           "coral-studio",
           "crimson-dusk",
           "deep-ocean",
+          "executive-ivory",
+          "field-day",
           "forest-night",
           "fresh-dark",
           "fresh-light",
@@ -1771,12 +1843,14 @@
           "sage-paper",
           "sandstone",
           "slate-steel",
+          "studio-pro-slate",
           "windows-light"
         ],
         "style-theme": [
           "dense-grid",
           "enterprise",
           "executive",
+          "field",
           "fresh",
           "geometric",
           "glass-orbit",
@@ -1787,6 +1861,7 @@
           "sharp-terminal",
           "soft-studio",
           "soft-touch",
+          "studio-pro",
           "swiss",
           "terminal-pro",
           "windows"
@@ -1796,10 +1871,13 @@
           "canvas-studio",
           "classic-ide",
           "command-center",
+          "command",
           "console-pro",
           "data-grid",
           "document-reader",
           "enterprise-shell",
+          "executive",
+          "field",
           "focus-top",
           "kiosk",
           "portal-top",
@@ -1807,6 +1885,7 @@
           "signature-dock",
           "split-review",
           "studio-dock",
+          "studio-pro",
           "windows-explorer"
         ],
         "app-menu": [
@@ -2050,6 +2129,13 @@
           "steps",
           "striped-pill"
         ],
+        "table": [
+          "command",
+          "executive",
+          "field",
+          "standard",
+          "studio-pro"
+        ],
         "banner": [
           "amberx-accent",
           "amberx-branded",
@@ -2132,9 +2218,12 @@
           "arctic-daylight",
           "aurora-night",
           "carbon-amber",
+          "command-phosphor",
           "coral-studio",
           "crimson-dusk",
           "deep-ocean",
+          "executive-ivory",
+          "field-day",
           "forest-night",
           "fresh-dark",
           "fresh-light",
@@ -2158,12 +2247,14 @@
           "sage-paper",
           "sandstone",
           "slate-steel",
+          "studio-pro-slate",
           "windows-light"
         ],
         "style-theme": [
           "dense-grid",
           "enterprise",
           "executive",
+          "field",
           "fresh",
           "geometric",
           "glass-orbit",
@@ -2174,6 +2265,7 @@
           "sharp-terminal",
           "soft-studio",
           "soft-touch",
+          "studio-pro",
           "swiss",
           "terminal-pro",
           "windows"
@@ -2183,10 +2275,13 @@
           "canvas-studio",
           "classic-ide",
           "command-center",
+          "command",
           "console-pro",
           "data-grid",
           "document-reader",
           "enterprise-shell",
+          "executive",
+          "field",
           "focus-top",
           "kiosk",
           "portal-top",
@@ -2194,6 +2289,7 @@
           "signature-dock",
           "split-review",
           "studio-dock",
+          "studio-pro",
           "windows-explorer"
         ],
         "app-menu": [
@@ -2467,6 +2563,13 @@
           "segments",
           "steps",
           "striped-pill"
+        ],
+        "table": [
+          "command",
+          "executive",
+          "field",
+          "standard",
+          "studio-pro"
         ],
         "banner": [
           "amberx-accent",

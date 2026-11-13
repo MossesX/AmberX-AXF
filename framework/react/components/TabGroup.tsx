@@ -77,7 +77,9 @@ export function tabGroupDataFor(rt: AxfRuntime, id: string, hostAsset?: string):
   const pick = rt.settings.get(CHROME_INSTANCE_ASSET_KEY('tab-group', id));
   const pickId = typeof pick === 'string' && pick ? pick : hostAsset;
   const base = (pickId && rt.registry.get('tab-group', pickId)?.data) || rt.assetOrNull('tab-group')?.data || null;
-  return normalizeTabGroup(chromeInstanceData('tab-group', base as Partial<TabGroupData> | null, rt.settings.get(CHROME_INSTANCE_KEY('tab-group', id))));
+  // skin@2: the skin's behaviour (position, overflow, style, display) sits over the asset; the row's own override still wins
+  const skinned = rt.withBehaviour('tab-group', (base ?? {}) as Partial<TabGroupData>);
+  return normalizeTabGroup(chromeInstanceData('tab-group', skinned, rt.settings.get(CHROME_INSTANCE_KEY('tab-group', id))));
 }
 
 /** The row's effective tab-group data, live (re-renders on its settings and on any asset swap). */

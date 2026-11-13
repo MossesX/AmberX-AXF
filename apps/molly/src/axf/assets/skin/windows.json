@@ -3,8 +3,8 @@
   "type": "skin",
   "id": "windows",
   "name": "Windows",
-  "version": "1.0.0",
-  "description": "Makes the app look like a Windows 11 program: Segoe UI, Mica colours, a title bar, a menu bar, an Explorer layout, and Windows-style menus, dialogs, buttons and scrollbars, the AmberX outline icon pack, and square-cornered widgets (labels, badges, counters, avatars, progress) through its style parts. It runs inside the browser, so it can't replace the real OS title bar or native pickers such as the file picker. Segoe UI needs a device that has the font.",
+  "version": "2.0.0",
+  "description": "Makes the app look and behave like a Windows 11 program: Segoe UI, Mica colours, a title bar, a menu bar, an Explorer layout with a sidebar, boxed tabs on top, modal dialogs, right-click menus with flyout sub menus, confirm dialogs on destructive buttons, compact grid tables, Windows-style buttons and scrollbars, the AmberX outline icon pack, and square-cornered widgets (labels, badges, counters, avatars, progress, clocks) through its style parts. It runs inside the browser, so it can't replace the real OS title bar or native pickers such as the file picker. Segoe UI needs a device that has the font.",
   "author": "AmberX AXF",
   "tags": [
     "windows",
@@ -26,6 +26,19 @@
       "context-menu": "windows",
       "toolbar": "windows",
       "container": "windows",
+      "nav-menu": "sidebar-list",
+      "tab-group": "boxed",
+      "popup": "corner-solid",
+      "slider": "classic-round",
+      "gauge": "classic-arc",
+      "meter": "segments",
+      "table": "standard",
+      "settings": "standard",
+      "dock-layout": "main-side",
+      "nav-style": "standard",
+      "behavior-theme": "brisk",
+      "branding": "amberx",
+      "agent-card": "corporate-badge",
       "typography": "windows",
       "density": "compact",
       "sizing": "compact"
@@ -76,6 +89,65 @@
       },
       "search-bar": {
         "radius": "sm"
+      },
+      "clock": {
+        "fontFamily": "system",
+        "fontWeight": "400"
+      },
+      "logo": {
+        "radius": "none"
+      },
+      "theme-switch": {
+        "radius": "sm"
+      },
+      "spacer": {
+        "padding": "none"
+      },
+      "divider": {
+        "borderColor": "muted"
+      }
+    },
+    "behaviour": {
+      "app-menu": {
+        "form": "menubar"
+      },
+      "toolbar": {
+        "placement": "top",
+        "tapConfirm": "default",
+        "labels": "icons"
+      },
+      "nav-menu": {
+        "mode": "sidebar",
+        "side": "left"
+      },
+      "context-menu": {
+        "form": "menu",
+        "submenus": "flyout"
+      },
+      "tab-group": {
+        "position": "top",
+        "overflow": "scroll",
+        "style": "boxed",
+        "display": "both"
+      },
+      "dialog": {
+        "presentation": "modal",
+        "panelSide": "right"
+      },
+      "button": {
+        "press": "theme",
+        "confirm": "destructive",
+        "confirmBy": "dialog",
+        "holdMs": 600
+      },
+      "table": {
+        "form": "grid",
+        "density": "compact",
+        "rowActions": "hover",
+        "stickyHeader": true
+      },
+      "banner": {
+        "placement": "top"
       }
     }
   }

@@ -81,9 +81,10 @@ export class HubSync {
 
   start(): this {
     const c = this.cfg;
-    // look: an app that already attached a source (developer.hub, the console's own) keeps it
+    // look: an app that already attached a source (developer.hub, the console's own) keeps it; an app whose server said
+    // its look is local only (appearanceHub off, rt.appearanceLocalOnly) gets no hub source from here either
     if (c.look !== 'off') {
-      if (this.rt.hasAppearanceSource()) this.lookOwn = true;
+      if (this.rt.hasAppearanceSource() || this.rt.appearanceLocalOnly()) this.lookOwn = true;
       else {
         const inner = new HubAppearanceSource({ hub: c.hub, appId: this.appId, fetchImpl: this.opts.fetchImpl });
         const src = c.look === 'follow' ? new FollowSource(inner) : inner;

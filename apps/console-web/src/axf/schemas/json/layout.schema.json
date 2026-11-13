@@ -50,7 +50,8 @@
           "enum": [
             "left",
             "right",
-            "top"
+            "top",
+            "bottom"
           ],
           "description": "token --fx-layout-nav"
         },

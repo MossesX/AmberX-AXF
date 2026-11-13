@@ -169,7 +169,8 @@
       "options": [
         "left",
         "right",
-        "top"
+        "top",
+        "bottom"
       ],
       "default": "left"
     },
@@ -661,7 +662,7 @@
       "data.statusHeight must be a whole number"
     ],
     "bad-words": [
-      "data.nav must be one of: left, right, top",
+      "data.nav must be one of: left, right, top, bottom",
       "data.toolbarPosition must be one of: top, bottom",
       "data.inspector must be one of: left, right, none",
       "data.showMenubar must be true or false"

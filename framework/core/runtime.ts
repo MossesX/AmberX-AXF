@@ -10,8 +10,8 @@ import { announceWatchLiveRuntime } from './watch-live';
 import { ActionBus, FRAMEWORK_MODULE, STANDARD_ACTIONS, type ActionContext } from './engines/actions';
 import { colorThemeVars, scrollbarVars, styleThemeVars, type VarMap } from './engines/theme';
 import { scaleThemeVars } from './engines/scale';
-import { LAYOUT_VIEWPORTS, layoutViewports, layoutVars } from './engines/layout';
-import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, gaugeStyle, meterStyle, navMenuStyle, popupStyle, sliderStyle, tabGroupStyle, toolbarStyle } from './engines/components';
+import { LAYOUT_VIEWPORTS, layoutViewports, layoutVars, normalizeLayout } from './engines/layout';
+import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, gaugeStyle, meterStyle, navMenuStyle, popupStyle, sliderStyle, tabGroupStyle, tableStyle, toolbarStyle } from './engines/components';
 import { CUSTOM_KEY, customizableTypes, customizeSheet, effectiveCustom, normalizeCustomSlot, type CustomSlot, type CustomValues } from './engines/customize';
 import { CONTROL_TOKEN_SLOTS, applyTokenOverrides, effectiveTokenOverrides } from './engines/control-tokens.mjs';
 import { gateFor, hasPermission, resolvePermissions } from './engines/uac';
@@ -32,7 +32,7 @@ import { SearchIndex } from './engines/search';
 import { STYLE_PACKAGE_TYPE, stepPackage, stylePackageSlots, type StylePackageData } from './engines/stylepackage';
 import { appMenuSearchEntries, chromeToggleItems, compileAppMenu, compileProviderItems, mergeAppMenu, resolveChecked, type AppMenuContribution, type AppMenuEnv, type CompiledAppMenu, type CompiledMenuItem, type MergedAppMenu, type MenuSearchEntry, type ProviderOptions } from './engines/appmenu';
 import { isSkinMode, skinModeColor, skinModePair } from './engines/skin-modes.mjs';
-import { backToSkin, composeLookAt, globalSkinOf, isSubScopeKey, lookAfterChange, newAppLook, normalizeSkin, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, setInheritSkin, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorOf, skinCoverage, skinCovers, skinEntries, skinFromDesignPackage, skinScopeDomId, skinScopeOf, snapshotLook, undoRestore, SKIN_COLOR_SLOT, SKIN_ICON_PACK_KEY, SKIN_TYPE, type AppLookDocument, type AppLookStore, type ComposedLook, type CoverageRow, type ResolvedSkin, type SkinColor, type SkinData, type SkinEntry, type SkinScope, type SkinScopeState, foldLegacyPicks, isFoldedPickType, lookNeedsMigration, migrateLookSettings, parseLegacyLook, settingsNeedMigration, skinSlots, isRetiredLookKey, LEGACY_LOOK_KEY, SKIN_SWAPPABLE_SECTION } from './engines/skin';
+import { axisValuesText, backToSkin, backToSkinBehaviour, behaviourAttrs, behaviourKey, behaviourTokenVars, composeLookAt, normalizeAxisValue, globalSkinOf, isSubScopeKey, lookAfterChange, newAppLook, normalizeSkin, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, setInheritSkin, setScopeSkin, setSkinBehaviour, setSkinColorTheme, setUseSkin, skinApplyBehaviour, skinBehaviourAxes, skinBehaviourFieldsOf, skinBehaviourOverrides, skinBehaviourPicks, skinBehaviourResolve, skinBehaviourValue, skinColorOf, skinCoverage, skinCovers, skinDescribeBehaviour, skinEntries, skinFromDesignPackage, skinScopeDomId, skinScopeOf, snapshotLook, undoRestore, SKIN_COLOR_SLOT, SKIN_ICON_PACK_KEY, SKIN_TYPE, type AppLookDocument, type AppLookStore, type BehaviourDescription, type BehaviourMap, type BehaviourValue, type ComposedLook, type CoverageRow, type ResolvedSkin, type SkinColor, type SkinCoversRow, type SkinData, type SkinEntry, type SkinScope, type SkinScopeState, foldLegacyPicks, isFoldedPickType, lookNeedsMigration, migrateLookSettings, parseLegacyLook, settingsNeedMigration, skinSlots, isRetiredLookKey, LEGACY_LOOK_KEY, SKIN_SWAPPABLE_SECTION } from './engines/skin';
 import { DESIGN_APPLIED_KEY, DESIGN_OVERRIDABLE, DESIGN_OVERRIDES_KEY, DESIGN_PACKAGE_TYPE, PACKAGE_APPLIED_KEY, captureDesignPackage, designLookSlots, isRetiredLookSetting, designPackageSlots, isAppearanceSetting, normalizeDesignOverrides, normalizeDesignPackage, overrideAfterPick, packageSettingsPlan, type DesignOverrides } from './engines/designpackage';
 import { behaviorStyle, confirmBeforeDelete, normalizeBehavior, vibrationPattern } from './engines/behavior';
 import { navStyleOutput, normalizeNavStyle, type NavStyleData } from './engines/navstyle';
@@ -54,7 +54,9 @@ import {
   type AxfManifest,
   type AxfState,
   type Gate,
+  type LayoutData,
   type MenuActResult,
+  type TableData,
   type MenuItem,
   type MenuItemButton,
   type NavItem,
@@ -132,6 +134,8 @@ export const SPACING_KEY = 'axf.appearance.spacing';
 export const APPEARANCE_LOCK_KEY = 'axf.lock.appearance';
 /** app-look@1 of an app without a hub source (engines/skin.ts). Not an appearance setting: it holds them. */
 export const APP_LOOK_KEY = 'axf.skin.look';
+/** The navigation drawer's open state (skin@2 nav-menu mode drawer), per device. */
+export const NAV_DRAWER_KEY = 'axf.nav.drawer';
 /** The app whose colours the shared document's palette follows (axHub's own pages draw with it). */
 const HUB_PALETTE_APP = 'axhub-web';
 export const LOCKED_APPEARANCE_PERMS: readonly string[] = ['assets.swap', 'assets.import'];
@@ -505,6 +509,18 @@ export class AxfRuntime {
 
   /** Is a source attached (developer app)? */
   hasAppearanceSource(): boolean { return this.appearanceSource !== null; }
+
+  /**
+   * The app's own server said its look is local only (`appearanceHub: off`, AXF_APPEARANCE_HUB=off: local development,
+   * the theme-swap check). While on, libraries that would attach a hub source of their own (hubsync's look sync) keep
+   * off, so the app's look stays on this device and skins can be used and previewed from the local look document.
+   */
+  private appearanceLocal = false;
+  appearanceLocalOnly(): boolean { return this.appearanceLocal; }
+  setAppearanceLocalOnly(on: boolean): void {
+    this.appearanceLocal = on;
+    if (on && this.appearanceSource) this.detachAppearanceSource();
+  }
 
   /** Is `source` the one attached right now? Libraries that attach a source detach only their own (Oct 28 2026). */
   appearanceSourceIs(source: AppearanceSource | null | undefined): boolean { return !!source && this.appearanceSource === source; }
@@ -933,9 +949,101 @@ export class AxfRuntime {
   skinCoverage(): CoverageRow[] { return skinCoverage(); }
 
   /** What one skin (or design package) sets or styles, type by type. */
-  skinCovers(id: string): { type: string; by: CoverageRow['by']; covered: boolean; how: string[] }[] {
+  skinCovers(id: string): SkinCoversRow[] {
     const s = this.skinData(id);
     return s ? skinCovers(s) : [];
+  }
+
+  /* ---- skin@2 behaviour (engines/skin-behaviour.mjs): what the skin in force here says each control should do ---- */
+
+  /** The asset field a behaviour axis layers on, from the asset active at this place (a scoped view reads its own slots). */
+  private behaviourAssetField(type: string, field: string): unknown {
+    const data = this.assetOrNull(type as AssetType)?.data as Record<string, unknown> | undefined;
+    return data ? data[field] : undefined;
+  }
+  /** The behaviour picks in force at this place (the skin's, the chain's overrides over it), read through this view's settings. */
+  behaviourPicks(): BehaviourMap { return skinBehaviourPicks((k) => this.settings.get(k)); }
+  /** Every type and axis at this place, filled: the pick > the asset's field > today's behaviour. What the --fx-bhv-* tokens carry. */
+  behaviourResolved(): BehaviourMap { return skinBehaviourResolve(this.behaviourPicks(), (t, f) => this.behaviourAssetField(t, f)); }
+  /**
+   * One axis at a component. `instance` = the row's own chrome-settings override of the axis's field
+   * (axf.chrome.<type>.<row>, chrome-settings@1), which still beats the skin; then the skin's pick here; then the
+   * asset's field; then today's behaviour. Undefined for an axis the registry doesn't declare.
+   */
+  behaviour(type: string, axis: string, instance?: unknown): BehaviourValue | undefined {
+    const a = skinBehaviourAxes(type)[axis];
+    if (!a) return undefined;
+    return skinBehaviourValue(type, axis, { instance, pick: this.settings.get(behaviourKey(type, axis)), asset: a.field ? this.behaviourAssetField(a.of ?? type, a.field) : undefined });
+  }
+  /** Every axis of one type at this place (a row's own overrides are the component's business). */
+  behaviourOf(type: string): Record<string, BehaviourValue> {
+    const out: Record<string, BehaviourValue> = {};
+    for (const axis of Object.keys(skinBehaviourAxes(type))) { const v = this.behaviour(type, axis); if (v !== undefined) out[axis] = v; }
+    return out;
+  }
+  /** A type's asset data with the skin's behaviour picks written over the fields its axes layer on (before a row's own override goes on top). */
+  withBehaviour<T extends object>(type: string, data: T | null | undefined): T { return skinApplyBehaviour(type, data, this.behaviourPicks()); }
+  /** The fields the behaviour in force sets on another type's asset (the layout: nav side, toolbar position). */
+  behaviourFieldsOf(ofType: string): Record<string, BehaviourValue> { return skinBehaviourFieldsOf(ofType, this.behaviourPicks()); }
+  /**
+   * The layout the shell draws (skin@2): the layout asset with its token overrides, the behaviour fields that layer on
+   * it (toolbar placement, nav side), and what the skin's navigation and application-menu modes imply: top-bar / bottom-tabs
+   * move the nav to that edge, rail narrows it to the layout's own phone nav item width, a menu form other than the menu
+   * bar turns the menu bar row off (the compact menu button takes its place).
+   */
+  shellLayout(): LayoutData {
+    const base = { ...this.withTokenOverrides('tokens.layout', 'layout', this.asset('layout').data), ...(this.behaviourFieldsOf('layout') as Partial<LayoutData>) } as LayoutData;
+    const nav = this.behaviourOf('nav-menu');
+    const mode = String(nav.mode ?? 'sidebar');
+    const out: LayoutData = { ...base };
+    if (mode === 'top-bar') out.nav = 'top';
+    else if (mode === 'bottom-tabs') out.nav = 'bottom';
+    else if (out.nav === 'top' || out.nav === 'bottom') out.nav = nav.side === 'right' ? 'right' : 'left';
+    if (mode === 'rail') out.navWidth = (normalizeLayout(base) as { phoneNavItemMin: number }).phoneNavItemMin;
+    if (String(this.behaviour('app-menu', 'form') ?? 'menubar') !== 'menubar') out.showMenubar = false;
+    return out;
+  }
+  /** The navigation mode the skin gives this place (sidebar, rail, drawer, bottom-tabs, top-bar). */
+  navMode(): string { return String(this.behaviour('nav-menu', 'mode') ?? 'sidebar'); }
+  /** The navigation drawer (nav mode drawer): open or shut, per device. */
+  navDrawerOpen(): boolean { return this.settings.get(NAV_DRAWER_KEY) === true; }
+  setNavDrawer(open: boolean): void { if (open) this.settings.set(NAV_DRAWER_KEY, true); else this.settings.clear(NAV_DRAWER_KEY); }
+  /**
+   * Override one behaviour axis inside the skin in force (`value` null = back to the skin's); `key` = a ui: / plugin:
+   * scope, or the app. The skin, its id and every other pick stay (the same rule as the colour theme).
+   */
+  setSkinBehaviour(type: string, axis: string, value: BehaviourValue | null, key?: string): boolean {
+    const a = skinBehaviourAxes(type)[axis];
+    if (!a) { this.toast(`${type} has no behaviour axis "${axis}".`, 'warning', 'Skin'); return false; }
+    if (value !== null && normalizeAxisValue(a, value) === undefined) { this.toast(`${type}.${axis} takes ${axisValuesText(a)}.`, 'warning', 'Skin'); return false; }
+    if (value !== null) value = normalizeAxisValue(a, value)!;
+    if (key && !isSubScopeKey(key)) { this.toast(`"${key}" is not a UI or plugin scope.`, 'warning', 'Skin'); return false; }
+    if (!this.skinAt(key ? skinScopeOf(key, this.manifest.app.id) : null).id) { this.toast('No skin is in force here; behaviour comes from a skin.', 'warning', 'Skin'); return false; }
+    if (!this.changeLook((cur) => setSkinBehaviour(cur, type, axis, value, key))) return false;
+    this.terminal.ok('hot-swap', value === null ? `${type}.${axis}: back to the skin's` : `${type}.${axis} = ${String(value)}${key ? ` inside ${key}` : ''}`);
+    return true;
+  }
+  /** Back to the skin's behaviour: every override at the level, or one type's. */
+  backToSkinBehaviour(type = '', key?: string): boolean { return this.changeLook((cur) => backToSkinBehaviour(cur, type, key)); }
+  /** The behaviour overrides saved at a level (the "overridden" marks in Settings → Appearance). */
+  skinBehaviourOverrides(key?: string): BehaviourMap { return skinBehaviourOverrides(this.appLook(), key) as BehaviourMap; }
+  /** What one skin changes, axis by axis (skin@2): every type with behaviour, the skin's value or today's. */
+  skinBehaviourDescribe(id: string): BehaviourDescription[] {
+    const s = this.skinData(id);
+    return s ? skinDescribeBehaviour(s.behaviour) : [];
+  }
+  /**
+   * Set or clear the hub-wide skin on the shared appearance document (the `global` level: every app that follows the
+   * hub takes it). Needs an axHub source: an app without one keeps its own look only.
+   */
+  setGlobalSkin(id: string | null): boolean {
+    if (this.lockedByAppearance('assets.swap')) { this.lockedToast(); return false; }
+    if (!this.can('assets.swap')) { this.toast('Your role cannot change the look.', 'danger', 'Permission denied'); return false; }
+    if (id && !this.skinData(id)) { this.toast(`No skin "${id}" in this app.`, 'warning', 'Skin'); return false; }
+    if (!this.appearanceSource || !this.appearanceRunning) { this.toast('This app has no axHub source, so there is no hub-wide skin to set here.', 'warning', 'Skin'); return false; }
+    this.appearanceSource.save({ skin: id ? { id } : null });
+    this.terminal.ok('hot-swap', id ? `hub-wide skin ${id}` : 'hub-wide skin cleared');
+    return true;
   }
 
   /**
@@ -951,7 +1059,7 @@ export class AxfRuntime {
     // the app level from the same document (not the last composed look, which a store without a change feed leaves behind
     // for a moment after a pick): a colour theme switched inside the skin must not make every screen a scope of its own
     const app = resolveLookSkin(look, this.globalSkin(), { app: this.manifest.app.id });
-    if (here.id === app.id && JSON.stringify(here.overrides) === JSON.stringify(app.overrides) && (here.colorTheme ?? '') === (app.colorTheme ?? '')) { this.dropScope(skinScopeDomId(key)); return null; }
+    if (here.id === app.id && JSON.stringify(here.overrides) === JSON.stringify(app.overrides) && (here.colorTheme ?? '') === (app.colorTheme ?? '') && JSON.stringify(here.behaviour ?? {}) === JSON.stringify(app.behaviour ?? {})) { this.dropScope(skinScopeDomId(key)); return null; }
     const scopeId = skinScopeDomId(key);
     const resolve = (): ResolvedInterface => {
       const composed = composeLookAt(this.lastAppearance, this.appLook() ?? look, (id) => this.skinData(id), skinScopeOf(key, this.manifest.app.id));
@@ -959,7 +1067,7 @@ export class AxfRuntime {
       const r = resolveAppearance(composed.doc, has);
       // the skin in force at this level composes its sections: nothing re-reads a design package here (skins only, Nov 10 2026)
       const active: Record<string, string> = { ...r.slots };
-      return { active, spacing: r.spacing ?? this.spacing(), hidden: r.hidden, settings: (composed.doc.settings ?? {}) as Record<string, unknown>, branding: '', design: '', missing: [], parts: composed.parts } as ResolvedInterface & { parts: ComposedLook['parts'] };
+      return { active, spacing: r.spacing ?? this.spacing(), hidden: r.hidden, settings: (composed.doc.settings ?? {}) as Record<string, unknown>, branding: '', design: '', missing: [], parts: composed.parts, behaviour: composed.behaviour } as ResolvedInterface & { parts: ComposedLook['parts']; behaviour: ComposedLook['behaviour'] };
     };
     return this.scopedView(scopeId, `skin:${key}`, resolve, 'skin');
   }
@@ -1540,6 +1648,15 @@ export class AxfRuntime {
     if (!this.can(need)) {
       this.toast(`Your role needs "${need}" to change the ${assetTypeSpecs[type].label.toLowerCase()}.`, 'danger', 'Permission denied');
       return false;
+    }
+    // A skin is never "just a slot" (skin@2): swapping it turns Use skin on with that skin, look and behaviour at once, no
+    // reload (next / prev / random walk the picker's list, skins then design packages; default / off = the app's own look).
+    if (type === SKIN_TYPE) {
+      if (target === 'default' || target === 'off') return this.useSkin(false);
+      const ids = this.skinList().map((s) => s.id);
+      const i = ids.indexOf(this.skinInForce().id);
+      const pick = target === 'next' ? ids[(i + 1) % ids.length] : target === 'prev' ? ids[(i - 1 + ids.length) % ids.length] : target === 'random' ? ids[Math.floor(Math.random() * ids.length)] : target;
+      return !!pick && this.useSkin(true, pick);
     }
     // Skins only (Nov 10 2026, Brett: "remove all the styling and theme and layout stuff"): the style, layout and
     // behaviour themes, the scale assets and the packages are parts of the skin; only its colour theme is still swapped
@@ -2607,16 +2724,18 @@ export class AxfRuntime {
       buttonStyle(this.asset('button').data),
       sliderStyle(this.asset('slider').data),
       containerStyle(this.asset('container').data),
-      dialogStyle(this.asset('dialog').data),
+      // skin@2: the skin's behaviour picks sit over the asset's fields (dialog presentation, toolbar labels, tab rows, tables)
+      dialogStyle(this.withBehaviour('dialog', this.asset('dialog').data)),
       popupStyle(this.asset('popup').data),
       contextMenuStyle(this.asset('context-menu').data),
-      toolbarStyle(this.asset('toolbar').data),
+      toolbarStyle(this.withBehaviour('toolbar', this.asset('toolbar').data)),
       navMenuStyle(this.asset('nav-menu').data),
       appMenuStyle(this.asset('app-menu').data),
       // optional control types (older apps without them get the defaults)
       gaugeStyle(this.assetOrNull('gauge')?.data),
       meterStyle(this.assetOrNull('meter')?.data),
-      tabGroupStyle(this.assetOrNull('tab-group')?.data, this.slotHidden('tab-group')),
+      tabGroupStyle(this.withBehaviour('tab-group', this.assetOrNull('tab-group')?.data ?? {}), this.slotHidden('tab-group')),
+      tableStyle(this.withBehaviour('table', (this.assetOrNull('table')?.data ?? {}) as Partial<TableData>)),
     ];
     const vars: VarMap = {
       ...colorThemeVars(color),
@@ -2628,7 +2747,9 @@ export class AxfRuntime {
         density: this.withTokenOverrides('tokens.density', 'density' as AssetType, this.assetOrNull('density' as AssetType)?.data ?? (this.settings.get(CONTROL_TOKEN_SLOTS['tokens.density'].key) ? {} : undefined)),
         sizing: this.withTokenOverrides('tokens.sizing', 'sizing' as AssetType, this.assetOrNull('sizing' as AssetType)?.data ?? (this.settings.get(CONTROL_TOKEN_SLOTS['tokens.sizing'].key) ? {} : undefined)),
       }),
-      ...layoutVars(this.inspectorLayout(this.withTokenOverrides('tokens.layout', 'layout', this.asset('layout').data)), this.hiddenSlots()),
+      // the skin's behaviour may move the grid (nav side and mode, toolbar position, menu bar: shellLayout) before the inspector and hidden slots apply;
+      // a drawer nav leaves the grid (it opens over the page)
+      ...layoutVars(this.inspectorLayout(this.shellLayout()), this.navMode() === 'drawer' ? [...this.hiddenSlots(), 'nav-menu'] : this.hiddenSlots()),
       ...bannerVars(this.assetOrNull('banner')?.data, this.slotHidden('banner')),
       // branding package (optional): palette slots as --fx-brand-1/2/3, the brand name, the accent when it asks for it
       ...brandingVars(this.assetOrNull('branding' as AssetType)?.data ?? { brand: { name: '' }, marks: {} }),
@@ -2651,6 +2772,10 @@ export class AxfRuntime {
       Object.assign(vars, p.vars);
       Object.assign(attrs, p.attrs);
     }
+    // skin@2 behaviour: every axis as --fx-bhv-<type>-<axis> and data-fx-bhv-<type>-<axis> (the skin's pick, else the asset's field, else today's)
+    const behaviourNow = this.behaviourResolved();
+    Object.assign(vars, behaviourTokenVars(behaviourNow));
+    Object.assign(attrs, behaviourAttrs(behaviourNow));
     return { vars, attrs };
   }
 
@@ -2775,7 +2900,7 @@ export class AxfRuntime {
       // a skin scope: its key (icon pack lookups) and the skin's parts for its sheet (customSheet reads lastComposed)
       ...(skinScope ? {
         scopeKey: { value: interfaceId.slice(5) },
-        lastComposed: { get: () => ({ parts: (resolved() as ResolvedInterface & { parts?: ComposedLook['parts'] }).parts ?? {} }) },
+        lastComposed: { get: () => { const r = resolved() as ResolvedInterface & { parts?: ComposedLook['parts']; behaviour?: ComposedLook['behaviour'] }; return { parts: r.parts ?? {}, behaviour: r.behaviour ?? {} }; } },
       } : {}),
       // swaps inside a scope change the app: the palette pushed to axHub is the app's, not the scope's interface
       // (fix Oct 29 2026: the hub document carried the AmberX Signature tab's saffron palette over fresh-light)
@@ -3014,6 +3139,22 @@ export class AxfRuntime {
     // skin.mode:light|dark|system: the skin's light or dark colour theme, or follow the device (skin-modes@1)
     a.register('skin.mode', ([m]) => { this.setSkinMode(m || (this.skinColorTheme().id === skinModePair(this.registry.get(SKIN_TYPE as AssetType, this.skinInForce().id)).dark ? 'light' : 'dark')); }, { label: 'Switch the skin to light, dark or follow the system', requires: 'assets.swap', params: true });
     if (this.skinMode() === 'system') queueMicrotask(() => { if (this.skinInForce().id) this.setSkinMode('system'); });
+    // skin@2 behaviour: skin.behaviour:<type>:<axis>:<value|default> overrides one axis inside the skin in force (the skin stays);
+    // skin.behaviour:<ui|plugin>:<id>:<type>:<axis>:<value> does it for one scope; skin.behaviour.reset[:<type>] goes back to the skin's
+    a.register('skin.behaviour', (p) => {
+      const scoped = (p[0] === 'ui' || p[0] === 'plugin') && !!p[1];
+      const [type, axis, value] = scoped ? p.slice(2) : p;
+      if (!type || !axis) { this.toast('skin.behaviour needs <type>:<axis>:<value>.', 'warning', 'Skin'); return; }
+      const v = value === undefined || value === '' || value === 'default' || value === 'skin' ? null : value === 'true' ? true : value === 'false' ? false : /^-?\d+(\.\d+)?$/.test(value) ? Number(value) : value;
+      this.setSkinBehaviour(type, axis, v, scoped ? `${p[0]}:${p[1]}` : undefined);
+    }, { label: 'Change one behaviour inside the skin', requires: 'assets.swap', params: true });
+    a.register('skin.behaviour.reset', ([type]) => { this.backToSkinBehaviour(type || ''); }, { label: "Back to the skin's behaviour", requires: 'assets.swap', params: true });
+    // skin.preview:<id|off> shows a skin on this screen without saving anything (the gallery's live preview, for voice / API)
+    a.register('skin.preview', ([id]) => { this.previewSkin(!id || id === 'off' || id === 'none' ? null : id); }, { label: 'Preview a skin without saving', requires: 'assets.swap', params: true });
+    // skin.global:<id|off> sets or clears the hub-wide skin (the global level) on the shared document
+    a.register('skin.global', ([id]) => { this.setGlobalSkin(!id || id === 'off' || id === 'none' ? null : id); }, { label: 'Set the hub-wide skin', requires: 'assets.swap', params: true });
+    // the navigation drawer (nav mode drawer): nav.drawer:open | close | toggle
+    a.register('nav.drawer', ([v]) => { this.setNavDrawer(v === 'open' ? true : v === 'close' ? false : !this.navDrawerOpen()); }, { label: 'Open or close the navigation drawer', params: true });
     a.register('skin.restore', () => this.restoreDefaultAppearance(), { label: 'Restore this app to its default look', requires: 'assets.swap' });
     a.register('skin.undo', () => { this.undoRestoreDefault(); }, { label: 'Undo Restore to default', requires: 'assets.swap' });
     // Scopes (skin-coverage@1): skin.inherit:on|off follows the hub-wide skin; skin.scope:<ui|plugin>:<id>:<on|off|inherit>[:<skin>] sets one level

@@ -1,0 +1,163 @@
+{
+  "$axf": "asset@1",
+  "type": "skin",
+  "id": "command",
+  "name": "Command",
+  "version": "1.0.0",
+  "description": "A keyboard-first skin: a command-palette application menu on Ctrl / Cmd+K, a hidden navigation drawer, tab rows docked at the bottom, inline Confirm / Cancel buttons, context menus as a searchable palette, terminal-style monospace tables, a labels-only toolbar with no tap-to-confirm, phosphor green on near-black with IBM Plex Mono headings. Built for people who never touch the mouse.",
+  "author": "AmberX AXF",
+  "tags": [
+    "skin",
+    "professional",
+    "keyboard",
+    "terminal",
+    "dark"
+  ],
+  "data": {
+    "layoutTheme": "command",
+    "colorTheme": "command-phosphor",
+    "styleTheme": "terminal-pro",
+    "behaviorTheme": "instant",
+    "assets": {
+      "banner": "amberx-thin",
+      "app-menu": "developer",
+      "toolbar": "text-commands",
+      "nav-menu": "power-rail",
+      "context-menu": "developer-tools",
+      "tab-group": "terminal",
+      "dialog": "terminal",
+      "popup": "terminal",
+      "button": "terminal",
+      "slider": "terminal",
+      "gauge": "digital",
+      "meter": "segments",
+      "table": "command",
+      "container": "terminal",
+      "settings": "standard",
+      "dock-layout": "ide",
+      "nav-style": "still",
+      "branding": "amberx",
+      "agent-card": "backstage-pass",
+      "typography": "compact",
+      "density": "compact",
+      "sizing": "compact"
+    },
+    "preview": {
+      "caption": "Keyboard-first: command palette, hidden drawer, bottom tabs, terminal tables."
+    },
+    "extras": {
+      "spacing": "tight",
+      "hidden": {
+        "toolbar": false,
+        "nav-menu": false,
+        "banner": false,
+        "app-menu": false
+      }
+    },
+    "iconPack": "pack-053",
+    "parts": {
+      "button": {
+        "radius": "none",
+        "fontFamily": "mono",
+        "textTransform": "uppercase",
+        "letterSpacing": "wide"
+      },
+      "action-button": {
+        "radius": "none",
+        "fontFamily": "mono"
+      },
+      "badge": {
+        "radius": "none",
+        "fontFamily": "mono"
+      },
+      "counter": {
+        "radius": "none",
+        "fontFamily": "mono",
+        "fontWeight": "700"
+      },
+      "label": {
+        "fontFamily": "mono",
+        "textTransform": "uppercase",
+        "letterSpacing": "wide"
+      },
+      "link": {
+        "hover": "underline",
+        "textColor": "accent",
+        "fontFamily": "mono"
+      },
+      "avatar": {
+        "radius": "none"
+      },
+      "progress": {
+        "radius": "none"
+      },
+      "status": {
+        "fontFamily": "mono",
+        "textTransform": "uppercase"
+      },
+      "search-bar": {
+        "radius": "none",
+        "fontFamily": "mono"
+      },
+      "clock": {
+        "fontFamily": "mono",
+        "fontWeight": "700"
+      },
+      "logo": {
+        "radius": "none"
+      },
+      "theme-switch": {
+        "radius": "none"
+      },
+      "spacer": {
+        "padding": "none"
+      },
+      "divider": {
+        "borderColor": "accent"
+      }
+    },
+    "behaviour": {
+      "app-menu": {
+        "form": "palette"
+      },
+      "toolbar": {
+        "placement": "top",
+        "tapConfirm": "off",
+        "labels": "labels"
+      },
+      "nav-menu": {
+        "mode": "drawer",
+        "side": "left"
+      },
+      "context-menu": {
+        "form": "palette",
+        "submenus": "inline"
+      },
+      "tab-group": {
+        "position": "bottom",
+        "overflow": "scroll",
+        "style": "plain",
+        "display": "text"
+      },
+      "dialog": {
+        "presentation": "modal",
+        "panelSide": "right"
+      },
+      "button": {
+        "press": "none",
+        "confirm": "destructive",
+        "confirmBy": "inline",
+        "holdMs": 600
+      },
+      "table": {
+        "form": "terminal",
+        "density": "compact",
+        "rowActions": "always",
+        "stickyHeader": true
+      },
+      "banner": {
+        "placement": "top"
+      }
+    }
+  }
+}
