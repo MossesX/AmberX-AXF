@@ -199,7 +199,9 @@ export function PluginThemePanel({ id, name }: { id: string; name: string }) {
       <p className="fx-muted" style={{ margin: 0 }}>{name} uses the app’s theme. Switch the override on to give it its own tokens on top of that theme: only what you change here is overridden, the rest follows the app (and a theme swap).</p>
       <fieldset className="axf-plugintheme__fieldset" disabled={locked}>
         <Switch label="Theme override" hint={look.on ? `${n} token${n === 1 ? '' : 's'} overridden in ${name}’s pages, dialogs, windows and settings.` : 'Off: the app’s theme.'} checked={look.on} onChange={(on) => save({ ...look, on })} />
-        {lookLocked && look.on && <Note tone="warning">The look is locked (Settings → Appearance → Lock the look): the override is kept but not applied until it is unlocked.</Note>}
+        {lookLocked && look.on && <Note tone="warning">{rt.appearanceLockReason() === 'hub'
+          ? 'Following axHub (Settings → Appearance → Get my skin only from axHub): the override is kept but not applied until that is off.'
+          : 'The look is locked (Settings → Appearance → Lock the look): the override is kept but not applied until it is unlocked.'}</Note>}
         {look.on && (
           <Container title={`Theme override tokens${n ? ` (${n} changed)` : ''}`} icon="sliders" collapsible defaultOpen>
             <div className="fx-stack">

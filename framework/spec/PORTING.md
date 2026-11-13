@@ -187,6 +187,16 @@ Build `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides`. Web
 - `chromeOverrideList(saved)`, `CONTROLLED_COLOR_KEY` / `controlledColorOf()` (chrome-settings-rules.mjs), actions `chrome.unset`, `chrome.edits`, `settings.controlled-colour`; spec `check-asset-overrides.mjs`.
 - look-migration@1: a folded colour pick lands as the skin's `colorTheme`, never `overrides['color-theme']` (fixture regenerated).
 
+## Deferred: skin from axHub only (Nov 13 2026)
+
+Build `console-skin-axhub-only`. Web only; the Kotlin twin is deferred (Android on hold):
+- `hubOnlyLook(look)` in `skin-rules.mjs` (the look drawn while an app takes its skin from axHub only: no own picks, no
+  scopes, follow the hub-wide skin, default snapshot kept), pinned by the `scopes.hubOnly` block of `spec/fixtures/skin.json`.
+- Runtime: `HUB_SKIN_ONLY_KEY` (`axf.lock.hubskin`), `hubSkinOnly()` / `setHubSkinOnly()`, `appearanceLockReason()` (the
+  switch drives the appearance lock), action `appearance.hubskin:on|off|toggle`; `customSheet()` keeps the skin's parts while locked.
+- Voice: "lock the console to the axHub skin" / "unlock the console from the axHub skin" (`console-control-voice.mjs`, Python
+  twin in `server/console_control.py`, fixture `console-control-voice.json`).
+
 ## Deferred: reliable console delivery + screen focus (Nov 11 2026)
 Web only (Android on hold, build `console-commands-reliable`), Kotlin twins when the Android side resumes:
 - `console-command@1` field `focus`, `consoleSplitFocus` ("<screen> <tab or item>"), `consoleMessageLate` + `CONSOLE_LATE_MS`,

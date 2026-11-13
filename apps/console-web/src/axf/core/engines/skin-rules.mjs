@@ -150,6 +150,17 @@ export function parseAppLook(text) {
 export function setUseSkin(look, on) { return { ...look, skin: { ...look.skin, use: on } }; }
 /** Follow the hub-wide skin while Use skin is off (Brett: "a switch to do it, but by default they're all their own"). */
 export function setInheritSkin(look, on) { return { ...look, skin: { ...look.skin, inherit: on } }; }
+/**
+ * The look drawn while an app takes its skin from axHub only (Settings → Appearance → "Get my skin only from axHub"):
+ * the hub-wide skin, with the colour theme axHub picked inside it, over the app's default snapshot. The app's own picks,
+ * its Use skin switch, skin, overrides and colour theme pick, and every UI / plugin scope are left out of what is drawn;
+ * they stay in the stored document (this only builds the document to compose), so switching back shows them again.
+ * The undo and migration stamps ride along unchanged. null stays null.
+ */
+export function hubOnlyLook(look) {
+  if (!look) return look;
+  return { ...look, own: {}, skin: { use: false, inherit: true, id: '', overrides: {} }, scopes: {} };
+}
 /** Pick a skin: a different one starts with no overrides and its own colour theme; the same one keeps both. */
 export function pickSkin(look, id) { return id === look.skin.id ? look : { ...look, skin: { ...withColor(look.skin, ''), id, overrides: {} } }; }
 /**

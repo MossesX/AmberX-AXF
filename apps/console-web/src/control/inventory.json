@@ -7,8 +7,8 @@
     "tabGroups": 22,
     "tabs": 76,
     "settingsTabs": 67,
-    "settings": 85,
-    "functions": 225,
+    "settings": 86,
+    "functions": 228,
     "buttons": 62,
     "plugins": 67
   },
@@ -2084,6 +2084,20 @@
   ],
   "settings": [
     {
+      "address": "view:settings/tab:settings.tabs=appearance/setting:axf.lock.hubskin",
+      "kind": "setting",
+      "label": "Get my skin only from axHub",
+      "key": "axf.lock.hubskin",
+      "type": "toggle",
+      "detail": "Settings › Appearance",
+      "keywords": [
+        "axf.lock.hubskin",
+        "Appearance"
+      ],
+      "runs": "console",
+      "file": "src/hubAppearance.tsx"
+    },
+    {
       "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=agent-voice/setting:agent-voice.banner",
       "kind": "setting",
       "label": "On the banner",
@@ -3908,10 +3922,53 @@
       "file": "plugins/approvals-banner/web/index.tsx"
     },
     {
+      "address": "function:overlay.expand",
+      "kind": "function",
+      "id": "overlay.expand",
+      "label": "Expand the overlay",
+      "detail": "Action · Approvals banner",
+      "keywords": [
+        "overlay.expand",
+        "overlay",
+        "expand"
+      ],
+      "plugin": "ai.amberx.axf.console.approvals-banner",
+      "file": "plugins/approvals-banner/web/index.tsx"
+    },
+    {
+      "address": "function:overlay.collapse",
+      "kind": "function",
+      "id": "overlay.collapse",
+      "label": "Collapse the overlay",
+      "detail": "Action · Approvals banner",
+      "keywords": [
+        "overlay.collapse",
+        "overlay",
+        "collapse"
+      ],
+      "plugin": "ai.amberx.axf.console.approvals-banner",
+      "file": "plugins/approvals-banner/web/index.tsx"
+    },
+    {
+      "address": "function:overlay.open",
+      "kind": "function",
+      "id": "overlay.open",
+      "label": "Open a page in the overlay (overlay.open:<url>)",
+      "detail": "Action · Approvals banner",
+      "keywords": [
+        "overlay.open",
+        "overlay",
+        "open"
+      ],
+      "params": true,
+      "plugin": "ai.amberx.axf.console.approvals-banner",
+      "file": "plugins/approvals-banner/web/index.tsx"
+    },
+    {
       "address": "function:approvals.overlay",
       "kind": "function",
       "id": "approvals.overlay",
-      "label": "Approval overlay (phone): on/off, edge, top, size, expand, show, idle, opacity, shrink, pages; expand or collapse its card; page[:<url>] opens a page in its full browser window, close shrinks it back to the toolbar (approvals.overlay:<what>:<value>)",
+      "label": "Overlay (phone): on/off, edge, top, size, opens, show, opacity, shrink; expand, collapse, open:<url>; bar[:off] (approvals.overlay:<what>:<value>)",
       "detail": "Action · Approvals banner",
       "keywords": [
         "approvals.overlay",
@@ -7993,7 +8050,7 @@
       "id": "ai.amberx.axf.console.approvals-banner",
       "label": "Approvals banner",
       "folder": "approvals-banner",
-      "version": "0.7.0",
+      "version": "0.8.0",
       "detail": "Plugin · module",
       "keywords": [
         "approvals-banner",

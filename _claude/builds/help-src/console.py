@@ -103,6 +103,7 @@ e("open-the-build-manager", "Open the Build manager", "Opens the Build manager."
 e("build-manager", "Build manager", "Its settings.", kind="tab")
 e("banner-while-a-build-runs", "Banner while a build runs", "Shows the Build manager banner whenever a build is running.", kind="toggle")
 e("banner-on-every-load", "Banner on every load", "Shows the banner every time the console opens.", kind="toggle")
+e("get-my-skin-only-from-axhub", "Get my skin only from axHub", "On: this console takes its skin, colour theme and every token from axHub's look only, and a change made on axHub shows up here live. Skin picks, overrides, rolls, packages and Token Control changes made only in this console are kept, not used; their controls are locked and say Following axHub. Off (the default): this console's own look.", more="Voice: \"lock the console to the axHub skin\" / \"unlock the console from the axHub skin\". REST, MCP and the CLI: the action appearance.hubskin:on|off (axf console action appearance.hubskin on), or the setting itself through console.settings / settings.set:axf.lock.hubskin:on|off.", related=["follow-the-hub-wide-skin"], kind="toggle")
 e("refresh-the-list-live-builds-and-history", "Refresh", "Reloads the list, the live builds and the history.")
 e("one-build", "One build", "Shows the steps of one build only.", kind="tab")
 e("already-built", "Already built", "This is already on main; nothing to do.")

@@ -15,6 +15,8 @@ export interface VoiceIntent {
   within?: string;
 }
 export const VOICE_FRAME: 'console-control-voice@1';
+/** The words the skin lock phrases search for: the setting's label. */
+export const HUB_SKIN_SETTING: string;
 export function cleanPhrase(text: unknown): string;
 export function voiceIntent(text: unknown): VoiceIntent | null;
 export function intentAddress(intent: VoiceIntent, hit?: string | null): string;
