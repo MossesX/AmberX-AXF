@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4729,
- "updatedAt": "2026-11-13T18:58:34.448Z",
+ "rev": 4730,
+ "updatedAt": "2026-11-13T18:58:54.442Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -201806,7 +201806,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:56:15.400Z",
-   "updatedAt": "2026-11-13T18:57:42.948Z",
+   "updatedAt": "2026-11-13T18:58:51.273Z",
    "builtAt": "",
    "notes": [
     {
@@ -201824,6 +201824,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"48b94bf2-12b4-437b-b4c4-434701764752\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-13T18:57:42.948Z"
+    },
+    {
+     "text": "Brett: in the overrides dialog everything starts collapsed except the path to the changes. Only the categories and parents that contain an overridden token are expanded, down to the changed tokens. Parents of a change (asset, category, sub-category) are drawn in a different colour (a token, e.g. accent) so you can follow the trail. IMPORTANT: steps s2 and s5 say the switches are mutually exclusive; that is SUPERSEDED by the earlier note. Both switches can be on, and only edited tokens stop inheriting from axHub.",
+     "at": "2026-11-13T18:58:51.273Z"
     }
    ],
    "approvals": [],
@@ -202063,7 +202067,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
