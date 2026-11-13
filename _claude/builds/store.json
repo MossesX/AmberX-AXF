@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4746,
- "updatedAt": "2026-11-13T19:06:27.457Z",
+ "rev": 4747,
+ "updatedAt": "2026-11-13T19:06:55.052Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -199048,7 +199048,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:30:38.922Z",
-   "updatedAt": "2026-11-13T19:03:03.122Z",
+   "updatedAt": "2026-11-13T19:06:37.485Z",
    "builtAt": "",
    "notes": [
     {
@@ -199110,6 +199110,10 @@
     {
      "text": "Two headless sessions (Greenlight Gina and Ping Paulie) are running Phase 1 in the same worktree at once; both edit the same files. Gina committed s1 (ad1da7487) and is finishing s2 while taking Paulie's on-disk edits as-is; the dispatcher double-launched this phase.",
      "at": "2026-11-13T19:01:25.369Z"
+    },
+    {
+     "text": "Double launch again: Paulie (run 2, 18:52) found the Fable session from run 1 (agent Greenlight Gina, pid 811375, started 18:39, session a2405ba5) still live in the same worktree and writing s2 (test.mjs, spec/check-ui-manager.mjs, fixtures/ui-manager.json, CI lines, catalog status cx.uimanager). Paulie committed and pushed s1 (b09c0e80a: engine + plugin + validate/schemas routes + PORTING row + plugins README line; the commit swept in the other session's test.mjs draft) and ticked s1, then stood down so two sessions do not both commit s2. The other session continues s2 on disk. Needs Brett: dispatch-gate must refuse a launch while a session for the same build is alive (third time: see the Earl/Paulie and Lenny/Paulie notes).",
+     "at": "2026-11-13T19:06:37.485Z"
     }
    ],
    "approvals": [],
@@ -199481,7 +199485,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 26,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
