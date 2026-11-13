@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4500,
- "updatedAt": "2026-11-13T17:22:07.809Z",
+ "rev": 4501,
+ "updatedAt": "2026-11-13T17:22:16.295Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -175482,7 +175482,7 @@
    "pr": "#564",
    "mergedAt": "2026-11-13T17:20:15Z",
    "createdAt": "2026-11-12T23:14:47.128Z",
-   "updatedAt": "2026-11-13T17:21:11.994Z",
+   "updatedAt": "2026-11-13T17:22:06Z",
    "builtAt": "2026-11-13T11:03:51.335Z",
    "notes": [
     {
@@ -175508,6 +175508,10 @@
     {
      "text": "Reconciler: PR #564 merged",
      "at": "2026-11-13T17:21:11.994Z"
+    },
+    {
+     "text": "Shipped manifest sm-stop-the-molly-guide-from-popping-up-and-talking-every-time-the-console-loads-n rev 1 sent to Shipped features (orchestrator): landed 5402a7ad6, 18 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-13T17:22:06Z"
     }
    ],
    "approvals": [],
@@ -175557,6 +175561,12 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "shipped": {
+    "id": "sm-stop-the-molly-guide-from-popping-up-and-talking-every-time-the-console-loads-n",
+    "rev": 1,
+    "at": "2026-11-13T17:22:06Z",
+    "landedCommit": "5402a7ad6b679a042757ff03e1528ce992d7a3cd"
    },
    "steps": [
     {
@@ -175659,7 +175669,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -181846,7 +181856,7 @@
    "mergedAt": "2026-11-13T17:16:09Z",
    "priority": "P0",
    "createdAt": "2026-11-13T07:12:21.823Z",
-   "updatedAt": "2026-11-13T17:21:11.994Z",
+   "updatedAt": "2026-11-13T17:22:08Z",
    "builtAt": "2026-11-13T12:35:19.912Z",
    "notes": [
     {
@@ -181948,6 +181958,10 @@
     {
      "text": "Reconciler: PR #556 merged",
      "at": "2026-11-13T17:21:11.994Z"
+    },
+    {
+     "text": "Shipped manifest sm-full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu rev 1 sent to Shipped features (orchestrator): landed 1d9d3815f, 124 file(s), 0 test line(s), 3 open.",
+     "at": "2026-11-13T17:22:08Z"
     }
    ],
    "approvals": [
@@ -182006,6 +182020,12 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "shipped": {
+    "id": "sm-full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu",
+    "rev": 1,
+    "at": "2026-11-13T17:22:08Z",
+    "landedCommit": "1d9d3815ff45de167ef3cb12cf8b8bdef4722d32"
    },
    "steps": [
     {
@@ -182788,7 +182808,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 58,
+   "rev": 59,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
