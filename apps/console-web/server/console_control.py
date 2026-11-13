@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 import re
+import unicodedata
 from pathlib import Path
 from typing import Any
 
@@ -300,6 +301,13 @@ def set_server_setting(spec: dict[str, Any], value: Any, by: str) -> dict[str, A
 
 # ---------------------------------------------------------------------- functions and buttons
 
+def slug(text: str) -> str:
+    """A label as an address id (= controlSlug in framework/react/controlTargets.ts): "Restore defaults" → "restore-defaults"."""
+    t = unicodedata.normalize("NFKD", str(text or "").lower())
+    t = "".join(ch for ch in t if not unicodedata.combining(ch))
+    return re.sub(r"[^a-z0-9]+", "-", t).strip("-")[:80]
+
+
 DESTRUCTIVE_RE = re.compile(r"(^|[.:_-])(delete|remove|purge|wipe|reset|uninstall|drop|clear|discard|revoke|destroy|erase|kill|force-?push|hard-?delete)([.:_-]|$)", re.I)
 DECIDING_RE = re.compile(r"(^|[.:_-])(approve|deny|reject|veto|shelve|decide|sign-?off)([.:_-]|$)", re.I)
 
@@ -318,14 +326,15 @@ def press_spec(address: str) -> dict[str, Any] | None:
     return None
 
 
-def check_press(spec: dict[str, Any] | None, address: str, confirm: Any) -> None:
-    """Deciding actions are Brett's own tap; destructive ones need `confirm` (the same rule the open console applies)."""
+def check_press(spec: dict[str, Any] | None, address: str, confirm: Any, owner: bool = False) -> None:
+    """Deciding actions are Brett's own tap (or his own signed-in session's voice: `owner`); destructive ones need `confirm`
+    (the same rule the open console applies)."""
     leaf = (address or "").rsplit("/", 1)[-1]
     word = leaf.split(":", 1)[-1]
     person = bool(spec and spec.get("personOnly")) or bool(DECIDING_RE.search(word))
     destructive = bool(spec and spec.get("destructive")) or bool(DESTRUCTIVE_RE.search(word))
     label = (spec or {}).get("label") or word
-    if person:
+    if person and not owner:
         raise ControlError("denied", f"{label} is a decision only Brett makes with his own tap", requires="person", personOnly=True)
     if destructive and not confirm:
         raise ControlError("confirmation_required", f"{label} deletes or resets something: send it again with confirm", confirm="required")
