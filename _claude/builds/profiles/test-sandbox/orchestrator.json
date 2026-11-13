@@ -1,0 +1,90 @@
+{
+ "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
+ "$axf": "orchestrator@1",
+ "updatedAt": "2026-11-13T17:18:27.657Z",
+ "rules": {
+  "sameSession": true,
+  "subAgents": false,
+  "approveModelSwitch": true,
+  "maxStepMinutes": 10
+ },
+ "builds": [
+  {
+   "id": "test-sandbox-sample-shipped-build",
+   "title": "[TEST DATA] Sample shipped build: landing page copy",
+   "category": "test data",
+   "detail": "TEST DATA for the Test Sandbox project (made by framework/cli/project-seed.mjs). Not real work: nothing was built or merged.",
+   "status": "complete",
+   "hidden": false,
+   "source": "project-seed",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-13T17:18:25.933Z",
+   "updatedAt": "2026-11-13T17:18:25.933Z",
+   "builtAt": "2026-11-13T17:18:25.934Z",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Write the headline and intro",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-13T17:18:25.170Z",
+     "note": "",
+     "uid": "st-mwf8qebs04vsb3",
+     "createdAt": "2026-11-13T17:18:25.934Z"
+    },
+    {
+     "id": "s2",
+     "text": "Add the feature list",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-13T17:18:25.170Z",
+     "note": "",
+     "uid": "st-mwf8qebs05hlhg",
+     "createdAt": "2026-11-13T17:18:25.934Z"
+    },
+    {
+     "id": "s3",
+     "text": "Review and publish",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-13T17:18:25.170Z",
+     "note": "",
+     "uid": "st-mwf8qebs06onch",
+     "createdAt": "2026-11-13T17:18:25.934Z"
+    }
+   ]
+  }
+ ]
+}
