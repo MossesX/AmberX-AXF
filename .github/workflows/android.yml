@@ -302,6 +302,8 @@ jobs:
             npx -y tsx framework/spec/check-roller.mts                 # interface roller: every rolled asset validates, structure kept, reproducible
             npx -y tsx framework/spec/check-app-menu.mts                # app-menu engine: fixture replay, validators agree, runtime contributions + live lists
             npx -y tsx apps/console-web/scripts/menu-reach.mts          # console app menu reaches every nav entry, toolbar item and page (toolbar + nav hidden by default)
+            npx -y tsx framework/spec/check-context-lead.mts           # context-lead@1: lead entries start every context menu (right-click, toolbar, own-items asset, long-press) above one separator
+            npx -y tsx apps/console-web/scripts/console-settings-menu.mts # Console settings leads every console context menu, Settings folded in, reachable as console.settings.open
             npx -y tsx framework/spec/check-mcp.mts                    # MCP client: fixture replay + client against a fake Streamable HTTP server
             npx -y tsx framework/spec/check-appearance.mts             # appearance@1 document + runtime source + HubAppearanceSource against a fake hub
             npx -y tsx framework/spec/check-appearance-lock.mts        # look lock greys look controls + no opt-out from the axHub look + Sliders clamp
