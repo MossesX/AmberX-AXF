@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4214,
- "updatedAt": "2026-11-13T10:40:29.537Z",
+ "rev": 4215,
+ "updatedAt": "2026-11-13T10:40:42.954Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -148506,7 +148506,7 @@
    "mergedAt": "2026-11-11T00:48:50Z",
    "priority": "P0",
    "createdAt": "2026-11-10T17:07:33.143Z",
-   "updatedAt": "2026-11-13T10:38:27.144Z",
+   "updatedAt": "2026-11-13T10:40:35.231Z",
    "builtAt": "",
    "notes": [
     {
@@ -148552,6 +148552,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-orchestrator-hold-status-archive-tab-deleted-tab--rhonda, own login copy)",
      "at": "2026-11-13T10:38:27.144Z"
+    },
+    {
+     "text": "Headless run axf-orchestrator-hold-status-archive-tab-deleted-tab--rhonda: brief only · start 11.6K tokens ($0.03) · cost $0.30 · 14 turns · 6 tools, MCP none",
+     "at": "2026-11-13T10:40:35.231Z"
     }
    ],
    "approvals": [],
@@ -148681,7 +148685,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 59,
+   "rev": 60,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
