@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4719,
- "updatedAt": "2026-11-13T18:55:19.337Z",
+ "rev": 4720,
+ "updatedAt": "2026-11-13T18:55:46.038Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -198796,10 +198796,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/transparency-token-works-every-dialog",
-   "pr": "",
+   "pr": "#632",
    "priority": "P1",
    "createdAt": "2026-11-13T18:26:12.039Z",
-   "updatedAt": "2026-11-13T18:53:47.564Z",
+   "updatedAt": "2026-11-13T18:55:43.466Z",
    "builtAt": "",
    "notes": [
     {
@@ -199008,7 +199008,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

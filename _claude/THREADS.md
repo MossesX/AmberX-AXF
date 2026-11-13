@@ -786,7 +786,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 12:31 UTC · `assets-menu-hide-any-asset-visible-and-hidden-li` → queued, note (all) · console
 - 2026-11-13 12:32 UTC · `fix-toolbar-settings-doing-nothing` s2 done (all) · orchestrator
 - 2026-11-13 12:32 UTC · `assets-menu-hide-any-asset-visible-and-hidden-li` note (all) · mcp
 - 2026-11-13 12:32 UTC · `assets-menu-hide-any-asset-visible-and-hidden-li` note (all) · orchestrator
@@ -1186,6 +1185,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 18:53 UTC · `ui-manager-floating-window-to-select-any` note (all) · orchestrator
 - 2026-11-13 18:53 UTC · `transparency-token-works-every-dialog` s3 done (all) · orchestrator
 - 2026-11-13 18:54 UTC · `quick-settings-pinned-collapsible-pane` → pending, note (all) · reconciler
+- 2026-11-13 18:55 UTC · `transparency-token-works-every-dialog` PR #632 (all) · builds-live
 
 ## Token passes (log)
 
