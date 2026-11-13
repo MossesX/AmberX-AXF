@@ -781,7 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 07:07 UTC · `skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga` → queued, note (all) · pipeline
 - 2026-11-13 07:07 UTC · `remove-ui-review-as-a-gate-no-screenshots-required-prs-never-held-as-draft-for` s6 done (all) · orchestrator
 - 2026-11-13 07:07 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` s2 done (all) · orchestrator
 - 2026-11-13 07:08 UTC · `professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e` note (all) · mcp
@@ -1181,6 +1180,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 12:14 UTC · `combine-merge-queue-into-one-pr` s2 done (all) · orchestrator
 - 2026-11-13 12:14 UTC · `ui-review-gate-switch-default-off` added (0 steps) (all) · console
 - 2026-11-13 12:15 UTC · `combine-merge-queue-into-one-pr` branch combine/merge-queue-2026-11-13 (all) · builds-live
+- 2026-11-13 12:14 UTC · `ui-review-gate-switch-default-off` → queued, note (all) · console
 
 ## Token passes (log)
 
