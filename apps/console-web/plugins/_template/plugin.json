@@ -33,5 +33,10 @@
   "commands": { "$axf": "plugin-commands@1", "auto": true },
   "builtWith": { "model": "", "builtAt": "" },
   "help": "help.json",
+  "icons": {
+    "$axf": "icon-map@1",
+    "roles": { "ask-again": { "glyph": "refresh", "group": "action", "label": "Ask again" } },
+    "pins": { "refresh": "ask-again" }
+  },
   "opens": "main"
 }

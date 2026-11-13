@@ -26,7 +26,7 @@ export const ANIMATION_PRESETS = ['spin', 'pulse', 'draw', 'orbit', 'float', 'sh
 export const ANIMATION_LIMITS = { durationMs: [300, 20000], delayMs: [0, 10000] };
 
 export const ICON_STYLES = ['outline', 'filled', 'duotone', 'sharp', 'rounded'];
-export const ICON_LIMITS = { grid: [16, 48], stroke: [0.5, 4], glyphs: 600, pathChars: 2000, nameChars: 48 };
+export const ICON_LIMITS = { grid: [16, 48], stroke: [0.5, 4], glyphs: 600, pathChars: 2000, nameChars: 48, roles: 600 };
 export const GLYPH_NAME = /^[a-z][a-z0-9-]*$/;
 
 /** Decoration places a branding package may style; an open list (apps and plugins may register more through `registerBrandSlot`). */
@@ -141,6 +141,15 @@ export function normalizeIconPack(raw) {
       glyphs[name] = { d, fill: q.fill === true, secondary: typeof q.secondary === 'string' && PATH_DATA.test(q.secondary) ? q.secondary.slice(0, ICON_LIMITS.pathChars) : '' };
     }
   }
+  // icon-map@1 (Nov 13 2026): role → glyph name, so applying the pack changes every slot of a role at once
+  const roles = {};
+  if (isObj(o.roles)) {
+    for (const [role, g] of Object.entries(o.roles).slice(0, ICON_LIMITS.roles)) {
+      if (!ROLE_NAME.test(role) || typeof g !== 'string' || !GLYPH_NAME.test(g)) continue;
+      roles[role] = g;
+    }
+  }
+  const license = isObj(o.license) ? { name: str(o.license.name, 80), url: str(o.license.url, 200) } : typeof o.license === 'string' ? { name: str(o.license, 80), url: '' } : { name: '', url: '' };
   return {
     style: ICON_STYLES.includes(o.style) ? o.style : 'outline',
     grid: num(o.grid, ICON_LIMITS.grid[0], ICON_LIMITS.grid[1], 24),
@@ -148,15 +157,37 @@ export function normalizeIconPack(raw) {
     linecap: ['round', 'square', 'butt'].includes(o.linecap) ? o.linecap : 'round',
     fallback: o.fallback === 'none' ? 'none' : 'framework',
     glyphs,
+    roles,
+    /** true (default) = glyphs take their colour and stroke from the skin's tokens (currentColor); false = fixed-colour art (emoji-style, brand logos) */
+    themable: o.themable !== false,
+    /** what the pack covers: icons, badges, logos (default icons) */
+    covers: Array.isArray(o.covers) ? ICON_COVERS.filter((c) => o.covers.includes(c)) : ['icons'],
+    license,
     tags: Array.isArray(o.tags) ? o.tags.filter((t) => typeof t === 'string').slice(0, 12) : [],
   };
 }
+
+export const ICON_COVERS = ['icons', 'badges', 'logos'];
+export const ROLE_NAME = /^[a-z][a-z0-9-]*$/;
 
 export function iconPackErrors(raw) {
   const e = [];
   if (!isObj(raw)) return ['data must be an object'];
   if (raw.style !== undefined && !ICON_STYLES.includes(raw.style)) e.push(`data.style must be one of: ${ICON_STYLES.join(', ')}`);
   if (raw.grid !== undefined && (typeof raw.grid !== 'number' || raw.grid < ICON_LIMITS.grid[0] || raw.grid > ICON_LIMITS.grid[1])) e.push(`data.grid must be ${ICON_LIMITS.grid[0]}–${ICON_LIMITS.grid[1]}`);
+  if (raw.roles !== undefined) {
+    if (!isObj(raw.roles)) e.push('data.roles must be an object of role → glyph name');
+    else {
+      if (Object.keys(raw.roles).length > ICON_LIMITS.roles) e.push(`data.roles: at most ${ICON_LIMITS.roles} roles`);
+      for (const [role, g] of Object.entries(raw.roles)) {
+        if (!ROLE_NAME.test(role)) e.push(`data.roles.${role}: role ids are lowercase words with dashes`);
+        if (typeof g !== 'string' || !GLYPH_NAME.test(g)) e.push(`data.roles.${role}: must name a glyph (lowercase words with dashes)`);
+      }
+    }
+  }
+  if (raw.themable !== undefined && typeof raw.themable !== 'boolean') e.push('data.themable must be true or false');
+  if (raw.covers !== undefined && (!Array.isArray(raw.covers) || raw.covers.some((c) => !ICON_COVERS.includes(c)))) e.push(`data.covers must list some of: ${ICON_COVERS.join(', ')}`);
+  if (raw.license !== undefined && typeof raw.license !== 'string' && !(isObj(raw.license) && typeof raw.license.name === 'string')) e.push('data.license must be a name or { name, url }');
   if (!isObj(raw.glyphs)) e.push('data.glyphs must be an object of name → path');
   else {
     const names = Object.keys(raw.glyphs);
