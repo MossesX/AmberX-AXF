@@ -781,7 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 21:49 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` → queued, note (all) · console
 - 2026-11-12 21:50 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` note (all) · pipeline
 - 2026-11-12 21:50 UTC · `new-project-wizard-name-linked-repo-required-starter-code-skin-accounts` → queued, note (all) · console
 - 2026-11-12 21:50 UTC · `projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone` → queued, note (all) · console
@@ -1181,6 +1180,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 06:27 UTC · `skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga` branch claude/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga (all) · pipeline
 - 2026-11-13 06:29 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` s6 done (all) · orchestrator
 - 2026-11-13 06:29 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` s7 done (all) · orchestrator
+- 2026-11-13 06:30 UTC · `professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e` note (all) · orchestrator
 
 ## Token passes (log)
 
