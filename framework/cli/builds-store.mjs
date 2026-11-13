@@ -23,6 +23,10 @@
  * published there at once as its own status-only commit, whatever branch this checkout is on. AXF_BUILDS_LIVE=0 = off.
  * The old per-profile files (orchestrator.json, pending.json, build-queue.json) stay for one release as READ-ONLY
  * exports of the store (see exportAll); nothing but the store writes them, and a direct edit is taken into the store.
+ * Step dependencies (Nov 13 2026, build-pipeline@1): a step's optional `after` list and `claim` record go through
+ * normBuild, the orchestrator export / absorb and the newer-wins merge unchanged; a step without `after` stays
+ * implicitly sequential (that is the whole migration: nothing is added to older steps). `verify` reports an `after`
+ * id that names no step of the build and any dependency cycle (core.validateStore / dependencyCycles).
  */
 import { appendFileSync, chmodSync, chownSync, closeSync, existsSync, mkdirSync, openSync, readFileSync, readdirSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';

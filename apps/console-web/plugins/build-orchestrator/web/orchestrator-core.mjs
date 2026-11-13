@@ -108,6 +108,9 @@ function normStep(s, i) {
     doneAt: o.done === true ? str(o.doneAt, 40) : '',
     note: str(o.note, 1000),
     ...(str(o.createdAt, 40) ? { createdAt: str(o.createdAt, 40) } : {}), // which step-size limit the step is held to (stepLimit)
+    // step dependencies (build-pipeline@1, Nov 13 2026): carried through as the store wrote them, only when present
+    ...(Array.isArray(o.after) ? { after: o.after.map((x) => str(x, 40)).filter(Boolean).slice(0, 20) } : {}),
+    ...(o.claim && typeof o.claim === 'object' && str(o.claim.runId) && o.done !== true ? { claim: { ...o.claim } } : {}),
   };
 }
 

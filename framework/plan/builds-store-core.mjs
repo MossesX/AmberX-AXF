@@ -47,7 +47,7 @@ import { normApproval, normRequest } from '../core/model-switch.mjs';
 import { mergeOrigin, normOrigin } from '../core/build-origin.mjs';
 import { effectivePriority, normPriority } from '../core/build-priority.mjs';
 import { normRef as normShippedRef } from '../core/shipped-manifest.mjs';
-import { normPipeline } from '../core/build-pipeline.mjs';
+import { dependsOn, normAfter, normClaim, normPipeline } from '../core/build-pipeline.mjs';
 
 export const SCHEMA = 'builds@1';
 export const MODELS = ['Fable', 'Opus'];
@@ -83,6 +83,8 @@ const nowIso = () => new Date().toISOString();
 export const slug = (t) => str(t, 80).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'build';
 const ORCH_BUILD_KEYS = ['id', 'title', 'category', 'detail', 'status', 'hidden', 'source', 'pendingId', 'branch', 'pr', 'mergedAt', 'priority', 'createdAt', 'updatedAt', 'builtAt', 'notes', 'approvals', 'upgradeRequests', 'origin', 'steps'];
 const ORCH_STEP_KEYS = ['id', 'text', 'model', 'why', 'phase', 'group', 'estimate', 'files', 'checks', 'session', 'agent', 'skip', 'done', 'doneAt', 'note'];
+/** Optional step fields (Nov 13 2026, step dependencies): carried only when set, so an old step never gains them. */
+const ORCH_STEP_OPTIONAL = ['after', 'claim'];
 
 // ------------------------------------------------------------------ records
 
@@ -98,12 +100,18 @@ function hash(s) { let h = 2166136261; for (let i = 0; i < s.length; i++) { h ^=
 export function normStep(s, i = 0, ctx = {}) {
   const o = s && typeof s === 'object' ? s : {};
   const at = ctx.now || nowIso();
+  const id = str(o.id, 40) || `s${i + 1}`;
+  const model = MODELS.includes(o.model) ? o.model : 'Opus';
+  // step dependencies (build-pipeline@1, Nov 13 2026): `after` only when the step carries a list (absent = sequential,
+  // the migration for every older step); a claim never outlives a done or skipped step
+  const after = normAfter(o.after, { self: id });
+  const claim = o.done === true || o.skip === true ? null : normClaim(o.claim, { model });
   return {
-    id: str(o.id, 40) || `s${i + 1}`,
+    id,
     uid: str(o.uid, 60) || newUid(ctx.seed ? `${ctx.seed}/${str(o.id, 40) || i}/${i}` : ''),
     title: str(o.title, 200),
     text: str(o.text, 2000),
-    model: MODELS.includes(o.model) ? o.model : 'Opus',
+    model,
     why: str(o.why, 300),
     phase: str(o.phase, 80),
     group: str(o.group, 80),
@@ -117,6 +125,8 @@ export function normStep(s, i = 0, ctx = {}) {
     doneAt: o.done === true ? str(o.doneAt, 40) : '',
     note: str(o.note, 1000),
     ...(str(o.fm).trim() ? { fm: str(o.fm, 80).trim() } : {}),
+    ...(after ? { after } : {}),
+    ...(claim ? { claim } : {}),
     rev: Number.isInteger(o.rev) && o.rev > 0 ? o.rev : 1,
     createdAt: str(o.createdAt, 40) || at,
     updatedAt: str(o.updatedAt, 40) || at,
@@ -312,9 +322,38 @@ export function validateStore(store) {
       if (!MODELS.includes(s.model)) err(`${sa}.model`, `"${s.model}" is not one of ${MODELS.join(', ')} (model policy: Opus or Fable, never Sonnet)`);
       if (typeof s.text !== 'string' || !s.text.trim()) err(`${sa}.text`, 'is missing');
       if (!Number.isInteger(s.rev) || s.rev < 1) err(`${sa}.rev`, 'must be a whole number from 1');
+      if (s.after !== undefined) {
+        if (!Array.isArray(s.after) || s.after.some((x) => typeof x !== 'string' || !x)) err(`${sa}.after`, 'must be a list of step ids');
+        else for (const x of s.after) { if (x === s.id) err(`${sa}.after`, 'a step never waits on itself'); else if (!b.steps.some((o) => o?.id === x)) err(`${sa}.after`, `"${x}" is not a step of this build`); }
+      }
+      if (s.claim !== undefined && s.claim !== null) {
+        if (typeof s.claim !== 'object' || typeof s.claim.runId !== 'string' || !s.claim.runId) err(`${sa}.claim`, 'must be { runId, slot, account, branch, at, model, expiresAt } or absent');
+        else if (s.done === true || s.skip === true) err(`${sa}.claim`, 'a done or skipped step carries no claim');
+        else if (s.claim.model && s.claim.model !== s.model) err(`${sa}.claim.model`, `"${s.claim.model}" is not the step's pinned model ${s.model}`);
+      }
     });
+    for (const cyc of dependencyCycles(b)) err(`${at}.steps`, `dependency cycle: ${cyc.join(' → ')}`);
   });
   return { ok: !errors.length, errors };
+}
+
+/**
+ * Cycles in a build's step dependencies (the resolved graph: `after` lists plus the implicit "previous step" of steps
+ * without one, so `s2.after = [s3]` with a plain `s3` is a cycle). [] = none. Each cycle once, as the ids on it.
+ */
+export function dependencyCycles(b) {
+  const steps = Array.isArray(b?.steps) ? b.steps.filter((s) => s && typeof s === 'object') : [];
+  const deps = new Map(steps.map((s) => [s.id, dependsOn({ steps }, s)]));
+  const state = new Map(); const out = []; const seen = new Set();
+  const walk = (id, path) => {
+    if (state.get(id) === 'done') return;
+    if (state.get(id) === 'open') { const cyc = [...path.slice(path.indexOf(id)), id]; const key = [...cyc].sort().join(','); if (!seen.has(key)) { seen.add(key); out.push(cyc); } return; }
+    state.set(id, 'open');
+    for (const d of deps.get(id) ?? []) walk(d, [...path, id]);
+    state.set(id, 'done');
+  };
+  for (const s of steps) walk(s.id, []);
+  return out;
 }
 
 /** The form written to disk: the default breakdown is left out while it equals the steps (not rearranged). */
@@ -427,7 +466,7 @@ export function storeSummary(store, profile) {
 
 // ------------------------------------------------------------------ orchestrator@1 projection
 
-const orchStep = (s) => { const o = {}; for (const k of ORCH_STEP_KEYS) o[k] = s[k]; o.uid = s.uid; if (s.title) o.title = s.title; if (s.createdAt) o.createdAt = s.createdAt; return o; };
+const orchStep = (s) => { const o = {}; for (const k of ORCH_STEP_KEYS) o[k] = s[k]; o.uid = s.uid; if (s.title) o.title = s.title; if (s.createdAt) o.createdAt = s.createdAt; for (const k of ORCH_STEP_OPTIONAL) if (s[k] !== undefined && s[k] !== null) o[k] = clone(s[k]); return o; };
 const orchBuild = (b) => { const o = {}; for (const k of ORCH_BUILD_KEYS) if (b[k] !== undefined) o[k] = k === 'steps' ? b.steps.map(orchStep) : clone(b[k]); return o; };
 
 export function projectOrchestrator(store, profile) {

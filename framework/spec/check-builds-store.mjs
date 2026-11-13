@@ -6,6 +6,7 @@ import { mkdtempSync, readFileSync, readdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import * as c from '../plan/builds-store-core.mjs';
+import * as m from '../plan/builds-merge-core.mjs';
 
 let n = 0; const t = (name, fn) => { try { fn(); n += 1; } catch (e) { console.error(`✗ ${name}`); throw e; } };
 const at = '2026-10-31T10:00:00.000Z';
@@ -252,5 +253,45 @@ t('every write is versioned in the journal and can be restored', () => {
 io.withStore((s) => c.addDraftOp(s, 'all', { op: 'rename-build', id: 'shared', title: 'Draft name' }), { by: 'test', action: 'draft' });
 t('draft survives a reload, Apply writes it', () => { assert.equal(c.draftOf(io.loadStore(), 'all').ops.length, 1); io.applyDraftNow('all', 'test'); assert.equal(io.loadStore().builds.find((x) => x.id === 'shared').title, 'Draft name'); assert.equal(c.draftOf(io.loadStore(), 'all').ops.length, 0); });
 t('the store on disk leaves out an unchanged default breakdown', () => { const raw = JSON.parse(readFileSync(process.env.AXF_BUILDS_STORE, 'utf8')); assert.ok(raw.builds.some((b) => !('defaultSteps' in b))); });
+
+// ------------------------------------------------------------------ step dependencies and claims (build-pipeline@1, Nov 13 2026)
+const CLAIM = { runId: 'run-1', slot: 'slot-7', account: 'mossesx-max-', branch: 'claude/dep--s2', at: '2026-11-13T10:00:00.000Z', model: 'Opus' };
+const depBuild = (extra = {}) => c.normBuild({ id: 'dep', title: 'Dep', profiles: ['all'], order: { all: 0 }, status: 'running', steps: [
+  step('s1', 'first'), step('s2', 'second', { after: [], claim: CLAIM }), step('s3', 'third', { after: ['s1', 's2', 's3', 's3'] }), step('s4', 'fourth', { done: true, doneAt: at, claim: CLAIM }),
+], ...extra }, { now: at });
+t('normStep keeps after and claim; absent after stays absent (old steps are implicitly sequential)', () => {
+  const b = depBuild();
+  assert.equal('after' in b.steps[0], false, 'no after added to an old step');
+  assert.deepEqual(b.steps[1].after, []); assert.deepEqual(b.steps[2].after, ['s1', 's2'], 'self and duplicates dropped');
+  assert.deepEqual(b.steps[1].claim, { ...CLAIM, expiresAt: '2026-11-13T10:45:00.000Z' });
+  assert.equal('claim' in b.steps[3], false, 'a done step carries no claim');
+});
+t('validateStore: a clean dependency set passes; unknown ids, self, a wrong claim model and cycles are named', () => {
+  const s = { ...c.emptyStore(at), builds: [depBuild()] };
+  assert.deepEqual(c.validateStore(s).errors, []);
+  const bad = JSON.parse(JSON.stringify(s));
+  bad.builds[0].steps[2].after = ['zz', 's3']; bad.builds[0].steps[1].claim.model = 'Fable';
+  const msgs = c.validateStore(bad).errors.map((e) => `${e.path} ${e.message}`).join('\n');
+  assert.match(msgs, /steps\[2\]\.after "zz" is not a step/); assert.match(msgs, /never waits on itself/); assert.match(msgs, /claim\.model "Fable" is not the step's pinned model Opus/);
+  const cyc = { ...c.emptyStore(at), builds: [c.normBuild({ id: 'cyc', title: 'C', steps: [step('s1', 'a', { after: ['s3'] }), step('s2', 'b'), step('s3', 'c', { after: ['s2'] })] })] };
+  assert.deepEqual(c.dependencyCycles(cyc.builds[0]), [['s1', 's3', 's2', 's1']], 'the implicit previous-step edge (s2 → s1) closes the cycle');
+  assert.match(c.validateStore(cyc).errors.map((e) => e.message).join('\n'), /dependency cycle: s1 → s3 → s2 → s1/);
+  assert.deepEqual(c.dependencyCycles(depBuild()), []);
+});
+t('the orchestrator export carries after and claim, and a write from older code (no after) keeps them', () => {
+  const s = { ...c.emptyStore(at), builds: [depBuild()] };
+  const doc = c.projectOrchestrator(s, 'all');
+  assert.deepEqual(doc.builds[0].steps[1].after, []); assert.equal(doc.builds[0].steps[1].claim.runId, 'run-1'); assert.equal('after' in doc.builds[0].steps[0], false);
+  const old = JSON.parse(JSON.stringify(doc)); for (const st of old.builds[0].steps) { delete st.after; delete st.claim; } old.builds[0].steps[2].note = 'edited by old code';
+  const back = c.absorbOrchestrator(s, 'all', old, { now: '2026-11-13T11:00:00.000Z', by: 'test' }).builds[0];
+  assert.deepEqual(back.steps[2].after, ['s1', 's2']); assert.equal(back.steps[2].note, 'edited by old code'); assert.equal(back.steps[1].claim.runId, 'run-1');
+});
+t('newer-wins merge: a released claim on the newer copy wins; a claim on the newer copy survives an older copy without one', () => {
+  const a = depBuild(); const b = JSON.parse(JSON.stringify(a));
+  delete b.steps[1].claim; b.steps[1].updatedAt = '2026-11-13T12:00:00.000Z'; b.steps[1].rev = 2;
+  assert.equal('claim' in m.mergeBuild(a, b).steps[1], false);
+  const older = JSON.parse(JSON.stringify(a)); delete older.steps[1].claim; older.steps[1].updatedAt = '2026-10-30T09:00:00.000Z';
+  assert.equal(m.mergeBuild(older, a).steps[1].claim.runId, 'run-1'); assert.deepEqual(m.mergeBuild(older, a).steps[2].after, ['s1', 's2']);
+});
 
 console.log(`builds-store: ${n} checks passed`);
