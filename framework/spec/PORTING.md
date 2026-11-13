@@ -220,3 +220,10 @@ The guide asks agent `gizmo` (Molly is no longer an agent, Nov 3 decision; the `
 `gizmo.ask` / `gizmo.replay` / `gizmo.next` / `gizmo.prev` / `gizmo.close` with the `molly.*` names kept as hidden aliases.
 AmberX on Android runs the web app, so its texts follow already. A native Compose player of walkthrough@1, when the Android side
 resumes, replays the same rule: no auto-open on start, opt-in only, nothing older than the app's start, and the Gizmo names.
+
+## Deferred: settings open in a floating dialog (Nov 13 2026)
+
+`framework/core/engines/settingsopen.ts` (build `all-settings-interfaces-open-floating`): every settings interface
+opens in a floating glass dialog by default (`app.settings`, `settings.open[:tab]`), per-user `axf.settings.opensAs`
+= page keeps the page, `settings.page[:tab]` forces it. Web only; the Kotlin twin (`lib-settings` opening its screen in a
+dialog by default) is a deferred gap, no new Android work. Check: `framework/spec/check-settings-open.mts`.

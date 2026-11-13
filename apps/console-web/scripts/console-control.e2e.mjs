@@ -94,8 +94,11 @@ try {
 
   // open a tab (Settings › Plugins): the answer's state says the screen and the active tab
   a = await run({ verb: 'open', address: 'view:settings/tab:settings.tabs=plugins' });
-  ok(a.ok && a.state.screen === 'settings', `open a settings tab → screen settings (${a.message ?? a.state?.screen})`);
-  ok(Object.values(a.state.tabs).includes('plugins') || (await page.evaluate(() => window.axfConsoleControlState().screen)) === 'settings', 'the settings tab row reports plugins');
+  // settings open in a floating dialog by default (settings-open, Nov 13 2026): the state names the dialog
+  ok(a.ok && (a.state.dialog === 'axf.settings.tab' || a.state.screen === 'settings'), `open a settings tab → the settings dialog (${a.message ?? a.state?.dialog ?? a.state?.screen})`);
+  ok(a.state.dialog === 'axf.settings.tab' || Object.values(a.state.tabs).includes('plugins'), 'the settings tab is open');
+  await page.evaluate(() => window.axfConsoleControl({ verb: 'state' }));
+  await page.keyboard.press('Escape');
 
   // set a setting (help mode) and read it back
   a = await run({ verb: 'set', address: 'setting:axf.help.mode', value: 'on' });

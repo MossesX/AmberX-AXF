@@ -916,6 +916,12 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
   background: var(--fx-surface); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-lg);
   box-shadow: var(--fx-shadow-lg); overflow: hidden; outline: none;
 }
+/* every settings dialog (core/engines/settingsopen.ts): see-through glass over the screen it opened on, wide enough for a settings interface */
+.fx-dialog[data-fx-dialog-surface='glass'] {
+  background: color-mix(in srgb, var(--fx-surface) calc(var(--fx-opacity-glass) * 100%), transparent);
+  backdrop-filter: blur(var(--fx-blur)) saturate(1.2); -webkit-backdrop-filter: blur(var(--fx-blur)) saturate(1.2);
+}
+.fx-dialog[data-fx-dialog-size='wide'] { width: min(calc(var(--fx-dialog-w) * 1.8), 100%); }
 .fx-dialog__head { display: flex; align-items: center; gap: var(--fx-dens-gap-2xl); padding: var(--fx-dens-gap-2xl) var(--fx-dens-gap-3xl); border-bottom: var(--fx-border-w) solid var(--fx-border); }
 .fx-dialog__head h2 { font-size: var(--fx-type-scale-lg); flex: 1; }
 .fx-dialog__head > svg { color: var(--fx-accent); }
