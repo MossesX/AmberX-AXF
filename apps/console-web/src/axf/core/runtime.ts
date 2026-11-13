@@ -36,6 +36,7 @@ import { DESIGN_APPLIED_KEY, DESIGN_OVERRIDABLE, DESIGN_OVERRIDES_KEY, DESIGN_PA
 import { behaviorStyle, confirmBeforeDelete, normalizeBehavior, vibrationPattern } from './engines/behavior';
 import { navStyleOutput, normalizeNavStyle, type NavStyleData } from './engines/navstyle';
 import { animationFor, brandingVars, glyphFor, markSvg, resolveBranding, type Glyph, type MarkAnimation, type ResolvedBrand } from './engines/brand';
+import { ICON_PACK_KEY, ICON_SLOT_KEY, resolveIcon, type IconResolution } from './engines/icon-map-rules.mjs';
 import { INTERFACE_SETTING_KEY, INTERFACE_TYPE, captureInterface, isScopeId, resolveInterface, scopeAttrs, scopeSheet, scopeVarsCss, type InterfaceData, type ResolvedInterface } from './engines/interface';
 import { APPEARANCE_FRAME, mergeAppearance, paletteFromColorTheme, resolveAppearance, type AppearanceChange, type AppearanceDocument, type AppearanceSourceState } from './engines/appearance';
 import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, HELP_SEEN_KEY, buildHelpIndex, helpTarget, introFor, introToShow, markSeen, resolveHelp, type HelpDescriptor, type HelpEntry, type HelpIndex, type HelpIntro } from './engines/help';
@@ -2827,13 +2828,60 @@ export class AxfRuntime {
 
   /** The glyph an icon name resolves to in the active icon pack, or null = the framework's own icon. */
   brandGlyph(name: string): { glyph: Glyph; pack: unknown } | null {
-    // a skin's icon pack (engines/skin.ts, axf.icons.pack.<scope>: this scope's, else the app's) beats the branding's
-    const packId = this.skinIconPack() || this.branding()?.iconPack;
-    if (!packId) return null;
-    const pack = this.registry.get('icon-pack' as AssetType, packId);
+    const pack = this.iconPack();
     if (!pack) return null;
     const glyph = glyphFor(pack.data, name);
     return glyph ? { glyph, pack: pack.data } : null;
+  }
+
+  /* ---- icon map (icon-map@1, engines/icon-map-rules.mjs) ---- */
+
+  /** The icon pack in force: a skin's (axf.icons.pack.<scope>, this scope's else the app's), else the branding's. */
+  iconPack(): RegisteredAsset | null {
+    const packId = this.skinIconPack() || this.branding()?.iconPack;
+    return packId ? this.registry.get('icon-pack' as AssetType, packId) ?? null : null;
+  }
+
+  /** The id of the icon pack in force ('' = the framework's own glyphs). */
+  iconPackId(): string {
+    return this.iconPack()?.id ?? '';
+  }
+
+  /**
+   * Switch the app's icon pack (`axf.icons.pack.app`: the same key the skin engine sets, so a skin and a hand pick
+   * agree). '' or null = back to the branding's pack. Needs assets.swap; false when denied or the pack is unknown.
+   */
+  setIconPack(id: string | null): boolean {
+    if (this.gate('assets.swap') !== 'allow') return false;
+    if (id && !this.registry.has('icon-pack' as AssetType, id)) return false;
+    if (id) this.settings.set(ICON_PACK_KEY, id); else this.settings.clear(ICON_PACK_KEY);
+    return true;
+  }
+
+  /** Every saved per-slot pick: slot id → glyph name. */
+  iconOverrides(): Record<string, string> {
+    const out: Record<string, string> = {};
+    const prefix = ICON_SLOT_KEY('');
+    for (const [k, v] of Object.entries(this.settings.savedValues())) if (k.startsWith(prefix) && typeof v === 'string' && v) out[k.slice(prefix.length)] = v;
+    return out;
+  }
+
+  /** Pick one slot's glyph (null = back to the pack / role / name). Needs assets.swap. */
+  setIconSlot(slotId: string, glyph: string | null): boolean {
+    if (this.gate('assets.swap') !== 'allow' || !slotId) return false;
+    if (glyph) this.settings.set(ICON_SLOT_KEY(slotId), glyph); else this.settings.clear(ICON_SLOT_KEY(slotId));
+    return true;
+  }
+
+  /** How a place resolves: its override, the pack's role mapping, the pack's or the framework's glyph of that name. */
+  iconResolution(name: string, slot?: string, role?: string): IconResolution {
+    const slotKey = slot ? this.settings.get(ICON_SLOT_KEY(slot)) : null;
+    return resolveIcon({ name, slot, role, overrides: slot && typeof slotKey === 'string' && slotKey ? { [slot]: slotKey } : {}, pack: this.iconPack()?.data ?? null });
+  }
+
+  /** The glyph name the Icon component draws for a place (see iconResolution). */
+  iconGlyph(name: string, slot?: string, role?: string): string {
+    return this.iconResolution(name, slot, role).glyph;
   }
 
   private prefersReducedMotion(): boolean {

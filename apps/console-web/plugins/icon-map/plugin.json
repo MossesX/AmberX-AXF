@@ -12,7 +12,8 @@
   ],
   "provides": [
     "view:icon-map",
-    "settings-tab:icon-map"
+    "settings-tab:icon-map",
+    "service:axf.icon-map@1"
   ],
   "optional": [],
   "scopes": [
@@ -54,6 +55,7 @@
       { "action": "icon-map.pack.clear", "title": "Back to the branding's icon pack (in the open console)" },
       { "action": "icon-map.slot.set", "title": "Pick one slot's icon (in the open console)", "description": "Argument: <slot id>:<glyph>.", "input": { "type": "object", "properties": { "value": { "type": "string" } }, "required": ["value"] } },
       { "action": "icon-map.slot.clear", "title": "Drop one slot's pick (in the open console)", "description": "Argument: the slot id." },
+      { "action": "icon-map.slot.open", "title": "Open one slot in the icon map", "description": "Argument: the slot id. Opens the page on that slot's panel: previews, why it draws what it draws, and the glyph grid to change it.", "navigate": true, "input": { "type": "object", "properties": { "value": { "type": "string" } }, "required": ["value"] } },
       { "action": "icon-map.refresh", "title": "Reload the icon map", "readOnly": true }
     ]
   },

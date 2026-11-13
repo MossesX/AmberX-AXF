@@ -1447,7 +1447,11 @@
       "optional_fields": {
         "stroke": "number 0.5-4 (default 1.75)",
         "linecap": "round | square | butt",
-        "fallback": "framework (default) | none"
+        "fallback": "framework (default) | none",
+        "roles": "icon-map@1: role → glyph name (e.g. { \"save\": \"floppy\", \"build-running\": \"spinner\" }); applying the pack changes every slot of a role at once (framework/schemas/icon-map.json)",
+        "themable": "true (default) = glyphs take colour and stroke from the skin's tokens; false = fixed-colour art (emoji-style, brand logos) that stays as drawn",
+        "covers": "what the pack covers: icons | badges | logos (default [icons])",
+        "license": "the glyphs' licence: a name or { name, url }; must allow redistribution"
       },
       "skin": {
         "by": "reference",

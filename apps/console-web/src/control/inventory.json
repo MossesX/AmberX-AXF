@@ -4,11 +4,11 @@
   "counts": {
     "views": 62,
     "nav": 16,
-    "tabGroups": 22,
-    "tabs": 76,
+    "tabGroups": 23,
+    "tabs": 78,
     "settingsTabs": 68,
     "settings": 85,
-    "functions": 235,
+    "functions": 236,
     "buttons": 62,
     "plugins": 68
   },
@@ -1466,6 +1466,27 @@
       "file": "plugins/glossary-index/web/index.tsx",
       "line": 250,
       "tabs": []
+    },
+    {
+      "address": "view:icon-map/tab:icon-map.mode",
+      "id": "icon-map.mode",
+      "dynamic": false,
+      "view": "icon-map",
+      "plugin": "ai.amberx.axf.console.icon-map",
+      "file": "plugins/icon-map/web/IconMapView.tsx",
+      "line": 191,
+      "tabs": [
+        {
+          "address": "view:icon-map/tab:icon-map.mode=tree",
+          "value": "tree",
+          "label": "Tree"
+        },
+        {
+          "address": "view:icon-map/tab:icon-map.mode=list",
+          "value": "list",
+          "label": "List"
+        }
+      ]
     },
     {
       "address": "view:plan-studio/tab:plan-studio.tabs",
@@ -5315,6 +5336,24 @@
       "file": "plugins/icon-map/web/index.tsx"
     },
     {
+      "address": "function:icon-map.slot.open",
+      "kind": "function",
+      "id": "icon-map.slot.open",
+      "label": "Open one slot in the icon map",
+      "detail": "Action · Icon map",
+      "keywords": [
+        "icon-map.slot.open",
+        "icon",
+        "map",
+        "slot",
+        "open"
+      ],
+      "effect": "navigate",
+      "params": true,
+      "plugin": "ai.amberx.axf.console.icon-map",
+      "file": "plugins/icon-map/web/index.tsx"
+    },
+    {
       "address": "function:main-build-status.open",
       "kind": "function",
       "id": "main-build-status.open",
@@ -8904,7 +8943,9 @@
       ],
       "view": "view:icon-map",
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=icon-map",
-      "provides": [],
+      "provides": [
+        "service:axf.icon-map@1"
+      ],
       "requires": [],
       "optional": []
     },

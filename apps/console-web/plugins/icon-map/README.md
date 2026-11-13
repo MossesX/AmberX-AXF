@@ -14,7 +14,16 @@ can change every single one with a click".
 | MCP | `icon-map_map`, `icon-map_packs`, `icon-map_state`, `icon-map_pack-set`, `icon-map_pack-clear`, `icon-map_slot-set`, `icon-map_slot-clear`, `icon-map_resolve`, `icon-map_check`, … (`plugin_commands icon-map` lists them) |
 | CLI | `axf icon-map pack-set --pack duotone`, `axf icon-map map --q save`, `node framework/cli/icon-map.mjs …` (the map from the files, no console needed) |
 | Voice | "switch to the duotone icon pack", "use the filled icon pack", "back to the default icon pack", "open the icon map" |
-| Console actions | `icon-map.open`, `icon-map.pack.use:<pack>`, `icon-map.pack.clear`, `icon-map.slot.set:<slot>:<glyph>`, `icon-map.slot.clear:<slot>`, `icon-map.refresh` (search, context menu, `function:` control targets) |
+| Console actions | `icon-map.open`, `icon-map.pack.use:<pack>`, `icon-map.pack.clear`, `icon-map.slot.set:<slot>:<glyph>`, `icon-map.slot.clear:<slot>`, `icon-map.slot.open:<slot>`, `icon-map.refresh` (search, context menu, `function:` control targets) |
+| Other UI tools | web service `axf.icon-map@1` (`globalThis.__axfWebServices`): `open(slot)`, `resolve(name, slot?, role?)`, `setSlot(slot, glyph \| null)`, `usePack(pack)`, `packs()`, `map(query)` |
+
+## The page
+
+Two views (TabGroup): **Tree** (app → plugin / screen owner → surface → slot, with counts; a search opens the
+branches it matches) and **List**. Filters: search, app, surface, kind (icon / badge / logo). Every row previews what
+the place draws now, through the runtime, so a pack switch or a pick shows at once. **Change** opens the slot panel:
+previews at three sizes, why it draws what it draws (pick, pack role, pack glyph, framework, fallback) and a glyph
+grid; one click on a glyph changes that place.
 
 ## State
 
