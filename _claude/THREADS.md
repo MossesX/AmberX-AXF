@@ -778,9 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 18:28 UTC · `new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans` s2 done (all) · orchestrator
-- 2026-11-12 18:33 UTC · `add-a-tap-to-confirm-option-to-every-settings-in` added (0 steps) (all) · console
-- 2026-11-12 18:33 UTC · `add-a-tap-to-confirm-option-to-every-settings-in` → queued, note (all) · console
 - 2026-11-12 18:34 UTC · `add-a-tap-to-confirm-option-to-every-settings-in` note (all) · orchestrator
 - 2026-11-12 18:34 UTC · `new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans` s3 done (all) · orchestrator
 - 2026-11-12 18:34 UTC · `add-a-tap-to-confirm-option-to-every-settings-in` → running, note (all) · pipeline
@@ -1178,6 +1175,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 03:27 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` → queued, note (all) · console
 - 2026-11-13 03:27 UTC · `change-to-one-to-do-notes-and-tasks-plugin-pr-527-brett-notes-tasks-and-to` → queued, note (all) · console
 - 2026-11-13 03:28 UTC · `change-to-move-amberx-web-app-into-the-console-amberx-andr-pr-528-brett-do` → queued, note (all) · console
+- 2026-11-13 03:28 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` → running, note (all) · pipeline
+- 2026-11-13 03:28 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` branch claude/skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change (all) · pipeline
+- 2026-11-13 03:28 UTC · `badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad` → queued, note (all) · console
 
 ## Token passes (log)
 
