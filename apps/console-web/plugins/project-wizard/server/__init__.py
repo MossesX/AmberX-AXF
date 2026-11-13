@@ -159,6 +159,22 @@ class Inherit(BaseModel):
     accounts: bool | None = None
 
 
+class Carry(BaseModel):
+    items: Literal["structure", "all", "none"] = "structure"
+    builds: bool = False
+
+
+class StartFrom(BaseModel):
+    """What the new project starts from: blank, a copy of the current project, or a saved boilerplate (by id)."""
+    kind: Literal["blank", "current", "boilerplate"] = "blank"
+    id: str = Field(default="", max_length=80)
+    carry: Carry = Field(default_factory=Carry)
+
+
+class StartReq(BaseModel):
+    startFrom: StartFrom = Field(default_factory=StartFrom)
+
+
 class FullPlan(Plan):
     starter: Starter | None = None
     framework: Framework | None = None
@@ -167,6 +183,7 @@ class FullPlan(Plan):
     firstPlan: FirstPlan = Field(default_factory=FirstPlan)
     inherit: Inherit = Field(default_factory=Inherit)
     switchTo: bool = True  # make it the active project when it is made
+    startFrom: StartFrom | None = None
 
 
 def _plan(p: FullPlan) -> dict[str, Any]:
@@ -256,6 +273,12 @@ def options() -> dict[str, Any]:
     r = _ok(_engine({"action": "options"}, timeout=40))
     r["accounts"] = _accounts()
     return r
+
+
+@router.post("/start")
+def start(req: StartReq) -> dict[str, Any]:
+    """What a "Start from" choice fills in: the optional steps' values, a name suggestion, and what comes along."""
+    return _ok(_engine({"action": "start", "startFrom": req.startFrom.model_dump()}, timeout=60))
 
 
 @router.get("/current")

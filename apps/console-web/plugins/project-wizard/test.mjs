@@ -47,6 +47,8 @@ await new Promise((r) => server.listen(0, '127.0.0.1', r));
 const env = {
   ...process.env, GITHUB_TOKEN: 'test-token', GITHUB_API_URL: `http://127.0.0.1:${server.address().port}`, CLAUDE_PROJECT_GIT_BASE: gitBase,
   AXF_WIZARD_WORKSPACE: ws, AXF_WIZARD_ROOTS: tmp, AXF_WIZARD_STORE: join(tmp, 'store.json'), AXF_VPS_GIT_DIR: vpsGit, AXF_VPS_HOST: '', AXF_DATA_DIR: join(tmp, 'data'), AXF_APPEARANCE_FILE: join(tmp, 'appearance.json'), AXF_ACTOR: 'test',
+  // a project template's stores (start from): boilerplates, to-dos, plans and the hub's notes, all in the throwaway folder
+  AXF_PROJECT_BOILERPLATES_FILE: join(tmp, 'boilerplates.json'), AXF_TODO_DIR: join(tmp, 'todo'), AXF_PLANS_DIR: join(tmp, 'plans'), AXHUB_PROJECTS_DIR: join(tmp, 'hub'), AXF_BUILDS_LIVE: '0',
   GIT_AUTHOR_NAME: 't', GIT_AUTHOR_EMAIL: 't@t', GIT_COMMITTER_NAME: 't', GIT_COMMITTER_EMAIL: 't@t', HOME: tmp,
 };
 // the wizard runs as a child process, like the console's server part runs it
@@ -171,6 +173,36 @@ try {
   assert.equal(inh.ok, true, JSON.stringify(inh.problems));
   assert.equal(inh.plan.setup.starter.id, 'none'); assert.equal(inh.plan.setup.claude.models.build, 'fable'); assert.equal(inh.plan.setup.skin.id, 'other');
   assert.equal(inh.plan.inherit.starter, true); assert.equal(inh.plan.inherit.skin, false);
+  // start from (wizard defaults): blank keeps the current project's setup; a copy of it or a saved boilerplate fills the
+  // locked steps with the template's setup, suggests a name, and carries its lists into the new workspace
+  const cli = (file, ...a) => { const r = spawnSync(process.execPath, [fileURLToPath(new URL(`../../../../framework/cli/${file}`, import.meta.url)), ...a, '--json'], { env, encoding: 'utf8' }); const j = JSON.parse(r.stdout.trim().split('\n').pop()); assert.equal(j.ok, true, j.error); return j; };
+  const sBlank = await callP({ action: 'start', startFrom: { kind: 'blank' } });
+  assert.equal(sBlank.ok, true, sBlank.error); assert.equal(sBlank.values.skin.id, 'windows', 'blank: the current project\'s setup as defaults'); assert.equal(sBlank.suggest.display, '');
+  const sCur = await callP({ action: 'start', startFrom: { kind: 'current' } });
+  assert.equal(sCur.label, 'Garden'); assert.equal(sCur.suggest.display, 'Garden copy', 'a copy is named "<project> copy"');
+  assert.equal(sCur.values.skin.id, 'windows'); assert.equal(sCur.values.claude.models.build, 'fable');
+  mkdirSync(join(tmp, 'todo/projects/garden'), { recursive: true });
+  writeFileSync(join(tmp, 'todo/projects/garden/store.json'), JSON.stringify({ lists: [{ id: 1, parentId: null, title: 'Beds' }], entries: [{ id: 2, listId: 1, kind: 'todo', title: 'Dig' }], nextId: 3 }));
+  cli('project-templates.mjs', 'boilerplate', 'save', 'garden', '--name', 'Garden kit');
+  cli('projects.mjs', 'select', 'amberx-axf');
+  assert.notEqual((await callP({ action: 'current' })).values.skin.id, 'windows', 'switched away from Garden');
+  const sBp = await callP({ action: 'start', startFrom: { kind: 'boilerplate', id: 'garden-kit' } });
+  assert.equal(sBp.label, 'Garden kit'); assert.equal(sBp.values.skin.id, 'windows', 'the boilerplate\'s setup, not the current project\'s');
+  assert.ok(sBp.boilerplates.some((b) => b.id === 'garden-kit'));
+  const orchard = { source: { kind: 'new' }, display: 'Orchard', homes: { github: { mode: 'new', owner: 'MossesX' } }, startFrom: { kind: 'boilerplate', id: 'garden-kit' }, switchTo: false };
+  const cb = await callP({ action: 'check', plan: orchard });
+  assert.equal(cb.ok, true, JSON.stringify(cb.problems));
+  assert.equal(cb.plan.setup.skin.id, 'windows'); assert.equal(cb.plan.setup.starter.id, 'none'); assert.equal(cb.plan.setup.claude.account, 'work');
+  assert.equal(cb.plan.startFrom.label, 'Garden kit'); assert.equal(cb.template, undefined, 'the check never sends the template back');
+  assert.ok((await callP({ action: 'check', plan: { ...orchard, startFrom: { kind: 'boilerplate', id: 'nope' } } })).problems.some((p) => /no boilerplate/.test(p)));
+  const rOrchard = await callP({ action: 'run', plan: orchard });
+  assert.equal(rOrchard.ok, true, `${rOrchard.error}\n${(rOrchard.log ?? []).join('\n')}`);
+  assert.deepEqual(JSON.parse(readFileSync(join(ws, 'orchard/project.manifest.json'), 'utf8')).x.setup.startedFrom, { kind: 'boilerplate', id: 'garden-kit', name: 'Garden kit' });
+  const orchardTodo = JSON.parse(readFileSync(join(tmp, 'todo/projects/orchard/store.json'), 'utf8'));
+  assert.deepEqual(orchardTodo.lists.map((l) => l.title), ['Beds'], 'the lists came along'); assert.equal(orchardTodo.entries.length, 0, 'structure only: no items');
+  assert.equal(rOrchard.workspace.active, false); assert.equal((await callP({ action: 'current' })).project.id, 'amberx-axf');
+  cli('projects.mjs', 'select', 'garden');
+
   // starter = a boilerplate of an imported framework (a server folder here)
   const fwDir = join(tmp, 'other-fw'); mkdirSync(join(fwDir, 'boilerplates/basic'), { recursive: true }); writeFileSync(join(fwDir, 'boilerplates/basic/app.txt'), 'hello\n');
   const badFw = await callP({ action: 'check', plan: { source: { kind: 'new' }, display: 'Fw App', homes: { github: { mode: 'new', owner: 'MossesX' } }, starter: { id: 'framework' }, framework: { mode: 'import', import: { path: fwDir, boilerplate: '../../etc' } } } });

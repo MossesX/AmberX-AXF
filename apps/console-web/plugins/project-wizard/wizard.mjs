@@ -7,6 +7,12 @@
  *   node wizard.mjs --json '{"action":"status"}'
  *   actions: status · options · current · draft {set?, reset?} · inspect {source} · check {plan | fromDraft} · list {location}
  *            · run {plan | fromDraft} (alias create) · kit {name} · link {name,url} · forget {name}
+ *            · start {startFrom}: what "Start from" (blank, the current project, a saved boilerplate) fills in
+ *
+ * Start from (plan.startFrom = { kind: blank|current|boilerplate, id?, carry? }): the current project or a saved
+ * boilerplate is a project template (framework/cli/project-templates.mjs). Its setup is what the locked optional steps
+ * take; its rules, instructions and manifest settings go into the new repo; its lists, notes, plans and build rules
+ * go into the new workspace before it becomes the active project. Blank keeps the current project's setup as defaults.
  *
  * A run:
  *   1. gets a working folder from the source: a GitHub or VPS repo (cloned into the workspace), a folder on this
@@ -291,13 +297,30 @@ export function normaliseSetup(raw = {}) {
   };
 }
 
+/** The wizard's record of a console project (projects@1 entry): made here, or copied here from a template. */
+function recordOf(proj) {
+  const s = loadStore();
+  const rec = Object.values(s.projects).find((r) => r.workspace === proj.id) ?? s.projects[proj.id];
+  return { rec, copied: s.copies?.[proj.id] ?? null };
+}
+
+/** The folder holding a project's manifest and _claude/ files: its repo when made here, this repo for the base. */
+function folderOf(proj, rec) {
+  if (rec?.dir && existsSync(join(rec.dir, 'project.manifest.json'))) return rec.dir;
+  return proj.base ? REPO_ROOT : '';
+}
+
 /** The current (active) project and the values its optional steps start on. */
 export async function current() {
   let proj = { id: 'amberx-axf', name: 'AmberX AXF', description: '', base: true };
   try { const p = (await projectsCli()).activeProject(); proj = { id: p.id, name: p.name, description: p.description ?? '', base: !!p.base }; } catch { /* no registry: the base project */ }
-  const all = loadStore().projects;
-  const rec = Object.values(all).find((r) => r.workspace === proj.id) ?? all[proj.id];
-  let setup = rec?.setup ?? null;
+  return setupOf(proj);
+}
+
+/** A project's setup: the values the wizard's optional steps start on when this project is the starting point. */
+export async function setupOf(proj) {
+  const { rec, copied } = recordOf(proj);
+  let setup = rec?.setup ?? copied?.setup ?? null;
   let repo = rec?.github || rec?.vps || rec?.dir || '';
   if (!setup) {
     // a project not made here (the base project): AXF, the console-style app, its manifest's repo, the hub-wide skin
@@ -332,12 +355,142 @@ export async function options() {
     libraries,
     accounts: [],
     current: await current(),
+    startFrom: { kinds: START_KINDS, boilerplates: (await templates()).listBoilerplates() },
   };
+}
+
+/* ─── start from: blank, the current project, or a saved boilerplate (project-template@1) ── */
+
+const SELF = basename(PLUGIN_DIR);
+const templates = () => import(join(CLI, 'project-templates.mjs'));
+const templatesCore = () => import(join(REPO_ROOT, 'framework', 'plan', 'project-templates-core.mjs'));
+const START_KINDS = ['blank', 'current', 'boilerplate'];
+/** Manifest keys a copy never takes from its source: who the project is and where it lives. Its setup travels on its own. */
+const IDENTITY = ['$axf', 'name', 'displayName', 'description', 'repo', 'location', 'deploy'];
+const INSTRUCTION_DIRS = ['_claude/rules', '_claude/instructions'];
+const INSTRUCTION_BYTES = 64 * 1024;
+const INSTRUCTION_TOTAL = 512 * 1024;
+
+/** A project folder's own rules and instructions (Markdown under _claude/rules and _claude/instructions; READMEs are made fresh). */
+function readInstructions(dir) {
+  const files = {};
+  let total = 0;
+  for (const d of INSTRUCTION_DIRS) {
+    const abs = join(dir, d);
+    if (!existsSync(abs)) continue;
+    for (const n of readdirSync(abs).sort()) {
+      const f = join(abs, n);
+      if (!n.endsWith('.md') || n === 'README.md' || !lstatSync(f).isFile()) continue;
+      const size = statSync(f).size;
+      if (size > INSTRUCTION_BYTES || total + size > INSTRUCTION_TOTAL) continue;
+      files[`${d}/${n}`] = readFileSync(f, 'utf8');
+      total += size;
+    }
+  }
+  return files;
+}
+
+/** The wizard's part of a project copy: its setup (starter, framework, skin, Claude account and models), manifest and instructions. */
+export async function exportPart(proj) {
+  const { rec, copied } = recordOf(proj);
+  const { values } = await setupOf(proj);
+  const dir = folderOf(proj, rec);
+  let manifest = copied?.manifest ?? null;
+  let instructions = copied?.instructions ?? {};
+  if (dir) {
+    const m = readJson(join(dir, 'project.manifest.json'));
+    if (m) {
+      manifest = Object.fromEntries(Object.entries(m).filter(([k]) => !IDENTITY.includes(k)));
+      if (manifest.x?.setup) { const { setup, ...x } = manifest.x; manifest.x = x; }
+    }
+    instructions = readInstructions(dir);
+  }
+  return { setup: values, manifest, instructions };
+}
+
+/** Keep a copied project's part for its workspace (a project made by duplicating has no repo yet; the wizard links one later). */
+export function importPart(proj, data) {
+  const s = loadStore();
+  const { rec } = recordOf(proj);
+  s.copies = s.copies ?? {};
+  if (rec || s.copies[proj.id]) return { note: 'the project already has its setup: left as it is' };
+  const manifest = data?.manifest && typeof data.manifest === 'object' ? { ...data.manifest, name: proj.id, displayName: proj.name, ...(proj.description ? { description: proj.description } : {}) } : null;
+  const instructions = Object.fromEntries(Object.entries(data?.instructions ?? {}).filter(([k, v]) => INSTRUCTION_DIRS.some((d) => k.startsWith(`${d}/`)) && !k.split('/').includes('..') && typeof v === 'string'));
+  s.copies[proj.id] = { setup: normaliseSetup(data?.setup ?? {}), manifest, instructions, copiedAt: new Date().toISOString() };
+  saveStore(s);
+  const n = Object.keys(instructions).length;
+  return { note: `setup${manifest ? ', manifest' : ''}${n ? `, ${n} rules and instructions file(s)` : ''}` };
+}
+
+/** The template a plan starts from (null = blank) and what the steps take from it. */
+async function startTemplate(raw) {
+  const sf = raw && typeof raw === 'object' ? raw : {};
+  const kind = START_KINDS.includes(sf.kind) ? sf.kind : 'blank';
+  const T = await templates();
+  const carry = (await templatesCore()).normaliseCarry(sf.carry);
+  if (kind === 'current') {
+    const p = T.findProject();
+    const template = await T.capture(p, carry);
+    return { kind, id: p.id, label: p.name, carry: template.carry, template };
+  }
+  if (kind === 'boilerplate') {
+    if (!str(sf.id, 80)) fail('Start from: pick a boilerplate');
+    const b = T.getBoilerplate(sf.id);
+    return { kind, id: b.id, label: b.name, carry: b.template.carry, template: b.template };
+  }
+  return { kind: 'blank', id: '', label: '', carry: null, template: null };
+}
+
+/** What a "Start from" choice fills in: the optional steps' values, a name suggestion, and what it carries. */
+export async function start({ startFrom } = {}) {
+  const st = await startTemplate(startFrom);
+  const T = await templates();
+  const C = await templatesCore();
+  const cur = await current();
+  const part = st.template?.plugins?.[SELF]?.data;
+  const values = part?.setup ? (({ starter, framework, skin, claude }) => ({ starter, framework, skin, claude }))(normaliseSetup(part.setup)) : cur.values;
+  let display = '';
+  if (st.kind === 'current') {
+    try { display = C.copyName(st.label, (await projectsCli()).readProjects().projects.map((p) => p.name)); } catch { display = `${st.label} copy`; }
+  } else if (st.kind === 'boilerplate') display = st.label;
+  return {
+    ok: true, kind: st.kind, id: st.id, label: st.label || cur.project.name, carry: st.carry,
+    holds: st.template ? C.describeTemplate(st.template) : 'nothing: a blank project',
+    values, suggest: { display, description: st.template?.source?.description ?? '' },
+    boilerplates: T.listBoilerplates(),
+  };
+}
+
+/** Write the template's rules and instructions files and manifest keys into the new repo (only what isn't there). */
+function writeFromTemplate(dir, template) {
+  const part = template?.plugins?.[SELF]?.data;
+  if (!part) return [];
+  const written = [];
+  for (const [rel, text] of Object.entries(part.instructions ?? {})) {
+    if (!INSTRUCTION_DIRS.some((d) => rel.startsWith(`${d}/`)) || rel.split('/').includes('..') || typeof text !== 'string') continue;
+    const f = join(dir, rel);
+    insideOrThrow(dir, f);
+    if (existsSync(f)) continue;
+    mkdirSync(dirname(f), { recursive: true });
+    writeFileSync(f, text);
+    written.push(rel);
+  }
+  const mf = join(dir, 'project.manifest.json');
+  const m = readJson(mf);
+  if (m && isObj(part.manifest)) {
+    let added = 0;
+    for (const [k, v] of Object.entries(part.manifest)) {
+      if (IDENTITY.includes(k) || k in m) continue;
+      m[k] = v; added++;
+    }
+    if (added) { writeFileSync(mf, JSON.stringify(m, null, 2) + '\n'); written.push('project.manifest.json'); }
+  }
+  return written;
 }
 
 /* ─── the draft: build a plan step by step without the UI (REST, MCP, CLI, voice) ── */
 
-const DRAFT_KEYS = ['source', 'display', 'name', 'description', 'kind', 'visibility', 'homes', 'sync', 'commitAll', 'port', 'starter', 'framework', 'skin', 'claude', 'firstPlan', 'inherit', 'switchTo'];
+const DRAFT_KEYS = ['source', 'display', 'name', 'description', 'kind', 'visibility', 'homes', 'sync', 'commitAll', 'port', 'starter', 'framework', 'skin', 'claude', 'firstPlan', 'inherit', 'switchTo', 'startFrom'];
 const isObj = (v) => !!v && typeof v === 'object' && !Array.isArray(v);
 function merge(a, b) {
   const out = { ...(isObj(a) ? a : {}) };
@@ -510,8 +663,12 @@ async function normalise(plan = {}) {
   // older callers name the template on the source: that is the "AXF template" starter
   if (raw.starter === undefined && source.kind === 'new' && str(source.template, 40)) raw.starter = { id: 'template', template: source.template, boilerplate: source.boilerplate };
   const inherit = { ...Object.fromEntries(OPTIONAL.map((k) => [k, raw[SETUP_KEY[k]] === undefined])),...(isObj(plan.inherit) ? plan.inherit : {}) };
+  // start from: a template (the current project or a boilerplate) sets what a locked step takes, instead of the current project
+  let start = { kind: 'blank', id: '', label: '', carry: null, template: null };
+  try { start = await startTemplate(plan.startFrom); } catch (e) { problems.push(e.message); }
+  const startSetup = start.template?.plugins?.[SELF]?.data?.setup;
   let cur = null;
-  if (OPTIONAL.some((k) => inherit[k] === true)) cur = (await current()).values;
+  if (OPTIONAL.some((k) => inherit[k] === true)) cur = startSetup ? normaliseSetup(startSetup) : (await current()).values;
   const given = normaliseSetup({ ...raw, firstPlan: plan.firstPlan });
   const setup = { ...given };
   for (const k of OPTIONAL) {
@@ -521,6 +678,8 @@ async function normalise(plan = {}) {
   out.inherit = Object.fromEntries(OPTIONAL.map((k) => [k, inherit[k] === true]));
   out.switchTo = plan.switchTo !== false;
   out.setup = setup;
+  out.startFrom = { kind: start.kind, id: start.id, label: start.label, carry: start.carry };
+  if (start.template && !Object.keys(start.template.plugins ?? {}).length && !start.template.profile?.rules) warnings.push(`Start from: ${start.label} has nothing to carry over beyond its settings`);
 
   // the starter only makes code for a new repo; an existing repo or folder is its own starter
   if (source.kind === 'new') {
@@ -549,7 +708,7 @@ async function normalise(plan = {}) {
   }
   if (fw.mode === 'own' && fw.name && !NAME_RE.test(slugOf(fw.name))) problems.push('Framework: give your framework a name');
   for (const lib of fw.privateLibraries) if (!parseGithub(lib) && !isAbsolute(lib)) problems.push(`Framework: private library "${lib}" must be a GitHub owner/name or a server folder`);
-  return { plan: out, problems, warnings };
+  return { plan: out, problems, warnings, template: start.template };
 }
 
 /** The stored draft as a plan (run/check {fromDraft:true}). */
@@ -561,13 +720,13 @@ function draftPlan() {
 }
 
 export async function check(plan) {
-  const r = await normalise(plan);
+  const { template, ...r } = await normalise(plan);
   return { ok: !r.problems.length, ...r };
 }
 
 /** Steps 1-3 (see the header). */
 export async function run(plan) {
-  const { plan: p, problems, warnings } = await normalise(plan);
+  const { plan: p, problems, warnings, template } = await normalise(plan);
   if (problems.length) fail(problems.join(' · '));
   const log = [];
   const say = (m) => log.push(String(m).replace(ANSI, ''));
@@ -622,7 +781,8 @@ export async function run(plan) {
     else if (r.github) step('claude-app', 'the Claude GitHub app can see the repo (Claude.ai can attach it)');
 
     // 3. the setup (starter, framework, skin, Claude account and models, first plan) and the Claude.ai project kit
-    const written = writeSetup(p.dir, p);
+    const written = [...writeSetup(p.dir, p), ...writeFromTemplate(p.dir, template)];
+    if (template) step('start-from', `${p.startFrom.kind === 'current' ? 'a copy of' : 'boilerplate'} ${p.startFrom.label}: its rules, instructions and manifest settings`);
     step('setup', `starter ${p.setup.starter.id}, framework ${p.setup.framework.mode}, skin ${p.setup.skin.id || 'default'}, models ${Object.values(p.setup.claude.models).join('/')}${p.setup.firstPlan.text || p.setup.firstPlan.builds.length ? ', first plan' : ''}`);
     const k = writeKit(p.dir, { github: rec.github, vps: rec.vps });
     commitAndPush(p.dir, [KIT_DIR, ...written], `Add the project setup and the Claude.ai project kit for ${p.display}`, { github: rec.github, vps: !!rec.vps });
@@ -632,9 +792,13 @@ export async function run(plan) {
     rec.inherit = p.inherit;
 
     // 4. its own workspace in the console (projects@1), and switch into it
-    const ws = await openWorkspace(p);
+    const ws = await openWorkspace(p, template);
     rec.workspace = ws.id;
     step('workspace', ws.note);
+    if (template) {
+      rec.startFrom = p.startFrom;
+      for (const line of ws.carried ?? []) say(line);
+    }
     putProject(rec);
     clearDraftIf(plan);
     return { ok: true, project: rec, log, kit: k, workspace: ws };
@@ -693,6 +857,7 @@ export function writeSetup(dir, p) {
       claude: s.claude,
       firstPlan: written.includes('docs/FIRST_PLAN.md') ? 'docs/FIRST_PLAN.md' : null,
       inherited: Object.entries(p.inherit).filter(([, v]) => v).map(([k]) => k),
+      ...(p.startFrom && p.startFrom.kind !== 'blank' ? { startedFrom: { kind: p.startFrom.kind, id: p.startFrom.id, name: p.startFrom.label } } : {}),
       madeBy: 'project-wizard',
     } };
     writeFileSync(mf, JSON.stringify(m, null, 2) + '\n');
@@ -701,17 +866,27 @@ export function writeSetup(dir, p) {
   return written;
 }
 
-/** Create the project's console workspace (projects@1) and, unless told not to, make it the active project. */
-async function openWorkspace(p) {
+/**
+ * Create the project's console workspace (projects@1) and, unless told not to, make it the active project. With a
+ * template, the new workspace gets the template's lists, notes, plans and build rules before anyone switches to it.
+ */
+async function openWorkspace(p, template = null) {
   const P = await projectsCli();
   const id = p.name.slice(0, 40).replace(/-+$/, '');
   const have = P.readProjects().projects.find((x) => x.id === id);
   if (have) {
     if (p.switchTo && have.status !== 'archived') await P.act({ action: 'select', id });
-    return { id, created: false, active: p.switchTo && have.status !== 'archived', note: `workspace ${id} already there${p.switchTo ? ', switched to it' : ''}` };
+    return { id, created: false, active: p.switchTo && have.status !== 'archived', note: `workspace ${id} already there${p.switchTo ? ', switched to it' : ''}${template ? '; its data was left as it is' : ''}` };
   }
-  await P.act({ action: 'create', id, name: p.display, description: p.description, select: p.switchTo });
-  return { id, created: true, active: p.switchTo, note: `workspace ${id} created${p.switchTo ? ' and made the active project' : ''}` };
+  const made = await P.act({ action: 'create', id, name: p.display, description: p.description, select: p.switchTo && !template });
+  const carried = [];
+  if (template) {
+    // the wizard's own part (setup, manifest, instructions) went into the repo above
+    const r = await (await templates()).apply(made.project, template, { skip: [SELF], log: (m) => carried.push(m) });
+    for (const x of r.problems) carried.push(`! ${x}`);
+    if (p.switchTo) await P.act({ action: 'select', id });
+  }
+  return { id, created: true, active: p.switchTo, carried, note: `workspace ${id} created${template ? ` from ${p.startFrom.label}` : ''}${p.switchTo ? ' and made the active project' : ''}` };
 }
 
 /** A run made from the draft (or one equal to it) clears the draft. */
@@ -905,6 +1080,7 @@ export async function handle(req = {}) {
     case 'check': return check(req.fromDraft ? draftPlan() : req.plan);
     case 'run': case 'create': return run(req.fromDraft ? draftPlan() : req.plan);
     case 'options': return options();
+    case 'start': return start(req);
     case 'current': return { ok: true, ...(await current()) };
     case 'draft': return draft(req);
     case 'list': return list(req);

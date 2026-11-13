@@ -41,6 +41,23 @@
         "readOnly": true
       },
       {
+        "route": "POST /start",
+        "id": "start",
+        "title": "Start a new project from",
+        "description": "What a new project starting from blank, a copy of the current project, or a saved boilerplate gets: the setup its optional steps start on, a name suggestion and what comes along (voice: 'start the new project from the Client site boilerplate'). Put the choice in the plan with draft-set {startFrom}.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "startFrom": {
+              "type": "object",
+              "description": "{kind: blank|current|boilerplate, id: the boilerplate id, carry: {items: structure|all|none, builds: bool}}"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      {
         "route": "GET /draft",
         "id": "draft",
         "title": "New project draft",
@@ -51,7 +68,7 @@
         "route": "POST /draft",
         "id": "draft-set",
         "title": "Set a new project step",
-        "description": "Fill one or more wizard steps without the UI (voice: 'call the new project Garden', 'link it to a new GitHub repo', 'use the Windows skin', 'builds on Opus'). set merges fields: display, description, source {kind: new|github|vps|folder, repo, path}, homes {github {mode: new|existing|skip, owner, name}, vps {mode}}, starter {id: console-app|template|framework|none, template, boilerplate}, framework {mode: axf|own|import, libraries, privateLibraries, name, import {repo, path, boilerplate}}, skin {id}, claude {account, models {plan, build, review: opus|fable}}, firstPlan {text, builds, spoken}, inherit {starter, framework, skin, accounts}, switchTo. reset true starts again.",
+        "description": "Fill one or more wizard steps without the UI (voice: 'call the new project Garden', 'link it to a new GitHub repo', 'use the Windows skin', 'builds on Opus'). set merges fields: display, description, source {kind: new|github|vps|folder, repo, path}, homes {github {mode: new|existing|skip, owner, name}, vps {mode}}, starter {id: console-app|template|framework|none, template, boilerplate}, framework {mode: axf|own|import, libraries, privateLibraries, name, import {repo, path, boilerplate}}, skin {id}, claude {account, models {plan, build, review: opus|fable}}, firstPlan {text, builds, spoken}, startFrom {kind: blank|current|boilerplate, id, carry {items, builds}}, inherit {starter, framework, skin, accounts}, switchTo. reset true starts again.",
         "input": {
           "type": "object",
           "properties": {

@@ -5,7 +5,7 @@ import { pluginFetch } from '@console/plugins';
 import './project-wizard.css';
 import { appMenu } from './menu';
 import { LoadingSkeleton, EmptyState } from '@console/emptyState';
-import { AccountsStep, FirstPlanStep, FrameworkStep, Locked, PICK_DIALOG, PickDialog, SkinStep, StarterStep, summary, type FirstPlan, type Lockable, type Options, type Setup } from './steps';
+import { AccountsStep, FirstPlanStep, FrameworkStep, Locked, PICK_DIALOG, PickDialog, SkinStep, StartFromField, StarterStep, summary, type FirstPlan, type Lockable, type Options, type Setup, type StartFrom, type StartInfo } from './steps';
 
 /** Plugin folder: server routes live at /api/plugins/project-wizard/. */
 const FOLDER = 'project-wizard';
@@ -22,7 +22,7 @@ interface Plan {
   source: Source; display: string; name: string; description: string; kind: string; visibility: 'private' | 'public';
   port: 'bake' | 'rebuild' | 'no'; homes: { github: Home; vps: Home; local: Home }; sync: boolean; commitAll: boolean;
   starter: Setup['starter']; framework: Setup['framework']; skin: Setup['skin']; claude: Setup['claude']; firstPlan: FirstPlan;
-  inherit: Record<Lockable, boolean>; switchTo: boolean;
+  inherit: Record<Lockable, boolean>; switchTo: boolean; startFrom: StartFrom;
 }
 interface Step { ok: boolean; note: string; at: string }
 interface Project { name: string; display: string; description?: string; dir: string; github?: string; vps?: string; claudeAi?: string; source: { kind: SourceKind; repo?: string; path?: string; template?: string }; steps: Record<string, Step>; kit?: { files: string[] }; failed?: string; updatedAt?: string }
@@ -32,7 +32,7 @@ interface Status {
   boilerplates: { id: string; name: string; category: string; description: string; status: string }[]; claudeNewProjectUrl: string; projects: Project[];
 }
 interface Inspect { kind: SourceKind; repo?: string; path?: string; state?: string; stack?: string[]; relation?: string; axfNote?: string; git?: boolean; empty?: boolean; hasManifest?: boolean; origin?: string; suggest: { display: string; name: string; description: string; owner?: string; repoName?: string; visibility?: 'private' | 'public' } }
-interface Check { ok: boolean; problems: string[]; warnings: string[]; plan: { name: string; dir: string; setup?: Setup; inherit?: Record<Lockable, boolean>; homes: { github?: { owner: string; name: string; state: string; isSource: boolean }; vps?: { path: string; state: string }; local: { path: string } } } }
+interface Check { ok: boolean; problems: string[]; warnings: string[]; plan: { name: string; dir: string; setup?: Setup; inherit?: Record<Lockable, boolean>; startFrom?: { kind: StartFrom['kind']; id: string; label: string }; homes: { github?: { owner: string; name: string; state: string; isSource: boolean }; vps?: { path: string; state: string }; local: { path: string } } } }
 interface KitFile { path: string; bytes: number; text: string }
 interface RunResult { ok: boolean; error?: string; log: string[]; project: Project; kit?: { files: KitFile[] }; workspace?: { id: string; created: boolean; active: boolean; note: string } }
 interface Item { id: string; label: string; note: string }
@@ -43,6 +43,7 @@ const freshPlan = (): Plan => ({
   starter: { id: 'console-app', template: 'react-ts', boilerplate: '' }, framework: { mode: 'axf', libraries: [], privateLibraries: [], name: '', import: { repo: '', path: '', boilerplate: '' } }, skin: { id: '', color: '' },
   claude: { account: '', ownAccount: true, models: { plan: 'fable', build: 'opus', review: 'opus' } }, firstPlan: { text: '', builds: [], spoken: false },
   inherit: { starter: true, framework: true, skin: true, accounts: true }, switchTo: true,
+  startFrom: { kind: 'blank', id: '', carry: { items: 'structure', builds: false } },
 });
 /** "owner/name", a github.com link or a bare name (then the current owner) → [owner, name]. */
 function splitRepo(val: string, owner: string): [string, string] {
@@ -151,13 +152,32 @@ function Wizard({ st, onDone }: { st: Status; onDone: () => void }) {
   const setSource = (p: Partial<Source>) => { setInfo(null); setPlan((x) => ({ ...x, source: { ...x.source, ...p } })); };
   const setHome = (k: keyof Plan['homes'], p: Partial<Home>) => setPlan((x) => ({ ...x, homes: { ...x.homes, [k]: { ...x.homes[k], ...p } } }));
   useEffect(() => { const f = (s: string) => { const i = STEP_IDS.indexOf(s as typeof STEP_IDS[number]); if (i >= 0) setStep(i); }; stepListeners.add(f); return () => { stepListeners.delete(f); }; }, []);
-  // the optional steps start on the current project's values
+  // the optional steps start on the current project's values, or the values of what the project starts from
   useEffect(() => { if (o) setPlan((x) => ({ ...x, ...o.current.values })); }, [o]);
-  const cur = o?.current;
+  const [start, setStart] = useState<StartInfo | null>(null);
+  const [suggested, setSuggested] = useState({ display: '', description: '' });
+  const cur = o ? { project: o.current.project, values: start?.values ?? o.current.values, label: start && start.kind !== 'blank' ? start.label : o.current.project.name } : null;
   const lock = (k: Lockable, locked: boolean) => setPlan((x) => {
     const key = k === 'accounts' ? 'claude' : k;
     return { ...x, inherit: { ...x.inherit, [k]: locked }, ...(locked && cur ? { [key]: cur.values[key] } : {}) };
   });
+  /** Start from: blank, the current project or a boilerplate. Its setup fills the locked steps; its name is suggested. */
+  const setStartFrom = async (sf: StartFrom) => {
+    setPlan((x) => ({ ...x, startFrom: sf }));
+    if (sf.kind === 'boilerplate' && !sf.id) return;
+    setErr('');
+    try {
+      const r = await post<StartInfo>('start', { startFrom: sf });
+      setStart(r);
+      setPlan((x) => {
+        const locked = Object.fromEntries((['starter', 'framework', 'skin', 'accounts'] as Lockable[]).filter((k) => x.inherit[k]).map((k) => (k === 'accounts' ? ['claude', r.values.claude] : [k, r.values[k]])));
+        const display = !x.display || x.display === suggested.display ? r.suggest.display : x.display;
+        const description = !x.description || x.description === suggested.description ? r.suggest.description : x.description;
+        return { ...x, ...locked, display, name: display === x.display ? x.name : '', description };
+      });
+      setSuggested(r.suggest);
+    } catch (e) { setErr((e as Error).message); }
+  };
 
   const inspect = async (): Promise<boolean> => {
     if (plan.source.kind === 'new') return true;
@@ -204,7 +224,7 @@ function Wizard({ st, onDone }: { st: Status; onDone: () => void }) {
   const canNext = step === 0 ? nameOk : true;
   const newRepo = plan.source.kind === 'new';
   const lk = (k: Lockable) => plan.inherit[k];
-  const curName = cur?.project.name ?? 'the current project';
+  const curName = cur?.label ?? 'the current project';
   const sum = (k: Lockable) => (cur ? summary(k, cur.values, o) : '…');
 
   if (result?.ok) return <Done st={st} result={result} />;
@@ -216,6 +236,7 @@ function Wizard({ st, onDone }: { st: Status; onDone: () => void }) {
       </ol>
       {optErr && <p className={`${P}__error`}>{optErr}</p>}
 
+      {step === 0 && <StartFromField o={o} v={plan.startFrom} info={start} onChange={(sf) => void setStartFrom(sf)} />}
       {step === 0 && <NameStep plan={plan} set={set} info={info} />}
       {step === 1 && <RepoStep st={st} plan={plan} setSource={setSource} setHome={setHome} set={set} info={info} />}
       {step >= 2 && step <= 5 && !o && <LoadingSkeleton />}
@@ -224,7 +245,7 @@ function Wizard({ st, onDone }: { st: Status; onDone: () => void }) {
       {step === 4 && o && <Locked locked={lk('skin')} onLock={(v) => lock('skin', v)} current={curName} summary={sum('skin')}><SkinStep o={o} v={plan.skin} set={(skin) => set({ skin })} /></Locked>}
       {step === 5 && o && <Locked locked={lk('accounts')} onLock={(v) => lock('accounts', v)} current={curName} summary={sum('accounts')}><AccountsStep o={o} v={plan.claude} set={(claude) => set({ claude })} /></Locked>}
       {step === 6 && <FirstPlanStep v={plan.firstPlan} set={(firstPlan) => set({ firstPlan })} />}
-      {step === 7 && check && <ReviewStep plan={plan} set={set} check={check} o={o} info={info} />}
+      {step === 7 && check && <ReviewStep plan={plan} set={set} check={check} o={o} info={info} start={start} />}
 
       {result && !result.ok && <RunLog result={result} />}
       {err && <p className={`${P}__error`}>{err}</p>}
@@ -419,17 +440,20 @@ function ClaudeStep({ plan, set, info }: { plan: Plan; set: (p: Partial<Plan>) =
   );
 }
 
-function ReviewStep({ plan, set, check, o, info }: { plan: Plan; set: (p: Partial<Plan>) => void; check: Check; o: Options | null; info: Inspect | null }) {
+function ReviewStep({ plan, set, check, o, info, start }: { plan: Plan; set: (p: Partial<Plan>) => void; check: Check; o: Options | null; info: Inspect | null; start: StartInfo | null }) {
   const h = check.plan.homes;
   const row = (k: string, v: ReactNode) => <tr><th>{k}</th><td>{v}</td></tr>;
   const src = plan.source;
   const setup = check.plan.setup;
-  const same = (k: Lockable) => (check.plan.inherit?.[k] ? <Chip>same as {o?.current.project.name ?? 'now'}</Chip> : null);
+  const sf = check.plan.startFrom;
+  const from = sf && sf.kind !== 'blank' ? sf.label : o?.current.project.name ?? 'now';
+  const same = (k: Lockable) => (check.plan.inherit?.[k] ? <Chip>same as {from}</Chip> : null);
   return (
     <div className="fx-stack">
       <table className="fx-table"><tbody>
         {row('Project', <>{plan.display} <span className="fx-mono fx-muted">({check.plan.name})</span></>)}
         {plan.description && row('Description', plan.description)}
+        {row('Start from', sf && sf.kind !== 'blank' ? <>{sf.kind === 'current' ? 'a copy of' : 'boilerplate'} <strong>{sf.label}</strong>{start?.holds ? <span className="fx-muted"> · {start.holds}</span> : null}</> : 'blank')}
         {row('Linked repo', src.kind === 'new' ? 'a new repo' : src.kind === 'folder' ? src.path : `${src.kind === 'github' ? 'GitHub' : 'VPS'} ${src.repo}`)}
         {row('GitHub', h.github ? <>{h.github.owner}/{h.github.name} <Chip tone={h.github.state === 'free' ? 'accent' : h.github.isSource ? 'success' : 'warning'}>{h.github.state === 'free' ? 'will be created' : h.github.isSource ? 'the source' : h.github.state}</Chip></> : '—')}
         {row('VPS', h.vps ? <><span className="fx-mono">{h.vps.path}</span> <Chip tone={h.vps.state === 'free' ? 'accent' : 'warning'}>{h.vps.state === 'free' ? 'will be created' : h.vps.state}</Chip></> : '—')}

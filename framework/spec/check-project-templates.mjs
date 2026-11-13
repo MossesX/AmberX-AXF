@@ -95,6 +95,7 @@ try {
   check('duplicate: notes folders, no notes', existsSync(join(hub, '_shared/_claude/project-notes', c, 'ideas')) && !existsSync(join(hub, '_shared/_claude/project-notes', c, 'ideas/one.md')));
   check('duplicate: plan categories, no plans', existsSync(join(plans, 'projects', c, 'categories.json')) && !existsSync(join(plans, 'projects', c, 'plans/beds.json')));
   check('duplicate: build rules copied', readJson(storeFile).rules[c]?.maxStepMinutes === 17);
+  check('duplicate: wizard setup kept for the copy', !!readJson(join(data, 'wizard.json')).copies?.[c]?.setup);
   check('duplicate: no builds of its own', d.state.projects.find((x) => x.id === c)?.counts?.builds === 0);
   check('duplicate: no builds history by default', !existsSync(join(data, 'framework/plan/profiles', c, 'framework/plan/builds-history.json')));
 

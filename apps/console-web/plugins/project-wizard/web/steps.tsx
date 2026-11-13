@@ -32,6 +32,48 @@ export interface Options {
   libraries: { id: string; name: string; description: string }[];
   accounts: { name: string; kind: string; plan: string; email: string; active: boolean }[];
   current: { project: { id: string; name: string; description: string; base: boolean; repo: string }; values: Setup };
+  startFrom?: { kinds: StartFrom['kind'][]; boilerplates: BoilerplateInfo[] };
+}
+
+/* ---------------- start from: blank, the current project, or a saved boilerplate ---------------- */
+
+export type Items = 'structure' | 'all' | 'none';
+export interface StartFrom { kind: 'blank' | 'current' | 'boilerplate'; id: string; carry: { items: Items; builds: boolean } }
+export interface BoilerplateInfo { id: string; name: string; description: string; from: { id: string; name: string }; holds: string }
+/** What a start choice fills in (POST start): the optional steps' values, a name suggestion, what it carries. */
+export interface StartInfo { kind: StartFrom['kind']; id: string; label: string; holds: string; values: Setup; suggest: { display: string; description: string }; boilerplates: BoilerplateInfo[] }
+
+const ITEM_CHOICES: { value: Items; label: string }[] = [
+  { value: 'structure', label: 'Structure only: lists, folders and categories, no items' },
+  { value: 'all', label: 'Everything: with their items' },
+  { value: 'none', label: 'Leave them out' },
+];
+
+/** The first question: start blank, as a copy of the current project, or from a saved boilerplate. */
+export function StartFromField({ o, v, info, onChange }: { o: Options | null; v: StartFrom; info: StartInfo | null; onChange: (v: StartFrom) => void }) {
+  const boilerplates = info?.boilerplates ?? o?.startFrom?.boilerplates ?? [];
+  const curName = o?.current.project.name ?? 'the current project';
+  const choices: Choice[] = [
+    { id: 'blank', title: 'Blank', text: `A new project. Its settings start on ${curName}'s; nothing else comes along.`, icon: 'file' },
+    { id: 'current', title: `Copy of ${curName}`, text: 'Its settings, rules, instructions, skin, Claude accounts and plugin setup, and its lists.', icon: 'copy' },
+    { id: 'boilerplate', title: 'A boilerplate', text: boilerplates.length ? `${boilerplates.length} saved` : 'none saved yet (Projects → Save as boilerplate)', icon: 'package', disabled: !boilerplates.length },
+  ];
+  return (
+    <fieldset className={`${P}__fieldset`}>
+      <legend>Start from</legend>
+      <ChoiceGrid label="Start from" choices={choices} selected={[v.kind]} onToggle={(k) => onChange({ ...v, kind: k as StartFrom['kind'], id: k === 'boilerplate' ? v.id || boilerplates[0]?.id || '' : '' })} />
+      {v.kind === 'boilerplate' && (
+        <SelectField label="Boilerplate" value={v.id} options={boilerplates.map((b) => ({ value: b.id, label: b.from.name ? `${b.name} (from ${b.from.name})` : b.name }))} onChange={(id) => onChange({ ...v, id })} />
+      )}
+      {v.kind === 'current' && (
+        <>
+          <SelectField label="Lists, to-dos, notes and plans" value={v.carry.items} options={ITEM_CHOICES} onChange={(items) => onChange({ ...v, carry: { ...v.carry, items: items as Items } })} />
+          <Checkbox label="Bring the builds history (read-only; the builds stay with the original)" checked={v.carry.builds} onChange={(builds) => onChange({ ...v, carry: { ...v.carry, builds } })} />
+        </>
+      )}
+      {info && info.kind !== 'blank' && <p className={`fx-small fx-muted ${P}__flat`}>Comes along: {info.holds}. The optional steps start on its values.</p>}
+    </fieldset>
+  );
 }
 
 /* ---------------- the lock: current value grayed out until unlocked ---------------- */

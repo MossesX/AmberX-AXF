@@ -194,6 +194,18 @@
         "title": "Create the project",
         "text": "Makes the repo, starter code, project files and Claude.ai kit, then the project's workspace, and switches into it.",
         "kind": "button"
+      },
+      {
+        "target": "start-from",
+        "title": "Start from",
+        "text": "Blank: a new project whose settings start on the current project's. Copy of the current project: its settings, rules, instructions, skin, Claude accounts, plugin setup and lists. A boilerplate: a project saved with Save as boilerplate. The optional steps start on what you pick.",
+        "kind": "field"
+      },
+      {
+        "target": "boilerplate",
+        "title": "Boilerplate",
+        "text": "Which saved boilerplate the new project starts from. Save one from Projects → Save as boilerplate.",
+        "kind": "field"
       }
     ],
     "intros": []
