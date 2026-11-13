@@ -205,3 +205,21 @@ t('the veto screen closes itself only on a read made after it opened', () => {
 });
 
 console.log(`✓ approvals-banner: ${n} checks passed`);
+
+// Held calls and waiting approvals in the console's decision queue (decisions.ts, Nov 13 2026).
+{
+  const { decisionDiff, vetoOffer } = await import('./web/decisions.ts');
+  const held = [{ id: 'h1', title: 'Deploy', tool: 'vps.exec', summary: 'restart', command: 'systemctl restart x' }];
+  const pending = [{ id: 'p1', tool: 'git.push', summary: 'push main', title: '' }];
+  t('offer every held call and waiting approval once', () => {
+    const d1 = decisionDiff(new Set(), held, pending, true);
+    assert.deepEqual(d1.offer.map((o) => [o.type, o.ref]), [['veto', 'h1'], ['approval', 'p1']]);
+    assert.deepEqual(decisionDiff(new Set(['h1', 'p1']), held, pending, true), { offer: [], withdraw: [] });
+  });
+  t('gone from the feed: taken back; a failed read changes nothing', () => {
+    assert.deepEqual(decisionDiff(new Set(['h1', 'p1']), [], pending, true).withdraw, ['h1']);
+    assert.deepEqual(decisionDiff(new Set(['h1']), [], [], false), { offer: [], withdraw: [] });
+  });
+  t('buttons run the banner\'s own person-only actions', () => assert.deepEqual(vetoOffer(held[0]).buttons.map((b) => b.action), ['approvals.approve-now:h1', 'approvals.deny:h1', 'approvals.shelve:h1']));
+  console.log(`decision queue offers: ok (${n} checks so far)`);
+}

@@ -1,54 +1,225 @@
 {
   "$axf": "decision-types@1",
-  "note": "Every kind of decision that pops up the one decision dialog. A source may send its own buttons; these are the defaults. popup / notify are the defaults for Settings → Plugins → Decision dialog.",
+  "note": "Every kind of decision that pops up the one decision dialog. A source may send its own buttons; these are the defaults. popup / notify are the defaults for Settings \u2192 Plugins \u2192 Decision dialog.",
   "types": [
-    { "id": "ui-review", "label": "UI Review", "icon": "eye", "popup": true, "notify": true, "description": "An item was submitted to UI Review: screenshots or options to approve or pick.",
+    {
+      "id": "ui-review",
+      "label": "UI Review",
+      "icon": "eye",
+      "popup": true,
+      "notify": true,
+      "description": "An item was submitted to UI Review: screenshots or options to approve or pick.",
       "buttons": [
-        { "id": "approve", "label": "Approve", "kind": "primary", "icon": "check" },
-        { "id": "changes", "label": "Request changes", "kind": "neutral", "note": true, "icon": "edit" },
-        { "id": "reject", "label": "Reject", "kind": "danger", "icon": "x" }
-      ] },
-    { "id": "veto", "label": "Veto countdown", "icon": "clock", "popup": true, "notify": true, "description": "axHub holds a call on its countdown: it runs by itself unless you stop it.",
+        {
+          "id": "approve",
+          "label": "Approve",
+          "kind": "primary",
+          "icon": "check"
+        },
+        {
+          "id": "changes",
+          "label": "Request changes",
+          "kind": "neutral",
+          "note": true,
+          "icon": "edit"
+        },
+        {
+          "id": "reject",
+          "label": "Reject",
+          "kind": "danger",
+          "icon": "x"
+        }
+      ]
+    },
+    {
+      "id": "veto",
+      "label": "Veto countdown",
+      "icon": "clock",
+      "popup": false,
+      "notify": true,
+      "description": "axHub holds a call on its countdown: it runs by itself unless you stop it. Its own veto / approval screen already pops up, so here it waits in the queue and the counter unless you switch Pops up on.",
       "buttons": [
-        { "id": "approve-now", "label": "Approve now", "kind": "primary", "icon": "check" },
-        { "id": "deny", "label": "Deny", "kind": "danger", "icon": "x" },
-        { "id": "shelve", "label": "Shelve", "kind": "neutral", "icon": "pause" }
-      ] },
-    { "id": "approval", "label": "Approval", "icon": "shield", "popup": true, "notify": true, "description": "A call waiting for your approval on axHub.",
+        {
+          "id": "approve-now",
+          "label": "Approve now",
+          "kind": "primary",
+          "icon": "check"
+        },
+        {
+          "id": "deny",
+          "label": "Deny",
+          "kind": "danger",
+          "icon": "x"
+        },
+        {
+          "id": "shelve",
+          "label": "Shelve",
+          "kind": "neutral",
+          "icon": "pause"
+        }
+      ]
+    },
+    {
+      "id": "approval",
+      "label": "Approval",
+      "icon": "shield",
+      "popup": false,
+      "notify": true,
+      "description": "A call waiting for your approval on axHub. Its own veto / approval screen already pops up, so here it waits in the queue and the counter unless you switch Pops up on.",
       "buttons": [
-        { "id": "approve", "label": "Approve", "kind": "primary", "icon": "check" },
-        { "id": "deny", "label": "Deny", "kind": "danger", "icon": "x" }
-      ] },
-    { "id": "confirm", "label": "Confirm", "icon": "help", "popup": true, "notify": false, "description": "Something asks you to confirm before it goes on.",
+        {
+          "id": "approve",
+          "label": "Approve",
+          "kind": "primary",
+          "icon": "check"
+        },
+        {
+          "id": "deny",
+          "label": "Deny",
+          "kind": "danger",
+          "icon": "x"
+        }
+      ]
+    },
+    {
+      "id": "confirm",
+      "label": "Confirm",
+      "icon": "help",
+      "popup": true,
+      "notify": false,
+      "description": "Something asks you to confirm before it goes on.",
       "buttons": [
-        { "id": "approve", "label": "Confirm", "kind": "primary", "icon": "check" },
-        { "id": "deny", "label": "Cancel", "kind": "neutral", "icon": "x" }
-      ] },
-    { "id": "model-upgrade", "label": "Model upgrade", "icon": "sparkles", "popup": true, "notify": true, "description": "A build step asks to run on a higher model.",
+        {
+          "id": "approve",
+          "label": "Confirm",
+          "kind": "primary",
+          "icon": "check"
+        },
+        {
+          "id": "deny",
+          "label": "Cancel",
+          "kind": "neutral",
+          "icon": "x"
+        }
+      ]
+    },
+    {
+      "id": "model-upgrade",
+      "label": "Model upgrade",
+      "icon": "sparkles",
+      "popup": true,
+      "notify": true,
+      "description": "A build step asks to run on a higher model.",
       "buttons": [
-        { "id": "approve", "label": "Approve upgrade", "kind": "primary", "icon": "check" },
-        { "id": "deny", "label": "Keep the model", "kind": "neutral", "icon": "x" }
-      ] },
-    { "id": "merge-clash", "label": "Merge clash", "icon": "branch", "popup": true, "notify": true, "description": "Two branches clash: pick which one wins or send it back.",
+        {
+          "id": "approve",
+          "label": "Approve upgrade",
+          "kind": "primary",
+          "icon": "check"
+        },
+        {
+          "id": "deny",
+          "label": "Keep the model",
+          "kind": "neutral",
+          "icon": "x"
+        }
+      ]
+    },
+    {
+      "id": "merge-clash",
+      "label": "Merge clash",
+      "icon": "branch",
+      "popup": true,
+      "notify": true,
+      "description": "Two branches clash: pick which one wins or send it back.",
       "buttons": [
-        { "id": "approve", "label": "Resolve it", "kind": "primary", "icon": "check" },
-        { "id": "changes", "label": "Send back", "kind": "neutral", "note": true, "icon": "edit" },
-        { "id": "deny", "label": "Hold", "kind": "danger", "icon": "pause" }
-      ] },
-    { "id": "key-needed", "label": "Key needed", "icon": "key", "popup": true, "notify": true, "description": "Something needs a key or sign-in only you can give.",
+        {
+          "id": "approve",
+          "label": "Resolve it",
+          "kind": "primary",
+          "icon": "check"
+        },
+        {
+          "id": "changes",
+          "label": "Send back",
+          "kind": "neutral",
+          "note": true,
+          "icon": "edit"
+        },
+        {
+          "id": "deny",
+          "label": "Hold",
+          "kind": "danger",
+          "icon": "pause"
+        }
+      ]
+    },
+    {
+      "id": "key-needed",
+      "label": "Key needed",
+      "icon": "key",
+      "popup": true,
+      "notify": true,
+      "description": "Something needs a key or sign-in only you can give.",
       "buttons": [
-        { "id": "approve", "label": "Done, I added it", "kind": "primary", "icon": "check" },
-        { "id": "deny", "label": "Skip", "kind": "neutral", "icon": "x" }
-      ] },
-    { "id": "pass", "label": "Pass", "icon": "check", "popup": true, "notify": false, "description": "A pass (check, test run, walkthrough) waiting for your sign-off.",
+        {
+          "id": "approve",
+          "label": "Done, I added it",
+          "kind": "primary",
+          "icon": "check"
+        },
+        {
+          "id": "deny",
+          "label": "Skip",
+          "kind": "neutral",
+          "icon": "x"
+        }
+      ]
+    },
+    {
+      "id": "pass",
+      "label": "Pass",
+      "icon": "check",
+      "popup": true,
+      "notify": false,
+      "description": "A pass (check, test run, walkthrough) waiting for your sign-off.",
       "buttons": [
-        { "id": "approve", "label": "Pass", "kind": "primary", "icon": "check" },
-        { "id": "changes", "label": "Fails: note", "kind": "danger", "note": true, "icon": "x" }
-      ] },
-    { "id": "other", "label": "Other", "icon": "info", "popup": true, "notify": true, "description": "Anything else that needs you.",
+        {
+          "id": "approve",
+          "label": "Pass",
+          "kind": "primary",
+          "icon": "check"
+        },
+        {
+          "id": "changes",
+          "label": "Fails: note",
+          "kind": "danger",
+          "note": true,
+          "icon": "x"
+        }
+      ]
+    },
+    {
+      "id": "other",
+      "label": "Other",
+      "icon": "info",
+      "popup": true,
+      "notify": true,
+      "description": "Anything else that needs you.",
       "buttons": [
-        { "id": "approve", "label": "Approve", "kind": "primary", "icon": "check" },
-        { "id": "deny", "label": "Deny", "kind": "danger", "icon": "x" }
-      ] }
+        {
+          "id": "approve",
+          "label": "Approve",
+          "kind": "primary",
+          "icon": "check"
+        },
+        {
+          "id": "deny",
+          "label": "Deny",
+          "kind": "danger",
+          "icon": "x"
+        }
+      ]
+    }
   ]
 }

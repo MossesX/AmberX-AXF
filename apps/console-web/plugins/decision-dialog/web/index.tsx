@@ -22,7 +22,7 @@ import { Button, Icon, Note, Switch, TextField } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginApi, pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
-import { appMenu } from './menu';
+import { appMenu, WAITING } from './menu';
 import { matchButton, nextPopup, parseAnswer, place, type Decision, type DecisionButton, type DecisionShot } from './queue';
 import './decision-dialog.css';
 
@@ -50,6 +50,7 @@ export async function checkNow(): Promise<void> {
   try {
     const r = await api.call<{ items: Decision[] }>('list?status=waiting');
     emit({ items: r.items, error: '', checkedAt: Date.now() });
+    runtime?.setBadge(WAITING, r.items.length);
     maybePop();
   } catch (e) {
     emit({ error: (e as Error).message || 'unreachable', checkedAt: Date.now() });

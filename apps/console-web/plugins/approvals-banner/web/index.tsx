@@ -49,6 +49,7 @@ import { WatchLiveFor } from '@console/watchLive';
 import './approvals-banner.css';
 import { appMenu, WAITING, WAITING_LIST } from './menu';
 import { nextPopup, POPUP_GONE_CLOSE_MS, vetoGone } from './popup';
+import { decisionDiff, SOURCE as DECISION_SOURCE } from './decisions';
 import { EDGES, EXPANDS, nativeOverlayConfig, OVERLAY_DEFAULTS, OVERLAY_KEYS, overlayConfig, PAGES, parseOverlayChange, parsePageCommand, SHOWS, SIZES } from './overlay';
 
 const ID = 'ai.amberx.axf.console.approvals-banner';
@@ -98,6 +99,14 @@ interface State { status: Status; hub: string; count: number; pending: Pending[]
 let st: State = { status: 'idle', hub: DEFAULT_HUB, count: 0, pending: [], held: [], items: [], approvalsUrl: approvalsUrl(DEFAULT_HUB), checkedAt: null, hiddenIds: '', error: '' };
 const subs = new Set<() => void>();
 const set = (p: Partial<State>) => { st = { ...st, ...p }; runtime?.setBadge(WAITING, st.status === 'ok' ? st.count + st.held.length : 0); subs.forEach((f) => f()); };
+/** Held calls and waiting approvals offered to the console's decision queue (decisions.ts): ids offered so far. */
+const offered = new Set<string>();
+function offerDecisions() {
+  const d = decisionDiff(offered, st.held, st.pending, st.status === 'ok');
+  for (const o of d.offer) { offered.add(o.ref); globalThis.dispatchEvent?.(new CustomEvent('axf:decision', { detail: o })); }
+  for (const ref of d.withdraw) { offered.delete(ref); globalThis.dispatchEvent?.(new CustomEvent('axf:decision-withdraw', { detail: { source: DECISION_SOURCE, ref } })); }
+}
+subs.add(offerDecisions);
 const useApprovals = () => useSyncExternalStore((f) => { subs.add(f); return () => subs.delete(f); }, () => st);
 
 /** The hub's address, from the console's own account endpoint (AXF_WALL_HUB on the server); https only. */

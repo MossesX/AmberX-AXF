@@ -111,4 +111,12 @@ d5 = c.post("/raise", json={"type": "other", "title": "x", "handler": "gone@1", 
 ok(c.post("/answer", json={"id": d5["id"], "button": "approve"}).status_code == 409, "missing handler = 409, nothing decided")
 ok(c.get("/item", params={"id": d5["id"]}).json()["status"] == "waiting", "still waiting")
 
+# A held call (browser source): its buttons are console actions, a person's tap only.
+v = c.post("/raise", json={"type": "veto", "title": "Deploy", "source": "approvals-banner", "ref": "h1", "buttons": [
+    {"id": "approve-now", "label": "Approve now", "kind": "primary", "action": "approvals.approve-now:h1"}, {"id": "deny", "label": "Deny", "kind": "danger", "action": "approvals.deny:h1"}]}).json()
+ok(v["popup"] is False if "popup" in v else c.get("/item", params={"id": v["id"]}).json()["popup"] is False, "veto waits in the queue: its own screen pops up")
+ok(c.post("/answer", json={"id": v["id"], "button": "deny"}).status_code == 403, "API / MCP / voice server-side can't press a tap-only button")
+r = c.post("/answer", json={"id": v["id"], "button": "deny", "via": "console"}).json()
+ok(r["action"] == "approvals.deny:h1", "the console tap gets the action to run")
+
 print(f"decision-dialog: {checks} checks passed")

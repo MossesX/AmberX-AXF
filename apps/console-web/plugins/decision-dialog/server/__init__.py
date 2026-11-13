@@ -287,6 +287,8 @@ def answer(did: str, button: str, option: str = "", note: str = "", by: str = "b
     elif b not in [x["id"] for x in d["buttons"]]:
         raise ValueError(f'no button "{b}" here: {", ".join(x["id"] for x in d["buttons"])}')
     btn = next((x for x in d["buttons"] if x["id"] == b), {"id": b, "note": False, "action": ""})
+    if btn.get("action") and via != "console":
+        raise PermissionError(f'"{btn.get("label", b)}" is a tap in the console only: open the decision there (?axf-decision={d["id"]})')
     if btn.get("note") and not _s(note, 2000):
         raise ValueError(f"{btn.get('label', b)} needs a note")
     result: dict = {"ok": True}
@@ -379,6 +381,8 @@ def _http(fn, *a, **k):
         raise HTTPException(404, str(e).strip("'\"")) from e
     except ValueError as e:
         raise HTTPException(400, str(e)) from e
+    except PermissionError as e:
+        raise HTTPException(403, str(e)) from e
     except RuntimeError as e:
         raise HTTPException(409, str(e)) from e
 
