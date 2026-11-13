@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T06:33:07.689Z",
+ "updatedAt": "2026-11-13T06:33:22.864Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -116373,7 +116373,7 @@
    "mergedAt": "2026-11-13T06:14:28Z",
    "priority": "P0",
    "createdAt": "2026-11-13T00:42:24.765Z",
-   "updatedAt": "2026-11-13T06:31:06.529Z",
+   "updatedAt": "2026-11-13T06:33:06Z",
    "builtAt": "2026-11-13T01:55:36.584Z",
    "notes": [
     {
@@ -116427,6 +116427,10 @@
     {
      "text": "Reconciler: PR #540 merged",
      "at": "2026-11-13T06:31:06.529Z"
+    },
+    {
+     "text": "Shipped manifest sm-full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app rev 1 sent to Shipped features (orchestrator): PR #540, 42 file(s), 4 test line(s), 3 open.",
+     "at": "2026-11-13T06:33:06Z"
     }
    ],
    "approvals": [],
@@ -116520,7 +116524,7 @@
    "mergedAt": "2026-11-13T06:14:32Z",
    "priority": "P0",
    "createdAt": "2026-11-13T01:09:38.633Z",
-   "updatedAt": "2026-11-13T06:31:06.529Z",
+   "updatedAt": "2026-11-13T06:33:07Z",
    "builtAt": "2026-11-13T01:20:53.464Z",
    "notes": [
     {
@@ -116546,6 +116550,10 @@
     {
      "text": "Reconciler: PR #535 merged",
      "at": "2026-11-13T06:31:06.529Z"
+    },
+    {
+     "text": "Shipped manifest sm-10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less rev 1 sent to Shipped features (orchestrator): PR #535, 23 file(s), 5 test line(s), 4 open.",
+     "at": "2026-11-13T06:33:07Z"
     }
    ],
    "approvals": [],
