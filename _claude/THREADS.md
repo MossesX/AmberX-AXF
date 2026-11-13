@@ -781,10 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 20:42 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` → queued, note (all) · builds-live
-- 2026-11-12 20:42 UTC · `move-amberx-web-app-into-the-console-amberx-andr` note (all) · builds-live
-- 2026-11-12 20:42 UTC · `move-amberx-web-app-into-the-console-amberx-andr` note (all) · orchestrator
-- 2026-11-10 18:08 UTC · `shipped-features-show-each-landed-build-s-screen` note (all) · fix-the-orchestrator-s-splitter-claude-print-get
 - 2026-11-12 11:07 UTC · `fix-axhub-36-pull-main-in-failed` note (all) · fix-the-step-splitter
 - 2026-11-12 20:42 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` → running, note (all) · pipeline
 - 2026-11-12 20:42 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` note (all) · orchestrator
@@ -1181,6 +1177,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 06:12 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` → queued, note (all) · console
 - 2026-11-13 06:12 UTC · `professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e` → queued, note (all) · console
 - 2026-11-13 06:12 UTC · `professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e` note (all) · console
+- 2026-11-13 06:14 UTC · `professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e` note (all) · orchestrator
+- 2026-11-13 06:14 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` → running, note (all) · pipeline
+- 2026-11-13 06:14 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` note (all) · orchestrator
+- 2026-11-13 06:14 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` → running, note (all) · pipeline
 
 ## Token passes (log)
 
