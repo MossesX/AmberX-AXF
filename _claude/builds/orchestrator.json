@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T11:31:31.481Z",
+ "updatedAt": "2026-11-13T11:31:46.442Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -110975,8 +110975,8 @@
    "branch": "claude/show-commits-behind-main-on-every-build-table-an",
    "pr": "#567",
    "createdAt": "2026-11-12T10:39:34.736Z",
-   "updatedAt": "2026-11-13T11:30:17.974Z",
-   "builtAt": "2026-11-13T11:30:17.974Z",
+   "updatedAt": "2026-11-13T11:31:04.877Z",
+   "builtAt": "2026-11-13T11:31:04.877Z",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
@@ -111033,6 +111033,10 @@
     {
      "text": "Headless run axf-show-commits-behind-main-on-every-build-table-an--gina: brief only · start 11.3K tokens ($0.03) · cost $0.20 · 9 turns · 6 tools, MCP none",
      "at": "2026-11-13T11:30:17.974Z"
+    },
+    {
+     "text": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
+     "at": "2026-11-13T11:31:04.877Z"
     },
     {
      "text": "PR #567 is a draft. All tests pass. Headless capture could not reach axHub, so desktop and phone UI Review shots of All builds, the pipeline tabs, the Builds page and the merge queue are still needed before it can be marked ready.",
@@ -114994,8 +114998,8 @@
    "branch": "claude/badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad",
    "pr": "#568",
    "createdAt": "2026-11-12T23:14:26.317Z",
-   "updatedAt": "2026-11-13T11:30:42.556Z",
-   "builtAt": "2026-11-13T11:30:42.556Z",
+   "updatedAt": "2026-11-13T11:31:10.158Z",
+   "builtAt": "2026-11-13T11:31:10.158Z",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
@@ -115032,6 +115036,10 @@
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-badge-shape-picker-on-the-banners-screen-pill-te--sully.",
      "at": "2026-11-13T11:25:33.547Z"
+    },
+    {
+     "text": "Headless run axf-badge-shape-picker-on-the-banners-screen-pill-te--sully: brief only · start 12.4K tokens ($0.03) · cost $0.63 · 22 turns · 6 tools, MCP none",
+     "at": "2026-11-13T11:31:10.158Z"
     }
    ],
    "approvals": [],

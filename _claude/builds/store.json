@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4329,
- "updatedAt": "2026-11-13T11:31:31.481Z",
+ "rev": 4330,
+ "updatedAt": "2026-11-13T11:31:46.442Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -169556,8 +169556,8 @@
    "branch": "claude/show-commits-behind-main-on-every-build-table-an",
    "pr": "#567",
    "createdAt": "2026-11-12T10:39:34.736Z",
-   "updatedAt": "2026-11-13T11:30:17.974Z",
-   "builtAt": "2026-11-13T11:30:17.974Z",
+   "updatedAt": "2026-11-13T11:31:04.877Z",
+   "builtAt": "2026-11-13T11:31:04.877Z",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
@@ -169616,6 +169616,10 @@
      "at": "2026-11-13T11:30:17.974Z"
     },
     {
+     "text": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
+     "at": "2026-11-13T11:31:04.877Z"
+    },
+    {
      "text": "PR #567 is a draft. All tests pass. Headless capture could not reach axHub, so desktop and phone UI Review shots of All builds, the pipeline tabs, the Builds page and the merge queue are still needed before it can be marked ready.",
      "at": "2026-11-13T11:29:57.935Z"
     }
@@ -169638,18 +169642,18 @@
     "queuedAt": "2026-11-13T11:24:26.279Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-show-commits-behind-main-on-every-build-table-an--gina",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-13T11:25:40.599Z",
     "runs": 3,
     "lastRun": {
-     "at": "2026-11-12T11:15:03.683Z",
+     "at": "2026-11-13T11:31:03.702Z",
      "exit": 0,
      "outcome": "returned",
      "stepsLeft": 1,
      "account": "mossesx-max-",
-     "session": "axf-show-commits-behind-main-on-every-build-table-an--earl"
+     "session": "axf-show-commits-behind-main-on-every-build-table-an--gina"
     },
     "split": {
      "at": "2026-11-12T10:40:28.980Z",
@@ -169659,7 +169663,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "2026-11-13T11:25:40.599Z",
     "planned": {
@@ -175191,8 +175195,8 @@
    "branch": "claude/badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad",
    "pr": "#568",
    "createdAt": "2026-11-12T23:14:26.317Z",
-   "updatedAt": "2026-11-13T11:30:42.556Z",
-   "builtAt": "2026-11-13T11:30:42.556Z",
+   "updatedAt": "2026-11-13T11:31:10.158Z",
+   "builtAt": "2026-11-13T11:31:10.158Z",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
@@ -175229,6 +175233,10 @@
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-badge-shape-picker-on-the-banners-screen-pill-te--sully.",
      "at": "2026-11-13T11:25:33.547Z"
+    },
+    {
+     "text": "Headless run axf-badge-shape-picker-on-the-banners-screen-pill-te--sully: brief only · start 12.4K tokens ($0.03) · cost $0.63 · 22 turns · 6 tools, MCP none",
+     "at": "2026-11-13T11:31:10.158Z"
     }
    ],
    "approvals": [],
@@ -175383,22 +175391,7 @@
    "rev": 14,
    "deleted": false,
    "deletedAt": "",
-   "pending": {
-    "model": "Opus",
-    "status": "complete",
-    "estimate": "",
-    "source": "console",
-    "planId": "",
-    "createdAt": "2026-11-12T23:14:26.317Z",
-    "builtAt": "2026-11-13T11:30:42.556Z",
-    "prefixSteps": true,
-    "stepAt": {
-     "st-mwe62k6v01dlm2": "2026-11-12T23:16:08.502Z",
-     "st-mwe62k6v02vb5e": "2026-11-12T23:16:08.502Z",
-     "st-mwe62k6v03q5y0": "2026-11-12T23:16:08.502Z",
-     "st-mwe62k6v04jam9": "2026-11-12T23:16:08.502Z"
-    }
-   },
+   "pending": null,
    "queue": null,
    "defaultAt": "2026-11-12T23:16:08.502Z",
    "rearranged": false,
