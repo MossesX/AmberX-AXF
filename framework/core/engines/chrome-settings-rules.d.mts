@@ -44,6 +44,8 @@ export function CHROME_SETTINGS_PICK_KEY(type: string): string;
 export function CHROME_SETTINGS_PATCH_KEY(type: string): string;
 export function CHROME_INSTANCE_KEY(type: string, instance: string): string;
 export function CHROME_INSTANCE_ASSET_KEY(type: string, instance: string): string;
+export function CHROME_INSTANCE_INTERFACE_KEY(type: string, instance: string): string;
+export const CHROME_INSTANCE_PICK_SUFFIXES: string[];
 export function TAB_GROUP_LAST_KEY(instance: string): string;
 export function TAB_GROUP_FOLD_KEY(instance: string): string;
 export function isChromeInstanceId(id: unknown): id is string;
@@ -66,6 +68,10 @@ export function controlledColorOf(v: unknown): (typeof CONTROLLED_COLORS)[number
 export function chromeSettingsErrors(asset: unknown): string[];
 export function resolveSettingsChain(get: (id: string) => AssetLike | null | undefined, id: string, seen?: string[]): Record<string, unknown> | null;
 export function chromeSettingsPick(saved: unknown, type: ChromeType | string, ids: string[]): string | null;
+export type ChromeInterfaceSource = 'instance' | 'type' | 'default';
+export function chromeInstanceSettingsPick(instanceSaved: unknown, typeSaved: unknown, type: ChromeType | string, ids: string[]): { id: string; source: ChromeInterfaceSource } | null;
+export interface ChromeInstanceInterface { type: ChromeType; instance: string; interface: string }
+export function chromeInstanceInterfaceList(saved: unknown): ChromeInstanceInterface[];
 export function chromeSettingsChoices(type: ChromeType | string, assets: AssetLike[]): ChromeSettingsChoice[];
 export function customCopy(defaultAsset: AssetLike, app: string | { id: string; name?: string }): { $axf: 'asset@1'; type: 'settings'; id: string; name: string; version: string; description: string; author: string; tags: string[]; data: Record<string, unknown> };
 export function chromeSettingsPlan(appId: string): ChromeSettingsPlanEntry[];

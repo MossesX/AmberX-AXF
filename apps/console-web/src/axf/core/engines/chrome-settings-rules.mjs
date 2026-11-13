@@ -66,6 +66,10 @@ export const CHROME_SETTINGS_PATCH_KEY = (type) => `axf.chrome.settings.custom.$
 export const CHROME_INSTANCE_KEY = (type, instance) => `axf.chrome.${type}.${instance}`;
 /** The asset one tab group picked for itself (tab groups only; the other kinds swap the app's slot). */
 export const CHROME_INSTANCE_ASSET_KEY = (type, instance) => `axf.chrome.${type}.${instance}.asset`;
+/** The settings interface one instance picked for its own dialog (every kind; unset = the kind's pick, else the default). */
+export const CHROME_INSTANCE_INTERFACE_KEY = (type, instance) => `axf.chrome.${type}.${instance}.interface`;
+/** Suffixes of per-instance keys that are picks, not field overrides (never listed as "assets with edits"). */
+export const CHROME_INSTANCE_PICK_SUFFIXES = ['.asset', '.interface'];
 /** A tab group's remembered tab and fold state (per device). */
 export const TAB_GROUP_LAST_KEY = (instance) => `axf.tabs.${instance}.last`;
 export const TAB_GROUP_FOLD_KEY = (instance) => `axf.tabs.${instance}.folded`;
@@ -215,7 +219,7 @@ export function chromeOverrideList(saved) {
     const type = CHROME_TYPES.find((t) => rest.startsWith(`${t}.`));
     if (!type) continue;
     const instance = rest.slice(type.length + 1);
-    if (!isChromeInstanceId(instance) || instance.endsWith('.asset')) continue;
+    if (!isChromeInstanceId(instance) || CHROME_INSTANCE_PICK_SUFFIXES.some((x) => instance.endsWith(x))) continue;
     const fields = normalizeInstanceOverride(type, raw);
     if (Object.keys(fields).length) out.push({ type, instance, fields });
   }
@@ -270,6 +274,38 @@ export function chromeSettingsPick(saved, type, ids) {
   if (typeof saved === 'string' && list.includes(saved) && chromeTypeOfSettingsId(saved) === type) return saved;
   const d = chromeSettingsDefaultId(type);
   return list.includes(d) ? d : null;
+}
+
+/**
+ * The settings interface ONE instance's dialog renders through (build per-instance-settings-window-picker):
+ * `{ id, source }` where source is `instance` (its own pick), `type` (the kind's pick for the app) or `default` (the
+ * shared default); null when the app ships none. A pick whose asset is gone (another skin, a removed copy) falls
+ * through to the next level, so a dialog always opens.
+ */
+export function chromeInstanceSettingsPick(instanceSaved, typeSaved, type, ids) {
+  const list = Array.isArray(ids) ? ids : [];
+  if (typeof instanceSaved === 'string' && list.includes(instanceSaved) && chromeTypeOfSettingsId(instanceSaved) === type) return { id: instanceSaved, source: 'instance' };
+  const id = chromeSettingsPick(typeSaved, type, list);
+  if (!id) return null;
+  return { id, source: typeof typeSaved === 'string' && typeSaved === id && id !== chromeSettingsDefaultId(type) ? 'type' : 'default' };
+}
+
+/**
+ * Every instance that picked its own settings interface: `[{ type, instance, interface }]` from the saved settings,
+ * sorted like chromeOverrideList. The readable state behind chrome.instance-interface.
+ */
+export function chromeInstanceInterfaceList(saved) {
+  const out = [];
+  if (!isObj(saved)) return out;
+  for (const [key, raw] of Object.entries(saved)) {
+    if (!key.startsWith('axf.chrome.') || !key.endsWith('.interface') || typeof raw !== 'string' || !raw) continue;
+    const rest = key.slice('axf.chrome.'.length, -'.interface'.length);
+    const type = CHROME_TYPES.find((t) => rest.startsWith(`${t}.`));
+    if (!type) continue;
+    const instance = rest.slice(type.length + 1);
+    if (isChromeInstanceId(instance)) out.push({ type, instance, interface: raw });
+  }
+  return out.sort((a, b) => CHROME_TYPES.indexOf(a.type) - CHROME_TYPES.indexOf(b.type) || a.instance.localeCompare(b.instance));
 }
 
 /** The choices a picker offers for a chrome type: the shared default first, then every custom copy / other interface for it. */

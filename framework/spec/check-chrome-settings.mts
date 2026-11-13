@@ -53,7 +53,7 @@ eq(f.ids, Object.fromEntries(cs.CHROME_TYPES.map((t) => [t, { default: cs.chrome
 for (const t of cs.CHROME_TYPES) eq(cs.chromeTypeOfSettingsId(cs.chromeSettingsCustomId(t, 'molly')), t, `custom id of ${t} resolves to ${t} (nav-menu vs app-menu never confused)`);
 eq(cs.chromeTypeOfSettingsId('chrome-tab-group-tab-group'), 'tab-group', 'longest type wins');
 eq(cs.chromeTypeOfSettingsId('standard'), null, 'a plain settings asset is no chrome interface');
-eq(f.keys, { pick: cs.CHROME_SETTINGS_PICK_KEY('tab-group'), patch: cs.CHROME_SETTINGS_PATCH_KEY('tab-group'), instance: cs.CHROME_INSTANCE_KEY('tab-group', 'ui-review.sections'), instanceAsset: cs.CHROME_INSTANCE_ASSET_KEY('tab-group', 'ui-review.sections'), last: cs.TAB_GROUP_LAST_KEY('ui-review.sections'), fold: cs.TAB_GROUP_FOLD_KEY('ui-review.sections') }, 'keys fixture');
+eq(f.keys, { pick: cs.CHROME_SETTINGS_PICK_KEY('tab-group'), patch: cs.CHROME_SETTINGS_PATCH_KEY('tab-group'), instance: cs.CHROME_INSTANCE_KEY('tab-group', 'ui-review.sections'), instanceAsset: cs.CHROME_INSTANCE_ASSET_KEY('tab-group', 'ui-review.sections'), instanceInterface: cs.CHROME_INSTANCE_INTERFACE_KEY('tab-group', 'ui-review.sections'), last: cs.TAB_GROUP_LAST_KEY('ui-review.sections'), fold: cs.TAB_GROUP_FOLD_KEY('ui-review.sections') }, 'keys fixture');
 eq(f.slugs, { 'Dev Console': cs.appSlug('Dev Console'), 'axf-console': cs.appSlug('axf-console'), '': cs.appSlug(''), '  Weird__Name!!': cs.appSlug('  Weird__Name!!') }, 'slugs fixture');
 ok(cs.isChromeInstanceId('ui-review.sections') && cs.isChromeInstanceId('plugin:build-manager/tabs') && !cs.isChromeInstanceId('') && !cs.isChromeInstanceId('.x') && !cs.isChromeInstanceId('a b'), 'instance ids');
 
@@ -97,6 +97,25 @@ eq(cs.chromeSettingsPick(undefined, 'tab-group', ['chrome-tab-group', copy.id]),
 eq(cs.chromeSettingsPick(copy.id, 'tab-group', ['chrome-tab-group', copy.id]), copy.id, 'the custom copy only when picked');
 eq(f.choices, cs.chromeSettingsChoices('tab-group', [edited, defaults.toolbar!, copy, defaults['tab-group']!]), 'choices fixture');
 ok(cs.chromeSettingsChoices('tab-group', [edited, defaults.toolbar!, copy, defaults['tab-group']!])[0]!.id === 'chrome-tab-group', 'the picker offers the shared default first');
+
+/* ---- per-instance settings interface (build per-instance-settings-window-picker) ---- */
+const ids3 = ['chrome-tab-group', copy.id, edited.id, 'chrome-toolbar'];
+const instancePicks = {
+  unset: cs.chromeInstanceSettingsPick(undefined, undefined, 'tab-group', ids3),
+  kind: cs.chromeInstanceSettingsPick(undefined, copy.id, 'tab-group', ids3),
+  own: cs.chromeInstanceSettingsPick(edited.id, copy.id, 'tab-group', ids3),
+  ownDefault: cs.chromeInstanceSettingsPick('chrome-tab-group', copy.id, 'tab-group', ids3),
+  gone: cs.chromeInstanceSettingsPick('chrome-tab-group-gone', copy.id, 'tab-group', ids3),
+  wrongType: cs.chromeInstanceSettingsPick('chrome-toolbar', undefined, 'tab-group', ids3),
+  none: cs.chromeInstanceSettingsPick(edited.id, undefined, 'tab-group', []),
+};
+eq(f.instancePicks, instancePicks, 'instance picks fixture');
+eq(instancePicks.unset, { id: 'chrome-tab-group', source: 'default' }, 'an instance with no pick gets the shared default (preselected)');
+eq(instancePicks.own, { id: edited.id, source: 'instance' }, "an instance's own pick wins over the kind's");
+eq(instancePicks.gone, { id: copy.id, source: 'type' }, 'a pick whose asset is gone (another skin) falls back to the kind');
+const savedInst = { 'axf.chrome.toolbar.app.interface': 'chrome-toolbar-x', 'axf.chrome.tab-group.settings.main.interface': 'chrome-tab-group-x', 'axf.chrome.tab-group.settings.main': { style: 'pills' }, 'axf.chrome.banner.app.interface': '', 'axf.chrome.clock.app.interface': 'x', 'axf.chrome.settings.toolbar': 'chrome-toolbar' };
+eq(f.instanceInterfaces, cs.chromeInstanceInterfaceList(savedInst), 'instance interfaces fixture');
+eq(cs.chromeOverrideList(savedInst).map((o) => o.instance), ['settings.main'], 'an .interface pick is never listed as asset edits');
 
 /* ---- instance overrides ---- */
 eq(f.overrides, { clean: cs.normalizeInstanceOverride('tab-group', { style: 'pills', position: 'left', badges: false, bogus: 1, density: 'huge', sticky: 'yes' }), number: cs.normalizeInstanceOverride('banner', { height: 999.6, surface: 'raised' }), empty: cs.normalizeInstanceOverride('toolbar', null), unknownType: cs.normalizeInstanceOverride('clock', { format: '12h' }), data: cs.chromeInstanceData('tab-group', { style: 'underline', align: 'start' }, { style: 'pills', bogus: true }), value: [cs.chromeFieldValue('tab-group', { style: 'underline' }, { style: 'pills' }, 'style'), cs.chromeFieldValue('tab-group', { style: 'underline' }, {}, 'style'), cs.chromeFieldValue('tab-group', {}, {}, 'style')] }, 'overrides fixture');
