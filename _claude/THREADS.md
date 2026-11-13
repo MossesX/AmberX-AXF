@@ -785,7 +785,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 10:42 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` s14 done, → running (all) · orchestrator
 - 2026-11-13 10:43 UTC · `every-skin-ships-a-light-and-a-dark-colour-theme` note (all) · orchestrator
 - 2026-11-13 10:43 UTC · `orchestrator-hold-status-archive-tab-deleted-tab` note (all) · pipeline
 - 2026-11-13 10:43 UTC · `console-and-axhub-retry-failed-calls-themselves-no-claude-needed` → running, note (all) · pipeline
@@ -1185,6 +1184,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 17:35 UTC · `one-source-of-truth-console-shows-only-what-the-server-says-is-running` note, removed (all) · build-rename
 - 2026-11-13 17:35 UTC · `orchestrator-checks-shipped-features` added (3 steps) (all) · build-rename
 - 2026-11-13 17:35 UTC · `orchestrator-checks-shipped-features-before-spli` note, removed (all) · build-rename
+- 2026-11-13 17:35 UTC · `builds-get-console-token-banner-alert` note (all) · orchestrator
 
 ## Token passes (log)
 
