@@ -778,7 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 10:54 UTC · `element-inspector` → archived (all) · claude-voice
 - 2026-11-12 10:54 UTC · `context-menu-editor` → archived (all) · claude-voice
 - 2026-11-12 10:54 UTC · `grid-sort-filter` → archived (all) · claude-voice
 - 2026-11-12 10:54 UTC · `plugin-cleanup` → archived (all) · claude-voice
@@ -1178,6 +1177,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 00:47 UTC · `server-every-failed-merge-alerts-brett-immediately-and-retries-by-itself-until` note (all) · pipeline
 - 2026-11-13 00:48 UTC · `tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch` note (all) · pipeline
 - 2026-11-13 00:48 UTC · `amberx-approval-pop-up-not-showing-only-the-android-notification` s1 done (all) · orchestrator
+- 2026-11-13 00:50 UTC · `tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch` note (all) · pipeline
 
 ## Token passes (log)
 
