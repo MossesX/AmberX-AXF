@@ -786,7 +786,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 17:22 UTC · `one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx` note (all) · orchestrator
 - 2026-11-13 17:22 UTC · `stop-the-molly-guide-from-popping-up-and-talking-every-time-the-console-loads-n` note (all) · orchestrator
 - 2026-11-13 17:22 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` note (all) · orchestrator
 - 2026-11-13 17:23 UTC · `android-approval-overlay-a-small-always-on-float` note (all) · orchestrator
@@ -1186,6 +1185,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 19:14 UTC · `console-app-part-3-native-bridge-mic` → queued, note (all) · pipeline
 - 2026-11-13 19:15 UTC · `land-project-duplicate-boilerplate` branch claude/project-duplicate-boilerplate, PR #621 (all) · builds-live
 - 2026-11-13 19:15 UTC · `console-android-app-thin-webview-wrapper` → queued, note (all) · pipeline
+- 2026-11-13 19:15 UTC · `land-project-duplicate-boilerplate` s1 done, → running (all) · orchestrator
 
 ## Token passes (log)
 
