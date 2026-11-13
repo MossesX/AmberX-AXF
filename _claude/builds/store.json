@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4279,
- "updatedAt": "2026-11-13T11:11:17.439Z",
+ "rev": 4280,
+ "updatedAt": "2026-11-13T11:13:08.609Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -181651,7 +181651,7 @@
    "pr": "#556",
    "priority": "P0",
    "createdAt": "2026-11-13T07:12:21.823Z",
-   "updatedAt": "2026-11-13T11:11:15.378Z",
+   "updatedAt": "2026-11-13T11:13:06.714Z",
    "builtAt": "",
    "notes": [
     {
@@ -181717,6 +181717,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-full-api-and-voice-control-of-the-entire-console--lenny, own login copy)",
      "at": "2026-11-13T10:37:19.982Z"
+    },
+    {
+     "text": "Brett (addendum): I want to be able to drag anything on any page, anything that's draggable. Add a move/drag command to console-control@1: every draggable thing (banner widgets, toolbar items, tabs, dock panes, grid columns and rows, list items, layout slots) registers as a drag target with its drop zones; move(address, to: address|index|zone) does the same as a mouse drag, including add/remove/reorder of banner widgets. Through REST, MCP, CLI and voice ('move the CPU widget to the left', 'drag that tab to the end'). Coverage check fails on a draggable element with no address.",
+     "at": "2026-11-13T11:13:06.714Z"
     }
    ],
    "approvals": [
@@ -182557,7 +182561,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 41,
+   "rev": 42,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
