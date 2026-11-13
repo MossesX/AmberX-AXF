@@ -212,3 +212,45 @@ export function nativeTool(win, name, args) {
   if (!b || b.version !== BRIDGE_VERSION) return Promise.reject(bridgeError('no_bridge', 'The Android console app is not running this page.'));
   return b.call(name, args);
 }
+
+/** How long requestPermission waits for Android's prompt to be answered before giving up. */
+export const PERMISSION_WAIT_MS = 60000;
+
+/**
+ * Asks the phone for one permission ('mic' | 'notifications' | 'overlay') and resolves with whether it is granted:
+ * at once when it already was, else when the 'permission' event for it comes back from Android's prompt (or the
+ * overlay settings screen), else false after `waitMs`.
+ */
+export async function requestPermission(win, permission, { waitMs = PERMISSION_WAIT_MS } = {}) {
+  const b = win && win.axfNative;
+  if (!b || b.version !== BRIDGE_VERSION) throw bridgeError('no_bridge', 'The Android console app is not running this page.');
+  let off = () => {};
+  let cancel = () => {};
+  const answered = new Promise((resolve) => {
+    const timer = setTimeout(() => { off(); resolve(false); }, waitMs);
+    off = b.on('permission', (d) => {
+      if (d && d.permission === permission) { clearTimeout(timer); off(); resolve(!!d.granted); }
+    });
+    cancel = () => { clearTimeout(timer); off(); resolve(false); };
+  });
+  let first;
+  try { first = await b.call('permissions.request', { permission }); }
+  catch (e) { cancel(); throw e; }
+  if (first && first.granted) { cancel(); return true; }
+  return answered;
+}
+
+/**
+ * Runs a tool; when it answers 'permission', asks for each missing permission and tries once more. The second
+ * failure (a "no" on the prompt) is the caller's error, with its code and permissions.
+ */
+export async function callWithPermissions(win, name, args, opts) {
+  try { return await nativeTool(win, name, args); }
+  catch (e) {
+    if (e?.code !== 'permission' || !Array.isArray(e.permissions) || !e.permissions.length) throw e;
+    for (const p of e.permissions) {
+      if (!(await requestPermission(win, p, opts))) throw bridgeError('permission', `Permission "${p}" was not given.`, [p]);
+    }
+    return nativeTool(win, name, args);
+  }
+}

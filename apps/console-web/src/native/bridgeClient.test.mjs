@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
-  BRIDGE_VERSION, EVENTS, LEGACY_METHODS, READY_EVENT, TOOLS, argsFor, bridgeAvailable, createBridge, installBridge, nativeTool, toolOf,
+  BRIDGE_VERSION, EVENTS, callWithPermissions, requestPermission, LEGACY_METHODS, READY_EVENT, TOOLS, argsFor, bridgeAvailable, createBridge, installBridge, nativeTool, toolOf,
 } from './bridgeClient.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -133,6 +133,43 @@ test('installBridge: only inside the app, fires ready once, merges part 1\'s obj
   assert.ok(LEGACY_METHODS.includes('overlayState'));
   remove();
   assert.equal(win.axfNative, undefined);
+});
+
+test('permissions: asked, answered by the event, then the tool runs again', async () => {
+  let micGranted = false;
+  const win = fakeWindow({
+    answer: (c) => {
+      if (c.tool === 'permissions.request') {
+        if (c.args.permission === 'mic') setTimeout(() => { micGranted = true; win.emit('permission', { permission: 'mic', granted: true, asked: true }); }, 5);
+        return { ok: true, data: { permission: c.args.permission, granted: false, asked: true } };
+      }
+      if (c.tool === 'mic.set' && !micGranted) return { ok: false, error: { code: 'permission', message: 'needs mic', permissions: ['mic'] } };
+      return { ok: true, data: { on: true } };
+    },
+  });
+  const remove = installBridge(win);
+  assert.deepEqual(await callWithPermissions(win, 'mic.on'), { on: true });
+  assert.deepEqual(win.calls.map((c) => c.tool), ['mic.set', 'permissions.request', 'mic.set']);
+  // a prompt nobody answers: false after the wait
+  assert.equal(await requestPermission(win, 'notifications', { waitMs: 20 }), false);
+  remove();
+});
+
+test('permissions: a "no" is the caller\'s error; already granted answers at once', async () => {
+  const win = fakeWindow({
+    answer: (c) => {
+      if (c.tool === 'permissions.request') {
+        setTimeout(() => win.emit('permission', { permission: c.args.permission, granted: false, asked: true }), 5);
+        return { ok: true, data: { permission: c.args.permission, granted: c.args.permission === 'overlay', asked: c.args.permission !== 'overlay' } };
+      }
+      return { ok: false, error: { code: 'permission', message: 'needs notifications', permissions: ['notifications'] } };
+    },
+  });
+  const remove = installBridge(win);
+  await assert.rejects(callWithPermissions(win, 'notify.show', { title: 'x' }), (e) => e.code === 'permission' && e.permissions[0] === 'notifications');
+  assert.equal(await requestPermission(win, 'overlay'), true);
+  remove();
+  await assert.rejects(requestPermission(win, 'mic'), (e) => e.code === 'no_bridge');
 });
 
 test('main.tsx installs the bridge', () => {

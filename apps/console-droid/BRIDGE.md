@@ -124,14 +124,31 @@ bigger than a step; until it moves, the console app does not advertise `recorder
 `amberx.recorder_*` to AmberX, and a page call to `recorder.*` answers `not_implemented`. Recorded as a deferred gap in
 the build report.
 
+## Mic and permissions (s4)
+
+Two gates for the mic: the console's own **mic switch** (`mic.set` / `mic.on` / `mic.off`, kept in the app, on by
+default) and Android's `RECORD_AUDIO`. `mic.status` answers `{ on, granted, available, reason }` with `reason`
+`ok`, `switched_off` or `no_permission`. Switched off, the WebView's audio requests (talk mode, dictation) are denied
+without a prompt (`MicTools.webCaptureAllowed`); switched on, part 1's `WebHost` asks Android as before. Every change is
+a `mic` event. Rules in `MicRules` (JUnit `MicRulesTest`), tools in `MicTools`, on part 1's `Perms` prompts.
+
+`permissions.request { permission }` (`mic`, `notifications`, `overlay`; `microphone` / `notify` accepted) answers at
+once: `granted: true` when it already was, else `asked: true`, and the prompt's answer arrives as the `permission` event
+`{ permission, granted, asked, all }`. In the console, `requestPermission(window, key)` waits for that event, and
+`callWithPermissions(window, tool, args)` runs a tool, asks for whatever a `permission` error lists, and tries once more
+(`bridgeClient.mjs`, tested).
+
 ## Wiring in `ConsoleActivity` (part 1's file; the integration adds these lines)
 
 ```java
 bridge = DeviceBridge.attach(this, web);      // in onCreate, after the WebView exists
 DeviceTools.register(bridge, this);           // open_url, wake, notifications
+MicTools.register(bridge, this);              // mic.status, mic.set, permissions.request
 HubLink.ensure(this);                         // the axHub device link (amberx device service)
 bridge.onPageFinished(view, url);             // in Client.onPageFinished
 bridge.detach();                              // in onDestroy
+// WebHost.onPermissionRequest, first line for RESOURCE_AUDIO_CAPTURE:
+if (!MicTools.webCaptureAllowed(web.getContext(), origin)) { req.deny(); return; }
 ```
 
 Anything in the contract with no code yet answers `not_implemented`, never silence, and `bridge.capabilities` lists it

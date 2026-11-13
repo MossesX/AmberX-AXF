@@ -33,3 +33,6 @@ export declare function createBridge(win: unknown, opts?: { timeoutMs?: number }
 export declare function mergeBridge(bridge: AxfNativeBridge, prev: unknown): AxfNativeBridge;
 export declare function installBridge(win: unknown, opts?: { timeoutMs?: number }): () => void;
 export declare function nativeTool(win: unknown, name: string, args?: Record<string, unknown>): Promise<Record<string, unknown>>;
+export declare const PERMISSION_WAIT_MS: number;
+export declare function requestPermission(win: unknown, permission: 'mic' | 'notifications' | 'overlay' | string, opts?: { waitMs?: number }): Promise<boolean>;
+export declare function callWithPermissions(win: unknown, name: string, args?: Record<string, unknown>, opts?: { waitMs?: number }): Promise<Record<string, unknown>>;
