@@ -304,6 +304,30 @@
         {
           "id": "opacityGlass",
           "kind": "number"
+        },
+        {
+          "id": "opacityDialog",
+          "kind": "number"
+        },
+        {
+          "id": "opacitySettings",
+          "kind": "number"
+        },
+        {
+          "id": "opacityPanel",
+          "kind": "number"
+        },
+        {
+          "id": "opacityMenu",
+          "kind": "number"
+        },
+        {
+          "id": "opacityToolbar",
+          "kind": "number"
+        },
+        {
+          "id": "opacityBanner",
+          "kind": "number"
         }
       ],
       "value": "field",
@@ -3025,7 +3049,13 @@
           "opacityHover",
           "opacityTint",
           "opacityScrim",
-          "opacityGlass"
+          "opacityGlass",
+          "opacityDialog",
+          "opacitySettings",
+          "opacityPanel",
+          "opacityMenu",
+          "opacityToolbar",
+          "opacityBanner"
         ]
       },
       "tokens.layout": {

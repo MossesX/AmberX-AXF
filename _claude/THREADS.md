@@ -33,6 +33,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 ## Active
 
 | Thread | State | Branch | PR | Queued / next | Updated |
+| Transparency token on every dialog and settings window (`transparency-token-works-every-dialog`, Fable s1, Opus s2–s4; Brett Nov 13: "how come I can't see the transparency of a settings interface dialog? Everything needs to have a token"): style theme `opacityDialog` / `opacitySettings` / `opacityPanel` / `opacityMenu` / `opacityToolbar` / `opacityBanner` (default 1) → `--fx-opacity-<kind>` + frosted `--fx-backdrop-<kind>`; every surface root reads its own; the tab group inside a settings window no longer paints over it; per window Window settings → Background + `windows.background:<id>:<v>`; check-theme rule *surface* | PR open | `claude/transparency-token-works-every-dialog` | (see build) | Report `_claude/builds/reports/transparency-token-works-every-dialog.md`. Kotlin twin deferred (PORTING.md) | 2026-11-13 |
 | Full API and voice control of the console (`full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu`, Fable s1–s8 then Opus s9–s31): console-control@1 gives every screen, tab, setting, button, function, plugin, grid row and build step an address, driven the same through REST `/api/console-control`, the `console_control_*` MCP tools, `axf console …` and AmberX voice; plugin on/off with effects; Ctrl+K search palette; coverage ratchet in CI; e2e 23 checks, parity 14 cases across the four channels | phase 2 done; palette waiting in UI Review (`r-20261113-3lor001`) | `claude/full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` | #556 | merge queue; Kotlin twin deferred (PORTING.md). Report `_claude/builds/reports/full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu.md` | 2026-11-13 |
 | Full voice and AI control of everything in the console (`full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app`, Opus, phase 1): every single setting is a console `field` (open / read value / `settings.set:<key>:<value>`) through control@1 `console.settings` + `console.actions` (REST, MCP, CLI, voice); Plan Studio find by content down to the item ("the plan about X, the step that mentions Y": `plan-studio/find`, `plan-studio.focus:<plan>/<item>`, `console_open "plan-studio <words>"`) <!-- axf-plugin:plan-studio --> | phase 1 done; PR draft until UI Review shots | `claude/full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app` | (see build) | Shots of Plan Studio with a found step marked (desktop + phone) to UI Review; next: find inside builds. Report `_claude/builds/reports/full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app.md` | 2026-11-13 |
 | Notes & tasks: one item type, nested to any depth (`change-to-one-to-do-notes-and-tasks-plugin-pr-527-brett-notes-tasks-and-to`, Opus; Brett Nov 13: notes, tasks and to-dos are ONE item type, any item holds any other to any depth): notes-tasks@1 design + schema revised (looks instead of kinds, `parent` = any item, legacy rows still read); supersedes #527 | PR open | `claude/change-to-one-to-do-notes-and-tasks-plugin-pr-527-brett-notes-tasks-and-to` | #545 | next: engine step (Fable) per DESIGN.md | 2026-11-13 |
@@ -786,69 +787,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 17:36 UTC · `professional-skins-rebuild-whole-app` added (17 steps) (all) · build-rename
-- 2026-11-13 17:36 UTC · `professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e` note, removed (all) · build-rename
-- 2026-11-13 17:36 UTC · `projects-own-everything-per-project` added (5 steps) (all) · build-rename
-- 2026-11-13 17:36 UTC · `projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone` note, removed (all) · build-rename
-- 2026-11-13 17:37 UTC · `remove-console-s-own-notes-manager` added (3 steps) (all) · build-rename
-- 2026-11-13 17:37 UTC · `remove-the-console-s-own-notes-manager-console-u` note, removed (all) · build-rename
-- 2026-11-13 17:37 UTC · `remove-no-new-android-kotlin-work-rule` added (2 steps) (all) · build-rename
-- 2026-11-13 17:37 UTC · `remove-the-no-new-android-or-kotlin-work-rule-build-android-twins-in-parallel` note, removed (all) · build-rename
-- 2026-11-13 17:37 UTC · `remove-ui-review-gate-no-screenshots` added (12 steps) (all) · build-rename
-- 2026-11-13 17:37 UTC · `remove-ui-review-as-a-gate-no-screenshots-required-prs-never-held-as-draft-for` note, removed (all) · build-rename
-- 2026-11-13 17:37 UTC · `server-every-failed-merge-alerts-brett` added (3 steps) (all) · build-rename
-- 2026-11-13 17:37 UTC · `server-every-failed-merge-alerts-brett-immediately-and-retries-by-itself-until` note, removed (all) · build-rename
-- 2026-11-13 17:37 UTC · `server-gate-one-session-per-build-no` added (5 steps) (all) · build-rename
-- 2026-11-13 17:37 UTC · `server-gate-one-session-per-build-no-duplicate-launches` note, removed (all) · build-rename
-- 2026-11-13 17:38 UTC · `show-commits-behind-main-every-build` added (3 steps) (all) · build-rename
-- 2026-11-13 17:38 UTC · `show-commits-behind-main-on-every-build-table-an` note, removed (all) · build-rename
-- 2026-11-13 17:38 UTC · `skin-configuration-panel-before-ai-makes` added (9 steps) (all) · build-rename
-- 2026-11-13 17:38 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` note, removed (all) · build-rename
-- 2026-11-13 17:38 UTC · `skins-plugin-own-removable-console` added (20 steps) (all) · build-rename
-- 2026-11-13 17:38 UTC · `skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga` note, removed (all) · build-rename
-- 2026-11-13 17:38 UTC · `tap-to-confirm-follows-label-visibility` added (3 steps) (all) · build-rename
-- 2026-11-13 17:38 UTC · `tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch` note, removed (all) · build-rename
-- 2026-11-13 17:38 UTC · `unlink-plan-studio-builds-delete-all` added (3 steps) (all) · build-rename
-- 2026-11-13 17:38 UTC · `unlink-plan-studio-from-builds-delete-all-plan-s` note, removed (all) · build-rename
-- 2026-11-13 17:38 UTC · `vps-badge-shows-shell-commands-work` added (3 steps) (all) · build-rename
-- 2026-11-13 17:38 UTC · `vps-badge-shows-shell-commands-work-banner-widgets-for-disk-cpu-load-and-memor` note, removed (all) · build-rename
-- 2026-11-13 17:39 UTC · `full-voice-api-control-type-fields-press` added (0 steps) (all) · console
-- 2026-11-13 17:39 UTC · `full-voice-api-control-type-fields-press` → queued, note (all) · console
-- 2026-11-13 17:41 UTC · `full-voice-api-control-type-fields-press` note (all) · orchestrator
-- 2026-11-13 17:41 UTC · `full-voice-api-control-type-fields-press` → running, note (all) · pipeline
-- 2026-11-13 17:41 UTC · `full-voice-api-control-type-fields-press` branch claude/full-voice-api-control-type-fields-press (all) · pipeline
-- 2026-11-13 17:44 UTC · `chrome-settings-actually-apply-toolbars` added (0 steps) (all) · console
-- 2026-11-13 17:44 UTC · `chrome-settings-actually-apply-toolbars` → queued, note (all) · console
-- 2026-11-13 17:46 UTC · `chrome-settings-actually-apply-toolbars` note (all) · orchestrator
-- 2026-11-13 17:46 UTC · `per-instance-settings-window-picker` added (0 steps) (all) · console
-- 2026-11-13 17:46 UTC · `per-instance-settings-window-picker` → queued, note (all) · console
-- 2026-11-13 17:46 UTC · `chrome-settings-actually-apply-toolbars` → running, note (all) · pipeline
-- 2026-11-13 17:46 UTC · `chrome-settings-actually-apply-toolbars` branch claude/chrome-settings-actually-apply-toolbars (all) · pipeline
-- 2026-11-13 17:47 UTC · `chrome-settings-actually-apply-toolbars` note (all) · orchestrator
-- 2026-11-13 17:47 UTC · `chrome-settings-actually-apply-toolbars` → running, branch claude/chrome-settings-actually-apply-toolbars, note (all) · builds-live
-- 2026-11-13 17:47 UTC · `per-instance-settings-window-picker` note (all) · claude-voice
-- 2026-11-13 17:47 UTC · `per-instance-settings-window-picker` note (all) · orchestrator
-- 2026-11-13 17:48 UTC · `full-voice-api-control-type-fields-press` s1 done, → running (all) · orchestrator
-- 2026-11-13 17:48 UTC · `full-voice-api-control-type-fields-press` s2 done (all) · orchestrator
-- 2026-11-13 17:49 UTC · `per-instance-settings-window-picker` → running, note (all) · pipeline
-- 2026-11-13 17:49 UTC · `per-instance-settings-window-picker` branch claude/per-instance-settings-window-picker (all) · pipeline
-- 2026-11-13 17:49 UTC · `per-instance-settings-window-picker` note (all) · orchestrator
-- 2026-11-13 17:50 UTC · `per-instance-settings-window-picker` → queued, note (all) · pipeline
-- 2026-11-13 17:50 UTC · `full-voice-api-control-type-fields-press` s3 done (all) · orchestrator
-- 2026-11-13 17:51 UTC · `tab-groups-choose-how-many-rows-tabs` added (0 steps) (all) · console
-- 2026-11-13 17:51 UTC · `tab-groups-choose-how-many-rows-tabs` → queued, note (all) · console
-- 2026-11-13 17:53 UTC · `tab-groups-choose-how-many-rows-tabs` note (all) · orchestrator
-- 2026-11-13 17:53 UTC · `per-instance-settings-window-picker` → running, note (all) · pipeline
-- 2026-11-13 17:53 UTC · `per-instance-settings-window-picker` note (all) · orchestrator
-- 2026-11-13 17:53 UTC · `full-voice-api-control-type-fields-press` s4 done (all) · orchestrator
-- 2026-11-13 17:54 UTC · `tab-groups-choose-how-many-rows-tabs` → running, note (all) · pipeline
-- 2026-11-13 17:54 UTC · `tab-groups-choose-how-many-rows-tabs` branch claude/tab-groups-choose-how-many-rows-tabs (all) · pipeline
-- 2026-11-13 17:54 UTC · `tab-groups-choose-how-many-rows-tabs` note (all) · orchestrator
-- 2026-11-13 17:56 UTC · `full-voice-api-control-type-fields-press` s5 done (all) · orchestrator
-- 2026-11-13 17:59 UTC · `restore-asset-designer-plugin-merged-nov` added (0 steps) (all) · console
-- 2026-11-13 17:59 UTC · `restore-asset-designer-plugin-merged-nov` → queued, note (all) · console
-- 2026-11-13 17:59 UTC · `chrome-settings-actually-apply-toolbars` s1 done, → running (all) · orchestrator
-- 2026-11-13 17:59 UTC · `restore-asset-designer-plugin-merged-nov` note (all) · claude-voice
 - 2026-11-13 18:00 UTC · `per-instance-settings-window-picker` s1 done, → running (all) · orchestrator
 - 2026-11-13 18:00 UTC · `chrome-settings-actually-apply-toolbars` s1 done (all) · foreign-write
 - 2026-11-13 18:02 UTC · `restore-asset-designer-plugin-merged-nov` note (all) · orchestrator
@@ -1186,6 +1124,69 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 19:33 UTC · `skin-axhub-override-switch-greyed-out` branch claude/skin-axhub-override-switch-greyed-out (all) · pipeline
 - 2026-11-13 19:32 UTC · `console-app-part-4-console-side-safe` branch claude/console-app-part-4-console-side-safe (all) · builds-live
 - 2026-11-13 19:33 UTC · `console-app-part-4-console-side-safe` s2 done (all) · orchestrator
+- 2026-11-13 19:34 UTC · `land-rename-long-builds-resolve-clash` note (all) · orchestrator
+- 2026-11-13 19:34 UTC · `land-rename-long-builds-resolve-clash` note (all) · builds-live
+- 2026-11-13 19:35 UTC · `skin-axhub-override-switch-greyed-out` s1 done (all) · orchestrator
+- 2026-11-13 19:35 UTC · `land-overlay-preview-ui-review-resolve` note (all) · orchestrator
+- 2026-11-13 19:35 UTC · `console-android-app-thin-webview-wrapper` note (all) · pipeline
+- 2026-11-13 19:35 UTC · `skin-axhub-override-switch-greyed-out` s1 done (all) · foreign-write
+- 2026-11-13 19:35 UTC · `transparency-token-works-every-dialog` note (all) · claude-voice
+- 2026-11-13 19:35 UTC · `land-rename-long-builds-resolve-clash` → running, note (all) · pipeline
+- 2026-11-13 19:35 UTC · `land-per-instance-settings-picker` added (0 steps) (all) · console
+- 2026-11-13 19:35 UTC · `land-rename-long-builds-resolve-clash` branch claude/land-rename-long-builds-resolve-clash (all) · pipeline
+- 2026-11-13 19:35 UTC · `land-rename-long-builds-resolve-clash` note (all) · orchestrator
+- 2026-11-13 19:37 UTC · `console-app-part-4-console-side-safe` s3 done (all) · orchestrator
+- 2026-11-13 19:37 UTC · `per-instance-settings-picker-merge-main` added (0 steps) (all) · console
+- 2026-11-13 19:37 UTC · `per-instance-settings-picker-merge-main` → queued, note (all) · console
+- 2026-11-13 19:37 UTC · `land-per-instance-settings-picker` note (all) · orchestrator
+- 2026-11-13 19:37 UTC · `land-rename-long-builds-resolve-clash` s1 done (all) · orchestrator
+- 2026-11-13 19:38 UTC · `per-instance-settings-picker-merge-main` note (all) · orchestrator
+- 2026-11-13 19:38 UTC · `skin-axhub-override-switch-greyed-out` s2 done (all) · orchestrator
+- 2026-11-13 19:38 UTC · `land-rename-long-builds-resolve-clash` s2 done (all) · orchestrator
+- 2026-11-13 19:39 UTC · `console-app-part-3-native-bridge-mic` s6 done (all) · orchestrator
+- 2026-11-13 19:39 UTC · `land-drive-live-console-first-resolve` branch claude/drive-live-console-first, PR #620 (all) · builds-live
+- 2026-11-13 19:39 UTC · `land-rename-long-builds-resolve-clash` PR #638 (all) · builds-live
+- 2026-11-13 19:39 UTC · `land-rename-long-builds-resolve-clash` s3 done, → built (all) · orchestrator
+- 2026-11-13 19:39 UTC · `land-rename-long-builds-resolve-clash` note (all) · orchestrator
+- 2026-11-13 19:40 UTC · `land-drive-live-console-first-resolve` s1 done (all) · orchestrator
+- 2026-11-13 19:40 UTC · `console-app-part-3-native-bridge-mic` s7 done, → built (all) · orchestrator
+- 2026-11-13 19:40 UTC · `orchestrator-custom-groups-custom-tabs` s1 done, → running (all) · orchestrator
+- 2026-11-13 19:40 UTC · `land-rename-long-builds-resolve-clash` → pending, note (all) · pipeline
+- 2026-11-13 19:41 UTC · `restore-asset-designer-plugin-merged-nov` → pending, note (all) · reconciler
+- 2026-11-13 19:41 UTC · `all-settings-interfaces-open-floating` → pending, note (all) · reconciler
+- 2026-11-13 19:41 UTC · `console-app-part-3-native-bridge-mic` s7 done, → built, note (all) · reconciler
+- 2026-11-13 19:41 UTC · `land-project-duplicate-boilerplate` → pending, note (all) · reconciler
+- 2026-11-13 19:41 UTC · `land-rename-long-builds-resolve-clash` note (all) · reconciler
+- 2026-11-13 19:41 UTC · `land-drive-live-console-first-resolve` s1 done (all) · foreign-write
+- 2026-11-13 19:40 UTC · `orchestrator-custom-groups-custom-tabs` s2 done (all) · orchestrator
+- 2026-11-13 19:40 UTC · `orchestrator-custom-groups-custom-tabs` s3 done (all) · orchestrator
+- 2026-11-13 19:41 UTC · `orchestrator-custom-groups-custom-tabs` s4 done (all) · orchestrator
+- 2026-11-13 19:41 UTC · `orchestrator-custom-groups-custom-tabs` s5 done (all) · orchestrator
+- 2026-11-13 19:41 UTC · `orchestrator-custom-groups-custom-tabs` s6 done (all) · orchestrator
+- 2026-11-13 19:41 UTC · `orchestrator-custom-groups-custom-tabs` s7 done (all) · orchestrator
+- 2026-11-13 19:42 UTC · `console-app-part-3-native-bridge-mic` note (all) · orchestrator
+- 2026-11-13 19:42 UTC · `skin-axhub-override-switch-greyed-out` s3 done (all) · orchestrator
+- 2026-11-13 19:42 UTC · `land-overlay-preview-ui-review-resolve` → running, note (all) · pipeline
+- 2026-11-13 19:42 UTC · `land-overlay-preview-ui-review-resolve` branch claude/land-overlay-preview-ui-review-resolve (all) · pipeline
+- 2026-11-13 19:42 UTC · `land-overlay-preview-ui-review-resolve` note (all) · orchestrator
+- 2026-11-13 19:40 UTC · `console-app-part-4-console-side-safe` s4 done (all) · orchestrator
+- 2026-11-13 19:43 UTC · `console-app-part-3-native-bridge-mic` note (all) · pipeline
+- 2026-11-13 19:43 UTC · `console-app-part-2-native-floating-2` note (all) · orchestrator
+- 2026-11-13 19:43 UTC · `per-instance-settings-picker-merge-main` → running, note (all) · pipeline
+- 2026-11-13 19:43 UTC · `per-instance-settings-picker-merge-main` branch claude/per-instance-settings-picker-merge-main (all) · pipeline
+- 2026-11-13 19:43 UTC · `per-instance-settings-picker-merge-main` note (all) · orchestrator
+- 2026-11-13 19:42 UTC · `skin-axhub-override-switch-greyed-out` s4 done (all) · orchestrator
+- 2026-11-13 19:43 UTC · `land-drive-live-console-first-resolve` note (all) · orchestrator
+- 2026-11-13 19:44 UTC · `console-app-part-2-native-floating-2` → pending, note (all) · pipeline
+- 2026-11-13 19:44 UTC · `land-drive-live-console-first-resolve` → queued, note (all) · pipeline
+- 2026-11-13 19:44 UTC · `land-drive-live-console-first-resolve` → running, note (all) · pipeline
+- 2026-11-13 19:44 UTC · `land-drive-live-console-first-resolve` note (all) · orchestrator
+- 2026-11-13 19:44 UTC · `demo-pipelines-guided-walkthrough-live` → running, note (all) · pipeline
+- 2026-11-13 19:44 UTC · `demo-pipelines-guided-walkthrough-live` branch claude/demo-pipelines-guided-walkthrough-live (all) · pipeline
+- 2026-11-13 19:44 UTC · `demo-pipelines-guided-walkthrough-live` note (all) · orchestrator
+- 2026-11-13 19:43 UTC · `orchestrator-custom-groups-custom-tabs` s8 done (all) · orchestrator
+- 2026-11-13 19:44 UTC · `skin-axhub-override-switch-greyed-out` s5 done (all) · orchestrator
+- 2026-11-13 19:44 UTC · `land-overlay-preview-ui-review-resolve` s1 done, → running (all) · orchestrator
 
 ## Token passes (log)
 

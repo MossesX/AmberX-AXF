@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T19:34:05.008Z",
+ "updatedAt": "2026-11-13T19:46:09.848Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -125837,7 +125837,7 @@
    "title": "Restore the Asset Designer plugin (merged Nov 10, now missing)",
    "category": "",
    "detail": "_claude/builds/shipped/asset-designer.json says the Asset Designer plugin (no-code; apps/console-web/plugins/asset-designer, id ai.amberx.axf.console.asset-designer) merged 2026-11-10T04:39Z, but the folder is not in main now and branch claude/asset-designer is deleted.\n1. Find it in git history (git log --all -- apps/console-web/plugins/asset-designer, reflog, any branch/PR/combine branch), find the commit that removed it and why.\n2. Restore it onto current main, update to current framework (tokens, chrome, skins, control@1), make it able to edit every asset type including the chrome settings interface for toolbars and tab groups (all its tokens), with the validation gate.\n3. If history is gone, rebuild from the shipped spec's steps.\n4. Installed and enabled by default, in nav and console.actions, REST/MCP/CLI/voice. Tests, Shipped features. Report what removed it so it doesn't happen again.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -125845,7 +125845,7 @@
    "pr": "#631",
    "priority": "P1",
    "createdAt": "2026-11-13T17:59:17.167Z",
-   "updatedAt": "2026-11-13T18:47:27.935Z",
+   "updatedAt": "2026-11-13T19:41:04.838Z",
    "builtAt": "",
    "notes": [
     {
@@ -125871,6 +125871,10 @@
     {
      "text": "Headless run axf-restore-asset-designer-plugin-merged-nov--earl: brief only · start 12.8K tokens ($0.10) · cost $14.00 · 80 turns · 6 tools, MCP none",
      "at": "2026-11-13T18:47:27.935Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-13T19:41:04.838Z"
     }
    ],
    "approvals": [],
@@ -126031,7 +126035,7 @@
    "title": "All settings interfaces open in a floating dialog by default",
    "category": "",
    "detail": "Every settings interface (console Settings sections, plugin settings, chrome settings for tab groups/toolbars/banners/nav/menu bar, and any future one) opens by default in a floating dialog over the current screen instead of navigating to the Settings page. Make it a framework default so new settings interfaces get it automatically (template + check that fails if a settings interface navigates away by default). Keep a per-user option to open it as a page instead, and a 'pop out to page' button in the dialog. Dialogs use the glass/transparency tokens (opacityGlass, blur). Deep links and voice/MCP/API still work. Tests, help entry, Shipped features.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -126039,7 +126043,7 @@
    "pr": "#628",
    "priority": "P1",
    "createdAt": "2026-11-13T18:03:04.047Z",
-   "updatedAt": "2026-11-13T18:41:40.218Z",
+   "updatedAt": "2026-11-13T19:41:04.838Z",
    "builtAt": "",
    "notes": [
     {
@@ -126065,6 +126069,10 @@
     {
      "text": "Headless run axf-all-settings-interfaces-open-floating--gina: brief only · start 11.2K tokens ($0.03) · cost $8.59 · 121 turns · 6 tools, MCP none",
      "at": "2026-11-13T18:41:40.218Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-13T19:41:04.838Z"
     }
    ],
    "approvals": [],
@@ -127670,7 +127678,7 @@
    "pr": "#632",
    "priority": "P1",
    "createdAt": "2026-11-13T18:26:12.039Z",
-   "updatedAt": "2026-11-13T18:57:48.959Z",
+   "updatedAt": "2026-11-13T19:35:34.978Z",
    "builtAt": "2026-11-13T18:55:46.655Z",
    "notes": [
     {
@@ -127724,6 +127732,10 @@
     {
      "text": "Session axf-transparency-token-works-every-dialog--sully on mossesx-max- ended (exit 0); the build was already built.",
      "at": "2026-11-13T18:57:48.959Z"
+    },
+    {
+     "text": "Brett: every single instance of every tab group, application menu, navigation menu and toolbar (and dialog) gets its own settings interface that changes only that one instance, and each must include its own transparency setting. Ties into per-instance-settings-window-picker.",
+     "at": "2026-11-13T19:35:34.978Z"
     }
    ],
    "approvals": [
@@ -128248,7 +128260,7 @@
    "pr": "#637",
    "priority": "P1",
    "createdAt": "2026-11-13T18:38:53.122Z",
-   "updatedAt": "2026-11-13T19:33:12.066Z",
+   "updatedAt": "2026-11-13T19:35:13.753Z",
    "builtAt": "2026-11-13T19:28:57.835Z",
    "notes": [
     {
@@ -128362,6 +128374,10 @@
     {
      "text": "Headless run axf-console-android-app-thin-webview-wrapper--sully: brief only · start 11.8K tokens ($0.03) · cost $3.14 · 63 turns · 6 tools, MCP none",
      "at": "2026-11-13T19:33:12.066Z"
+    },
+    {
+     "text": "Session axf-console-android-app-thin-webview-wrapper--sully on mossesx-max- ended (exit 1); the build was already built.",
+     "at": "2026-11-13T19:35:13.753Z"
     }
    ],
    "approvals": [],
@@ -128982,7 +128998,7 @@
    "title": "Console app part 3: native bridge, mic, recorder, open_url, wake",
    "category": "",
    "detail": "Parallel part 3 of 4 of console-android-app-thin-webview-wrapper (parent). Builds only in the wrapper's Android module, following the shell contract from the parent.\n- JS bridge window.axfNative exposing the native features to the console.\n- Migrates AmberX's axHub device service (amberx.open_url, recorder_start/stop/status, console wake, notifications) to the new app, with the same tool names or aliases so axHub keeps working.\n- Mic and permissions handling.\n- Full API parity: REST/MCP/CLI/voice. Tests, help, Shipped features.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -128990,8 +129006,8 @@
    "pr": "#633",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:27.359Z",
-   "updatedAt": "2026-11-13T19:32:30.495Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-13T19:43:04.738Z",
+   "builtAt": "2026-11-13T19:41:04.838Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -129052,6 +129068,18 @@
     {
      "text": "Headless run axf-console-app-part-3-native-bridge-mic--paulie: brief only · start 11.3K tokens ($0.03) · cost $3.82 · 88 turns · 6 tools, MCP none",
      "at": "2026-11-13T19:29:20.233Z"
+    },
+    {
+     "text": "Reconciler: PR #633 names s1, s2, s3, s4, s5, s6, s7 done",
+     "at": "2026-11-13T19:41:04.838Z"
+    },
+    {
+     "text": "Headless run axf-console-app-part-3-native-bridge-mic--gina: brief only · start 11.5K tokens ($0.03) · cost $3.57 · 47 turns · 6 tools, MCP none",
+     "at": "2026-11-13T19:42:08.702Z"
+    },
+    {
+     "text": "Session axf-console-app-part-3-native-bridge-mic--gina on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-13T19:43:04.738Z"
     }
    ],
    "approvals": [
@@ -129186,8 +129214,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T19:39:19.625Z",
      "note": "",
      "uid": "st-mwfbrawt0e44k2",
      "createdAt": "2026-11-13T18:43:07.133Z"
@@ -129208,9 +129236,9 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
+     "done": true,
+     "doneAt": "2026-11-13T19:41:04.838Z",
+     "note": "PR #633 (claude/console-app-part-3-native-bridge-mic)",
      "uid": "st-mwfbrawt0fprpt",
      "createdAt": "2026-11-13T18:43:07.133Z"
     }
@@ -129229,7 +129257,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:32.589Z",
-   "updatedAt": "2026-11-13T19:33:33.232Z",
+   "updatedAt": "2026-11-13T19:40:12.756Z",
    "builtAt": "",
    "notes": [
     {
@@ -129315,8 +129343,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T19:37:05.326Z",
      "note": "",
      "uid": "st-mwfbry9t0izi1a",
      "createdAt": "2026-11-13T18:43:37.409Z"
@@ -129334,8 +129362,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T19:40:12.756Z",
      "note": "",
      "uid": "st-mwfbry9t0j3q82",
      "createdAt": "2026-11-13T18:43:37.409Z"
@@ -129407,7 +129435,7 @@
    "title": "Console app part 2: native floating overlay and approvals bar",
    "category": "",
    "detail": "Parallel part 2 of 4 of console-android-app-thin-webview-wrapper (parent). Builds only in the wrapper's Android module, following the shell contract (package, module layout, window.axfNative bridge names) from the parent build.\n- Draw-over-apps floating toolbar/bubble, ported from overlay-toolbar-v2. It keeps the app in front, expands to the full-screen console with the toolbar top-left, and pops up an approvals bar with a link to the approvals page.\n- Permission flow for 'display over other apps'.\n- Respects safe areas (status bar, cutout, nav bar).\n- Tests, help, Shipped features.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -129415,7 +129443,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:46.237Z",
-   "updatedAt": "2026-11-13T19:33:06.881Z",
+   "updatedAt": "2026-11-13T19:44:05.562Z",
    "builtAt": "",
    "notes": [
     {
@@ -129437,6 +129465,14 @@
     {
      "text": "Brett: from now on UI Review items launch from the floating overlay. When a review is waiting, the overlay pops it up (preview plus pick/approve/deny), with a link to the full UI Review screen. The overlay gets its own settings interface with a section to manage what pops up in it (UI reviews, approvals, decisions, build done/failed, landing blocked, banners), each with a switch and a priority/sound option. The settings are also in the API and voice.",
      "at": "2026-11-13T19:33:06.881Z"
+    },
+    {
+     "text": "Headless run axf-console-app-part-2-native-floating-2--lenny: brief only · start 12.7K tokens ($0.06) · cost $4.70 · 39 turns · 6 tools, MCP none",
+     "at": "2026-11-13T19:43:06.693Z"
+    },
+    {
+     "text": "Session on mossesx-max- stopped on its own with 7 steps left: back in Pending for Brett.",
+     "at": "2026-11-13T19:44:05.562Z"
     }
    ],
    "approvals": [],
@@ -129867,7 +129903,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:50:33.284Z",
-   "updatedAt": "2026-11-13T19:31:49.059Z",
+   "updatedAt": "2026-11-13T19:43:56.716Z",
    "builtAt": "",
    "notes": [
     {
@@ -129915,8 +129951,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T19:40:47.837Z",
      "note": "",
      "uid": "st-mwfc2gnw01v6tw",
      "createdAt": "2026-11-13T18:51:47.804Z"
@@ -129934,8 +129970,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T19:40:51.535Z",
      "note": "",
      "uid": "st-mwfc2gnw02gqci",
      "createdAt": "2026-11-13T18:51:47.804Z"
@@ -129953,8 +129989,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T19:40:55.606Z",
      "note": "",
      "uid": "st-mwfc2gnw03tgld",
      "createdAt": "2026-11-13T18:51:47.804Z"
@@ -129972,8 +130008,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T19:41:07.805Z",
      "note": "",
      "uid": "st-mwfc2gnw04tc7l",
      "createdAt": "2026-11-13T18:51:47.804Z"
@@ -129991,8 +130027,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T19:41:12.540Z",
      "note": "",
      "uid": "st-mwfc2gnw057gzy",
      "createdAt": "2026-11-13T18:51:47.804Z"
@@ -130010,8 +130046,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T19:41:16.031Z",
      "note": "",
      "uid": "st-mwfc2gnw068hmn",
      "createdAt": "2026-11-13T18:51:47.804Z"
@@ -130029,8 +130065,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T19:41:18.594Z",
      "note": "",
      "uid": "st-mwfc2gnw07zucr",
      "createdAt": "2026-11-13T18:51:47.804Z"
@@ -130048,8 +130084,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T19:43:56.716Z",
      "note": "",
      "uid": "st-mwfc2gnw089tnf",
      "createdAt": "2026-11-13T18:51:47.804Z"
@@ -130110,7 +130146,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:56:15.400Z",
-   "updatedAt": "2026-11-13T19:33:26.971Z",
+   "updatedAt": "2026-11-13T19:44:00.325Z",
    "builtAt": "",
    "notes": [
     {
@@ -130178,8 +130214,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T19:35:10.208Z",
      "note": "",
      "uid": "st-mwfca2p001eyoz",
      "createdAt": "2026-11-13T18:57:42.948Z"
@@ -130197,8 +130233,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T19:38:47.101Z",
      "note": "",
      "uid": "st-mwfca2p002kii6",
      "createdAt": "2026-11-13T18:57:42.948Z"
@@ -130216,8 +130252,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T19:42:10.608Z",
      "note": "",
      "uid": "st-mwfca2p0037pbj",
      "createdAt": "2026-11-13T18:57:42.948Z"
@@ -130235,8 +130271,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T19:42:14.980Z",
      "note": "",
      "uid": "st-mwfca2p0041b3i",
      "createdAt": "2026-11-13T18:57:42.948Z"
@@ -130254,8 +130290,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T19:44:00.325Z",
      "note": "",
      "uid": "st-mwfca2p005gqo7",
      "createdAt": "2026-11-13T18:57:42.948Z"
@@ -130425,15 +130461,15 @@
    "title": "Demo pipelines: guided walkthrough with live behind-the-scenes output",
    "category": "",
    "detail": "Demo mode for pitching (Demonstration Designer).\n- A library of ready-made demo pipelines of different types, e.g.: voice-to-app (say an idea, get an Android app), add a feature to an existing app, skin swap across the whole app, parallel split build (several slots at once), fix a failing build automatically, create a new project from a template, and the approval flow (veto, approve by voice).\n- Each demo is a guided walkthrough: narrated chapters you can skip, and the console follows along live (focus mode moves to each screen as it happens: orchestrator, steps, UI Review, landing).\n- A behind-the-scenes panel: a scrolling terminal-style window streaming everything normally hidden (orchestrator decisions, model picks, step splits, agent logs, git, tests, axHub calls), colour-coded and filterable, which can be docked, floated or full-screen.\n- Runs for real in the test-sandbox project, or as a recorded replay for offline/fast demos. Speed control, pause, restart.\n- Create and edit demos in a Demonstration Designer (pick a pipeline type, script the narration, choose screens).\n- Full API: REST/MCP/CLI/voice ('run the voice-to-app demo'). Tests, help, Shipped features.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/demo-pipelines-guided-walkthrough-live",
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T19:01:19.839Z",
-   "updatedAt": "2026-11-13T19:05:57.629Z",
+   "updatedAt": "2026-11-13T19:44:42.845Z",
    "builtAt": "",
    "notes": [
     {
@@ -130443,6 +130479,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"e02db8b9-3b26-4fe6-b864-4d088fef452f\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-13T19:05:57.629Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-demo-pipelines-guided-walkthrough-live--gina.",
+     "at": "2026-11-13T19:44:38.507Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-demo-pipelines-guided-walkthrough-live--gina, own login copy)",
+     "at": "2026-11-13T19:44:42.845Z"
     }
    ],
    "approvals": [],
@@ -130453,8 +130497,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "demo-pipelines-guided-walkthrough-live",
+    "brief": "# Build: demo-pipelines-guided-walkthrough-live\n\n## Brett said (verbatim)\nAt: 2026-11-13T19:01:19.839Z\n> a bunch of different types of pipelines for demonstration purposes, walked through so you can see what's going on behind the scenes; follow the console building stuff, and a terminal or scrolling window showing all the output you wouldn't normally see\n\n## What to build\nContinue build \"Demo pipelines: guided walkthrough with live behind-the-scenes output\" (demo-pipelines-guided-walkthrough-live) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-13 19:01):\n\"a bunch of different types of pipelines for demonstration purposes, walked through so you can see what's going on behind the scenes; follow the console building stuff, and a terminal or scrolling window showing all the output you wouldn't normally see\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (9 left, ~1.5 h):\n[ ] s1 (~10 min) Demo mode for pitching (Demonstration Designer).\n[ ] s2 (~10 min) A library of ready-made demo pipelines of different types, e.g.: voice-to-app (say an idea, get an Android app), add a feature to an existing app, skin swap across the whole app, parallel split build (several slots at once), fix a failing build automatically, create a new project from a template, and the approval flow (veto, approve by voice).\n[ ] s3 (~10 min) Each demo is a guided walkthrough: narrated chapters you can skip, and the console follows along live (focus mode moves to each screen as it happens: orchestrator, steps, UI Review, landing).\n[ ] s4 (~10 min) A behind-the-scenes panel: a scrolling terminal-style window streaming everything normally hidden (orchestrator decisions, model picks, step splits, agent logs, git, tests, axHub calls), colour-coded and filterable, which can be docked, floated or full-screen.\n[ ] s5 (~10 min) Runs for real in the test-sandbox project, or as a recorded replay for offline/fast demos. Speed control, pause, restart.\n[ ] s6 (~10 min) Create and edit demos in a Demonstration Designer (pick a pipeline type, script the narration, choose screens).\n[ ] s7 (~10 min) Full API: REST/MCP/CLI/voice ('run the voice-to-app demo'). Tests, help, Shipped features.\n[ ] s8 (~10 min) a bunch of different types of pipelines for demonstration purposes, walked through so you can see what's going on behind the scenes; follow the console building stuff, and a terminal or scrolling window showing all the output you wouldn't normally see\n[ ] s9 (~10 min) Tests green, report _claude/builds/reports/demo-pipelines-guided-walkthrough-live.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/demo-pipelines-guided-walkthrough-live.md, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step demo-pipelines-guided-walkthrough-live <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link demo-pipelines-guided-walkthrough-live --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step demo-pipelines-guided-walkthrough-live <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note demo-pipelines-guided-walkthrough-live \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -130641,7 +130685,7 @@
    "title": "Land project-duplicate-boilerplate: resolve clash in status.json and PORTING.md",
    "category": "",
    "detail": "Branch claude/project-duplicate-boilerplate clashed with main in framework/catalog/status.json and framework/spec/PORTING.md (merge aborted, main untouched). Merge origin/main into the branch, resolve by keeping both sides' entries (additive), run tests, push, then land on main. No feature changes. If the project-create-mcp clash fix landed first, merge after it.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -130649,7 +130693,7 @@
    "pr": "#621",
    "priority": "P0",
    "createdAt": "2026-11-13T19:03:35.763Z",
-   "updatedAt": "2026-11-13T19:17:30.283Z",
+   "updatedAt": "2026-11-13T19:41:04.838Z",
    "builtAt": "",
    "notes": [
     {
@@ -130671,6 +130715,10 @@
     {
      "text": "Headless run axf-land-project-duplicate-boilerplate--gina: brief only · start 12.8K tokens ($0.06) · cost $1.95 · 54 turns · 6 tools, MCP none",
      "at": "2026-11-13T19:17:30.283Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-13T19:41:04.838Z"
     }
    ],
    "approvals": [],
@@ -130759,11 +130807,11 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/land-drive-live-console-first-resolve",
-   "pr": "",
+   "branch": "claude/drive-live-console-first",
+   "pr": "#620",
    "priority": "P0",
    "createdAt": "2026-11-13T19:31:40.346Z",
-   "updatedAt": "2026-11-13T19:32:56.779Z",
+   "updatedAt": "2026-11-13T19:44:27.886Z",
    "builtAt": "",
    "notes": [
     {
@@ -130781,6 +130829,22 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-land-drive-live-console-first-resolve--paulie, own login copy)",
      "at": "2026-11-13T19:32:56.779Z"
+    },
+    {
+     "text": "Session on mossesx-max- ended (exit 0) with 2 steps left: back in the Queue (run 1).",
+     "at": "2026-11-13T19:44:07.512Z"
+    },
+    {
+     "text": "Started run 2 on mossesx-max- (Opus, Phase 2): axf-land-drive-live-console-first-resolve--earl.",
+     "at": "2026-11-13T19:44:22.860Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-land-drive-live-console-first-resolve--earl, own login copy)",
+     "at": "2026-11-13T19:44:27.886Z"
+    },
+    {
+     "text": "Headless run axf-land-drive-live-console-first-resolve--paulie: brief only · start 12.9K tokens ($0.06) · cost $2.49 · 53 turns · 6 tools, MCP none",
+     "at": "2026-11-13T19:43:57.110Z"
     }
    ],
    "approvals": [],
@@ -130792,7 +130856,7 @@
     "session": "",
     "link": "",
     "by": "land-drive-live-console-first-resolve",
-    "brief": "# Build: land-drive-live-console-first-resolve\n\n## Brett said (verbatim)\nAt: 2026-11-13T19:31:40.346Z\n> land drive the live console first\n\n## What to build\nContinue build \"Land drive-live-console-first: resolve clash in console-commands engine\" (land-drive-live-console-first-resolve) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-13 19:31):\n\"land drive the live console first\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (1 left, ~10 min):\n[ ] s1 (~10 min) Branch claude/drive-live-console-first clashed with main in 7 files (console-commands plugin console.mjs and server/__init__.py, console-commands engine .mjs/.d.mts in framework/core/engines and apps/console-web/src/axf/core/engines, framework/catalog/status.json). Merge origin/main into the branch and keep main's newer console-commands behaviour (reconnect delivery, wake) plus this branch's 'drive the live console first' path. Regenerate the baked engine copies from framework, run the console-commands self-checks and tests, push, then land on main.\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step land-drive-live-console-first-resolve <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link land-drive-live-console-first-resolve --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step land-drive-live-console-first-resolve <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note land-drive-live-console-first-resolve \"…\"); the build goes back to Pending for Brett.\n",
+    "brief": "# Build: land-drive-live-console-first-resolve\n\n## Brett said (verbatim)\nAt: 2026-11-13T19:31:40.346Z\n> land drive the live console first\n\n## What to build\nContinue build \"Land drive-live-console-first: resolve clash in console-commands engine\" (land-drive-live-console-first-resolve) — Phase 2, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-13 19:31):\n\"land drive the live console first\"\nThis phase downgrades Fable → Opus: fine, no approval needed (it is recorded when you tick its first step).\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/drive-live-console-first · PR #620\nSteps in this phase (2 left, ~20 min):\n[ ] s2 (~10 min) land drive the live console first\n[ ] s3 (~10 min) Tests green, report _claude/builds/reports/land-drive-live-console-first-resolve.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/land-drive-live-console-first-resolve.md, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step land-drive-live-console-first-resolve <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link land-drive-live-console-first-resolve --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step land-drive-live-console-first-resolve <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note land-drive-live-console-first-resolve \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -130811,8 +130875,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T19:40:00.150Z",
      "note": "",
      "uid": "st-mwfdj07401snir",
      "createdAt": "2026-11-13T19:32:39.232Z"
@@ -130865,20 +130929,44 @@
    "title": "Land rename-long-builds: resolve clash in orchestrator.mjs",
    "category": "",
    "detail": "Branch claude/rename-long-builds clashed with main in apps/console-web/plugins/build-orchestrator/orchestrator.mjs (merge aborted, main untouched). Merge origin/main into the branch and keep main's newer orchestrator code plus this branch's rename logic and renames.json mapping. Run the orchestrator tests, push, then land on main.",
-   "status": "queued",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/land-rename-long-builds-resolve-clash",
+   "pr": "#638",
    "priority": "P0",
    "createdAt": "2026-11-13T19:32:22.232Z",
-   "updatedAt": "2026-11-13T19:32:25.191Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-13T19:41:04.838Z",
+   "builtAt": "2026-11-13T19:40:19.880Z",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-13T19:32:25.191Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"1ec17e03-ec45-4061-9c9d-84bf5aef7664\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-13T19:34:28.140Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-land-rename-long-builds-resolve-clash--gina.",
+     "at": "2026-11-13T19:35:37.978Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-land-rename-long-builds-resolve-clash--gina, own login copy)",
+     "at": "2026-11-13T19:35:46.927Z"
+    },
+    {
+     "text": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
+     "at": "2026-11-13T19:40:19.880Z"
+    },
+    {
+     "text": "Headless run axf-land-rename-long-builds-resolve-clash--gina: brief only · start 11.1K tokens ($0.03) · cost $0.46 · 22 turns · 6 tools, MCP none",
+     "at": "2026-11-13T19:39:26.133Z"
+    },
+    {
+     "text": "Reconciler: PR #638",
+     "at": "2026-11-13T19:41:04.838Z"
     }
    ],
    "approvals": [],
@@ -130889,33 +130977,106 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "land-rename-long-builds-resolve-clash",
+    "brief": "# Build: land-rename-long-builds-resolve-clash\n\n## Brett said (verbatim)\nAt: 2026-11-13T19:32:22.232Z\n> land rename long builds\n\n## What to build\nContinue build \"Land rename-long-builds: resolve clash in orchestrator.mjs\" (land-rename-long-builds-resolve-clash) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-13 19:32):\n\"land rename long builds\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~30 min):\n[ ] s1 (~10 min) Branch claude/rename-long-builds clashed with main in apps/console-web/plugins/build-orchestrator/orchestrator.mjs (merge aborted, main untouched). Merge origin/main into the branch and keep main's newer orchestrator code plus this branch's rename logic and renames.json mapping. Run the orchestrator tests, push, then land on main.\n[ ] s2 (~10 min) land rename long builds\n[ ] s3 (~10 min) Tests green, report _claude/builds/reports/land-rename-long-builds-resolve-clash.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/land-rename-long-builds-resolve-clash.md, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step land-rename-long-builds-resolve-clash <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link land-rename-long-builds-resolve-clash --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step land-rename-long-builds-resolve-clash <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note land-rename-long-builds-resolve-clash \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Branch claude/rename-long-builds clashed with main in apps/console-web/plugins/build-orchestrator/orchestrator.mjs (merge aborted, main untouched). Merge origin/main into the branch and keep main's newer orchestrator code plus this branch's rename logic and renames.json mapping. Run the orchestrator tests, push, then land on main.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-13T19:37:53.228Z",
+     "note": "",
+     "uid": "st-mwfdlc8c01ic63",
+     "createdAt": "2026-11-13T19:34:28.140Z"
+    },
+    {
+     "id": "s2",
+     "text": "land rename long builds",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-13T19:38:39.712Z",
+     "note": "",
+     "uid": "st-mwfdlc8c02cd7r",
+     "createdAt": "2026-11-13T19:34:28.140Z"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/land-rename-long-builds-resolve-clash.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/land-rename-long-builds-resolve-clash.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-13T19:39:12.547Z",
+     "note": "",
+     "uid": "st-mwfdlc8c03jjsa",
+     "createdAt": "2026-11-13T19:34:28.140Z"
+    }
+   ]
   },
   {
    "id": "land-overlay-preview-ui-review-resolve",
    "title": "Land overlay-preview-ui-review: resolve clash in approvals-banner",
    "category": "",
    "detail": "Branch claude/overlay-preview-ui-review clashed with main in apps/console-web/plugins/approvals-banner/help.json and web/index.tsx (merge aborted, main untouched). Merge origin/main into the branch and keep both: main's approvals-banner changes plus this branch's UI Review choice-set assets for the overlay toolbar shape. Run tests, push, then land on main.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/land-overlay-preview-ui-review-resolve",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T19:33:18.264Z",
-   "updatedAt": "2026-11-13T19:33:24.794Z",
+   "updatedAt": "2026-11-13T19:44:16.452Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-13T19:33:24.794Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"4fee4660-b409-490f-906c-4ba119eb7522\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-13T19:35:01.361Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-land-overlay-preview-ui-review-resolve--rhonda.",
+     "at": "2026-11-13T19:42:18.766Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-land-overlay-preview-ui-review-resolve--rhonda, own login copy)",
+     "at": "2026-11-13T19:42:22.089Z"
     }
    ],
    "approvals": [],
@@ -130926,13 +131087,281 @@
     "source": "",
     "session": "",
     "link": "",
+    "by": "land-overlay-preview-ui-review-resolve",
+    "brief": "# Build: land-overlay-preview-ui-review-resolve\n\n## Brett said (verbatim)\nAt: 2026-11-13T19:33:18.264Z\n> land the overlay preview in UI Review\n\n## What to build\nContinue build \"Land overlay-preview-ui-review: resolve clash in approvals-banner\" (land-overlay-preview-ui-review-resolve) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-13 19:33):\n\"land the overlay preview in UI Review\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~30 min):\n[ ] s1 (~10 min) Branch claude/overlay-preview-ui-review clashed with main in apps/console-web/plugins/approvals-banner/help.json and web/index.tsx (merge aborted, main untouched). Merge origin/main into the branch and keep both: main's approvals-banner changes plus this branch's UI Review choice-set assets for the overlay toolbar shape. Run tests, push, then land on main.\n[ ] s2 (~10 min) land the overlay preview in UI Review\n[ ] s3 (~10 min) Tests green, report _claude/builds/reports/land-overlay-preview-ui-review-resolve.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/land-overlay-preview-ui-review-resolve.md, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step land-overlay-preview-ui-review-resolve <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link land-overlay-preview-ui-review-resolve --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step land-overlay-preview-ui-review-resolve <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note land-overlay-preview-ui-review-resolve \"…\"); the build goes back to Pending for Brett.\n",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Branch claude/overlay-preview-ui-review clashed with main in apps/console-web/plugins/approvals-banner/help.json and web/index.tsx (merge aborted, main untouched). Merge origin/main into the branch and keep both: main's approvals-banner changes plus this branch's UI Review choice-set assets for the overlay toolbar shape. Run tests, push, then land on main.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-13T19:44:16.452Z",
+     "note": "",
+     "uid": "st-mwfdm1v6046tr5",
+     "createdAt": "2026-11-13T19:35:01.361Z"
+    },
+    {
+     "id": "s2",
+     "text": "land the overlay preview in UI Review",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfdm1v605dj11",
+     "createdAt": "2026-11-13T19:35:01.361Z"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/land-overlay-preview-ui-review-resolve.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/land-overlay-preview-ui-review-resolve.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfdm1v6064qvs",
+     "createdAt": "2026-11-13T19:35:01.361Z"
+    }
+   ]
+  },
+  {
+   "id": "land-per-instance-settings-picker",
+   "title": "Land per-instance settings picker: resolve clash in Overlays.tsx",
+   "category": "",
+   "detail": "Branch claude/per-instance-settings-window-picker clashed with main in apps/console-web/axf.lock.json, apps/console-web/src/axf/react/components/Overlays.tsx and framework/react/components/Overlays.tsx (merge aborted, main untouched). Merge origin/main and keep both sides' Overlays changes; edit framework first and re-bake the console copy, then regenerate axf.lock.json. Brett: every instance of every tab group, application menu, navigation menu, toolbar and dialog gets its own settings interface (including its own transparency) that changes only that one. Run tests, push, land on main.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-13T19:35:42.374Z",
+   "updatedAt": "2026-11-13T19:37:31.490Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"a54de3c9-d6da-4a1b-94df-48b7fb181427\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-13T19:37:31.490Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I definitely need that; every tab group, application menu, navigation menu, toolbar can have its own settings interface that changes only it, and they all have transparency",
+    "at": "2026-11-13T19:35:42.374Z",
+    "source": "",
+    "session": "",
+    "link": "",
     "by": "",
     "brief": "",
     "verbatim": true,
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Branch claude/per-instance-settings-window-picker clashed with main in apps/console-web/axf.lock.json, apps/console-web/src/axf/react/components/Overlays.tsx and framework/react/components/Overlays.tsx (merge aborted, main untouched). Merge origin/main and keep both sides' Overlays changes; edit framework first and re-bake the console copy, then regenerate axf.lock.json. Brett: every instance of every tab group, application menu, navigation menu, toolbar and dialog gets its own settings interface (including its own transparency) that changes only that one. Run tests, push, land on main.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfdp9pe01qo1a",
+     "createdAt": "2026-11-13T19:37:31.490Z"
+    },
+    {
+     "id": "s2",
+     "text": "I definitely need that; every tab group, application menu, navigation menu, toolbar can have its own settings interface that changes only it, and they all have transparency",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfdp9pe024v20",
+     "createdAt": "2026-11-13T19:37:31.490Z"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/land-per-instance-settings-picker.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/land-per-instance-settings-picker.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfdp9pe0368we",
+     "createdAt": "2026-11-13T19:37:31.490Z"
+    }
+   ]
+  },
+  {
+   "id": "per-instance-settings-picker-merge-main",
+   "title": "Per-instance settings picker: merge main and land",
+   "category": "",
+   "detail": "Branch claude/per-instance-settings-window-picker clashed with main in apps/console-web/axf.lock.json, apps/console-web/src/axf/react/components/Overlays.tsx and framework/react/components/Overlays.tsx (merge aborted, main untouched). Merge origin/main and keep both sides' Overlays changes; edit framework first and re-bake the console copy, then regenerate axf.lock.json. Brett: every instance of every tab group, application menu, navigation menu, toolbar and dialog gets its own settings interface (including its own transparency) that changes only that one. Run tests, push, land on main.",
+   "status": "running",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/per-instance-settings-picker-merge-main",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-13T19:37:14.557Z",
+   "updatedAt": "2026-11-13T19:43:18.403Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T19:37:17.272Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"ea667ee6-2076-42f6-ad21-216fdcee3cda\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-13T19:38:35.332Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-per-instance-settings-picker-merge-main--lenny.",
+     "at": "2026-11-13T19:43:15.650Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-per-instance-settings-picker-merge-main--lenny, own login copy)",
+     "at": "2026-11-13T19:43:18.403Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I definitely need that; every tab group, application menu, navigation menu, toolbar can have its own settings interface that changes only it, and they all have transparency",
+    "at": "2026-11-13T19:37:14.557Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "per-instance-settings-picker-merge-main",
+    "brief": "# Build: per-instance-settings-picker-merge-main\n\n## Brett said (verbatim)\nAt: 2026-11-13T19:37:14.557Z\n> I definitely need that; every tab group, application menu, navigation menu, toolbar can have its own settings interface that changes only it, and they all have transparency\n\n## What to build\nContinue build \"Per-instance settings picker: merge main and land\" (per-instance-settings-picker-merge-main) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-13 19:37):\n\"I definitely need that; every tab group, application menu, navigation menu, toolbar can have its own settings interface that changes only it, and they all have transparency\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~30 min):\n[ ] s1 (~10 min) Branch claude/per-instance-settings-window-picker clashed with main in apps/console-web/axf.lock.json, apps/console-web/src/axf/react/components/Overlays.tsx and framework/react/components/Overlays.tsx (merge aborted, main untouched). Merge origin/main and keep both sides' Overlays changes; edit framework first and re-bake the console copy, then regenerate axf.lock.json. Brett: every instance of every tab group, application menu, navigation menu, toolbar and dialog gets its own settings interface (including its own transparency) that changes only that one. Run tests, push, land on main.\n[ ] s2 (~10 min) I definitely need that; every tab group, application menu, navigation menu, toolbar can have its own settings interface that changes only it, and they all have transparency\n[ ] s3 (~10 min) Tests green, report _claude/builds/reports/per-instance-settings-picker-merge-main.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/per-instance-settings-picker-merge-main.md, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step per-instance-settings-picker-merge-main <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link per-instance-settings-picker-merge-main --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step per-instance-settings-picker-merge-main <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note per-instance-settings-picker-merge-main \"…\"); the build goes back to Pending for Brett.\n",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Branch claude/per-instance-settings-window-picker clashed with main in apps/console-web/axf.lock.json, apps/console-web/src/axf/react/components/Overlays.tsx and framework/react/components/Overlays.tsx (merge aborted, main untouched). Merge origin/main and keep both sides' Overlays changes; edit framework first and re-bake the console copy, then regenerate axf.lock.json. Brett: every instance of every tab group, application menu, navigation menu, toolbar and dialog gets its own settings interface (including its own transparency) that changes only that one. Run tests, push, land on main.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfdqmys01hugg",
+     "createdAt": "2026-11-13T19:38:35.332Z"
+    },
+    {
+     "id": "s2",
+     "text": "I definitely need that; every tab group, application menu, navigation menu, toolbar can have its own settings interface that changes only it, and they all have transparency",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfdqmys02ibv8",
+     "createdAt": "2026-11-13T19:38:35.332Z"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/per-instance-settings-picker-merge-main.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/per-instance-settings-picker-merge-main.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfdqmys03xi4y",
+     "createdAt": "2026-11-13T19:38:35.332Z"
+    }
+   ]
   }
  ]
 }
