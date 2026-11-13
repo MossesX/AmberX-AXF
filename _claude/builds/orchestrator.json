@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T12:14:18.740Z",
+ "updatedAt": "2026-11-13T12:14:50.803Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -122824,7 +122824,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T11:45:11.111Z",
-   "updatedAt": "2026-11-13T12:10:36.014Z",
+   "updatedAt": "2026-11-13T12:14:32.121Z",
    "builtAt": "",
    "notes": [
     {
@@ -122868,7 +122868,16 @@
      "at": "2026-11-13T12:10:36.014Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-13T12:14:32.121Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "Brett: if anything stops working, the server/orchestrator fixes it automatically with no one asking. Detect builds marked running with no live session (killed exit 143, failed exit 1), reset and requeue them, retry failed sessions, keep every slot filled, FYI to phone per fix.",
@@ -122945,8 +122954,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T12:14:32.121Z",
      "note": "",
      "uid": "st-mwewxu2m0o2b46",
      "createdAt": "2026-11-13T11:48:17.662Z"
@@ -123233,7 +123242,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T11:55:36.143Z",
-   "updatedAt": "2026-11-13T12:14:17.115Z",
+   "updatedAt": "2026-11-13T12:14:49.132Z",
    "builtAt": "",
    "notes": [
     {
@@ -123330,8 +123339,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T12:14:49.132Z",
      "note": "",
      "uid": "st-mwex9tpr021aq0",
      "createdAt": "2026-11-13T11:57:37.071Z"

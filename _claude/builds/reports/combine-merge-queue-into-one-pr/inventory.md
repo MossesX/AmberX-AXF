@@ -394,3 +394,8 @@ hand in auto-land: `land.mjs hold <build> --why "Combine merge queue …"` (land
 that hold as `landHeld` and takes the PR out of the line-up at its next round ("held by hand in auto-land"), so none of
 them can land one at a time. Nothing is removed from the queue yet. #554, #556 and #571 keep running on their own.
 Released in s18 (`land.mjs release <build>`) once the combined PR replaces them.
+
+## Combined branch (s3)
+
+`combine/merge-queue-2026-11-13` from origin/main `501e246f8`, worktree `/root/axf-builds/combine-mq-2026-11-13`, the
+builds merge driver installed there (`builds-live.mjs install`). PR heads fetched as `pr/<n>`; all 13 match the table.

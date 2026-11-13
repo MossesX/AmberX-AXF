@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4383,
- "updatedAt": "2026-11-13T12:14:18.740Z",
+ "rev": 4385,
+ "updatedAt": "2026-11-13T12:14:50.803Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -185937,7 +185937,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T11:45:11.111Z",
-   "updatedAt": "2026-11-13T12:10:36.014Z",
+   "updatedAt": "2026-11-13T12:14:32.121Z",
    "builtAt": "",
    "notes": [
     {
@@ -185981,7 +185981,16 @@
      "at": "2026-11-13T12:10:36.014Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-13T12:14:32.121Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "Brett: if anything stops working, the server/orchestrator fixes it automatically with no one asking. Detect builds marked running with no live session (killed exit 143, failed exit 1), reset and requeue them, retry failed sessions, keep every slot filled, FYI to phone per fix.",
@@ -185998,12 +186007,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T12:09:25.180Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-auto-recover-stuck-builds--gina",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-13T12:10:26.240Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T11:48:17.662Z",
@@ -186015,7 +186024,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-13T12:10:26.240Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -186024,7 +186033,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-13T12:10:26.240Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -186100,12 +186109,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T12:14:32.121Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T11:48:17.662Z",
-     "updatedAt": "2026-11-13T11:48:17.662Z"
+     "updatedAt": "2026-11-13T12:14:32.351Z"
     },
     {
      "id": "s4",
@@ -186443,7 +186452,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T11:55:36.143Z",
-   "updatedAt": "2026-11-13T12:14:17.115Z",
+   "updatedAt": "2026-11-13T12:14:49.132Z",
    "builtAt": "",
    "notes": [
     {
@@ -186579,12 +186588,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T12:14:49.132Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T11:57:37.071Z",
-     "updatedAt": "2026-11-13T11:57:37.071Z"
+     "updatedAt": "2026-11-13T12:14:49.321Z"
     },
     {
      "id": "s3",
@@ -187114,7 +187123,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
