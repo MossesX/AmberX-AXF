@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4908,
- "updatedAt": "2026-11-13T20:07:44.978Z",
+ "rev": 4909,
+ "updatedAt": "2026-11-13T20:08:05.939Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -206461,6 +206461,55 @@
    "kind": "build",
    "planRef": "",
    "rev": 3,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "per-toolbar-settings-fix-failing-chrome",
+   "title": "Per-toolbar settings: fix failing chrome-settings check and land",
+   "category": "",
+   "detail": "Branch claude/per-instance-settings-picker-merge-main (worktree /root/axf-builds/per-instance-settings-picker-merge-main) now has origin/main merged (commit 617aa0a7d). The fixture clash in framework/spec/fixtures/chrome-settings.json was resolved by taking main's version and regenerating the fixtures, but framework/spec/check-chrome-settings.mts now fails with a deepStrictEqual. Find which expectation differs (likely the per-instance fields vs main's tab-rows fields), fix the rules or regenerate the fixtures so both features' expectations hold, run the full chrome-settings and theme/control checks, commit, push, then land on main. Feature: every individual toolbar, tab group, menu and dialog instance gets its own settings interface (including transparency) that changes only that instance.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-13T20:08:02.821Z",
+   "updatedAt": "2026-11-13T20:08:02.821Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "land the per-toolbar, tab group and menu settings",
+    "at": "2026-11-13T20:08:02.821Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 833
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
