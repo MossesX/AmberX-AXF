@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T11:27:37.717Z",
+ "updatedAt": "2026-11-13T11:27:55.919Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -122072,6 +122072,37 @@
      "createdAt": "2026-11-13T11:15:09.567Z"
     }
    ]
+  },
+  {
+   "id": "overlay-opens-pages-the-floating-toolbar-expands",
+   "title": "Overlay opens pages: the floating toolbar expands into a full browser window when Claude or Brett opens a page (open_url, console_show, voice), then shrinks back to the toolbar when the browser is closed; works from the background via draw-over-other-apps; follows the skin; full API and voice",
+   "category": "",
+   "detail": "",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-13T11:27:54.484Z",
+   "updatedAt": "2026-11-13T11:27:54.484Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I want it to pop up a full browser window if I want to, if I go to a page. But I want it to be just a floating toolbar unless you call it to open something. When you close the browser, it's just a floating toolbar again.",
+    "at": "2026-11-13T11:27:54.484Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }
