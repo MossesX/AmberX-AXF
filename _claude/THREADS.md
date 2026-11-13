@@ -786,10 +786,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 17:33 UTC · `fix-a-build-whose-session-finishes-its-phase-e-g-the-fable-steps-with-steps` note, removed (all) · build-rename
-- 2026-11-13 17:33 UTC · `fix-merge-conflicts-pr-557-professional` added (2 steps) (all) · build-rename
-- 2026-11-13 17:33 UTC · `fix-merge-conflicts-on-pr-557-professional-skins` note, removed (all) · build-rename
-- 2026-11-13 17:33 UTC · `fix-step-splitter-claude-exit-1-input` added (8 steps) (all) · build-rename
 - 2026-11-13 17:33 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` note, removed (all) · build-rename
 - 2026-11-13 17:34 UTC · `builds-get-console-token-banner-alert` added (0 steps) (all) · claude-voice
 - 2026-11-13 17:33 UTC · `focus-every-screen-console-open-console` added (3 steps) (all) · build-rename
@@ -1186,6 +1182,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 19:29 UTC · `console-android-app-thin-webview-wrapper` note (all) · orchestrator
 - 2026-11-13 19:29 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
 - 2026-11-13 19:30 UTC · `ui-manager-floating-window-to-select-any` note (all) · orchestrator
+- 2026-11-13 19:30 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-13 19:30 UTC · `console-app-part-4-console-side-safe` → running, note (all) · pipeline
+- 2026-11-13 19:30 UTC · `console-app-part-4-console-side-safe` branch claude/console-app-part-4-console-side-safe (all) · pipeline
+- 2026-11-13 19:30 UTC · `console-app-part-4-console-side-safe` note (all) · orchestrator
 
 ## Token passes (log)
 

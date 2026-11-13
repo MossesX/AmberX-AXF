@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4803,
- "updatedAt": "2026-11-13T19:30:30.648Z",
+ "rev": 4804,
+ "updatedAt": "2026-11-13T19:30:49.375Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -200000,7 +200000,7 @@
    "pr": "#636",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:12.834Z",
-   "updatedAt": "2026-11-13T19:29:58.993Z",
+   "updatedAt": "2026-11-13T19:30:32.174Z",
    "builtAt": "",
    "notes": [
     {
@@ -200038,6 +200038,10 @@
     {
      "text": "Headless run axf-orchestrator-settings-collapsible-split--earl-191118: brief only · start 12.9K tokens ($0.06) · cost $2.71 · 50 turns · 6 tools, MCP none",
      "at": "2026-11-13T19:29:58.993Z"
+    },
+    {
+     "text": "Headless run axf-orchestrator-settings-collapsible-split--joey: brief only · start 12.9K tokens ($0.00) · cost $1.86 · 25 turns · 6 tools, MCP none",
+     "at": "2026-11-13T19:30:32.174Z"
     }
    ],
    "approvals": [],
@@ -200277,7 +200281,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -200859,15 +200863,15 @@
    "title": "Console app part 4: console-side safe areas and wrapper support",
    "category": "",
    "detail": "Parallel part 4 of 4 of console-android-app-thin-webview-wrapper (parent). Web console side only (apps/console-web, framework).\n- viewport-fit=cover, and every top bar, banner, toolbar, menu bar and bottom nav padded with env(safe-area-inset-*) through framework tokens, so nothing is ever drawn under the clock, camera cutout or notification shade (Brett's screenshots: the AmberX title/search/menu sat under the status bar).\n- Detects when it's running in the wrapper (window.axfNative) and uses native features when present, falling back gracefully in a browser.\n- Auto-update path so the wrapper always loads the live console.\n- Tests, including a CI check for safe-area padding on top and bottom bars. Help, Shipped features.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/console-app-part-4-console-side-safe",
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:32.589Z",
-   "updatedAt": "2026-11-13T19:30:27.676Z",
+   "updatedAt": "2026-11-13T19:30:36.861Z",
    "builtAt": "",
    "notes": [
     {
@@ -200877,6 +200881,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"ce23f686-1f3b-4747-87f7-3f190096c76d\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-13T18:43:37.409Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-console-app-part-4-console-side-safe--rhonda.",
+     "at": "2026-11-13T19:30:33.638Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-console-app-part-4-console-side-safe--rhonda, own login copy)",
+     "at": "2026-11-13T19:30:36.861Z"
     }
    ],
    "approvals": [],
@@ -200896,12 +200908,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T18:41:34.928Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-console-app-part-4-console-side-safe--rhonda",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-13T19:30:32.539Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T18:43:37.409Z",
@@ -200911,9 +200923,9 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"ce23f686-1f3b-4747-87f7-3f190096c76d\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-13T19:30:32.539Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -200922,7 +200934,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-13T19:30:32.539Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -201094,7 +201106,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -201118,7 +201130,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:46.237Z",
-   "updatedAt": "2026-11-13T18:46:01.392Z",
+   "updatedAt": "2026-11-13T19:30:46.384Z",
    "builtAt": "",
    "notes": [
     {
@@ -201138,8 +201150,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "console-app-part-2-native-floating-2",
+    "brief": "# Build: console-app-part-2-native-floating-2\n\n## Brett said (verbatim)\nAt: 2026-11-13T18:41:46.237Z\n> split the console wrapper so it runs on four slots at the same time\n\n## What to build\nContinue build \"Console app part 2: native floating overlay and approvals bar\" (console-app-part-2-native-floating-2) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-13 18:41):\n\"split the console wrapper so it runs on four slots at the same time\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (1 left, ~10 min):\n[ ] s1 (~10 min) Parallel part 2 of 4 of console-android-app-thin-webview-wrapper (parent). Builds only in the wrapper's Android module, following the shell contract (package, module layout, window.axfNative bridge names) from the parent build.\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step console-app-part-2-native-floating-2 <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link console-app-part-2-native-floating-2 --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step console-app-part-2-native-floating-2 <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note console-app-part-2-native-floating-2 \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -201345,7 +201357,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
