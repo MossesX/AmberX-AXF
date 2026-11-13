@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4820,
- "updatedAt": "2026-11-13T19:37:08.333Z",
+ "rev": 4821,
+ "updatedAt": "2026-11-13T19:37:28.548Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -203528,6 +203528,55 @@
    ],
    "order": {
     "all": 820
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "per-instance-settings-picker-merge-main",
+   "title": "Per-instance settings picker: merge main and land",
+   "category": "",
+   "detail": "Branch claude/per-instance-settings-window-picker clashed with main in apps/console-web/axf.lock.json, apps/console-web/src/axf/react/components/Overlays.tsx and framework/react/components/Overlays.tsx (merge aborted, main untouched). Merge origin/main and keep both sides' Overlays changes; edit framework first and re-bake the console copy, then regenerate axf.lock.json. Brett: every instance of every tab group, application menu, navigation menu, toolbar and dialog gets its own settings interface (including its own transparency) that changes only that one. Run tests, push, land on main.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-13T19:37:14.557Z",
+   "updatedAt": "2026-11-13T19:37:14.557Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I definitely need that; every tab group, application menu, navigation menu, toolbar can have its own settings interface that changes only it, and they all have transparency",
+    "at": "2026-11-13T19:37:14.557Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 821
    },
    "kind": "build",
    "planRef": "",

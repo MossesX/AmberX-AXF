@@ -5343,6 +5343,18 @@
    "from": "",
    "addenda": []
   },
+  "per-instance-settings-picker-merge-main": {
+   "said": "I definitely need that; every tab group, application menu, navigation menu, toolbar can have its own settings interface that changes only it, and they all have transparency",
+   "at": "2026-11-13T19:37:14.557Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "per-instance-settings-window-picker": {
    "said": "every tab group and toolbar has its own settings interface, and within it you can select our settings interface",
    "at": "2026-11-13T17:46:43.480Z",
