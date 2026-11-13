@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { useRuntime } from '../AxfProvider';
 import { Icon } from '../components/Icon';
 import type { TerminalLine } from '../../core/terminal';
+import { controlSlug } from '../controlTargets';
 
 /**
  * The output terminal pane: every install / import / hot-swap / fallback line, newest at the bottom, auto-scrolling
@@ -21,13 +22,13 @@ export function OutputTerminalPane({ channel, height }: { channel?: string | nul
   return (
     <div className="fx-terminal" style={height ? { height } : undefined}>
       <div className="fx-terminal__bar" role="toolbar" aria-label="Output channels">
-        <button className={`fx-chip ${filter === null ? 'is-selected' : ''}`} onClick={() => setFilter(null)}>all</button>
-        {term.channels().map((c) => <button key={c} className={`fx-chip ${filter === c ? 'is-selected' : ''}`} onClick={() => setFilter(c)}>{c}</button>)}
+        <button data-axf-target="button:terminal.filter-all" className={`fx-chip ${filter === null ? 'is-selected' : ''}`} onClick={() => setFilter(null)}>all</button>
+        {term.channels().map((c) => <button key={c} data-axf-target={`button:terminal.filter-${controlSlug(c)}`} className={`fx-chip ${filter === c ? 'is-selected' : ''}`} onClick={() => setFilter(c)}>{c}</button>)}
         <span className="fx-tabgroup__spacer" />
         <span className="fx-badge">{lines.length}</span>
-        <button className={`fx-iconbtn ${follow ? 'is-active' : ''}`} title={follow ? 'Following output' : 'Resume auto-scroll'} onClick={() => setFollow(true)}><Icon name={follow ? 'chevron-down' : 'pause'} /></button>
-        <button className="fx-iconbtn" title="Copy output" onClick={() => navigator.clipboard?.writeText(term.export()).then(() => rt.toast('Terminal output copied.'))}><Icon name="copy" /></button>
-        <button className="fx-iconbtn" title="Clear" onClick={() => term.clear()}><Icon name="trash" /></button>
+        <button data-axf-target="button:terminal.follow" className={`fx-iconbtn ${follow ? 'is-active' : ''}`} title={follow ? 'Following output' : 'Resume auto-scroll'} onClick={() => setFollow(true)}><Icon name={follow ? 'chevron-down' : 'pause'} /></button>
+        <button data-axf-target="button:terminal.copy" className="fx-iconbtn" title="Copy output" onClick={() => navigator.clipboard?.writeText(term.export()).then(() => rt.toast('Terminal output copied.'))}><Icon name="copy" /></button>
+        <button data-axf-target="button:terminal.clear" className="fx-iconbtn" title="Clear" onClick={() => term.clear()}><Icon name="trash" /></button>
       </div>
       <div className="fx-terminal__lines" ref={ref} onScroll={onScroll}>
         {lines.length === 0 && <div className="fx-muted">— no output yet —</div>}
