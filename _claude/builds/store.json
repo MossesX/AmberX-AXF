@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4434,
- "updatedAt": "2026-11-13T12:32:12.347Z",
+ "rev": 4435,
+ "updatedAt": "2026-11-13T12:32:24.699Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -187870,12 +187870,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T12:31:20.005Z",
-   "updatedAt": "2026-11-13T12:31:22.120Z",
+   "updatedAt": "2026-11-13T12:32:23.427Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-13T12:31:22.120Z"
+    },
+    {
+     "text": "Brett: also put the same Assets menu in the application menu (top menu bar): Assets > Visible assets / Hidden assets, same icons, type colours, highlight, as the context menu.",
+     "at": "2026-11-13T12:32:23.427Z"
     }
    ],
    "approvals": [],
@@ -187923,7 +187927,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
