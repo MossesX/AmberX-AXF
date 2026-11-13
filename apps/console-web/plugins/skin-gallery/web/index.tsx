@@ -18,6 +18,7 @@ export const plugin: AxfWebLibrary = {
     void loadSettings();
   },
   views: { 'skin-gallery': { title: 'Skins', icon: 'palette', render: () => <SkinsScreen /> } },
+  // deep links: console_open {kind: screen, target: skin-gallery, focus: skin/<id> | scope/<scope> | preview/<id>?view=phone} (web/link.ts)
   nav: { label: 'Plugins', items: [{ id: 'skin-gallery', label: 'Skins', icon: 'palette', view: 'skin-gallery' }] },
   banners: [{ id: 'skin-gallery', label: 'Quick skin switcher', icon: 'palette', settingsTab: 'skin-gallery', order: 8, render: () => <QuickSwitch /> }],
   settingsTabs: [{ id: 'skin-gallery', label: 'Skins', icon: 'palette', order: 90, parent: 'plugins' }],

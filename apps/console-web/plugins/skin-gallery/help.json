@@ -6,25 +6,83 @@
   "version": "0.1.0",
   "description": "The Skins plugin's Help mode entries (help@1).",
   "author": "Brett",
-  "tags": ["help"],
+  "tags": [
+    "help"
+  ],
   "data": {
     "scope": "plugin:skin-gallery",
     "entries": [
-      { "target": "view:skin-gallery", "title": "Skins", "text": "Every skin in one gallery. Tap one to preview it live, then Use skin to switch the scope you picked: the whole hub, this app, one screen or one plugin.", "kind": "screen" },
-      { "target": "skin-gallery.scope", "title": "Where", "text": "Which level the buttons change: the whole hub, this app, one screen or one plugin. A smaller scope wins over a bigger one." },
-      { "target": "skin-gallery.view", "title": "Desktop or phone", "text": "Shows the preview at desktop or phone width. Nothing is saved until you tap Use skin." },
-      { "target": "skin-gallery.use", "title": "Use skin", "text": "Switches the picked scope to the skin you are previewing. Undo puts it back." },
-      { "target": "skin-gallery.back", "title": "Back to skin", "text": "Drops every change made on top of the skin at this scope, so it shows as it ships. The skin stays." },
-      { "target": "skin-gallery.restore", "title": "Restore to Default", "text": "Puts this scope back to its default: no hub-wide skin, the app's saved look, or the screen / plugin following its parent. Undo puts it back." },
-      { "target": "skin-gallery.undo", "title": "Undo", "text": "Takes back the last Use, Back or Restore. Only one step is kept." },
-      { "target": "settings-tab:skin-gallery", "title": "Skins settings", "text": "Whether the banner chip shows, the default scope, how long Undo stays offered and the preview size; install and uninstall. Settings → Plugins → Skins." }
+      {
+        "target": "view:skin-gallery",
+        "title": "Skins",
+        "text": "Every skin in one gallery. Tap one to preview it live, then Use skin to switch the scope you picked: the whole hub, this app, one screen or one plugin.",
+        "kind": "screen"
+      },
+      {
+        "target": "skin-gallery.scope",
+        "title": "Where",
+        "text": "Which level the buttons change: the whole hub, this app, one screen or one plugin. A smaller scope wins over a bigger one."
+      },
+      {
+        "target": "skin-gallery.view",
+        "title": "Desktop or phone",
+        "text": "Shows the preview at desktop or phone width. Nothing is saved until you tap Use skin."
+      },
+      {
+        "target": "skin-gallery.use",
+        "title": "Use skin",
+        "text": "Switches the picked scope to the skin you are previewing. Undo puts it back."
+      },
+      {
+        "target": "skin-gallery.back",
+        "title": "Back to skin",
+        "text": "Drops every change made on top of the skin at this scope, so it shows as it ships. The skin stays."
+      },
+      {
+        "target": "skin-gallery.restore",
+        "title": "Restore to Default",
+        "text": "Puts this scope back to its default: no hub-wide skin, the app's saved look, or the screen / plugin following its parent. Undo puts it back."
+      },
+      {
+        "target": "skin-gallery.undo",
+        "title": "Undo",
+        "text": "Takes back the last Use, Back or Restore. Only one step is kept."
+      },
+      {
+        "target": "settings-tab:skin-gallery",
+        "title": "Skins settings",
+        "text": "Whether the banner chip shows, the default scope, how long Undo stays offered and the preview size; install and uninstall. Settings → Plugins → Skins."
+      },
+      {
+        "target": "skin-gallery.links",
+        "title": "Open Skins from anywhere",
+        "text": "console_open {kind: screen, target: skin-gallery} opens the gallery; add focus skin/<id> to pick a skin, scope/<scope> (hub, app, ui:<view>, plugin:<id>) to open the scope picker there, or preview/<id>?view=phone for the phone preview. The hash form is #/skin-gallery?skin=<id>&scope=<scope>&view=phone. GET /api/plugins/skin-gallery/open returns the link."
+      },
+      {
+        "target": "skin-gallery.grid",
+        "title": "Gallery",
+        "text": "Every skin: its icon pack, how many asset types it covers, and where it is in use. Tap one to preview it."
+      }
     ],
     "intros": [
-      { "screen": "skin-gallery", "title": "Skins", "steps": [
-        { "say": "Pick where to switch: the hub, this app, one screen or one plugin.", "target": "skin-gallery.scope" },
-        { "say": "Tap a skin to preview it, on desktop or phone width.", "target": "skin-gallery.grid" },
-        { "say": "Use skin switches it. Undo takes it back.", "target": "skin-gallery.use" }
-      ] }
+      {
+        "screen": "skin-gallery",
+        "title": "Skins",
+        "steps": [
+          {
+            "say": "Pick where to switch: the hub, this app, one screen or one plugin.",
+            "target": "skin-gallery.scope"
+          },
+          {
+            "say": "Tap a skin to preview it, on desktop or phone width.",
+            "target": "skin-gallery.grid"
+          },
+          {
+            "say": "Use skin switches it. Undo takes it back.",
+            "target": "skin-gallery.use"
+          }
+        ]
+      }
     ]
   }
 }

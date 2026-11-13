@@ -118,7 +118,13 @@ for bad in ({"undoSeconds": 0}, {"defaultScope": "x:y"}, {"previewView": "tv"}, 
 check("refused settings change nothing", c.get("/p/settings").json()["result"]["undoSeconds"] == 20)
 
 r = c.get("/p/open", params={"skin": skin, "view": "phone"}).json()
-check("phone deep link", "view=phone" in r["result"]["link"], r)
+check("phone deep link", "view=phone" in r["result"]["link"] and r["result"]["focus"] == f"preview/{skin}?view=phone", r)
+r = c.get("/p/open", params={"skin": skin}).json()
+check("skin deep link", r["result"]["focus"] == f"skin/{skin}", r)
+r = c.get("/p/open", params={"scope": "plugin:theme-manager"}).json()
+check("scope deep link", r["result"]["focus"] == "scope/plugin:theme-manager", r)
+r = c.get("/p/open").json()
+check("gallery deep link", "focus" not in r["result"] and r["result"]["target"] == "skin-gallery", r)
 r = c.get("/p/open", params={"skin": skin, "scope": "hub"}).json()
 check("deep link", r["result"]["target"] == "skin-gallery" and f"skin={skin}" in r["result"]["link"], r)
 
