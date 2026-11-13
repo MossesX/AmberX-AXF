@@ -786,7 +786,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 17:36 UTC · `professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e` note, removed (all) · build-rename
 - 2026-11-13 17:36 UTC · `projects-own-everything-per-project` added (5 steps) (all) · build-rename
 - 2026-11-13 17:36 UTC · `projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone` note, removed (all) · build-rename
 - 2026-11-13 17:37 UTC · `remove-console-s-own-notes-manager` added (3 steps) (all) · build-rename
@@ -1186,6 +1185,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 19:32 UTC · `console-app-part-4-console-side-safe` branch claude/console-app-part-4-console-side-safe (all) · builds-live
 - 2026-11-13 19:33 UTC · `console-app-part-4-console-side-safe` s2 done (all) · orchestrator
 - 2026-11-13 19:34 UTC · `land-rename-long-builds-resolve-clash` note (all) · orchestrator
+- 2026-11-13 19:34 UTC · `land-rename-long-builds-resolve-clash` note (all) · builds-live
 
 ## Token passes (log)
 
