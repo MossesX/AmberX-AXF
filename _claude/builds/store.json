@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4710,
- "updatedAt": "2026-11-13T18:51:43.150Z",
+ "rev": 4711,
+ "updatedAt": "2026-11-13T18:51:55.548Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -199469,7 +199469,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:38:53.122Z",
-   "updatedAt": "2026-11-13T18:50:16.663Z",
+   "updatedAt": "2026-11-13T18:51:35.092Z",
    "builtAt": "",
    "notes": [
     {
@@ -199503,6 +199503,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-console-android-app-thin-webview-wrapper--lenny, own login copy)",
      "at": "2026-11-13T18:43:48.669Z"
+    },
+    {
+     "text": "Brett: instant wake. Today a voice/MCP command waits ~12-24 s because Android holds Chrome back and the console only gets it after reconnecting. The wrapper must keep a persistent connection in a foreground service (console-command socket alive in the background, battery-optimisation exemption) so commands open the screen instantly, bringing the app to the front with no notification tap. Cache the console shell (service worker or local assets) so it paints in under a second.",
+     "at": "2026-11-13T18:51:35.092Z"
     }
    ],
    "approvals": [],
@@ -199793,7 +199797,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
