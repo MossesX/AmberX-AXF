@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5056,
- "updatedAt": "2026-11-13T21:27:20.253Z",
+ "rev": 5057,
+ "updatedAt": "2026-11-13T21:27:31.131Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -208963,7 +208963,7 @@
    "pr": "#663",
    "priority": "P0",
    "createdAt": "2026-11-13T21:13:28.338Z",
-   "updatedAt": "2026-11-13T21:26:54.393Z",
+   "updatedAt": "2026-11-13T21:27:14.675Z",
    "builtAt": "",
    "notes": [
     {
@@ -209019,7 +209019,30 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwfhmdio01b2aw",
+     "title": "",
+     "text": "Repo exports only for repo-registered profiles; remove _claude/builds/profiles/test-sandbox/; check-profiles.mjs names the folder origin; builds-store and builds-live checks green",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T21:27:14.676Z",
+     "updatedAt": "2026-11-13T21:27:14.928Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -209028,12 +209051,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-13T21:27:14.676Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

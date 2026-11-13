@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T21:27:20.253Z",
+ "updatedAt": "2026-11-13T21:27:31.131Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -134924,7 +134924,7 @@
    "pr": "#663",
    "priority": "P0",
    "createdAt": "2026-11-13T21:13:28.338Z",
-   "updatedAt": "2026-11-13T21:26:54.393Z",
+   "updatedAt": "2026-11-13T21:27:14.675Z",
    "builtAt": "",
    "notes": [
     {
@@ -134958,7 +134958,27 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Repo exports only for repo-registered profiles; remove _claude/builds/profiles/test-sandbox/; check-profiles.mjs names the folder origin; builds-store and builds-live checks green",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfhmdio01b2aw",
+     "createdAt": "2026-11-13T21:27:14.676Z"
+    }
+   ]
   }
  ]
 }
