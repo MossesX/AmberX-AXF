@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4930,
- "updatedAt": "2026-11-13T20:15:15.127Z",
+ "rev": 4931,
+ "updatedAt": "2026-11-13T20:15:31.304Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -204924,7 +204924,7 @@
    "title": "Full voice control: merge main and land",
    "category": "",
    "detail": "Branch claude/full-voice-api-control-type-fields-press clashed with main only in framework/catalog/status.json (merge aborted, main untouched). Merge origin/main and keep both sides' catalog entries (additive), run tests, push, then land on main.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -204933,7 +204933,7 @@
    "priority": "P0",
    "createdAt": "2026-11-13T19:53:48.014Z",
    "updatedAt": "2026-11-13T20:14:59.377Z",
-   "builtAt": "",
+   "builtAt": "2026-11-13T20:14:59.377Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -205067,12 +205067,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T20:14:35.079Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T19:54:58.989Z",
-     "updatedAt": "2026-11-13T19:54:58.989Z"
+     "updatedAt": "2026-11-13T20:14:35.356Z"
     }
    ],
    "profiles": [

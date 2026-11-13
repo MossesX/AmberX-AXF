@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T20:15:15.127Z",
+ "updatedAt": "2026-11-13T20:15:31.304Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -132067,7 +132067,7 @@
    "title": "Full voice control: merge main and land",
    "category": "",
    "detail": "Branch claude/full-voice-api-control-type-fields-press clashed with main only in framework/catalog/status.json (merge aborted, main untouched). Merge origin/main and keep both sides' catalog entries (additive), run tests, push, then land on main.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -132076,7 +132076,7 @@
    "priority": "P0",
    "createdAt": "2026-11-13T19:53:48.014Z",
    "updatedAt": "2026-11-13T20:14:59.377Z",
-   "builtAt": "",
+   "builtAt": "2026-11-13T20:14:59.377Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -132168,8 +132168,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T20:14:35.079Z",
      "note": "",
      "uid": "st-mwfebpyl03zwem",
      "createdAt": "2026-11-13T19:54:58.989Z"
