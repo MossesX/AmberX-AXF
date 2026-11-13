@@ -33,6 +33,7 @@ for Brett's go), `blocked` (needs Brett), `failed`, `stopped` (cut off: out of c
 ## Active
 
 | Thread | State | Branch | PR | Queued / next | Updated |
+| Tab groups: choose how many rows (`tab-groups-choose-how-many-rows-tabs`, Opus; Brett Nov 13: "you can say three and it will list three rows of tabs"): every tab group has a per-row Rows setting (1 default, 2–6, Auto), the tabs share the rows evenly with no sideways scrolling; `chrome.set:tab-group:<id>:rows:<n>`, `tabs.rows:<name>:<n>`, voice "make the settings tabs three rows" | review | `claude/tab-groups-choose-how-many-rows-tabs` | #623 | UI Review (shots local only: no console token in the session) | 2026-11-13 |
 | Transparency token on every dialog and settings window (`transparency-token-works-every-dialog`, Fable s1, Opus s2–s4; Brett Nov 13: "how come I can't see the transparency of a settings interface dialog? Everything needs to have a token"): style theme `opacityDialog` / `opacitySettings` / `opacityPanel` / `opacityMenu` / `opacityToolbar` / `opacityBanner` (default 1) → `--fx-opacity-<kind>` + frosted `--fx-backdrop-<kind>`; every surface root reads its own; the tab group inside a settings window no longer paints over it; per window Window settings → Background + `windows.background:<id>:<v>`; check-theme rule *surface* | PR open | `claude/transparency-token-works-every-dialog` | (see build) | Report `_claude/builds/reports/transparency-token-works-every-dialog.md`. Kotlin twin deferred (PORTING.md) | 2026-11-13 |
 | Full API and voice control of the console (`full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu`, Fable s1–s8 then Opus s9–s31): console-control@1 gives every screen, tab, setting, button, function, plugin, grid row and build step an address, driven the same through REST `/api/console-control`, the `console_control_*` MCP tools, `axf console …` and AmberX voice; plugin on/off with effects; Ctrl+K search palette; coverage ratchet in CI; e2e 23 checks, parity 14 cases across the four channels | phase 2 done; palette waiting in UI Review (`r-20261113-3lor001`) | `claude/full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` | #556 | merge queue; Kotlin twin deferred (PORTING.md). Report `_claude/builds/reports/full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu.md` | 2026-11-13 |
 | Per-instance settings interface picker (`per-instance-settings-window-picker`, Opus, phase 1; Brett Nov 13: "every tab group and toolbar has its own settings interface, and within it you can select our settings interface"): every tab group / toolbar / banner / nav / menu bar picks its own settings interface inside its own dialog (`axf.chrome.<type>.<instance>.interface`, shared default preselected), action `chrome.instance-interface` (REST, MCP, CLI, voice); workspace toolbars + All toolbars list open each toolbar's own dialog | phase 1 done (s1–s3); PR draft until UI Review shots | `claude/per-instance-settings-window-picker` | [#622](https://github.com/MossesX/AmberX-AXF/pull/622) | Desktop + phone shots of a toolbar and a tab-group dialog to UI Review (Playwright not installed on the VPS). Report `_claude/builds/reports/per-instance-settings-window-picker.md` | 2026-11-13 |
@@ -789,75 +790,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 18:08 UTC · `per-instance-settings-window-picker` note (all) · orchestrator
-- 2026-11-13 18:10 UTC · `all-settings-interfaces-open-floating` → running, note (all) · pipeline
-- 2026-11-13 18:10 UTC · `all-settings-interfaces-open-floating` branch claude/all-settings-interfaces-open-floating (all) · pipeline
-- 2026-11-13 18:10 UTC · `all-settings-interfaces-open-floating` note (all) · orchestrator
-- 2026-11-13 18:08 UTC · `tab-groups-choose-how-many-rows-tabs` s2 done (all) · orchestrator
-- 2026-11-13 18:11 UTC · `tab-groups-choose-how-many-rows-tabs` PR #623 (all) · builds-live
-- 2026-11-13 18:12 UTC · `quick-settings-pinned-collapsible-pane` → running, note (all) · pipeline
-- 2026-11-13 18:12 UTC · `quick-settings-pinned-collapsible-pane` branch claude/quick-settings-pinned-collapsible-pane (all) · pipeline
-- 2026-11-13 18:12 UTC · `quick-settings-pinned-collapsible-pane` note (all) · orchestrator
-- 2026-11-13 18:12 UTC · `tab-groups-choose-how-many-rows-tabs` s3 done, → built (all) · orchestrator
-- 2026-11-13 18:12 UTC · `chrome-settings-actually-apply-toolbars` s2 done (all) · orchestrator
-- 2026-11-13 18:12 UTC · `tab-groups-choose-how-many-rows-tabs` note (all) · orchestrator
-- 2026-11-13 18:13 UTC · `tab-groups-choose-how-many-rows-tabs` note (all) · orchestrator
-- 2026-11-13 18:13 UTC · `chrome-settings-actually-apply-toolbars` PR #625 (all) · builds-live
-- 2026-11-13 18:13 UTC · `new-asset-type-animated-expanding-row` added (0 steps) (all) · console
-- 2026-11-13 18:13 UTC · `new-asset-type-animated-expanding-row` → queued, note (all) · console
-- 2026-11-13 18:13 UTC · `vps-builds-get-console-token-ui-review` added (0 steps) (all) · console
-- 2026-11-13 18:13 UTC · `vps-builds-get-console-token-ui-review` → queued, note (all) · console
-- 2026-11-13 18:14 UTC · `chrome-settings-actually-apply-toolbars` note (all) · orchestrator
-- 2026-11-13 18:14 UTC · `chrome-settings-actually-apply-toolbars` note (all) · builds-live
-- 2026-11-13 18:14 UTC · `vps-builds-get-console-token-ui-review` added (0 steps) (all) · builds-live
-- 2026-11-13 18:13 UTC · `chrome-settings-actually-apply-toolbars` note (all) · orchestrator
-- 2026-11-13 18:13 UTC · `chrome-settings-actually-apply-toolbars` s3 done, → built (all) · orchestrator
-- 2026-11-13 18:14 UTC · `decision-dialog-ui-review-other` added (0 steps) (all) · console
-- 2026-11-13 18:14 UTC · `new-asset-type-animated-expanding-row` note (all) · orchestrator
-- 2026-11-13 18:14 UTC · `decision-dialog-ui-review-other` → queued, note (all) · console
-- 2026-11-13 18:15 UTC · `prompting-engine-control-panel-to-create` added (0 steps) (all) · console
-- 2026-11-13 18:16 UTC · `prompting-engine-control-panel-events` added (0 steps) (all) · console
-- 2026-11-13 18:16 UTC · `prompting-engine-control-panel-events` → queued, note (all) · console
-- 2026-11-13 18:16 UTC · `vps-builds-get-console-token-ui-review` note (all) · orchestrator
-- 2026-11-13 18:16 UTC · `vps-builds-get-console-token-ui-review` → running, note (all) · pipeline
-- 2026-11-13 18:16 UTC · `vps-builds-get-console-token-ui-review` branch claude/vps-builds-get-console-token-ui-review (all) · pipeline
-- 2026-11-13 18:17 UTC · `vps-builds-get-console-token-ui-review` note (all) · orchestrator
-- 2026-11-13 18:17 UTC · `full-voice-api-control-type-fields-press` s6 done (all) · orchestrator
-- 2026-11-13 18:17 UTC · `new-asset-type-animated-expanding-row` → running, note (all) · pipeline
-- 2026-11-13 18:17 UTC · `new-asset-type-animated-expanding-row` branch claude/new-asset-type-animated-expanding-row (all) · pipeline
-- 2026-11-13 18:17 UTC · `new-asset-type-animated-expanding-row` note (all) · orchestrator
-- 2026-11-13 18:18 UTC · `vps-builds-get-console-token-ui-review` s1 done, → running (all) · orchestrator
-- 2026-11-13 18:18 UTC · `decision-dialog-ui-review-other` note (all) · orchestrator
-- 2026-11-13 18:18 UTC · `decision-dialog-ui-review-other` note (all) · builds-live
-- 2026-11-13 18:19 UTC · `prompting-engine-control-panel-events` note (all) · claude-voice
-- 2026-11-13 18:19 UTC · `full-voice-api-control-type-fields-press` s7 done (all) · orchestrator
-- 2026-11-13 18:19 UTC · `prompting-engine-control-panel-to-create` note (all) · builds-live
-- 2026-11-13 18:19 UTC · `prompting-engine-control-panel-to-create` note (all) · orchestrator
-- 2026-11-13 18:19 UTC · `prompting-engine-control-panel-events` note (all) · orchestrator
-- 2026-11-13 18:19 UTC · `decision-dialog-ui-review-other` → running, note (all) · pipeline
-- 2026-11-13 18:19 UTC · `decision-dialog-ui-review-other` branch claude/decision-dialog-ui-review-other (all) · pipeline
-- 2026-11-13 18:20 UTC · `full-voice-api-control-type-fields-press` PR #627 (all) · builds-live
-- 2026-11-13 18:20 UTC · `full-voice-api-control-type-fields-press` s8 done, → built (all) · orchestrator
-- 2026-11-13 18:20 UTC · `decision-dialog-ui-review-other` note (all) · orchestrator
-- 2026-11-13 18:20 UTC · `decision-dialog-ui-review-other` note (all) · foreign-write
-- 2026-11-13 18:20 UTC · `toolbar-widgets-attach-any-banner-style` added (0 steps) (all) · console
-- 2026-11-13 18:20 UTC · `toolbar-widgets-attach-any-banner-style` → queued, note (all) · console
-- 2026-11-13 18:20 UTC · `full-voice-api-control-type-fields-press` note (all) · orchestrator
-- 2026-11-13 18:20 UTC · `all-settings-interfaces-open-floating` s1 done, → running (all) · orchestrator
-- 2026-11-13 18:20 UTC · `decision-dialog-ui-review-other` note (all) · pipeline
-- 2026-11-13 18:21 UTC · `decision-dialog-ui-review-other` → running, note (all) · builds-live
-- 2026-11-13 18:21 UTC · `toolbar-widgets-attach-any-banner-style` note (all) · orchestrator
-- 2026-11-13 18:21 UTC · `vps-builds-get-console-token-ui-review` s2 done (all) · orchestrator
-- 2026-11-13 18:21 UTC · `prompting-engine-control-panel-events` → running, note (all) · pipeline
-- 2026-11-13 18:21 UTC · `prompting-engine-control-panel-events` branch claude/prompting-engine-control-panel-events (all) · pipeline
-- 2026-11-13 18:22 UTC · `prompting-engine-control-panel-events` note (all) · orchestrator
-- 2026-11-13 18:23 UTC · `vps-builds-get-console-token-ui-review` s3 done (all) · orchestrator
-- 2026-11-13 18:23 UTC · `all-settings-interfaces-open-floating` s2 done (all) · orchestrator
-- 2026-11-13 18:25 UTC · `decision-dialog-ui-review-other` note (all) · orchestrator
-- 2026-11-13 18:26 UTC · `decision-dialog-ui-review-other` → pending, note (all) · pipeline
-- 2026-11-13 18:26 UTC · `all-settings-interfaces-open-floating` note (all) · claude-voice
-- 2026-11-13 18:26 UTC · `transparency-token-works-every-dialog` added (0 steps) (all) · console
-- 2026-11-13 18:26 UTC · `transparency-token-works-every-dialog` → queued, note (all) · console
 - 2026-11-13 18:26 UTC · `vps-builds-get-console-token-ui-review` s4 done (all) · orchestrator
 - 2026-11-13 18:27 UTC · `transparency-token-works-every-dialog` note (all) · claude-voice
 - 2026-11-13 18:28 UTC · `transparency-token-works-every-dialog` note (all) · orchestrator
@@ -1189,6 +1121,75 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 19:49 UTC · `skin-config-panel-merge-main-and-land` note (all) · orchestrator
 - 2026-11-13 19:50 UTC · `skin-animations-swatches-skin-switch` note (all) · orchestrator
 - 2026-11-13 19:51 UTC · `skin-animations-swatches-skin-switch` note (all) · builds-live
+- 2026-11-13 19:51 UTC · `land-drive-live-console-first-resolve` s2 done (all) · orchestrator
+- 2026-11-13 19:51 UTC · `skin-animations-animated-colour-swatches` note (all) · orchestrator
+- 2026-11-13 19:51 UTC · `skin-config-panel-merge-main-and-land` → queued, note (all) · pipeline
+- 2026-11-13 19:48 UTC · `skin-axhub-override-switch-greyed-out` s6 done (all) · orchestrator
+- 2026-11-13 19:52 UTC · `land-drive-live-console-first-resolve` s3 done, → built (all) · orchestrator
+- 2026-11-13 19:52 UTC · `land-drive-live-console-first-resolve` note (all) · orchestrator
+- 2026-11-13 19:52 UTC · `skin-axhub-override-switch-greyed-out` s7 done (all) · orchestrator
+- 2026-11-13 19:53 UTC · `land-drive-live-console-first-resolve` → queued, note (all) · pipeline
+- 2026-11-13 19:53 UTC · `land-drive-live-console-first-resolve` → running, note (all) · pipeline
+- 2026-11-13 19:53 UTC · `land-drive-live-console-first-resolve` note (all) · orchestrator
+- 2026-11-13 19:53 UTC · `land-drive-live-console-first-resolve` note (all) · orchestrator
+- 2026-11-13 19:53 UTC · `full-voice-control-merge-main-and-land` added (0 steps) (all) · console
+- 2026-11-13 19:53 UTC · `full-voice-control-merge-main-and-land` → queued, note (all) · console
+- 2026-11-13 19:54 UTC · `demo-pipelines-guided-walkthrough-live` s1 done, → running (all) · orchestrator
+- 2026-11-13 19:54 UTC · `land-drive-live-console-first-resolve` note (all) · builds-live
+- 2026-11-13 19:54 UTC · `full-voice-control-merge-main-and-land` added (0 steps) (all) · builds-live
+- 2026-11-13 19:54 UTC · `skin-axhub-override-switch-greyed-out` note (all) · orchestrator
+- 2026-11-13 19:53 UTC · `per-instance-settings-picker-merge-main` s1 done (all) · orchestrator
+- 2026-11-13 19:54 UTC · `demo-pipelines-guided-walkthrough-live` s2 done (all) · orchestrator
+- 2026-11-13 19:55 UTC · `per-instance-settings-picker-merge-main` note (all) · orchestrator
+- 2026-11-13 19:55 UTC · `per-instance-settings-picker-merge-main` s2 done (all) · orchestrator
+- 2026-11-13 19:56 UTC · `per-instance-settings-picker-merge-main` PR #642 (all) · builds-live
+- 2026-11-13 19:54 UTC · `full-voice-control-merge-main-and-land` note (all) · orchestrator
+- 2026-11-13 19:55 UTC · `skin-axhub-override-switch-greyed-out` → pending, note (all) · pipeline
+- 2026-11-13 19:55 UTC · `land-drive-live-console-first-resolve` note (all) · pipeline
+- 2026-11-13 19:55 UTC · `icon-map-icon-packs-every-icon-badge-app` added (0 steps) (all) · console
+- 2026-11-13 19:55 UTC · `skin-config-panel-merge-main-and-land` → running, note (all) · pipeline
+- 2026-11-13 19:55 UTC · `icon-map-icon-packs-every-icon-badge-app` → queued, note (all) · console
+- 2026-11-13 19:55 UTC · `skin-config-panel-merge-main-and-land` note (all) · orchestrator
+- 2026-11-13 19:56 UTC · `per-instance-settings-picker-merge-main` s3 done, → built (all) · orchestrator
+- 2026-11-13 19:56 UTC · `skins-plugin-merge-main-and-land` → running, note (all) · pipeline
+- 2026-11-13 19:56 UTC · `skins-plugin-merge-main-and-land` branch claude/skins-plugin-merge-main-and-land (all) · pipeline
+- 2026-11-13 19:56 UTC · `skins-plugin-merge-main-and-land` note (all) · orchestrator
+- 2026-11-13 19:56 UTC · `per-instance-settings-picker-merge-main` note (all) · orchestrator
+- 2026-11-13 19:57 UTC · `grids-get-their-own-full-token-set` added (0 steps) (all) · console
+- 2026-11-13 19:57 UTC · `grid-token-set-colours-hover-selected` added (0 steps) (all) · console
+- 2026-11-13 19:57 UTC · `own-token-sets-for-grids-and-tab-groups` added (0 steps) (all) · console
+- 2026-11-13 19:57 UTC · `own-token-sets-for-grids-and-tab-groups` → queued, note (all) · console
+- 2026-11-13 19:58 UTC · `icon-map-icon-packs-every-icon-badge-app` note (all) · orchestrator
+- 2026-11-13 19:58 UTC · `per-instance-settings-picker-merge-main` note (all) · pipeline
+- 2026-11-13 19:58 UTC · `own-token-sets-for-grids-and-tab-groups` note (all) · claude-voice
+- 2026-11-13 19:59 UTC · `own-token-sets-for-grids-and-tab-groups` note (all) · claude-voice
+- 2026-11-13 19:59 UTC · `full-voice-control-merge-main-and-land` → running, note (all) · pipeline
+- 2026-11-13 19:59 UTC · `full-voice-control-merge-main-and-land` branch claude/full-voice-control-merge-main-and-land (all) · pipeline
+- 2026-11-13 19:59 UTC · `full-voice-control-merge-main-and-land` note (all) · orchestrator
+- 2026-11-13 19:59 UTC · `skin-animations-swatches-skin-switch` → running, note (all) · pipeline
+- 2026-11-13 19:59 UTC · `skin-animations-swatches-skin-switch` branch claude/skin-animations-swatches-skin-switch (all) · pipeline
+- 2026-11-13 19:59 UTC · `skin-animations-swatches-skin-switch` note (all) · orchestrator
+- 2026-11-13 20:00 UTC · `own-token-sets-for-grids-and-tab-groups` note (all) · claude-voice
+- 2026-11-13 20:00 UTC · `own-token-sets-for-grids-and-tab-groups` note (all) · builds-live
+- 2026-11-13 20:01 UTC · `grids-get-their-own-full-token-set` note (all) · orchestrator
+- 2026-11-13 20:01 UTC · `own-token-sets-for-grids-and-tab-groups` note (all) · claude-voice
+- 2026-11-13 20:01 UTC · `grids-get-their-own-full-token-set` note (all) · builds-live
+- 2026-11-13 20:01 UTC · `own-token-sets-for-grids-and-tab-groups` note (all) · builds-live
+- 2026-11-13 20:02 UTC · `grid-token-set-colours-hover-selected` note (all) · orchestrator
+- 2026-11-13 20:02 UTC · `grid-token-set-colours-hover-selected` note (all) · builds-live
+- 2026-11-13 20:03 UTC · `own-token-sets-for-grids-and-tab-groups` note (all) · orchestrator
+- 2026-11-13 20:03 UTC · `orchestrator-custom-groups-custom-tabs` s9 done (all) · orchestrator
+- 2026-11-13 20:03 UTC · `demo-pipelines-guided-walkthrough-live` s3 done (all) · orchestrator
+- 2026-11-13 20:03 UTC · `console-app-wake-word-voice-listener` branch claude/console-app-wake-word-voice-listener, PR #643 (all) · builds-live
+- 2026-11-13 20:04 UTC · `token-registry-skin-editor-live-sandbox` added (0 steps) (all) · console
+- 2026-11-13 20:04 UTC · `token-registry-skin-editor-live-sandbox` → queued, note (all) · console
+- 2026-11-13 20:04 UTC · `orchestrator-custom-groups-custom-tabs` PR #644 (all) · builds-live
+- 2026-11-13 20:03 UTC · `console-app-wake-word-voice-listener` s1 done, → running (all) · orchestrator
+- 2026-11-13 20:03 UTC · `demo-pipelines-guided-walkthrough-live` s4 done (all) · orchestrator
+- 2026-11-13 20:04 UTC · `orchestrator-custom-groups-custom-tabs` s10 done, → built (all) · orchestrator
+- 2026-11-13 20:04 UTC · `orchestrator-custom-groups-custom-tabs` note (all) · orchestrator
+- 2026-11-13 20:05 UTC · `orchestrator-custom-groups-custom-tabs` note (all) · orchestrator
+- 2026-11-13 20:06 UTC · `token-registry-skin-editor-live-sandbox` note (all) · claude-voice
 
 ## Token passes (log)
 

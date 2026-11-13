@@ -51,6 +51,14 @@ export const CHROME_INSTANCE_PICK_SUFFIXES: string[];
 export function TAB_GROUP_LAST_KEY(instance: string): string;
 export function TAB_GROUP_FOLD_KEY(instance: string): string;
 export function isChromeInstanceId(id: unknown): id is string;
+export type TabRows = '1' | '2' | '3' | '4' | '5' | '6' | 'auto';
+export const TAB_ROWS_FIELD: 'rows';
+export const TAB_ROWS_MAX: number;
+export const TAB_ROWS_OPTIONS: TabRows[];
+export function parseTabRows(v: unknown): TabRows | null;
+export interface TabRowsLayout { rows: number | 'auto'; perRow: number; wrap: boolean; vars: Record<string, string>; attrs: Record<string, string> }
+export function tabRowsLayout(count: number, value: unknown): TabRowsLayout;
+export function matchTabGroup(rows: { id: string; label?: string; visible?: boolean }[], words: unknown): string | null;
 export const CHROME_TARGETS: Record<ChromeType, string[]>;
 export function chromeTypeOfTarget(target: unknown): ChromeType | null;
 export const CHROME_MOVES: Record<ChromeType, ChromeMove>;

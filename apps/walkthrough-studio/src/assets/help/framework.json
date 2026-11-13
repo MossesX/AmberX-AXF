@@ -411,6 +411,13 @@
         "text": "Reloads the live preview of the screen being changed."
       },
       {
+        "target": "rows",
+        "title": "Rows",
+        "text": "How many rows this tab group uses. Pick 3 and the tabs stack on three even rows, so they all fit on the page and nothing scrolls to the right. Auto wraps them onto as many rows as they need. 1 is the normal single row.",
+        "more": "Set per tab group and remembered. Right-click (or long-press) any tab row → Settings… → Look → Rows. Side rails and dropdown rows ignore it. Without the screen: chrome.set:tab-group:<row id>:rows:3, or tell Amber \"make the settings tabs three rows\".",
+        "kind": "field"
+      },
+      {
         "target": "open-in-a-new-tab",
         "title": "Open in a new tab",
         "text": "Opens it in its own browser tab."

@@ -6854,6 +6854,20 @@
       "file": "src/axf/react/components/ChromeContext.tsx"
     },
     {
+      "address": "function:tabs.rows",
+      "kind": "function",
+      "id": "tabs.rows",
+      "label": "How many rows a tab group stacks its tabs on (tabs.rows:<tab group id or name>:<1-6|auto>)",
+      "detail": "Action",
+      "keywords": [
+        "tabs.rows",
+        "tabs",
+        "rows"
+      ],
+      "params": true,
+      "file": "src/axf/react/components/ChromeContext.tsx"
+    },
+    {
       "address": "function:tapconfirm.window",
       "kind": "function",
       "id": "tapconfirm.window",
