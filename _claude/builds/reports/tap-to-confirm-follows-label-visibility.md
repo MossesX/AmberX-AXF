@@ -1,6 +1,6 @@
 # Tap-to-confirm follows label visibility + quick-switches pane
 
-Build `tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch`, Phase 1 (Opus), Nov 13 2026.
+Build `tap-to-confirm-follows-label-visibility`, Phase 1 (Opus), Nov 13 2026.
 
 ## What changed
 
