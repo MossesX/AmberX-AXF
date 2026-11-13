@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4730,
- "updatedAt": "2026-11-13T18:58:54.442Z",
+ "rev": 4731,
+ "updatedAt": "2026-11-13T18:59:15.842Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -199489,7 +199489,7 @@
    "title": "Console Android app: thin WebView wrapper with overlay, replaces AmberX",
    "category": "",
    "detail": "New Android app that replaces AmberX: a thin native shell that runs the AXF console web app in a WebView. Not a native rewrite.\n- Native only where Android requires it: draw-over-apps floating toolbar/bubble (port from overlay-toolbar-v2), approvals bar, notifications, mic/recorder, open_url, wake, permissions. Everything else is the web console.\n- SAFE AREA (Brett's screenshots, Nov 13): AmberX drew its top bar under the status bar, so the clock, camera cutout, call pill, notification icons and signal sat on top of the title/search/menu. The wrapper must handle WindowInsets (status bar, display cutout, navigation bar, IME), pass them into the WebView as CSS env(safe-area-inset-*) with viewport-fit=cover, and the console must pad every top bar, banner, toolbar and bottom nav with them. Nothing is ever drawn under the clock, camera or notification shade. Test on cutout and punch-hole phones, portrait and landscape.\n- The floating toolbar expands to the full-screen console with the toolbar top-left, keeps the app in front, and pops up approvals with a link to the approvals page.\n- A JS bridge exposes the native features to the console (window.axfNative), with full API parity: REST/MCP/CLI/voice.\n- Auto-updates the web content from the live console. The shell rarely needs a rebuild.\n- Migrate AmberX's axHub device service (amberx.open_url, recorder) to the new app.\n- Tests, help, Shipped features.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -199497,7 +199497,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:38:53.122Z",
-   "updatedAt": "2026-11-13T18:58:01.143Z",
+   "updatedAt": "2026-11-13T18:58:14.995Z",
    "builtAt": "",
    "notes": [
     {
@@ -199566,7 +199566,7 @@
    "pipeline": {
     "queuedAt": "2026-11-13T18:38:55.070Z",
     "queuedBy": "console",
-    "account": "",
+    "account": "mossesx-max-",
     "session": "",
     "slot": "",
     "model": "Opus",
@@ -199588,7 +199588,7 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"42523f40-ad67-40c7-a2c7-fbb1f4b209fc\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "released by the self-check (nothing ran): back in the Queue",
+    "note": "Session on mossesx-max- ended (exit 3) with 10 steps left: back in the Queue (run 1).",
     "route": "",
     "dispatchedAt": "2026-11-13T18:39:57.071Z",
     "planned": {
@@ -199664,12 +199664,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T18:58:14.995Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T18:39:44.852Z",
-     "updatedAt": "2026-11-13T18:39:44.852Z"
+     "updatedAt": "2026-11-13T18:58:15.509Z"
     },
     {
      "id": "s4",
