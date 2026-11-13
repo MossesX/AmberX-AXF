@@ -1,7 +1,7 @@
 {
   "$axf": "tracker@1",
   "frameworkVersion": "0.2.0",
-  "generatedAt": "2026-11-13T18:54:37.201Z",
+  "generatedAt": "2026-11-13T23:49:32.148Z",
   "summary": {
     "foundations": {
       "built": 68,
@@ -2932,7 +2932,7 @@
       "status": "placeholder",
       "wave": 2,
       "module": "axf-platform-android",
-      "notes": ""
+      "notes": "AmberX shell (app code, not this framework module) has one always-on draw-over-apps overlay since Nov 13 2026: toolbar, approval bar, full-screen browser (ApprovalOverlay + ApprovalOverlayRules / OverlayPageRules, JUnit). The framework capability stays a placeholder (Android on hold)."
     },
     {
       "id": "dv.pip",
@@ -3698,6 +3698,18 @@
       "wave": 1,
       "module": "app-console",
       "notes": "11 sections (orchestrator, dispatcher, watchdog, shipped, account failover, landing, merge queue, nightly deploy, backups, health monitor, notification rules), one owner each from the crew; registry agents/sections.json, reassign in Settings → Agent swarm → Section owners; posts start/done/failed/blocked/waiting as the owner, respects the chat switch, deduped; crew-say.mjs check in CI. Kotlin twin deferred."
+    },
+    {
+      "id": "cx.buildengine.autoland",
+      "tab": "console",
+      "group": "console-plumbing",
+      "parent": "cx.buildengine",
+      "title": "Auto-land by default: every finished build lands itself the moment it finishes, through one serial landing line; a clash or red tests gets a P0 merge-main-and-land fix build until it lands; running builds get main every 30 min; a 10-min sweeper; Landing chip with what is stuck",
+      "tag": "suggested",
+      "status": "built",
+      "wave": 1,
+      "module": "app-console",
+      "notes": "Nov 13 2026 (auto-land-every-finished-build-lands): push-banner land/ autoLand on by default (autoLandRev 2; per-build off/on), build-hook@1 listener land/hook.mjs, serial landing lock (land.mjs serial / lock), P0 fix builds through axf.build-dispatch@1 (POST /land/fix) with FYI alerts, refreshRunning every 30 min, sweep every 10 min, GET /land/line + banner Landing chip. REST, MCP (plugin-commands@1), CLI land.mjs, voice through the same commands."
     },
     {
       "id": "cx.ai",

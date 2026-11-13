@@ -11,6 +11,7 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { BANNER_KEY, FOLDER, ID, VERSION, load, start } from './store';
 import { PushBanner, PushSettings } from './ui';
 import { MergeQueueView } from './queue';
+import { LandingView } from './landing';
 import { appMenu } from './menu';
 import './push-banner.css';
 
@@ -22,6 +23,7 @@ export const plugin: AxfWebLibrary = {
   register(rt) {
     start();
     rt.actions.register('push-banner.queue', () => rt.dispatch('settings.open:push-banner'), { label: 'Merge queue' });
+    rt.actions.register('push-banner.land', () => rt.dispatch('settings.open:push-banner'), { label: 'Landing line' });
     rt.actions.register('push-banner.check', () => { void load(true); rt.toast('Checking every branch against main…', 'info', 'Push banner'); }, { label: 'Check branches not on main' });
   },
   // After Codebase changes (4.7), before the approvals banner (5).
@@ -34,6 +36,7 @@ export const plugin: AxfWebLibrary = {
     ],
   }],
   settingsPanels: [
+    { id: 'push-banner.land', tab: 'push-banner', title: 'Landing line', icon: 'upload', order: 2, render: () => <LandingView /> },
     { id: 'push-banner.queue', tab: 'push-banner', title: 'Merge queue', icon: 'branch', order: 3, render: () => <MergeQueueView /> },
     { id: 'push-banner.branches', tab: 'push-banner', title: 'Branches', icon: 'branch', order: 5, render: () => <PushSettings /> },
     { id: 'push-banner.lifecycle', tab: 'push-banner', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },

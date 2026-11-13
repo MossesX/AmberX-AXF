@@ -79,7 +79,7 @@ length limit; it is shown everywhere a build is named.
 
 Most Nov 13 2026 land failures were clashes only in generated or additive files. One manifest, `generated-files@1`
 (`framework/spec/generated-files.json`), now says which files a merge resolves by itself and how; every lander reads
-it: the auto-land runner and the merge queue (`apps/console-web/plugins/push-banner/land/land-core.mjs`
+it: the auto-land runner and the merge queue (their `land-core.mjs`
 `classifyPath` / `regenPlan` / `mergeJson3`, `land.mjs resolveConflicts`) and the `vps.build_land` resolver
 (`framework/cli/land-resolve.py`, which `/opt/axf-batch/resolve.py` hands over to).
 

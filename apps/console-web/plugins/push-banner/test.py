@@ -697,17 +697,57 @@ check(mod.PUSHES._code_behind(CmpGh(2, ["Fix it", live[0]], ["_claude/THREADS.md
 check(mod.PUSHES._code_behind(CmpGh(0, [], []), "MossesX/AmberX-AXF", "main", "abc123") == 0, "not behind = 0")
 
 cfg0 = mod.PUSHES.config()
-check(cfg0["autoLand"] is False and cfg0["landWaitUi"] is True, "auto-land is off by default (the merge queue merges), Wait for UI Review on")
+check(cfg0["autoLand"] is True and cfg0["landWaitUi"] is True, "auto-land is on by default for every build (Nov 13 2026), Wait for UI Review on")
 r = c.put("/p/config", json={"landWaitUi": False})
-check(r.status_code == 200 and r.json()["landWaitUi"] is False and r.json()["autoLand"] is False, "Wait for UI Review can be switched off")
+check(r.status_code == 200 and r.json()["landWaitUi"] is False and r.json()["autoLand"] is True, "Wait for UI Review can be switched off")
 check(c.put("/p/config", json={"autoLand": "yes"}).status_code == 400, "autoLand is true or false")
 c.put("/p/config", json={"landWaitUi": True})
+_cfgf = Path(os.environ["AXF_PUSH_BANNER_DIR"]) / "config.json"
+_cfg_before = _cfgf.read_text() if _cfgf.exists() else None
+_cfgf.write_text(json.dumps({"$axf": "push-banner-config@1", "autoLand": False}))
+check(mod.PUSHES.config()["autoLand"] is True, "an off written before autoLandRev 2 (the Nov 4 off) reads as on")
+r = c.put("/p/config", json={"autoLand": False})
+check(r.status_code == 200 and r.json()["autoLand"] is False and json.loads(_cfgf.read_text()).get("autoLandRev") == 2, "switching it off now is honoured (autoLandRev 2 written)")
+c.put("/p/config", json={"autoLand": True})
+if _cfg_before is not None:
+    _cfgf.write_text(_cfg_before)
 
 ddir = Path(os.environ["AXF_PUSH_BANNER_DIR"])
 (ddir / "land.json").write_text(json.dumps({"$axf": "auto-land@1", "at": "2026-11-03T18:00:00Z", "order": [18], "managed": [18],
                                             "items": [{"id": "feat-a", "pr": 18, "state": "blocked", "reason": {"kind": "ui", "text": "feat-a: its screenshots are waiting in UI Review."}}]}))
 r = c.get("/p/land")
 check(r.status_code == 200 and r.json()["items"][0]["id"] == "feat-a" and r.json()["order"] == [18], "GET /land: what the host runner wrote")
+
+class FakeDispatch:
+    def __init__(self) -> None:
+        self.asked: list[dict] = []
+    def request(self, title, detail="", **kw):
+        self.asked.append({"title": title, "detail": detail, **kw})
+        return {"ok": True, "id": "merge-main-and-land-feat-a", "status": "queued"}
+r = c.post("/p/land/fix", json={"build": "feat-a", "kind": "conflict", "title": "Merge main and land feat-a", "detail": "clash in a.ts"})
+check(r.status_code == 503, "POST /land/fix without the Build orchestrator: 503, says why")
+fd = FakeDispatch()
+plugin_services.provide("axf.build-dispatch@1", fd, "fake-orchestrator")
+r = c.post("/p/land/fix", json={"build": "feat-a", "branch": "claude/feat-a", "kind": "conflict", "title": "Merge main and land feat-a", "detail": "clash in a.ts", "attempt": 1})
+check(r.status_code == 200 and r.json()["id"] == "merge-main-and-land-feat-a" and fd.asked[0]["priority"] == "P0" and fd.asked[0]["queue"] is True, "POST /land/fix files a P0 fix build straight into the Queue (axf.build-dispatch@1)")
+check(c.post("/p/land/fix", json={"build": "feat-a", "kind": "ui"}).status_code == 400, "only a clash or red tests get a fix build")
+plugin_services.withdraw("fake-orchestrator")
+
+_land_before = (ddir / "land.json").read_text()
+(ddir / "land.json").write_text(json.dumps({"$axf": "auto-land@1", "at": "2026-11-13T18:00:00Z", "items": [
+    {"id": "old-one", "pr": 9, "state": "blocked", "since": "2026-11-01T00:00:00Z", "reason": {"kind": "conflict", "text": "old-one: merging main into it conflicts in code (a.ts)."}},
+    {"id": "new-one", "pr": 10, "state": "waiting", "since": "2099-01-01T00:00:00Z", "reason": {"kind": "running", "text": "new-one: CI is running."}},
+    {"id": "done-one", "pr": 11, "state": "ready", "reason": None}]}))
+(ddir / "land-fix.json").write_text(json.dumps({"builds": {"old-one": {"attempt": 2, "id": "merge-main-and-land-old-one-2", "via": "build"}}}))
+r = c.get("/p/land/line")
+j = r.json()
+check(r.status_code == 200 and [x["id"] for x in j["line"]] == ["old-one", "new-one"], "GET /land/line: the builds not on main yet, in order (ready ones are not in the line)")
+check([x["id"] for x in j["stuck"]] == ["old-one"] and j["stuck"][0]["fix"] == "merge-main-and-land-old-one-2", "stuck over 30 minutes: listed with its fix build")
+check(j["chip"]["label"] == "Landing: 3" and j["chip"]["stuck"] == 1 and j["chip"]["tone"] == "danger", "the banner chip: Landing: N, stuck count, danger tone")
+r = c.post("/p/land/sweep")
+check(r.status_code == 200 and json.loads((ddir / "land-sweep.json").read_text())["at"] is None, "POST /land/sweep: the sweeper runs at the next round")
+(ddir / "land.json").write_text(_land_before)
+(ddir / "land-fix.json").unlink()
 check(c.get("/p/land/blocked").json()["items"][0]["state"] == "blocked", "GET /land/blocked: the blocked ones")
 r = c.post("/p/land/hold", json={"build": "feat-a", "why": "Brett wants to look"})
 check(r.status_code == 200 and r.json()["holds"]["feat-a"]["why"] == "Brett wants to look", "POST /land/hold runs land.mjs and records the hold")
@@ -716,6 +756,14 @@ check(r.status_code == 200 and "feat-a" not in r.json()["holds"], "POST /land/re
 r = c.post("/p/land/now", json={"build": "feat-a"})
 check(r.status_code == 200 and r.json()["now"][0] == "feat-a", "POST /land/now puts it first")
 check(c.post("/p/land/hold", json={"build": "../x"}).status_code == 400, "a bad build id is refused")
+# the sweeper's own switch and state: the same land.mjs status / pause / resume the CLI runs
+r = c.post("/p/land/pause", json={"why": "Brett looks first"})
+check(r.status_code == 200 and r.json()["paused"]["why"] == "Brett looks first" and json.loads((ddir / "land-control.json").read_text())["sweepPaused"]["why"] == "Brett looks first", "POST /land/pause: the sweeper is paused, reason kept")
+r = c.get("/p/land/status")
+check(r.status_code == 200 and r.json()["paused"] and r.json()["everyMin"] == 10 and "stuck" in r.json(), "GET /land/status: paused or on, last sweep, what is stuck")
+r = c.post("/p/land/resume")
+check(r.status_code == 200 and r.json()["paused"] is None and c.get("/p/land/status").json()["paused"] is None, "POST /land/resume: the sweeper is on again")
+check(c.post("/p/land/pause", json={"build": "x"}).status_code == 400, "pause takes only {why}")
 mod.PUSHES._forget()
 st = mod.PUSHES.branches(force=True)
 p18 = next((x for x in st["repos"][0]["pulls"] if x["number"] == 18), None)

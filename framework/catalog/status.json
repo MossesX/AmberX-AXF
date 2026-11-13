@@ -2299,5 +2299,11 @@
     "wave": 1,
     "module": "app-console",
     "notes": "context-lead@1: rt.contextExtras keys '^:<name>' lead every context menu above one separator (core/engines/windows.ts withContextLead, react Overlays ContextMenuHost; any target, even contributions:false, right-click and long-press). The console registers Console settings (app.settings, folding the asset's own Settings in) plus console.settings.open for search, voice, MCP and CLI; help entries; checks spec/check-context-lead.mts + apps/console-web/scripts/console-settings-menu.mts. Kotlin twin deferred."
+  },
+  "cx.buildengine.autoland": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "Nov 13 2026 (auto-land-every-finished-build-lands): push-banner land/ autoLand on by default (autoLandRev 2; per-build off/on), build-hook@1 listener land/hook.mjs, serial landing lock (land.mjs serial / lock), P0 fix builds through axf.build-dispatch@1 (POST /land/fix) with FYI alerts, refreshRunning every 30 min, sweep every 10 min, GET /land/line + banner Landing chip. REST, MCP (plugin-commands@1), CLI land.mjs, voice through the same commands."
   }
 }

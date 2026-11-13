@@ -2,6 +2,7 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { Button, Icon, RefText, SelectField, Switch, useAxfState, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
 import { MergeQueueChip, MergeQueueView } from './queue';
+import { LandingChip, LandingView } from './landing';
 import { ago, bannerOn, doneKeys, doneRows, failedKeys, failedRows, fixWithClaude, jobOf, REPAIR_ALL, removeFailed, repair, repairAll, load, loadDetail, mergePr, needsPull, openPr, PULL_ALL, pullAll, pullMain, pullRows, removeDone, rows, saveClaude, setHidden, useStore, api, type Done, type Failed, type PullRow, type Row } from './store';
 
 const CI_WORD: Record<string, string> = { success: 'CI passed', failure: 'CI failed', running: 'CI running', none: 'no CI yet', unknown: 'CI unknown' };
@@ -330,6 +331,7 @@ export function PushBanner() {
   // Launches expanded like the other banners; "_" folds it to its summary line.
   const [open, setOpen] = useBannerLaunchOpen();
   const [queueOpen, setQueueOpen] = useState(false);
+  const [lineOpen, setLineOpen] = useState(false);
   if (!bannerOn((k) => rt.settings.get(k))) return null;
   const finished = doneRows(s.answer);
   const fails = failedRows(s.answer).filter((f) => !doneKeys(s.answer).has(f.key));
@@ -366,10 +368,12 @@ export function PushBanner() {
           </span>
           <span className="axp-push-banner__lead">{[pulls.length ? plural(pulls.length, 'pull request', 'pull requests') : '', fails.length ? `${fails.length} pull${fails.length === 1 ? '' : 's'} failed` : '', behindCount ? `${behindCount} need main pulled in` : '', clean.length ? `${clean.length} need a PR` : '', allBare.length ? `${plural(allBare.length, 'branch', 'branches')} without a PR` : '', finished.length ? `${finished.length} done` : '', repos.join(' · ')].filter(Boolean).join(' · ')}</span>
         </button>
+        <LandingChip open={lineOpen} onToggle={() => { setLineOpen(!lineOpen); if (!open) setOpen(true); }} />
         <MergeQueueChip open={queueOpen} onToggle={() => { setQueueOpen(!queueOpen); if (!open) setOpen(true); }} />
       </div>
       {open && (
         <div className="axp-push-banner__body">
+          {lineOpen && <section className="axp-push-banner__group" aria-label="Landing line"><h4 className="axp-push-banner__group-title">Landing line</h4><LandingView /></section>}
           {queueOpen && <section className="axp-push-banner__group" aria-label="Merge queue"><h4 className="axp-push-banner__group-title">Merge queue</h4><MergeQueueView compact /></section>}
           <Group title="Done" count={finished.length}>{finished.map((d) => <DoneItem key={d.key} d={d} sha={d.kind === 'pulled' ? headOf(d.key) : undefined} />)}</Group>
           <Group title="Pull failed" tone="warning" count={fails.length} action={<RepairAllButton list={fails} />}>{fails.map((f) => <FailedItem key={f.key} f={f} base={baseOf(f.key)} />)}</Group>
@@ -473,7 +477,7 @@ function AutoMergeSettings() {
 }
 
 type LandItem = { id: string; title: string; branch: string; pr: number | null; state: string; since?: string; reason: { kind: string; text: string } | null };
-type LandState = { on: boolean; waitUi: boolean; at?: string; items: LandItem[]; holds: Record<string, { why: string }> };
+type LandState = { on: boolean; waitUi: boolean; at?: string; items: LandItem[]; holds: Record<string, { why: string }>; off?: Record<string, { why: string }> };
 
 /** Auto-land (Nov 3 2026, Brett: "zero tokens for merging"): finished builds land by plain scripts on the VPS; only a
  * code conflict or red CI goes to an agent. The two switches and every finished build with what it waits on. */
@@ -484,12 +488,12 @@ function AutoLandSettings() {
   useEffect(() => { void read(); }, []);
   if (!st) return err ? <p className="fx-small axp-push-banner__note is-danger">{err}</p> : null;
   const set = (patch: { autoLand?: boolean; landWaitUi?: boolean }) => { setErr(''); api.put('config', patch).then(read, (e: Error) => setErr(e.message)); };
-  const act = (cmd: 'now' | 'hold' | 'release', build: string) => { setErr(''); api.post(`land/${cmd}`, { build }).then(read, (e: Error) => setErr(e.message)); };
+  const act = (cmd: 'now' | 'hold' | 'release' | 'off' | 'on', build: string) => { setErr(''); api.post(`land/${cmd}`, { build }).then(read, (e: Error) => setErr(e.message)); };
   return (
     <div className="fx-stack">
       <h4 className="axp-push-banner__group-title">Auto-land finished builds</h4>
       <Switch label="Auto-land finished builds" checked={st.on} onChange={(v) => set({ autoLand: v })}
-        hint="Every 3 min a plain script on the VPS takes every build whose steps are all done: commits the synced files it left, merges main in (builds files newer-wins, logs kept from both sides), opens its PR and starts CI. Auto-merge then merges them in dependency order. No model, no tokens: only a code conflict or red CI goes to a free agent." />
+        hint="On for every build by default (each build's own Auto-land switch below turns one off). A build lands the moment it finishes, and a round every 3 min catches the rest: commits the synced files it left, merges main in (builds files newer-wins, logs kept from both sides), opens its PR and puts it in the merge queue. A code clash or red tests gets a P0 'merge main and land' fix build, retried until it lands; you get an FYI for each attempt. Running builds get main merged in every 30 min." />
       <Switch label="Wait for UI Review" checked={st.waitUi} disabled={!st.on} onChange={(v) => set({ landWaitUi: v })}
         hint="On: a PR whose screenshots are waiting, have changes asked or are rejected in UI Review waits, and merges by itself the moment you approve them. Off: UI Review doesn't hold merges." />
       {st.items.length > 0 ? (
@@ -503,6 +507,7 @@ function AutoLandSettings() {
               <div className="axp-push-banner__acts">
                 <Button size="sm" icon="play" onClick={() => act('now', x.id)}>Land now</Button>
                 {st.holds[x.id] ? <Button size="sm" icon="check" onClick={() => act('release', x.id)}>Release</Button> : <Button size="sm" icon="pause" onClick={() => act('hold', x.id)}>Hold</Button>}
+                <Switch label="Auto-land" checked={!st.off?.[x.id]} onChange={(v) => act(v ? 'on' : 'off', x.id)} />
               </div>
             </li>
           ))}

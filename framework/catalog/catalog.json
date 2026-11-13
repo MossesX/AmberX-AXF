@@ -2516,6 +2516,10 @@
                 {
                   "id": "cx.buildengine.sectionowners",
                   "title": "Section owners: every section that acts on its own has one employee who posts its key events in the group chat (crew-sections@1, framework/cli/crew-say.mjs, CI owner check)"
+                },
+                {
+                  "id": "cx.buildengine.autoland",
+                  "title": "Auto-land by default: every finished build lands itself the moment it finishes, through one serial landing line; a clash or red tests gets a P0 merge-main-and-land fix build until it lands; running builds get main every 30 min; a 10-min sweeper; Landing chip with what is stuck"
                 }
               ]
             },
