@@ -19,6 +19,8 @@
  *
  *   node apps/console-web/plugins/build-orchestrator/recover.mjs status [--json]         settings, last run, latest events, parked builds
  *   … run [--dry-run] [--json]                 one recovery round now
+ *   … run --request                            the same where the sessions are visible, else ask the host's next tick (auto-fix)
+ *   … health [--json]                          the builds-stuck-recovery systems check item
  *   … retry <build> [--by who]                 put a stuck, failed or parked build back in the Queue now (the counter starts over)
  *   … park <build> [--why w] [--by who]        stop retrying it: back to Pending with the reason
  *   … settings [--json] | settings set k=v…     the Recovery settings (enabled, maxRetries, staleHeartbeatMin, backoffMin, fyi)
@@ -51,8 +53,8 @@ export function dataDir(env = process.env) {
   const hub = join(env.AXHUB_PROJECTS_DIR || '/projects', 'amberx-axf', '_data');
   return existsSync(hub) ? join(hub, 'pipeline') : join(homedir(), '.axf', 'pipeline');
 }
-export const files = (env = process.env) => { const d = dataDir(env); return { dir: d, state: join(d, 'recovery-state.json'), log: join(d, 'recovery.jsonl'), lock: join(d, 'recovery.lock') }; };
-export const DATA_FILES = ['recovery-state.json', 'recovery.jsonl', 'recovery.lock'];
+export const files = (env = process.env) => { const d = dataDir(env); return { dir: d, state: join(d, 'recovery-state.json'), log: join(d, 'recovery.jsonl'), lock: join(d, 'recovery.lock'), request: join(d, 'recovery-request.json') }; };
+export const DATA_FILES = ['recovery-state.json', 'recovery.jsonl', 'recovery.lock', 'recovery-request.json'];
 const LOG_KEEP_BYTES = 512 * 1024;
 /** A session that ended with exit 0 is the dispatcher's to close (pipeline.mjs checkEnds); recovery waits this long first. */
 export const NORMAL_END_GRACE_MS = 15 * 60e3;
@@ -245,6 +247,7 @@ export function run(opts = {}) {
   const r = withRunLock(() => { try { return go(); } catch (e) { return { ...base, ran: true, errors: [{ error: str(e.message, 300) }] }; } }, env);
   if (r.busy) return { ...base, busy: true, why: 'another recovery round is running' };
   if (!opts.dryRun) {
+    rmSync(files(env).request, { force: true });   // a request from the console is answered by this round
     writeJson(files(env).state, { $axf: 'recovery-state@1', lastRun: { at: r.at, by: r.by, actions: r.actions.length, applied: r.applied.map((a) => ({ build: a.build, action: a.action, state: a.state, exit: a.exit, attempt: a.attempt })), skipped: r.skipped, errors: r.errors }, ok: !r.errors.length });
     if (r.errors.length) logLine({ event: 'run-failed', errors: r.errors }, env);
   }
@@ -287,6 +290,52 @@ export function notify(a, { settings = loadRecoverySettings(), env = process.env
   return alert;
 }
 
+// ------------------------------------------------------------------ requests from where the sessions can't be seen
+
+/** The console container sees no tmux and no host PIDs: it asks the host's dispatcher, whose next tick runs recovery. */
+export const seesSessions = () => slots.tmuxSessions() !== null;
+export function request({ by = 'console', reason = 'on demand', env = process.env } = {}) {
+  const r = { at: nowIso(), by: str(by, 80), reason: str(reason, 120) };
+  writeJson(files(env).request, r);
+  logLine({ event: 'requested', ...r }, env);
+  return r;
+}
+/** Run now where the sessions are visible, else ask the host. Answers like a health@1 auto-fix: { state, message, waitS? }. */
+export function runOrRequest({ by = 'console', env = process.env } = {}) {
+  if (!seesSessions()) { request({ by, reason: 'auto-fix', env }); return { state: 'started', message: 'Auto-recovery runs on the dispatcher\'s next tick on the VPS (within a minute).', waitS: 90 }; }
+  const r = run({ by, env });
+  if (!r.ran) return { state: 'failed', message: r.why || 'Recovery did not run.' };
+  if (r.errors.length) return { state: 'failed', message: `Recovery failed: ${r.errors.map((e) => e.error).join('; ').slice(0, 300)}` };
+  return { state: 'done', message: r.applied.length ? `Fixed ${r.applied.length}: ${r.applied.map((a) => a.line).join(' ').slice(0, 400)}` : 'Nothing stuck right now.' };
+}
+
+// ------------------------------------------------------------------ the systems check item (health@1)
+
+/** Parked builds: auto-recovery stopped retrying them and they wait in Pending for Brett. */
+export const parkedBuilds = (store = loadStore()) => store.builds.filter((b) => !b.deleted && b.status === 'pending' && R.recoveryOf(b).parkedAt);
+/**
+ * The `builds-stuck-recovery` systems check: red only when a build is parked after the cap or the last recovery round
+ * failed (within the last 15 minutes); otherwise ok, with what was fixed lately. { status, summary, details }.
+ */
+export function health({ env = process.env, now = Date.now(), store = null } = {}) {
+  const s = loadRecoverySettings(env);
+  const st = readJson(files(env).state, null);
+  const parked = parkedBuilds(store ?? loadStore());
+  const lr = st?.lastRun;
+  const failedLately = lr && lr.errors?.length && now - Date.parse(lr.at) < 15 * 60e3;
+  const fixedToday = readLog({ limit: 500, env }).filter((e) => e.event === 'recovered' && now - Date.parse(e.at) < 24 * 3600e3);
+  const details = [
+    ...parked.map((b) => `Parked: ${b.id} after ${R.recoveryOf(b).attempts} retries (${R.recoveryOf(b).lastCause || 'stuck'}${R.recoveryOf(b).lastExit == null ? '' : `, exit ${R.recoveryOf(b).lastExit}`}). Retry: recover.mjs retry ${b.id}, or queue it.`),
+    ...(failedLately ? lr.errors.map((e) => `Recovery failed${e.build ? ` on ${e.build}` : ''}: ${e.error}`) : []),
+    ...fixedToday.slice(0, 5).map((e) => `${e.at.slice(11, 16)} ${e.line}`),
+  ];
+  if (parked.length || failedLately) {
+    const what = [parked.length ? `${parked.length} build${parked.length === 1 ? '' : 's'} parked after ${s.maxRetries} retries` : '', failedLately ? 'the last recovery round failed' : ''].filter(Boolean).join('; ');
+    return { status: 'error', summary: `${what}. Needs you: retry or re-queue in Build orchestrator → Recovery.`, details };
+  }
+  return { status: 'ok', summary: !s.enabled ? 'Auto-recovery is off (Recovery settings).' : fixedToday.length ? `Auto-recovery fixed ${fixedToday.length} in the last 24 h; nothing parked.` : 'Nothing stuck.', details };
+}
+
 // ------------------------------------------------------------------ CLI
 
 const flags = (argv) => { const o = { _: [] }; for (let i = 0; i < argv.length; i++) { const a = argv[i]; if (a.startsWith('--')) { const k = a.slice(2); const v = argv[i + 1]; if (v === undefined || v.startsWith('--')) o[k] = true; else { o[k] = v; i++; } } else o._.push(a); } return o; };
@@ -304,7 +353,9 @@ async function main(argv) {
   const f = flags(rest);
   const json = (v) => console.log(JSON.stringify(v, null, 2));
   switch (cmd) {
+    case 'health': { const h = health(); return f.json ? json(h) : console.log(`${h.status}: ${h.summary}${h.details.length ? `\n  ${h.details.join('\n  ')}` : ''}`); }
     case 'run': {
+      if (f.request) { const r = runOrRequest({ by: f.by || process.env.AXF_ACTOR || 'console' }); if (f.json) json(r); else console.log(r.message); if (r.state === 'failed') process.exitCode = 1; return; }
       const r = run({ dryRun: !!(f['dry-run'] || f.dry), by: f.by || process.env.AXF_ACTOR || 'cli', force: !!f.force });
       if (f.json) json(r); else printRun(r);
       if (r.errors.length) process.exitCode = 1;

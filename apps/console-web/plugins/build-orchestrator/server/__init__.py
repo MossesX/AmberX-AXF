@@ -366,6 +366,56 @@ def sees_probe(summary: dict[str, Any] | None = None, running: list[str] | None 
 
 _health_done = False
 
+# ---- auto-recovery (build auto-recover-stuck-builds, Nov 13 2026): recover.mjs, its systems check item and its routes
+
+RECOVER_CLI = CLI.parent / "recover.mjs"
+RECOVERY_HEALTH_ID = "builds-stuck-recovery"  # systems-check's own `builds-stuck` watches change-log entries: another id, so neither replaces the other
+
+
+def _recover(*args: str, who: str = "", timeout: int = 120) -> dict[str, Any]:
+    """Run recover.mjs with --json; the last stdout line is the answer. Raises HTTPException on a refusal."""
+    env = {k: v for k, v in os.environ.items() if k not in APPROVER_KEYS}
+    if who:
+        env["AXF_ACTOR"] = who
+    proc = subprocess.run(["node", str(RECOVER_CLI), *args, "--json"], cwd=ROOT, capture_output=True, text=True, timeout=timeout, env=env)
+    try:
+        res = json.loads(proc.stdout) if proc.stdout.strip() else {}
+    except json.JSONDecodeError:
+        res = {}
+    if proc.returncode == 2 or (not res and proc.returncode != 0):
+        err = (proc.stderr or proc.stdout).strip()[-400:] or "recover failed"
+        raise HTTPException(404 if "no build" in err else 400 if proc.returncode == 2 else 500, err)
+    return res
+
+
+def recovery_probe() -> dict[str, Any]:
+    """health@1 run(): red only when a build is parked after the retry cap or the last recovery round failed."""
+    try:
+        return _recover("health", timeout=60)
+    except Exception as e:  # noqa: BLE001 — a probe answers, it never raises
+        return {"status": "unknown", "summary": f"recover.mjs health failed: {str(e)[:200]}", "unreachable": True}
+
+
+def recovery_autofix() -> dict[str, Any]:
+    """health@1 autoFix run(): one recovery round now (on the host), or ask the host's next tick (in the container)."""
+    try:
+        r = _recover("run", "--request", "--by", "systems-check", timeout=120)
+        return {"state": r.get("state") or "done", "message": str(r.get("message") or "")[:500], **({"waitS": r["waitS"]} if r.get("waitS") else {})}
+    except Exception as e:  # noqa: BLE001
+        return {"state": "failed", "message": f"Recovery failed: {str(e)[:300]}"}
+
+
+def register_recovery_health(reg: Any) -> None:
+    """The Builds stuck item: auto-fix on by default (Fix it yourself), it runs recovery before the item turns red."""
+    reg.register({"id": RECOVERY_HEALTH_ID, "label": "Builds stuck (auto-recovery)", "service": "console", "order": 8, "severity": "error",
+                  "run": recovery_probe, "interval": 300,
+                  "breaks": "A build marked running with no live session holds its place and its slot: nothing builds it until someone notices.",
+                  "links": [{"label": "Build orchestrator → Recovery", "url": "view:build-orchestrator"}],
+                  "instructions": ["Auto-recovery requeues stuck builds by itself (killed, failed, hung, no session) and parks one in Pending after the retry cap.",
+                                   "A parked build needs you: Build orchestrator → Recovery → Retry (or `node apps/console-web/plugins/build-orchestrator/recover.mjs retry <build>`), or queue it again.",
+                                   "Recovery itself failing: `node apps/console-web/plugins/build-orchestrator/recover.mjs run` on the VPS shows the error."],
+                  "autoFix": {"label": "Run auto-recovery now", "mode": "auto", "run": recovery_autofix}}, FOLDER)
+
 
 def ensure_health() -> bool:
     """Registers the live-sync item on the systems check once it provides axf.health@1 (plugins load in any order)."""
@@ -385,6 +435,7 @@ def ensure_health() -> bool:
                       "run": lambda: sees_probe(), "interval": 300,
                       "breaks": "Overview, Build queue and Plan (console and MCP) show 0 builds, so nobody sees what is running.",
                       "instructions": ["`node framework/cli/builds-store.mjs verify` on the VPS.", "`node framework/cli/builds-live.mjs sync` in /opt/axf brings main's store in."]}, FOLDER)
+        register_recovery_health(reg)
     except Exception:  # noqa: BLE001 — the orchestrator works without its health item
         return False
     _health_done = True
