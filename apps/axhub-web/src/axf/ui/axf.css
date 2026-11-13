@@ -1226,6 +1226,12 @@ textarea.fx-input { resize: vertical; white-space: pre; }
 .fx-tabs--group[data-fx-tabs-overflow='scroll'], .fx-tabs--group[data-fx-tabs-overflow='more'], .fx-tabs--group[data-fx-tabs-overflow='dropdown'] { flex-wrap: nowrap; }
 .fx-tabs--group[data-fx-tabs-overflow='more'] { overflow: hidden; }
 .fx-tabs--group[data-fx-tabs-divider='off'] { border-bottom-color: transparent; }
+/* Rows (Nov 13 2026, build tab-groups-choose-how-many-rows-tabs): the row's own `rows` choice stacks its tabs instead of
+ * scrolling sideways. A number shares the tabs evenly over that many rows (--fx-tabs-per-row, set by TabGroup);
+ * auto wraps them at their own width. Either way every tab is on the page and nothing scrolls to the right. */
+.fx-tabs--group[data-fx-tabs-rows] { flex-wrap: wrap; overflow-x: visible; row-gap: var(--fx-dens-gap-xs); }
+.fx-tabs--group[data-fx-tabs-rows]:not([data-fx-tabs-rows='auto']) > .fx-tab:not(.fx-tabs__fold) { flex: 0 0 calc((100% - (var(--fx-tabs-per-row) - 1) * var(--fx-dens-gap-md)) / var(--fx-tabs-per-row)); min-width: 0; justify-content: center; }
+.fx-tabs--group[data-fx-tabs-rows]:not([data-fx-tabs-rows='auto']) > .fx-tab > .fx-tab__text { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .fx-tabs--group[data-fx-tabs-divider='on'] { border-bottom-color: var(--fx-border); }
 .fx-tabs--group[data-fx-tabs-display='icons'] > .fx-tab > .fx-tab__text { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .fx-tabs--group[data-fx-tabs-display='text'] > .fx-tab > .fx-icon { display: none; }

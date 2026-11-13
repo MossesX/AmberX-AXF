@@ -512,6 +512,13 @@ if ! command -v tmux >/dev/null; then
   echo "started pid $! in $(pwd) (tmux missing: the console can't show it)"
   exit 0
 fi
+# One live session per build (framework/cli/build-lock.mjs, Nov 13 2026): a build launch never opens a second tmux
+# session beside a live one (axf-<build>*, or a claude pid in this worktree); other runs keep the -HHMMSS rename.
+LOCK_CLI="$HERE/../framework/cli/build-lock.mjs"
+if [[ -n "${AXF_BUILD_ID:-}" ]] && command -v node >/dev/null && [[ -f "$LOCK_CLI" ]]; then
+  lverdict="$(node "$LOCK_CLI" check "$AXF_BUILD_ID" --dir "$(pwd)" --no-lock 2>&1)"; l_st=$?
+  if (( l_st == 3 )); then echo "claude-headless: $lverdict" >&2; echo "$lverdict"; [[ -n "$slot" ]] && slots_on && node "$SLOTS" release "$slot" --exit 3 >/dev/null 2>&1; exit 3; fi
+fi
 tmux has-session -t "=$session" 2>/dev/null && session="$session-$(date +%H%M%S)"
 envs=()   # tmux starts the command in its server's environment: pass what the run needs explicitly
 for v in PATH HOME AXF_BUILD_LIMIT AXF_BUILD_SLICE AXF_BUILD_LIMIT_ONLY AXF_BUILD_LIMIT_POLL AXF_SURFACE AXF_MODEL AXF_AGENT AXF_AGENT_NAME AXF_AGENT_BOOKED AXF_HEADLESS_DIR AXF_ADOPT_CHANGE AXF_CLAUDE_AUTH AXF_SESSION AXHUB_URL AXF_SLOTS AXF_SLOTS_DIR AXF_SLOTS_PREFIX AXF_SLOTS_HOST AXF_WATCH_LIVE AXF_CLAUDE_ACCOUNT AXF_OWN_LOGIN AXF_CLAUDE_ACCOUNTS AXF_CLAUDE_HOME AXF_CLAUDE_GLOBAL AXF_CLAUDE_SEEN AXF_LOGIN_NOTE AXF_WORKERS AXF_CLAUDE_WORKERS AXF_WORKER_POLL AXF_WORKERS_ALIVE AXF_BUILD_PROFILE AXF_JOB_TYPE; do
