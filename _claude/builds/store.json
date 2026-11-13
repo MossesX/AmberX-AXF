@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5039,
- "updatedAt": "2026-11-13T21:18:48.183Z",
+ "rev": 5040,
+ "updatedAt": "2026-11-13T21:19:07.645Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -208516,7 +208516,7 @@
    "title": "Lander regenerates generated files on clash",
    "category": "",
    "detail": "Most Nov 13 land failures were clashes only in GENERATED or additive files: apps/console-web/src/control/inventory.json, framework/assets/help/framework.json and its baked copies in apps/*, framework/catalog/status.json, framework/spec/PORTING.md, framework/spec/fixtures/*.json, apps/*/axf.lock.json, and the baked framework copies under apps/*/src/axf/. Fix the land path (/opt/axf-batch/resolve.py used by vps.build_land, and the orchestrator lander): (1) list generated files in one manifest; (2) on a clash in a generated file, take main's side, then run the matching generator (control inventory, help bake, fixtures, lock, framework re-bake) on the merged tree and commit; (3) union-merge additive docs/catalogs (PORTING.md, catalog status.json) by key; (4) only real source clashes stop the land; (5) run tests after regenerating. Then re-land: full-voice-control-merge-main-and-land, skin-config-panel-merge-main-and-land, skins-plugin-merge-main-and-land, project-create-mcp, project-duplicate-boilerplate, drive-live-console-first, rename-long-builds, overlay-preview-ui-review. Must land before auto-land-every-finished-build-lands.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -208524,7 +208524,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T20:47:11.569Z",
-   "updatedAt": "2026-11-13T20:52:33.927Z",
+   "updatedAt": "2026-11-13T21:19:01.773Z",
    "builtAt": "",
    "notes": [
     {
@@ -208561,12 +208561,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T20:47:20.965Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-lander-regenerates-generated-files-clash--sully",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Fable",
-    "launchedAt": "2026-11-13T20:52:29.610Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T20:52:05.784Z",
@@ -208576,9 +208576,9 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"012c709a-352c-4b9f-94c7-cc8af2ff3246\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "2026-11-13T20:52:29.610Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Fable",
      "account": "mossesx-max-",
@@ -208587,7 +208587,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-13T20:52:29.610Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
