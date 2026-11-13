@@ -781,9 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 20:45 UTC · `move-amberx-web-app-into-the-console-amberx-andr` note (all) · fix-the-step-splitter-claude-exit-1-input-must-b
-- 2026-11-12 20:45 UTC · `tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch` added (3 steps) (all) · Claude (voice)
-- 2026-11-12 20:45 UTC · `tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch` → queued, note (all) · console
 - 2026-11-12 20:45 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` s2 done (all) · orchestrator
 - 2026-11-12 20:45 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` s6-5 done (all) · orchestrator
 - 2026-11-12 20:46 UTC · `tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch` note (all) · pipeline
@@ -1181,6 +1178,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 06:14 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` note (all) · orchestrator
 - 2026-11-13 06:14 UTC · `professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e` → running, note (all) · pipeline
 - 2026-11-13 06:14 UTC · `professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e` branch claude/professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e (all) · pipeline
+- 2026-11-13 06:15 UTC · `professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e` → running, note (all) · pipeline
+- 2026-11-13 06:15 UTC · `professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e` branch claude/professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e (all) · pipeline
+- 2026-11-13 06:16 UTC · `professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e` note (all) · orchestrator
 
 ## Token passes (log)
 

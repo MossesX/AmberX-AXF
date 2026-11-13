@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T06:14:58.181Z",
+ "updatedAt": "2026-11-13T06:16:14.844Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -111491,7 +111491,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-12T23:32:23.494Z",
-   "updatedAt": "2026-11-13T06:14:48.710Z",
+   "updatedAt": "2026-11-13T06:15:58.468Z",
    "builtAt": "",
    "notes": [
     {
@@ -111513,6 +111513,14 @@
     {
      "text": "Split by Claude into 17 steps (17 Fable).",
      "at": "2026-11-13T06:14:22.635Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-professional-skins-that-rebuild-the-whole-app-fa--lenny.",
+     "at": "2026-11-13T06:15:42.947Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-professional-skins-that-rebuild-the-whole-app-fa--lenny, own login copy)",
+     "at": "2026-11-13T06:15:58.468Z"
     },
     {
      "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-professional-skins-that-rebuild-the-whole-app-fa--sully.",
