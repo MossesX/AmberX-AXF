@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3968,
- "updatedAt": "2026-11-13T02:11:23.471Z",
+ "rev": 3969,
+ "updatedAt": "2026-11-13T02:11:38.491Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -173365,15 +173365,15 @@
    "title": "Tap-to-confirm follows label visibility + quick-switches pane at top of every chrome settings",
    "category": "ui",
    "detail": "Follow-up to PR #524 (tap-to-confirm). Brett: \"By default, if you turn text on or off, it switches that tap to confirm on or off. If there's no text, it turns double tap on.\" and \"a collapsible pane at the top of the settings interface that has switches like override or double tap... at the top, easy to see.\"",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch",
    "pr": "#544",
    "createdAt": "2026-11-12T20:45:12.311Z",
-   "updatedAt": "2026-11-13T02:11:21.520Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-13T02:11:28.597Z",
+   "builtAt": "2026-11-13T02:11:28.598Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -173556,12 +173556,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T02:11:28.597Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T20:45:12.312Z",
-     "updatedAt": "2026-11-12T20:45:12.312Z"
+     "updatedAt": "2026-11-13T02:11:28.808Z"
     }
    ],
    "profiles": [
@@ -173572,7 +173572,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 26,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
