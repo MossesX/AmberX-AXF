@@ -235,6 +235,125 @@ ok('plugin.json declares every server route as a command with a description, and
   assert.ok(help.data.entries.some((e) => e.target === 'view:demonstration-designer' && e.kind === 'screen'));
 });
 
+
+/* ---------------- pipeline demos (pipeline-demo@1): library, timeline, player, panel filter, voice, store, live ---------------- */
+{
+  const PL = await import('./pipelines.mjs');
+  const { LIBRARY } = await import('./pipeline-library.mjs');
+  const PS = await import('./pipeline-demos.mjs');
+  const pcli = (...args) => spawnSync('node', [join(HERE, 'pipeline-demos.mjs'), ...args], { encoding: 'utf8', env: { ...process.env } });
+
+  ok('the library ships one demo per pipeline type, each valid, with screens and behind-the-scenes lines of several kinds', () => {
+    for (const t of PL.TYPE_IDS.filter((x) => x !== 'custom')) assert.ok(LIBRARY.some((d) => d.type === t), t);
+    for (const d of LIBRARY) {
+      assert.deepEqual(PL.validateDemo(d), [], d.id);
+      assert.ok(d.builtIn && d.chapters.length >= 3 && d.chapters.every((c) => c.say && c.view), d.id);
+      const kinds = new Set(d.chapters.flatMap((c) => c.events.map((e) => e.kind)));
+      assert.ok(kinds.size >= 3, `${d.id}: ${[...kinds]}`);
+      for (const c of d.chapters) for (const p of c.live) assert.ok(PL.PROBES[p], `${d.id}/${c.id}: probe ${p}`);
+    }
+    const screens = new Set(LIBRARY.flatMap((d) => d.chapters.map((c) => c.view)));
+    for (const v of ['build-orchestrator', 'builds', 'ui-review', 'shipped-features']) assert.ok(screens.has(v), v);
+  });
+
+  ok('timeline: chapters back to back, a focus line at each screen, lines sorted by second', () => {
+    const tl = PL.timeline(LIBRARY[0]);
+    assert.equal(tl.chapters[0].start, 0);
+    for (let i = 1; i < tl.chapters.length; i++) assert.equal(tl.chapters[i].start, tl.chapters[i - 1].end);
+    assert.equal(tl.total, tl.chapters.at(-1).end);
+    assert.equal(tl.events.filter((e) => e.kind === 'focus').length, tl.chapters.filter((c) => c.view).length);
+    for (let i = 1; i < tl.events.length; i++) assert.ok(tl.events[i].t >= tl.events[i - 1].t);
+    assert.equal(PL.chapterAt(tl, tl.chapters[2].start + 0.1), 2);
+  });
+
+  ok('player: play, tick at speed, pause holds, skip and back by chapter, restart, done at the end', () => {
+    const tl = PL.timeline(LIBRARY[0]);
+    let s = PL.playerReduce(PL.playerInit(), { type: 'play' }, tl);
+    assert.equal(s.status, 'playing');
+    s = PL.playerReduce(PL.playerReduce(s, { type: 'speed', speed: 2 }, tl), { type: 'tick', dt: 1.5 }, tl);
+    assert.equal(s.at, 3);
+    s = PL.playerReduce(s, { type: 'pause' }, tl);
+    assert.equal(PL.playerReduce(s, { type: 'tick', dt: 5 }, tl).at, 3);
+    s = PL.playerReduce(s, { type: 'next' }, tl);
+    assert.equal(s.at, tl.chapters[1].start);
+    s = PL.playerReduce(s, { type: 'prev' }, tl);
+    assert.equal(s.at, 0);
+    s = PL.playerReduce(PL.playerReduce(PL.playerReduce(s, { type: 'resume' }, tl), { type: 'seek', at: tl.total - 1 }, tl), { type: 'tick', dt: 5 }, tl);
+    assert.equal(s.status, 'done'); assert.equal(s.at, tl.total);
+    s = PL.playerReduce(s, { type: 'restart' }, tl);
+    assert.equal(s.at, 0); assert.equal(s.status, 'playing');
+    assert.equal(PL.playerReduce(s, { type: 'dock', dock: 'full' }, tl).dock, 'full');
+    assert.equal(PL.playerReduce(s, { type: 'dock', dock: 'sideways' }, tl).dock, 'dock');
+  });
+
+  ok('the panel filter keeps the kinds asked for and every word; lines print as clock, kind, text', () => {
+    const tl = PL.timeline(LIBRARY.find((d) => d.id === 'parallel-split'));
+    const git = PL.filterEvents(tl.events, { kinds: ['git'] });
+    assert.ok(git.length >= 3 && git.every((e) => e.kind === 'git'));
+    assert.ok(PL.filterEvents(tl.events, { q: 'slot 2 push' }).every((e) => /slot 2/.test(e.text) && /push/.test(e.text)));
+    assert.match(PL.lineText(git[0]), /^\d\d:\d\d git {10}/);
+  });
+
+  ok('voice: "run the voice-to-app demo" and other phrases name the right demo', () => {
+    assert.equal(PL.matchDemo('run the voice-to-app demo', LIBRARY), 'voice-to-app');
+    assert.equal(PL.matchDemo('show me the skin swap', LIBRARY), 'skin-swap');
+    assert.equal(PL.matchDemo('approve by voice', LIBRARY), 'approval-flow');
+    assert.equal(PL.matchDemo('fix a failing build', LIBRARY), 'auto-fix');
+    assert.equal(PL.matchDemo('parallel split build', LIBRARY), 'parallel-split');
+    assert.equal(PL.matchDemo('the demo', LIBRARY), '');
+  });
+
+  ok('deep link: ?axf-pipeline=<id> with autoplay and live round trip; library opens the list', () => {
+    const l = PL.pipelineLink('', 'skin-swap', { play: true, mode: 'live' });
+    assert.deepEqual(PL.parsePipelineLink(l.slice(1)), { id: 'skin-swap', play: true, mode: 'live' });
+    assert.equal(PL.parsePipelineLink('?axf-pipeline=library').id, 'library');
+    assert.equal(PL.parsePipelineLink('?axf-pipeline=../x'), null);
+  });
+
+  ok('designer store: save, copy a built-in (it stays), a saved copy shadows it, built-ins cannot be deleted', () => {
+    assert.throws(() => PS.save({ name: '', chapters: [] }), /name/);
+    const mine = PS.save({ id: 'my-pipe', name: 'My pipe', type: 'custom', chapters: [{ title: 'One', say: 'Hello there everyone.', view: 'builds', events: [{ at: 1, kind: 'git', text: 'push' }] }] });
+    assert.equal(mine.builtIn, false);
+    assert.ok(PS.list().some((s) => s.id === 'my-pipe' && !s.builtIn));
+    const c = PS.copy('skin-swap');
+    assert.equal(c.id, 'skin-swap-copy');
+    assert.ok(PS.get('skin-swap').builtIn);
+    PS.save({ ...PS.get('skin-swap'), name: 'Skin swap, my way' });
+    assert.equal(PS.get('skin-swap').name, 'Skin swap, my way');
+    assert.equal(PS.remove('skin-swap'), true);
+    assert.ok(PS.get('skin-swap').builtIn);
+    assert.throws(() => PS.remove('skin-swap'), /built-in/);
+    assert.equal(PS.remove('my-pipe'), true);
+  });
+
+  if (!process.env.AXF_DEMO_DESIGNER_PROBE) {
+    const r = await PS.live('add-feature', { chapter: 'ask' });
+    const probes = await PS.probe('model-pick', { say: 'Write the data model and the schema for it. Then add a button to the list.' });
+    ok('live run: the chapter probes run for real on the test-sandbox data and the recording is what the next replay plays', () => {
+    assert.equal(r.$axf, 'pipeline-recording@1');
+    assert.ok(r.live >= 1, 'at least one real line');
+    const played = PS.playable('add-feature');
+    assert.ok(played.recordedAt);
+    assert.ok(played.timeline.events.some((e) => e.source === 'sandbox-builds'));
+    assert.ok(!PS.playable('add-feature', { recorded: false }).timeline.events.some((e) => e.source));
+    assert.match(probes[0], /→ fable/); assert.match(probes[1], /→ opus/);
+    });
+  }
+
+  ok('pipeline CLI: list, lines filtered, match, link, timeline at speed', () => {
+    const l = pcli('list', '--json'); assert.equal(l.status, 0, l.stderr);
+    assert.ok(JSON.parse(l.stdout).length >= 7);
+    const g = pcli('lines', 'parallel-split', '--kind', 'git', '--json'); assert.equal(g.status, 0, g.stderr);
+    assert.ok(JSON.parse(g.stdout).every((e) => e.kind === 'git'));
+    const m = pcli('match', 'run', 'the', 'voice-to-app', 'demo', '--json'); assert.equal(JSON.parse(m.stdout).id, 'voice-to-app');
+    assert.equal(pcli('match', 'nothing', 'like', 'this').status, 2);
+    assert.match(JSON.parse(pcli('link', 'auto-fix', '--play', '--json').stdout).path, /axf-pipeline=auto-fix&axf-autoplay=1/);
+    const t = JSON.parse(pcli('timeline', 'auto-fix', '--speed', '2', '--json').stdout);
+    assert.equal(t.wallSeconds, t.timeline.total / 2);
+    assert.equal(pcli('get', 'no-such-demo').status, 2);
+  });
+}
+
 /* ---------------- server: cloud narrator routes (python3 + fastapi, when there) ---------------- */
 {
   const py = process.env.PYTHON || 'python3';
