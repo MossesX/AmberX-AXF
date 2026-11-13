@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5062,
- "updatedAt": "2026-11-13T21:30:43.553Z",
+ "rev": 5063,
+ "updatedAt": "2026-11-13T21:31:37.891Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -208963,7 +208963,7 @@
    "pr": "#663",
    "priority": "P0",
    "createdAt": "2026-11-13T21:13:28.338Z",
-   "updatedAt": "2026-11-13T21:27:16.800Z",
+   "updatedAt": "2026-11-13T21:31:35.885Z",
    "builtAt": "2026-11-13T21:27:16.800Z",
    "notes": [
     {
@@ -208981,6 +208981,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-main-ci-red-test-sandbox-profile-export--joey, own login copy)",
      "at": "2026-11-13T21:16:48.954Z"
+    },
+    {
+     "text": "s1 done, PR #663. Fix: repo orchestrator exports only for profiles in the repo's framework/plan/profiles.json; hub-only profiles export into their shared-data folder. To stop sessions still on the old code from re-adding _claude/builds/profiles/test-sandbox/ to main before the merge, the two test-sandbox sample builds (test data from project-seed) were soft-deleted: kept in the builds journal; after the merge 'node framework/cli/project-seed.mjs seed' puts them back.",
+     "at": "2026-11-13T21:31:35.885Z"
     }
    ],
    "approvals": [],
@@ -209051,7 +209055,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
