@@ -31,6 +31,8 @@ let checks = 0;
 let last; // the last answer, printed when a check fails
 const ok = (c, what) => { if (!c) throw new Error(`✗ ${what}${last ? `\n  last answer: ${JSON.stringify(last).slice(0, 1200)}` : ''}`); checks++; };
 let browser;
+// signed in as admin, no axHub (the look is local), so nothing reaches outside the test
+const ME = { wall: false, hub: '', appearanceHub: 'off', user: null, admin: true, role: 'admin', themes: true, plugins: [] };
 
 // the orchestrator state of this checkout, cut to one build (its steps are real)
 const full = JSON.parse(execFileSync('node', [join(APP, 'plugins/build-orchestrator/orchestrator.mjs'), 'state', '--json'], { encoding: 'utf8', maxBuffer: 256 * 1024 * 1024 }).trim().split('\n').pop());
@@ -70,7 +72,7 @@ try {
   await page.route('**/api/**', (r) => {
     const u = new URL(r.request().url());
     const json = (body, status = 200) => r.fulfill({ status, contentType: 'application/json', body: JSON.stringify(body) });
-    if (u.pathname === '/api/me') return json({ wall: false, hub: '', appearanceHub: 'off', user: null, admin: true, role: 'admin', themes: true, plugins: [] });
+    if (u.pathname === '/api/me') return json(ME);
     if (u.pathname.endsWith('/build-orchestrator/state')) return json(state);
     if (u.pathname.endsWith('/build-orchestrator/pipeline')) return json(pipeline);
     if (r.request().method() === 'GET' && u.pathname === '/api/events') return r.abort();
@@ -159,10 +161,13 @@ try {
   // the deep link opens the palette with the words
   const phone = await browser.newPage({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
   await phone.route('**/api/**', (r) => (new URL(r.request().url()).pathname === '/api/me'
-    ? r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ wall: false, admin: true, role: 'admin', plugins: [] }) })
+    ? r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(ME) })
     : r.fulfill({ status: 503, contentType: 'application/json', body: '{"ok":false}' })));
   await phone.goto(`http://127.0.0.1:${PORT}/?axf-cmd=search&q=settings`);
-  await phone.waitForSelector('.cc-palette__hit', { timeout: 15_000 });
+  await phone.waitForSelector('.cc-palette__hit', { timeout: 15_000 }).catch(async () => {
+    if (process.env.CC_E2E_SHOTS) await phone.screenshot({ path: join(process.env.CC_E2E_SHOTS, 'palette-phone-failed.png') });
+    throw new Error(`✗ the deep link lists no hits: ${JSON.stringify(await phone.evaluate(() => ({ url: location.href, palette: document.querySelector('.cc-palette')?.textContent?.slice(0, 300) ?? null, input: document.querySelector('.cc-palette input')?.value ?? null, dialog: window.axfConsoleControlState?.().dialog ?? null, screen: window.axfConsoleControlState?.().screen ?? null })))}`);
+  });
   ok(!phone.url().includes('axf-cmd'), 'the deep link is taken off the address');
   if (shots) await phone.screenshot({ path: join(shots, 'palette-phone.png') });
 

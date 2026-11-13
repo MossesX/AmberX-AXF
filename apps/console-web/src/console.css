@@ -266,7 +266,7 @@
 /* console-control@1 search palette (src/control/SearchPalette.tsx): layout only, controls keep their own look */
 .cc-palette { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); }
 .cc-palette__hits { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); max-height: 60vh; overflow-y: auto; }
-.cc-palette__hit { justify-content: flex-start; text-align: start; width: 100%; }
+.cc-palette__hit { justify-content: flex-start; gap: var(--fx-dens-gap-sm); text-align: start; width: 100%; }
 .cc-palette__label { flex: 0 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.cc-palette__detail { flex: 1 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--fx-muted); font-size: var(--fx-type-root-xs); }
+.cc-palette__detail { flex: 1 1 auto; margin-inline-start: var(--fx-dens-gap-sm); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--fx-muted); font-size: var(--fx-type-root-xs); }
 .cc-palette__empty { color: var(--fx-muted); margin: 0; }

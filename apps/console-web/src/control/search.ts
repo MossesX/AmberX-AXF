@@ -121,6 +121,10 @@ function* candidates(rt: AxfRuntime): Generator<{ t: Pick<ControlTarget, 'addres
  * Rank everything for a query. Kinds filter by hit kind; the limit is clamped to SEARCH_MAX_LIMIT.
  * Throws `invalid` for an empty query.
  */
+/** A label that is only an address (`function:build-orchestrator.hold`): no words of its own to show. */
+const BARE_LABEL = /^[a-z][a-z-]*:\S+$/;
+const BARE_FACTOR = 0.4;
+
 export function consoleSearch(rt: AxfRuntime, query: SearchQuery): ConsoleSearchHit[] {
   const q = String(query?.q ?? '').trim();
   if (!q) throw new ConsoleControlError(CONSOLE_CONTROL_WIRE.INVALID, 'search needs words (query.q)', { field: 'query.q' });
@@ -137,7 +141,9 @@ export function consoleSearch(rt: AxfRuntime, query: SearchQuery): ConsoleSearch
   for (const { t, source, onScreen, value } of candidates(rt)) {
     const s = scoreEntry({ label: t.label, detail: t.detail, keywords: [...(t.keywords ?? []), ...addressIds(t.address)], kind: t.kind }, q);
     if (s <= 0) continue;
-    keep({ address: t.address, kind: t.kind, label: t.label, ...(t.detail ? { detail: t.detail } : {}), ...(t.icon ? { icon: t.icon } : {}), score: round(s + SOURCE_BOOST[source] + (KIND_BOOST[t.kind] ?? 0)), source, ...(onScreen ? { onScreen } : {}), ...(value !== undefined ? { value } : {}) });
+    // a target registered without a label of its own (the label is its address): still found, listed after named ones
+    const bare = !t.label || t.label === t.address || BARE_LABEL.test(t.label);
+    keep({ address: t.address, kind: t.kind, label: t.label || t.address, ...(t.detail ? { detail: t.detail } : {}), ...(t.icon ? { icon: t.icon } : {}), score: round((s + SOURCE_BOOST[source] + (KIND_BOOST[t.kind] ?? 0)) * (bare ? BARE_FACTOR : 1)), source, ...(onScreen ? { onScreen } : {}), ...(value !== undefined ? { value } : {}) });
   }
 
   // the framework index: plan features, tracker items, builds, windows, dialogs, words on the page (control targets are already in)
