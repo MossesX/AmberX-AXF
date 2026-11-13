@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4325,
- "updatedAt": "2026-11-13T11:30:00.046Z",
+ "rev": 4326,
+ "updatedAt": "2026-11-13T11:30:31.156Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -169556,7 +169556,7 @@
    "branch": "claude/show-commits-behind-main-on-every-build-table-an",
    "pr": "#567",
    "createdAt": "2026-11-12T10:39:34.736Z",
-   "updatedAt": "2026-11-13T11:29:49.048Z",
+   "updatedAt": "2026-11-13T11:30:17.974Z",
    "builtAt": "",
    "notes": [
     {
@@ -169610,6 +169610,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-show-commits-behind-main-on-every-build-table-an--gina, own login copy)",
      "at": "2026-11-13T11:25:44.620Z"
+    },
+    {
+     "text": "Headless run axf-show-commits-behind-main-on-every-build-table-an--gina: brief only · start 11.3K tokens ($0.03) · cost $0.20 · 9 turns · 6 tools, MCP none",
+     "at": "2026-11-13T11:30:17.974Z"
     }
    ],
    "approvals": [],
