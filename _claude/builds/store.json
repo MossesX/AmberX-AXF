@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5076,
- "updatedAt": "2026-11-13T21:55:26.356Z",
+ "rev": 5077,
+ "updatedAt": "2026-11-13T21:55:39.042Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -205285,7 +205285,7 @@
    "pr": "#664",
    "priority": "P1",
    "createdAt": "2026-11-13T19:55:30.979Z",
-   "updatedAt": "2026-11-13T21:55:12.052Z",
+   "updatedAt": "2026-11-13T21:55:36.504Z",
    "builtAt": "",
    "notes": [
     {
@@ -205339,6 +205339,10 @@
     {
      "text": "Self-check: icon-map-icon-packs-every-icon-badge-app had no session on record but axf-icon-map-icon-packs-every-icon-badge-app--earl is alive: kept running and tracking it.",
      "at": "2026-11-13T21:20:21.541Z"
+    },
+    {
+     "text": "Headless run axf-icon-map-icon-packs-every-icon-badge-app--earl: brief only · start 11.7K tokens ($0.03) · cost $17.87 · 287 turns · 6 tools, MCP none",
+     "at": "2026-11-13T21:55:36.504Z"
     }
    ],
    "approvals": [
@@ -205616,7 +205620,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
