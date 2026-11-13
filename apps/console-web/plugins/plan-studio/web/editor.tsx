@@ -44,7 +44,7 @@ export function PlanEditor({ initial, isNew, onClose, onOpen }: { initial: Plan;
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const autosave = setting(rt, KEYS.autosave, true) !== false;
 
-  // the store changed under us (an AI edit, another tab, the build syncing): take it when we have no unsaved edits
+  // the store changed under us (an AI edit, another tab, the CLI or voice): take it when we have no unsaved edits
   const live = state?.plans.find((p) => p.id === plan.id);
   useEffect(() => {
     if (!live || !saved || live.version === saved.version) return;

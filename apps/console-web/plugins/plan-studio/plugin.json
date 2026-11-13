@@ -35,6 +35,7 @@
     "dataDir": ".axf-console/plugins/plan-studio",
     "env": [],
     "mentions": [
+      ".github/workflows/android.yml",
       "_claude/memory/STATUS.md",
       "_claude/shared/rules/RULES.md",
       "apps/console-web/plugins/README.md",

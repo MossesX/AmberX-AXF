@@ -16,7 +16,7 @@ plugin's listener and the SQLite schema were Fable-reviewed on Nov 6 2026 (`_cla
 
 | Source | When | What it does |
 | --- | --- | --- |
-| build-hook@1 (`framework/core/build-hook.mjs`, `framework/cli/build-hooks.mjs`) | every builds store write, from any creator (vps.build_start, orchestrator add, pending_change add, Plan Studio "Turn into a build", hired agents, the reconciler) | `ledger/hook.mjs` → `ledger/apply.mjs`: a created build's steps become **Planned** features with his verbatim prompt, or Planned **edits** of features that already exist; status follows the build (Queued, Building, In PR, Merged, Cancelled) |
+| build-hook@1 (`framework/core/build-hook.mjs`, `framework/cli/build-hooks.mjs`) | every builds store write, from any creator (vps.build_start, orchestrator add, pending_change add, hired agents, the reconciler) | `ledger/hook.mjs` → `ledger/apply.mjs`: a created build's steps become **Planned** features with his verbatim prompt, or Planned **edits** of features that already exist; status follows the build (Queued, Building, In PR, Merged, Cancelled) |
 | merged PRs | `ledger.mjs sync` (last 300 first-parent commits) and `import` (all) | a PR with a build dates that build's features and edits (merged, merge commit); a PR without one becomes a feature or an edit |
 | early commits | `import` | first-parent commits before the first PR, feature-like subjects only, confidence guessed |
 | deploy log (deploy-log@1) | `sync` | `/opt/axf/.axf-console/deploys/log.jsonl`, written by `axf_deploy_log` in every deploy script; a feature is **Live** on a target from the first successful deploy that contains its merge commit. History before the log: guessed (~) from what each target runs now |
