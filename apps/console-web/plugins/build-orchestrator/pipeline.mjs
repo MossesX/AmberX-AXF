@@ -35,6 +35,9 @@
  *   … request --title T [--detail D | --detail-file F] [--said S] [--priority P0-P3] [--route api|subscription] [--queue] [--by who]
  *                                  file a build with the orchestrator (the id is assigned here) and, with --queue, put it in the
  *                                  Queue. Every former launch path (Build manager Start, Fix with Claude, feature assist) calls this.
+ *   … shipped-check <id> [--run]   the build's check against Shipped features (made at every split; --run checks its current
+ *                                  steps again): what it would build twice, change or conflict with, and the files it shares
+ *   … shipped-ack <id> [--why w]   Brett's go-ahead on a build that check held (it does not start until then)
  *   … show <id>                    one build as the table shows it (status, steps, pipeline record)
  *   … route <id> api|subscription|auto   the per-build override: run on an API-key account, never on one, or the default
  *
@@ -49,6 +52,9 @@
  * Group chat (crew-sections@1, framework/cli/crew-say.mjs): each section's key events are posted as the employee who owns
  * it: orchestrator (splits, auto-queue), dispatcher (launches, session ends, launch failures, idle), watchdog (self-check),
  * shipped (manifests). Dropped while the chat is off; AXF_CREW_SAY=off for tests.
+ * Shipped check (Brett, Nov 12 2026): every split first reads the Shipped features ledger (the manifests): related shipped
+ * builds go into the split prompt, and the result is checked (pipeline-core.mjs shippedCheck). A build that would redo,
+ * change or conflict with shipped work gets an AmberX alert (pipeline:shipped:<id>) and waits until Brett's shipped-ack.
  *
  * Files (AXF_PIPELINE_DIR, else /projects/amberx-axf/_data/pipeline where the hub is mounted, else ~/.axf/pipeline; shared
  * with the console container): settings.json, accounts.json, state.json (what the last tick saw and did), log.jsonl.
@@ -77,6 +83,7 @@ import * as slots from '../../../../framework/cli/agent-slots.mjs';
 import { issue as issueDispatch } from '../../../../framework/cli/dispatch-gate.mjs';
 import { shipLanded } from '../../../../framework/cli/shipped.mjs';
 import { crewSay } from '../../../../framework/cli/crew-say.mjs';
+import { listManifests } from '../../../../framework/cli/shipped-files.mjs';
 import { normPriority } from '../../../../framework/core/build-priority.mjs';
 import { act as orchAct } from './orchestrator.mjs';
 import { reap as workersReap, status as workersStatus, route as workerRoute } from '../../../../deploy/claude-workers.mjs';
@@ -101,7 +108,7 @@ export function pipeDir(env = process.env) {
   const hub = join(env.AXHUB_PROJECTS_DIR || '/projects', 'amberx-axf', '_data');
   return existsSync(hub) ? join(hub, 'pipeline') : join(homedir(), '.axf', 'pipeline');
 }
-const files = () => { const d = pipeDir(); return { dir: d, settings: join(d, 'settings.json'), accounts: join(d, 'accounts.json'), state: join(d, 'state.json'), log: join(d, 'log.jsonl'), host: join(d, 'accounts-host.json'), checkRequest: join(d, 'selfcheck-request.json'), health: join(d, 'health.json'), healthLock: join(d, 'health.lock'), healthRequest: join(d, 'health-request.json') }; };
+const files = () => { const d = pipeDir(); return { dir: d, settings: join(d, 'settings.json'), accounts: join(d, 'accounts.json'), state: join(d, 'state.json'), log: join(d, 'log.jsonl'), host: join(d, 'accounts-host.json'), checkRequest: join(d, 'selfcheck-request.json'), health: join(d, 'health.json'), shippedChecks: join(d, 'shipped-checks.json'), healthLock: join(d, 'health.lock'), healthRequest: join(d, 'health-request.json') }; };
 
 /** The Claude settings document's values (owner-only ones included), {} when unreadable. */
 export function claudeSettings(env = process.env) { return readJson(claudeSettingsFile(env))?.values ?? {}; }
@@ -127,6 +134,43 @@ export function saveOwnAccount(name, patch) {
 export const loadState = () => ({ $axf: SCHEMA_STATE, at: '', plan: null, slots: null, accounts: [], idle: null, alerts: [], launchFails: {}, recent: [], ...(readJson(files().state, {}) ?? {}) });
 const saveState = (s) => writeJson(files().state, { ...s, $axf: SCHEMA_STATE });
 const logLine = (o) => { try { mkdirSync(files().dir, { recursive: true }); appendFileSync(files().log, `${JSON.stringify({ at: nowIso(), ...o })}\n`); } catch { /* the log is a courtesy */ } };
+
+// ------------------------------------------------------------------ shipped features checks (pipeline data: shipped-checks.json)
+
+/** Every build's last shipped-check@1 record, by build id. */
+export const loadChecks = () => { const j = readJson(files().shippedChecks, {}); return j && typeof j === 'object' && !Array.isArray(j) ? j : {}; };
+export const checkOf = (id) => loadChecks()[id] ?? null;
+function saveCheck(rec) { const all = loadChecks(); all[rec.build] = rec; writeJson(files().shippedChecks, all); return rec; }
+/** The Shipped features ledger as the orchestrator reads it: every landed build's shipped-manifest@1. */
+export const shippedLedger = (env = process.env) => { try { return listManifests(env); } catch { return []; } };
+
+/**
+ * Check a build's steps against Shipped features without splitting it again (hand-written steps, or a re-check after the
+ * ledger grew). Keeps an earlier acknowledgement when the findings are the same.
+ */
+export function checkShipped(id, { by = 'orchestrator' } = {}) {
+  const b = storeCore.findBuild(loadStore(), id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
+  const prev = checkOf(b.id);
+  const rec = P.shippedCheck(b, b.steps, shippedLedger(), { provider: 'recheck' });
+  // Claude's flags from the split still stand on a re-check
+  for (const f of (prev?.findings ?? []).filter((x) => x.by === 'claude')) if (!rec.findings.some((x) => x.kind === f.kind && x.step === f.step && x.ship === f.ship)) rec.findings.push(f);
+  rec.verdict = rec.findings.length ? 'needs-brett' : 'clear'; rec.line = P.shippedLine(rec);
+  if (prev?.ackedAt && JSON.stringify(prev.findings.map((f) => f.ship).sort()) === JSON.stringify(rec.findings.map((f) => f.ship).sort())) Object.assign(rec, { ackedAt: prev.ackedAt, ackedBy: prev.ackedBy, ackWhy: prev.ackWhy });
+  saveCheck(rec);
+  logLine({ event: 'shipped-check', build: b.id, verdict: rec.verdict, findings: rec.findings.length, by });
+  return rec;
+}
+
+/** Brett's go-ahead on a build the shipped check held: it may start (the note says who and why). */
+export function ackShipped(id, { by = process.env.AXF_ACTOR || 'console', why = '' } = {}) {
+  const b = storeCore.findBuild(loadStore(), id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
+  const c = checkOf(b.id);
+  if (!P.shippedHolds(c)) throw Object.assign(new Error(c ? `${b.id} is not held by the shipped check (${c.ackedAt ? `acknowledged by ${c.ackedBy}` : c.verdict})` : `${b.id} has no shipped check`), { code: 2 });
+  const rec = saveCheck({ ...c, ackedAt: nowIso(), ackedBy: str(by, 80), ackWhy: str(why, 300) });
+  setPipeline(b.id, { note: '' }, { note: `Go-ahead on the shipped-features check (${by})${why ? `: ${str(why, 300)}` : ''}. ${c.line}.`, by, action: 'pipeline:shipped-ack' });
+  logLine({ event: 'shipped-ack', build: b.id, by });
+  return rec;
+}
 
 // ------------------------------------------------------------------ reads
 
@@ -192,11 +236,12 @@ export function accountsRead(store, settings = loadSettings(), env = process.env
 /** Accounts as the pipeline sees them: claude-workers rows + what the store says runs on each + the pipeline's own records. */
 export function accountsNow(store, settings = loadSettings()) { return accountsRead(store, settings).accounts; }
 
-const row = (b) => {
+const shippedRow = (c) => (c ? { verdict: c.verdict, line: c.line, holds: P.shippedHolds(c), at: c.at, ackedAt: c.ackedAt, ackedBy: c.ackedBy, findings: c.findings.length, touches: c.touches.length } : null);
+const row = (b, checks = null) => {
   const p = orch.progress(b); const nx = orch.nextUp(b);
   return { id: b.id, title: b.title, status: b.status, priority: priorityLabel(effectivePriority(b)), steps: { done: p.done, total: p.total, left: p.total - p.done - p.skipped }, minutesLeft: p.minutesLeft,
     nextModel: BP.nextModel(b), nextStep: nx.step ? `${nx.step.id} ${nx.step.text}`.slice(0, 200) : '', needsApproval: nx.needsApproval, needsSplit: P.needsSplit(b), pipeline: b.pipeline ?? null, said: subtitle(b.origin, 160), branch: b.branch, pr: b.pr, createdAt: b.createdAt, updatedAt: b.updatedAt,
-    tab: BP.tabOf(b), held: BP.isHeld(b), actions: BP.actionsFor(b), deleted: !!b.deleted, deletedAt: b.deletedAt ?? '', builtAt: b.builtAt ?? '', stepList: (b.steps ?? []).slice(0, 40).map((x) => ({ id: x.id, text: str(x.text, 160), model: x.model, estimate: x.estimate ?? '', done: !!x.done, skip: !!x.skip })) };
+    shipped: shippedRow(checks?.[b.id]), tab: BP.tabOf(b), held: BP.isHeld(b), actions: BP.actionsFor(b), deleted: !!b.deleted, deletedAt: b.deletedAt ?? '', builtAt: b.builtAt ?? '', stepList: (b.steps ?? []).slice(0, 40).map((x) => ({ id: x.id, text: str(x.text, 160), model: x.model, estimate: x.estimate ?? '', done: !!x.done, skip: !!x.skip })) };
 };
 
 /** The whole picture for the console and the CLI. */
@@ -207,14 +252,15 @@ export function status() {
   const builds = live(store).filter((b) => inProfile(b, scope.profile));
   const ageMin = read.at ? Math.max(0, Math.round((Date.now() - Date.parse(read.at)) / 60e3)) : null;
   const accountsFrom = { source: read.source, at: read.at, ageMin, why: read.why || (read.source === 'snapshot' && ageMin > 5 ? `the host's account snapshot is ${ageMin} min old: the dispatcher cron may be stopped` : '') };
-  const plan = P.plan({ builds: runnable(store, scope), accounts, slots: sl, settings, rules: rulesOf(store) });
+  const checks = loadChecks();
+  const plan = P.plan({ builds: runnable(store, scope), accounts, slots: sl, settings, rules: rulesOf(store), checks });
   const byTable = { pending: [], queued: [], building: [] };
-  for (const b of builds) { const t = BP.tableOf(b); if (t && !b.hidden) byTable[t].push(row(b)); }
+  for (const b of builds) { const t = BP.tableOf(b); if (t && !b.hidden) byTable[t].push(row(b, checks)); }
   byTable.queued.sort((a, b) => plan.queue.indexOf(a.id) - plan.queue.indexOf(b.id));
   byTable.pending.sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
   byTable.building.sort((a, b) => str(b.pipeline?.launchedAt).localeCompare(str(a.pipeline?.launchedAt)));
   const tabs = Object.fromEntries(BP.TABS.map((t) => [t, []]));
-  for (const b of store.builds) { if (!inProfile(b, scope.profile)) continue; const t = BP.tabOf(b); if (t) tabs[t].push(row(b)); } // every record of the project: the Deleted tab shows soft-deleted builds
+  for (const b of store.builds) { if (!inProfile(b, scope.profile)) continue; const t = BP.tabOf(b); if (t) tabs[t].push(row(b, checks)); } // every record of the project: the Deleted tab shows soft-deleted builds
   tabs.queue.sort((a, b) => plan.queue.indexOf(a.id) - plan.queue.indexOf(b.id));
   tabs.active.sort((a, b) => str(b.pipeline?.launchedAt).localeCompare(str(a.pipeline?.launchedAt)));
   for (const t of ['pending', 'incomplete', 'errors']) tabs[t].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt));
@@ -352,12 +398,17 @@ export function splitBuild(id, { provider = '', by = 'orchestrator' } = {}) {
   const b = storeCore.findBuild(store, id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
   if (['built', 'complete', 'archived'].includes(b.status)) throw Object.assign(new Error(`${b.id} is ${b.status}: nothing to split`), { code: 2 });
   let steps = []; let used = 'rules'; let note = ''; let error = '';
+  // first the Shipped features ledger: what already landed that this job touches goes into the split, so nothing is built twice
+  const ledger = shippedLedger(); const ctx = P.shippedContext(b, ledger);
+  let flags = []; let alreadyShipped = null;
   if (provider !== 'rules') {
-    const a = askSplitter(P.splitPrompt(b, rules), settings);
-    if (!a.error) { const p = P.parseSplit(a.text, rules); if (!p.error && p.steps.length) { steps = p.steps; used = 'claude'; } else error = p.error || 'empty answer'; } else error = a.error;
+    const a = askSplitter(P.splitPrompt(b, rules, ctx), settings);
+    if (!a.error) { const p = P.parseSplit(a.text, rules); flags = p.flags ?? []; alreadyShipped = p.alreadyShipped ?? null; if (!p.error && p.steps.length) { steps = p.steps; used = 'claude'; } else if (!p.error && alreadyShipped) { error = ''; } else error = p.error || 'empty answer'; } else error = a.error;
   }
-  if (!steps.length) { steps = P.rulesSplit(b, rules); used = 'rules'; note = `Split by rules${error ? ` (Claude: ${str(error, 200)})` : ''}: one step per line of the request, review the steps.`; }
+  if (!steps.length) { steps = P.rulesSplit(b, rules); used = 'rules'; note = alreadyShipped ? `Claude says this is already shipped (${alreadyShipped.id}): steps made by rules only so it can be reviewed.` : `Split by rules${error ? ` (Claude: ${str(error, 200)})` : ''}: one step per line of the request, review the steps.`; }
   else note = `Split by Claude into ${steps.length} steps (${steps.filter((s) => s.model === 'Fable').length} Fable).`;
+  const check = saveCheck(P.shippedCheck(b, steps, ledger, { flags, alreadyShipped, provider: used }));
+  note = `${note} Shipped features: ${check.line}.`;
   const done = new Map(b.steps.filter((s) => s.done).map((s) => [s.text.trim().toLowerCase(), s]));
   let out = null;
   withStore((s) => {
@@ -371,8 +422,8 @@ export function splitBuild(id, { provider = '', by = 'orchestrator' } = {}) {
     rec.notes.push({ text: note, at: now }); rec.updatedAt = now; out = rec;
     return s;
   }, { by, action: 'pipeline:split', note: b.id });
-  logLine({ event: 'split', build: b.id, provider: used, steps: out.steps.length, error });
-  return { id: b.id, provider: used, steps: out.steps.length, error, note };
+  logLine({ event: 'split', build: b.id, provider: used, steps: out.steps.length, error, shipped: check.verdict });
+  return { id: b.id, provider: used, steps: out.steps.length, error, note, shipped: check };
 }
 
 /** Every build that needs the orchestrator's split gets one (a few per round); auto-queue when the Claude setting says so. */
@@ -389,6 +440,8 @@ export function intake({ max = MAX_SPLITS_PER_TICK, alert = () => {} } = {}) {
         const r = splitBuild(b.id); out.split.push(r); alert('split', { id: b.id, title: b.title, steps: r.steps, error: r.provider === 'rules' ? r.note : '', note: r.note });
         if (r.provider === 'rules') crewSay('orchestrator', 'waiting', `Split ${b.id} by rules into ${r.steps} steps (Claude couldn't). Brett, check the steps before it runs.`, { ref: b.id });
         else crewSay('orchestrator', 'done', `Split ${b.id} into ${r.steps} steps.`, { ref: b.id });
+        // it would redo, change or conflict with something shipped: Brett hears it now, and the build waits for his go
+        if (P.shippedHolds(r.shipped)) alert('shipped', { id: b.id, title: b.title, line: r.shipped.line, findings: r.shipped.findings });
       }
       catch (e) { out.skipped.push({ id: b.id, error: e.message }); }
     }
@@ -400,6 +453,8 @@ export function intake({ max = MAX_SPLITS_PER_TICK, alert = () => {} } = {}) {
       // Launch builds without asking is ON: a split build with every step still open goes to the Queue by itself; one a session
       // handed back to Pending (returned) waits for Brett
       if (b.status !== 'pending' || b.hidden || !b.steps.length || P.needsSplit(b, rules) || b.pipeline?.lastRun?.outcome === 'returned') continue;
+      // held by the shipped-features check: stays in Pending until Brett says go
+      if (P.shippedHolds(checkOf(b.id))) { out.skipped.push({ id: b.id, error: 'waiting for Brett on the shipped-features check' }); continue; }
       try { queue(b.id, { by: 'auto (Launch builds without asking)' }); out.queued.push(b.id); crewSay('orchestrator', 'start', `Queued ${b.id} by itself (Launch builds without asking is on).`, { ref: b.id }); } catch (e) { out.skipped.push({ id: b.id, error: e.message }); }
     }
   }
@@ -604,7 +659,7 @@ export function tick({ env = process.env } = {}) {
   const read = accountsRead(store, settings, env); const accounts = read.accounts; const sl = slotsNow();
   // the console (in its container) can't see the logins: it reads what the host saw here
   if (read.source === 'host') { try { writeHostAccounts(read.rows, read.at || nowIso()); } catch (e) { logLine({ event: 'snapshot-failed', error: str(e.message, 300) }); } }
-  const plan = P.plan({ builds: runnable(store), accounts, slots: sl, settings, rules });
+  const plan = P.plan({ builds: runnable(store), accounts, slots: sl, settings, rules, checks: loadChecks() });
   planAhead(store, accounts, settings);
   const launched = []; const failed = [];
   const hourAgo = Date.now() - 3600e3;
@@ -885,14 +940,26 @@ async function main(argv) {
   }
   if (cmd === 'split') {
     if (has('request')) { const b = setPipeline(rest[0], { splitRequested: nowIso() }, { note: `Split asked for by ${by}.`, by, action: 'pipeline:split-request' }); return out({ ok: true, id: b.id, requested: b.pipeline.splitRequested }, `${b.id}: split on the next tick`); }
-    const r = splitBuild(rest[0], { provider: flag('provider'), by }); return out({ ok: true, ...r }, `${r.id}: ${r.note}`);
+    const r = splitBuild(rest[0], { provider: flag('provider'), by });
+    if (P.shippedHolds(r.shipped)) { const b = storeCore.findBuild(loadStore(), r.id); makeConsole()('POST', '/api/alerts', P.alertFor('shipped', { id: r.id, title: b?.title || r.id, line: r.shipped.line, findings: r.shipped.findings })); }
+    return out({ ok: true, ...r }, `${r.id}: ${r.note}`);
   }
+  if (cmd === 'shipped-check') {
+    // the last check (default), or --run: check the build's current steps against the ledger again (no new split)
+    const id = rest[0]; if (!id) throw Object.assign(new Error('usage: shipped-check <id> [--run]'), { code: 2 });
+    const c = has('run') ? checkShipped(id, { by }) : checkOf(storeCore.findBuild(loadStore(), id)?.id || id);
+    if (!c) return out({ ok: true, id, check: null }, `${id}: not checked against Shipped features yet (shipped-check ${id} --run)`);
+    return out({ ok: true, id: c.build, check: c, holds: P.shippedHolds(c) }, [`${c.build}: ${c.line}${c.ackedAt ? ` · go-ahead by ${c.ackedBy} ${c.ackedAt.slice(0, 16)}` : ''}`,
+      ...c.findings.map((f) => `  ${f.kind.padEnd(9)} ${f.step || 'build'} → ${f.ship}${f.title ? ` (${f.title})` : ''}${f.why ? `: ${f.why}` : ''}`),
+      ...c.touches.slice(0, 12).map((t) => `  touches   ${t.step} → ${t.ship}: ${t.files.join(', ')}`)].join('\n'));
+  }
+  if (cmd === 'shipped-ack') { const c = ackShipped(rest[0], { by, why: flag('why') || '' }); return out({ ok: true, id: c.build, check: c }, `${c.build}: go-ahead recorded (${by}); it may start`); }
   if (cmd === 'request') {
     const df = flag('detail-file'); const detail = df ? readFileSync(df, 'utf8') : flag('detail');
     const b = request({ title: flag('title'), detail, said: flag('said'), priority: flag('priority'), route: flag('route') === 'auto' ? '' : flag('route'), queue: has('queue'), by, source: flag('source') });
     return out({ ok: true, id: b.id, status: b.status, build: { id: b.id, title: b.title, status: b.status } }, `${b.id} filed${b.status === 'queued' ? ' and queued: the dispatcher starts it' : ' in Pending'}`);
   }
-  if (cmd === 'show') { const b = storeCore.findBuild(loadStore(), rest[0]); if (!b) throw Object.assign(new Error(`no build "${rest[0]}"`), { code: 2 }); const r = row(b); return out({ ok: true, build: r }, `${r.id} ${r.status} ${r.steps.done}/${r.steps.total}${r.pipeline?.account ? ` on ${r.pipeline.account}` : ''}`); }
+  if (cmd === 'show') { const b = storeCore.findBuild(loadStore(), rest[0]); if (!b) throw Object.assign(new Error(`no build "${rest[0]}"`), { code: 2 }); const r = row(b, loadChecks()); return out({ ok: true, build: r }, `${r.id} ${r.status} ${r.steps.done}/${r.steps.total}${r.pipeline?.account ? ` on ${r.pipeline.account}` : ''}`); }
   if (cmd === 'route') { const b = setRoute(rest[0], rest[1], { by }); return out({ ok: true, id: b.id, route: b.pipeline?.route || 'auto' }, `${b.id}: route ${b.pipeline?.route || 'auto'}`); }
   if (cmd === 'intake') { const r = intake(); return out({ ok: true, ...r }, [`split: ${r.split.map((x) => `${x.id} (${x.provider}, ${x.steps})`).join(', ') || 'nothing'}`, `queued: ${r.queued.join(', ') || 'nothing'}`, ...r.skipped.map((x) => `skipped ${x.id}: ${x.error}`)].join('\n')); }
   if (cmd === 'tick') {

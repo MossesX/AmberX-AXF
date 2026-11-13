@@ -527,6 +527,32 @@ async def pipeline_split(request: Request) -> dict[str, Any]:
     return _pipeline("split", _build_id(body.get("id")), "--request", "--by", (brett_click(request) or "console")[:80])
 
 
+@router.get("/pipeline/shipped-check")
+def pipeline_shipped_check(id: str = "") -> dict[str, Any]:
+    """?id=: the build's check against Shipped features, made at every split: verdict (clear | needs-brett), what it would
+    build twice, change or conflict with (findings), the files it shares with shipped builds (touches), and Brett's go-ahead."""
+    return _pipeline("shipped-check", _build_id(id))
+
+
+@router.post("/pipeline/shipped-check")
+async def pipeline_shipped_recheck(request: Request) -> dict[str, Any]:
+    """{id}: check the build's current steps against Shipped features again (no new split)."""
+    body = await _json_body(request)
+    return _pipeline("shipped-check", _build_id(body.get("id")), "--run", "--by", (brett_click(request) or "console")[:80])
+
+
+@router.post("/pipeline/shipped-ack")
+async def pipeline_shipped_ack(request: Request) -> dict[str, Any]:
+    """{id, why?}: Brett's go-ahead on a build the shipped-features check held (it redoes, changes or conflicts with shipped
+    work). Until then the dispatcher does not start it. Recorded with who and why on the build."""
+    body = await _json_body(request)
+    args = ["shipped-ack", _build_id(body.get("id")), "--by", (brett_click(request) or "console")[:80]]
+    why = str(body.get("why") or "")[:300]
+    if why.strip():
+        args += ["--why", why]
+    return _pipeline(*args)
+
+
 @router.post("/pipeline/account")
 async def pipeline_account(request: Request) -> dict[str, Any]:
     """{name, fable?: on|off|auto, parallel?: n, use?: on|off}: the pipeline's own record of a Claude account (never a credential)."""
