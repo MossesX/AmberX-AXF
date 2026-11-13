@@ -717,6 +717,21 @@ ddir = Path(os.environ["AXF_PUSH_BANNER_DIR"])
                                             "items": [{"id": "feat-a", "pr": 18, "state": "blocked", "reason": {"kind": "ui", "text": "feat-a: its screenshots are waiting in UI Review."}}]}))
 r = c.get("/p/land")
 check(r.status_code == 200 and r.json()["items"][0]["id"] == "feat-a" and r.json()["order"] == [18], "GET /land: what the host runner wrote")
+
+class FakeDispatch:
+    def __init__(self) -> None:
+        self.asked: list[dict] = []
+    def request(self, title, detail="", **kw):
+        self.asked.append({"title": title, "detail": detail, **kw})
+        return {"ok": True, "id": "merge-main-and-land-feat-a", "status": "queued"}
+r = c.post("/p/land/fix", json={"build": "feat-a", "kind": "conflict", "title": "Merge main and land feat-a", "detail": "clash in a.ts"})
+check(r.status_code == 503, "POST /land/fix without the Build orchestrator: 503, says why")
+fd = FakeDispatch()
+plugin_services.provide("axf.build-dispatch@1", fd, "fake-orchestrator")
+r = c.post("/p/land/fix", json={"build": "feat-a", "branch": "claude/feat-a", "kind": "conflict", "title": "Merge main and land feat-a", "detail": "clash in a.ts", "attempt": 1})
+check(r.status_code == 200 and r.json()["id"] == "merge-main-and-land-feat-a" and fd.asked[0]["priority"] == "P0" and fd.asked[0]["queue"] is True, "POST /land/fix files a P0 fix build straight into the Queue (axf.build-dispatch@1)")
+check(c.post("/p/land/fix", json={"build": "feat-a", "kind": "ui"}).status_code == 400, "only a clash or red tests get a fix build")
+plugin_services.withdraw("fake-orchestrator")
 check(c.get("/p/land/blocked").json()["items"][0]["state"] == "blocked", "GET /land/blocked: the blocked ones")
 r = c.post("/p/land/hold", json={"build": "feat-a", "why": "Brett wants to look"})
 check(r.status_code == 200 and r.json()["holds"]["feat-a"]["why"] == "Brett wants to look", "POST /land/hold runs land.mjs and records the hold")

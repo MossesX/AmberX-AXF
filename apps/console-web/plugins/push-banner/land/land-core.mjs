@@ -229,6 +229,52 @@ export function agentJobFor(b, reason) {
   return { type: 'land-build', input: { branch: b.branch, build: b.id, checks } };
 }
 
+/**
+ * The P0 fix build for a build that clashes with main in code or whose tests fail (Brett, Nov 13 2026: it keeps trying
+ * until it lands; Brett gets an FYI per attempt, never a question). Filed through the orchestrator's
+ * axf.build-dispatch@1 (POST /land/fix on this plugin's server), priority P0, straight into the Queue. The fix works on
+ * the build's own branch, so its PR and its place in the merge queue stay.
+ */
+export const FIX_RETRY_MS = 90 * 60 * 1000;
+export const FIX_RETRY_MAX_MS = 6 * 3600 * 1000;
+
+/** Is a new fix attempt due? No attempt yet; the head moved and it still fails; or the last one went quiet too long. */
+export function fixDue(prev, reason, head, nowMs = Date.now()) {
+  if (!reason?.agent) return false;
+  if (!prev || !prev.attempt) return true;
+  if (head && prev.head && prev.head !== head) return true;
+  const wait = Math.min(FIX_RETRY_MAX_MS, FIX_RETRY_MS * prev.attempt);
+  return nowMs - Date.parse(prev.at || 0) >= wait;
+}
+
+/** The fix build's title and brief (plain words, the exact files or checks, where to push). */
+export function fixBuildFor(b, reason, { attempt = 1, pr = null } = {}) {
+  const what = reason.kind === 'conflict' ? `merging main into it clashes in code: ${(reason.files || []).slice(0, 12).join(', ') || 'see the merge'}`
+    : `its tests fail: ${(reason.checks || []).slice(0, 8).join(', ') || 'see the PR checks'}`;
+  const title = `Merge main and land ${b.id}${attempt > 1 ? ` (attempt ${attempt})` : ''}`.slice(0, 200);
+  const detail = [
+    `Auto-land could not land \`${b.id}\` (${str(b.title, 200) || b.id}): ${what}.`,
+    '',
+    `Work on its own branch \`${b.branch}\`${pr ? ` (PR #${pr})` : ''}; do not open a new PR.`,
+    `1. git fetch origin && git checkout ${b.branch} && git merge origin/main`,
+    '2. Resolve every conflict keeping both sides\' intent (builds files: newer wins; THREADS / STATUS / decisions: keep both).',
+    `3. Make ${reason.kind === 'ci' ? 'the failing checks' : 'the tests the clash touches'} pass, plus node framework/cli/tracker.mjs --check.`,
+    `4. Commit and push to ${b.branch}. Auto-land and the merge queue land it by themselves.`,
+    '',
+    `Attempt ${attempt}. Auto-land retries until it lands; Brett gets an FYI for each attempt.`,
+  ].join('\n');
+  return { title, detail, priority: 'P0', build: b.id, branch: b.branch, kind: reason.kind, attempt };
+}
+
+/** The FYI Brett gets for each fix attempt: information, not a question. */
+export function fixFyi(b, reason, { attempt = 1, fixId = '', pr = null } = {}) {
+  return {
+    source: 'push-banner', key: `land-fix:${b.id}`, severity: 'info',
+    title: `FYI: ${b.id} ${reason.kind === 'conflict' ? 'clashes with main' : 'fails its tests'}; fix build ${attempt > 1 ? `attempt ${attempt} ` : ''}queued (P0)`.slice(0, 200),
+    body: `${reason.text}${pr ? ` PR #${pr}.` : ''} ${fixId ? `Fix build ${fixId} is in the Queue at P0.` : 'A P0 fix build is in the Queue.'} Nothing to do: it lands by itself.`.slice(0, 600),
+  };
+}
+
 /** The commands, declared once: the CLI, the push banner's REST routes and (through plugin-commands@1) MCP. */
 export const LAND_COMMANDS = Object.freeze([
   { id: 'land-list', method: 'GET', path: '/land', cli: 'list', title: 'Auto-land: every finished build', description: 'Every finished build the pipeline lands, in landing order, with its PR, state and what it waits on.', effect: 'read' },

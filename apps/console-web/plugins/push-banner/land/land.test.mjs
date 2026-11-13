@@ -12,7 +12,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from './land-core.mjs';
-import { makeGit, round, control, readState, readControl, ciOf, reasonEvent, badJson, takeLandLock, dropLandLock, serial, lockOwner } from './land.mjs';
+import { makeGit, round, control, readState, readControl, ciOf, reasonEvent, badJson, takeLandLock, dropLandLock, serial, lockOwner, requestFix } from './land.mjs';
 import { finishedBy, onBuildEvents } from './hook.mjs';
 process.env.AXF_CREW_SAY = 'off'; // group-chat posts (crew-say.mjs) stay out of the real Breakroom
 
@@ -270,6 +270,29 @@ console.log('serial landing line: two landings never race');
   dropLandLock();
   check(core.REF_LOCK_ERR.test("error: cannot lock ref 'refs/remotes/origin/main': is at 1a2b but expected 3c4d") && !core.REF_LOCK_ERR.test('fatal: not a git repository'), 'a lost ref lock is recognised (retried, not reported)');
   delete process.env.AXF_LAND_LOCK; rmSync(ld, { recursive: true, force: true });
+}
+console.log('fix builds: a clash or red tests gets a P0 "merge main and land" build, again until it lands');
+{
+  const B = { id: 'feat-z', title: 'Feat Z', branch: 'claude/feat-z' };
+  const clash = core.blockReason('feat-z', { conflicts: ['a.ts', 'b.py'] });
+  const fb = core.fixBuildFor(B, clash, { attempt: 2, pr: 77 });
+  check(fb.priority === 'P0' && /Merge main and land feat-z \(attempt 2\)/.test(fb.title) && /a\.ts, b\.py/.test(fb.detail) && /claude\/feat-z` \(PR #77\)/.test(fb.detail), 'the fix build: P0, names the files, works on the build\'s own branch and PR');
+  check(core.fixDue(null, clash, 'h1') && !core.fixDue({ attempt: 1, head: 'h1', at: new Date().toISOString() }, clash, 'h1'), 'first attempt at once; not again at the same head right away');
+  check(core.fixDue({ attempt: 1, head: 'h1', at: new Date().toISOString() }, clash, 'h2'), 'the head moved and it still clashes: next attempt');
+  check(core.fixDue({ attempt: 1, head: 'h1', at: new Date(Date.now() - core.FIX_RETRY_MS - 1000).toISOString() }, clash, 'h1') && !core.fixDue({ attempt: 3, head: 'h1', at: new Date(Date.now() - core.FIX_RETRY_MS * 2).toISOString() }, clash, 'h1'), 'a quiet attempt is retried after 90 min, backing off per attempt');
+  check(!core.fixDue(null, core.blockReason('feat-z', { ui: 'waiting', ci: 'success' }), 'h1'), 'only a clash or red tests get a fix build');
+  const fyi = core.fixFyi(B, clash, { attempt: 2, fixId: 'merge-main-and-land-feat-z' });
+  check(fyi.severity === 'info' && /^FYI:/.test(fyi.title) && /Nothing to do/.test(fyi.body), 'Brett gets an FYI, not a question');
+  const sent = []; const fapi = async (m, p, b) => { sent.push({ p, b }); return p.endsWith('/land/fix') ? { ok: true, id: 'merge-main-and-land-feat-z', status: 'queued' } : { ok: true }; };
+  const sd = { repo: process.cwd(), dataDir: tmpdir() };
+  const r = await requestFix({ s: sd, api: fapi, b: B, reason: clash, head: 'h1', pr: 77, prev: null, at: 't', agentJob: () => { throw new Error('no agent when the build is filed'); } });
+  check(r.via === 'build' && r.id === 'merge-main-and-land-feat-z' && r.attempt === 1 && sent[0].p === '/api/plugins/push-banner/land/fix' && sent[0].b.priority === 'P0', 'filed through the console as a P0 build');
+  check(sent.some((x) => x.p === '/api/alerts' && x.b.severity === 'info'), 'and an FYI alert went out');
+  const again = await requestFix({ s: sd, api: fapi, b: B, reason: clash, head: 'h1', pr: 77, prev: r, at: 't' });
+  check(again === null, 'not filed twice for the same head');
+  const jobs = []; const down = async () => null;
+  const fb2 = await requestFix({ s: sd, api: down, b: B, reason: clash, head: 'h2', pr: 77, prev: r, at: 't', agentJob: (j) => { jobs.push(j); return { exit: 0 }; } });
+  check(fb2.via === 'agent' && fb2.attempt === 2 && jobs[0].type === 'land-build', 'console down: the agent job takes attempt 2');
 }
 console.log('group chat: a landing reason is Brett\'s move, a code fix, or something in the way');
 check(['held', 'ui', 'code'].every((k) => reasonEvent(k) === 'waiting'), 'held, UI Review and uncommitted code wait for Brett');

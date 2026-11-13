@@ -381,6 +381,25 @@ class Pushes:
                 "order": [n for n in st.get("order", []) if isinstance(n, int)] if isinstance(st.get("order"), list) else [],
                 "managed": [n for n in st.get("managed", []) if isinstance(n, int)] if isinstance(st.get("managed"), list) else []}
 
+    def land_fix(self, body: Any) -> dict[str, Any]:
+        if not isinstance(body, dict) or not isinstance(body.get("build"), str) or not LAND_ID.match(body["build"]):
+            raise HTTPException(400, "send {build, branch, title, detail, kind, attempt}")
+        if body.get("kind") not in ("conflict", "ci"):
+            raise HTTPException(400, "kind is conflict or ci")
+        title = _text(body.get("title"), 200).strip() or f"Merge main and land {body['build']}"
+        detail = _text(body.get("detail"), 8000)
+        svc = claudefix.plugin_services.get(claudefix.DISPATCH)
+        if not svc:
+            raise HTTPException(503, "the Build orchestrator (axf.build-dispatch@1) is not installed")
+        try:
+            r = svc.request(title, detail, by="auto-land", source="push-banner", priority="P0", queue=True)
+        except Exception as e:  # noqa: BLE001 — the orchestrator's own refusal
+            raise HTTPException(409, _text(f"the orchestrator did not take it: {getattr(e, 'detail', None) or e}", 300)) from None
+        bid = str((r or {}).get("id") or "")
+        if not bid:
+            raise HTTPException(502, "the orchestrator gave no build id")
+        return {"ok": True, "id": bid, "status": _text((r or {}).get("status"), 40) or "queued", "build": body["build"], "priority": "P0"}
+
     def land_command(self, cmd: str, body: Any) -> dict[str, Any]:
         """now | hold | release: one implementation, land/land.mjs (the same file the CLI and the host runner use)."""
         if not isinstance(body, dict) or set(body) - {"build", "why"} or not isinstance(body.get("build"), str) or not LAND_ID.match(body["build"]):
@@ -1460,6 +1479,14 @@ def land_blocked() -> dict[str, Any]:
 def ui_hold(branch: str = "", pr: int = 0) -> dict[str, Any]:
     """The UI Review state holding a PR for the auto-land script ('' = free), asked through ui-review@1."""
     return {"hold": PUSHES.ui_hold(UI_REVIEW_REPO, pr, branch)}
+
+
+@router.post("/land/fix")
+def land_fix(body: Any = Body(None)) -> dict[str, Any]:
+    """{build, branch, title, detail, kind, attempt}: auto-land (land/land.mjs on the host) files a P0 "merge main and land"
+    fix build for a finished build that clashes with main in code or fails its tests. Through the orchestrator's
+    axf.build-dispatch@1, straight into its Queue (Brett, Nov 13 2026: keep trying until it lands; FYI, not a question)."""
+    return PUSHES.land_fix(body)
 
 
 @router.post("/land/now")

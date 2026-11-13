@@ -433,12 +433,11 @@ export async function round({ s = settings(), git = makeGit(s.repo), gh = makeGi
       }
       it.pushed = { kind: it.reason.kind, head: it.head, at };
     }
-    if (it.reason?.agent && !(old.agent && old.agent.kind === it.reason.kind && old.agent.head === it.head)) {
-      const job = core.agentJobFor(b, it.reason);
-      if (job && !dry) {
-        it.agent = { kind: it.reason.kind, head: it.head, at, ...agentJob(job) };
-        if (it.agent.exit === 0) crewSay('landing', 'start', `Handed ${b.id} to ${it.agent.session || 'an agent'} for the ${it.reason.kind === 'ci' ? 'red CI' : 'code conflict'}.`, { ref: b.id, repo: s.repo });
-      }
+    // a code clash or failing tests: a P0 "merge main and land" fix build, again and again until it lands (FYI each time)
+    it.fix = old.fix || null;
+    if (it.reason?.agent && !dry) {
+      const f = await requestFix({ s, api, b, reason: it.reason, head: it.head, pr: it.pr, prev: old.fix, at, nowMs: now().getTime(), agentJob });
+      if (f) { it.fix = f; if (f.via === 'agent') it.agent = { kind: it.reason.kind, head: it.head, at, ...f.job }; }
     }
     if (!it.reason && old.pushed && !dry) await api('POST', '/api/alerts/resolve', { keys: [core.alertKey(b.id)] });
     if (!it.reason && old.state !== 'ready' && !dry) crewSay('landing', 'done', `${b.id}${it.pr ? ` (#${it.pr})` : ''} is ready: CI green, nothing holds it. It joins the merge queue.`, { ref: b.id, repo: s.repo });
@@ -451,6 +450,28 @@ export async function round({ s = settings(), git = makeGit(s.repo), gh = makeGi
     items: only ? [...items, ...(prev.items || []).filter((x) => x.id !== only)] : items };
   if (!dry) { writeJson(stateFile(s), st); const c = readControl(s); if (c.now?.length) writeJson(controlFile(s), { ...c, now: c.now.filter((id) => !items.some((x) => x.id === id)) }); }
   return st;
+}
+
+/**
+ * File the next fix attempt when one is due (land-core fixDue): through the console (POST /land/fix → the orchestrator's
+ * axf.build-dispatch@1, P0, queued), else the old agent job. Brett gets an FYI alert per attempt. Returns the new fix
+ * record, or null when nothing was due.
+ */
+export async function requestFix({ s, api, b, reason, head, pr, prev, at, nowMs = Date.now(), agentJob = defaultAgentJob(s) }) {
+  if (!core.fixDue(prev, reason, head, nowMs)) return null;
+  const attempt = (prev?.attempt || 0) + 1;
+  const fb = core.fixBuildFor(b, reason, { attempt, pr });
+  const r = await api('POST', '/api/plugins/push-banner/land/fix', fb);
+  let rec;
+  if (r && r.ok && r.id) rec = { attempt, head, at, kind: reason.kind, via: 'build', id: r.id, status: r.status || 'queued' };
+  else {
+    const job = core.agentJobFor(b, reason);
+    const j = job ? agentJob(job) : { exit: 1, why: 'no job' };
+    rec = { attempt, head, at, kind: reason.kind, via: 'agent', job: j, why: String(r?.detail || r?.error || 'the console did not take the fix build').slice(0, 200) };
+  }
+  await api('POST', '/api/alerts', core.fixFyi(b, reason, { attempt, fixId: rec.id || '', pr }));
+  crewSay('landing', 'start', `${b.id}${pr ? ` (#${pr})` : ''}: ${reason.kind === 'conflict' ? 'clashes with main' : 'tests fail'}. Fix attempt ${attempt}${rec.id ? ` is build ${rec.id} (P0, queued)` : ' went to an agent'}.`, { ref: b.id, repo: s.repo });
+  return rec;
 }
 
 function defaultAgentJob(s) {
