@@ -25,16 +25,15 @@ function speak(text: string, rate: number) {
   } catch { /* no speech here */ }
 }
 
-/** Keep the server's copy of the player state current (status, chapter, dock or filter changed; at most twice a second). */
+/** Keep the server's copy of the player state current: on a change of status, chapter, dock or filter, and every 5 demo seconds. */
 function useReportState() {
   const p = usePipelines();
   const sent = useRef('');
-  const at = useRef(0);
   useEffect(() => {
     const s = pipelineState();
-    const key = JSON.stringify({ ...s, at: Math.floor(s.at / 5) });
-    if (key === sent.current || Date.now() - at.current < 500) return;
-    sent.current = key; at.current = Date.now();
+    const key = JSON.stringify({ ...s, at: Math.floor(s.at / 5), lines: Math.floor(s.lines / 10) });
+    if (key === sent.current) return;
+    sent.current = key;
     void api.post('pipeline/state', s).catch(() => { /* the server is optional for playing */ });
   }, [p]);
 }

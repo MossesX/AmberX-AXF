@@ -34,7 +34,8 @@
     "mentions": [
       "_claude/memory/STATUS.md",
       ".github/workflows/android.yml",
-      "apps/console-web/plugins/README.md"
+      "apps/console-web/plugins/README.md",
+      "framework/spec/PORTING.md"
     ]
   },
   "commands": {
