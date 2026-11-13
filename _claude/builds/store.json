@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4068,
- "updatedAt": "2026-11-13T06:56:05.782Z",
+ "rev": 4069,
+ "updatedAt": "2026-11-13T06:56:19.362Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -177654,7 +177654,7 @@
    "pr": "#547",
    "priority": "P0",
    "createdAt": "2026-11-13T01:13:53.464Z",
-   "updatedAt": "2026-11-13T06:56:03.335Z",
+   "updatedAt": "2026-11-13T06:56:09.733Z",
    "builtAt": "2026-11-13T06:56:03.335Z",
    "notes": [
     {
@@ -177728,6 +177728,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-13T06:56:03.335Z"
+    },
+    {
+     "text": "Headless run axf-skin-configuration-panel-before-ai-makes-a-skin---paulie: brief only · start 12.3K tokens ($0.04) · cost $10.11 · 177 turns · 6 tools, MCP none",
+     "at": "2026-11-13T06:56:09.733Z"
     }
    ],
    "approvals": [
@@ -178050,7 +178054,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
