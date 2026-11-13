@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4660,
- "updatedAt": "2026-11-13T18:32:34.477Z",
+ "rev": 4661,
+ "updatedAt": "2026-11-13T18:32:44.954Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -197694,7 +197694,7 @@
    "title": "Decision dialog: UI Review and other approvals pop up on any screen with approve/deny/pick",
    "category": "",
    "detail": "Generalise the approval popup into one 'decision dialog' type used for anything that needs Brett, starting with UI Review.\n- Whenever an item is submitted to UI Review, Brett gets a notification AND a dialog pops up on whatever console screen he is on (and on the phone overlay toolbar when built), without navigating away.\n- The dialog shows the item (title, build, screenshots/options side by side, desktop + phone), with buttons: pick option N / Approve, Reject, Request changes (with a note), Later, and 'Open in UI Review' (only navigates if tapped).\n- Same dialog type reused for other decisions: veto countdowns, confirms, model upgrade approvals, merge clashes, keys needed, passes. Each source registers its buttons; one queue so several waiting items stack with a counter.\n- Voice/MCP/API: list waiting decisions, answer one by id ('pick option 2', 'approve it').\n- Notification settings to choose which decision types pop up.\n- Tests, help entry, Shipped features.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -197702,7 +197702,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:14:45.988Z",
-   "updatedAt": "2026-11-13T18:26:05.542Z",
+   "updatedAt": "2026-11-13T18:32:42.314Z",
    "builtAt": "",
    "notes": [
     {
@@ -197716,6 +197716,10 @@
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-decision-dialog-ui-review-other--paulie.",
      "at": "2026-11-13T18:19:55.254Z"
+    },
+    {
+     "text": "Duplicate dispatch: two headless Opus sessions (Ping Paulie, Snap Sully; slots hl-mwfaxg9r-jh and hl-mwfayc64-ji) were started at 18:20 on the same worktree and branch and were overwriting each other's files (decision-dialog/server/__init__.py, ui-review/server/decisions.py). One session stepped back without committing so the other can finish. Nothing committed from it. Dispatcher should not launch two sessions per build/worktree.",
+     "at": "2026-11-13T18:25:35.557Z"
     },
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-decision-dialog-ui-review-other--sully.",
@@ -197732,10 +197736,6 @@
     {
      "text": "Headless run axf-decision-dialog-ui-review-other--sully: brief only · start 11.5K tokens ($0.03) · cost $1.62 · 30 turns · 6 tools, MCP none",
      "at": "2026-11-13T18:25:46.301Z"
-    },
-    {
-     "text": "Duplicate dispatch: two headless Opus sessions (Ping Paulie, Snap Sully; slots hl-mwfaxg9r-jh and hl-mwfayc64-ji) were started at 18:20 on the same worktree and branch and were overwriting each other's files (decision-dialog/server/__init__.py, ui-review/server/decisions.py). One session stepped back without committing so the other can finish. Nothing committed from it. Dispatcher should not launch two sessions per build/worktree.",
-     "at": "2026-11-13T18:25:35.557Z"
     },
     {
      "text": "Session on mossesx-max- stopped on its own with 9 steps left: back in Pending for Brett.",
@@ -197760,19 +197760,12 @@
     "queuedAt": "2026-11-13T18:14:48.668Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "",
+    "session": "axf-decision-dialog-ui-review-other--paulie",
     "slot": "",
     "model": "Opus",
-    "launchedAt": "2026-11-13T18:20:36.175Z",
+    "launchedAt": "2026-11-13T18:19:54.760Z",
     "runs": 1,
-    "lastRun": {
-     "at": "2026-11-13T18:26:03.198Z",
-     "exit": 0,
-     "outcome": "returned",
-     "stepsLeft": 9,
-     "account": "mossesx-max-",
-     "session": "axf-decision-dialog-ui-review-other--sully"
-    },
+    "lastRun": null,
     "split": {
      "at": "2026-11-13T18:18:38.236Z",
      "by": "orchestrator",
@@ -197781,9 +197774,9 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"a27086cb-22e6-40b0-8041-ff41f173ba0a\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "Session on mossesx-max- stopped on its own with 9 steps left: back in Pending for Brett.",
+    "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-13T18:20:36.175Z",
+    "dispatchedAt": "2026-11-13T18:19:54.760Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -197792,7 +197785,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-13T18:20:36.175Z",
+    "pickedAt": "2026-11-13T18:19:54.760Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -197813,12 +197806,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T18:32:42.314Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T18:18:38.236Z",
-     "updatedAt": "2026-11-13T18:18:38.236Z"
+     "updatedAt": "2026-11-13T18:32:42.736Z"
     },
     {
      "id": "s2",
@@ -198004,7 +197997,7 @@
     "all"
    ],
    "order": {
-    "all": 799
+    "all": 800
    },
    "kind": "build",
    "planRef": "",
