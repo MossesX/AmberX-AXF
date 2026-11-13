@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T17:36:31.844Z",
+ "updatedAt": "2026-11-13T17:36:48.948Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -111262,7 +111262,7 @@
    ]
   },
   {
-   "id": "pending-tab-one-collapsed-row-per-build-tap-to-e",
+   "id": "pending-tab-one-collapsed-row-per-build",
    "title": "Pending tab: one collapsed row per build, tap to expand everything",
    "category": "",
    "detail": "Build orchestrator Pending tab (and every build table) shows each build as ONE compact row (title, model, steps done/total, behind-main, age). Tapping the row expands it to show everything: detail, steps, notes, branch/PR, origin said, commands. Never show steps or notes inline by default. Desktop and phone.",
@@ -111270,10 +111270,10 @@
    "hidden": false,
    "source": "mcp",
    "pendingId": "pending-tab-one-collapsed-row-per-build-tap-to-e",
-   "branch": "claude/pending-tab-one-collapsed-row-per-build-tap-to-e",
-   "pr": "#520",
+   "branch": "claude/pending-tab-one-collapsed-row-per-build",
+   "pr": "#602",
    "createdAt": "2026-11-12T10:48:25.123Z",
-   "updatedAt": "2026-11-12T11:06:49.143Z",
+   "updatedAt": "2026-11-13T17:36:11.898Z",
    "builtAt": "2026-11-12T11:06:49.143Z",
    "notes": [
     {
@@ -111295,6 +111295,10 @@
     {
      "text": "PR #520 open. UI Review screenshots not taken: scratch console (rebuild-shots) could not load the orchestrator; desktop + phone shots needed from the live console.",
      "at": "2026-11-12T11:06:35.905Z"
+    },
+    {
+     "text": "Renamed from pending-tab-one-collapsed-row-per-build-tap-to-e (build names are at most 40 characters). By build-rename.",
+     "at": "2026-11-13T17:36:11.898Z"
     }
    ],
    "approvals": [],
@@ -112120,7 +112124,7 @@
    ]
   },
   {
-   "id": "plugin-review-map-what-each-plugin-does-depends-on-and-breaks",
+   "id": "plugin-review-map-what-each-plugin-does",
    "title": "Plugin review: map what each plugin does, depends on, and breaks",
    "category": "report",
    "detail": "Brett said: \"For each plugin put a list for everything that it does, what will be broken, what it depends on, and what other plugins use it.\"\n\nREAD-ONLY analysis, change no code. For every folder in apps/console-web/plugins (68, skip _template): read plugin.json, README.md and web/ + server/ code. Find real dependencies from imports, requires, service contracts (service:xxx@1), API routes it calls (/api/plugins/<other>/...), events, settings keys and banner/slot ids it reads. Build the reverse map (used by). Then fill the existing Plan Studio plan 'Plugin review: what to disable' (planner.plans, via control_set) so each plugin's step holds four plain-English lists: What it does / What breaks if disabled (including other plugins, banners, voice commands, AmberX features) / Depends on / Used by. Mark core plugins that must never be disabled (e.g. plugin-manager, build-orchestrator, approvals-banner, hub-sync) with a warning. Also write _claude/builds/reports/plugin-review.md with the same table.",
@@ -112128,10 +112132,10 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/plugin-review-map-what-each-plugin-does-depends-on-and-breaks",
-   "pr": "#522",
+   "branch": "claude/plugin-review-map-what-each-plugin-does",
+   "pr": "#603",
    "createdAt": "2026-11-12T17:47:56.247Z",
-   "updatedAt": "2026-11-12T18:21:03.656Z",
+   "updatedAt": "2026-11-13T17:36:27.819Z",
    "builtAt": "2026-11-12T18:20:35.390Z",
    "notes": [
     {
@@ -112193,6 +112197,10 @@
     {
      "text": "Session axf-plugin-review-map-what-each-plugin-does-depends---lenny on mossesx-max- ended (exit 0); the build was already built.",
      "at": "2026-11-12T18:21:03.656Z"
+    },
+    {
+     "text": "Renamed from plugin-review-map-what-each-plugin-does-depends-on-and-breaks (build names are at most 40 characters). By build-rename.",
+     "at": "2026-11-13T17:36:27.819Z"
     }
    ],
    "approvals": [],
@@ -115775,7 +115783,7 @@
    ]
   },
   {
-   "id": "professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e",
+   "id": "professional-skins-rebuild-whole-app",
    "title": "Professional skins that rebuild the whole app (Fable, ultrathink, every step): each skin is a complete restyle AND rebehave of the entire console UI. Every asset (theme, layout, toolbars, tab groups and where tabs go, buttons and how they behave, context menus, nav menu, app menus, dialogs, tables, ",
    "category": "",
    "detail": "",
@@ -115783,11 +115791,11 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e",
-   "pr": "#557",
+   "branch": "claude/professional-skins-rebuild-whole-app",
+   "pr": "#604",
    "priority": "P0",
    "createdAt": "2026-11-12T23:32:23.494Z",
-   "updatedAt": "2026-11-13T08:44:03.188Z",
+   "updatedAt": "2026-11-13T17:36:43.520Z",
    "builtAt": "2026-11-13T08:42:58.405Z",
    "notes": [
     {
@@ -115869,6 +115877,10 @@
     {
      "text": "Session axf-professional-skins-that-rebuild-the-whole-app-fa--sully on mossesx-max- ended (exit 0); the build was already built.",
      "at": "2026-11-13T08:44:03.188Z"
+    },
+    {
+     "text": "Renamed from professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e (build names are at most 40 characters). By build-rename.",
+     "at": "2026-11-13T17:36:43.520Z"
     }
    ],
    "approvals": [],
