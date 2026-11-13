@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T02:11:38.491Z",
+ "updatedAt": "2026-11-13T02:11:49.425Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -109780,8 +109780,8 @@
    "branch": "claude/tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch",
    "pr": "#544",
    "createdAt": "2026-11-12T20:45:12.311Z",
-   "updatedAt": "2026-11-13T02:11:28.597Z",
-   "builtAt": "2026-11-13T02:11:28.598Z",
+   "updatedAt": "2026-11-13T02:11:47.409Z",
+   "builtAt": "2026-11-13T02:11:47.409Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -109858,6 +109858,10 @@
     {
      "text": "s1-s3 done, PR #544. UI Review not submitted: this headless session had no AXF_CONSOLE_URL/AXF_TOKEN. Shots (desktop+phone, 4 dialogs) are in /root/axf-builds/tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch/.axf-shots. To submit, with the console env set: node apps/console-web/plugins/ui-review/review.mjs submit --kind screen --name 'Chrome settings: quick switches + tap to confirm follows labels' --app console-web --screen chrome-settings --group 'tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch - Nov 13 2:15 AM' --shots <the 8 pngs, comma-separated> --branch claude/tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch --pr 544 --console --single-option 'Built from framework Container + existing field controls; position fixed by the brief.'",
      "at": "2026-11-13T02:11:21.520Z"
+    },
+    {
+     "text": "Headless run axf-tap-to-confirm-follows-label-visibility-quick-sw--earl: brief only · start 11.0K tokens ($0.03) · cost $4.61 · 112 turns · 6 tools, MCP none",
+     "at": "2026-11-13T02:11:47.409Z"
     }
    ],
    "approvals": [],
