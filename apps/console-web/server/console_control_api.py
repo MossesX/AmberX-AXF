@@ -8,6 +8,18 @@
     POST /scroll    {dir, amount?, to?, address?}   scroll the active pane (or the pane of `address`)
     POST /plugins/{id}/enable|disable  {force?, by?}  turn a plugin on / off (server-side, no browser needed)
     POST /voice     {text, to?}             a spoken phrase → its command, run; `say` = the line to speak back
+    GET  /audit?limit=&writes=&by=          the audit, newest first (by, reason, policy, outcome, decidedBy)
+    GET  /screen                            what is on screen: view, open dialog, fields with values, buttons, headings, text
+    GET  /fields                            the fields and buttons of the open dialog / screen (the same, without the text)
+    POST /fill      {values: {field: value}, submit?, reason?}   type into several fields, then press `submit` (a button)
+
+Fields and buttons on any screen (spec/CONSOLE-CONTROL.md → Fields and buttons on any screen): every input, select, switch,
+choice group and button the open console shows has an address (`setting:field.<id>`, `button:<id>`), discovered on the page.
+A field or button may be named by its label: `fill` and voice resolve "Project name" → `setting:field.project-name`, else by search.
+
+Decisions (approve, deny, veto, sign off) are Brett's own: refused for every command, except one from Brett's own signed-in
+session (a person's axHub sign-in on his browser or phone, never the shared console token an agent holds), which counts as his
+own tap (`decidedBy`, audited). See `owner_of`.
 
 Commands that need the page go to the open console over the console-commands relay (console-commands@1 `control`); the
 answer is the console's own envelope with its live `state`. No console open → 503 `unavailable` with `openUrl`.
@@ -28,6 +40,11 @@ from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import JSONResponse
 
 import console_control as cc
+
+try:  # the shared console token's caller (an agent, a script, the MCP connector): never a person
+    from wall import TOKEN_CALLER as _TOKEN_CALLER
+except Exception:  # noqa: BLE001 — tests without the wall
+    _TOKEN_CALLER = None
 
 VERBS = ("open", "state", "press", "set", "scroll", "focus", "search", "list", "plugin.enable", "plugin.disable")
 SCROLL_DIRS = ("up", "down", "page-up", "page-down", "top", "bottom", "to")  # = CONSOLE_CONTROL_SCROLL_DIRS
@@ -123,10 +140,16 @@ def _shown_value(cmd: dict[str, Any]) -> Any:
     return text[:200]
 
 
+NO_REASON = "(no reason given)"
+
+
 def audit(cmd: dict[str, Any], r: dict[str, Any], by: str, audience: str, policy: dict[str, Any]) -> None:
-    """One line per command: data/audit.jsonl and the console's terminal log."""
+    """One line per command: data/audit.jsonl and the console's terminal log. Every write names who (`by`) and why
+    (`reason`; a write sent without one is marked NO_REASON, a voice command's reason is what was said)."""
+    if not policy.get("readOnly") and not cmd.get("reason"):
+        cmd = {**cmd, "reason": NO_REASON}
     line = {"at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "by": by, "audience": audience, "verb": cmd.get("verb"), "address": cmd.get("address"),
-            "value": _shown_value(cmd), "query": (cmd.get("query") or {}).get("q"), "reason": cmd.get("reason"), "policy": policy["tag"],
+            "value": _shown_value(cmd), "query": (cmd.get("query") or {}).get("q"), "reason": cmd.get("reason"), "policy": policy["tag"], "decidedBy": cmd.get("decidedBy"),
             "ok": bool(r.get("ok")), "code": r.get("code"), "source": r.get("source") or ("console" if r.get("client") else None), "client": r.get("client")}
     line = {k: v for k, v in line.items() if v not in (None, "")}
     try:
@@ -139,26 +162,69 @@ def audit(cmd: dict[str, Any], r: dict[str, Any], by: str, audience: str, policy
     try:
         import console_context
         if console_context.log is not None:
-            console_context.log("console-control", f"{by}: {cmd.get('verb')} {cmd.get('address') or (cmd.get('query') or {}).get('q') or ''} → {'ok' if r.get('ok') else r.get('code')}")
+            why = f" ({cmd['reason']})" if cmd.get("reason") and not policy.get("readOnly") else ""
+            console_context.log("console-control", f"{by}: {cmd.get('verb')} {cmd.get('address') or (cmd.get('query') or {}).get('q') or ''}{why} → {'ok' if r.get('ok') else r.get('code')}")
     except Exception:  # noqa: BLE001 — tests without the console
         pass
 
 
-def guarded(cmd: dict[str, Any], by: str, audience: str, grants: set[str], to: str = "recent") -> dict[str, Any]:
-    """Permission, rate, then run; the answer carries its policy tag and is audited."""
+def owner_of(request: Request) -> str | None:
+    """Brett's own session: a person signed in to axHub as an admin on his browser or phone (the wall caller), never the
+    shared console token (agents, scripts, MCP connectors all hold that one). Its name, else None."""
+    user = getattr(request.state, "axf_user", None)
+    if user is None or (_TOKEN_CALLER is not None and user is _TOKEN_CALLER) or not getattr(user, "admin", False):
+        return None
+    name = str(getattr(user, "name", "") or "").strip()
+    return name or None
+
+
+PERSON_REFUSED = ("{what} is a decision only Brett makes himself: say it from his own signed-in console or AmberX session "
+                  "(voice), or tap it")
+
+
+def guarded(cmd: dict[str, Any], by: str, audience: str, grants: set[str], to: str = "recent", owner: str | None = None) -> dict[str, Any]:
+    """Permission, rate, then run; the answer carries its policy tag and is audited. `owner` = Brett's own signed-in
+    session (owner_of): only then may a deciding press (approve, deny, veto) run, recorded as his decision."""
     policy = policy_of(cmd)
+    decided = False
     try:
         if not granted(grants, policy["requires"]):
             raise cc.ControlError("denied", f"{cmd['verb']} needs {policy['requires']}", requires=policy["requires"])
         if policy["tag"] == "person":
-            raise cc.ControlError("denied", f"{cmd.get('address')} is a decision only Brett makes with his own tap", requires="person", personOnly=True)
+            if not owner or audience != OWNER:
+                raise cc.ControlError("denied", PERSON_REFUSED.format(what=cmd.get("address")), requires="person", personOnly=True)
+            decided = True
         check_rate(f"{audience}|{by}", not policy["readOnly"])
-        r = run(cmd, by, audience, to)
+        r = run({**cmd, **({"ownerDecision": True} if decided else {})}, by, audience, to)
     except cc.ControlError as e:
         r = e.envelope()
     r = {**r, "policy": {k: policy[k] for k in ("tag", "effect", "readOnly", "destructive")}}
-    audit(cmd, r, by, audience, policy)
+    if decided:
+        r["decidedBy"] = f"owner:{owner}"
+    audit({**cmd, **({"decidedBy": f"owner:{owner}"} if decided else {})}, r, by, audience, policy)
     return r
+
+
+def audit_lines(limit: int = 50, writes_only: bool = False, by: str = "") -> list[dict[str, Any]]:
+    """The last `limit` audit lines (newest first): who, what, why, the policy tag, the outcome, a decision's decidedBy."""
+    try:
+        lines = AUDIT_FILE.read_text(encoding="utf-8").splitlines()
+    except OSError:
+        return []
+    out: list[dict[str, Any]] = []
+    for raw in reversed(lines):
+        try:
+            x = json.loads(raw)
+        except ValueError:
+            continue
+        if writes_only and x.get("policy") == "allow":
+            continue
+        if by and str(x.get("by") or "") != by:
+            continue
+        out.append(x)
+        if len(out) >= max(1, min(int(limit), 500)):
+            break
+    return out
 
 
 def _relay() -> Any:
@@ -250,7 +316,7 @@ def server_side(cmd: dict[str, Any], by: str) -> dict[str, Any] | None:
             if p is not None:
                 return cc.ok("state", p["address"], state=cc.plugin_state(p))
     if verb == "press":
-        cc.check_press(cc.press_spec(address), address, cmd.get("confirm"))
+        cc.check_press(cc.press_spec(address), address, cmd.get("confirm"), owner=bool(cmd.get("ownerDecision")))
     return None
 
 
@@ -259,7 +325,7 @@ def to_console(cmd: dict[str, Any], by: str, audience: str, to: str = "recent") 
     if relay is None or not hasattr(relay, "control"):
         return {"$axf": cc.FRAME, "ok": False, "code": "unavailable", "because": "no relay",
                 "message": "the Console commands plugin is off, so no console can be reached (turn it on in Settings › Plugins)", "openUrl": CONSOLE_URL + "/"}
-    return relay.control(cmd, by, audience, to)
+    return relay.control({k: v for k, v in cmd.items() if k != "ownerDecision"}, by, audience, to)
 
 
 def run(cmd: dict[str, Any], by: str, audience: str, to: str = "recent") -> dict[str, Any]:
@@ -309,22 +375,101 @@ def targets(under: str = "", kinds: list[str] | None = None, source: str = "auto
     return {"$axf": cc.TARGETS_FRAME, "ok": True, "source": "inventory", "targets": _static(under or None, kinds), "counts": cc.inventory().get("counts", {})}
 
 
-def command(b: dict[str, Any], by: str = "", audience: str = OWNER, grants: set[str] | None = None) -> dict[str, Any]:
+def command(b: dict[str, Any], by: str = "", audience: str = OWNER, grants: set[str] | None = None, owner: str | None = None) -> dict[str, Any]:
     """One command from a body ({verb, address, value, …, to}) → the guarded answer (what /do answers; MCP and the CLI use it)."""
     try:
         cmd = normalize(b)
     except cc.ControlError as e:
         return e.envelope()
-    return guarded(cmd, str(b.get("by") or by or "api")[:80], audience, grants if grants is not None else {"*"}, str(b.get("to") or "recent"))
+    return guarded(cmd, str(b.get("by") or by or "api")[:80], audience, grants if grants is not None else {"*"}, str(b.get("to") or "recent"), owner)
 
 
-def voice(text: str, by: str = "voice", audience: str = OWNER, grants: set[str] | None = None, to: str = "recent") -> dict[str, Any]:
+# ---------------------------------------------------------------------- fields, buttons and the screen read-back
+
+def field_address(key: str) -> str:
+    """A field named by address or by label: "setting:field.name" stays, "Project name" → "setting:field.project-name"."""
+    k = str(key or "").strip()
+    return k if ":" in k else f"setting:field.{cc.slug(k)}"
+
+
+def button_address(key: str) -> str:
+    """A button named by address or by label: "Create project" → "button:create-project"."""
+    k = str(key or "").strip()
+    return k if ":" in k else f"button:{cc.slug(k)}"
+
+
+def screen(by: str = "api", audience: str = OWNER, grants: set[str] | None = None, to: str = "recent", text: bool = True) -> dict[str, Any]:
+    """What is on screen in the open console (state with no address → state.report): view, title, open dialog, fields
+    with their values, buttons, headings and (text=True) the visible text. No console open: unavailable + openUrl."""
+    r = guarded({"$axf": cc.FRAME, "verb": "state"}, by, audience, grants if grants is not None else {"*"}, to)
+    sc = ((r.get("state") or {}) if isinstance(r.get("state"), dict) else {}).get("report")
+    if not r.get("ok") or not isinstance(sc, dict):
+        if r.get("ok"):
+            return {**r, "ok": False, "code": "unavailable", "because": "no screen report", "message": "the open console does not report its screen yet (reload it to pick up the new build)"}
+        return r
+    if not text:
+        sc = {k: v for k, v in sc.items() if k != "text"}
+    return {"$axf": cc.FRAME, "ok": True, "verb": "state", "screen": sc, "say": say_screen(sc), **({"client": r["client"]} if r.get("client") else {})}
+
+
+def say_screen(sc: dict[str, Any]) -> str:
+    """One or two plain lines for a voice to speak (console_control.screen_line = screenLine)."""
+    return cc.screen_line(sc)
+
+
+def _resolve_field(key: str, by: str, audience: str, grants: set[str], to: str) -> str:
+    """A label that is not an exact slug: the best search hit among the settings on screen, else the slug guess."""
+    guess = field_address(key)
+    if ":" in str(key):
+        return guess
+    r = guarded({"$axf": cc.FRAME, "verb": "search", "query": {"q": str(key), "kinds": ["setting"], "limit": 5}}, by, audience, grants, to)
+    hits = [h for h in r.get("hits") or [] if "/setting:field." in str(h.get("address"))]
+    return str(hits[0]["address"]) if hits else guess
+
+
+def fill(values: dict[str, Any], submit: str = "", by: str = "api", audience: str = OWNER, grants: set[str] | None = None, to: str = "recent",
+         reason: str = "", owner: str | None = None) -> dict[str, Any]:
+    """Type into several fields of the open dialog / screen in order (label or address → value), then press `submit`.
+    Stops at the first field that fails and says which. The answer ends with the screen read back, so the caller sees
+    what landed (a validation error, the wizard's next page)."""
+    g = grants if grants is not None else {"*"}
+    done: list[dict[str, Any]] = []
+    for key, value in (values or {}).items():
+        address = field_address(key)
+        r = guarded({"$axf": cc.FRAME, "verb": "set", "address": address, "value": value, **({"reason": reason} if reason else {})}, by, audience, g, to)
+        if not r.get("ok") and r.get("code") in ("not_found", "ambiguous"):
+            alt = _resolve_field(key, by, audience, g, to)
+            if alt != address:
+                address = alt
+                r = guarded({"$axf": cc.FRAME, "verb": "set", "address": address, "value": value, **({"reason": reason} if reason else {})}, by, audience, g, to)
+        done.append({"field": key, "address": address, "ok": bool(r.get("ok")), **({"value": r.get("value")} if r.get("ok") else {"code": r.get("code"), "message": r.get("message")})})
+        if not r.get("ok"):
+            return {"$axf": cc.FRAME, "ok": False, "code": r.get("code") or "unexpected", "message": f"{key}: {r.get('message')}", "filled": done,
+                    **({"openUrl": r["openUrl"]} if r.get("openUrl") else {})}
+    out: dict[str, Any] = {"$axf": cc.FRAME, "ok": True, "filled": done}
+    if submit:
+        p = guarded({"$axf": cc.FRAME, "verb": "press", "address": button_address(submit), **({"reason": reason} if reason else {})}, by, audience, g, to, owner)
+        out["pressed"] = {"button": submit, "address": button_address(submit), "ok": bool(p.get("ok")), **({} if p.get("ok") else {"code": p.get("code"), "message": p.get("message")})}
+        if not p.get("ok"):
+            out.update({"ok": False, "code": p.get("code"), "message": f"{submit}: {p.get('message')}"})
+    sc = screen(by, audience, g, to, text=False)
+    if sc.get("ok"):
+        out["screen"] = sc["screen"]
+    return out
+
+
+def voice(text: str, by: str = "voice", audience: str = OWNER, grants: set[str] | None = None, to: str = "recent", owner: str | None = None) -> dict[str, Any]:
     """A spoken phrase → its command (console_control.voice_intent), words resolved by the same search, then run with the
     same guards. The answer carries `heard`, `intent`, `command` and `say` (the line to speak back)."""
     g = grants if grants is not None else {"*"}
     intent = cc.voice_intent(text)
     if intent is None:
         return {"$axf": cc.FRAME, "ok": False, "code": "invalid", "message": "not a console command", "heard": text, "intent": None, "say": "That isn't a console command I know."}
+    if intent.get("help"):
+        return {"$axf": cc.FRAME, "ok": True, "verb": "state", "heard": text, "intent": intent, "command": None, "say": cc.VOICE_HELP}
+    if intent.get("screen"):
+        sc = screen(by, audience, g, to)
+        return {**sc, "heard": text, "intent": intent, "command": {"verb": "state"}, **({} if sc.get("ok") else {"say": cc.voice_reply(intent, sc)})}
     hit: dict[str, Any] | None = None
     if intent.get("find"):
         r = guarded({"$axf": cc.FRAME, "verb": "search", "query": {"q": intent["find"]["q"], "kinds": intent["find"]["kinds"], "limit": 10}}, by, audience, g, to)
@@ -334,11 +479,11 @@ def voice(text: str, by: str = "voice", audience: str = OWNER, grants: set[str] 
         if hit is None:
             return {"$axf": cc.FRAME, "ok": False, "code": "not_found", "message": f"nothing called {intent['find']['q']}", "heard": text, "intent": intent,
                     "say": f"I couldn't find {intent['find']['q']}.", **({"openUrl": r["openUrl"]} if r.get("openUrl") else {})}
-    cmd = {"$axf": cc.FRAME, **cc.intent_command(intent, hit["address"] if hit else None)}
+    cmd = {"$axf": cc.FRAME, **cc.intent_command(intent, hit["address"] if hit else None), "reason": f"said: {text[:160]}"}
     if hit and hit.get("value") is not None and cmd["verb"] in ("open", "press"):
         cmd["verb"], cmd["value"] = "press", hit["value"]
-    ans = guarded(cmd, by, audience, g, to)
-    return {**ans, "heard": text, "intent": intent, "command": {k: v for k, v in cmd.items() if k != "$axf"}, "say": cc.voice_reply(intent, ans, (hit or {}).get("label", ""))}
+    ans = guarded(cmd, by, audience, g, to, owner)
+    return {**ans, "heard": text, "intent": intent, "command": {k: v for k, v in cmd.items() if k not in ("$axf", "reason")}, "say": cc.voice_reply(intent, ans, (hit or {}).get("label", ""))}
 
 
 def _kinds(v: str | None) -> list[str] | None:
@@ -353,7 +498,7 @@ def router_for(auth: Any) -> APIRouter:
     async def go(request: Request, cmd: dict[str, Any], to: str = "recent") -> JSONResponse:
         audience, name = audience_of(request)
         by = str(cmd.pop("by", "") or "") or name
-        return answer(await run_in_threadpool(guarded, cmd, by, audience, grants_of(request), to))
+        return answer(await run_in_threadpool(guarded, cmd, by, audience, grants_of(request), to, owner_of(request)))
 
     async def from_body(request: Request, b: dict[str, Any]) -> JSONResponse:
         try:
@@ -405,7 +550,34 @@ def router_for(auth: Any) -> APIRouter:
         text = str(b.get("text") or "").strip()[:300]
         if not text:
             return fail(cc.ControlError("invalid", "voice needs text", field="text"))
-        return answer(await run_in_threadpool(voice, text, str(b.get("by") or "voice")[:80], audience, grants_of(request), str(b.get("to") or "recent")))
+        return answer(await run_in_threadpool(voice, text, str(b.get("by") or "voice")[:80], audience, grants_of(request), str(b.get("to") or "recent"), owner_of(request)))
+
+    @r.get("/audit")
+    async def audit_route(limit: int = 50, writes: bool = False, by: str = "") -> JSONResponse:
+        """The audit (newest first): every console-control command with by, reason, policy, outcome and decidedBy."""
+        return JSONResponse({"$axf": cc.FRAME, "ok": True, "lines": await run_in_threadpool(audit_lines, limit, writes, by)})
+
+    @r.get("/screen")
+    async def screen_route(request: Request, to: str = "recent", text: bool = True) -> JSONResponse:
+        """What is on screen: view, open dialog, fields with values, buttons, headings, text, and `say` (one line to speak)."""
+        audience, name = audience_of(request)
+        return answer(await run_in_threadpool(screen, name, audience, grants_of(request), to, text))
+
+    @r.get("/fields")
+    async def fields_route(request: Request, to: str = "recent") -> JSONResponse:
+        audience, name = audience_of(request)
+        return answer(await run_in_threadpool(screen, name, audience, grants_of(request), to, False))
+
+    @r.post("/fill")
+    async def fill_route(request: Request) -> JSONResponse:
+        """{values: {label or address: value}, submit?: button label or address, reason?, by?, to?}."""
+        b = await _body(request)
+        audience, name = audience_of(request)
+        values = b.get("values") if isinstance(b.get("values"), dict) else {}
+        if not values and not b.get("submit"):
+            return fail(cc.ControlError("invalid", "fill needs values {field: value} or submit", field="values"))
+        return answer(await run_in_threadpool(fill, values, str(b.get("submit") or ""), str(b.get("by") or name)[:80], audience, grants_of(request),
+                                              str(b.get("to") or "recent"), str(b.get("reason") or ""), owner_of(request)))
 
     @r.post("/plugins/{ref}/{op}")
     async def plugin(request: Request, ref: str, op: str) -> JSONResponse:
