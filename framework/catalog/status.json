@@ -2293,5 +2293,29 @@
     "wave": 1,
     "module": "app-console",
     "notes": "context-lead@1: rt.contextExtras keys '^:<name>' lead every context menu above one separator (core/engines/windows.ts withContextLead, react Overlays ContextMenuHost; any target, even contributions:false, right-click and long-press). The console registers Console settings (app.settings, folding the asset's own Settings in) plus console.settings.open for search, voice, MCP and CLI; help entries; checks spec/check-context-lead.mts + apps/console-web/scripts/console-settings-menu.mts. Kotlin twin deferred."
+  },
+  "cx.phoneweb": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "Console app part 4 (console-app-part-4-console-side-safe). Reached by console actions native.* (REST POST /api/console/action, MCP console_action, CLI axf console action, voice) and state on panel:phone-app. Kotlin twin not needed: web console side only."
+  },
+  "cx.phoneweb.safearea": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "--fx-safe-* tokens (framework/ui/axf.css) on every edge-fixed layer; framework/cli/check-safe-area.mjs + test in CI."
+  },
+  "cx.phoneweb.wrapper": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "apps/console-web/src/native/browserFallback.mjs (+ test); wrapperEnv treats axfNativeHost or axfBridgeHost as the app."
+  },
+  "cx.phoneweb.liveupdate": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "apps/console-web/src/native/liveUpdate.mjs (+ test); server main.py sends index.html no-cache; runs when the shell has no native update."
   }
 }

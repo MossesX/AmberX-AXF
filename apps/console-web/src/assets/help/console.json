@@ -1042,21 +1042,21 @@
       {
         "target": "action:native.notify",
         "title": "Phone: notification",
-        "text": "Puts a notification on the phone from the console app.",
+        "text": "Puts a notification on the phone from the console app. In a browser it uses the browser's own notifications (it asks once), or a toast if they are off.",
         "kind": "control",
         "tryIt": "native.notify:Build done:PR merged"
       },
       {
         "target": "action:native.open",
         "title": "Phone: open a page",
-        "text": "Opens one of your own pages (amberxai.com) on the phone: in the app, in the floating overlay, or in the phone's browser.",
+        "text": "Opens one of your own pages (amberxai.com) on the phone: in the app, in the floating overlay, or in the phone's browser. In a browser, a console page opens in place and anything else in a new tab.",
         "kind": "control",
         "tryIt": "native.open:https://console.amberxai.com/|overlay"
       },
       {
         "target": "action:native.wake",
         "title": "Phone: wake",
-        "text": "Brings the console app to the front and turns the screen on.",
+        "text": "Brings the console app to the front and turns the screen on. In a browser it focuses the console's window.",
         "kind": "control"
       },
       {
@@ -1068,14 +1068,14 @@
       {
         "target": "action:native.update",
         "title": "Phone: web content update",
-        "text": "The console app loads the live console, so a deploy reaches the phone without a new app. check looks for a newer console now, reload loads it now, state shows which version the page runs. Off screen, a newer console loads by itself; on screen you get the \"Reload for the new version\" bar.",
+        "text": "The console app loads the live console, so a deploy reaches the phone without a new app. check looks for a newer console now, reload loads it now, state shows which version the page runs. Off screen, a newer console loads by itself; on screen you get the \"Reload for the new version\" bar. A browser tab does the same check by itself when you come back to it and every 30 minutes, and shows the bar.",
         "kind": "control",
         "tryIt": "native.update:check"
       },
       {
         "target": "action:native.state",
         "title": "Phone: app state",
-        "text": "Everything the console app knows: app version, permissions, the floating toolbar, the safe area (status bar, camera cutout, navigation bar, keyboard), web content updates and the axHub device link. The same answer is panel:phone-app's state over REST, MCP and the CLI.",
+        "text": "Everything the console app knows: app version, permissions, the floating toolbar, the safe area (status bar, camera cutout, navigation bar, keyboard), web content updates and the axHub device link. The same answer is panel:phone-app's state over REST, MCP and the CLI, which also says whether the page runs in the app or a browser (data-axf-wrapper) and what the browser can do.",
         "kind": "control"
       }
     ],

@@ -128,6 +128,8 @@ jobs:
         run: node framework/cli/check-controls.mjs
       - name: Toolbars — every toolbar is a framework toolbar (role="toolbar" + settings id; tap-to-confirm off in code only with a recorded reason)
         run: node framework/cli/check-toolbars.mjs
+      - name: Safe area — top bars, bottom nav and every edge-fixed layer pad --fx-safe-*; viewport-fit=cover in every app (nothing under the clock, camera or notification shade)
+        run: node framework/cli/check-safe-area.mjs && node framework/cli/check-safe-area.test.mjs
       - name: Console control — every view, tab row, setting, plugin, toolbar, grid and button has a console-control address (ratchet framework/spec/console-control-baseline.json only goes down)
         run: node framework/cli/check-console-control.mjs
       - name: Banner widgets — every banner chip comes through the one widget registry, none hard-coded
