@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T17:31:26.449Z",
+ "updatedAt": "2026-11-13T17:31:37.321Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -124447,7 +124447,7 @@
    ]
   },
   {
-   "id": "assets-menu-hide-any-asset-visible-and-hidden-li",
+   "id": "assets-menu-hide-any-asset-visible",
    "title": "Assets menu: hide any asset, visible and hidden lists",
    "category": "",
    "detail": "",
@@ -124455,11 +124455,11 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/assets-menu-hide-any-asset-visible-and-hidden-li",
-   "pr": "#573",
+   "branch": "claude/assets-menu-hide-any-asset-visible",
+   "pr": "#583",
    "priority": "P0",
    "createdAt": "2026-11-13T12:31:20.005Z",
-   "updatedAt": "2026-11-13T13:00:38.359Z",
+   "updatedAt": "2026-11-13T17:31:26.271Z",
    "builtAt": "2026-11-13T12:59:49.949Z",
    "notes": [
     {
@@ -124497,6 +124497,10 @@
     {
      "text": "Headless run axf-assets-menu-hide-any-asset-visible-and-hidden-li--joey: brief only · start 12.0K tokens ($0.03) · cost $6.17 · 139 turns · 6 tools, MCP none",
      "at": "2026-11-13T13:00:38.358Z"
+    },
+    {
+     "text": "Renamed from assets-menu-hide-any-asset-visible-and-hidden-li (build names are at most 40 characters). By build-rename.",
+     "at": "2026-11-13T17:31:26.271Z"
     }
    ],
    "approvals": [],
