@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4176,
- "updatedAt": "2026-11-13T09:33:14.965Z",
+ "rev": 4177,
+ "updatedAt": "2026-11-13T09:33:28.964Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -178097,7 +178097,7 @@
    "title": "Merges are only 'merged' once GitHub confirms: every merge path (console auto-merge, auto-land, github client plugin, server gate, scripts) shows 'Pending GitHub confirmation' right after a merge call, then reads the PR back from GitHub (state MERGED and the merge commit on main) before marking it m",
    "category": "",
    "detail": "",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -178105,7 +178105,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T06:21:11.993Z",
-   "updatedAt": "2026-11-13T09:32:50.685Z",
+   "updatedAt": "2026-11-13T09:33:23.469Z",
    "builtAt": "",
    "notes": [
     {
@@ -178139,6 +178139,14 @@
     {
      "text": "Queued by console.",
      "at": "2026-11-13T09:32:50.685Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 2): axf-merges-are-only-merged-once-github-confirms-ever--rhonda.",
+     "at": "2026-11-13T09:33:21.984Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-merges-are-only-merged-once-github-confirms-ever--rhonda, own login copy)",
+     "at": "2026-11-13T09:33:23.469Z"
     }
    ],
    "approvals": [],
@@ -178150,7 +178158,7 @@
     "session": "",
     "link": "",
     "by": "merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me",
-    "brief": "# Build: merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"Merges are only 'merged' once GitHub confirms: every merge path (console auto-merge, auto-land, github client plugin, server gate, scripts) shows 'Pending GitHub confirmation' right after a merge call, then reads the PR back from GitHub (state MERGED and the merge commit on main) before marking it m\" (merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me) — Phase 1, model Fable.\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (2 left, ~20 min):\n[ ] s1 (~10 min) Design the merge-confirm@1 contract: states (merge-requested → pending-github-confirmation → merged | merge-unconfirmed | merge-failed), required evidence (PR state MERGED, merged_at, merge_commit_sha reachable from main), retry/backoff and timeout rules, and the record each merge path writes. Add it to the schemas with a reference fixture.\n[ ] s2 (~10 min) Write the shared core framework/core/merge-confirm.mjs: pure state machine (request, observe(prRead, mainRead), timeout), the evidence check and the label 'Pending GitHub confirmation'. Add a fixture runner check-merge-confirm.mjs.\nRead first: framework/schemas/merge-confirm.json, framework/spec/fixtures/merge-confirm.json, framework/spec/MERGE-CONFIRM.md, framework/core/merge-confirm.mjs, framework/spec/check-merge-confirm.mjs\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me \"…\"); the build goes back to Pending for Brett.\n",
+    "brief": "# Build: merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"Merges are only 'merged' once GitHub confirms: every merge path (console auto-merge, auto-land, github client plugin, server gate, scripts) shows 'Pending GitHub confirmation' right after a merge call, then reads the PR back from GitHub (state MERGED and the merge commit on main) before marking it m\" (merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me) — Phase 2, model Opus.\nThis phase downgrades Fable → Opus: fine, no approval needed (it is recorded when you tick its first step).\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me\nSteps in this phase (11 left, ~1.8 h):\n[ ] s3 (~10 min) Add a GitHub read-back helper framework/cli/merge-confirm.mjs: given repo + PR, read the PR from GitHub through github-token.mjs (ETag cached), check state MERGED and merge_commit_sha is an ancestor of origin/main (compare API), and return a merge-confirm@1 result. CLI: confirm <repo> <pr> [--wait], status <repo> <pr>, list.\n[ ] s4 (~10 min) Persistent pending-confirmation store + poller: record each merge call as pending-github-confirmation in the push-banner data dir, a tick that re-reads pending ones with backoff, flips them to merged or merge-unconfirmed after the timeout, and raises one health@1 banner item for unconfirmed merges.\n[ ] s5 (~10 min) Merge queue path: after each queue merge call, record pending-github-confirmation and only mark the stack entry merged (and trigger the one-per-stack redeploy) once merge-confirm says merged; unconfirmed entries stay in the queue as 'awaiting GitHub'.\n[ ] s6 (~10 min) Auto-land and console auto-merge paths (push banner, settings autoLand/autoMerge): route their merge calls through the same request → confirm flow; nothing reports 'merged' from the merge API's 200 alone.\n[ ] s7 (~10 min) GitHub client plugin + server merge gate: the github plugin's merge action and the console server's merge gate return status pending-github-confirmation with a confirm id, and the gate's 'merged' answer comes from merge-confirm only.\n[ ] s8 (~10 min) Scripts and builds: find every remaining merge caller (grep 'pulls/.*/merge', 'gh pr merge', mergePullRequest in deploy/, framework/cli/, apps/console-web/plugins/) and switch it to the flow; builds-live / builds-reconcile mark a build complete only on a confirmed merge.\n[ ] s9 (~10 min) Push banner UI: show 'Pending GitHub confirmation' (spinner chip, tokens only, framework Chip) on PR rows and merge-queue entries right after a merge call, then Merged (with merge commit link) or 'GitHub hasn't confirmed' with Recheck. Toolbar stays role=toolbar with tap-confirm.\n[ ] s10 (~10 min) API for the UI: REST GET /api/plugins/push-banner/merge-confirm (list + one), POST …/recheck; MCP plugin commands push_banner_mergeconfirm_list|get|recheck; CLI merge-confirm.mjs; voice action merge.recheck; console_show target push-banner/merge-confirm/<repo>#<pr> deep link.\n[ ] s11 (~5 min) Notifications + glossary: declare the 'merge unconfirmed' alert in push-banner notify.json, describe the new CLI/commands where defined so the glossary catalog picks them up, lifecycle markers on doc lines.\n[ ] s12 (~10 min) Tests: unit tests for the read-back (MERGED + commit on main, MERGED but commit missing, still OPEN, API error, timeout) with a fake GitHub; merge-queue and auto-merge tests asserting nothing is 'merged' before confirmation; run check-merge-confirm, check-theme, check-toolbars, check-chrome-assets, plugin-lifecycle check.\n[ ] s13 (~10 min) UI Review shots (3 options for the pending chip) submitted via review.mjs, report _claude/builds/reports/merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me.md (paths covered, API reach per feature), THREADS.md row, STATUS line, push branch and open PR naming the REST/MCP/CLI/voice/deep-link reach.\nRead first: framework/cli/merge-confirm.mjs, framework/cli/github-token.mjs, apps/console-web/plugins/push-banner/land/merge-confirm-store.mjs, apps/console-web/plugins/push-banner/land/land.mjs, apps/console-web/plugins/systems-check/, apps/console-web/plugins/push-banner/land/merge-queue.mjs, apps/console-web/plugins/push-banner/server/, apps/console-web/plugins/push-banner/land/auto-land.mjs, apps/console-web/plugins/github-app/, apps/console-web/server/, deploy/, framework/cli/builds-live.mjs, framework/cli/builds-reconcile.mjs, framework/cli/, apps/console-web/plugins/push-banner/web/, apps/console-web/plugins/push-banner/server/routes.py, apps/console-web/plugins/push-banner/plugin.json, apps/console-web/plugins/push-banner/commands/, apps/console-web/plugins/push-banner/notify.json, apps/console-web/plugins/push-banner/README.md, apps/console-web/plugins/push-banner/test/, framework/spec/check-merge-confirm.mjs, _claude/builds/reports/merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me.md, _claude/THREADS.md, _claude/memory/STATUS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": false,
     "from": "",
     "addenda": []
@@ -178158,12 +178166,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T09:32:50.225Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-merges-are-only-merged-once-github-confirms-ever--rhonda",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-13T09:33:21.626Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T06:25:16.456Z",
@@ -178175,7 +178183,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-13T09:33:21.626Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -178184,7 +178192,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-13T09:33:21.626Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -178529,7 +178537,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -180240,7 +180248,7 @@
    "title": "Always fill every slot: when slots are free, run independent steps of running builds in parallel across them, and auto-queue pending builds",
    "category": "",
    "detail": "",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -180248,7 +180256,7 @@
    "pr": "#554",
    "priority": "P0",
    "createdAt": "2026-11-13T06:57:42.497Z",
-   "updatedAt": "2026-11-13T09:33:12.305Z",
+   "updatedAt": "2026-11-13T09:33:17.746Z",
    "builtAt": "",
    "notes": [
     {
@@ -180310,6 +180318,14 @@
     {
      "text": "Queued by console.",
      "at": "2026-11-13T09:32:48.944Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-always-fill-every-slot-when-slots-are-free-run-i--gina.",
+     "at": "2026-11-13T09:33:16.268Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-always-fill-every-slot-when-slots-are-free-run-i--gina, own login copy)",
+     "at": "2026-11-13T09:33:17.746Z"
     }
    ],
    "approvals": [],
@@ -180321,7 +180337,7 @@
     "session": "",
     "link": "",
     "by": "always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu",
-    "brief": "# Build: always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"Always fill every slot: when slots are free, run independent steps of running builds in parallel across them, and auto-queue pending builds\" (always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu) — Phase 1, model Fable.\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu · PR #554\nSteps in this phase (3 left, ~30 min):\n[x] s1 (~10 min) Add the step-dependency contract to builds@1. Steps get an optional `after: [stepId]` list and a `claim: {runId, slot, account, branch, at}` record. Old builds with no `after` stay sequential, so each step waits for the previous one. Update the schema, `framework/core/build-pipeline.mjs` header docs and `_claude/builds/README.md`.\n[x] s2 (~10 min) Make `framework/cli/builds-store.mjs` keep `after` and `claim` on steps through normBuild and the newer-wins merge. Add a migration that leaves old steps implicitly sequential. Check for dependency cycles and for `after` ids that point at missing steps.\n[x] s3 (~10 min) Add `readySteps(build)` and `claimStep` / `releaseStep` to `framework/core/build-pipeline.mjs`. A step is ready when everything in its `after` list is done and it has no live claim. Claims are model-aware (the step's pinned model) and expire after a TTL.\n[x] s4 (~10 min) Add the fill-slots planner `planFill({slots, accounts, running, queue, pending, settings})` to `framework/core/build-pipeline.mjs`. It fills every free slot in this order: ready steps of running builds, then Queue builds by priority, then Pending builds when auto-queue is on. It respects the agent cap, the memory floor, per-account model limits (Fable phases only to accounts with Fable) and budget caps. It returns the list of launches with the reason for each.\n[x] s5 (~10 min) Write the contract for merging parallel steps back. Each parallel step runs on branch `<build-branch>--s<n>` in its own worktree off the build branch, then merges into the build branch when done. A merge conflict releases the claim and turns the step into a sequential retry with a note. Put the spec in `framework/spec/BUILD-PARALLEL.md` and add fixtures for `readySteps`, claims and `planFill` in `framework/spec/fixtures/build-pipeline-fill.json`.\n[ ] s6 (~10 min) Design the step-dependency contract: add optional `dependsOn: [stepId]` and `parallel: auto|never` to build steps in build-pipeline@1 (framework/core/build-pipeline.mjs), with the rule that steps with no `dependsOn` run in order (the old behaviour), plus a pure `readySteps(build)` that returns the steps whose dependencies are all done and that touch no files another running step is touching. Update the builds@1 normaliser so the new fields are kept and not dropped.\n[ ] s7 (~10 min) Design the fill-slots plan as a pure function: `planFill({slots, accounts, queue, running, pending, settings})` in framework/core/build-pipeline.mjs. It returns the launches in priority order: ready steps of running builds first, then Queue builds, then (only when the owner setting is on) Pending builds that are split and have no clashes, auto-queued. Each launch respects the model per account (Fable phases go to accounts with Fable) and the per-build max-parallel and budget caps.\n[ ] s8 (~10 min) Add golden fixtures plus check-build-pipeline cases for readySteps and planFill: linear steps unchanged, a fan-out/fan-in DAG, a file-overlap clash held back, a Fable step with no Fable account free, auto-queue off vs on, caps reached, a priority order tie.\nRead first: framework/core/build-pipeline.mjs, framework/cli/builds-store.mjs, framework/schemas/builds.json, framework/core/build-priority.mjs, framework/spec/fixtures/build-pipeline-fill.json, framework/spec/check-build-pipeline-fill.mjs\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu \"…\"); the build goes back to Pending for Brett.\n",
+    "brief": "# Build: always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"Always fill every slot: when slots are free, run independent steps of running builds in parallel across them, and auto-queue pending builds\" (always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu) — Phase 1, model Fable.\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (5 left, ~50 min):\n[ ] s1 (~10 min) Add the step-dependency contract to builds@1. Steps get an optional `after: [stepId]` list and a `claim: {runId, slot, account, branch, at}` record. Old builds with no `after` stay sequential, so each step waits for the previous one. Update the schema, `framework/core/build-pipeline.mjs` header docs and `_claude/builds/README.md`.\n[ ] s2 (~10 min) Make `framework/cli/builds-store.mjs` keep `after` and `claim` on steps through normBuild and the newer-wins merge. Add a migration that leaves old steps implicitly sequential. Check for dependency cycles and for `after` ids that point at missing steps.\n[ ] s3 (~10 min) Add `readySteps(build)` and `claimStep` / `releaseStep` to `framework/core/build-pipeline.mjs`. A step is ready when everything in its `after` list is done and it has no live claim. Claims are model-aware (the step's pinned model) and expire after a TTL.\n[ ] s4 (~10 min) Add the fill-slots planner `planFill({slots, accounts, running, queue, pending, settings})` to `framework/core/build-pipeline.mjs`. It fills every free slot in this order: ready steps of running builds, then Queue builds by priority, then Pending builds when auto-queue is on. It respects the agent cap, the memory floor, per-account model limits (Fable phases only to accounts with Fable) and budget caps. It returns the list of launches with the reason for each.\n[ ] s5 (~10 min) Write the contract for merging parallel steps back. Each parallel step runs on branch `<build-branch>--s<n>` in its own worktree off the build branch, then merges into the build branch when done. A merge conflict releases the claim and turns the step into a sequential retry with a note. Put the spec in `framework/spec/BUILD-PARALLEL.md` and add fixtures for `readySteps`, claims and `planFill` in `framework/spec/fixtures/build-pipeline-fill.json`.\nRead first: framework/schemas/builds.json, framework/core/build-pipeline.mjs, _claude/builds/README.md, framework/cli/builds-store.mjs, framework/cli/builds-live.mjs, framework/spec/BUILD-PARALLEL.md, framework/spec/fixtures/build-pipeline-fill.json\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": false,
     "from": "",
     "addenda": []
@@ -180329,12 +180345,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T09:32:48.552Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-always-fill-every-slot-when-slots-are-free-run-i--gina",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Fable",
+    "launchedAt": "2026-11-13T09:33:15.773Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T07:42:03.981Z",
@@ -180346,7 +180362,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-13T09:33:15.773Z",
     "planned": {
      "model": "Fable",
      "account": "mossesx-max-",
@@ -180355,7 +180371,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-13T09:33:15.773Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -181018,7 +181034,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 25,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

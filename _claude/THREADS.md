@@ -781,10 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 23:33 UTC · `professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e` note (all) · orchestrator
-- 2026-11-12 23:40 UTC · `everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the` added (0 steps) (all) · mcp
-- 2026-11-12 23:40 UTC · `everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the` added (0 steps) (all) · foreign-write
-- 2026-11-12 23:40 UTC · `everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the` → queued, note (all) · console
 - 2026-11-12 23:41 UTC · `everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the` note (all) · orchestrator
 - 2026-11-12 23:41 UTC · `everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the` note (all) · pipeline
 - 2026-11-12 23:42 UTC · `everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the` note (all) · pipeline
@@ -1181,6 +1177,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 09:32 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` → queued, note (all) · console
 - 2026-11-13 09:33 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` → running, note (all) · pipeline
 - 2026-11-13 09:33 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` note (all) · orchestrator
+- 2026-11-13 09:33 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` → running, note (all) · pipeline
+- 2026-11-13 09:33 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` note (all) · orchestrator
+- 2026-11-13 09:33 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` → running, note (all) · pipeline
+- 2026-11-13 09:33 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` note (all) · orchestrator
 
 ## Token passes (log)
 
