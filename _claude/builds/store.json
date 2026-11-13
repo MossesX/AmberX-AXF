@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4792,
- "updatedAt": "2026-11-13T19:26:17.712Z",
+ "rev": 4793,
+ "updatedAt": "2026-11-13T19:26:36.432Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -199568,7 +199568,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:38:53.122Z",
-   "updatedAt": "2026-11-13T19:25:15.591Z",
+   "updatedAt": "2026-11-13T19:25:38.768Z",
    "builtAt": "",
    "notes": [
     {
@@ -199670,6 +199670,10 @@
     {
      "text": "Self-check: console-android-app-thin-webview-wrapper was marked running on mossesx-max- with no session: released and back in the Queue.",
      "at": "2026-11-13T19:20:19.211Z"
+    },
+    {
+     "text": "Double dispatch: a second Opus session (Snap Sully) was started while the first (Landin' Lenny) was still running in the same worktree. Sully ticked s6 (already committed as 4ce3145db) and s7 (Lenny's 12e0f5e19), ran the pure JUnit rule tests (28 passed), changed no code, and stopped so Lenny can finish s8-s10 alone. Dispatcher should check for a live session on a build before launching another.",
+     "at": "2026-11-13T19:25:38.768Z"
     }
    ],
    "approvals": [],
@@ -199960,7 +199964,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
