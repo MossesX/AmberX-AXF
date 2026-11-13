@@ -280,6 +280,37 @@ ctx_plan() {   # $1 = session name
   return 0
 }
 
+# Session status (session-status@1, build auto-recover-stuck-builds, Nov 13 2026): inside tmux the run writes
+# <agent-slots dir>/sessions/<session>.json when claude starts and again when it ends (exit code, signal: 143 = SIGTERM,
+# end time, account), and refreshes <session>.heartbeat every AXF_HEARTBEAT_SEC (default 60) while it runs with the time
+# claude last wrote to its stream (a hung session stops moving it). A kill (TERM / HUP / INT) is trapped and recorded
+# too. framework/cli/session-liveness.mjs reads them for the orchestrator's auto-recovery. AXF_SESSION_STATUS=off skips it.
+status_on() { [[ "${AXF_SESSION_STATUS:-on}" != off ]] && command -v node >/dev/null && [[ -f "$SLOTS" ]]; }
+status_ses="" status_hb="" status_done=""
+status_start() {   # $1 = tmux session; never stops the run
+  status_on || return 0
+  node "$SLOTS" session start "$1" --name "$name" ${run_build:+--build "$run_build"} ${slot:+--slot "$slot"} ${login_account:+--account "$login_account"} ${model:+--model "$model"} --pid "$$" --cwd "$(pwd)" >/dev/null 2>&1 || return 0
+  status_ses="$1"
+  local d; d="$(node "$SLOTS" session dir 2>/dev/null)"; [[ -n "$d" && -d "$d" ]] || return 0
+  local started; started="$(date +%s)"
+  ( while kill -0 "$$" 2>/dev/null; do   # the heartbeat: the last time claude's stream moved (start time until it does)
+      t="$(stat -c %Y "$raw" 2>/dev/null || echo 0)"; (( t < started )) && t="$started"
+      date -u -d "@$t" +%Y-%m-%dT%H:%M:%SZ > "$d/$1.heartbeat.tmp" 2>/dev/null && mv -f "$d/$1.heartbeat.tmp" "$d/$1.heartbeat"
+      sleep "${AXF_HEARTBEAT_SEC:-60}"
+    done ) >/dev/null 2>&1 &
+  status_hb=$!
+  trap 'status_end 143 SIGTERM; exit 143' TERM
+  trap 'status_end 129 SIGHUP; exit 129' HUP
+  trap 'status_end 130 SIGINT; exit 130' INT
+  trap 'status_end "$?"' EXIT
+}
+status_end() {   # $1 = exit code, $2 = signal (optional); once per run
+  [[ -n "$status_ses" && -z "$status_done" ]] || return 0
+  status_done=1
+  [[ -n "$status_hb" ]] && kill "$status_hb" 2>/dev/null
+  node "$SLOTS" session end "$status_ses" --exit "${1:-0}" ${2:+--signal "$2"} ${login_account:+--account "$login_account"} >/dev/null 2>&1 || true
+}
+
 LIMIT_JS="$HERE/../framework/cli/build-limit.mjs"
 limit_on() { [[ "${AXF_BUILD_LIMIT:-on}" != off ]] && command -v node >/dev/null && [[ -f "$LIMIT_JS" ]]; }
 
@@ -373,6 +404,7 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
   switches=0 max_switches="${AXF_ACCOUNT_SWITCHES:-3}"
   run_build=""   # the orchestrator build of this run: its meter (start tokens, cost) is grouped under it
   read -r _ run_build < <(node "$HERE/../framework/cli/build-priority.mjs" slot --name "$name" --brief "$brief" 2>/dev/null) || true
+  [[ -n "$gate_ok" ]] && status_start "$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")"
   while [[ -n "$gate_ok" ]]; do
     if command -v node >/dev/null; then
       ses="$(tmux display-message -p '#S' 2>/dev/null || echo "axf-${name:-run}")"; meter=()
@@ -418,6 +450,7 @@ if [[ -n "$inner" ]]; then   # inside tmux: run, show, keep the result on screen
     [[ -n "$login_dir" ]] && { release_login; own_login live; }   # the run's copy follows the switch AI keys wrote
     switches=$((switches + 1))
   done
+  status_end "$st"   # the exit record lands as soon as claude stops, not after the close wait
   [[ -n "${mcp:-}" ]] && rm -f "$mcp"
   [[ -n "${ctx_dir:-}" && -d "$ctx_dir" ]] && rm -rf "$ctx_dir"
   # per-build start tokens and cost: one note on the build (every build view shows its notes)

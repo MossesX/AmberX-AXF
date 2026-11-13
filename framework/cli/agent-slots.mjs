@@ -25,6 +25,7 @@
  *   … settings [--json] · set key=value… | set --json '{…}' · get <key>
  *   … heavy [--label l] -- <cmd…>  run a heavy step under the test/build lock
  *   … sweep                        close finished tmux sessions, count unregistered axf-* ones
+ *   … session start|beat|end|list|dir <tmux session> [--exit N] [--account a] [--build id]   session-status@1 records
  *
  * Hard limit (build-limit@1, Nov 12 2026): framework/cli/build-limit.mjs counts what really runs on the host and refuses
  * the N+1st build whatever this queue thinks. Here maxAgents is capped at that limit (settings keep the value asked for
@@ -33,7 +34,7 @@
  * Only Queued builds take slots (Brett, Nov 12 2026): a waiting entry whose build is no longer Queued / Running (moved
  * back to Pending, built, failed…) is dropped instead of started (framework/cli/dispatch-gate.mjs buildMayTakeSlot).
  */
-import { existsSync, mkdirSync, readFileSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
 import { homedir, hostname } from 'node:os';
 import { dirname, join } from 'node:path';
 import { spawn, spawnSync } from 'node:child_process';
@@ -460,6 +461,71 @@ export function sweep(facts = {}) {
   return { closed, adopted };
 }
 
+/* ---------------- session status (session-status@1, build auto-recover-stuck-builds) ----------------
+ * Every headless session writes <dir>/sessions/<session>.json when claude starts (state running) and again when it ends
+ * (state ended: exit code, signal, end time, account), and keeps <dir>/sessions/<session>.heartbeat fresh while it runs
+ * (one ISO line, rewritten every heartbeat interval). framework/cli/session-liveness.mjs reads them for build-recovery@1:
+ * exit 143 = SIGTERM (killed), 137 = SIGKILL, 1 = failed; a stale heartbeat = a hung session. One file per session, so
+ * no lock: only the session itself writes its own record. Records older than SESSION_KEEP_MS are dropped on read.
+ */
+export const SESSION_SCHEMA = 'session-status@1';
+export const SESSION_KEEP_MS = 7 * 24 * 3600e3;
+const SIGNALS = { 129: 'SIGHUP', 130: 'SIGINT', 131: 'SIGQUIT', 134: 'SIGABRT', 137: 'SIGKILL', 143: 'SIGTERM' };
+export const signalOf = (exit) => (Number.isInteger(exit) ? SIGNALS[exit] ?? '' : '');
+export const sessionsDir = () => join(slotsDir(), 'sessions');
+const safeSession = (s) => (typeof s === 'string' && /^[A-Za-z0-9._:-]{1,120}$/.test(s) ? s : '');
+const sessionFile = (s, ext = 'json') => join(sessionsDir(), `${safeSession(s)}.${ext}`);
+const intOrNull = (v) => { const n = Number(v); return v !== undefined && v !== null && v !== '' && v !== true && Number.isInteger(n) ? n : null; };
+
+export function normSessionStatus(r) {
+  if (!r || typeof r !== 'object' || !safeSession(r.session)) return null;
+  const s = (v, max = 200) => (typeof v === 'string' ? v.slice(0, max) : '');
+  const exit = intOrNull(r.exit);
+  return {
+    $axf: SESSION_SCHEMA, session: r.session, name: s(r.name, 80), build: s(r.build, 80), slot: s(r.slot, 60), account: s(r.account, 40),
+    model: s(r.model, 40), pid: intOrNull(r.pid), host: s(r.host, 80), state: r.state === 'ended' ? 'ended' : 'running',
+    startedAt: s(r.startedAt, 40), heartbeatAt: s(r.heartbeatAt, 40), endedAt: s(r.endedAt, 40), exit, signal: s(r.signal, 12) || signalOf(exit), cwd: s(r.cwd, 300),
+  };
+}
+
+/** Write (merge) a session's status record. `start` sets running; `end` sets ended with the exit and its signal. */
+export function writeSessionStatus(session, patch = {}) {
+  if (!safeSession(session)) throw new Error('session: a tmux session name (letters, digits, . _ : -)');
+  mkdirSync(sessionsDir(), { recursive: true });
+  const prev = readJson(sessionFile(session), null) ?? {};
+  const rec = normSessionStatus({ ...prev, ...Object.fromEntries(Object.entries(patch).filter(([, v]) => v !== undefined && v !== true)), session, host: prev.host || HOST() });
+  writeJson(sessionFile(session), rec);
+  return rec;
+}
+export const sessionStart = (session, o = {}) => writeSessionStatus(session, { ...o, state: 'running', startedAt: new Date().toISOString(), endedAt: '', exit: null, signal: '' });
+export function sessionEnd(session, o = {}) {
+  const exit = intOrNull(o.exit);
+  const prev = readJson(sessionFile(session), null);
+  if (prev?.state === 'ended' && !o.force) return normSessionStatus(prev);   // the first end (claude's own exit) wins over the trap's
+  return writeSessionStatus(session, { ...o, state: 'ended', endedAt: new Date().toISOString(), exit, signal: o.signal || signalOf(exit) });
+}
+export function sessionBeat(session) {
+  mkdirSync(sessionsDir(), { recursive: true });
+  const f = sessionFile(session, 'heartbeat'); const tmp = `${f}.${process.pid}.tmp`;
+  writeFileSync(tmp, `${new Date().toISOString()}\n`); renameSync(tmp, f);
+}
+
+/** Every session record, with its heartbeat folded in (heartbeat file content, else its mtime). Old records are pruned. */
+export function readSessionStatuses({ now = Date.now(), prune: doPrune = true } = {}) {
+  const dir = sessionsDir(); let names = [];
+  try { names = readdirSync(dir).filter((n) => n.endsWith('.json')); } catch { return []; }
+  const out = [];
+  for (const n of names) {
+    const rec = normSessionStatus(readJson(join(dir, n), null)); if (!rec) continue;
+    const hb = join(dir, `${rec.session}.heartbeat`);
+    try { const t = readFileSync(hb, 'utf8').trim(); rec.heartbeatAt = Number.isFinite(Date.parse(t)) ? t : new Date(statSync(hb).mtimeMs).toISOString(); } catch { /* none yet */ }
+    const last = Date.parse(rec.endedAt || rec.heartbeatAt || rec.startedAt);
+    if (doPrune && rec.state === 'ended' && Number.isFinite(last) && now - last > SESSION_KEEP_MS) { rmSync(join(dir, n), { force: true }); rmSync(hb, { force: true }); continue; }
+    out.push(rec);
+  }
+  return out.sort((a, b) => String(b.startedAt).localeCompare(String(a.startedAt)));
+}
+
 export function status(facts = {}) {
   const settings = loadSettings();
   let mem = {};
@@ -538,7 +604,17 @@ async function cli(argv) {
       process.exitCode = code; return;
     }
     case 'sweep': return json(sweep());
-    default: throw new Error(`unknown command ${cmd} (status, enqueue, wait, claim, bind, finish, release, cancel, up, reprioritise, settings, set, get, heavy, sweep)`);
+    case 'session': {   // session-status@1: start | beat | end | list | dir
+      const [sub, ses] = f._;
+      const o = { name: f.name, build: f.build, slot: f.slot, account: f.account, model: f.model, pid: f.pid, cwd: f.cwd };
+      if (sub === 'dir') return console.log(sessionsDir());
+      if (sub === 'list') return json(readSessionStatuses());
+      if (sub === 'start') return void sessionStart(ses, o);
+      if (sub === 'beat') return void sessionBeat(ses);
+      if (sub === 'end') return void sessionEnd(ses, { ...o, exit: f.exit, signal: typeof f.signal === 'string' ? f.signal : undefined });
+      throw new Error('session start|beat|end|list|dir <tmux session> [--exit N] [--signal S] [--account a] [--build id] [--slot id] [--pid N]');
+    }
+    default: throw new Error(`unknown command ${cmd} (status, enqueue, wait, claim, bind, finish, release, cancel, up, reprioritise, settings, set, get, heavy, sweep, session)`);
   }
 }
 
