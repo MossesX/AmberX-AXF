@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3978,
- "updatedAt": "2026-11-13T03:32:12.636Z",
+ "rev": 3979,
+ "updatedAt": "2026-11-13T03:32:43.496Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -176507,7 +176507,7 @@
    "branch": "claude/change-to-one-to-do-notes-and-tasks-plugin-pr-527-brett-notes-tasks-and-to",
    "pr": "",
    "createdAt": "2026-11-13T00:40:38.452Z",
-   "updatedAt": "2026-11-13T03:28:39.658Z",
+   "updatedAt": "2026-11-13T03:32:41.381Z",
    "builtAt": "",
    "notes": [
     {
@@ -176544,12 +176544,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T03:27:58.175Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-change-to-one-to-do-notes-and-tasks-plugin-pr-52--sully",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-13T03:28:36.533Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T00:41:48.903Z",
@@ -176561,7 +176561,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-13T03:28:36.533Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -176570,7 +176570,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-13T03:28:36.533Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -176591,12 +176591,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T03:32:41.381Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T00:41:48.903Z",
-     "updatedAt": "2026-11-13T00:41:48.903Z"
+     "updatedAt": "2026-11-13T03:32:41.620Z"
     },
     {
      "id": "s2",
