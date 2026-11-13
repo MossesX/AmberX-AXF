@@ -781,7 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 00:41 UTC · `change-to-one-to-do-notes-and-tasks-plugin-pr-527-brett-notes-tasks-and-to` note (all) · orchestrator
 - 2026-11-13 00:41 UTC · `everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the` note (all) · pipeline
 - 2026-11-13 00:42 UTC · `everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the` note (all) · pipeline
 - 2026-11-13 00:42 UTC · `full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app` added (0 steps) (all) · mcp
@@ -1181,6 +1180,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 10:10 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` → pending, note (all) · reconciler
 - 2026-11-13 10:10 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` → pending, note (all) · reconciler
 - 2026-11-13 10:10 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` → pending, note (all) · reconciler
+- 2026-11-13 10:35 UTC · `fix-a-build-whose-session-finishes-its-phase-e-g-the-fable-steps-with-steps` added (0 steps) (all) · mcp
 
 ## Token passes (log)
 
