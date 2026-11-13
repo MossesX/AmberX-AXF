@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T03:27:52.775Z",
+ "updatedAt": "2026-11-13T03:28:07.595Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -111655,14 +111655,14 @@
    "title": "CHANGE to move-amberx-web-app-into-the-console-amberx-andr (PR #528), Brett: do NOT bring AmberX features into the console. Plan Studio is already there. Only build the Console Android app with all notifications (text, approvals, alerts) going through the console. Drop the rest of the AmberX port. A",
    "category": "",
    "detail": "",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-13T00:39:39.304Z",
-   "updatedAt": "2026-11-13T00:41:27.700Z",
+   "updatedAt": "2026-11-13T03:28:05.153Z",
    "builtAt": "",
    "notes": [
     {
@@ -111672,6 +111672,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-13T00:41:27.700Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T03:28:05.153Z"
     }
    ],
    "approvals": [],
@@ -111777,19 +111781,23 @@
    "title": "CHANGE to one-to-do-notes-and-tasks-plugin (PR #527), Brett: notes, tasks and to-dos are ONE item type, not separate things. Any item can hold any other, nested to any depth: a note can contain task lists and to-do lists, a task or to-do list can contain notes, and lists nest inside lists inside not",
    "category": "",
    "detail": "",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-13T00:40:38.452Z",
-   "updatedAt": "2026-11-13T00:41:48.903Z",
+   "updatedAt": "2026-11-13T03:27:58.609Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-13T00:41:48.903Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T03:27:58.609Z"
     }
    ],
    "approvals": [],

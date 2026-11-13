@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3971,
- "updatedAt": "2026-11-13T03:27:52.775Z",
+ "rev": 3972,
+ "updatedAt": "2026-11-13T03:28:07.595Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -176258,14 +176258,14 @@
    "title": "CHANGE to move-amberx-web-app-into-the-console-amberx-andr (PR #528), Brett: do NOT bring AmberX features into the console. Plan Studio is already there. Only build the Console Android app with all notifications (text, approvals, alerts) going through the console. Drop the rest of the AmberX port. A",
    "category": "",
    "detail": "",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-13T00:39:39.304Z",
-   "updatedAt": "2026-11-13T00:41:27.700Z",
+   "updatedAt": "2026-11-13T03:28:05.153Z",
    "builtAt": "",
    "notes": [
     {
@@ -176275,13 +176275,17 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-13T00:41:27.700Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T03:28:05.153Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
    "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
+    "queuedAt": "2026-11-13T03:28:02.740Z",
+    "queuedBy": "console",
     "account": "",
     "session": "",
     "slot": "",
@@ -176297,7 +176301,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
     "dispatchedAt": "",
     "planned": {
@@ -176436,7 +176440,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -176452,26 +176456,30 @@
    "title": "CHANGE to one-to-do-notes-and-tasks-plugin (PR #527), Brett: notes, tasks and to-dos are ONE item type, not separate things. Any item can hold any other, nested to any depth: a note can contain task lists and to-do lists, a task or to-do list can contain notes, and lists nest inside lists inside not",
    "category": "",
    "detail": "",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-13T00:40:38.452Z",
-   "updatedAt": "2026-11-13T00:41:48.903Z",
+   "updatedAt": "2026-11-13T03:27:58.609Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-13T00:41:48.903Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T03:27:58.609Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
    "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
+    "queuedAt": "2026-11-13T03:27:58.175Z",
+    "queuedBy": "console",
     "account": "",
     "session": "",
     "slot": "",
@@ -176487,7 +176495,7 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
     "dispatchedAt": "",
     "planned": {
@@ -176582,7 +176590,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

@@ -778,8 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 18:24 UTC · `new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans` s1 done, → running (all) · orchestrator
-- 2026-11-12 18:25 UTC · `new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans` note (all) · orchestrator
 - 2026-11-12 18:28 UTC · `new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans` s2 done (all) · orchestrator
 - 2026-11-12 18:33 UTC · `add-a-tap-to-confirm-option-to-every-settings-in` added (0 steps) (all) · console
 - 2026-11-12 18:33 UTC · `add-a-tap-to-confirm-option-to-every-settings-in` → queued, note (all) · console
@@ -1178,6 +1176,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 02:11 UTC · `tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch` note (all) · orchestrator
 - 2026-11-13 02:11 UTC · `tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch` s3 done, → built (all) · orchestrator
 - 2026-11-13 03:27 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` → queued, note (all) · console
+- 2026-11-13 03:27 UTC · `change-to-one-to-do-notes-and-tasks-plugin-pr-527-brett-notes-tasks-and-to` → queued, note (all) · console
+- 2026-11-13 03:28 UTC · `change-to-move-amberx-web-app-into-the-console-amberx-andr-pr-528-brett-do` → queued, note (all) · console
 
 ## Token passes (log)
 
