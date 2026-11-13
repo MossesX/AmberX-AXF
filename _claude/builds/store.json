@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4025,
- "updatedAt": "2026-11-13T06:30:12.760Z",
+ "rev": 4026,
+ "updatedAt": "2026-11-13T06:30:28.259Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -175979,7 +175979,7 @@
    "title": "Professional skins that rebuild the whole app (Fable, ultrathink, every step): each skin is a complete restyle AND rebehave of the entire console UI. Every asset (theme, layout, toolbars, tab groups and where tabs go, buttons and how they behave, context menus, nav menu, app menus, dialogs, tables, ",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -175987,7 +175987,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-12T23:32:23.494Z",
-   "updatedAt": "2026-11-13T06:30:09.548Z",
+   "updatedAt": "2026-11-13T06:30:12.839Z",
    "builtAt": "",
    "notes": [
     {
@@ -176011,20 +176011,24 @@
      "at": "2026-11-13T06:14:22.635Z"
     },
     {
-     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-professional-skins-that-rebuild-the-whole-app-fa--sully.",
-     "at": "2026-11-13T06:14:48.710Z"
-    },
-    {
-     "text": "Dispatcher launched two Fable sessions on this build in the same worktree (Snap Sully 06:14, Landin' Lenny 06:16); both edited the same files. Sully stopped Lenny's process group at 06:31 and continues alone. Needs a dispatcher fix: one build, one session.",
-     "at": "2026-11-13T06:30:09.548Z"
-    },
-    {
      "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-professional-skins-that-rebuild-the-whole-app-fa--lenny.",
      "at": "2026-11-13T06:15:42.947Z"
     },
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-professional-skins-that-rebuild-the-whole-app-fa--lenny, own login copy)",
      "at": "2026-11-13T06:15:58.468Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-professional-skins-that-rebuild-the-whole-app-fa--sully.",
+     "at": "2026-11-13T06:14:48.710Z"
+    },
+    {
+     "text": "Session on mossesx-max- ended (exit 1) with 17 steps left: back in the Queue (run 1).",
+     "at": "2026-11-13T06:30:12.839Z"
+    },
+    {
+     "text": "Dispatcher launched two Fable sessions on this build in the same worktree (Snap Sully 06:14, Landin' Lenny 06:16); both edited the same files. Sully stopped Lenny's process group at 06:31 and continues alone. Needs a dispatcher fix: one build, one session.",
+     "at": "2026-11-13T06:30:09.548Z"
     }
    ],
    "approvals": [],
@@ -176045,12 +176049,19 @@
     "queuedAt": "2026-11-13T06:12:08.295Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-professional-skins-that-rebuild-the-whole-app-fa--sully",
+    "session": "",
     "slot": "",
     "model": "Fable",
-    "launchedAt": "2026-11-13T06:14:47.983Z",
+    "launchedAt": "2026-11-13T06:15:37.493Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-13T06:30:11.803Z",
+     "exit": 1,
+     "outcome": "requeued",
+     "stepsLeft": 17,
+     "account": "mossesx-max-",
+     "session": "axf-professional-skins-that-rebuild-the-whole-app-fa--lenny"
+    },
     "split": {
      "at": "2026-11-13T06:14:22.635Z",
      "by": "orchestrator",
@@ -176059,9 +176070,9 @@
      "note": "Split by Claude into 17 steps (17 Fable)."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- ended (exit 1) with 17 steps left: back in the Queue (run 1).",
     "route": "",
-    "dispatchedAt": "2026-11-13T06:14:47.983Z",
+    "dispatchedAt": "2026-11-13T06:15:37.493Z",
     "planned": {
      "model": "Fable",
      "account": "mossesx-max-",
@@ -176070,7 +176081,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-13T06:14:47.983Z",
+    "pickedAt": "2026-11-13T06:15:37.493Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -176529,7 +176540,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
