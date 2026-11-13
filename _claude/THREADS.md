@@ -781,7 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 09:36 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` s3 done, → running (all) · orchestrator
 - 2026-11-13 09:37 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` s3 done (all) · foreign-write
 - 2026-11-13 09:38 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` s4 done (all) · orchestrator
 - 2026-11-13 09:40 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` s10 done (all) · orchestrator
@@ -1181,6 +1180,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 13:23 UTC · `auto-recover-stuck-builds` note (all) · orchestrator
 - 2026-11-13 13:32 UTC · `ui-review-gate-switch-default-off` PR #575 (all) · builds-live
 - 2026-11-13 13:32 UTC · `ui-review-gate-switch-default-off` s14 done, → built (all) · orchestrator
+- 2026-11-13 13:33 UTC · `ui-review-gate-switch-default-off` note (all) · orchestrator
 
 ## Token passes (log)
 
