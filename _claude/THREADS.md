@@ -792,7 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 19:03 UTC · `new-asset-type-animated-expanding-row` → pending, note (all) · reconciler
 - 2026-11-13 19:03 UTC · `land-project-duplicate-boilerplate` added (0 steps) (all) · console
 - 2026-11-13 19:03 UTC · `land-project-duplicate-boilerplate` → queued, note (all) · console
 - 2026-11-13 19:04 UTC · `console-app-part-3-native-bridge-mic` note (all) · orchestrator
@@ -1192,6 +1191,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 20:50 UTC · `per-toolbar-settings-fix-failing-chrome` note (all) · orchestrator
 - 2026-11-13 20:51 UTC · `land-overlay-preview-ui-review-resolve` note (all) · builds-live
 - 2026-11-13 20:51 UTC · `full-voice-control-resolve-inventory` → running, branch claude/full-voice-control-resolve-inventory, note (all) · builds-live
+- 2026-11-13 20:52 UTC · `lander-regenerates-generated-files-clash` note (all) · orchestrator
 
 ## Token passes (log)
 
