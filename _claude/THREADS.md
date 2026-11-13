@@ -781,7 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 03:29 UTC · `change-to-move-amberx-web-app-into-the-console-amberx-andr-pr-528-brett-do` → running, note (all) · pipeline
 - 2026-11-13 03:29 UTC · `change-to-move-amberx-web-app-into-the-console-amberx-andr-pr-528-brett-do` branch claude/change-to-move-amberx-web-app-into-the-console-amberx-andr-pr-528-brett-do (all) · pipeline
 - 2026-11-13 03:29 UTC · `change-to-move-amberx-web-app-into-the-console-amberx-andr-pr-528-brett-do` note (all) · orchestrator
 - 2026-11-13 03:30 UTC · `badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad` → running, note (all) · pipeline
@@ -1181,6 +1180,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 11:14 UTC · `fix-merge-conflicts-on-pr-557-professional-skins` PR #557 (all) · builds-live
 - 2026-11-13 11:15 UTC · `drag-anything-by-api-and-voice-after-pr-556-land` note (all) · orchestrator
 - 2026-11-13 11:15 UTC · `fix-merge-conflicts-on-pr-557-professional-skins` s2 done, → built (all) · orchestrator
+- 2026-11-13 11:16 UTC · `fix-merge-conflicts-on-pr-557-professional-skins` note (all) · orchestrator
 
 ## Token passes (log)
 

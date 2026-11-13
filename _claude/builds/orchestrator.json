@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T11:16:02.178Z",
+ "updatedAt": "2026-11-13T11:16:50.822Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -120757,8 +120757,8 @@
    "pr": "#557",
    "priority": "P0",
    "createdAt": "2026-11-13T10:40:45.569Z",
-   "updatedAt": "2026-11-13T11:15:47.905Z",
-   "builtAt": "2026-11-13T11:15:47.905Z",
+   "updatedAt": "2026-11-13T11:16:46.914Z",
+   "builtAt": "2026-11-13T11:16:46.914Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -120779,6 +120779,10 @@
     {
      "text": "PR #563 makes skin@1 require colorThemes {light, dark}: the four #557 skins (studio-pro, executive, field, command) need a light and a dark colour theme each, or check-skin-modes fails.",
      "at": "2026-11-13T10:56:41.586Z"
+    },
+    {
+     "text": "Headless run axf-fix-merge-conflicts-on-pr-557-professional-skins--earl: brief only · start 11.1K tokens ($0.03) · cost $3.21 · 112 turns · 6 tools, MCP none",
+     "at": "2026-11-13T11:16:46.914Z"
     }
    ],
    "approvals": [],
