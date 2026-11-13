@@ -1,4 +1,4 @@
-import { useEffect, useId, useState, type ButtonHTMLAttributes, type MouseEvent, type ReactNode } from 'react';
+import { useEffect, useId, useRef, useState, type ButtonHTMLAttributes, type CSSProperties, type MouseEvent, type ReactNode } from 'react';
 import { useAsset, useGate, useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
 import { BrandMark, BrandWatermark, brandHostProps, useBrandPlace } from './Brand';
@@ -23,29 +23,90 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   busy?: boolean;
 }
 
+/** How long a tap-twice arm lasts before the button goes back to normal. */
+const TAP_TWICE_MS = 3000;
+
+/**
+ * skin@2 behaviour (axes on the button type, read from the nearest SkinScope): `confirm` says which buttons ask first
+ * (destructive = those with a `confirm` question, the behaviour theme still deciding; none; all), `confirmBy` how
+ * (a confirm dialog, an inline Confirm / Cancel pair, press and hold for `holdMs`, or tap twice), `press` the press
+ * feedback (theme = the behaviour theme's). Nothing here is a literal: the skin decides, the stylesheet draws.
+ */
 export function Button({ tone = 'neutral', size = 'md', icon, requires, confirm, undoable, busy, children, className, disabled, onClick, ...rest }: ButtonProps) {
   const gate = useGate(requires);
   const rt = useRuntime();
+  const [armed, setArmed] = useState<'inline' | 'twice' | null>(null);
+  const [holding, setHolding] = useState(false);
+  const holdTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const holdFired = useRef(false);
+  const self = useRef<HTMLButtonElement>(null);
   useEffect(() => { if (!busy) return; rt.setBusy(true); return () => rt.setBusy(false); }, [busy, rt]);
+  useEffect(() => {
+    if (armed !== 'twice') return;
+    const t = setTimeout(() => setArmed(null), TAP_TWICE_MS);
+    return () => clearTimeout(t);
+  }, [armed]);
+  useEffect(() => () => { if (holdTimer.current) clearTimeout(holdTimer.current); }, []);
   if (gate === 'hide') return null;
   const locked = gate === 'disable';
+  const b = rt.behaviourOf('button');
+  const which = String(b.confirm ?? 'destructive');
+  const by = String(b.confirmBy ?? 'dialog');
+  const holdMs = typeof b.holdMs === 'number' ? b.holdMs : 600;
+  const press = b.press !== undefined && b.press !== 'theme' ? String(b.press) : undefined;
+  // which buttons ask first: destructive ones (a `confirm` question, the behaviour theme deciding), none, or every one
+  const asks = which === 'none' ? false : which === 'all' ? !!onClick : !!confirm && rt.confirmDelete(undoable);
+  const question = confirm || (typeof children === 'string' ? `${children}?` : rest.title ? `${rest.title}?` : 'Confirm?');
+  const label = size === 'sm' ? 11 : 15;
   const click = (e: MouseEvent<HTMLButtonElement>) => {
-    if (confirm && rt.confirmDelete(undoable) && !globalThis.confirm?.(confirm)) return;
+    if (asks) {
+      if (by === 'dialog') { if (!globalThis.confirm?.(question)) return; }
+      else if (by === 'hold') { if (!holdFired.current) { e.preventDefault(); return; } holdFired.current = false; }
+      else if (by === 'tap-twice') { if (armed !== 'twice') { e.preventDefault(); setArmed('twice'); return; } setArmed(null); }
+      else if (by === 'inline') { if (armed !== 'inline') { e.preventDefault(); setArmed('inline'); return; } setArmed(null); }
+    }
     onClick?.(e);
   };
-  return (
+  const holdStart = () => {
+    if (!asks || by !== 'hold' || disabled || locked || busy) return;
+    setHolding(true);
+    holdTimer.current = setTimeout(() => { holdFired.current = true; setHolding(false); self.current?.click(); }, holdMs);
+  };
+  const holdStop = () => {
+    if (holdTimer.current) clearTimeout(holdTimer.current);
+    holdTimer.current = null;
+    setHolding(false);
+  };
+  const button = (
     <button
       type="button"
-      className={`fx-btn fx-btn--${tone}${size === 'sm' ? ' fx-btn--sm' : ''}${busy ? ' is-busy' : ''} ${className ?? ''}`}
+      ref={self}
+      className={`fx-btn fx-btn--${armed === 'inline' ? (tone === 'danger' ? 'danger' : 'primary') : tone}${size === 'sm' ? ' fx-btn--sm' : ''}${busy ? ' is-busy' : ''} ${className ?? ''}`}
       disabled={disabled || locked || busy}
       aria-busy={busy || undefined}
-      title={locked ? `Requires ${requires}` : rest.title}
+      title={locked ? `Requires ${requires}` : armed ? question : rest.title}
       onClick={click}
+      data-fx-press={press}
+      data-axf-armed={armed === 'twice' ? '' : undefined}
+      data-axf-holding={holding ? '' : undefined}
+      data-axf-confirm-by={asks ? by : undefined}
+      style={asks && by === 'hold' ? ({ '--axf-hold-ms': `${holdMs}ms` } as CSSProperties) : undefined}
+      onPointerDown={holdStart}
+      onPointerUp={holdStop}
+      onPointerLeave={holdStop}
+      onPointerCancel={holdStop}
       {...rest}
     >
-      {locked ? <Icon name="lock" size={size === 'sm' ? 11 : 14} /> : busy ? <Icon name="refresh" size={size === 'sm' ? 11 : 15} className="fx-spin" /> : icon && <Icon name={icon} size={size === 'sm' ? 11 : 15} />}
-      {children && <span>{children}</span>}
+      {locked ? <Icon name="lock" size={size === 'sm' ? 11 : 14} /> : busy ? <Icon name="refresh" size={label} className="fx-spin" /> : armed === 'inline' ? <Icon name="check" size={label} /> : icon && <Icon name={icon} size={label} />}
+      {armed === 'inline' ? <span>Confirm</span> : children && <span>{children}</span>}
     </button>
+  );
+  if (armed !== 'inline') return button;
+  return (
+    <span className="fx-btn-confirm" role="group" aria-label={question}>
+      {button}
+      <button type="button" className={`fx-iconbtn${size === 'sm' ? ' fx-iconbtn--sm' : ''}`} aria-label="Cancel" title="Cancel" onClick={() => setArmed(null)}><Icon name="x" size={size === 'sm' ? 11 : 14} /></button>
+    </span>
   );
 }
 

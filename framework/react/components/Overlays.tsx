@@ -79,8 +79,13 @@ export function DialogHost({ dialogs }: { dialogs: DialogMap }) {
   const close = () => rt.closeDialog();
   const brand = rt.brandPlace('dialog', 16);
   const brandHost = brandHostProps(brand);
+  // skin@2: how the skin presents dialogs here (modal, sheet, side panel, full screen) and on which side a panel opens;
+  // the root's data-fx-dialog already carries the presentation through the dialog asset (withBehaviour), this host
+  // repeats it on the backdrop so a host inside a SkinScope draws its own skin's choice
+  const presentation = String(rt.behaviour('dialog', 'presentation') ?? 'modal');
+  const side = String(rt.behaviour('dialog', 'panelSide') ?? 'right');
   return (
-    <div className="fx-backdrop" onPointerDown={(e) => d.closeOnBackdrop && rt.behavior().windows.closeOnBackdrop && e.target === e.currentTarget && close()}>
+    <div className="fx-backdrop" data-fx-dialog-presentation={presentation} data-fx-dialog-side={side} onPointerDown={(e) => d.closeOnBackdrop && rt.behavior().windows.closeOnBackdrop && e.target === e.currentTarget && close()}>
       <div className={`fx-dialog ${brandHost.className}`.trim()} role="dialog" aria-modal="true" aria-label={def.title} tabIndex={-1} ref={panelRef} data-fx-brand-mode={brandHost['data-fx-brand-mode']} style={pull ? { transform: `translateY(${pull}px)` } : undefined}>
         <header className="fx-dialog__head" onPointerDown={onHeadDown} onPointerMove={onHeadMove} onPointerUp={onHeadUp} onPointerCancel={onHeadUp}>
           {brand?.svg && <BrandMark slot="dialog" height={16} className="fx-dialog__brand" />}
@@ -202,8 +207,15 @@ export function ContextMenuHost() {
     };
   }, [rt, scope]);
 
-  // On screen: below-right of the pointer, flipped or shifted to fit, scrolling inside when taller than the room (menu-fit@1)
-  useMenuFit(ref, 'point', () => state.context && { left: state.context.x, right: state.context.x, top: state.context.y, bottom: state.context.y }, {}, [state.context]);
+  // skin@2: the form the skin gives context menus here (a menu at the pointer, a bottom sheet, a searchable palette) and
+  // whether sub menus fly out or sit inline
+  const form = String(rt.behaviour('context-menu', 'form') ?? 'menu');
+  const submenus = String(rt.behaviour('context-menu', 'submenus') ?? 'flyout');
+  const [query, setQuery] = useState('');
+  useEffect(() => { setQuery(''); }, [state.context]);
+  // On screen: below-right of the pointer, flipped or shifted to fit, scrolling inside when taller than the room (menu-fit@1);
+  // a sheet or a palette has its own place (the stylesheet), so it is not fitted to the pointer
+  useMenuFit(ref, 'point', () => (form === 'menu' && state.context ? { left: state.context.x, right: state.context.x, top: state.context.y, bottom: state.context.y } : null), {}, [state.context, form]);
 
   if (!state.context || (state.context.scope ?? '') !== scope) return null;
   const ctx = state.context;
@@ -222,14 +234,24 @@ export function ContextMenuHost() {
   const more = [...extra, ...chromeSep, ...chrome, ...fallback] as unknown as typeof base;
   const sep = base.length && more.length && !base[base.length - 1]?.separator ? [{ id: 'x-sep', separator: true } as unknown as (typeof base)[number]] : [];
   const tail = everywhere.length ? [{ id: 'ctx-everywhere-sep', separator: true }, ...everywhere] : [];
-  const items = [...base, ...sep, ...more, ...(tail as unknown as typeof base)];
+  const assembled = [...base, ...sep, ...more, ...(tail as unknown as typeof base)];
+  // inline sub menus: a parent's children follow it, named "Parent · Child"; a palette flattens everything and filters by what is typed
+  const items = form === 'palette' ? paletteItems(assembled, query) : submenus === 'inline' ? inlineItems(assembled) : assembled;
   return (
     <div
       ref={ref}
       className="fx-ctx fx-popover"
-      style={{ left: state.context.x, top: state.context.y }}
+      data-fx-ctx-form={form}
+      data-fx-ctx-submenus={submenus}
+      style={form === 'menu' ? { left: state.context.x, top: state.context.y } : undefined}
       onContextMenu={(e) => e.preventDefault()}
     >
+      {form === 'palette' && (
+        <label className="fx-search fx-ctx__search">
+          <Icon name="search" size={14} />
+          <input autoFocus value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Type to find an action…" aria-label="Find an action" />
+        </label>
+      )}
       <MenuScroll box={ref}>
         <MenuList
           items={items}
@@ -241,4 +263,33 @@ export function ContextMenuHost() {
       </MenuScroll>
     </div>
   );
+}
+
+type CtxItem = { id: string; label?: string; separator?: boolean; items?: CtxItem[]; action?: string };
+
+/** Sub menus laid inline (skin@2 context-menu.submenus = inline): each child right after its parent, named "Parent · Child". */
+function inlineItems<T extends CtxItem>(items: T[]): T[] {
+  const out: T[] = [];
+  for (const it of items) {
+    if (!it.items?.length) { out.push(it); continue; }
+    out.push({ ...it, id: `${it.id}-sep`, separator: true, items: undefined, label: undefined } as T);
+    for (const c of inlineItems(it.items as T[])) out.push(c.separator ? c : ({ ...c, label: `${it.label ?? ''} · ${c.label ?? ''}` } as T));
+  }
+  return out;
+}
+
+/** A palette (skin@2 context-menu.form = palette): every action flattened, those whose path matches the query. */
+function paletteItems<T extends CtxItem>(items: T[], query: string): T[] {
+  const q = query.trim().toLowerCase();
+  const out: T[] = [];
+  const walk = (list: T[], path: string) => {
+    for (const it of list) {
+      if (it.separator) continue;
+      const label = path ? `${path} › ${it.label ?? ''}` : it.label ?? '';
+      if (it.items?.length) { walk(it.items as T[], label); continue; }
+      if (!q || label.toLowerCase().includes(q)) out.push({ ...it, label } as T);
+    }
+  };
+  walk(items, '');
+  return out.length ? out : ([{ id: 'ctx-none', label: q ? `Nothing matches "${query}"` : 'Nothing here', action: undefined } as unknown as T]);
 }

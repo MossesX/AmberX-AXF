@@ -88,6 +88,8 @@ export function Toolbar({ views }: { views: ViewMap }) {
   const rt = useRuntime();
   const tb = useAsset('toolbar');
   useAxfState();
+  // skin@2: the skin's behaviour (button labels) sits over the asset; placement is the shell's (layout toolbarPosition)
+  const tbData = rt.withBehaviour('toolbar', tb.data);
   const [q, setQ] = useState('');
   // Widgets (clock, search bar) at the toolbar's start / end: its own `widgets` + run-time ones (core/engines/widgets.ts).
   const widgets = rt.toolbarWidgets();
@@ -97,12 +99,12 @@ export function Toolbar({ views }: { views: ViewMap }) {
   const brandHost = brandHostProps(brand);
   const drawWidget = (w: PlacedAttachment, i: number) => arrange.item(w, i, 'fx-toolbar__widget', { 'data-axf-toolbar-widget': w.key, 'data-axf-origin': w.origin }, <WidgetView type={w.type} id={w.id} host="toolbar" />);
   // `collapsible` toolbars fold to a thin handle; the fold is a per-device setting (axf.toolbar.collapsed).
-  const collapsible = tb.data.collapsible === true;
+  const collapsible = tbData.collapsible === true;
   const collapsed = rt.toolbarCollapsed();
   const fold = (on: boolean) => rt.setToolbarCollapsed(on);
   if (collapsible && collapsed) {
     return (
-      <div className={`fx-toolbar fx-toolbar--${tb.data.variant} is-collapsed`} data-align={tb.data.align} role="toolbar" aria-label="Toolbar (folded)" data-axf-toolbar="app">
+      <div className={`fx-toolbar fx-toolbar--${tbData.variant} is-collapsed`} data-align={tbData.align} role="toolbar" aria-label="Toolbar (folded)" data-axf-toolbar="app">
         <button type="button" className="fx-toolbtn fx-toolbar__fold" aria-label="Unfold the toolbar" aria-expanded="false" onClick={() => fold(false)}><Icon name="chevron-down" size={14} /></button>
       </div>
     );
@@ -131,14 +133,14 @@ export function Toolbar({ views }: { views: ViewMap }) {
   };
 
   return (
-    <div className={`fx-toolbar fx-toolbar--${tb.data.variant}${arrange.on ? ' is-arranging' : ''} ${brandHost.className}`.trim()} data-align={tb.data.align} role="toolbar" aria-label="Toolbar" data-axf-toolbar="app" data-fx-ctx-target="toolbar" data-fx-ctx-payload="app" data-axf-arrange-host="toolbar" data-fx-brand-mode={brandHost['data-fx-brand-mode']}>
+    <div className={`fx-toolbar fx-toolbar--${tbData.variant}${arrange.on ? ' is-arranging' : ''} ${brandHost.className}`.trim()} data-align={tbData.align} role="toolbar" aria-label="Toolbar" data-axf-toolbar="app" data-fx-ctx-target="toolbar" data-fx-ctx-payload="app" data-axf-arrange-host="toolbar" data-fx-brand-mode={brandHost['data-fx-brand-mode']}>
       <ArrangeBar host="toolbar" label="toolbar" />
       {brand?.svg && <span className="fx-toolbar__brand"><BrandMark slot="toolbar" height={20} /></span>}
       {(arrange.on || widgets.start.length > 0) && <span className="fx-toolbar__widgets is-start" {...arrange.sideProps('start')}>{arrangedSide(arrange, 'start', widgets.start, drawWidget)}</span>}
-      {tb.data.groups.map((g) => <ToolbarGroupView key={g.id} group={g} variant={tb.data.variant} />)}
+      {tbData.groups.map((g) => <ToolbarGroupView key={g.id} group={g} variant={tbData.variant} />)}
       {(arrange.on || widgets.end.length > 0) && <span className="fx-toolbar__widgets is-end" {...arrange.sideProps('end')}>{arrangedSide(arrange, 'end', widgets.end, drawWidget)}</span>}
-      {tb.data.showSearch && tb.data.search?.live && <LiveSearch config={tb.data.search} />}
-      {tb.data.showSearch && !tb.data.search?.live && (
+      {tbData.showSearch && tbData.search?.live && <LiveSearch config={tbData.search} />}
+      {tbData.showSearch && !tbData.search?.live && (
         <form className="fx-search" onSubmit={run} role="search">
           <Icon name="search" size={14} />
           <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Go to view or swap asset…" aria-label="Search views and assets" />

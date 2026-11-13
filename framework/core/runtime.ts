@@ -11,7 +11,7 @@ import { ActionBus, FRAMEWORK_MODULE, STANDARD_ACTIONS, type ActionContext } fro
 import { colorThemeVars, scrollbarVars, styleThemeVars, type VarMap } from './engines/theme';
 import { scaleThemeVars } from './engines/scale';
 import { LAYOUT_VIEWPORTS, layoutViewports, layoutVars } from './engines/layout';
-import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, gaugeStyle, meterStyle, navMenuStyle, popupStyle, sliderStyle, tabGroupStyle, toolbarStyle } from './engines/components';
+import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, gaugeStyle, meterStyle, navMenuStyle, popupStyle, sliderStyle, tabGroupStyle, tableStyle, toolbarStyle } from './engines/components';
 import { CUSTOM_KEY, customizableTypes, customizeSheet, effectiveCustom, normalizeCustomSlot, type CustomSlot, type CustomValues } from './engines/customize';
 import { CONTROL_TOKEN_SLOTS, applyTokenOverrides, effectiveTokenOverrides } from './engines/control-tokens.mjs';
 import { gateFor, hasPermission, resolvePermissions } from './engines/uac';
@@ -55,6 +55,7 @@ import {
   type Gate,
   type LayoutData,
   type MenuActResult,
+  type TableData,
   type MenuItem,
   type MenuItemButton,
   type NavItem,
@@ -2540,16 +2541,18 @@ export class AxfRuntime {
       buttonStyle(this.asset('button').data),
       sliderStyle(this.asset('slider').data),
       containerStyle(this.asset('container').data),
-      dialogStyle(this.asset('dialog').data),
+      // skin@2: the skin's behaviour picks sit over the asset's fields (dialog presentation, toolbar labels, tab rows, tables)
+      dialogStyle(this.withBehaviour('dialog', this.asset('dialog').data)),
       popupStyle(this.asset('popup').data),
       contextMenuStyle(this.asset('context-menu').data),
-      toolbarStyle(this.asset('toolbar').data),
+      toolbarStyle(this.withBehaviour('toolbar', this.asset('toolbar').data)),
       navMenuStyle(this.asset('nav-menu').data),
       appMenuStyle(this.asset('app-menu').data),
       // optional control types (older apps without them get the defaults)
       gaugeStyle(this.assetOrNull('gauge')?.data),
       meterStyle(this.assetOrNull('meter')?.data),
-      tabGroupStyle(this.assetOrNull('tab-group')?.data, this.slotHidden('tab-group')),
+      tabGroupStyle(this.withBehaviour('tab-group', this.assetOrNull('tab-group')?.data ?? {}), this.slotHidden('tab-group')),
+      tableStyle(this.withBehaviour('table', (this.assetOrNull('table')?.data ?? {}) as Partial<TableData>)),
     ];
     const vars: VarMap = {
       ...colorThemeVars(color),

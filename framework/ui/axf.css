@@ -1822,3 +1822,41 @@ html[data-axf-help='on'] button[data-axf-help-id], html[data-axf-help='on'] [rol
 .axf-priority-panel__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap); }
 .axf-priority-panel__row { width: 100%; justify-content: flex-start; flex-wrap: wrap; column-gap: var(--fx-dens-gap-xl); text-align: start; height: auto; }
 .axf-priority-panel__title { overflow-wrap: anywhere; }
+
+/* ---------- skin@2 behaviour (build professional-skins, Nov 13 2026): what the skin in force says each control does.
+   Every rule selects on a behaviour attribute the runtime stamps (data-fx-bhv-* on the root and each SkinScope; the
+   engines' data-fx-dialog / data-fx-table / the hosts' data-fx-ctx-form) and draws with tokens only. ---------- */
+/* dialogs: full screen, and a side panel that opens on the left */
+[data-fx-dialog='full-screen'] .fx-backdrop { padding: 0; align-items: stretch; justify-content: stretch; }
+[data-fx-dialog='full-screen'] .fx-dialog { width: 100%; max-width: none; height: 100dvh; max-height: none; border-radius: 0; border: 0; }
+[data-fx-dialog='full-screen'] .fx-dialog { animation: fx-fade calc(var(--fx-motion) * 1.6) var(--fx-ease) both; }
+[data-fx-dialog='drawer'] .fx-backdrop[data-fx-dialog-side='left'] { justify-content: flex-start; }
+[data-fx-dialog='drawer'] .fx-backdrop[data-fx-dialog-side='left'] .fx-dialog { border-radius: 0 var(--fx-radius-lg) var(--fx-radius-lg) 0; border-right: var(--fx-border-w) solid var(--fx-border); border-left: 0; animation: fx-slide-right calc(var(--fx-motion) * 1.8) cubic-bezier(.2, .8, .2, 1) both; }
+@keyframes fx-slide-right { from { transform: translateX(-60px); opacity: 0; } }
+/* context menus: a bottom sheet, or a searchable palette */
+.fx-ctx[data-fx-ctx-form='sheet'] { left: var(--fx-layout-phone-edge); right: var(--fx-layout-phone-edge); bottom: var(--fx-layout-phone-edge); top: auto; min-width: 0; max-height: 70dvh; border-radius: var(--fx-radius-lg); padding-bottom: calc(var(--fx-dens-gap-md) + env(safe-area-inset-bottom)); animation: fx-slide-up calc(var(--fx-motion) * 1.8) cubic-bezier(.2, .8, .2, 1) both; }
+.fx-ctx[data-fx-ctx-form='sheet'] .fx-menu__item { padding: var(--fx-dens-gap-xl) var(--fx-dens-gap-2xl); min-height: var(--fx-size-button-height); }
+.fx-ctx[data-fx-ctx-form='palette'] { left: 50%; top: 15dvh; transform: translateX(-50%); min-width: min(calc(var(--fx-space) * 60), calc(100vw - var(--fx-layout-phone-edge) * 2)); max-height: 70dvh; }
+.fx-ctx[data-fx-ctx-form='palette'] .fx-ctx__search { margin: var(--fx-dens-gap-sm) var(--fx-dens-gap-sm) var(--fx-dens-gap-md); }
+.fx-ctx[data-fx-ctx-submenus='inline'] .fx-menu__sub { position: static; box-shadow: none; border: 0; padding: 0; }
+/* buttons: the skin's press feedback and its confirm modes */
+.fx-btn[data-fx-press='shrink']:active:not(:disabled) { transform: scale(.96); }
+.fx-btn[data-fx-press='darken']:active:not(:disabled) { filter: brightness(calc(1 - var(--fx-opacity-hover))); transform: none; }
+.fx-btn[data-fx-press='ripple']:active:not(:disabled) { box-shadow: 0 0 0 calc(var(--fx-border-w) * 3) var(--fx-accent-soft); transform: none; }
+.fx-btn[data-fx-press='none']:active:not(:disabled) { transform: none; }
+.fx-btn-confirm { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm); }
+.fx-btn[data-axf-holding] { background-image: linear-gradient(var(--fx-accent), var(--fx-accent)); background-repeat: no-repeat; background-position: left bottom; background-size: 0% calc(var(--fx-border-w) * 2); animation: fx-hold-fill var(--axf-hold-ms) linear forwards; }
+@keyframes fx-hold-fill { to { background-size: 100% calc(var(--fx-border-w) * 2); } }
+.fx-btn[data-axf-confirm-by='hold'] { user-select: none; -webkit-user-select: none; touch-action: none; }
+/* tables (table@1): density, sticky header, zebra, dividers, header case, and the terminal / card forms */
+.fx-table th, .fx-table td { padding: var(--fx-table-py) var(--fx-table-px); }
+[data-fx-table-sticky='on'] .fx-tablewrap .fx-table thead th { position: sticky; top: 0; background: var(--fx-surface); z-index: 1; }
+[data-fx-table-zebra='on'] .fx-table tbody tr:nth-child(even) td { background: var(--fx-surface2); }
+[data-fx-table-dividers='off'] .fx-table th, [data-fx-table-dividers='off'] .fx-table td { border-bottom: 0; }
+[data-fx-table-header='upper'] .fx-table th { text-transform: uppercase; letter-spacing: var(--fx-type-eyebrow-tracking); font-size: var(--fx-type-scale-xs); }
+[data-fx-table='terminal'] .fx-table { font-family: var(--fx-font-mono); font-size: var(--fx-type-scale-sm); }
+[data-fx-table='terminal'] .fx-table th { border-bottom: var(--fx-border-w) dashed var(--fx-border); }
+[data-fx-table='cards'] .fx-table thead { display: none; }
+[data-fx-table='cards'] .fx-table, [data-fx-table='cards'] .fx-table tbody, [data-fx-table='cards'] .fx-table tr, [data-fx-table='cards'] .fx-table td { display: block; }
+[data-fx-table='cards'] .fx-table tr { background: var(--fx-surface); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); margin-bottom: var(--fx-dens-gap-lg); padding: var(--fx-dens-gap-md); box-shadow: var(--fx-shadow-sm); }
+[data-fx-table='cards'] .fx-table td { border-bottom: 0; }

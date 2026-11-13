@@ -23,3 +23,21 @@
 /* row hooks (grid-hook@1): the hook buttons sit with the expand button; the tail track sizes to them, nothing overlaps */
 .axf-grid-tail { display: inline-flex; align-items: center; justify-content: flex-end; gap: calc(var(--fx-space) / 4); min-width: 0; }
 .axf-grid-hooks { display: inline-flex; align-items: center; gap: calc(var(--fx-space) / 4); }
+/* skin@2 table behaviour (table@1 axes on the grid root; the skin in force decides, tokens only) */
+.axf-grid[data-fx-table-density='compact'] { --axf-grid-pad: 0; }
+.axf-grid[data-fx-table-density='roomy'] { --axf-grid-pad: var(--fx-dens-gap-xl); }
+.axf-grid[data-fx-table-sticky='off'] .axf-grid-head { position: static; }
+.axf-grid[data-fx-table-actions='hover'] .axf-grid-row .axf-grid-hooks { opacity: 0; transition: opacity var(--fx-motion) var(--fx-ease); }
+.axf-grid[data-fx-table-actions='hover'] .axf-grid-row:hover .axf-grid-hooks, .axf-grid[data-fx-table-actions='hover'] .axf-grid-row:focus-within .axf-grid-hooks, .axf-grid[data-fx-table-actions='hover'] .axf-grid-row.is-active .axf-grid-hooks { opacity: 1; }
+.axf-grid[data-fx-table-actions='menu'] .axf-grid-row .axf-grid-hooks { display: none; }
+.axf-grid[data-fx-table='terminal'] { font-family: var(--fx-font-mono); font-size: var(--fx-type-scale-sm); }
+.axf-grid[data-fx-table='terminal'] .axf-grid-row, .axf-grid[data-fx-table='terminal'] .axf-grid-head { border-bottom: 0; }
+.axf-grid[data-fx-table='terminal'] .axf-grid-head { background: transparent; border-bottom: var(--fx-border-w) dashed var(--fx-border); }
+.axf-grid[data-fx-table='terminal'] .axf-grid-row:hover { background: var(--fx-surface3); }
+.axf-grid[data-fx-table='cards'] .axf-grid-head { display: none; }
+.axf-grid[data-fx-table='cards'] { display: grid; gap: var(--fx-dens-gap-lg); padding: var(--fx-dens-gap-md) 0; }
+.axf-grid[data-fx-table='cards'] .axf-grid-row { grid-template-columns: auto 1fr; grid-auto-flow: row; align-items: start; min-width: 0; background: var(--fx-surface); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); padding: var(--fx-dens-gap-xl); box-shadow: var(--fx-shadow-sm); }
+.axf-grid[data-fx-table='cards'] .axf-grid-row .axf-grid-cell { grid-column: 2; white-space: normal; overflow: visible; }
+.axf-grid[data-fx-table='cards'] .axf-grid-row .axf-grid-tail { grid-column: 1 / -1; justify-content: flex-start; margin-top: var(--fx-dens-gap-md); }
+.axf-grid[data-fx-table='cards'] .axf-grid-row .axf-grid-hooks .fx-iconbtn { min-height: var(--fx-size-button-height); min-width: var(--fx-size-button-height); }
+.axf-grid[data-fx-table='cards'] .axf-grid-group { border-radius: var(--fx-radius-md); }
