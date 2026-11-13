@@ -787,9 +787,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 18:09 UTC · `per-instance-settings-window-picker` note (all) · orchestrator
-- 2026-11-13 18:09 UTC · `restore-asset-designer-plugin-merged-nov` → running, note (all) · pipeline
-- 2026-11-13 18:09 UTC · `restore-asset-designer-plugin-merged-nov` branch claude/restore-asset-designer-plugin-merged-nov (all) · pipeline
 - 2026-11-13 18:09 UTC · `restore-asset-designer-plugin-merged-nov` note (all) · orchestrator
 - 2026-11-13 18:08 UTC · `per-instance-settings-window-picker` s3 done, → built (all) · orchestrator
 - 2026-11-13 18:08 UTC · `per-instance-settings-window-picker` note (all) · orchestrator
@@ -1187,6 +1184,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 19:49 UTC · `skins-plugin-merge-main-and-land` note (all) · orchestrator
 - 2026-11-13 19:49 UTC · `skin-animations-swatches-skin-switch` added (0 steps) (all) · console
 - 2026-11-13 19:49 UTC · `skin-animations-swatches-skin-switch` → queued, note (all) · console
+- 2026-11-13 19:49 UTC · `skin-config-panel-merge-main-and-land` → running, note (all) · pipeline
+- 2026-11-13 19:49 UTC · `skin-config-panel-merge-main-and-land` branch claude/skin-config-panel-merge-main-and-land (all) · pipeline
+- 2026-11-13 19:49 UTC · `skin-config-panel-merge-main-and-land` note (all) · orchestrator
 
 ## Token passes (log)
 
