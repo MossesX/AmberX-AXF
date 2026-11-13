@@ -778,9 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 10:55 UTC · `universal-voice-api-control-everything-controllable` → archived (all) · claude-voice
-- 2026-11-12 10:55 UTC · `amberx-notify-panel` → archived (all) · claude-voice
-- 2026-11-12 10:55 UTC · `one-way-to-start-builds-the-orchestrator-dispatc` → archived (all) · claude-voice
 - 2026-11-12 10:55 UTC · `nested-menus-for-console-amberx-and-molly-overri` → archived (all) · claude-voice
 - 2026-11-12 10:55 UTC · `urgent-approval-links-say-method-not-allowed` → archived (all) · claude-voice
 - 2026-11-12 10:55 UTC · `walkthrough-player-ide-layout-setting-collapsibl` → archived (all) · claude-voice
@@ -1178,6 +1175,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 01:16 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` note (all) · orchestrator
 - 2026-11-13 01:16 UTC · `10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less` s2 done (all) · orchestrator
 - 2026-11-13 01:19 UTC · `10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less` s3 done (all) · orchestrator
+- 2026-11-13 01:20 UTC · `projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone` → running, note (all) · pipeline
+- 2026-11-13 01:20 UTC · `projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone` branch claude/projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone (all) · pipeline
+- 2026-11-13 01:20 UTC · `projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone` note (all) · orchestrator
 
 ## Token passes (log)
 

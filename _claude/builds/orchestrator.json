@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T01:20:11.564Z",
+ "updatedAt": "2026-11-13T01:20:27.156Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -109337,14 +109337,14 @@
    "title": "Projects own everything: per-project Claude accounts and credentials, plus Clone project (settings only)",
    "category": "projects",
    "detail": "Brett said: \"every project will have its own set of Claude accounts and own everything. Basically, the console and axHub and all that runs on the project. So if you change project, everything is fresh. The Claude credentials, all the credentials for everything... let's create a new project that copies all the stuff over, everything except for the builds and the notes and the to-do manager.\"",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone",
    "pr": "",
    "createdAt": "2026-11-12T20:35:05.081Z",
-   "updatedAt": "2026-11-13T01:20:09.921Z",
+   "updatedAt": "2026-11-13T01:20:15.578Z",
    "builtAt": "",
    "notes": [
     {
@@ -109386,6 +109386,14 @@
     {
      "text": "Launch failed on mossesx-max-: launcher exit 2: claude-headless: --log is a plain file name",
      "at": "2026-11-13T00:22:03.886Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-projects-own-everything-per-project-claude-accou--lenny.",
+     "at": "2026-11-13T01:20:13.404Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-projects-own-everything-per-project-claude-accou--lenny, own login copy)",
+     "at": "2026-11-13T01:20:15.578Z"
     }
    ],
    "approvals": [],

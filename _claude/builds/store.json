@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3907,
- "updatedAt": "2026-11-13T01:20:11.564Z",
+ "rev": 3908,
+ "updatedAt": "2026-11-13T01:20:27.156Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -172772,14 +172772,14 @@
    "title": "Projects own everything: per-project Claude accounts and credentials, plus Clone project (settings only)",
    "category": "projects",
    "detail": "Brett said: \"every project will have its own set of Claude accounts and own everything. Basically, the console and axHub and all that runs on the project. So if you change project, everything is fresh. The Claude credentials, all the credentials for everything... let's create a new project that copies all the stuff over, everything except for the builds and the notes and the to-do manager.\"",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone",
    "pr": "",
    "createdAt": "2026-11-12T20:35:05.081Z",
-   "updatedAt": "2026-11-13T01:20:09.921Z",
+   "updatedAt": "2026-11-13T01:20:15.578Z",
    "builtAt": "",
    "notes": [
     {
@@ -172821,6 +172821,14 @@
     {
      "text": "Launch failed on mossesx-max-: launcher exit 2: claude-headless: --log is a plain file name",
      "at": "2026-11-13T00:22:03.886Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-projects-own-everything-per-project-claude-accou--lenny.",
+     "at": "2026-11-13T01:20:13.404Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-projects-own-everything-per-project-claude-accou--lenny, own login copy)",
+     "at": "2026-11-13T01:20:15.578Z"
     }
    ],
    "approvals": [],
@@ -172840,18 +172848,18 @@
    "pipeline": {
     "queuedAt": "2026-11-12T21:50:35.181Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-projects-own-everything-per-project-claude-accou--lenny",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Fable",
+    "launchedAt": "2026-11-13T01:20:12.774Z",
+    "runs": 1,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
-    "note": "launch failed: launcher exit 2: claude-headless: --log is a plain file name",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-13T01:20:12.774Z",
     "planned": {
      "model": "Fable",
      "account": "mossesx-max-",
@@ -172859,10 +172867,8 @@
      "at": "2026-11-12T20:36:05.232Z",
      "why": "subscription account mossesx-max-"
     },
-    "tried": [
-     "mossesx-max-"
-    ],
-    "pickedAt": "",
+    "tried": [],
+    "pickedAt": "2026-11-13T01:20:12.774Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -172987,7 +172993,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
