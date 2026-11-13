@@ -778,8 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 10:55 UTC · `new-app-wizard` → complete (all) · foreign-write
-- 2026-11-12 10:55 UTC · `focus-on-every-screen-console-open-console-show-` note (all) · foreign-write
 - 2026-11-12 10:55 UTC · `show-commits-behind-main-on-every-build-table-an` note (all) · foreign-write
 - 2026-11-12 10:55 UTC · `remove-the-console-s-own-notes-manager-console-u` note (all) · foreign-write
 - 2026-11-12 10:55 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` note (all) · foreign-write
@@ -1178,6 +1176,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 01:09 UTC · `10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less` added (0 steps) (all) · mcp
 - 2026-11-13 01:09 UTC · `10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less` → queued, note (all) · console
 - 2026-11-13 01:11 UTC · `10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less` note (all) · orchestrator
+- 2026-11-13 01:11 UTC · `10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less` → running, note (all) · pipeline
+- 2026-11-13 01:11 UTC · `10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less` branch claude/10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less (all) · pipeline
 
 ## Token passes (log)
 

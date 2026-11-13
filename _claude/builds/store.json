@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3894,
- "updatedAt": "2026-11-13T01:11:28.564Z",
+ "rev": 3895,
+ "updatedAt": "2026-11-13T01:11:43.051Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -176524,15 +176524,15 @@
    "title": "10-minute steps: the splitter cuts every build into steps of 10 minutes or less (was 30). Steps are checkpoints inside ONE session: the session ticks each one done and commits as it goes, so nothing is lost if it dies, and there is no new prompt or relaunch per step. Update the splitter prompt, the ",
    "category": "",
    "detail": "",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T01:09:38.633Z",
-   "updatedAt": "2026-11-13T01:11:23.434Z",
+   "updatedAt": "2026-11-13T01:11:30.915Z",
    "builtAt": "",
    "notes": [
     {
@@ -176542,6 +176542,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-13T01:11:10.433Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-10-minute-steps-the-splitter-cuts-every-build-in--gina.",
+     "at": "2026-11-13T01:11:28.472Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-10-minute-steps-the-splitter-cuts-every-build-in--gina, own login copy)",
+     "at": "2026-11-13T01:11:30.915Z"
     }
    ],
    "approvals": [],
@@ -176561,12 +176569,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T01:09:41.886Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-10-minute-steps-the-splitter-cuts-every-build-in--gina",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-13T01:11:27.492Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T01:11:10.433Z",
@@ -176576,9 +176584,9 @@
      "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-13T01:11:27.492Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -176587,7 +176595,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-13T01:11:27.492Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -176693,7 +176701,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
