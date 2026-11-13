@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4555,
- "updatedAt": "2026-11-13T17:47:47.735Z",
+ "rev": 4556,
+ "updatedAt": "2026-11-13T17:48:03.266Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -195896,7 +195896,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T17:46:43.480Z",
-   "updatedAt": "2026-11-13T17:47:46.237Z",
+   "updatedAt": "2026-11-13T17:47:52.425Z",
    "builtAt": "",
    "notes": [
     {
@@ -195906,6 +195906,10 @@
     {
      "text": "Brett's spec (overrides brief where different): Default settings interface per chrome type comes from axHub by default, or from the console's own Settings, which gets a list of all default assets (tab group settings interface, toolbar settings interface, etc.) where each can be chosen. In each individual toolbar/tab group settings dialog, the settings-interface picker is greyed out until Brett ticks a checkbox 'Override console default interface'; then he can pick a different one. Any chosen settings interface must have a manifest and pass a schema conformance test before it can be selected/applied.",
      "at": "2026-11-13T17:47:46.237Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"b6d527f6-7e3c-46c2-b1ed-2ba93d1e986c\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-13T17:47:52.425Z"
     }
    ],
    "approvals": [],
@@ -195932,19 +195936,101 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
-    "split": null,
+    "split": {
+     "at": "2026-11-13T17:47:52.425Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"b6d527f6-7e3c-46c2-b1ed-2ba93d1e986c\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
+    },
     "splitRequested": "",
-    "note": "waiting for the split before it can start",
+    "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-13T17:47:54.214Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwf9s99m0121d4",
+     "title": "",
+     "text": "Every chrome instance (tab group, toolbar, banner, nav, menu bar) has its own chrome settings dialog (framework ChromeContext.tsx / chrome-settings-rules.mjs). Today the settings asset is picked per type/app (axf.chrome.settings.<type>). Add, inside each instance's settings dialog, a picker to choose which settings interface (settings asset) THAT instance uses, per instance, with the shared default preselected. Changing it re-renders the dialog live. Persist per instance, survive reload, follow skins. Expose via REST/MCP/CLI/voice and control@1. Tests, help entry, Shipped features.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T17:47:52.425Z",
+     "updatedAt": "2026-11-13T17:47:52.425Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwf9s99m02e381",
+     "title": "",
+     "text": "every tab group and toolbar has its own settings interface, and within it you can select our settings interface",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T17:47:52.425Z",
+     "updatedAt": "2026-11-13T17:47:52.425Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwf9s99m03cl5j",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/per-instance-settings-window-picker.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/per-instance-settings-window-picker.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T17:47:52.425Z",
+     "updatedAt": "2026-11-13T17:47:52.425Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -195953,12 +196039,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-13T17:47:52.425Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
