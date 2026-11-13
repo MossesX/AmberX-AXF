@@ -446,3 +446,9 @@ builds merge driver installed there (`builds-live.mjs install`). PR heads fetche
   #570's removal of the build link kept (`state` no longer syncs builds, `build` / `sync-builds` ops and `hasBuild`
   gone, `delete-all` added); unused `readMatrices` / `orchestratorPath` imports dropped. plan-studio test 28 checks.
 - #556: not merged (out, still building).
+
+## Main pulled in again, store (s11)
+
+origin/main moved 40 commits, all builds-live status commits: merged clean (2bf7c1661). `builds-store.mjs verify`: ok,
+786 records, 21021 checks. `builds-reconcile.mjs`: nothing sure to apply (only "check" suggestions; the VPS cron ran it
+5 minutes earlier). All 13 builds are in the combined store with their PR numbers (#566's build carries #557).

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T12:27:55.982Z",
+ "updatedAt": "2026-11-13T12:28:35.585Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -117267,7 +117267,7 @@
    "title": "Merges are only 'merged' once GitHub confirms: every merge path (console auto-merge, auto-land, github client plugin, server gate, scripts) shows 'Pending GitHub confirmation' right after a merge call, then reads the PR back from GitHub (state MERGED and the merge commit on main) before marking it m",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -117275,8 +117275,8 @@
    "pr": "#569",
    "priority": "P0",
    "createdAt": "2026-11-13T06:21:11.993Z",
-   "updatedAt": "2026-11-13T12:27:47.750Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-13T12:28:11.498Z",
+   "builtAt": "2026-11-13T12:28:11.498Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -117361,6 +117361,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-merges-are-only-merged-once-github-confirms-ever--sully, own login copy)",
      "at": "2026-11-13T12:10:16.039Z"
+    },
+    {
+     "text": "Headless run axf-merges-are-only-merged-once-github-confirms-ever--sully: brief only · start 13.7K tokens ($0.04) · cost $2.43 · 82 turns · 6 tools, MCP none",
+     "at": "2026-11-13T12:28:11.498Z"
     }
    ],
    "approvals": [
@@ -117672,8 +117676,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T12:27:49.353Z",
      "note": "",
      "uid": "st-mweleffs0dktki",
      "createdAt": "2026-11-13T06:25:16.456Z"
@@ -123242,7 +123246,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T11:55:36.143Z",
-   "updatedAt": "2026-11-13T12:27:49.822Z",
+   "updatedAt": "2026-11-13T12:28:33.542Z",
    "builtAt": "",
    "notes": [
     {
@@ -123526,8 +123530,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T12:28:33.542Z",
      "note": "",
      "uid": "st-mwex9tpr0as4br",
      "createdAt": "2026-11-13T11:57:37.071Z"
@@ -123819,7 +123823,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T12:14:42.715Z",
-   "updatedAt": "2026-11-13T12:22:15.322Z",
+   "updatedAt": "2026-11-13T12:28:07.519Z",
    "builtAt": "",
    "notes": [
     {
@@ -123915,8 +123919,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T12:28:07.519Z",
      "note": "",
      "uid": "st-mwexys9f03rvyk",
      "createdAt": "2026-11-13T12:17:01.586Z"

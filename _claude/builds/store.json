@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4421,
- "updatedAt": "2026-11-13T12:27:55.982Z",
+ "rev": 4425,
+ "updatedAt": "2026-11-13T12:28:35.585Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -178383,7 +178383,7 @@
    "title": "Merges are only 'merged' once GitHub confirms: every merge path (console auto-merge, auto-land, github client plugin, server gate, scripts) shows 'Pending GitHub confirmation' right after a merge call, then reads the PR back from GitHub (state MERGED and the merge commit on main) before marking it m",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -178391,8 +178391,8 @@
    "pr": "#569",
    "priority": "P0",
    "createdAt": "2026-11-13T06:21:11.993Z",
-   "updatedAt": "2026-11-13T12:27:47.750Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-13T12:28:11.498Z",
+   "builtAt": "2026-11-13T12:28:11.498Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -178477,6 +178477,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-merges-are-only-merged-once-github-confirms-ever--sully, own login copy)",
      "at": "2026-11-13T12:10:16.039Z"
+    },
+    {
+     "text": "Headless run axf-merges-are-only-merged-once-github-confirms-ever--sully: brief only · start 13.7K tokens ($0.04) · cost $2.43 · 82 turns · 6 tools, MCP none",
+     "at": "2026-11-13T12:28:11.498Z"
     }
    ],
    "approvals": [
@@ -178860,12 +178864,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T12:27:49.353Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T06:25:16.456Z",
-     "updatedAt": "2026-11-13T06:25:16.456Z"
+     "updatedAt": "2026-11-13T12:27:49.605Z"
     }
    ],
    "profiles": [
@@ -178876,7 +178880,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 36,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -186452,7 +186456,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T11:55:36.143Z",
-   "updatedAt": "2026-11-13T12:27:49.822Z",
+   "updatedAt": "2026-11-13T12:28:33.542Z",
    "builtAt": "",
    "notes": [
     {
@@ -186799,12 +186803,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T12:28:33.542Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T11:57:37.071Z",
-     "updatedAt": "2026-11-13T11:57:37.071Z"
+     "updatedAt": "2026-11-13T12:28:33.835Z"
     },
     {
      "id": "s11",
@@ -187123,7 +187127,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -187147,7 +187151,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T12:14:42.715Z",
-   "updatedAt": "2026-11-13T12:22:15.322Z",
+   "updatedAt": "2026-11-13T12:28:07.519Z",
    "builtAt": "",
    "notes": [
     {
@@ -187285,12 +187289,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T12:28:07.519Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T12:17:01.586Z",
-     "updatedAt": "2026-11-13T12:17:01.586Z"
+     "updatedAt": "2026-11-13T12:28:07.828Z"
     },
     {
      "id": "s4",
@@ -187581,7 +187585,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
