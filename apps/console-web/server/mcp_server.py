@@ -40,6 +40,15 @@ EDITABLE = {"title", "summary", "area", "group", "priority", "wave", "effort", "
 READ = ToolAnnotations(readOnlyHint=True, destructiveHint=False, openWorldHint=False)
 WRITE = ToolAnnotations(readOnlyHint=False, destructiveHint=False, idempotentHint=False, openWorldHint=False)
 
+# The axHub policy a tool asks for when its annotations alone would pick another (framework/spec/CONTROL.md →
+# Recommended axHub policy): "allow" = runs at once for the owner, "confirm" = the owner approves it first.
+POLICY_META_KEY = "ai.amberx.axf/policy"
+PROJECT_OPS = ("project-create", "project-switch", "project-delete")
+
+
+def policy_meta(policy: Literal["allow", "veto", "confirm"]) -> dict[str, Any]:
+    return {POLICY_META_KEY: policy}
+
 INSTRUCTIONS = """AmberX AXF framework — plan, build queue, libraries and projects.
 Every Claude session calls `claude_session_start` first (when the Claude sessions plugin is on) and works as the crew agent
 it answers; `claude_session_agent` says when Brett picks another, `claude_session_book` books the work on that agent's card.
@@ -60,6 +69,9 @@ After reordering with `build_reorder`, call `build_reprocess` (apply=false to pr
 Chat and voice sessions (claude.ai, Amber): whenever you act, post one short line of what you are saying or doing with
 `console_session_note` (same `session` name every time, your claude.ai link as `url` when you know it). Brett watches it
 live in the Terminal's sessions nav and jumps in from there.
+
+Projects: `project_create` (seed="demo" for clearly marked test data), `project_switch` and `project_delete` (confirm
+= the project id). Brett watches the console change live.
 
 Follow Amber: check `console_follow`; while it is on, call `console_show` every time you mention something in Brett's
 console (a screen, settings tab, dialog, build, plugin, UI Review item), and his approvals pop up in the console."""
@@ -457,6 +469,42 @@ def build_server(call: Call, *, terminal: Callable[[int], list[dict[str, Any]]] 
         draft before writing it."""
         r = await run("project-validate", **({"manifest": manifest} if manifest is not None else {"dir": dir}))
         return {"dir": r.get("dir"), "validation": r.get("validation")}
+
+    # Projects (projects@1): workspaces with their own builds, notes, to-dos, lists and plans. Create and switch run
+    # without approval for the owner (POLICY_META); delete is destructive and keeps the owner's veto (CONTROL.md →
+    # Recommended axHub policy). The console shows each change live (log channel "projects" → /api/events).
+
+    @mcp.tool(annotations=WRITE, meta=policy_meta("allow"))
+    async def project_create(name: str, repo: str = "", skin: str = "", seed: Literal["none", "demo"] = "none", description: str = "",
+                             id: str = "", select: bool = True) -> dict[str, Any]:
+        """Create a project, exactly like the console's New project: its own build profile (builds), to-dos, lists,
+        notes and plans, plus its home in the hub (/projects/<id>/ with _claude/ and a project.manifest.json that passes
+        the Standards rules). `repo` links a GitHub repository (owner/name or its URL), `skin` records a skin id
+        (skins list: node framework/cli/skins.mjs list), `seed` "demo" fills it with clearly marked test data (nested
+        lists, ~10 to-dos, 5 notes, 2 plans, 2 sample builds; "with seed data"). `id` defaults to one made from the
+        name. select=False keeps the current project active. Runs without approval for the owner."""
+        args: dict[str, Any] = {"name": name, "seed": seed, "select": select, "by": f"mcp:{CALLER.get()}" if CALLER.get() else "mcp"}
+        for k, v in (("repo", repo), ("skin", skin), ("description", description), ("id", id)):
+            if v:
+                args[k] = v
+        r = await run("project-create", **args)
+        return {k: r.get(k) for k in ("project", "active", "home", "seed", "projects", "log") if r.get(k) is not None}
+
+    @mcp.tool(annotations=IDEMPOTENT, meta=policy_meta("allow"))
+    async def project_switch(project: str) -> dict[str, Any]:
+        """Make the console (every device and session) show another project: its builds, to-dos, lists, notes and
+        plans. `project` = its id or name. Running builds of other projects keep running. Runs without approval for
+        the owner."""
+        r = await run("project-switch", project=project)
+        return {k: r.get(k) for k in ("project", "active", "projects", "log") if r.get(k) is not None}
+
+    @mcp.tool(annotations=DESTRUCTIVE, meta=policy_meta("confirm"))
+    async def project_delete(project: str, confirm: str = "") -> dict[str, Any]:
+        """Take a project off the list for good (its data folders stay on disk; creating one with the same id brings
+        them back). `confirm` must be the project id: tell Brett what goes first. AmberX AXF can't be deleted. Keeps
+        the owner's veto."""
+        r = await run("project-delete", project=project, confirm=confirm)
+        return {k: r.get(k) for k in ("project", "active", "projects", "log") if r.get(k) is not None}
 
     @mcp.tool(annotations=READ)
     async def tracker_summary() -> dict[str, Any]:

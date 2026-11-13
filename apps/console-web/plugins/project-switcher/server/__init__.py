@@ -6,7 +6,8 @@ Projects themselves (projects@1) are framework data: framework/cli/projects.mjs 
 and the console core serves it at GET/POST /api/projects too. These routes are named for what people ask:
 
     GET  /             every project (counts, which is active)          GET  /current   the active project
-    POST /new          {name, description?, id?, select?}  a new, empty project (made active unless select is false)
+    POST /new          {name, description?, id?, repo?, skin?, seed?, select?}  a new project (made active unless select
+                       is false; seed "demo" = clearly marked test data, else empty) with its hub home and manifest
     POST /switch       {project}       id or name                        POST /rename    {project, name?, description?}
     POST /archive      {project, confirm}  confirm = the project id     POST /unarchive {project}
     POST /delete       {project, confirm}  confirm = the project id; off the list, its data stays on disk
@@ -88,8 +89,11 @@ def new(body: Any = Body(None)) -> dict[str, Any]:
     if not name:
         raise HTTPException(400, "a new project needs a name")
     change: dict[str, Any] = {"action": "create", "name": name, "description": _text(b.get("description")), "select": b.get("select") is not False}
-    if _text(b.get("id"), 40):
-        change["id"] = _text(b.get("id"), 40)
+    for key, n in (("id", 40), ("repo", 300), ("skin", 63), ("seed", 20)):
+        if _text(b.get(key), n):
+            change[key] = _text(b.get(key), n)
+    if b.get("seed") is True:
+        change["seed"] = "demo"
     return _change(change)
 
 

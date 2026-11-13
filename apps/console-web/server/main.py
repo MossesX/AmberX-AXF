@@ -634,6 +634,7 @@ def projects_state() -> Any:
 @app.post("/api/projects", dependencies=[Depends(auth)])
 async def projects_act(request: Request) -> Any:
     """One change: {action: select|create|update|archive|unarchive|delete, id?, name?, description?, confirm?}.
+    create also takes repo (owner/name), skin (a skin id) and seed (none|demo), and makes the project's hub home.
     archive and delete need confirm = the project id; the main project (AmberX AXF) can't be archived or deleted."""
     body = await request.body()
     if len(body) > 16 * 1024:
@@ -1050,8 +1051,10 @@ from mcp_server import build_server  # noqa: E402
 
 from mcp_server import control_runner  # noqa: E402
 from mcp_server import console_runner  # noqa: E402
-from mcp_server import CALLER as _MCP_CALLER, feed_recorder, session_note_runner  # noqa: E402
-_mcp = build_server(lambda op, **a: engine(op, "mcp", **a), terminal=lambda since: [l for l in _state["terminal"] if l["at"] > since],
+from mcp_server import CALLER as _MCP_CALLER, PROJECT_OPS as _MCP_PROJECT_OPS, feed_recorder, session_note_runner  # noqa: E402
+# Project changes log on the "projects" channel, like POST /api/projects: every open console follows /api/events and
+# repaints its project chip (and switches with the change) the moment an MCP client creates or switches a project.
+_mcp = build_server(lambda op, **a: engine(op, "projects" if op in _MCP_PROJECT_OPS else "mcp", **a), terminal=lambda since: [l for l in _state["terminal"] if l["at"] > since],
                     control=control_runner(ROOT), console=console_runner(ROOT), notes=session_note_runner(), on_call=feed_recorder())
 # Stateless JSON responses: works behind Traefik/Coolify and across container restarts. Host checks are off because
 # the endpoint is reached through a proxy under the console's own domain; the bearer token is the gate.

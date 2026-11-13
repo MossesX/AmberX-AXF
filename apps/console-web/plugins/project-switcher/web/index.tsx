@@ -13,6 +13,9 @@
  *   - server routes = plugin commands (REST /api/plugins/project-switcher/…, MCP projects_<command>, CLI, AmberX voice)
  *
  * Switching saves the pick for every device and session, then reloads the console so every view reads the new data.
+ * Changes made elsewhere (MCP project_create / project_switch, the CLI, voice) show up live: the server logs them on
+ * the "projects" channel of /api/events, and a slow poll on a visible tab catches the ones made on another machine.
+ * A project that appears is highlighted in the switcher; a switch made elsewhere is followed like a local one.
  */
 import { useCallback, useEffect, useState, useSyncExternalStore } from 'react';
 import type { AxfRuntime } from '@console/axf/core';
@@ -37,14 +40,18 @@ export const PROJECT_CHANGED = 'axf:project-changed';
 interface Counts { builds: number; open: number }
 interface Project { id: string; name: string; description?: string; profile: string; status: 'active' | 'archived'; base: boolean; active: boolean; createdAt?: string; archivedAt?: string; counts: Counts | null }
 interface State { ok?: boolean; active: string; projects: Project[] }
+const POLL_MS = 60_000;
+const FRESH_MS = 8_000;
 
 /* ---------------- store ---------------- */
 
-let st: { data: State | null; error: string; newOpen: boolean; newName: string } = { data: null, error: '', newOpen: false, newName: '' };
+let st: { data: State | null; error: string; newOpen: boolean; newName: string; fresh: string[] } = { data: null, error: '', newOpen: false, newName: '', fresh: [] };
 const subs = new Set<() => void>();
 const set = (p: Partial<typeof st>) => { st = { ...st, ...p }; subs.forEach((f) => f()); };
 const useProjects = () => useSyncExternalStore((f) => { subs.add(f); return () => subs.delete(f); }, () => st);
 let runtime: AxfRuntime | null = null;
+/** Changes this console is making right now: their echo on /api/events is not "made elsewhere". */
+let localBusy = 0;
 
 export async function loadProjects(): Promise<void> {
   try {
@@ -79,11 +86,51 @@ function paint(rt: AxfRuntime) {
 }
 
 async function change(rt: AxfRuntime, cmd: string, body: Record<string, unknown>, done: string): Promise<boolean> {
-  const r = await post(`${API}/${cmd}`, body);
-  if (!r.ok) { rt.toast(String(r.error ?? 'Could not change projects.'), 'danger', 'Projects'); return false; }
+  localBusy++;
+  try {
+    const r = await post(`${API}/${cmd}`, body);
+    if (!r.ok) { rt.toast(String(r.error ?? 'Could not change projects.'), 'danger', 'Projects'); return false; }
+    await loadProjects();
+    rt.toast(done, 'success', 'Projects');
+    return true;
+  } finally {
+    setTimeout(() => { localBusy--; }, 1500);
+  }
+}
+
+/**
+ * Re-read the projects after a change made elsewhere (an MCP client, the CLI, voice, another console): new projects
+ * are highlighted for a few seconds, and a switch is followed like one made here.
+ */
+async function followRemote(rt: AxfRuntime) {
+  if (localBusy > 0 || !st.data) return;
+  const before = st.data;
   await loadProjects();
-  rt.toast(done, 'success', 'Projects');
-  return true;
+  const after = st.data;
+  if (!after || localBusy > 0) return;
+  const known = new Set(before.projects.map((p) => p.id));
+  const added = after.projects.filter((p) => !known.has(p.id));
+  if (added.length) {
+    set({ fresh: [...st.fresh, ...added.map((p) => p.id)] });
+    setTimeout(() => set({ fresh: st.fresh.filter((id) => !added.some((p) => p.id === id)) }), FRESH_MS);
+    for (const p of added) rt.toast(`Project ${p.name} was just created.`, 'info', 'Projects');
+  }
+  if (after.active !== before.active) {
+    const p = after.projects.find((x) => x.active);
+    rt.toast(`Now working on ${p?.name ?? after.active}.`, 'info', 'Projects');
+    switched(rt, after.active);
+  }
+}
+
+/** Follow project changes made elsewhere: the server's "projects" log channel, plus a slow poll on a visible tab. */
+function watchRemote(rt: AxfRuntime) {
+  if (typeof EventSource !== 'undefined') {
+    const es = new EventSource('/api/events');
+    es.onmessage = (ev) => {
+      try { if ((JSON.parse(ev.data) as { channel?: string }).channel === 'projects') void followRemote(rt); } catch { /* keepalive */ }
+    };
+  }
+  setInterval(() => { if (globalThis.document?.visibilityState === 'visible') void followRemote(rt); }, POLL_MS);
 }
 
 /** Tell every view the project changed and (by default) reload so every page reads its data. */
@@ -96,8 +143,9 @@ async function switchTo(rt: AxfRuntime, p: Project) {
   if (await change(rt, 'switch', { project: p.id }, `Now working on ${p.name}.`)) switched(rt, p.id);
 }
 
-async function createProject(rt: AxfRuntime, name: string, description = '', select = true): Promise<boolean> {
-  const ok = await change(rt, 'new', { name, description, select }, select ? `${name} created, empty, and now active.` : `${name} created, empty.`);
+async function createProject(rt: AxfRuntime, name: string, description = '', select = true, seed = false): Promise<boolean> {
+  const what = seed ? 'with demo data' : 'empty';
+  const ok = await change(rt, 'new', { name, description, select, seed: seed ? 'demo' : 'none' }, select ? `${name} created, ${what}, and now active.` : `${name} created, ${what}.`);
   if (ok && select) switched(rt, current()?.id ?? '');
   return ok;
 }
@@ -106,17 +154,19 @@ async function createProject(rt: AxfRuntime, name: string, description = '', sel
 
 function ProjectRow({ p }: { p: Project }) {
   const rt = useRuntime();
+  const fresh = useProjects().fresh.includes(p.id);
   const [edit, setEdit] = useState(false);
   const [name, setName] = useState(p.name);
   const [desc, setDesc] = useState(p.description ?? '');
   const [confirm, setConfirm] = useState('');
   const archived = p.status === 'archived';
   return (
-    <li className={`axp-projects__row ${p.active ? 'is-active' : ''} ${archived ? 'is-archived' : ''}`} data-project={p.id}>
+    <li className={`axp-projects__row ${p.active ? 'is-active' : ''} ${archived ? 'is-archived' : ''} ${fresh ? 'is-new' : ''}`} data-project={p.id}>
       <div className="axp-projects__head">
         <span className="axp-projects__name"><Icon name="layers" size={14} /> {p.name}</span>
         {p.base && <Chip>main</Chip>}
         {p.active && <Chip tone="accent">active</Chip>}
+        {fresh && <Chip tone="success">new</Chip>}
         {archived && <Chip tone="warning">archived</Chip>}
       </div>
       {p.description && <p className="fx-small fx-muted axp-projects__desc">{p.description}</p>}
@@ -156,16 +206,18 @@ function NewProject() {
   const s = useProjects();
   const [desc, setDesc] = useState('');
   const [select, setSelect] = useState(true);
+  const [seed, setSeed] = useState(false);
   if (!s.newOpen) return <Button tone="neutral" icon="plus" onClick={() => set({ newOpen: true })}>New project</Button>;
   const name = s.newName;
   const create = async () => {
-    if (await createProject(rt, name.trim(), desc, select)) { set({ newOpen: false, newName: '' }); setDesc(''); }
+    if (await createProject(rt, name.trim(), desc, select, seed)) { set({ newOpen: false, newName: '' }); setDesc(''); setSeed(false); }
   };
   return (
     <div className="fx-stack axp-projects__new">
       <TextField label="Name" value={name} onChange={(v) => set({ newName: v })} placeholder="e.g. Garden planner" autoFocus />
       <TextField label="Description" value={desc} onChange={setDesc} rows={2} />
-      <p className="fx-small fx-muted axp-projects__desc">It starts empty: no builds, notes, to-dos or plans.</p>
+      <p className="fx-small fx-muted axp-projects__desc">It starts empty: no builds, notes, to-dos or plans{seed ? ', apart from the demo data' : ''}.</p>
+      <Switch label="Start with demo data" hint="Nested lists, to-dos, notes, plans and sample builds, all marked [Demo]." checked={seed} onChange={setSeed} />
       <Switch label="Switch to it right away" checked={select} onChange={setSelect} />
       <div className="fx-row fx-row--wrap">
         <Button tone="primary" icon="plus" disabled={!name.trim()} onClick={() => void create()}>Create</Button>
@@ -212,8 +264,8 @@ function SettingsPanel() {
       <Switch label="Show the project on the banner" checked={show} onChange={(on) => flip(SHOW_KEY, on, setShow)} />
       <Switch label="Reload the console after switching" hint="Every page then reads the new project's data." checked={reload} onChange={(on) => flip(RELOAD_KEY, on, setReload)} />
       <p className="fx-small fx-muted axp-projects__desc">
-        CLI: <span className="fx-mono">node framework/cli/projects.mjs [new "&lt;name&gt;" | select &lt;id&gt; | archive &lt;id&gt; --confirm &lt;id&gt; | delete &lt;id&gt; --confirm &lt;id&gt;]</span>.
-        API: <span className="fx-mono">/api/projects</span>, <span className="fx-mono">/api/plugins/project-switcher/…</span>; MCP: <span className="fx-mono">project-switcher_new</span>, <span className="fx-mono">project-switcher_switch</span> and the rest.
+        CLI: <span className="fx-mono">node framework/cli/projects.mjs [new "&lt;name&gt;" [--seed demo] [--repo owner/name] [--skin id] | select &lt;id&gt; | archive &lt;id&gt; --confirm &lt;id&gt; | delete &lt;id&gt; --confirm &lt;id&gt;]</span>.
+        API: <span className="fx-mono">/api/projects</span>, <span className="fx-mono">/api/plugins/project-switcher/…</span>; MCP: <span className="fx-mono">project_create</span>, <span className="fx-mono">project_switch</span>, <span className="fx-mono">project_delete</span>, <span className="fx-mono">project-switcher_new</span> and the rest. Changes made there show up here live.
         A session can work on another project without changing the pick: <span className="fx-mono">AXF_BUILD_PROFILE=&lt;its profile&gt;</span>.
       </p>
     </div>
@@ -245,6 +297,7 @@ export const plugin: AxfWebLibrary = {
     }, { label: 'Switch project' });
     paint(rt);
     void loadProjects();
+    watchRemote(rt);
   },
   dialogs: {
     [DIALOG]: { title: 'Projects', icon: 'layers', render: () => <Switcher /> },
