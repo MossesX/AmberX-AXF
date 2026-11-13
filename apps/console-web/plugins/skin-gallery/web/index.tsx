@@ -1,7 +1,9 @@
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { FOLDER } from './api';
+import { registerActions } from './actions';
 import { appMenu } from './menu';
+import { loadSettings } from './settings';
 import { QuickSwitch } from './QuickSwitch';
 import { SkinsScreen } from './SkinsScreen';
 import './skin-gallery.css';
@@ -11,6 +13,10 @@ export const plugin: AxfWebLibrary = {
   label: 'Skins',
   version: '0.1.0',
   appMenu,
+  register(rt) {
+    registerActions(rt);
+    void loadSettings();
+  },
   views: { 'skin-gallery': { title: 'Skins', icon: 'palette', render: () => <SkinsScreen /> } },
   nav: { label: 'Plugins', items: [{ id: 'skin-gallery', label: 'Skins', icon: 'palette', view: 'skin-gallery' }] },
   banners: [{ id: 'skin-gallery', label: 'Quick skin switcher', icon: 'palette', settingsTab: 'skin-gallery', order: 8, render: () => <QuickSwitch /> }],

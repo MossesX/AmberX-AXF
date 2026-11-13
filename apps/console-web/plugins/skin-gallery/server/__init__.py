@@ -13,6 +13,8 @@ app's app-look@1 file and the shared appearance document, as the framework skins
   POST /undo     {app?}
   POST /scope    {scope, follow: bool, app?}   Inherit / Follow hub: on follows the parent, off keeps its own
   GET  /open?skin=&scope=&view=  the console deep link (console_open screen target + arg)
+  GET  /settings                 the plugin settings (bannerChip, defaultScope, undoSeconds, previewView)
+  POST /settings {key: value…}   set one or more settings
 """
 from __future__ import annotations
 
@@ -31,7 +33,7 @@ CLI = Path(__file__).resolve().parents[1] / "skin-gallery.mjs"
 ROOT = CLI.parents[4]
 SCOPE = re.compile(r"^(hub|app|app:[a-z0-9][a-z0-9-]*|(ui|plugin):[a-z0-9][a-z0-9._-]{0,119})$")
 ID = re.compile(r"^[a-z0-9][a-z0-9._-]{0,119}$")
-STATUS = {"unknown-skin": 404, "nothing-to-undo": 409, "no-document": 409, "other-app": 400, "bad-scope": 400, "bad-slot": 400, "no-skin": 400, "bad-action": 400}
+STATUS = {"unknown-skin": 404, "nothing-to-undo": 409, "no-document": 409, "other-app": 400, "bad-scope": 400, "bad-slot": 400, "no-skin": 400, "bad-action": 400, "bad-setting": 400}
 
 
 def _run(*args: str) -> JSONResponse:
@@ -147,5 +149,27 @@ async def scope_follow(request: Request) -> JSONResponse:
     args = _common(scope, _str(b, "app"))
     if isinstance(args, JSONResponse):
         return args
-    follow = b.get("follow", True) is not False
+    f = b.get("follow", True)
+    follow = not (f is False or (isinstance(f, str) and f.strip().lower() in ("false", "off", "own", "no", "0")))
     return _run("scope", scope, "follow" if follow else "own", *[a for i, a in enumerate(args) if not (a == "--scope" or (i > 0 and args[i - 1] == "--scope"))])
+
+
+SETTING_KEYS = ("bannerChip", "defaultScope", "undoSeconds", "previewView")
+
+
+@router.get("/settings")
+def get_settings() -> JSONResponse:
+    return _run("settings")
+
+
+@router.post("/settings")
+async def set_settings(request: Request) -> JSONResponse:
+    b = await _body(request)
+    pairs: list[str] = []
+    for k, v in b.items():
+        if k not in SETTING_KEYS:
+            return _bad(f'no setting "{k}": {", ".join(SETTING_KEYS)}')
+        pairs += [k, str(v).lower() if isinstance(v, bool) else str(v)]
+    if not pairs:
+        return _bad("settings needs at least one of " + ", ".join(SETTING_KEYS))
+    return _run("settings", *pairs)

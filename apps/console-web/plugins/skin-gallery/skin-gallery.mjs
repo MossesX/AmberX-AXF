@@ -12,6 +12,7 @@
  *   node apps/console-web/plugins/skin-gallery/skin-gallery.mjs restore [--scope <s>] [--app <app>]
  *   node apps/console-web/plugins/skin-gallery/skin-gallery.mjs undo [--app <app>]
  *   node apps/console-web/plugins/skin-gallery/skin-gallery.mjs scope <scope> follow|own [--app <app>]  Inherit / Follow hub switch
+ *   node apps/console-web/plugins/skin-gallery/skin-gallery.mjs settings [<key> <value>]…    read or set: bannerChip, defaultScope, undoSeconds, previewView
  *   node apps/console-web/plugins/skin-gallery/skin-gallery.mjs open [<skin>] [--scope <s>] [--view phone]  the console deep link
  *
  * Scopes: hub | app | app:<id> | ui:<view> | plugin:<id>; default app (the acting app's own level). The acting app is
@@ -19,7 +20,7 @@
  */
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { readFileSync, renameSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
 import { parseSwitchScope, skinSwitch, skinSwitchState, switchScopes } from '../../../../framework/core/engines/skin-switch.mjs';
 import { appIds, change, coverage, covers, readGlobal, readLook, sharedFile, skinRows, writeLook } from '../../../../framework/cli/skins.mjs';
 
@@ -110,6 +111,33 @@ export function follow(scope, on, app = DEFAULT_APP) {
   return state(scope, id);
 }
 
+/* ------------------------------------------------------------- settings (the plugin's data folder only) */
+
+const ROOT = resolve(fileURLToPath(import.meta.url), '../../../../..');
+export const SETTINGS_DEFAULTS = { bannerChip: true, defaultScope: 'app', undoSeconds: 10, previewView: 'desktop' };
+const settingsFile = () => resolve(process.env.AXF_SKIN_GALLERY_DIR || resolve(ROOT, '.axf-console/plugins/skin-gallery'), 'settings.json');
+
+export function readSettings() {
+  try { return { ...SETTINGS_DEFAULTS, ...JSON.parse(readFileSync(settingsFile(), 'utf8')) }; } catch { return { ...SETTINGS_DEFAULTS }; }
+}
+
+/** Set one or more settings; every value is checked, an unknown key or a bad value changes nothing. */
+export function writeSettings(patch) {
+  const next = readSettings();
+  for (const [k, raw] of Object.entries(patch ?? {})) {
+    const v = typeof raw === 'string' ? raw.trim() : raw;
+    if (k === 'bannerChip') next.bannerChip = v === true || v === 'true' || v === 'on' || v === 'show';
+    else if (k === 'defaultScope') { if (!parseSwitchScope(String(v))) throw Object.assign(new Error(`"${v}" is not a scope`), { code: 'bad-scope' }); next.defaultScope = String(v); }
+    else if (k === 'undoSeconds') { const n = Number(v); if (!Number.isInteger(n) || n < 3 || n > 120) throw Object.assign(new Error('undoSeconds is a whole number from 3 to 120'), { code: 'bad-setting' }); next.undoSeconds = n; }
+    else if (k === 'previewView') { if (v !== 'desktop' && v !== 'phone') throw Object.assign(new Error('previewView is desktop or phone'), { code: 'bad-setting' }); next.previewView = v; }
+    else throw Object.assign(new Error(`no setting "${k}": bannerChip, defaultScope, undoSeconds, previewView`), { code: 'bad-setting' });
+  }
+  const f = settingsFile();
+  if (!existsSync(resolve(f, '..'))) mkdirSync(resolve(f, '..'), { recursive: true });
+  writeFileSync(f, `${JSON.stringify(next, null, 1)}\n`);
+  return next;
+}
+
 /** The console deep link (console_open target) for the gallery, one skin, or one scope. */
 export function open(skin = '', scope = '', view = '') {
   const q = new URLSearchParams({ ...(skin ? { skin } : {}), ...(scope ? { scope } : {}), ...(view === 'phone' ? { view } : {}) }).toString();
@@ -132,8 +160,13 @@ function main(argv) {
   else if (cmd === 'restore') out = run('restore-default', { scope, app });
   else if (cmd === 'undo') out = run('undo', { scope, app });
   else if (cmd === 'scope') { if (!arg) throw new Error('scope needs a scope: app, ui:<view> or plugin:<id>'); out = follow(arg, (args[2] ?? 'follow') !== 'own', app); }
+  else if (cmd === 'settings') {
+    const kv = args.slice(1);
+    if (kv.length % 2) throw new Error('settings takes <key> <value> pairs');
+    out = kv.length ? writeSettings(Object.fromEntries(kv.flatMap((x, i) => (i % 2 ? [] : [[x, kv[i + 1]]])))) : readSettings();
+  }
   else if (cmd === 'open') out = open(arg ?? '', opt('scope') ?? '', opt('view') ?? '');
-  else throw new Error(`unknown command ${cmd}: list | scopes | state | use | back | restore | undo | scope | open`);
+  else throw new Error(`unknown command ${cmd}: list | scopes | state | use | back | restore | undo | scope | settings | open`);
   if (json) console.log(JSON.stringify({ ok: true, result: out }));
   else console.log(Array.isArray(out) ? out.map((x) => (typeof x === 'string' ? x : JSON.stringify(x))).join('\n') : JSON.stringify(out, null, 1));
 }

@@ -24,6 +24,7 @@ TMP = Path(tempfile.mkdtemp(prefix="axf-skins-test-"))
 (TMP / "appearance.json").write_text(json.dumps({"colorTheme": "x"}) + "\n")
 os.environ["AXF_APPEARANCE_FILE"] = str(TMP / "appearance.json")
 os.environ["AXF_LOOKS_DIR"] = str(TMP / "looks")
+os.environ["AXF_SKIN_GALLERY_DIR"] = str(TMP / "data")
 subprocess.run(["node", "framework/cli/skins.mjs", "snapshot", "axf-console", "--json"], cwd=REPO, check=True, capture_output=True)
 
 sys.modules.setdefault("axf_console_plugins", types.ModuleType("axf_console_plugins")).__path__ = []
@@ -101,6 +102,20 @@ r = c.post("/p/scope", json={"scope": "elsewhere"})
 check("scope with a bad scope refused", r.status_code == 400, r.text)
 r = c.post("/p/use", json={"skin": skin, "scope": "ui:"})
 check("empty screen id refused", r.status_code == 400, r.text)
+
+r = c.post("/p/scope", json={"scope": "ui:home", "follow": "own"}).json()
+check("scope own as a word", r["result"]["state"]["use"] == "on", r)
+c.post("/p/scope", json={"scope": "ui:home", "follow": True})
+
+r = c.get("/p/settings").json()
+check("settings defaults", r["result"] == {"bannerChip": True, "defaultScope": "app", "undoSeconds": 10, "previewView": "desktop"}, r)
+r = c.post("/p/settings", json={"bannerChip": False, "defaultScope": "hub", "undoSeconds": 20, "previewView": "phone"}).json()
+check("settings set", r["result"] == {"bannerChip": False, "defaultScope": "hub", "undoSeconds": 20, "previewView": "phone"}, r)
+check("settings saved in the data folder", json.loads((TMP / "data" / "settings.json").read_text())["defaultScope"] == "hub")
+for bad in ({"undoSeconds": 0}, {"defaultScope": "x:y"}, {"previewView": "tv"}, {"color": "red"}, {}):
+    r = c.post("/p/settings", json=bad)
+    check(f"bad setting refused {bad}", r.status_code == 400, r.text)
+check("refused settings change nothing", c.get("/p/settings").json()["result"]["undoSeconds"] == 20)
 
 r = c.get("/p/open", params={"skin": skin, "view": "phone"}).json()
 check("phone deep link", "view=phone" in r["result"]["link"], r)

@@ -32,3 +32,4 @@ export const useSkinAt = (skin: string, scope: string) => call<ScopeView>('use',
 export const backAt = (scope: string) => call<ScopeView>('back', { scope });
 export const restoreAt = (scope: string) => call<ScopeView>('restore', { scope });
 export const undoLast = () => call<ScopeView>('undo', {});
+export const followAt = (scope: string, follow: boolean) => call<ScopeView>('scope', { scope, follow: follow ? 'true' : 'false' });
