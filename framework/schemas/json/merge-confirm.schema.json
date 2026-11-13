@@ -1,0 +1,209 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amberx.ai/axf/schemas/merge-confirm.schema.json",
+  "title": "merge-confirm@1 (one record per merge call; merged only once GitHub confirms)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "repo",
+    "pr",
+    "state",
+    "requestedAt"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "merge-confirm@1"
+    },
+    "id": {
+      "type": "string"
+    },
+    "repo": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9_.-]*/[a-z0-9_.-]+$"
+    },
+    "pr": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "url": {
+      "type": "string"
+    },
+    "path": {
+      "enum": [
+        "merge-queue",
+        "auto-land",
+        "console-auto-merge",
+        "github-plugin",
+        "server-gate",
+        "script",
+        "cli",
+        "reconcile"
+      ]
+    },
+    "by": {
+      "type": "string"
+    },
+    "build": {
+      "type": "string"
+    },
+    "state": {
+      "enum": [
+        "merge-requested",
+        "pending-github-confirmation",
+        "merged",
+        "merge-unconfirmed",
+        "merge-failed"
+      ]
+    },
+    "label": {
+      "enum": [
+        "Merge requested",
+        "Pending GitHub confirmation",
+        "Merged",
+        "GitHub hasn't confirmed",
+        "Merge failed"
+      ]
+    },
+    "attempt": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "rechecks": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "checks": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "requestedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "calledAt": {
+      "type": "string"
+    },
+    "deadlineAt": {
+      "type": "string"
+    },
+    "nextCheckAt": {
+      "type": "string"
+    },
+    "confirmedAt": {
+      "type": "string"
+    },
+    "endedAt": {
+      "type": "string"
+    },
+    "call": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "ok": {
+          "type": "boolean"
+        },
+        "status": {
+          "type": "integer"
+        },
+        "merged": {
+          "type": "boolean"
+        },
+        "sha": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "evidence": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": false,
+      "properties": {
+        "state": {
+          "enum": [
+            "",
+            "MERGED",
+            "OPEN",
+            "CLOSED"
+          ]
+        },
+        "mergedAt": {
+          "type": "string"
+        },
+        "mergeCommitSha": {
+          "type": "string"
+        },
+        "onMain": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "mainSha": {
+          "type": "string"
+        },
+        "shaMatch": {
+          "type": [
+            "boolean",
+            "null"
+          ]
+        },
+        "readAt": {
+          "type": "string"
+        },
+        "missing": {
+          "type": "array",
+          "items": {
+            "enum": [
+              "state MERGED",
+              "merged_at",
+              "merge_commit_sha",
+              "merge commit on main"
+            ]
+          }
+        },
+        "error": {
+          "type": "string"
+        }
+      }
+    },
+    "why": {
+      "type": "string"
+    },
+    "history": {
+      "type": "array",
+      "maxItems": 40,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "properties": {
+          "at": {
+            "type": "string"
+          },
+          "from": {
+            "type": "string"
+          },
+          "to": {
+            "enum": [
+              "merge-requested",
+              "pending-github-confirmation",
+              "merged",
+              "merge-unconfirmed",
+              "merge-failed"
+            ]
+          },
+          "why": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

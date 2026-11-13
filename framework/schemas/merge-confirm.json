@@ -1,0 +1,64 @@
+{
+  "schema": "merge-confirm@1",
+  "record": "merge-confirm@1",
+  "version": 1,
+  "states": [
+    "merge-requested",
+    "pending-github-confirmation",
+    "merged",
+    "merge-unconfirmed",
+    "merge-failed"
+  ],
+  "terminal": [
+    "merged",
+    "merge-unconfirmed",
+    "merge-failed"
+  ],
+  "labels": {
+    "merge-requested": "Merge requested",
+    "pending-github-confirmation": "Pending GitHub confirmation",
+    "merged": "Merged",
+    "merge-unconfirmed": "GitHub hasn't confirmed",
+    "merge-failed": "Merge failed"
+  },
+  "pendingLabel": "Pending GitHub confirmation",
+  "paths": [
+    "merge-queue",
+    "auto-land",
+    "console-auto-merge",
+    "github-plugin",
+    "server-gate",
+    "script",
+    "cli",
+    "reconcile"
+  ],
+  "evidence": [
+    "state MERGED",
+    "merged_at",
+    "merge_commit_sha",
+    "merge commit on main"
+  ],
+  "verdicts": [
+    "merged",
+    "pending",
+    "not-merged",
+    "closed",
+    "unknown"
+  ],
+  "backoffS": [
+    0,
+    5,
+    15,
+    30,
+    60,
+    120
+  ],
+  "timeoutS": 600,
+  "callTimeoutS": 120,
+  "refusalStatuses": [
+    405,
+    409,
+    422
+  ],
+  "historyMax": 40
+}
