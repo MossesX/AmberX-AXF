@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3921,
- "updatedAt": "2026-11-13T01:42:06.146Z",
+ "rev": 3922,
+ "updatedAt": "2026-11-13T01:42:17.239Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -175908,15 +175908,15 @@
    "title": "Everything on tokens before skins: fix the 27 open check-theme problems and the 1 check-controls finding (apps/player Home.tsx raw button), burn down all 1,209 frozen findings in framework/spec/conform-baseline.json (use framework/cli/scale-adopt.mjs, then hand-fix the rest) and empty the baseline, ",
    "category": "",
    "detail": "",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-12T23:40:00.983Z",
-   "updatedAt": "2026-11-13T01:42:04.589Z",
+   "updatedAt": "2026-11-13T01:42:11.195Z",
    "builtAt": "",
    "notes": [
     {
@@ -175962,6 +175962,14 @@
     {
      "text": "Queued by console.",
      "at": "2026-11-13T01:13:55.380Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-everything-on-tokens-before-skins-fix-the-27-ope--paulie.",
+     "at": "2026-11-13T01:42:07.633Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-everything-on-tokens-before-skins-fix-the-27-ope--paulie, own login copy)",
+     "at": "2026-11-13T01:42:11.195Z"
     }
    ],
    "approvals": [],
@@ -175981,12 +175989,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T01:13:54.960Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-everything-on-tokens-before-skins-fix-the-27-ope--paulie",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-13T01:42:07.174Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T23:41:19.671Z",
@@ -175998,7 +176006,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-13T01:42:07.174Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -176006,10 +176014,8 @@
      "at": "2026-11-12T23:41:20.890Z",
      "why": "subscription account mossesx-max-"
     },
-    "tried": [
-     "mossesx-max-"
-    ],
-    "pickedAt": "",
+    "tried": [],
+    "pickedAt": "2026-11-13T01:42:07.174Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -176071,7 +176077,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
