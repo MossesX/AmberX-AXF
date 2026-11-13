@@ -1948,6 +1948,18 @@
    "from": "",
    "addenda": []
   },
+  "combine-merge-queue-into-one-pr": {
+   "said": "Brett: stop merging one at a time and in order. Take every PR in the merge queue that's done building (#560, #562, #563, #564, #566, #568, #570, #513, #515, #529, #539, #544, #545, plus #556 if ready), combine them all into ONE branch, pull in main, fix every conflict and failing check, open one PR and merge it now. Confirm the merge on GitHub, close the originals as merged-via-combined, redeploy. Fix whatever needs fixing; don't stop to ask.",
+   "at": "2026-11-13T11:55:36.143Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "console-account-picker": {
    "said": "I need to be able to flip them from the console.",
    "at": "2026-11-05T23:30:48.450Z",
