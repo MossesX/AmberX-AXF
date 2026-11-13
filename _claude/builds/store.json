@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4132,
- "updatedAt": "2026-11-13T07:19:55.535Z",
+ "rev": 4133,
+ "updatedAt": "2026-11-13T07:20:09.928Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -179743,7 +179743,7 @@
    "title": "Remove UI Review as a gate: no screenshots required, PRs never held as draft for UI Review, drop UI Review steps from builds",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -179752,7 +179752,7 @@
    "priority": "P0",
    "createdAt": "2026-11-13T06:54:48.788Z",
    "updatedAt": "2026-11-13T07:19:48.368Z",
-   "builtAt": "",
+   "builtAt": "2026-11-13T07:19:48.368Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -180154,12 +180154,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T07:19:32.709Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T06:56:37.518Z",
-     "updatedAt": "2026-11-13T06:56:37.518Z"
+     "updatedAt": "2026-11-13T07:19:32.917Z"
     }
    ],
    "profiles": [
@@ -180170,7 +180170,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 25,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
