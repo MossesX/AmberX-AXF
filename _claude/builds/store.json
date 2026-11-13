@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4780,
- "updatedAt": "2026-11-13T19:20:17.650Z",
+ "rev": 4781,
+ "updatedAt": "2026-11-13T19:20:37.260Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -199560,7 +199560,7 @@
    "title": "Console Android app: thin WebView wrapper with overlay, replaces AmberX",
    "category": "",
    "detail": "New Android app that replaces AmberX: a thin native shell that runs the AXF console web app in a WebView. Not a native rewrite.\n- Native only where Android requires it: draw-over-apps floating toolbar/bubble (port from overlay-toolbar-v2), approvals bar, notifications, mic/recorder, open_url, wake, permissions. Everything else is the web console.\n- SAFE AREA (Brett's screenshots, Nov 13): AmberX drew its top bar under the status bar, so the clock, camera cutout, call pill, notification icons and signal sat on top of the title/search/menu. The wrapper must handle WindowInsets (status bar, display cutout, navigation bar, IME), pass them into the WebView as CSS env(safe-area-inset-*) with viewport-fit=cover, and the console must pad every top bar, banner, toolbar and bottom nav with them. Nothing is ever drawn under the clock, camera or notification shade. Test on cutout and punch-hole phones, portrait and landscape.\n- The floating toolbar expands to the full-screen console with the toolbar top-left, keeps the app in front, and pops up approvals with a link to the approvals page.\n- A JS bridge exposes the native features to the console (window.axfNative), with full API parity: REST/MCP/CLI/voice.\n- Auto-updates the web content from the live console. The shell rarely needs a rebuild.\n- Migrate AmberX's axHub device service (amberx.open_url, recorder) to the new app.\n- Tests, help, Shipped features.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -199568,7 +199568,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:38:53.122Z",
-   "updatedAt": "2026-11-13T19:19:25.577Z",
+   "updatedAt": "2026-11-13T19:20:19.211Z",
    "builtAt": "",
    "notes": [
     {
@@ -199666,6 +199666,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-console-android-app-thin-webview-wrapper--sully, own login copy)",
      "at": "2026-11-13T19:19:10.665Z"
+    },
+    {
+     "text": "Self-check: console-android-app-thin-webview-wrapper was marked running on mossesx-max- with no session: released and back in the Queue.",
+     "at": "2026-11-13T19:20:19.211Z"
     }
    ],
    "approvals": [],
@@ -199685,7 +199689,7 @@
    "pipeline": {
     "queuedAt": "2026-11-13T18:38:55.070Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
+    "account": "",
     "session": "",
     "slot": "",
     "model": "Opus",
@@ -199707,7 +199711,7 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"42523f40-ad67-40c7-a2c7-fbb1f4b209fc\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "Session on mossesx-max- ended (exit 3) with 10 steps left: back in the Queue (run 1).",
+    "note": "released by the self-check (nothing ran): back in the Queue",
     "route": "",
     "dispatchedAt": "2026-11-13T18:39:57.071Z",
     "planned": {
@@ -199956,7 +199960,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
