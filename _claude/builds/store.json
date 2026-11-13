@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4356,
- "updatedAt": "2026-11-13T11:45:20.486Z",
+ "rev": 4357,
+ "updatedAt": "2026-11-13T11:45:47.436Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -185339,12 +185339,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T11:45:11.111Z",
-   "updatedAt": "2026-11-13T11:45:13.129Z",
+   "updatedAt": "2026-11-13T11:45:46.259Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-13T11:45:13.129Z"
+    },
+    {
+     "text": "Brett: must be a SERVER GATE on the VPS — runs in the server process on its own (always on, no console or browser open needed), not a console/UI feature.",
+     "at": "2026-11-13T11:45:46.259Z"
     }
    ],
    "approvals": [],
@@ -185392,7 +185396,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
