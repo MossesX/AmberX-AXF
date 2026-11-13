@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4767,
- "updatedAt": "2026-11-13T19:13:21.313Z",
+ "rev": 4768,
+ "updatedAt": "2026-11-13T19:13:39.319Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -199559,7 +199559,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:38:53.122Z",
-   "updatedAt": "2026-11-13T19:11:19.374Z",
+   "updatedAt": "2026-11-13T19:13:18.538Z",
    "builtAt": "",
    "notes": [
     {
@@ -199623,6 +199623,10 @@
      "at": "2026-11-13T19:00:39.073Z"
     },
     {
+     "text": "Duplicate session: two Opus sessions ran in this worktree at once (pid 860239 from 18:43, pid 1001066 from 18:59). 860239 did s1, s2, s3 and s5; 1001066 did s4 and is still working (s6 onward). 860239 stopped after s5 so the two don't overwrite each other. Dispatcher should launch one session per build only.",
+     "at": "2026-11-13T19:10:09.917Z"
+    },
+    {
      "text": "Self-check: console-android-app-thin-webview-wrapper was marked running on mossesx-max- with no session: released and back in the Queue.",
      "at": "2026-11-13T19:09:10.673Z"
     },
@@ -199641,10 +199645,6 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-console-android-app-thin-webview-wrapper--lenny-191049, own login copy)",
      "at": "2026-11-13T19:10:54.649Z"
-    },
-    {
-     "text": "Duplicate session: two Opus sessions ran in this worktree at once (pid 860239 from 18:43, pid 1001066 from 18:59). 860239 did s1, s2, s3 and s5; 1001066 did s4 and is still working (s6 onward). 860239 stopped after s5 so the two don't overwrite each other. Dispatcher should launch one session per build only.",
-     "at": "2026-11-13T19:10:09.917Z"
     }
    ],
    "approvals": [],
@@ -199664,7 +199664,7 @@
    "pipeline": {
     "queuedAt": "2026-11-13T18:38:55.070Z",
     "queuedBy": "console",
-    "account": "",
+    "account": "mossesx-max-",
     "session": "",
     "slot": "",
     "model": "Opus",
@@ -199686,7 +199686,7 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"42523f40-ad67-40c7-a2c7-fbb1f4b209fc\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "released by the self-check (nothing ran): back in the Queue",
+    "note": "Session on mossesx-max- ended (exit 3) with 10 steps left: back in the Queue (run 1).",
     "route": "",
     "dispatchedAt": "2026-11-13T18:39:57.071Z",
     "planned": {
@@ -199762,12 +199762,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T19:13:18.538Z",
      "note": "",
-     "rev": 3,
+     "rev": 4,
      "createdAt": "2026-11-13T18:39:44.852Z",
-     "updatedAt": "2026-11-13T18:59:53.681Z"
+     "updatedAt": "2026-11-13T19:13:18.903Z"
     },
     {
      "id": "s4",
