@@ -2368,6 +2368,18 @@
    "from": "",
    "addenda": []
   },
+  "context-menus-plugin-one-true-source": {
+   "said": "integrated with the UI manager; stores its data in one true source on axHub accessible from any plugin; contains the context menus, which are effectively assets; lists all the context menus; uses Claude to generate a context menu at advanced, pro, amateur, beginner coder levels, mapped out more meticulously depending on level",
+   "at": "2026-11-13T20:14:18.033Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "conversation-rag-amendment-store-only-short-key": {
    "said": "I don't need the whole entire session quoted and plugged in, that costs me a shitload of money. Just a brief summary of what you don't do. A two field RAG format, an entry and a value, that's it.",
    "at": "2026-11-10T16:51:08.892Z",
