@@ -786,7 +786,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 17:32 UTC · `change-to-move-amberx-web-app-into-the-console-amberx-andr-pr-528-brett-do` note, removed (all) · build-rename
 - 2026-11-13 17:32 UTC · `claude-badge-can-claude-build-green-when` added (4 steps) (all) · build-rename
 - 2026-11-13 17:32 UTC · `claude-badge-can-claude-build-green-when-at-least-one-build-account-in-the-or` note, removed (all) · build-rename
 - 2026-11-13 17:32 UTC · `collapse-auto-collapse-buttons-every-tab` added (3 steps) (all) · build-rename
@@ -1186,6 +1185,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 19:26 UTC · `console-app-part-3-native-bridge-mic` → queued, note (all) · pipeline
 - 2026-11-13 19:25 UTC · `console-android-app-thin-webview-wrapper` note (all) · orchestrator
 - 2026-11-13 19:27 UTC · `console-android-app-thin-webview-wrapper` s9 done (all) · orchestrator
+- 2026-11-13 19:27 UTC · `ui-manager-floating-window-to-select-any` s5 done (all) · orchestrator
 
 ## Token passes (log)
 
