@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4227,
- "updatedAt": "2026-11-13T10:45:48.829Z",
+ "rev": 4228,
+ "updatedAt": "2026-11-13T10:46:04.419Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -160739,14 +160739,14 @@
    "title": "Owner recognized everywhere + veto countdown only on shell commands",
    "category": "axhub",
    "detail": "URGENT, boss order from Brett, Nov 12. Two problems: 1) The console and axHub do not recognize Brett as the owner, so owner-only settings (Claude settings > Approvals & veto tab, policy changes) don't work for him. Fix owner detection so Brett's admin console login and his axHub session count as owner everywhere (check the earlier owner-only-settings-brett-s-admin-console-login-counts-as-owner build and claude-settings-tabs-veto s4, axHub owner-only policy API GET/PUT /auth/api/policy; finish whatever is missing). 2) Change the axHub approval policies: a veto countdown ONLY on shell commands that run on the VPS (vps.run and anything executing a shell). Everything in the console/orchestrator (axf-console control_add, control_set, control_act, build_orchestrator_pipeline_queue, priority_set, agent_slots settings, console_open/show, etc.) becomes allow, no countdown. Keep confirm on the few owner-only items that already need it (model upgrades). Repos: axHub and AmberX-AXF. Tests: Brett's session is owner; vps.run still held on veto; console/orchestrator tools run immediately. PR, land through the gate, redeploy, AmberX FYI when live. Don't stop to ask.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/owner-recognized-everywhere-veto-countdown-only-on-shell-commands",
    "pr": "",
    "createdAt": "2026-11-12T02:04:11.564Z",
-   "updatedAt": "2026-11-13T10:37:54.630Z",
+   "updatedAt": "2026-11-13T10:45:24.170Z",
    "builtAt": "",
    "notes": [
     {
@@ -160812,6 +160812,14 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-owner-recognized-everywhere-veto-countdown-only---earl, own login copy)",
      "at": "2026-11-13T10:37:54.630Z"
+    },
+    {
+     "text": "Headless run axf-owner-recognized-everywhere-veto-countdown-only---earl: brief only · start 11.3K tokens ($0.03) · cost $0.78 · 45 turns · 6 tools, MCP none",
+     "at": "2026-11-13T10:45:21.643Z"
+    },
+    {
+     "text": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
+     "at": "2026-11-13T10:45:24.170Z"
     }
    ],
    "approvals": [],
@@ -160832,22 +160840,22 @@
     "queuedAt": "2026-11-13T10:35:15.013Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-owner-recognized-everywhere-veto-countdown-only---earl",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-13T10:37:52.173Z",
     "runs": 2,
     "lastRun": {
-     "at": "2026-11-12T02:27:04.519Z",
-     "exit": 1,
-     "outcome": "requeued",
-     "stepsLeft": 3,
+     "at": "2026-11-13T10:45:20.510Z",
+     "exit": 0,
+     "outcome": "returned",
+     "stepsLeft": 1,
      "account": "mossesx-max-",
-     "session": "hl-mwcx2k2t-f4"
+     "session": "axf-owner-recognized-everywhere-veto-countdown-only---earl"
     },
     "split": null,
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "2026-11-13T10:37:52.173Z",
     "planned": {
@@ -160939,7 +160947,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -182506,7 +182514,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T10:35:03.675Z",
-   "updatedAt": "2026-11-13T10:45:20.452Z",
+   "updatedAt": "2026-11-13T10:45:37.868Z",
    "builtAt": "",
    "notes": [
     {
@@ -182528,6 +182536,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-fix-a-build-whose-session-finishes-its-phase-e-g--paulie, own login copy)",
      "at": "2026-11-13T10:43:24.079Z"
+    },
+    {
+     "text": "Headless run axf-fix-a-build-whose-session-finishes-its-phase-e-g--paulie: brief only · start 11.3K tokens ($0.03) · cost $0.56 · 20 turns · 6 tools, MCP none",
+     "at": "2026-11-13T10:45:37.868Z"
     }
    ],
    "approvals": [],
@@ -182547,12 +182559,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T10:35:20.815Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-fix-a-build-whose-session-finishes-its-phase-e-g--paulie",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-13T10:43:20.478Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T10:37:10.223Z",
@@ -182564,7 +182576,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-13T10:43:20.478Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -182573,7 +182585,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-13T10:43:20.478Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -182888,7 +182900,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -183224,7 +183236,13 @@
     "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-13T10:45:26.207Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -183288,7 +183306,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -183363,7 +183381,13 @@
     "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-13T10:45:26.207Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -183449,7 +183473,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
