@@ -49,6 +49,7 @@ import { WatchLiveFor } from '@console/watchLive';
 import './approvals-banner.css';
 import { appMenu, WAITING, WAITING_LIST } from './menu';
 import { nextPopup, POPUP_GONE_CLOSE_MS, vetoGone } from './popup';
+import { EDGES, EXPANDS, nativeOverlayConfig, OVERLAY_DEFAULTS, OVERLAY_KEYS, overlayConfig, parseOverlayChange, SHOWS, SIZES } from './overlay';
 
 const ID = 'ai.amberx.axf.console.approvals-banner';
 const FOLDER = 'approvals-banner';
@@ -522,7 +523,17 @@ export const plugin: AxfWebLibrary = {
     }
     // The app's native side (AmberX phone): notification taps open the veto screen; actions taken there refresh.
     let offEvents: (() => void) | undefined;
-    const sync = syncNativeAlarm((k) => rt.settings.get(k));
+    const syncAlarm = syncNativeAlarm((k) => rt.settings.get(k));
+    // The phone's approval overlay follows its settings (Java ApprovalOverlay through the veto host).
+    let sentOverlay = '';
+    const syncOverlay = () => {
+      const cfg = nativeOverlayConfig(overlayConfig((k) => rt.settings.get(k)));
+      const key = JSON.stringify(cfg);
+      if (key === sentOverlay || !vetoHost().overlay) return;
+      sentOverlay = key;
+      vetoHost().overlay?.(cfg);
+    };
+    const sync = () => { syncAlarm(); syncOverlay(); };
     const hook = () => {
       offEvents?.();
       offEvents = vetoHost().onEvent?.((e) => {
@@ -546,6 +557,20 @@ export const plugin: AxfWebLibrary = {
       rt.settings.set(key, on);
       rt.toast(`Veto ${what === 'alarm' ? 'alarm' : `notice ${what}`}: ${on ? 'on' : 'off'}`, 'success', 'Approvals');
     }, { label: 'Veto notice: sound / vibrate / repeat / alarm on or off (approvals.notice:<what>:<on|off>)', params: true });
+    // approvals.overlay:<setting>:<value> — the phone's approval overlay by name (Brett, Nov 13 2026; voice: "overlay
+    // size large", "overlay off"); approvals.overlay:expand|collapse opens or folds its card. The deciding buttons stay his.
+    rt.actions.register('approvals.overlay', async ([what = '', value = '']) => {
+      const w = what.trim().toLowerCase();
+      if (w === 'expand' || w === 'collapse' || w === 'open' || w === 'fold') {
+        const ok = await vetoHost().overlayCommand?.(w === 'expand' || w === 'open' ? 'expand' : 'collapse');
+        rt.toast(ok ? `Approval overlay ${w === 'expand' || w === 'open' ? 'opened' : 'folded'}` : 'The approval overlay is on the AmberX phone app only.', ok ? 'success' : 'info', 'Approvals');
+        return;
+      }
+      const change = parseOverlayChange(what, value);
+      if ('error' in change) { rt.toast(`approvals.overlay:<setting>:<value>: ${change.error}`, 'warning', 'Approvals'); return; }
+      rt.settings.set(change.key, change.value);
+      rt.toast(`Approval overlay ${change.key.split('.').pop()}: ${String(change.value)}`, 'success', 'Approvals');
+    }, { label: 'Approval overlay (phone): on/off, edge, top, size, expand, show, idle, opacity, shrink; expand or collapse its card (approvals.overlay:<what>:<value>)', params: true });
     rt.actions.register('approvals.check', () => void checkNow(), { label: 'Check axHub approvals' });
     rt.actions.register('approvals.open', () => { globalThis.open(st.approvalsUrl, '_blank', 'noopener'); }, { label: 'Open axHub approvals' });
     // approvals.view:<id> — that call in the console (menus, console_show, notification taps); approvals.review is its
@@ -582,6 +607,21 @@ export const plugin: AxfWebLibrary = {
         { key: ALARM_KEYS.noticeSound, label: 'Notice sound', kind: 'toggle', default: NOTICE_DEFAULTS.sound, description: "The phone's normal notification sound, once." },
         { key: ALARM_KEYS.noticeVibrate, label: 'Notice vibration', kind: 'toggle', default: NOTICE_DEFAULTS.vibrate },
         { key: ALARM_KEYS.noticeRepeat, label: 'Alert again at 30 s left and when it runs', kind: 'toggle', default: NOTICE_DEFAULTS.repeat, description: 'Off: the notice just updates, silently.' },
+      ],
+    },
+    {
+      id: 'approvals-banner.overlay', label: 'Approval overlay (phone)', icon: 'layers', tab: 'approvals-banner', order: 12,
+      description: 'A small toolbar floating over every app on the AmberX phone app. It opens into the full approval card (what, why, countdown, Approve / Deny) the moment one arrives and shrinks back when none is left. Its colours follow the active skin. Needs "Display over other apps" and approvals watching on.',
+      settings: [
+        { key: OVERLAY_KEYS.on, label: 'Overlay', kind: 'toggle', default: OVERLAY_DEFAULTS.on },
+        { key: OVERLAY_KEYS.expand, label: 'Opens for', kind: 'choice', default: OVERLAY_DEFAULTS.expand, options: EXPANDS.map(({ value, label }) => ({ value, label })) },
+        { key: OVERLAY_KEYS.show, label: 'Toolbar shows', kind: 'choice', default: OVERLAY_DEFAULTS.show, options: SHOWS.map(({ value, label }) => ({ value, label })) },
+        { key: OVERLAY_KEYS.size, label: 'Size', kind: 'choice', default: OVERLAY_DEFAULTS.size, options: SIZES.map(({ value, label }) => ({ value, label })) },
+        { key: OVERLAY_KEYS.edge, label: 'Side', kind: 'choice', default: OVERLAY_DEFAULTS.edge, options: EDGES.map(({ value, label }) => ({ value, label })) },
+        { key: OVERLAY_KEYS.top, label: 'Height on screen (% from the top)', kind: 'slider', default: OVERLAY_DEFAULTS.top, min: 0, max: 90, step: 5, description: 'Dragging the toolbar on the phone sets this too.' },
+        { key: OVERLAY_KEYS.idleVisible, label: 'Show the toolbar when nothing waits', kind: 'toggle', default: OVERLAY_DEFAULTS.idleVisible, description: 'Off: it appears only with an approval.' },
+        { key: OVERLAY_KEYS.idleOpacity, label: 'Opacity when nothing waits (%)', kind: 'slider', default: OVERLAY_DEFAULTS.idleOpacity, min: 40, max: 100, step: 5 },
+        { key: OVERLAY_KEYS.shrinkAfterSec, label: 'Shrink back after (seconds)', kind: 'number', default: OVERLAY_DEFAULTS.shrinkAfterSec, min: 0, max: 60, description: 'After the last approval goes; 0 = at once.' },
       ],
     },
   ],

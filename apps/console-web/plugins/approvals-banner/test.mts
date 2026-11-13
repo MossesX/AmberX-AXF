@@ -3,11 +3,29 @@
 import assert from 'node:assert/strict';
 import { relayAction, relayDecide, relayHosts } from './web/relay.ts';
 import { nextPopup, vetoGone } from './web/popup.ts';
+import { OVERLAY_DEFAULTS, OVERLAY_KEYS as O, overlayConfig, parseOverlayChange } from './web/overlay.ts';
 import { ALARM_DEFAULTS, ALARM_KEYS as K, NOTICE_DEFAULTS, noticeConfig, alarmConfig, alarmDue, alarmLength, nativeAlarmConfig, ringingAt, soundAllowed, startSeconds, START_AT, TONES, tonesOf, VIBRATIONS, volumeAt } from './web/alarm.ts';
 
 let n = 0;
 const t = (name: string, f: () => void) => { try { f(); n++; } catch (e) { console.error(`✗ ${name}`); throw e; } };
 const cfgOf = (o: Record<string, unknown>) => alarmConfig((k) => o[k]);
+
+// The approval overlay's settings: the same defaults and clamps as Java ApprovalOverlayRules.
+t('overlay defaults', () => assert.deepEqual(overlayConfig(() => undefined), OVERLAY_DEFAULTS));
+t('overlay clamps and fallbacks', () => {
+  const c = overlayConfig((k) => ({ [O.top]: 400, [O.size]: 'huge', [O.edge]: 'start', [O.idleOpacity]: '5', [O.shrinkAfterSec]: -2, [O.expand]: 'held' } as Record<string, unknown>)[k]);
+  assert.deepEqual([c.top, c.size, c.edge, c.idleOpacity, c.shrinkAfterSec, c.expand], [90, 'small', 'start', 40, 0, 'held']);
+});
+t('overlay changes by name (voice and actions)', () => {
+  assert.deepEqual(parseOverlayChange('off', ''), { key: O.on, value: false });
+  assert.deepEqual(parseOverlayChange('size', 'big'), { key: O.size, value: 'large' });
+  assert.deepEqual(parseOverlayChange('position', 'left'), { key: O.edge, value: 'start' });
+  assert.deepEqual(parseOverlayChange('top', '40%'), { key: O.top, value: 40 });
+  assert.deepEqual(parseOverlayChange('expand', 'always'), { key: O.expand, value: 'every' });
+  assert.deepEqual(parseOverlayChange('idle', 'off'), { key: O.idleVisible, value: false });
+  assert.ok('error' in parseOverlayChange('colour', 'red'));
+  assert.ok('error' in parseOverlayChange('size', 'tiny'));
+});
 
 t('defaults', () => assert.deepEqual(cfgOf({}), ALARM_DEFAULTS));
 t('values clamped', () => {

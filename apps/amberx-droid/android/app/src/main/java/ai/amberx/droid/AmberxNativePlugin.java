@@ -225,6 +225,31 @@ public class AmberxNativePlugin extends Plugin {
         });
     }
 
+    /* ---------------------------------------------------------------- approval overlay (ApprovalOverlay) */
+
+    /** Changes the approval overlay's settings (any subset); resolves with its state. */
+    @PluginMethod
+    public void approvalOverlaySet(PluginCall call) {
+        WatchService.setApprovalOverlay(getContext(), call.getData());
+        call.resolve(js(WatchService.approvalOverlayState(getContext())));
+    }
+
+    /** The approval overlay's settings, whether it is shown or open, and what waits. */
+    @PluginMethod
+    public void approvalOverlayState(PluginCall call) { call.resolve(js(WatchService.approvalOverlayState(getContext()))); }
+
+    /** expand / collapse, or a card action (approve, deny, shelve, approve-now, decline) on [id] or the card shown. */
+    @PluginMethod
+    public void approvalOverlayCommand(PluginCall call) {
+        boolean ok = WatchService.approvalOverlayCommand(getContext(), call.getString("command", ""), call.getString("id", ""));
+        call.resolve(new JSObject().put("ok", ok));
+    }
+
+    static void approvalOverlayChanged(JSONObject state) {
+        AmberxNativePlugin p = current;
+        if (p != null) p.notifyListeners("approvalOverlay", js(state), true);
+    }
+
     /** The banner plugin's alarm settings (VetoAlarm). */
     @PluginMethod
     public void vetoAlarm(PluginCall call) {
