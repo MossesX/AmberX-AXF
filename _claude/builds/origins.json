@@ -2164,6 +2164,30 @@
    "from": "",
    "addenda": []
   },
+  "console-app-part-3-native-bridge-mic": {
+   "said": "split the console wrapper so it runs on four slots at the same time",
+   "at": "2026-11-13T18:41:27.359Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "console-app-part-4-console-side-safe": {
+   "said": "split the console wrapper so it runs on four slots at the same time; AmberX's banner was behind the camera, the clock and the notification panel",
+   "at": "2026-11-13T18:41:32.589Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "console-approvals-in-place": {
    "said": "It does pop it up in my approval, but when I click it, it brings me to axHub. I don't want it to bring me to axHub.",
    "at": "2026-11-06",
