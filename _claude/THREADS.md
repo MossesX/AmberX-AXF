@@ -785,7 +785,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 11:14 UTC · `fix-merge-conflicts-on-pr-557-professional-skins` s1 done (all) · orchestrator
 - 2026-11-13 11:14 UTC · `fix-merge-conflicts-on-pr-557-professional-skins` PR #557 (all) · builds-live
 - 2026-11-13 11:15 UTC · `drag-anything-by-api-and-voice-after-pr-556-land` note (all) · orchestrator
 - 2026-11-13 11:15 UTC · `fix-merge-conflicts-on-pr-557-professional-skins` s2 done, → built (all) · orchestrator
@@ -1185,6 +1184,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 18:05 UTC · `per-instance-settings-window-picker` note (all) · foreign-write
 - 2026-11-13 18:07 UTC · `quick-settings-pinned-collapsible-pane` added (0 steps) (all) · console
 - 2026-11-13 18:07 UTC · `quick-settings-pinned-collapsible-pane` → queued, note (all) · console
+- 2026-11-13 18:08 UTC · `quick-settings-pinned-collapsible-pane` → queued, note (all) · builds-live
 
 ## Token passes (log)
 
