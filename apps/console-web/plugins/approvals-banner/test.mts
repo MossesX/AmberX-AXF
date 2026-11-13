@@ -3,7 +3,7 @@
 import assert from 'node:assert/strict';
 import { relayAction, relayDecide, relayHosts } from './web/relay.ts';
 import { nextPopup, vetoGone } from './web/popup.ts';
-import { OVERLAY_DEFAULTS, OVERLAY_KEYS as O, overlayConfig, parseOverlayChange } from './web/overlay.ts';
+import { OVERLAY_DEFAULTS, OVERLAY_KEYS as O, overlayConfig, parseOverlayChange, parsePageCommand } from './web/overlay.ts';
 import { ALARM_DEFAULTS, ALARM_KEYS as K, NOTICE_DEFAULTS, noticeConfig, alarmConfig, alarmDue, alarmLength, nativeAlarmConfig, ringingAt, soundAllowed, startSeconds, START_AT, TONES, tonesOf, VIBRATIONS, volumeAt } from './web/alarm.ts';
 
 let n = 0;
@@ -25,6 +25,20 @@ t('overlay changes by name (voice and actions)', () => {
   assert.deepEqual(parseOverlayChange('idle', 'off'), { key: O.idleVisible, value: false });
   assert.ok('error' in parseOverlayChange('colour', 'red'));
   assert.ok('error' in parseOverlayChange('size', 'tiny'));
+  assert.deepEqual(parseOverlayChange('pages', 'chrome'), { key: O.pages, value: 'browser' });
+  assert.deepEqual(parseOverlayChange('pages', 'window'), { key: O.pages, value: 'overlay' });
+});
+t('overlay pages default to the toolbar window; unknown falls back', () => {
+  assert.equal(overlayConfig(() => undefined).pages, 'overlay');
+  assert.equal(overlayConfig((k) => (k === O.pages ? 'browser' : undefined)).pages, 'browser');
+  assert.equal(overlayConfig((k) => (k === O.pages ? 'tab' : undefined)).pages, 'overlay');
+});
+t('overlay page window commands (open a page, close back to the toolbar)', () => {
+  assert.deepEqual(parsePageCommand('page', 'https://console.amberxai.com/?axf-view=builds'), { command: 'page', url: 'https://console.amberxai.com/?axf-view=builds' });
+  assert.deepEqual(parsePageCommand('page', ''), { command: 'page' });
+  assert.deepEqual(parsePageCommand('close', ''), { command: 'close-page' });
+  assert.deepEqual(parsePageCommand('close-page', ''), { command: 'close-page' });
+  assert.equal(parsePageCommand('size', 'large'), null);
 });
 
 t('defaults', () => assert.deepEqual(cfgOf({}), ALARM_DEFAULTS));

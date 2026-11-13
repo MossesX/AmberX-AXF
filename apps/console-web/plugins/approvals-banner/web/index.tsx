@@ -49,7 +49,7 @@ import { WatchLiveFor } from '@console/watchLive';
 import './approvals-banner.css';
 import { appMenu, WAITING, WAITING_LIST } from './menu';
 import { nextPopup, POPUP_GONE_CLOSE_MS, vetoGone } from './popup';
-import { EDGES, EXPANDS, nativeOverlayConfig, OVERLAY_DEFAULTS, OVERLAY_KEYS, overlayConfig, parseOverlayChange, SHOWS, SIZES } from './overlay';
+import { EDGES, EXPANDS, nativeOverlayConfig, OVERLAY_DEFAULTS, OVERLAY_KEYS, overlayConfig, PAGES, parseOverlayChange, parsePageCommand, SHOWS, SIZES } from './overlay';
 
 const ID = 'ai.amberx.axf.console.approvals-banner';
 const FOLDER = 'approvals-banner';
@@ -559,8 +559,17 @@ export const plugin: AxfWebLibrary = {
     }, { label: 'Veto notice: sound / vibrate / repeat / alarm on or off (approvals.notice:<what>:<on|off>)', params: true });
     // approvals.overlay:<setting>:<value> — the phone's approval overlay by name (Brett, Nov 13 2026; voice: "overlay
     // size large", "overlay off"); approvals.overlay:expand|collapse opens or folds its card. The deciding buttons stay his.
-    rt.actions.register('approvals.overlay', async ([what = '', value = '']) => {
+    rt.actions.register('approvals.overlay', async ([what = '', ...rest]) => {
+      const value = rest.join(':'); // a page URL carries its own colons
       const w = what.trim().toLowerCase();
+      // approvals.overlay:page[:<url>] opens a page in the toolbar's full browser window; approvals.overlay:close closes
+      // it so it is just the floating toolbar again (Brett, Nov 13 2026).
+      const page = parsePageCommand(what, value);
+      if (page) {
+        const ok = await vetoHost().overlayCommand?.(page.command, page.url);
+        rt.toast(ok ? (page.command === 'page' ? 'Page opened in the overlay' : 'Overlay is just the toolbar again') : 'The overlay browser window is on the AmberX phone app only (overlay on, "Display over other apps" allowed).', ok ? 'success' : 'info', 'Approvals');
+        return;
+      }
       if (w === 'expand' || w === 'collapse' || w === 'open' || w === 'fold') {
         const ok = await vetoHost().overlayCommand?.(w === 'expand' || w === 'open' ? 'expand' : 'collapse');
         rt.toast(ok ? `Approval overlay ${w === 'expand' || w === 'open' ? 'opened' : 'folded'}` : 'The approval overlay is on the AmberX phone app only.', ok ? 'success' : 'info', 'Approvals');
@@ -570,7 +579,7 @@ export const plugin: AxfWebLibrary = {
       if ('error' in change) { rt.toast(`approvals.overlay:<setting>:<value>: ${change.error}`, 'warning', 'Approvals'); return; }
       rt.settings.set(change.key, change.value);
       rt.toast(`Approval overlay ${change.key.split('.').pop()}: ${String(change.value)}`, 'success', 'Approvals');
-    }, { label: 'Approval overlay (phone): on/off, edge, top, size, expand, show, idle, opacity, shrink; expand or collapse its card (approvals.overlay:<what>:<value>)', params: true });
+    }, { label: 'Approval overlay (phone): on/off, edge, top, size, expand, show, idle, opacity, shrink, pages; expand or collapse its card; page[:<url>] opens a page in its full browser window, close shrinks it back to the toolbar (approvals.overlay:<what>:<value>)', params: true });
     rt.actions.register('approvals.check', () => void checkNow(), { label: 'Check axHub approvals' });
     rt.actions.register('approvals.open', () => { globalThis.open(st.approvalsUrl, '_blank', 'noopener'); }, { label: 'Open axHub approvals' });
     // approvals.view:<id> — that call in the console (menus, console_show, notification taps); approvals.review is its
@@ -621,6 +630,7 @@ export const plugin: AxfWebLibrary = {
         { key: OVERLAY_KEYS.top, label: 'Height on screen (% from the top)', kind: 'slider', default: OVERLAY_DEFAULTS.top, min: 0, max: 90, step: 5, description: 'Dragging the toolbar on the phone sets this too.' },
         { key: OVERLAY_KEYS.idleVisible, label: 'Show the toolbar when nothing waits', kind: 'toggle', default: OVERLAY_DEFAULTS.idleVisible, description: 'Off: it appears only with an approval.' },
         { key: OVERLAY_KEYS.idleOpacity, label: 'Opacity when nothing waits (%)', kind: 'slider', default: OVERLAY_DEFAULTS.idleOpacity, min: 40, max: 100, step: 5 },
+        { key: OVERLAY_KEYS.pages, label: 'Pages Amber opens', kind: 'choice', default: OVERLAY_DEFAULTS.pages, options: PAGES.map(({ value, label }) => ({ value, label })), description: 'The toolbar stays a toolbar until a page is opened (open_url, console_show, its Page button, voice); closing the window makes it just the toolbar again. Only your own sites load inside; other links open in Chrome.' },
         { key: OVERLAY_KEYS.shrinkAfterSec, label: 'Shrink back after (seconds)', kind: 'number', default: OVERLAY_DEFAULTS.shrinkAfterSec, min: 0, max: 60, description: 'After the last approval goes; 0 = at once.' },
       ],
     },
