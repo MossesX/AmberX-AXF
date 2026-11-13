@@ -44,6 +44,17 @@ for (const [sel, k] of [['.fx-dialog {', 'dialog'], ['.fx-window {', 'settings']
 }
 ok(surfaceFindings(css).length === 0, 'axf.css passes the surface rule');
 
+// s3 (Brett: "how come I can't see the transparency of a settings interface dialog?"): a settings interface is a tab
+// group inside a floating window; the tab group must not paint an opaque layer over the window's own surface
+ok(/\.fx-window \.fx-tabgroup \{ background: transparent; \}/.test(css), 'tab group inside a window draws no background of its own');
+ok(/\.fx-window \.fx-tabgroup__bar \{[^}]*var\(--fx-opacity-settings\)/.test(css), 'window tab bar reads the settings token');
+ok(surfaceFindings('.fx-tabgroup { background: var(--fx-surface) }').length === 1, 'an opaque tab group is caught');
+const settingsLib = readFileSync(join(ROOT, 'framework/libs/settings/index.tsx'), 'utf8') + readFileSync(join(ROOT, 'framework/libs/settings/levels.tsx'), 'utf8');
+for (const c of ['.axf-settings__levelbar{', '.axf-settings__navlist{', '.axf-settings__gbody{', '.axf-levels__col{']) {
+  const line = settingsLib.split('\n').find((l) => l.trimStart().startsWith(c) && l.includes('background:')) ?? '';
+  ok(line.includes('var(--fx-opacity-panel)'), `settings panel ${c.slice(0, -1)} reads the panel token`);
+}
+
 // the check itself
 ok(surfaceFindings('.fx-dialog { background: var(--fx-surface); }').length === 1, 'opaque dialog background is caught');
 ok(surfaceFindings('.a .fx-window:hover,\n.b { background-color: var(--fx-surface2) }').length === 1, 'any selector part, background-color too');

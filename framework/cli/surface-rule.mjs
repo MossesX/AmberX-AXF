@@ -4,7 +4,7 @@
  * see-through is a style-theme token (opacityDialog … opacityBanner, framework/core/engines/theme.ts SURFACE_KINDS).
  * Pure: imported by check-theme.mjs and framework/spec/check-surface-opacity.mts.
  */
-export const SURFACE_ROOTS = ['fx-dialog', 'fx-window', 'fx-window__title', 'fx-popover', 'fx-dropdown', 'fx-ctx', 'fx-card', 'fx-toolbar', 'fx-menubar', 'fx-banner'];
+export const SURFACE_ROOTS = ['fx-dialog', 'fx-window', 'fx-window__title', 'fx-popover', 'fx-dropdown', 'fx-ctx', 'fx-card', 'fx-toolbar', 'fx-menubar', 'fx-banner', 'fx-tabgroup', 'fx-tabgroup__bar'];
 export const SURFACE_MSG = 'surface background ignores its transparency token; mix it with calc(var(--fx-opacity-<dialog|settings|panel|menu|toolbar|banner>) * 100%) and read var(--fx-backdrop-<kind>) (engines/theme.ts SURFACE_KINDS)';
 const surfaceRoot = (selector) => selector.split(',').some((part) => {
   const last = part.trim().split(/[\s>+~]+/).pop() ?? '';

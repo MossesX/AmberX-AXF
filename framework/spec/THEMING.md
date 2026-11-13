@@ -61,7 +61,11 @@ Defaults in `SURFACE_KINDS` / `SURFACE_OPACITY_DEFAULT` (`engines/theme.ts`).
 They live in the style theme, so they follow skins and design packages. Edit them in Token Control
 (control@1 `tokens.style`, e.g. `set tokens.style opacitySettings 0.8`) or the Element Explorer (Dialog, Window, Card,
 Context menu, Toolbar, Menubar, Banner). One floating window overrides its own value: window menu → Window settings →
-Background (`WindowSettings.surface`, `surfaceVars('settings', v)` on the window). The `glass` variants keep reading
+Background (`WindowSettings.surface`, `surfaceVars('settings', v)` on the window; action
+`windows.background:<window id>:<0..1|theme>`, deep link `dialog:window-settings:<window id>`). Inside a floating window
+the tab group draws no background of its own (the window is the surface), and its tab bar reads `opacitySettings`;
+elsewhere tab groups and the settings library's panels (level bar, nav list, group bodies, level columns) read
+`opacityPanel`. The `glass` variants keep reading
 `opacityGlass`. `check-theme.mjs` (rule *surface*) fails on any CSS rule that sets a surface root's background without
 an `--fx-opacity-*` token.
 
