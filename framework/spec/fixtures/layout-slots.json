@@ -14,8 +14,8 @@
       "areas": "\"nav inspector main\" \"toolbar toolbar toolbar\" \"status status status\"",
       "columns": "84px 250px minmax(0, 1fr)",
       "rows": "minmax(0, 1fr) auto auto",
-      "mobileAreas": "\"toolbar\" \"main\" \"nav\"",
-      "mobileRows": "auto minmax(0, 1fr) auto",
+      "mobileAreas": "\"main\" \"toolbar\" \"nav\"",
+      "mobileRows": "minmax(0, 1fr) auto auto",
       "navOrientation": "vertical",
       "slots": {
         "menubar": [],
@@ -57,8 +57,8 @@
       "areas": "\"inspector main\" \"toolbar toolbar\" \"status status\"",
       "columns": "250px minmax(0, 1fr)",
       "rows": "minmax(0, 1fr) auto auto",
-      "mobileAreas": "\"toolbar\" \"main\"",
-      "mobileRows": "auto minmax(0, 1fr)",
+      "mobileAreas": "\"main\" \"toolbar\"",
+      "mobileRows": "minmax(0, 1fr) auto",
       "navOrientation": "vertical",
       "slots": {
         "menubar": [
@@ -149,8 +149,8 @@
       "areas": "\"nav inspector main\" \"toolbar toolbar toolbar\" \"status status status\"",
       "columns": "84px 250px minmax(0, 1fr)",
       "rows": "minmax(0, 1fr) auto auto",
-      "mobileAreas": "\"toolbar\" \"main\" \"nav\"",
-      "mobileRows": "auto minmax(0, 1fr) auto",
+      "mobileAreas": "\"main\" \"toolbar\" \"nav\"",
+      "mobileRows": "minmax(0, 1fr) auto auto",
       "navOrientation": "vertical",
       "slots": {
         "menubar": [
@@ -193,8 +193,8 @@
       "areas": "\"inspector main\" \"toolbar toolbar\" \"status status\"",
       "columns": "250px minmax(0, 1fr)",
       "rows": "minmax(0, 1fr) auto auto",
-      "mobileAreas": "\"toolbar\" \"main\"",
-      "mobileRows": "auto minmax(0, 1fr)",
+      "mobileAreas": "\"main\" \"toolbar\"",
+      "mobileRows": "minmax(0, 1fr) auto",
       "navOrientation": "vertical",
       "slots": {
         "menubar": [
@@ -285,8 +285,8 @@
       "areas": "\"nav inspector main\" \"toolbar toolbar toolbar\" \"status status status\"",
       "columns": "84px 250px minmax(0, 1fr)",
       "rows": "minmax(0, 1fr) auto auto",
-      "mobileAreas": "\"toolbar\" \"main\" \"nav\"",
-      "mobileRows": "auto minmax(0, 1fr) auto",
+      "mobileAreas": "\"main\" \"toolbar\" \"nav\"",
+      "mobileRows": "minmax(0, 1fr) auto auto",
       "navOrientation": "vertical",
       "slots": {
         "menubar": [

@@ -596,7 +596,7 @@
     "src/axf/core/engines/job-type-rules.mjs": "1b0185de2f27f003",
     "src/axf/core/engines/layout-rules.d.mts": "5520bdbfa896cefa",
     "src/axf/core/engines/layout-rules.mjs": "b3cc53cb5271bfda",
-    "src/axf/core/engines/layout.ts": "5ce61449eaaa7944",
+    "src/axf/core/engines/layout.ts": "e56ab1815830e8a1",
     "src/axf/core/engines/looktokens.ts": "3e78c02213dc6a1e",
     "src/axf/core/engines/mcp.ts": "b5534a64b2063b25",
     "src/axf/core/engines/menufit.ts": "8e5eea185259b35d",
@@ -922,6 +922,6 @@
     "src/axf/schemas/shipped-manifest.json": "b0ed855f1141e630",
     "src/axf/schemas/swarm.json": "35dd72b97f7a4a89",
     "src/axf/schemas/ui-review.json": "0a34b5e29eb76cca",
-    "src/axf/ui/axf.css": "454113969471bb34"
+    "src/axf/ui/axf.css": "7dfe9a68e7200390"
   }
 }
