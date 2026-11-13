@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T10:40:42.954Z",
+ "updatedAt": "2026-11-13T10:41:11.188Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -120508,6 +120508,43 @@
    "origin": {
     "said": "Yo, every skin needs a light and dark.",
     "at": "2026-11-13T10:39:51.656Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "fix-merge-conflicts-on-pr-557-professional-skins",
+   "title": "Fix merge conflicts on PR #557 (professional skins) with main, run the checks, push and land it; confirm the merge on GitHub",
+   "category": "",
+   "detail": "",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-13T10:40:45.569Z",
+   "updatedAt": "2026-11-13T10:40:47.743Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T10:40:47.743Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Alright, land that shit.",
+    "at": "2026-11-13T10:40:45.569Z",
     "source": "",
     "session": "",
     "link": "",
