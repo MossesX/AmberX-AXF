@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T06:45:47.497Z",
+ "updatedAt": "2026-11-13T06:46:10.919Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -117348,7 +117348,7 @@
    "title": "Skins plugin: its own removable console plugin and screen for changing skins. Gallery of every skin with live preview (desktop and phone), one-tap Use skin, Back and Restore to Default with undo, per-scope switching (whole hub, one app, one screen, one plugin), a quick skin switcher on the banner an",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -117356,8 +117356,8 @@
    "pr": "#553",
    "priority": "P0",
    "createdAt": "2026-11-13T06:25:11.720Z",
-   "updatedAt": "2026-11-13T06:45:45.573Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-13T06:46:06.436Z",
+   "builtAt": "2026-11-13T06:45:47.460Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -117405,32 +117405,17 @@
    "steps": [
     {
      "id": "s1",
-     "text": "Skins plugin: its own removable console plugin and screen for changing skins.",
-     "model": "Opus",
-     "why": "",
+     "text": "Define the skin-switch@1 action contract in framework/core/engines/skin-switch.mjs: use / back-to-skin / restore-default / undo for each scope (hub, app:<id>, ui:<view>, plugin:<id>), built on resolveLookSkin and the app-look@1 snapshot, with a one-step undo record kept in the look document. Add a fixture in framework/spec/fixtures/skin-switch.json, and record the Android twin as a deferred gap in PORTING.md",
+     "model": "Fable",
+     "why": "Shared engine contract that AppearancePanel in every app and the new plugin both read, so it changes how skin GUIs work across apps",
      "phase": "",
      "group": "",
      "estimate": "10 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-13T06:43:53.929Z",
-     "note": "",
-     "uid": "st-mwelw64c015wg7",
-     "createdAt": "2026-11-13T06:39:04.188Z"
-    },
-    {
-     "id": "s2",
-     "text": "Gallery of every skin with live preview (desktop and phone), one-tap Use skin, Back and Restore to Default with undo, per-scope switching (whole hub, one app, one screen, one plugin), a quick skin switcher on the banner an",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [],
+     "files": [
+      "framework/core/engines/skin-switch.mjs",
+      "framework/spec/fixtures/skin-switch.json",
+      "framework/spec/PORTING.md"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -117438,8 +117423,77 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwelw64c02pcf8",
-     "createdAt": "2026-11-13T06:39:04.188Z"
+     "uid": "st-mwem4wis01mh3q",
+     "createdAt": "2026-11-13T06:45:51.399Z"
+    },
+    {
+     "id": "s2",
+     "text": "Add check framework/spec/check-skin-switch.mts (engine vs fixture: scope precedence, undo after restore, back clears only the overridden part) and wire it into CI",
+     "model": "Fable",
+     "why": "Conformance check for the new cross-app contract",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/spec/check-skin-switch.mts",
+      ".github/workflows/android.yml"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwem4xtb01rws0",
+     "createdAt": "2026-11-13T06:45:53.134Z"
+    },
+    {
+     "id": "s3",
+     "text": "Scaffold the removable plugin apps/console-web/plugins/skins/: plugin.json (builtWith, description, uiEditor: theme, lifecycle.dataDir), install.mjs, uninstall.mjs, README.md, notify.json, plus a Settings → Plugins → Skins sub-tab entry",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/skins/plugin.json",
+      "apps/console-web/plugins/skins/install.mjs",
+      "apps/console-web/plugins/skins/uninstall.mjs",
+      "apps/console-web/plugins/skins/README.md",
+      "apps/console-web/plugins/skins/notify.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwem4z9y014t64",
+     "createdAt": "2026-11-13T06:45:54.991Z"
+    },
+    {
+     "id": "s4",
+     "text": "CLI apps/console-web/plugins/skins/skins-plugin.mjs (list | state | use | back | restore | undo | scope | open), calling the same REST routes, and register it so `axf skins-ui …` works",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/skins/skins-plugin.mjs",
+      "framework/cli/axf.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwem588c01xbh3",
+     "createdAt": "2026-11-13T06:46:06.445Z"
     }
    ]
   }
