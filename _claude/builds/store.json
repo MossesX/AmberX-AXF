@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4161,
- "updatedAt": "2026-11-13T07:54:45.428Z",
+ "rev": 4162,
+ "updatedAt": "2026-11-13T07:56:41.002Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -178518,7 +178518,7 @@
    "title": "Skins plugin: its own removable console plugin and screen for changing skins. Gallery of every skin with live preview (desktop and phone), one-tap Use skin, Back and Restore to Default with undo, per-scope switching (whole hub, one app, one screen, one plugin), a quick skin switcher on the banner an",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -178526,8 +178526,8 @@
    "pr": "#553",
    "priority": "P0",
    "createdAt": "2026-11-13T06:25:11.720Z",
-   "updatedAt": "2026-11-13T07:54:44.029Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-13T07:56:39.561Z",
+   "builtAt": "2026-11-13T07:56:39.561Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -179152,12 +179152,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T07:56:39.561Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T06:52:08.440Z",
-     "updatedAt": "2026-11-13T06:52:08.732Z"
+     "updatedAt": "2026-11-13T07:56:39.728Z"
     }
    ],
    "profiles": [
@@ -179168,7 +179168,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 91,
+   "rev": 92,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
