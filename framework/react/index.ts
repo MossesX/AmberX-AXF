@@ -51,5 +51,6 @@ export { installTapConfirm, toolbarOf, toolbarElementId, tipTextOf, tapSurfaceOf
 export { TapConfirmChoice } from './components/TapConfirmChoice';
 export { RefText, REFS_SETTING, addRefSource, refSourcesChanged, refIndexOf, openRef, refLink, type RefTextProps, type RefHow } from './components/RefText';
 export { TabGroup, useTabGroupData, tabGroupDataFor, type TabDef, type TabGroupProps } from './components/TabGroup';
+export { ControlRegistry, ControlScope, controlRegistry, composeAddress, installControlRegistry, settingTargetDef, targetKindLabel, useControlScope, useControlTarget, useViewTargets, CONTROL_ACTION, CONTROL_ACTIONS, CONTROL_HIGHLIGHT_CLASS, CONTROL_TARGET_ATTR, CONTROL_SCOPE_ATTR, SETTINGS_VIEW_ADDRESS, SETTINGS_TAB_ROW, MAIN_SCROLL_ADDRESS, type ControlTargetDef, type ControlScroller } from './controlTargets';
 export { BannerWidgetsPanel, BannerMore, bannerItemAttrs, bannerWidgetsDialog, useBannerOverflow } from './components/BannerWidgets';
 export { CHROME_SETTINGS_DIALOG, CHROME_PICK_DIALOG, CHROME_APP_INSTANCE, CHROME_ACTION_IDS, AssetsWithEdits, ChromeSettingsPanel, ChromeAssetPicker, chromeDialogs, chromeMenu, chromeSettingsUi, installChrome, moveChrome, setChromeField, swapChrome } from './components/ChromeContext';

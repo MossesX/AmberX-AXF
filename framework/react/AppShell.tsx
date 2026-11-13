@@ -18,6 +18,7 @@ import { FrameBanners, Slot } from './components/Slots';
 import { BannerStripPage, useBannerStripFollower } from './components/BannerStrip';
 import { BANNER_STRIP_VIEW } from './bannerStrip';
 import { WaitingForHub } from './components/Waiting';
+import { ControlScope, useViewTargets } from './controlTargets';
 import { Note } from './components/Forms';
 import { HelpLayer } from './components/Help';
 import { embedHostLabel, embedPageView } from '../core/engines/embed';
@@ -73,6 +74,8 @@ export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, 
   const allDialogs: DialogMap = { ...builtinDialogs, ...bannerSettingsDialog, ...bannerWidgetsDialog, ...chromeDialogs, ...priorityDialogs, ...windowDialogs, ...terminalDialog, ...dialogs };
   // Live search: views, dialogs and page text go into the runtime's search index; picks are focused here.
   useSearchHost(declaredViews, allDialogs);
+  // console-control@1: every view is an addressable target (`view:<id>`); what a view renders composes under it.
+  useViewTargets(views);
   const view = views[state.view] ?? Object.values(views)[0];
   // Kept views (`keep`): mounted the first time they're shown, then only hidden, so their state (a frame) survives.
   const [kept, setKept] = useState<string[]>([]);
@@ -155,12 +158,12 @@ export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, 
         {/* every view root is a UI level of the skin chain (SkinScope kind="ui": a marker until Appearance names a skin for it) */}
         {keptNow.map((id) => (
           <div key={`kept:${id}`} className="fx-main__inner fx-main__inner--kept" hidden={id !== state.view} data-axf-view={id}>
-            <SkinScope kind="ui" id={id} className="fx-ui-scope">{views[id]?.render()}</SkinScope>
+            <SkinScope kind="ui" id={id} className="fx-ui-scope"><ControlScope address={`view:${id}`}>{views[id]?.render()}</ControlScope></SkinScope>
           </div>
         ))}
         {!keep.includes(state.view) && (
-          <div className="fx-main__inner" key={state.view}>
-            <SkinScope kind="ui" id={state.view} className="fx-ui-scope">{view?.render()}</SkinScope>
+          <div className="fx-main__inner" key={state.view} data-axf-view={state.view}>
+            <SkinScope kind="ui" id={state.view} className="fx-ui-scope"><ControlScope address={`view:${state.view}`}>{view?.render()}</ControlScope></SkinScope>
           </div>
         )}
       </main>
