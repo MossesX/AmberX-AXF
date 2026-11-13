@@ -7,11 +7,13 @@ import { installActionTargets } from './actions';
 import { installPluginTargets } from './plugins';
 import { installControlSearch } from './search';
 import { installControlExecutor } from './executor';
+import { installVoiceControl } from '../actions/voice-control';
 
 export function installConsoleControl(rt: AxfRuntime): () => void {
   const actions = installActionTargets(rt);
   const plugins = installPluginTargets(rt);
   const search = installControlSearch(rt);
   const executor = installControlExecutor(rt);
-  return () => { actions.off(); plugins(); search(); executor(); };
+  const voice = installVoiceControl(rt);
+  return () => { actions.off(); plugins(); search(); executor(); voice(); };
 }

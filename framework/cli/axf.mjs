@@ -51,7 +51,7 @@
  *                               a plugin providing service:plugin-commands@1, the Plugin commands plugin)  <!-- axf-plugin:plugin-commands -->
  *   axf console open <screen> | dialog <id> | settings <tab> | action <id> [args…] | back | home | refresh [--hard] [--all] | where | list [kind] [words] | clients
  *                               load a screen in Brett's open console (needs a plugin providing service:console-commands@1)
- *   axf console do|state|targets|search|focus|scroll|plugin enable|disable …  [--json]
+ *   axf console do|state|targets|search|focus|scroll|plugin enable|disable|voice …  [--json]
  *                               console-control@1: drive any tab, setting, button, plugin, grid row or build step by address
  *                               (framework/cli/console-control.mjs → the console's /api/console-control routes)
  */
@@ -82,7 +82,7 @@ if (CONTROL_WORDS.has(cmd) || (cmd === 'list' && CONTROL_LIST_WORDS.has(rest[0])
   process.exit(await main([cmd, ...rest]));
 }
 // console commands (control@1 console domain) go to the plugin that provides console-commands@1 (never by folder name).
-if (cmd === 'console' && ['do', 'state', 'targets', 'search', 'focus', 'scroll', 'plugin'].includes(rest[0] ?? '')) {
+if (cmd === 'console' && ['do', 'state', 'targets', 'search', 'focus', 'scroll', 'plugin', 'voice'].includes(rest[0] ?? '')) {
   const { main } = await import('./console-control.mjs');
   process.exit(await main(rest));
 }

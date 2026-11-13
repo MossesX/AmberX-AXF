@@ -1068,7 +1068,7 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
 # ---------------------------------------------------------------------- console control (console-control@1, CONSOLE-CONTROL.md)
 
 CONSOLE_CONTROL_TOOLS = ("console_control_targets", "console_control_state", "console_control_do", "console_control_search", "console_control_focus",
-                         "console_control_scroll", "console_control_plugin")
+                         "console_control_scroll", "console_control_plugin", "console_control_voice")
 ADDRESS_RE = re.compile(r"^(view|tab|subtab|setting|button|function|plugin|grid|row|step|panel|scroll):")
 
 
@@ -1083,7 +1083,10 @@ def console_control_runner() -> Callable[[dict[str, Any]], dict[str, Any]]:
         import urllib.request
         base = os.environ.get("AXF_CONSOLE_URL", "https://console.amberxai.com").rstrip("/") + "/api/console-control"
         auth = {"authorization": f"Bearer {os.environ['AXF_TOKEN']}"} if os.environ.get("AXF_TOKEN") else {}
-        if body.get("verb") == "targets":
+        if body.get("verb") == "voice":
+            req = urllib.request.Request(f"{base}/voice", data=json.dumps({"text": body.get("text"), "by": body.get("by"), "to": body.get("to")}).encode(), method="POST",
+                                         headers={"content-type": "application/json", **auth})
+        elif body.get("verb") == "targets":
             q = urllib.parse.urlencode({k: body[k] for k in ("under", "kinds", "source") if body.get(k)})
             req = urllib.request.Request(f"{base}/targets?{q}", headers=auth)
         else:
@@ -1108,6 +1111,8 @@ def console_control_runner() -> Callable[[dict[str, Any]], dict[str, Any]]:
         if body.get("verb") == "targets":
             ks = [k for k in str(body.get("kinds") or "").split(",") if k]
             return api.targets(str(body.get("under") or ""), ks or None, str(body.get("source") or "auto"), str(body.get("by") or "mcp"))
+        if body.get("verb") == "voice":
+            return api.voice(str(body.get("text") or ""), str(body.get("by") or "voice"), to=str(body.get("to") or "recent"))
         return api.command(body, str(body.get("by") or "mcp"))
 
     return run
@@ -1182,6 +1187,16 @@ def _register_console_control_tools(mcp: MCPServer, run: Callable[[dict[str, Any
         """Turn a console plugin on or off (id, folder or name). Core plugins refuse; a plugin another enabled one needs
         refuses unless force. The answer names the effects: who stops working, what it needs that is off."""
         return await go({"verb": "plugin.enable" if enabled else "plugin.disable", "address": plugin, "reason": reason, **({"options": {"force": True}} if force else {})})
+
+    @mcp.tool(annotations=WRITE)
+    async def console_control_voice(text: str, to: str = "recent") -> dict[str, Any]:
+        """What Brett said to AmberX about the console ("scroll down", "open plugins settings", "find <x>", "show step 3
+        of <build>", "disable plugin <y>", "press <button>", "set <setting> to <v>"): mapped to one console-control
+        command, run, and answered with `say` (speak it back) plus the command and the console's state."""
+        r = await anyio.to_thread.run_sync(lambda: run({"verb": "voice", "text": text, "to": to, "by": "voice"}))
+        if not r.get("ok") and r.get("code") not in ("confirmation_required", "unavailable", "not_found", "invalid"):
+            raise ToolError(f"{r.get('code', 'unexpected')}: {r.get('message', 'failed')}")
+        return r
 
 
 def follow_call(op: str, args: dict[str, Any]) -> dict[str, Any]:

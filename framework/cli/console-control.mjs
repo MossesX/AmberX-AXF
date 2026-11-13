@@ -10,6 +10,7 @@
  *   axf console focus <address> [--select] [--expand]
  *   axf console scroll up|down|page-up|page-down|top|bottom [--amount 0.5] [--address <pane>] · scroll to <address>
  *   axf console plugin enable|disable <plugin> [--force]
+ *   axf console voice "<phrase>"                       what AmberX does with a spoken phrase ("scroll down", "disable plugin skins")
  *   axf console do <verb> [address] [--value v] [--confirm] [--reason "…"] [--to recent|all|<client>]
  *   --json  the answer as JSON · --remote <url>  another console
  *
@@ -17,7 +18,7 @@
  */
 import { pathToFileURL } from 'node:url';
 
-export const CONTROL_SUBCOMMANDS = new Set(['do', 'state', 'targets', 'search', 'focus', 'scroll', 'plugin']);
+export const CONTROL_SUBCOMMANDS = new Set(['do', 'state', 'targets', 'search', 'focus', 'scroll', 'plugin', 'voice']);
 const VERBS = ['open', 'state', 'press', 'set', 'scroll', 'focus', 'search', 'list', 'plugin.enable', 'plugin.disable'];
 const SCROLL_DIRS = ['up', 'down', 'page-up', 'page-down', 'top', 'bottom', 'to'];
 const FLAGS_WITH_VALUE = new Set(['value', 'reason', 'to', 'kinds', 'limit', 'under', 'source', 'amount', 'address', 'remote', 'by']);
@@ -82,6 +83,11 @@ export function toRequest(argv) {
       if (!['enable', 'disable'].includes(op) || !id) throw new Error('usage: axf console plugin enable|disable <plugin> [--force]');
       return { method: 'POST', path: `/plugins/${encodeURIComponent(id)}/${op}`, body: { ...(flags.force ? { force: true } : {}), ...extra } };
     }
+    case 'voice': {
+      const text = args.join(' ').trim();
+      if (!text) throw new Error('usage: axf console voice "<phrase>"');
+      return { method: 'POST', path: '/voice', body: { text, ...extra } };
+    }
     case 'do': {
       const [verb, address] = args;
       if (!VERBS.includes(verb)) throw new Error(`usage: axf console do <${VERBS.join('|')}> [address] [--value v] [--confirm]`);
@@ -118,6 +124,7 @@ export function describe(r) {
   const st = r.state && typeof r.state === 'object' && 'screen' in r.state ? r.state : null;
   if (st) out.push(`  screen ${st.screenLabel ?? st.screen}${st.focused ? ` · focused ${st.focused}` : ''}${st.scroll ? ` · scroll ${Math.round(st.scroll.fraction * 100)}%` : ''}`);
   if (r.effects?.stopsWorking?.length) out.push(`  stops working: ${r.effects.stopsWorking.map((d) => d.name).join(', ')}`);
+  if (r.say) out.unshift(`🗣 ${r.say}`);
   if (r.source && !Array.isArray(r.targets)) out.push(`  (${r.source}${r.console === false ? ', no console open' : ''})`);
   return out;
 }

@@ -48,6 +48,7 @@ import { NAV_STYLE_FIELDS, NAV_STYLE_FRAME, navArrange, navFollow, navPathTo, na
 import { navFieldErrors } from '../core/engines/navstyle-rules.mjs';
 import { CHROME_KINDS, DEFAULT_MERGE, DEFAULT_PRESETS, MERGE_MODES, OPEN_TARGETS, TOOLBAR_LOCATIONS, TOOLBAR_SLOT_COUNT, XLAYOUT_CONTRACT, XLAYOUT_LIMITS, dockRulesOf, guestHidden, guestTakes, guestUrl, guestUserAgent, idePresets, normalizeXLayout, nsId as xNsId, openTargetFor, parseToolbarItem, splitNs, stripNs, visibleToolbars, xlayoutErrors } from '../core/engines/xlayout';
 import { CHROME_CONTRACT, CHROME_LIMITS, WIDGET_TONES as CHROME_WIDGET_TONES, WIDGET_TYPES as CHROME_WIDGET_TYPES, activeNav, chromePicks, emptyChrome, mergeChrome, parseChromeBundle, routePick, type ChromeBundle } from '../core/engines/chrome';
+import { intentCommand, voiceIntent, voiceReply } from '../core/engines/console-control-voice.mjs';
 import { CONSOLE_CONTROL_CODES, CONSOLE_CONTROL_DEFAULT_CAN, CONSOLE_CONTROL_KINDS, CONSOLE_CONTROL_TARGETS_FRAME, CONSOLE_CONTROL_VERB_IDS, childAddress, consoleControlErrors, consoleControlFailure, consoleControlResult, failureOf, focusOptions, formatAddress, listTargets, nearestRegisteredParent, nearestTargets, normalizeConsoleControl, parseAddress, resolveAddress, resolveForVerb, scrollState, scrollStep, searchTargets, splitTabId, tabAddressId, type AddressSegment, type ConsoleControlScrollDir, type ConsoleControlVerb, type ScrollState, type TargetSnapshot } from '../core/engines/console-control';
 import { addonRisks, agentToAddon, bm25Rank, chunkText, composeSystemPrompt, fillToolTemplate, fillWorkflowTemplate, memoryTokens, parseRouterPick, resolveMemory, stripAddonRisks, trimMemory, validateAddon, validateAgentItem, type AddonBundle, type AgentCollection } from '../core/agents';
 
@@ -2265,5 +2266,30 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
       'unknown-code': consoleControlFailure('boom', 'x'), denied: consoleControlFailure('denied', 'needs control.console.write', { requires: 'control.console.write' }), 'unknown-error': failureOf(new Error('secret details')),
     },
     helpers: { tabId: [tabAddressId('row'), tabAddressId('row', 'v'), tabAddressId('row', null)], child: [childAddress(null, 'view', 'builds'), childAddress('view:builds', 'row', 'a/b')], parent: nearestRegisteredParent(snapshot, parseAddress('view:builds/tab:orchestrator.sections=pipeline/grid:queue/row:abc/button:nope')), 'no-parent': nearestRegisteredParent(snapshot, parseAddress('view:nope/button:x')) },
+  });
+}
+
+// console-control@1 voice intents (core/engines/console-control-voice.mjs; Python twin server/console_control.py voice_intent): phrase → intent → command → reply
+{
+  const phrases = ['scroll down', 'Amber, scroll up a bit please', 'scroll down two pages', 'page down', 'go to the top', 'scroll to the bottom', 'open plugins settings', 'open the pipeline tab',
+    'go to plan studio', 'open settings', 'find dark mode', 'search for snapshot', 'show step 3 of the console control build', 'step three of skins', 'disable plugin skins',
+    'turn off the skins plugin', 'turn the skins plugin off', 'enable voice notes plugin', 'press save', 'click the refresh button', 'Set font scale to 1.2.', 'turn help mode on', 'what time is it', ''];
+  const intents = Object.fromEntries(phrases.map((p) => [p, voiceIntent(p)]));
+  const hit = 'view:build-orchestrator/grid:builds/row:b1';
+  write('console-control-voice.json', {
+    intents,
+    commands: Object.fromEntries(phrases.filter((p) => intents[p]).map((p) => [p, intentCommand(intents[p]!, intents[p]!.find ? hit : null)])),
+    replies: {
+      scroll: voiceReply({ verb: 'scroll', scroll: { dir: 'down' } }, { ok: true, scroll: { fraction: 0.42, atTop: false, atBottom: false } }),
+      bottom: voiceReply({ verb: 'scroll', scroll: { dir: 'bottom' } }, { ok: true, scroll: { fraction: 1, atTop: false, atBottom: true } }),
+      search: voiceReply({ verb: 'search', query: { q: 'x' } }, { ok: true, hits: [{ label: 'Plugins' }, { label: 'Plugin settings' }] }),
+      none: voiceReply({ verb: 'search', query: { q: 'x' } }, { ok: true, hits: [] }),
+      open: voiceReply({ verb: 'open', address: 'view:settings' }, { ok: true, address: 'view:settings' }, 'Settings'),
+      set: voiceReply({ verb: 'set', value: true }, { ok: true, value: true }, 'Help mode'),
+      disable: voiceReply({ verb: 'plugin.disable' }, { ok: true, effects: { loses: [{ name: 'Crew' }] } }, 'Skins'),
+      confirm: voiceReply({ verb: 'press' }, { ok: false, code: 'confirmation_required', message: 'x' }),
+      noConsole: voiceReply({ verb: 'open' }, { ok: false, code: 'unavailable', message: 'x', openUrl: 'https://c/' }),
+      failed: voiceReply({ verb: 'press' }, { ok: false, code: 'denied', message: 'needs Brett' }),
+    },
   });
 }

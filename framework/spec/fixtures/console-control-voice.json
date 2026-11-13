@@ -1,0 +1,323 @@
+{
+  "intents": {
+    "scroll down": {
+      "verb": "scroll",
+      "scroll": {
+        "dir": "down"
+      }
+    },
+    "Amber, scroll up a bit please": {
+      "verb": "scroll",
+      "scroll": {
+        "dir": "up",
+        "amount": 0.25
+      }
+    },
+    "scroll down two pages": {
+      "verb": "scroll",
+      "scroll": {
+        "dir": "down",
+        "amount": 2
+      }
+    },
+    "page down": {
+      "verb": "scroll",
+      "scroll": {
+        "dir": "page-down"
+      }
+    },
+    "go to the top": {
+      "verb": "scroll",
+      "scroll": {
+        "dir": "top"
+      }
+    },
+    "scroll to the bottom": {
+      "verb": "scroll",
+      "scroll": {
+        "dir": "bottom"
+      }
+    },
+    "open plugins settings": {
+      "verb": "open",
+      "find": {
+        "q": "plugins",
+        "kinds": [
+          "tab",
+          "subtab"
+        ]
+      },
+      "within": "view:settings"
+    },
+    "open the pipeline tab": {
+      "verb": "open",
+      "find": {
+        "q": "pipeline",
+        "kinds": [
+          "tab",
+          "subtab"
+        ]
+      }
+    },
+    "go to plan studio": {
+      "verb": "open",
+      "find": {
+        "q": "plan studio",
+        "kinds": [
+          "view",
+          "tab",
+          "subtab",
+          "plugin"
+        ]
+      }
+    },
+    "open settings": {
+      "verb": "open",
+      "address": "view:settings"
+    },
+    "find dark mode": {
+      "verb": "search",
+      "query": {
+        "q": "dark mode"
+      }
+    },
+    "search for snapshot": {
+      "verb": "search",
+      "query": {
+        "q": "snapshot"
+      }
+    },
+    "show step 3 of the console control build": {
+      "verb": "focus",
+      "find": {
+        "q": "console control",
+        "kinds": [
+          "row"
+        ]
+      },
+      "step": 3,
+      "options": {
+        "expand": true
+      }
+    },
+    "step three of skins": {
+      "verb": "focus",
+      "find": {
+        "q": "skins",
+        "kinds": [
+          "row"
+        ]
+      },
+      "step": 3,
+      "options": {
+        "expand": true
+      }
+    },
+    "disable plugin skins": {
+      "verb": "plugin.disable",
+      "find": {
+        "q": "skins",
+        "kinds": [
+          "plugin"
+        ]
+      }
+    },
+    "turn off the skins plugin": {
+      "verb": "plugin.disable",
+      "find": {
+        "q": "skins",
+        "kinds": [
+          "plugin"
+        ]
+      }
+    },
+    "turn the skins plugin off": {
+      "verb": "plugin.disable",
+      "find": {
+        "q": "skins",
+        "kinds": [
+          "plugin"
+        ]
+      }
+    },
+    "enable voice notes plugin": {
+      "verb": "plugin.enable",
+      "find": {
+        "q": "voice notes",
+        "kinds": [
+          "plugin"
+        ]
+      }
+    },
+    "press save": {
+      "verb": "press",
+      "find": {
+        "q": "save",
+        "kinds": [
+          "button",
+          "function"
+        ]
+      }
+    },
+    "click the refresh button": {
+      "verb": "press",
+      "find": {
+        "q": "refresh",
+        "kinds": [
+          "button",
+          "function"
+        ]
+      }
+    },
+    "Set font scale to 1.2.": {
+      "verb": "set",
+      "find": {
+        "q": "font scale",
+        "kinds": [
+          "setting"
+        ]
+      },
+      "value": "1.2"
+    },
+    "turn help mode on": {
+      "verb": "set",
+      "find": {
+        "q": "help mode",
+        "kinds": [
+          "setting"
+        ]
+      },
+      "value": true
+    },
+    "what time is it": null,
+    "": null
+  },
+  "commands": {
+    "scroll down": {
+      "verb": "scroll",
+      "scroll": {
+        "dir": "down"
+      }
+    },
+    "Amber, scroll up a bit please": {
+      "verb": "scroll",
+      "scroll": {
+        "dir": "up",
+        "amount": 0.25
+      }
+    },
+    "scroll down two pages": {
+      "verb": "scroll",
+      "scroll": {
+        "dir": "down",
+        "amount": 2
+      }
+    },
+    "page down": {
+      "verb": "scroll",
+      "scroll": {
+        "dir": "page-down"
+      }
+    },
+    "go to the top": {
+      "verb": "scroll",
+      "scroll": {
+        "dir": "top"
+      }
+    },
+    "scroll to the bottom": {
+      "verb": "scroll",
+      "scroll": {
+        "dir": "bottom"
+      }
+    },
+    "open plugins settings": {
+      "verb": "open",
+      "address": "view:build-orchestrator/grid:builds/row:b1"
+    },
+    "open the pipeline tab": {
+      "verb": "open",
+      "address": "view:build-orchestrator/grid:builds/row:b1"
+    },
+    "go to plan studio": {
+      "verb": "open",
+      "address": "view:build-orchestrator/grid:builds/row:b1"
+    },
+    "open settings": {
+      "verb": "open",
+      "address": "view:settings"
+    },
+    "find dark mode": {
+      "verb": "search",
+      "query": {
+        "q": "dark mode"
+      }
+    },
+    "search for snapshot": {
+      "verb": "search",
+      "query": {
+        "q": "snapshot"
+      }
+    },
+    "show step 3 of the console control build": {
+      "verb": "focus",
+      "address": "view:build-orchestrator/grid:builds/row:b1/step:s3",
+      "options": {
+        "expand": true
+      }
+    },
+    "step three of skins": {
+      "verb": "focus",
+      "address": "view:build-orchestrator/grid:builds/row:b1/step:s3",
+      "options": {
+        "expand": true
+      }
+    },
+    "disable plugin skins": {
+      "verb": "plugin.disable",
+      "address": "view:build-orchestrator/grid:builds/row:b1"
+    },
+    "turn off the skins plugin": {
+      "verb": "plugin.disable",
+      "address": "view:build-orchestrator/grid:builds/row:b1"
+    },
+    "turn the skins plugin off": {
+      "verb": "plugin.disable",
+      "address": "view:build-orchestrator/grid:builds/row:b1"
+    },
+    "enable voice notes plugin": {
+      "verb": "plugin.enable",
+      "address": "view:build-orchestrator/grid:builds/row:b1"
+    },
+    "press save": {
+      "verb": "press",
+      "address": "view:build-orchestrator/grid:builds/row:b1"
+    },
+    "click the refresh button": {
+      "verb": "press",
+      "address": "view:build-orchestrator/grid:builds/row:b1"
+    },
+    "Set font scale to 1.2.": {
+      "verb": "set",
+      "address": "view:build-orchestrator/grid:builds/row:b1",
+      "value": "1.2"
+    },
+    "turn help mode on": {
+      "verb": "set",
+      "address": "view:build-orchestrator/grid:builds/row:b1",
+      "value": true
+    }
+  },
+  "replies": {
+    "scroll": "Scrolled, 42 percent down.",
+    "bottom": "At the bottom.",
+    "search": "2 results. Top: Plugins.",
+    "none": "Nothing found.",
+    "open": "Opened Settings.",
+    "set": "Set Help mode to on.",
+    "disable": "Skins is off. Crew loses a feature.",
+    "confirm": "That deletes something. Say it again with confirm, or do it on screen.",
+    "noConsole": "No console is open. Open it and ask again.",
+    "failed": "Couldn't: needs Brett"
+  }
+}

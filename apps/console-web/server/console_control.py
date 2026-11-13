@@ -435,3 +435,120 @@ def toggle_plugin(ref: str, enabled: bool, by: str = "", force: bool = False, is
         effects["nowWorks"] = [d for d in deps if d["required"] and d["enabled"]]
     return ok(verb, p["address"], plugin=p["id"], enabled=enabled, changed=[p["address"]] if was != enabled else [], effects=effects,
               reload="the open console reloads its plugin list" if was != enabled else None, **({"by": by} if by else {}))
+
+
+# ---------------------------------------------------------------------- voice (twin of core/engines/console-control-voice.mjs)
+
+VOICE_NUMBERS = {"one": 1, "two": 2, "three": 3, "four": 4, "five": 5, "six": 6, "seven": 7, "eight": 8, "nine": 9, "ten": 10, "eleven": 11, "twelve": 12, "thirteen": 13,
+                 "fourteen": 14, "fifteen": 15, "sixteen": 16, "seventeen": 17, "eighteen": 18, "nineteen": 19, "twenty": 20, "first": 1, "second": 2, "third": 3, "fourth": 4, "fifth": 5}
+VOICE_AMOUNTS = {"a bit": 0.25, "a little": 0.25, "a little bit": 0.25, "a lot": 2, "a page": 1, "one page": 1, "half a page": 0.5}
+_GO = r"(?:open|go to|show(?: me)?|take me to|switch to)"
+
+
+def clean_phrase(text: Any) -> str:
+    p = str(text or "").lower()
+    p = re.sub(r"(?<!\d)\.|\.(?!\d)", " ", p)
+    p = re.sub(r"[“”\"'’,!?;:]+", " ", p)
+    p = re.sub(r"^\s*(hey |ok |okay )?(amber|amberx)\b[\s,]*", " ", p)
+    p = re.sub(r"\b(please|can you|could you|would you|for me|now)\b", " ", p)
+    return re.sub(r"\s+", " ", p).strip()
+
+
+def _strip(s: str) -> str:
+    s = re.sub(r"^(the|a|an|my)\s+", "", s)
+    return re.sub(r"\s+(screen|page|view)$", "", s).strip()
+
+
+def _num(w: str) -> int | None:
+    return int(w) if w.isdigit() else VOICE_NUMBERS.get(w)
+
+
+def voice_intent(text: Any) -> dict[str, Any] | None:
+    """A phrase → an intent (same shape and rules as voiceIntent in console-control-voice.mjs), or None."""
+    p = clean_phrase(text)
+    if not p:
+        return None
+    if m := re.match(r"^(?:scroll|go|jump)(?: all the way)?(?: to)?(?: the)? (top|bottom|start|end)(?: of(?: the)? (?:page|list|screen))?$", p):
+        return {"verb": "scroll", "scroll": {"dir": "top" if m.group(1) in ("top", "start") else "bottom"}}
+    if m := re.match(r"^page (up|down)$", p):
+        return {"verb": "scroll", "scroll": {"dir": f"page-{m.group(1)}"}}
+    if m := re.match(r"^scroll (up|down)(?: (a bit|a little bit|a little|a lot|a page|one page|half a page|(\d+|\w+) pages?))?$", p):
+        amount = (VOICE_AMOUNTS.get(m.group(2)) or (_num(m.group(3)) if m.group(3) else None)) if m.group(2) else None
+        return {"verb": "scroll", "scroll": {"dir": m.group(1), **({"amount": amount} if amount else {})}}
+    if m := re.match(r"^(?:find|search for|search|look for|look up)\s+(.+)$", p):
+        return {"verb": "search", "query": {"q": _strip(m.group(1))}}
+    if m := re.match(r"^(?:show (?:me )?|open |go to |focus (?:on )?)?(?:the )?(?:step (\w+)|(\w+) step) of (?:the )?(?:build )?(.+?)(?: build)?$", p):
+        n = _num(m.group(1) or m.group(2) or "")
+        if n is not None:
+            return {"verb": "focus", "find": {"q": _strip(m.group(3)), "kinds": ["row"]}, "step": n, "options": {"expand": True}}
+    if m := re.match(r"^(enable|disable|turn on|turn off|switch on|switch off)(?: the)? (?:plugin (.+)|(.+?) plugin)$", p):
+        on = bool(re.search(r"enable|on", m.group(1)))
+        return {"verb": "plugin.enable" if on else "plugin.disable", "find": {"q": _strip(m.group(2) or m.group(3)), "kinds": ["plugin"]}}
+    if m := re.match(r"^(?:turn|switch)(?: the)? (.+?) plugin (on|off)$", p):
+        return {"verb": "plugin.enable" if m.group(2) == "on" else "plugin.disable", "find": {"q": _strip(m.group(1)), "kinds": ["plugin"]}}
+    if m := re.match(r"^set (?:the )?(.+?) (?:to|at) (.+)$", p):
+        return {"verb": "set", "find": {"q": _strip(m.group(1)), "kinds": ["setting"]}, "value": m.group(2).strip()}
+    if m := re.match(r"^(?:turn|switch) (?:the )?(.+?) (on|off)$", p):
+        return {"verb": "set", "find": {"q": _strip(m.group(1)), "kinds": ["setting"]}, "value": m.group(2) == "on"}
+    if m := re.match(r"^(?:press|click|tap|hit|push)(?: on)?(?: the)? (.+?)(?: button)?$", p):
+        return {"verb": "press", "find": {"q": _strip(m.group(1)), "kinds": ["button", "function"]}}
+    if m := re.match(rf"^{_GO}(?: the)? (.+?) settings?$", p):
+        return {"verb": "open", "find": {"q": _strip(m.group(1)), "kinds": ["tab", "subtab"]}, "within": "view:settings"}
+    if m := re.match(rf"^{_GO}(?: the)? (.+?) tab$", p):
+        return {"verb": "open", "find": {"q": _strip(m.group(1)), "kinds": ["tab", "subtab"]}}
+    if re.match(r"^(?:open |go to |show(?: me)? |take me to )?(?:the )?settings$", p):
+        return {"verb": "open", "address": "view:settings"}
+    if m := re.match(r"^(?:open|go to|show(?: me)?|take me to|switch to|bring up)(?: the)? (.+)$", p):
+        return {"verb": "open", "find": {"q": _strip(m.group(1)), "kinds": ["view", "tab", "subtab", "plugin"]}}
+    return None
+
+
+def intent_command(intent: dict[str, Any], hit: str | None = None) -> dict[str, Any]:
+    cmd: dict[str, Any] = {"verb": intent["verb"]}
+    if intent["verb"] == "search":
+        cmd["query"] = intent["query"]
+    elif intent["verb"] == "scroll":
+        cmd["scroll"] = intent["scroll"]
+    else:
+        base = intent.get("address") or hit or ""
+        cmd["address"] = f"{base}/step:s{intent['step']}" if base and intent.get("step") is not None else base
+    if "value" in intent:
+        cmd["value"] = intent["value"]
+    if intent.get("options"):
+        cmd["options"] = intent["options"]
+    return cmd
+
+
+def voice_reply(intent: dict[str, Any], answer: dict[str, Any] | None, label: str = "") -> str:
+    """What to say back (same lines as voiceReply)."""
+    if not answer or answer.get("ok") is False:
+        if (answer or {}).get("code") == "confirmation_required":
+            return "That deletes something. Say it again with confirm, or do it on screen."
+        if (answer or {}).get("code") == "unavailable" and (answer or {}).get("openUrl"):
+            return "No console is open. Open it and ask again."
+        return f"Couldn't: {(answer or {}).get('message') or 'that did not work'}"
+    what = label or answer.get("address") or ""
+    v = intent["verb"]
+    if v == "scroll":
+        s = answer.get("scroll") or (answer.get("state") or {}).get("scroll")
+        if not s:
+            return "Scrolled."
+        return "At the bottom." if s.get("atBottom") else "At the top." if s.get("atTop") else f"Scrolled, {round((s.get('fraction') or 0) * 100)} percent down."
+    if v == "search":
+        hits = answer.get("hits") or []
+        return f"{len(hits)} result{'' if len(hits) == 1 else 's'}. Top: {hits[0]['label']}." if hits else "Nothing found."
+    if v == "open":
+        return f"Opened {what}."
+    if v == "focus":
+        return f"Showing {what}."
+    if v == "press":
+        return f"Pressed {what}."
+    if v == "set":
+        val = answer.get("value", intent.get("value"))
+        return f"Set {what} to {('on' if val else 'off') if isinstance(val, bool) else val}."
+    if v == "plugin.enable":
+        return f"{what} is on."
+    if v == "plugin.disable":
+        loses = (answer.get("effects") or {}).get("loses") or []
+        return f"{what} is off." + (f" {', '.join(d['name'] for d in loses)} lose{'s' if len(loses) == 1 else ''} a feature." if loses else "")
+    return "Done."

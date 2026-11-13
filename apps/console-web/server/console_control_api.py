@@ -7,6 +7,7 @@
     POST /focus     {address, options?}     bring a target into view (opens its screen, tab, row first) and highlight it
     POST /scroll    {dir, amount?, to?, address?}   scroll the active pane (or the pane of `address`)
     POST /plugins/{id}/enable|disable  {force?, by?}  turn a plugin on / off (server-side, no browser needed)
+    POST /voice     {text, to?}             a spoken phrase → its command, run; `say` = the line to speak back
 
 Commands that need the page go to the open console over the console-commands relay (console-commands@1 `control`); the
 answer is the console's own envelope with its live `state`. No console open → 503 `unavailable` with `openUrl`.
@@ -317,6 +318,29 @@ def command(b: dict[str, Any], by: str = "", audience: str = OWNER, grants: set[
     return guarded(cmd, str(b.get("by") or by or "api")[:80], audience, grants if grants is not None else {"*"}, str(b.get("to") or "recent"))
 
 
+def voice(text: str, by: str = "voice", audience: str = OWNER, grants: set[str] | None = None, to: str = "recent") -> dict[str, Any]:
+    """A spoken phrase → its command (console_control.voice_intent), words resolved by the same search, then run with the
+    same guards. The answer carries `heard`, `intent`, `command` and `say` (the line to speak back)."""
+    g = grants if grants is not None else {"*"}
+    intent = cc.voice_intent(text)
+    if intent is None:
+        return {"$axf": cc.FRAME, "ok": False, "code": "invalid", "message": "not a console command", "heard": text, "intent": None, "say": "That isn't a console command I know."}
+    hit: dict[str, Any] | None = None
+    if intent.get("find"):
+        r = guarded({"$axf": cc.FRAME, "verb": "search", "query": {"q": intent["find"]["q"], "kinds": intent["find"]["kinds"], "limit": 10}}, by, audience, g, to)
+        hits = r.get("hits") or []
+        within = intent.get("within")
+        hit = next((h for h in hits if within and h["address"].startswith(within + "/")), None) or (hits[0] if hits else None)
+        if hit is None:
+            return {"$axf": cc.FRAME, "ok": False, "code": "not_found", "message": f"nothing called {intent['find']['q']}", "heard": text, "intent": intent,
+                    "say": f"I couldn't find {intent['find']['q']}.", **({"openUrl": r["openUrl"]} if r.get("openUrl") else {})}
+    cmd = {"$axf": cc.FRAME, **cc.intent_command(intent, hit["address"] if hit else None)}
+    if hit and hit.get("value") is not None and cmd["verb"] in ("open", "press"):
+        cmd["verb"], cmd["value"] = "press", hit["value"]
+    ans = guarded(cmd, by, audience, g, to)
+    return {**ans, "heard": text, "intent": intent, "command": {k: v for k, v in cmd.items() if k != "$axf"}, "say": cc.voice_reply(intent, ans, (hit or {}).get("label", ""))}
+
+
 def _kinds(v: str | None) -> list[str] | None:
     ks = [k.strip() for k in (v or "").split(",") if k.strip()]
     return ks or None
@@ -372,6 +396,16 @@ def router_for(auth: Any) -> APIRouter:
     async def scroll(request: Request) -> JSONResponse:
         b = await _body(request)
         return await from_body(request, {**b, "verb": "scroll"})
+
+    @r.post("/voice")
+    async def voice_route(request: Request) -> JSONResponse:
+        """{text, to?}: a spoken phrase (AmberX) → the command it maps to, run, with `say` to speak back."""
+        b = await _body(request)
+        audience, name = audience_of(request)
+        text = str(b.get("text") or "").strip()[:300]
+        if not text:
+            return fail(cc.ControlError("invalid", "voice needs text", field="text"))
+        return answer(await run_in_threadpool(voice, text, str(b.get("by") or "voice")[:80], audience, grants_of(request), str(b.get("to") or "recent")))
 
     @r.post("/plugins/{ref}/{op}")
     async def plugin(request: Request, ref: str, op: str) -> JSONResponse:
