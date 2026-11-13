@@ -786,7 +786,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 17:38 UTC · `tap-to-confirm-follows-label-visibility` added (3 steps) (all) · build-rename
 - 2026-11-13 17:38 UTC · `tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch` note, removed (all) · build-rename
 - 2026-11-13 17:38 UTC · `unlink-plan-studio-builds-delete-all` added (3 steps) (all) · build-rename
 - 2026-11-13 17:38 UTC · `unlink-plan-studio-from-builds-delete-all-plan-s` note, removed (all) · build-rename
@@ -1186,6 +1185,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 19:38 UTC · `skin-axhub-override-switch-greyed-out` s2 done (all) · orchestrator
 - 2026-11-13 19:38 UTC · `land-rename-long-builds-resolve-clash` s2 done (all) · orchestrator
 - 2026-11-13 19:39 UTC · `console-app-part-3-native-bridge-mic` s6 done (all) · orchestrator
+- 2026-11-13 19:39 UTC · `land-drive-live-console-first-resolve` branch claude/drive-live-console-first, PR #620 (all) · builds-live
 
 ## Token passes (log)
 

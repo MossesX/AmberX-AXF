@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4828,
- "updatedAt": "2026-11-13T19:39:35.063Z",
+ "rev": 4829,
+ "updatedAt": "2026-11-13T19:39:46.195Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -202997,11 +202997,11 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/land-drive-live-console-first-resolve",
-   "pr": "",
+   "branch": "claude/drive-live-console-first",
+   "pr": "#620",
    "priority": "P0",
    "createdAt": "2026-11-13T19:31:40.346Z",
-   "updatedAt": "2026-11-13T19:32:56.779Z",
+   "updatedAt": "2026-11-13T19:39:44.226Z",
    "builtAt": "",
    "notes": [
     {
@@ -203148,7 +203148,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
