@@ -136,8 +136,9 @@ export const plugin: AxfWebLibrary = {
     });
   },
   views: {
-    'build-orchestrator.recovery': { title: 'Builds / Orchestrator / Recovery', icon: 'refresh', keywords: ['recovery log', 'auto-recovery', 'stuck builds', 'parked builds'], render: () => <RecoveryLink /> },
-    'build-orchestrator': { title: 'Build orchestrator', icon: 'layers', keywords: ['recovery', 'orchestrator', 'builds', 'build manager', 'pending', 'queue', 'active', 'incomplete', 'complete', 'errors', 'archive', 'deleted', 'hold', 'on hold', 'restore', 'accounts', 'health', 'fable', 'opus', 'steps', 'phases', 'approve model'], render: () => <OrchestratorPage /> } },
+    'build-orchestrator': { title: 'Build orchestrator', icon: 'layers', keywords: ['recovery', 'orchestrator', 'builds', 'build manager', 'pending', 'queue', 'active', 'incomplete', 'complete', 'errors', 'archive', 'deleted', 'hold', 'on hold', 'restore', 'accounts', 'health', 'fable', 'opus', 'steps', 'phases', 'approve model'], render: () => <OrchestratorPage /> },
+    // first view = the plugin's "Opens in"; this one only redirects (deep link builds/orchestrator/recovery)
+    'build-orchestrator.recovery': { title: 'Builds / Orchestrator / Recovery', icon: 'refresh', keywords: ['recovery log', 'auto-recovery', 'stuck builds', 'parked builds'], render: () => <RecoveryLink /> } },
   nav: { label: 'Builds', items: [{ id: 'build-orchestrator', label: 'Build orchestrator', icon: 'layers', view: 'build-orchestrator' }] },
   contextMenu: [{ id: 'build-orchestrator.pending', target: 'axf-pending-item', items: [{ id: 'build-orchestrator.open', label: 'Open in Build orchestrator', icon: 'layers', action: 'build-orchestrator.open' }] },
     { id: 'build-orchestrator.default', target: 'default', order: 91, items: [{ id: 'build-orchestrator', label: 'Build orchestrator', icon: 'layers', action: 'nav:build-orchestrator' }] }],
