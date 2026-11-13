@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T10:48:04.154Z",
+ "updatedAt": "2026-11-13T10:48:21.154Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -109751,14 +109751,14 @@
    "title": "Console and axHub retry failed calls themselves (no Claude needed)",
    "category": "orchestrator",
    "detail": "URGENT, boss order from Brett, Nov 12. When a call from Claude/MCP/voice/CLI fails for a transient reason (e.g. 'builds store is locked', timeout, console client asleep, rate limit, 5xx), the console and axHub must retry it THEMSELVES on the server, whether or not the Claude session is still connected. Retry with backoff until it succeeds (bounded, e.g. 10 tries over ~10 min), then the result is stored on the job so get_job shows success. Only permanent errors (validation, not found) fail, and those send Brett an AmberX FYI with what's missing. Fix the root cause of store.json.lock contention too (stale lock cleanup, short waits for the lock instead of failing). Applies to control_add/set/act, pipeline_queue, console_open/show and all axf-console write tools. Tests: locked store -> call waits/retries and succeeds; session disconnect mid-retry -> still completes.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/console-and-axhub-retry-failed-calls-themselves-no-claude-needed",
    "pr": "#561",
    "createdAt": "2026-11-12T02:37:24.132Z",
-   "updatedAt": "2026-11-13T10:47:50.582Z",
+   "updatedAt": "2026-11-13T10:48:03.418Z",
    "builtAt": "",
    "notes": [
     {
@@ -109828,6 +109828,10 @@
     {
      "text": "Headless run axf-console-and-axhub-retry-failed-calls-themselves---joey: brief only · start 11.8K tokens ($0.03) · cost $0.83 · 36 turns · 6 tools, MCP none",
      "at": "2026-11-13T10:47:50.582Z"
+    },
+    {
+     "text": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
+     "at": "2026-11-13T10:48:03.418Z"
     },
     {
      "text": "PR #510 had been closed and its branch deleted after the queue kicked it out (agent-slots help.json + help coverage 99.8%). Rebased the same commits on main, added the 3 missing help entries (coverage 100%), all retry tests re-run green. New PR #561; landing through the merge queue. Gaps: no UI Review shots (local console can't reach axHub from the build sandbox); AmberX FYI on live is left to the lander/deploy, not polled.",
@@ -120598,15 +120602,15 @@
    "title": "Every skin ships a light and a dark colour theme (Studio Pro, Executive, Field, Command, Default and any future skin): quick light/dark switch per skin, follow-system option, coverage check fails if a skin lacks either; full API and voice",
    "category": "",
    "detail": "",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/every-skin-ships-a-light-and-a-dark-colour-theme",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T10:39:51.656Z",
-   "updatedAt": "2026-11-13T10:43:00.026Z",
+   "updatedAt": "2026-11-13T10:48:18.886Z",
    "builtAt": "",
    "notes": [
     {
@@ -120616,6 +120620,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"0eea71b2-aaf2-45f5-b7e1-1fcea640a629\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-13T10:43:00.026Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-every-skin-ships-a-light-and-a-dark-colour-theme--sully.",
+     "at": "2026-11-13T10:48:16.775Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-every-skin-ships-a-light-and-a-dark-colour-theme--sully, own login copy)",
+     "at": "2026-11-13T10:48:18.886Z"
     }
    ],
    "approvals": [],
@@ -120626,8 +120638,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "every-skin-ships-a-light-and-a-dark-colour-theme",
+    "brief": "# Build: every-skin-ships-a-light-and-a-dark-colour-theme\n\n## Brett said (verbatim)\nAt: 2026-11-13T10:39:51.656Z\n> Yo, every skin needs a light and dark.\n\n## What to build\nContinue build \"Every skin ships a light and a dark colour theme (Studio Pro, Executive, Field, Command, Default and any future skin): quick light/dark switch per skin, follow-system option, coverage check fails if a skin lacks either; full API and voice\" (every-skin-ships-a-light-and-a-dark-colour-theme) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-13 10:39):\n\"Yo, every skin needs a light and dark.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (2 left, ~20 min):\n[ ] s1 (~10 min) Yo, every skin needs a light and dark.\n[ ] s2 (~10 min) Tests green, report _claude/builds/reports/every-skin-ships-a-light-and-a-dark-colour-theme.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/every-skin-ships-a-light-and-a-dark-colour-theme.md, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step every-skin-ships-a-light-and-a-dark-colour-theme <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link every-skin-ships-a-light-and-a-dark-colour-theme --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step every-skin-ships-a-light-and-a-dark-colour-theme <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note every-skin-ships-a-light-and-a-dark-colour-theme \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []

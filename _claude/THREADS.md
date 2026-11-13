@@ -781,10 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 01:44 UTC · `full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app` branch claude/full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app (all) · pipeline
-- 2026-11-13 01:44 UTC · `full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app` note (all) · orchestrator
-- 2026-11-13 01:46 UTC · `server-every-failed-merge-alerts-brett-immediately-and-retries-by-itself-until` → running, note (all) · pipeline
-- 2026-11-13 01:46 UTC · `server-every-failed-merge-alerts-brett-immediately-and-retries-by-itself-until` branch claude/server-every-failed-merge-alerts-brett-immediately-and-retries-by-itself-until (all) · pipeline
 - 2026-11-13 01:46 UTC · `server-every-failed-merge-alerts-brett-immediately-and-retries-by-itself-until` note (all) · orchestrator
 - 2026-11-13 01:46 UTC · `vps-badge-shows-shell-commands-work-banner-widgets-for-disk-cpu-load-and-memor` → running, note (all) · pipeline
 - 2026-11-13 01:46 UTC · `vps-badge-shows-shell-commands-work-banner-widgets-for-disk-cpu-load-and-memor` branch claude/vps-badge-shows-shell-commands-work-banner-widgets-for-disk-cpu-load-and-memor (all) · pipeline
@@ -1181,6 +1177,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 10:47 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` s15 done (all) · orchestrator
 - 2026-11-13 10:47 UTC · `console-and-axhub-retry-failed-calls-themselves-no-claude-needed` s3 done, → built (all) · orchestrator
 - 2026-11-13 10:47 UTC · `console-and-axhub-retry-failed-calls-themselves-no-claude-needed` note (all) · orchestrator
+- 2026-11-13 10:48 UTC · `console-and-axhub-retry-failed-calls-themselves-no-claude-needed` → pending, note (all) · pipeline
+- 2026-11-13 10:48 UTC · `every-skin-ships-a-light-and-a-dark-colour-theme` → running, note (all) · pipeline
+- 2026-11-13 10:48 UTC · `every-skin-ships-a-light-and-a-dark-colour-theme` branch claude/every-skin-ships-a-light-and-a-dark-colour-theme (all) · pipeline
+- 2026-11-13 10:48 UTC · `every-skin-ships-a-light-and-a-dark-colour-theme` note (all) · orchestrator
 
 ## Token passes (log)
 
