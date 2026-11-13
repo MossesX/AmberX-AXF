@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T19:29:20.998Z",
+ "updatedAt": "2026-11-13T19:29:35.079Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -127336,7 +127336,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:16:04.183Z",
-   "updatedAt": "2026-11-13T19:02:06.376Z",
+   "updatedAt": "2026-11-13T19:29:08.987Z",
    "builtAt": "",
    "notes": [
     {
@@ -127358,6 +127358,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-prompting-engine-control-panel-events--joey, own login copy)",
      "at": "2026-11-13T18:22:00.455Z"
+    },
+    {
+     "text": "Headless run axf-prompting-engine-control-panel-events--joey: brief only · start 12.9K tokens ($0.06) · cost $20.40 · 186 turns · 6 tools, MCP none",
+     "at": "2026-11-13T19:29:08.987Z"
     }
    ],
    "approvals": [],
@@ -128240,7 +128244,7 @@
    "pr": "#637",
    "priority": "P1",
    "createdAt": "2026-11-13T18:38:53.122Z",
-   "updatedAt": "2026-11-13T19:28:57.835Z",
+   "updatedAt": "2026-11-13T19:29:31.958Z",
    "builtAt": "2026-11-13T19:28:57.835Z",
    "notes": [
     {
@@ -128346,6 +128350,10 @@
     {
      "text": "Double dispatch: a second Opus session (Snap Sully) was started while the first (Landin' Lenny) was still running in the same worktree. Sully ticked s6 (already committed as 4ce3145db) and s7 (Lenny's 12e0f5e19), ran the pure JUnit rule tests (28 passed), changed no code, and stopped so Lenny can finish s8-s10 alone. Dispatcher should check for a live session on a build before launching another.",
      "at": "2026-11-13T19:25:38.768Z"
+    },
+    {
+     "text": "Headless run axf-console-android-app-thin-webview-wrapper--lenny-191049: brief only · start 11.7K tokens ($0.03) · cost $3.60 · 89 turns · 6 tools, MCP none",
+     "at": "2026-11-13T19:29:31.958Z"
     }
    ],
    "approvals": [],
@@ -128958,7 +128966,7 @@
    "title": "Console app part 3: native bridge, mic, recorder, open_url, wake",
    "category": "",
    "detail": "Parallel part 3 of 4 of console-android-app-thin-webview-wrapper (parent). Builds only in the wrapper's Android module, following the shell contract from the parent.\n- JS bridge window.axfNative exposing the native features to the console.\n- Migrates AmberX's axHub device service (amberx.open_url, recorder_start/stop/status, console wake, notifications) to the new app, with the same tool names or aliases so axHub keeps working.\n- Mic and permissions handling.\n- Full API parity: REST/MCP/CLI/voice. Tests, help, Shipped features.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -128966,7 +128974,7 @@
    "pr": "#633",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:27.359Z",
-   "updatedAt": "2026-11-13T19:29:07.449Z",
+   "updatedAt": "2026-11-13T19:29:20.234Z",
    "builtAt": "",
    "notes": [
     {
@@ -129016,6 +129024,18 @@
     {
      "text": "Self-check: console-app-part-3-native-bridge-mic was marked running on mossesx-max- with no session: released and back in the Queue.",
      "at": "2026-11-13T19:26:08.185Z"
+    },
+    {
+     "text": "Started run 2 on mossesx-max- (Opus, Phase 2): axf-console-app-part-3-native-bridge-mic--gina.",
+     "at": "2026-11-13T19:29:12.000Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-console-app-part-3-native-bridge-mic--gina, own login copy)",
+     "at": "2026-11-13T19:29:16.114Z"
+    },
+    {
+     "text": "Headless run axf-console-app-part-3-native-bridge-mic--paulie: brief only · start 11.3K tokens ($0.03) · cost $3.82 · 88 turns · 6 tools, MCP none",
+     "at": "2026-11-13T19:29:20.233Z"
     }
    ],
    "approvals": [

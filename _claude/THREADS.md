@@ -786,11 +786,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 17:32 UTC · `console-axhub-retry-failed-calls` added (5 steps) (all) · build-rename
-- 2026-11-13 17:32 UTC · `console-and-axhub-retry-failed-calls-themselves-no-claude-needed` note, removed (all) · build-rename
-- 2026-11-13 17:32 UTC · `drag-anything-api-voice-after-pr-556` added (20 steps) (all) · build-rename
-- 2026-11-13 17:32 UTC · `drag-anything-by-api-and-voice-after-pr-556-land` note, removed (all) · build-rename
-- 2026-11-13 17:33 UTC · `every-skin-ships-light-dark-colour-theme` added (2 steps) (all) · build-rename
 - 2026-11-13 17:33 UTC · `every-skin-ships-a-light-and-a-dark-colour-theme` note, removed (all) · build-rename
 - 2026-11-13 17:33 UTC · `fix-build-whose-session-finishes-phase-e` added (12 steps) (all) · build-rename
 - 2026-11-13 17:33 UTC · `fix-a-build-whose-session-finishes-its-phase-e-g-the-fable-steps-with-steps` note, removed (all) · build-rename
@@ -1186,6 +1181,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 19:28 UTC · `console-android-app-thin-webview-wrapper` PR #637 (all) · builds-live
 - 2026-11-13 19:28 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
 - 2026-11-13 19:28 UTC · `console-android-app-thin-webview-wrapper` s10 done, → built (all) · orchestrator
+- 2026-11-13 19:29 UTC · `prompting-engine-control-panel-events` note (all) · orchestrator
+- 2026-11-13 19:29 UTC · `console-app-part-3-native-bridge-mic` → running, note (all) · pipeline
+- 2026-11-13 19:29 UTC · `console-app-part-3-native-bridge-mic` note (all) · orchestrator
+- 2026-11-13 19:29 UTC · `console-app-part-3-native-bridge-mic` note (all) · orchestrator
+- 2026-11-13 19:29 UTC · `console-android-app-thin-webview-wrapper` note (all) · orchestrator
 
 ## Token passes (log)
 
