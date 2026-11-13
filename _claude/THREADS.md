@@ -788,7 +788,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 18:31 UTC · `ui-manager-floating-window-to-select-any` added (0 steps) (all) · builds-live
 - 2026-11-13 18:31 UTC · `ui-manager-floating-window-to-select-any` note (all) · claude-voice
 - 2026-11-13 18:31 UTC · `ui-manager-floating-window-to-select-any` note (all) · claude-voice
 - 2026-11-13 18:31 UTC · `ui-manager-floating-window-to-select-any` note (all) · claude-voice
@@ -1188,6 +1187,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 20:08 UTC · `demo-pipelines-guided-walkthrough-live` s7 done (all) · orchestrator
 - 2026-11-13 20:09 UTC · `dispatcher-gate-never-launch-build` note (all) · builds-live
 - 2026-11-13 20:09 UTC · `per-toolbar-settings-fix-failing-chrome` note (all) · orchestrator
+- 2026-11-13 20:10 UTC · `skin-animations-swatches-skin-switch` s1 done, → running (all) · orchestrator
 
 ## Token passes (log)
 
