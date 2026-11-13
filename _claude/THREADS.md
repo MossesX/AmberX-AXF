@@ -792,7 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 19:30 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
 - 2026-11-13 19:30 UTC · `console-app-part-4-console-side-safe` → running, note (all) · pipeline
 - 2026-11-13 19:30 UTC · `console-app-part-4-console-side-safe` branch claude/console-app-part-4-console-side-safe (all) · pipeline
 - 2026-11-13 19:30 UTC · `console-app-part-4-console-side-safe` note (all) · orchestrator
@@ -1192,6 +1191,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 21:16 UTC · `auto-land-every-finished-build-lands` s10 done, → built (all) · orchestrator
 - 2026-11-13 21:16 UTC · `auto-land-every-finished-build-lands` note (all) · orchestrator
 - 2026-11-13 21:17 UTC · `per-instance-settings-small-live-preview` s1 done, → running (all) · orchestrator
+- 2026-11-13 21:18 UTC · `icon-map-icon-packs-every-icon-badge-app` s4 done (all) · orchestrator
 
 ## Token passes (log)
 
