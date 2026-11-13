@@ -792,8 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 19:09 UTC · `ui-manager-floating-window-to-select-any` → queued, note (all) · pipeline
-- 2026-11-13 19:09 UTC · `console-android-app-thin-webview-wrapper` → queued, note (all) · pipeline
 - 2026-11-13 19:09 UTC · `decision-dialog-ui-review-other` note (all) · orchestrator
 - 2026-11-13 19:10 UTC · `decision-dialog-ui-review-other` note (all) · pipeline
 - 2026-11-13 19:09 UTC · `console-android-app-thin-webview-wrapper` s5 done (all) · orchestrator
@@ -1192,6 +1190,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 20:55 UTC · `full-voice-control-resolve-inventory` PR #655 (all) · builds-live
 - 2026-11-13 20:55 UTC · `hotfix-desktop-console-draws-app-menu` → queued (all) · claude-voice
 - 2026-11-13 20:55 UTC · `full-voice-control-resolve-inventory` s1 done (all) · orchestrator
+- 2026-11-13 20:55 UTC · `hotfix-desktop-console-draws-app-menu` note (all) · orchestrator
+- 2026-11-13 20:55 UTC · `icon-map-icon-packs-every-icon-badge-app` → queued, note (all) · pipeline
 
 ## Token passes (log)
 

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T20:55:54.523Z",
+ "updatedAt": "2026-11-13T20:56:09.397Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -132301,7 +132301,7 @@
    "title": "Icon map and icon packs: every icon and badge in the app, swappable",
    "category": "",
    "detail": "1. Icon map: a registry of EVERY icon, badge and logo slot in the whole app (every plugin, screen, dialog, menu, toolbar, tab, nav item, banner, widget and button that shows an icon). Each slot gets a stable id, its location and a role (e.g. 'save', 'approve', 'build-running'), and registers through the framework manifest so new plugins appear automatically. Add a CI check that fails on hard-coded icons not in the map.\n2. Icon map screen: a searchable, filterable, categorized tree of every slot with a live preview, where you click a slot to change its icon. Ties into the UI Manager.\n3. Icon pack template: one pack file maps every role to an icon. Applying a pack changes every icon in the app in one click. Per-slot overrides with Restore previous edit / Restore from axHub.\n4. Packs: ship a lot of packs (outline, filled, rounded, duotone, sharp, glyph, emoji-style, plus badge styles and app/plugin logos). Some are themable (follow skin tokens for colour and stroke), others are fixed-colour. Each pack declares whether it's themable. Licences must allow redistribution; prefer open icon sets.\n5. Packs are assets: swappable, per-skin defaults, shareable via the hub asset library, importable.\n6. Full API: REST/MCP/CLI/voice ('switch to the duotone icon pack'). Tests, help, Shipped features. Use Fable for the registry/schema and asset type.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -132309,7 +132309,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T19:55:30.979Z",
-   "updatedAt": "2026-11-13T20:54:13.729Z",
+   "updatedAt": "2026-11-13T20:55:48.632Z",
    "builtAt": "",
    "notes": [
     {
@@ -132343,6 +132343,10 @@
     {
      "text": "Dispatch gate: icon-map-icon-packs-every-icon-badge-app still has axf-icon-map-icon-packs-every-icon-badge-app--gina alive: not launched again, tracking that session.",
      "at": "2026-11-13T20:54:13.729Z"
+    },
+    {
+     "text": "Session on mossesx-max- ended (exit 0) with 6 steps left: back in the Queue (run 1).",
+     "at": "2026-11-13T20:55:48.632Z"
     }
    ],
    "approvals": [],
@@ -134646,12 +134650,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T20:53:50.393Z",
-   "updatedAt": "2026-11-13T20:55:19.511Z",
+   "updatedAt": "2026-11-13T20:55:46.020Z",
    "builtAt": "",
    "notes": [
     {
      "text": "UPDATE: Brett chose to PULL the per-toolbar landing out of main first (a reverse-patch commit of e5639b79f..ec579ee23, excluding _claude, pushed about 20:55). So this hotfix must: start from claude/per-toolbar-settings-fix-failing-chrome, merge current main (which includes the pull-out commit, so revert that pull-out commit on this branch), fix the double app menu/banner/nav on desktop, prove it with the count test, then land the fixed per-toolbar settings back on main and redeploy.",
      "at": "2026-11-13T20:53:59.483Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"b8bbcc40-67ec-4a69-a6e1-9e75174f51f7\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-13T20:55:46.020Z"
     }
    ],
    "approvals": [],
@@ -134668,7 +134676,68 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Right after per-toolbar-settings-fix-failing-chrome landed on main (merge ec579ee23, 20:44 Nov 13) and the console redeployed, Brett's DESKTOP console shows TWO app menus, TWO banners and TWO navigation menus (the phone looks fine). Keep the per-toolbar/per-instance settings feature: fix forward, don't revert it. Likely cause: the per-instance chrome (ChromeContext.tsx / Overlays.tsx / chrome-settings-rules) now renders a per-instance copy of each chrome element in addition to the default one on wide layouts, or the merge kept both sides of a render block. Find it, render exactly one of each chrome element, add an e2e/visual test that counts app menus, banners and nav menus on desktop and phone (must be 1 each), run all tests, then LAND it on main immediately and redeploy the console. Note: commit 237a293af was an accidental revert that only re-added 24 lines to one file; check it and drop it if it's wrong.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfghw11018fjl",
+     "createdAt": "2026-11-13T20:55:46.020Z"
+    },
+    {
+     "id": "s2",
+     "text": "there's two app menus, two banners, two navigation menus; I don't want to lose the toolbar settings",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfghw1102xelt",
+     "createdAt": "2026-11-13T20:55:46.020Z"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/hotfix-desktop-console-draws-app-menu.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/hotfix-desktop-console-draws-app-menu.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfghw11030mto",
+     "createdAt": "2026-11-13T20:55:46.020Z"
+    }
+   ]
   }
  ]
 }
