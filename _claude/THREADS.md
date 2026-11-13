@@ -786,7 +786,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 12:26 UTC · `fix-toolbar-settings-doing-nothing` note (all) · orchestrator
 - 2026-11-13 12:26 UTC · `fix-toolbar-settings-doing-nothing` → running, note (all) · pipeline
 - 2026-11-13 12:26 UTC · `fix-toolbar-settings-doing-nothing` branch claude/fix-toolbar-settings-doing-nothing (all) · pipeline
 - 2026-11-13 12:27 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` → running (all) · builds-live
@@ -1186,6 +1185,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 18:48 UTC · `decision-dialog-ui-review-other` s4 done (all) · orchestrator
 - 2026-11-13 18:49 UTC · `decision-dialog-ui-review-other` s5 done (all) · orchestrator
 - 2026-11-13 18:50 UTC · `console-android-app-thin-webview-wrapper` s1 done, → running (all) · orchestrator
+- 2026-11-13 18:50 UTC · `orchestrator-custom-groups-custom-tabs` added (0 steps) (all) · console
 
 ## Token passes (log)
 

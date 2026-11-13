@@ -4899,6 +4899,18 @@
    "from": "",
    "addenda": []
   },
+  "orchestrator-custom-groups-custom-tabs": {
+   "said": "I want to be able to add some custom groups to my board, sorted by state from partials to done, running; mostly for pending; custom pending tabs, custom groups",
+   "at": "2026-11-13T18:50:33.284Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "orchestrator-dup-check": {
    "said": "Orchestrator: cheap redundancy check at split time (Brett, Nov 7). Every time the orchestrator takes a build request and splits it into steps, it runs a CHEAP redundancy check before registering it. Plain code, zero AI tokens, fast (<2 s).",
    "at": "2026-11-07T14:11:33.802Z",

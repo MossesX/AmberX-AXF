@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4706,
- "updatedAt": "2026-11-13T18:50:19.927Z",
+ "rev": 4707,
+ "updatedAt": "2026-11-13T18:50:35.335Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -201423,6 +201423,55 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-13T18:48:10.123Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "orchestrator-custom-groups-custom-tabs",
+   "title": "Orchestrator: custom groups and custom tabs on the builds board",
+   "category": "",
+   "detail": "Build Orchestrator board gets user-made groups.\n- Brett creates, renames, reorders, colours and deletes custom groups/tabs (e.g. 'Console app', 'UI', 'Urgent').\n- Builds are dragged or assigned into a group (one or several), by hand, by voice or by API.\n- Custom tabs can sit next to Pending, Queued, Building and Done. Mostly used for Pending: custom Pending tabs.\n- Inside a group, builds are sorted by state (partial/pending, queued, running, done, landed) with a sort and filter picker, and the group shows counts per state.\n- Smart groups by rule (e.g. 'title contains console app', 'more than 500 behind main', 'filed today').\n- Group actions: queue all, land all, archive all, change priority.\n- Groups are saved per project. Full API: REST/MCP/CLI/voice/control@1. Tests, help, Shipped features.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-13T18:50:33.284Z",
+   "updatedAt": "2026-11-13T18:50:33.284Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I want to be able to add some custom groups to my board, sorted by state from partials to done, running; mostly for pending; custom pending tabs, custom groups",
+    "at": "2026-11-13T18:50:33.284Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 812
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
