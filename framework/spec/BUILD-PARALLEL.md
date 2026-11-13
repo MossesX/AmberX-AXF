@@ -66,12 +66,17 @@ list order. `model` narrows to one pin.
 
 `planFill({ slots, accounts, running, queue, pending, settings })` fills every free slot, in this order:
 
-1. **Ready steps of running builds** that carry an explicit `after` list. A step without one is sequential and belongs to
-   the build's own session, and so does the first ready step when no step of the build is claimed yet (the main session
-   has not started claiming). Per build at most `maxParallelPerBuild` (3) parallel sessions beyond the main one.
-2. **Queue builds** by priority (P0 first), then queue time (`queueOrder`). Held builds are skipped and say so.
-3. **Pending builds** when `autoQueue` is on, by priority then creation time. Off: the planner reports how many wait
-   for Brett.
+1. **Ready steps of running builds** that are parallel candidates (§1a: an explicit list, not `parallel: never`). A step
+   without a list is sequential and belongs to the build's own session, and so does the first ready step when no step
+   of the build is claimed yet (the main session has not started claiming). A candidate that shares a file with the
+   session's step or with a step launched this round waits (`files clash with s2 (path)`). Per build at most
+   `pipeline.maxParallel` (else `maxParallelPerBuild`, 3) parallel sessions beyond the main one.
+2. **Queue builds** by priority (P0 first), then queue time (`queueOrder`); equal priority and queue time fall back to
+   creation time. Held builds are skipped and say so; unsplit builds wait for the split.
+3. **Pending builds** when `autoQueue` is on, by priority then creation time, only when **split** (steps present) and
+   with **no clash**: a Pending build whose open steps touch a file an open step of a running build (or of a build
+   launched this round) touches waits (`files clash with running build r1 (path)`). Off: the planner reports how many
+   wait for Brett.
 
 Every launch takes one agent slot and one account slot on the launch's pinned model. Limits, each with its reason in
 `waits[].why` or `blocked`:
@@ -84,7 +89,14 @@ Every launch takes one agent slot and one account slot on the launch's pinned mo
 | per-account model limit | `account.free`, `account.fable` | Fable only to accounts with Fable; Opus kept off Fable accounts when another fits |
 | subscriptions first | `pickAccount` | API accounts only as overflow (`apiOverflow`) or by the build's `pipeline.route = api` |
 | API budget cap | `settings.budget { capUsd, spentUsd, perLaunchUsd }` | an API launch past the cap waits |
+| per-build parallel cap | `pipeline.maxParallel` (0 = `maxParallelPerBuild`) | a running build never has more parallel sessions than its cap |
+| per-build budget | `pipeline.budgetUsd`, `pipeline.spentUsd` | an API launch of that build past its own cap waits (`build budget cap reached`); subscriptions are never counted |
+| file clash | step `files` | a step beside one on the same file waits; a Pending build on a running build's file waits |
 | round guard | `maxLaunchesPerRound` (12) | never more launches in one round |
+
+Per-build caps live on the pipeline record (`build-pipeline@1`): `maxParallel` (whole number, 0 = default, at most 12),
+`budgetUsd` and `spentUsd` (dollars, 0 = none). The dispatcher adds each API run's cost to `spentUsd`; the planner only
+reads it.
 
 Launch record: `{ kind: step | build | pending, id, step, model, account, accountKind, rule, branch, why }`.
 
