@@ -39,7 +39,7 @@ export const listApps = () => pluginFetch(FOLDER, 'apps').then((r) => r.json() a
 export const listScopes = () => call<string[]>('scopes');
 export const readState = (scope: string) => call<ScopeView>(`state?scope=${encodeURIComponent(scope)}`);
 export const useSkinAt = (skin: string, scope: string) => call<ScopeView>('use', { skin, scope });
-export const backAt = (scope: string) => call<ScopeView>('back', { scope });
+export const backAt = (scope: string, slot = '') => call<ScopeView>('back', { scope, ...(slot ? { slot } : {}) });
 export const restoreAt = (scope: string) => call<ScopeView>('restore', { scope });
 export const undoLast = () => call<ScopeView>('undo', {});
 export const followAt = (scope: string, follow: boolean) => call<ScopeView>('scope', { scope, follow });

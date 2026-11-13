@@ -14,6 +14,8 @@ export const plugin: AxfWebLibrary = {
   id: 'ai.amberx.axf.console.skin-gallery',
   label: 'Skins',
   version: '0.1.0',
+  // the skin-switch@1 service: Settings → Appearance runs its Use / Back / Restore / Undo through skin.* (capability check)
+  provides: ['axf.skin-switch@1'],
   appMenu,
   register(rt) {
     registerActions(rt);

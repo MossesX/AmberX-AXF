@@ -576,6 +576,17 @@ const LOCK_PANEL_ID = 'axf.appearance.lock';
  * without changing the skin"): picking one keeps the same skin, shows no overridden dot and makes no new skin;
  * "Skin's colours" goes back to the skin's own (rt.skinColorTheme / rt.setSkinColorTheme).
  */
+/**
+ * The skin-switch@1 service (a library that provides it, e.g. a Skins plugin), found by capability, never by name.
+ * When one is installed, Use / Back to skin / Restore / Undo here run its actions (skin.use / skin.back / skin.restore /
+ * skin.undo at the app scope), so they make the same change, through the same engine and the same undo record, as its
+ * gallery, its REST routes, MCP, the CLI and voice; skin.open opens its gallery. Without one, the runtime does it.
+ */
+export const SKIN_SWITCH_SERVICE = 'axf.skin-switch@1';
+export function hasSkinSwitch(rt: AxfRuntime): boolean {
+  return (rt.libraries as unknown as { provides?: string[] }[]).some((l) => l.provides?.includes(SKIN_SWITCH_SERVICE));
+}
+
 export function AppearancePanel() {
   const rt = useRuntime();
   const st = useAxfState();
@@ -589,6 +600,11 @@ export function AppearancePanel() {
   const colour = rt.skinColorTheme();
   const inForce = !!colour.own; // a skin with data is in force here (read from the look document, so a pick just made is seen at once)
   const [confirm, setConfirm] = useState(false);
+  const service = hasSkinSwitch(rt);
+  const back = (type: string) => (service ? rt.dispatch(`skin.back:app:${type}`) : rt.backToSkin(type));
+  const restore = () => (service ? rt.dispatch('skin.restore:app') : rt.restoreDefaultAppearance());
+  const undo = () => (service ? rt.dispatch('skin.undo') : rt.undoRestoreDefault());
+  const useSkin = (on: boolean) => (service && on && skinId ? rt.dispatch(`skin.use:${skinId}:app`) : rt.useSkin(on, skinId || undefined));
   const row = (label: string, type: string) => {
     const list = rt.registry.list(type as AssetType);
     const value = st.active[type as AssetType] ?? '';
@@ -607,7 +623,7 @@ export function AppearancePanel() {
             {!value && <option value="">—</option>}
             {list.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
           </select>
-          {isOver && <Button size="sm" tone="quiet" disabled={locked} onClick={() => rt.backToSkin(type)}>Back to skin</Button>}
+          {isOver && <Button size="sm" tone="quiet" disabled={locked} onClick={() => back(type)}>Back to skin</Button>}
           {isColour && colour.picked && <Button size="sm" tone="quiet" disabled={locked} title="Back to the colour theme this skin came with" onClick={() => rt.setSkinColorTheme(null)}>Skin's colours</Button>}
         </div>
       </div>
@@ -621,9 +637,12 @@ export function AppearancePanel() {
           <span>Skin</span>
           <span className="fx-muted axf-settings__hint">{skinOn ? `${skins.find((s) => s.id === skinId)?.name ?? skinId}, in this app only.` : "Off: this app's own look."}</span>
         </div>
-        <div className="axf-settings__control axf-skin__action"><Button size="sm" icon="palette" disabled={locked || !skins.length} onClick={() => rt.openDialog(SKIN_DIALOG, {})}>Choose…</Button></div>
+        <div className="axf-settings__control axf-skin__action">
+          <Button size="sm" icon="palette" disabled={locked || !skins.length} onClick={() => rt.openDialog(SKIN_DIALOG, {})}>Choose…</Button>
+          {service && <Button size="sm" tone="ghost" icon="external" data-axf-skin-gallery-link="" onClick={() => rt.dispatch('skin.open')}>Open Skins gallery</Button>}
+        </div>
       </div>
-      <Switch label="Use skin" hint={skinOn ? 'Off goes back to this app\'s own look and keeps your picks.' : 'On applies the last skin you picked.'} checked={skinOn} disabled={locked || !skins.length} onChange={(on) => { rt.useSkin(on, skinId || undefined); }} />
+      <Switch label="Use skin" hint={skinOn ? 'Off goes back to this app\'s own look and keeps your picks.' : 'On applies the last skin you picked.'} checked={skinOn} disabled={locked || !skins.length} onChange={(on) => { useSkin(on); }} />
       <FollowHubSwitch locked={locked} />
       {row('Colour theme', 'color-theme')}
       <p className="fx-eyebrow">Visible parts</p>
@@ -635,8 +654,8 @@ export function AppearancePanel() {
       <div className="axf-settings__row">
         <div className="axf-settings__label"><span>Restore to default</span><span className="fx-muted axf-settings__hint">Back to the look this app had when skins landed.</span></div>
         <div className="axf-settings__control axf-skin__action">
-          <Button size="sm" tone="quiet" disabled={locked} onClick={() => { if (!confirm) { setConfirm(true); setTimeout(() => setConfirm(false), 4000); return; } setConfirm(false); rt.restoreDefaultAppearance(); }}>{confirm ? 'Tap again to restore' : 'Restore'}</Button>
-          {!!look?.undo && <Button size="sm" tone="quiet" disabled={locked} onClick={() => rt.undoRestoreDefault()}>Undo</Button>}
+          <Button size="sm" tone="quiet" disabled={locked} onClick={() => { if (!confirm) { setConfirm(true); setTimeout(() => setConfirm(false), 4000); return; } setConfirm(false); restore(); }}>{confirm ? 'Tap again to restore' : 'Restore'}</Button>
+          {!!look?.undo && <Button size="sm" tone="quiet" disabled={locked} onClick={() => undo()}>Undo</Button>}
         </div>
       </div>
     </div>

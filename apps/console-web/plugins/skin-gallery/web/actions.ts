@@ -1,7 +1,7 @@
 /**
  * Console actions of the Skins plugin (console_action, menus, search, AmberX voice). Each one calls the same REST
  * route as the screen, the CLI and the MCP plugin commands, so every way in makes the same change.
- *   skin.use <skin> [scope]   skin.back [scope]   skin.restore [scope]   skin.undo   skin.open [skin] [scope]
+ *   skin.use <skin> [scope]   skin.back [scope] [slot]   skin.restore [scope]   skin.undo   skin.open [skin] [scope]
  *   skin.scope <scope> [follow|own]
  *   skin.setting <key> <value>   bannerChip on|off · defaultScope <scope> · undoSeconds <n> · previewView desktop|phone
  *   skin-gallery.focus:<path>  the deep link console_open … focus runs: skin/<id> | scope/<scope> | preview/<id>?view=phone
@@ -30,7 +30,7 @@ export function registerActions(rt: AxfRuntime): void {
     if (!skin) { rt.navigate('skin-gallery'); return; }
     void done('use', useSkinAt(skin, scopeArg(args, 1)));
   }, { label: 'Use skin' });
-  rt.actions.register('skin.back', (args?: string[]) => { void done('back', backAt(scopeArg(args, 0))); }, { label: 'Back to skin' });
+  rt.actions.register('skin.back', (args?: string[]) => { void done('back', backAt(scopeArg(args, 0), (args ?? [])[1]?.trim() ?? '')); }, { label: 'Back to skin' });
   rt.actions.register('skin.restore', (args?: string[]) => { void done('restore', restoreAt(scopeArg(args, 0))); }, { label: 'Restore skin to default' });
   rt.actions.register('skin.undo', () => { void done('undo', undoLast()); }, { label: 'Undo skin change' });
   rt.actions.register('skin.scope', (args?: string[]) => {
