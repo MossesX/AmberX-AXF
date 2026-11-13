@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4750,
- "updatedAt": "2026-11-13T19:08:01.689Z",
+ "rev": 4751,
+ "updatedAt": "2026-11-13T19:08:18.487Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -199040,7 +199040,7 @@
    "title": "UI Manager: floating window to select any element in the console and edit all its tokens",
    "category": "",
    "detail": "UI Manager (console plugin), opens in a floating window.\n- Lets Brett select ANY UI element in the whole console (every screen, plugin, dialog, toolbar, tab group, banner, nav, widget, control).\n- Left: collapsible categorized tree of all elements. Top category 'On screen now' lists every element currently visible; these are references (like Windows shortcuts / symlinks) to the same element that also lives in its normal category - both point to one shared source, edit either and both change.\n- Selecting an element (or picking it on screen with an inspector/picker mode) opens it according to the chosen view (several views: expanding row, side panel, grid...). Default: an expanding row listing all its properties and every token it reads.\n- Each property/token is edited by choosing from predetermined, valid values supplied by the console/framework integration (token sets, skins, assets, enums, ranges) - never free text where a valid list exists; schema-validated; live preview; reset to skin/default; shows overrides.\n- Searchable, sortable, multi-filter lists everywhere (thousands of elements).\n- Full API: REST/MCP/CLI/voice/control@1 ('select the main toolbar, set its transparency to 80').\n- Elements register via the framework (manifest) so new plugins appear automatically.\n- Tests, help, Shipped features. Fable for the element registry/schema core, Opus for UI.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -199048,7 +199048,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:30:38.922Z",
-   "updatedAt": "2026-11-13T19:07:41.879Z",
+   "updatedAt": "2026-11-13T19:07:49.205Z",
    "builtAt": "",
    "notes": [
     {
@@ -199112,12 +199112,16 @@
      "at": "2026-11-13T19:01:25.369Z"
     },
     {
+     "text": "Headless run axf-ui-manager-floating-window-to-select-any--paulie: brief only · start 13.2K tokens ($0.07) · cost $5.11 · 69 turns · 6 tools, MCP none",
+     "at": "2026-11-13T19:06:57.573Z"
+    },
+    {
      "text": "Double launch again: Paulie (run 2, 18:52) found the Fable session from run 1 (agent Greenlight Gina, pid 811375, started 18:39, session a2405ba5) still live in the same worktree and writing s2 (test.mjs, spec/check-ui-manager.mjs, fixtures/ui-manager.json, CI lines, catalog status cx.uimanager). Paulie committed and pushed s1 (b09c0e80a: engine + plugin + validate/schemas routes + PORTING row + plugins README line; the commit swept in the other session's test.mjs draft) and ticked s1, then stood down so two sessions do not both commit s2. The other session continues s2 on disk. Needs Brett: dispatch-gate must refuse a launch while a session for the same build is alive (third time: see the Earl/Paulie and Lenny/Paulie notes).",
      "at": "2026-11-13T19:06:37.485Z"
     },
     {
-     "text": "Headless run axf-ui-manager-floating-window-to-select-any--paulie: brief only · start 13.2K tokens ($0.07) · cost $5.11 · 69 turns · 6 tools, MCP none",
-     "at": "2026-11-13T19:06:57.573Z"
+     "text": "Session on mossesx-max- stopped on its own with 13 steps left: back in Pending for Brett.",
+     "at": "2026-11-13T19:07:49.205Z"
     }
    ],
    "approvals": [],
@@ -199138,12 +199142,19 @@
     "queuedAt": "2026-11-13T18:30:41.004Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-ui-manager-floating-window-to-select-any--paulie",
+    "session": "",
     "slot": "",
     "model": "Fable",
     "launchedAt": "2026-11-13T18:53:11.620Z",
     "runs": 2,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-13T19:07:48.655Z",
+     "exit": 0,
+     "outcome": "returned",
+     "stepsLeft": 13,
+     "account": "mossesx-max-",
+     "session": "axf-ui-manager-floating-window-to-select-any--paulie"
+    },
     "split": {
      "at": "2026-11-13T18:31:36.507Z",
      "by": "orchestrator",
@@ -199152,7 +199163,7 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"579404e5-a10e-46f4-a7ce-8a0d0f0faa44\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- stopped on its own with 13 steps left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "2026-11-13T18:53:11.620Z",
     "planned": {
@@ -200409,7 +200420,7 @@
    "title": "Console app part 3: native bridge, mic, recorder, open_url, wake",
    "category": "",
    "detail": "Parallel part 3 of 4 of console-android-app-thin-webview-wrapper (parent). Builds only in the wrapper's Android module, following the shell contract from the parent.\n- JS bridge window.axfNative exposing the native features to the console.\n- Migrates AmberX's axHub device service (amberx.open_url, recorder_start/stop/status, console wake, notifications) to the new app, with the same tool names or aliases so axHub keeps working.\n- Mic and permissions handling.\n- Full API parity: REST/MCP/CLI/voice. Tests, help, Shipped features.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -200417,7 +200428,7 @@
    "pr": "#633",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:27.359Z",
-   "updatedAt": "2026-11-13T19:04:46.223Z",
+   "updatedAt": "2026-11-13T19:07:51.021Z",
    "builtAt": "",
    "notes": [
     {
@@ -200439,6 +200450,10 @@
     {
      "text": "Headless run axf-console-app-part-3-native-bridge-mic--joey: brief only · start 12.7K tokens ($0.06) · cost $4.94 · 36 turns · 6 tools, MCP none",
      "at": "2026-11-13T19:04:46.223Z"
+    },
+    {
+     "text": "Session on mossesx-max- ended (exit 0) with 6 steps left: back in the Queue (run 1).",
+     "at": "2026-11-13T19:07:51.021Z"
     }
    ],
    "approvals": [],
@@ -200459,12 +200474,19 @@
     "queuedAt": "2026-11-13T18:41:29.660Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-console-app-part-3-native-bridge-mic--joey",
+    "session": "",
     "slot": "",
     "model": "Fable",
     "launchedAt": "2026-11-13T18:48:25.253Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-13T19:07:50.250Z",
+     "exit": 0,
+     "outcome": "requeued",
+     "stepsLeft": 6,
+     "account": "mossesx-max-",
+     "session": "axf-console-app-part-3-native-bridge-mic--joey"
+    },
     "split": {
      "at": "2026-11-13T18:43:07.133Z",
      "by": "orchestrator",
@@ -200473,14 +200495,14 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"416cb9dc-383f-4644-bf7c-965b5ba0e064\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- ended (exit 0) with 6 steps left: back in the Queue (run 1).",
     "route": "",
     "dispatchedAt": "2026-11-13T18:48:25.253Z",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-13T18:43:39.359Z",
+     "at": "2026-11-13T19:07:52.870Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -200656,7 +200678,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -202337,7 +202359,13 @@
     "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-13T19:07:52.870Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -202555,7 +202583,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -202571,15 +202599,15 @@
    "title": "Land project-duplicate-boilerplate: resolve clash in status.json and PORTING.md",
    "category": "",
    "detail": "Branch claude/project-duplicate-boilerplate clashed with main in framework/catalog/status.json and framework/spec/PORTING.md (merge aborted, main untouched). Merge origin/main into the branch, resolve by keeping both sides' entries (additive), run tests, push, then land on main. No feature changes. If the project-create-mcp clash fix landed first, merge after it.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/land-project-duplicate-boilerplate",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T19:03:35.763Z",
-   "updatedAt": "2026-11-13T19:07:47.374Z",
+   "updatedAt": "2026-11-13T19:08:13.740Z",
    "builtAt": "",
    "notes": [
     {
@@ -202589,6 +202617,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"6c0ab83b-8cbd-4e20-912b-32970857880a\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-13T19:07:47.374Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-land-project-duplicate-boilerplate--gina.",
+     "at": "2026-11-13T19:08:09.200Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-land-project-duplicate-boilerplate--gina, own login copy)",
+     "at": "2026-11-13T19:08:13.740Z"
     }
    ],
    "approvals": [],
@@ -202599,8 +202635,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "land-project-duplicate-boilerplate",
+    "brief": "# Build: land-project-duplicate-boilerplate\n\n## Brett said (verbatim)\nAt: 2026-11-13T19:03:35.763Z\n> land duplicate projects and templates\n\n## What to build\nContinue build \"Land project-duplicate-boilerplate: resolve clash in status.json and PORTING.md\" (land-project-duplicate-boilerplate) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-13 19:03):\n\"land duplicate projects and templates\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (1 left, ~10 min):\n[ ] s1 (~10 min) Branch claude/project-duplicate-boilerplate clashed with main in framework/catalog/status.json and framework/spec/PORTING.md (merge aborted, main untouched). Merge origin/main into the branch, resolve by keeping both sides' entries (additive), run tests, push, then land on main. No feature changes. If the project-create-mcp clash fix landed first, merge after it.\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step land-project-duplicate-boilerplate <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link land-project-duplicate-boilerplate --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step land-project-duplicate-boilerplate <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note land-project-duplicate-boilerplate \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -202608,12 +202644,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T19:03:39.310Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-land-project-duplicate-boilerplate--gina",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Fable",
+    "launchedAt": "2026-11-13T19:08:08.553Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T19:07:47.374Z",
@@ -202623,12 +202659,18 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"6c0ab83b-8cbd-4e20-912b-32970857880a\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
-    "planned": null,
+    "dispatchedAt": "2026-11-13T19:08:08.553Z",
+    "planned": {
+     "model": "Fable",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-13T19:07:52.870Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-13T19:08:08.553Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -202712,7 +202754,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
