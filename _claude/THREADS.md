@@ -786,12 +786,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 17:35 UTC · `orchestrator-checks-shipped-features` added (3 steps) (all) · build-rename
-- 2026-11-13 17:35 UTC · `orchestrator-checks-shipped-features-before-spli` note, removed (all) · build-rename
-- 2026-11-13 17:35 UTC · `builds-get-console-token-banner-alert` note (all) · orchestrator
-- 2026-11-13 17:35 UTC · `orchestrator-hold-status-archive-tab` added (3 steps) (all) · build-rename
-- 2026-11-13 17:35 UTC · `orchestrator-hold-status-archive-tab-deleted-tab` note, removed (all) · build-rename
-- 2026-11-13 17:35 UTC · `owner-recognized-everywhere-veto` added (3 steps) (all) · build-rename
 - 2026-11-13 17:35 UTC · `owner-recognized-everywhere-veto-countdown-only-on-shell-commands` note, removed (all) · build-rename
 - 2026-11-13 17:36 UTC · `pending-tab-one-collapsed-row-per-build` added (3 steps) (all) · build-rename
 - 2026-11-13 17:36 UTC · `pending-tab-one-collapsed-row-per-build-tap-to-e` note, removed (all) · build-rename
@@ -1186,6 +1180,12 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 19:32 UTC · `land-rename-long-builds-resolve-clash` → queued, note (all) · console
 - 2026-11-13 19:32 UTC · `land-drive-live-console-first-resolve` note (all) · orchestrator
 - 2026-11-13 19:32 UTC · `console-app-part-4-console-side-safe` s1 done, → running (all) · orchestrator
+- 2026-11-13 19:32 UTC · `land-drive-live-console-first-resolve` → running, note (all) · pipeline
+- 2026-11-13 19:32 UTC · `land-drive-live-console-first-resolve` branch claude/land-drive-live-console-first-resolve (all) · pipeline
+- 2026-11-13 19:33 UTC · `console-app-part-2-native-floating-2` note (all) · claude-voice
+- 2026-11-13 19:33 UTC · `console-android-app-thin-webview-wrapper` note (all) · orchestrator
+- 2026-11-13 19:33 UTC · `land-overlay-preview-ui-review-resolve` added (0 steps) (all) · console
+- 2026-11-13 19:33 UTC · `skin-axhub-override-switch-greyed-out` note (all) · orchestrator
 
 ## Token passes (log)
 
