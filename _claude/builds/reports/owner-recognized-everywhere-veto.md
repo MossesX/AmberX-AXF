@@ -1,6 +1,6 @@
 # Owner recognized everywhere + veto countdown only on shell commands
 
-Build `owner-recognized-everywhere-veto-countdown-only-on-shell-commands`, Nov 12 2026, Opus.
+Build `owner-recognized-everywhere-veto`, Nov 12 2026, Opus.
 
 ## Owner detection (s1)
 
