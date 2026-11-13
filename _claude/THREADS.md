@@ -785,7 +785,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 11:08 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` s21 done (all) · orchestrator
 - 2026-11-13 11:08 UTC · `android-approval-overlay-a-small-always-on-float` PR #565 (all) · builds-live
 - 2026-11-13 11:08 UTC · `android-approval-overlay-a-small-always-on-float` note (all) · orchestrator
 - 2026-11-13 11:08 UTC · `android-approval-overlay-a-small-always-on-float` s3 done, → built (all) · orchestrator
@@ -1185,6 +1184,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 17:59 UTC · `restore-asset-designer-plugin-merged-nov` → queued, note (all) · console
 - 2026-11-13 17:59 UTC · `chrome-settings-actually-apply-toolbars` s1 done, → running (all) · orchestrator
 - 2026-11-13 17:59 UTC · `restore-asset-designer-plugin-merged-nov` note (all) · claude-voice
+- 2026-11-13 18:00 UTC · `per-instance-settings-window-picker` s1 done, → running (all) · orchestrator
 
 ## Token passes (log)
 
