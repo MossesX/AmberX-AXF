@@ -30,7 +30,7 @@ function lines(v) {
     const ss = v.settings.filter((s) => s.group === g.id);
     if (!ss.length) continue;
     rows.push('', `${g.label}`);
-    for (const s of ss) rows.push(`  ${s.key} = ${show(s.value)}${s.owner === true ? '  [owner-only]' : s.owner === 'raise' ? '  [owner raises]' : s.locked ? '  [locked]' : ''}  — ${s.description}`);
+    for (const s of ss) rows.push(`  ${s.key} = ${show(s.value)}${s.owner === true ? '  [owner-only]' : s.owner === 'raise' ? '  [owner raises]' : s.deprecated ? '  [deprecated]' : s.locked ? '  [locked]' : ''}  — ${s.deprecated || s.description}`);
   }
   return rows.join('\n');
 }

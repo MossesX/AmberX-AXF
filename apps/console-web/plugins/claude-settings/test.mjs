@@ -5,9 +5,13 @@
  *
  *   node apps/console-web/plugins/claude-settings/test.mjs
  */
-import { mkdtempSync, readFileSync } from 'node:fs';
+import { spawnSync } from 'node:child_process';
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const HERE = dirname(fileURLToPath(import.meta.url));
 
 const dir = mkdtempSync(join(tmpdir(), 'axf-claude-settings-'));
 process.env.AXF_CLAUDE_SETTINGS_FILE = join(dir, 'settings.json');
@@ -25,8 +29,20 @@ const BRETT = { via: 'console', name: 'brett' };
 // registry
 const reg = loadRegistry();
 ok(reg.settings.length >= 25 && reg.groups.length >= 7, 'registry has the groups and settings');
-for (const k of ['noWait.enabled', 'noWait.includeIrreversible', 'noWait.duration', 'builds.launchWithoutAsking', 'builds.uiReviewGate', 'builds.defaultModel']) ok(reg.settings.find((s) => s.key === k)?.owner === true, `${k} is owner-only`);
+for (const k of ['noWait.enabled', 'noWait.includeIrreversible', 'noWait.duration', 'builds.launchWithoutAsking', 'builds.defaultModel']) ok(reg.settings.find((s) => s.key === k)?.owner === true, `${k} is owner-only`);
 ok(reg.settings.find((s) => s.key === 'builds.alwaysNamedAgent')?.locked === true, 'named agent is locked on');
+// UI Review gate retired (Nov 13 2026): readable, deprecated, always false, changed by nobody (not even Brett)
+{
+  const g = reg.settings.find((x) => x.key === 'builds.uiReviewGate');
+  ok(g?.deprecated && /no longer a gate/.test(g.deprecated) && g.default === false && g.locked === true && g.owner === false, 'builds.uiReviewGate is deprecated, off, locked');
+  writeFileSync(process.env.AXF_CLAUDE_SETTINGS_FILE, JSON.stringify({ values: { 'builds.uiReviewGate': true } }));
+  const v = view(); const row = v.settings.find((x) => x.key === 'builds.uiReviewGate');
+  ok(v.values['builds.uiReviewGate'] === false && row.deprecated && /^Deprecated: /.test(row.who), 'an old document saying true still reads false, reported as deprecated');
+  ok(throwsCode(() => setSettings({ 'builds.uiReviewGate': true }, { owner: BRETT, env: CLEAN }), 'denied'), 'nobody switches the retired gate back on');
+  const got = spawnSync(process.execPath, [join(HERE, 'claude-settings.mjs'), 'get'], { env: { ...process.env }, encoding: 'utf8' });
+  ok(/builds\.uiReviewGate = false {2}\[deprecated\]/.test(got.stdout), 'claude-settings.mjs get marks it [deprecated]');
+  rmSync(process.env.AXF_CLAUDE_SETTINGS_FILE, { force: true });
+}
 { const f = reg.settings.find((s) => s.key === 'builds.fableUpgradeApproval'); ok(f?.owner === true && f.default === false && f.kind === 'toggle', 'Fable upgrades need my approval: owner-only toggle, off by default (Brett, Nov 4 2026)'); }
 ok(reg.settings.find((s) => s.key === 'followAmber.enabled')?.shared === 'Follow Amber', 'Follow Amber is the shared switch');
 const more = loadRegistry({ extra: [{ groups: [{ id: 'x', label: 'Extra' }], settings: [{ key: 'x.flag', group: 'x', label: 'Flag', kind: 'toggle', default: false }, { key: 'bad', kind: 'toggle', default: 'no' }] }] });

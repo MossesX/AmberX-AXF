@@ -11,6 +11,7 @@
  * Who may change what: `owner: true` settings change only with an owner approval, which the transport derives from
  * Brett's signed-in console session (never from a request body, an MCP call, a CLI flag or the environment);
  * `owner: "raise"` numbers may be lowered by anyone and raised only by the owner; `locked` settings change for nobody.
+ * `deprecated: "<why>"` settings are retired: kept readable for old documents, always their default, changed by nobody.
  * The No wait switch itself does nothing here: the console server turns it into a standing all-scope veto pass
  * (control-pass@1, token-control) with the same owner approval, and revokes it when the switch goes off.
  */
@@ -66,6 +67,7 @@ function normEntry(e) {
     description: String(e.description || '').slice(0, 400), default: e.default, level: LEVELS.includes(e.level) ? e.level : 'basic',
     owner: e.owner === true ? true : e.owner === 'raise' ? 'raise' : false, locked: e.locked === true,
   };
+  if (typeof e.deprecated === 'string' && e.deprecated.trim()) { out.deprecated = e.deprecated.trim().slice(0, 300); out.locked = true; out.owner = false; }
   if (e.kind === 'choice') out.options = (Array.isArray(e.options) ? e.options : []).filter((o) => isObj(o) && typeof o.value === 'string').map((o) => ({ value: o.value, label: String(o.label || o.value) }));
   if (e.kind === 'number') for (const k of ['min', 'max', 'step']) if (typeof e[k] === 'number') out[k] = e[k];
   if (typeof e.shared === 'string') out.shared = e.shared;
@@ -137,6 +139,7 @@ export function valueOf(spec, doc) {
 
 /** Who may change it, in plain words. */
 export function whoSentence(spec) {
+  if (spec.deprecated) return `Deprecated: ${spec.deprecated}`;
   if (spec.locked) return 'Locked: nobody changes it.';
   if (spec.owner === true) return "Owner-only: changes only with Brett's own click in the console.";
   if (spec.owner === 'raise') return 'Anyone may lower it; only Brett raises it.';
@@ -149,7 +152,7 @@ export function view({ doc = readDoc(), registry = loadRegistry(), extras = {} }
   const settings = registry.settings.map((s) => ({
     key: s.key, group: s.group, label: s.label, kind: s.kind, value: valueOf(s, doc), default: s.default, level: s.level,
     owner: s.owner, locked: s.locked, who: whoSentence(s), description: s.description,
-    ...(s.options ? { options: s.options } : {}), ...(s.min !== undefined ? { min: s.min, max: s.max, step: s.step } : {}),
+    ...(s.deprecated ? { deprecated: s.deprecated } : {}), ...(s.options ? { options: s.options } : {}), ...(s.min !== undefined ? { min: s.min, max: s.max, step: s.step } : {}),
     ...(s.shared ? { shared: s.shared } : {}), ...(doc.changed[s.key] ? { changed: doc.changed[s.key] } : {}),
   }));
   const values = Object.fromEntries(settings.map((s) => [s.key, s.value]));
@@ -178,6 +181,7 @@ export function setSettings(patch, { owner = null, by = 'unknown', registry = lo
     const v = coerce(spec, raw);
     if (!valid(spec, v)) throw new SettingsError('invalid', `${key}: ${JSON.stringify(raw)} is not a valid ${spec.kind}${spec.options ? ` (${spec.options.map((o) => o.value).join(', ')})` : ''}${spec.min !== undefined ? ` (${spec.min}-${spec.max})` : ''}`);
     const before = valueOf(spec, doc);
+    if (spec.deprecated && v !== spec.default) throw new SettingsError('denied', `${key} is deprecated: ${spec.deprecated}`);
     if (spec.locked && v !== spec.default) throw new SettingsError('denied', `${key} is locked at ${JSON.stringify(spec.default)}`);
     if (spec.owner === true && !isOwner && v !== before) throw new SettingsError('denied', `${key} is owner-only: only Brett changes it, with his own click in the console (Settings → Plugins → Claude)`);
     if (spec.owner === 'raise' && !isOwner && typeof before === 'number' && v > before) throw new SettingsError('denied', `${key} can only be raised by Brett (console); lowering it is fine`);
