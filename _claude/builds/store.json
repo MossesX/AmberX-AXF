@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4259,
- "updatedAt": "2026-11-13T10:57:25.983Z",
+ "rev": 4260,
+ "updatedAt": "2026-11-13T10:57:42.256Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -183122,8 +183122,8 @@
    "pr": "#563",
    "priority": "P0",
    "createdAt": "2026-11-13T10:39:51.656Z",
-   "updatedAt": "2026-11-13T10:56:37.917Z",
-   "builtAt": "2026-11-13T10:56:37.917Z",
+   "updatedAt": "2026-11-13T10:57:06.217Z",
+   "builtAt": "2026-11-13T10:57:06.217Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -183140,6 +183140,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-every-skin-ships-a-light-and-a-dark-colour-theme--sully, own login copy)",
      "at": "2026-11-13T10:48:18.886Z"
+    },
+    {
+     "text": "Headless run axf-every-skin-ships-a-light-and-a-dark-colour-theme--sully: brief only · start 11.2K tokens ($0.03) · cost $1.98 · 55 turns · 6 tools, MCP none",
+     "at": "2026-11-13T10:57:06.217Z"
     }
    ],
    "approvals": [],
