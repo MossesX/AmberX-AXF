@@ -53,6 +53,9 @@ export function typeIntent(text) {
   return null;
 }
 
+/** The answer to "what can I say" (= VOICE_HELP in server/console_control.py). */
+export const VOICE_HELP = "Say: what's on screen. Open plan studio. Type Garden planner into name. Set template to blank. Press create, or just next, save, confirm. Approve or veto it, from your own session. Scroll down. Find a build. Show step 3 of a build. Turn a plugin off.";
+
 /** Words that decide (approve / deny …): only Brett's own signed-in session may press them (CONSOLE-CONTROL.md → Decisions). */
 export const DECISION_WORDS = ['approve', 'veto', 'deny', 'reject', 'sign off'];
 /** One-word presses on the dialog or screen in front. */
@@ -71,6 +74,9 @@ export function voiceIntent(text) {
   // typing into a field (raw words, so the text keeps its case)
   const typed = typeIntent(text);
   if (typed && typed.find.q) return typed;
+
+  // what can I say
+  if (/^(?:what can i say|what can you do|voice help|help with voice|what are the (?:voice )?commands)$/.test(p)) return { verb: 'state', help: true };
 
   // the screen read back
   if (/^(?:what(?: s| is)?|whats) (?:on|in front of me on) (?:the )?screen$|^(?:read|describe)(?: me)? (?:the |this )?(?:screen|page|dialog)$|^where am i$|^what can i (?:press|tap|fill(?: in)?|do here)$|^what(?: s| is)? open$/.test(p)) return { verb: 'state', screen: true };
@@ -134,7 +140,7 @@ export function intentAddress(intent, hit) {
 /** The command an intent is, given the address its words resolved to (null for a search / scroll: none needed). */
 export function intentCommand(intent, hit = null) {
   const cmd = { verb: intent.verb };
-  if (intent.screen) return cmd;
+  if (intent.screen || intent.help) return cmd;
   if (intent.verb === 'search') cmd.query = intent.query;
   else if (intent.verb === 'scroll') cmd.scroll = intent.scroll;
   else cmd.address = intentAddress(intent, hit);
@@ -158,7 +164,7 @@ export function voiceReply(intent, answer, label = '') {
     case 'open': return `Opened ${what}.`;
     case 'focus': return `Showing ${what}.`;
     case 'press': return intent.decision ? `${what || intent.decision}: done, as your decision.` : `Pressed ${what}.`;
-    case 'state': return intent.screen ? screenLine(answer.state?.report ?? answer.screen) : 'Done.';
+    case 'state': if (intent.help) return VOICE_HELP; return intent.screen ? screenLine(answer.state?.report ?? answer.screen) : 'Done.';
     case 'set': return `Set ${what} to ${typeof answer.value === 'boolean' ? (answer.value ? 'on' : 'off') : String(answer.value ?? intent.value)}.`;
     case 'plugin.enable': return `${what} is on.`;
     case 'plugin.disable': return `${what} is off.${answer.effects?.loses?.length ? ` ${answer.effects.loses.map((d) => d.name).join(', ')} lose${answer.effects.loses.length === 1 ? 's' : ''} a feature.` : ''}`;

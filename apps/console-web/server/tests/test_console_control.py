@@ -199,6 +199,13 @@ def test_voice() -> None:
     for phrase, cmd in fx["commands"].items():
         i = cc.voice_intent(phrase)
         assert cc.intent_command(i, "view:build-orchestrator/grid:builds/row:b1" if i.get("find") else None) == cmd, phrase
+    rep = fx["replies"]
+    assert cc.voice_reply({"verb": "state", "help": True}, {"ok": True}) == rep["help"], "what can I say: the same line in both twins"
+    assert cc.voice_reply({"verb": "press", "decision": "approve"}, {"ok": True}, "Approve") == rep["decided"]
+    assert cc.screen_line({"view": "projects", "title": "Projects", "dialog": {"id": "new-project", "title": "New project"}, "fields": [{"label": "Name", "required": True, "value": ""}, {"label": "Template", "value": "blank"}],
+                           "buttons": [{"label": "Create"}, {"label": "Cancel"}, {"label": "Off", "disabled": True}]}) == rep["screen"], "screen read-back line: the same in both twins"
+    r = client.post(f"{U}/voice", json={"text": "what can I say"})
+    assert r.status_code == 200 and r.json()["say"] == rep["help"] and r.json()["command"] is None
     r = client.post(f"{U}/voice", json={"text": "scroll down"})
     assert r.status_code == 200 and r.json()["command"] == {"verb": "scroll", "scroll": {"dir": "down"}} and r.json()["say"].startswith("Scrolled")
     r = client.post(f"{U}/voice", json={"text": "what time is it"})

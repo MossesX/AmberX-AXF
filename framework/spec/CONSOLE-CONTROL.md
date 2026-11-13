@@ -182,8 +182,8 @@ connector is the gap (report of the build).
 `console-control-voice.mjs` (Python twin `console_control.voice_intent`) adds: "type <text> into <field>", "enter <text> in
 <field>", "fill <field> with <text>" (the text keeps its case: matched on the raw words), "what's on screen" / "read the screen" /
 "where am I" / "what can I press" (`{ verb: state, screen: true }`, answered with `screenLine` from `state.report`), "approve [<x>]" / "veto it" /
-"deny" / "reject <x>" / "sign off" (`decision`), and one-word presses (submit, next, create, save, continue, finish, done, confirm,
-cancel, back, close, ok, apply, send, start, retry). Fixture rows in `spec/fixtures/console-control-voice.json`.
+"deny" / "reject <x>" / "sign off" (`decision`), one-word presses (submit, next, create, save, continue, finish, done, confirm,
+cancel, back, close, ok, apply, send, start, retry), and "what can I say" (`{ verb: state, help: true }`: `VOICE_HELP`, no command runs). Fixture rows in `spec/fixtures/console-control-voice.json`.
 
 ## Answers
 

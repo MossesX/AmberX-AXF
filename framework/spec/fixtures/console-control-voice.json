@@ -233,6 +233,10 @@
       "verb": "state",
       "screen": true
     },
+    "what can I say": {
+      "verb": "state",
+      "help": true
+    },
     "approve": {
       "verb": "press",
       "find": {
@@ -447,6 +451,9 @@
     "read the dialog": {
       "verb": "state"
     },
+    "what can I say": {
+      "verb": "state"
+    },
     "approve": {
       "verb": "press",
       "address": "view:build-orchestrator/grid:builds/row:b1"
@@ -487,6 +494,7 @@
     "confirm": "That deletes something. Say it again with confirm, or do it on screen.",
     "noConsole": "No console is open. Open it and ask again.",
     "failed": "Couldn't: needs Brett",
+    "help": "Say: what's on screen. Open plan studio. Type Garden planner into name. Set template to blank. Press create, or just next, save, confirm. Approve or veto it, from your own session. Scroll down. Find a build. Show step 3 of a build. Turn a plugin off.",
     "decided": "Approve: done, as your decision.",
     "screen": "You're on New project dialog on Projects. 2 fields: Name (required, empty), Template. Buttons: Create, Cancel."
   }

@@ -465,6 +465,8 @@ def voice(text: str, by: str = "voice", audience: str = OWNER, grants: set[str] 
     intent = cc.voice_intent(text)
     if intent is None:
         return {"$axf": cc.FRAME, "ok": False, "code": "invalid", "message": "not a console command", "heard": text, "intent": None, "say": "That isn't a console command I know."}
+    if intent.get("help"):
+        return {"$axf": cc.FRAME, "ok": True, "verb": "state", "heard": text, "intent": intent, "command": None, "say": cc.VOICE_HELP}
     if intent.get("screen"):
         sc = screen(by, audience, g, to)
         return {**sc, "heard": text, "intent": intent, "command": {"verb": "state"}, **({} if sc.get("ok") else {"say": cc.voice_reply(intent, sc)})}

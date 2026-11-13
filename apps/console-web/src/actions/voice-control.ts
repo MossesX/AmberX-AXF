@@ -42,7 +42,8 @@ export async function runVoice(rt: AxfRuntime, text: string, opts: { speak?: boo
     if (opts.speak !== false) { speak(r.say); rt.toast(r.say, r.ok ? 'info' : 'warning', 'Voice'); }
     return r;
   };
-  if (!intent) return done({ heard, intent, say: "That isn't a console command I know.", ok: false });
+  if (!intent) return done({ heard, intent, say: "That isn't a console command I know. Say: what can I say.", ok: false });
+  if (intent.help) return done({ heard, intent, say: voiceReply(intent, { ok: true }), ok: true });
   let hit: ConsoleSearchHit | null = null;
   if (intent.find) {
     try { hit = resolveIntent(rt, intent); } catch { hit = null; }

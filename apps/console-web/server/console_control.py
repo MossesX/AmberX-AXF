@@ -473,6 +473,8 @@ def _num(w: str) -> int | None:
     return int(w) if w.isdigit() else VOICE_NUMBERS.get(w)
 
 
+VOICE_HELP = ("Say: what's on screen. Open plan studio. Type Garden planner into name. Set template to blank. Press create, or just next, save, "
+              "confirm. Approve or veto it, from your own session. Scroll down. Find a build. Show step 3 of a build. Turn a plugin off.")
 _WAKE = re.compile(r"^\s*(?:(?:hey|ok|okay)\s+)?(?:amberx|amber)\b[\s,]*", re.I)
 _POLITE = re.compile(r"^(?:please\s+|can you\s+|could you\s+|would you\s+)+", re.I)
 
@@ -509,6 +511,8 @@ def voice_intent(text: Any) -> dict[str, Any] | None:
     typed = type_intent(text)
     if typed and typed["find"]["q"]:
         return typed
+    if re.match(r"^(?:what can i say|what can you do|voice help|help with voice|what are the (?:voice )?commands)$", p):
+        return {"verb": "state", "help": True}
     if _SCREEN_RE.match(p):
         return {"verb": "state", "screen": True}
     if m := re.match(r"^(approve|veto|deny|reject|sign off)(?: (?:it|this|that))?(?: (.+))?$", p):
@@ -552,7 +556,7 @@ def voice_intent(text: Any) -> dict[str, Any] | None:
 
 def intent_command(intent: dict[str, Any], hit: str | None = None) -> dict[str, Any]:
     cmd: dict[str, Any] = {"verb": intent["verb"]}
-    if intent.get("screen"):
+    if intent.get("screen") or intent.get("help"):
         return cmd
     if intent["verb"] == "search":
         cmd["query"] = intent["query"]
@@ -590,6 +594,8 @@ def voice_reply(intent: dict[str, Any], answer: dict[str, Any] | None, label: st
         return f"Opened {what}."
     if v == "focus":
         return f"Showing {what}."
+    if v == "state" and intent.get("help"):
+        return VOICE_HELP
     if v == "state":
         return screen_line((answer.get("state") or {}).get("report") or answer.get("screen")) if intent.get("screen") else "Done."
     if v == "press":

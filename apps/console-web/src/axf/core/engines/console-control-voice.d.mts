@@ -17,6 +17,8 @@ export interface VoiceIntent {
   screen?: boolean;
   /** a deciding press (approve, veto, deny, reject, sign off): only Brett's own signed-in session may run it */
   decision?: string;
+  /** "what can I say": answered with VOICE_HELP, no command runs */
+  help?: boolean;
 }
 export const VOICE_FRAME: 'console-control-voice@1';
 export function cleanPhrase(text: unknown): string;
@@ -28,3 +30,4 @@ export function typeIntent(text: unknown): VoiceIntent | null;
 export const DECISION_WORDS: string[];
 export const PRESS_WORDS: string[];
 export function screenLine(screen: Record<string, any> | null | undefined): string;
+export const VOICE_HELP: string;
