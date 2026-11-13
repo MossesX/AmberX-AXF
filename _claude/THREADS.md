@@ -781,7 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 09:32 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` → queued, note (all) · console
 - 2026-11-13 09:33 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` → running, note (all) · pipeline
 - 2026-11-13 09:33 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` note (all) · orchestrator
 - 2026-11-13 09:33 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` → running, note (all) · pipeline
@@ -1181,6 +1180,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 12:59 UTC · `assets-menu-hide-any-asset-visible-and-hidden-li` s7 done, → built (all) · orchestrator
 - 2026-11-13 13:00 UTC · `assets-menu-hide-any-asset-visible-and-hidden-li` s7 done, → built (all) · foreign-write
 - 2026-11-13 13:00 UTC · `assets-menu-hide-any-asset-visible-and-hidden-li` note (all) · orchestrator
+- 2026-11-13 13:23 UTC · `auto-recover-stuck-builds` PR #574 (all) · builds-live
 
 ## Token passes (log)
 
