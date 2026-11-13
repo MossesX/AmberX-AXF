@@ -199,6 +199,11 @@ export interface AppMenuProvider {
   act?: (itemId: string, buttonId: string) => MenuActResult | Promise<MenuActResult>;
 }
 
+/** A view renderer as the shell sees it (the React port's ViewDef without React types, so the core stays framework-free). */
+export interface UiViewRenderer { title: string; icon?: string; render: () => unknown; keywords?: string[] }
+/** A dialog renderer as the shell sees it (DialogDef): props and a close callback in, content out. */
+export interface UiDialogRenderer { title: string; icon?: string; render: (props: Record<string, unknown>, close: () => void) => unknown; searchable?: boolean }
+
 /**
  * A library installed with `installLibraries` (web) — what the settings library's Plugins tab and the plugin
  * inventory engine (`engines/plugins.ts`) read. Everything a library declared, so the inventory can resolve
@@ -278,6 +283,15 @@ export class AxfRuntime {
   readonly search = new SearchIndex(this);
   /** Libraries installed with installLibraries, for the settings About / Plugins tabs. */
   readonly libraries: InstalledLibrary[] = [];
+  /**
+   * Every view and dialog renderer the app installed (installLibraries, plus the app's own through registerUiRenderers),
+   * so a tool can draw any UI inside a sandbox with real components (the Skin editor's live preview, Nov 13 2026).
+   */
+  readonly uiRenderers: { views: Record<string, UiViewRenderer>; dialogs: Record<string, UiDialogRenderer> } = { views: {}, dialogs: {} };
+  registerUiRenderers(views: Record<string, UiViewRenderer>, dialogs: Record<string, UiDialogRenderer> = {}) {
+    Object.assign(this.uiRenderers.views, views);
+    Object.assign(this.uiRenderers.dialogs, dialogs);
+  }
   /** Primary UIs that move with their owner's placement (engines/placement.ts): `view:<id>` / `dialog:<id>` → owner + default. */
   private readonly placements = new Map<string, { owner: string; ui: UiRef; fallback: Placement; title: string }>();
   /** Props of dialogs placed in a page / window tab (they don't fit in a tab payload string), by dialog id. */
@@ -3024,6 +3038,13 @@ export class AxfRuntime {
     a.register('windows.maximize', ([w]) => w && wm.toggleMaximize(w), { label: 'Maximize / restore window', params: true });
     a.register('windows.snap', ([w, zone = 'left']) => w && wm.snapTo(w, zone as import('./engines/windows').SnapZone), { label: 'Snap window to a zone', params: true });
     a.register('windows.focus', ([w]) => w && wm.focus(w), { label: 'Focus window', params: true });
+    // a window's own background transparency (0..1, or `theme` = follow the style theme's opacitySettings token)
+    a.register('windows.background', ([w, v = 'theme']) => {
+      const win = w ? wm.state.windows.find((x) => x.id === w) : undefined;
+      if (!win) return;
+      const n = Number(v);
+      wm.setSettings(win.id, { ...win.settings, surface: v === 'theme' || !Number.isFinite(n) ? null : Math.min(1, Math.max(0, n)) });
+    }, { label: 'Window background opacity', params: true });
     // dock@1 (Nov 3 2026): re-dock a floating window along a side of the main dock; lay the open tabs out on a preset
     a.register('windows.redockInto', ([w, side = 'right']) => w && wm.redockInto(w, { target: 'root', zone: (['left', 'right', 'top', 'bottom'].includes(side) ? side : 'right') as import('./engines/dock').DockSide }), { label: 'Redock window into the dock', params: true });
     a.register('windows.layout', ([preset = '', w = '']) => {

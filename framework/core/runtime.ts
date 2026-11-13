@@ -199,6 +199,11 @@ export interface AppMenuProvider {
   act?: (itemId: string, buttonId: string) => MenuActResult | Promise<MenuActResult>;
 }
 
+/** A view renderer as the shell sees it (the React port's ViewDef without React types, so the core stays framework-free). */
+export interface UiViewRenderer { title: string; icon?: string; render: () => unknown; keywords?: string[] }
+/** A dialog renderer as the shell sees it (DialogDef): props and a close callback in, content out. */
+export interface UiDialogRenderer { title: string; icon?: string; render: (props: Record<string, unknown>, close: () => void) => unknown; searchable?: boolean }
+
 /**
  * A library installed with `installLibraries` (web) — what the settings library's Plugins tab and the plugin
  * inventory engine (`engines/plugins.ts`) read. Everything a library declared, so the inventory can resolve
@@ -278,6 +283,15 @@ export class AxfRuntime {
   readonly search = new SearchIndex(this);
   /** Libraries installed with installLibraries, for the settings About / Plugins tabs. */
   readonly libraries: InstalledLibrary[] = [];
+  /**
+   * Every view and dialog renderer the app installed (installLibraries, plus the app's own through registerUiRenderers),
+   * so a tool can draw any UI inside a sandbox with real components (the Skin editor's live preview, Nov 13 2026).
+   */
+  readonly uiRenderers: { views: Record<string, UiViewRenderer>; dialogs: Record<string, UiDialogRenderer> } = { views: {}, dialogs: {} };
+  registerUiRenderers(views: Record<string, UiViewRenderer>, dialogs: Record<string, UiDialogRenderer> = {}) {
+    Object.assign(this.uiRenderers.views, views);
+    Object.assign(this.uiRenderers.dialogs, dialogs);
+  }
   /** Primary UIs that move with their owner's placement (engines/placement.ts): `view:<id>` / `dialog:<id>` → owner + default. */
   private readonly placements = new Map<string, { owner: string; ui: UiRef; fallback: Placement; title: string }>();
   /** Props of dialogs placed in a page / window tab (they don't fit in a tab payload string), by dialog id. */
