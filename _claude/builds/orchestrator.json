@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T12:25:28.411Z",
+ "updatedAt": "2026-11-13T12:25:41.126Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -124183,7 +124183,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T12:23:34.932Z",
-   "updatedAt": "2026-11-13T12:25:03.279Z",
+   "updatedAt": "2026-11-13T12:25:39.494Z",
    "builtAt": "",
    "notes": [
     {
@@ -124197,6 +124197,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"d9093dd3-a080-4406-84d8-88197b2a18e3\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-13T12:25:03.279Z"
+    },
+    {
+     "text": "Brett confirmed: navigation menu settings are broken the same way (changes do nothing). Fix it, not just check it.",
+     "at": "2026-11-13T12:25:39.494Z"
     }
    ],
    "approvals": [],
