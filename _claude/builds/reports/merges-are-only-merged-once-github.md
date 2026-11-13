@@ -1,7 +1,7 @@
 # Merges are only "merged" once GitHub confirms (merge-confirm@1)
 
-Build `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me`, branch
-`claude/merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me`. Phase 1 (Fable): s1–s2, the contract and
+Build `merges-are-only-merged-once-github`, branch
+`claude/merges-are-only-merged-once-github`. Phase 1 (Fable): s1–s2, the contract and
 core. Phase 2 (Opus): s3–s13.
 
 ## What changed
@@ -61,7 +61,7 @@ Not green, and not from this build: `help-coverage --check` is one entry short a
 
 Submitted as item **r-20261113-768a822a** with three choices (ui-choices@1, asset type `status`; the option assets are in
 `apps/console-web/plugins/push-banner/assets/status/`). It is waiting for Brett. Group:
-"merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me - Nov 13 12:30 PM".
+"merges-are-only-merged-once-github - Nov 13 12:30 PM".
 
 | Option | Chip | |
 |---|---|---|
