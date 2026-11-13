@@ -57,17 +57,17 @@ export function RegistryView() {
       )}
       {error && <Note tone="danger">{error}</Note>}
       <Container title={`${tokens.length} of ${total} tokens`} icon="list">
-        <table className={`axp-skin__table ${P}__table`}>
+        <div className="fx-tablewrap"><table className={`fx-table ${P}__table`}>
           <thead><tr><th>Token</th><th>Element</th><th>Area</th><th>State</th><th>Scheme</th><th>Level</th><th>What it does</th><th>Default</th><th>Source</th></tr></thead>
           <tbody>
             {tokens.map((t) => (
-              <tr key={t.id} data-fx-row tabIndex={0} title="Open in the Skin editor" onClick={() => openIn(t)} onKeyDown={(e) => { if (e.key === 'Enter') openIn(t); }}>
+              <tr key={t.id} className="axp-skin__row" tabIndex={0} title="Open in the Skin editor" onClick={() => openIn(t)} onKeyDown={(e) => { if (e.key === 'Enter') openIn(t); }}>
                 <td>{t.id}</td><td>{ELEMENT_LABELS[t.element] ?? t.element}</td><td>{t.area}</td><td>{t.state}</td><td>{t.scheme}</td><td>{t.level}</td>
                 <td>{t.description}</td><td className={`${P}__default`} title={String(t.default)}>{String(t.default)}</td><td className={`${P}__default`} title={(t.sources ?? [t.source]).join('\n')}>{t.source}</td>
               </tr>
             ))}
           </tbody>
-        </table>
+        </table></div>
         {!tokens.length && !error && <p className="fx-muted">No token matches. Clear a filter or try other words.</p>}
       </Container>
     </div>

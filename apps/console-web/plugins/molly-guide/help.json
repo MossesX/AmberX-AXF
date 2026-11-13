@@ -76,6 +76,12 @@
         "draft": true
       },
       {
+        "target": "gizmo-guide",
+        "title": "Gizmo guide settings",
+        "text": "Settings → Plugins → Gizmo guide: narrated walkthroughs from Gizmo in a floating window, only when you ask.",
+        "kind": "tab"
+      },
+      {
         "target": "action:gizmo.ask",
         "title": "Ask Gizmo to show me",
         "text": "Opens the guide window: ask Gizmo how to do something and he walks you through it, step by step. Part of Gizmo guide.",

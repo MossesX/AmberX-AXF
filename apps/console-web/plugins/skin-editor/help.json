@@ -18,6 +18,7 @@
       { "target": "pick-on-screen", "title": "Pick on screen", "text": "Then click any screen in the console: it is loaded into the sandbox. Esc cancels." },
       { "target": "pick-element", "title": "Pick element", "text": "Then click a control inside the sandbox: the token list narrows to that element's tokens, so you edit the thing you clicked." },
       { "target": "undo", "title": "Undo", "text": "Back to the previous snapshot. The undo is itself a snapshot, so you can redo by reverting to the later one." },
+      { "target": "token-registry", "title": "Token registry", "text": "Opens the registry page: every token in the system with what it styles and what it does." },
       { "target": "level", "title": "Level", "text": "Basic shows the handful of tokens everyone changes, Pro adds per-element looks and transparencies, Advanced shows everything including layout, type scale, density and motion." },
       { "target": "find-a-token", "title": "Find a token", "text": "Type words from a token's name, element or description to narrow the list." },
       { "target": "revert", "title": "Revert", "text": "Back to this snapshot's state. The revert is added as a new snapshot at the head, so the chain keeps every step." },

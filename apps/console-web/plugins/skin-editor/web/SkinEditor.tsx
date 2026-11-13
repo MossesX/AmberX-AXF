@@ -31,7 +31,7 @@ function ElementGallery({ only }: { only?: string }) {
       {show('chip') && <Container title="Chips" icon="star"><div className={`${P}__wrap`}><Chip>Plain</Chip><Chip tone="accent">Accent</Chip><Chip tone="success">Success</Chip><Chip tone="warning">Warning</Chip><Chip tone="danger">Danger</Chip></div></Container>}
       {show('tab-group') && <Container title="Tabs" icon="layers"><TabGroup id="skin-editor-sample" label="Sample tabs" value={tab} onChange={setTab} tabs={[{ value: 'open', label: 'Open', badge: 3 }, { value: 'done', label: 'Done' }, { value: 'all', label: 'All' }]} /><p className="fx-muted">{tab === 'open' ? 'Three open items.' : tab === 'done' ? 'Nothing done yet.' : 'Everything.'}</p></Container>}
       {show('container') && <Container title="Card" icon="grid"><p>A container with text, a <a href="#sample" onClick={(e) => e.preventDefault()}>link</a> and a caption.</p><p className="fx-muted">Captions use the muted colour.</p></Container>}
-      {show('grid') && <Container title="Grid" icon="list"><table className={`${P}__table`}><thead><tr><th>Build</th><th>Status</th><th>Model</th></tr></thead><tbody>{[['Token registry', 'Running', 'Fable'], ['Tab groups', 'Landed', 'Opus'], ['Transparency token', 'Landed', 'Opus']].map(([a, b, c], i) => <tr key={a} data-fx-row aria-selected={i === 0}><td>{a}</td><td>{b}</td><td>{c}</td></tr>)}</tbody></table></Container>}
+      {show('grid') && <Container title="Grid" icon="list"><div className="fx-tablewrap"><table className="fx-table"><thead><tr><th>Build</th><th>Status</th><th>Model</th></tr></thead><tbody>{[['Token registry', 'Running', 'Fable'], ['Tab groups', 'Landed', 'Opus'], ['Transparency token', 'Landed', 'Opus']].map(([a, b, c], i) => <tr key={a} className={`${P}__row`} aria-selected={i === 0}><td>{a}</td><td>{b}</td><td>{c}</td></tr>)}</tbody></table></div></Container>}
       {show('note') && <Container title="Notes" icon="info"><div className={`${P}__gallery-card`}><Note tone="info">An information note.</Note><Note tone="success">Saved and applied.</Note><Note tone="warning">Check this first.</Note><Note tone="danger">Something broke.</Note></div></Container>}
       {show('toolbar') && <Container title="Toolbar" icon="menu"><div className="fx-toolbar" role="toolbar" aria-label="Sample toolbar"><Button size="sm" icon="plus">New</Button><Button size="sm" icon="refresh">Refresh</Button><IconButton icon="search" label="Search" /><IconButton icon="more" label="More" /></div></Container>}
       {show('slider') && <Container title="Slider" icon="sliders"><Slider label="Sample" value={n} onChange={setN} unit="%" /></Container>}
@@ -57,13 +57,14 @@ function TokenRow({ token, value, onChange }: { token: RegistryToken; value: str
   const edited = value !== undefined;
   const shown = value === undefined ? '' : String(value);
   const placeholder = String(token.default || '');
+  const label = token.id.replace(/^--fx-/, '').replace(/-/g, ' ');
   return (
     <div className={`${P}__token ${edited ? `${P}__token--edited` : ''}`} data-token={token.id}>
       <span className={`${P}__token-name`} title={token.id}>{isColourToken(token) && <span className={`${P}__swatch`} style={{ background: shown || `var(${token.id})` }} />}{token.id.replace(/^--fx-/, '')}</span>
       <span className={`${P}__wrap`}>{edited && <IconButton icon="undo" label={`Back to the default for ${token.id}`} onClick={() => onChange(null)} />}</span>
       {isColourToken(token)
-        ? <ColorField label={ELEMENT_LABELS[token.element] ?? token.element} value={shown} onChange={(v) => onChange(v)} hint={token.description} />
-        : <TextField label={ELEMENT_LABELS[token.element] ?? token.element} value={shown} onChange={(v) => onChange(v === '' ? null : v)} placeholder={placeholder || 'default'} hint={token.description} />}
+        ? <ColorField label={label} value={shown} onChange={(v) => onChange(v)} hint={token.description} />
+        : <TextField label={label} value={shown} onChange={(v) => onChange(v === '' ? null : v)} placeholder={placeholder || 'default'} hint={token.description} />}
     </div>
   );
 }
@@ -182,6 +183,7 @@ export function SkinEditorView() {
         {element && <Chip tone="accent">{ELEMENT_LABELS[element] ?? element} <button type="button" className="fx-btn fx-btn--sm fx-btn--quiet" aria-label="Every element" onClick={() => { setElement(''); rt.settings.set(ELEMENT_KEY, ''); }}>×</button></Chip>}
         <span className={`${P}__grow`} />
         <Button size="sm" icon="undo" disabled={!head?.parent || busy} onClick={() => void undo()}>Undo</Button>
+        <Button size="sm" icon="list" title="Browse every token in the system" onClick={() => rt.navigate('token-registry')}>Token registry</Button>
         <Chip>{edits} edit{edits === 1 ? '' : 's'} · {session?.chain.length ?? 0} snapshot{session?.chain.length === 1 ? '' : 's'}</Chip>
       </div>
       {msg && <Note tone="danger">{msg}</Note>}

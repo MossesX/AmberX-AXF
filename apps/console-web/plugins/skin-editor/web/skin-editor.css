@@ -2,7 +2,7 @@
 .axp-skin { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); min-height: 0; }
 .axp-skin__bar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm); }
 .axp-skin__bar > .fx-input { flex: 1 1 12em; min-width: 8em; }
-.axp-skin__bar > .fx-field { flex: 0 1 24em; min-width: 12em; }
+.axp-skin__bar > .fx-field { flex: 0 1 16em; min-width: 10em; }
 .axp-skin__grow { flex: 1 1 auto; }
 .axp-skin__body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(16em, 22em); gap: var(--fx-dens-gap-md); min-height: 0; align-items: start; }
 :root[data-fx-narrow] .axp-skin__body, :root[data-fx-small] .axp-skin__body, :root[data-fx-tiny] .axp-skin__body { grid-template-columns: minmax(0, 1fr); }
@@ -17,10 +17,9 @@
 .axp-skin__gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(14em, 1fr)); gap: var(--fx-dens-gap-md); }
 .axp-skin__gallery-card { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); }
 .axp-skin__wrap { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-sm); align-items: center; }
-.axp-skin__table { width: 100%; border-collapse: collapse; }
-.axp-skin__table th, .axp-skin__table td { text-align: left; padding: var(--fx-dens-gap-xs) var(--fx-dens-gap-sm); border-bottom: var(--fx-border-w) solid var(--fx-border); }
-.axp-skin__table tr[aria-selected="true"] td { background: var(--fx-accent-soft); }
-.axp-skin__table tr[data-fx-row]:hover td { background: var(--fx-surface2); }
+.axp-skin__row { cursor: pointer; }
+.axp-skin__row[aria-selected="true"] td { background: var(--fx-accent-soft); }
+.axp-skin__row:hover td, .axp-skin__row:focus-visible td { background: var(--fx-surface2); }
 
 /* the side panel: tokens / history / export */
 .axp-skin__side { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); min-width: 0; }
@@ -50,5 +49,7 @@
 
 /* the registry page */
 .axp-registry__summary { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-xs); }
-.axp-registry__table td:first-child { font-family: var(--fx-font-mono); font-size: var(--fx-type-scale-xs); white-space: nowrap; }
+.axp-registry__table th, .axp-registry__table td:nth-child(-n+6) { white-space: nowrap; }
+.axp-registry__table td:first-child { font-family: var(--fx-font-mono); font-size: var(--fx-type-scale-xs); }
+.axp-registry__table td:nth-child(7) { min-width: 14em; }
 .axp-registry__default { font-family: var(--fx-font-mono); font-size: var(--fx-type-scale-xs); color: var(--fx-muted); max-width: 14em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
