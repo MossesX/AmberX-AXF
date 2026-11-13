@@ -1,6 +1,6 @@
 # Assets menu: hide any asset, visible and hidden lists
 
-Build `assets-menu-hide-any-asset-visible-and-hidden-li`, phase 1 (Opus), branch `claude/assets-menu-hide-any-asset-visible-and-hidden-li`.
+Build `assets-menu-hide-any-asset-visible`, phase 1 (Opus), branch `claude/assets-menu-hide-any-asset-visible`.
 
 ## Brett said (verbatim)
 
