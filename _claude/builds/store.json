@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4512,
- "updatedAt": "2026-11-13T17:31:37.321Z",
+ "rev": 4513,
+ "updatedAt": "2026-11-13T17:31:55.006Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -174941,14 +174941,14 @@
    "category": "banner",
    "detail": "Brett said: \"Make it focus, bring it in focus... Highlight the VPS one.\" console_show/console_open with focus on the Banners screen answers \"it has no way to focus\". Every screen must support focus (standing rule).",
    "status": "built",
-   "hidden": false,
+   "hidden": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/banners-page-focus-scroll-to-and-highlight-any-banner-or-badge",
    "pr": "#531",
    "priority": "P0",
    "createdAt": "2026-11-12T23:12:31.496Z",
-   "updatedAt": "2026-11-12T23:22:21.160Z",
+   "updatedAt": "2026-11-13T17:31:51.582Z",
    "builtAt": "2026-11-12T23:22:21.160Z",
    "notes": [
     {
@@ -174970,6 +174970,10 @@
     {
      "text": "PR #531 (draft). banners.focus works through MCP, REST, CLI, voice and ?axf-banner= links; 30 spec checks in CI. UI Review shots not taken: the sandbox console waits for axHub, which it can't reach. Shots are needed from the live console before the PR is ready.",
      "at": "2026-11-12T23:22:07.291Z"
+    },
+    {
+     "text": "Renamed to banners-page-focus-scroll-to-highlight: this record is kept as a tombstone, use banners-page-focus-scroll-to-highlight.",
+     "at": "2026-11-13T17:31:51.582Z"
     }
    ],
    "approvals": [],
@@ -175014,52 +175018,7 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "steps": [
-    {
-     "id": "s1",
-     "uid": "st-mwe5xwue03wcn7",
-     "title": "",
-     "text": "Banners page: support focus=<badge or banner id/label>: scroll it into view, expand it, flash highlight; works from console_show, console_open, deep links, CLI and voice",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "25m",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-12T23:20:16.574Z",
-     "note": "",
-     "rev": 2,
-     "createdAt": "2026-11-12T23:12:31.497Z",
-     "updatedAt": "2026-11-12T23:20:16.781Z"
-    },
-    {
-     "id": "s2",
-     "uid": "st-mwe5xwue04racc",
-     "title": "",
-     "text": "Tests, report, PR",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "15m",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-12T23:22:08.774Z",
-     "note": "",
-     "rev": 2,
-     "createdAt": "2026-11-12T23:12:31.497Z",
-     "updatedAt": "2026-11-12T23:22:08.996Z"
-    }
-   ],
+   "steps": [],
    "profiles": [
     "all"
    ],
@@ -175068,9 +175027,9 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
-   "deleted": false,
-   "deletedAt": "",
+   "rev": 13,
+   "deleted": true,
+   "deletedAt": "2026-11-13T17:31:51.582Z",
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-12T23:12:31.497Z",
@@ -175085,13 +175044,13 @@
    "category": "",
    "detail": "",
    "status": "built",
-   "hidden": false,
+   "hidden": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad",
    "pr": "#568",
    "createdAt": "2026-11-12T23:14:26.317Z",
-   "updatedAt": "2026-11-13T11:31:10.158Z",
+   "updatedAt": "2026-11-13T17:31:38.368Z",
    "builtAt": "2026-11-13T11:31:10.158Z",
    "notes": [
     {
@@ -175137,6 +175096,10 @@
     {
      "text": "Phase 1 done, PR #568. UI Review shots not submitted: axf.mjs here has no shot/focus command and the live console runs main. Shots needed from a branch preview.",
      "at": "2026-11-13T11:30:51.552Z"
+    },
+    {
+     "text": "Renamed to badge-shape-picker-banners-screen-pill: this record is kept as a tombstone, use badge-shape-picker-banners-screen-pill.",
+     "at": "2026-11-13T17:31:38.368Z"
     }
    ],
    "approvals": [],
@@ -175187,99 +175150,7 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "steps": [
-    {
-     "id": "s1",
-     "uid": "st-mwe62k6v01dlm2",
-     "title": "",
-     "text": "Badge shape picker on the Banners screen: pill (text), icon or dot for every badge, like Following AmberX.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-13T03:36:35.592Z",
-     "note": "",
-     "rev": 2,
-     "createdAt": "2026-11-12T23:16:08.502Z",
-     "updatedAt": "2026-11-13T03:36:35.808Z"
-    },
-    {
-     "id": "s2",
-     "uid": "st-mwe62k6v02vb5e",
-     "title": "",
-     "text": "Shape already exists in code (types.ts, Banner.tsx), it just isn't shown.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-13T03:36:37.217Z",
-     "note": "",
-     "rev": 2,
-     "createdAt": "2026-11-12T23:16:08.502Z",
-     "updatedAt": "2026-11-13T03:37:08.077Z"
-    },
-    {
-     "id": "s3",
-     "uid": "st-mwe62k6v03q5y0",
-     "title": "",
-     "text": "Android twin too.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-13T03:36:44.694Z",
-     "note": "",
-     "rev": 2,
-     "createdAt": "2026-11-12T23:16:08.502Z",
-     "updatedAt": "2026-11-13T03:37:08.077Z"
-    },
-    {
-     "id": "s4",
-     "uid": "st-mwe62k6v04jam9",
-     "title": "",
-     "text": "Tests green, report _claude/builds/reports/badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad.md, THREADS row, commit, push, PR",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "20 min",
-     "files": [
-      "_claude/builds/reports/badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad.md",
-      "_claude/THREADS.md"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-13T11:30:42.556Z",
-     "note": "",
-     "rev": 2,
-     "createdAt": "2026-11-12T23:16:08.502Z",
-     "updatedAt": "2026-11-13T11:33:05.931Z"
-    }
-   ],
+   "steps": [],
    "profiles": [
     "all"
    ],
@@ -175288,9 +175159,9 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
-   "deleted": false,
-   "deletedAt": "",
+   "rev": 18,
+   "deleted": true,
+   "deletedAt": "2026-11-13T17:31:38.368Z",
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-12T23:16:08.502Z",
@@ -189864,6 +189735,378 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-13T12:32:26.587Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "badge-shape-picker-banners-screen-pill",
+   "title": "Badge shape picker on the Banners screen: pill (text), icon or dot for every badge, like Following AmberX. Shape already exists in code (types.ts, Banner.tsx), it just isn't shown. Android twin too.",
+   "category": "",
+   "detail": "",
+   "status": "built",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/badge-shape-picker-banners-screen-pill",
+   "pr": "#584",
+   "createdAt": "2026-11-12T23:14:26.317Z",
+   "updatedAt": "2026-11-13T17:31:38.368Z",
+   "builtAt": "2026-11-13T11:31:10.158Z",
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-12T23:16:08.502Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T03:28:19.401Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-badge-shape-picker-on-the-banners-screen-pill-te--gina.",
+     "at": "2026-11-13T03:30:00.024Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-badge-shape-picker-on-the-banners-screen-pill-te--gina, own login copy)",
+     "at": "2026-11-13T03:30:09.470Z"
+    },
+    {
+     "text": "Headless run axf-badge-shape-picker-on-the-banners-screen-pill-te--gina: brief only · start 11.2K tokens ($0.03) · cost $1.96 · 59 turns · 6 tools, MCP none",
+     "at": "2026-11-13T03:38:27.788Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-13T04:00:48.570Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T11:24:24.942Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-badge-shape-picker-on-the-banners-screen-pill-te--sully, own login copy)",
+     "at": "2026-11-13T11:25:36.529Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-badge-shape-picker-on-the-banners-screen-pill-te--sully.",
+     "at": "2026-11-13T11:25:33.547Z"
+    },
+    {
+     "text": "Headless run axf-badge-shape-picker-on-the-banners-screen-pill-te--sully: brief only · start 12.4K tokens ($0.03) · cost $0.63 · 22 turns · 6 tools, MCP none",
+     "at": "2026-11-13T11:31:10.158Z"
+    },
+    {
+     "text": "Phase 1 done, PR #568. UI Review shots not submitted: axf.mjs here has no shot/focus command and the live console runs main. Shots needed from a branch preview.",
+     "at": "2026-11-13T11:30:51.552Z"
+    },
+    {
+     "text": "Renamed from badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad (build names are at most 40 characters). By build-rename.",
+     "at": "2026-11-13T17:31:38.368Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad",
+    "brief": "# Build: badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"Badge shape picker on the Banners screen: pill (text), icon or dot for every badge, like Following AmberX. Shape already exists in code (types.ts, Banner.tsx), it just isn't shown. Android twin too.\" (badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad) — Phase 1, model Opus.\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad\nSteps in this phase (1 left, ~20 min):\n[x] s1 (~30 min) Badge shape picker on the Banners screen: pill (text), icon or dot for every badge, like Following AmberX.\n[x] s2 (~30 min) Shape already exists in code (types.ts, Banner.tsx), it just isn't shown.\n[x] s3 (~30 min) Android twin too.\n[ ] s4 (~20 min) Tests green, report _claude/builds/reports/badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad.md, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad \"…\"); the build goes back to Pending for Brett.\n",
+    "verbatim": false,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "2026-11-13T11:24:24.436Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-12T23:16:08.502Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 4,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-12T23:16:44.676Z",
+     "why": "subscription account mossesx-max-"
+    },
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwe62k6v01dlm2",
+     "title": "",
+     "text": "Badge shape picker on the Banners screen: pill (text), icon or dot for every badge, like Following AmberX.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-13T03:36:35.592Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-12T23:16:08.502Z",
+     "updatedAt": "2026-11-13T03:36:35.808Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwe62k6v02vb5e",
+     "title": "",
+     "text": "Shape already exists in code (types.ts, Banner.tsx), it just isn't shown.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-13T03:36:37.217Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-12T23:16:08.502Z",
+     "updatedAt": "2026-11-13T03:37:08.077Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwe62k6v03q5y0",
+     "title": "",
+     "text": "Android twin too.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-13T03:36:44.694Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-12T23:16:08.502Z",
+     "updatedAt": "2026-11-13T03:37:08.077Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mwe62k6v04jam9",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-13T11:30:42.556Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-12T23:16:08.502Z",
+     "updatedAt": "2026-11-13T11:33:05.931Z"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 753
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 17,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-12T23:16:08.502Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "banners-page-focus-scroll-to-highlight",
+   "title": "Banners page: focus, scroll to and highlight any banner or badge",
+   "category": "banner",
+   "detail": "Brett said: \"Make it focus, bring it in focus... Highlight the VPS one.\" console_show/console_open with focus on the Banners screen answers \"it has no way to focus\". Every screen must support focus (standing rule).",
+   "status": "built",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/banners-page-focus-scroll-to-highlight",
+   "pr": "#585",
+   "priority": "P0",
+   "createdAt": "2026-11-12T23:12:31.496Z",
+   "updatedAt": "2026-11-13T17:31:51.582Z",
+   "builtAt": "2026-11-12T23:22:21.160Z",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-12T23:12:34.264Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-banners-page-focus-scroll-to-and-highlight-any-b--sully.",
+     "at": "2026-11-12T23:13:16.666Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-banners-page-focus-scroll-to-and-highlight-any-b--sully, own login copy)",
+     "at": "2026-11-12T23:13:18.764Z"
+    },
+    {
+     "text": "Headless run axf-banners-page-focus-scroll-to-and-highlight-any-b--sully: brief only · start 10.8K tokens ($0.02) · cost $2.92 · 81 turns · 6 tools, MCP none",
+     "at": "2026-11-12T23:22:21.160Z"
+    },
+    {
+     "text": "PR #531 (draft). banners.focus works through MCP, REST, CLI, voice and ?axf-banner= links; 30 spec checks in CI. UI Review shots not taken: the sandbox console waits for axHub, which it can't reach. Shots are needed from the live console before the PR is ready.",
+     "at": "2026-11-12T23:22:07.291Z"
+    },
+    {
+     "text": "Renamed from banners-page-focus-scroll-to-and-highlight-any-banner-or-badge (build names are at most 40 characters). By build-rename.",
+     "at": "2026-11-13T17:31:51.582Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "banners-page-focus-scroll-to-and-highlight-any-banner-or-badge",
+    "brief": "# Build: banners-page-focus-scroll-to-and-highlight-any-banner-or-badge\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"Banners page: focus, scroll to and highlight any banner or badge\" (banners-page-focus-scroll-to-and-highlight-any-banner-or-badge) [banner] — Phase 1, model Opus.\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (2 left, ~40 min):\n[ ] s1 (~25m) Banners page: support focus=<badge or banner id/label>: scroll it into view, expand it, flash highlight; works from console_show, console_open, deep links, CLI and voice\n[ ] s2 (~15m) Tests, report, PR\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step banners-page-focus-scroll-to-and-highlight-any-banner-or-badge <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link banners-page-focus-scroll-to-and-highlight-any-banner-or-badge --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step banners-page-focus-scroll-to-and-highlight-any-banner-or-badge <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note banners-page-focus-scroll-to-and-highlight-any-banner-or-badge \"…\"); the build goes back to Pending for Brett.\n",
+    "verbatim": false,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "2026-11-12T23:12:33.833Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-12T23:13:05.233Z",
+     "why": "subscription account mossesx-max-"
+    },
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwe5xwue03wcn7",
+     "title": "",
+     "text": "Banners page: support focus=<badge or banner id/label>: scroll it into view, expand it, flash highlight; works from console_show, console_open, deep links, CLI and voice",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-12T23:20:16.574Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-12T23:12:31.497Z",
+     "updatedAt": "2026-11-12T23:20:16.781Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwe5xwue04racc",
+     "title": "",
+     "text": "Tests, report, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "15m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-12T23:22:08.774Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-12T23:12:31.497Z",
+     "updatedAt": "2026-11-12T23:22:08.996Z"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 752
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 12,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-12T23:12:31.497Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

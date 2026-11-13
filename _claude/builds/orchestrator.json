@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T17:31:37.321Z",
+ "updatedAt": "2026-11-13T17:31:55.006Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -114924,7 +114924,7 @@
    ]
   },
   {
-   "id": "banners-page-focus-scroll-to-and-highlight-any-banner-or-badge",
+   "id": "banners-page-focus-scroll-to-highlight",
    "title": "Banners page: focus, scroll to and highlight any banner or badge",
    "category": "banner",
    "detail": "Brett said: \"Make it focus, bring it in focus... Highlight the VPS one.\" console_show/console_open with focus on the Banners screen answers \"it has no way to focus\". Every screen must support focus (standing rule).",
@@ -114932,11 +114932,11 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/banners-page-focus-scroll-to-and-highlight-any-banner-or-badge",
-   "pr": "#531",
+   "branch": "claude/banners-page-focus-scroll-to-highlight",
+   "pr": "#585",
    "priority": "P0",
    "createdAt": "2026-11-12T23:12:31.496Z",
-   "updatedAt": "2026-11-12T23:22:21.160Z",
+   "updatedAt": "2026-11-13T17:31:51.582Z",
    "builtAt": "2026-11-12T23:22:21.160Z",
    "notes": [
     {
@@ -114958,6 +114958,10 @@
     {
      "text": "PR #531 (draft). banners.focus works through MCP, REST, CLI, voice and ?axf-banner= links; 30 spec checks in CI. UI Review shots not taken: the sandbox console waits for axHub, which it can't reach. Shots are needed from the live console before the PR is ready.",
      "at": "2026-11-12T23:22:07.291Z"
+    },
+    {
+     "text": "Renamed from banners-page-focus-scroll-to-and-highlight-any-banner-or-badge (build names are at most 40 characters). By build-rename.",
+     "at": "2026-11-13T17:31:51.582Z"
     }
    ],
    "approvals": [],
@@ -115016,7 +115020,7 @@
    ]
   },
   {
-   "id": "badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad",
+   "id": "badge-shape-picker-banners-screen-pill",
    "title": "Badge shape picker on the Banners screen: pill (text), icon or dot for every badge, like Following AmberX. Shape already exists in code (types.ts, Banner.tsx), it just isn't shown. Android twin too.",
    "category": "",
    "detail": "",
@@ -115024,10 +115028,10 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad",
-   "pr": "#568",
+   "branch": "claude/badge-shape-picker-banners-screen-pill",
+   "pr": "#584",
    "createdAt": "2026-11-12T23:14:26.317Z",
-   "updatedAt": "2026-11-13T11:31:10.158Z",
+   "updatedAt": "2026-11-13T17:31:38.368Z",
    "builtAt": "2026-11-13T11:31:10.158Z",
    "notes": [
     {
@@ -115073,6 +115077,10 @@
     {
      "text": "Phase 1 done, PR #568. UI Review shots not submitted: axf.mjs here has no shot/focus command and the live console runs main. Shots needed from a branch preview.",
      "at": "2026-11-13T11:30:51.552Z"
+    },
+    {
+     "text": "Renamed from badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad (build names are at most 40 characters). By build-rename.",
+     "at": "2026-11-13T17:31:38.368Z"
     }
    ],
    "approvals": [],
