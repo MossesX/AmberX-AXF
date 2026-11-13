@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5048,
- "updatedAt": "2026-11-13T21:23:26.881Z",
+ "rev": 5049,
+ "updatedAt": "2026-11-13T21:23:43.173Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -208558,7 +208558,7 @@
    "pr": "#661",
    "priority": "P0",
    "createdAt": "2026-11-13T20:47:11.569Z",
-   "updatedAt": "2026-11-13T21:23:24.136Z",
+   "updatedAt": "2026-11-13T21:23:27.174Z",
    "builtAt": "",
    "notes": [
     {
@@ -208576,6 +208576,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-lander-regenerates-generated-files-clash--sully, own login copy)",
      "at": "2026-11-13T20:52:33.927Z"
+    },
+    {
+     "text": "Lander fix is on PR #661 (generated-files@1 manifest; auto-land, merge queue and /opt/axf-batch/resolve.py all regenerate on a clash). Re-lands done with land.mjs merge-main (main merged in, pushed): full-voice-control-merge-main-and-land #645 (inventory regenerated), skin-config-panel-merge-main-and-land #648 (inventory + help bake regenerated, help pack unioned), skins-plugin-merge-main-and-land #647, project-duplicate-boilerplate #621, drive-live-console-first #620, land-rename-long-builds-resolve-clash #638, land-overlay-preview-ui-review-resolve #653. Not re-landed, real code clashes: project-create-mcp #579 (framework/cli/project-seed.mjs add/add vs main; land-project-create-mcp-resolve-clash is the pending fix build), rename-long-builds #617 and overlay-preview-ui-review #626 (orchestrator.mjs / approvals-banner index.tsx; their resolve branches #638 / #653 carry them). Land order set: auto-land-every-finished-build-lands after this build.",
+     "at": "2026-11-13T21:23:27.174Z"
     },
     {
      "text": "Dispatch gate: lander-regenerates-generated-files-clash still has axf-lander-regenerates-generated-files-clash--sully alive: not launched again, tracking that session.",
@@ -208713,7 +208717,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

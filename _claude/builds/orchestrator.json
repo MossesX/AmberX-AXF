@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T21:23:26.881Z",
+ "updatedAt": "2026-11-13T21:23:43.173Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -134648,7 +134648,7 @@
    "pr": "#661",
    "priority": "P0",
    "createdAt": "2026-11-13T20:47:11.569Z",
-   "updatedAt": "2026-11-13T21:23:24.136Z",
+   "updatedAt": "2026-11-13T21:23:27.174Z",
    "builtAt": "",
    "notes": [
     {
@@ -134666,6 +134666,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-lander-regenerates-generated-files-clash--sully, own login copy)",
      "at": "2026-11-13T20:52:33.927Z"
+    },
+    {
+     "text": "Lander fix is on PR #661 (generated-files@1 manifest; auto-land, merge queue and /opt/axf-batch/resolve.py all regenerate on a clash). Re-lands done with land.mjs merge-main (main merged in, pushed): full-voice-control-merge-main-and-land #645 (inventory regenerated), skin-config-panel-merge-main-and-land #648 (inventory + help bake regenerated, help pack unioned), skins-plugin-merge-main-and-land #647, project-duplicate-boilerplate #621, drive-live-console-first #620, land-rename-long-builds-resolve-clash #638, land-overlay-preview-ui-review-resolve #653. Not re-landed, real code clashes: project-create-mcp #579 (framework/cli/project-seed.mjs add/add vs main; land-project-create-mcp-resolve-clash is the pending fix build), rename-long-builds #617 and overlay-preview-ui-review #626 (orchestrator.mjs / approvals-banner index.tsx; their resolve branches #638 / #653 carry them). Land order set: auto-land-every-finished-build-lands after this build.",
+     "at": "2026-11-13T21:23:27.174Z"
     },
     {
      "text": "Dispatch gate: lander-regenerates-generated-files-clash still has axf-lander-regenerates-generated-files-clash--sully alive: not launched again, tracking that session.",
