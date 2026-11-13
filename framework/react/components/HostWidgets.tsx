@@ -11,6 +11,7 @@ import { useState, type PointerEvent, type ReactNode, type RefObject } from 'rea
 import { bannerWidgetCapCss, type BannerWidgetSize } from '../../core/engines/bannerwidgets';
 import { HOST_APP_INSTANCE, hostSpec, instanceHost, type PlacedAttachment } from '../../core/engines/widgets';
 import { HOST_WIDGETS_DIALOG, type AxfRuntime, type BannerWidget } from '../../core/runtime';
+import { CONTROL_TOKEN_SLOTS, withTokenOverride } from '../../core/engines/control-tokens.mjs';
 import { useAxfState, useRuntime } from '../AxfProvider';
 import { ArrangeBar, arrangedSide, useArrange } from './Arrange';
 import { BannerWidgetBody } from './Banner';
@@ -155,9 +156,17 @@ export function HostWidgetsPanel({ host, instance, initial }: { host: WidgetHost
     );
   };
 
+  // the app toolbar may be off twice over: hidden as a slot, or left out by the layout asset (showToolbar: false)
+  const layoutOff = host === 'toolbar' && instance === HOST_APP_INSTANCE && (rt.asset('layout').data as unknown as { showToolbar?: boolean }).showToolbar === false;
+  const toolbarOff = host === 'toolbar' && instance === HOST_APP_INSTANCE && (rt.slotHidden('toolbar') || layoutOff);
+  const showToolbar = () => {
+    rt.dispatch('slot.hide:toolbar:off');
+    if (layoutOff) { const key = CONTROL_TOKEN_SLOTS['tokens.layout'].key; rt.settings.set(key, withTokenOverride(rt.settings.get(key), 'showToolbar', true) as never); }
+  };
   return (
     <div className="fx-banner-widgets" data-axf-host-widgets={hostId}>
       <p className="fx-muted fx-small">{title}</p>
+      {toolbarOff && <Note tone="warning" icon="eye">This app's toolbar is off ({layoutOff ? 'the layout leaves it out' : 'Settings → Appearance → Visible parts'}), so its widgets have nowhere to show. <Button size="sm" icon="eye" onClick={showToolbar}>Show the toolbar</Button></Note>}
       {sides.map((side) => {
         const list = on.filter((w) => w.at === side);
         return (
