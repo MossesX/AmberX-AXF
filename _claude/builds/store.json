@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4067,
- "updatedAt": "2026-11-13T06:55:49.865Z",
+ "rev": 4068,
+ "updatedAt": "2026-11-13T06:56:05.782Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -177654,8 +177654,8 @@
    "pr": "#547",
    "priority": "P0",
    "createdAt": "2026-11-13T01:13:53.464Z",
-   "updatedAt": "2026-11-13T06:55:48.226Z",
-   "builtAt": "2026-11-13T06:55:48.226Z",
+   "updatedAt": "2026-11-13T06:56:03.335Z",
+   "builtAt": "2026-11-13T06:56:03.335Z",
    "notes": [
     {
      "text": "Brett: TONS of options, the deeper the better. Every option gets a plain explanation and the right control: sliders for amounts (density, roundness, contrast, animation speed, menu depth), dropdowns and swatches for choices, toggles for on/off, plus a live preview.",
@@ -177724,6 +177724,10 @@
     {
      "text": "Model switch: phase 3 Opus → Fable. Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself.",
      "at": "2026-11-13T06:31:38.011Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-13T06:56:03.335Z"
     }
    ],
    "approvals": [
