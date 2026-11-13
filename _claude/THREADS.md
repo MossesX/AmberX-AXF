@@ -781,8 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 06:32 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` note (all) · orchestrator
-- 2026-11-13 06:33 UTC · `everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the` note (all) · orchestrator
 - 2026-11-13 06:33 UTC · `full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app` note (all) · orchestrator
 - 2026-11-13 06:33 UTC · `10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less` note (all) · orchestrator
 - 2026-11-13 06:34 UTC · `professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e` s1 done (all) · orchestrator
@@ -1181,6 +1179,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 11:36 UTC · `unlink-plan-studio-from-builds-delete-all-plan-s` note (all) · pipeline
 - 2026-11-13 11:36 UTC · `overlay-opens-pages-the-floating-toolbar-expands` note (all) · orchestrator
 - 2026-11-13 11:37 UTC · `overlay-opens-pages-the-floating-toolbar-expands` → queued, note (all) · pipeline
+- 2026-11-13 11:37 UTC · `overlay-opens-pages-the-floating-toolbar-expands` → running, note (all) · pipeline
+- 2026-11-13 11:37 UTC · `overlay-opens-pages-the-floating-toolbar-expands` note (all) · orchestrator
 
 ## Token passes (log)
 
