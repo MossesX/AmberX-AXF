@@ -788,7 +788,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 18:32 UTC · `transparency-token-works-every-dialog` s1 done, → running (all) · orchestrator
 - 2026-11-13 18:32 UTC · `transparency-token-works-every-dialog` branch claude/transparency-token-works-every-dialog (all) · builds-live
 - 2026-11-13 18:33 UTC · `transparency-token-works-every-dialog` note (all) · orchestrator
 - 2026-11-13 18:33 UTC · `decision-dialog-ui-review-other` s2 done (all) · orchestrator
@@ -1188,6 +1187,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 20:12 UTC · `skin-animations-swatches-skin-switch` s3 done (all) · orchestrator
 - 2026-11-13 20:12 UTC · `context-menu-plugin-ai-generated-slim` note (all) · orchestrator
 - 2026-11-13 20:12 UTC · `context-menu-plugin-ai-generated-slim` → archived (all) · claude-voice
+- 2026-11-13 20:13 UTC · `full-voice-control-merge-main-and-land` s1 done (all) · orchestrator
 
 ## Token passes (log)
 
