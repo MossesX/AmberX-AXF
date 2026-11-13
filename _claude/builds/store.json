@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4305,
- "updatedAt": "2026-11-13T11:22:12.382Z",
+ "rev": 4306,
+ "updatedAt": "2026-11-13T11:22:25.988Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -184257,7 +184257,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T11:13:29.147Z",
-   "updatedAt": "2026-11-13T11:21:54.314Z",
+   "updatedAt": "2026-11-13T11:22:18.000Z",
    "builtAt": "",
    "notes": [
     {
@@ -184297,14 +184297,6 @@
      "at": "2026-11-13T11:19:14.850Z"
     },
     {
-     "text": "s1 precheck failed: PR 556 (console-control@1, full API and voice control) is still OPEN on GitHub, not merged to main (no merge commit, mergeStateStatus UNKNOWN, no auto-merge). Brett said the regular API build lands first, so this build stops here with no code written and no step ticked. Hand back to Pending. To restart: land PR 556 through the merge queue, then re-queue this build; s1 picks up from the inventory.",
-     "at": "2026-11-13T11:20:20.820Z"
-    },
-    {
-     "text": "s1 precheck failed a third time (run joey): PR 556 is still OPEN, not merged to main. Status set to Pending explicitly this time: the two earlier runs (lenny, earl) only left notes, so the build stayed Running and the dispatcher relaunched it as a cut-off session, costing three Fable starts for nothing. No code written, no step ticked. Re-queue once PR 556 lands; s1 resumes at the draggable-surface inventory.",
-     "at": "2026-11-13T11:21:54.314Z"
-    },
-    {
      "text": "Session on mossesx-max- stopped on its own with 20 steps left: back in Pending for Brett.",
      "at": "2026-11-13T11:20:08.945Z"
     },
@@ -184315,6 +184307,18 @@
     {
      "text": "Headless run axf-drag-anything-by-api-and-voice-after-pr-556-land--earl: brief only · start 13.7K tokens ($0.07) · cost $0.63 · 12 turns · 6 tools, MCP none",
      "at": "2026-11-13T11:20:53.873Z"
+    },
+    {
+     "text": "s1 precheck failed: PR 556 (console-control@1, full API and voice control) is still OPEN on GitHub, not merged to main (no merge commit, mergeStateStatus UNKNOWN, no auto-merge). Brett said the regular API build lands first, so this build stops here with no code written and no step ticked. Hand back to Pending. To restart: land PR 556 through the merge queue, then re-queue this build; s1 picks up from the inventory.",
+     "at": "2026-11-13T11:20:20.820Z"
+    },
+    {
+     "text": "Headless run axf-drag-anything-by-api-and-voice-after-pr-556-land--joey: brief only · start 13.8K tokens ($0.07) · cost $0.81 · 13 turns · 6 tools, MCP none",
+     "at": "2026-11-13T11:22:18.000Z"
+    },
+    {
+     "text": "s1 precheck failed a third time (run joey): PR 556 is still OPEN, not merged to main. Status set to Pending explicitly this time: the two earlier runs (lenny, earl) only left notes, so the build stayed Running and the dispatcher relaunched it as a cut-off session, costing three Fable starts for nothing. No code written, no step ticked. Re-queue once PR 556 lands; s1 resumes at the draggable-surface inventory.",
+     "at": "2026-11-13T11:21:54.314Z"
     }
    ],
    "approvals": [],
@@ -184335,12 +184339,19 @@
     "queuedAt": "2026-11-13T11:13:30.493Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-drag-anything-by-api-and-voice-after-pr-556-land--lenny",
+    "session": "",
     "slot": "",
     "model": "Fable",
     "launchedAt": "2026-11-13T11:17:35.907Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-13T11:20:08.054Z",
+     "exit": 0,
+     "outcome": "returned",
+     "stepsLeft": 20,
+     "account": "mossesx-max-",
+     "session": "axf-drag-anything-by-api-and-voice-after-pr-556-land--lenny"
+    },
     "split": {
      "at": "2026-11-13T11:15:09.567Z",
      "by": "orchestrator",
@@ -184349,7 +184360,7 @@
      "note": "Split by Claude into 20 steps (5 Fable)."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- stopped on its own with 20 steps left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "2026-11-13T11:17:35.908Z",
     "planned": {
@@ -184885,7 +184896,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
