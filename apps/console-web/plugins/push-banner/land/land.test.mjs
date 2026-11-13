@@ -151,7 +151,7 @@ const gh = async (method, path, body) => {
   calls.gh.push(`${method} ${path}`);
   if (method === 'GET' && path.includes('/pulls?state=open')) return pulls;
   if (method === 'GET' && /\/pulls\/\d+$/.test(path)) return { mergeable: true };
-  if (method === 'POST' && path.endsWith('/pulls')) { const n = 60 + pulls.length; const p = { number: n, head: { ref: body.head, repo: { full_name: 'MossesX/AmberX-AXF' } }, base: { ref: 'main' }, html_url: `u${n}` }; pulls.push(p); return p; }
+  if (method === 'POST' && path.endsWith('/pulls')) { if (body.draft) calls.draftPrs = (calls.draftPrs || 0) + 1; const n = 60 + pulls.length; const p = { number: n, head: { ref: body.head, repo: { full_name: 'MossesX/AmberX-AXF' } }, base: { ref: 'main' }, html_url: `u${n}` }; pulls.push(p); return p; }
   if (method === 'GET' && path.includes('/check-runs')) {
     const sha = path.split('/commits/')[1].split('/')[0];
     if (sha === headOf('claude/ui') || sha === headOf('claude/green')) return { check_runs: [{ name: 'CI', status: 'completed', conclusion: 'success' }] };
@@ -173,6 +173,7 @@ const by = Object.fromEntries(st.items.map((x) => [x.id, x]));
 check(!by.busy, 'a build with steps left is not landed');
 check(st.items.map((x) => x.id).indexOf('later') > st.items.map((x) => x.id).indexOf('ok'), 'landing order: `later` after `ok` (its note)');
 check(by.ok?.state === 'waiting' && by.ok.reason?.kind === 'running' && by.ok.pr && calls.gh.some((c) => c.startsWith('POST') && c.endsWith('/pulls')), 'ok: behind only by status data = no merge, PR opened, waiting on CI');
+check(!calls.draftPrs, 'auto-land opens PRs ready for review, never as drafts');
 check(calls.gh.some((c) => c.includes('/actions/workflows/android.yml/dispatches')) && by.ok.dispatched === headOf('claude/ok'), 'ok: no CI on its head (CodeRabbit skipped only) = CI started once');
 check(by.clash?.state === 'blocked' && by.clash.reason.kind === 'conflict' && by.clash.reason.files.join() === 'shared.ts', 'clash: a code conflict blocks it, file named');
 check(calls.jobs.some((j) => j.input.build === 'clash' && j.type === 'land-build') && by.clash.agent, 'clash: one agent job for the code conflict');

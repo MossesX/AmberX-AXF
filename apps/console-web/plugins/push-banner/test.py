@@ -324,6 +324,7 @@ r = c.post("/p/pr", json={"repo": "MossesX/AmberX-AXF", "branch": "feat/a"}).jso
 check(r["existing"] is True and r["number"] == 18, "Open PR on a branch that has one answers that PR")
 r = c.post("/p/pr", json={"repo": "MossesX/AmberX-AXF", "branch": "feat/b"}).json()
 check(r["existing"] is False and r["number"] == 19 and STATE["created"][-1]["head"] == "feat/b" and STATE["created"][-1]["base"] == "main", "Open PR creates feat/b → main")
+check(not STATE["created"][-1].get("draft"), "Open PR opens it ready for review, never as a draft for UI Review")
 check(STATE["created"][-1]["title"] == "Last on feat/b", "the PR is titled from the last commit")
 check(c.post("/p/pr", json={"repo": "MossesX/Other", "branch": "feat/b"}).status_code == 400, "a repo that isn't watched is refused")
 check(c.post("/p/pr", json={"repo": "MossesX/AmberX-AXF", "branch": "main"}).status_code == 400, "no PR from main into main")
