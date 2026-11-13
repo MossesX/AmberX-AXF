@@ -790,27 +790,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 18:39 UTC · `console-android-app-thin-webview-wrapper` added (0 steps) (all) · builds-live
-- 2026-11-13 18:38 UTC · `new-asset-type-animated-expanding-row` s2 done (all) · orchestrator
-- 2026-11-13 18:39 UTC · `console-android-app-thin-webview-wrapper` note (all) · orchestrator
-- 2026-11-13 18:39 UTC · `console-android-app-thin-webview-wrapper` → running, note (all) · pipeline
-- 2026-11-13 18:39 UTC · `console-android-app-thin-webview-wrapper` branch claude/console-android-app-thin-webview-wrapper (all) · pipeline
-- 2026-11-13 18:40 UTC · `console-android-app-thin-webview-wrapper` note (all) · orchestrator
-- 2026-11-13 18:41 UTC · `console-android-app-thin-webview-wrapper` → queued, note (all) · pipeline
-- 2026-11-13 18:41 UTC · `orchestrator-settings-collapsible-split` added (0 steps) (all) · console
-- 2026-11-13 18:41 UTC · `orchestrator-settings-collapsible-split` → queued, note (all) · console
-- 2026-11-13 18:41 UTC · `console-app-part-2-native-floating` added (0 steps) (all) · console
-- 2026-11-13 18:41 UTC · `console-app-part-3-native-bridge-mic` added (0 steps) (all) · console
-- 2026-11-13 18:41 UTC · `console-app-part-3-native-bridge-mic` → queued, note (all) · console
-- 2026-11-13 18:41 UTC · `console-app-part-4-console-side-safe` added (0 steps) (all) · console
-- 2026-11-13 18:41 UTC · `console-app-part-4-console-side-safe` → queued, note (all) · console
-- 2026-11-13 18:41 UTC · `all-settings-interfaces-open-floating` note (all) · orchestrator
-- 2026-11-13 18:41 UTC · `console-app-part-2-native-floating-2` added (0 steps) (all) · console
-- 2026-11-13 18:41 UTC · `console-app-part-2-native-floating-2` → queued, note (all) · console
-- 2026-11-13 18:42 UTC · `console-android-app-thin-webview-wrapper` note (all) · builds-live
-- 2026-11-13 18:41 UTC · `console-android-app-thin-webview-wrapper` note (all) · claude-voice
-- 2026-11-13 18:42 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
-- 2026-11-13 18:42 UTC · `orchestrator-settings-collapsible-split` note (all) · builds-live
 - 2026-11-13 18:43 UTC · `console-app-part-3-native-bridge-mic` note (all) · orchestrator
 - 2026-11-13 18:43 UTC · `console-app-part-3-native-bridge-mic` note (all) · builds-live
 - 2026-11-13 18:43 UTC · `console-app-part-4-console-side-safe` note (all) · orchestrator
@@ -1190,6 +1169,27 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 20:17 UTC · `dispatcher-gate-never-launch-build` → queued, note (all) · pipeline
 - 2026-11-13 20:17 UTC · `skin-animations-swatches-skin-switch` s5 done (all) · orchestrator
 - 2026-11-13 20:17 UTC · `skin-config-panel-merge-main-and-land` PR #648 (all) · builds-live
+- 2026-11-13 20:17 UTC · `skin-config-panel-merge-main-and-land` note (all) · orchestrator
+- 2026-11-13 20:17 UTC · `skin-config-panel-merge-main-and-land` s1 done (all) · orchestrator
+- 2026-11-13 20:18 UTC · `skin-config-panel-merge-main-and-land` → pending, note (all) · pipeline
+- 2026-11-13 20:18 UTC · `dispatcher-gate-never-launch-build` → running, note (all) · pipeline
+- 2026-11-13 20:18 UTC · `dispatcher-gate-never-launch-build` note (all) · orchestrator
+- 2026-11-13 20:18 UTC · `per-toolbar-settings-fix-failing-chrome` → running, note (all) · pipeline
+- 2026-11-13 20:18 UTC · `per-toolbar-settings-fix-failing-chrome` branch claude/per-toolbar-settings-fix-failing-chrome (all) · pipeline
+- 2026-11-13 20:18 UTC · `per-toolbar-settings-fix-failing-chrome` note (all) · orchestrator
+- 2026-11-13 20:19 UTC · `own-token-sets-for-grids-and-tab-groups` → running, note (all) · pipeline
+- 2026-11-13 20:19 UTC · `own-token-sets-for-grids-and-tab-groups` branch claude/own-token-sets-for-grids-and-tab-groups (all) · pipeline
+- 2026-11-13 20:19 UTC · `own-token-sets-for-grids-and-tab-groups` note (all) · orchestrator
+- 2026-11-13 20:19 UTC · `demo-pipelines-guided-walkthrough-live` s8 done (all) · orchestrator
+- 2026-11-13 20:19 UTC · `tab-groups-choose-how-many-rows-tabs` → complete, merged, note (all) · reconciler
+- 2026-11-13 20:19 UTC · `prompting-engine-control-panel-events` → pending, note (all) · reconciler
+- 2026-11-13 20:19 UTC · `transparency-token-works-every-dialog` → complete, merged, note (all) · reconciler
+- 2026-11-13 20:19 UTC · `orchestrator-settings-collapsible-split` → pending, note (all) · reconciler
+- 2026-11-13 20:19 UTC · `console-app-part-4-console-side-safe` s7 done, → built, PR #640, note (all) · reconciler
+- 2026-11-13 20:19 UTC · `console-app-part-2-native-floating-2` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, → built, PR #639, note (all) · reconciler
+- 2026-11-13 20:19 UTC · `console-app-wake-word-voice-listener` s2 done, note (all) · reconciler
+- 2026-11-13 20:19 UTC · `skin-axhub-override-switch-greyed-out` PR #641, note (all) · reconciler
+- 2026-11-13 20:19 UTC · `skins-plugin-merge-main-and-land` PR #647, note (all) · reconciler
 
 ## Token passes (log)
 
