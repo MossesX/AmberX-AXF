@@ -781,7 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 01:26 UTC · `claude-badge-can-claude-build-green-when-at-least-one-build-account-in-the-or` PR #536 (all) · builds-live
 - 2026-11-13 01:26 UTC · `claude-badge-can-claude-build-green-when-at-least-one-build-account-in-the-or` s4 done, → built (all) · orchestrator
 - 2026-11-13 01:26 UTC · `claude-badge-can-claude-build-green-when-at-least-one-build-account-in-the-or` note (all) · orchestrator
 - 2026-11-13 01:27 UTC · `projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone` branch claude/projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone, PR #537 (all) · builds-live
@@ -1181,6 +1180,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 10:45 UTC · `owner-recognized-everywhere-veto-countdown-only-on-shell-commands` note (all) · orchestrator
 - 2026-11-13 10:45 UTC · `owner-recognized-everywhere-veto-countdown-only-on-shell-commands` → pending, note (all) · pipeline
 - 2026-11-13 10:45 UTC · `fix-a-build-whose-session-finishes-its-phase-e-g-the-fable-steps-with-steps` note (all) · orchestrator
+- 2026-11-13 10:45 UTC · `fix-a-build-whose-session-finishes-its-phase-e-g-the-fable-steps-with-steps` branch claude/fix-a-build-whose-session-finishes-its-phase-e-g-the-fable-steps-with-steps (all) · builds-live
 
 ## Token passes (log)
 
