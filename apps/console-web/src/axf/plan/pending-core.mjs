@@ -22,6 +22,7 @@
  *              ticked off one by one (`done`, `doneAt`). `splitCheck` / `needsSplit` flag a big build without such steps.
  */
 import { normOrigin } from '../core/build-origin.mjs';
+import { isBuildId, shortBuildId, uniqueBuildId } from '../core/build-id.mjs';
 
 export const STATUSES = ['pending', 'unsafe', 'broken', 'failed', 'complete'];
 export const STATUS_LABEL = { pending: 'Pending', unsafe: 'Unsafe', complete: 'Complete', failed: 'Failed', broken: 'Broken' };
@@ -155,7 +156,7 @@ export function normalize(raw, now = new Date().toISOString()) {
   const createdAt = iso(raw?.createdAt) || now;
   const builtAt = status === 'complete' ? iso(raw?.builtAt) || iso(raw?.updatedAt) || now : '';
   return {
-    id: str(raw?.id) || slug(raw?.title),
+    id: str(raw?.id) || shortBuildId(str(raw?.title)),
     title: str(raw?.title).trim() || 'Untitled build',
     detail: str(raw?.detail),
     model, status,
@@ -183,7 +184,8 @@ export function normalizeState(raw, now) {
   return { $axf: 'pending@1', updatedAt: iso(s.updatedAt), artifact: str(s.artifact) || ARTIFACT_URL, items };
 }
 
-const uniqueId = (items, base) => { let id = slug(base), n = 2; while (items.some((i) => i.id === id)) id = `${slug(base)}-${n++}`; return id; };
+/** A new item's id (build-id@1: at most 40 characters, a suffix on a collision); the title is kept whole. */
+const uniqueId = (items, base) => uniqueBuildId(str(base), new Set(items.map((i) => i.id)));
 const touch = (state, items, now) => ({ ...state, items, updatedAt: now });
 
 /**
@@ -207,7 +209,7 @@ export function apply(state, a, now = new Date().toISOString()) {
     case 'add': {
       const title = str(a.title).trim();
       if (!title) throw new Error('title is required');
-      const it0 = normalize({ ...a, id: a.id && !s.items.some((x) => x.id === a.id) ? a.id : uniqueId(s.items, title), title, createdAt: now, updatedAt: now, status: 'pending', source: a.source || 'console' }, now);
+      const it0 = normalize({ ...a, id: isBuildId(a.id) && !s.items.some((x) => x.id === a.id) ? a.id : uniqueId(s.items, a.id || title), title, createdAt: now, updatedAt: now, status: 'pending', source: a.source || 'console' }, now);
       const it = { ...setStatus(it0, a.status ?? 'pending'), updatedAt: now };
       return { state: touch(s, [...s.items, it], now), item: it, log: [`pending: added "${it.title}" (${it.id}, waits on ${it.model})`] };
     }
