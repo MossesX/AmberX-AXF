@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T18:53:49.424Z",
+ "updatedAt": "2026-11-13T18:54:25.323Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -126149,7 +126149,7 @@
    "title": "Quick settings: pinned, collapsible pane at the top of every settings interface",
    "category": "",
    "detail": "Every settings interface (console Settings, plugin settings, chrome settings for tab groups/toolbars/banners/nav/menu bar, and future ones - framework default, enforced by a check) gets a 'Quick settings' pane at the very top:\n- Pinned: does not scroll; everything else scrolls underneath it.\n- Collapses vertically with a small handle/arrow button; the handle style is configurable in settings; collapsed state remembered.\n- Contents, in order: (1) Skin: shows the current skin; checkbox 'Override console skin' to apply a different skin to just this interface. (2) Default assets for this interface (navigation menu, toolbar, tab group, settings interface, etc.): shows the current asset for each; picker greyed out until 'Override console default' is ticked. (3) Override notice: when anything here overrides the skin or console defaults, show 'This is overriding the current skin/defaults' and reuse the existing 'N assets are controlled by their own settings' (chrome.edits) line that expands to list every override, each with reset.\n- Any picked asset must have a manifest and pass schema conformance before applying.\n- Reachable by REST/MCP/CLI/voice/control@1. Tests, help entries, Shipped features.\nWorks together with the 'all settings interfaces open in a floating dialog' and per-instance settings-window picker builds.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -126157,7 +126157,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:07:49.026Z",
-   "updatedAt": "2026-11-13T18:29:57.341Z",
+   "updatedAt": "2026-11-13T18:54:23.539Z",
    "builtAt": "",
    "notes": [
     {
@@ -126175,6 +126175,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-quick-settings-pinned-collapsible-pane--rhonda, own login copy)",
      "at": "2026-11-13T18:12:16.315Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-13T18:54:23.539Z"
     }
    ],
    "approvals": [],
