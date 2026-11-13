@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T18:12:54.087Z",
+ "updatedAt": "2026-11-13T18:13:11.833Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -125867,7 +125867,7 @@
    "pr": "#623",
    "priority": "P2",
    "createdAt": "2026-11-13T17:51:25.212Z",
-   "updatedAt": "2026-11-13T18:12:28.097Z",
+   "updatedAt": "2026-11-13T18:12:31.967Z",
    "builtAt": "2026-11-13T18:12:28.097Z",
    "notes": [
     {
@@ -125885,6 +125885,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-tab-groups-choose-how-many-rows-tabs--rhonda, own login copy)",
      "at": "2026-11-13T17:54:17.405Z"
+    },
+    {
+     "text": "PR #623 ready. UI Review item could not be uploaded: dispatched session has no AXF_CONSOLE_URL/AXF_TOKEN. Fix: give build sessions those env vars, then run the review.mjs submit line in the report with --console. check-help coverage 99.6% is from approvals-banner + molly-guide controls already on main.",
+     "at": "2026-11-13T18:12:31.967Z"
     }
    ],
    "approvals": [],
