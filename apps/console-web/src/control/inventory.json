@@ -8,7 +8,7 @@
     "tabs": 76,
     "settingsTabs": 67,
     "settings": 85,
-    "functions": 218,
+    "functions": 227,
     "buttons": 62,
     "plugins": 67
   },
@@ -1902,7 +1902,7 @@
     {
       "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=molly-guide",
       "id": "molly-guide",
-      "label": "Molly guide",
+      "label": "Gizmo guide",
       "parent": "plugins",
       "plugin": "ai.amberx.axf.console.molly-guide"
     },
@@ -2344,10 +2344,10 @@
       "label": "Read each step out loud",
       "key": "molly-guide.speak",
       "type": "toggle",
-      "detail": "Settings › Plugins › Molly guide",
+      "detail": "Settings › Plugins › Gizmo guide",
       "keywords": [
         "molly-guide.speak",
-        "Molly guide"
+        "Gizmo guide"
       ],
       "runs": "console",
       "plugin": "ai.amberx.axf.console.molly-guide",
@@ -2359,10 +2359,10 @@
       "label": "Move the console to each step (run its action)",
       "key": "molly-guide.runSteps",
       "type": "toggle",
-      "detail": "Settings › Plugins › Molly guide",
+      "detail": "Settings › Plugins › Gizmo guide",
       "keywords": [
         "molly-guide.runSteps",
-        "Molly guide"
+        "Gizmo guide"
       ],
       "runs": "console",
       "plugin": "ai.amberx.axf.console.molly-guide",
@@ -2371,13 +2371,13 @@
     {
       "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=molly-guide/setting:molly-guide.autoOpen",
       "kind": "setting",
-      "label": "Open walkthroughs Molly makes from AmberX by themselves",
+      "label": "Open walkthroughs asked for from AmberX by themselves",
       "key": "molly-guide.autoOpen",
       "type": "toggle",
-      "detail": "Settings › Plugins › Molly guide",
+      "detail": "Settings › Plugins › Gizmo guide",
       "keywords": [
         "molly-guide.autoOpen",
-        "Molly guide"
+        "Gizmo guide"
       ],
       "runs": "console",
       "plugin": "ai.amberx.axf.console.molly-guide",
@@ -3894,6 +3894,64 @@
       "file": "plugins/approvals-banner/web/index.tsx"
     },
     {
+      "address": "function:overlay.expand",
+      "kind": "function",
+      "id": "overlay.expand",
+      "label": "Expand the overlay",
+      "detail": "Action · Approvals banner",
+      "keywords": [
+        "overlay.expand",
+        "overlay",
+        "expand"
+      ],
+      "plugin": "ai.amberx.axf.console.approvals-banner",
+      "file": "plugins/approvals-banner/web/index.tsx"
+    },
+    {
+      "address": "function:overlay.collapse",
+      "kind": "function",
+      "id": "overlay.collapse",
+      "label": "Collapse the overlay",
+      "detail": "Action · Approvals banner",
+      "keywords": [
+        "overlay.collapse",
+        "overlay",
+        "collapse"
+      ],
+      "plugin": "ai.amberx.axf.console.approvals-banner",
+      "file": "plugins/approvals-banner/web/index.tsx"
+    },
+    {
+      "address": "function:overlay.open",
+      "kind": "function",
+      "id": "overlay.open",
+      "label": "Open a page in the overlay (overlay.open:<url>)",
+      "detail": "Action · Approvals banner",
+      "keywords": [
+        "overlay.open",
+        "overlay",
+        "open"
+      ],
+      "params": true,
+      "plugin": "ai.amberx.axf.console.approvals-banner",
+      "file": "plugins/approvals-banner/web/index.tsx"
+    },
+    {
+      "address": "function:approvals.overlay",
+      "kind": "function",
+      "id": "approvals.overlay",
+      "label": "Overlay (phone): on/off, edge, top, size, opens, show, opacity, shrink; expand, collapse, open:<url>; bar[:off] (approvals.overlay:<what>:<value>)",
+      "detail": "Action · Approvals banner",
+      "keywords": [
+        "approvals.overlay",
+        "approvals",
+        "overlay"
+      ],
+      "params": true,
+      "plugin": "ai.amberx.axf.console.approvals-banner",
+      "file": "plugins/approvals-banner/web/index.tsx"
+    },
+    {
       "address": "function:approvals.check",
       "kind": "function",
       "id": "approvals.check",
@@ -5341,11 +5399,81 @@
       "file": "plugins/md-studio/web/index.tsx"
     },
     {
+      "address": "function:gizmo.ask",
+      "kind": "function",
+      "id": "gizmo.ask",
+      "label": "Ask Gizmo to show me how",
+      "detail": "Action · Gizmo guide",
+      "keywords": [
+        "gizmo.ask",
+        "gizmo",
+        "ask"
+      ],
+      "plugin": "ai.amberx.axf.console.molly-guide",
+      "file": "plugins/molly-guide/web/index.tsx"
+    },
+    {
+      "address": "function:gizmo.replay",
+      "kind": "function",
+      "id": "gizmo.replay",
+      "label": "Replay the last walkthrough",
+      "detail": "Action · Gizmo guide",
+      "keywords": [
+        "gizmo.replay",
+        "gizmo",
+        "replay"
+      ],
+      "plugin": "ai.amberx.axf.console.molly-guide",
+      "file": "plugins/molly-guide/web/index.tsx"
+    },
+    {
+      "address": "function:gizmo.next",
+      "kind": "function",
+      "id": "gizmo.next",
+      "label": "Walkthrough: next step",
+      "detail": "Action · Gizmo guide",
+      "keywords": [
+        "gizmo.next",
+        "gizmo",
+        "next"
+      ],
+      "plugin": "ai.amberx.axf.console.molly-guide",
+      "file": "plugins/molly-guide/web/index.tsx"
+    },
+    {
+      "address": "function:gizmo.prev",
+      "kind": "function",
+      "id": "gizmo.prev",
+      "label": "Walkthrough: previous step",
+      "detail": "Action · Gizmo guide",
+      "keywords": [
+        "gizmo.prev",
+        "gizmo",
+        "prev"
+      ],
+      "plugin": "ai.amberx.axf.console.molly-guide",
+      "file": "plugins/molly-guide/web/index.tsx"
+    },
+    {
+      "address": "function:gizmo.close",
+      "kind": "function",
+      "id": "gizmo.close",
+      "label": "Walkthrough: close",
+      "detail": "Action · Gizmo guide",
+      "keywords": [
+        "gizmo.close",
+        "gizmo",
+        "close"
+      ],
+      "plugin": "ai.amberx.axf.console.molly-guide",
+      "file": "plugins/molly-guide/web/index.tsx"
+    },
+    {
       "address": "function:molly.ask",
       "kind": "function",
       "id": "molly.ask",
-      "label": "Ask Molly to show me how",
-      "detail": "Action · Molly guide",
+      "label": "Ask Gizmo to show me how",
+      "detail": "Action · Gizmo guide",
       "keywords": [
         "molly.ask",
         "molly",
@@ -5359,7 +5487,7 @@
       "kind": "function",
       "id": "molly.replay",
       "label": "Replay the last walkthrough",
-      "detail": "Action · Molly guide",
+      "detail": "Action · Gizmo guide",
       "keywords": [
         "molly.replay",
         "molly",
@@ -5373,7 +5501,7 @@
       "kind": "function",
       "id": "molly.next",
       "label": "Walkthrough: next step",
-      "detail": "Action · Molly guide",
+      "detail": "Action · Gizmo guide",
       "keywords": [
         "molly.next",
         "molly",
@@ -5387,7 +5515,7 @@
       "kind": "function",
       "id": "molly.prev",
       "label": "Walkthrough: previous step",
-      "detail": "Action · Molly guide",
+      "detail": "Action · Gizmo guide",
       "keywords": [
         "molly.prev",
         "molly",
@@ -7894,7 +8022,7 @@
       "id": "ai.amberx.axf.console.approvals-banner",
       "label": "Approvals banner",
       "folder": "approvals-banner",
-      "version": "0.6.1",
+      "version": "0.8.0",
       "detail": "Plugin · module",
       "keywords": [
         "approvals-banner",
@@ -8701,18 +8829,18 @@
       "address": "plugin:ai.amberx.axf.console.molly-guide",
       "kind": "plugin",
       "id": "ai.amberx.axf.console.molly-guide",
-      "label": "Molly guide",
+      "label": "Gizmo guide",
       "folder": "molly-guide",
       "version": "0.1.0",
       "detail": "Plugin · module",
       "keywords": [
         "molly-guide",
-        "Molly guide",
-        "Molly's narrated walkthroughs (walkthrough@1) in the console"
+        "Gizmo guide",
+        "Gizmo's narrated walkthroughs (walkthrough@1) in the console"
       ],
       "aliases": [
         "molly-guide",
-        "molly guide"
+        "gizmo guide"
       ],
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=molly-guide",
       "provides": [],
