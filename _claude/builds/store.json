@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5005,
- "updatedAt": "2026-11-13T20:57:58.423Z",
+ "rev": 5006,
+ "updatedAt": "2026-11-13T20:58:22.265Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -208612,7 +208612,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T20:53:50.393Z",
-   "updatedAt": "2026-11-13T20:57:56.640Z",
+   "updatedAt": "2026-11-13T20:58:20.400Z",
    "builtAt": "",
    "notes": [
     {
@@ -208634,6 +208634,10 @@
     {
      "text": "CORRECTION: the pull-out commit was NEVER pushed (push rejected), so main still HAS the per-toolbar settings, and there is no pull-out commit to revert. After a hard refresh Brett's desktop looked fine, so the double app menu/banner/nav may have been a stale cached bundle. Still verify with the count test that desktop and phone each render exactly one. Main bug to fix now: per-toolbar settings don't apply (setting two toolbars to show labels shows no labels). Also: Brett says there's no Console settings page/entry he can find. Check that the Console settings entry at the top of every context menu (context-menu-console-settings, landed earlier today) works and opens Settings.",
      "at": "2026-11-13T20:57:56.640Z"
+    },
+    {
+     "text": "Brett: right-clicking a toolbar shows 'Toolbar settings' at the top and NO 'Console settings' entry. Rule (from context-menu-console-settings): 'Console settings' must be the FIRST entry of EVERY context menu in the console (toolbars, tab groups, nav, app menu, banners, grids, every plugin), with the element's own settings (Toolbar settings etc.) right below it. Fix whichever menus skip it, and add a test that walks every registered context menu zone and asserts entry 1 is Console settings.",
+     "at": "2026-11-13T20:58:20.400Z"
     }
    ],
    "approvals": [],
@@ -208763,7 +208767,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
