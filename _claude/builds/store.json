@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4101,
- "updatedAt": "2026-11-13T07:10:18.830Z",
+ "rev": 4102,
+ "updatedAt": "2026-11-13T07:10:31.953Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -180825,6 +180825,75 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-13T06:59:15.736Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the",
+   "title": "Remove Molly completely: delete the molly add-on bundle from agent-manager, the _offer_molly auto-install on start, the molly-guide plugin and anything that pops Molly up on load",
+   "category": "",
+   "detail": "",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-13T07:10:15.600Z",
+   "updatedAt": "2026-11-13T07:10:26.365Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T07:10:21.623Z"
+    },
+    {
+     "text": "Split asked for by console.",
+     "at": "2026-11-13T07:10:26.365Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "pipeline": {
+    "queuedAt": "2026-11-13T07:10:21.155Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "2026-11-13T07:10:25.668Z",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 770
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 4,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

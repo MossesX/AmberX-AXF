@@ -781,9 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 22:33 UTC · `move-amberx-web-app-into-the-console-amberx-andr` → queued, note (all) · pipeline
-- 2026-11-12 22:33 UTC · `move-amberx-web-app-into-the-console-amberx-andr` → running, note (all) · pipeline
-- 2026-11-12 22:33 UTC · `move-amberx-web-app-into-the-console-amberx-andr` note (all) · orchestrator
 - 2026-11-12 22:38 UTC · `move-amberx-web-app-into-the-console-amberx-andr` s3 done, → running (all) · orchestrator
 - 2026-11-12 22:39 UTC · `move-amberx-web-app-into-the-console-amberx-andr` → queued, note (all) · pipeline
 - 2026-11-12 22:40 UTC · `move-amberx-web-app-into-the-console-amberx-andr` → running, note (all) · pipeline
@@ -1181,6 +1178,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 07:09 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` s3 done (all) · orchestrator
 - 2026-11-13 07:09 UTC · `remove-ui-review-as-a-gate-no-screenshots-required-prs-never-held-as-draft-for` s7 done (all) · orchestrator
 - 2026-11-13 07:09 UTC · `skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga` s3 done (all) · orchestrator
+- 2026-11-13 07:10 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` added (0 steps) (all) · mcp
+- 2026-11-13 07:10 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` → queued, note (all) · console
+- 2026-11-13 07:10 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` note (all) · console
 
 ## Token passes (log)
 

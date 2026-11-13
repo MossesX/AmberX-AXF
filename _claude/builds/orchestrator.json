@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T07:10:18.830Z",
+ "updatedAt": "2026-11-13T07:10:31.953Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -118790,6 +118790,35 @@
      "createdAt": "2026-11-13T06:59:15.736Z"
     }
    ]
+  },
+  {
+   "id": "remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the",
+   "title": "Remove Molly completely: delete the molly add-on bundle from agent-manager, the _offer_molly auto-install on start, the molly-guide plugin and anything that pops Molly up on load",
+   "category": "",
+   "detail": "",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-13T07:10:15.600Z",
+   "updatedAt": "2026-11-13T07:10:26.365Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T07:10:21.623Z"
+    },
+    {
+     "text": "Split asked for by console.",
+     "at": "2026-11-13T07:10:26.365Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": []
   }
  ]
 }
