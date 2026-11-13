@@ -778,7 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 10:55 UTC · `postgres-console` → archived (all) · claude-voice
 - 2026-11-12 10:55 UTC · `amberx-full-ui-redesign-8-game-style-concepts-for-ui-review` → archived (all) · claude-voice
 - 2026-11-12 10:55 UTC · `universal-voice-api-control-everything-controllable` → archived (all) · claude-voice
 - 2026-11-12 10:55 UTC · `amberx-notify-panel` → archived (all) · claude-voice
@@ -1178,6 +1177,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 01:15 UTC · `10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less` s1 done, → running (all) · orchestrator
 - 2026-11-13 01:14 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` note (all) · mcp
 - 2026-11-13 01:16 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` note (all) · orchestrator
+- 2026-11-13 01:16 UTC · `10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less` s2 done (all) · orchestrator
 
 ## Token passes (log)
 
