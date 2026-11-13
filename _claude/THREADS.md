@@ -792,6 +792,30 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
+- 2026-11-13 18:52 UTC · `ui-manager-floating-window-to-select-any` → queued, note (all) · foreign-write
+- 2026-11-13 18:52 UTC · `console-android-app-thin-webview-wrapper` → running, note (all) · claude-voice
+- 2026-11-13 18:52 UTC · `ui-manager-floating-window-to-select-any` note (all) · orchestrator
+- 2026-11-13 18:52 UTC · `decision-dialog-ui-review-other` s7 done (all) · orchestrator
+- 2026-11-13 18:53 UTC · `ui-manager-floating-window-to-select-any` → running, note (all) · pipeline
+- 2026-11-13 18:53 UTC · `ui-manager-floating-window-to-select-any` note (all) · orchestrator
+- 2026-11-13 18:53 UTC · `transparency-token-works-every-dialog` s3 done (all) · orchestrator
+- 2026-11-13 18:54 UTC · `quick-settings-pinned-collapsible-pane` → pending, note (all) · reconciler
+- 2026-11-13 18:55 UTC · `transparency-token-works-every-dialog` PR #632 (all) · builds-live
+- 2026-11-13 18:56 UTC · `console-android-app-thin-webview-wrapper` s2 done (all) · orchestrator
+- 2026-11-13 18:55 UTC · `transparency-token-works-every-dialog` s4 done, → built (all) · orchestrator
+- 2026-11-13 18:56 UTC · `transparency-token-works-every-dialog` note (all) · orchestrator
+- 2026-11-13 18:56 UTC · `skin-axhub-override-switch-greyed-out` added (0 steps) (all) · console
+- 2026-11-13 18:56 UTC · `skin-axhub-override-switch-greyed-out` → queued, note (all) · console
+- 2026-11-13 18:56 UTC · `skin-axhub-override-switch-greyed-out` note (all) · claude-voice
+- 2026-11-13 18:57 UTC · `skin-axhub-override-switch-greyed-out` note (all) · claude-voice
+- 2026-11-13 18:57 UTC · `ui-manager-floating-window-to-select-any` s1 done (all) · orchestrator
+- 2026-11-13 18:57 UTC · `skin-axhub-override-switch-greyed-out` note (all) · orchestrator
+- 2026-11-13 18:57 UTC · `transparency-token-works-every-dialog` note (all) · pipeline
+- 2026-11-13 18:58 UTC · `console-android-app-thin-webview-wrapper` → queued, note (all) · pipeline
+- 2026-11-13 18:58 UTC · `skin-axhub-override-switch-greyed-out` note (all) · claude-voice
+- 2026-11-13 18:58 UTC · `skin-axhub-override-switch-greyed-out` note (all) · claude-voice
+- 2026-11-13 18:58 UTC · `console-android-app-thin-webview-wrapper` s3 done (all) · orchestrator
+- 2026-11-13 18:59 UTC · `skin-axhub-override-switch-greyed-out` note (all) · claude-voice
 - 2026-11-13 18:59 UTC · `console-android-app-thin-webview-wrapper` → running, note (all) · pipeline
 - 2026-11-13 18:59 UTC · `console-android-app-thin-webview-wrapper` s3 undone, note (all) · foreign-write
 - 2026-11-13 18:59 UTC · `console-android-app-thin-webview-wrapper` note (all) · orchestrator
