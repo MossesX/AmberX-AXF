@@ -117,3 +117,10 @@ banner red within a minute if anything is stuck in a worktree.
   itself, the same way they already carry `AXHUB_TOKEN` (private file, never logged).
 - `/root/axf-review-shots` is not mounted in the console container, so the health check scans build worktrees
   only; `review.mjs resubmit` covers both folders on the host.
+
+## s9 Done
+
+Tests green for everything this build touches (above). Unrelated failures that are the same on main:
+`deploy/claude-login.test.mjs` (4 account-switch checks) and `deploy/claude-workers.test.mjs` ("and the run ends").
+PR #629. Nothing visible changed, so there is nothing to send to UI Review: the alert uses the existing systems check
+banner and bell.
