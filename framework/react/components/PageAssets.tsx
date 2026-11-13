@@ -25,7 +25,7 @@ import {
   FRAMEWORK_MODULE, PAGE_ANY, PAGE_ASSETS_HIDDEN_KEY, PAGE_ASSET_COLOURS, PAGE_ASSET_COLOUR_KEY, PAGE_ASSET_HIDDEN_COLOUR_KEY,
   PAGE_ASSET_ICONS, PAGE_ASSET_TYPES, hiddenOnPage, isPageAssetColour, isPageAssetType, pageAssetColourOf, pageAssetHiddenColourOf,
   pageAssetHighlightMs, pageAssetId, pageAssetLabel, pageAssetSlug, parsePageAssetId, withAssetHidden,
-  type AxfRuntime, type MenuItem, type PageAssetColour, type PageAssetSummary, type PageAssetType,
+  type AxfRuntime, type ChromeType, type MenuItem, type PageAssetColour, type PageAssetSummary, type PageAssetType,
 } from '../../core';
 import { useAxfState, useRuntime } from '../AxfProvider';
 import { SelectField } from './Forms';
@@ -123,6 +123,18 @@ export function contextPageAsset(rt: AxfRuntime, list = scanPageAssets(rt)): Pag
   let best: PageAsset | null = null;
   for (const a of list) if (a.el.contains(t) && (!best || best.el.contains(a.el))) best = a;
   return best;
+}
+
+/** Page asset kinds that are chrome (chrome-settings@1): each has its own Settings / Change / Move block. */
+const CHROME_KIND: Partial<Record<PageAssetType, ChromeType>> = { toolbar: 'toolbar', 'tab-group': 'tab-group', 'nav-menu': 'nav-menu', 'app-menu': 'app-menu', banner: 'banner' };
+
+/** The innermost chrome piece (toolbar, tab row, nav, menu bar, banner) the context menu was opened on, or null. */
+export function contextChromeAsset(rt: AxfRuntime): { type: ChromeType; instance: string } | null {
+  const t = hostOf(rt).target;
+  if (!t || !rt.getState().context || typeof document === 'undefined') return null;
+  let best: PageAsset | null = null;
+  for (const a of scanPageAssets(rt)) if (CHROME_KIND[a.type] && a.el.contains(t) && (!best || best.el.contains(a.el))) best = a;
+  return best ? { type: CHROME_KIND[best.type]!, instance: best.instance } : null;
 }
 
 export const typeColour = (rt: AxfRuntime, type: PageAssetType): PageAssetColour => pageAssetColourOf(type, rt.settings.get(PAGE_ASSET_COLOUR_KEY(type)));
