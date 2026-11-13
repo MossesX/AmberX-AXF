@@ -410,6 +410,7 @@
           "text",
           "icon"
         ],
+        "behaviour": [],
         "declared": false,
         "via": "",
         "why": "",
@@ -425,6 +426,7 @@
           "text",
           "icon"
         ],
+        "behaviour": [],
         "declared": false,
         "via": "",
         "why": "",
@@ -436,6 +438,7 @@
         "group": "Chrome",
         "also": [],
         "elements": [],
+        "behaviour": [],
         "declared": false,
         "via": "",
         "why": "a widget or attachable type with no style target (schemas/customize.json targets)",
@@ -447,6 +450,7 @@
         "group": "Brand",
         "also": [],
         "elements": [],
+        "behaviour": [],
         "declared": true,
         "via": "iconPack",
         "why": "named by the skin",
@@ -458,6 +462,7 @@
         "group": "System",
         "also": [],
         "elements": [],
+        "behaviour": [],
         "declared": true,
         "via": "",
         "why": "no look",
@@ -469,6 +474,7 @@
         "group": "System",
         "also": [],
         "elements": [],
+        "behaviour": [],
         "declared": false,
         "via": "",
         "why": "excluded from appearance slots and not declared (add \"skin\": { \"by\": … } to its registry entry)",
@@ -480,6 +486,7 @@
         "group": "System",
         "also": [],
         "elements": [],
+        "behaviour": [],
         "declared": true,
         "via": "",
         "why": "",
@@ -491,6 +498,7 @@
         "group": "Data",
         "also": [],
         "elements": [],
+        "behaviour": [],
         "declared": true,
         "via": "",
         "why": "mystery: skin.by must be one of slot, parts, reference, bundle, none",
@@ -502,6 +510,7 @@
         "group": "System",
         "also": [],
         "elements": [],
+        "behaviour": [],
         "declared": true,
         "via": "",
         "why": "hush: skin.by \"none\" needs a why",
@@ -521,7 +530,8 @@
       "parts": 1,
       "reference": 1,
       "bundle": 1,
-      "none": 1
+      "none": 1,
+      "behaviour": 0
     },
     "partsTypes": [
       "button",
@@ -984,7 +994,22 @@
         "type": "toolbar",
         "by": "slot",
         "covered": false,
-        "how": []
+        "how": [],
+        "behaviour": {
+          "axes": [
+            "placement",
+            "tapConfirm",
+            "labels"
+          ],
+          "set": [],
+          "missing": [
+            "placement",
+            "tapConfirm",
+            "labels"
+          ]
+        },
+        "missing": true,
+        "why": "no toolbar asset"
       },
       {
         "type": "button",
@@ -993,7 +1018,24 @@
         "how": [
           "slot windows",
           "parts radius, fontWeight"
-        ]
+        ],
+        "behaviour": {
+          "axes": [
+            "press",
+            "confirm",
+            "confirmBy",
+            "holdMs"
+          ],
+          "set": [],
+          "missing": [
+            "press",
+            "confirm",
+            "confirmBy",
+            "holdMs"
+          ]
+        },
+        "missing": true,
+        "why": "behaviour unset: press, confirm, confirmBy, holdMs"
       },
       {
         "type": "label",
@@ -1001,7 +1043,14 @@
         "covered": true,
         "how": [
           "parts textColor"
-        ]
+        ],
+        "behaviour": {
+          "axes": [],
+          "set": [],
+          "missing": []
+        },
+        "missing": false,
+        "why": ""
       },
       {
         "type": "skin",
@@ -1009,13 +1058,27 @@
         "covered": true,
         "how": [
           "the skin itself"
-        ]
+        ],
+        "behaviour": {
+          "axes": [],
+          "set": [],
+          "missing": []
+        },
+        "missing": false,
+        "why": ""
       },
       {
         "type": "logo-mark",
         "by": "reference",
         "covered": false,
-        "how": []
+        "how": [],
+        "behaviour": {
+          "axes": [],
+          "set": [],
+          "missing": []
+        },
+        "missing": true,
+        "why": "no branding"
       },
       {
         "type": "icon-pack",
@@ -1023,13 +1086,27 @@
         "covered": true,
         "how": [
           "iconPack lucide-sharp"
-        ]
+        ],
+        "behaviour": {
+          "axes": [],
+          "set": [],
+          "missing": []
+        },
+        "missing": false,
+        "why": ""
       },
       {
         "type": "branding",
         "by": "slot",
         "covered": false,
-        "how": []
+        "how": [],
+        "behaviour": {
+          "axes": [],
+          "set": [],
+          "missing": []
+        },
+        "missing": true,
+        "why": "no branding asset"
       },
       {
         "type": "uac-policy",
@@ -1037,7 +1114,14 @@
         "covered": false,
         "how": [
           "no look"
-        ]
+        ],
+        "behaviour": {
+          "axes": [],
+          "set": [],
+          "missing": []
+        },
+        "missing": false,
+        "why": ""
       }
     ],
     "globalSkin": {

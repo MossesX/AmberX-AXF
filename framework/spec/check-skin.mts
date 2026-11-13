@@ -438,7 +438,10 @@ console.log(`check-skin: ${n} checks passed`);
   eq(parseAppLook(JSON.stringify(pluginOn)), pluginOn, 'scopes round trip');
   eq(restoreAppDefault(pluginOn, 'now').scopes, {}, 'Restore clears the scopes');
   eq(undoRestore(restoreAppDefault(pluginOn, 'now')).scopes, pluginOn.scopes, 'and undo brings them back');
-  eq(skinCovers(skinned).find((c) => c.type === 'label'), { type: 'label', by: 'parts', covered: true, how: ['parts textColor'] }, 'what this skin covers: a label through parts');
+  eq(skinCovers(skinned).find((c) => c.type === 'label'), { type: 'label', by: 'parts', covered: true, how: ['parts textColor'], behaviour: { axes: [], set: [], missing: [] }, missing: false, why: '' }, 'what this skin covers: a label through parts (skin@2 rows carry behaviour and missing)');
+  // skin@2: a type with behaviour axes the skin leaves unset is reported as uncovered (what CI fails a shipped skin on)
+  ok(skinCovers(skinned).find((c) => c.type === 'tab-group')!.behaviour.axes.length > 0 && skinCovers(skinned).find((c) => c.type === 'tab-group')!.missing, 'a type with behaviour axes the skin does not set is uncovered');
+  ok(skinCovers(normalizeSkin({ ...skin, behaviour: { banner: { placement: 'bottom' } } })).find((c) => c.type === 'banner')!.behaviour.missing.length === 0, 'setting every axis covers the behaviour');
   eq(skinCovers(skinned).find((c) => c.type === 'icon-pack')!.how, ['iconPack lucide-sharp'], 'the icon pack reference');
   ok(skinCovers(skinned).find((c) => c.type === 'nav-menu')!.covered === false, 'a type the skin does not set is shown as not covered by it');
   eq(globalSkinOf({ $axf: 'appearance@1', skin: { id: 'Bad Id' } } as never), null, 'a junk hub-wide skin is none');

@@ -19,8 +19,8 @@
  *                                                           no new skin; default = the skin's own colours); --scope = inside one screen / plugin only
  *   node framework/cli/skins.mjs restore <app>             back to the snapshot (keeps one undo)
  *   node framework/cli/skins.mjs undo <app>                undo the last restore
- *   node framework/cli/skins.mjs coverage                  how a skin reaches every registered asset type (CI: spec/check-skin-coverage.mjs)
- *   node framework/cli/skins.mjs covers <skin>             what one skin sets or styles, type by type
+ *   node framework/cli/skins.mjs coverage                  how a skin reaches every registered asset type, with each type's behaviour axes (CI: spec/check-skin-coverage.mjs)
+ *   node framework/cli/skins.mjs covers <skin>             what one skin sets or styles, type by type, and which behaviour axes it sets (✗ = uncovered)
  *   add --json for machine output. An app is its id (axf-console) or its folder (console-web), or `console`, `axhub`, `amberx`, `molly`.
  *
  * Files are written where /projects is mounted (the hub's data folder), so open apps follow through the hub's change
@@ -30,7 +30,8 @@ import { chownSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { backToSkin, newAppLook, normalizeAppLook, normalizeLookPart, overriddenSlots, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, setInheritSkin, setLookSlot, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorTheme, undoRestore, SKIN_COLOR_SLOT, SKIN_NEVER } from '../core/engines/skin-rules.mjs';
-import { coverageSummary, coverageTable, isSubScopeKey, partElements, skinScopeOf } from '../core/engines/skin-coverage.mjs';
+import { coverageSummary, coverageTable, isSubScopeKey, partElements, skinCoversTable, skinScopeOf } from '../core/engines/skin-coverage.mjs';
+import { behaviourTable } from '../core/engines/skin-behaviour.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
 const ALIASES = { console: 'axf-console', 'console-web': 'axf-console', axhub: 'axhub-web', amberx: 'amberx-droid' };
@@ -200,33 +201,30 @@ export function setSlotEverywhere(slot, id, by) {
   for (const app of appIds()) { const l = readLook(app); if (l) writeLook(setLookSlot(l, slot, id, global), by); }
 }
 
-/** skin-coverage@1 over the real registry and style targets. */
+const registry = () => ({ spec: readJson(join(ROOT, 'framework/schemas/asset-types.json')).types, targets: readJson(join(ROOT, 'framework/schemas/customize.json')).targets ?? {} });
+
+/** skin-coverage@1 over the real registry and style targets, each row with the type's behaviour axes (skin@2). */
 export function coverage() {
-  const spec = readJson(join(ROOT, 'framework/schemas/asset-types.json')).types;
-  const targets = readJson(join(ROOT, 'framework/schemas/customize.json')).targets ?? {};
+  const { spec, targets } = registry();
   const rows = coverageTable(spec, targets, SKIN_NEVER);
-  return { summary: coverageSummary(rows), rows };
+  return { summary: coverageSummary(rows), rows, behaviour: behaviourTable(spec, targets) };
 }
 
-/** What one skin (or design package) sets or styles, type by type. */
-export function covers(skinId) {
+/** A shipped skin or design package as skin@2 data (a design package reads with today's behaviour). */
+export function skinDataOf(skinId) {
   const a = assetsOf('skin').find((s) => s.id === skinId) ?? assetsOf('design-package').find((s) => s.id === skinId);
   if (!a) throw new Error(`no skin "${skinId}"`);
   const d = a.data ?? {};
-  const slots = a.type === 'skin'
-    ? { ...(d.assets ?? {}), ...(d.layoutTheme ? { layout: d.layoutTheme } : {}), ...(d.colorTheme ? { 'color-theme': d.colorTheme } : {}), ...(d.styleTheme ? { 'style-theme': d.styleTheme } : {}) }
-    : { ...(d.extras?.slots ?? {}), ...(d.layout ? { layout: d.layout } : {}), ...(d['color-theme'] ? { 'color-theme': d['color-theme'] } : {}), ...(d['style-theme'] ? { 'style-theme': d['style-theme'] } : {}) };
-  const targets = readJson(join(ROOT, 'framework/schemas/customize.json')).targets ?? {};
-  return coverage().rows.map((r) => {
-    const how = [];
-    if (slots[r.type]) how.push(`slot ${slots[r.type]}`);
-    if (d.parts?.[r.type]) how.push(`parts ${Object.keys(d.parts[r.type]).join(', ')} (${partElements(targets[r.type]).join('/')})`);
-    if (r.by === 'reference' && r.via === 'iconPack' && d.iconPack) how.push(`iconPack ${d.iconPack}`);
-    if (r.by === 'reference' && r.via && r.via !== 'iconPack' && slots[r.via]) how.push(`via ${r.via} ${slots[r.via]}`);
-    if (r.by === 'bundle') how.push('the skin itself');
-    if (r.by === 'none') how.push('no look');
-    return { type: r.type, by: r.by, covered: r.by !== 'none' && how.length > 0, how };
-  });
+  if (a.type === 'skin') return d;
+  const assets = { ...(d.extras?.slots ?? {}) };
+  if (d['behavior-theme']) assets['behavior-theme'] = d['behavior-theme'];
+  return { layoutTheme: d.layout, colorTheme: d['color-theme'], styleTheme: d['style-theme'], assets };
+}
+
+/** What one skin (or design package) sets or styles, type by type, with its behaviour axes set / unset (skin@2). */
+export function covers(skinId) {
+  const { spec, targets } = registry();
+  return skinCoversTable(skinDataOf(skinId), spec, targets, SKIN_NEVER).map((r) => ({ ...r, how: r.how.map((h) => (h.startsWith('parts ') ? `${h} (${partElements(targets[r.type]).join('/')})` : h)) }));
 }
 
 function main(argv) {
@@ -248,8 +246,8 @@ function main(argv) {
   else if (cmd === 'covers') { if (!app) throw new Error('covers needs a skin id'); out = covers(app); }
   else throw new Error(`unknown command ${cmd}`);
   if (json) console.log(JSON.stringify({ ok: true, result: out }));
-  else if (cmd === 'coverage') { for (const r of out.rows) console.log(`${r.type.padEnd(16)} ${r.by.padEnd(10)}${r.also.length ? `+${r.also.join('+')}` : ''}${r.elements.length ? `  ${r.elements.join('/')}` : ''}`); const s = out.summary; console.log(`${s.total} types · slot ${s.slot} · parts ${s.parts} · reference ${s.reference} · bundle ${s.bundle} · none ${s.none} · uncovered ${s.uncovered}`); }
-  else if (cmd === 'covers') for (const c of out) console.log(`${c.covered ? '✓' : '·'} ${c.type.padEnd(16)} ${c.by.padEnd(10)} ${c.how.join('; ')}`);
+  else if (cmd === 'coverage') { for (const r of out.rows) console.log(`${r.type.padEnd(16)} ${r.by.padEnd(10)}${r.also.length ? `+${r.also.join('+')}` : ''}${r.elements.length ? `  ${r.elements.join('/')}` : ''}${r.behaviour.length ? `  behaviour: ${r.behaviour.join(', ')}` : ''}`); const s = out.summary; console.log(`${s.total} types · slot ${s.slot} · parts ${s.parts} · reference ${s.reference} · bundle ${s.bundle} · none ${s.none} · uncovered ${s.uncovered} · ${s.behaviour} with behaviour`); }
+  else if (cmd === 'covers') { for (const c of out) console.log(`${c.missing ? '✗' : c.covered ? '✓' : '·'} ${c.type.padEnd(16)} ${c.by.padEnd(10)} ${c.how.join('; ')}${c.behaviour.axes.length ? `  behaviour ${c.behaviour.set.length}/${c.behaviour.axes.length}${c.behaviour.missing.length ? ` (unset: ${c.behaviour.missing.join(', ')})` : ''}` : ''}`); const miss = out.filter((c) => c.missing); console.log(miss.length ? `${miss.length} type(s) uncovered by this skin` : 'covers every type'); }
   else console.log(Array.isArray(out) ? out.map((x) => JSON.stringify(x)).join('\n') : JSON.stringify(out));
 }
 

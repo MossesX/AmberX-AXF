@@ -37,14 +37,18 @@ import { spacingOf } from './spacing';
 import { CUSTOM_TARGETS, customizable, normalizeCustomValues, type CustomValues } from './customize';
 import spec from '../../schemas/asset-types.json';
 import { SKIN_COLOR_SLOT, SKIN_NEVER, normalizeLookPart, resolveLookSkin, setSkinColorTheme, type AppLookDocument, type GlobalSkin, type LookPart } from './skin-rules.mjs';
-import { coverageSummary, coverageTable, partsErrors, partsTypes, skinScopeKey, uncoveredTypes, type CoverageRow, type CoverageSummary, type ResolvedSkin, type SkinScope, type TypeSpecs } from './skin-coverage.mjs';
-import { behaviourErrors, normalizeBehaviour, type BehaviourMap } from './skin-behaviour.mjs';
+import { coverageSummary, coverageTable, partsErrors, partsTypes, skinCoversTable, skinScopeKey, skinUncoveredBy, uncoveredTypes, type CoverageRow, type CoverageSummary, type ResolvedSkin, type SkinCoversRow, type SkinScope, type TypeSpecs } from './skin-coverage.mjs';
+import { behaviourAxes, behaviourErrors, behaviourTable, behaviourTokens, normalizeBehaviour, type BehaviourAxis, type BehaviourMap, type BehaviourRow, type BehaviourTokenInfo } from './skin-behaviour.mjs';
 
 export { APP_LOOK_FRAME, APP_LOOK_MAX_BYTES, APP_LOOK_PROJECT, SKIN_COLOR_SLOT, SKIN_NEVER, SKIN_USES, appLookPath, backToSkin, newAppLook, normalizeAppLook, normalizeScopeState, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, scopeState, setInheritSkin, setLookSlot, setScopeOverride, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorTheme, undoRestore } from './skin-rules.mjs';
 export type { AppLookDocument, AppSkinState, GlobalSkin, LookPart } from './skin-rules.mjs';
 // named, not `export *`: tsx links a star re-export of a .mjs module as empty when the importer is a .mts file
 export { COVERAGE_KINDS, PART_ELEMENTS, SKIN_COVERAGE_CONTRACT, SKIN_SCOPE_APP, SKIN_SCOPE_GLOBAL, SKIN_SCOPE_KINDS, coverageOf, coverageSummary, coverageTable, declarationErrors, declaredCoverage, isSubScopeKey, normalizeSkinScope, partElements, partsErrors, partsTypes, resolveSkinChain, skinScopeChain, skinScopeDomId, skinScopeKey, skinScopeKind, skinScopeOf, skinScopeSelector, uncoveredTypes } from './skin-coverage.mjs';
-export type { CoverageKind, CoverageRow, CoverageSummary, PartElement, ResolvedSkin, SkinScope, SkinScopeKind, SkinScopeState, StyleTargets, TypeSpecs } from './skin-coverage.mjs';
+export type { CoverageKind, CoverageRow, CoverageSummary, PartElement, ResolvedSkin, SkinCoversRow, SkinLike, SkinScope, SkinScopeKind, SkinScopeState, StyleTargets, TypeSpecs } from './skin-coverage.mjs';
+export { skinCoversTable, skinSlotMap, skinUncoveredBy } from './skin-coverage.mjs';
+// skin@2 behaviour axes (skin-behaviour.mjs): named re-exports for the same tsx reason
+export { BEHAVIOUR_KEY_PREFIX, BEHAVIOUR_KINDS, BEHAVIOUR_TOKEN_PREFIX, SKIN_BEHAVIOUR_CONTRACT, applyBehaviourToAsset, axisOf, axisValuesText, behaviourAttr, behaviourAttrs, behaviourAxes, behaviourCoverage, behaviourDeclarationErrors, behaviourDefaults, behaviourErrors, behaviourFieldsOf, behaviourFromSettings, behaviourKey, behaviourMissing, behaviourRuntimeValues, behaviourSchemaProperties, behaviourTable, behaviourToken, behaviourTokenVars, behaviourTokens, behaviourTypes, behaviourValue, behaviourValueText, checkAxis, describeBehaviour, isBehaviourKey, mergeBehaviour, normalizeAxisValue, normalizeBehaviour, parseBehaviourKey, resolveBehaviour, sameBehaviour } from './skin-behaviour.mjs';
+export type { BehaviourAxis, BehaviourCoverageRow, BehaviourDescription, BehaviourKind, BehaviourMap, BehaviourRow, BehaviourSources, BehaviourTokenInfo, BehaviourValue } from './skin-behaviour.mjs';
 
 export const SKIN_TYPE = 'skin';
 /** skin@2 (Nov 13 2026): look + behaviour. A skin without `behaviour` is a skin@1 and reads as today's behaviour. */
@@ -206,20 +210,19 @@ export function skinUncovered(): CoverageRow[] { return uncoveredTypes(TYPE_SPEC
 export function skinCoverageSummary(): CoverageSummary { return coverageSummary(skinCoverage()); }
 /** The types a skin's `parts` may style. */
 export function skinPartsTypes(): string[] { return partsTypes(TYPE_SPECS, CUSTOM_TARGETS); }
-/** What one skin covers, type by type: `covered` = it sets or styles that type; `how` = the means it uses. */
-export function skinCovers(skin: SkinData): { type: string; by: CoverageRow['by']; covered: boolean; how: string[] }[] {
-  const slots = skinSlots(skin);
-  return skinCoverage().map((r) => {
-    const how: string[] = [];
-    if (slots[r.type]) how.push(`slot ${slots[r.type]}`);
-    if (skin.parts?.[r.type]) how.push(`parts ${Object.keys(skin.parts[r.type]!).join(', ')}`);
-    if (r.by === 'reference' && r.via === 'iconPack' && skin.iconPack) how.push(`iconPack ${skin.iconPack}`);
-    if (r.by === 'reference' && r.via && r.via !== 'iconPack' && slots[r.via]) how.push(`via ${r.via} ${slots[r.via]}`);
-    if (r.by === 'bundle') how.push('the skin itself');
-    if (r.by === 'none') how.push('no look');
-    return { type: r.type, by: r.by, covered: r.by !== 'none' && how.length > 0, how };
-  });
-}
+/**
+ * What one skin covers, type by type: `covered` = its look sets or styles that type; `how` = the means it uses;
+ * `behaviour` = the type's axes, set and unset by this skin; `missing` = CI would fail this skin on the row (skin@2).
+ */
+export function skinCovers(skin: SkinData): SkinCoversRow[] { return skinCoversTable(skin, TYPE_SPECS, CUSTOM_TARGETS, SKIN_NEVER); }
+/** The rows a skin leaves uncovered on look or behaviour (what check-skin-coverage fails a shipped skin on). */
+export function skinUncoveredRows(skin: SkinData): SkinCoversRow[] { return skinUncoveredBy(skin, TYPE_SPECS, CUSTOM_TARGETS, SKIN_NEVER); }
+/** Every type with behaviour axes and its axes (skin@2), registry order. */
+export function skinBehaviourTable(): BehaviourRow[] { return behaviourTable(TYPE_SPECS, CUSTOM_TARGETS); }
+/** The behaviour axes of one type (skin@2), {} for a type without behaviour. */
+export function skinBehaviourAxes(type: string): Record<string, BehaviourAxis> { return behaviourAxes(type, TYPE_SPECS, CUSTOM_TARGETS); }
+/** Every behaviour token (--fx-bhv-*, data-fx-bhv-*, axf.behaviour.*), registry order: the control@1 list. */
+export function skinBehaviourTokens(): BehaviourTokenInfo[] { return behaviourTokens(TYPE_SPECS, CUSTOM_TARGETS); }
 
 /* ---------------- composing ---------------- */
 

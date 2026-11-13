@@ -28,11 +28,25 @@ export interface CoverageRow {
   also: CoverageKind[];
   /** the elements its style parts reach (composite assets) */
   elements: PartElement[];
+  /** the behaviour axes the type declares (skin@2, skin-behaviour.mjs); [] = no behaviour */
+  behaviour: string[];
   declared: boolean;
   via: string;
   why: string;
 }
-export interface CoverageSummary { total: number; uncovered: number; slot: number; parts: number; reference: number; bundle: number; none: number }
+export interface CoverageSummary { total: number; uncovered: number; slot: number; parts: number; reference: number; bundle: number; none: number; behaviour: number }
+/** One row of what a skin covers: its look's means, its behaviour axes set / unset, and whether CI would fail it. */
+export interface SkinCoversRow {
+  type: string;
+  by: CoverageKind | 'uncovered';
+  covered: boolean;
+  how: string[];
+  behaviour: { axes: string[]; set: string[]; missing: string[] };
+  missing: boolean;
+  why: string;
+}
+/** The skin@2 data shape the coverage functions read (normalizeSkin output or a design package read as a skin). */
+export interface SkinLike { layoutTheme?: string; colorTheme?: string; styleTheme?: string; assets?: Record<string, string>; iconPack?: string; parts?: Record<string, unknown>; behaviour?: unknown }
 
 export type TypeSpecs = Record<string, Record<string, unknown>>;
 export type StyleTargets = Record<string, { root: string; item?: string }>;
@@ -54,5 +68,8 @@ export function coverageOf(type: string, spec: TypeSpecs, targets?: StyleTargets
 export function coverageTable(spec: TypeSpecs, targets?: StyleTargets, never?: readonly string[]): CoverageRow[];
 export function uncoveredTypes(spec: TypeSpecs, targets?: StyleTargets, never?: readonly string[]): CoverageRow[];
 export function coverageSummary(rows: readonly CoverageRow[]): CoverageSummary;
+export function skinSlotMap(skin: SkinLike | null | undefined): Record<string, string>;
+export function skinCoversTable(skin: SkinLike | null | undefined, spec: TypeSpecs, targets?: StyleTargets, never?: readonly string[]): SkinCoversRow[];
+export function skinUncoveredBy(skin: SkinLike | null | undefined, spec: TypeSpecs, targets?: StyleTargets, never?: readonly string[]): SkinCoversRow[];
 export function partsTypes(spec: TypeSpecs, targets?: StyleTargets): string[];
 export function partsErrors(parts: unknown, spec: TypeSpecs, targets?: StyleTargets): string[];

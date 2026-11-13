@@ -8,6 +8,7 @@
     "nav-menu": true,
     "context-menu": false,
     "tab-group": true,
+    "table": true,
     "dialog": true,
     "popup": true,
     "button": true,
@@ -233,6 +234,9 @@
           "touch-friendly",
           "underline",
           "warm-craft"
+        ],
+        "table": [
+          "standard"
         ],
         "dialog": [
           "amber-signature",
@@ -651,6 +655,9 @@
           "touch-friendly",
           "underline",
           "warm-craft"
+        ],
+        "table": [
+          "standard"
         ],
         "dialog": [
           "amber-signature",
@@ -1076,6 +1083,9 @@
           "underline",
           "warm-craft"
         ],
+        "table": [
+          "standard"
+        ],
         "dialog": [
           "amber-signature",
           "boardroom",
@@ -1494,6 +1504,9 @@
           "underline",
           "warm-craft"
         ],
+        "table": [
+          "standard"
+        ],
         "dialog": [
           "amber-signature",
           "boardroom",
@@ -1882,6 +1895,9 @@
           "touch-friendly",
           "underline",
           "warm-craft"
+        ],
+        "table": [
+          "standard"
         ],
         "dialog": [
           "amber-signature",
@@ -2300,6 +2316,9 @@
           "touch-friendly",
           "underline",
           "warm-craft"
+        ],
+        "table": [
+          "standard"
         ],
         "dialog": [
           "amber-signature",
