@@ -788,7 +788,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 18:36 UTC · `transparency-token-works-every-dialog` note (all) · orchestrator
 - 2026-11-13 18:37 UTC · `vps-builds-get-console-token-ui-review` PR #629 (all) · builds-live
 - 2026-11-13 18:37 UTC · `vps-builds-get-console-token-ui-review` note (all) · orchestrator
 - 2026-11-13 18:37 UTC · `new-asset-type-animated-expanding-row` s1 done, → running (all) · orchestrator
@@ -1188,6 +1187,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 20:14 UTC · `context-menus-plugin-one-true-source` → queued, note (all) · console
 - 2026-11-13 20:15 UTC · `full-voice-control-merge-main-and-land` note (all) · orchestrator
 - 2026-11-13 20:14 UTC · `full-voice-control-merge-main-and-land` s3 done, → built (all) · orchestrator
+- 2026-11-13 20:15 UTC · `context-menus-plugin-one-true-source` note (all) · claude-voice
 
 ## Token passes (log)
 

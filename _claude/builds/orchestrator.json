@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T20:15:31.304Z",
+ "updatedAt": "2026-11-13T20:15:49.955Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -133545,12 +133545,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T20:14:18.034Z",
-   "updatedAt": "2026-11-13T20:14:20.654Z",
+   "updatedAt": "2026-11-13T20:15:47.807Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-13T20:14:20.654Z"
+    },
+    {
+     "text": "Brett adds: (1) a visible, EDITABLE MAP of every context-menu zone in the app (add, remove, merge or split zones, assign menus). (2) A context menu entry 'Context menu developer mode' (toggle): when on, every zone on the current page is highlighted with an outline and label. (3) A tooltip in developer mode: 'Double-click a zone to manage its context menu.' (4) Double-clicking a zone opens the context menu manager on that zone: a sorted, collapsible, categorized tree of its menu items and tokens, filterable by page, app, plugin or element, easily readable, editable and manageable (add, reorder, hide, rename, level per item, restore). Full API and voice ('turn on context menu developer mode').",
+     "at": "2026-11-13T20:15:47.807Z"
     }
    ],
    "approvals": [],
