@@ -1,0 +1,324 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "axf/designer.schema.json",
+  "title": "AmberX AXF Designer interface asset",
+  "type": "object",
+  "required": [
+    "$axf",
+    "type",
+    "id",
+    "name",
+    "version",
+    "data"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "asset@1"
+    },
+    "type": {
+      "const": "designer"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{1,47}$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "data": {
+      "type": "object",
+      "required": [],
+      "properties": {
+        "for": {
+          "type": "string"
+        },
+        "extends": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]{1,47}$"
+        },
+        "canvas": {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "enum": [
+                "free",
+                "flow",
+                "both"
+              ],
+              "default": "both",
+              "description": "Canvas"
+            },
+            "grid": {
+              "type": "number",
+              "minimum": 2,
+              "maximum": 64,
+              "default": 8,
+              "description": "Grid step"
+            },
+            "snap": {
+              "type": "boolean",
+              "default": true,
+              "description": "Snap to grid"
+            },
+            "zoomMin": {
+              "type": "number",
+              "minimum": 10,
+              "maximum": 100,
+              "default": 25,
+              "description": "Smallest zoom (%)"
+            },
+            "zoomMax": {
+              "type": "number",
+              "minimum": 100,
+              "maximum": 800,
+              "default": 400,
+              "description": "Largest zoom (%)"
+            },
+            "rulers": {
+              "type": "boolean",
+              "default": false,
+              "description": "Rulers"
+            },
+            "guides": {
+              "type": "boolean",
+              "default": true,
+              "description": "Alignment guides"
+            }
+          }
+        },
+        "panels": {
+          "type": "object",
+          "properties": {
+            "library": {
+              "enum": [
+                "left",
+                "right",
+                "bottom",
+                "float",
+                "hidden"
+              ],
+              "default": "left",
+              "description": "Asset library panel"
+            },
+            "layers": {
+              "enum": [
+                "left",
+                "right",
+                "bottom",
+                "float",
+                "hidden"
+              ],
+              "default": "left",
+              "description": "Layers / tree panel"
+            },
+            "inspector": {
+              "enum": [
+                "left",
+                "right",
+                "bottom",
+                "float",
+                "hidden"
+              ],
+              "default": "right",
+              "description": "Inspector panel"
+            },
+            "preview": {
+              "enum": [
+                "left",
+                "right",
+                "bottom",
+                "float",
+                "hidden"
+              ],
+              "default": "bottom",
+              "description": "Preview panel"
+            },
+            "help": {
+              "enum": [
+                "left",
+                "right",
+                "bottom",
+                "float",
+                "hidden"
+              ],
+              "default": "right",
+              "description": "Help panel"
+            },
+            "history": {
+              "enum": [
+                "left",
+                "right",
+                "bottom",
+                "float",
+                "hidden"
+              ],
+              "default": "hidden",
+              "description": "History panel"
+            }
+          }
+        },
+        "preview": {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "enum": [
+                "inline",
+                "floating",
+                "docked"
+              ],
+              "default": "docked",
+              "description": "Preview"
+            },
+            "device": {
+              "enum": [
+                "desktop",
+                "phone",
+                "both"
+              ],
+              "default": "both",
+              "description": "Preview device"
+            },
+            "refresh": {
+              "enum": [
+                "live",
+                "on-save"
+              ],
+              "default": "live",
+              "description": "Preview refresh"
+            }
+          }
+        },
+        "info": {
+          "type": "object",
+          "properties": {
+            "tooltip": {
+              "type": "boolean",
+              "default": true,
+              "description": "Tooltips"
+            },
+            "hoverCard": {
+              "type": "boolean",
+              "default": true,
+              "description": "Hover cards"
+            },
+            "sidePanel": {
+              "type": "boolean",
+              "default": true,
+              "description": "Side panel details"
+            },
+            "helpText": {
+              "type": "boolean",
+              "default": true,
+              "description": "Help text"
+            },
+            "say": {
+              "type": "boolean",
+              "default": false,
+              "description": "Spoken descriptions"
+            }
+          }
+        },
+        "context": {
+          "type": "object",
+          "properties": {
+            "preview": {
+              "type": "boolean",
+              "default": true,
+              "description": "Preview in the context menu"
+            },
+            "insert": {
+              "type": "boolean",
+              "default": true,
+              "description": "Insert menu"
+            },
+            "arrange": {
+              "type": "boolean",
+              "default": true,
+              "description": "Arrange menu"
+            },
+            "clipboard": {
+              "type": "boolean",
+              "default": true,
+              "description": "Cut / copy / paste"
+            },
+            "help": {
+              "type": "boolean",
+              "default": true,
+              "description": "Help entry"
+            }
+          }
+        },
+        "history": {
+          "type": "object",
+          "properties": {
+            "limit": {
+              "type": "number",
+              "minimum": 10,
+              "maximum": 500,
+              "default": 100,
+              "description": "Undo steps"
+            },
+            "coalesceMs": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 2000,
+              "default": 400,
+              "description": "Merge quick edits (ms)"
+            }
+          }
+        },
+        "output": {
+          "type": "object",
+          "properties": {
+            "to": {
+              "enum": [
+                "app",
+                "framework",
+                "hub"
+              ],
+              "default": "app",
+              "description": "Save designed assets to"
+            },
+            "idPrefix": {
+              "type": "string",
+              "maxLength": 80,
+              "default": "",
+              "description": "Id prefix"
+            },
+            "register": {
+              "type": "boolean",
+              "default": true,
+              "description": "Register in the UI registry"
+            },
+            "version": {
+              "enum": [
+                "patch",
+                "minor",
+                "keep"
+              ],
+              "default": "patch",
+              "description": "Version on save"
+            }
+          }
+        },
+        "voice": {
+          "type": "boolean",
+          "default": true,
+          "description": "Voice control"
+        },
+        "autosave": {
+          "type": "boolean",
+          "default": true,
+          "description": "Autosave"
+        }
+      }
+    }
+  }
+}

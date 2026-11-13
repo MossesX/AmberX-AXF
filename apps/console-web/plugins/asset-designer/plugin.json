@@ -1,0 +1,74 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.asset-designer",
+  "name": "Asset designer",
+  "version": "0.3.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "No-code designer for every asset type the framework registers (asset-types.json): colour and style themes, layouts, menus, toolbars, tab groups, banners, widgets, settings interfaces, skins, typography, density, sizing, cards, help, and the chrome settings interface of every toolbar, tab group, banner and menu (chrome-settings@1) with all of its tokens. Fields come from the asset type's registry (required fields, enums, optional fields, chrome fields), with a JSON view, a live preview on the real chrome and the designed@1 manifest. Every save passes the framework validator first (the same one the build engine runs): Save stays off until the asset is clean, and the server refuses an invalid asset. Designed assets are standard asset@1 files kept in the plugin's data folder and registered into the runtime on load. Nav → Plugins → Asset designer; Settings → Plugins → Asset designer.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "view:asset-designer",
+    "settings-tab:asset-designer",
+    "action:asset-designer.open",
+    "action:asset-designer.new",
+    "action:asset-designer.edit",
+    "action:asset-designer.chrome",
+    "action:asset-designer.reload"
+  ],
+  "requires": [],
+  "optional": [],
+  "uiEditor": [
+    "builder"
+  ],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "banner": false,
+  "tabable": false,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/asset-designer",
+    "env": [
+      "AXF_ASSET_DESIGNER_DIR"
+    ],
+    "mentions": [
+      "CLAUDE.md", "_claude/memory/STATUS.md",
+      "apps/console-web/plugins/README.md"
+    ]
+  },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      { "route": "GET /types", "id": "types", "title": "List asset types", "description": "Every asset type the designer can edit, with its fields, enums and chrome fields.", "readOnly": true },
+      { "route": "GET /chrome", "id": "chrome", "title": "Chrome settings fields", "description": "The chrome types (tab group, toolbar, banner, menus), every field their settings interface offers and the default settings interface id of each.", "readOnly": true },
+      { "route": "GET /builtin/{t}", "id": "builtin", "title": "List built-in assets of a type", "description": "The framework's and the console's own assets of one type, to start a design from.", "readOnly": true,
+        "input": { "type": "object", "properties": { "t": { "type": "string", "description": "asset type, e.g. toolbar" } }, "required": ["t"] } },
+      { "route": "GET /assets", "id": "assets", "title": "List designed assets", "description": "Every asset saved in the designer (optionally one type: ?type=toolbar).", "readOnly": true },
+      { "route": "GET /assets/{t}/{iid}", "id": "asset", "title": "Read one designed asset", "readOnly": true,
+        "input": { "type": "object", "properties": { "t": { "type": "string" }, "iid": { "type": "string" } }, "required": ["t", "iid"] } },
+      { "route": "GET /library", "id": "library", "title": "Designer library index", "description": "designer-library@1: one row per designed asset (uid, ref, revision, updated).", "readOnly": true },
+      { "route": "POST /validate", "id": "validate", "title": "Validate an asset", "description": "Runs the framework validator on an asset@1 object without saving it; answers ok + errors.", "readOnly": true,
+        "input": { "type": "object", "properties": { "asset": { "type": "object", "description": "an asset@1 envelope" } }, "required": ["asset"] } },
+      { "route": "POST /assets", "id": "save", "title": "Save a designed asset", "description": "Validates, adds or bumps the designed@1 manifest and writes the asset (any type; built-in ids are refused).",
+        "input": { "type": "object", "properties": { "asset": { "type": "object" }, "overwrite": { "type": "boolean", "default": true }, "by": { "type": "string" } }, "required": ["asset"] } },
+      { "route": "POST /assets/{t}/{iid}/duplicate", "id": "duplicate", "title": "Duplicate a designed asset", "description": "Copies a designed asset under a new id (and name) with a fresh identifier.",
+        "input": { "type": "object", "properties": { "t": { "type": "string" }, "iid": { "type": "string" }, "id": { "type": "string" }, "name": { "type": "string" } }, "required": ["t", "iid", "id"] } },
+      { "route": "DELETE /assets/{t}/{iid}", "id": "delete", "title": "Delete a designed asset", "destructive": true, "confirm": true,
+        "input": { "type": "object", "properties": { "t": { "type": "string" }, "iid": { "type": "string" } }, "required": ["t", "iid"] } },
+      { "action": "asset-designer.open", "title": "Open the asset designer", "navigate": true },
+      { "action": "asset-designer.new", "title": "New asset in the designer", "description": "Opens the designer on a blank asset of a type: asset-designer.new:<type>.", "navigate": true },
+      { "action": "asset-designer.edit", "title": "Edit a designed asset", "description": "Opens a saved asset in the designer: asset-designer.edit:<type>:<id>.", "navigate": true },
+      { "action": "asset-designer.chrome", "title": "Edit a chrome settings interface", "description": "Opens the settings interface asset of a chrome type (tab-group, toolbar, banner, nav-menu, app-menu, context-menu) in the designer: asset-designer.chrome:<type>.", "navigate": true },
+      { "action": "asset-designer.reload", "title": "Reload designed assets", "description": "Re-reads the saved assets and registers them into the running console." }
+    ]
+  },
+  "builtWith": { "model": "fable", "builtAt": "2026-11-13" },
+  "help": "help.json",
+  "opens": "main"
+}

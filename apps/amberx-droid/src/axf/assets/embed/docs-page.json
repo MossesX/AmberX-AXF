@@ -1,0 +1,37 @@
+{
+  "$axf": "asset@1",
+  "type": "embed",
+  "id": "docs-page",
+  "name": "Framework docs page",
+  "version": "1.0.0",
+  "description": "An https page in a sandboxed frame: the AXF docs, embedded in a toolbar button, a tab or a region. A web page never gets the console token or the host storage (embed-asset@1).",
+  "author": "AmberX AXF",
+  "tags": [
+    "embed",
+    "starter"
+  ],
+  "data": {
+    "target": {
+      "kind": "url",
+      "url": "https://axf.amberxai.com/"
+    },
+    "manifest": "https://axf.amberxai.com/embed.json",
+    "label": "Docs",
+    "icon": "book",
+    "size": {
+      "width": "auto",
+      "height": 600
+    },
+    "hosts": [
+      "toolbar",
+      "tab-group",
+      "region",
+      "dialog"
+    ],
+    "load": "lazy",
+    "sandbox": true,
+    "expand": "popout",
+    "passData": false,
+    "remember": true
+  }
+}

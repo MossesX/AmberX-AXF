@@ -14,6 +14,7 @@ import { agentCardErrors } from './engines/agent-card-rules.mjs';
 import { jobTypeErrors } from './engines/job-type-rules.mjs';
 import { cardErrors } from './engines/card-rules.mjs';
 import { demoAssetErrors } from './engines/demo-rules.mjs';
+import { designedErrors, designerErrors, designerSettingsErrors } from './engines/designer-rules.mjs';
 import { behaviorErrors } from './engines/behavior';
 import { dockLayoutErrors } from './engines/dock';
 import { xlayoutErrors } from './engines/xlayout';
@@ -132,6 +133,10 @@ export function validateAsset(raw: unknown): ValidationResult {
   errors.push(...cardErrors(raw.type, data));
   // demonstration@1 / book@1 / clip@1 / docs@1: ONE validator shared with the build engine (core/engines/demo-rules.mjs)
   errors.push(...demoAssetErrors(raw.type, data));
+  // designer@1: the designer interface + embed-asset@1 types, a designer's settings interface, and the designed@1 manifest a designed asset carries (core/engines/designer-rules.mjs)
+  errors.push(...designerErrors(raw.type, data));
+  if (raw.type === 'settings') errors.push(...designerSettingsErrors(raw));
+  if (raw.designed !== undefined) errors.push(...designedErrors(raw.designed, raw));
   errors.push(...(brandAssetErrors(raw.type, data) ?? []));
   // Widget hosts (banner.attach, toolbar.widgets): every entry names a type and side the host takes.
   const host = hostSpec(raw.type);

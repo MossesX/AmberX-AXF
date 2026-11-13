@@ -1,0 +1,18 @@
+/* Asset designer plugin. Layout only, every value an asset token (framework/spec/THEMING.md); controls keep the app's style. */
+.axp-asset-designer { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); min-width: 0 }
+.axp-asset-designer__bar { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--fx-dens-gap-md); min-width: 0 }
+.axp-asset-designer__bar > .fx-field { flex: 1 1 calc(var(--fx-space) * 22); min-width: 0; max-width: calc(var(--fx-space) * 40) }
+.axp-asset-designer__actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm); margin-left: auto }
+.axp-asset-designer__state { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md); min-width: 0 }
+.axp-asset-designer__envelope { display: grid; grid-template-columns: repeat(auto-fit, minmax(calc(var(--fx-space) * 24), 1fr)); gap: var(--fx-dens-gap-md); align-items: start }
+.axp-asset-designer__envelope .axp-asset-designer__wide { grid-column: 1 / -1 }
+.axp-asset-designer__fields { display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--fx-space) * 28), 1fr)); gap: var(--fx-dens-gap-md); align-items: start }
+.axp-asset-designer__fields .axp-asset-designer__json { grid-column: 1 / -1 }
+.axp-asset-designer__group { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm) }
+.axp-asset-designer__errors { margin: 0; padding-left: var(--fx-dens-gap-xl); color: var(--fx-danger) }
+.axp-asset-designer__manifest { display: grid; grid-template-columns: minmax(calc(var(--fx-space) * 12), auto) minmax(0, 1fr); gap: var(--fx-dens-gap-xs) var(--fx-dens-gap-lg); align-items: baseline }
+.axp-asset-designer__manifest dt { color: var(--fx-muted) }
+.axp-asset-designer__manifest dd { margin: 0; overflow-wrap: anywhere; font-family: var(--fx-font-mono) }
+.axp-asset-designer__preview { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); min-width: 0 }
+.axp-asset-designer__previewbox { padding: var(--fx-dens-gap-md); border-radius: var(--fx-radius-md); border: var(--fx-border-w) solid var(--fx-border); background: var(--fx-surface2); overflow: auto; min-width: 0 }
+:where([data-fx-medium]) .axp-asset-designer__actions { margin-left: 0 }
