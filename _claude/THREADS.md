@@ -792,8 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 19:31 UTC · `console-app-wake-word-voice-listener` branch claude/console-app-wake-word-voice-listener (all) · pipeline
-- 2026-11-13 19:31 UTC · `console-app-wake-word-voice-listener` note (all) · orchestrator
 - 2026-11-13 19:31 UTC · `land-drive-live-console-first-resolve` added (0 steps) (all) · console
 - 2026-11-13 19:31 UTC · `orchestrator-custom-groups-custom-tabs` note (all) · orchestrator
 - 2026-11-13 19:31 UTC · `orchestrator-custom-groups-custom-tabs` → running, note (all) · pipeline
@@ -1192,6 +1190,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 21:20 UTC · `toolbar-widgets-attach-any-banner-style` note (all) · builds-live
 - 2026-11-13 21:20 UTC · `lander-regenerates-generated-files-clash` → running, note (all) · pipeline
 - 2026-11-13 21:20 UTC · `icon-map-icon-packs-every-icon-badge-app` note (all) · pipeline
+- 2026-11-13 21:21 UTC · `own-token-sets-for-grids-and-tab-groups` → pending, note (all) · reconciler
+- 2026-11-13 21:21 UTC · `lander-regenerates-generated-files-clash` s1 done, note (all) · reconciler
 
 ## Token passes (log)
 

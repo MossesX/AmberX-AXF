@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5045,
- "updatedAt": "2026-11-13T21:21:10.923Z",
+ "rev": 5046,
+ "updatedAt": "2026-11-13T21:21:23.898Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -206077,7 +206077,7 @@
    "title": "Own token sets for grids and tab groups",
    "category": "",
    "detail": "Today grids only have layout tokens (--fx-grid-areas/cols/rows and the -m mobile variants), and tab groups only have --fx-tab-py/--fx-tab-px padding and --fx-tabs-per-row. Both borrow the general colour tokens (--fx-surface, --fx-border, accent), so hover, selected and active states can't be styled on their own. Add dedicated token families in tokens.style, following skins and editable in Token Control, the UI Manager and per instance.\nGRID: header background/text/border/sort arrow/filter chip; row, alternate row, hover, selected, focused, expanded, disabled; grid lines, outer border, cell padding, row height, radius; group header, sticky column shadow, empty state; transparency (default 100%).\nTAB GROUP: bar background and border; tab text, background and border for idle, hover, active/selected, pressed, disabled and focus ring; active indicator (underline/pill) colour and thickness; badge on tab; fold/overflow button; gap; radius per style (underline, pills, boxed, segmented, plain, chips); transparency (default 100%).\nWire every grid/table and tab group to read them, and add a CI check against hard-coded colours. Per-instance overrides with Restore previous edit / Restore from axHub. Full API. Tests, help, Shipped features. Fable for the token schema.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -206085,7 +206085,7 @@
    "pr": "#654",
    "priority": "P1",
    "createdAt": "2026-11-13T19:57:42.157Z",
-   "updatedAt": "2026-11-13T20:54:32.696Z",
+   "updatedAt": "2026-11-13T21:21:16.380Z",
    "builtAt": "",
    "notes": [
     {
@@ -206135,6 +206135,10 @@
     {
      "text": "Headless run axf-own-token-sets-for-grids-and-tab-groups--rhonda: brief only · start 12.8K tokens ($0.06) · cost $15.53 · 129 turns · 6 tools, MCP none",
      "at": "2026-11-13T20:54:32.696Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-13T21:21:16.380Z"
     }
    ],
    "approvals": [],
@@ -206330,7 +206334,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -208554,7 +208558,7 @@
    "pr": "#661",
    "priority": "P0",
    "createdAt": "2026-11-13T20:47:11.569Z",
-   "updatedAt": "2026-11-13T21:20:13.895Z",
+   "updatedAt": "2026-11-13T21:21:16.380Z",
    "builtAt": "",
    "notes": [
     {
@@ -208576,6 +208580,10 @@
     {
      "text": "Dispatch gate: lander-regenerates-generated-files-clash still has axf-lander-regenerates-generated-files-clash--sully alive: not launched again, tracking that session.",
      "at": "2026-11-13T21:20:13.895Z"
+    },
+    {
+     "text": "Reconciler: PR #661 names s1 done",
+     "at": "2026-11-13T21:21:16.380Z"
     }
    ],
    "approvals": [],
@@ -208642,12 +208650,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
+     "done": true,
+     "doneAt": "2026-11-13T21:21:16.380Z",
+     "note": "PR #661 (claude/lander-regenerates-generated-files-clash)",
+     "rev": 2,
      "createdAt": "2026-11-13T20:52:05.784Z",
-     "updatedAt": "2026-11-13T20:52:05.784Z"
+     "updatedAt": "2026-11-13T21:21:16.381Z"
     },
     {
      "id": "s2",
@@ -208705,7 +208713,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
