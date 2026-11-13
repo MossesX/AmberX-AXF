@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4445,
- "updatedAt": "2026-11-13T12:33:40.417Z",
+ "rev": 4446,
+ "updatedAt": "2026-11-13T12:33:46.522Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -188233,14 +188233,15 @@
    "title": "Fix step splitter claude exit 1",
    "category": "",
    "detail": "",
-   "status": "queued",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P0",
    "createdAt": "2026-11-13T12:33:30.406Z",
-   "updatedAt": "2026-11-13T12:33:37.587Z",
+   "updatedAt": "2026-11-13T12:33:39.641Z",
    "builtAt": "",
    "notes": [
     {
@@ -188254,28 +188255,6 @@
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "pipeline": {
-    "queuedAt": "2026-11-13T12:33:37.189Z",
-    "queuedBy": "console",
-    "account": "",
-    "session": "",
-    "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "waiting for the split before it can start",
-    "route": "",
-    "dispatchedAt": "",
-    "planned": null,
-    "tried": [],
-    "pickedAt": "",
-    "heldAt": "",
-    "heldBy": "",
-    "heldWhy": ""
-   },
    "steps": [],
    "profiles": [
     "all"

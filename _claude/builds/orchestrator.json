@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T12:33:40.417Z",
+ "updatedAt": "2026-11-13T12:33:46.522Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -124632,14 +124632,15 @@
    "title": "Fix step splitter claude exit 1",
    "category": "",
    "detail": "",
-   "status": "queued",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P0",
    "createdAt": "2026-11-13T12:33:30.406Z",
-   "updatedAt": "2026-11-13T12:33:37.587Z",
+   "updatedAt": "2026-11-13T12:33:39.641Z",
    "builtAt": "",
    "notes": [
     {
