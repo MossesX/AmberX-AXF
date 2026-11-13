@@ -62,5 +62,5 @@ See the s3 section below.
 - Banner: no pane here (Banner settings has its own preview). `dialog` chrome kind and the per-instance transparency
   field are still open on Fable (per-toolbar-settings follow-up); the pane will draw them once they exist.
 - Kotlin twin of the pane and engine functions: deferred (PORTING.md).
-- UI Review: captures are in Screenshots (group `per-instance-settings-small-live-preview`); submitted to the review
-  queue with the PR.
+- UI Review queue: not submitted. `review.mjs submit --console` needs AXF_CONSOLE_URL + AXF_TOKEN, and this headless
+  session has neither. Captures are in Screenshots (group `per-instance-settings-small-live-preview`).
