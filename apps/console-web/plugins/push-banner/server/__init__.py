@@ -994,13 +994,13 @@ class Pushes:
                     pass
             self._remember({"key": f"{repo}:#{number}", "kind": "merged", "repo": repo, "base": base, "number": number,
                             "title": _text(p.get("title")), "url": _safe_url(p.get("html_url")), "text": f"Merged #{number} into {base or 'main'}."})
-        return {"merged": merged, "state": "merged", "confirmId": f"{repo.lower()}#{number}", "sha": _text(r.get("sha"), 40) if isinstance(r, dict) else "", "url": _safe_url(p.get("html_url"))}
+        return {"merged": merged, "state": "merged", "id": f"{repo.lower()}#{number}", "confirmId": f"{repo.lower()}#{number}", "sha": _text(r.get("sha"), 40) if isinstance(r, dict) else "", "url": _safe_url(p.get("html_url"))}
 
     def _pending_answer(self, repo: str, number: int, p: dict[str, Any], rec: dict[str, Any]) -> dict[str, Any]:
         """A merge call GitHub hasn't confirmed yet: never `merged: true`. The poller finishes it."""
         cid = _text(rec.get("id"), 120) or f"{repo.lower()}#{number}"
         state = rec.get("state") if rec.get("state") in (MC_PENDING, "merge-requested", "merge-unconfirmed") else MC_PENDING
-        return {"merged": False, "state": state, "confirmId": cid, "label": _text(rec.get("label"), 60) or "Pending GitHub confirmation",
+        return {"merged": False, "state": state, "id": cid, "confirmId": cid, "label": _text(rec.get("label"), 60) or "Pending GitHub confirmation",
                 "why": _text(rec.get("why"), 300), "sha": "", "url": _safe_url(p.get("html_url")),
                 "text": f"#{number}: merge called; pending GitHub confirmation (read back until GitHub shows it merged on main)."}
 
@@ -1365,6 +1365,34 @@ class MergeQueueService:
 
     def stacked(self) -> list[dict[str, Any]]:
         return [p for rows in PUSHES._stacked.values() for p in rows]
+
+
+class MergeConfirmService:
+    """axf.merge-confirm@1 (framework/spec/MERGE-CONFIRM.md): the one way another plugin (the GitHub plugin's merge
+    action, a tool, a job) merges a PR or asks whether one is merged. `merge` goes through the console's merge gate and
+    answers {state: pending-github-confirmation, id} until GitHub, read back, proves it; `get` / `list` / `recheck`
+    read the shared store. Nothing here reports merged from the merge API's answer alone."""
+    version = 1
+
+    def merge(self, repo: str, number: int, by: str = "github-plugin") -> dict[str, Any]:
+        return PUSHES.merge({"repo": repo, "number": number, "confirm": f"{repo}#{number}"}, path="github-plugin", by=_text(by, 80) or "github-plugin")
+
+    def get(self, cid: str) -> dict[str, Any] | None:
+        return next((r for r in mc_records() if r.get("id") == str(cid).lower()), None)
+
+    def list(self) -> list[dict[str, Any]]:
+        return mc_records()
+
+    def is_merged(self, cid: str) -> bool:
+        r = self.get(cid)
+        return bool(r and r.get("state") == "merged")
+
+    def recheck(self, cid: str, by: str = "") -> dict[str, Any]:
+        repo, _, pr = str(cid).partition("#")
+        return mc_cli(["recheck", repo, pr, "--by", _text(by, 80) or "plugin"])
+
+
+claudefix.plugin_services.provide("axf.merge-confirm@1", MergeConfirmService(), Path(__file__).resolve().parents[1].name)
 CLAUDE = claudefix.Launches(lambda: PUSHES.config())
 
 
@@ -1515,7 +1543,9 @@ def _tracked(kind: str, verb: str, body: Any, fn: Callable[[Any], dict[str, Any]
             act.finish(iid, "failed", str(e)[:300])
         raise
     if act:
-        act.finish(iid, "done", None)
+        # merge-confirm@1: a merge call GitHub hasn't confirmed yet is not "done merging"
+        pending = isinstance(out, dict) and out.get("state") in (MC_PENDING, "merge-requested", "merge-unconfirmed")
+        act.finish(iid, "done", "Pending GitHub confirmation" if pending else None)
     return out
 
 

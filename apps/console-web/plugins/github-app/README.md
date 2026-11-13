@@ -26,6 +26,9 @@ Commit statuses (read), Metadata (read). Private app, webhook off.
 - **VPS**: `framework/deploy/axf-git-cred` (git: installation token, then the old token) and `framework/deploy/gh-app`
   (`gh`: the user token, else the installation token), installed by `framework/deploy/install-github-helpers.sh`.
 - **Node tools**: `framework/cli/github.mjs` `githubToken()` = env token, else the app's installation token, else `gh`.
+- **Merging** (merge-confirm@1, Nov 13 2026): this plugin mints tokens and never merges. A merge action anywhere goes
+  through the `axf.merge-confirm@1` capability (`merge(repo, number)` answers `{state: pending-github-confirmation, id}`
+  until GitHub, read back, shows the PR MERGED with its merge commit on main), never a bare `PUT …/pulls/<n>/merge`.
 
 ## Health (axf.health@1)
 - `github-app`: credential files private, app key accepted (`GET /app`), installed, token mints, rate limit left.
