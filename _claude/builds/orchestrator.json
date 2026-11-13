@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T19:09:00.269Z",
+ "updatedAt": "2026-11-13T19:09:17.355Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -127828,7 +127828,7 @@
    "pr": "#634",
    "priority": "P1",
    "createdAt": "2026-11-13T18:30:38.922Z",
-   "updatedAt": "2026-11-13T19:08:10.892Z",
+   "updatedAt": "2026-11-13T19:08:37.129Z",
    "builtAt": "",
    "notes": [
     {
@@ -127892,16 +127892,20 @@
      "at": "2026-11-13T19:01:25.369Z"
     },
     {
-     "text": "Double launch again: Paulie (run 2, 18:52) found the Fable session from run 1 (agent Greenlight Gina, pid 811375, started 18:39, session a2405ba5) still live in the same worktree and writing s2 (test.mjs, spec/check-ui-manager.mjs, fixtures/ui-manager.json, CI lines, catalog status cx.uimanager). Paulie committed and pushed s1 (b09c0e80a: engine + plugin + validate/schemas routes + PORTING row + plugins README line; the commit swept in the other session's test.mjs draft) and ticked s1, then stood down so two sessions do not both commit s2. The other session continues s2 on disk. Needs Brett: dispatch-gate must refuse a launch while a session for the same build is alive (third time: see the Earl/Paulie and Lenny/Paulie notes).",
-     "at": "2026-11-13T19:06:37.485Z"
-    },
-    {
      "text": "Headless run axf-ui-manager-floating-window-to-select-any--paulie: brief only · start 13.2K tokens ($0.07) · cost $5.11 · 69 turns · 6 tools, MCP none",
      "at": "2026-11-13T19:06:57.573Z"
     },
     {
+     "text": "Double launch again: Paulie (run 2, 18:52) found the Fable session from run 1 (agent Greenlight Gina, pid 811375, started 18:39, session a2405ba5) still live in the same worktree and writing s2 (test.mjs, spec/check-ui-manager.mjs, fixtures/ui-manager.json, CI lines, catalog status cx.uimanager). Paulie committed and pushed s1 (b09c0e80a: engine + plugin + validate/schemas routes + PORTING row + plugins README line; the commit swept in the other session's test.mjs draft) and ticked s1, then stood down so two sessions do not both commit s2. The other session continues s2 on disk. Needs Brett: dispatch-gate must refuse a launch while a session for the same build is alive (third time: see the Earl/Paulie and Lenny/Paulie notes).",
+     "at": "2026-11-13T19:06:37.485Z"
+    },
+    {
      "text": "Session on mossesx-max- stopped on its own with 13 steps left: back in Pending for Brett.",
      "at": "2026-11-13T19:07:49.205Z"
+    },
+    {
+     "text": "Headless run axf-ui-manager-floating-window-to-select-any--gina: brief only · start 13.1K tokens ($0.07) · cost $12.14 · 135 turns · 6 tools, MCP none",
+     "at": "2026-11-13T19:08:37.129Z"
     }
    ],
    "approvals": [],
