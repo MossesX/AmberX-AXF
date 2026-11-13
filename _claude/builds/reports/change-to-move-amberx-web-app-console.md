@@ -1,6 +1,6 @@
 # Console app: every notification through the console (narrows PR #528)
 
-Build `change-to-move-amberx-web-app-into-the-console-amberx-andr-pr-528-brett-do`, Phase 1 (Opus), Nov 13 2026.
+Build `change-to-move-amberx-web-app-console`, Phase 1 (Opus), Nov 13 2026.
 
 Brett: "do NOT bring AmberX features into the console. Plan Studio is already there. Only build the Console Android app with all
 notifications (text, approvals, alerts) going through the console. Drop the rest of the AmberX port."
