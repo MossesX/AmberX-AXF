@@ -160,6 +160,8 @@ jobs:
         run: node apps/console-web/plugins/claude-settings/test.mjs  # axf-plugin:claude-settings
       - name: AmberX listeners plugin (listener@1 on the console — devices from the hub table, policies as hub-settings@1, restart requests, CLI)  # axf-plugin:amberx-listeners
         run: node apps/console-web/plugins/amberx-listeners/test.mjs  # axf-plugin:amberx-listeners
+      - name: Notes & tasks plugin (notes-tasks@1 schema — one item type nested to any depth, 10+ and 1 000 levels; amberx-notes@1 and first-design documents stay valid)  # axf-plugin:notes-tasks
+        run: node apps/console-web/plugins/notes-tasks/test.mjs  # axf-plugin:notes-tasks
       - name: Auto-land (push banner) — zero tokens (no model client in the merge pipeline), landing rules, rounds on fake builds  # axf-plugin:push-banner
         run: node apps/console-web/plugins/push-banner/land/land.test.mjs  # axf-plugin:push-banner
       - name: Merge queue (push banner) — stacking, blame + kick-out, rebuild without it, no retest on merge; real git, fake GitHub  # axf-plugin:push-banner

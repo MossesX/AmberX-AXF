@@ -1124,7 +1124,8 @@
   "dv.a11yservice": {
     "status": "placeholder",
     "wave": 2,
-    "module": "axf-platform-android"
+    "module": "axf-platform-android",
+    "notes": "AmberX shell (app code, not this framework module) has one always-on draw-over-apps overlay since Nov 13 2026: toolbar, approval bar, full-screen browser (ApprovalOverlay + ApprovalOverlayRules / OverlayPageRules, JUnit). The framework capability stays a placeholder (Android on hold)."
   },
   "dv.pip": {
     "status": "placeholder",
