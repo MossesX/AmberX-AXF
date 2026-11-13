@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T10:39:07.346Z",
+ "updatedAt": "2026-11-13T10:39:21.828Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -110348,7 +110348,7 @@
    "branch": "claude/all-banners-hide-when-empty",
    "pr": "#509",
    "createdAt": "2026-11-12T02:45:08.669Z",
-   "updatedAt": "2026-11-12T03:10:51.460Z",
+   "updatedAt": "2026-11-13T10:39:07.159Z",
    "builtAt": "2026-11-12T03:10:51.460Z",
    "notes": [
     {
@@ -110370,6 +110370,10 @@
     {
      "text": "Headless run axf-all-banners-hide-when-empty--joey: brief only · start 10.6K tokens ($0.02) · cost $5.05 · 75 turns · 6 tools, MCP none",
      "at": "2026-11-12T03:10:51.460Z"
+    },
+    {
+     "text": "Session axf-all-banners-hide-when-empty--joey on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-13T10:39:07.159Z"
     }
    ],
    "approvals": [],
