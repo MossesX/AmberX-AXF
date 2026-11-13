@@ -555,7 +555,7 @@ function StepGrid({ b, rules, busy, act, hidden, setHidden }: { b: Build; rules:
   if (!b.steps.length) return <p className="fx-small fx-muted">No steps yet. Add steps of {core.maxStep(rules)} minutes or less below.</p>;
   return (
     <div className="oc-subgrid">
-      <DataGrid<GStep> id={`orch-steps-${b.id.replace(/[^a-z0-9-]/gi, '-')}`} label={`Steps of ${b.title}`} compact groups={groups} columns={cols}
+      <DataGrid<GStep> id={`orch-steps-${b.id.replace(/[^a-z0-9-]/gi, '-')}`} rowKind="step" label={`Steps of ${b.title}`} compact groups={groups} columns={cols}
         rowId={(s) => s.id} rowLabel={(s) => s.text}
         rowTone={(s) => (s.done ? 'success' : s.locked ? 'warning' : s.next ? 'accent' : 'muted')}
         hidden={hidden} onToggleColumn={(c, show) => setHidden((h) => toggleIn(h, c, show))} onShowAll={() => setHidden(() => [])}

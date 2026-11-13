@@ -18,6 +18,7 @@ import {
 } from '../axf/core/engines/console-control';
 import { controlRegistry } from '../axf/react';
 import { inventoryViewLabel, inventoryViewOf } from './inventory';
+import { loadedItemFor } from './search';
 
 /** The live state that comes back with every answer. */
 export interface ControlStateSnapshot {
@@ -78,6 +79,14 @@ export async function executeControl(rt: AxfRuntime, raw: unknown): Promise<Cont
     return { ...r, state: controlState(rt) } as ControlAnswer;
   }
   let res = await reg.run(cmd);
+  // loaded but not rendered (a build on another tab, a folded group): the item opens itself, then ask again
+  if (!res.ok && res.code === CONSOLE_CONTROL_WIRE.NOT_FOUND && cmd.address && OPENS_SCREEN.has(cmd.verb)) {
+    const item = loadedItemFor(cmd.address);
+    if (item?.open) {
+      try { await item.open(); } catch { /* the retry answers */ }
+      for (const ms of [150, 400, 900]) { await nextFrame(); await wait(ms); res = await reg.run(cmd); if (res.ok || res.code !== CONSOLE_CONTROL_WIRE.NOT_FOUND) break; }
+    }
+  }
   // not rendered yet: open the screen the inventory names, let it render, ask again (once)
   if (!res.ok && res.code === CONSOLE_CONTROL_WIRE.NOT_FOUND && cmd.address && OPENS_SCREEN.has(cmd.verb)) {
     const view = inventoryViewOf(cmd.address);

@@ -36,7 +36,11 @@ export interface ConsoleSearchHit {
 }
 
 /** Something a view or plugin has loaded: a build step, a review item, a chat line. `address` must parse. */
-export interface LoadedItem { address: string; kind: ConsoleControlKind; label: string; detail?: string; icon?: string; keywords?: string[] }
+export interface LoadedItem {
+  address: string; kind: ConsoleControlKind; label: string; detail?: string; icon?: string; keywords?: string[];
+  /** bring it onto the screen when it is not rendered (open its screen and tab, expand its group); focus then finds it */
+  open?: () => unknown;
+}
 export type LoadedSource = () => LoadedItem[];
 
 const loadedSources = new Map<string, LoadedSource>();
@@ -45,6 +49,17 @@ const loadedSources = new Map<string, LoadedSource>();
 export function addLoadedSource(id: string, source: LoadedSource): () => void {
   loadedSources.set(id, source);
   return () => { if (loadedSources.get(id) === source) loadedSources.delete(id); };
+}
+
+/** The loaded item an address names (itself, or something under it: `row:<build>/step:s3` → the build), else null. */
+export function loadedItemFor(address: string): LoadedItem | null {
+  for (const src of loadedSources.values()) {
+    let items: LoadedItem[] = [];
+    try { items = src(); } catch { continue; }
+    const hit = items.find((i) => address === i.address || address.startsWith(`${i.address}/`) || address.endsWith(`/${i.address}`) || address.includes(`/${i.address}/`));
+    if (hit) return hit;
+  }
+  return null;
 }
 
 /** Rank boosts: what is on the screen first, then loaded data, then the rest; among kinds, places before things. */
