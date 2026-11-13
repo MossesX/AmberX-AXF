@@ -785,7 +785,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 10:50 UTC · `android-approval-overlay-a-small-always-on-float` note (all) · orchestrator
 - 2026-11-13 10:50 UTC · `one-source-of-truth-console-shows-only-what-the-server-says-is-running` note (all) · orchestrator
 - 2026-11-13 10:50 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` s17 done (all) · orchestrator
 - 2026-11-13 10:51 UTC · `stop-the-molly-guide-from-popping-up-and-talking-every-time-the-console-loads-n` → running, note (all) · pipeline
@@ -1185,6 +1184,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 17:41 UTC · `full-voice-api-control-type-fields-press` → running, note (all) · pipeline
 - 2026-11-13 17:41 UTC · `full-voice-api-control-type-fields-press` branch claude/full-voice-api-control-type-fields-press (all) · pipeline
 - 2026-11-13 17:44 UTC · `chrome-settings-actually-apply-toolbars` added (0 steps) (all) · console
+- 2026-11-13 17:44 UTC · `chrome-settings-actually-apply-toolbars` → queued, note (all) · console
 
 ## Token passes (log)
 

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T17:44:38.485Z",
+ "updatedAt": "2026-11-13T17:44:51.652Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -125591,16 +125591,22 @@
    "title": "Chrome settings actually apply on toolbars, nav and menu bar (not just tab groups)",
    "category": "",
    "detail": "The framework chrome settings dialog (framework/react/components/ChromeContext.tsx, chrome-settings-rules.mjs, chrome.settings:<type>:<instance>) gives every tab group, toolbar, banner, nav and menu bar its own settings. Only tab groups apply the per-item settings (look, size, etc.); the main toolbar, nav and menu bar ignore most of them. Make every setting in the dialog take effect live on every chrome type and instance, persist per instance, and survive reload. Add a check that sets every value on every chrome type and verifies the render changes. Expose via REST/MCP/CLI/voice. Shipped features.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P1",
    "createdAt": "2026-11-13T17:44:36.515Z",
-   "updatedAt": "2026-11-13T17:44:36.515Z",
+   "updatedAt": "2026-11-13T17:44:39.159Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T17:44:39.159Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
