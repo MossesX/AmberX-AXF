@@ -785,7 +785,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 11:10 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` → pending, note (all) · reconciler
 - 2026-11-13 11:10 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` s23 done (all) · orchestrator
 - 2026-11-13 11:11 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` s22 done (all) · orchestrator
 - 2026-11-13 11:13 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` note (all) · mcp
@@ -1185,6 +1184,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 18:02 UTC · `restore-asset-designer-plugin-merged-nov` note (all) · orchestrator
 - 2026-11-13 18:02 UTC · `tab-groups-choose-how-many-rows-tabs` s1 done, → running (all) · orchestrator
 - 2026-11-13 18:02 UTC · `per-instance-settings-window-picker` → queued, note (all) · pipeline
+- 2026-11-13 18:03 UTC · `all-settings-interfaces-open-floating` added (0 steps) (all) · console
 
 ## Token passes (log)
 
