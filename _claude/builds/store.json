@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3857,
- "updatedAt": "2026-11-13T00:39:40.474Z",
+ "rev": 3858,
+ "updatedAt": "2026-11-13T00:40:40.106Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -175911,6 +175911,43 @@
    ],
    "order": {
     "all": 761
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "change-to-one-to-do-notes-and-tasks-plugin-pr-527-brett-notes-tasks-and-to",
+   "title": "CHANGE to one-to-do-notes-and-tasks-plugin (PR #527), Brett: notes, tasks and to-dos are ONE item type, not separate things. Any item can hold any other, nested to any depth: a note can contain task lists and to-do lists, a task or to-do list can contain notes, and lists nest inside lists inside not",
+   "category": "",
+   "detail": "",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-13T00:40:38.452Z",
+   "updatedAt": "2026-11-13T00:40:38.452Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 762
    },
    "kind": "build",
    "planRef": "",
