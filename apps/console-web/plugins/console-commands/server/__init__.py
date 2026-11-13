@@ -707,6 +707,49 @@ async def _body(request: Request) -> dict[str, Any]:
         return {}
 
 
+def control(command: dict[str, Any], by: str = "", audience: str = OWNER, to: str = "recent") -> dict[str, Any]:
+    """A console-control@1 command (spec/CONSOLE-CONTROL.md) for the open console: sent as console-command@1 op
+    `control`, answered with the console's own envelope (result + live state) and `client` / `delivery`. Nothing is
+    queued: no console open answers `unavailable` with `openUrl` (open the console, then send it again)."""
+    mid = "ctl-" + os.urandom(8).hex()
+    message = {"$axf": "console-command@1", "id": mid, "op": "control", "command": command, "by": by or "api", "at": _iso(_now())}
+    now = _now()
+    with _lock:
+        live = [c for c in _clients.values() if c["audience"] == audience and _ready(c) and _live(c, now)]
+    live.sort(key=lambda c: (c.get("front", True) is False, -float(c.get("lastUsed") or 0)))
+    no_console = {"$axf": "console-control@1", "ok": False, "code": "unavailable", "because": "no console open",
+                  "message": "no console open: open the console (openUrl), then send the command again", "openUrl": CONSOLE_URL + "/"}
+    if to == "all":
+        if not live:
+            return no_console
+        acks = deliver([c["id"] for c in live], message, audience)
+        results = [a.get("result") or {"ok": False, "code": "unavailable", "message": a.get("message") or "no answer", "client": a.get("client")} for a in acks]
+        return {"$axf": "console-control@1", "ok": any(r.get("ok") for r in results), "verb": command.get("verb"), "results": results, "delivery": {"how": "all", "clients": [c["id"] for c in live]}}
+    if to != "recent":
+        with _lock:
+            c = _clients.get(to)
+            ok = c is not None and c["audience"] == audience and c.get("queue") is not None
+        if not ok:
+            return {**no_console, "code": "not_found", "message": f"no open console {to} (GET /api/console/clients lists them)"}
+        order = [to]
+    else:
+        if not live:
+            return no_console
+        order = _turn_order(audience, live[0]["id"], str(live[0].get("app") or "console-web"))
+    tried, acks = try_in_turn(order, message, audience)
+    with _lock:
+        _late.pop(mid, None)  # a control command is never queued: a late ack has nothing to stop
+    who = next((c for c in tried if c in acks), "")
+    if not who:
+        return {**no_console, "message": f"no console answered (tried {', '.join(tried)}): open the console (openUrl), then send the command again", "tried": tried}
+    a = acks[who]
+    res = a.get("result") if isinstance(a.get("result"), dict) else {"$axf": "console-control@1", "ok": bool(a.get("ok")), **({} if a.get("ok") else {"code": "unexpected"}), "message": a.get("message") or ""}
+    out = {**res, "client": who, "delivery": {"how": "live" if who == tried[0] else "after retry", "tried": tried}}
+    _recent.appendleft({"at": _iso(_now()), "by": by or "api", "target": "console.control", "path": command.get("address") or "", "action": command.get("verb"), "ok": bool(out.get("ok")),
+                        "code": out.get("code", ""), "message": out.get("message", ""), "audience": audience, "how": out["delivery"]["how"], "delivered": [{"client": who, "ok": bool(out.get("ok")), "message": a.get("message", "")}]})
+    return out
+
+
 def run_for(request: Request, command: dict[str, Any]) -> dict[str, Any]:
     grants, name, audience = caller(request)
     return run(command, grants, command.get("by") or name, audience)
@@ -979,6 +1022,10 @@ class ConsoleCommands:
 
     def run_for(self, request: Request, command: dict[str, Any]) -> dict[str, Any]:
         return run_for(request, command)
+
+    def control(self, command: dict[str, Any], by: str = "", audience: str = OWNER, to: str = "recent") -> dict[str, Any]:
+        """A console-control@1 command for the open console → its answer (result + live state), or unavailable + openUrl."""
+        return control(command, by, audience, to)
 
     def queue_for_owner(self, command: dict[str, Any], grants: list[str], by: str = "") -> dict[str, Any]:
         e = queue_for_owner(command, grants, by)
