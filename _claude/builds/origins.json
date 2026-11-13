@@ -2306,6 +2306,18 @@
    "from": "report",
    "addenda": []
   },
+  "drag-anything-by-api-and-voice-follow-up-to-full": {
+   "said": "I want to be able to drag anything on any page, anything that's draggable, I want to be able to drag it. The regular API build land first.",
+   "at": "2026-11-13T11:13:21.086Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "drag-to-tab": {
    "said": "I want to be able to drag [items] to their containers and drop them as new tabs. Like grab something from the navigation menu, or from one tab, drag it over to another area and drop it as a new tab.",
    "at": "2026-11-04T00:00:00Z",
