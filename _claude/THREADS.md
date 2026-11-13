@@ -786,7 +786,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 17:38 UTC · `show-commits-behind-main-on-every-build-table-an` note, removed (all) · build-rename
 - 2026-11-13 17:38 UTC · `skin-configuration-panel-before-ai-makes` added (9 steps) (all) · build-rename
 - 2026-11-13 17:38 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` note, removed (all) · build-rename
 - 2026-11-13 17:38 UTC · `skins-plugin-own-removable-console` added (20 steps) (all) · build-rename
@@ -1186,6 +1185,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 19:37 UTC · `per-instance-settings-picker-merge-main` added (0 steps) (all) · console
 - 2026-11-13 19:37 UTC · `per-instance-settings-picker-merge-main` → queued, note (all) · console
 - 2026-11-13 19:37 UTC · `land-per-instance-settings-picker` note (all) · orchestrator
+- 2026-11-13 19:37 UTC · `land-rename-long-builds-resolve-clash` s1 done (all) · orchestrator
 
 ## Token passes (log)
 
