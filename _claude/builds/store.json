@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4604,
- "updatedAt": "2026-11-13T18:13:26.662Z",
+ "rev": 4605,
+ "updatedAt": "2026-11-13T18:13:42.026Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -195722,10 +195722,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/chrome-settings-actually-apply-toolbars",
-   "pr": "",
+   "pr": "#625",
    "priority": "P1",
    "createdAt": "2026-11-13T17:44:36.515Z",
-   "updatedAt": "2026-11-13T18:12:25.767Z",
+   "updatedAt": "2026-11-13T18:13:26.145Z",
    "builtAt": "",
    "notes": [
     {
@@ -195872,7 +195872,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
