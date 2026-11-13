@@ -281,7 +281,7 @@ class Lander:
             it["head"] = f.get("head") or it.get("head")
             step = plan(it, f, now)
             if "wait" in step:
-                it.setdefault("waitSince", now)
+                it["waitSince"] = it.get("waitSince") or now
             else:
                 it["waitSince"] = None
             it["next"] = step.get("why") or step.get("wait") or step.get("blocked") or ""

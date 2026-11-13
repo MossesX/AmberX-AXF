@@ -6,7 +6,9 @@ is off, never on the console MCP; hub users never reach it: the plugin isn't use
                                     entry (head → base, fork, CI, mergeable, ready = CI passed + mergeable + not a
                                     draft); cached ~2 min
     POST /pr     {repo, branch}     opens a PR into the default branch (or answers the one already open)
-    POST /merge  {repo, number, confirm: "<repo>#<number>"}
+    POST /merge  {repo, number, confirm: "<repo>#<number>", via?}   (through the server lander, server/lander.py)
+    GET  /lander | POST /lander/retry {repo, number} | /lander/forget {repo, number} | /lander/round
+                                    the server lander: every failed merge, its retry ladder and what is missing
                                     merges an open PR (merge commit) only when it isn't behind its base, GitHub says it
                                     can and every check on its head commit passed; the head commit is pinned so nothing
                                     newer slips in
