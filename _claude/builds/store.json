@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4596,
- "updatedAt": "2026-11-13T18:10:43.833Z",
+ "rev": 4597,
+ "updatedAt": "2026-11-13T18:11:02.202Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -196548,15 +196548,15 @@
    "title": "All settings interfaces open in a floating dialog by default",
    "category": "",
    "detail": "Every settings interface (console Settings sections, plugin settings, chrome settings for tab groups/toolbars/banners/nav/menu bar, and any future one) opens by default in a floating dialog over the current screen instead of navigating to the Settings page. Make it a framework default so new settings interfaces get it automatically (template + check that fails if a settings interface navigates away by default). Keep a per-user option to open it as a page instead, and a 'pop out to page' button in the dialog. Dialogs use the glass/transparency tokens (opacityGlass, blur). Deep links and voice/MCP/API still work. Tests, help entry, Shipped features.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/all-settings-interfaces-open-floating",
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:03:04.047Z",
-   "updatedAt": "2026-11-13T18:10:33.728Z",
+   "updatedAt": "2026-11-13T18:10:45.003Z",
    "builtAt": "",
    "notes": [
     {
@@ -196566,6 +196566,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"c5306804-4e34-4054-b61f-210257efd14f\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-13T18:04:33.661Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-all-settings-interfaces-open-floating--gina.",
+     "at": "2026-11-13T18:10:39.646Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-all-settings-interfaces-open-floating--gina, own login copy)",
+     "at": "2026-11-13T18:10:45.003Z"
     }
    ],
    "approvals": [],
@@ -196585,12 +196593,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T18:03:06.496Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-all-settings-interfaces-open-floating--gina",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-13T18:10:38.308Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T18:04:33.661Z",
@@ -196600,9 +196608,9 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"c5306804-4e34-4054-b61f-210257efd14f\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-13T18:10:38.308Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -196611,7 +196619,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-13T18:10:38.308Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -196695,7 +196703,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
