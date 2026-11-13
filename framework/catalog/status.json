@@ -2299,5 +2299,11 @@
     "wave": 1,
     "module": "app-console",
     "notes": "context-lead@1: rt.contextExtras keys '^:<name>' lead every context menu above one separator (core/engines/windows.ts withContextLead, react Overlays ContextMenuHost; any target, even contributions:false, right-click and long-press). The console registers Console settings (app.settings, folding the asset's own Settings in) plus console.settings.open for search, voice, MCP and CLI; help entries; checks spec/check-context-lead.mts + apps/console-web/scripts/console-settings-menu.mts. Kotlin twin deferred."
+  },
+  "cx.chrome.settingspreview": {
+    "status": "built",
+    "wave": 1,
+    "module": "framework-react",
+    "notes": "Live preview pane at the top of every chrome instance's settings dialog (build per-instance-settings-small-live-preview, Brett Nov 13 2026): seed toolbar icons with a badge, two seed tab groups (real TabGroup via previewOf), a short nav with one selected item, a menu bar with an open menu + submenu (real MenuList), a context menu; draws the instance's effective data through the real style engines, so every setting change shows at once. Collapsible, app / light / dark sample colours, hover / press demo. API: chrome.preview:<open|close|toggle|scheme:…|demo:…> (REST console action, MCP console_action, CLI, voice), state panel:chrome.preview, deep link chrome.settings:<type>:<instance>. Engine core/engines/chrome-settings-rules.mjs (CHROME_PREVIEW_*), check spec/check-chrome-settings.mts. Kotlin twin deferred (PORTING.md)."
   }
 }

@@ -701,6 +701,15 @@ write('spacing.json', {
     instanceInterfaces: cs.chromeInstanceInterfaceList(savedInst),
     prefixTargets: Object.fromEntries(['axf-ws-toolbar:main', 'axf-ws-toolbar:', 'axf-ws-toolbarx'].map((t) => [t, cs.chromeTypeOfTarget(t)])),
     instanceSlugs: Object.fromEntries(['Tree search', 'ui-review.sections', '  MCP server!! ', ''].map((l) => [l || '(empty)', cs.chromeInstanceSlug(l)])),
+    // live preview pane (Nov 13 2026, build per-instance-settings-small-live-preview): seed, state, changes, model
+    preview: {
+      keys: { open: cs.CHROME_PREVIEW_OPEN_KEY, scheme: cs.CHROME_PREVIEW_SCHEME_KEY, demo: cs.CHROME_PREVIEW_DEMO_KEY },
+      schemes: cs.CHROME_PREVIEW_SCHEMES, demos: cs.CHROME_PREVIEW_DEMOS, seed: cs.CHROME_PREVIEW_SEED,
+      states: { unset: cs.chromePreviewState({}), closed: cs.chromePreviewState({ [cs.CHROME_PREVIEW_OPEN_KEY]: false, [cs.CHROME_PREVIEW_SCHEME_KEY]: 'dark', [cs.CHROME_PREVIEW_DEMO_KEY]: 'press' }), junk: cs.chromePreviewState({ [cs.CHROME_PREVIEW_OPEN_KEY]: 'x', [cs.CHROME_PREVIEW_SCHEME_KEY]: 'sepia', [cs.CHROME_PREVIEW_DEMO_KEY]: 7 }) },
+      changes: Object.fromEntries(['open', 'close', 'toggle', 'scheme:light', 'scheme:app', 'dark', 'demo:hover', 'press', 'demo:off', 'off', 'scheme:sepia', 'demo:wiggle', 'nonsense'].map((w) => [w, cs.chromePreviewChange(w, cs.chromePreviewState({}))])),
+      toggleClosed: cs.chromePreviewChange('toggle', cs.chromePreviewState({ [cs.CHROME_PREVIEW_OPEN_KEY]: false })),
+      model: cs.chromePreviewModel('toolbar', { variant: 'labels', density: 'roomy' }, { density: 'compact', surface: 'glass' }),
+    },
     overrides: {
       clean: cs.normalizeInstanceOverride('tab-group', { style: 'pills', position: 'left', badges: false, bogus: 1, density: 'huge', sticky: 'yes' }),
       number: cs.normalizeInstanceOverride('banner', { height: 999.6, surface: 'raised' }),

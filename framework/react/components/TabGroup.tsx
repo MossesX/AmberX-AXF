@@ -60,6 +60,11 @@ export interface TabGroupProps<T extends string = string> {
   asset?: string;
   /** small text (window tab bars, dense tools) */
   size?: 'sm';
+  /**
+   * A preview row (chrome settings live preview): render with the look of the tab group `previewOf` (its asset pick and
+   * overrides, live) while `id` stays this row's own; it saves no last tab or fold and is not a tab group on screen.
+   */
+  previewOf?: string;
 }
 
 /** Re-render when one of these settings keys changes. */
@@ -91,9 +96,10 @@ export function useTabGroupData(id: string, hostAsset?: string): Required<TabGro
 
 const MORE_ROOM = 44; // px of row kept for the More button while measuring (layout only: the button itself is token-sized)
 
-export function TabGroup<T extends string = string>({ id, label, value, onChange, tabs, className, onClose, onReorder, extra, children, asset, size }: TabGroupProps<T>) {
+export function TabGroup<T extends string = string>({ id, label, value, onChange, tabs, className, onClose, onReorder, extra, children, asset, size, previewOf }: TabGroupProps<T>) {
   const rt = useRuntime();
-  const data = useTabGroupData(id, asset);
+  const lookId = previewOf ?? id;
+  const data = useTabGroupData(lookId, asset);
   useSettingsKeys(rt, [TAB_GROUP_FOLD_KEY(id)]);
   const hidden = rt.slotHidden('tab-group');
   const out = tabGroupStyle(data, hidden);
@@ -106,7 +112,7 @@ export function TabGroup<T extends string = string>({ id, label, value, onChange
   // remember the last tab (per device): reopen on it, keep it as it changes
   const lastKey = TAB_GROUP_LAST_KEY(id);
   useEffect(() => {
-    if (!data.rememberLast) return;
+    if (!data.rememberLast || previewOf) return;
     const saved = rt.settings.get(lastKey);
     if (typeof saved === 'string' && saved !== value && tabs.some((t) => t.value === saved && !t.disabled)) onChange(saved as T);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -114,13 +120,13 @@ export function TabGroup<T extends string = string>({ id, label, value, onChange
   // onChange fires on every tap, the active tab's too: a host may treat a re-tap as "back up" (Notes → Lists)
   const pick = useCallback((v: T) => {
     onChange(v);
-    if (data.rememberLast) rt.settings.set(lastKey, v);
+    if (data.rememberLast && !previewOf) rt.settings.set(lastKey, v);
     setMenu(false);
   }, [value, onChange, data.rememberLast, rt, lastKey]);
 
   // rows (instance-only choice, chrome-settings@1): 2…6 = the tabs share that many rows evenly; auto = wrap as needed.
   // A left / right rail or a dropdown row never scrolls sideways, so it ignores the choice.
-  const rowsValue = chromeFieldValue('tab-group', null, rt.settings.get(CHROME_INSTANCE_KEY('tab-group', id)), TAB_ROWS_FIELD);
+  const rowsValue = chromeFieldValue('tab-group', null, rt.settings.get(CHROME_INSTANCE_KEY('tab-group', lookId)), TAB_ROWS_FIELD);
   const stackable = data.position !== 'left' && data.position !== 'right' && data.overflow !== 'dropdown';
   const rowsOut = tabRowsLayout(tabs.length, stackable ? rowsValue : '1');
 
@@ -163,11 +169,11 @@ export function TabGroup<T extends string = string>({ id, label, value, onChange
     pick(t.value);
     return undefined;
   };
-  useControlTarget({
+  useControlTarget(previewOf ? null : {
     address: `${tabKind}:${id}`, kind: tabKind, label, keywords: tabs.map((t) => t.label), element: () => rowRef.current,
     get: () => value, set: pickByText, state: () => ({ rows: rowsValue, tabs: tabs.map((t) => ({ value: t.value, label: t.label, ...(t.disabled ? { disabled: true } : {}), ...(t.badge !== undefined && t.badge !== '' ? { badge: t.badge } : {}) })) }),
   }, [tabsKey]);
-  useControlTargets(tabs.map((t) => ({
+  useControlTargets((previewOf ? [] : tabs).map((t) => ({
     address: `${tabKind}:${id}=${t.value}`, kind: tabKind, label: t.label, detail: label, icon: t.icon, keywords: [String(t.value)],
     element: () => rowRef.current?.querySelector(`[data-axf-tab="${escapeSelector(String(t.value))}"]`) ?? rowRef.current,
     open: () => { if (t.value !== value) pick(t.value); }, invoke: () => pick(t.value), get: () => t.value === value, isDisabled: () => !!t.disabled,
@@ -254,7 +260,7 @@ export function TabGroup<T extends string = string>({ id, label, value, onChange
   if (data.overflow === 'dropdown') {
     const cur = tabs[activeIndex];
     row = (
-      <div ref={rowRef} className={`${cls} fx-tabs--dropdown`} role="tablist" aria-label={label} data-axf-tab-group={id} data-fx-ctx-target="tab-group" data-fx-ctx-payload={id} style={style} {...attrs}>
+      <div ref={rowRef} className={`${cls} fx-tabs--dropdown`} role="tablist" aria-label={label} data-axf-tab-group={previewOf ? undefined : id} data-axf-tab-preview={previewOf} data-fx-ctx-target="tab-group" data-fx-ctx-payload={lookId} style={style} {...attrs}>
         <button type="button" className="fx-tabs__pick" aria-haspopup="menu" aria-expanded={menu} onClick={() => setMenu((m) => !m)}>
           {cur?.icon && data.display !== 'text' && <Icon name={cur.icon} size={14} />}
           {data.display !== 'icons' && <span className="fx-tab__text">{cur?.label ?? label}</span>}
@@ -267,7 +273,7 @@ export function TabGroup<T extends string = string>({ id, label, value, onChange
     );
   } else {
     row = (
-      <div ref={rowRef} className={cls} role="tablist" aria-label={label} aria-orientation={vertical ? 'vertical' : 'horizontal'} data-axf-tab-group={id} data-fx-ctx-target="tab-group" data-fx-ctx-payload={id} style={style} {...attrs}>
+      <div ref={rowRef} className={cls} role="tablist" aria-label={label} aria-orientation={vertical ? 'vertical' : 'horizontal'} data-axf-tab-group={previewOf ? undefined : id} data-axf-tab-preview={previewOf} data-fx-ctx-target="tab-group" data-fx-ctx-payload={lookId} style={style} {...attrs}>
         {shown.map(tabEl)}
         {overflowed.length > 0 && (
           <button type="button" className="fx-tab fx-tabs__more" aria-haspopup="menu" aria-expanded={menu} aria-label={`${overflowed.length} more`} title={`${overflowed.length} more`} onClick={() => setMenu((m) => !m)}>
@@ -276,7 +282,7 @@ export function TabGroup<T extends string = string>({ id, label, value, onChange
           </button>
         )}
         {data.collapsible && (
-          <button type="button" className="fx-tab fx-tabs__fold" aria-pressed={folded} aria-label={folded ? 'Show every tab' : 'Fold to the active tab'} title={folded ? 'Show every tab' : 'Fold to the active tab'} onClick={() => rt.settings.set(TAB_GROUP_FOLD_KEY(id), !folded)}>
+          <button type="button" className="fx-tab fx-tabs__fold" aria-pressed={folded} aria-label={folded ? 'Show every tab' : 'Fold to the active tab'} title={folded ? 'Show every tab' : 'Fold to the active tab'} onClick={() => { if (!previewOf) rt.settings.set(TAB_GROUP_FOLD_KEY(id), !folded); }}>
             <Icon name={folded ? 'chevron-down' : 'chevron-up'} size={12} />
           </button>
         )}

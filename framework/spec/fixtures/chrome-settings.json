@@ -978,6 +978,328 @@
     "  MCP server!! ": "mcp-server",
     "(empty)": ""
   },
+  "preview": {
+    "keys": {
+      "open": "axf.chrome.preview.open",
+      "scheme": "axf.chrome.preview.scheme",
+      "demo": "axf.chrome.preview.demo"
+    },
+    "schemes": [
+      "app",
+      "light",
+      "dark"
+    ],
+    "demos": [
+      "none",
+      "hover",
+      "press"
+    ],
+    "seed": {
+      "toolbar": {
+        "groups": [
+          {
+            "id": "file",
+            "items": [
+              {
+                "id": "new",
+                "icon": "plus",
+                "label": "New"
+              },
+              {
+                "id": "open",
+                "icon": "folder",
+                "label": "Open",
+                "badge": "3"
+              }
+            ]
+          },
+          {
+            "id": "view",
+            "items": [
+              {
+                "id": "search",
+                "icon": "search",
+                "label": "Search",
+                "on": true
+              }
+            ]
+          }
+        ],
+        "demo": "new"
+      },
+      "tab-group": {
+        "groups": [
+          {
+            "id": "mail",
+            "label": "Mail",
+            "active": "inbox",
+            "tabs": [
+              {
+                "value": "inbox",
+                "label": "Inbox",
+                "icon": "bell",
+                "badge": "4"
+              },
+              {
+                "value": "drafts",
+                "label": "Drafts",
+                "icon": "edit"
+              },
+              {
+                "value": "sent",
+                "label": "Sent",
+                "icon": "upload"
+              }
+            ]
+          },
+          {
+            "id": "views",
+            "label": "Views",
+            "active": "list",
+            "tabs": [
+              {
+                "value": "board",
+                "label": "Board",
+                "icon": "grid"
+              },
+              {
+                "value": "list",
+                "label": "List",
+                "icon": "list"
+              },
+              {
+                "value": "chart",
+                "label": "Chart",
+                "icon": "chart"
+              }
+            ]
+          }
+        ],
+        "demo": "drafts"
+      },
+      "nav-menu": {
+        "items": [
+          {
+            "id": "home",
+            "icon": "home",
+            "label": "Home"
+          },
+          {
+            "id": "projects",
+            "icon": "folder",
+            "label": "Projects",
+            "active": true
+          },
+          {
+            "id": "reports",
+            "icon": "chart",
+            "label": "Reports",
+            "badge": "2"
+          },
+          {
+            "id": "settings",
+            "icon": "settings",
+            "label": "Settings"
+          }
+        ],
+        "demo": "home"
+      },
+      "app-menu": {
+        "menus": [
+          {
+            "id": "file",
+            "label": "File",
+            "open": true
+          },
+          {
+            "id": "edit",
+            "label": "Edit"
+          },
+          {
+            "id": "view",
+            "label": "View"
+          }
+        ],
+        "items": [
+          {
+            "id": "new",
+            "icon": "plus",
+            "label": "New",
+            "shortcut": "Ctrl+N"
+          },
+          {
+            "id": "recent",
+            "icon": "clock",
+            "label": "Open recent",
+            "submenu": [
+              {
+                "id": "a",
+                "label": "Plan.md"
+              },
+              {
+                "id": "b",
+                "label": "Budget.csv"
+              }
+            ]
+          },
+          {
+            "id": "save",
+            "icon": "save",
+            "label": "Save",
+            "shortcut": "Ctrl+S"
+          }
+        ],
+        "demo": "edit"
+      },
+      "banner": {
+        "text": "Build 42 is live",
+        "demo": ""
+      },
+      "context-menu": {
+        "items": [
+          {
+            "id": "cut",
+            "icon": "cut",
+            "label": "Cut",
+            "shortcut": "Ctrl+X"
+          },
+          {
+            "id": "copy",
+            "icon": "copy",
+            "label": "Copy",
+            "shortcut": "Ctrl+C"
+          },
+          {
+            "id": "paste",
+            "icon": "paste",
+            "label": "Paste",
+            "shortcut": "Ctrl+V"
+          }
+        ],
+        "demo": "copy"
+      }
+    },
+    "states": {
+      "unset": {
+        "open": true,
+        "scheme": "app",
+        "demo": "none"
+      },
+      "closed": {
+        "open": false,
+        "scheme": "dark",
+        "demo": "press"
+      },
+      "junk": {
+        "open": true,
+        "scheme": "app",
+        "demo": "none"
+      }
+    },
+    "changes": {
+      "open": {
+        "key": "axf.chrome.preview.open",
+        "value": null
+      },
+      "close": {
+        "key": "axf.chrome.preview.open",
+        "value": false
+      },
+      "toggle": {
+        "key": "axf.chrome.preview.open",
+        "value": false
+      },
+      "scheme:light": {
+        "key": "axf.chrome.preview.scheme",
+        "value": "light"
+      },
+      "scheme:app": {
+        "key": "axf.chrome.preview.scheme",
+        "value": null
+      },
+      "dark": {
+        "key": "axf.chrome.preview.scheme",
+        "value": "dark"
+      },
+      "demo:hover": {
+        "key": "axf.chrome.preview.demo",
+        "value": "hover"
+      },
+      "press": {
+        "key": "axf.chrome.preview.demo",
+        "value": "press"
+      },
+      "demo:off": {
+        "key": "axf.chrome.preview.demo",
+        "value": null
+      },
+      "off": {
+        "key": "axf.chrome.preview.demo",
+        "value": null
+      },
+      "scheme:sepia": {
+        "error": "Preview scheme takes app, light, dark (not \"sepia\")."
+      },
+      "demo:wiggle": {
+        "error": "Preview demo takes none, hover, press (not \"wiggle\")."
+      },
+      "nonsense": {
+        "error": "Preview takes open, close, toggle, scheme:<app|light|dark> or demo:<none|hover|press> (not \"nonsense\")."
+      }
+    },
+    "toggleClosed": {
+      "key": "axf.chrome.preview.open",
+      "value": null
+    },
+    "model": {
+      "type": "toolbar",
+      "seed": {
+        "groups": [
+          {
+            "id": "file",
+            "items": [
+              {
+                "id": "new",
+                "icon": "plus",
+                "label": "New"
+              },
+              {
+                "id": "open",
+                "icon": "folder",
+                "label": "Open",
+                "badge": "3"
+              }
+            ]
+          },
+          {
+            "id": "view",
+            "items": [
+              {
+                "id": "search",
+                "icon": "search",
+                "label": "Search",
+                "on": true
+              }
+            ]
+          }
+        ],
+        "demo": "new"
+      },
+      "fields": {
+        "variant": "labels",
+        "align": "start",
+        "density": "compact",
+        "surface": "glass",
+        "divider": true,
+        "showSearch": false,
+        "collapsible": false,
+        "tapConfirm": "inherit"
+      },
+      "open": true,
+      "scheme": "app",
+      "demo": "none"
+    }
+  },
   "overrides": {
     "clean": {
       "style": "pills",
