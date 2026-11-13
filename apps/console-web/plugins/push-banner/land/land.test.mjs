@@ -12,7 +12,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from './land-core.mjs';
-import { makeGit, round, control, readState, readControl, ciOf, reasonEvent, badJson, takeLandLock, dropLandLock, serial, lockOwner, requestFix, refreshRunning } from './land.mjs';
+import { makeGit, round, control, readState, readControl, ciOf, reasonEvent, badJson, takeLandLock, dropLandLock, serial, lockOwner, requestFix, refreshRunning, sweep, readFixes } from './land.mjs';
 import { finishedBy, onBuildEvents } from './hook.mjs';
 process.env.AXF_CREW_SAY = 'off'; // group-chat posts (crew-say.mjs) stay out of the real Breakroom
 
@@ -314,6 +314,37 @@ console.log('fix builds: a clash or red tests gets a P0 "merge main and land" bu
   const jobs = []; const down = async () => null;
   const fb2 = await requestFix({ s: sd, api: down, b: B, reason: clash, head: 'h2', pr: 77, prev: r, at: 't', agentJob: (j) => { jobs.push(j); return { exit: 0 }; } });
   check(fb2.via === 'agent' && fb2.attempt === 2 && jobs[0].type === 'land-build', 'console down: the agent job takes attempt 2');
+}
+console.log('sweeper: every 10 minutes, each finished build not on main is landed or gets its fix build');
+{
+  const kr = core.kickReason('k', 'kicked out: #581 conflicts with main in code (deploy/claude-workers.mjs, a.ts). Merge main in and fix them.');
+  check(kr.kind === 'conflict' && kr.files.join() === 'deploy/claude-workers.mjs,a.ts', 'kicked for a clash: the files are read back');
+  const kc = core.kickReason('k', 'kicked out: #575 broke CI when tested on top of main (failed: Web Dev Console (React/TS) + Python API, Build engine sweep (Node)). Run: u');
+  check(kc.kind === 'ci' && kc.agent, 'kicked for red CI: a code fix');
+  check(core.kickReason('k', 'its PR checks are red') === null, 'not kicked: no kick reason');
+  const T = Date.parse('2026-11-13T20:00:00Z');
+  const items = [{ id: 'kicked', branch: 'claude/kicked', head: 'h', pr: 581, since: '2026-11-13T19:00:00Z', reason: { kind: 'running', quiet: true, text: 'kicked: CI' } },
+    { id: 'pushfail', branch: 'claude/pushfail', since: '2026-11-13T19:00:00Z', reason: { kind: 'push', text: 'pushfail: push failed' } },
+    { id: 'fresh', branch: 'claude/fresh', since: '2026-11-13T19:55:00Z', reason: { kind: 'push', text: 'fresh: push failed' } },
+    { id: 'uiwait', branch: 'claude/uiwait', since: '2026-11-13T18:00:00Z', state: 'blocked', reason: { kind: 'ui', text: 'uiwait: screenshots waiting' } }];
+  const waiting = [{ build: 'kicked', pr: 581, head: 'h', why: 'kicked out: #581 conflicts with main in code (a.ts). Merge main in.' }];
+  const plan = core.sweepPlan(items, waiting, T);
+  check(plan.find((p) => p.id === 'kicked')?.act === 'fix' && plan.find((p) => p.id === 'pushfail')?.act === 'retry' && !plan.some((p) => p.id === 'fresh') && !plan.some((p) => p.id === 'uiwait'), 'plan: kicked → fix build; push failing 30 min → retry; fresh and UI waits left alone');
+  const stuck = core.stuckItems(items.map((x) => ({ ...x, state: 'blocked' })), T);
+  check(stuck.some((x) => x.id === 'uiwait') && !stuck.some((x) => x.id === 'fresh'), 'stuck over 30 minutes: listed for the banner');
+  const sd = { repo: process.cwd(), dataDir: mkdtempSync(join(tmpdir(), 'axf-sweep-')) };
+  writeFileSync(join(sd.dataDir, 'land.json'), JSON.stringify({ on: true, items }));
+  writeFileSync(join(sd.dataDir, 'merge-queue.json'), JSON.stringify({ waiting }));
+  writeFileSync(join(sd.dataDir, 'land.json.tmp-123'), ''); spawnSync('touch', ['-d', '2026-11-01T00:00:00Z', join(sd.dataDir, 'land.json.tmp-123')]);
+  const sent = []; const fapi = async (m, p, b) => { sent.push({ p, b }); return p.endsWith('/land/fix') ? { ok: true, id: 'merge-main-and-land-kicked' } : { ok: true }; };
+  const r = await sweep({ s: sd, api: fapi, nowMs: T });
+  check(r.acted.some((a) => a.id === 'kicked' && a.fix === 'merge-main-and-land-kicked') && readFixes(sd).kicked?.attempt === 1, 'sweep: the kicked build got its P0 fix build, recorded');
+  check(readControl(sd).now.includes('pushfail'), 'sweep: the stuck push is first in line again');
+  check(r.tmpCleared === 1 && !existsSync(join(sd.dataDir, 'land.json.tmp-123')), 'sweep: leftover .tmp files cleared');
+  check((await sweep({ s: sd, api: fapi, nowMs: T + 60000 })).skipped, 'not again within 10 minutes');
+  const again = await sweep({ s: sd, api: fapi, nowMs: T + core.SWEEP_MS, force: true });
+  check(!again.acted.some((a) => a.act === 'fix'), 'the same kick at the same head is not filed twice');
+  rmSync(sd.dataDir, { recursive: true, force: true });
 }
 console.log('group chat: a landing reason is Brett\'s move, a code fix, or something in the way');
 check(['held', 'ui', 'code'].every((k) => reasonEvent(k) === 'waiting'), 'held, UI Review and uncommitted code wait for Brett');

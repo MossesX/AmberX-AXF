@@ -12,6 +12,8 @@
  *   … list | blocked [--json]            what the last round found (landing order, PR, state, reason)
  *   … now <build> | hold <build> [--why "…"] | release <build> | after <build> <other>
  *   … off <build> [--why "…"] | on <build>   the per-build switch (auto-land is on for every build unless switched off)
+ *   … sweep [--dry-run]                  the sweeper now (it also runs every 10 min inside a round): land or fix-build each
+ *                                        finished build not on main; say what is stuck over 30 min
  *   … lock | serial -- <cmd …>           the serial landing line: who lands now | run a command in the line (waits its turn)
  *   run takes the line's lock (skips when busy; --wait-lock waits up to 15 min, the finish hook's round)
  *   … queue list | add <pr> | remove <pr> | move <pr> <index>   the merge queue (merge-queue.mjs; it runs in every round)
@@ -41,7 +43,7 @@
  * (/root/archive/auto-land), AXF_LAND_GITHUB_API (https://api.github.com), AXF_LAND_WORKFLOW (android.yml).
  */
 import { spawnSync } from 'node:child_process';
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, renameSync, rmSync, statSync, writeFileSync, copyFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, renameSync, rmSync, statSync, writeFileSync, copyFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -177,6 +179,10 @@ export function crewSay(section, event, text, { ref = '', repo = SELF_REPO, dedu
 export const reasonEvent = (kind) => (['held', 'ui', 'code'].includes(kind) ? 'waiting' : ['conflict', 'ci', 'error'].includes(kind) ? 'failed' : 'blocked');
 
 export const stateFile = (s) => join(s.dataDir, 'land.json');
+/** One record per build of its fix attempts (round and sweeper share it, so an attempt is never filed twice). */
+export const fixFile = (s) => join(s.dataDir, 'land-fix.json');
+export const readFixes = (s) => (readJson(fixFile(s), {}) || {}).builds || {};
+export const writeFixes = (s, builds) => writeJson(fixFile(s), { $axf: 'auto-land-fix@1', builds });
 export const controlFile = (s) => join(s.dataDir, 'land-control.json');
 export const readState = (s) => readJson(stateFile(s), { $axf: core.LAND_FRAME, items: [] });
 export const readControl = (s) => readJson(controlFile(s), { $axf: core.CONTROL_FRAME, holds: {}, now: [], after: {}, off: {} });
@@ -478,10 +484,11 @@ export async function round({ s = settings(), git = makeGit(s.repo), gh = makeGi
       it.pushed = { kind: it.reason.kind, head: it.head, at };
     }
     // a code clash or failing tests: a P0 "merge main and land" fix build, again and again until it lands (FYI each time)
-    it.fix = old.fix || null;
+    const fixes = readFixes(s);
+    it.fix = fixes[b.id] || old.fix || null;
     if (it.reason?.agent && !dry) {
-      const f = await requestFix({ s, api, b, reason: it.reason, head: it.head, pr: it.pr, prev: old.fix, at, nowMs: now().getTime(), agentJob });
-      if (f) { it.fix = f; if (f.via === 'agent') it.agent = { kind: it.reason.kind, head: it.head, at, ...f.job }; }
+      const f = await requestFix({ s, api, b, reason: it.reason, head: it.head, pr: it.pr, prev: it.fix, at, nowMs: now().getTime(), agentJob });
+      if (f) { it.fix = f; writeFixes(s, { ...readFixes(s), [b.id]: f }); if (f.via === 'agent') it.agent = { kind: it.reason.kind, head: it.head, at, ...f.job }; }
     }
     if (!it.reason && old.pushed && !dry) await api('POST', '/api/alerts/resolve', { keys: [core.alertKey(b.id)] });
     if (!it.reason && old.state !== 'ready' && !dry) crewSay('landing', 'done', `${b.id}${it.pr ? ` (#${it.pr})` : ''} is ready: CI green, nothing holds it. It joins the merge queue.`, { ref: b.id, repo: s.repo });
@@ -538,9 +545,57 @@ async function runRound({ s, dry, json, opt, print }) {
     try { const git = makeGit(s.repo); const mq = await queueRound({ s, git, gh, api: makeConsole(s), dry, fetched: true, log: (m) => !json && console.error(m) }); st.queue = { on: mq.on, items: (mq.items || []).length, kicked: (mq.kicked || []).length }; }
     catch (e) { if (!json) console.error(`merge queue: ${e.message}`); }
   }
+  // the sweeper: every 10 minutes, every finished build still not on main is landed or gets its fix build
+  if (!opt('only')) { try { st.sweep = await sweep({ s, dry, log: (m) => !json && console.error(m) }); } catch (e) { if (!json) console.error(`sweep: ${e.message}`); } }
   gh.save(); st.github = { calls: gh.calls, cached: gh.cached, left: Number.isFinite(gh.left()) ? gh.left() : null };
   if (!json) console.error(`github: ${gh.calls} billed call(s), ${gh.cached} answered from cache (304)`);
   return print(st, st.on === false ? 'auto-land is off (Settings → Plugins → Push banner → Auto-land)' : st.items.map(line).join('\n') || 'no finished builds to land');
+}
+
+// ------------------------------------------------------------------ the sweeper (every 10 minutes)
+
+export const sweepFile = (s) => join(s.dataDir, 'land-sweep.json');
+
+/**
+ * Every SWEEP_MS (or `force`): each finished build that is still not on main is landed or gets its fix build. Reads
+ * what the last round and the merge queue found (no GitHub calls of its own): kicked out of the queue or a clash / red
+ * CI → requestFix (P0 fix build, FYI); stuck on a push, a PR or a failed round for 30 min → first in line again. Also
+ * drops fix records of builds that landed and clears the data folder's leftover *.tmp-* files.
+ */
+export async function sweep({ s, api = makeConsole(s), nowMs = Date.now(), dry = false, force = false, agentJob = defaultAgentJob(s), log = () => {} } = {}) {
+  const prev = readJson(sweepFile(s), {}) || {};
+  if (!force && nowMs - (Date.parse(prev.at || 0) || 0) < core.SWEEP_MS) return { ...prev, skipped: true };
+  const at = new Date(nowMs).toISOString();
+  const st = readState(s); const mq = readJson(join(s.dataDir, 'merge-queue.json'), {}) || {};
+  const items = st.on === false ? [] : (st.items || []);
+  const plan = core.sweepPlan(items, mq.waiting || [], nowMs);
+  const fixes = readFixes(s); const done = [];
+  for (const p of plan) {
+    const it = items.find((x) => x.id === p.id) || { id: p.id };
+    const b = { id: p.id, title: it.title || p.id, branch: it.branch || '' };
+    if (p.act === 'retry') { if (!dry) control(s, 'now', p.id); done.push({ id: p.id, act: 'retry' }); continue; }
+    if (dry) { if (core.fixDue(fixes[p.id], p.reason, p.head, nowMs)) done.push({ id: p.id, act: 'fix', dry: true }); continue; }
+    const f = await requestFix({ s, api, b, reason: p.reason, head: p.head, pr: p.pr, prev: fixes[p.id], at, nowMs, agentJob });
+    if (f) { fixes[p.id] = f; done.push({ id: p.id, act: 'fix', attempt: f.attempt, fix: f.id || f.via }); }
+  }
+  // fix records of builds no longer waiting to land
+  const live = new Set(items.map((x) => x.id));
+  for (const id of Object.keys(fixes)) if (!live.has(id)) delete fixes[id];
+  let tmpCleared = 0;
+  if (!dry) {
+    writeFixes(s, fixes);
+    try {
+      for (const f of readdirSync(s.dataDir)) {
+        if (!/\.tmp-\d+$/.test(f)) continue;
+        const p = join(s.dataDir, f);
+        try { if (nowMs - statSync(p).mtimeMs > 3600e3) { rmSync(p, { force: true }); tmpCleared++; } } catch { /* gone */ }
+      }
+    } catch { /* no folder */ }
+  }
+  const out = { $axf: 'auto-land-sweep@1', at, acted: done, stuck: core.stuckItems(items, nowMs), tmpCleared };
+  if (!dry) writeJson(sweepFile(s), out);
+  log(`sweep: ${done.length} acted, ${out.stuck.length} stuck over 30 min`);
+  return out;
 }
 
 // ------------------------------------------------------------------ CLI
@@ -563,6 +618,11 @@ export async function main(argv) {
     if (!r.ran) { console.error(`the landing line stayed busy (${r.owner || 'unknown'})`); process.exitCode = 75; return; }
     process.exitCode = r.value; return;
   }
+  if (cmd === 'sweep') {
+    const r = await serial(() => sweep({ s, dry, force: true, log: (m) => !json && console.error(m) }), { wait: 60000, who: 'sweep' });
+    if (!r.ran) return print({ ran: false, owner: r.owner }, `the landing line is busy (${r.owner || 'unknown'})`);
+    return print(r.value, `${r.value.acted.map((a) => `${a.act.padEnd(6)} ${a.id}${a.fix ? ` → ${a.fix}` : ''}`).join('\n') || 'nothing to sweep'}${r.value.stuck.length ? `\nstuck over 30 min: ${r.value.stuck.map((x) => x.id).join(', ')}` : ''}`);
+  }
   if (cmd === 'lock') return print({ owner: lockOwner(), dir: lockDir() }, lockOwner() ? `landing now: ${lockOwner()}` : 'the landing line is free');
   if (cmd === 'run') {
     // one landing at a time: the cron round skips when the line is busy, the finish hook's round waits for it
@@ -581,7 +641,7 @@ export async function main(argv) {
     const d = control(s, cmd, id, { why: opt('why'), after: rest[1] });
     return print({ ok: true, control: d }, `${cmd}: ${id}${cmd === 'after' ? ` after ${rest[1]}` : ''}`);
   }
-  throw new Error('usage: land.mjs run [--dry-run] [--only <build>] | list | blocked | now <build> | hold <build> [--why …] | release <build> | off <build> [--why …] | on <build> | after <build> <other> | lock | serial -- <cmd …>');
+  throw new Error('usage: land.mjs run [--dry-run] [--only <build>] | list | blocked | now <build> | hold <build> [--why …] | release <build> | off <build> [--why …] | on <build> | after <build> <other> | sweep | lock | serial -- <cmd …>');
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

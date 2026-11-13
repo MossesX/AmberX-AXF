@@ -290,6 +290,46 @@ export function fixFyi(b, reason, { attempt = 1, fixId = '', pr = null } = {}) {
   };
 }
 
+/**
+ * The sweeper (Brett, Nov 13 2026): every SWEEP_MS, any finished build that is still not on main is landed or gets
+ * its fix build. Kicked out of the merge queue (a clash with main, or it broke CI on top of main) → a fix build;
+ * stuck on something plain scripts can retry (push, PR, a failed round) → first in line again.
+ */
+export const SWEEP_MS = 10 * 60 * 1000;
+/** Stuck: blocked or waiting this long (the banner shows it, the sweeper acts on it). */
+export const STUCK_MS = 30 * 60 * 1000;
+
+/** A kicked-out queue entry → the landing reason it stands for (conflict / ci), or null. */
+export function kickReason(id, why) {
+  const w = str(why, 600);
+  if (!/^kicked out/i.test(w)) return null;
+  const files = (w.match(/conflicts with main in code \(([^)]*)\)/) || [])[1];
+  if (files) return blockReason(id, { conflicts: files.split(/,\s*/).filter(Boolean) });
+  const checks = (w.match(/failed: ([^)]*)\)/) || [])[1];
+  return blockReason(id, { ci: 'failure', failing: checks ? checks.split(/,\s*/).filter(Boolean) : [] });
+}
+
+/** What the sweeper does for each finished, unlanded build: fix | retry | none. */
+export function sweepPlan(items = [], waiting = [], nowMs = Date.now()) {
+  const kicked = new Map(); for (const w of waiting || []) if (w?.build && /^kicked out/i.test(w.why || '')) kicked.set(w.build, w);
+  const out = [];
+  for (const it of items || []) {
+    const k = kicked.get(it.id);
+    const kr = k ? kickReason(it.id, k.why) : null;
+    if (kr) { out.push({ id: it.id, act: 'fix', reason: kr, head: k.head || it.head || '', pr: k.pr || it.pr || null }); continue; }
+    if (it.reason?.agent) { out.push({ id: it.id, act: 'fix', reason: it.reason, head: it.head || '', pr: it.pr || null }); continue; }
+    const stuck = nowMs - (Date.parse(it.since || 0) || nowMs) >= STUCK_MS;
+    if (stuck && ['push', 'pr', 'error'].includes(it.reason?.kind)) out.push({ id: it.id, act: 'retry' });
+  }
+  return out;
+}
+
+/** Items stuck for over STUCK_MS (anything but a quiet wait on CI that is running): for the banner. */
+export function stuckItems(items = [], nowMs = Date.now()) {
+  return (items || []).filter((x) => x && x.state !== 'ready' && x.state !== 'off' && x.reason && nowMs - (Date.parse(x.since || 0) || nowMs) >= STUCK_MS)
+    .map((x) => ({ id: x.id, pr: x.pr || null, kind: x.reason.kind, text: x.reason.text, since: x.since, fix: x.fix?.id || '' }));
+}
+
 /** The commands, declared once: the CLI, the push banner's REST routes and (through plugin-commands@1) MCP. */
 export const LAND_COMMANDS = Object.freeze([
   { id: 'land-list', method: 'GET', path: '/land', cli: 'list', title: 'Auto-land: every finished build', description: 'Every finished build the pipeline lands, in landing order, with its PR, state and what it waits on.', effect: 'read' },
