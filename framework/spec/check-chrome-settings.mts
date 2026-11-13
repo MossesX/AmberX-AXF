@@ -116,6 +116,12 @@ eq(instancePicks.gone, { id: copy.id, source: 'type' }, 'a pick whose asset is g
 const savedInst = { 'axf.chrome.toolbar.app.interface': 'chrome-toolbar-x', 'axf.chrome.tab-group.settings.main.interface': 'chrome-tab-group-x', 'axf.chrome.tab-group.settings.main': { style: 'pills' }, 'axf.chrome.banner.app.interface': '', 'axf.chrome.clock.app.interface': 'x', 'axf.chrome.settings.toolbar': 'chrome-toolbar' };
 eq(f.instanceInterfaces, cs.chromeInstanceInterfaceList(savedInst), 'instance interfaces fixture');
 eq(cs.chromeOverrideList(savedInst).map((o) => o.instance), ['settings.main'], 'an .interface pick is never listed as asset edits');
+// every toolbar and tab row is its own instance: library toolbar targets map to the kind, unnamed ones get a slug
+const prefixTargets = Object.fromEntries(['axf-ws-toolbar:main', 'axf-ws-toolbar:', 'axf-ws-toolbarx'].map((t) => [t, cs.chromeTypeOfTarget(t)]));
+const instanceSlugs = Object.fromEntries(['Tree search', 'ui-review.sections', '  MCP server!! ', ''].map((l) => [l || '(empty)', cs.chromeInstanceSlug(l)]));
+eq(f.prefixTargets, prefixTargets, 'prefix targets fixture');
+eq(f.instanceSlugs, instanceSlugs, 'instance slugs fixture');
+eq(prefixTargets['axf-ws-toolbar:main'], 'toolbar', 'a workspace toolbar opens toolbar settings');
 
 /* ---- instance overrides ---- */
 eq(f.overrides, { clean: cs.normalizeInstanceOverride('tab-group', { style: 'pills', position: 'left', badges: false, bogus: 1, density: 'huge', sticky: 'yes' }), number: cs.normalizeInstanceOverride('banner', { height: 999.6, surface: 'raised' }), empty: cs.normalizeInstanceOverride('toolbar', null), unknownType: cs.normalizeInstanceOverride('clock', { format: '12h' }), data: cs.chromeInstanceData('tab-group', { style: 'underline', align: 'start' }, { style: 'pills', bogus: true }), value: [cs.chromeFieldValue('tab-group', { style: 'underline' }, { style: 'pills' }, 'style'), cs.chromeFieldValue('tab-group', { style: 'underline' }, {}, 'style'), cs.chromeFieldValue('tab-group', {}, {}, 'style')] }, 'overrides fixture');

@@ -79,10 +79,21 @@ export const isChromeInstanceId = (id) => typeof id === 'string' && INSTANCE.tes
 
 /** data-fx-ctx-target names each chrome kind reports on right-click / long-press (several per kind: older names kept). */
 export const CHROME_TARGETS = { 'tab-group': ['tab-group'], toolbar: ['toolbar'], banner: ['banner', 'axf-banner'], 'nav-menu': ['nav', 'nav-item'], 'app-menu': ['app-menu', 'menubar'], 'context-menu': [] };
+/** Target prefixes that are a chrome kind too (a library's own toolbar target, `axf-ws-toolbar:<workspace>`). */
+export const CHROME_TARGET_PREFIXES = { toolbar: ['axf-ws-toolbar:'] };
 export function chromeTypeOfTarget(target) {
   if (typeof target !== 'string') return null;
   for (const t of CHROME_TYPES) if (CHROME_TARGETS[t].includes(target)) return t;
+  for (const t of CHROME_TYPES) if ((CHROME_TARGET_PREFIXES[t] ?? []).some((p) => target.startsWith(p) && target.length > p.length)) return t;
   return null;
+}
+
+/**
+ * The instance id of a toolbar / tab row / nav that names no target of its own: its settings id, else its accessible
+ * name, as a slug (the context menu and the All toolbars list use the same one, so both open the same dialog).
+ */
+export function chromeInstanceSlug(label) {
+  return typeof label === 'string' ? label.toLowerCase().replace(/[^a-z0-9._:/-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 120) : '';
 }
 
 /** Where a kind can be moved from its context menu, and the setting that does it. */

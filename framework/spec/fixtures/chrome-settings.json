@@ -1025,5 +1025,16 @@
       "instance": "app",
       "interface": "chrome-toolbar-x"
     }
-  ]
+  ],
+  "prefixTargets": {
+    "axf-ws-toolbar:main": "toolbar",
+    "axf-ws-toolbar:": null,
+    "axf-ws-toolbarx": null
+  },
+  "instanceSlugs": {
+    "Tree search": "tree-search",
+    "ui-review.sections": "ui-review.sections",
+    "  MCP server!! ": "mcp-server",
+    "(empty)": ""
+  }
 }

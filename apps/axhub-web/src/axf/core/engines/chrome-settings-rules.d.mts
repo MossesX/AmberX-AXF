@@ -44,6 +44,8 @@ export function CHROME_SETTINGS_PICK_KEY(type: string): string;
 export function CHROME_SETTINGS_PATCH_KEY(type: string): string;
 export function CHROME_INSTANCE_KEY(type: string, instance: string): string;
 export function CHROME_INSTANCE_ASSET_KEY(type: string, instance: string): string;
+export const CHROME_TARGET_PREFIXES: Partial<Record<ChromeType, string[]>>;
+export function chromeInstanceSlug(label: unknown): string;
 export function CHROME_INSTANCE_INTERFACE_KEY(type: string, instance: string): string;
 export const CHROME_INSTANCE_PICK_SUFFIXES: string[];
 export function TAB_GROUP_LAST_KEY(instance: string): string;
