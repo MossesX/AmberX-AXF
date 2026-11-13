@@ -9,6 +9,7 @@ import { builtinDialogs } from './studio/builtinDialogs';
 import { bannerSettingsDialog } from './components/BannerSettings';
 import { bannerWidgetsDialog } from './components/BannerWidgets';
 import { chromeDialogs, installChrome } from './components/ChromeContext';
+import { PageAssetsHost } from './components/PageAssets';
 import { priorityDialogs } from './components/PriorityTag';
 import { FloatingWindowsHost, TabRenderersProvider, windowDialogs, useWindowShortcuts, type TabRenderers } from './windows/WindowHost';
 import { OutputTerminalPane, terminalDialog } from './studio/OutputTerminal';
@@ -177,6 +178,8 @@ export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, 
       <DialogHost dialogs={allDialogs} />
       <ToastHost />
       <ContextMenuHost />
+      {/* page-assets@1: hidden assets stay off the page, the right-clicked one lit while its menu is open */}
+      <PageAssetsHost />
       <FloatingWindowsHost />
       {/* Help mode (components/Help.tsx): tooltips on every control, screen intros, What is this?; nothing while it's off */}
       <HelpLayer />

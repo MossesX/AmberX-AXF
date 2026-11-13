@@ -22,7 +22,7 @@
  * a command waits, the browser AmberX opens, the open consoles, waiting and last commands.
  */
 import { useEffect, useState } from 'react';
-import { Button, Container, Note, SelectField, Switch, useRuntime, type AxfWebLibrary } from '@console/axf/react';
+import { Button, Container, Note, SelectField, Switch, pageAssetsSummary, useRuntime, type AxfWebLibrary } from '@console/axf/react';
 import type { AxfRuntime } from '@console/axf/core';
 import { followSse, sseJson } from '@console/axf/core/sse';
 import { pluginFetch } from '@console/plugins';
@@ -95,6 +95,8 @@ function hereOf(rt: AxfRuntime): ConsoleHere {
   if (label) here.screenLabel = label;
   if (s.dialog) here.dialog = s.dialog.id;
   if (s.view === 'settings') { const t = rt.settings.get('axf.settings.lastTab'); if (typeof t === 'string' && t) here.settings = t; }
+  // page-assets@1: every asset on the page and whether it is hidden (console_where → here.assets)
+  here.assets = pageAssetsSummary(rt);
   return here;
 }
 

@@ -53,3 +53,4 @@ export { RefText, REFS_SETTING, addRefSource, refSourcesChanged, refIndexOf, ope
 export { TabGroup, useTabGroupData, tabGroupDataFor, type TabDef, type TabGroupProps } from './components/TabGroup';
 export { BannerWidgetsPanel, BannerMore, bannerItemAttrs, bannerWidgetsDialog, useBannerOverflow } from './components/BannerWidgets';
 export { CHROME_SETTINGS_DIALOG, CHROME_PICK_DIALOG, CHROME_APP_INSTANCE, CHROME_ACTION_IDS, AssetsWithEdits, ChromeSettingsPanel, ChromeAssetPicker, chromeDialogs, chromeMenu, chromeSettingsUi, installChrome, moveChrome, setChromeField, swapChrome } from './components/ChromeContext';
+export { PageAssetColours, PageAssetsHost, contextPageAsset, highlightPageAsset, installPageAssets, pageAssetsMenu, pageAssetsSummary, scanPageAssets, type PageAsset } from './components/PageAssets';

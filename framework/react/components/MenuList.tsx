@@ -83,7 +83,8 @@ export function MenuList({ items, onDone, payload, showIcons = true, showShortcu
               type="button"
               role={check === null ? 'menuitem' : 'menuitemcheckbox'}
               aria-checked={check === null ? undefined : check}
-              className="fx-menu__item"
+              className={`fx-menu__item${item.current ? ' is-current' : ''}`}
+              aria-current={item.current ? 'true' : undefined}
               data-axf-action={item.action}
               disabled={locked}
               title={hostLock ?? (locked ? `Requires ${item.requires}` : undefined)}
@@ -100,6 +101,7 @@ export function MenuList({ items, onDone, payload, showIcons = true, showShortcu
               {showIcons && (
                 <span className="fx-menu__icon">{locked ? <Icon name="lock" size={14} /> : <Icon name={item.icon} size={15} />}</span>
               )}
+              {item.swatch && <span className={`fx-menu__swatch fx-tone-mark--${item.swatch}`} aria-hidden="true" />}
               <span className="fx-menu__label">{item.label}</span>
               {check !== null && <span className="fx-menu__check">{check && <Icon name="check" size={14} />}</span>}
               {showShortcuts && item.shortcut && <Kbd>{item.shortcut}</Kbd>}

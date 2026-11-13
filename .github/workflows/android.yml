@@ -267,6 +267,7 @@ jobs:
             node framework/spec/check-skin-colour-rule.mjs              # skin + colour theme rule: a colour pick switches inside the skin, never a new or forked skin
             node framework/spec/check-skin-sections.mjs                 # every shipped skin's look / layout / behaviour sections and asset slots ship; the professional skins set all four
             node framework/spec/check-asset-overrides.mjs               # asset overrides: the Assets with edits list (chrome-settings@1 instance overrides) and the controlled-item colour
+            node framework/spec/check-page-assets.mjs                   # page-assets@1: Assets menu ids, the hidden list (per page / every page), type + hidden colours (tokens only), console_where here.assets
             npx -y tsx framework/spec/check-look-migration.mts         # look-migration@1 (skins only): retired theme / style / layout picks and settings fold into the active skin; idempotent, look-preserving, backed up
             npx -y tsx framework/spec/check-settings-ui.mts            # settings interface asset: fixture replay, starters, enums
             npx -y tsx framework/spec/check-design-package.mts         # design-package@1 + behavior-theme@1 rules, starters, the Amber context menu
