@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4905,
- "updatedAt": "2026-11-13T20:06:54.165Z",
+ "rev": 4906,
+ "updatedAt": "2026-11-13T20:07:09.409Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -199083,7 +199083,7 @@
    "pr": "#634",
    "priority": "P1",
    "createdAt": "2026-11-13T18:30:38.922Z",
-   "updatedAt": "2026-11-13T19:30:21.793Z",
+   "updatedAt": "2026-11-13T20:06:58.873Z",
    "builtAt": "",
    "notes": [
     {
@@ -199177,6 +199177,10 @@
     {
      "text": "Headless run axf-ui-manager-floating-window-to-select-any--rhonda: brief only · start 11.6K tokens ($0.03) · cost $2.60 · 73 turns · 6 tools, MCP none",
      "at": "2026-11-13T19:30:21.793Z"
+    },
+    {
+     "text": "Brett: in the UI Manager list of every UI element: (1) every row/entry has its own Reset/Restore button (Restore previous edit / Restore to default / Restore from axHub); (2) every row shows its PARENT: the page and the app/plugin/feature it belongs to, with a link to it, plus a column filter and group-by on parent; (3) cascading restore at four levels, each available from its row, the parent rows and the API: RESTORE APP (every page, interface, toolbar, tab group, menu and asset customisation in that app back to default), RESTORE PAGE (that screen/feature and everything in it), RESTORE INTERFACE (one toolbar, tab group, menu or dialog instance), and RESTORE ASSET (the asset itself). Before restoring, show what will be reset (count and list); every restore is snapshotted so it can be undone. Voice: 'restore the whole Build orchestrator', 'reset this toolbar'.",
+     "at": "2026-11-13T20:06:58.873Z"
     }
    ],
    "approvals": [
@@ -199564,7 +199568,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 36,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

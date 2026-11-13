@@ -788,7 +788,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 18:28 UTC · `builds-get-console-token-banner-alert` removed (all) · orchestrator
 - 2026-11-13 18:28 UTC · `transparency-token-works-every-dialog` → running, note (all) · pipeline
 - 2026-11-13 18:28 UTC · `transparency-token-works-every-dialog` branch claude/transparency-token-works-every-dialog (all) · pipeline
 - 2026-11-13 18:28 UTC · `vps-builds-get-console-token-ui-review` note (all) · orchestrator
@@ -1188,6 +1187,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 20:06 UTC · `icon-map-icon-packs-every-icon-badge-app` → running, note (all) · pipeline
 - 2026-11-13 20:06 UTC · `icon-map-icon-packs-every-icon-badge-app` branch claude/icon-map-icon-packs-every-icon-badge-app (all) · pipeline
 - 2026-11-13 20:06 UTC · `icon-map-icon-packs-every-icon-badge-app` note (all) · orchestrator
+- 2026-11-13 20:06 UTC · `ui-manager-floating-window-to-select-any` note (all) · claude-voice
 
 ## Token passes (log)
 
