@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T17:47:09.081Z",
+ "updatedAt": "2026-11-13T17:47:47.735Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -125709,12 +125709,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T17:46:43.480Z",
-   "updatedAt": "2026-11-13T17:46:46.542Z",
+   "updatedAt": "2026-11-13T17:47:46.237Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-13T17:46:46.542Z"
+    },
+    {
+     "text": "Brett's spec (overrides brief where different): Default settings interface per chrome type comes from axHub by default, or from the console's own Settings, which gets a list of all default assets (tab group settings interface, toolbar settings interface, etc.) where each can be chosen. In each individual toolbar/tab group settings dialog, the settings-interface picker is greyed out until Brett ticks a checkbox 'Override console default interface'; then he can pick a different one. Any chosen settings interface must have a manifest and pass a schema conformance test before it can be selected/applied.",
+     "at": "2026-11-13T17:47:46.237Z"
     }
    ],
    "approvals": [],
