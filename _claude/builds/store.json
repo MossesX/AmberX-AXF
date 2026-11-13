@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3999,
- "updatedAt": "2026-11-13T03:56:08.991Z",
+ "rev": 4000,
+ "updatedAt": "2026-11-13T04:00:50.305Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -174924,14 +174924,14 @@
    "title": "Badge shape picker on the Banners screen: pill (text), icon or dot for every badge, like Following AmberX. Shape already exists in code (types.ts, Banner.tsx), it just isn't shown. Android twin too.",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad",
    "pr": "",
    "createdAt": "2026-11-12T23:14:26.317Z",
-   "updatedAt": "2026-11-13T03:38:27.788Z",
+   "updatedAt": "2026-11-13T04:00:48.570Z",
    "builtAt": "",
    "notes": [
     {
@@ -174953,6 +174953,10 @@
     {
      "text": "Headless run axf-badge-shape-picker-on-the-banners-screen-pill-te--gina: brief only · start 11.2K tokens ($0.03) · cost $1.96 · 59 turns · 6 tools, MCP none",
      "at": "2026-11-13T03:38:27.788Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-13T04:00:48.570Z"
     }
    ],
    "approvals": [],
@@ -175104,7 +175108,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -176286,14 +176290,14 @@
    "title": "CHANGE to move-amberx-web-app-into-the-console-amberx-andr (PR #528), Brett: do NOT bring AmberX features into the console. Plan Studio is already there. Only build the Console Android app with all notifications (text, approvals, alerts) going through the console. Drop the rest of the AmberX port. A",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/change-to-move-amberx-web-app-into-the-console-amberx-andr-pr-528-brett-do",
    "pr": "#546",
    "createdAt": "2026-11-13T00:39:39.304Z",
-   "updatedAt": "2026-11-13T03:38:32.520Z",
+   "updatedAt": "2026-11-13T04:00:48.570Z",
    "builtAt": "",
    "notes": [
     {
@@ -176319,6 +176323,10 @@
     {
      "text": "Headless run axf-change-to-move-amberx-web-app-into-the-console-a--earl: brief only · start 11.2K tokens ($0.03) · cost $2.72 · 61 turns · 6 tools, MCP none",
      "at": "2026-11-13T03:38:32.520Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-13T04:00:48.570Z"
     }
    ],
    "approvals": [],
@@ -176492,7 +176500,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
