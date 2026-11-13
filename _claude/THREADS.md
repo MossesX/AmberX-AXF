@@ -786,10 +786,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 12:25 UTC · `fix-toolbar-settings-doing-nothing` note (all) · mcp
-- 2026-11-13 12:25 UTC · `fix-toolbar-settings-doing-nothing` note (all) · console
-- 2026-11-13 12:25 UTC · `combine-merge-queue-into-one-pr` s7 done (all) · orchestrator
-- 2026-11-13 12:26 UTC · `combine-merge-queue-into-one-pr` s8 done (all) · orchestrator
 - 2026-11-13 12:26 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` s30 done (all) · orchestrator
 - 2026-11-13 12:26 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` s30 done (all) · foreign-write
 - 2026-11-13 12:26 UTC · `combine-merge-queue-into-one-pr` s8 done (all) · foreign-write
@@ -1186,6 +1182,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 18:48 UTC · `change-to-one-to-do-notes-and-tasks-plugin-pr-527-brett-notes-tasks-and-to` → complete, merged, note (all) · reconciler
 - 2026-11-13 18:48 UTC · `transparency-token-works-every-dialog` s2 done (all) · orchestrator
 - 2026-11-13 18:48 UTC · `console-app-wake-word-voice-listener` note (all) · orchestrator
+- 2026-11-13 18:48 UTC · `console-app-part-3-native-bridge-mic` → running, note (all) · pipeline
+- 2026-11-13 18:48 UTC · `console-app-part-3-native-bridge-mic` branch claude/console-app-part-3-native-bridge-mic (all) · pipeline
+- 2026-11-13 18:48 UTC · `change-to-one-to-do-notes-and-tasks-plugin-pr-527-brett-notes-tasks-and-to` note (all) · orchestrator
+- 2026-11-13 18:48 UTC · `console-app-part-3-native-bridge-mic` note (all) · orchestrator
 
 ## Token passes (log)
 
