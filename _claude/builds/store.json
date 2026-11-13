@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4757,
- "updatedAt": "2026-11-13T19:09:44.386Z",
+ "rev": 4758,
+ "updatedAt": "2026-11-13T19:09:58.505Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -197741,7 +197741,7 @@
    "pr": "#635",
    "priority": "P1",
    "createdAt": "2026-11-13T18:14:45.988Z",
-   "updatedAt": "2026-11-13T19:09:27.501Z",
+   "updatedAt": "2026-11-13T19:09:51.691Z",
    "builtAt": "2026-11-13T19:09:27.501Z",
    "notes": [
     {
@@ -197779,6 +197779,10 @@
     {
      "text": "Session on mossesx-max- stopped on its own with 9 steps left: back in Pending for Brett.",
      "at": "2026-11-13T18:26:05.542Z"
+    },
+    {
+     "text": "Headless run axf-decision-dialog-ui-review-other--paulie: brief only · start 11.4K tokens ($0.03) · cost $10.24 · 186 turns · 6 tools, MCP none",
+     "at": "2026-11-13T19:09:51.691Z"
     }
    ],
    "approvals": [],
@@ -198040,7 +198044,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
