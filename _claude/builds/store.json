@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4018,
- "updatedAt": "2026-11-13T06:25:34.375Z",
+ "rev": 4019,
+ "updatedAt": "2026-11-13T06:25:48.602Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -177930,15 +177930,15 @@
    "title": "Merges are only 'merged' once GitHub confirms: every merge path (console auto-merge, auto-land, github client plugin, server gate, scripts) shows 'Pending GitHub confirmation' right after a merge call, then reads the PR back from GitHub (state MERGED and the merge commit on main) before marking it m",
    "category": "",
    "detail": "",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T06:21:11.993Z",
-   "updatedAt": "2026-11-13T06:25:32.331Z",
+   "updatedAt": "2026-11-13T06:25:40.850Z",
    "builtAt": "",
    "notes": [
     {
@@ -177952,6 +177952,14 @@
     {
      "text": "Split by Claude into 13 steps (2 Fable).",
      "at": "2026-11-13T06:25:16.456Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-merges-are-only-merged-once-github-confirms-ever--joey.",
+     "at": "2026-11-13T06:25:37.965Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-merges-are-only-merged-once-github-confirms-ever--joey, own login copy)",
+     "at": "2026-11-13T06:25:40.850Z"
     }
    ],
    "approvals": [],
@@ -177971,12 +177979,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T06:21:16.887Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-merges-are-only-merged-once-github-confirms-ever--joey",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Fable",
+    "launchedAt": "2026-11-13T06:25:37.289Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T06:25:16.456Z",
@@ -177988,7 +177996,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-13T06:25:37.289Z",
     "planned": {
      "model": "Fable",
      "account": "mossesx-max-",
@@ -177997,7 +178005,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-13T06:25:37.289Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -178342,7 +178350,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

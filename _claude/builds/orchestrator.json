@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T06:25:34.375Z",
+ "updatedAt": "2026-11-13T06:25:48.602Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -116903,15 +116903,15 @@
    "title": "Merges are only 'merged' once GitHub confirms: every merge path (console auto-merge, auto-land, github client plugin, server gate, scripts) shows 'Pending GitHub confirmation' right after a merge call, then reads the PR back from GitHub (state MERGED and the merge commit on main) before marking it m",
    "category": "",
    "detail": "",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T06:21:11.993Z",
-   "updatedAt": "2026-11-13T06:25:32.331Z",
+   "updatedAt": "2026-11-13T06:25:40.850Z",
    "builtAt": "",
    "notes": [
     {
@@ -116925,6 +116925,14 @@
     {
      "text": "Split by Claude into 13 steps (2 Fable).",
      "at": "2026-11-13T06:25:16.456Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-merges-are-only-merged-once-github-confirms-ever--joey.",
+     "at": "2026-11-13T06:25:37.965Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-merges-are-only-merged-once-github-confirms-ever--joey, own login copy)",
+     "at": "2026-11-13T06:25:40.850Z"
     }
    ],
    "approvals": [],
