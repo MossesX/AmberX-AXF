@@ -226,3 +226,12 @@ Build `every-skin-ships-a-light-and-a-dark-colour-theme`. Web only; the Kotlin t
 `skinModeProblems`, `skinModeRows`), the required `colorThemes: { light, dark }` on skin@1 and the runtime's
 `setSkinMode` / `skin.mode:light|dark|system` (system follows `prefers-color-scheme`). A port maps `system` to the
 device's night mode (`isSystemInDarkTheme()`) and replays the engine cases in `spec/check-skin-modes.mjs`.
+
+## Deferred: the guide's no-auto-open rule + Gizmo naming (Nov 13 2026)
+Web only (Android on hold, build `stop-the-molly-guide-from-popping-up-and-talking-every-time-the-console-loads-n`). The console's
+walkthrough guide (plugin code, `molly-guide/web/walkthrough.ts` `pollDecision`) never opens on load: the first read only learns the
+newest seq, auto-open is opt-in (`molly-guide.autoOpen`, default off) and never plays a walkthrough made before the page loaded.
+The guide asks agent `gizmo` (Molly is no longer an agent, Nov 3 decision; the `molly` add-on is only a fallback) and registers
+`gizmo.ask` / `gizmo.replay` / `gizmo.next` / `gizmo.prev` / `gizmo.close` with the `molly.*` names kept as hidden aliases.
+AmberX on Android runs the web app, so its texts follow already. A native Compose player of walkthrough@1, when the Android side
+resumes, replays the same rule: no auto-open on start, opt-in only, nothing older than the app's start, and the Gizmo names.
