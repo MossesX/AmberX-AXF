@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T06:23:51.203Z",
+ "updatedAt": "2026-11-13T06:24:34.497Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -116595,7 +116595,7 @@
    "pr": "#547",
    "priority": "P0",
    "createdAt": "2026-11-13T01:13:53.464Z",
-   "updatedAt": "2026-11-13T06:23:32.208Z",
+   "updatedAt": "2026-11-13T06:23:48.776Z",
    "builtAt": "",
    "notes": [
     {
@@ -116657,6 +116657,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-skin-configuration-panel-before-ai-makes-a-skin---paulie, own login copy)",
      "at": "2026-11-13T06:14:38.432Z"
+    },
+    {
+     "text": "Self-check: skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change was marked running on mossesx-max- with no session: released and back in the Queue.",
+     "at": "2026-11-13T06:23:40.622Z"
     }
    ],
    "approvals": [
@@ -116848,7 +116852,7 @@
     {
      "id": "s8",
      "text": "Ship 3 UI Review options for the panel as settings assets (tree with switches, two-column picker, compact chip grid), then rebake the console, axHub web and AmberX shared assets.",
-     "model": "Opus",
+     "model": "Fable",
      "why": "",
      "phase": "",
      "group": "",
@@ -116871,7 +116875,7 @@
     {
      "id": "s9",
      "text": "Tests: engine fixtures, route tests, CLI tests, check-theme, check-controls, check-chrome-assets, check-skin-coverage, glossary catalog --check. Submit the desktop and phone screenshots of the 3 options to UI Review with --choices. Write _claude/builds/reports/skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change.md, add a THREADS row, and open the PR. The PR says how each feature is reached (deep link, REST, MCP, CLI, voice).",
-     "model": "Opus",
+     "model": "Fable",
      "why": "",
      "phase": "",
      "group": "",
