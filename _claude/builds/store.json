@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4575,
- "updatedAt": "2026-11-13T18:00:44.561Z",
+ "rev": 4576,
+ "updatedAt": "2026-11-13T18:01:12.799Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -195762,12 +195762,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T17:44:38.731Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-chrome-settings-actually-apply-toolbars--paulie",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-13T17:46:56.405Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T17:46:32.016Z",
@@ -195777,9 +195777,9 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"fa4180cf-cda0-4b2d-b885-c81df8cbcd81\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-13T17:46:56.405Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -195788,7 +195788,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-13T17:46:56.405Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -195814,7 +195814,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-13T17:46:32.016Z",
-     "updatedAt": "2026-11-13T17:59:16.752Z"
+     "updatedAt": "2026-11-13T18:00:27.782Z"
     },
     {
      "id": "s2",
@@ -195872,7 +195872,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
