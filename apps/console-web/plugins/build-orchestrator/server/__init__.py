@@ -593,6 +593,17 @@ async def pipeline_fill_run(request: Request) -> dict[str, Any]:
     return _pipeline("fill", "run", "--by", (brett_click(request) or "console")[:80], who=(brett_click(request) or "console")[:80])
 
 
+@router.post("/pipeline/fill/settings")
+async def pipeline_fill_settings(request: Request) -> dict[str, Any]:
+    """{fillSlots?, maxParallelPerBuild?, autoQueuePending?}: the fill settings alone (the MCP command
+    pipeline-fill-settings, `pipeline.mjs fill set`, the voice action). Same rules as POST /pipeline/settings."""
+    body = await _json_body(request)
+    if not any(k in FILL_KEYS for k in body):
+        raise HTTPException(400, "send fillSlots, maxParallelPerBuild and/or autoQueuePending")
+    fill = fill_settings_set(request, body)
+    return {"ok": True, **fill, "settings": _pipeline("fill", "status").get("settings")}
+
+
 @router.post("/builds/{build_id}/steps/{step}/deps")
 async def step_deps(build_id: str, step: str, request: Request) -> dict[str, Any]:
     """{dependsOn: [stepId…]} sets the step's dependencies ([] = independent: it may run in parallel as soon as the build

@@ -5,6 +5,7 @@ import { setPriorityHost, type PriorityHost } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import { FOLDER, OrchestratorPage, TABS, openTab } from './ui';
 import { focusBuild } from './focus';
+import { fillApi, fillSummary, parseDepsArg, parseSettingsArg } from './fill';
 import { BUILD_ACTIONS, type BuildAction } from '@console/axf/core/build-pipeline.mjs';
 
 const ACTION_LABEL: Record<BuildAction, string> = { unqueue: 'Back to Pending', hold: 'Hold (stays in the Queue)', release: 'Release from hold', archive: 'Move to the Archive', unarchive: 'Bring back from the Archive', delete: 'Delete (kept in Deleted)', restore: 'Restore' };
@@ -16,6 +17,10 @@ const ACTION_ICON: Record<BuildAction, string> = { unqueue: 'arrow-left', hold: 
  * active|incomplete|complete|errors|archive|deleted|accounts|builds|approvals|rules>, build-orchestrator.start:<build> (Start
  * = Queue: the dispatcher starts it when its turn comes). Search: every build, by its tab. Context menu: Open / Queue on
  * build rows, plus the actions the build offers.
+ * Fill every slot (Nov 13 2026): build-orchestrator.pipeline-fill-status[:<build>] (opens the Slots strip and says what
+ * runs where), .pipeline-fill-run (one dispatcher round now), .pipeline-step-deps:<build>/<step>/<s1,s2|none|sequential>
+ * and .pipeline-fill-settings:<fillSlots=on|off,maxParallelPerBuild=N,autoQueuePending=on|off>: the same names and REST
+ * routes as the MCP plugin commands and `pipeline.mjs fill status|run|deps|set` (web/fill.ts).
  * build-orchestrator.focus:<tab|build> (Nov 11 2026, console-commands-reliable): what a console command's `focus` runs
  * ("build-orchestrator pending", console_show "build:<id>"): a tab by id or label opens; a build opens its tab with its
  * row scrolled into view, expanded and highlighted. open / tab / focus only navigate (effect navigate), so Follow Amber's
@@ -73,6 +78,26 @@ export const plugin: AxfWebLibrary = {
         .then((r) => { if (!r.ok) throw new Error(r.error); rt.toast(`${id} is in the Queue: the dispatcher starts it when its turn comes.`, 'success'); void open('queue'); })
         .catch((e: Error) => rt.toast(e.message, 'danger'));
     }, { label: 'Start a build (put it in the Queue)' });
+    const fill = fillApi(pipeApi);
+    const fail = (e: unknown) => rt.toast((e as Error).message, 'danger');
+    rt.actions.register('build-orchestrator.pipeline-fill-status', ([arg]) => {
+      const build = decodeURIComponent(arg ?? '').trim();
+      void open(build || 'active');
+      void fill.status(build).then((f) => rt.toast(fillSummary(f), 'info')).catch(fail);
+    }, { label: 'Fill every slot: what runs in each agent slot and what starts next (a build adds its steps)', params: true, effect: 'navigate' });
+    rt.actions.register('build-orchestrator.pipeline-fill-run', () => {
+      void fill.run().then((r) => rt.toast(r.ran ? `Round run: ${r.fill?.launched.length ?? 0} parallel step(s) started` : r.note ?? 'Filed: the dispatcher runs a round within a minute', 'success')).catch(fail);
+    }, { label: 'Fill the slots now (one dispatcher round)' });
+    rt.actions.register('build-orchestrator.pipeline-step-deps', ([arg]) => {
+      const d = parseDepsArg(arg ?? '');
+      if (!d) { rt.toast('Say it as build-orchestrator.pipeline-step-deps:<build>/<step>/<s1,s2 | none | sequential>', 'warning'); return; }
+      void fill.deps(d.build, d.step, d.dependsOn).then((r) => rt.toast(`${r.id} ${r.step}: ${r.explicit === null ? 'sequential' : r.dependsOn.length ? `after ${r.dependsOn.join(', ')}` : 'independent'}`, 'success')).catch(fail);
+    }, { label: "Set a step's dependencies (<build>/<step>/<s1,s2 | none | sequential>)", params: true });
+    rt.actions.register('build-orchestrator.pipeline-fill-settings', ([arg]) => {
+      const patch = parseSettingsArg(arg ?? '');
+      if (!Object.keys(patch).length) { rt.toast('Say it as build-orchestrator.pipeline-fill-settings:fillSlots=on|off,maxParallelPerBuild=N,autoQueuePending=on|off', 'warning'); return; }
+      void fill.settings(patch).then((r) => rt.toast(r.changed.length ? r.changed.map((c) => `${c.key}: ${String(c.to)}`).join(', ') : 'Nothing changed', 'success')).catch(fail);
+    }, { label: 'Fill every slot settings (fill every slot, max parallel steps per build, auto-queue pending builds: Brett only)', params: true });
     for (const action of BUILD_ACTIONS) {
       rt.actions.register(`build-orchestrator.${action}`, ([arg]) => {
         const ids = decodeURIComponent(arg ?? '').split(',').map((x) => x.trim()).filter(Boolean);

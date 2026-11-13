@@ -46,7 +46,8 @@
       "_claude/shared/rules/RULES.md",
       "deploy/claude-headless.sh",
       "deploy/install-console.sh",
-      "framework/spec/check-builds-live.mjs"
+      "framework/spec/check-builds-live.mjs",
+      "framework/cli/agent-slots.mjs"
     ]
   },
   "commands": {
@@ -528,6 +529,91 @@
           }
         },
         "output": "{ settings }"
+      },
+      {
+        "id": "pipeline-fill-status",
+        "route": "GET /pipeline/fill",
+        "title": "Fill every slot: slots and ready steps",
+        "description": "Which build and step runs in each agent slot (or free), the ready steps of running builds, what the next dispatcher round would start (dry run, with why the rest waits) and the fill settings; with build, that build's steps and their dependency state (done, running in slot N, ready, waiting on). Say 'what's in the slots' or 'what runs in parallel'.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "Build id (adds its steps and their dependency state)"
+            }
+          }
+        },
+        "output": "{ settings: { fillSlots, autoQueuePending, maxParallelPerBuild }, slots: { cap, used, free, rows: [{ n, build, step, state, session }] }, ready, builds: [{ id, parallel, cap }], plan: { launches, waits, free, blocked }, build?: { steps: [{ id, state, dependsOn, waitingOn, runningIn }] } }"
+      },
+      {
+        "id": "pipeline-fill-run",
+        "route": "POST /pipeline/fill/run",
+        "title": "Fill the slots now",
+        "description": "Run one dispatcher round now: ready parallel steps start in the free slots (and Queue builds, and Pending ones when auto-queue is on). On the VPS it runs at once; from the console it is filed and runs within a minute. Say 'fill the slots'.",
+        "readOnly": false,
+        "output": "{ ran, requested?, launched, fill: { launched, ended, autoQueued, plan } }"
+      },
+      {
+        "id": "pipeline-step-deps",
+        "route": "POST /builds/{build_id}/steps/{step}/deps",
+        "title": "Set a step's dependencies",
+        "description": "Set which steps of the build one step waits for: a list of step ids ([] = independent, it may run in parallel as soon as the build runs) or null = sequential (it waits for the step before it). Unknown ids, the step itself and cycles are refused. Say 'step 4 of the icon build only needs step 1'.",
+        "readOnly": false,
+        "input": {
+          "type": "object",
+          "properties": {
+            "build_id": {
+              "type": "string",
+              "description": "Build id"
+            },
+            "step": {
+              "type": "string",
+              "description": "Step id (s4)"
+            },
+            "dependsOn": {
+              "type": [
+                "array",
+                "null"
+              ],
+              "items": {
+                "type": "string"
+              },
+              "description": "Step ids it waits for; [] = independent; null = sequential"
+            }
+          },
+          "required": [
+            "build_id",
+            "step"
+          ]
+        },
+        "output": "{ id, step, dependsOn, explicit, parallel }"
+      },
+      {
+        "id": "pipeline-fill-settings",
+        "route": "POST /pipeline/fill/settings",
+        "title": "Fill every slot settings",
+        "description": "Fill every slot (run independent steps in parallel; anyone may switch it off, only Brett on), max parallel steps per build (1-12; only Brett raises it) and auto-queue pending builds (owner-only: refused unless Brett's own click). Say 'turn off fill every slot' or 'one parallel step per build'.",
+        "readOnly": false,
+        "input": {
+          "type": "object",
+          "properties": {
+            "fillSlots": {
+              "type": "boolean"
+            },
+            "maxParallelPerBuild": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 12
+            },
+            "autoQueuePending": {
+              "type": "boolean",
+              "description": "Owner-only: Brett's own console click"
+            }
+          }
+        },
+        "output": "{ changed, settings }"
       }
     ]
   },

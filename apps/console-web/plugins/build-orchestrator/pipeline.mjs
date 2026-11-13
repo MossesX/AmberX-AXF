@@ -14,6 +14,10 @@
  *   … archive <id…> | unarchive <id…>        the Archive (finished and retired builds; complete ones show there by themselves)
  *   … delete <id…> [--why w] | restore <id…> soft delete: kept in the store forever, Deleted tab, restorable
  *   … split <id> [--request] [--provider claude|rules]   split a build now (or ask the next tick to)
+ *   … fill status [build] | fill run | fill deps <build> <step> <s1,s2|none|sequential> | fill set k=v…
+ *                                  fill every slot: slots, ready steps, the next round (dry run); one round now; a step's
+ *                                  dependsOn; the fill settings (fillSlots, maxParallelPerBuild, autoQueuePending: owner)
+ *   … step-brief <build> <step>    the brief of a step-scoped launch (claude-headless.sh --step)
  *   … intake [--json]              split every build with no steps (and every split the console asked for); auto-queue when the Claude setting says so
  *   … tick [--json]                one dispatcher round: intake, session ends, launches, idle alert, state file
  *   … accounts [--json]            every account as the pipeline sees it (Fable yes / no, parallel, running)
@@ -1312,6 +1316,15 @@ async function main(argv) {
   }
   if (cmd === 'fill' && (rest[0] ?? 'status') === 'status') { const f = fillStatus({ build: rest[1] ?? '' }); return out(f, fillLines(f)); }
   if (cmd === 'fill' && rest[0] === 'run') { const r = fillRun({ by }); return out(r, r.ran ? `ran a round: ${r.launched.length} build(s), ${r.fill.launched.length} parallel step(s) started${r.fill.autoQueued.length ? `, auto-queued ${r.fill.autoQueued.join(', ')}` : ''}` : r.note); }
+  if (cmd === 'fill' && rest[0] === 'set') {
+    // fill set fillSlots=false maxParallelPerBuild=2: through the console's route, which owns the owner rules
+    const body = Object.fromEntries(rest.slice(1).filter((a) => a.includes('=')).map((a) => { const [k, v] = a.split('='); return [k, v === 'true' ? true : v === 'false' ? false : /^\d+$/.test(v) ? Number(v) : v]; }));
+    if (!Object.keys(body).length) throw Object.assign(new Error('usage: fill set fillSlots=true|false maxParallelPerBuild=<1-12> autoQueuePending=true|false'), { code: 2 });
+    const r = makeConsole()('POST', '/api/plugins/build-orchestrator/pipeline/fill/settings', body); // axf-plugin:build-orchestrator
+    if (!r) throw new Error('the console did not answer (the fill settings change through its API: Settings → Plugins → Build orchestrator)');
+    if (r.ok === false || r.detail) throw Object.assign(new Error(str(r.detail || r.error || 'refused', 300)), { code: 2 });
+    return out({ ok: true, ...r }, (r.changed ?? []).map((c) => `${c.key}: ${c.from} → ${c.to}`).join('\n') || 'nothing changed');
+  }
   if (cmd === 'fill' && rest[0] === 'deps') {
     // fill deps <build> <step> <s1,s2 | none | sequential>   (none = independent: [])
     const raw = rest[3] ?? ''; const deps = raw === 'sequential' ? null : raw === 'none' || raw === '[]' ? [] : raw.startsWith('[') ? JSON.parse(raw) : raw;
