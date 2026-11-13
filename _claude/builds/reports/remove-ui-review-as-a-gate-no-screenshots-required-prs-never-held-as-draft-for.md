@@ -4,6 +4,62 @@ Build `remove-ui-review-as-a-gate-no-screenshots-required-prs-never-held-as-draf
 UI Review stays as optional feedback (items, Screenshots, Choices, approve / reject). Nothing waits on it any more:
 no PR is held, no PR is kept as a draft for it, no build is required to submit screenshots.
 
+## Before / after
+
+| | Before (Nov 13, main 305ec2d5e) | After |
+|---|---|---|
+| `review.mjs state --exit-code` | exit 3 when waiting / changes / rejected | always exit 0; prints the state "(not a gate)" |
+| `ui-review@1` capability | `holds()` true unless approved / none | `hold` / `holds` / `isHeld` always not held, reason `UI Review is not a gate (Nov 2026)`; new `gate()` |
+| `GET state` | `holds` true when waiting | `holds: false`, `reason` |
+| Merge queue (`notReady`) | "its screenshots wait for Brett in UI Review" kept a PR out | UI Review never keeps a PR out |
+| Auto-land (`blockReason`) | reason `ui` blocked a landing | no `ui` reason; `land.mjs` never asks `ui-hold` |
+| Push banner Merge / batch merge | 409 "held by UI Review"; held PRs skipped | never asks UI Review; `GET ui-hold` answers `{hold: ""}` for old scripts |
+| "Wait for UI Review" (`landWaitUi`) | on by default, switch in Settings | retired: always false, switch and help entry gone, old saved values ignored |
+| PRs opened by Open PR / auto-land / merge queue | ready (no draft code existed) | ready, now asserted by tests |
+| Claude setting *UI Review gate* (`builds.uiReviewGate`) | owner-only, default on | deprecated (new registry field `deprecated`): always false, refused for everyone, `[deprecated]` in `claude-settings.mjs get`, `deprecated` in `claude_settings_get`, greyed in Settings → Plugins → Claude |
+| Splitter | rules told builds to add UI Review steps | prompt says never add one; `parseSplit` drops a UI-Review-only step (`uiReviewOnlyStep`) |
+| UI rules brief (`rules-briefs.json`) | "UI changes go to UI Review before the PR is called ready" | "UI Review is optional feedback, not a gate … Open the PR ready for review." |
+| Store | 3 open UI-Review-only steps in live builds | skipped, note "UI Review no longer a gate", journalled (rev in `_claude/builds/journal/2026-11-p6.jsonl`, action `ui-review-steps`), on main via builds-live |
+| Launcher (`claude-headless.sh`) | queued a UI build for look approval (exit 4), refused a rejected look (exit 3) | `ui-predict.mjs gate` always exits 0; verdict logged; predictions still made |
+| UI Review page / settings | "Approvals · N waiting", "waits here for your OK", *Wait for my look approval* switch | "Feedback · not a gate", "No PR or build waits on it", read-only *Not a gate* panel reading the gate API |
+| Rules | shared RULES "Every UI change goes to UI Review" + options rule hold | "UI Review is optional feedback, not a gate"; options apply only when a build chooses to submit; decision in `memory/decisions.md` |
+
+Kept as they were: review items, Screenshots, groups, Choices, approve / Ask changes / Reject, predicted looks
+(still made, now feedback), the options intake (a submission still needs 3 options or `--single-option`; submitting
+at all is optional), `check-ui-review.mjs` (schema / fixtures).
+
+## API (Everything comes with an API)
+
+The one new UI piece is the read-only *Not a gate* line in Settings → Plugins → UI Review. Its state, everywhere the same object
+`{ $axf: 'ui-review-gate@1', gate: false, since: '2026-11-13', why: 'UI Review is not a gate (Nov 2026)' }`:
+
+- REST: `GET /api/plugins/ui-review/gate`
+- MCP: plugin command `ui_review_gate` (plugin-commands@1 id `gate`; also `ui_review_action_gate`)
+- CLI: `node apps/console-web/plugins/ui-review/review.mjs gate [--console] [--json]`
+- Voice / console action: `ui-review.gate`
+- Deep link: `console_show` target `ui-review` (unchanged); the panel lives on the UI Review settings tab.
+
+`apps/console-web/plugins/ui-review/test.py` checks all four return the same object. The retired setting is read
+through `claude_settings_get` / `claude-settings.mjs get` (reported deprecated).
+
+## Checks run (s12)
+
+ui-review test.py 234 ok, test.mts 30 ok · push-banner test.py 179, land.test 98, merge-queue.test 18 ·
+build-orchestrator pipeline.test 48, test.mjs 35, test.py 41 · claude-settings test.mjs 50, test.py 21 ·
+check-ui-predict 12 · check-headless-context 38 · check-ui-review 68 · check-build-steps 44 · check-builds-store 40 ·
+builds-store verify ok · tracker --check ok · check-theme, check-controls, check-toolbars, check-chrome-assets ok ·
+plugin-commands check ok · console `tsc --noEmit` clean · plugin-lifecycle: no new stale references (the remaining
+ones are older copies under `apps/*/_claude/shared/` and untracked session files).
+
+## Notes
+
+- No draft-PR code existed: the "draft until UI Review" practice lived only in the rules and session habits; s4 added
+  tests that every PR the console opens is ready.
+- `claude-sync sync` ran: this fresh worktree has no sync base, so 115 `_claude` files are held "new on both sides"
+  for amberx-axf. The hub's copies of `shared/rules/RULES.md` (Nov 6) and `memory/decisions.md` (Nov 3) are older and
+  have none of the UI Review rules, so nothing was forced; the repo copies land with this PR.
+- Screenshots: none taken; UI Review is not a gate and the change is wording plus one read-only panel.
+
 ## Inventory (s1): every place UI Review acted as a gate
 
 Line numbers are from `main` at 305ec2d5e, before this build.

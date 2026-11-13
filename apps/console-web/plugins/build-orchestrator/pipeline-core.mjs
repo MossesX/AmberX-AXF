@@ -386,7 +386,7 @@ const UI_REVIEW_LEAD = /^(?:s\d+[a-z]?\s*[:.-]?\s*)?(?:ui[ -]?review\b|(?:deskto
 const OTHER_WORK = /\b(?:reports?|threads|prs?|pull requests?|tests?|type-?check\w*|readme|docs?|help|rules?|migrat\w+|api|rest|mcp|cli|voice|implement\w*|wire\w*|schemas?|stores?|checks?|ci|deploy\w*|merge\w*|status|install\w*|fix\w*|code|server|routes?|plugin\.json|commands?|gaps?|gate|draft|splitter|then build)\b|\(ui-review\)/i;
 export const UI_REVIEW_SKIP_NOTE = 'UI Review no longer a gate';
 export function uiReviewOnlyStep(text) {
-  // file paths and inline code name tools, not work: `review.mjs submit --choices`, apps/…/assets/<type>/
+  // file paths and inline code name tools, not work: `review.mjs submit --name … --choices`, apps/…/assets/<type>/
   const t = String(text ?? '').replace(/`[^`]*`/g, ' ').replace(/\S*\/\S*/g, ' ').replace(/\s+/g, ' ').trim();
   return /\bui[ -]?review\b|review\.mjs/i.test(String(text ?? '')) && UI_REVIEW_LEAD.test(t) && !OTHER_WORK.test(t);
 }
