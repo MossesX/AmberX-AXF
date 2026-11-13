@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T19:03:52.511Z",
+ "updatedAt": "2026-11-13T19:04:29.421Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -126377,7 +126377,7 @@
    "title": "New asset type: animated expanding row picker replaces every dropdown",
    "category": "",
    "detail": "Brett: no more drop-down menus anywhere. New asset type (e.g. 'expander-picker') that replaces every dropdown/select in the framework:\n- Collapsed: a row showing the setting's name and current value, with a small arrow.\n- Tap the arrow (or row): the row expands with an animation into a subgrid of all options (cards/tiles, can show previews), pushing content below down; no floating dropdown.\n- Tap an option once: it is selected/highlighted (preview where possible).\n- Tap the same option again: applies it and the subgrid animates closed.\n- Animation uses motion tokens; respects reduced-motion; keyboard and screen-reader accessible.\n- Make it the framework default for every select/dropdown control, existing and future (migrate all current dropdowns, add a check that fails on new raw dropdowns). Ship 3 design options to UI Review.\n- Asset schema + manifest + conformance tests; skinnable via tokens; reachable by REST/MCP/CLI/voice/control@1.\n- Shipped features entry.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -126385,7 +126385,7 @@
    "pr": "#630",
    "priority": "P1",
    "createdAt": "2026-11-13T18:13:23.703Z",
-   "updatedAt": "2026-11-13T18:39:10.605Z",
+   "updatedAt": "2026-11-13T19:03:30.844Z",
    "builtAt": "",
    "notes": [
     {
@@ -126407,6 +126407,10 @@
     {
      "text": "Headless run axf-new-asset-type-animated-expanding-row--joey: brief only · start 12.9K tokens ($0.06) · cost $8.77 · 111 turns · 6 tools, MCP none",
      "at": "2026-11-13T18:39:10.605Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-13T19:03:30.844Z"
     }
    ],
    "approvals": [],
@@ -130212,6 +130216,43 @@
    "origin": {
     "said": "a bunch of different types of pipelines for demonstration purposes, walked through so you can see what's going on behind the scenes; follow the console building stuff, and a terminal or scrolling window showing all the output you wouldn't normally see",
     "at": "2026-11-13T19:01:19.839Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "land-project-duplicate-boilerplate",
+   "title": "Land project-duplicate-boilerplate: resolve clash in status.json and PORTING.md",
+   "category": "",
+   "detail": "Branch claude/project-duplicate-boilerplate clashed with main in framework/catalog/status.json and framework/spec/PORTING.md (merge aborted, main untouched). Merge origin/main into the branch, resolve by keeping both sides' entries (additive), run tests, push, then land on main. No feature changes. If the project-create-mcp clash fix landed first, merge after it.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-13T19:03:35.763Z",
+   "updatedAt": "2026-11-13T19:03:49.406Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T19:03:49.406Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "land duplicate projects and templates",
+    "at": "2026-11-13T19:03:35.763Z",
     "source": "",
     "session": "",
     "link": "",
