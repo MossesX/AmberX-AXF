@@ -17,4 +17,4 @@
  */
 import { main } from './icon-map.mjs';
 
-process.exit(await main(['check', ...process.argv.slice(2)]));
+process.exitCode = await main(["check", ...process.argv.slice(2)]);

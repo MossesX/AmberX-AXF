@@ -1,0 +1,44 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "icon-map-help",
+  "name": "Icon map help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:icon-map (help@1): the Icon map page, its pack picker, the per-slot picks, the settings tab and the actions voice, search, MCP and the CLI reach.",
+  "author": "Brett",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:icon-map",
+    "entries": [
+      { "target": "view:icon-map", "title": "Icon map", "kind": "screen", "text": "Every icon, badge and logo slot in every app, plugin and screen, with a live preview of what each one draws right now. Switch the icon pack to change every icon at once, or pick one place.", "tryIt": "Type save in Search to see every place that shows a save icon." },
+      { "target": "action:icon-map.open", "title": "Icon map", "kind": "menu-item", "text": "Opens the Icon map page (View → Icon map). Also reachable by voice (\"open the icon map\"), search, MCP and the CLI." },
+      { "target": "action:icon-map.pack.use", "title": "Switch the icon pack", "kind": "menu-item", "text": "Uses an icon pack by id, name or style word, for every icon in the console. Voice: \"switch to the duotone icon pack\". REST PUT /api/plugins/icon-map/pack, MCP icon-map_pack-set, CLI axf icon-map pack-set --pack duotone." },
+      { "target": "action:icon-map.pack.clear", "title": "Back to the branding icon pack", "kind": "menu-item", "text": "Drops the hand-picked pack; the branding package's (or skin's) pack is in force again." },
+      { "target": "action:icon-map.slot.set", "title": "Pick one slot's icon", "kind": "menu-item", "text": "Makes one place draw a glyph: icon-map.slot.set:<slot id>:<glyph>. The pick wins over the pack until it is cleared." },
+      { "target": "action:icon-map.slot.clear", "title": "Drop one slot's pick", "kind": "menu-item", "text": "The place follows the pack's role mapping or the framework glyph again." },
+      { "target": "action:icon-map.refresh", "title": "Reload the icon map", "kind": "menu-item", "text": "Reads the state again (the pack and every pick) and redraws." },
+      { "target": "pack", "title": "Pack", "kind": "field", "text": "The icon pack to use. Framework glyphs is the branding default; a pack marked fixed colour keeps its own colours instead of following the skin." },
+      { "target": "use-pack", "title": "Use pack", "kind": "button", "text": "Switches every icon in the console to the chosen pack. Slots with a hand pick keep their pick." },
+      { "target": "back-to-branding-pack", "title": "Back to branding pack", "kind": "button", "text": "Drops the hand-picked pack; the branding package's (or skin's) pack is in force again." },
+      { "target": "search", "title": "Search", "kind": "field", "text": "Narrows the list by slot id, role, glyph, screen or file." },
+      { "target": "surface", "title": "Surface", "kind": "field", "text": "Only the slots on one surface: nav, toolbar, tab, menu, dialog, banner, widget, button, badge, logo, settings, view, status, card, grid, step or inline." },
+      { "target": "app", "title": "App", "kind": "field", "text": "Only the slots of one app (the console, AmberX, axHub, the demo apps) or the framework chrome every app shares." },
+      { "target": "reload", "title": "Reload", "kind": "button", "text": "Reads the map and the state again." },
+      { "target": "pick", "title": "Pick", "kind": "button", "text": "Choose the glyph this one place draws. The pick is saved and wins over the pack until Clear." },
+      { "target": "glyph", "title": "Glyph", "kind": "field", "text": "The framework glyph this place draws. Picking one saves it at once." },
+      { "target": "clear", "title": "Clear", "kind": "button", "text": "Drops this place's pick; it follows the pack again." },
+      { "target": "icon-map", "title": "Icon map settings", "text": "This plugin's tab under Settings → Plugins: open the page, install or uninstall the plugin." },
+      { "target": "open-icon-map", "title": "Open icon map", "kind": "button", "text": "Opens the Icon map page." }
+    ],
+    "intros": [
+      { "screen": "icon-map", "steps": [
+        { "say": "Every place that shows an icon is a slot: an id, where it is, and a role such as save or approve." },
+        { "say": "Pick a pack and press Use pack: every icon follows at once. Fixed-colour packs keep their own colours." },
+        { "say": "Press Pick on one row to change that one place; Clear puts it back." },
+        { "say": "Everything here is also on REST, MCP, the CLI and voice: say \"switch to the duotone icon pack\"." }
+      ] }
+    ]
+  }
+}

@@ -1,0 +1,18 @@
+/* Icon map. Theme tokens only, axp-icon-map prefix, shared is-* states. Layout only: the controls are framework controls. */
+.axp-icon-map { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); min-width: 0; color: var(--fx-text) }
+.axp-icon-map__bar { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--fx-dens-gap-lg) }
+.axp-icon-map__bar > * { min-width: 0 }
+.axp-icon-map__grow { flex: 1 1 calc(var(--fx-font-size) * 16) }
+.axp-icon-map__summary { margin: 0; color: var(--fx-muted); font-size: var(--fx-type-root-sm) }
+.axp-icon-map__list { list-style: none; margin: 0; padding: 0; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface) }
+.axp-icon-map__row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: var(--fx-dens-gap-lg); min-height: var(--fx-row-h); padding: var(--fx-dens-gap-sm) var(--fx-dens-gap-lg) }
+.axp-icon-map__row + .axp-icon-map__row { border-top: var(--fx-border-w) solid var(--fx-border) }
+.axp-icon-map__row.is-picked .axp-icon-map__id { color: var(--fx-accent) }
+.axp-icon-map__preview { display: inline-flex; align-items: center; justify-content: center; width: var(--fx-row-h); height: var(--fx-row-h); border-radius: var(--fx-radius-sm); background: var(--fx-bg); color: var(--fx-text) }
+.axp-icon-map__text { display: flex; flex-direction: column; gap: var(--fx-dens-gap-2xs); min-width: 0 }
+.axp-icon-map__id { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--fx-font-mono); font-size: var(--fx-type-root-sm) }
+.axp-icon-map__where { color: var(--fx-muted); font-size: var(--fx-type-root-xs); overflow: hidden; text-overflow: ellipsis; white-space: nowrap }
+.axp-icon-map__actions { display: flex; align-items: center; gap: var(--fx-dens-gap-sm) }
+.axp-icon-map__empty { margin: 0; padding: var(--fx-dens-gap-3xl); text-align: center; color: var(--fx-muted) }
+:where([data-fx-narrow]) .axp-icon-map__row { grid-template-columns: auto minmax(0, 1fr) }
+:where([data-fx-narrow]) .axp-icon-map__actions { grid-column: 1 / -1; justify-content: flex-end }

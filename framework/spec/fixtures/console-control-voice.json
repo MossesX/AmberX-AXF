@@ -1,5 +1,33 @@
 {
   "intents": {
+    "switch to the duotone icon pack": {
+      "verb": "press",
+      "address": "function:icon-map.pack.use",
+      "value": "duotone"
+    },
+    "Amber, use the filled icons please": {
+      "verb": "press",
+      "address": "function:icon-map.pack.use",
+      "value": "filled"
+    },
+    "set the icon pack to amberx outline": {
+      "verb": "press",
+      "address": "function:icon-map.pack.use",
+      "value": "amberx outline"
+    },
+    "back to the default icon pack": {
+      "verb": "press",
+      "address": "function:icon-map.pack.clear"
+    },
+    "reset the icons": {
+      "verb": "press",
+      "address": "function:icon-map.pack.clear"
+    },
+    "change the save icon to check circle": {
+      "verb": "press",
+      "address": "function:icon-map.slot.set",
+      "value": "save:check-circle"
+    },
     "scroll down": {
       "verb": "scroll",
       "scroll": {
@@ -193,6 +221,11 @@
     "": null
   },
   "commands": {
+    "switch to the duotone icon pack": {
+      "verb": "press",
+      "address": "function:icon-map.pack.use",
+      "value": "duotone"
+    },
     "scroll down": {
       "verb": "scroll",
       "scroll": {

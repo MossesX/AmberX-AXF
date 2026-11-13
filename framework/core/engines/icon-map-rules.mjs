@@ -295,7 +295,7 @@ const SURFACE_HINTS = [
   [/EmptyState|\bempty\b/, 'empty-state'],
   [/\bstatus\b|\btone\b|Status/, 'status'],
   [/\bsteps?\b|Step/, 'step'],
-  [/\bcolumns?\b|DataGrid|\bgrid\b/, 'grid'],
+  [/\bcolumns?\s*[:=]|DataGrid|<Grid\b|\bgrid:/, 'grid'],
   [/<Container\b|\bCard\b|\bcard\b/, 'card'],
   [/<(?:Icon)?Button\b|IconButton|fx-btn|fx-iconbtn/, 'button'],
   [/<Icon\b/, 'inline'],
@@ -324,7 +324,7 @@ const LABEL_RE = /\b(?:label|title)(?::\s*|=)(['"`])((?:\\.|(?!\1)[^\\\n]){1,80}
 function nameNear(line, before, col) {
   const start = Math.max(line.lastIndexOf('{', col), line.lastIndexOf('<', col), 0);
   const seg = line.slice(start, col);
-  const after = line.slice(col);
+  const after = line.slice(col).replace(/=>/g, '  '); // an arrow function's `>` is not the element's closing bracket
   const end = after.search(/[}>]/);
   const segAll = seg + (end >= 0 ? after.slice(0, end) : after);
   let m;
@@ -356,7 +356,8 @@ export function scanIconLiterals(text, file = '') {
     while ((m = LITERAL.exec(line))) {
       const before = src.slice(Math.max(0, offset - 600), offset);
       const { name, label } = nameNear(line, before, m.index);
-      out.push({ glyph: m[2], line: i + 1, file, surface: surfaceFor(before, line, m.index + m[0].length), name, label, ok: line.includes(ICON_OK), known: isGlyph(m[2]) });
+      // the surface is read up to the icon's own name (`<Icon name="` / `icon: '`), never including the glyph word itself
+      out.push({ glyph: m[2], line: i + 1, file, surface: surfaceFor(before, line, m.index + m[0].length - m[2].length - 1), name, label, ok: line.includes(ICON_OK), known: isGlyph(m[2]) });
     }
     offset += line.length + 1;
   }

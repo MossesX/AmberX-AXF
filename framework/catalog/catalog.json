@@ -2584,6 +2584,14 @@
               "tag": "",
               "recommended": true,
               "suggests": []
+            },
+            {
+              "id": "cx.icons.map",
+              "title": "Icon map: every icon, badge and logo slot in every app, plugin and screen with a stable id, location and role; icon packs map roles to glyphs so one pick changes every icon; per-slot picks; REST / MCP / CLI / voice",
+              "note": "icon-map@1 (core/engines/icon-map-rules.mjs + glyphs.mjs); CI check framework/cli/check-icons.mjs; Icon map plugin (apps/console-web/plugins/icon-map).",
+              "tag": "",
+              "recommended": true,
+              "suggests": []
             }
           ]
         }

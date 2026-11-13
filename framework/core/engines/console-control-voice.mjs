@@ -32,6 +32,8 @@ export function cleanPhrase(text) {
 }
 
 const strip = (s) => s.replace(/^(the|a|an|my)\s+/, '').replace(/\s+(screen|page|view)$/, '').trim();
+/** A glyph name from spoken words: "check circle" → check-circle. */
+const slug = (s) => strip(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
 const num = (w) => (/^\d+$/.test(w) ? Number(w) : NUMBERS[w] ?? null);
 
 /**
@@ -69,6 +71,17 @@ export function voiceIntent(text) {
     return { verb: on ? 'plugin.enable' : 'plugin.disable', find: { q: strip(m[2] ?? m[3]), kinds: ['plugin'] } };
   }
   if ((m = /^(?:turn|switch)(?: the)? (.+?) plugin (on|off)$/.exec(p))) return { verb: m[2] === 'on' ? 'plugin.enable' : 'plugin.disable', find: { q: strip(m[1]), kinds: ['plugin'] } };
+
+  // icon packs (icon-map@1, the Icon map plugin's actions; before the generic set / switch-to rules): "switch to the
+  // duotone icon pack" · "use the filled icons" · "set the icon pack to amberx outline" · "back to the default icon pack" ·
+  // "change the save icon to check circle"
+  if (/^(?:(?:switch|go|change|set) )?(?:back )?(?:to |use )?(?:the )?(?:default|original|normal|branding|standard|framework) (?:icon pack|icons|icon set)$/.test(p) || /^(?:reset|clear|drop) (?:the )?(?:icon pack|icons|icon set)$/.test(p)) {
+    return { verb: 'press', address: 'function:icon-map.pack.clear' };
+  }
+  if ((m = /^(?:switch to|use|apply|turn on|put on|go to|change to|set)(?: the)? (.+?) (?:icon pack|icons|icon set)$/.exec(p)) || (m = /^set (?:the )?icon pack (?:to|at) (.+)$/.exec(p)) || (m = /^(?:switch|change) (?:the )?icon pack to (.+)$/.exec(p))) {
+    return { verb: 'press', address: 'function:icon-map.pack.use', value: strip(m[1]) };
+  }
+  if ((m = /^(?:change|set|make|switch) (?:the )?(.+?) icon (?:to|into|draw) (?:the |a |an )?(.+?)(?: icon| glyph)?$/.exec(p))) return { verb: 'press', address: 'function:icon-map.slot.set', value: `${strip(m[1])}:${slug(m[2])}` };
 
   // settings
   if ((m = /^set (?:the )?(.+?) (?:to|at) (.+)$/.exec(p))) return { verb: 'set', find: { q: strip(m[1]), kinds: ['setting'] }, value: m[2].trim() };

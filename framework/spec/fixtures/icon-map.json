@@ -22,8 +22,8 @@
     "line": 6,
     "file": "web/index.tsx",
     "surface": "button",
-    "name": "server-says",
-    "label": "Server says",
+    "name": "ask-again",
+    "label": "Ask again",
     "ok": false,
     "known": true
    },

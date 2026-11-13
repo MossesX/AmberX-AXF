@@ -196,6 +196,7 @@ export async function main(argv = process.argv.slice(2)) {
       console.log('by kind:', Object.entries(map.counts.byKind).map(([k, v]) => `${k} ${v}`).join(' · '));
       return 0;
     }
+    case 'counts': return out(buildMap().counts);
     case 'list': {
       const map = buildMap();
       const filters = {}; for (const k of ['app', 'owner', 'surface', 'kind', 'role', 'glyph', 'screen']) if (typeof flags[k] === 'string') filters[k] = flags[k];
@@ -261,4 +262,5 @@ export async function main(argv = process.argv.slice(2)) {
   }
 }
 
-if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) process.exit(await main());
+// exitCode, not process.exit: a large JSON answer to a pipe must finish writing first
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) process.exitCode = await main();

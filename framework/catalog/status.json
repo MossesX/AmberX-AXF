@@ -2299,5 +2299,11 @@
     "wave": 1,
     "module": "app-console",
     "notes": "context-lead@1: rt.contextExtras keys '^:<name>' lead every context menu above one separator (core/engines/windows.ts withContextLead, react Overlays ContextMenuHost; any target, even contributions:false, right-click and long-press). The console registers Console settings (app.settings, folding the asset's own Settings in) plus console.settings.open for search, voice, MCP and CLI; help entries; checks spec/check-context-lead.mts + apps/console-web/scripts/console-settings-menu.mts. Kotlin twin deferred."
+  },
+  "cx.icons.map": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "icon-map@1 (build icon-map-icon-packs-every-icon-badge-app, Nov 13 2026): every icon, badge and logo slot in every app, plugin and screen, with a stable id, location and role; built from plugin manifests (plugin.json icons block), code and assets (core/engines/icon-map-rules.mjs, glyphs.mjs as the one glyph list); resolution override -> pack role -> pack glyph -> framework glyph; icon-pack@1 roles / themable / covers / license; CI check framework/cli/check-icons.mjs (ratchet spec/icon-map-baseline.json); Icon map console plugin: page, REST /api/plugins/icon-map, MCP icon-map_*, CLI axf icon-map / axf icons, voice (switch to the duotone icon pack). Kotlin twin deferred."
   }
 }
