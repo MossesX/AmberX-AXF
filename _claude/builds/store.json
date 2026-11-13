@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4532,
- "updatedAt": "2026-11-13T17:36:48.948Z",
+ "rev": 4533,
+ "updatedAt": "2026-11-13T17:37:06.870Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -171456,13 +171456,13 @@
    "category": "projects",
    "detail": "Brett said: \"every project will have its own set of Claude accounts and own everything. Basically, the console and axHub and all that runs on the project. So if you change project, everything is fresh. The Claude credentials, all the credentials for everything... let's create a new project that copies all the stuff over, everything except for the builds and the notes and the to-do manager.\"",
    "status": "pending",
-   "hidden": false,
+   "hidden": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone",
    "pr": "#537",
    "createdAt": "2026-11-12T20:35:05.081Z",
-   "updatedAt": "2026-11-13T01:53:11.496Z",
+   "updatedAt": "2026-11-13T17:36:54.377Z",
    "builtAt": "",
    "notes": [
     {
@@ -171520,6 +171520,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-13T01:53:11.496Z"
+    },
+    {
+     "text": "Renamed to projects-own-everything-per-project: this record is kept as a tombstone, use projects-own-everything-per-project.",
+     "at": "2026-11-13T17:36:54.377Z"
     }
    ],
    "approvals": [],
@@ -171566,118 +171570,7 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "steps": [
-    {
-     "id": "s1",
-     "uid": "st-mwe0bg2h05a63i",
-     "title": "",
-     "text": "Design: per-project Claude accounts, credentials, plugin settings and console/axHub config are OPTIONAL. By default a project shares the global ones; a project can switch any of them to its own. Brett: \"don't make the project have to do that, but allow it to.\"",
-     "model": "Fable",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30m",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-13T01:27:58.798Z",
-     "note": "",
-     "rev": 3,
-     "createdAt": "2026-11-12T20:35:05.083Z",
-     "updatedAt": "2026-11-13T01:27:58.970Z"
-    },
-    {
-     "id": "s2",
-     "uid": "st-mwe0bg2h06lcme",
-     "title": "",
-     "text": "Scope Claude accounts, credentials vault and plugin settings to the active project; migrate current ones into AmberX AXF",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30m",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-12T20:35:05.083Z",
-     "updatedAt": "2026-11-12T20:35:05.083Z"
-    },
-    {
-     "id": "s3",
-     "uid": "st-mwe0bg2h07zd81",
-     "title": "",
-     "text": "Default for a new project: it carries over everything from the project you're in (Claude accounts, credentials, plugins, settings, console/axHub config), but starts with empty builds, notes, to-dos and plans. Any of the carried-over items can then be changed to the new project's own. Brett: \"by default, if you make a new project, it carries over everything from the one you're using.\"",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30m",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 2,
-     "createdAt": "2026-11-12T20:35:05.083Z",
-     "updatedAt": "2026-11-12T20:36:14.480Z"
-    },
-    {
-     "id": "s5",
-     "uid": "st-mwe0dij401sv9s",
-     "title": "",
-     "text": "Carry-over also includes repo locations and axHub folders (project _claude/_data paths). Wizard pre-fills them from the current project; the repo link step lets you keep or change it. Brett: \"that includes the location of the repos and the axHub folders and all of that.\"",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "20m",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-12T20:36:41.741Z",
-     "updatedAt": "2026-11-12T20:36:41.872Z"
-    },
-    {
-     "id": "s4",
-     "uid": "st-mwe0bg2h08kquu",
-     "title": "",
-     "text": "Tests (switch swaps credentials; clone carries settings but no data), report, PR",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "20m",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-12T20:35:05.083Z",
-     "updatedAt": "2026-11-12T20:35:05.083Z"
-    }
-   ],
+   "steps": [],
    "profiles": [
     "all"
    ],
@@ -171686,9 +171579,9 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
-   "deleted": false,
-   "deletedAt": "",
+   "rev": 28,
+   "deleted": true,
+   "deletedAt": "2026-11-13T17:36:54.377Z",
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-12T20:35:05.083Z",
@@ -193467,6 +193360,257 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-13T06:14:22.635Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "projects-own-everything-per-project",
+   "title": "Projects own everything: per-project Claude accounts and credentials, plus Clone project (settings only)",
+   "category": "projects",
+   "detail": "Brett said: \"every project will have its own set of Claude accounts and own everything. Basically, the console and axHub and all that runs on the project. So if you change project, everything is fresh. The Claude credentials, all the credentials for everything... let's create a new project that copies all the stuff over, everything except for the builds and the notes and the to-do manager.\"",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/projects-own-everything-per-project",
+   "pr": "#605",
+   "createdAt": "2026-11-12T20:35:05.081Z",
+   "updatedAt": "2026-11-13T17:36:54.377Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-12T21:50:35.666Z"
+    },
+    {
+     "text": "Launch failed on mossesx-max-: launcher exit 2: claude-headless: --log is a plain file name",
+     "at": "2026-11-12T21:51:20.050Z"
+    },
+    {
+     "text": "Launch failed on mossesx-max-: launcher exit 2: claude-headless: --log is a plain file name",
+     "at": "2026-11-12T21:52:05.755Z"
+    },
+    {
+     "text": "Launch failed on mossesx-max-: launcher exit 2: claude-headless: --log is a plain file name",
+     "at": "2026-11-12T21:53:03.809Z"
+    },
+    {
+     "text": "Launch failed on mossesx-max-: launcher exit 2: claude-headless: --log is a plain file name",
+     "at": "2026-11-12T23:19:03.501Z"
+    },
+    {
+     "text": "Launch failed on mossesx-max-: launcher exit 2: claude-headless: --log is a plain file name",
+     "at": "2026-11-12T23:20:06.878Z"
+    },
+    {
+     "text": "Launch failed on mossesx-max-: launcher exit 2: claude-headless: --log is a plain file name",
+     "at": "2026-11-12T23:21:05.128Z"
+    },
+    {
+     "text": "Launch failed on mossesx-max-: launcher exit 2: claude-headless: --log is a plain file name",
+     "at": "2026-11-13T00:19:04.678Z"
+    },
+    {
+     "text": "Launch failed on mossesx-max-: launcher exit 2: claude-headless: --log is a plain file name",
+     "at": "2026-11-13T00:21:04.281Z"
+    },
+    {
+     "text": "Launch failed on mossesx-max-: launcher exit 2: claude-headless: --log is a plain file name",
+     "at": "2026-11-13T00:22:03.886Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-projects-own-everything-per-project-claude-accou--lenny.",
+     "at": "2026-11-13T01:20:13.404Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-projects-own-everything-per-project-claude-accou--lenny, own login copy)",
+     "at": "2026-11-13T01:20:15.578Z"
+    },
+    {
+     "text": "Headless run axf-projects-own-everything-per-project-claude-accou--lenny: brief only · start 12.7K tokens ($0.10) · cost $2.92 · 21 turns · 6 tools, MCP none",
+     "at": "2026-11-13T01:28:26.477Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-13T01:53:11.496Z"
+    },
+    {
+     "text": "Renamed from projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone (build names are at most 40 characters). By build-rename.",
+     "at": "2026-11-13T17:36:54.377Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone",
+    "brief": "# Build: projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"Projects own everything: per-project Claude accounts and credentials, plus Clone project (settings only)\" (projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone) [projects] — Phase 1, model Fable.\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (1 left, ~30 min):\n[ ] s1 (~30m) Design: per-project Claude accounts, credentials, plugin settings and console/axHub config are OPTIONAL. By default a project shares the global ones; a project can switch any of them to its own. Brett: \"don't make the project have to do that, but allow it to.\"\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Tick every step as you finish it (orchestrator.mjs act step projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone \"…\"); the build goes back to Pending for Brett.\n",
+    "verbatim": false,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "2026-11-12T21:50:35.181Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "launch failed: launcher exit 2: claude-headless: --log is a plain file name",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-13T01:54:06.134Z",
+     "why": "subscription account mossesx-max-"
+    },
+    "tried": [
+     "mossesx-max-"
+    ],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwe0bg2h05a63i",
+     "title": "",
+     "text": "Design: per-project Claude accounts, credentials, plugin settings and console/axHub config are OPTIONAL. By default a project shares the global ones; a project can switch any of them to its own. Brett: \"don't make the project have to do that, but allow it to.\"",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-13T01:27:58.798Z",
+     "note": "",
+     "rev": 3,
+     "createdAt": "2026-11-12T20:35:05.083Z",
+     "updatedAt": "2026-11-13T01:27:58.970Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwe0bg2h06lcme",
+     "title": "",
+     "text": "Scope Claude accounts, credentials vault and plugin settings to the active project; migrate current ones into AmberX AXF",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-12T20:35:05.083Z",
+     "updatedAt": "2026-11-12T20:35:05.083Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwe0bg2h07zd81",
+     "title": "",
+     "text": "Default for a new project: it carries over everything from the project you're in (Claude accounts, credentials, plugins, settings, console/axHub config), but starts with empty builds, notes, to-dos and plans. Any of the carried-over items can then be changed to the new project's own. Brett: \"by default, if you make a new project, it carries over everything from the one you're using.\"",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-12T20:35:05.083Z",
+     "updatedAt": "2026-11-12T20:36:14.480Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mwe0dij401sv9s",
+     "title": "",
+     "text": "Carry-over also includes repo locations and axHub folders (project _claude/_data paths). Wizard pre-fills them from the current project; the repo link step lets you keep or change it. Brett: \"that includes the location of the repos and the axHub folders and all of that.\"",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-12T20:36:41.741Z",
+     "updatedAt": "2026-11-12T20:36:41.872Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mwe0bg2h08kquu",
+     "title": "",
+     "text": "Tests (switch swaps credentials; clone carries settings but no data), report, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-12T20:35:05.083Z",
+     "updatedAt": "2026-11-12T20:35:05.083Z"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 743
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 27,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-12T20:35:05.083Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
