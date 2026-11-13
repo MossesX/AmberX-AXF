@@ -27,10 +27,18 @@
  * categories, and Reset. Stored in one setting, `axf.banners.look`, holding only what was changed: look tokens compile
  * to one stylesheet over every banner frame on top of the inherited theme; behaviour tokens are the fallback under
  * each banner's own choices (its tab wins, then Apply to all, then the default).
+ *
+ * Focus (Nov 12 2026): `banners.focus:<banner or badge>` opens the Banners page on that banner's tab (scrolled into
+ * view, flashed; the live banner opens out of its one-line fold and flashes too) or, for a badge on the banner bar,
+ * Banner widgets with that badge's row open and flashed (the badge on the bar flashes too). What it names is resolved by
+ * core/engines/bannerfocus.ts ("banner:" / "badge:" prefixes, ids, labels, words). Console commands run it for
+ * console_open / console_show `focus` on the `banners` screen (MCP, REST, the CLI, voice); a link carries it as
+ * `?axf-banner=<what>` (bannerFocusLink).
  */
 import { createContext, useCallback, useContext, useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
 import type { AxfRuntime } from '../../core';
-import { APPEARANCE_LOCK_KEY } from '../../core/runtime';
+import { APPEARANCE_LOCK_KEY, BANNER_WIDGETS_DIALOG } from '../../core/runtime';
+import { resolveBannerFocus, type BannerFocusHit } from '../../core/engines/bannerfocus';
 import type { BannerDef, SlotDef } from '../library';
 import type { MenuEntry } from '../../core/engines/windows';
 import { FRAMEWORK_MODULE } from '../../core/engines/actions';
@@ -195,6 +203,7 @@ function install(rt: AxfRuntime): void {
   if (installed.has(rt)) return;
   installed.add(rt);
   rt.actions.withModule(FRAMEWORK_MODULE, () => installActions(rt));
+  focusFromLink(rt);
   applyBannerLook(rt);
   rt.settings.onChange(BANNER_LOOK_KEY, () => applyBannerLook(rt));
   rt.settings.onChange(APPEARANCE_LOCK_KEY, () => applyBannerLook(rt));
@@ -228,6 +237,8 @@ function installActions(rt: AxfRuntime): void {
   }, { label: 'Hide banner for a while' });
   rt.actions.register('banners.unhide', ([id]) => { if (id) setBannerHide(rt, id, false); }, { label: 'Unhide banner' });
   rt.actions.register('banners.show-all', () => showAllBannersNow(rt), { label: 'Show all banners (reset hide timers)' });
+  // What console commands run for focus on the `banners` screen (console_open / console_show, the CLI, voice).
+  rt.actions.register(BANNERS_FOCUS_ACTION, ([what]) => { focusBannerOrBadge(rt, what ?? ''); }, { label: 'Banners: bring a banner or badge forward', params: true, effect: 'navigate' });
   // One entry, named after the banner that was right-clicked (payload = its id), never the others.
   rt.contextExtras.set(BANNER_CTX_TARGET, (_t, id) => [...(id ? [bannerMenu(rt, id)] : []), ...skinsMenu(rt)]);
   // The Skins widget (Brett, Nov 10 2026: "widget hidden by default"): a chip that opens the skin picker, off until it
@@ -295,6 +306,91 @@ function migrateShow(rt: AxfRuntime): void {
   rt.settings.set(BANNER_PREFS_KEY, next as never);
 }
 
+/* ---------------- focus: bring one banner or badge forward ---------------- */
+
+/** The action console commands run for `focus` on the Banners screen: `banners.focus:<banner or badge>`. */
+export const BANNERS_FOCUS_ACTION = 'banners.focus';
+/** A link that opens the Banners page focused on a banner or badge: `?axf-banner=<what>`. */
+export const BANNER_FOCUS_PARAM = 'axf-banner';
+/** How long a focus ask waits for its page, dialog or banner to draw (plugins load after the first render). */
+const FOCUS_WAIT_MS = 8000;
+
+let focused: { id: string; at: number } = { id: '', at: 0 };
+const focusSubs = new Set<() => void>();
+function setFocused(id: string): void { focused = { id, at: Date.now() }; focusSubs.forEach((f) => f()); }
+/** The banner asked for last ({ id, at }); a new ask is a new object, so the same banner asked again counts again. */
+function useFocusedBanner(): { id: string; at: number } {
+  return useSyncExternalStore((f) => { focusSubs.add(f); return () => { focusSubs.delete(f); }; }, () => focused, () => focused);
+}
+
+const cssId = (s: string) => (globalThis.CSS?.escape ? globalThis.CSS.escape(s) : s.replace(/["\\]/g, '\\$&'));
+
+/** Wait for an element, then flash it (and scroll it into view when `scroll` is set). */
+function flashWhen(selector: string, scroll: ScrollLogicalPosition | null): void {
+  const doc = globalThis.document;
+  if (!doc) return;
+  const started = Date.now();
+  const tick = () => {
+    const el = Array.from(doc.querySelectorAll<HTMLElement>(selector)).find((x) => !x.closest('[hidden]'));
+    if (!el) { if (Date.now() - started < FOCUS_WAIT_MS) setTimeout(tick, 90); return; }
+    const reduce = globalThis.matchMedia?.('(prefers-reduced-motion: reduce)').matches || doc.documentElement.hasAttribute('data-reduced-motion');
+    if (scroll) el.scrollIntoView({ block: scroll, behavior: reduce ? 'auto' : 'smooth' });
+    el.classList.remove('fx-search-flash');
+    void el.offsetWidth; // restart the animation
+    el.classList.add('fx-search-flash');
+    setTimeout(() => el.classList.remove('fx-search-flash'), 1900);
+  };
+  setTimeout(tick, 30);
+}
+
+/**
+ * Bring one banner or badge forward. A banner: the Banners page opens on its tab, scrolled into view and flashed, and the
+ * banner itself opens out of its one-line fold and flashes. A badge (a widget on the banner bar): Banner widgets opens
+ * with its row open, scrolled into view and flashed, and the badge on the bar flashes. Only navigates (changes no
+ * setting). Empty = just the page. → what it found, or null (a toast says nothing matched).
+ */
+export function focusBannerOrBadge(rt: AxfRuntime, what: string): BannerFocusHit | null {
+  let q = String(what ?? '');
+  try { q = decodeURIComponent(q); } catch { /* already plain */ }
+  q = q.trim();
+  const hit = q ? resolveBannerFocus(q, knownBanners(rt), rt.bannerWidgets()) : null;
+  if (rt.embedded?.page !== 'banners' && rt.getState().view !== BANNERS_VIEW) rt.navigate(BANNERS_VIEW);
+  if (!q) return null;
+  if (!hit) { rt.toast(`No banner or badge called "${q}" in this app.`, 'warning', 'Banners'); return null; }
+  if (hit.kind === 'banner') {
+    setWantTab(hit.id);
+    setFocused(hit.id);
+    flashWhen(`[data-axf-banner-focus="${cssId(hit.id)}"]`, 'start');
+    flashWhen(`.fx-banner-frame[data-fx-banner-id="${cssId(hit.id)}"]`, null);
+  } else {
+    rt.openDialog(BANNER_WIDGETS_DIALOG, { key: hit.key });
+    flashWhen(`[data-axf-widget-row="${cssId(hit.key)}"]`, 'center');
+    flashWhen(`.fx-banner [data-axf-banner-item="${cssId(hit.key)}"]`, null);
+  }
+  return hit;
+}
+
+/** A link to this app that opens the Banners page focused on a banner or badge. */
+export function bannerFocusLink(what: string): string {
+  if (typeof location === 'undefined') return `?${BANNER_FOCUS_PARAM}=${encodeURIComponent(what)}`;
+  const u = new URL(location.href); u.search = ''; u.hash = ''; u.searchParams.set(BANNER_FOCUS_PARAM, what);
+  return u.toString();
+}
+
+/** `?axf-banner=<what>`: once the app's banners have registered, focus it and drop the parameter. */
+function focusFromLink(rt: AxfRuntime): void {
+  if (typeof location === 'undefined' || typeof history === 'undefined') return;
+  const what = new URL(location.href).searchParams.get(BANNER_FOCUS_PARAM);
+  if (!what) return;
+  const started = Date.now();
+  const go = () => {
+    if (!knownBanners(rt).length && Date.now() - started < FOCUS_WAIT_MS) { setTimeout(go, 200); return; }
+    const u = new URL(location.href); u.searchParams.delete(BANNER_FOCUS_PARAM); history.replaceState(history.state, '', u.toString());
+    focusBannerOrBadge(rt, what);
+  };
+  setTimeout(go, 300);
+}
+
 /* ---------------- the frame around each banner ---------------- */
 
 const LaunchCtx = createContext<'expanded' | 'minimized'>('expanded');
@@ -324,7 +420,13 @@ export function BannerIcon({ icon, working = false, size = 18, className = '' }:
 /** For a banner that can fold to one line: whether it starts open, as its Banner settings say (default open). */
 export function useBannerLaunchOpen(): [boolean, (v: boolean) => void] {
   const launch = useContext(LaunchCtx);
-  return useState(launch === 'expanded');
+  const id = useContext(IdCtx);
+  const state = useState(launch === 'expanded');
+  // focused (banners.focus): it opens out of its fold
+  const f = useFocusedBanner();
+  const setOpen = state[1];
+  useEffect(() => { if (id && f.id === id && f.at) setOpen(true); }, [f, id, setOpen]);
+  return state;
 }
 
 /**
@@ -446,15 +548,16 @@ function QuickHideNote({ id, until }: { id: string; until: number }) {
 
 /* ---------------- the banner a page was asked to show; each banner's own settings ---------------- */
 
-let wantTab = '';
+// a new object on every ask, so asking for the tab already picked (after a manual switch) still switches back
+let wantTab: { id: string } = { id: '' };
 const wantSubs = new Set<() => void>();
-function setWantTab(id: string): void { wantTab = id; wantSubs.forEach((f) => f()); }
+function setWantTab(id: string): void { wantTab = { id }; wantSubs.forEach((f) => f()); }
 /** Show this banner's tab wherever Banner settings is open (a settings page asked for a banner plugin's own tab). */
 export function askBannerTab(rt: AxfRuntime, idOrSettingsTab: string): void {
   const b = knownBanners(rt).find((x) => x.id === idOrSettingsTab) ?? knownBanners(rt).find((x) => x.settingsTab === idOrSettingsTab);
   if (b) setWantTab(b.id);
 }
-function useWantTab(): string {
+function useWantTab(): { id: string } {
   return useSyncExternalStore((f) => { wantSubs.add(f); return () => { wantSubs.delete(f); }; }, () => wantTab, () => wantTab);
 }
 
@@ -486,9 +589,13 @@ export function BannerSettingsPanel({ initial }: { initial?: string }) {
   const list = useKnownBanners();
   const asked = useWantTab();
   const [tab, setTab] = useState(() => (initial && list.some((b) => b.id === initial) ? initial : list[0]?.id ?? ''));
-  useEffect(() => { if (asked && list.some((b) => b.id === asked)) setTab(asked); }, [asked]);
-  // the list fills in after the plugins load (a page opened straight on Banners)
-  useEffect(() => { if (!list.some((b) => b.id === tab) && list[0]) setTab(initial && list.some((b) => b.id === initial) ? initial : list[0].id); }, [list.length]);
+  useEffect(() => { if (asked.id && list.some((b) => b.id === asked.id)) setTab(asked.id); }, [asked]);
+  // the list fills in after the plugins load (a page opened straight on Banners, or focused on a banner)
+  useEffect(() => {
+    if (list.some((b) => b.id === tab) || !list[0]) return;
+    const pick = [asked.id, initial].find((x) => x && list.some((b) => b.id === x));
+    setTab(pick ?? list[0].id);
+  }, [list.length]);
   const b = list.find((x) => x.id === tab);
   if (!list.length) return <p className="fx-muted">This app has no banners.</p>;
   const p = bannerPrefs(rt, tab);
@@ -508,7 +615,7 @@ export function BannerSettingsPanel({ initial }: { initial?: string }) {
       <ApplyToAllLook />
       <TabGroup id="banner-settings.banners" label="Banners" className="fx-banner-settings__tabs" value={tab} onChange={setTab} tabs={list.map((x) => ({ value: x.id, label: bannerLabel(x), icon: x.icon ?? 'bell' }))} />
       {b && (
-        <div className="fx-stack">
+        <div className="fx-stack" data-axf-banner-focus={b.id}>
           <Section title="Hide">
             <HideControls id={b.id} label={bannerLabel(b)} list={list} hide={hide} />
           </Section>

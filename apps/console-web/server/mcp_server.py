@@ -976,6 +976,7 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
         ("view:settings/tab:settings.tabs=plugins", "row:<build>/step:s3", "setting:<key>"): opened and focused. A tab or item on the screen:
         "build-orchestrator pending", or `focus` ("pending", a build id). A build: "build:<build id>" (or the bare id)
         opens the Build orchestrator on its tab with that build scrolled into view, expanded and highlighted.
+        A banner or a badge: screen="banners", focus = its id or name ("build status", "badge:clock", "banner:approvals").
         Read `status`: delivered (a console acked it), pending (no console answered yet; queued and AmberX opens the
         console on Brett's phone) or failed. Not sure of the name? console_list(kind="screens", q="…") first."""
         if ADDRESS_RE.match(screen.strip()):
@@ -1048,6 +1049,7 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
         "plugins/<plugin>"), or kind:name (screen:, settings:, dialog:, action:, approval:<id> pops up a waiting
         axHub approval). A build: "build:<build id>" (or the bare id) opens the Build orchestrator on that build's tab,
         scrolled into view, expanded and highlighted. A tab: "build-orchestrator pending", or `focus` = the tab or item.
+        A banner or a badge on the banner bar: target="banners", focus = its id or name ("badge:alerts bell").
         `highlight` = a CSS selector or exact visible text to flash once it's open. Only navigates. `status` says
         whether it is on screen: delivered, pending (no console answered yet; it opens when one does) or failed.
         `target` may be a console-control@1 address ("grid:queue/row:<id>", "plugin:<id>"): focused and highlighted."""

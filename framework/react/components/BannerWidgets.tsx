@@ -139,6 +139,8 @@ export function BannerWidgetsPanel({ initial }: { initial?: string }) {
   useAxfState();
   const rows = rt.bannerWidgets();
   const [open, setOpen] = useState(initial ?? '');
+  // opened again on another widget while already open (banners.focus on a badge): that one's row opens
+  useEffect(() => { if (initial) setOpen(initial); }, [initial]);
   const [drag, setDrag] = useState<{ key: string; side: string; index: number } | null>(null);
   useBannerHideTick();
   const strips = useKnownBanners();
