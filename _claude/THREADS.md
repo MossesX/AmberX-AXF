@@ -786,8 +786,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 17:36 UTC · `plugin-review-map-what-each-plugin-does` added (3 steps) (all) · build-rename
-- 2026-11-13 17:36 UTC · `plugin-review-map-what-each-plugin-does-depends-on-and-breaks` note, removed (all) · build-rename
 - 2026-11-13 17:36 UTC · `professional-skins-rebuild-whole-app` added (17 steps) (all) · build-rename
 - 2026-11-13 17:36 UTC · `professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e` note, removed (all) · build-rename
 - 2026-11-13 17:36 UTC · `projects-own-everything-per-project` added (5 steps) (all) · build-rename
@@ -1186,6 +1184,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 19:33 UTC · `land-overlay-preview-ui-review-resolve` → queued, note (all) · console
 - 2026-11-13 19:33 UTC · `skin-axhub-override-switch-greyed-out` → running, note (all) · pipeline
 - 2026-11-13 19:33 UTC · `skin-axhub-override-switch-greyed-out` branch claude/skin-axhub-override-switch-greyed-out (all) · pipeline
+- 2026-11-13 19:32 UTC · `console-app-part-4-console-side-safe` branch claude/console-app-part-4-console-side-safe (all) · builds-live
+- 2026-11-13 19:33 UTC · `console-app-part-4-console-side-safe` s2 done (all) · orchestrator
 
 ## Token passes (log)
 
