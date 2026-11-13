@@ -2282,6 +2282,12 @@
     "module": "app-console",
     "notes": "11 sections (orchestrator, dispatcher, watchdog, shipped, account failover, landing, merge queue, nightly deploy, backups, health monitor, notification rules), one owner each from the crew; registry agents/sections.json, reassign in Settings → Agent swarm → Section owners; posts start/done/failed/blocked/waiting as the owner, respects the chat switch, deduped; crew-say.mjs check in CI. Kotlin twin deferred."
   },
+  "cx.buildengine.reviewtoken": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "deploy/claude-headless.sh passes AXF_CONSOLE_URL (env, else https://<DOMAIN>) and AXF_TOKEN (private 0600 secret file, never logged) into every build; rebuild-shots runs its scratch console with AXF_APPEARANCE_HUB=off and drops 'Waiting for axHub' captures; ui-review console-call.mjs names each failure, leaves submit-failed.json in the worktree and raises an alert; health check ui-review-stuck (GET /api/plugins/ui-review/stuck) scans build worktrees; review.mjs resubmit sends stuck work. A per-build scoped token needs a console auth change (deferred). No Kotlin twin (CLI + server only)."
+  },
   "cx.buildengine.buildids": {
     "status": "built",
     "wave": 1,

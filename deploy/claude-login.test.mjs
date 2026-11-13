@@ -129,6 +129,8 @@ printf '%s' "\${CLAUDE_CONFIG_DIR:-}" > "$out/config_dir"
 printf '%s' "\${CLAUDE_CODE_OAUTH_TOKEN:-}" | sha256sum | cut -c1-64 > "$out/token_sha"
 f="\${CLAUDE_CONFIG_DIR:-$HOME/.claude}/.credentials.json"
 sha256sum < "$f" 2>/dev/null | cut -c1-64 > "$out/creds1"
+printf '%s' "\${AXF_TOKEN:-}" | sha256sum | cut -c1-64 > "$out/console_token_sha"
+printf '%s' "\${AXF_CONSOLE_URL:-}" > "$out/console_url"
 touch "$out/started"
 while [ ! -f "$PWD/go" ]; do sleep 0.1; done
 printf '%s' '${credsOf('fake-refreshed-by-build')}' > "$f.tmp" && mv "$f.tmp" "$f"
@@ -138,7 +140,8 @@ echo '{"type":"result","result":"done"}'
   chmodSync(join(bin, 'claude'), 0o755);
   const sock = mkdtempSync(join(tmpdir(), 'axf-login-tmux-'));
   const runEnv = { ...env, PATH: `${bin}:${process.env.PATH}`, TMUX_TMPDIR: sock, AXF_SLOTS: 'off', AXF_AGENT_BOOK: 'off', AXF_WATCH_LIVE: 'off', AXF_LOOK_GATE: 'off',
-    AXF_ORIGIN: 'off', AXF_LOGIN_NOTE: 'off', AXF_ACCOUNT_SWITCHES: '0', AXF_WORKERS: 'off', /* own login of the active account, not worker routing */ AXF_HEADLESS_DIR: join(tmp, 'headless'), CLAUDE_CODE_OAUTH_TOKEN: INHERITED };
+    AXF_ORIGIN: 'off', AXF_LOGIN_NOTE: 'off', AXF_ACCOUNT_SWITCHES: '0', AXF_WORKERS: 'off', /* own login of the active account, not worker routing */ AXF_HEADLESS_DIR: join(tmp, 'headless'), CLAUDE_CODE_OAUTH_TOKEN: INHERITED,
+    AXF_TOKEN: 'fake-console-token-for-ui-review', AXF_CONSOLE_URL: 'https://console.example.test', AXF_CONSOLE_ENV: join(tmp, 'no-console-env') };
   // HOME is a temp folder too: the launcher puts ~/.local/bin first on PATH, where the real claude lives
   runEnv.HOME = join(tmp, 'home'); mkdirSync(runEnv.HOME);
   for (const k of ['TMUX', 'CLAUDE_CONFIG_DIR', 'AXF_AGENT', 'AXF_AGENT_NAME', 'AXF_AGENT_BOOKED', 'AXF_SESSION', 'AXHUB_TOKEN']) delete runEnv[k];
@@ -155,6 +158,8 @@ echo '{"type":"result","result":"done"}'
   ok(cfg.startsWith(join(d1, '.axf-claude') + '/'), 'claude runs with CLAUDE_CONFIG_DIR = the build\'s own copy');
   ok(read(join(d1, 'fake', 'creds1')).trim() === sha(credsOf(SECRET_A)), 'on the active account\'s login');
   ok(read(join(d1, 'fake', 'token_sha')).trim() === sha(''), 'the inherited CLAUDE_CODE_OAUTH_TOKEN never reaches it');
+  ok(read(join(d1, 'fake', 'console_token_sha')).trim() === sha('fake-console-token-for-ui-review'), 'the build gets the console token (AXF_TOKEN), so UI Review submits reach the console');
+  ok(read(join(d1, 'fake', 'console_url')) === 'https://console.example.test', 'and AXF_CONSOLE_URL');
   // Brett logs the VPS out, then switches the shared login to another account, while the build runs
   rmSync(join(SH, '.credentials.json'));
   writeFileSync(join(A, '.active'), 'account-b\n');
@@ -170,7 +175,7 @@ echo '{"type":"result","result":"done"}'
   ok(/^# login account-a \(a@example\.com\) · own copy \(live\)$/m.test(log1), 'the log says which account it ran on');
   const ev = read(join(tmp, 'headless', 'events.jsonl')).split('\n').filter(Boolean).map((l) => JSON.parse(l));
   ok(ev.some((e) => e.event === 'session-login' && e.account === 'account-a' && e.email === 'a@example.com'), 'session-login event names the account');
-  ok(!/fake-secret|fake-token|fake-inherited/.test(log1 + read(join(d1, 'run.jsonl')) + r1.stdout + r1.stderr + JSON.stringify(ev)), 'no credential printed anywhere');
+  ok(!/fake-secret|fake-token|fake-inherited|fake-console-token/.test(log1 + read(join(d1, 'run.jsonl')) + r1.stdout + r1.stderr + JSON.stringify(ev)), 'no credential printed anywhere');
 
   // the next launch picks up the new active account; --account picks one per launch (with its saved token)
   const d2 = runIn('build2');

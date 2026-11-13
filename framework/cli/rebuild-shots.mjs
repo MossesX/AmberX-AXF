@@ -50,7 +50,11 @@ const apiPort = await freePort(), webPort = args['web-port'] ? Number(args['web-
 // every --env counts (args keeps only the last value of a repeated flag)
 const envArgs = process.argv.slice(2).flatMap((v, i, all) => (v === '--env' && typeof all[i + 1] === 'string' && all[i + 1].includes('=') ? [all[i + 1]] : []));
 const extraEnv = Object.fromEntries(envArgs.map((kv) => { const i = kv.indexOf('='); return [kv.slice(0, i), kv.slice(i + 1)]; }));
-const env = { ...process.env, ...extraEnv, AXF_TOKEN: token, AXF_DATA_DIR: data, AXF_TOKEN_FILE: join(data, 'env'), AXF_STATE: join(data, 'state.json'), AXF_API: `http://127.0.0.1:${apiPort}` };
+// The scratch console never reaches the real one (its throwaway token would only earn 401s) and, unless --env points it at
+// a hub, runs on local settings: the capture browser has no axHub session, so with the hub source on every shot was the
+// "Waiting for axHub" screen. Submitting (--submit --console) still uses this process's own AXF_CONSOLE_URL + AXF_TOKEN.
+const { AXF_CONSOLE_URL: _realConsole, ...hostEnv } = process.env;
+const env = { ...hostEnv, AXF_APPEARANCE_HUB: 'off', ...extraEnv, AXF_TOKEN: token, AXF_DATA_DIR: data, AXF_TOKEN_FILE: join(data, 'env'), AXF_STATE: join(data, 'state.json'), AXF_API: `http://127.0.0.1:${apiPort}` };
 const procs = [];
 const run = (cmd, argv, cwd) => { const p = spawn(cmd, argv, { cwd, env, stdio: ['ignore', 'pipe', 'pipe'], detached: true }); let log = ''; p.stdout.on('data', (d) => { log += d; }); p.stderr.on('data', (d) => { log += d; }); p.log = () => log.slice(-4000); procs.push(p); return p; };
 const stop = () => { for (const p of procs) { try { process.kill(-p.pid, 'SIGTERM'); } catch { /* gone */ } } };
@@ -64,6 +68,7 @@ try { await waitFor(`http://127.0.0.1:${webPort}/`, startMs); } catch (e) { cons
 
 const browser = await playwright.chromium.launch();
 const saved = [];
+const blocked = []; // shots that only show the axHub waiting / sign-in screen
 try {
   for (const shot of shots) {
     for (const vp of shot.viewports || ['phone', 'desktop']) {
@@ -92,11 +97,19 @@ try {
       const dir = join(resolve(args.out), label); mkdirSync(dir, { recursive: true });
       const file = join(dir, `${shot.name}-${vp}.png`);
       await page.screenshot({ path: file, fullPage: !!shot.fullPage });
+      // a capture of the hub waiting / sign-in screen is not a screenshot of the UI: say so instead of submitting it
+      const stuck = await page.evaluate(() => /^(Waiting for axHub|Sign in to axHub)$/m.test(document.body?.innerText ?? '')).catch(() => false);
+      if (stuck) { blocked.push(`${shot.name}-${vp}`); await ctx.close(); continue; }
       saved.push(file); await ctx.close();
     }
   }
 } finally { await browser.close(); stop(); }
 console.log(saved.join('\n'));
+if (blocked.length) {
+  console.error(`rebuild-shots: ${blocked.length} shot(s) show only the axHub waiting / sign-in screen, not kept: ${blocked.join(', ')}. `
+    + 'Run without --env AXF_APPEARANCE_HUB (local settings) or give the shot a hub "signIn".');
+  process.exitCode = 3;
+}
 // Keep the repo light: scale + palette-compress what was just captured (no-op without Pillow).
 try { execSync(`python3 ${JSON.stringify(join(dirname(fileURLToPath(import.meta.url)), 'shrink-shots.py'))} ${JSON.stringify(join(resolve(args.out), label))}`, { stdio: 'inherit' }); } catch { /* shrinking is best effort */ }
 if (!existsSync(join(resolve(args.out), label))) process.exit(1);

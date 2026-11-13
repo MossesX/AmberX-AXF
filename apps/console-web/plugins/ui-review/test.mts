@@ -448,4 +448,74 @@ t('sorting: every column sorts both ways', () => {
   assert.equal(core.sortItems(xs, 'waiting-desc')[0].status, 'approved');
 });
 
+// ---- console call (review.mjs / shots.mjs --console): every failure says what to fix; failed writes are never silent
+{
+  const cc = await import('./console-call.mjs');
+  const env = { AXF_CONSOLE_URL: 'https://console.example.test/', AXF_TOKEN: 'tok', AXF_BUILD_ID: 'b1' };
+  const res = (status, body, type = 'application/json') => ({ status, ok: status >= 200 && status < 300, statusText: '', headers: { get: () => type }, json: async () => body });
+  const seen = [];
+  const fake = (r) => async (url, init) => { seen.push({ url, init }); if (r instanceof Error) throw r; return r; };
+  const code = async (p) => { try { await p; return 'none'; } catch (e) { return e.code; } };
+  assert.equal(await code(cc.consoleCall('items', null, { env: {} })), 'no-token');
+  assert.equal(await code(cc.consoleCall('items', null, { env, fetch: fake(res(401, { detail: 'x' })) })), 'unauthorized');
+  assert.equal(await code(cc.consoleCall('items', null, { env, fetch: fake(res(200, null, 'text/html')) })), 'not-api');
+  assert.equal(await code(cc.consoleCall('items', null, { env, fetch: fake(res(302, null, 'text/html')) })), 'not-api');
+  assert.equal(await code(cc.consoleCall('items', null, { env, fetch: fake(new Error('ECONNREFUSED')) })), 'unreachable');
+  assert.equal(await code(cc.consoleCall('submit', {}, { env, fetch: fake(res(500, { detail: 'boom' })) })), 'http');
+  seen.length = 0;
+  assert.deepEqual(await cc.consoleCall('items', null, { env, fetch: fake(res(200, { items: [] })) }), { items: [] });
+  assert.equal(seen[0].url, 'https://console.example.test/api/plugins/ui-review/items');
+  assert.equal(seen[0].init.headers.Authorization, 'Bearer tok');
+  assert.equal(seen[0].init.redirect, 'manual');
+  // reported(): marker + alert on failure, marker cleared on success; a refused token never posts an alert
+  const md = mkdtempSync(join(tmpdir(), 'ui-review-marker-'));
+  seen.length = 0;
+  const boom = Object.assign(new Error('console 500: boom'), { code: 'http' });
+  await assert.rejects(cc.reported(async () => { throw boom; }, { what: 'submit', markerDir: md, env, fetch: fake(res(200, { ok: true })) }));
+  const m = JSON.parse(readFileSync(join(md, cc.MARKER), 'utf8'));
+  assert.equal(m.code, 'http'); assert.equal(m.build, 'b1'); assert.match(m.reason, /boom/);
+  assert.equal(seen.length, 1); assert.equal(seen[0].url, 'https://console.example.test/api/alerts');
+  const alert = JSON.parse(seen[0].init.body);
+  assert.equal(alert.source, 'ui-review'); assert.equal(alert.severity, 'error'); assert.equal(alert.key, 'ui-review:submit-failed:b1');
+  seen.length = 0;
+  await assert.rejects(cc.reported(async () => { throw Object.assign(new Error('401'), { code: 'unauthorized' }); }, { markerDir: md, env, fetch: fake(res(200, {})) }));
+  assert.equal(seen.length, 0, 'a refused token raises no alert (the marker covers it)');
+  assert.equal(await cc.reported(async () => 'ok', { markerDir: md, env }), 'ok');
+  assert.equal(existsSync(join(md, cc.MARKER)), false, 'a success clears the marker');
+  n += 1;
+}
+
+// ---- resubmit: stuck build work → the normal CLIs, recorded in sent.json, duplicates skipped
+{
+  const rs = await import('./resubmit.mjs');
+  const root = mkdtempSync(join(tmpdir(), 'ui-review-resubmit-'));
+  const d = join(root, 'b1', rs.REL);
+  mkdirSync(join(d, 'shots', 'r-1'), { recursive: true }); mkdirSync(join(d, 'screenshots', 'files'), { recursive: true });
+  writeFileSync(join(root, 'b1', '.git'), 'gitdir: x');
+  writeFileSync(join(d, 'shots', 'r-1', 'a-desktop.png'), 'PNG-A');
+  writeFileSync(join(d, 'screenshots', 'files', 's-1.png'), 'PNG-S');
+  writeFileSync(join(d, 'items.json'), JSON.stringify({ items: [
+    { id: 'r-1', name: 'Item one', kind: 'review', app: 'console-web', screen: 'x', branch: 'claude/b1', pr: 7, singleOption: 'why', group: { name: 'b1 - g' }, submittedBy: { type: 'build', id: 'claude/b1' }, source: 'headless', files: { before: [], after: [{ src: 'items/r-1/a-desktop.png' }] } },
+    { id: 'r-2', name: 'Already there', branch: 'claude/b1', files: { after: [{ src: 'items/r-2/gone.png' }] } }] }));
+  writeFileSync(join(d, 'screenshots', 'index.json'), JSON.stringify({ shots: [{ id: 's-1', name: 'Shot', app: 'demo', screen: 'home', viewport: 'desktop', files: { after: [{ src: 's-1.png' }] } }] }));
+  writeFileSync(join(d, 'submit-failed.json'), '{}');
+  mkdirSync(join(root, 'loose')); writeFileSync(join(root, 'loose', 'a-desktop.png'), 'PNG-A');   // same picture as r-1
+  const p = rs.plan([root]);
+  const calls = p.flatMap((w) => w.calls);
+  const c1 = calls.find((c) => c.id === 'r-1');
+  assert.deepEqual(c1.argv.slice(1, 3), ['submit', '--kind']);
+  for (const [k, v] of [['--name', 'Item one'], ['--branch', 'claude/b1'], ['--pr', '7'], ['--group', 'b1 - g'], ['--by', 'build:claude/b1'], ['--single-option', 'why']]) assert.equal(c1.argv[c1.argv.indexOf(k) + 1], v, k);
+  assert.ok(c1.argv.includes('--console'));
+  assert.equal(calls.find((c) => c.id === 'r-2').skip, 'no pictures on disk');
+  assert.ok(calls.find((c) => c.id === 's-1').argv[0].endsWith('shots.mjs'));
+  const ran = [];
+  const r = rs.run([root], { log: () => {}, spawn: (_n, argv) => { ran.push(argv); return { status: 0, stdout: '', stderr: '' }; }, known: new Set([rs.keyOf('Already there', 'claude/b1')]) });
+  assert.equal(r.sent.length, 2, 'r-1 + s-1 sent');
+  assert.ok(r.skipped.some((x) => x.why === 'same pictures as a stuck review item'), 'loose duplicate skipped');
+  assert.deepEqual(JSON.parse(readFileSync(join(d, 'sent.json'), 'utf8')).ids.sort(), ['r-1', 's-1']);
+  assert.equal(existsSync(join(d, 'submit-failed.json')), false, 'the failure marker is cleared once all went');
+  assert.equal(rs.plan([root]).flatMap((w) => w.calls).filter((c) => !c.skip).length, 0, 'a second run has nothing to send');
+  n += 1;
+}
+
 console.log(`ui-review: ${n} checks ok`);

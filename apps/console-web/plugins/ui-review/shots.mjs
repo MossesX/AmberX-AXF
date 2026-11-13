@@ -28,10 +28,11 @@ import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, renameS
 import { tmpdir } from 'node:os';
 import { basename, dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { consoleCall as remoteCall, reported } from './console-call.mjs';
 import * as core from './web/shots-core.mjs';
 import * as gc from './web/groups-core.mjs';
 import * as cf from './web/conform.mjs';
-import { caller, dataDir, submitLocal } from './review.mjs';
+import { caller, dataDir, isWorktree, submitLocal } from './review.mjs';
 
 const IMG = /\.(png|jpe?g|webp)$/i;
 const readJson = (f, d) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return d; } };
@@ -167,14 +168,8 @@ export function migrateLocal() {
   return { moved: r.moved, shots: added, groups: repairLocal() };
 }
 
-async function consoleCall(path, body) {
-  const url = process.env.AXF_CONSOLE_URL, tok = process.env.AXF_TOKEN;
-  if (!url || !tok) throw new Error('--console needs AXF_CONSOLE_URL and AXF_TOKEN');
-  const r = await fetch(`${url.replace(/\/$/, '')}/api/plugins/ui-review/${path}`, { method: body ? 'POST' : 'GET', headers: { Authorization: `Bearer ${tok}`, 'Content-Type': 'application/json' }, body: body ? JSON.stringify(body) : undefined });
-  const j = await r.json().catch(() => ({}));
-  if (!r.ok) throw new Error(`console ${r.status}: ${typeof j.detail === 'string' ? j.detail : r.statusText}`);
-  return j;
-}
+// writes (POST) from a build worktree that fail leave a marker the console's ui-review-stuck check reads, and raise an alert
+const consoleCall = (path, body) => (body ? reported(() => remoteCall(path, body), { what: `shot (${path.split('?')[0]})`, markerDir: isWorktree() ? dataDir() : '' }) : remoteCall(path, body));
 
 /** Flags; --console, --local, --json and --help never take a value (so `--local shot.png` keeps the file). */
 const BOOL = new Set(['console', 'local', 'json', 'help']);
