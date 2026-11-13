@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4254,
- "updatedAt": "2026-11-13T10:55:33.584Z",
+ "rev": 4255,
+ "updatedAt": "2026-11-13T10:55:48.159Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -175355,7 +175355,7 @@
    "branch": "claude/stop-the-molly-guide-from-popping-up-and-talking-every-time-the-console-loads-n",
    "pr": "",
    "createdAt": "2026-11-12T23:14:47.128Z",
-   "updatedAt": "2026-11-13T10:53:46.880Z",
+   "updatedAt": "2026-11-13T10:55:45.024Z",
    "builtAt": "",
    "notes": [
     {
@@ -175461,12 +175461,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T10:55:45.024Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T23:16:42.326Z",
-     "updatedAt": "2026-11-12T23:16:42.326Z"
+     "updatedAt": "2026-11-13T10:55:45.349Z"
     },
     {
      "id": "s3",
@@ -175524,7 +175524,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
