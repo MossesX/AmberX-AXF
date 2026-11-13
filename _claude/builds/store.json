@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4759,
- "updatedAt": "2026-11-13T19:10:16.941Z",
+ "rev": 4760,
+ "updatedAt": "2026-11-13T19:10:32.480Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -197741,7 +197741,7 @@
    "pr": "#635",
    "priority": "P1",
    "createdAt": "2026-11-13T18:14:45.988Z",
-   "updatedAt": "2026-11-13T19:09:51.691Z",
+   "updatedAt": "2026-11-13T19:10:08.607Z",
    "builtAt": "2026-11-13T19:09:27.501Z",
    "notes": [
     {
@@ -197785,6 +197785,10 @@
      "at": "2026-11-13T19:09:51.691Z"
     },
     {
+     "text": "Session axf-decision-dialog-ui-review-other--paulie on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-13T19:10:08.607Z"
+    },
+    {
      "text": "Phase done: PR #635, UI Review r-20261113-89d7348e. Dispatcher bug: two sessions (Paulie 18:19, Sully 18:20) ran this build in the same worktree; Sully overwrote 3 files and ended uncommitted at 18:25. Restored; ~10 min lost.",
      "at": "2026-11-13T19:09:35.834Z"
     }
@@ -197807,12 +197811,19 @@
     "queuedAt": "2026-11-13T18:14:48.668Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-decision-dialog-ui-review-other--paulie",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-13T18:19:54.760Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-13T19:10:07.155Z",
+     "exit": 0,
+     "outcome": "finished",
+     "stepsLeft": 0,
+     "account": "mossesx-max-",
+     "session": "axf-decision-dialog-ui-review-other--paulie"
+    },
     "split": {
      "at": "2026-11-13T18:18:38.236Z",
      "by": "orchestrator",
@@ -198048,7 +198059,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
