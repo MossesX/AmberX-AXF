@@ -781,7 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 02:05 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` PR #543 (all) · builds-live
 - 2026-11-13 02:05 UTC · `vps-badge-shows-shell-commands-work-banner-widgets-for-disk-cpu-load-and-memor` note (all) · orchestrator
 - 2026-11-13 02:05 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` note (all) · orchestrator
 - 2026-11-13 02:05 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` s3 done, → built (all) · orchestrator
@@ -1181,6 +1180,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 11:04 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` s19 done (all) · orchestrator
 - 2026-11-13 11:06 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` s20 done (all) · orchestrator
 - 2026-11-13 11:07 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` s21 done (all) · orchestrator
+- 2026-11-13 11:07 UTC · `android-approval-overlay-a-small-always-on-float` s2 done (all) · orchestrator
 
 ## Token passes (log)
 
