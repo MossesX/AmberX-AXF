@@ -7198,6 +7198,18 @@
    "from": "",
    "addenda": []
   },
+  "ui-review-gate-switch-default-off": {
+   "said": "Brett: UI Review must not be a gate. Add an on/off switch in UI Review settings, 'UI Review is a merge gate', default OFF. When off, PRs are never held for screenshots: release every PR held for UI Review now (#557, #553, #541, #536, #518, #517) into the merge queue. UI Review items still get filed so Brett can look, they just don't block. Build on/replace #555 (kicked out of CI) and fix its CI failures. Full API: REST, MCP, CLI, voice.",
+   "at": "2026-11-13T12:14:42.715Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "ui-review-notify-session-audio": {
    "said": "Anything that's ready for UI review, send me a notification through the AmberX. Yeah, I want you to build it and it's not open on the phone. I want this, the audio... automatically audio built in transcriptions automatic every session.",
    "at": "2026-11-06T19:49:18.565Z",
