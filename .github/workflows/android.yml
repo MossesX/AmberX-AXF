@@ -270,6 +270,7 @@ jobs:
             node framework/cli/check-chrome-assets.mjs                 # every tab group, toolbar, banner and nav is framework chrome with the right-click settings; ratchet spec/chrome-baseline.json
             npx -y tsx framework/spec/check-skin.mts                   # skin@1 + app-look@1: one look per app, fixture replay, the Windows skin's assets, preview, apply, overrides, Restore + undo
             node framework/spec/check-skin-coverage.mjs                 # skin-coverage@1: every registered asset type has skin coverage (slot / parts / reference / bundle / none); fails on a type a skin cannot reach
+            node framework/spec/check-token-registry.mjs                # token-registry@1: every --fx-* token registered (element, area, state, scheme, level, description, default, source); no UI reads an unregistered token, nothing registered goes unread, new plugins register tokens in plugin.json; skin-snapshot@1 fixture
             node framework/spec/check-skin-colour-rule.mjs              # skin + colour theme rule: a colour pick switches inside the skin, never a new or forked skin
             node framework/spec/check-skin-sections.mjs                 # every shipped skin's look / layout / behaviour sections and asset slots ship; the professional skins set all four
             node framework/spec/check-asset-overrides.mjs               # asset overrides: the Assets with edits list (chrome-settings@1 instance overrides) and the controlled-item colour

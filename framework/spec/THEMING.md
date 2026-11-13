@@ -23,6 +23,33 @@ so the button asset, style theme and spacing restyle it with the app. A whole ro
 width…) but never set its background, colour, border, radius, padding, font size/weight, shadow or case.
 CI: `node framework/cli/check-controls.mjs`.
 
+## Token registry (token-registry@1, Nov 13 2026)
+
+Every `--fx-*` token in the system is listed once, in `framework/schemas/token-registry.json`, with its element type,
+area (layout / style / colour / behaviour), state (hover, selected, disabled …), scheme (light / dark / both), level
+(basic / pro / advanced), a plain-English description, its default and where it comes from (axf.css, an engine, the
+colour themes, a manifest). Engine: `core/engines/token-registry.mjs` (pure); CLI: `node framework/cli/token-registry.mjs
+list | search | get | sync --write | check | manifest <plugin> --write`; CI: `spec/check-token-registry.mjs`.
+
+- **Sync, don't hand-write.** `sync --write` derives the token set the way check-theme does (axf.css, the engines'
+  literals, the colour themes' keys, the scale and layout registries, the names in use under a component prefix) and
+  merges the manifests' `tokens.defines`, keeping every hand-edited description, level, area, state and element.
+- **A new UI, component or plugin registers its tokens through its manifest.** plugin.json (and axf.manifest.json):
+  `"tokens": { "$axf": "token-registry@1", "uses": ["--fx-accent", …], "defines": [{ "id": "--fx-…", "element", "area",
+  "state", "scheme", "level", "description", "default" }] }`. `uses` must equal what the folder's files read
+  (`manifest <folder> --write` fills it); `defines` are the plugin's own tokens, merged into the registry.
+- **CI fails** on a token a UI reads that is not registered, on a registered token nothing reads (generated scale /
+  layout tokens and `deprecated` entries excepted), and on a plugin outside `spec/token-manifest-baseline.json` with no
+  or a stale `tokens` block. The baseline lists the plugins that pre-date the rule and only shrinks.
+- **Levels** are what the Skin editor and Token control show: basic = the handful everyone changes (page colours,
+  accent, font, size, space, radius), pro = per-element looks and transparencies, advanced = layout, scale, density,
+  shadows, motion.
+- **Skin snapshots (skin-snapshot@1).** The Skin editor keeps one chain per picked UI: the root is the default skin (no
+  edits), every edit is a snapshot with a parent, a revert is a new snapshot that copies an older state (nothing is
+  lost), `snapshotBefore` answers "as it was 10 minutes ago", and `exportSkin` turns any state into a skin asset whose
+  mapped tokens ride `extras.settings['axf.tokens.<set>']` (control@1 overrides, applied everywhere the skin is used)
+  while variables no set carries ride `extras.settings['axf.skin-editor.vars']`.
+
 ## Transparency tokens
 
 Part of the style theme (optional fields, 0–1; defaults in `OPACITY_DEFAULTS`, identical on Android):
