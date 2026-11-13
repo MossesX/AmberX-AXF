@@ -1,14 +1,16 @@
 /**
- * Molly guide console plugin (ai.amberx.axf.console.molly-guide), Oct 28 2026.
+ * Gizmo guide console plugin (ai.amberx.axf.console.molly-guide; folder name kept so saved settings and data stay), Oct 28 2026.
+ * Nov 13 2026: Molly is no longer an agent (Nov 3 decision), so the guide asks Gizmo; it never opens by itself on load.
  *
  * Brett: "if you ask how to set this option to that it will open up a floating window in the console and display the
  * walkthrough … a small overlay with next previous buttons that are narrated while she shows you step by step".
  *
- * - Ask: Help → "Ask Molly to show me…" (or `molly.ask`) opens the window with a question box; the question goes to
- *   this plugin's server (POST /api/plugins/molly-guide/ask), which hands it to Molly through axf.agents@1. Her answer
+ * - Ask: Help → "Ask Gizmo to show me…" (or `gizmo.ask`; `molly.ask` stays as an alias) opens the window with a question box; the question goes to
+ *   this plugin's server (POST /api/plugins/molly-guide/ask), which hands it to Gizmo through axf.agents@1. Her answer
  *   is spoken; when it holds a walkthrough@1, the window plays it.
- * - From AmberX: AmberX's server asks Molly through the same route, so the walkthrough is kept here; this plugin polls
- *   GET …/walkthroughs?after=<seq> every few seconds while the console is visible and opens new ones by itself.
+ * - From AmberX: AmberX's server asks Gizmo through the same route, so the walkthrough is kept here; this plugin polls
+ *   GET …/walkthroughs?after=<seq> while the console is visible. It opens a new one by itself only when the opt-in
+ *   switch is on and the walkthrough was made after this page loaded (pollDecision); otherwise Replay plays it.
  * - Each step: runs its `do` (a console action spec), highlights its `target` (outline from theme tokens), and reads its
  *   `say` aloud (speech synthesis, switchable). Next / Previous / Repeat / Close, and the arrow keys.
  */
@@ -83,7 +85,7 @@ function openWindow() {
   if (!runtime) return;
   const wm = runtime.windows;
   if (st.windowId && wm.state.windows.some((w) => w.id === st.windowId)) return;
-  const id = wm.openFloating([{ id: `molly-${Date.now()}`, title: 'Molly', kind: KIND, payload: '', icon: 'sparkles' }], 'Molly', 'floating', 380, 300);
+  const id = wm.openFloating([{ id: `gizmo-guide-${Date.now()}`, title: 'Gizmo', kind: KIND, payload: '', icon: 'sparkles' }], 'Gizmo', 'floating', 380, 300);
   set({ windowId: id });
 }
 
@@ -98,7 +100,7 @@ function close() {
   set({ walk: null, at: 0 });
 }
 
-export async function askMolly(question: string) {
+export async function askGizmo(question: string) {
   const q = question.trim();
   if (!q) return;
   set({ asking: true, error: '', answer: '' });
@@ -110,7 +112,7 @@ export async function askMolly(question: string) {
     ok = res.ok;
   } catch (e) { r = { detail: (e as Error).message }; }
   set({ asking: false });
-  if (!ok) { set({ error: typeof r.detail === 'string' ? r.detail : 'Molly didn\'t answer.' }); return; }
+  if (!ok) { set({ error: typeof r.detail === 'string' ? r.detail : 'Gizmo didn\'t answer.' }); return; }
   const text = typeof r.text === 'string' ? r.text : '';
   const w = cleanWalkthrough(r.walkthrough);
   if (w) play(w);
@@ -157,10 +159,10 @@ function GuideWindow() {
   }
   return (
     <div className="fx-stack axp-molly-guide">
-      <p className="fx-muted">Ask Molly how to do something in the console: she'll show you, step by step.</p>
+      <p className="fx-muted">Ask Gizmo how to do something in the console: he'll show you, step by step.</p>
       <TextField label="What do you want to do?" value={q} onChange={setQ} placeholder="How do I switch the colour theme?" autoFocus />
       <div className="fx-row fx-row--wrap">
-        <Button tone="primary" icon="sparkles" disabled={g.asking || !q.trim()} onClick={() => void askMolly(q)}>{g.asking ? 'Molly is looking…' : 'Show me'}</Button>
+        <Button tone="primary" icon="sparkles" disabled={g.asking || !q.trim()} onClick={() => void askGizmo(q)}>{g.asking ? 'Gizmo is looking…' : 'Show me'}</Button>
         {rt.settings.get(K.speak) !== false && <Button tone="quiet" icon="volume-x" onClick={hush}>Stop talking</Button>}
       </div>
       {g.answer && <Note tone="info">{g.answer}</Note>}
@@ -197,17 +199,17 @@ subs.add(() => { if (st.walk) last = st.walk; });
 
 export const plugin: AxfWebLibrary = {
   id: ID,
-  label: 'Molly guide',
+  label: 'Gizmo guide',
   version: '0.1.0',
   builtWith: { model: 'opus', builtAt: '2026-10-28' },
   appMenu,
   tabs: { [KIND]: () => <GuideWindow /> },
-  settingsTabs: [{ id: 'molly-guide', label: 'Molly guide', icon: 'sparkles', order: 60, parent: 'plugins', description: 'Narrated walkthroughs from Molly in a floating window.' }],
+  settingsTabs: [{ id: 'molly-guide', label: 'Gizmo guide', icon: 'sparkles', order: 60, parent: 'plugins', description: 'Narrated walkthroughs from Gizmo in a floating window, only when you ask.' }],
   settings: [
     { id: 'molly-guide.main', label: 'Walkthroughs', icon: 'sparkles', tab: 'molly-guide', order: 10, settings: [
       { key: K.speak, label: 'Read each step out loud', kind: 'toggle', default: true },
       { key: K.run, label: 'Move the console to each step (run its action)', kind: 'toggle', default: true },
-      { key: K.auto, label: 'Open walkthroughs asked for from AmberX by themselves (off: the guide opens only when you ask in the console)', kind: 'toggle', default: false },
+      { key: K.auto, label: 'Open walkthroughs asked for from AmberX by themselves', kind: 'toggle', default: false },
     ] },
   ],
   settingsPanels: [
@@ -217,10 +219,21 @@ export const plugin: AxfWebLibrary = {
   ],
   register(rt) {
     runtime = rt;
-    rt.actions.register('molly.ask', ([q]) => { openWindow(); if (q) void askMolly(decodeURIComponent(q)); }, { label: 'Ask Molly to show me how' });
-    rt.actions.register('molly.replay', () => { if (last) play(last); else openWindow(); }, { label: 'Replay the last walkthrough' });
-    rt.actions.register('molly.next', () => show(st.at + 1), { label: 'Walkthrough: next step', searchable: false });
-    rt.actions.register('molly.prev', () => show(st.at - 1), { label: 'Walkthrough: previous step', searchable: false });
+    const ask = ([q]: string[]) => { openWindow(); if (q) void askGizmo(decodeURIComponent(q)); };
+    const replay = () => { if (last) play(last); else openWindow(); };
+    const next = () => show(st.at + 1);
+    const prev = () => show(st.at - 1);
+    const closeIt = () => close();
+    rt.actions.register('gizmo.ask', ask, { label: 'Ask Gizmo to show me how' });
+    rt.actions.register('gizmo.replay', replay, { label: 'Replay the last walkthrough' });
+    rt.actions.register('gizmo.next', next, { label: 'Walkthrough: next step', searchable: false });
+    rt.actions.register('gizmo.prev', prev, { label: 'Walkthrough: previous step', searchable: false });
+    rt.actions.register('gizmo.close', closeIt, { label: 'Walkthrough: close', searchable: false });
+    // the old names keep working (AmberX voice commands, saved links), hidden from search
+    rt.actions.register('molly.ask', ask, { label: 'Ask Gizmo to show me how', searchable: false });
+    rt.actions.register('molly.replay', replay, { label: 'Replay the last walkthrough', searchable: false });
+    rt.actions.register('molly.next', next, { label: 'Walkthrough: next step', searchable: false });
+    rt.actions.register('molly.prev', prev, { label: 'Walkthrough: previous step', searchable: false });
     void poll();
     loop();
   },
@@ -230,13 +243,13 @@ function TryPanel() {
   const [on, setOn] = useState(false);
   return (
     <div className="fx-stack">
-      <p className="fx-muted">A three-step sample, no Molly needed: it opens Settings, then this tab.</p>
+      <p className="fx-muted">A three-step sample, no Gizmo needed: it opens Settings, then this tab.</p>
       <Switch label="Show me the sample" checked={on} onChange={(v) => {
         setOn(v);
-        if (v) play({ $axf: 'walkthrough@1', id: 'sample', title: 'Where Molly lives', app: 'console', steps: [
-          { say: 'This window is Molly\'s guide. Each step moves the console and reads itself out.', do: '', target: '' },
-          { say: 'Settings, Plugins, Molly guide: switch the voice or the auto-open here.', do: 'settings.open:molly-guide', target: 'molly-guide' },
-          { say: 'Ask her anything from Help, Ask Molly to show me. That\'s it.', do: '', target: '' },
+        if (v) play({ $axf: 'walkthrough@1', id: 'sample', title: 'Where the Gizmo guide lives', app: 'console', steps: [
+          { say: 'This window is the Gizmo guide. Each step moves the console and reads itself out.', do: '', target: '' },
+          { say: 'Settings, Plugins, Gizmo guide: switch the voice or the auto-open here.', do: 'settings.open:molly-guide', target: 'molly-guide' },
+          { say: 'Ask him anything from Help, Ask Gizmo to show me. It only opens when you ask.', do: '', target: '' },
         ] });
         else close();
       }} />

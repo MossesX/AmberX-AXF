@@ -1,12 +1,12 @@
 {
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.molly-guide",
-  "name": "Molly guide",
+  "name": "Gizmo guide",
   "version": "0.1.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Molly's narrated walkthroughs (walkthrough@1) in the console: ask her how to do something, or say it to AmberX, and a small floating window shows each step with Next and Previous while the console moves there, highlights it and reads the step out loud. Reaches Molly through the axf.agents@1 capability (the Agent manager provides it); AmberX's server asks her through this plugin's /ask route.",
+  "description": "Gizmo's narrated walkthroughs (walkthrough@1) in the console: ask him how to do something (Help → Ask Gizmo to show me…, gizmo.ask, or AmberX) and a small floating window shows each step with Next and Previous while the console moves there, highlights it and reads the step out loud. It never opens by itself on load; walkthroughs asked for from AmberX open on their own only with the opt-in switch. Reaches Gizmo through the axf.agents@1 capability (the Agent manager provides it; falls back to the old Molly add-on if Gizmo is off); AmberX's server asks through this plugin's /ask route. Folder and setting keys keep the molly-guide name so saved data stays.",
   "targets": [
     "axf-console"
   ],

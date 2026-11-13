@@ -1,5 +1,5 @@
 /**
- * walkthrough@1 (Oct 28 2026): what Molly sends when Brett asks to be shown something. Pure (no DOM): the console's
+ * walkthrough@1 (Oct 28 2026): what Gizmo (formerly agent Molly) sends when Brett asks to be shown something. Pure (no DOM): the console's
  * floating window (index.tsx) plays it. Same cleaning as the agent manager's server (`clean_walkthrough`), so a step
  * never runs a script or a link: `do` is a console action spec, `target` a data-axf-id, view id or CSS selector.
  */
