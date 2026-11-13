@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T11:08:49.046Z",
+ "updatedAt": "2026-11-13T11:09:03.842Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -120832,7 +120832,7 @@
    "title": "Android approval overlay: a small always-on floating toolbar (draw-over-other-apps) on Brett's phone that expands into the full approval card (what, why, countdown, Approve/Deny) the moment an approval is sent, then shrinks back; settings for position, size and on/off; full API and voice",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -120841,7 +120841,7 @@
    "priority": "P0",
    "createdAt": "2026-11-13T10:41:19.479Z",
    "updatedAt": "2026-11-13T11:08:46.725Z",
-   "builtAt": "",
+   "builtAt": "2026-11-13T11:08:46.725Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -120937,8 +120937,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T11:08:30.239Z",
      "note": "",
      "uid": "st-mweuoty705wnq8",
      "createdAt": "2026-11-13T10:45:18.367Z"
