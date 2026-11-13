@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T18:18:44.521Z",
+ "updatedAt": "2026-11-13T18:19:07.221Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -127251,12 +127251,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:16:04.183Z",
-   "updatedAt": "2026-11-13T18:16:08.665Z",
+   "updatedAt": "2026-11-13T18:19:05.293Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-13T18:16:08.665Z"
+    },
+    {
+     "text": "Brett's full spec (Fable, ultrathink, high quality - he wants this really nice):\nBuilder UI: left column = categorized, collapsible tree of every plugin/app/tool/screen (orchestrator, asset manager, etc.). Select one -> pick from a predefined list of actions/commands/events that belong to that thing -> set conditions and parameters -> pick the output type (prompt/decision dialog, push notification, email, text message, phone call to Brett, new orchestrator build, delete/archive a build, run a tool/macro/pipeline...). Every choice is context-aware: each list only offers what is valid given everything already selected (dependent, related options; pick builds etc. from live lists).\nTriggers include watchdog events (fire on watchdog/health/failure events), schedules, and any app event.\nHighly integrated, extremely robust rules + conditions engine (AND/OR groups, thresholds, cooldowns, dedupe, retries, dry-run/test-fire, history, audit). Every plugin registers its events/actions/conditions with the engine via a manifest so new plugins plug in automatically.\nOutputs needing third-party services (email, SMS, voice call) via axHub connectors; if a key/service is missing, show it as a 'keys needed' item.",
+     "at": "2026-11-13T18:19:05.293Z"
     }
    ],
    "approvals": [],
