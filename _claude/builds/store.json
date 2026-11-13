@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4832,
- "updatedAt": "2026-11-13T19:40:40.037Z",
+ "rev": 4833,
+ "updatedAt": "2026-11-13T19:40:55.874Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -200556,7 +200556,7 @@
    "title": "Console app part 3: native bridge, mic, recorder, open_url, wake",
    "category": "",
    "detail": "Parallel part 3 of 4 of console-android-app-thin-webview-wrapper (parent). Builds only in the wrapper's Android module, following the shell contract from the parent.\n- JS bridge window.axfNative exposing the native features to the console.\n- Migrates AmberX's axHub device service (amberx.open_url, recorder_start/stop/status, console wake, notifications) to the new app, with the same tool names or aliases so axHub keeps working.\n- Mic and permissions handling.\n- Full API parity: REST/MCP/CLI/voice. Tests, help, Shipped features.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -200564,8 +200564,8 @@
    "pr": "#633",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:27.359Z",
-   "updatedAt": "2026-11-13T19:39:19.625Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-13T19:40:18.103Z",
+   "builtAt": "2026-11-13T19:40:18.103Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -200843,12 +200843,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T19:40:18.103Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T18:43:07.133Z",
-     "updatedAt": "2026-11-13T18:43:07.133Z"
+     "updatedAt": "2026-11-13T19:40:18.473Z"
     }
    ],
    "profiles": [
@@ -200859,7 +200859,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 26,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
