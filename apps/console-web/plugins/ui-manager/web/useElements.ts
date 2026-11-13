@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import type { AxfRuntime } from '@console/axf/core';
 import { controlRegistry } from '@console/axf/react';
-import type { UiElement } from '../../../../../framework/core/engines/ui-manager-rules.mjs';
+import { overrideCount, type Overrides, type UiElement } from '../../../../../framework/core/engines/ui-manager-rules.mjs';
 import { pluginFetch } from '@console/plugins';
 import { liveElements, mergeElements, visibleIds } from './live';
 
@@ -46,7 +46,10 @@ export function useElements(rt: AxfRuntime, rev: number) {
   const [server, setServer] = useState<ElementRow[]>([]);
   const [error, setError] = useState('');
   const [tick, setTick] = useState(0);
+  const [over, setOver] = useState<Overrides | null>(null);
   useEffect(() => { loadServer(rev > 0).then((s) => { setServer(s); setError(''); }, (e: Error) => setError(e.message || 'The UI Manager server part is not answering.')); }, [rev]);
+  // one saved overrides document: a shortcut and its element show the same count because they read the same entry
+  useEffect(() => { fetchJson<Overrides & { error?: string }>('overrides').then((o) => setOver(o.error ? null : o), () => setOver(null)); }, [rev]);
   // the live part follows the console: registry changes, navigation, scroll, resize, and a slow heartbeat
   useEffect(() => {
     let t = 0;
@@ -57,8 +60,8 @@ export function useElements(rt: AxfRuntime, rev: number) {
     const beat = window.setInterval(bump, 2000);
     return () => { offReg(); offRt(); removeEventListener('scroll', bump, true); removeEventListener('resize', bump); clearInterval(beat); clearTimeout(t); };
   }, [rt]);
-  const all = useMemo(() => mergeElements(server, liveElements(rt)) as ElementRow[], [server, rt, tick]);
+  const all = useMemo(() => (mergeElements(server, liveElements(rt)) as ElementRow[]).map((e) => ({ ...e, overrides: over ? overrideCount(over, e.id) : e.overrides ?? 0 })), [server, rt, tick, over]);
   const visible = useMemo(() => visibleIds(all, rt.getState().view), [all, tick]);
   lastAll = all; lastVisible = visible;
-  return { all, visible, error };
+  return { all, visible, error, overrides: over };
 }

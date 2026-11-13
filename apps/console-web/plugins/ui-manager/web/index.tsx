@@ -17,7 +17,7 @@ function UiManagerPage() {
     <div className="fx-stack fx-stack--lg">
       <header className="fx-pagehead">
         <div><p className="fx-eyebrow">Plugin</p><h1>UI Manager</h1><p className="fx-muted">Select any element in the console and change its properties and tokens from predetermined values.</p></div>
-        <div className="fx-row"><Button icon="external-link" onClick={() => openUiManager(rt)}>Open in a floating window</Button></div>
+        <div className="fx-row"><Button icon="external" onClick={() => openUiManager(rt)}>Open in a floating window</Button></div>
       </header>
       <Manager />
     </div>
