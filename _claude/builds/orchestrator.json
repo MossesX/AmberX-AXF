@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T11:45:47.436Z",
+ "updatedAt": "2026-11-13T11:47:32.599Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -122291,9 +122291,14 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T11:45:00.916Z",
-   "updatedAt": "2026-11-13T11:45:04.408Z",
+   "updatedAt": "2026-11-13T11:47:31.261Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by Claude into 21 steps (3 Fable).",
+     "at": "2026-11-13T11:47:31.261Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -122308,7 +122313,471 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Design the watchdog@1 contract in framework/core/build-watchdog.mjs. A build counts as stuck when it is marked running or queued-running and has no live session: the pid is gone, the tmux session is missing, the heartbeat (lastSeenAt) is older than staleMin, or an exit code is recorded (143 killed, 137 OOM, 1 failed, usage limit). For each case, define the action: reset the running step, release the slot, requeue, retry on the same or another account, or give up after maxRetries and go back to Pending with a banner item. Also define the recovery record shape { at, buildId, phase, step, cause, exit, action, attempt, account, notified }.",
+     "model": "Fable",
+     "why": "New cross-app contract that decides builds@1 status transitions",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/build-watchdog.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwewwu9q01fx0i",
+     "createdAt": "2026-11-13T11:47:31.261Z"
+    },
+    {
+     "id": "s2",
+     "text": "Add the JSON schema framework/schemas/build-watchdog.json and register recovery records on builds@1. This adds an optional `recoveries[]` on a build, which normBuild must keep, plus the journal kind `watchdog-recover`. Old records with no recoveries load unchanged, so no migration is needed. Show this in builds-store verify.",
+     "model": "Fable",
+     "why": "Schema + store field design on the one builds store",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/schemas/build-watchdog.json",
+      "framework/cli/builds-store.mjs",
+      "framework/core/build-pipeline.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwewwu9q02lxne",
+     "createdAt": "2026-11-13T11:47:31.261Z"
+    },
+    {
+     "id": "s3",
+     "text": "Add golden fixtures for the decision table (killed 143, exit 1, stale heartbeat, live session left alone, retry cap reached, usage limit moves to another account) and a check script. Wire the check into CI.",
+     "model": "Fable",
+     "why": "Conformance fixtures for the new contract",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/spec/fixtures/build-watchdog.json",
+      "framework/spec/check-build-watchdog.mjs",
+      ".github/workflows/android.yml"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwewwu9q034mck",
+     "createdAt": "2026-11-13T11:47:31.261Z"
+    },
+    {
+     "id": "s4",
+     "text": "Have deploy/claude-headless.sh record each run's end: exit code, signal, account and the time it ended. It writes them to the build's run record through builds-live.mjs (and a run-status file under the slot dir), so killed (143) and failed (1) runs leave evidence the watchdog can read.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "deploy/claude-headless.sh",
+      "framework/cli/builds-live.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwewwu9q04dv52",
+     "createdAt": "2026-11-13T11:47:31.261Z"
+    },
+    {
+     "id": "s5",
+     "text": "Add the liveness probe: framework/cli/agent-slots.mjs `alive <build>` checks pid, tmux session and slot heartbeat and returns JSON. Also free slots whose process is gone (orphan slot reaping).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/cli/agent-slots.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwewwu9q05104j",
+     "createdAt": "2026-11-13T11:47:31.261Z"
+    },
+    {
+     "id": "s6",
+     "text": "Add watchdog.mjs `scan` (dry run) to the build-orchestrator plugin. It reads the store, finds every running build, probes liveness, applies the build-watchdog.mjs decisions and prints the stuck builds with cause and planned action (--json).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/watchdog.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwewwu9q06pfdm",
+     "createdAt": "2026-11-13T11:47:31.261Z"
+    },
+    {
+     "id": "s7",
+     "text": "Add watchdog.mjs `run`, which applies the recoveries. It resets the stuck step to pending, releases the slot, sets the build back to queued through pipeline.mjs, appends a recoveries[] entry under the store lock and pushes it live with builds-live.mjs. It does this idempotently, using a per-build lock and a cooldown.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/watchdog.mjs",
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwewwu9q07mcvo",
+     "createdAt": "2026-11-13T11:47:31.261Z"
+    },
+    {
+     "id": "s8",
+     "text": "Retry failed sessions. Crashes and kills are retried up to maxRetries (default 3). A usage limit or account error retries on the next worker through deploy/claude-workers.mjs route. When the cap is hit, the build goes to Pending with a note. The retry count lives on the build, not in memory.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/watchdog.mjs",
+      "deploy/claude-workers.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwewwu9q08es6z",
+     "createdAt": "2026-11-13T11:47:31.261Z"
+    },
+    {
+     "id": "s9",
+     "text": "Keep every slot filled. After each recovery, and on every watchdog pass, call pipeline.mjs tick while free slots plus Queue work remain. If slots sit idle while the Queue is non-empty, record that as a recovery cause ('idle-slots') and fix it.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/watchdog.mjs",
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwewwu9q094et1",
+     "createdAt": "2026-11-13T11:47:31.261Z"
+    },
+    {
+     "id": "s10",
+     "text": "Schedule it: add an `axf-watchdog` cron every minute (with flock) to the plugin's install.mjs and remove it in uninstall.mjs. Mount and add the env in the deploy install script. Make the plugin-lifecycle check pass.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/install.mjs",
+      "apps/console-web/plugins/build-orchestrator/uninstall.mjs",
+      "deploy/install-console.sh"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwewwu9q0aao77",
+     "createdAt": "2026-11-13T11:47:31.261Z"
+    },
+    {
+     "id": "s11",
+     "text": "Send a phone FYI for every fix. Declare notify type `watchdog.fix` (FYI, low priority) and `watchdog.gave-up` (alert) in notify.json, and send each through axf.notify@1 to the AmberX app with build, cause, action and attempt. Set `notified` on the recovery record and batch several fixes in one pass into one push.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/notify.json",
+      "apps/console-web/plugins/build-orchestrator/watchdog.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwewwu9q0b5kj6",
+     "createdAt": "2026-11-13T11:47:31.261Z"
+    },
+    {
+     "id": "s12",
+     "text": "Add the health@1 check 'Build watchdog' in systems-check. It goes red when the last pass is older than 3 minutes or a build gave up. Its auto-fix reinstalls the cron and runs one pass. A gave-up build becomes a banner item with Fix (requeue).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/systems-check/",
+      "apps/console-web/plugins/build-orchestrator/server/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwewwu9q0crvw5",
+     "createdAt": "2026-11-13T11:47:31.261Z"
+    },
+    {
+     "id": "s13",
+     "text": "Add Watchdog settings as a section of Settings → Plugins → Build orchestrator (level toolbar applies): on/off, interval, stale heartbeat minutes, max retries, retry on another account, FYI per fix or batched. Stored as plugin settings keys that watchdog.mjs reads.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/web/",
+      "apps/console-web/plugins/build-orchestrator/plugin.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwewwu9q0d62ga",
+     "createdAt": "2026-11-13T11:47:31.261Z"
+    },
+    {
+     "id": "s14",
+     "text": "Add a Watchdog panel in Build orchestrator, built from framework controls and tokens only, in a TabGroup tab. It shows last pass, running builds with liveness, recent fixes (cause → action, attempt, notified) and a Run now toolbar (role=toolbar, aria-label). Each build view shows its recoveries list.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/web/WatchdogPanel.tsx",
+      "apps/console-web/plugins/build-orchestrator/web/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwewwu9q0e9air",
+     "createdAt": "2026-11-13T11:47:31.261Z"
+    },
+    {
+     "id": "s15",
+     "text": "Add the REST API: GET watchdog/status, GET watchdog/scan, POST watchdog/run, GET/PUT watchdog/settings, GET builds/<id>/recoveries on the build-orchestrator server routes.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/server/routes.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwewwu9q0fet1u",
+     "createdAt": "2026-11-13T11:47:31.261Z"
+    },
+    {
+     "id": "s16",
+     "text": "Add the same API on MCP, the CLI and voice: plugin-commands for the routes (watchdog_status/scan/run/settings), CLI `axf watchdog status|scan|run|set`, the voice/console actions `watchdog.run` and `watchdog.status`, and a console_show / console_open deep link target `build-orchestrator/watchdog` (plus `?build=<id>`).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/cli/axf.mjs",
+      "apps/console-web/plugins/build-orchestrator/commands.json",
+      "apps/console-web/plugins/follow-amber/",
+      "apps/console-web/plugins/build-orchestrator/plugin.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwewwu9q0g2e5h",
+     "createdAt": "2026-11-13T11:47:31.261Z"
+    },
+    {
+     "id": "s17",
+     "text": "Write unit tests for watchdog.mjs against a temp store (AXF_DATA_DIR): killed 143 is requeued, exit 1 is retried, a stale heartbeat is reset, a live build is untouched, the cap sends the build to Pending, a usage limit goes to the next account, idle slots trigger a tick, one FYI per fix, and a second pass does nothing.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/test-watchdog.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwewwu9q0he7lq",
+     "createdAt": "2026-11-13T11:47:31.261Z"
+    },
+    {
+     "id": "s18",
+     "text": "Add an end-to-end test with a fake claude in HOME/.local/bin: launch it through claude-headless.sh, kill it (SIGTERM, 143), run watchdog run, then assert the build was requeued, the slot freed and refilled, the recovery recorded and the notify sent. Run the notify-control registry test.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/test-watchdog-e2e.sh",
+      "apps/console-web/plugins/notify-control/test.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwewwu9q0inufv",
+     "createdAt": "2026-11-13T11:47:31.261Z"
+    },
+    {
+     "id": "s19",
+     "text": "Write docs and the catalog: a Watchdog section in the plugin README, help entries, plugin.json/command/CLI-header descriptions for the glossary, and the _claude/builds/README.md recovery flow. Run glossary-index catalog.mjs --check, check-theme, check-controls, check-toolbars and check-chrome-assets.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/README.md",
+      "_claude/builds/README.md",
+      "apps/console-web/plugins/glossary-index/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwewwu9q0jacz5",
+     "createdAt": "2026-11-13T11:47:31.261Z"
+    },
+    {
+     "id": "s20",
+     "text": "Submit the Watchdog panel to UI Review with 3 options (layout variants as assets under plugins/build-orchestrator/assets/), each with desktop and phone shots, in group 'server-watchdog-orchestrator-auto-recovers-stuck - <date>'.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/assets/",
+      "apps/console-web/plugins/ui-review/review.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwewwu9q0khmcs",
+     "createdAt": "2026-11-13T11:47:31.261Z"
+    },
+    {
+     "id": "s21",
+     "text": "Finish: run all the checks (check-build-watchdog, builds-store verify, check-builds-store, plugin-lifecycle check, tracker --check, the unit and e2e tests). Write _claude/builds/reports/server-watchdog-orchestrator-auto-recovers-stuck.md with before/after and how each feature is reached (REST, MCP, CLI, voice, deep link). Add a THREADS.md row, open the PR, link it with builds-live.mjs link and add it to the merge queue.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/server-watchdog-orchestrator-auto-recovers-stuck.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwewwu9q0lxhkk",
+     "createdAt": "2026-11-13T11:47:31.261Z"
+    }
+   ]
   },
   {
    "id": "auto-recover-stuck-builds",
