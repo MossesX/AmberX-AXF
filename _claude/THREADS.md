@@ -781,7 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 07:04 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` s1 done, → running (all) · orchestrator
 - 2026-11-13 07:04 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` branch claude/always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu (all) · builds-live
 - 2026-11-13 07:05 UTC · `remove-ui-review-as-a-gate-no-screenshots-required-prs-never-held-as-draft-for` s5 done (all) · orchestrator
 - 2026-11-13 07:07 UTC · `skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga` → queued, note (all) · pipeline
@@ -1181,6 +1180,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 12:12 UTC · `combine-merge-queue-into-one-pr` branch claude/combine-merge-queue-into-one-pr (all) · pipeline
 - 2026-11-13 12:14 UTC · `combine-merge-queue-into-one-pr` s1 done, → running (all) · orchestrator
 - 2026-11-13 12:14 UTC · `auto-recover-stuck-builds` s3 done, → running (all) · orchestrator
+- 2026-11-13 12:14 UTC · `combine-merge-queue-into-one-pr` s2 done (all) · orchestrator
 
 ## Token passes (log)
 
