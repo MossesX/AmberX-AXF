@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3962,
- "updatedAt": "2026-11-13T02:05:36.877Z",
+ "rev": 3963,
+ "updatedAt": "2026-11-13T02:05:57.101Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -174585,7 +174585,7 @@
    "branch": "claude/vps-badge-shows-shell-commands-work-banner-widgets-for-disk-cpu-load-and-memor",
    "pr": "#541",
    "createdAt": "2026-11-12T22:31:52.977Z",
-   "updatedAt": "2026-11-13T02:05:17.671Z",
+   "updatedAt": "2026-11-13T02:05:45.916Z",
    "builtAt": "2026-11-13T02:05:17.671Z",
    "notes": [
     {
@@ -174611,6 +174611,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-vps-badge-shows-shell-commands-work-banner-widge--paulie, own login copy)",
      "at": "2026-11-13T01:46:17.982Z"
+    },
+    {
+     "text": "Headless run axf-vps-badge-shows-shell-commands-work-banner-widge--paulie: brief only · start 11.1K tokens ($0.03) · cost $4.79 · 101 turns · 6 tools, MCP none",
+     "at": "2026-11-13T02:05:45.916Z"
     }
    ],
    "approvals": [],
@@ -174733,7 +174737,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T02:05:36.877Z",
+ "updatedAt": "2026-11-13T02:05:57.101Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -110629,7 +110629,7 @@
    "branch": "claude/vps-badge-shows-shell-commands-work-banner-widgets-for-disk-cpu-load-and-memor",
    "pr": "#541",
    "createdAt": "2026-11-12T22:31:52.977Z",
-   "updatedAt": "2026-11-13T02:05:17.671Z",
+   "updatedAt": "2026-11-13T02:05:45.916Z",
    "builtAt": "2026-11-13T02:05:17.671Z",
    "notes": [
     {
@@ -110655,6 +110655,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-vps-badge-shows-shell-commands-work-banner-widge--paulie, own login copy)",
      "at": "2026-11-13T01:46:17.982Z"
+    },
+    {
+     "text": "Headless run axf-vps-badge-shows-shell-commands-work-banner-widge--paulie: brief only · start 11.1K tokens ($0.03) · cost $4.79 · 101 turns · 6 tools, MCP none",
+     "at": "2026-11-13T02:05:45.916Z"
     }
    ],
    "approvals": [],
