@@ -2286,5 +2286,11 @@
     "wave": 1,
     "module": "app-console",
     "notes": "framework/core/build-id.mjs: ids ≤ 40 chars (^[a-z0-9][a-z0-9-]{0,39}$), filler words dropped, cut at a dash, -2/-3 on a collision; used by request, orchestrator add/import/harvest, Pending and Plan Studio. Legacy long ids get an alias (pipeline.mjs aliases, the tick for live builds); land-alias links <worktrees>/<alias> and claude/<alias> for build_land. Kotlin twin deferred."
+  },
+  "cx.decisions.dialog": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "decision-dialog plugin (Nov 13 2026, Opus): one decision@1 queue + one pop-up dialog for UI Review (notification + dialog on any screen, options side by side, Pick N / Approve / Request changes / Reject / Later / Open in UI Review) and other decisions (veto, approval, confirm, model upgrade, merge clash, key needed, pass); REST/MCP/CLI/voice answers in words; per-type pop-up / notify settings. AmberX phone overlay twin deferred (PORTING.md)."
   }
 }

@@ -40,7 +40,8 @@
       "AXF_CONSOLE_PUBLIC_URL"
     ],
     "mentions": [
-      "apps/console-web/plugins/README.md"
+      "apps/console-web/plugins/README.md",
+      "framework/spec/PORTING.md"
     ]
   },
   "commands": {

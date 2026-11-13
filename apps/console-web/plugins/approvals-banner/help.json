@@ -93,6 +93,41 @@
         "text": "Where you set “Alert again at 30 s left and when it runs”. Change it and the app uses the new value. Part of Approvals banner.",
         "kind": "field",
         "draft": true
+      },
+      {
+        "target": "overlay",
+        "title": "Overlay",
+        "text": "Where you set “Overlay”. Change it and the app uses the new value. Part of Approvals banner.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "height-on-screen-from-the-top",
+        "title": "Height on screen (% from the top)",
+        "text": "Where you set “Height on screen (% from the top)”. Change it and the app uses the new value. Part of Approvals banner.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "show-the-toolbar-when-nothing-waits",
+        "title": "Show the toolbar when nothing waits",
+        "text": "Where you set “Show the toolbar when nothing waits”. Change it and the app uses the new value. Part of Approvals banner.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "opacity-when-nothing-waits",
+        "title": "Opacity when nothing waits (%)",
+        "text": "Where you set “Opacity when nothing waits (%)”. Change it and the app uses the new value. Part of Approvals banner.",
+        "kind": "field",
+        "draft": true
+      },
+      {
+        "target": "shrink-back-after-seconds",
+        "title": "Shrink back after (seconds)",
+        "text": "Where you set “Shrink back after (seconds)”. Change it and the app uses the new value. Part of Approvals banner.",
+        "kind": "field",
+        "draft": true
       }
     ],
     "intros": []
