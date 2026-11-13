@@ -111,6 +111,10 @@ export interface MenuItem {
   order?: number;
   before?: string;
   after?: string;
+  /** a small colour mark before the label: a colour token name (`accent` | `info` | `success` | `warning` | `danger` | `muted`) */
+  swatch?: string;
+  /** marks the row as the thing the menu was opened on (page-assets@1: the right-clicked asset in the Assets list) */
+  current?: boolean;
   /* ---- live-list rows only (a provider's items; engines/appmenu.ts) ---- */
   /** buttons on the row itself (e.g. Deny / Approve): run without closing the menu, the row flips in place */
   buttons?: MenuItemButton[];

@@ -23,6 +23,7 @@
  * Kotlin twin deferred (Android on hold, spec/PORTING.md).
  */
 import { CONTROL_WIRE, controlConfirmToken, controlConfirmValid, controlGranted, CONTROL_CONFIRM_TTL_MS } from './control-rules.mjs';
+import { normalizePageAssetSummary } from './page-assets-rules.mjs';
 
 export const CONSOLE_CATALOG_FRAME = 'console-catalog@1';
 export const CONSOLE_COMMAND_FRAME = 'console-command@1';
@@ -98,11 +99,13 @@ export function normalizeConsoleCatalog(raw) {
   return { $axf: CONSOLE_CATALOG_FRAME, app: str(r.app, 60) || 'console-web', items, here: normalizeHere(r.here) };
 }
 
-/** Where a console is: the screen, an open dialog, the settings tab when Settings shows. */
+/** Where a console is: the screen, an open dialog, the settings tab when Settings shows, the page's assets. */
 export function normalizeHere(raw) {
   const r = isObj(raw) ? raw : {};
   const out = {};
   for (const k of ['screen', 'screenLabel', 'dialog', 'settings']) { const v = str(r[k], 160); if (v) out[k] = v; }
+  // page-assets@1: every asset on the page with its hidden state ({ id, type, label, hidden }), when the console reports it
+  if (Array.isArray(r.assets)) out.assets = normalizePageAssetSummary(r.assets);
   return out;
 }
 
