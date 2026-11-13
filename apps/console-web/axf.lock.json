@@ -919,6 +919,8 @@
     "src/axf/schemas/swarm.json": "35dd72b97f7a4a89",
     "src/axf/schemas/ui-review.json": "0a34b5e29eb76cca",
     "src/axf/ui/axf.css": "f0805759380d32da",
-    "src/axf/react/components/HubSkinLock.tsx": "8235599ec42d907e"
+    "src/axf/react/components/HubSkinLock.tsx": "8235599ec42d907e",
+    "src/axf/core/engines/console-control-voice.mjs": "ec82dc9d99dfd31d",
+    "src/axf/core/engines/console-control-voice.d.mts": "e91a57d59285d3a3"
   }
 }

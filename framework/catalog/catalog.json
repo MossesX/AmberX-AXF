@@ -326,6 +326,14 @@
               "tag": "lib",
               "recommended": false,
               "suggests": []
+            },
+            {
+              "id": "f.appearance.hubskinoverride",
+              "title": "Override axHub: the switch under Get my skin only from axHub (one or the other); while axHub-only is on every skin and asset editor is greyed out under a lock note with a \"Click here to override\" link; one confirm unlocks editing and edited parts are marked Overridden",
+              "note": "runtime HUB_SKIN_OVERRIDE_KEY / HUB_SKIN_OVERRIDDEN_KEY / appearance.hubskin.override; react HubSkinLockNote / HubSkinLockArea; reachable by settings.set, console.settings, the action, voice; default off; Kotlin twin deferred",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
             }
           ]
         },

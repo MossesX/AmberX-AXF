@@ -2100,7 +2100,7 @@
     {
       "address": "view:settings/tab:settings.tabs=appearance/setting:axf.lock.hubskin.override",
       "kind": "setting",
-      "label": "Override",
+      "label": "Override axHub",
       "key": "axf.lock.hubskin.override",
       "type": "toggle",
       "detail": "Settings › Appearance",

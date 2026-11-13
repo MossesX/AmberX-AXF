@@ -14,11 +14,14 @@
  *   "set <setting> to <value>" · "turn <setting> on|off"
  *   "lock the console to the axHub skin" · "unlock the console from the axHub skin" (Settings → Appearance →
  *   Get my skin only from axHub)
+ *   "override the axHub skin" · "stop overriding the axHub skin" (the Override switch under it)
  */
 
 export const VOICE_FRAME = 'console-control-voice@1';
 /** The words the skin lock phrases search for: the setting's label. */
 export const HUB_SKIN_SETTING = 'get my skin only from axhub';
+/** The words the override phrases search for: the Override switch's label (under the axHub-only switch). */
+export const HUB_SKIN_OVERRIDE_SETTING = 'override axhub';
 
 const NUMBERS = { one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, eleven: 11, twelve: 12, thirteen: 13, fourteen: 14, fifteen: 15, sixteen: 16, seventeen: 17, eighteen: 18, nineteen: 19, twenty: 20, first: 1, second: 2, third: 3, fourth: 4, fifth: 5 };
 const AMOUNTS = { 'a bit': 0.25, 'a little': 0.25, 'a little bit': 0.25, 'a lot': 2, 'a page': 1, 'one page': 1, 'half a page': 0.5 };
@@ -77,6 +80,10 @@ export function voiceIntent(text) {
   // the console's skin lock: Settings → Appearance → Get my skin only from axHub (`axf.lock.hubskin`)
   if ((m = /^(lock|unlock) (?:the |this )?console (?:to|from|on) (?:the )?axhub(?: skin| look)?(?: only)?$/.exec(p))) {
     return { verb: 'set', find: { q: HUB_SKIN_SETTING, kinds: ['setting'] }, value: m[1] === 'lock' };
+  }
+  // its Override switch (one or the other): "override the axHub skin" / "stop overriding the axHub skin"
+  if ((m = /^(override|stop overriding|don't override|do not override) (?:the )?axhub(?: skin| look)?$/.exec(p))) {
+    return { verb: 'set', find: { q: HUB_SKIN_OVERRIDE_SETTING, kinds: ['setting'] }, value: m[1] === 'override' };
   }
 
   // settings

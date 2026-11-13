@@ -105,7 +105,7 @@ export const hubAppearanceLibrary: AxfWebLibrary = {
     settings: [
       { key: 'axf.lock.hubskin', label: 'Get my skin only from axHub', kind: 'toggle', default: false, scope: 'device', description: "On: this console's skin, colour theme and every token come from axHub's look only, and changes made on axHub show up here live. Skin picks, overrides, rolls, packages and Token Control changes made only in this console are kept, not used, and their controls are locked until you switch this off." },
       // under it: Override (one or the other; core/runtime.ts HUB_SKIN_OVERRIDE_KEY), asked once before it goes on
-      { key: 'axf.lock.hubskin.override', label: 'Override', kind: 'toggle', default: false, scope: 'device', confirm: HUB_SKIN_OVERRIDE_CONFIRM, description: "On: you can edit the skin and assets here, and \"Get my skin only from axHub\" goes off (you only have one or the other). What you edit is marked as overridden and no longer refreshes or inherits any of its data from axHub. Turning axHub-only back on turns this off." },
+      { key: 'axf.lock.hubskin.override', label: 'Override axHub', kind: 'toggle', default: false, scope: 'device', confirm: HUB_SKIN_OVERRIDE_CONFIRM, description: "On: you can edit the skin and assets here, and \"Get my skin only from axHub\" goes off (you only have one or the other). What you edit is marked as overridden and no longer refreshes or inherits any of its data from axHub. Turning axHub-only back on turns this off." },
     ],
   }],
   settingsPanels: [

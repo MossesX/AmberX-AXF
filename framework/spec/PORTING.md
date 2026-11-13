@@ -196,6 +196,12 @@ Build `console-skin-axhub-only`. Web only; the Kotlin twin is deferred (Android 
   switch drives the appearance lock), action `appearance.hubskin:on|off|toggle`; `customSheet()` keeps the skin's parts while locked.
 - Voice: "lock the console to the axHub skin" / "unlock the console from the axHub skin" (`console-control-voice.mjs`, Python
   twin in `server/console_control.py`, fixture `console-control-voice.json`).
+- Override (build `skin-axhub-override-switch-greyed-out`): `HUB_SKIN_OVERRIDE_KEY` (`axf.lock.hubskin.override`), mutually
+  exclusive with `axf.lock.hubskin` whichever way either is set; `hubSkinOverride()` / `setHubSkinOverride()`, action
+  `appearance.hubskin.override:on|off|toggle`; edits under Override recorded in `HUB_SKIN_OVERRIDDEN_KEY`
+  (`hubOverridden()` / `isHubOverridden()`), cleared when axHub-only goes back on. React `HubSkinLockNote` /
+  `HubSkinLockArea` (the lock note with "Click here to override", one confirm). Voice "override the axHub skin" / "stop
+  overriding the axHub skin". Checked by `spec/check-appearance-lock.mts`. Compose twin deferred.
 
 ## Deferred: reliable console delivery + screen focus (Nov 11 2026)
 Web only (Android on hold, build `console-commands-reliable`), Kotlin twins when the Android side resumes:

@@ -457,6 +457,8 @@ def clean_phrase(text: Any) -> str:
 
 # The words the skin lock phrases search for: the setting's label (HUB_SKIN_SETTING in console-control-voice.mjs).
 HUB_SKIN_SETTING = "get my skin only from axhub"
+# The Override switch under it (HUB_SKIN_OVERRIDE_SETTING in console-control-voice.mjs).
+HUB_SKIN_OVERRIDE_SETTING = "override axhub"
 
 
 def _strip(s: str) -> str:
@@ -494,6 +496,8 @@ def voice_intent(text: Any) -> dict[str, Any] | None:
     # the console's skin lock: Settings → Appearance → Get my skin only from axHub (axf.lock.hubskin)
     if m := re.match(r"^(lock|unlock) (?:the |this )?console (?:to|from|on) (?:the )?axhub(?: skin| look)?(?: only)?$", p):
         return {"verb": "set", "find": {"q": HUB_SKIN_SETTING, "kinds": ["setting"]}, "value": m.group(1) == "lock"}
+    if m := re.match(r"^(override|stop overriding|don't override|do not override) (?:the )?axhub(?: skin| look)?$", p):
+        return {"verb": "set", "find": {"q": HUB_SKIN_OVERRIDE_SETTING, "kinds": ["setting"]}, "value": m.group(1) == "override"}
     if m := re.match(r"^set (?:the )?(.+?) (?:to|at) (.+)$", p):
         return {"verb": "set", "find": {"q": _strip(m.group(1)), "kinds": ["setting"]}, "value": m.group(2).strip()}
     if m := re.match(r"^(?:turn|switch) (?:the )?(.+?) (on|off)$", p):

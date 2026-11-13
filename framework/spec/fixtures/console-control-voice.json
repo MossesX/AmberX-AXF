@@ -209,6 +209,26 @@
       },
       "value": false
     },
+    "Override the axHub skin": {
+      "verb": "set",
+      "find": {
+        "q": "override axhub",
+        "kinds": [
+          "setting"
+        ]
+      },
+      "value": true
+    },
+    "stop overriding the axHub skin": {
+      "verb": "set",
+      "find": {
+        "q": "override axhub",
+        "kinds": [
+          "setting"
+        ]
+      },
+      "value": false
+    },
     "what time is it": null,
     "": null
   },
@@ -333,6 +353,16 @@
       "value": true
     },
     "unlock the console from the axHub skin": {
+      "verb": "set",
+      "address": "view:build-orchestrator/grid:builds/row:b1",
+      "value": false
+    },
+    "Override the axHub skin": {
+      "verb": "set",
+      "address": "view:build-orchestrator/grid:builds/row:b1",
+      "value": true
+    },
+    "stop overriding the axHub skin": {
       "verb": "set",
       "address": "view:build-orchestrator/grid:builds/row:b1",
       "value": false
