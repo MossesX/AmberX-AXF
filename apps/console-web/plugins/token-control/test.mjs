@@ -53,6 +53,36 @@ await test('tokens: get / set / list / reset ride the look document', async () =
   const r = await runControl({ op: 'reset', target: 'tokens.layout', path: 'navWidth' });
   assert.equal(r.ok, true); assert.equal(doc().settings['axf.tokens.layout'], undefined);
 });
+await test('tokens: component tokens in the style (grid.* / tabs.*) and per instance (tokens.instances)', async () => {
+  const s = await runControl({ op: 'set', target: 'tokens.style', path: 'grid.hoverBg', value: 'accentSoft', by: 'test' });
+  assert.equal(s.ok, true); assert.equal(s.item.value, 'accentSoft'); assert.equal(s.item.token, '--fx-grid-hover-bg');
+  assert.deepEqual(doc().settings['axf.tokens.style'], { '*': { 'grid.hoverBg': 'accentSoft' } });
+  assert.equal((await runControl({ op: 'set', target: 'tokens.style', path: 'tabs.indicator', value: 'nope nope' })).code, 'validation');
+  const l = await runControl({ op: 'list', target: 'tokens.style' });
+  const row = l.items.find((x) => x.id === 'tabs.pillsActiveBg');
+  assert.equal(row.level, 'basic'); assert.equal(row.default, 'var(--fx-accent)'); assert.ok(row.description.length > 10);
+  assert.equal((await runControl({ op: 'reset', target: 'tokens.style', path: 'grid.hoverBg' })).ok, true);
+  // one tab row's own values
+  const i1 = await runControl({ op: 'set', target: 'tokens.instances', path: 'tabs.settings.main.activeText', value: 'accent', by: 'test' });
+  assert.equal(i1.ok, true); assert.equal(i1.item.value, 'accent'); assert.equal(i1.key, 'axf.tokens.instances');
+  const i2 = await runControl({ op: 'set', target: 'tokens.instances', path: 'tabs.settings.main.indicator', value: 'danger' });
+  assert.equal(i2.ok, true); assert.deepEqual(i2.item.values, { activeText: 'accent', indicator: 'danger' });
+  assert.equal((await runControl({ op: 'set', target: 'tokens.instances', path: 'tabs.settings.main.indicator', value: 'not a colour!' })).code, 'validation');
+  assert.equal((await runControl({ op: 'set', target: 'tokens.instances', path: 'tabs.settings.main', value: 'accent' })).code, 'validation');
+  const li = await runControl({ op: 'list', target: 'tokens.instances' });
+  assert.equal(li.items.length, 2); assert.deepEqual(li.instances.map((x) => x.id), ['tabs.settings.main']); assert.equal(li.instances[0].hasPrevious, true);
+  const g = await runControl({ op: 'get', target: 'tokens.instances', path: 'tabs.settings.main' });
+  assert.deepEqual(g.value, { activeText: 'accent', indicator: 'danger' });
+  const rp = await runControl({ op: 'act', target: 'tokens.instances', path: 'tabs.settings.main', action: 'restore-previous', by: 'test' });
+  assert.equal(rp.ok, true); assert.deepEqual(rp.values, { activeText: 'accent' });
+  assert.equal((await runControl({ op: 'act', target: 'tokens.instances', path: 'tabs.settings.main', action: 'nope' })).code, 'validation');
+  const rh = await runControl({ op: 'act', target: 'tokens.instances', path: 'tabs.settings.main', action: 'restore-hub', by: 'test' });
+  assert.equal(rh.ok, true); assert.deepEqual(rh.values, {});
+  assert.equal(doc().settings['axf.tokens.instances'], undefined, 'nothing left: the key is dropped');
+  await runControl({ op: 'set', target: 'tokens.instances', path: 'grid.builds.hoverBg', value: 'accentSoft' });
+  assert.equal((await runControl({ op: 'reset', target: 'tokens.instances' })).ok, true);
+  assert.equal(doc().settings['axf.tokens.instances'], undefined);
+});
 await test('tokens: theme colour, style field, design package resolves the theme', async () => {
   const g = await runControl({ op: 'get', target: 'tokens.theme', path: 'accent' });
   assert.equal(g.item.asset, 'hub-night');

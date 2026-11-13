@@ -73,6 +73,46 @@ an `--fx-opacity-*` token.
 primitives (`fx-stack`, `fx-row`, `fx-row--wrap`, `fx-small`, `fx-muted`, `fx-mono`, `fx-eyebrow`, …) and
 the React controls (`Button`, `Chip`, `Container`, …) render through them.
 
+## Component token families: grid and tab group (component-tokens@1, Nov 13 2026)
+
+Brett: "how many tokens does a grid have, colors, don't they need that to have hover colors; what about tab groups, are
+they the same way". Until this build a grid had only its layout tokens and a tab group its padding; both borrowed the
+general colour tokens, so a hovered row or an active tab could not be styled on its own. Now each has its own family,
+declared once in `core/engines/component-tokens.mjs` (kind, level basic / pro / advanced, plain-English description,
+default) and listed by `node framework/cli/component-tokens.mjs list [grid|tabs]`:
+
+| Family | Variables | Read by | Tokens |
+| --- | --- | --- | --- |
+| `grid` | `--fx-grid-*` | `.fx-table` / `.fx-tablewrap` (axf.css), lib-datagrid `.axf-grid` | header (bg, text, active text, border, weight, sort arrow, plain-table header bg), rows (bg, alternate bg, text, hover, selected + border, focus ring, expanded, disabled opacity), lines, outer border, cell padding, row height, radius, group headers (three depths, text, summary), sticky shadow, empty text, opacity |
+| `tabs` | `--fx-tab-*` | `.fx-tabs` / `.fx-tab` (page tabs), `.fx-tabs--group` (TabGroup), `.fx-tabgroup__bar` (window tab bars) | bar bg + border, gap, idle / hover / active / pressed / disabled text, bg, border, weight, focus ring, indicator colour + size, badge (idle + active), close button, dropdown pick, sticky bg, window bar + active tab, radius per style (underline, pills, boxed, segmented, plain, chips, window), the colours each style draws (pills active, boxed active, segmented track + active, plain active, chips), opacity |
+
+**Defaults reproduce today's look.** Every default in the `:root` block of `framework/ui/axf.css` (generated:
+`node framework/cli/component-tokens.mjs write`) points at the general token the component read before
+(`--fx-grid-hover-bg: var(--fx-surface2)`, `--fx-tab-indicator: var(--fx-accent)`, …), so every existing skin renders
+exactly as it did. Three places set a token, lowest to highest:
+
+1. the `:root` defaults;
+2. the style theme: optional `data.grid.<token>` / `data.tabs.<token>` maps (asset-types.json), compiled by `styleThemeVars`;
+   skins set them, and control@1 `tokens.style` lists them as `grid.<token>` / `tabs.<token>` with variable, level,
+   default and description (`axf token style set tabs.pillsActiveBg accent2`; Token control page, REST, MCP, voice);
+3. one instance: a TabGroup by its id, a DataGrid by its id. Right-click a tab row → Settings… → Look → "Tab group colours &
+   style (this one)": pick a token, type a value, Set; **Restore previous edit** swaps back to the values before the last
+   edit (again = redo); **Restore from axHub** drops every value of that instance so it follows the shared look. Stored in
+   the one setting `axf.tokens.instances` (rides the axHub look like every `axf.tokens.*` key). API: control@1
+   `tokens.instances` (`set tabs.<row id>.<token> <value>`, `reset tabs.<row id>[.<token>]`,
+   `act tabs.<row id> restore-previous | restore-hub`) and the actions `chrome.token`, `chrome.token-restore`,
+   `chrome.token-hub` (voice, console actions). A grid's per-instance values are set the same way by API; the grid
+   settings panel comes with the UI Manager work.
+
+Values: a colour-theme token name (`accent`, `surface2`, `accentSoft`) → `var(--fx-accent-soft)`; a CSS colour; for
+lengths a number (px), a CSS length, or a style / scale token (`radius.sm`, `dens-gap-md`, `space`); shadows
+`shadow.sm|md|lg` or a CSS shadow; opacity 0..1. Anything else is refused by name and never written.
+
+CI: `node framework/spec/check-component-tokens.mjs` fails when the `:root` block drifts from the schema, when a grid /
+tab rule in axf.css or lib-datagrid reads a general colour token or a literal, when the compile / per-instance rules stop
+matching `spec/fixtures/component-tokens.json`, or when control@1 stops listing a token. Kotlin twin deferred
+(PORTING.md).
+
 ## Shared form controls (Oct 21 2026)
 
 Apps and plugins never hand-roll a switch, a labelled field, a choice grid, a callout or a Markdown renderer: the

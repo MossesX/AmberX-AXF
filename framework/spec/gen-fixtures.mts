@@ -36,6 +36,7 @@ import { ASSET_ORIGIN, CHECKED_KINDS, DEFAULT_MENU, MENU_DEFAULT_ORDER, MENU_ITE
 import { LIBRARY_PARAM_TYPES, PARAM_TRUE_WORDS, paramBool, paramDefaultText, paramDefaults, paramError, paramToJson, type LibraryParam } from '../core/library';
 import { validateAsset } from '../core/validate';
 import * as cs from '../core/engines/chrome-settings-rules.mjs';
+import * as ct from '../core/engines/component-tokens.mjs';
 import { DEFAULT_PROJECT_RULES, validateProjectManifest } from '../core/project';
 import { HUB_DEFAULT, HUB_FEED_MAX_BYTES, HUB_FEED_MAX_ITEMS, HUB_FEED_STATUSES, HUB_FIELD_CAPS, HUB_MESSAGES, HUB_PATHS, HUB_SEEN_CAP, accountUrl, apkDownloadName, approvalUrl, approvalsUrl, appsUrl, csrfFromPage, feedUrl, hubOrigin, interpretFeed, isHub, loginUrl, logoutUrl, normalizeHub, seenPlan, unreachableFeed } from '../libs/hub/hub';
 import { APPS_FEED_MAX_BYTES, APPS_FEED_PATH, APPS_MAX, VERSIONS_MAX, appsFeedUrl, interpretApps } from '../libs/hub/apps';
@@ -744,6 +745,44 @@ write('components.json', {
     'menu-roomy-raised': appMenuStyle({ menus: [], density: 'roomy', surface: 'raised' }),
   },
 });
+// component-tokens@1 (Nov 13 2026): the grid / tab-group token schema, the :root defaults, the style-theme compile and the
+// per-instance rules (set → previous, Restore previous edit, Restore from axHub) a port must match
+{
+  const themeCases: Record<string, unknown> = {
+    none: null,
+    'no-maps': { fontSize: 14 },
+    'skin-sets-some': { grid: { hoverBg: 'accentSoft', headerText: 'text', radius: 6, opacity: 0.9 }, tabs: { indicator: '#f5a524', pillsActiveBg: 'accent2', radiusPills: 'radius.md', opacity: 0.8 } },
+    'bad-values-dropped': { grid: { hoverBg: 'red;}x{', bogus: 'x', opacity: 'x' }, tabs: { activeText: 7, indicatorSize: 'big' } },
+    'every-value-kind': { grid: { headerBg: 'surface3', cellPadY: 'dens-gap-sm', rowHeight: 36, stickyShadow: 'shadow.sm', headerWeight: 700, disabledOpacity: 0.4 }, tabs: { barBg: 'rgb(10 20 30 / 50%)', gap: '0.5em', windowActiveShadow: 'none', activeWeight: 600 } },
+  };
+  let saved: unknown = {};
+  const steps: Record<string, unknown> = {};
+  saved = ct.setInstanceToken(saved, 'tabs', 'settings.main', 'activeText', 'accent'); steps['set-first'] = saved;
+  saved = ct.setInstanceToken(saved, 'tabs', 'settings.main', 'indicator', '#ff0000'); steps['set-second'] = saved;
+  saved = ct.setInstanceToken(saved, 'grid', 'ui-review.items', 'hoverBg', 'accentSoft'); steps['set-other-family'] = saved;
+  steps['vars-tabs'] = ct.instanceTokenVars(saved, 'tabs', 'settings.main');
+  steps['vars-grid'] = ct.instanceTokenVars(saved, 'grid', 'ui-review.items');
+  steps['restore-previous'] = ct.restorePreviousInstanceTokens(saved, 'tabs', 'settings.main');
+  steps['restore-previous-twice'] = ct.restorePreviousInstanceTokens(ct.restorePreviousInstanceTokens(saved, 'tabs', 'settings.main'), 'tabs', 'settings.main');
+  steps['restore-hub'] = ct.restoreInstanceTokensFromHub(saved, 'tabs', 'settings.main');
+  steps['drop-one'] = ct.setInstanceToken(saved, 'tabs', 'settings.main', 'indicator', null);
+  steps['list'] = ct.instanceTokenList(saved);
+  steps['normalize-junk'] = ct.normalizeInstanceTokens({ 'tabs.a': { values: { activeText: 'accent', bogus: 1, indicator: 'x;y' } }, 'nav.a': { values: { x: 1 } }, junk: 1 });
+  write('component-tokens.json', {
+    contract: ct.COMPONENT_TOKENS_CONTRACT,
+    families: Object.fromEntries(Object.entries(ct.COMPONENT_TOKEN_FAMILIES).map(([id, f]) => [id, { label: f.label, prefix: f.prefix, tokens: f.tokens.length }])),
+    tokens: ct.componentTokenList(),
+    defaults: ct.componentTokenDefaults(),
+    paths: ct.componentTokenPaths(),
+    fields: ct.componentTokenFields(),
+    themeCases: Object.fromEntries(Object.entries(themeCases).map(([k, style]) => [k, { style, vars: ct.componentTokenVars(style) }])),
+    values: Object.fromEntries(['accentSoft', 'accent-soft', '#ff8800', 'rgb(1 2 3 / 50%)', 'transparent', 'red;}body{display:none', 'radius.sm', 'dens-gap-md', '0.5em', 'auto', 'shadow.md', 'none', 'big'].map((v) => [v, Object.fromEntries(ct.COMPONENT_TOKEN_KINDS.map((k) => [k, ct.componentTokenValue(k, v)]))])),
+    // every step's saved map equals its replay (the engine is deterministic); check-component-tokens replays them
+    instanceCases: Object.fromEntries(Object.entries(steps).map(([k, v]) => [k, { saved: v, replay: v }])),
+    key: ct.INSTANCE_TOKENS_KEY,
+    paths_instances: ['tabs.settings.main.activeText', 'grid.ui-review.items', 'nav.x.y', 'tabs', 'tabs.settings.main.bogus'].map((p) => ({ path: p, parsed: ct.parseInstanceTokenPath(p) })),
+  });
+}
 write('uac.json', Object.fromEntries(load('uac-policy').map((p) => [p.id, {
   roles: Object.fromEntries(p.data.roles.map((r: { id: string }) => [r.id, [...resolvePermissions(p.data, r.id)].sort()])),
   checks: ['files.write', 'dev.deploy', 'assets.swap', 'uac.manage', 'anything.else'].map((perm) => ({ perm, byRole: Object.fromEntries(p.data.roles.map((r: { id: string }) => [r.id, hasPermission(resolvePermissions(p.data, r.id), perm)])) })),

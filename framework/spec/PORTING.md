@@ -223,3 +223,14 @@ The guide asks agent `gizmo` (Molly is no longer an agent, Nov 3 decision; the `
 `gizmo.ask` / `gizmo.replay` / `gizmo.next` / `gizmo.prev` / `gizmo.close` with the `molly.*` names kept as hidden aliases.
 AmberX on Android runs the web app, so its texts follow already. A native Compose player of walkthrough@1, when the Android side
 resumes, replays the same rule: no auto-open on start, opt-in only, nothing older than the app's start, and the Gizmo names.
+
+## Deferred: component token families for grids and tab groups (Nov 13 2026)
+Web only (Android on hold, build `own-token-sets-for-grids-and-tab-groups`). `core/engines/component-tokens.mjs` is the one
+schema of the `grid` (`--fx-grid-*`) and `tabs` (`--fx-tab-*`) token families: kind, level, description and a default that
+points at the general token the component read before, so no skin changes. `styleThemeVars` compiles a style theme's optional
+`grid` / `tabs` maps; the TabGroup and DataGrid controls apply one instance's own values from the setting
+`axf.tokens.instances` (set → previous, Restore previous edit, Restore from axHub); control@1 lists them on `tokens.style` and
+`tokens.instances`. The fixture `spec/fixtures/component-tokens.json` carries the defaults, paths, compile cases and the
+per-instance replay. The Kotlin twin, when Android resumes: the same schema in `StyleTheme` (two optional maps), `Axf.colors` /
+`Axf.shapes` lookups for the family tokens in the Compose table and tab row, and a per-instance override read from the same
+settings key; replay the fixture.
