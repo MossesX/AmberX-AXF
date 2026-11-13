@@ -242,18 +242,11 @@ fi
 LOOK="$HERE/../framework/cli/ui-predict.mjs"
 look_on() { [[ "${AXF_LOOK_GATE:-on}" != off ]] && command -v node >/dev/null && [[ -f "$LOOK" ]]; }
 # Predicted looks (ui-prediction@1, Brett Nov 3 2026): a build that changes UI gets its predicted look in UI Review at
-# launch (framework/cli/ui-predict.mjs gate starts it in the background). With "Wait for my look approval before UI
-# builds start" on (UI Review settings), it queues here until Brett approves the look: a waiter relaunches it by
-# itself once he does. A rejected look holds it (exit 3, never started). AXF_LOOK_GATE=off skips it.
+# launch (framework/cli/ui-predict.mjs gate starts it in the background). UI Review is not a gate (Nov 13 2026): the
+# launcher never waits for a look approval and never refuses a UI build; the verdict is logged. AXF_LOOK_GATE=off skips it.
 if [[ -z "$inner" && -z "$queued" ]] && look_on; then
-  look_line="$(node "$LOOK" gate --name "$name" --brief "$brief" 2>&1)"; look_st=$?
-  if (( look_st == 5 )); then echo "claude-headless: $look_line" >&2; echo "$look_line"; exit 3; fi
-  if (( look_st == 4 )); then
-    ${SETSID:-$(command -v setsid)} nohup bash -c 'node "$1" wait --name "$2" --brief "$3" && exec bash "${@:4}"' _ "$LOOK" "$name" "$brief" \
-      "$HERE/claude-headless.sh" --name "$name" --agent "$agent" ${account:+--account "$account"} --brief "$brief" --log "$log" ${priority:+--priority "$priority"} -- "$@" > .axf-look-wait.log 2>&1 &
-    echo "queued for look approval in $(pwd): $look_line (starts by itself once Brett approves the look in UI Review)"
-    exit 0
-  fi
+  look_line="$(node "$LOOK" gate --name "$name" --brief "$brief" 2>&1)" || true
+  if [[ -n "$look_line" ]]; then echo "claude-headless: $look_line" >&2; fi
 fi
 if [[ -z "$inner" && -z "$queued" ]] && command -v node >/dev/null && [[ -f "$DISPATCH" ]]; then
   node "$DISPATCH" consume --name "$name" --brief "$brief" >/dev/null 2>&1 || { echo "claude-headless: dispatch token no longer valid; not starting" >&2; exit 3; }

@@ -12,9 +12,10 @@
  *   … list [--build <id>] [--json]                predicted items and their look gate verdicts
  *   … approve <build> [--changes|--reject|--reopen] [--comment "…"]   Brett's decision on a look (the console's buttons)
  *   … settings [on|off]                           "Wait for my look approval before UI builds start" (default off)
- *   … gate [--build <id>] [--name <session>] [--brief <file>]   the launcher's check: exit 0 go, 4 wait, 5 held
- *        (no prediction yet for a UI build = one is started in the background)
- *   … wait [--build|--name|--brief] [--every 60] [--max-hours 24]   until the look is approved (0) or rejected (5)
+ *   … gate [--build <id>] [--name <session>] [--brief <file>]   the launcher's check: always exit 0 (UI Review is not a
+ *        gate, Nov 13 2026; the look verdict is printed for information). No prediction yet for a UI build = one is
+ *        started in the background
+ *   … wait [--build|--name|--brief]               returns at once (exit 0): nothing waits on the look any more
  *   … follow <build> --worktree <dir> [--parent <pid>] [--every 300]   refresh while the build runs; real shots at the end
  *   … addendum <build> --text "…"                 an Ask changes comment → a note on the build (orchestrator)
  *   … addenda <build>                             the brief lines for a build's asked look changes
@@ -198,7 +199,8 @@ async function gate() {
     // the predicted look is made now, in the background: Brett sees it in UI Review while the build waits or runs
     spawn(process.execPath, [SELF, 'predict', b.id, ...(val(flags.worktree) ? ['--worktree', flags.worktree] : [])], { detached: true, stdio: 'ignore' }).unref();
   }
-  return { code: v.go ? 0 : v.wait ? 4 : 5, line: `look gate: ${b.id} ${v.go ? 'starts' : v.wait ? 'waits' : 'is held'}: ${v.reason}`, verdict: v };
+  // UI Review is not a gate (Brett, Nov 13 2026): the launcher never waits for or refuses on the look; the verdict is information
+  return { code: 0, line: `look gate: ${b.id} starts (UI Review is not a gate; look ${v.look || 'none'}: ${v.reason})`, verdict: v };
 }
 
 async function addendum(id, text) {

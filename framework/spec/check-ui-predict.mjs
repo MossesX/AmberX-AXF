@@ -131,9 +131,9 @@ t('cli gate never blocks a launch it cannot check; which finds the build from th
   assert.equal(cli('bogus').status, 2);
 });
 
-t('launcher: look gate wired in, bash parses', () => {
+t('launcher: look check wired in (never a gate), bash parses', () => {
   const sh = readFileSync(join(ROOT, 'deploy/claude-headless.sh'), 'utf8');
-  assert.match(sh, /ui-predict\.mjs/); assert.match(sh, /look_st == 5/); assert.match(sh, /look_st == 4/); assert.match(sh, /AXF_LOOK_GATE/);
+  assert.match(sh, /ui-predict\.mjs/); assert.doesNotMatch(sh, /look_st == [45]/, 'UI Review is not a gate: the launcher never waits or refuses on the look'); assert.match(sh, /AXF_LOOK_GATE/);
   assert.equal(spawnSync('bash', ['-n', join(ROOT, 'deploy/claude-headless.sh')]).status, 0);
 });
 
