@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4293,
- "updatedAt": "2026-11-13T11:17:55.214Z",
+ "rev": 4294,
+ "updatedAt": "2026-11-13T11:18:16.748Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -184257,7 +184257,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T11:13:29.147Z",
-   "updatedAt": "2026-11-13T11:17:36.431Z",
+   "updatedAt": "2026-11-13T11:18:12.751Z",
    "builtAt": "",
    "notes": [
     {
@@ -184267,6 +184267,14 @@
     {
      "text": "Split by Claude into 20 steps (5 Fable).",
      "at": "2026-11-13T11:15:09.567Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-drag-anything-by-api-and-voice-after-pr-556-land--lenny, own login copy)",
+     "at": "2026-11-13T11:17:43.635Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-drag-anything-by-api-and-voice-after-pr-556-land--earl.",
+     "at": "2026-11-13T11:18:12.751Z"
     },
     {
      "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-drag-anything-by-api-and-voice-after-pr-556-land--lenny.",
@@ -184291,10 +184299,10 @@
     "queuedAt": "2026-11-13T11:13:30.493Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-drag-anything-by-api-and-voice-after-pr-556-land--lenny",
+    "session": "axf-drag-anything-by-api-and-voice-after-pr-556-land--earl",
     "slot": "",
     "model": "Fable",
-    "launchedAt": "2026-11-13T11:17:35.907Z",
+    "launchedAt": "2026-11-13T11:18:12.117Z",
     "runs": 1,
     "lastRun": null,
     "split": {
@@ -184307,7 +184315,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-13T11:17:35.908Z",
+    "dispatchedAt": "2026-11-13T11:18:12.117Z",
     "planned": {
      "model": "Fable",
      "account": "mossesx-max-",
@@ -184316,7 +184324,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-13T11:17:35.908Z",
+    "pickedAt": "2026-11-13T11:18:12.117Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -184841,7 +184849,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
