@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T20:11:32.172Z",
+ "updatedAt": "2026-11-13T20:11:47.134Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -133317,16 +133317,22 @@
    "title": "Context menu plugin: AI-generated slim context menus",
    "category": "",
    "detail": "New removable console plugin 'Context menu'.\n- Adds one entry, 'Context menu', at the very bottom of EVERY context menu in the app.\n- Needs Claude: when the Claude badge isn't green, the entry is greyed out, but its submenu arrow still opens and shows a clear error ('Claude isn't connected') with a link to fix it.\n- Submenu entries: (1) 'Generate global context menu' maps the page it's on and the element under the cursor (its properties up to one level below root) and generates a slim context menu design applied app-wide; (2) 'Generate advanced context menu' uses deep thinking to meticulously map the WHOLE app: every zone/element type, its tokens and actions, and generates a dynamic, context-aware menu per zone.\n- MAIN GOAL: today's menus are too big, with wasted space and hooks Brett almost never uses (about 90%). Generated menus must be SLIM: only the most relevant actions for that zone (ranked by real usage, tracked locally), compact density, rarely used items folded into a 'More' entry or search, and Console settings stays at top.\n- Preview the generated menu before applying; snapshot and restore like skins (Restore previous / default). Menus are assets (context-menu@1), per zone, editable in the UI Manager, with their tokens in the registry.\n- Full API and voice ('slim down the context menus'). Tests, help, Shipped features. Fable for the zone map/schema; the generation runs through Claude.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P1",
    "createdAt": "2026-11-13T20:11:30.018Z",
-   "updatedAt": "2026-11-13T20:11:30.018Z",
+   "updatedAt": "2026-11-13T20:11:33.651Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T20:11:33.651Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
