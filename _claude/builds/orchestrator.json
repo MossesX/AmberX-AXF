@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T06:48:31.572Z",
+ "updatedAt": "2026-11-13T06:48:49.912Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -117356,7 +117356,7 @@
    "pr": "#553",
    "priority": "P0",
    "createdAt": "2026-11-13T06:25:11.720Z",
-   "updatedAt": "2026-11-13T06:48:30.018Z",
+   "updatedAt": "2026-11-13T06:48:48.273Z",
    "builtAt": "",
    "notes": [
     {
@@ -117392,7 +117392,16 @@
      "at": "2026-11-13T06:47:24.519Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-13T06:48:48.273Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "",
@@ -117471,8 +117480,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T06:48:48.273Z",
      "note": "",
      "uid": "st-mwem4z9y014t64",
      "createdAt": "2026-11-13T06:45:54.991Z"
