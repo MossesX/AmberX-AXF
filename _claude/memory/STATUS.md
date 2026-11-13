@@ -2,6 +2,7 @@
 
 Moved out of CLAUDE.md on Oct 27 2026 so it no longer loads in every session. Read the parts you need (Grep, then read by line range); keep it updated whenever something meaningful changes.
 
+- **Nov 13 2026, merge-confirm@1 (PR #569, `claude/merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me`):** a merge is merged only once GitHub confirms: every merge path records the request, shows Pending GitHub confirmation, then reads the PR back (MERGED + merge commit on main) before marking it merged; 10 min without that = GitHub hasn't confirmed with Recheck (health@1 item, notify `merge.unconfirmed`). Core `framework/core/merge-confirm.mjs`, IO/CLI `framework/cli/merge-confirm.mjs`, spec `framework/spec/MERGE-CONFIRM.md`. Reach: REST `/api/plugins/push-banner/merge-confirm`, MCP `push_banner_mergeconfirm_*`, voice `merge.recheck`, deep link `push-banner/merge-confirm/<repo>#<pr>`. Kotlin twin deferred. Report `_claude/builds/reports/merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me.md`. <!-- axf-plugin:push-banner -->
 - **Nov 7 2026, approvals-in-place-r2 (PR pending):** Approve / Deny stay in the console through the approvals banner's relay; `console.refresh`; nightly console deploy; UI Review choices (ui-choices@1) with a three-option rule; Settings → Appearance → Choose from every asset. Report `_claude/builds/reports/approvals-in-place-r2.md`.
 
 ## Status (as of Oct 21 2026)

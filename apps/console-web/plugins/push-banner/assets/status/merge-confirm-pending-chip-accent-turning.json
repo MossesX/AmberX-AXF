@@ -1,0 +1,21 @@
+{
+ "$axf": "asset@1",
+ "type": "status",
+ "id": "merge-confirm-pending-chip-accent-turning",
+ "name": "merge-confirm-pending-chip: A: accent chip, turning icon (as built)",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Chip tone accent with a turning refresh icon (still under reduced motion), text 'Pending GitHub confirmation'.",
+ "tags": [
+  "ui-choice",
+  "choice-set:merge-confirm-pending-chip",
+  "choice-option:accent-turning"
+ ],
+ "data": {
+  "state": "pending-github-confirmation",
+  "tone": "accent",
+  "icon": "refresh",
+  "motion": "spin",
+  "text": "Pending GitHub confirmation"
+ }
+}

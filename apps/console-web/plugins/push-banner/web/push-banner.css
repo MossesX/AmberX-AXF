@@ -91,7 +91,9 @@ a.axp-push-banner__name:hover { text-decoration: underline }
 .axp-mq__chip { flex: none; display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); cursor: pointer }
 .axp-mq__why { display: block; white-space: normal; overflow-wrap: anywhere }
 /* merge-confirm@1: the confirmation chip (framework Chip) and its turning icon while GitHub hasn't confirmed */
-.axp-mc { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm) }
+.axp-mc { display: inline-flex; flex: none; align-items: center; gap: var(--fx-dens-gap-sm) }
+/* a row's meta line that carries a merge confirmation gets its own line, so the chip is never cut off */
+.axp-push-banner__entry > .axp-push-banner__meta:has(> .axp-mc) { flex: 1 0 100% }
 .axp-mc__spin { animation: fx-spin calc(var(--fx-motion) * 4) linear infinite }
 @media (prefers-reduced-motion: reduce) { .axp-mc__spin { animation: none } }
 [data-fx-motion='reduced'] .axp-mc__spin { animation: none }

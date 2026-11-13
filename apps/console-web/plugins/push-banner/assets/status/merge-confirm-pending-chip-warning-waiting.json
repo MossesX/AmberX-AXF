@@ -1,0 +1,21 @@
+{
+ "$axf": "asset@1",
+ "type": "status",
+ "id": "merge-confirm-pending-chip-warning-waiting",
+ "name": "merge-confirm-pending-chip: C: warning chip, 'Waiting for GitHub…'",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Warning tone, turning icon, shorter text 'Waiting for GitHub…'.",
+ "tags": [
+  "ui-choice",
+  "choice-set:merge-confirm-pending-chip",
+  "choice-option:warning-waiting"
+ ],
+ "data": {
+  "state": "pending-github-confirmation",
+  "tone": "warning",
+  "icon": "refresh",
+  "motion": "spin",
+  "text": "Waiting for GitHub…"
+ }
+}

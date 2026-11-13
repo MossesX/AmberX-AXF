@@ -1,0 +1,21 @@
+{
+ "$axf": "asset@1",
+ "type": "status",
+ "id": "merge-confirm-pending-chip-neutral-still",
+ "name": "merge-confirm-pending-chip: B: neutral chip, still icon",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Neutral chip (no tone), icon does not turn, same text.",
+ "tags": [
+  "ui-choice",
+  "choice-set:merge-confirm-pending-chip",
+  "choice-option:neutral-still"
+ ],
+ "data": {
+  "state": "pending-github-confirmation",
+  "tone": "neutral",
+  "icon": "refresh",
+  "motion": "none",
+  "text": "Pending GitHub confirmation"
+ }
+}
