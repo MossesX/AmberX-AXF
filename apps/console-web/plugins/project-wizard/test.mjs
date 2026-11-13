@@ -3,13 +3,17 @@
 // A fake GitHub API + bare repos in a throwaway folder stand in for GitHub and the VPS; nothing real is touched.
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { createServer } from 'node:http';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const HERE = fileURLToPath(new URL('.', import.meta.url));
+// A project's build profile keeps its orchestrator tracker in the repo (_claude/builds/profiles/<id>/): remove the ones
+// this test makes, and only those.
+const PROFILES = fileURLToPath(new URL('../../../../_claude/builds/profiles/', import.meta.url));
+const profilesBefore = new Set(existsSync(PROFILES) ? readdirSync(PROFILES) : []);
 const tmp = mkdtempSync(join(tmpdir(), 'axf-wizard-'));
 const gitBase = join(tmp, 'github');   // <owner>/<name>.git bare repos = "GitHub"
 const vpsGit = join(tmp, 'srv-git');   // the VPS's /srv/git
@@ -42,7 +46,7 @@ const server = createServer((req, res) => {
 await new Promise((r) => server.listen(0, '127.0.0.1', r));
 const env = {
   ...process.env, GITHUB_TOKEN: 'test-token', GITHUB_API_URL: `http://127.0.0.1:${server.address().port}`, CLAUDE_PROJECT_GIT_BASE: gitBase,
-  AXF_WIZARD_WORKSPACE: ws, AXF_WIZARD_ROOTS: tmp, AXF_WIZARD_STORE: join(tmp, 'store.json'), AXF_VPS_GIT_DIR: vpsGit, AXF_VPS_HOST: '',
+  AXF_WIZARD_WORKSPACE: ws, AXF_WIZARD_ROOTS: tmp, AXF_WIZARD_STORE: join(tmp, 'store.json'), AXF_VPS_GIT_DIR: vpsGit, AXF_VPS_HOST: '', AXF_DATA_DIR: join(tmp, 'data'), AXF_APPEARANCE_FILE: join(tmp, 'appearance.json'), AXF_ACTOR: 'test',
   GIT_AUTHOR_NAME: 't', GIT_AUTHOR_EMAIL: 't@t', GIT_COMMITTER_NAME: 't', GIT_COMMITTER_EMAIL: 't@t', HOME: tmp,
 };
 // the wizard runs as a child process, like the console's server part runs it
@@ -136,6 +140,49 @@ try {
   assert.ok(!g(own, 'ls-tree', '-r', '--name-only', 'HEAD').split('\n').includes('wip.txt'), 'staged work stays out of the commits');
   assert.match(g(own, 'status', '--porcelain'), /wip\.txt/, 'and stays staged');
 
+  // the setup steps: options, the linked repo is required, the draft, create, inherit, workspace switch
+  const opt = await callP({ action: 'options' });
+  assert.equal(opt.ok, true); assert.deepEqual(opt.steps.map((x) => x.id), ['name', 'repo', 'starter', 'framework', 'skin', 'accounts', 'plan', 'review']);
+  assert.equal(opt.starters[0].id, 'console-app'); assert.ok(opt.starters[0].plugins.includes('claude-accounts'));
+  assert.deepEqual(opt.models, ['opus', 'fable'], 'Opus or Fable only');
+  const noRepo = await callP({ action: 'check', plan: { source: { kind: 'new' }, display: 'Loose End', homes: { github: { mode: 'skip' }, vps: { mode: 'skip' } } } });
+  assert.ok(!noRepo.ok && noRepo.problems.some((p) => /Link a repo/.test(p)), 'a repo link is required');
+  await callP({ action: 'draft', reset: true });
+  let d = await callP({ action: 'draft', set: { display: 'Garden', description: 'Plants', source: { kind: 'new' } } });
+  assert.equal(d.draft.display, 'Garden'); assert.ok(d.check.problems.some((p) => /Link a repo/.test(p)));
+  d = await callP({ action: 'draft', set: { homes: { github: { mode: 'new', owner: 'MossesX' }, vps: { mode: 'skip' } }, starter: { id: 'none' }, skin: { id: 'windows' }, claude: { account: 'work', models: { build: 'fable', plan: 'sonnet' } }, firstPlan: { text: 'Grow things', builds: ['Seed list', { title: 'Watering timer' }], spoken: true } } });
+  assert.equal(d.draft.display, 'Garden', 'set merges'); assert.equal(d.check.ok, true, JSON.stringify(d.check.problems));
+  const rd = await callP({ action: 'create', fromDraft: true });
+  assert.equal(rd.ok, true, `${rd.error}\n${(rd.log ?? []).join('\n')}`);
+  const gdir = join(ws, 'garden');
+  const gm = JSON.parse(readFileSync(join(gdir, 'project.manifest.json'), 'utf8'));
+  assert.equal(gm.x.setup.skin.id, 'windows'); assert.equal(gm.x.setup.starter.id, 'none');
+  assert.deepEqual(gm.x.setup.claude.models, { plan: 'fable', build: 'fable', review: 'opus' }, 'unknown models fall back, never Sonnet');
+  assert.equal(gm.x.setup.claude.account, 'work');
+  assert.match(readFileSync(join(gdir, 'docs/FIRST_PLAN.md'), 'utf8'), /- \[ \] Watering timer/);
+  assert.ok(hasCommits(bare('MossesX', 'garden')));
+  assert.match(g(gdir, 'ls-tree', '-r', '--name-only', 'HEAD'), /docs\/FIRST_PLAN\.md/, 'the setup is committed');
+  assert.equal(rd.workspace.id, 'garden'); assert.equal(rd.workspace.active, true);
+  const cur = await callP({ action: 'current' });
+  assert.equal(cur.project.id, 'garden', 'switched into the new project'); assert.equal(cur.values.skin.id, 'windows');
+  assert.equal((await callP({ action: 'draft' })).draft.display, undefined, 'the draft is cleared once made');
+  // a step the plan leaves out (or locks) follows the current project; an unlocked one takes the new value
+  const inh = await callP({ action: 'check', plan: { source: { kind: 'new' }, display: 'Herbs', homes: { github: { mode: 'new', owner: 'MossesX' } }, skin: { id: 'other' }, inherit: { skin: false } } });
+  assert.equal(inh.ok, true, JSON.stringify(inh.problems));
+  assert.equal(inh.plan.setup.starter.id, 'none'); assert.equal(inh.plan.setup.claude.models.build, 'fable'); assert.equal(inh.plan.setup.skin.id, 'other');
+  assert.equal(inh.plan.inherit.starter, true); assert.equal(inh.plan.inherit.skin, false);
+  // starter = a boilerplate of an imported framework (a server folder here)
+  const fwDir = join(tmp, 'other-fw'); mkdirSync(join(fwDir, 'boilerplates/basic'), { recursive: true }); writeFileSync(join(fwDir, 'boilerplates/basic/app.txt'), 'hello\n');
+  const badFw = await callP({ action: 'check', plan: { source: { kind: 'new' }, display: 'Fw App', homes: { github: { mode: 'new', owner: 'MossesX' } }, starter: { id: 'framework' }, framework: { mode: 'import', import: { path: fwDir, boilerplate: '../../etc' } } } });
+  assert.ok(!badFw.ok && badFw.problems.some((p) => /inside the framework/.test(p)));
+  const rf = await callP({ action: 'run', plan: { source: { kind: 'new' }, display: 'Fw App', homes: { github: { mode: 'new', owner: 'MossesX' } }, starter: { id: 'framework' }, framework: { mode: 'import', import: { path: fwDir, boilerplate: 'boilerplates/basic' } }, switchTo: false } });
+  assert.equal(rf.ok, true, `${rf.error}\n${(rf.log ?? []).join('\n')}`);
+  assert.equal(readFileSync(join(ws, 'fw-app/app.txt'), 'utf8'), 'hello\n');
+  assert.equal(rf.workspace.active, false); assert.equal((await callP({ action: 'current' })).project.id, 'garden', 'switchTo false keeps the current project');
+  // own framework: framework/README.md is seeded
+  const ro2 = await callP({ action: 'run', plan: { source: { kind: 'new' }, display: 'Own Fw', homes: { github: { mode: 'new', owner: 'MossesX' } }, starter: { id: 'none' }, framework: { mode: 'own', name: 'Leaf' }, switchTo: false } });
+  assert.equal(ro2.ok, true, ro2.error); assert.match(readFileSync(join(ws, 'own-fw/framework/README.md'), 'utf8'), /# Leaf/);
+
   // listings
   assert.ok((await callP({ action: 'list', location: 'vps' })).items.some((i) => i.id === 'notes-pad'));
   assert.ok((await callP({ action: 'list', location: 'local' })).items.some((i) => i.id === dir1));
@@ -155,5 +202,6 @@ try {
   console.log('project-wizard: all checks passed');
 } finally {
   server.close();
+  for (const d of existsSync(PROFILES) ? readdirSync(PROFILES) : []) if (!profilesBefore.has(d)) rmSync(join(PROFILES, d), { recursive: true, force: true });
   rmSync(tmp, { recursive: true, force: true });
 }
