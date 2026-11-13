@@ -27,7 +27,7 @@
  */
 import { hostname } from 'node:os';
 import { fileURLToPath } from 'node:url';
-import { holding, loadState, readSessionStatuses, tmuxSessions } from './agent-slots.mjs';
+import { holding, loadState, normSessionStatus, readSessionStatuses, tmuxSessions } from './agent-slots.mjs';
 import { loadStore } from './builds-store.mjs';
 import { assess, POLICY } from '../core/build-recovery.mjs';
 
@@ -60,7 +60,7 @@ export function liveness(facts = {}) {
   const now = facts.now ?? Date.now();
   const host = facts.host ?? process.env.AXF_SLOTS_HOST ?? hostname();
   const store = facts.store ?? loadStore();
-  const records = facts.records ?? readSessionStatuses({ now });
+  const records = (facts.records ?? readSessionStatuses({ now })).map(normSessionStatus).filter(Boolean);
   const tmux = facts.tmux !== undefined ? facts.tmux : tmuxSessions();
   const st = facts.slots ?? loadState();
   const slots = { running: holding(st), queue: st.queue ?? [] };
