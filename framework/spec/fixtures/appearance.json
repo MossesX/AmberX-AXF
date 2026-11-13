@@ -281,6 +281,17 @@
       "ok": "#3ecc89",
       "scheme": "dark"
     },
+    "command-phosphor": {
+      "bg": "#0b0d0f",
+      "fg": "#d9e2dc",
+      "muted": "#8a9690",
+      "card": "#101316",
+      "line": "#242b31",
+      "accent": "#3ddc84",
+      "danger": "#ff6b6b",
+      "ok": "#3ddc84",
+      "scheme": "dark"
+    },
     "coral-studio": {
       "bg": "#f7f4f3",
       "fg": "#261b1a",
@@ -313,6 +324,28 @@
       "danger": "#ef6174",
       "ok": "#3ecc89",
       "scheme": "dark"
+    },
+    "executive-ivory": {
+      "bg": "#f6f4ef",
+      "fg": "#1c1f26",
+      "muted": "#646a76",
+      "card": "#fffdf9",
+      "line": "#dcd6ca",
+      "accent": "#1f3a68",
+      "danger": "#b23a3a",
+      "ok": "#2f7d4f",
+      "scheme": "light"
+    },
+    "field-day": {
+      "bg": "#f8f9fa",
+      "fg": "#101418",
+      "muted": "#4a5561",
+      "card": "#ffffff",
+      "line": "#c9d1d9",
+      "accent": "#e8590c",
+      "danger": "#c81e1e",
+      "ok": "#1b7f3b",
+      "scheme": "light"
     },
     "forest-night": {
       "bg": "#0d1411",
@@ -565,6 +598,17 @@
       "accent": "#6aa1c8",
       "danger": "#ef6174",
       "ok": "#3ecc89",
+      "scheme": "dark"
+    },
+    "studio-pro-slate": {
+      "bg": "#141619",
+      "fg": "#e6e9ed",
+      "muted": "#98a1ad",
+      "card": "#1b1e22",
+      "line": "#30363e",
+      "accent": "#4c9be8",
+      "danger": "#ef6b6b",
+      "ok": "#43c98a",
       "scheme": "dark"
     },
     "windows-light": {
