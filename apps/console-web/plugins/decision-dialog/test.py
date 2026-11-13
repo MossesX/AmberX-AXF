@@ -131,4 +131,9 @@ w2 = c.post("/raise", json={"type": "ui-review", "title": "Plain", "ref": "item-
 ok(c.post("/answer", json={"id": w2["id"], "text": "deny"}).json()["button"] == "reject", "deny means reject on UI Review")
 ok(c.post("/answer", json={"text": "make me a sandwich"}).status_code == 400, "not an answer: refused in words")
 
+# A source that notifies by itself (UI Review: one alert per group) asks for no second one.
+n0 = len(alerts)
+c.post("/raise", json={"type": "ui-review", "title": "Quiet", "ref": "q1", "notify": False})
+ok(len(alerts) == n0, "notify: false = no second notification")
+
 print(f"decision-dialog: {checks} checks passed")

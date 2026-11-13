@@ -46,7 +46,8 @@ def fields(item: dict) -> dict:
     picked = {s["src"] for o in options for s in o["shots"]}
     return {"type": "ui-review", "source": SOURCE, "ref": item["id"], "handler": HANDLER, "title": item.get("title") or "UI Review item",
             "body": str(item.get("notes") or "")[:2000], "build": item.get("build", ""), "app": item.get("app", ""), "openAction": f"ui-review.item:{item['id']}",
-            "openLabel": "Open in UI Review", "shots": [s for s in shots if s["src"] not in picked], "options": options}
+            "openLabel": "Open in UI Review", "shots": [s for s in shots if s["src"] not in picked], "options": options,
+            "notify": False}  # notify.py already sends one notification per group
 
 
 def raised(item: dict) -> None:

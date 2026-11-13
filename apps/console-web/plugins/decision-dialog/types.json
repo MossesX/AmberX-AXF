@@ -8,7 +8,7 @@
       "icon": "eye",
       "popup": true,
       "notify": true,
-      "description": "An item was submitted to UI Review: screenshots or options to approve or pick.",
+      "description": "An item was submitted to UI Review: screenshots or options to approve or pick. Its notification is UI Review's own (one per group, Settings \u2192 Plugins \u2192 Claude \u2192 notify.uiReview).",
       "buttons": [
         {
           "id": "approve",

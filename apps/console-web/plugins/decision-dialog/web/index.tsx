@@ -234,16 +234,24 @@ function SettingsPanel() {
   );
 }
 
+/** The approve / deny control panel: everything waiting, decided in place (Settings → Plugins → Decision dialog). */
 function QueuePanel() {
   const q = useQueue();
+  const [busy, setBusy] = useState('');
+  const [err, setErr] = useState('');
   const w = q.items.filter((d) => d.status === 'waiting');
   return (
     <div className="fx-stack">
-      {q.error && <Note tone="danger">{q.error}</Note>}
+      {(q.error || err) && <Note tone="danger">{q.error || err}</Note>}
       {!w.length ? <p className="fx-small fx-muted">Nothing is waiting for you.</p> : w.map((d) => (
         <div key={d.id} className="fx-row axp-decision-settings__row">
-          <span className="axp-decision-settings__what"><strong>{d.title}</strong><span className="fx-small fx-muted">{d.type}{d.build ? ` · ${d.build}` : ''}</span></span>
-          <Button size="sm" icon="eye" onClick={() => show(d.id)}>Show</Button>
+          <span className="axp-decision-settings__what"><strong>{d.title}</strong><span className="fx-small fx-muted">{typeLabel(d.type)}{d.build ? ` · ${d.build}` : ''}</span></span>
+          <span className="fx-row axp-decision__acts" role="toolbar" aria-label={`Decide: ${d.title}`}>
+            {!d.options.length && d.buttons.filter((b) => !b.note).map((b) => (
+              <Button key={b.id} size="sm" tone={TONE[b.kind]} icon={b.icon || undefined} disabled={busy === d.id} onClick={() => { setBusy(d.id); void answer(d, b.id).then((r) => { setBusy(''); if (!r.ok) setErr(r.message); }); }}>{b.label}</Button>
+            ))}
+            <Button size="sm" icon="eye" onClick={() => show(d.id)}>{d.options.length ? 'Pick…' : 'Show'}</Button>
+          </span>
         </div>
       ))}
       <div className="fx-row" role="toolbar" aria-label="Decision queue"><Button size="sm" tone="ghost" icon="refresh" onClick={() => void checkNow()}>Check now</Button></div>

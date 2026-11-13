@@ -220,7 +220,7 @@ def raise_decision(fields: dict) -> dict:
         else:
             doc["items"].append(d)
         _save(doc)
-    if not old:
+    if not old and fields.get("notify", True) is not False:  # a source that buzzes the phone itself sends notify: false
         _alert(d)
     return d
 
