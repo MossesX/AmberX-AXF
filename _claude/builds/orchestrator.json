@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T19:13:39.319Z",
+ "updatedAt": "2026-11-13T19:14:16.062Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -128925,7 +128925,7 @@
    "title": "Console app part 3: native bridge, mic, recorder, open_url, wake",
    "category": "",
    "detail": "Parallel part 3 of 4 of console-android-app-thin-webview-wrapper (parent). Builds only in the wrapper's Android module, following the shell contract from the parent.\n- JS bridge window.axfNative exposing the native features to the console.\n- Migrates AmberX's axHub device service (amberx.open_url, recorder_start/stop/status, console wake, notifications) to the new app, with the same tool names or aliases so axHub keeps working.\n- Mic and permissions handling.\n- Full API parity: REST/MCP/CLI/voice. Tests, help, Shipped features.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -128933,7 +128933,7 @@
    "pr": "#633",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:27.359Z",
-   "updatedAt": "2026-11-13T19:12:54.637Z",
+   "updatedAt": "2026-11-13T19:14:12.691Z",
    "builtAt": "",
    "notes": [
     {
@@ -128967,6 +128967,10 @@
     {
      "text": "Started run 2 on mossesx-max- (Opus, Phase 2): axf-console-app-part-3-native-bridge-mic--paulie.",
      "at": "2026-11-13T19:12:47.687Z"
+    },
+    {
+     "text": "Self-check: console-app-part-3-native-bridge-mic was marked running on mossesx-max- with no session: released and back in the Queue.",
+     "at": "2026-11-13T19:14:12.691Z"
     }
    ],
    "approvals": [],
