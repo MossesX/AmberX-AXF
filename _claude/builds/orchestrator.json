@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T20:46:19.070Z",
+ "updatedAt": "2026-11-13T20:46:35.640Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -125561,15 +125561,16 @@
    "title": "Per-instance settings-window picker inside every tab group and toolbar's settings",
    "category": "",
    "detail": "Every chrome instance (tab group, toolbar, banner, nav, menu bar) has its own chrome settings dialog (framework ChromeContext.tsx / chrome-settings-rules.mjs). Today the settings asset is picked per type/app (axf.chrome.settings.<type>). Add, inside each instance's settings dialog, a picker to choose which settings interface (settings asset) THAT instance uses, per instance, with the shared default preselected. Changing it re-renders the dialog live. Persist per instance, survive reload, follow skins. Expose via REST/MCP/CLI/voice and control@1. Tests, help entry, Shipped features.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/per-instance-settings-window-picker",
    "pr": "#622",
+   "mergedAt": "2026-11-13T20:44:56Z",
    "priority": "P1",
    "createdAt": "2026-11-13T17:46:43.480Z",
-   "updatedAt": "2026-11-13T18:09:55.996Z",
+   "updatedAt": "2026-11-13T20:46:27.757Z",
    "builtAt": "2026-11-13T18:09:55.996Z",
    "notes": [
     {
@@ -125635,6 +125636,10 @@
     {
      "text": "Phase 1 done, PR #622 (draft). UI Review shots missing: Playwright not installed on the VPS, capture tool fails. help-coverage and shared-assets checks were already failing on main.",
      "at": "2026-11-13T18:09:43.287Z"
+    },
+    {
+     "text": "Reconciler: PR #622 merged",
+     "at": "2026-11-13T20:46:27.757Z"
     }
    ],
    "approvals": [],
@@ -131377,15 +131382,16 @@
    "title": "Per-instance settings picker: merge main and land",
    "category": "",
    "detail": "Branch claude/per-instance-settings-window-picker clashed with main in apps/console-web/axf.lock.json, apps/console-web/src/axf/react/components/Overlays.tsx and framework/react/components/Overlays.tsx (merge aborted, main untouched). Merge origin/main and keep both sides' Overlays changes; edit framework first and re-bake the console copy, then regenerate axf.lock.json. Brett: every instance of every tab group, application menu, navigation menu, toolbar and dialog gets its own settings interface (including its own transparency) that changes only that one. Run tests, push, land on main.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/per-instance-settings-picker-merge-main",
    "pr": "#642",
+   "mergedAt": "2026-11-13T20:44:56Z",
    "priority": "P0",
    "createdAt": "2026-11-13T19:37:14.557Z",
-   "updatedAt": "2026-11-13T19:58:47.332Z",
+   "updatedAt": "2026-11-13T20:46:27.757Z",
    "builtAt": "2026-11-13T19:56:25.055Z",
    "notes": [
     {
@@ -131415,6 +131421,10 @@
     {
      "text": "Session axf-per-instance-settings-picker-merge-main--lenny on mossesx-max- ended (exit 0); the build was already built.",
      "at": "2026-11-13T19:58:47.332Z"
+    },
+    {
+     "text": "Reconciler: PR #642 merged",
+     "at": "2026-11-13T20:46:27.757Z"
     }
    ],
    "approvals": [],
@@ -133231,15 +133241,16 @@
    "title": "Dispatcher gate: never launch a build that already has a live session",
    "category": "",
    "detail": "Bug seen three times on Nov 13 (ui-manager-floating-window-to-select-any: Earl/Gina, Gina/Paulie, Lenny/Paulie): the orchestrator's dispatcher launched the same build phase twice on the same worktree, so two headless sessions wrote the same files at once. Also 'Self-check: marked running with no session' releases builds back to the Queue while a session is still alive. Fix: (1) a dispatch gate that refuses a launch while ANY live tmux/claude session exists for that build id or worktree (check tmux axf-<build>--*, claude -p pids and a lock file in the worktree); (2) the self-check must confirm a session is really dead (pid + tmux) before releasing; (3) a per-build lock file with heartbeat, where stale locks expire; (4) tests that simulate double dispatch. This must land BEFORE parallel split (orchestrator-settings-collapsible-split) goes live, since parallel sub-builds must each get their own worktree and branch and never share one.",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/dispatcher-gate-never-launch-build",
    "pr": "#651",
+   "mergedAt": "2026-11-13T20:44:13Z",
    "priority": "P0",
    "createdAt": "2026-11-13T20:07:27.626Z",
-   "updatedAt": "2026-11-13T20:31:16.091Z",
+   "updatedAt": "2026-11-13T20:46:27.757Z",
    "builtAt": "2026-11-13T20:31:16.091Z",
    "notes": [
     {
@@ -133281,6 +133292,10 @@
     {
      "text": "Reconciler: PR #651",
      "at": "2026-11-13T20:31:16.091Z"
+    },
+    {
+     "text": "Reconciler: PR #651 merged",
+     "at": "2026-11-13T20:46:27.757Z"
     }
    ],
    "approvals": [],
@@ -133371,9 +133386,10 @@
    "pendingId": "",
    "branch": "claude/per-toolbar-settings-fix-failing-chrome",
    "pr": "#650",
+   "mergedAt": "2026-11-13T20:44:56Z",
    "priority": "P0",
    "createdAt": "2026-11-13T20:08:02.821Z",
-   "updatedAt": "2026-11-13T20:31:20.161Z",
+   "updatedAt": "2026-11-13T20:46:27.757Z",
    "builtAt": "",
    "notes": [
     {
@@ -133403,6 +133419,10 @@
     {
      "text": "Session on mossesx-max- stopped on its own with 3 steps left: back in Pending for Brett.",
      "at": "2026-11-13T20:31:20.161Z"
+    },
+    {
+     "text": "Reconciler: PR #650 merged",
+     "at": "2026-11-13T20:46:27.757Z"
     }
    ],
    "approvals": [],

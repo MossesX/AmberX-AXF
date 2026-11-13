@@ -792,10 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 18:55 UTC · `transparency-token-works-every-dialog` s4 done, → built (all) · orchestrator
-- 2026-11-13 18:56 UTC · `transparency-token-works-every-dialog` note (all) · orchestrator
-- 2026-11-13 18:56 UTC · `skin-axhub-override-switch-greyed-out` added (0 steps) (all) · console
-- 2026-11-13 18:56 UTC · `skin-axhub-override-switch-greyed-out` → queued, note (all) · console
 - 2026-11-13 18:56 UTC · `skin-axhub-override-switch-greyed-out` note (all) · claude-voice
 - 2026-11-13 18:57 UTC · `skin-axhub-override-switch-greyed-out` note (all) · claude-voice
 - 2026-11-13 18:57 UTC · `ui-manager-floating-window-to-select-any` s1 done (all) · orchestrator
@@ -1192,6 +1188,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 20:45 UTC · `per-instance-settings-small-live-preview` → queued, note (all) · console
 - 2026-11-13 20:45 UTC · `full-voice-control-resolve-inventory` added (0 steps) (all) · console
 - 2026-11-13 20:46 UTC · `full-voice-control-resolve-inventory` → queued, note (all) · console
+- 2026-11-13 20:46 UTC · `per-instance-settings-window-picker` → complete, merged, note (all) · reconciler
+- 2026-11-13 20:46 UTC · `per-instance-settings-picker-merge-main` → complete, merged, note (all) · reconciler
+- 2026-11-13 20:46 UTC · `dispatcher-gate-never-launch-build` → complete, merged, note (all) · reconciler
+- 2026-11-13 20:46 UTC · `per-toolbar-settings-fix-failing-chrome` merged, note (all) · reconciler
 
 ## Token passes (log)
 
