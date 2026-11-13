@@ -2570,6 +2570,18 @@
    "from": "report",
    "addenda": []
   },
+  "dispatcher-gate-never-launch-build": {
+   "said": "what's up with the parallel build that breaks a build up to run on multiple sessions",
+   "at": "2026-11-13T20:07:27.626Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "drag-anything-api-voice-after-pr-556": {
    "said": "I want to be able to drag anything on any page, anything that's draggable. The regular API build land first.",
    "at": "2026-11-13T11:13:29.147Z",
