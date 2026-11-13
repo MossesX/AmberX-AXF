@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T00:42:36.534Z",
+ "updatedAt": "2026-11-13T00:43:07.868Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -111534,17 +111534,79 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T00:42:24.765Z",
-   "updatedAt": "2026-11-13T00:42:29.429Z",
+   "updatedAt": "2026-11-13T00:43:06.281Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-13T00:42:28.167Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-13T00:43:06.281Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Full voice and AI control of EVERYTHING in the console, before the Android app: every action, setting, tab, dialog, menu, list, item and field gets an API (REST, MCP, CLI, voice).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwe96e9601vf0e"
+    },
+    {
+     "id": "s2",
+     "text": "Add find-by-content deep links down to the item: 'jump to the plan about X, the step that mentions Y' searches inside pl",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwe96e9602jtsm"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwe96e9603fjii"
+    }
+   ]
   }
  ]
 }
