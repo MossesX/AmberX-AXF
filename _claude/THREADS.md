@@ -785,7 +785,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 11:13 UTC · `drag-anything-by-api-and-voice-after-pr-556-land` added (0 steps) (all) · console
 - 2026-11-13 11:13 UTC · `drag-anything-by-api-and-voice-after-pr-556-land` → queued, note (all) · console
 - 2026-11-13 11:13 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` s23 done (all) · orchestrator
 - 2026-11-13 11:14 UTC · `fix-merge-conflicts-on-pr-557-professional-skins` s1 done (all) · orchestrator
@@ -1185,6 +1184,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 18:04 UTC · `all-settings-interfaces-open-floating` note (all) · orchestrator
 - 2026-11-13 18:04 UTC · `per-instance-settings-window-picker` note (all) · pipeline
 - 2026-11-13 18:04 UTC · `per-instance-settings-window-picker` note (all) · orchestrator
+- 2026-11-13 18:05 UTC · `per-instance-settings-window-picker` note (all) · foreign-write
 
 ## Token passes (log)
 
