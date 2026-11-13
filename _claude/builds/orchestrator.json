@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T18:01:12.799Z",
+ "updatedAt": "2026-11-13T18:02:05.813Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -125945,7 +125945,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T17:59:17.167Z",
-   "updatedAt": "2026-11-13T17:59:54.539Z",
+   "updatedAt": "2026-11-13T18:02:00.272Z",
    "builtAt": "",
    "notes": [
     {
@@ -125955,6 +125955,10 @@
     {
      "text": "Brett changed this: don't restore the old one, build a NEW Asset Designer / editor plugin from scratch on current framework. It must edit every asset type and all its tokens, including the chrome settings interface for toolbars and tab groups, with the schema validation gate.",
      "at": "2026-11-13T17:59:54.539Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"c35d172d-5489-40cd-9973-a48ce90e9a68\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-13T18:02:00.272Z"
     }
    ],
    "approvals": [],
@@ -125971,7 +125975,144 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Restore it onto current main, update to current framework (tokens, chrome, skins, control@1), make it able to edit every asset type including the chrome settings interface for toolbars and tab groups (all its tokens), with the validation gate.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfaafgx01799m",
+     "createdAt": "2026-11-13T18:02:00.272Z"
+    },
+    {
+     "id": "s2",
+     "text": "_claude/builds/shipped/asset-designer.json says the Asset Designer plugin (no-code; apps/console-web/plugins/asset-designer, id ai.amberx.axf.console.asset-designer) merged 2026-11-10T04:39Z, but the folder is not in main now and branch claude/asset-designer is deleted.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfaafgx02r3cx",
+     "createdAt": "2026-11-13T18:02:00.272Z"
+    },
+    {
+     "id": "s3",
+     "text": "Find it in git history (git log --all -- apps/console-web/plugins/asset-designer, reflog, any branch/PR/combine branch), find the commit that removed it and why.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfaafgx03ipfs",
+     "createdAt": "2026-11-13T18:02:00.272Z"
+    },
+    {
+     "id": "s4",
+     "text": "If history is gone, rebuild from the shipped spec's steps.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfaafgx0472t5",
+     "createdAt": "2026-11-13T18:02:00.272Z"
+    },
+    {
+     "id": "s5",
+     "text": "Installed and enabled by default, in nav and console.actions, REST/MCP/CLI/voice. Tests, Shipped features. Report what removed it so it doesn't happen again.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfaafgx05g8wc",
+     "createdAt": "2026-11-13T18:02:00.272Z"
+    },
+    {
+     "id": "s6",
+     "text": "find the archive build for it and rebuild it, branches should still be around somewhere",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfaafgx06nccx",
+     "createdAt": "2026-11-13T18:02:00.272Z"
+    },
+    {
+     "id": "s7",
+     "text": "Tests green, report _claude/builds/reports/restore-asset-designer-plugin-merged-nov.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/restore-asset-designer-plugin-merged-nov.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfaafgx07fpdu",
+     "createdAt": "2026-11-13T18:02:00.272Z"
+    }
+   ]
   }
  ]
 }
