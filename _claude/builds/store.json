@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4707,
- "updatedAt": "2026-11-13T18:50:35.335Z",
+ "rev": 4708,
+ "updatedAt": "2026-11-13T18:50:51.568Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -201433,16 +201433,22 @@
    "title": "Orchestrator: custom groups and custom tabs on the builds board",
    "category": "",
    "detail": "Build Orchestrator board gets user-made groups.\n- Brett creates, renames, reorders, colours and deletes custom groups/tabs (e.g. 'Console app', 'UI', 'Urgent').\n- Builds are dragged or assigned into a group (one or several), by hand, by voice or by API.\n- Custom tabs can sit next to Pending, Queued, Building and Done. Mostly used for Pending: custom Pending tabs.\n- Inside a group, builds are sorted by state (partial/pending, queued, running, done, landed) with a sort and filter picker, and the group shows counts per state.\n- Smart groups by rule (e.g. 'title contains console app', 'more than 500 behind main', 'filed today').\n- Group actions: queue all, land all, archive all, change priority.\n- Groups are saved per project. Full API: REST/MCP/CLI/voice/control@1. Tests, help, Shipped features.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P1",
    "createdAt": "2026-11-13T18:50:33.284Z",
-   "updatedAt": "2026-11-13T18:50:33.284Z",
+   "updatedAt": "2026-11-13T18:50:37.242Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T18:50:37.242Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -201457,6 +201463,28 @@
     "from": "",
     "addenda": []
    },
+   "pipeline": {
+    "queuedAt": "2026-11-13T18:50:36.045Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
    "steps": [],
    "profiles": [
     "all"
@@ -201466,7 +201494,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
