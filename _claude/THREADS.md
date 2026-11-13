@@ -785,7 +785,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 10:35 UTC · `server-gate-one-session-per-build-no-duplicate-launches` → queued, note (all) · console
 - 2026-11-13 10:35 UTC · `owner-recognized-everywhere-veto-countdown-only-on-shell-commands` → queued, note (all) · console
 - 2026-11-13 10:35 UTC · `one-source-of-truth-console-shows-only-what-the-server-says-is-running` → queued, note (all) · console
 - 2026-11-13 10:35 UTC · `orchestrator-hold-status-archive-tab-deleted-tab` → queued, note (all) · console
@@ -1185,6 +1184,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 17:30 UTC · `test-sandbox-sample-pending-build` added (3 steps) (test-sandbox) · foreign-write
 - 2026-11-13 17:30 UTC · `account-order-hulu-moses-x-api-account` added (3 steps) (all) · build-rename
 - 2026-11-13 17:30 UTC · `account-order-hulu-moses-x-api-account-shown-on-every-build` note, removed (all) · build-rename
+- 2026-11-13 17:31 UTC · `account-order-hulu-moses-x-api-account` added (3 steps) (all) · foreign-write
 
 ## Token passes (log)
 
