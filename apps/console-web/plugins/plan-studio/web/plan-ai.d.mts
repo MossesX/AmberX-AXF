@@ -1,7 +1,7 @@
 /** Types for plan-ai.mjs (plain English → plan@1 edits). */
 import type { Plan, CatalogEntry } from './plan-core.mjs';
 export type Op = { op: string; [k: string]: unknown };
-export interface Ctx { plan?: Plan | null; plans?: Plan[]; catalog?: CatalogEntry[]; categories?: string[]; builds?: unknown[]; now?: string }
+export interface Ctx { plan?: Plan | null; plans?: Plan[]; catalog?: CatalogEntry[]; categories?: string[]; now?: string }
 export interface Applied { plan: Plan | null; others: Map<string, Plan>; created: Plan[]; summary: string[]; answer: string; ask: string; changed: boolean }
 export const OP_KINDS: string[]; export const SET_FIELDS: string[];
 export function clauses(text: string): string[];

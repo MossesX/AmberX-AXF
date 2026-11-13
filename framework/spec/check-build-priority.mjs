@@ -55,14 +55,14 @@ t('waitingOn: every source, tappable, finished builds left out', () => {
     mergeQueue: { items: [{ pr: 39, title: 'Ahead' }, { pr: 40, title: 'Skins', build: 'skins' }, { pr: 41, title: 'Behind', url: 'https://x/41' }] },
     pulls: [{ number: 50, title: 'Stacked', base: 'claude/skins', url: 'https://x/50' }, { number: 51, title: 'Other', base: 'claude/else' }],
     ui: [{ id: 'u1', name: 'Skin shots', build: 'skins', status: 'waiting' }, { id: 'u2', name: 'Done', build: 'skins', status: 'approved' }],
-    plans: [{ id: 'skins-plan', title: 'Skins plan', build: { id: 'skins' } }],
+    plans: [{ id: 'skins-plan', title: 'Skins plan', build: { id: 'skins' } }], // Plan Studio is not linked to builds: ignored
   };
   const rows = p.waitingOn('skins', sources);
-  assert.deepEqual(rows.map((r) => `${r.kind}:${r.id}`).sort(), ['build:themes', 'build:x.layouts', 'plan:skins-plan', 'pr:#41', 'pr:#50', 'slot:hl-1', 'ui:u1'].sort());
+  assert.deepEqual(rows.map((r) => `${r.kind}:${r.id}`).sort(), ['build:themes', 'build:x.layouts', 'pr:#41', 'pr:#50', 'slot:hl-1', 'ui:u1'].sort());
   for (const r of rows) assert.ok(r.route || r.url, `${r.id} opens something`);
   assert.deepEqual(p.waitingOn('themes', sources), []);
   const map = p.priorityMap(sources);
-  assert.equal(map.skins.waiting, 7);
+  assert.equal(map.skins.waiting, 6);
   assert.equal(map['x.skins'].id, 'skins'); // a screen that knows it by its plan epic
   assert.ok(!map.gone);
 });

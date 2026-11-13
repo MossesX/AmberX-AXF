@@ -1,6 +1,7 @@
 // Self-test: node apps/console-web/plugins/build-orchestrator/test.mjs
 import assert from 'node:assert/strict';
-import { mkdtempSync, readFileSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
+import { mkdtempSync, readdirSync, readFileSync, rmSync, statSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import * as c from './web/orchestrator-core.mjs';
@@ -179,5 +180,22 @@ t('approvals off: an open request filed while they were on is closed when the ph
   c.setUpgradePolicy({ approvalRequired: false, source: 'test' });
   try { x = c.apply(x, { action: 'step', id: 'old', step: 's2' }).state; assert.equal(x.builds[0].upgradeRequests[0].state, 'approved'); }
   finally { c.setUpgradePolicy({ approvalRequired: true, source: 'test' }); }
+});
+// Builds never create, sync or update plans (Brett, Nov 12 2026: "I don't want this plan studio to be linked to the
+// build at all"). A whole build life (add, every step, complete) through the CLI on a scratch store and data folder
+// writes the builds store, its journal and the profile file, and nothing else: no plan anywhere.
+t('adding and finishing a build creates no plan (CLI, scratch store, builds-live off)', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'axf-orch-noplan-'));
+  const env = { ...process.env, AXF_DATA_DIR: join(dir, 'data'), AXF_BUILDS_STORE: join(dir, 'store.json'), AXF_BUILDS_LIVE: '0', AXF_BUILDS_EXPORT: '0', AXF_BUILDS_DIR: join(dir, 'builds'), AXF_PLANS_DIR: join(dir, 'plans') };
+  const cli = (...a) => JSON.parse(execFileSync('node', [new URL('./orchestrator.mjs', import.meta.url).pathname, ...a, '--json'], { env, encoding: 'utf8' }).trim().split('\n').pop());
+  try {
+    cli('act', '--json', JSON.stringify({ action: 'add', id: 'no-plan', title: 'No plan', steps: [{ text: 'a', model: 'Opus', estimate: '10 min' }, { text: 'b', model: 'Opus', estimate: '10 min' }] }));
+    cli('act', 'step', 'no-plan', 's1', 'done'); cli('act', 'step', 'no-plan', 's2', 'done');
+    assert.equal(cli('act', 'status', 'no-plan', 'complete').build?.status ?? 'complete', 'complete');
+    const files = (d) => readdirSync(d).flatMap((x) => (statSync(join(d, x)).isDirectory() ? files(join(d, x)) : [join(d, x).slice(dir.length)]));
+    const all = files(dir);
+    assert.deepEqual(all.filter((f) => /plan-studio|\/plans\b|plan-history|\.plan\.json/.test(f)), [], `no plan written: ${all.join(', ')}`);
+    assert.ok(all.every((f) => f === '/store.json' || f.startsWith('/store.journal/') || f === '/data/framework/plan/profiles.json'), `only the builds store is written: ${all.join(', ')}`);
+  } finally { rmSync(dir, { recursive: true, force: true }); }
 });
 console.log(`build-orchestrator: ${n} checks passed`);

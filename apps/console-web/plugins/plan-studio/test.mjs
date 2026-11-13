@@ -1,6 +1,6 @@
 // Self-test: npx -y tsx apps/console-web/plugins/plan-studio/test.mjs   (--write regenerates fixtures/plan.json on purpose)
 // plan@1 schema + migrations (fixtures), categories, totals, versions + restore, templates, Markdown import/export,
-// duplicates, filters/sort/group, bulk, turn-into-build + live progress, catalog discovery + overlay, the CLI and
+// duplicates, filters/sort/group, bulk, delete / delete-all, no build link, catalog discovery + overlay, the CLI and
 // store on scratch folders (the repo and the hub are never written), the plain-English parser with fixed model
 // replies (no live model), and the voice turn loop with fake speech in/out, mic-lease handoff and undo by voice.
 import assert from 'node:assert/strict';
@@ -162,24 +162,6 @@ await t('duplicates, search every field, filters, sort, group, bulk, roadmap', (
   assert.equal(pc.counts(ps).statuses.parked, 1);
 });
 
-// ---------------------------------------------------------------- turn into a build
-await t('turn into a build: orchestrator add change, links both ways, live progress, done ticks features', () => {
-  const p = pc.normalize({ id: 'ship', title: 'Ship it', category: 'Product > Installer', steps: [{ id: 's1', text: 'B', model: 'Opus', minutes: 20, dependsOn: ['s2'] }, { id: 's2', text: 'A', model: 'Fable', minutes: 25 }, { id: 's3', text: 'Done already', done: true }], features: [{ entry: 'app:amberx-droid', feature: 'x', title: 'X', state: 'planned' }], requirements: ['R1'] }, { now: NOW });
-  const ch = pc.toBuild(p, { profile: 'all' });
-  assert.equal(ch.action, 'add'); assert.equal(ch.id, 'ship'); assert.equal(ch.category, 'Product');
-  assert.deepEqual(ch.steps.map((s) => [s.text, s.model, s.estimate]), [['A', 'Fable', '25 min'], ['B', 'Opus', '20 min']]);
-  assert.match(ch.detail, /From Plan Studio plan ship/); assert.match(ch.detail, /Requirements: R1/);
-  assert.throws(() => pc.toBuild(pc.normalize({ title: 'x' })), /no steps/);
-  const linked = pc.linkBuild(p, { profile: 'all', id: 'ship' }, NOW);
-  assert.equal(linked.status, 'building'); assert.ok(linked.links.some((l) => l.kind === 'build' && l.ref === 'all:ship'));
-  const half = pc.syncBuild(linked, { status: 'in-progress', steps: [{ text: 'A', done: true, doneAt: NOW }, { text: 'B', done: false }], branch: 'claude/x' });
-  assert.ok(half.changed); assert.equal(half.plan.build.progress, 50); assert.equal(half.plan.steps.find((s) => s.id === 's2').done, true); assert.equal(half.plan.status, 'building');
-  assert.ok(half.plan.links.some((l) => l.kind === 'branch'));
-  const done = pc.syncBuild(half.plan, { status: 'complete', steps: [{ text: 'A', done: true }, { text: 'B', done: true }], pr: '200' });
-  assert.equal(done.plan.status, 'done'); assert.equal(done.plan.features[0].state, 'have'); assert.ok(done.plan.links.some((l) => l.kind === 'pr' && l.ref === '200'));
-  assert.equal(pc.syncBuild(done.plan, { status: 'complete', steps: [{ text: 'A', done: true }, { text: 'B', done: true }], pr: '200' }).changed, false);
-});
-
 // ---------------------------------------------------------------- the plain-English AI (rules + fixed model replies)
 const catalogFix = [{ key: 'app:amberx-droid', name: 'AmberX', kind: 'app', features: [{ id: 'app-plugin:voice', title: 'AmberX voice', state: 'partial' }] }, { key: 'plugin:build-breaker', name: 'Build Breaker', kind: 'plugin', features: [] }];
 const cur = pc.normalize({ id: 'selling', title: 'AmberX Selling It', steps: [{ id: 's1', text: 'Price page', model: 'Opus', minutes: 20 }] }, { now: NOW });
@@ -249,11 +231,11 @@ await t('voice: turn after turn until "I\'m done"; undo by voice; repeat', async
 });
 await t('voice: big edits are confirmed by voice (yes runs it, no drops it)', async () => {
   let ran = 0;
-  const handle = async () => ({ say: '', confirm: { question: 'Turn Docs Studio into a build in Angel?', run: async () => { ran += 1; return { say: 'Done, build docs-studio.' }; } } });
-  let f = fakeIo(['turn it into a build', 'yes', "that's all"]);
+  const handle = async () => ({ say: '', confirm: { question: 'Delete the plan Docs Studio?', run: async () => { ran += 1; return { say: 'Deleted Docs Studio.' }; } } });
+  let f = fakeIo(['delete this plan', 'yes', "that's all"]);
   await voice.runConversation(f.io, handle, { greeting: 'Hi.' });
-  assert.equal(ran, 1); assert.deepEqual(f.said.slice(1, 3), ['Turn Docs Studio into a build in Angel?', 'Done, build docs-studio.']);
-  f = fakeIo(['turn it into a build', 'no', 'bye']);
+  assert.equal(ran, 1); assert.deepEqual(f.said.slice(1, 3), ['Delete the plan Docs Studio?', 'Deleted Docs Studio.']);
+  f = fakeIo(['delete this plan', 'no', 'bye']);
   await voice.runConversation(f.io, handle, { greeting: 'Hi.' });
   assert.equal(ran, 1); assert.equal(f.said[2], "Okay, I won't.");
 });
@@ -294,19 +276,12 @@ const env = { ...process.env, AXF_PLANS_DIR: join(scratch, 'store'), AXF_ORCH_FI
 const node = (args) => { let out; try { out = execFileSync('node', args, { env, encoding: 'utf8' }); } catch (e) { out = e.stdout ?? ''; } return JSON.parse(out.trim().split('\n').at(-1)); };
 const cli = (...a) => node([join(here, 'plans.mjs'), ...a, '--json']);
 const apiCall = (o) => node([join(here, 'plans.mjs'), 'api', JSON.stringify(o)]);
-await t('store: seeds load once (the imported parked plans), never over an edit', () => {
+await t('store: starts empty (no seed plans ship), default categories only', () => {
   const s = apiCall({ op: 'state' });
   assert.ok(s.ok); assert.equal(s.store, env.AXF_PLANS_DIR); assert.equal(s.onHub, false);
-  const seeds = readdirSync(join(here, 'data/plans')).filter((f) => f.endsWith('.json')).length;
-  assert.equal(s.plans.length, seeds);
-  const docs = s.plans.find((p) => p.id === 'docs-studio');
-  assert.ok(docs, 'Docs Studio is there'); assert.equal(docs.status, 'parked'); assert.equal(docs.category, 'Framework > Docs'); assert.equal(docs.steps.length, 15);
-  assert.ok(s.plans.some((p) => p.category === 'Product > Installer'));
-  for (const p of s.plans) assert.deepEqual(pc.validate(p), [], p.id);
-  apiCall({ op: 'save', plan: { ...docs, summary: 'edited' } });
-  assert.equal(apiCall({ op: 'get', id: 'docs-studio' }).plan.summary, 'edited');
-  apiCall({ op: 'state' });
-  assert.equal(apiCall({ op: 'get', id: 'docs-studio' }).plan.summary, 'edited', 'the seed never overwrites');
+  assert.equal(existsSync(join(here, 'data/plans')) ? readdirSync(join(here, 'data/plans')).filter((f) => f.endsWith('.json')).length : 0, 0, 'no seed plans');
+  assert.equal(s.plans.length, 0);
+  assert.ok(s.categories.paths.includes('Product > Installer'));
 });
 await t('CLI: add (duplicate check), list, show --md, status, import, export, categories', () => {
   const a = cli('add', 'Docs website', '--category', 'Framework > Docs', '--step', 'Contract|Fable|25', '--step', 'Pages|Opus|30');
@@ -338,17 +313,40 @@ await t('API: versions, restore, delete (history kept), bulk, categories, templa
   const tp = apiCall({ op: 'template-save', template: { label: 'Mine', plan: { status: 'idea' } } }); assert.equal(tp.templates.all.length, 8);
   const v = apiCall({ op: 'view-save', view: { label: 'Urgent', layout: 'board', filter: { priorities: ['P0'] } } }); assert.equal(v.views.items[0].id, 'urgent');
 });
-await t('API: turn into a build (preview, add to the orchestrator file, link both ways, live progress)', () => {
-  const id = apiCall({ op: 'save', plan: { title: 'Buildable', steps: [{ text: 'Do A', model: 'Opus', minutes: 20 }, { text: 'Do B', model: 'Fable', minutes: 30 }] }, force: true }).plan.id;
-  const pre = apiCall({ op: 'build', id, profile: 'all', preview: true }); assert.equal(pre.minutes, 50); assert.equal(existsSync(env.AXF_ORCH_FILE), false, 'preview writes nothing');
-  const r = apiCall({ op: 'build', id, profile: 'all' }); assert.ok(r.ok); assert.equal(r.plan.status, 'building');
-  const orch = JSON.parse(readFileSync(env.AXF_ORCH_FILE, 'utf8')); const b = orch.builds.find((x) => x.id === r.build.id);
-  assert.equal(b.source, 'plan-studio'); assert.equal(b.steps.length, 2); assert.match(b.notes[0].text, new RegExp(`Plan Studio plan: ${id}`));
-  assert.equal(apiCall({ op: 'build', id, profile: 'all' }).ok, false, 'the same build twice is refused');
-  b.steps[0].done = true; writeFileSync(env.AXF_ORCH_FILE, JSON.stringify(orch));
-  assert.deepEqual(apiCall({ op: 'sync-builds' }).changed, [id]); assert.equal(apiCall({ op: 'get', id }).plan.build.progress, 50);
-  b.steps[1].done = true; b.status = 'complete'; writeFileSync(env.AXF_ORCH_FILE, JSON.stringify(orch));
-  apiCall({ op: 'sync-builds' }); assert.equal(apiCall({ op: 'get', id }).plan.status, 'done');
+await t('not linked to builds: no build ops, no orchestrator reads or writes, build field always null', () => {
+  for (const op of ['build', 'sync-builds']) assert.equal(apiCall({ op, id: 'x' }).ok, false, `${op} is gone`);
+  const before = existsSync(env.AXF_ORCH_FILE) ? readFileSync(env.AXF_ORCH_FILE, 'utf8') : null;
+  const p = apiCall({ op: 'save', plan: { title: 'Standalone', build: { profile: 'all', id: 'some-build', progress: 50 }, steps: [{ text: 'A' }] }, force: true }).plan;
+  assert.equal(p.build, null, 'a plan never carries a build link');
+  apiCall({ op: 'state' });
+  assert.equal(existsSync(env.AXF_ORCH_FILE) ? readFileSync(env.AXF_ORCH_FILE, 'utf8') : null, before, 'Plan Studio never touches the orchestrator file');
+  for (const f of ['plans.mjs', 'catalog.mjs', 'server/__init__.py', 'web/plan-core.mjs', 'web/api.ts', 'web/editor.tsx', 'web/ai.tsx']) {
+    assert.doesNotMatch(readFileSync(join(here, f), 'utf8'), /turnIntoBuild|syncBuilds?\b|orchBuilds|orchestratorPath|linkBuild|toBuild\(/, f);
+  }
+  apiCall({ op: 'delete', id: p.id });
+});
+await t('builds-side code never reaches the plan store (deploy, framework, the orchestrator@1 provider)', () => {
+  const walk = (d) => (existsSync(d) ? readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? (['node_modules', 'fixtures', 'dist'].includes(e.name) ? [] : walk(join(d, e.name))) : /\.(mjs|js|ts|tsx|py|sh)$/.test(e.name) ? [join(d, e.name)] : [])) : []);
+  const roots = ['deploy', 'framework/cli', 'framework/plan', 'framework/core'].map((r) => join(repo, r));
+  // the plugin that owns builds, found by capability (never by folder name)
+  const pluginsDir = join(repo, 'apps/console-web/plugins');
+  for (const d of readdirSync(pluginsDir)) {
+    try { if ((JSON.parse(readFileSync(join(pluginsDir, d, 'plugin.json'), 'utf8')).provides ?? []).includes('service:orchestrator@1')) roots.push(join(pluginsDir, d)); } catch { /* not a plugin */ }
+  }
+  const hits = roots.flatMap(walk).filter((f) => /plans@1|plan-studio\/plans|build-plan@1|syncBuildPlans?|makeBuildPlan/.test(readFileSync(f, 'utf8')));
+  assert.deepEqual(hits.map((f) => f.slice(repo.length)), [], 'Plan Studio is not linked to builds');
+});
+await t('API + CLI: delete-all (needs confirm, by status, history kept), delete <id>', () => {
+  assert.equal(apiCall({ op: 'delete-all' }).ok, false, 'delete-all without confirm is refused');
+  const a = apiCall({ op: 'save', plan: { title: 'Gone one', status: 'idea' }, force: true }).plan.id;
+  const b = apiCall({ op: 'save', plan: { title: 'Gone two', status: 'draft' }, force: true }).plan.id;
+  const some = apiCall({ op: 'delete-all', confirm: 'all', status: 'idea' }); assert.ok(some.deleted.includes(a)); assert.ok(!some.deleted.includes(b));
+  assert.deepEqual(cli('delete', b).deleted, [b]);
+  apiCall({ op: 'save', plan: { title: 'Gone three' }, force: true });
+  const all = cli('delete', '--all'); assert.ok(all.deleted.length >= 1);
+  assert.equal(apiCall({ op: 'state' }).plans.length, 0, 'every plan is gone');
+  assert.equal(apiCall({ op: 'restore', id: a, v: 1 }).plan.id, a, 'history stays: a deleted plan can be restored');
+  apiCall({ op: 'delete', id: a });
 });
 await t('API: AI turn with a fixed reply; AI edits recorded in history as "AI, from: …"', () => {
   const id = apiCall({ op: 'save', plan: { title: 'AI target' }, force: true }).plan.id;

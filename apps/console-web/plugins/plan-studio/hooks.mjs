@@ -1,7 +1,8 @@
 /**
  * Lifecycle hooks (plugin-lifecycle@1). Plans live in the plan store (plans.mjs storeDir: the hub's shared data where
- * /projects is mounted, else this plugin's data folder). Install copies the seed plans in (never over a plan that
- * exists); uninstall removes the data folder only — plans on the hub are shared data and stay.
+ * /projects is mounted, else this plugin's data folder). Install sets up the store (any seed plans in data/plans are
+ * copied in, never over a plan that exists; none ship today); uninstall removes the data folder only — plans on the hub
+ * are shared data and stay. An empty store is healthy.
  */
 import { existsSync, mkdirSync } from 'node:fs';
 
@@ -20,6 +21,6 @@ export async function checks(ctx) {
   return [
     { id: 'data-folder', ok: existsSync(ctx.dataDir), detail: ctx.dataDir },
     { id: 'store', ok: existsSync(storeDir()), detail: `${storeDir()}${onHub() ? ' (hub shared data)' : ''}` },
-    { id: 'plans', ok: plans.length > 0 && !bad.length, detail: `${plans.length} plans${bad.length ? `, ${bad.length} invalid: ${bad.map((p) => p.id).join(', ')}` : ''}` },
+    { id: 'plans', ok: !bad.length, detail: `${plans.length} plans${bad.length ? `, ${bad.length} invalid: ${bad.map((p) => p.id).join(', ')}` : ''}` },
   ];
 }

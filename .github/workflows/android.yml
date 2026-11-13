@@ -142,6 +142,10 @@ jobs:
         run: node apps/console-web/plugins/project-wizard/test.mjs  # axf-plugin:project-wizard
       - name: Token control plugin (control@1 runner — tokens in the look, AmberX, planner, gate, confirm, CLI, client forms)  # axf-plugin:token-control
         run: node apps/console-web/plugins/token-control/test.mjs  # axf-plugin:token-control
+      - name: Plan Studio plugin (plan@1 contract, store, delete-all, never linked to builds, builds-side code never reaches the plan store)  # axf-plugin:plan-studio
+        run: node --experimental-strip-types apps/console-web/plugins/plan-studio/test.mjs  # axf-plugin:plan-studio
+      - name: Build orchestrator core (phases, model switches, a whole build life creates no plan)  # axf-plugin:build-orchestrator
+        run: node apps/console-web/plugins/build-orchestrator/test.mjs  # axf-plugin:build-orchestrator
       - name: Console commands plugin (control@1 console domain — CLI words, runner gate + resolve + deliver, confirm, send to a console)  # axf-plugin:console-commands
         run: node apps/console-web/plugins/console-commands/test.mjs  # axf-plugin:console-commands
       - name: Reference links plugin (ref@1 runner — builds store + plugin targets, find, explicit touches, ambiguous, missing, resolve, CLI)  # axf-plugin:ref-links

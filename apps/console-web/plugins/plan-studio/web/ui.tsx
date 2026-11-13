@@ -66,7 +66,7 @@ export function Head({ count }: { count?: number }) {
       <div>
         <p className="fx-eyebrow">Builds · plans{count ? ` · ${count}` : ''}</p>
         <h1>Plan Studio</h1>
-        <p className="fx-muted">Every plan in one place: write it, file it, find it, and turn it into a build when it's ready.</p>
+        <p className="fx-muted">Every plan in one place: write it, file it, find it.</p>
       </div>
     </header>
   );
@@ -243,7 +243,7 @@ function Row({ p, sel, pick, onOpen }: { p: Plan; sel: Set<string>; pick: (id: s
           {p.summary && <p>{p.summary}</p>}
           {p.goal && <p><b>Goal:</b> {p.goal}</p>}
           {p.steps.length > 0 && <ol className="axp-plan-studio__psteps">{p.steps.slice(0, 12).map((s) => <li key={s.id} className={s.done ? 'is-done' : ''}>{s.text} <span className="fx-muted">({s.model}{s.minutes ? `, ${pc.fmtMinutes(s.minutes)}` : ''})</span></li>)}{p.steps.length > 12 && <li className="fx-muted">…{p.steps.length - 12} more</li>}</ol>}
-          <p className="fx-muted axp-plan-studio__hint">{[p.tags.map((x) => `#${x}`).join(' '), p.profile && `profile ${p.profile}`, p.build && `build ${p.build.id} · ${p.build.progress ?? 0}%`, pc.fmtCost(p.cost.usd) && `${pc.fmtCost(p.cost.usd)} est.`, `changed ${fmtDay(p.updatedAt)}`].filter(Boolean).join(' · ')}</p>
+          <p className="fx-muted axp-plan-studio__hint">{[p.tags.map((x) => `#${x}`).join(' '), p.profile && `profile ${p.profile}`, pc.fmtCost(p.cost.usd) && `${pc.fmtCost(p.cost.usd)} est.`, `changed ${fmtDay(p.updatedAt)}`].filter(Boolean).join(' · ')}</p>
           <div className="fx-row"><Button size="sm" tone="primary" icon="edit" onClick={() => onOpen(p)}>Open</Button></div>
         </div>
       )}

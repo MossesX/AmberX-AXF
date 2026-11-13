@@ -23,7 +23,6 @@
   "optional": [
     "service:axf.agent-slots@1",
     "service:axf.merge-queue@1",
-    "service:plans@1",
     "service:ui-review@1"
   ],
   "banner": false,

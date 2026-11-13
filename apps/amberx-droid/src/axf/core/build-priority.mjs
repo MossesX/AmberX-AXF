@@ -48,7 +48,6 @@ const entryOf = (e, id) => e.build === id || e.name === id;
  *   mergeQueue   merge-queue state: { items: [{ pr, title, branch, build, url }] }
  *   pulls        open PRs: [{ number, title, base, branch, url }] (a PR based on this build's branch is stacked on it)
  *   ui           UI Review items still waiting: [{ id, name|title, build, branch, pr, status }]
- *   plans        plan@1 plans: [{ id, title, build: { id } }]
  *   epics        plan features: [{ id, title, dependsOn }]
  */
 export function waitingOn(id, sources = {}) {
@@ -94,9 +93,6 @@ export function waitingOn(id, sources = {}) {
     const hit = u.build === id || (branch && u.branch === branch) || (pr && Number(u.pr) === pr);
     const open = !u.status || ['waiting', 'pending', 'changes'].includes(u.status);
     if (hit && open) add({ kind: 'ui', id: u.id, title: u.name || u.title || u.id, why: 'In UI Review', route: 'ui-review', highlight: u.name || u.title || '' });
-  }
-  for (const p of sources.plans ?? []) {
-    if (p.build?.id === id) add({ kind: 'plan', id: p.id, title: p.title, why: 'Plan linked to it', route: 'plan-studio', highlight: p.title });
   }
   return rows;
 }

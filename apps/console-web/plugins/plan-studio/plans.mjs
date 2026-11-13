@@ -11,7 +11,7 @@
  * <store> is the hub's shared data where /projects is mounted (the console container): /projects/amberx-axf/_data/
  * plan-studio/ = axhub.memory_read/memory_write project "amberx-axf", area "data", path "plan-studio/plans/<id>.json".
  * Elsewhere it is the plugin's data folder (.axf-console/plugins/plan-studio). AXF_PLANS_DIR overrides (tests).
- * The plugin folder's data/plans/*.json are seeds (the imported parked plans): copied in once when missing.
+ * The plugin folder's data/plans/*.json are optional seeds: copied in once when missing (none ship today).
  *
  *   node apps/console-web/plugins/plan-studio/plans.mjs list [--status s] [--category c] [--q words]
  *   … show <id> [--md]                one plan (JSON, or Markdown)
@@ -19,6 +19,7 @@
  *                                     → hits with the focus to open (`axf control act console.screens plan-studio --focus <focus>`)
  *   … add "<title>" [--status parked] [--category "A > B"] [--priority P1] [--summary …] [--template feature] [--step "text|Opus|20"]…
  *   … status <id> <status>
+ *   … delete <id>… | delete --all [--status s]   delete plans (history kept: api restore brings one back)
  *   … import <file.md|file.json|->    a Markdown plan, a plan@1 JSON, or a JSON array of them (parked unless they say)
  *   … export [<id>…] [--md] [--out file]
  *   … ai "<plain English>" [--plan <id>] [--reply-file f] [--apply]   rules first; --reply-file = a fixed model reply (tests)
@@ -32,8 +33,8 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as pc from './web/plan-core.mjs';
 import * as ai from './web/plan-ai.mjs';
-import { discover, readMatrices, writeBack } from './catalog.mjs';
-import { dataPath, orchestratorPath, persistRoot, readProfiles, activeProfile } from '../../../../framework/cli/persist.mjs';
+import { discover, writeBack } from './catalog.mjs';
+import { dataPath, persistRoot, readProfiles, activeProfile } from '../../../../framework/cli/persist.mjs';
 import { activeProject, projectDataDir } from '../../../../framework/cli/projects.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -100,7 +101,7 @@ export const templates = () => pc.normTemplates(readJson(P('templates.json'), {}
 export const views = () => pc.normViews(readJson(P('views.json'), {}));
 
 /**
- * Save one plan (a version is kept). meta: {by, kind: save|autosave|ai|import|restore|build, note, force}.
+ * Save one plan (a version is kept). meta: {by, kind: save|autosave|ai|import|restore, note, force}.
  * A new plan whose title looks like an existing one is refused with the matches unless `force` (duplicate check).
  */
 export function savePlan(raw, meta = {}) {
@@ -127,6 +128,16 @@ export function deletePlan(id) {
   const d = readJson(P('deleted.json'), { ids: [] }); d.ids = [...new Set([...(d.ids ?? []), id])]; writeJson(P('deleted.json'), d);
   return { ok: true, id }; // history stays: restore brings it back
 }
+/**
+ * Delete every plan (or every plan with one status). `confirm: 'all'` is required so a stray call can't empty the
+ * store. Each plan goes through deletePlan: its history stays and restore brings any one back.
+ */
+export function deleteAll({ confirm = '', status = '' } = {}) {
+  if (confirm !== 'all') throw new Error('delete-all needs confirm: "all"');
+  const ids = loadPlans().filter((p) => !status || p.status === status).map((p) => p.id);
+  for (const id of ids) deletePlan(id);
+  return { ok: true, deleted: ids };
+}
 export function restore(id, v, by = '') {
   const h = history(id);
   const plan = pc.restoreVersion(h, v, readJson(P('plans', `${id}.json`)));
@@ -134,46 +145,13 @@ export function restore(id, v, by = '') {
   return savePlan(plan, { by, kind: 'restore', note: `Restored version ${v}`, force: true });
 }
 
-/* ------------------------------------------------------------------ orchestrator (orchestrator@1, the tracker file) */
+/* ------------------------------------------------------------------ build profiles (a plan's optional profile tag) */
 
-const orchFile = (profile) => (process.env.AXF_ORCH_FILE ? process.env.AXF_ORCH_FILE : orchestratorPath(profile || activeProfile().id));
+/*
+ * Plan Studio is a standalone tool (Brett, Nov 12 2026: "I don't want this plan studio to be linked to the build at
+ * all"). It never creates, reads, syncs or updates orchestrator builds, and builds never write plans.
+ */
 export function profiles() { try { return readProfiles().profiles?.map((p) => ({ id: p.id, label: p.label ?? p.name ?? p.id })) ?? []; } catch { return []; } }
-export function orchBuilds(profile) { return readJson(orchFile(profile), { builds: [] }).builds ?? []; }
-
-/** Turn a plan into a build: preview (no write) or add it to the profile's orchestrator and link both ways. */
-export function turnIntoBuild(id, { profile, buildId, preview = false, by = '', said = '' } = {}) {
-  const plan = getPlan(id);
-  if (!plan) throw new Error(`no plan ${id}`);
-  const prof = profile || plan.profile || activeProfile().id;
-  const change = pc.toBuild(plan, { profile: prof, id: buildId, said, by });
-  if (preview) return { ok: true, preview: true, change, profile: prof, minutes: change.steps.reduce((m, s) => m + pc.minutesOf(s.estimate), 0) };
-  const f = orchFile(prof);
-  const st = readJson(f, { $axf: 'orchestrator@1', builds: [] });
-  st.builds = st.builds ?? [];
-  if (st.builds.some((b) => b.id === change.id)) throw new Error(`"${change.id}" is already in the ${prof} orchestrator: pick another build id`);
-  const now = new Date().toISOString();
-  st.builds.push({
-    id: change.id, title: change.title, category: change.category, detail: change.detail, status: 'pending', hidden: false, source: 'plan-studio', pendingId: '', branch: '', pr: '',
-    createdAt: now, updatedAt: now, builtAt: '', notes: [{ text: `Plan Studio plan: ${plan.id} (${plan.title})`, at: now }], approvals: [], ...(change.origin ? { origin: change.origin } : {}),
-    steps: change.steps.map((s, i) => ({ id: `s${i + 1}`, text: s.text, model: s.model, why: '', phase: s.phase, group: '', estimate: s.estimate, files: [], checks: [], session: 'same', agent: false, skip: false, done: false, doneAt: '', note: '' })),
-  });
-  writeJson(f, st);
-  const saved = savePlan(pc.linkBuild(plan, { profile: prof, id: change.id }), { by, kind: 'build', note: `Turned into build ${prof}:${change.id}`, force: true });
-  return { ok: true, build: { profile: prof, id: change.id }, plan: saved.plan };
-}
-/** Live progress: every plan with a build reads its build; changed plans are saved. */
-export function syncBuilds() {
-  const changed = [];
-  const cache = new Map();
-  for (const p of loadPlans()) {
-    if (!p.build) continue;
-    if (!cache.has(p.build.profile)) cache.set(p.build.profile, orchBuilds(p.build.profile));
-    const b = cache.get(p.build.profile).find((x) => x.id === p.build.id);
-    const r = pc.syncBuild(p, b);
-    if (r.changed) { savePlan(r.plan, { by: 'orchestrator', kind: 'build', note: b?.status === 'complete' ? 'Build complete' : 'Build progress', force: true }); changed.push(p.id); }
-  }
-  return changed;
-}
 
 /* ------------------------------------------------------------------ catalog */
 
@@ -181,7 +159,7 @@ export async function catalog() {
   const plans = loadPlans();
   const seenFile = P('catalog-seen.json');
   const seen = readJson(seenFile, { keys: [] }).keys ?? [];
-  const entries = await discover({ seen, matrices: readMatrices(), plans });
+  const entries = await discover({ seen, plans });
   const keys = entries.filter((e) => e.status !== 'gone').map((e) => e.key);
   const all = [...new Set([...seen, ...keys])].sort();
   if (JSON.stringify(all) !== JSON.stringify(seen)) writeJson(seenFile, { keys: all });
@@ -212,7 +190,7 @@ export function exportPlans(ids, format = 'json') {
 export async function aiTurn(text, { planId, reply = null, apply = false, by = 'AI' } = {}) {
   const plans = loadPlans();
   const plan = planId ? plans.find((p) => p.id === planId) ?? null : null;
-  const ctx = { plan, plans, categories: categories().paths, catalog: await catalog(), builds: orchBuilds() };
+  const ctx = { plan, plans, categories: categories().paths, catalog: await catalog() };
   const complete = reply == null ? null : async () => reply;
   const r = await ai.interpret(text, ctx, complete);
   let res;
@@ -234,15 +212,12 @@ export async function api(req) {
   const r = req && typeof req === 'object' ? req : {};
   const by = String(r.by ?? '');
   switch (r.op) {
-    case 'state': {
-      let synced = [];
-      try { synced = syncBuilds(); } catch { /* the orchestrator file is optional */ }
-      return { ok: true, plans: loadPlans(), categories: categories(), templates: { ...templates(), all: pc.allTemplates(templates()) }, views: views(), profiles: profiles(), activeProfile: activeProfile().id, store: storeDir(), onHub: onHub(), synced };
-    }
+    case 'state': return { ok: true, plans: loadPlans(), categories: categories(), templates: { ...templates(), all: pc.allTemplates(templates()) }, views: views(), profiles: profiles(), activeProfile: activeProfile().id, store: storeDir(), onHub: onHub() };
     case 'find': return { ok: true, ...pc.findInPlans(loadPlans(), { q: r.q, plan: r.plan, item: r.item, kind: r.kind }, { limit: r.limit }) };
     case 'get': { const plan = getPlan(r.id); if (!plan) throw new Error(`no plan ${r.id}`); return { ok: true, plan, history: history(r.id) }; }
     case 'save': return savePlan(r.plan, { by, kind: r.kind, note: r.note, force: !!r.force });
     case 'delete': return deletePlan(r.id);
+    case 'delete-all': return deleteAll({ confirm: r.confirm, status: r.status });
     case 'restore': return restore(r.id, r.v, by);
     case 'bulk': { const changed = pc.bulk(loadPlans(), r.ids ?? [], r.change ?? {}); for (const p of changed) savePlan(p, { by, kind: 'save', note: 'Bulk change', force: true }); return { ok: true, changed: changed.map((p) => p.id) }; }
     case 'category': {
@@ -268,8 +243,6 @@ export async function api(req) {
       const f = e.features.find((x) => x.id === r.feature) ?? { id: r.feature || pc.slug(r.title), title: r.title || r.feature, state: 'idea' };
       return { ok: true, plan: pc.planFromFeature(e, f) };
     }
-    case 'build': return turnIntoBuild(r.id, { profile: r.profile, buildId: r.buildId, preview: !!r.preview, by, said: typeof r.said === 'string' ? r.said : '' });
-    case 'sync-builds': return { ok: true, changed: syncBuilds() };
     case 'ai': return aiTurn(r.text, { planId: r.plan, reply: r.reply ?? null, apply: !!r.apply, by: by || 'AI' });
     case 'ai-apply': { // apply edits the page already showed as a diff
       const plans = loadPlans(); const plan = r.plan ? plans.find((p) => p.id === r.plan) ?? null : null;
@@ -281,7 +254,7 @@ export async function api(req) {
       for (const p of res.created) saved.push(savePlan(p, { by: by || 'AI', kind: 'ai', note, force: true }).plan);
       return { ok: true, saved, summary: res.summary, say: ai.speakable(res) };
     }
-    case 'ai-prompt': { const plans = loadPlans(); return { ok: true, ...ai.modelPrompt(r.text, { plan: plans.find((p) => p.id === r.plan) ?? null, plans, categories: categories().paths, catalog: await catalog(), builds: orchBuilds() }) }; }
+    case 'ai-prompt': { const plans = loadPlans(); return { ok: true, ...ai.modelPrompt(r.text, { plan: plans.find((p) => p.id === r.plan) ?? null, plans, categories: categories().paths, catalog: await catalog() }) }; }
     default: throw new Error(`unknown op "${r.op}"`);
   }
 }
@@ -339,7 +312,11 @@ async function main(argv) {
     const r = await aiTurn(rest.join(' '), { planId: typeof f.plan === 'string' ? f.plan : '', reply, apply: !!f.apply, by: 'AI (cli)' });
     return out(r, r.ok ? `${r.say}${r.applied ? ' (applied)' : r.ops?.some((o) => !['answer', 'ask'].includes(o.op)) ? ' (not applied: add --apply)' : ''}` : `✗ ${r.error}`);
   }
-  if (cmd === 'sync-builds') { const c = syncBuilds(); return out({ ok: true, changed: c }, c.length ? `updated ${c.join(', ')}` : 'nothing changed'); }
+  if (cmd === 'delete') {
+    if (f.all) { const r = deleteAll({ confirm: 'all', status: typeof f.status === 'string' ? f.status : '' }); return out(r, `deleted ${r.deleted.length} plan(s)`); }
+    if (!rest.length) throw new Error('delete <id>… | delete --all [--status s]');
+    const ids = rest.map((id) => deletePlan(id).id); return out({ ok: true, deleted: ids }, `deleted ${ids.join(', ')}`);
+  }
   throw new Error(`unknown command ${cmd}`);
 }
 

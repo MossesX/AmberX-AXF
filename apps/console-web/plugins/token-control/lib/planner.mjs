@@ -3,7 +3,8 @@
  *
  * planner.plans  plan@1 plans through the plans@1 provider's module (Plan Studio's plans.mjs: the same store, history
  *                and rules as its page, its CLI and claude.ai sessions). `add` files a plan as parked unless a status
- *                is given (the "put it in a plan for later" rule); `build` turns one into an orchestrator build.
+ *                is given (the "put it in a plan for later" rule). Plans are not linked to builds (Brett, Nov 12
+ *                2026): act `build` is refused; `remove` deletes one plan (history kept, act restore brings it back).
  * planner.builds builds@1 records through the orchestrator@1 provider (orchestrator.mjs act/load: the one builds store,
  *                every write journalled; Pending, the queue and the Build manager follow). `select.profile` /
  *                AXF_BUILD_PROFILE picks the profile view; removing a build goes through the orchestrator's own
@@ -27,7 +28,7 @@ export function runPlanner(c) {
   return c.target === 'planner.plans' ? runPlans(c) : runBuilds(c);
 }
 
-const planRow = (p) => ({ id: p.id, title: p.title, status: p.status, priority: p.priority, category: p.category, tags: p.tags, project: p.project, profile: p.profile, summary: p.summary, steps: (p.steps ?? []).length, stepsDone: (p.steps ?? []).filter((s) => s.done).length, build: p.build ?? null, updatedAt: p.updatedAt });
+const planRow = (p) => ({ id: p.id, title: p.title, status: p.status, priority: p.priority, category: p.category, tags: p.tags, project: p.project, profile: p.profile, summary: p.summary, steps: (p.steps ?? []).length, stepsDone: (p.steps ?? []).filter((s) => s.done).length, updatedAt: p.updatedAt });
 
 async function runPlans(c) {
   const ps = await provider('plans@1');
@@ -63,7 +64,7 @@ async function runPlans(c) {
       const by = c.by ?? 'token-control';
       switch (c.action) {
         case 'park': { const r = await wrap(() => ps.savePlan({ ...p, status: 'parked' }, { by, kind: 'save', note: c.reason ?? 'Parked', force: true })); return { changed: !r.unchanged, item: r.plan }; }
-        case 'build': { const r = await wrap(() => ps.turnIntoBuild(p.id, { profile: input.profile || undefined, buildId: input.buildId || undefined, by })); return { changed: true, item: r.plan, build: r.build }; }
+        case 'build': throw new ControlError('invalid', 'Plan Studio is not linked to builds any more: add the build through planner.builds instead');
         case 'restore': { const r = await wrap(() => ps.restore(p.id, Number(input.version), by)); return { changed: true, item: r.plan ?? ps.getPlan(p.id) }; }
         case 'export': return { changed: false, text: ps.exportPlans([p.id], input.format === 'md' ? 'md' : 'json'), format: input.format === 'md' ? 'md' : 'json' };
         case 'step': {

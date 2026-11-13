@@ -10,12 +10,11 @@ export interface Link { kind: string; ref: string; label: string; [k: string]: u
 export interface PlanFeature { entry: string; feature: string; title: string; state: FeatureState; [k: string]: unknown }
 export interface Attachment { id: string; kind: 'image' | 'file' | 'voice'; name: string; url: string; size: number; transcript: string; [k: string]: unknown }
 export interface Comment { id: string; by: string; at: string; text: string; [k: string]: unknown }
-export interface BuildLink { profile: string; id: string; linkedAt?: string; status?: string; progress?: number; title?: string; branch?: string; pr?: string; [k: string]: unknown }
 export interface Plan {
   $axf: 'plan@1'; id: string; title: string; summary: string; goal: string; why: string; category: string; tags: string[]; project: string;
   touches: { key: string; name?: string }[]; profile: string; status: Status; priority: Priority; targetDate: string; owner: string;
   steps: Step[]; requirements: TextItem[]; acceptance: TextItem[]; decisions: TextItem[]; questions: TextItem[]; risks: TextItem[]; outOfScope: TextItem[];
-  links: Link[]; features: PlanFeature[]; attachments: Attachment[]; body: string; comments: Comment[]; build: BuildLink | null;
+  links: Link[]; features: PlanFeature[]; attachments: Attachment[]; body: string; comments: Comment[]; build: null;
   createdAt: string; updatedAt: string; createdBy: string; version: number; effort: { minutes: number; left: number }; cost: { usd: number; estimated: boolean };
   template?: string; [k: string]: unknown;
 }
@@ -24,10 +23,10 @@ export interface History { $axf: string; id: string; versions: Version[] }
 export interface CatNode { path: string; name: string; children: CatNode[]; count: number; total: number }
 export interface Template { id: string; label: string; icon: string; builtIn: boolean; plan: Partial<Plan> & Record<string, unknown> }
 export interface SavedView { id: string; label: string; layout: string; filter: Filter; sort: string; group: string }
-export interface Filter { q?: string; statuses?: string[]; priorities?: string[]; categories?: string[]; tags?: string[]; projects?: string[]; profiles?: string[]; models?: string[]; hasBuild?: boolean }
+export interface Filter { q?: string; statuses?: string[]; priorities?: string[]; categories?: string[]; tags?: string[]; projects?: string[]; profiles?: string[]; models?: string[] }
 export interface DiffItem { path: string; op: 'added' | 'removed' | 'changed' | 'reordered'; from: unknown; to: unknown }
 export interface Totals { minutes: number; left: number; cost: number; steps: number; done: number; progress: number; models: Record<string, number>; acceptance: { total: number; done: number } }
-export interface CatalogFeature { id: string; title: string; state: FeatureState; source: string; plan?: string; planTitle?: string; build?: string; description?: string; [k: string]: unknown }
+export interface CatalogFeature { id: string; title: string; state: FeatureState; source: string; plan?: string; planTitle?: string; description?: string; [k: string]: unknown }
 export interface CatalogEntry { key: string; kind: string; id: string; name: string; version: string; status: string; description: string; folder?: string; profile: string; links: Link[]; features: CatalogFeature[]; counts: Record<FeatureState, number>; total: number; progress: number; plans: string[]; [k: string]: unknown }
 export interface CatalogFilter { q?: string; kinds?: string[]; gaps?: boolean; planned?: boolean; profile?: string; status?: string }
 
@@ -64,9 +63,6 @@ export function bulk(plans: Plan[], ids: string[], change: Record<string, unknow
 export function roadmap(plans: Plan[]): { month: string; plans: Plan[] }[];
 export function outline(md: string): { level: number; text: string; id: string }[];
 export function toMarkdown(p: Plan): string; export function fromMarkdown(md: string, opts?: Record<string, unknown>): Plan;
-export function toBuild(plan: Plan, o?: { profile?: string; id?: string }): { action: 'add'; id: string; title: string; category: string; detail: string; steps: { text: string; model: string; estimate: string; phase: string }[]; [k: string]: unknown };
-export function linkBuild(plan: Plan, b: { profile: string; id: string }, at?: string): Plan;
-export function syncBuild(plan: Plan, build: unknown): { plan: Plan; changed: boolean };
 export function overlayCatalog(entries: unknown[], plans: Plan[]): CatalogEntry[];
 export function filterCatalog(entries: CatalogEntry[], f?: CatalogFilter): CatalogEntry[];
 export function planFromFeature(entry: CatalogEntry, feature: CatalogFeature, opts?: Record<string, unknown>): Plan;

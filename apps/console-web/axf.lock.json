@@ -548,7 +548,7 @@
     "src/axf/core/build-pipeline.d.mts": "d950df581b787da4",
     "src/axf/core/build-pipeline.mjs": "9d9501e637aac828",
     "src/axf/core/build-priority.d.mts": "f4864780baaea162",
-    "src/axf/core/build-priority.mjs": "a5b76c82c4f45a8f",
+    "src/axf/core/build-priority.mjs": "db907a417db3d751",
     "src/axf/core/catalog.ts": "294110261dff040c",
     "src/axf/core/deploy-log.d.mts": "5830a47f0f792b37",
     "src/axf/core/deploy-log.mjs": "aa9ff5758d912ac8",

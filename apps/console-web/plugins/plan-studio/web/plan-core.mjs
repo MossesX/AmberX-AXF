@@ -283,13 +283,12 @@ export function normalize(raw, opts = {}) {
     attachments: arr(o.attachments).map(normAttachment),
     body: str(o.body, 200000),
     comments: arr(o.comments).map((c) => ({ ...obj(c), id: str(obj(c).id, 40) || `c-${hid(`${obj(c).at}${obj(c).text}`)}`, by: str(obj(c).by, 80), at: str(obj(c).at, 40), text: str(obj(c).text, 4000) })).filter((c) => c.text),
-    build: o.build && typeof o.build === 'object' ? { ...o.build, profile: str(o.build.profile, 40), id: str(o.build.id, 80) } : null,
+    build: null, // kept in plan@1 for shape; Plan Studio is not linked to builds (Nov 12 2026), so it is always empty
     createdAt: str(o.createdAt, 40) || at,
     updatedAt: str(o.updatedAt, 40) || at,
     createdBy: str(o.createdBy, 80),
     version: Number.isInteger(o.version) && o.version > 0 ? o.version : 1,
   };
-  if (!plan.build?.id) plan.build = null;
   const t = totals(plan, opts.prices);
   plan.effort = { minutes: t.minutes, left: t.left };
   plan.cost = { usd: t.cost, estimated: true };
@@ -445,7 +444,7 @@ export function fromTemplate(template, fields = {}, opts = {}) {
   if (fields.id) p.id = fields.id;
   return p;
 }
-/** A plan as a user template (no ids, dates, history, build link). */
+/** A plan as a user template (no ids, dates, history). */
 export function asTemplate(plan, label) {
   const { id, createdAt, updatedAt, version, build, comments, attachments, $axf, effort, cost, createdBy, ...rest } = plan;
   return { id: slug(label), label: str(label, 80), icon: 'file', plan: { ...rest, title: '', steps: rest.steps.map(({ done, doneAt, ...s }) => s) } };
@@ -567,7 +566,7 @@ export function parseFocus(focus, plans = []) {
   return { find: t };
 }
 
-/** filter: {q, statuses[], priorities[], categories[] (a category includes its sub-categories), tags[], projects[], profiles[], models[], hasBuild} */
+/** filter: {q, statuses[], priorities[], categories[] (a category includes its sub-categories), tags[], projects[], profiles[], models[]} */
 export function filterPlans(plans, f = {}) {
   const words = str(f.q).toLowerCase().split(/\s+/).filter(Boolean);
   const inList = (list, v) => !arr(list).length || arr(list).includes(v);
@@ -576,8 +575,6 @@ export function filterPlans(plans, f = {}) {
     if (arr(f.categories).length && !f.categories.some((c) => under(p.category, normPath(c)))) return false;
     if (arr(f.tags).length && !f.tags.every((t) => p.tags.includes(t))) return false;
     if (arr(f.models).length && !p.steps.some((s) => f.models.includes(s.model))) return false;
-    if (f.hasBuild === true && !p.build) return false;
-    if (f.hasBuild === false && p.build) return false;
     if (words.length) { const t = searchText(p); if (!words.every((w) => t.includes(w))) return false; }
     return true;
   });
@@ -762,59 +759,6 @@ export function fromMarkdown(md, opts = {}) {
   return normalize({ ...plan, ...lists }, opts);
 }
 
-/* ------------------------------------------------------------------ Turn into a build (orchestrator@1) */
-
-/** The orchestrator `add` change for a plan (steps in dependency order, each with its model and estimate). */
-export function toBuild(plan, { profile, id, said = '', by = '' } = {}) {
-  const steps = orderSteps(plan.steps.filter((s) => !s.done));
-  if (!steps.length) throw new Error('the plan has no steps left to build: add steps first');
-  const buildId = slug(id || plan.id, 60);
-  const detail = [
-    plan.summary, plan.goal && `Goal: ${plan.goal}`, plan.why && `Why: ${plan.why}`,
-    plan.requirements.length && `Requirements: ${plan.requirements.map((r) => r.text).join('; ')}`,
-    plan.acceptance.length && `Done when: ${plan.acceptance.map((r) => r.text).join('; ')}`,
-    plan.outOfScope.length && `Out of scope: ${plan.outOfScope.map((r) => r.text).join('; ')}`,
-    `From Plan Studio plan ${plan.id}.`,
-  ].filter(Boolean).join('\n');
-  return {
-    action: 'add', id: buildId, title: plan.title, category: pathParts(plan.category)[0] || 'Plans', detail, source: 'plan-studio', planId: plan.id, profile: profile || plan.profile || '',
-    // what Brett said (build-origin@1): his words when he turned it into a build, else the plan's own origin
-    ...(str(said, 8000).trim() || plan.origin?.said ? { origin: { ...(plan.origin ?? {}), said: str(said, 8000).trim() || plan.origin.said, source: plan.origin?.source || 'console', at: plan.origin?.at || nowIso(), by: by || plan.origin?.by || 'plan-studio' } } : {}),
-    steps: steps.map((s) => ({ text: s.text, model: s.model, estimate: `${s.minutes || 20} min`, phase: s.phase || '', planStep: s.id })),
-  };
-}
-/** The plan linked to its build (both ways: the build carries planId, the plan carries build + a build link). */
-export function linkBuild(plan, { profile, id }, at = nowIso()) {
-  const links = plan.links.filter((l) => !(l.kind === 'build' && l.ref === `${profile}:${id}`));
-  return { ...plan, status: plan.status === 'done' ? 'done' : 'building', profile: profile || plan.profile, build: { profile, id, linkedAt: at, status: 'pending', progress: 0 }, links: [...links, { kind: 'build', ref: `${profile}:${id}`, label: 'Orchestrator build' }] };
-}
-/**
- * Bring a plan up to date with its orchestrator build (live progress). The build's steps tick the plan's steps
- * (matched by planStep, else by text). When the build is complete the plan is done and its planned features are have.
- * Returns {plan, changed}.
- */
-export function syncBuild(plan, build) {
-  if (!plan.build || !build) return { plan, changed: false };
-  const bs = arr(build.steps);
-  const done = bs.filter((s) => s.done || s.skip).length;
-  const progress = bs.length ? Math.round((done / bs.length) * 100) : 0;
-  const complete = build.status === 'complete' || (bs.length > 0 && done === bs.length);
-  const steps = plan.steps.map((s) => {
-    const b = bs.find((x) => x.planStep === s.id) ?? bs.find((x) => str(x.text).trim() === s.text.trim());
-    return b && b.done && !s.done ? { ...s, done: true, doneAt: str(b.doneAt) || nowIso() } : s;
-  });
-  const next = {
-    ...plan, steps,
-    build: { ...plan.build, status: complete ? 'complete' : str(build.status) || plan.build.status, progress, title: str(build.title, 300), branch: str(build.branch, 200), pr: str(build.pr, 200) },
-    status: complete ? 'done' : plan.status === 'done' ? 'done' : 'building',
-    features: complete ? plan.features.map((f) => (f.state === 'planned' ? { ...f, state: 'have', haveAt: nowIso() } : f)) : plan.features,
-  };
-  if (build.pr && !next.links.some((l) => l.kind === 'pr' && l.ref === String(build.pr))) next.links = [...next.links, { kind: 'pr', ref: String(build.pr), label: 'Build PR' }];
-  if (build.branch && !next.links.some((l) => l.kind === 'branch' && l.ref === build.branch)) next.links = [...next.links, { kind: 'branch', ref: build.branch, label: '' }];
-  const changed = JSON.stringify(diff(plan, next)) !== '[]';
-  return { plan: changed ? next : plan, changed };
-}
-
 /* ------------------------------------------------------------------ Catalog features on plans */
 
 /** Catalog entries with their features, overlaid with what plans say (planned / have), counts and progress. */
@@ -831,14 +775,14 @@ export function overlayCatalog(entries, plans) {
       const live = hits.find((h) => !['dropped'].includes(h.plan.status));
       if (!live) return x;
       const state = x.state === 'have' ? 'have' : live.f.state === 'have' ? 'have' : 'planned';
-      return { ...x, state, plan: live.plan.id, planTitle: live.plan.title, build: live.plan.build ? `${live.plan.build.profile}:${live.plan.build.id}` : '' };
+      return { ...x, state, plan: live.plan.id, planTitle: live.plan.title };
     });
     // features a plan adds that no source has yet (kept on the plan, shown as planned)
     for (const p of plans) for (const f of p.features) {
       if (f.entry !== e.key || p.status === 'dropped') continue;
       const id = f.feature || slug(f.title, 80);
       if (feats.some((x) => x.id === id)) continue;
-      feats.push({ id, title: f.title || f.feature, state: f.state === 'have' ? 'have' : f.state === 'idea' ? 'idea' : 'planned', source: 'plan', plan: p.id, planTitle: p.title, build: p.build ? `${p.build.profile}:${p.build.id}` : '' });
+      feats.push({ id, title: f.title || f.feature, state: f.state === 'have' ? 'have' : f.state === 'idea' ? 'idea' : 'planned', source: 'plan', plan: p.id, planTitle: p.title });
     }
     const c = { have: 0, partial: 0, planned: 0, idea: 0 };
     for (const x of feats) c[x.state] = (c[x.state] ?? 0) + 1;

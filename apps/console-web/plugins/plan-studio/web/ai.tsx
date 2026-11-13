@@ -3,7 +3,7 @@ import { Button, Icon, IconButton, useRuntime } from '@console/axf/react';
 import * as pc from './plan-core.mjs';
 import * as ai from './plan-ai.mjs';
 import type { Plan } from './plan-core.mjs';
-import { applyAi, askAi, KEYS, turnIntoBuild, undoFor, useAiInfo, useStudio, type AiResult } from './api';
+import { applyAi, askAi, deleteAllPlans, deletePlan, KEYS, undoFor, useAiInfo, useStudio, type AiResult } from './api';
 import { canListen, hasAgentVoice, listenOnce, micLease, runConversation, speakOut, type TurnResult } from './voice';
 
 /*
@@ -118,15 +118,17 @@ export function VoicePanel({ plan, onClose, onOpen }: { plan: Plan | null; onClo
     const lang = String(setting(rt, KEYS.voiceLang, 'en-US'));
     const handle = async (heard: string): Promise<TurnResult> => {
       const cur = () => plansRef.current.find((p) => p.id === planRef.current) ?? null;
-      const tb = /^(?:turn|make|send)\s+(this|it|the plan|.+?)\s+into\s+a\s+build(?:\s+(?:in|on|for)\s+(?:the\s+)?([a-z0-9-]+)(?:\s+profile)?)?$/i.exec(heard.trim().replace(/[.!?]+$/, ''));
-      if (tb) {
-        const target = /^(this|it|the plan)$/i.test(tb[1]!) ? cur() : ai.findPlan(plansRef.current, tb[1]!);
-        if (!target) return { say: 'Which plan should become a build? Open it first or say its name.' };
-        const profile = tb[2] || target.profile || state?.activeProfile || '';
-        const prof = state?.profiles.find((p) => p.id === profile || p.label.toLowerCase() === profile.toLowerCase())?.id ?? profile;
-        const pre = await turnIntoBuild(target.id, prof, true);
-        if (!pre.ok) return { say: pre.error || 'That plan cannot become a build yet.' };
-        return { say: '', confirm: { question: `Turn ${target.title} into a build in ${prof}, ${pre.change?.steps.length ?? 0} steps, about ${pc.fmtMinutes(pre.minutes ?? 0)}?`, run: async () => { const r = await turnIntoBuild(target.id, prof, false); return { say: r.ok ? `Done. It's build ${r.build?.id} in ${prof}.` : r.error || 'That did not work.' }; } } };
+      // delete by voice (always confirmed): "delete this plan", "delete the Docs Studio plan", "delete all plans"
+      const said = heard.trim().replace(/[.!?]+$/, '');
+      if (/^(?:delete|remove|clear)\s+(?:all|every)(?:\s+(?:of\s+)?the)?\s+plans?$/i.test(said)) {
+        const n = plansRef.current.length;
+        if (!n) return { say: 'There are no plans to delete.' };
+        return { say: '', confirm: { question: `Delete all ${n} plans? Their history stays, so any one can be restored.`, run: async () => { const r = await deleteAllPlans(); return { say: r.ok ? `Deleted ${r.deleted.length} plans.` : r.error || 'That did not work.' }; } } };
+      }
+      const del = /^(?:delete|remove)\s+(this|it|the plan|this plan|.+?)(?:\s+plan)?$/i.exec(said);
+      if (del && !/^(?:the\s+)?(?:step|task|risk|requirement|decision|question|acceptance|check|comment|link)s?\b/i.test(del[1]!)) {
+        const target = /^(this|it|the plan|this plan)$/i.test(del[1]!) ? cur() : ai.findPlan(plansRef.current, del[1]!);
+        if (target) return { say: '', confirm: { question: `Delete the plan ${target.title}?`, run: async () => { await deletePlan(target.id); if (planRef.current === target.id) planRef.current = ''; return { say: `Deleted ${target.title}.` }; } } };
       }
       const open = /^(?:open|go to|switch to|work on)\s+(?:the\s+)?(.+?)(?:\s+plan)?$/i.exec(heard.trim());
       if (open) { const p = ai.findPlan(plansRef.current, open[1]!); if (p) { planRef.current = p.id; onOpen?.(p.id); return { say: `Opened ${p.title}.` }; } }
