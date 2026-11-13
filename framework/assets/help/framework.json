@@ -1538,6 +1538,44 @@
         "target": "apply-layout",
         "title": "Apply layout",
         "text": "Lays the open tabs out on the layout you picked, spread evenly over its panes. The pane limit holds: a layout with more panes uses only its first ones."
+      },
+      {
+        "target": "this-app",
+        "title": "This app",
+        "text": "Sets what the AI may change when it makes a skin for this app only. Hub-wide is the other tab.",
+        "kind": "tab"
+      },
+      {
+        "target": "hub-wide",
+        "title": "Hub-wide",
+        "text": "Sets what the AI may change when it makes a skin for every app on the hub. This app overrides it for one app.",
+        "kind": "tab"
+      },
+      {
+        "target": "save-current-look-as-default",
+        "title": "Save current look as Default",
+        "text": "Saves the look you have right now as the Default skin: the one every AI skin starts from and the one Restore goes back to. It cannot be deleted.",
+        "tryIt": "Get the app looking the way you like, then press this once.",
+        "kind": "button"
+      },
+      {
+        "target": "what-should-the-ai-make",
+        "title": "What should the AI make?",
+        "text": "A few words on the skin you want: calmer, darker, rounder buttons. The AI reads this with the allow / lock list below and only changes what you let it.",
+        "kind": "field"
+      },
+      {
+        "target": "make-skin-with-ai",
+        "title": "Make skin with AI",
+        "text": "Asks the AI for a new skin that obeys this config: locked options stay as the Default skin has them, allowed ones may change, ask ones wait for you. The result lands as a skin you can preview, apply or throw away.",
+        "more": "The same move is skins.mjs config make on the command line and the skin.config.make action. Dry run first if you only want the brief.",
+        "kind": "button"
+      },
+      {
+        "target": "find-an-option",
+        "title": "Find an option",
+        "text": "Narrows the list to options whose name or group matches what you type.",
+        "kind": "field"
       }
     ],
     "intros": [
