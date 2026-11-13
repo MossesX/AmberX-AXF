@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T18:16:00.689Z",
+ "updatedAt": "2026-11-13T18:16:21.839Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -126853,6 +126853,43 @@
    "origin": {
     "said": "like a veto approve control panel, we'll be able to create a prompting event, it could be for anything, a general prompting engine which will run set tools and maybe some macros or pipelines",
     "at": "2026-11-13T18:15:41.449Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "prompting-engine-control-panel-events",
+   "title": "Prompting engine with control panel (events, macros, pipelines)",
+   "category": "",
+   "detail": "A general prompting/rules engine with its own control panel (console plugin), built on the decision dialog (build decision-dialog-ui-review-other).\n- Create 'prompt events': a trigger (any console/axHub/build event: UI Review submitted, build failed, merge clash, approval held, schedule, voice phrase, webhook, custom), conditions, and what to ask Brett (approve/deny, veto countdown, pick from options, text input).\n- Actions on each answer: run tools (MCP/axHub/console commands), macros (saved sequences of commands), or orchestrator pipelines; chain events.\n- Control panel to list, create, edit, enable/disable, test-fire and see history of events; templates for common ones.\n- Reachable by REST/MCP/CLI/voice/control@1.\n- Schema + manifest for events/macros, conformance tests, audit log, Shipped features.\nMODEL: Brett wants Fable for the engine, event/macro schema and contract steps; Opus is fine for UI steps. Brett pre-approves the Fable upgrade for those steps.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-13T18:16:04.183Z",
+   "updatedAt": "2026-11-13T18:16:08.665Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T18:16:08.665Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "a general prompting engine which will run set tools and maybe some macros or pipelines; we're gonna do that on Fable",
+    "at": "2026-11-13T18:16:04.183Z",
     "source": "",
     "session": "",
     "link": "",

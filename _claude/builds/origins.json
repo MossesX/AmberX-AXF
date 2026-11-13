@@ -6186,6 +6186,18 @@
    "from": "",
    "addenda": []
   },
+  "prompting-engine-control-panel-events": {
+   "said": "a general prompting engine which will run set tools and maybe some macros or pipelines; we're gonna do that on Fable",
+   "at": "2026-11-13T18:16:04.183Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "prompting-engine-control-panel-to-create": {
    "said": "like a veto approve control panel, we'll be able to create a prompting event, it could be for anything, a general prompting engine which will run set tools and maybe some macros or pipelines",
    "at": "2026-11-13T18:15:41.449Z",
