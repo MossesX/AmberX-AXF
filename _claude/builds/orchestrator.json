@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T12:14:33.854Z",
+ "updatedAt": "2026-11-13T12:28:16.438Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -117267,7 +117267,7 @@
    "title": "Merges are only 'merged' once GitHub confirms: every merge path (console auto-merge, auto-land, github client plugin, server gate, scripts) shows 'Pending GitHub confirmation' right after a merge call, then reads the PR back from GitHub (state MERGED and the merge commit on main) before marking it m",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -117275,8 +117275,8 @@
    "pr": "#569",
    "priority": "P0",
    "createdAt": "2026-11-13T06:21:11.993Z",
-   "updatedAt": "2026-11-13T12:10:16.039Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-13T12:28:11.498Z",
+   "builtAt": "2026-11-13T12:28:11.498Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -117361,6 +117361,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-merges-are-only-merged-once-github-confirms-ever--sully, own login copy)",
      "at": "2026-11-13T12:10:16.039Z"
+    },
+    {
+     "text": "Headless run axf-merges-are-only-merged-once-github-confirms-ever--sully: brief only · start 13.7K tokens ($0.04) · cost $2.43 · 82 turns · 6 tools, MCP none",
+     "at": "2026-11-13T12:28:11.498Z"
     }
    ],
    "approvals": [
@@ -117381,7 +117385,7 @@
     "session": "",
     "link": "",
     "by": "merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me",
-    "brief": "# Build: merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"Merges are only 'merged' once GitHub confirms: every merge path (console auto-merge, auto-land, github client plugin, server gate, scripts) shows 'Pending GitHub confirmation' right after a merge call, then reads the PR back from GitHub (state MERGED and the merge commit on main) before marking it m\" (merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me) — Phase 2, model Opus.\nThis phase downgrades Fable → Opus: fine, no approval needed (it is recorded when you tick its first step).\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me · PR #569\nSteps in this phase (1 left, ~10 min):\n[x] s3 (~10 min) Add a GitHub read-back helper framework/cli/merge-confirm.mjs: given repo + PR, read the PR from GitHub through github-token.mjs (ETag cached), check state MERGED and merge_commit_sha is an ancestor of origin/main (compare API), and return a merge-confirm@1 result. CLI: confirm <repo> <pr> [--wait], status <repo> <pr>, list.\n[x] s4 (~10 min) Persistent pending-confirmation store + poller: record each merge call as pending-github-confirmation in the push-banner data dir, a tick that re-reads pending ones with backoff, flips them to merged or merge-unconfirmed after the timeout, and raises one health@1 banner item for unconfirmed merges.\n[x] s5 (~10 min) Merge queue path: after each queue merge call, record pending-github-confirmation and only mark the stack entry merged (and trigger the one-per-stack redeploy) once merge-confirm says merged; unconfirmed entries stay in the queue as 'awaiting GitHub'.\n[x] s6 (~10 min) Auto-land and console auto-merge paths (push banner, settings autoLand/autoMerge): route their merge calls through the same request → confirm flow; nothing reports 'merged' from the merge API's 200 alone.\n[x] s7 (~10 min) GitHub client plugin + server merge gate: the github plugin's merge action and the console server's merge gate return status pending-github-confirmation with a confirm id, and the gate's 'merged' answer comes from merge-confirm only.\n[x] s8 (~10 min) Scripts and builds: find every remaining merge caller (grep 'pulls/.*/merge', 'gh pr merge', mergePullRequest in deploy/, framework/cli/, apps/console-web/plugins/) and switch it to the flow; builds-live / builds-reconcile mark a build complete only on a confirmed merge.\n[x] s9 (~10 min) Push banner UI: show 'Pending GitHub confirmation' (spinner chip, tokens only, framework Chip) on PR rows and merge-queue entries right after a merge call, then Merged (with merge commit link) or 'GitHub hasn't confirmed' with Recheck. Toolbar stays role=toolbar with tap-confirm.\n[x] s10 (~10 min) API for the UI: REST GET /api/plugins/push-banner/merge-confirm (list + one), POST …/recheck; MCP plugin commands push_banner_mergeconfirm_list|get|recheck; CLI merge-confirm.mjs; voice action merge.recheck; console_show target push-banner/merge-confirm/<repo>#<pr> deep link.\n[x] s11 (~5 min) Notifications + glossary: declare the 'merge unconfirmed' alert in push-banner notify.json, describe the new CLI/commands where defined so the glossary catalog picks them up, lifecycle markers on doc lines.\n[x] s12 (~10 min) Tests: unit tests for the read-back (MERGED + commit on main, MERGED but commit missing, still OPEN, API error, timeout) with a fake GitHub; merge-queue and auto-merge tests asserting nothing is 'merged' before confirmation; run check-merge-confirm, check-theme, check-toolbars, check-chrome-assets, plugin-lifecycle check.\n[ ] s13 (~10 min) UI Review shots (3 options for the pending chip) submitted via review.mjs, report _claude/builds/reports/merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me.md (paths covered, API reach per feature), THREADS.md row, STATUS line, push branch and open PR naming the REST/MCP/CLI/voice/deep-link reach.\nRead first: _claude/builds/reports/merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me.md, _claude/THREADS.md, _claude/memory/STATUS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me \"…\"); the build goes back to Pending for Brett.\n",
+    "brief": "# Build: merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"Merges are only 'merged' once GitHub confirms: every merge path (console auto-merge, auto-land, github client plugin, server gate, scripts) shows 'Pending GitHub confirmation' right after a merge call, then reads the PR back from GitHub (state MERGED and the merge commit on main) before marking it m\" (merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me) — Phase 1, model Fable.\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (2 left, ~20 min):\n[ ] s1 (~10 min) Design the merge-confirm@1 contract: states (merge-requested → pending-github-confirmation → merged | merge-unconfirmed | merge-failed), required evidence (PR state MERGED, merged_at, merge_commit_sha reachable from main), retry/backoff and timeout rules, and the record each merge path writes. Add it to the schemas with a reference fixture.\n[ ] s2 (~10 min) Write the shared core framework/core/merge-confirm.mjs: pure state machine (request, observe(prRead, mainRead), timeout), the evidence check and the label 'Pending GitHub confirmation'. Add a fixture runner check-merge-confirm.mjs.\nRead first: framework/schemas/merge-confirm.json, framework/spec/fixtures/merge-confirm.json, framework/spec/MERGE-CONFIRM.md, framework/core/merge-confirm.mjs, framework/spec/check-merge-confirm.mjs\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": false,
     "from": "",
     "addenda": []
@@ -117672,8 +117676,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T12:27:49.353Z",
      "note": "",
      "uid": "st-mweleffs0dktki",
      "createdAt": "2026-11-13T06:25:16.456Z"
@@ -119597,7 +119601,7 @@
    "pr": "#556",
    "priority": "P0",
    "createdAt": "2026-11-13T07:12:21.823Z",
-   "updatedAt": "2026-11-13T11:59:12.332Z",
+   "updatedAt": "2026-11-13T12:26:13.857Z",
    "builtAt": "",
    "notes": [
     {
@@ -119711,7 +119715,7 @@
     "session": "",
     "link": "",
     "by": "full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu",
-    "brief": "# Build: full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"Full API and voice control of the entire console: every tab, screen, setting, button, function and plugin (incl. enable/disable plugins); scroll up/down; bring any row or step of any table or grid into focus; search screens and everything loaded and pull it into focus\" (full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu) — Phase 2, model Opus.\nThis phase downgrades Fable → Opus: fine, no approval needed (it is recorded when you tick its first step).\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu · PR #556\nSteps in this phase (4 left, ~36 min):\n[x] s9 (~6 min) Re-bake the framework into the console and check that it still typechecks and builds.\n[x] s10 (~10 min) Console screen and tab inventory: build a static index of every console view, nav entry and tab group, with addresses, labels and keywords, from the view registry, and export it for the server.\n[x] s11 (~10 min) Settings inventory: every setting in the SettingsRegistry and in every plugin sub-tab gets an address with get/set and type and range validation. Owner-only Claude settings are marked personOnly and refused.\n[x] s12 (~10 min) Button and function inventory: expose the existing console action registry, toolbar buttons and context-menu items as press targets. Destructive ones need an explicit confirm flag, and deciding actions (approve/deny) stay personOnly.\n[x] s13 (~10 min) Plugin targets: address every plugin, its UI and settings tab, and add enable/disable through the plugin-manager engine. Report dependency effects (what needs it) in the result. Core plugins refuse disable with a reason.\n[x] s14 (~10 min) Search index: one ranked search over screens, tabs, settings, buttons, plugins, help and everything currently loaded (grid rows, build steps, UI Review items, chat lines). Each hit carries its address so it can be pulled into focus.\n[x] s15 (~10 min) Browser executor: the console page receives console-control commands over the existing relay channel and runs open/press/set/scroll/focus/search through the target registry. It highlights the result and returns a result plus a live state snapshot (screen, tab, scroll, focused row).\n[x] s16 (~10 min) Server REST: add /api/console-control/targets, /state, /do, /search, /focus, /scroll and /plugins/{id}/enable|disable. Commands go to the open console session (Follow Amber channel), with a clear 'no console open' error and an open_url fallback link. Settings and plugin toggles that need no browser run server-side.\n[x] s17 (~8 min) Server-side guards: personOnly and owner-only refusal, confirm for destructive actions, an audit log line per command, and a rate limit. Send veto-policy tags to axHub for state-changing verbs and leave navigation read-only.\n[x] s18 (~10 min) MCP tools in mcp_server.py: console_control_targets, _state, _do, _search, _focus, _scroll and _plugin (enable/disable). Extend console_show/console_open to accept the new addresses.\n[x] s19 (~8 min) CLI: add axf console do|state|targets|search|focus|scroll|plugin enable|disable to framework/cli/axf.mjs, calling the REST routes, with --json output.\n[x] s20 (~10 min) Voice (AmberX): map phrases to console-control commands ('scroll down', 'open plugins settings', 'find <x>', 'show step 3 of <build>', 'disable plugin <y>', 'press <button>') through the console actions registry, with spoken confirmation of the result.\n[x] s21 (~8 min) control@1 integration: register the console-control targets so that control@1 tokens and planner items can point at addresses, and add console actions console.control.* with descriptions.\n[x] s22 (~10 min) Search palette UI: a framework command-palette (Ctrl+K or a banner chip) listing search hits. Picking one pulls it into focus. Use tokens and TabGroup/Button only. Its API is the search route: deep link ?axf-cmd=search&q=, state via console_control_state.\n[x] s23 (~10 min) Backfill batch 1: add data-axf-target and settings ids to hand-drawn elements in the banner, nav, Settings and Terminal views that the framework hooks don't reach.\n[x] s24 (~10 min) Backfill batch 2: Builds views (orchestrator, Pipeline, Pending, Queue, Build manager), so that every build row and step is focusable.\n[x] s25 (~10 min) Backfill batch 3: the remaining plugin UIs (UI Review, Plan Studio, Breakroom, Shipped features, Glossary and others) and their grids.\n[x] s26 (~10 min) Coverage CI check framework/cli/check-console-control.mjs. It fails when a view, tab group, toolbar, setting, plugin or DataGrid has no address. The ratchet baseline framework/spec/console-control-baseline.json can only go down. Wire it into CI.\n[x] s27 (~10 min) Server tests: pytest for the REST routes and MCP tools (targets, state, do, search, plugin enable/disable, personOnly refusal, no-console error).\n[ ] s28 (~10 min) Executor tests: Playwright against vite preview. Open a tab, scroll, focus a grid row and a build step, set a setting, press a button and search-then-focus, asserting the reported state.\n[ ] s29 (~8 min) Parity test: the same command through REST, MCP, CLI and the voice intent gives identical results and state.\n[ ] s30 (~8 min) Docs: help entries and glossary descriptions for the new actions, CLI and MCP tools; _claude/memory/docs/console-control.md; a CLAUDE.md conventions line.\n[ ] s31 (~10 min) Run all the checks (fixtures, check-console-control, theme, controls, toolbars, chrome-assets, pytest, e2e, parity). Write the report _claude/builds/reports/full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu.md, add a THREADS.md row and open the PR stating how each feature is reached (deep link, state, actions, settings via REST, MCP, CLI and voice).\nRead first: apps/console-web/scripts/console-control.e2e.mjs, apps/console-web/scripts/console-control-parity.mjs, _claude/memory/docs/console-control.md, apps/console-web/src/help/, CLAUDE.md, _claude/builds/reports/full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu.md, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu \"…\"); the build goes back to Pending for Brett.\n",
+    "brief": "# Build: full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"Full API and voice control of the entire console: every tab, screen, setting, button, function and plugin (incl. enable/disable plugins); scroll up/down; bring any row or step of any table or grid into focus; search screens and everything loaded and pull it into focus\" (full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu) — Phase 1, model Fable.\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (8 left, ~1.2 h):\n[ ] s1 (~10 min) Design the console-control@1 contract. Define one address grammar for screen, tab, sub-tab, setting, button, function, plugin, grid row and build step (e.g. view:builds/tab:pipeline/grid:queue/row:<id>). Define the verbs open, state, press, set, scroll (up/down/page/top/bottom/to), focus, search, plugin.enable and plugin.disable. Write it up in framework/spec/CONSOLE-CONTROL.md.\n[ ] s2 (~8 min) Add the console-control@1 JSON schema (address, command, result and state shapes) to framework/schemas, and regenerate the JSON Schemas with axf.mjs schemas.\n[ ] s3 (~10 min) Write the reference engine framework/core/engines/console-control.ts. It parses and formats addresses, validates commands against the schema, resolves an address against a target registry snapshot, and returns typed errors with stable wire codes.\n[ ] s4 (~8 min) Add golden fixtures for console-control (parsing, resolving, errors and scroll maths) to gen-fixtures.mts and a check script. Record the Kotlin twin as a deferred gap in PORTING.md (Android on hold).\n[ ] s5 (~10 min) Add the framework target registry framework/react/controlTargets.ts: a useControlTarget hook and a data-axf-target convention. Buttons, tabs, settings and views register their address, label, keywords and an invoke/get/set handler. AxfProvider installs the registry.\n[ ] s6 (~10 min) Wire TabGroup, Button and the settings rows to register targets automatically, using their existing settings ids and labels as addresses, so most of the UI is addressable with no per-view code.\n[ ] s7 (~8 min) Add the scroll contract framework/react/scrollControl.ts. It finds the active or named scroll container and runs scroll up/down/page/top/bottom/to-address, and reports the scroll position and extent as state.\n[ ] s8 (~10 min) Grid and table focus: DataGrid and the build step lists register every row and step as a target. focus(address) scrolls the row into view, selects it, highlights it through theme tokens (opacityTint) and works on virtualised rows.\nRead first: framework/spec/CONSOLE-CONTROL.md, framework/schemas/console-control.json, framework/schemas/json/, framework/core/engines/console-control.ts, framework/core/index.ts, framework/spec/gen-fixtures.mts, framework/spec/fixtures/console-control.json, framework/spec/check-console-control.mts, framework/spec/PORTING.md, framework/react/controlTargets.ts, framework/react/AxfProvider.tsx, framework/react/components/TabGroup.tsx, framework/react/components/Button.tsx, framework/libs/settings/, framework/react/scrollControl.ts, framework/react/components/DataGrid.tsx, framework/ui/axf.css\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": false,
     "from": "",
     "addenda": []
@@ -120323,8 +120327,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T12:18:28.526Z",
      "note": "",
      "uid": "st-mwen6bti0ss5d0",
      "createdAt": "2026-11-13T07:14:57.750Z"
@@ -120344,8 +120348,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T12:23:36.594Z",
      "note": "",
      "uid": "st-mwen6bti0tv8cn",
      "createdAt": "2026-11-13T07:14:57.750Z"
@@ -120367,8 +120371,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T12:26:13.857Z",
      "note": "",
      "uid": "st-mwen6bti0ue2y9",
      "createdAt": "2026-11-13T07:14:57.750Z"
@@ -122824,7 +122828,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T11:45:11.111Z",
-   "updatedAt": "2026-11-13T12:14:32.121Z",
+   "updatedAt": "2026-11-13T12:25:26.465Z",
    "builtAt": "",
    "notes": [
     {
@@ -122975,8 +122979,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T12:15:48.832Z",
      "note": "",
      "uid": "st-mwewxu2m0ptav4",
      "createdAt": "2026-11-13T11:48:17.662Z"
@@ -122997,8 +123001,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T12:18:18.484Z",
      "note": "",
      "uid": "st-mwewxu2m0qxfvz",
      "createdAt": "2026-11-13T11:48:17.662Z"
@@ -123018,8 +123022,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T12:20:33.572Z",
      "note": "",
      "uid": "st-mwewxu2m0rf856",
      "createdAt": "2026-11-13T11:48:17.662Z"
@@ -123040,8 +123044,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T12:22:18.574Z",
      "note": "",
      "uid": "st-mwewxu2m0syuoq",
      "createdAt": "2026-11-13T11:48:17.662Z"
@@ -123062,8 +123066,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T12:23:49.879Z",
      "note": "",
      "uid": "st-mwewxu2m0t5ja6",
      "createdAt": "2026-11-13T11:48:17.662Z"
@@ -123084,8 +123088,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T12:25:26.465Z",
      "note": "",
      "uid": "st-mwewxu2m0u67fx",
      "createdAt": "2026-11-13T11:48:17.662Z"
@@ -123238,11 +123242,11 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/combine-merge-queue-into-one-pr",
+   "branch": "combine/merge-queue-2026-11-13",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T11:55:36.143Z",
-   "updatedAt": "2026-11-13T12:14:17.115Z",
+   "updatedAt": "2026-11-13T12:27:49.822Z",
    "builtAt": "",
    "notes": [
     {
@@ -123339,8 +123343,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T12:14:49.132Z",
      "note": "",
      "uid": "st-mwex9tpr021aq0",
      "createdAt": "2026-11-13T11:57:37.071Z"
@@ -123360,8 +123364,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T12:15:42.577Z",
      "note": "",
      "uid": "st-mwex9tpr03y07c",
      "createdAt": "2026-11-13T11:57:37.071Z"
@@ -123383,8 +123387,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T12:17:04.646Z",
      "note": "",
      "uid": "st-mwex9tpr042fga",
      "createdAt": "2026-11-13T11:57:37.071Z"
@@ -123406,8 +123410,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T12:19:42.120Z",
      "note": "",
      "uid": "st-mwex9tpr05s2mt",
      "createdAt": "2026-11-13T11:57:37.071Z"
@@ -123430,8 +123434,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T12:24:26.252Z",
      "note": "",
      "uid": "st-mwex9tpr06u37t",
      "createdAt": "2026-11-13T11:57:37.071Z"
@@ -123454,8 +123458,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T12:25:53.425Z",
      "note": "",
      "uid": "st-mwex9tpr07ho2r",
      "createdAt": "2026-11-13T11:57:37.071Z"
@@ -123478,8 +123482,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T12:26:09.754Z",
      "note": "",
      "uid": "st-mwex9tpr08lrzs",
      "createdAt": "2026-11-13T11:57:37.071Z"
@@ -123502,8 +123506,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T12:27:49.821Z",
      "note": "",
      "uid": "st-mwex9tpr094jsa",
      "createdAt": "2026-11-13T11:57:37.071Z"
@@ -123803,6 +123807,557 @@
      "note": "",
      "uid": "st-mwex9tpr0msvlr",
      "createdAt": "2026-11-13T11:57:37.071Z"
+    }
+   ]
+  },
+  {
+   "id": "ui-review-gate-switch-default-off",
+   "title": "UI Review gate switch, default off",
+   "category": "",
+   "detail": "",
+   "status": "running",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/ui-review-gate-switch-default-off",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-13T12:14:42.715Z",
+   "updatedAt": "2026-11-13T12:28:07.519Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T12:14:45.150Z"
+    },
+    {
+     "text": "Split by Claude into 14 steps (0 Fable).",
+     "at": "2026-11-13T12:17:01.586Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-ui-review-gate-switch-default-off--lenny.",
+     "at": "2026-11-13T12:17:16.212Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-ui-review-gate-switch-default-off--lenny, own login copy)",
+     "at": "2026-11-13T12:17:19.214Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Brett: UI Review must not be a gate. Add an on/off switch in UI Review settings, 'UI Review is a merge gate', default OFF. When off, PRs are never held for screenshots: release every PR held for UI Review now (#557, #553, #541, #536, #518, #517) into the merge queue. UI Review items still get filed so Brett can look, they just don't block. Build on/replace #555 (kicked out of CI) and fix its CI failures. Full API: REST, MCP, CLI, voice.",
+    "at": "2026-11-13T12:14:42.715Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "ui-review-gate-switch-default-off",
+    "brief": "# Build: ui-review-gate-switch-default-off\n\n## Brett said (verbatim)\nAt: 2026-11-13T12:14:42.715Z\n> Brett: UI Review must not be a gate. Add an on/off switch in UI Review settings, 'UI Review is a merge gate', default OFF. When off, PRs are never held for screenshots: release every PR held for UI Review now (#557, #553, #541, #536, #518, #517) into the merge queue. UI Review items still get filed so Brett can look, they just don't block. Build on/replace #555 (kicked out of CI) and fix its CI failures. Full API: REST, MCP, CLI, voice.\n\n## What to build\nContinue build \"UI Review gate switch, default off\" (ui-review-gate-switch-default-off) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-13 12:14):\n\"Brett: UI Review must not be a gate. Add an on/off switch in UI Review settings, 'UI Review is a merge gate', default OFF. When off, PRs are never held for screenshots: release every PR held for UI Review now (#557, #553, #541, #536, #518, #517) into the merge queue. UI Review items still get filed so Brett can look, they just don't block. Build on/replace #555 (kicked out of CI) and fix its CI failures. Full API: REST, MCP, CLI, voice.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (14 left, ~2.2 h):\n[ ] s1 (~8 min) Check out PR #555's branch (or start claude/ui-review-gate-switch from main and cherry-pick #555's commits if it can't be rebased). Read #555's failures in the 'CI build errors' issue and the PR checks, and write them down as a checklist in _claude/builds/reports/ui-review-gate-switch-default-off.md. Link the build with builds-live.mjs link. Commit.\n[ ] s2 (~10 min) Fix #555's CI failures, part 1: the plugin's own checks (lifecycle markers, help or glossary ratchet, plugin-commands static routes, fixtures). Rerun each failing check locally until it passes. Commit.\n[ ] s3 (~10 min) Fix #555's CI failures, part 2: the framework and console sweep (check-theme, check-controls, check-toolbars, check-chrome-assets, tracker --check, console typecheck after a rebake). Reproduce with AXF_DATA_DIR=off. Commit.\n[ ] s4 (~8 min) Add the setting 'UI Review is a merge gate' (key uiReview.gate, default false) to the UI Review plugin settings. Have it read and write the owner-only Claude setting 'UI Review gate', so one value drives both. A missing value counts as false, and existing installs migrate to false. Commit.\n[ ] s5 (~10 min) Make the gate decision one function, gateOn() in the plugin server and review.mjs. When the gate is off, 'review.mjs state --pr <n> --exit-code' exits 0 with state 'filed (not a gate)', and the ui-review@1 capability's held() returns false. Submissions are still filed, never refused. Commit.\n[ ] s6 (~10 min) Make the merge queue and the push banner stop holding PRs or keeping them as drafts for UI Review when gateOn() is false. That covers the merge-queue.mjs readiness check, land.mjs, and the auto-PR draft flag. Add a unit test for both gate states. Commit.\n[ ] s7 (~8 min) UI: add a Switch 'UI Review is a merge gate' to Settings → Plugins → UI Review, on the framework Switch with tokens only and the level toolbar's Simple level. Under it, a status line: 'Off: items are filed for you to look at, PRs never wait.' Commit.\n[ ] s8 (~10 min) API for the switch: REST GET/POST /api/plugins/ui-review/gate returning {on, heldPrs[]}. Turning it on is personOnly, matching the owner-only Claude setting; turning it off and reading it are open to everyone. Add the MCP plugin commands ui-review_gate_get/set, the CLI 'review.mjs gate [on|off|status]', the voice action 'uireview.gate', and the deep link console_show target 'settings:plugins/ui-review#gate'. Commit.\n[ ] s9 (~10 min) Release command: 'review.mjs release-held [--pr n…] [--all]', REST POST /api/plugins/ui-review/release, MCP ui-review_release, voice 'uireview.release'. For each PR still held for UI Review, it marks the review item non-blocking (still filed), un-drafts the PR, and adds it to the merge queue with land.mjs queue add. It goes through the merge queue only and never merges. Has a dry-run. Commit.\n[ ] s10 (~8 min) Release Brett's held PRs now: run release-held for #557, #553, #541, #536, #518 and #517 (GitHub writes as axHub veto calls with a reason, where the session token can't do them). Record the result per PR in the report. Commit.\n[ ] s11 (~10 min) Tests: python and node tests for gateOn() defaults, state --exit-code in both gate states, personOnly on turning the gate on, release-held in dry-run and real mode against a fake GitHub, and REST, MCP and CLI giving the same answers. Commit.\n[ ] s12 (~8 min) Docs and rules: update the shared rule 'Every UI change goes to UI Review' and the CLAUDE.md UI Review line to say a hold applies only while the gate switch is on (default off). Update the plugin README and help, run the glossary catalog --check, then claude-sync sync. Commit.\n[ ] s13 (~10 min) UI Review submission for the settings switch: 3 options as settings assets in apps/console-web/plugins/ui-review/assets/settings/, with desktop and phone shots from vite preview, submitted with review.mjs submit --choices. With the gate off it is filed but does not block. Commit the assets.\n[ ] s14 (~10 min) Finish: run the full CI sweep locally. Write the report _claude/builds/reports/ui-review-gate-switch-default-off.md (what #555's failures were and how they were fixed, the release result per PR, and the API list: deep link, REST, MCP, CLI, voice). Add a THREADS.md row, push, open the PR (it replaces #555; close #555 with a link), add it to the merge queue, and tick the build.\nRead first: apps/console-web/plugins/ui-review/, _claude/builds/reports/ui-review-gate-switch-default-off.md, apps/console-web/plugins/glossary-index/coverage.json, apps/console-web/src/, framework/cli/, tracker.json, apps/console-web/plugins/ui-review/plugin.json, apps/console-web/plugins/ui-review/server/, apps/console-web/plugins/claude-settings/, apps/console-web/plugins/ui-review/review.mjs, apps/console-web/plugins/push-banner/land/merge-queue.mjs, apps/console-web/plugins/push-banner/land/land.mjs, apps/console-web/plugins/push-banner/test/, apps/console-web/plugins/ui-review/web/, apps/console-web/plugins/ui-review/server/routes.py, apps/console-web/plugins/ui-review/commands.json, apps/console-web/plugins/ui-review/actions.json, apps/console-web/plugins/push-banner/land/, apps/console-web/plugins/ui-review/test/, _claude/shared/rules/RULES.md, CLAUDE.md, apps/console-web/plugins/ui-review/README.md, apps/console-web/plugins/glossary-index/, apps/console-web/plugins/ui-review/assets/settings/, _claude/builds/reports/ui-review-gate-switch-default-off/, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step ui-review-gate-switch-default-off <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link ui-review-gate-switch-default-off --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step ui-review-gate-switch-default-off <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note ui-review-gate-switch-default-off \"…\"); the build goes back to Pending for Brett.\n",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Check out PR #555's branch (or start claude/ui-review-gate-switch from main and cherry-pick #555's commits if it can't be rebased). Read #555's failures in the 'CI build errors' issue and the PR checks, and write them down as a checklist in _claude/builds/reports/ui-review-gate-switch-default-off.md. Link the build with builds-live.mjs link. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/ui-review/",
+      "_claude/builds/reports/ui-review-gate-switch-default-off.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-13T12:19:54.305Z",
+     "note": "",
+     "uid": "st-mwexys9f01nrj3",
+     "createdAt": "2026-11-13T12:17:01.586Z"
+    },
+    {
+     "id": "s2",
+     "text": "Fix #555's CI failures, part 1: the plugin's own checks (lifecycle markers, help or glossary ratchet, plugin-commands static routes, fixtures). Rerun each failing check locally until it passes. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/ui-review/",
+      "apps/console-web/plugins/glossary-index/coverage.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-13T12:22:15.322Z",
+     "note": "",
+     "uid": "st-mwexys9f02x5h2",
+     "createdAt": "2026-11-13T12:17:01.586Z"
+    },
+    {
+     "id": "s3",
+     "text": "Fix #555's CI failures, part 2: the framework and console sweep (check-theme, check-controls, check-toolbars, check-chrome-assets, tracker --check, console typecheck after a rebake). Reproduce with AXF_DATA_DIR=off. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src/",
+      "framework/cli/",
+      "tracker.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-13T12:28:07.519Z",
+     "note": "",
+     "uid": "st-mwexys9f03rvyk",
+     "createdAt": "2026-11-13T12:17:01.586Z"
+    },
+    {
+     "id": "s4",
+     "text": "Add the setting 'UI Review is a merge gate' (key uiReview.gate, default false) to the UI Review plugin settings. Have it read and write the owner-only Claude setting 'UI Review gate', so one value drives both. A missing value counts as false, and existing installs migrate to false. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/ui-review/plugin.json",
+      "apps/console-web/plugins/ui-review/server/",
+      "apps/console-web/plugins/claude-settings/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwexys9f041bs6",
+     "createdAt": "2026-11-13T12:17:01.586Z"
+    },
+    {
+     "id": "s5",
+     "text": "Make the gate decision one function, gateOn() in the plugin server and review.mjs. When the gate is off, 'review.mjs state --pr <n> --exit-code' exits 0 with state 'filed (not a gate)', and the ui-review@1 capability's held() returns false. Submissions are still filed, never refused. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/ui-review/review.mjs",
+      "apps/console-web/plugins/ui-review/server/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwexys9f05tjmd",
+     "createdAt": "2026-11-13T12:17:01.586Z"
+    },
+    {
+     "id": "s6",
+     "text": "Make the merge queue and the push banner stop holding PRs or keeping them as drafts for UI Review when gateOn() is false. That covers the merge-queue.mjs readiness check, land.mjs, and the auto-PR draft flag. Add a unit test for both gate states. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/land/merge-queue.mjs",
+      "apps/console-web/plugins/push-banner/land/land.mjs",
+      "apps/console-web/plugins/push-banner/test/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwexys9f06p6ti",
+     "createdAt": "2026-11-13T12:17:01.586Z"
+    },
+    {
+     "id": "s7",
+     "text": "UI: add a Switch 'UI Review is a merge gate' to Settings → Plugins → UI Review, on the framework Switch with tokens only and the level toolbar's Simple level. Under it, a status line: 'Off: items are filed for you to look at, PRs never wait.' Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/ui-review/web/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwexys9f07srs7",
+     "createdAt": "2026-11-13T12:17:01.586Z"
+    },
+    {
+     "id": "s8",
+     "text": "API for the switch: REST GET/POST /api/plugins/ui-review/gate returning {on, heldPrs[]}. Turning it on is personOnly, matching the owner-only Claude setting; turning it off and reading it are open to everyone. Add the MCP plugin commands ui-review_gate_get/set, the CLI 'review.mjs gate [on|off|status]', the voice action 'uireview.gate', and the deep link console_show target 'settings:plugins/ui-review#gate'. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/ui-review/server/routes.py",
+      "apps/console-web/plugins/ui-review/review.mjs",
+      "apps/console-web/plugins/ui-review/commands.json",
+      "apps/console-web/plugins/ui-review/actions.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwexys9f08d7hd",
+     "createdAt": "2026-11-13T12:17:01.586Z"
+    },
+    {
+     "id": "s9",
+     "text": "Release command: 'review.mjs release-held [--pr n…] [--all]', REST POST /api/plugins/ui-review/release, MCP ui-review_release, voice 'uireview.release'. For each PR still held for UI Review, it marks the review item non-blocking (still filed), un-drafts the PR, and adds it to the merge queue with land.mjs queue add. It goes through the merge queue only and never merges. Has a dry-run. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/ui-review/review.mjs",
+      "apps/console-web/plugins/ui-review/server/routes.py",
+      "apps/console-web/plugins/push-banner/land/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwexys9f094c7z",
+     "createdAt": "2026-11-13T12:17:01.586Z"
+    },
+    {
+     "id": "s10",
+     "text": "Release Brett's held PRs now: run release-held for #557, #553, #541, #536, #518 and #517 (GitHub writes as axHub veto calls with a reason, where the session token can't do them). Record the result per PR in the report. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "_claude/builds/reports/ui-review-gate-switch-default-off.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwexys9f0aiccz",
+     "createdAt": "2026-11-13T12:17:01.586Z"
+    },
+    {
+     "id": "s11",
+     "text": "Tests: python and node tests for gateOn() defaults, state --exit-code in both gate states, personOnly on turning the gate on, release-held in dry-run and real mode against a fake GitHub, and REST, MCP and CLI giving the same answers. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/ui-review/test/",
+      "apps/console-web/plugins/push-banner/test/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwexys9j0bimfp",
+     "createdAt": "2026-11-13T12:17:01.586Z"
+    },
+    {
+     "id": "s12",
+     "text": "Docs and rules: update the shared rule 'Every UI change goes to UI Review' and the CLAUDE.md UI Review line to say a hold applies only while the gate switch is on (default off). Update the plugin README and help, run the glossary catalog --check, then claude-sync sync. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "_claude/shared/rules/RULES.md",
+      "CLAUDE.md",
+      "apps/console-web/plugins/ui-review/README.md",
+      "apps/console-web/plugins/glossary-index/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwexys9j0cm9fj",
+     "createdAt": "2026-11-13T12:17:01.586Z"
+    },
+    {
+     "id": "s13",
+     "text": "UI Review submission for the settings switch: 3 options as settings assets in apps/console-web/plugins/ui-review/assets/settings/, with desktop and phone shots from vite preview, submitted with review.mjs submit --choices. With the gate off it is filed but does not block. Commit the assets.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/ui-review/assets/settings/",
+      "_claude/builds/reports/ui-review-gate-switch-default-off/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwexys9j0dv2sj",
+     "createdAt": "2026-11-13T12:17:01.586Z"
+    },
+    {
+     "id": "s14",
+     "text": "Finish: run the full CI sweep locally. Write the report _claude/builds/reports/ui-review-gate-switch-default-off.md (what #555's failures were and how they were fixed, the release result per PR, and the API list: deep link, REST, MCP, CLI, voice). Add a THREADS.md row, push, open the PR (it replaces #555; close #555 with a link), add it to the merge queue, and tick the build.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/ui-review-gate-switch-default-off.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwexys9j0ewbyk",
+     "createdAt": "2026-11-13T12:17:01.586Z"
+    }
+   ]
+  },
+  {
+   "id": "fix-toolbar-settings-doing-nothing",
+   "title": "Fix toolbar settings doing nothing",
+   "category": "",
+   "detail": "",
+   "status": "running",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/fix-toolbar-settings-doing-nothing",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-13T12:23:34.932Z",
+   "updatedAt": "2026-11-13T12:26:42.078Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T12:23:37.247Z"
+    },
+    {
+     "text": "Brett: same bug on tab groups, not just toolbars. Fix and test settings applying on every toolbar AND every tab group (TabGroup). Also check the navigation menu settings.",
+     "at": "2026-11-13T12:24:32.190Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"d9093dd3-a080-4406-84d8-88197b2a18e3\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-13T12:25:03.279Z"
+    },
+    {
+     "text": "Brett confirmed: navigation menu settings are broken the same way (changes do nothing). Fix it, not just check it.",
+     "at": "2026-11-13T12:25:39.494Z"
+    },
+    {
+     "text": "Brett: probably app menus too. Check and fix settings on application menus as well (toolbars, tab groups, nav menu, app menus).",
+     "at": "2026-11-13T12:25:43.405Z"
+    },
+    {
+     "text": "Split asked for by console.",
+     "at": "2026-11-13T12:25:47.282Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"8b7d7615-9320-4f15-b239-d23839ae55e5\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-13T12:26:26.762Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-fix-toolbar-settings-doing-nothing--earl.",
+     "at": "2026-11-13T12:26:38.073Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-fix-toolbar-settings-doing-nothing--earl, own login copy)",
+     "at": "2026-11-13T12:26:42.078Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Brett: when I long-press / right-click a toolbar and open toolbar settings, none of the settings change anything. Selecting icons, text, collapsible etc. has no effect. Seen on Shipped features (Sync/CSV/Markdown bar, group-by tabs, filter checkboxes, status chips, edit status). Fix it so every toolbar setting actually applies live to that toolbar, on every toolbar in the console, persists, and is controllable by API (REST, MCP, CLI, voice). Add a test that changing each setting changes the rendered toolbar.",
+    "at": "2026-11-13T12:23:34.932Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "fix-toolbar-settings-doing-nothing",
+    "brief": "# Build: fix-toolbar-settings-doing-nothing\n\n## Brett said (verbatim)\nAt: 2026-11-13T12:23:34.932Z\n> Brett: when I long-press / right-click a toolbar and open toolbar settings, none of the settings change anything. Selecting icons, text, collapsible etc. has no effect. Seen on Shipped features (Sync/CSV/Markdown bar, group-by tabs, filter checkboxes, status chips, edit status). Fix it so every toolbar setting actually applies live to that toolbar, on every toolbar in the console, persists, and is controllable by API (REST, MCP, CLI, voice). Add a test that changing each setting changes the rendered toolbar.\n\n## What to build\nContinue build \"Fix toolbar settings doing nothing\" (fix-toolbar-settings-doing-nothing) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-13 12:23):\n\"Brett: when I long-press / right-click a toolbar and open toolbar settings, none of the settings change anything. Selecting icons, text, collapsible etc. has no effect. Seen on Shipped features (Sync/CSV/Markdown bar, group-by tabs, filter checkboxes, status chips, edit status). Fix it so every toolbar setting actually applies live to that toolbar, on every toolbar in the console, persists, and is controllable by API (REST, MCP, CLI, voice). Add a test that changing each setting changes the rendered toolbar.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (6 left, ~1 h):\n[ ] s1 (~10 min) Brett: when I long-press / right-click a toolbar and open toolbar settings, none of the settings change anything.\n[ ] s2 (~10 min) Selecting icons, text, collapsible etc. has no effect.\n[ ] s3 (~10 min) Seen on Shipped features (Sync/CSV/Markdown bar, group-by tabs, filter checkboxes, status chips, edit status).\n[ ] s4 (~10 min) Fix it so every toolbar setting actually applies live to that toolbar, on every toolbar in the console, persists, and is controllable by API (REST, MCP, CLI, voice).\n[ ] s5 (~10 min) Add a test that changing each setting changes the rendered toolbar.\n[ ] s6 (~10 min) Tests green, report _claude/builds/reports/fix-toolbar-settings-doing-nothing.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/fix-toolbar-settings-doing-nothing.md, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step fix-toolbar-settings-doing-nothing <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link fix-toolbar-settings-doing-nothing --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step fix-toolbar-settings-doing-nothing <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note fix-toolbar-settings-doing-nothing \"…\"); the build goes back to Pending for Brett.\n",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Brett: when I long-press / right-click a toolbar and open toolbar settings, none of the settings change anything.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mweyawcq01l7jd",
+     "createdAt": "2026-11-13T12:26:26.762Z"
+    },
+    {
+     "id": "s2",
+     "text": "Selecting icons, text, collapsible etc. has no effect.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mweyawcq024poc",
+     "createdAt": "2026-11-13T12:26:26.762Z"
+    },
+    {
+     "id": "s3",
+     "text": "Seen on Shipped features (Sync/CSV/Markdown bar, group-by tabs, filter checkboxes, status chips, edit status).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mweyawcq033044",
+     "createdAt": "2026-11-13T12:26:26.762Z"
+    },
+    {
+     "id": "s4",
+     "text": "Fix it so every toolbar setting actually applies live to that toolbar, on every toolbar in the console, persists, and is controllable by API (REST, MCP, CLI, voice).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mweyawcq04gwpy",
+     "createdAt": "2026-11-13T12:26:26.762Z"
+    },
+    {
+     "id": "s5",
+     "text": "Add a test that changing each setting changes the rendered toolbar.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mweyawcq05xtyz",
+     "createdAt": "2026-11-13T12:26:26.762Z"
+    },
+    {
+     "id": "s6",
+     "text": "Tests green, report _claude/builds/reports/fix-toolbar-settings-doing-nothing.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/fix-toolbar-settings-doing-nothing.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mweyawcq06hj8c",
+     "createdAt": "2026-11-13T12:26:26.762Z"
     }
    ]
   }

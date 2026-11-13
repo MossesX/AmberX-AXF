@@ -788,47 +788,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 07:04 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` s1 done, → running (all) · orchestrator
-- 2026-11-13 07:04 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` branch claude/always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu (all) · builds-live
-- 2026-11-13 07:05 UTC · `remove-ui-review-as-a-gate-no-screenshots-required-prs-never-held-as-draft-for` s5 done (all) · orchestrator
-- 2026-11-13 07:07 UTC · `skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga` → queued, note (all) · pipeline
-- 2026-11-13 07:07 UTC · `remove-ui-review-as-a-gate-no-screenshots-required-prs-never-held-as-draft-for` s6 done (all) · orchestrator
-- 2026-11-13 07:07 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` s2 done (all) · orchestrator
-- 2026-11-13 07:08 UTC · `professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e` note (all) · mcp
-- 2026-11-13 07:08 UTC · `skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga` → running, note (all) · pipeline
-- 2026-11-13 07:08 UTC · `skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga` note (all) · orchestrator
-- 2026-11-13 07:09 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` → pending, note (all) · reconciler
-- 2026-11-13 07:09 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` s3 done (all) · orchestrator
-- 2026-11-13 07:09 UTC · `remove-ui-review-as-a-gate-no-screenshots-required-prs-never-held-as-draft-for` s7 done (all) · orchestrator
-- 2026-11-13 07:09 UTC · `skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga` s3 done (all) · orchestrator
-- 2026-11-13 07:10 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` added (0 steps) (all) · mcp
-- 2026-11-13 07:10 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` → queued, note (all) · console
-- 2026-11-13 07:10 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` note (all) · console
-- 2026-11-13 07:10 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` note (all) · mcp
-- 2026-11-13 07:10 UTC · `skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga` s4 done (all) · orchestrator
-- 2026-11-13 07:11 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` note (all) · builds-live
-- 2026-11-13 07:11 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` → pending, note (all) · console
-- 2026-11-13 07:11 UTC · `skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga` s5 done (all) · orchestrator
-- 2026-11-13 07:12 UTC · `remove-molly-completely-delete-the-molly-add-on-bundle-from-agent-manager-the` note (all) · orchestrator
-- 2026-11-13 07:11 UTC · `professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e` s5 done (all) · orchestrator
-- 2026-11-13 07:12 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` added (0 steps) (all) · mcp
-- 2026-11-13 07:11 UTC · `remove-ui-review-as-a-gate-no-screenshots-required-prs-never-held-as-draft-for` s8 done (all) · orchestrator
-- 2026-11-13 07:11 UTC · `skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga` s6 done (all) · orchestrator
-- 2026-11-13 07:12 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` note (all) · mcp
-- 2026-11-13 07:12 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` → queued, note (all) · console
-- 2026-11-13 07:12 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` note (all) · console
-- 2026-11-13 07:13 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` → queued, note (all) · builds-live
-- 2026-11-13 07:12 UTC · `remove-ui-review-as-a-gate-no-screenshots-required-prs-never-held-as-draft-for` s9 done (all) · orchestrator
-- 2026-11-13 07:14 UTC · `skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga` s7 done (all) · orchestrator
-- 2026-11-13 07:14 UTC · `remove-ui-review-as-a-gate-no-screenshots-required-prs-never-held-as-draft-for` s10 done (all) · orchestrator
-- 2026-11-13 07:11 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` s4 done (all) · orchestrator
-- 2026-11-13 07:14 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` s5 done (all) · orchestrator
-- 2026-11-13 07:14 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` note (all) · orchestrator
-- 2026-11-13 07:15 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` PR #554 (all) · builds-live
-- 2026-11-13 07:15 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` → running, note (all) · pipeline
-- 2026-11-13 07:15 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` branch claude/full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu (all) · pipeline
-- 2026-11-13 07:15 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` note (all) · orchestrator
-- 2026-11-13 07:16 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` note (all) · orchestrator
 - 2026-11-13 07:18 UTC · `skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga` s8 done (all) · orchestrator
 - 2026-11-13 07:18 UTC · `skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga` s9 done (all) · orchestrator
 - 2026-11-13 07:18 UTC · `skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga` s10 done (all) · orchestrator
@@ -1188,6 +1147,47 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 12:12 UTC · `combine-merge-queue-into-one-pr` branch claude/combine-merge-queue-into-one-pr (all) · pipeline
 - 2026-11-13 12:14 UTC · `combine-merge-queue-into-one-pr` s1 done, → running (all) · orchestrator
 - 2026-11-13 12:14 UTC · `auto-recover-stuck-builds` s3 done, → running (all) · orchestrator
+- 2026-11-13 12:14 UTC · `combine-merge-queue-into-one-pr` s2 done (all) · orchestrator
+- 2026-11-13 12:14 UTC · `ui-review-gate-switch-default-off` added (0 steps) (all) · console
+- 2026-11-13 12:15 UTC · `combine-merge-queue-into-one-pr` branch combine/merge-queue-2026-11-13 (all) · builds-live
+- 2026-11-13 12:14 UTC · `ui-review-gate-switch-default-off` → queued, note (all) · console
+- 2026-11-13 12:15 UTC · `combine-merge-queue-into-one-pr` s3 done (all) · orchestrator
+- 2026-11-13 12:15 UTC · `auto-recover-stuck-builds` s4 done (all) · orchestrator
+- 2026-11-13 12:17 UTC · `ui-review-gate-switch-default-off` note (all) · orchestrator
+- 2026-11-13 12:17 UTC · `ui-review-gate-switch-default-off` → running, note (all) · pipeline
+- 2026-11-13 12:17 UTC · `ui-review-gate-switch-default-off` branch claude/ui-review-gate-switch-default-off (all) · pipeline
+- 2026-11-13 12:17 UTC · `combine-merge-queue-into-one-pr` s4 done (all) · orchestrator
+- 2026-11-13 12:18 UTC · `auto-recover-stuck-builds` s5 done (all) · orchestrator
+- 2026-11-13 12:18 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` s28 done, → running (all) · orchestrator
+- 2026-11-13 12:19 UTC · `combine-merge-queue-into-one-pr` s5 done (all) · orchestrator
+- 2026-11-13 12:19 UTC · `ui-review-gate-switch-default-off` s1 done (all) · orchestrator
+- 2026-11-13 12:20 UTC · `auto-recover-stuck-builds` s6 done (all) · orchestrator
+- 2026-11-13 12:22 UTC · `ui-review-gate-switch-default-off` s2 done (all) · orchestrator
+- 2026-11-13 12:22 UTC · `auto-recover-stuck-builds` s7 done (all) · orchestrator
+- 2026-11-13 12:23 UTC · `fix-toolbar-settings-doing-nothing` added (0 steps) (all) · console
+- 2026-11-13 12:23 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` s29 done (all) · orchestrator
+- 2026-11-13 12:23 UTC · `fix-toolbar-settings-doing-nothing` → queued, note (all) · console
+- 2026-11-13 12:23 UTC · `auto-recover-stuck-builds` s8 done (all) · orchestrator
+- 2026-11-13 12:24 UTC · `combine-merge-queue-into-one-pr` s6 done (all) · orchestrator
+- 2026-11-13 12:24 UTC · `fix-toolbar-settings-doing-nothing` note (all) · mcp
+- 2026-11-13 12:25 UTC · `fix-toolbar-settings-doing-nothing` note (all) · orchestrator
+- 2026-11-13 12:25 UTC · `fix-toolbar-settings-doing-nothing` note (all) · foreign-write
+- 2026-11-13 12:25 UTC · `auto-recover-stuck-builds` s9 done (all) · orchestrator
+- 2026-11-13 12:25 UTC · `fix-toolbar-settings-doing-nothing` note (all) · mcp
+- 2026-11-13 12:25 UTC · `fix-toolbar-settings-doing-nothing` note (all) · console
+- 2026-11-13 12:25 UTC · `combine-merge-queue-into-one-pr` s7 done (all) · orchestrator
+- 2026-11-13 12:26 UTC · `combine-merge-queue-into-one-pr` s8 done (all) · orchestrator
+- 2026-11-13 12:26 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` s30 done (all) · orchestrator
+- 2026-11-13 12:26 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` s30 done (all) · foreign-write
+- 2026-11-13 12:26 UTC · `combine-merge-queue-into-one-pr` s8 done (all) · foreign-write
+- 2026-11-13 12:26 UTC · `fix-toolbar-settings-doing-nothing` note (all) · orchestrator
+- 2026-11-13 12:26 UTC · `fix-toolbar-settings-doing-nothing` → running, note (all) · pipeline
+- 2026-11-13 12:26 UTC · `fix-toolbar-settings-doing-nothing` branch claude/fix-toolbar-settings-doing-nothing (all) · pipeline
+- 2026-11-13 12:27 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` → running (all) · builds-live
+- 2026-11-13 12:27 UTC · `combine-merge-queue-into-one-pr` s9 done (all) · orchestrator
+- 2026-11-13 12:27 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` s13 done, → built (all) · orchestrator
+- 2026-11-13 12:28 UTC · `ui-review-gate-switch-default-off` s3 done (all) · orchestrator
+- 2026-11-13 12:28 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` note (all) · orchestrator
 
 ## Token passes (log)
 
