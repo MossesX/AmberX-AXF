@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4350,
- "updatedAt": "2026-11-13T11:42:04.979Z",
+ "rev": 4351,
+ "updatedAt": "2026-11-13T11:43:10.771Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -185047,10 +185047,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/overlay-opens-pages-the-floating-toolbar-expands",
-   "pr": "",
+   "pr": "#571",
    "priority": "P0",
    "createdAt": "2026-11-13T11:27:54.484Z",
-   "updatedAt": "2026-11-13T11:41:50.586Z",
+   "updatedAt": "2026-11-13T11:43:09.401Z",
    "builtAt": "",
    "notes": [
     {
@@ -185242,7 +185242,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
