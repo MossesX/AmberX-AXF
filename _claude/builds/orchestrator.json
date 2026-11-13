@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T00:41:29.110Z",
+ "updatedAt": "2026-11-13T00:41:50.040Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -111443,12 +111443,75 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-13T00:40:38.452Z",
-   "updatedAt": "2026-11-13T00:40:38.452Z",
+   "updatedAt": "2026-11-13T00:41:48.903Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-13T00:41:48.903Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "CHANGE to one-to-do-notes-and-tasks-plugin (PR #527), Brett: notes, tasks and to-dos are ONE item type, not separate things.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwe94qjs0652id"
+    },
+    {
+     "id": "s2",
+     "text": "Any item can hold any other, nested to any depth: a note can contain task lists and to-do lists, a task or to-do list can contain notes, and lists nest inside lists inside not",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwe94qjs07t6jx"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/change-to-one-to-do-notes-and-tasks-plugin-pr-527-brett-notes-tasks-and-to.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/change-to-one-to-do-notes-and-tasks-plugin-pr-527-brett-notes-tasks-and-to.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwe94qjs0844sf"
+    }
+   ]
   }
  ]
 }
