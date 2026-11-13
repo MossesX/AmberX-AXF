@@ -2,6 +2,7 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { FOLDER } from './api';
 import { registerActions } from './actions';
+import { addContextItems } from './contextItems';
 import { appMenu } from './menu';
 import { loadSettings } from './settings';
 import { SkinChip } from './SkinChip';
@@ -15,6 +16,7 @@ export const plugin: AxfWebLibrary = {
   appMenu,
   register(rt) {
     registerActions(rt);
+    addContextItems(rt);
     void loadSettings();
   },
   views: { 'skin-gallery': { title: 'Skins', icon: 'palette', render: () => <SkinsScreen /> } },
