@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4672,
- "updatedAt": "2026-11-13T18:37:37.823Z",
+ "rev": 4673,
+ "updatedAt": "2026-11-13T18:37:55.014Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -197054,7 +197054,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:13:23.703Z",
-   "updatedAt": "2026-11-13T18:17:21.527Z",
+   "updatedAt": "2026-11-13T18:37:45.128Z",
    "builtAt": "",
    "notes": [
     {
@@ -197091,12 +197091,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T18:13:26.048Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-new-asset-type-animated-expanding-row--joey",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Fable",
-    "launchedAt": "2026-11-13T18:17:12.803Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T18:14:50.263Z",
@@ -197106,9 +197106,9 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"cbf3dc93-52ab-4362-b55a-8c0071ad498a\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "2026-11-13T18:17:12.803Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Fable",
      "account": "mossesx-max-",
@@ -197117,7 +197117,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-13T18:17:12.803Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -197138,12 +197138,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T18:37:45.128Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T18:14:50.263Z",
-     "updatedAt": "2026-11-13T18:14:50.263Z"
+     "updatedAt": "2026-11-13T18:37:45.712Z"
     },
     {
      "id": "s2",
@@ -197373,7 +197373,7 @@
     "all"
    ],
    "order": {
-    "all": 797
+    "all": 798
    },
    "kind": "build",
    "planRef": "",
