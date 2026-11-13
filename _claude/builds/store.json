@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4360,
- "updatedAt": "2026-11-13T11:48:32.812Z",
+ "rev": 4361,
+ "updatedAt": "2026-11-13T11:54:45.575Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -185905,7 +185905,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T11:45:11.111Z",
-   "updatedAt": "2026-11-13T11:48:29.263Z",
+   "updatedAt": "2026-11-13T11:54:44.360Z",
    "builtAt": "",
    "notes": [
     {
@@ -185927,6 +185927,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-auto-recover-stuck-builds--joey, own login copy)",
      "at": "2026-11-13T11:48:29.262Z"
+    },
+    {
+     "text": "Brett: the merge queue must never block behind one PR. If the head PR (e.g. #556) isn't ready (build still running, session died, checks failing, conflicts), skip it and land the ready ones behind it; come back to it when ready.",
+     "at": "2026-11-13T11:54:44.360Z"
     }
    ],
    "approvals": [],
@@ -186367,7 +186371,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

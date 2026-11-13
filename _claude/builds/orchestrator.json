@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T11:48:32.812Z",
+ "updatedAt": "2026-11-13T11:54:45.575Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -122792,7 +122792,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T11:45:11.111Z",
-   "updatedAt": "2026-11-13T11:48:29.263Z",
+   "updatedAt": "2026-11-13T11:54:44.360Z",
    "builtAt": "",
    "notes": [
     {
@@ -122814,6 +122814,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-auto-recover-stuck-builds--joey, own login copy)",
      "at": "2026-11-13T11:48:29.262Z"
+    },
+    {
+     "text": "Brett: the merge queue must never block behind one PR. If the head PR (e.g. #556) isn't ready (build still running, session died, checks failing, conflicts), skip it and land the ready ones behind it; come back to it when ready.",
+     "at": "2026-11-13T11:54:44.360Z"
     }
    ],
    "approvals": [],
