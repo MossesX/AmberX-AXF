@@ -786,7 +786,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 17:59 UTC · `restore-asset-designer-plugin-merged-nov` note (all) · claude-voice
 - 2026-11-13 18:00 UTC · `per-instance-settings-window-picker` s1 done, → running (all) · orchestrator
 - 2026-11-13 18:00 UTC · `chrome-settings-actually-apply-toolbars` s1 done (all) · foreign-write
 - 2026-11-13 18:02 UTC · `restore-asset-designer-plugin-merged-nov` note (all) · orchestrator
@@ -1186,6 +1185,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 19:44 UTC · `demo-pipelines-guided-walkthrough-live` note (all) · orchestrator
 - 2026-11-13 19:43 UTC · `orchestrator-custom-groups-custom-tabs` s8 done (all) · orchestrator
 - 2026-11-13 19:44 UTC · `skin-axhub-override-switch-greyed-out` s5 done (all) · orchestrator
+- 2026-11-13 19:44 UTC · `land-overlay-preview-ui-review-resolve` s1 done, → running (all) · orchestrator
 
 ## Token passes (log)
 
