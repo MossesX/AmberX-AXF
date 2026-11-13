@@ -17,8 +17,8 @@ final class OverlayRules {
 
     /** The overlay's states: the small toolbar, the toolbar with the approval bar, the full-screen console. */
     static final String TOOLBAR = "toolbar", APPROVALS = "approvals", EXPANDED = "expanded";
-    /** The console-control address of the approvals page the bar links to. */
-    static final String APPROVALS_PAGE = "view:approvals";
+    /** The console action that shows the approvals list (the bar's "Open approvals" link; also axf-console://open/approvals.view). */
+    static final String APPROVALS_PAGE = "approvals.view";
 
     /** The settings the shell reads (keys of {@code approvals-banner.overlay.*}, without the prefix). */
     static final class Config {
@@ -88,8 +88,21 @@ final class OverlayRules {
 
     /** The state after an approvals update, given the state now. The expanded console is never folded by one. */
     static String afterApprovals(String now, Config c, int waiting, int held) {
+        return afterApprovals(now, c, waiting, held, 0);
+    }
+
+    /**
+     * As above, with the bar dismissed while {@code dismissedAt} approvals waited: it stays closed until more wait than
+     * that (a new approval pops it again; one that is decided does not).
+     */
+    static String afterApprovals(String now, Config c, int waiting, int held, int dismissedAt) {
         if (EXPANDED.equals(now)) return EXPANDED;
-        return popsBar(c.expand, waiting, held) ? APPROVALS : TOOLBAR;
+        return popsBar(c.expand, waiting, held) && waiting > dismissedAt ? APPROVALS : TOOLBAR;
+    }
+
+    /** The dismissed count after an approvals update: it follows the count down, so the next new approval pops the bar. */
+    static int dismissedAfter(int dismissedAt, int waiting) {
+        return Math.max(0, Math.min(dismissedAt, waiting));
     }
 
     /** The approval bar's line: "Run deploy.sh — 1 more" / "3 approvals wait". */
@@ -127,13 +140,14 @@ final class OverlayRules {
         return Math.max(safeTop, Math.round(screenHeight * clamp(topPercent, 0, 90) / 100f));
     }
 
-    /** A remote verb ({@code expand}, {@code collapse}, {@code toggle}, {@code approvals}) → the next state. */
+    /** A remote verb ({@code expand}, {@code collapse}, {@code toggle}, {@code approvals}, {@code dismiss}) → the next state. */
     static String verb(String now, String verb) {
         switch (verb == null ? "" : verb) {
             case "expand": return EXPANDED;
             case "collapse": return TOOLBAR;
             case "toggle": return EXPANDED.equals(now) ? TOOLBAR : EXPANDED;
             case "approvals": return EXPANDED;
+            case "dismiss": return EXPANDED.equals(now) ? EXPANDED : TOOLBAR;
             default: return now;
         }
     }

@@ -114,7 +114,7 @@ final class NativeBridge {
     // ---- overlay ----
     @JavascriptInterface public String overlay(String verb) {
         if (!allowed()) return DENIED;
-        if (!"expand".equals(verb) && !"collapse".equals(verb) && !"toggle".equals(verb) && !"approvals".equals(verb)) return fail("overlay verbs: expand, collapse, toggle, approvals");
+        if (!"expand".equals(verb) && !"collapse".equals(verb) && !"toggle".equals(verb) && !"approvals".equals(verb) && !"dismiss".equals(verb)) return fail("overlay verbs: expand, collapse, toggle, approvals, dismiss");
         ui.post(() -> OverlayService.verb(app, verb));
         return ok(null);
     }

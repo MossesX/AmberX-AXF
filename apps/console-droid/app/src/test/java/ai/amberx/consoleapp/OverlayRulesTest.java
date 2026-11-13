@@ -88,4 +88,23 @@ public class OverlayRulesTest {
         assertEquals(100, OverlayRules.opacity(new OverlayRules.Config(), 2));
         assertEquals(85, OverlayRules.opacity(new OverlayRules.Config(), 0));
     }
+
+    @Test public void dismissedBarStaysClosedUntilANewApprovalArrives() {
+        OverlayRules.Config c = new OverlayRules.Config();
+        // two wait, the bar was dismissed at two: closed
+        assertEquals(OverlayRules.TOOLBAR, OverlayRules.afterApprovals(OverlayRules.TOOLBAR, c, 2, 0, 2));
+        // one decided: still closed, and the dismissed count follows it down
+        assertEquals(1, OverlayRules.dismissedAfter(2, 1));
+        assertEquals(OverlayRules.TOOLBAR, OverlayRules.afterApprovals(OverlayRules.TOOLBAR, c, 1, 0, 1));
+        // a new one arrives: the bar pops again
+        assertEquals(OverlayRules.APPROVALS, OverlayRules.afterApprovals(OverlayRules.TOOLBAR, c, 2, 0, 1));
+        // the expanded console is never folded by an update
+        assertEquals(OverlayRules.EXPANDED, OverlayRules.afterApprovals(OverlayRules.EXPANDED, c, 5, 0, 0));
+        assertEquals(0, OverlayRules.dismissedAfter(3, 0));
+    }
+
+    @Test public void dismissVerbFoldsTheBarButNotTheConsole() {
+        assertEquals(OverlayRules.TOOLBAR, OverlayRules.verb(OverlayRules.APPROVALS, "dismiss"));
+        assertEquals(OverlayRules.EXPANDED, OverlayRules.verb(OverlayRules.EXPANDED, "dismiss"));
+    }
 }

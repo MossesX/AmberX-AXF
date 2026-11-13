@@ -48,11 +48,13 @@ public class OverlayService extends Service {
     static OverlayRules.Config config = new OverlayRules.Config();
     static String state = OverlayRules.TOOLBAR;
     static int waiting, held;
+    /** How many approvals waited when the bar was dismissed: it stays closed until a new one arrives. */
+    static int dismissedAt;
     static String firstTitle = "";
 
     private WindowManager wm;
     private LinearLayout toolbar;
-    private TextView consoleBtn, badge, bar;
+    private TextView consoleBtn, badge, bar, link, dismiss;
     private WindowManager.LayoutParams lp;
     private FrameLayout full;
     private WindowManager.LayoutParams fullLp;
@@ -78,11 +80,17 @@ public class OverlayService extends Service {
         if (running == null) {
             startIfWanted(c);
             if (running == null) { // no overlay (off or not allowed): the app itself is the full-screen console
-                if (!"collapse".equals(verb)) c.startActivity(new Intent(c, ConsoleActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                if (!"collapse".equals(verb) && !"dismiss".equals(verb)) c.startActivity(new Intent(c, ConsoleActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                 return;
             }
         }
-        if ("approvals".equals(verb)) WebHost.open(c, ShellRules.SCHEME + "://open/" + OverlayRules.APPROVALS_PAGE);
+        if ("dismiss".equals(verb)) dismissedAt = waiting;
+        if ("approvals".equals(verb)) {
+            // in the running console the list opens without a reload (the page runs approvals.view on this event);
+            // anywhere else (offline page, another site) the deep link loads the console on the approvals page
+            if (ShellRules.bridgeAllowed(NativeBridge.currentUrl)) NativeBridge.emit("approvals.open", "{\"target\":\"" + OverlayRules.APPROVALS_PAGE + "\"}");
+            else WebHost.open(c, ShellRules.SCHEME + "://open/" + OverlayRules.APPROVALS_PAGE);
+        }
         running.show(OverlayRules.verb(state, verb));
     }
 
@@ -101,12 +109,13 @@ public class OverlayService extends Service {
         waiting = Math.max(0, count);
         held = Math.max(0, heldCount);
         firstTitle = title == null ? "" : title;
-        if (running != null) running.show(OverlayRules.afterApprovals(state, config, waiting, held));
+        dismissedAt = OverlayRules.dismissedAfter(dismissedAt, waiting);
+        if (running != null) running.show(OverlayRules.afterApprovals(state, config, waiting, held, dismissedAt));
     }
 
     /** {"running":true,"state":"toolbar","waiting":2,"held":0,"on":true,"edge":"end","top":30,"size":"small","expand":"every","idleOpacity":85} */
     static String stateJson() {
-        return "{\"running\":" + (running != null) + ",\"state\":\"" + state + "\",\"waiting\":" + waiting + ",\"held\":" + held
+        return "{\"running\":" + (running != null) + ",\"state\":\"" + state + "\",\"waiting\":" + waiting + ",\"held\":" + held + ",\"dismissedAt\":" + dismissedAt
             + ",\"on\":" + config.on + ",\"edge\":\"" + config.edge + "\",\"top\":" + config.top + ",\"size\":\"" + config.size
             + "\",\"expand\":\"" + config.expand + "\",\"idleOpacity\":" + config.idleOpacity + "}";
     }
@@ -141,7 +150,7 @@ public class OverlayService extends Service {
         else startForeground(NOTE_ID, n);
         wm = (WindowManager) getSystemService(WINDOW_SERVICE);
         buildToolbar();
-        show(OverlayRules.afterApprovals(OverlayRules.TOOLBAR, config, waiting, held));
+        show(OverlayRules.afterApprovals(OverlayRules.TOOLBAR, config, waiting, held, dismissedAt));
         NativeBridge.emit("overlay", stateJson());
     }
 
@@ -177,9 +186,15 @@ public class OverlayService extends Service {
         consoleBtn = button(getString(R.string.overlay_console), v -> verb(this, "toggle"));
         badge = button("", v -> verb(this, "approvals"));
         bar = button("", v -> verb(this, "approvals"));
+        link = button(getString(R.string.overlay_open_approvals), v -> verb(this, "approvals"));
+        link.setPaintFlags(link.getPaintFlags() | android.graphics.Paint.UNDERLINE_TEXT_FLAG);
+        dismiss = button(getString(R.string.overlay_dismiss_glyph), v -> verb(this, "dismiss"));
+        dismiss.setContentDescription(getString(R.string.overlay_dismiss));
         toolbar.addView(consoleBtn);
         toolbar.addView(badge);
         toolbar.addView(bar);
+        toolbar.addView(link);
+        toolbar.addView(dismiss);
         consoleBtn.setOnTouchListener(new Drag());
         lp = new WindowManager.LayoutParams(
             WindowManager.LayoutParams.WRAP_CONTENT, WindowManager.LayoutParams.WRAP_CONTENT, overlayType(),
@@ -207,7 +222,7 @@ public class OverlayService extends Service {
         bgd.setCornerRadius(dp(ShellTheme.radiusDp * 2));
         toolbar.setBackground(bgd);
         toolbar.setPadding(pad / 2, pad / 2, pad / 2, pad / 2);
-        for (TextView t : new TextView[] { consoleBtn, badge, bar }) {
+        for (TextView t : new TextView[] { consoleBtn, badge, bar, link, dismiss }) {
             t.setTextSize(TypedValue.COMPLEX_UNIT_SP, ShellTheme.textSp * scale);
             t.setTextColor(ShellTheme.fg);
             t.setPadding(pad, pad / 2, pad, pad / 2);
@@ -218,6 +233,7 @@ public class OverlayService extends Service {
         badge.setBackground(pill);
         badge.setTextColor(ShellTheme.onAccent);
         bar.setTextColor(ShellTheme.fg);
+        link.setTextColor(ShellTheme.accent);
         int screenH = getResources().getDisplayMetrics().heightPixels;
         lp.gravity = Gravity.TOP | ("start".equals(config.edge) ? Gravity.START : Gravity.END);
         lp.x = 0;
@@ -235,8 +251,9 @@ public class OverlayService extends Service {
         badge.setVisibility(b.isEmpty() ? View.GONE : View.VISIBLE);
         badge.setContentDescription(getString(R.string.overlay_open_approvals));
         boolean barOn = OverlayRules.APPROVALS.equals(state);
-        bar.setText(barOn ? OverlayRules.barText(waiting, firstTitle) + "  ·  " + getString(R.string.overlay_open_approvals) : "");
-        bar.setVisibility(barOn ? View.VISIBLE : View.GONE);
+        bar.setText(barOn ? OverlayRules.barText(waiting, firstTitle) : "");
+        bar.setContentDescription(getString(R.string.overlay_open_approvals));
+        for (View v : new View[] { bar, link, dismiss }) v.setVisibility(barOn ? View.VISIBLE : View.GONE);
         consoleBtn.setText(OverlayRules.EXPANDED.equals(state) ? getString(R.string.overlay_collapse) : getString(R.string.overlay_console));
         if (OverlayRules.EXPANDED.equals(state)) openFull(); else closeFull();
         restyle();
