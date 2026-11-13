@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T12:28:35.585Z",
+ "updatedAt": "2026-11-13T12:29:26.663Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -122828,7 +122828,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T11:45:11.111Z",
-   "updatedAt": "2026-11-13T12:25:26.465Z",
+   "updatedAt": "2026-11-13T12:29:05.776Z",
    "builtAt": "",
    "notes": [
     {
@@ -123110,8 +123110,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T12:29:05.776Z",
      "note": "",
      "uid": "st-mwewxu2m0v9b2l",
      "createdAt": "2026-11-13T11:48:17.662Z"
@@ -123246,7 +123246,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T11:55:36.143Z",
-   "updatedAt": "2026-11-13T12:28:33.542Z",
+   "updatedAt": "2026-11-13T12:29:22.878Z",
    "builtAt": "",
    "notes": [
     {
@@ -123553,8 +123553,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T12:29:22.878Z",
      "note": "",
      "uid": "st-mwex9tpr0b96ak",
      "createdAt": "2026-11-13T11:57:37.071Z"
@@ -124187,7 +124187,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T12:23:34.932Z",
-   "updatedAt": "2026-11-13T12:26:42.078Z",
+   "updatedAt": "2026-11-13T12:29:20.398Z",
    "builtAt": "",
    "notes": [
     {
@@ -124225,6 +124225,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-fix-toolbar-settings-doing-nothing--earl, own login copy)",
      "at": "2026-11-13T12:26:42.078Z"
+    },
+    {
+     "text": "Brett: on the Build orchestrator page, long-pressing the toolbars (Reload/Plan Studio/Swarm row, Select all/Archive/Unarchive/Delete row) shows NO 'Toolbar settings' in the context menu at all. Tab group settings there DO save and apply. So two bugs: (1) some toolbars aren't registered as framework toolbars, so they have no settings entry; (2) on Shipped features the settings open but don't apply. Every toolbar must offer Toolbar settings on long-press/right-click, and its settings must apply.",
+     "at": "2026-11-13T12:29:20.398Z"
     }
    ],
    "approvals": [],

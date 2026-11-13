@@ -452,3 +452,10 @@ builds merge driver installed there (`builds-live.mjs install`). PR heads fetche
 origin/main moved 40 commits, all builds-live status commits: merged clean (2bf7c1661). `builds-store.mjs verify`: ok,
 786 records, 21021 checks. `builds-reconcile.mjs`: nothing sure to apply (only "check" suggestions; the VPS cron ran it
 5 minutes earlier). All 13 builds are in the combined store with their PR numbers (#566's build carries #557).
+
+## Generated files (s12)
+
+tracker.mjs, `axf.mjs schemas` (93; skin.schema.json changed), gen-fixtures (appearance, roll, theme gained the new
+skins / colour themes; chrome-settings regenerated in s6), `shared-assets.mjs bake --all`, `chrome-settings.mjs
+backfill` (nothing missing), `rebake.mjs apply apps/console-web --force` (console-web is "current"; the other apps keep
+main's "edited" state, CI re-bakes them from framework/ anyway).
