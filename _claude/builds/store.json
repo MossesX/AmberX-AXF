@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4674,
- "updatedAt": "2026-11-13T18:38:09.233Z",
+ "rev": 4675,
+ "updatedAt": "2026-11-13T18:38:23.614Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -197373,11 +197373,11 @@
     "all"
    ],
    "order": {
-    "all": 798
+    "all": 797
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -198984,7 +198984,7 @@
    "title": "UI Manager: floating window to select any element in the console and edit all its tokens",
    "category": "",
    "detail": "UI Manager (console plugin), opens in a floating window.\n- Lets Brett select ANY UI element in the whole console (every screen, plugin, dialog, toolbar, tab group, banner, nav, widget, control).\n- Left: collapsible categorized tree of all elements. Top category 'On screen now' lists every element currently visible; these are references (like Windows shortcuts / symlinks) to the same element that also lives in its normal category - both point to one shared source, edit either and both change.\n- Selecting an element (or picking it on screen with an inspector/picker mode) opens it according to the chosen view (several views: expanding row, side panel, grid...). Default: an expanding row listing all its properties and every token it reads.\n- Each property/token is edited by choosing from predetermined, valid values supplied by the console/framework integration (token sets, skins, assets, enums, ranges) - never free text where a valid list exists; schema-validated; live preview; reset to skin/default; shows overrides.\n- Searchable, sortable, multi-filter lists everywhere (thousands of elements).\n- Full API: REST/MCP/CLI/voice/control@1 ('select the main toolbar, set its transparency to 80').\n- Elements register via the framework (manifest) so new plugins appear automatically.\n- Tests, help, Shipped features. Fable for the element registry/schema core, Opus for UI.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -198992,7 +198992,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:30:38.922Z",
-   "updatedAt": "2026-11-13T18:38:07.543Z",
+   "updatedAt": "2026-11-13T18:38:19.745Z",
    "builtAt": "",
    "notes": [
     {
@@ -199026,6 +199026,14 @@
     {
      "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-ui-manager-floating-window-to-select-any--earl.",
      "at": "2026-11-13T18:31:50.681Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-ui-manager-floating-window-to-select-any--gina.",
+     "at": "2026-11-13T18:38:11.994Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-ui-manager-floating-window-to-select-any--gina, own login copy)",
+     "at": "2026-11-13T18:38:19.745Z"
     }
    ],
    "approvals": [],
@@ -199045,12 +199053,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T18:30:41.004Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-ui-manager-floating-window-to-select-any--gina",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Fable",
+    "launchedAt": "2026-11-13T18:38:11.121Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T18:31:36.507Z",
@@ -199060,9 +199068,9 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"579404e5-a10e-46f4-a7ce-8a0d0f0faa44\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-13T18:38:11.121Z",
     "planned": {
      "model": "Fable",
      "account": "mossesx-max-",
@@ -199071,7 +199079,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-13T18:38:11.121Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -199397,7 +199405,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
