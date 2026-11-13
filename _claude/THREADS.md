@@ -778,9 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 11:14 UTC · `show-commits-behind-main-on-every-build-table-an` note (all) · orchestrator
-- 2026-11-12 11:14 UTC · `show-commits-behind-main-on-every-build-table-an` note (all) · foreign-write
-- 2026-11-12 11:15 UTC · `show-commits-behind-main-on-every-build-table-an` → pending, note (all) · pipeline
 - 2026-11-12 11:16 UTC · `unlink-plan-studio-from-builds-delete-all-plan-s` note (all) · orchestrator
 - 2026-11-12 11:30 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` → pending, note (all) · reconciler
 - 2026-11-12 11:40 UTC · `unlink-plan-studio-from-builds-delete-all-plan-s` → pending, note (all) · reconciler
@@ -1178,6 +1175,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 01:48 UTC · `everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the` note (all) · orchestrator
 - 2026-11-13 01:49 UTC · `full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app` s1 done, → running (all) · orchestrator
 - 2026-11-13 01:51 UTC · `server-every-failed-merge-alerts-brett-immediately-and-retries-by-itself-until` s1 done (all) · orchestrator
+- 2026-11-13 01:52 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` → running, note (all) · pipeline
+- 2026-11-13 01:52 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` branch claude/one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds (all) · pipeline
+- 2026-11-13 01:52 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` note (all) · orchestrator
 
 ## Token passes (log)
 

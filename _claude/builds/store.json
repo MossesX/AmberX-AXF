@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3935,
- "updatedAt": "2026-11-13T01:52:09.602Z",
+ "rev": 3936,
+ "updatedAt": "2026-11-13T01:52:22.819Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -173578,15 +173578,15 @@
    "title": "One account picker: choose the single Claude account the console and VPS builds use",
    "category": "accounts",
    "detail": "Brett said: \"I need to be able to select in the console what account the console uses and the VPS uses for builds. I need to just be able to select one and that's it, just one.\"",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-12T21:49:00.405Z",
-   "updatedAt": "2026-11-13T01:52:07.660Z",
+   "updatedAt": "2026-11-13T01:52:15.064Z",
    "builtAt": "",
    "notes": [
     {
@@ -173648,6 +173648,14 @@
     {
      "text": "Queued by console.",
      "at": "2026-11-13T01:13:57.072Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-one-account-picker-choose-the-single-claude-acco--gina.",
+     "at": "2026-11-13T01:52:12.686Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-one-account-picker-choose-the-single-claude-acco--gina, own login copy)",
+     "at": "2026-11-13T01:52:15.064Z"
     }
    ],
    "approvals": [],
@@ -173667,18 +173675,18 @@
    "pipeline": {
     "queuedAt": "2026-11-13T01:13:56.666Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-one-account-picker-choose-the-single-claude-acco--gina",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-13T01:52:11.782Z",
+    "runs": 1,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-13T01:52:11.782Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -173686,10 +173694,8 @@
      "at": "2026-11-12T21:49:04.048Z",
      "why": "subscription account mossesx-max-"
     },
-    "tried": [
-     "mossesx-max-"
-    ],
-    "pickedAt": "",
+    "tried": [],
+    "pickedAt": "2026-11-13T01:52:11.782Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -173770,7 +173776,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
