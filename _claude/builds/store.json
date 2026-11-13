@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4096,
- "updatedAt": "2026-11-13T07:08:22.861Z",
+ "rev": 4097,
+ "updatedAt": "2026-11-13T07:09:06.418Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -178074,7 +178074,7 @@
    "title": "Merges are only 'merged' once GitHub confirms: every merge path (console auto-merge, auto-land, github client plugin, server gate, scripts) shows 'Pending GitHub confirmation' right after a merge call, then reads the PR back from GitHub (state MERGED and the merge commit on main) before marking it m",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -178082,7 +178082,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T06:21:11.993Z",
-   "updatedAt": "2026-11-13T06:38:26.343Z",
+   "updatedAt": "2026-11-13T07:09:02.464Z",
    "builtAt": "",
    "notes": [
     {
@@ -178108,6 +178108,10 @@
     {
      "text": "Headless run axf-merges-are-only-merged-once-github-confirms-ever--joey: brief only · start 13.2K tokens ($0.07) · cost $6.00 · 44 turns · 6 tools, MCP none",
      "at": "2026-11-13T06:38:26.343Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-13T07:09:02.464Z"
     }
    ],
    "approvals": [],
@@ -178498,7 +178502,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

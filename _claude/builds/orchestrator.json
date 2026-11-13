@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T07:08:22.861Z",
+ "updatedAt": "2026-11-13T07:09:06.418Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -117011,7 +117011,7 @@
    "title": "Merges are only 'merged' once GitHub confirms: every merge path (console auto-merge, auto-land, github client plugin, server gate, scripts) shows 'Pending GitHub confirmation' right after a merge call, then reads the PR back from GitHub (state MERGED and the merge commit on main) before marking it m",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -117019,7 +117019,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T06:21:11.993Z",
-   "updatedAt": "2026-11-13T06:38:26.343Z",
+   "updatedAt": "2026-11-13T07:09:02.464Z",
    "builtAt": "",
    "notes": [
     {
@@ -117045,6 +117045,10 @@
     {
      "text": "Headless run axf-merges-are-only-merged-once-github-confirms-ever--joey: brief only · start 13.2K tokens ($0.07) · cost $6.00 · 44 turns · 6 tools, MCP none",
      "at": "2026-11-13T06:38:26.343Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-13T07:09:02.464Z"
     }
    ],
    "approvals": [],
