@@ -48,3 +48,8 @@ for (const f of ['build-queue-core.mjs', 'build-queue-core.d.mts', 'pending-core
   writeFileSync(join(OUT, 'project-rules.json'), JSON.stringify({ rules, base: baseRules(), file: RULES_REL }));
 }
 console.log(`console data synced → public/data (${items.length} boilerplates, ${modules.length} modules)`);
+// console-control@1: the static inventory (views, tab rows, settings, functions, plugins) the console and the server share
+{
+  const { buildInventory } = await import('./control-inventory.mjs');
+  writeFileSync(resolve(HERE, '../src/control/inventory.json'), JSON.stringify(buildInventory(), null, 2) + '\n');
+}
