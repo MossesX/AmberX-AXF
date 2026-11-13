@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4972,
- "updatedAt": "2026-11-13T20:45:48.828Z",
+ "rev": 4973,
+ "updatedAt": "2026-11-13T20:46:01.895Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -207577,6 +207577,55 @@
    "kind": "build",
    "planRef": "",
    "rev": 3,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "per-instance-settings-small-live-preview",
+   "title": "Per-instance settings: small live preview pane",
+   "category": "",
+   "detail": "Follow-up to the landed per-toolbar settings (per-toolbar-settings-fix-failing-chrome). In the settings interface of every individual toolbar, nav menu, application menu and tab group (and dialog), add a small live preview pane at the top: a compact sample of that element type rendered with seed data (e.g. 2-3 toolbar icons with a badge, 2 tab groups of a few tabs with one active, a short nav menu with one selected item, an app menu with a submenu). It hot-renders every setting change in real time (style, colours, transparency, layout, density, hover/active states, with a hover/press demo toggle), before Apply. Collapsible, light/dark toggle, and it uses the real framework components and the instance's tokens. Full API. Tests, help, Shipped features.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-13T20:45:51.589Z",
+   "updatedAt": "2026-11-13T20:45:51.589Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "on the per toolbar, per nav menu, per application menu, per tab group settings I need a small preview pane, a couple of icons or two tab groups with some seed data, showing what the settings look like",
+    "at": "2026-11-13T20:45:51.589Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 837
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
