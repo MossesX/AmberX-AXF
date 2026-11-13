@@ -792,8 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 19:39 UTC · `land-rename-long-builds-resolve-clash` s3 done, → built (all) · orchestrator
-- 2026-11-13 19:39 UTC · `land-rename-long-builds-resolve-clash` note (all) · orchestrator
 - 2026-11-13 19:40 UTC · `land-drive-live-console-first-resolve` s1 done (all) · orchestrator
 - 2026-11-13 19:40 UTC · `console-app-part-3-native-bridge-mic` s7 done, → built (all) · orchestrator
 - 2026-11-13 19:40 UTC · `orchestrator-custom-groups-custom-tabs` s1 done, → running (all) · orchestrator
@@ -1192,6 +1190,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 23:42 UTC · `voice-listener-use-claude-when-connected` → queued, note (all) · console
 - 2026-11-13 23:42 UTC · `voice-listener-use-claude-when-connected` note (all) · mcp
 - 2026-11-13 23:43 UTC · `auto-land-merge-main-land-land-mjs-clash` s2 done (all) · orchestrator
+- 2026-11-13 23:43 UTC · `land-batch-merge-main-each-finished` note (all) · builds-live
+- 2026-11-13 23:43 UTC · `voice-listener-use-claude-when-connected` → queued, note (all) · builds-live
 
 ## Token passes (log)
 
