@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4238,
- "updatedAt": "2026-11-13T10:48:34.623Z",
+ "rev": 4239,
+ "updatedAt": "2026-11-13T10:49:18.253Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -160744,9 +160744,9 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/owner-recognized-everywhere-veto-countdown-only-on-shell-commands",
-   "pr": "",
+   "pr": "#559",
    "createdAt": "2026-11-12T02:04:11.564Z",
-   "updatedAt": "2026-11-13T10:45:24.170Z",
+   "updatedAt": "2026-11-13T10:49:16.891Z",
    "builtAt": "",
    "notes": [
     {
@@ -160820,6 +160820,10 @@
     {
      "text": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
      "at": "2026-11-13T10:45:24.170Z"
+    },
+    {
+     "text": "Reconciler: PR #559",
+     "at": "2026-11-13T10:49:16.891Z"
     }
    ],
    "approvals": [],
@@ -160947,7 +160951,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -161731,9 +161735,9 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/server-gate-one-session-per-build-no-duplicate-launches",
-   "pr": "",
+   "pr": "#560",
    "createdAt": "2026-11-12T02:42:15.357Z",
-   "updatedAt": "2026-11-13T10:46:07.776Z",
+   "updatedAt": "2026-11-13T10:49:16.891Z",
    "builtAt": "",
    "notes": [
     {
@@ -161775,6 +161779,10 @@
     {
      "text": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
      "at": "2026-11-13T10:46:07.776Z"
+    },
+    {
+     "text": "Reconciler: PR #560",
+     "at": "2026-11-13T10:49:16.891Z"
     }
    ],
    "approvals": [],
@@ -161946,7 +161954,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": {
