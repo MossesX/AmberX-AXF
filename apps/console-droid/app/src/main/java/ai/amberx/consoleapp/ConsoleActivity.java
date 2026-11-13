@@ -1,50 +1,38 @@
 package ai.amberx.consoleapp;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient;
-import android.webkit.WebResourceError;
-import android.webkit.WebResourceRequest;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.webkit.WebViewClient;
+import android.widget.FrameLayout;
 
 /**
- * The console app's one screen: the live web console in a full-screen WebView. Not a native rewrite: every screen,
- * setting and action is the web console; this class only hosts it, keeps links to other sites out of the app, and
- * hands deep links ({@code axf-console://open/<address>}, {@code https://console.amberxai.com/…}) to the page.
+ * The console app's one screen: the live web console ({@link WebHost}'s WebView) full screen. Not a native rewrite:
+ * every screen, setting and action is the web console; this class only shows it, hands deep links
+ * ({@code axf-console://open/<address>}, {@code https://console.amberxai.com/…}) to the page, answers Android's
+ * permission prompts and starts the floating toolbar ({@link OverlayService}).
  */
 public class ConsoleActivity extends Activity {
     static final int FILE_PICK = 41;
+    static final int PERMS = 42;
 
-    WebView web;
-    private ValueCallback<Uri[]> filePick;
-    /** The activity on screen, for the overlay and the bridge (null when it is gone). */
-    static ConsoleActivity current;
+    FrameLayout root;
 
-    @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle state) {
         super.onCreate(state);
-        current = this;
-        web = new WebView(this);
-        WebSettings s = web.getSettings();
-        s.setJavaScriptEnabled(true);
-        s.setDomStorageEnabled(true);
-        s.setDatabaseEnabled(true);
-        s.setMediaPlaybackRequiresUserGesture(false);
-        s.setCacheMode(WebSettings.LOAD_DEFAULT);
-        s.setUserAgentString(s.getUserAgentString() + " AXFConsoleApp/" + BuildConfigInfo.version(this));
-        web.setWebViewClient(new Client());
-        web.setWebChromeClient(new Chrome());
-        setContentView(web);
-        if (state != null) web.restoreState(state);
-        else web.loadUrl(ShellRules.deepLink(linkOf(getIntent())));
+        WebHost.activity = this;
+        root = new FrameLayout(this);
+        setContentView(root);
+        Insets.install(this, root);
+        Wake.apply(this, getIntent().getBooleanExtra(Wake.EXTRA, false));
+        String link = linkOf(getIntent());
+        boolean fresh = WebHost.current() == null;
+        WebHost.get(this, ShellRules.deepLink(link)); // a fresh page starts at the link
+        if (!fresh && link != null && state == null) WebHost.open(this, link); // a running page goes there
+        OverlayService.startIfWanted(this);
     }
 
     /** The link an intent carries (a VIEW intent's data, or the overlay's {@code url} extra), else null. */
@@ -57,71 +45,57 @@ public class ConsoleActivity extends Activity {
     }
 
     @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        String link = linkOf(intent);
-        if (link != null) web.loadUrl(ShellRules.deepLink(link));
+    protected void onResume() {
+        super.onResume();
+        WebHost.activity = this;
+        // The overlay may have the page in its expanded window: the app on screen takes it back.
+        OverlayService.collapseIfExpanded(this);
+        WebHost.attach(root, this);
+        Perms.resumed(this);
+        NativeBridge.emit("app", "{\"visible\":true}");
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle out) {
-        super.onSaveInstanceState(out);
-        web.saveState(out);
+    protected void onPause() {
+        NativeBridge.emit("app", "{\"visible\":false}");
+        super.onPause();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        Wake.apply(this, intent.getBooleanExtra(Wake.EXTRA, false));
+        String link = linkOf(intent);
+        if (link != null) WebHost.open(this, link);
     }
 
     @Override
     @SuppressWarnings("deprecation")
     public void onBackPressed() {
-        if ("back".equals(ShellRules.back(web.canGoBack()))) web.goBack();
-        else moveTaskToBack(true); // keep the page (and its session) alive; the overlay stays on top
+        WebView w = WebHost.current();
+        if (w != null && "back".equals(ShellRules.back(w.canGoBack()))) w.goBack();
+        else moveTaskToBack(true); // the page (and its live stream) keeps running; the floating toolbar stays on top
     }
 
     @Override
     protected void onDestroy() {
-        if (current == this) current = null;
-        web.destroy();
+        WebHost.detach(root);
+        if (WebHost.activity == this) WebHost.activity = null;
         super.onDestroy();
     }
 
     @Override
     protected void onActivityResult(int request, int result, Intent data) {
         super.onActivityResult(request, result, data);
-        if (request != FILE_PICK || filePick == null) return;
-        filePick.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(result, data));
-        filePick = null;
+        if (request != FILE_PICK || WebHost.filePick == null) return;
+        WebHost.filePick.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(result, data));
+        WebHost.filePick = null;
     }
 
-    /** Opens a link that leaves Brett's sites in the phone's browser. */
-    void openOutside(Uri uri) {
-        try { startActivity(new Intent(Intent.ACTION_VIEW, uri).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)); }
-        catch (ActivityNotFoundException ignored) { /* no browser: stay put */ }
-    }
-
-    private final class Client extends WebViewClient {
-        @Override
-        public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest req) {
-            String url = req.getUrl().toString();
-            if (url.startsWith(ShellRules.SCHEME + "://")) { view.loadUrl(ShellRules.deepLink(url)); return true; }
-            if (ShellRules.staysInside(url)) return false;
-            openOutside(req.getUrl());
-            return true;
-        }
-
-        @Override
-        public void onReceivedError(WebView view, WebResourceRequest req, WebResourceError err) {
-            // The console is unreachable (offline, deploy in progress): a local page that retries, never a blank screen.
-            if (req.isForMainFrame()) view.loadUrl("file:///android_asset/offline.html");
-        }
-    }
-
-    private final class Chrome extends WebChromeClient {
-        @Override
-        public boolean onShowFileChooser(WebView view, ValueCallback<Uri[]> cb, FileChooserParams params) {
-            if (filePick != null) filePick.onReceiveValue(null);
-            filePick = cb;
-            try { startActivityForResult(params.createIntent(), FILE_PICK); }
-            catch (ActivityNotFoundException e) { filePick = null; return false; }
-            return true;
-        }
+    @Override
+    public void onRequestPermissionsResult(int request, String[] names, int[] results) {
+        super.onRequestPermissionsResult(request, names, results);
+        if (request == PERMS) Perms.answered(this);
     }
 }
