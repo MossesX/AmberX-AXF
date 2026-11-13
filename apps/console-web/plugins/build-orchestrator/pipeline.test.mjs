@@ -156,6 +156,17 @@ t('parseSplit: JSON inside prose, models coerced, estimates checked', () => {
   assert.match(P.parseSplit('{"steps":[{"text":"No estimate","model":"Opus"}]}').error, /no estimate/);
   assert.equal(P.parseSplit('{"steps":[{"text":"Sonnet is never allowed","model":"Sonnet","estimate":"5 min"}]}').steps[0].model, 'Opus');
 });
+t('UI Review is not a gate: the splitter adds no step for it and drops one whose only job it is', () => {
+  assert.match(P.splitPrompt(raw), /UI Review is not a gate .*never add a step to submit to UI Review/);
+  const r = P.parseSplit('{"steps":[{"text":"Build the slot lanes view","model":"Opus","estimate":"8 min"},{"text":"Submit the slot lanes view to UI Review with 3 asset options and desktop and phone screenshots, using `review.mjs submit --choices`.","model":"Opus","estimate":"6 min"},{"text":"Tests, report, THREADS row and PR","model":"Opus","estimate":"8 min"}]}');
+  assert.equal(r.error, ''); assert.deepEqual(r.steps.map((s) => [s.id, s.text.slice(0, 5)]), [['s1', 'Build'], ['s2', 'Tests']], 'dropped and renumbered');
+  assert.match(P.parseSplit('{"steps":[{"text":"UI Review: desktop and phone shots","model":"Opus","estimate":"5 min"}]}').error, /besides UI Review/);
+  for (const only of ['Screenshots of every view (phone + desktop) to UI Review.', 'UI Review: shoot the console under each of the 4 skins on desktop and phone with rebuild-shots.mjs, then submit them as one choice set with review.mjs submit --choices.',
+    'Capture desktop and phone screenshots of the list previews and send them to UI Review', 'UI Review choices: build at least 3 options for the gallery layout as assets under apps/console-web/plugins/skins/assets/<type>/, with a choices JSON']) assert.equal(P.uiReviewOnlyStep(only), true, only);
+  for (const mixed of ['UI Review shots (3 options for the chip) submitted via review.mjs, report _claude/builds/reports/x.md, THREADS.md row, open PR', 'Tests/type-check, screenshots, UI Review item, report, THREADS, PR',
+    "Update the UI Review plugin UI: drop 'holds the PR' badges", 'Remove UI Review steps from existing builds in the store: a one-shot migration', 'Screenshot viewer side pane: list every token for that screen',
+    "Wait for Brett's pick in UI Review, then build that one.", 'UI Review (ui-review): part 1/2 of 75 gaps → map every view in plugin.json ui', 'Add the gallery view and its settings']) assert.equal(P.uiReviewOnlyStep(mixed), false, mixed);
+});
 t('rulesSplit: one step per line, Fable for foundation words first, a closing test + PR step', () => {
   const s = P.rulesSplit(build('r', 'pending', [], { title: 'Thing', detail: 'Add the plugin UI.\nDesign the asset type schema for packs.\nWire the API route.' }));
   assert.equal(s.length, 4); assert.equal(s[0].model, 'Fable'); assert.match(s[0].text, /schema/); assert.equal(s[3].model, 'Opus'); assert.match(s[3].text, /report _claude\/builds\/reports\/r\.md/);
