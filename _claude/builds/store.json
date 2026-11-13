@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5031,
- "updatedAt": "2026-11-13T21:15:55.636Z",
+ "rev": 5080,
+ "updatedAt": "2026-11-13T22:21:06.092Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -182359,9 +182359,9 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
-   "deleted": false,
-   "deletedAt": "",
+   "rev": 4,
+   "deleted": true,
+   "deletedAt": "2026-11-13T21:30:23.078Z",
    "pending": {
     "model": "Opus",
     "status": "complete",
@@ -182501,13 +182501,13 @@
     "test-sandbox"
    ],
    "order": {
-    "test-sandbox": 1
+    "test-sandbox": 0
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
-   "deleted": false,
-   "deletedAt": "",
+   "rev": 7,
+   "deleted": true,
+   "deletedAt": "2026-11-13T21:30:25.310Z",
    "pending": {
     "model": "Opus",
     "status": "pending",
@@ -198697,7 +198697,7 @@
    "title": "Toolbar widgets: attach any banner-style widget to any toolbar",
    "category": "",
    "detail": "Let every toolbar (and tab group bar) host widgets the same way the banner does: use the same widget assets and registry as banner widgets (status badges, counters, CPU/disk, account, clocks, etc.). Add/remove/arrange widgets per toolbar instance from its right-click menu and its chrome settings (drag to arrange, like widgets.arrange). Widgets follow skins/tokens, collapse into an overflow when space is short, persist per instance. Reachable by REST/MCP/CLI/voice/control@1 ('add the CPU widget to the main toolbar'). Tests, help, Shipped features.",
-   "status": "queued",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -198705,7 +198705,7 @@
    "pr": "#656",
    "priority": "P2",
    "createdAt": "2026-11-13T18:20:19.790Z",
-   "updatedAt": "2026-11-13T20:56:45.086Z",
+   "updatedAt": "2026-11-13T21:40:41.939Z",
    "builtAt": "",
    "notes": [
     {
@@ -198723,6 +198723,18 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-toolbar-widgets-attach-any-banner-style--joey, own login copy)",
      "at": "2026-11-13T20:32:13.894Z"
+    },
+    {
+     "text": "Dispatch gate: toolbar-widgets-attach-any-banner-style still has axf-toolbar-widgets-attach-any-banner-style--joey alive: not launched again, tracking that session.",
+     "at": "2026-11-13T21:17:18.458Z"
+    },
+    {
+     "text": "Headless run axf-toolbar-widgets-attach-any-banner-style--joey: brief only · start 12.9K tokens ($0.06) · cost $16.70 · 174 turns · 6 tools, MCP none",
+     "at": "2026-11-13T21:19:53.032Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-13T21:40:41.939Z"
     }
    ],
    "approvals": [],
@@ -198761,10 +198773,10 @@
     "route": "",
     "dispatchedAt": "",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-13T18:21:45.269Z",
+     "at": "2026-11-13T21:41:03.496Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -198789,12 +198801,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T21:18:48.948Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T18:21:42.427Z",
-     "updatedAt": "2026-11-13T18:21:42.427Z"
+     "updatedAt": "2026-11-13T21:18:49.252Z"
     },
     {
      "id": "s2",
@@ -198852,7 +198864,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -205265,15 +205277,15 @@
    "title": "Icon map and icon packs: every icon and badge in the app, swappable",
    "category": "",
    "detail": "1. Icon map: a registry of EVERY icon, badge and logo slot in the whole app (every plugin, screen, dialog, menu, toolbar, tab, nav item, banner, widget and button that shows an icon). Each slot gets a stable id, its location and a role (e.g. 'save', 'approve', 'build-running'), and registers through the framework manifest so new plugins appear automatically. Add a CI check that fails on hard-coded icons not in the map.\n2. Icon map screen: a searchable, filterable, categorized tree of every slot with a live preview, where you click a slot to change its icon. Ties into the UI Manager.\n3. Icon pack template: one pack file maps every role to an icon. Applying a pack changes every icon in the app in one click. Per-slot overrides with Restore previous edit / Restore from axHub.\n4. Packs: ship a lot of packs (outline, filled, rounded, duotone, sharp, glyph, emoji-style, plus badge styles and app/plugin logos). Some are themable (follow skin tokens for colour and stroke), others are fixed-colour. Each pack declares whether it's themable. Licences must allow redistribution; prefer open icon sets.\n5. Packs are assets: swappable, per-skin defaults, shareable via the hub asset library, importable.\n6. Full API: REST/MCP/CLI/voice ('switch to the duotone icon pack'). Tests, help, Shipped features. Use Fable for the registry/schema and asset type.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/icon-map-icon-packs-every-icon-badge-app",
-   "pr": "",
+   "pr": "#664",
    "priority": "P1",
    "createdAt": "2026-11-13T19:55:30.979Z",
-   "updatedAt": "2026-11-13T21:10:18.379Z",
+   "updatedAt": "2026-11-13T22:20:38.558Z",
    "builtAt": "",
    "notes": [
     {
@@ -205323,6 +205335,18 @@
     {
      "text": "Self-check: icon-map-icon-packs-every-icon-badge-app had no session on record but axf-icon-map-icon-packs-every-icon-badge-app--earl is alive: kept running and tracking it.",
      "at": "2026-11-13T21:10:18.379Z"
+    },
+    {
+     "text": "Self-check: icon-map-icon-packs-every-icon-badge-app had no session on record but axf-icon-map-icon-packs-every-icon-badge-app--earl is alive: kept running and tracking it.",
+     "at": "2026-11-13T21:20:21.541Z"
+    },
+    {
+     "text": "Headless run axf-icon-map-icon-packs-every-icon-badge-app--earl: brief only · start 11.7K tokens ($0.03) · cost $17.87 · 287 turns · 6 tools, MCP none",
+     "at": "2026-11-13T21:55:36.504Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-13T22:20:38.558Z"
     }
    ],
    "approvals": [
@@ -205352,7 +205376,7 @@
     "queuedAt": "2026-11-13T19:55:38.790Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-icon-map-icon-packs-every-icon-badge-app--earl",
+    "session": "",
     "slot": "",
     "model": "Fable",
     "launchedAt": "2026-11-13T20:06:45.871Z",
@@ -205377,10 +205401,10 @@
     "route": "",
     "dispatchedAt": "2026-11-13T20:06:45.871Z",
     "planned": {
-     "model": "Opus",
+     "model": "Fable",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-13T20:54:11.879Z",
+     "at": "2026-11-13T22:21:03.931Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -205471,12 +205495,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T21:18:44.755Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T19:58:41.893Z",
-     "updatedAt": "2026-11-13T19:58:41.893Z"
+     "updatedAt": "2026-11-13T21:18:45.275Z"
     },
     {
      "id": "s5",
@@ -205493,12 +205517,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T21:28:54.436Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T19:58:41.893Z",
-     "updatedAt": "2026-11-13T19:58:41.893Z"
+     "updatedAt": "2026-11-13T21:28:54.737Z"
     },
     {
      "id": "s6",
@@ -205515,12 +205539,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T21:37:41.483Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T19:58:41.893Z",
-     "updatedAt": "2026-11-13T19:58:41.893Z"
+     "updatedAt": "2026-11-13T21:37:41.706Z"
     },
     {
      "id": "s7",
@@ -205537,12 +205561,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T21:49:41.505Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T19:58:41.893Z",
-     "updatedAt": "2026-11-13T19:58:41.893Z"
+     "updatedAt": "2026-11-13T21:49:41.729Z"
     },
     {
      "id": "s8",
@@ -205562,12 +205586,34 @@
      "session": "same",
      "agent": false,
      "skip": false,
+     "done": true,
+     "doneAt": "2026-11-13T21:55:12.052Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-13T19:58:41.893Z",
+     "updatedAt": "2026-11-13T21:55:12.420Z"
+    },
+    {
+     "id": "s9",
+     "uid": "st-mwfhdqyp01kax0",
+     "title": "",
+     "text": "icon-pack@1 colour layers + logo packs drive brand marks (Fable: schema + engine). (1) Glyphs may carry layers [{d, color, opacity}] so fixed-colour packs (themable:false: twemoji, badges-traffic, logo-amber-gem) draw in their own colours: normalizeIconPack + glyphSvg (brand-rules.mjs, brand.ts) + asset-types optional_fields + fixtures; the s5 packs already ship layers with a one-colour d fallback. (2) The 82 logo slots are brand marks (logo-mark assets via the branding package): when the icon pack in force covers logos and maps app-mark / app-logo, BrandMark in mark mode draws that glyph (brand.ts place resolution + react/components/Brand.tsx), then re-bake the apps",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-13T19:58:41.893Z",
-     "updatedAt": "2026-11-13T19:58:41.893Z"
+     "rev": 3,
+     "createdAt": "2026-11-13T21:20:31.599Z",
+     "updatedAt": "2026-11-13T21:55:20.973Z"
     }
    ],
    "profiles": [
@@ -205578,7 +205624,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -206043,7 +206089,7 @@
    "title": "Own token sets for grids and tab groups",
    "category": "",
    "detail": "Today grids only have layout tokens (--fx-grid-areas/cols/rows and the -m mobile variants), and tab groups only have --fx-tab-py/--fx-tab-px padding and --fx-tabs-per-row. Both borrow the general colour tokens (--fx-surface, --fx-border, accent), so hover, selected and active states can't be styled on their own. Add dedicated token families in tokens.style, following skins and editable in Token Control, the UI Manager and per instance.\nGRID: header background/text/border/sort arrow/filter chip; row, alternate row, hover, selected, focused, expanded, disabled; grid lines, outer border, cell padding, row height, radius; group header, sticky column shadow, empty state; transparency (default 100%).\nTAB GROUP: bar background and border; tab text, background and border for idle, hover, active/selected, pressed, disabled and focus ring; active indicator (underline/pill) colour and thickness; badge on tab; fold/overflow button; gap; radius per style (underline, pills, boxed, segmented, plain, chips); transparency (default 100%).\nWire every grid/table and tab group to read them, and add a CI check against hard-coded colours. Per-instance overrides with Restore previous edit / Restore from axHub. Full API. Tests, help, Shipped features. Fable for the token schema.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -206051,7 +206097,7 @@
    "pr": "#654",
    "priority": "P1",
    "createdAt": "2026-11-13T19:57:42.157Z",
-   "updatedAt": "2026-11-13T20:54:32.696Z",
+   "updatedAt": "2026-11-13T21:21:16.380Z",
    "builtAt": "",
    "notes": [
     {
@@ -206101,6 +206147,10 @@
     {
      "text": "Headless run axf-own-token-sets-for-grids-and-tab-groups--rhonda: brief only · start 12.8K tokens ($0.06) · cost $15.53 · 129 turns · 6 tools, MCP none",
      "at": "2026-11-13T20:54:32.696Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-13T21:21:16.380Z"
     }
    ],
    "approvals": [],
@@ -206139,10 +206189,10 @@
     "route": "",
     "dispatchedAt": "",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-13T20:03:13.974Z",
+     "at": "2026-11-13T21:22:04.626Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -206296,7 +206346,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -206312,7 +206362,7 @@
    "title": "Token registry and Skin Editor: live sandbox preview, snapshot history",
    "category": "",
    "detail": "Runs after the token schema step of own-token-sets-for-grids-and-tab-groups (builds on its schema).\n1. TOKEN REGISTRY: one registry listing every token in the system, with element type, area (layout/style/colour/behaviour), state, light/dark, level (basic/pro/advanced), plain-English description, default and source. Every new UI, component or plugin MUST register its tokens through its manifest. A CI check fails any UI whose tokens aren't in the registry, and any registered token that nothing uses. Browsable and searchable, with full API.\n2. SKIN EDITOR (plugin and screen): pick any UI from the list (a screen, plugin, dialog, element), or pick it on screen, and it's loaded into a sandbox live-preview window with real components and sample data. Every edit hot-renders the preview in real time. The token list comes from the registry, with Basic/Pro/Advanced views. Inline element and asset editors work inside it.\n3. DEFAULT SKIN: there is always a built-in default skin that is locked.\n4. SNAPSHOTS: every edit to a skin automatically takes a snapshot (like a disk snapshot). A timeline shows the chain of edits, each with time, who/what made it, and a diff of exactly which tokens changed (old -> new). Click any snapshot to preview it, compare any two, or revert to it (a revert is itself a new snapshot, so nothing is ever lost). No breaking skins into separate style or colour groups: the skin is the only unit.\n5. EXPORT: at any point, 'Export current to new skin' saves the current state as a brand-new skin (name, thumbnail, to the hub library).\n6. Restore previous edit / Restore from axHub work through the snapshots.\n7. Full API: REST/MCP/CLI/voice ('revert the skin to 10 minutes ago', 'export this as a new skin called Midnight'). Tests, help, Shipped features. Fable for the registry and snapshot schema.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -206320,7 +206370,7 @@
    "pr": "#657",
    "priority": "P1",
    "createdAt": "2026-11-13T20:04:16.679Z",
-   "updatedAt": "2026-11-13T21:12:18.475Z",
+   "updatedAt": "2026-11-13T22:20:38.558Z",
    "builtAt": "",
    "notes": [
     {
@@ -206342,6 +206392,18 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-token-registry-skin-editor-live-sandbox--lenny, own login copy)",
      "at": "2026-11-13T20:21:33.063Z"
+    },
+    {
+     "text": "Phase 1 done on Fable: PR #657. Token registry (223 tokens, token-registry@1, CI check, manifest tokens block), Skin editor plugin (sandbox hot render, Basic/Pro/Advanced, snapshot chain with revert, export as skin, REST/MCP/CLI/voice), console bake fixes (build-id, windows engine). UI Review r-20261113-5f636908 waiting for Brett. Note: own-token-sets-for-grids-and-tab-groups had not pushed its schema; the registry derives from the engines, so its families register on the next sync.",
+     "at": "2026-11-13T21:53:26.570Z"
+    },
+    {
+     "text": "Headless run axf-token-registry-skin-editor-live-sandbox--lenny: brief only · start 13.4K tokens ($0.07) · cost $35.59 · 241 turns · 6 tools, MCP none",
+     "at": "2026-11-13T21:55:24.444Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-13T22:20:38.558Z"
     }
    ],
    "approvals": [],
@@ -206380,10 +206442,10 @@
     "route": "",
     "dispatchedAt": "",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-13T20:06:23.674Z",
+     "at": "2026-11-13T22:21:03.931Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -206474,12 +206536,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T21:28:48.253Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T20:06:18.849Z",
-     "updatedAt": "2026-11-13T20:06:18.849Z"
+     "updatedAt": "2026-11-13T21:28:48.502Z"
     },
     {
      "id": "s5",
@@ -206496,12 +206558,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T21:53:24.810Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T20:06:18.849Z",
-     "updatedAt": "2026-11-13T20:06:18.849Z"
+     "updatedAt": "2026-11-13T21:53:25.036Z"
     },
     {
      "id": "s6",
@@ -206625,7 +206687,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -207358,7 +207420,7 @@
    "title": "Context menus plugin: one true source on axHub, Claude-generated by skill level",
    "category": "",
    "detail": "Replaces the archived context-menu-plugin-ai-generated-slim.\n- New console plugin 'Context menus', integrated with the UI Manager (its menus show there per element/zone).\n- ONE TRUE SOURCE: every context menu definition is stored on axHub (not local), as context-menu@1 assets, readable and writable by every plugin and app through the hub API. Plugins register the actions/hooks they offer; menus reference them.\n- The plugin lists every context menu in the app (per zone/element/page, with its parent app, plugin or page), searchable, with preview, edit and Restore per row, snapshots and restore like skins.\n- AI generation (needs Claude; greyed out with a clear error when the Claude badge isn't green): generate the context menus for the whole app at a chosen level. BEGINNER: a few big, obvious actions. AMATEUR: common actions. PRO: full working set grouped. ADVANCED CODER: meticulous map of every zone with deep actions (tokens, API, inspect, copy ids, run commands). Higher levels map the app more meticulously. Menus are slim by default (no wasted space, rarely used items folded away). The user picks the level, and it can differ per app/page.\n- Preview before applying. Full API and voice ('generate pro context menus'). Tests, help, Shipped features. Fable for the context-menu@1 schema and the hub source.",
-   "status": "queued",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -207366,7 +207428,7 @@
    "pr": "#659",
    "priority": "P1",
    "createdAt": "2026-11-13T20:14:18.034Z",
-   "updatedAt": "2026-11-13T21:14:59.411Z",
+   "updatedAt": "2026-11-13T21:17:05.927Z",
    "builtAt": "",
    "notes": [
     {
@@ -207382,12 +207444,28 @@
      "at": "2026-11-13T20:15:47.807Z"
     },
     {
+     "text": "s1 done on PR #659: plugin context-menus (hub one-true-source store, context-menu@1 Fable rules + fixture/check, Claude generation by level with preview before apply, full REST/MCP/CLI/actions/voice, tests in CI). UI Review not submitted: no screenshot capture possible from this session (no Playwright; preview needs a signed-in hub session). Page is in Watch live (console-web, route context-menus). Pre-existing on base: menu-reach window-switcher items, help coverage gizmo-guide.",
+     "at": "2026-11-13T21:15:10.280Z"
+    },
+    {
      "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-context-menus-plugin-one-true-source--gina.",
      "at": "2026-11-13T20:31:40.846Z"
     },
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-context-menus-plugin-one-true-source--gina, own login copy)",
      "at": "2026-11-13T20:31:47.158Z"
+    },
+    {
+     "text": "Dispatch gate: context-menus-plugin-one-true-source still has axf-context-menus-plugin-one-true-source--gina alive: not launched again, tracking that session.",
+     "at": "2026-11-13T21:16:50.984Z"
+    },
+    {
+     "text": "Session stopped on its own with 7 steps left: back in Pending for Brett.",
+     "at": "2026-11-13T21:17:05.927Z"
+    },
+    {
+     "text": "Headless run axf-context-menus-plugin-one-true-source--gina: brief only · start 12.9K tokens ($0.06) · cost $18.36 · 130 turns · 6 tools, MCP none",
+     "at": "2026-11-13T21:15:55.434Z"
     }
    ],
    "approvals": [],
@@ -207413,7 +207491,14 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-13T21:17:04.659Z",
+     "exit": 0,
+     "outcome": "returned",
+     "stepsLeft": 7,
+     "account": "",
+     "session": "axf-context-menus-plugin-one-true-source--gina"
+    },
     "split": {
      "at": "2026-11-13T20:16:04.552Z",
      "by": "orchestrator",
@@ -207422,14 +207507,14 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"e779dc8d-8b62-458d-945b-c6275886b2ea\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "Session stopped on its own with 7 steps left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-13T20:17:10.655Z",
+     "at": "2026-11-13T21:17:08.385Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -207454,12 +207539,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T21:15:22.997Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T20:16:04.552Z",
-     "updatedAt": "2026-11-13T20:16:04.552Z"
+     "updatedAt": "2026-11-13T21:15:23.857Z"
     },
     {
      "id": "s2",
@@ -207627,7 +207712,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -207643,16 +207728,16 @@
    "title": "Auto-land: every finished build lands itself immediately",
    "category": "",
    "detail": "Brett is sick of finished builds sitting unlanded until they're thousands of commits behind. Make auto-land the DEFAULT for every build (the per-build switch stays, default ON):\n- The moment a build finishes and its tests pass, the server lands it on main (build_land logic: push, merge origin/main, union-merge THREADS/STATUS/decisions, settle orchestrator JSON, check JSON, push).\n- Lands go through ONE serial landing queue, so two lands never race (fixes 'cannot lock ref origin/main').\n- On a code clash or failing test, the server automatically queues a P0 'merge main and land' fix build for it and keeps retrying until it lands. Brett gets an FYI notification for each attempt, not a question.\n- A build that's still running gets main merged into its branch every 30 minutes, so it never falls far behind.\n- A sweeper runs every 10 minutes: any finished-but-unlanded build is landed or gets its fix build.\n- A banner/badge shows the landing queue and anything stuck for over 30 minutes.\n- Full API and voice. Tests, help, Shipped features.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/auto-land-every-finished-build-lands",
-   "pr": "",
+   "pr": "#660",
    "priority": "P0",
    "createdAt": "2026-11-13T20:44:39.782Z",
-   "updatedAt": "2026-11-13T21:13:59.824Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-13T21:17:09.699Z",
+   "builtAt": "2026-11-13T21:17:09.699Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -207669,6 +207754,14 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-auto-land-every-finished-build-lands--rhonda, own login copy)",
      "at": "2026-11-13T20:47:04.960Z"
+    },
+    {
+     "text": "Headless run axf-auto-land-every-finished-build-lands--rhonda: brief only · start 11.5K tokens ($0.03) · cost $7.27 · 139 turns · 6 tools, MCP none",
+     "at": "2026-11-13T21:17:09.699Z"
+    },
+    {
+     "text": "Phase 1 done, PR #660. Main CI is red (test-sandbox profile export); P0 main-ci-red-test-sandbox-profile-export queued, it must land first. Landing chip UI Review shots not submitted: the live console runs main, capture after deploy.",
+     "at": "2026-11-13T21:16:52.292Z"
     }
    ],
    "approvals": [],
@@ -207936,12 +208029,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T21:16:38.277Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T20:46:35.586Z",
-     "updatedAt": "2026-11-13T20:46:35.586Z"
+     "updatedAt": "2026-11-13T21:16:38.618Z"
     }
    ],
    "profiles": [
@@ -207952,7 +208045,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -207968,16 +208061,16 @@
    "title": "Per-instance settings: small live preview pane",
    "category": "",
    "detail": "Follow-up to the landed per-toolbar settings (per-toolbar-settings-fix-failing-chrome). In the settings interface of every individual toolbar, nav menu, application menu and tab group (and dialog), add a small live preview pane at the top: a compact sample of that element type rendered with seed data (e.g. 2-3 toolbar icons with a badge, 2 tab groups of a few tabs with one active, a short nav menu with one selected item, an app menu with a submenu). It hot-renders every setting change in real time (style, colours, transparency, layout, density, hover/active states, with a hover/press demo toggle), before Apply. Collapsible, light/dark toggle, and it uses the real framework components and the instance's tokens. Full API. Tests, help, Shipped features.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/per-instance-settings-small-live-preview",
-   "pr": "",
+   "pr": "#662",
    "priority": "P1",
    "createdAt": "2026-11-13T20:45:51.589Z",
-   "updatedAt": "2026-11-13T21:01:35.753Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-13T21:27:07.106Z",
+   "builtAt": "2026-11-13T21:27:07.106Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -207994,6 +208087,14 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-per-instance-settings-small-live-preview--gina, own login copy)",
      "at": "2026-11-13T21:01:35.753Z"
+    },
+    {
+     "text": "UI Review queue submit not done: review.mjs --console needs AXF_CONSOLE_URL + AXF_TOKEN (not in the headless env). To submit: node apps/console-web/plugins/ui-review/review.mjs submit --kind screen --name 'Chrome settings live preview pane' --app console-web --screen chrome-settings --group 'per-instance-settings-small-live-preview - Nov 13 9:40 PM' --shots <Screenshots group per-instance-settings-small-live-preview> --branch claude/per-instance-settings-small-live-preview --pr 662 --single-option 'one requested element' --console",
+     "at": "2026-11-13T21:26:43.210Z"
+    },
+    {
+     "text": "Headless run axf-per-instance-settings-small-live-preview--gina: brief only · start 11.3K tokens ($0.03) · cost $5.05 · 121 turns · 6 tools, MCP none",
+     "at": "2026-11-13T21:27:07.106Z"
     }
    ],
    "approvals": [],
@@ -208013,12 +208114,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T20:45:54.783Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-per-instance-settings-small-live-preview--gina",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-13T21:01:26.317Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T20:48:36.828Z",
@@ -208028,9 +208129,9 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"e5e6c1b0-dcd5-4bee-949f-67fa1ae8fa4a\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "2026-11-13T21:01:26.317Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -208039,7 +208140,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-13T21:01:26.317Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -208060,12 +208161,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T21:17:47.401Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T20:48:36.828Z",
-     "updatedAt": "2026-11-13T20:48:36.828Z"
+     "updatedAt": "2026-11-13T21:17:47.763Z"
     },
     {
      "id": "s2",
@@ -208082,12 +208183,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T21:24:34.196Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T20:48:36.828Z",
-     "updatedAt": "2026-11-13T20:48:36.828Z"
+     "updatedAt": "2026-11-13T21:24:34.418Z"
     },
     {
      "id": "s3",
@@ -208107,12 +208208,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T21:26:45.962Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T20:48:36.828Z",
-     "updatedAt": "2026-11-13T20:48:36.828Z"
+     "updatedAt": "2026-11-13T21:26:46.234Z"
     }
    ],
    "profiles": [
@@ -208123,7 +208224,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -208481,15 +208582,15 @@
    "title": "Lander regenerates generated files on clash",
    "category": "",
    "detail": "Most Nov 13 land failures were clashes only in GENERATED or additive files: apps/console-web/src/control/inventory.json, framework/assets/help/framework.json and its baked copies in apps/*, framework/catalog/status.json, framework/spec/PORTING.md, framework/spec/fixtures/*.json, apps/*/axf.lock.json, and the baked framework copies under apps/*/src/axf/. Fix the land path (/opt/axf-batch/resolve.py used by vps.build_land, and the orchestrator lander): (1) list generated files in one manifest; (2) on a clash in a generated file, take main's side, then run the matching generator (control inventory, help bake, fixtures, lock, framework re-bake) on the merged tree and commit; (3) union-merge additive docs/catalogs (PORTING.md, catalog status.json) by key; (4) only real source clashes stop the land; (5) run tests after regenerating. Then re-land: full-voice-control-merge-main-and-land, skin-config-panel-merge-main-and-land, skins-plugin-merge-main-and-land, project-create-mcp, project-duplicate-boilerplate, drive-live-console-first, rename-long-builds, overlay-preview-ui-review. Must land before auto-land-every-finished-build-lands.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/lander-regenerates-generated-files-clash",
-   "pr": "",
+   "pr": "#661",
    "priority": "P0",
    "createdAt": "2026-11-13T20:47:11.569Z",
-   "updatedAt": "2026-11-13T20:52:33.927Z",
+   "updatedAt": "2026-11-13T21:50:42.153Z",
    "builtAt": "",
    "notes": [
     {
@@ -208507,6 +208608,26 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-lander-regenerates-generated-files-clash--sully, own login copy)",
      "at": "2026-11-13T20:52:33.927Z"
+    },
+    {
+     "text": "Dispatch gate: lander-regenerates-generated-files-clash still has axf-lander-regenerates-generated-files-clash--sully alive: not launched again, tracking that session.",
+     "at": "2026-11-13T21:20:13.895Z"
+    },
+    {
+     "text": "Reconciler: PR #661 names s1 done",
+     "at": "2026-11-13T21:21:16.380Z"
+    },
+    {
+     "text": "Headless run axf-lander-regenerates-generated-files-clash--sully: brief only · start 13.1K tokens ($0.07) · cost $8.32 · 95 turns · 6 tools, MCP none",
+     "at": "2026-11-13T21:23:53.510Z"
+    },
+    {
+     "text": "Lander fix is on PR #661 (generated-files@1 manifest; auto-land, merge queue and /opt/axf-batch/resolve.py all regenerate on a clash). Re-lands done with land.mjs merge-main (main merged in, pushed): full-voice-control-merge-main-and-land #645 (inventory regenerated), skin-config-panel-merge-main-and-land #648 (inventory + help bake regenerated, help pack unioned), skins-plugin-merge-main-and-land #647, project-duplicate-boilerplate #621, drive-live-console-first #620, land-rename-long-builds-resolve-clash #638, land-overlay-preview-ui-review-resolve #653. Not re-landed, real code clashes: project-create-mcp #579 (framework/cli/project-seed.mjs add/add vs main; land-project-create-mcp-resolve-clash is the pending fix build), rename-long-builds #617 and overlay-preview-ui-review #626 (orchestrator.mjs / approvals-banner index.tsx; their resolve branches #638 / #653 carry them). Land order set: auto-land-every-finished-build-lands after this build.",
+     "at": "2026-11-13T21:23:27.174Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-13T21:50:42.153Z"
     }
    ],
    "approvals": [],
@@ -208526,12 +208647,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T20:47:20.965Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-lander-regenerates-generated-files-clash--sully",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Fable",
-    "launchedAt": "2026-11-13T20:52:29.610Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T20:52:05.784Z",
@@ -208541,18 +208662,18 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"012c709a-352c-4b9f-94c7-cc8af2ff3246\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "2026-11-13T20:52:29.610Z",
+    "dispatchedAt": "",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-13T20:52:09.659Z",
+     "at": "2026-11-13T21:51:04.188Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-13T20:52:29.610Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -208573,12 +208694,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T21:23:24.136Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T20:52:05.784Z",
-     "updatedAt": "2026-11-13T20:52:05.784Z"
+     "updatedAt": "2026-11-13T21:23:24.487Z"
     },
     {
      "id": "s2",
@@ -208636,7 +208757,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -208652,7 +208773,7 @@
    "title": "HOTFIX: desktop console draws app menu, banners and nav twice",
    "category": "",
    "detail": "Right after per-toolbar-settings-fix-failing-chrome landed on main (merge ec579ee23, 20:44 Nov 13) and the console redeployed, Brett's DESKTOP console shows TWO app menus, TWO banners and TWO navigation menus (the phone looks fine). Keep the per-toolbar/per-instance settings feature: fix forward, don't revert it. Likely cause: the per-instance chrome (ChromeContext.tsx / Overlays.tsx / chrome-settings-rules) now renders a per-instance copy of each chrome element in addition to the default one on wide layouts, or the merge kept both sides of a render block. Find it, render exactly one of each chrome element, add an e2e/visual test that counts app menus, banners and nav menus on desktop and phone (must be 1 each), run all tests, then LAND it on main immediately and redeploy the console. Note: commit 237a293af was an accidental revert that only re-added 24 lines to one file; check it and drop it if it's wrong.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -208660,7 +208781,7 @@
    "pr": "#658",
    "priority": "P0",
    "createdAt": "2026-11-13T20:53:50.393Z",
-   "updatedAt": "2026-11-13T21:14:49.474Z",
+   "updatedAt": "2026-11-13T21:16:23.568Z",
    "builtAt": "",
    "notes": [
     {
@@ -208706,6 +208827,10 @@
     {
      "text": "Dispatch gate: hotfix-desktop-console-draws-app-menu still has axf-hotfix-desktop-console-draws-app-menu--lenny alive: not launched again, tracking that session.",
      "at": "2026-11-13T21:14:49.474Z"
+    },
+    {
+     "text": "Session stopped on its own with 3 steps left: back in Pending for Brett.",
+     "at": "2026-11-13T21:16:23.568Z"
     }
    ],
    "approvals": [],
@@ -208726,12 +208851,19 @@
     "queuedAt": "",
     "queuedBy": "",
     "account": "",
-    "session": "axf-hotfix-desktop-console-draws-app-menu--lenny",
+    "session": "",
     "slot": "",
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-13T21:16:22.820Z",
+     "exit": 0,
+     "outcome": "returned",
+     "stepsLeft": 3,
+     "account": "",
+     "session": "axf-hotfix-desktop-console-draws-app-menu--lenny"
+    },
     "split": {
      "at": "2026-11-13T21:14:45.379Z",
      "by": "orchestrator",
@@ -208740,7 +208872,7 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"b91717a9-c832-49af-9ac7-5fd5a4873a0a\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "Session stopped on its own with 3 steps left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "",
     "planned": {
@@ -208835,7 +208967,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -208851,24 +208983,56 @@
    "title": "Main CI red: test-sandbox profile export leaks onto main",
    "category": "",
    "detail": "Main's CI is red, so the merge queue kicks out every PR with the same failure (\"Build engine sweep (Node)\" → framework/spec/check-profiles.mjs):\n\n  _claude/builds/profiles/test-sandbox/ exists but \"test-sandbox\" is not in framework/plan/profiles.json\n\nThe folder first reached main in 84c62e2e2 (Nov 13 17:18, \"Builds live: test-sandbox-sample-shipped-build added (3 steps) (test-sandbox) [skip ci]\"). project-seed.mjs made the sample build with profiles ['test-sandbox'], and every orchestrator write since then re-exports _claude/builds/profiles/test-sandbox/orchestrator.json, which builds-live publishes to main.\n\nFix: (1) orchestrator / builds-store exports write only registered profiles (framework/plan/profiles.json; test projects such as test-sandbox never get a repo export), (2) delete _claude/builds/profiles/test-sandbox/ from the repo, (3) make check-profiles.mjs say where the folder came from. Then run node framework/spec/check-profiles.mjs and the builds-store checks. Found by auto-land-every-finished-build-lands (s9).\n",
-   "status": "queued",
+   "status": "built",
    "hidden": false,
    "source": "auto-land",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/main-ci-red-test-sandbox-profile-export",
+   "pr": "#663",
    "priority": "P0",
    "createdAt": "2026-11-13T21:13:28.338Z",
-   "updatedAt": "2026-11-13T21:13:31.014Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-13T21:32:33.679Z",
+   "builtAt": "2026-11-13T21:27:16.800Z",
    "notes": [
     {
      "text": "Queued by auto-land-every-finished-build-lands.",
      "at": "2026-11-13T21:13:31.014Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"3887ca86-c7c6-4bd5-aad2-ab43b87f09c4\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-13T21:16:20.570Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-main-ci-red-test-sandbox-profile-export--joey.",
+     "at": "2026-11-13T21:16:45.307Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-main-ci-red-test-sandbox-profile-export--joey, own login copy)",
+     "at": "2026-11-13T21:16:48.954Z"
+    },
+    {
+     "text": "s1 done, PR #663. Fix: repo orchestrator exports only for profiles in the repo's framework/plan/profiles.json; hub-only profiles export into their shared-data folder. To stop sessions still on the old code from re-adding _claude/builds/profiles/test-sandbox/ to main before the merge, the two test-sandbox sample builds (test data from project-seed) were soft-deleted: kept in the builds journal; after the merge 'node framework/cli/project-seed.mjs seed' puts them back.",
+     "at": "2026-11-13T21:31:35.885Z"
+    },
+    {
+     "text": "Headless run axf-main-ci-red-test-sandbox-profile-export--joey: brief only · start 12.7K tokens ($0.06) · cost $5.84 · 94 turns · 6 tools, MCP none",
+     "at": "2026-11-13T21:32:33.679Z"
     }
    ],
    "approvals": [],
    "upgradeRequests": [],
+   "origin": {
+    "said": "",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "main-ci-red-test-sandbox-profile-export",
+    "brief": "# Build: main-ci-red-test-sandbox-profile-export\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"Main CI red: test-sandbox profile export leaks onto main\" (main-ci-red-test-sandbox-profile-export) — Phase 1, model Fable.\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (1 left, ~10 min):\n[ ] s1 (~10 min) Main's CI is red, so the merge queue kicks out every PR with the same failure (\"Build engine sweep (Node)\" → framework/spec/check-profiles.mjs):\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step main-ci-red-test-sandbox-profile-export <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link main-ci-red-test-sandbox-profile-export --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step main-ci-red-test-sandbox-profile-export <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note main-ci-red-test-sandbox-profile-export \"…\"); the build goes back to Pending for Brett.\n",
+    "verbatim": false,
+    "from": "",
+    "addenda": []
+   },
    "pipeline": {
     "queuedAt": "2026-11-13T21:13:30.340Z",
     "queuedBy": "auto-land-every-finished-build-lands",
@@ -208891,7 +209055,30 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwfhmdio01b2aw",
+     "title": "",
+     "text": "Repo exports only for repo-registered profiles; remove _claude/builds/profiles/test-sandbox/; check-profiles.mjs names the folder origin; builds-store and builds-live checks green",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-13T21:27:16.800Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-13T21:27:14.676Z",
+     "updatedAt": "2026-11-13T21:27:17.023Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -208900,12 +209087,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-13T21:27:14.676Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

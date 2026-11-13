@@ -75,6 +75,26 @@ length limit; it is shown everywhere a build is named.
   `vps.build_land` (and stop / clean) can be called with the alias. Run it again right before landing to move the
   branch to the latest commit.
 
+## Landing: generated and additive files never stop a land
+
+Most Nov 13 2026 land failures were clashes only in generated or additive files. One manifest, `generated-files@1`
+(`framework/spec/generated-files.json`), now says which files a merge resolves by itself and how; every lander reads
+it: the auto-land runner and the merge queue (`apps/console-web/plugins/push-banner/land/land-core.mjs`
+`classifyPath` / `regenPlan` / `mergeJson3`, `land.mjs resolveConflicts`) and the `vps.build_land` resolver
+(`framework/cli/land-resolve.py`, which `/opt/axf-batch/resolve.py` hands over to).
+
+| Merge rule | Files | What happens on a clash |
+| --- | --- | --- |
+| `regen` | `apps/console-web/src/control/inventory.json`, `apps/*/src/assets/help/*.json`, `apps/*/src/axf/**`, `apps/*/axf.lock.json`, `framework/spec/fixtures/*.json`, `tracker.json` | main's copy is taken, then the generator runs once on the merged tree (control inventory, `help-coverage.mjs --sync`, `rebake.mjs apply apps/<app>`, `gen-fixtures.mts`, `tracker.mjs`) and its outputs join the merge commit. `rebake` is optional: an app with edited baked files keeps main's copy. |
+| `union-json` | `framework/assets/help/*.json`, `framework/catalog/{status,libraries}.json` | both sides' keys kept (3-way by key; main wins a scalar clash) |
+| `union-lines` | `framework/spec/PORTING.md` (THREADS, STATUS, decisions and logs were already unioned) | both sides' lines |
+| `main` | `framework/plan/*.json`, `changes/`, `sessions/` copies | main's copy |
+
+After regenerating, each generator's check and the manifest's `tests` (control inventory `--check`, project fixtures)
+run on the merged tree; a red one stops the land with the reason. Only a clash in a real source file (anything the
+manifest doesn't name) stops a land and goes to an agent. `land.mjs merge-main <build>` merges main into one build's
+branch with these rules on demand (a re-land after a lander fix).
+
 ## Projections and absorbs
 
 | Older list | Project | Absorb (after a change) |
