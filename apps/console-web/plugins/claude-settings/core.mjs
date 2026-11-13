@@ -10,7 +10,8 @@
  *
  * Who may change what: `owner: true` settings change only with an owner approval, which the transport derives from
  * Brett's signed-in console session (never from a request body, an MCP call, a CLI flag or the environment);
- * `owner: "raise"` numbers may be lowered by anyone and raised only by the owner; `locked` settings change for nobody.
+ * `owner: "raise"` numbers may be lowered by anyone and raised only by the owner, and `owner: "raise"` toggles may be
+ * turned off by anyone and on only by the owner; `locked` settings change for nobody.
  * `deprecated: "<why>"` settings are retired: kept readable for old documents, always their default, changed by nobody.
  * The No wait switch itself does nothing here: the console server turns it into a standing all-scope veto pass
  * (control-pass@1, token-control) with the same owner approval, and revokes it when the switch goes off.
@@ -113,11 +114,24 @@ export function coerce(spec, v) {
   return v;
 }
 
-export function emptyDoc() { return { $axf: FRAME, updatedAt: '', values: {}, changed: {} }; }
+export function emptyDoc() { return { $axf: FRAME, updatedAt: '', values: {}, changed: {}, migrated: [...MIGRATIONS.map((m) => m.id)] }; }
+/**
+ * One-time document migrations, applied on read (the next write keeps them). `ui-review-gate-off` (Brett, Nov 13 2026:
+ * "UI Review must not be a gate ... default OFF"): a UI Review gate stored before the switch existed goes back to off;
+ * once the document carries the marker, a value Brett sets afterwards stays.
+ */
+export const MIGRATIONS = Object.freeze([
+  { id: 'ui-review-gate-off', apply: (d) => { const values = { ...d.values }; delete values['builds.uiReviewGate']; const changed = { ...d.changed }; delete changed['builds.uiReviewGate']; return { ...d, values, changed }; } },
+]);
+export function migrateDoc(d) {
+  let out = { ...d, migrated: Array.isArray(d.migrated) ? d.migrated.filter((x) => typeof x === 'string') : [] };
+  for (const m of MIGRATIONS) if (!out.migrated.includes(m.id)) out = { ...m.apply(out), migrated: [...out.migrated, m.id] };
+  return out;
+}
 export function readDoc() {
   const { file } = storeFile();
   const d = readJson(file);
-  return isObj(d) && d.$axf === FRAME && isObj(d.values) ? { ...emptyDoc(), ...d, changed: isObj(d.changed) ? d.changed : {} } : emptyDoc();
+  return isObj(d) && d.$axf === FRAME && isObj(d.values) ? migrateDoc({ ...emptyDoc(), migrated: [], ...d, changed: isObj(d.changed) ? d.changed : {} }) : emptyDoc();
 }
 function writeDoc(d) {
   const { file } = storeFile();
@@ -142,7 +156,7 @@ export function whoSentence(spec) {
   if (spec.deprecated) return `Deprecated: ${spec.deprecated}`;
   if (spec.locked) return 'Locked: nobody changes it.';
   if (spec.owner === true) return "Owner-only: changes only with Brett's own click in the console.";
-  if (spec.owner === 'raise') return 'Anyone may lower it; only Brett raises it.';
+  if (spec.owner === 'raise') return spec.kind === 'toggle' ? 'Anyone may turn it off; only Brett turns it on.' : 'Anyone may lower it; only Brett raises it.';
   return 'Any Claude session may change it (axHub veto).';
 }
 
@@ -185,6 +199,7 @@ export function setSettings(patch, { owner = null, by = 'unknown', registry = lo
     if (spec.locked && v !== spec.default) throw new SettingsError('denied', `${key} is locked at ${JSON.stringify(spec.default)}`);
     if (spec.owner === true && !isOwner && v !== before) throw new SettingsError('denied', `${key} is owner-only: only Brett changes it, with his own click in the console (Settings → Plugins → Claude)`);
     if (spec.owner === 'raise' && !isOwner && typeof before === 'number' && v > before) throw new SettingsError('denied', `${key} can only be raised by Brett (console); lowering it is fine`);
+    if (spec.owner === 'raise' && !isOwner && before === false && v === true) throw new SettingsError('denied', `${key} can only be turned on by Brett, with his own click in the console; turning it off is fine`);
     if (v !== before) { next[key] = v; changed.push({ key, from: before, to: v }); }
   }
   if (!changed.length) return { changed: [], view: view({ doc, registry }) };

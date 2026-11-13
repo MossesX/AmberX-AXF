@@ -658,7 +658,7 @@ def _register_claude_settings_tools(mcp: MCPServer) -> None:
     async def claude_settings_set(values: dict[str, Any], by: str = "") -> dict[str, Any]:
         """Change Claude settings that are not owner-only ({key: value}). Owner-only settings (No wait, Include
         irreversible, launch without asking, default model, raising a budget cap or max parallel) are
-        refused here (builds.uiReviewGate is deprecated: UI Review is no longer a gate, always false): only Brett changes them, with his own click in the console (Settings → Plugins → Claude)."""
+        refused here, and so is turning builds.uiReviewGate (UI Review is a merge gate) on; turning it off is fine: only Brett changes them, with his own click in the console (Settings → Plugins → Claude)."""
         pairs = [f"{k}={v if isinstance(v, str) else json.dumps(v)}" for k, v in (values or {}).items()]
         if not pairs:
             raise ToolError("invalid: send values as {key: value}")

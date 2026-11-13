@@ -31,16 +31,22 @@ const reg = loadRegistry();
 ok(reg.settings.length >= 25 && reg.groups.length >= 7, 'registry has the groups and settings');
 for (const k of ['noWait.enabled', 'noWait.includeIrreversible', 'noWait.duration', 'builds.launchWithoutAsking', 'builds.defaultModel']) ok(reg.settings.find((s) => s.key === k)?.owner === true, `${k} is owner-only`);
 ok(reg.settings.find((s) => s.key === 'builds.alwaysNamedAgent')?.locked === true, 'named agent is locked on');
-// UI Review gate retired (Nov 13 2026): readable, deprecated, always false, changed by nobody (not even Brett)
+// UI Review gate switch (Brett, Nov 13 2026: "UI Review must not be a gate ... default OFF"): off by default, anyone turns
+// it off, only Brett turns it on; an old stored true migrates to off once, and his later choice stays.
 {
   const g = reg.settings.find((x) => x.key === 'builds.uiReviewGate');
-  ok(g?.deprecated && /no longer a gate/.test(g.deprecated) && g.default === false && g.locked === true && g.owner === false, 'builds.uiReviewGate is deprecated, off, locked');
-  writeFileSync(process.env.AXF_CLAUDE_SETTINGS_FILE, JSON.stringify({ values: { 'builds.uiReviewGate': true } }));
+  ok(g && !g.deprecated && g.default === false && g.owner === 'raise' && g.kind === 'toggle' && !g.locked, 'builds.uiReviewGate: toggle, default off, owner raises');
+  rmSync(process.env.AXF_CLAUDE_SETTINGS_FILE, { force: true });
+  ok(view().values['builds.uiReviewGate'] === false, 'a missing value reads off');
+  writeFileSync(process.env.AXF_CLAUDE_SETTINGS_FILE, JSON.stringify({ $axf: 'claude-settings@1', values: { 'builds.uiReviewGate': true }, changed: { 'builds.uiReviewGate': { at: '2026-11-01T00:00:00Z', by: 'brett', via: 'console' } } }));
   const v = view(); const row = v.settings.find((x) => x.key === 'builds.uiReviewGate');
-  ok(v.values['builds.uiReviewGate'] === false && row.deprecated && /^Deprecated: /.test(row.who), 'an old document saying true still reads false, reported as deprecated');
-  ok(throwsCode(() => setSettings({ 'builds.uiReviewGate': true }, { owner: BRETT, env: CLEAN }), 'denied'), 'nobody switches the retired gate back on');
+  ok(v.values['builds.uiReviewGate'] === false && !row.changed && /only Brett turns it on/.test(row.who), 'an existing install migrates to off (stored true from before the switch)');
+  ok(throwsCode(() => setSettings({ 'builds.uiReviewGate': true }, { owner: null, by: 'session', env: CLEAN }), 'denied'), 'a session cannot turn the gate on');
+  ok(throwsCode(() => setSettings({ 'builds.uiReviewGate': true }, { owner: BRETT, env: SESSION }), 'denied'), 'an owner approval inside a Claude session does not turn it on');
+  ok(setSettings({ 'builds.uiReviewGate': true }, { owner: BRETT, env: CLEAN }).changed.length === 1 && view().values['builds.uiReviewGate'] === true, "Brett's own click turns it on, and it stays on after the migration");
+  ok(setSettings({ 'builds.uiReviewGate': false }, { owner: null, by: 'session', env: CLEAN }).changed.length === 1 && view().values['builds.uiReviewGate'] === false, 'anyone turns it off');
   const got = spawnSync(process.execPath, [join(HERE, 'claude-settings.mjs'), 'get'], { env: { ...process.env }, encoding: 'utf8' });
-  ok(/builds\.uiReviewGate = false {2}\[deprecated\]/.test(got.stdout), 'claude-settings.mjs get marks it [deprecated]');
+  ok(/builds\.uiReviewGate = false {2}\[owner raises\]/.test(got.stdout), 'claude-settings.mjs get shows it, marked [owner raises]');
   rmSync(process.env.AXF_CLAUDE_SETTINGS_FILE, { force: true });
 }
 { const f = reg.settings.find((s) => s.key === 'builds.fableUpgradeApproval'); ok(f?.owner === true && f.default === false && f.kind === 'toggle', 'Fable upgrades need my approval: owner-only toggle, off by default (Brett, Nov 4 2026)'); }

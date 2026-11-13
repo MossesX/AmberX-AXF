@@ -9,8 +9,9 @@ Every UI a build makes is submitted here for Brett's approval (review-item@1), o
   POST remove  {ids: [..]}    take submitted items (and their screenshots) out
   GET  shot?path=r<n>/<file> | items/<id>/<file>    one screenshot (png/jpg/webp)
   GET  picks / PUT picks {picked: [ids]}             design-pack picks (the page allows 3)
-  GET  gate                  {gate: false, since, why}: UI Review is not a gate (Nov 13 2026), read-only
-  GET  state?branch=&pr=      ui-review@1: the strictest status of that branch's / PR's items, for information only (holds is always false)
+  GET  gate / POST gate {on}  "UI Review is a merge gate" (uiReview.gate, default off): {on, heldPrs, openReviews, line};
+                              on is Brett's own click only, off is open to everyone (server/gate.py)
+  GET  state?branch=&pr=      ui-review@1: the strictest status of that branch's / PR's items; holds only while the gate is on
   …    settings, predicted, predict, predict/real, approve-look
   …    choices/*                  the options a build shipped, Brett's pick, option assets (ui-choices@1, choices.py)
                               predicted looks (ui-prediction@1, predicted.py): a build's mockup waits here before it runs
@@ -18,7 +19,7 @@ Every UI a build makes is submitted here for Brett's approval (review-item@1), o
                               queue; shots/promote sends one in ("Send to review"), shots/migrate moves "Breakroom check:" items out
 
 Capability ui-review@1 (plugin_services): state(branch, pr), items(branch, pr), submit(fields, shots),
-hold / holds / isHeld (always not held: UI Review is not a gate, Nov 2026), gate().
+held / hold / holds / isHeld (held only while the gate switch is on, default off), gate_on(), gate().
 Data folder (AXF_UI_REVIEW_DIR): items.json, shots/<id>/, picks.json, kinds.json, screenshots/ (index.json + files/). On first start the old Design
 packs data folder (its picks) moves in here.
 """
@@ -49,6 +50,7 @@ from . import screenshots as shots_mod
 from . import choices as choices_mod
 from . import predicted as predicted_mod
 from . import notify
+from . import gate as gate_mod
 
 router = APIRouter()
 FOLDER = "ui-review"
@@ -222,20 +224,71 @@ def decide(item: dict, decision: str, comment: str = "", by: str = "brett", at: 
     return out
 
 
-# UI Review is not a gate (Brett, Nov 13 2026): nothing waits on it. Same object as web/review-core.mjs GATE.
-GATE: dict[str, Any] = {"$axf": "ui-review-gate@1", "gate": False, "since": "2026-11-13", "why": "UI Review is not a gate (Nov 2026)"}
+# The gate switch (Brett, Nov 13 2026: "'UI Review is a merge gate', default OFF"). gate_on() is the one decision every
+# hold asks; off = items are filed for Brett to look at and no PR waits. server/gate.py keeps the value.
+def gate_on() -> bool:
+    return gate_mod.gate_on(data_dir)
 
 
-def review_state(items: list[dict], branch: str = "", pr: int | None = None) -> dict:
+def owner_of(request: Request) -> dict | None:
+    """Brett's signed-in console session as control@1 sees it (never from a body); None for everyone else."""
+    c = plugin_services.get("control@1")
+    try:
+        return c.owner(request) if c is not None and hasattr(c, "owner") else None
+    except Exception:  # noqa: BLE001
+        return None
+
+
+def set_gate(request: Request, on: Any, by: str = "") -> dict:
+    user = getattr(request.state, "axf_user", None)
+    try:
+        return gate_mod.write(data_dir, on, owner=owner_of(request), by=by or str(getattr(user, "name", "") or "console"))
+    except gate_mod.GateError as e:
+        raise HTTPException({"invalid": 400, "denied": 403}.get(e.code, 503), str(e)) from None
+
+
+def review_state(items: list[dict], branch: str = "", pr: int | None = None, gate: bool | None = None) -> dict:
+    """The strictest review status of a branch's / PR's items. `review` is always that status; `state` is it too while
+    the gate is on, and 'filed (not a gate)' while it is off (then nothing holds). An item released with release-held
+    (nonBlocking) is still filed and counted, but never holds."""
+    on = gate_on() if gate is None else gate
     # a predicted look is approved for the look, not for merging: only real screens count for a branch / PR
     mine = [it for it in items if ((branch and it.get("branch") == branch) or (pr and it.get("pr") == pr)) and (predicted_mod.prediction_of(it) or {}).get("state") != "predicted"]
     c = {k: 0 for k in STATUSES}
     for it in mine:
         if it.get("status") in c:
             c[it["status"]] += 1
-    state = "none" if not mine else "rejected" if c["rejected"] else "changes" if c["changes"] else "waiting" if c["waiting"] else "approved"
-    return {"$axf": "ui-review@1", "branch": branch, "pr": pr, "state": state, "holds": False, "reason": GATE["why"], "counts": c,
-            "items": [{"id": it["id"], "title": it.get("title", ""), "kind": it.get("kind", ""), "status": it.get("status", "waiting")} for it in mine]}
+    review = "none" if not mine else "rejected" if c["rejected"] else "changes" if c["changes"] else "waiting" if c["waiting"] else "approved"
+    blocking = [it for it in mine if it.get("status") in ("waiting", "pending", "changes", "rejected") and not it.get("nonBlocking")]
+    holds = bool(on and blocking)
+    state = review if on or review == "none" else gate_mod.NOT_A_GATE
+    reason = (f"UI Review is a merge gate and this is {review}" if holds else "UI Review is a merge gate; nothing here holds" if on else gate_mod.OFF_LINE)
+    return {"$axf": "ui-review@1", "branch": branch, "pr": pr, "state": state, "review": review, "gate": on, "holds": holds, "reason": reason, "counts": c,
+            "items": [{"id": it["id"], "title": it.get("title", ""), "kind": it.get("kind", ""), "status": it.get("status", "waiting"), **({"nonBlocking": True} if it.get("nonBlocking") else {})} for it in mine]}
+
+
+def held_prs(items: list[dict] | None = None, gate: bool | None = None) -> list[dict]:
+    """PRs UI Review holds now (empty while the gate is off) and, either way, the PRs with an open review: [{pr, branch,
+    review, held}]."""
+    on = gate_on() if gate is None else gate
+    its = _submitted(_items_doc()) if items is None else items
+    out: dict[int, dict] = {}
+    for it in its:
+        n = it.get("pr")
+        if isinstance(n, int) and n > 0 and n not in out:
+            st = review_state(its, "", n, on)
+            if st["review"] in ("waiting", "changes", "rejected"):
+                out[n] = {"pr": n, "branch": it.get("branch", ""), "review": st["review"], "held": st["holds"]}
+    return sorted(out.values(), key=lambda x: x["pr"])
+
+
+def gate_view() -> dict:
+    """ui-review-gate@1: {on, heldPrs, openReviews, line, source}; the same object on REST, MCP, the CLI and voice."""
+    g = gate_mod.read(data_dir)
+    prs = held_prs(gate=g["on"])
+    return {"$axf": "ui-review-gate@1", "key": gate_mod.KEY, "label": gate_mod.LABEL, "on": g["on"], "gate": g["on"], "source": g["source"],
+            "heldPrs": [p["pr"] for p in prs if p["held"]], "openReviews": prs, "line": gate_mod.line(g["on"]),
+            "who": "Anyone may turn it off; only Brett turns it on, with his own click in the console."}
 
 
 def _submitted(doc: dict) -> list[dict]:
@@ -327,7 +380,8 @@ def after_decide(items: list[dict]) -> None:
 
 
 class UiReviewService:
-    """ui-review@1 for other plugins. UI Review is not a gate (Nov 2026): hold / holds / isHeld always answer not held."""
+    """ui-review@1 for other plugins. held() / holds() / isHeld() / hold() follow gate_on(): while UI Review is not a
+    merge gate (the default) nothing is held; items are still filed."""
 
     name = "ui-review@1"
 
@@ -339,18 +393,25 @@ class UiReviewService:
     def state(self, branch: str = "", pr: int | None = None) -> dict:
         return review_state(_submitted(_items_doc()), branch, pr)
 
+    def held(self, branch: str = "", pr: int | None = None) -> bool:
+        return bool(self.state(branch, pr)["holds"])
+
     def holds(self, branch: str = "", pr: int | None = None) -> bool:
-        return False
+        return self.held(branch, pr)
 
     def isHeld(self, branch: str = "", pr: int | None = None) -> bool:  # noqa: N802 — capability method name
-        return False
+        return self.held(branch, pr)
 
     def hold(self, branch: str = "", pr: int | None = None) -> dict:
-        """Is this branch / PR held? Never: {held: False, reason, state} (state for information only)."""
-        return {"held": False, "reason": GATE["why"], "state": self.state(branch, pr)["state"]}
+        """{held, reason, state, review, gate}."""
+        st = self.state(branch, pr)
+        return {"held": st["holds"], "reason": st["reason"], "state": st["state"], "review": st["review"], "gate": st["gate"]}
+
+    def gate_on(self) -> bool:
+        return gate_on()
 
     def gate(self) -> dict:
-        return dict(GATE)
+        return gate_view()
 
     def submit(self, fields: dict, shots: list[tuple[str, str, bytes]] | None = None) -> dict:
         return submit(fields, shots)
@@ -602,9 +663,18 @@ async def post_remove(request: Request) -> dict:
 
 @router.get("/gate")
 def gate() -> dict:
-    """Is UI Review a gate? No (Nov 13 2026): {gate: false, since, why}. Read-only; the same object as review.mjs gate,
-    MCP ui_review_gate and the console action ui-review.gate."""
-    return dict(GATE)
+    """'UI Review is a merge gate' (uiReview.gate = Claude setting builds.uiReviewGate, default off): {on, heldPrs,
+    openReviews, line}. The same object as review.mjs gate, MCP ui-review_gate_get and the voice action uireview.gate."""
+    return gate_view()
+
+
+@router.post("/gate")
+async def post_gate(request: Request) -> dict:
+    """{on: bool}. Turning it on is Brett's own click only (personOnly, like the owner-only Claude setting); turning it
+    off is open to everyone. Answers the gate object plus {changed}."""
+    body = await _json(request, 4096)
+    r = set_gate(request, body.get("on"), _s(body.get("by"), 80))
+    return {**gate_view(), "changed": r.get("changed", False)}
 
 
 @router.get("/state")

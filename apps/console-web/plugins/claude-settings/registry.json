@@ -46,9 +46,8 @@
       "description": "All builds together stop and notify Brett when the day's cost reaches this. 0 = no cap. Anyone may lower it; only Brett raises it." },
     { "key": "builds.alwaysNamedAgent", "group": "builds", "label": "Always assign a named agent", "kind": "toggle", "default": true, "locked": true, "level": "developer",
       "description": "Every build is booked on a named agent's card. Locked on." },
-    { "key": "builds.uiReviewGate", "group": "builds", "label": "UI Review gate", "kind": "toggle", "default": false, "level": "developer",
-      "deprecated": "UI Review is no longer a gate (Nov 13 2026): no PR waits for it, no screenshots are required. Kept readable for old documents; always off.",
-      "description": "Retired. UI Review is optional feedback: approve, reject and Choices still work, but nothing waits on them." },
+    { "key": "builds.uiReviewGate", "group": "builds", "label": "UI Review gate", "kind": "toggle", "default": false, "owner": "raise", "level": "developer",
+      "description": "UI Review is a merge gate: a PR whose UI Review is waiting, has changes asked or is rejected is held. Off (the default since Nov 13 2026): items are filed for Brett to look at, PRs never wait. Anyone may turn it off; only Brett turns it on. Same value as UI Review's 'UI Review is a merge gate' (uiReview.gate)." },
 
     { "key": "verification.mode", "group": "verification", "label": "Verify builds", "kind": "choice", "default": "on-conflict", "level": "developer",
       "options": [{ "value": "on-conflict", "label": "Trust the live store, verify on conflict" }, { "value": "always", "label": "Always verify" }],
