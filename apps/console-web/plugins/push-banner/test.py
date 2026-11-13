@@ -166,6 +166,21 @@ spec.loader.exec_module(mod)
 from fastapi import FastAPI  # noqa: E402
 from fastapi.testclient import TestClient  # noqa: E402
 
+# merge-confirm@1 stand-in for framework/cli/merge-confirm.mjs: MC["as"] is what GitHub says when the PR is read back
+os.environ["AXF_MERGE_CONFIRM_DIR"] = tempfile.mkdtemp(prefix="pb-mc-")
+MC: dict = {"as": "merged", "calls": []}
+
+
+def fake_mc(args, timeout=90):
+    MC["calls"].append([str(a) for a in args])
+    if len(args) < 3:
+        return {"records": []}
+    st = MC["as"] if args[0] in ("confirm", "recheck", "status") else "pending-github-confirmation"
+    return {"$axf": "merge-confirm@1", "id": f"{str(args[1]).lower()}#{args[2]}", "repo": str(args[1]).lower(), "pr": int(args[2]), "state": st,
+            "label": "Merged" if st == "merged" else "Pending GitHub confirmation", "evidence": {"mergeCommitSha": "merge123"}, "why": "" if st == "merged" else "PR still open on GitHub"}
+
+
+mod.mc_cli = fake_mc
 clock = {"t": 1_000_000.0}
 mod.PUSHES.clock = lambda: clock["t"]
 app = FastAPI()

@@ -163,9 +163,16 @@ def mc_records() -> list[dict[str, Any]]:
 
 def mc_cli(args: list[str], timeout: int = 90) -> dict[str, Any]:
     """framework/cli/merge-confirm.mjs <args> --json → its answer; {ok: False, error} when it fails to answer."""
+    extra = {"AXF_MERGE_CONFIRM_DIR": str(merge_confirm_dir())}
+    try:
+        tok = (PUSHES.token() or "").strip()  # the console's own token for the read-back (never logged, never in argv)
+        if tok:
+            extra["AXF_MERGE_CONFIRM_TOKEN"] = tok
+    except Exception:  # noqa: BLE001 — the CLI falls back to framework/cli/github-token.mjs
+        pass
     try:
         r = subprocess.run(["node", str(MC_SCRIPT), *[str(a) for a in args], "--json"], capture_output=True, text=True, timeout=timeout,
-                           env={**os.environ, "AXF_MERGE_CONFIRM_DIR": str(merge_confirm_dir())})
+                           env={**os.environ, **extra})
     except (OSError, subprocess.TimeoutExpired) as e:
         return {"ok": False, "error": _text(str(e))}
     lines = (r.stdout or "").strip().splitlines()
@@ -893,7 +900,11 @@ class Pushes:
             return "unknown"
         return str(st.get("state") or "waiting") if st.get("holds") else ""
 
-    def merge(self, body: Any, wait_ui: bool = True) -> dict[str, Any]:
+    def merge(self, body: Any, wait_ui: bool = True, path: str = "server-gate", by: str = "console") -> dict[str, Any]:
+        """The one merge call of the console (POST /merge = the server merge gate, auto-merge = console-auto-merge).
+        merge-confirm@1: the call is recorded as pending-github-confirmation first and the answer says `merged` only once
+        GitHub, read back, proves it (state MERGED, merge commit on main); otherwise `state: pending-github-confirmation`
+        with the confirm id, and the poller finishes it (Merged, or 'GitHub hasn't confirmed' with Recheck)."""
         if not isinstance(body, dict) or set(body) - {"repo", "number", "confirm"}:
             raise HTTPException(400, "send {repo, number, confirm}")
         repo, number = body.get("repo"), body.get("number")
@@ -910,6 +921,7 @@ class Pushes:
             return {"merged": False, "queued": True, "sha": "", "url": "",
                     "text": f"#{number} is in the merge queue: it lands with the next batch once that batch's CI run is green."}
         gh = self.gh()
+        called = False
         try:
             p = gh.get(github.repo_path(repo, "pulls", number))
             if not isinstance(p, dict) or p.get("state") != "open":
@@ -937,12 +949,38 @@ class Pushes:
                 raise HTTPException(409, "its CI failed" + self._hand({**task, "failure": "CI failed on its head commit"}))
             if ci != "success":
                 raise HTTPException(409, {"running": "its CI is still running", "none": "it has no CI result yet"}.get(ci, "its CI isn't green"))
+            mc_cli(["request", repo, number, "--path", path, "--by", by, "--url", _safe_url(p.get("html_url")) or ""])
+            called = True
             r = gh.json("PUT", github.repo_path(repo, "pulls", number, "merge"), {"merge_method": "merge", "sha": sha})
         except github.GitHubError as e:
-            hand = self._hand({**task, "failure": f"GitHub refused the merge: {_text(str(e), 160)}"}) if "task" in locals() and getattr(e, "status", 0) in (405, 409, 422) else ""
-            raise HTTPException(502, _text(str(e)) + hand) from None
+            if called:  # the merge call was made: record its answer and read back once
+                status = int(getattr(e, "status", 0) or 0)
+                mc_cli(["called", repo, number, *(["--status", status, "--message", _text(str(e), 160)] if status else ["--none"])])
+                rec = mc_cli(["confirm", repo, number, "--path", path, "--by", by])
+                if rec.get("state") == "merged":
+                    r = {"merged": True, "sha": (rec.get("evidence") or {}).get("mergeCommitSha", "")}
+                elif not status:
+                    return self._pending_answer(repo, number, p, rec)
+                else:
+                    r = None
+            else:
+                r = None
+            if r is None:
+                hand = self._hand({**task, "failure": f"GitHub refused the merge: {_text(str(e), 160)}"}) if "task" in locals() and getattr(e, "status", 0) in (405, 409, 422) else ""
+                raise HTTPException(502, _text(str(e)) + hand) from None
+        else:
+            # the merge API's 200 is a hint, never proof: GitHub, read back, decides (merge-confirm@1)
+            mc_cli(["called", repo, number, "--status", 200, *(["--merged"] if isinstance(r, dict) and r.get("merged") else []),
+                    *(["--sha", _text(r.get("sha"), 40)] if isinstance(r, dict) and r.get("sha") else [])])
+            rec = mc_cli(["confirm", repo, number, "--path", path, "--by", by])
+            if rec.get("state") != "merged":
+                self._forget()
+                if rec.get("state") == "merge-failed":
+                    raise HTTPException(409, f"GitHub didn't merge it: {_text(rec.get('why'), 200)}")
+                return self._pending_answer(repo, number, p, rec)
+            r = {**(r if isinstance(r, dict) else {}), "sha": (rec.get("evidence") or {}).get("mergeCommitSha") or (r or {}).get("sha", "")}
         self._forget()
-        merged = bool(isinstance(r, dict) and r.get("merged"))
+        merged = True
         base = _text((p.get("base") or {}).get("ref") if isinstance(p.get("base"), dict) else "", 200)
         if merged:
             # the merged head branch goes (Oct 31 2026: a left-over branch was re-opened as a duplicate PR); same-repo only,
@@ -956,7 +994,30 @@ class Pushes:
                     pass
             self._remember({"key": f"{repo}:#{number}", "kind": "merged", "repo": repo, "base": base, "number": number,
                             "title": _text(p.get("title")), "url": _safe_url(p.get("html_url")), "text": f"Merged #{number} into {base or 'main'}."})
-        return {"merged": merged, "sha": _text(r.get("sha"), 40) if isinstance(r, dict) else "", "url": _safe_url(p.get("html_url"))}
+        return {"merged": merged, "state": "merged", "confirmId": f"{repo.lower()}#{number}", "sha": _text(r.get("sha"), 40) if isinstance(r, dict) else "", "url": _safe_url(p.get("html_url"))}
+
+    def _pending_answer(self, repo: str, number: int, p: dict[str, Any], rec: dict[str, Any]) -> dict[str, Any]:
+        """A merge call GitHub hasn't confirmed yet: never `merged: true`. The poller finishes it."""
+        cid = _text(rec.get("id"), 120) or f"{repo.lower()}#{number}"
+        state = rec.get("state") if rec.get("state") in (MC_PENDING, "merge-requested", "merge-unconfirmed") else MC_PENDING
+        return {"merged": False, "state": state, "confirmId": cid, "label": _text(rec.get("label"), 60) or "Pending GitHub confirmation",
+                "why": _text(rec.get("why"), 300), "sha": "", "url": _safe_url(p.get("html_url")),
+                "text": f"#{number}: merge called; pending GitHub confirmation (read back until GitHub shows it merged on main)."}
+
+    def settle_confirms(self) -> int:
+        """Console merges GitHub has since confirmed: the head branch goes and the PR shows as Merged in Done. Once each."""
+        done_keys = {d["key"] for d in self.done() if d.get("kind") == "merged"}
+        n = 0
+        for rec in mc_records()[:100]:
+            if rec.get("state") != "merged" or rec.get("path") not in ("console-auto-merge", "server-gate", "github-plugin"):
+                continue
+            repo = next((x for x in self.config()["repos"] if x.lower() == str(rec.get("repo"))), None)
+            if not repo or f"{repo}:#{rec.get('pr')}" in done_keys:
+                continue
+            self._remember({"key": f"{repo}:#{rec['pr']}", "kind": "merged", "repo": repo, "base": "main", "number": rec["pr"], "title": "",
+                            "url": _safe_url(rec.get("url")), "text": f"Merged #{rec['pr']}: confirmed by GitHub."})
+            n += 1
+        return n
 
 
     # ---- auto-merge (Oct 30 2026; 0.5.0: every branch through a PR, pulled up to date with main before it merges)
@@ -1046,9 +1107,10 @@ class Pushes:
                     done.append({**line, "merged": False, "why": "ready: merges next round (one merge per round)"})
                     break
                 try:
-                    res = self.merge({"repo": repo, "number": p["number"], "confirm": key}, wait_ui=wait_ui)
-                    merged_one = bool(res.get("merged"))
-                    done.append({**line, "merged": merged_one})
+                    res = self.merge({"repo": repo, "number": p["number"], "confirm": key}, wait_ui=wait_ui, path="console-auto-merge", by="auto-merge")
+                    # a merge call GitHub hasn't confirmed still uses this round's one merge; it is never reported merged
+                    merged_one = bool(res.get("merged")) or res.get("state") in (MC_PENDING, "merge-requested")
+                    done.append({**line, "merged": bool(res.get("merged")), **({"state": res["state"], "confirmId": res.get("confirmId")} if not res.get("merged") else {})})
                 except HTTPException as e:
                     done.append({**line, "merged": False, "why": _text(str(e.detail), 200)})
                 except Exception as e:  # noqa: BLE001
@@ -1411,6 +1473,7 @@ def _auto_merge_loop() -> None:
         try:
             ensure_health()
             ensure_mc_health()
+            PUSHES.settle_confirms()
             if any(r.get("state") in (MC_PENDING, "merge-requested") for r in mc_records()):
                 mc_cli(["tick"])  # read back pending merges between the host's land rounds (ETag-cached)
             PUSHES.auto_merge()
