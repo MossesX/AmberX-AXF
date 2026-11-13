@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4273,
- "updatedAt": "2026-11-13T11:08:30.328Z",
+ "rev": 4274,
+ "updatedAt": "2026-11-13T11:08:49.046Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -183432,7 +183432,7 @@
    "pr": "#565",
    "priority": "P0",
    "createdAt": "2026-11-13T10:41:19.479Z",
-   "updatedAt": "2026-11-13T11:08:28.601Z",
+   "updatedAt": "2026-11-13T11:08:46.725Z",
    "builtAt": "",
    "notes": [
     {
@@ -183454,6 +183454,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-android-approval-overlay-a-small-always-on-float--gina, own login copy)",
      "at": "2026-11-13T10:50:28.489Z"
+    },
+    {
+     "text": "Headless run axf-android-approval-overlay-a-small-always-on-float--gina: brief only · start 11.3K tokens ($0.03) · cost $2.95 · 64 turns · 6 tools, MCP none",
+     "at": "2026-11-13T11:08:46.725Z"
     }
    ],
    "approvals": [],
