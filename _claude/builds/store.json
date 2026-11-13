@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4333,
- "updatedAt": "2026-11-13T11:33:08.573Z",
+ "rev": 4334,
+ "updatedAt": "2026-11-13T11:33:25.833Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -170151,7 +170151,7 @@
    "branch": "claude/unlink-plan-studio-from-builds-delete-all-plan-s",
    "pr": "",
    "createdAt": "2026-11-12T10:49:12.963Z",
-   "updatedAt": "2026-11-13T11:25:49.355Z",
+   "updatedAt": "2026-11-13T11:33:07.827Z",
    "builtAt": "",
    "notes": [
     {
@@ -170204,12 +170204,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T11:24:27.918Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-unlink-plan-studio-from-builds-delete-all-plan-s--rhonda",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-13T11:25:46.013Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T10:50:36.976Z",
@@ -170221,7 +170221,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-13T11:25:46.013Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -170230,7 +170230,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-13T11:25:46.013Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -170273,12 +170273,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T11:33:07.827Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T10:50:36.976Z",
-     "updatedAt": "2026-11-12T10:50:36.976Z"
+     "updatedAt": "2026-11-13T11:33:08.078Z"
     },
     {
      "id": "s3",
@@ -170326,7 +170326,11 @@
     "createdAt": "2026-11-12T10:49:12.963Z",
     "builtAt": "",
     "prefixSteps": false,
-    "stepAt": {}
+    "stepAt": {
+     "st-mwdfft4g011xgy": "2026-11-12T10:50:36.976Z",
+     "st-mwdfft4g027qpo": "2026-11-12T10:50:36.976Z",
+     "st-mwdfft4g03m4rw": "2026-11-12T10:50:36.976Z"
+    }
    },
    "queue": null,
    "defaultAt": "2026-11-12T10:50:36.976Z",
