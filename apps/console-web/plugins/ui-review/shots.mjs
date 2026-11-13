@@ -28,6 +28,7 @@ import { copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync, renameS
 import { tmpdir } from 'node:os';
 import { basename, dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { consoleCall as remoteCall } from './console-call.mjs';
 import * as core from './web/shots-core.mjs';
 import * as gc from './web/groups-core.mjs';
 import * as cf from './web/conform.mjs';
@@ -167,14 +168,7 @@ export function migrateLocal() {
   return { moved: r.moved, shots: added, groups: repairLocal() };
 }
 
-async function consoleCall(path, body) {
-  const url = process.env.AXF_CONSOLE_URL, tok = process.env.AXF_TOKEN;
-  if (!url || !tok) throw new Error('--console needs AXF_CONSOLE_URL and AXF_TOKEN');
-  const r = await fetch(`${url.replace(/\/$/, '')}/api/plugins/ui-review/${path}`, { method: body ? 'POST' : 'GET', headers: { Authorization: `Bearer ${tok}`, 'Content-Type': 'application/json' }, body: body ? JSON.stringify(body) : undefined });
-  const j = await r.json().catch(() => ({}));
-  if (!r.ok) throw new Error(`console ${r.status}: ${typeof j.detail === 'string' ? j.detail : r.statusText}`);
-  return j;
-}
+const consoleCall = (path, body) => remoteCall(path, body);
 
 /** Flags; --console, --local, --json and --help never take a value (so `--local shot.png` keeps the file). */
 const BOOL = new Set(['console', 'local', 'json', 'help']);

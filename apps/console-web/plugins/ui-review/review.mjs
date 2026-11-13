@@ -34,6 +34,7 @@
 import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, renameSync, statSync, writeFileSync } from 'node:fs';
 import { basename, dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { consoleCall as remoteCall } from './console-call.mjs';
 import * as core from './web/review-core.mjs';
 import * as cf from './web/conform.mjs';
 import * as gc from './web/groups-core.mjs';
@@ -158,14 +159,7 @@ function writeOptionAssets({ choices, data }) {
 }
 
 /* -------------------------------------------------------------- console API (--console) */
-async function consoleCall(path, body) {
-  const url = process.env.AXF_CONSOLE_URL, tok = process.env.AXF_TOKEN;
-  if (!url || !tok) throw new Error('--console needs AXF_CONSOLE_URL and AXF_TOKEN');
-  const r = await fetch(`${url.replace(/\/$/, '')}/api/plugins/ui-review/${path}`, { method: body ? 'POST' : 'GET', headers: { Authorization: `Bearer ${tok}`, 'Content-Type': 'application/json' }, body: body ? JSON.stringify(body) : undefined });
-  const j = await r.json().catch(() => ({}));
-  if (!r.ok) throw new Error(`console ${r.status}: ${typeof j.detail === 'string' ? j.detail : r.statusText}`);
-  return j;
-}
+const consoleCall = (path, body) => remoteCall(path, body);
 
 /* -------------------------------------------------------------- CLI */
 export function parseArgs(argv) {
@@ -190,7 +184,10 @@ const line = (it) => `${core.statusInfo(it.status).label.padEnd(13)} ${it.id.pad
 export async function main(argv = process.argv.slice(2)) {
   const { pos, flags } = parseArgs(argv);
   const [cmd = 'help'] = pos;
-  const json = !!flags.json; const remote = !!flags.console;
+  const json = !!flags.json;
+  // --console, or a build worktree that has the console's address and token (what headless builds get): a worktree's
+  // own data folder is never seen by Brett and is deleted with the worktree. --local keeps it here on purpose.
+  const remote = flags.local ? false : !!flags.console || (isWorktree() && !process.env.AXF_UI_REVIEW_DIR && !!(process.env.AXF_CONSOLE_URL && process.env.AXF_TOKEN));
   const out = (v, text) => console.log(json ? JSON.stringify(v) : text);
   if (cmd === 'submit') {
     let files = shotFiles(flags); const fields = fieldsOf(flags);
