@@ -14,7 +14,12 @@ Server-side settings, plugin toggles, and search / targets / state of the static
 """
 from __future__ import annotations
 
+import json
 import os
+import threading
+import time
+from collections import deque
+from pathlib import Path
 from typing import Any
 
 from fastapi import APIRouter, Request
@@ -27,6 +32,132 @@ VERBS = ("open", "state", "press", "set", "scroll", "focus", "search", "list", "
 SCROLL_DIRS = ("up", "down", "page-up", "page-down", "top", "bottom", "to")  # = CONSOLE_CONTROL_SCROLL_DIRS
 OWNER = "owner"
 CONSOLE_URL = (os.environ.get("AXF_CONSOLE_PUBLIC_URL") or "https://console.amberxai.com").rstrip("/")
+
+
+# ---------------------------------------------------------------------- guards (policy, permission, rate, audit)
+
+# = CONSOLE_CONTROL_VERBS in core/engines/console-control-rules.mjs (effect, control@1 permission)
+VERB_RULES: dict[str, tuple[str, str]] = {
+    "open": ("navigate", "control.console.navigate"), "state": ("read", "control.console.read"), "press": ("write", "control.console.write"),
+    "set": ("write", "control.console.write"), "scroll": ("navigate", "control.console.navigate"), "focus": ("navigate", "control.console.navigate"),
+    "search": ("read", "control.console.read"), "list": ("read", "control.console.read"),
+    "plugin.enable": ("write", "control.plugins.write"), "plugin.disable": ("write", "control.plugins.write"),
+}
+RATE_WINDOW_S = 10.0
+RATE_MAX = 120         # commands per caller per window (reads and navigation)
+RATE_MAX_WRITE = 20    # state-changing commands per caller per window
+DATA_DIR = Path(os.environ.get("AXF_CONSOLE_CONTROL_DATA_DIR") or cc.APP.parent.parent / ".axf-console" / "console-control")
+AUDIT_FILE = DATA_DIR / "audit.jsonl"
+POLICY_FILE = cc.APP / "src" / "assets" / "uac-policy" / "console-access.json"
+_rate: dict[str, deque[tuple[float, bool]]] = {}
+_rate_lock = threading.Lock()
+_audit_lock = threading.Lock()
+
+
+def policy_of(cmd: dict[str, Any]) -> dict[str, Any]:
+    """The axHub policy tag of a command (CONTROL.md → Recommended axHub policy): reads and navigation `allow` (never a
+    veto countdown), writes `veto`, destructive presses `confirm`, deciding presses `person` (never by command)."""
+    effect, requires = VERB_RULES.get(cmd.get("verb", ""), ("write", "control.console.write"))
+    tag = "allow" if effect in ("read", "navigate") else "veto"
+    destructive = False
+    if cmd.get("verb") == "press":
+        word = str(cmd.get("address") or "").rsplit("/", 1)[-1].split(":", 1)[-1]
+        spec = cc.press_spec(str(cmd.get("address") or ""))
+        if bool(spec and spec.get("personOnly")) or bool(cc.DECIDING_RE.search(word)):
+            tag = "person"
+        elif bool(spec and spec.get("destructive")) or bool(cc.DESTRUCTIVE_RE.search(word)):
+            tag, destructive = "confirm", True
+    return {"tag": tag, "effect": effect, "readOnly": effect in ("read", "navigate"), "destructive": destructive, "requires": requires}
+
+
+def _role_grants(role: str) -> set[str]:
+    try:
+        roles = json.loads(POLICY_FILE.read_text()).get("data", {}).get("roles", [])
+    except (OSError, ValueError):
+        return set()
+    r = next((x for x in roles if x.get("id") == role), None)
+    return set(r.get("permissions") or []) if r else set()
+
+
+def grants_of(request: Request) -> set[str]:
+    """The console token and hub admins = everything; a hub user = their own perms plus their role's grants."""
+    user = getattr(request.state, "axf_user", None)
+    if user is None or getattr(user, "admin", False):
+        return {"*"}
+    return set(getattr(user, "perms", ()) or ()) | _role_grants(str(getattr(user, "role", "") or ""))
+
+
+def granted(grants: set[str], perm: str) -> bool:
+    """`*`, the permission itself, or a wildcard above it (`control.*`, `control.console.*`)."""
+    if "*" in grants or perm in grants:
+        return True
+    parts = perm.split(".")
+    return any(".".join(parts[:i]) + ".*" in grants for i in range(1, len(parts)))
+
+
+def check_rate(who: str, write: bool, now: float | None = None) -> None:
+    """At most RATE_MAX commands (RATE_MAX_WRITE state-changing ones) per caller per RATE_WINDOW_S. Raises unavailable."""
+    t = now if now is not None else time.monotonic()
+    with _rate_lock:
+        q = _rate.setdefault(who, deque())
+        while q and q[0][0] <= t - RATE_WINDOW_S:
+            q.popleft()
+        writes = sum(1 for _, w in q if w)
+        if len(q) >= RATE_MAX or (write and writes >= RATE_MAX_WRITE):
+            retry = max(0.1, RATE_WINDOW_S - (t - q[0][0])) if q else RATE_WINDOW_S
+            raise cc.ControlError("unavailable", f"too many console-control commands: at most {RATE_MAX_WRITE if write else RATE_MAX} per {int(RATE_WINDOW_S)} s; try again in {retry:.1f} s",
+                                  because="rate limit", retryAfterS=round(retry, 1))
+        q.append((t, write))
+
+
+def _shown_value(cmd: dict[str, Any]) -> Any:
+    """The value for the audit line: never a secret setting's, and short."""
+    if "value" not in cmd:
+        return None
+    spec = cc.setting_spec(str(cmd.get("address") or "")) if cmd.get("verb") == "set" else None
+    if spec and spec.get("type") == "secret":
+        return "(hidden)"
+    v = cmd["value"]
+    text = v if isinstance(v, str) else json.dumps(v, default=str)
+    return text[:200]
+
+
+def audit(cmd: dict[str, Any], r: dict[str, Any], by: str, audience: str, policy: dict[str, Any]) -> None:
+    """One line per command: data/audit.jsonl and the console's terminal log."""
+    line = {"at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "by": by, "audience": audience, "verb": cmd.get("verb"), "address": cmd.get("address"),
+            "value": _shown_value(cmd), "query": (cmd.get("query") or {}).get("q"), "reason": cmd.get("reason"), "policy": policy["tag"],
+            "ok": bool(r.get("ok")), "code": r.get("code"), "source": r.get("source") or ("console" if r.get("client") else None), "client": r.get("client")}
+    line = {k: v for k, v in line.items() if v not in (None, "")}
+    try:
+        with _audit_lock:
+            DATA_DIR.mkdir(parents=True, exist_ok=True)
+            with AUDIT_FILE.open("a", encoding="utf-8") as f:
+                f.write(json.dumps(line, ensure_ascii=False) + "\n")
+    except OSError:
+        pass
+    try:
+        import console_context
+        if console_context.log is not None:
+            console_context.log("console-control", f"{by}: {cmd.get('verb')} {cmd.get('address') or (cmd.get('query') or {}).get('q') or ''} → {'ok' if r.get('ok') else r.get('code')}")
+    except Exception:  # noqa: BLE001 — tests without the console
+        pass
+
+
+def guarded(cmd: dict[str, Any], by: str, audience: str, grants: set[str], to: str = "recent") -> dict[str, Any]:
+    """Permission, rate, then run; the answer carries its policy tag and is audited."""
+    policy = policy_of(cmd)
+    try:
+        if not granted(grants, policy["requires"]):
+            raise cc.ControlError("denied", f"{cmd['verb']} needs {policy['requires']}", requires=policy["requires"])
+        if policy["tag"] == "person":
+            raise cc.ControlError("denied", f"{cmd.get('address')} is a decision only Brett makes with his own tap", requires="person", personOnly=True)
+        check_rate(f"{audience}|{by}", not policy["readOnly"])
+        r = run(cmd, by, audience, to)
+    except cc.ControlError as e:
+        r = e.envelope()
+    r = {**r, "policy": {k: policy[k] for k in ("tag", "effect", "readOnly", "destructive")}}
+    audit(cmd, r, by, audience, policy)
+    return r
 
 
 def _relay() -> Any:
@@ -47,8 +178,11 @@ def audience_of(request: Request) -> tuple[str, str]:
 
 
 def answer(r: dict[str, Any]) -> JSONResponse:
-    status = 200 if r.get("ok") else cc.STATUS.get(str(r.get("code") or "unexpected"), 500)
-    return JSONResponse(r, status_code=status)
+    status = 200 if r.get("ok") else 429 if r.get("because") == "rate limit" else cc.STATUS.get(str(r.get("code") or "unexpected"), 500)
+    headers = {"X-AXF-Policy": str(r["policy"]["tag"])} if isinstance(r.get("policy"), dict) else {}
+    if r.get("retryAfterS"):
+        headers["Retry-After"] = str(int(float(r["retryAfterS"]) + 0.999))
+    return JSONResponse(r, status_code=status, headers=headers)
 
 
 def fail(e: cc.ControlError) -> JSONResponse:
@@ -174,7 +308,7 @@ def router_for(auth: Any) -> APIRouter:
     async def go(request: Request, cmd: dict[str, Any], to: str = "recent") -> JSONResponse:
         audience, name = audience_of(request)
         by = str(cmd.pop("by", "") or "") or name
-        return answer(await run_in_threadpool(run, cmd, by, audience, to))
+        return answer(await run_in_threadpool(guarded, cmd, by, audience, grants_of(request), to))
 
     async def from_body(request: Request, b: dict[str, Any]) -> JSONResponse:
         try:
@@ -190,7 +324,9 @@ def router_for(auth: Any) -> APIRouter:
         """source=inventory: the static list only; console: the open console's live list (503 when none); auto: live, else static."""
         if source != "inventory":
             audience, name = audience_of(request)
-            live = await run_in_threadpool(to_console, {"$axf": cc.FRAME, "verb": "list", **({"address": under} if under else {})}, name, audience)
+            live = await run_in_threadpool(guarded, {"$axf": cc.FRAME, "verb": "list", **({"address": under} if under else {})}, name, audience, grants_of(request))
+            if live.get("source") == "inventory" and source != "console":
+                live = {"ok": False}
             if live.get("ok"):
                 ks = _kinds(kinds)
                 ts = [t for t in live.get("targets") or [] if not ks or t.get("kind") in ks]
