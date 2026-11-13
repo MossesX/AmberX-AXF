@@ -38,6 +38,7 @@ import { CUSTOM_TARGETS, customizable, normalizeCustomValues, type CustomValues 
 import spec from '../../schemas/asset-types.json';
 import { SKIN_COLOR_SLOT, SKIN_NEVER, normalizeLookPart, resolveLookSkin, setSkinColorTheme, type AppLookDocument, type GlobalSkin, type LookPart } from './skin-rules.mjs';
 import { coverageSummary, coverageTable, partsErrors, partsTypes, skinScopeKey, uncoveredTypes, type CoverageRow, type CoverageSummary, type ResolvedSkin, type SkinScope, type TypeSpecs } from './skin-coverage.mjs';
+import { behaviourErrors, normalizeBehaviour, type BehaviourMap } from './skin-behaviour.mjs';
 
 export { APP_LOOK_FRAME, APP_LOOK_MAX_BYTES, APP_LOOK_PROJECT, SKIN_COLOR_SLOT, SKIN_NEVER, SKIN_USES, appLookPath, backToSkin, newAppLook, normalizeAppLook, normalizeScopeState, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, scopeState, setInheritSkin, setLookSlot, setScopeOverride, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorTheme, undoRestore } from './skin-rules.mjs';
 export type { AppLookDocument, AppSkinState, GlobalSkin, LookPart } from './skin-rules.mjs';
@@ -46,7 +47,8 @@ export { COVERAGE_KINDS, PART_ELEMENTS, SKIN_COVERAGE_CONTRACT, SKIN_SCOPE_APP, 
 export type { CoverageKind, CoverageRow, CoverageSummary, PartElement, ResolvedSkin, SkinScope, SkinScopeKind, SkinScopeState, StyleTargets, TypeSpecs } from './skin-coverage.mjs';
 
 export const SKIN_TYPE = 'skin';
-export const SKIN_FRAME = 'skin@1';
+/** skin@2 (Nov 13 2026): look + behaviour. A skin without `behaviour` is a skin@1 and reads as today's behaviour. */
+export const SKIN_FRAME = 'skin@2';
 /** Setting keys of a shared document that still reach every app: control@1 token overrides. */
 export const SHARED_SETTING_PREFIXES: readonly string[] = ['axf.tokens.'];
 /** `axf.icons.pack.<scopeKey>` = the icon pack a skin puts in force at a scope (the icon-map engine's own key, so icon maps read it as the scope's pack). */
@@ -63,6 +65,8 @@ export interface SkinData {
   iconPack?: string;
   /** Style parts per asset type (customize tokens): how the type's box, text, icon and items look under this skin. */
   parts?: Record<string, CustomValues>;
+  /** skin@2: the behaviour pick per asset type with behaviour axes (skin-behaviour.mjs); absent = today's behaviour. */
+  behaviour?: BehaviourMap;
   /** Shown in the picker; swatches are drawn from the skin's colour theme. */
   preview?: { caption?: string; image?: string };
   /** Spacing and chrome the skin needs shown or hidden. */
@@ -122,6 +126,8 @@ export function normalizeSkin(raw: unknown): SkinData {
   if (typeof d.iconPack === 'string' && ID.test(d.iconPack)) out.iconPack = d.iconPack;
   const parts = partsMap(d.parts);
   if (Object.keys(parts).length) out.parts = parts;
+  const behaviour = normalizeBehaviour(d.behaviour, TYPE_SPECS, CUSTOM_TARGETS);
+  if (Object.keys(behaviour).length) out.behaviour = behaviour;
   if (isObj(d.preview)) {
     const p: NonNullable<SkinData['preview']> = {};
     if (typeof d.preview.caption === 'string') p.caption = d.preview.caption.slice(0, 200);
@@ -150,6 +156,7 @@ export function skinErrors(raw: unknown): string[] {
   }
   if ('iconPack' in raw && (typeof raw.iconPack !== 'string' || !ID.test(raw.iconPack))) errors.push('data.iconPack must be an icon-pack asset id');
   errors.push(...partsErrors(raw.parts, TYPE_SPECS, CUSTOM_TARGETS));
+  errors.push(...behaviourErrors(raw.behaviour, TYPE_SPECS, CUSTOM_TARGETS));
   if ('preview' in raw && !isObj(raw.preview)) errors.push('data.preview must be an object');
   if ('extras' in raw) {
     const x = raw.extras;

@@ -13,6 +13,7 @@ import { AGENT_CARD_TYPE, agentCardErrors, agentCardSchemaProperties } from '../
 import { JOB_TYPE, jobTypeErrors, jobTypeSchemaProperties } from '../core/engines/job-type-rules.mjs';
 import { CARD_TYPE, cardErrors, cardSchemaProperties } from '../core/engines/card-rules.mjs';
 import { partsErrors as skinPartsErrors } from '../core/engines/skin-coverage.mjs';
+import { behaviourErrors as skinBehaviourErrors, behaviourSchemaProperties } from '../core/engines/skin-behaviour.mjs';
 import { DEMO_TYPES, demoAssetErrors, demoSchemaProperties } from '../core/engines/demo-rules.mjs';
 import { jsonSchemas as uiReviewJsonSchemas, REGISTRY as UI_REVIEW_REGISTRY } from '../core/ui-review-schema.mjs';
 import { jsonSchemas as sessionJsonSchemas, REGISTRY as SESSION_REGISTRY } from '../core/session-schema.mjs';
@@ -215,6 +216,7 @@ export function skinErrors(d) {
   }
   if ('iconPack' in d && (typeof d.iconPack !== 'string' || !ID.test(d.iconPack))) errors.push('data.iconPack must be an icon-pack asset id');
   errors.push(...skinPartsErrors(d.parts, spec.types, customizeSpec.targets));
+  errors.push(...skinBehaviourErrors(d.behaviour, spec.types, customizeSpec.targets));
   if ('preview' in d && !isO(d.preview)) errors.push('data.preview must be an object');
   if ('extras' in d) {
     const x = d.extras;
@@ -832,6 +834,26 @@ export function newAsset({ dir, type, id, from, name }) {
 }
 
 /** Emit JSON Schema files (for editor autocompletion) from the type spec. */
+/** skin@2's optional fields: the look extras and the behaviour block (one property per type with axes, from the registry). */
+function skinSchemaProperties() {
+  const id = { type: 'string', pattern: '^[a-z0-9][a-z0-9-]*$' };
+  return {
+    iconPack: { ...id, description: 'icon-pack asset id the skin draws with' },
+    parts: { type: 'object', description: 'asset type → style parts (customize tokens) for types with a style target', additionalProperties: { type: 'object' } },
+    preview: { type: 'object', properties: { caption: { type: 'string', maxLength: 200 }, image: { type: 'string', maxLength: 500 } } },
+    extras: { type: 'object', properties: { spacing: { enum: ['tight', 'compact', 'regular'] }, hidden: { type: 'object', additionalProperties: { type: 'boolean' } }, settings: { type: 'object' } } },
+    ...behaviourSchemaProperties(spec.types, customizeSpec.targets),
+  };
+}
+
+/** A type with no required fields: its enum fields as enums, its documented booleans as booleans. */
+function optionalEnumSchemaProperties(ts) {
+  const props = {};
+  for (const [k, words] of Object.entries(ts.enums ?? {})) props[k] = { enum: words };
+  for (const [k, doc] of Object.entries(ts.optional_fields ?? {})) if (!props[k] && /^boolean/.test(doc)) props[k] = { type: 'boolean' };
+  return props;
+}
+
 export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
   mkdirSync(outDir, { recursive: true });
   const written = [];
@@ -850,6 +872,10 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
     if (type === JOB_TYPE) Object.assign(props, jobTypeSchemaProperties());
     if (type === CARD_TYPE) Object.assign(props, cardSchemaProperties());
     if (DEMO_TYPES.includes(type)) Object.assign(props, demoSchemaProperties(type));
+    // skin@2: the optional look fields plus one `behaviour` property per type with behaviour axes (from the registry)
+    if (type === 'skin') Object.assign(props, skinSchemaProperties());
+    // types whose fields are all optional (table@1): every enum field typed from the registry, switches as booleans
+    if (type === 'table') Object.assign(props, optionalEnumSchemaProperties(ts));
     const $defs = type === 'app-menu' || type === 'context-menu' ? { menuItem: menuItemSchema() } : undefined;
     const schema = {
       ...($defs ? { $defs } : {}),

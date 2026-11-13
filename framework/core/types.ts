@@ -17,6 +17,7 @@ export const ASSET_TYPES = [
   'nav-menu',
   'context-menu',
   'tab-group',
+  'table',
   'dialog',
   'popup',
   'button',
@@ -67,7 +68,7 @@ export const ASSET_TYPES = [
 ] as const;
 
 /** Types that are optional: an app may ship none (the framework ships starters). Attachable ones live on a host (the banner). */
-export const OPTIONAL_TYPES: readonly AssetType[] = ['tab-group', 'gauge', 'meter', 'banner', 'clock', 'search-bar', 'logo', 'action-button', 'label', 'status', 'counter', 'progress', 'avatar', 'link', 'theme-switch', 'spacer', 'divider', 'badge', 'settings', 'dock-layout', 'xlayout', 'nav-style', 'behavior-theme', 'design-package', 'skin', 'style-package', 'logo-mark', 'animated-logo', 'icon-pack', 'branding', 'interface', 'typography', 'density', 'sizing', 'agent-card', 'job-type', 'card', 'help', 'demonstration', 'book', 'clip', 'docs'];
+export const OPTIONAL_TYPES: readonly AssetType[] = ['tab-group', 'table', 'gauge', 'meter', 'banner', 'clock', 'search-bar', 'logo', 'action-button', 'label', 'status', 'counter', 'progress', 'avatar', 'link', 'theme-switch', 'spacer', 'divider', 'badge', 'settings', 'dock-layout', 'xlayout', 'nav-style', 'behavior-theme', 'design-package', 'skin', 'style-package', 'logo-mark', 'animated-logo', 'icon-pack', 'branding', 'interface', 'typography', 'density', 'sizing', 'agent-card', 'job-type', 'card', 'help', 'demonstration', 'book', 'clip', 'docs'];
 
 export type AssetType = (typeof ASSET_TYPES)[number];
 
@@ -512,6 +513,26 @@ export interface TabGroupData {
   rememberLast?: boolean;
 }
 
+/**
+ * table@1 (build professional-skins, Nov 13 2026): how every table and data grid looks and behaves. Every field is
+ * optional with the framework's own look as its default; a skin picks the asset and sets its behaviour axes (skin@2).
+ * Engine: normalizeTable / tableStyle in engines/components.ts.
+ */
+export interface TableData {
+  /** rows in a grid (default) / one card per row / a monospace terminal listing */
+  form?: 'grid' | 'cards' | 'terminal';
+  density?: ChromeDensity;
+  /** when a row's actions show: on hover (default), always, behind a menu, on swipe */
+  rowActions?: 'hover' | 'always' | 'menu' | 'swipe';
+  /** the header stays while the body scrolls (default true) */
+  stickyHeader?: boolean;
+  /** every other row tinted (default false) */
+  zebra?: boolean;
+  /** a rule between rows (default true) */
+  dividers?: boolean;
+  headerCase?: 'normal' | 'upper';
+}
+
 export interface MeterData {
   shape: 'bar' | 'segments' | 'steps' | 'line';
   /** bar height in px, 2–24 */
@@ -603,6 +624,7 @@ export interface AssetDataMap {
   gauge: GaugeData;
   meter: MeterData;
   'tab-group': TabGroupData;
+  table: TableData;
   container: ContainerData;
   banner: BannerData;
   clock: ClockData;
@@ -650,7 +672,7 @@ export type Asset<K extends AssetType> = AssetEnvelope<AssetDataMap[K]>;
 /** Active asset id per slot. Optional control types added after apps already shipped (gauge, meter, settings) may be absent from an app's manifest. */
 export type ActiveAssets = { [K in Exclude<AssetType, LateOptionalType>]: string } & { [K in LateOptionalType]?: string };
 /** Types added after apps shipped manifests: their defaults may be missing (the engines fall back to built-in defaults). */
-export type LateOptionalType = 'tab-group' | 'gauge' | 'meter' | 'settings' | 'dock-layout' | 'xlayout' | 'nav-style' | 'behavior-theme' | 'design-package' | 'skin' | 'style-package' | 'logo-mark' | 'animated-logo' | 'icon-pack' | 'branding' | 'interface' | 'typography' | 'density' | 'sizing' | 'agent-card' | 'job-type' | 'card' | 'help' | 'demonstration' | 'book' | 'clip' | 'docs';
+export type LateOptionalType = 'tab-group' | 'table' | 'gauge' | 'meter' | 'settings' | 'dock-layout' | 'xlayout' | 'nav-style' | 'behavior-theme' | 'design-package' | 'skin' | 'style-package' | 'logo-mark' | 'animated-logo' | 'icon-pack' | 'branding' | 'interface' | 'typography' | 'density' | 'sizing' | 'agent-card' | 'job-type' | 'card' | 'help' | 'demonstration' | 'book' | 'clip' | 'docs';
 
 export interface AxfManifest {
   $axf: 'manifest@1';
