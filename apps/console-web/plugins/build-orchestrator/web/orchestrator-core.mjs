@@ -11,6 +11,7 @@
  */
 
 import { normOrigin, originText } from '../../../../../framework/core/build-origin.mjs';
+import { isBuildId, namesOf, shortBuildId, slugWords, uniqueBuildId } from '../../../../../framework/core/build-id.mjs';
 import { AUTO_UPGRADE_NOTE, normApproval, normRequest, phaseApproved, setUpgradePolicy, switchKind, switchRule, upgradeLine, upgradeNeedsApproval, upgradePolicy, modelRank } from '../../../../../framework/core/model-switch.mjs';
 
 export const SCHEMA = 'orchestrator@1';
@@ -71,7 +72,8 @@ const now = () => new Date().toISOString();
 const str = (v, max = 4000) => (typeof v === 'string' ? v.slice(0, max) : '');
 /** A step still to do: not done and not skipped by the build's feature matrix. */
 const open = (s) => !s.done && !s.skip;
-const slug = (t) => str(t, 80).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') || 'build';
+/** A new build's id (build-id@1: at most 40 characters); the title is kept whole as the display name. */
+const slug = (t) => shortBuildId(str(t, 300));
 
 /** "45 min", "2 h", "1.5 d", "90" → minutes (a day = 8 working hours), null when unreadable. */
 export function estimateMinutes(e) {
@@ -301,20 +303,28 @@ export function apply(state, change) {
   const s = normalizeState(state);
   const c = change && typeof change === 'object' ? change : {};
   const log = [];
-  const find = () => { const b = s.builds.find((x) => x.id === c.id); if (!b) throw new Error(`no build "${c.id}"`); return b; };
+  const find = () => { const b = s.builds.find((x) => x.id === c.id) ?? s.builds.find((x) => namesOf(x).includes(c.id)); if (!b) throw new Error(`no build "${c.id}"`); return b; };
   const stepOf = (b) => { const st = b.steps.find((x) => x.id === c.step) ?? b.steps[Number(c.index)]; if (!st) throw new Error(`no step "${c.step ?? c.index}" in ${b.id}`); return st; };
   let b = null;
   switch (c.action) {
     case 'add': {
-      const id = slug(c.id || c.title); if (!str(c.title).trim()) throw new Error('a title is needed');
-      if (s.builds.some((x) => x.id === id)) throw new Error(`"${id}" is already on the list`);
+      if (!str(c.title).trim()) throw new Error('a title is needed');
+      const taken = new Set(s.builds.flatMap(namesOf));
+      // the same id or title again is refused; two titles that only meet once shortened get a suffix
+      const asked = slugWords(c.id || str(c.title, 300));
+      if (taken.has(asked)) throw new Error(`"${asked}" is already on the list`);
+      const id = c.id && isBuildId(asked) ? asked : uniqueBuildId(asked, taken);
       // origin = what Brett said that started it (build-origin@1); `said` is the shortcut for his verbatim words
       const origin = c.said !== undefined ? { ...(c.origin ?? {}), said: c.said, at: c.origin?.at || now() } : c.origin;
       b = normBuild({ ...c, id, origin, status: 'pending', createdAt: now() }); s.builds.push(b); log.push(`added ${id} (${b.steps.length} steps)${b.origin?.said ? ', with what Brett said' : ''}`); break;
     }
     case 'import': { // from a pending@1 item: its sub prompts become steps on the item's model
-      const it = c.item ?? {}; const id = slug(c.id || it.id || it.title);
-      if (s.builds.some((x) => x.id === id)) throw new Error(`"${id}" is already on the list`);
+      const it = c.item ?? {};
+      // already imported: the same pending item, or a build made before ids were capped (its full-length slug)
+      const was = s.builds.find((x) => (it.id && x.pendingId === it.id) || x.id === slugWords(c.id || it.id || it.title));
+      if (was) throw new Error(`"${was.id}" is already on the list`);
+      const taken = new Set(s.builds.flatMap(namesOf));
+      const id = c.id && isBuildId(c.id) && !taken.has(c.id) ? c.id : uniqueBuildId(c.id || it.id || it.title, taken);
       const model = MODELS.includes(it.model) ? it.model : 'Opus';
       b = normBuild({ id, title: it.title, detail: it.detail, source: 'pending', pendingId: it.id, steps: (it.subPrompts ?? []).map((p) => ({ text: p.text, estimate: p.estimate, model, done: p.done, doneAt: p.doneAt })) });
       s.builds.push(b); log.push(`imported pending ${it.id} as ${id}`); break;

@@ -21,8 +21,9 @@
  * `id` is the row's settings id: stable, unique in the app (`<plugin>.<row>`), and what check-chrome-assets.mjs asks for.
  */
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type DragEvent, type ReactNode } from 'react';
-import { CHROME_INSTANCE_ASSET_KEY, CHROME_INSTANCE_KEY, TAB_GROUP_FOLD_KEY, TAB_GROUP_LAST_KEY, chromeInstanceData, normalizeTabGroup, tabGroupStyle, type AxfRuntime, type TabGroupData } from '../../core';
+import { CHROME_INSTANCE_ASSET_KEY, CHROME_INSTANCE_KEY, TAB_GROUP_FOLD_KEY, TAB_GROUP_LAST_KEY, TAB_ROWS_FIELD, chromeFieldValue, chromeInstanceData, tabRowsLayout, normalizeTabGroup, tabGroupStyle, type AxfRuntime, type TabGroupData } from '../../core';
 import { useAxfState, useRuntime } from '../AxfProvider';
+import { ControlScope, escapeSelector, useControlScope, useControlTarget, useControlTargets } from '../controlTargets';
 import { Icon } from './Icon';
 
 export interface TabDef<T extends string = string> {
@@ -117,8 +118,14 @@ export function TabGroup<T extends string = string>({ id, label, value, onChange
     setMenu(false);
   }, [value, onChange, data.rememberLast, rt, lastKey]);
 
+  // rows (instance-only choice, chrome-settings@1): 2…6 = the tabs share that many rows evenly; auto = wrap as needed.
+  // A left / right rail or a dropdown row never scrolls sideways, so it ignores the choice.
+  const rowsValue = chromeFieldValue('tab-group', null, rt.settings.get(CHROME_INSTANCE_KEY('tab-group', id)), TAB_ROWS_FIELD);
+  const stackable = data.position !== 'left' && data.position !== 'right' && data.overflow !== 'dropdown';
+  const rowsOut = tabRowsLayout(tabs.length, stackable ? rowsValue : '1');
+
   // overflow 'more': measure once with every tab shown, then keep what fits; the active tab is always on the row
-  const more = data.overflow === 'more' && data.position !== 'left' && data.position !== 'right';
+  const more = data.overflow === 'more' && data.position !== 'left' && data.position !== 'right' && !rowsOut.wrap;
   useLayoutEffect(() => {
     if (!more) { setVisible(Infinity); return; }
     const el = rowRef.current;
@@ -142,6 +149,29 @@ export function TabGroup<T extends string = string>({ id, label, value, onChange
 
   const folded = data.collapsible && rt.settings.get(TAB_GROUP_FOLD_KEY(id)) === true;
   const activeIndex = Math.max(0, tabs.findIndex((t) => t.value === value));
+
+  // console-control@1 (react/controlTargets.ts): the row is `tab:<id>` (state = the active tab, set = switch), every tab is
+  // `tab:<id>=<value>` (open = switch to it, focus = scroll + highlight); a row inside another tab's panel is a `subtab`.
+  const scope = useControlScope();
+  const tabKind = scope && /(^|\/)(tab|subtab):[^/]*$/.test(scope) ? 'subtab' : 'tab';
+  const tabsKey = tabs.map((t) => `${t.value}:${t.label}:${t.disabled ? 0 : 1}`).join('|');
+  const pickByText = (v: unknown): string | undefined => {
+    const want = String(v ?? '').trim().toLowerCase();
+    const t = tabs.find((x) => String(x.value).toLowerCase() === want) ?? tabs.find((x) => x.label.toLowerCase() === want);
+    if (!t) return `${String(v)} is not one of ${tabs.map((x) => x.value).join(', ')}`;
+    if (t.disabled) return `${t.label} is disabled`;
+    pick(t.value);
+    return undefined;
+  };
+  useControlTarget({
+    address: `${tabKind}:${id}`, kind: tabKind, label, keywords: tabs.map((t) => t.label), element: () => rowRef.current,
+    get: () => value, set: pickByText, state: () => ({ rows: rowsValue, tabs: tabs.map((t) => ({ value: t.value, label: t.label, ...(t.disabled ? { disabled: true } : {}), ...(t.badge !== undefined && t.badge !== '' ? { badge: t.badge } : {}) })) }),
+  }, [tabsKey]);
+  useControlTargets(tabs.map((t) => ({
+    address: `${tabKind}:${id}=${t.value}`, kind: tabKind, label: t.label, detail: label, icon: t.icon, keywords: [String(t.value)],
+    element: () => rowRef.current?.querySelector(`[data-axf-tab="${escapeSelector(String(t.value))}"]`) ?? rowRef.current,
+    open: () => { if (t.value !== value) pick(t.value); }, invoke: () => pick(t.value), get: () => t.value === value, isDisabled: () => !!t.disabled,
+  })), `${tabKind}:${id}|${tabsKey}`);
   // which tabs sit on the row and which go under More (the active one swaps in for the last visible)
   const { shown, overflowed } = useMemo(() => {
     if (!more || !Number.isFinite(visible) || visible >= tabs.length) return { shown: tabs.map((_, i) => i), overflowed: [] as number[] };
@@ -152,8 +182,8 @@ export function TabGroup<T extends string = string>({ id, label, value, onChange
   }, [more, visible, tabs, activeIndex]);
 
   const vars = out.vars as Record<string, string>;
-  const style = Object.fromEntries(Object.entries(vars)) as CSSProperties;
-  const attrs = out.attrs;
+  const style = { ...Object.fromEntries(Object.entries(vars)), ...rowsOut.vars } as CSSProperties;
+  const attrs = { ...out.attrs, ...rowsOut.attrs };
   const cls = ['fx-tabs', 'fx-tabs--group', size === 'sm' ? 'fx-tabs--sm' : '', folded ? 'is-folded' : '', className ?? ''].filter(Boolean).join(' ');
   const vertical = data.position === 'left' || data.position === 'right';
   const closable = data.closable && !!onClose;
@@ -260,7 +290,7 @@ export function TabGroup<T extends string = string>({ id, label, value, onChange
   return (
     <div className="fx-tabframe" data-fx-tabs-position={data.position}>
       {row}
-      <div className="fx-tabframe__panel" role="tabpanel">{children}</div>
+      <div className="fx-tabframe__panel" role="tabpanel"><ControlScope address={`${tabKind}:${id}=${value}`}>{children}</ControlScope></div>
     </div>
   );
 }

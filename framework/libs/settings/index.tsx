@@ -15,7 +15,7 @@
 import { Fragment, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
 import type { SettingsPanel } from '../../core';
 import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, APPEARANCE_LOCK_KEY, ASSET_TYPES, assetTypeSpecs, hideable, PLACEMENT_LABELS, SKIN_COLOR_SLOT, arrangeSettingsTabs, filterSettingsGroup, normalizeSettingsUi, settingMatches, settingsShown, settingsUiGroups, SETTINGS_LEVEL_KEY, SETTINGS_LEVEL_BAR_KEY, SETTINGS_VISIBLE_KEY, SETTINGS_LEVEL_HINT, SETTINGS_LEVEL_LABEL, SETTINGS_LEVELS, settingsLevel, shownAtLevel, splitSettingsGroup, withSettingsVisible, hideableTypes, type SettingsLevel, type SettingsUi, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
-import { AssetsWithEdits, AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Chip, Container, Icon, IconButton, ModelBadge, setBannerOwnSettingsRenderer, Slider, Switch, useAsset, useAxfState, useKnownBanners, useRuntime } from '../../react';
+import { AssetsWithEdits, AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Chip, Container, ControlScope, Icon, IconButton, ModelBadge, setBannerOwnSettingsRenderer, settingTargetDef, Slider, Switch, useAsset, useAxfState, useControlTarget, useKnownBanners, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import { runtimeInventory } from '../../react/pluginRecords';
 import { TabGroup } from '../../react/components/TabGroup';
@@ -115,6 +115,8 @@ function SettingRow({ spec }: { spec: SettingSpec }) {
   const rt = useRuntime();
   useAxfState();
   useSettingsRevision(rt);
+  // console-control@1: the rendered row is `setting:<key>` under its tab's scope (state / set / focus; react/controlTargets.ts)
+  useControlTarget(settingTargetDef(rt, spec, `setting:${spec.key}`, 'Settings'));
   // Inside a host app (embed@1), settings about chrome the host owns aren't shown at all (never greyed out).
   if ((spec.slot && rt.slotOwnedByHost(spec.slot as AssetType)) || (spec.kind === 'asset_slot' && spec.target && rt.slotOwnedByHost(spec.target as AssetType))) return null;
   // A setting about a slot the user hid is greyed out (and its control disabled) until the slot is shown again.
@@ -424,9 +426,9 @@ function useWide(): boolean {
 }
 
 /** One line of the settings list: icon, label, a one-line description, chevron. */
-function NavRow({ icon, label, desc, active, onClick }: { icon?: string; label: string; desc?: string; active?: boolean; onClick: () => void }) {
+function NavRow({ id, icon, label, desc, active, onClick }: { id?: string; icon?: string; label: string; desc?: string; active?: boolean; onClick: () => void }) {
   return (
-    <button type="button" data-fx-row className={`axf-settings__nav ${active ? 'is-on' : ''}`} aria-current={active ? 'page' : undefined} onClick={onClick}>
+    <button type="button" data-fx-row {...(id ? { 'data-axf-settings-nav': id } : {})} className={`axf-settings__nav ${active ? 'is-on' : ''}`} aria-current={active ? 'page' : undefined} onClick={onClick}>
       {icon && <Icon name={icon} size={15} />}
       <span className="axf-settings__navtext"><span className="axf-settings__navlabel">{label}</span>{desc && <span className="axf-settings__navdesc">{desc}</span>}</span>
       <Icon name="chevron-right" size={14} className="axf-settings__navchev" />
@@ -491,12 +493,12 @@ export function SettingsView() {
   );
   const navList = (
     <nav className="axf-settings__navlist" aria-label="Settings sections" data-axf-not-nav="the settings page's section list (settings-ui@1 layout list), not a navigation menu">
-      {tabs.map((t) => <NavRow key={t.id} icon={t.icon} label={t.label} desc={t.description} active={wide && t.id === current?.id} onClick={() => { setQuery(''); choose(t.id); }} />)}
+      {tabs.map((t) => <NavRow key={t.id} id={t.id} icon={t.icon} label={t.label} desc={t.description} active={wide && t.id === current?.id} onClick={() => { setQuery(''); choose(t.id); }} />)}
     </nav>
   );
   const inSub = !!shown && !!current && shown.id !== current.id;
   const body = searching ? <SearchResults query={query} tabs={all} ui={ui} /> : !current ? navList : (
-    <div className="fx-stack axf-settings__body">
+    <ControlScope address={`tab:settings.tabs=${current.id}`}><div className="fx-stack axf-settings__body">
       {isList && (
         <div className="axf-settings__crumbs">
           {(!wide || inSub) && <IconButton icon="chevron-left" label={inSub && subList ? `Back to ${current.label}` : 'All settings'} onClick={() => (inSub && subList ? choose(current.id) : choose(''))} />}
@@ -510,11 +512,11 @@ export function SettingsView() {
       {shown?.description && <p className="fx-muted axf-settings__desc" style={{ margin: 0 }}>{shown.description}</p>}
       {subList && !inSub && (
         <nav className="axf-settings__navlist axf-settings__navlist--subs" aria-label={`${current.label} sections`} data-axf-not-nav="the settings page's sub-section list, not a navigation menu">
-          {subs.map((t) => <NavRow key={t.id} icon={t.icon} label={t.label} desc={t.description} onClick={() => choose(current.id, t.id)} />)}
+          {subs.map((t) => <NavRow key={t.id} id={t.id} icon={t.icon} label={t.label} desc={t.description} onClick={() => choose(current.id, t.id)} />)}
         </nav>
       )}
-      {shown && <TabContent id={shown.id} />}
-    </div>
+      {shown && (inSub ? <ControlScope address={`subtab:settings.subtabs=${shown.id}`}><TabContent id={shown.id} /></ControlScope> : <TabContent id={shown.id} />)}
+    </div></ControlScope>
   );
 
   return (
@@ -752,11 +754,11 @@ function TabDialog({ id }: { id: string }) {
   const bar = useLevelBarOn();
   if (!tab) return <p className="fx-muted">No settings tab "{id}".</p>;
   return (
-    <div className="fx-stack axf-settings axf-settings--dialog" data-axf-settings-tab={id}>
+    <div className="fx-stack axf-settings axf-settings--dialog" data-axf-settings-tab={id}><ControlScope address={`view:settings/tab:settings.tabs=${id}`}>
       <p className="fx-eyebrow"><Icon name={tab.icon} /> {tab.label}</p>
       {ui.levels && bar && <SettingsLevelBar level={level} />}
       <TabContent id={id} />
-    </div>
+    </ControlScope></div>
   );
 }
 
@@ -891,7 +893,7 @@ const CSS = `
 .axf-settings__listitem .axf-settings__hint{margin-left:var(--fx-dens-gap-xl)}
 .axf-settings__title,.axf-settings__tabtitle{margin:0}
 .axf-settings__search{max-width:420px}
-.axf-settings__levelbar{display:flex;flex-wrap:wrap;align-items:center;gap:var(--fx-dens-gap-md) var(--fx-dens-gap-xl);padding:var(--fx-dens-gap-md) var(--fx-dens-gap-xl);border-radius:var(--fx-radius-md);border:var(--fx-border-w) solid var(--fx-border);background:var(--fx-surface2)}
+.axf-settings__levelbar{display:flex;flex-wrap:wrap;align-items:center;gap:var(--fx-dens-gap-md) var(--fx-dens-gap-xl);padding:var(--fx-dens-gap-md) var(--fx-dens-gap-xl);border-radius:var(--fx-radius-md);border:var(--fx-border-w) solid var(--fx-border);background:color-mix(in srgb, var(--fx-surface2) calc(var(--fx-opacity-panel) * 100%), transparent)}
 .axf-settings__levelbar>*{min-width:0}
 .axf-settings__levelhint{flex:1 1 160px}
 .axf-settings__levelbar-actions{display:inline-flex;align-items:center;gap:var(--fx-dens-gap-md);margin-left:auto}
@@ -906,7 +908,7 @@ const CSS = `
 /* ---- compact settings (Oct 30 2026, Brett: short lists you tap into, dropdowns, tight spacing) ---- */
 .axf-settings{gap:var(--fx-dens-gap-2xl)!important}
 .axf-settings__title{font-size:var(--fx-type-scale-xl)}
-.axf-settings__navlist{display:flex;flex-direction:column;border:var(--fx-border-w) solid var(--fx-border);border-radius:var(--fx-radius-md);background:var(--fx-surface);overflow:hidden;min-width:0}
+.axf-settings__navlist{display:flex;flex-direction:column;border:var(--fx-border-w) solid var(--fx-border);border-radius:var(--fx-radius-md);background:color-mix(in srgb, var(--fx-surface) calc(var(--fx-opacity-panel) * 100%), transparent);overflow:hidden;min-width:0}
 .axf-settings__nav{all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:var(--fx-dens-gap-xl);padding:var(--fx-dens-gap-xl) var(--fx-dens-gap-2xl);min-width:0;color:var(--fx-text)}
 .axf-settings__nav+.axf-settings__nav{border-top:var(--fx-border-w) solid var(--fx-border)}
 .axf-settings__nav:hover{background:var(--fx-surface2)}
@@ -929,7 +931,7 @@ const CSS = `
 .axf-settings__gtoggle{all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:var(--fx-dens-gap-lg);font-size:var(--fx-type-scale-xs);font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--fx-muted);padding:var(--fx-dens-gap-xs)}
 .axf-settings__gtoggle:hover{color:var(--fx-text)}
 .axf-settings__gtitle{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.axf-settings__gbody{display:flex;flex-direction:column;border:var(--fx-border-w) solid var(--fx-border);border-radius:var(--fx-radius-md);background:var(--fx-surface);min-width:0}
+.axf-settings__gbody{display:flex;flex-direction:column;border:var(--fx-border-w) solid var(--fx-border);border-radius:var(--fx-radius-md);background:color-mix(in srgb, var(--fx-surface) calc(var(--fx-opacity-panel) * 100%), transparent);min-width:0}
 .axf-settings__nest>.axf-settings__gbody{border:0;background:transparent;gap:var(--fx-dens-gap-2xl)}
 .axf-settings__nested{display:flex;flex-direction:column;gap:var(--fx-dens-gap-2xl)}
 .axf-settings__gbody>.axf-settings__desc{margin:0;padding:var(--fx-dens-gap-lg) var(--fx-dens-gap-2xl) 0;font-size:var(--fx-type-scale-sm)}

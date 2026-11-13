@@ -15,86 +15,92 @@
       {
         "target": "close-the-walkthrough",
         "title": "Close the walkthrough",
-        "text": "Closes the walkthrough. Part of Molly guide.",
+        "text": "Closes the walkthrough. Part of Gizmo guide.",
         "kind": "button",
         "draft": true
       },
       {
         "target": "repeat",
         "title": "Repeat",
-        "text": "Shows “Repeat”. Part of Molly guide.",
+        "text": "Shows “Repeat”. Part of Gizmo guide.",
         "kind": "button",
         "draft": true
       },
       {
         "target": "what-do-you-want-to-do",
         "title": "What do you want to do",
-        "text": "Where you set “What do you want to do”. Change it and the app uses the new value. Part of Molly guide.",
+        "text": "Where you set “What do you want to do”. Change it and the app uses the new value. Part of Gizmo guide.",
         "kind": "field",
         "draft": true
       },
       {
         "target": "stop-talking",
         "title": "Stop talking",
-        "text": "Stops talking. Part of Molly guide.",
+        "text": "Stops talking. Part of Gizmo guide.",
         "kind": "button",
         "draft": true
       },
       {
         "target": "show-me-the-sample",
         "title": "Show me the sample",
-        "text": "Turns “Show me the sample” on or off. It takes effect straight away and is remembered. Part of Molly guide.",
+        "text": "Turns “Show me the sample” on or off. It takes effect straight away and is remembered. Part of Gizmo guide.",
         "kind": "toggle",
         "draft": true
       },
       {
         "target": "read-each-step-out-loud",
         "title": "Read each step out loud",
-        "text": "Where you set “Read each step out loud”. Change it and the app uses the new value. Part of Molly guide.",
+        "text": "Where you set “Read each step out loud”. Change it and the app uses the new value. Part of Gizmo guide.",
         "kind": "field",
         "draft": true
       },
       {
         "target": "move-the-console-to-each-step-run-its-action",
         "title": "Move the console to each step (run its action)",
-        "text": "Where you set “Move the console to each step (run its action)”. Change it and the app uses the new value. Part of Molly guide.",
+        "text": "Where you set “Move the console to each step (run its action)”. Change it and the app uses the new value. Part of Gizmo guide.",
         "kind": "field",
         "draft": true
       },
       {
-        "target": "open-walkthroughs-molly-makes-from-amberx-by-themselves",
-        "title": "Open walkthroughs Molly makes from AmberX by themselves",
-        "text": "Where you set “Open walkthroughs Molly makes from AmberX by themselves”. Change it and the app uses the new value. Part of Molly guide.",
+        "target": "open-walkthroughs-asked-for-from-amberx-by-themselves",
+        "title": "Open walkthroughs asked for from AmberX by themselves",
+        "text": "Off by default: the guide then opens only when you ask in the console. On: a walkthrough you ask Gizmo for from AmberX opens here by itself (only ones made after the console loaded). Part of Gizmo guide.",
         "kind": "field",
         "draft": true
       },
       {
         "target": "molly-guide",
-        "title": "Molly guide",
-        "text": "Shows the “Molly guide” part of this screen. Part of Molly guide.",
+        "title": "Gizmo guide",
+        "text": "Shows the “Gizmo guide” part of this screen. Part of Gizmo guide.",
         "kind": "tab",
         "draft": true
       },
       {
-        "target": "action:molly.ask",
-        "title": "Ask Molly to show me",
-        "text": "Asks molly to show me. Part of Molly guide.",
+        "target": "action:gizmo.ask",
+        "title": "Ask Gizmo to show me",
+        "text": "Opens the guide window: ask Gizmo how to do something and he walks you through it, step by step. Part of Gizmo guide.",
         "kind": "menu-item",
         "draft": true
       },
       {
-        "target": "action:molly.replay",
+        "target": "action:gizmo.replay",
         "title": "Replay the last walkthrough",
-        "text": "Replays the last walkthrough. Part of Molly guide.",
+        "text": "Replays the last walkthrough. Part of Gizmo guide.",
         "kind": "menu-item",
         "draft": true
       },
       {
         "target": "re-record-the-amberx-walkthrough",
         "title": "Re-record the AmberX walkthrough",
-        "text": "Shows “Re-record the AmberX walkthrough”. Part of Molly guide.",
+        "text": "Shows “Re-record the AmberX walkthrough”. Part of Gizmo guide.",
         "kind": "button",
         "draft": true
+      },
+      {
+        "target": "gizmo-guide",
+        "title": "Gizmo guide",
+        "text": "The Gizmo guide: the recorded AmberX walkthrough and the controls to replay or re-record it.",
+        "kind": "tab"
       }
     ],
     "intros": []

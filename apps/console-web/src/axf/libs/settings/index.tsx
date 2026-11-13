@@ -15,7 +15,7 @@
 import { Fragment, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
 import type { SettingsPanel } from '../../core';
 import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, APPEARANCE_LOCK_KEY, ASSET_TYPES, assetTypeSpecs, hideable, PLACEMENT_LABELS, SKIN_COLOR_SLOT, arrangeSettingsTabs, filterSettingsGroup, normalizeSettingsUi, settingMatches, settingsShown, settingsUiGroups, SETTINGS_LEVEL_KEY, SETTINGS_LEVEL_BAR_KEY, SETTINGS_VISIBLE_KEY, SETTINGS_LEVEL_HINT, SETTINGS_LEVEL_LABEL, SETTINGS_LEVELS, settingsLevel, shownAtLevel, splitSettingsGroup, withSettingsVisible, hideableTypes, type SettingsLevel, type SettingsUi, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
-import { AssetsWithEdits, AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Chip, Container, Icon, IconButton, ModelBadge, setBannerOwnSettingsRenderer, Slider, Switch, useAsset, useAxfState, useKnownBanners, useRuntime } from '../../react';
+import { AssetsWithEdits, AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Chip, Container, ControlScope, Icon, IconButton, ModelBadge, setBannerOwnSettingsRenderer, settingTargetDef, Slider, Switch, useAsset, useAxfState, useControlTarget, useKnownBanners, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import { runtimeInventory } from '../../react/pluginRecords';
 import { TabGroup } from '../../react/components/TabGroup';
@@ -115,6 +115,8 @@ function SettingRow({ spec }: { spec: SettingSpec }) {
   const rt = useRuntime();
   useAxfState();
   useSettingsRevision(rt);
+  // console-control@1: the rendered row is `setting:<key>` under its tab's scope (state / set / focus; react/controlTargets.ts)
+  useControlTarget(settingTargetDef(rt, spec, `setting:${spec.key}`, 'Settings'));
   // Inside a host app (embed@1), settings about chrome the host owns aren't shown at all (never greyed out).
   if ((spec.slot && rt.slotOwnedByHost(spec.slot as AssetType)) || (spec.kind === 'asset_slot' && spec.target && rt.slotOwnedByHost(spec.target as AssetType))) return null;
   // A setting about a slot the user hid is greyed out (and its control disabled) until the slot is shown again.
@@ -424,9 +426,9 @@ function useWide(): boolean {
 }
 
 /** One line of the settings list: icon, label, a one-line description, chevron. */
-function NavRow({ icon, label, desc, active, onClick }: { icon?: string; label: string; desc?: string; active?: boolean; onClick: () => void }) {
+function NavRow({ id, icon, label, desc, active, onClick }: { id?: string; icon?: string; label: string; desc?: string; active?: boolean; onClick: () => void }) {
   return (
-    <button type="button" data-fx-row className={`axf-settings__nav ${active ? 'is-on' : ''}`} aria-current={active ? 'page' : undefined} onClick={onClick}>
+    <button type="button" data-fx-row {...(id ? { 'data-axf-settings-nav': id } : {})} className={`axf-settings__nav ${active ? 'is-on' : ''}`} aria-current={active ? 'page' : undefined} onClick={onClick}>
       {icon && <Icon name={icon} size={15} />}
       <span className="axf-settings__navtext"><span className="axf-settings__navlabel">{label}</span>{desc && <span className="axf-settings__navdesc">{desc}</span>}</span>
       <Icon name="chevron-right" size={14} className="axf-settings__navchev" />
@@ -491,12 +493,12 @@ export function SettingsView() {
   );
   const navList = (
     <nav className="axf-settings__navlist" aria-label="Settings sections" data-axf-not-nav="the settings page's section list (settings-ui@1 layout list), not a navigation menu">
-      {tabs.map((t) => <NavRow key={t.id} icon={t.icon} label={t.label} desc={t.description} active={wide && t.id === current?.id} onClick={() => { setQuery(''); choose(t.id); }} />)}
+      {tabs.map((t) => <NavRow key={t.id} id={t.id} icon={t.icon} label={t.label} desc={t.description} active={wide && t.id === current?.id} onClick={() => { setQuery(''); choose(t.id); }} />)}
     </nav>
   );
   const inSub = !!shown && !!current && shown.id !== current.id;
   const body = searching ? <SearchResults query={query} tabs={all} ui={ui} /> : !current ? navList : (
-    <div className="fx-stack axf-settings__body">
+    <ControlScope address={`tab:settings.tabs=${current.id}`}><div className="fx-stack axf-settings__body">
       {isList && (
         <div className="axf-settings__crumbs">
           {(!wide || inSub) && <IconButton icon="chevron-left" label={inSub && subList ? `Back to ${current.label}` : 'All settings'} onClick={() => (inSub && subList ? choose(current.id) : choose(''))} />}
@@ -510,11 +512,11 @@ export function SettingsView() {
       {shown?.description && <p className="fx-muted axf-settings__desc" style={{ margin: 0 }}>{shown.description}</p>}
       {subList && !inSub && (
         <nav className="axf-settings__navlist axf-settings__navlist--subs" aria-label={`${current.label} sections`} data-axf-not-nav="the settings page's sub-section list, not a navigation menu">
-          {subs.map((t) => <NavRow key={t.id} icon={t.icon} label={t.label} desc={t.description} onClick={() => choose(current.id, t.id)} />)}
+          {subs.map((t) => <NavRow key={t.id} id={t.id} icon={t.icon} label={t.label} desc={t.description} onClick={() => choose(current.id, t.id)} />)}
         </nav>
       )}
-      {shown && <TabContent id={shown.id} />}
-    </div>
+      {shown && (inSub ? <ControlScope address={`subtab:settings.subtabs=${shown.id}`}><TabContent id={shown.id} /></ControlScope> : <TabContent id={shown.id} />)}
+    </div></ControlScope>
   );
 
   return (
@@ -752,11 +754,11 @@ function TabDialog({ id }: { id: string }) {
   const bar = useLevelBarOn();
   if (!tab) return <p className="fx-muted">No settings tab "{id}".</p>;
   return (
-    <div className="fx-stack axf-settings axf-settings--dialog" data-axf-settings-tab={id}>
+    <div className="fx-stack axf-settings axf-settings--dialog" data-axf-settings-tab={id}><ControlScope address={`view:settings/tab:settings.tabs=${id}`}>
       <p className="fx-eyebrow"><Icon name={tab.icon} /> {tab.label}</p>
       {ui.levels && bar && <SettingsLevelBar level={level} />}
       <TabContent id={id} />
-    </div>
+    </ControlScope></div>
   );
 }
 

@@ -1352,6 +1352,14 @@
               "suggests": []
             },
             {
+              "id": "ui.opacity.surfaces",
+              "title": "Surface transparency tokens: every dialog, settings window, panel, menu, toolbar and banner reads its own opacity",
+              "note": "",
+              "tag": "core",
+              "recommended": true,
+              "suggests": []
+            },
+            {
               "id": "ui.icons",
               "title": "Icon registry (Material Symbols + custom packs, swappable as an asset)",
               "note": "",
@@ -2500,6 +2508,10 @@
                 {
                   "id": "cx.buildengine.hardlimit",
                   "title": "VPS hard build limit: the host refuses the N+1st headless build, every build in a CPU/memory-capped systemd slice, docker test runs capped (build-limit@1)"
+                },
+                {
+                  "id": "cx.buildengine.buildids",
+                  "title": "Build names fit the VPS tools: every new build id is at most 40 characters (build-id@1), the full title stays the display name, older long ids get a short alias that every command and build_land accept"
                 },
                 {
                   "id": "cx.buildengine.sectionowners",

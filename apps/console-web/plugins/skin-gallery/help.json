@@ -62,6 +62,78 @@
         "target": "skin-gallery.grid",
         "title": "Gallery",
         "text": "Every skin: its icon pack, how many asset types it covers, and where it is in use. Tap one to preview it."
+      },
+      {
+        "target": "or-type-its-id",
+        "title": "Or type its id",
+        "text": "Type the id of a screen or plugin when it is not in the list above. The skin you pick applies to that scope only.",
+        "kind": "field"
+      },
+      {
+        "target": "desktop",
+        "title": "Desktop",
+        "text": "Previews the selected skin at desktop width.",
+        "kind": "tab"
+      },
+      {
+        "target": "phone",
+        "title": "Phone",
+        "text": "Previews the selected skin at phone width.",
+        "kind": "tab"
+      },
+      {
+        "target": "covers-of-asset-types",
+        "title": "Covers of asset types",
+        "text": "How many of the asset types this skin covers and how many style parts it brings. A skin that covers fewer types falls back to the app defaults for the rest.",
+        "kind": "button"
+      },
+      {
+        "target": "show-the-skin-chip-on-the-banner",
+        "title": "Show the skin chip on the banner",
+        "text": "Shows a chip on the banner with the skin in force on the screen in front, with one-tap Use, Back and Undo. Takes effect straight away and is remembered.",
+        "kind": "toggle"
+      },
+      {
+        "target": "default-scope",
+        "title": "Default scope",
+        "text": "Where the banner chip, voice commands and the gallery switch skins when no scope is named: the whole hub, this app, the screen in front or the plugin in front.",
+        "kind": "field"
+      },
+      {
+        "target": "undo-window",
+        "title": "Undo window",
+        "text": "How long the snackbar offers Undo after a skin change. Undo on the toolbar stays available until the next change.",
+        "kind": "field"
+      },
+      {
+        "target": "desktop-and-phone",
+        "title": "Desktop and phone",
+        "text": "Previews the selected skin at desktop and phone width side by side.",
+        "kind": "tab"
+      },
+      {
+        "target": "action:skin.here:ui",
+        "title": "Change skin here",
+        "text": "Opens the Skins gallery scoped to the screen in front, so the skin you pick applies to this screen only.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:skin.here:plugin",
+        "title": "Change skin for this plugin",
+        "text": "Opens the Skins gallery scoped to the plugin in front, so the skin you pick applies to that plugin only.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "skins",
+        "title": "Skins",
+        "text": "Settings for the Skins plugin: the banner chip, the default scope, the undo window and the preview viewport.",
+        "kind": "tab"
+      },
+      {
+        "target": "banner:skin-gallery",
+        "title": "Skin chip",
+        "text": "The skin in force on the screen in front, with one-tap Use, Back to skin and Undo. Right-click or long-press it for its settings.",
+        "kind": "banner"
       }
     ],
     "intros": [

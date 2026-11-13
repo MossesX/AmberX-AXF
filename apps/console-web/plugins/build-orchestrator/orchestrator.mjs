@@ -25,6 +25,7 @@
  * axHub-approved MCP tool set AXF_APPROVER + AXF_APPROVER_VIA, and nothing in the environment says the caller is a
  * Claude session, a headless build or an agent. An `approver` inside a --json change is never trusted.
  *   … where                           the tracker file in use
+ * Any <id> may be a build's alias (build-id@1): a build whose id is over 40 characters answers to a short one too.
  *   --json on any command prints JSON (the console server uses this).
  */
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
@@ -69,8 +70,15 @@ export function save(state, by = 'orchestrator') {
   withStore((s) => absorbOrchestrator(s, p, state, { by }), { by, action: 'orchestrator' });
 }
 /** One change: applied to the profile's view of the store and taken back into it, under the store lock (versioned). */
+/** A build's id from its id or alias (build-id@1: a build made before ids were capped answers to a short alias too). */
+export function resolveId(store, id) {
+  if (!id || store.builds.some((x) => x.id === id)) return id;
+  return store.builds.find((x) => x.alias === id)?.id ?? id;
+}
+
 export function act(change, by = process.env.AXF_ACTOR || 'orchestrator') {
   change = withApprover(change);
+  if (!legacy() && change?.id && change.action !== 'add') change = { ...change, id: resolveId(loadStore(), change.id) };
   if (change.approver) by = `${change.approver.by} (${change.approver.via})`;
   if (legacy()) { const r = core.apply(load(), change); save(r.state); return r; }
   let r;
@@ -105,7 +113,8 @@ function line(b, rules) {
 async function main(argv) {
   const json = argv.includes('--json'); const args = argv.filter((a) => a !== '--json');
   const out = (o, text) => console.log(json ? JSON.stringify(o) : text);
-  const [cmd = 'list', ...rest] = args;
+  const [cmd = 'list', ...given] = args;
+  const rest = !legacy() && ['next', 'brief', 'request-upgrade'].includes(cmd) && given[0] ? [resolveId(loadStore(), given[0]), ...given.slice(1)] : given;
   const s = load(['next', 'brief'].includes(cmd) ? rest[0] : '');
   if (cmd === 'where') return out({ ok: true, file: trackerFile() }, trackerFile());
   if (cmd === 'list' || cmd === 'state') return out({ ok: true, state: s, upgradePolicy: upgradePolicy() }, s.builds.filter((b) => !b.hidden && b.status !== 'archived').map((b) => line(b, s.rules)).join('\n') || 'No builds.');

@@ -21,7 +21,7 @@
  * `id` is the row's settings id: stable, unique in the app (`<plugin>.<row>`), and what check-chrome-assets.mjs asks for.
  */
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type DragEvent, type ReactNode } from 'react';
-import { CHROME_INSTANCE_ASSET_KEY, CHROME_INSTANCE_KEY, TAB_GROUP_FOLD_KEY, TAB_GROUP_LAST_KEY, chromeInstanceData, normalizeTabGroup, tabGroupStyle, type AxfRuntime, type TabGroupData } from '../../core';
+import { CHROME_INSTANCE_ASSET_KEY, CHROME_INSTANCE_KEY, TAB_GROUP_FOLD_KEY, TAB_GROUP_LAST_KEY, TAB_ROWS_FIELD, chromeFieldValue, chromeInstanceData, tabRowsLayout, normalizeTabGroup, tabGroupStyle, type AxfRuntime, type TabGroupData } from '../../core';
 import { useAxfState, useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
 
@@ -117,8 +117,14 @@ export function TabGroup<T extends string = string>({ id, label, value, onChange
     setMenu(false);
   }, [value, onChange, data.rememberLast, rt, lastKey]);
 
+  // rows (instance-only choice, chrome-settings@1): 2…6 = the tabs share that many rows evenly; auto = wrap as needed.
+  // A left / right rail or a dropdown row never scrolls sideways, so it ignores the choice.
+  const rowsValue = chromeFieldValue('tab-group', null, rt.settings.get(CHROME_INSTANCE_KEY('tab-group', id)), TAB_ROWS_FIELD);
+  const stackable = data.position !== 'left' && data.position !== 'right' && data.overflow !== 'dropdown';
+  const rowsOut = tabRowsLayout(tabs.length, stackable ? rowsValue : '1');
+
   // overflow 'more': measure once with every tab shown, then keep what fits; the active tab is always on the row
-  const more = data.overflow === 'more' && data.position !== 'left' && data.position !== 'right';
+  const more = data.overflow === 'more' && data.position !== 'left' && data.position !== 'right' && !rowsOut.wrap;
   useLayoutEffect(() => {
     if (!more) { setVisible(Infinity); return; }
     const el = rowRef.current;
@@ -152,8 +158,8 @@ export function TabGroup<T extends string = string>({ id, label, value, onChange
   }, [more, visible, tabs, activeIndex]);
 
   const vars = out.vars as Record<string, string>;
-  const style = Object.fromEntries(Object.entries(vars)) as CSSProperties;
-  const attrs = out.attrs;
+  const style = { ...Object.fromEntries(Object.entries(vars)), ...rowsOut.vars } as CSSProperties;
+  const attrs = { ...out.attrs, ...rowsOut.attrs };
   const cls = ['fx-tabs', 'fx-tabs--group', size === 'sm' ? 'fx-tabs--sm' : '', folded ? 'is-folded' : '', className ?? ''].filter(Boolean).join(' ');
   const vertical = data.position === 'left' || data.position === 'right';
   const closable = data.closable && !!onClose;

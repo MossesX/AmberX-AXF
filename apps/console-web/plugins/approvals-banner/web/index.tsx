@@ -49,6 +49,7 @@ import { WatchLiveFor } from '@console/watchLive';
 import './approvals-banner.css';
 import { appMenu, WAITING, WAITING_LIST } from './menu';
 import { nextPopup, POPUP_GONE_CLOSE_MS, vetoGone } from './popup';
+import { EDGES, EXPANDS, IDLE_OPACITY_MIN, migrateOverlay, nativeOverlayConfig, OVERLAY_DEFAULTS, OVERLAY_KEYS, overlayBridge, overlayConfig, overlayUrlAllowed, parseOverlayChange, parseOverlayVerb, SHOWS, SIZES, type OverlayBarVerb, type OverlayVerb } from './overlay';
 
 const ID = 'ai.amberx.axf.console.approvals-banner';
 const FOLDER = 'approvals-banner';
@@ -136,6 +137,34 @@ async function installRelay(): Promise<void> {
   const h = relayHosts(relayPost);
   setVetoHost(h.veto);
   setApprovalsHost(h.approvals);
+}
+
+/**
+ * Runs an overlay verb wherever this console is: inside AmberX's overlay browser (its bridge), in the AmberX app (the
+ * native overlay), or anywhere else through the console server, which asks the phone through axHub (`amberx.open_url`
+ * carrying the verb). → what to tell Brett.
+ */
+async function runOverlay(verb: OverlayVerb | OverlayBarVerb, url?: string): Promise<{ ok: boolean; message: string }> {
+  const bridge = overlayBridge();
+  if (bridge && (verb === 'collapse' || verb === 'open')) {
+    if (verb === 'collapse') bridge.collapse(); else bridge.open(url ?? '');
+    return { ok: true, message: verb === 'collapse' ? 'Overlay collapsed to the toolbar' : 'Opened in the overlay' };
+  }
+  if (bridge && verb === 'expand') return { ok: true, message: 'The overlay is already full screen' };
+  const host = vetoHost().overlayCommand;
+  if (host) {
+    const ok = await host(verb, url);
+    const done: Record<string, string> = { expand: 'Overlay expanded to full screen', collapse: 'Overlay collapsed to the toolbar', open: 'Opened in the overlay', 'bar-open': 'Approval bar opened', 'bar-close': 'Approval bar folded' };
+    return { ok, message: ok ? done[verb]! : 'The overlay is off on this phone (or "Display over other apps" is not allowed).' };
+  }
+  if (verb === 'bar-open' || verb === 'bar-close') return { ok: false, message: 'The approval bar opens on its own on the phone when something waits.' };
+  try {
+    const r = await pluginFetch('console-commands', 'overlay', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ verb, ...(url ? { url } : {}) }), signal: AbortSignal.timeout(RELAY_TIMEOUT_MS) });
+    const j = (await r.json().catch(() => null)) as { ok?: boolean; message?: string; detail?: string } | null;
+    return { ok: r.ok && j?.ok === true, message: j?.message ?? j?.detail ?? `the console answered ${r.status}` };
+  } catch (e) {
+    return { ok: false, message: `couldn't reach the console: ${(e as Error).message}` };
+  }
 }
 
 let inflight = false;
@@ -522,7 +551,20 @@ export const plugin: AxfWebLibrary = {
     }
     // The app's native side (AmberX phone): notification taps open the veto screen; actions taken there refresh.
     let offEvents: (() => void) | undefined;
-    const sync = syncNativeAlarm((k) => rt.settings.get(k));
+    const syncAlarm = syncNativeAlarm((k) => rt.settings.get(k));
+    // The overlay's settings from the float and pages builds move over once, so nothing Brett chose is lost.
+    const moved = migrateOverlay((k) => rt.settings.get(k));
+    if (moved) for (const [k, v] of Object.entries(moved)) rt.settings.set(k, v as string | number | boolean | null);
+    // The phone's overlay follows its settings (Java ApprovalOverlay through the veto host).
+    let sentOverlay = '';
+    const syncOverlay = () => {
+      const cfg = nativeOverlayConfig(overlayConfig((k) => rt.settings.get(k)));
+      const key = JSON.stringify(cfg);
+      if (key === sentOverlay || !vetoHost().overlay) return;
+      sentOverlay = key;
+      vetoHost().overlay?.(cfg);
+    };
+    const sync = () => { syncAlarm(); syncOverlay(); };
     const hook = () => {
       offEvents?.();
       offEvents = vetoHost().onEvent?.((e) => {
@@ -546,6 +588,35 @@ export const plugin: AxfWebLibrary = {
       rt.settings.set(key, on);
       rt.toast(`Veto ${what === 'alarm' ? 'alarm' : `notice ${what}`}: ${on ? 'on' : 'off'}`, 'success', 'Approvals');
     }, { label: 'Veto notice: sound / vibrate / repeat / alarm on or off (approvals.notice:<what>:<on|off>)', params: true });
+    // overlay.expand / overlay.collapse / overlay.open:<url> — the phone's overlay (voice, console actions, MCP, the
+    // CLI): full-screen browser on the last page or the console, back to the toolbar, or one of Brett's pages full
+    // screen. Inside the overlay's own browser these run through its bridge, so Amber driving the console there can
+    // collapse it or move it to another page.
+    const verbAction = (verb: OverlayVerb) => async (args: string[]) => {
+      const raw = args.join(':').trim(); // a page URL carries its own colons
+      if (verb === 'open' && !overlayUrlAllowed(raw)) { rt.toast(`overlay.open takes one of your own pages (https://…amberxai.com)${raw ? `, not "${raw}"` : ''}`, 'warning', 'Overlay'); return; }
+      const r = await runOverlay(verb, verb === 'open' ? raw : undefined);
+      rt.toast(r.message, r.ok ? 'success' : 'info', 'Overlay');
+    };
+    rt.actions.register('overlay.expand', verbAction('expand'), { label: 'Expand the overlay' });
+    rt.actions.register('overlay.collapse', verbAction('collapse'), { label: 'Collapse the overlay' });
+    rt.actions.register('overlay.open', verbAction('open'), { label: 'Open a page in the overlay (overlay.open:<url>)', params: true });
+    // approvals.overlay:<setting>:<value> — the overlay's settings by name (voice: "overlay size large", "overlay off");
+    // approvals.overlay:expand|collapse|open:<url> are the verbs above, approvals.overlay:bar[:off] the approval bar.
+    rt.actions.register('approvals.overlay', async ([what = '', ...rest]) => {
+      const value = rest.join(':');
+      const verb = parseOverlayVerb(what, value);
+      if (verb && 'error' in verb) { rt.toast(verb.error, 'warning', 'Overlay'); return; }
+      if (verb) {
+        const r = await runOverlay(verb.verb, 'url' in verb ? verb.url : undefined);
+        rt.toast(r.message, r.ok ? 'success' : 'info', 'Overlay');
+        return;
+      }
+      const change = parseOverlayChange(what, value);
+      if ('error' in change) { rt.toast(`approvals.overlay:<setting>:<value>: ${change.error}`, 'warning', 'Overlay'); return; }
+      rt.settings.set(change.key, change.value);
+      rt.toast(`Overlay ${change.key.split('.').pop()}: ${String(change.value)}`, 'success', 'Overlay');
+    }, { label: 'Overlay (phone): on/off, edge, top, size, opens, show, opacity, shrink; expand, collapse, open:<url>; bar[:off] (approvals.overlay:<what>:<value>)', params: true });
     rt.actions.register('approvals.check', () => void checkNow(), { label: 'Check axHub approvals' });
     rt.actions.register('approvals.open', () => { globalThis.open(st.approvalsUrl, '_blank', 'noopener'); }, { label: 'Open axHub approvals' });
     // approvals.view:<id> — that call in the console (menus, console_show, notification taps); approvals.review is its
@@ -582,6 +653,20 @@ export const plugin: AxfWebLibrary = {
         { key: ALARM_KEYS.noticeSound, label: 'Notice sound', kind: 'toggle', default: NOTICE_DEFAULTS.sound, description: "The phone's normal notification sound, once." },
         { key: ALARM_KEYS.noticeVibrate, label: 'Notice vibration', kind: 'toggle', default: NOTICE_DEFAULTS.vibrate },
         { key: ALARM_KEYS.noticeRepeat, label: 'Alert again at 30 s left and when it runs', kind: 'toggle', default: NOTICE_DEFAULTS.repeat, description: 'Off: the notice just updates, silently.' },
+      ],
+    },
+    {
+      id: 'approvals-banner.overlay', label: 'Overlay (phone)', icon: 'layers', tab: 'approvals-banner', order: 12,
+      description: 'One overlay on the AmberX phone app: a floating toolbar always on screen over every app (drag it anywhere; it remembers where). When something waits for you it spawns the approval bar (what, countdown, Approve / Deny). Tap it, or let Amber open something, and it expands into a full-screen browser signed in like the app, with the toolbar docked top-left; one tap collapses it. Because the toolbar is always visible, AmberX can open pages from the background without a notification tap. Needs "Display over other apps".',
+      settings: [
+        { key: OVERLAY_KEYS.on, label: 'Overlay', kind: 'toggle', default: OVERLAY_DEFAULTS.on, description: 'The one switch. Off: no toolbar, and pages Amber opens go to Chrome with a tap-to-open notification.' },
+        { key: OVERLAY_KEYS.expand, label: 'Approval bar opens for', kind: 'choice', default: OVERLAY_DEFAULTS.expand, options: EXPANDS.map(({ value, label }) => ({ value, label })) },
+        { key: OVERLAY_KEYS.show, label: 'Toolbar shows', kind: 'choice', default: OVERLAY_DEFAULTS.show, options: SHOWS.map(({ value, label }) => ({ value, label })) },
+        { key: OVERLAY_KEYS.size, label: 'Size', kind: 'choice', default: OVERLAY_DEFAULTS.size, options: SIZES.map(({ value, label }) => ({ value, label })) },
+        { key: OVERLAY_KEYS.edge, label: 'Side', kind: 'choice', default: OVERLAY_DEFAULTS.edge, options: EDGES.map(({ value, label }) => ({ value, label })), description: 'Dragging the toolbar on the phone sets this.' },
+        { key: OVERLAY_KEYS.top, label: 'Height on screen (% from the top)', kind: 'slider', default: OVERLAY_DEFAULTS.top, min: 0, max: 90, step: 5, description: 'Dragging the toolbar on the phone sets this too.' },
+        { key: OVERLAY_KEYS.idleOpacity, label: 'Opacity when nothing waits (%)', kind: 'slider', default: OVERLAY_DEFAULTS.idleOpacity, min: IDLE_OPACITY_MIN, max: 100, step: 5 },
+        { key: OVERLAY_KEYS.shrinkAfterSec, label: 'Fold the approval bar after (seconds)', kind: 'number', default: OVERLAY_DEFAULTS.shrinkAfterSec, min: 0, max: 60, description: 'After the last approval goes; 0 = at once.' },
       ],
     },
   ],

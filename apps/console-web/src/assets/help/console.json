@@ -955,6 +955,75 @@
         "target": "view:plan-studio.reader",
         "title": "Reader",
         "text": "Read a plan like a document."
+      },
+      {
+        "target": "action:console.control.search",
+        "title": "Search the console",
+        "kind": "control",
+        "text": "One search over every screen, tab, setting, button, plugin, help entry and what's loaded right now (build rows and steps, UI Review items, chat lines). Pick a hit and it's pulled into focus. Same thing without the console: REST /api/console-control, the console_control_* MCP tools, axf console, or say it to AmberX.",
+        "tryIt": "Ctrl+K, type a few words, Enter.",
+        "related": [
+          "action:console.control.focus",
+          "search-the-console"
+        ]
+      },
+      {
+        "target": "action:console.control.open",
+        "title": "Open by address",
+        "kind": "control",
+        "text": "Opens a place by its address: a screen (view:settings), a tab (view:settings/tab:settings.tabs=plugins), a setting, a build row or step. Opens every parent on the way. Same thing without the console: REST /api/console-control, the console_control_* MCP tools, axf console, or say it to AmberX."
+      },
+      {
+        "target": "action:console.control.focus",
+        "title": "Pull into focus",
+        "kind": "control",
+        "text": "Opens the place, scrolls it into view and highlights it. A build step on another tab works too: its tab opens and its row unfolds first. Same thing without the console: REST /api/console-control, the console_control_* MCP tools, axf console, or say it to AmberX.",
+        "related": [
+          "action:console.control.open"
+        ]
+      },
+      {
+        "target": "action:console.control.scroll",
+        "title": "Scroll",
+        "kind": "control",
+        "text": "Scrolls the active pane: up, down, page-up, page-down, top or bottom. The answer says where the pane ended up. Same thing without the console: REST /api/console-control, the console_control_* MCP tools, axf console, or say it to AmberX."
+      },
+      {
+        "target": "action:console.control.state",
+        "title": "Where the console is",
+        "kind": "control",
+        "text": "Reads the screen, its open tabs, the scroll, what's focused and any open dialog; with an address, that one thing's value and whether it can be pressed or set. Same thing without the console: REST /api/console-control, the console_control_* MCP tools, axf console, or say it to AmberX."
+      },
+      {
+        "target": "action:console.control.press",
+        "title": "Press by address",
+        "kind": "control",
+        "text": "Presses a button or runs a console function by address. Anything that deletes asks for confirm first; approve and deny are never pressed by a command, only by Brett. Same thing without the console: REST /api/console-control, the console_control_* MCP tools, axf console, or say it to AmberX."
+      },
+      {
+        "target": "action:console.control.set",
+        "title": "Set by address",
+        "kind": "control",
+        "text": "Sets a setting, tab or selection by address (address:value). The value is checked against the setting's type and range; owner-only Claude settings refuse. Same thing without the console: REST /api/console-control, the console_control_* MCP tools, axf console, or say it to AmberX."
+      },
+      {
+        "target": "action:console.control.plugin",
+        "title": "Turn a plugin on or off",
+        "kind": "control",
+        "text": "Turns a plugin on or off (plugin:on|off) and says what else loses a feature or stops working. Core plugins refuse with the reason. Same thing without the console: REST /api/console-control, the console_control_* MCP tools, axf console, or say it to AmberX."
+      },
+      {
+        "target": "search-the-console",
+        "title": "Search the console",
+        "kind": "field",
+        "text": "Type a few words: screens, tabs, settings, buttons, plugins, rows and steps that match are listed best first. Arrow keys move, Enter pulls the hit into focus, Esc closes.",
+        "tryIt": "Try “dark mode” or a build's name."
+      },
+      {
+        "target": "what-to-search",
+        "title": "What to search",
+        "kind": "tab",
+        "text": "Narrows the hits: everything, screens and tabs, settings, buttons, plugins, or the rows and steps loaded right now."
       }
     ],
     "intros": [
