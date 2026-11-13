@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3964,
- "updatedAt": "2026-11-13T02:06:11.095Z",
+ "rev": 3965,
+ "updatedAt": "2026-11-13T02:06:24.836Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -173592,8 +173592,8 @@
    "pr": "#543",
    "priority": "P0",
    "createdAt": "2026-11-12T21:49:00.405Z",
-   "updatedAt": "2026-11-13T02:05:42.152Z",
-   "builtAt": "2026-11-13T02:05:42.153Z",
+   "updatedAt": "2026-11-13T02:06:04.112Z",
+   "builtAt": "2026-11-13T02:06:04.112Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -173664,6 +173664,14 @@
      "at": "2026-11-13T01:52:15.064Z"
     },
     {
+     "text": "Headless run axf-one-account-picker-choose-the-single-claude-acco--gina: brief only · start 10.9K tokens ($0.03) · cost $3.38 · 73 turns · 6 tools, MCP none",
+     "at": "2026-11-13T02:05:56.568Z"
+    },
+    {
+     "text": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
+     "at": "2026-11-13T02:06:04.112Z"
+    },
+    {
      "text": "PR #543 (draft). Picker, REST/MCP/CLI/voice, launcher and dispatcher done; tests pass. UI Review shots still missing: the scratch console can't reach axHub from the build sandbox, so captures only showed 'Waiting for axHub'. Take desktop + phone shots of Settings → Claude accounts → One account and the banner dialog, submit to UI Review, then mark the PR ready.",
      "at": "2026-11-13T02:05:36.975Z"
     }
@@ -173686,15 +173694,22 @@
     "queuedAt": "2026-11-13T01:13:56.666Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-one-account-picker-choose-the-single-claude-acco--gina",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-13T01:52:11.782Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-13T02:06:03.430Z",
+     "exit": 0,
+     "outcome": "returned",
+     "stepsLeft": 1,
+     "account": "mossesx-max-",
+     "session": "axf-one-account-picker-choose-the-single-claude-acco--gina"
+    },
     "split": null,
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "2026-11-13T01:52:11.782Z",
     "planned": {
