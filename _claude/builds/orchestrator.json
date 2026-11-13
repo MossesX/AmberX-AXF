@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T08:21:05.372Z",
+ "updatedAt": "2026-11-13T08:40:33.238Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -115477,7 +115477,7 @@
    "title": "Professional skins that rebuild the whole app (Fable, ultrathink, every step): each skin is a complete restyle AND rebehave of the entire console UI. Every asset (theme, layout, toolbars, tab groups and where tabs go, buttons and how they behave, context menus, nav menu, app menus, dialogs, tables, ",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -115485,7 +115485,7 @@
    "pr": "#557",
    "priority": "P0",
    "createdAt": "2026-11-12T23:32:23.494Z",
-   "updatedAt": "2026-11-13T08:13:34.240Z",
+   "updatedAt": "2026-11-13T08:40:31.974Z",
    "builtAt": "",
    "notes": [
     {
@@ -115555,6 +115555,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-13T08:10:31.883Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-13T08:40:31.974Z"
     }
    ],
    "approvals": [],
