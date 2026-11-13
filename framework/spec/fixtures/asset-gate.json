@@ -1,0 +1,48 @@
+{
+  "contract": "asset-gate@1",
+  "reasons": ["ok", "bad-type", "bad-id", "no-manifest", "invalid"],
+  "registry": {
+    "nav-menu/essentials-list": { "$axf": "asset@1", "type": "nav-menu", "id": "essentials-list", "name": "Essentials List", "version": "1.0.0", "data": { "style": "list", "sections": [] } },
+    "nav-menu/no-frame": { "type": "nav-menu", "id": "no-frame", "name": "No frame", "version": "1.0.0", "data": { "style": "list" } },
+    "nav-menu/wrong-id": { "$axf": "asset@1", "type": "nav-menu", "id": "other", "name": "Wrong id", "version": "1.0.0", "data": { "style": "list" } },
+    "nav-menu/blank-name": { "$axf": "asset@1", "type": "nav-menu", "id": "blank-name", "name": "  ", "version": "1.0.0", "data": { "style": "list" } },
+    "nav-menu/bad-data": { "$axf": "asset@1", "type": "nav-menu", "id": "bad-data", "name": "Bad data", "version": "1.0.0", "data": { "style": "nope" } },
+    "skin/atelier": { "$axf": "asset@1", "type": "skin", "id": "atelier", "name": "Atelier", "version": "1.0.0", "data": { "layoutTheme": "canvas-studio" } },
+    "toolbar/wrong-type": { "$axf": "asset@1", "type": "nav-menu", "id": "wrong-type", "name": "Wrong type", "version": "1.0.0", "data": {} }
+  },
+  "types": ["nav-menu", "skin", "toolbar"],
+  "invalid": { "nav-menu/bad-data": ["data.style must be one of: list, rail, pills"] },
+  "cases": [
+    { "name": "a registered, valid pick passes", "pick": { "type": "nav-menu", "id": "essentials-list" }, "reason": "ok", "errors": [] },
+    { "name": "a skin pick passes the same way", "pick": { "type": "skin", "id": "atelier" }, "reason": "ok", "errors": [] },
+    { "name": "an unknown type is refused before the registry is read", "pick": { "type": "widget", "id": "essentials-list" }, "reason": "bad-type", "errors": ["unknown asset type \"widget\""] },
+    { "name": "no type is a bad type", "pick": { "id": "essentials-list" }, "reason": "bad-type", "errors": ["unknown asset type \"\""] },
+    { "name": "an id outside the pattern is refused", "pick": { "type": "nav-menu", "id": "Essentials List" }, "reason": "bad-id", "errors": ["\"Essentials List\" is not an asset id (^[a-z0-9][a-z0-9-]{1,47}$)"] },
+    { "name": "an empty id is refused", "pick": { "type": "nav-menu", "id": "" }, "reason": "bad-id", "errors": ["\"\" is not an asset id (^[a-z0-9][a-z0-9-]{1,47}$)"] },
+    { "name": "a pick nothing is registered under has no manifest", "pick": { "type": "nav-menu", "id": "missing" }, "reason": "no-manifest", "errors": ["no nav-menu asset \"missing\" is registered: nothing to apply"] },
+    { "name": "a document without the asset@1 frame has no manifest", "pick": { "type": "nav-menu", "id": "no-frame" }, "reason": "no-manifest", "errors": ["manifest is missing \"$axf\""] },
+    { "name": "a manifest naming another id is not this pick's", "pick": { "type": "nav-menu", "id": "wrong-id" }, "reason": "no-manifest", "errors": ["manifest id \"other\" is not the picked \"wrong-id\""] },
+    { "name": "a manifest of another type is not this pick's", "pick": { "type": "toolbar", "id": "wrong-type" }, "reason": "no-manifest", "errors": ["manifest is a nav-menu, the pick wants a toolbar"] },
+    { "name": "a blank name is no manifest", "pick": { "type": "nav-menu", "id": "blank-name" }, "reason": "no-manifest", "errors": ["manifest \"name\" is empty"] },
+    { "name": "a manifest that fails the type spec is invalid", "pick": { "type": "nav-menu", "id": "bad-data" }, "reason": "invalid", "errors": ["data.style must be one of: list, rail, pills"] },
+    { "name": "a null pick is a bad type", "pick": null, "reason": "bad-type", "errors": ["unknown asset type \"\""] }
+  ],
+  "messages": {
+    "ok": "nav-menu \"essentials-list\": Ready to apply",
+    "no-manifest": "nav-menu \"missing\": No manifest: no nav-menu asset \"missing\" is registered: nothing to apply",
+    "invalid": "nav-menu \"bad-data\": Fails schema conformance: data.style must be one of: list, rail, pills"
+  },
+  "batch": {
+    "picks": [{ "type": "skin", "id": "atelier" }, { "type": "nav-menu", "id": "essentials-list" }, { "type": "nav-menu", "id": "bad-data" }],
+    "ok": false,
+    "blocked": ["nav-menu/bad-data"]
+  },
+  "framework": {
+    "pass": [{ "type": "nav-menu", "id": "essentials-list" }, { "type": "skin", "id": "atelier" }, { "type": "toolbar", "id": "minimal-glass" }],
+    "refuse": [
+      { "type": "nav-menu", "id": "not-shipped", "reason": "no-manifest" },
+      { "type": "nope", "id": "atelier", "reason": "bad-type" },
+      { "type": "skin", "id": "Bad Id", "reason": "bad-id" }
+    ]
+  }
+}

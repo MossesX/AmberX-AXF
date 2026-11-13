@@ -13,7 +13,7 @@ import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { execFileSync } from 'node:child_process';
 import { describeOptions } from './build-options.mjs';
-import { FRAMEWORK_DIR, appOptions, init, listBoilerplates, listFrameworkAssets, listModules, listTemplates, loadBoilerplate, newAsset, newDemoApp, newModule, validateApp, appDefaults, spec as assetSpec } from './build-engine.mjs';
+import { FRAMEWORK_DIR, appOptions, init, listBoilerplates, listFrameworkAssets, listModules, listTemplates, loadBoilerplate, newAsset, newDemoApp, newModule, validateApp, appDefaults, spec as assetSpec, gateAppAsset } from './build-engine.mjs';
 import { installLibrary, listLibraries, writeLibrariesIndex } from './libraries.mjs';
 import { importUiLibrary, listPortedKits } from './ui-port.mjs';
 import { compileLibrary, listLibraryTemplates, newLibrary, portLibrary, removeLibrary } from './library-templates.mjs';
@@ -130,6 +130,7 @@ function run() {
     case 'framework-assets': return { template: b.template ?? null, assets: listFrameworkAssets(b.template) };
     case 'options': { const r = appOptions({ dir: b.framework ? '.' : safeDir(b.dir ?? '.'), framework: !!b.framework, options: b.options ?? {}, log }); return r; }
     case 'validate': return { dir: b.dir, report: validateApp(safeDir(b.dir)) };
+    case 'asset-gate': return { gate: gateAppAsset({ dir: b.framework ? undefined : safeDir(b.dir ?? '.'), framework: !!b.framework, type: b.type, id: b.id, raw: b.raw }) }; // asset-gate@1: may { type, id } be applied? (manifest + schema pass)
     case 'new-asset': return { file: relative(ROOT, newAsset({ dir: safeDir(b.dir), type: b.type, id: b.id, from: b.from, name: b.name })) };
     case 'new-module': { const r = newModule({ name: b.name, label: b.label, capabilities: b.capabilities ?? [], dependsOn: b.dependsOn ?? [], compose: b.compose !== false, log }); return { ...r, dir: relative(ROOT, r.dir) }; }
     case 'new-demo': { const r = newDemoApp({ library: b.library, name: b.name, dir: b.dir ? safeDir(b.dir) : undefined, log }); return { dir: relative(ROOT, r.dir), manifest: r.manifest, report: r.report }; }

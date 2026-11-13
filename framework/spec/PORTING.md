@@ -220,3 +220,12 @@ The guide asks agent `gizmo` (Molly is no longer an agent, Nov 3 decision; the `
 `gizmo.ask` / `gizmo.replay` / `gizmo.next` / `gizmo.prev` / `gizmo.close` with the `molly.*` names kept as hidden aliases.
 AmberX on Android runs the web app, so its texts follow already. A native Compose player of walkthrough@1, when the Android side
 resumes, replays the same rule: no auto-open on start, opt-in only, nothing older than the app's start, and the Gizmo names.
+
+## Deferred: asset-gate@1 (Nov 13 2026)
+Web and host only (Android on hold, build `quick-settings-pinned-collapsible-pane`). A picked asset (a skin, a Quick settings
+default-asset override, a chrome instance pick, `swap:<type>:<id>`) applies only when it has a manifest (a registered asset@1
+document naming the same type and id) that passes the type spec: `framework/core/engines/asset-gate.mjs` (`gateAsset`,
+`gatePicks`, `gateMessage`, `gateState`), called by `AxfRuntime.checkAsset` / `checkSkin` / `applyGate` in `swap`, `useSkin`,
+`pickSkin`, `scopeSkin`, by `swapChrome` (ChromeContext) and read through the `assets.check:<type>:<id>` action, engine-rpc
+`asset-gate` and `axf asset-check`. The Compose runtime's `swap` and skin picks need the same gate (a Kotlin `AssetGate` over
+`AssetRegistry.get` + `validateAsset`) when the Android side resumes; the fixture to replay is `framework/spec/fixtures/asset-gate.json`.

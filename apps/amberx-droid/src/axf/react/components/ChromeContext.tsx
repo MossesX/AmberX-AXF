@@ -125,7 +125,8 @@ export function swapChrome(rt: AxfRuntime, type: ChromeType, instance: string, a
   }
   if (type === 'tab-group') {
     if (id === 'default' || id === '') { rt.settings.clear(CHROME_INSTANCE_ASSET_KEY(type, instance)); return true; }
-    if (!list.some((a) => a.id === id)) return false;
+    // asset-gate@1: an instance pick applies only with a manifest that passes the type spec
+    if (!rt.applyGate(rt.checkAsset(type, id), chromeLabel(type))) return false;
     rt.settings.set(CHROME_INSTANCE_ASSET_KEY(type, instance), id);
     return true;
   }

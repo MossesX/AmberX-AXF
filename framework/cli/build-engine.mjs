@@ -23,6 +23,7 @@ import { REGISTRY as DEPLOY_LOG_REGISTRY, jsonSchemas as deployLogJsonSchemas } 
 import { REGISTRY as BUILD_HOOK_REGISTRY, jsonSchemas as buildHookJsonSchemas } from '../core/build-hook.mjs';
 import { REGISTRY as SHIPPED_MANIFEST_REGISTRY, jsonSchemas as shippedManifestJsonSchemas } from '../core/shipped-manifest.mjs';
 import { consoleControlRegistry, jsonSchemas as consoleControlJsonSchemas } from '../core/engines/console-control-rules.mjs';
+import { gateAsset, gateState } from '../core/engines/asset-gate.mjs';
 import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 import { applyOptions, readOptions, resolveOptions } from './build-options.mjs';
@@ -522,6 +523,28 @@ export function checkDesignedAssets(assets) {
     if (JSON.stringify(raw).length > 200_000) throw new Error(`assets[${i}]: ${key} is over 200 KB`);
     return raw;
   });
+}
+
+/**
+ * asset-gate@1 (core/engines/asset-gate.mjs) for the CLI and the console API: may `{ type, id }` be applied in the app at
+ * `dir` (or in the framework with `framework: true`)? The registry is the app's asset folders (shared set, own assets,
+ * overrides); `raw` hands in a document to judge instead (an asset being designed, not yet saved). Returns the gate's
+ * state: `{ ok, type, id, reason, label, errors, message }`, never throws.
+ */
+export function gateAppAsset({ dir, framework = false, type, id, raw } = {}) {
+  let list = [];
+  try {
+    if (framework) list = [...loadAssets(join(FRAMEWORK_DIR, 'assets')), ...loadAssets(join(FRAMEWORK_DIR, 'android/assets'))];
+    else { const root = resolve(dir ?? '.'); list = appAssetDirs(root, appTemplate(root)).flatMap((d) => loadAssets(d)); }
+  } catch (e) {
+    return gateState({ ok: false, type: String(type ?? ''), id: String(id ?? ''), reason: 'no-manifest', label: 'No manifest', errors: [`cannot read the assets: ${e.message}`] });
+  }
+  const docs = new Map(list.filter((a) => isObj(a.raw) && typeof a.raw.type === 'string' && typeof a.raw.id === 'string').map((a) => [`${a.raw.type}/${a.raw.id}`, a.raw]));
+  return gateState(gateAsset({ type, id }, {
+    isType: (t) => !!spec.types[t],
+    get: (t, i) => (raw !== undefined ? raw : docs.get(`${t}/${i}`) ?? null),
+    validate: (doc) => validateAsset(doc),
+  }));
 }
 
 /** The hub's https origin (http only for localhost): a plain origin, no path, no credentials. */

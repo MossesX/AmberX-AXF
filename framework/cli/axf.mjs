@@ -12,6 +12,8 @@
  *   build options (framework/schemas/build-options.json; --x = on, --x on|off, --no-x = off; new builds default every option off):
  *     --wrap-groups              every section / group gets a collapse toggle top-right (style-theme wrapGroups)
  *   axf validate [dir]          validate an app (or the framework's own assets with --framework)
+ *   axf asset-check <type> <id> [dir] [--framework] [--json]   asset-gate@1: may this pick be applied? It needs a
+ *                               manifest (a registered asset@1 document) that passes the type spec. Exit 1 when refused.
  *   axf list [dir]              list assets by slot
  *   axf new-asset <type> <id> [--from <id>] [--name "Name"] [--dir .]
  *   axf schemas                 regenerate JSON Schemas in framework/schemas/json
@@ -60,7 +62,7 @@ import { importUiLibrary, listPortedKits } from './ui-port.mjs';
 import { compileLibrary, listLibraryTemplates, newLibrary, portLibrary, removeLibrary } from './library-templates.mjs';
 import { installLibrary, installScript, libraryInfo, listLibraries, wizard } from './libraries.mjs';
 import { OPTIONS, describeOptions, pickOptions } from './build-options.mjs';
-import { FRAMEWORK_DIR, FRAMEWORK_VERSION, appOptions, init, listBoilerplates, listModules, listTemplates, loadAssets, newAsset, newDemoApp, newModule, spec, validateApp, writeSchemas } from './build-engine.mjs';
+import { FRAMEWORK_DIR, FRAMEWORK_VERSION, appOptions, gateAppAsset, init, listBoilerplates, listModules, listTemplates, loadAssets, newAsset, newDemoApp, newModule, spec, validateApp, writeSchemas } from './build-engine.mjs';
 import { checkProject } from './project.mjs';
 
 const [cmd, ...rest] = process.argv.slice(2);
@@ -219,6 +221,13 @@ try {
         printReport(r);
         process.exitCode = r.ok ? 0 : 1;
       }
+      break;
+    }
+    case 'asset-check': {
+      // asset-gate@1: the same decision the runtime makes before a pick applies (core/engines/asset-gate.mjs)
+      const r = gateAppAsset({ dir: args[2] ?? '.', framework: !!flags.framework, type: args[0], id: args[1] });
+      console.log(flags.json ? JSON.stringify(r, null, 2) : `${r.ok ? '✓' : '✗'} ${r.message}`);
+      process.exitCode = r.ok ? 0 : 1;
       break;
     }
     case 'list': {

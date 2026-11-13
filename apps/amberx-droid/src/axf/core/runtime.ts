@@ -59,7 +59,8 @@ import {
   type NavItem,
   type Toast,
 } from './types';
-import { assetTypeSpecs, attachable, type ValidationResult } from './validate';
+import { assetTypeSpecs, attachable, isAssetType, validateAsset, type ValidationResult } from './validate';
+import { ASSET_GATE_CONTRACT, gateAsset, gateMessage, gateState, type GateResult } from './engines/asset-gate.mjs';
 
 /** A signed-in account bound to the runtime (bindPrincipal): its policy + role replace the role switcher. */
 export interface BoundPrincipal {
@@ -804,12 +805,35 @@ export class AxfRuntime {
     return true;
   }
 
+  /* ---- asset-gate@1 (engines/asset-gate.mjs): a picked asset needs a manifest and a schema pass before it is applied ---- */
+
+  /** May this pick be applied? A registered asset@1 document under the type and id (its manifest) that still passes the type spec. */
+  checkAsset(type: string, id: string): GateResult {
+    return gateAsset({ type, id }, { isType: (t) => isAssetType(t), get: (t, i) => this.registry.get(t as AssetType, i) ?? null, validate: (raw) => validateAsset(raw) });
+  }
+
+  /** The gate for a skin pick: a skin, or a design package standing in as one (skins only, Nov 10 2026). */
+  checkSkin(id: string): GateResult {
+    const skin = this.checkAsset(SKIN_TYPE, id);
+    if (skin.ok || skin.reason !== 'no-manifest') return skin;
+    const pkg = this.checkAsset(DESIGN_PACKAGE_TYPE, id);
+    return pkg.ok || pkg.reason !== 'no-manifest' ? pkg : skin;
+  }
+
+  /** True when the gate passed; otherwise the refusal goes to the terminal and a toast under `title`, and nothing applies. */
+  applyGate(r: GateResult, title = 'Asset'): boolean {
+    if (r.ok) return true;
+    this.terminal.error('hot-swap', `${ASSET_GATE_CONTRACT}: ${gateMessage(r)}`);
+    this.toast(gateMessage(r), 'warning', title);
+    return false;
+  }
+
   /** The 'Use skin' switch. `id` picks the skin too; on with none picked takes the first skin. */
   useSkin(on: boolean, id?: string): boolean {
     if (id === 'next' || id === 'prev') id = this.stepSkin(id === 'next' ? 1 : -1);
     const pick = id ?? this.appLook()?.skin.id ?? '';
     const skin = pick || (on ? this.skinList()[0]?.id ?? '' : '');
-    if (on && !this.skinData(skin)) { this.toast(`No skin "${skin}" in this app.`, 'warning', 'Skin'); return false; }
+    if (on && !this.applyGate(this.checkSkin(skin), 'Skin')) return false;
     if (!this.changeLook((cur) => setUseSkin(skin ? pickSkin(cur, skin) : cur, on))) return false;
     this.terminal.ok('hot-swap', on ? `skin ${skin} on for this app` : 'skin off: back to this app\'s own look');
     this.lookApplied('default', skin);
@@ -826,7 +850,7 @@ export class AxfRuntime {
 
   /** Pick a skin; it shows only while Use skin is on. */
   pickSkin(id: string): boolean {
-    if (!this.skinData(id)) { this.toast(`No skin "${id}" in this app.`, 'warning', 'Skin'); return false; }
+    if (!this.applyGate(this.checkSkin(id), 'Skin')) return false;
     return this.changeLook((cur) => pickSkin(cur, id));
   }
 
@@ -879,7 +903,7 @@ export class AxfRuntime {
     if (!isSubScopeKey(key)) { this.toast(`"${key}" is not a UI or plugin scope.`, 'warning', 'Skin'); return false; }
     const cur = this.appLook();
     const pick = use === 'on' ? (id || cur?.scopes[key]?.id || cur?.skin.id || this.skinList()[0]?.id || '') : id;
-    if (use === 'on' && (!pick || !this.skinData(pick))) { this.toast(`No skin "${pick}" in this app.`, 'warning', 'Skin'); return false; }
+    if (use === 'on' && !this.applyGate(this.checkSkin(pick ?? ''), 'Skin')) return false;
     if (!this.changeLook((look) => setScopeSkin(look, key, use, pick))) return false;
     this.terminal.ok('hot-swap', use === 'on' ? `skin ${pick} on for ${key}` : use === 'off' ? `no skin inside ${key}` : `${key} follows its parent`);
     return true;
@@ -1531,6 +1555,8 @@ export class AxfRuntime {
       this.toast(`No ${type} asset with id "${target}".`, 'warning', 'Swap failed');
       return false;
     }
+    // asset-gate@1: the pick's manifest must still pass the type spec before anything applies
+    if (!this.applyGate(this.checkAsset(type, next), 'Swap failed')) return false;
     // A design package is never "just a slot": moving it means loading the package (its themes, extras; overrides
     // cleared), or every other app on the hub would show the package while this one kept the old themes (Nov 3 2026).
     if (type === DESIGN_PACKAGE_TYPE) return this.applyDesignPackage(next);
@@ -2898,6 +2924,12 @@ export class AxfRuntime {
       if (type && (ASSET_TYPES as readonly string[]).includes(type)) this.swap(type as AssetType, target);
       else this.toast(`Unknown asset type "${type}".`, 'warning');
     }, { label: 'Swap asset', params: true });
+    // asset-gate@1: assets.check:<type>:<id> reads the gate without applying anything (REST / MCP / CLI / voice through the console catalog)
+    a.register('assets.check', ([type, id]) => {
+      const r = gateState(type === SKIN_TYPE ? this.checkSkin(id ?? '') : this.checkAsset(type ?? '', id ?? ''));
+      this.terminal.log('hot-swap', `${ASSET_GATE_CONTRACT}: ${r.message}`, r.ok ? 'ok' : 'warn');
+      this.toast(r.message, r.ok ? 'success' : 'warning', 'Asset check');
+    }, { label: 'Check an asset before applying it', params: true, effect: 'read' });
     a.register('nav', ([view]) => view && this.navigate(view), { label: 'Navigate', params: true });
     // Help mode (engines/help.ts): help.mode[:on|off|toggle] · help.intros.reset · help.intro (replay this screen's intro) · help.explain:<help id>
     a.register(HELP_ACTIONS.mode, ([v]) => this.setHelpMode(v === 'on' ? true : v === 'off' ? false : null), { label: 'Help mode (tooltips everywhere)', params: true });
