@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3917,
- "updatedAt": "2026-11-13T01:26:46.104Z",
+ "rev": 3918,
+ "updatedAt": "2026-11-13T01:27:58.886Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -172772,14 +172772,14 @@
    "title": "Projects own everything: per-project Claude accounts and credentials, plus Clone project (settings only)",
    "category": "projects",
    "detail": "Brett said: \"every project will have its own set of Claude accounts and own everything. Basically, the console and axHub and all that runs on the project. So if you change project, everything is fresh. The Claude credentials, all the credentials for everything... let's create a new project that copies all the stuff over, everything except for the builds and the notes and the to-do manager.\"",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone",
-   "pr": "",
+   "pr": "#537",
    "createdAt": "2026-11-12T20:35:05.081Z",
-   "updatedAt": "2026-11-13T01:20:15.578Z",
+   "updatedAt": "2026-11-13T01:27:57.621Z",
    "builtAt": "",
    "notes": [
     {
@@ -172848,18 +172848,18 @@
    "pipeline": {
     "queuedAt": "2026-11-12T21:50:35.181Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-projects-own-everything-per-project-claude-accou--lenny",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Fable",
-    "launchedAt": "2026-11-13T01:20:12.774Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
-    "note": "",
+    "note": "launch failed: launcher exit 2: claude-headless: --log is a plain file name",
     "route": "",
-    "dispatchedAt": "2026-11-13T01:20:12.774Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Fable",
      "account": "mossesx-max-",
@@ -172867,8 +172867,10 @@
      "at": "2026-11-12T20:36:05.232Z",
      "why": "subscription account mossesx-max-"
     },
-    "tried": [],
-    "pickedAt": "2026-11-13T01:20:12.774Z",
+    "tried": [
+     "mossesx-max-"
+    ],
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T01:26:46.104Z",
+ "updatedAt": "2026-11-13T01:27:58.886Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -109337,14 +109337,14 @@
    "title": "Projects own everything: per-project Claude accounts and credentials, plus Clone project (settings only)",
    "category": "projects",
    "detail": "Brett said: \"every project will have its own set of Claude accounts and own everything. Basically, the console and axHub and all that runs on the project. So if you change project, everything is fresh. The Claude credentials, all the credentials for everything... let's create a new project that copies all the stuff over, everything except for the builds and the notes and the to-do manager.\"",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone",
-   "pr": "",
+   "pr": "#537",
    "createdAt": "2026-11-12T20:35:05.081Z",
-   "updatedAt": "2026-11-13T01:20:15.578Z",
+   "updatedAt": "2026-11-13T01:27:57.621Z",
    "builtAt": "",
    "notes": [
     {
