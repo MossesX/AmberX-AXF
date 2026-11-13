@@ -35,6 +35,8 @@
  *
  *     origin                       build-origin@1 (framework/core/build-origin.mjs): Brett's verbatim words that started it,
  *                                  when / where / who launched it, the brief, later addenda; merged, never overwritten
+ *     recovery                     build-recovery@1 (framework/core/build-recovery.mjs): how often the orchestrator fixed this
+ *                                  build on its own (attempts, backoff nextAt, parkedAt, last events); default on old records
  *
  *   StepRecord = orchestrator@1 step fields (id, text, model, why, phase, group, estimate, files, checks, session,
  *     agent, skip, done, doneAt, note) plus uid (never changes, also across a harvest), title (rename; shown instead
@@ -48,6 +50,7 @@ import { mergeOrigin, normOrigin } from '../core/build-origin.mjs';
 import { effectivePriority, normPriority } from '../core/build-priority.mjs';
 import { normRef as normShippedRef } from '../core/shipped-manifest.mjs';
 import { normPipeline } from '../core/build-pipeline.mjs';
+import { normRecovery } from '../core/build-recovery.mjs';
 
 export const SCHEMA = 'builds@1';
 export const MODELS = ['Fable', 'Opus'];
@@ -164,6 +167,7 @@ export function normBuild(b, ctx = {}) {
     ...(origin ? { origin } : {}),
     ...(normPipeline(o.pipeline) ? { pipeline: normPipeline(o.pipeline) } : {}), // build-pipeline@1: queue / run record (framework/core/build-pipeline.mjs)
     ...(normShippedRef(o.shipped) ? { shipped: normShippedRef(o.shipped) } : {}), // shipped-manifest@1 ref: the manifest the orchestrator sent when it landed (sidecar _claude/builds/shipped/<id>.json)
+    recovery: normRecovery(o.recovery), // build-recovery@1: automatic-fix counter, backoff, park mark, last events (framework/core/build-recovery.mjs); old records read as the default
     steps,
     profiles,
     order,

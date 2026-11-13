@@ -6,7 +6,7 @@
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Breaks every build into small steps (10 min or less; checkpoints inside one session, each committed and ticked as it finishes), each pinned to Fable or Opus, and runs the build pipeline (Brett, Nov 8 2026): every build gets an id and a Claude split (Fable only where needed) and sits in Pending; Brett moves it to the Queue; the dispatcher (pipeline.mjs on the VPS, every minute) watches the Claude accounts (which have Fable, parallel per account) and the agent slots and, when a slot is free, starts a headless session for the next Queue build on an account that runs its next phase's model. The only place that browses and manages builds (Brett, Nov 10 2026; the Build manager is retired): tabs Pending, Queue (each build's steps, planned model and account), Active, Incomplete, Complete, Errors, Archive (every completed and archived build), Deleted (soft-deleted builds kept forever, restorable), then Accounts (health every 5 minutes: sign-in, credits, Fable), All builds, Approvals and Rules. When a build's turn comes the dispatcher makes the final account pick, subscriptions first (in Brett's order), then any API account, moving on until one accepts, and records which account took it. Tracker is the one builds store, _claude/builds/store.json, so any session or account continues the build (orchestrator.mjs next | brief | act; pipeline.mjs status | queue | unqueue | hold | release | archive | unarchive | delete | restore | split | tick).",
+  "description": "Breaks every build into small steps (10 min or less; checkpoints inside one session, each committed and ticked as it finishes), each pinned to Fable or Opus, and runs the build pipeline (Brett, Nov 8 2026): every build gets an id and a Claude split (Fable only where needed) and sits in Pending; Brett moves it to the Queue; the dispatcher (pipeline.mjs on the VPS, every minute) watches the Claude accounts (which have Fable, parallel per account) and the agent slots and, when a slot is free, starts a headless session for the next Queue build on an account that runs its next phase's model. The only place that browses and manages builds (Brett, Nov 10 2026; the Build manager is retired): tabs Pending, Queue (each build's steps, planned model and account), Active, Incomplete, Complete, Errors, Archive (every completed and archived build), Deleted (soft-deleted builds kept forever, restorable), then Accounts (health every 5 minutes: sign-in, credits, Fable), All builds, Approvals and Rules. When a build's turn comes the dispatcher makes the final account pick, subscriptions first (in Brett's order), then any API account, moving on until one accepts, and records which account took it. Tracker is the one builds store, _claude/builds/store.json, so any session or account continues the build (orchestrator.mjs next | brief | act; pipeline.mjs status | queue | unqueue | hold | release | archive | unarchive | delete | restore | split | tick). Auto-recovery (Nov 13 2026): every tick first fixes stuck builds by itself (no live session, killed exit 143, failed exit 1, hung, leaked slots; another worker after a usage limit; parked in Pending at the retry cap; FYI per fix), then fills every free slot; Recovery tab and settings, recover.mjs status | run | retry | park | settings, voice recovery.*, deep link builds/orchestrator/recovery.",
   "targets": [
     "axf-console"
   ],
@@ -528,6 +528,99 @@
           }
         },
         "output": "{ settings }"
+      },
+      {
+        "id": "recovery-status",
+        "route": "GET /recovery",
+        "title": "Auto-recovery status",
+        "description": "The Recovery log: auto-recovery settings, the last recovery round, every build auto-recovery touched (attempts, last cause and exit, backoff, parked) and the latest recovery events (cause, exit, action, attempt), plus the Builds stuck systems check item. Say 'what did recovery fix'.",
+        "readOnly": true,
+        "output": "{ settings, lastRun, builds, events, health }"
+      },
+      {
+        "id": "recovery-run",
+        "route": "POST /recovery/run",
+        "title": "Run auto-recovery now",
+        "description": "One auto-recovery round now: stuck builds (no live session, killed exit 143, failed exit 1, hung) go back to the Queue, leaked slots are released, a build at the retry cap is parked in Pending. dry_run plans and answers without changing anything. From the console container the round runs on the VPS dispatcher's next tick.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "dry_run": {
+              "type": "boolean",
+              "description": "Plan only, change nothing"
+            }
+          }
+        },
+        "output": "{ state, message } or, dry run, { actions }"
+      },
+      {
+        "id": "recovery-settings",
+        "route": "POST /recovery/settings",
+        "title": "Recovery settings",
+        "description": "Change auto-recovery settings (Claude settings builds.recovery.*): enabled, maxRetries (0-10, default 3), staleHeartbeatMin (5-240, default 20), backoffMin (minutes, comma separated, default 1,5,15), fyi (one phone line per fix).",
+        "input": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "maxRetries": {
+              "type": "integer"
+            },
+            "staleHeartbeatMin": {
+              "type": "integer"
+            },
+            "backoffMin": {
+              "type": "string"
+            },
+            "fyi": {
+              "type": "boolean"
+            }
+          }
+        },
+        "output": "{ ok, settings }"
+      },
+      {
+        "id": "recovery-retry",
+        "route": "POST /recovery/retry/{build}",
+        "title": "Retry a stuck build",
+        "description": "Put a stuck, failed or parked build back in the Queue now; its automatic retry count starts over. Refused while it has a live session.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "Build id"
+            }
+          },
+          "required": [
+            "build"
+          ]
+        },
+        "output": "{ ok, id, status }"
+      },
+      {
+        "id": "recovery-park",
+        "route": "POST /recovery/park/{build}",
+        "title": "Park a build",
+        "description": "Stop retrying a build: back to Pending with the reason, for Brett to decide.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "Build id"
+            },
+            "why": {
+              "type": "string",
+              "description": "Why it is parked"
+            }
+          },
+          "required": [
+            "build"
+          ]
+        },
+        "output": "{ ok, id, status }"
       }
     ]
   },

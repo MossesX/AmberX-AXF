@@ -5,6 +5,17 @@ import { setPriorityHost, type PriorityHost } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import { FOLDER, OrchestratorPage, TABS, openTab } from './ui';
 import { focusBuild } from './focus';
+import { RecoverySettings } from './RecoverySettings';
+import { useEffect } from 'react';
+import { useRuntime } from '@console/axf/react';
+import { recoveryApi, type RecoveryState } from './recovery';
+
+/** The deep link `builds/orchestrator/recovery` (console_show / console_open): opens the orchestrator on its Recovery tab. */
+function RecoveryLink() {
+  const rt = useRuntime();
+  useEffect(() => { openTab('recovery'); rt.navigate('build-orchestrator'); }, [rt]);
+  return null;
+}
 import { BUILD_ACTIONS, type BuildAction } from '@console/axf/core/build-pipeline.mjs';
 
 const ACTION_LABEL: Record<BuildAction, string> = { unqueue: 'Back to Pending', hold: 'Hold (stays in the Queue)', release: 'Release from hold', archive: 'Move to the Archive', unarchive: 'Bring back from the Archive', delete: 'Delete (kept in Deleted)', restore: 'Restore' };
@@ -89,6 +100,23 @@ export const plugin: AxfWebLibrary = {
           .catch((e: Error) => rt.toast(e.message, 'danger'));
       }, { label: `Build orchestrator: ${ACTION_LABEL[action]} (one build or several, comma separated)` });
     }
+    // auto-recovery (build auto-recover-stuck-builds): the voice actions AmberX runs, the same calls as REST / MCP / CLI
+    const openRecovery = () => { rt.navigate('build-orchestrator'); openTab('recovery'); };
+    rt.actions.register('recovery.status', () => {
+      openRecovery();
+      void recoveryApi.call<RecoveryState>('recovery').then((s) => rt.toast(`${s.health.summary} Auto-recovery is ${s.settings.enabled ? 'on' : 'off'}.`, s.health.status === 'error' ? 'warning' : 'info', 'Auto-recovery'))
+        .catch((e: Error) => rt.toast(e.message, 'danger'));
+    }, { label: 'Auto-recovery: what is stuck and what was fixed (opens the Recovery log)', effect: 'navigate' });
+    rt.actions.register('recovery.run', () => {
+      void recoveryApi.post<{ state?: string; message?: string }>('recovery/run', {}).then((r) => rt.toast(r.message || 'Auto-recovery ran.', r.state === 'failed' ? 'danger' : 'success', 'Auto-recovery'))
+        .catch((e: Error) => rt.toast(e.message, 'danger'));
+    }, { label: 'Auto-recovery: fix stuck builds now' });
+    rt.actions.register('recovery.retry', ([arg]) => {
+      const id = decodeURIComponent(arg ?? '').trim();
+      if (!id) { openRecovery(); rt.toast('Name a build: recovery.retry:<build>', 'warning'); return; }
+      void recoveryApi.post(`recovery/retry/${encodeURIComponent(id)}`, {}).then(() => rt.toast(`${id} is back in the Queue (retry count reset).`, 'success', 'Auto-recovery'))
+        .catch((e: Error) => rt.toast(e.message, 'danger'));
+    }, { label: 'Auto-recovery: retry a stuck or parked build now', params: true });
     rt.search.add('build-orchestrator.builds', () => {
       if (Date.now() - loadedAt > 30_000) void loadRows().catch(() => undefined);
       return rows.map((r) => ({
@@ -107,10 +135,14 @@ export const plugin: AxfWebLibrary = {
       return out;
     });
   },
-  views: { 'build-orchestrator': { title: 'Build orchestrator', icon: 'layers', keywords: ['orchestrator', 'builds', 'build manager', 'pending', 'queue', 'active', 'incomplete', 'complete', 'errors', 'archive', 'deleted', 'hold', 'on hold', 'restore', 'accounts', 'health', 'fable', 'opus', 'steps', 'phases', 'approve model'], render: () => <OrchestratorPage /> } },
+  views: {
+    'build-orchestrator': { title: 'Build orchestrator', icon: 'layers', keywords: ['recovery', 'orchestrator', 'builds', 'build manager', 'pending', 'queue', 'active', 'incomplete', 'complete', 'errors', 'archive', 'deleted', 'hold', 'on hold', 'restore', 'accounts', 'health', 'fable', 'opus', 'steps', 'phases', 'approve model'], render: () => <OrchestratorPage /> },
+    // first view = the plugin's "Opens in"; this one only redirects (deep link builds/orchestrator/recovery)
+    'build-orchestrator.recovery': { title: 'Builds / Orchestrator / Recovery', icon: 'refresh', keywords: ['recovery log', 'auto-recovery', 'stuck builds', 'parked builds'], render: () => <RecoveryLink /> } },
   nav: { label: 'Builds', items: [{ id: 'build-orchestrator', label: 'Build orchestrator', icon: 'layers', view: 'build-orchestrator' }] },
   contextMenu: [{ id: 'build-orchestrator.pending', target: 'axf-pending-item', items: [{ id: 'build-orchestrator.open', label: 'Open in Build orchestrator', icon: 'layers', action: 'build-orchestrator.open' }] },
     { id: 'build-orchestrator.default', target: 'default', order: 91, items: [{ id: 'build-orchestrator', label: 'Build orchestrator', icon: 'layers', action: 'nav:build-orchestrator' }] }],
   settingsTabs: [{ id: 'build-orchestrator', label: 'Build orchestrator', icon: 'layers', order: 90, parent: 'plugins' }],
-  settingsPanels: [{ id: 'build-orchestrator.lifecycle', tab: 'build-orchestrator', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
+  settingsPanels: [{ id: 'build-orchestrator.recovery', tab: 'build-orchestrator', title: 'Recovery', icon: 'refresh', order: 20, render: () => <RecoverySettings /> },
+    { id: 'build-orchestrator.lifecycle', tab: 'build-orchestrator', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
 };

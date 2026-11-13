@@ -35,6 +35,7 @@
  */
 import { DEFAULT_MAX_RUNS, STATUS_AFTER, isHeld, nextModel, openSteps, outcomeLine, outcomeOf, queueOrder } from '../../../../framework/core/build-pipeline.mjs';
 import { effectivePriority, priorityLabel } from '../../../../framework/core/build-priority.mjs';
+import { canLaunch, recoveryOf } from '../../../../framework/core/build-recovery.mjs';
 import { FOUNDATION_MODEL, MODEL_LABELS, modelForWork, modelKey } from '../../../../framework/core/model-policy.mjs';
 import { API_RULE, estimateMinutes, maxStep, nextUp as orchNextUp, MODEL_GUIDE, STEP_MINUTES, stepLimit } from './web/orchestrator-core.mjs';
 
@@ -178,6 +179,24 @@ export function candidates(accounts, model) {
     .sort((a, b) => byOrder(a, b) || a.running - b.running || (needFable ? 0 : (a.fable ? 1 : 0) - (b.fable ? 1 : 0)) || (a.role === 'worker' ? 0 : 1) - (b.role === 'worker' ? 0 : 1));
 }
 
+/**
+ * The auto-recovery account hint (recover.mjs, build auto-recover-stuck-builds): a run that stopped on a usage limit or
+ * a login error is retried on another worker. The hint rides on pipeline.planned ({ account: to, why: 'auto-recovery:
+ * <from> stopped …' }); planAhead leaves it alone. { from, to } or empty strings.
+ */
+export const RECOVERY_HINT = /^auto-recovery: ([a-z0-9][a-z0-9-]{0,31}) stopped/;
+export function recoveryHint(b) {
+  const pl = b?.pipeline?.planned; const m = RECOVERY_HINT.exec(pl?.why || '');
+  return m ? { from: m[1], to: pl.account || '' } : { from: '', to: '' };
+}
+/** Candidates with the hint applied: the hinted worker first, the account that stopped last (while any other can take it). */
+export function hinted(b, list_) {
+  const h = recoveryHint(b); if (!h.from) return list_;
+  const others = list_.filter((a) => a.name !== h.from);
+  const pool = others.length ? others : list_;
+  return [...pool.filter((a) => a.name === h.to), ...pool.filter((a) => a.name !== h.to)];
+}
+
 /** API accounts that can take one more build on `model` now: least busy first, then the least spent today. */
 export function apiCandidates(accounts, model) {
   const needFable = modelKey(model) === FOUNDATION_MODEL;
@@ -192,7 +211,7 @@ export function apiCandidates(accounts, model) {
  */
 export function routeOptions(b, accounts, model, settings = normSettings()) {
   const route = b?.pipeline?.route || '';
-  const subs = route === 'api' ? [] : candidates(accounts, model).map((a) => ({ account: a.name, kind: 'subscription', rule: '', why: '' }));
+  const subs = route === 'api' ? [] : hinted(b, candidates(accounts, model)).map((a) => ({ account: a.name, kind: 'subscription', rule: '', why: '' }));
   const apiOk = route === 'api' || (route !== 'subscription' && settings.apiOverflow);
   const apis = apiOk ? apiCandidates(accounts, model).map((a) => ({ account: a.name, kind: 'api', rule: route === 'api' ? 'override' : 'overflow',
     why: route === 'api' ? `routed to API account ${a.name} (this build is set to run on API)` : `every subscription account is full or out, so it goes to API account ${a.name}` })) : [];
@@ -274,8 +293,8 @@ export function routeFor(b, accounts, model, settings = normSettings()) {
     const a = apiCandidates(accounts, model)[0];
     return a ? { account: a.name, kind: 'api', rule: 'override', why: `routed to API account ${a.name} (this build is set to run on API)` } : { account: '', kind: '', rule: 'override', why: `set to run on API, ${apiNoAccountWhy(accounts, model)}` };
   }
-  const sub = candidates(accounts, model)[0];
-  if (sub) return { account: sub.name, kind: 'subscription', rule: '', why: '' };
+  const sub = hinted(b, candidates(accounts, model))[0];
+  if (sub) return { account: sub.name, kind: 'subscription', rule: '', why: recoveryHint(b).to && sub.name === recoveryHint(b).to ? `auto-recovery: moved off ${recoveryHint(b).from}` : '' };
   const subWhy = noAccountWhy(accounts, model);
   if (route === 'subscription') return { account: '', kind: '', rule: '', why: `${subWhy} (this build is kept off API accounts)` };
   const hasApi = list(accounts).some((a) => a.kind === 'api');
@@ -321,6 +340,8 @@ export function plan({ builds, accounts, slots, settings = normSettings(), rules
     if (b.status !== 'queued') continue;
     if (isHeld(b)) { waits.push({ id: b.id, why: `on hold${b.pipeline.heldBy ? ` (${b.pipeline.heldBy})` : ''}: skipped until released`, held: true }); continue; }
     if (!openSteps(b).length) { waits.push({ id: b.id, why: b.steps?.length ? 'every step is done: nothing to run' : 'no steps yet: waiting for the split' }); continue; }
+    // auto-recovery backoff (build-recovery@1): a recovered build waits its 1 / 5 / 15 min before it launches again
+    if (!canLaunch(b, now)) { waits.push({ id: b.id, why: `auto-recovery backoff: launches again after ${recoveryOf(b).nextAt}`, backoff: true }); continue; }
     const n = orchNextUp(b, rules);
     if (n.needsApproval) { waits.push({ id: b.id, why: `needs Brett's approval: upgrade ${n.phase.from} → ${n.phase.model}` }); continue; }
     const model = nextModel(b);
@@ -431,7 +452,8 @@ export function needsSplit(b, rules = { maxStepMinutes: STEP_MINUTES }) {
 // ------------------------------------------------------------------ alerts (the console alerts API; types in notify.json)
 
 export const ALERT_SOURCE = 'pipeline';
-export const ALERT_LINK = '#/build-orchestrator';
+/** The console's alerts API takes http(s)://, view:<id> or settings:<tab> links only (a '#/…' link was refused with 400). */
+export const ALERT_LINK = 'view:build-orchestrator';
 /**
  * The payload POST /api/alerts takes. kind = idle | launched | ended | failed | split. `key` makes repeats bump a count
  * instead of a new alert, and lets the dispatcher resolve one (idle) when a build runs again. Key prefixes are what

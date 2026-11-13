@@ -1,0 +1,34 @@
+{
+ "$axf": "asset@1",
+ "type": "interface",
+ "id": "recovery-log-grouped",
+ "name": "recovery-log: Grouped per build, parked first",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "One row per build: the latest fix (cause, exit, action, attempt, when) with its priority tag; parked builds in their own red group on top; every event and Retry / Park in the row's detail.",
+ "tags": [
+  "ui-choice",
+  "choice-set:recovery-log",
+  "choice-option:grouped"
+ ],
+ "data": {
+  "view": "build-orchestrator",
+  "tab": "recovery",
+  "layout": "grouped",
+  "rowPer": "build",
+  "groups": [
+   "parked",
+   "recovered"
+  ],
+  "columns": [
+   "build",
+   "priority",
+   "cause",
+   "exit",
+   "action",
+   "attempt",
+   "when"
+  ],
+  "localKey": "orch-recovery-layout"
+ }
+}

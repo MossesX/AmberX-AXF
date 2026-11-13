@@ -78,6 +78,8 @@ import { issue as issueDispatch } from '../../../../framework/cli/dispatch-gate.
 import { shipLanded } from '../../../../framework/cli/shipped.mjs';
 import { crewSay } from '../../../../framework/cli/crew-say.mjs';
 import { normPriority } from '../../../../framework/core/build-priority.mjs';
+import { run as recoverRun } from './recover.mjs';
+import { isDefaultRecovery, recoveryOf, resetRecovery as resetRecoveryRecord } from '../../../../framework/core/build-recovery.mjs';
 import { act as orchAct } from './orchestrator.mjs';
 import { reap as workersReap, status as workersStatus, route as workerRoute } from '../../../../deploy/claude-workers.mjs';
 import { childEnv, paths as loginPaths, release as releaseLogin, snapshot as snapshotLogin } from '../../../../deploy/claude-login.mjs';
@@ -192,11 +194,17 @@ export function accountsRead(store, settings = loadSettings(), env = process.env
 /** Accounts as the pipeline sees them: claude-workers rows + what the store says runs on each + the pipeline's own records. */
 export function accountsNow(store, settings = loadSettings()) { return accountsRead(store, settings).accounts; }
 
+/** A build's auto-recovery for its card badge (null when never recovered): the RecoveryBuild shape GET recovery answers. */
+const recoveryRow = (b) => {
+  if (isDefaultRecovery(b.recovery)) return null;
+  const r = recoveryOf(b);
+  return { id: b.id, title: b.title, status: b.status, attempts: r.attempts, lastAt: r.lastAt, lastCause: r.lastCause, lastExit: r.lastExit, nextAt: r.nextAt, parkedAt: r.parkedAt, parked: b.status === 'pending' && !!r.parkedAt, priority: b.priority || '' };
+};
 const row = (b) => {
   const p = orch.progress(b); const nx = orch.nextUp(b);
   return { id: b.id, title: b.title, status: b.status, priority: priorityLabel(effectivePriority(b)), steps: { done: p.done, total: p.total, left: p.total - p.done - p.skipped }, minutesLeft: p.minutesLeft,
     nextModel: BP.nextModel(b), nextStep: nx.step ? `${nx.step.id} ${nx.step.text}`.slice(0, 200) : '', needsApproval: nx.needsApproval, needsSplit: P.needsSplit(b), pipeline: b.pipeline ?? null, said: subtitle(b.origin, 160), branch: b.branch, pr: b.pr, createdAt: b.createdAt, updatedAt: b.updatedAt,
-    tab: BP.tabOf(b), held: BP.isHeld(b), actions: BP.actionsFor(b), deleted: !!b.deleted, deletedAt: b.deletedAt ?? '', builtAt: b.builtAt ?? '', stepList: (b.steps ?? []).slice(0, 40).map((x) => ({ id: x.id, text: str(x.text, 160), model: x.model, estimate: x.estimate ?? '', done: !!x.done, skip: !!x.skip })) };
+    tab: BP.tabOf(b), held: BP.isHeld(b), actions: BP.actionsFor(b), recovery: recoveryRow(b), deleted: !!b.deleted, deletedAt: b.deletedAt ?? '', builtAt: b.builtAt ?? '', stepList: (b.steps ?? []).slice(0, 40).map((x) => ({ id: x.id, text: str(x.text, 160), model: x.model, estimate: x.estimate ?? '', done: !!x.done, skip: !!x.skip })) };
 };
 
 /** The whole picture for the console and the CLI. */
@@ -230,7 +238,7 @@ export function status() {
 // ------------------------------------------------------------------ store writes
 
 /** One change to a build's pipeline record (and status / note) under the store lock. */
-export function setPipeline(id, patch, { status = '', note = '', by = 'pipeline', action = 'pipeline' } = {}) {
+export function setPipeline(id, patch, { status = '', note = '', by = 'pipeline', action = 'pipeline', resetRecovery = '' } = {}) {
   let out = null;
   withStore((s) => {
     const b = storeCore.findBuild(s, id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
@@ -239,6 +247,8 @@ export function setPipeline(id, patch, { status = '', note = '', by = 'pipeline'
     if (!b.pipeline) delete b.pipeline;
     if (status) { if (!storeCore.STATUSES.includes(status)) throw new Error(`unknown status ${status}`); b.status = status; b.builtAt = storeCore.FINISHED.includes(status) ? (b.builtAt || now) : ''; }
     if (note) b.notes.push({ text: str(note, 2000), at: now });
+    // a person queued it: the auto-recovery counter starts over (build-recovery@1 resetRecovery; the events stay)
+    if (resetRecovery && !isDefaultRecovery(b.recovery)) b.recovery = resetRecoveryRecord(b.recovery, { now, why: resetRecovery });
     b.updatedAt = now; out = b;
     return s;
   }, { by, action, note: id });
@@ -249,7 +259,7 @@ export function queue(id, { by = process.env.AXF_ACTOR || 'console' } = {}) {
   const b = storeCore.findBuild(loadStore(), id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
   if (!BP.canQueue(b)) throw Object.assign(new Error(`${b.id} is ${b.status}${b.hidden ? ' (hidden)' : ''}: only a Pending build can be queued`), { code: 2 });
   const now = nowIso();
-  const r = setPipeline(b.id, { queuedAt: now, queuedBy: str(by, 80), note: b.steps.length ? '' : 'waiting for the split before it can start' }, { status: 'queued', note: `Queued by ${by}.`, by, action: 'pipeline:queue' });
+  const r = setPipeline(b.id, { queuedAt: now, queuedBy: str(by, 80), note: b.steps.length ? '' : 'waiting for the split before it can start' }, { status: 'queued', note: `Queued by ${by}.`, by, action: 'pipeline:queue', resetRecovery: `queued by ${by}` });
   logLine({ event: 'queued', build: b.id, by });
   return r;
 }
@@ -598,6 +608,11 @@ export function tick({ env = process.env } = {}) {
   const sent = [];
   const alert = (kind, d) => { const a = P.alertFor(kind, d); consoleApi('POST', '/api/alerts', a); sent.push({ key: a.key, kind, at: nowIso(), title: a.title }); };
   const started = nowIso();
+  // auto-recovery first (build auto-recover-stuck-builds): stuck builds go back to the Queue (or park in Pending at the
+  // cap) and leaked slots free up before this tick counts slots and picks launches, so every free slot is filled now
+  let recovery = null;
+  try { recovery = recoverRun({ by: 'dispatcher', env }); if (recovery.errors?.length) logLine({ event: 'recovery-errors', errors: recovery.errors }); }
+  catch (e) { recovery = { ran: false, errors: [{ error: str(e.message, 300) }] }; logLine({ event: 'recovery-failed', error: str(e.message, 300) }); }
   const inta = intake({ alert });
   const ended = checkEnds({ alert, env });
   const store = loadStore(); const settings = loadSettings(); const rules = rulesOf(store);
@@ -608,9 +623,9 @@ export function tick({ env = process.env } = {}) {
   planAhead(store, accounts, settings);
   const launched = []; const failed = [];
   const hourAgo = Date.now() - 3600e3;
-  for (const first of plan.launches) {
+  const launchOne = (first, store) => {
     const fails = (state.launchFails[first.id] ?? []).filter((t) => Date.parse(t) > hourAgo);
-    if (fails.length >= LAUNCH_FAILS_PER_HOUR) { plan.waits.push({ id: first.id, why: `launch failed ${fails.length} times in the last hour: waiting` }); continue; }
+    if (fails.length >= LAUNCH_FAILS_PER_HOUR) { plan.waits.push({ id: first.id, why: `launch failed ${fails.length} times in the last hour: waiting` }); return false; }
     const b = live(store).find((x) => x.id === first.id);
     // the final pick: the plan's account first, then every other account that may take it (subscriptions, then API),
     // moving on until one accepts the launch
@@ -626,7 +641,7 @@ export function tick({ env = process.env } = {}) {
       if (!r) throw lastErr ?? new Error('no account accepted the launch');
       const runs = (b.pipeline?.runs ?? 0) + 1;
       const moved = tried.length ? ` after ${tried.join(', ')} refused` : '';
-      setPipeline(b.id, { account: l.account, session: r.session, slot: r.slot, model: l.model, launchedAt: nowIso(), dispatchedAt: nowIso(), pickedAt: nowIso(), tried, runs, note: r.queuedInSlots ? 'in the agent-slots queue (starts when the VPS cap frees)' : r.lookWait ? 'waiting for the predicted look approval in UI Review' : '' },
+      setPipeline(b.id, { ...(P.recoveryHint(b).from ? { planned: null } : {}), account: l.account, session: r.session, slot: r.slot, model: l.model, launchedAt: nowIso(), dispatchedAt: nowIso(), pickedAt: nowIso(), tried, runs, note: r.queuedInSlots ? 'in the agent-slots queue (starts when the VPS cap frees)' : r.lookWait ? 'waiting for the predicted look approval in UI Review' : '' },
         { status: 'running', note: `Started run ${runs} on ${l.account}${moved}${l.kind === 'api' ? ` (API key, ${l.rule === 'override' ? 'this build is set to API' : 'subscriptions first, then API'})` : ''} (${l.model}${l.phase ? `, ${l.phase}` : ''}): ${r.session || 'queued in agent slots'}.`, action: 'pipeline:launch' });
       if (!b.branch) withStore((s) => { const rec = storeCore.findBuild(s, b.id); if (rec && !rec.branch) rec.branch = `claude/${b.id}`; return s; }, { by: 'pipeline', action: 'pipeline:branch', note: b.id });
       alert('launched', { id: b.id, title: b.title, account: l.account, model: l.model, phase: l.phase, session: r.session });
@@ -640,7 +655,24 @@ export function tick({ env = process.env } = {}) {
       setPipeline(l.id, { note: `launch failed: ${str(e.message, 300)}`, tried }, { note: `Launch failed on ${tried.join(', ') || l.account}: ${str(e.message, 500)}`, action: 'pipeline:launch-failed' });
       logLine({ event: 'launch-failed', build: l.id, account: l.account, tried, error: e.message });
       crewSay('dispatcher', 'failed', `Couldn't start ${l.id} on ${tried.join(', ') || l.account}: ${str(e.message, 160)}`, { ref: l.id });
+      return false;
     }
+    return true;
+  };
+  // keep every slot filled: launch the plan, and when a launch was refused or skipped, plan again on the slots that are
+  // still free with the builds not tried yet, until the slots or the Queue run out (bounded rounds)
+  const tried = new Set();
+  let round = plan; let roundStore = store;
+  for (let i = 0; i < FILL_ROUNDS; i++) {
+    let missed = 0;
+    for (const first of round.launches) { tried.add(first.id); if (!launchOne(first, roundStore)) missed += 1; }
+    if (!missed) break;
+    roundStore = loadStore();
+    const sl2 = slotsNow();
+    if (!(Number(sl2.free) > 0)) break;
+    round = P.plan({ builds: runnable(roundStore).filter((b) => !tried.has(b.id)), accounts: accountsRead(roundStore, settings, env).accounts, slots: sl2, settings, rules });
+    if (!round.launches.length) break;
+    plan.launches.push(...round.launches);
   }
   // idle: nothing running while work waits. Recorded at once; the phone hears about it after idleAfterMin, once per idle spell.
   let idle = null;
@@ -675,10 +707,12 @@ export function tick({ env = process.env } = {}) {
   for (const fn of TICK_HOOKS) {
     try { fn({ state: next, plan, launched, ended, failed, env }); } catch (e) { logLine({ event: 'hook-failed', error: str(e.message, 300) }); }
   }
-  return { ok: true, at: next.at, intake: inta, ended, launched, failed, plan, idle, alertsSent: sent, selfCheck: check, health };
+  return { ok: true, at: next.at, recovery, intake: inta, ended, launched, failed, plan, idle, alertsSent: sent, selfCheck: check, health };
 }
 
 const MAX_PICK_TRIES = 4;
+/** Planning rounds per tick: a refused launch's slot goes to the next Queue build in the same tick. */
+const FILL_ROUNDS = 3;
 
 /**
  * The orchestrator's plan for every split build that waits (Pending, Queue): its next model and the account it expects
@@ -688,8 +722,9 @@ export function planAhead(store, accounts, settings = loadSettings()) {
   const want = new Map();
   for (const b of live(store)) {
     if ((b.status !== 'pending' && b.status !== 'queued') || b.hidden || !BP.openSteps(b).length) continue;
-    const p = P.planFor(b, accounts, settings);
     const cur = b.pipeline?.planned;
+    if (P.recoveryHint(b).from) continue;   // auto-recovery's account hint stands until the build launches
+    const p = P.planFor(b, accounts, settings);
     if (!p || (cur && cur.model === p.model && cur.account === p.account && cur.kind === p.kind)) continue;
     want.set(b.id, p);
   }
