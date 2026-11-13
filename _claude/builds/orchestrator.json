@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T00:50:38.977Z",
+ "updatedAt": "2026-11-13T00:51:06.644Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -107782,7 +107782,7 @@
    "pr": "#533",
    "priority": "P0",
    "createdAt": "2026-11-12T15:33:08.904Z",
-   "updatedAt": "2026-11-13T00:50:28.107Z",
+   "updatedAt": "2026-11-13T00:51:05.153Z",
    "builtAt": "2026-11-13T00:50:28.107Z",
    "notes": [
     {
@@ -107800,6 +107800,10 @@
     {
      "text": "Headless run axf-amberx-approval-pop-up-not-showing-only-the-andr--earl: brief only · start 10.8K tokens ($0.03) · cost $1.32 · 31 turns · 6 tools, MCP none",
      "at": "2026-11-13T00:50:28.107Z"
+    },
+    {
+     "text": "Session axf-amberx-approval-pop-up-not-showing-only-the-andr--earl on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-13T00:51:05.153Z"
     }
    ],
    "approvals": [],
