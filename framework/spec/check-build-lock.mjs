@@ -18,7 +18,7 @@ const off = { ...process.env, AXF_BUILD_LOCK_TMUX: 'off', AXF_BUILD_LOCK_PIDS: '
 
 t('session names: axf-<id>, axf-<id>--agent, the -HHMMSS duplicate; never another build', () => {
   for (const s of ['axf-foo', 'axf-foo--paulie', 'axf-foo-201530', 'axf-foo--gina-201530']) assert.ok(L.sessionOf('foo', s), s);
-  for (const s of ['axf-foo-bar', 'axf-foo-bar--paulie', 'axf-foobar', 'axt-foo', 'foo', 'axf-foo-2015']) assert.ok(!L.sessionOf('foo', s), s);
+  for (const s of ['axf-foo-bar', 'axf-foo-bar--paulie', 'axf-foo-p1', 'axf-foo-p1--earl', 'axf-foo-p2-201530', 'axf-foobar', 'axt-foo', 'foo', 'axf-foo-2015']) assert.ok(!L.sessionOf('foo', s), s);
   assert.ok(!L.sessionOf('Bad Id', 'axf-Bad Id'));
 });
 t('tmux sessions are matched per build', () => {
