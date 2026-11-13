@@ -142,26 +142,32 @@ t('endOutcome: finished → built with a PR, complete without; crash requeues; c
 const raw = build('raw', 'pending', [], { title: 'Icon browser', detail: 'Add an icon browser plugin.\nList every icon pack.\nSearch by name.', origin: { said: 'I want an icon browser, dude.', addenda: [] } });
 t('splitPrompt carries the title, detail, his words and the JSON shape', () => {
   const p = P.splitPrompt(raw);
-  assert.match(p, /Icon browser/); assert.match(p, /icon browser, dude/); assert.match(p, /"steps"/); assert.match(p, /30 minutes or less/); assert.match(p, /Fable ONLY for/);
+  assert.match(p, /Icon browser/); assert.match(p, /icon browser, dude/); assert.match(p, /"steps"/); assert.match(p, /10 minutes or less/); assert.match(p, /checkpoints inside ONE session/); assert.match(p, /no step gets its own prompt or relaunch/); assert.match(p, /Fable ONLY for/);
+  assert.match(P.splitPrompt(raw, { maxStepMinutes: 30 }), /every step 10 minutes or less/, 'a stored 30 reads as the 10-minute ceiling');
+  assert.match(P.splitPrompt(raw, { maxStepMinutes: 5 }), /every step 5 minutes or less/, 'the rule can lower it');
 });
 t('parseSplit: JSON inside prose, models coerced, estimates checked', () => {
-  const ok = P.parseSplit('Here you go:\n{"steps":[{"text":"Design the icon-pack schema","model":"fable","estimate":"25 min","why":"schema"},{"text":"Wire the route","model":"Opus 5.5","estimate":20}]}\nDone.');
-  assert.equal(ok.error, ''); assert.equal(ok.steps.length, 2); assert.equal(ok.steps[0].model, 'Fable'); assert.equal(ok.steps[1].model, 'Opus'); assert.equal(ok.steps[1].estimate, '20 min'); assert.equal(ok.steps[0].id, 's1');
+  const ok = P.parseSplit('Here you go:\n{"steps":[{"text":"Design the icon-pack schema","model":"fable","estimate":"10 min","why":"schema"},{"text":"Write the docs","model":"Opus","estimate":"8"},{"text":"Wire the route","model":"Opus 5.5","estimate":9}]}\nDone.');
+  assert.equal(ok.error, ''); assert.equal(ok.steps.length, 3); ok.steps.splice(1, 1); assert.equal(ok.steps[0].model, 'Fable'); assert.equal(ok.steps[1].model, 'Opus'); assert.equal(ok.steps[1].estimate, '9 min'); assert.equal(ok.steps[0].id, 's1');
   assert.match(P.parseSplit('nothing here').error, /no JSON/);
   assert.match(P.parseSplit('{"steps":[]}').error, /no steps/);
-  assert.match(P.parseSplit('{"steps":[{"text":"Too big a step","model":"Opus","estimate":"2 h"}]}').error, /120 min \(limit 30\)/);
+  assert.match(P.parseSplit('{"steps":[{"text":"Too big a step","model":"Opus","estimate":"2 h"}]}').error, /120 min \(limit 10\)/);
+  assert.match(P.parseSplit('{"steps":[{"text":"Was fine before","model":"Opus","estimate":"25 min"}]}').error, /25 min \(limit 10\)/);
   assert.match(P.parseSplit('{"steps":[{"text":"No estimate","model":"Opus"}]}').error, /no estimate/);
   assert.equal(P.parseSplit('{"steps":[{"text":"Sonnet is never allowed","model":"Sonnet","estimate":"5 min"}]}').steps[0].model, 'Opus');
 });
 t('rulesSplit: one step per line, Fable for foundation words first, a closing test + PR step', () => {
   const s = P.rulesSplit(build('r', 'pending', [], { title: 'Thing', detail: 'Add the plugin UI.\nDesign the asset type schema for packs.\nWire the API route.' }));
   assert.equal(s.length, 4); assert.equal(s[0].model, 'Fable'); assert.match(s[0].text, /schema/); assert.equal(s[3].model, 'Opus'); assert.match(s[3].text, /report _claude\/builds\/reports\/r\.md/);
-  assert.ok(s.every((x) => (P.needsSplit({ status: 'pending', steps: [x] }) === false)));
+  assert.ok(s.every((x) => (P.needsSplit({ status: 'pending', steps: [x] }) === false))); assert.ok(s.every((x) => x.estimate === '10 min'));
   const bare = P.rulesSplit(build('b', 'pending', [], { title: 'Just a title' })); assert.equal(bare.length, 2); assert.equal(bare[0].text, 'Just a title');
 });
 t('needsSplit: no steps, a step over the limit or without an estimate; never a finished build', () => {
   assert.equal(P.needsSplit(raw), true);
-  assert.equal(P.needsSplit(build('x', 'pending', [step('s1', 'Opus')])), false);
+  assert.equal(P.needsSplit(build('x', 'pending', [{ ...step('s1', 'Opus'), estimate: '10 min' }])), false);
+  assert.equal(P.needsSplit(build('x', 'pending', [step('s1', 'Opus')])), true, '25 min is over the 10-minute limit');
+  assert.equal(P.needsSplit(build('x', 'pending', [{ ...step('s1', 'Opus'), createdAt: '2026-11-01T00:00:00.000Z' }])), false, 'a step written before the change keeps the 30-minute limit');
+  assert.equal(P.needsSplit(build('x', 'pending', [{ ...step('s1', 'Opus'), estimate: '40 min', createdAt: '2026-11-01T00:00:00.000Z' }])), true);
   assert.equal(P.needsSplit(build('x', 'pending', [{ ...step('s1', 'Opus'), estimate: '2 h' }])), true);
   assert.equal(P.needsSplit(build('x', 'pending', [{ ...step('s1', 'Opus'), estimate: '' }])), true);
   assert.equal(P.needsSplit(build('x', 'complete', [])), false);
@@ -386,7 +392,7 @@ echo "started axf-$name--fake in $(pwd)"
   const splitter = join(tmp, 'splitter.sh');
   writeFileSync(splitter, `#!/usr/bin/env bash
 cat > "${tmp}/split-prompt.txt"
-echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"20 min","why":"contract"},{"text":"Wire the UI and tests","model":"Opus","estimate":"25 min"}]}'
+echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"10 min","why":"contract"},{"text":"Wire the UI and tests","model":"Opus","estimate":"10 min"}]}'
 `); chmodSync(splitter, 0o755);
   const env = { ...process.env, AXF_BUILDS_STORE: storeFile, AXF_BUILD_HOOKS: 'off', AXF_BUILDS_LIVE: '0', AXF_SHIPPED: 'off', AXF_PIPELINE_DIR: pipeDir, AXF_SLOTS_DIR: slotsDir, AXF_SLOTS_TMUX: 'off', AXF_SLOTS_MEM_GB: '8', AXF_HEADLESS_DIR: hdir,
     AXF_CLAUDE_ACCOUNTS: accountsDir, AXF_CLAUDE_SEEN: join(workersDir, 'seen.json'), AXF_CLAUDE_WORKERS: workersDir, AXF_CLAUDE_HOME: join(tmp, 'claude-home'), AXF_CLAUDE_GLOBAL: join(tmp, 'claude.json'),
@@ -400,7 +406,7 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
   const find = (id) => store().builds.find((b) => b.id === id);
 
   orch('act', JSON.stringify({ action: 'add', id: 'alpha', title: 'Alpha feature', detail: 'Make the alpha thing.', said: 'build me alpha, kid' }));
-  orch('act', JSON.stringify({ action: 'add', id: 'beta', title: 'Beta feature', steps: [{ text: 'do beta', model: 'Opus', estimate: '20 min' }] }));
+  orch('act', JSON.stringify({ action: 'add', id: 'beta', title: 'Beta feature', steps: [{ text: 'do beta', model: 'Opus', estimate: '10 min' }] }));
   t('e2e intake: a new build with no steps is split by the orchestrator (fake Claude) and stays in Pending', () => {
     const r = json(pipe('intake', '--json'));
     assert.deepEqual(r.split.map((x) => x.id), ['alpha']);
@@ -430,6 +436,7 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     const a = find('alpha'); assert.equal(a.status, 'running'); assert.equal(a.pipeline.account, 'w-max'); assert.equal(a.pipeline.runs, 1); assert.match(a.pipeline.session, /^axf-alpha/); assert.equal(a.pipeline.model, 'Fable');
     assert.ok(existsSync(join(wtRoot, 'alpha', '.axf-brief.md')), 'a brief file is written in the worktree');
     const brief = readFileSync(join(wtRoot, 'alpha', '.axf-brief.md'), 'utf8'); assert.match(brief, /## Brett said \(verbatim\)/); assert.match(brief, /build me alpha, kid/); assert.match(brief, /Continue build "Alpha feature" \(alpha\)/);
+    assert.match(brief, /Checkpoints: Steps are checkpoints inside this ONE session/); assert.match(brief, /they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it/);
     assert.equal(json(pipe('tick', '--json')).launched.length, 0, 'nothing free: no second launch');
   });
   t('e2e one way to start builds: every dispatcher launch carries a token the gate accepts once; anything else is refused', () => {

@@ -69,7 +69,7 @@
       {
         "target": "split-now",
         "title": "Split now",
-        "text": "Asks the orchestrator to split this build into steps of 30 minutes or less (Fable only where needed, Opus otherwise). Done by the dispatcher within a minute.",
+        "text": "Asks the orchestrator to split this build into steps of 10 minutes or less (Fable only where needed, Opus otherwise). Done by the dispatcher within a minute.",
         "kind": "button"
       },
       {

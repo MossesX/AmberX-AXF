@@ -246,7 +246,7 @@ function BuildCard({ b, rules, busy, act, embedded }: { b: Build; rules: Rules; 
       )}
       {(mode === 'note' || mode === 'step') && (
         <div className="fx-stack">
-          <textarea className="fx-input" rows={3} autoFocus value={text} onChange={(e) => setText(e.target.value)} placeholder={mode === 'note' ? 'Add a note' : 'Add a step (30 min or less)'} />
+          <textarea className="fx-input" rows={3} autoFocus value={text} onChange={(e) => setText(e.target.value)} placeholder={mode === 'note' ? 'Add a note' : `Add a step (${core.STEP_MINUTES} min or less)`} />
           {mode === 'step' && (
             <div className="pd-two">
               <label className="pd-field">Model<select className="fx-input" value={stepModel} onChange={(e) => setStepModel(e.target.value as 'Fable' | 'Opus')}>{core.MODELS.map((m) => <option key={m}>{m}</option>)}</select></label>
@@ -357,7 +357,8 @@ function RulesTab({ rules, busy, act }: { rules: Rules; busy: boolean; act: Act 
         <label className="fx-row"><input type="checkbox" checked={r.sameSession} onChange={() => flip('sameSession')} />Stay in one session (a step can still ask for a new one)</label>
         <label className="fx-row"><input type="checkbox" checked={r.subAgents} onChange={() => flip('subAgents')} />Allow sub-agents (off = only steps marked “sub-agent ok”)</label>
         <p className="fx-small fx-muted">Model switches: an upgrade always waits for your approval; a downgrade goes on by itself (Nov 3 2026, not a setting).</p>
-        <label className="pd-field">Largest step (minutes)<input className="fx-input" type="number" min={5} max={240} value={r.maxStepMinutes} onChange={(e) => setR((x) => ({ ...x, maxStepMinutes: Number(e.target.value) }))} /></label>
+        <label className="pd-field">Largest step (minutes, {core.STEP_MINUTES} at most)<input className="fx-input" type="number" min={1} max={core.STEP_MINUTES} value={core.maxStep(r)} onChange={(e) => setR((x) => ({ ...x, maxStepMinutes: Number(e.target.value) }))} /></label>
+        <p className="fx-small fx-muted">Steps are checkpoints inside one session: it commits and ticks each one as it goes, with no new prompt or launch per step.</p>
         <div><Button tone="primary" icon="save" disabled={busy} onClick={() => act({ action: 'rules', rules: r })}>Save rules</Button></div>
       </article>
       <article className="pd-card">
@@ -542,7 +543,7 @@ function StepGrid({ b, rules, busy, act, hidden, setHidden }: { b: Build; rules:
         </span>
       ) },
   ];
-  if (!b.steps.length) return <p className="fx-small fx-muted">No steps yet. Add steps of {rules.maxStepMinutes} minutes or less below.</p>;
+  if (!b.steps.length) return <p className="fx-small fx-muted">No steps yet. Add steps of {core.maxStep(rules)} minutes or less below.</p>;
   return (
     <div className="oc-subgrid">
       <DataGrid<GStep> id={`orch-steps-${b.id.replace(/[^a-z0-9-]/gi, '-')}`} label={`Steps of ${b.title}`} compact groups={groups} columns={cols}
