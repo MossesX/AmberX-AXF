@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4867,
- "updatedAt": "2026-11-13T19:52:55.280Z",
+ "rev": 4868,
+ "updatedAt": "2026-11-13T19:53:19.481Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -203058,8 +203058,8 @@
    "pr": "#620",
    "priority": "P0",
    "createdAt": "2026-11-13T19:31:40.346Z",
-   "updatedAt": "2026-11-13T19:52:28.257Z",
-   "builtAt": "2026-11-13T19:52:28.257Z",
+   "updatedAt": "2026-11-13T19:52:44.391Z",
+   "builtAt": "2026-11-13T19:52:44.391Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -203092,6 +203092,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-land-drive-live-console-first-resolve--earl, own login copy)",
      "at": "2026-11-13T19:44:27.886Z"
+    },
+    {
+     "text": "Headless run axf-land-drive-live-console-first-resolve--earl: brief only · start 11.1K tokens ($0.03) · cost $0.59 · 26 turns · 6 tools, MCP none",
+     "at": "2026-11-13T19:52:44.391Z"
     }
    ],
    "approvals": [
