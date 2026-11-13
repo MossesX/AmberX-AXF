@@ -3,7 +3,7 @@
  * tests, so the console shows exactly what the dispatcher on the VPS will do next.
  *
  * Brett, Nov 8 2026 (build urgent-rebuild-pipeline-orchestrator-ids-splits-): the orchestrator assigns the id, uses
- * Claude to split a build into ≤ 30-min steps (Fable only where needed, Opus otherwise), puts it in Pending; Brett moves
+ * Claude to split a build into ≤ 10-min steps (checkpoints inside one session) (Fable only where needed, Opus otherwise), puts it in Pending; Brett moves
  * it to the Queue; the orchestrator "checks the VPS to see what accounts have what slots" and, when a slot is free,
  * grabs the next Queue build and starts a headless session on it: Fable steps to an account with Fable, the rest to
  * Opus. It never starts a session right away.
@@ -36,7 +36,7 @@
 import { DEFAULT_MAX_RUNS, STATUS_AFTER, isHeld, nextModel, openSteps, outcomeLine, outcomeOf, queueOrder } from '../../../../framework/core/build-pipeline.mjs';
 import { effectivePriority, priorityLabel } from '../../../../framework/core/build-priority.mjs';
 import { FOUNDATION_MODEL, MODEL_LABELS, modelForWork, modelKey } from '../../../../framework/core/model-policy.mjs';
-import { API_RULE, estimateMinutes, nextUp as orchNextUp, MODEL_GUIDE } from './web/orchestrator-core.mjs';
+import { API_RULE, estimateMinutes, maxStep, nextUp as orchNextUp, MODEL_GUIDE, STEP_MINUTES, stepLimit } from './web/orchestrator-core.mjs';
 
 export const SCHEMA = 'pipeline-settings@1';
 export const DEFAULTS = Object.freeze({
@@ -342,13 +342,14 @@ export function endOutcome(b, { exit, account = '', session = '', now = new Date
 // ------------------------------------------------------------------ split
 
 /** The one-shot prompt the orchestrator sends to Claude to split a build. The answer must be JSON only. */
-export function splitPrompt(b, rules = { maxStepMinutes: 30 }) {
-  const max = rules.maxStepMinutes || 30;
+export function splitPrompt(b, rules = { maxStepMinutes: STEP_MINUTES }) {
+  const max = maxStep(rules);
   const said = str(b.origin?.said, 6000).trim();
   const addenda = list(b.origin?.addenda).map((a, i) => `Addendum ${i + 1}: ${str(a.said, 2000)}`).join('\n');
   return [
     `You are the AmberX AXF build orchestrator. Split the build below into small steps a headless Claude Code session does one after another in one repo checkout.`,
-    `Rules: every step ${max} minutes or less, with an estimate; 3 to 20 steps; each step is one concrete piece of work naming the files or folders it touches; the last step is tests, report (_claude/builds/reports/<build id>.md), THREADS row and PR.`,
+    `Steps are checkpoints inside ONE session, not separate launches: the session works through them in order, commits and ticks each one as it finishes it, so nothing is lost if it dies; no step gets its own prompt or relaunch. Small steps cost nothing extra, so cut fine.`,
+    `Rules: every step ${max} minutes or less, with an estimate; 3 to 40 steps; each step is one concrete piece of work naming the files or folders it touches and ending in something that can be committed; anything bigger than ${max} minutes is cut into several steps; the last step is tests, report (_claude/builds/reports/<build id>.md), THREADS row and PR.`,
     `API rule: ${API_RULE} So every step that adds or changes UI names its API part (deep link, state read, actions, settings; REST + MCP + CLI + voice) in the same step or the step right after it.`,
     `Model per step, Opus by default. Fable ONLY for: ${MODEL_GUIDE.Fable} Opus for: ${MODEL_GUIDE.Opus} Put Fable steps first when the work allows, so the build switches model at most once.`,
     `Answer with JSON only, no prose: {"steps":[{"text":"…","model":"Fable|Opus","estimate":"<n> min","why":"<one line when Fable>","files":["…"]}]}`,
@@ -359,8 +360,8 @@ export function splitPrompt(b, rules = { maxStepMinutes: 30 }) {
 
 const EST_RE = /^\s*(\d+(?:\.\d+)?)\s*(m|min|mins|minutes?|h|hr|hrs|hours?)?\s*$/i;
 /** Claude's answer → steps, or an error. Accepts the JSON object alone or inside other text; refuses steps over the limit. */
-export function parseSplit(text, rules = { maxStepMinutes: 30 }) {
-  const max = rules.maxStepMinutes || 30;
+export function parseSplit(text, rules = { maxStepMinutes: STEP_MINUTES }) {
+  const max = maxStep(rules);
   const s = str(text, 200000);
   const start = s.indexOf('{'); const end = s.lastIndexOf('}');
   if (start < 0 || end <= start) return { steps: [], error: 'no JSON object in the answer' };
@@ -368,7 +369,7 @@ export function parseSplit(text, rules = { maxStepMinutes: 30 }) {
   try { j = JSON.parse(s.slice(start, end + 1)); } catch (e) { return { steps: [], error: `not JSON: ${e.message}` }; }
   const raw = list(j?.steps);
   if (raw.length < 1) return { steps: [], error: 'no steps in the answer' };
-  if (raw.length > 40) return { steps: [], error: `${raw.length} steps: too many (40 at most)` };
+  if (raw.length > 60) return { steps: [], error: `${raw.length} steps: too many (60 at most)` };
   const steps = []; const problems = [];
   raw.forEach((r, i) => {
     const text = str(r?.text ?? r?.title, 2000).trim();
@@ -387,8 +388,8 @@ export function parseSplit(text, rules = { maxStepMinutes: 30 }) {
  * is bare), each ${max} min, Fable when its words name foundation work; a closing test + report + PR step. Marked for
  * review: it is the fallback when no model can be asked (`split.provider: rules`).
  */
-export function rulesSplit(b, rules = { maxStepMinutes: 30 }) {
-  const max = Math.min(30, rules.maxStepMinutes || 30);
+export function rulesSplit(b, rules = { maxStepMinutes: STEP_MINUTES }) {
+  const max = maxStep(rules);
   const source = `${str(b.detail, 8000)}\n${str(b.origin?.said, 6000)}`.trim() || str(b.title, 300);
   let parts = source.split(/\n+/).map((l) => l.replace(/^\s*(?:[-*•]|\d+[.)])\s*/, '').trim()).filter((l) => l.length >= 12);
   if (parts.length < 2) parts = source.replace(/\s+/g, ' ').split(/(?<=[.!?])\s+(?=[A-Z])/).map((x) => x.trim()).filter((x) => x.length >= 12);
@@ -399,16 +400,15 @@ export function rulesSplit(b, rules = { maxStepMinutes: 30 }) {
   // Fable first so the build switches model once at most (a downgrade needs nobody)
   steps.sort((a, c) => (a.model === 'Fable' ? 0 : 1) - (c.model === 'Fable' ? 0 : 1));
   steps.forEach((s, i) => { s.id = `s${i + 1}`; });
-  steps.push({ id: `s${steps.length + 1}`, text: `Tests green, report _claude/builds/reports/${b.id}.md, THREADS row, commit, push, PR`, model: 'Opus', estimate: `${Math.min(max, 20)} min`, why: '', files: [`_claude/builds/reports/${b.id}.md`, '_claude/THREADS.md'], checks: [] });
+  steps.push({ id: `s${steps.length + 1}`, text: `Tests green, report _claude/builds/reports/${b.id}.md, THREADS row, commit, push, PR`, model: 'Opus', estimate: `${max} min`, why: '', files: [`_claude/builds/reports/${b.id}.md`, '_claude/THREADS.md'], checks: [] });
   return steps;
 }
 
 /** Does this build still need the orchestrator's split? (no steps, or steps over the limit / without estimates) */
-export function needsSplit(b, rules = { maxStepMinutes: 30 }) {
+export function needsSplit(b, rules = { maxStepMinutes: STEP_MINUTES }) {
   if (!b || ['built', 'complete', 'archived', 'failed'].includes(b.status) || b.deleted) return false;
   if (!list(b.steps).length) return true;
-  const max = rules.maxStepMinutes || 30;
-  return list(b.steps).some((s) => !s.done && (estimateMinutes(s.estimate) == null || estimateMinutes(s.estimate) > max));
+  return list(b.steps).some((s) => !s.done && (estimateMinutes(s.estimate) == null || estimateMinutes(s.estimate) > stepLimit(s, rules)));
 }
 
 // ------------------------------------------------------------------ alerts (the console alerts API; types in notify.json)
