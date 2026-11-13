@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T17:20:27.363Z",
+ "updatedAt": "2026-11-13T17:20:38.671Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -22,9 +22,14 @@
    "pr": "",
    "mergedAt": "2026-11-13T17:18:25.170Z",
    "createdAt": "2026-11-13T17:18:25.933Z",
-   "updatedAt": "2026-11-13T17:18:27.485Z",
+   "updatedAt": "2026-11-13T17:20:26Z",
    "builtAt": "2026-11-13T17:18:25.934Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Shipped manifest sm-test-sandbox-sample-shipped-build rev 1 sent to Shipped features (orchestrator): PR #0, 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-13T17:20:26Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [

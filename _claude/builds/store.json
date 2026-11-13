@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4497,
- "updatedAt": "2026-11-13T17:20:27.363Z",
+ "rev": 4498,
+ "updatedAt": "2026-11-13T17:20:38.671Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -188879,9 +188879,14 @@
    "pr": "",
    "mergedAt": "2026-11-13T17:18:25.170Z",
    "createdAt": "2026-11-13T17:18:25.933Z",
-   "updatedAt": "2026-11-13T17:18:27.485Z",
+   "updatedAt": "2026-11-13T17:20:26Z",
    "builtAt": "2026-11-13T17:18:25.934Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Shipped manifest sm-test-sandbox-sample-shipped-build rev 1 sent to Shipped features (orchestrator): PR #0, 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-13T17:20:26Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -188960,10 +188965,24 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "complete",
+    "estimate": "",
+    "source": "project-seed",
+    "planId": "",
+    "createdAt": "2026-11-13T17:18:25.933Z",
+    "builtAt": "2026-11-13T17:18:25.934Z",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwf8qebs04vsb3": "2026-11-13T17:18:25.934Z",
+     "st-mwf8qebs05hlhg": "2026-11-13T17:18:25.934Z",
+     "st-mwf8qebs06onch": "2026-11-13T17:18:25.934Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-13T17:18:25.934Z",
    "rearranged": false,
