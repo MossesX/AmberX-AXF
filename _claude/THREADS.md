@@ -788,9 +788,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 18:43 UTC · `console-app-part-4-console-side-safe` note (all) · orchestrator
-- 2026-11-13 18:43 UTC · `console-android-app-thin-webview-wrapper` → running, note (all) · pipeline
-- 2026-11-13 18:43 UTC · `console-android-app-thin-webview-wrapper` note (all) · orchestrator
 - 2026-11-13 18:43 UTC · `orchestrator-settings-collapsible-split` → running, note (all) · pipeline
 - 2026-11-13 18:43 UTC · `orchestrator-settings-collapsible-split` branch claude/orchestrator-settings-collapsible-split (all) · pipeline
 - 2026-11-13 18:43 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
@@ -1188,6 +1185,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 20:19 UTC · `skins-plugin-merge-main-and-land` PR #647, note (all) · reconciler
 - 2026-11-13 20:20 UTC · `demo-pipelines-guided-walkthrough-live` note (all) · orchestrator
 - 2026-11-13 20:19 UTC · `demo-pipelines-guided-walkthrough-live` s9 done, → built (all) · orchestrator
+- 2026-11-13 20:21 UTC · `token-registry-skin-editor-live-sandbox` → running, note (all) · pipeline
+- 2026-11-13 20:21 UTC · `token-registry-skin-editor-live-sandbox` branch claude/token-registry-skin-editor-live-sandbox (all) · pipeline
+- 2026-11-13 20:21 UTC · `tab-groups-choose-how-many-rows-tabs` note (all) · orchestrator
 
 ## Token passes (log)
 
