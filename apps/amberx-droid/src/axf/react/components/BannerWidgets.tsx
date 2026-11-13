@@ -17,6 +17,7 @@ import { bannerLabel, isBannerHidden, setBannerHide, useBannerHideTick, useKnown
 import { Button, IconButton } from './Controls';
 import { Checkbox, Note, SelectField, Switch, TextField } from './Forms';
 import { Icon } from './Icon';
+import { BadgeShapePicker, hasBadgeShape } from './BadgeShapes';
 import type { DialogMap } from './Overlays';
 
 const SIZE_LABEL: Record<BannerWidgetSize, string> = { icon: 'Icon only', compact: 'Compact', normal: 'Normal', wide: 'Wide' };
@@ -27,7 +28,9 @@ const SIDE_LABEL: Record<string, string> = { left: 'Left', center: 'Centre', rig
 export function bannerItemAttrs(rt: AxfRuntime, key: string): Record<string, unknown> {
   const v = rt.bannerWidgetView(key);
   const max = bannerWidgetCapCss(v.cap);
-  return { 'data-fx-wsize': v.size, 'data-fx-wshow': v.show === 'auto' ? undefined : v.show, ...(max ? { style: { maxWidth: max } } : {}) };
+  // a status picked as a dot draws only its dot: the same as Shows: icon only
+  const show = v.shape === 'dot' && key.startsWith('status:') ? 'icon' : v.show;
+  return { 'data-fx-wsize': v.size, 'data-fx-wshow': show === 'auto' ? undefined : show, 'data-fx-wshape': v.shape ?? undefined, ...(max ? { style: { maxWidth: max } } : {}) };
 }
 
 /**
@@ -171,7 +174,7 @@ export function BannerWidgetsPanel({ initial }: { initial?: string }) {
           {!w.attached && <span className="fx-muted fx-small">nothing to show now</span>}
           {w.attached && !w.view.hidden && !w.shown && <span className="fx-muted fx-small">empty</span>}
           <span className="fx-grow" />
-          <span className="fx-muted fx-small">{SIZE_LABEL[w.view.size]}</span>
+          {hasBadgeShape(w) ? <BadgeShapePicker w={w} size="sm" /> : <span className="fx-muted fx-small">{SIZE_LABEL[w.view.size]}</span>}
           {w.attached && <IconButton icon="chevron-up" label={`Move ${w.label} up`} disabled={i === 0} onClick={() => rt.moveHostItem('banner', w.key, w.at, i - 1)} />}
           {w.attached && <IconButton icon="chevron-down" label={`Move ${w.label} down`} disabled={i === total - 1} onClick={() => rt.moveHostItem('banner', w.key, w.at, i + 1)} />}
           <IconButton icon="settings" label={`Settings for ${w.label}`} aria-expanded={isOpen} onClick={() => setOpen(isOpen ? '' : w.key)} />

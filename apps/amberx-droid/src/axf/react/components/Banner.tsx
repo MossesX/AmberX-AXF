@@ -7,7 +7,7 @@
  */
 import { useEffect, useRef, useState } from 'react';
 import { BANNER_SIDES, badgeToneToken, bannerSurface, clockTickMs, formatClock, type ClockParts, type PlacedAttachment } from '../../core/engines/banner';
-import { bannerWidgetNumber } from '../../core/engines/bannerwidgets';
+import { bannerBadgeShape, bannerWidgetNumber } from '../../core/engines/bannerwidgets';
 import { statusOn, widgetTone } from '../../core/engines/widgets';
 import type { BadgeData, ClockData, CounterData, StatusData } from '../../core/types';
 import { useAxfState, useRuntime } from '../AxfProvider';
@@ -72,8 +72,12 @@ export function BannerWidgetBody({ type, id }: { type: string; id: string }) {
   const rt = useRuntime();
   const asset = rt.registry.get(type as never, id) as { data: unknown } | undefined;
   if (!asset) return null;
-  const { show } = rt.bannerWidgetView(`${type}:${id}`);
-  if (type === 'badge') return <BannerBadge data={asset.data as BadgeData} />;
+  const view = rt.bannerWidgetView(`${type}:${id}`);
+  const { show } = view;
+  // the shape picked in the Widgets picker beats the badge's own (pill / icon / dot)
+  if (type === 'badge') { const d = asset.data as BadgeData; return <BannerBadge data={{ ...d, shape: bannerBadgeShape('badge', d.shape, view) }} />; }
+  // a status picked as a dot: only its dot (the same as Shows: icon only)
+  if (type === 'status' && view.shape === 'dot') return <WidgetView type={type} id={id} host="banner" patch={{ dot: true }} />;
   if (show === 'number' && (type === 'status' || type === 'counter')) return <WidgetNumber type={type} data={asset.data as StatusData} />;
   // icon only: a status has no icon, its dot is what's left
   return <WidgetView type={type} id={id} host="banner" patch={show === 'icon' && type === 'status' ? { dot: true } : undefined} />;

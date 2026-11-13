@@ -16,6 +16,11 @@ export type BannerWidgetSize = typeof BANNER_WIDGET_SIZES[number];
 /** What a widget draws: `auto` is its own mix; `number` is only its count. */
 export const BANNER_WIDGET_SHOWS = ['auto', 'both', 'icon', 'text', 'number'] as const;
 export type BannerWidgetShow = typeof BANNER_WIDGET_SHOWS[number];
+/** A badge's shape (badge@1 `shape`): pill = icon + text, icon = icon only, dot = a coloured dot. */
+export const BANNER_BADGE_SHAPES = ['pill', 'icon', 'dot'] as const;
+export type BannerBadgeShape = typeof BANNER_BADGE_SHAPES[number];
+/** The shapes each badge-like widget type takes: a status has no icon, so it is its text (with its dot) or only its dot. */
+export const BANNER_SHAPE_TYPES: Readonly<Record<string, readonly BannerBadgeShape[]>> = { badge: BANNER_BADGE_SHAPES, status: ['pill', 'dot'] };
 export const BANNER_WIDTH_UNITS = ['px', 'ch'] as const;
 export type BannerWidthUnit = typeof BANNER_WIDTH_UNITS[number];
 
@@ -53,6 +58,8 @@ export interface BannerWidgetPref {
   hidden?: boolean;
   size?: BannerWidgetSize;
   show?: BannerWidgetShow;
+  /** badge and status widgets: the shape picked over the badge's own (BANNER_SHAPE_TYPES) */
+  shape?: BannerBadgeShape;
   maxWidth?: number;
   maxUnit?: BannerWidthUnit;
   priority?: number;
@@ -66,6 +73,8 @@ export interface BannerWidgetView {
   hidden: boolean;
   size: BannerWidgetSize;
   show: BannerWidgetShow;
+  /** the shape picked for a badge or status widget; null = its own (or the type takes no shape) */
+  shape: BannerBadgeShape | null;
   /** the width cap, null = none */
   cap: { n: number; unit: 'space' | BannerWidthUnit } | null;
   priority: number;
@@ -85,6 +94,7 @@ export function normalizeBannerWidgetPref(raw: unknown): BannerWidgetPref {
   if (typeof p.hidden === 'boolean') out.hidden = p.hidden;
   if (has(BANNER_WIDGET_SIZES, p.size)) out.size = p.size;
   if (has(BANNER_WIDGET_SHOWS, p.show)) out.show = p.show;
+  if (has(BANNER_BADGE_SHAPES, p.shape)) out.shape = p.shape;
   const unit: BannerWidthUnit = has(BANNER_WIDTH_UNITS, p.maxUnit) ? p.maxUnit : 'px';
   if (num(p.maxWidth) && p.maxWidth > 0) {
     out.maxWidth = clampInt(p.maxWidth, BANNER_WIDGET_MAX_WIDTH[unit].min, BANNER_WIDGET_MAX_WIDTH[unit].max);
@@ -133,7 +143,19 @@ export function bannerWidgetView(type: string, hint: BannerWidgetHint | null | u
   const spaces = fixed && !picked ? null : BANNER_WIDGET_WIDTH[size];
   const cap: BannerWidgetView['cap'] = num(p.maxWidth) && p.maxWidth > 0 ? { n: p.maxWidth, unit: p.maxUnit ?? 'px' } : spaces === null ? null : { n: spaces, unit: 'space' };
   const priority = num(p.priority) ? p.priority : num(h.priority) ? clampInt(h.priority, BANNER_WIDGET_PRIORITY.min, BANNER_WIDGET_PRIORITY.max) : BANNER_WIDGET_PRIORITY.default;
-  return { hidden: p.hidden ?? h.hidden ?? false, size, show, cap, priority, hideWhenEmpty: p.hideWhenEmpty ?? h.hideWhenEmpty ?? false, overflow: p.overflow ?? h.overflow ?? true };
+  const shapes = BANNER_SHAPE_TYPES[type];
+  const shape = shapes && has(shapes, p.shape) ? p.shape : null;
+  return { hidden: p.hidden ?? h.hidden ?? false, size, show, shape, cap, priority, hideWhenEmpty: p.hideWhenEmpty ?? h.hideWhenEmpty ?? false, overflow: p.overflow ?? h.overflow ?? true };
+}
+
+/** The shapes a widget type can take (empty: it has no shape to pick). */
+export function bannerWidgetShapes(type: string): readonly BannerBadgeShape[] { return BANNER_SHAPE_TYPES[type] ?? []; }
+
+/** The shape a badge or status widget is drawn in: the person's pick, else its own (a status's own is pill). */
+export function bannerBadgeShape(type: string, own: unknown, view: Pick<BannerWidgetView, 'shape'> | null | undefined): BannerBadgeShape {
+  const shapes = bannerWidgetShapes(type);
+  if (view?.shape && shapes.includes(view.shape)) return view.shape;
+  return has(shapes, own) ? own : 'pill';
 }
 
 /** A width cap as a CSS length. */
