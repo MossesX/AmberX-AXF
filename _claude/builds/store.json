@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4143,
- "updatedAt": "2026-11-13T07:24:15.957Z",
+ "rev": 4144,
+ "updatedAt": "2026-11-13T07:26:18.883Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -178526,7 +178526,7 @@
    "pr": "#553",
    "priority": "P0",
    "createdAt": "2026-11-13T06:25:11.720Z",
-   "updatedAt": "2026-11-13T07:24:14.369Z",
+   "updatedAt": "2026-11-13T07:26:17.320Z",
    "builtAt": "",
    "notes": [
     {
@@ -179075,12 +179075,12 @@
      "session": "same",
      "agent": false,
      "skip": true,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T07:26:17.320Z",
      "note": "UI Review no longer a gate",
-     "rev": 3,
+     "rev": 4,
      "createdAt": "2026-11-13T06:50:06.068Z",
-     "updatedAt": "2026-11-13T07:10:49.965Z"
+     "updatedAt": "2026-11-13T07:26:17.534Z"
     },
     {
      "id": "s18",
@@ -179164,7 +179164,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 88,
+   "rev": 89,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
