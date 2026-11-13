@@ -781,8 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 06:48 UTC · `skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga` s3 done (all) · orchestrator
-- 2026-11-13 06:48 UTC · `skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga` note (all) · orchestrator
 - 2026-11-13 06:49 UTC · `skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga` note (all) · orchestrator
 - 2026-11-13 06:50 UTC · `skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga` → pending, note (all) · pipeline
 - 2026-11-13 06:53 UTC · `skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga` → pending, note (all) · pipeline
@@ -1181,6 +1179,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 11:45 UTC · `auto-recover-stuck-builds` note (all) · mcp
 - 2026-11-13 11:47 UTC · `server-watchdog-orchestrator-auto-recovers-stuck` note (all) · orchestrator
 - 2026-11-13 11:48 UTC · `auto-recover-stuck-builds` note (all) · orchestrator
+- 2026-11-13 11:48 UTC · `auto-recover-stuck-builds` → running, note (all) · pipeline
+- 2026-11-13 11:48 UTC · `auto-recover-stuck-builds` branch claude/auto-recover-stuck-builds (all) · pipeline
 
 ## Token passes (log)
 
