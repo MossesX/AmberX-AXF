@@ -3,11 +3,76 @@
 import assert from 'node:assert/strict';
 import { relayAction, relayDecide, relayHosts } from './web/relay.ts';
 import { nextPopup, vetoGone } from './web/popup.ts';
+import { migrateOverlay, OVERLAY_DEFAULTS, OVERLAY_KEYS as O, overlayBridge, overlayConfig, overlayUrlAllowed, overlayVerbUrl, parseOverlayChange, parseOverlayVerb, RETIRED_KEYS as R } from './web/overlay.ts';
 import { ALARM_DEFAULTS, ALARM_KEYS as K, NOTICE_DEFAULTS, noticeConfig, alarmConfig, alarmDue, alarmLength, nativeAlarmConfig, ringingAt, soundAllowed, startSeconds, START_AT, TONES, tonesOf, VIBRATIONS, volumeAt } from './web/alarm.ts';
 
 let n = 0;
 const t = (name: string, f: () => void) => { try { f(); n++; } catch (e) { console.error(`✗ ${name}`); throw e; } };
 const cfgOf = (o: Record<string, unknown>) => alarmConfig((k) => o[k]);
+
+// The overlay's settings: the same defaults and clamps as Java ApprovalOverlayRules.
+t('overlay defaults', () => assert.deepEqual(overlayConfig(() => undefined), OVERLAY_DEFAULTS));
+t('overlay clamps and fallbacks', () => {
+  const c = overlayConfig((k) => ({ [O.top]: 400, [O.size]: 'huge', [O.edge]: 'start', [O.idleOpacity]: '5', [O.shrinkAfterSec]: -2, [O.expand]: 'held' } as Record<string, unknown>)[k]);
+  assert.deepEqual([c.top, c.size, c.edge, c.idleOpacity, c.shrinkAfterSec, c.expand], [90, 'small', 'start', 40, 0, 'held']);
+});
+t('one on/off setting: the retired float / pages settings are gone from the config', () => {
+  const c = overlayConfig(() => undefined) as Record<string, unknown>;
+  assert.equal('idleVisible' in c, false);
+  assert.equal('pages' in c, false);
+});
+t('overlay changes by name (voice and actions)', () => {
+  assert.deepEqual(parseOverlayChange('off', ''), { key: O.on, value: false });
+  assert.deepEqual(parseOverlayChange('size', 'big'), { key: O.size, value: 'large' });
+  assert.deepEqual(parseOverlayChange('position', 'left'), { key: O.edge, value: 'start' });
+  assert.deepEqual(parseOverlayChange('top', '40%'), { key: O.top, value: 40 });
+  assert.deepEqual(parseOverlayChange('opens', 'always'), { key: O.expand, value: 'every' });
+  assert.ok('error' in parseOverlayChange('colour', 'red'));
+  assert.ok('error' in parseOverlayChange('size', 'tiny'));
+  assert.ok('error' in parseOverlayChange('pages', 'chrome'), 'pages is retired');
+  assert.ok('error' in parseOverlayChange('idle', 'off'), 'idleVisible is retired');
+});
+t('settings from the float and pages builds move over once, nothing lost', () => {
+  const runtimeGet = (o: Record<string, unknown>) => (k: string) => (k in o ? o[k] : null); // the runtime answers null for unsaved keys
+  assert.equal(migrateOverlay(runtimeGet({})), null, 'nothing saved: nothing to move');
+  assert.deepEqual(migrateOverlay(runtimeGet({ [R.idleVisible]: false })), { [R.idleVisible]: null, [O.idleOpacity]: 40 }, 'hidden when idle → faintest toolbar');
+  assert.deepEqual(migrateOverlay(runtimeGet({ [R.idleVisible]: true, [R.pages]: 'browser' })), { [R.idleVisible]: null, [R.pages]: null });
+  assert.equal(migrateOverlay(runtimeGet({ [R.idleVisible]: null, [R.pages]: null })), null, 'already moved: runs once');
+});
+t('overlay verbs: overlay.expand, overlay.collapse, overlay.open {url}', () => {
+  assert.deepEqual(parseOverlayVerb('expand'), { verb: 'expand' });
+  assert.deepEqual(parseOverlayVerb('full screen'), { verb: 'expand' });
+  assert.deepEqual(parseOverlayVerb('collapse'), { verb: 'collapse' });
+  assert.deepEqual(parseOverlayVerb('open', 'https://console.amberxai.com/?axf-view=builds'), { verb: 'open', url: 'https://console.amberxai.com/?axf-view=builds' });
+  assert.deepEqual(parseOverlayVerb('open', ''), { verb: 'expand' }, 'open with no page expands on the last one');
+  assert.ok('error' in (parseOverlayVerb('open', 'https://evil.example/') as object), 'only Brett\'s own pages');
+  // the older approvals.overlay words keep working
+  assert.deepEqual(parseOverlayVerb('page', 'https://axhub.amberxai.com/x'), { verb: 'open', url: 'https://axhub.amberxai.com/x' });
+  assert.deepEqual(parseOverlayVerb('page', ''), { verb: 'expand' });
+  assert.deepEqual(parseOverlayVerb('close-page', ''), { verb: 'collapse' });
+  assert.deepEqual(parseOverlayVerb('bar'), { verb: 'bar-open' });
+  assert.deepEqual(parseOverlayVerb('bar', 'off'), { verb: 'bar-close' });
+  assert.equal(parseOverlayVerb('size', 'large'), null, 'a setting, not a verb');
+});
+t('overlay pages: https on amberxai.com only', () => {
+  assert.ok(overlayUrlAllowed('https://console.amberxai.com/'));
+  assert.ok(overlayUrlAllowed('https://amberxai.com/'));
+  assert.ok(!overlayUrlAllowed('http://console.amberxai.com/'));
+  assert.ok(!overlayUrlAllowed('https://amberxai.com.evil.example/'));
+  assert.ok(!overlayUrlAllowed('https://user:pw@console.amberxai.com/'));
+  assert.ok(!overlayUrlAllowed('javascript:alert(1)'));
+});
+t('verbs ride amberx.open_url as a console URL (Java OverlayPageRules.verb reads it)', () => {
+  assert.equal(overlayVerbUrl('expand'), 'https://console.amberxai.com/?axf-overlay=expand');
+  assert.equal(overlayVerbUrl('collapse', '', 'https://c.amberxai.com/'), 'https://c.amberxai.com/?axf-overlay=collapse');
+  assert.equal(overlayVerbUrl('open', 'https://console.amberxai.com/x'), 'https://console.amberxai.com/x');
+});
+t('the overlay browser bridge is found only when it is really there', () => {
+  assert.equal(overlayBridge({}), null);
+  assert.equal(overlayBridge({ AmberxOverlay: { collapse: 1 } }), null);
+  const b = { collapse() {}, open() {}, state: () => '{}' };
+  assert.equal(overlayBridge({ AmberxOverlay: b }), b);
+});
 
 t('defaults', () => assert.deepEqual(cfgOf({}), ALARM_DEFAULTS));
 t('values clamped', () => {

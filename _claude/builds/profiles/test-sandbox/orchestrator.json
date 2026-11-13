@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T17:18:47.904Z",
+ "updatedAt": "2026-11-13T18:41:52.464Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -22,9 +22,14 @@
    "pr": "",
    "mergedAt": "2026-11-13T17:18:25.170Z",
    "createdAt": "2026-11-13T17:18:25.933Z",
-   "updatedAt": "2026-11-13T17:18:27.485Z",
+   "updatedAt": "2026-11-13T17:20:26Z",
    "builtAt": "2026-11-13T17:18:25.934Z",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Shipped manifest sm-test-sandbox-sample-shipped-build rev 1 sent to Shipped features (orchestrator): PR #0, 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-13T17:20:26Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -99,7 +104,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-13T17:18:30.441Z",
-   "updatedAt": "2026-11-13T17:18:30.441Z",
+   "updatedAt": "2026-11-13T17:22:37.364Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -160,63 +165,6 @@
      "doneAt": "",
      "note": "",
      "uid": "st-mwf8qhsg06qnkm",
-     "createdAt": "2026-11-13T17:18:30.442Z"
-    },
-    {
-     "id": "s4-3",
-     "text": "Form fields and validation",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwf8qiq904pxkk",
-     "createdAt": "2026-11-13T17:18:30.442Z"
-    },
-    {
-     "id": "s5-4",
-     "text": "Send to the inbox",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwf8qiq9054t9g",
-     "createdAt": "2026-11-13T17:18:30.442Z"
-    },
-    {
-     "id": "s6-5",
-     "text": "Thank-you screen",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwf8qiqa06p8ct",
      "createdAt": "2026-11-13T17:18:30.442Z"
     }
    ]
