@@ -74,13 +74,13 @@ def read(data_dir: Callable[[], Path], fresh: bool = False) -> dict[str, Any]:
             r = svc.get()
             vals = r.get("values") if isinstance(r, dict) else None
             if isinstance(vals, dict):
-                on, source = vals.get(CLAUDE_KEY) is True, "claude-settings"
+                on, source = vals.get(CLAUDE_KEY) is True, "claude setting"
         except Exception:  # noqa: BLE001 — Claude settings unreadable: fall back to the copy here
             on = None
     if on is None:
         on = _read_mirror(data_dir)
     elif on != _read_mirror(data_dir):
-        _write_mirror(data_dir, on, "claude-settings")
+        _write_mirror(data_dir, on, "claude setting")
     with _lock:
         _cache.update(at=time.monotonic(), on=on, source=source)
     return {"on": on, "source": source}

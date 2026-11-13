@@ -3,11 +3,28 @@
 Brett, Oct 30 2026 (voice, driving): rename the Design packs plugin and make it one all-in-one UI approval plugin.
 Every UI a build makes goes there for his approval, separated by type, with design packs as one section.
 
-**Not a gate (Nov 13 2026, build `remove-ui-review-as-a-gate-…`):** UI Review is optional feedback. No PR is held or
-kept as a draft for it, no build has to submit screenshots or options, and the launcher never waits for a predicted
-look. Approve / Ask changes / Reject and Choices still work and are recorded. Read it anywhere:
-`GET /api/plugins/ui-review/gate` = MCP `ui_review_gate` = `review.mjs gate` = console / voice action `ui-review.gate`
-→ `{ $axf: 'ui-review-gate@1', gate: false, since: '2026-11-13', why }`; Settings → Plugins → UI Review → *Not a gate*.
+**The gate switch (Nov 13 2026, Brett: "UI Review must not be a gate. Add an on/off switch in UI Review settings, 'UI
+Review is a merge gate', default OFF"):** every item is filed so Brett can look, and the switch *UI Review is a merge
+gate* (`uiReview.gate`, Settings → Plugins → UI Review → Merge gate, Simple level) decides whether a review holds a PR.
+Its value is the Claude setting `builds.uiReviewGate` (one value for both; `server/gate.py` keeps a copy for when Claude
+settings is off; a missing value is off, and documents from before the switch migrate to off once). Anyone may turn it
+off; only Brett's own console click turns it on (any other caller gets 403).
+
+- **Off (default):** no PR waits or stays a draft for UI Review; `review.mjs state --pr N --exit-code` exits 0 with
+  state `filed (not a gate)`; `ui-review@1` `held()` is false; the merge queue, auto-land and Merge never ask per PR.
+- **On:** a PR whose items are waiting, have changes asked or are rejected is held (`--exit-code` exits 1, the merge
+  queue says "UI Review is a merge gate …"), unless its items were released.
+
+API, all the same object `{ $axf: 'ui-review-gate@1', on, heldPrs, openReviews, line, who }`:
+REST `GET|POST /api/plugins/ui-review/gate {on}` · MCP `ui_review_gate_get` / `ui_review_gate_set` · CLI
+`review.mjs gate [on|off|status]` · console / voice actions `ui-review.gate` / `uireview.gate [on|off]` · deep link
+`console_show` target `settings:plugins/ui-review`, highlight `#gate`.
+
+**release-held:** `review.mjs release-held [--pr n[,n…]]… [--all] [--dry-run]` = `POST release {prs|all, dryRun}` =
+MCP `ui_review_release` = voice `uireview.release 557 553 | all`. For each PR: its open items become `nonBlocking`
+(still filed, status kept, a history line; `POST release/items` is this half alone), a draft PR is marked ready for
+review, and the PR is added to the merge queue through the command `mergequeue-add` (found in the plugin-commands
+registry). It never merges.
 
 ## One schema: ui-review-item@1 (Nov 1 2026)
 
@@ -165,9 +182,9 @@ an agent spends money. Core `framework/core/ui-predict.mjs` (pure; checks `frame
 ## State for other plugins (`ui-review@1`)
 
 `plugin_services.get("ui-review@1")` → `state(branch, pr)`, `items(branch, pr)`, `submit(fields, shots)`, `gate()`,
-and `hold` / `holds` / `isHeld`, which always answer not held (reason `UI Review is not a gate (Nov 2026)`). HTTP:
-`GET /api/plugins/ui-review/state?branch=&pr=`. CLI: `review.mjs state --pr N` (`--exit-code` is accepted and always
-exits 0). The state is the strictest of the branch's / PR's items, for information: rejected > changes > waiting >
+`gate_on()`, and `held` / `hold` / `holds` / `isHeld`, true only while the gate switch is on. HTTP:
+`GET /api/plugins/ui-review/state?branch=&pr=`. CLI: `review.mjs state --pr N` (`--exit-code` exits 1 only while the
+gate is on and the PR is held). The state is the strictest of the branch's / PR's items, for information: rejected > changes > waiting >
 approved; `none` when nothing was submitted. `holds` is always false.
 
 **Merges never wait for UI Review (Nov 13 2026; it held them Nov 1 – Nov 13):** the push banner, auto-land and the
