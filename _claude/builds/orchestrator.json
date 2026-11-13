@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T01:58:09.730Z",
+ "updatedAt": "2026-11-13T01:58:22.637Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -110366,15 +110366,15 @@
    "title": "Remove the 'no new Android or Kotlin work' rule; build Android twins in parallel",
    "category": "rules",
    "detail": "Brett said: \"just get rid of that rule, period. Get rid of it... right away. It's parallel.\" Remove the standing rule \"No new Android or Kotlin work: record the twin as a deferred gap in framework/spec/PORTING.md\" from the rules brief and every rules file (CLAUDE.md, _claude/rules, shared rules, headless rules brief). Android/Kotlin twins are built in parallel with the web side from now on.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/remove-the-no-new-android-or-kotlin-work-rule-build-android-twins-in-parallel",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-12T21:54:49.855Z",
-   "updatedAt": "2026-11-13T01:58:07.721Z",
+   "updatedAt": "2026-11-13T01:58:15.185Z",
    "builtAt": "",
    "notes": [
     {
@@ -110428,6 +110428,14 @@
     {
      "text": "Launch failed on mossesx-max-: launcher exit 2: claude-headless: --log is a plain file name",
      "at": "2026-11-13T01:00:11.897Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-remove-the-no-new-android-or-kotlin-work-rule-bu--rhonda.",
+     "at": "2026-11-13T01:58:12.100Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-remove-the-no-new-android-or-kotlin-work-rule-bu--rhonda, own login copy)",
+     "at": "2026-11-13T01:58:15.185Z"
     }
    ],
    "approvals": [],
