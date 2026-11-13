@@ -792,7 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 19:30 UTC · `console-app-part-2-native-floating-2` → running, note (all) · pipeline
 - 2026-11-13 19:30 UTC · `console-app-part-2-native-floating-2` branch claude/console-app-part-2-native-floating-2 (all) · pipeline
 - 2026-11-13 19:30 UTC · `console-app-part-2-native-floating-2` note (all) · orchestrator
 - 2026-11-13 19:31 UTC · `console-app-wake-word-voice-listener` → running, note (all) · pipeline
@@ -1192,6 +1191,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 21:19 UTC · `lander-regenerates-generated-files-clash` branch claude/lander-regenerates-generated-files-clash (all) · builds-live
 - 2026-11-13 21:18 UTC · `toolbar-widgets-attach-any-banner-style` s1 done, → running (all) · orchestrator
 - 2026-11-13 21:19 UTC · `toolbar-widgets-attach-any-banner-style` note (all) · orchestrator
+- 2026-11-13 21:20 UTC · `lander-regenerates-generated-files-clash` PR #661 (all) · builds-live
 
 ## Token passes (log)
 
