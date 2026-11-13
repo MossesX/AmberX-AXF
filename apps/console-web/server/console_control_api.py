@@ -8,6 +8,7 @@
     POST /scroll    {dir, amount?, to?, address?}   scroll the active pane (or the pane of `address`)
     POST /plugins/{id}/enable|disable  {force?, by?}  turn a plugin on / off (server-side, no browser needed)
     POST /voice     {text, to?}             a spoken phrase → its command, run; `say` = the line to speak back
+    GET  /audit?limit=&writes=&by=          the audit, newest first (by, reason, policy, outcome, decidedBy)
     GET  /screen                            what is on screen: view, open dialog, fields with values, buttons, headings, text
     GET  /fields                            the fields and buttons of the open dialog / screen (the same, without the text)
     POST /fill      {values: {field: value}, submit?, reason?}   type into several fields, then press `submit` (a button)
@@ -139,8 +140,14 @@ def _shown_value(cmd: dict[str, Any]) -> Any:
     return text[:200]
 
 
+NO_REASON = "(no reason given)"
+
+
 def audit(cmd: dict[str, Any], r: dict[str, Any], by: str, audience: str, policy: dict[str, Any]) -> None:
-    """One line per command: data/audit.jsonl and the console's terminal log."""
+    """One line per command: data/audit.jsonl and the console's terminal log. Every write names who (`by`) and why
+    (`reason`; a write sent without one is marked NO_REASON, a voice command's reason is what was said)."""
+    if not policy.get("readOnly") and not cmd.get("reason"):
+        cmd = {**cmd, "reason": NO_REASON}
     line = {"at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()), "by": by, "audience": audience, "verb": cmd.get("verb"), "address": cmd.get("address"),
             "value": _shown_value(cmd), "query": (cmd.get("query") or {}).get("q"), "reason": cmd.get("reason"), "policy": policy["tag"], "decidedBy": cmd.get("decidedBy"),
             "ok": bool(r.get("ok")), "code": r.get("code"), "source": r.get("source") or ("console" if r.get("client") else None), "client": r.get("client")}
@@ -155,7 +162,8 @@ def audit(cmd: dict[str, Any], r: dict[str, Any], by: str, audience: str, policy
     try:
         import console_context
         if console_context.log is not None:
-            console_context.log("console-control", f"{by}: {cmd.get('verb')} {cmd.get('address') or (cmd.get('query') or {}).get('q') or ''} → {'ok' if r.get('ok') else r.get('code')}")
+            why = f" ({cmd['reason']})" if cmd.get("reason") and not policy.get("readOnly") else ""
+            console_context.log("console-control", f"{by}: {cmd.get('verb')} {cmd.get('address') or (cmd.get('query') or {}).get('q') or ''}{why} → {'ok' if r.get('ok') else r.get('code')}")
     except Exception:  # noqa: BLE001 — tests without the console
         pass
 
@@ -195,6 +203,28 @@ def guarded(cmd: dict[str, Any], by: str, audience: str, grants: set[str], to: s
         r["decidedBy"] = f"owner:{owner}"
     audit({**cmd, **({"decidedBy": f"owner:{owner}"} if decided else {})}, r, by, audience, policy)
     return r
+
+
+def audit_lines(limit: int = 50, writes_only: bool = False, by: str = "") -> list[dict[str, Any]]:
+    """The last `limit` audit lines (newest first): who, what, why, the policy tag, the outcome, a decision's decidedBy."""
+    try:
+        lines = AUDIT_FILE.read_text(encoding="utf-8").splitlines()
+    except OSError:
+        return []
+    out: list[dict[str, Any]] = []
+    for raw in reversed(lines):
+        try:
+            x = json.loads(raw)
+        except ValueError:
+            continue
+        if writes_only and x.get("policy") == "allow":
+            continue
+        if by and str(x.get("by") or "") != by:
+            continue
+        out.append(x)
+        if len(out) >= max(1, min(int(limit), 500)):
+            break
+    return out
 
 
 def _relay() -> Any:
@@ -447,11 +477,11 @@ def voice(text: str, by: str = "voice", audience: str = OWNER, grants: set[str] 
         if hit is None:
             return {"$axf": cc.FRAME, "ok": False, "code": "not_found", "message": f"nothing called {intent['find']['q']}", "heard": text, "intent": intent,
                     "say": f"I couldn't find {intent['find']['q']}.", **({"openUrl": r["openUrl"]} if r.get("openUrl") else {})}
-    cmd = {"$axf": cc.FRAME, **cc.intent_command(intent, hit["address"] if hit else None)}
+    cmd = {"$axf": cc.FRAME, **cc.intent_command(intent, hit["address"] if hit else None), "reason": f"said: {text[:160]}"}
     if hit and hit.get("value") is not None and cmd["verb"] in ("open", "press"):
         cmd["verb"], cmd["value"] = "press", hit["value"]
     ans = guarded(cmd, by, audience, g, to, owner)
-    return {**ans, "heard": text, "intent": intent, "command": {k: v for k, v in cmd.items() if k != "$axf"}, "say": cc.voice_reply(intent, ans, (hit or {}).get("label", ""))}
+    return {**ans, "heard": text, "intent": intent, "command": {k: v for k, v in cmd.items() if k not in ("$axf", "reason")}, "say": cc.voice_reply(intent, ans, (hit or {}).get("label", ""))}
 
 
 def _kinds(v: str | None) -> list[str] | None:
@@ -519,6 +549,11 @@ def router_for(auth: Any) -> APIRouter:
         if not text:
             return fail(cc.ControlError("invalid", "voice needs text", field="text"))
         return answer(await run_in_threadpool(voice, text, str(b.get("by") or "voice")[:80], audience, grants_of(request), str(b.get("to") or "recent"), owner_of(request)))
+
+    @r.get("/audit")
+    async def audit_route(limit: int = 50, writes: bool = False, by: str = "") -> JSONResponse:
+        """The audit (newest first): every console-control command with by, reason, policy, outcome and decidedBy."""
+        return JSONResponse({"$axf": cc.FRAME, "ok": True, "lines": await run_in_threadpool(audit_lines, limit, writes, by)})
 
     @r.get("/screen")
     async def screen_route(request: Request, to: str = "recent", text: bool = True) -> JSONResponse:

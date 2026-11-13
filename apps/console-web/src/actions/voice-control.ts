@@ -51,7 +51,7 @@ export async function runVoice(rt: AxfRuntime, text: string, opts: { speak?: boo
   const command = intentCommand(intent, hit?.address ?? null);
   // a function hit with an argument (a plan feature, a build) runs with it
   if (hit?.value !== undefined && (command.verb === 'open' || command.verb === 'press')) { command.verb = 'press'; command.value = hit.value; }
-  const answer = await executeControl(rt, { ...command, by: 'voice' });
+  const answer = await executeControl(rt, { ...command, by: 'voice', reason: `said: ${heard.slice(0, 160)}` });
   return done({ heard, intent, ...(hit ? { hit } : {}), command, answer, say: voiceReply(intent, answer as unknown as Record<string, unknown>, hit?.label), ok: answer.ok });
 }
 
