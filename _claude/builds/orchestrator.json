@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T12:27:55.982Z",
+ "updatedAt": "2026-11-13T12:28:01.794Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -117267,7 +117267,7 @@
    "title": "Merges are only 'merged' once GitHub confirms: every merge path (console auto-merge, auto-land, github client plugin, server gate, scripts) shows 'Pending GitHub confirmation' right after a merge call, then reads the PR back from GitHub (state MERGED and the merge commit on main) before marking it m",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -117275,8 +117275,8 @@
    "pr": "#569",
    "priority": "P0",
    "createdAt": "2026-11-13T06:21:11.993Z",
-   "updatedAt": "2026-11-13T12:27:47.750Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-13T12:27:49.353Z",
+   "builtAt": "2026-11-13T12:27:49.354Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -117672,8 +117672,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T12:27:49.353Z",
      "note": "",
      "uid": "st-mweleffs0dktki",
      "createdAt": "2026-11-13T06:25:16.456Z"

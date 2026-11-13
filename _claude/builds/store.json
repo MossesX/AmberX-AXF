@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4421,
- "updatedAt": "2026-11-13T12:27:55.982Z",
+ "rev": 4422,
+ "updatedAt": "2026-11-13T12:28:01.794Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -178383,7 +178383,7 @@
    "title": "Merges are only 'merged' once GitHub confirms: every merge path (console auto-merge, auto-land, github client plugin, server gate, scripts) shows 'Pending GitHub confirmation' right after a merge call, then reads the PR back from GitHub (state MERGED and the merge commit on main) before marking it m",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -178391,8 +178391,8 @@
    "pr": "#569",
    "priority": "P0",
    "createdAt": "2026-11-13T06:21:11.993Z",
-   "updatedAt": "2026-11-13T12:27:47.750Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-13T12:27:49.353Z",
+   "builtAt": "2026-11-13T12:27:49.354Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -178860,12 +178860,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T12:27:49.353Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T06:25:16.456Z",
-     "updatedAt": "2026-11-13T06:25:16.456Z"
+     "updatedAt": "2026-11-13T12:27:49.605Z"
     }
    ],
    "profiles": [
