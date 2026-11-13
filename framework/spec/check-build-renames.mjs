@@ -44,10 +44,11 @@ await t('addRename re-points earlier renames and refuses a renamed target', () =
   assert.equal(r.renamesText({ z: 'y', a: 'b' }), '{\n "a": "b",\n "z": "y"\n}\n');
 });
 await t('renameInStore: new record keeps title, steps and notes; the old one is a soft-deleted tombstone', () => {
-  const s = { ...c.emptyStore(), builds: [rec(LONG, { notes: [{ text: 'hello', at: '2026-11-01T00:00:00Z' }] })] };
+  const s = { ...c.emptyStore(), builds: [rec(LONG, { pendingId: LONG, notes: [{ text: 'hello', at: '2026-11-01T00:00:00Z' }] })] };
   const { record, tombstone } = r.renameInStore(s, LONG, 'owner-recognized-everywhere-veto', { pr: '#600', at: '2026-11-13T00:00:00Z' });
   assert.equal(record.title, `Title of ${LONG}`); assert.equal(record.branch, 'claude/owner-recognized-everywhere-veto'); assert.equal(record.pr, '#600');
   assert.equal(record.steps.length, 2); assert.ok(record.notes.some((x) => x.text === 'hello'));
+  assert.equal(record.pendingId, 'owner-recognized-everywhere-veto', 'Pending builds lists it by the new id');
   assert.equal(tombstone.deleted, true); assert.match(tombstone.notes.at(-1).text, /Renamed to owner-recognized-everywhere-veto/);
   assert.equal(c.findBuild(s, 'owner-recognized-everywhere-veto'), record);
   assert.ok(c.validateStore(c.normalizeStore(s)).ok);

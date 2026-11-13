@@ -95,6 +95,7 @@ export function renameInStore(store, from, to, { branch, pr, at = new Date().toI
   rec.id = to;
   rec.branch = typeof branch === 'string' ? branch : str(old.branch) === `claude/${from}` ? `claude/${to}` : str(old.branch);
   if (typeof pr === 'string') rec.pr = pr;
+  if (str(old.pendingId) === from) rec.pendingId = to; // Pending builds lists it by this id
   rec.updatedAt = at;
   rec.notes = [...(rec.notes ?? []), { text: `Renamed from ${from} (build names are at most 40 characters). By ${by}.`, at }];
   builds.splice(builds.indexOf(old), 0, rec);
