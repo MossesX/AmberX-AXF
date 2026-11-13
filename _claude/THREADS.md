@@ -781,8 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 06:58 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` note (all) · console
-- 2026-11-13 06:58 UTC · `remove-ui-review-as-a-gate-no-screenshots-required-prs-never-held-as-draft-for` s1 done (all) · orchestrator
 - 2026-11-13 06:59 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` note (all) · orchestrator
 - 2026-11-13 06:59 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` note (all) · mcp
 - 2026-11-13 06:59 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` note (all) · console
@@ -1181,6 +1179,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 12:09 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` → queued, note (all) · console
 - 2026-11-13 12:09 UTC · `auto-recover-stuck-builds` → pending (all) · mcp
 - 2026-11-13 12:09 UTC · `auto-recover-stuck-builds` → queued, note (all) · console
+- 2026-11-13 12:10 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` → running, note (all) · pipeline
+- 2026-11-13 12:10 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` note (all) · orchestrator
 
 ## Token passes (log)
 
