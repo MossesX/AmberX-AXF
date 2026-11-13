@@ -975,11 +975,24 @@ async def refresh(request: Request) -> JSONResponse:
     return await go(request, cmd)
 
 
+HUB_SEEN = "hub-console-first.json"  # the last time axHub reached this console (the systems check reads it: hooks.mjs)
+
+
+def _hub_seen() -> None:
+    try:
+        DATA_DIR.mkdir(parents=True, exist_ok=True)
+        (DATA_DIR / HUB_SEEN).write_text(json.dumps({"at": _iso(_now())}))
+    except OSError:
+        pass  # only the systems check reads it
+
+
 @router.post("/open-url")
 async def open_url(request: Request) -> JSONResponse:
     """Open one of Brett's own pages in the console: {url, live?, popup?, label?, to?}. live = a console open now or nothing
     (no queue, no wake); popup = a new axHub approval the hub pushed (pops up once, unless pop-ups are off there)."""
     b = await _body(request)
+    if b.get("by") == "axhub":
+        _hub_seen()
     flags = {k: True for k in ("live", "popup") if b.get(k) is True}
     return await go(request, {"op": "act", "target": "console.nav", "path": "here", "action": "open_url", **_to(b, url=b.get("url"), label=b.get("label"), **flags), **_audit(b)})
 

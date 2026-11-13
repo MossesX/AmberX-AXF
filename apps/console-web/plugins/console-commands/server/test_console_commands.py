@@ -470,6 +470,7 @@ eq(awake_got[-1].get("focus"), "queue", "input.focus")
 # console first (drive-live-console-first): open_url reaches the live console; live-only never queues or wakes
 j = client.post("/api/console/open-url", json={"url": "https://axhub.amberxai.com/auth/admin/approvals/c_9", "live": True, "popup": True, "by": "axhub"}).json()
 eq((j["status"], awake_got[-1]["op"], awake_got[-1]["url"], awake_got[-1].get("arg")), ("delivered", "url", "https://axhub.amberxai.com/auth/admin/approvals/c_9", "popup"), f"open-url → the live console ({j.get('delivery')})")
+ok((cc.DATA_DIR / cc.HUB_SEEN).exists(), "a call from axHub is remembered for the systems check")
 eq(client.post("/api/console/open-url", json={"url": "https://evil.com/"}).status_code, 403, "another site is refused")
 eq(client.post("/api/console/open-url", json={"url": "http://console.amberxai.com/"}).status_code, 422, "http is refused")
 eq(client.post("/api/console/open-url", json={}).status_code, 422, "no url is refused")
