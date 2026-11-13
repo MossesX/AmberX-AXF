@@ -39,8 +39,8 @@ export function useRecovery(pollMs = 30_000): { state: RecoveryState | null; err
 }
 
 /** The badge text a build view shows: '' when auto-recovery never touched it. */
-export function badgeOf(b: RecoveryBuild | undefined): { text: string; tone: 'danger' | 'warning' | 'info' } | null {
+export function badgeOf(b: RecoveryBuild | undefined): { text: string; tone: 'danger' | 'warning' | 'accent' } | null {
   if (!b || (!b.attempts && !b.parked)) return null;
   if (b.parked) return { text: `Parked after ${b.attempts} retries`, tone: 'danger' };
-  return { text: `Recovered ${b.attempts}×${b.lastCause ? ` · ${CAUSE_LABEL[b.lastCause] ?? b.lastCause}` : ''}`, tone: b.nextAt && Date.parse(b.nextAt) > Date.now() ? 'warning' : 'info' };
+  return { text: `Recovered ${b.attempts}×${b.lastCause ? ` · ${CAUSE_LABEL[b.lastCause] ?? b.lastCause}` : ''}`, tone: b.nextAt && Date.parse(b.nextAt) > Date.now() ? 'warning' : 'accent' };
 }

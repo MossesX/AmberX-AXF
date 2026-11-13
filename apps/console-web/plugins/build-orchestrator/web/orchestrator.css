@@ -53,3 +53,8 @@ button.oc-model { cursor: pointer }
 .oc-rec-settings { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg) }
 .oc-rec-row { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--fx-dens-gap-md) }
 .oc-rec-row > .fx-field { flex: 1 1 calc(var(--fx-font-size) * 14); min-width: 0 }
+.oc-rec-log { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg) }
+.oc-rec-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--fx-dens-gap-md) }
+.oc-rec-head > p { margin: 0; display: inline-flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-xs) }
+.oc-rec-tools { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md) }
+.oc-rec-red { color: var(--fx-danger) }

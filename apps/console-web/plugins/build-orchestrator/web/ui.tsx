@@ -9,6 +9,8 @@ import pricing from '@console/axf/schemas/model-pricing.json';
 import { DataGrid, RowHookButtons, registerRowRefTarget, type GridColumn, type GridGroup, type GridSort } from '@console/axf/libs/datagrid';
 import { PipelineTab, type PipelineView } from './pipeline';
 import { buildRowSelector, settleFocus, useFocusedBuild } from './focus';
+import { RecoveryBadge, RecoveryLog } from './RecoveryLog';
+import { useRecovery } from './recovery';
 import './orchestrator.css';
 
 /*
@@ -45,7 +47,7 @@ export const TABS = [
   { id: 'pending', label: 'Pending', icon: 'clock' }, { id: 'queue', label: 'Queue', icon: 'list' }, { id: 'active', label: 'Active', icon: 'play' },
   { id: 'incomplete', label: 'Incomplete', icon: 'pause' }, { id: 'complete', label: 'Complete', icon: 'check-circle' }, { id: 'errors', label: 'Errors', icon: 'alert' },
   { id: 'archive', label: 'Archive', icon: 'package' }, { id: 'deleted', label: 'Deleted', icon: 'trash' },
-  { id: 'accounts', label: 'Accounts', icon: 'user' }, { id: 'builds', label: 'All builds', icon: 'grid' }, { id: 'approvals', label: 'Approvals', icon: 'check' }, { id: 'rules', label: 'Rules', icon: 'settings' },
+  { id: 'accounts', label: 'Accounts', icon: 'user' }, { id: 'recovery', label: 'Recovery', icon: 'refresh' }, { id: 'builds', label: 'All builds', icon: 'grid' }, { id: 'approvals', label: 'Approvals', icon: 'check' }, { id: 'rules', label: 'Rules', icon: 'settings' },
 ] as const;
 export type Tab = (typeof TABS)[number]['id'];
 const PIPELINE_VIEWS = new Set<string>(['pending', 'queue', 'active', 'incomplete', 'complete', 'errors', 'archive', 'deleted', 'accounts']);
@@ -96,6 +98,7 @@ export function OrchestratorPage() {
       {error && <div className="pl-note is-warn"><Icon name="alert" size={14} />{error}</div>}
       <TabGroup id="build-orchestrator.tabs" label="Build orchestrator" value={tab} onChange={setTab} tabs={TABS.map((t) => ({ value: t.id, label: t.label, icon: t.icon, badge: t.id === 'approvals' && waiting > 0 ? waiting : undefined }))} />
       {PIPELINE_VIEWS.has(tab) && <PipelineTab key={tab} api={api} log={log} view={tab as PipelineView} />}
+      {tab === 'recovery' && <RecoveryLog />}
       {tab === 'builds' && <BuildsTab state={state} busy={busy} act={act} />}
       {tab === 'approvals' && <ApprovalsTab state={state} busy={busy} act={act} />}
       {tab === 'rules' && <RulesTab rules={state.rules} busy={busy} act={act} />}
@@ -439,6 +442,8 @@ function BuildGrid({ builds, rules, busy, act }: { builds: Build[]; rules: Rules
   const [sort, setSort] = useState<GridSort>(() => consoleApi.readLocal<GridSort>('orch-grid-sort', null));
   const [hidden, setHidden] = useState<string[]>(() => consoleApi.readLocal<string[]>('orch-grid-hidden', ['left']));
   const [stepHidden, setStepHidden] = useState<string[]>(() => consoleApi.readLocal<string[]>('orch-step-hidden', ['doneAt']));
+  const recovered = useRecovery(60_000).state?.builds;
+  const recOf = useMemo(() => new Map((recovered ?? []).map((r) => [r.id, r])), [recovered]);
   const [open, setOpen] = useState<string[]>([]);
   const [collapsed, setCollapsed] = useState<string[]>([]);
   // a build asked for: its row expands, stays selected (highlighted), scrolls into view and flashes once it is drawn
@@ -464,7 +469,7 @@ function BuildGrid({ builds, rules, busy, act }: { builds: Build[]; rules: Rules
   }, [builds, fig, collapsed]);
   const cols: GridColumn<Build>[] = [
     { id: 'title', label: 'Build', width: 'minmax(calc(var(--fx-font-size) * 16), calc(var(--fx-font-size) * 25))', fixed: true, sortable: true, sortValue: (b) => b.title.toLowerCase(),
-      render: (b) => <span className="oc-cell-title" title={b.detail || b.title}><strong><AgentAvatar inText={`${b.id}\n${b.detail}`} size="small" /> {b.title}{b.hidden && <span className="fx-muted fx-small"> · hidden</span>}</strong>{summary(b) && <span className="fx-small fx-muted">{summary(b)}</span>}</span> },
+      render: (b) => <span className="oc-cell-title" title={b.detail || b.title}><strong><AgentAvatar inText={`${b.id}\n${b.detail}`} size="small" /> {b.title}{b.hidden && <span className="fx-muted fx-small"> · hidden</span>}</strong><RecoveryBadge build={recOf.get(b.id)} />{summary(b) && <span className="fx-small fx-muted">{summary(b)}</span>}</span> },
     { id: 'priority', label: 'Priority', width: 'calc(var(--fx-font-size) * 9)', render: (b) => <PriorityTag build={b.id} /> },
     { id: 'status', label: 'Status', width: 'calc(var(--fx-font-size) * 7.5)', sortable: true, sortValue: (b) => core.STATUSES.indexOf(b.status),
       render: (b) => <span className={`pd-badge oc-badge is-${b.status}`}>{(core.STATUS_LABEL as Record<string, string>)[b.status]}</span> },
