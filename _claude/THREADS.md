@@ -788,10 +788,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 18:16 UTC · `vps-builds-get-console-token-ui-review` → running, note (all) · pipeline
-- 2026-11-13 18:16 UTC · `vps-builds-get-console-token-ui-review` branch claude/vps-builds-get-console-token-ui-review (all) · pipeline
-- 2026-11-13 18:17 UTC · `vps-builds-get-console-token-ui-review` note (all) · orchestrator
-- 2026-11-13 18:17 UTC · `full-voice-api-control-type-fields-press` s6 done (all) · orchestrator
 - 2026-11-13 18:17 UTC · `new-asset-type-animated-expanding-row` → running, note (all) · pipeline
 - 2026-11-13 18:17 UTC · `new-asset-type-animated-expanding-row` branch claude/new-asset-type-animated-expanding-row (all) · pipeline
 - 2026-11-13 18:17 UTC · `new-asset-type-animated-expanding-row` note (all) · orchestrator
@@ -1188,6 +1184,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 19:55 UTC · `icon-map-icon-packs-every-icon-badge-app` → queued, note (all) · console
 - 2026-11-13 19:55 UTC · `skin-config-panel-merge-main-and-land` note (all) · orchestrator
 - 2026-11-13 19:56 UTC · `per-instance-settings-picker-merge-main` s3 done, → built (all) · orchestrator
+- 2026-11-13 19:56 UTC · `skins-plugin-merge-main-and-land` → running, note (all) · pipeline
+- 2026-11-13 19:56 UTC · `skins-plugin-merge-main-and-land` branch claude/skins-plugin-merge-main-and-land (all) · pipeline
+- 2026-11-13 19:56 UTC · `skins-plugin-merge-main-and-land` note (all) · orchestrator
+- 2026-11-13 19:56 UTC · `per-instance-settings-picker-merge-main` note (all) · orchestrator
 
 ## Token passes (log)
 

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T19:56:59.333Z",
+ "updatedAt": "2026-11-13T19:57:19.273Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -131307,8 +131307,8 @@
    "pr": "#642",
    "priority": "P0",
    "createdAt": "2026-11-13T19:37:14.557Z",
-   "updatedAt": "2026-11-13T19:56:08.030Z",
-   "builtAt": "2026-11-13T19:56:08.030Z",
+   "updatedAt": "2026-11-13T19:56:25.055Z",
+   "builtAt": "2026-11-13T19:56:25.055Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -131329,6 +131329,10 @@
     {
      "text": "Follow-up needed (pin Fable: chrome-settings@1 contract + renderers): (1) per-instance transparency is not in any chrome kind yet. Add an instanceOnly 'transparency' field (0-90%) to every CHROME_TYPES kind like tapConfirm, regenerate chrome-settings fixtures, and apply it in the tab group, toolbar, nav, app menu, banner and context menu renderers through an --fx-* opacity token. Only TabGroup reads instance overrides today. (2) Dialogs are not a chrome kind: add 'dialog' with its own settings-ui asset (framework + console/molly/axhub copies) so each dialog gets its own settings interface and transparency. Too big for one 10-min Opus step; this build only merges and lands the picker.",
      "at": "2026-11-13T19:55:12.571Z"
+    },
+    {
+     "text": "Headless run axf-per-instance-settings-picker-merge-main--lenny: brief only · start 11.3K tokens ($0.03) · cost $1.14 · 51 turns · 6 tools, MCP none",
+     "at": "2026-11-13T19:56:25.055Z"
     }
    ],
    "approvals": [],
@@ -131535,15 +131539,15 @@
    "title": "Skins plugin: merge main and land",
    "category": "",
    "detail": "Branch claude/skins-plugin-own-removable-console clashed with main in framework/spec/gen-fixtures.mts (merge aborted, main untouched). Merge origin/main and keep both sides' fixture entries, regenerate fixtures, run tests, push, then land on main. The Skins plugin is its own removable console plugin and screen for changing skins.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/skins-plugin-merge-main-and-land",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T19:47:44.815Z",
-   "updatedAt": "2026-11-13T19:55:56.292Z",
+   "updatedAt": "2026-11-13T19:56:20.761Z",
    "builtAt": "",
    "notes": [
     {
@@ -131557,6 +131561,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"5c4edfd5-147d-4274-a380-ce2150667637\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-13T19:49:27.897Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-skins-plugin-merge-main-and-land--rhonda.",
+     "at": "2026-11-13T19:56:15.514Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-skins-plugin-merge-main-and-land--rhonda, own login copy)",
+     "at": "2026-11-13T19:56:20.761Z"
     }
    ],
    "approvals": [],
