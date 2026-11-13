@@ -409,7 +409,14 @@
         "rememberLast": "boolean, default false — the row reopens on the tab it was on last time (per device)"
       },
       "hideable": true,
-      "optional": true
+      "optional": true,
+      "widgets": {
+        "_doc": "Widget host (toolbar-widgets, Nov 13 2026): a tab row takes the same widget types as a toolbar, at its start or end; what a person adds is a setting per row (rt.addHostWidget), never written into the asset.",
+        "sides": [
+          "start",
+          "end"
+        ]
+      }
     },
     "dialog": {
       "label": "Dialog",

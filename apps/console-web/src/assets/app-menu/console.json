@@ -586,6 +586,14 @@
             "order": 21
           },
           {
+            "id": "toolbar-widgets",
+            "label": "Toolbar widgets…",
+            "icon": "layers",
+            "action": "toolbar.widgets:app",
+            "requires": "assets.swap",
+            "order": 21
+          },
+          {
             "id": "appearance",
             "label": "Appearance settings",
             "icon": "settings",

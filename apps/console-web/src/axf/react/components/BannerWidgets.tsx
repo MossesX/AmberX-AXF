@@ -9,7 +9,7 @@
 import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties, type PointerEvent, type ReactNode, type RefObject } from 'react';
 import { createPortal } from 'react-dom';
 import { BANNER_SIDES, type PlacedAttachment } from '../../core/engines/banner';
-import { BANNER_WIDGET_MAX_WIDTH, BANNER_WIDGET_PRIORITY, BANNER_WIDGET_SHOWS, BANNER_WIDGET_SIZES, bannerWidgetCapCss, overflowWidgets, type BannerWidgetShow, type BannerWidgetSize, type BannerWidthUnit } from '../../core/engines/bannerwidgets';
+import { BANNER_WIDGET_MAX_WIDTH, BANNER_WIDGET_PRIORITY, BANNER_WIDGET_SHOWS, BANNER_WIDGET_SIZES, bannerWidgetCapCss, overflowWidgets, type BannerWidgetPref, type BannerWidgetShow, type BannerWidgetSize, type BannerWidgetView, type BannerWidthUnit } from '../../core/engines/bannerwidgets';
 import { BANNER_WIDGETS_DIALOG, type AxfRuntime, type BannerWidget } from '../../core/runtime';
 import { useAxfState, useRuntime } from '../AxfProvider';
 import { Banner } from './Banner';
@@ -34,29 +34,36 @@ export function bannerItemAttrs(rt: AxfRuntime, key: string): Record<string, unk
  * Which widgets don't fit on a bar right now. Widths are kept from when each one was last drawn, so a widget in the ⋯ menu
  * comes back as soon as the bar has room for it, and the answer doesn't depend on what is drawn this moment.
  */
-export function useBannerOverflow(root: RefObject<HTMLElement | null>, items: readonly Pick<PlacedAttachment, 'key'>[], on: boolean): string[] {
+export function useBannerOverflow(root: RefObject<HTMLElement | null>, items: readonly Pick<PlacedAttachment, 'key'>[], on: boolean, opts?: HostOverflowOptions): string[] {
   const rt = useRuntime();
   const widths = useRef(new Map<string, number>());
   const [out, setOut] = useState<string[]>([]);
-  const rank = items.map((p) => { const v = rt.bannerWidgetView(p.key); return `${p.key}=${v.priority}${v.overflow ? '' : '!'}`; }).join('|');
+  const view = opts?.view ?? ((key: string) => rt.bannerWidgetView(key));
+  const attr = opts?.attr ?? 'data-axf-banner-item';
+  const rank = items.map((p) => { const v = view(p.key); return `${p.key}=${v.priority}${v.overflow ? '' : '!'}`; }).join('|');
   useLayoutEffect(() => {
     const el = root.current;
     if (!el || !on || typeof ResizeObserver === 'undefined') { setOut((p) => (p.length ? [] : p)); return; }
-    const nodes = () => [...el.querySelectorAll<HTMLElement>('[data-axf-banner-item]')];
+    const nodes = () => [...el.querySelectorAll<HTMLElement>(`[${attr}]`)];
     const measure = () => {
       for (const n of nodes()) {
-        const k = n.getAttribute('data-axf-banner-item')!;
+        const k = n.getAttribute(attr)!;
         // the search bar gives way first (down to its minimum), so only that much counts as taken
         const search = n.querySelector<HTMLElement>('.fx-widget-search');
         widths.current.set(k, search ? parseFloat(getComputedStyle(search).minWidth) || n.offsetWidth : n.offsetWidth);
       }
       const cs = getComputedStyle(el);
-      const side = el.querySelector<HTMLElement>('.fx-banner__side');
-      const gap = side ? parseFloat(getComputedStyle(side).columnGap) || 0 : 0;
-      const logo = el.querySelector<HTMLElement>('.fx-banner__logo')?.offsetWidth ?? 0;
-      const available = el.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - (logo ? logo + gap : 0);
+      const gap = parseFloat(cs.columnGap) || 0;
+      let available: number;
+      if (opts?.available) available = opts.available(el, gap);
+      else {
+        const side = el.querySelector<HTMLElement>('.fx-banner__side');
+        const sideGap = side ? parseFloat(getComputedStyle(side).columnGap) || 0 : 0;
+        const logo = el.querySelector<HTMLElement>('.fx-banner__logo')?.offsetWidth ?? 0;
+        available = el.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) - (logo ? logo + sideGap : 0);
+      }
       const list = items
-        .map((p) => { const v = rt.bannerWidgetView(p.key); return { key: p.key, width: widths.current.get(p.key) ?? 0, priority: v.priority, overflow: v.overflow }; })
+        .map((p) => { const v = view(p.key); return { key: p.key, width: widths.current.get(p.key) ?? 0, priority: v.priority, overflow: v.overflow }; })
         .filter((i) => i.width > 0);
       const next = overflowWidgets(list, available, el.clientHeight, gap);
       setOut((p) => (p.join('|') === next.join('|') ? p : next));
@@ -66,12 +73,20 @@ export function useBannerOverflow(root: RefObject<HTMLElement | null>, items: re
     for (const n of nodes()) ro.observe(n);
     measure();
     return () => ro.disconnect();
-  }, [root, rt, rank, on, out.join('|')]);
+  }, [root, rt, rank, on, out.join('|'), attr]);
   return on ? out : [];
 }
 
+/** How another host (a toolbar, a tab row) measures its widgets: how each is drawn, the item attribute, the room it has. */
+export interface HostOverflowOptions {
+  view?: (key: string) => Pick<BannerWidgetView, 'priority' | 'overflow'>;
+  attr?: string;
+  /** the width the widgets may take on this host (the bar minus padding and everything that isn't a widget) */
+  available?: (el: HTMLElement, gap: number) => number;
+}
+
 /** The ⋯ button and its menu: the widgets that didn't fit, still live, nothing lost. */
-export function BannerMore({ keys, draw }: { keys: string[]; draw: (key: string) => ReactNode }) {
+export function BannerMore({ keys, draw, className = 'fx-banner__item fx-banner__more-btn', target = 'banner', what = 'banner widget' }: { keys: string[]; draw: (key: string) => ReactNode; className?: string; target?: string; what?: string }) {
   const btn = useRef<HTMLSpanElement>(null);
   const box = useRef<HTMLDivElement>(null);
   const [pos, setPos] = useState<CSSProperties | null>(null);
@@ -91,10 +106,10 @@ export function BannerMore({ keys, draw }: { keys: string[]; draw: (key: string)
     setPos({ top: r.bottom, right: Math.max(0, document.documentElement.clientWidth - r.right) });
   };
   return (
-    <span ref={btn} className="fx-banner__item fx-banner__more-btn">
-      <IconButton icon="more" label={`${keys.length} more banner widget${keys.length === 1 ? '' : 's'}`} title={`${keys.length} more`} aria-expanded={!!pos} onClick={toggle} />
+    <span ref={btn} className={className}>
+      <IconButton icon="more" label={`${keys.length} more ${what}${keys.length === 1 ? '' : 's'}`} title={`${keys.length} more`} aria-expanded={!!pos} onClick={toggle} />
       {pos && createPortal(
-        <div ref={box} className="fx-popover fx-banner__more" style={pos} data-fx-overlay="" data-fx-ctx-target="banner" data-axf-search="off">
+        <div ref={box} className="fx-popover fx-banner__more" style={pos} data-fx-overlay="" data-fx-ctx-target={target} data-axf-search="off">
           {keys.map((k) => <div key={k} className="fx-banner__more-item" data-axf-banner-more={k}>{draw(k)}</div>)}
         </div>,
         document.body,
@@ -103,11 +118,15 @@ export function BannerMore({ keys, draw }: { keys: string[]; draw: (key: string)
   );
 }
 
-/** Size, what it shows, width, hide when empty, ⋯ menu, priority and region for one widget. */
+/** Size, what it shows, width, hide when empty, ⋯ menu, priority and region for one banner widget. */
 function WidgetFields({ w }: { w: BannerWidget }) {
   const rt = useRuntime();
-  const saved = rt.bannerWidgetPrefs()[w.key] ?? {};
-  const set = (patch: Record<string, unknown>) => rt.setBannerWidget(w.key, patch);
+  return <WidgetFieldsFor w={w} saved={rt.bannerWidgetPrefs()[w.key] ?? {}} sides={BANNER_SIDES} sideLabel={(s) => SIDE_LABEL[s] ?? s}
+    set={(patch) => rt.setBannerWidget(w.key, patch)} move={(side) => rt.moveHostItem('banner', w.key, side, 999)} reset={() => rt.dispatch(`banner.widget:${w.key}:reset`)} />;
+}
+
+/** The same fields for a widget on any host (the banner, a toolbar, a tab row): the host says where they are saved and how a move happens. */
+export function WidgetFieldsFor({ w, saved, sides, sideLabel, set, move, reset }: { w: BannerWidget; saved: BannerWidgetPref; sides: readonly string[]; sideLabel: (side: string) => string; set: (patch: Record<string, unknown>) => void; move: (side: string) => void; reset: () => void }) {
   const unit: BannerWidthUnit = saved.maxUnit ?? 'px';
   const [text, setText] = useState(saved.maxWidth ? String(saved.maxWidth) : '');
   useEffect(() => { setText(saved.maxWidth ? String(saved.maxWidth) : ''); }, [saved.maxWidth]);
@@ -124,11 +143,11 @@ function WidgetFields({ w }: { w: BannerWidget }) {
       <SelectField label="Shows" value={saved.show ?? 'auto'} options={BANNER_WIDGET_SHOWS.map((s) => ({ value: s, label: SHOW_LABEL[s] }))} onChange={(v) => set({ show: v })} />
       <TextField label="Max width" value={text} placeholder="By size" hint={`${limits.min} to ${limits.max}, empty = by size`} onChange={commit} />
       <SelectField label="Width in" value={unit} options={[{ value: 'px', label: 'Pixels' }, { value: 'ch', label: 'Characters' }]} onChange={(v) => { if (saved.maxWidth) set({ maxWidth: Math.max(BANNER_WIDGET_MAX_WIDTH[v as BannerWidthUnit].min, Math.min(BANNER_WIDGET_MAX_WIDTH[v as BannerWidthUnit].max, saved.maxWidth)), maxUnit: v }); else set({ maxUnit: null }); }} />
-      <SelectField label="Region" value={w.at} options={BANNER_SIDES.map((s) => ({ value: s, label: SIDE_LABEL[s] ?? s }))} onChange={(v) => { if (w.attached) rt.moveHostItem('banner', w.key, v, 999); }} disabled={!w.attached} />
+      <SelectField label="Region" value={w.at} options={sides.map((s) => ({ value: s, label: sideLabel(s) }))} onChange={(v) => { if (w.attached) move(v); }} disabled={!w.attached} />
       <SelectField label="Priority" hint="Low goes into ⋯ first" value={String(w.view.priority)} options={Array.from({ length: BANNER_WIDGET_PRIORITY.max }, (_, i) => ({ value: String(i + 1), label: String(i + 1) }))} onChange={(v) => set({ priority: Number(v) })} />
       <Switch className="fx-banner-widgets__wide" label="Hide when there's nothing to report" checked={w.view.hideWhenEmpty} onChange={(v) => set({ hideWhenEmpty: v })} />
       <Switch className="fx-banner-widgets__wide" label="Move into the ⋯ menu when space runs out" checked={w.view.overflow} onChange={(v) => set({ overflow: v })} />
-      <div className="fx-row fx-banner-widgets__wide"><Button size="sm" tone="ghost" icon="undo" onClick={() => rt.dispatch(`banner.widget:${w.key}:reset`)}>Back to default</Button></div>
+      <div className="fx-row fx-banner-widgets__wide"><Button size="sm" tone="ghost" icon="undo" onClick={reset}>Back to default</Button></div>
     </div>
   );
 }

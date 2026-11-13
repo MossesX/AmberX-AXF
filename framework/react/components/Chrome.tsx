@@ -9,9 +9,7 @@ import { AppMenuDropdown } from './AppMenu';
 import { HelpModeButton } from './Help';
 import { LiveSearch } from './Search';
 import type { ViewMap } from '../AppShell';
-import { WidgetView } from './Widgets';
-import { ArrangeBar, arrangedSide, useArrange } from './Arrange';
-import type { PlacedAttachment } from '../../core/engines/widgets';
+import { useHostWidgets } from './HostWidgets';
 import type { CompiledMenuItem } from '../../core/engines/appmenu';
 import { controlSlug } from '../controlTargets';
 
@@ -91,13 +89,12 @@ export function Toolbar({ views }: { views: ViewMap }) {
   const tb = useAsset('toolbar');
   useAxfState();
   const [q, setQ] = useState('');
-  // Widgets (clock, search bar) at the toolbar's start / end: its own `widgets` + run-time ones (core/engines/widgets.ts).
-  const widgets = rt.toolbarWidgets();
-  // Arrange mode (right-click the toolbar → Arrange widgets): drag a widget, it snaps between the others (Arrange.tsx).
-  const arrange = useArrange('toolbar', widgets);
+  const root = useRef<HTMLDivElement>(null);
+  // Widgets at the toolbar's start / end: its own `widgets`, run-time ones and what the person added (HostWidgets.tsx:
+  // right-click → Widgets…; arrange mode drags them; what doesn't fit goes into ⋯).
+  const hw = useHostWidgets('toolbar', 'app', root);
   const brand = useBrandPlace('toolbar');
   const brandHost = brandHostProps(brand);
-  const drawWidget = (w: PlacedAttachment, i: number) => arrange.item(w, i, 'fx-toolbar__widget', { 'data-axf-toolbar-widget': w.key, 'data-axf-origin': w.origin }, <WidgetView type={w.type} id={w.id} host="toolbar" />);
   // `collapsible` toolbars fold to a thin handle; the fold is a per-device setting (axf.toolbar.collapsed).
   const collapsible = tb.data.collapsible === true;
   const collapsed = rt.toolbarCollapsed();
@@ -133,12 +130,12 @@ export function Toolbar({ views }: { views: ViewMap }) {
   };
 
   return (
-    <div className={`fx-toolbar fx-toolbar--${tb.data.variant}${arrange.on ? ' is-arranging' : ''} ${brandHost.className}`.trim()} data-align={tb.data.align} role="toolbar" aria-label="Toolbar" data-axf-toolbar="app" data-fx-ctx-target="toolbar" data-fx-ctx-payload="app" data-axf-arrange-host="toolbar" data-fx-brand-mode={brandHost['data-fx-brand-mode']}>
-      <ArrangeBar host="toolbar" label="toolbar" />
+    <div ref={root} className={`fx-toolbar fx-toolbar--${tb.data.variant}${hw.on ? ' is-arranging' : ''} ${brandHost.className}`.trim()} data-align={tb.data.align} role="toolbar" aria-label="Toolbar" data-axf-toolbar="app" data-fx-ctx-target="toolbar" data-fx-ctx-payload="app" {...hw.rootProps} data-fx-brand-mode={brandHost['data-fx-brand-mode']}>
+      {hw.bar}
       {brand?.svg && <span className="fx-toolbar__brand"><BrandMark slot="toolbar" height={20} /></span>}
-      {(arrange.on || widgets.start.length > 0) && <span className="fx-toolbar__widgets is-start" {...arrange.sideProps('start')}>{arrangedSide(arrange, 'start', widgets.start, drawWidget)}</span>}
+      {hw.start}
       {tb.data.groups.map((g) => <ToolbarGroupView key={g.id} group={g} variant={tb.data.variant} />)}
-      {(arrange.on || widgets.end.length > 0) && <span className="fx-toolbar__widgets is-end" {...arrange.sideProps('end')}>{arrangedSide(arrange, 'end', widgets.end, drawWidget)}</span>}
+      {hw.end}
       {tb.data.showSearch && tb.data.search?.live && <LiveSearch config={tb.data.search} />}
       {tb.data.showSearch && !tb.data.search?.live && (
         <form className="fx-search" onSubmit={run} role="search">
@@ -216,18 +213,24 @@ function ToolbarButton({ item: it, variant, lockedNote }: { item: ToolbarItem; v
 
 /**
  * A toolbar drawn from a named toolbar asset rather than the app's active one: a page's own toolbar (the settings
- * interface names one in its `toolbar` field). Same items, look and gating as the app toolbar; no widgets or fold.
+ * interface names one in its `toolbar` field). Same items, look and gating as the app toolbar; no fold. It hosts
+ * widgets like every toolbar (its asset's own `widgets` and what the person adds to this one: instance = the asset id).
  * `search` fills the asset's search spot when it has `showSearch`. Null when the asset isn't registered.
  */
 export function AssetToolbar({ id, search, label = 'Page toolbar' }: { id: string; search?: ReactNode; label?: string }) {
   const rt = useRuntime();
   useAxfState();
+  const root = useRef<HTMLDivElement>(null);
+  const hw = useHostWidgets('toolbar', id, root);
   const tb = rt.registry.list('toolbar').find((a) => a.id === id);
   if (!tb) return null;
   const data = tb.data as { variant: string; align?: string; showSearch?: boolean; groups: ToolbarGroup[] };
   return (
-    <div className={`fx-toolbar fx-toolbar--${data.variant}`} data-align={data.align} role="toolbar" aria-label={label} data-axf-toolbar-asset={tb.id}>
+    <div ref={root} className={`fx-toolbar fx-toolbar--${data.variant}${hw.on ? ' is-arranging' : ''}`} data-align={data.align} role="toolbar" aria-label={label} data-axf-toolbar-asset={tb.id} {...hw.rootProps}>
+      {hw.bar}
+      {hw.start}
       {data.groups.map((g) => <ToolbarGroupView key={g.id} group={g} variant={data.variant} />)}
+      {hw.end}
       {data.showSearch && search}
     </div>
   );

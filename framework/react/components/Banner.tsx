@@ -7,7 +7,7 @@
  */
 import { useEffect, useRef, useState } from 'react';
 import { BANNER_SIDES, badgeToneToken, bannerSurface, clockTickMs, formatClock, type ClockParts, type PlacedAttachment } from '../../core/engines/banner';
-import { bannerWidgetNumber } from '../../core/engines/bannerwidgets';
+import { bannerWidgetNumber, type BannerWidgetShow } from '../../core/engines/bannerwidgets';
 import { statusOn, widgetTone } from '../../core/engines/widgets';
 import type { BadgeData, ClockData, CounterData, StatusData } from '../../core/types';
 import { useAxfState, useRuntime } from '../AxfProvider';
@@ -68,16 +68,16 @@ function WidgetNumber({ type, data }: { type: string; data: Partial<StatusData &
   return <Tap action={data.link} className="fx-widget-counter" title={type === 'status' ? (on ? data.onLabel : data.offLabel) : data.label}><span className="fx-widget-counter__num" data-tone={tone}>{text}</span></Tap>;
 }
 
-/** One banner widget as the person set it up (bar, ⋯ menu, a host's banner strip). */
-export function BannerWidgetBody({ type, id }: { type: string; id: string }) {
+/** One banner widget as the person set it up (bar, ⋯ menu, a host's banner strip). A toolbar or tab row passes its own `show` and `host`. */
+export function BannerWidgetBody({ type, id, show: shown, host = 'banner' }: { type: string; id: string; show?: BannerWidgetShow; host?: string }) {
   const rt = useRuntime();
   const asset = rt.registry.get(type as never, id) as { data: unknown } | undefined;
   if (!asset) return null;
-  const { show } = rt.bannerWidgetView(`${type}:${id}`);
+  const show = shown ?? rt.bannerWidgetView(`${type}:${id}`).show;
   if (type === 'badge') return <BannerBadge data={asset.data as BadgeData} id={id} />;
   if (show === 'number' && (type === 'status' || type === 'counter')) return <WidgetNumber type={type} data={asset.data as StatusData} />;
   // icon only: a status has no icon, its dot is what's left
-  return <WidgetView type={type} id={id} host="banner" patch={show === 'icon' && type === 'status' ? { dot: true } : undefined} />;
+  return <WidgetView type={type} id={id} host={host} patch={show === 'icon' && type === 'status' ? { dot: true } : undefined} />;
 }
 
 function Attached({ a }: { a: PlacedAttachment }) {

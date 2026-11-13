@@ -523,6 +523,40 @@
         "text": "Picks which widgets sit on the top bar, their order, size and how much room they take."
       },
       {
+        "target": "action:toolbar.widgets",
+        "title": "Toolbar widgets",
+        "text": "Picks which widgets sit on this toolbar: the same clocks, counters, meters and chips the banner takes. Tick, drag, size them, or add new ones from the list.",
+        "more": "Each toolbar remembers its own set, saved for this app on this kind of device and kept in sync through axHub. Widgets that don't fit move into the toolbar's own ⋯ menu, lowest priority first, and come back when there is room. Voice and the API use the same door: \"add the CPU widget to the main toolbar\" (toolbar.widget:app:cpu:add).",
+        "related": [
+          "action:banner.widgets",
+          "action:tabs.widgets",
+          "action:widgets.arrange"
+        ]
+      },
+      {
+        "target": "action:tabs.widgets",
+        "title": "Tab row widgets",
+        "text": "Picks which widgets sit on this row of tabs, the same way a toolbar does.",
+        "related": [
+          "action:toolbar.widgets"
+        ]
+      },
+      {
+        "target": "action:toolbar.widgets.reset",
+        "title": "Reset the toolbar's widgets",
+        "text": "Takes off every widget you added to this toolbar and puts the rest back where they were."
+      },
+      {
+        "target": "add-a-widget",
+        "title": "Add a widget",
+        "text": "Every widget this bar can take. Start puts it before the buttons, End after them."
+      },
+      {
+        "target": "drag-them-on-the-toolbar",
+        "title": "Drag them on the toolbar",
+        "text": "Closes this and lets you drag the widgets on the toolbar itself. They snap into place."
+      },
+      {
         "target": "action:banners.settings",
         "title": "Banner settings",
         "text": "Opens the settings of this banner: its look, how it behaves and the plugin's own settings."

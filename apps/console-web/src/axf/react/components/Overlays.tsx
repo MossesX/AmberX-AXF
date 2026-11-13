@@ -139,6 +139,8 @@ export function ContextMenuHost() {
       if ((target?.closest('[data-fx-scope]')?.getAttribute('data-fx-scope') ?? '') !== scope) return;
       // which banner widget was hit: its menu offers Widget settings for that one
       rt.contextBannerWidget = target?.closest('[data-axf-banner-item]')?.getAttribute('data-axf-banner-item') ?? null;
+      // which toolbar / tab row widget was hit: its menu offers Widget settings and Remove for that one
+      rt.contextHostWidget = target?.closest('[data-axf-host-item]')?.getAttribute('data-axf-host-item') ?? null;
       // chrome-settings@1 (Nov 4 2026): a toolbar, a tab row or a nav that names no target is still one, so every
       // toolbar / tab group / navigation menu gets Settings / Change / Move without an attribute of its own
       const el = target?.closest('[data-fx-ctx-target], [role="toolbar"], [role="tablist"], nav');
