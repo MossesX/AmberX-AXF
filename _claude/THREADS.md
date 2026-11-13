@@ -778,7 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 18:21 UTC · `plugin-review-map-what-each-plugin-does-depends-on-and-breaks` note (all) · pipeline
 - 2026-11-12 18:21 UTC · `new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans` → running, note (all) · pipeline
 - 2026-11-12 18:21 UTC · `new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans` note (all) · orchestrator
 - 2026-11-12 18:24 UTC · `new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans` s1 done, → running (all) · orchestrator
@@ -1178,6 +1177,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 02:06 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` → pending, note (all) · pipeline
 - 2026-11-13 02:07 UTC · `tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch` s2 done (all) · orchestrator
 - 2026-11-13 02:10 UTC · `tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch` PR #544 (all) · builds-live
+- 2026-11-13 02:11 UTC · `tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch` note (all) · orchestrator
 
 ## Token passes (log)
 
