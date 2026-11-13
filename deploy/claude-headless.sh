@@ -110,7 +110,7 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 [[ -n "$brief" && -f "$brief" ]] || { echo "claude-headless: --brief <file> is required" >&2; exit 2; }
-[[ "$log" =~ ^[A-Za-z0-9._-]{1,80}$ ]] || { echo "claude-headless: --log is a plain file name" >&2; exit 2; }
+[[ "$log" =~ ^[A-Za-z0-9._-]{1,200}$ ]] || { echo "claude-headless: --log is a plain file name" >&2; exit 2; }
 [[ -z "$account" || "$account" =~ ^[a-z0-9][a-z0-9-]{0,31}$ ]] || { echo "claude-headless: --account is a saved account name (or active / live)" >&2; exit 2; }
 raw="${log%.log}.jsonl"
 HDIR="${AXF_HEADLESS_DIR:-/var/tmp/axf-headless}"
