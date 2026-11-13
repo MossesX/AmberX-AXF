@@ -322,10 +322,13 @@ export function resolveForVerb(snapshot: Pick<TargetSnapshot, 'targets'>, addres
   return r;
 }
 
-/** Every target under an address (the address itself included), or every target when `under` is null. */
+/**
+ * Every target under an address (the address itself included), or every target when `under` is null. A short `under`
+ * is resolved first (trailing match), so `grid:queue` lists the grid and its rows. Throws not_found / ambiguous.
+ */
 export function listTargets(snapshot: Pick<TargetSnapshot, 'targets'>, under: Address | string | null = null): ControlTarget[] {
   if (!under) return [...snapshot.targets];
-  const prefix = typeof under === 'string' ? parseAddress(under) : under;
+  const prefix = resolveAddress(snapshot, under).address;
   return snapshot.targets.filter((t) => { try { return addressStartsWith(parseAddress(t.address), prefix); } catch { return false; } });
 }
 

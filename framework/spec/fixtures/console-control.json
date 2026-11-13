@@ -1,0 +1,1578 @@
+{
+  "registry": {
+    "kinds": [
+      "view",
+      "tab",
+      "subtab",
+      "setting",
+      "button",
+      "function",
+      "plugin",
+      "grid",
+      "row",
+      "step",
+      "panel",
+      "scroll"
+    ],
+    "verbs": [
+      "open",
+      "state",
+      "press",
+      "set",
+      "scroll",
+      "focus",
+      "search",
+      "list",
+      "plugin.enable",
+      "plugin.disable"
+    ],
+    "codes": [
+      "invalid",
+      "not_found",
+      "ambiguous",
+      "denied",
+      "validation",
+      "unavailable",
+      "confirmation_required",
+      "not_implemented",
+      "unexpected"
+    ],
+    "defaultCan": {
+      "view": [
+        "open",
+        "state",
+        "list",
+        "scroll"
+      ],
+      "tab": [
+        "open",
+        "state",
+        "set",
+        "focus"
+      ],
+      "subtab": [
+        "open",
+        "state",
+        "set",
+        "focus"
+      ],
+      "setting": [
+        "open",
+        "state",
+        "set",
+        "focus"
+      ],
+      "button": [
+        "open",
+        "state",
+        "press",
+        "focus"
+      ],
+      "function": [
+        "state",
+        "press"
+      ],
+      "plugin": [
+        "open",
+        "state",
+        "plugin.enable",
+        "plugin.disable"
+      ],
+      "grid": [
+        "open",
+        "state",
+        "set",
+        "focus",
+        "list",
+        "scroll"
+      ],
+      "row": [
+        "open",
+        "state",
+        "focus",
+        "set"
+      ],
+      "step": [
+        "open",
+        "state",
+        "focus"
+      ],
+      "panel": [
+        "open",
+        "state",
+        "focus",
+        "scroll"
+      ],
+      "scroll": [
+        "state",
+        "scroll"
+      ]
+    }
+  },
+  "addresses": {
+    "view": {
+      "ok": true,
+      "parts": [
+        {
+          "kind": "view",
+          "id": "builds"
+        }
+      ],
+      "text": "view:builds"
+    },
+    "tab": {
+      "ok": true,
+      "parts": [
+        {
+          "kind": "view",
+          "id": "builds"
+        },
+        {
+          "kind": "tab",
+          "id": "orchestrator.sections=pipeline"
+        }
+      ],
+      "text": "view:builds/tab:orchestrator.sections=pipeline"
+    },
+    "deep": {
+      "ok": true,
+      "parts": [
+        {
+          "kind": "view",
+          "id": "builds"
+        },
+        {
+          "kind": "tab",
+          "id": "pipeline"
+        },
+        {
+          "kind": "grid",
+          "id": "queue"
+        },
+        {
+          "kind": "row",
+          "id": "abc"
+        },
+        {
+          "kind": "step",
+          "id": "s3"
+        }
+      ],
+      "text": "view:builds/tab:pipeline/grid:queue/row:abc/step:s3"
+    },
+    "upper-kind": {
+      "ok": true,
+      "parts": [
+        {
+          "kind": "view",
+          "id": "Builds"
+        },
+        {
+          "kind": "tab",
+          "id": "x=y"
+        }
+      ],
+      "text": "view:Builds/tab:x=y"
+    },
+    "encoded": {
+      "ok": true,
+      "parts": [
+        {
+          "kind": "grid",
+          "id": "a/b"
+        },
+        {
+          "kind": "row",
+          "id": "100%"
+        }
+      ],
+      "text": "grid:a%2Fb/row:100%25"
+    },
+    "spaced": {
+      "$axf": "console-control@1",
+      "ok": false,
+      "code": "invalid",
+      "message": "row cannot follow view; it follows the start or grid",
+      "field": "address",
+      "segment": "row:abc"
+    },
+    "object": {
+      "ok": true,
+      "parts": [
+        {
+          "kind": "view",
+          "id": "builds"
+        },
+        {
+          "kind": "button",
+          "id": "save"
+        }
+      ],
+      "text": "view:builds/button:save"
+    },
+    "short-row": {
+      "ok": true,
+      "parts": [
+        {
+          "kind": "row",
+          "id": "abc"
+        }
+      ],
+      "text": "row:abc"
+    },
+    "short-step": {
+      "ok": true,
+      "parts": [
+        {
+          "kind": "step",
+          "id": "s3"
+        }
+      ],
+      "text": "step:s3"
+    },
+    "row-step": {
+      "ok": true,
+      "parts": [
+        {
+          "kind": "row",
+          "id": "abc"
+        },
+        {
+          "kind": "step",
+          "id": "s3"
+        }
+      ],
+      "text": "row:abc/step:s3"
+    },
+    "setting-only": {
+      "ok": true,
+      "parts": [
+        {
+          "kind": "setting",
+          "id": "axf.display.fontScale"
+        }
+      ],
+      "text": "setting:axf.display.fontScale"
+    },
+    "subtab": {
+      "ok": true,
+      "parts": [
+        {
+          "kind": "view",
+          "id": "settings"
+        },
+        {
+          "kind": "tab",
+          "id": "a=b"
+        },
+        {
+          "kind": "subtab",
+          "id": "c=d"
+        }
+      ],
+      "text": "view:settings/tab:a=b/subtab:c=d"
+    },
+    "panel-button": {
+      "ok": true,
+      "parts": [
+        {
+          "kind": "view",
+          "id": "x"
+        },
+        {
+          "kind": "panel",
+          "id": "p"
+        },
+        {
+          "kind": "button",
+          "id": "b"
+        }
+      ],
+      "text": "view:x/panel:p/button:b"
+    },
+    "row-button": {
+      "ok": true,
+      "parts": [
+        {
+          "kind": "grid",
+          "id": "g"
+        },
+        {
+          "kind": "row",
+          "id": "r"
+        },
+        {
+          "kind": "button",
+          "id": "b"
+        }
+      ],
+      "text": "grid:g/row:r/button:b"
+    }
+  },
+  "badAddresses": {
+    "empty": {
+      "$axf": "console-control@1",
+      "ok": false,
+      "code": "invalid",
+      "message": "address is empty",
+      "field": "address"
+    },
+    "missing": {
+      "$axf": "console-control@1",
+      "ok": false,
+      "code": "invalid",
+      "message": "address is missing",
+      "field": "address"
+    },
+    "no-colon": {
+      "$axf": "console-control@1",
+      "ok": false,
+      "code": "invalid",
+      "message": "segment 1 \"builds\" is not kind:id",
+      "field": "address",
+      "segment": "builds"
+    },
+    "bad-kind": {
+      "$axf": "console-control@1",
+      "ok": false,
+      "code": "invalid",
+      "message": "segment 1 \"screen:builds\": kind must be one of view, tab, subtab, setting, button, function, plugin, grid, row, step, panel, scroll",
+      "field": "address",
+      "segment": "screen:builds"
+    },
+    "empty-id": {
+      "$axf": "console-control@1",
+      "ok": false,
+      "code": "invalid",
+      "message": "segment 1 (view) has an empty id",
+      "field": "address",
+      "segment": "view:"
+    },
+    "row-first-is-fine-step-after-row": {
+      "ok": true,
+      "parts": [
+        {
+          "kind": "row",
+          "id": "a"
+        },
+        {
+          "kind": "step",
+          "id": "s1"
+        }
+      ],
+      "text": "row:a/step:s1"
+    },
+    "step-then-row": {
+      "$axf": "console-control@1",
+      "ok": false,
+      "code": "invalid",
+      "message": "row cannot follow step; it follows the start or grid",
+      "field": "address",
+      "segment": "row:abc"
+    },
+    "subtab-at-top": {
+      "$axf": "console-control@1",
+      "ok": false,
+      "code": "invalid",
+      "message": "subtab cannot open an address; it follows tab",
+      "field": "address",
+      "segment": "subtab:x=y"
+    },
+    "row-under-view": {
+      "$axf": "console-control@1",
+      "ok": false,
+      "code": "invalid",
+      "message": "row cannot follow view; it follows the start or grid",
+      "field": "address",
+      "segment": "row:abc"
+    },
+    "view-under-tab": {
+      "$axf": "console-control@1",
+      "ok": false,
+      "code": "invalid",
+      "message": "view cannot follow tab; it follows the start",
+      "field": "address",
+      "segment": "view:c"
+    },
+    "too-deep": {
+      "$axf": "console-control@1",
+      "ok": false,
+      "code": "invalid",
+      "message": "address has 9 segments; at most 8",
+      "field": "address"
+    },
+    "long-id": {
+      "$axf": "console-control@1",
+      "ok": false,
+      "code": "invalid",
+      "message": "segment 1 (view): id longer than 160",
+      "field": "address",
+      "segment": "view:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+    },
+    "object-bad-kind": {
+      "$axf": "console-control@1",
+      "ok": false,
+      "code": "invalid",
+      "message": "segment 1: kind must be one of view, tab, subtab, setting, button, function, plugin, grid, row, step, panel, scroll",
+      "field": "address",
+      "segment": "nope:x"
+    },
+    "object-no-id": {
+      "$axf": "console-control@1",
+      "ok": false,
+      "code": "invalid",
+      "message": "segment 1 (view): id must be a string",
+      "field": "address",
+      "segment": "view:"
+    },
+    "number": {
+      "$axf": "console-control@1",
+      "ok": false,
+      "code": "invalid",
+      "message": "address must be text (kind:id/…) or { path: [{ kind, id }] }",
+      "field": "address"
+    }
+  },
+  "tabIds": {
+    "row": {
+      "row": "orchestrator.sections",
+      "value": null
+    },
+    "valued": {
+      "row": "orchestrator.sections",
+      "value": "shipped"
+    },
+    "setting-never-splits": {
+      "row": "a=b",
+      "value": null
+    },
+    "empty-value": {
+      "row": "row",
+      "value": ""
+    }
+  },
+  "commands": {
+    "open-tab": {
+      "verb": "open",
+      "address": "tab:orchestrator.sections=shipped"
+    },
+    "state-no-address": {
+      "verb": "state"
+    },
+    "press-button": {
+      "verb": "press",
+      "address": "button:refresh",
+      "by": "claude",
+      "reason": "reload the list"
+    },
+    "press-function-arg": {
+      "verb": "press",
+      "address": "function:build-orchestrator.focus",
+      "value": "abc"
+    },
+    "set-setting": {
+      "verb": "set",
+      "address": "setting:axf.display.fontScale",
+      "value": 1.2
+    },
+    "set-no-value": {
+      "verb": "set",
+      "address": "setting:axf.display.fontScale"
+    },
+    "scroll-down": {
+      "verb": "scroll",
+      "scroll": {
+        "dir": "down"
+      }
+    },
+    "scroll-to": {
+      "verb": "scroll",
+      "scroll": {
+        "dir": "to",
+        "to": {
+          "path": [
+            {
+              "kind": "row",
+              "id": "abc"
+            }
+          ]
+        }
+      },
+      "by": " me "
+    },
+    "scroll-to-missing": {
+      "verb": "scroll",
+      "scroll": {
+        "dir": "to"
+      }
+    },
+    "scroll-bad-dir": {
+      "verb": "scroll",
+      "scroll": {
+        "dir": "sideways",
+        "amount": -1,
+        "extra": 1
+      },
+      "value": 1
+    },
+    "scroll-no-spec": {
+      "verb": "scroll"
+    },
+    "focus-no-address": {
+      "verb": "focus"
+    },
+    "focus-options": {
+      "verb": "focus",
+      "address": "step:s3",
+      "options": {
+        "expand": true,
+        "highlightMs": 500
+      }
+    },
+    "focus-bad-options": {
+      "verb": "focus",
+      "address": "step:s3",
+      "options": {
+        "expand": "yes",
+        "highlightMs": 99999,
+        "flash": true
+      }
+    },
+    "search": {
+      "verb": "search",
+      "query": {
+        "q": " voice ",
+        "kinds": [
+          "row",
+          "row"
+        ]
+      }
+    },
+    "search-bad": {
+      "verb": "search",
+      "query": {
+        "q": "",
+        "kinds": [
+          "screen"
+        ],
+        "limit": 99,
+        "sort": "x"
+      }
+    },
+    "search-no-query": {
+      "verb": "search"
+    },
+    "list": {
+      "verb": "list",
+      "address": "grid:queue"
+    },
+    "plugin-disable": {
+      "verb": "plugin.disable",
+      "address": "plugin:skins",
+      "by": "claude"
+    },
+    "plugin-no-address": {
+      "verb": "plugin.enable"
+    },
+    "bad-verb": {
+      "verb": "explode",
+      "address": "view:builds"
+    },
+    "bad-frame": {
+      "$axf": "control@1",
+      "verb": "state"
+    },
+    "unknown-field": {
+      "verb": "state",
+      "address": "view:builds",
+      "target": "x"
+    },
+    "bad-address": {
+      "verb": "open",
+      "address": "step:s3/row:abc"
+    },
+    "not-an-object": "open view:builds"
+  },
+  "errors": {
+    "open-tab": [],
+    "state-no-address": [],
+    "press-button": [],
+    "press-function-arg": [],
+    "set-setting": [],
+    "set-no-value": [
+      "set needs a value"
+    ],
+    "scroll-down": [],
+    "scroll-to": [],
+    "scroll-to-missing": [
+      "scroll to needs scroll.to (an address inside the container)"
+    ],
+    "scroll-bad-dir": [
+      "scroll does not take value",
+      "scroll.dir must be one of up, down, page-up, page-down, top, bottom, to",
+      "scroll.amount must be a number above 0 (px, or a fraction of the view when 1 or less)",
+      "scroll: no field extra"
+    ],
+    "scroll-no-spec": [
+      "scroll needs scroll { dir, amount?, to? }"
+    ],
+    "focus-no-address": [
+      "focus needs an address"
+    ],
+    "focus-options": [],
+    "focus-bad-options": [
+      "options.expand must be true or false",
+      "options.highlightMs must be 0 to 60000",
+      "options: no field flash"
+    ],
+    "search": [],
+    "search-bad": [
+      "query.q must be words",
+      "query.kinds must be kinds from view, tab, subtab, setting, button, function, plugin, grid, row, step, panel, scroll",
+      "query.limit must be 1 to 50",
+      "query: no field sort"
+    ],
+    "search-no-query": [
+      "search needs query { q, kinds?, limit? }"
+    ],
+    "list": [],
+    "plugin-disable": [],
+    "plugin-no-address": [
+      "plugin.enable needs an address"
+    ],
+    "bad-verb": [
+      "verb must be one of open, state, press, set, scroll, focus, search, list, plugin.enable, plugin.disable"
+    ],
+    "bad-frame": [
+      "$axf must be console-control@1"
+    ],
+    "unknown-field": [
+      "no field target"
+    ],
+    "bad-address": [
+      "address: row cannot follow step; it follows the start or grid"
+    ],
+    "not-an-object": [
+      "command must be an object"
+    ]
+  },
+  "normalize": {
+    "open-tab": {
+      "$axf": "console-control@1",
+      "verb": "open",
+      "address": "tab:orchestrator.sections=shipped"
+    },
+    "state-no-address": {
+      "$axf": "console-control@1",
+      "verb": "state"
+    },
+    "press-button": {
+      "$axf": "console-control@1",
+      "verb": "press",
+      "address": "button:refresh",
+      "by": "claude",
+      "reason": "reload the list"
+    },
+    "press-function-arg": {
+      "$axf": "console-control@1",
+      "verb": "press",
+      "address": "function:build-orchestrator.focus",
+      "value": "abc"
+    },
+    "set-setting": {
+      "$axf": "console-control@1",
+      "verb": "set",
+      "address": "setting:axf.display.fontScale",
+      "value": 1.2
+    },
+    "set-no-value": {
+      "$axf": "console-control@1",
+      "ok": false,
+      "code": "invalid",
+      "message": "set needs a value",
+      "problems": [
+        "set needs a value"
+      ]
+    },
+    "scroll-down": {
+      "$axf": "console-control@1",
+      "verb": "scroll",
+      "scroll": {
+        "dir": "down"
+      }
+    },
+    "scroll-to": {
+      "$axf": "console-control@1",
+      "verb": "scroll",
+      "scroll": {
+        "dir": "to",
+        "to": "row:abc"
+      },
+      "by": "me"
+    },
+    "scroll-to-missing": {
+      "$axf": "console-control@1",
+      "ok": false,
+      "code": "invalid",
+      "message": "scroll to needs scroll.to (an address inside the container)",
+      "problems": [
+        "scroll to needs scroll.to (an address inside the container)"
+      ]
+    },
+    "scroll-bad-dir": {
+      "$axf": "console-control@1",
+      "ok": false,
+      "code": "invalid",
+      "message": "scroll does not take value; scroll.dir must be one of up, down, page-up, page-down, top, bottom, to; scroll.amount must be a number above 0 (px, or a fraction of the view when 1 or less); scroll: no field extra",
+      "problems": [
+        "scroll does not take value",
+        "scroll.dir must be one of up, down, page-up, page-down, top, bottom, to",
+        "scroll.amount must be a number above 0 (px, or a fraction of the view when 1 or less)",
+        "scroll: no field extra"
+      ]
+    },
+    "scroll-no-spec": {
+      "$axf": "console-control@1",
+      "ok": false,
+      "code": "invalid",
+      "message": "scroll needs scroll { dir, amount?, to? }",
+      "problems": [
+        "scroll needs scroll { dir, amount?, to? }"
+      ]
+    },
+    "focus-no-address": {
+      "$axf": "console-control@1",
+      "ok": false,
+      "code": "invalid",
+      "message": "focus needs an address",
+      "problems": [
+        "focus needs an address"
+      ]
+    },
+    "focus-options": {
+      "$axf": "console-control@1",
+      "verb": "focus",
+      "address": "step:s3",
+      "options": {
+        "expand": true,
+        "highlightMs": 500
+      }
+    },
+    "focus-bad-options": {
+      "$axf": "console-control@1",
+      "ok": false,
+      "code": "invalid",
+      "message": "options.expand must be true or false; options.highlightMs must be 0 to 60000; options: no field flash",
+      "problems": [
+        "options.expand must be true or false",
+        "options.highlightMs must be 0 to 60000",
+        "options: no field flash"
+      ]
+    },
+    "search": {
+      "$axf": "console-control@1",
+      "verb": "search",
+      "query": {
+        "q": "voice",
+        "kinds": [
+          "row"
+        ],
+        "limit": 12
+      }
+    },
+    "search-bad": {
+      "$axf": "console-control@1",
+      "ok": false,
+      "code": "invalid",
+      "message": "query.q must be words; query.kinds must be kinds from view, tab, subtab, setting, button, function, plugin, grid, row, step, panel, scroll; query.limit must be 1 to 50; query: no field sort",
+      "problems": [
+        "query.q must be words",
+        "query.kinds must be kinds from view, tab, subtab, setting, button, function, plugin, grid, row, step, panel, scroll",
+        "query.limit must be 1 to 50",
+        "query: no field sort"
+      ]
+    },
+    "search-no-query": {
+      "$axf": "console-control@1",
+      "ok": false,
+      "code": "invalid",
+      "message": "search needs query { q, kinds?, limit? }",
+      "problems": [
+        "search needs query { q, kinds?, limit? }"
+      ]
+    },
+    "list": {
+      "$axf": "console-control@1",
+      "verb": "list",
+      "address": "grid:queue"
+    },
+    "plugin-disable": {
+      "$axf": "console-control@1",
+      "verb": "plugin.disable",
+      "address": "plugin:skins",
+      "by": "claude"
+    },
+    "plugin-no-address": {
+      "$axf": "console-control@1",
+      "ok": false,
+      "code": "invalid",
+      "message": "plugin.enable needs an address",
+      "problems": [
+        "plugin.enable needs an address"
+      ]
+    },
+    "bad-verb": {
+      "$axf": "console-control@1",
+      "ok": false,
+      "code": "invalid",
+      "message": "verb must be one of open, state, press, set, scroll, focus, search, list, plugin.enable, plugin.disable",
+      "problems": [
+        "verb must be one of open, state, press, set, scroll, focus, search, list, plugin.enable, plugin.disable"
+      ]
+    },
+    "bad-frame": {
+      "$axf": "console-control@1",
+      "ok": false,
+      "code": "invalid",
+      "message": "$axf must be console-control@1",
+      "problems": [
+        "$axf must be console-control@1"
+      ]
+    },
+    "unknown-field": {
+      "$axf": "console-control@1",
+      "ok": false,
+      "code": "invalid",
+      "message": "no field target",
+      "problems": [
+        "no field target"
+      ]
+    },
+    "bad-address": {
+      "$axf": "console-control@1",
+      "ok": false,
+      "code": "invalid",
+      "message": "address: row cannot follow step; it follows the start or grid",
+      "problems": [
+        "address: row cannot follow step; it follows the start or grid"
+      ]
+    },
+    "not-an-object": {
+      "$axf": "console-control@1",
+      "ok": false,
+      "code": "invalid",
+      "message": "command must be an object",
+      "problems": [
+        "command must be an object"
+      ]
+    }
+  },
+  "snapshot": {
+    "$axf": "console-control-targets@1",
+    "view": "builds",
+    "targets": [
+      {
+        "address": "view:builds",
+        "kind": "view",
+        "label": "Builds",
+        "keywords": [
+          "orchestrator",
+          "pipeline"
+        ]
+      },
+      {
+        "address": "view:settings",
+        "kind": "view",
+        "label": "Settings"
+      },
+      {
+        "address": "view:builds/tab:orchestrator.sections",
+        "kind": "tab",
+        "label": "Sections",
+        "value": "pipeline"
+      },
+      {
+        "address": "view:builds/tab:orchestrator.sections=pipeline",
+        "kind": "tab",
+        "label": "Pipeline"
+      },
+      {
+        "address": "view:builds/tab:orchestrator.sections=shipped",
+        "kind": "tab",
+        "label": "Shipped"
+      },
+      {
+        "address": "view:builds/tab:orchestrator.sections=pipeline/grid:queue",
+        "kind": "grid",
+        "label": "Queue",
+        "value": "abc"
+      },
+      {
+        "address": "view:builds/tab:orchestrator.sections=pipeline/grid:queue/row:abc",
+        "kind": "row",
+        "label": "Full API and voice control",
+        "keywords": [
+          "fable",
+          "running"
+        ]
+      },
+      {
+        "address": "view:builds/tab:orchestrator.sections=pipeline/grid:queue/row:abc/step:s3",
+        "kind": "step",
+        "label": "Reference engine",
+        "detail": "Full API and voice control"
+      },
+      {
+        "address": "view:builds/tab:orchestrator.sections=pipeline/grid:queue/row:abc/button:save",
+        "kind": "button",
+        "label": "Save"
+      },
+      {
+        "address": "view:builds/tab:orchestrator.sections=pipeline/grid:queue/row:def",
+        "kind": "row",
+        "label": "Skins plugin",
+        "virtual": true
+      },
+      {
+        "address": "view:builds/button:save",
+        "kind": "button",
+        "label": "Save",
+        "disabled": true
+      },
+      {
+        "address": "view:builds/button:refresh",
+        "kind": "button",
+        "label": "Refresh",
+        "keywords": [
+          "reload"
+        ]
+      },
+      {
+        "address": "view:builds/button:delete-build",
+        "kind": "button",
+        "label": "Delete build",
+        "destructive": true
+      },
+      {
+        "address": "view:settings/tab:axf.settings.tabs=plugins/setting:axf.display.fontScale",
+        "kind": "setting",
+        "label": "Font scale",
+        "value": "1",
+        "can": [
+          "open",
+          "state",
+          "set",
+          "focus"
+        ]
+      },
+      {
+        "address": "plugin:skins",
+        "kind": "plugin",
+        "label": "Skins",
+        "value": "enabled"
+      },
+      {
+        "address": "view:builds/function:build-orchestrator.focus",
+        "kind": "function",
+        "label": "Focus a build"
+      },
+      {
+        "address": "view:builds/scroll:main",
+        "kind": "scroll",
+        "label": "Main pane"
+      },
+      {
+        "address": "nonsense",
+        "kind": "row",
+        "label": "A bad registered address never matches"
+      }
+    ]
+  },
+  "resolveCases": {
+    "full": "view:builds/tab:orchestrator.sections=pipeline/grid:queue/row:abc",
+    "trailing-row": "row:abc",
+    "trailing-step": "step:s3",
+    "row-step": "row:abc/step:s3",
+    "tab-row": "tab:orchestrator.sections",
+    "tab-value": "tab:orchestrator.sections=shipped",
+    "tab-value-unregistered": "view:builds/tab:orchestrator.sections=pending",
+    "case-folded": "ROW:ABC",
+    "ambiguous-button": "button:save",
+    "exact-wins": "view:builds/button:save",
+    "not-found": "row:nope",
+    "near-miss": "row:abd",
+    "near-label": "button:refesh",
+    "plugin": "plugin:skins",
+    "setting": "setting:axf.display.fontScale"
+  },
+  "resolve": {
+    "full": {
+      "address": "view:builds/tab:orchestrator.sections=pipeline/grid:queue/row:abc",
+      "kind": "row",
+      "can": [
+        "open",
+        "state",
+        "focus",
+        "set"
+      ]
+    },
+    "trailing-row": {
+      "address": "view:builds/tab:orchestrator.sections=pipeline/grid:queue/row:abc",
+      "kind": "row",
+      "can": [
+        "open",
+        "state",
+        "focus",
+        "set"
+      ]
+    },
+    "trailing-step": {
+      "address": "view:builds/tab:orchestrator.sections=pipeline/grid:queue/row:abc/step:s3",
+      "kind": "step",
+      "can": [
+        "open",
+        "state",
+        "focus"
+      ]
+    },
+    "row-step": {
+      "address": "view:builds/tab:orchestrator.sections=pipeline/grid:queue/row:abc/step:s3",
+      "kind": "step",
+      "can": [
+        "open",
+        "state",
+        "focus"
+      ]
+    },
+    "tab-row": {
+      "address": "view:builds/tab:orchestrator.sections",
+      "kind": "tab",
+      "can": [
+        "open",
+        "state",
+        "set",
+        "focus"
+      ]
+    },
+    "tab-value": {
+      "address": "view:builds/tab:orchestrator.sections=shipped",
+      "kind": "tab",
+      "can": [
+        "open",
+        "state",
+        "set",
+        "focus"
+      ]
+    },
+    "tab-value-unregistered": {
+      "address": "view:builds/tab:orchestrator.sections",
+      "kind": "tab",
+      "can": [
+        "open",
+        "state",
+        "set",
+        "focus"
+      ]
+    },
+    "case-folded": {
+      "address": "view:builds/tab:orchestrator.sections=pipeline/grid:queue/row:abc",
+      "kind": "row",
+      "can": [
+        "open",
+        "state",
+        "focus",
+        "set"
+      ]
+    },
+    "ambiguous-button": {
+      "$axf": "console-control@1",
+      "ok": false,
+      "code": "ambiguous",
+      "message": "button:save names 2 targets; say which",
+      "candidates": [
+        "view:builds/button:save",
+        "view:builds/tab:orchestrator.sections=pipeline/grid:queue/row:abc/button:save"
+      ]
+    },
+    "exact-wins": {
+      "address": "view:builds/button:save",
+      "kind": "button",
+      "can": [
+        "open",
+        "state",
+        "press",
+        "focus"
+      ]
+    },
+    "not-found": {
+      "$axf": "console-control@1",
+      "ok": false,
+      "code": "not_found",
+      "message": "nothing on this screen is row:nope",
+      "nearest": []
+    },
+    "near-miss": {
+      "$axf": "console-control@1",
+      "ok": false,
+      "code": "not_found",
+      "message": "nothing on this screen is row:abd",
+      "nearest": [
+        "view:builds/tab:orchestrator.sections=pipeline/grid:queue/row:abc"
+      ]
+    },
+    "near-label": {
+      "$axf": "console-control@1",
+      "ok": false,
+      "code": "not_found",
+      "message": "nothing on this screen is button:refesh",
+      "nearest": [
+        "view:builds/button:refresh"
+      ]
+    },
+    "plugin": {
+      "address": "plugin:skins",
+      "kind": "plugin",
+      "can": [
+        "open",
+        "state",
+        "plugin.enable",
+        "plugin.disable"
+      ]
+    },
+    "setting": {
+      "address": "view:settings/tab:axf.settings.tabs=plugins/setting:axf.display.fontScale",
+      "kind": "setting",
+      "can": [
+        "open",
+        "state",
+        "set",
+        "focus"
+      ]
+    }
+  },
+  "verbCases": {
+    "press-disabled": [
+      "view:builds/button:save",
+      "press"
+    ],
+    "press-step": [
+      "step:s3",
+      "press"
+    ],
+    "set-row": [
+      "row:abc",
+      "set"
+    ],
+    "focus-virtual": [
+      "row:def",
+      "focus"
+    ],
+    "scroll-view": [
+      "view:builds",
+      "scroll"
+    ],
+    "disable-plugin": [
+      "plugin:skins",
+      "plugin.disable"
+    ],
+    "press-button-ok": [
+      "button:refresh",
+      "press"
+    ],
+    "open-setting": [
+      "setting:axf.display.fontScale",
+      "open"
+    ],
+    "state-scroll": [
+      "scroll:main",
+      "state"
+    ],
+    "press-missing": [
+      "button:nope",
+      "press"
+    ]
+  },
+  "verbs": {
+    "press-disabled": {
+      "$axf": "console-control@1",
+      "ok": false,
+      "code": "unavailable",
+      "message": "view:builds/button:save is disabled right now",
+      "because": "disabled"
+    },
+    "press-step": {
+      "$axf": "console-control@1",
+      "ok": false,
+      "code": "not_implemented",
+      "message": "view:builds/tab:orchestrator.sections=pipeline/grid:queue/row:abc/step:s3 does not answer press",
+      "can": [
+        "open",
+        "state",
+        "focus"
+      ]
+    },
+    "set-row": {
+      "address": "view:builds/tab:orchestrator.sections=pipeline/grid:queue/row:abc",
+      "can": [
+        "open",
+        "state",
+        "focus",
+        "set"
+      ]
+    },
+    "focus-virtual": {
+      "address": "view:builds/tab:orchestrator.sections=pipeline/grid:queue/row:def",
+      "can": [
+        "open",
+        "state",
+        "focus",
+        "set"
+      ]
+    },
+    "scroll-view": {
+      "address": "view:builds",
+      "can": [
+        "open",
+        "state",
+        "list",
+        "scroll"
+      ]
+    },
+    "disable-plugin": {
+      "address": "plugin:skins",
+      "can": [
+        "open",
+        "state",
+        "plugin.enable",
+        "plugin.disable"
+      ]
+    },
+    "press-button-ok": {
+      "address": "view:builds/button:refresh",
+      "can": [
+        "open",
+        "state",
+        "press",
+        "focus"
+      ]
+    },
+    "open-setting": {
+      "address": "view:settings/tab:axf.settings.tabs=plugins/setting:axf.display.fontScale",
+      "can": [
+        "open",
+        "state",
+        "set",
+        "focus"
+      ]
+    },
+    "state-scroll": {
+      "address": "view:builds/scroll:main",
+      "can": [
+        "state",
+        "scroll"
+      ]
+    },
+    "press-missing": {
+      "$axf": "console-control@1",
+      "ok": false,
+      "code": "not_found",
+      "message": "nothing on this screen is button:nope",
+      "nearest": [
+        "view:builds/button:save",
+        "view:builds/tab:orchestrator.sections=pipeline/grid:queue/row:abc/button:save"
+      ]
+    }
+  },
+  "list": {
+    "all": 18,
+    "grid": [
+      "view:builds/tab:orchestrator.sections=pipeline/grid:queue",
+      "view:builds/tab:orchestrator.sections=pipeline/grid:queue/row:abc",
+      "view:builds/tab:orchestrator.sections=pipeline/grid:queue/row:abc/step:s3",
+      "view:builds/tab:orchestrator.sections=pipeline/grid:queue/row:abc/button:save",
+      "view:builds/tab:orchestrator.sections=pipeline/grid:queue/row:def"
+    ],
+    "row": [
+      "view:builds/tab:orchestrator.sections=pipeline/grid:queue/row:abc",
+      "view:builds/tab:orchestrator.sections=pipeline/grid:queue/row:abc/step:s3",
+      "view:builds/tab:orchestrator.sections=pipeline/grid:queue/row:abc/button:save"
+    ],
+    "settings": [
+      "view:settings",
+      "view:settings/tab:axf.settings.tabs=plugins/setting:axf.display.fontScale"
+    ],
+    "missing": {
+      "$axf": "console-control@1",
+      "ok": false,
+      "code": "not_found",
+      "message": "nothing on this screen is grid:nope",
+      "nearest": []
+    }
+  },
+  "search": {
+    "voice": [
+      {
+        "address": "view:builds/tab:orchestrator.sections=pipeline/grid:queue/row:abc",
+        "kind": "row",
+        "label": "Full API and voice control",
+        "score": 39.567
+      },
+      {
+        "address": "view:builds/tab:orchestrator.sections=pipeline/grid:queue/row:abc/step:s3",
+        "kind": "step",
+        "label": "Reference engine",
+        "detail": "Full API and voice control",
+        "score": 9.733
+      }
+    ],
+    "save": [
+      {
+        "address": "view:builds/button:save",
+        "kind": "button",
+        "label": "Save",
+        "score": 99.933
+      },
+      {
+        "address": "view:builds/tab:orchestrator.sections=pipeline/grid:queue/row:abc/button:save",
+        "kind": "button",
+        "label": "Save",
+        "score": 99.933
+      }
+    ],
+    "save-buttons-only": [
+      {
+        "address": "view:builds/button:save",
+        "kind": "button",
+        "label": "Save",
+        "score": 99.933
+      },
+      {
+        "address": "view:builds/tab:orchestrator.sections=pipeline/grid:queue/row:abc/button:save",
+        "kind": "button",
+        "label": "Save",
+        "score": 99.933
+      }
+    ],
+    "reload": [
+      {
+        "address": "view:builds/button:refresh",
+        "kind": "button",
+        "label": "Refresh",
+        "score": 9.883
+      }
+    ],
+    "by-id-words": [
+      {
+        "address": "view:settings/tab:axf.settings.tabs=plugins/setting:axf.display.fontScale",
+        "kind": "setting",
+        "label": "Font scale",
+        "score": 129.833
+      }
+    ],
+    "limited": [
+      {
+        "address": "view:builds/button:save",
+        "kind": "button",
+        "label": "Save",
+        "score": 59.933
+      },
+      {
+        "address": "view:builds/tab:orchestrator.sections=pipeline/grid:queue/row:abc/button:save",
+        "kind": "button",
+        "label": "Save",
+        "score": 59.933
+      }
+    ],
+    "none": [],
+    "blank": []
+  },
+  "nearest": {
+    "row-abd": [
+      "view:builds/tab:orchestrator.sections=pipeline/grid:queue/row:abc"
+    ],
+    "button-refesh": [
+      "view:builds/button:refresh"
+    ],
+    "tab-shiped": [
+      "view:builds/tab:orchestrator.sections=shipped",
+      "view:builds/tab:orchestrator.sections",
+      "view:builds/tab:orchestrator.sections=pipeline"
+    ],
+    "far": []
+  },
+  "scroll": {
+    "states": {
+      "main": {
+        "container": "scroll:main",
+        "top": 100,
+        "left": 0,
+        "height": 600,
+        "extent": 3000,
+        "atTop": false,
+        "atBottom": false,
+        "fraction": 0.042
+      },
+      "short": {
+        "container": "scroll:main",
+        "top": 0,
+        "left": 0,
+        "height": 600,
+        "extent": 400,
+        "atTop": true,
+        "atBottom": true,
+        "fraction": 0
+      },
+      "clamped-top": {
+        "container": "scroll:main",
+        "top": 2400,
+        "left": 0,
+        "height": 600,
+        "extent": 3000,
+        "atTop": false,
+        "atBottom": true,
+        "fraction": 1
+      },
+      "bottom": {
+        "container": "scroll:main",
+        "top": 2400,
+        "left": 0,
+        "height": 600,
+        "extent": 3000,
+        "atTop": false,
+        "atBottom": true,
+        "fraction": 1
+      },
+      "left": {
+        "container": "scroll:x",
+        "top": 10,
+        "left": 40,
+        "height": 100,
+        "extent": 500,
+        "atTop": false,
+        "atBottom": false,
+        "fraction": 0.025
+      }
+    },
+    "steps": {
+      "down": 300,
+      "up": 0,
+      "down-px": 350,
+      "up-half": 0,
+      "down-one": 700,
+      "page-down": 668,
+      "page-up": 0,
+      "page-down-no-line": 700,
+      "top": 0,
+      "bottom": 2400,
+      "to-centred": 1200,
+      "to-start": 2400,
+      "to-missing": {
+        "$axf": "console-control@1",
+        "ok": false,
+        "code": "validation",
+        "message": "scroll to: the address is not inside this container",
+        "problems": [
+          "scroll.to is outside the container"
+        ]
+      },
+      "short-down": 0,
+      "short-bottom": 0,
+      "bad-dir": {
+        "$axf": "console-control@1",
+        "ok": false,
+        "code": "invalid",
+        "message": "scroll.dir must be one of up, down, page-up, page-down, top, bottom, to",
+        "field": "scroll.dir"
+      }
+    }
+  },
+  "focusOptions": {
+    "defaults": {
+      "select": true,
+      "expand": false,
+      "highlight": true,
+      "highlightMs": 1800
+    },
+    "given": {
+      "select": false,
+      "expand": true,
+      "highlight": true,
+      "highlightMs": 0
+    }
+  },
+  "results": {
+    "press": {
+      "$axf": "console-control@1",
+      "ok": true,
+      "verb": "press",
+      "address": "button:refresh",
+      "pressed": "view:builds/button:refresh",
+      "audit": {
+        "by": "claude",
+        "reason": "reload",
+        "at": "2026-11-13T12:00:00.000Z"
+      }
+    },
+    "state": {
+      "$axf": "console-control@1",
+      "ok": true,
+      "verb": "state",
+      "address": "scroll:main",
+      "state": {
+        "container": "scroll:main",
+        "top": 100,
+        "left": 0,
+        "height": 600,
+        "extent": 3000,
+        "atTop": false,
+        "atBottom": false,
+        "fraction": 0.042
+      }
+    },
+    "search": {
+      "$axf": "console-control@1",
+      "ok": true,
+      "verb": "search",
+      "hits": []
+    },
+    "object-address": {
+      "$axf": "console-control@1",
+      "ok": true,
+      "verb": "focus",
+      "address": "row:abc",
+      "focused": "view:builds/tab:orchestrator.sections=pipeline/grid:queue/row:abc"
+    },
+    "unknown-code": {
+      "$axf": "console-control@1",
+      "ok": false,
+      "code": "unexpected",
+      "message": "x"
+    },
+    "denied": {
+      "$axf": "console-control@1",
+      "ok": false,
+      "code": "denied",
+      "message": "needs control.console.write",
+      "requires": "control.console.write"
+    },
+    "unknown-error": {
+      "$axf": "console-control@1",
+      "ok": false,
+      "code": "unexpected",
+      "message": "the command failed"
+    }
+  },
+  "helpers": {
+    "tabId": [
+      "row",
+      "row=v",
+      "row"
+    ],
+    "child": [
+      "view:builds",
+      "view:builds/row:a%2Fb"
+    ],
+    "parent": "view:builds/tab:orchestrator.sections=pipeline/grid:queue/row:abc",
+    "no-parent": null
+  }
+}
