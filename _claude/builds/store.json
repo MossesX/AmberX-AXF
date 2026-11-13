@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5004,
- "updatedAt": "2026-11-13T20:57:29.622Z",
+ "rev": 5005,
+ "updatedAt": "2026-11-13T20:57:58.423Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -208612,7 +208612,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T20:53:50.393Z",
-   "updatedAt": "2026-11-13T20:56:23.237Z",
+   "updatedAt": "2026-11-13T20:57:56.640Z",
    "builtAt": "",
    "notes": [
     {
@@ -208630,6 +208630,10 @@
     {
      "text": "Brett: he set two toolbars to show labels and the labels don't show. Make sure every per-toolbar setting actually applies (labels on/off/below/beside, icon size, style, transparency) and add a test per setting that checks the rendered toolbar changes, on desktop and phone.",
      "at": "2026-11-13T20:56:23.237Z"
+    },
+    {
+     "text": "CORRECTION: the pull-out commit was NEVER pushed (push rejected), so main still HAS the per-toolbar settings, and there is no pull-out commit to revert. After a hard refresh Brett's desktop looked fine, so the double app menu/banner/nav may have been a stale cached bundle. Still verify with the count test that desktop and phone each render exactly one. Main bug to fix now: per-toolbar settings don't apply (setting two toolbars to show labels shows no labels). Also: Brett says there's no Console settings page/entry he can find. Check that the Console settings entry at the top of every context menu (context-menu-console-settings, landed earlier today) works and opens Settings.",
+     "at": "2026-11-13T20:57:56.640Z"
     }
    ],
    "approvals": [],
@@ -208759,7 +208763,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
