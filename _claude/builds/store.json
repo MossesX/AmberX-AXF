@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4971,
- "updatedAt": "2026-11-13T20:45:19.383Z",
+ "rev": 4972,
+ "updatedAt": "2026-11-13T20:45:48.828Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -203568,16 +203568,16 @@
    "title": "Land overlay-preview-ui-review: resolve clash in approvals-banner",
    "category": "",
    "detail": "Branch claude/overlay-preview-ui-review clashed with main in apps/console-web/plugins/approvals-banner/help.json and web/index.tsx (merge aborted, main untouched). Merge origin/main into the branch and keep both: main's approvals-banner changes plus this branch's UI Review choice-set assets for the overlay toolbar shape. Run tests, push, then land on main.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/land-overlay-preview-ui-review-resolve",
-   "pr": "",
+   "pr": "#653",
    "priority": "P0",
    "createdAt": "2026-11-13T19:33:18.264Z",
-   "updatedAt": "2026-11-13T20:44:59.235Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-13T20:45:34.732Z",
+   "builtAt": "2026-11-13T20:45:34.732Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -203707,12 +203707,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T20:45:34.732Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T19:35:01.361Z",
-     "updatedAt": "2026-11-13T19:35:01.361Z"
+     "updatedAt": "2026-11-13T20:45:35.050Z"
     }
    ],
    "profiles": [
@@ -203723,7 +203723,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
