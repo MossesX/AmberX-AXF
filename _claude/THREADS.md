@@ -785,7 +785,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 11:32 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` note (all) · orchestrator
 - 2026-11-13 11:33 UTC · `show-commits-behind-main-on-every-build-table-an` s3 done, → complete, note (all) · foreign-write
 - 2026-11-13 11:33 UTC · `unlink-plan-studio-from-builds-delete-all-plan-s` note (all) · foreign-write
 - 2026-11-13 11:33 UTC · `badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad` s4 done, → complete, note (all) · foreign-write
@@ -1185,6 +1184,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 18:20 UTC · `toolbar-widgets-attach-any-banner-style` → queued, note (all) · console
 - 2026-11-13 18:20 UTC · `full-voice-api-control-type-fields-press` note (all) · orchestrator
 - 2026-11-13 18:20 UTC · `all-settings-interfaces-open-floating` s1 done, → running (all) · orchestrator
+- 2026-11-13 18:20 UTC · `decision-dialog-ui-review-other` note (all) · pipeline
 
 ## Token passes (log)
 

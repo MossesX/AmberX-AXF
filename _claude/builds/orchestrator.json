@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T18:21:01.579Z",
+ "updatedAt": "2026-11-13T18:21:15.936Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -126999,7 +126999,7 @@
    "title": "Decision dialog: UI Review and other approvals pop up on any screen with approve/deny/pick",
    "category": "",
    "detail": "Generalise the approval popup into one 'decision dialog' type used for anything that needs Brett, starting with UI Review.\n- Whenever an item is submitted to UI Review, Brett gets a notification AND a dialog pops up on whatever console screen he is on (and on the phone overlay toolbar when built), without navigating away.\n- The dialog shows the item (title, build, screenshots/options side by side, desktop + phone), with buttons: pick option N / Approve, Reject, Request changes (with a note), Later, and 'Open in UI Review' (only navigates if tapped).\n- Same dialog type reused for other decisions: veto countdowns, confirms, model upgrade approvals, merge clashes, keys needed, passes. Each source registers its buttons; one queue so several waiting items stack with a counter.\n- Voice/MCP/API: list waiting decisions, answer one by id ('pick option 2', 'approve it').\n- Notification settings to choose which decision types pop up.\n- Tests, help entry, Shipped features.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -127007,7 +127007,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:14:45.988Z",
-   "updatedAt": "2026-11-13T18:19:59.855Z",
+   "updatedAt": "2026-11-13T18:20:42.356Z",
    "builtAt": "",
    "notes": [
     {
@@ -127019,12 +127019,20 @@
      "at": "2026-11-13T18:18:38.236Z"
     },
     {
-     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-decision-dialog-ui-review-other--paulie, own login copy)",
-     "at": "2026-11-13T18:19:59.855Z"
-    },
-    {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-decision-dialog-ui-review-other--paulie.",
      "at": "2026-11-13T18:19:55.254Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-decision-dialog-ui-review-other--sully.",
+     "at": "2026-11-13T18:20:36.966Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-decision-dialog-ui-review-other--sully, own login copy)",
+     "at": "2026-11-13T18:20:42.356Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-decision-dialog-ui-review-other--paulie, own login copy)",
+     "at": "2026-11-13T18:19:59.855Z"
     }
    ],
    "approvals": [],

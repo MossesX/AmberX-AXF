@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4629,
- "updatedAt": "2026-11-13T18:21:01.579Z",
+ "rev": 4630,
+ "updatedAt": "2026-11-13T18:21:15.936Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -197686,7 +197686,7 @@
    "title": "Decision dialog: UI Review and other approvals pop up on any screen with approve/deny/pick",
    "category": "",
    "detail": "Generalise the approval popup into one 'decision dialog' type used for anything that needs Brett, starting with UI Review.\n- Whenever an item is submitted to UI Review, Brett gets a notification AND a dialog pops up on whatever console screen he is on (and on the phone overlay toolbar when built), without navigating away.\n- The dialog shows the item (title, build, screenshots/options side by side, desktop + phone), with buttons: pick option N / Approve, Reject, Request changes (with a note), Later, and 'Open in UI Review' (only navigates if tapped).\n- Same dialog type reused for other decisions: veto countdowns, confirms, model upgrade approvals, merge clashes, keys needed, passes. Each source registers its buttons; one queue so several waiting items stack with a counter.\n- Voice/MCP/API: list waiting decisions, answer one by id ('pick option 2', 'approve it').\n- Notification settings to choose which decision types pop up.\n- Tests, help entry, Shipped features.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -197694,7 +197694,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:14:45.988Z",
-   "updatedAt": "2026-11-13T18:19:59.855Z",
+   "updatedAt": "2026-11-13T18:20:42.356Z",
    "builtAt": "",
    "notes": [
     {
@@ -197706,12 +197706,20 @@
      "at": "2026-11-13T18:18:38.236Z"
     },
     {
-     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-decision-dialog-ui-review-other--paulie, own login copy)",
-     "at": "2026-11-13T18:19:59.855Z"
-    },
-    {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-decision-dialog-ui-review-other--paulie.",
      "at": "2026-11-13T18:19:55.254Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-decision-dialog-ui-review-other--sully.",
+     "at": "2026-11-13T18:20:36.966Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-decision-dialog-ui-review-other--sully, own login copy)",
+     "at": "2026-11-13T18:20:42.356Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-decision-dialog-ui-review-other--paulie, own login copy)",
+     "at": "2026-11-13T18:19:59.855Z"
     }
    ],
    "approvals": [],
@@ -197731,12 +197739,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T18:14:48.668Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-decision-dialog-ui-review-other--sully",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-13T18:20:36.175Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T18:18:38.236Z",
@@ -197746,18 +197754,18 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"a27086cb-22e6-40b0-8041-ff41f173ba0a\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-13T18:20:36.175Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-13T18:20:16.525Z",
+     "at": "2026-11-13T18:19:45.091Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-13T18:20:36.175Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -197973,7 +197981,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
