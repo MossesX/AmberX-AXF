@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4722,
- "updatedAt": "2026-11-13T18:56:22.089Z",
+ "rev": 4723,
+ "updatedAt": "2026-11-13T18:56:46.604Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -198799,7 +198799,7 @@
    "pr": "#632",
    "priority": "P1",
    "createdAt": "2026-11-13T18:26:12.039Z",
-   "updatedAt": "2026-11-13T18:55:46.655Z",
+   "updatedAt": "2026-11-13T18:56:28.230Z",
    "builtAt": "2026-11-13T18:55:46.655Z",
    "notes": [
     {
@@ -198841,6 +198841,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-transparency-token-works-every-dialog--sully, own login copy)",
      "at": "2026-11-13T18:36:18.638Z"
+    },
+    {
+     "text": "Phase 2 done, PR #632. UI Review item r-20261113-1u5fq01 and the before/after shots were saved in the worktree only: AXF_CONSOLE_URL / AXF_TOKEN were not set in this headless session, so they never reached the console. Next step: re-submit them with --console from a session that has console credentials (files: /tmp/tt-shots/before.png, after.png, after-phone.png), or take live desktop + phone shots once a console runs this branch.",
+     "at": "2026-11-13T18:56:28.230Z"
     }
    ],
    "approvals": [
@@ -199008,7 +199012,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

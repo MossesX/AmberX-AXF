@@ -786,7 +786,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 12:32 UTC · `assets-menu-hide-any-asset-visible-and-hidden-li` note (all) · orchestrator
 - 2026-11-13 12:32 UTC · `assets-menu-hide-any-asset-visible-and-hidden-li` → running, note (all) · pipeline
 - 2026-11-13 12:32 UTC · `assets-menu-hide-any-asset-visible-and-hidden-li` branch claude/assets-menu-hide-any-asset-visible-and-hidden-li (all) · pipeline
 - 2026-11-13 12:32 UTC · `auto-recover-stuck-builds` s11 done (all) · orchestrator
@@ -1186,6 +1185,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 18:55 UTC · `transparency-token-works-every-dialog` PR #632 (all) · builds-live
 - 2026-11-13 18:56 UTC · `console-android-app-thin-webview-wrapper` s2 done (all) · orchestrator
 - 2026-11-13 18:55 UTC · `transparency-token-works-every-dialog` s4 done, → built (all) · orchestrator
+- 2026-11-13 18:56 UTC · `transparency-token-works-every-dialog` note (all) · orchestrator
 
 ## Token passes (log)
 
