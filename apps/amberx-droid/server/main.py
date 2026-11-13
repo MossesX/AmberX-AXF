@@ -13,8 +13,8 @@ The page never holds an AI key: keys, provider profiles and the provider switchi
     GET  /api/walkthrough/{file}          the recorded app walkthrough (walkthrough.mp4 with Range, .vtt, chapters.json,
                                           poster.jpg) from `$AMBERX_DATA_DIR/walkthrough/` (walkthrough/rebuild.sh writes it)
   hub admins only:
-    GET  /api/ai/molly/status                     {ok, reason}   is Molly (the console's agent) reachable
-    POST /api/ai/molly      {task, page?, app?}   → {answer, walkthrough?}   Molly through the console's walkthrough guide
+    GET  /api/ai/molly/status                     {ok, reason}   is Gizmo (the console's agent; route name kept) reachable
+    POST /api/ai/molly      {task, page?, app?}   → {answer, walkthrough?}   Gizmo through the console's walkthrough guide
                                                    (every VPS command she runs is approved by Brett on axHub)
     GET  /api/ai/config                   profiles without keys (+ hasKey), order, active, Claude switch, kinds
     PUT  /api/ai/config     {profiles?, order?, active?, claude?: plan|api, keepAliveMin?}
@@ -32,8 +32,8 @@ AMBERX_WALL_SECRET, set by deploy/install.sh); a machine may use `Authorization:
 users may read the status and parse / summarize / ask; only admins change the config. Browser writes must come from
 this site's own origin.
 
-Molly: AMBERX_CONSOLE_URL (default http://axf-console:7090) + the console token (AMBERX_CONSOLE_TOKEN, else the
-AXF_TOKEN line in AMBERX_CONSOLE_TOKEN_FILE). Without them Molly is reported as not connected, with how to fix it.
+Gizmo: AMBERX_CONSOLE_URL (default http://axf-console:7090) + the console token (AMBERX_CONSOLE_TOKEN, else the
+AXF_TOKEN line in AMBERX_CONSOLE_TOKEN_FILE). Without them Gizmo is reported as not connected, with how to fix it.
 
 Env: AMBERX_DATA_DIR (default ./data), AMBERX_DIST (default ../dist), AMBERX_WALL_HUB, AMBERX_AI_KEEPALIVE=off,
 AMBERX_AI_TIMEOUT, AMBERX_AI_RETRIES, AMBERX_AI_MAX_BYTES, AMBERX_AI_HTTP_HOSTS, key variables (router.py), PORT.
@@ -124,8 +124,8 @@ def walkthrough_edits(raw: Any) -> dict[str, Any]:
 CONSOLE_URL = (os.environ.get("AMBERX_CONSOLE_URL") or "http://axf-console:7090").rstrip("/")
 _CONSOLE_TOKEN = TokenFile(os.environ.get("AMBERX_CONSOLE_TOKEN_FILE") or None, fallback=lambda: os.environ.get("AMBERX_CONSOLE_TOKEN", ""))
 MOLLY_TIMEOUT = 300.0
-# Where the console serves Molly's guide (its walkthrough plugin's folder). If that plugin is removed the console answers
-# 404 and AmberX says Molly can't be reached; nothing here breaks.
+# Where the console serves the Gizmo guide (its walkthrough plugin's folder). If that plugin is removed the console answers
+# 404 and AmberX says Gizmo can't be reached; nothing here breaks.
 MOLLY_PLUGIN = re.sub(r"[^a-z0-9-]", "", os.environ.get("AMBERX_MOLLY_PLUGIN") or "molly-guide") or "molly-guide"
 MOLLY_ASK = f"/api/plugins/{MOLLY_PLUGIN}/ask"
 WALKTHROUGH_RENDER = f"/api/plugins/{MOLLY_PLUGIN}/amberx-walkthrough/rerecord"  # re-voice / re-record a walkthrough
@@ -133,7 +133,7 @@ MOLLY_WALKS = f"/api/plugins/{MOLLY_PLUGIN}/walkthroughs"
 
 
 def console_client() -> ConsoleClient | None:
-    """The console, for Molly; None when no token is configured."""
+    """The console, for Gizmo; None when no token is configured."""
     return ConsoleClient(CONSOLE_URL, token=_CONSOLE_TOKEN, timeout=MOLLY_TIMEOUT, token_hint="AMBERX_CONSOLE_TOKEN") if _CONSOLE_TOKEN() else None
 DEV = wallmod.Caller("dev", "admin", frozenset({"*"}), "dev")
 
@@ -440,7 +440,7 @@ def make_app(router: Router | None = None, approvals_transport: httpx.BaseTransp
     async def molly_status() -> dict[str, Any]:
         c = console_client()
         if c is None:
-            return {"ok": False, "reason": "Molly isn't connected: this AmberX server has no console token (AMBERX_CONSOLE_TOKEN).", "fix": "token"}
+            return {"ok": False, "reason": "Gizmo isn't connected: this AmberX server has no console token (AMBERX_CONSOLE_TOKEN).", "fix": "token"}
         try:
             await run_in_threadpool(c.call, "GET", f"{MOLLY_WALKS}?after=999999999", None, 10)
             return {"ok": True, "reason": ""}
@@ -449,7 +449,7 @@ def make_app(router: Router | None = None, approvals_transport: httpx.BaseTransp
 
     @app.post("/api/ai/molly")
     async def molly(request: Request) -> dict[str, Any]:
-        """A developer task or app question for Molly. Runs on the console (its walkthrough guide → axf.agents@1); anything she
+        """A developer task or app question for Gizmo. Runs on the console (its walkthrough guide → axf.agents@1); anything he
         does on the VPS waits for Brett's approval on axHub, so this can take minutes."""
         b = await body_of(request)
         task = b.get("task")
@@ -459,12 +459,12 @@ def make_app(router: Router | None = None, approvals_transport: httpx.BaseTransp
             raise HTTPException(413, "task is at most 4000 characters")
         c = console_client()
         if c is None:
-            raise HTTPException(503, "Molly isn't connected: this AmberX server has no console token (AMBERX_CONSOLE_TOKEN).")
+            raise HTTPException(503, "Gizmo isn't connected: this AmberX server has no console token (AMBERX_CONSOLE_TOKEN).")
         body = {"task": task.strip(), "app": "amberx", "page": re.sub(r"[^\w.:-]", "", str(b.get("page") or ""))[:80]}
         try:
             r = await run_in_threadpool(c.call, "POST", MOLLY_ASK, body, MOLLY_TIMEOUT)
         except ConsoleError as e:
-            raise HTTPException(502, f"Molly couldn't answer: {str(e)[:300]}") from None
+            raise HTTPException(502, f"Gizmo couldn't answer: {str(e)[:300]}") from None
         r = r if isinstance(r, dict) else {}
         out: dict[str, Any] = {"answer": str(r.get("text") or "")[:6000] or "Done."}
         wt = r.get("walkthrough")
