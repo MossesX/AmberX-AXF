@@ -792,8 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 19:12 UTC · `orchestrator-settings-collapsible-split` → running, note (all) · pipeline
-- 2026-11-13 19:12 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
 - 2026-11-13 19:12 UTC · `console-app-part-3-native-bridge-mic` → running, note (all) · pipeline
 - 2026-11-13 19:12 UTC · `console-app-part-3-native-bridge-mic` → running, note (all) · orchestrator
 - 2026-11-13 19:13 UTC · `console-android-app-thin-webview-wrapper` s3 done (all) · orchestrator
@@ -1192,6 +1190,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 20:58 UTC · `hotfix-desktop-console-draws-app-menu` note (all) · claude-voice
 - 2026-11-13 20:58 UTC · `auto-land-every-finished-build-lands` s5 done (all) · orchestrator
 - 2026-11-13 20:59 UTC · `full-voice-control-resolve-inventory` s2 done (all) · orchestrator
+- 2026-11-13 20:59 UTC · `full-voice-control-resolve-inventory` note (all) · orchestrator
+- 2026-11-13 20:59 UTC · `full-voice-control-resolve-inventory` s3 done, → built (all) · orchestrator
 
 ## Token passes (log)
 
