@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4463,
- "updatedAt": "2026-11-13T12:40:43.046Z",
+ "rev": 4464,
+ "updatedAt": "2026-11-13T12:40:50.896Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -187613,7 +187613,7 @@
    "pr": "#572",
    "priority": "P0",
    "createdAt": "2026-11-13T12:23:34.932Z",
-   "updatedAt": "2026-11-13T12:40:41.227Z",
+   "updatedAt": "2026-11-13T12:40:42.998Z",
    "builtAt": "2026-11-13T12:40:41.227Z",
    "notes": [
     {
@@ -187655,6 +187655,10 @@
     {
      "text": "Brett: on the Build orchestrator page, long-pressing the toolbars (Reload/Plan Studio/Swarm row, Select all/Archive/Unarchive/Delete row) shows NO 'Toolbar settings' in the context menu at all. Tab group settings there DO save and apply. So two bugs: (1) some toolbars aren't registered as framework toolbars, so they have no settings entry; (2) on Shipped features the settings open but don't apply. Every toolbar must offer Toolbar settings on long-press/right-click, and its settings must apply.",
      "at": "2026-11-13T12:29:20.398Z"
+    },
+    {
+     "text": "PR #572 open, CI runs check-toolbar-settings (146 checks). UI Review not sent: no console token in the headless session; 6 shots in _claude/builds/reports/fix-toolbar-settings-doing-nothing/, submit command in the report.",
+     "at": "2026-11-13T12:40:42.998Z"
     }
    ],
    "approvals": [],
@@ -187850,7 +187854,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
