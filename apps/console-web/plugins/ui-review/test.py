@@ -199,6 +199,21 @@ check(c.get("/p/gate").json()["on"] is True and c.get("/p/settings").json()["uiR
 r = c.post("/p/gate", json={"on": False})
 check(r.status_code == 200 and r.json()["on"] is False and r.json()["changed"] is True and not svc.held("claude/t"), "POST gate {on: false} is open to everyone; nothing holds again")
 
+# ---- release-held's UI Review half (s9/s11): dry run marks nothing; real marks open items nonBlocking, still filed
+it42 = [x for x in c.get("/p/items").json()["items"] if x.get("pr") == 42]
+c.post("/p/decide", json={"ids": [it42[0]["id"]], "decision": "reject"})
+check(c.post("/p/release/items", json={}).status_code == 400, "release/items needs prs or all")
+dr = c.post("/p/release/items", json={"prs": [42], "dryRun": True}).json()
+check(dr["dryRun"] is True and dr["prs"][0]["items"] == [it42[0]["id"]] and not any(x.get("nonBlocking") for x in c.get("/p/items").json()["items"] if x.get("pr") == 42), "release/items dry run: lists the open item, marks nothing")
+gm._write_mirror(mod.data_dir, True, "test"); gm._cache.update(at=0.0, on=None, source="")
+check(svc.held(pr=42) is True and 42 in c.get("/p/gate").json()["heldPrs"], "gate on: the rejected PR 42 is held before release")
+rl = c.post("/p/release/items", json={"prs": ["#42"]}).json()
+after = [x for x in c.get("/p/items").json()["items"] if x.get("id") == it42[0]["id"]][0]
+check(rl["prs"][0]["items"] == [it42[0]["id"]] and after.get("nonBlocking") is True and after["status"] == "rejected" and after["history"][-1]["action"] == "released", "release/items: nonBlocking, status kept (nothing approved), history line")
+check(svc.held(pr=42) is False and 42 not in c.get("/p/gate").json()["heldPrs"] and c.get("/p/state", params={"pr": "42"}).json()["review"] == "rejected", "released: PR 42 no longer held even with the gate on, still filed as rejected")
+check(c.post("/p/release/items", json={"all": True}).json()["prs"] == [] or all(not x["items"] or x["pr"] != 42 for x in c.post("/p/release/items", json={"all": True, "dryRun": True}).json()["prs"]), "release/items all: a released item is not released twice")
+gm._write_mirror(mod.data_dir, False, "test"); gm._cache.update(at=0.0, on=None, source="")
+
 # ---- picks + remove
 check(c.put("/p/picks", json={"picked": ["a", "b", "c"]}).json()["picked"] == ["a", "b", "c"], "picks saved")
 check(c.put("/p/picks", json={"picked": ["../x"]}).status_code == 400, "bad pick refused")
