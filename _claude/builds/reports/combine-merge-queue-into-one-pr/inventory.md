@@ -442,3 +442,7 @@ builds merge driver installed there (`builds-live.mjs install`). PR heads fetche
   Open: #566's new skins command, executive, field, studio-pro have no light/dark pair, which #563 makes required
   (fixed in the checks step).
 - #568: only the baked copy `apps/console-web/src/axf/react/components/BannerSettings.tsx`: ours kept, rebaked in s12.
+- #570 (Plan Studio unlinked from builds): main's find-by-content kept (`find` op, `findInPlans`, CLI `find`, OPS),
+  #570's removal of the build link kept (`state` no longer syncs builds, `build` / `sync-builds` ops and `hasBuild`
+  gone, `delete-all` added); unused `readMatrices` / `orchestratorPath` imports dropped. plan-studio test 28 checks.
+- #556: not merged (out, still building).
