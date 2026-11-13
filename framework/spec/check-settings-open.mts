@@ -87,6 +87,12 @@ const walk = (dir: string) => {
 for (const d of ['framework/react', 'framework/libs', 'framework/core', 'framework/templates', 'apps']) walk(join(ROOT, d));
 ok(scanned.length > 100, `source guard scanned files (${scanned.length})`);
 
+// API, MCP, CLI and voice (console-control@1) open the Settings view the way a click does: through app.settings
+const ct = readFileSync(join(ROOT, 'framework/react/controlTargets.ts'), 'utf8');
+ok(/id === 'settings' \? rt\.dispatch\('app\.settings'\)/.test(ct), 'console-control view:settings opens through app.settings');
+ok(/address: SETTINGS_VIEW_ADDRESS[^\n]*open: \(\) => rt\.dispatch\('app\.settings'\)/.test(ct), 'derived Settings target opens through app.settings');
+ok(/const open = \(\) => rt\.dispatch\(`settings\.open:\$\{tab\.id\}`\)/.test(ct), 'settings tab targets open through settings.open');
+
 /* 4. dialog host + stylesheet */
 const ov = readFileSync(join(ROOT, 'framework/react/components/Overlays.tsx'), 'utf8');
 ok(/surface\?: 'glass'/.test(ov) && /data-fx-dialog-surface=\{dialogSurface\(state\.dialog\.id, def\)\}/.test(ov), 'dialog host gives settings dialogs glass by default');

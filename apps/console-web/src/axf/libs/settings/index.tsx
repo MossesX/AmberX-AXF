@@ -952,7 +952,7 @@ const CSS = `
 .axf-settings__levelpick{display:inline-flex;align-items:center;gap:var(--fx-dens-gap-md);flex:none}
 .axf-settings__levelhint{flex:1 1 auto!important;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:var(--fx-type-scale-sm)}
 .axf-settings__dialoghead{display:flex;align-items:center;justify-content:space-between;gap:var(--fx-dens-gap-md)}
-.axf-settings--alldialog>.axf-settings>.fx-pagehead{display:none}
+.axf-settings--alldialog :is(.fx-pagehead,.axf-settings__title){display:none}
 .axf-settings__search{max-width:none!important}
 .axf-settings>.axf-settings__search{flex:none;margin-left:0;width:100%;box-sizing:border-box;min-height:calc(var(--fx-font-size)*2.4)}
 .axf-settings__gbody .axf-settings__label>:not(:first-child){font-size:var(--fx-type-scale-xs);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
