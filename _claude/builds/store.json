@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3963,
- "updatedAt": "2026-11-13T02:05:57.101Z",
+ "rev": 3964,
+ "updatedAt": "2026-11-13T02:06:11.095Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -173584,7 +173584,7 @@
    "title": "One account picker: choose the single Claude account the console and VPS builds use",
    "category": "accounts",
    "detail": "Brett said: \"I need to be able to select in the console what account the console uses and the VPS uses for builds. I need to just be able to select one and that's it, just one.\"",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -173592,8 +173592,8 @@
    "pr": "#543",
    "priority": "P0",
    "createdAt": "2026-11-12T21:49:00.405Z",
-   "updatedAt": "2026-11-13T02:05:34.128Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-13T02:05:42.152Z",
+   "builtAt": "2026-11-13T02:05:42.153Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -173662,6 +173662,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-one-account-picker-choose-the-single-claude-acco--gina, own login copy)",
      "at": "2026-11-13T01:52:15.064Z"
+    },
+    {
+     "text": "PR #543 (draft). Picker, REST/MCP/CLI/voice, launcher and dispatcher done; tests pass. UI Review shots still missing: the scratch console can't reach axHub from the build sandbox, so captures only showed 'Waiting for axHub'. Take desktop + phone shots of Settings → Claude accounts → One account and the banner dialog, submit to UI Review, then mark the PR ready.",
+     "at": "2026-11-13T02:05:36.975Z"
     }
    ],
    "approvals": [],
@@ -173766,12 +173770,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T02:05:42.152Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T21:49:00.406Z",
-     "updatedAt": "2026-11-12T21:49:00.406Z"
+     "updatedAt": "2026-11-13T02:05:42.441Z"
     }
    ],
    "profiles": [
@@ -173782,7 +173786,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

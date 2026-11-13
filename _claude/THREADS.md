@@ -778,8 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 18:20 UTC · `plugin-review-map-what-each-plugin-does-depends-on-and-breaks` s3 done, → built, note (all) · orchestrator
-- 2026-11-12 18:20 UTC · `new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans` → running, note (all) · pipeline
 - 2026-11-12 18:20 UTC · `new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans` branch claude/new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans (all) · pipeline
 - 2026-11-12 18:20 UTC · `new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans` note (all) · orchestrator
 - 2026-11-12 18:20 UTC · `plugin-review-map-what-each-plugin-does-depends-on-and-breaks` note (all) · orchestrator
@@ -1178,6 +1176,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 02:05 UTC · `vps-badge-shows-shell-commands-work-banner-widgets-for-disk-cpu-load-and-memor` s3 done, → built (all) · orchestrator
 - 2026-11-13 02:05 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` PR #543 (all) · builds-live
 - 2026-11-13 02:05 UTC · `vps-badge-shows-shell-commands-work-banner-widgets-for-disk-cpu-load-and-memor` note (all) · orchestrator
+- 2026-11-13 02:05 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` note (all) · orchestrator
+- 2026-11-13 02:05 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` s3 done, → built (all) · orchestrator
 
 ## Token passes (log)
 
