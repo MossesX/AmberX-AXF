@@ -781,11 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 20:51 UTC · `add-a-tap-to-confirm-option-to-every-settings-in` note (all) · orchestrator
-- 2026-11-12 20:59 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` PR #526 (all) · builds-live
-- 2026-11-12 20:59 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` s4 done (all) · orchestrator
-- 2026-11-12 20:59 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` s8-7 done, → built (all) · orchestrator
-- 2026-11-12 21:00 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` PR #526 (all) · foreign-write
 - 2026-11-12 21:00 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` → pending, note (all) · pipeline
 - 2026-11-12 21:00 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` → running, note (all) · orchestrator
 - 2026-11-12 21:00 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` → queued, note (all) · pipeline
@@ -1181,6 +1176,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 06:23 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` note (all) · orchestrator
 - 2026-11-13 06:23 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` → pending, note (all) · pipeline
 - 2026-11-13 06:24 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` note (all) · builds-live
+- 2026-11-13 06:23 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` → queued, note (all) · pipeline
+- 2026-11-13 06:23 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` → running (all) · mcp
+- 2026-11-13 06:25 UTC · `skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga` added (0 steps) (all) · mcp
+- 2026-11-13 06:25 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` note (all) · orchestrator
+- 2026-11-13 06:25 UTC · `skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga` → queued, note (all) · console
 
 ## Token passes (log)
 
