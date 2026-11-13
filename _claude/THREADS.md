@@ -785,8 +785,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 11:17 UTC · `drag-anything-by-api-and-voice-after-pr-556-land` → running, note (all) · pipeline
-- 2026-11-13 11:17 UTC · `drag-anything-by-api-and-voice-after-pr-556-land` branch claude/drag-anything-by-api-and-voice-after-pr-556-land (all) · pipeline
 - 2026-11-13 11:17 UTC · `drag-anything-by-api-and-voice-after-pr-556-land` note (all) · orchestrator
 - 2026-11-13 11:18 UTC · `drag-anything-by-api-and-voice-after-pr-556-land` → running, note (all) · pipeline
 - 2026-11-13 11:18 UTC · `drag-anything-by-api-and-voice-after-pr-556-land` branch claude/drag-anything-by-api-and-voice-after-pr-556-land (all) · pipeline
@@ -1185,6 +1183,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 18:09 UTC · `restore-asset-designer-plugin-merged-nov` → running, note (all) · pipeline
 - 2026-11-13 18:09 UTC · `restore-asset-designer-plugin-merged-nov` branch claude/restore-asset-designer-plugin-merged-nov (all) · pipeline
 - 2026-11-13 18:09 UTC · `restore-asset-designer-plugin-merged-nov` note (all) · orchestrator
+- 2026-11-13 18:08 UTC · `per-instance-settings-window-picker` s3 done, → built (all) · orchestrator
+- 2026-11-13 18:08 UTC · `per-instance-settings-window-picker` note (all) · orchestrator
 
 ## Token passes (log)
 

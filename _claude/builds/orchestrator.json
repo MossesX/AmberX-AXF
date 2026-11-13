@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T18:09:32.038Z",
+ "updatedAt": "2026-11-13T18:09:44.088Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -125701,7 +125701,7 @@
    "title": "Per-instance settings-window picker inside every tab group and toolbar's settings",
    "category": "",
    "detail": "Every chrome instance (tab group, toolbar, banner, nav, menu bar) has its own chrome settings dialog (framework ChromeContext.tsx / chrome-settings-rules.mjs). Today the settings asset is picked per type/app (axf.chrome.settings.<type>). Add, inside each instance's settings dialog, a picker to choose which settings interface (settings asset) THAT instance uses, per instance, with the shared default preselected. Changing it re-renders the dialog live. Persist per instance, survive reload, follow skins. Expose via REST/MCP/CLI/voice and control@1. Tests, help entry, Shipped features.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -125710,7 +125710,7 @@
    "priority": "P1",
    "createdAt": "2026-11-13T17:46:43.480Z",
    "updatedAt": "2026-11-13T18:09:08.109Z",
-   "builtAt": "",
+   "builtAt": "2026-11-13T18:09:08.109Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -125763,6 +125763,10 @@
     {
      "text": "Headless run axf-per-instance-settings-window-picker--sully: brief only · start 11.2K tokens ($0.03) · cost $2.81 · 71 turns · 6 tools, MCP none",
      "at": "2026-11-13T18:09:08.109Z"
+    },
+    {
+     "text": "Phase 1 done, PR #622 draft. Gap: UI Review shots not taken (headless console rendered blank in the worktree); desktop + phone shots of a toolbar and tab-group dialog still needed.",
+     "at": "2026-11-13T18:08:42.635Z"
     }
    ],
    "approvals": [],
@@ -125834,8 +125838,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T18:08:39.080Z",
      "note": "",
      "uid": "st-mwf9s99m03cl5j",
      "createdAt": "2026-11-13T17:47:52.425Z"
