@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3950,
- "updatedAt": "2026-11-13T01:56:17.254Z",
+ "rev": 3951,
+ "updatedAt": "2026-11-13T01:56:29.714Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -173372,7 +173372,7 @@
    "branch": "claude/tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch",
    "pr": "",
    "createdAt": "2026-11-12T20:45:12.311Z",
-   "updatedAt": "2026-11-13T01:48:15.036Z",
+   "updatedAt": "2026-11-13T01:56:05.334Z",
    "builtAt": "",
    "notes": [
     {
@@ -173465,18 +173465,18 @@
    "pipeline": {
     "queuedAt": "2026-11-12T20:45:18.841Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-tap-to-confirm-follows-label-visibility-quick-sw--earl",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-13T01:48:10.772Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
-    "note": "",
+    "note": "launch failed: launcher exit 2: claude-headless: --log is a plain file name",
     "route": "",
-    "dispatchedAt": "2026-11-13T01:48:10.772Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -173484,8 +173484,10 @@
      "at": "2026-11-12T20:46:05.543Z",
      "why": "subscription account mossesx-max-"
     },
-    "tried": [],
-    "pickedAt": "2026-11-13T01:48:10.772Z",
+    "tried": [
+     "mossesx-max-"
+    ],
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -173506,12 +173508,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T01:56:05.334Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T20:45:12.312Z",
-     "updatedAt": "2026-11-12T20:45:12.312Z"
+     "updatedAt": "2026-11-13T01:56:05.695Z"
     },
     {
      "id": "s2",
