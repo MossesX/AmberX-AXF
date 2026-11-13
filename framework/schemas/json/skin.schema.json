@@ -38,30 +38,11 @@
         "layoutTheme",
         "colorTheme",
         "styleTheme",
-        "assets",
-        "colorThemes"
+        "assets"
       ],
       "properties": {
         "layoutTheme": {},
         "colorTheme": {},
-        "colorThemes": {
-          "type": "object",
-          "description": "The skin's light and dark colour themes (skin-modes@1); colorTheme is one of the two.",
-          "required": [
-            "light",
-            "dark"
-          ],
-          "properties": {
-            "light": {
-              "type": "string",
-              "pattern": "^[a-z0-9][a-z0-9-]*$"
-            },
-            "dark": {
-              "type": "string",
-              "pattern": "^[a-z0-9][a-z0-9-]*$"
-            }
-          }
-        },
         "styleTheme": {},
         "assets": {},
         "behaviorTheme": {

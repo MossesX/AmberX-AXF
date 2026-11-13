@@ -226,7 +226,7 @@ export function TabGroup<T extends string = string>({ id, label, value, onChange
   if (data.overflow === 'dropdown') {
     const cur = tabs[activeIndex];
     row = (
-      <div ref={rowRef} className={`${cls} fx-tabs--dropdown`} role="tablist" aria-label={label} data-axf-tab-group={id} data-fx-ctx-target="tab-group" data-fx-ctx-payload={id} style={style} {...attrs}>
+      <div ref={rowRef} className={`${cls} fx-tabs--dropdown`} role="tablist" aria-label={label} data-axf-tab-group={id} data-axf-labels={data.display === 'icons' ? 'hidden' : 'shown'} data-fx-ctx-target="tab-group" data-fx-ctx-payload={id} style={style} {...attrs}>
         <button type="button" className="fx-tabs__pick" aria-haspopup="menu" aria-expanded={menu} onClick={() => setMenu((m) => !m)}>
           {cur?.icon && data.display !== 'text' && <Icon name={cur.icon} size={14} />}
           {data.display !== 'icons' && <span className="fx-tab__text">{cur?.label ?? label}</span>}
@@ -239,7 +239,7 @@ export function TabGroup<T extends string = string>({ id, label, value, onChange
     );
   } else {
     row = (
-      <div ref={rowRef} className={cls} role="tablist" aria-label={label} aria-orientation={vertical ? 'vertical' : 'horizontal'} data-axf-tab-group={id} data-fx-ctx-target="tab-group" data-fx-ctx-payload={id} style={style} {...attrs}>
+      <div ref={rowRef} className={cls} role="tablist" aria-label={label} aria-orientation={vertical ? 'vertical' : 'horizontal'} data-axf-tab-group={id} data-axf-labels={data.display === 'icons' ? 'hidden' : 'shown'} data-fx-ctx-target="tab-group" data-fx-ctx-payload={id} style={style} {...attrs}>
         {shown.map(tabEl)}
         {overflowed.length > 0 && (
           <button type="button" className="fx-tab fx-tabs__more" aria-haspopup="menu" aria-expanded={menu} aria-label={`${overflowed.length} more`} title={`${overflowed.length} more`} onClick={() => setMenu((m) => !m)}>

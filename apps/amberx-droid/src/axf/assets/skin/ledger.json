@@ -11,7 +11,8 @@
     "enterprise",
     "dense",
     "skin",
-    "professional"
+    "professional",
+    "partial"
   ],
   "data": {
     "layoutTheme": "data-grid",

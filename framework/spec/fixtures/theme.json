@@ -611,6 +611,24 @@
     "--fx-focus": "#4c9be8",
     "--fx-shadow": "rgba(0,0,0,0.5)"
   },
+  "color-theme:windows-dark": {
+    "--fx-bg": "#202020",
+    "--fx-surface": "#2b2b2b",
+    "--fx-surface2": "#323232",
+    "--fx-surface3": "#3a3a3a",
+    "--fx-text": "#ffffff",
+    "--fx-muted": "#c5c5c5",
+    "--fx-border": "#3d3d3d",
+    "--fx-accent": "#4cc2ff",
+    "--fx-accent-text": "#000000",
+    "--fx-accent-soft": "rgba(76,194,255,0.14)",
+    "--fx-danger": "#ff99a4",
+    "--fx-success": "#6ccb5f",
+    "--fx-warning": "#fce100",
+    "--fx-info": "#60cdff",
+    "--fx-focus": "#4cc2ff",
+    "--fx-shadow": "rgba(0,0,0,0.42)"
+  },
   "color-theme:windows-light": {
     "--fx-bg": "#f3f3f3",
     "--fx-surface": "#ffffff",

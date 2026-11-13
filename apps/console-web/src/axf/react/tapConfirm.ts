@@ -12,12 +12,15 @@
  *
  * A click whose press was a finger goes through `tapDecide`: the first tap is swallowed, the item lights up
  * (`data-axf-armed`) and a tip says what it is and "Tap again to confirm"; a second tap on it inside the arm window
- * lets the click through. Mouse, pen and keyboard clicks pass untouched. Whether an item taps to confirm is a setting:
- * the item's own choice (its settings dialog → Behaviour → Tap to confirm, the `tapConfirm` field of chrome-settings@1)
- * else the switch for its kind (Settings → Plugins → Toolbars → Tap to confirm). In code, an element can opt out with
- * `data-axf-tap-confirm="off"` and a `data-axf-tap-confirm-reason` (check-toolbars.mjs refuses one without a reason).
+ * lets the click through. Mouse, pen and keyboard clicks pass untouched. Whether an item taps to confirm is a setting
+ * (core/engines/tapconfirm.ts `tapConfig`): a toolbar's own override, else the item's own choice (its settings dialog →
+ * Behaviour → Tap to confirm, the `tapConfirm` field of chrome-settings@1), else the switch for its kind (Settings →
+ * Plugins → Toolbars), which by default follows label visibility: on where the labels are hidden
+ * (`data-axf-labels="hidden"`, set by the renderers; a surface without the mark counts as hidden when none of its
+ * buttons carries any text), off where they show. In code, an element can opt out with `data-axf-tap-confirm="off"`
+ * and a `data-axf-tap-confirm-reason` (check-toolbars.mjs refuses one without a reason).
  */
-import { TAP_HINT, TAP_IDLE, tapConfigFor, tapDecide, tapPointer, toolbarIdOf, type TapKind, type TapState } from '../core/engines/tapconfirm';
+import { TAP_HINT, TAP_IDLE, tapConfig, tapDecide, tapPointer, toolbarIdOf, type TapKind, type TapScope, type TapState } from '../core/engines/tapconfirm';
 import { placeTip } from './placeTip';
 
 const BUTTONS = 'button, [role="button"], a[href]';
@@ -61,6 +64,24 @@ export function toolbarOf(btn: Element): HTMLElement | null {
   const bar = btn.closest<HTMLElement>('[role="toolbar"]');
   if (!bar || bar.dataset.axfTapConfirm === 'off') return null;
   return bar;
+}
+
+/** Whether a surface hides its labels: `data-axf-labels`, else no button in it carries any text. */
+export function labelsHiddenOf(bar: HTMLElement): boolean {
+  const mark = bar.dataset.axfLabels;
+  if (mark === 'hidden') return true;
+  // the nav region folded to icons (nav style "collapsed") hides every label whatever the nav itself says
+  if ((bar.tagName === 'NAV' || bar.dataset.axfNav !== undefined) && bar.closest?.('[data-fx-navs-collapsed="on"]')) return true;
+  if (mark === 'shown') return false;
+  const buttons = Array.from((bar as unknown as { querySelectorAll?: (s: string) => ArrayLike<Element> }).querySelectorAll?.(BUTTONS) ?? []);
+  return buttons.length > 0 && buttons.every((b) => !(b.textContent ?? '').trim());
+}
+
+/** The surface an element is: its kind, chrome instance (for its settings field), label visibility and toolbar id. */
+export function scopeOf(bar: HTMLElement): TapScope & { id: string } {
+  const s = tapSurfaceOf(bar);
+  const type: TapKind = s?.kind ?? 'toolbar';
+  return { type, instance: s?.instance || undefined, labelsHidden: labelsHiddenOf(s?.el ?? bar), id: type === 'toolbar' ? toolbarElementId(s?.el ?? bar) : '' };
 }
 
 /** The settings id of a toolbar element (`data-axf-toolbar`, `data-axf-toolbar-asset`, else its aria-label). */
@@ -130,8 +151,8 @@ export function installTapConfirm(doc: Document, get: (key: string) => unknown, 
     const fresh = press && now() - press.at <= PRESS_MS && press.target instanceof Node && btn.contains(press.target);
     const pointer = tapPointer(fresh && e.detail > 0 ? press!.type : '');
     // skin@2: the skin in force where the surface sits stamps data-fx-bhv-<kind>-tap-confirm on its root (the page or a SkinScope)
-    const skinPick = surface.el.closest(`[data-fx-bhv-${surface.kind}-tap-confirm]`)?.getAttribute(`data-fx-bhv-${surface.kind}-tap-confirm`) ?? undefined;
-    const cfg = tapConfigFor(get, surface.kind, surface.instance, skinPick);
+    const skin = surface.el.closest(`[data-fx-bhv-${surface.kind}-tap-confirm]`)?.getAttribute(`data-fx-bhv-${surface.kind}-tap-confirm`) ?? undefined;
+    const cfg = tapConfig(get, surface.kind === 'toolbar' ? toolbarElementId(surface.el) : '', { type: surface.kind, instance: surface.instance, labelsHidden: labelsHiddenOf(surface.el), skin });
     const d = tapDecide(state, { pointer, target: keyOf(btn), now: now() }, cfg);
     if (d.outcome === 'run') { clear(); return; }
     e.preventDefault();

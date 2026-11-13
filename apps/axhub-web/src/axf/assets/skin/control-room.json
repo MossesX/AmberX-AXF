@@ -11,7 +11,8 @@
     "dark",
     "dense",
     "skin",
-    "professional"
+    "professional",
+    "partial"
   ],
   "data": {
     "layoutTheme": "command-center",

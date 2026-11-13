@@ -69,6 +69,10 @@ export const CHROME_INSTANCE_ASSET_KEY = (type, instance) => `axf.chrome.${type}
 /** A tab group's remembered tab and fold state (per device). */
 export const TAB_GROUP_LAST_KEY = (instance) => `axf.tabs.${instance}.last`;
 export const TAB_GROUP_FOLD_KEY = (instance) => `axf.tabs.${instance}.folded`;
+/** The quick-switches pane at the top of a chrome type's settings dialog: 'folded' or unset (open). */
+export const CHROME_QUICK_KEY = (type) => `axf.chrome.quick.${type}`;
+/** The fields of a type the quick-switches pane shows (label visibility, tap to confirm, …); [] = no pane. */
+export const chromeQuickFields = (type) => (CHROME_FIELDS[type] ?? []).filter((f) => f.quick === true);
 export const isChromeInstanceId = (id) => typeof id === 'string' && INSTANCE.test(id);
 
 /* ---------------- context targets + moves ---------------- */
@@ -100,13 +104,14 @@ const SURFACE = ['flat', 'raised', 'glass'];
  * Every field the chrome settings dialog offers, per type: the asset type's own data fields a person may override
  * for one instance (the asset itself stays untouched; the override is a setting). `group` = the dialog tab, `level`
  * = settings-ui@1 level it shows from, `default` = the value the asset type's engine uses when the asset leaves the
- * field out (so a dialog always shows a value). Kinds: choice (options), toggle, number (min/max).
+ * field out (so a dialog always shows a value). Kinds: choice (options), toggle, number (min/max). `quick` = also in
+ * the quick-switches pane at the top of the dialog (label visibility and tap to confirm: tapconfirm.ts links the two).
  */
 export const CHROME_FIELDS = {
   'tab-group': [
     { key: 'style', label: 'Tab style', kind: 'choice', options: ['underline', 'pills', 'boxed', 'segmented', 'plain', 'chips'], default: "underline", group: 'look', level: 'simple' },
     { key: 'position', label: 'Position', kind: 'choice', options: ['top', 'bottom', 'left', 'right'], default: "top", group: 'look', level: 'simple' },
-    { key: 'display', label: 'Show', kind: 'choice', options: ['both', 'text', 'icons'], labels: { both: 'Icons + text', text: 'Text', icons: 'Icons' }, default: "both", group: 'look', level: 'simple' },
+    { key: 'display', label: 'Show', kind: 'choice', options: ['both', 'text', 'icons'], labels: { both: 'Icons + text', text: 'Text', icons: 'Icons' }, default: "both", group: 'look', level: 'simple', quick: true },
     { key: 'density', label: 'Size', kind: 'choice', options: DENSITY, default: 'regular', group: 'look', level: 'basic' },
     { key: 'align', label: 'Align', kind: 'choice', options: ['start', 'center', 'end', 'stretch'], default: "start", group: 'look', level: 'basic' },
     { key: 'divider', label: 'Rule under the row', kind: 'toggle', default: true, group: 'look', level: 'basic' },
@@ -119,7 +124,7 @@ export const CHROME_FIELDS = {
     { key: 'reorderable', label: 'Reorderable (where the host allows)', kind: 'toggle', default: true, group: 'behaviour', level: 'developer' },
   ],
   toolbar: [
-    { key: 'variant', label: 'Buttons', kind: 'choice', options: ['icons', 'icons-labels', 'labels'], labels: { icons: 'Icons', 'icons-labels': 'Icons + labels', labels: 'Labels' }, default: "icons", group: 'look', level: 'simple' },
+    { key: 'variant', label: 'Buttons', kind: 'choice', options: ['icons', 'icons-labels', 'labels'], labels: { icons: 'Icons', 'icons-labels': 'Icons + labels', labels: 'Labels' }, default: "icons", group: 'look', level: 'simple', quick: true },
     { key: 'align', label: 'Align', kind: 'choice', options: ['start', 'center', 'spread'], default: "start", group: 'look', level: 'basic' },
     { key: 'density', label: 'Size', kind: 'choice', options: DENSITY, default: 'regular', group: 'look', level: 'basic' },
     { key: 'surface', label: 'Surface', kind: 'choice', options: SURFACE, default: 'flat', group: 'look', level: 'basic' },
@@ -137,6 +142,7 @@ export const CHROME_FIELDS = {
     { key: 'density', label: 'Size', kind: 'choice', options: DENSITY, default: 'regular', group: 'look', level: 'basic' },
     { key: 'indicator', label: 'Active mark', kind: 'choice', options: ['auto', 'bar', 'fill', 'none'], default: "auto", group: 'look', level: 'basic' },
     { key: 'showIcons', label: 'Icons', kind: 'toggle', default: true, group: 'look', level: 'basic' },
+    { key: 'showLabels', label: 'Labels', kind: 'toggle', default: true, group: 'look', level: 'simple', quick: true },
     { key: 'navStyle', label: 'Sub menus (nav-style)', kind: 'toggle', default: false, group: 'behaviour', level: 'developer' },
   ],
   'app-menu': [
@@ -155,13 +161,16 @@ export const CHROME_FIELDS = {
  * in all of them. In all their settings interfaces." Addendum 1: every custom settings interface uses it by default).
  * One field in every chrome kind's settings dialog, so every tab group, toolbar, navigation menu, application menu,
  * context menu and banner offers it, and every settings interface (the shared default and each app's custom copy)
- * shows it with no asset edit. `instanceOnly`: a choice of the item, not a field of its asset type (asset-types.json
- * is unchanged), so it is only ever an instance override. `inherit` follows the switch for that whole kind (core/engines/tapconfirm.ts).
+ * shows it with no asset edit. `instanceOnly`: a choice of the item, normally an instance override (asset-types.json
+ * documents it for the kinds that can hide their labels). `inherit` follows the switch for that whole kind, which by
+ * default follows label visibility (core/engines/tapconfirm.ts). `quick`: also in the quick-switches pane.
  */
 export const CHROME_TAP_FIELD = 'tapConfirm';
 export const CHROME_TAP_OPTIONS = ['inherit', 'on', 'off'];
+/** The kinds whose quick-switches pane (top of the dialog) also holds tap to confirm, next to their label visibility. */
+const QUICK_TAP = ['toolbar', 'tab-group', 'nav-menu', 'app-menu'];
 for (const t of CHROME_TYPES) {
-  CHROME_FIELDS[t].push({ key: CHROME_TAP_FIELD, label: 'Tap to confirm (touch)', kind: 'choice', options: [...CHROME_TAP_OPTIONS], labels: { inherit: 'Same as all', on: 'On', off: 'Off' }, default: 'inherit', group: 'behaviour', level: 'simple', instanceOnly: true });
+  CHROME_FIELDS[t].push({ key: CHROME_TAP_FIELD, label: 'Tap to confirm (touch)', kind: 'choice', options: [...CHROME_TAP_OPTIONS], labels: { inherit: 'Same as all', on: 'On', off: 'Off' }, default: 'inherit', group: 'behaviour', level: 'simple', instanceOnly: true, ...(QUICK_TAP.includes(t) ? { quick: true } : {}) });
 }
 
 /** The tabs every chrome settings interface starts with (a settings asset may relabel, reorder or hide them). */

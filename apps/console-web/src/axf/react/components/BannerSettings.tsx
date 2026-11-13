@@ -42,7 +42,7 @@ import {
   setAllBannersHidden, setBannerHidden, setBannerTimer, showAllBanners, anyBannerHide, type BannerHideState,
 } from '../../core/engines/bannerhide';
 import { Icon } from './Icon';
-import { Slot } from './Slots';
+import { BadgeShapesList } from './BadgeShapes';
 import { TabGroup } from './TabGroup';
 import { LookEditor, LookLevelSwitch } from './LookEditor';
 import { LOOK_LEVELS, lookChanged, lookCss, lookPrefs, normalizeLook, type LookLevel, type LookValues } from '../../core/engines/looktokens';
@@ -405,8 +405,7 @@ function BannerFrame({ id, children }: { id: string; children: ReactNode }) {
       data-icon={p.icon ? undefined : 'off'}
       style={p.maxRows ? { maxHeight: `calc(var(--fx-row-h) * ${p.maxRows})`, overflow: 'auto' } : undefined}
     >
-      {/* banner.extras: widgets a person snapped into this banner (props.banner = this banner's id); each draws nothing elsewhere */}
-      <IdCtx.Provider value={id}><LaunchCtx.Provider value={p.launch}>{children}<Slot name="banner.extras" props={{ banner: id }} /></LaunchCtx.Provider></IdCtx.Provider>
+      <IdCtx.Provider value={id}><LaunchCtx.Provider value={p.launch}>{children}</LaunchCtx.Provider></IdCtx.Provider>
     </div>
   );
   if (until === undefined) return frame;
@@ -508,6 +507,12 @@ export function BannerSettingsPanel({ initial }: { initial?: string }) {
         <Button tone="ghost" icon="layers" onClick={() => rt.dispatch('banner.widgets')}>Widgets on the top bar…</Button>
       </div>
       <ApplyToAllLook />
+      <Container className="fx-banner-settings__badges" title="Badge shapes" icon="star" collapsible defaultOpen>
+        <fieldset className="fx-stack" disabled={rt.lockedByAppearance('assets.swap')} style={{ border: 0, margin: 0, padding: 0, minWidth: 0 }}>
+          <p className="fx-muted fx-small" style={{ margin: 0 }}>Each badge on the top bar as a pill (icon and text), only its icon, or only a dot.</p>
+          <BadgeShapesList />
+        </fieldset>
+      </Container>
       <TabGroup id="banner-settings.banners" label="Banners" className="fx-banner-settings__tabs" value={tab} onChange={setTab} tabs={list.map((x) => ({ value: x.id, label: bannerLabel(x), icon: x.icon ?? 'bell' }))} />
       {b && (
         <div className="fx-stack">

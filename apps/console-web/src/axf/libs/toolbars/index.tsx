@@ -5,7 +5,8 @@
  *   installLibraries(rt, [settingsLibrary, toolbarsLibrary, ...]);
  *
  * What it does today:
- *  - Settings → Plugins → Toolbars: tap-to-confirm on touch (on by default) and its arm window (3 s by default). The
+ *  - Settings → Plugins → Toolbars: tap-to-confirm on touch (follows label visibility by default: on where a toolbar,
+ *    tab group, nav or menu bar shows icons only, off where it shows labels; or Always / Never) and its arm window (3 s by default). The
  *    behaviour itself is the framework's (framework/react/tapConfirm.ts, installed by <AxfProvider>) and reads these
  *    keys, so it works the same with or without this library; the library is where a person changes them.
  *  - All toolbars: every toolbar on the current screen (any element with role="toolbar") with its settings id and its
@@ -20,8 +21,8 @@ import type { AxfWebLibrary } from '../../react/library';
 import { useAxfState, useRuntime } from '../../react/AxfProvider';
 import { SelectField, Note } from '../../react/components/Forms';
 import { Button } from '../../react/components/Controls';
-import { TAP_ARM_DEFAULT_MS, TAP_ARM_RANGE, TAP_KEYS, TAP_KINDS, TAP_KIND_LABELS, TAP_OVERRIDES, tapConfig, tapKindKey, type TapOverride } from '../../core/engines/tapconfirm';
-import { toolbarElementId } from '../../react/tapConfirm';
+import { TAP_ARM_DEFAULT_MS, TAP_ARM_RANGE, TAP_KEYS, TAP_KINDS, TAP_KIND_LABELS, TAP_MODES, TAP_MODE_LABELS, TAP_OVERRIDES, tapConfig, tapKindKey, type TapOverride, type TapScope, type TapSource } from '../../core/engines/tapconfirm';
+import { scopeOf, toolbarElementId } from '../../react/tapConfirm';
 import './toolbars.css';
 
 export const TOOLBARS_ID = 'ai.amberx.axf.toolbars';
@@ -31,7 +32,7 @@ export const ALL_TOOLBARS_PANEL = 'toolbars.all';
 /** The settings key of one toolbar's tap-to-confirm override. */
 export const tapOverrideKey = (toolbarId: string) => `${TAP_KEYS.perToolbar}${toolbarId}.tapConfirm`;
 
-export interface ToolbarOnScreen { id: string; label: string; offInCode: string | null; count: number }
+export interface ToolbarOnScreen { id: string; label: string; offInCode: string | null; count: number; scope: TapScope }
 
 /** Every toolbar on the page now, one row per settings id (several bars may share one id, e.g. a list of cards). */
 export function toolbarsOnScreen(doc: Document = document): ToolbarOnScreen[] {
@@ -42,7 +43,7 @@ export function toolbarsOnScreen(doc: Document = document): ToolbarOnScreen[] {
     const hit = out.get(id);
     if (hit) { hit.count++; continue; }
     const off = el.dataset.axfTapConfirm === 'off' ? el.dataset.axfTapConfirmReason || 'switched off in code' : null;
-    out.set(id, { id, label: el.getAttribute('aria-label') || id, offInCode: off, count: 1 });
+    out.set(id, { id, label: el.getAttribute('aria-label') || id, offInCode: off, count: 1, scope: scopeOf(el) });
   }
   return [...out.values()].sort((a, b) => a.label.localeCompare(b.label));
 }
@@ -51,6 +52,7 @@ export function toolbarsOnScreen(doc: Document = document): ToolbarOnScreen[] {
 const ARM_CHOICES = [1500, 2000, 3000, 4000, 5000, 7000, 10000].filter((ms) => ms >= TAP_ARM_RANGE[0] && ms <= TAP_ARM_RANGE[1]).map((ms) => ({ value: String(ms), label: `${ms / 1000} s${ms === TAP_ARM_DEFAULT_MS ? ' (default)' : ''}` }));
 
 const OVERRIDE_LABEL: Record<TapOverride, string> = { inherit: 'Same as all', on: 'On', off: 'Off' };
+const SOURCE_LABEL: Record<TapSource, string> = { toolbar: 'set here', instance: 'set in its settings', skin: 'set by the skin', global: 'set for all', labels: 'follows its labels' };
 
 function AllToolbarsPanel() {
   const rt = useRuntime();
@@ -67,7 +69,7 @@ function AllToolbarsPanel() {
         <div key={r.id} className="axf-toolbars__row">
           <div className="axf-toolbars__name">
             <strong>{r.label}</strong>
-            <span className="fx-small fx-muted">{r.id}{r.count > 1 ? ` · ${r.count} on screen` : ''} · tap-to-confirm {r.offInCode ? 'off' : tapConfig(get, r.id).enabled ? 'on' : 'off'}</span>
+            <span className="fx-small fx-muted">{r.id}{r.count > 1 ? ` · ${r.count} on screen` : ''} · tap-to-confirm {r.offInCode ? 'off' : ((c) => `${c.enabled ? 'on' : 'off'} (${SOURCE_LABEL[c.source ?? 'labels']})`)(tapConfig(get, r.id, r.scope))}</span>
           </div>
           {r.offInCode
             ? <span className="fx-small fx-muted">Off in code: {r.offInCode}</span>
@@ -84,12 +86,12 @@ export const toolbarsLibrary: AxfWebLibrary = {
   id: TOOLBARS_ID,
   label: 'Toolbars',
   version: '0.1.0',
-  settingsTabs: [{ id: TOOLBARS_TAB, label: 'Toolbars', icon: 'layout', order: 40, parent: 'plugins', description: 'Tap to confirm on touch for every toolbar, tab group, navigation and menu in this app, and each toolbar’s own choice.' }],
+  settingsTabs: [{ id: TOOLBARS_TAB, label: 'Toolbars', icon: 'layout', order: 40, parent: 'plugins', description: 'Tap to confirm on touch for every toolbar, tab group, navigation and menu in this app (follows label visibility by default), and each toolbar’s own choice.' }],
   settings: [{
     id: 'toolbars.tap', tab: TOOLBARS_TAB, label: 'Tap to confirm (touch)', icon: 'smartphone', order: 10,
     description: 'On a phone or any touch screen, the first tap on a toolbar button, tab, navigation or menu item shows what it is and lights it up; a second tap confirms it. A mouse, trackpad or pen clicks once, as usual. Each one can choose for itself in its own settings (right-click or long-press it → Settings → Behaviour).',
     settings: [
-      ...TAP_KINDS.map((kind) => ({ key: tapKindKey(kind), label: `Tap twice on touch: ${TAP_KIND_LABELS[kind].toLowerCase()}`, kind: 'toggle' as const, default: true, scope: 'device' as const })),
+      ...TAP_KINDS.map((kind) => ({ key: tapKindKey(kind), label: `Tap twice on touch: ${TAP_KIND_LABELS[kind].toLowerCase()}`, description: 'Follow labels: on where it shows icons only, off where it shows labels. Each one can still be set on or off in its own settings.', kind: 'choice' as const, default: 'labels', options: TAP_MODES.map((m) => ({ value: m, label: TAP_MODE_LABELS[m] })), scope: 'device' as const })),
       { key: TAP_KEYS.armMs, label: 'Ready for the second tap', description: 'How long an item stays lit after the first tap.', kind: 'choice', default: String(TAP_ARM_DEFAULT_MS), options: ARM_CHOICES, scope: 'device' },
     ],
   }],

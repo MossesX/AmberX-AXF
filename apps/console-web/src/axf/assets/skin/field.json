@@ -16,6 +16,7 @@
     "layoutTheme": "field",
     "colorTheme": "field-day",
     "styleTheme": "field",
+    "behaviorTheme": "gentle",
     "assets": {
       "banner": "amberx-thin",
       "app-menu": "minimal-picker",
@@ -34,7 +35,6 @@
       "settings": "standard",
       "dock-layout": "single",
       "nav-style": "standard",
-      "behavior-theme": "gentle",
       "branding": "amberx",
       "agent-card": "corporate-badge",
       "typography": "standard",

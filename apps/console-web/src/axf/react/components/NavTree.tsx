@@ -37,7 +37,7 @@ const NAV_ICON_PX: Record<string, number> = { sm: 14, md: 17, lg: 20 };
 /** `inert` as a plain attribute: React 18 only passes it through as a string, React 19 types it as a boolean. */
 const inertWhen = (on: boolean): object => (on ? { inert: '' } : {});
 
-export function NavTree({ sections, views, style, orient, header }: { sections: Section[]; views: ViewMap; style: NavStyleData; orient: 'horizontal' | 'vertical'; header?: string }) {
+export function NavTree({ sections, views, style, orient, header, labels = 'shown' }: { sections: Section[]; views: ViewMap; style: NavStyleData; orient: 'horizontal' | 'vertical'; header?: string; labels?: 'hidden' | 'shown' }) {
   const rt = useRuntime();
   const state = useAxfState();
   const view = state.view;
@@ -185,7 +185,7 @@ export function NavTree({ sections, views, style, orient, header }: { sections: 
 
   return (
     <div className="fx-navs" data-orient={orient}>
-      <nav ref={navRef} className={`fx-nav fx-nav--${rt.asset('nav-menu').data.style}`} data-orient={orient} aria-label="Main" data-axf-nav="app" data-fx-ctx-target="nav" data-fx-ctx-payload="app" onPointerDown={onDown}>
+      <nav ref={navRef} className={`fx-nav fx-nav--${rt.asset('nav-menu').data.style}`} data-orient={orient} aria-label="Main" data-axf-nav="app" data-axf-labels={labels} data-fx-ctx-target="nav" data-fx-ctx-payload="app" onPointerDown={onDown}>
         {(header || (style.width.collapsible && !narrow)) && orient === 'vertical' && (
           <div className="fx-nav__head">
             {header && <div className="fx-nav__header">{header}</div>}

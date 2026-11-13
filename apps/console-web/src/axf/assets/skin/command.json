@@ -17,6 +17,7 @@
     "layoutTheme": "command",
     "colorTheme": "command-phosphor",
     "styleTheme": "terminal-pro",
+    "behaviorTheme": "instant",
     "assets": {
       "banner": "amberx-thin",
       "app-menu": "developer",
@@ -35,7 +36,6 @@
       "settings": "standard",
       "dock-layout": "ide",
       "nav-style": "still",
-      "behavior-theme": "instant",
       "branding": "amberx",
       "agent-card": "backstage-pass",
       "typography": "compact",

@@ -16,6 +16,7 @@
     "layoutTheme": "studio-pro",
     "colorTheme": "studio-pro-slate",
     "styleTheme": "studio-pro",
+    "behaviorTheme": "focused",
     "assets": {
       "banner": "amberx-thin",
       "app-menu": "developer",
@@ -34,7 +35,6 @@
       "settings": "standard",
       "dock-layout": "ide",
       "nav-style": "standard",
-      "behavior-theme": "focused",
       "branding": "amberx",
       "agent-card": "corporate-badge",
       "typography": "compact",

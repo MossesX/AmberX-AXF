@@ -11,7 +11,8 @@
     "reader",
     "swiss",
     "skin",
-    "professional"
+    "professional",
+    "partial"
   ],
   "data": {
     "layoutTheme": "document-reader",

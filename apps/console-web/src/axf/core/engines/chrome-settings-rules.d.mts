@@ -20,6 +20,8 @@ export interface ChromeField {
   level: ChromeLevel;
   /** a choice of the item only (not a field of the asset type), e.g. tapConfirm */
   instanceOnly?: boolean;
+  /** shown in the quick-switches pane at the top of the settings dialog (label visibility, tap to confirm, …) */
+  quick?: boolean;
 }
 export interface ChromeMove { positions: ChromePosition[]; via: 'instance' | 'layout' | 'none'; field: string }
 export interface ChromeSettingsTab { id: string; label: string; icon: string; order: number }
@@ -46,6 +48,8 @@ export function CHROME_INSTANCE_KEY(type: string, instance: string): string;
 export function CHROME_INSTANCE_ASSET_KEY(type: string, instance: string): string;
 export function TAB_GROUP_LAST_KEY(instance: string): string;
 export function TAB_GROUP_FOLD_KEY(instance: string): string;
+export const CHROME_QUICK_KEY: (type: ChromeType) => string;
+export function chromeQuickFields(type: ChromeType): ChromeField[];
 export function isChromeInstanceId(id: unknown): id is string;
 export const CHROME_TARGETS: Record<ChromeType, string[]>;
 export function chromeTypeOfTarget(target: unknown): ChromeType | null;
