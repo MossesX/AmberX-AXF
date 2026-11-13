@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4484,
- "updatedAt": "2026-11-13T13:23:58.242Z",
+ "rev": 4485,
+ "updatedAt": "2026-11-13T13:32:45.112Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -187156,10 +187156,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/ui-review-gate-switch-default-off",
-   "pr": "",
+   "pr": "#575",
    "priority": "P0",
    "createdAt": "2026-11-13T12:14:42.715Z",
-   "updatedAt": "2026-11-13T13:23:33.180Z",
+   "updatedAt": "2026-11-13T13:32:43.857Z",
    "builtAt": "",
    "notes": [
     {
@@ -187593,7 +187593,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
