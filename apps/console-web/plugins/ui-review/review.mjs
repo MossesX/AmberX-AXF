@@ -14,7 +14,7 @@
  *   node apps/console-web/plugins/ui-review/review.mjs decision <id> --console     his pick, in priority order
  *   node apps/console-web/plugins/ui-review/review.mjs list [--kind K] [--status waiting|changes|rejected|approved|open]
  *        [--branch B] [--pr N] [--q text] [--console] [--json]
- *   node apps/console-web/plugins/ui-review/review.mjs gate [--console] [--json]    is UI Review a gate? never: {gate: false, since, why}
+ *   node apps/console-web/plugins/ui-review/review.mjs gate [on|off|status] [--console] [--json]   'UI Review is a merge gate' (default off)
  *   node apps/console-web/plugins/ui-review/review.mjs state [--branch B] [--pr N] [--exit-code] [--console] [--json]
  *   node apps/console-web/plugins/ui-review/review.mjs decide <id[,id…]> approve|changes|reject|reopen [--comment "…"] [--console]
  *   node apps/console-web/plugins/ui-review/review.mjs migrate [--apply] [--report <file.md>]   older items → ui-review-item@1
@@ -30,7 +30,9 @@
  * Screenshots named …-phone.png / …-desktop.png get their device from the name. Default: writes the plugin's data
  * folder in this checkout (AXF_UI_REVIEW_DIR overrides). --console posts to the running console instead
  * (AXF_CONSOLE_URL + AXF_TOKEN), which is what a build on the VPS uses so Brett sees it at once.
- * state prints the review state for information only: UI Review is not a gate (Nov 2026), so --exit-code always exits 0.
+ * gateOn() is the one gate decision (uiReview.gate = the Claude setting builds.uiReviewGate, default off; --console asks
+ * the console, else this checkout's copy in the data folder). state --exit-code exits 1 only while the gate is on and the
+ * PR is held; with the gate off it exits 0 and says 'filed (not a gate)'. gate on is Brett's own click in the console.
  */
 import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, renameSync, statSync, writeFileSync } from 'node:fs';
 import { basename, dirname, join, resolve } from 'node:path';
@@ -168,6 +170,20 @@ async function consoleCall(path, body) {
   return j;
 }
 
+/* -------------------------------------------------------------- the gate switch */
+const gateFile = () => join(dataDir(), 'gate.json');
+/** The gate decision: the console's answer with --console, else the copy in the data folder; missing = off. */
+export async function gateOn({ remote = false } = {}) {
+  if (remote) return (await consoleCall('gate')).on === true;
+  return readJson(gateFile(), {})?.on === true;
+}
+/** Local switch: off is open to everyone; on needs Brett's own click in the console, so it is refused here. */
+export function setGateLocal(on, by = 'cli') {
+  if (on) throw new Error(`'${core.GATE_LABEL}' is turned on only by Brett, with his own click in the console (Settings → Plugins → UI Review)`);
+  writeJson(gateFile(), { $axf: 'ui-review-gate@1', on: false, by, at: new Date().toISOString() });
+  return core.gateView(false, submitted(loadDoc()));
+}
+
 /* -------------------------------------------------------------- CLI */
 export function parseArgs(argv) {
   const pos = [], flags = {};
@@ -232,15 +248,19 @@ export async function main(argv = process.argv.slice(2)) {
     return out({ ok: true, items: rows }, rows.length ? rows.map(line).join('\n') : 'nothing to review');
   }
   if (cmd === 'gate') {
-    const g = remote ? await consoleCall('gate') : { ...core.GATE };
-    return out(g, `UI Review is ${g.gate ? 'a gate' : 'not a gate'} (since ${g.since}): ${g.why}`);
+    const sub = pos[1] || 'status';
+    if (!['on', 'off', 'status'].includes(sub)) throw new Error('usage: review.mjs gate [on|off|status] [--console]');
+    let g;
+    if (sub === 'status') g = remote ? await consoleCall('gate') : core.gateView(await gateOn(), submitted(loadDoc()));
+    else g = remote ? await consoleCall('gate', { on: sub === 'on', by: caller().session || 'cli' }) : setGateLocal(sub === 'on');
+    return out(g, `${core.GATE_LABEL}: ${g.on ? 'on' : 'off'}. ${g.line}${g.heldPrs.length ? ` Held: ${g.heldPrs.map((n) => `#${n}`).join(', ')}.` : ''}`);
   }
   if (cmd === 'state') {
     const branch = val(flags.branch), pr = val(flags.pr).replace(/^#/, '') || null;
     if (!branch && !pr) throw new Error('state needs --branch and/or --pr');
-    const s = remote ? await consoleCall(`state?branch=${encodeURIComponent(branch)}&pr=${encodeURIComponent(pr ?? '')}`) : core.reviewState(submitted(loadDoc()), { branch, pr });
-    out(s, `${s.state} (not a gate) · waiting ${s.counts.waiting} · changes ${s.counts.changes} · rejected ${s.counts.rejected} · approved ${s.counts.approved}`);
-    // --exit-code is accepted for old scripts and always exits 0: UI Review never holds a PR (core.GATE)
+    const s = remote ? await consoleCall(`state?branch=${encodeURIComponent(branch)}&pr=${encodeURIComponent(pr ?? '')}`) : core.reviewState(submitted(loadDoc()), { branch, pr, gate: await gateOn() });
+    out(s, `${s.state}${s.holds ? ' (holds)' : ''} · waiting ${s.counts.waiting} · changes ${s.counts.changes} · rejected ${s.counts.rejected} · approved ${s.counts.approved}`);
+    if (flags['exit-code'] && s.holds) process.exitCode = 1; // only while the gate is on (gateOn())
     return;
   }
   if (cmd === 'decide') {

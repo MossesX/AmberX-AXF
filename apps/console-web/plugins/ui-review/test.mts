@@ -145,18 +145,22 @@ t('caller: source + sender from the Claude Code session, never guessed', () => {
   assert.equal(f.title, 'N'); assert.equal(f.source, 'manual'); assert.equal(f.submittedBy, 'user:brett');
 });
 
-t('ui-review@1 state: strictest wins, never holds (UI Review is not a gate)', () => {
-  assert.equal(core.reviewState(items, { branch: 'claude/x' }).state, 'changes');
-  assert.equal(core.reviewState(items, { pr: 9 }).state, 'waiting');
-  assert.equal(core.reviewState(items, { pr: 9 }).holds, false); assert.equal(core.reviewState(items, { pr: 9 }).reason, 'UI Review is not a gate (Nov 2026)');
-  assert.deepEqual({ ...core.GATE }, { $axf: 'ui-review-gate@1', gate: false, since: '2026-11-13', why: 'UI Review is not a gate (Nov 2026)' });
-  assert.ok(core.STATUSES.every((x) => x.holds === false), 'no status holds a PR');
-  const s = core.reviewState(items, { branch: 'nope' }); assert.equal(s.state, 'none'); assert.equal(s.holds, false);
-  const ok = core.reviewState([core.decide(items[0], 'approve')], { pr: 9 }); assert.equal(ok.state, 'approved'); assert.equal(ok.holds, false);
-  assert.equal(core.reviewState([...items, mk({ id: 'r', branch: 'claude/x', status: 'rejected' })], { branch: 'claude/x' }).state, 'rejected');
+t('ui-review@1 state: strictest wins; holds only while the gate switch is on (default off)', () => {
+  assert.equal(core.GATE_DEFAULT, false); assert.equal(core.GATE_KEY, 'uiReview.gate');
+  assert.equal(core.reviewState(items, { branch: 'claude/x' }).review, 'changes');
+  const off = core.reviewState(items, { pr: 9 });
+  assert.equal(off.review, 'waiting'); assert.equal(off.state, 'filed (not a gate)'); assert.equal(off.holds, false); assert.equal(off.gate, false); assert.equal(off.reason, core.GATE_OFF_LINE);
+  const on = core.reviewState(items, { pr: 9, gate: true });
+  assert.equal(on.state, 'waiting'); assert.equal(on.holds, true);
+  assert.equal(core.reviewState(items.map((x) => ({ ...x, nonBlocking: true })), { pr: 9, gate: true }).holds, false, 'a released item is filed, never holds');
+  assert.equal(core.GATE.on, false); assert.deepEqual(core.GATE.heldPrs, []); assert.equal(core.GATE.line, 'Off: items are filed for you to look at, PRs never wait.');
+  assert.deepEqual(core.gateView(true, items).heldPrs, [9]); assert.deepEqual(core.gateView(false, items).heldPrs, []);
+  const s = core.reviewState(items, { branch: 'nope', gate: true }); assert.equal(s.state, 'none'); assert.equal(s.holds, false);
+  const ok = core.reviewState([core.decide(items[0], 'approve')], { pr: 9, gate: true }); assert.equal(ok.state, 'approved'); assert.equal(ok.holds, false);
+  assert.equal(core.reviewState([...items, mk({ id: 'r', branch: 'claude/x', status: 'rejected' })], { branch: 'claude/x', gate: true }).state, 'rejected');
 });
 
-t('CLI: submit → list → state (always exit 0) → decide → state, kinds', () => {
+t('CLI: submit → list → state --exit-code in both gate states → decide → state, kinds', () => {
   const dir = mkdtempSync(join(tmpdir(), 'ui-review-test-'));
   const env = cleanEnv(dir);
   const cli = (...a) => spawnSync(process.execPath, [join(HERE, 'review.mjs'), ...a], { env, encoding: 'utf8' });
@@ -180,9 +184,15 @@ t('CLI: submit → list → state (always exit 0) → decide → state, kinds', 
   const vs = JSON.parse(viaSession.stdout).item; assert.equal(vs.source, 'claude-code'); assert.deepEqual(vs.submittedBy, { type: 'session', id: 'sess-abc' }); assert.match(vs.group.name, /^session sess-abc - /);
   assert.equal(JSON.parse(cli('list', '--status', 'waiting', '--json').stdout).items.length, 2);
   assert.match(cli('check').stdout, /all ui-review-item@1/);
-  const waiting = cli('state', '--pr', '42', '--exit-code'); assert.equal(waiting.status, 0, 'a waiting review never fails --exit-code'); assert.match(waiting.stdout, /waiting \(not a gate\)/);
+  const waiting = cli('state', '--pr', '42', '--exit-code'); assert.equal(waiting.status, 0, 'gate off: a waiting review exits 0'); assert.match(waiting.stdout, /^filed \(not a gate\)/);
+  assert.equal(JSON.parse(cli('gate', '--json').stdout).on, false, 'gate status: off by default');
+  assert.notEqual(cli('gate', 'on').status, 0, 'gate on from the CLI is refused (Brett turns it on in the console)');
+  writeFileSync(join(dir, 'gate.json'), JSON.stringify({ on: true }));
+  const held = cli('state', '--pr', '42', '--exit-code'); assert.equal(held.status, 1, 'gate on: a waiting review exits 1'); assert.match(held.stdout, /^waiting \(holds\)/);
+  assert.deepEqual(JSON.parse(cli('gate', '--json').stdout).heldPrs, [42]);
+  assert.equal(cli('gate', 'off').status, 0, 'gate off is open to everyone'); assert.equal(cli('state', '--pr', '42', '--exit-code').status, 0);
   assert.equal(cli('decide', item.id, 'approve', '--comment', 'good').status, 0);
-  const st = JSON.parse(cli('state', '--branch', 'claude/t', '--json', '--exit-code').stdout); assert.equal(st.state, 'approved');
+  const st = JSON.parse(cli('state', '--branch', 'claude/t', '--json', '--exit-code').stdout); assert.equal(st.review, 'approved'); assert.equal(st.state, 'filed (not a gate)');
   assert.equal(cli('state', '--branch', 'claude/t', '--exit-code').status, 0);
   assert.equal(cli('decide', 'pack:graphite-pro', 'changes').status, 0, 'a design pack can be decided too');
   const doc = JSON.parse(readFileSync(join(dir, 'items.json'), 'utf8'));
