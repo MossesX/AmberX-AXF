@@ -99,7 +99,7 @@ export function normSettings(raw = {}) {
  *   usable     may the dispatcher put a build on it? never limited, never an API key, never one Brett switched off;
  *              workers always; the console's account only when no worker exists and useConsoleAccount is on
  */
-export function accountView(row, own = {}, { settings = normSettings(), anyWorker = false, now = Date.now() } = {}) {
+export function accountView(row, own = {}, { settings = normSettings(), anyWorker = false, now = Date.now(), pick = '' } = {}) {
   const o = own && typeof own === 'object' ? own : {};
   const plan = str(row?.plan, 40).toLowerCase();
   const health = freshHealth(o.health, settings, now);
@@ -117,18 +117,24 @@ export function accountView(row, own = {}, { settings = normSettings(), anyWorke
     ? { kind: health.signedIn === false ? 'auth' : 'credits', reason: health.signedIn === false ? 'cannot sign in (health check)' : 'no credits left (health check)', until: '' } : null;
   const limited = row?.limited && typeof row.limited === 'object' ? row.limited : sick;
   // subscriptions only: an API account never takes a build by itself, only through routeFor() (override or overflow)
-  const usable = !off && !apiKey && !limited && (role === 'worker' || (!anyWorker && settings.useConsoleAccount && (role === 'interactive' || role === 'saved')));
+  // one build account (claude-workers@1 buildAccount, build one-account-picker): it alone takes builds, whatever its role
+  // or the pipeline's own on/off says; every other account, API ones too, is off for builds
+  const picked = !!pick && str(row?.name, 40) === pick && !apiKey;
+  const usable = pick ? picked && !limited : !off && !apiKey && !limited && (role === 'worker' || (!anyWorker && settings.useConsoleAccount && (role === 'interactive' || role === 'saved')));
   let why = '';
-  if (off) why = 'switched off for the pipeline';
+  if (pick && !picked) why = `off for builds: ${pick} takes every build`;
+  else if (picked && limited) why = `${limited.reason === 'auth' ? 'login expired' : limited.reason || 'limited'}${limited.until ? ` until ${str(limited.until, 40).slice(0, 16).replace('T', ' ')}` : ''}`;
+  else if (picked) why = '';
+  else if (off) why = 'switched off for the pipeline';
   else if (limited) why = `${limited.reason === 'auth' ? 'login expired' : limited.reason || 'limited'}${limited.until ? ` until ${str(limited.until, 40).slice(0, 16).replace('T', ' ')}` : ''}`;
   else if (apiKey) why = 'API key (billed per token): takes a build only when routed there';
   else if (!usable) why = anyWorker ? 'not a worker (workers take every headless job)' : 'console account use is off';
   // API accounts: their own slot count (claude-workers building limit), Fable unless overridden (an API key reaches every model)
   const apiParallel = Number.isInteger(o.parallel) && o.parallel > 0 ? Math.min(12, o.parallel) : Number.isInteger(row?.building) && row.building > 0 ? row.building : settings.parallelPerAccount;
-  const api = apiKey ? apiState(row, o, settings, { limited, apiParallel, running }) : null;
+  const api = apiKey ? (pick ? { usable: false, why: `off for builds: ${pick} takes every build`, spend: row?.spend && typeof row.spend === 'object' ? row.spend : null } : apiState(row, o, settings, { limited, apiParallel, running })) : null;
   const rawOrder = o.order ?? row?.order;
   const order = typeof rawOrder === 'number' && Number.isFinite(rawOrder) ? rawOrder : null;
-  return { name: str(row?.name, 40), email: str(row?.email, 200), plan, role, kind: apiKey ? 'api' : 'subscription', label: str(row?.label, 40), order, health: health ?? (o.health && typeof o.health === 'object' ? o.health : null),
+  return { name: str(row?.name, 40), email: str(row?.email, 200), plan, role, kind: apiKey ? 'api' : 'subscription', label: str(row?.label, 40), order, buildAccount: picked, health: health ?? (o.health && typeof o.health === 'object' ? o.health : null),
     fable: apiKey && typeof o.fable !== 'boolean' && !probe ? true : fable, fableFrom: apiKey && typeof o.fable !== 'boolean' && !probe ? 'api' : fableFrom,
     parallel: apiKey ? apiParallel : parallel, running, free: Math.max(0, (apiKey ? apiParallel : parallel) - running), usable, why, limited, probe: probe ?? (o.probe ?? null), api };
 }
@@ -151,7 +157,14 @@ export function apiState(row, own = {}, settings = normSettings(), { limited = n
 /** Every account as the pipeline sees it; `rows` = claude-workers status rows, `own` = accounts.json. */
 export function accountViews(rows, own = {}, opts = {}) {
   const anyWorker = list(rows).some((r) => r?.role === 'worker');
-  return list(rows).map((r) => accountView(r, own?.[r?.name], { ...opts, anyWorker }));
+  const pick = buildPick(rows);
+  return list(rows).map((r) => accountView(r, own?.[r?.name], { ...opts, anyWorker, pick }));
+}
+
+/** The one build account the claude-workers rows carry (buildPick on every row), '' = none: the normal routing. */
+export function buildPick(rows) {
+  const p = list(rows).map((r) => str(r?.buildPick, 40)).find(Boolean) ?? '';
+  return /^[a-z0-9][a-z0-9-]{0,31}$/.test(p) ? p : '';
 }
 
 /** Brett's account order (Claude Accounts Manager drag-and-drop): ordered accounts first, lower first; unordered keep the old rules. */
@@ -274,6 +287,10 @@ export function routeFor(b, accounts, model, settings = normSettings()) {
 
 /** Why no account takes `model` right now, in plain words. */
 export function noAccountWhy(accounts, model) {
+  const one = list(accounts).find((a) => a.buildAccount);
+  const offAll = list(accounts).length && list(accounts).every((a) => /^off for builds: /.test(a.why || ''));
+  if (offAll) return `the one build account ${list(accounts)[0].why.replace(/^off for builds: | takes every build$/g, '')} is not saved on the VPS`;
+  if (one && !one.usable) return `the one build account ${one.name} is ${one.why || 'not usable'}`;
   const usable = list(accounts).filter((a) => a.usable);
   const needFable = modelKey(model) === FOUNDATION_MODEL;
   if (!usable.length) return list(accounts).length ? `no usable Claude account (${list(accounts).map((a) => `${a.name}: ${a.why || 'busy'}`).join('; ')})` : 'no Claude account is signed in on the VPS';
