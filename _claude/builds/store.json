@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4725,
- "updatedAt": "2026-11-13T18:57:23.614Z",
+ "rev": 4726,
+ "updatedAt": "2026-11-13T18:57:40.206Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -201798,7 +201798,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:56:15.400Z",
-   "updatedAt": "2026-11-13T18:57:14.075Z",
+   "updatedAt": "2026-11-13T18:57:33.118Z",
    "builtAt": "",
    "notes": [
     {
@@ -201808,6 +201808,10 @@
     {
      "text": "Brett: reuse the existing overridden-settings dialog (the 'N assets controlled by own settings' notice/dialog), don't build a new one. Next to the Override switch, show a hook/link with the count, e.g. '3 tokens overridden', that opens that dialog listing every overridden token and asset, with reset to axHub per item and reset all.",
      "at": "2026-11-13T18:57:14.075Z"
+    },
+    {
+     "text": "Brett CHANGED this (overrides the detail): the two switches are NOT mutually exclusive. Both 'Inherit from axHub only' and 'Override' can be on together. With both on, the skin keeps inheriting and refreshing from axHub EXCEPT the tokens Brett has edited: only those overridden tokens stop inheriting, and each is marked 'overridden' with 'reset to axHub'. With axHub-only on and Override off, editors are greyed out with the note and a 'click here to override' link that turns Override on.",
+     "at": "2026-11-13T18:57:33.118Z"
     }
    ],
    "approvals": [],
@@ -201855,7 +201859,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

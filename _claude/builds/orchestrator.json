@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T18:57:23.614Z",
+ "updatedAt": "2026-11-13T18:57:40.206Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -129860,7 +129860,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:56:15.400Z",
-   "updatedAt": "2026-11-13T18:57:14.075Z",
+   "updatedAt": "2026-11-13T18:57:33.118Z",
    "builtAt": "",
    "notes": [
     {
@@ -129870,6 +129870,10 @@
     {
      "text": "Brett: reuse the existing overridden-settings dialog (the 'N assets controlled by own settings' notice/dialog), don't build a new one. Next to the Override switch, show a hook/link with the count, e.g. '3 tokens overridden', that opens that dialog listing every overridden token and asset, with reset to axHub per item and reset all.",
      "at": "2026-11-13T18:57:14.075Z"
+    },
+    {
+     "text": "Brett CHANGED this (overrides the detail): the two switches are NOT mutually exclusive. Both 'Inherit from axHub only' and 'Override' can be on together. With both on, the skin keeps inheriting and refreshing from axHub EXCEPT the tokens Brett has edited: only those overridden tokens stop inheriting, and each is marked 'overridden' with 'reset to axHub'. With axHub-only on and Override off, editors are greyed out with the note and a 'click here to override' link that turns Override on.",
+     "at": "2026-11-13T18:57:33.118Z"
     }
    ],
    "approvals": [],
