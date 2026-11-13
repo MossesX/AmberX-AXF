@@ -262,6 +262,11 @@ export function mergeMain({ s, git, b, dry }) {
       for (const p of plan.generated) { g(['checkout', '--theirs', '--', p]); const cmd = core.regenFor(p); if (cmd) spawnSync(cmd[0], cmd.slice(1), { cwd: wt, timeout: 120000 }); g(['add', '--', p]); resolved.push(p); }
       const still = g(['diff', '--name-only', '--diff-filter=U']).out.split('\n').filter(Boolean);
       if (still.length) { g(['merge', '--abort']); return { merged: false, conflicts: still }; }
+      // check JSON: a settled builds / generated file that doesn't parse takes main's copy; one that still doesn't stops it
+      const broken = badJson(wt, resolved);
+      for (const p of broken) { g(['checkout', '--theirs', '--', p]); g(['add', '--', p]); }
+      const still2 = badJson(wt, broken);
+      if (still2.length) { g(['merge', '--abort']); return { merged: false, conflicts: still2, badJson: still2 }; }
       const c = g([...drv, 'commit', '-q', '--no-edit']);
       if (c.code) { g(['merge', '--abort']); return { merged: false, conflicts: [], pushError: `commit: ${c.err.slice(-200)}` }; }
     }
@@ -270,6 +275,11 @@ export function mergeMain({ s, git, b, dry }) {
     const p = g(['push', '-q', s.remote, `HEAD:refs/heads/${b.branch}`], { timeout: 90000 });
     return p.code ? { merged: false, conflicts: [], resolved, pushError: p.err.slice(-200) || 'push failed' } : { merged: true, sha, conflicts: [], resolved };
   } finally { git(['worktree', 'remove', '--force', wt]); rmSync(dir, { recursive: true, force: true }); }
+}
+
+/** The .json files among `paths` that don't parse (a merge that settled them badly). */
+export function badJson(wt, paths) {
+  return (paths || []).filter((p) => p.endsWith('.json')).filter((p) => { try { JSON.parse(readFileSync(join(wt, p), 'utf8')); return false; } catch { return true; } });
 }
 
 // ------------------------------------------------------------------ step 3: PR + CI
@@ -425,8 +435,8 @@ function defaultAgentJob(s) {
 const line = (x) => `${x.state.padEnd(8)} ${x.id}${x.pr ? ` #${x.pr}` : ''}${x.reason ? ` · ${x.reason.text.replace(`${x.id}: `, '')}` : ' · ready: merges at the next push banner round'}`;
 
 export async function main(argv) {
-  const json = argv.includes('--json'); const dry = argv.includes('--dry-run');
-  const args = argv.filter((a) => !['--json', '--dry-run'].includes(a));
+  const json = argv.includes('--json'); const dry = argv.includes('--dry-run'); const waitLock = argv.includes('--wait-lock');
+  const args = argv.filter((a) => !['--json', '--dry-run', '--wait-lock'].includes(a));
   const opt = (n) => { const i = args.indexOf(`--${n}`); return i >= 0 ? args[i + 1] || '' : ''; };
   const [cmd = 'list', ...rest] = args;
   const s = settings();

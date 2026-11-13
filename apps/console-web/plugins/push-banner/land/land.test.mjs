@@ -12,7 +12,8 @@ import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from './land-core.mjs';
-import { makeGit, round, control, readState, ciOf, reasonEvent } from './land.mjs';
+import { makeGit, round, control, readState, readControl, ciOf, reasonEvent, badJson } from './land.mjs';
+import { finishedBy, onBuildEvents } from './hook.mjs';
 process.env.AXF_CREW_SAY = 'off'; // group-chat posts (crew-say.mjs) stay out of the real Breakroom
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -227,6 +228,30 @@ console.log('per-build switch: on unless switched off');
   d = core.applyControl(d, 'on', 'feat-x');
   check(core.buildOn(d, 'feat-x'), 'on switches it back on');
   check(core.autoLandOn({}) && core.autoLandOn({ autoLand: false }) && !core.autoLandOn({ autoLand: false, autoLandRev: core.AUTO_LAND_REV }), 'autoLandOn: default on; only an off at rev 2 counts');
+}
+console.log('finish hook: a build lands the moment it finishes');
+{
+  const steps = (d) => d.map((x, i) => ({ id: `s${i + 1}`, done: x }));
+  const builds = [{ id: 'fin', branch: 'claude/fin', status: 'running', steps: steps([true, true]) }, { id: 'half', branch: 'claude/half', status: 'running', steps: steps([true, false]) }, { id: 'nob', status: 'built', steps: [] }];
+  const ev = (event, id, extra = {}) => ({ event, build: { id, branch: builds.find((b) => b.id === id)?.branch }, ...extra });
+  check(JSON.stringify(finishedBy([ev('step-done', 'fin'), ev('step-done', 'half')], builds)) === '["fin"]', 'the step that leaves every step done finishes the build; one with steps left does not');
+  check(JSON.stringify(finishedBy([ev('status', 'half', { to: 'built' }), ev('status', 'nob', { to: 'built' })], builds)) === '["half"]', 'status → built finishes it; a build with no branch has nothing to land');
+  const dd = mkdtempSync(join(tmpdir(), 'axf-land-hook-'));
+  const was = process.env.AXF_PUSH_BANNER_DIR; process.env.AXF_PUSH_BANNER_DIR = dd;
+  const started = [];
+  const r1 = onBuildEvents([ev('status', 'half', { to: 'built' })], { env: { ...process.env }, builds, start: (id) => { started.push(id); return true; } });
+  check(r1.landing[0] === 'half' && started[0] === 'half' && readControl({ dataDir: dd }).now[0] === 'half', 'finished: first in the landing line (now) and a round started for it');
+  const r2 = onBuildEvents([ev('status', 'half', { to: 'built' })], { env: { ...process.env }, builds, start: (id) => { started.push(id); return true; } });
+  check(r2.landing.length === 0 && started.length === 1, 'a replayed event is not asked twice');
+  writeFileSync(join(dd, 'land-control.json'), JSON.stringify({ off: { half: { why: 'x' } } }));
+  check(readControl({ dataDir: dd }).off.half.why === 'x', 'per-build off is read by the hook');
+  writeFileSync(join(dd, 'config.json'), JSON.stringify({ autoLand: false, autoLandRev: core.AUTO_LAND_REV }));
+  check(onBuildEvents([ev('status', 'half', { to: 'built' })], { env: { ...process.env }, start: () => true }).off === true, 'auto-land off: the hook does nothing');
+  check(onBuildEvents([], { env: { AXF_LAND_HOOK: 'off' } }).landing.length === 0, 'AXF_LAND_HOOK=off: nothing');
+  if (was === undefined) delete process.env.AXF_PUSH_BANNER_DIR; else process.env.AXF_PUSH_BANNER_DIR = was;
+  mkdirSync(join(dd, 'j'), { recursive: true }); writeFileSync(join(dd, 'j/a.json'), '{"ok":1}'); writeFileSync(join(dd, 'j/b.json'), '{"ok":');
+  check(JSON.stringify(badJson(dd, ['j/a.json', 'j/b.json', 'j/c.md'])) === '["j/b.json"]', 'check JSON: a settled file that does not parse is found');
+  rmSync(dd, { recursive: true, force: true });
 }
 console.log('group chat: a landing reason is Brett\'s move, a code fix, or something in the way');
 check(['held', 'ui', 'code'].every((k) => reasonEvent(k) === 'waiting'), 'held, UI Review and uncommitted code wait for Brett');
