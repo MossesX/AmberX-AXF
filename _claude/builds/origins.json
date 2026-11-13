@@ -8598,6 +8598,18 @@
    "from": "report",
    "addenda": []
   },
+  "voice-listener-use-claude-when-connected": {
+   "said": "can we have a setting to make it use Claude if Claude's connected",
+   "at": "2026-11-13T23:42:29.374Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "voicevault-voice-notes": {
    "said": "bake voice notes into the Voice Vault Android app. Voice Vault app code only (Android hold exception): background listener hears the start triggers from the console's Voice notes settings on axHub, beeps, records the note to the stop trigger, asks where to store it (list of lists, numbers, subcategories, question sets) and saves it to table notes in voice-notes on axHub via a hub session cookie (lib-hub sign-in). Kotlin hubstore twin stays deferred (framework). Branch claude/project-thread-l3b0qo.",
    "at": "2026-10-23",
