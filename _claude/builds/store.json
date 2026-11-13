@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4053,
- "updatedAt": "2026-11-13T06:48:14.429Z",
+ "rev": 4054,
+ "updatedAt": "2026-11-13T06:48:31.572Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -178510,7 +178510,7 @@
    "pr": "#553",
    "priority": "P0",
    "createdAt": "2026-11-13T06:25:11.720Z",
-   "updatedAt": "2026-11-13T06:48:12.028Z",
+   "updatedAt": "2026-11-13T06:48:30.018Z",
    "builtAt": "",
    "notes": [
     {
@@ -178942,30 +178942,6 @@
      "rev": 1,
      "createdAt": "2026-11-13T06:46:39.975Z",
      "updatedAt": "2026-11-13T06:46:40.185Z"
-    },
-    {
-     "id": "s15",
-     "uid": "st-mwem5z6301qw19",
-     "title": "",
-     "text": "Screenshots of the gallery, the previews, the scope picker and the banner chip on desktop and phone (vite preview with the hub look mocked). Submit them to UI Review with the choices",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "_claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga/shots/"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-13T06:46:41.515Z",
-     "updatedAt": "2026-11-13T06:46:41.739Z"
     }
    ],
    "profiles": [
@@ -178976,7 +178952,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 36,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -179095,6 +179071,35 @@
       "updatedAt": "2026-11-13T06:46:43.265Z"
      },
      "at": "2026-11-13T06:48:12.030Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
+    },
+    {
+     "step": {
+      "id": "s15",
+      "uid": "st-mwem5z6301qw19",
+      "title": "",
+      "text": "Screenshots of the gallery, the previews, the scope picker and the banner chip on desktop and phone (vite preview with the hub look mocked). Submit them to UI Review with the choices",
+      "model": "Opus",
+      "why": "",
+      "phase": "",
+      "group": "",
+      "estimate": "10 min",
+      "files": [
+       "_claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga/shots/"
+      ],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": false,
+      "doneAt": "",
+      "note": "",
+      "rev": 1,
+      "createdAt": "2026-11-13T06:46:41.515Z",
+      "updatedAt": "2026-11-13T06:46:41.739Z"
+     },
+     "at": "2026-11-13T06:48:30.019Z",
      "why": "removed in the orchestrator",
      "by": "orchestrator"
     }
