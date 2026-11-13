@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T01:54:27.336Z",
+ "updatedAt": "2026-11-13T01:55:19.777Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -110601,7 +110601,7 @@
    "branch": "claude/vps-badge-shows-shell-commands-work-banner-widgets-for-disk-cpu-load-and-memor",
    "pr": "",
    "createdAt": "2026-11-12T22:31:52.977Z",
-   "updatedAt": "2026-11-13T01:46:17.982Z",
+   "updatedAt": "2026-11-13T01:55:17.985Z",
    "builtAt": "",
    "notes": [
     {
@@ -110657,8 +110657,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T01:55:17.985Z",
      "note": "",
      "uid": "st-mwe4hna104x5i7"
     },
