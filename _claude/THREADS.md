@@ -788,7 +788,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 18:13 UTC · `chrome-settings-actually-apply-toolbars` note (all) · orchestrator
 - 2026-11-13 18:13 UTC · `chrome-settings-actually-apply-toolbars` s3 done, → built (all) · orchestrator
 - 2026-11-13 18:14 UTC · `decision-dialog-ui-review-other` added (0 steps) (all) · console
 - 2026-11-13 18:14 UTC · `new-asset-type-animated-expanding-row` note (all) · orchestrator
@@ -1188,6 +1187,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 19:54 UTC · `demo-pipelines-guided-walkthrough-live` s2 done (all) · orchestrator
 - 2026-11-13 19:55 UTC · `per-instance-settings-picker-merge-main` note (all) · orchestrator
 - 2026-11-13 19:55 UTC · `per-instance-settings-picker-merge-main` s2 done (all) · orchestrator
+- 2026-11-13 19:56 UTC · `per-instance-settings-picker-merge-main` PR #642 (all) · builds-live
 
 ## Token passes (log)
 
