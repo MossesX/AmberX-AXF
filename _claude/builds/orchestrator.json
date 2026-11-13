@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T11:30:47.658Z",
+ "updatedAt": "2026-11-13T11:31:13.981Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -111059,9 +111059,9 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad",
-   "pr": "",
+   "pr": "#568",
    "createdAt": "2026-11-12T23:14:26.317Z",
-   "updatedAt": "2026-11-13T11:25:36.529Z",
+   "updatedAt": "2026-11-13T11:30:38.842Z",
    "builtAt": "",
    "notes": [
     {

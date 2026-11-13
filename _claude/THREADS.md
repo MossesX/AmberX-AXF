@@ -781,11 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 06:21 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` s4 done (all) · orchestrator
-- 2026-11-13 06:22 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` note (all) · orchestrator
-- 2026-11-13 06:22 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` s5 done (all) · orchestrator
-- 2026-11-13 06:23 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` note (all) · orchestrator
-- 2026-11-13 06:23 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` → pending, note (all) · pipeline
 - 2026-11-13 06:24 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` note (all) · builds-live
 - 2026-11-13 06:23 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` → queued, note (all) · pipeline
 - 2026-11-13 06:23 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` → running (all) · mcp
@@ -1181,6 +1176,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 11:30 UTC · `show-commits-behind-main-on-every-build-table-an` note (all) · orchestrator
 - 2026-11-13 11:29 UTC · `show-commits-behind-main-on-every-build-table-an` s3 done, → built (all) · orchestrator
 - 2026-11-13 11:29 UTC · `show-commits-behind-main-on-every-build-table-an` note (all) · orchestrator
+- 2026-11-13 11:30 UTC · `show-commits-behind-main-on-every-build-table-an` s3 done, → complete, note (all) · foreign-write
+- 2026-11-13 11:30 UTC · `change-to-move-amberx-web-app-into-the-console-amberx-andr-pr-528-brett-do` note (all) · foreign-write
+- 2026-11-13 11:30 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` s26 done, note (all) · foreign-write
+- 2026-11-13 11:30 UTC · `overlay-opens-pages-the-floating-toolbar-expands` added (4 steps) (all) · foreign-write
+- 2026-11-13 11:30 UTC · `badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad` PR #568 (all) · builds-live
 
 ## Token passes (log)
 

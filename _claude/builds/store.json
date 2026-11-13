@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4327,
- "updatedAt": "2026-11-13T11:30:47.658Z",
+ "rev": 4328,
+ "updatedAt": "2026-11-13T11:31:13.981Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -169743,7 +169743,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-12T10:40:28.980Z",
-     "updatedAt": "2026-11-13T11:29:52.678Z"
+     "updatedAt": "2026-11-13T11:30:37.930Z"
     }
    ],
    "profiles": [
@@ -175189,9 +175189,9 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad",
-   "pr": "",
+   "pr": "#568",
    "createdAt": "2026-11-12T23:14:26.317Z",
-   "updatedAt": "2026-11-13T11:25:36.529Z",
+   "updatedAt": "2026-11-13T11:30:38.842Z",
    "builtAt": "",
    "notes": [
     {
@@ -175380,7 +175380,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -177297,7 +177297,7 @@
      "note": "",
      "rev": 3,
      "createdAt": "2026-11-13T00:41:27.700Z",
-     "updatedAt": "2026-11-13T11:27:19.348Z"
+     "updatedAt": "2026-11-13T11:30:37.930Z"
     }
    ],
    "profiles": [
@@ -181344,7 +181344,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-13T07:42:03.981Z",
-     "updatedAt": "2026-11-13T11:29:20.352Z"
+     "updatedAt": "2026-11-13T11:30:37.930Z"
     }
    ],
    "profiles": [
