@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4485,
- "updatedAt": "2026-11-13T13:32:45.112Z",
+ "rev": 4486,
+ "updatedAt": "2026-11-13T13:32:52.329Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -187151,7 +187151,7 @@
    "title": "UI Review gate switch, default off",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -187159,8 +187159,8 @@
    "pr": "#575",
    "priority": "P0",
    "createdAt": "2026-11-13T12:14:42.715Z",
-   "updatedAt": "2026-11-13T13:32:43.857Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-13T13:32:49.084Z",
+   "builtAt": "2026-11-13T13:32:49.084Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -187577,12 +187577,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T13:32:49.084Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T12:17:01.586Z",
-     "updatedAt": "2026-11-13T12:17:01.586Z"
+     "updatedAt": "2026-11-13T13:32:49.274Z"
     }
    ],
    "profiles": [
@@ -187593,7 +187593,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
