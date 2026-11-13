@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4670,
- "updatedAt": "2026-11-13T18:36:29.996Z",
+ "rev": 4671,
+ "updatedAt": "2026-11-13T18:37:17.033Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -197398,10 +197398,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/vps-builds-get-console-token-ui-review",
-   "pr": "",
+   "pr": "#629",
    "priority": "P0",
    "createdAt": "2026-11-13T18:13:51.274Z",
-   "updatedAt": "2026-11-13T18:32:42.762Z",
+   "updatedAt": "2026-11-13T18:37:13.790Z",
    "builtAt": "",
    "notes": [
     {
@@ -197678,7 +197678,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
