@@ -778,7 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 10:55 UTC · `x.lib.sensors` → archived (all) · claude-voice
 - 2026-11-12 10:55 UTC · `x.lib.charts` → archived (all) · claude-voice
 - 2026-11-12 10:55 UTC · `x.console.repo` → archived (all) · claude-voice
 - 2026-11-12 10:55 UTC · `postgres-console` → archived (all) · claude-voice
@@ -1178,6 +1177,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 01:13 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` → queued, note (all) · console
 - 2026-11-13 01:13 UTC · `full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app` → queued, note (all) · console
 - 2026-11-13 01:14 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` → queued, note (all) · console
+- 2026-11-13 01:15 UTC · `10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less` s1 done, → running (all) · orchestrator
 
 ## Token passes (log)
 
