@@ -78,6 +78,7 @@ import copy
 import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable
 from urllib.parse import quote
@@ -112,6 +113,7 @@ QUEUE_MODES = ("batch", "stack")  # land/merge-queue-core.mjs QUEUE_MODES
 BATCH_SIZE_MAX = 20  # land/merge-queue-core.mjs BATCH_SIZE_MAX
 AGENT_HEADERS = ("x-axhub-session", "x-axhub-source")
 LAND_ID = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]{0,80}\Z")
+LAND_STUCK_S = 30 * 60  # stuck in the landing line: blocked or waiting this long (land-core.mjs STUCK_MS)
 AUTO_LAND_REV = 2   # config revision from which an explicit autoLand false is honoured; = land-core.mjs AUTO_LAND_REV
 UI_REVIEW_CAP = "ui-review@1"  # PRs whose UI is waiting, has changes asked or is rejected in UI Review don't merge
 UI_REVIEW_REPO = os.environ.get("AXF_GITHUB_REPO") or "MossesX/AmberX-AXF"  # the repo UI Review's PR numbers belong to
@@ -376,10 +378,51 @@ class Pushes:
         cfg = self.config()
         items = [x for x in st.get("items", []) if isinstance(x, dict)] if isinstance(st.get("items"), list) else []
         holds = ctl.get("holds") if isinstance(ctl.get("holds"), dict) else {}
+        off = ctl.get("off") if isinstance(ctl.get("off"), dict) else {}
+        fixes = (storage.read_json(data_dir() / "land-fix.json", {}) or {}).get("builds") or {}
+        sweep = storage.read_json(data_dir() / "land-sweep.json", {}) or {}
+        now_list = [x for x in ctl.get("now", []) if isinstance(x, str)] if isinstance(ctl.get("now"), list) else []
+        for x in items:
+            f = fixes.get(x.get("id")) if isinstance(fixes, dict) else None
+            if isinstance(f, dict):
+                x["fix"] = {k: f.get(k) for k in ("attempt", "id", "via", "kind", "at", "status") if f.get(k) is not None}
+        line = self.land_line(items, now_list, cfg["autoLand"])
         return {"$axf": "auto-land@1", "on": cfg["autoLand"], "waitUi": cfg["landWaitUi"], "at": st.get("at"), "items": items,
-                "holds": holds, "now": ctl.get("now") if isinstance(ctl.get("now"), list) else [],
+                "off": off, "line": line["line"], "stuck": line["stuck"], "chip": line["chip"],
+                "sweep": {"at": sweep.get("at"), "acted": sweep.get("acted") if isinstance(sweep.get("acted"), list) else [], "requested": sweep.get("requested")},
+                "holds": holds, "now": now_list,
                 "order": [n for n in st.get("order", []) if isinstance(n, int)] if isinstance(st.get("order"), list) else [],
                 "managed": [n for n in st.get("managed", []) if isinstance(n, int)] if isinstance(st.get("managed"), list) else []}
+
+    @staticmethod
+    def land_line(items: list[dict[str, Any]], now_list: list[str], on: bool, now: float | None = None) -> dict[str, Any]:
+        """The serial landing line for the banner: every finished build not on main in landing order (`now` first), and
+        what is stuck over LAND_STUCK_S (anything but ready / switched off). = land-core.mjs stuckItems."""
+        t = time.time() if now is None else now
+        def age(x: dict[str, Any]) -> float:
+            try:
+                return t - datetime.fromisoformat(str(x.get("since") or "").replace("Z", "+00:00")).timestamp()
+            except ValueError:
+                return 0.0
+        waiting = [x for x in items if x.get("state") not in ("ready", "off")]
+        order = sorted(waiting, key=lambda x: (0 if x.get("id") in now_list else 1, now_list.index(x["id"]) if x.get("id") in now_list else 0))
+        line = [{"id": x.get("id"), "pr": x.get("pr"), "state": x.get("state"), "since": x.get("since"), "kind": (x.get("reason") or {}).get("kind", "")} for x in order]
+        stuck = [{"id": x.get("id"), "pr": x.get("pr"), "kind": (x.get("reason") or {}).get("kind", ""), "text": (x.get("reason") or {}).get("text", ""),
+                  "since": x.get("since"), "minutes": int(age(x) // 60), "fix": (x.get("fix") or {}).get("id") or ""}
+                 for x in waiting if x.get("reason") and age(x) >= LAND_STUCK_S]
+        ready = sum(1 for x in items if x.get("state") == "ready")
+        chip = None
+        if on and (line or ready):
+            n = len(line) + ready
+            chip = {"label": f"Landing: {n}", "line": n, "ready": ready, "stuck": len(stuck), "tone": "danger" if stuck else "info"}
+        return {"line": line, "stuck": stuck, "chip": chip}
+
+    def land_sweep(self) -> dict[str, Any]:
+        """Ask for the sweeper at the next round (the host runner sweeps; this clears its 10-minute wait)."""
+        f = data_dir() / "land-sweep.json"
+        cur = storage.read_json(f, {}) or {}
+        storage.write_json(f, {**cur, "$axf": "auto-land-sweep@1", "at": None, "requested": datetime.now(timezone.utc).isoformat()})
+        return {"ok": True, "requested": True, **self.land()}
 
     def land_fix(self, body: Any) -> dict[str, Any]:
         if not isinstance(body, dict) or not isinstance(body.get("build"), str) or not LAND_ID.match(body["build"]):
@@ -401,11 +444,11 @@ class Pushes:
         return {"ok": True, "id": bid, "status": _text((r or {}).get("status"), 40) or "queued", "build": body["build"], "priority": "P0"}
 
     def land_command(self, cmd: str, body: Any) -> dict[str, Any]:
-        """now | hold | release: one implementation, land/land.mjs (the same file the CLI and the host runner use)."""
+        """now | hold | release | off | on: one implementation, land/land.mjs (the same file the CLI and the host runner use)."""
         if not isinstance(body, dict) or set(body) - {"build", "why"} or not isinstance(body.get("build"), str) or not LAND_ID.match(body["build"]):
             raise HTTPException(400, "send {build: <build id>, why?}")
         args = ["node", str(LAND_SCRIPT), cmd, body["build"], "--json"]
-        if cmd == "hold" and isinstance(body.get("why"), str) and body["why"].strip():
+        if cmd in ("hold", "off") and isinstance(body.get("why"), str) and body["why"].strip():
             args += ["--why", _text(body["why"], 200)]
         try:
             r = subprocess.run(args, capture_output=True, text=True, timeout=30, env={**os.environ, "AXF_PUSH_BANNER_DIR": str(data_dir())})
@@ -1487,6 +1530,27 @@ def land_fix(body: Any = Body(None)) -> dict[str, Any]:
     fix build for a finished build that clashes with main in code or fails its tests. Through the orchestrator's
     axf.build-dispatch@1, straight into its Queue (Brett, Nov 13 2026: keep trying until it lands; FYI, not a question)."""
     return PUSHES.land_fix(body)
+
+
+@router.get("/land/line")
+def land_line() -> dict[str, Any]:
+    st = PUSHES.land()
+    return {"$axf": "auto-land@1", "on": st["on"], "at": st["at"], "line": st["line"], "stuck": st["stuck"], "chip": st["chip"], "sweep": st["sweep"]}
+
+
+@router.post("/land/sweep")
+def land_sweep() -> dict[str, Any]:
+    return PUSHES.land_sweep()
+
+
+@router.post("/land/off")
+def land_off(body: Any = Body(None)) -> dict[str, Any]:
+    return PUSHES.land_command("off", body)
+
+
+@router.post("/land/on")
+def land_on(body: Any = Body(None)) -> dict[str, Any]:
+    return PUSHES.land_command("on", body)
 
 
 @router.post("/land/now")

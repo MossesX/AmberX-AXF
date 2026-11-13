@@ -732,6 +732,22 @@ r = c.post("/p/land/fix", json={"build": "feat-a", "branch": "claude/feat-a", "k
 check(r.status_code == 200 and r.json()["id"] == "merge-main-and-land-feat-a" and fd.asked[0]["priority"] == "P0" and fd.asked[0]["queue"] is True, "POST /land/fix files a P0 fix build straight into the Queue (axf.build-dispatch@1)")
 check(c.post("/p/land/fix", json={"build": "feat-a", "kind": "ui"}).status_code == 400, "only a clash or red tests get a fix build")
 plugin_services.withdraw("fake-orchestrator")
+
+_land_before = (ddir / "land.json").read_text()
+(ddir / "land.json").write_text(json.dumps({"$axf": "auto-land@1", "at": "2026-11-13T18:00:00Z", "items": [
+    {"id": "old-one", "pr": 9, "state": "blocked", "since": "2026-11-01T00:00:00Z", "reason": {"kind": "conflict", "text": "old-one: merging main into it conflicts in code (a.ts)."}},
+    {"id": "new-one", "pr": 10, "state": "waiting", "since": "2099-01-01T00:00:00Z", "reason": {"kind": "running", "text": "new-one: CI is running."}},
+    {"id": "done-one", "pr": 11, "state": "ready", "reason": None}]}))
+(ddir / "land-fix.json").write_text(json.dumps({"builds": {"old-one": {"attempt": 2, "id": "merge-main-and-land-old-one-2", "via": "build"}}}))
+r = c.get("/p/land/line")
+j = r.json()
+check(r.status_code == 200 and [x["id"] for x in j["line"]] == ["old-one", "new-one"], "GET /land/line: the builds not on main yet, in order (ready ones are not in the line)")
+check([x["id"] for x in j["stuck"]] == ["old-one"] and j["stuck"][0]["fix"] == "merge-main-and-land-old-one-2", "stuck over 30 minutes: listed with its fix build")
+check(j["chip"]["label"] == "Landing: 3" and j["chip"]["stuck"] == 1 and j["chip"]["tone"] == "danger", "the banner chip: Landing: N, stuck count, danger tone")
+r = c.post("/p/land/sweep")
+check(r.status_code == 200 and json.loads((ddir / "land-sweep.json").read_text())["at"] is None, "POST /land/sweep: the sweeper runs at the next round")
+(ddir / "land.json").write_text(_land_before)
+(ddir / "land-fix.json").unlink()
 check(c.get("/p/land/blocked").json()["items"][0]["state"] == "blocked", "GET /land/blocked: the blocked ones")
 r = c.post("/p/land/hold", json={"build": "feat-a", "why": "Brett wants to look"})
 check(r.status_code == 200 and r.json()["holds"]["feat-a"]["why"] == "Brett wants to look", "POST /land/hold runs land.mjs and records the hold")

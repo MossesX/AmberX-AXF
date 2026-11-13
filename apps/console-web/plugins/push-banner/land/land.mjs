@@ -632,6 +632,15 @@ export async function main(argv) {
     try { return await runRound({ s, dry, json, opt, print }); } finally { if (!dry) dropLandLock(); }
   }
   if (cmd === 'queue') return queueMain(argv.slice(argv.indexOf('queue') + 1));
+  if (cmd === 'line') {
+    const st = readState(s); const ctl = readControl(s); const sw = readJson(sweepFile(s), {}) || {};
+    const items = (st.items || []).filter((x) => !['ready', 'off'].includes(x.state));
+    const nowList = ctl.now || [];
+    items.sort((a, b) => (nowList.includes(a.id) ? nowList.indexOf(a.id) : 1e3) - (nowList.includes(b.id) ? nowList.indexOf(b.id) : 1e3));
+    const stuck = core.stuckItems(st.items || []);
+    return print({ on: st.on !== false, at: st.at, owner: lockOwner(), line: items.map((x) => ({ id: x.id, pr: x.pr, state: x.state, since: x.since })), stuck, sweep: { at: sw.at, acted: sw.acted || [] } },
+      `${lockOwner() ? `landing now: ${lockOwner()}\n` : ''}${items.map(line).join('\n') || 'the landing line is empty'}${stuck.length ? `\nstuck over 30 min: ${stuck.map((x) => `${x.id} (${x.kind}${x.fix ? `, fix ${x.fix}` : ''})`).join(', ')}` : ''}`);
+  }
   if (cmd === 'list' || cmd === 'blocked') {
     const st = readState(s); const items = (st.items || []).filter((x) => cmd === 'list' || x.state === 'blocked');
     return print({ ...st, items }, items.map(line).join('\n') || (cmd === 'blocked' ? 'nothing blocked' : 'no finished builds to land'));

@@ -337,6 +337,10 @@ export const LAND_COMMANDS = Object.freeze([
   { id: 'land-now', method: 'POST', path: '/land/now', cli: 'now', title: 'Auto-land: land a build now', description: 'Land one finished build at the next round (within 3 minutes), ahead of the rest; a hold on it is released.', effect: 'write', input: { build: 'build id' } },
   { id: 'land-hold', method: 'POST', path: '/land/hold', cli: 'hold', title: 'Auto-land: hold a build', description: 'Keep a finished build from landing until it is released.', effect: 'write', input: { build: 'build id', why: 'optional reason' } },
   { id: 'land-release', method: 'POST', path: '/land/release', cli: 'release', title: 'Auto-land: release a held build', description: 'Let a held build land again.', effect: 'write', input: { build: 'build id' } },
+  { id: 'land-off', method: 'POST', path: '/land/off', cli: 'off', title: 'Auto-land: switch one build off', description: 'The per-build switch: this build is not landed by itself (auto-land stays on for every other build).', effect: 'write', input: { build: 'build id', why: 'optional reason' } },
+  { id: 'land-on', method: 'POST', path: '/land/on', cli: 'on', title: 'Auto-land: switch one build back on', description: 'The per-build switch: this build lands by itself again (the default).', effect: 'write', input: { build: 'build id' } },
+  { id: 'land-line', method: 'GET', path: '/land/line', cli: 'line', title: 'Auto-land: the landing line', description: 'The serial landing line: builds waiting to land in order, what is stuck for over 30 minutes and why, each fix build filed, the last sweep.', effect: 'read' },
+  { id: 'land-sweep', method: 'POST', path: '/land/sweep', cli: 'sweep', title: 'Auto-land: sweep now', description: 'Run the sweeper at the next round: every finished build not on main is landed or gets its P0 fix build.', effect: 'write' },
 ]);
 
 /** Apply one control command to the control document (holds, now, after). Returns the new document. */

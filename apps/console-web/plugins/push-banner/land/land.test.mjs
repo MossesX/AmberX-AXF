@@ -317,9 +317,9 @@ console.log('fix builds: a clash or red tests gets a P0 "merge main and land" bu
 }
 console.log('sweeper: every 10 minutes, each finished build not on main is landed or gets its fix build');
 {
-  const kr = core.kickReason('k', 'kicked out: #581 conflicts with main in code (deploy/claude-workers.mjs, a.ts). Merge main in and fix them.');
+  const kr = core.kickReason('k', 'kicked out: PR 7001 conflicts with main in code (deploy/claude-workers.mjs, a.ts). Merge main in and fix them.');
   check(kr.kind === 'conflict' && kr.files.join() === 'deploy/claude-workers.mjs,a.ts', 'kicked for a clash: the files are read back');
-  const kc = core.kickReason('k', 'kicked out: #575 broke CI when tested on top of main (failed: Web Dev Console (React/TS) + Python API, Build engine sweep (Node)). Run: u');
+  const kc = core.kickReason('k', 'kicked out: PR 7002 broke CI when tested on top of main (failed: Web Dev Console (React/TS) + Python API, Build engine sweep (Node)). Run: u');
   check(kc.kind === 'ci' && kc.agent, 'kicked for red CI: a code fix');
   check(core.kickReason('k', 'its PR checks are red') === null, 'not kicked: no kick reason');
   const T = Date.parse('2026-11-13T20:00:00Z');
@@ -327,7 +327,7 @@ console.log('sweeper: every 10 minutes, each finished build not on main is lande
     { id: 'pushfail', branch: 'claude/pushfail', since: '2026-11-13T19:00:00Z', reason: { kind: 'push', text: 'pushfail: push failed' } },
     { id: 'fresh', branch: 'claude/fresh', since: '2026-11-13T19:55:00Z', reason: { kind: 'push', text: 'fresh: push failed' } },
     { id: 'uiwait', branch: 'claude/uiwait', since: '2026-11-13T18:00:00Z', state: 'blocked', reason: { kind: 'ui', text: 'uiwait: screenshots waiting' } }];
-  const waiting = [{ build: 'kicked', pr: 581, head: 'h', why: 'kicked out: #581 conflicts with main in code (a.ts). Merge main in.' }];
+  const waiting = [{ build: 'kicked', pr: 581, head: 'h', why: 'kicked out: PR 7001 conflicts with main in code (a.ts). Merge main in.' }];
   const plan = core.sweepPlan(items, waiting, T);
   check(plan.find((p) => p.id === 'kicked')?.act === 'fix' && plan.find((p) => p.id === 'pushfail')?.act === 'retry' && !plan.some((p) => p.id === 'fresh') && !plan.some((p) => p.id === 'uiwait'), 'plan: kicked → fix build; push failing 30 min → retry; fresh and UI waits left alone');
   const stuck = core.stuckItems(items.map((x) => ({ ...x, state: 'blocked' })), T);
