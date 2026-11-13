@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3985,
- "updatedAt": "2026-11-13T03:37:26.935Z",
+ "rev": 3986,
+ "updatedAt": "2026-11-13T03:37:40.123Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -176289,7 +176289,7 @@
    "branch": "claude/change-to-move-amberx-web-app-into-the-console-amberx-andr-pr-528-brett-do",
    "pr": "",
    "createdAt": "2026-11-13T00:39:39.304Z",
-   "updatedAt": "2026-11-13T03:36:58.964Z",
+   "updatedAt": "2026-11-13T03:37:05.197Z",
    "builtAt": "",
    "notes": [
     {
@@ -176421,12 +176421,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T03:37:01.506Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T00:41:27.700Z",
-     "updatedAt": "2026-11-13T00:41:27.700Z"
+     "updatedAt": "2026-11-13T03:37:01.976Z"
     },
     {
      "id": "s4",
@@ -176443,12 +176443,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T03:37:05.197Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T00:41:27.700Z",
-     "updatedAt": "2026-11-13T00:41:27.700Z"
+     "updatedAt": "2026-11-13T03:37:05.568Z"
     },
     {
      "id": "s5",
@@ -176484,7 +176484,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
