@@ -788,7 +788,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 18:51 UTC · `orchestrator-custom-groups-custom-tabs` note (all) · orchestrator
 - 2026-11-13 18:51 UTC · `console-android-app-thin-webview-wrapper` → queued, note (all) · pipeline
 - 2026-11-13 18:52 UTC · `decision-dialog-ui-review-other` s6 done (all) · foreign-write
 - 2026-11-13 18:52 UTC · `ui-manager-floating-window-to-select-any` → queued, note (all) · foreign-write
@@ -1188,6 +1187,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 20:32 UTC · `toolbar-widgets-attach-any-banner-style` branch claude/toolbar-widgets-attach-any-banner-style (all) · pipeline
 - 2026-11-13 20:32 UTC · `toolbar-widgets-attach-any-banner-style` note (all) · orchestrator
 - 2026-11-13 20:32 UTC · `console-app-wake-word-voice-listener` note (all) · orchestrator
+- 2026-11-13 20:35 UTC · `icon-map-icon-packs-every-icon-badge-app` s1 done (all) · orchestrator
 
 ## Token passes (log)
 
