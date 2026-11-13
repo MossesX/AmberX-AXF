@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T19:08:18.487Z",
+ "updatedAt": "2026-11-13T19:08:32.152Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -127820,15 +127820,15 @@
    "title": "UI Manager: floating window to select any element in the console and edit all its tokens",
    "category": "",
    "detail": "UI Manager (console plugin), opens in a floating window.\n- Lets Brett select ANY UI element in the whole console (every screen, plugin, dialog, toolbar, tab group, banner, nav, widget, control).\n- Left: collapsible categorized tree of all elements. Top category 'On screen now' lists every element currently visible; these are references (like Windows shortcuts / symlinks) to the same element that also lives in its normal category - both point to one shared source, edit either and both change.\n- Selecting an element (or picking it on screen with an inspector/picker mode) opens it according to the chosen view (several views: expanding row, side panel, grid...). Default: an expanding row listing all its properties and every token it reads.\n- Each property/token is edited by choosing from predetermined, valid values supplied by the console/framework integration (token sets, skins, assets, enums, ranges) - never free text where a valid list exists; schema-validated; live preview; reset to skin/default; shows overrides.\n- Searchable, sortable, multi-filter lists everywhere (thousands of elements).\n- Full API: REST/MCP/CLI/voice/control@1 ('select the main toolbar, set its transparency to 80').\n- Elements register via the framework (manifest) so new plugins appear automatically.\n- Tests, help, Shipped features. Fable for the element registry/schema core, Opus for UI.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/ui-manager-floating-window-to-select-any",
-   "pr": "",
+   "pr": "#634",
    "priority": "P1",
    "createdAt": "2026-11-13T18:30:38.922Z",
-   "updatedAt": "2026-11-13T19:07:49.205Z",
+   "updatedAt": "2026-11-13T19:08:10.892Z",
    "builtAt": "",
    "notes": [
     {
@@ -127892,12 +127892,12 @@
      "at": "2026-11-13T19:01:25.369Z"
     },
     {
-     "text": "Headless run axf-ui-manager-floating-window-to-select-any--paulie: brief only · start 13.2K tokens ($0.07) · cost $5.11 · 69 turns · 6 tools, MCP none",
-     "at": "2026-11-13T19:06:57.573Z"
-    },
-    {
      "text": "Double launch again: Paulie (run 2, 18:52) found the Fable session from run 1 (agent Greenlight Gina, pid 811375, started 18:39, session a2405ba5) still live in the same worktree and writing s2 (test.mjs, spec/check-ui-manager.mjs, fixtures/ui-manager.json, CI lines, catalog status cx.uimanager). Paulie committed and pushed s1 (b09c0e80a: engine + plugin + validate/schemas routes + PORTING row + plugins README line; the commit swept in the other session's test.mjs draft) and ticked s1, then stood down so two sessions do not both commit s2. The other session continues s2 on disk. Needs Brett: dispatch-gate must refuse a launch while a session for the same build is alive (third time: see the Earl/Paulie and Lenny/Paulie notes).",
      "at": "2026-11-13T19:06:37.485Z"
+    },
+    {
+     "text": "Headless run axf-ui-manager-floating-window-to-select-any--paulie: brief only · start 13.2K tokens ($0.07) · cost $5.11 · 69 turns · 6 tools, MCP none",
+     "at": "2026-11-13T19:06:57.573Z"
     },
     {
      "text": "Session on mossesx-max- stopped on its own with 13 steps left: back in Pending for Brett.",
