@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3912,
- "updatedAt": "2026-11-13T01:21:48.056Z",
+ "rev": 3913,
+ "updatedAt": "2026-11-13T01:22:01.737Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -175562,7 +175562,7 @@
    "branch": "claude/claude-badge-can-claude-build-green-when-at-least-one-build-account-in-the-or",
    "pr": "",
    "createdAt": "2026-11-12T23:30:16.119Z",
-   "updatedAt": "2026-11-13T01:21:46.628Z",
+   "updatedAt": "2026-11-13T01:21:48.022Z",
    "builtAt": "",
    "notes": [
     {
@@ -175668,12 +175668,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T01:21:48.022Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T23:31:24.959Z",
-     "updatedAt": "2026-11-12T23:31:24.959Z"
+     "updatedAt": "2026-11-13T01:21:48.195Z"
     },
     {
      "id": "s3",
