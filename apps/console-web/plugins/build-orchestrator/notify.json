@@ -75,6 +75,36 @@
       "channels": {
         "amberx": false
       }
+    },
+    {
+      "id": "pipeline.autoqueue",
+      "label": "Pending builds auto-queued",
+      "group": "builds",
+      "app": "console",
+      "source": "Build orchestrator dispatcher",
+      "description": "Auto-queue pending builds is on and agent slots were still free after every ready step and every Queue build had one: split Pending builds that clash with nothing running moved to the Queue in priority order (each gets the build note 'auto-queued: slots free'). One alert per round, listing them.",
+      "match": {
+        "source": "pipeline",
+        "keyPrefix": "pipeline:autoqueue:"
+      },
+      "setting": "notify.buildDone",
+      "push": true,
+      "priority": "normal"
+    },
+    {
+      "id": "pipeline.step-conflict",
+      "label": "Parallel step could not merge back",
+      "group": "builds",
+      "app": "console",
+      "source": "Build orchestrator dispatcher",
+      "description": "A step that ran in parallel (Fill every slot) conflicted with work already merged into its build branch: it went back as blocked and re-runs after the steps it clashed with, in the build's own session. Its branch is kept.",
+      "match": {
+        "source": "pipeline",
+        "keyPrefix": "pipeline:step-conflict:"
+      },
+      "setting": "notify.blocked",
+      "push": true,
+      "priority": "high"
     }
   ]
 }

@@ -783,7 +783,44 @@ export function fillRound({ state, env = process.env, alert = () => {}, rules, l
     }
   }
   requeueAfterParallel({ now });
-  return { launched, failed, plan, ended, settings: fill };
+  const autoQueued = fill.autoQueuePending ? autoQueuePending({ state, env, alert, fill, launchedNow: launchedNow + launched.length, now }) : [];
+  return { launched, failed, plan, ended, settings: fill, autoQueued };
+}
+
+/**
+ * Auto-queue pending builds (Claude setting builds.autoQueuePending, owner-only, off by default): when agent slots are
+ * still free after every ready step started and no Queue build waits for one, split Pending builds that clash with
+ * nothing running move to the Queue in priority order (planFill's Pending rule: split, no file clash, accounts free),
+ * each with the build note `auto-queued: slots free`, and one alert lists them. A build a session handed back to
+ * Pending, or one whose steps still need a split, keeps waiting for Brett. The next tick launches them.
+ */
+export function autoQueuePending({ state, env = process.env, alert = () => {}, fill = fillSettings(env), launchedNow = 0, now = Date.now() } = {}) {
+  if (!fill.autoQueuePending) return [];
+  const store = loadStore(); const rules = rulesOf(store);
+  const builds = runnable(store);
+  const queueWaits = builds.filter((b) => b.status === 'queued' && !BP.isHeld(b) && BP.openSteps(b).length);
+  if (queueWaits.length) return [];
+  const pending = builds.filter((b) => b.status === 'pending' && !b.hidden && b.steps.length && !P.needsSplit(b, rules) && b.pipeline?.lastRun?.outcome !== 'returned');
+  if (!pending.length) return [];
+  const inputs = fillInputs({ store, state, env, fill, launchedNow, now });
+  // ready steps first: what they would take is not left for Pending builds
+  const plan = BP.planFill({ ...inputs, pending, settings: { ...inputs.settings, autoQueue: true }, priorityOf: (b) => effectivePriority(b) });
+  const take = plan.launches.filter((l) => l.kind === 'pending');
+  const moved = [];
+  for (const l of take) {
+    try {
+      queue(l.id, { by: 'auto-queue (slots free)' });
+      withStore((s) => { const rec = storeCore.findBuild(s, l.id); if (rec) { rec.notes.push({ text: 'auto-queued: slots free', at: nowIso() }); rec.updatedAt = nowIso(); } return s; }, { by: 'dispatcher', action: 'pipeline:auto-queue', note: l.id });
+      moved.push(l.id);
+    } catch (e) { logLine({ event: 'auto-queue-failed', build: l.id, error: str(e.message, 300) }); }
+  }
+  if (moved.length) {
+    const byId = new Map(builds.map((b) => [b.id, b]));
+    alert('autoqueue', { ids: moved, builds: moved.map((id) => ({ id, title: str(byId.get(id)?.title, 120), priority: priorityLabel(effectivePriority(byId.get(id))) })) });
+    logLine({ event: 'auto-queued', builds: moved });
+    crewSay('orchestrator', 'start', `Slots were free: auto-queued ${moved.join(', ')}.`, { ref: moved[0] });
+  }
+  return moved;
 }
 
 /**
