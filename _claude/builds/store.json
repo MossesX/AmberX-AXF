@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5073,
- "updatedAt": "2026-11-13T21:53:38.761Z",
+ "rev": 5074,
+ "updatedAt": "2026-11-13T21:53:49.245Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -206362,7 +206362,7 @@
    "pr": "#657",
    "priority": "P1",
    "createdAt": "2026-11-13T20:04:16.679Z",
-   "updatedAt": "2026-11-13T21:53:24.810Z",
+   "updatedAt": "2026-11-13T21:53:26.570Z",
    "builtAt": "",
    "notes": [
     {
@@ -206384,6 +206384,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-token-registry-skin-editor-live-sandbox--lenny, own login copy)",
      "at": "2026-11-13T20:21:33.063Z"
+    },
+    {
+     "text": "Phase 1 done on Fable: PR #657. Token registry (223 tokens, token-registry@1, CI check, manifest tokens block), Skin editor plugin (sandbox hot render, Basic/Pro/Advanced, snapshot chain with revert, export as skin, REST/MCP/CLI/voice), console bake fixes (build-id, windows engine). UI Review r-20261113-5f636908 waiting for Brett. Note: own-token-sets-for-grids-and-tab-groups had not pushed its schema; the registry derives from the engines, so its families register on the next sync.",
+     "at": "2026-11-13T21:53:26.570Z"
     }
    ],
    "approvals": [],
@@ -206667,7 +206671,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
