@@ -788,7 +788,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 18:21 UTC · `decision-dialog-ui-review-other` → running, note (all) · builds-live
 - 2026-11-13 18:21 UTC · `toolbar-widgets-attach-any-banner-style` note (all) · orchestrator
 - 2026-11-13 18:21 UTC · `vps-builds-get-console-token-ui-review` s2 done (all) · orchestrator
 - 2026-11-13 18:21 UTC · `prompting-engine-control-panel-events` → running, note (all) · pipeline
@@ -1188,6 +1187,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 20:01 UTC · `own-token-sets-for-grids-and-tab-groups` note (all) · builds-live
 - 2026-11-13 20:02 UTC · `grid-token-set-colours-hover-selected` note (all) · orchestrator
 - 2026-11-13 20:02 UTC · `grid-token-set-colours-hover-selected` note (all) · builds-live
+- 2026-11-13 20:03 UTC · `own-token-sets-for-grids-and-tab-groups` note (all) · orchestrator
 
 ## Token passes (log)
 
