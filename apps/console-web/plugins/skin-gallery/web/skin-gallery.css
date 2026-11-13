@@ -1,0 +1,12 @@
+/* Layout only: every control keeps its own asset look. */
+.axp-skin-gallery__target { display: grid; grid-template-columns: repeat(auto-fit, minmax(calc(var(--fx-layout-nav-width) * 0.8), 1fr)); gap: var(--fx-dens-gap-md); }
+.axp-skin-gallery__actions, .axp-skin-gallery__frames { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-md); }
+.axp-skin-gallery__now, .axp-skin-gallery__msg { margin-top: 0; }
+.axp-skin-gallery__body { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--fx-dens-gap-md); align-items: start; }
+.axp-skin-gallery__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--fx-layout-nav-width) * 0.6), 1fr)); gap: var(--fx-dens-gap-md); }
+.axp-skin-gallery__card { display: flex; flex-direction: column; align-items: flex-start; gap: var(--fx-dens-gap-sm); text-align: start; height: auto; }
+.axp-skin-gallery__card.is-picked { outline: var(--fx-border-w) solid var(--fx-accent); }
+.axp-skin-gallery__frame { margin-top: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-lg); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-lg); background: var(--fx-bg); }
+.axp-skin-gallery__frame.is-phone { max-width: calc(var(--fx-layout-nav-width) * 1.6); margin-inline: auto; border-radius: var(--fx-radius-lg); }
+.axp-skin-gallery-quick { display: flex; align-items: center; gap: var(--fx-dens-gap-sm); }
+:where([data-fx-narrow]) .axp-skin-gallery__body { grid-template-columns: minmax(0, 1fr); }
