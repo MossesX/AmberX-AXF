@@ -424,3 +424,10 @@ builds merge driver installed there (`builds-live.mjs install`). PR heads fetche
   shipped behaviour: the per-toolbar key no longer beats the dialog choice, and an app-menu drop-down taps to confirm
   like the rest of the app menu. check-tapconfirm 111/111; fixture regenerated, check-chrome-settings 284 checks.
 - #545: merged clean.
+- #560: all additive against main: pipeline.test.mjs (main's shipped-check e2e test + #560's server-gate tests),
+  merge-queue.mjs imports (`crewSay` + `gateRecord`), claude-headless.sh (main's one-build-account pick and limit
+  release kept, #560's `gate_hold` and slot-limit gate record added, `AXF_GATE_OWNER AXF_GATE_BUILD` added to main's
+  env pass-through list), server/__init__.py (main's console-focus@1 + #560's gate-log/gate-banner routes),
+  web/index.tsx (main's focus action and `effect: 'navigate'` + #560's gate-log / gate-banner actions).
+- #562: pipeline.mjs row keeps main's `shipped` and adds #562's `stale`; plugin.json keeps the gate-log routes and
+  adds `pipeline-live`. pipeline.test.mjs 54 checks pass.

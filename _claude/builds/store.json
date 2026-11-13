@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4396,
- "updatedAt": "2026-11-13T12:19:43.913Z",
+ "rev": 4405,
+ "updatedAt": "2026-11-13T12:24:28.871Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -181793,7 +181793,7 @@
    "pr": "#556",
    "priority": "P0",
    "createdAt": "2026-11-13T07:12:21.823Z",
-   "updatedAt": "2026-11-13T12:18:28.526Z",
+   "updatedAt": "2026-11-13T12:23:36.594Z",
    "builtAt": "",
    "notes": [
     {
@@ -182660,12 +182660,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T12:23:36.594Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T07:14:57.750Z",
-     "updatedAt": "2026-11-13T07:14:57.750Z"
+     "updatedAt": "2026-11-13T12:23:37.147Z"
     },
     {
      "id": "s30",
@@ -182727,7 +182727,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 53,
+   "rev": 54,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -185937,7 +185937,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T11:45:11.111Z",
-   "updatedAt": "2026-11-13T12:18:18.484Z",
+   "updatedAt": "2026-11-13T12:23:49.879Z",
    "builtAt": "",
    "notes": [
     {
@@ -186182,12 +186182,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T12:20:33.572Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T11:48:17.662Z",
-     "updatedAt": "2026-11-13T11:48:17.662Z"
+     "updatedAt": "2026-11-13T12:20:33.961Z"
     },
     {
      "id": "s7",
@@ -186207,12 +186207,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T12:22:18.574Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T11:48:17.662Z",
-     "updatedAt": "2026-11-13T11:48:17.662Z"
+     "updatedAt": "2026-11-13T12:22:18.804Z"
     },
     {
      "id": "s8",
@@ -186232,12 +186232,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T12:23:49.879Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T11:48:17.662Z",
-     "updatedAt": "2026-11-13T11:48:17.662Z"
+     "updatedAt": "2026-11-13T12:23:50.278Z"
     },
     {
      "id": "s9",
@@ -186428,7 +186428,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -186452,7 +186452,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T11:55:36.143Z",
-   "updatedAt": "2026-11-13T12:19:42.120Z",
+   "updatedAt": "2026-11-13T12:24:26.252Z",
    "builtAt": "",
    "notes": [
     {
@@ -186691,12 +186691,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T12:24:26.252Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T11:57:37.071Z",
-     "updatedAt": "2026-11-13T11:57:37.071Z"
+     "updatedAt": "2026-11-13T12:24:26.597Z"
     },
     {
      "id": "s7",
@@ -187123,7 +187123,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -187147,7 +187147,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T12:14:42.715Z",
-   "updatedAt": "2026-11-13T12:17:19.214Z",
+   "updatedAt": "2026-11-13T12:22:15.322Z",
    "builtAt": "",
    "notes": [
     {
@@ -187234,12 +187234,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T12:19:54.305Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T12:17:01.586Z",
-     "updatedAt": "2026-11-13T12:17:01.586Z"
+     "updatedAt": "2026-11-13T12:19:54.538Z"
     },
     {
      "id": "s2",
@@ -187259,12 +187259,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T12:22:15.322Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T12:17:01.586Z",
-     "updatedAt": "2026-11-13T12:17:01.586Z"
+     "updatedAt": "2026-11-13T12:22:15.563Z"
     },
     {
      "id": "s3",
@@ -187581,12 +187581,89 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-13T12:17:01.586Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "fix-toolbar-settings-doing-nothing",
+   "title": "Fix toolbar settings doing nothing",
+   "category": "",
+   "detail": "",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-13T12:23:34.932Z",
+   "updatedAt": "2026-11-13T12:23:37.247Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T12:23:37.247Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Brett: when I long-press / right-click a toolbar and open toolbar settings, none of the settings change anything. Selecting icons, text, collapsible etc. has no effect. Seen on Shipped features (Sync/CSV/Markdown bar, group-by tabs, filter checkboxes, status chips, edit status). Fix it so every toolbar setting actually applies live to that toolbar, on every toolbar in the console, persists, and is controllable by API (REST, MCP, CLI, voice). Add a test that changing each setting changes the rendered toolbar.",
+    "at": "2026-11-13T12:23:34.932Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "2026-11-13T12:23:36.778Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 784
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 3,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

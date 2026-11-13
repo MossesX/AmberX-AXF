@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T12:19:43.913Z",
+ "updatedAt": "2026-11-13T12:24:28.871Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -119597,7 +119597,7 @@
    "pr": "#556",
    "priority": "P0",
    "createdAt": "2026-11-13T07:12:21.823Z",
-   "updatedAt": "2026-11-13T12:18:28.526Z",
+   "updatedAt": "2026-11-13T12:23:36.594Z",
    "builtAt": "",
    "notes": [
     {
@@ -120344,8 +120344,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T12:23:36.594Z",
      "note": "",
      "uid": "st-mwen6bti0tv8cn",
      "createdAt": "2026-11-13T07:14:57.750Z"
@@ -122824,7 +122824,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T11:45:11.111Z",
-   "updatedAt": "2026-11-13T12:18:18.484Z",
+   "updatedAt": "2026-11-13T12:23:49.879Z",
    "builtAt": "",
    "notes": [
     {
@@ -123018,8 +123018,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T12:20:33.572Z",
      "note": "",
      "uid": "st-mwewxu2m0rf856",
      "createdAt": "2026-11-13T11:48:17.662Z"
@@ -123040,8 +123040,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T12:22:18.574Z",
      "note": "",
      "uid": "st-mwewxu2m0syuoq",
      "createdAt": "2026-11-13T11:48:17.662Z"
@@ -123062,8 +123062,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T12:23:49.879Z",
      "note": "",
      "uid": "st-mwewxu2m0t5ja6",
      "createdAt": "2026-11-13T11:48:17.662Z"
@@ -123242,7 +123242,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T11:55:36.143Z",
-   "updatedAt": "2026-11-13T12:19:42.120Z",
+   "updatedAt": "2026-11-13T12:24:26.252Z",
    "builtAt": "",
    "notes": [
     {
@@ -123430,8 +123430,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T12:24:26.252Z",
      "note": "",
      "uid": "st-mwex9tpr06u37t",
      "createdAt": "2026-11-13T11:57:37.071Z"
@@ -123819,7 +123819,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T12:14:42.715Z",
-   "updatedAt": "2026-11-13T12:17:19.214Z",
+   "updatedAt": "2026-11-13T12:22:15.322Z",
    "builtAt": "",
    "notes": [
     {
@@ -123870,8 +123870,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T12:19:54.305Z",
      "note": "",
      "uid": "st-mwexys9f01nrj3",
      "createdAt": "2026-11-13T12:17:01.586Z"
@@ -123892,8 +123892,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T12:22:15.322Z",
      "note": "",
      "uid": "st-mwexys9f02x5h2",
      "createdAt": "2026-11-13T12:17:01.586Z"
@@ -124169,6 +124169,43 @@
      "createdAt": "2026-11-13T12:17:01.586Z"
     }
    ]
+  },
+  {
+   "id": "fix-toolbar-settings-doing-nothing",
+   "title": "Fix toolbar settings doing nothing",
+   "category": "",
+   "detail": "",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-13T12:23:34.932Z",
+   "updatedAt": "2026-11-13T12:23:37.247Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T12:23:37.247Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Brett: when I long-press / right-click a toolbar and open toolbar settings, none of the settings change anything. Selecting icons, text, collapsible etc. has no effect. Seen on Shipped features (Sync/CSV/Markdown bar, group-by tabs, filter checkboxes, status chips, edit status). Fix it so every toolbar setting actually applies live to that toolbar, on every toolbar in the console, persists, and is controllable by API (REST, MCP, CLI, voice). Add a test that changing each setting changes the rendered toolbar.",
+    "at": "2026-11-13T12:23:34.932Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }
