@@ -1,6 +1,6 @@
 # Fix the step splitter: "claude exit 1: Input must be provided"
 
-Build `fix-the-step-splitter-claude-exit-1-input-must-b`, branch `claude/fix-the-step-splitter-claude-exit-1-input-must-b`, Opus.
+Build `fix-step-splitter-claude-exit-1-input`, branch `claude/fix-step-splitter-claude-exit-1-input`, Opus.
 
 ## What broke
 
