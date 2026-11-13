@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4568,
- "updatedAt": "2026-11-13T17:54:12.544Z",
+ "rev": 4569,
+ "updatedAt": "2026-11-13T17:54:25.753Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -196082,15 +196082,15 @@
    "title": "Tab groups: choose how many rows of tabs (stack tabs instead of side-scrolling)",
    "category": "",
    "detail": "Add a 'Rows' setting to every tab group's chrome settings (per instance): 1 (default, today's behaviour), 2, 3, ... or Auto (as many rows as needed to fit). Tabs wrap evenly across that many rows so all tabs fit on the page without horizontal scrolling. Works on desktop and phone, follows skins/tokens, persists per instance, survives reload. Active tab stays visible; drag-reorder works across rows. Expose via REST/MCP/CLI/voice/control@1 ('make the settings tabs three rows'). Tests, help entry, Shipped features.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/tab-groups-choose-how-many-rows-tabs",
    "pr": "",
    "priority": "P2",
    "createdAt": "2026-11-13T17:51:25.212Z",
-   "updatedAt": "2026-11-13T17:54:10.862Z",
+   "updatedAt": "2026-11-13T17:54:17.405Z",
    "builtAt": "",
    "notes": [
     {
@@ -196100,6 +196100,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"c33c8da4-9882-4654-8610-3088e703a00a\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-13T17:53:12.928Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-tab-groups-choose-how-many-rows-tabs--rhonda.",
+     "at": "2026-11-13T17:54:14.619Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-tab-groups-choose-how-many-rows-tabs--rhonda, own login copy)",
+     "at": "2026-11-13T17:54:17.405Z"
     }
    ],
    "approvals": [],
@@ -196119,12 +196127,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T17:51:27.246Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-tab-groups-choose-how-many-rows-tabs--rhonda",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-13T17:54:13.975Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T17:53:12.928Z",
@@ -196134,9 +196142,9 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"c33c8da4-9882-4654-8610-3088e703a00a\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-13T17:54:13.975Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -196145,7 +196153,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-13T17:54:13.975Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -196229,7 +196237,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
