@@ -788,7 +788,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 18:21 UTC · `prompting-engine-control-panel-events` → running, note (all) · pipeline
 - 2026-11-13 18:21 UTC · `prompting-engine-control-panel-events` branch claude/prompting-engine-control-panel-events (all) · pipeline
 - 2026-11-13 18:22 UTC · `prompting-engine-control-panel-events` note (all) · orchestrator
 - 2026-11-13 18:23 UTC · `vps-builds-get-console-token-ui-review` s3 done (all) · orchestrator
@@ -1188,6 +1187,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 20:03 UTC · `own-token-sets-for-grids-and-tab-groups` note (all) · orchestrator
 - 2026-11-13 20:03 UTC · `orchestrator-custom-groups-custom-tabs` s9 done (all) · orchestrator
 - 2026-11-13 20:03 UTC · `demo-pipelines-guided-walkthrough-live` s3 done (all) · orchestrator
+- 2026-11-13 20:03 UTC · `console-app-wake-word-voice-listener` branch claude/console-app-wake-word-voice-listener, PR #643 (all) · builds-live
 
 ## Token passes (log)
 

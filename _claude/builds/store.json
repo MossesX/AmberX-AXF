@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4895,
- "updatedAt": "2026-11-13T20:04:03.032Z",
+ "rev": 4896,
+ "updatedAt": "2026-11-13T20:04:16.606Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -201436,15 +201436,15 @@
    "title": "Console app: wake-word voice listener, voice approvals, every console command by voice",
    "category": "",
    "detail": "Voice control for the console Android app (wrapper, parts 1-4), working offline where possible.\n- Always-on wake-word listener, with a wake phrase Brett sets in Settings (several allowed). Runs on-device (offline engine, e.g. Vosk/whisper.cpp + a local intent matcher), with a mic-on indicator and an off switch.\n- After the wake phrase the app answers out loud ('What's up?') and listens for a command.\n- Voice approvals: 'approve' reads pending approvals one at a time (who asked, what it does); Brett says approve, deny, skip or details. 'Approve all pending' and 'deny all' ask for one spoken confirm. Works from the floating overlay and the lock screen.\n- Settings by voice, e.g. 'change the veto timer to two hours' (the axHub veto countdown, so he has that long to veto something before it runs/builds), with the value read back.\n- Command catalog: every console action, plugin command, control@1 target and pipeline gets a voice entry, built from the API registry so new plugins appear automatically. Multi-field actions run as a spoken wizard that asks for each missing field ('create a new project' -> 'name?' -> 'Gizmo Johnson' -> confirm). Covers projects, builds/pipelines (file, split, prioritise, land, stop), approvals, settings, tokens/skins, notes/tasks, navigation.\n- A Voice commands screen lists every command and its phrasings, searchable, with custom phrases Brett adds.\n- Destructive commands always need a spoken confirm.\n- Full API parity. Tests, help, Shipped features.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/console-app-wake-word-voice-listener",
-   "pr": "",
+   "pr": "#643",
    "priority": "P1",
    "createdAt": "2026-11-13T18:44:52.063Z",
-   "updatedAt": "2026-11-13T19:31:20.212Z",
+   "updatedAt": "2026-11-13T20:03:29.163Z",
    "builtAt": "",
    "notes": [
     {
@@ -201481,12 +201481,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T18:44:54.704Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-console-app-wake-word-voice-listener--earl",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Fable",
-    "launchedAt": "2026-11-13T19:31:11.596Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T18:48:10.123Z",
@@ -201496,9 +201496,9 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"fd4e2ca1-06b3-4e4b-9294-67a366c6037c\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "2026-11-13T19:31:11.599Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Fable",
      "account": "mossesx-max-",
@@ -201507,7 +201507,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-13T19:31:11.599Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
