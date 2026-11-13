@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3995,
- "updatedAt": "2026-11-13T03:46:39.136Z",
+ "rev": 3996,
+ "updatedAt": "2026-11-13T03:50:24.481Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -177085,7 +177085,7 @@
    "branch": "claude/skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change",
    "pr": "",
    "createdAt": "2026-11-13T01:13:53.464Z",
-   "updatedAt": "2026-11-13T03:46:37.575Z",
+   "updatedAt": "2026-11-13T03:50:22.779Z",
    "builtAt": "",
    "notes": [
     {
@@ -177232,12 +177232,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T03:50:22.779Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T01:16:06.682Z",
-     "updatedAt": "2026-11-13T01:16:06.682Z"
+     "updatedAt": "2026-11-13T03:50:22.988Z"
     },
     {
      "id": "s3",
@@ -177430,7 +177430,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
