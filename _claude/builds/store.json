@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5089,
- "updatedAt": "2026-11-13T23:43:00.099Z",
+ "rev": 5090,
+ "updatedAt": "2026-11-13T23:43:15.545Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -209583,16 +209583,26 @@
    "title": "Voice listener: use Claude when connected (setting)",
    "category": "",
    "detail": "Follow-up to console-app-wake-word-voice-listener (scripted, offline command catalog plus spoken wizard). Add a setting 'Understand with Claude when connected' (default ON). When the Claude badge is green, the transcribed speech goes to Claude with the voice command catalog (from the API registry) as tools, so Brett can talk freely: Claude picks the command, fills fields from what he said, asks only for what's missing, and confirms destructive actions. When Claude isn't connected or times out, it falls back to the scripted matcher and wizard, with a small 'offline mode' indicator. Approvals still need an explicit spoken approve/deny. Show which mode handled each command in the history. Full API and voice ('use Claude for voice'). Tests, help, Shipped features.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P1",
    "createdAt": "2026-11-13T23:42:29.374Z",
-   "updatedAt": "2026-11-13T23:42:29.374Z",
+   "updatedAt": "2026-11-13T23:42:55.748Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T23:42:33.211Z"
+    },
+    {
+     "text": "Brett: the setting must be a real on/off switch. OFF = always scripted/offline even while Claude is connected (no speech text sent to Claude at all). Add a test that proves it: with Claude connected and the switch off, a command is handled by the scripted matcher and no Claude request is made. Show the current mode on the listener UI.",
+     "at": "2026-11-13T23:42:55.748Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -209607,6 +209617,28 @@
     "from": "",
     "addenda": []
    },
+   "pipeline": {
+    "queuedAt": "2026-11-13T23:42:32.638Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
    "steps": [],
    "profiles": [
     "all"
@@ -209616,7 +209648,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
