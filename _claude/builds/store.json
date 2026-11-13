@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4801,
- "updatedAt": "2026-11-13T19:29:35.079Z",
+ "rev": 4802,
+ "updatedAt": "2026-11-13T19:30:05.814Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -199996,7 +199996,7 @@
    "pr": "#636",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:12.834Z",
-   "updatedAt": "2026-11-13T19:28:26.651Z",
+   "updatedAt": "2026-11-13T19:29:58.993Z",
    "builtAt": "",
    "notes": [
     {
@@ -200030,6 +200030,10 @@
     {
      "text": "Headless run axf-orchestrator-settings-collapsible-split--earl: brief only · start 12.8K tokens ($0.06) · cost $23.41 · 264 turns · 6 tools, MCP none",
      "at": "2026-11-13T19:28:26.651Z"
+    },
+    {
+     "text": "Headless run axf-orchestrator-settings-collapsible-split--earl-191118: brief only · start 12.9K tokens ($0.06) · cost $2.71 · 50 turns · 6 tools, MCP none",
+     "at": "2026-11-13T19:29:58.993Z"
     }
    ],
    "approvals": [],
@@ -200269,7 +200273,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
