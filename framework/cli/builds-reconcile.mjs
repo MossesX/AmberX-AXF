@@ -7,6 +7,10 @@
  * (so it goes live to main as one status commit, builds-live.mjs): blank branch / PR fields filled, steps a PR names
  * ticked (with the PR in the step note), merged PRs recorded (built → complete). What it can't place goes in the
  * report: orphan PRs and branches, and suggestions. The systems check shows the report as a banner item.
+ * Parallel steps (fill every slot, BUILD-PARALLEL): a step claimed by a step session that is no longer alive (no tmux
+ * session axf-<build>--<step>, no agent slot holding it) is reset to ready, its worktree and branch kept for the retry;
+ * step branches (`<build-branch>--<step>`) are never matched as builds or orphans; and a build counts as built only when
+ * every step branch has merged back (a merged one is deleted), else it stays running with a note.
  *
  *   node framework/cli/builds-reconcile.mjs              dry run: what it would change (nothing written)
  *   … --apply                                           write the changes (live to main) and the report
@@ -24,6 +28,7 @@ import { fileURLToPath } from 'node:url';
 import * as core from '../plan/builds-store-core.mjs';
 import * as merge from '../plan/builds-merge-core.mjs';
 import { aliveIds, idlePlan, plan } from '../plan/builds-reconcile-core.mjs';
+import { claimLive, isParallelStep, releaseStep, stepBranch } from '../core/build-pipeline.mjs';
 import { REPO_ROOT, persistRoot } from './persist.mjs';
 import { loadStore, withStore } from './builds-store.mjs';
 import { liveStatus, syncAll, install } from './builds-live.mjs';
@@ -99,9 +104,56 @@ export function liveBuilds({ now = new Date() } = {}) {
   return aliveIds({ sessions: [...tmux.keys()], slots, changes: recentChanges(now), now: now.toISOString() });
 }
 
+// ------------------------------------------------------------------ parallel steps (BUILD-PARALLEL)
+
+/**
+ * Step branches of done parallel steps still on the remote, per build: Map(buildId → [{ step, branch }]). A merged step
+ * branch is deleted; the branch of a step re-run in the build's own session after a conflict (parallel: never) is kept
+ * on purpose and does not count.
+ */
+export function stepBranchesOf(builds, branches) {
+  const names = new Set((branches ?? []).map((b) => b.name ?? b));
+  const out = new Map();
+  for (const b of builds) for (const st of (b.steps ?? []).filter((x) => x.done && isParallelStep(x))) {
+    const br = stepBranch(b, st, { parallel: true });
+    if (names.has(br)) { if (!out.has(b.id)) out.set(b.id, []); out.get(b.id).push({ step: st.id, branch: br }); }
+  }
+  return out;
+}
+/** Branch names that are some build's step branch (kept out of the build / orphan matching). */
+export const isStepBranch = (builds, name) => builds.some((b) => String(name).startsWith(`${stepBranch(b, null)}--`) && (b.steps ?? []).some((st) => `${stepBranch(b, null)}--${st.id}` === name));
+
+const GRACE_MS = 10 * 60e3;
+/**
+ * Step claims whose session is gone: [{ id, step, runId, why }]. `alive(b, step)` answers true / false, or null when it
+ * can't tell (then nothing is reset). The build's own in-memory claim (main:…) is never stored, so never seen here.
+ */
+export function stepResetPlan(builds, alive, { now = Date.now(), graceMs = GRACE_MS } = {}) {
+  const out = [];
+  for (const b of builds) for (const st of b.steps ?? []) {
+    const c = st.claim;
+    if (!c?.runId || st.done || st.skip || String(c.runId).startsWith('main:')) continue;
+    if (claimLive(c, now) && now - Date.parse(c.at || 0) < graceMs) continue;
+    const a = alive(b, st);
+    if (a === null || a === true) continue;
+    out.push({ id: b.id, step: st.id, runId: c.runId, why: `${st.id}: step session ${c.runId} is not alive: back to ready (worktree and branch kept)` });
+  }
+  return out;
+}
+/** Is a step's session alive here? tmux axf-<slug>--<step>[--agent] or an agent slot holding build + step; null = can't tell. */
+export function stepAlive(sessions, slots) {
+  if (!sessions) return () => null;
+  const names = [...sessions];
+  return (b, st) => {
+    const slug = String(b.id).replace(/[^A-Za-z0-9._-]/g, '-').slice(0, Math.max(1, 46 - st.id.length));
+    if (names.some((n) => n === `axf-${slug}--${st.id}` || n.startsWith(`axf-${slug}--${st.id}--`) || n.startsWith(`axf-${slug}--${st.id}-`))) return true;
+    return (slots ?? []).some((r) => r.build === b.id && r.step === st.id && (r.state === 'running' || r.state === 'starting'));
+  };
+}
+
 /** Apply a plan in one store write (live to main). Returns the changes the store saw. */
 export function applyPlan(p, by = 'reconciler') {
-  if (!p.changes.length) return { changes: [] };
+  if (!p.changes.length && !(p.stepResets ?? []).length) return { changes: [] };
   const r = withStore((s) => {
     const now = new Date().toISOString();
     for (const c of p.changes) {
@@ -114,10 +166,18 @@ export function applyPlan(p, by = 'reconciler') {
       b.updatedAt = now;
       merge.settleStatus(b, now);
       if (c.steps.length && (b.status === 'pending' || b.status === 'queued')) b.status = 'running';
+      // built only once every step branch is merged back
+      const open = p.stepBranches?.get?.(b.id) ?? [];
+      if ((b.status === 'complete' || b.status === 'built') && open.length) { b.status = 'running'; b.notes.push({ text: `Reconciler: every step is done but ${open.map((x) => x.branch).join(', ')} not merged back yet: stays running until the dispatcher merges ${open.length === 1 ? 'it' : 'them'}.`, at: now }); }
       if ((b.status === 'complete' || b.status === 'built') && !b.builtAt) b.builtAt = now;
     }
+    for (const r of p.stepResets ?? []) {
+      const b = s.builds.find((x) => x.id === r.id); if (!b) continue;
+      const rel = releaseStep(b, r.step, { runId: r.runId, now, note: `Reconciler: ${r.why}` });
+      if (rel.ok && rel.released) { Object.assign(b, rel.build); b.notes.push({ text: `Reconciler: ${r.why}`, at: now }); b.updatedAt = now; }
+    }
     return s;
-  }, { by, action: 'reconcile', note: p.changes.map((c) => c.id).join(', ') });
+  }, { by, action: 'reconcile', note: [...p.changes.map((c) => c.id), ...(p.stepResets ?? []).map((r) => `${r.id}/${r.step}`)].join(', ') });
   return { changes: r.changes };
 }
 
@@ -129,20 +189,34 @@ export async function reconcile({ apply = false, gh, repo } = {}) {
   const builds = store.builds.filter((b) => !b.deleted);
   let gathered; let error = '';
   try { gathered = await gather({ gh, repo }); } catch (e) { error = String(e.message ?? e).slice(0, 300); gathered = { prs: [], branches: [] }; }
-  const p = error ? { changes: [], suggestions: [], orphans: { prs: [], branches: [] } } : plan(builds, gathered.prs, gathered.branches, { now: at });
+  // step branches belong to their build's steps, never to the build / orphan matching
+  const stepBr = stepBranchesOf(builds, gathered.branches);
+  const plainBranches = gathered.branches.filter((b) => !isStepBranch(builds, b.name));
+  const plainPrs = gathered.prs.filter((x) => !isStepBranch(builds, x.branch));
+  const p = error ? { changes: [], suggestions: [], orphans: { prs: [], branches: [] } } : plan(builds, plainPrs, plainBranches, { now: at });
+  p.stepBranches = error ? new Map() : stepBr;
+  for (const [id, list] of p.stepBranches) {
+    const b = builds.find((x) => x.id === id);
+    if (!b || !['built', 'complete'].includes(b.status) || p.changes.some((c) => c.id === id)) continue;
+    p.changes.push({ id, set: { status: 'running' }, steps: [], stepNotes: {}, why: [`step branch${list.length === 1 ? '' : 'es'} ${list.map((x) => x.branch).join(', ')} not merged back: not built yet`] });
+  }
   // running = a live process runs it (zero tokens: tmux, agent slots and build-log heartbeats on this host)
   const alive = liveBuilds();
+  // parallel step sessions that died: their steps go back to ready
+  let tmuxNow = null; try { tmuxNow = process.env.AXF_RECONCILE_IDLE === 'off' ? null : tmuxSessions(); } catch { tmuxNow = null; }
+  p.stepResets = stepResetPlan(builds, stepAlive(tmuxNow ? [...tmuxNow.keys()] : null, (() => { try { return slotState().running; } catch { return []; } })()));
   const idle = idlePlan(builds, alive, { now: at, skip: p.changes.filter((c) => c.steps.length).map((c) => c.id) });
   for (const c of idle) {
     const same = p.changes.find((x) => x.id === c.id);
     if (same) { Object.assign(same.set, c.set); same.why.push(...c.why); } else p.changes.push(c);
   }
-  const applied = apply && p.changes.length ? applyPlan(p) : { changes: [] };
+  const applied = apply && (p.changes.length || p.stepResets.length) ? applyPlan(p) : { changes: [] };
   const profiles = [...new Set(builds.flatMap((b) => b.profiles))];
   const report = {
     $axf: 'builds-reconcile@1', at, repo: repo ?? repoName(), apply, error, pulled: pulled.ok ? (pulled.taken ?? []) : { error: pulled.error },
     profiles, prs: gathered.prs.length, branches: gathered.branches.length,
     changes: p.changes, suggestions: p.suggestions, orphans: p.orphans, live: liveStatus(), written: applied.changes.length,
+    stepResets: p.stepResets, stepBranches: [...p.stepBranches.entries()].map(([id, list]) => ({ id, steps: list })),
     running: alive ? builds.filter((b) => b.status === 'running' && alive.has(b.id)).map((b) => b.id) : null,
   };
   if (apply) { try { mkdirSync(dirname(reportFile()), { recursive: true }); writeFileSync(reportFile(), `${JSON.stringify(report, null, 1)}\n`); } catch { /* report only */ } }
@@ -153,6 +227,7 @@ function text(r, brief) {
   const L = [];
   if (r.error) L.push(`GitHub not read: ${r.error}`);
   for (const c of r.changes) L.push(`${r.apply ? 'fixed' : 'would fix'} ${c.id}: ${c.why.join('; ')}`);
+  for (const x of r.stepResets ?? []) L.push(`${r.apply ? 'reset' : 'would reset'} ${x.id}/${x.step}: ${x.why}`);
   if (!brief) for (const s of r.suggestions) L.push(`check ${s.build ?? s.builds?.join('/') ?? ''}: ${s.why}`);
   if (r.orphans.prs.length) L.push(`orphan PRs (no build): ${r.orphans.prs.map((p) => `#${p.number}`).join(' ')}`);
   if (r.orphans.branches.length) L.push(`orphan branches (no PR, no build): ${r.orphans.branches.map((b) => b.branch).join(' ')}`);

@@ -80,4 +80,25 @@ await t('conflictBack (pure): with no file match it falls back to the previous s
   assert.equal(P.conflictBack(b, 's9').ok, false);
 });
 
+// ---------------- the reconciler (builds-reconcile.mjs): dead step sessions, step branches
+const R = await import('../../../../../framework/cli/builds-reconcile.mjs');
+await t('reconciler: a step session that is not alive is reset to ready (worktree kept); a live one and the build session are left alone', () => {
+  const now = Date.parse('2026-11-13T12:00:00Z');
+  const claim = (runId, at) => ({ runId, slot: '', account: 'w', branch: 'claude/dag--s2', at, model: 'Opus', expiresAt: new Date(Date.parse(at) + 45 * 60e3).toISOString() });
+  const b = { id: 'dag', steps: [step('s1', { done: true }), step('s2', { after: ['s1'], claim: claim('step-a', '2026-11-13T11:00:00Z') }), step('s3', { after: ['s1'], claim: claim('step-b', '2026-11-13T11:00:00Z') }), step('s4', { after: ['s1'], claim: claim('step-c', '2026-11-13T11:58:00Z') })] };
+  const alive = R.stepAlive(['axf-dag--s3--joey'], []);
+  const resets = R.stepResetPlan([b], alive, { now });
+  assert.deepEqual(resets.map((r) => r.step), ['s2'], 's3 is alive in tmux; s4 is inside the grace period');
+  assert.match(resets[0].why, /not alive: back to ready \(worktree and branch kept\)/);
+  assert.deepEqual(R.stepResetPlan([b], R.stepAlive(null, []), { now }), [], 'no tmux to ask: nothing reset');
+  assert.equal(R.stepAlive([], [{ build: 'dag', step: 's2', state: 'running' }])(b, b.steps[1]), true, 'an agent slot holding the step counts as alive');
+});
+await t('reconciler: step branches stay out of build matching; built only when every done parallel step branch merged back', () => {
+  const b = { id: 'dag', branch: 'claude/dag', steps: [step('s1', { done: true }), step('s2', { after: ['s1'], done: true }), step('s3', { after: ['s1'], done: true, parallel: 'never' })] };
+  assert.equal(R.isStepBranch([b], 'claude/dag--s2'), true); assert.equal(R.isStepBranch([b], 'claude/dag-other'), false);
+  const open = R.stepBranchesOf([b], [{ name: 'claude/dag--s2' }, { name: 'claude/dag--s3' }, { name: 'claude/dag' }]);
+  assert.deepEqual(open.get('dag'), [{ step: 's2', branch: 'claude/dag--s2' }], 'the kept branch of a conflict re-run does not hold the build');
+  assert.equal(R.stepBranchesOf([b], [{ name: 'claude/dag' }]).size, 0);
+});
+
 console.log(`fill-slots: ${n} checks passed`);
