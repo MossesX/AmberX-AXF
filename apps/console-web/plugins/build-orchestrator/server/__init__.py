@@ -733,3 +733,59 @@ class ConsoleFocus:
 
 
 plugin_services.provide("console-focus@1", ConsoleFocus(), Path(__file__).resolve().parents[1].name)
+
+
+# ---- auto-recovery routes (build auto-recover-stuck-builds): the Recovery log and settings, the same calls as the CLI
+# (recover.mjs status | run | retry | park | settings), the MCP plugin commands and voice (recovery.run / status / retry)
+
+RECOVERY_SETTING_NAMES = ("enabled", "maxRetries", "staleHeartbeatMin", "backoffMin", "fyi")
+
+
+@router.get("/recovery")
+def recovery_state() -> dict[str, Any]:
+    """The Recovery log: settings, the last run, every build with a recovery record (attempts, last cause and exit,
+    backoff, parked), the latest recovery events (cause, exit, action, attempt; newest first) and the systems check item."""
+    return _recover("status")
+
+
+@router.post("/recovery/run")
+async def recovery_run(request: Request) -> dict[str, Any]:
+    """{dry_run?}: one recovery round now. dry_run = plan and answer, change nothing. In the console container (no tmux,
+    no host PIDs) a real run is asked of the VPS dispatcher, whose next tick runs it (within a minute)."""
+    body = await _json_body(request)
+    who = (brett_click(request) or "console")[:80]
+    if body.get("dry_run") or body.get("dryRun"):
+        return {"ok": True, **_recover("run", "--dry-run", "--by", who)}
+    r = _recover("run", "--request", "--by", who)
+    return {"ok": r.get("state") != "failed", **r}
+
+
+@router.post("/recovery/settings")
+async def recovery_settings_set(request: Request) -> dict[str, Any]:
+    """{enabled?, maxRetries?, staleHeartbeatMin?, backoffMin?, fyi?}: Claude settings builds.recovery.*. Answers the settings."""
+    body = await _json_body(request)
+    pairs: list[str] = []
+    for k in RECOVERY_SETTING_NAMES:
+        if k in body:
+            v = body[k]
+            pairs.append(f"{k}={('true' if v else 'false') if isinstance(v, bool) else str(v)[:40]}")
+    if not pairs:
+        raise HTTPException(400, f"send one of {', '.join(RECOVERY_SETTING_NAMES)}")
+    return _recover("settings", "set", *pairs, "--by", (brett_click(request) or "console")[:80])
+
+
+@router.post("/recovery/retry/{build_id}")
+async def recovery_retry(build_id: str, request: Request) -> dict[str, Any]:
+    """Put a stuck, failed or parked build back in the Queue now; its retry count starts over."""
+    return _recover("retry", _build_id(build_id), "--by", (brett_click(request) or "console")[:80])
+
+
+@router.post("/recovery/park/{build_id}")
+async def recovery_park(build_id: str, request: Request) -> dict[str, Any]:
+    """{why?}: stop retrying a build: back to Pending with the reason."""
+    body = await _json_body(request)
+    args = ["park", _build_id(build_id), "--by", (brett_click(request) or "console")[:80]]
+    why = str(body.get("why") or "").strip()[:300]
+    if why:
+        args += ["--why", why]
+    return _recover(*args)

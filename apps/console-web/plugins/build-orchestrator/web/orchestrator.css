@@ -48,3 +48,8 @@ button.oc-model { cursor: pointer }
 
 /* Bulk select (Nov 10 2026: hold, archive, delete, restore on many builds at once): layout only */
 .pl-bulk { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md) }
+
+/* Recovery settings and log (auto-recover-stuck-builds, Nov 13 2026): layout only; every control is a framework control */
+.oc-rec-settings { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg) }
+.oc-rec-row { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--fx-dens-gap-md) }
+.oc-rec-row > .fx-field { flex: 1 1 calc(var(--fx-font-size) * 14); min-width: 0 }

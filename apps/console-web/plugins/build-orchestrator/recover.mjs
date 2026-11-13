@@ -290,6 +290,73 @@ export function notify(a, { settings = loadRecoverySettings(), env = process.env
   return alert;
 }
 
+// ------------------------------------------------------------------ by hand: retry, park, the state
+
+const err2 = (m) => Object.assign(new Error(m), { code: 2 });
+/** Refuse when the build has a session that still runs (two sessions never work one branch). */
+function refuseLive(id, env) {
+  try { const r = liveness({}).rows.find((x) => x.build === id); if (r?.alive) throw err2(`${id} has a live session (${r.session}): stop it first`); }
+  catch (e) { if (e.code === 2) throw e; /* no facts here: the store decides */ }
+}
+/**
+ * Put a stuck, failed or parked build back in the Queue now (Recovery log → Retry, POST recovery/retry/<id>, voice
+ * recovery.retry). A person asked: the counter starts over and the backoff is dropped.
+ */
+export function retry(id, { by = process.env.AXF_ACTOR || 'cli', env = process.env } = {}) {
+  const b0 = storeCore.findBuild(loadStore(), id);
+  if (!b0 || b0.deleted) throw err2(`no build "${id}"`);
+  if (!['pending', 'failed', 'running', 'waiting', 'queued'].includes(b0.status)) throw err2(`${b0.id} is ${b0.status}: only a stuck, failed, parked or queued build can be retried`);
+  if (!BP.openSteps(b0).length) throw err2(`${b0.id} has no step left to run`);
+  refuseLive(b0.id, env);
+  const now = nowIso(); let out = null;
+  withStore((s) => {
+    const b = storeCore.findBuild(s, b0.id);
+    const step = openStep(b); if (step) Object.assign(step, R.STEP_RESET, { updatedAt: now });
+    b.status = 'queued';
+    b.pipeline = BP.normPipeline({ ...(b.pipeline ?? {}), session: '', slot: '', account: '', launchedAt: '', dispatchedAt: '', queuedAt: now, queuedBy: str(by, 80), note: `retried by ${str(by, 80)}` }) ?? undefined;
+    b.recovery = R.resetRecovery(b.recovery, { now, why: `Retried by ${str(by, 80)}: back in the Queue, the retry count starts over.` });
+    b.notes.push({ text: `Retried by ${str(by, 80)} (auto-recovery count reset): back in the Queue.`, at: now });
+    b.updatedAt = now; out = { id: b.id, status: b.status };
+    return s;
+  }, { by: str(by, 80), action: 'recovery:retry', note: b0.id });
+  logLine({ event: 'retry', build: b0.id, by: str(by, 80) }, env);
+  return out;
+}
+/** Stop retrying a build: back to Pending with the reason (Recovery log → Park, POST recovery/park/<id>). */
+export function park(id, { why = '', by = process.env.AXF_ACTOR || 'cli', env = process.env } = {}) {
+  const b0 = storeCore.findBuild(loadStore(), id);
+  if (!b0 || b0.deleted) throw err2(`no build "${id}"`);
+  if (!['failed', 'running', 'waiting', 'queued', 'pending'].includes(b0.status)) throw err2(`${b0.id} is ${b0.status}: nothing to park`);
+  refuseLive(b0.id, env);
+  const now = nowIso(); const reason = str(why, 300) || `parked by ${str(by, 80)}`; let out = null;
+  withStore((s) => {
+    const b = storeCore.findBuild(s, b0.id);
+    const r = R.recoveryOf(b);
+    const event = R.normEvent({ id: `${b.id}:park:${r.attempts}:${now}`, build: b.id, cause: r.lastCause, exit: r.lastExit, action: 'park', attempt: r.attempts, at: now, line: `Parked by ${str(by, 80)}: ${reason}` });
+    b.recovery = { ...r, nextAt: '', parkedAt: now, events: [...r.events, event].slice(-R.EVENTS_KEPT) };
+    b.status = 'pending';
+    b.pipeline = BP.normPipeline({ ...(b.pipeline ?? {}), session: '', slot: '', account: '', queuedAt: '', queuedBy: '', note: `parked: ${reason}` }) ?? undefined;
+    b.notes.push({ text: `Parked by ${str(by, 80)}: ${reason}`, at: now });
+    b.updatedAt = now; out = { id: b.id, status: b.status };
+    return s;
+  }, { by: str(by, 80), action: 'recovery:park', note: b0.id });
+  logLine({ event: 'park', build: b0.id, by: str(by, 80), why: reason }, env);
+  return out;
+}
+
+/** Everything the Recovery log shows: settings, the last run, every build's recovery record and events (newest first), health. */
+export function state({ env = process.env, limit = 200 } = {}) {
+  const store = loadStore();
+  const builds = store.builds.filter((b) => !b.deleted && !R.isDefaultRecovery(b.recovery)).map((b) => {
+    const r = R.recoveryOf(b);
+    return { id: b.id, title: b.title, status: b.status, attempts: r.attempts, lastAt: r.lastAt, lastCause: r.lastCause, lastExit: r.lastExit, nextAt: r.nextAt, parkedAt: r.parkedAt, parked: b.status === 'pending' && !!r.parkedAt, priority: b.priority || '' };
+  });
+  const events = store.builds.filter((b) => !b.deleted).flatMap((b) => R.recoveryOf(b).events.map((e) => ({ ...e, build: e.build || b.id, title: b.title, priority: b.priority || '' })))
+    .sort((a, b) => b.at.localeCompare(a.at)).slice(0, limit);
+  const st = readJson(files(env).state, null);
+  return { ok: true, $axf: 'recovery-status@1', settings: loadRecoverySettings(env), lastRun: st?.lastRun ?? null, requested: readJson(files(env).request, null), builds, events, health: health({ env, store }), link: 'build-orchestrator.open:recovery' };
+}
+
 // ------------------------------------------------------------------ requests from where the sessions can't be seen
 
 /** The console container sees no tmux and no host PIDs: it asks the host's dispatcher, whose next tick runs recovery. */
@@ -362,14 +429,17 @@ async function main(argv) {
       return;
     }
     case 'settings': {
-      if (f._[0] === 'set') { const patch = Object.fromEntries(f._.slice(1).map((kv) => { const i = kv.indexOf('='); return [kv.slice(0, i), kv.slice(i + 1)]; })); const s = saveRecoverySettings(patch, { by: f.by || 'cli' }); return f.json ? json(s) : console.log(JSON.stringify(s)); }
+      if (f._[0] === 'set' && typeof f.json === 'string') { const s = saveRecoverySettings(JSON.parse(f.json), { by: f.by || 'cli' }); return json({ ok: true, settings: s }); }
+      if (f._[0] === 'set') { const patch = Object.fromEntries(f._.slice(1).map((kv) => { const i = kv.indexOf('='); return [kv.slice(0, i), kv.slice(i + 1)]; })); const s = saveRecoverySettings(patch, { by: f.by || 'cli' }); return f.json ? json({ ok: true, settings: s }) : console.log(JSON.stringify(s)); }
       const s = loadRecoverySettings();
       return f.json ? json(s) : console.log(Object.entries(s).map(([k, v]) => `${k} = ${v}`).join('\n'));
     }
+    case 'retry': { if (!f._[0]) throw err2('retry <build>'); const r = retry(f._[0], { by: f.by || process.env.AXF_ACTOR || 'cli' }); return f.json ? json({ ok: true, ...r }) : console.log(`${r.id} is back in the Queue (retry count reset)`); }
+    case 'park': { if (!f._[0]) throw err2('park <build> [--why w]'); const r = park(f._[0], { why: typeof f.why === 'string' ? f.why : '', by: f.by || process.env.AXF_ACTOR || 'cli' }); return f.json ? json({ ok: true, ...r }) : console.log(`${r.id} is parked in Pending`); }
     case 'status': {
       const st = readJson(files().state, null);
       const s = loadRecoverySettings();
-      if (f.json) return json({ settings: s, state: st, events: readLog({ limit: 50 }) });
+      if (f.json) return json(state());
       console.log(`auto-recovery ${s.enabled ? 'on' : 'off'} · max ${s.maxRetries} retries · stale after ${s.staleHeartbeatMin} min · backoff ${s.backoffMin} min · FYI ${s.fyi ? 'on' : 'off'}`);
       console.log(st?.lastRun ? `last run ${st.lastRun.at}: ${st.lastRun.applied.length} fixed${st.lastRun.errors.length ? `, ${st.lastRun.errors.length} error(s)` : ''}` : 'no run yet');
       for (const e of readLog({ limit: 10 }).filter((x) => x.event === 'recovered')) console.log(`  ${e.at} ${e.action} ${e.build} · ${e.line}`);
