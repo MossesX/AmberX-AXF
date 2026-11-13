@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4887,
- "updatedAt": "2026-11-13T20:00:25.512Z",
+ "rev": 4888,
+ "updatedAt": "2026-11-13T20:00:43.245Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -205463,7 +205463,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T19:57:42.157Z",
-   "updatedAt": "2026-11-13T20:00:20.733Z",
+   "updatedAt": "2026-11-13T20:00:39.486Z",
    "builtAt": "",
    "notes": [
     {
@@ -205481,6 +205481,14 @@
     {
      "text": "Brett: scope is ALL FOUR areas for EVERY element: (1) LAYOUTS: placement, size, gaps, columns/rows, alignment, wrap, density, breakpoints; (2) STYLES: radius, borders, shadows, padding, variants, indicators, typography; (3) COLOUR THEMES: every state (idle, hover, active, selected, pressed, focus, disabled, error) light and dark; (4) BEHAVIOUR: transitions/animation timing and easing, hover/press effects, open/close, collapse, scroll, sticky, motion intensity, and reduced-motion. Every one is a token or asset value. Additive defaults point at today's general tokens, so nothing breaks. Split into parallel sub-builds, one per area (layout, style, colour, behaviour), after a shared Fable schema step, then an integration step and the skin upgrader. The CI gate fails on any literal value in any of the four areas. Treat as top priority.",
      "at": "2026-11-13T20:00:20.733Z"
+    },
+    {
+     "text": "Brett is worried this breaks things. Safety gate: before any change, capture baseline screenshots of every console screen, plugin, dialog, menu, toolbar and tab group (desktop and phone, light and dark, for each shipped skin). After each sub-build, re-capture and pixel-diff. Any difference fails the step and blocks landing until it's fixed (the token defaults must reproduce today's exact look). The engine change is limited to token resolution, and every engine step runs the full test suite. Land the sub-builds one at a time, each behind its own green visual diff.",
+     "at": "2026-11-13T20:00:25.805Z"
+    },
+    {
+     "text": "Brett: EXHAUSTIVE. Every element gets every possible token: every visual or behavioural property that could ever vary is a token, not just the ones in use today. For style, behaviour, colours, layout, typography, spacing, borders, shadows, effects (blur, glass, gradients, opacity), icons, cursor, motion, sound/haptics where relevant, and every state (idle, hover, focus, active, pressed, selected, disabled, loading, error, empty, dragging) in light and dark. Generate the token families from one schema per element type, so a full set is guaranteed and gaps are caught by CI. Defaults still point at today's values, so nothing looks different.",
+     "at": "2026-11-13T20:00:39.486Z"
     }
    ],
    "approvals": [],
@@ -205528,7 +205536,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
