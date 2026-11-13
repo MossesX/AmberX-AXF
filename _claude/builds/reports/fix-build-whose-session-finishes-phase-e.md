@@ -1,6 +1,6 @@
 # Fix: a phase-done build with steps left goes back to Pending instead of the Queue
 
-Build: `fix-a-build-whose-session-finishes-its-phase-e-g-the-fable-steps-with-steps`
+Build: `fix-build-whose-session-finishes-phase-e`
 
 ## Notes
 
