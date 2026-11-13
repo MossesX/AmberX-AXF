@@ -781,7 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 21:57 UTC · `remove-the-no-new-android-or-kotlin-work-rule-build-android-twins-in-parallel` note (all) · pipeline
 - 2026-11-12 22:03 UTC · `one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx` branch claude/one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx, PR #527 (all) · builds-live
 - 2026-11-12 22:03 UTC · `one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx` s1 done, → running (all) · orchestrator
 - 2026-11-12 22:03 UTC · `one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx` note (all) · orchestrator
@@ -1181,6 +1180,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 06:41 UTC · `professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e` note (all) · orchestrator
 - 2026-11-13 06:42 UTC · `professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e` note (all) · orchestrator
 - 2026-11-13 06:43 UTC · `professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e` s2 done (all) · orchestrator
+- 2026-11-13 06:43 UTC · `skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga` s1 done (all) · orchestrator
 
 ## Token passes (log)
 
