@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T12:26:25.050Z",
+ "updatedAt": "2026-11-13T12:26:31.227Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -124183,7 +124183,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T12:23:34.932Z",
-   "updatedAt": "2026-11-13T12:25:47.282Z",
+   "updatedAt": "2026-11-13T12:26:26.762Z",
    "builtAt": "",
    "notes": [
     {
@@ -124209,6 +124209,10 @@
     {
      "text": "Split asked for by console.",
      "at": "2026-11-13T12:25:47.282Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"8b7d7615-9320-4f15-b239-d23839ae55e5\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-13T12:26:26.762Z"
     }
    ],
    "approvals": [],
@@ -124242,8 +124246,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwey9bhd01l4ag",
-     "createdAt": "2026-11-13T12:25:12.925Z"
+     "uid": "st-mweyawcq01l7jd",
+     "createdAt": "2026-11-13T12:26:26.762Z"
     },
     {
      "id": "s2",
@@ -124261,8 +124265,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwey9bhd02ygxd",
-     "createdAt": "2026-11-13T12:25:12.925Z"
+     "uid": "st-mweyawcq024poc",
+     "createdAt": "2026-11-13T12:26:26.762Z"
     },
     {
      "id": "s3",
@@ -124280,8 +124284,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwey9bhd03jlwc",
-     "createdAt": "2026-11-13T12:25:12.925Z"
+     "uid": "st-mweyawcq033044",
+     "createdAt": "2026-11-13T12:26:26.762Z"
     },
     {
      "id": "s4",
@@ -124299,8 +124303,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwey9bhd045yd2",
-     "createdAt": "2026-11-13T12:25:12.925Z"
+     "uid": "st-mweyawcq04gwpy",
+     "createdAt": "2026-11-13T12:26:26.762Z"
     },
     {
      "id": "s5",
@@ -124318,8 +124322,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwey9bhd0599hz",
-     "createdAt": "2026-11-13T12:25:12.925Z"
+     "uid": "st-mweyawcq05xtyz",
+     "createdAt": "2026-11-13T12:26:26.762Z"
     },
     {
      "id": "s6",
@@ -124340,125 +124344,8 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwey9bhd06k79r",
-     "createdAt": "2026-11-13T12:25:12.925Z"
-    },
-    {
-     "id": "s7-6",
-     "text": "Brett: when I long-press / right-click a toolbar and open toolbar settings, none of the settings change anything.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwey93xr015z37",
-     "createdAt": "2026-11-13T12:25:03.279Z"
-    },
-    {
-     "id": "s8-7",
-     "text": "Selecting icons, text, collapsible etc. has no effect.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwey93xr02jood",
-     "createdAt": "2026-11-13T12:25:03.279Z"
-    },
-    {
-     "id": "s9-8",
-     "text": "Seen on Shipped features (Sync/CSV/Markdown bar, group-by tabs, filter checkboxes, status chips, edit status).",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwey93xr03unho",
-     "createdAt": "2026-11-13T12:25:03.279Z"
-    },
-    {
-     "id": "s10-9",
-     "text": "Fix it so every toolbar setting actually applies live to that toolbar, on every toolbar in the console, persists, and is controllable by API (REST, MCP, CLI, voice).",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwey93xr04xiiq",
-     "createdAt": "2026-11-13T12:25:03.279Z"
-    },
-    {
-     "id": "s11-10",
-     "text": "Add a test that changing each setting changes the rendered toolbar.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwey93xr05au1r",
-     "createdAt": "2026-11-13T12:25:03.279Z"
-    },
-    {
-     "id": "s12-11",
-     "text": "Tests green, report _claude/builds/reports/fix-toolbar-settings-doing-nothing.md, THREADS row, commit, push, PR",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "_claude/builds/reports/fix-toolbar-settings-doing-nothing.md",
-      "_claude/THREADS.md"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwey93xr06kw0f",
-     "createdAt": "2026-11-13T12:25:03.279Z"
+     "uid": "st-mweyawcq06hj8c",
+     "createdAt": "2026-11-13T12:26:26.762Z"
     }
    ]
   }

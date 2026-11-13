@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4416,
- "updatedAt": "2026-11-13T12:26:25.050Z",
+ "rev": 4417,
+ "updatedAt": "2026-11-13T12:26:31.227Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -187605,7 +187605,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T12:23:34.932Z",
-   "updatedAt": "2026-11-13T12:25:47.282Z",
+   "updatedAt": "2026-11-13T12:26:26.762Z",
    "builtAt": "",
    "notes": [
     {
@@ -187631,6 +187631,10 @@
     {
      "text": "Split asked for by console.",
      "at": "2026-11-13T12:25:47.282Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"8b7d7615-9320-4f15-b239-d23839ae55e5\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-13T12:26:26.762Z"
     }
    ],
    "approvals": [],
@@ -187658,17 +187662,23 @@
     "runs": 0,
     "lastRun": null,
     "split": {
-     "at": "2026-11-13T12:25:03.279Z",
+     "at": "2026-11-13T12:26:26.762Z",
      "by": "orchestrator",
      "provider": "rules",
      "steps": 6,
-     "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"d9093dd3-a080-4406-84d8-88197b2a18e3\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
+     "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"8b7d7615-9320-4f15-b239-d23839ae55e5\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
-    "splitRequested": "2026-11-13T12:25:46.817Z",
+    "splitRequested": "",
     "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-13T12:26:27.955Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -187678,7 +187688,7 @@
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mwey9bhd01l4ag",
+     "uid": "st-mweyawcq01l7jd",
      "title": "",
      "text": "Brett: when I long-press / right-click a toolbar and open toolbar settings, none of the settings change anything.",
      "model": "Opus",
@@ -187695,12 +187705,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-13T12:25:12.925Z",
-     "updatedAt": "2026-11-13T12:25:13.057Z"
+     "createdAt": "2026-11-13T12:26:26.762Z",
+     "updatedAt": "2026-11-13T12:26:26.762Z"
     },
     {
      "id": "s2",
-     "uid": "st-mwey9bhd02ygxd",
+     "uid": "st-mweyawcq024poc",
      "title": "",
      "text": "Selecting icons, text, collapsible etc. has no effect.",
      "model": "Opus",
@@ -187717,12 +187727,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-13T12:25:12.925Z",
-     "updatedAt": "2026-11-13T12:25:13.057Z"
+     "createdAt": "2026-11-13T12:26:26.762Z",
+     "updatedAt": "2026-11-13T12:26:26.762Z"
     },
     {
      "id": "s3",
-     "uid": "st-mwey9bhd03jlwc",
+     "uid": "st-mweyawcq033044",
      "title": "",
      "text": "Seen on Shipped features (Sync/CSV/Markdown bar, group-by tabs, filter checkboxes, status chips, edit status).",
      "model": "Opus",
@@ -187739,12 +187749,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-13T12:25:12.925Z",
-     "updatedAt": "2026-11-13T12:25:13.057Z"
+     "createdAt": "2026-11-13T12:26:26.762Z",
+     "updatedAt": "2026-11-13T12:26:26.762Z"
     },
     {
      "id": "s4",
-     "uid": "st-mwey9bhd045yd2",
+     "uid": "st-mweyawcq04gwpy",
      "title": "",
      "text": "Fix it so every toolbar setting actually applies live to that toolbar, on every toolbar in the console, persists, and is controllable by API (REST, MCP, CLI, voice).",
      "model": "Opus",
@@ -187761,12 +187771,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-13T12:25:12.925Z",
-     "updatedAt": "2026-11-13T12:25:13.057Z"
+     "createdAt": "2026-11-13T12:26:26.762Z",
+     "updatedAt": "2026-11-13T12:26:26.762Z"
     },
     {
      "id": "s5",
-     "uid": "st-mwey9bhd0599hz",
+     "uid": "st-mweyawcq05xtyz",
      "title": "",
      "text": "Add a test that changing each setting changes the rendered toolbar.",
      "model": "Opus",
@@ -187783,12 +187793,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-13T12:25:12.925Z",
-     "updatedAt": "2026-11-13T12:25:13.057Z"
+     "createdAt": "2026-11-13T12:26:26.762Z",
+     "updatedAt": "2026-11-13T12:26:26.762Z"
     },
     {
      "id": "s6",
-     "uid": "st-mwey9bhd06k79r",
+     "uid": "st-mweyawcq06hj8c",
      "title": "",
      "text": "Tests green, report _claude/builds/reports/fix-toolbar-settings-doing-nothing.md, THREADS row, commit, push, PR",
      "model": "Opus",
@@ -187808,143 +187818,8 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-13T12:25:12.925Z",
-     "updatedAt": "2026-11-13T12:25:13.057Z"
-    },
-    {
-     "id": "s7-6",
-     "uid": "st-mwey93xr015z37",
-     "title": "",
-     "text": "Brett: when I long-press / right-click a toolbar and open toolbar settings, none of the settings change anything.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-13T12:25:03.279Z",
-     "updatedAt": "2026-11-13T12:25:03.279Z"
-    },
-    {
-     "id": "s8-7",
-     "uid": "st-mwey93xr02jood",
-     "title": "",
-     "text": "Selecting icons, text, collapsible etc. has no effect.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-13T12:25:03.279Z",
-     "updatedAt": "2026-11-13T12:25:03.279Z"
-    },
-    {
-     "id": "s9-8",
-     "uid": "st-mwey93xr03unho",
-     "title": "",
-     "text": "Seen on Shipped features (Sync/CSV/Markdown bar, group-by tabs, filter checkboxes, status chips, edit status).",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-13T12:25:03.279Z",
-     "updatedAt": "2026-11-13T12:25:03.279Z"
-    },
-    {
-     "id": "s10-9",
-     "uid": "st-mwey93xr04xiiq",
-     "title": "",
-     "text": "Fix it so every toolbar setting actually applies live to that toolbar, on every toolbar in the console, persists, and is controllable by API (REST, MCP, CLI, voice).",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-13T12:25:03.279Z",
-     "updatedAt": "2026-11-13T12:25:03.279Z"
-    },
-    {
-     "id": "s11-10",
-     "uid": "st-mwey93xr05au1r",
-     "title": "",
-     "text": "Add a test that changing each setting changes the rendered toolbar.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-13T12:25:03.279Z",
-     "updatedAt": "2026-11-13T12:25:03.279Z"
-    },
-    {
-     "id": "s12-11",
-     "uid": "st-mwey93xr06kw0f",
-     "title": "",
-     "text": "Tests green, report _claude/builds/reports/fix-toolbar-settings-doing-nothing.md, THREADS row, commit, push, PR",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "_claude/builds/reports/fix-toolbar-settings-doing-nothing.md",
-      "_claude/THREADS.md"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-13T12:25:03.279Z",
-     "updatedAt": "2026-11-13T12:25:03.279Z"
+     "createdAt": "2026-11-13T12:26:26.762Z",
+     "updatedAt": "2026-11-13T12:26:26.762Z"
     }
    ],
    "profiles": [
@@ -187955,12 +187830,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "2026-11-13T12:25:03.279Z",
+   "defaultAt": "2026-11-13T12:26:26.762Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
