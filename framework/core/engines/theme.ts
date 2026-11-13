@@ -19,6 +19,37 @@ export function colorThemeVars(t: ColorThemeData): VarMap {
 /** Transparency defaults, identical to the Android kernel's StyleTheme defaults. */
 export const OPACITY_DEFAULTS = { disabled: 0.38, muted: 0.62, hover: 0.08, tint: 0.14, scrim: 0.5, glass: 0.72 } as const;
 
+/**
+ * Surface transparency (build transparency-token-works-every-dialog, Nov 13 2026). Every floating or framed surface
+ * reads its own opacity token; 1 (the default) is fully opaque, lower it to see through. Below 1 the surface also
+ * frosts what is behind it (--fx-blur). Style theme field = `opacity` + the capitalised kind (opacityDialog …).
+ *   dialog   → .fx-dialog                       settings → .fx-window (floating settings interfaces, tool windows)
+ *   panel    → .fx-card (containers, groups)     menu     → .fx-popover, .fx-dropdown, .fx-ctx
+ *   toolbar  → .fx-toolbar, .fx-menubar          banner   → .fx-banner
+ */
+export const SURFACE_KINDS = ['dialog', 'settings', 'panel', 'menu', 'toolbar', 'banner'] as const;
+export type SurfaceKind = (typeof SURFACE_KINDS)[number];
+export const SURFACE_OPACITY_DEFAULT = 1;
+export const surfaceField = (k: SurfaceKind) => `opacity${k.charAt(0).toUpperCase()}${k.slice(1)}` as `opacity${Capitalize<SurfaceKind>}`;
+const clamp01 = (n: number) => Math.min(1, Math.max(0, n));
+
+/**
+ * The two variables a surface reads: its opacity and its backdrop filter ('none' while opaque, so an opaque surface
+ * never becomes a containing block for fixed-position popovers inside it). Used by the theme and by per-instance
+ * overrides (a window's own Background setting) alike.
+ */
+export function surfaceVars(kind: SurfaceKind, opacity: number | null | undefined): VarMap {
+  const o = clamp01(typeof opacity === 'number' && Number.isFinite(opacity) ? opacity : SURFACE_OPACITY_DEFAULT);
+  return {
+    [`--fx-opacity-${kind}`]: String(o),
+    [`--fx-backdrop-${kind}`]: o < 1 ? 'blur(var(--fx-blur))' : 'none',
+  };
+}
+
+export function surfaceThemeVars(s: Partial<Record<`opacity${Capitalize<SurfaceKind>}`, number>> | null | undefined): VarMap {
+  return Object.assign({}, ...SURFACE_KINDS.map((k) => surfaceVars(k, s?.[surfaceField(k)])));
+}
+
 const DENSITY = { compact: 0.78, comfortable: 1, spacious: 1.22 } as const;
 
 /** `spacing` = the user's Spacing choice (engines/spacing.ts); 'regular' compiles the theme exactly as written. */
@@ -49,6 +80,7 @@ export function styleThemeVars(s: StyleThemeData, spacing: Spacing = 'regular'):
     '--fx-opacity-tint': String(s.opacityTint ?? OPACITY_DEFAULTS.tint),
     '--fx-opacity-scrim': String(s.opacityScrim ?? OPACITY_DEFAULTS.scrim),
     '--fx-opacity-glass': String(s.opacityGlass ?? OPACITY_DEFAULTS.glass),
+    ...surfaceThemeVars(s),
     '--fx-wrap-groups': wrapGroups(s) ? '1' : '0',
   };
 }

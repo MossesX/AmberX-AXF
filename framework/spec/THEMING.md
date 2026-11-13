@@ -42,6 +42,29 @@ Translucent colours are built from a colour token and a transparency token, neve
 `scrim` token overrides it. The style editors (Android Studio → Style tokens, web Element Explorer → Dialog,
 Chip, Card) edit these live.
 
+### Surface transparency (every surface has its own token)
+
+Every framed surface reads its own transparency token (build transparency-token-works-every-dialog, Nov 13 2026).
+Default 1 = fully opaque; lower it to see through. Below 1 the surface also frosts what is behind it
+(`--fx-backdrop-<kind>` = `blur(var(--fx-blur))`; at 1 it is `none`, so an opaque surface never traps fixed popovers).
+Defaults in `SURFACE_KINDS` / `SURFACE_OPACITY_DEFAULT` (`engines/theme.ts`).
+
+| Field | Variables | Surfaces |
+| --- | --- | --- |
+| `opacityDialog` | `--fx-opacity-dialog`, `--fx-backdrop-dialog` | `.fx-dialog` (modal, drawer, sheet) |
+| `opacitySettings` | `--fx-opacity-settings`, `--fx-backdrop-settings` | `.fx-window` + title bar: settings interfaces, floating tool windows |
+| `opacityPanel` | `--fx-opacity-panel`, `--fx-backdrop-panel` | `.fx-card` (containers, groups) |
+| `opacityMenu` | `--fx-opacity-menu`, `--fx-backdrop-menu` | `.fx-popover`, dropdowns, context menus |
+| `opacityToolbar` | `--fx-opacity-toolbar`, `--fx-backdrop-toolbar` | `.fx-toolbar`, `.fx-menubar` |
+| `opacityBanner` | `--fx-opacity-banner`, `--fx-backdrop-banner` | `.fx-banner` |
+
+They live in the style theme, so they follow skins and design packages. Edit them in Token Control
+(control@1 `tokens.style`, e.g. `set tokens.style opacitySettings 0.8`) or the Element Explorer (Dialog, Window, Card,
+Context menu, Toolbar, Menubar, Banner). One floating window overrides its own value: window menu → Window settings →
+Background (`WindowSettings.surface`, `surfaceVars('settings', v)` on the window). The `glass` variants keep reading
+`opacityGlass`. `check-theme.mjs` (rule *surface*) fails on any CSS rule that sets a surface root's background without
+an `--fx-opacity-*` token.
+
 `framework/ui/axf.css` is the base stylesheet. It reads only these variables and provides the shared layout
 primitives (`fx-stack`, `fx-row`, `fx-row--wrap`, `fx-small`, `fx-muted`, `fx-mono`, `fx-eyebrow`, …) and
 the React controls (`Button`, `Chip`, `Container`, …) render through them.
