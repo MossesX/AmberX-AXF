@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4354,
- "updatedAt": "2026-11-13T11:44:04.878Z",
+ "rev": 4355,
+ "updatedAt": "2026-11-13T11:45:04.805Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -185271,6 +185271,55 @@
    },
    "queue": null,
    "defaultAt": "2026-11-13T11:28:36.977Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "server-watchdog-orchestrator-auto-recovers-stuck",
+   "title": "Server watchdog: orchestrator auto-recovers stuck or killed builds",
+   "category": "",
+   "detail": "",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-13T11:45:00.916Z",
+   "updatedAt": "2026-11-13T11:45:00.917Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Brett: if anything stops working, the server/orchestrator fixes it automatically with no one asking. Detect builds marked running with no live session (e.g. killed exit 143, failed exit 1), reset and requeue them, retry failed sessions, keep every slot filled, and send an FYI to the phone for each fix. Never wait for Brett to notice.",
+    "at": "2026-11-13T11:45:00.916Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 780
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

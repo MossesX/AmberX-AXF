@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T11:44:04.878Z",
+ "updatedAt": "2026-11-13T11:45:04.805Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -122277,6 +122277,37 @@
      "createdAt": "2026-11-13T11:28:36.977Z"
     }
    ]
+  },
+  {
+   "id": "server-watchdog-orchestrator-auto-recovers-stuck",
+   "title": "Server watchdog: orchestrator auto-recovers stuck or killed builds",
+   "category": "",
+   "detail": "",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-13T11:45:00.916Z",
+   "updatedAt": "2026-11-13T11:45:00.917Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Brett: if anything stops working, the server/orchestrator fixes it automatically with no one asking. Detect builds marked running with no live session (e.g. killed exit 143, failed exit 1), reset and requeue them, retry failed sessions, keep every slot filled, and send an FYI to the phone for each fix. Never wait for Brett to notice.",
+    "at": "2026-11-13T11:45:00.916Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }
