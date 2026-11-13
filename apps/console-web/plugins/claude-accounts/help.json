@@ -280,6 +280,12 @@
         "text": "Where you set “Minutes left”. Change it and the app uses the new value. Part of Claude accounts.",
         "kind": "field",
         "draft": true
+      },
+      {
+        "target": "one-claude-account",
+        "title": "One Claude account",
+        "text": "Pick one Claude account for the console and every VPS build; every other account is off for builds. Used from the next build on; running builds keep theirs.",
+        "kind": "field"
       }
     ]
   }

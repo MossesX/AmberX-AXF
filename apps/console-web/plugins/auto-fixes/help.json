@@ -6,17 +6,61 @@
   "version": "0.1.0",
   "description": "Help mode entries (help@1) of the Auto-fixes plugin.",
   "author": "Brett",
-  "tags": ["help"],
+  "tags": [
+    "help"
+  ],
   "data": {
     "scope": "plugin:auto-fixes",
     "entries": [
-      { "target": "view:auto-fixes", "title": "Auto-fixes", "text": "Every call that failed and is being fixed automatically, the fix it is trying now, and the ones that gave up with what is missing. Tap a row for its full Automatic fixes log.", "kind": "screen" },
-      { "target": "auto-fixes.banner", "title": "Auto-fixes banner", "text": "Shows while a failed call is being fixed or has given up. Tap a row to open its log; tap the count for the full list." },
-      { "target": "auto-fixes.row", "title": "A failing call", "text": "What failed, which fix it is trying now (step n of m) and how many attempts so far. Tap to open its Automatic fixes log." },
-      { "target": "auto-fixes", "title": "Auto-fixes settings", "text": "Show it as its own banner across the top, as a widget on the banner bar, or only on its page. Switches live in every open console." }
+      {
+        "target": "view:auto-fixes",
+        "title": "Auto-fixes",
+        "text": "Every call that failed and is being fixed automatically, the fix it is trying now, and the ones that gave up with what is missing. Tap a row for its full Automatic fixes log.",
+        "kind": "screen"
+      },
+      {
+        "target": "auto-fixes.banner",
+        "title": "Auto-fixes banner",
+        "text": "Shows while a failed call is being fixed or has given up. Tap a row to open its log; tap the count for the full list."
+      },
+      {
+        "target": "auto-fixes.row",
+        "title": "A failing call",
+        "text": "What failed, which fix it is trying now (step n of m) and how many attempts so far. Tap to open its Automatic fixes log."
+      },
+      {
+        "target": "auto-fixes",
+        "title": "Auto-fixes settings",
+        "text": "Show it as its own banner across the top, as a widget on the banner bar, or only on its page. Switches live in every open console."
+      },
+      {
+        "target": "show-it-as",
+        "title": "Show it as",
+        "text": "Where Auto-fixes shows: its own strip across the top (only while something is failing), a badge on the banner bar, or only on its page. Switches live in every open console.",
+        "kind": "field"
+      },
+      {
+        "target": "banner:auto-fixes",
+        "title": "Auto-fixes banner",
+        "text": "Calls that failed and are being fixed on their own: what failed, the fix it is trying now and attempts so far. Tap a row to open its Automatic fixes log.",
+        "kind": "banner"
+      }
     ],
     "intros": [
-      { "screen": "auto-fixes", "title": "Auto-fixes", "steps": [ { "say": "Calls that failed are fixed here on their own: each failure kind has a ladder of fixes, tried once each.", "target": "" }, { "say": "Tap a row to see every attempt; dismiss one that gave up once you've dealt with it.", "target": "" } ] }
+      {
+        "screen": "auto-fixes",
+        "title": "Auto-fixes",
+        "steps": [
+          {
+            "say": "Calls that failed are fixed here on their own: each failure kind has a ladder of fixes, tried once each.",
+            "target": ""
+          },
+          {
+            "say": "Tap a row to see every attempt; dismiss one that gave up once you've dealt with it.",
+            "target": ""
+          }
+        ]
+      }
     ]
   }
 }
