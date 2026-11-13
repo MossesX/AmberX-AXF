@@ -43,6 +43,6 @@ Voice: Amber reads the same MCP tools.
 
 - UI Review: the Notification history screen (from #528 s9) has no desktop / phone shots yet (no scratch console built in this
   session); the PR stays draft until they are in UI Review.
-- Close PR #528 unmerged once this lands (not done here: closing someone's PR is Brett's call).
+- PR #546. Close PR #528 unmerged once this lands (not done here: closing someone's PR is Brett's call).
 - Install the new Console APK on the phone (CI artifact) after merge.
 - The contract change was done on Opus: it only narrows an unshipped contract, nothing new is designed.
