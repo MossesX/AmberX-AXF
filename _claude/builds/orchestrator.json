@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T11:47:32.599Z",
+ "updatedAt": "2026-11-13T11:48:19.033Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -122792,7 +122792,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T11:45:11.111Z",
-   "updatedAt": "2026-11-13T11:45:46.259Z",
+   "updatedAt": "2026-11-13T11:48:17.662Z",
    "builtAt": "",
    "notes": [
     {
@@ -122802,6 +122802,10 @@
     {
      "text": "Brett: must be a SERVER GATE on the VPS — runs in the server process on its own (always on, no console or browser open needed), not a console/UI feature.",
      "at": "2026-11-13T11:45:46.259Z"
+    },
+    {
+     "text": "Split by Claude into 15 steps (2 Fable).",
+     "at": "2026-11-13T11:48:17.662Z"
     }
    ],
    "approvals": [],
@@ -122818,7 +122822,343 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Define the build-recovery@1 contract in framework/core/build-recovery.mjs. It covers: (1) the stuck states a build can be in (running with no live session, session killed with exit 143, session failed with exit 1, heartbeat stale, slot leaked); (2) what happens for each state (reset the step, requeue, retry the session, or park in Pending once the retry cap is reached); (3) the per-build retry counter and its backoff; (4) the recovery event record (build id, phase, cause, exit code, action, attempt, at); (5) a pure plan(builds, sessions, slots, now) function that returns actions and never runs side effects. Add the matching recovery fields to the builds@1 normaliser (normBuild keeps them), with a migration that defaults old records.",
+     "model": "Fable",
+     "why": "New cross-surface contract and a builds@1 schema and migration change that the dispatcher, launcher and console all read",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/build-recovery.mjs",
+      "framework/core/build-pipeline.mjs",
+      "framework/core/builds-store-schema.mjs",
+      "framework/schemas/build-recovery.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwewxu2m0mygwo",
+     "createdAt": "2026-11-13T11:48:17.662Z"
+    },
+    {
+     "id": "s2",
+     "text": "Write golden fixtures and a checker for build-recovery@1. Cover each stuck state, the retry cap, backoff timing, a build whose live session is healthy (no action), and a build whose PR is merged (never requeued). Run the checker in the spec sweep.",
+     "model": "Fable",
+     "why": "These fixtures are the conformance contract for the recovery planner",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/spec/fixtures/build-recovery.json",
+      "framework/spec/check-build-recovery.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwewxu2m0nvaqx",
+     "createdAt": "2026-11-13T11:48:17.662Z"
+    },
+    {
+     "id": "s3",
+     "text": "Record the exit status of every headless session. claude-headless.sh traps the exit and writes the exit code, the signal (143 = SIGTERM), the end time and the account into a session status file under the agent-slots dir. It also writes a heartbeat file while the session runs, so the planner has real liveness data.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "deploy/claude-headless.sh",
+      "framework/cli/agent-slots.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwewxu2m0o2b46",
+     "createdAt": "2026-11-13T11:48:17.662Z"
+    },
+    {
+     "id": "s4",
+     "text": "Add a session liveness reader in framework/cli/session-liveness.mjs. It joins the builds store's running builds with live PIDs, heartbeats, tmux sessions and the exit records from the previous step. It outputs the input that build-recovery plan() expects. Add a CLI: `session-liveness.mjs list --json`.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/cli/session-liveness.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwewxu2m0ptav4",
+     "createdAt": "2026-11-13T11:48:17.662Z"
+    },
+    {
+     "id": "s5",
+     "text": "Add the recovery executor in apps/console-web/plugins/build-orchestrator/recover.mjs. It applies plan() actions through the builds store under its lock: set the stuck step back to todo, set status to queued with a recovery note, increment the retry counter, release leaked agent slots, and park the build in Pending with a reason once the cap is hit. It journals every action and publishes through builds-live.mjs. Add `--dry-run`.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/recover.mjs",
+      "framework/cli/builds-live.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwewxu2m0qxfvz",
+     "createdAt": "2026-11-13T11:48:17.662Z"
+    },
+    {
+     "id": "s6",
+     "text": "Wire recovery into the dispatcher. pipeline.mjs tick runs recover first on every tick, then fills every free agent slot from the Queue (loop until slots or the Queue run out, not one build per tick), and respects account and model routing. The axf-pipeline cron needs no change.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/pipeline.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwewxu2m0rf856",
+     "createdAt": "2026-11-13T11:48:17.662Z"
+    },
+    {
+     "id": "s7",
+     "text": "Retry failed sessions on another worker. When the exit record shows a usage limit or an account error, the executor requeues the build with an account hint, so the dispatcher routes it to a different worker through claude-workers.mjs route.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/recover.mjs",
+      "deploy/claude-workers.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwewxu2m0syuoq",
+     "createdAt": "2026-11-13T11:48:17.662Z"
+    },
+    {
+     "id": "s8",
+     "text": "Send an FYI to the phone for each fix. Declare a `build-recovered` notification type and a `build-recovery-parked` notification type in the plugin's notify.json. Send each one through axf.notify@1 (AmberX app) as one plain line: what stuck, the exit code, what was done and the attempt number. Parked builds get a banner item instead of only a push.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/notify.json",
+      "apps/console-web/plugins/build-orchestrator/recover.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwewxu2m0t5ja6",
+     "createdAt": "2026-11-13T11:48:17.662Z"
+    },
+    {
+     "id": "s9",
+     "text": "Register a systems-check health@1 check, `builds-stuck`, with an auto-fix that runs recover. Under the Fix it yourself setting it defaults to on. It turns red only when a build is parked after the cap or when recovery itself fails.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/server/health.py",
+      "apps/console-web/plugins/systems-check/README.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwewxu2m0u67fx",
+     "createdAt": "2026-11-13T11:48:17.662Z"
+    },
+    {
+     "id": "s10",
+     "text": "Add Recovery settings to the Build orchestrator settings sub-tab, on framework controls: auto-recover on/off, max retries (default 3), stale heartbeat minutes, backoff, FYI per fix on/off. Include the settings level-toolbar entries. Store them as Claude settings keys under builds.recovery.*.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/web/RecoverySettings.tsx",
+      "apps/console-web/plugins/build-orchestrator/plugin.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwewxu2m0v9b2l",
+     "createdAt": "2026-11-13T11:48:17.662Z"
+    },
+    {
+     "id": "s11",
+     "text": "Add a Recovery log view in the Build orchestrator: the latest recovery events per build (cause, exit, action, attempt) and a PriorityTag on each row. Each build view shows a recovery badge. Use only tokens and framework controls (DataGrid, TabGroup).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/web/RecoveryLog.tsx",
+      "apps/console-web/plugins/build-orchestrator/web/index.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwewxu2m0wcgz7",
+     "createdAt": "2026-11-13T11:48:17.662Z"
+    },
+    {
+     "id": "s12",
+     "text": "API parity for the Recovery log and settings. REST routes: GET /recovery (state, events, settings), POST /recovery/run (with dry_run), POST /recovery/settings, POST /recovery/retry/<id>, POST /recovery/park/<id>. Expose the same routes as MCP plugin commands. Add a console_show deep link target `builds/orchestrator/recovery`. Add the CLI `recover.mjs status|run|retry|park|settings` and voice actions `recovery.run`, `recovery.status` and `recovery.retry` for AmberX.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/server/routes.py",
+      "apps/console-web/plugins/build-orchestrator/commands.json",
+      "apps/console-web/plugins/build-orchestrator/actions.json",
+      "apps/console-web/plugins/build-orchestrator/recover.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwewxu2m0xsaqb",
+     "createdAt": "2026-11-13T11:48:17.662Z"
+    },
+    {
+     "id": "s13",
+     "text": "Write tests: run the executor against a temp builds store with fake exit records (143, 1, a stale heartbeat, a healthy session, the cap reached). Assert requeue, reset, slot release, park and notify calls, check that the tick fills all free slots, and run the routes smoke test. Add them to CI.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/test/recover.test.mjs",
+      "apps/console-web/plugins/build-orchestrator/server/test_recovery.py",
+      ".github/workflows/android.yml"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwewxu2m0yz8a9",
+     "createdAt": "2026-11-13T11:48:17.662Z"
+    },
+    {
+     "id": "s14",
+     "text": "Lifecycle and docs: add uninstall coverage for the new data files, lifecycle markers, help and glossary descriptions for the new commands and settings, and a feature in the Shipped features ledger. Run plugin-lifecycle check, catalog.mjs --check and check-theme/check-controls/check-toolbars/check-chrome-assets.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/build-orchestrator/uninstall.mjs",
+      "apps/console-web/plugins/build-orchestrator/README.md",
+      "apps/console-web/plugins/glossary-index/coverage.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwewxu2m0zn8tl",
+     "createdAt": "2026-11-13T11:48:17.662Z"
+    },
+    {
+     "id": "s15",
+     "text": "Submit the Recovery log and settings to UI Review with 3 options and shots. Run the full checks. Write the report _claude/builds/reports/auto-recover-stuck-builds.md, covering what was added, the stuck states handled and how each part is reached through deep link, REST, MCP, CLI and voice. Add the THREADS.md row, open the PR stating API reach, link the PR with builds-live.mjs, and add the PR to the merge queue.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/auto-recover-stuck-builds.md",
+      "_claude/THREADS.md",
+      "apps/console-web/plugins/ui-review/review.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwewxu2m10s2ye",
+     "createdAt": "2026-11-13T11:48:17.662Z"
+    }
+   ]
   }
  ]
 }
