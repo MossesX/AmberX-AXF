@@ -7895,6 +7895,18 @@
    "from": "detail",
    "addenda": []
   },
+  "token-registry-skin-editor-live-sandbox": {
+   "said": "list every token in a registry; any time a new UI is made add its tokens to the registry; an editor that takes whatever UI you pick and throws it in a sandbox with live preview, hot render as you edit; a default skin; every edit takes a snapshot, you see the chain of edits like a disk snapshot and can revert to any point; at any point export current to a new skin",
+   "at": "2026-11-13T20:04:16.679Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "token-usage-log-accounts-plan-studio-control-small-steps": {
    "said": "",
    "at": "",
