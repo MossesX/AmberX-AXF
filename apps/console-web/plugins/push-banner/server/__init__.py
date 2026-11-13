@@ -497,10 +497,12 @@ class Pushes:
                 "repo": UI_REVIEW_REPO, "at": st.get("at"),
                 "project": {"id": active["id"], "name": active["name"], "inProject": sum(1 for x in items if x.get("inProject")), "elsewhere": sum(1 for x in items if not x.get("inProject"))},
                 "items": items, "waiting": lst("waiting"), "kicked": kicked, "merged": lst("merged")[-10:],
+                # merge-confirm@1: merge called, GitHub hasn't confirmed yet ('awaiting GitHub' rows; items carry them too)
+                "awaiting": lst("awaiting"),
                 "avgMin": st.get("avgMin") if isinstance(st.get("avgMin"), int) else None,
                 "variable": _text(st.get("variable"), 10), "variableError": _text(st.get("variableError"), 300),
                 "chip": {"label": f"Merge queue: {len(items)}", "count": len(items), "testing": sum(1 for x in items if x.get("state") == "testing"),
-                         "kicked": len(kicked), "tone": "warning" if kicked else "info" if items else "muted"}}
+                         "kicked": len(kicked), "awaiting": len(lst("awaiting")), "tone": "warning" if kicked else "info" if items else "muted"}}
 
     def queue_command(self, cmd: str, body: Any, owner: str = "") -> dict[str, Any]:
         """add | remove | move: one implementation, land/merge-queue.mjs (the same file the CLI and the host runner use).

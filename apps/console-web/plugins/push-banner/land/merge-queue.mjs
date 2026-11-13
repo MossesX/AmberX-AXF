@@ -32,6 +32,7 @@ import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as q from './merge-queue-core.mjs';
+import { confirmNow, getConfirm, isMerged, recordCall, requestMerge } from './merge-confirm-store.mjs';
 import * as core from './land-core.mjs';
 import { ciOf, crewSay, mergeMain, settings, makeGit, makeGitHub, makeConsole } from './land.mjs';
 
@@ -188,7 +189,18 @@ async function roundOnce({ s, git, gh, api, dry = false, now = () => new Date(),
     prs.push(fact);
   }
   ctl = q.pruneControl(ctl, prs.map((p) => p.number));
-  if (cfg.mode === 'batch') return batchRound({ s, git, gh, api, dry, at, cfg, prev, ctl, prs, rank, mainSha, base, enlisted, pulls, log });
+  // merge-confirm@1: PRs whose merge was called but GitHub hasn't confirmed stay out of the stack as 'awaiting GitHub';
+  // confirmed ones count as merged now (their branch goes, the chat says Landed, the redeploy may run)
+  const settled = q.settleAwaiting(prev.awaiting || [], (n) => (dry ? null : getConfirm(s, s.slug, n)), at);
+  for (const m of settled.merged) {
+    log(`queue: GitHub confirmed #${m.pr} merged at ${String(m.sha).slice(0, 8)}`);
+    if (!dry && m.prBranch) await gh('DELETE', `/repos/${s.slug}/git/refs/heads/${m.prBranch}`).catch(() => {});
+  }
+  for (const f of settled.failed) log(`queue: #${f.pr} did not merge on GitHub: ${f.why}`);
+  for (const e of settled.still) { const p = prs.find((x) => x.number === e.pr); if (p) p.why = q.awaitingWhy(e); }
+  const awaitingPrs = new Set([...settled.still, ...settled.merged].map((e) => e.pr));
+  for (const n of awaitingPrs) { const i = prs.findIndex((x) => x.number === n); if (i >= 0 && settled.merged.some((m) => m.pr === n)) prs.splice(i, 1); }
+  if (cfg.mode === 'batch') return batchRound({ s, git, gh, api, dry, at, cfg, prev, ctl, prs, rank, mainSha, base, enlisted, pulls, log, settled });
   const ready = q.queueOrder(prs.filter((p) => !p.why), ctl, rank, prev.stack || []);
 
   // 2. what of last round's stack still holds: main must have the code the stack was built on
@@ -216,7 +228,8 @@ async function roundOnce({ s, git, gh, api, dry = false, now = () => new Date(),
     }
   }
   const d = q.decide(stack, Object.fromEntries(stack.map((e) => [e.pr, e.ci])));
-  const merged = [...(prev.merged || [])].slice(-20);
+  const merged = [...(prev.merged || []).slice(-20), ...settled.merged];
+  const awaiting = [...settled.still];
   // one deploy per stack: the console updater (deploy/install-console.sh) waits while this file is fresh
   const holdDeploy = join(s.dataDir, 'queue-merging');
   if (!dry && (d.merge || []).length) writeFileSync(holdDeploy, `${at}\n`);
@@ -226,8 +239,17 @@ async function roundOnce({ s, git, gh, api, dry = false, now = () => new Date(),
     const p = prs.find((x) => x.number === n);
     if (dry) { e.state = 'merging'; continue; }
     const r = await mergeTested({ s, git, gh, e, p, log });
-    if (!r.merged) { e.state = 'passed'; e.why = r.why; log(`queue: #${n} passed but didn't merge: ${r.why}`); break; }
-    merged.push({ pr: n, title: p?.title || '', sha: r.sha, queueSha: e.sha, at, retested: false, branch: q.queueBranch(n), agent: p?.agent || '' });
+    if (!r.merged && !r.awaiting) { e.state = 'passed'; e.why = r.why; log(`queue: #${n} passed but didn't merge: ${r.why}`); break; }
+    const entry = { pr: n, title: p?.title || '', sha: r.sha, queueSha: e.sha, at, retested: false, branch: q.queueBranch(n), agent: p?.agent || '', build: p?.build || '', prBranch: p?.branch || '' };
+    if (r.awaiting) {
+      // merge called, GitHub hasn't confirmed: it waits as 'awaiting GitHub'; the PRs behind it wait with it
+      awaiting.push({ ...entry, confirm: r.confirm?.state || 'pending-github-confirmation', why: r.confirm?.why || '' });
+      if (p) p.why = q.awaitingWhy(awaiting[awaiting.length - 1]);
+      stack = stack.filter((x) => x.pr !== n);
+      log(`queue: #${n} merge called; pending GitHub confirmation`);
+      break;
+    }
+    merged.push(entry);
     newExpect = r.sha;
     git(['fetch', '-q', s.remote, s.base]);
     if (!r.same) { log(`queue: main after #${n} differs in code from what was tested; the rest is rebuilt`); stack = []; break; }
@@ -236,7 +258,7 @@ async function roundOnce({ s, git, gh, api, dry = false, now = () => new Date(),
   // part of the stack merged and the rest is still running: keep the deploy waiting for it (the 15-minute staleness in
   // the updater bounds this); otherwise the stack is in, or nothing landed, and the update may run
   const holding = (d.merge || []).length || existsSync(holdDeploy);
-  if (!dry && holding && stack.some((x) => x.ci !== 'failure' && x.ci !== 'success')) writeFileSync(holdDeploy, `${at}\n`);
+  if (!dry && holding && (awaiting.length || stack.some((x) => x.ci !== 'failure' && x.ci !== 'success'))) writeFileSync(holdDeploy, `${at}\n`);
   else if (!dry) rmSync(holdDeploy, { force: true });
   const kicked = [...(prev.kicked || [])].slice(-20);
   if (d.kick && stack.some((x) => x.pr === d.kick)) {
@@ -289,7 +311,7 @@ async function roundOnce({ s, git, gh, api, dry = false, now = () => new Date(),
   const v = dry ? {} : await syncVariable(s, gh, true, prev);
   const avg = q.runMinutes(history);
   const nowMs = Date.parse(at);
-  const items = [];
+  const items = awaiting.map((e) => awaitingItem(e, prs));
   for (const [i, e] of stack.entries()) {
     const p = prs.find((x) => x.number === e.pr) || {};
     const startedMin = e.startedAt ? (nowMs - Date.parse(e.startedAt)) / 60000 : 0;
@@ -299,9 +321,9 @@ async function roundOnce({ s, git, gh, api, dry = false, now = () => new Date(),
   }
   const rest = order.filter((p) => !stack.some((e) => e.pr === p.number) && !p.why);
   for (const [j, p] of rest.entries()) items.push({ pr: p.number, title: p.title, url: p.url, branch: p.branch, head: p.head, build: p.build, agent: p.agent, priority: p.priority, state: 'waiting', ci: '', why: skipped.get(p.number) || '', etaMin: q.etaMinutes(stack.length + j, { depth: cfg.depth, avg }) });
-  const waiting = prs.filter((p) => p.why && !mergedNow.has(p.number)).map((p) => ({ pr: p.number, title: p.title, url: p.url, branch: p.branch, head: p.head, build: p.build, agent: p.agent, state: p.why.startsWith('kicked out') ? 'kicked' : 'held', why: p.why, prCi: p.ci }));
+  const waiting = prs.filter((p) => p.why && !mergedNow.has(p.number) && !awaiting.some((e) => e.pr === p.number)).map((p) => ({ pr: p.number, title: p.title, url: p.url, branch: p.branch, head: p.head, build: p.build, agent: p.agent, state: p.why.startsWith('kicked out') ? 'kicked' : 'held', why: p.why, prCi: p.ci }));
   for (const it of items) { const p = prs.find((x) => x.number === it.pr); if (p) it.prCi = p.ci; }
-  const st = { ...base, mainSha, expect: newExpect || mainSha, avgMin: avg, history: history.slice(-20), stack, items, waiting, kicked: kicked.filter((k) => prs.some((p) => p.number === k.pr)).slice(-20), merged, ...v };
+  const st = { ...base, mainSha, expect: newExpect || mainSha, avgMin: avg, history: history.slice(-20), stack, items, waiting, awaiting, kicked: kicked.filter((k) => prs.some((p) => p.number === k.pr)).slice(-20), merged, ...v };
   if (!dry) { writeJson(queueFile(s), st); writeJson(queueControlFile(s), ctl); }
   return st;
 }
@@ -353,9 +375,10 @@ export function landBatch({ s, git, batch }) {
  * queue/batch, CI runs once on it, and a green batch lands on main as that one commit (GitHub marks every member PR
  * merged). A red batch is split in half until the one PR to blame is found and kicked out; the halves that pass land.
  */
-async function batchRound({ s, git, gh, api, dry, at, cfg, prev, ctl, prs, rank, mainSha, base, enlisted, pulls, log }) {
+async function batchRound({ s, git, gh, api, dry, at, cfg, prev, ctl, prs, rank, mainSha, base, enlisted, pulls, log, settled = { merged: [], still: [] } }) {
   const history = [...(prev.history || [])];
-  const merged = [...(prev.merged || [])].slice(-40);
+  const merged = [...(prev.merged || []).slice(-40), ...settled.merged];
+  const awaiting = [...settled.still];
   const kicked = [...(prev.kicked || [])].slice(-20);
   let split = [...(prev.split || [])];
   let batch = prev.batch && prev.batch.sha ? { ...prev.batch } : null;
@@ -397,7 +420,14 @@ async function batchRound({ s, git, gh, api, dry, at, cfg, prev, ctl, prs, rank,
     if (d.land.length) {
       const r = dry ? { landed: false, why: 'dry run' } : landBatch({ s, git, batch });
       if (r.landed) {
-        for (const n of d.land) { const p = prOf(n); merged.push({ pr: n, title: p.title || '', sha: r.sha, queueSha: batch.sha, at, retested: false, branch: q.BATCH_BRANCH, agent: p.agent || '', batch: d.land }); landedNow.add(n); }
+        // the push to main is the merge call; each member PR counts as merged only once GitHub confirms it (merge-confirm@1)
+        for (const n of d.land) {
+          const p = prOf(n);
+          const entry = { pr: n, title: p.title || '', sha: r.sha, queueSha: batch.sha, at, retested: false, branch: q.BATCH_BRANCH, agent: p.agent || '', batch: d.land, build: p.build || '', prBranch: '' };
+          const rec = confirmQueueMerge(s, { pr: n, build: p.build, url: p.url }, { status: 200, merged: true, sha: r.sha, message: 'merge queue pushed the batch to main' });
+          if (isMerged(rec)) merged.push(entry); else { awaiting.push({ ...entry, confirm: rec?.state || 'pending-github-confirmation', why: rec?.why || '' }); p.why = q.awaitingWhy(awaiting[awaiting.length - 1]); }
+          landedNow.add(n);
+        }
         lastLanded = [...lastLanded, ...d.land.map((n) => prOf(n).branch).filter(Boolean)];
         log(`queue: landed batch ${d.land.map((n) => `#${n}`).join(', ')} at ${r.sha.slice(0, 8)} (one CI run, ${batch.sha.slice(0, 8)})`);
         await api('POST', '/api/alerts/resolve', { keys: d.land.map((n) => `queue:${n}`) });
@@ -453,12 +483,13 @@ async function batchRound({ s, git, gh, api, dry, at, cfg, prev, ctl, prs, rank,
     for (const ref of lines(git(['for-each-ref', '--format=%(refname:strip=3)', `refs/remotes/${s.remote}/queue/`]).out)) {
       if (q.isQueueBranch(ref) && ref !== q.BATCH_BRANCH) git(['push', '-q', s.remote, '--delete', ref], { timeout: 60000 });
     }
-    rmSync(join(s.dataDir, 'queue-merging'), { force: true }); // one landing = one push = one console deploy
+    // one landing = one push = one console deploy, once GitHub has confirmed the batch's PRs merged
+    if (awaiting.length) writeFileSync(join(s.dataDir, 'queue-merging'), `${at}\n`); else rmSync(join(s.dataDir, 'queue-merging'), { force: true });
   }
   const v = dry ? {} : await syncVariable(s, gh, true, prev);
   const avg = q.runMinutes(history);
   const startedMin = batch?.startedAt ? (Date.parse(at) - Date.parse(batch.startedAt)) / 60000 : 0;
-  const items = [];
+  const items = awaiting.map((e) => awaitingItem(e, prs));
   for (const m of batch?.members || []) {
     const p = prs.find((x) => x.number === m.pr) || {};
     const state = batch.state || (batch.ci === 'success' ? 'passed' : 'testing');
@@ -466,8 +497,8 @@ async function batchRound({ s, git, gh, api, dry, at, cfg, prev, ctl, prs, rank,
   }
   const rest = q.greenFirst(q.queueOrder(prs.filter((p) => !p.why && !landedNow.has(p.number) && !(batch?.members || []).some((m) => m.pr === p.number)), ctl, rank, []), ctl);
   for (const [j, p] of rest.entries()) items.push({ pr: p.number, title: p.title, url: p.url, branch: p.branch, head: p.head, build: p.build, agent: p.agent, priority: p.priority, state: 'waiting', ci: '', why: skipped.get(p.number) || (split.includes(p.number) ? 'its batch went red: tested again in a smaller batch' : ''), etaMin: Math.round(avg * (2 + Math.floor(j / cfg.batchSize))), prCi: p.ci });
-  const waiting = prs.filter((p) => p.why && !landedNow.has(p.number)).map((p) => ({ pr: p.number, title: p.title, url: p.url, branch: p.branch, head: p.head, build: p.build, agent: p.agent, state: p.why.startsWith('kicked out') ? 'kicked' : 'held', why: p.why, prCi: p.ci }));
-  const st = { ...base, mainSha, expect: batch?.base || mainSha, avgMin: avg, history: history.slice(-20), batch, split, stack: [], items, waiting, kicked: kicked.filter((k) => prs.some((p) => p.number === k.pr)).slice(-20), merged, lastLanded, enlisted, ...v };
+  const waiting = prs.filter((p) => p.why && !landedNow.has(p.number) && !awaiting.some((e) => e.pr === p.number)).map((p) => ({ pr: p.number, title: p.title, url: p.url, branch: p.branch, head: p.head, build: p.build, agent: p.agent, state: p.why.startsWith('kicked out') ? 'kicked' : 'held', why: p.why, prCi: p.ci }));
+  const st = { ...base, mainSha, expect: batch?.base || mainSha, avgMin: avg, history: history.slice(-20), batch, split, stack: [], items, waiting, awaiting, kicked: kicked.filter((k) => prs.some((p) => p.number === k.pr)).slice(-20), merged, lastLanded, enlisted, ...v };
   if (!dry) { writeJson(queueFile(s), st); writeJson(queueControlFile(s), ctl); }
   return st;
 }
@@ -478,24 +509,54 @@ async function batchRound({ s, git, gh, api, dry, at, cfg, prev, ctl, prs, rank,
  * its code equals the tested queue commit. Returns { merged, sha, same, why }.
  */
 async function mergeTested({ s, git, gh, e, p, log }) {
+  requestMerge(s, { repo: s.slug, pr: e.pr, path: 'merge-queue', by: 'merge-queue', build: p?.build || '', url: p?.url || '' });
   const tryMerge = async (sha) => gh('PUT', `/repos/${s.slug}/pulls/${e.pr}/merge`, { merge_method: 'merge', sha, commit_title: `Merge pull request #${e.pr} from ${p?.branch || ''} (merge queue: tested as ${q.queueBranch(e.pr)} ${e.sha.slice(0, 8)})`.slice(0, 250) });
   let head = e.head; let r;
   try { r = await tryMerge(head); }
   catch (err) {
-    if (![405, 409, 422].includes(err.status) || !p?.branch) return { merged: false, why: err.message };
+    if (![405, 409, 422].includes(err.status) || !p?.branch) return calledBack(s, e.pr, err, { why: err.message });
     const m = mergeMain({ s, git, b: { id: `pr-${e.pr}`, branch: p.branch }, dry: false });
     if (!m.merged) return { merged: false, why: m.conflicts?.length ? `main conflicts with it in ${m.conflicts.slice(0, 3).join(', ')}` : m.pushError || 'main could not be merged in' };
     git(['fetch', '-q', s.remote, `+refs/heads/${p.branch}:refs/remotes/${s.remote}/${p.branch}`]);
     head = m.sha;
     if (!q.sameCodeFiles(lines(git(['diff', '--name-only', e.sha, head]).out))) return { merged: false, why: 'after main was merged in, its code differs from what the queue tested; retested' };
-    try { r = await tryMerge(head); } catch (err2) { return { merged: false, why: err2.message }; }
+    try { r = await tryMerge(head); } catch (err2) { return calledBack(s, e.pr, err2, { why: err2.message }); }
   }
-  if (!r?.merged) return { merged: false, why: r?.message || 'GitHub did not merge it' };
+  // the merge API's answer is a hint: GitHub, read back, decides (merge-confirm@1)
+  recordCall(s, s.slug, e.pr, { status: 200, merged: r?.merged === true, sha: r?.sha || '', message: r?.message || '' });
+  const rec = confirmNow(s, s.slug, e.pr, { path: 'merge-queue', by: 'merge-queue' });
+  const sha = rec?.evidence?.mergeCommitSha || r?.sha || '';
   git(['fetch', '-q', s.remote, s.base]);
-  const same = q.sameCodeFiles(lines(git(['diff', '--name-only', e.sha, r.sha]).out));
+  const same = !!sha && q.sameCodeFiles(lines(git(['diff', '--name-only', e.sha, sha]).out));
+  if (!isMerged(rec)) {
+    if (rec?.state === 'merge-failed') return { merged: false, why: rec.why || 'GitHub did not merge it' };
+    return { merged: false, awaiting: true, confirm: rec, sha, same };
+  }
   try { if (p?.branch) await gh('DELETE', `/repos/${s.slug}/git/refs/heads/${p.branch}`); } catch { /* left for the banner */ }
-  log(`queue: merged #${e.pr} at ${String(r.sha).slice(0, 8)} (tested once as ${e.sha.slice(0, 8)}${same ? '' : '; main differs in code, so main CI runs'})`);
-  return { merged: true, sha: r.sha, same };
+  log(`queue: merged #${e.pr} at ${String(sha).slice(0, 8)}, confirmed by GitHub (tested once as ${e.sha.slice(0, 8)}${same ? '' : '; main differs in code, so main CI runs'})`);
+  return { merged: true, sha, same, confirm: rec };
+}
+
+/** A merge call that threw: record its answer, read back once (a timeout can hide a merge that went through). */
+function calledBack(s, pr, err, { why }) {
+  recordCall(s, s.slug, pr, err?.status ? { status: err.status, merged: false, message: String(err.message || '').slice(0, 200) } : null);
+  const rec = confirmNow(s, s.slug, pr, { path: 'merge-queue', by: 'merge-queue' });
+  if (isMerged(rec)) return { merged: true, sha: rec.evidence?.mergeCommitSha || '', same: true, confirm: rec };
+  if (rec && rec.state !== 'merge-failed' && !err?.status) return { merged: false, awaiting: true, confirm: rec, sha: '' };
+  return { merged: false, why };
+}
+
+/** A batch member landed by the push to main: request + called + one read-back. */
+function confirmQueueMerge(s, { pr, build = '', url = '' }, call) {
+  requestMerge(s, { repo: s.slug, pr, path: 'merge-queue', by: 'merge-queue', build, url });
+  recordCall(s, s.slug, pr, call);
+  return confirmNow(s, s.slug, pr, { path: 'merge-queue', by: 'merge-queue' });
+}
+
+/** A queue row for a PR whose merge GitHub hasn't confirmed yet. */
+function awaitingItem(e, prs) {
+  const p = prs.find((x) => x.number === e.pr) || {};
+  return { pr: e.pr, title: e.title || p.title || '', url: p.url || '', branch: p.branch || e.prBranch || '', head: p.head || '', build: e.build || p.build || '', agent: e.agent || p.agent || '', priority: p.priority || '', state: 'awaiting', confirm: e.confirm || 'pending-github-confirmation', ci: 'success', queueBranch: e.branch, queueSha: e.queueSha, ahead: [], runUrl: '', why: q.awaitingWhy(e), etaMin: 0, prCi: p.ci || '' };
 }
 
 // ------------------------------------------------------------------ CLI

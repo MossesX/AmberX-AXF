@@ -46,8 +46,29 @@ export const sameCodeFiles = (files) => (files || []).map((f) => String(f || '')
 
 /** Entry states, in the words the view shows. */
 export const STATES = Object.freeze({
-  waiting: 'Waiting', testing: 'Testing', passed: 'Passed', merging: 'Merging', merged: 'Merged', kicked: 'Kicked out', held: 'Not in the queue',
+  waiting: 'Waiting', testing: 'Testing', passed: 'Passed', merging: 'Merging', awaiting: 'Awaiting GitHub', merged: 'Merged', kicked: 'Kicked out', held: 'Not in the queue',
 });
+
+/**
+ * merge-confirm@1 (framework/spec/MERGE-CONFIRM.md): a queue merge call (or a batch push to main) leaves its PRs
+ * `awaiting` GitHub's confirmation; they count as merged (the merged list, the chat's "Landed", the one-per-stack
+ * redeploy) only once their record is `merged`. `confirmOf(pr)` = the PR's merge-confirm@1 record or null.
+ * Returns { merged: entries confirmed now (stamped `at`), still: entries still awaiting (with the record's label / why),
+ * failed: entries GitHub says didn't merge }.
+ */
+export function settleAwaiting(awaiting, confirmOf, at) {
+  const out = { merged: [], still: [], failed: [] };
+  for (const e of Array.isArray(awaiting) ? awaiting : []) {
+    if (!num(e?.pr)) continue;
+    const r = confirmOf(e.pr);
+    if (r?.state === 'merged') out.merged.push({ ...e, at, sha: r.evidence?.mergeCommitSha || e.sha, confirmedAt: r.confirmedAt || at, awaitingSince: e.at });
+    else if (r?.state === 'merge-failed') out.failed.push({ ...e, why: r.why || 'GitHub says it did not merge' });
+    else out.still.push({ ...e, confirm: r?.state || 'pending-github-confirmation', why: r?.why || '' });
+  }
+  return out;
+}
+/** The text an awaiting PR shows in the queue. */
+export const awaitingWhy = (e) => (e?.confirm === 'merge-unconfirmed' ? `GitHub hasn't confirmed the merge${e.why ? `: ${e.why}` : ''}; Recheck` : 'Pending GitHub confirmation: merge called, reading it back');
 
 /**
  * Why an open PR can't be in the queue (plain words), or '' when it can. `pr` is what the runner knows about it:

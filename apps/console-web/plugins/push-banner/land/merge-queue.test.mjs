@@ -92,7 +92,10 @@ const branch = (name, file, text) => { sh(repo, 'checkout', '-q', '-b', name, 'o
 const heads = { 1: branch('b1', 'one.txt', '1\n'), 2: branch('b2', 'two.txt', '2\n'), 3: branch('b3', 'three.txt', '3\n') };
 sh(repo, 'fetch', '-q', 'origin');
 
-const s = { repo, slug: 'o/r', dataDir: data, remote: 'origin', base: 'main', archive: join(root, 'archive') };
+// merge-confirm@1 stand-in for framework/cli/merge-confirm.mjs: `confirmAs` is what GitHub says when read back
+let confirmAs = 'merged';
+const mergeConfirm = (args) => { const [cmd, repo, pr] = args; const rec = { $axf: 'merge-confirm@1', id: `${repo}#${pr}`, repo, pr: Number(pr), evidence: { mergeCommitSha: '' }, why: '' }; return ['confirm', 'status', 'recheck'].includes(cmd) ? { ...rec, state: confirmAs } : { ...rec, state: 'pending-github-confirmation' }; };
+const s = { repo, slug: 'o/r', dataDir: data, remote: 'origin', base: 'main', archive: join(root, 'archive'), mergeConfirm };
 writeFileSync(join(data, 'config.json'), JSON.stringify({ queueMode: 'stack' })); // the Nov 4 per-PR stack; batch mode is tested below
 const git = makeGit(repo);
 const ciBySha = {}; const merges = []; const comments = []; const vars = [];
@@ -218,7 +221,7 @@ await t('batch rules: members, holds, decide (land all / split in half / kick th
   const h = { 1: branch2('b1', 'one.txt', '1\n'), 2: branch2('b2', 'two.txt', '2\n'), 3: branch2('b3', 'three.txt', '3\n') };
   branch2('b4', 'four.txt', '4\n');
   sh(repo2, 'fetch', '-q', 'origin');
-  const s2 = { repo: repo2, slug: 'o/r', dataDir: data2, remote: 'origin', base: 'main', archive: join(root2, 'archive') };
+  const s2 = { repo: repo2, slug: 'o/r', dataDir: data2, remote: 'origin', base: 'main', archive: join(root2, 'archive'), mergeConfirm };
   const git2 = makeGit(repo2);
   const ci2 = {}; const opened = []; const comments2 = []; const deleted = [];
   const onMain = (sha) => spawnSync('git', ['merge-base', '--is-ancestor', sha, 'main'], { cwd: origin2 }).status === 0;
