@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4539,
- "updatedAt": "2026-11-13T17:38:26.946Z",
+ "rev": 4540,
+ "updatedAt": "2026-11-13T17:38:50.939Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -169267,13 +169267,13 @@
    "category": "",
    "detail": "1) Delete every Plan Studio plan (planner.plans), plus a delete action on plans via REST/MCP/CLI/voice (none exists today). 2) Builds must never create, sync or update Plan Studio plans: remove build-plan@1 per-build plans (plan-studio-backfill-12h), any build-todo-sync plan creation, the 'every build goes to Plan Studio' rule in briefs/RULES, and any sync hooks between the builds store and plans. Plan Studio stays as a standalone tool only. Tests: adding/finishing a build creates no plan.",
    "status": "built",
-   "hidden": false,
+   "hidden": true,
    "source": "mcp",
    "pendingId": "unlink-plan-studio-from-builds-delete-all-plan-s",
    "branch": "claude/unlink-plan-studio-from-builds-delete-all-plan-s",
    "pr": "#570",
    "createdAt": "2026-11-12T10:49:12.963Z",
-   "updatedAt": "2026-11-13T11:36:04.425Z",
+   "updatedAt": "2026-11-13T17:38:48.690Z",
    "builtAt": "2026-11-13T11:34:54.213Z",
    "notes": [
     {
@@ -169319,6 +169319,10 @@
     {
      "text": "Session axf-unlink-plan-studio-from-builds-delete-all-plan-s--rhonda on mossesx-max- ended (exit 0); the build was already built.",
      "at": "2026-11-13T11:36:04.425Z"
+    },
+    {
+     "text": "Renamed to unlink-plan-studio-builds-delete-all: this record is kept as a tombstone, use unlink-plan-studio-builds-delete-all.",
+     "at": "2026-11-13T17:38:48.690Z"
     }
    ],
    "approvals": [],
@@ -169376,77 +169380,7 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "steps": [
-    {
-     "id": "s1",
-     "uid": "st-mwdfft4g011xgy",
-     "title": "",
-     "text": "Delete every Plan Studio plan (planner.plans), plus a delete action on plans via REST/MCP/CLI/voice (none exists today). 2) Builds must never create, sync or update Plan Studio plans: remove build-plan@1 per-build plans (plan-studio-backfill-12h), any build-todo-sync plan creation, the 'every build goes to Plan Studio' rule in briefs/RULES, and any sync hooks between the builds store and plans. Plan Studio stays as a standalone tool only. Tests: adding/finishing a build creates no plan.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-12T11:06:18.488Z",
-     "note": "",
-     "rev": 2,
-     "createdAt": "2026-11-12T10:50:36.976Z",
-     "updatedAt": "2026-11-12T11:06:18.752Z"
-    },
-    {
-     "id": "s2",
-     "uid": "st-mwdfft4g027qpo",
-     "title": "",
-     "text": "I want to delete all the plans and um, I no longer want build to automatically make a plan studio plan or sync with them... I don't want this plan studio to be linked to the build at all",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-13T11:33:07.827Z",
-     "note": "",
-     "rev": 2,
-     "createdAt": "2026-11-12T10:50:36.976Z",
-     "updatedAt": "2026-11-13T11:33:38.319Z"
-    },
-    {
-     "id": "s3",
-     "uid": "st-mwdfft4g03m4rw",
-     "title": "",
-     "text": "Tests green, report _claude/builds/reports/unlink-plan-studio-from-builds-delete-all-plan-s.md, THREADS row, commit, push, PR",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "20 min",
-     "files": [
-      "_claude/builds/reports/unlink-plan-studio-from-builds-delete-all-plan-s.md",
-      "_claude/THREADS.md"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-13T11:34:54.213Z",
-     "note": "",
-     "rev": 2,
-     "createdAt": "2026-11-12T10:50:36.976Z",
-     "updatedAt": "2026-11-13T11:35:05.724Z"
-    }
-   ],
+   "steps": [],
    "profiles": [
     "all"
    ],
@@ -169455,9 +169389,9 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
-   "deleted": false,
-   "deletedAt": "",
+   "rev": 30,
+   "deleted": true,
+   "deletedAt": "2026-11-13T17:38:48.690Z",
    "pending": {
     "model": "Opus",
     "status": "complete",
@@ -171508,13 +171442,13 @@
    "category": "ui",
    "detail": "Follow-up to PR #524 (tap-to-confirm). Brett: \"By default, if you turn text on or off, it switches that tap to confirm on or off. If there's no text, it turns double tap on.\" and \"a collapsible pane at the top of the settings interface that has switches like override or double tap... at the top, easy to see.\"",
    "status": "built",
-   "hidden": false,
+   "hidden": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch",
    "pr": "#544",
    "createdAt": "2026-11-12T20:45:12.311Z",
-   "updatedAt": "2026-11-13T02:11:47.409Z",
+   "updatedAt": "2026-11-13T17:38:37.590Z",
    "builtAt": "2026-11-13T02:11:47.409Z",
    "notes": [
     {
@@ -171596,6 +171530,10 @@
     {
      "text": "Headless run axf-tap-to-confirm-follows-label-visibility-quick-sw--earl: brief only · start 11.0K tokens ($0.03) · cost $4.61 · 112 turns · 6 tools, MCP none",
      "at": "2026-11-13T02:11:47.409Z"
+    },
+    {
+     "text": "Renamed to tap-to-confirm-follows-label-visibility: this record is kept as a tombstone, use tap-to-confirm-follows-label-visibility.",
+     "at": "2026-11-13T17:38:37.590Z"
     }
    ],
    "approvals": [],
@@ -171642,74 +171580,7 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "steps": [
-    {
-     "id": "s1",
-     "uid": "st-mwe0oghv048c1u",
-     "title": "",
-     "text": "Default link: hiding labels (icons only) turns tap-to-confirm on; showing labels turns it off, on every toolbar, tab group, nav menu and app menu; a manual setting overrides",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30m",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-13T01:56:05.334Z",
-     "note": "",
-     "rev": 2,
-     "createdAt": "2026-11-12T20:45:12.312Z",
-     "updatedAt": "2026-11-13T01:56:05.695Z"
-    },
-    {
-     "id": "s2",
-     "uid": "st-mwe0oghw05voca",
-     "title": "",
-     "text": "Collapsible quick-switches pane at the top of every toolbar, tab group, nav menu and app menu settings dialog (tap to confirm, override, etc.)",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30m",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-13T02:07:22.108Z",
-     "note": "",
-     "rev": 2,
-     "createdAt": "2026-11-12T20:45:12.312Z",
-     "updatedAt": "2026-11-13T02:07:22.527Z"
-    },
-    {
-     "id": "s3",
-     "uid": "st-mwe0oghw06192u",
-     "title": "",
-     "text": "Tests, report, PR",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "20m",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-13T02:11:28.597Z",
-     "note": "",
-     "rev": 2,
-     "createdAt": "2026-11-12T20:45:12.312Z",
-     "updatedAt": "2026-11-13T02:11:28.808Z"
-    }
-   ],
+   "steps": [],
    "profiles": [
     "all"
    ],
@@ -171719,8 +171590,8 @@
    "kind": "build",
    "planRef": "",
    "rev": 33,
-   "deleted": false,
-   "deletedAt": "",
+   "deleted": true,
+   "deletedAt": "2026-11-13T17:38:37.590Z",
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-12T20:45:12.312Z",
@@ -175411,14 +175282,14 @@
    "category": "",
    "detail": "",
    "status": "built",
-   "hidden": false,
+   "hidden": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga",
    "pr": "#553",
    "priority": "P0",
    "createdAt": "2026-11-13T06:25:11.720Z",
-   "updatedAt": "2026-11-13T07:57:03.048Z",
+   "updatedAt": "2026-11-13T17:38:26.299Z",
    "builtAt": "2026-11-13T07:56:39.561Z",
    "notes": [
     {
@@ -175496,6 +175367,10 @@
     {
      "text": "Session axf-skins-plugin-its-own-removable-console-plugin-an--paulie on mossesx-max- ended (exit 0); the build was already built.",
      "at": "2026-11-13T07:57:03.048Z"
+    },
+    {
+     "text": "Renamed to skins-plugin-own-removable-console: this record is kept as a tombstone, use skins-plugin-own-removable-console.",
+     "at": "2026-11-13T17:38:26.299Z"
     }
    ],
    "approvals": [
@@ -175562,504 +175437,7 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "steps": [
-    {
-     "id": "s1",
-     "uid": "st-mwemczh801rt30",
-     "title": "",
-     "text": "Define the skin-switch@1 action contract in framework/core/engines/skin-switch.mjs: use / back-to-skin / restore-default / undo for each scope (hub, app:<id>, ui:<view>, plugin:<id>), built on resolveLookSkin and the app-look@1 snapshot, with a one-step undo record kept in the look document. Add a fixture in framework/spec/fixtures/skin-switch.json, and record the Android twin as a deferred gap in PORTING.md",
-     "model": "Fable",
-     "why": "Shared engine contract that AppearancePanel in every app and the new plugin both read, so it changes how skin GUIs work across apps",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "framework/core/engines/skin-switch.mjs",
-      "framework/spec/fixtures/skin-switch.json",
-      "framework/spec/PORTING.md"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-13T06:52:08.422Z",
-     "note": "skin-switch@1 engine + fixture, PR #553 (7ed5d3a2d)",
-     "rev": 1,
-     "createdAt": "2026-11-13T06:52:08.440Z",
-     "updatedAt": "2026-11-13T06:52:08.732Z"
-    },
-    {
-     "id": "s2",
-     "uid": "st-mwemczh802ajkq",
-     "title": "",
-     "text": "Add check framework/spec/check-skin-switch.mts (engine vs fixture: scope precedence, undo after restore, back clears only the overridden part) and wire it into CI",
-     "model": "Fable",
-     "why": "Conformance check for the new cross-app contract",
-     "phase": "",
-     "group": "",
-     "estimate": "8 min",
-     "files": [
-      "framework/spec/check-skin-switch.mts",
-      ".github/workflows/android.yml"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-13T06:52:08.440Z",
-     "note": "check-skin-switch.mts wired into CI, PR #553 (8b7424a18)",
-     "rev": 1,
-     "createdAt": "2026-11-13T06:52:08.440Z",
-     "updatedAt": "2026-11-13T06:52:08.732Z"
-    },
-    {
-     "id": "s3",
-     "uid": "st-mwem9g9z018p14",
-     "title": "",
-     "text": "Scaffold the removable plugin apps/console-web/plugins/skins/: plugin.json (builtWith, description, uiEditor: theme, lifecycle.dataDir), install.mjs, uninstall.mjs, README.md, notify.json, plus a Settings → Plugins → Skins sub-tab entry",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "8 min",
-     "files": [
-      "apps/console-web/plugins/skins/plugin.json",
-      "apps/console-web/plugins/skins/install.mjs",
-      "apps/console-web/plugins/skins/uninstall.mjs",
-      "apps/console-web/plugins/skins/README.md",
-      "apps/console-web/plugins/skins/notify.json"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-13T07:09:59.556Z",
-     "note": "",
-     "rev": 2,
-     "createdAt": "2026-11-13T06:49:23.645Z",
-     "updatedAt": "2026-11-13T07:09:59.713Z"
-    },
-    {
-     "id": "s4",
-     "uid": "st-mwem9hut01zfm1",
-     "title": "",
-     "text": "Server routes in apps/console-web/plugins/skins/server/routes.py: GET skins (gallery list with coverage), GET state?scope=, POST use / back / restore / undo / scope. They go through the theme-manager routes and the skin-switch engine, with no second store",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "apps/console-web/plugins/skins/server/routes.py",
-      "apps/console-web/plugins/skins/server/__init__.py"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-13T07:10:57.730Z",
-     "note": "",
-     "rev": 2,
-     "createdAt": "2026-11-13T06:49:25.681Z",
-     "updatedAt": "2026-11-13T07:10:57.911Z"
-    },
-    {
-     "id": "s5",
-     "uid": "st-mwem9j5201q7q5",
-     "title": "",
-     "text": "Server tests for the routes: list, state per scope, use → back → restore → undo round trip, refusal of unknown scope or skin",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "8 min",
-     "files": [
-      "apps/console-web/plugins/skins/test.py"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-13T07:11:18.819Z",
-     "note": "",
-     "rev": 2,
-     "createdAt": "2026-11-13T06:49:27.315Z",
-     "updatedAt": "2026-11-13T07:11:19.056Z"
-    },
-    {
-     "id": "s6",
-     "uid": "st-mwem9kn501cuf8",
-     "title": "",
-     "text": "CLI apps/console-web/plugins/skins/skins-plugin.mjs (list | state | use | back | restore | undo | scope | open), calling the same REST routes, and register it so `axf skins-ui …` works",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "8 min",
-     "files": [
-      "apps/console-web/plugins/skins/skins-plugin.mjs",
-      "framework/cli/axf.mjs"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-13T07:11:48.285Z",
-     "note": "",
-     "rev": 2,
-     "createdAt": "2026-11-13T06:49:29.291Z",
-     "updatedAt": "2026-11-13T07:11:48.528Z"
-    },
-    {
-     "id": "s7",
-     "uid": "st-mwem9mfj01xu0g",
-     "title": "",
-     "text": "MCP plugin commands (skins_list, skins_state, skins_use, skins_back, skins_restore, skins_undo, skins_scope) through plugin-commands, plus console actions skin.use / skin.back / skin.restore / skin.undo for AmberX voice",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "9 min",
-     "files": [
-      "apps/console-web/plugins/skins/commands.json",
-      "apps/console-web/plugins/skins/actions.json"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-13T07:14:05.444Z",
-     "note": "",
-     "rev": 2,
-     "createdAt": "2026-11-13T06:49:31.590Z",
-     "updatedAt": "2026-11-13T07:14:05.672Z"
-    },
-    {
-     "id": "s8",
-     "uid": "st-mwem5ilk016sp0",
-     "title": "",
-     "text": "Gallery screen apps/console-web/plugins/skins/web/SkinsScreen.tsx: a grid of every skin card (name, icon pack, coverage), built from framework controls and tokens only, with a TabGroup for scope (Hub / App / Screen / Plugin) and a SkinScope root",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "apps/console-web/plugins/skins/web/SkinsScreen.tsx",
-      "apps/console-web/plugins/skins/web/skins.css"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-13T07:18:04.432Z",
-     "note": "",
-     "rev": 3,
-     "createdAt": "2026-11-13T06:46:19.897Z",
-     "updatedAt": "2026-11-13T07:18:20.322Z"
-    },
-    {
-     "id": "s9",
-     "uid": "st-mwem5kkf01urej",
-     "title": "",
-     "text": "Live preview pane: the selected skin is drawn in a scoped desktop frame and a phone-width frame side by side (SkinScope with the preview skin, no write until Use), with a desktop/phone toggle on a role=toolbar",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "apps/console-web/plugins/skins/web/SkinPreview.tsx"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-13T07:18:06.264Z",
-     "note": "",
-     "rev": 3,
-     "createdAt": "2026-11-13T06:46:22.518Z",
-     "updatedAt": "2026-11-13T07:18:06.528Z"
-    },
-    {
-     "id": "s10",
-     "uid": "st-mwem9rm301awkl",
-     "title": "",
-     "text": "Action toolbar on the screen: one-tap Use skin, Back to skin, Restore to Default (confirm) and Undo (snackbar plus a button), wired to the REST routes. Toolbar has role=toolbar, aria-label and tap-to-confirm",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "9 min",
-     "files": [
-      "apps/console-web/plugins/skins/web/SkinActions.tsx"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-13T07:18:08.091Z",
-     "note": "",
-     "rev": 2,
-     "createdAt": "2026-11-13T06:49:38.202Z",
-     "updatedAt": "2026-11-13T07:18:08.309Z"
-    },
-    {
-     "id": "s11",
-     "uid": "st-mwem9th501e8jn",
-     "title": "",
-     "text": "Per-scope picker: pick the app, the screen (ui:<view>) or the plugin from registries, show the inherited skin and where it comes from, with an Inherit / Follow hub switch per scope",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "apps/console-web/plugins/skins/web/ScopePicker.tsx"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-13T07:18:09.632Z",
-     "note": "",
-     "rev": 2,
-     "createdAt": "2026-11-13T06:49:40.685Z",
-     "updatedAt": "2026-11-13T07:18:09.873Z"
-    },
-    {
-     "id": "s12",
-     "uid": "st-mwem9up201uz2e",
-     "title": "",
-     "text": "Deep links: console_show / console_open targets skins, skins/skin/<id>, skins/scope/<scope> and skins/preview/<id>?view=phone. Register them in the plugin's nav and help entries",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "7 min",
-     "files": [
-      "apps/console-web/plugins/skins/web/index.tsx",
-      "apps/console-web/plugins/skins/help.json"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-13T07:18:30.256Z",
-     "note": "",
-     "rev": 2,
-     "createdAt": "2026-11-13T06:49:42.360Z",
-     "updatedAt": "2026-11-13T07:18:30.443Z"
-    },
-    {
-     "id": "s13",
-     "uid": "st-mwem9wqc0171f6",
-     "title": "",
-     "text": "Quick skin switcher on the banner: a status-widget chip (current skin for this scope) whose popover lists skins with one-tap Use, Back and Undo. Add it to KNOWN_BANNERS with banner settings (label, icon, settingsTab)",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "apps/console-web/plugins/skins/web/SkinChip.tsx",
-      "apps/console-web/plugins/skins/assets/"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-13T07:20:52.669Z",
-     "note": "",
-     "rev": 2,
-     "createdAt": "2026-11-13T06:49:44.889Z",
-     "updatedAt": "2026-11-13T07:20:52.869Z"
-    },
-    {
-     "id": "s14",
-     "uid": "st-mwema3ya01ociz",
-     "title": "",
-     "text": "Context-menu entries (rt.addContextItems): Change skin here… on any view root and plugin root, opening the scope picker on that scope. Banner chip right-click gives Settings… / Change… / Move",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "8 min",
-     "files": [
-      "apps/console-web/plugins/skins/web/contextItems.ts"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-13T07:20:55.783Z",
-     "note": "",
-     "rev": 3,
-     "createdAt": "2026-11-13T06:49:54.045Z",
-     "updatedAt": "2026-11-13T07:20:56.002Z"
-    },
-    {
-     "id": "s15",
-     "uid": "st-mwema69v014s4q",
-     "title": "",
-     "text": "Settings sub-tab (Settings → Plugins → Skins) with the level toolbar: show the banner chip, default scope, undo window, preview viewport. Each setting is readable and settable through REST, MCP, CLI and voice",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "9 min",
-     "files": [
-      "apps/console-web/plugins/skins/web/SkinsSettings.tsx",
-      "apps/console-web/plugins/skins/settings.json"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-13T07:22:26.116Z",
-     "note": "",
-     "rev": 3,
-     "createdAt": "2026-11-13T06:49:57.155Z",
-     "updatedAt": "2026-11-13T07:22:26.312Z"
-    },
-    {
-     "id": "s16",
-     "uid": "st-mwema8ti013a2a",
-     "title": "",
-     "text": "Hook AppearancePanel in framework/libs/settings to the skin-switch engine, so its Use / Back / Restore match the plugin's, and add an Open Skins gallery link when the plugin is installed (capability check, no folder name)",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "8 min",
-     "files": [
-      "framework/libs/settings/AppearancePanel.tsx"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-13T07:24:14.369Z",
-     "note": "",
-     "rev": 3,
-     "createdAt": "2026-11-13T06:50:00.412Z",
-     "updatedAt": "2026-11-13T07:24:14.579Z"
-    },
-    {
-     "id": "s17",
-     "uid": "st-mwemad9401two1",
-     "title": "",
-     "text": "UI Review choices: build at least 3 options for the gallery layout and for the banner chip as assets under apps/console-web/plugins/skins/assets/<type>/, with a choices JSON",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "apps/console-web/plugins/skins/assets/",
-      "apps/console-web/plugins/skins/choices/"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": true,
-     "done": true,
-     "doneAt": "2026-11-13T07:26:17.320Z",
-     "note": "UI Review no longer a gate",
-     "rev": 4,
-     "createdAt": "2026-11-13T06:50:06.068Z",
-     "updatedAt": "2026-11-13T07:26:17.534Z"
-    },
-    {
-     "id": "s18",
-     "uid": "st-mwemah9t01m7ag",
-     "title": "",
-     "text": "Lifecycle and conformance: run uninstall --all and plugin-lifecycle check --after-uninstall, check-theme, check-controls, check-toolbars, check-chrome-assets and the glossary-index catalog --check. Fix any findings",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "9 min",
-     "files": [
-      "apps/console-web/plugins/skins/"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-13T07:26:58.216Z",
-     "note": "",
-     "rev": 3,
-     "createdAt": "2026-11-13T06:50:11.173Z",
-     "updatedAt": "2026-11-13T07:26:58.384Z"
-    },
-    {
-     "id": "s19",
-     "uid": "st-mwemczh8036k0q",
-     "title": "",
-     "text": "Screenshots of the gallery, the previews, the scope picker and the banner chip on desktop and phone (vite preview with the hub look mocked). Submit them to UI Review with the choices",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "_claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga/shots/"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": true,
-     "done": true,
-     "doneAt": "2026-11-13T07:54:44.029Z",
-     "note": "UI Review no longer a gate",
-     "rev": 3,
-     "createdAt": "2026-11-13T06:52:08.440Z",
-     "updatedAt": "2026-11-13T07:54:44.193Z"
-    },
-    {
-     "id": "s20",
-     "uid": "st-mwemczh804rthi",
-     "title": "",
-     "text": "Tests (check-skin-switch, check-skin-coverage, plugin test.py, typecheck), report _claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga.md (with how every feature is reached by deep link, REST, MCP, CLI and voice), THREADS.md row, builds-live link, and PR",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "_claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga.md",
-      "_claude/THREADS.md"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-13T07:56:39.561Z",
-     "note": "",
-     "rev": 2,
-     "createdAt": "2026-11-13T06:52:08.440Z",
-     "updatedAt": "2026-11-13T07:56:39.728Z"
-    }
-   ],
+   "steps": [],
    "profiles": [
     "all"
    ],
@@ -176069,576 +175447,13 @@
    "kind": "build",
    "planRef": "",
    "rev": 101,
-   "deleted": false,
-   "deletedAt": "",
+   "deleted": true,
+   "deletedAt": "2026-11-13T17:38:26.299Z",
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-13T06:45:51.399Z",
    "rearranged": false,
-   "removedSteps": [
-    {
-     "step": {
-      "id": "s3",
-      "uid": "st-mwelw64c035md3",
-      "title": "",
-      "text": "Tests green, report _claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga.md, THREADS row, commit, push, PR",
-      "model": "Opus",
-      "why": "",
-      "phase": "",
-      "group": "",
-      "estimate": "10 min",
-      "files": [
-       "_claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga.md",
-       "_claude/THREADS.md"
-      ],
-      "checks": [],
-      "session": "same",
-      "agent": false,
-      "skip": false,
-      "done": false,
-      "doneAt": "",
-      "note": "",
-      "rev": 1,
-      "createdAt": "2026-11-13T06:39:04.188Z",
-      "updatedAt": "2026-11-13T06:39:04.188Z"
-     },
-     "at": "2026-11-13T06:45:45.573Z",
-     "why": "removed in the orchestrator",
-     "by": "orchestrator"
-    },
-    {
-     "step": {
-      "id": "s2",
-      "uid": "st-mwelw64c02pcf8",
-      "title": "",
-      "text": "Gallery of every skin with live preview (desktop and phone), one-tap Use skin, Back and Restore to Default with undo, per-scope switching (whole hub, one app, one screen, one plugin), a quick skin switcher on the banner an",
-      "model": "Opus",
-      "why": "",
-      "phase": "",
-      "group": "",
-      "estimate": "10 min",
-      "files": [],
-      "checks": [],
-      "session": "same",
-      "agent": false,
-      "skip": false,
-      "done": false,
-      "doneAt": "",
-      "note": "",
-      "rev": 1,
-      "createdAt": "2026-11-13T06:39:04.188Z",
-      "updatedAt": "2026-11-13T06:39:04.188Z"
-     },
-     "at": "2026-11-13T06:45:47.460Z",
-     "why": "removed in the orchestrator",
-     "by": "orchestrator"
-    },
-    {
-     "step": {
-      "id": "s1",
-      "uid": "st-mwelw64c015wg7",
-      "title": "",
-      "text": "Skins plugin: its own removable console plugin and screen for changing skins.",
-      "model": "Opus",
-      "why": "",
-      "phase": "",
-      "group": "",
-      "estimate": "10 min",
-      "files": [],
-      "checks": [],
-      "session": "same",
-      "agent": false,
-      "skip": false,
-      "done": true,
-      "doneAt": "2026-11-13T06:43:53.929Z",
-      "note": "",
-      "rev": 2,
-      "createdAt": "2026-11-13T06:39:04.188Z",
-      "updatedAt": "2026-11-13T06:43:54.154Z"
-     },
-     "at": "2026-11-13T06:45:49.354Z",
-     "why": "removed in the orchestrator",
-     "by": "orchestrator"
-    },
-    {
-     "step": {
-      "id": "s16",
-      "uid": "st-mwem60ch016f3b",
-      "title": "",
-      "text": "Tests (check-skin-switch, check-skin-coverage, plugin test.py, typecheck), report _claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga.md (with how every feature is reached by deep link, REST, MCP, CLI and voice), THREADS.md row, builds-live link, and PR",
-      "model": "Opus",
-      "why": "",
-      "phase": "",
-      "group": "",
-      "estimate": "10 min",
-      "files": [
-       "_claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga.md",
-       "_claude/THREADS.md"
-      ],
-      "checks": [],
-      "session": "same",
-      "agent": false,
-      "skip": false,
-      "done": false,
-      "doneAt": "",
-      "note": "",
-      "rev": 1,
-      "createdAt": "2026-11-13T06:46:43.066Z",
-      "updatedAt": "2026-11-13T06:46:43.265Z"
-     },
-     "at": "2026-11-13T06:48:12.030Z",
-     "why": "removed in the orchestrator",
-     "by": "orchestrator"
-    },
-    {
-     "step": {
-      "id": "s15",
-      "uid": "st-mwem5z6301qw19",
-      "title": "",
-      "text": "Screenshots of the gallery, the previews, the scope picker and the banner chip on desktop and phone (vite preview with the hub look mocked). Submit them to UI Review with the choices",
-      "model": "Opus",
-      "why": "",
-      "phase": "",
-      "group": "",
-      "estimate": "10 min",
-      "files": [
-       "_claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga/shots/"
-      ],
-      "checks": [],
-      "session": "same",
-      "agent": false,
-      "skip": false,
-      "done": false,
-      "doneAt": "",
-      "note": "",
-      "rev": 1,
-      "createdAt": "2026-11-13T06:46:41.515Z",
-      "updatedAt": "2026-11-13T06:46:41.739Z"
-     },
-     "at": "2026-11-13T06:48:30.019Z",
-     "why": "removed in the orchestrator",
-     "by": "orchestrator"
-    },
-    {
-     "step": {
-      "id": "s14",
-      "uid": "st-mwem5xyx0156ov",
-      "title": "",
-      "text": "Lifecycle and conformance: run uninstall --all and plugin-lifecycle check --after-uninstall, check-theme, check-controls, check-toolbars, check-chrome-assets and the glossary-index catalog --check. Fix any findings",
-      "model": "Opus",
-      "why": "",
-      "phase": "",
-      "group": "",
-      "estimate": "9 min",
-      "files": [
-       "apps/console-web/plugins/skins/"
-      ],
-      "checks": [],
-      "session": "same",
-      "agent": false,
-      "skip": false,
-      "done": false,
-      "doneAt": "",
-      "note": "",
-      "rev": 1,
-      "createdAt": "2026-11-13T06:46:39.975Z",
-      "updatedAt": "2026-11-13T06:46:40.185Z"
-     },
-     "at": "2026-11-13T06:48:49.468Z",
-     "why": "removed in the orchestrator",
-     "by": "orchestrator"
-    },
-    {
-     "step": {
-      "id": "s13",
-      "uid": "st-mwem5wpo01x9ec",
-      "title": "",
-      "text": "UI Review choices: build at least 3 options for the gallery layout and for the banner chip as assets under apps/console-web/plugins/skins/assets/<type>/, with a choices JSON",
-      "model": "Opus",
-      "why": "",
-      "phase": "",
-      "group": "",
-      "estimate": "10 min",
-      "files": [
-       "apps/console-web/plugins/skins/assets/",
-       "apps/console-web/plugins/skins/choices/"
-      ],
-      "checks": [],
-      "session": "same",
-      "agent": false,
-      "skip": false,
-      "done": false,
-      "doneAt": "",
-      "note": "",
-      "rev": 1,
-      "createdAt": "2026-11-13T06:46:38.359Z",
-      "updatedAt": "2026-11-13T06:46:38.556Z"
-     },
-     "at": "2026-11-13T06:48:51.899Z",
-     "why": "removed in the orchestrator",
-     "by": "orchestrator"
-    },
-    {
-     "step": {
-      "id": "s12",
-      "uid": "st-mwem5uzz0150o0",
-      "title": "",
-      "text": "Hook AppearancePanel in framework/libs/settings to the skin-switch engine, so its Use / Back / Restore match the plugin's, and add an Open Skins gallery link when the plugin is installed (capability check, no folder name)",
-      "model": "Opus",
-      "why": "",
-      "phase": "",
-      "group": "",
-      "estimate": "8 min",
-      "files": [
-       "framework/libs/settings/AppearancePanel.tsx"
-      ],
-      "checks": [],
-      "session": "same",
-      "agent": false,
-      "skip": false,
-      "done": false,
-      "doneAt": "",
-      "note": "",
-      "rev": 1,
-      "createdAt": "2026-11-13T06:46:35.745Z",
-      "updatedAt": "2026-11-13T06:46:36.335Z"
-     },
-     "at": "2026-11-13T06:48:53.848Z",
-     "why": "removed in the orchestrator",
-     "by": "orchestrator"
-    },
-    {
-     "step": {
-      "id": "s11",
-      "uid": "st-mwem5szt01xndd",
-      "title": "",
-      "text": "Settings sub-tab (Settings → Plugins → Skins) with the level toolbar: show the banner chip, default scope, undo window, preview viewport. Each setting is readable and settable through REST, MCP, CLI and voice",
-      "model": "Opus",
-      "why": "",
-      "phase": "",
-      "group": "",
-      "estimate": "9 min",
-      "files": [
-       "apps/console-web/plugins/skins/web/SkinsSettings.tsx",
-       "apps/console-web/plugins/skins/settings.json"
-      ],
-      "checks": [],
-      "session": "same",
-      "agent": false,
-      "skip": false,
-      "done": false,
-      "doneAt": "",
-      "note": "",
-      "rev": 1,
-      "createdAt": "2026-11-13T06:46:33.406Z",
-      "updatedAt": "2026-11-13T06:46:33.737Z"
-     },
-     "at": "2026-11-13T06:48:55.587Z",
-     "why": "removed in the orchestrator",
-     "by": "orchestrator"
-    },
-    {
-     "step": {
-      "id": "s10",
-      "uid": "st-mwem5qjl01f80q",
-      "title": "",
-      "text": "Context-menu entries (rt.addContextItems): Change skin here… on any view root and plugin root, opening the scope picker on that scope. Banner chip right-click gives Settings… / Change… / Move",
-      "model": "Opus",
-      "why": "",
-      "phase": "",
-      "group": "",
-      "estimate": "8 min",
-      "files": [
-       "apps/console-web/plugins/skins/web/contextItems.ts"
-      ],
-      "checks": [],
-      "session": "same",
-      "agent": false,
-      "skip": false,
-      "done": false,
-      "doneAt": "",
-      "note": "",
-      "rev": 1,
-      "createdAt": "2026-11-13T06:46:30.364Z",
-      "updatedAt": "2026-11-13T06:46:30.563Z"
-     },
-     "at": "2026-11-13T06:48:57.054Z",
-     "why": "removed in the orchestrator",
-     "by": "orchestrator"
-    },
-    {
-     "step": {
-      "id": "s7",
-      "uid": "st-mwem5g4x01fcj3",
-      "title": "",
-      "text": "Live preview pane: the selected skin is drawn in a scoped desktop frame and a phone-width frame side by side (SkinScope with the preview skin, no write until Use), with a desktop/phone toggle on a role=toolbar",
-      "model": "Opus",
-      "why": "",
-      "phase": "",
-      "group": "",
-      "estimate": "10 min",
-      "files": [
-       "apps/console-web/plugins/skins/web/SkinPreview.tsx"
-      ],
-      "checks": [],
-      "session": "same",
-      "agent": false,
-      "skip": false,
-      "done": false,
-      "doneAt": "",
-      "note": "",
-      "rev": 1,
-      "createdAt": "2026-11-13T06:46:16.376Z",
-      "updatedAt": "2026-11-13T06:46:17.073Z"
-     },
-     "at": "2026-11-13T06:49:05.728Z",
-     "why": "removed in the orchestrator",
-     "by": "orchestrator"
-    },
-    {
-     "step": {
-      "id": "s6",
-      "uid": "st-mwem5dd801pp6y",
-      "title": "",
-      "text": "Gallery screen apps/console-web/plugins/skins/web/SkinsScreen.tsx: a grid of every skin card (name, icon pack, coverage), built from framework controls and tokens only, with a TabGroup for scope (Hub / App / Screen / Plugin) and a SkinScope root",
-      "model": "Opus",
-      "why": "",
-      "phase": "",
-      "group": "",
-      "estimate": "10 min",
-      "files": [
-       "apps/console-web/plugins/skins/web/SkinsScreen.tsx",
-       "apps/console-web/plugins/skins/web/skins.css"
-      ],
-      "checks": [],
-      "session": "same",
-      "agent": false,
-      "skip": false,
-      "done": false,
-      "doneAt": "",
-      "note": "",
-      "rev": 1,
-      "createdAt": "2026-11-13T06:46:12.964Z",
-      "updatedAt": "2026-11-13T06:46:13.484Z"
-     },
-     "at": "2026-11-13T06:49:08.404Z",
-     "why": "removed in the orchestrator",
-     "by": "orchestrator"
-    },
-    {
-     "step": {
-      "id": "s5",
-      "uid": "st-mwem5aw901khlx",
-      "title": "",
-      "text": "MCP plugin commands (skins_list, skins_state, skins_use, skins_back, skins_restore, skins_undo, skins_scope) through plugin-commands, plus console actions skin.use / skin.back / skin.restore / skin.undo for AmberX voice",
-      "model": "Opus",
-      "why": "",
-      "phase": "",
-      "group": "",
-      "estimate": "9 min",
-      "files": [
-       "apps/console-web/plugins/skins/commands.json",
-       "apps/console-web/plugins/skins/actions.json"
-      ],
-      "checks": [],
-      "session": "same",
-      "agent": false,
-      "skip": false,
-      "done": false,
-      "doneAt": "",
-      "note": "",
-      "rev": 1,
-      "createdAt": "2026-11-13T06:46:09.774Z",
-      "updatedAt": "2026-11-13T06:46:10.281Z"
-     },
-     "at": "2026-11-13T06:49:10.443Z",
-     "why": "removed in the orchestrator",
-     "by": "orchestrator"
-    },
-    {
-     "step": {
-      "id": "s4",
-      "uid": "st-mwem588c01xbh3",
-      "title": "",
-      "text": "CLI apps/console-web/plugins/skins/skins-plugin.mjs (list | state | use | back | restore | undo | scope | open), calling the same REST routes, and register it so `axf skins-ui …` works",
-      "model": "Opus",
-      "why": "",
-      "phase": "",
-      "group": "",
-      "estimate": "8 min",
-      "files": [
-       "apps/console-web/plugins/skins/skins-plugin.mjs",
-       "framework/cli/axf.mjs"
-      ],
-      "checks": [],
-      "session": "same",
-      "agent": false,
-      "skip": false,
-      "done": false,
-      "doneAt": "",
-      "note": "",
-      "rev": 1,
-      "createdAt": "2026-11-13T06:46:06.445Z",
-      "updatedAt": "2026-11-13T06:46:06.828Z"
-     },
-     "at": "2026-11-13T06:49:12.417Z",
-     "why": "removed in the orchestrator",
-     "by": "orchestrator"
-    },
-    {
-     "step": {
-      "id": "s3",
-      "uid": "st-mwem4z9y014t64",
-      "title": "",
-      "text": "Scaffold the removable plugin apps/console-web/plugins/skins/: plugin.json (builtWith, description, uiEditor: theme, lifecycle.dataDir), install.mjs, uninstall.mjs, README.md, notify.json, plus a Settings → Plugins → Skins sub-tab entry",
-      "model": "Opus",
-      "why": "",
-      "phase": "",
-      "group": "",
-      "estimate": "8 min",
-      "files": [
-       "apps/console-web/plugins/skins/plugin.json",
-       "apps/console-web/plugins/skins/install.mjs",
-       "apps/console-web/plugins/skins/uninstall.mjs",
-       "apps/console-web/plugins/skins/README.md",
-       "apps/console-web/plugins/skins/notify.json"
-      ],
-      "checks": [],
-      "session": "same",
-      "agent": false,
-      "skip": false,
-      "done": true,
-      "doneAt": "2026-11-13T06:48:48.273Z",
-      "note": "",
-      "rev": 2,
-      "createdAt": "2026-11-13T06:45:54.991Z",
-      "updatedAt": "2026-11-13T06:48:48.460Z"
-     },
-     "at": "2026-11-13T06:49:14.166Z",
-     "why": "removed in the orchestrator",
-     "by": "orchestrator"
-    },
-    {
-     "step": {
-      "id": "s2",
-      "uid": "st-mwem4xtb01rws0",
-      "title": "",
-      "text": "Add check framework/spec/check-skin-switch.mts (engine vs fixture: scope precedence, undo after restore, back clears only the overridden part) and wire it into CI",
-      "model": "Fable",
-      "why": "Conformance check for the new cross-app contract",
-      "phase": "",
-      "group": "",
-      "estimate": "8 min",
-      "files": [
-       "framework/spec/check-skin-switch.mts",
-       ".github/workflows/android.yml"
-      ],
-      "checks": [],
-      "session": "same",
-      "agent": false,
-      "skip": false,
-      "done": true,
-      "doneAt": "2026-11-13T06:47:43.943Z",
-      "note": "",
-      "rev": 2,
-      "createdAt": "2026-11-13T06:45:53.134Z",
-      "updatedAt": "2026-11-13T06:47:44.162Z"
-     },
-     "at": "2026-11-13T06:49:15.908Z",
-     "why": "removed in the orchestrator",
-     "by": "orchestrator"
-    },
-    {
-     "step": {
-      "id": "s1",
-      "uid": "st-mwem4wis01mh3q",
-      "title": "",
-      "text": "Define the skin-switch@1 action contract in framework/core/engines/skin-switch.mjs: use / back-to-skin / restore-default / undo for each scope (hub, app:<id>, ui:<view>, plugin:<id>), built on resolveLookSkin and the app-look@1 snapshot, with a one-step undo record kept in the look document. Add a fixture in framework/spec/fixtures/skin-switch.json, and record the Android twin as a deferred gap in PORTING.md",
-      "model": "Fable",
-      "why": "Shared engine contract that AppearancePanel in every app and the new plugin both read, so it changes how skin GUIs work across apps",
-      "phase": "",
-      "group": "",
-      "estimate": "10 min",
-      "files": [
-       "framework/core/engines/skin-switch.mjs",
-       "framework/spec/fixtures/skin-switch.json",
-       "framework/spec/PORTING.md"
-      ],
-      "checks": [],
-      "session": "same",
-      "agent": false,
-      "skip": false,
-      "done": false,
-      "doneAt": "",
-      "note": "",
-      "rev": 1,
-      "createdAt": "2026-11-13T06:45:51.399Z",
-      "updatedAt": "2026-11-13T06:45:51.652Z"
-     },
-     "at": "2026-11-13T06:49:17.618Z",
-     "why": "removed in the orchestrator",
-     "by": "orchestrator"
-    },
-    {
-     "step": {
-      "id": "s8-7",
-      "uid": "st-mwem9nqi01izdu",
-      "title": "",
-      "text": "Gallery screen apps/console-web/plugins/skins/web/SkinsScreen.tsx: a grid of every skin card (name, icon pack, coverage), built from framework controls and tokens only, with a TabGroup for scope (Hub / App / Screen / Plugin) and a SkinScope root",
-      "model": "Opus",
-      "why": "",
-      "phase": "",
-      "group": "",
-      "estimate": "10 min",
-      "files": [
-       "apps/console-web/plugins/skins/web/SkinsScreen.tsx",
-       "apps/console-web/plugins/skins/web/skins.css"
-      ],
-      "checks": [],
-      "session": "same",
-      "agent": false,
-      "skip": false,
-      "done": false,
-      "doneAt": "",
-      "note": "",
-      "rev": 1,
-      "createdAt": "2026-11-13T06:49:33.336Z",
-      "updatedAt": "2026-11-13T06:49:33.546Z"
-     },
-     "at": "2026-11-13T06:52:08.440Z",
-     "why": "removed in the orchestrator",
-     "by": "skins-plugin phase 1 session (plan repair)"
-    },
-    {
-     "step": {
-      "id": "s9-8",
-      "uid": "st-mwem9pnp01hcba",
-      "title": "",
-      "text": "Live preview pane: the selected skin is drawn in a scoped desktop frame and a phone-width frame side by side (SkinScope with the preview skin, no write until Use), with a desktop/phone toggle on a role=toolbar",
-      "model": "Opus",
-      "why": "",
-      "phase": "",
-      "group": "",
-      "estimate": "10 min",
-      "files": [
-       "apps/console-web/plugins/skins/web/SkinPreview.tsx"
-      ],
-      "checks": [],
-      "session": "same",
-      "agent": false,
-      "skip": false,
-      "done": false,
-      "doneAt": "",
-      "note": "",
-      "rev": 1,
-      "createdAt": "2026-11-13T06:49:35.747Z",
-      "updatedAt": "2026-11-13T06:49:36.037Z"
-     },
-     "at": "2026-11-13T06:52:08.440Z",
-     "why": "removed in the orchestrator",
-     "by": "skins-plugin phase 1 session (plan repair)"
-    }
-   ],
+   "removedSteps": [],
    "legacy": [],
    "copies": []
   },
@@ -194699,6 +193514,1701 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-13T01:16:06.682Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "skins-plugin-own-removable-console",
+   "title": "Skins plugin: its own removable console plugin and screen for changing skins. Gallery of every skin with live preview (desktop and phone), one-tap Use skin, Back and Restore to Default with undo, per-scope switching (whole hub, one app, one screen, one plugin), a quick skin switcher on the banner an",
+   "category": "",
+   "detail": "",
+   "status": "built",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/skins-plugin-own-removable-console",
+   "pr": "#613",
+   "priority": "P0",
+   "createdAt": "2026-11-13T06:25:11.720Z",
+   "updatedAt": "2026-11-13T17:38:26.299Z",
+   "builtAt": "2026-11-13T07:56:39.561Z",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T06:25:18.338Z"
+    },
+    {
+     "text": "Split by Claude into 20 steps (2 Fable).",
+     "at": "2026-11-13T06:27:07.243Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-skins-plugin-its-own-removable-console-plugin-an--paulie.",
+     "at": "2026-11-13T06:27:24.652Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-skins-plugin-its-own-removable-console-plugin-an--paulie, own login copy)",
+     "at": "2026-11-13T06:27:30.457Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"acd1fe16-ad55-4437-bfba-91bdb55f813c\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-13T06:39:04.188Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-skins-plugin-its-own-removable-console-plugin-an--earl.",
+     "at": "2026-11-13T06:39:13.673Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-skins-plugin-its-own-removable-console-plugin-an--earl, own login copy)",
+     "at": "2026-11-13T06:39:16.730Z"
+    },
+    {
+     "text": "Phase 1 (Fable) done on PR #553: skin-switch@1 engine + fixture (s1) and check-skin-switch wired into CI (s2). Pipeline fault: the 20-step Claude split was lost on main (the branch worktree published a stepless copy of this build, newer-wins), intake re-split it by rules into 3 Opus steps and dispatched a second session (earl, Opus) into the same worktree and branch while this Fable session was still running. The 20-step plan was put back from the journal; the earl session is still running the plugin work (its commit e17b86283 is on the branch). Brett: decide whether earl continues as Phase 2 or is stopped and re-dispatched; the split-loss race needs a pipeline fix.",
+     "at": "2026-11-13T06:47:24.519Z"
+    },
+    {
+     "text": "Opus phase 1 done: skin-gallery plugin (REST, plugin commands, CLI, deep link), gallery with live preview, per-scope Use/Back/Restore/Undo, banner switcher. Open: screenshots + UI Review choices, settings sub-tab, context menu, AppearancePanel hook (see report).",
+     "at": "2026-11-13T06:48:50.720Z"
+    },
+    {
+     "text": "Headless run axf-skins-plugin-its-own-removable-console-plugin-an--earl: brief only · start 11.5K tokens ($0.03) · cost $2.72 · 76 turns · 6 tools, MCP none",
+     "at": "2026-11-13T06:49:14.919Z"
+    },
+    {
+     "text": "Session on mossesx-max- stopped on its own with 3 steps left: back in Pending for Brett.",
+     "at": "2026-11-13T06:50:11.596Z"
+    },
+    {
+     "text": "Session on mossesx-max- stopped on its own with 18 steps left: back in Pending for Brett.",
+     "at": "2026-11-13T06:53:04.958Z"
+    },
+    {
+     "text": "Headless run axf-skins-plugin-its-own-removable-console-plugin-an--paulie: brief only · start 13.3K tokens ($0.07) · cost $10.51 · 108 turns · 6 tools, MCP none",
+     "at": "2026-11-13T06:54:46.819Z"
+    },
+    {
+     "text": "Self-check: skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga was marked running on mossesx-max- with no session: released and back in the Queue.",
+     "at": "2026-11-13T07:07:04.739Z"
+    },
+    {
+     "text": "Started run 2 on mossesx-max- (Opus, Phase 2): axf-skins-plugin-its-own-removable-console-plugin-an--paulie.",
+     "at": "2026-11-13T07:08:12.652Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-skins-plugin-its-own-removable-console-plugin-an--paulie, own login copy)",
+     "at": "2026-11-13T07:08:15.757Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-13T07:50:35.041Z"
+    },
+    {
+     "text": "Headless run axf-skins-plugin-its-own-removable-console-plugin-an--paulie: brief only · start 13.3K tokens ($0.07) · cost $19.40 · 287 turns · 6 tools, MCP none",
+     "at": "2026-11-13T07:57:00.212Z"
+    },
+    {
+     "text": "Session axf-skins-plugin-its-own-removable-console-plugin-an--paulie on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-13T07:57:03.048Z"
+    },
+    {
+     "text": "Renamed from skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga (build names are at most 40 characters). By build-rename.",
+     "at": "2026-11-13T17:38:26.299Z"
+    }
+   ],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-13T06:48:48.273Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga",
+    "brief": "# Build: skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"Skins plugin: its own removable console plugin and screen for changing skins. Gallery of every skin with live preview (desktop and phone), one-tap Use skin, Back and Restore to Default with undo, per-scope switching (whole hub, one app, one screen, one plugin), a quick skin switcher on the banner an\" (skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga) — Phase 2, model Opus.\nThis phase downgrades Fable → Opus: fine, no approval needed (it is recorded when you tick its first step).\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga · PR #553\nSteps in this phase (18 left, ~2.7 h):\n[ ] s3 (~8 min) Scaffold the removable plugin apps/console-web/plugins/skins/: plugin.json (builtWith, description, uiEditor: theme, lifecycle.dataDir), install.mjs, uninstall.mjs, README.md, notify.json, plus a Settings → Plugins → Skins sub-tab entry\n[ ] s4 (~10 min) Server routes in apps/console-web/plugins/skins/server/routes.py: GET skins (gallery list with coverage), GET state?scope=, POST use / back / restore / undo / scope. They go through the theme-manager routes and the skin-switch engine, with no second store\n[ ] s5 (~8 min) Server tests for the routes: list, state per scope, use → back → restore → undo round trip, refusal of unknown scope or skin\n[ ] s6 (~8 min) CLI apps/console-web/plugins/skins/skins-plugin.mjs (list | state | use | back | restore | undo | scope | open), calling the same REST routes, and register it so `axf skins-ui …` works\n[ ] s7 (~9 min) MCP plugin commands (skins_list, skins_state, skins_use, skins_back, skins_restore, skins_undo, skins_scope) through plugin-commands, plus console actions skin.use / skin.back / skin.restore / skin.undo for AmberX voice\n[ ] s8 (~10 min) Gallery screen apps/console-web/plugins/skins/web/SkinsScreen.tsx: a grid of every skin card (name, icon pack, coverage), built from framework controls and tokens only, with a TabGroup for scope (Hub / App / Screen / Plugin) and a SkinScope root\n[ ] s9 (~10 min) Live preview pane: the selected skin is drawn in a scoped desktop frame and a phone-width frame side by side (SkinScope with the preview skin, no write until Use), with a desktop/phone toggle on a role=toolbar\n[ ] s10 (~9 min) Action toolbar on the screen: one-tap Use skin, Back to skin, Restore to Default (confirm) and Undo (snackbar plus a button), wired to the REST routes. Toolbar has role=toolbar, aria-label and tap-to-confirm\n[ ] s11 (~10 min) Per-scope picker: pick the app, the screen (ui:<view>) or the plugin from registries, show the inherited skin and where it comes from, with an Inherit / Follow hub switch per scope\n[ ] s12 (~7 min) Deep links: console_show / console_open targets skins, skins/skin/<id>, skins/scope/<scope> and skins/preview/<id>?view=phone. Register them in the plugin's nav and help entries\n[ ] s13 (~10 min) Quick skin switcher on the banner: a status-widget chip (current skin for this scope) whose popover lists skins with one-tap Use, Back and Undo. Add it to KNOWN_BANNERS with banner settings (label, icon, settingsTab)\n[ ] s14 (~8 min) Context-menu entries (rt.addContextItems): Change skin here… on any view root and plugin root, opening the scope picker on that scope. Banner chip right-click gives Settings… / Change… / Move\n[ ] s15 (~9 min) Settings sub-tab (Settings → Plugins → Skins) with the level toolbar: show the banner chip, default scope, undo window, preview viewport. Each setting is readable and settable through REST, MCP, CLI and voice\n[ ] s16 (~8 min) Hook AppearancePanel in framework/libs/settings to the skin-switch engine, so its Use / Back / Restore match the plugin's, and add an Open Skins gallery link when the plugin is installed (capability check, no folder name)\n[ ] s17 (~10 min) UI Review choices: build at least 3 options for the gallery layout and for the banner chip as assets under apps/console-web/plugins/skins/assets/<type>/, with a choices JSON\n[ ] s18 (~9 min) Lifecycle and conformance: run uninstall --all and plugin-lifecycle check --after-uninstall, check-theme, check-controls, check-toolbars, check-chrome-assets and the glossary-index catalog --check. Fix any findings\n[ ] s19 (~10 min) Screenshots of the gallery, the previews, the scope picker and the banner chip on desktop and phone (vite preview with the hub look mocked). Submit them to UI Review with the choices\n[ ] s20 (~10 min) Tests (check-skin-switch, check-skin-coverage, plugin test.py, typecheck), report _claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga.md (with how every feature is reached by deep link, REST, MCP, CLI and voice), THREADS.md row, builds-live link, and PR\nRead first: apps/console-web/plugins/skins/plugin.json, apps/console-web/plugins/skins/install.mjs, apps/console-web/plugins/skins/uninstall.mjs, apps/console-web/plugins/skins/README.md, apps/console-web/plugins/skins/notify.json, apps/console-web/plugins/skins/server/routes.py, apps/console-web/plugins/skins/server/__init__.py, apps/console-web/plugins/skins/test.py, apps/console-web/plugins/skins/skins-plugin.mjs, framework/cli/axf.mjs, apps/console-web/plugins/skins/commands.json, apps/console-web/plugins/skins/actions.json, apps/console-web/plugins/skins/web/SkinsScreen.tsx, apps/console-web/plugins/skins/web/skins.css, apps/console-web/plugins/skins/web/SkinPreview.tsx, apps/console-web/plugins/skins/web/SkinActions.tsx, apps/console-web/plugins/skins/web/ScopePicker.tsx, apps/console-web/plugins/skins/web/index.tsx, apps/console-web/plugins/skins/help.json, apps/console-web/plugins/skins/web/SkinChip.tsx, apps/console-web/plugins/skins/assets/, apps/console-web/plugins/skins/web/contextItems.ts, apps/console-web/plugins/skins/web/SkinsSettings.tsx, apps/console-web/plugins/skins/settings.json, framework/libs/settings/AppearancePanel.tsx, apps/console-web/plugins/skins/choices/, apps/console-web/plugins/skins/, _claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga/shots/, _claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga.md, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga \"…\"); the build goes back to Pending for Brett.\n",
+    "verbatim": false,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "2026-11-13T06:25:16.919Z",
+    "queuedBy": "console",
+    "account": "mossesx-max-",
+    "session": "",
+    "slot": "",
+    "model": "Opus",
+    "launchedAt": "2026-11-13T07:08:11.318Z",
+    "runs": 2,
+    "lastRun": {
+     "at": "2026-11-13T07:57:02.406Z",
+     "exit": 0,
+     "outcome": "finished",
+     "stepsLeft": 0,
+     "account": "mossesx-max-",
+     "session": "axf-skins-plugin-its-own-removable-console-plugin-an--paulie"
+    },
+    "split": {
+     "at": "2026-11-13T06:39:04.188Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"acd1fe16-ad55-4437-bfba-91bdb55f813c\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": "2026-11-13T07:08:11.318Z",
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-13T06:39:06.001Z",
+     "why": "subscription account mossesx-max-"
+    },
+    "tried": [],
+    "pickedAt": "2026-11-13T07:08:11.318Z",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwemczh801rt30",
+     "title": "",
+     "text": "Define the skin-switch@1 action contract in framework/core/engines/skin-switch.mjs: use / back-to-skin / restore-default / undo for each scope (hub, app:<id>, ui:<view>, plugin:<id>), built on resolveLookSkin and the app-look@1 snapshot, with a one-step undo record kept in the look document. Add a fixture in framework/spec/fixtures/skin-switch.json, and record the Android twin as a deferred gap in PORTING.md",
+     "model": "Fable",
+     "why": "Shared engine contract that AppearancePanel in every app and the new plugin both read, so it changes how skin GUIs work across apps",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/engines/skin-switch.mjs",
+      "framework/spec/fixtures/skin-switch.json",
+      "framework/spec/PORTING.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-13T06:52:08.422Z",
+     "note": "skin-switch@1 engine + fixture, PR #553 (7ed5d3a2d)",
+     "rev": 1,
+     "createdAt": "2026-11-13T06:52:08.440Z",
+     "updatedAt": "2026-11-13T06:52:08.732Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwemczh802ajkq",
+     "title": "",
+     "text": "Add check framework/spec/check-skin-switch.mts (engine vs fixture: scope precedence, undo after restore, back clears only the overridden part) and wire it into CI",
+     "model": "Fable",
+     "why": "Conformance check for the new cross-app contract",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/spec/check-skin-switch.mts",
+      ".github/workflows/android.yml"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-13T06:52:08.440Z",
+     "note": "check-skin-switch.mts wired into CI, PR #553 (8b7424a18)",
+     "rev": 1,
+     "createdAt": "2026-11-13T06:52:08.440Z",
+     "updatedAt": "2026-11-13T06:52:08.732Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwem9g9z018p14",
+     "title": "",
+     "text": "Scaffold the removable plugin apps/console-web/plugins/skins/: plugin.json (builtWith, description, uiEditor: theme, lifecycle.dataDir), install.mjs, uninstall.mjs, README.md, notify.json, plus a Settings → Plugins → Skins sub-tab entry",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/skins/plugin.json",
+      "apps/console-web/plugins/skins/install.mjs",
+      "apps/console-web/plugins/skins/uninstall.mjs",
+      "apps/console-web/plugins/skins/README.md",
+      "apps/console-web/plugins/skins/notify.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-13T07:09:59.556Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-13T06:49:23.645Z",
+     "updatedAt": "2026-11-13T07:09:59.713Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mwem9hut01zfm1",
+     "title": "",
+     "text": "Server routes in apps/console-web/plugins/skins/server/routes.py: GET skins (gallery list with coverage), GET state?scope=, POST use / back / restore / undo / scope. They go through the theme-manager routes and the skin-switch engine, with no second store",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/skins/server/routes.py",
+      "apps/console-web/plugins/skins/server/__init__.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-13T07:10:57.730Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-13T06:49:25.681Z",
+     "updatedAt": "2026-11-13T07:10:57.911Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mwem9j5201q7q5",
+     "title": "",
+     "text": "Server tests for the routes: list, state per scope, use → back → restore → undo round trip, refusal of unknown scope or skin",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/skins/test.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-13T07:11:18.819Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-13T06:49:27.315Z",
+     "updatedAt": "2026-11-13T07:11:19.056Z"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mwem9kn501cuf8",
+     "title": "",
+     "text": "CLI apps/console-web/plugins/skins/skins-plugin.mjs (list | state | use | back | restore | undo | scope | open), calling the same REST routes, and register it so `axf skins-ui …` works",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/skins/skins-plugin.mjs",
+      "framework/cli/axf.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-13T07:11:48.285Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-13T06:49:29.291Z",
+     "updatedAt": "2026-11-13T07:11:48.528Z"
+    },
+    {
+     "id": "s7",
+     "uid": "st-mwem9mfj01xu0g",
+     "title": "",
+     "text": "MCP plugin commands (skins_list, skins_state, skins_use, skins_back, skins_restore, skins_undo, skins_scope) through plugin-commands, plus console actions skin.use / skin.back / skin.restore / skin.undo for AmberX voice",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "apps/console-web/plugins/skins/commands.json",
+      "apps/console-web/plugins/skins/actions.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-13T07:14:05.444Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-13T06:49:31.590Z",
+     "updatedAt": "2026-11-13T07:14:05.672Z"
+    },
+    {
+     "id": "s8",
+     "uid": "st-mwem5ilk016sp0",
+     "title": "",
+     "text": "Gallery screen apps/console-web/plugins/skins/web/SkinsScreen.tsx: a grid of every skin card (name, icon pack, coverage), built from framework controls and tokens only, with a TabGroup for scope (Hub / App / Screen / Plugin) and a SkinScope root",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/skins/web/SkinsScreen.tsx",
+      "apps/console-web/plugins/skins/web/skins.css"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-13T07:18:04.432Z",
+     "note": "",
+     "rev": 3,
+     "createdAt": "2026-11-13T06:46:19.897Z",
+     "updatedAt": "2026-11-13T07:18:20.322Z"
+    },
+    {
+     "id": "s9",
+     "uid": "st-mwem5kkf01urej",
+     "title": "",
+     "text": "Live preview pane: the selected skin is drawn in a scoped desktop frame and a phone-width frame side by side (SkinScope with the preview skin, no write until Use), with a desktop/phone toggle on a role=toolbar",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/skins/web/SkinPreview.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-13T07:18:06.264Z",
+     "note": "",
+     "rev": 3,
+     "createdAt": "2026-11-13T06:46:22.518Z",
+     "updatedAt": "2026-11-13T07:18:06.528Z"
+    },
+    {
+     "id": "s10",
+     "uid": "st-mwem9rm301awkl",
+     "title": "",
+     "text": "Action toolbar on the screen: one-tap Use skin, Back to skin, Restore to Default (confirm) and Undo (snackbar plus a button), wired to the REST routes. Toolbar has role=toolbar, aria-label and tap-to-confirm",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "apps/console-web/plugins/skins/web/SkinActions.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-13T07:18:08.091Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-13T06:49:38.202Z",
+     "updatedAt": "2026-11-13T07:18:08.309Z"
+    },
+    {
+     "id": "s11",
+     "uid": "st-mwem9th501e8jn",
+     "title": "",
+     "text": "Per-scope picker: pick the app, the screen (ui:<view>) or the plugin from registries, show the inherited skin and where it comes from, with an Inherit / Follow hub switch per scope",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/skins/web/ScopePicker.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-13T07:18:09.632Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-13T06:49:40.685Z",
+     "updatedAt": "2026-11-13T07:18:09.873Z"
+    },
+    {
+     "id": "s12",
+     "uid": "st-mwem9up201uz2e",
+     "title": "",
+     "text": "Deep links: console_show / console_open targets skins, skins/skin/<id>, skins/scope/<scope> and skins/preview/<id>?view=phone. Register them in the plugin's nav and help entries",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "7 min",
+     "files": [
+      "apps/console-web/plugins/skins/web/index.tsx",
+      "apps/console-web/plugins/skins/help.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-13T07:18:30.256Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-13T06:49:42.360Z",
+     "updatedAt": "2026-11-13T07:18:30.443Z"
+    },
+    {
+     "id": "s13",
+     "uid": "st-mwem9wqc0171f6",
+     "title": "",
+     "text": "Quick skin switcher on the banner: a status-widget chip (current skin for this scope) whose popover lists skins with one-tap Use, Back and Undo. Add it to KNOWN_BANNERS with banner settings (label, icon, settingsTab)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/skins/web/SkinChip.tsx",
+      "apps/console-web/plugins/skins/assets/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-13T07:20:52.669Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-13T06:49:44.889Z",
+     "updatedAt": "2026-11-13T07:20:52.869Z"
+    },
+    {
+     "id": "s14",
+     "uid": "st-mwema3ya01ociz",
+     "title": "",
+     "text": "Context-menu entries (rt.addContextItems): Change skin here… on any view root and plugin root, opening the scope picker on that scope. Banner chip right-click gives Settings… / Change… / Move",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/skins/web/contextItems.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-13T07:20:55.783Z",
+     "note": "",
+     "rev": 3,
+     "createdAt": "2026-11-13T06:49:54.045Z",
+     "updatedAt": "2026-11-13T07:20:56.002Z"
+    },
+    {
+     "id": "s15",
+     "uid": "st-mwema69v014s4q",
+     "title": "",
+     "text": "Settings sub-tab (Settings → Plugins → Skins) with the level toolbar: show the banner chip, default scope, undo window, preview viewport. Each setting is readable and settable through REST, MCP, CLI and voice",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "apps/console-web/plugins/skins/web/SkinsSettings.tsx",
+      "apps/console-web/plugins/skins/settings.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-13T07:22:26.116Z",
+     "note": "",
+     "rev": 3,
+     "createdAt": "2026-11-13T06:49:57.155Z",
+     "updatedAt": "2026-11-13T07:22:26.312Z"
+    },
+    {
+     "id": "s16",
+     "uid": "st-mwema8ti013a2a",
+     "title": "",
+     "text": "Hook AppearancePanel in framework/libs/settings to the skin-switch engine, so its Use / Back / Restore match the plugin's, and add an Open Skins gallery link when the plugin is installed (capability check, no folder name)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/libs/settings/AppearancePanel.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-13T07:24:14.369Z",
+     "note": "",
+     "rev": 3,
+     "createdAt": "2026-11-13T06:50:00.412Z",
+     "updatedAt": "2026-11-13T07:24:14.579Z"
+    },
+    {
+     "id": "s17",
+     "uid": "st-mwemad9401two1",
+     "title": "",
+     "text": "UI Review choices: build at least 3 options for the gallery layout and for the banner chip as assets under apps/console-web/plugins/skins/assets/<type>/, with a choices JSON",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/skins/assets/",
+      "apps/console-web/plugins/skins/choices/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": true,
+     "done": true,
+     "doneAt": "2026-11-13T07:26:17.320Z",
+     "note": "UI Review no longer a gate",
+     "rev": 4,
+     "createdAt": "2026-11-13T06:50:06.068Z",
+     "updatedAt": "2026-11-13T07:26:17.534Z"
+    },
+    {
+     "id": "s18",
+     "uid": "st-mwemah9t01m7ag",
+     "title": "",
+     "text": "Lifecycle and conformance: run uninstall --all and plugin-lifecycle check --after-uninstall, check-theme, check-controls, check-toolbars, check-chrome-assets and the glossary-index catalog --check. Fix any findings",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "apps/console-web/plugins/skins/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-13T07:26:58.216Z",
+     "note": "",
+     "rev": 3,
+     "createdAt": "2026-11-13T06:50:11.173Z",
+     "updatedAt": "2026-11-13T07:26:58.384Z"
+    },
+    {
+     "id": "s19",
+     "uid": "st-mwemczh8036k0q",
+     "title": "",
+     "text": "Screenshots of the gallery, the previews, the scope picker and the banner chip on desktop and phone (vite preview with the hub look mocked). Submit them to UI Review with the choices",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga/shots/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": true,
+     "done": true,
+     "doneAt": "2026-11-13T07:54:44.029Z",
+     "note": "UI Review no longer a gate",
+     "rev": 3,
+     "createdAt": "2026-11-13T06:52:08.440Z",
+     "updatedAt": "2026-11-13T07:54:44.193Z"
+    },
+    {
+     "id": "s20",
+     "uid": "st-mwemczh804rthi",
+     "title": "",
+     "text": "Tests (check-skin-switch, check-skin-coverage, plugin test.py, typecheck), report _claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga.md (with how every feature is reached by deep link, REST, MCP, CLI and voice), THREADS.md row, builds-live link, and PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-13T07:56:39.561Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-13T06:52:08.440Z",
+     "updatedAt": "2026-11-13T07:56:39.728Z"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 767
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 100,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-13T06:45:51.399Z",
+   "rearranged": false,
+   "removedSteps": [
+    {
+     "step": {
+      "id": "s3",
+      "uid": "st-mwelw64c035md3",
+      "title": "",
+      "text": "Tests green, report _claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga.md, THREADS row, commit, push, PR",
+      "model": "Opus",
+      "why": "",
+      "phase": "",
+      "group": "",
+      "estimate": "10 min",
+      "files": [
+       "_claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga.md",
+       "_claude/THREADS.md"
+      ],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": false,
+      "doneAt": "",
+      "note": "",
+      "rev": 1,
+      "createdAt": "2026-11-13T06:39:04.188Z",
+      "updatedAt": "2026-11-13T06:39:04.188Z"
+     },
+     "at": "2026-11-13T06:45:45.573Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
+    },
+    {
+     "step": {
+      "id": "s2",
+      "uid": "st-mwelw64c02pcf8",
+      "title": "",
+      "text": "Gallery of every skin with live preview (desktop and phone), one-tap Use skin, Back and Restore to Default with undo, per-scope switching (whole hub, one app, one screen, one plugin), a quick skin switcher on the banner an",
+      "model": "Opus",
+      "why": "",
+      "phase": "",
+      "group": "",
+      "estimate": "10 min",
+      "files": [],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": false,
+      "doneAt": "",
+      "note": "",
+      "rev": 1,
+      "createdAt": "2026-11-13T06:39:04.188Z",
+      "updatedAt": "2026-11-13T06:39:04.188Z"
+     },
+     "at": "2026-11-13T06:45:47.460Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
+    },
+    {
+     "step": {
+      "id": "s1",
+      "uid": "st-mwelw64c015wg7",
+      "title": "",
+      "text": "Skins plugin: its own removable console plugin and screen for changing skins.",
+      "model": "Opus",
+      "why": "",
+      "phase": "",
+      "group": "",
+      "estimate": "10 min",
+      "files": [],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": true,
+      "doneAt": "2026-11-13T06:43:53.929Z",
+      "note": "",
+      "rev": 2,
+      "createdAt": "2026-11-13T06:39:04.188Z",
+      "updatedAt": "2026-11-13T06:43:54.154Z"
+     },
+     "at": "2026-11-13T06:45:49.354Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
+    },
+    {
+     "step": {
+      "id": "s16",
+      "uid": "st-mwem60ch016f3b",
+      "title": "",
+      "text": "Tests (check-skin-switch, check-skin-coverage, plugin test.py, typecheck), report _claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga.md (with how every feature is reached by deep link, REST, MCP, CLI and voice), THREADS.md row, builds-live link, and PR",
+      "model": "Opus",
+      "why": "",
+      "phase": "",
+      "group": "",
+      "estimate": "10 min",
+      "files": [
+       "_claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga.md",
+       "_claude/THREADS.md"
+      ],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": false,
+      "doneAt": "",
+      "note": "",
+      "rev": 1,
+      "createdAt": "2026-11-13T06:46:43.066Z",
+      "updatedAt": "2026-11-13T06:46:43.265Z"
+     },
+     "at": "2026-11-13T06:48:12.030Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
+    },
+    {
+     "step": {
+      "id": "s15",
+      "uid": "st-mwem5z6301qw19",
+      "title": "",
+      "text": "Screenshots of the gallery, the previews, the scope picker and the banner chip on desktop and phone (vite preview with the hub look mocked). Submit them to UI Review with the choices",
+      "model": "Opus",
+      "why": "",
+      "phase": "",
+      "group": "",
+      "estimate": "10 min",
+      "files": [
+       "_claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga/shots/"
+      ],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": false,
+      "doneAt": "",
+      "note": "",
+      "rev": 1,
+      "createdAt": "2026-11-13T06:46:41.515Z",
+      "updatedAt": "2026-11-13T06:46:41.739Z"
+     },
+     "at": "2026-11-13T06:48:30.019Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
+    },
+    {
+     "step": {
+      "id": "s14",
+      "uid": "st-mwem5xyx0156ov",
+      "title": "",
+      "text": "Lifecycle and conformance: run uninstall --all and plugin-lifecycle check --after-uninstall, check-theme, check-controls, check-toolbars, check-chrome-assets and the glossary-index catalog --check. Fix any findings",
+      "model": "Opus",
+      "why": "",
+      "phase": "",
+      "group": "",
+      "estimate": "9 min",
+      "files": [
+       "apps/console-web/plugins/skins/"
+      ],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": false,
+      "doneAt": "",
+      "note": "",
+      "rev": 1,
+      "createdAt": "2026-11-13T06:46:39.975Z",
+      "updatedAt": "2026-11-13T06:46:40.185Z"
+     },
+     "at": "2026-11-13T06:48:49.468Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
+    },
+    {
+     "step": {
+      "id": "s13",
+      "uid": "st-mwem5wpo01x9ec",
+      "title": "",
+      "text": "UI Review choices: build at least 3 options for the gallery layout and for the banner chip as assets under apps/console-web/plugins/skins/assets/<type>/, with a choices JSON",
+      "model": "Opus",
+      "why": "",
+      "phase": "",
+      "group": "",
+      "estimate": "10 min",
+      "files": [
+       "apps/console-web/plugins/skins/assets/",
+       "apps/console-web/plugins/skins/choices/"
+      ],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": false,
+      "doneAt": "",
+      "note": "",
+      "rev": 1,
+      "createdAt": "2026-11-13T06:46:38.359Z",
+      "updatedAt": "2026-11-13T06:46:38.556Z"
+     },
+     "at": "2026-11-13T06:48:51.899Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
+    },
+    {
+     "step": {
+      "id": "s12",
+      "uid": "st-mwem5uzz0150o0",
+      "title": "",
+      "text": "Hook AppearancePanel in framework/libs/settings to the skin-switch engine, so its Use / Back / Restore match the plugin's, and add an Open Skins gallery link when the plugin is installed (capability check, no folder name)",
+      "model": "Opus",
+      "why": "",
+      "phase": "",
+      "group": "",
+      "estimate": "8 min",
+      "files": [
+       "framework/libs/settings/AppearancePanel.tsx"
+      ],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": false,
+      "doneAt": "",
+      "note": "",
+      "rev": 1,
+      "createdAt": "2026-11-13T06:46:35.745Z",
+      "updatedAt": "2026-11-13T06:46:36.335Z"
+     },
+     "at": "2026-11-13T06:48:53.848Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
+    },
+    {
+     "step": {
+      "id": "s11",
+      "uid": "st-mwem5szt01xndd",
+      "title": "",
+      "text": "Settings sub-tab (Settings → Plugins → Skins) with the level toolbar: show the banner chip, default scope, undo window, preview viewport. Each setting is readable and settable through REST, MCP, CLI and voice",
+      "model": "Opus",
+      "why": "",
+      "phase": "",
+      "group": "",
+      "estimate": "9 min",
+      "files": [
+       "apps/console-web/plugins/skins/web/SkinsSettings.tsx",
+       "apps/console-web/plugins/skins/settings.json"
+      ],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": false,
+      "doneAt": "",
+      "note": "",
+      "rev": 1,
+      "createdAt": "2026-11-13T06:46:33.406Z",
+      "updatedAt": "2026-11-13T06:46:33.737Z"
+     },
+     "at": "2026-11-13T06:48:55.587Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
+    },
+    {
+     "step": {
+      "id": "s10",
+      "uid": "st-mwem5qjl01f80q",
+      "title": "",
+      "text": "Context-menu entries (rt.addContextItems): Change skin here… on any view root and plugin root, opening the scope picker on that scope. Banner chip right-click gives Settings… / Change… / Move",
+      "model": "Opus",
+      "why": "",
+      "phase": "",
+      "group": "",
+      "estimate": "8 min",
+      "files": [
+       "apps/console-web/plugins/skins/web/contextItems.ts"
+      ],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": false,
+      "doneAt": "",
+      "note": "",
+      "rev": 1,
+      "createdAt": "2026-11-13T06:46:30.364Z",
+      "updatedAt": "2026-11-13T06:46:30.563Z"
+     },
+     "at": "2026-11-13T06:48:57.054Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
+    },
+    {
+     "step": {
+      "id": "s7",
+      "uid": "st-mwem5g4x01fcj3",
+      "title": "",
+      "text": "Live preview pane: the selected skin is drawn in a scoped desktop frame and a phone-width frame side by side (SkinScope with the preview skin, no write until Use), with a desktop/phone toggle on a role=toolbar",
+      "model": "Opus",
+      "why": "",
+      "phase": "",
+      "group": "",
+      "estimate": "10 min",
+      "files": [
+       "apps/console-web/plugins/skins/web/SkinPreview.tsx"
+      ],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": false,
+      "doneAt": "",
+      "note": "",
+      "rev": 1,
+      "createdAt": "2026-11-13T06:46:16.376Z",
+      "updatedAt": "2026-11-13T06:46:17.073Z"
+     },
+     "at": "2026-11-13T06:49:05.728Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
+    },
+    {
+     "step": {
+      "id": "s6",
+      "uid": "st-mwem5dd801pp6y",
+      "title": "",
+      "text": "Gallery screen apps/console-web/plugins/skins/web/SkinsScreen.tsx: a grid of every skin card (name, icon pack, coverage), built from framework controls and tokens only, with a TabGroup for scope (Hub / App / Screen / Plugin) and a SkinScope root",
+      "model": "Opus",
+      "why": "",
+      "phase": "",
+      "group": "",
+      "estimate": "10 min",
+      "files": [
+       "apps/console-web/plugins/skins/web/SkinsScreen.tsx",
+       "apps/console-web/plugins/skins/web/skins.css"
+      ],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": false,
+      "doneAt": "",
+      "note": "",
+      "rev": 1,
+      "createdAt": "2026-11-13T06:46:12.964Z",
+      "updatedAt": "2026-11-13T06:46:13.484Z"
+     },
+     "at": "2026-11-13T06:49:08.404Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
+    },
+    {
+     "step": {
+      "id": "s5",
+      "uid": "st-mwem5aw901khlx",
+      "title": "",
+      "text": "MCP plugin commands (skins_list, skins_state, skins_use, skins_back, skins_restore, skins_undo, skins_scope) through plugin-commands, plus console actions skin.use / skin.back / skin.restore / skin.undo for AmberX voice",
+      "model": "Opus",
+      "why": "",
+      "phase": "",
+      "group": "",
+      "estimate": "9 min",
+      "files": [
+       "apps/console-web/plugins/skins/commands.json",
+       "apps/console-web/plugins/skins/actions.json"
+      ],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": false,
+      "doneAt": "",
+      "note": "",
+      "rev": 1,
+      "createdAt": "2026-11-13T06:46:09.774Z",
+      "updatedAt": "2026-11-13T06:46:10.281Z"
+     },
+     "at": "2026-11-13T06:49:10.443Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
+    },
+    {
+     "step": {
+      "id": "s4",
+      "uid": "st-mwem588c01xbh3",
+      "title": "",
+      "text": "CLI apps/console-web/plugins/skins/skins-plugin.mjs (list | state | use | back | restore | undo | scope | open), calling the same REST routes, and register it so `axf skins-ui …` works",
+      "model": "Opus",
+      "why": "",
+      "phase": "",
+      "group": "",
+      "estimate": "8 min",
+      "files": [
+       "apps/console-web/plugins/skins/skins-plugin.mjs",
+       "framework/cli/axf.mjs"
+      ],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": false,
+      "doneAt": "",
+      "note": "",
+      "rev": 1,
+      "createdAt": "2026-11-13T06:46:06.445Z",
+      "updatedAt": "2026-11-13T06:46:06.828Z"
+     },
+     "at": "2026-11-13T06:49:12.417Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
+    },
+    {
+     "step": {
+      "id": "s3",
+      "uid": "st-mwem4z9y014t64",
+      "title": "",
+      "text": "Scaffold the removable plugin apps/console-web/plugins/skins/: plugin.json (builtWith, description, uiEditor: theme, lifecycle.dataDir), install.mjs, uninstall.mjs, README.md, notify.json, plus a Settings → Plugins → Skins sub-tab entry",
+      "model": "Opus",
+      "why": "",
+      "phase": "",
+      "group": "",
+      "estimate": "8 min",
+      "files": [
+       "apps/console-web/plugins/skins/plugin.json",
+       "apps/console-web/plugins/skins/install.mjs",
+       "apps/console-web/plugins/skins/uninstall.mjs",
+       "apps/console-web/plugins/skins/README.md",
+       "apps/console-web/plugins/skins/notify.json"
+      ],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": true,
+      "doneAt": "2026-11-13T06:48:48.273Z",
+      "note": "",
+      "rev": 2,
+      "createdAt": "2026-11-13T06:45:54.991Z",
+      "updatedAt": "2026-11-13T06:48:48.460Z"
+     },
+     "at": "2026-11-13T06:49:14.166Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
+    },
+    {
+     "step": {
+      "id": "s2",
+      "uid": "st-mwem4xtb01rws0",
+      "title": "",
+      "text": "Add check framework/spec/check-skin-switch.mts (engine vs fixture: scope precedence, undo after restore, back clears only the overridden part) and wire it into CI",
+      "model": "Fable",
+      "why": "Conformance check for the new cross-app contract",
+      "phase": "",
+      "group": "",
+      "estimate": "8 min",
+      "files": [
+       "framework/spec/check-skin-switch.mts",
+       ".github/workflows/android.yml"
+      ],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": true,
+      "doneAt": "2026-11-13T06:47:43.943Z",
+      "note": "",
+      "rev": 2,
+      "createdAt": "2026-11-13T06:45:53.134Z",
+      "updatedAt": "2026-11-13T06:47:44.162Z"
+     },
+     "at": "2026-11-13T06:49:15.908Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
+    },
+    {
+     "step": {
+      "id": "s1",
+      "uid": "st-mwem4wis01mh3q",
+      "title": "",
+      "text": "Define the skin-switch@1 action contract in framework/core/engines/skin-switch.mjs: use / back-to-skin / restore-default / undo for each scope (hub, app:<id>, ui:<view>, plugin:<id>), built on resolveLookSkin and the app-look@1 snapshot, with a one-step undo record kept in the look document. Add a fixture in framework/spec/fixtures/skin-switch.json, and record the Android twin as a deferred gap in PORTING.md",
+      "model": "Fable",
+      "why": "Shared engine contract that AppearancePanel in every app and the new plugin both read, so it changes how skin GUIs work across apps",
+      "phase": "",
+      "group": "",
+      "estimate": "10 min",
+      "files": [
+       "framework/core/engines/skin-switch.mjs",
+       "framework/spec/fixtures/skin-switch.json",
+       "framework/spec/PORTING.md"
+      ],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": false,
+      "doneAt": "",
+      "note": "",
+      "rev": 1,
+      "createdAt": "2026-11-13T06:45:51.399Z",
+      "updatedAt": "2026-11-13T06:45:51.652Z"
+     },
+     "at": "2026-11-13T06:49:17.618Z",
+     "why": "removed in the orchestrator",
+     "by": "orchestrator"
+    },
+    {
+     "step": {
+      "id": "s8-7",
+      "uid": "st-mwem9nqi01izdu",
+      "title": "",
+      "text": "Gallery screen apps/console-web/plugins/skins/web/SkinsScreen.tsx: a grid of every skin card (name, icon pack, coverage), built from framework controls and tokens only, with a TabGroup for scope (Hub / App / Screen / Plugin) and a SkinScope root",
+      "model": "Opus",
+      "why": "",
+      "phase": "",
+      "group": "",
+      "estimate": "10 min",
+      "files": [
+       "apps/console-web/plugins/skins/web/SkinsScreen.tsx",
+       "apps/console-web/plugins/skins/web/skins.css"
+      ],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": false,
+      "doneAt": "",
+      "note": "",
+      "rev": 1,
+      "createdAt": "2026-11-13T06:49:33.336Z",
+      "updatedAt": "2026-11-13T06:49:33.546Z"
+     },
+     "at": "2026-11-13T06:52:08.440Z",
+     "why": "removed in the orchestrator",
+     "by": "skins-plugin phase 1 session (plan repair)"
+    },
+    {
+     "step": {
+      "id": "s9-8",
+      "uid": "st-mwem9pnp01hcba",
+      "title": "",
+      "text": "Live preview pane: the selected skin is drawn in a scoped desktop frame and a phone-width frame side by side (SkinScope with the preview skin, no write until Use), with a desktop/phone toggle on a role=toolbar",
+      "model": "Opus",
+      "why": "",
+      "phase": "",
+      "group": "",
+      "estimate": "10 min",
+      "files": [
+       "apps/console-web/plugins/skins/web/SkinPreview.tsx"
+      ],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": false,
+      "doneAt": "",
+      "note": "",
+      "rev": 1,
+      "createdAt": "2026-11-13T06:49:35.747Z",
+      "updatedAt": "2026-11-13T06:49:36.037Z"
+     },
+     "at": "2026-11-13T06:52:08.440Z",
+     "why": "removed in the orchestrator",
+     "by": "skins-plugin phase 1 session (plan repair)"
+    }
+   ],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "tap-to-confirm-follows-label-visibility",
+   "title": "Tap-to-confirm follows label visibility + quick-switches pane at top of every chrome settings",
+   "category": "ui",
+   "detail": "Follow-up to PR #524 (tap-to-confirm). Brett: \"By default, if you turn text on or off, it switches that tap to confirm on or off. If there's no text, it turns double tap on.\" and \"a collapsible pane at the top of the settings interface that has switches like override or double tap... at the top, easy to see.\"",
+   "status": "built",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/tap-to-confirm-follows-label-visibility",
+   "pr": "#614",
+   "createdAt": "2026-11-12T20:45:12.311Z",
+   "updatedAt": "2026-11-13T17:38:37.590Z",
+   "builtAt": "2026-11-13T02:11:47.409Z",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-12T20:45:19.251Z"
+    },
+    {
+     "text": "Launch failed on mossesx-max-: launcher exit 2: claude-headless: --log is a plain file name",
+     "at": "2026-11-12T20:46:12.029Z"
+    },
+    {
+     "text": "Launch failed on mossesx-max-: launcher exit 2: claude-headless: --log is a plain file name",
+     "at": "2026-11-12T20:47:03.823Z"
+    },
+    {
+     "text": "Launch failed on mossesx-max-: launcher exit 2: claude-headless: --log is a plain file name",
+     "at": "2026-11-12T20:48:05.547Z"
+    },
+    {
+     "text": "Launch failed on mossesx-max-: launcher exit 2: claude-headless: --log is a plain file name",
+     "at": "2026-11-12T21:47:03.551Z"
+    },
+    {
+     "text": "Launch failed on mossesx-max-: launcher exit 2: claude-headless: --log is a plain file name",
+     "at": "2026-11-12T21:48:03.989Z"
+    },
+    {
+     "text": "Launch failed on mossesx-max-: launcher exit 2: claude-headless: --log is a plain file name",
+     "at": "2026-11-12T21:49:05.227Z"
+    },
+    {
+     "text": "Launch failed on mossesx-max-: launcher exit 2: claude-headless: --log is a plain file name",
+     "at": "2026-11-12T22:47:03.919Z"
+    },
+    {
+     "text": "Launch failed on mossesx-max-: launcher exit 2: claude-headless: --log is a plain file name",
+     "at": "2026-11-12T22:49:04.541Z"
+    },
+    {
+     "text": "Launch failed on mossesx-max-: launcher exit 2: claude-headless: --log is a plain file name",
+     "at": "2026-11-12T22:50:06.905Z"
+    },
+    {
+     "text": "Launch failed on mossesx-max-: launcher exit 2: claude-headless: --log is a plain file name",
+     "at": "2026-11-12T23:48:03.828Z"
+    },
+    {
+     "text": "Launch failed on mossesx-max-: launcher exit 2: claude-headless: --log is a plain file name",
+     "at": "2026-11-12T23:50:06.163Z"
+    },
+    {
+     "text": "Launch failed on mossesx-max-: launcher exit 2: claude-headless: --log is a plain file name",
+     "at": "2026-11-12T23:51:05.591Z"
+    },
+    {
+     "text": "Launch failed on mossesx-max-: launcher exit 2: claude-headless: --log is a plain file name",
+     "at": "2026-11-13T00:48:05.555Z"
+    },
+    {
+     "text": "Launch failed on mossesx-max-: launcher exit 2: claude-headless: --log is a plain file name",
+     "at": "2026-11-13T00:50:07.951Z"
+    },
+    {
+     "text": "Launch failed on mossesx-max-: launcher exit 2: claude-headless: --log is a plain file name",
+     "at": "2026-11-13T00:51:07.848Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-tap-to-confirm-follows-label-visibility-quick-sw--earl.",
+     "at": "2026-11-13T01:48:11.309Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-tap-to-confirm-follows-label-visibility-quick-sw--earl, own login copy)",
+     "at": "2026-11-13T01:48:15.036Z"
+    },
+    {
+     "text": "s1-s3 done, PR #544. UI Review not submitted: this headless session had no AXF_CONSOLE_URL/AXF_TOKEN. Shots (desktop+phone, 4 dialogs) are in /root/axf-builds/tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch/.axf-shots. To submit, with the console env set: node apps/console-web/plugins/ui-review/review.mjs submit --kind screen --name 'Chrome settings: quick switches + tap to confirm follows labels' --app console-web --screen chrome-settings --group 'tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch - Nov 13 2:15 AM' --shots <the 8 pngs, comma-separated> --branch claude/tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch --pr 544 --console --single-option 'Built from framework Container + existing field controls; position fixed by the brief.'",
+     "at": "2026-11-13T02:11:21.520Z"
+    },
+    {
+     "text": "Headless run axf-tap-to-confirm-follows-label-visibility-quick-sw--earl: brief only · start 11.0K tokens ($0.03) · cost $4.61 · 112 turns · 6 tools, MCP none",
+     "at": "2026-11-13T02:11:47.409Z"
+    },
+    {
+     "text": "Renamed from tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch (build names are at most 40 characters). By build-rename.",
+     "at": "2026-11-13T17:38:37.590Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch",
+    "brief": "# Build: tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"Tap-to-confirm follows label visibility + quick-switches pane at top of every chrome settings\" (tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch) [ui] — Phase 1, model Opus.\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30m) Default link: hiding labels (icons only) turns tap-to-confirm on; showing labels turns it off, on every toolbar, tab group, nav menu and app menu; a manual setting overrides\n[ ] s2 (~30m) Collapsible quick-switches pane at the top of every toolbar, tab group, nav menu and app menu settings dialog (tap to confirm, override, etc.)\n[ ] s3 (~20m) Tests, report, PR\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch \"…\"); the build goes back to Pending for Brett.\n",
+    "verbatim": false,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "2026-11-12T20:45:18.841Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "launch failed: launcher exit 2: claude-headless: --log is a plain file name",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-12T20:46:05.543Z",
+     "why": "subscription account mossesx-max-"
+    },
+    "tried": [
+     "mossesx-max-"
+    ],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwe0oghv048c1u",
+     "title": "",
+     "text": "Default link: hiding labels (icons only) turns tap-to-confirm on; showing labels turns it off, on every toolbar, tab group, nav menu and app menu; a manual setting overrides",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-13T01:56:05.334Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-12T20:45:12.312Z",
+     "updatedAt": "2026-11-13T01:56:05.695Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwe0oghw05voca",
+     "title": "",
+     "text": "Collapsible quick-switches pane at the top of every toolbar, tab group, nav menu and app menu settings dialog (tap to confirm, override, etc.)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-13T02:07:22.108Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-12T20:45:12.312Z",
+     "updatedAt": "2026-11-13T02:07:22.527Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwe0oghw06192u",
+     "title": "",
+     "text": "Tests, report, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-13T02:11:28.597Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-12T20:45:12.312Z",
+     "updatedAt": "2026-11-13T02:11:28.808Z"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 745
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 32,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-12T20:45:12.312Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "unlink-plan-studio-builds-delete-all",
+   "title": "Unlink Plan Studio from builds; delete all Plan Studio plans",
+   "category": "",
+   "detail": "1) Delete every Plan Studio plan (planner.plans), plus a delete action on plans via REST/MCP/CLI/voice (none exists today). 2) Builds must never create, sync or update Plan Studio plans: remove build-plan@1 per-build plans (plan-studio-backfill-12h), any build-todo-sync plan creation, the 'every build goes to Plan Studio' rule in briefs/RULES, and any sync hooks between the builds store and plans. Plan Studio stays as a standalone tool only. Tests: adding/finishing a build creates no plan.",
+   "status": "built",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "unlink-plan-studio-from-builds-delete-all-plan-s",
+   "branch": "claude/unlink-plan-studio-builds-delete-all",
+   "pr": "#615",
+   "createdAt": "2026-11-12T10:49:12.963Z",
+   "updatedAt": "2026-11-13T17:38:48.690Z",
+   "builtAt": "2026-11-13T11:34:54.213Z",
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-12T10:50:36.976Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-unlink-plan-studio-from-builds-delete-all-plan-s--gina.",
+     "at": "2026-11-12T10:50:58.906Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-unlink-plan-studio-from-builds-delete-all-plan-s--gina, own login copy)",
+     "at": "2026-11-12T10:51:01.424Z"
+    },
+    {
+     "text": "Headless run axf-unlink-plan-studio-from-builds-delete-all-plan-s--gina: brief only · start 11.2K tokens ($0.03) · cost $4.73 · 106 turns · 6 tools, MCP none",
+     "at": "2026-11-12T11:16:48.575Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-12T11:40:35.817Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T11:24:28.383Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-unlink-plan-studio-from-builds-delete-all-plan-s--rhonda.",
+     "at": "2026-11-13T11:25:46.462Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-unlink-plan-studio-from-builds-delete-all-plan-s--rhonda, own login copy)",
+     "at": "2026-11-13T11:25:49.347Z"
+    },
+    {
+     "text": "PR #570. UI Review shots of the Plan Studio editor still owed: the branch is 866 commits behind main with 3 conflicts (plans.mjs, server, plan-core), so they should be taken after the merge queue resolves it. 3 plans Brett made after the wipe were kept.",
+     "at": "2026-11-13T11:34:55.593Z"
+    },
+    {
+     "text": "Headless run axf-unlink-plan-studio-from-builds-delete-all-plan-s--rhonda: brief only · start 12.4K tokens ($0.03) · cost $1.31 · 46 turns · 6 tools, MCP none",
+     "at": "2026-11-13T11:35:09.515Z"
+    },
+    {
+     "text": "Session axf-unlink-plan-studio-from-builds-delete-all-plan-s--rhonda on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-13T11:36:04.425Z"
+    },
+    {
+     "text": "Renamed from unlink-plan-studio-from-builds-delete-all-plan-s (build names are at most 40 characters). By build-rename.",
+     "at": "2026-11-13T17:38:48.690Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I want to delete all the plans and um, I no longer want build to automatically make a plan studio plan or sync with them... I don't want this plan studio to be linked to the build at all",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "unlink-plan-studio-from-builds-delete-all-plan-s",
+    "brief": "# Build: unlink-plan-studio-from-builds-delete-all-plan-s\n\n## Brett said (verbatim)\n> I want to delete all the plans and um, I no longer want build to automatically make a plan studio plan or sync with them... I don't want this plan studio to be linked to the build at all\n\n## What to build\nContinue build \"Unlink Plan Studio from builds; delete all Plan Studio plans\" (unlink-plan-studio-from-builds-delete-all-plan-s) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said:\n\"I want to delete all the plans and um, I no longer want build to automatically make a plan studio plan or sync with them... I don't want this plan studio to be linked to the build at all\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/unlink-plan-studio-from-builds-delete-all-plan-s\nSteps in this phase (2 left, ~50 min):\n[x] s1 (~30 min) Delete every Plan Studio plan (planner.plans), plus a delete action on plans via REST/MCP/CLI/voice (none exists today). 2) Builds must never create, sync or update Plan Studio plans: remove build-plan@1 per-build plans (plan-studio-backfill-12h), any build-todo-sync plan creation, the 'every build goes to Plan Studio' rule in briefs/RULES, and any sync hooks between the builds store and plans. Plan Studio stays as a standalone tool only. Tests: adding/finishing a build creates no plan.\n[ ] s2 (~30 min) I want to delete all the plans and um, I no longer want build to automatically make a plan studio plan or sync with them... I don't want this plan studio to be linked to the build at all\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/unlink-plan-studio-from-builds-delete-all-plan-s.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/unlink-plan-studio-from-builds-delete-all-plan-s.md, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step unlink-plan-studio-from-builds-delete-all-plan-s <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link unlink-plan-studio-from-builds-delete-all-plan-s --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step unlink-plan-studio-from-builds-delete-all-plan-s <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note unlink-plan-studio-from-builds-delete-all-plan-s \"…\"); the build goes back to Pending for Brett.\n",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "2026-11-13T11:24:27.918Z",
+    "queuedBy": "console",
+    "account": "mossesx-max-",
+    "session": "",
+    "slot": "",
+    "model": "Opus",
+    "launchedAt": "2026-11-13T11:25:46.013Z",
+    "runs": 1,
+    "lastRun": {
+     "at": "2026-11-13T11:36:03.318Z",
+     "exit": 0,
+     "outcome": "finished",
+     "stepsLeft": 0,
+     "account": "mossesx-max-",
+     "session": "axf-unlink-plan-studio-from-builds-delete-all-plan-s--rhonda"
+    },
+    "split": {
+     "at": "2026-11-12T10:50:36.976Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": "2026-11-13T11:25:46.013Z",
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-12T19:43:03.226Z",
+     "why": "subscription account mossesx-max-"
+    },
+    "tried": [],
+    "pickedAt": "2026-11-13T11:25:46.013Z",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwdfft4g011xgy",
+     "title": "",
+     "text": "Delete every Plan Studio plan (planner.plans), plus a delete action on plans via REST/MCP/CLI/voice (none exists today). 2) Builds must never create, sync or update Plan Studio plans: remove build-plan@1 per-build plans (plan-studio-backfill-12h), any build-todo-sync plan creation, the 'every build goes to Plan Studio' rule in briefs/RULES, and any sync hooks between the builds store and plans. Plan Studio stays as a standalone tool only. Tests: adding/finishing a build creates no plan.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-12T11:06:18.488Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-12T10:50:36.976Z",
+     "updatedAt": "2026-11-12T11:06:18.752Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwdfft4g027qpo",
+     "title": "",
+     "text": "I want to delete all the plans and um, I no longer want build to automatically make a plan studio plan or sync with them... I don't want this plan studio to be linked to the build at all",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-13T11:33:07.827Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-12T10:50:36.976Z",
+     "updatedAt": "2026-11-13T11:33:38.319Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwdfft4g03m4rw",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/unlink-plan-studio-from-builds-delete-all-plan-s.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/unlink-plan-studio-from-builds-delete-all-plan-s.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-13T11:34:54.213Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-12T10:50:36.976Z",
+     "updatedAt": "2026-11-13T11:35:05.724Z"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 732
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 29,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": {
+    "model": "Opus",
+    "status": "complete",
+    "estimate": "1 h",
+    "source": "mcp",
+    "planId": "",
+    "createdAt": "2026-11-12T10:49:12.963Z",
+    "builtAt": "2026-11-13T11:34:54.213Z",
+    "prefixSteps": false,
+    "stepAt": {
+     "st-mwdfft4g011xgy": "2026-11-12T10:50:36.976Z",
+     "st-mwdfft4g027qpo": "2026-11-12T10:50:36.976Z",
+     "st-mwdfft4g03m4rw": "2026-11-12T10:50:36.976Z"
+    }
+   },
+   "queue": null,
+   "defaultAt": "2026-11-12T10:50:36.976Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

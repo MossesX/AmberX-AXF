@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T17:38:26.946Z",
+ "updatedAt": "2026-11-13T17:38:50.939Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -111391,7 +111391,7 @@
    ]
   },
   {
-   "id": "unlink-plan-studio-from-builds-delete-all-plan-s",
+   "id": "unlink-plan-studio-builds-delete-all",
    "title": "Unlink Plan Studio from builds; delete all Plan Studio plans",
    "category": "",
    "detail": "1) Delete every Plan Studio plan (planner.plans), plus a delete action on plans via REST/MCP/CLI/voice (none exists today). 2) Builds must never create, sync or update Plan Studio plans: remove build-plan@1 per-build plans (plan-studio-backfill-12h), any build-todo-sync plan creation, the 'every build goes to Plan Studio' rule in briefs/RULES, and any sync hooks between the builds store and plans. Plan Studio stays as a standalone tool only. Tests: adding/finishing a build creates no plan.",
@@ -111399,10 +111399,10 @@
    "hidden": false,
    "source": "mcp",
    "pendingId": "unlink-plan-studio-from-builds-delete-all-plan-s",
-   "branch": "claude/unlink-plan-studio-from-builds-delete-all-plan-s",
-   "pr": "#570",
+   "branch": "claude/unlink-plan-studio-builds-delete-all",
+   "pr": "#615",
    "createdAt": "2026-11-12T10:49:12.963Z",
-   "updatedAt": "2026-11-13T11:36:04.425Z",
+   "updatedAt": "2026-11-13T17:38:48.690Z",
    "builtAt": "2026-11-13T11:34:54.213Z",
    "notes": [
     {
@@ -111448,6 +111448,10 @@
     {
      "text": "Session axf-unlink-plan-studio-from-builds-delete-all-plan-s--rhonda on mossesx-max- ended (exit 0); the build was already built.",
      "at": "2026-11-13T11:36:04.425Z"
+    },
+    {
+     "text": "Renamed from unlink-plan-studio-from-builds-delete-all-plan-s (build names are at most 40 characters). By build-rename.",
+     "at": "2026-11-13T17:38:48.690Z"
     }
    ],
    "approvals": [],
@@ -113936,7 +113940,7 @@
    ]
   },
   {
-   "id": "tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch",
+   "id": "tap-to-confirm-follows-label-visibility",
    "title": "Tap-to-confirm follows label visibility + quick-switches pane at top of every chrome settings",
    "category": "ui",
    "detail": "Follow-up to PR #524 (tap-to-confirm). Brett: \"By default, if you turn text on or off, it switches that tap to confirm on or off. If there's no text, it turns double tap on.\" and \"a collapsible pane at the top of the settings interface that has switches like override or double tap... at the top, easy to see.\"",
@@ -113944,10 +113948,10 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch",
-   "pr": "#544",
+   "branch": "claude/tap-to-confirm-follows-label-visibility",
+   "pr": "#614",
    "createdAt": "2026-11-12T20:45:12.311Z",
-   "updatedAt": "2026-11-13T02:11:47.409Z",
+   "updatedAt": "2026-11-13T17:38:37.590Z",
    "builtAt": "2026-11-13T02:11:47.409Z",
    "notes": [
     {
@@ -114029,6 +114033,10 @@
     {
      "text": "Headless run axf-tap-to-confirm-follows-label-visibility-quick-sw--earl: brief only · start 11.0K tokens ($0.03) · cost $4.61 · 112 turns · 6 tools, MCP none",
      "at": "2026-11-13T02:11:47.409Z"
+    },
+    {
+     "text": "Renamed from tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch (build names are at most 40 characters). By build-rename.",
+     "at": "2026-11-13T17:38:37.590Z"
     }
    ],
    "approvals": [],
@@ -117815,7 +117823,7 @@
    ]
   },
   {
-   "id": "skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga",
+   "id": "skins-plugin-own-removable-console",
    "title": "Skins plugin: its own removable console plugin and screen for changing skins. Gallery of every skin with live preview (desktop and phone), one-tap Use skin, Back and Restore to Default with undo, per-scope switching (whole hub, one app, one screen, one plugin), a quick skin switcher on the banner an",
    "category": "",
    "detail": "",
@@ -117823,11 +117831,11 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga",
-   "pr": "#553",
+   "branch": "claude/skins-plugin-own-removable-console",
+   "pr": "#613",
    "priority": "P0",
    "createdAt": "2026-11-13T06:25:11.720Z",
-   "updatedAt": "2026-11-13T07:57:03.048Z",
+   "updatedAt": "2026-11-13T17:38:26.299Z",
    "builtAt": "2026-11-13T07:56:39.561Z",
    "notes": [
     {
@@ -117905,6 +117913,10 @@
     {
      "text": "Session axf-skins-plugin-its-own-removable-console-plugin-an--paulie on mossesx-max- ended (exit 0); the build was already built.",
      "at": "2026-11-13T07:57:03.048Z"
+    },
+    {
+     "text": "Renamed from skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga (build names are at most 40 characters). By build-rename.",
+     "at": "2026-11-13T17:38:26.299Z"
     }
    ],
    "approvals": [
