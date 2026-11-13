@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4866,
- "updatedAt": "2026-11-13T19:52:36.826Z",
+ "rev": 4867,
+ "updatedAt": "2026-11-13T19:52:55.280Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -203050,7 +203050,7 @@
    "title": "Land drive-live-console-first: resolve clash in console-commands engine",
    "category": "",
    "detail": "Branch claude/drive-live-console-first clashed with main in 7 files (console-commands plugin console.mjs and server/__init__.py, console-commands engine .mjs/.d.mts in framework/core/engines and apps/console-web/src/axf/core/engines, framework/catalog/status.json). Merge origin/main into the branch and keep main's newer console-commands behaviour (reconnect delivery, wake) plus this branch's 'drive the live console first' path. Regenerate the baked engine copies from framework, run the console-commands self-checks and tests, push, then land on main.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -203058,8 +203058,8 @@
    "pr": "#620",
    "priority": "P0",
    "createdAt": "2026-11-13T19:31:40.346Z",
-   "updatedAt": "2026-11-13T19:51:46.253Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-13T19:52:28.257Z",
+   "builtAt": "2026-11-13T19:52:28.257Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -203214,12 +203214,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T19:52:28.257Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T19:32:39.232Z",
-     "updatedAt": "2026-11-13T19:32:39.232Z"
+     "updatedAt": "2026-11-13T19:52:28.573Z"
     }
    ],
    "profiles": [
@@ -203230,7 +203230,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
