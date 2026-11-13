@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4391,
- "updatedAt": "2026-11-13T12:17:04.464Z",
+ "rev": 4392,
+ "updatedAt": "2026-11-13T12:17:22.707Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -187139,15 +187139,15 @@
    "title": "UI Review gate switch, default off",
    "category": "",
    "detail": "",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/ui-review-gate-switch-default-off",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T12:14:42.715Z",
-   "updatedAt": "2026-11-13T12:17:01.586Z",
+   "updatedAt": "2026-11-13T12:17:19.214Z",
    "builtAt": "",
    "notes": [
     {
@@ -187157,6 +187157,14 @@
     {
      "text": "Split by Claude into 14 steps (0 Fable).",
      "at": "2026-11-13T12:17:01.586Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-ui-review-gate-switch-default-off--lenny.",
+     "at": "2026-11-13T12:17:16.212Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-ui-review-gate-switch-default-off--lenny, own login copy)",
+     "at": "2026-11-13T12:17:19.214Z"
     }
    ],
    "approvals": [],
@@ -187167,8 +187175,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "ui-review-gate-switch-default-off",
+    "brief": "# Build: ui-review-gate-switch-default-off\n\n## Brett said (verbatim)\nAt: 2026-11-13T12:14:42.715Z\n> Brett: UI Review must not be a gate. Add an on/off switch in UI Review settings, 'UI Review is a merge gate', default OFF. When off, PRs are never held for screenshots: release every PR held for UI Review now (#557, #553, #541, #536, #518, #517) into the merge queue. UI Review items still get filed so Brett can look, they just don't block. Build on/replace #555 (kicked out of CI) and fix its CI failures. Full API: REST, MCP, CLI, voice.\n\n## What to build\nContinue build \"UI Review gate switch, default off\" (ui-review-gate-switch-default-off) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-13 12:14):\n\"Brett: UI Review must not be a gate. Add an on/off switch in UI Review settings, 'UI Review is a merge gate', default OFF. When off, PRs are never held for screenshots: release every PR held for UI Review now (#557, #553, #541, #536, #518, #517) into the merge queue. UI Review items still get filed so Brett can look, they just don't block. Build on/replace #555 (kicked out of CI) and fix its CI failures. Full API: REST, MCP, CLI, voice.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (14 left, ~2.2 h):\n[ ] s1 (~8 min) Check out PR #555's branch (or start claude/ui-review-gate-switch from main and cherry-pick #555's commits if it can't be rebased). Read #555's failures in the 'CI build errors' issue and the PR checks, and write them down as a checklist in _claude/builds/reports/ui-review-gate-switch-default-off.md. Link the build with builds-live.mjs link. Commit.\n[ ] s2 (~10 min) Fix #555's CI failures, part 1: the plugin's own checks (lifecycle markers, help or glossary ratchet, plugin-commands static routes, fixtures). Rerun each failing check locally until it passes. Commit.\n[ ] s3 (~10 min) Fix #555's CI failures, part 2: the framework and console sweep (check-theme, check-controls, check-toolbars, check-chrome-assets, tracker --check, console typecheck after a rebake). Reproduce with AXF_DATA_DIR=off. Commit.\n[ ] s4 (~8 min) Add the setting 'UI Review is a merge gate' (key uiReview.gate, default false) to the UI Review plugin settings. Have it read and write the owner-only Claude setting 'UI Review gate', so one value drives both. A missing value counts as false, and existing installs migrate to false. Commit.\n[ ] s5 (~10 min) Make the gate decision one function, gateOn() in the plugin server and review.mjs. When the gate is off, 'review.mjs state --pr <n> --exit-code' exits 0 with state 'filed (not a gate)', and the ui-review@1 capability's held() returns false. Submissions are still filed, never refused. Commit.\n[ ] s6 (~10 min) Make the merge queue and the push banner stop holding PRs or keeping them as drafts for UI Review when gateOn() is false. That covers the merge-queue.mjs readiness check, land.mjs, and the auto-PR draft flag. Add a unit test for both gate states. Commit.\n[ ] s7 (~8 min) UI: add a Switch 'UI Review is a merge gate' to Settings → Plugins → UI Review, on the framework Switch with tokens only and the level toolbar's Simple level. Under it, a status line: 'Off: items are filed for you to look at, PRs never wait.' Commit.\n[ ] s8 (~10 min) API for the switch: REST GET/POST /api/plugins/ui-review/gate returning {on, heldPrs[]}. Turning it on is personOnly, matching the owner-only Claude setting; turning it off and reading it are open to everyone. Add the MCP plugin commands ui-review_gate_get/set, the CLI 'review.mjs gate [on|off|status]', the voice action 'uireview.gate', and the deep link console_show target 'settings:plugins/ui-review#gate'. Commit.\n[ ] s9 (~10 min) Release command: 'review.mjs release-held [--pr n…] [--all]', REST POST /api/plugins/ui-review/release, MCP ui-review_release, voice 'uireview.release'. For each PR still held for UI Review, it marks the review item non-blocking (still filed), un-drafts the PR, and adds it to the merge queue with land.mjs queue add. It goes through the merge queue only and never merges. Has a dry-run. Commit.\n[ ] s10 (~8 min) Release Brett's held PRs now: run release-held for #557, #553, #541, #536, #518 and #517 (GitHub writes as axHub veto calls with a reason, where the session token can't do them). Record the result per PR in the report. Commit.\n[ ] s11 (~10 min) Tests: python and node tests for gateOn() defaults, state --exit-code in both gate states, personOnly on turning the gate on, release-held in dry-run and real mode against a fake GitHub, and REST, MCP and CLI giving the same answers. Commit.\n[ ] s12 (~8 min) Docs and rules: update the shared rule 'Every UI change goes to UI Review' and the CLAUDE.md UI Review line to say a hold applies only while the gate switch is on (default off). Update the plugin README and help, run the glossary catalog --check, then claude-sync sync. Commit.\n[ ] s13 (~10 min) UI Review submission for the settings switch: 3 options as settings assets in apps/console-web/plugins/ui-review/assets/settings/, with desktop and phone shots from vite preview, submitted with review.mjs submit --choices. With the gate off it is filed but does not block. Commit the assets.\n[ ] s14 (~10 min) Finish: run the full CI sweep locally. Write the report _claude/builds/reports/ui-review-gate-switch-default-off.md (what #555's failures were and how they were fixed, the release result per PR, and the API list: deep link, REST, MCP, CLI, voice). Add a THREADS.md row, push, open the PR (it replaces #555; close #555 with a link), add it to the merge queue, and tick the build.\nRead first: apps/console-web/plugins/ui-review/, _claude/builds/reports/ui-review-gate-switch-default-off.md, apps/console-web/plugins/glossary-index/coverage.json, apps/console-web/src/, framework/cli/, tracker.json, apps/console-web/plugins/ui-review/plugin.json, apps/console-web/plugins/ui-review/server/, apps/console-web/plugins/claude-settings/, apps/console-web/plugins/ui-review/review.mjs, apps/console-web/plugins/push-banner/land/merge-queue.mjs, apps/console-web/plugins/push-banner/land/land.mjs, apps/console-web/plugins/push-banner/test/, apps/console-web/plugins/ui-review/web/, apps/console-web/plugins/ui-review/server/routes.py, apps/console-web/plugins/ui-review/commands.json, apps/console-web/plugins/ui-review/actions.json, apps/console-web/plugins/push-banner/land/, apps/console-web/plugins/ui-review/test/, _claude/shared/rules/RULES.md, CLAUDE.md, apps/console-web/plugins/ui-review/README.md, apps/console-web/plugins/glossary-index/, apps/console-web/plugins/ui-review/assets/settings/, _claude/builds/reports/ui-review-gate-switch-default-off/, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step ui-review-gate-switch-default-off <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link ui-review-gate-switch-default-off --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step ui-review-gate-switch-default-off <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note ui-review-gate-switch-default-off \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -187176,12 +187184,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T12:14:44.721Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-ui-review-gate-switch-default-off--lenny",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-13T12:17:15.710Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T12:17:01.586Z",
@@ -187193,10 +187201,16 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
-    "planned": null,
+    "dispatchedAt": "2026-11-13T12:17:15.710Z",
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-13T12:17:05.455Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-13T12:17:15.710Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -187567,7 +187581,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
