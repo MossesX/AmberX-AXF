@@ -1000,7 +1000,9 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
 
     @mcp.tool(annotations=READ)
     async def console_where() -> dict[str, Any]:
-        """Where Brett's open console is now: screen, open dialog, settings tab, and which console that is."""
+        """Where Brett's open console is now: screen, open dialog, settings tab, and which console that is. `here.assets`
+        lists every asset on the page ({id, type, label, hidden}); hide / show / highlight one with console_action
+        `assets.hide` / `assets.unhide` / `assets.highlight` and args [type, instance] (page-assets@1)."""
         return await go({"op": "get", "target": "console.nav", "path": "here"})
 
     @mcp.tool(annotations=READ)

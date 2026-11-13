@@ -16,7 +16,9 @@
  *   assets.unhide-all[:all]                    show every asset hidden on this page (`all`: every page)
  *   assets.highlight:<type>:<instance>[:<ms>]  highlight it for a moment (default 4 s); assets.highlight:off clears
  *   assets.colour:<type|hidden>:<colour|default>   a type's list colour, or the hidden colour
+ *   assets.open                                open the context menu whose Assets entry holds both lists (the deep link)
  *   assets.list                                say what the page has (the list itself: console_where → here.assets)
+ *   settings.open:appearance                   the type colours and the hidden colour (Settings → Appearance)
  */
 import { useEffect, useState } from 'react';
 import {
@@ -241,6 +243,12 @@ export function installPageAssets(rt: AxfRuntime): void {
       else { rt.toast(`Colours: ${PAGE_ASSET_COLOURS.join(', ')} or default.`, 'warning', 'Assets'); return; }
       hostOf(rt).apply?.();
     }, { label: 'Colour of an asset type in the Assets lists, or the hidden colour (assets.colour:<type|hidden>:<colour|default>)', params: true, effect: 'write' });
+    rt.actions.register('assets.open', () => {
+      // the deep link: the page's context menu, opened mid-page, whose Assets entry holds both lists
+      const main = typeof document === 'undefined' ? null : document.querySelector('.fx-main');
+      const r = main?.getBoundingClientRect();
+      rt.openContext(Math.round(r ? r.left + r.width / 3 : 40), Math.round(r ? r.top + 40 : 80), 'default');
+    }, { label: 'Open the Assets menu (visible and hidden assets on this page)', effect: 'navigate' });
     rt.actions.register('assets.list', () => {
       const list = scanPageAssets(rt);
       const hidden = list.filter((a) => a.hidden);

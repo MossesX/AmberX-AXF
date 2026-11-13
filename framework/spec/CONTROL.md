@@ -128,6 +128,14 @@ and follows installs and uninstalls by itself: REST `GET|POST|DELETE /api/contro
 (`apps/console-web/plugins/plugin-commands`, capability `plugin-commands@1`). The lifecycle check fails a plugin whose route or
 action can't be exposed, whose declarations name something gone, or that has no reads without saying why (`commands.noReads`).
 
+Page assets (page-assets@1, build assets-menu-hide-any-asset-visible-and-hidden-li, Nov 13 2026): every console reports the assets on its
+page in `here.assets` (`[{ id: "<type>:<instance>", type, label, hidden }]`; types toolbar, tab-group, nav-menu, app-menu, banner, widget,
+grid, container), so `console.nav get here` (MCP `console_where`, REST `GET /api/console/where`, `console.mjs where`) lists them.
+`console.actions run` drives them: `assets.hide:<type>:<instance>[:all]`, `assets.unhide:<type>:<instance>`, `assets.toggle:…`,
+`assets.unhide-all[:all]`, `assets.highlight:<type>:<instance>[:<ms>]` (`assets.highlight:off`), `assets.colour:<type|hidden>:<colour|default>`
+(colours are token names: accent, info, success, warning, danger, muted), `assets.open` (the context menu holding Assets ▸ Visible / Hidden)
+and `assets.list`. Hidden is per page (`all`: every page) in the setting `axf.assets.hidden`; rules in core/engines/page-assets-rules.mjs.
+
 ## Auth
 
 Permissions: `control.<domain>.read | write | delete` (`control.tokens.write`, `control.amberx.delete`, `control.pass.write`, `control.plugins.read`, …), plus
