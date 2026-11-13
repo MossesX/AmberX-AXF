@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5063,
- "updatedAt": "2026-11-13T21:31:37.891Z",
+ "rev": 5064,
+ "updatedAt": "2026-11-13T21:32:35.361Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -208963,7 +208963,7 @@
    "pr": "#663",
    "priority": "P0",
    "createdAt": "2026-11-13T21:13:28.338Z",
-   "updatedAt": "2026-11-13T21:31:35.885Z",
+   "updatedAt": "2026-11-13T21:32:33.679Z",
    "builtAt": "2026-11-13T21:27:16.800Z",
    "notes": [
     {
@@ -208985,6 +208985,10 @@
     {
      "text": "s1 done, PR #663. Fix: repo orchestrator exports only for profiles in the repo's framework/plan/profiles.json; hub-only profiles export into their shared-data folder. To stop sessions still on the old code from re-adding _claude/builds/profiles/test-sandbox/ to main before the merge, the two test-sandbox sample builds (test data from project-seed) were soft-deleted: kept in the builds journal; after the merge 'node framework/cli/project-seed.mjs seed' puts them back.",
      "at": "2026-11-13T21:31:35.885Z"
+    },
+    {
+     "text": "Headless run axf-main-ci-red-test-sandbox-profile-export--joey: brief only · start 12.7K tokens ($0.06) · cost $5.84 · 94 turns · 6 tools, MCP none",
+     "at": "2026-11-13T21:32:33.679Z"
     }
    ],
    "approvals": [],
@@ -209055,7 +209059,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
