@@ -1,0 +1,123 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amberx.ai/axf/schemas/prompt-instance.schema.json",
+  "title": "prompt-instance@1: one prompt waiting for (or holding) Brett's answer",
+  "type": "object",
+  "required": [
+    "id",
+    "rule",
+    "kind",
+    "status"
+  ],
+  "additionalProperties": true,
+  "properties": {
+    "$axf": {
+      "const": "prompt-instance@1"
+    },
+    "id": {
+      "type": "string"
+    },
+    "rule": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]{0,79}$"
+    },
+    "ruleTitle": {
+      "type": "string"
+    },
+    "event": {
+      "type": "object"
+    },
+    "kind": {
+      "enum": [
+        "none",
+        "approve",
+        "veto",
+        "pick",
+        "text"
+      ]
+    },
+    "title": {
+      "type": "string"
+    },
+    "text": {
+      "type": "string"
+    },
+    "options": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "countdownSec": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "askedAt": {
+      "type": "string"
+    },
+    "expiresAt": {
+      "type": "string"
+    },
+    "status": {
+      "enum": [
+        "waiting",
+        "answered",
+        "expired",
+        "shelved",
+        "ran",
+        "failed"
+      ]
+    },
+    "outputs": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "dialog",
+          "push",
+          "email",
+          "sms",
+          "call"
+        ]
+      }
+    },
+    "answers": {
+      "type": "array",
+      "items": {
+        "enum": [
+          "approve",
+          "deny",
+          "pick",
+          "text",
+          "timeout",
+          "later"
+        ]
+      }
+    },
+    "answer": {
+      "type": "object"
+    },
+    "answeredAt": {
+      "type": "string"
+    },
+    "branch": {
+      "type": "string"
+    },
+    "resume": {
+      "type": "object"
+    },
+    "keysNeeded": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}
