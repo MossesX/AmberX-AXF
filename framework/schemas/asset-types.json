@@ -1519,7 +1519,11 @@
         "asset": false
       },
       "shared": false,
-      "optional": true
+      "optional": true,
+      "skin": {
+        "by": "none",
+        "why": "The cross-app host layout is Molly's structure, not a look: the apps it frames each take their own skin."
+      }
     },
     "nav-style": {
       "label": "Navigation style",
@@ -2069,6 +2073,10 @@
         "keywords": "auto-tagged words for search and the clip tagger (up to 200)",
         "generated": "{ from: glossary | manual | book | help-intro | recorder, at: ISO time, build: the build that made it }",
         "editable": "false = a generated demo that is rebuilt from its entry (edits are lost); default true"
+      },
+      "skin": {
+        "by": "none",
+        "why": "A demonstration is narrated steps, not drawn: the UI it plays in takes the skin."
       }
     },
     "book": {
@@ -2096,6 +2104,10 @@
         "docs": "{ enabled, depth, format, interactive, includeApi, includeScreens } — the documentation generated alongside the book",
         "outputs": "{ video: the narrated walkthrough video, chapterClips: one clip asset per chapter }",
         "keywords": "words for search (up to 200)"
+      },
+      "skin": {
+        "by": "none",
+        "why": "A book is a plan of chapters, not drawn: the Book Builder that shows it takes the skin."
       }
     },
     "clip": {
@@ -2136,6 +2148,10 @@
         "chain": "clip ids played after this one",
         "entries": "glossary entry ids shown in the clip",
         "keywords": "the auto-extracted tag set (up to 200)"
+      },
+      "skin": {
+        "by": "none",
+        "why": "A clip is recorded media, not drawn: the player that shows it takes the skin."
       }
     },
     "docs": {
@@ -2184,6 +2200,10 @@
         "sourceHash": "hash of the sources it was generated from (a different hash = out of sync)",
         "build": "the build that generated it",
         "keywords": "words for search (up to 200)"
+      },
+      "skin": {
+        "by": "none",
+        "why": "Generated documentation is content, not drawn: the pages that show it take the skin."
       }
     },
     "uac-policy": {

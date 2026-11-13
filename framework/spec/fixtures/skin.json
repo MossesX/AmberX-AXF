@@ -1,5 +1,5 @@
 {
-  "contract": "skin@1",
+  "contract": "skin@2",
   "normalize": {
     "good": {
       "layoutTheme": "windows-explorer",
@@ -2002,6 +2002,1579 @@
         }
       },
       "undo": null
+    }
+  },
+  "behaviour": {
+    "contract": "skin-behaviour@1",
+    "kinds": [
+      "choice",
+      "switch",
+      "number"
+    ],
+    "input": {
+      "types": {
+        "tab-group": {
+          "label": "Tab group",
+          "group": "Navigation",
+          "behaviour": {
+            "_doc": "notes are skipped",
+            "position": {
+              "label": "Where tab rows sit",
+              "kind": "choice",
+              "values": [
+                "top",
+                "bottom",
+                "left",
+                "right"
+              ],
+              "default": "top",
+              "field": "position"
+            },
+            "overflow": {
+              "kind": "choice",
+              "values": [
+                "scroll",
+                "wrap",
+                "more"
+              ],
+              "default": "scroll",
+              "field": "overflow"
+            }
+          }
+        },
+        "toolbar": {
+          "label": "Toolbar",
+          "group": "Navigation",
+          "behaviour": {
+            "placement": {
+              "label": "Where the toolbar goes",
+              "kind": "choice",
+              "values": [
+                "top",
+                "bottom"
+              ],
+              "default": "top",
+              "field": "toolbarPosition",
+              "of": "layout"
+            },
+            "tapConfirm": {
+              "kind": "choice",
+              "values": [
+                "default",
+                "on",
+                "off"
+              ],
+              "default": "default"
+            }
+          }
+        },
+        "dialog": {
+          "label": "Dialog",
+          "group": "Overlays",
+          "behaviour": {
+            "presentation": {
+              "kind": "choice",
+              "values": [
+                "modal",
+                "sheet",
+                "side-panel"
+              ],
+              "default": "modal",
+              "field": "variant",
+              "map": {
+                "drawer": "side-panel"
+              }
+            }
+          }
+        },
+        "table": {
+          "label": "Table",
+          "group": "Controls",
+          "behaviour": {
+            "stickyHeader": {
+              "label": "Sticky header",
+              "kind": "switch",
+              "default": true,
+              "field": "stickyHeader"
+            }
+          }
+        },
+        "button": {
+          "label": "Button",
+          "group": "Controls",
+          "behaviour": {
+            "holdMs": {
+              "label": "Hold time",
+              "kind": "number",
+              "min": 300,
+              "max": 2000,
+              "default": 600,
+              "unit": "ms"
+            },
+            "confirmBy": {
+              "kind": "choice",
+              "values": [
+                "dialog",
+                "inline",
+                "hold"
+              ],
+              "default": "dialog"
+            }
+          }
+        },
+        "layout": {
+          "label": "Layout",
+          "group": "Themes"
+        },
+        "banner": {
+          "label": "Banner",
+          "group": "Chrome"
+        },
+        "broken": {
+          "label": "Broken",
+          "group": "X",
+          "behaviour": {
+            "bad": {
+              "kind": "choice",
+              "values": [
+                "one"
+              ],
+              "default": "two"
+            },
+            "Bad Name": {
+              "kind": "switch",
+              "default": true
+            },
+            "num": {
+              "kind": "number",
+              "min": 5,
+              "max": 1,
+              "default": 3
+            },
+            "viaNowhere": {
+              "kind": "switch",
+              "default": false,
+              "field": "x",
+              "of": "nope"
+            },
+            "odd": {
+              "kind": "sometimes",
+              "values": [
+                "a",
+                "b"
+              ],
+              "default": "a"
+            }
+          }
+        }
+      },
+      "targets": {
+        "banner": {
+          "root": ".fx-banner",
+          "behaviour": {
+            "placement": {
+              "label": "Banner placement",
+              "kind": "choice",
+              "values": [
+                "top",
+                "bottom"
+              ],
+              "default": "top"
+            }
+          }
+        }
+      },
+      "picks": {
+        "tab-group": {
+          "position": "bottom",
+          "overflow": "nope"
+        },
+        "toolbar": {
+          "placement": "bottom"
+        },
+        "table": {
+          "stickyHeader": "off"
+        },
+        "button": {
+          "holdMs": 900,
+          "confirmBy": "inline"
+        },
+        "banner": {
+          "placement": "bottom"
+        },
+        "mystery": {
+          "x": 1
+        },
+        "dialog": 7
+      },
+      "assets": {
+        "tab-group": {
+          "position": "left",
+          "overflow": "wrap"
+        },
+        "layout": {
+          "toolbarPosition": "top",
+          "nav": "left"
+        },
+        "dialog": {
+          "variant": "drawer"
+        },
+        "table": {
+          "stickyHeader": false
+        }
+      },
+      "badSkin2": {
+        "layoutTheme": "windows-explorer",
+        "colorTheme": "windows-light",
+        "styleTheme": "windows",
+        "assets": {
+          "button": "windows",
+          "banner": "windows-titlebar"
+        },
+        "preview": {
+          "caption": "Windows"
+        },
+        "extras": {
+          "spacing": "compact",
+          "hidden": {
+            "toolbar": false
+          }
+        },
+        "behaviour": {
+          "banner": {
+            "placement": "sideways"
+          },
+          "nope": {
+            "a": 1
+          },
+          "tab-group": 3
+        }
+      }
+    },
+    "axes": [
+      {
+        "type": "tab-group",
+        "label": "Tab group",
+        "group": "Navigation",
+        "axes": [
+          {
+            "name": "position",
+            "label": "Where tab rows sit",
+            "kind": "choice",
+            "default": "top",
+            "values": [
+              "top",
+              "bottom",
+              "left",
+              "right"
+            ],
+            "field": "position"
+          },
+          {
+            "name": "overflow",
+            "label": "overflow",
+            "kind": "choice",
+            "default": "scroll",
+            "values": [
+              "scroll",
+              "wrap",
+              "more"
+            ],
+            "field": "overflow"
+          }
+        ]
+      },
+      {
+        "type": "toolbar",
+        "label": "Toolbar",
+        "group": "Navigation",
+        "axes": [
+          {
+            "name": "placement",
+            "label": "Where the toolbar goes",
+            "kind": "choice",
+            "default": "top",
+            "values": [
+              "top",
+              "bottom"
+            ],
+            "field": "toolbarPosition",
+            "of": "layout"
+          },
+          {
+            "name": "tapConfirm",
+            "label": "tapConfirm",
+            "kind": "choice",
+            "default": "default",
+            "values": [
+              "default",
+              "on",
+              "off"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "dialog",
+        "label": "Dialog",
+        "group": "Overlays",
+        "axes": [
+          {
+            "name": "presentation",
+            "label": "presentation",
+            "kind": "choice",
+            "default": "modal",
+            "values": [
+              "modal",
+              "sheet",
+              "side-panel"
+            ],
+            "field": "variant",
+            "map": {
+              "drawer": "side-panel"
+            }
+          }
+        ]
+      },
+      {
+        "type": "table",
+        "label": "Table",
+        "group": "Controls",
+        "axes": [
+          {
+            "name": "stickyHeader",
+            "label": "Sticky header",
+            "kind": "switch",
+            "default": true,
+            "field": "stickyHeader"
+          }
+        ]
+      },
+      {
+        "type": "button",
+        "label": "Button",
+        "group": "Controls",
+        "axes": [
+          {
+            "name": "holdMs",
+            "label": "Hold time",
+            "kind": "number",
+            "default": 600,
+            "min": 300,
+            "max": 2000,
+            "unit": "ms"
+          },
+          {
+            "name": "confirmBy",
+            "label": "confirmBy",
+            "kind": "choice",
+            "default": "dialog",
+            "values": [
+              "dialog",
+              "inline",
+              "hold"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "banner",
+        "label": "Banner",
+        "group": "Chrome",
+        "axes": [
+          {
+            "name": "placement",
+            "label": "Banner placement",
+            "kind": "choice",
+            "default": "top",
+            "values": [
+              "top",
+              "bottom"
+            ]
+          }
+        ]
+      }
+    ],
+    "types": [
+      "tab-group",
+      "toolbar",
+      "dialog",
+      "table",
+      "button",
+      "banner"
+    ],
+    "declarationErrors": [
+      "broken.behaviour.bad: a choice axis needs at least two values (lower-case words)",
+      "broken.behaviour.bad: default must be one of its values",
+      "broken.behaviour.Bad Name: an axis name is a camelCase word (letters and digits, 40 at most)",
+      "broken.behaviour.num: a number axis needs min < max",
+      "broken.behaviour.num: default must be a number inside min..max",
+      "broken.behaviour.viaNowhere: of \"nope\" is not a registered asset type",
+      "broken.behaviour.odd: kind must be one of choice, switch, number"
+    ],
+    "normalize": {
+      "tab-group": {
+        "position": "bottom"
+      },
+      "toolbar": {
+        "placement": "bottom"
+      },
+      "table": {
+        "stickyHeader": false
+      },
+      "button": {
+        "holdMs": 900,
+        "confirmBy": "inline"
+      },
+      "banner": {
+        "placement": "bottom"
+      }
+    },
+    "errors": {
+      "good": [],
+      "bad": [
+        "data.behaviour.tab-group.overflow must be one of scroll, wrap, more",
+        "data.behaviour.mystery: not a registered asset type",
+        "data.behaviour.dialog must be an object (axis → value)"
+      ],
+      "notObject": [
+        "data.behaviour must be an object (asset type → axis → value)"
+      ],
+      "none": []
+    },
+    "defaults": {
+      "tab-group": {
+        "position": "top",
+        "overflow": "scroll"
+      },
+      "toolbar": {
+        "placement": "top",
+        "tapConfirm": "default"
+      },
+      "dialog": {
+        "presentation": "modal"
+      },
+      "table": {
+        "stickyHeader": true
+      },
+      "button": {
+        "holdMs": 600,
+        "confirmBy": "dialog"
+      },
+      "banner": {
+        "placement": "top"
+      }
+    },
+    "resolved": {
+      "tab-group": {
+        "position": "bottom",
+        "overflow": "wrap"
+      },
+      "toolbar": {
+        "placement": "bottom",
+        "tapConfirm": "default"
+      },
+      "dialog": {
+        "presentation": "side-panel"
+      },
+      "table": {
+        "stickyHeader": false
+      },
+      "button": {
+        "holdMs": 900,
+        "confirmBy": "inline"
+      },
+      "banner": {
+        "placement": "bottom"
+      }
+    },
+    "resolvedNoPicks": {
+      "tab-group": {
+        "position": "left",
+        "overflow": "wrap"
+      },
+      "toolbar": {
+        "placement": "top",
+        "tapConfirm": "default"
+      },
+      "dialog": {
+        "presentation": "side-panel"
+      },
+      "table": {
+        "stickyHeader": false
+      },
+      "button": {
+        "holdMs": 600,
+        "confirmBy": "dialog"
+      },
+      "banner": {
+        "placement": "top"
+      }
+    },
+    "value": {
+      "instanceWins": "right",
+      "pick": "bottom",
+      "asset": "left",
+      "mapped": "side-panel",
+      "dflt": "top",
+      "unknown": null
+    },
+    "merge": {
+      "tab-group": {
+        "position": "bottom"
+      },
+      "banner": {
+        "placement": "bottom"
+      }
+    },
+    "applied": {
+      "style": "pills",
+      "position": "bottom"
+    },
+    "appliedMap": {
+      "variant": "drawer"
+    },
+    "layoutFields": {
+      "toolbarPosition": "bottom"
+    },
+    "missing": {
+      "tab-group": [
+        "overflow"
+      ],
+      "toolbar": [
+        "tapConfirm"
+      ],
+      "dialog": [
+        "presentation"
+      ]
+    },
+    "coverage": [
+      {
+        "type": "tab-group",
+        "axes": [
+          "position",
+          "overflow"
+        ],
+        "set": [
+          "position"
+        ],
+        "missing": [
+          "overflow"
+        ]
+      },
+      {
+        "type": "toolbar",
+        "axes": [
+          "placement",
+          "tapConfirm"
+        ],
+        "set": [
+          "placement"
+        ],
+        "missing": [
+          "tapConfirm"
+        ]
+      },
+      {
+        "type": "dialog",
+        "axes": [
+          "presentation"
+        ],
+        "set": [],
+        "missing": [
+          "presentation"
+        ]
+      },
+      {
+        "type": "table",
+        "axes": [
+          "stickyHeader"
+        ],
+        "set": [
+          "stickyHeader"
+        ],
+        "missing": []
+      },
+      {
+        "type": "button",
+        "axes": [
+          "holdMs",
+          "confirmBy"
+        ],
+        "set": [
+          "holdMs",
+          "confirmBy"
+        ],
+        "missing": []
+      },
+      {
+        "type": "banner",
+        "axes": [
+          "placement"
+        ],
+        "set": [
+          "placement"
+        ],
+        "missing": []
+      }
+    ],
+    "describe": [
+      {
+        "type": "tab-group",
+        "label": "Tab group",
+        "picks": [
+          {
+            "axis": "position",
+            "label": "Where tab rows sit",
+            "value": "bottom",
+            "set": true,
+            "isDefault": false
+          },
+          {
+            "axis": "overflow",
+            "label": "overflow",
+            "value": "scroll",
+            "set": false,
+            "isDefault": true
+          }
+        ]
+      },
+      {
+        "type": "toolbar",
+        "label": "Toolbar",
+        "picks": [
+          {
+            "axis": "placement",
+            "label": "Where the toolbar goes",
+            "value": "bottom",
+            "set": true,
+            "isDefault": false
+          },
+          {
+            "axis": "tapConfirm",
+            "label": "tapConfirm",
+            "value": "default",
+            "set": false,
+            "isDefault": true
+          }
+        ]
+      },
+      {
+        "type": "dialog",
+        "label": "Dialog",
+        "picks": [
+          {
+            "axis": "presentation",
+            "label": "presentation",
+            "value": "modal",
+            "set": false,
+            "isDefault": true
+          }
+        ]
+      },
+      {
+        "type": "table",
+        "label": "Table",
+        "picks": [
+          {
+            "axis": "stickyHeader",
+            "label": "Sticky header",
+            "value": false,
+            "set": true,
+            "isDefault": false
+          }
+        ]
+      },
+      {
+        "type": "button",
+        "label": "Button",
+        "picks": [
+          {
+            "axis": "holdMs",
+            "label": "Hold time",
+            "value": 900,
+            "set": true,
+            "isDefault": false
+          },
+          {
+            "axis": "confirmBy",
+            "label": "confirmBy",
+            "value": "inline",
+            "set": true,
+            "isDefault": false
+          }
+        ]
+      },
+      {
+        "type": "banner",
+        "label": "Banner",
+        "picks": [
+          {
+            "axis": "placement",
+            "label": "Banner placement",
+            "value": "bottom",
+            "set": true,
+            "isDefault": false
+          }
+        ]
+      }
+    ],
+    "tokens": {
+      "vars": {
+        "--fx-bhv-tab-group-position": "bottom",
+        "--fx-bhv-tab-group-overflow": "wrap",
+        "--fx-bhv-toolbar-placement": "bottom",
+        "--fx-bhv-toolbar-tap-confirm": "default",
+        "--fx-bhv-dialog-presentation": "side-panel",
+        "--fx-bhv-table-sticky-header": "0",
+        "--fx-bhv-button-hold-ms": "900",
+        "--fx-bhv-button-confirm-by": "inline",
+        "--fx-bhv-banner-placement": "bottom"
+      },
+      "attrs": {
+        "data-fx-bhv-tab-group-position": "bottom",
+        "data-fx-bhv-tab-group-overflow": "wrap",
+        "data-fx-bhv-toolbar-placement": "bottom",
+        "data-fx-bhv-toolbar-tap-confirm": "default",
+        "data-fx-bhv-dialog-presentation": "side-panel",
+        "data-fx-bhv-table-sticky-header": "0",
+        "data-fx-bhv-button-hold-ms": "900",
+        "data-fx-bhv-button-confirm-by": "inline",
+        "data-fx-bhv-banner-placement": "bottom"
+      },
+      "values": {
+        "axf.behaviour.tab-group.position": "bottom",
+        "axf.behaviour.tab-group.overflow": "wrap",
+        "axf.behaviour.toolbar.placement": "bottom",
+        "axf.behaviour.toolbar.tapConfirm": "default",
+        "axf.behaviour.dialog.presentation": "side-panel",
+        "axf.behaviour.table.stickyHeader": false,
+        "axf.behaviour.button.holdMs": 900,
+        "axf.behaviour.button.confirmBy": "inline",
+        "axf.behaviour.banner.placement": "bottom"
+      },
+      "list": [
+        {
+          "type": "tab-group",
+          "axis": "position",
+          "label": "Where tab rows sit",
+          "kind": "choice",
+          "values": [
+            "top",
+            "bottom",
+            "left",
+            "right"
+          ],
+          "default": "top",
+          "min": null,
+          "max": null,
+          "unit": "",
+          "field": "position",
+          "of": "tab-group",
+          "token": "--fx-bhv-tab-group-position",
+          "attr": "data-fx-bhv-tab-group-position",
+          "key": "axf.behaviour.tab-group.position"
+        },
+        {
+          "type": "tab-group",
+          "axis": "overflow",
+          "label": "overflow",
+          "kind": "choice",
+          "values": [
+            "scroll",
+            "wrap",
+            "more"
+          ],
+          "default": "scroll",
+          "min": null,
+          "max": null,
+          "unit": "",
+          "field": "overflow",
+          "of": "tab-group",
+          "token": "--fx-bhv-tab-group-overflow",
+          "attr": "data-fx-bhv-tab-group-overflow",
+          "key": "axf.behaviour.tab-group.overflow"
+        },
+        {
+          "type": "toolbar",
+          "axis": "placement",
+          "label": "Where the toolbar goes",
+          "kind": "choice",
+          "values": [
+            "top",
+            "bottom"
+          ],
+          "default": "top",
+          "min": null,
+          "max": null,
+          "unit": "",
+          "field": "toolbarPosition",
+          "of": "layout",
+          "token": "--fx-bhv-toolbar-placement",
+          "attr": "data-fx-bhv-toolbar-placement",
+          "key": "axf.behaviour.toolbar.placement"
+        },
+        {
+          "type": "toolbar",
+          "axis": "tapConfirm",
+          "label": "tapConfirm",
+          "kind": "choice",
+          "values": [
+            "default",
+            "on",
+            "off"
+          ],
+          "default": "default",
+          "min": null,
+          "max": null,
+          "unit": "",
+          "field": "",
+          "of": "",
+          "token": "--fx-bhv-toolbar-tap-confirm",
+          "attr": "data-fx-bhv-toolbar-tap-confirm",
+          "key": "axf.behaviour.toolbar.tapConfirm"
+        },
+        {
+          "type": "dialog",
+          "axis": "presentation",
+          "label": "presentation",
+          "kind": "choice",
+          "values": [
+            "modal",
+            "sheet",
+            "side-panel"
+          ],
+          "default": "modal",
+          "min": null,
+          "max": null,
+          "unit": "",
+          "field": "variant",
+          "of": "dialog",
+          "token": "--fx-bhv-dialog-presentation",
+          "attr": "data-fx-bhv-dialog-presentation",
+          "key": "axf.behaviour.dialog.presentation"
+        },
+        {
+          "type": "table",
+          "axis": "stickyHeader",
+          "label": "Sticky header",
+          "kind": "switch",
+          "values": null,
+          "default": true,
+          "min": null,
+          "max": null,
+          "unit": "",
+          "field": "stickyHeader",
+          "of": "table",
+          "token": "--fx-bhv-table-sticky-header",
+          "attr": "data-fx-bhv-table-sticky-header",
+          "key": "axf.behaviour.table.stickyHeader"
+        },
+        {
+          "type": "button",
+          "axis": "holdMs",
+          "label": "Hold time",
+          "kind": "number",
+          "values": null,
+          "default": 600,
+          "min": 300,
+          "max": 2000,
+          "unit": "ms",
+          "field": "",
+          "of": "",
+          "token": "--fx-bhv-button-hold-ms",
+          "attr": "data-fx-bhv-button-hold-ms",
+          "key": "axf.behaviour.button.holdMs"
+        },
+        {
+          "type": "button",
+          "axis": "confirmBy",
+          "label": "confirmBy",
+          "kind": "choice",
+          "values": [
+            "dialog",
+            "inline",
+            "hold"
+          ],
+          "default": "dialog",
+          "min": null,
+          "max": null,
+          "unit": "",
+          "field": "",
+          "of": "",
+          "token": "--fx-bhv-button-confirm-by",
+          "attr": "data-fx-bhv-button-confirm-by",
+          "key": "axf.behaviour.button.confirmBy"
+        },
+        {
+          "type": "banner",
+          "axis": "placement",
+          "label": "Banner placement",
+          "kind": "choice",
+          "values": [
+            "top",
+            "bottom"
+          ],
+          "default": "top",
+          "min": null,
+          "max": null,
+          "unit": "",
+          "field": "",
+          "of": "",
+          "token": "--fx-bhv-banner-placement",
+          "attr": "data-fx-bhv-banner-placement",
+          "key": "axf.behaviour.banner.placement"
+        }
+      ]
+    },
+    "keys": {
+      "ok": {
+        "type": "tab-group",
+        "axis": "position"
+      },
+      "bad": null,
+      "fromSettings": {
+        "tab-group": {
+          "position": "bottom"
+        },
+        "table": {
+          "stickyHeader": false
+        }
+      }
+    },
+    "schema": {
+      "behaviour": {
+        "type": "object",
+        "additionalProperties": false,
+        "description": "skin@2: a behaviour pick per asset type with behaviour (axes declared on the registry entry; unset = the asset's field, else today's behaviour)",
+        "properties": {
+          "tab-group": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "position": {
+                "enum": [
+                  "top",
+                  "bottom",
+                  "left",
+                  "right"
+                ],
+                "description": "Where tab rows sit (default \"top\"; unset = the asset's position)"
+              },
+              "overflow": {
+                "enum": [
+                  "scroll",
+                  "wrap",
+                  "more"
+                ],
+                "description": "overflow (default \"scroll\"; unset = the asset's overflow)"
+              }
+            }
+          },
+          "toolbar": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "placement": {
+                "enum": [
+                  "top",
+                  "bottom"
+                ],
+                "description": "Where the toolbar goes (default \"top\"; unset = the layout's toolbarPosition)"
+              },
+              "tapConfirm": {
+                "enum": [
+                  "default",
+                  "on",
+                  "off"
+                ],
+                "description": "tapConfirm (default \"default\")"
+              }
+            }
+          },
+          "dialog": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "presentation": {
+                "enum": [
+                  "modal",
+                  "sheet",
+                  "side-panel"
+                ],
+                "description": "presentation (default \"modal\"; unset = the asset's variant)"
+              }
+            }
+          },
+          "table": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "stickyHeader": {
+                "type": "boolean",
+                "description": "Sticky header (default true; unset = the asset's stickyHeader)"
+              }
+            }
+          },
+          "button": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "holdMs": {
+                "type": "number",
+                "minimum": 300,
+                "maximum": 2000,
+                "description": "Hold time (default 600)"
+              },
+              "confirmBy": {
+                "enum": [
+                  "dialog",
+                  "inline",
+                  "hold"
+                ],
+                "description": "confirmBy (default \"dialog\")"
+              }
+            }
+          },
+          "banner": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "placement": {
+                "enum": [
+                  "top",
+                  "bottom"
+                ],
+                "description": "Banner placement (default \"top\")"
+              }
+            }
+          }
+        }
+      }
+    },
+    "coversTable": [
+      {
+        "type": "tab-group",
+        "by": "slot",
+        "covered": true,
+        "how": [
+          "slot x"
+        ],
+        "behaviour": {
+          "axes": [
+            "position",
+            "overflow"
+          ],
+          "set": [
+            "position"
+          ],
+          "missing": [
+            "overflow"
+          ]
+        },
+        "missing": true,
+        "why": "behaviour unset: overflow"
+      },
+      {
+        "type": "toolbar",
+        "by": "slot",
+        "covered": false,
+        "how": [],
+        "behaviour": {
+          "axes": [
+            "placement",
+            "tapConfirm"
+          ],
+          "set": [],
+          "missing": [
+            "placement",
+            "tapConfirm"
+          ]
+        },
+        "missing": true,
+        "why": "no toolbar asset"
+      },
+      {
+        "type": "dialog",
+        "by": "slot",
+        "covered": false,
+        "how": [],
+        "behaviour": {
+          "axes": [
+            "presentation"
+          ],
+          "set": [],
+          "missing": [
+            "presentation"
+          ]
+        },
+        "missing": true,
+        "why": "no dialog asset"
+      },
+      {
+        "type": "table",
+        "by": "slot",
+        "covered": false,
+        "how": [],
+        "behaviour": {
+          "axes": [
+            "stickyHeader"
+          ],
+          "set": [],
+          "missing": [
+            "stickyHeader"
+          ]
+        },
+        "missing": true,
+        "why": "no table asset"
+      },
+      {
+        "type": "button",
+        "by": "slot",
+        "covered": false,
+        "how": [],
+        "behaviour": {
+          "axes": [
+            "holdMs",
+            "confirmBy"
+          ],
+          "set": [],
+          "missing": [
+            "holdMs",
+            "confirmBy"
+          ]
+        },
+        "missing": true,
+        "why": "no button asset"
+      },
+      {
+        "type": "layout",
+        "by": "slot",
+        "covered": true,
+        "how": [
+          "slot l"
+        ],
+        "behaviour": {
+          "axes": [],
+          "set": [],
+          "missing": []
+        },
+        "missing": false,
+        "why": ""
+      },
+      {
+        "type": "banner",
+        "by": "slot",
+        "covered": false,
+        "how": [],
+        "behaviour": {
+          "axes": [
+            "placement"
+          ],
+          "set": [],
+          "missing": [
+            "placement"
+          ]
+        },
+        "missing": true,
+        "why": "no banner asset"
+      },
+      {
+        "type": "broken",
+        "by": "slot",
+        "covered": false,
+        "how": [],
+        "behaviour": {
+          "axes": [],
+          "set": [],
+          "missing": []
+        },
+        "missing": true,
+        "why": "no broken asset"
+      },
+      {
+        "type": "color-theme",
+        "by": "slot",
+        "covered": true,
+        "how": [
+          "slot c"
+        ],
+        "behaviour": {
+          "axes": [],
+          "set": [],
+          "missing": []
+        },
+        "missing": false,
+        "why": ""
+      }
+    ],
+    "uncoveredBy": [
+      "tab-group: behaviour unset: overflow",
+      "toolbar: no toolbar asset",
+      "dialog: no dialog asset",
+      "table: no table asset",
+      "button: no button asset",
+      "banner: no banner asset",
+      "broken: no broken asset"
+    ],
+    "document": {
+      "appOver": {
+        "use": true,
+        "inherit": false,
+        "id": "windows",
+        "overrides": {},
+        "behaviour": {
+          "tab-group": {
+            "position": "bottom"
+          }
+        }
+      },
+      "pluginOver": {
+        "plugin:notes": {
+          "use": "inherit",
+          "id": "",
+          "overrides": {},
+          "behaviour": {
+            "tab-group": {
+              "position": "left"
+            }
+          }
+        }
+      },
+      "both": {
+        "plugin:notes": {
+          "use": "inherit",
+          "id": "",
+          "overrides": {},
+          "behaviour": {
+            "tab-group": {
+              "position": "left"
+            },
+            "toolbar": {
+              "placement": "bottom"
+            }
+          }
+        }
+      },
+      "resolvedLeaf": {
+        "id": "windows",
+        "overrides": {},
+        "from": "app",
+        "behaviour": {
+          "tab-group": {
+            "position": "left"
+          },
+          "toolbar": {
+            "placement": "bottom"
+          }
+        }
+      },
+      "resolvedApp": {
+        "id": "windows",
+        "overrides": {},
+        "from": "app",
+        "behaviour": {
+          "tab-group": {
+            "position": "bottom"
+          }
+        }
+      },
+      "dropped": {
+        "plugin:notes": {
+          "use": "inherit",
+          "id": "",
+          "overrides": {},
+          "behaviour": {
+            "toolbar": {
+              "placement": "bottom"
+            }
+          }
+        }
+      },
+      "backOne": {
+        "plugin:notes": {
+          "use": "inherit",
+          "id": "",
+          "overrides": {},
+          "behaviour": {
+            "tab-group": {
+              "position": "left"
+            }
+          }
+        }
+      },
+      "backAll": {
+        "use": true,
+        "inherit": false,
+        "id": "windows",
+        "overrides": {}
+      },
+      "overrides": {
+        "app": {
+          "tab-group": {
+            "position": "bottom"
+          }
+        },
+        "plugin": {
+          "tab-group": {
+            "position": "left"
+          },
+          "toolbar": {
+            "placement": "bottom"
+          }
+        }
+      },
+      "otherSkinDrops": {
+        "use": true,
+        "inherit": false,
+        "id": "aurora",
+        "overrides": {}
+      },
+      "sameSkinKeeps": {
+        "use": true,
+        "inherit": false,
+        "id": "windows",
+        "overrides": {},
+        "behaviour": {
+          "tab-group": {
+            "position": "bottom"
+          }
+        }
+      },
+      "scopeOtherSkinDrops": {
+        "plugin:notes": {
+          "use": "on",
+          "id": "aurora",
+          "overrides": {}
+        }
+      },
+      "roundTrip": {
+        "$axf": "app-look@1",
+        "app": "app",
+        "default": {
+          "slots": {
+            "layout": "focus-top",
+            "color-theme": "arctic-daylight",
+            "style-theme": "hub",
+            "button": "rounded-solid",
+            "design-package": "hub-default"
+          },
+          "spacing": "tight",
+          "hidden": {
+            "toolbar": true
+          },
+          "settings": {
+            "axf.banners.group": "a",
+            "axf.tokens.button": "x"
+          }
+        },
+        "own": {},
+        "skin": {
+          "use": true,
+          "inherit": false,
+          "id": "windows",
+          "overrides": {},
+          "behaviour": {
+            "tab-group": {
+              "position": "bottom"
+            }
+          }
+        },
+        "scopes": {
+          "plugin:notes": {
+            "use": "inherit",
+            "id": "",
+            "overrides": {},
+            "behaviour": {
+              "tab-group": {
+                "position": "left"
+              },
+              "toolbar": {
+                "placement": "bottom"
+              }
+            }
+          }
+        },
+        "undo": null
+      },
+      "global": {
+        "id": "aurora",
+        "overrides": {},
+        "behaviour": {
+          "banner": {
+            "placement": "bottom"
+          }
+        }
+      },
+      "followingGlobal": {
+        "id": "aurora",
+        "overrides": {},
+        "from": "global",
+        "behaviour": {
+          "banner": {
+            "placement": "bottom"
+          }
+        }
+      },
+      "composed": {
+        "doc": {
+          "$axf": "appearance@1",
+          "slots": {
+            "layout": "windows-explorer",
+            "color-theme": "windows-light",
+            "style-theme": "windows",
+            "button": "windows",
+            "design-package": "hub-default",
+            "banner": "windows-titlebar"
+          },
+          "hidden": {
+            "toolbar": false
+          },
+          "settings": {
+            "axf.banners.group": "a",
+            "axf.tokens.button": "x",
+            "axf.appearance.overrides": {
+              "style-theme": "windows",
+              "color-theme": "windows-light"
+            },
+            "axf.behaviour.banner.placement": "top",
+            "axf.behaviour.tab-group.position": "left",
+            "axf.behaviour.tab-group.style": "boxed",
+            "axf.behaviour.toolbar.placement": "bottom"
+          },
+          "spacing": "compact"
+        },
+        "parts": {},
+        "behaviour": {
+          "banner": {
+            "placement": "top"
+          },
+          "tab-group": {
+            "position": "left",
+            "style": "boxed"
+          },
+          "toolbar": {
+            "placement": "bottom"
+          }
+        },
+        "skin": {
+          "id": "windows",
+          "overrides": {},
+          "from": "app",
+          "behaviour": {
+            "tab-group": {
+              "position": "left"
+            },
+            "toolbar": {
+              "placement": "bottom"
+            }
+          }
+        },
+        "scopeKey": "plugin:notes"
+      },
+      "composedApp": {
+        "doc": {
+          "$axf": "appearance@1",
+          "slots": {
+            "layout": "windows-explorer",
+            "color-theme": "windows-light",
+            "style-theme": "windows",
+            "button": "windows",
+            "design-package": "hub-default",
+            "banner": "windows-titlebar"
+          },
+          "hidden": {
+            "toolbar": false
+          },
+          "settings": {
+            "axf.banners.group": "a",
+            "axf.tokens.button": "x",
+            "axf.appearance.overrides": {
+              "style-theme": "windows",
+              "color-theme": "windows-light"
+            },
+            "axf.behaviour.banner.placement": "top",
+            "axf.behaviour.tab-group.position": "bottom",
+            "axf.behaviour.tab-group.style": "boxed"
+          },
+          "spacing": "compact"
+        },
+        "parts": {},
+        "behaviour": {
+          "banner": {
+            "placement": "top"
+          },
+          "tab-group": {
+            "position": "bottom",
+            "style": "boxed"
+          }
+        },
+        "skin": {
+          "id": "windows",
+          "overrides": {},
+          "from": "app",
+          "behaviour": {
+            "tab-group": {
+              "position": "bottom"
+            }
+          }
+        },
+        "scopeKey": "app"
+      },
+      "skin1ReadsAsSkin2": {
+        "normalized": {
+          "layoutTheme": "windows-explorer",
+          "colorTheme": "windows-light",
+          "styleTheme": "windows",
+          "assets": {
+            "button": "windows",
+            "banner": "windows-titlebar"
+          },
+          "preview": {
+            "caption": "Windows"
+          },
+          "extras": {
+            "spacing": "compact",
+            "hidden": {
+              "toolbar": false
+            }
+          }
+        },
+        "composedPicks": {},
+        "resolvedIsDefaults": true
+      },
+      "skin2": {
+        "layoutTheme": "windows-explorer",
+        "colorTheme": "windows-light",
+        "styleTheme": "windows",
+        "assets": {
+          "button": "windows",
+          "banner": "windows-titlebar"
+        },
+        "behaviour": {
+          "banner": {
+            "placement": "bottom"
+          },
+          "tab-group": {
+            "position": "bottom"
+          }
+        },
+        "preview": {
+          "caption": "Windows"
+        },
+        "extras": {
+          "spacing": "compact",
+          "hidden": {
+            "toolbar": false
+          }
+        }
+      },
+      "skin2Errors": [
+        "data.behaviour.banner.placement must be one of top, bottom",
+        "data.behaviour.nope: not a registered asset type",
+        "data.behaviour.tab-group must be an object (axis → value)"
+      ],
+      "skinOff": {}
     }
   }
 }

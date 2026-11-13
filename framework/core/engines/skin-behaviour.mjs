@@ -99,12 +99,12 @@ export function checkAxis(type, name, raw) {
   return { axis: errors.length ? null : axis, errors };
 }
 
-/** The behaviour axes of a type, checked, declaration order; a type with none (or only bad ones) gives {}. */
+/** The behaviour axes of a type, checked, declaration order; a type with none (or only bad ones, or an `of` naming no registered type) gives {}. */
 export function behaviourAxes(type, spec, targets = {}) {
   const out = {};
   for (const [name, raw] of Object.entries(rawAxes(type, spec, targets))) {
     const { axis } = checkAxis(type, name, raw);
-    if (axis) out[name] = axis;
+    if (axis && !(axis.field && axis.of && isObj(spec) && !spec[axis.of])) out[name] = axis;
   }
   return out;
 }
@@ -118,10 +118,10 @@ export function behaviourDeclarationErrors(type, spec, targets = {}) {
   const t = isObj(spec) ? spec[type] : null;
   if (isObj(t) && 'behaviour' in t && !isObj(t.behaviour)) out.push(`${type}: behaviour must be an object (axis → declaration)`);
   const raw = rawAxes(type, spec, targets);
-  for (const [name, r] of Object.entries(raw)) out.push(...checkAxis(type, name, r).errors);
-  for (const axis of Object.values(behaviourAxes(type, spec, targets))) {
-    const of = axis.of ?? type;
-    if (axis.field && isObj(spec) && !spec[of]) out.push(`${type}.behaviour.${axis.name}: of "${of}" is not a registered asset type`);
+  for (const [name, r] of Object.entries(raw)) {
+    const { axis, errors } = checkAxis(type, name, r);
+    out.push(...errors);
+    if (axis?.field && axis.of && isObj(spec) && !spec[axis.of]) out.push(`${type}.behaviour.${name}: of "${axis.of}" is not a registered asset type`);
   }
   return out;
 }
@@ -278,7 +278,7 @@ export function applyBehaviourToAsset(type, data, picked, spec, targets = {}) {
     const v = normalizeAxisValue(a, p[a.name]);
     if (v === undefined) continue;
     const back = a.map ? Object.entries(a.map).filter(([, to]) => to === v).map(([from]) => from) : [];
-    out[a.field] = back.length === 1 && !(a.kind === 'choice' && a.values.includes(v)) ? back[0] : v;
+    out[a.field] = back.length === 1 ? back[0] : v;
   }
   return out;
 }
