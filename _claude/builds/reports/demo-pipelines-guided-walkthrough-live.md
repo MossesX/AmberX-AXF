@@ -37,7 +37,7 @@ See the README table "Pipelines mode". In short:
 
 - `node apps/console-web/plugins/demonstration-designer/test.mjs`: 31 checks (9 new: library, timeline, player, filter, voice, deep link, designer store, a real live run on test-sandbox, the pipeline CLI).
 - `python3 apps/console-web/plugins/demonstration-designer/server_test.py`: 26 checks (16 new pipeline routes).
-- `pipelines.e2e.mjs`: see the e2e line below.
+- `pipelines.e2e.mjs` (Playwright on the built console, `DD_E2E_PORT` / `DD_E2E_SHOTS`): 18 checks passed: deep link opens Pipelines, 7 demos listed, Play brings up the walkthrough over the console, lines stream, skip moves chapter, the walkthrough stays up while the console follows to the chapter's screen (reported chapter 2 = build-orchestrator), six kinds colour-coded, kind filter, float, full screen, state reported, stop, no page errors; phone autoplay deep link, no page errors.
 - check-theme, check-controls, check-toolbars, check-chrome-assets, check-console-control, plugin-lifecycle check: pass. `tsc --noEmit`: pass.
 
 ## Decisions taken without asking
@@ -49,5 +49,6 @@ See the README table "Pipelines mode". In short:
 
 ## Open
 
-- UI Review: desktop and phone shots submitted (see PR).
+- UI Review `r-20261113-njy0j01` (6 shots, desktop + phone; single option: dock / float / full are a run-time switch, all shown): waiting for Brett.
+- A vite preview left by another session holds port 7098 (pid 2750069, from the full-api build's worktree); not touched. The e2e now runs vite in its own process group so it never leaves one behind.
 - Android twin deferred (PORTING.md).

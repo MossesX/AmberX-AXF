@@ -37,13 +37,14 @@ const cli = (...args) => {
 };
 let reported = null;
 
-const server = spawn('npx', ['vite', 'preview', '--host', '127.0.0.1', '--port', String(PORT), '--strictPort'], { cwd: APP, stdio: 'ignore' });
-process.on('exit', () => { try { server.kill('SIGTERM'); } catch { /* gone */ } });
+// its own process group, so stopping it stops vite too (npx would leave the preview behind)
+const server = spawn('npx', ['vite', 'preview', '--host', '127.0.0.1', '--port', String(PORT), '--strictPort'], { cwd: APP, stdio: 'ignore', detached: true });
+process.on('exit', () => { try { process.kill(-server.pid, 'SIGTERM'); } catch { /* gone */ } });
 let browser;
 try {
   let up = false;
-  for (let i = 0; i < 60 && !up; i++) { try { up = (await fetch(`http://127.0.0.1:${PORT}/`)).ok; } catch { await sleep(500); } }
-  ok(up, `vite preview on :${PORT}`);
+  for (let i = 0; i < 60 && !up; i++) { try { up = (await fetch(`http://127.0.0.1:${PORT}/`)).ok; } catch { /* not up */ } if (!up) await sleep(500); }
+  ok(up, `vite preview on :${PORT} (is dist/ built, is the port free? DD_E2E_PORT picks another)`);
   browser = await playwright.chromium.launch(process.env.PW_CHROMIUM ? { executablePath: process.env.PW_CHROMIUM } : {});
   const shoot = async (page, name) => { if (!SHOTS) return; mkdirSync(SHOTS, { recursive: true }); await page.screenshot({ path: join(SHOTS, name) }); };
   const open = async (viewport) => {
