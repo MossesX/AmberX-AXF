@@ -8,49 +8,71 @@ Build `skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-ski
 | Phase | Model | What |
 | --- | --- | --- |
 | Fable phase 1 | Fable | skin-switch@1 engine (`framework/core/engines/skin-switch.mjs`): use / back-to-skin / restore-default / undo per scope (hub, app:<id>, ui:<view>, plugin:<id>), one undo record in the look document; fixture `spec/fixtures/skin-switch.json`, check `spec/check-skin-switch.mts` (CI); Kotlin twin deferred in PORTING.md |
-| Opus phase 1, s1 | Opus | Removable plugin `apps/console-web/plugins/skin-gallery` (shown as **Skins**): plugin.json, install / uninstall / hooks, help, README; `skin-gallery.mjs` CLI over the engine and the framework skins CLI's documents (no second store); REST routes; plugin-commands@1 auto commands; `test.py` (16 checks) |
-| Opus phase 1, s2 | Opus | Gallery screen, live preview (desktop / phone frame, `rt.previewSkin`, nothing saved until Use skin), scope TabGroup with screen / plugin picker, Use skin / Back to skin / Restore to Default (confirm, undoable) / Undo toolbar, banner quick switcher (`KNOWN_BANNERS`) |
+| Opus phase 1 | Opus | Removable plugin `apps/console-web/plugins/skin-gallery` (shown as **Skins**): manifest, install / uninstall / hooks, help, README, CLI over the engine, REST routes, first gallery screen and banner switcher |
+| Opus phase 2 (s3–s20) | Opus | `notify.json` and a help.json fix; coverage per skin, `POST scope` (Inherit / Follow hub), `GET apps`, settings route; named MCP commands; `skin.*` console actions for voice; screen split into SkinsScreen (SkinScope root) / ScopePicker / SkinActions (Undo snackbar) / SkinPreview (desktop + phone side by side); deep links through `console_open … focus`; banner chip with popover; context menu; settings sub-tab; AppearancePanel through the skin-switch@1 service; 3 + 3 UI Review options; screenshots; `KNOWN_BANNERS` fix |
 
-Folder name: `skin-gallery`, not `skins`. "skins" is a common key across the repo (theme-manager's `skins` field),
-so the lifecycle stale-reference check flagged it; the user-facing name stays "Skins".
+Folder name: `skin-gallery`, not `skins` (phase 1's decision). "skins" is a common key across the repo, so the
+lifecycle stale-reference check flags it. The name people see is still "Skins". This phase kept the folder, so the steps' `skins/…`
+paths are `skin-gallery/…`, the routes live in `server/__init__.py`, and the CLI is `skin-gallery.mjs`.
 
 ## How every feature is reached
 
-| Feature | Deep link | REST (`/api/plugins/skin-gallery/`) | MCP / `axf` CLI (plugin commands) | Local CLI | Voice (AmberX) |
+REST base: `/api/plugins/skin-gallery/`. MCP tools are `skin-gallery_<command>` (plugin-commands@1); the `axf` CLI is
+`axf skin-gallery <command>`; the local CLI is `node apps/console-web/plugins/skin-gallery/skin-gallery.mjs`.
+Voice (AmberX) runs the console actions; it can also run the plugin commands.
+
+| Feature | Deep link (`console_open {kind: screen, target: skin-gallery, focus}`) | REST | MCP / `axf skin-gallery` | Local CLI | Voice / console action |
 | --- | --- | --- | --- | --- | --- |
-| Open the gallery | `#/skin-gallery`, `console_open {kind: screen, target: skin-gallery}` | `GET open?skin=&scope=` | `skin-gallery open` | `skin-gallery.mjs open [<skin>] [--scope]` | "open skins" |
-| List skins | — | `GET skins` | `skin-gallery skins` | `skin-gallery.mjs list` | plugin command |
-| Scopes | `?scope=hub \| app \| ui:<v> \| plugin:<id>` | `GET scopes` | `skin-gallery scopes` | `skin-gallery.mjs scopes` | plugin command |
-| State of a scope | — | `GET state?scope=` | `skin-gallery state --scope …` | `skin-gallery.mjs state --scope …` | plugin command |
-| Preview a skin | `?skin=<id>&view=phone` | — (preview is screen only, by design: it saves nothing) | — | — | — |
-| Use skin | — | `POST use {skin, scope}` | `skin-gallery use --skin … --scope …` | `skin-gallery.mjs use <id> --scope …` | plugin command |
-| Back to skin | — | `POST back {scope, slot?}` | `skin-gallery back` | `skin-gallery.mjs back [<slot>]` | plugin command |
-| Restore to Default | — | `POST restore {scope}` | `skin-gallery restore` (confirm) | `skin-gallery.mjs restore --scope …` | plugin command |
-| Undo | — | `POST undo` | `skin-gallery undo` | `skin-gallery.mjs undo` | plugin command |
-| Quick switcher | banner (Banner settings → Quick skin switcher) | same routes (scope `app`) | same | same | same |
+| Open the gallery | no focus; hash `#/skin-gallery` | `GET open` | `open` | `open` | `skin.open` |
+| One skin picked / previewed | `skin/<id>`, `preview/<id>?view=phone` | `GET open?skin=&view=phone` | `open --skin --view` | `open <id> --view phone` | `skin.open <id>` |
+| Scope picker on a scope | `scope/<scope>` | `GET open?scope=` | `open --scope` | `open --scope` | `skin.open "" <scope>`, right-click Change skin here… (`skin.here:ui|plugin`) |
+| List skins (with coverage) | in the gallery | `GET skins` | `list` | `list` | via `list` command |
+| Apps / scopes | in the picker | `GET apps`, `GET scopes` | `apps`, `scopes` | `apps`, `scopes` | via commands |
+| State of a scope | in the picker | `GET state?scope=` | `state` | `state --scope` | via `state` command |
+| Use skin | toolbar, chip | `POST use {skin, scope}` | `use` | `use <id> --scope` | `skin.use <id> [scope]` |
+| Back to skin | toolbar, chip, Appearance | `POST back {scope, slot?}` | `back` | `back [slot] --scope` | `skin.back [scope] [slot]` |
+| Restore to Default | toolbar (tap to confirm), Appearance | `POST restore {scope}` | `restore` (confirm) | `restore --scope` | `skin.restore [scope]` |
+| Undo | toolbar, snackbar, chip, Appearance | `POST undo` | `undo` | `undo` | `skin.undo` |
+| Inherit / Follow hub | switch in the picker | `POST scope {scope, follow}` | `scope` | `scope <scope> follow\|own` | `skin.scope <scope> [own]` |
+| Settings (banner chip, default scope, undo window, preview viewport) | Settings → Plugins → Skins; chip right-click Settings… | `GET / POST settings` | `settings`, `set-settings` | `settings [<key> <value>]` | `skin.setting <key> <value>` |
+| Banner chip | Banner settings → Quick skin switcher; right-click Settings… / Change… / Move | same routes | same | same | same |
+
+The live preview is screen-only by design: it saves nothing (`rt.previewSkin`).
 
 ## Tests
 
-- `python3 apps/console-web/plugins/skin-gallery/test.py`: 16/16 (hub, app and plugin round trips, undo after
-  restore, second undo refused, unknown skin / bad scope refused, deep link).
-- `npx tsx framework/spec/check-skin-switch.mts`: 392 checks. `check-skin-coverage.mjs`: 55 types, 0 uncovered.
-- `tsc --noEmit` (console-web): clean. check-theme, check-controls, check-toolbars, check-chrome-assets: clean.
-- `plugin-lifecycle check skin-gallery`: only finding is the local, untracked `.axf-focus.json` watcher file.
-- `scripts/lazy-loader-check.mts`: fails on `project-switcher` missing from `KNOWN_BANNERS`. That was already
-  failing before this build; not changed here.
+- `python3 apps/console-web/plugins/skin-gallery/test.py`: 37/37 (list with coverage, state per scope, use → back →
+  restore → undo round trips at hub, app and plugin, Inherit / Follow hub, settings and their refusals, deep links,
+  unknown skin and bad scope refused).
+- `check-skin-switch.mts`: 392 checks. `check-skin-coverage.mjs`: 55 types, 0 uncovered.
+- `tsc --noEmit` (console-web): clean. Also clean or passing: check-theme, check-controls, check-toolbars,
+  check-chrome-assets, check-banner-widgets, plugin-commands check and test, glossary-index `catalog.mjs --check`, lazy-loader-check.
+- `uninstall.mjs --all`, then `plugin-lifecycle check skin-gallery --after-uninstall`: clean (the folder was restored
+  from git afterwards).
+- Found and fixed along the way: `project-switcher` was missing from `KNOWN_BANNERS` (lazy-loader-check failed on main).
 
-## Open (next phases)
+## UI Review
 
-The original 20-step split was replaced by a 3-step plan after the splitter failed. These items from it are still open:
+Both sets are waiting for Brett in UI Review (group "skins-plugin-…-ga - Nov 13 7:55 AM"):
 
-- Desktop and phone screenshots of the gallery, preview, scope picker and banner chip; UI Review submission with
-  3 layout choices for the gallery and the chip (s17, s19). Not submitted yet; the PR is not ready for review.
-- Plugin settings sub-tab content (show the banner chip, default scope, preview viewport) with API parity (s15).
-  Today the tab holds only the lifecycle panel, and the banner chip is always shown while the plugin is on.
-- Context-menu "Change skin here…" on view and plugin roots (s14).
-- AppearancePanel in framework/libs/settings calling skin-switch@1, plus an "Open Skins gallery" link found through
-  a capability check (s16).
-- Named console actions `skin.use / skin.back / skin.restore / skin.undo` for voice. Voice reaches the plugin
-  commands today.
-- Preview inside a framed copy of the app. The preview applies the skin to the live console and frames a sample
-  panel at phone width; it doesn't draw a separate rendering.
+- `r-20261113-e4671753`: gallery layout, 3 options (split = today's default, stage, list), plus previews and the scope
+  picker, desktop and phone.
+- `r-20261113-142d30e7`: banner chip, 3 options (name = today's default, icon, scope).
+
+The option assets are in `apps/console-web/plugins/skin-gallery/assets/{container,badge}/`, and the choices JSON in `choices/`.
+Shots are in `_claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga/shots/`.
+They were taken on a local console with no hub (`AXF_APPEARANCE_HUB=off`), on scratch look documents.
+
+## Gaps and choices made
+
+- **Scoped preview.** The preview frames show the picked skin through `rt.previewSkin`, which reskins the whole
+  console without saving anything. `SkinScope` and `InterfaceScope` resolve only saved looks, so drawing an unsaved
+  skin inside just one frame needs a runtime `skinScoped`-style preview hook. That is kernel work for Fable; it is
+  not in this build.
+- **`axf skins-ui`.** `axf <plugin>` dispatches by folder name and has no alias mechanism, so the CLI is
+  `axf skin-gallery …`. An alias field would be a plugin-commands@1 contract change (Fable).
+- **Banner chip shots.** The test console's banner was full, so the chip was folded into the overflow. The chip shots
+  show its popover, which now opens under the banner's right end when the chip has no box.
+- **AppearancePanel.** It goes through the skin-switch@1 service only when a library provides `axf.skin-switch@1`
+  (found by capability). Without the plugin, the runtime's own calls run as before.
+- **MCP tool names.** They are `skin-gallery_list`, `skin-gallery_use` and so on, not `skins_*`, because names come from the folder.
