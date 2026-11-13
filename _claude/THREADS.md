@@ -788,7 +788,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 18:30 UTC · `quick-settings-pinned-collapsible-pane` → queued (all) · foreign-write
 - 2026-11-13 18:30 UTC · `quick-settings-pinned-collapsible-pane` note (all) · orchestrator
 - 2026-11-13 18:30 UTC · `ui-manager-floating-window-to-select-any` added (0 steps) (all) · console
 - 2026-11-13 18:30 UTC · `ui-manager-floating-window-to-select-any` → queued, note (all) · console
@@ -1188,6 +1187,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 20:08 UTC · `per-toolbar-settings-fix-failing-chrome` added (0 steps) (all) · builds-live
 - 2026-11-13 20:06 UTC · `demo-pipelines-guided-walkthrough-live` s5 done (all) · orchestrator
 - 2026-11-13 20:06 UTC · `demo-pipelines-guided-walkthrough-live` s6 done (all) · orchestrator
+- 2026-11-13 20:08 UTC · `dispatcher-gate-never-launch-build` note (all) · orchestrator
 
 ## Token passes (log)
 
