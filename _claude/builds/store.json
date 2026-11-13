@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4300,
- "updatedAt": "2026-11-13T11:20:24.825Z",
+ "rev": 4301,
+ "updatedAt": "2026-11-13T11:20:39.804Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -184257,7 +184257,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T11:13:29.147Z",
-   "updatedAt": "2026-11-13T11:20:08.945Z",
+   "updatedAt": "2026-11-13T11:20:10.863Z",
    "builtAt": "",
    "notes": [
     {
@@ -184299,6 +184299,10 @@
     {
      "text": "Session on mossesx-max- stopped on its own with 20 steps left: back in Pending for Brett.",
      "at": "2026-11-13T11:20:08.945Z"
+    },
+    {
+     "text": "Headless run axf-drag-anything-by-api-and-voice-after-pr-556-land--lenny: brief only · start 13.7K tokens ($0.11) · cost $0.62 · 8 turns · 6 tools, MCP none",
+     "at": "2026-11-13T11:20:10.863Z"
     }
    ],
    "approvals": [],
@@ -184876,7 +184880,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
