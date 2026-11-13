@@ -74,6 +74,8 @@ export interface SettingsPanel {
   icon?: string;
   order?: number;
   module?: string;
+  /** the lowest settings level that shows it (simple | basic | developer | administrator); the asset's levelOf wins */
+  level?: string;
   render: () => unknown;
 }
 

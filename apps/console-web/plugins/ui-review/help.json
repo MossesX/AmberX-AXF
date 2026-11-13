@@ -61,10 +61,10 @@
         "kind": "button"
       },
       {
-        "target": "read-the-gate-api",
-        "title": "Read the gate API",
-        "text": "UI Review is not a gate: this reads GET /api/plugins/ui-review/gate ({gate: false, since, why}) and logs it. The same answer comes from MCP ui_review_gate, review.mjs gate and the ui-review.gate action.",
-        "kind": "button"
+        "target": "ui-review-is-a-merge-gate",
+        "title": "UI Review is a merge gate",
+        "text": "Off (the default): every UI Review item is still filed for you to look at, and no PR waits for it. On: a PR whose UI Review is waiting, has changes asked or is rejected waits in the merge queue until you approve it. Anyone may turn it off; only you turn it on. Same switch as the Claude setting UI Review gate, GET/POST /api/plugins/ui-review/gate, MCP ui-review_gate_get / ui-review_gate_set, review.mjs gate and voice uireview.gate.",
+        "kind": "field"
       },
       {
         "target": "more",

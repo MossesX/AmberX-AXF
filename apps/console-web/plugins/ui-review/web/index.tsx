@@ -52,7 +52,7 @@ export const plugin: AxfWebLibrary = {
   slots: { 'app.frame.cover': [{ id: 'ui-review.ask', order: 97, render: () => <AskClient /> }] },
   dialogs: { [ASK_DIALOG]: { title: 'How many options?', icon: 'layers', render: (p) => <AskDialog ask={p.ask as Parameters<typeof AskDialog>[0]['ask']} /> } },
   nav: { label: 'Plugins', items: [{ id: 'ui-review', label: 'UI Review', icon: 'eye', view: 'ui-review' }, { id: 'design-packs', label: 'Design packs', icon: 'palette', view: 'design-packs' }, { id: 'ui-screenshots', label: 'Screenshots', icon: 'monitor', view: 'ui-screenshots' }] },
-  settingsTabs: [{ id: FOLDER, label: 'UI Review', icon: 'eye', parent: 'plugins', order: 46, description: 'Optional feedback on the UI builds make. Not a gate: nothing waits on it.' }],
+  settingsTabs: [{ id: FOLDER, label: 'UI Review', icon: 'eye', parent: 'plugins', order: 46, description: 'Feedback on the UI builds make. Not a merge gate unless you switch it on: items are filed, PRs never wait.' }],
   settings: [{
     id: 'ui-review.prefs', label: 'UI Review', icon: 'eye', tab: FOLDER, order: 10,
     settings: [
@@ -64,7 +64,7 @@ export const plugin: AxfWebLibrary = {
       { key: KEYS.thumbs, label: 'Show the screens list', kind: 'toggle', default: true, description: 'The list of screens beside (on a phone: above) the preview.' },
     ],
   }],
-  settingsPanels: [{ id: 'ui-review.gate', tab: FOLDER, title: 'Not a gate', icon: 'info', order: 5, render: () => <GatePanel /> },
+  settingsPanels: [{ id: 'ui-review.gate', tab: FOLDER, title: 'Merge gate', icon: 'branch', order: 5, level: 'simple', render: () => <GatePanel /> },
     { id: 'ui-review.choices', tab: FOLDER, title: 'Choices', icon: 'layers', order: 15, render: () => <ChoicesPanel /> },
     { id: 'ui-review.lifecycle', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
 };

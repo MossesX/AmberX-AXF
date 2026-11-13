@@ -753,7 +753,7 @@ function TabBody({ id, all = false }: { id: string; all?: boolean }) {
   const groups = split.map((x) => x.shown).filter((g): g is SettingsGroup => !!g);
   const restGroups = split.map((x) => x.rest).filter((g): g is SettingsGroup => !!g);
   const allPanels = rt.settings.panelsIn(id).filter((p) => settingsShown(ui, p.id));
-  const panels = allPanels.filter((p) => !at || shownAtLevel(ui, p.id, at));
+  const panels = allPanels.filter((p) => !at || shownAtLevel(ui, p.id, at, p.level));
   const restPanels = at ? allPanels.filter((p) => !panels.includes(p)) : [];
   const panelNode = (p: SettingsPanel, icon: string) => <FlatSection anchor={`settings-panel:${p.id}`} title={p.title} icon={p.icon ?? tab?.icon ?? icon} collapsible={COLLAPSIBLE_PANELS.has(p.id)} defaultOpen={!COLLAPSIBLE_PANELS.has(p.id)}><div className="axf-settings__panel">{p.render() as ReactNode}</div></FlatSection>;
   const ordered = (ps: SettingsPanel[], gs: SettingsGroup[]) => [...ps.map((p) => ({ order: p.order ?? 100, tie: 0, key: `p:${p.id}`, node: panelNode(p, 'settings') })),
