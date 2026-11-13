@@ -31,6 +31,17 @@ Rules (`normAfter`, `validateStore`):
 - the migration is a no-op: nothing adds `after` to an older step. Absent and `[]` are kept distinct through
   normalisation, the orchestrator export and absorb, and the newer-wins merge.
 
+### 1a. `dependsOn`, `parallel` and `files`
+
+| Field | Values | Rule |
+|---|---|---|
+| `dependsOn` | `[stepId]`, input only | the same list under the splitter's and the API's name. `normStep` stores it as `after` (`after` wins when both are given); the store check refuses a stored `dependsOn`. `explicitAfter(step)` reads either. |
+| `parallel` | `auto` (default, not stored) / `never` | `never`: only the build's own session runs the step, even when every dependency is done (rebases, merges, releases, shared state). The planner skips it; `isParallelStep` is false. An unknown value is dropped on normalisation and named by the store check. |
+| `files` | `[path]` (existing field) | two steps that share a file never run at once. `fileClashes(build, step, { now, against })` lists the live-claimed steps (or the `against` steps) sharing a file with it; `readySteps` leaves such a step out; `claimStep` refuses it (`s3 files clash with s2 (path)`); the planner holds it back with the same reason and never launches two clashing steps in one round. A step with no files never clashes. |
+
+A step is a **parallel candidate** when it has an explicit list (`after` / `dependsOn`) and is not `parallel: never`.
+Steps with no list run in order, as before.
+
 ## 2. Claims (`claim`)
 
 `claim: { runId, slot, account, branch, at, model, expiresAt }` is the session working the step right now.

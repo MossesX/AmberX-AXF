@@ -87,10 +87,24 @@
     "updatedAt",
     "origin",
     "after",
+    "parallel",
     "claim"
   ],
   "stepDependencies": {
     "since": "2026-11-13",
+    "dependsOn": {
+      "type": "string[] | absent (input only)",
+      "note": "the same list under the splitter's and the API's name; normalisation stores it as `after` (`after` wins when both are given). Never on disk: the store check refuses a stored `dependsOn`."
+    },
+    "parallel": {
+      "type": "'auto' | 'never' | absent",
+      "absent": "auto: the planner may run the step in a parallel session when it has an explicit `after` list and no file clash",
+      "never": "only the build's own session runs it, even when its dependencies are done (rebases, merges, releases, shared state)",
+      "stored": "only when 'never'"
+    },
+    "files": {
+      "note": "an existing step field; two steps that share a file never run at once. A step whose files overlap a step with a live claim is held back (readySteps / fileClashes), and auto-queue skips a Pending build while a running build is on one of its files."
+    },
     "after": {
       "type": "string[] | absent",
       "items": "step ids of the same build",

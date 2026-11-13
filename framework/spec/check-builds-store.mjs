@@ -286,6 +286,23 @@ t('the orchestrator export carries after and claim, and a write from older code 
   const back = c.absorbOrchestrator(s, 'all', old, { now: '2026-11-13T11:00:00.000Z', by: 'test' }).builds[0];
   assert.deepEqual(back.steps[2].after, ['s1', 's2']); assert.equal(back.steps[2].note, 'edited by old code'); assert.equal(back.steps[1].claim.runId, 'run-1');
 });
+t('dependsOn is an input alias stored as after; parallel is kept only as never; the export and the merge carry it', () => {
+  const b = c.normBuild({ id: 'alias', title: 'A', profiles: ['all'], order: { all: 0 }, steps: [
+    step('s1', 'a', { parallel: 'auto' }), step('s2', 'b', { dependsOn: ['s1'], parallel: 'never' }), step('s3', 'c', { dependsOn: ['s1'], after: [], parallel: 'maybe' }),
+  ] }, { now: at });
+  assert.equal('parallel' in b.steps[0], false, 'auto is the default and is not stored');
+  assert.deepEqual(b.steps[1].after, ['s1']); assert.equal('dependsOn' in b.steps[1], false); assert.equal(b.steps[1].parallel, 'never');
+  assert.deepEqual(b.steps[2].after, [], 'after wins over dependsOn when both are given'); assert.equal('parallel' in b.steps[2], false, 'an unknown mode is dropped');
+  const s = { ...c.emptyStore(at), builds: [b] };
+  assert.deepEqual(c.validateStore(s).errors, []);
+  const bad = JSON.parse(JSON.stringify(s)); bad.builds[0].steps[0].dependsOn = ['s2']; bad.builds[0].steps[1].parallel = 'sometimes';
+  const msgs = c.validateStore(bad).errors.map((e) => `${e.path} ${e.message}`).join('\n');
+  assert.match(msgs, /steps\[0\]\.dependsOn is an input alias/); assert.match(msgs, /steps\[1\]\.parallel "sometimes" is not one of auto, never/);
+  const doc = c.projectOrchestrator(s, 'all');
+  assert.equal(doc.builds[0].steps[1].parallel, 'never'); assert.equal('parallel' in doc.builds[0].steps[0], false);
+  const older = JSON.parse(JSON.stringify(b)); delete older.steps[1].parallel; older.steps[1].updatedAt = '2026-10-30T09:00:00.000Z';
+  assert.equal(m.mergeBuild(older, b).steps[1].parallel, 'never');
+});
 t('newer-wins merge: a released claim on the newer copy wins; a claim on the newer copy survives an older copy without one', () => {
   const a = depBuild(); const b = JSON.parse(JSON.stringify(a));
   delete b.steps[1].claim; b.steps[1].updatedAt = '2026-11-13T12:00:00.000Z'; b.steps[1].rev = 2;

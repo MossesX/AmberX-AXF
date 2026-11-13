@@ -30,6 +30,9 @@
  *   pickedAt   ISO of the final account decision (the moment the build's turn came in the Queue)
  *   heldAt, heldBy, heldWhy  On hold (Brett, Nov 10 2026: "Make a hold status … leave in queue on hold"): the build stays
  *              in the Queue, keeps its place, and the dispatcher skips it until it is released. '' = not held.
+ *   maxParallel  parallel step sessions this build may have at once beyond its own (0 = the planner's default, 3)
+ *   budgetUsd, spentUsd  this build's API spend cap and what its API runs have cost so far (0 = no cap / nothing spent);
+ *              an API launch that would pass the cap waits, subscriptions are never counted
  *
  * The orchestrator's tabs (Brett, Nov 10 2026: "Tabs: pending, active, incomplete, complete, errors, queue"): tabOf().
  *
@@ -45,15 +48,24 @@
  *                     A claim lives CLAIM_TTL_MS from `at` (expiresAt); past it the step is ready again (a session that
  *                     died without releasing). Ticking a step done releases its claim. `branch` is the parallel step's
  *                     worktree branch (<build-branch>--s<n>) or the build branch for a sequential step.
- * Helpers: normAfter / normClaim (shape), dependsOn(build, step) (the resolved list, implicit sequential included),
- * claimLive(claim, now), stepBranch(build, step).
+ *   dependsOn [stepId]  the same list under the splitter's and the API's name: accepted on input and stored as `after`
+ *                     (normStep folds it; `after` wins when both are present). One field on disk, two spellings in.
+ *   parallel  'auto' | 'never'  may the planner run this step in a parallel session? absent = auto: yes, when it has an
+ *                     explicit list and no file clash. 'never' = only the build's own session runs it (a step that
+ *                     rebases, merges, releases or touches shared state) even when its dependencies are done.
+ *   files     [path]  (an existing step field) what the step touches. Two steps that share a file never run at once:
+ *                     a step whose files overlap a step with a live claim is held back (fileClashes).
+ * Helpers: normAfter / normClaim / normParallel (shape), dependsOn(build, step) (the resolved list, implicit sequential
+ * included), claimLive(claim, now), stepBranch(build, step), fileClashes(build, step, { now, against }).
  * Engine (pure, every call returns a new record): readySteps(build, { now, model }) = open steps whose dependencies are
- * settled and that carry no live claim; claimStep(build, stepId, { runId, slot, account, branch, model, now, ttlMs })
- * takes one (refused: not ready, another run's live claim, a model above the pin); releaseStep(build, stepId, { runId,
- * note }) gives it back; expiredClaims(build, now) lists the dead ones.
+ * settled, that carry no live claim and that touch no file a live-claimed step touches; claimStep(build, stepId, { runId,
+ * slot, account, branch, model, now, ttlMs }) takes one (refused: not ready, a file clash, another run's live claim, a
+ * model above the pin); releaseStep(build, stepId, { runId, note }) gives it back; expiredClaims(build, now) lists the
+ * dead ones.
  * Planner: planFill({ slots, accounts, running, queue, pending, settings }) fills every free slot: parallel-ready steps of
  * running builds, then Queue builds by priority, then Pending builds when auto-queue is on; agent cap, VPS hard limit,
- * memory floor, per-account model limits and the API budget cap respected; every launch and every wait says why.
+ * memory floor, per-account model limits, the API budget cap and each build's own caps (pipeline.maxParallel,
+ * pipeline.budgetUsd / spentUsd) respected; every launch and every wait says why.
  */
 
 export const SCHEMA = 'build-pipeline@1';
@@ -74,8 +86,9 @@ const NAME_RE = /^[a-z0-9][a-z0-9-]{0,31}$/;
 export const accountName = (v) => (NAME_RE.test(str(v, 40)) ? str(v, 40) : '');
 
 export function emptyPipeline() {
-  return { queuedAt: '', queuedBy: '', account: '', session: '', slot: '', model: '', launchedAt: '', runs: 0, lastRun: null, split: null, splitRequested: '', note: '', route: '', dispatchedAt: '', planned: null, tried: [], pickedAt: '', heldAt: '', heldBy: '', heldWhy: '' };
+  return { queuedAt: '', queuedBy: '', account: '', session: '', slot: '', model: '', launchedAt: '', runs: 0, lastRun: null, split: null, splitRequested: '', note: '', route: '', dispatchedAt: '', planned: null, tried: [], pickedAt: '', heldAt: '', heldBy: '', heldWhy: '', maxParallel: 0, budgetUsd: 0, spentUsd: 0 };
 }
+const usd = (v) => { const n = Number(v); return Number.isFinite(n) && n > 0 ? Math.round(n * 100) / 100 : 0; };
 
 /** The record, every field in shape; null for nothing (a build the pipeline never touched carries none). */
 export function normPipeline(p) {
@@ -94,6 +107,7 @@ export function normPipeline(p) {
     planned: pl ? { model: str(pl.model, 20), account: accountName(pl.account), kind: pl.kind === 'api' ? 'api' : pl.kind === 'subscription' ? 'subscription' : '', at: iso(pl.at), why: str(pl.why, 300) } : null,
     tried: (Array.isArray(p.tried) ? p.tried : []).map(accountName).filter(Boolean).slice(0, 12), pickedAt: iso(p.pickedAt),
     heldAt: iso(p.heldAt), heldBy: iso(p.heldAt) ? str(p.heldBy, 80) : '', heldWhy: iso(p.heldAt) ? str(p.heldWhy, 300) : '',
+    maxParallel: Number.isInteger(p.maxParallel) && p.maxParallel > 0 ? Math.min(p.maxParallel, 12) : 0, budgetUsd: usd(p.budgetUsd), spentUsd: usd(p.spentUsd),
   };
   const empty = emptyPipeline();
   return JSON.stringify(out) === JSON.stringify(empty) ? null : out;
@@ -208,13 +222,39 @@ export function claimLive(c, now = Date.now()) {
   return Number.isFinite(t) && t > (typeof now === 'number' ? now : Date.parse(now));
 }
 
-/** The step ids `step` really waits on: its `after` list, or the previous step in the build when it has none. */
+/** The explicit dependency list a step carries (`after`, or its input alias `dependsOn`), or undefined for none. */
+export const explicitAfter = (step) => (Array.isArray(step?.after) ? step.after : Array.isArray(step?.dependsOn) ? step.dependsOn : undefined);
+/** A step with an explicit list is a parallel candidate; one without is sequential (the build's own session). */
+export const isParallelStep = (step) => explicitAfter(step) !== undefined && normParallel(step?.parallel) !== 'never';
+
+export const PARALLEL_MODES = ['auto', 'never'];
+/** `parallel` in shape: 'never' when set so, else undefined (absent = auto; the field is stored only when it says something). */
+export const normParallel = (v) => (v === 'never' ? 'never' : undefined);
+
+/** The step ids `step` really waits on: its explicit list, or the previous step in the build when it has none. */
 export function dependsOn(b, step) {
   const steps = b?.steps ?? [];
-  if (Array.isArray(step?.after)) return step.after.filter((id) => id !== step.id && steps.some((s) => s.id === id));
+  const ex = explicitAfter(step);
+  if (ex) return ex.filter((id) => id !== step.id && steps.some((s) => s.id === id));
   const i = steps.findIndex((s) => s === step || (step?.uid && s.uid === step.uid) || s.id === step?.id);
   return i > 0 ? [steps[i - 1].id] : [];
 }
+
+/** The files a step touches, in shape (its `files` list; '' entries dropped). */
+export const stepFiles = (step) => (Array.isArray(step?.files) ? step.files.map((f) => str(f, 300).trim()).filter(Boolean) : []);
+
+/**
+ * Steps `step` may not run beside: open steps of the same build that touch one of its files and are running now
+ * (a live claim at `now`), or any step in `against` (the planner passes the step the build's own session is on, and
+ * steps of other builds). [{ step: id, files: [shared…] }]; [] = no clash. A step with no files never clashes.
+ */
+export function fileClashes(b, step, { now = Date.now(), against = null } = {}) {
+  const mine = new Set(stepFiles(step));
+  if (!mine.size) return [];
+  const others = against ? list(against) : (b?.steps ?? []).filter((s) => s !== step && s.id !== step?.id && !settled(s) && claimLive(s.claim, now));
+  return others.map((s) => ({ step: s.id, files: stepFiles(s).filter((f) => mine.has(f)) })).filter((c) => c.files.length);
+}
+const clashLine = (c) => `files clash with ${c.map((x) => `${x.step} (${x.files.join(', ')})`).join('; ')}`;
 
 /** The branch a step is worked on: the build branch for a sequential step, `<build-branch>--<stepId>` for a parallel one. */
 export function stepBranch(b, step, { parallel = false } = {}) {
@@ -231,13 +271,15 @@ const nowMs = (now) => (typeof now === 'number' ? now : now ? Date.parse(now) : 
 
 /**
  * The steps a session may start now: open (not done, not skipped), every step they depend on settled (done or skipped;
- * dependsOn() resolves the implicit "previous step" of steps without `after`), and no live claim at `now`. `model`
- * narrows to steps pinned to that model. In list order, so the first ready step is the one the sequential rule picks.
+ * dependsOn() resolves the implicit "previous step" of steps without `after`), no live claim at `now`, and no file in
+ * common with a step that is running (live claim) right now (`files: false` skips that rule). `model` narrows to steps
+ * pinned to that model. In list order, so the first ready step is the one the sequential rule picks.
  */
-export function readySteps(b, { now = Date.now(), model = '' } = {}) {
+export function readySteps(b, { now = Date.now(), model = '', files = true } = {}) {
   const steps = b?.steps ?? [];
   return steps.filter((s) => !settled(s) && (!model || s.model === model) && !claimLive(s.claim, now)
-    && dependsOn(b, s).every((id) => settled(steps.find((x) => x.id === id))));
+    && dependsOn(b, s).every((id) => settled(steps.find((x) => x.id === id)))
+    && (!files || !fileClashes(b, s, { now }).length));
 }
 
 /** Steps whose claim has run out at `now` (a session that died without releasing): [{ step, claim }]. */
@@ -257,10 +299,12 @@ export function claimStep(b, stepId, { runId, slot = '', account = '', branch = 
   const open = dependsOn(b, s).filter((id) => !settled((b.steps ?? []).find((x) => x.id === id)));
   if (open.length) return { ok: false, why: `${s.id} waits on ${open.join(', ')}` };
   if (claimLive(s.claim, now) && s.claim.runId !== str(runId, 80).trim()) return { ok: false, why: `${s.id} is claimed by run ${s.claim.runId}${s.claim.account ? ` on ${s.claim.account}` : ''} until ${s.claim.expiresAt}` };
+  const clash = fileClashes(b, s, { now }).filter((c) => stepOf(b, c.step)?.claim?.runId !== str(runId, 80).trim());
+  if (clash.length) return { ok: false, why: `${s.id} ${clashLine(clash)}` };
   const m = CLAIM_MODELS.includes(model) ? model : s.model;
   if ((MODEL_RANK[m] ?? 0) > (MODEL_RANK[s.model] ?? 0)) return { ok: false, why: `${s.id} is pinned to ${s.model}: never launched on ${m} (raise the step first)` };
   const at = nowIso(now);
-  const claim = normClaim({ runId, slot, account, branch: branch || stepBranch(b, s, { parallel: Array.isArray(s.after) }), at, model: m, expiresAt: new Date(nowMs(now) + Math.max(60e3, Number(ttlMs) || CLAIM_TTL_MS)).toISOString() }, { model: s.model });
+  const claim = normClaim({ runId, slot, account, branch: branch || stepBranch(b, s, { parallel: isParallelStep(s) }), at, model: m, expiresAt: new Date(nowMs(now) + Math.max(60e3, Number(ttlMs) || CLAIM_TTL_MS)).toISOString() }, { model: s.model });
   const build = { ...b, steps: b.steps.map((x) => (x === s ? { ...x, claim, updatedAt: at } : x)), updatedAt: at };
   return { ok: true, build, claim, step: build.steps.find((x) => x.id === s.id) };
 }
@@ -331,11 +375,15 @@ function noAccountLine(accounts, model) {
  *   accounts  the pipeline's account views (pickAccount)                 settings  FILL_DEFAULTS overrides
  *   running   builds@1 records in Building (running / waiting)          queue     queued builds (any order)
  *   pending   pending builds (used only when settings.autoQueue)
- * Order: 1. ready steps of running builds that carry an explicit `after` list (a parallel step; a step without one is
- * sequential and belongs to the build's own session, as does the first ready step when no step is claimed yet);
- * 2. Queue builds by priority, then queue time; 3. Pending builds when auto-queue is on. Every launch takes one agent
+ * Order: 1. ready steps of running builds that carry an explicit `after` list and are not `parallel: never` (a step
+ * without a list is sequential and belongs to the build's own session, as does the first ready step when no step is
+ * claimed yet); a step that shares a file with the session's step or with one launched this round is held back, and a
+ * build never has more than its cap (pipeline.maxParallel, else maxParallelPerBuild) of parallel sessions;
+ * 2. Queue builds by priority, then queue time; 3. Pending builds when auto-queue is on: split (steps present), by
+ * priority then creation time, skipped while a running build is on one of their files. Every launch takes one agent
  * slot and one account slot on the step's / phase's pinned model (Fable only to accounts with Fable). Nothing is launched
- * under the memory floor, over the agent cap or the VPS hard limit, or past the API budget cap.
+ * under the memory floor, over the agent cap or the VPS hard limit, past the API budget cap or past a build's own
+ * budget (pipeline.budgetUsd).
  * Returns { launches: [{ kind, id, step, model, account, accountKind, rule, branch, why }], waits: [{ id, step?, why }],
  *           free, blocked } where `blocked` is the one reason nothing more fits ('' when slots simply ran out).
  */
@@ -350,30 +398,43 @@ export function planFill({ slots = {}, accounts = [], running = [], queue = [], 
   if (mem && mem.availGb != null && Number(mem.floorGb) > 0 && Number(mem.availGb) < Number(mem.floorGb)) blocked = `memory under the floor (${mem.availGb} GB free, floor ${mem.floorGb} GB)`;
   else if (free <= 0) blocked = slots?.hard?.max && Number(slots.hard.free) <= 0 ? `VPS hard build limit reached (${slots.hard.live ?? '?'}/${slots.hard.max} running)` : `no free agent slot (${slots?.used ?? '?'}/${slots?.cap ?? '?'} in use)`;
   let apiSpent = Number(st.budget?.spentUsd) || 0;
-  const take = (model, route, item) => {
+  const perLaunch = Number(st.budget?.perLaunchUsd) || 0;
+  const buildSpent = new Map(); // build id → API spend counted this round on top of pipeline.spentUsd
+  const take = (model, b, item) => {
+    const route = b?.pipeline?.route || '';
     if (blocked) { waits.push({ ...item, why: blocked }); return false; }
     if (launches.length >= st.maxLaunchesPerRound) { waits.push({ ...item, why: `round limit of ${st.maxLaunchesPerRound} launches reached` }); return false; }
     const pick = pickAccount(acc, model, { route, settings: st });
     if (!pick) { waits.push({ ...item, why: noAccountLine(acc, model) }); return false; }
-    if (pick.kind === 'api' && st.budget && Number(st.budget.capUsd) > 0 && apiSpent + (Number(st.budget.perLaunchUsd) || 0) > Number(st.budget.capUsd)) { waits.push({ ...item, why: `API budget cap reached ($${apiSpent.toFixed(2)} of $${Number(st.budget.capUsd).toFixed(2)})` }); return false; }
-    if (pick.kind === 'api') apiSpent += Number(st.budget?.perLaunchUsd) || 0;
+    if (pick.kind === 'api' && st.budget && Number(st.budget.capUsd) > 0 && apiSpent + perLaunch > Number(st.budget.capUsd)) { waits.push({ ...item, why: `API budget cap reached ($${apiSpent.toFixed(2)} of $${Number(st.budget.capUsd).toFixed(2)})` }); return false; }
+    const cap = usd(b?.pipeline?.budgetUsd); const spent = usd(b?.pipeline?.spentUsd) + (buildSpent.get(b?.id) ?? 0);
+    if (pick.kind === 'api' && cap > 0 && spent + perLaunch > cap) { waits.push({ ...item, why: `build budget cap reached ($${spent.toFixed(2)} of $${cap.toFixed(2)})` }); return false; }
+    if (pick.kind === 'api') { apiSpent += perLaunch; buildSpent.set(b?.id, (buildSpent.get(b?.id) ?? 0) + perLaunch); }
     pick.account.free -= 1; pick.account.running += 1; free -= 1;
     if (free <= 0) blocked = 'every agent slot is filled';
     launches.push({ ...item, model, account: pick.account.name, accountKind: pick.kind, rule: pick.rule });
     return true;
   };
+  // files other builds are on right now: every open step of a running build (and of each build launched this round)
+  const busy = new Map(); // file → build id
+  const occupy = (b) => { for (const s of openSteps(b)) for (const f of stepFiles(s)) if (!busy.has(f)) busy.set(f, b.id); };
+  const live = list(running).filter((b) => b && !b.deleted && (b.status === 'running' || b.status === 'waiting'));
+  for (const b of live) occupy(b);
   // 1. parallel-ready steps of running builds
-  for (const b of list(running)) {
-    if (!b || b.deleted || !(b.status === 'running' || b.status === 'waiting')) continue;
+  for (const b of live) {
     const ready = readySteps(b, { now });
     const claimed = (b.steps ?? []).filter((s) => claimLive(s.claim, now)).length;
     const mainTaken = claimed > 0 ? 0 : 1; // no claim anywhere: the build's own session is on the first ready step
-    const parallel = ready.filter((s, i) => Array.isArray(s.after) && !(mainTaken && i === 0));
+    const parallel = ready.filter((s, i) => isParallelStep(s) && !(mainTaken && i === 0));
+    const beside = mainTaken && ready[0] ? [ready[0]] : []; // steps started this round: no file of theirs may be touched twice
     const liveParallel = Math.max(0, claimed - 1); // one live claim is the build's own session
-    let room = Math.max(0, st.maxParallelPerBuild - liveParallel);
+    const cap = b.pipeline?.maxParallel > 0 ? b.pipeline.maxParallel : st.maxParallelPerBuild;
+    let room = Math.max(0, cap - liveParallel);
     for (const s of parallel) {
-      if (room <= 0) { waits.push({ id: b.id, step: s.id, why: `build at its parallel cap (${st.maxParallelPerBuild})` }); continue; }
-      if (take(s.model, b.pipeline?.route || '', { kind: 'step', id: b.id, step: s.id, branch: stepBranch(b, s, { parallel: true }), why: `ready step of a running build: ${dependsOn(b, s).length ? `after ${dependsOn(b, s).join(', ')}` : 'independent'}` })) room -= 1;
+      const clash = fileClashes(b, s, { now, against: beside });
+      if (clash.length) { waits.push({ id: b.id, step: s.id, why: clashLine(clash) }); continue; }
+      if (room <= 0) { waits.push({ id: b.id, step: s.id, why: `build at its parallel cap (${cap})` }); continue; }
+      if (take(s.model, b, { kind: 'step', id: b.id, step: s.id, branch: stepBranch(b, s, { parallel: true }), why: `ready step of a running build: ${dependsOn(b, s).length ? `after ${dependsOn(b, s).join(', ')}` : 'independent'}` })) { room -= 1; beside.push(s); }
     }
   }
   // 2. the Queue, by priority then queue time
@@ -381,13 +442,18 @@ export function planFill({ slots = {}, accounts = [], running = [], queue = [], 
   for (const b of q) {
     if (isHeld(b)) { waits.push({ id: b.id, why: `on hold${b.pipeline?.heldBy ? ` (${b.pipeline.heldBy})` : ''}` }); continue; }
     if (!openSteps(b).length) { waits.push({ id: b.id, why: b.steps?.length ? 'every step is done' : 'no steps yet: waiting for the split' }); continue; }
-    take(nextModel(b), b.pipeline?.route || '', { kind: 'build', id: b.id, step: readySteps(b, { now })[0]?.id ?? openSteps(b)[0].id, branch: stepBranch(b, null), why: `next in the Queue (${priorityOf(b)})` });
+    if (take(nextModel(b), b, { kind: 'build', id: b.id, step: readySteps(b, { now })[0]?.id ?? openSteps(b)[0].id, branch: stepBranch(b, null), why: `next in the Queue (${priorityOf(b)})` })) occupy(b);
   }
-  // 3. Pending, only when auto-queue is on
+  // 3. Pending, only when auto-queue is on: split builds whose files no running build is on
   if (st.autoQueue) {
-    const p = list(pending).filter((b) => b && !b.deleted && !b.hidden && b.status === 'pending' && openSteps(b).length)
+    const p = list(pending).filter((b) => b && !b.deleted && !b.hidden && b.status === 'pending')
       .sort((a, b) => prioRank(priorityOf(a)) - prioRank(priorityOf(b)) || str(a.createdAt).localeCompare(str(b.createdAt)));
-    for (const b of p) take(nextModel(b), b.pipeline?.route || '', { kind: 'pending', id: b.id, step: readySteps(b, { now })[0]?.id ?? openSteps(b)[0].id, branch: stepBranch(b, null), why: `auto-queue: Pending build taken (${priorityOf(b)})` });
+    for (const b of p) {
+      if (!openSteps(b).length) { waits.push({ id: b.id, why: b.steps?.length ? 'every step is done' : 'no steps yet: waiting for the split' }); continue; }
+      const shared = [...new Set(openSteps(b).flatMap(stepFiles))].filter((f) => busy.has(f));
+      if (shared.length) { waits.push({ id: b.id, why: `files clash with running build ${busy.get(shared[0])} (${shared.join(', ')})` }); continue; }
+      if (take(nextModel(b), b, { kind: 'pending', id: b.id, step: readySteps(b, { now })[0]?.id ?? openSteps(b)[0].id, branch: stepBranch(b, null), why: `auto-queue: Pending build taken (${priorityOf(b)})` })) occupy(b);
+    }
   } else if (list(pending).length && !blocked && free > 0) blocked = `${list(pending).length} Pending build${list(pending).length === 1 ? '' : 's'} wait for Brett (auto-queue is off)`;
   return { launches, waits, free, blocked, at: nowIso(now) };
 }

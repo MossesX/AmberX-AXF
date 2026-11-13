@@ -106,9 +106,14 @@ and auto-queue pending builds." Two optional fields on a step (builds@1, `framew
   Model-aware (`model` = the step's pinned model, never higher); a claim expires after a TTL (45 min) so a dead session
   frees its step; ticking a step done releases it. `branch` is the step's worktree branch for a parallel step
   (`<build-branch>--s<n>`) or the build branch.
+- **`dependsOn: [stepId]`** is the same list under the splitter's and the API's name: accepted on input, stored as `after`.
+- **`parallel: never`** keeps a step in the build's own session even when its dependencies are done (absent = auto).
+- **`files`** (the existing step field) also gates parallel runs: two steps that share a file never run at once, and
+  auto-queue skips a Pending build while a running build is on one of its files.
 
 The dispatcher's fill planner (`planFill`) uses them to put a ready step of a running build in every free slot before it
-takes the next Queue build, and Pending builds last when auto-queue is on.
+takes the next Queue build, and Pending builds last when auto-queue is on. Per build, `pipeline.maxParallel` caps its
+parallel sessions and `pipeline.budgetUsd` / `spentUsd` cap what its API runs may cost.
 
 ## Own Claude login per build (since Nov 5 2026)
 

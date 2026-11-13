@@ -47,7 +47,7 @@ import { normApproval, normRequest } from '../core/model-switch.mjs';
 import { mergeOrigin, normOrigin } from '../core/build-origin.mjs';
 import { effectivePriority, normPriority } from '../core/build-priority.mjs';
 import { normRef as normShippedRef } from '../core/shipped-manifest.mjs';
-import { dependsOn, normAfter, normClaim, normPipeline } from '../core/build-pipeline.mjs';
+import { PARALLEL_MODES, dependsOn, explicitAfter, normAfter, normClaim, normParallel, normPipeline } from '../core/build-pipeline.mjs';
 
 export const SCHEMA = 'builds@1';
 export const MODELS = ['Fable', 'Opus'];
@@ -84,7 +84,7 @@ export const slug = (t) => str(t, 80).toLowerCase().replace(/[^a-z0-9]+/g, '-').
 const ORCH_BUILD_KEYS = ['id', 'title', 'category', 'detail', 'status', 'hidden', 'source', 'pendingId', 'branch', 'pr', 'mergedAt', 'priority', 'createdAt', 'updatedAt', 'builtAt', 'notes', 'approvals', 'upgradeRequests', 'origin', 'steps'];
 const ORCH_STEP_KEYS = ['id', 'text', 'model', 'why', 'phase', 'group', 'estimate', 'files', 'checks', 'session', 'agent', 'skip', 'done', 'doneAt', 'note'];
 /** Optional step fields (Nov 13 2026, step dependencies): carried only when set, so an old step never gains them. */
-const ORCH_STEP_OPTIONAL = ['after', 'claim'];
+const ORCH_STEP_OPTIONAL = ['after', 'parallel', 'claim'];
 
 // ------------------------------------------------------------------ records
 
@@ -103,8 +103,10 @@ export function normStep(s, i = 0, ctx = {}) {
   const id = str(o.id, 40) || `s${i + 1}`;
   const model = MODELS.includes(o.model) ? o.model : 'Opus';
   // step dependencies (build-pipeline@1, Nov 13 2026): `after` only when the step carries a list (absent = sequential,
-  // the migration for every older step); a claim never outlives a done or skipped step
-  const after = normAfter(o.after, { self: id });
+  // the migration for every older step); `dependsOn` is the same list under its input name and is stored as `after`;
+  // `parallel` only when it says 'never'; a claim never outlives a done or skipped step
+  const after = normAfter(explicitAfter(o), { self: id });
+  const parallel = normParallel(o.parallel);
   const claim = o.done === true || o.skip === true ? null : normClaim(o.claim, { model });
   return {
     id,
@@ -126,6 +128,7 @@ export function normStep(s, i = 0, ctx = {}) {
     note: str(o.note, 1000),
     ...(str(o.fm).trim() ? { fm: str(o.fm, 80).trim() } : {}),
     ...(after ? { after } : {}),
+    ...(parallel ? { parallel } : {}),
     ...(claim ? { claim } : {}),
     rev: Number.isInteger(o.rev) && o.rev > 0 ? o.rev : 1,
     createdAt: str(o.createdAt, 40) || at,
@@ -326,6 +329,8 @@ export function validateStore(store) {
         if (!Array.isArray(s.after) || s.after.some((x) => typeof x !== 'string' || !x)) err(`${sa}.after`, 'must be a list of step ids');
         else for (const x of s.after) { if (x === s.id) err(`${sa}.after`, 'a step never waits on itself'); else if (!b.steps.some((o) => o?.id === x)) err(`${sa}.after`, `"${x}" is not a step of this build`); }
       }
+      if (s.dependsOn !== undefined) err(`${sa}.dependsOn`, 'is an input alias: the store keeps the list as `after`');
+      if (s.parallel !== undefined && !PARALLEL_MODES.includes(s.parallel)) err(`${sa}.parallel`, `"${s.parallel}" is not one of ${PARALLEL_MODES.join(', ')}`);
       if (s.claim !== undefined && s.claim !== null) {
         if (typeof s.claim !== 'object' || typeof s.claim.runId !== 'string' || !s.claim.runId) err(`${sa}.claim`, 'must be { runId, slot, account, branch, at, model, expiresAt } or absent');
         else if (s.done === true || s.skip === true) err(`${sa}.claim`, 'a done or skipped step carries no claim');
