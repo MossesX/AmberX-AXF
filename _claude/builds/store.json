@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4992,
- "updatedAt": "2026-11-13T20:54:07.448Z",
+ "rev": 4993,
+ "updatedAt": "2026-11-13T20:54:21.912Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -207710,7 +207710,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-13T20:46:35.586Z",
-     "updatedAt": "2026-11-13T20:52:55.897Z"
+     "updatedAt": "2026-11-13T20:53:40.038Z"
     },
     {
      "id": "s3",
@@ -208563,6 +208563,61 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-13T20:52:05.784Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "hotfix-desktop-console-draws-app-menu",
+   "title": "HOTFIX: desktop console draws app menu, banners and nav twice",
+   "category": "",
+   "detail": "Right after per-toolbar-settings-fix-failing-chrome landed on main (merge ec579ee23, 20:44 Nov 13) and the console redeployed, Brett's DESKTOP console shows TWO app menus, TWO banners and TWO navigation menus (the phone looks fine). Keep the per-toolbar/per-instance settings feature: fix forward, don't revert it. Likely cause: the per-instance chrome (ChromeContext.tsx / Overlays.tsx / chrome-settings-rules) now renders a per-instance copy of each chrome element in addition to the default one on wide layouts, or the merge kept both sides of a render block. Find it, render exactly one of each chrome element, add an e2e/visual test that counts app menus, banners and nav menus on desktop and phone (must be 1 each), run all tests, then LAND it on main immediately and redeploy the console. Note: commit 237a293af was an accidental revert that only re-added 24 lines to one file; check it and drop it if it's wrong.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-13T20:53:50.393Z",
+   "updatedAt": "2026-11-13T20:53:59.483Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "UPDATE: Brett chose to PULL the per-toolbar landing out of main first (a reverse-patch commit of e5639b79f..ec579ee23, excluding _claude, pushed about 20:55). So this hotfix must: start from claude/per-toolbar-settings-fix-failing-chrome, merge current main (which includes the pull-out commit, so revert that pull-out commit on this branch), fix the double app menu/banner/nav on desktop, prove it with the count test, then land the fixed per-toolbar settings back on main and redeploy.",
+     "at": "2026-11-13T20:53:59.483Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "there's two app menus, two banners, two navigation menus; I don't want to lose the toolbar settings",
+    "at": "2026-11-13T20:53:50.393Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 841
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 3,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

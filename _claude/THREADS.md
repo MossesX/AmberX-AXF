@@ -792,10 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 19:04 UTC · `console-app-part-3-native-bridge-mic` branch claude/console-app-part-3-native-bridge-mic, PR #633 (all) · builds-live
-- 2026-11-13 19:07 UTC · `ui-manager-floating-window-to-select-any` s2 done (all) · orchestrator
-- 2026-11-13 19:07 UTC · `land-project-duplicate-boilerplate` note (all) · orchestrator
-- 2026-11-13 19:07 UTC · `ui-manager-floating-window-to-select-any` → pending, note (all) · pipeline
 - 2026-11-13 19:07 UTC · `console-app-part-3-native-bridge-mic` → queued, note (all) · pipeline
 - 2026-11-13 19:08 UTC · `land-project-duplicate-boilerplate` → running, note (all) · pipeline
 - 2026-11-13 19:08 UTC · `land-project-duplicate-boilerplate` branch claude/land-project-duplicate-boilerplate (all) · pipeline
@@ -1192,6 +1188,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 20:52 UTC · `icon-map-icon-packs-every-icon-badge-app` note (all) · orchestrator
 - 2026-11-13 20:53 UTC · `icon-map-icon-packs-every-icon-badge-app` note (all) · orchestrator
 - 2026-11-13 20:53 UTC · `own-token-sets-for-grids-and-tab-groups` note (all) · orchestrator
+- 2026-11-13 20:53 UTC · `auto-land-every-finished-build-lands` s2 done (all) · foreign-write
+- 2026-11-13 20:53 UTC · `hotfix-desktop-console-draws-app-menu` added (0 steps) (all) · console
+- 2026-11-13 20:53 UTC · `hotfix-desktop-console-draws-app-menu` → queued, note (all) · console
+- 2026-11-13 20:53 UTC · `hotfix-desktop-console-draws-app-menu` note (all) · claude-voice
 
 ## Token passes (log)
 
