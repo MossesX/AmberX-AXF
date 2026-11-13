@@ -788,7 +788,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 18:46 UTC · `console-app-part-2-native-floating-2` note (all) · orchestrator
 - 2026-11-13 18:47 UTC · `restore-asset-designer-plugin-merged-nov` note (all) · orchestrator
 - 2026-11-13 18:48 UTC · `change-to-one-to-do-notes-and-tasks-plugin-pr-527-brett-notes-tasks-and-to` → complete, merged, note (all) · reconciler
 - 2026-11-13 18:48 UTC · `transparency-token-works-every-dialog` s2 done (all) · orchestrator
@@ -1188,6 +1187,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 20:30 UTC · `per-toolbar-settings-fix-failing-chrome` PR #650 (all) · builds-live
 - 2026-11-13 20:30 UTC · `skin-animations-swatches-skin-switch` note (all) · orchestrator
 - 2026-11-13 20:30 UTC · `dispatcher-gate-never-launch-build` → built, PR #651 (all) · builds-live
+- 2026-11-13 20:30 UTC · `per-toolbar-settings-fix-failing-chrome` s1 done (all) · orchestrator
 
 ## Token passes (log)
 
