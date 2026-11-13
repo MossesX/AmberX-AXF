@@ -78,6 +78,7 @@ import copy
 import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
+from datetime import datetime
 from pathlib import Path
 from typing import Any, Callable
 from urllib.parse import quote
@@ -107,6 +108,8 @@ STATUS_PATHS = "_claude/"          # the only paths they touch
 LAND_SCRIPT = Path(__file__).resolve().parent.parent / "land" / "land.mjs"
 # merge queue (Nov 4 2026): land/merge-queue.mjs on the VPS host runs it every auto-land round; commands go through it too
 QUEUE_SCRIPT = Path(__file__).resolve().parent.parent / "land" / "merge-queue.mjs"
+# lander (Nov 12 2026): land/lander.mjs, axf-lander.service on the VPS host, merges ready PRs one at a time; it replaces the queue
+LANDER_SCRIPT = Path(__file__).resolve().parent.parent / "land" / "lander.mjs"
 QUEUE_DEPTH_MAX = 6
 QUEUE_MODES = ("batch", "stack")  # land/merge-queue-core.mjs QUEUE_MODES
 BATCH_SIZE_MAX = 20  # land/merge-queue-core.mjs BATCH_SIZE_MAX
@@ -226,6 +229,10 @@ class Pushes:
                 # Merge queue (Nov 4 2026, Brett: "We're paying to do these CI checks twice."): each ready PR is tested
                 # once on top of main + the PRs ahead of it and merges with no retest. On unless switched off.
                 "mergeQueue": raw.get("mergeQueue") is not False,
+                # Lander (Nov 12 2026, Brett: "Retire the old merge queue (it doesn't work)"): land/lander.mjs merges ready PRs
+                # one at a time through the main gate and finished builds merge themselves. On unless switched off; while it
+                # is on the merge queue stays retired whatever mergeQueue says (queue_on).
+                "lander": raw.get("lander") is not False,
                 "queueDepth": raw["queueDepth"] if isinstance(raw.get("queueDepth"), int) and not isinstance(raw.get("queueDepth"), bool) and 1 <= raw["queueDepth"] <= QUEUE_DEPTH_MAX else 3,
                 # Batch mode (Nov 10 2026, Brett: "Everything needs to go into the merge queue so we can make one build out of
                 # it before we send it to CI"): the ready PRs are combined into one commit, CI runs once, it lands as one.
@@ -234,7 +241,7 @@ class Pushes:
                 "batchSize": raw["batchSize"] if isinstance(raw.get("batchSize"), int) and not isinstance(raw.get("batchSize"), bool) and 1 <= raw["batchSize"] <= BATCH_SIZE_MAX else 8}
 
     def save_config(self, body: Any) -> dict[str, Any]:
-        if not isinstance(body, dict) or set(body) - {"repos", "hidden", "claudeOnFail", "claudeShell", "autoMerge", "autoPr", "autoLand", "landWaitUi", "mergeQueue", "queueDepth", "queueMode", "batchSize"}:
+        if not isinstance(body, dict) or set(body) - {"repos", "hidden", "claudeOnFail", "claudeShell", "autoMerge", "autoPr", "autoLand", "landWaitUi", "mergeQueue", "lander", "queueDepth", "queueMode", "batchSize"}:
             raise HTTPException(400, "send {repos: [owner/name …], hidden: [\"owner/name:branch\" …]}")
         cur = self.config()
         repos, hidden = cur["repos"], cur["hidden"]
@@ -251,7 +258,7 @@ class Pushes:
                     raise HTTPException(400, f"hidden entries look like owner/name:branch[@sha] ({_text(e, 80)!r})")
             hidden = list(dict.fromkeys(h))
         flags = {}
-        for k in ("claudeOnFail", "claudeShell", "autoMerge", "autoPr", "autoLand", "landWaitUi", "mergeQueue"):
+        for k in ("claudeOnFail", "claudeShell", "autoMerge", "autoPr", "autoLand", "landWaitUi", "mergeQueue", "lander"):
             if k in body and not isinstance(body[k], bool):
                 raise HTTPException(400, f"{k} is true or false")
             flags[k] = body[k] if k in body else cur[k]
@@ -270,6 +277,11 @@ class Pushes:
         return self.config()
 
     # ---- GitHub
+    def queue_on(self, cfg: dict[str, Any] | None = None) -> bool:
+        """The retired merge queue runs only when Brett switched the lander off and the queue on."""
+        cfg = cfg or self.config()
+        return bool(cfg["mergeQueue"]) and not cfg["lander"]
+
     def gh(self) -> github.GitHubClient:
         """The client from axf.github@1 (axHub first, the local GITHUB_TOKEN as the fallback; Settings → Plugins →
         Systems check → GitHub route), else a plain local-token client when the capability isn't installed. Reads the
@@ -394,6 +406,73 @@ class Pushes:
             raise HTTPException(400, _text(r.stderr.strip() or r.stdout.strip() or f"land.mjs {cmd} failed"))
         return {"ok": True, "command": cmd, "build": body["build"], **self.land()}
 
+    # ---- lander (land/lander.mjs, axf-lander.service on the VPS host, writes lander.json; commands write lander-control.json)
+    def lander(self) -> dict[str, Any]:
+        """What is merging, ready, blocked and merged, the progress line and the conflict fixer's Claude account."""
+        st = storage.read_json(data_dir() / "lander.json", {}) or {}
+        lst = lambda k: [x for x in st.get(k, []) if isinstance(x, dict)] if isinstance(st.get(k), list) else []  # noqa: E731
+        items = lst("items")
+        cur = st.get("current") if isinstance(st.get("current"), dict) else None
+        prog = st.get("progress") if isinstance(st.get("progress"), dict) else {}
+        beat = st.get("heartbeat") if isinstance(st.get("heartbeat"), str) else ""
+        try:
+            alive = bool(beat) and time.time() - datetime.fromisoformat(beat.replace("Z", "+00:00")).timestamp() < 600
+        except ValueError:
+            alive = False
+        blocked = [x for x in items if x.get("state") == "blocked"]
+        acc = st.get("account") if isinstance(st.get("account"), dict) else {}
+        return {"$axf": "lander@1", "on": st.get("on") is not False, "drain": st.get("drain") is True, "stop": st.get("stop") is True,
+                "alive": alive, "heartbeat": beat, "startedAt": _text(st.get("startedAt"), 40), "restarts": st.get("restarts") if isinstance(st.get("restarts"), int) else 0,
+                "repo": UI_REVIEW_REPO, "at": st.get("at"), "current": cur, "items": items, "merged": lst("merged")[-20:],
+                "account": {"account": _text(acc.get("account"), 40), "label": _text(acc.get("label"), 40), "why": _text(acc.get("why"), 300)},
+                "progress": {"text": _text(prog.get("text"), 200), "now": _text(prog.get("now"), 80), "ready": prog.get("ready", 0), "blocked": prog.get("blocked", 0), "merged": prog.get("merged", 0)},
+                "chip": {"label": f"Merging #{cur['pr']}" if cur and isinstance(cur.get("pr"), int) else f"Blocked: {len(blocked)}" if blocked else "Lander idle",
+                         "count": len(blocked), "tone": "info" if cur else "warning" if blocked else "muted"}}
+
+    def lander_command(self, cmd: str, body: Any) -> dict[str, Any]:
+        """merge-all | merge | unblock | finish | stop: one implementation, land/lander.mjs (the same file the CLI, MCP,
+        voice and the host service use)."""
+        body = body if isinstance(body, dict) else {}
+        args = ["node", str(LANDER_SCRIPT), cmd]
+        if cmd in ("merge", "unblock"):
+            pr = body.get("pr")
+            if set(body) - {"pr"} or not isinstance(pr, int) or isinstance(pr, bool) or pr <= 0:
+                raise HTTPException(400, "send {pr: <PR number>}")
+            args.append(str(pr))
+        elif cmd == "finish":
+            b = body.get("build")
+            if set(body) - {"build"} or not isinstance(b, str) or not re.fullmatch(r"[a-z0-9][a-z0-9-]{0,119}", b):
+                raise HTTPException(400, "send {build: <build id>}")
+            args.append(b)
+        elif body:
+            raise HTTPException(400, "send no body")
+        try:
+            r = subprocess.run([*args, "--json"], capture_output=True, text=True, timeout=30, env={**os.environ, "AXF_PUSH_BANNER_DIR": str(data_dir()), "AXF_LANDER_BY": "console"})
+        except (OSError, subprocess.TimeoutExpired) as e:
+            raise HTTPException(502, _text(str(e))) from None
+        if r.returncode != 0:
+            raise HTTPException(400, _text(r.stderr.strip() or r.stdout.strip() or f"lander.mjs {cmd} failed"))
+        return {"ok": True, "command": cmd, "note": "the lander takes it at its next step (within a minute)", **self.lander()}
+
+    def gate_log(self, limit: int = 200, gate: str = "") -> dict[str, Any]:
+        """Server gate log entries the lander writes (gate-log.jsonl), newest first; `gate` filters by gate name."""
+        out: list[dict[str, Any]] = []
+        try:
+            with open(data_dir() / "gate-log.jsonl", encoding="utf-8") as f:
+                rows = f.read().splitlines()[-5000:]
+        except OSError:
+            rows = []
+        for line in reversed(rows):
+            try:
+                e = json.loads(line)
+            except ValueError:
+                continue
+            if isinstance(e, dict) and (not gate or e.get("gate") == gate):
+                out.append(e)
+                if len(out) >= max(1, min(limit, 2000)):
+                    break
+        return {"$axf": "server-gate-log@1", "items": out, "count": len(out)}
+
     # ---- merge queue (land/merge-queue.mjs on the VPS host writes merge-queue.json; commands write merge-queue-control.json)
     def queue(self) -> dict[str, Any]:
         st = storage.read_json(data_dir() / "merge-queue.json", {}) or {}
@@ -411,7 +490,7 @@ class Pushes:
         b = st.get("batch") if isinstance(st.get("batch"), dict) else None
         batch = None if not b else {"prs": [m.get("pr") for m in b.get("members", []) if isinstance(m, dict)], "sha": _text(b.get("sha"), 40), "ci": _text(b.get("ci"), 20),
                                      "runUrl": _safe_url(b.get("runUrl")), "builtAt": _text(b.get("builtAt"), 40), "bisect": b.get("bisect") is True, "why": _text(b.get("why"), 300)}
-        return {"$axf": "merge-queue@1", "on": cfg["mergeQueue"], "depth": cfg["queueDepth"], "mode": cfg["queueMode"], "batchSize": cfg["batchSize"], "batch": batch,
+        return {"$axf": "merge-queue@1", "on": self.queue_on(cfg), "retired": cfg["lander"], "depth": cfg["queueDepth"], "mode": cfg["queueMode"], "batchSize": cfg["batchSize"], "batch": batch,
                 "split": [n for n in st.get("split", []) if isinstance(n, int)] if isinstance(st.get("split"), list) else [],
                 "enlisted": [x for x in st.get("enlisted", []) if isinstance(x, dict)][:10] if isinstance(st.get("enlisted"), list) else [],
                 "repo": UI_REVIEW_REPO, "at": st.get("at"),
@@ -821,7 +900,13 @@ class Pushes:
             raise HTTPException(400, "number is the PR number")
         if body.get("confirm") != f"{repo}#{number}":
             raise HTTPException(400, f'confirm with "{repo}#{number}"')
-        if repo == UI_REVIEW_REPO and self.config()["mergeQueue"]:
+        if repo == UI_REVIEW_REPO and self.config()["lander"]:
+            # Lander (Nov 12 2026): Merge puts the PR at the front of the lander; it merges through the main gate (main
+            # merged in when behind, tests green on that exact head) within minutes, never straight from the browser.
+            self.lander_command("merge", {"pr": number})
+            return {"merged": False, "queued": True, "sha": "", "url": "",
+                    "text": f"#{number} merges next: the lander brings it up to date with main, waits for its tests and merges it."}
+        if repo == UI_REVIEW_REPO and self.queue_on():
             # Enforced (Nov 10 2026, Brett: "Everything needs to go into the merge queue"): nothing reaches this repo's main
             # on its own. Merge puts the PR in the queue; it lands with the next batch once that batch's one CI run is green.
             self.queue_command("add", {"pr": number})
@@ -919,7 +1004,10 @@ class Pushes:
             queue.sort(key=lambda p: (p.get("created") or p.get("updated") or "", p["number"]))  # oldest first
             if repo == UI_REVIEW_REPO and rank:  # finished builds first, in auto-land's dependency order (land.json)
                 queue.sort(key=lambda p: rank.get(p["number"], len(rank)))
-            if repo == UI_REVIEW_REPO and cfg["mergeQueue"]:
+            if repo == UI_REVIEW_REPO and cfg["lander"]:
+                done.append({"pr": repo, "merged": False, "why": "merged by the lander"})
+                continue
+            if repo == UI_REVIEW_REPO and self.queue_on(cfg):
                 # the merge queue merges this repo (land/merge-queue.mjs): each PR tested once on top of the ones ahead
                 # of it, so pulling main in here (a new head, a second CI run) is exactly what it saves
                 done.append({"pr": repo, "merged": False, "why": "merged by the merge queue"})
@@ -1019,7 +1107,7 @@ class Pushes:
         rsc = cur.get("required_status_checks") if isinstance(cur.get("required_status_checks"), dict) else None
         rpr = cur.get("required_pull_request_reviews") if isinstance(cur.get("required_pull_request_reviews"), dict) else None
         have_checks = [c for c in (rsc or {}).get("contexts", []) if isinstance(c, str)] if rsc else []
-        queued = repo == UI_REVIEW_REPO and self.config()["mergeQueue"]
+        queued = repo == UI_REVIEW_REPO and (self.queue_on() or self.config()["lander"])
         if rsc and (rsc.get("strict") is True or queued) and rpr is not None and have_checks:
             return {**out, "state": "protected", "checks": have_checks}
         if rpr and (rpr.get("dismissal_restrictions") or rpr.get("bypass_pull_request_allowances")):
@@ -1391,7 +1479,7 @@ def auto_merge_now() -> dict[str, Any]:
 def auto_merge_last() -> dict[str, Any]:
     raw = storage.read_json(data_dir() / "auto-merge.json", {}) or {}
     cfg = PUSHES.config()
-    return {"on": cfg["autoMerge"], "autoPr": cfg["autoPr"], "mergeQueue": cfg["mergeQueue"], "queueMode": cfg["queueMode"], "batchSize": cfg["batchSize"], "batchSizeMax": BATCH_SIZE_MAX, "everyS": AUTO_MERGE_EVERY_S, "last": raw.get("last", []), "at": raw.get("at"),
+    return {"on": cfg["autoMerge"], "autoPr": cfg["autoPr"], "lander": cfg["lander"], "mergeQueue": PUSHES.queue_on(cfg), "queueMode": cfg["queueMode"], "batchSize": cfg["batchSize"], "batchSizeMax": BATCH_SIZE_MAX, "everyS": AUTO_MERGE_EVERY_S, "last": raw.get("last", []), "at": raw.get("at"),
             "protection": PUSHES.protection()["repos"]}
 
 
@@ -1485,6 +1573,42 @@ def _owner(request: Request) -> str:
         if v and v != "console":
             return ""
     return str(getattr(c, "name", "") or "brett")[:120]
+
+
+@router.get("/lander")
+def lander_state() -> dict[str, Any]:
+    """The lander: what is merging now, ready, blocked (with why), merged, the progress line and service heartbeat."""
+    return PUSHES.lander()
+
+
+@router.post("/lander/merge-all")
+def lander_merge_all(body: Any = Body(None)) -> dict[str, Any]:
+    return PUSHES.lander_command("merge-all", body)
+
+
+@router.post("/lander/merge")
+def lander_merge(body: Any = Body(None)) -> dict[str, Any]:
+    return PUSHES.lander_command("merge", body)
+
+
+@router.post("/lander/unblock")
+def lander_unblock(body: Any = Body(None)) -> dict[str, Any]:
+    return PUSHES.lander_command("unblock", body)
+
+
+@router.post("/lander/finish")
+def lander_finish(body: Any = Body(None)) -> dict[str, Any]:
+    return PUSHES.lander_command("finish", body)
+
+
+@router.post("/lander/stop")
+def lander_stop(body: Any = Body(None)) -> dict[str, Any]:
+    return PUSHES.lander_command("stop", body)
+
+
+@router.get("/gate-log")
+def gate_log(limit: int = 200, gate: str = "") -> dict[str, Any]:
+    return PUSHES.gate_log(limit, gate)
 
 
 @router.get("/queue")

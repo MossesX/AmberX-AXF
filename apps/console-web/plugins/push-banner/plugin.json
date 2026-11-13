@@ -2,18 +2,19 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.push-banner",
   "name": "Push banner",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "A banner listing every branch that isn't on main yet in AmberX-AXF and axHub (commits ahead/behind, age, last commit, its open PR and that PR's CI), with Open PR and Merge: every change reaches main only through its PR (one is opened for every branch), brought up to date with main and re-tested before it merges (not behind, CI passed on the pinned head; re-checked on the server). Auto-merge takes ready PRs oldest first, one merge per round, and sets branch protection on main where the token may. Auto-land (land/land.mjs, plain scripts on the VPS, no model calls) lands every finished build: worktree cleaned, main merged in with the builds files newer-wins, PR opened, CI started, merged here in dependency order once green and not held by UI Review; blocked builds are pushed to Brett once, in plain words. The console server talks to GitHub with its own token, which never reaches the browser. Merge queue (0.7.0): GitHub's own merge queue needs an organisation-owned repo, so the queue is ours: ready PRs line up, each is tested once on top of main + every PR ahead of it (queue/pr-<n> branches), the green head merges with no retest, a red one is kicked out with the reason in plain words and the ones behind it are retested without it; CI runs only what a change touches, PRs run light checks while the queue is on. Merge queue view, banner chip, REST + MCP + CLI. 0.7.1 (Nov 4 2026, Brett: \"Stop merging these things one at a time\"): auto-land is off by default and only the merge queue merges AmberX-AXF; GitHub reads are cached with ETags (a 304 costs no API call) and held back when the shared limit runs low; the console redeploys once per stack. 0.8.0 (Nov 10 2026, Brett: \"Everything needs to go into the merge queue so we can make one build out of it before we send it to CI\"): batch mode by default: every finished build gets a PR and joins the queue, up to batchSize ready PRs are combined into one commit on queue/batch, CI runs once, and a green batch lands on main as that one commit (one redeploy); a red batch is split in half until the PR that broke it is kicked out. Merge on AmberX-AXF puts the PR in the queue.",
+  "description": "A banner listing every branch that isn't on main yet in AmberX-AXF and axHub (commits ahead/behind, age, last commit, its open PR and that PR's CI), with Open PR and Merge: every change reaches main only through its PR (one is opened for every branch), brought up to date with main and re-tested before it merges (not behind, CI passed on the pinned head; re-checked on the server). Auto-merge takes ready PRs oldest first, one merge per round, and sets branch protection on main where the token may. Auto-land (land/land.mjs, plain scripts on the VPS, no model calls) lands every finished build: worktree cleaned, main merged in with the builds files newer-wins, PR opened, CI started, merged here in dependency order once green and not held by UI Review; blocked builds are pushed to Brett once, in plain words. The console server talks to GitHub with its own token, which never reaches the browser. Merge queue (0.7.0): GitHub's own merge queue needs an organisation-owned repo, so the queue is ours: ready PRs line up, each is tested once on top of main + every PR ahead of it (queue/pr-<n> branches), the green head merges with no retest, a red one is kicked out with the reason in plain words and the ones behind it are retested without it; CI runs only what a change touches, PRs run light checks while the queue is on. Merge queue view, banner chip, REST + MCP + CLI. 0.7.1 (Nov 4 2026, Brett: \"Stop merging these things one at a time\"): auto-land is off by default and only the merge queue merges AmberX-AXF; GitHub reads are cached with ETags (a 304 costs no API call) and held back when the shared limit runs low; the console redeploys once per stack. 0.8.0 (Nov 10 2026, Brett: \"Everything needs to go into the merge queue so we can make one build out of it before we send it to CI\"): batch mode by default: every finished build gets a PR and joins the queue, up to batchSize ready PRs are combined into one commit on queue/batch, CI runs once, and a green batch lands on main as that one commit (one redeploy); a red batch is split in half until the PR that broke it is kicked out. Merge on AmberX-AXF puts the PR in the queue. 0.9.0 (Nov 12 2026, Brett: \"Retire the old merge queue (it doesn't work)\"): the lander (land/lander.mjs, axf-lander.service on the VPS, Restart=always) merges AmberX-AXF's ready PRs one at a time through the main gate: main merged in when behind (never a force-push), tests green on that exact head, merged pinned to it; red or conflicted PRs blocked with the reason. A build merges itself the moment it finishes (merge on finish, service:axf.lander@1). Merge all ready and per-row Merge in the banner and Settings, live progress chip; Server gate log entries and AmberX FYIs for merges of finished builds, blocks, account switches (Moses X, then Hulu API, then Hulu, and back) and restarts. The merge queue runs only if the lander is switched off.",
   "targets": [
     "axf-console"
   ],
   "provides": [
     "banner:push-banner",
     "service:axf.merge-queue@1",
-    "settings-tab:push-banner"
+    "settings-tab:push-banner",
+    "service:axf.lander@1"
   ],
   "optional": [
     "service:axf.activity@1"
@@ -26,6 +27,99 @@
     "$axf": "plugin-commands@1",
     "auto": true,
     "items": [
+      {
+        "id": "lander-status",
+        "title": "Lander: what is merging",
+        "description": "The server-side lander: the PR merging now and its phase (updating from main, testing, merging), every open PR ready or blocked with the reason, the last merged, the progress line and whether the service is alive. Voice: \"what's merging\".",
+        "route": "GET /lander",
+        "readOnly": true
+      },
+      {
+        "id": "lander-merge-all",
+        "title": "Lander: merge all ready",
+        "description": "Merge every ready PR, one at a time through the main gate (main merged in when behind, tests green on that exact head, never a force-push); red or conflicted ones are blocked with the reason. An AmberX FYI when the backlog is cleared. Voice: \"merge all ready\".",
+        "route": "POST /lander/merge-all"
+      },
+      {
+        "id": "lander-merge",
+        "title": "Lander: merge this PR",
+        "description": "Put one PR at the front of the lander: it goes through the main gate next. Voice: \"merge PR 412\".",
+        "route": "POST /lander/merge",
+        "input": {
+          "type": "object",
+          "properties": {
+            "pr": {
+              "type": "integer",
+              "description": "PR number"
+            }
+          },
+          "required": [
+            "pr"
+          ]
+        }
+      },
+      {
+        "id": "lander-unblock",
+        "title": "Lander: try a blocked PR again",
+        "description": "Clear the lander's block on a PR (red tests, conflict) and try it again at its current head.",
+        "route": "POST /lander/unblock",
+        "input": {
+          "type": "object",
+          "properties": {
+            "pr": {
+              "type": "integer",
+              "description": "PR number"
+            }
+          },
+          "required": [
+            "pr"
+          ]
+        }
+      },
+      {
+        "id": "lander-finish",
+        "title": "Lander: a build finished, merge it",
+        "description": "Merge on finish: the build's PR (opened when missing) goes first: latest main merged in, tests run, merged into main when they pass; a conflict is blocked with why and sent as an AmberX FYI. The orchestrator calls this when a build finishes.",
+        "route": "POST /lander/finish",
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "build id"
+            }
+          },
+          "required": [
+            "build"
+          ]
+        }
+      },
+      {
+        "id": "lander-stop",
+        "title": "Lander: stop merging the backlog",
+        "description": "Stop Merge all ready after the PR in flight; finished builds still merge themselves.",
+        "route": "POST /lander/stop"
+      },
+      {
+        "id": "gate-log",
+        "title": "Server gate log: main gate",
+        "description": "The main gate's entries, newest first: every merge, block, catch-up with main, account switch and lander restart, with who asked and why. Filter with gate (main gate, account switch, lander service). Voice: \"show the gate log\".",
+        "route": "GET /gate-log",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "limit": {
+              "type": "integer",
+              "description": "entries (default 200)"
+            },
+            "gate": {
+              "type": "string",
+              "description": "filter by gate"
+            }
+          }
+        }
+      },
       {
         "id": "land-list",
         "title": "Auto-land: every finished build",

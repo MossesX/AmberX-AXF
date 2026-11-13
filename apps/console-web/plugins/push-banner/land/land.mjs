@@ -408,6 +408,15 @@ export async function round({ s = settings(), git = makeGit(s.repo), gh = makeGi
   return st;
 }
 
+/** Keep axf-lander.service installed and running (root on the host; a no-op elsewhere or when the lander is switched off). */
+export function ensureLander(s, log = () => {}) {
+  const c = readJson(join(s.dataDir, 'config.json'), {}) || {};
+  if (c.lander === false || process.getuid?.() !== 0 || !existsSync('/run/systemd/system')) return;
+  const r = spawnSync('bash', [join(HERE, 'lander-service.sh'), 'ensure'], { encoding: 'utf8', timeout: 60000, env: { ...process.env, AXF_LAND_REPO: s.repo } });
+  const out = `${r.stdout || ''}${r.stderr || ''}`.trim();
+  if (out) log(out);
+}
+
 function defaultAgentJob(s) {
   return (job) => {
     const args = [join(s.repo, 'framework/cli/agent-job.mjs'), job.type, ...Object.entries(job.input).flatMap(([k, v]) => ['--input', `${k}=${v}`]), '--json'];
@@ -432,7 +441,9 @@ export async function main(argv) {
   if (cmd === 'run') {
     const gh = makeGitHub(s); // one client per run: one ETag cache, one count
     const st = await round({ s, gh, dry, only: opt('only'), log: (m) => !json && console.error(m) });
-    // the merge queue takes its turn in the same round (same cron, same lock): it merges what auto-land made ready
+    // the lander (Nov 12 2026) replaces the merge queue: this cron keeps its service installed and running, and the
+    // queue round below only syncs the repo variable off (PRs run their full tests) unless Brett brings the queue back
+    if (!opt('only') && !dry) ensureLander(s, (m) => !json && console.error(m));
     if (!opt('only')) {
       try { const git = makeGit(s.repo); const mq = await queueRound({ s, git, gh, api: makeConsole(s), dry, fetched: true, log: (m) => !json && console.error(m) }); st.queue = { on: mq.on, items: (mq.items || []).length, kicked: (mq.kicked || []).length }; }
       catch (e) { if (!json) console.error(`merge queue: ${e.message}`); }

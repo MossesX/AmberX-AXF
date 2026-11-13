@@ -48,7 +48,9 @@ export function readQueueConfig(s) {
   const depth = Number.isInteger(c.queueDepth) ? Math.min(q.QUEUE_DEPTH_MAX, Math.max(1, c.queueDepth)) : q.QUEUE_DEFAULTS.queueDepth;
   const mode = q.QUEUE_MODES.includes(c.queueMode) ? c.queueMode : q.QUEUE_DEFAULTS.queueMode;
   const batchSize = Number.isInteger(c.batchSize) ? Math.min(q.BATCH_SIZE_MAX, Math.max(1, c.batchSize)) : q.QUEUE_DEFAULTS.batchSize;
-  return { mergeQueue: c.mergeQueue !== false, depth, mode, batchSize, waitUi: c.landWaitUi !== false };
+  // retired Nov 12 2026 (Brett: "Retire the old merge queue (it doesn't work)"): the lander merges; the queue runs only
+  // when Brett switches the lander off and the queue on by hand
+  return { mergeQueue: c.lander === false && c.mergeQueue === true, depth, mode, batchSize, waitUi: c.landWaitUi !== false };
 }
 export function queueControl(s, cmd, pr, opts = {}) {
   const cur = (readQueue(s).items || []).map((x) => x.pr);
