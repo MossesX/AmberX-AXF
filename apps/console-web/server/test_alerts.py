@@ -244,6 +244,23 @@ def check_hub() -> None:
         assert snap["unread"] == 0
         assert "tk_secret123" not in c.get("/api/alerts/config", headers=h).text
         assert c.post("/api/alerts/test", json={"channel": "bell"}, headers=h).json()["ok"]
+
+        # per-device history (C35b), since (C33), tapped (s9)
+        r = c.post("/api/alerts", json={"source": "ci", "severity": "error", "title": "CI failed", "key": "ci:main"}, headers=h).json()
+        aid = r["alert"]["id"]
+        v = c.get("/api/alerts?view=phone&device=pixel-9", headers=h).json()
+        hist = c.get("/api/alerts/history?device=pixel-9", headers=h).json()
+        assert any(x["alert"] == aid and x["deliveredAt"] and x["readAt"] is None for x in hist["items"]), hist
+        n_before = hist["total"]
+        c.get("/api/alerts?view=phone&device=pixel-9", headers=h)
+        assert c.get("/api/alerts/history?device=pixel-9", headers=h).json()["total"] == n_before, "a second read records nothing new"
+        assert c.get(f"/api/alerts?since={v['version']}", headers=h).json().get("unchanged") is True
+        assert "alerts" in c.get("/api/alerts?since=-5", headers=h).json()
+        c.post("/api/alerts/tapped", json={"id": aid, "device": "pixel-9"}, headers=h)
+        rec = next(x for x in c.get("/api/alerts/history?device=pixel-9", headers=h).json()["items"] if x["alert"] == aid)
+        assert rec["tappedAt"] and rec["readAt"], rec
+        c.get("/api/alerts?device=tablet%20one!", headers=h)
+        assert "tabletone" in c.get("/api/alerts/history", headers=h).json()["devices"], "device names are cleaned"
     srv.shutdown()
     print("hub, sources, delivery and routes OK")
 

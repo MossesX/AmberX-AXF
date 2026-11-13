@@ -6,7 +6,7 @@
     { "id": "amberx", "label": "AmberX push", "icon": "smartphone", "app": "amberx", "description": "A notification from the AmberX app on the phone." },
     { "id": "sound", "label": "Sound", "icon": "play", "app": "console", "description": "A short tone in an open console." },
     { "id": "popup", "label": "Console pop-up", "icon": "info", "app": "console", "description": "A pop-up in an open console." },
-    { "id": "webpush", "label": "Web push / ntfy", "icon": "cloud", "app": "webpush", "description": "Browser web push and ntfy, when they are set up in Settings → Alerts. Their severity rules there still apply." }
+    { "id": "webpush", "label": "Web push / ntfy", "icon": "cloud", "app": "webpush", "description": "Browser web push and ntfy, when they are set up in Settings → Alerts. Their severity rules there still apply, except for types that must buzz (they reach the phone at any severity)." }
   ],
   "apps": [
     { "id": "console", "label": "Console", "description": "Everything shown in the console: banner, sound and pop-ups." },
@@ -40,6 +40,7 @@
     { "id": "console.crash", "label": "Crashes", "group": "console", "app": "console", "source": "Console core and the page", "description": "An unhandled API or page error.", "match": { "source": "crashes" }, "priority": "high" },
     { "id": "console.restart", "label": "Unclean restart", "group": "console", "app": "console", "source": "Console core", "description": "The console restarted without shutting down cleanly.", "match": { "source": "crashes", "keyPrefix": "crash:restart" } },
     { "id": "console.test", "label": "Alert test buttons", "group": "console", "app": "console", "source": "Settings → Alerts", "description": "The Try it buttons in Settings → Alerts.", "match": { "source": "alerts" } },
+    { "id":  "fyi.note", "label":  "FYI from a session", "group":  "sessions", "app":  "console", "source":  "Notifications panel, FYI command", "description":  "A short note a Claude session, a script or Amber sends you (POST /api/plugins/notify-control/fyi). The console keeps it in the bell and pushes it to the phone itself (web push, ntfy, the AmberX watch).", "match":  { "source":  "fyi" }, "push":  true},
 
     { "id": "amberx.approval", "label": "Approval waiting", "group": "approvals", "app": "amberx", "source": "AmberX reads the axHub feed", "description": "A call waits for your approval on axHub. AmberX buzzes through the silencer.", "enforced": "device", "guarded": true, "only": ["amberx"], "priority": "urgent" },
     { "id": "amberx.veto", "label": "Veto countdown", "group": "approvals", "app": "amberx", "source": "AmberX reads the axHub feed", "description": "A held call is counting down to run. AmberX shows it with Deny, Approve and Shelve, and the alarm.", "enforced": "device", "guarded": true, "only": ["amberx"], "priority": "urgent" },

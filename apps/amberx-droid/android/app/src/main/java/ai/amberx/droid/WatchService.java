@@ -261,6 +261,12 @@ public class WatchService extends Service {
         int every = Math.max(15, Math.min(300, cfg.optInt("intervalSec", 30)));
         HubRules.Feed feed;
         int held = 0;
+        // Every notification goes through the console (Brett, Nov 13 2026): with the console's alerts read and its
+        // approvals watch working, an approval reaches the phone as the console's alert, not the phone's own. The phone
+        // still reads axHub for auto-approval and for held veto calls, whose card carries the Deny button.
+        boolean readConsole = cfg.optBoolean("consoleAlerts", true);
+        boolean viaConsole = readConsole && consoleCarriesApprovals();
+        boolean vetoCards = false;
         if (hub == null) feed = new HubRules.Feed("unreachable", 0, new ArrayList<>());
         else {
             String cookie = CookieManager.getInstance().getCookie(hub);
@@ -273,14 +279,15 @@ public class WatchService extends Service {
                 feed = new HubRules.Feed("unreachable", 0, new ArrayList<>());
             }
             if ("ok".equals(feed.status)) {
-                handleNew(hub, cookie, feed, cfg.optJSONObject("autoApprove"));
+                handleNew(hub, cookie, feed, cfg.optJSONObject("autoApprove"), viaConsole);
                 // Held veto calls (veto@1): their own notifications with Deny, never treated as approvals.
                 List<HubRules.Veto> vetoes = HubRules.vetoes(hub, body, System.currentTimeMillis());
                 held = vetoes.size();
                 VetoAlerts.update(this, work, muted.contains("amberx.veto") ? new ArrayList<>() : vetoes);
+                vetoCards = true;
             }
         }
-        int alerts = cfg.optBoolean("consoleAlerts", true) ? consoleAlerts() : -1;
+        int alerts = readConsole ? consoleAlerts(vetoCards) : -1;
         JSONObject s = new JSONObject();
         try {
             s.put("running", true).put("listening", listening).put("lastCheck", Instant.now().toString())
@@ -306,7 +313,8 @@ public class WatchService extends Service {
     /** Device types the console's Notifications panel switched off; read with the console's alerts, empty until then. */
     private Set<String> muted = new HashSet<>();
 
-    private void handleNew(String hub, String cookie, HubRules.Feed feed, JSONObject auto) {
+    /** New approvals: auto-approves what matches; tells about the rest itself only when the console doesn't (viaConsole). */
+    private void handleNew(String hub, String cookie, HubRules.Feed feed, JSONObject auto, boolean viaConsole) {
         SharedPreferences p = prefs(this);
         Set<String> seen = new HashSet<>(p.getStringSet("seen", new HashSet<>()));
         Set<String> now = new HashSet<>();
@@ -317,26 +325,31 @@ public class WatchService extends Service {
             boolean approve = auto != null && HubRules.autoApproves(auto.optBoolean("on"), auto.optBoolean("all"), auto.optString("tools", ""), a.tool);
             if (approve && HubRules.approve(hub, a.id, cookie)) {
                 if (!muted.contains("amberx.auto-approved")) nm.notify(a.id, 0, alert(CH_APPROVALS, "Auto-approved " + a.tool, a.summary, a.url, false));
-            } else if (!muted.contains("amberx.approval")) {
+            } else if (!viaConsole && !muted.contains("amberx.approval")) {
                 soundThrough();
                 nm.notify(a.id, 0, alert(CH_APPROVALS, "Approval waiting: " + a.tool, a.summary, a.url, true));
             }
         }
         for (String gone : seen) if (!now.contains(gone)) nm.cancel(gone, 0); // decided elsewhere: take its alert away
-        p.edit().putStringSet("seen", now).apply();
+        // the console just took over: its alerts show these approvals now, so the phone's own copies go
+        if (viaConsole && !p.getBoolean("viaConsole", false)) for (String id : now) nm.cancel(id, 0);
+        p.edit().putBoolean("viaConsole", viaConsole).putStringSet("seen", now).apply();
     }
 
     /**
      * The Dev Console's open alerts (builds, CI, deploys, systems check), read with the phone's own session for the console
      * (the hub's sign-in wall lets a signed-in admin through). Errors and warnings alert once per change; resolved or read
      * ones are taken away. Returns how many are open, or -1 when the console can't be read (signed out, unreachable).
+     * A held veto call (`approvals:veto:<id>`) is skipped while the phone shows its own card for it ({@code vetoCards}):
+     * that card carries the Deny button and re-reads every 10 s.
      */
-    private int consoleAlerts() {
+    private int consoleAlerts(boolean vetoCards) {
         String cookie = CookieManager.getInstance().getCookie(HubRules.CONSOLE);
         if (cookie == null) return -1;
         HubRules.Alerts a;
         try {
-            HubRules.Reply r = HubRules.get(HubRules.CONSOLE + HubRules.ALERTS_PATH, cookie);
+            // the phone's view with its name, so the console keeps its notification history
+            HubRules.Reply r = HubRules.get(ConsoleBackend.alertsUrl(AxppLink.deviceId(this)), cookie);
             a = HubRules.consoleAlerts(r.status, r.body);
             Set<String> off = HubRules.mutedTypes(r.status, r.body);
             if (off != null) muted = off;
@@ -350,12 +363,28 @@ public class WatchService extends Service {
         NotificationManager nm = getSystemService(NotificationManager.class);
         for (String key : a.closed) nm.cancel("console:" + key, 0);
         for (HubRules.ConsoleAlert c : a.open) {
+            if (vetoCards && ConsoleBackend.isVetoAlert(c.key)) continue;
             now.add(c.stamp);
             if (seen.contains(c.stamp)) continue;
             nm.notify("console:" + c.key, 0, consoleAlert(c));
         }
         p.edit().putStringSet("alertsSeen", now).apply();
         return a.open.size();
+    }
+
+    /**
+     * Whether the console carries approvals this round (its approvals watch reads axHub fine): then approval
+     * notifications come from the console's alerts only. Build change-to-move-amberx-web-app-into-the-console-amberx-andr-pr-528-brett-do.
+     */
+    private boolean consoleCarriesApprovals() {
+        String cookie = CookieManager.getInstance().getCookie(HubRules.CONSOLE);
+        if (cookie == null) return false;
+        try {
+            HubRules.Reply r = HubRules.get(ConsoleBackend.approvalsWatchUrl(), cookie);
+            return ConsoleBackend.consoleCarriesApprovals(r.status, r.body);
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     /* ---------------------------------------------------------------- hands-free listening */

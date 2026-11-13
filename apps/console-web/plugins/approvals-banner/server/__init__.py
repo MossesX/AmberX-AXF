@@ -299,3 +299,27 @@ def ensure_health() -> bool:
         return False
     _health_done = True
     return True
+
+
+# ---- approvals as console alerts (watch.py): the console tells the phone, not the AmberX web app
+
+from . import watch as _watch  # noqa: E402
+
+import console_context as cx  # noqa: E402
+
+WATCH = _watch.Watch(hub_base, owner_credential, OWNER, lambda i: bool(ID_RE.match(i)),
+                     raise_alert=lambda a: cx.raise_alert(a), resolve=lambda keys: cx.resolve_alerts(keys),
+                     open_keys=lambda prefix: cx.open_alert_keys(prefix), on=lambda: cx.plugin_enabled(FOLDER))
+_watch_stop = _watch.start(WATCH)
+
+
+@router.get("/watch")
+def get_watch() -> dict[str, Any]:
+    """What the approvals watch saw last: on, state (ok | error | unreachable | off | idle), waiting, lastAt, error."""
+    return {"ok": True, **WATCH.state()}
+
+
+@router.post("/watch/poll")
+async def post_watch_poll() -> dict[str, Any]:
+    """Read axHub's approvals feed now and bring the approval alerts in line (it reads by itself every 30 s)."""
+    return {"ok": True, **(await run_in_threadpool(WATCH.poll))}

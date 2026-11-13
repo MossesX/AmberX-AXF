@@ -377,11 +377,12 @@ eq(sharedCheck(here0), [], 'ships every shareable asset, no own copy of a shared
   ok(!sharesHubSite('https://amberxai.com.evil.io/', HUB), 'a suffix trick does not');
   ok(!sharesHubSite('not a url', HUB), 'garbage does not');
   const cap = JSON.parse(readFileSync(new URL('./capacitor.config.json', import.meta.url), 'utf8'));
-  eq(cap.server?.url, HOSTED_URL, 'the shell loads the hosted app');
+  // The shell is the Console app: it loads the Dev Console (build change-to-move-amberx-web-app-into-the-console-amberx-andr-pr-528-brett-do)
+  eq(cap.server?.url, 'https://console.amberxai.com', 'the shell loads the console');
   ok((cap.server?.allowNavigation ?? []).includes(new URL(HUB).host), 'hub sign-in stays inside the app');
-  eq((cap.server?.allowNavigation ?? []).length, 2, 'only the app and the hub may load in the shell');
+  eq((cap.server?.allowNavigation ?? []).length, 2, 'only the console and the hub may load in the shell');
   eq(cap.server?.errorPath, 'offline.html', 'offline page when the server is unreachable');
-  ok(readFileSync(new URL('./public/offline.html', import.meta.url), 'utf8').includes(HOSTED_URL), 'the offline page retries the hosted app');
+  ok(readFileSync(new URL('./public/offline.html', import.meta.url), 'utf8').includes('https://console.amberxai.com/'), 'the offline page retries the console');
 }
 
 

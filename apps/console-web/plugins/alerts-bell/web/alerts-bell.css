@@ -1,0 +1,7 @@
+/* Notification history (s9): layout only (THEMING.md); controls are framework controls, sizes and colours are tokens. */
+.axp-alerts-history { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xl); }
+.axp-alerts-history__row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm); min-width: 0; }
+.axp-alerts-history__grow { flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; }
+.axp-alerts-history__list { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); }
+.axp-alerts-history__item { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); padding: var(--fx-dens-gap-sm); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); }
+.axp-alerts-history__item.is-focused { border-color: var(--fx-accent); }

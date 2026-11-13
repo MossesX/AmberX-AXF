@@ -31,6 +31,7 @@ them down: a session that could mute the veto notice could act unseen. Data: .ax
 from __future__ import annotations
 
 import json
+import re
 import os
 import threading
 import time
@@ -465,6 +466,40 @@ async def send_test(request: Request) -> dict[str, Any]:
     timer.daemon = True
     timer.start()
     return {"ok": True, "type": t["id"], "sent": [c for c, on in v["channels"].items() if on], "why": v["why"], "held": v["held"]}
+
+
+FYI_LINK = re.compile(r"^(https://[^\s]{1,2000}|view:[A-Za-z0-9._:-]{1,120}|settings:[A-Za-z0-9._/-]{1,120})$")
+FYI_KEY = re.compile(r"^[A-Za-z0-9._:-]{1,120}$")
+
+
+def fyi_alert(b: dict[str, Any], now_ms: int) -> dict[str, Any]:
+    """An FYI as an alert (source `fyi`, type fyi.note): the console keeps it and pushes it itself. Raises ValueError."""
+    title = " ".join(str(b.get("title") or "").split())
+    if not title or len(title) > 200:
+        raise ValueError("send a title (up to 200 characters)")
+    body = str(b.get("body") or "")[:2000]
+    link = str(b.get("link") or "")
+    if link and not FYI_LINK.match(link):
+        raise ValueError("link must be an https:// URL, view:<id> or settings:<tab>")
+    key = str(b.get("key") or "")
+    if key and not FYI_KEY.match(key):
+        raise ValueError("key: letters, digits and . _ : - (up to 120)")
+    return {"source": "fyi", "severity": "info", "key": f"fyi:{key or now_ms}", "title": title, "body": body, "link": link,
+            "meta": {"notifyType": "fyi.note", "label": "FYI"}}
+
+
+@router.post("/fyi")
+async def send_fyi(request: Request) -> dict[str, Any]:
+    """Brett, Nov 12 2026: "I want all the notifications. I want everything to go through the console." An FYI from a
+    session, a script or Amber goes into the console's alerts and the console pushes it to the phone."""
+    try:
+        a = fyi_alert(await body_of(request), int(time.time() * 1000))
+    except ValueError as e:
+        raise HTTPException(400, str(e)) from None
+    cx.resolve_alerts([a["key"]])  # the same key again buzzes again, with the new text
+    cx.raise_alert(a)
+    v = alert_verdict(a)
+    return {"ok": True, "key": a["key"], "sent": [c for c, on in v["channels"].items() if on], "why": v["why"], "held": v["held"]}
 
 
 @router.post("/reset")

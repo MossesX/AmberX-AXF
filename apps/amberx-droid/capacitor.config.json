@@ -1,15 +1,18 @@
 {
   "appId": "ai.amberx.droid",
-  "appName": "AmberX",
+  "appName": "Console",
   "webDir": "dist",
   "android": {
     "allowMixedContent": false,
     "webContentsDebuggingEnabled": false
   },
   "server": {
-    "url": "https://amberx.amberxai.com",
+    "url": "https://console.amberxai.com",
     "androidScheme": "https",
-    "allowNavigation": ["amberx.amberxai.com", "axhub.amberxai.com"],
+    "allowNavigation": [
+      "console.amberxai.com",
+      "axhub.amberxai.com"
+    ],
     "errorPath": "offline.html"
   }
 }

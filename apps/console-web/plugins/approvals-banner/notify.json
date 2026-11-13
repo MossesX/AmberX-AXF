@@ -24,6 +24,40 @@
       "only": [
         "sound"
       ]
+    },
+    {
+      "id": "approvals.waiting",
+      "label": "Approval waiting (from the console)",
+      "group": "approvals",
+      "app": "console",
+      "source": "Approvals banner, approvals watch",
+      "description": "The console reads axHub's approvals with its own owner sign-in and raises one alert per call waiting for you; the bell, web push, ntfy and the Console phone app all carry it. The phone shows this alert instead of its own while the console's approvals watch reads axHub fine. Clears when the call is decided or expires.",
+      "match": {
+        "source": "approvals",
+        "keyPrefix": "approvals:"
+      },
+      "push": true,
+      "priority": "high",
+      "channels": {
+        "amberx": true
+      }
+    },
+    {
+      "id": "approvals.veto-call",
+      "label": "Veto call counting down (from the console)",
+      "group": "approvals",
+      "app": "console",
+      "source": "Approvals banner, approvals watch",
+      "description": "A held call that runs by itself unless you stop it, raised by the console from axHub's feed and pushed through web push, ntfy and the Console phone app. While the phone reads axHub itself it shows its own veto card (with Deny) instead of this alert.",
+      "match": {
+        "source": "approvals",
+        "keyPrefix": "approvals:veto:"
+      },
+      "push": true,
+      "priority": "urgent",
+      "channels": {
+        "amberx": true
+      }
     }
   ]
 }

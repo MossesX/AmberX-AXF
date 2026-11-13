@@ -5,7 +5,9 @@ import android.os.Bundle;
 import com.getcapacitor.BridgeActivity;
 
 /**
- * AmberX's one screen: the web app (dist/, bundled) in Capacitor's WebView, plus the AmberxNative plugin. It tells the
+ * The phone app's one screen: the Dev Console (capacitor.config.json server.url, https://console.amberxai.com) in
+ * Capacitor's WebView, plus the AmberxNative plugin; every notification it shows comes from the console (WatchService).
+ * It tells the
  * watch service when it is on screen (the web side listens itself then) and hands notification taps and wake-phrase hits
  * to the web side.
  */
