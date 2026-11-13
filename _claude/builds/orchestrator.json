@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T17:46:34.812Z",
+ "updatedAt": "2026-11-13T17:46:52.249Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -125687,6 +125687,43 @@
      "createdAt": "2026-11-13T17:46:32.016Z"
     }
    ]
+  },
+  {
+   "id": "per-instance-settings-window-picker",
+   "title": "Per-instance settings-window picker inside every tab group and toolbar's settings",
+   "category": "",
+   "detail": "Every chrome instance (tab group, toolbar, banner, nav, menu bar) has its own chrome settings dialog (framework ChromeContext.tsx / chrome-settings-rules.mjs). Today the settings asset is picked per type/app (axf.chrome.settings.<type>). Add, inside each instance's settings dialog, a picker to choose which settings interface (settings asset) THAT instance uses, per instance, with the shared default preselected. Changing it re-renders the dialog live. Persist per instance, survive reload, follow skins. Expose via REST/MCP/CLI/voice and control@1. Tests, help entry, Shipped features.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-13T17:46:43.480Z",
+   "updatedAt": "2026-11-13T17:46:46.542Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T17:46:46.542Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "every tab group and toolbar has its own settings interface, and within it you can select our settings interface",
+    "at": "2026-11-13T17:46:43.480Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }
