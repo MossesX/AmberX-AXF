@@ -1,9 +1,9 @@
 // Types for console-commands.mjs (the console domain of control@1: open screens, dialogs, settings tabs, run actions).
 import type { ControlCommand, ControlWireCode } from './control-rules.mjs';
 
-export type ConsoleItemKind = 'screen' | 'dialog' | 'settings' | 'action';
+export type ConsoleItemKind = 'screen' | 'dialog' | 'settings' | 'action' | 'field';
 export type ConsoleActionEffect = 'navigate' | 'read' | 'write' | 'destructive';
-export interface ConsoleItem { kind: ConsoleItemKind; id: string; label: string; detail?: string; icon?: string; keywords?: string[]; requires?: string; effect?: ConsoleActionEffect; params?: boolean; parent?: string; module?: string }
+export interface ConsoleItem { kind: ConsoleItemKind; id: string; label: string; detail?: string; icon?: string; keywords?: string[]; requires?: string; effect?: ConsoleActionEffect; params?: boolean; parent?: string; module?: string; /** field: its setting kind, current value as text (not for secrets), choices, range */ type?: string; value?: string; options?: string[]; min?: number; max?: number; secret?: boolean }
 export interface ConsoleHere { screen?: string; screenLabel?: string; dialog?: string; settings?: string }
 export interface ConsoleCatalog { $axf: 'console-catalog@1'; app: string; items: ConsoleItem[]; here: ConsoleHere }
 export interface ConsoleClient { id: string; app?: string; title?: string; device?: string; user?: string; lastUsed?: number; lastSeen?: number; here?: ConsoleHere; catalog?: ConsoleCatalog }
@@ -16,6 +16,7 @@ export const CONSOLE_CATALOG_FRAME: 'console-catalog@1';
 export const CONSOLE_COMMAND_FRAME: 'console-command@1';
 export const CONSOLE_KINDS: Record<string, ConsoleItemKind>;
 export const CONSOLE_ITEM_KINDS: readonly ConsoleItemKind[];
+export const CONSOLE_FIELD_TYPES: readonly string[];
 export const CONSOLE_DELIVERY: readonly string[];
 export const CONSOLE_CATALOG_MAX: number;
 export const CONSOLE_LIST_DEFAULT: number;
@@ -28,12 +29,14 @@ export function normalizeConsoleItem(raw: unknown): ConsoleItem | null;
 export function normalizeConsoleCatalog(raw: unknown): ConsoleCatalog;
 export function normalizeHere(raw: unknown): ConsoleHere;
 export function consoleCatalogFrom(
-  entries: readonly { kind: string; label: string; detail?: string; icon?: string; keywords?: string[]; requires?: string; parent?: string; focus: unknown }[],
+  entries: readonly { kind: string; label: string; detail?: string; icon?: string; keywords?: string[]; requires?: string; parent?: string; focus: unknown; field?: Record<string, unknown> }[],
   actions?: readonly { id: string; meta: { label?: string; requires?: string; stub?: boolean; params?: boolean; module?: string; effect?: string } }[],
   extra?: { app?: string; here?: ConsoleHere },
 ): ConsoleCatalog;
 export function consoleSearch(items: readonly ConsoleItem[], kind: ConsoleItemKind | null, q?: string, limit?: number): ConsoleItem[];
 export function consoleResolve(items: readonly ConsoleItem[], kind: ConsoleItemKind, path: string): { item?: ConsoleItem; args?: string[]; focus?: string; candidates?: ConsoleItem[]; ambiguous?: boolean };
+export function consoleResolveField(items: readonly ConsoleItem[], path: string): { item?: ConsoleItem };
+export function consoleFieldValue(field: { type?: string; kind?: string; label?: string; key?: string; options?: readonly (string | { value: string })[]; min?: number; max?: number }, raw: unknown, current?: unknown): { value: unknown; error?: undefined } | { error: string; value?: undefined };
 export function consoleActionEffect(item: Partial<ConsoleItem>): Exclude<ConsoleActionEffect, 'read'>;
 export function consoleActionNeeds(item: Partial<ConsoleItem>): { effect: Exclude<ConsoleActionEffect, 'read'>; needs: string[] };
 export function consolePickClients<C extends ConsoleClient>(clients: readonly C[], to?: string, now?: number): C[];

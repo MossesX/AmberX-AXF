@@ -90,6 +90,17 @@ re-sent and answers `failed`. A console that gets a live command more than `CONS
 (`consoleMessageLate`) and acks `skipped`; a late ack from the console asked first settles the queued copy (`how: late ack`).
 Every act answer carries `status`: `delivered` (a console acked it as done) · `pending` (nobody acked yet) · `failed`, and
 `delivery.tried` (the consoles asked, in turn) with `delivery.how` `live` · `after retry` · the ones above.
+Single settings (build full-voice-and-ai-control, Nov 13 2026): every console reports each setting with a value as a catalog item of kind
+`field` (id = its key, parent = its tab, type, current value as text, options, min / max; secrets say `secret: true` and never send a value).
+`console.settings` reaches them: `act open` with a key, `field:<key>`, `<tab>/<key>` or its name opens the tab scrolled to it (a tab of the
+same name wins); `get` reads the value; `list` with `q` lists matching fields after the tabs. `console.actions run settings.set:<key>:<value>`
+changes one (`consoleFieldValue` parses on/off/toggle, numbers in range, choices by value, comma lists; the setting's own `requires` applies;
+a refused value is the ack's message). The catalog is re-sent when a setting changes, so a `get` right after a set reads the new value.
+Find by content (same build): Plan Studio's `plan-studio.focus:<focus>` opens a plan down to one item: `<plan id>`, `<plan id>/<item ref>`
+(step id, `risks:2`, comment id, `body:4`) or words — "the plan about X, the step that mentions Y" — that its `find` resolves to the best
+hit. REST `GET /api/plugins/plan-studio/find?q=|plan=&item=&kind=` (also `plugins.reads plan-studio/find`, MCP `plan-studio_find`,
+`axf plan-studio find`), CLI `plans.mjs find <words>`; every hit carries its `focus`, and `console_open "plan-studio <focus or words>"` /
+`console_show` open it. <!-- axf-plugin:plan-studio -->
 Focus on a screen: `act open` on `console.screens` takes `input.focus` or a path "<screen id or title> <rest>" ("build-orchestrator
 pending", `consoleSplitFocus`); the message carries `focus` and the console runs the screen's own `<screen>.focus:<focus>` action.
 The console server asks the capability `console-focus@1` (the Build orchestrator provides it) to map `build:<id>` (or a bare build id that is no screen id) to its screen with that focus: the build's
