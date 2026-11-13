@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4217,
- "updatedAt": "2026-11-13T10:41:45.709Z",
+ "rev": 4218,
+ "updatedAt": "2026-11-13T10:41:59.385Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -27427,10 +27427,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -91138,10 +91135,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -98280,10 +98274,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -107493,10 +107484,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -120689,10 +120677,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-molly-native-expenses",
@@ -120962,10 +120947,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -121354,10 +121336,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -135097,10 +135076,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -137632,10 +137608,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -138036,10 +138009,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -143968,10 +143938,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -144397,10 +144364,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -144973,10 +144937,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -146340,10 +146301,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -148640,10 +148598,7 @@
     "pickedAt": "2026-11-13T10:38:25.274Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-orchestrator-hold-status-archive-tab-deleted-tab",
@@ -148846,10 +148801,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -150618,10 +150570,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -152826,10 +152775,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -153043,10 +152989,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-land-all-97-built-but-unmerged-builds-skins-firs",
@@ -153584,10 +153527,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -153772,10 +153712,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -153979,10 +153916,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -154190,10 +154124,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -154410,10 +154341,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -154633,10 +154561,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -154860,10 +154785,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -155088,10 +155010,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -155319,10 +155238,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -155550,10 +155466,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -155782,10 +155695,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -156438,10 +156348,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -157226,10 +157133,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -157411,10 +157315,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -157641,10 +157542,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -157884,10 +157782,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -158070,10 +157965,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -158271,10 +158163,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -158529,10 +158418,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -158719,10 +158605,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -158916,10 +158799,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -159102,10 +158982,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -159477,10 +159354,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -160252,10 +160126,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -160444,10 +160315,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -160660,10 +160528,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -160985,10 +160850,7 @@
     "pickedAt": "2026-11-13T10:37:52.173Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -161210,10 +161072,7 @@
     "pickedAt": "2026-11-13T10:38:35.562Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -161450,10 +161309,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -161611,10 +161467,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -161749,10 +161602,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -161920,10 +161770,7 @@
     "pickedAt": "2026-11-13T10:37:41.673Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -162153,10 +162000,7 @@
     "pickedAt": "2026-11-12T02:52:13.861Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -162314,10 +162158,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -162482,10 +162323,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -162704,10 +162542,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -169533,10 +169368,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -169751,10 +169583,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -169932,10 +169761,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -170117,10 +169943,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -170304,10 +170127,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -170523,10 +170343,7 @@
     "pickedAt": "2026-11-12T20:42:37.390Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -170781,10 +170598,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -170966,10 +170780,7 @@
     "pickedAt": "2026-11-13T00:46:14.486Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-amberx-approval-pop-up-not-showing-only-the-android-notification",
@@ -171144,10 +170955,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans",
@@ -171425,10 +171233,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -171565,10 +171370,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -171841,10 +171643,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-add-a-tap-to-confirm-option-to-every-settings-in",
@@ -172029,10 +171828,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -172341,10 +172137,7 @@
     "pickedAt": "2026-11-12T22:15:14.526Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -172828,10 +172621,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -173188,10 +172978,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -173449,10 +173236,7 @@
     "pickedAt": "2026-11-12T22:46:08.743Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -173811,10 +173595,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -174056,10 +173837,7 @@
     "pickedAt": "2026-11-13T01:52:11.782Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds",
@@ -174234,10 +174012,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -174477,10 +174252,7 @@
     "pickedAt": "2026-11-13T01:46:09.134Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -174701,10 +174473,7 @@
     "pickedAt": "2026-11-13T01:58:11.445Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -174916,10 +174685,7 @@
     "pickedAt": "2026-11-13T06:14:29.774Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o",
@@ -175078,10 +174844,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -175247,10 +175010,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -175403,10 +175163,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -175578,10 +175335,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -175749,10 +175503,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -175898,10 +175649,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -176069,10 +175817,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -176246,10 +175991,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -176513,10 +176255,7 @@
     "pickedAt": "2026-11-13T06:14:47.983Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -177113,10 +176852,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the",
@@ -177282,10 +177018,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -177503,10 +177236,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -177720,10 +177450,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app",
@@ -177907,10 +177634,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less",
@@ -178195,10 +177919,7 @@
     "pickedAt": "2026-11-13T03:28:15.605Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -178589,10 +178310,7 @@
     "pickedAt": "2026-11-13T10:37:34.284Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -179100,10 +178818,7 @@
     "pickedAt": "2026-11-13T07:08:11.318Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -180303,10 +180018,7 @@
     "pickedAt": "2026-11-13T06:56:46.988Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -180806,10 +180518,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -181555,10 +181264,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -181974,10 +181680,7 @@
     "pickedAt": "2026-11-13T10:37:16.655Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -182834,10 +182537,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -183172,12 +182872,93 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-13T10:39:34.330Z",
-   "updatedAt": "2026-11-13T10:39:34.330Z",
+   "updatedAt": "2026-11-13T10:41:23.599Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"c575e85b-102f-4b6f-8805-0fec90217ed0\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-13T10:41:23.599Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-13T10:41:23.599Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 2,
+     "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"c575e85b-102f-4b6f-8805-0fec90217ed0\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mweujssv0188cu",
+     "title": "",
+     "text": "Every skin ships a light and a dark colour theme (Studio Pro, Executive, Field, Command, Default and any future skin): quick light/dark switch per skin, follow-system option, coverage check fails if a skin lacks either; full API and voice",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T10:41:23.599Z",
+     "updatedAt": "2026-11-13T10:41:23.599Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mweujssw02gf7f",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/every-skin-ships-a-light-and-a-dark-colour-theme-studio-pro-executive-field.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/every-skin-ships-a-light-and-a-dark-colour-theme-studio-pro-executive-field.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T10:41:23.599Z",
+     "updatedAt": "2026-11-13T10:41:23.599Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -183186,12 +182967,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-13T10:41:23.599Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
@@ -183252,10 +183033,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -183332,10 +183110,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "maxParallel": 0,
-    "budgetUsd": 0,
-    "spentUsd": 0
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -183347,6 +183122,87 @@
    "kind": "build",
    "planRef": "",
    "rev": 3,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "android-approval-overlay-a-small-always-on-float",
+   "title": "Android approval overlay: a small always-on floating toolbar (draw-over-other-apps) on Brett's phone that expands into the full approval card (what, why, countdown, Approve/Deny) the moment an approval is sent, then shrinks back; settings for position, size and on/off; full API and voice",
+   "category": "",
+   "detail": "",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-13T10:41:19.479Z",
+   "updatedAt": "2026-11-13T10:41:44.966Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T10:41:21.820Z"
+    },
+    {
+     "text": "Brett: the overlay uses the skin/interface system too (follows the active skin, light/dark), and he wants to fully configure it: look, size, position, what it shows, when it expands. Configurable from the console and the phone, full API and voice.",
+     "at": "2026-11-13T10:41:44.966Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Build me a overlay that expands with the approval every time one's sent. A little overlay, like a little toolbar, but it expands when I need an approval.",
+    "at": "2026-11-13T10:41:19.479Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "2026-11-13T10:41:21.390Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 776
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

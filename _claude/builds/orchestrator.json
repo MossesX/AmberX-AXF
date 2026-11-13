@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T10:41:45.709Z",
+ "updatedAt": "2026-11-13T10:41:59.385Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -120475,12 +120475,59 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-13T10:39:34.330Z",
-   "updatedAt": "2026-11-13T10:39:34.330Z",
+   "updatedAt": "2026-11-13T10:41:23.599Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"c575e85b-102f-4b6f-8805-0fec90217ed0\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-13T10:41:23.599Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Every skin ships a light and a dark colour theme (Studio Pro, Executive, Field, Command, Default and any future skin): quick light/dark switch per skin, follow-system option, coverage check fails if a skin lacks either; full API and voice",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mweujssv0188cu",
+     "createdAt": "2026-11-13T10:41:23.599Z"
+    },
+    {
+     "id": "s2",
+     "text": "Tests green, report _claude/builds/reports/every-skin-ships-a-light-and-a-dark-colour-theme-studio-pro-executive-field.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/every-skin-ships-a-light-and-a-dark-colour-theme-studio-pro-executive-field.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mweujssw02gf7f",
+     "createdAt": "2026-11-13T10:41:23.599Z"
+    }
+   ]
   },
   {
    "id": "every-skin-ships-a-light-and-a-dark-colour-theme",
@@ -120545,6 +120592,47 @@
    "origin": {
     "said": "Alright, land that shit.",
     "at": "2026-11-13T10:40:45.569Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "android-approval-overlay-a-small-always-on-float",
+   "title": "Android approval overlay: a small always-on floating toolbar (draw-over-other-apps) on Brett's phone that expands into the full approval card (what, why, countdown, Approve/Deny) the moment an approval is sent, then shrinks back; settings for position, size and on/off; full API and voice",
+   "category": "",
+   "detail": "",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-13T10:41:19.479Z",
+   "updatedAt": "2026-11-13T10:41:44.966Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T10:41:21.820Z"
+    },
+    {
+     "text": "Brett: the overlay uses the skin/interface system too (follows the active skin, light/dark), and he wants to fully configure it: look, size, position, what it shows, when it expands. Configurable from the console and the phone, full API and voice.",
+     "at": "2026-11-13T10:41:44.966Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Build me a overlay that expands with the approval every time one's sent. A little overlay, like a little toolbar, but it expands when I need an approval.",
+    "at": "2026-11-13T10:41:19.479Z",
     "source": "",
     "session": "",
     "link": "",
