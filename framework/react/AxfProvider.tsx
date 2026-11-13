@@ -3,6 +3,7 @@ import type { AssetType, AxfRuntime, MenuItem } from '../core';
 import { installTapConfirm } from './tapConfirm';
 import { installMenuFit } from './components/menuFit';
 import { installControlRegistry } from './controlTargets';
+import { installScrollControl } from './scrollControl';
 
 export const AxfContext = createContext<AxfRuntime | null>(null);
 
@@ -106,6 +107,8 @@ export function AxfProvider({ runtime, children }: { runtime: AxfRuntime; childr
 
   // console-control@1 (controlTargets.ts): every control on the page is addressable; the verbs ride on console.actions.
   useEffect(() => installControlRegistry(runtime), [runtime]);
+  // … and the scroll contract (scrollControl.ts): scroll up / down / page / top / bottom / to on the active or a named pane.
+  useEffect(() => installScrollControl(runtime), [runtime]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
