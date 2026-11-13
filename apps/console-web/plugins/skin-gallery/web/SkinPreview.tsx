@@ -25,7 +25,7 @@ export function SkinPreview({ skin, fallback, frame, onFrame }: { skin: SkinRow 
     <Container title={skin ? `Preview: ${skin.name}` : 'Preview'} icon="eye" className="axp-skin-gallery__preview">
       <div role="toolbar" aria-label="Preview size" className="axp-skin-gallery__frames">
         <Segmented label="Preview size" value={frame} onChange={onFrame} options={[
-          { value: 'both', label: 'Both', icon: 'columns' },
+          { value: 'both', label: 'Both', icon: 'grid' },
           { value: 'desktop', label: 'Desktop', icon: 'monitor' },
           { value: 'phone', label: 'Phone', icon: 'smartphone' },
         ]} />

@@ -11,5 +11,8 @@
 .axp-skin-gallery__frameset.is-desktop, .axp-skin-gallery__frameset.is-phone { grid-template-columns: minmax(0, 1fr); }
 .axp-skin-gallery__frame { padding: var(--fx-dens-gap-lg); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-lg); background: var(--fx-bg); }
 .axp-skin-gallery__frame.is-phone { max-width: calc(var(--fx-layout-nav-width) * 1.6); width: 100%; justify-self: center; }
-.axp-skin-gallery-quick { display: flex; align-items: center; gap: var(--fx-dens-gap-sm); }
 :where([data-fx-narrow]) .axp-skin-gallery__body, :where([data-fx-narrow]) .axp-skin-gallery__frameset { grid-template-columns: minmax(0, 1fr); }
+.axp-skin-gallery-chip { display: inline-flex; }
+.axp-skin-gallery-chip__pop { position: fixed; min-width: calc(var(--fx-layout-nav-width) * 0.9); }
+.axp-skin-gallery-chip__head { margin: var(--fx-dens-gap-sm) var(--fx-dens-gap-md); }
+.axp-skin-gallery-chip__bar { display: flex; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-sm) var(--fx-dens-gap-md); border-top: var(--fx-border-w) solid var(--fx-border); }

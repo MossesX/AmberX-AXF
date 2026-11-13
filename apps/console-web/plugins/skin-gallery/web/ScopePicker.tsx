@@ -49,7 +49,7 @@ export function ScopePicker({ kind, target, app, known, view, skins, busy, onKin
   const inherits = view?.state.use === 'inherit';
   const followLabel = kind === 'app' ? 'Follow hub' : 'Inherit from parent';
   return (
-    <Container title="Where to switch" icon="target" className="axp-skin-gallery__scope">
+    <Container title="Where to switch" icon="layers" className="axp-skin-gallery__scope">
       <TabGroup id="skin-gallery.scope" label="Scope" value={kind} onChange={(v) => onKind(v as Kind)} tabs={KINDS} />
       <div className="axp-skin-gallery__target" data-help="skin-gallery.scope">
         {kind === 'app' && (
