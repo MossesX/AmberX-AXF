@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T18:17:28.135Z",
+ "updatedAt": "2026-11-13T18:17:46.844Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -126509,15 +126509,15 @@
    "title": "New asset type: animated expanding row picker replaces every dropdown",
    "category": "",
    "detail": "Brett: no more drop-down menus anywhere. New asset type (e.g. 'expander-picker') that replaces every dropdown/select in the framework:\n- Collapsed: a row showing the setting's name and current value, with a small arrow.\n- Tap the arrow (or row): the row expands with an animation into a subgrid of all options (cards/tiles, can show previews), pushing content below down; no floating dropdown.\n- Tap an option once: it is selected/highlighted (preview where possible).\n- Tap the same option again: applies it and the subgrid animates closed.\n- Animation uses motion tokens; respects reduced-motion; keyboard and screen-reader accessible.\n- Make it the framework default for every select/dropdown control, existing and future (migrate all current dropdowns, add a check that fails on new raw dropdowns). Ship 3 design options to UI Review.\n- Asset schema + manifest + conformance tests; skinnable via tokens; reachable by REST/MCP/CLI/voice/control@1.\n- Shipped features entry.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/new-asset-type-animated-expanding-row",
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:13:23.703Z",
-   "updatedAt": "2026-11-13T18:17:07.472Z",
+   "updatedAt": "2026-11-13T18:17:21.527Z",
    "builtAt": "",
    "notes": [
     {
@@ -126527,6 +126527,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"cbf3dc93-52ab-4362-b55a-8c0071ad498a\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-13T18:14:50.263Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-new-asset-type-animated-expanding-row--joey.",
+     "at": "2026-11-13T18:17:14.834Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-new-asset-type-animated-expanding-row--joey, own login copy)",
+     "at": "2026-11-13T18:17:21.527Z"
     }
    ],
    "approvals": [],
