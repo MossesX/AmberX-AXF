@@ -778,7 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 11:08 UTC · `show-commits-behind-main-on-every-build-table-an` → queued, note (all) · pipeline
 - 2026-11-12 11:08 UTC · `show-commits-behind-main-on-every-build-table-an` → running, note (all) · pipeline
 - 2026-11-12 11:08 UTC · `show-commits-behind-main-on-every-build-table-an` note (all) · orchestrator
 - 2026-11-12 11:10 UTC · `focus-on-every-screen-console-open-console-show-` PR #521 (all) · builds-live
@@ -1178,6 +1177,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 01:46 UTC · `vps-badge-shows-shell-commands-work-banner-widgets-for-disk-cpu-load-and-memor` branch claude/vps-badge-shows-shell-commands-work-banner-widgets-for-disk-cpu-load-and-memor (all) · pipeline
 - 2026-11-13 01:46 UTC · `vps-badge-shows-shell-commands-work-banner-widgets-for-disk-cpu-load-and-memor` note (all) · orchestrator
 - 2026-11-13 01:47 UTC · `everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the` s1 done, → running (all) · orchestrator
+- 2026-11-13 01:48 UTC · `everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the` PR #538 (all) · builds-live
 
 ## Token passes (log)
 
