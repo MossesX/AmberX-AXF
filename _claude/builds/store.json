@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4204,
- "updatedAt": "2026-11-13T10:37:39.872Z",
+ "rev": 4205,
+ "updatedAt": "2026-11-13T10:37:53.284Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -160723,7 +160723,7 @@
    "branch": "claude/owner-recognized-everywhere-veto-countdown-only-on-shell-commands",
    "pr": "",
    "createdAt": "2026-11-12T02:04:11.564Z",
-   "updatedAt": "2026-11-13T10:35:15.469Z",
+   "updatedAt": "2026-11-13T10:37:49.715Z",
    "builtAt": "",
    "notes": [
     {
@@ -160792,7 +160792,7 @@
     "session": "",
     "link": "",
     "by": "owner-recognized-everywhere-veto-countdown-only-on-shell-commands",
-    "brief": "# Build: owner-recognized-everywhere-veto-countdown-only-on-shell-commands\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"Owner recognized everywhere + veto countdown only on shell commands\" (owner-recognized-everywhere-veto-countdown-only-on-shell-commands) [axhub] — Phase 1, model Opus.\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/owner-recognized-everywhere-veto-countdown-only-on-shell-commands\nSteps in this phase (2 left, ~45 min):\n[x] s1 (~30 min) Fix owner detection: Brett's admin console login and axHub session count as owner everywhere; finish the axHub owner-only policy API (GET/PUT /auth/api/policy) and the Approvals & veto tab so Brett can change policies himself.\n[ ] s2 (~25 min) Set axHub policies: veto countdown ONLY for shell commands on the VPS (vps.run and anything executing a shell); all console/orchestrator tools to allow; keep confirm on model upgrades.\n[ ] s3 (~20 min) Tests (owner recognized, vps.run still veto, console/orchestrator tools run immediately), PR, land, redeploy, AmberX FYI when live.\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step owner-recognized-everywhere-veto-countdown-only-on-shell-commands <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link owner-recognized-everywhere-veto-countdown-only-on-shell-commands --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step owner-recognized-everywhere-veto-countdown-only-on-shell-commands <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note owner-recognized-everywhere-veto-countdown-only-on-shell-commands \"…\"); the build goes back to Pending for Brett.\n",
+    "brief": "# Build: owner-recognized-everywhere-veto-countdown-only-on-shell-commands\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"Owner recognized everywhere + veto countdown only on shell commands\" (owner-recognized-everywhere-veto-countdown-only-on-shell-commands) [axhub] — Phase 1, model Opus.\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/owner-recognized-everywhere-veto-countdown-only-on-shell-commands\nSteps in this phase (1 left, ~20 min):\n[x] s1 (~30 min) Fix owner detection: Brett's admin console login and axHub session count as owner everywhere; finish the axHub owner-only policy API (GET/PUT /auth/api/policy) and the Approvals & veto tab so Brett can change policies himself.\n[x] s2 (~25 min) Set axHub policies: veto countdown ONLY for shell commands on the VPS (vps.run and anything executing a shell); all console/orchestrator tools to allow; keep confirm on model upgrades.\n[ ] s3 (~20 min) Tests (owner recognized, vps.run still veto, console/orchestrator tools run immediately), PR, land, redeploy, AmberX FYI when live.\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step owner-recognized-everywhere-veto-countdown-only-on-shell-commands <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link owner-recognized-everywhere-veto-countdown-only-on-shell-commands --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step owner-recognized-everywhere-veto-countdown-only-on-shell-commands <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note owner-recognized-everywhere-veto-countdown-only-on-shell-commands \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": false,
     "from": "",
     "addenda": []
@@ -160908,7 +160908,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -161644,14 +161644,14 @@
    "title": "Server gate: one session per build, no duplicate launches",
    "category": "orchestrator",
    "detail": "URGENT, boss order from Brett, Nov 12. The dispatcher double/triple-launched builds: owner-recognized-everywhere ran 3 sessions and molly-gap-console-token-handoff ran 2, in the same worktree folders, clobbering each other and wasting slots. Add a SERVER GATE on the VPS, enforced by the server itself: only ONE live session per build ID and per worktree folder, ever. Every launch path (vps build_start, dispatcher, agent-slots, any claude -p/tmux axf-* launcher) takes an exclusive lock per build ID + folder (flock), and refuses a second launch while a session for that build is alive. A watchdog finds any duplicates that slip through, keeps the oldest, stops the rest, and logs it in 'Automatic fixes' with an AmberX FYI. Also fix the dispatcher's double-launch root cause (see pending dispatcher-a-worktree-store-write-can-erase-a-fr: store write erases the fresh launch record). Tests: second launch of the same build refused; duplicates reaped.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/server-gate-one-session-per-build-no-duplicate-launches",
    "pr": "",
    "createdAt": "2026-11-12T02:42:15.357Z",
-   "updatedAt": "2026-11-13T10:37:37.943Z",
+   "updatedAt": "2026-11-13T10:37:44.975Z",
    "builtAt": "",
    "notes": [
     {
@@ -161677,6 +161677,14 @@
     {
      "text": "Queued by console.",
      "at": "2026-11-13T10:35:14.147Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-server-gate-one-session-per-build-no-duplicate-l--sully.",
+     "at": "2026-11-13T10:37:42.055Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-server-gate-one-session-per-build-no-duplicate-l--sully, own login copy)",
+     "at": "2026-11-13T10:37:44.975Z"
     }
    ],
    "approvals": [],
@@ -161688,7 +161696,7 @@
     "session": "",
     "link": "",
     "by": "server-gate-one-session-per-build-no-duplicate-launches",
-    "brief": "# Build: server-gate-one-session-per-build-no-duplicate-launches\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"Server gate: one session per build, no duplicate launches\" (server-gate-one-session-per-build-no-duplicate-launches) [orchestrator] — Phase 1, model Opus.\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/server-gate-one-session-per-build-no-duplicate-launches\nSteps in this phase (1 left, ~20 min):\n[x] s1 (~30 min) Server gate: per-build-ID + per-worktree exclusive lock in every VPS launch path; a second launch of a build with a live session is refused, logged, AmberX FYI.\n[x] s2 (~30 min) Fix the dispatcher double-launch root cause (store write erasing the fresh launch record); watchdog reaps any duplicate sessions, keeping the oldest.\n[x] s4 (~25 min) Server gate log: every time ANY server gate is hit (duplicate launch refused, duplicate reaped by watchdog, slot limit, orchestrator-ID gate, main gate), write an entry: time, which gate, which build, who/what tried it, what the gate did. Viewable in the console as a 'Server gate log' page with a count badge and filter by gate; also via REST/MCP/CLI and voice ('show the gate log'). Kept on the server, survives restarts.\n[x] s5 (~25 min) Server gate log banner widget (snappable asset) with count badge showing latest gate hits; tap opens the Server gate log page. Setting for where its entries show: its OWN banner (a strip across the top that only appears when there's something in it) OR any existing banner Brett picks (dropdown of all banners); switchable live; also via REST/MCP/CLI/voice.\n[ ] s3 (~20 min) Tests (second launch refused; duplicates reaped; dispatcher no longer double-launches), PR, land through the gate, AmberX FYI when live.\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step server-gate-one-session-per-build-no-duplicate-launches <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link server-gate-one-session-per-build-no-duplicate-launches --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step server-gate-one-session-per-build-no-duplicate-launches <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note server-gate-one-session-per-build-no-duplicate-launches \"…\"); the build goes back to Pending for Brett.\n",
+    "brief": "# Build: server-gate-one-session-per-build-no-duplicate-launches\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"Server gate: one session per build, no duplicate launches\" (server-gate-one-session-per-build-no-duplicate-launches) [orchestrator] — Phase 1, model Opus.\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (5 left, ~2.2 h):\n[ ] s1 (~30 min) Server gate: per-build-ID + per-worktree exclusive lock in every VPS launch path; a second launch of a build with a live session is refused, logged, AmberX FYI.\n[ ] s2 (~30 min) Fix the dispatcher double-launch root cause (store write erasing the fresh launch record); watchdog reaps any duplicate sessions, keeping the oldest.\n[ ] s4 (~25 min) Server gate log: every time ANY server gate is hit (duplicate launch refused, duplicate reaped by watchdog, slot limit, orchestrator-ID gate, main gate), write an entry: time, which gate, which build, who/what tried it, what the gate did. Viewable in the console as a 'Server gate log' page with a count badge and filter by gate; also via REST/MCP/CLI and voice ('show the gate log'). Kept on the server, survives restarts.\n[ ] s5 (~25 min) Server gate log banner widget (snappable asset) with count badge showing latest gate hits; tap opens the Server gate log page. Setting for where its entries show: its OWN banner (a strip across the top that only appears when there's something in it) OR any existing banner Brett picks (dropdown of all banners); switchable live; also via REST/MCP/CLI/voice.\n[ ] s3 (~20 min) Tests (second launch refused; duplicates reaped; dispatcher no longer double-launches), PR, land through the gate, AmberX FYI when live.\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step server-gate-one-session-per-build-no-duplicate-launches <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link server-gate-one-session-per-build-no-duplicate-launches --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step server-gate-one-session-per-build-no-duplicate-launches <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note server-gate-one-session-per-build-no-duplicate-launches \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": false,
     "from": "",
     "addenda": []
@@ -161696,18 +161704,18 @@
    "pipeline": {
     "queuedAt": "2026-11-13T10:35:13.717Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-server-gate-one-session-per-build-no-duplicate-l--sully",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-13T10:37:41.673Z",
+    "runs": 1,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-13T10:37:41.673Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -161716,7 +161724,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-13T10:37:41.673Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -161841,7 +161849,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": {
