@@ -781,7 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 06:31 UTC · `10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less` → complete, merged, note (all) · reconciler
 - 2026-11-13 06:31 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` s8 done, note (all) · orchestrator
 - 2026-11-13 06:32 UTC · `amberx-approval-pop-up-not-showing-only-the-android-notification` note (all) · orchestrator
 - 2026-11-13 06:32 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` note (all) · orchestrator
@@ -1181,6 +1180,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 11:35 UTC · `unlink-plan-studio-from-builds-delete-all-plan-s` s3 done, → complete, note (all) · foreign-write
 - 2026-11-13 11:34 UTC · `unlink-plan-studio-from-builds-delete-all-plan-s` s3 done, → built (all) · orchestrator
 - 2026-11-13 11:34 UTC · `unlink-plan-studio-from-builds-delete-all-plan-s` note (all) · orchestrator
+- 2026-11-13 11:35 UTC · `unlink-plan-studio-from-builds-delete-all-plan-s` note (all) · orchestrator
 
 ## Token passes (log)
 

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4339,
- "updatedAt": "2026-11-13T11:35:23.368Z",
+ "rev": 4340,
+ "updatedAt": "2026-11-13T11:35:34.129Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -170151,7 +170151,7 @@
    "branch": "claude/unlink-plan-studio-from-builds-delete-all-plan-s",
    "pr": "#570",
    "createdAt": "2026-11-12T10:49:12.963Z",
-   "updatedAt": "2026-11-13T11:34:55.593Z",
+   "updatedAt": "2026-11-13T11:35:09.515Z",
    "builtAt": "2026-11-13T11:34:54.213Z",
    "notes": [
     {
@@ -170189,6 +170189,10 @@
     {
      "text": "PR #570. UI Review shots of the Plan Studio editor still owed: the branch is 866 commits behind main with 3 conflicts (plans.mjs, server, plan-core), so they should be taken after the merge queue resolves it. 3 plans Brett made after the wipe were kept.",
      "at": "2026-11-13T11:34:55.593Z"
+    },
+    {
+     "text": "Headless run axf-unlink-plan-studio-from-builds-delete-all-plan-s--rhonda: brief only · start 12.4K tokens ($0.03) · cost $1.31 · 46 turns · 6 tools, MCP none",
+     "at": "2026-11-13T11:35:09.515Z"
     }
    ],
    "approvals": [],
@@ -170208,12 +170212,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T11:24:27.918Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-unlink-plan-studio-from-builds-delete-all-plan-s--rhonda",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-13T11:25:46.013Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T10:50:36.976Z",
@@ -170225,7 +170229,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-13T11:25:46.013Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -170234,7 +170238,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-13T11:25:46.013Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -170323,12 +170327,12 @@
    "deletedAt": "",
    "pending": {
     "model": "Opus",
-    "status": "pending",
+    "status": "complete",
     "estimate": "1 h",
     "source": "mcp",
     "planId": "",
     "createdAt": "2026-11-12T10:49:12.963Z",
-    "builtAt": "",
+    "builtAt": "2026-11-13T11:34:54.213Z",
     "prefixSteps": false,
     "stepAt": {
      "st-mwdfft4g011xgy": "2026-11-12T10:50:36.976Z",
