@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4292,
- "updatedAt": "2026-11-13T11:17:41.183Z",
+ "rev": 4293,
+ "updatedAt": "2026-11-13T11:17:55.214Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -183291,7 +183291,7 @@
    "pr": "#557",
    "priority": "P0",
    "createdAt": "2026-11-13T10:40:45.569Z",
-   "updatedAt": "2026-11-13T11:16:46.914Z",
+   "updatedAt": "2026-11-13T11:17:23.815Z",
    "builtAt": "2026-11-13T11:16:46.914Z",
    "notes": [
     {
@@ -183317,6 +183317,10 @@
     {
      "text": "Headless run axf-fix-merge-conflicts-on-pr-557-professional-skins--earl: brief only · start 11.1K tokens ($0.03) · cost $3.21 · 112 turns · 6 tools, MCP none",
      "at": "2026-11-13T11:16:46.914Z"
+    },
+    {
+     "text": "Session axf-fix-merge-conflicts-on-pr-557-professional-skins--earl on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-13T11:17:23.815Z"
     }
    ],
    "approvals": [],
@@ -183337,12 +183341,19 @@
     "queuedAt": "2026-11-13T10:40:47.256Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-fix-merge-conflicts-on-pr-557-professional-skins--earl",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-13T10:48:26.846Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-13T11:17:23.245Z",
+     "exit": 0,
+     "outcome": "finished",
+     "stepsLeft": 0,
+     "account": "mossesx-max-",
+     "session": "axf-fix-merge-conflicts-on-pr-557-professional-skins--earl"
+    },
     "split": {
      "at": "2026-11-13T10:44:27.308Z",
      "by": "orchestrator",
@@ -183424,7 +183435,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -183670,7 +183681,13 @@
     "note": "",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Fable",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-13T11:17:25.223Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -184216,7 +184233,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -184232,15 +184249,15 @@
    "title": "Drag anything by API and voice, after PR 556 lands: banner widgets, toolbar items, tabs, panes, grid rows and columns; move, reorder, add and remove",
    "category": "",
    "detail": "",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/drag-anything-by-api-and-voice-after-pr-556-land",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T11:13:29.147Z",
-   "updatedAt": "2026-11-13T11:15:09.567Z",
+   "updatedAt": "2026-11-13T11:17:36.431Z",
    "builtAt": "",
    "notes": [
     {
@@ -184250,6 +184267,10 @@
     {
      "text": "Split by Claude into 20 steps (5 Fable).",
      "at": "2026-11-13T11:15:09.567Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-drag-anything-by-api-and-voice-after-pr-556-land--lenny.",
+     "at": "2026-11-13T11:17:36.431Z"
     }
    ],
    "approvals": [],
@@ -184260,8 +184281,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "drag-anything-by-api-and-voice-after-pr-556-land",
+    "brief": "# Build: drag-anything-by-api-and-voice-after-pr-556-land\n\n## Brett said (verbatim)\nAt: 2026-11-13T11:13:29.147Z\n> I want to be able to drag anything on any page, anything that's draggable. The regular API build land first.\n\n## What to build\nContinue build \"Drag anything by API and voice, after PR 556 lands: banner widgets, toolbar items, tabs, panes, grid rows and columns; move, reorder, add and remove\" (drag-anything-by-api-and-voice-after-pr-556-land) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-13 11:13):\n\"I want to be able to drag anything on any page, anything that's draggable. The regular API build land first.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (5 left, ~46 min):\n[ ] s1 (~8 min) Precheck: confirm PR 556 (full API and voice control) has merged to main; if it hasn't, stop and hand the build back to Pending with a note. Read the drag code that already exists (banner widget drag, toolbar editor drops, the workspace pane strip, the Terminal tab strip, TabGroup reorder, DataGrid column and row moves, hook@1 and drop-target@1) and write a list of every draggable surface to _claude/builds/reports/drag-anything-by-api-and-voice-after-pr-556-land/inventory.md\n[ ] s2 (~10 min) Design the drag-op@1 contract: a draggable surface registry (surface id, kind = banner-widget|toolbar-item|tab|pane|grid-row|grid-column|open, item ids, slots/hosts) and ops move|reorder|add|remove with from/to/index, plus a stable error code list. Put it in a schema file and a spec doc, and record the Kotlin twin as a deferred gap in PORTING.md\n[ ] s3 (~10 min) Write the reference engine framework/core/engines/drag-ops.ts: a pure engine that validates an op against a surface snapshot and returns the new order or placement or a coded error (no DOM)\n[ ] s4 (~8 min) Add golden fixtures for drag-ops (move, reorder, add, remove, out-of-range, locked item, unknown surface) and a check script for the engine against them\n[ ] s5 (~10 min) Write the runtime drag registry framework/react/dragRegistry.ts: a hook where any draggable host registers its surface (id, kind, list items, apply(op) callback) and runtime methods rt.drag.surfaces(), rt.drag.state(id) and rt.drag.apply(op). Every UI drag goes through the same apply path, so a mouse drag and an API drag share one code path\nRead first: _claude/builds/reports/drag-anything-by-api-and-voice-after-pr-556-land/inventory.md, framework/react, apps/console-web/src, apps/console-web/plugins, framework/schemas/drag-op.json, framework/spec/DRAG-API.md, framework/spec/PORTING.md, framework/core/engines/drag-ops.ts, framework/core/index.ts, framework/spec/fixtures/drag-ops.json, framework/spec/gen-fixtures.mts, framework/spec/check-drag-ops.mts, framework/react/dragRegistry.ts, framework/react/AxfProvider.tsx, framework/core/runtime.ts\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step drag-anything-by-api-and-voice-after-pr-556-land <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link drag-anything-by-api-and-voice-after-pr-556-land --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step drag-anything-by-api-and-voice-after-pr-556-land <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note drag-anything-by-api-and-voice-after-pr-556-land \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -184269,12 +184290,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T11:13:30.493Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-drag-anything-by-api-and-voice-after-pr-556-land--lenny",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Fable",
+    "launchedAt": "2026-11-13T11:17:35.907Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T11:15:09.567Z",
@@ -184286,10 +184307,16 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
-    "planned": null,
+    "dispatchedAt": "2026-11-13T11:17:35.908Z",
+    "planned": {
+     "model": "Fable",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-13T11:17:25.223Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-13T11:17:35.908Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -184814,7 +184841,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
