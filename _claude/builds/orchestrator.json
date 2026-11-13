@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T18:51:55.548Z",
+ "updatedAt": "2026-11-13T18:52:13.906Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -128155,7 +128155,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:38:53.122Z",
-   "updatedAt": "2026-11-13T18:51:35.092Z",
+   "updatedAt": "2026-11-13T18:52:04.515Z",
    "builtAt": "",
    "notes": [
     {
@@ -128189,6 +128189,14 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-console-android-app-thin-webview-wrapper--lenny, own login copy)",
      "at": "2026-11-13T18:43:48.669Z"
+    },
+    {
+     "text": "Self-check: console-android-app-thin-webview-wrapper was marked running on mossesx-max- with no session: released and back in the Queue.",
+     "at": "2026-11-13T18:51:51.682Z"
+    },
+    {
+     "text": "Brett: while the console app (or AmberX) is open or running, the console must NEVER go to sleep. Keep the WebView and its command socket alive with a foreground service and a partial wake lock, and ask for the battery-optimisation exemption on first run (with a one-tap setup, including Samsung's 'never sleeping apps'). Add a setting 'Keep console awake while the app is open' (default on), plus API/voice control.",
+     "at": "2026-11-13T18:52:04.515Z"
     },
     {
      "text": "Brett: instant wake. Today a voice/MCP command waits ~12-24 s because Android holds Chrome back and the console only gets it after reconnecting. The wrapper must keep a persistent connection in a foreground service (console-command socket alive in the background, battery-optimisation exemption) so commands open the screen instantly, bringing the app to the front with no notification tap. Cache the console shell (service worker or local assets) so it paints in under a second.",
@@ -129593,12 +129601,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:50:33.284Z",
-   "updatedAt": "2026-11-13T18:50:37.242Z",
+   "updatedAt": "2026-11-13T18:51:47.804Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-13T18:50:37.242Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"bfa5ae03-24df-42c5-8b81-d1988367aa82\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-13T18:51:47.804Z"
     }
    ],
    "approvals": [],
@@ -129615,7 +129627,201 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Build Orchestrator board gets user-made groups.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfc2gnw01v6tw",
+     "createdAt": "2026-11-13T18:51:47.804Z"
+    },
+    {
+     "id": "s2",
+     "text": "Brett creates, renames, reorders, colours and deletes custom groups/tabs (e.g. 'Console app', 'UI', 'Urgent').",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfc2gnw02gqci",
+     "createdAt": "2026-11-13T18:51:47.804Z"
+    },
+    {
+     "id": "s3",
+     "text": "Builds are dragged or assigned into a group (one or several), by hand, by voice or by API.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfc2gnw03tgld",
+     "createdAt": "2026-11-13T18:51:47.804Z"
+    },
+    {
+     "id": "s4",
+     "text": "Custom tabs can sit next to Pending, Queued, Building and Done. Mostly used for Pending: custom Pending tabs.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfc2gnw04tc7l",
+     "createdAt": "2026-11-13T18:51:47.804Z"
+    },
+    {
+     "id": "s5",
+     "text": "Inside a group, builds are sorted by state (partial/pending, queued, running, done, landed) with a sort and filter picker, and the group shows counts per state.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfc2gnw057gzy",
+     "createdAt": "2026-11-13T18:51:47.804Z"
+    },
+    {
+     "id": "s6",
+     "text": "Smart groups by rule (e.g. 'title contains console app', 'more than 500 behind main', 'filed today').",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfc2gnw068hmn",
+     "createdAt": "2026-11-13T18:51:47.804Z"
+    },
+    {
+     "id": "s7",
+     "text": "Group actions: queue all, land all, archive all, change priority.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfc2gnw07zucr",
+     "createdAt": "2026-11-13T18:51:47.804Z"
+    },
+    {
+     "id": "s8",
+     "text": "Groups are saved per project. Full API: REST/MCP/CLI/voice/control@1. Tests, help, Shipped features.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfc2gnw089tnf",
+     "createdAt": "2026-11-13T18:51:47.804Z"
+    },
+    {
+     "id": "s9",
+     "text": "I want to be able to add some custom groups to my board, sorted by state from partials to done, running; mostly for pending; custom pending tabs, custom groups",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfc2gnw0921gq",
+     "createdAt": "2026-11-13T18:51:47.804Z"
+    },
+    {
+     "id": "s10",
+     "text": "Tests green, report _claude/builds/reports/orchestrator-custom-groups-custom-tabs.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/orchestrator-custom-groups-custom-tabs.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfc2gnw0ah51l",
+     "createdAt": "2026-11-13T18:51:47.804Z"
+    }
+   ]
   }
  ]
 }

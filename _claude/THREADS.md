@@ -786,11 +786,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 12:27 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` s13 done, → built (all) · orchestrator
-- 2026-11-13 12:28 UTC · `ui-review-gate-switch-default-off` s3 done (all) · orchestrator
-- 2026-11-13 12:28 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` note (all) · orchestrator
-- 2026-11-13 12:28 UTC · `combine-merge-queue-into-one-pr` s10 done (all) · orchestrator
-- 2026-11-13 12:29 UTC · `auto-recover-stuck-builds` s10 done (all) · orchestrator
 - 2026-11-13 12:29 UTC · `fix-toolbar-settings-doing-nothing` note (all) · mcp
 - 2026-11-13 12:29 UTC · `combine-merge-queue-into-one-pr` s11 done (all) · orchestrator
 - 2026-11-13 12:29 UTC · `fix-toolbar-settings-doing-nothing` s1 done, → running (all) · orchestrator
@@ -1186,6 +1181,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 18:51 UTC · `decision-dialog-ui-review-other` s6 done (all) · orchestrator
 - 2026-11-13 18:51 UTC · `ui-manager-floating-window-to-select-any` note (all) · orchestrator
 - 2026-11-13 18:51 UTC · `console-android-app-thin-webview-wrapper` note (all) · claude-voice
+- 2026-11-13 18:51 UTC · `orchestrator-custom-groups-custom-tabs` note (all) · orchestrator
+- 2026-11-13 18:51 UTC · `console-android-app-thin-webview-wrapper` → queued, note (all) · pipeline
+- 2026-11-13 18:52 UTC · `decision-dialog-ui-review-other` s6 done (all) · foreign-write
+- 2026-11-13 18:52 UTC · `ui-manager-floating-window-to-select-any` → queued, note (all) · foreign-write
+- 2026-11-13 18:52 UTC · `console-android-app-thin-webview-wrapper` → running, note (all) · claude-voice
 
 ## Token passes (log)
 
