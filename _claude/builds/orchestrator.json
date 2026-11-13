@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T19:34:05.008Z",
+ "updatedAt": "2026-11-13T19:34:29.750Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -130873,12 +130873,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T19:32:22.232Z",
-   "updatedAt": "2026-11-13T19:32:25.191Z",
+   "updatedAt": "2026-11-13T19:34:28.140Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-13T19:32:25.191Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"1ec17e03-ec45-4061-9c9d-84bf5aef7664\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-13T19:34:28.140Z"
     }
    ],
    "approvals": [],
@@ -130895,7 +130899,68 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Branch claude/rename-long-builds clashed with main in apps/console-web/plugins/build-orchestrator/orchestrator.mjs (merge aborted, main untouched). Merge origin/main into the branch and keep main's newer orchestrator code plus this branch's rename logic and renames.json mapping. Run the orchestrator tests, push, then land on main.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfdlc8c01ic63",
+     "createdAt": "2026-11-13T19:34:28.140Z"
+    },
+    {
+     "id": "s2",
+     "text": "land rename long builds",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfdlc8c02cd7r",
+     "createdAt": "2026-11-13T19:34:28.140Z"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/land-rename-long-builds-resolve-clash.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/land-rename-long-builds-resolve-clash.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfdlc8c03jjsa",
+     "createdAt": "2026-11-13T19:34:28.140Z"
+    }
+   ]
   },
   {
    "id": "land-overlay-preview-ui-review-resolve",
