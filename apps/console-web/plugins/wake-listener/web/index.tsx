@@ -23,7 +23,7 @@ import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { ENGINE_LABEL, FOLDER, hear, initialState, light, normalizeSettings, pickEngine, sleep, stateLine, switched, wizardOff, wizardOn, type ListenerSettings, type ListenerState } from '../core.mjs';
 import { available, chime, createEngine, say, type Engine } from './engine';
-import { cancelFloor, handleCommand, hasFloor } from './flow';
+import { cancelFloor, floorLabel, handleCommand, hasFloor } from './flow';
 import { appMenu } from './menu';
 import './wake-listener.css';
 
@@ -117,11 +117,13 @@ function onHeard(text: string, opts: { direct?: boolean } = {}) {
   if (r.event === 'wake') { if (L.settings.chime) chime(); armSleep(); return; }
   if (r.event === 'ignored') return;
   if (L.timer) { clearTimeout(L.timer); L.timer = null; }
-  void handleCommand({ rt, say: speak }, r.command ?? '').then((res) => {
+  void handleCommand(flowHost(rt), r.command ?? '').then((res) => {
     if (res.say) speak(res.say);
     setState(res.done ? wizardOff({ ...L.state, lastCommand: r.command ?? '' }) : wizardOn(L.state));
   }).catch((e: Error) => { speak(`That failed: ${e.message}`); setState(wizardOff(L.state)); });
 }
+
+const flowHost = (rt: AxfRuntime) => ({ rt, say: speak, answerSec: L.settings.answerSec, floor: (busy: boolean) => setState(busy ? wizardOn(L.state) : wizardOff(L.state)) });
 
 /* ------------------------------------------------------------------ the banner light */
 
@@ -176,7 +178,7 @@ export function WakeListenerPanel() {
         <p className="fx-muted">{stateLine(st, s)}</p>
         {st.error && <Note tone="warning">{st.error}</Note>}
         {!have.native && !have.webspeech && <Note tone="info">This browser has no speech recognizer. The console Android app brings its own on-device engine (offline) through the native bridge; Chrome and Edge use the browser's.</Note>}
-        {hasFloor() && <div className="axp-wake-listener__floor"><strong>A wizard has the floor</strong><span className="fx-muted">Say the answer, or Cancel.</span><div><Button size="sm" icon="x" onClick={() => { const m = cancelFloor(); speak(m); setState(wizardOff(L.state)); }}>Cancel</Button></div></div>}
+        {hasFloor() && <div className="axp-wake-listener__floor"><strong>{floorLabel()} is waiting for your answer</strong><span className="fx-muted">{st.lastReply || 'Say the answer, or Cancel.'}</span><div><Button size="sm" icon="x" onClick={() => { const m = cancelFloor(); speak(m); setState(wizardOff(L.state)); }}>Cancel</Button></div></div>}
       </Container>
       <Container title="Wake phrases" icon="message-circle">
         <p className="fx-muted">Say one of these, then the command (or wait for the chime and say it). "Hey" or "OK" in front is fine. Several are allowed.</p>

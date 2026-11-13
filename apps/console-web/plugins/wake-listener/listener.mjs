@@ -115,7 +115,9 @@ if (isMain) {
     }
     else if (cmd === 'match' || cmd === 'catalog') {
       const cat = await import('./catalog.mjs');
-      const catalog = cat.buildCatalog({ registry: cat.readRegistry() });
+      const { registry } = await import('../../../../framework/cli/plugin-commands.mjs');
+      const { CONTROL_TARGETS } = await import('../../../../framework/core/engines/control-rules.mjs');
+      const catalog = cat.buildCatalog({ registry: registry({ apps: ['console-web'] }), targets: CONTROL_TARGETS });
       if (cmd === 'catalog') {
         const q = rest.join(' ').trim();
         const list = q ? cat.searchCatalog(catalog, q) : catalog.entries;
