@@ -101,13 +101,38 @@ Snake-case and hyphenated spellings (`open_url`, `recorder-status`, `console_wak
 console API, the CLI (`axf console …`) and voice can use their own spelling. The hub only gets the tools marked
 "yes" above; a page-only tool answers `denied`.
 
-## Wiring in `ConsoleActivity` (part 1's file; the integration step adds two lines)
+## The axHub device link (moved from AmberX, s3)
+
+`HubLink` is AmberX's `AxppLink` moved here: one background thread, `hello` / long-poll `next` / `answer` on
+`https://axhub.amberxai.com/axpp/v1/` (`HubLinkRules`, JUnit `HubLinkRulesTest`) with the hub session from the
+WebView's cookies, nothing sent anywhere else. Every hub call goes through `DeviceBridge.run`, so a hub call and a page
+call run the same code and answer the same errors (AXPP `error` with the bridge's `code`, plus `permissions`).
+The `hello` says `app: "console-droid"`, `service: "amberx"`, and lists only the capabilities this build has tools for.
+
+| Moved | Tool | Code |
+| --- | --- | --- |
+| `amberx.open_url` | `browser.open` | `DeviceTools.open`: Brett's own https pages (`ShellRules.allowed`); in the app, or `where: "browser"` |
+| `amberx.console_wake` | `console.wake` | `DeviceTools.wake`: `?axf-open=<target>` (`DeviceRules.wakeUrl`), over the lock screen; emits `wake` |
+| `amberx.notify` | `notify.show` / `.cancel` / `.status` | `DeviceTools.notify*`, on part 1's `Notifier` channels |
+| `amberx.recorder_start\|stop\|status` | `recorder.*` | **stays in AmberX** for now (see below) |
+
+When Android refuses a start from the background, `browser.open` and `console.wake` post a one-tap notification and
+answer `opened: false, notified: true`, as AmberX did.
+
+**The recorder stays in AmberX.** Its capture service (`OutputRecordService`, MediaProjection, upload queue) is far
+bigger than a step; until it moves, the console app does not advertise `recorder@1`, so the hub keeps routing
+`amberx.recorder_*` to AmberX, and a page call to `recorder.*` answers `not_implemented`. Recorded as a deferred gap in
+the build report.
+
+## Wiring in `ConsoleActivity` (part 1's file; the integration adds these lines)
 
 ```java
 bridge = DeviceBridge.attach(this, web);      // in onCreate, after the WebView exists
+DeviceTools.register(bridge, this);           // open_url, wake, notifications
+HubLink.ensure(this);                         // the axHub device link (amberx device service)
 bridge.onPageFinished(view, url);             // in Client.onPageFinished
 bridge.detach();                              // in onDestroy
 ```
 
-Later steps of this build register the tools: `bridge.register(BridgeContract.REC_START, args -> …)`. Anything in the
-contract with no code yet answers `not_implemented`, never silence, and `bridge.capabilities` lists it under `notYet`.
+Anything in the contract with no code yet answers `not_implemented`, never silence, and `bridge.capabilities` lists it
+under `notYet`.
