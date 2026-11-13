@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4418,
- "updatedAt": "2026-11-13T12:26:37.985Z",
+ "rev": 4419,
+ "updatedAt": "2026-11-13T12:26:45.403Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -187597,15 +187597,15 @@
    "title": "Fix toolbar settings doing nothing",
    "category": "",
    "detail": "",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/fix-toolbar-settings-doing-nothing",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T12:23:34.932Z",
-   "updatedAt": "2026-11-13T12:26:34.546Z",
+   "updatedAt": "2026-11-13T12:26:42.078Z",
    "builtAt": "",
    "notes": [
     {
@@ -187635,6 +187635,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"8b7d7615-9320-4f15-b239-d23839ae55e5\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-13T12:26:26.762Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-fix-toolbar-settings-doing-nothing--earl.",
+     "at": "2026-11-13T12:26:38.073Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-fix-toolbar-settings-doing-nothing--earl, own login copy)",
+     "at": "2026-11-13T12:26:42.078Z"
     }
    ],
    "approvals": [],
@@ -187654,12 +187662,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T12:23:36.778Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-fix-toolbar-settings-doing-nothing--earl",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-13T12:26:37.466Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T12:26:26.762Z",
@@ -187669,9 +187677,9 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"8b7d7615-9320-4f15-b239-d23839ae55e5\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-13T12:26:37.466Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -187680,7 +187688,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-13T12:26:37.466Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -187830,7 +187838,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
