@@ -1,0 +1,30 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "skin-gallery-help",
+  "name": "Skins help",
+  "version": "0.1.0",
+  "description": "The Skins plugin's Help mode entries (help@1).",
+  "author": "Brett",
+  "tags": ["help"],
+  "data": {
+    "scope": "plugin:skin-gallery",
+    "entries": [
+      { "target": "view:skin-gallery", "title": "Skins", "text": "Every skin in one gallery. Tap one to preview it live, then Use skin to switch the scope you picked: the whole hub, this app, one screen or one plugin.", "kind": "screen" },
+      { "target": "skin-gallery.scope", "title": "Where", "text": "Which level the buttons change: the whole hub, this app, one screen or one plugin. A smaller scope wins over a bigger one." },
+      { "target": "skin-gallery.view", "title": "Desktop or phone", "text": "Shows the preview at desktop or phone width. Nothing is saved until you tap Use skin." },
+      { "target": "skin-gallery.use", "title": "Use skin", "text": "Switches the picked scope to the skin you are previewing. Undo puts it back." },
+      { "target": "skin-gallery.back", "title": "Back to skin", "text": "Drops every change made on top of the skin at this scope, so it shows as it ships. The skin stays." },
+      { "target": "skin-gallery.restore", "title": "Restore to Default", "text": "Puts this scope back to its default: no hub-wide skin, the app's saved look, or the screen / plugin following its parent. Undo puts it back." },
+      { "target": "skin-gallery.undo", "title": "Undo", "text": "Takes back the last Use, Back or Restore. Only one step is kept." },
+      { "target": "skin-gallery., "title": "Skins settings", "text": "Install and uninstall for the Skins plugin, under Settings → Plugins." }
+    ],
+    "intros": [
+      { "screen": "skin-gallery", "title": "Skins", "steps": [
+        { "say": "Pick where to switch: the hub, this app, one screen or one plugin.", "target": "skin-gallery.scope" },
+        { "say": "Tap a skin to preview it, on desktop or phone width.", "target": "" },
+        { "say": "Use skin switches it. Undo takes it back.", "target": "skin-gallery.use" }
+      ] }
+    ]
+  }
+}
