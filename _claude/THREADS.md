@@ -792,8 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 19:29 UTC · `console-android-app-thin-webview-wrapper` note (all) · orchestrator
-- 2026-11-13 19:29 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
 - 2026-11-13 19:30 UTC · `ui-manager-floating-window-to-select-any` note (all) · orchestrator
 - 2026-11-13 19:30 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
 - 2026-11-13 19:30 UTC · `console-app-part-4-console-side-safe` → running, note (all) · pipeline
@@ -1192,6 +1190,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 21:17 UTC · `context-menus-plugin-one-true-source` → pending, note (all) · pipeline
 - 2026-11-13 21:17 UTC · `auto-land-every-finished-build-lands` note (all) · orchestrator
 - 2026-11-13 21:17 UTC · `toolbar-widgets-attach-any-banner-style` → running, note (all) · pipeline
+- 2026-11-13 21:16 UTC · `auto-land-every-finished-build-lands` s10 done, → built (all) · orchestrator
+- 2026-11-13 21:16 UTC · `auto-land-every-finished-build-lands` note (all) · orchestrator
 
 ## Token passes (log)
 

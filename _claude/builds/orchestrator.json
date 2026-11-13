@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T21:17:24.430Z",
+ "updatedAt": "2026-11-13T21:17:38.964Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -134029,7 +134029,7 @@
    "title": "Auto-land: every finished build lands itself immediately",
    "category": "",
    "detail": "Brett is sick of finished builds sitting unlanded until they're thousands of commits behind. Make auto-land the DEFAULT for every build (the per-build switch stays, default ON):\n- The moment a build finishes and its tests pass, the server lands it on main (build_land logic: push, merge origin/main, union-merge THREADS/STATUS/decisions, settle orchestrator JSON, check JSON, push).\n- Lands go through ONE serial landing queue, so two lands never race (fixes 'cannot lock ref origin/main').\n- On a code clash or failing test, the server automatically queues a P0 'merge main and land' fix build for it and keeps retrying until it lands. Brett gets an FYI notification for each attempt, not a question.\n- A build that's still running gets main merged into its branch every 30 minutes, so it never falls far behind.\n- A sweeper runs every 10 minutes: any finished-but-unlanded build is landed or gets its fix build.\n- A banner/badge shows the landing queue and anything stuck for over 30 minutes.\n- Full API and voice. Tests, help, Shipped features.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -134038,7 +134038,7 @@
    "priority": "P0",
    "createdAt": "2026-11-13T20:44:39.782Z",
    "updatedAt": "2026-11-13T21:17:09.699Z",
-   "builtAt": "",
+   "builtAt": "2026-11-13T21:17:09.699Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -134059,6 +134059,10 @@
     {
      "text": "Headless run axf-auto-land-every-finished-build-lands--rhonda: brief only · start 11.5K tokens ($0.03) · cost $7.27 · 139 turns · 6 tools, MCP none",
      "at": "2026-11-13T21:17:09.699Z"
+    },
+    {
+     "text": "Phase 1 done, PR #660. Main CI is red (test-sandbox profile export); P0 main-ci-red-test-sandbox-profile-export queued, it must land first. Landing chip UI Review shots not submitted: the live console runs main, capture after deploy.",
+     "at": "2026-11-13T21:16:52.292Z"
     }
    ],
    "approvals": [],
@@ -134263,8 +134267,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T21:16:38.277Z",
      "note": "",
      "uid": "st-mwfg63b70a460b",
      "createdAt": "2026-11-13T20:46:35.586Z"
