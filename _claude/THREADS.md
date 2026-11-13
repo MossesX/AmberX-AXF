@@ -786,9 +786,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 17:54 UTC · `tab-groups-choose-how-many-rows-tabs` note (all) · orchestrator
-- 2026-11-13 17:56 UTC · `full-voice-api-control-type-fields-press` s5 done (all) · orchestrator
-- 2026-11-13 17:59 UTC · `restore-asset-designer-plugin-merged-nov` added (0 steps) (all) · console
 - 2026-11-13 17:59 UTC · `restore-asset-designer-plugin-merged-nov` → queued, note (all) · console
 - 2026-11-13 17:59 UTC · `chrome-settings-actually-apply-toolbars` s1 done, → running (all) · orchestrator
 - 2026-11-13 17:59 UTC · `restore-asset-designer-plugin-merged-nov` note (all) · claude-voice
@@ -1186,6 +1183,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 19:44 UTC · `land-drive-live-console-first-resolve` → queued, note (all) · pipeline
 - 2026-11-13 19:44 UTC · `land-drive-live-console-first-resolve` → running, note (all) · pipeline
 - 2026-11-13 19:44 UTC · `land-drive-live-console-first-resolve` note (all) · orchestrator
+- 2026-11-13 19:44 UTC · `demo-pipelines-guided-walkthrough-live` → running, note (all) · pipeline
+- 2026-11-13 19:44 UTC · `demo-pipelines-guided-walkthrough-live` branch claude/demo-pipelines-guided-walkthrough-live (all) · pipeline
+- 2026-11-13 19:44 UTC · `demo-pipelines-guided-walkthrough-live` note (all) · orchestrator
 
 ## Token passes (log)
 

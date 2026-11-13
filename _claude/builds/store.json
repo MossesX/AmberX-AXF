@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4846,
- "updatedAt": "2026-11-13T19:44:38.538Z",
+ "rev": 4847,
+ "updatedAt": "2026-11-13T19:44:54.720Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -202564,15 +202564,15 @@
    "title": "Demo pipelines: guided walkthrough with live behind-the-scenes output",
    "category": "",
    "detail": "Demo mode for pitching (Demonstration Designer).\n- A library of ready-made demo pipelines of different types, e.g.: voice-to-app (say an idea, get an Android app), add a feature to an existing app, skin swap across the whole app, parallel split build (several slots at once), fix a failing build automatically, create a new project from a template, and the approval flow (veto, approve by voice).\n- Each demo is a guided walkthrough: narrated chapters you can skip, and the console follows along live (focus mode moves to each screen as it happens: orchestrator, steps, UI Review, landing).\n- A behind-the-scenes panel: a scrolling terminal-style window streaming everything normally hidden (orchestrator decisions, model picks, step splits, agent logs, git, tests, axHub calls), colour-coded and filterable, which can be docked, floated or full-screen.\n- Runs for real in the test-sandbox project, or as a recorded replay for offline/fast demos. Speed control, pause, restart.\n- Create and edit demos in a Demonstration Designer (pick a pipeline type, script the narration, choose screens).\n- Full API: REST/MCP/CLI/voice ('run the voice-to-app demo'). Tests, help, Shipped features.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/demo-pipelines-guided-walkthrough-live",
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T19:01:19.839Z",
-   "updatedAt": "2026-11-13T19:44:33.013Z",
+   "updatedAt": "2026-11-13T19:44:42.845Z",
    "builtAt": "",
    "notes": [
     {
@@ -202582,6 +202582,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"e02db8b9-3b26-4fe6-b864-4d088fef452f\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-13T19:05:57.629Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-demo-pipelines-guided-walkthrough-live--gina.",
+     "at": "2026-11-13T19:44:38.507Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-demo-pipelines-guided-walkthrough-live--gina, own login copy)",
+     "at": "2026-11-13T19:44:42.845Z"
     }
    ],
    "approvals": [],
@@ -202601,12 +202609,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T19:01:25.990Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-demo-pipelines-guided-walkthrough-live--gina",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-13T19:44:36.941Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T19:05:57.629Z",
@@ -202616,9 +202624,9 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"e02db8b9-3b26-4fe6-b864-4d088fef452f\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-13T19:44:36.941Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -202627,7 +202635,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-13T19:44:36.941Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -202843,7 +202851,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
