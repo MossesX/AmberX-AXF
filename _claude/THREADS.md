@@ -788,7 +788,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 18:44 UTC · `console-app-part-2-native-floating` note (all) · builds-live
 - 2026-11-13 18:44 UTC · `console-app-wake-word-voice-listener` added (0 steps) (all) · console
 - 2026-11-13 18:44 UTC · `console-app-wake-word-voice-listener` → queued, note (all) · console
 - 2026-11-13 18:46 UTC · `decision-dialog-ui-review-other` s3 done (all) · orchestrator
@@ -1188,6 +1187,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 20:27 UTC · `dispatcher-gate-never-launch-build` s1 done (all) · orchestrator
 - 2026-11-13 20:29 UTC · `dispatcher-gate-never-launch-build` s2 done (all) · orchestrator
 - 2026-11-13 20:30 UTC · `skin-animations-swatches-skin-switch` PR #652 (all) · builds-live
+- 2026-11-13 20:30 UTC · `dispatcher-gate-never-launch-build` s3 done, → complete (all) · orchestrator
 
 ## Token passes (log)
 
