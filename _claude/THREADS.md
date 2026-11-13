@@ -781,7 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 22:17 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` → running, note (all) · pipeline
 - 2026-11-12 22:17 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` branch claude/fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o (all) · pipeline
 - 2026-11-12 22:17 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` note (all) · orchestrator
 - 2026-11-12 22:22 UTC · `github-client-plugin-see-and-control-every-pr-status-merge-pull-main-in-gro` → queued, note (all) · console
@@ -1181,6 +1180,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 06:59 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` note (all) · orchestrator
 - 2026-11-13 06:59 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` note (all) · mcp
 - 2026-11-13 06:59 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` note (all) · console
+- 2026-11-13 06:59 UTC · `remove-ui-review-as-a-gate-no-screenshots-required-prs-never-held-as-draft-for` note (all) · orchestrator
 
 ## Token passes (log)
 
