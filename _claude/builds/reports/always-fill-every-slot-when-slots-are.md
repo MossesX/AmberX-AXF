@@ -1,7 +1,7 @@
-# Fill every slot (`always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu`)
+# Fill every slot (`always-fill-every-slot-when-slots-are`)
 
 Brett: "Always fill every slot: when slots are free, run independent steps of running builds in parallel across them,
-and auto-queue pending builds." Branch `claude/always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu`, PR #554.
+and auto-queue pending builds." Branch `claude/always-fill-every-slot-when-slots-are`, PR #554.
 Phase 1 (Fable, s1-s8): the contract (`framework/spec/BUILD-PARALLEL.md`, `planFill`, claims, fixtures). Phase 2 (Opus,
 s9-s26): this report.
 
