@@ -12,6 +12,7 @@
  *   … list | blocked [--json]            what the last round found (landing order, PR, state, reason)
  *   … now <build> | hold <build> [--why "…"] | release <build> | after <build> <other>
  *   … queue list | add <pr> | remove <pr> | move <pr> <index>   the merge queue (merge-queue.mjs; it runs in every round)
+ *   Every `run` first ticks the merge-confirm@1 poller (merge-confirm-store.mjs → framework/cli/merge-confirm.mjs tick).
  *
  * One round, per finished build (land-core.mjs isCandidate), in dependency order:
  *   1. its worktree: synced files committed on its own branch, scratch files skipped, untracked copies of hub files
@@ -43,6 +44,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from './land-core.mjs';
 import { queueRound, readQueue, readQueueConfig, main as queueMain } from './merge-queue.mjs';
+import { tickConfirm } from './merge-confirm-store.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const SELF_REPO = resolve(HERE, '../../../../..');
@@ -431,7 +433,11 @@ export async function main(argv) {
   const known = core.LAND_COMMANDS.find((c) => c.cli === cmd);
   if (cmd === 'run') {
     const gh = makeGitHub(s); // one client per run: one ETag cache, one count
+    // merge-confirm@1 poller first: pending merges read back (backoff), past-deadline ones become merge-unconfirmed
+    const mc = dry ? null : tickConfirm(s);
+    if (mc && !json && (mc.checked || mc.alert.length)) console.error(`merge-confirm: ${mc.checked} read back, ${mc.merged.length} confirmed, ${mc.pending} pending, ${mc.alert.length} unconfirmed`);
     const st = await round({ s, gh, dry, only: opt('only'), log: (m) => !json && console.error(m) });
+    if (mc) st.mergeConfirm = { checked: mc.checked, merged: mc.merged, pending: mc.pending, unconfirmed: mc.alert.length };
     // the merge queue takes its turn in the same round (same cron, same lock): it merges what auto-land made ready
     if (!opt('only')) {
       try { const git = makeGit(s.repo); const mq = await queueRound({ s, git, gh, api: makeConsole(s), dry, fetched: true, log: (m) => !json && console.error(m) }); st.queue = { on: mq.on, items: (mq.items || []).length, kicked: (mq.kicked || []).length }; }

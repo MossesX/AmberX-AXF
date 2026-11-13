@@ -142,6 +142,86 @@ def valid_hidden(e: Any) -> bool:
     return github.valid_repo(repo) and (valid_branch(ref) or bool(re.fullmatch(r"#\d{1,9}", ref)))
 
 
+# merge-confirm@1 (framework/spec/MERGE-CONFIRM.md): a merge is merged only once GitHub, read back, proves it. The record,
+# the read-back and the shared store are the framework's (framework/cli/merge-confirm.mjs); this plugin reads the store,
+# runs the CLI for its merge calls, rechecks and the poller tick, and raises one health@1 item for unconfirmed merges.
+MC_SCRIPT = cx.ROOT / "framework" / "cli" / "merge-confirm.mjs"
+MC_HEALTH_ID = "push-banner-merge-unconfirmed"
+MC_PENDING = "pending-github-confirmation"
+
+
+def merge_confirm_dir() -> Path:
+    return Path(os.environ.get("AXF_MERGE_CONFIRM_DIR") or (cx.ROOT / ".axf-console" / "merge-confirm"))
+
+
+def mc_records() -> list[dict[str, Any]]:
+    """Every merge-confirm@1 record in the shared store, newest first (no GitHub call)."""
+    raw = storage.read_json(merge_confirm_dir() / "records.json", {}) or {}
+    recs = [r for r in (raw.get("records") or {}).values() if isinstance(r, dict) and r.get("$axf") == "merge-confirm@1"] if isinstance(raw, dict) else []
+    return sorted(recs, key=lambda r: str(r.get("requestedAt") or ""), reverse=True)
+
+
+def mc_cli(args: list[str], timeout: int = 90) -> dict[str, Any]:
+    """framework/cli/merge-confirm.mjs <args> --json → its answer; {ok: False, error} when it fails to answer."""
+    try:
+        r = subprocess.run(["node", str(MC_SCRIPT), *[str(a) for a in args], "--json"], capture_output=True, text=True, timeout=timeout,
+                           env={**os.environ, "AXF_MERGE_CONFIRM_DIR": str(merge_confirm_dir())})
+    except (OSError, subprocess.TimeoutExpired) as e:
+        return {"ok": False, "error": _text(str(e))}
+    lines = (r.stdout or "").strip().splitlines()
+    try:
+        return json.loads(lines[-1]) if lines else {"ok": False, "error": _text(r.stderr.strip() or "merge-confirm gave no answer")}
+    except ValueError:
+        return {"ok": False, "error": _text(r.stderr.strip() or lines[-1])}
+
+
+def mc_health() -> dict[str, Any]:
+    """health@1 run(): merges GitHub hasn't confirmed (merge-unconfirmed records). One item for all of them."""
+    recs = mc_records()
+    bad = [r for r in recs if r.get("state") == "merge-unconfirmed"]
+    pending = [r for r in recs if r.get("state") in (MC_PENDING, "merge-requested")]
+    if not bad:
+        return {"status": "ok", "summary": f"Every merge is confirmed by GitHub{f'; {len(pending)} waiting for confirmation' if pending else ''}."}
+    first = bad[0]
+    since = str(first.get("endedAt") or "")
+    return {"status": "warn", "summary": f"GitHub hasn't confirmed {len(bad)} merge{'s' if len(bad) != 1 else ''}: "
+                                         + ", ".join(f"{r.get('id')}" for r in bad[:5]) + (f" (since {since})" if since else "") + ".",
+            "details": [f"{r.get('id')} ({r.get('path')}): {_text(str(r.get('why') or ''), 160)}" for r in bad[:10]]}
+
+
+def mc_recheck_all() -> dict[str, Any]:
+    """Auto fix: recheck every unconfirmed merge (one read-back each; ETag-cached)."""
+    bad = [r for r in mc_records() if r.get("state") == "merge-unconfirmed"]
+    done = [mc_cli(["recheck", r["repo"], r["pr"], "--by", "systems-check"]) for r in bad[:10]]
+    merged = sum(1 for d in done if d.get("state") == "merged")
+    still = sum(1 for d in done if d.get("state") != "merged")
+    return {"state": "done" if not still else "failed", "message": f"Rechecked {len(done)}: {merged} confirmed merged, {still} still unconfirmed."}
+
+
+_mc_health_done = False
+
+
+def ensure_mc_health() -> bool:
+    global _mc_health_done
+    if _mc_health_done:
+        return True
+    reg = claudefix.plugin_services.get(HEALTH_CAP)
+    if reg is None:
+        return False
+    try:
+        reg.register({"id": MC_HEALTH_ID, "label": "Merges confirmed by GitHub", "service": "github", "order": 15, "severity": "warn",
+                      "run": mc_health,
+                      "breaks": "A PR the console asked GitHub to merge isn't proven merged (state MERGED and the merge commit on main): "
+                                "its build isn't marked complete and the merge queue keeps it as 'awaiting GitHub'.",
+                      "autoFix": {"label": "Recheck", "run": mc_recheck_all},
+                      "instructions": ["Push banner → Merge confirmations: tap Recheck on the PR, or open it on GitHub.",
+                                       "CLI: node framework/cli/merge-confirm.mjs recheck <owner/repo> <pr>."]}, "push-banner")
+    except Exception:  # noqa: BLE001 — merges are still confirmed without the banner item
+        return False
+    _mc_health_done = True
+    return True
+
+
 def data_dir() -> Path:
     return Path(os.environ.get("AXF_PUSH_BANNER_DIR") or (cx.ROOT / ".axf-console" / "plugins" / "push-banner"))
 
@@ -1328,6 +1408,9 @@ def _auto_merge_loop() -> None:
         time.sleep(AUTO_MERGE_EVERY_S)
         try:
             ensure_health()
+            ensure_mc_health()
+            if any(r.get("state") in (MC_PENDING, "merge-requested") for r in mc_records()):
+                mc_cli(["tick"])  # read back pending merges between the host's land rounds (ETag-cached)
             PUSHES.auto_merge()
         except Exception:  # noqa: BLE001 — never take the server down
             pass

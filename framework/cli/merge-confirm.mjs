@@ -12,6 +12,8 @@
  *   … request <repo> <pr> --path <p> [--by who] [--build id] [--url u] [--json]   a merge call is about to be made
  *   … called <repo> <pr> [--status N] [--merged] [--sha s] [--message m] [--none] [--json]  what the merge call answered
  *   … recheck <repo> <pr> [--by who] [--json]   merge-unconfirmed → pending again, read back now
+ *   … tick [--json]                     the poller: read back every record that is due (backoff), time out the rest;
+ *        answers { checked, merged, unconfirmed, failed, pending, alert } (the push banner runs it every round)
  *
  * Reads go through the token from framework/cli/github-token.mjs (never printed). Every GET is cached with its ETag
  * (a 304 costs no call against the shared 5000/h limit) and reads are held back below RESERVE calls left.
@@ -19,7 +21,7 @@
  * GET /repos/<repo>/compare/<merge_commit_sha>...<base> (ahead | identical = the merge commit is on main).
  *
  * Store: <dir>/records.json (merge-confirm-store@1, one record per PR) and <dir>/gh-cache.json; dir = AXF_MERGE_CONFIRM_DIR,
- * else <AXF_CONSOLE_ROOT or /opt/axf>/.axf-console/merge-confirm. Framework data, shared by every merge path (plugins,
+ * else <AXF_CONSOLE_ROOT, AXF_ROOT or /opt/axf>/.axf-console/merge-confirm. Framework data, shared by every merge path (plugins,
  * deploy scripts, builds-live), so it outlives any one plugin. Environment: AXF_MERGE_CONFIRM_API (https://api.github.com).
  */
 import { spawnSync } from 'node:child_process';
@@ -36,7 +38,7 @@ export const RESERVE = 300;
 const CACHE_MAX = 1000;
 const RECORDS_MAX = 500;
 
-export const storeDir = () => env('AXF_MERGE_CONFIRM_DIR', join(env('AXF_CONSOLE_ROOT', '/opt/axf'), '.axf-console', 'merge-confirm'));
+export const storeDir = () => env('AXF_MERGE_CONFIRM_DIR', join(env('AXF_CONSOLE_ROOT', env('AXF_ROOT', '/opt/axf')), '.axf-console', 'merge-confirm'));
 const nowIso = () => M.iso(new Date().toISOString());
 
 // ------------------------------------------------------------------ store
@@ -203,6 +205,34 @@ export async function confirm(repo, pr, { wait = false, path = 'reconcile', by =
   } finally { client.save?.(); }
 }
 
+/**
+ * The poller: every record that is due (merge-requested past the call timeout, pending at its nextCheckAt) is read back
+ * once; anything past its deadline becomes merge-unconfirmed. `alert` lists the unconfirmed records (newest first) for
+ * the one banner item; it is empty when there are none.
+ */
+export async function tick({ gh = null, dir = storeDir(), now = nowIso, max = 20 } = {}) {
+  const at = now();
+  const t = Date.parse(at);
+  // merge-unconfirmed: one more read every TIMEOUT_S for a day, so a merge GitHub confirms late clears the alert by itself
+  const late = (r) => r.state === 'merge-unconfirmed' && t - Date.parse(r.endedAt) < 86400000 && t - Date.parse(r.evidence?.readAt || r.endedAt) >= M.TIMEOUT_S * 1000;
+  const due = listRecords({}, dir).filter((r) => M.due(r, at) || (!M.isTerminal(r.state) && Date.parse(r.deadlineAt) <= t) || late(r));
+  const out = { at, checked: 0, merged: [], unconfirmed: [], failed: [], pending: 0, errors: [], alert: [] };
+  const client = due.length ? (gh || makeGitHub({ dir })) : null;
+  try {
+    for (const r of due.slice(0, max)) {
+      try {
+        const next = storeObserved(await confirmOnce(r, { gh: client, at: now() }), dir);
+        out.checked++;
+        if (next.state !== r.state) (next.state === 'merged' ? out.merged : next.state === 'merge-failed' ? out.failed : next.state === 'merge-unconfirmed' ? out.unconfirmed : []).push(next.id);
+      } catch (e) { out.errors.push({ id: r.id, error: String(e?.message || e).slice(0, 200) }); }
+    }
+  } finally { client?.save?.(); }
+  const all = listRecords({}, dir);
+  out.pending = all.filter((r) => r.state === 'pending-github-confirmation' || r.state === 'merge-requested').length;
+  out.alert = all.filter((r) => r.state === 'merge-unconfirmed').map((r) => ({ id: r.id, repo: r.repo, pr: r.pr, url: r.url, path: r.path, why: r.why, since: r.endedAt }));
+  return out;
+}
+
 // ------------------------------------------------------------------ CLI
 
 const EXIT = { merged: 0, 'merge-failed': 4 };
@@ -258,8 +288,13 @@ export async function main(argv = process.argv.slice(2)) {
       const after = M.isTerminal(r.state) ? r : await confirm(repo, pr, { path: r.path });
       say(after, line(after)); return EXIT[after.state] ?? 3;
     }
+    case 'tick': {
+      const t = await tick();
+      say(t, `checked ${t.checked}: ${t.merged.length} merged, ${t.unconfirmed.length} newly unconfirmed, ${t.failed.length} failed; ${t.pending} pending; ${t.alert.length} unconfirmed in all${t.errors.length ? `; ${t.errors.length} errors` : ''}`);
+      return 0;
+    }
     default:
-      process.stderr.write('usage: merge-confirm.mjs confirm <repo> <pr> [--wait] | status <repo> <pr> | list [--state s] | request <repo> <pr> --path p | called <repo> <pr> [--status N --merged --sha s | --none] | recheck <repo> <pr>  [--json]\n');
+      process.stderr.write('usage: merge-confirm.mjs tick | confirm <repo> <pr> [--wait] | status <repo> <pr> | list [--state s] | request <repo> <pr> --path p | called <repo> <pr> [--status N --merged --sha s | --none] | recheck <repo> <pr>  [--json]\n');
       return 1;
   }
 }
