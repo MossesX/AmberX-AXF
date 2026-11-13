@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4578,
- "updatedAt": "2026-11-13T18:02:19.960Z",
+ "rev": 4579,
+ "updatedAt": "2026-11-13T18:02:36.253Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -195888,7 +195888,7 @@
    "title": "Per-instance settings-window picker inside every tab group and toolbar's settings",
    "category": "",
    "detail": "Every chrome instance (tab group, toolbar, banner, nav, menu bar) has its own chrome settings dialog (framework ChromeContext.tsx / chrome-settings-rules.mjs). Today the settings asset is picked per type/app (axf.chrome.settings.<type>). Add, inside each instance's settings dialog, a picker to choose which settings interface (settings asset) THAT instance uses, per instance, with the shared default preselected. Changing it re-renders the dialog live. Persist per instance, survive reload, follow skins. Expose via REST/MCP/CLI/voice and control@1. Tests, help entry, Shipped features.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -195896,7 +195896,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T17:46:43.480Z",
-   "updatedAt": "2026-11-13T18:00:20.043Z",
+   "updatedAt": "2026-11-13T18:02:09.286Z",
    "builtAt": "",
    "notes": [
     {
@@ -195930,6 +195930,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-per-instance-settings-window-picker--sully, own login copy)",
      "at": "2026-11-13T17:53:25.605Z"
+    },
+    {
+     "text": "Self-check: per-instance-settings-window-picker was marked running on mossesx-max- with no session: released and back in the Queue.",
+     "at": "2026-11-13T18:02:09.286Z"
     }
    ],
    "approvals": [],
@@ -195949,7 +195953,7 @@
    "pipeline": {
     "queuedAt": "2026-11-13T17:46:45.998Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
+    "account": "",
     "session": "",
     "slot": "",
     "model": "Opus",
@@ -195971,7 +195975,7 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"b6d527f6-7e3c-46c2-b1ed-2ba93d1e986c\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "Session on mossesx-max- ended (exit 3) with 3 steps left: back in the Queue (run 1).",
+    "note": "released by the self-check (nothing ran): back in the Queue",
     "route": "",
     "dispatchedAt": "2026-11-13T17:49:19.495Z",
     "planned": {
@@ -196066,7 +196070,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -196312,7 +196316,13 @@
     "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Fable",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-13T18:02:06.684Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -196486,7 +196496,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
