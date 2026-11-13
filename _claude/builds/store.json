@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4504,
- "updatedAt": "2026-11-13T17:22:50.403Z",
+ "rev": 4505,
+ "updatedAt": "2026-11-13T17:23:09.103Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -183703,7 +183703,7 @@
    "mergedAt": "2026-11-13T17:20:20Z",
    "priority": "P0",
    "createdAt": "2026-11-13T10:41:19.479Z",
-   "updatedAt": "2026-11-13T17:21:11.994Z",
+   "updatedAt": "2026-11-13T17:23:06Z",
    "builtAt": "2026-11-13T11:08:46.725Z",
    "notes": [
     {
@@ -183733,6 +183733,10 @@
     {
      "text": "Reconciler: PR #565 merged",
      "at": "2026-11-13T17:21:11.994Z"
+    },
+    {
+     "text": "Shipped manifest sm-android-approval-overlay-a-small-always-on-float rev 1 sent to Shipped features (orchestrator): landed 70e8782d7, 15 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-13T17:23:06Z"
     }
    ],
    "approvals": [],
@@ -183782,6 +183786,12 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "shipped": {
+    "id": "sm-android-approval-overlay-a-small-always-on-float",
+    "rev": 1,
+    "at": "2026-11-13T17:23:06Z",
+    "landedCommit": "70e8782d7638ee1248ebc0cea177d39af45a12d5"
    },
    "steps": [
     {
@@ -183862,7 +183872,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
