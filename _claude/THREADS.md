@@ -786,7 +786,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 12:19 UTC · `ui-review-gate-switch-default-off` s1 done (all) · orchestrator
 - 2026-11-13 12:20 UTC · `auto-recover-stuck-builds` s6 done (all) · orchestrator
 - 2026-11-13 12:22 UTC · `ui-review-gate-switch-default-off` s2 done (all) · orchestrator
 - 2026-11-13 12:22 UTC · `auto-recover-stuck-builds` s7 done (all) · orchestrator
@@ -1186,6 +1185,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 18:43 UTC · `orchestrator-settings-collapsible-split` → running, note (all) · pipeline
 - 2026-11-13 18:43 UTC · `orchestrator-settings-collapsible-split` branch claude/orchestrator-settings-collapsible-split (all) · pipeline
 - 2026-11-13 18:43 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
+- 2026-11-13 18:44 UTC · `orchestrator-settings-collapsible-split` → running, branch claude/orchestrator-settings-collapsible-split, note (all) · builds-live
 
 ## Token passes (log)
 
