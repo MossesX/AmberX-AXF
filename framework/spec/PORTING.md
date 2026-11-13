@@ -144,6 +144,21 @@ Regenerate fixtures after changing a reference engine: `npx -y tsx framework/spe
 
 `framework/core/engines/skin.ts` and `skin-rules.mjs` (web only, built on Opus, format marked for a possible Fable review: plan `skins-possible-fable-review-6xha`) have no Kotlin twin. Android work is on hold. A port needs the same pure functions, the same `skin` asset type and the same document on the hub: `normalizeSkin`, `skinFromDesignPackage`, `composeLook`, `lookAfterChange`, `pickSkin`, `setUseSkin`, `backToSkin`, `restoreAppDefault`, `undoRestore`, pinned by `spec/fixtures/skin.json` and `spec/check-skin.mts`. Build skins-asset-types (Fable, Nov 7 2026) added `skin-coverage.mjs` (coverage of every registered type from the registry, the scope chain global → app → UI → plugin with `resolveSkinChain`, `partsErrors`), `composeLookAt`, `resolveLookSkin`, per-scope states in app-look@1 (`scopes`, `skin.inherit`), the hub-wide `skin` field on appearance@1, `iconPack` + `parts` on skin@1, and the runtime's `skinScoped` views; a port carries the same functions and the `coverage` / `scopes` blocks of the fixture. Build skins-own-everything-colour-theme-swaps-independ (Fable, Nov 10 2026) added the colour theme switched inside the skin: `colorTheme` on the app level, on a scope and on the hub-wide skin (never an override, never a new skin), `setSkinColorTheme`, `skinColorTheme`, `skinColorOf`, `setLookSlot(look, slot, id, global)`, the legacy `overrides["color-theme"]` migration on read, and the `colour` block of the fixture; a port carries those too. `theme.ts`'s scrollbar tokens stay out of the output Kotlin is tested against until then. Until a port does this, an Android app keeps reading `appearance@1` directly and shows no skin.
 
+**skin-config@1 + the Default skin (build skin-configuration-panel, Fable, Nov 13 2026, web/Node only):**
+`core/engines/skin-config-rules.mjs` is the permission tree Brett sets before the AI makes a skin (category > group >
+option, each allow / lock / ask; categories derived from the registry and skin-coverage@1, the `extras` category and the
+per-type `skinConfig.limits` declared in `asset-types.json`: depth with `root`, `count:<field>`), the document
+`shared/settings/skin-config/<app>.json`, the moves (`setConfigMode`, `setConfigLimit`, `setConfigDefault`,
+`resetSkinConfig`), `effectiveConfig`, `measureAsset`, `skinChangeReport`, `mergeWithDefault`, `skinConfigBrief`,
+`skinConfigSchema`, and the Default skin (`defaultSkinOf`, `isDefaultSkin`, `skinDeleteError`, `defaultSkinMigration`:
+each app's saved look as the protected skin@1 asset `default-<app>` at `shared/settings/skins/<app>.json`, `default-global`
+for the hub-wide look). Fixture `spec/fixtures/skin-config.json` (its own small registry in `in`, so a port replays it
+without the real one), check `spec/check-skin-config.mjs`; snapshot `schemas/skin-config.json`, JSON Schema
+`schemas/json/skin-config.schema.json`. **Kotlin twin deferred** (no new Android or Kotlin work): a `SkinConfigRules`
+object replaying `skin-config.json` (tree, modes, limits, report, merge, Default skin), the `skinConfig` block read by the
+spec-driven `AssetTypeRegistry` (it accepts the field as it is today), and an Android reader of the two hub documents, for
+when an Android app makes or applies AI skins.
+
 ## Deferred: build-pipeline@1 route + dispatch (Nov 9 2026)
 
 `framework/core/build-pipeline.mjs` gained `pipeline.route` ('' | api | subscription: the per-build override that lets
