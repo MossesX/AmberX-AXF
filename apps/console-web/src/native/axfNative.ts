@@ -26,6 +26,7 @@ import {
   APPROVALS_TARGET, NATIVE_ACTIONS, OVERLAY_SETTING_PREFIX, WAITING_BADGE,
   PHONE_APP_ADDRESS, nativeCall, openTarget, overlayConfig, pageHandlesInsets, parseAnswer, themeTokens,
 } from './nativeRules.mjs';
+import { WRAPPER_ATTR, browserCapabilities, browserPlan, wrapperEnv } from './browserFallback.mjs';
 
 /** The shell's Java bridge (`NativeBridge`): every method answers a JSON string. */
 export interface AxfNativeHost {
@@ -94,10 +95,13 @@ export function installNative(rt: AxfRuntime): () => void {
   if (typeof window === 'undefined') return () => {};
   runDeepLink(rt);
   const offs: Array<() => void> = [];
+  // <html data-axf-wrapper="app|browser">: CSS and plugins can tell the console app from a browser
+  document.documentElement.setAttribute(WRAPPER_ATTR, wrapperEnv(window).mode);
 
   // native.* actions everywhere: outside the app they answer that the app isn't here
   for (const a of NATIVE_ACTIONS) {
     offs.push(rt.actions.register(a.id, (args) => {
+      if (!wrapperEnv(window).wrapper) { void runInBrowser(rt, a.id, args); return; }
       const c = nativeCall(a.id, args);
       if ('error' in c) { rt.toast(c.error, 'warning', 'Phone'); return; }
       const r = c.call === 'state' ? nativeState() : callNative(c.call, ...c.args);
@@ -110,7 +114,7 @@ export function installNative(rt: AxfRuntime): () => void {
   offs.push(controlRegistry(rt).register({
     address: PHONE_APP_ADDRESS, kind: 'panel', label: 'Android console app', detail: 'Phone · floating toolbar, permissions, safe area',
     icon: 'smartphone', keywords: ['phone', 'android', 'native', 'overlay', 'toolbar', 'app'], can: ['state'],
-    state: () => ({ native: nativeState() }),
+    state: () => ({ native: nativeState(), env: wrapperEnv(window), browser: browserCapabilities(window) }),
   }));
 
   const host = nativeHost();
@@ -162,6 +166,48 @@ export function installNative(rt: AxfRuntime): () => void {
   // the approval bar's link and the overlay's "approvals" verb: the approvals list opens in this page (no reload)
   offs.push(on('approvals.open', () => { if (rt.actions.list().some((a) => a.id === APPROVALS_TARGET)) rt.dispatch(APPROVALS_TARGET); }));
   return () => offs.forEach((f) => f());
+}
+
+/** A native.* action in a plain browser: the web's own way where there is one, a plain "needs the app" where not. */
+async function runInBrowser(rt: AxfRuntime, id: string, args: unknown): Promise<void> {
+  const say = (msg: string, ok: boolean) => rt.toast(msg, ok ? 'success' : 'warning', 'Browser');
+  const p = browserPlan(id, args as string[] | undefined, window.location.origin) as Record<string, string> & { error?: string; do?: string };
+  if (p.error) { say(p.error, false); return; }
+  try {
+    switch (p.do) {
+      case 'notify': {
+        const N = window.Notification;
+        if (!N) { say(`${p.title}${p.text ? `: ${p.text}` : ''}`, true); return; }
+        const perm = N.permission === 'default' ? await N.requestPermission() : N.permission;
+        if (perm === 'granted') { new N(p.title!, { body: p.text }); say('Notification shown', true); }
+        else say(`${p.title}${p.text ? `: ${p.text}` : ''}`, true);
+        return;
+      }
+      case 'open': { window.open(p.url, p.target, 'noopener'); return; }
+      case 'permission': {
+        if (p.name === 'notifications') {
+          const r = window.Notification ? await window.Notification.requestPermission() : 'unsupported';
+          say(`Notifications: ${r}`, r === 'granted'); return;
+        }
+        if (p.name === 'mic') {
+          const st = await navigator.mediaDevices.getUserMedia({ audio: true });
+          st.getTracks().forEach((t) => t.stop());
+          say('Microphone allowed', true); return;
+        }
+        say(`${p.name} has no browser permission`, false); return;
+      }
+      case 'focus': { window.focus(); return; }
+      case 'update': {
+        if (p.verb === 'reload') { window.location.reload(); return; }
+        say('A browser loads the live console on every reload', true); return;
+      }
+      case 'state': {
+        const c = browserCapabilities(window);
+        say(`Browser (no console app): notifications ${c.notifications}, mic ${c.mic ? 'available' : 'unavailable'}`, true); return;
+      }
+      default: say(`${id} needs the Android console app`, false);
+    }
+  } catch (e) { say(String((e as Error)?.message ?? e), false); }
 }
 
 function describeNative(id: string, r: NativeAnswer): string {
