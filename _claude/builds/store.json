@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4946,
- "updatedAt": "2026-11-13T20:20:19.226Z",
+ "rev": 4947,
+ "updatedAt": "2026-11-13T20:20:35.868Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -202637,7 +202637,7 @@
    "pr": "#646",
    "priority": "P1",
    "createdAt": "2026-11-13T19:01:19.839Z",
-   "updatedAt": "2026-11-13T20:19:47.641Z",
+   "updatedAt": "2026-11-13T20:20:33.465Z",
    "builtAt": "",
    "notes": [
     {
@@ -202655,6 +202655,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-demo-pipelines-guided-walkthrough-live--gina, own login copy)",
      "at": "2026-11-13T19:44:42.845Z"
+    },
+    {
+     "text": "Headless run axf-demo-pipelines-guided-walkthrough-live--gina: brief only · start 11.7K tokens ($0.03) · cost $13.52 · 122 turns · 6 tools, MCP none",
+     "at": "2026-11-13T20:20:33.465Z"
     }
    ],
    "approvals": [],
@@ -202916,7 +202920,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

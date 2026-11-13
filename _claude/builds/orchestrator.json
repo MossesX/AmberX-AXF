@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T20:20:19.226Z",
+ "updatedAt": "2026-11-13T20:20:35.868Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -130527,7 +130527,7 @@
    "pr": "#646",
    "priority": "P1",
    "createdAt": "2026-11-13T19:01:19.839Z",
-   "updatedAt": "2026-11-13T20:19:47.641Z",
+   "updatedAt": "2026-11-13T20:20:33.465Z",
    "builtAt": "",
    "notes": [
     {
@@ -130545,6 +130545,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-demo-pipelines-guided-walkthrough-live--gina, own login copy)",
      "at": "2026-11-13T19:44:42.845Z"
+    },
+    {
+     "text": "Headless run axf-demo-pipelines-guided-walkthrough-live--gina: brief only · start 11.7K tokens ($0.03) · cost $13.52 · 122 turns · 6 tools, MCP none",
+     "at": "2026-11-13T20:20:33.465Z"
     }
    ],
    "approvals": [],
