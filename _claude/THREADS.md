@@ -786,7 +786,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 12:46 UTC · `ui-review-gate-switch-default-off` s10 done (all) · orchestrator
 - 2026-11-13 12:47 UTC · `assets-menu-hide-any-asset-visible-and-hidden-li` s2 done (all) · orchestrator
 - 2026-11-13 12:47 UTC · `ui-review-gate-switch-default-off` s11 done (all) · orchestrator
 - 2026-11-13 12:47 UTC · `assets-menu-hide-any-asset-visible-and-hidden-li` s3 done (all) · orchestrator
@@ -1186,6 +1185,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 19:05 UTC · `demo-pipelines-guided-walkthrough-live` note (all) · orchestrator
 - 2026-11-13 19:06 UTC · `demo-pipelines-guided-walkthrough-live` note (all) · builds-live
 - 2026-11-13 19:06 UTC · `ui-manager-floating-window-to-select-any` note (all) · orchestrator
+- 2026-11-13 19:04 UTC · `console-app-part-3-native-bridge-mic` branch claude/console-app-part-3-native-bridge-mic, PR #633 (all) · builds-live
 
 ## Token passes (log)
 
