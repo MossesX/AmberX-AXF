@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4516,
- "updatedAt": "2026-11-13T17:32:39.518Z",
+ "rev": 4517,
+ "updatedAt": "2026-11-13T17:32:51.048Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -171734,14 +171734,14 @@
    "category": "",
    "detail": "Every tab group, toolbar, navigation menu and application menu (console, Molly, every standalone app, new and existing, via the shared framework component) gets a collapse/expand button and an auto-collapse toggle. Both are settable in each one's settings and reachable by API (REST, MCP, CLI, voice).",
    "status": "built",
-   "hidden": false,
+   "hidden": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/collapse-and-auto-collapse-buttons-on-every-tab",
    "pr": "#525",
    "priority": "P1",
    "createdAt": "2026-11-12T18:40:03.355Z",
-   "updatedAt": "2026-11-12T19:58:20.158Z",
+   "updatedAt": "2026-11-13T17:32:45.035Z",
    "builtAt": "2026-11-12T19:58:20.158Z",
    "notes": [
     {
@@ -171767,6 +171767,10 @@
     {
      "text": "PR #525 is open. UI Review desktop and phone shots were not taken: this ran headless with no console to capture. Take them before the PR is called ready.",
      "at": "2026-11-12T19:58:07.397Z"
+    },
+    {
+     "text": "Renamed to collapse-auto-collapse-buttons-every-tab: this record is kept as a tombstone, use collapse-auto-collapse-buttons-every-tab.",
+     "at": "2026-11-13T17:32:45.035Z"
     }
    ],
    "approvals": [],
@@ -171817,77 +171821,7 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "steps": [
-    {
-     "id": "s1",
-     "uid": "st-mwdwabfh019e1n",
-     "title": "",
-     "text": "Every tab group, toolbar, navigation menu and application menu (console, Molly, every standalone app, new and existing, via the shared framework component) gets a collapse/expand button and an auto-collapse toggle. Both are settable in each one's settings and reachable by API (REST, MCP, CLI, voice).",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-12T19:54:38.450Z",
-     "note": "",
-     "rev": 2,
-     "createdAt": "2026-11-12T18:42:14.237Z",
-     "updatedAt": "2026-11-12T19:54:38.641Z"
-    },
-    {
-     "id": "s2",
-     "uid": "st-mwdwabfh02wwg4",
-     "title": "",
-     "text": "All tab groups and toolbars and nav menus and application menus need a, auto collapse button or, and a collapsible button.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-12T19:56:45.669Z",
-     "note": "",
-     "rev": 2,
-     "createdAt": "2026-11-12T18:42:14.237Z",
-     "updatedAt": "2026-11-12T19:56:45.841Z"
-    },
-    {
-     "id": "s3",
-     "uid": "st-mwdwabfh038hd6",
-     "title": "",
-     "text": "Tests green, report _claude/builds/reports/collapse-and-auto-collapse-buttons-on-every-tab.md, THREADS row, commit, push, PR",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "20 min",
-     "files": [
-      "_claude/builds/reports/collapse-and-auto-collapse-buttons-on-every-tab.md",
-      "_claude/THREADS.md"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-12T19:58:01.504Z",
-     "note": "",
-     "rev": 2,
-     "createdAt": "2026-11-12T18:42:14.237Z",
-     "updatedAt": "2026-11-12T19:58:01.846Z"
-    }
-   ],
+   "steps": [],
    "profiles": [
     "all"
    ],
@@ -171897,8 +171831,8 @@
    "kind": "build",
    "planRef": "",
    "rev": 16,
-   "deleted": false,
-   "deletedAt": "",
+   "deleted": true,
+   "deletedAt": "2026-11-13T17:32:45.035Z",
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-12T18:42:14.237Z",
@@ -190366,6 +190300,189 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-12T23:31:24.959Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "collapse-auto-collapse-buttons-every-tab",
+   "title": "Collapse and auto-collapse buttons on every tab group, toolbar, nav menu and app menu",
+   "category": "",
+   "detail": "Every tab group, toolbar, navigation menu and application menu (console, Molly, every standalone app, new and existing, via the shared framework component) gets a collapse/expand button and an auto-collapse toggle. Both are settable in each one's settings and reachable by API (REST, MCP, CLI, voice).",
+   "status": "built",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/collapse-auto-collapse-buttons-every-tab",
+   "pr": "#588",
+   "priority": "P1",
+   "createdAt": "2026-11-12T18:40:03.355Z",
+   "updatedAt": "2026-11-13T17:32:45.035Z",
+   "builtAt": "2026-11-12T19:58:20.158Z",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-12T18:40:12.938Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-12T18:42:14.237Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-collapse-and-auto-collapse-buttons-on-every-tab--gina.",
+     "at": "2026-11-12T19:43:12.691Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-collapse-and-auto-collapse-buttons-on-every-tab--gina, own login copy)",
+     "at": "2026-11-12T19:43:14.422Z"
+    },
+    {
+     "text": "Headless run axf-collapse-and-auto-collapse-buttons-on-every-tab--gina: brief only · start 11.1K tokens ($0.03) · cost $4.48 · 100 turns · 6 tools, MCP none",
+     "at": "2026-11-12T19:58:20.158Z"
+    },
+    {
+     "text": "PR #525 is open. UI Review desktop and phone shots were not taken: this ran headless with no console to capture. Take them before the PR is called ready.",
+     "at": "2026-11-12T19:58:07.397Z"
+    },
+    {
+     "text": "Renamed from collapse-and-auto-collapse-buttons-on-every-tab (build names are at most 40 characters). By build-rename.",
+     "at": "2026-11-13T17:32:45.035Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "All tab groups and toolbars and nav menus and application menus need a, auto collapse button or, and a collapsible button.",
+    "at": "2026-11-12T18:40:03.355Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "collapse-and-auto-collapse-buttons-on-every-tab",
+    "brief": "# Build: collapse-and-auto-collapse-buttons-on-every-tab\n\n## Brett said (verbatim)\nAt: 2026-11-12T18:40:03.355Z\n> All tab groups and toolbars and nav menus and application menus need a, auto collapse button or, and a collapsible button.\n\n## What to build\nContinue build \"Collapse and auto-collapse buttons on every tab group, toolbar, nav menu and app menu\" (collapse-and-auto-collapse-buttons-on-every-tab) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-12 18:40):\n\"All tab groups and toolbars and nav menus and application menus need a, auto collapse button or, and a collapsible button.\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~1.3 h):\n[ ] s1 (~30 min) Every tab group, toolbar, navigation menu and application menu (console, Molly, every standalone app, new and existing, via the shared framework component) gets a collapse/expand button and an auto-collapse toggle. Both are settable in each one's settings and reachable by API (REST, MCP, CLI, voice).\n[ ] s2 (~30 min) All tab groups and toolbars and nav menus and application menus need a, auto collapse button or, and a collapsible button.\n[ ] s3 (~20 min) Tests green, report _claude/builds/reports/collapse-and-auto-collapse-buttons-on-every-tab.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/collapse-and-auto-collapse-buttons-on-every-tab.md, _claude/THREADS.md\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step collapse-and-auto-collapse-buttons-on-every-tab <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link collapse-and-auto-collapse-buttons-on-every-tab --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step collapse-and-auto-collapse-buttons-on-every-tab <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note collapse-and-auto-collapse-buttons-on-every-tab \"…\"); the build goes back to Pending for Brett.\n",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "2026-11-12T18:40:10.226Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-12T18:42:14.237Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-12T19:43:03.226Z",
+     "why": "subscription account mossesx-max-"
+    },
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwdwabfh019e1n",
+     "title": "",
+     "text": "Every tab group, toolbar, navigation menu and application menu (console, Molly, every standalone app, new and existing, via the shared framework component) gets a collapse/expand button and an auto-collapse toggle. Both are settable in each one's settings and reachable by API (REST, MCP, CLI, voice).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-12T19:54:38.450Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-12T18:42:14.237Z",
+     "updatedAt": "2026-11-12T19:54:38.641Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwdwabfh02wwg4",
+     "title": "",
+     "text": "All tab groups and toolbars and nav menus and application menus need a, auto collapse button or, and a collapsible button.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-12T19:56:45.669Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-12T18:42:14.237Z",
+     "updatedAt": "2026-11-12T19:56:45.841Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwdwabfh038hd6",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/collapse-and-auto-collapse-buttons-on-every-tab.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [
+      "_claude/builds/reports/collapse-and-auto-collapse-buttons-on-every-tab.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-12T19:58:01.504Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-12T18:42:14.237Z",
+     "updatedAt": "2026-11-12T19:58:01.846Z"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 740
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 15,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-12T18:42:14.237Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

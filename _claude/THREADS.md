@@ -785,8 +785,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 10:37 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` note (all) · orchestrator
-- 2026-11-13 10:37 UTC · `server-gate-one-session-per-build-no-duplicate-launches` → running, note (all) · pipeline
 - 2026-11-13 10:37 UTC · `server-gate-one-session-per-build-no-duplicate-launches` note (all) · orchestrator
 - 2026-11-13 10:38 UTC · `all-banners-hide-when-empty` s3 undone, → running (all) · builds-live
 - 2026-11-13 10:37 UTC · `owner-recognized-everywhere-veto-countdown-only-on-shell-commands` → running, note (all) · pipeline
@@ -1185,6 +1183,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 17:32 UTC · `change-to-move-amberx-web-app-into-the-console-amberx-andr-pr-528-brett-do` note, removed (all) · build-rename
 - 2026-11-13 17:32 UTC · `claude-badge-can-claude-build-green-when` added (4 steps) (all) · build-rename
 - 2026-11-13 17:32 UTC · `claude-badge-can-claude-build-green-when-at-least-one-build-account-in-the-or` note, removed (all) · build-rename
+- 2026-11-13 17:32 UTC · `collapse-auto-collapse-buttons-every-tab` added (3 steps) (all) · build-rename
+- 2026-11-13 17:32 UTC · `collapse-and-auto-collapse-buttons-on-every-tab` note, removed (all) · build-rename
 
 ## Token passes (log)
 

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T17:32:39.518Z",
+ "updatedAt": "2026-11-13T17:32:51.048Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -112536,7 +112536,7 @@
    ]
   },
   {
-   "id": "collapse-and-auto-collapse-buttons-on-every-tab",
+   "id": "collapse-auto-collapse-buttons-every-tab",
    "title": "Collapse and auto-collapse buttons on every tab group, toolbar, nav menu and app menu",
    "category": "",
    "detail": "Every tab group, toolbar, navigation menu and application menu (console, Molly, every standalone app, new and existing, via the shared framework component) gets a collapse/expand button and an auto-collapse toggle. Both are settable in each one's settings and reachable by API (REST, MCP, CLI, voice).",
@@ -112544,11 +112544,11 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/collapse-and-auto-collapse-buttons-on-every-tab",
-   "pr": "#525",
+   "branch": "claude/collapse-auto-collapse-buttons-every-tab",
+   "pr": "#588",
    "priority": "P1",
    "createdAt": "2026-11-12T18:40:03.355Z",
-   "updatedAt": "2026-11-12T19:58:20.158Z",
+   "updatedAt": "2026-11-13T17:32:45.035Z",
    "builtAt": "2026-11-12T19:58:20.158Z",
    "notes": [
     {
@@ -112574,6 +112574,10 @@
     {
      "text": "PR #525 is open. UI Review desktop and phone shots were not taken: this ran headless with no console to capture. Take them before the PR is called ready.",
      "at": "2026-11-12T19:58:07.397Z"
+    },
+    {
+     "text": "Renamed from collapse-and-auto-collapse-buttons-on-every-tab (build names are at most 40 characters). By build-rename.",
+     "at": "2026-11-13T17:32:45.035Z"
     }
    ],
    "approvals": [],
