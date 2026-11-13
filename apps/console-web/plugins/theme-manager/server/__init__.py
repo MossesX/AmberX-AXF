@@ -265,6 +265,25 @@ def skin_color_set(app: str, body: dict[str, Any] = Body(...)) -> Any:
     return _skins("color", app, str(body.get("theme") or "default"), *_scope_args(body.get("scope")))
 
 
+@router.get("/skins/modes")
+def skin_modes() -> Any:
+    """Every skin's light and dark colour themes, and any skin missing one (skin-modes@1: every skin ships both)."""
+    return _skins("modes")
+
+
+@router.get("/skins/{app}/mode")
+def skin_mode(app: str, scope: str | None = None) -> Any:
+    """Light, dark or system in an app (or one screen / plugin, scope=ui:<id> | plugin:<id>): the mode, the scheme showing and the skin's light and dark colour themes."""
+    return _skins("mode", app, *_scope_args(scope))
+
+
+@router.post("/skins/{app}/mode")
+def skin_mode_set(app: str, body: dict[str, Any] = Body(...)) -> Any:
+    """Switch the skin in force to its light or dark colour theme, or follow the system, body {mode: light|dark|system, system?: light|dark, scope?}: 'make the console dark'. The skin stays the same skin."""
+    extra = ["--system", str(body["system"])] if body.get("system") in ("light", "dark") else []
+    return _skins("mode", app, str(body.get("mode") or ""), *extra, *_scope_args(body.get("scope")))
+
+
 @router.post("/skins/{app}/restore")
 def skin_restore(app: str) -> Any:
     """Restore an app to its default look: 'restore AmberX to default'. Keeps one undo."""

@@ -218,3 +218,11 @@ Build `x.engine.dev` s2 (Android on hold, no new Kotlin). `axf dev` and the web 
   so CI and `adb` can turn it on; `.github/workflows/dev-reload-android.yml` (manual) passes them and asserts a pixel diff;
 - the reloader should start or restart when either setting changes (today: once, in `start()`);
 - invalid changes (`ok: false`, `error` on the change record, s3) should write a terminal line instead of being skipped.
+
+## Deferred: skin-modes@1, every skin's light and dark (Nov 13 2026)
+
+Build `every-skin-ships-a-light-and-a-dark-colour-theme`. Web only; the Kotlin twin is deferred (Android on hold):
+`framework/core/engines/skin-modes.mjs` (`skinModePair`, `effectiveScheme`, `skinModeColor`, `skinSchemeOf`,
+`skinModeProblems`, `skinModeRows`), the required `colorThemes: { light, dark }` on skin@1 and the runtime's
+`setSkinMode` / `skin.mode:light|dark|system` (system follows `prefers-color-scheme`). A port maps `system` to the
+device's night mode (`isSystemInDarkTheme()`) and replays the engine cases in `spec/check-skin-modes.mjs`.
