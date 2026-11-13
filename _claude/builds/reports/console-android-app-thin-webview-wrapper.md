@@ -19,6 +19,7 @@ what Android requires:
 | s5 | `window.axfNative` bridge, `native.*` console actions, `panel:phone-app` state | `NativeBridge`, `apps/console-web/src/native` |
 | s6 | Web content follows the live console: a newer entry bundle reloads the page after a minute off screen; on screen the console's "Reload for the new version" bar shows | `ContentUpdate`, `UpdateRules` |
 | s7 | axHub's `amberx` device service moved from AmberX: AXPP hello/next/answer, `browser.open` (`amberx.open_url`) | `DeviceLink`, `DeviceRules`, `wake.py` |
+| s9 | Brett's request checked end to end: Android app, wrapper only, floating on top, nothing under the clock, camera or shade | shots below |
 | s8 | Help for every `native.*` action; JUnit + node tests | `console.json` help |
 
 ## How each feature is reached (API parity)
@@ -43,6 +44,7 @@ Actions: `native.overlay:<expand|collapse|toggle|approvals|dismiss>`, `native.pe
 - Safe area screenshots (Playwright, 412×915 phone and 915×412 landscape with punch-hole insets): before, the first card sits under the clock and camera; after, it starts at 44 px (portrait) and 44 px from the cutout edge (landscape). The preview can't reach axHub, so the shots show the "Waiting for axHub" screen inside the same frame, not the full console.
 
 ## Known gaps / needs Brett
+- **Safe-area shots aren't in the console's UI Review.** `r-20261113-an5fv01` and screenshots `s-20261113-b0580c6f`, `-ec4a7e10`, `-64643a60` stayed in the build worktree: the headless session had no `AXF_CONSOLE_URL`/`AXF_TOKEN`. Re-submit with `--console`.
 - **Recorder not moved.** AmberX's Audio Output Recorder (`amberx.recorder_start|stop|status`) still runs in AmberX. Its capture service (MediaProjection, upload queue, consent activity; ~1,400 lines tied to Capacitor) needs a session with a Java toolchain to port and test. The console app doesn't announce `recorder@1`, so axHub keeps sending recorder calls to AmberX. Keep AmberX installed for recording until then.
 - **Sign in to axHub inside the app once.** The device link uses the WebView's axhub.amberxai.com session; signed out, it waits and retries every minute (`native.state` → `device.status`).
 - **The hub may file the device under `app: console-droid`.** If axHub only accepts `amberx-droid` hellos, `amberx.open_url` stays on AmberX until the hub accepts it (check `device.status` = `linked`).
