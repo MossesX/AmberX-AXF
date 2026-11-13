@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T18:26:35.917Z",
+ "updatedAt": "2026-11-13T18:27:17.878Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -127778,12 +127778,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:26:12.039Z",
-   "updatedAt": "2026-11-13T18:26:14.211Z",
+   "updatedAt": "2026-11-13T18:27:16.397Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-13T18:26:14.211Z"
+    },
+    {
+     "text": "Brett: every surface must READ the glass/transparency token (wired in everywhere, always), even if it doesn't apply it. Whether a surface actually goes see-through is its own per-surface/per-instance switch (on/off), not missing wiring.",
+     "at": "2026-11-13T18:27:16.397Z"
     }
    ],
    "approvals": [],
