@@ -84,7 +84,7 @@ function SettingRow({ s }: { s: Setting }) {
   const put = (v: Value) => { setBusy(true); setError(''); save({ [s.key]: v }).catch((e: Error) => setError(e.message)).finally(() => setBusy(false)); };
   const badge = s.locked ? <span className="fx-chip"><Icon name="lock" size={12} /> Locked</span>
     : s.owner === true ? <span className="fx-chip fx-chip--warning"><Icon name="key" size={12} /> Owner only</span>
-      : s.owner === 'raise' ? <span className="fx-chip"><Icon name="key" size={12} /> Only Brett raises</span>
+      : s.owner === 'raise' ? <span className="fx-chip"><Icon name="key" size={12} /> {s.kind === 'toggle' ? 'Only Brett switches on' : 'Only Brett raises'}</span>
         : s.shared ? <span className="fx-chip fx-chip--accent"><Icon name="layers" size={12} /> Shared with {s.shared}</span> : null;
   const hint = <>{s.description}{s.changed ? <span className="axp-cs-row__when"> Last changed by {s.changed.by}{s.changed.why ? ` (${s.changed.why})` : ''}, {new Date(s.changed.at).toLocaleString()}.</span> : null}</>;
   const disabled = busy || s.locked;
