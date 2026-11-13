@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T17:32:29.438Z",
+ "updatedAt": "2026-11-13T17:32:39.518Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -115595,7 +115595,7 @@
    ]
   },
   {
-   "id": "claude-badge-can-claude-build-green-when-at-least-one-build-account-in-the-or",
+   "id": "claude-badge-can-claude-build-green-when",
    "title": "Claude badge = can Claude build: green when at least one build account in the orchestrator's account health sweep can sign in and has credits (the same check the dispatcher uses), red when none can. Stop using the VPS root `claude auth status` / .active login. Tap shows which accounts are ready. And",
    "category": "",
    "detail": "",
@@ -115603,10 +115603,10 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/claude-badge-can-claude-build-green-when-at-least-one-build-account-in-the-or",
-   "pr": "#536",
+   "branch": "claude/claude-badge-can-claude-build-green-when",
+   "pr": "#587",
    "createdAt": "2026-11-12T23:30:16.119Z",
-   "updatedAt": "2026-11-13T01:26:44.505Z",
+   "updatedAt": "2026-11-13T17:32:32.778Z",
    "builtAt": "2026-11-13T01:26:44.505Z",
    "notes": [
     {
@@ -115628,6 +115628,10 @@
     {
      "text": "Headless run axf-claude-badge-can-claude-build-green-when-at-leas--rhonda: brief only · start 11.1K tokens ($0.03) · cost $3.50 · 79 turns · 6 tools, MCP none",
      "at": "2026-11-13T01:26:44.505Z"
+    },
+    {
+     "text": "Renamed from claude-badge-can-claude-build-green-when-at-least-one-build-account-in-the-or (build names are at most 40 characters). By build-rename.",
+     "at": "2026-11-13T17:32:32.778Z"
     }
    ],
    "approvals": [],
@@ -116374,7 +116378,7 @@
    ]
   },
   {
-   "id": "change-to-move-amberx-web-app-into-the-console-amberx-andr-pr-528-brett-do",
+   "id": "change-to-move-amberx-web-app-console",
    "title": "CHANGE to move-amberx-web-app-into-the-console-amberx-andr (PR #528), Brett: do NOT bring AmberX features into the console. Plan Studio is already there. Only build the Console Android app with all notifications (text, approvals, alerts) going through the console. Drop the rest of the AmberX port. A",
    "category": "",
    "detail": "",
@@ -116382,10 +116386,10 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/change-to-move-amberx-web-app-into-the-console-amberx-andr-pr-528-brett-do",
-   "pr": "#546",
+   "branch": "claude/change-to-move-amberx-web-app-console",
+   "pr": "#586",
    "createdAt": "2026-11-13T00:39:39.304Z",
-   "updatedAt": "2026-11-13T11:28:44.251Z",
+   "updatedAt": "2026-11-13T17:32:08.163Z",
    "builtAt": "2026-11-13T11:25:24.180Z",
    "notes": [
     {
@@ -116435,6 +116439,10 @@
     {
      "text": "Session axf-change-to-move-amberx-web-app-into-the-console-a--paulie on mossesx-max- ended (exit 0); the build was already built.",
      "at": "2026-11-13T11:28:44.251Z"
+    },
+    {
+     "text": "Renamed from change-to-move-amberx-web-app-into-the-console-amberx-andr-pr-528-brett-do (build names are at most 40 characters). By build-rename.",
+     "at": "2026-11-13T17:32:08.163Z"
     }
    ],
    "approvals": [],

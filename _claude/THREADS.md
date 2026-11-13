@@ -785,10 +785,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 10:37 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` note (all) · orchestrator
-- 2026-11-13 10:37 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` → running, note (all) · orchestrator
-- 2026-11-13 10:37 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` note (all) · pipeline
-- 2026-11-13 10:37 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` → running, note (all) · pipeline
 - 2026-11-13 10:37 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` note (all) · orchestrator
 - 2026-11-13 10:37 UTC · `server-gate-one-session-per-build-no-duplicate-launches` → running, note (all) · pipeline
 - 2026-11-13 10:37 UTC · `server-gate-one-session-per-build-no-duplicate-launches` note (all) · orchestrator
@@ -1185,6 +1181,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 17:31 UTC · `badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad` note, removed (all) · build-rename
 - 2026-11-13 17:31 UTC · `banners-page-focus-scroll-to-highlight` added (2 steps) (all) · build-rename
 - 2026-11-13 17:31 UTC · `banners-page-focus-scroll-to-and-highlight-any-banner-or-badge` note, removed (all) · build-rename
+- 2026-11-13 17:32 UTC · `change-to-move-amberx-web-app-console` added (5 steps) (all) · build-rename
+- 2026-11-13 17:32 UTC · `change-to-move-amberx-web-app-into-the-console-amberx-andr-pr-528-brett-do` note, removed (all) · build-rename
+- 2026-11-13 17:32 UTC · `claude-badge-can-claude-build-green-when` added (4 steps) (all) · build-rename
+- 2026-11-13 17:32 UTC · `claude-badge-can-claude-build-green-when-at-least-one-build-account-in-the-or` note, removed (all) · build-rename
 
 ## Token passes (log)
 
