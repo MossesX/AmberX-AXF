@@ -44,6 +44,17 @@
     },
     "plugins.reads": {
       "read": "read"
+    },
+    "console.control": {
+      "open": "navigate",
+      "focus": "navigate",
+      "scroll": "navigate",
+      "search": "read",
+      "state": "read",
+      "press": "write",
+      "set": "write",
+      "plugin.enable": "write",
+      "plugin.disable": "write"
     }
   },
   "domains": [
@@ -2229,6 +2240,59 @@
       ],
       "value": "field",
       "doc": "nav-style@1 (core/engines/navstyle-rules.mjs): the navigation menu with sub menus: colours (colour-theme token ids), font, icons, density, width, the sub-menu animation, behaviour (one or many open, tap or hover, auto-collapse, remember, follow the active page, swipe), pinned / hidden / ordered items (comma-separated ids) and accents.<item id>. Only navs that opt in (nav-menu navStyle: true) read it."
+    },
+    "console.control": {
+      "domain": "console",
+      "label": "Console control (any address)",
+      "ops": [
+        "list",
+        "get",
+        "act"
+      ],
+      "paths": "host",
+      "select": {
+        "kinds": "string",
+        "source": "enum:auto,console,inventory",
+        "limit": "number"
+      },
+      "acts": {
+        "open": {
+          "options": "object"
+        },
+        "focus": {
+          "options": "object"
+        },
+        "press": {
+          "value": "any",
+          "confirm": "boolean"
+        },
+        "set": {
+          "value": "any"
+        },
+        "scroll": {
+          "scroll": "object"
+        },
+        "search": {
+          "query": "object"
+        },
+        "state": {},
+        "plugin.enable": {},
+        "plugin.disable": {
+          "options": "object"
+        }
+      },
+      "actEffect": {
+        "open": "navigate",
+        "focus": "navigate",
+        "scroll": "navigate",
+        "search": "read",
+        "state": "read",
+        "press": "write",
+        "set": "write",
+        "plugin.enable": "write",
+        "plugin.disable": "write"
+      },
+      "doc": "console-control@1 (spec/CONSOLE-CONTROL.md): one address for every screen, tab, setting, button, function, plugin, grid row and build step (\"view:settings/tab:settings.tabs=plugins\", \"row:<build>/step:s3\", \"plugin:<id>\"). path = the address (full or short); list = every target under it, get = its state (no path: where the console is), act <verb> runs it (open, focus, press, set, scroll, search, state, plugin.enable, plugin.disable). A plan's links[] entry or any item may carry { address } to point here. Same guards as /api/console-control: deciding presses refused, destructive ones need input.confirm. Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them)."
     }
   },
   "aliases": {
@@ -2312,7 +2376,8 @@
               "pass.scopes",
               "plugins.commands",
               "plugins.reads",
-              "tokens.nav"
+              "tokens.nav",
+              "console.control"
             ],
             "description": "what to control"
           },
@@ -2366,7 +2431,8 @@
               "pass.scopes",
               "plugins.commands",
               "plugins.reads",
-              "tokens.nav"
+              "tokens.nav",
+              "console.control"
             ],
             "description": "what to control"
           },
@@ -2421,7 +2487,8 @@
               "pass.scopes",
               "plugins.commands",
               "plugins.reads",
-              "tokens.nav"
+              "tokens.nav",
+              "console.control"
             ],
             "description": "what to control"
           },
@@ -2483,7 +2550,8 @@
               "pass.scopes",
               "plugins.commands",
               "plugins.reads",
-              "tokens.nav"
+              "tokens.nav",
+              "console.control"
             ],
             "description": "what to control"
           },
@@ -2545,7 +2613,8 @@
               "pass.scopes",
               "plugins.commands",
               "plugins.reads",
-              "tokens.nav"
+              "tokens.nav",
+              "console.control"
             ],
             "description": "what to control"
           },
@@ -2607,7 +2676,8 @@
               "pass.scopes",
               "plugins.commands",
               "plugins.reads",
-              "tokens.nav"
+              "tokens.nav",
+              "console.control"
             ],
             "description": "what to control"
           },
@@ -2673,7 +2743,8 @@
               "pass.scopes",
               "plugins.commands",
               "plugins.reads",
-              "tokens.nav"
+              "tokens.nav",
+              "console.control"
             ],
             "description": "what to control"
           },
@@ -2804,7 +2875,8 @@
       "pass.scopes",
       "plugins.commands",
       "plugins.reads",
-      "tokens.nav"
+      "tokens.nav",
+      "console.control"
     ]
   },
   "schema": {
@@ -2855,7 +2927,8 @@
           "pass.scopes",
           "plugins.commands",
           "plugins.reads",
-          "tokens.nav"
+          "tokens.nav",
+          "console.control"
         ]
       },
       "path": {
@@ -3969,6 +4042,68 @@
           "items.hidden",
           "items.pinned"
         ]
+      },
+      "console.control": {
+        "description": "console-control@1 (spec/CONSOLE-CONTROL.md): one address for every screen, tab, setting, button, function, plugin, grid row and build step (\"view:settings/tab:settings.tabs=plugins\", \"row:<build>/step:s3\", \"plugin:<id>\"). path = the address (full or short); list = every target under it, get = its state (no path: where the console is), act <verb> runs it (open, focus, press, set, scroll, search, state, plugin.enable, plugin.disable). A plan's links[] entry or any item may carry { address } to point here. Same guards as /api/console-control: deciding presses refused, destructive ones need input.confirm. Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them).",
+        "ops": [
+          "list",
+          "get",
+          "act"
+        ],
+        "select": {
+          "kinds": {
+            "type": "string"
+          },
+          "source": {
+            "enum": [
+              "auto",
+              "console",
+              "inventory"
+            ]
+          },
+          "limit": {
+            "type": "number"
+          }
+        },
+        "acts": {
+          "open": {
+            "options": {
+              "type": "object"
+            }
+          },
+          "focus": {
+            "options": {
+              "type": "object"
+            }
+          },
+          "press": {
+            "value": {},
+            "confirm": {
+              "type": "boolean"
+            }
+          },
+          "set": {
+            "value": {}
+          },
+          "scroll": {
+            "scroll": {
+              "type": "object"
+            }
+          },
+          "search": {
+            "query": {
+              "type": "object"
+            }
+          },
+          "state": {},
+          "plugin.enable": {},
+          "plugin.disable": {
+            "options": {
+              "type": "object"
+            }
+          }
+        },
+        "paths": "host"
       }
     }
   }

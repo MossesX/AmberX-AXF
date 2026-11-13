@@ -9,6 +9,7 @@
  *   node console.mjs run      one command on stdin ({command, grants?, by?, clients}) → the answer as JSON (`deliver` = what to send)
  *   node console.mjs open <screen> [--focus <tab or build>] | dialog <id> | dialog close [id] | settings <tab> [--anchor a] | action <id> [args…] [--confirm t]
  *                    | back | home | close | refresh [--hard] [--all] | open-url <url> [--live] | where | list [screens|dialogs|settings|actions|clients] [words] | clients
+ *                    | overlay expand | overlay collapse | overlay open <url>   (AmberX's overlay on Brett's phone, POST /api/console/overlay)
  *        → sent to the console (AXF_CONSOLE_URL, default https://console.amberxai.com; AXF_TOKEN), which runs it
  *   --to recent|all|<client id>   which open console (default: the one used last)
  *   --remote <url> · --json
@@ -73,7 +74,8 @@ function flags(argv) {
 }
 
 const LIST_KINDS = { screens: 'console.screens', screen: 'console.screens', dialogs: 'console.dialogs', dialog: 'console.dialogs', settings: 'console.settings', actions: 'console.actions', action: 'console.actions', clients: 'console.clients', consoles: 'console.clients' };
-export const USAGE = 'usage: axf console open <screen> | dialog <id> | dialog close [id] | settings <tab> | action <id> [args…] | back | home | close | refresh [--hard] [--all] | open-url <url> [--live] | where | list [screens|dialogs|settings|actions|clients] [words] | clients   [--to recent|all|<client>]';
+export const USAGE = 'usage: axf console open <screen> | dialog <id> | dialog close [id] | settings <tab> | action <id> [args…] | back | home | close | refresh [--hard] [--all] | open-url <url> [--live] | where | list [screens|dialogs|settings|actions|clients] [words] | clients | overlay expand|collapse|open <url>   [--to recent|all|<client>]';
+export const OVERLAY_VERBS = ['expand', 'collapse', 'open'];
 
 /** `axf console …` words → a control@1 console command, or { error }. */
 export function commandFromArgv(argv) {
@@ -82,6 +84,12 @@ export function commandFromArgv(argv) {
   const words = rest.join(' ').trim();
   const input = Object.fromEntries(['to', 'anchor', 'arg', 'focus'].filter((k) => typeof f[k] === 'string').map((k) => [k, f[k]]));
   const act = (target, action, path) => (path ? { op: 'act', target, path, action, ...(Object.keys(input).length ? { input } : {}) } : null);
+  if (verb === 'overlay') {
+    // The phone's overlay is not a console command: the console server asks AmberX through axHub.
+    const [ov, url = ''] = rest;
+    if (!OVERLAY_VERBS.includes(ov) || (ov === 'open' && !url)) return { error: 'usage: axf console overlay expand | collapse | open <https://…amberxai.com page>' };
+    return { overlay: { verb: ov, ...(ov === 'open' ? { url } : {}) }, base: typeof f.remote === 'string' ? f.remote : '', json: !!f.json };
+  }
   let cmd = null;
   switch (verb) {
     case 'open': case 'screen': case 'go': cmd = act('console.screens', 'open', words); break;
@@ -132,6 +140,18 @@ export function formatAnswer(r) {
   return `${sent.some((d) => d.ok) ? '✓' : '✗'} ${r.action} ${what}${how} → ${sent.map((d) => `${d.client}: ${d.ok ? d.message || 'done' : `failed: ${d.message}`}`).join(' · ')}`;
 }
 
+/** overlay.expand / collapse / open on Brett's phone through the console's /api/console/overlay. Never throws. */
+export async function sendOverlay(body, { base = process.env.AXF_CONSOLE_URL || 'https://console.amberxai.com', token = process.env.AXF_TOKEN || '', fetch: f = globalThis.fetch } = {}) {
+  const url = `${String(base).replace(/\/$/, '')}${API_PATH}/overlay`;
+  try {
+    const res = await f(url, { method: 'POST', headers: { 'content-type': 'application/json', ...(token ? { authorization: `Bearer ${token}` } : {}) }, body: JSON.stringify(body) });
+    const text = await res.text();
+    try { return JSON.parse(text); } catch { return { ok: false, verb: body.verb, message: `${res.status} ${text.slice(0, 200)}` }; }
+  } catch (e) {
+    return { ok: false, verb: body.verb, message: `could not reach ${url}: ${e?.message ?? e}` };
+  }
+}
+
 /** Send a whole command to a console's /api/console. Never throws: network trouble is an `unexpected` failure. */
 export async function sendToConsole(command, { base = process.env.AXF_CONSOLE_URL || 'https://console.amberxai.com', token = process.env.AXF_TOKEN || '', fetch: f = globalThis.fetch } = {}) {
   const url = `${String(base).replace(/\/$/, '')}${API_PATH}`;
@@ -150,7 +170,7 @@ export async function main(argv) {
   if (argv[0] === 'console') argv = argv.slice(1);
   const [cmd] = argv;
   if (!cmd || cmd === 'help' || cmd === '--help') {
-    console.log([USAGE, '', 'Examples:', '  axf console open plan studio', '  axf console settings plugins', '  axf console action terminal.open', '  axf console list screens build', '  axf console back · axf console where · axf console clients',
+    console.log([USAGE, '', 'Examples:', '  axf console open plan studio', '  axf console settings plugins', '  axf console action terminal.open', '  axf console list screens build', '  axf console back · axf console where · axf console clients', '  axf console overlay expand · axf console overlay open https://console.amberxai.com/?axf-view=ui-review',
       '', `MCP tools (console /mcp, and through axHub): ${CONSOLE_TOOLS.join(', ')}`, `REST: POST ${API_PATH} (a whole control@1 command), POST ${API_PATH}/open {screen} …`].join('\n'));
     return 0;
   }
@@ -161,6 +181,11 @@ export async function main(argv) {
   }
   const parsed = commandFromArgv(argv);
   if (parsed.error) { console.error(parsed.error); return 2; }
+  if (parsed.overlay) {
+    const r = await sendOverlay(parsed.overlay, parsed.base ? { base: parsed.base } : {});
+    console.log(parsed.json ? JSON.stringify(r, null, 1) : `${r.ok ? '✓' : '✗'} overlay ${r.verb ?? parsed.overlay.verb}: ${r.message || (r.ok ? 'done' : 'failed')}`);
+    return r.ok ? 0 : 1;
+  }
   const { command, json } = parsed;
   if (!command.by) command.by = process.env.AXF_ACTOR || `cli:${process.env.USER || 'user'}`;
   const r = await sendToConsole(command, parsed.base ? { base: parsed.base } : {});

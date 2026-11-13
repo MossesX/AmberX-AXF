@@ -38,6 +38,7 @@ journalled.
 | `defaultSteps`, `defaultAt`, `rearranged` | the default breakdown (Restore default); follows orchestrator edits until the Steps view rearranges the build |
 | `removedSteps` | steps taken out (removed, divided, harvested away) with why, when, by |
 | `legacy`, `copies` | where the record came from in the migration; other copies kept verbatim |
+| `alias` | optional: the short name of a build whose `id` is not a valid build name (made before build-id@1); `findBuild` and every orchestrator / pipeline command accept it |
 
 **StepRecord** = orchestrator@1 step fields (`id`, `text`, `model`, `why`, `phase`, `group`, `estimate`, `files`, `checks`,
 `session`, `agent`, `skip`, `done`, `doneAt`, `note`) plus `uid` (never changes, also across a harvest), `title` (rename),
@@ -53,6 +54,26 @@ policy `framework/core/model-policy.mjs`; a legacy `[Sonnet]` prefix reads as Op
 - Live step `uid`s unique across the whole store (a harvested step keeps its uid and leaves its source build); step ids
   unique within a build; every step `Fable` or `Opus` with text.
 - Ids never change: renaming changes `title` only.
+
+## Build ids (build-id@1, `framework/core/build-id.mjs`)
+
+A build's `id` names its worktree folder (`<worktrees>/<id>`), its branch (`claude/<id>`), its tmux session and log, and
+is what axHub's `vps.build_start` / `build_land` / `build_stop` / `build_clean` take. Those accept only
+`^[a-z0-9][a-z0-9-]{0,39}$`, so every new id is at most **40 characters**. The `title` is the display name and has no
+length limit; it is shown everywhere a build is named.
+
+- `shortBuildId(title)`: lowercase slug; when it is over 40 characters, filler words (a, the, and, of, in, …) are
+  dropped, then it is cut at the last dash that fits. `uniqueBuildId(title, taken)` adds `-2`, `-3`, … inside the same
+  40 characters on a collision.
+- Every id maker uses it: `pipeline.mjs request`, the orchestrator's `add` / `import`, a harvest, the Pending list and
+  Plan Studio. Adding the same title (or id) again is still refused by the orchestrator; two titles that only meet once
+  shortened get a suffix.
+- Builds made before this rule keep their ids (their branches and PRs are not renamed) and get an `alias` that is a
+  valid build name: the tick sets it for builds that may still run or land; `pipeline.mjs aliases [--apply] [--all]`
+  lists or sets it for any. `pipeline.mjs land-alias <id|alias|folder>` is the landing path: it links
+  `<worktrees>/<alias>` to the build's folder and points the local branch `claude/<alias>` at the build's branch, so
+  `vps.build_land` (and stop / clean) can be called with the alias. Run it again right before landing to move the
+  branch to the latest commit.
 
 ## Projections and absorbs
 

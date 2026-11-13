@@ -12,7 +12,7 @@ import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 process.env.AXF_CONSOLE_COMMANDS_DATA_DIR = mkdtempSync(join(tmpdir(), 'cc-'));
-const { commandFromArgv, formatAnswer, runConsole, sendToConsole, confirmSalt } = await import('./console.mjs');
+const { commandFromArgv, formatAnswer, runConsole, sendOverlay, sendToConsole, confirmSalt } = await import('./console.mjs');
 
 let n = 0;
 const t = (name, fn) => { fn(); n++; };
@@ -31,6 +31,14 @@ t('CLI words', () => {
   assert.ok(commandFromArgv(['open-url']).error, 'open-url without a url is a usage error');
   assert.ok(commandFromArgv(['open']).error, 'open without a screen is a usage error');
   assert.ok(commandFromArgv(['explode']).error, 'unknown verb');
+});
+
+t('CLI overlay verbs (AmberX overlay on the phone)', () => {
+  assert.deepEqual(commandFromArgv(['console', 'overlay', 'expand']).overlay, { verb: 'expand' });
+  assert.deepEqual(commandFromArgv(['overlay', 'collapse']).overlay, { verb: 'collapse' });
+  assert.deepEqual(commandFromArgv(['overlay', 'open', 'https://console.amberxai.com/?axf-view=builds']).overlay, { verb: 'open', url: 'https://console.amberxai.com/?axf-view=builds' });
+  assert.ok(commandFromArgv(['overlay', 'open']).error, 'open needs a page');
+  assert.ok(commandFromArgv(['overlay', 'spin']).error, 'unknown overlay verb');
 });
 
 const NOW = Date.now();
@@ -86,6 +94,18 @@ t('answers as text', () => {
 let sent = null;
 const fakeFetch = async (url, init) => { sent = { url, init }; return { status: 200, text: async () => JSON.stringify({ ok: true, op: 'act', echoed: JSON.parse(init.body) }) }; };
 const r = await sendToConsole({ op: 'act', target: 'console.nav', path: 'here', action: 'home' }, { base: 'https://c.example/', token: 'tok', fetch: fakeFetch });
+{
+  let seen = null;
+  const o = await sendOverlay({ verb: 'expand' }, { base: 'https://c.example/', token: 'tok', fetch: async (url, init) => { seen = { url, init }; return { status: 200, text: async () => JSON.stringify({ ok: true, verb: 'expand', message: 'AmberX opened it full screen in its overlay' }) }; } });
+  t('sendOverlay', () => {
+    assert.equal(seen.url, 'https://c.example/api/console/overlay');
+    assert.equal(seen.init.headers.authorization, 'Bearer tok');
+    assert.deepEqual(JSON.parse(seen.init.body), { verb: 'expand' });
+    assert.ok(o.ok);
+  });
+  const down = await sendOverlay({ verb: 'collapse' }, { base: 'https://c.example', fetch: async () => { throw new Error('offline'); } });
+  t('sendOverlay never throws', () => assert.ok(!down.ok && /offline/.test(down.message)));
+}
 t('sendToConsole', () => {
   assert.equal(sent.url, 'https://c.example/api/console');
   assert.equal(sent.init.headers.authorization, 'Bearer tok');

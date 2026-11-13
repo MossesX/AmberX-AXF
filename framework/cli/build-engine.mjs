@@ -22,6 +22,7 @@ import { REGISTRY as LEDGER_REGISTRY, jsonSchemas as ledgerJsonSchemas } from '.
 import { REGISTRY as DEPLOY_LOG_REGISTRY, jsonSchemas as deployLogJsonSchemas } from '../core/deploy-log.mjs';
 import { REGISTRY as BUILD_HOOK_REGISTRY, jsonSchemas as buildHookJsonSchemas } from '../core/build-hook.mjs';
 import { REGISTRY as SHIPPED_MANIFEST_REGISTRY, jsonSchemas as shippedManifestJsonSchemas } from '../core/shipped-manifest.mjs';
+import { consoleControlRegistry, jsonSchemas as consoleControlJsonSchemas } from '../core/engines/console-control-rules.mjs';
 import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 import { applyOptions, readOptions, resolveOptions } from './build-options.mjs';
@@ -898,6 +899,9 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
   // shipped-manifest@1: what the orchestrator sends Shipped features when a build lands
   for (const [n, schema] of Object.entries(shippedManifestJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
   const smreg = join(FRAMEWORK_DIR, 'schemas/shipped-manifest.json'); writeFileSync(smreg, JSON.stringify(SHIPPED_MANIFEST_REGISTRY, null, 2) + '\n'); written.push(smreg);
+  // console-control@1: one address + ten verbs for everything the console shows (address, command, result, targets) + the registry snapshot
+  for (const [n, schema] of Object.entries(consoleControlJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
+  const ccreg = join(FRAMEWORK_DIR, 'schemas/console-control.json'); writeFileSync(ccreg, JSON.stringify(consoleControlRegistry(), null, 2) + '\n'); written.push(ccreg);
   return written;
 }
 

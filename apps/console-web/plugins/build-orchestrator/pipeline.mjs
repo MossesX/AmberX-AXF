@@ -36,6 +36,11 @@
  *                                  file a build with the orchestrator (the id is assigned here) and, with --queue, put it in the
  *                                  Queue. Every former launch path (Build manager Start, Fix with Claude, feature assist) calls this.
  *   … show <id>                    one build as the table shows it (status, steps, pipeline record)
+ *   … aliases [--apply] [--all]    builds whose id is not a valid build name (made before build-id@1) and the short alias each
+ *                                  gets; --apply saves them (the tick does this for builds that may still run or land; --all
+ *                                  takes in finished, archived and deleted ones). Every command takes the alias for the id.
+ *   … land-alias <id|alias|folder> the landing path for such a build: <worktrees>/<alias> → its folder and local branch
+ *                                  claude/<alias> at its branch, so vps.build_land takes the alias. Branch and PR stay as they are.
  *   … route <id> api|subscription|auto   the per-build override: run on an API-key account, never on one, or the default
  *
  * One way to start builds (Brett, Nov 9 2026: "It has to be the orchestrator"): the tick is the only caller of the
@@ -60,12 +65,13 @@
 import { spawn, spawnSync } from 'node:child_process';
 import { appendFileSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, statSync, symlinkSync, writeFileSync } from 'node:fs';
 import { homedir, tmpdir } from 'node:os';
-import { dirname, join, resolve } from 'node:path';
+import { basename, dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as P from './pipeline-core.mjs';
 import * as orch from './web/orchestrator-core.mjs';
 import * as BP from '../../../../framework/core/build-pipeline.mjs';
 import { addendumBlock, saidBlock, subtitle } from '../../../../framework/core/build-origin.mjs';
+import { isBuildId, namesOf, planAliases, uniqueBuildId } from '../../../../framework/core/build-id.mjs';
 import { effectivePriority, priorityLabel } from '../../../../framework/core/build-priority.mjs';
 import { MODEL_IDS, modelKey } from '../../../../framework/core/model-policy.mjs';
 import * as storeCore from '../../../../framework/plan/builds-store-core.mjs';
@@ -194,7 +200,7 @@ export function accountsNow(store, settings = loadSettings()) { return accountsR
 
 const row = (b) => {
   const p = orch.progress(b); const nx = orch.nextUp(b);
-  return { id: b.id, title: b.title, status: b.status, priority: priorityLabel(effectivePriority(b)), steps: { done: p.done, total: p.total, left: p.total - p.done - p.skipped }, minutesLeft: p.minutesLeft,
+  return { id: b.id, alias: b.alias ?? '', title: b.title, status: b.status, priority: priorityLabel(effectivePriority(b)), steps: { done: p.done, total: p.total, left: p.total - p.done - p.skipped }, minutesLeft: p.minutesLeft,
     nextModel: BP.nextModel(b), nextStep: nx.step ? `${nx.step.id} ${nx.step.text}`.slice(0, 200) : '', needsApproval: nx.needsApproval, needsSplit: P.needsSplit(b), pipeline: b.pipeline ?? null, said: subtitle(b.origin, 160), branch: b.branch, pr: b.pr, createdAt: b.createdAt, updatedAt: b.updatedAt,
     tab: BP.tabOf(b), held: BP.isHeld(b), actions: BP.actionsFor(b), deleted: !!b.deleted, deletedAt: b.deletedAt ?? '', builtAt: b.builtAt ?? '', stepList: (b.steps ?? []).slice(0, 40).map((x) => ({ id: x.id, text: str(x.text, 160), model: x.model, estimate: x.estimate ?? '', done: !!x.done, skip: !!x.skip })) };
 };
@@ -430,6 +436,52 @@ export function ensureWorktree(id, env = process.env) {
   return { dir, made: true };
 }
 
+// ------------------------------------------------------------------ build names (build-id@1)
+
+/**
+ * Give every build whose id is longer than a valid build name (made before ids were capped at 40 characters) a short
+ * alias. The id, folder and branch stay as they are (a branch with an open PR is not renamed); the alias is one more
+ * name the store answers to. `apply: false` only lists what it would set; `only` = one build id.
+ */
+export function assignAliases({ apply = true, all = false, only = '', by = process.env.AXF_ACTOR || 'pipeline' } = {}) {
+  const builds = loadStore().builds;
+  // by default only builds that may still run or land; `all` takes in finished, archived and deleted ones too
+  const want = (b) => (only ? b.id === only : b.kind !== 'epic' && (all || (!b.deleted && !['complete', 'archived'].includes(b.status))));
+  const plan = planAliases(builds).filter((x) => want(builds.find((b) => b.id === x.id)));
+  if (!apply || !plan.length) return plan;
+  withStore((s) => { for (const { id, alias } of plan) { const rec = s.builds.find((x) => x.id === id); if (rec && !isBuildId(rec.alias ?? '')) rec.alias = alias; } return s; }, { by, action: 'pipeline:alias', note: plan.map((x) => `${x.id} → ${x.alias}`).join(', ').slice(0, 500) });
+  for (const x of plan) logLine({ event: 'aliased', build: x.id, alias: x.alias });
+  return plan;
+}
+
+/**
+ * The landing path for a build with a long id: `ref` is its id, its alias or its worktree folder. Makes sure it has an
+ * alias, then points <worktrees>/<alias> at its folder (a symlink) and sets the local branch claude/<alias> to the head
+ * of claude/<id>, so vps.build_land / build_stop / build_clean can be called with the alias. The original branch and its
+ * PR are left alone. Run it again right before landing: it moves claude/<alias> to the branch's latest commit.
+ */
+export function landAlias(ref, { env = process.env, by = process.env.AXF_ACTOR || 'cli' } = {}) {
+  const name = basename(String(ref || '').replace(/\/+$/, ''));
+  if (!name) throw Object.assign(new Error('give a build id, alias or worktree folder'), { code: 2 });
+  let b = storeCore.findBuild(loadStore(), name);
+  if (!b) throw Object.assign(new Error(`no build "${name}"`), { code: 2 });
+  if (isBuildId(b.id)) return { id: b.id, alias: b.id, name: b.id, dir: join(worktreesRoot(env), b.id), branch: `claude/${b.id}`, linked: false, note: 'its id is a valid build name already' };
+  if (!isBuildId(b.alias ?? '')) { assignAliases({ by, only: b.id }); b = storeCore.findBuild(loadStore(), b.id); }
+  const alias = b.alias; const root = worktreesRoot(env);
+  const dir = join(root, b.id); const link = join(root, alias);
+  let linked = false;
+  if (existsSync(dir) && !existsSync(link)) { symlinkSync(dir, link); linked = true; }
+  const from = b.branch || `claude/${b.id}`;
+  let branch = '';
+  if (git(REPO_ROOT, 'rev-parse', '--verify', '-q', from).status === 0) {
+    const r = git(REPO_ROOT, 'branch', '-f', `claude/${alias}`, from);
+    if (r.status === 0) branch = `claude/${alias}`;
+  }
+  logLine({ event: 'land-alias', build: b.id, alias, linked, branch });
+  return { id: b.id, alias, name: alias, dir: existsSync(link) ? link : '', branch, from, linked,
+    note: `land it with vps.build_land name=${alias}${branch ? ` (claude/${alias} is at ${from})` : ` (no local ${from} to point claude/${alias} at)`}` };
+}
+
 /** The brief file: what Brett said first (build-origin@1 blocks), then the orchestrator's phase brief. */
 export function briefFor(b, rules, { account, model, kind = '' }) {
   const o = b.origin ?? {};
@@ -599,6 +651,7 @@ export function tick({ env = process.env } = {}) {
   const alert = (kind, d) => { const a = P.alertFor(kind, d); consoleApi('POST', '/api/alerts', a); sent.push({ key: a.key, kind, at: nowIso(), title: a.title }); };
   const started = nowIso();
   const inta = intake({ alert });
+  try { assignAliases({ by: 'pipeline' }); } catch (e) { logLine({ event: 'alias-failed', error: str(e.message, 300) }); }
   const ended = checkEnds({ alert, env });
   const store = loadStore(); const settings = loadSettings(); const rules = rulesOf(store);
   const read = accountsRead(store, settings, env); const accounts = read.accounts; const sl = slotsNow();
@@ -722,19 +775,18 @@ afterTick(({ env }) => {
 
 // ------------------------------------------------------------------ the one way in: request a build, route it
 
-const slugId = (t) => String(t || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 48).replace(/-+$/, '') || 'build';
 
 /**
- * File a build with the orchestrator: it assigns the id (from the title, made unique), the next tick splits it, and with
+ * File a build with the orchestrator: it assigns the id (from the title, at most 40 characters, made unique), the next tick splits it, and with
  * `queue` it goes straight to the Queue. Returns the build. This replaces every direct launch (Build manager Start,
  * Fix with Claude, feature assist): they all end here and the dispatcher starts the build.
  */
 export function request({ title, detail = '', said = '', priority = '', route = '', queue: toQueue = false, by = process.env.AXF_ACTOR || 'console', source = '' } = {}) {
   const t = str(title, 300).trim(); if (!t) throw Object.assign(new Error('a build needs a title'), { code: 2 });
   if (route && !BP.ROUTES.includes(route)) throw Object.assign(new Error(`route is api, subscription or auto, not ${route}`), { code: 2 });
-  const taken = new Set(loadStore().builds.map((b) => b.id));
-  const base = slugId(t); let id = base; let k = 2;
-  while (taken.has(id)) id = `${base}-${k++}`;
+  // build-id@1: the id names the folder, the branch claude/<id> and the tmux session, so it stays within 40 characters;
+  // the title is the display name, kept whole
+  const id = uniqueBuildId(t, new Set(loadStore().builds.flatMap(namesOf)));
   orchAct({ action: 'add', id, title: t, detail: str(detail, 8000), ...(said ? { said: str(said, 6000) } : {}), source: str(source || by, 60) }, by);
   const p = normPriority(priority);
   if (p || route) withStore((s) => { const rec = storeCore.findBuild(s, id); if (rec) { if (p) rec.priority = p; if (route) rec.pipeline = BP.normPipeline({ ...(rec.pipeline ?? {}), route }) ?? undefined; rec.updatedAt = nowIso(); } return s; }, { by, action: 'pipeline:request', note: id });
@@ -892,6 +944,8 @@ async function main(argv) {
     const b = request({ title: flag('title'), detail, said: flag('said'), priority: flag('priority'), route: flag('route') === 'auto' ? '' : flag('route'), queue: has('queue'), by, source: flag('source') });
     return out({ ok: true, id: b.id, status: b.status, build: { id: b.id, title: b.title, status: b.status } }, `${b.id} filed${b.status === 'queued' ? ' and queued: the dispatcher starts it' : ' in Pending'}`);
   }
+  if (cmd === 'aliases') { const r = assignAliases({ apply: has('apply'), all: has('all'), by }); return out({ ok: true, applied: has('apply'), aliases: r }, r.map((x) => `${x.id} → ${x.alias}`).join('\n') || 'every build id is a valid build name'); }
+  if (cmd === 'land-alias') { const r = landAlias(rest[0], { by }); return out({ ok: true, ...r }, `${r.id} → ${r.alias}${r.dir ? `\nfolder ${r.dir}` : ''}${r.branch ? `\nbranch ${r.branch}` : ''}\n${r.note}`); }
   if (cmd === 'show') { const b = storeCore.findBuild(loadStore(), rest[0]); if (!b) throw Object.assign(new Error(`no build "${rest[0]}"`), { code: 2 }); const r = row(b); return out({ ok: true, build: r }, `${r.id} ${r.status} ${r.steps.done}/${r.steps.total}${r.pipeline?.account ? ` on ${r.pipeline.account}` : ''}`); }
   if (cmd === 'route') { const b = setRoute(rest[0], rest[1], { by }); return out({ ok: true, id: b.id, route: b.pipeline?.route || 'auto' }, `${b.id}: route ${b.pipeline?.route || 'auto'}`); }
   if (cmd === 'intake') { const r = intake(); return out({ ok: true, ...r }, [`split: ${r.split.map((x) => `${x.id} (${x.provider}, ${x.steps})`).join(', ') || 'nothing'}`, `queued: ${r.queued.join(', ') || 'nothing'}`, ...r.skipped.map((x) => `skipped ${x.id}: ${x.error}`)].join('\n')); }

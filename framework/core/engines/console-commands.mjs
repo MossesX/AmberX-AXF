@@ -16,7 +16,7 @@
  *            `console.settings` opens it (its tab, scrolled to it), lists and reads it; `settings.set:<key>:<value>` sets it.
  *   client   { id, app, host?, front?, title, device, user, lastUsed, here, catalog }   (one per open console tab, kept by the server;
  *            app `molly/console-web` + host `molly` inside Molly; front = visible and shown by its host)
- *   message  { $axf: 'console-command@1', id, op: open|run|back|home|close|refresh|url, kind?, target?, label?, spec?, anchor?, arg?, focus?, hard?, url?, by, at }
+ *   message  { $axf: 'console-command@1', id, op: open|run|back|home|close|refresh|url|control, kind?, target?, label?, spec?, anchor?, arg?, focus?, hard?, url?, command?, by, at }
  *            focus = what to bring forward on the opened screen (a tab or an item: a build id on the Build orchestrator);
  *            the console runs the screen's own `<screen>.focus:<focus>` action when it has one.
  *            op `url` (build drive-live-console-first, Nov 13 2026): open one of Brett's own pages (consoleOwnUrl) in the
@@ -53,7 +53,7 @@ export const CONSOLE_TOOLS = ['console_open', 'console_dialog', 'console_setting
 export const CONSOLE_URL_DOMAINS = ['amberxai.com'];
 export const CONSOLE_URL_MAX = 2000;
 /** The console ops a console-command@1 message carries. */
-export const CONSOLE_MESSAGE_OPS = ['open', 'run', 'back', 'home', 'close', 'refresh', 'url'];
+export const CONSOLE_MESSAGE_OPS = ['open', 'run', 'back', 'home', 'close', 'refresh', 'url', 'control'];
 
 /** Action ids that only navigate (open, show, move a window): run with control.console.navigate alone. */
 const NAVIGATING = /^(nav|dialog|settings\.open|banners\.settings|windows\.[A-Za-z]+|terminal\.(open|dialog)|help(\.[A-Za-z.]+)?|help\.mode|search(\.[A-Za-z]+)?|inspector|asset\.json|plugins\.open|views?\.[A-Za-z.]+)$/;
@@ -349,10 +349,12 @@ export function consoleMessage(fields, { id, by = '', now = Date.now() } = {}) {
 export function consoleMessageErrors(m) {
   const errors = [];
   if (!isObj(m) || m.$axf !== CONSOLE_COMMAND_FRAME) return [`$axf must be ${CONSOLE_COMMAND_FRAME}`];
-  if (!CONSOLE_MESSAGE_OPS.includes(m.op)) errors.push('op must be open, run, back, home, close, refresh or url');
+  if (!CONSOLE_MESSAGE_OPS.includes(m.op)) errors.push(`op must be ${CONSOLE_MESSAGE_OPS.slice(0, -1).join(', ')} or ${CONSOLE_MESSAGE_OPS.at(-1)}`);
   if (m.op === 'open' && (!CONSOLE_ITEM_KINDS.includes(m.kind) || m.kind === 'action' || !m.target)) errors.push('open needs a kind (screen, dialog, settings) and a target');
   if (m.op === 'run' && !m.spec) errors.push('run needs an action spec');
   if (m.op === 'url' && consoleOwnUrl(m.url).error) errors.push(`url: ${consoleOwnUrl(m.url).error}`);
+  // a console-control@1 command (spec/CONSOLE-CONTROL.md); the console's executor validates the command itself
+  if (m.op === 'control' && !isObj(m.command)) errors.push('control needs a console-control@1 command');
   return errors;
 }
 

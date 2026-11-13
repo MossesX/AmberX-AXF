@@ -92,6 +92,7 @@ jobs:
       - run: node framework/spec/check-profiles.mjs                 # every build profile folder is registered in framework/plan/profiles.json
       - run: node framework/spec/check-feature-matrix.mjs           # feature-matrix@1: contract + Apply engine replay fixtures/feature-matrix.json
       - run: node framework/spec/check-builds-store.mjs             # builds@1: migration loses nothing, projections round-trip, reorder, rename, divide, harvest, Restore default, Apply/Discard
+      - run: node framework/spec/check-build-id.mjs                # build-id@1: new build ids fit the vps tools' 40-char pattern, collisions get suffixes, legacy long ids get aliases
       - run: node framework/spec/check-builds-store-lock.mjs        # a store read never fails on the lock (GET /api/build-queue 500, urgent-console-perf)
       - run: node framework/spec/check-build-origin.mjs            # build-origin@1: Brett's verbatim words on every build, never lost on merge, brief capture, backfill
       - run: node framework/spec/check-builds-live.mjs              # builds-live: store writes reach main (status-only commits, rebase-retry, never forced), parallel writers, newer-wins merge driver, heal, reconciler matching
@@ -105,6 +106,7 @@ jobs:
       - run: node framework/spec/check-build-priority.mjs           # priority tags: levels, backfill, what waits on a build, the agent queue follows priority
       - run: node framework/spec/check-projects.mjs                 # projects@1: a new project starts empty, AmberX AXF keeps everything, archive/delete need the id
       - run: node apps/console-web/plugins/build-orchestrator/pipeline.test.mjs   # build pipeline: Pending → Queue → Building, accounts with Fable, slot-open launches, session ends, idle alert, split  # axf-plugin:build-orchestrator
+      - run: node apps/console-web/plugins/build-orchestrator/build-id.test.mjs   # build-id@1: orchestrator ids fit 40 chars, titles kept, collisions suffixed, legacy aliases and land-alias  # axf-plugin:build-orchestrator
       - run: node framework/spec/check-model-policy.mjs             # model-policy@1: Opus or Fable only, never Sonnet; job types, roster, plan picker and the builds store read one registry
       - run: node framework/spec/check-card.mjs                     # card@1 + home-layout@1: binding, view pick, live refresh, layout, suggestions, drops, zero tokens, fixture
       - run: node framework/cli/builds-store.mjs verify            # every build, step, note and status of the read-only old files is in the store
@@ -126,6 +128,8 @@ jobs:
         run: node framework/cli/check-controls.mjs
       - name: Toolbars — every toolbar is a framework toolbar (role="toolbar" + settings id; tap-to-confirm off in code only with a recorded reason)
         run: node framework/cli/check-toolbars.mjs
+      - name: Console control — every view, tab row, setting, plugin, toolbar, grid and button has a console-control address (ratchet framework/spec/console-control-baseline.json only goes down)
+        run: node framework/cli/check-console-control.mjs
       - name: Banner widgets — every banner chip comes through the one widget registry, none hard-coded
         run: node framework/cli/check-banner-widgets.mjs
       - name: Asset conformance — the checker and the adopter agree (scale-adopt self-test)
@@ -156,6 +160,8 @@ jobs:
         run: node apps/console-web/plugins/claude-settings/test.mjs  # axf-plugin:claude-settings
       - name: AmberX listeners plugin (listener@1 on the console — devices from the hub table, policies as hub-settings@1, restart requests, CLI)  # axf-plugin:amberx-listeners
         run: node apps/console-web/plugins/amberx-listeners/test.mjs  # axf-plugin:amberx-listeners
+      - name: Notes & tasks plugin (notes-tasks@1 schema — one item type nested to any depth, 10+ and 1 000 levels; amberx-notes@1 and first-design documents stay valid)  # axf-plugin:notes-tasks
+        run: node apps/console-web/plugins/notes-tasks/test.mjs  # axf-plugin:notes-tasks
       - name: Auto-land (push banner) — zero tokens (no model client in the merge pipeline), landing rules, rounds on fake builds  # axf-plugin:push-banner
         run: node apps/console-web/plugins/push-banner/land/land.test.mjs  # axf-plugin:push-banner
       - name: Merge queue (push banner) — stacking, blame + kick-out, rebuild without it, no retest on merge; real git, fake GitHub  # axf-plugin:push-banner
@@ -274,6 +280,7 @@ jobs:
             npx -y tsx framework/spec/check-layout-tokens.mts          # every layout parameter is a token: registry = asset-types, defaults, normalize, --fx-layout-* vars, grid reads tokens, validators agree, starters, schema, fixture
             npx -y tsx framework/spec/check-control.mts                # control@1: one command schema for tokens, AmberX entities and the planner: registry, gate (roles × ops), confirm flow, errors, projections, snapshot, fixture
             npx -y tsx framework/spec/check-console-commands.mts       # console commands (control@1 console domain): catalog, resolve by id/title/words, action policy, clients, runner, messages, screen focus, late commands
+            npx -y tsx framework/spec/check-console-control.mts        # console-control@1: address grammar, verbs, resolve against a target snapshot, search, scroll maths, wire codes, schemas + snapshot + fixture current
             npx -y tsx framework/spec/check-orchestrator-focus.mts  # a build asked for by a console command: kept for the tab that mounts later, settled once shown, its row selector  # axf-plugin:build-orchestrator
             node framework/spec/check-nightly-deploy.mjs
             node framework/spec/check-plugin-commands.mjs               # plugin-commands@1: every plugin's commands and reads from routes, actions, data folder and plugin.json; projections; every plugin covered
@@ -297,6 +304,8 @@ jobs:
             npx -y tsx framework/spec/check-roller.mts                 # interface roller: every rolled asset validates, structure kept, reproducible
             npx -y tsx framework/spec/check-app-menu.mts                # app-menu engine: fixture replay, validators agree, runtime contributions + live lists
             npx -y tsx apps/console-web/scripts/menu-reach.mts          # console app menu reaches every nav entry, toolbar item and page (toolbar + nav hidden by default)
+            npx -y tsx framework/spec/check-context-lead.mts           # context-lead@1: lead entries start every context menu (right-click, toolbar, own-items asset, long-press) above one separator
+            npx -y tsx apps/console-web/scripts/console-settings-menu.mts # Console settings leads every console context menu, Settings folded in, reachable as console.settings.open
             npx -y tsx framework/spec/check-mcp.mts                    # MCP client: fixture replay + client against a fake Streamable HTTP server
             npx -y tsx framework/spec/check-appearance.mts             # appearance@1 document + runtime source + HubAppearanceSource against a fake hub
             npx -y tsx framework/spec/check-appearance-lock.mts        # look lock greys look controls + no opt-out from the axHub look + Sliders clamp
@@ -345,6 +354,8 @@ jobs:
             python apps/console-web/plugins/follow-amber/test.py  # axf-plugin:follow-amber
             python apps/console-web/plugins/ref-links/server/test_ref_links.py  # reference links: targets (catalog, agents, UI Review), find, resolve, open → refs.<how> through console-commands@1  # axf-plugin:ref-links
             python apps/console-web/server/test_mcp_tools.py         # console MCP: read tools read-only, deletes destructive, veto pass tools
+            python apps/console-web/server/tests/test_console_control.py  # console-control@1: REST routes, guards (person-only, confirm, rate, audit), plugin toggles, no-console error, voice twin, MCP tools
+            node apps/console-web/scripts/console-control-parity.mjs   # console-control@1 parity: the same command through REST, CLI, MCP and the voice intent gives the same answer and console state
             python apps/console-web/plugins/plugin-commands/server/test_plugin_commands.py  # plugin commands: /api/control/<plugin>/<command>, deletes confirm, actions to the console, MCP tools follow the plugins  # axf-plugin:plugin-commands
             python apps/amberx-droid/server/test_server.py           # AmberX server: wall, admin-only AI config, write-only keys, fallback, intent checks, caps, SPA paths
           } 2>&1 | tee /tmp/web-tests.log
