@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T17:21:14.122Z",
+ "updatedAt": "2026-11-13T17:22:07.809Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -114222,7 +114222,7 @@
    "pr": "#527",
    "mergedAt": "2026-11-13T17:18:08Z",
    "createdAt": "2026-11-12T21:51:44.012Z",
-   "updatedAt": "2026-11-13T17:21:11.994Z",
+   "updatedAt": "2026-11-13T17:22:04Z",
    "builtAt": "",
    "notes": [
     {
@@ -114252,6 +114252,10 @@
     {
      "text": "Reconciler: PR #527 merged; PR #527 names s1 done",
      "at": "2026-11-13T17:21:11.994Z"
+    },
+    {
+     "text": "Shipped manifest sm-one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx rev 1 sent to Shipped features (orchestrator): landed dd8fae443, 3 file(s), 0 test line(s), 4 open.",
+     "at": "2026-11-13T17:22:04Z"
     }
    ],
    "approvals": [],

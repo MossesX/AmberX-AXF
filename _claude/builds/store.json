@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4499,
- "updatedAt": "2026-11-13T17:21:14.122Z",
+ "rev": 4500,
+ "updatedAt": "2026-11-13T17:22:07.809Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -174102,7 +174102,7 @@
    "pr": "#527",
    "mergedAt": "2026-11-13T17:18:08Z",
    "createdAt": "2026-11-12T21:51:44.012Z",
-   "updatedAt": "2026-11-13T17:21:11.994Z",
+   "updatedAt": "2026-11-13T17:22:04Z",
    "builtAt": "",
    "notes": [
     {
@@ -174132,6 +174132,10 @@
     {
      "text": "Reconciler: PR #527 merged; PR #527 names s1 done",
      "at": "2026-11-13T17:21:11.994Z"
+    },
+    {
+     "text": "Shipped manifest sm-one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx rev 1 sent to Shipped features (orchestrator): landed dd8fae443, 3 file(s), 0 test line(s), 4 open.",
+     "at": "2026-11-13T17:22:04Z"
     }
    ],
    "approvals": [],
@@ -174175,6 +174179,12 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "shipped": {
+    "id": "sm-one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx",
+    "rev": 1,
+    "at": "2026-11-13T17:22:04Z",
+    "landedCommit": "dd8fae4438bf75b4550afe8731419b7753371615"
    },
    "steps": [
     {
@@ -174296,7 +174306,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
