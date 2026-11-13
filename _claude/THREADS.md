@@ -785,9 +785,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 11:42 UTC · `overlay-opens-pages-the-floating-toolbar-expands` s3 done (all) · foreign-write
-- 2026-11-13 11:43 UTC · `overlay-opens-pages-the-floating-toolbar-expands` PR #571 (all) · builds-live
-- 2026-11-13 11:43 UTC · `overlay-opens-pages-the-floating-toolbar-expands` s4 done, → complete (all) · foreign-write
 - 2026-11-13 11:43 UTC · `overlay-opens-pages-the-floating-toolbar-expands` note (all) · orchestrator
 - 2026-11-13 11:43 UTC · `overlay-opens-pages-the-floating-toolbar-expands` s4 done, → built (all) · orchestrator
 - 2026-11-13 11:44 UTC · `overlay-opens-pages-the-floating-toolbar-expands` note (all) · pipeline
@@ -1185,6 +1182,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 18:29 UTC · `quick-settings-pinned-collapsible-pane` s1 done, → running (all) · orchestrator
 - 2026-11-13 18:30 UTC · `all-settings-interfaces-open-floating` PR #628 (all) · builds-live
 - 2026-11-13 18:30 UTC · `quick-settings-pinned-collapsible-pane` → queued (all) · foreign-write
+- 2026-11-13 18:30 UTC · `quick-settings-pinned-collapsible-pane` note (all) · orchestrator
+- 2026-11-13 18:30 UTC · `ui-manager-floating-window-to-select-any` added (0 steps) (all) · console
+- 2026-11-13 18:30 UTC · `ui-manager-floating-window-to-select-any` → queued, note (all) · console
 
 ## Token passes (log)
 
