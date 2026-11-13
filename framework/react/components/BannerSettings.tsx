@@ -28,10 +28,11 @@
  * to one stylesheet over every banner frame on top of the inherited theme; behaviour tokens are the fallback under
  * each banner's own choices (its tab wins, then Apply to all, then the default).
  */
-import { createContext, useCallback, useContext, useEffect, useRef, useState, useSyncExternalStore, type ReactNode } from 'react';
+import { createContext, useCallback, useContext, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore, type ReactNode, type RefObject } from 'react';
 import type { AxfRuntime } from '../../core';
 import { APPEARANCE_LOCK_KEY } from '../../core/runtime';
 import type { BannerDef, SlotDef } from '../library';
+import { BANNER_EMPTY_ATTR, bannerFrameEmpty } from '../bannerEmpty';
 import type { MenuEntry } from '../../core/engines/windows';
 import { FRAMEWORK_MODULE } from '../../core/engines/actions';
 import type { DialogMap } from './Overlays';
@@ -348,6 +349,24 @@ function fullTextTip(e: { target: EventTarget | null; currentTarget: EventTarget
   }
 }
 
+/**
+ * Whether a banner frame holds nothing to show, watched live: checked before the first paint (an empty banner never
+ * flashes) and again on every change inside it, so it shows the moment an entry arrives and hides when the last goes.
+ */
+function useFrameEmpty(ref: RefObject<HTMLDivElement | null>): boolean {
+  const [empty, setEmpty] = useState(false);
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const check = () => setEmpty(bannerFrameEmpty(el as never));
+    check();
+    const obs = new MutationObserver(check);
+    obs.observe(el, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ['hidden', 'aria-hidden', BANNER_EMPTY_ATTR] });
+    return () => obs.disconnect();
+  }, [ref]);
+  return empty;
+}
+
 function BannerFrame({ id, children }: { id: string; children: ReactNode }) {
   const rt = useRuntime();
   useBannerPrefsTick();
@@ -388,14 +407,17 @@ function BannerFrame({ id, children }: { id: string; children: ReactNode }) {
     obs.observe(el, { subtree: true, childList: true, characterData: true });
     return () => { clearTimeout(timer); obs.disconnect(); };
   }, [p.autoHide]);
+  // Empty (nothing to read or press): not drawn, no space kept; back the moment an entry arrives (bannerEmpty.ts).
+  const empty = useFrameEmpty(ref);
   const until = hiddenNow ? hide.banners[id]?.until : undefined;
   const frame = (
     <div
       ref={ref}
       className="fx-banner-frame"
       onMouseOver={fullTextTip}
-      hidden={asleep || hiddenNow}
+      hidden={asleep || hiddenNow || empty}
       data-fx-banner-hidden={hiddenNow ? 'on' : undefined}
+      data-fx-empty={empty ? 'on' : undefined}
       data-fx-ctx-target={BANNER_CTX_TARGET}
       data-fx-ctx-payload={id}
       data-fx-banner-id={id}
