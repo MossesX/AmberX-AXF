@@ -121,9 +121,10 @@ const gh = { json: async (method, path, body) => {
 process.env.AXF_PIPELINE_WORKTREES = wt; process.env.AXF_BUILD_RENAME_REPO = 'owner/repo';
 const cli = await import('../cli/build-rename.mjs');
 
-await t('apply --dry changes nothing', async () => {
-  const d = await cli.apply(B, 'remove-ui-review-gate-no-screenshots', { dry: true, gh });
+await t('apply --dry changes nothing; a new name that is a prefix of the old branch is not taken', async () => {
+  const d = await cli.apply(B, 'remove-ui-review-as-a-gate-no', { dry: true, gh });
   assert.ok(d.steps.length >= 6); assert.ok(existsSync(join(wt, B)));
+  assert.ok(d.steps.includes(`delete origin claude/${B}`));
 });
 await t('apply moves folder, branch, PR, store and renames.json; branch files follow the new id', async () => {
   const to = 'remove-ui-review-gate-no-screenshots';

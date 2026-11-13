@@ -71,7 +71,7 @@ export async function plan({ gh = createGitHub(), store = loadStore() } = {}) {
   const folders = readdirSync(dir).filter((f) => isWorktree(join(dir, f)));
   const repo = repoOf(join(dir, folders[0] ?? '.'));
   const prs = await openPrs(gh, repo);
-  const remote = new Set((tryGit(join(dir, folders[0] ?? '.'), 'ls-remote', '--heads', 'origin') ?? '').split('\n').map((l) => l.replace(/^.*refs\/heads\//, '')));
+  const remote = new Set((tryGit(join(dir, folders[0] ?? '.'), 'ls-remote', '--heads', 'origin') ?? '').split('\n').map((l) => l.replace(/^.*\trefs\/heads\//, '')));
   const renames = readRenames();
   const busy = busyFolders();
   const taken = new Set([...store.builds.map((b) => b.id), ...folders, ...[...remote].map((b) => b.replace(/^claude\//, '')), ...Object.keys(renames), ...Object.values(renames)]);
@@ -129,15 +129,15 @@ export async function apply(from, to, { dry = false, gh = createGitHub(), by = p
   const head = git(src, 'rev-parse', '--abbrev-ref', 'HEAD');
   if (head !== oldBranch) throw new Error(`${from} is on ${head}, not ${oldBranch}`);
   if (tryGit(src, 'rev-parse', '--verify', '--quiet', `refs/heads/${newBranch}`)) throw new Error(`branch ${newBranch} already exists`);
-  const remoteHeads = git(src, 'ls-remote', '--heads', 'origin', oldBranch, newBranch);
-  if (remoteHeads.includes(`refs/heads/${newBranch}`)) throw new Error(`origin already has ${newBranch}`);
+  const remoteHeads = new Set(git(src, 'ls-remote', '--heads', 'origin', oldBranch, newBranch).split('\n').map((l) => l.replace(/^.*\trefs\/heads\//, '')));
+  if (remoteHeads.has(newBranch)) throw new Error(`origin already has ${newBranch}`);
   const store = loadStore();
   if (storeCore.findBuild(store, to)) throw new Error(`"${to}" is already a build`);
   const repo = repoOf(src);
   const old = (await gh.json('GET', `/repos/${repo}/pulls?state=open&head=${encodeURIComponent(`${repo.split('/')[0]}:${oldBranch}`)}`))?.[0] ?? null;
   const record = storeCore.findBuild(store, from);
   const steps = [`commit the renamed report / shipped / THREADS rows on ${oldBranch}`, `git worktree move ${src} ${dst}`, `git branch -m ${oldBranch} ${newBranch}`, `push ${newBranch}`,
-    old ? `open a PR from ${newBranch} replacing #${old.number}, close #${old.number}` : 'no open PR', remoteHeads.includes(`refs/heads/${oldBranch}`) ? `delete origin ${oldBranch}` : `origin has no ${oldBranch}`,
+    old ? `open a PR from ${newBranch} replacing #${old.number}, close #${old.number}` : 'no open PR', remoteHeads.has(oldBranch) ? `delete origin ${oldBranch}` : `origin has no ${oldBranch}`,
     record ? `store: ${from} → ${to} (old record kept as a tombstone)` : 'not in the store', `renames.json: ${from} → ${to}`];
   if (dry) return { from, to, dry: true, steps };
 
@@ -154,7 +154,7 @@ export async function apply(from, to, { dry = false, gh = createGitHub(), by = p
     await gh.json('POST', `/repos/${repo}/issues/${old.number}/comments`, { body: `Superseded by #${pr.number}: the branch was renamed to \`${newBranch}\` (build names are at most 40 characters). Same commits, title and description.` });
     await gh.json('PATCH', `/repos/${repo}/pulls/${old.number}`, { state: 'closed' });
   }
-  if (remoteHeads.includes(`refs/heads/${oldBranch}`)) git(dst, 'push', '-q', 'origin', '--delete', oldBranch);
+  if (remoteHeads.has(oldBranch)) git(dst, 'push', '-q', 'origin', '--delete', oldBranch);
   if (record) renameBuildNow(from, to, { branch: newBranch, ...(pr ? { pr: `#${pr.number}` } : {}), by });
   else writeRenameOnly(from, to);
   return { from, to, branch: newBranch, folder: dst, pr: pr ? `#${pr.number}` : '', replaced: old ? `#${old.number}` : '', committed, inStore: !!record };
