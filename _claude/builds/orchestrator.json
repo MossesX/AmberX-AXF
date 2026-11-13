@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T20:16:31.682Z",
+ "updatedAt": "2026-11-13T20:16:47.450Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -133121,15 +133121,15 @@
    "title": "Dispatcher gate: never launch a build that already has a live session",
    "category": "",
    "detail": "Bug seen three times on Nov 13 (ui-manager-floating-window-to-select-any: Earl/Gina, Gina/Paulie, Lenny/Paulie): the orchestrator's dispatcher launched the same build phase twice on the same worktree, so two headless sessions wrote the same files at once. Also 'Self-check: marked running with no session' releases builds back to the Queue while a session is still alive. Fix: (1) a dispatch gate that refuses a launch while ANY live tmux/claude session exists for that build id or worktree (check tmux axf-<build>--*, claude -p pids and a lock file in the worktree); (2) the self-check must confirm a session is really dead (pid + tmux) before releasing; (3) a per-build lock file with heartbeat, where stale locks expire; (4) tests that simulate double dispatch. This must land BEFORE parallel split (orchestrator-settings-collapsible-split) goes live, since parallel sub-builds must each get their own worktree and branch and never share one.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/dispatcher-gate-never-launch-build",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T20:07:27.626Z",
-   "updatedAt": "2026-11-13T20:16:22.078Z",
+   "updatedAt": "2026-11-13T20:16:37.888Z",
    "builtAt": "",
    "notes": [
     {
@@ -133139,6 +133139,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"1e700143-c0b8-4a7f-adbe-5b601ff47212\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-13T20:08:53.774Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-dispatcher-gate-never-launch-build--joey.",
+     "at": "2026-11-13T20:16:32.287Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-dispatcher-gate-never-launch-build--joey, own login copy)",
+     "at": "2026-11-13T20:16:37.888Z"
     }
    ],
    "approvals": [],
