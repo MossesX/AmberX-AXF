@@ -506,6 +506,18 @@ export class AxfRuntime {
   /** Is a source attached (developer app)? */
   hasAppearanceSource(): boolean { return this.appearanceSource !== null; }
 
+  /**
+   * The app's own server said its look is local only (`appearanceHub: off`, AXF_APPEARANCE_HUB=off: local development,
+   * the theme-swap check). While on, libraries that would attach a hub source of their own (hubsync's look sync) keep
+   * off, so the app's look stays on this device and skins can be used and previewed from the local look document.
+   */
+  private appearanceLocal = false;
+  appearanceLocalOnly(): boolean { return this.appearanceLocal; }
+  setAppearanceLocalOnly(on: boolean): void {
+    this.appearanceLocal = on;
+    if (on && this.appearanceSource) this.detachAppearanceSource();
+  }
+
   /** Is `source` the one attached right now? Libraries that attach a source detach only their own (Oct 28 2026). */
   appearanceSourceIs(source: AppearanceSource | null | undefined): boolean { return !!source && this.appearanceSource === source; }
 
