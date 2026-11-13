@@ -145,6 +145,7 @@ export function ThemeManager() {
           )}
           {n.leaf && <button type="button" className={`fx-iconbtn ${P}__lock ${lockedLeaf ? 'is-active' : ''}`} title={lockedLeaf ? 'Locked: never rolled' : 'Lock (keep this value when rolling)'} aria-pressed={!!lockedLeaf} onClick={() => setLocked((l) => { const x = new Set(l); if (x.has(n.id)) x.delete(n.id); else x.add(n.id); return x; })}><Icon name="lock" size={12} /></button>}
           {!n.leaf && !narrow && <button type="button" className={`fx-chip ${P}__only`} title="Tick only this branch" onClick={() => setTicked(new Set(leaves(n).map((l) => l.id)))}>only</button>}
+          {top && !n.leaf && rt.isHubOverridden(n.type) && <Chip tone="warning">Overridden</Chip>}
           {top && !n.leaf && hideable(n.type) && (
             <Switch hideLabel className={`${P}__hide`} label={`Show ${n.label}`} text={off ? 'Hidden' : 'Shown'} title={off ? `${n.label} is hidden: it isn't drawn and rolls skip it` : `Hide ${n.label} from the screen`}
               checked={!off} disabled={rt.gate('assets.swap') !== 'allow'} onChange={(on) => rt.setSlotHidden(n.type as AssetType, !on)} />

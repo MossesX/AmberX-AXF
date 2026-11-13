@@ -35,6 +35,7 @@ function AssetRow({ type, locked }: { type: AssetType; locked: boolean }) {
           : <Button size="sm" tone="primary" icon="eye" disabled={locked || chosen === active} onClick={preview}>Preview</Button>}
         {fallback && <Button size="sm" tone="ghost" icon="refresh" disabled={locked || active === fallback} onClick={() => { rt.swap(type, fallback); setPick(''); setUndo(''); }}>Reset to default</Button>}
         {chosen === active && <Chip>In use</Chip>}
+        {rt.isHubOverridden(type) && <Chip tone="warning">Overridden</Chip>}
       </div>
     </div>
   );

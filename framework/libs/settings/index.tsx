@@ -15,7 +15,7 @@
 import { Fragment, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
 import type { SettingsPanel } from '../../core';
 import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, APPEARANCE_LOCK_KEY, HUB_SKIN_ONLY_GROUP, ASSET_TYPES, assetTypeSpecs, hideable, PLACEMENT_LABELS, SKIN_COLOR_SLOT, arrangeSettingsTabs, filterSettingsGroup, normalizeSettingsUi, settingMatches, settingsShown, settingsUiGroups, SETTINGS_LEVEL_KEY, SETTINGS_LEVEL_BAR_KEY, SETTINGS_VISIBLE_KEY, SETTINGS_LEVEL_HINT, SETTINGS_LEVEL_LABEL, SETTINGS_LEVELS, settingsLevel, shownAtLevel, splitSettingsGroup, withSettingsVisible, hideableTypes, type SettingsLevel, type SettingsUi, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
-import { AssetsWithEdits, AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Chip, Container, ControlScope, HubSkinLockNote, Icon, IconButton, ModelBadge, setBannerOwnSettingsRenderer, settingTargetDef, Slider, Switch, useAsset, useAxfState, useControlTarget, useKnownBanners, useRuntime } from '../../react';
+import { AssetsWithEdits, AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Chip, Container, ControlScope, HubSkinLockNote, Icon, IconButton, ModelBadge, Note, setBannerOwnSettingsRenderer, settingTargetDef, Slider, Switch, useAsset, useAxfState, useControlTarget, useKnownBanners, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import { runtimeInventory } from '../../react/pluginRecords';
 import { TabGroup } from '../../react/components/TabGroup';
@@ -572,6 +572,18 @@ export function FollowingAxHubNote() {
   return <HubSkinLockNote className="axf-settings__following" />;
 }
 
+/** Override on: what was edited here and no longer refreshes from axHub (rt.hubOverridden). */
+export function HubOverriddenNote() {
+  const rt = useRuntime();
+  const parts = rt.hubOverridden();
+  const label = (p: string) => (p === 'skin' ? 'Skin' : p.startsWith('asset:') ? assetTypeSpecs[p.slice(6) as AssetType]?.label ?? p.slice(6) : rt.settings.spec(p.slice(8))?.label ?? p.slice(8));
+  return (
+    <Note tone="warning" icon="edit" className="axf-settings__following">
+      {parts.length ? `Overriding axHub. Overridden here (no longer refreshed from axHub): ${parts.map(label).join(', ')}.` : 'Overriding axHub: what you edit here is marked as overridden and no longer refreshes from axHub.'}
+    </Note>
+  );
+}
+
 /**
  * Settings → Appearance is the skin panel in every app (Nov 4 2026, Brett; skins only since Nov 10 2026: "remove all
  * the styling and theme and layout stuff … the new thing's going to override it"): one shared panel, top to bottom: Skin
@@ -627,6 +639,7 @@ export function AppearancePanel() {
   return (
     <div className="axf-settings__rows" data-axf-appearance="">
       {following && <FollowingAxHubNote />}
+      {rt.hubSkinOverride() && <HubOverriddenNote />}
       <AssetsWithEdits />
       <div className="axf-settings__row">
         <div className="axf-settings__label">
