@@ -12,6 +12,8 @@ Source: voice · At: 2026-11-03T14:05:00Z · Session: <session or conversation i
 
 ## What to build
 Your paraphrase, the plan, the steps (s1 …), checks.
+<!-- UI Review is not a gate (Nov 13 2026): no step, check or done condition for UI Review submissions or approval
+     screenshots, and the PR opens ready for review (never a draft for UI Review). -->
 
 Needs MCP: none
 Needs tools: none

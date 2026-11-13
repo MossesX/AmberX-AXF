@@ -3,6 +3,12 @@
 Brett, Oct 30 2026 (voice, driving): rename the Design packs plugin and make it one all-in-one UI approval plugin.
 Every UI a build makes goes there for his approval, separated by type, with design packs as one section.
 
+**Not a gate (Nov 13 2026, build `remove-ui-review-as-a-gate-…`):** UI Review is optional feedback. No PR is held or
+kept as a draft for it, no build has to submit screenshots or options, and the launcher never waits for a predicted
+look. Approve / Ask changes / Reject and Choices still work and are recorded. Read it anywhere:
+`GET /api/plugins/ui-review/gate` = MCP `ui_review_gate` = `review.mjs gate` = console / voice action `ui-review.gate`
+→ `{ $axf: 'ui-review-gate@1', gate: false, since: '2026-11-13', why }`; Settings → Plugins → UI Review → *Not a gate*.
+
 ## One schema: ui-review-item@1 (Nov 1 2026)
 
 Brett: "ANYTHING that goes into UI Review (the approve/reject queue AND Screenshots), from ANY source … MUST have a
@@ -142,11 +148,10 @@ an agent spends money. Core `framework/core/ui-predict.mjs` (pure; checks `frame
   **Approve look / Ask changes / Reject look** are the normal decisions; on a predicted item they decide the look too.
   An Ask changes comment becomes an addendum: the server runs `ui-predict.mjs addendum` (a note on the orchestrator
   build) and the launcher adds it to the brief. A predicted item carries no branch / PR and never holds a merge.
-- **Gate** (Settings → Plugins → UI Review → *Predicted looks*: **Wait for my look approval before UI builds start**,
-  default off, kept in `<data>/settings.json` so the host reads it): `deploy/claude-headless.sh` asks
-  `ui-predict.mjs gate` before a start. A UI build with no prediction gets one made in the background. Setting on +
-  look not approved = the launch queues (`.axf-look-wait.log`) and starts by itself once he approves; changes asked =
-  starts with the addendum; rejected = held (exit 3, never started, setting on or off). `AXF_LOOK_GATE=off` skips it.
+- **At launch** (no longer a gate since Nov 13 2026): `deploy/claude-headless.sh` runs `ui-predict.mjs gate`, which
+  always exits 0 and logs the look verdict; a UI build with no prediction gets one made in the background. The old
+  *Wait for my look approval before UI builds start* setting (`<data>/settings.json` `waitForLook`) is retired: the
+  switch is gone and the launcher ignores it. Ask changes still becomes an addendum. `AXF_LOOK_GATE=off` skips it.
 - **While running / at the end**: the launcher runs `ui-predict.mjs follow` next to the session: every 5 min it
   re-predicts (only when the spec changed, e.g. the diff grew; `prediction.refreshes`), and when the session ends it
   captures the real screens from the worktree and posts them (`predict/real`): badge **Real**, the item waits for the
@@ -159,15 +164,15 @@ an agent spends money. Core `framework/core/ui-predict.mjs` (pure; checks `frame
 
 ## State for other plugins (`ui-review@1`)
 
-`plugin_services.get("ui-review@1")` → `state(branch, pr)`, `holds(branch, pr)`, `items(branch, pr)`, `submit(fields,
-shots)`. HTTP: `GET /api/plugins/ui-review/state?branch=&pr=`. CLI: `review.mjs state --pr N --exit-code` (exit 3 =
-held). The state is the strictest of the branch's / PR's items: rejected > changes > waiting > approved; `none`
-when nothing was submitted. `holds` is true for waiting, changes and rejected.
+`plugin_services.get("ui-review@1")` → `state(branch, pr)`, `items(branch, pr)`, `submit(fields, shots)`, `gate()`,
+and `hold` / `holds` / `isHeld`, which always answer not held (reason `UI Review is not a gate (Nov 2026)`). HTTP:
+`GET /api/plugins/ui-review/state?branch=&pr=`. CLI: `review.mjs state --pr N` (`--exit-code` is accepted and always
+exits 0). The state is the strictest of the branch's / PR's items, for information: rejected > changes > waiting >
+approved; `none` when nothing was submitted. `holds` is always false.
 
-**Merges wait for UI Review (Nov 1 2026, orchestrator `ui-review` s9):** the push banner reads `ui-review@1` `state()`
-before every merge: a PR whose items are waiting, have changes asked or are rejected is skipped by auto-merge (the
-next PR gets its turn) and refused by Merge, until Brett approves it here. PR numbers count for AmberX-AXF only (items
-carry no repo); other repos match by branch. If this plugin errors, the PR is held, never merged blind.
+**Merges never wait for UI Review (Nov 13 2026; it held them Nov 1 – Nov 13):** the push banner, auto-land and the
+merge queue no longer ask UI Review; a PR whose items are waiting, have changes asked or are rejected lands like any
+other. `GET /api/plugins/push-banner/ui-hold` stays for old scripts and always answers `{hold: ""}`.
 
 ## Checks
 
