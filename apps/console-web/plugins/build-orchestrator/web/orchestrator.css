@@ -48,3 +48,10 @@ button.oc-model { cursor: pointer }
 
 /* Bulk select (Nov 10 2026: hold, archive, delete, restore on many builds at once): layout only */
 .pl-bulk { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md) }
+
+/* Slots strip (fill every slot): one chip per agent slot; layouts are the strip asset choices (chips, grid, list) */
+.pl-slots__row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm) }
+.pl-slots--grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(calc(var(--fx-font-size) * 14), 1fr)) }
+.pl-slots--list { flex-direction: column; align-items: stretch }
+.pl-slots__slot { display: inline-flex; min-width: 0 }
+.pl-slots--grid .pl-slots__slot, .pl-slots--list .pl-slots__slot { display: flex }
