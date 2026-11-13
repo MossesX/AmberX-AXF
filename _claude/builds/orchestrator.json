@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T07:08:09.659Z",
+ "updatedAt": "2026-11-13T07:08:22.861Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -115485,7 +115485,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-12T23:32:23.494Z",
-   "updatedAt": "2026-11-13T07:03:33.330Z",
+   "updatedAt": "2026-11-13T07:08:17.755Z",
    "builtAt": "",
    "notes": [
     {
@@ -115547,6 +115547,10 @@
     {
      "text": "Headless run axf-professional-skins-that-rebuild-the-whole-app-fa--sully-063028: brief only · start 18.0K tokens ($0.13) · cost $4.99 · 42 turns · 6 tools, MCP none",
      "at": "2026-11-13T06:42:32.498Z"
+    },
+    {
+     "text": "Brett: land them one at a time. As soon as the shared pieces and the first skin are done, open the PR and land it, then land each following skin as soon as it's finished. Don't wait for all four.",
+     "at": "2026-11-13T07:08:11.062Z"
     }
    ],
    "approvals": [],
@@ -115903,7 +115907,7 @@
      "checks": [],
      "session": "same",
      "agent": false,
-     "skip": false,
+     "skip": true,
      "done": false,
      "doneAt": "",
      "note": "",
@@ -117356,7 +117360,7 @@
    "title": "Skins plugin: its own removable console plugin and screen for changing skins. Gallery of every skin with live preview (desktop and phone), one-tap Use skin, Back and Restore to Default with undo, per-scope switching (whole hub, one app, one screen, one plugin), a quick skin switcher on the banner an",
    "category": "",
    "detail": "",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -117364,7 +117368,7 @@
    "pr": "#553",
    "priority": "P0",
    "createdAt": "2026-11-13T06:25:11.720Z",
-   "updatedAt": "2026-11-13T07:08:08.013Z",
+   "updatedAt": "2026-11-13T07:08:15.757Z",
    "builtAt": "",
    "notes": [
     {
@@ -117422,6 +117426,14 @@
     {
      "text": "Self-check: skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga was marked running on mossesx-max- with no session: released and back in the Queue.",
      "at": "2026-11-13T07:07:04.739Z"
+    },
+    {
+     "text": "Started run 2 on mossesx-max- (Opus, Phase 2): axf-skins-plugin-its-own-removable-console-plugin-an--paulie.",
+     "at": "2026-11-13T07:08:12.652Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-skins-plugin-its-own-removable-console-plugin-an--paulie, own login copy)",
+     "at": "2026-11-13T07:08:15.757Z"
     }
    ],
    "approvals": [
