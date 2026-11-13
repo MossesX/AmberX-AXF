@@ -21,8 +21,8 @@ import { runtimeInventory } from '../../react/pluginRecords';
 import { TabGroup } from '../../react/components/TabGroup';
 import { LEVEL_EDITOR_ACTIONS, LEVEL_EDITOR_CTX, LEVEL_EDITOR_DIALOG, LEVELS_CSS, LevelEditor, levelEditorAct } from './levels';
 import { FollowHubSwitch, SKIN_WHERE_CSS, SKIN_WHERE_DIALOG, SkinWhere, SkinWhereDialog } from './skinwhere';
-import { SKIN_CONFIG_CSS, SKIN_CONFIG_TAB, skinConfigService } from './SkinConfigPanel';
-export { SkinConfigPanel, SKIN_CONFIG_LAYOUT_KEY, SKIN_CONFIG_SERVICE, SKIN_CONFIG_TAB, skinConfigLayout, skinConfigService, type SkinConfigLayout, type SkinConfigService } from './SkinConfigPanel';
+import { hasSkinConfigProvider, SKIN_CONFIG_CSS, SKIN_CONFIG_TAB, SkinConfigPanel as SkinConfigView } from './SkinConfigPanel';
+export { SkinConfigPanel, hasSkinConfigProvider, SKIN_CONFIG_LAYOUT_KEY, SKIN_CONFIG_SERVICE, SKIN_CONFIG_TAB, skinConfigLayout, skinConfigService, type SkinConfigLayout, type SkinConfigService } from './SkinConfigPanel';
 import { SkinScope } from '../../react/components/SkinScope';
 
 export const SETTINGS_LIBRARY_ID = 'ai.amberx.axf.settings';
@@ -40,6 +40,8 @@ export const SETTINGS_TABS = {
   // Every banner plugin's settings in one place (Brett, Oct 22 2026); shown only while the app has banners.
   banners: { id: 'banners', label: 'Banners', icon: 'bell', parent: 'plugins', order: 1, description: 'Every banner: its look, its behaviour and its plugin’s own settings, one tab each. Right-click (or long-press) any banner for the same.' },
   about: { id: 'about', label: 'About', icon: 'info', order: 90, description: 'Versions and help.' },
+  // What the AI may change when it makes a skin (skin-config@1); shown only while something provides axf.skin-config@1.
+  'skin-config': { id: 'skin-config', label: 'Skin config', icon: 'sliders', parent: 'appearance', order: 30, description: 'Before AI makes a skin: pick what it may change, lock the rest, set how deep it may build menus. The current look is the Default skin.' },
 } as const;
 
 /* ---------------- hooks ---------------- */
@@ -474,7 +476,8 @@ export function SettingsView() {
   const choose = (top: string, child = '') => { setSel([top, child]); rt.settings.set(TAB_KEY, child || top); };
   // List layout: no tab picked = the list of tabs (drill-down, with Back); the other layouts always show a tab.
   const current = tabs.find((t) => t.id === tab) ?? (isList && !wide ? undefined : tabs[0]);
-  const subs = current ? childrenOf(current.id).filter((t) => !folded.has(t.id) && (t.id !== 'banners' || banners.length > 0)) : [];
+  const skinConfig = hasSkinConfigProvider(rt);
+  const subs = current ? childrenOf(current.id).filter((t) => !folded.has(t.id) && (t.id !== 'banners' || banners.length > 0) && (t.id !== SKIN_CONFIG_TAB || skinConfig)) : [];
   const noOverview = !!pluginLock && current?.id === 'plugins' && subs.length > 0;
   const shown = (sub && subs.find((t) => t.id === sub)) || (noOverview ? subs[0] : current);
   const subList = isList && subs.length >= SUB_LIST_FROM;
@@ -640,7 +643,7 @@ export function AppearancePanel() {
           {!!look?.undo && <Button size="sm" tone="quiet" disabled={locked} onClick={() => rt.undoRestoreDefault()}>Undo</Button>}
         </div>
       </div>
-      {skinConfigService() && (
+      {hasSkinConfigProvider(rt) && (
         <div className="axf-settings__row" data-axf-skin-section="skin-config">
           <div className="axf-settings__label"><span>Skin config</span><span className="fx-muted axf-settings__hint">What the AI may change when it makes a skin; the current look is the Default skin.</span></div>
           <div className="axf-settings__control axf-skin__action">
@@ -1049,6 +1052,7 @@ export const library: AxfWebLibrary = {
     { id: 'axf.account.role', tab: 'account', title: 'Role', icon: 'shield', order: 10, render: () => <RolePanel /> },
     { id: 'axf.account.profile', tab: 'account', title: 'Access policy', icon: 'user', order: 20, render: () => <AccessPanel /> },
     { id: DESIGN_PANEL_ID, tab: 'appearance', title: 'Theme manager', icon: 'palette', order: 0, render: () => <AppearancePanel /> },
+    { id: 'axf.appearance.skin-config', tab: SKIN_CONFIG_TAB, title: 'Skin config', icon: 'sliders', order: 10, render: () => <SkinConfigView /> },
     { id: 'axf.plugins.libraries', tab: 'plugins', title: 'Installed plugins and libraries', icon: 'box', order: 50, render: () => <LibrariesPanel /> },
     { id: 'axf.banners', tab: 'banners', title: 'Every banner', icon: 'bell', order: 10, render: () => <BannerSettingsPanel /> },
     { id: 'axf.about', tab: 'about', title: 'About', icon: 'info', order: 10, render: () => <AboutPanel /> },

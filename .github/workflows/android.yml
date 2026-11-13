@@ -265,6 +265,7 @@ jobs:
             npx -y tsx framework/spec/check-skin.mts                   # skin@1 + app-look@1: one look per app, fixture replay, the Windows skin's assets, preview, apply, overrides, Restore + undo
             node framework/spec/check-skin-coverage.mjs                 # skin-coverage@1: every registered asset type has skin coverage (slot / parts / reference / bundle / none); fails on a type a skin cannot reach
             node framework/spec/check-skin-config.mjs                   # skin-config@1: the permission tree from the registry (allow / lock / ask, depth + count limits), fixture replay, merge with the Default skin, Default skin migration, snapshot current
+            node framework/spec/check-skins-config-cli.mjs              # skins.mjs config end to end on a scratch hub: allow / lock / depth / put / reset / Default skin / brief / hold / make with a fake generator
             npx -y tsx framework/spec/check-settings-ui.mts            # settings interface asset: fixture replay, starters, enums
             npx -y tsx framework/spec/check-design-package.mts         # design-package@1 + behavior-theme@1 rules, starters, the Amber context menu
             npx -y tsx framework/spec/check-scale.mts                  # typography@1 + density@1 + sizing@1: registry, defaults, tokens, fixture, starters, validators agree, hub slots

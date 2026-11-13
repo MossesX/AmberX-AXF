@@ -1,7 +1,7 @@
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import type { AxfRuntime } from '@console/axf/core';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
-import { AppearancePanel, SkinConfigPanel } from '@console/axf/libs/settings';
+import { AppearancePanel } from '@console/axf/libs/settings';
 import { registerSkinConfig, SKIN_CONFIG_SERVICE } from './skinConfig';
 import { FOLDER, ID, call, type SavedTheme } from './api';
 import { ThemeManager, lastApplied } from './ThemeManager';
@@ -48,12 +48,11 @@ export const plugin: AxfWebLibrary = {
   },
   views: { 'theme-manager': { title: 'Theme manager', icon: 'palette', keywords: ['roll', 'theme', 'colors', 'tokens'], render: () => <div className="fx-stack fx-stack--lg"><header className="fx-pagehead"><div><p className="fx-eyebrow">Design &amp; branding</p><h1>Theme manager</h1><p className="fx-muted" title="Roll colour, style and layout themes from a token tree, preview them live and save the ones you like as themes.">Roll themes from a token tree, preview live, save the keepers.</p></div></header><AppearancePanel /><ThemeManager /></div> } },
   nav: { label: 'Plugins', items: [{ id: 'theme-manager', label: 'Theme manager', icon: 'palette', view: 'theme-manager' }] },
+  // Settings → Appearance → Skin config is the settings library's own sub-tab (plugins keep their tabs under Plugins);
+  // it shows while this plugin provides axf.skin-config@1. Deep link: settings:appearance/skin-config.
   settingsTabs: [
-    // Settings → Appearance → Skin config (deep link settings:appearance/skin-config): what the AI may change in a skin
-    { id: 'skin-config', label: 'Skin config', icon: 'sliders', parent: 'appearance', order: 30, description: 'Before AI makes a skin: pick what it may change, lock the rest, set how deep it may build menus. The current look is the Default skin.' },
     { id: 'theme-manager', label: 'Themes', icon: 'palette', parent: 'plugins', order: 44, description: 'Roll colour, style and layout themes (or any themeable part), pick which tokens change, save rolls as assets.' }],
   settingsPanels: [
-    { id: 'axf.appearance.skin-config', tab: 'skin-config', title: 'Skin config', icon: 'sliders', order: 10, render: () => <SkinConfigPanel /> },
     { id: 'theme-manager.appearance', tab: 'theme-manager', title: 'Appearance', icon: 'palette', order: 5, render: () => <AppearancePanel /> },
     { id: 'theme-manager.main', tab: 'theme-manager', title: 'Theme manager', icon: 'palette', order: 10, render: () => <ThemeManager /> },
     { id: 'theme-manager.lifecycle', tab: 'theme-manager', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },

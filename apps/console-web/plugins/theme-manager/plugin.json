@@ -15,7 +15,6 @@
     "settings-tab:theme-manager",
     "action:theme-manager.open",
     "service:axf.token-tree@1",
-    "settings-tab:skin-config",
     "service:axf.skin-config@1",
     "action:skin.config.open"
   ],

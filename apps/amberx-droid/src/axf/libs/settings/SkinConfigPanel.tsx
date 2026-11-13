@@ -45,6 +45,11 @@ export interface SkinConfigService {
   made(app: string): Promise<{ items: unknown[] }>;
 }
 
+/** Does something in the app provide the skin config (loaded, or a lazy plugin that declares it)? Gates the sub-tab. */
+export function hasSkinConfigProvider(rt: AxfRuntime): boolean {
+  return !!skinConfigService() || rt.libraries.some((l) => l.provides?.includes(SKIN_CONFIG_SERVICE));
+}
+
 export const skinConfigService = (): SkinConfigService | null => {
   const s = (globalThis as { __axfWebServices?: Record<string, unknown> }).__axfWebServices?.[SKIN_CONFIG_SERVICE] as SkinConfigService | undefined;
   return s && typeof s.get === 'function' ? s : null;
@@ -55,7 +60,8 @@ const LAYOUT_NAMES: Record<SkinConfigLayout, string> = { tree: 'Tree', columns: 
 /** The layouts the registered settings assets offer (`ui-choices:skin-config`), else the three built in. */
 function layoutOptions(rt: AxfRuntime): { value: SkinConfigLayout; label: string }[] {
   const views = rt.registry.list('settings').filter((a) => a.tags?.includes(SKIN_CONFIG_CHOICES)).map((a) => (a.data as { view?: string }).view).filter((v): v is SkinConfigLayout => v === 'tree' || v === 'columns' || v === 'chips');
-  const list = views.length ? [...new Set(views)] : (Object.keys(LAYOUT_NAMES) as SkinConfigLayout[]);
+  const all = Object.keys(LAYOUT_NAMES) as SkinConfigLayout[];
+  const list = views.length ? all.filter((v) => views.includes(v)) : all;
   return list.map((v) => ({ value: v, label: LAYOUT_NAMES[v] }));
 }
 const MODES: { value: Mode; label: string }[] = [

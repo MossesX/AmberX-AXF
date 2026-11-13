@@ -23,25 +23,15 @@
  *   node framework/cli/skins.mjs migrate [--all | <app>|global] [--dry]   write every Default skin that is missing or stale (idempotent:
  *                                                           a second run keeps everything); snapshots an app with no look document first
  *   node framework/cli/skins.mjs delete <skin>             refuse to delete a Default skin (framework skins are repo files, not deleted here)
- *   node framework/cli/skins.mjs config get|tree|schema|brief|made <app>|global   the skin config (skin-config@1): what the AI may change
- *   node framework/cli/skins.mjs config allow|lock|ask|inherit <app> <type>[/<group>[/<option>]]   one category, group or option
- *   node framework/cli/skins.mjs config depth <app> <type> <n>|default [limit]   a limit (menu levels, toolbar groups)
- *   node framework/cli/skins.mjs config mode <app> allow|lock|ask   the mode of everything not set · config reset <app>
- *   node framework/cli/skins.mjs config put <app> <file> | --json-doc '{…}'   the whole document (checked first)
- *   node framework/cli/skins.mjs config default <app>      save the current look as the Default skin
- *   node framework/cli/skins.mjs config make <app> [--wish "…"] [--from out.json] [--dry]   make a skin with AI under the config:
- *                                                           the brief carries only the allowed options and limits; the result is held
- *                                                           to the config (anything outside it dropped and listed) and saved as ai-<app>-…
- *   node framework/cli/skins.mjs config hold <app> --from out.json   check a generator's output against the config (nothing saved)
+ *   node framework/cli/skins.mjs config get|allow|lock|ask|inherit|depth|mode|reset|put|default|brief|hold|make|made <app>|global …
+ *        skin-config@1, what the AI may change (configMain below lists the arguments); make = a skin by AI held to it
  *   node framework/cli/skins.mjs coverage                  how a skin reaches every registered asset type (CI: spec/check-skin-coverage.mjs)
  *   node framework/cli/skins.mjs covers <skin>             what one skin sets or styles, type by type
  *   add --json for machine output. An app is its id (axf-console) or its folder (console-web), or `console`, `axhub`, `amberx`, `molly`.
  *
  * Files are written where /projects is mounted (the hub's data folder), so open apps follow through the hub's change
  * feed. AXF_LOOKS_DIR points elsewhere (tests, local development); AXF_APPEARANCE_FILE is the shared document;
- * AXF_SKINS_DIR holds the Default skins (`shared/settings/skins/<app>.json`, skin-config-rules.mjs); AXF_SKIN_CONFIG_DIR the
- * skin configs (`shared/settings/skin-config/<app>.json`) and what the maker made (`made/`). AXF_SKIN_MAKER_CMD = the
- * generator (brief on stdin, JSON on stdout; `off` = none), else `claude -p` on Opus under the agent cap.
+ * AXF_SKINS_DIR holds the Default skins; AXF_SKIN_CONFIG_DIR the skin configs and made skins; AXF_SKIN_MAKER_CMD the generator.
  */
 import { chownSync, existsSync, mkdirSync, readFileSync, readdirSync, renameSync, statSync, writeFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
@@ -476,7 +466,18 @@ const str = (v) => (typeof v === 'string' ? v.slice(0, 120) : '');
 /** The skins the maker saved (skin@1 assets, usable like any skin). */
 export const madeSkins = () => (existsSync(join(madeDir(), 'skins')) ? readdirSync(join(madeDir(), 'skins')).filter((f) => f.endsWith('.json')).map((f) => readJson(join(madeDir(), 'skins', f))).filter((a) => a?.type === 'skin') : []);
 
-/** `skins.mjs config <move> <app> …` */
+/**
+ * `skins.mjs config <move> <app>|global …`:
+ *   get | tree | schema | brief [--wish "…"] | made        read (brief = what the AI would get: allowed options + limits only)
+ *   allow | lock | ask | inherit <type>[/<group>[/<option>]] one category, group or option
+ *   depth <type> <n>|default [limit]                         a limit (menu levels, toolbar groups), clamped
+ *   mode allow|lock|ask · reset · put <file> | --json-doc '{…}'   the default mode, everything back, the whole document
+ *   default                                                  save the current look as the Default skin
+ *   hold --from out.json                                     hold a generator's output to the config (nothing saved)
+ *   make [--wish "…"] [--from out.json] [--dry]              brief → generator → held → saved as ai-<app>-… (dropped listed)
+ * Stored at shared/settings/skin-config/<app>.json; made skins under made/. The generator is $AXF_SKIN_MAKER_CMD (brief
+ * on stdin, JSON on stdout; `off` = none), else `claude -p` on Opus under the agent cap.
+ */
 function configMain(args, argv) {
   const [sub = 'get', app, a, b, c] = args;
   const flag = (k) => { const i = argv.indexOf(`--${k}`); return i >= 0 ? argv[i + 1] ?? '' : ''; };
