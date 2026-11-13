@@ -26,6 +26,19 @@
         "keyPrefix": "queue:"
       },
       "priority": "high"
+    },
+    {
+      "id": "merge.unconfirmed",
+      "label": "Merge not confirmed by GitHub",
+      "group": "merge",
+      "app": "console",
+      "source": "Push banner, merge confirmations",
+      "description": "A PR was asked to merge, but GitHub hasn't shown it merged with its merge commit on main. It isn't counted as merged until GitHub confirms it or you tap Recheck.",
+      "match": {
+        "source": "push-banner",
+        "keyPrefix": "confirm:"
+      },
+      "priority": "high"
     }
   ]
 }

@@ -195,6 +195,24 @@
         "text": "Where you set “PRs in one batch”. Change it and the app uses the new value. Part of Push banner.",
         "kind": "field",
         "draft": true
+      },
+      {
+        "target": "recheck",
+        "title": "Recheck",
+        "text": "Asks GitHub again whether this PR is merged. It counts as merged only once GitHub shows it merged with its merge commit on main. Recheck never merges anything.",
+        "kind": "button"
+      },
+      {
+        "target": "action:merge.recheck",
+        "title": "Recheck a merge",
+        "text": "Asks GitHub again about a merge it hasn't confirmed. Name a PR (owner/repo#123), or say nothing to recheck every unconfirmed one. Never merges anything.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:push-banner.focus",
+        "title": "Open a merge confirmation",
+        "text": "Opens the push banner's settings with one PR's merge confirmation highlighted (link: push-banner/merge-confirm/owner/repo#123).",
+        "kind": "menu-item"
       }
     ],
     "intros": []

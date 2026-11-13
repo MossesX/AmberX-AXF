@@ -39,6 +39,29 @@ export const listConfirm = (s) => { const r = cli(s, ['list']); return Array.isA
 /** The poller (one per round): read back what is due, time out the rest. `{ checked, merged, unconfirmed, failed, pending, alert }`. */
 export const tickConfirm = (s) => { const r = cli(s, ['tick']); return r && Array.isArray(r.alert) ? r : { checked: 0, merged: [], unconfirmed: [], failed: [], pending: 0, alert: [], errors: [{ error: r?.error || 'tick failed' }] }; };
 
+/** Console alert key of one PR's merge confirmation (notify.json type merge.unconfirmed, keyPrefix confirm:). */
+export const confirmAlertKey = (id) => `confirm:${String(id).toLowerCase()}`;
+/**
+ * What a poller tick tells Brett: one alert per merge that just became merge-unconfirmed (pushed once, on the change),
+ * and the alerts of merges GitHub has since confirmed (or refused: merge-failed has its own row) resolved.
+ * → { post: [alert], resolve: [key] }
+ */
+export function confirmAlerts(tick) {
+  const t = tick && typeof tick === 'object' ? tick : {};
+  const info = new Map((t.alert || []).map((a) => [a.id, a]));
+  const post = (t.unconfirmed || []).map((id) => {
+    const a = info.get(id) || {};
+    return {
+      source: 'push-banner', key: confirmAlertKey(id), severity: 'warning',
+      title: `GitHub hasn't confirmed the merge of ${id}`.slice(0, 200),
+      body: `${a.why ? `${a.why} ` : ''}Merge called by ${a.path || 'a merge path'}; it is not counted as merged. Push banner → Merge confirmations → Recheck, or merge-confirm.mjs recheck ${a.repo || id.split('#')[0]} ${a.pr || id.split('#')[1]}.`.slice(0, 600),
+      ...(a.url ? { url: a.url } : {}),
+    };
+  });
+  const resolve = [...(t.merged || []), ...(t.failed || [])].map(confirmAlertKey);
+  return { post, resolve };
+}
+
 /**
  * The one merge flow for this plugin: record the request, make the merge call (`gh('PUT', …)`), record its answer and
  * read the PR back once. Answers the merge-confirm@1 record: `merged` only with GitHub's proof, else

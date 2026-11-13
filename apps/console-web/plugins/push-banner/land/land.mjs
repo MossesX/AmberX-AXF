@@ -44,7 +44,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from './land-core.mjs';
 import { queueRound, readQueue, readQueueConfig, main as queueMain } from './merge-queue.mjs';
-import { tickConfirm } from './merge-confirm-store.mjs';
+import { confirmAlerts, tickConfirm } from './merge-confirm-store.mjs';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const SELF_REPO = resolve(HERE, '../../../../..');
@@ -438,6 +438,13 @@ export async function main(argv) {
     if (mc && !json && (mc.checked || mc.alert.length)) console.error(`merge-confirm: ${mc.checked} read back, ${mc.merged.length} confirmed, ${mc.pending} pending, ${mc.alert.length} unconfirmed`);
     const st = await round({ s, gh, dry, only: opt('only'), log: (m) => !json && console.error(m) });
     if (mc) st.mergeConfirm = { checked: mc.checked, merged: mc.merged, pending: mc.pending, unconfirmed: mc.alert.length };
+    // one console alert per merge that just became unconfirmed (notify type merge.unconfirmed); resolved once GitHub confirms
+    if (mc) {
+      const { post, resolve } = confirmAlerts(mc);
+      const con = makeConsole(s);
+      for (const al of post) { try { await con('POST', '/api/alerts', al); } catch (e) { if (!json) console.error(`merge-confirm alert: ${e.message}`); } }
+      if (resolve.length) { try { await con('POST', '/api/alerts/resolve', { keys: resolve }); } catch (e) { if (!json) console.error(`merge-confirm alert: ${e.message}`); } }
+    }
     // the merge queue takes its turn in the same round (same cron, same lock): it merges what auto-land made ready
     if (!opt('only')) {
       try { const git = makeGit(s.repo); const mq = await queueRound({ s, git, gh, api: makeConsole(s), dry, fetched: true, log: (m) => !json && console.error(m) }); st.queue = { on: mq.on, items: (mq.items || []).length, kicked: (mq.kicked || []).length }; }
