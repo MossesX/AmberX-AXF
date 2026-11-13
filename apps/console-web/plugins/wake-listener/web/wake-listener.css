@@ -1,0 +1,14 @@
+/* Wake listener (console): layout only (THEMING.md); controls are framework controls, sizes and colours are tokens. */
+.axp-wake-listener { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); }
+.axp-wake-listener__row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md); min-width: 0; }
+.axp-wake-listener__grow { flex: 1 1 auto; min-width: 0; }
+.axp-wake-listener__phrases { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm); }
+.axp-wake-listener__add { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--fx-dens-gap-md); }
+.axp-wake-listener__add .fx-field { flex: 1 1 auto; min-width: 0; }
+.axp-wake-listener__log { margin: 0; display: grid; grid-template-columns: max-content 1fr; gap: var(--fx-dens-gap-xs) var(--fx-dens-gap-md); overflow-wrap: anywhere; }
+.axp-wake-listener__log dt { margin: 0; }
+.axp-wake-listener__log dd { margin: 0; min-width: 0; }
+.axp-wake-listener__floor { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-md); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); }
+.axp-wake-listener__catalog { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); max-height: calc(var(--fx-space) * 80); overflow: auto; }
+.axp-wake-listener__catalog li { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-sm); align-items: baseline; min-width: 0; }
+.axp-wake-listener__catalog code { overflow-wrap: anywhere; }

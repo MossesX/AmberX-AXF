@@ -8,9 +8,9 @@
     "tabs": 76,
     "settingsTabs": 67,
     "settings": 85,
-    "functions": 225,
+    "functions": 236,
     "buttons": 62,
-    "plugins": 67
+    "plugins": 68
   },
   "views": [
     {
@@ -3908,10 +3908,53 @@
       "file": "plugins/approvals-banner/web/index.tsx"
     },
     {
+      "address": "function:overlay.expand",
+      "kind": "function",
+      "id": "overlay.expand",
+      "label": "Expand the overlay",
+      "detail": "Action · Approvals banner",
+      "keywords": [
+        "overlay.expand",
+        "overlay",
+        "expand"
+      ],
+      "plugin": "ai.amberx.axf.console.approvals-banner",
+      "file": "plugins/approvals-banner/web/index.tsx"
+    },
+    {
+      "address": "function:overlay.collapse",
+      "kind": "function",
+      "id": "overlay.collapse",
+      "label": "Collapse the overlay",
+      "detail": "Action · Approvals banner",
+      "keywords": [
+        "overlay.collapse",
+        "overlay",
+        "collapse"
+      ],
+      "plugin": "ai.amberx.axf.console.approvals-banner",
+      "file": "plugins/approvals-banner/web/index.tsx"
+    },
+    {
+      "address": "function:overlay.open",
+      "kind": "function",
+      "id": "overlay.open",
+      "label": "Open a page in the overlay (overlay.open:<url>)",
+      "detail": "Action · Approvals banner",
+      "keywords": [
+        "overlay.open",
+        "overlay",
+        "open"
+      ],
+      "params": true,
+      "plugin": "ai.amberx.axf.console.approvals-banner",
+      "file": "plugins/approvals-banner/web/index.tsx"
+    },
+    {
       "address": "function:approvals.overlay",
       "kind": "function",
       "id": "approvals.overlay",
-      "label": "Approval overlay (phone): on/off, edge, top, size, expand, show, idle, opacity, shrink, pages; expand or collapse its card; page[:<url>] opens a page in its full browser window, close shrinks it back to the toolbar (approvals.overlay:<what>:<value>)",
+      "label": "Overlay (phone): on/off, edge, top, size, opens, show, opacity, shrink; expand, collapse, open:<url>; bar[:off] (approvals.overlay:<what>:<value>)",
       "detail": "Action · Approvals banner",
       "keywords": [
         "approvals.overlay",
@@ -6177,6 +6220,136 @@
       "file": "plugins/ui-review/web/index.tsx"
     },
     {
+      "address": "function:wake-listener.on",
+      "kind": "function",
+      "id": "wake-listener.on",
+      "label": "Wake listener on",
+      "detail": "Action · Wake listener",
+      "keywords": [
+        "wake-listener.on",
+        "wake",
+        "listener",
+        "on"
+      ],
+      "effect": "write",
+      "plugin": "ai.amberx.axf.console.wake-listener",
+      "file": "plugins/wake-listener/web/index.tsx"
+    },
+    {
+      "address": "function:wake-listener.off",
+      "kind": "function",
+      "id": "wake-listener.off",
+      "label": "Wake listener off",
+      "detail": "Action · Wake listener",
+      "keywords": [
+        "wake-listener.off",
+        "wake",
+        "listener",
+        "off"
+      ],
+      "effect": "write",
+      "plugin": "ai.amberx.axf.console.wake-listener",
+      "file": "plugins/wake-listener/web/index.tsx"
+    },
+    {
+      "address": "function:wake-listener.toggle",
+      "kind": "function",
+      "id": "wake-listener.toggle",
+      "label": "Wake listener on / off",
+      "detail": "Action · Wake listener",
+      "keywords": [
+        "wake-listener.toggle",
+        "wake",
+        "listener",
+        "toggle"
+      ],
+      "effect": "write",
+      "plugin": "ai.amberx.axf.console.wake-listener",
+      "file": "plugins/wake-listener/web/index.tsx"
+    },
+    {
+      "address": "function:wake-listener.heard",
+      "kind": "function",
+      "id": "wake-listener.heard",
+      "label": "Say a phrase to the console (as if the mic heard it)",
+      "detail": "Action · Wake listener",
+      "keywords": [
+        "wake-listener.heard",
+        "wake",
+        "listener",
+        "heard"
+      ],
+      "effect": "write",
+      "params": true,
+      "plugin": "ai.amberx.axf.console.wake-listener",
+      "file": "plugins/wake-listener/web/index.tsx"
+    },
+    {
+      "address": "function:wake-listener.approvals",
+      "kind": "function",
+      "id": "wake-listener.approvals",
+      "label": "Review approvals by voice",
+      "detail": "Action · Wake listener",
+      "keywords": [
+        "wake-listener.approvals",
+        "wake",
+        "listener",
+        "approvals"
+      ],
+      "effect": "write",
+      "plugin": "ai.amberx.axf.console.wake-listener",
+      "file": "plugins/wake-listener/web/index.tsx"
+    },
+    {
+      "address": "function:wake-listener.wizard",
+      "kind": "function",
+      "id": "wake-listener.wizard",
+      "label": "Start a spoken wizard for a command",
+      "detail": "Action · Wake listener",
+      "keywords": [
+        "wake-listener.wizard",
+        "wake",
+        "listener",
+        "wizard"
+      ],
+      "effect": "write",
+      "params": true,
+      "plugin": "ai.amberx.axf.console.wake-listener",
+      "file": "plugins/wake-listener/web/index.tsx"
+    },
+    {
+      "address": "function:wake-listener.cancel",
+      "kind": "function",
+      "id": "wake-listener.cancel",
+      "label": "Cancel the spoken wizard",
+      "detail": "Action · Wake listener",
+      "keywords": [
+        "wake-listener.cancel",
+        "wake",
+        "listener",
+        "cancel"
+      ],
+      "effect": "write",
+      "plugin": "ai.amberx.axf.console.wake-listener",
+      "file": "plugins/wake-listener/web/index.tsx"
+    },
+    {
+      "address": "function:wake-listener.open",
+      "kind": "function",
+      "id": "wake-listener.open",
+      "label": "Wake listener settings",
+      "detail": "Action · Wake listener",
+      "keywords": [
+        "wake-listener.open",
+        "wake",
+        "listener",
+        "open"
+      ],
+      "effect": "navigate",
+      "plugin": "ai.amberx.axf.console.wake-listener",
+      "file": "plugins/wake-listener/web/index.tsx"
+    },
+    {
       "address": "function:whats-shipped.open",
       "kind": "function",
       "id": "whats-shipped.open",
@@ -7993,7 +8166,7 @@
       "id": "ai.amberx.axf.console.approvals-banner",
       "label": "Approvals banner",
       "folder": "approvals-banner",
-      "version": "0.7.0",
+      "version": "0.8.0",
       "detail": "Plugin · module",
       "keywords": [
         "approvals-banner",
@@ -9386,6 +9559,31 @@
       "provides": [],
       "requires": [],
       "optional": []
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.wake-listener",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.wake-listener",
+      "label": "Wake listener",
+      "folder": "wake-listener",
+      "version": "0.1.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "wake-listener",
+        "Wake listener",
+        "An always-on wake-word listener for the console and the console Android app"
+      ],
+      "aliases": [
+        "wake-listener",
+        "wake listener"
+      ],
+      "provides": [
+        "service:axf.wake-listener@1"
+      ],
+      "requires": [],
+      "optional": [
+        "service:axf.speech@1"
+      ]
     },
     {
       "address": "plugin:ai.amberx.axf.console.whats-shipped",

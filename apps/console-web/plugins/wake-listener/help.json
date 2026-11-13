@@ -1,0 +1,33 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "wake-listener-help",
+  "name": "Wake listener help",
+  "version": "0.1.0",
+  "description": "Help mode entries for the Wake listener plugin (help@1): the settings tab, the banner light and the spoken flows.",
+  "author": "Brett",
+  "tags": ["help"],
+  "data": {
+    "scope": "plugin:wake-listener",
+    "entries": [
+      {
+        "target": "settings:wake-listener",
+        "title": "Wake listener",
+        "text": "The console listens for a wake phrase you set here (several allowed), then takes one command: any console action, plugin command, pipeline command or control@1 target, by voice. A command with missing fields becomes a spoken wizard that asks for each one and confirms. 'Approve' reviews everything waiting on axHub one call at a time.",
+        "more": "The switch closes the microphone everywhere this console is open. On the console Android app the recognizer runs on the device (offline); in a browser it is the browser's own. The light on the banner shows what the listener is doing: grey = off, green = waiting for the wake phrase, amber = heard it and waiting for a command, accent = a wizard is waiting for your answer, red = an error with the reason. Replies are spoken through the agent voice when it is installed, else the device voice.",
+        "tryIt": "Say your wake phrase, wait for the chime, then say 'approve'."
+      },
+      {
+        "target": "status:wake-listener",
+        "title": "Mic light",
+        "text": "Lit while the console listens for its wake phrase. Tap it to switch the listener on or off.",
+        "more": "Grey: off. Green: idle, waiting for the wake phrase. Amber: awake, say a command. Accent: a wizard or the approvals review is waiting for an answer. Red: the recognizer stopped; the label says why."
+      },
+      {
+        "target": "action:wake-listener.heard",
+        "title": "Say a phrase without the microphone",
+        "text": "Runs a phrase as if the mic heard it after the wake phrase: from the settings tab's Try it box, or from the API (REST, MCP, CLI, AmberX) as the console action wake-listener.heard:<phrase>."
+      }
+    ]
+  }
+}
