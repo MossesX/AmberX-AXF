@@ -1,0 +1,33 @@
+{
+ "$axf": "asset@1",
+ "type": "interface",
+ "id": "recovery-log-timeline",
+ "name": "recovery-log: Timeline of every fix",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Every automatic fix as its own row, newest first: when, build, priority, cause, exit, action, attempt. Best for 'what happened overnight'.",
+ "tags": [
+  "ui-choice",
+  "choice-set:recovery-log",
+  "choice-option:timeline"
+ ],
+ "data": {
+  "view": "build-orchestrator",
+  "tab": "recovery",
+  "layout": "timeline",
+  "rowPer": "event",
+  "groups": [
+   "fixes"
+  ],
+  "columns": [
+   "when",
+   "build",
+   "priority",
+   "cause",
+   "exit",
+   "action",
+   "attempt"
+  ],
+  "localKey": "orch-recovery-layout"
+ }
+}

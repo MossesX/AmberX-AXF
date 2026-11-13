@@ -66,7 +66,9 @@ recovery steps in only if it is still unclosed after 15 minutes.
 
 ## Open
 
-- UI Review: the Recovery log (3 options) and Recovery settings are waiting for Brett.
+- UI Review: Recovery log r-20261113-0b8d5125 (3 options: grouped, timeline, compact; option assets in
+  `apps/console-web/plugins/build-orchestrator/assets/interface/`) and Recovery settings r-20261113-7fa47dbf (single
+  option, reason on the item) are waiting for Brett. PR #574.
 - `plugin-lifecycle check build-orchestrator` still lists three stale references that were already on main
   (`framework/spec/check-build-limit.mjs:24`, `framework/spec/check-projects.mjs:51,61`). They are not from this build.
 - Kotlin twin of build-recovery@1: deferred (framework/spec/PORTING.md, from phase 1).

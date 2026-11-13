@@ -1,0 +1,31 @@
+{
+ "$axf": "asset@1",
+ "type": "interface",
+ "id": "recovery-log-compact",
+ "name": "recovery-log: Compact one line per build",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "One dense line per build: title, priority, 'Killed · exit 143 · Retried · 1/3', when. Parked builds sorted first. Fits the phone best.",
+ "tags": [
+  "ui-choice",
+  "choice-set:recovery-log",
+  "choice-option:compact"
+ ],
+ "data": {
+  "view": "build-orchestrator",
+  "tab": "recovery",
+  "layout": "compact",
+  "rowPer": "build",
+  "groups": [
+   "all"
+  ],
+  "columns": [
+   "build",
+   "priority",
+   "what",
+   "when"
+  ],
+  "compact": true,
+  "localKey": "orch-recovery-layout"
+ }
+}
