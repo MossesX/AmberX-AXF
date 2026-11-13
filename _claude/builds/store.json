@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4686,
- "updatedAt": "2026-11-13T18:41:52.464Z",
+ "rev": 4687,
+ "updatedAt": "2026-11-13T18:42:20.637Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -199437,7 +199437,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:38:53.122Z",
-   "updatedAt": "2026-11-13T18:41:04.290Z",
+   "updatedAt": "2026-11-13T18:41:53.866Z",
    "builtAt": "",
    "notes": [
     {
@@ -199459,6 +199459,10 @@
     {
      "text": "Session on mossesx-max- ended (exit 3) with 10 steps left: back in the Queue (run 1).",
      "at": "2026-11-13T18:41:04.290Z"
+    },
+    {
+     "text": "Brett: split into 4 parallel builds. THIS build is now part 1 only: the WebView shell, Android module layout, WindowInsets to CSS env(safe-area-inset-*), and the shell contract (package name, module layout, window.axfNative bridge names) written FIRST and pushed so parts 2-4 (console-app-part-2..., console-app-part-3-native-bridge-mic, console-app-part-4-console-side-safe) build against it. Then integrate and test all four together.",
+     "at": "2026-11-13T18:41:53.866Z"
     }
    ],
    "approvals": [],
@@ -199749,7 +199753,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -200026,11 +200030,11 @@
     "all"
    ],
    "order": {
-    "all": 808
+    "all": 809
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
