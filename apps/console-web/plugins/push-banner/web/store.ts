@@ -1,6 +1,7 @@
 /** Push banner: the branches every watched repo has ahead of its default branch, read from this plugin's server part. */
 import { useSyncExternalStore } from 'react';
 import { pluginApi } from '@console/plugins';
+import { loadConfirms } from './confirm';
 
 export const ID = 'ai.amberx.axf.console.push-banner';
 export const FOLDER = 'push-banner';
@@ -157,9 +158,11 @@ export const openPr = (r: Row) => act(r.key, async () => {
 
 export const mergePr = (r: { key: string; repo: string; number: number; base: string }) => act(r.key, async () => {
   const n = r.number;
-  const m = await api.post<{ merged: boolean; queued?: boolean; text?: string }>('merge', { repo: r.repo, number: n, confirm: `${r.repo}#${n}` });
+  const m = await api.post<{ merged: boolean; queued?: boolean; text?: string; state?: string; why?: string }>('merge', { repo: r.repo, number: n, confirm: `${r.repo}#${n}` });
   if (m.queued) return m.text || `PR #${n} is in the merge queue.`;
-  return m.merged ? `Merged PR #${n} into ${r.base}.` : `GitHub didn't merge PR #${n}.`;
+  void loadConfirms(); // merge-confirm@1: the row shows Pending GitHub confirmation, then Merged or Recheck
+  if (m.merged) return `Merged PR #${n} into ${r.base}: confirmed by GitHub.`;
+  return m.state === 'merge-unconfirmed' ? `GitHub hasn't confirmed PR #${n} merged${m.why ? `: ${m.why}` : ''}.` : `Merge called for PR #${n}: pending GitHub confirmation.`;
 });
 
 /** Pull the default branch into a PR's branch, or into a branch without a PR (never touches the default branch). */

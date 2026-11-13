@@ -9,12 +9,13 @@ import { useEffect, useState, useSyncExternalStore } from 'react';
 import { AgentAvatar, Button, Icon, PriorityTag, useRuntime } from '@console/axf/react';
 import { cardFromDrop } from '@console/axf/core/engines/card-rules.mjs';
 import { api, FOLDER } from './store';
+import { MergeConfirmChip, RecheckButton, confirmOf, startConfirms, useConfirms } from './confirm';
 
-export interface QueueItem { inBatch?: boolean; pr: number; title: string; url?: string; branch?: string; build?: string; agent?: string; state: 'waiting' | 'testing' | 'passed' | 'merging' | 'kicked' | 'held'; ci?: string; why?: string; etaMin?: number; runUrl?: string; queueBranch?: string; ahead?: number[]; prCi?: string }
+export interface QueueItem { inBatch?: boolean; pr: number; title: string; url?: string; branch?: string; build?: string; agent?: string; state: 'waiting' | 'testing' | 'passed' | 'merging' | 'awaiting' | 'kicked' | 'held'; confirm?: string; ci?: string; why?: string; etaMin?: number; runUrl?: string; queueBranch?: string; ahead?: number[]; prCi?: string }
 export interface QueueKick { pr: number; title: string; why: string; at: string; runUrl?: string }
 export interface QueueMerged { pr: number; title: string; at: string; agent?: string }
 export interface QueueBatch { prs: number[]; sha: string; ci: string; runUrl?: string; builtAt?: string; bisect?: boolean; why?: string }
-export interface QueueState { mode?: 'batch' | 'stack'; batchSize?: number; batch?: QueueBatch | null; split?: number[]; on: boolean; depth: number; at?: string; items: QueueItem[]; waiting: QueueItem[]; kicked: QueueKick[]; merged: QueueMerged[]; avgMin: number | null; variable?: string; variableError?: string; chip: { label: string; count: number; testing: number; kicked: number; tone: string } }
+export interface QueueState { awaiting?: QueueItem[]; repo?: string; mode?: 'batch' | 'stack'; batchSize?: number; batch?: QueueBatch | null; split?: number[]; on: boolean; depth: number; at?: string; items: QueueItem[]; waiting: QueueItem[]; kicked: QueueKick[]; merged: QueueMerged[]; avgMin: number | null; variable?: string; variableError?: string; chip: { label: string; count: number; testing: number; kicked: number; tone: string } }
 
 const POLL_MS = 60_000;
 let qstate: { data: QueueState | null; error: string; busy: number; note: string } = { data: null, error: '', busy: 0, note: '' };
@@ -36,14 +37,18 @@ async function command(cmd: 'add' | 'remove' | 'move', body: { pr: number; to?: 
   finally { set({ busy: 0 }); }
 }
 
-const STATE_WORD: Record<QueueItem['state'], string> = { waiting: 'Waiting', testing: 'Testing', passed: 'Passed', merging: 'Merging', kicked: 'Kicked out', held: 'Not in the queue' };
-const STATE_ICON: Record<QueueItem['state'], string> = { waiting: 'clock', testing: 'refresh', passed: 'check-circle', merging: 'branch', kicked: 'x-circle', held: 'pause' };
+const STATE_WORD: Record<QueueItem['state'], string> = { waiting: 'Waiting', testing: 'Testing', passed: 'Passed', merging: 'Merging', awaiting: 'Awaiting GitHub', kicked: 'Kicked out', held: 'Not in the queue' };
+const STATE_ICON: Record<QueueItem['state'], string> = { waiting: 'clock', testing: 'refresh', passed: 'check-circle', merging: 'branch', awaiting: 'clock', kicked: 'x-circle', held: 'pause' };
 const eta = (m?: number) => (m == null ? '' : m < 60 ? `~${m} min` : `~${Math.round(m / 6) / 10} h`);
 
 function Row({ it, i, count, onDrop }: { it: QueueItem; i: number; count: number; onDrop: (pr: number, to: number) => void }) {
   const q = useQueue();
+  const c = useConfirms();
   const [sure, setSure] = useState(false);
   const busy = q.busy === it.pr;
+  const awaiting = it.state === 'awaiting';
+  // merge-confirm@1: the record (repo of the queue's PRs) or, before it is read, the state the queue runner saw
+  const mc = awaiting ? (confirmOf(c.data, q.data?.repo || '', it.pr) ?? { id: `#${it.pr}`, repo: '', pr: it.pr, path: 'merge-queue', state: (it.confirm || 'pending-github-confirmation') as 'pending-github-confirmation', label: '', why: '' }) : null;
   return (
     <li className={`axp-push-banner__item axp-mq__row is-${it.state}`} draggable onDragStart={(e) => { e.dataTransfer.setData('text/x-axf-queue-pr', String(it.pr)); e.dataTransfer.effectAllowed = 'move'; }}
       onDragOver={(e) => { if (e.dataTransfer.types.includes('text/x-axf-queue-pr')) e.preventDefault(); }}
@@ -56,7 +61,7 @@ function Row({ it, i, count, onDrop }: { it: QueueItem; i: number; count: number
           <PriorityTag build={it.build} />
         </span>
         <span className="axp-push-banner__meta">
-          <span className={`axp-mq__state is-${it.state}`}><Icon name={STATE_ICON[it.state]} size={14} /> {STATE_WORD[it.state]}</span>
+          {awaiting ? <MergeConfirmChip rec={mc} /> : <span className={`axp-mq__state is-${it.state}`}><Icon name={STATE_ICON[it.state]} size={14} /> {STATE_WORD[it.state]}</span>}
           {it.inBatch ? ' · in this batch' : it.state === 'testing' && it.ahead?.length ? ` · with ${it.ahead.map((n) => `#${n}`).join(', ')} ahead` : ''}
           {it.etaMin ? ` · merges ${eta(it.etaMin)}` : ''}
           {it.agent ? ` · ${it.agent}` : ''}
@@ -65,12 +70,14 @@ function Row({ it, i, count, onDrop }: { it: QueueItem; i: number; count: number
         {it.why && <span className="axp-push-banner__sub axp-mq__why">{it.why}</span>}
       </span>
       <div className="axp-push-banner__acts" role="toolbar" aria-label={`Merge queue #${it.pr}`}>
+        {awaiting ? <RecheckButton rec={mc} /> : <>
         <Button size="sm" tone="quiet" icon="chevron-up" disabled={busy || i === 0} title="Move up one place" onClick={() => void command('move', { pr: it.pr, to: Math.max(0, i - 1) }, `Moved #${it.pr} up.`)}>Up</Button>
         <Button size="sm" tone="quiet" icon="chevron-down" disabled={busy || i === count - 1} title="Move down one place" onClick={() => void command('move', { pr: it.pr, to: i + 1 }, `Moved #${it.pr} down.`)}>Down</Button>
         <Button size="sm" tone="neutral" icon="rocket" disabled={busy || i === 0} title="Jump to the front of the queue (your own click)" onClick={() => void command('move', { pr: it.pr, to: 0 }, `#${it.pr} is at the front.`)}>Jump to front</Button>
         {sure
           ? <><Button size="sm" tone="danger" icon="x" disabled={busy} onClick={() => { setSure(false); void command('remove', { pr: it.pr, why: 'removed in the console' }, `Took #${it.pr} out of the queue.`); }}>Remove?</Button><Button size="sm" tone="quiet" onClick={() => setSure(false)}>Cancel</Button></>
           : <Button size="sm" tone="quiet" icon="x" disabled={busy} title="Take it out of the queue until its next commit" onClick={() => setSure(true)}>Remove from queue</Button>}
+        </>}
       </div>
     </li>
   );
@@ -80,7 +87,7 @@ function Row({ it, i, count, onDrop }: { it: QueueItem; i: number; count: number
 export function MergeQueueView({ compact = false }: { compact?: boolean }) {
   const rt = useRuntime();
   const q = useQueue();
-  useEffect(() => { startQueue(); }, []);
+  useEffect(() => { startQueue(); startConfirms(); }, []);
   const d = q.data;
   if (!d) return <p className="fx-small fx-muted">{q.error || 'Reading the merge queue…'}</p>;
   if (!d.on) return <p className="fx-small fx-muted">The merge queue is off: PRs merge one by one, each re-tested after main moves. Switch it on in Settings → Plugins → Push banner.</p>;

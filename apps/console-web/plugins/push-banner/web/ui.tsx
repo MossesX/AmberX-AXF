@@ -2,6 +2,7 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { Button, Icon, RefText, SelectField, Switch, useAxfState, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
 import { MergeQueueChip, MergeQueueView } from './queue';
+import { ConfirmWhy, MergeConfirmChip, MergeConfirmList, RecheckButton, confirmOf, startConfirms, useConfirms } from './confirm';
 import { ago, bannerOn, doneKeys, doneRows, failedKeys, failedRows, fixWithClaude, jobOf, REPAIR_ALL, removeFailed, repair, repairAll, load, loadDetail, mergePr, needsPull, openPr, PULL_ALL, pullAll, pullMain, pullRows, removeDone, rows, saveClaude, setHidden, useStore, api, type Done, type Failed, type PullRow, type Row } from './store';
 
 const CI_WORD: Record<string, string> = { success: 'CI passed', failure: 'CI failed', running: 'CI running', none: 'no CI yet', unknown: 'CI unknown' };
@@ -113,6 +114,7 @@ function Expander({ open, onToggle, chip, title, label }: { open: boolean; onTog
 /** An open pull request: why it is or isn't ready, and Merge (tap twice) when it is. */
 function PullItem({ p }: { p: PullRow }) {
   const s = useStore();
+  const mc = confirmOf(useConfirms().data, p.repo, p.number);
   const [sure, setSure] = useState(false);
   const [open, setOpen] = useState(false);
   const busy = s.busy === p.key;
@@ -130,12 +132,15 @@ function PullItem({ p }: { p: PullRow }) {
           {p.ahead != null && <span>{p.ahead} ahead{p.behind ? ` · ${p.behind} behind` : ''}</span>}
           {p.fork && <span>from a fork{p.author ? ` (${p.author})` : ''}</span>}
           {p.updated && <span>{ago(p.updated)}</span>}
+          <MergeConfirmChip rec={mc} />
         </span>
+        <ConfirmWhy rec={mc} />
         <Note k={p.key} />
         {open && <Details k={p.key} repo={p.repo} number={p.number} url={p.url} lines={[`${p.head} → ${p.base}${p.fork ? ` · from a fork (${p.author})` : p.author ? ` · by ${p.author}` : ''}`, p.draft ? 'Draft: GitHub won’t merge it until it’s marked ready.' : '']} />}
       </div>
-      <div className="axp-push-banner__acts">
-        {!sure && <Button size="sm" tone="success" icon="branch" disabled={busy || !p.ready} title={p.ready ? `Merge #${p.number} into ${p.base}` : `Merges once it's ready (${why.toLowerCase()})`} onClick={() => setSure(true)}>Merge</Button>}
+      <div className="axp-push-banner__acts" role="toolbar" aria-label={`Pull request #${p.number}`}>
+        {!sure && <RecheckButton rec={mc} />}
+        {!sure && <Button size="sm" tone="success" icon="branch" disabled={busy || !p.ready || ['merge-requested', 'pending-github-confirmation'].includes(mc?.state ?? '')} title={p.ready ? `Merge #${p.number} into ${p.base}` : `Merges once it's ready (${why.toLowerCase()})`} onClick={() => setSure(true)}>Merge</Button>}
         {sure && <Button size="sm" tone="success" icon="check" disabled={busy} onClick={() => { setSure(false); void mergePr({ key: p.key, repo: p.repo, number: p.number, base: p.base }); }}>Merge #{p.number} into {p.base}?</Button>}
         {sure && <Button size="sm" tone="quiet" onClick={() => setSure(false)}>Cancel</Button>}
         {!sure && behind && <PullMainButton k={p.key} repo={p.repo} base={p.base} number={p.number} />}
@@ -202,10 +207,14 @@ function CleanItem({ r }: { r: Row }) {
   );
 }
 
+/** Starts reading merge confirmations while the banner is mounted. */
+function ConfirmStarter() { useEffect(() => { startConfirms(); }, []); return null; }
+
 /** A merge or a pull that went through: stays (every device) until its trash can takes it off the banner. */
 function DoneItem({ d, sha }: { d: Done; sha?: string }) {
   const s = useStore();
   const merged = d.kind === 'merged';
+  const mc = merged && d.number ? confirmOf(useConfirms().data, d.repo, d.number) : undefined;
   return (
     <li className="axp-push-banner__item is-done">
       <div className="axp-push-banner__entry">
@@ -215,7 +224,7 @@ function DoneItem({ d, sha }: { d: Done; sha?: string }) {
             : <span className="axp-push-banner__name is-title"><RefText text={d.title || d.branch || ''} /></span>}
         </span>
         <span className="axp-push-banner__line axp-push-banner__meta">
-          <span className="axp-push-banner__pill is-ready"><Icon name="check-circle" size={11} />{merged ? 'Merged' : `Pulled ${d.base || 'main'} in`}</span>
+          {mc ? <MergeConfirmChip rec={mc} /> : <span className="axp-push-banner__pill is-ready"><Icon name="check-circle" size={11} />{merged ? 'Merged' : `Pulled ${d.base || 'main'} in`}</span>}
           <span>{ago(new Date(d.at).toISOString())}</span>
           {!merged && <span>CI runs again on the new commit</span>}
         </span>
@@ -368,6 +377,7 @@ export function PushBanner() {
         </button>
         <MergeQueueChip open={queueOpen} onToggle={() => { setQueueOpen(!queueOpen); if (!open) setOpen(true); }} />
       </div>
+      <ConfirmStarter />
       {open && (
         <div className="axp-push-banner__body">
           {queueOpen && <section className="axp-push-banner__group" aria-label="Merge queue"><h4 className="axp-push-banner__group-title">Merge queue</h4><MergeQueueView compact /></section>}
@@ -422,6 +432,7 @@ export function PushSettings() {
       )}
       <div className="fx-row"><Button icon="refresh" onClick={() => void load(true)}>{s.loading ? 'Checking…' : 'Check now'}</Button></div>
       <AutoMergeSettings />
+      <MergeConfirmList />
       <AutoLandSettings />
       <ClaudeSettings />
     </div>

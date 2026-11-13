@@ -90,3 +90,8 @@ a.axp-push-banner__name:hover { text-decoration: underline }
 .axp-mq__row.is-passed { border-color: color-mix(in srgb, var(--fx-success) calc(var(--fx-opacity-muted) * 100%), transparent) }
 .axp-mq__chip { flex: none; display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xs); cursor: pointer }
 .axp-mq__why { display: block; white-space: normal; overflow-wrap: anywhere }
+/* merge-confirm@1: the confirmation chip (framework Chip) and its turning icon while GitHub hasn't confirmed */
+.axp-mc { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm) }
+.axp-mc__spin { animation: fx-spin calc(var(--fx-motion) * 4) linear infinite }
+@media (prefers-reduced-motion: reduce) { .axp-mc__spin { animation: none } }
+[data-fx-motion='reduced'] .axp-mc__spin { animation: none }
