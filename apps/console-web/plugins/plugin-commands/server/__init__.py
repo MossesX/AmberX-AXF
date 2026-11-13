@@ -113,9 +113,12 @@ def is_plugin(folder: str) -> bool:
 
 # ---------------------------------------------------------------------- running a command
 
-def _http(method: str, path: str, query: dict[str, str], body: Any) -> dict[str, Any]:
-    """The route, called on the console itself (loopback, the console token), or in-process when no server listens."""
+def _http(method: str, path: str, query: dict[str, str], body: Any, by: str = "") -> dict[str, Any]:
+    """The route, called on the console itself (loopback, the console token), or in-process when no server listens.
+    `by` (who asked: mcp, a session, voice) goes along as X-Axf-By so a route can refuse what a caller may not do."""
     headers = {"content-type": "application/json"}
+    if by:
+        headers["x-axf-by"] = "".join(c for c in str(by) if 32 <= ord(c) < 127)[:80]
     tok = cx.current_token()
     if tok:
         headers["authorization"] = f"Bearer {tok}"
@@ -182,7 +185,7 @@ def run(command: dict[str, Any], grants: list[str] | None = None, by: str = "", 
     d = plan["dispatch"]
     who = plan["command"].get("by") or by or "unknown"
     if d["kind"] == "route":
-        outcome = _http(d["method"], d["path"], d.get("query") or {}, d.get("body"))
+        outcome = _http(d["method"], d["path"], d.get("query") or {}, d.get("body"), who)
     else:
         outcome = _action(plan, grants, who, request)
     if plan.get("effect") != "read":

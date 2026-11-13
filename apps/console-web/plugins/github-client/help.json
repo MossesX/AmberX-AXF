@@ -1,0 +1,396 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "github-client-help",
+  "name": "GitHub client help",
+  "version": "0.1.0",
+  "description": "Help mode entries of the GitHub client plugin (help@1).",
+  "author": "Brett",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:github-client",
+    "entries": [
+      {
+        "target": "view:github-client",
+        "title": "GitHub client",
+        "text": "Every pull request of this project's repos and everything you can do with them: merge, pull main in, rebase, close, batch several into one, bulk actions, branches, commits and one git log.",
+        "kind": "screen"
+      },
+      {
+        "target": "github-client.prs",
+        "title": "Pull requests",
+        "text": "Open PRs with a status chip (ready, failing, conflicts, queued), checks, commits behind main, review and linked build. Tap a row for checks, commits and actions; tick rows to batch or bulk them."
+      },
+      {
+        "target": "github-client.refresh",
+        "title": "Refresh",
+        "text": "Reads GitHub now instead of waiting for the next poll."
+      },
+      {
+        "target": "github-client.merge",
+        "title": "Merge",
+        "text": "Merges a ready PR. With the merge queue on it goes into the queue and lands with the next green batch; it never goes around the queue."
+      },
+      {
+        "target": "github-client.update-main",
+        "title": "Pull main in",
+        "text": "Merges the newest main into the PR's branch. When GitHub can't (a conflict) it tries in a scratch copy, where builds files merge by themselves, and reports anything else."
+      },
+      {
+        "target": "github-client.rebase",
+        "title": "Rebase",
+        "text": "Replays the PR's commits on top of main and force-pushes its own branch (with lease). The old head is saved in the Git log."
+      },
+      {
+        "target": "github-client.rerun",
+        "title": "Re-run failed",
+        "text": "Re-runs the failed jobs of every check run on the PR's head commit."
+      },
+      {
+        "target": "github-client.fix-conflicts",
+        "title": "Ask Claude to fix",
+        "text": "Files a build in the orchestrator's Queue that merges main into this branch, resolves the conflicts and pushes. It never merges the PR."
+      },
+      {
+        "target": "github-client.close",
+        "title": "Close",
+        "text": "Closes the PR; its branch stays, so Reopen brings it back."
+      },
+      {
+        "target": "github-client.comment",
+        "title": "Comment",
+        "text": "Posts a comment on the PR on GitHub."
+      },
+      {
+        "target": "github-client.batch",
+        "title": "Batch merge",
+        "text": "Pulls main into each selected PR, merges them in order on one branch, opens one PR and runs the checks once, so they land together and can't clash on main. Clashes between them go to Claude and you get an alert."
+      },
+      {
+        "target": "github-client.batches",
+        "title": "Batches",
+        "text": "Every batch with its state, members, the batch PR and any clash. Land it, retry it, rebuild it on fresh main or dissolve it."
+      },
+      {
+        "target": "github-client.batch-land",
+        "title": "Land batch",
+        "text": "Lands the batch PR (through the merge queue when it is on); the member PRs then close as landed by the batch."
+      },
+      {
+        "target": "github-client.batch-retry",
+        "title": "Retry",
+        "text": "Carries on building the batch from its branch, after Claude or you fixed a clash."
+      },
+      {
+        "target": "github-client.bulk",
+        "title": "Bulk actions",
+        "text": "Runs one action on many PRs: merge all ready, close all stale, update all from main, re-run failed or label. Shows what it takes and skips first."
+      },
+      {
+        "target": "github-client.branches",
+        "title": "Branches",
+        "text": "Every branch with how far ahead and behind main it is, its last commit and its PR. Delete saves the SHA so it can be restored."
+      },
+      {
+        "target": "github-client.branch-delete",
+        "title": "Delete branch",
+        "text": "Deletes the branch on GitHub after saving its SHA in the Git log; Restore there brings it back. Main and protected branches can't be deleted here."
+      },
+      {
+        "target": "github-client.commits",
+        "title": "Commits",
+        "text": "The commits on a branch; tap one for its files and diff."
+      },
+      {
+        "target": "github-client.commit",
+        "title": "Commit",
+        "text": "One commit: message, files and the diff of each file."
+      },
+      {
+        "target": "github-client.diff",
+        "title": "Changes",
+        "text": "The files a PR or a branch changes, with the diff of each."
+      },
+      {
+        "target": "github-client.checks",
+        "title": "Checks",
+        "text": "The check runs and statuses of a branch, a commit or pr:<number>, grouped by workflow."
+      },
+      {
+        "target": "github-client.log",
+        "title": "Git log",
+        "text": "Every git action in one searchable list: merges, failed merges and why, retries, branch deletes with Restore, pushes, main pulled in, PRs opened and closed, batches and bulk runs."
+      },
+      {
+        "target": "github-client.log-import",
+        "title": "Import deleted-branch lists",
+        "text": "Reads _deleted-branches-*.txt lists into the Git log so those branches can be restored."
+      },
+      {
+        "target": "github-client.restore",
+        "title": "Restore",
+        "text": "Recreates the deleted branch at the SHA saved when it was deleted."
+      },
+      {
+        "target": "github-client.settings",
+        "title": "GitHub client settings",
+        "text": "Extra repos, merge method, readiness policy (green checks, review, do-not-merge label), stale days, polling, batch retries and who handles clashes."
+      },
+      {
+        "target": "github-client",
+        "title": "GitHub client settings",
+        "text": "This plugin's settings under Settings → Plugins."
+      },
+      {
+        "target": "re-run-all",
+        "title": "Re-run all",
+        "text": "Re-runs every workflow run on the PR's head commit, green ones too."
+      },
+      {
+        "target": "ready-for-review",
+        "title": "Ready for review",
+        "text": "Turns a draft PR into one that is ready for review."
+      },
+      {
+        "target": "out-of-the-queue",
+        "title": "Out of the queue",
+        "text": "Takes the PR out of the merge queue; it stays open."
+      },
+      {
+        "target": "comment",
+        "title": "Comment",
+        "text": "The text of a comment to post on the PR."
+      },
+      {
+        "target": "prs",
+        "title": "PRs",
+        "text": "How many pull requests are in this batch."
+      },
+      {
+        "target": "rebuild-on-fresh-main",
+        "title": "Rebuild on fresh main",
+        "text": "Makes the batch branch again from the newest main with every member merged in."
+      },
+      {
+        "target": "batch-pr",
+        "title": "Batch PR",
+        "text": "Opens the batch's pull request on GitHub."
+      },
+      {
+        "target": "dissolve",
+        "title": "Dissolve",
+        "text": "Closes the batch PR and deletes its branch (SHA saved). The member PRs stay open as they were."
+      },
+      {
+        "target": "batch-name",
+        "title": "Batch name",
+        "text": "A name for the batch; its branch becomes queue/group-<name>."
+      },
+      {
+        "target": "land-it-as-soon-as-it-is-green",
+        "title": "Land it as soon as it is green",
+        "text": "Lands the batch by itself once its checks pass (through the merge queue when it is on)."
+      },
+      {
+        "target": "batch-prs",
+        "title": "Batch PRs",
+        "text": "Builds the batch from the ticked PRs."
+      },
+      {
+        "target": "commits",
+        "title": "Commits",
+        "text": "Shows the commits on this branch."
+      },
+      {
+        "target": "compare-with-main",
+        "title": "Compare with main",
+        "text": "Shows what this branch changes compared with main, file by file."
+      },
+      {
+        "target": "open-a-pr",
+        "title": "Open a PR",
+        "text": "Opens GitHub's page for a new pull request from this branch."
+      },
+      {
+        "target": "newer",
+        "title": "Newer",
+        "text": "The page of newer commits."
+      },
+      {
+        "target": "older",
+        "title": "Older",
+        "text": "The page of older commits."
+      },
+      {
+        "target": "branch-sha-or-pr-n",
+        "title": "Branch, SHA or pr:<n>",
+        "text": "Which checks to show: a branch, a commit SHA, or pr: followed by a PR number."
+      },
+      {
+        "target": "labels-to-add-comma-separated",
+        "title": "Labels to add",
+        "text": "Labels the bulk action puts on every PR, separated by commas."
+      },
+      {
+        "target": "run-on-prs",
+        "title": "Run",
+        "text": "Runs the bulk action on the PRs listed above; the skipped ones stay as they are."
+      },
+      {
+        "target": "view:github-client.batch",
+        "title": "Batch merge",
+        "text": "Pick the PRs to land together: main goes into each, they merge on one branch and land as one PR.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:github-client.bulk",
+        "title": "Bulk actions",
+        "text": "One action on many PRs, previewed first, with a result per PR.",
+        "kind": "screen"
+      },
+      {
+        "target": "view:github-client.commit",
+        "title": "Commit",
+        "text": "One commit with its message, files and diffs.",
+        "kind": "screen"
+      },
+      {
+        "target": "failed",
+        "title": "Failed",
+        "text": "Only the actions that failed, with why."
+      },
+      {
+        "target": "this-repo",
+        "title": "This repo",
+        "text": "Only the repo picked at the top."
+      },
+      {
+        "target": "every-repo",
+        "title": "Every repo",
+        "text": "Actions in every repo this console works with."
+      },
+      {
+        "target": "batch",
+        "title": "Batch",
+        "text": "Opens the batch this entry belongs to."
+      },
+      {
+        "target": "commit",
+        "title": "Commit",
+        "text": "Opens the commit this entry is about."
+      },
+      {
+        "target": "action:github-client.focus",
+        "title": "Ready to merge",
+        "text": "Opens the GitHub client on the PRs that are ready to merge.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:github-client.batch",
+        "title": "Batch merge",
+        "text": "Opens the Batch merge dialog.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:github-client.focus:branches",
+        "title": "Branches",
+        "text": "Opens the GitHub client's Branches tab.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:github-client.focus:commits",
+        "title": "Commits",
+        "text": "Opens the GitHub client's Commits tab.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "action:github-client.focus:log",
+        "title": "Git log",
+        "text": "Opens the GitHub client's Git log.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "commits-on-this-pr",
+        "title": "Commits on this PR",
+        "text": "Lists the PR's commits; tap one for its diff."
+      },
+      {
+        "target": "extra-repos-owner-name-one-a-line",
+        "title": "Extra repos",
+        "text": "More repos to list, as owner/name, one a line."
+      },
+      {
+        "target": "merge-method",
+        "title": "Merge method",
+        "text": "How Merge lands a PR: the merge queue (when it is on for the repo), squash, a merge commit or rebase."
+      },
+      {
+        "target": "require-green-checks",
+        "title": "Require green checks",
+        "text": "A PR is only ready when its checks passed."
+      },
+      {
+        "target": "allow-a-pr-with-no-checks",
+        "title": "Allow a PR with no checks",
+        "text": "A PR whose commit ran no checks can still be ready."
+      },
+      {
+        "target": "require-an-approving-review",
+        "title": "Require an approving review",
+        "text": "A PR is only ready once someone approved it."
+      },
+      {
+        "target": "do-not-merge-label",
+        "title": "Do-not-merge label",
+        "text": "A PR with this label is never ready."
+      },
+      {
+        "target": "your-github-login-the-mine-filter",
+        "title": "Your GitHub login",
+        "text": "The Mine filter shows PRs by this login."
+      },
+      {
+        "target": "stale-after-days",
+        "title": "Stale after",
+        "text": "Days without an update before an open PR counts as stale."
+      },
+      {
+        "target": "poll-github-every-minutes",
+        "title": "Poll GitHub every",
+        "text": "How often the list is read from GitHub while it is open."
+      },
+      {
+        "target": "batch-auto-retries-when-its-checks-fail",
+        "title": "Batch auto-retries",
+        "text": "How many times a batch whose checks fail is rebuilt on fresh main before you are alerted."
+      },
+      {
+        "target": "clashes-in-a-batch",
+        "title": "Clashes in a batch",
+        "text": "Who handles a clash between PRs in a batch: Claude (a build in the Queue) or nobody (only reported)."
+      }
+    ],
+    "intros": [
+      {
+        "screen": "github-client",
+        "title": "GitHub client",
+        "steps": [
+          {
+            "say": "Every open pull request, with what stops it from merging.",
+            "target": "github-client.prs"
+          },
+          {
+            "say": "Tick a few and tap Batch merge to land them together as one PR.",
+            "target": "github-client.batch"
+          },
+          {
+            "say": "Everything that happened, including deleted branches you can restore, is in the Git log.",
+            "target": "github-client.log"
+          }
+        ]
+      }
+    ]
+  }
+}

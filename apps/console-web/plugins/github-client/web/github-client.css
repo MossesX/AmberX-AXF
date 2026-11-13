@@ -1,0 +1,37 @@
+/* GitHub client: layout only, theme tokens only (controls keep their own look). */
+.axp-github-client__head { display: flex; flex-wrap: wrap; align-items: end; gap: var(--fx-dens-gap-md) }
+.axp-github-client__status { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-xs); align-items: center }
+.axp-github-client__tab { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); min-width: 0 }
+.axp-github-client__toolbar { display: flex; flex-wrap: wrap; align-items: end; gap: var(--fx-dens-gap-sm) }
+.axp-github-client__grow { flex: 1 1 auto; min-width: 0 }
+.axp-github-client__search { flex: 1 1 calc(var(--fx-space) * 12); min-width: 0 }
+.axp-github-client__count { margin-left: var(--fx-dens-gap-xs); opacity: var(--fx-opacity-muted) }
+.axp-github-client__rows, .axp-github-client__checks, .axp-github-client__commits, .axp-github-client__files, .axp-github-client__picklist { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-2xs) }
+.axp-github-client__row { border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface); min-width: 0 }
+.axp-github-client__row.is-open { border-color: var(--fx-accent) }
+.axp-github-client__rowhead { display: flex; align-items: center; gap: var(--fx-dens-gap-xs); padding-left: var(--fx-dens-gap-sm) }
+.axp-github-client__pick { flex: 0 0 auto }
+.axp-github-client__summary, .axp-github-client__subhead, .axp-github-client__commit { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm); width: 100%; min-width: 0; min-height: var(--fx-row-h); padding: var(--fx-dens-gap-xs) var(--fx-dens-gap-sm); background: none; border: 0; color: inherit; font: inherit; text-align: left; cursor: pointer }
+.axp-github-client__num { font-weight: var(--fx-type-weights-strong); white-space: nowrap }
+.axp-github-client__title { flex: 1 1 calc(var(--fx-space) * 14); min-width: 0; overflow-wrap: anywhere }
+.axp-github-client__chips { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-2xs) }
+.axp-github-client__age { white-space: nowrap }
+.axp-github-client__detail { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-sm) var(--fx-dens-gap-lg) var(--fx-dens-gap-md); border-top: var(--fx-border-w) solid var(--fx-border) }
+.axp-github-client__branches, .axp-github-client__line { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-xs); overflow-wrap: anywhere }
+.axp-github-client__check { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm); min-width: 0 }
+.axp-github-client__actions { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm) }
+.axp-github-client__comment { display: flex; flex-wrap: wrap; align-items: end; gap: var(--fx-dens-gap-sm) }
+.axp-github-client__comment > :first-child { flex: 1 1 calc(var(--fx-space) * 16); min-width: 0 }
+.axp-github-client__sub { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs) }
+.axp-github-client__h { margin: 0; font-size: var(--fx-type-root-sm); color: var(--fx-muted) }
+.axp-github-client__dialog { min-width: 0; max-width: 100% }
+.axp-github-client__picklist { max-height: calc(var(--fx-row-h) * 10); overflow: auto }
+.axp-github-client__message, .axp-github-client__patch { margin: 0; padding: var(--fx-dens-gap-sm); font-family: var(--fx-font-mono); font-size: var(--fx-type-root-xs); background: var(--fx-surface2); border-radius: var(--fx-radius-sm); overflow: auto; white-space: pre-wrap; overflow-wrap: anywhere }
+.axp-github-client__patch { white-space: pre; max-height: calc(var(--fx-row-h) * 18) }
+.axp-github-client__patch [data-line='add'] { color: var(--fx-success) }
+.axp-github-client__patch [data-line='del'] { color: var(--fx-danger) }
+.axp-github-client__patch [data-line='hunk'] { color: var(--fx-accent) }
+.axp-github-client__add { color: var(--fx-success) }
+.axp-github-client__del { color: var(--fx-danger) }
+.axp-github-client__settings { max-width: calc(var(--fx-space) * 40) }
+:where([data-fx-tiny]) .axp-github-client__age { flex-basis: 100% }
