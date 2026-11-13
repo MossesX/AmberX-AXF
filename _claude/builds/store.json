@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4007,
- "updatedAt": "2026-11-13T06:16:14.844Z",
+ "rev": 4008,
+ "updatedAt": "2026-11-13T06:21:13.706Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -177888,6 +177888,43 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-13T01:16:06.682Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me",
+   "title": "Merges are only 'merged' once GitHub confirms: every merge path (console auto-merge, auto-land, github client plugin, server gate, scripts) shows 'Pending GitHub confirmation' right after a merge call, then reads the PR back from GitHub (state MERGED and the merge commit on main) before marking it m",
+   "category": "",
+   "detail": "",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-13T06:21:11.993Z",
+   "updatedAt": "2026-11-13T06:21:11.993Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 766
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
