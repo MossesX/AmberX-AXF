@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4844,
- "updatedAt": "2026-11-13T19:43:59.131Z",
+ "rev": 4845,
+ "updatedAt": "2026-11-13T19:44:21.703Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -201154,7 +201154,7 @@
    "title": "Console app part 2: native floating overlay and approvals bar",
    "category": "",
    "detail": "Parallel part 2 of 4 of console-android-app-thin-webview-wrapper (parent). Builds only in the wrapper's Android module, following the shell contract (package, module layout, window.axfNative bridge names) from the parent build.\n- Draw-over-apps floating toolbar/bubble, ported from overlay-toolbar-v2. It keeps the app in front, expands to the full-screen console with the toolbar top-left, and pops up an approvals bar with a link to the approvals page.\n- Permission flow for 'display over other apps'.\n- Respects safe areas (status bar, cutout, nav bar).\n- Tests, help, Shipped features.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -201162,7 +201162,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:46.237Z",
-   "updatedAt": "2026-11-13T19:43:06.693Z",
+   "updatedAt": "2026-11-13T19:44:05.562Z",
    "builtAt": "",
    "notes": [
     {
@@ -201188,6 +201188,10 @@
     {
      "text": "Headless run axf-console-app-part-2-native-floating-2--lenny: brief only · start 12.7K tokens ($0.06) · cost $4.70 · 39 turns · 6 tools, MCP none",
      "at": "2026-11-13T19:43:06.693Z"
+    },
+    {
+     "text": "Session on mossesx-max- stopped on its own with 7 steps left: back in Pending for Brett.",
+     "at": "2026-11-13T19:44:05.562Z"
     }
    ],
    "approvals": [],
@@ -201208,12 +201212,19 @@
     "queuedAt": "2026-11-13T18:41:48.935Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-console-app-part-2-native-floating-2--lenny",
+    "session": "",
     "slot": "",
     "model": "Fable",
     "launchedAt": "2026-11-13T19:30:50.870Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-13T19:44:03.918Z",
+     "exit": 0,
+     "outcome": "returned",
+     "stepsLeft": 7,
+     "account": "mossesx-max-",
+     "session": "axf-console-app-part-2-native-floating-2--lenny"
+    },
     "split": {
      "at": "2026-11-13T18:46:01.392Z",
      "by": "orchestrator",
@@ -201222,7 +201233,7 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"5a87c9c2-7124-4778-b8e4-2fa5e994b977\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- stopped on its own with 7 steps left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "2026-11-13T19:30:50.870Z",
     "planned": {
@@ -201405,7 +201416,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -203035,7 +203046,7 @@
    "pr": "#620",
    "priority": "P0",
    "createdAt": "2026-11-13T19:31:40.346Z",
-   "updatedAt": "2026-11-13T19:40:00.150Z",
+   "updatedAt": "2026-11-13T19:43:57.110Z",
    "builtAt": "",
    "notes": [
     {
@@ -203053,6 +203064,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-land-drive-live-console-first-resolve--paulie, own login copy)",
      "at": "2026-11-13T19:32:56.779Z"
+    },
+    {
+     "text": "Headless run axf-land-drive-live-console-first-resolve--paulie: brief only · start 12.9K tokens ($0.06) · cost $2.49 · 53 turns · 6 tools, MCP none",
+     "at": "2026-11-13T19:43:57.110Z"
     }
    ],
    "approvals": [],
@@ -203182,7 +203197,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
