@@ -792,7 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 19:06 UTC · `demo-pipelines-guided-walkthrough-live` note (all) · builds-live
 - 2026-11-13 19:06 UTC · `ui-manager-floating-window-to-select-any` note (all) · orchestrator
 - 2026-11-13 19:04 UTC · `console-app-part-3-native-bridge-mic` branch claude/console-app-part-3-native-bridge-mic, PR #633 (all) · builds-live
 - 2026-11-13 19:07 UTC · `ui-manager-floating-window-to-select-any` s2 done (all) · orchestrator
@@ -1192,6 +1191,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 20:52 UTC · `icon-map-icon-packs-every-icon-badge-app` s2 done (all) · orchestrator
 - 2026-11-13 20:52 UTC · `auto-land-every-finished-build-lands` s2 done (all) · orchestrator
 - 2026-11-13 20:52 UTC · `icon-map-icon-packs-every-icon-badge-app` note (all) · orchestrator
+- 2026-11-13 20:53 UTC · `icon-map-icon-packs-every-icon-badge-app` note (all) · orchestrator
 
 ## Token passes (log)
 

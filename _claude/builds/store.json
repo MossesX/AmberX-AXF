@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4990,
- "updatedAt": "2026-11-13T20:53:37.491Z",
+ "rev": 4991,
+ "updatedAt": "2026-11-13T20:53:49.832Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -205265,7 +205265,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T19:55:30.979Z",
-   "updatedAt": "2026-11-13T20:52:55.371Z",
+   "updatedAt": "2026-11-13T20:53:24.255Z",
    "builtAt": "",
    "notes": [
     {
@@ -205283,6 +205283,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-icon-map-icon-packs-every-icon-badge-app--gina, own login copy)",
      "at": "2026-11-13T20:06:51.193Z"
+    },
+    {
+     "text": "Headless run axf-icon-map-icon-packs-every-icon-badge-app--gina: brief only · start 13.1K tokens ($0.07) · cost $18.84 · 193 turns · 6 tools, MCP none",
+     "at": "2026-11-13T20:53:24.255Z"
     },
     {
      "text": "Fable phase done (s1, s2) on claude/icon-map-icon-packs-every-icon-badge-app, 2 commits, no PR yet (s8 opens it). s1: icon-map@1 engine (framework/core/engines/icon-map-rules.mjs + glyphs.mjs), 5792 slots over 8 apps and 70 plugins, CI check framework/cli/check-icons.mjs (ratchet spec/icon-map-baseline.json; Expenses frozen), icon-pack@1 gains roles / themable / covers / license, runtime setIconPack / setIconSlot, Icon slot+role props. s2: Icon map console plugin: screen View -> Icon map (deep link console_show view:icon-map), REST /api/plugins/icon-map/*, MCP icon-map_*, CLI axf icon-map ... and axf icons ..., voice 'switch to the duotone icon pack' in both twins. For the PR: reach table is in apps/console-web/plugins/icon-map/README.md. Open for the Opus phase: s3 reworks the page (submit desktop + phone shots to UI Review then), s4/s5 build packs on the roles contract, s6 hub asset library. Found pre-existing: apps/console-web/src/axf/libs/hub/veto.ts (baked copy) has overlayCommand that framework/libs/hub/veto.ts lacks, so a CI re-bake fails tsc on approvals-banner; not touched here. Fixed pre-existing: molly-guide Gizmo guide tab help (coverage was 99.9%).",

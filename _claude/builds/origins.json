@@ -3672,6 +3672,18 @@
    "from": "",
    "addenda": []
   },
+  "hotfix-desktop-console-draws-app-menu": {
+   "said": "there's two app menus, two banners, two navigation menus; I don't want to lose the toolbar settings",
+   "at": "2026-11-13T20:53:50.393Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "hub-look-all-assets": {
    "said": "hub-look-all-assets — one look from axHub, every app ships every shareable asset",
    "at": "",
