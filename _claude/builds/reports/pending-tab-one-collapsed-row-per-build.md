@@ -1,6 +1,6 @@
 # Pending tab: one collapsed row per build, tap to expand everything
 
-Build `pending-tab-one-collapsed-row-per-build-tap-to-e` · Opus · Nov 12 2026.
+Build `pending-tab-one-collapsed-row-per-build` · Opus · Nov 12 2026.
 
 Brett said: "No! Every building pending should have its own row that opens, that expands to show everything."
 
