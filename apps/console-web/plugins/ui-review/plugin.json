@@ -6,7 +6,7 @@
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Every UI a build makes comes here for Brett's approval, one section per kind (open registry: Design packs, Whole apps / programs, Screens & pages, Settings interfaces, Dialogs & popups, Menus & toolbars, Banners & cards, Other). Each item carries its app, build, branch and PR, desktop + phone screenshots, notes, a status (waiting, approved, changes asked, rejected), his comment and its history. Views: tree, collapsible grid, grid with sub-grids, gallery and side-by-side compare, all with multi-select and bulk Approve / Ask changes / Reject. Builds submit through review.mjs, POST /api/plugins/ui-review/submit or rebuild-shots --submit; other plugins read the per-branch / per-PR state through the ui-review@1 capability. Design packs (formerly their own plugin) are one section: pick up to 3. Screenshots tab (ui-screenshot@1): ad-hoc pictures (check sessions, live captures, PR before/after, uploads) that never enter the approve / reject queue, saved with axf shot / POST shots / Upload; grid grouped by app, screen, source or day, thumbnails, full-screen viewer with before/after slider, copy link, delete, Send to review. Predicted looks (ui-prediction@1): when a build that changes UI is launched, framework/cli/ui-predict.mjs makes a mockup of each screen it will touch (framework controls, current theme, demo data) and files it here as 'Predicted - approve the look' next to the screen as it is now; Approve look / Ask changes (the comment goes to the build) / Reject (the build is held). Setting: wait for the look approval before UI builds start. The predicted pictures refresh while the build runs and the real after-shots replace them at the end (badge Real, predicted vs real compare).",
+  "description": "Optional feedback on every UI a build makes (not a gate since Nov 13 2026: no PR waits for it, no screenshots are required; GET gate says so), one section per kind (open registry: Design packs, Whole apps / programs, Screens & pages, Settings interfaces, Dialogs & popups, Menus & toolbars, Banners & cards, Other). Each item carries its app, build, branch and PR, desktop + phone screenshots, notes, a status (waiting, approved, changes asked, rejected), his comment and its history. Views: tree, collapsible grid, grid with sub-grids, gallery and side-by-side compare, all with multi-select and bulk Approve / Ask changes / Reject. Builds submit through review.mjs, POST /api/plugins/ui-review/submit or rebuild-shots --submit; other plugins read the per-branch / per-PR state through the ui-review@1 capability. Design packs (formerly their own plugin) are one section: pick up to 3. Screenshots tab (ui-screenshot@1): ad-hoc pictures (check sessions, live captures, PR before/after, uploads) that never enter the approve / reject queue, saved with axf shot / POST shots / Upload; grid grouped by app, screen, source or day, thumbnails, full-screen viewer with before/after slider, copy link, delete, Send to review. Predicted looks (ui-prediction@1): when a build that changes UI is launched, framework/cli/ui-predict.mjs makes a mockup of each screen it will touch (framework controls, current theme, demo data) and files it here as 'Predicted - approve the look' next to the screen as it is now; Approve look / Ask changes (the comment goes to the build) / Reject (the build is held). Setting: wait for the look approval before UI builds start. The predicted pictures refresh while the build runs and the real after-shots replace them at the end (badge Real, predicted vs real compare).",
   "targets": [
     "axf-console"
   ],
@@ -201,16 +201,16 @@
       {
         "id": "settings",
         "route": "GET /settings",
-        "title": "Look approval setting",
-        "description": "'Wait for my look approval before UI builds start' (waitForLook, default off).",
+        "title": "Look approval setting (retired)",
+        "description": "'Wait for my look approval before UI builds start' (waitForLook). Retired Nov 13 2026: UI Review is not a gate, the launcher never waits for a look whatever it says.",
         "readOnly": true,
         "output": "{ waitForLook }"
       },
       {
         "id": "settings-set",
         "route": "PUT /settings",
-        "title": "Set the look approval setting",
-        "description": "Turn 'Wait for my look approval before UI builds start' on or off.",
+        "title": "Set the look approval setting (retired)",
+        "description": "Stores 'Wait for my look approval before UI builds start' for old clients. Retired Nov 13 2026: it has no effect, UI Review is not a gate.",
         "input": {
           "type": "object",
           "properties": {
