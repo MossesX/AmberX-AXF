@@ -781,9 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 03:39 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` note (all) · orchestrator
-- 2026-11-13 03:46 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` s1 done, → running (all) · orchestrator
-- 2026-11-13 03:50 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` s2 done (all) · orchestrator
 - 2026-11-13 03:54 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` s3 done (all) · orchestrator
 - 2026-11-13 03:55 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` PR #547 (all) · builds-live
 - 2026-11-13 03:56 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` note (all) · orchestrator
@@ -1181,6 +1178,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 11:24 UTC · `show-commits-behind-main-on-every-build-table-an` → queued, note (all) · console
 - 2026-11-13 11:24 UTC · `unlink-plan-studio-from-builds-delete-all-plan-s` → queued, note (all) · console
 - 2026-11-13 03:38 UTC · `change-to-move-amberx-web-app-into-the-console-amberx-andr-pr-528-brett-do` s5 done, → built (all) · orchestrator
+- 2026-11-13 11:25 UTC · `change-to-move-amberx-web-app-into-the-console-amberx-andr-pr-528-brett-do` → running, note (all) · pipeline
+- 2026-11-13 11:25 UTC · `change-to-move-amberx-web-app-into-the-console-amberx-andr-pr-528-brett-do` note (all) · orchestrator
+- 2026-11-13 11:25 UTC · `badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad` → running, note (all) · pipeline
 
 ## Token passes (log)
 
