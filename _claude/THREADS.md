@@ -785,7 +785,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 11:03 UTC · `stop-the-molly-guide-from-popping-up-and-talking-every-time-the-console-loads-n` s4 done, → built (all) · orchestrator
 - 2026-11-13 11:04 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` s19 done (all) · orchestrator
 - 2026-11-13 11:06 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` s20 done (all) · orchestrator
 - 2026-11-13 11:07 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` s21 done (all) · orchestrator
@@ -1185,6 +1184,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 17:54 UTC · `tab-groups-choose-how-many-rows-tabs` → running, note (all) · pipeline
 - 2026-11-13 17:54 UTC · `tab-groups-choose-how-many-rows-tabs` branch claude/tab-groups-choose-how-many-rows-tabs (all) · pipeline
 - 2026-11-13 17:54 UTC · `tab-groups-choose-how-many-rows-tabs` note (all) · orchestrator
+- 2026-11-13 17:56 UTC · `full-voice-api-control-type-fields-press` s5 done (all) · orchestrator
 
 ## Token passes (log)
 
