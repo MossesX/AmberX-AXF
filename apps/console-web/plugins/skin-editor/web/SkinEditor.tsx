@@ -180,7 +180,7 @@ export function SkinEditorView() {
         <SelectField label="UI" value={ui ? api.uiKey(ui) : ''} onChange={(k) => { const u = allUis.find((x) => api.uiKey(x) === k); if (u) void choose(u); }} options={[{ value: '', label: 'Pick a UI…' }, ...allUis.map((u) => ({ value: api.uiKey(u), label: `${u.kind}: ${u.label}` }))]} />
         <Button size="sm" icon="eye" title="Click a screen anywhere in the console to load it here" onClick={() => rt.dispatch('skin-editor.pick')}>Pick on screen</Button>
         <Button size="sm" icon="layers" title="Click a control inside the sandbox to edit its tokens" onClick={() => setPicking((p) => !p)} aria-pressed={picking}>{picking ? 'Click a control…' : 'Pick element'}</Button>
-        {element && <Chip tone="accent">{ELEMENT_LABELS[element] ?? element} <button type="button" className="fx-btn fx-btn--sm fx-btn--quiet" aria-label="Every element" onClick={() => { setElement(''); rt.settings.set(ELEMENT_KEY, ''); }}>×</button></Chip>}
+        {element && <><Chip tone="accent">{ELEMENT_LABELS[element] ?? element}</Chip><IconButton icon="x" label="Every element" onClick={() => { setElement(''); rt.settings.set(ELEMENT_KEY, ''); }} /></>}
         <span className={`${P}__grow`} />
         <Button size="sm" icon="undo" disabled={!head?.parent || busy} onClick={() => void undo()}>Undo</Button>
         <Button size="sm" icon="list" title="Browse every token in the system" onClick={() => rt.navigate('token-registry')}>Token registry</Button>
