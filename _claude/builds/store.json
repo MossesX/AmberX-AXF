@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4720,
- "updatedAt": "2026-11-13T18:55:46.038Z",
+ "rev": 4721,
+ "updatedAt": "2026-11-13T18:56:05.245Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -199485,7 +199485,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:38:53.122Z",
-   "updatedAt": "2026-11-13T18:52:04.515Z",
+   "updatedAt": "2026-11-13T18:56:01.316Z",
    "builtAt": "",
    "notes": [
     {
@@ -199550,7 +199550,7 @@
    "pipeline": {
     "queuedAt": "2026-11-13T18:38:55.070Z",
     "queuedBy": "console",
-    "account": "",
+    "account": "mossesx-max-",
     "session": "",
     "slot": "",
     "model": "Opus",
@@ -199572,7 +199572,7 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"42523f40-ad67-40c7-a2c7-fbb1f4b209fc\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "released by the self-check (nothing ran): back in the Queue",
+    "note": "Session on mossesx-max- ended (exit 3) with 10 steps left: back in the Queue (run 1).",
     "route": "",
     "dispatchedAt": "2026-11-13T18:39:57.071Z",
     "planned": {
@@ -199626,12 +199626,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T18:56:01.316Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T18:39:44.852Z",
-     "updatedAt": "2026-11-13T18:39:44.852Z"
+     "updatedAt": "2026-11-13T18:56:02.027Z"
     },
     {
      "id": "s3",
