@@ -7663,6 +7663,18 @@
    "from": "detail",
    "addenda": []
   },
+  "transparency-token-works-every-dialog": {
+   "said": "how come I can't see the transparency of a settings interface dialog? Everything needs to have a token",
+   "at": "2026-11-13T18:26:12.039Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "trim-asset": {
    "said": "new asset type `trim` combining a layout asset and a colour theme asset. Decided: trim is its own swappable asset, and a design package may reference a trim instead of carrying its own layout + colour theme (both forms stay valid). Web + Python; Kotlin twin recorded in PORTING.md (Android hold).",
    "at": "2026-10-27",

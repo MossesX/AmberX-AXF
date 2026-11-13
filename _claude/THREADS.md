@@ -785,9 +785,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 11:34 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` note (all) · foreign-write
-- 2026-11-13 11:34 UTC · `unlink-plan-studio-from-builds-delete-all-plan-s` PR #570 (all) · builds-live
-- 2026-11-13 11:35 UTC · `unlink-plan-studio-from-builds-delete-all-plan-s` s3 done, → complete, note (all) · foreign-write
 - 2026-11-13 11:34 UTC · `unlink-plan-studio-from-builds-delete-all-plan-s` s3 done, → built (all) · orchestrator
 - 2026-11-13 11:34 UTC · `unlink-plan-studio-from-builds-delete-all-plan-s` note (all) · orchestrator
 - 2026-11-13 11:35 UTC · `unlink-plan-studio-from-builds-delete-all-plan-s` note (all) · orchestrator
@@ -1185,6 +1182,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 18:23 UTC · `all-settings-interfaces-open-floating` s2 done (all) · orchestrator
 - 2026-11-13 18:25 UTC · `decision-dialog-ui-review-other` note (all) · orchestrator
 - 2026-11-13 18:26 UTC · `decision-dialog-ui-review-other` → pending, note (all) · pipeline
+- 2026-11-13 18:26 UTC · `all-settings-interfaces-open-floating` note (all) · claude-voice
+- 2026-11-13 18:26 UTC · `transparency-token-works-every-dialog` added (0 steps) (all) · console
+- 2026-11-13 18:26 UTC · `transparency-token-works-every-dialog` → queued, note (all) · console
 
 ## Token passes (log)
 

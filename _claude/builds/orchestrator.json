@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T18:26:07.475Z",
+ "updatedAt": "2026-11-13T18:26:20.751Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -126187,7 +126187,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:03:04.047Z",
-   "updatedAt": "2026-11-13T18:23:44.409Z",
+   "updatedAt": "2026-11-13T18:26:07.880Z",
    "builtAt": "",
    "notes": [
     {
@@ -126205,6 +126205,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-all-settings-interfaces-open-floating--gina, own login copy)",
      "at": "2026-11-13T18:10:45.003Z"
+    },
+    {
+     "text": "Root cause found (Brett): --fx-opacity-glass / opacityGlass only applies where a component's customization has glass:true (framework/core/engines/customize.ts case 'glass'). Settings dialogs and most panels never set it, so the transparency token does nothing there. Fix: every dialog, settings interface, panel and floating surface gets a 'glass' token-driven background by default (surface mixed with opacityGlass + blur), controllable per surface type via tokens (e.g. glass on/off per surface, opacity per surface), and per instance in Quick settings. Rule: everything visual must be driven by a token; add a check that fails on hard-coded backgrounds/opacity in dialogs and settings.",
+     "at": "2026-11-13T18:26:07.880Z"
     }
    ],
    "approvals": [],
@@ -127760,6 +127764,43 @@
      "createdAt": "2026-11-13T18:21:42.427Z"
     }
    ]
+  },
+  {
+   "id": "transparency-token-works-every-dialog",
+   "title": "Transparency token works on every dialog and settings window",
+   "category": "",
+   "detail": "Root cause: --fx-opacity-glass / opacityGlass only applies where a component's customization has glass:true (framework/core/engines/customize.ts case 'glass'). Settings dialogs and most panels never set it, so the transparency token does nothing there.\nFix: every dialog, settings interface, panel, popover and floating surface uses a token-driven glass background by default (surface mixed with opacityGlass + blur). Add per-surface-type tokens (glass on/off and opacity per surface type: dialog, settings, panel, menu, toolbar, banner) in tokens.style, editable in Token Control and per instance in Quick settings. Rule: everything visual is driven by a token; add a check that fails on hard-coded backgrounds/opacity. Follows skins. Tests, Shipped features.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-13T18:26:12.039Z",
+   "updatedAt": "2026-11-13T18:26:14.211Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T18:26:14.211Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "how come I can't see the transparency of a settings interface dialog? Everything needs to have a token",
+    "at": "2026-11-13T18:26:12.039Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }
