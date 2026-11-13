@@ -88,6 +88,13 @@ and absorbs it back under one lock (`withStore`). The old files are **read-only 
 (`$export` note inside); a file written by something else since the last export is a *foreign write*, absorbed
 **newer-only** (adds and updates builds whose `updatedAt` is newer, never reverts or removes) before the next export.
 
+The orchestrator export is a **repo file only for a profile the repo's `framework/plan/profiles.json` lists** (`all` →
+`_claude/builds/orchestrator.json`, others → `_claude/builds/profiles/<id>/orchestrator.json`; `persist.mjs hasRepoExport`).
+A profile registered only on the hub (a project's profile, e.g. `test-sandbox` from project-seed) exports into its
+shared-data folder (`framework/plan/profiles/<id>/_claude/builds/orchestrator.json` under the data root) and never onto
+main: `check-profiles.mjs` fails CI for any unregistered folder, and builds-live takes such a folder off main on the next
+publish (Nov 13 2026, main-ci-red-test-sandbox-profile-export).
+
 ## Versioning
 
 Every write: store `rev` + 1, changed records `rev` + 1, one line in `_claude/builds/journal/<YYYY-MM>.jsonl` with each
