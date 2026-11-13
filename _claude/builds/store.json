@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4120,
- "updatedAt": "2026-11-13T07:15:15.839Z",
+ "rev": 4121,
+ "updatedAt": "2026-11-13T07:15:31.884Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -180187,10 +180187,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu",
-   "pr": "",
+   "pr": "#554",
    "priority": "P0",
    "createdAt": "2026-11-13T06:57:42.497Z",
-   "updatedAt": "2026-11-13T07:14:43.638Z",
+   "updatedAt": "2026-11-13T07:15:18.634Z",
    "builtAt": "",
    "notes": [
     {
@@ -180819,7 +180819,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
