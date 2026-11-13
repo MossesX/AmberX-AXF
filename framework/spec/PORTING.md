@@ -223,3 +223,11 @@ The guide asks agent `gizmo` (Molly is no longer an agent, Nov 3 decision; the `
 `gizmo.ask` / `gizmo.replay` / `gizmo.next` / `gizmo.prev` / `gizmo.close` with the `molly.*` names kept as hidden aliases.
 AmberX on Android runs the web app, so its texts follow already. A native Compose player of walkthrough@1, when the Android side
 resumes, replays the same rule: no auto-open on start, opt-in only, nothing older than the app's start, and the Gizmo names.
+
+## Deferred: skin animations (Nov 13 2026)
+
+Build skin-animations-swatches-skin-switch adds behaviour-theme `motion.swatches / skinSwitch / picker / animSpeed /
+animIntensity` (core/engines/behavior.ts: `skinAnimationVars`, `withAnimationPrefs`, `animationState`,
+`setAnimationPref`) and the colour maths in core/engines/swatches.ts (`shadesOf`, `mixHex`, `skinSwatches`,
+`sweepOrigin`); fixture framework/spec/fixtures/skin-animations.json. Kotlin twin deferred (no new Android work): the
+Compose behaviour reader ignores the new fields (defaults apply), so Android skins stay still until it is ported.

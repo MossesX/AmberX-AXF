@@ -49,6 +49,8 @@ import { navFieldErrors } from '../core/engines/navstyle-rules.mjs';
 import { CHROME_KINDS, DEFAULT_MERGE, DEFAULT_PRESETS, MERGE_MODES, OPEN_TARGETS, TOOLBAR_LOCATIONS, TOOLBAR_SLOT_COUNT, XLAYOUT_CONTRACT, XLAYOUT_LIMITS, dockRulesOf, guestHidden, guestTakes, guestUrl, guestUserAgent, idePresets, normalizeXLayout, nsId as xNsId, openTargetFor, parseToolbarItem, splitNs, stripNs, visibleToolbars, xlayoutErrors } from '../core/engines/xlayout';
 import { CHROME_CONTRACT, CHROME_LIMITS, WIDGET_TONES as CHROME_WIDGET_TONES, WIDGET_TYPES as CHROME_WIDGET_TYPES, activeNav, chromePicks, emptyChrome, mergeChrome, parseChromeBundle, routePick, type ChromeBundle } from '../core/engines/chrome';
 import { intentCommand, voiceIntent, voiceReply } from '../core/engines/console-control-voice.mjs';
+import { animationState, behaviorErrors, behaviorStyle, setAnimationPref, withAnimationPrefs } from '../core/engines/behavior';
+import { mixHex, shadesOf, skinSwatches, sweepOrigin } from '../core/engines/swatches';
 import { CONSOLE_CONTROL_CODES, CONSOLE_CONTROL_DEFAULT_CAN, CONSOLE_CONTROL_KINDS, CONSOLE_CONTROL_TARGETS_FRAME, CONSOLE_CONTROL_VERB_IDS, childAddress, consoleControlErrors, consoleControlFailure, consoleControlResult, failureOf, focusOptions, formatAddress, listTargets, nearestRegisteredParent, nearestTargets, normalizeConsoleControl, parseAddress, resolveAddress, resolveForVerb, scrollState, scrollStep, searchTargets, splitTabId, tabAddressId, type AddressSegment, type ConsoleControlScrollDir, type ConsoleControlVerb, type ScrollState, type TargetSnapshot } from '../core/engines/console-control';
 import { addonRisks, agentToAddon, bm25Rank, chunkText, composeSystemPrompt, fillToolTemplate, fillWorkflowTemplate, memoryTokens, parseRouterPick, resolveMemory, stripAddonRisks, trimMemory, validateAddon, validateAgentItem, type AddonBundle, type AgentCollection } from '../core/agents';
 
@@ -2298,6 +2300,33 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
       confirm: voiceReply({ verb: 'press' }, { ok: false, code: 'confirmation_required', message: 'x' }),
       noConsole: voiceReply({ verb: 'open' }, { ok: false, code: 'unavailable', message: 'x', openUrl: 'https://c/' }),
       failed: voiceReply({ verb: 'press' }, { ok: false, code: 'denied', message: 'needs Brett' }),
+    },
+  });
+}
+
+// Skin animations (build skin-animations-swatches-skin-switch): behaviour-theme animation fields, the Animations
+// settings overlay, and the swatch / sweep colour maths.
+{
+  const fluid = { motion: { speed: 'normal', easing: 'spring', reduced: 'system', entrance: 'scale' } };
+  const ripple = { motion: { swatches: 'ripple', skinSwitch: 'sweep', picker: 'pop', animSpeed: 200, animIntensity: 30 } };
+  write('skin-animations.json', {
+    style: { default: behaviorStyle({}), fluid: behaviorStyle(fluid), ripple: behaviorStyle(ripple), reduced: behaviorStyle(fluid, true), still: behaviorStyle({ motion: { animIntensity: 0 } }) },
+    errors: { ok: behaviorErrors(ripple), bad: behaviorErrors({ motion: { swatches: 'spin', animSpeed: 9000, animIntensity: 'lots' } }) },
+    prefs: {
+      set: setAnimationPref({}, 'swatches', 'pop'),
+      speed: setAnimationPref({ swatches: 'pop' }, 'speed', '150'),
+      back: setAnimationPref({ swatches: 'pop', speed: 150 }, 'swatches', 'skin'),
+      bad: setAnimationPref({}, 'picker', 'spin'),
+      unknown: setAnimationPref({}, 'glow', 'on'),
+      clamp: setAnimationPref({}, 'intensity', 500),
+      overlay: withAnimationPrefs(ripple, { swatches: 'wave', intensity: 80 }).motion,
+    },
+    state: { default: animationState({}, {}), own: animationState(ripple, { picker: 'off', speed: 50 }), reduced: animationState(fluid, {}, true) },
+    colours: {
+      mixDark: mixHex('#3366cc', -0.5), mixLight: mixHex('#3366cc', 0.5), notHex: mixHex('var(--fx-accent)', 0.5),
+      shades5: shadesOf('#3366CC', 5), shades4: shadesOf('#3366cc', 4), shadesNotHex: shadesOf('red', 3),
+      skin: skinSwatches({ bg: '#101010', surface: '#202020', surface2: '#202020', accent: '#ff8800', text: '#eeeeee' }), none: skinSwatches(undefined),
+      sweepTap: sweepOrigin({ x: 900, y: 100 }, { w: 1000, h: 800 }), sweepNone: sweepOrigin(null, { w: 1000, h: 800 }), sweepOut: sweepOrigin({ x: -5, y: 2000 }, { w: 1000, h: 800 }),
     },
   });
 }

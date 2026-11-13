@@ -33,7 +33,8 @@ import { STYLE_PACKAGE_TYPE, stepPackage, stylePackageSlots, type StylePackageDa
 import { appMenuSearchEntries, chromeToggleItems, compileAppMenu, compileProviderItems, mergeAppMenu, resolveChecked, type AppMenuContribution, type AppMenuEnv, type CompiledAppMenu, type CompiledMenuItem, type MergedAppMenu, type MenuSearchEntry, type ProviderOptions } from './engines/appmenu';
 import { backToSkin, composeLookAt, globalSkinOf, isSubScopeKey, lookAfterChange, newAppLook, normalizeSkin, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, setInheritSkin, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorOf, skinCoverage, skinCovers, skinEntries, skinFromDesignPackage, skinScopeDomId, skinScopeOf, snapshotLook, undoRestore, SKIN_COLOR_SLOT, SKIN_ICON_PACK_KEY, SKIN_TYPE, type AppLookDocument, type AppLookStore, type ComposedLook, type CoverageRow, type ResolvedSkin, type SkinColor, type SkinData, type SkinEntry, type SkinScope, type SkinScopeState, foldLegacyPicks, isFoldedPickType, lookNeedsMigration, migrateLookSettings, parseLegacyLook, settingsNeedMigration, skinSlots, isRetiredLookKey, LEGACY_LOOK_KEY, SKIN_SWAPPABLE_SECTION } from './engines/skin';
 import { DESIGN_APPLIED_KEY, DESIGN_OVERRIDABLE, DESIGN_OVERRIDES_KEY, DESIGN_PACKAGE_TYPE, PACKAGE_APPLIED_KEY, captureDesignPackage, designLookSlots, isRetiredLookSetting, designPackageSlots, isAppearanceSetting, normalizeDesignOverrides, normalizeDesignPackage, overrideAfterPick, packageSettingsPlan, type DesignOverrides } from './engines/designpackage';
-import { behaviorStyle, confirmBeforeDelete, normalizeBehavior, vibrationPattern } from './engines/behavior';
+import { ANIMATION_PREFS_KEY, animationState, behaviorStyle, confirmBeforeDelete, normalizeBehavior, setAnimationPref, skinAnimationVars, vibrationPattern, withAnimationPrefs, type AnimationState } from './engines/behavior';
+import { sweepOrigin } from './engines/swatches';
 import { navStyleOutput, normalizeNavStyle, type NavStyleData } from './engines/navstyle';
 import { animationFor, brandingVars, glyphFor, markSvg, resolveBranding, type Glyph, type MarkAnimation, type ResolvedBrand } from './engines/brand';
 import { INTERFACE_SETTING_KEY, INTERFACE_TYPE, captureInterface, isScopeId, resolveInterface, scopeAttrs, scopeSheet, scopeVarsCss, type InterfaceData, type ResolvedInterface } from './engines/interface';
@@ -751,8 +752,79 @@ export class AxfRuntime {
     if (!cur) { this.toast("This app's look can't be read from axHub right now.", 'warning', 'Appearance'); return false; }
     this.lookPreview = null;
     this.saveLook(next(cur));
+    this.withSkinSwitchFx(() => { this.applyAppearance(this.lastAppearance); this.bumpLook(); });
+    return true;
+  }
+
+  /* ---------------- skin animations (engines/behavior.ts, engines/swatches.ts) ---------------- */
+
+  private lastTap: { x: number; y: number; at: number } | null = null;
+  private skinSwitching = false;
+  private tapTracked = false;
+
+  /** Remember the last tap / click so the skin-switch ripple starts where you tapped. */
+  private trackTaps(): void {
+    if (this.tapTracked || typeof globalThis.document === 'undefined') return;
+    this.tapTracked = true;
+    globalThis.document.addEventListener('pointerdown', (e: PointerEvent) => { this.lastTap = { x: e.clientX, y: e.clientY, at: Date.now() }; }, { capture: true, passive: true });
+  }
+
+  /** The skin's behaviour theme with this app's animation picks laid over it. */
+  private animatedBehavior() {
+    return withAnimationPrefs(this.assetOrNull('behavior-theme' as AssetType)?.data, this.settings.get(ANIMATION_PREFS_KEY));
+  }
+
+  /**
+   * Paint a look change through the skin-switch animation: the new colours ripple out from the tap point, sweep across
+   * or fade in (View Transitions API). Off, reduced motion, no API or a switch already running: it just paints.
+   */
+  private withSkinSwitchFx(paint: () => void): void {
+    this.trackTaps();
+    const doc = globalThis.document as (Document & { startViewTransition?: (cb: () => void) => { finished?: Promise<unknown> } }) | undefined;
+    const st = animationState(this.assetOrNull('behavior-theme' as AssetType)?.data, this.settings.get(ANIMATION_PREFS_KEY), this.prefersReducedMotion());
+    const fx = st.animations.find((a) => a.key === 'skinSwitch');
+    if (!doc || typeof doc.startViewTransition !== 'function' || !fx?.on || this.skinSwitching) { paint(); return; }
+    const root = doc.documentElement;
+    const tap = this.lastTap && Date.now() - this.lastTap.at < 3000 ? this.lastTap : null;
+    const o = sweepOrigin(tap, { w: globalThis.innerWidth, h: globalThis.innerHeight });
+    for (const [k, v] of Object.entries(skinAnimationVars(this.animatedBehavior()))) root.style.setProperty(k, v);
+    root.style.setProperty('--fx-anim-sweep-x', o.x);
+    root.style.setProperty('--fx-anim-sweep-y', o.y);
+    root.setAttribute('data-fx-skin-switching', fx.value);
+    root.setAttribute('data-fx-sweep-dir', o.dir);
+    this.skinSwitching = true;
+    const done = () => { this.skinSwitching = false; root.removeAttribute('data-fx-skin-switching'); root.removeAttribute('data-fx-sweep-dir'); };
+    try {
+      const t = doc.startViewTransition(() => { paint(); });
+      if (t?.finished) t.finished.then(done, done); else done();
+    } catch { done(); paint(); }
+  }
+
+  /** Settings → Appearance → Animations, as data: each animation, the skin's value, this app's pick, speed, intensity. */
+  animations(): AnimationState {
+    return animationState(this.assetOrNull('behavior-theme' as AssetType)?.data, this.settings.get(ANIMATION_PREFS_KEY), this.prefersReducedMotion());
+  }
+
+  /**
+   * Set one animation pick for this app: `swatches` / `skinSwitch` / `picker` to one of its options (or `off`), `speed`
+   * (25 to 400, percent of normal) or `intensity` (0 to 100); `skin` goes back to the skin's own.
+   */
+  setAnimation(key: string, value: unknown): boolean {
+    if (this.lockedByAppearance('assets.swap')) { this.lockedToast(); return false; }
+    const next = setAnimationPref(this.settings.get(ANIMATION_PREFS_KEY), key, value);
+    if (!next) { this.toast(`"${String(value)}" isn't a value for the ${key} animation.`, 'warning', 'Animations'); return false; }
+    if (Object.keys(next).length) this.settings.set(ANIMATION_PREFS_KEY, next as unknown as SettingValue); else this.settings.clear(ANIMATION_PREFS_KEY);
     this.applyAppearance(this.lastAppearance);
-    this.bumpLook();
+    this.terminal.ok('animations', value === 'skin' || value == null ? `${key}: the skin's` : `${key} = ${String(value)}`);
+    return true;
+  }
+
+  /** Every animation back to the skin's. */
+  resetAnimations(): boolean {
+    if (this.lockedByAppearance('assets.swap')) { this.lockedToast(); return false; }
+    this.settings.clear(ANIMATION_PREFS_KEY);
+    this.applyAppearance(this.lastAppearance);
+    this.terminal.ok('animations', "all back to the skin's");
     return true;
   }
 
@@ -840,8 +912,7 @@ export class AxfRuntime {
     if (want && !this.skinData(want)) return false;
     if (want && (!this.can('assets.swap') || this.lockedByAppearance('assets.swap') || !this.ensureLook())) return false;
     this.lookPreview = want;
-    this.applyAppearance(this.lastAppearance);
-    this.bumpLook();
+    this.withSkinSwitchFx(() => { this.applyAppearance(this.lastAppearance); this.bumpLook(); });
     return true;
   }
 
@@ -2603,7 +2674,8 @@ export class AxfRuntime {
     // behaviour last among the theme vars: its motion speed (when not "theme") wins over the style theme's
     const reducedMotion = this.prefersReducedMotion();
     const behavior = this.assetOrNull('behavior-theme' as AssetType)?.data;
-    parts.push(behaviorStyle(behavior, reducedMotion));
+    // Settings → Appearance → Animations: this app's own animation picks over the skin's (engines/behavior.ts)
+    parts.push(behaviorStyle(withAnimationPrefs(behavior, this.settings.get(ANIMATION_PREFS_KEY)), reducedMotion));
     // nav-style@1 last (core/engines/navstyle.ts): only for a nav that opts in (nav-menu `navStyle: true`); it may set
     // the nav width (resized or collapsed to icons), so it wins over the layout's
     const navStyle = this.navStyleData();
@@ -2971,6 +3043,10 @@ export class AxfRuntime {
     // Skins (engines/skin.ts). skin.use:<id> turns Use skin on for this app, skin.off goes back to its own look.
     a.register('skin.use', ([id]) => { this.useSkin(true, id || undefined); }, { label: 'Use a skin in this app', requires: 'assets.swap', params: true });
     a.register('skin.off', () => { this.useSkin(false); }, { label: "Back to this app's own look", requires: 'assets.swap' });
+    a.register('animations.set', ([key, value]) => { if (key) this.setAnimation(key, value ?? 'skin'); }, { label: 'Set a skin animation (swatches, skinSwitch, picker, speed, intensity)', requires: 'assets.swap', params: true });
+    a.register('animations.off', ([key]) => { if (key) this.setAnimation(key, 'off'); else for (const k of ['swatches', 'skinSwitch', 'picker']) this.setAnimation(k, 'off'); }, { label: 'Turn a skin animation off (all when none named)', requires: 'assets.swap', params: true });
+    a.register('animations.reset', () => { this.resetAnimations(); }, { label: "Skin animations back to the skin's", requires: 'assets.swap' });
+    a.register('animations.open', () => { this.actions.dispatch('settings.open:appearance', { runtime: this }); }, { label: 'Open Settings → Appearance → Animations' });
     // skin.color:<colour theme> switches the colour theme inside the skin in force (the skin stays the same skin; nothing
     // is created); skin.color:default goes back to the skin's own colours; skin.color:<ui|plugin>:<id>:<theme|default> = one scope
     a.register('skin.color', ([x, id, theme]) => {

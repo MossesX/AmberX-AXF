@@ -237,6 +237,9 @@ export const BEHAVIOR_ENUMS = {
   'motion.easing': ['standard', 'emphasized', 'linear', 'spring', 'bounce'],
   'motion.reduced': ['system', 'always', 'never'],
   'motion.entrance': ['theme', 'none', 'fade', 'rise', 'scale'],
+  'motion.swatches': ['wave', 'ripple', 'pop', 'off'],
+  'motion.skinSwitch': ['ripple', 'sweep', 'fade', 'off'],
+  'motion.picker': ['fan', 'pop', 'off'],
   'interaction.hover': ['theme', 'none', 'tint', 'lift', 'glow', 'underline'],
   'interaction.press': ['theme', 'none', 'shrink', 'darken', 'ripple'],
   'interaction.focusRing': ['auto', 'always', 'never'],
@@ -253,6 +256,8 @@ export const BEHAVIOR_ENUMS = {
   'feedback.confirmDelete': ['always', 'risky', 'never'],
 };
 export const BEHAVIOR_RANGES = {
+  'motion.animSpeed': [25, 400],
+  'motion.animIntensity': [0, 100],
   'interaction.longPressMs': [250, 1500],
   'interaction.doubleTapMs': [150, 700],
   'interaction.dragThreshold': [0, 24],
