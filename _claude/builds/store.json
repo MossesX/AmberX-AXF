@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4837,
- "updatedAt": "2026-11-13T19:42:05.387Z",
+ "rev": 4838,
+ "updatedAt": "2026-11-13T19:42:23.537Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -200572,7 +200572,7 @@
    "pr": "#633",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:27.359Z",
-   "updatedAt": "2026-11-13T19:41:04.838Z",
+   "updatedAt": "2026-11-13T19:42:08.702Z",
    "builtAt": "2026-11-13T19:41:04.838Z",
    "notes": [
     {
@@ -200638,6 +200638,10 @@
     {
      "text": "Reconciler: PR #633 names s1, s2, s3, s4, s5, s6, s7 done",
      "at": "2026-11-13T19:41:04.838Z"
+    },
+    {
+     "text": "Headless run axf-console-app-part-3-native-bridge-mic--gina: brief only · start 11.5K tokens ($0.03) · cost $3.57 · 47 turns · 6 tools, MCP none",
+     "at": "2026-11-13T19:42:08.702Z"
     }
    ],
    "approvals": [
@@ -200871,7 +200875,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
