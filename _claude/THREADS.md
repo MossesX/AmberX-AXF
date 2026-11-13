@@ -787,10 +787,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 18:08 UTC · `quick-settings-pinned-collapsible-pane` → queued, note (all) · builds-live
-- 2026-11-13 18:08 UTC · `per-instance-settings-window-picker` PR #622 (all) · builds-live
-- 2026-11-13 18:08 UTC · `quick-settings-pinned-collapsible-pane` note (all) · orchestrator
-- 2026-11-13 18:08 UTC · `per-instance-settings-window-picker` → queued, note (all) · pipeline
 - 2026-11-13 18:09 UTC · `per-instance-settings-window-picker` note (all) · orchestrator
 - 2026-11-13 18:09 UTC · `restore-asset-designer-plugin-merged-nov` → running, note (all) · pipeline
 - 2026-11-13 18:09 UTC · `restore-asset-designer-plugin-merged-nov` branch claude/restore-asset-designer-plugin-merged-nov (all) · pipeline
@@ -1187,6 +1183,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 19:48 UTC · `skin-config-panel-merge-main-and-land` note (all) · builds-live
 - 2026-11-13 19:48 UTC · `skins-plugin-merge-main-and-land` note (all) · builds-live
 - 2026-11-13 19:49 UTC · `console-app-part-4-console-side-safe` note (all) · orchestrator
+- 2026-11-13 19:49 UTC · `skin-animations-animated-colour-swatches` added (0 steps) (all) · console
+- 2026-11-13 19:49 UTC · `skins-plugin-merge-main-and-land` note (all) · orchestrator
+- 2026-11-13 19:49 UTC · `skin-animations-swatches-skin-switch` added (0 steps) (all) · console
+- 2026-11-13 19:49 UTC · `skin-animations-swatches-skin-switch` → queued, note (all) · console
 
 ## Token passes (log)
 

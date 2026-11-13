@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4858,
- "updatedAt": "2026-11-13T19:49:20.709Z",
+ "rev": 4859,
+ "updatedAt": "2026-11-13T19:49:38.793Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -203989,7 +203989,13 @@
     "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Fable",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-13T19:49:29.549Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -204075,7 +204081,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -204099,7 +204105,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T19:47:44.815Z",
-   "updatedAt": "2026-11-13T19:48:35.732Z",
+   "updatedAt": "2026-11-13T19:49:27.897Z",
    "builtAt": "",
    "notes": [
     {
@@ -204109,6 +204115,10 @@
     {
      "text": "Brett: keep BOTH the built-in skins panel (Settings > Appearance / theme-manager) and the Skins plugin. When the Skins plugin is installed or enabled, it automatically disables and hides the built-in skins panel. When the plugin is removed or disabled, the built-in panel comes back. No duplicate skin UI is ever shown.",
      "at": "2026-11-13T19:48:35.732Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"5c4edfd5-147d-4274-a380-ce2150667637\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-13T19:49:27.897Z"
     }
    ],
    "approvals": [],
@@ -204135,6 +204145,215 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
+    "split": {
+     "at": "2026-11-13T19:49:27.897Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"5c4edfd5-147d-4274-a380-ce2150667637\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
+    },
+    "splitRequested": "",
+    "note": "steps made by rules: review them",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": {
+     "model": "Fable",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-13T19:49:29.549Z",
+     "why": "subscription account mossesx-max-"
+    },
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwfe4mhl04rgk2",
+     "title": "",
+     "text": "Branch claude/skins-plugin-own-removable-console clashed with main in framework/spec/gen-fixtures.mts (merge aborted, main untouched). Merge origin/main and keep both sides' fixture entries, regenerate fixtures, run tests, push, then land on main. The Skins plugin is its own removable console plugin and screen for changing skins.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T19:49:27.897Z",
+     "updatedAt": "2026-11-13T19:49:27.897Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwfe4mhl05tg2g",
+     "title": "",
+     "text": "land the skins plugin",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T19:49:27.897Z",
+     "updatedAt": "2026-11-13T19:49:27.897Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwfe4mhl06lrze",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/skins-plugin-merge-main-and-land.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/skins-plugin-merge-main-and-land.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T19:49:27.897Z",
+     "updatedAt": "2026-11-13T19:49:27.897Z"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 823
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 6,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-13T19:49:27.897Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "skin-animations-animated-colour-swatches",
+   "title": "Skin animations: animated colour swatches, skin-switch sweep, swatch picker",
+   "category": "",
+   "detail": "Cool animations for skins, all token-driven (duration, easing, intensity tokens) and respecting reduced-motion:\n- Skins gallery (Skins plugin and the built-in skins panel): each skin card shows a row of animated colour swatches that ripple/wave on hover or tap.\n- Switching skins: the new colours sweep or ripple across the screen from where you tapped, instead of snapping.\n- Colour pickers in token editors, UI Manager and Quick settings: swatches pop and fan out into their shades when picked, with a smooth morph to the new colour.\n- Animations are assets, so they're swappable and per-skin, with an Animations section in settings (on/off per animation, speed).\n- Full API: REST/MCP/CLI/voice. Tests, help, Shipped features.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-13T19:49:22.438Z",
+   "updatedAt": "2026-11-13T19:49:23.715Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "where can I put some cool animations, like color swatches; make a separate build right now",
+    "at": "2026-11-13T19:49:22.438Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 824
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 2,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "skin-animations-swatches-skin-switch",
+   "title": "Skin animations: swatches, skin-switch sweep, picker",
+   "category": "",
+   "detail": "Cool animations for skins, all token-driven (duration, easing, intensity tokens) and respecting reduced-motion:\n- Skins gallery (Skins plugin and the built-in skins panel): each skin card shows a row of animated colour swatches that ripple/wave on hover or tap.\n- Switching skins: the new colours sweep or ripple across the screen from where you tapped, instead of snapping.\n- Colour pickers in token editors, UI Manager and Quick settings: swatches pop and fan out into their shades when picked, with a smooth morph to the new colour.\n- Animations are assets, so they're swappable and per-skin, with an Animations section in settings (on/off per animation, speed).\n- Full API: REST/MCP/CLI/voice. Tests, help, Shipped features.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-13T19:49:31.102Z",
+   "updatedAt": "2026-11-13T19:49:36.604Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T19:49:36.604Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "where can I put some cool animations, like color swatches; make a separate build right now",
+    "at": "2026-11-13T19:49:31.102Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "2026-11-13T19:49:33.000Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
     "split": null,
     "splitRequested": "",
     "note": "waiting for the split before it can start",
@@ -204152,11 +204371,11 @@
     "all"
    ],
    "order": {
-    "all": 823
+    "all": 824
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

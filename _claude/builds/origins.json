@@ -7072,6 +7072,30 @@
    "from": "",
    "addenda": []
   },
+  "skin-animations-animated-colour-swatches": {
+   "said": "where can I put some cool animations, like color swatches; make a separate build right now",
+   "at": "2026-11-13T19:49:22.438Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "skin-animations-swatches-skin-switch": {
+   "said": "where can I put some cool animations, like color swatches; make a separate build right now",
+   "at": "2026-11-13T19:49:31.102Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "skin-axhub-override-switch-greyed-out": {
    "said": "under 'inherit from axHub only' there'll be an override switch; clicking it automatically turns off axHub mode, you only have one or the other; every screen where you'd change properties is greyed out with a note saying you can't edit this, but click here if you insist, and it will no longer refresh and inherit its data from axHub",
    "at": "2026-11-13T18:56:15.400Z",
