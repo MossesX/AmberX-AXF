@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3936,
- "updatedAt": "2026-11-13T01:52:22.819Z",
+ "rev": 3937,
+ "updatedAt": "2026-11-13T01:52:42.077Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -174012,7 +174012,7 @@
    "branch": "claude/server-every-failed-merge-alerts-brett-immediately-and-retries-by-itself-until",
    "pr": "",
    "createdAt": "2026-11-12T21:53:13.014Z",
-   "updatedAt": "2026-11-13T01:51:28.441Z",
+   "updatedAt": "2026-11-13T01:52:39.971Z",
    "builtAt": "",
    "notes": [
     {
@@ -174132,12 +174132,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T01:52:39.971Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T21:53:13.015Z",
-     "updatedAt": "2026-11-12T21:53:13.015Z"
+     "updatedAt": "2026-11-13T01:52:40.218Z"
     },
     {
      "id": "s3",
@@ -174170,7 +174170,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
