@@ -412,3 +412,15 @@ builds merge driver installed there (`builds-live.mjs install`). PR heads fetche
   `AXF_BUILD_PROFILE=all` for the whole workflow, which overrides the profile switch the test makes. The test now drops
   that pin from the wizard's env (reproduced with the pin, passes with the fix).
 - #539: merged clean.
+- #544: main had landed "Tap to confirm in every settings interface" (f9f218a89) after #544 branched: both reworked
+  `core/engines/tapconfirm.ts`, `react/tapConfirm.ts`, the chrome settings field, the Toolbars tab and their test.
+  One model now: the `tapConfirm` field on every chrome kind is main's (inherit / on / off, `instanceOnly`) and is
+  `quick` on toolbar, tab group, nav and app menu (#544's duplicate per-type fields dropped; asset-types.json text says
+  inherit, old `auto` reads as inherit). Each kind keeps main's own switch (`axf.toolbars.tapConfirm`,
+  `axf.tapConfirm.<kind>`), now 3-way per #544: Follow labels (default) / Always / Never (old booleans read as on/off);
+  `tapconfirm.kind:<type>:<labels|on|off>`. Precedence: item's dialog choice → a toolbar's older per-toolbar key → the
+  kind switch → label visibility, and `tapConfig` reports which decided (#544's source). Web host: main's surface
+  detection (6 kinds) + #544's `labelsHiddenOf`; `scopeOf` rebuilt on surfaces. Two #544 expectations changed to the
+  shipped behaviour: the per-toolbar key no longer beats the dialog choice, and an app-menu drop-down taps to confirm
+  like the rest of the app menu. check-tapconfirm 111/111; fixture regenerated, check-chrome-settings 284 checks.
+- #545: merged clean.
