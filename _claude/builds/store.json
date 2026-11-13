@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4758,
- "updatedAt": "2026-11-13T19:09:58.505Z",
+ "rev": 4759,
+ "updatedAt": "2026-11-13T19:10:16.941Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -197783,6 +197783,10 @@
     {
      "text": "Headless run axf-decision-dialog-ui-review-other--paulie: brief only · start 11.4K tokens ($0.03) · cost $10.24 · 186 turns · 6 tools, MCP none",
      "at": "2026-11-13T19:09:51.691Z"
+    },
+    {
+     "text": "Phase done: PR #635, UI Review r-20261113-89d7348e. Dispatcher bug: two sessions (Paulie 18:19, Sully 18:20) ran this build in the same worktree; Sully overwrote 3 files and ended uncommitted at 18:25. Restored; ~10 min lost.",
+     "at": "2026-11-13T19:09:35.834Z"
     }
    ],
    "approvals": [],
