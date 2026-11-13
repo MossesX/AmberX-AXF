@@ -286,6 +286,7 @@ def setting_state(spec: dict[str, Any]) -> dict[str, Any]:
 
 def set_server_setting(spec: dict[str, Any], value: Any, by: str) -> dict[str, Any]:
     """Change a server-side setting without a browser (the plugin's own service applies its rules too)."""
+    refuse_person_only(spec, value)  # owner-only and locked refuse before anything is read
     current = server_setting_value(spec)
     refuse_person_only(spec, value, current)
     v = validate_setting(spec, value, current)
