@@ -1,2 +1,2 @@
 - AmberX voice code: apps/amberx-droid/src/plugins/voice, src/plugins/commands. Molly hand-off: plugins/ai.
-- Android framework code is on hold; the Capacitor shell is allowed.
+- Android/Kotlin twins are built in parallel with the web side; the Capacitor shell too.

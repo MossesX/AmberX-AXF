@@ -52,6 +52,8 @@ Regenerate fixtures after changing a reference engine: `npx -y tsx framework/spe
 
 ## Port status
 
+**Android twins are built in parallel (Nov 13 2026, Brett).** The Oct 21 2026 Android hold is lifted: a build that adds or changes a cross-port contract builds its Kotlin twin (kernel engine, Compose UI, conformance test on the same fixture) alongside the web side. The "deferred" and "Android on hold" entries below are a backlog to clear; when a twin lands, remove its entry. Don't add new deferred entries for twins.
+
 | Port | Stack | Status |
 | --- | --- | --- |
 | web | React + TypeScript (Vite) | built — reference engines |

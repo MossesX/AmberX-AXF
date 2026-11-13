@@ -484,7 +484,7 @@ You are working on **${P.displayName}** (GitHub ${P.repo}, ${P.visibility}). ${P
 Rules that always apply (full text in the rules files):
 - Before any build, recommend Fable, Opus or Sonnet with one line of why and wait for Brett's pick; check the pending list (\`framework/plan/pending.json\`, or the Dev Console MCP \`pending_list\`).
 - Report every build to the Build manager on axHub before starting (\`_claude/memory/docs/build-reporting.md\`; in claude.ai write the entry with \`axhub.memory_write\`).
-- Everything visible is an asset (asset@1); UIs read only engine-compiled tokens. Engine compatibility across ports is a hard constraint (Android work is on hold except where the rules say).
+- Everything visible is an asset (asset@1); UIs read only engine-compiled tokens. Engine compatibility across ports is a hard constraint (Android/Kotlin twins are built in parallel with the web side).
 - No secrets anywhere (repo, _claude, _data, chat). Ask Brett for values; never guess them.
 - Brett works from his phone: lead with the result, short paragraphs; ask with tap-to-pick choices.
 - Load the rules and \`_claude/THREADS.md\` from axHub before anything else. If axHub can't be reached, do nothing but tell Brett and ask for a go on axHub (Go pass); work only while \`GO-PASS.json\` on the repo's \`go-pass\` branch says go and hasn't expired.
@@ -632,7 +632,7 @@ export const SESSION_RULES = [
   'One agent: no sub-agents, parallel workers or deep-research fan-outs unless Brett asks for one by name.',
   'Ask Brett with tap-to-pick choices; he works from his phone, so lead with the result and keep it short.',
   'No secrets anywhere (repo, _claude, _data, chat): ask him for values, never guess them.',
-  'Android work is on hold except Voice Vault and AmberX app code.',
+  'Build the Android/Kotlin twin in parallel with the web side (same contract, same fixture).',
 ];
 
 /** Gaps a new account should know about; editable in the console (Tools → Claude handoff → Handoff Session notes). */
