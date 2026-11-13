@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4330,
- "updatedAt": "2026-11-13T11:31:46.442Z",
+ "rev": 4331,
+ "updatedAt": "2026-11-13T11:32:00.660Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -175237,6 +175237,10 @@
     {
      "text": "Headless run axf-badge-shape-picker-on-the-banners-screen-pill-te--sully: brief only · start 12.4K tokens ($0.03) · cost $0.63 · 22 turns · 6 tools, MCP none",
      "at": "2026-11-13T11:31:10.158Z"
+    },
+    {
+     "text": "Phase 1 done, PR #568. UI Review shots not submitted: axf.mjs here has no shot/focus command and the live console runs main. Shots needed from a branch preview.",
+     "at": "2026-11-13T11:30:51.552Z"
     }
    ],
    "approvals": [],
@@ -175388,7 +175392,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
