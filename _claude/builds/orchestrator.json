@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T11:28:11.543Z",
+ "updatedAt": "2026-11-13T11:28:38.907Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -122086,12 +122086,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T11:27:54.484Z",
-   "updatedAt": "2026-11-13T11:27:56.557Z",
+   "updatedAt": "2026-11-13T11:28:36.977Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-13T11:27:56.557Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"23ee8b1a-7144-48a0-a700-7381ced9156f\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-13T11:28:36.977Z"
     }
    ],
    "approvals": [],
@@ -122108,7 +122112,87 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "I want it to pop up a full browser window if I want to, if I go to a page.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwew8j1u01m2bu",
+     "createdAt": "2026-11-13T11:28:36.977Z"
+    },
+    {
+     "id": "s2",
+     "text": "But I want it to be just a floating toolbar unless you call it to open something.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwew8j1u02mrb3",
+     "createdAt": "2026-11-13T11:28:36.977Z"
+    },
+    {
+     "id": "s3",
+     "text": "When you close the browser, it's just a floating toolbar again.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwew8j1u031lmw",
+     "createdAt": "2026-11-13T11:28:36.977Z"
+    },
+    {
+     "id": "s4",
+     "text": "Tests green, report _claude/builds/reports/overlay-opens-pages-the-floating-toolbar-expands.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/overlay-opens-pages-the-floating-toolbar-expands.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwew8j1u04bhak",
+     "createdAt": "2026-11-13T11:28:36.977Z"
+    }
+   ]
   }
  ]
 }

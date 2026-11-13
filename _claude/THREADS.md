@@ -781,7 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 06:14 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` → running, note (all) · pipeline
 - 2026-11-13 06:14 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` note (all) · orchestrator
 - 2026-11-13 06:14 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` → running, note (all) · pipeline
 - 2026-11-13 06:14 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` note (all) · orchestrator
@@ -1181,6 +1180,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 11:27 UTC · `overlay-opens-pages-the-floating-toolbar-expands` added (0 steps) (all) · console
 - 2026-11-13 11:27 UTC · `overlay-opens-pages-the-floating-toolbar-expands` → queued, note (all) · console
 - 2026-11-13 11:28 UTC · `overlay-opens-pages-the-floating-toolbar-expands` added (0 steps) (all) · builds-live
+- 2026-11-13 11:28 UTC · `overlay-opens-pages-the-floating-toolbar-expands` note (all) · orchestrator
 
 ## Token passes (log)
 
