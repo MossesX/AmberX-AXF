@@ -1,0 +1,49 @@
+{
+  "assetType": "badge",
+  "owner": "skin-gallery",
+  "set": "skin-gallery-chip",
+  "options": [
+    {
+      "id": "name",
+      "label": "Palette icon and the skin name",
+      "notes": "Says which skin is in force on the screen in front. Default today.",
+      "shots": [],
+      "data": {
+        "icon": "palette",
+        "label": "{skin}",
+        "tone": "neutral",
+        "shape": "pill",
+        "tooltip": "Skin here: {skin}",
+        "chip": "name"
+      }
+    },
+    {
+      "id": "icon",
+      "label": "Icon only",
+      "notes": "Smallest: the palette icon; the skin name is in the tooltip and the popover.",
+      "shots": [],
+      "data": {
+        "icon": "palette",
+        "label": "",
+        "tone": "neutral",
+        "shape": "circle",
+        "tooltip": "Skin here: {skin}",
+        "chip": "icon"
+      }
+    },
+    {
+      "id": "scope",
+      "label": "Skin name with the scope it comes from",
+      "notes": "Name plus where it is decided (hub, app, screen, plugin), e.g. Atelier \u00b7 app.",
+      "shots": [],
+      "data": {
+        "icon": "palette",
+        "label": "{skin} \u00b7 {from}",
+        "tone": "accent",
+        "shape": "pill",
+        "tooltip": "Skin here: {skin}, set at {from}",
+        "chip": "scope"
+      }
+    }
+  ]
+}

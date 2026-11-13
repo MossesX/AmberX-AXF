@@ -1,0 +1,24 @@
+{
+  "$axf": "asset@1",
+  "type": "container",
+  "id": "skin-gallery-layout-list",
+  "name": "Skins gallery layout: Compact list with the preview beside it",
+  "version": "0.1.0",
+  "author": "Skins plugin",
+  "description": "One row per skin (name, icon pack, coverage), so many skins fit. Preview beside it on desktop.",
+  "tags": [
+    "ui-choice",
+    "choice-set:skin-gallery-layout",
+    "choice-option:list"
+  ],
+  "data": {
+    "variant": "outline",
+    "header": "plain",
+    "padding": "sm",
+    "elevation": 0,
+    "collapsible": false,
+    "gallery": {
+      "layout": "list"
+    }
+  }
+}

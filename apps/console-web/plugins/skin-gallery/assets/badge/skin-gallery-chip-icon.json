@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "badge",
+  "id": "skin-gallery-chip-icon",
+  "name": "Skins banner chip: Icon only",
+  "version": "0.1.0",
+  "author": "Skins plugin",
+  "description": "Smallest: the palette icon; the skin name is in the tooltip and the popover.",
+  "tags": [
+    "ui-choice",
+    "choice-set:skin-gallery-chip",
+    "choice-option:icon"
+  ],
+  "data": {
+    "icon": "palette",
+    "label": "",
+    "tone": "neutral",
+    "shape": "circle",
+    "tooltip": "Skin here: {skin}",
+    "chip": "icon"
+  }
+}

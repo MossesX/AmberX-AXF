@@ -31,6 +31,7 @@ export function SkinsScreen() {
   const [busy, setBusy] = useState(false);
   const [snack, setSnack] = useState<{ text: string; seq: number } | null>(null);
   const [err, setErr] = useState('');
+  const [layout, setLayout] = useState(first.layout || 'split');
 
   // a deep link while the screen is open (console_open … focus) moves it there
   const link = useSyncExternalStore(subscribeLink, getLink, getLink);
@@ -39,6 +40,7 @@ export function SkinsScreen() {
     if (link.skin) setPicked(link.skin);
     if (link.scope) { setKind(kindOf(link.scope)); setTarget(targetOf(link.scope)); }
     if (link.view) setFrame(link.view);
+    if (link.layout) setLayout(link.layout);
   }, [link]);
 
   const scope = scopeOf(kind, target);
@@ -63,7 +65,7 @@ export function SkinsScreen() {
   const inForceName = view?.inForce.id ? skins.find((s) => s.id === view.inForce.id)?.name ?? view.inForce.id : 'No skin';
 
   return (
-    <SkinScope kind="plugin" id={PLUGIN_ID} className="fx-stack fx-stack--lg axp-skin-gallery" attrs={{ 'data-axf-skin-gallery': '' }}>
+    <SkinScope kind="plugin" id={PLUGIN_ID} className="fx-stack fx-stack--lg axp-skin-gallery" attrs={{ 'data-axf-skin-gallery': '', 'data-layout': layout }}>
       <header className="fx-pagehead"><div><p className="fx-eyebrow">Plugins</p><h1>Skins</h1><p className="fx-muted">Tap a skin to preview it live. Nothing is saved until Use skin.</p></div></header>
 
       <ScopePicker kind={kind} target={target} app={app} known={known} view={view} skins={skins} busy={busy}
@@ -72,7 +74,7 @@ export function SkinsScreen() {
       <SkinActions scope={scope} picked={picked} view={view} onDone={done} snack={snack} />
       {err && <p role="alert" className="fx-muted axp-skin-gallery__msg">{err}</p>}
 
-      <div className="axp-skin-gallery__body">
+      <div className={`axp-skin-gallery__body is-${layout}`}>
         <div className="axp-skin-gallery__grid" role="listbox" aria-label="Skins" data-help="skin-gallery.grid">
           {skins.map((s) => (
             <Button key={s.id} tone="quiet" className={`axp-skin-gallery__card${s.id === picked ? ' is-picked' : ''}`} role="option" aria-selected={s.id === picked} title={s.description} data-skin={s.id} onClick={() => setPicked(s.id === picked ? '' : s.id)}>

@@ -1,0 +1,55 @@
+{
+  "assetType": "container",
+  "owner": "skin-gallery",
+  "set": "skin-gallery-layout",
+  "options": [
+    {
+      "id": "split",
+      "label": "Gallery beside the preview",
+      "notes": "Cards on the left, desktop and phone previews on the right. Default today. Phone: stacked.",
+      "shots": [],
+      "data": {
+        "variant": "card",
+        "header": "divided",
+        "padding": "md",
+        "elevation": 1,
+        "collapsible": false,
+        "gallery": {
+          "layout": "split"
+        }
+      }
+    },
+    {
+      "id": "stage",
+      "label": "Preview on top, gallery under it",
+      "notes": "A wide preview stage first, then the cards in a full-width grid. Best on big screens.",
+      "shots": [],
+      "data": {
+        "variant": "panel",
+        "header": "accent",
+        "padding": "lg",
+        "elevation": 0,
+        "collapsible": false,
+        "gallery": {
+          "layout": "stage"
+        }
+      }
+    },
+    {
+      "id": "list",
+      "label": "Compact list with the preview beside it",
+      "notes": "One row per skin (name, icon pack, coverage), so many skins fit. Preview beside it on desktop.",
+      "shots": [],
+      "data": {
+        "variant": "outline",
+        "header": "plain",
+        "padding": "sm",
+        "elevation": 0,
+        "collapsible": false,
+        "gallery": {
+          "layout": "list"
+        }
+      }
+    }
+  ]
+}

@@ -7,6 +7,7 @@ import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { createPortal } from 'react-dom';
 import { Button, Icon, useAxfState } from '@console/axf/react';
 import { backAt, listSkins, readState, scopeLabel, undoLast, useSkinAt, type ScopeView, type SkinRow } from './api';
+import { chipFromHash } from './link';
 import { defaultScope, onSettings, settings } from './settings';
 
 const useSettings = () => useSyncExternalStore(onSettings, settings, settings);
@@ -22,6 +23,7 @@ export function SkinChip() {
   const pop = useRef<HTMLDivElement>(null);
   const scope = conf.defaultScope || defaultScope();
   const shown = st.view ? `ui:${st.view}` : 'app';
+  const variant = chipFromHash();
 
   useEffect(() => { void listSkins().then(setSkins, () => undefined); }, []);
   useEffect(() => { void readState(shown).then(setHere, () => setHere(null)); }, [shown]);
@@ -47,8 +49,8 @@ export function SkinChip() {
   };
 
   return (
-    <span ref={btn} className="axp-skin-gallery-chip" data-fx-ctx-target="skin-gallery-chip" data-fx-ctx-payload={scope}>
-      <Button size="sm" tone="ghost" icon="palette" aria-haspopup="menu" aria-expanded={!!at} title={`Skin here: ${name} (from ${here ? scopeLabel(here.inForce.from) : '…'})`} onClick={open}>{name}</Button>
+    <span ref={btn} className={`axp-skin-gallery-chip is-${variant}`} data-fx-ctx-target="skin-gallery-chip" data-fx-ctx-payload={scope}>
+      <Button size="sm" tone="ghost" icon="palette" aria-haspopup="menu" aria-expanded={!!at} title={`Skin here: ${name} (from ${here ? scopeLabel(here.inForce.from) : '…'})`} aria-label={`Skin: ${name}`} onClick={open}>{variant === 'icon' ? null : variant === 'scope' && here ? `${name} · ${scopeLabel(here.inForce.from)}` : name}</Button>
       {at && createPortal(
         <div ref={pop} className="fx-popover fx-dropdown axp-skin-gallery-chip__pop" style={{ top: at.top, left: at.left }} data-fx-overlay="">
           <p className="fx-eyebrow axp-skin-gallery-chip__head">Use at {scopeLabel(scope)}</p>

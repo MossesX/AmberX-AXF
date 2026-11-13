@@ -16,3 +16,8 @@
 .axp-skin-gallery-chip__pop { position: fixed; min-width: calc(var(--fx-layout-nav-width) * 0.9); }
 .axp-skin-gallery-chip__head { margin: var(--fx-dens-gap-sm) var(--fx-dens-gap-md); }
 .axp-skin-gallery-chip__bar { display: flex; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-sm) var(--fx-dens-gap-md); border-top: var(--fx-border-w) solid var(--fx-border); }
+/* Gallery layouts (UI Review choices/gallery-layout.json): split (default), stage (preview first), list (one row per skin). */
+.axp-skin-gallery__body.is-stage { grid-template-columns: minmax(0, 1fr); }
+.axp-skin-gallery__body.is-stage .axp-skin-gallery__preview { order: -1; }
+.axp-skin-gallery__body.is-list .axp-skin-gallery__grid { grid-template-columns: minmax(0, 1fr); gap: var(--fx-dens-gap-sm); }
+.axp-skin-gallery__body.is-list .axp-skin-gallery__card { flex-direction: row; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-md); }
