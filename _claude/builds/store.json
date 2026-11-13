@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4936,
- "updatedAt": "2026-11-13T20:17:08.120Z",
+ "rev": 4937,
+ "updatedAt": "2026-11-13T20:17:24.243Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -206429,7 +206429,7 @@
    "title": "Dispatcher gate: never launch a build that already has a live session",
    "category": "",
    "detail": "Bug seen three times on Nov 13 (ui-manager-floating-window-to-select-any: Earl/Gina, Gina/Paulie, Lenny/Paulie): the orchestrator's dispatcher launched the same build phase twice on the same worktree, so two headless sessions wrote the same files at once. Also 'Self-check: marked running with no session' releases builds back to the Queue while a session is still alive. Fix: (1) a dispatch gate that refuses a launch while ANY live tmux/claude session exists for that build id or worktree (check tmux axf-<build>--*, claude -p pids and a lock file in the worktree); (2) the self-check must confirm a session is really dead (pid + tmux) before releasing; (3) a per-build lock file with heartbeat, where stale locks expire; (4) tests that simulate double dispatch. This must land BEFORE parallel split (orchestrator-settings-collapsible-split) goes live, since parallel sub-builds must each get their own worktree and branch and never share one.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -206437,7 +206437,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T20:07:27.626Z",
-   "updatedAt": "2026-11-13T20:16:37.888Z",
+   "updatedAt": "2026-11-13T20:17:08.392Z",
    "builtAt": "",
    "notes": [
     {
@@ -206455,6 +206455,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-dispatcher-gate-never-launch-build--joey, own login copy)",
      "at": "2026-11-13T20:16:37.888Z"
+    },
+    {
+     "text": "Session on mossesx-max- ended (exit 3) with 3 steps left: back in the Queue (run 1).",
+     "at": "2026-11-13T20:17:08.392Z"
     }
    ],
    "approvals": [],
@@ -206475,12 +206479,19 @@
     "queuedAt": "2026-11-13T20:07:30.376Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-dispatcher-gate-never-launch-build--joey",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-13T20:16:30.994Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-13T20:17:07.061Z",
+     "exit": 3,
+     "outcome": "requeued",
+     "stepsLeft": 3,
+     "account": "mossesx-max-",
+     "session": "axf-dispatcher-gate-never-launch-build--joey"
+    },
     "split": {
      "at": "2026-11-13T20:08:53.774Z",
      "by": "orchestrator",
@@ -206489,7 +206500,7 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"1e700143-c0b8-4a7f-adbe-5b601ff47212\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- ended (exit 3) with 3 steps left: back in the Queue (run 1).",
     "route": "",
     "dispatchedAt": "2026-11-13T20:16:30.994Z",
     "planned": {
@@ -206584,7 +206595,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -207117,7 +207128,13 @@
     "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Fable",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-13T20:17:10.655Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -207313,7 +207330,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
