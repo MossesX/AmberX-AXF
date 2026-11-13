@@ -781,7 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 07:20 UTC · `remove-ui-review-as-a-gate-no-screenshots-required-prs-never-held-as-draft-for` note (all) · reconciler
 - 2026-11-13 07:20 UTC · `skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga` s13 done (all) · orchestrator
 - 2026-11-13 07:20 UTC · `skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga` s14 done (all) · orchestrator
 - 2026-11-13 07:21 UTC · `professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e` s7 done (all) · orchestrator
@@ -1181,6 +1180,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 12:32 UTC · `assets-menu-hide-any-asset-visible-and-hidden-li` → running, note (all) · pipeline
 - 2026-11-13 12:32 UTC · `assets-menu-hide-any-asset-visible-and-hidden-li` branch claude/assets-menu-hide-any-asset-visible-and-hidden-li (all) · pipeline
 - 2026-11-13 12:32 UTC · `auto-recover-stuck-builds` s11 done (all) · orchestrator
+- 2026-11-13 12:33 UTC · `assets-menu-hide-any-asset-visible-and-hidden-li` note (all) · mcp
 
 ## Token passes (log)
 

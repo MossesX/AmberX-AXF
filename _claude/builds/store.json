@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4440,
- "updatedAt": "2026-11-13T12:32:59.518Z",
+ "rev": 4441,
+ "updatedAt": "2026-11-13T12:33:15.362Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -187870,7 +187870,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T12:31:20.005Z",
-   "updatedAt": "2026-11-13T12:32:58.157Z",
+   "updatedAt": "2026-11-13T12:33:13.811Z",
    "builtAt": "",
    "notes": [
     {
@@ -187896,6 +187896,10 @@
     {
      "text": "Brett approved all of these for the Assets menu (app menu and context menu): Show all hidden (one click); Reset this page (undo every asset change on the page); Highlight on hover (asset lights up while hovering its name in the list); Jump to settings (opens that asset's settings); Search (filter the list by name or type).",
      "at": "2026-11-13T12:32:58.157Z"
+    },
+    {
+     "text": "Brett: the highlight (asset lit up while hovering its name in the Assets menu, and the right-clicked asset) must be configurable in settings: colour, style (outline/fill/glow), thickness, opacity, animation on/off. Via API too.",
+     "at": "2026-11-13T12:33:13.811Z"
     }
    ],
    "approvals": [],
@@ -188113,7 +188117,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
