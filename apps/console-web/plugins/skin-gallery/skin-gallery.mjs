@@ -11,7 +11,8 @@
  *   node apps/console-web/plugins/skin-gallery/skin-gallery.mjs back [<slot>] [--scope <s>] [--app <app>]
  *   node apps/console-web/plugins/skin-gallery/skin-gallery.mjs restore [--scope <s>] [--app <app>]
  *   node apps/console-web/plugins/skin-gallery/skin-gallery.mjs undo [--app <app>]
- *   node apps/console-web/plugins/skin-gallery/skin-gallery.mjs open [<skin>] [--scope <s>]  the console deep link
+ *   node apps/console-web/plugins/skin-gallery/skin-gallery.mjs scope <scope> follow|own [--app <app>]  Inherit / Follow hub switch
+ *   node apps/console-web/plugins/skin-gallery/skin-gallery.mjs open [<skin>] [--scope <s>] [--view phone]  the console deep link
  *
  * Scopes: hub | app | app:<id> | ui:<view> | plugin:<id>; default app (the acting app's own level). The acting app is
  * --app (default axf-console): its look document keeps the one undo record. Add --json for machine output.
@@ -20,7 +21,7 @@ import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readFileSync, renameSync, writeFileSync } from 'node:fs';
 import { parseSwitchScope, skinSwitch, skinSwitchState, switchScopes } from '../../../../framework/core/engines/skin-switch.mjs';
-import { appIds, readGlobal, readLook, sharedFile, skinRows, writeLook } from '../../../../framework/cli/skins.mjs';
+import { appIds, change, coverage, covers, readGlobal, readLook, sharedFile, skinRows, writeLook } from '../../../../framework/cli/skins.mjs';
 
 export const DEFAULT_APP = 'axf-console';
 const ALIASES = { console: 'axf-console', 'console-web': 'axf-console', axhub: 'axhub-web', amberx: 'amberx-droid' };
@@ -43,7 +44,12 @@ export function list(app = DEFAULT_APP) {
     const v = skinSwitchState(look, global, scope);
     if (v?.inForce.id) inForce.set(v.inForce.id, [...(inForce.get(v.inForce.id) ?? []), v.scope]);
   }
-  return skinRows().map((s) => ({ ...s, inForceAt: inForce.get(s.id) ?? [] }));
+  const total = coverage().summary.total;
+  return skinRows().map((s) => {
+    let covered = 0;
+    try { covered = covers(s.id).filter((r) => r.covered).length; } catch { /* a skin the registry can't read counts as none */ }
+    return { ...s, inForceAt: inForce.get(s.id) ?? [], coverage: { covered, total } };
+  });
 }
 
 /** The scopes of the acting app that can be switched: hub, the app, and every ui / plugin scope its document holds. */
@@ -86,16 +92,33 @@ export function run(action, { scope = 'app', skin = '', slot = '', app = DEFAULT
   return { changed: res.changed, ...state(shown, id) };
 }
 
+/**
+ * The Inherit / Follow hub switch of one scope. `follow` on: the app follows the hub-wide skin, a screen or plugin
+ * follows its parent. Off: the app keeps its own skin; a screen or plugin pins the skin in force there now.
+ */
+export function follow(scope, on, app = DEFAULT_APP) {
+  const id = appOf(app);
+  const sc = parseSwitchScope(scope);
+  if (!sc || sc.kind === 'hub') throw Object.assign(new Error(`"${scope}" can't follow: pick app, ui:<view> or plugin:<id>`), { code: 'bad-scope' });
+  if (sc.kind === 'app') change('follow', id, on ? 'on' : 'off');
+  else if (on) change('inherit', id, sc.key);
+  else {
+    const now = state(scope, id).inForce.id;
+    if (now) change('use', id, now, sc.key); else change('off', id, '', sc.key);
+  }
+  return state(scope, id);
+}
+
 /** The console deep link (console_open target) for the gallery, one skin, or one scope. */
-export function open(skin = '', scope = '') {
-  const q = new URLSearchParams({ ...(skin ? { skin } : {}), ...(scope ? { scope } : {}) }).toString();
+export function open(skin = '', scope = '', view = '') {
+  const q = new URLSearchParams({ ...(skin ? { skin } : {}), ...(scope ? { scope } : {}), ...(view === 'phone' ? { view } : {}) }).toString();
   return { kind: 'screen', target: 'skin-gallery', ...(q ? { arg: q } : {}), link: `/#/skin-gallery${q ? `?${q}` : ''}` };
 }
 
 function main(argv) {
   const json = argv.includes('--json');
   const opt = (k) => { const i = argv.indexOf(`--${k}`); return i >= 0 ? argv[i + 1] : undefined; };
-  const args = argv.filter((a, i) => !a.startsWith('--') && !['--scope', '--app'].includes(argv[i - 1]));
+  const args = argv.filter((a, i) => !a.startsWith('--') && !['--scope', '--app', '--view'].includes(argv[i - 1]));
   const [cmd = 'list', arg] = args;
   const app = opt('app') ?? DEFAULT_APP;
   const scope = opt('scope') ?? 'app';
@@ -107,8 +130,9 @@ function main(argv) {
   else if (cmd === 'back') out = run('back-to-skin', { scope, slot: arg ?? '', app });
   else if (cmd === 'restore') out = run('restore-default', { scope, app });
   else if (cmd === 'undo') out = run('undo', { scope, app });
-  else if (cmd === 'open') out = open(arg ?? '', opt('scope') ?? '');
-  else throw new Error(`unknown command ${cmd}: list | scopes | state | use | back | restore | undo | open`);
+  else if (cmd === 'scope') { if (!arg) throw new Error('scope needs a scope: app, ui:<view> or plugin:<id>'); out = follow(arg, (args[2] ?? 'follow') !== 'own', app); }
+  else if (cmd === 'open') out = open(arg ?? '', opt('scope') ?? '', opt('view') ?? '');
+  else throw new Error(`unknown command ${cmd}: list | scopes | state | use | back | restore | undo | scope | open`);
   if (json) console.log(JSON.stringify({ ok: true, result: out }));
   else console.log(Array.isArray(out) ? out.map((x) => (typeof x === 'string' ? x : JSON.stringify(x))).join('\n') : JSON.stringify(out, null, 1));
 }

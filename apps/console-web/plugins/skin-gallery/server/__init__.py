@@ -4,14 +4,15 @@ Every route runs the plugin CLI (skin-gallery.mjs, the skin-switch@1 engine over
 the REST API, MCP plugin commands, the CLI and voice make the same change. No second store: the documents are each
 app's app-look@1 file and the shared appearance document, as the framework skins CLI writes them.
 
-  GET  /skins                    every skin for the gallery (with the scopes each is in force at)
+  GET  /skins                    every skin for the gallery (coverage {covered, total} and the scopes each is in force at)
   GET  /scopes?app=              the scopes that can be switched
   GET  /state?scope=&app=        one scope: its own state, the skin in force and the level that decided, the undo
   POST /use      {skin, scope?, app?}
   POST /back     {scope?, slot?, app?}
   POST /restore  {scope?, app?}
   POST /undo     {app?}
-  GET  /open?skin=&scope=        the console deep link (console_open screen target + arg)
+  POST /scope    {scope, follow: bool, app?}   Inherit / Follow hub: on follows the parent, off keeps its own
+  GET  /open?skin=&scope=&view=  the console deep link (console_open screen target + arg)
 """
 from __future__ import annotations
 
@@ -94,13 +95,13 @@ def state(scope: str = "app", app: str = "") -> JSONResponse:
 
 
 @router.get("/open")
-def open_link(skin: str = "", scope: str = "") -> JSONResponse:
+def open_link(skin: str = "", scope: str = "", view: str = "") -> JSONResponse:
     if skin and not ID.match(skin):
         return _bad(f'"{skin}" is not a skin id')
     args = _common(scope, "")
     if isinstance(args, JSONResponse):
         return args
-    return _run("open", *([skin] if skin else []), *args)
+    return _run("open", *([skin] if skin else []), *args, *(["--view", "phone"] if view == "phone" else []))
 
 
 @router.post("/use")
@@ -135,3 +136,16 @@ async def undo(request: Request) -> JSONResponse:
     b = await _body(request)
     args = _common("", _str(b, "app"))
     return args if isinstance(args, JSONResponse) else _run("undo", *args)
+
+
+@router.post("/scope")
+async def scope_follow(request: Request) -> JSONResponse:
+    b = await _body(request)
+    scope = _str(b, "scope")
+    if not scope:
+        return _bad("scope needs a scope: app, ui:<view> or plugin:<id>")
+    args = _common(scope, _str(b, "app"))
+    if isinstance(args, JSONResponse):
+        return args
+    follow = b.get("follow", True) is not False
+    return _run("scope", scope, "follow" if follow else "own", *[a for i, a in enumerate(args) if not (a == "--scope" or (i > 0 and args[i - 1] == "--scope"))])
