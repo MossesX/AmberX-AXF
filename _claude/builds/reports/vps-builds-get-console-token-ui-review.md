@@ -93,3 +93,27 @@ five steps as this build) removed with `orchestrator.mjs act remove`; builds-liv
 - `deploy/claude-login.test.mjs`: the build session sees `AXF_TOKEN` and `AXF_CONSOLE_URL`; the token is printed nowhere.
 - `plugin-lifecycle.mjs check ui-review`: clean.
 - Shipped features: `cx.buildengine.reviewtoken` in `framework/catalog/catalog.json` + `status.json` (built).
+
+## s8 "the VPS builds, the UI reviews, does that have anything to do with it"
+
+Yes. It was the same fault behind both:
+
+- VPS builds start through `deploy/claude-headless.sh`, which never handed over the console token. Every build
+  that tried to put screens in UI Review either got refused (`--console needs AXF_CONSOLE_URL and AXF_TOKEN`) or
+  wrote them into its own worktree, where Brett never sees them. Nothing raised an alarm.
+- On top of that, builds that took screenshots with `rebuild-shots` got the "Waiting for axHub" screen instead
+  of the UI, because the capture browser has no hub session.
+- Scale: since Nov 1, 44 builds' notes say UI Review shots were missing, refused, not captured or waiting for
+  axHub. 6 builds had items or shots sitting in their worktrees today (sent now, s5).
+
+What changes for the next build: it starts with the console URL and token, its shots land in UI Review, a submit
+that still fails leaves a marker and a console alert, and the `ui-review-stuck` check turns the systems check
+banner red within a minute if anything is stuck in a worktree.
+
+## Follow-ups
+
+- Per-build scoped console token (only UI Review / shots / activity routes, expires with the build): needs the
+  console's auth to accept a second token class. Cross-app contract, so Fable. Today builds carry the console token
+  itself, the same way they already carry `AXHUB_TOKEN` (private file, never logged).
+- `/root/axf-review-shots` is not mounted in the console container, so the health check scans build worktrees
+  only; `review.mjs resubmit` covers both folders on the host.
