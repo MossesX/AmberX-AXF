@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3918,
- "updatedAt": "2026-11-13T01:27:58.886Z",
+ "rev": 3919,
+ "updatedAt": "2026-11-13T01:28:13.715Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -172772,14 +172772,14 @@
    "title": "Projects own everything: per-project Claude accounts and credentials, plus Clone project (settings only)",
    "category": "projects",
    "detail": "Brett said: \"every project will have its own set of Claude accounts and own everything. Basically, the console and axHub and all that runs on the project. So if you change project, everything is fresh. The Claude credentials, all the credentials for everything... let's create a new project that copies all the stuff over, everything except for the builds and the notes and the to-do manager.\"",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone",
    "pr": "#537",
    "createdAt": "2026-11-12T20:35:05.081Z",
-   "updatedAt": "2026-11-13T01:27:57.621Z",
+   "updatedAt": "2026-11-13T01:27:58.798Z",
    "builtAt": "",
    "notes": [
     {
@@ -172891,12 +172891,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T01:27:58.798Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-12T20:35:05.083Z",
-     "updatedAt": "2026-11-12T20:35:47.717Z"
+     "updatedAt": "2026-11-13T01:27:58.970Z"
     },
     {
      "id": "s2",
