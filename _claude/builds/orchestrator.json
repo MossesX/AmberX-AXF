@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T17:39:10.336Z",
+ "updatedAt": "2026-11-13T17:39:22.187Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -114890,7 +114890,7 @@
    ]
   },
   {
-   "id": "vps-badge-shows-shell-commands-work-banner-widgets-for-disk-cpu-load-and-memor",
+   "id": "vps-badge-shows-shell-commands-work",
    "title": "VPS badge shows shell commands work; banner widgets for disk, CPU load and memory",
    "category": "banner",
    "detail": "Brett said: \"we need the VPS badge to show that we're able to run shell commands.\" axHub badge already covers the server being reachable (axHub runs on the VPS). Claude login status moves off the VPS badge (it lives with the Claude badge / accounts). Also add the resource widgets Brett asked about: disk, CPU load, memory.",
@@ -114898,10 +114898,10 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/vps-badge-shows-shell-commands-work-banner-widgets-for-disk-cpu-load-and-memor",
-   "pr": "#541",
+   "branch": "claude/vps-badge-shows-shell-commands-work",
+   "pr": "#616",
    "createdAt": "2026-11-12T22:31:52.977Z",
-   "updatedAt": "2026-11-13T02:05:45.916Z",
+   "updatedAt": "2026-11-13T17:38:59.194Z",
    "builtAt": "2026-11-13T02:05:17.671Z",
    "notes": [
     {
@@ -114931,6 +114931,10 @@
     {
      "text": "Headless run axf-vps-badge-shows-shell-commands-work-banner-widge--paulie: brief only · start 11.1K tokens ($0.03) · cost $4.79 · 101 turns · 6 tools, MCP none",
      "at": "2026-11-13T02:05:45.916Z"
+    },
+    {
+     "text": "Renamed from vps-badge-shows-shell-commands-work-banner-widgets-for-disk-cpu-load-and-memor (build names are at most 40 characters). By build-rename.",
+     "at": "2026-11-13T17:38:59.194Z"
     }
    ],
    "approvals": [],
