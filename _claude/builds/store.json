@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4829,
- "updatedAt": "2026-11-13T19:39:46.195Z",
+ "rev": 4830,
+ "updatedAt": "2026-11-13T19:40:06.410Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -203164,16 +203164,16 @@
    "title": "Land rename-long-builds: resolve clash in orchestrator.mjs",
    "category": "",
    "detail": "Branch claude/rename-long-builds clashed with main in apps/console-web/plugins/build-orchestrator/orchestrator.mjs (merge aborted, main untouched). Merge origin/main into the branch and keep main's newer orchestrator code plus this branch's rename logic and renames.json mapping. Run the orchestrator tests, push, then land on main.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/land-rename-long-builds-resolve-clash",
-   "pr": "",
+   "pr": "#638",
    "priority": "P0",
    "createdAt": "2026-11-13T19:32:22.232Z",
-   "updatedAt": "2026-11-13T19:38:39.712Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-13T19:39:12.547Z",
+   "builtAt": "2026-11-13T19:39:12.547Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -203303,12 +203303,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T19:39:12.547Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T19:34:28.140Z",
-     "updatedAt": "2026-11-13T19:34:28.140Z"
+     "updatedAt": "2026-11-13T19:39:12.925Z"
     }
    ],
    "profiles": [
@@ -203319,7 +203319,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
