@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T11:55:50.375Z",
+ "updatedAt": "2026-11-13T11:56:15.788Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -122792,7 +122792,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T11:45:11.111Z",
-   "updatedAt": "2026-11-13T11:54:44.360Z",
+   "updatedAt": "2026-11-13T11:56:14.183Z",
    "builtAt": "",
    "notes": [
     {
@@ -122818,6 +122818,10 @@
     {
      "text": "Brett: the merge queue must never block behind one PR. If the head PR (e.g. #556) isn't ready (build still running, session died, checks failing, conflicts), skip it and land the ready ones behind it; come back to it when ready.",
      "at": "2026-11-13T11:54:44.360Z"
+    },
+    {
+     "text": "CORRECTION from Brett: IGNORE the earlier merge-queue note (skip head PR / don't merge one at a time). Do NOT change merge queue order or behaviour in this build. The combine was a one-time job for today's queue only.",
+     "at": "2026-11-13T11:56:14.183Z"
     }
    ],
    "approvals": [],
