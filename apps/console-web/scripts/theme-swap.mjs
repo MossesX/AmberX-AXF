@@ -8,7 +8,10 @@
  * colour theme and records each visible element's text, background and border colour. Any colour that stays the
  * same in every theme is hard-coded and fails the check. It then switches style themes and checks that the
  * transparency tokens (--fx-opacity-*) follow, then picks every typography / density / sizing asset and checks the sizes
- * on screen follow too (Angel build ui-all-assets). Needs the `playwright` package and a Chromium.
+ * on screen follow too (Angel build ui-all-assets). Then it switches every shipped skin (skin@2) through the skin
+ * gallery's live preview and fails on a colour, size or behaviour (nav mode, toolbar / banner placement, menu form, tab
+ * position and style, the --fx-bhv-* tokens) that does not follow the skin: a hard-coded one. Needs the `playwright`
+ * package and a Chromium.
  */
 import { spawn } from 'node:child_process';
 import { setTimeout as sleep } from 'node:timers/promises';
@@ -146,6 +149,83 @@ try {
     log(`${type} ${ids.join(', ')}: ${moved} of ${keys.length} sized elements follow the pick`);
     if (moved < Math.max(5, keys.length * share)) { log(`  ✗ ${type}: too few sizes follow the asset (hard-coded sizes left?)`); failed = true; }
   }
+  // Skins (skin@2, build professional-skins Nov 13 2026): switch every shipped skin through the skin gallery's live
+  // preview and check that the console follows each one: the root's --fx-bhv-* / data-fx-bhv-* carry the skin's picks,
+  // the shell's nav mode, toolbar and banner placement and menu form follow, every tab row on screen takes the skin's
+  // position and style, the table padding follows the skin's density, and colours move between skins (a colour that
+  // never changes is hard-coded). A behaviour that stays put is hard-coded somewhere and fails the check.
+  {
+    const { readdirSync, readFileSync } = await import('node:fs');
+    const kebab = (s) => s.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`);
+    const skinDir = new URL('../src/axf/assets/skin/', import.meta.url);
+    const skins = readdirSync(skinDir).filter((f) => f.endsWith('.json')).map((f) => JSON.parse(readFileSync(new URL(f, skinDir), 'utf8'))).filter((a) => a.type === 'skin' && a.data?.behaviour);
+    const open = page.getByRole('button', { name: 'Skin gallery…' }).first();
+    if (!(await open.count())) { log('✗ no Skin gallery button in Settings → Appearance'); failed = true; }
+    else {
+      await open.click();
+      await page.waitForTimeout(500);
+      const cards = page.locator('[data-axf-skin-gallery] [role="option"]');
+      const n = await cards.count();
+      log(`skin gallery: ${n} cards, ${skins.length} shipped skins with behaviour`);
+      if (n < skins.length) { log('✗ the gallery shows fewer cards than there are shipped skins'); failed = true; }
+      const skinSnaps = [];
+      const skinTablePad = new Set();
+      for (const s of skins) {
+        const card = cards.filter({ hasText: s.name }).first();
+        if (!(await card.count())) { log(`✗ no card for the ${s.name} skin`); failed = true; continue; }
+        await card.click();
+        await page.waitForTimeout(600);
+        const seen = await page.evaluate(() => {
+          const root = document.documentElement;
+          const attrs = {};
+          for (const a of root.attributes) if (a.name.startsWith('data-fx-bhv-')) attrs[a.name] = a.value;
+          const cs = getComputedStyle(root);
+          const nav = document.querySelector('.fx-region--nav');
+          const tabs = [...document.querySelectorAll('.fx-tabs[role="tablist"]:not([data-axf-tab-group^="axf-skin"])')].filter((e) => e.offsetParent !== null).map((e) => ({ id: e.getAttribute('data-axf-tab-group'), position: e.getAttribute('data-fx-tabs-position'), style: e.getAttribute('data-fx-tabs') }));
+          return {
+            attrs,
+            tablePad: cs.getPropertyValue('--fx-table-py').trim(),
+            navMode: nav?.getAttribute('data-fx-nav-mode') ?? (document.querySelector('.fx-nav-drawer__toggle') ? 'drawer' : null),
+            toolbarPos: document.querySelector('.fx-region--toolbar')?.getAttribute('data-pos') ?? null,
+            banner: document.querySelector('.fx-frame')?.getAttribute('data-fx-banner-placement') ?? null,
+            compactMenu: !!document.querySelector('.fx-menubar--compact'),
+            tabs,
+          };
+        });
+        const problems = [];
+        for (const [type, axes] of Object.entries(s.data.behaviour)) {
+          for (const [axis, v] of Object.entries(axes)) {
+            const want = typeof v === 'boolean' ? (v ? '1' : '0') : String(v);
+            const got = seen.attrs[`data-fx-bhv-${type}-${kebab(axis)}`];
+            if (got !== want) problems.push(`${type}.${axis}: root says ${got ?? 'nothing'}, the skin says ${want}`);
+          }
+        }
+        const b = s.data.behaviour;
+        if (b['nav-menu']?.mode && seen.navMode !== b['nav-menu'].mode) problems.push(`nav mode on screen ${seen.navMode}, skin ${b['nav-menu'].mode}`);
+        if (b.toolbar?.placement && seen.toolbarPos && seen.toolbarPos !== b.toolbar.placement) problems.push(`toolbar at ${seen.toolbarPos}, skin ${b.toolbar.placement}`);
+        if (b.banner?.placement && seen.banner !== b.banner.placement) problems.push(`banner at ${seen.banner}, skin ${b.banner.placement}`);
+        if (b['app-menu']?.form && seen.compactMenu !== (b['app-menu'].form !== 'menubar')) problems.push(`menu form ${seen.compactMenu ? 'compact' : 'menu bar'}, skin ${b['app-menu'].form}`);
+        for (const t of seen.tabs) {
+          if (b['tab-group']?.position && t.position !== b['tab-group'].position) problems.push(`tab row ${t.id}: position ${t.position}, skin ${b['tab-group'].position}`);
+          if (b['tab-group']?.style && t.style !== b['tab-group'].style) problems.push(`tab row ${t.id}: style ${t.style}, skin ${b['tab-group'].style}`);
+        }
+        skinTablePad.add(seen.tablePad);
+        skinSnaps.push(await snapshot());
+        log(`skin ${s.id}: ${Object.keys(seen.attrs).length} behaviour attributes, nav ${seen.navMode}, toolbar ${seen.toolbarPos}, ${seen.tabs.length} tab rows${problems.length ? `, ${problems.length} hard-coded` : ''}`);
+        for (const p of problems.slice(0, 20)) log(`  ✗ ${p}`);
+        if (problems.length) failed = true;
+      }
+      if (skinTablePad.size < 2 && skins.length > 1) { log('✗ the table padding did not follow the skins\' table density'); failed = true; }
+      if (skinSnaps.length > 1) {
+        const names = Object.keys(skinSnaps[0]).filter((k) => skinSnaps.every((x) => x[k]));
+        const stuckSkins = names.filter((k) => ['color', 'background'].every((p) => skinSnaps.every((x) => x[k][p] === skinSnaps[0][k][p])));
+        log(`skins: ${names.length} elements, ${stuckSkins.length} whose colours never changed between skins`);
+        if (stuckSkins.length) { for (const k of stuckSkins.slice(0, 20)) log(`  ✗ ${k}`); failed = true; }
+      }
+      await page.getByRole('button', { name: 'Cancel' }).first().click().catch(() => {});
+      await page.waitForTimeout(300);
+    }
+  }
   if (errors.length) { log(`✗ page errors:\n  ${errors.join('\n  ')}`); failed = true; }
   await browser.close();
 } catch (err) {
@@ -159,6 +239,6 @@ try {
 } finally {
   server.kill();
 }
-console.log(failed ? "✗ theme swap check failed" : "✓ every colour, transparency and size follows the active themes and scale assets");
+console.log(failed ? "✗ theme swap check failed" : "✓ every colour, transparency, size and behaviour follows the active themes, scale assets and skins");
 if (failed) annotate(lines.filter((l) => l.includes('✗')).slice(0, 30).join('\n') || 'failed');
 process.exit(failed ? 1 : 0);

@@ -41,7 +41,9 @@ export const ROOTS = roots.length ? roots : [
   join(ROOT, 'framework/boilerplates'), ...APPS.flatMap((a) => [join(ROOT, 'apps', a, 'plugins'), join(ROOT, 'apps', a, 'src')]),
 ];
 /** The framework files that draw the chrome itself (they are the implementation, not users of it). */
-const FRAMEWORK_OWN = ['framework/react/components/TabGroup.tsx', 'framework/react/components/Chrome.tsx', 'framework/react/components/NavTree.tsx', 'framework/react/components/Banner.tsx', 'framework/react/components/BannerStrip.tsx', 'framework/react/components/BannerSettings.tsx', 'framework/react/components/Controls.tsx', 'framework/react/windows/WindowHost.tsx', 'framework/react/windows/DockHost.tsx', 'framework/react/windows/MainTabs.tsx'];
+const FRAMEWORK_OWN = ['framework/react/components/TabGroup.tsx', 'framework/react/components/Chrome.tsx', 'framework/react/components/NavTree.tsx', 'framework/react/components/Banner.tsx', 'framework/react/components/BannerStrip.tsx', 'framework/react/components/BannerSettings.tsx', 'framework/react/components/Controls.tsx', 'framework/react/windows/WindowHost.tsx', 'framework/react/windows/DockHost.tsx', 'framework/react/windows/MainTabs.tsx',
+  // skin@2 behaviour drawers: the shell, the dialog / context-menu hosts and the data grid stamp the behaviour attributes themselves
+  'framework/react/AppShell.tsx', 'framework/react/components/Overlays.tsx', 'framework/libs/datagrid/index.tsx'];
 
 export function walk(dir, out = []) {
   let names = [];
@@ -107,6 +109,13 @@ export function checkSource(src, { own = false } = {}) {
     for (const t of componentTags(src, 'Segmented')) {
       const label = `${attr(t.text, 'label') ?? ''} ${attr(t.text, 'className') ?? ''}`.toLowerCase();
       if (/\btabs?\b|sections?\b/.test(label)) findings.push({ line: t.line, rule: 'tab-seg', message: `<Segmented> used as a tab row (${(attr(t.text, 'label') ?? '').slice(0, 40)}): use <TabGroup> (a Segmented is an option picker, a tab row switches what is shown)` });
+    }
+    // skin@2 behaviour (build professional-skins, Nov 13 2026): where a tab row sits, how a dialog opens, the form of a
+    // menu, a table's density… come from the skin in force (rt.behaviour, the engines' data-fx-* attributes). A literal
+    // behaviour attribute in app / plugin / library code hardcodes what the skin decides.
+    for (const t of openingTags(src)) {
+      const m = /\s(data-fx-bhv-[a-z-]+|data-fx-tabs(?:-[a-z]+)?|data-fx-dialog(?:-[a-z]+)?|data-fx-ctx-form|data-fx-ctx-submenus|data-fx-table(?:-[a-z]+)?|data-fx-nav-mode|data-fx-toolbar(?:-[a-z]+)?)=/.exec(t.text);
+      if (m) findings.push({ line: t.line, rule: 'behaviour', message: `${m[1]} written by hand: the skin in force decides it (skin@2 behaviour axes, rt.behaviour() / the framework control); let TabGroup, Toolbar, DialogHost, ContextMenuHost, DataGrid or the engines stamp it` });
     }
   }
   for (const x of checkToolbars(src)) findings.push({ ...x, rule: 'toolbar' });

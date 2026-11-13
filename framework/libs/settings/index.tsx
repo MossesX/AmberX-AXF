@@ -694,9 +694,9 @@ function SkinCard({ s, picked, onTap }: { s: SkinEntryLike; picked: boolean; onT
   const c = { bg: tokens.bg, surface: tokens.surface, surface2: tokens.surface2 ?? tokens.surface, accent: tokens.accent, border: tokens.border, text: tokens.text };
   const frame = (device: 'desktop' | 'phone') => (
     <span className={`axf-skin__frame axf-skin__frame--${device}`} style={{ background: c.bg, borderColor: c.border }} data-nav={device === 'phone' && navMode !== 'drawer' && navMode !== 'top-bar' ? 'bottom' : navMode === 'drawer' ? 'none' : navSide} data-tabs={tabs} data-toolbar={toolbar} data-banner={banner} data-dialog={dialog} data-rail={navMode === 'rail' ? 'on' : 'off'} aria-hidden="true">
-      <span className="axf-skin__mini axf-skin__mini--banner" style={{ background: c.surface, borderColor: c.border }} />
-      {menu === 'menubar' && device === 'desktop' && <span className="axf-skin__mini axf-skin__mini--menubar" style={{ background: c.surface2, borderColor: c.border }} />}
-      <span className="axf-skin__mini axf-skin__mini--toolbar" style={{ background: c.surface2, borderColor: c.border }} />
+      <span className="axf-skin__mini axf-skin__mini--head" style={{ background: c.surface, borderColor: c.border }} />
+      {menu === 'menubar' && device === 'desktop' && <span className="axf-skin__mini axf-skin__mini--menu" style={{ background: c.surface2, borderColor: c.border }} />}
+      <span className="axf-skin__mini axf-skin__mini--bar2" style={{ background: c.surface2, borderColor: c.border }} />
       <span className="axf-skin__mini axf-skin__mini--nav" style={{ background: c.surface, borderColor: c.border }}><i style={{ background: c.accent }} /><i style={{ background: c.border }} /><i style={{ background: c.border }} /></span>
       <span className="axf-skin__mini axf-skin__mini--main">
         <span className="axf-skin__mini axf-skin__mini--tabs"><i style={{ background: c.accent }} /><i style={{ background: c.border }} /><i style={{ background: c.border }} /></span>
@@ -984,9 +984,9 @@ const CSS = `
 .axf-skin__frame--desktop{width:calc(var(--fx-space)*17);height:calc(var(--fx-space)*11)}
 .axf-skin__frame--phone{width:calc(var(--fx-space)*6);height:calc(var(--fx-space)*11);border-radius:var(--fx-radius-md)}
 .axf-skin__mini{display:block;flex:none}
-.axf-skin__mini--banner,.axf-skin__mini--menubar,.axf-skin__mini--toolbar{height:calc(var(--fx-space)*.9);border-bottom:var(--fx-border-w) solid}
-.axf-skin__frame[data-banner='bottom'] .axf-skin__mini--banner{order:9;border-bottom:0;border-top:var(--fx-border-w) solid}
-.axf-skin__frame[data-toolbar='bottom'] .axf-skin__mini--toolbar{order:8;border-bottom:0;border-top:var(--fx-border-w) solid}
+.axf-skin__mini--head,.axf-skin__mini--menu,.axf-skin__mini--bar2{height:calc(var(--fx-space)*.9);border-bottom:var(--fx-border-w) solid}
+.axf-skin__frame[data-banner='bottom'] .axf-skin__mini--head{order:9;border-bottom:0;border-top:var(--fx-border-w) solid}
+.axf-skin__frame[data-toolbar='bottom'] .axf-skin__mini--bar2{order:8;border-bottom:0;border-top:var(--fx-border-w) solid}
 .axf-skin__frame .axf-skin__mini--nav{display:flex;gap:var(--fx-dens-gap-xs);padding:var(--fx-dens-gap-xs)}
 .axf-skin__frame .axf-skin__mini--nav i{display:block;flex:1 1 auto;border-radius:calc(var(--fx-border-w)*2)}
 .axf-skin__frame[data-nav='none'] .axf-skin__mini--nav{display:none}
@@ -994,14 +994,14 @@ const CSS = `
 .axf-skin__frame[data-nav='bottom'] .axf-skin__mini--nav{flex-direction:row;height:calc(var(--fx-space)*1.4);order:7;border-top:var(--fx-border-w) solid}
 .axf-skin__frame[data-nav='left'],.axf-skin__frame[data-nav='right']{display:grid;grid-template-columns:auto minmax(0,1fr);grid-template-rows:auto auto auto minmax(0,1fr) auto auto}
 .axf-skin__frame[data-nav='right']{grid-template-columns:minmax(0,1fr) auto}
-.axf-skin__frame[data-nav='left'] .axf-skin__mini--banner,.axf-skin__frame[data-nav='right'] .axf-skin__mini--banner,.axf-skin__frame[data-nav='left'] .axf-skin__mini--menubar,.axf-skin__frame[data-nav='right'] .axf-skin__mini--menubar,.axf-skin__frame[data-nav='left'] .axf-skin__mini--toolbar,.axf-skin__frame[data-nav='right'] .axf-skin__mini--toolbar{grid-column:1 / -1}
+.axf-skin__frame[data-nav='left'] .axf-skin__mini--head,.axf-skin__frame[data-nav='right'] .axf-skin__mini--head,.axf-skin__frame[data-nav='left'] .axf-skin__mini--menu,.axf-skin__frame[data-nav='right'] .axf-skin__mini--menu,.axf-skin__frame[data-nav='left'] .axf-skin__mini--bar2,.axf-skin__frame[data-nav='right'] .axf-skin__mini--bar2{grid-column:1 / -1}
 .axf-skin__frame[data-nav='left'] .axf-skin__mini--nav,.axf-skin__frame[data-nav='right'] .axf-skin__mini--nav{flex-direction:column;width:calc(var(--fx-space)*3.5);grid-row:4;border-right:var(--fx-border-w) solid}
 .axf-skin__frame[data-nav='right'] .axf-skin__mini--nav{grid-column:2;border-right:0;border-left:var(--fx-border-w) solid}
 .axf-skin__frame[data-nav='right'] .axf-skin__mini--main{grid-column:1;grid-row:4}
 .axf-skin__frame[data-nav='left'] .axf-skin__mini--main{grid-row:4}
 .axf-skin__frame[data-rail='on'] .axf-skin__mini--nav{width:calc(var(--fx-space)*1.4)}
 .axf-skin__frame[data-nav='left'] .axf-skin__mini--nav i,.axf-skin__frame[data-nav='right'] .axf-skin__mini--nav i{flex:0 0 calc(var(--fx-space)*.6)}
-.axf-skin__frame[data-banner='bottom'][data-nav='left'] .axf-skin__mini--banner,.axf-skin__frame[data-toolbar='bottom'][data-nav='left'] .axf-skin__mini--toolbar{grid-row:auto}
+.axf-skin__frame[data-banner='bottom'][data-nav='left'] .axf-skin__mini--head,.axf-skin__frame[data-toolbar='bottom'][data-nav='left'] .axf-skin__mini--bar2{grid-row:auto}
 .axf-skin__mini--main{position:relative;display:flex;flex-direction:column;flex:1 1 auto;min-height:0;padding:var(--fx-dens-gap-sm);gap:var(--fx-dens-gap-xs)}
 .axf-skin__mini--tabs{display:flex;gap:var(--fx-dens-gap-xs);height:var(--fx-dens-gap-lg)}
 .axf-skin__mini--tabs i{display:block;flex:1;border-radius:calc(var(--fx-border-w)*2)}

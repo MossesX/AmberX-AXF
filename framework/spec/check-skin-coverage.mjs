@@ -11,13 +11,13 @@
  *   - a style target naming a type that isn't registered (a stale target would hide a gap),
  *   - a bad behaviour axis declaration (skin@2, core/engines/skin-behaviour.mjs): a kind outside choice / switch /
  *     number, a choice without values or with a default outside them, a number without min < max, an `of` naming no type,
- *   - with --strict-skins (CI from build professional-skins s14): a shipped skin (framework/assets/skin, and any
- *     --skins <dir>) whose look leaves a slot / parts / reference type unreached or whose behaviour leaves an axis
- *     unset (Brett, Nov 13 2026: every professional skin covers every type). A skin tagged `partial` is only reported.
- *     Without the flag those gaps are printed as warnings,
+ *   - a shipped skin (framework/assets/skin, and any --skins <dir>) whose look leaves a slot / parts / reference type
+ *     unreached or whose behaviour leaves an axis unset (Brett, Nov 13 2026: every professional skin covers every type;
+ *     CI from build professional-skins s14). A skin tagged `partial` is only reported; --lenient-skins turns the rest
+ *     into warnings while a new skin is being written,
  * and prints the coverage table (with each type's behaviour axes) so a reviewer sees how each type is reached.
  *
- *   node framework/spec/check-skin-coverage.mjs [--json] [--quiet] [--skins <dir>]… [--no-skins] [--strict-skins]
+ *   node framework/spec/check-skin-coverage.mjs [--json] [--quiet] [--skins <dir>]… [--no-skins] [--lenient-skins]
  */
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
@@ -32,7 +32,8 @@ const argv = process.argv.slice(2);
 const json = argv.includes('--json');
 const quiet = argv.includes('--quiet') || json;
 const skinDirs = argv.includes('--no-skins') ? [] : [join(ROOT, 'assets/skin'), ...argv.flatMap((a, i) => (a === '--skins' && argv[i + 1] ? [resolve(argv[i + 1])] : []))];
-const strictSkins = argv.includes('--strict-skins');
+// shipped skins fail the check by default (build professional-skins s14); --lenient-skins only warns (local work on a new skin)
+const strictSkins = !argv.includes('--lenient-skins');
 const warnings = [];
 
 const spec = readJson(join(ROOT, 'schemas/asset-types.json')).types;
