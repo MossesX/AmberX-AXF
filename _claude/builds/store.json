@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4013,
- "updatedAt": "2026-11-13T06:22:57.652Z",
+ "rev": 4014,
+ "updatedAt": "2026-11-13T06:23:19.575Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -177525,7 +177525,7 @@
    "pr": "#547",
    "priority": "P0",
    "createdAt": "2026-11-13T01:13:53.464Z",
-   "updatedAt": "2026-11-13T06:22:28.250Z",
+   "updatedAt": "2026-11-13T06:23:17.857Z",
    "builtAt": "",
    "notes": [
     {
@@ -177739,7 +177739,7 @@
      "uid": "st-mweacucb04g9r1",
      "title": "",
      "text": "Make the AI skin maker obey the config: the generation brief carries only the allowed options and depth limits, and the output is validated against skin-config@1. Anything outside the allowed set is dropped and listed back to Brett.",
-     "model": "Opus",
+     "model": "Fable",
      "why": "",
      "phase": "",
      "group": "",
@@ -177755,9 +177755,9 @@
      "done": true,
      "doneAt": "2026-11-13T06:21:20.578Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-13T01:16:06.682Z",
-     "updatedAt": "2026-11-13T06:21:20.797Z"
+     "updatedAt": "2026-11-13T06:23:18.078Z"
     },
     {
      "id": "s5",
@@ -177899,7 +177899,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 25,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
