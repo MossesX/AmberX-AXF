@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4830,
- "updatedAt": "2026-11-13T19:40:06.410Z",
+ "rev": 4831,
+ "updatedAt": "2026-11-13T19:40:25.490Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -203172,8 +203172,8 @@
    "pr": "#638",
    "priority": "P0",
    "createdAt": "2026-11-13T19:32:22.232Z",
-   "updatedAt": "2026-11-13T19:39:12.547Z",
-   "builtAt": "2026-11-13T19:39:12.547Z",
+   "updatedAt": "2026-11-13T19:39:26.134Z",
+   "builtAt": "2026-11-13T19:39:26.134Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -203190,6 +203190,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-land-rename-long-builds-resolve-clash--gina, own login copy)",
      "at": "2026-11-13T19:35:46.927Z"
+    },
+    {
+     "text": "Headless run axf-land-rename-long-builds-resolve-clash--gina: brief only · start 11.1K tokens ($0.03) · cost $0.46 · 22 turns · 6 tools, MCP none",
+     "at": "2026-11-13T19:39:26.133Z"
     }
    ],
    "approvals": [],
