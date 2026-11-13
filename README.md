@@ -56,6 +56,28 @@ starter asset into `src/assets/`, writes `axf.manifest.json` (defaults + file st
 `build-engine.mjs` exports `init`, `validateApp`, `loadAssets`, `validateAsset`, `newAsset` and `writeSchemas`,
 so the same engine can sit behind an HTTP API, a browser UI, an SSH session or an MCP server.
 
+## Live reload on a phone
+
+`axf dev` serves an app's assets and pushes every saved change to whatever is connected; themes, layouts, menus and
+every other JSON asset swap in place, no rebuild and no lost state. Code changes still need a rebuild.
+
+1. On the PC: `node framework/cli/axf.mjs dev apps/<app>` (or `--framework` for `framework/assets`). It prints the URLs
+   it answers on, e.g. `http://192.168.1.20:7070`. Use the PC's Wi-Fi address (`ipconfig` / `ip addr`), not `localhost`.
+2. The phone must be on the same Wi-Fi as the PC (guest networks often block device-to-device traffic). Allow port
+   7070 through the PC firewall. On the emulator the PC is always `http://10.0.2.2:7070`.
+3. Web app (any browser, phone included): open it with `?axfDev=http://192.168.1.20:7070` (`?axfDev=1` = same host,
+   port 7070). Apps opt in with `useDevServer(devServerUrl(location.search))` from `framework/react`; the demo does.
+4. Android app: Settings → Developer → Dev server URL = the printed URL, and turn on Hot reload assets
+   (`axf.devServer`, flag `axf.hotReload`). Not wired on the device yet: see `framework/spec/PORTING.md`
+   ("Deferred: dev server launch extras").
+5. Edit and save an asset. A valid change lands in under a second. A broken file (bad JSON, schema error, wrong
+   folder) is not sent: the app keeps the last good version and the terminal shows `axf-dev` with the reason.
+   Editor temp and swap files are ignored; renames and deletes are reported as such.
+
+Endpoints: `/` (status), `/assets.json`, `/assets/<type>/<id>.json`, `/manifest.json`,
+`/events?since=<rev>` (long-poll; `{rev, changed: [{type, id, action, ok, error?, from?}], error?}`).
+Checks: `node framework/cli/check-dev-server.mjs`; emulator: Actions → Dev reload (Android).
+
 ## Runtime API (`window.AXF`)
 
 ```js

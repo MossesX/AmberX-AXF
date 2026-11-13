@@ -31,6 +31,7 @@ export { FRAME_BANNERS_SLOT, FrameBanners, Slot, SlotsProvider, useSlotFilled } 
 export { PageDataSets, RepeatingSlot, RepeatingSlots, RepeatView, usePageDataSets, type RepeatRenderProps } from './components/Repeat';
 export { BANNER_LOOK_KEY, BANNER_PREFS_KEY, BANNER_SETTINGS_DIALOG, BANNERS_VIEW, BannerIcon, BANNER_WORK_ICONS, BannerSettingsPanel, askBannerTab, bannerSettingsTabs, setBannerOwnSettingsRenderer, bannerPrefs, bannerSettingsDialog, bannerSlotDefs, knownBanners, setBannerPrefs, useBannerLaunchOpen, useBannerPrefsTick, useKnownBanners, type BannerPrefs, type BannerWorkAnim } from './components/BannerSettings';
 export { useEditorSync, type EditorSyncOptions } from './editorSync';
+export { useDevServer, connectDevServer, applyDevChanges, devServerUrl, DEV_SERVER_PARAM, DEV_SERVER_PORT, type DevServerChange, type DevServerStatus, type DevServerRuntime } from './devServer';
 export { pluginRecordOfLibrary, pluginRecordsFromRuntime, runtimeInventory } from './pluginRecords';
 export { HubAppearanceSource, DEFAULT_HUB, type HubAppearanceOptions } from './hubAppearance';
 export { WaitingForHub } from './components/Waiting';

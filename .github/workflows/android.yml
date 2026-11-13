@@ -120,6 +120,7 @@ jobs:
       - run: node framework/spec/check-feature-ledger.mjs            # feature-ledger@1 + deploy-log@1: one status lifecycle for features and edits, merge never loses a date / build / PR / prompt, live from the deploy log, grouping / sort / filter / export projections, schema snapshots
       - run: node framework/cli/help-coverage.mjs --check            # Help mode: every control in the framework chrome, the console + plugins and axHub web has help; fails if coverage drops below framework/spec/help-coverage.json
       - run: node framework/cli/axf.mjs libraries
+      - run: node framework/cli/check-dev-server.mjs                 # axf dev: validated changes (invalid → ok:false + error), editor temp files ignored, rename/delete records
       - name: Asset conformance — every web CSS/TSX and Kotlin UI (handwritten or generated) takes its look from asset tokens; file:line + token to use
         run: node framework/cli/check-theme.mjs
       - name: Asset conformance — every web button is a framework control (apps, plugins, libraries, templates)

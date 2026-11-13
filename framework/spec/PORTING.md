@@ -207,3 +207,12 @@ The 286 Kotlin findings stay on the baseline, Android on hold: 285 `.dp` spacing
 `Axf.shapes.*`) and one `Color(0x…)` literal (→ `Axf.colors.*`), in `framework/android` (230) and `apps/console` (56).
 `Axf.space` is a `@Composable` getter, so each call site needs a compiler to confirm it sits in a composable scope:
 do it with the Android build, then run `node framework/cli/check-theme.mjs --update-baseline` to empty the file.
+## Deferred: dev server launch extras + saved dev settings (Nov 12 2026)
+Build `x.engine.dev` s2 (Android on hold, no new Kotlin). `axf dev` and the web hook (`framework/react/devServer.ts`
+`useDevServer`, `?axfDev=`) work; the Android `HotReloader` (axf-devtools) exists but nothing feeds it:
+- the `axf.devServer` / `axf.hotReload` settings (SettingScope.DEVICE) are never copied into `kernel.config` / `kernel.flags`,
+  and `kernel.flags.set` is in memory only, so the reloader never starts after a restart;
+- debug builds should accept launch extras `--es axf.devServer <url> --ez axf.hotReload true` (config + flag, USER layer)
+  so CI and `adb` can turn it on; `.github/workflows/dev-reload-android.yml` (manual) passes them and asserts a pixel diff;
+- the reloader should start or restart when either setting changes (today: once, in `start()`);
+- invalid changes (`ok: false`, `error` on the change record, s3) should write a terminal line instead of being skipped.

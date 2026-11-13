@@ -1326,7 +1326,7 @@
    "priority": "P1",
    "wave": 1,
    "effort": "M",
-   "summary": "axf dev watches assets and long-polls changes to devices; the Android HotReloader re-registers changed assets live.",
+   "summary": "axf dev watches assets (validated, editor temp files ignored, rename/delete) and long-polls changes to devices; web apps hot-reload with useDevServer (?axfDev=), the Android HotReloader re-registers changed assets live.",
    "ports": {
     "android": {
      "status": "built",
@@ -1348,7 +1348,7 @@
    "warnings": [
     {
      "level": "warn",
-     "text": "Never tried end to end with a phone"
+     "text": "Web live reload tested end to end (check-dev-server + useDevServer). Android: the device never receives axf.devServer / axf.hotReload (no settings→config bridge, no launch extras); the emulator e2e (dev-reload-android.yml, manual) waits on that Kotlin twin, see PORTING.md 'Deferred: dev server launch extras'."
     }
    ],
    "recommendations": [],
