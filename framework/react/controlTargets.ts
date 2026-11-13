@@ -166,7 +166,7 @@ export class ControlRegistry {
       const tabAddr = parent ? `${tabRow}=${parent}/${formatAddress([{ kind: 'subtab', id: `${SETTINGS_SUBTAB_ROW}=${tab.id}` }])}` : `${tabRow}=${tab.id}`;
       const open = () => rt.dispatch(`settings.open:${tab.id}`);
       const where = parent ? `Settings › ${tabs.find((x) => x.id === parent)?.label ?? parent} › ${tab.label}` : `Settings › ${tab.label}`;
-      push({ address: tabAddr, kind: parent ? 'subtab' : 'tab', label: tab.label, detail: 'Settings', icon: tab.icon, keywords: [tab.description ?? ''], open, element: () => document.querySelector(`[data-axf-settings-tab="${cssEscape(tab.id)}"]`) });
+      push({ address: tabAddr, kind: parent ? 'subtab' : 'tab', label: tab.label, detail: 'Settings', icon: tab.icon, keywords: [tab.description ?? ''], open, element: () => document.querySelector(`[data-axf-settings-tab="${cssEscape(tab.id)}"]`) ?? document.querySelector(`[data-axf-settings-nav="${cssEscape(tab.id)}"]`) });
       for (const p of s.panelsIn(tab.id)) push({ address: childAddress(tabAddr, 'panel', `settings-panel:${p.id}`), kind: 'panel', label: p.title, detail: where, open, element: () => byAnchor(`settings-panel:${p.id}`) });
       for (const g of s.groupsIn(tab.id)) {
         push({ address: childAddress(tabAddr, 'panel', `settings-group:${g.id}`), kind: 'panel', label: g.label, detail: where, open, element: () => byAnchor(`settings-group:${g.id}`) });

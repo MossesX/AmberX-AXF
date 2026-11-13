@@ -426,9 +426,9 @@ function useWide(): boolean {
 }
 
 /** One line of the settings list: icon, label, a one-line description, chevron. */
-function NavRow({ icon, label, desc, active, onClick }: { icon?: string; label: string; desc?: string; active?: boolean; onClick: () => void }) {
+function NavRow({ id, icon, label, desc, active, onClick }: { id?: string; icon?: string; label: string; desc?: string; active?: boolean; onClick: () => void }) {
   return (
-    <button type="button" data-fx-row className={`axf-settings__nav ${active ? 'is-on' : ''}`} aria-current={active ? 'page' : undefined} onClick={onClick}>
+    <button type="button" data-fx-row {...(id ? { 'data-axf-settings-nav': id } : {})} className={`axf-settings__nav ${active ? 'is-on' : ''}`} aria-current={active ? 'page' : undefined} onClick={onClick}>
       {icon && <Icon name={icon} size={15} />}
       <span className="axf-settings__navtext"><span className="axf-settings__navlabel">{label}</span>{desc && <span className="axf-settings__navdesc">{desc}</span>}</span>
       <Icon name="chevron-right" size={14} className="axf-settings__navchev" />
@@ -493,7 +493,7 @@ export function SettingsView() {
   );
   const navList = (
     <nav className="axf-settings__navlist" aria-label="Settings sections" data-axf-not-nav="the settings page's section list (settings-ui@1 layout list), not a navigation menu">
-      {tabs.map((t) => <NavRow key={t.id} icon={t.icon} label={t.label} desc={t.description} active={wide && t.id === current?.id} onClick={() => { setQuery(''); choose(t.id); }} />)}
+      {tabs.map((t) => <NavRow key={t.id} id={t.id} icon={t.icon} label={t.label} desc={t.description} active={wide && t.id === current?.id} onClick={() => { setQuery(''); choose(t.id); }} />)}
     </nav>
   );
   const inSub = !!shown && !!current && shown.id !== current.id;
@@ -512,7 +512,7 @@ export function SettingsView() {
       {shown?.description && <p className="fx-muted axf-settings__desc" style={{ margin: 0 }}>{shown.description}</p>}
       {subList && !inSub && (
         <nav className="axf-settings__navlist axf-settings__navlist--subs" aria-label={`${current.label} sections`} data-axf-not-nav="the settings page's sub-section list, not a navigation menu">
-          {subs.map((t) => <NavRow key={t.id} icon={t.icon} label={t.label} desc={t.description} onClick={() => choose(current.id, t.id)} />)}
+          {subs.map((t) => <NavRow key={t.id} id={t.id} icon={t.icon} label={t.label} desc={t.description} onClick={() => choose(current.id, t.id)} />)}
         </nav>
       )}
       {shown && (inSub ? <ControlScope address={`subtab:settings.subtabs=${shown.id}`}><TabContent id={shown.id} /></ControlScope> : <TabContent id={shown.id} />)}
