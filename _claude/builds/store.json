@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4678,
- "updatedAt": "2026-11-13T18:39:05.625Z",
+ "rev": 4679,
+ "updatedAt": "2026-11-13T18:39:19.954Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -197054,7 +197054,7 @@
    "pr": "#630",
    "priority": "P1",
    "createdAt": "2026-11-13T18:13:23.703Z",
-   "updatedAt": "2026-11-13T18:38:39.272Z",
+   "updatedAt": "2026-11-13T18:39:10.605Z",
    "builtAt": "",
    "notes": [
     {
@@ -197072,6 +197072,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-new-asset-type-animated-expanding-row--joey, own login copy)",
      "at": "2026-11-13T18:17:21.527Z"
+    },
+    {
+     "text": "Headless run axf-new-asset-type-animated-expanding-row--joey: brief only · start 12.9K tokens ($0.06) · cost $8.77 · 111 turns · 6 tools, MCP none",
+     "at": "2026-11-13T18:39:10.605Z"
     }
    ],
    "approvals": [],
@@ -197373,11 +197377,11 @@
     "all"
    ],
    "order": {
-    "all": 798
+    "all": 797
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -199421,16 +199425,22 @@
    "title": "Console Android app: thin WebView wrapper with overlay, replaces AmberX",
    "category": "",
    "detail": "New Android app that replaces AmberX: a thin native shell that runs the AXF console web app in a WebView. Not a native rewrite.\n- Native only where Android requires it: draw-over-apps floating toolbar/bubble (port from overlay-toolbar-v2), approvals bar, notifications, mic/recorder, open_url, wake, permissions. Everything else is the web console.\n- SAFE AREA (Brett's screenshots, Nov 13): AmberX drew its top bar under the status bar, so the clock, camera cutout, call pill, notification icons and signal sat on top of the title/search/menu. The wrapper must handle WindowInsets (status bar, display cutout, navigation bar, IME), pass them into the WebView as CSS env(safe-area-inset-*) with viewport-fit=cover, and the console must pad every top bar, banner, toolbar and bottom nav with them. Nothing is ever drawn under the clock, camera or notification shade. Test on cutout and punch-hole phones, portrait and landscape.\n- The floating toolbar expands to the full-screen console with the toolbar top-left, keeps the app in front, and pops up approvals with a link to the approvals page.\n- A JS bridge exposes the native features to the console (window.axfNative), with full API parity: REST/MCP/CLI/voice.\n- Auto-updates the web content from the live console. The shell rarely needs a rebuild.\n- Migrate AmberX's axHub device service (amberx.open_url, recorder) to the new app.\n- Tests, help, Shipped features.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P1",
    "createdAt": "2026-11-13T18:38:53.122Z",
-   "updatedAt": "2026-11-13T18:38:53.122Z",
+   "updatedAt": "2026-11-13T18:38:55.610Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T18:38:55.610Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -199445,6 +199455,28 @@
     "from": "",
     "addenda": []
    },
+   "pipeline": {
+    "queuedAt": "2026-11-13T18:38:55.070Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
    "steps": [],
    "profiles": [
     "all"
@@ -199454,7 +199486,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

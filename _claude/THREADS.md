@@ -785,8 +785,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 11:59 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` → running, note (all) · pipeline
-- 2026-11-13 11:59 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` note (all) · orchestrator
 - 2026-11-13 11:59 UTC · `auto-recover-stuck-builds` s2 done (all) · orchestrator
 - 2026-11-13 12:09 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` → queued, note (all) · console
 - 2026-11-13 12:09 UTC · `auto-recover-stuck-builds` → pending (all) · mcp
@@ -1185,6 +1183,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 18:37 UTC · `vps-builds-get-console-token-ui-review` s9 done, → built (all) · orchestrator
 - 2026-11-13 18:38 UTC · `new-asset-type-animated-expanding-row` PR #630 (all) · builds-live
 - 2026-11-13 18:38 UTC · `console-android-app-thin-webview-wrapper` added (0 steps) (all) · console
+- 2026-11-13 18:38 UTC · `console-android-app-thin-webview-wrapper` → queued, note (all) · console
+- 2026-11-13 18:39 UTC · `new-asset-type-animated-expanding-row` note (all) · orchestrator
 
 ## Token passes (log)
 
