@@ -6,7 +6,8 @@
  * with an allow / lock switch on every category, group and option, steppers for the limits a type declares (how deep
  * the AI may build context menus, nav and app menus; how many toolbar groups), the Default skin row (the current look,
  * saved as a protected skin) and Make skin with AI. Three layouts, picked by the look setting `axf.skinConfig.layout`
- * (UI Review options, one settings asset each):
+ * (UI Review options, one `settings` asset each, tagged `ui-choices:skin-config`, `data.view` naming the layout:
+ * framework/assets/settings/skin-config-{tree,columns,chips}.json):
  *   tree     a collapsible container per category, groups and options inside, each with its switch
  *   columns  the categories on the left, the picked one's groups and options on the right
  *   chips    every category as one chip (tap = allow / lock), the limits as steppers below
@@ -49,11 +50,14 @@ export const skinConfigService = (): SkinConfigService | null => {
   return s && typeof s.get === 'function' ? s : null;
 };
 
-const LAYOUTS: { value: SkinConfigLayout; label: string }[] = [
-  { value: 'tree', label: 'Tree' },
-  { value: 'columns', label: 'Two columns' },
-  { value: 'chips', label: 'Chips' },
-];
+export const SKIN_CONFIG_CHOICES = 'ui-choices:skin-config';
+const LAYOUT_NAMES: Record<SkinConfigLayout, string> = { tree: 'Tree', columns: 'Two columns', chips: 'Chips' };
+/** The layouts the registered settings assets offer (`ui-choices:skin-config`), else the three built in. */
+function layoutOptions(rt: AxfRuntime): { value: SkinConfigLayout; label: string }[] {
+  const views = rt.registry.list('settings').filter((a) => a.tags?.includes(SKIN_CONFIG_CHOICES)).map((a) => (a.data as { view?: string }).view).filter((v): v is SkinConfigLayout => v === 'tree' || v === 'columns' || v === 'chips');
+  const list = views.length ? [...new Set(views)] : (Object.keys(LAYOUT_NAMES) as SkinConfigLayout[]);
+  return list.map((v) => ({ value: v, label: LAYOUT_NAMES[v] }));
+}
 const MODES: { value: Mode; label: string }[] = [
   { value: 'allow', label: 'Allow' },
   { value: 'lock', label: 'Lock' },
@@ -194,7 +198,7 @@ export function SkinConfigPanel() {
       {error && <Note tone="danger">{error}</Note>}
       <div className="axf-skincfg__bar" role="toolbar" aria-label="Skin config">
         <Segmented label="Level" size="sm" value={level} options={[{ value: 'app', label: 'This app' }, { value: 'global', label: 'Hub-wide' }]} onChange={setLevel} />
-        <Segmented label="Layout" size="sm" value={layout} options={LAYOUTS} onChange={(v) => rt.settings.set(SKIN_CONFIG_LAYOUT_KEY, v)} />
+        <Segmented label="Layout" size="sm" value={layout} options={layoutOptions(rt)} onChange={(v) => rt.settings.set(SKIN_CONFIG_LAYOUT_KEY, v)} />
         <Button size="sm" tone="ghost" icon="refresh" confirm="Reset the skin config? The AI may change everything again." disabled={busy} onClick={() => run(svc.reset(app))}>Reset</Button>
       </div>
       <div className="axf-skincfg__row">
