@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4083,
- "updatedAt": "2026-11-13T06:59:43.886Z",
+ "rev": 4084,
+ "updatedAt": "2026-11-13T06:59:54.057Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -179731,7 +179731,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T06:54:48.788Z",
-   "updatedAt": "2026-11-13T06:59:23.740Z",
+   "updatedAt": "2026-11-13T06:59:37.742Z",
    "builtAt": "",
    "notes": [
     {
@@ -179761,6 +179761,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-remove-ui-review-as-a-gate-no-screenshots-requir--lenny, own login copy)",
      "at": "2026-11-13T06:57:12.905Z"
+    },
+    {
+     "text": "Headless run axf-remove-ui-review-as-a-gate-no-screenshots-requir--lenny: brief only · start 15.7K tokens ($0.05) · cost $1.03 · 27 turns · 6 tools, MCP none",
+     "at": "2026-11-13T06:59:37.742Z"
     },
     {
      "text": "Double launch: two headless sessions (Greenlight Gina, pid 658490, and Landin' Lenny, pid 661427) were started on mossesx-max- for this build in the same worktree within ~20 s. Gina started first and already committed s1 (879e57848). Lenny stopped without changing any files so the two would not overwrite each other; Gina carries on. Dispatcher should not launch a second session on a build whose worktree already has a live claude-headless run.",
@@ -180158,15 +180162,15 @@
    "title": "Always fill every slot: when slots are free, run independent steps of running builds in parallel across them, and auto-queue pending builds",
    "category": "",
    "detail": "",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T06:57:42.497Z",
-   "updatedAt": "2026-11-13T06:59:26.578Z",
+   "updatedAt": "2026-11-13T06:59:35.372Z",
    "builtAt": "",
    "notes": [
     {
@@ -180204,6 +180208,14 @@
     {
      "text": "Split asked for by console.",
      "at": "2026-11-13T06:59:25.123Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-always-fill-every-slot-when-slots-are-free-run-i--joey.",
+     "at": "2026-11-13T06:59:31.210Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-always-fill-every-slot-when-slots-are-free-run-i--joey, own login copy)",
+     "at": "2026-11-13T06:59:35.372Z"
     }
    ],
    "approvals": [],
@@ -180223,12 +180235,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T06:57:47.148Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-always-fill-every-slot-when-slots-are-free-run-i--joey",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Fable",
+    "launchedAt": "2026-11-13T06:59:30.052Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T06:59:15.736Z",
@@ -180240,7 +180252,7 @@
     "splitRequested": "2026-11-13T06:59:23.355Z",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-13T06:59:30.052Z",
     "planned": {
      "model": "Fable",
      "account": "mossesx-max-",
@@ -180249,7 +180261,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-13T06:59:30.052Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -180787,7 +180799,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

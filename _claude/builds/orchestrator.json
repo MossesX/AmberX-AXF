@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T06:59:43.886Z",
+ "updatedAt": "2026-11-13T06:59:54.057Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -117895,7 +117895,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T06:54:48.788Z",
-   "updatedAt": "2026-11-13T06:59:23.740Z",
+   "updatedAt": "2026-11-13T06:59:37.742Z",
    "builtAt": "",
    "notes": [
     {
@@ -117925,6 +117925,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-remove-ui-review-as-a-gate-no-screenshots-requir--lenny, own login copy)",
      "at": "2026-11-13T06:57:12.905Z"
+    },
+    {
+     "text": "Headless run axf-remove-ui-review-as-a-gate-no-screenshots-requir--lenny: brief only · start 15.7K tokens ($0.05) · cost $1.03 · 27 turns · 6 tools, MCP none",
+     "at": "2026-11-13T06:59:37.742Z"
     },
     {
      "text": "Double launch: two headless sessions (Greenlight Gina, pid 658490, and Landin' Lenny, pid 661427) were started on mossesx-max- for this build in the same worktree within ~20 s. Gina started first and already committed s1 (879e57848). Lenny stopped without changing any files so the two would not overwrite each other; Gina carries on. Dispatcher should not launch a second session on a build whose worktree already has a live claude-headless run.",
@@ -118234,15 +118238,15 @@
    "title": "Always fill every slot: when slots are free, run independent steps of running builds in parallel across them, and auto-queue pending builds",
    "category": "",
    "detail": "",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T06:57:42.497Z",
-   "updatedAt": "2026-11-13T06:59:26.578Z",
+   "updatedAt": "2026-11-13T06:59:35.372Z",
    "builtAt": "",
    "notes": [
     {
@@ -118280,6 +118284,14 @@
     {
      "text": "Split asked for by console.",
      "at": "2026-11-13T06:59:25.123Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-always-fill-every-slot-when-slots-are-free-run-i--joey.",
+     "at": "2026-11-13T06:59:31.210Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-always-fill-every-slot-when-slots-are-free-run-i--joey, own login copy)",
+     "at": "2026-11-13T06:59:35.372Z"
     }
    ],
    "approvals": [],
