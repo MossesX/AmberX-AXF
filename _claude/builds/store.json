@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5009,
- "updatedAt": "2026-11-13T20:59:31.953Z",
+ "rev": 5010,
+ "updatedAt": "2026-11-13T20:59:48.046Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -208118,8 +208118,8 @@
    "pr": "#655",
    "priority": "P0",
    "createdAt": "2026-11-13T20:45:58.911Z",
-   "updatedAt": "2026-11-13T20:59:11.096Z",
-   "builtAt": "2026-11-13T20:59:11.096Z",
+   "updatedAt": "2026-11-13T20:59:27.633Z",
+   "builtAt": "2026-11-13T20:59:27.633Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -208136,6 +208136,10 @@
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-full-voice-control-resolve-inventory--paulie.",
      "at": "2026-11-13T20:50:40.364Z"
+    },
+    {
+     "text": "Headless run axf-full-voice-control-resolve-inventory--paulie: brief only · start 11.0K tokens ($0.03) · cost $1.01 · 48 turns · 6 tools, MCP none",
+     "at": "2026-11-13T20:59:27.633Z"
     },
     {
      "text": "Landing audit: merge queue empty, main CI red (check-profiles test-sandbox folder; amberx-droid setVetoHost overlay types not on main; kernel ConformanceTest theme vars). Needs a main-CI fix build; then the queue lands the green PRs. #655 lands the voice control work.",
