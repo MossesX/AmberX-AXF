@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T18:09:59.101Z",
+ "updatedAt": "2026-11-13T18:10:25.630Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -125771,6 +125771,10 @@
     {
      "text": "Phase 1 done, PR #622 draft. Gap: UI Review shots not taken (headless console rendered blank in the worktree); desktop + phone shots of a toolbar and tab-group dialog still needed.",
      "at": "2026-11-13T18:08:42.635Z"
+    },
+    {
+     "text": "Phase 1 done, PR #622 (draft). UI Review shots missing: Playwright not installed on the VPS, capture tool fails. help-coverage and shared-assets checks were already failing on main.",
+     "at": "2026-11-13T18:09:43.287Z"
     }
    ],
    "approvals": [],
@@ -125843,7 +125847,7 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-13T18:08:39.080Z",
+     "doneAt": "2026-11-13T18:09:39.473Z",
      "note": "",
      "uid": "st-mwf9s99m03cl5j",
      "createdAt": "2026-11-13T17:47:52.425Z"

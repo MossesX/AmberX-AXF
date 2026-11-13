@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4594,
- "updatedAt": "2026-11-13T18:09:59.101Z",
+ "rev": 4595,
+ "updatedAt": "2026-11-13T18:10:25.630Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -195958,6 +195958,10 @@
     {
      "text": "Phase 1 done, PR #622 draft. Gap: UI Review shots not taken (headless console rendered blank in the worktree); desktop + phone shots of a toolbar and tab-group dialog still needed.",
      "at": "2026-11-13T18:08:42.635Z"
+    },
+    {
+     "text": "Phase 1 done, PR #622 (draft). UI Review shots missing: Playwright not installed on the VPS, capture tool fails. help-coverage and shared-assets checks were already failing on main.",
+     "at": "2026-11-13T18:09:43.287Z"
     }
    ],
    "approvals": [],
@@ -196079,11 +196083,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-13T18:08:39.080Z",
+     "doneAt": "2026-11-13T18:09:39.473Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-13T17:47:52.425Z",
-     "updatedAt": "2026-11-13T18:08:39.514Z"
+     "updatedAt": "2026-11-13T18:09:39.777Z"
     }
    ],
    "profiles": [
@@ -196094,7 +196098,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
