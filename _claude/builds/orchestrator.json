@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T17:41:22.579Z",
+ "updatedAt": "2026-11-13T17:41:35.006Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -79749,11 +79749,11 @@
    "status": "built",
    "hidden": false,
    "source": "mcp",
-   "pendingId": "orchestrator-checks-shipped-features-before-spli",
+   "pendingId": "orchestrator-checks-shipped-features",
    "branch": "claude/orchestrator-checks-shipped-features",
    "pr": "#599",
    "createdAt": "2026-11-08T17:22:53.861Z",
-   "updatedAt": "2026-11-13T17:35:27.231Z",
+   "updatedAt": "2026-11-13T17:41:33.190Z",
    "builtAt": "2026-11-12T03:37:07.380Z",
    "notes": [
     {
@@ -110886,11 +110886,11 @@
    "status": "built",
    "hidden": false,
    "source": "mcp",
-   "pendingId": "focus-on-every-screen-console-open-console-show-",
+   "pendingId": "focus-every-screen-console-open-console",
    "branch": "claude/focus-every-screen-console-open-console",
    "pr": "#593",
    "createdAt": "2026-11-12T10:35:49.272Z",
-   "updatedAt": "2026-11-13T17:33:59.509Z",
+   "updatedAt": "2026-11-13T17:41:33.190Z",
    "builtAt": "2026-11-12T11:10:43.772Z",
    "notes": [
     {
@@ -111007,11 +111007,11 @@
    "status": "built",
    "hidden": false,
    "source": "mcp",
-   "pendingId": "show-commits-behind-main-on-every-build-table-an",
+   "pendingId": "show-commits-behind-main-every-build",
    "branch": "claude/show-commits-behind-main-every-build",
    "pr": "#611",
    "createdAt": "2026-11-12T10:39:34.736Z",
-   "updatedAt": "2026-11-13T17:38:02.873Z",
+   "updatedAt": "2026-11-13T17:41:33.191Z",
    "builtAt": "2026-11-13T11:31:04.877Z",
    "notes": [
     {
@@ -111168,11 +111168,11 @@
    "status": "built",
    "hidden": false,
    "source": "mcp",
-   "pendingId": "remove-the-console-s-own-notes-manager-console-u",
+   "pendingId": "remove-console-s-own-notes-manager",
    "branch": "claude/remove-console-s-own-notes-manager",
    "pr": "#606",
    "createdAt": "2026-11-12T10:43:54.592Z",
-   "updatedAt": "2026-11-13T17:37:09.269Z",
+   "updatedAt": "2026-11-13T17:41:33.191Z",
    "builtAt": "2026-11-12T11:03:13.773Z",
    "notes": [
     {
@@ -111281,11 +111281,11 @@
    "status": "built",
    "hidden": false,
    "source": "mcp",
-   "pendingId": "pending-tab-one-collapsed-row-per-build-tap-to-e",
+   "pendingId": "pending-tab-one-collapsed-row-per-build",
    "branch": "claude/pending-tab-one-collapsed-row-per-build",
    "pr": "#602",
    "createdAt": "2026-11-12T10:48:25.123Z",
-   "updatedAt": "2026-11-13T17:36:11.898Z",
+   "updatedAt": "2026-11-13T17:41:33.191Z",
    "builtAt": "2026-11-12T11:06:49.143Z",
    "notes": [
     {
@@ -111398,11 +111398,11 @@
    "status": "built",
    "hidden": false,
    "source": "mcp",
-   "pendingId": "unlink-plan-studio-from-builds-delete-all-plan-s",
+   "pendingId": "unlink-plan-studio-builds-delete-all",
    "branch": "claude/unlink-plan-studio-builds-delete-all",
    "pr": "#615",
    "createdAt": "2026-11-12T10:49:12.963Z",
-   "updatedAt": "2026-11-13T17:38:48.690Z",
+   "updatedAt": "2026-11-13T17:41:33.191Z",
    "builtAt": "2026-11-13T11:34:54.213Z",
    "notes": [
     {
@@ -111539,12 +111539,12 @@
    "status": "built",
    "hidden": false,
    "source": "mcp",
-   "pendingId": "fix-the-step-splitter-claude-exit-1-input-must-b",
+   "pendingId": "fix-step-splitter-claude-exit-1-input",
    "branch": "claude/fix-step-splitter-claude-exit-1-input",
    "pr": "#592",
    "priority": "P0",
    "createdAt": "2026-11-12T10:51:23.133Z",
-   "updatedAt": "2026-11-13T17:33:46.314Z",
+   "updatedAt": "2026-11-13T17:41:33.190Z",
    "builtAt": "2026-11-12T21:00:18.244Z",
    "notes": [
     {
