@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4223,
- "updatedAt": "2026-11-13T10:43:28.625Z",
+ "rev": 4224,
+ "updatedAt": "2026-11-13T10:44:28.869Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -183177,12 +183177,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T10:40:45.569Z",
-   "updatedAt": "2026-11-13T10:40:47.743Z",
+   "updatedAt": "2026-11-13T10:44:27.308Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-13T10:40:47.743Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"471279d0-2bb6-4680-a0d3-ba94a789b6ae\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-13T10:44:27.308Z"
     }
    ],
    "approvals": [],
@@ -183209,9 +183213,15 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
-    "split": null,
+    "split": {
+     "at": "2026-11-13T10:44:27.308Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 2,
+     "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"471279d0-2bb6-4680-a0d3-ba94a789b6ae\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
+    },
     "splitRequested": "",
-    "note": "waiting for the split before it can start",
+    "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
     "planned": null,
@@ -183221,7 +183231,55 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mweunqjw01tpox",
+     "title": "",
+     "text": "Alright, land that shit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T10:44:27.308Z",
+     "updatedAt": "2026-11-13T10:44:27.308Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mweunqjw02ipvn",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/fix-merge-conflicts-on-pr-557-professional-skins.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/fix-merge-conflicts-on-pr-557-professional-skins.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T10:44:27.308Z",
+     "updatedAt": "2026-11-13T10:44:27.308Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -183230,12 +183288,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-13T10:44:27.308Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

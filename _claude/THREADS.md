@@ -781,7 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 01:20 UTC · `projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone` branch claude/projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone (all) · pipeline
 - 2026-11-13 01:20 UTC · `projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone` note (all) · orchestrator
 - 2026-11-13 01:20 UTC · `10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less` PR #535 (all) · builds-live
 - 2026-11-13 01:20 UTC · `10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less` note (all) · orchestrator
@@ -1181,6 +1180,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 10:43 UTC · `fix-a-build-whose-session-finishes-its-phase-e-g-the-fable-steps-with-steps` → running, note (all) · pipeline
 - 2026-11-13 10:43 UTC · `fix-a-build-whose-session-finishes-its-phase-e-g-the-fable-steps-with-steps` branch claude/fix-a-build-whose-session-finishes-its-phase-e-g-the-fable-steps-with-steps (all) · pipeline
 - 2026-11-13 10:43 UTC · `fix-a-build-whose-session-finishes-its-phase-e-g-the-fable-steps-with-steps` note (all) · orchestrator
+- 2026-11-13 10:44 UTC · `fix-merge-conflicts-on-pr-557-professional-skins` note (all) · orchestrator
 
 ## Token passes (log)
 
