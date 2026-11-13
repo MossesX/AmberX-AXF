@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4955,
- "updatedAt": "2026-11-13T20:29:18.750Z",
+ "rev": 4956,
+ "updatedAt": "2026-11-13T20:30:13.089Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -204733,10 +204733,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/skin-animations-swatches-skin-switch",
-   "pr": "",
+   "pr": "#652",
    "priority": "P1",
    "createdAt": "2026-11-13T19:49:31.102Z",
-   "updatedAt": "2026-11-13T20:25:43.559Z",
+   "updatedAt": "2026-11-13T20:30:08.952Z",
    "builtAt": "",
    "notes": [
     {
@@ -204993,7 +204993,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
