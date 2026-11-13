@@ -57,3 +57,22 @@ Yes. Headless builds on the VPS start without `AXF_TOKEN` and `AXF_CONSOLE_URL`:
   once (`POST /api/alerts`, source `ui-review`, key `ui-review:submit-failed:<build>`). A later success clears it.
 - The launcher warns and leaves a build note when it has no console token to hand over.
 - First scan of the VPS: 6 review items and 4 screenshots stuck in 6 build worktrees.
+
+## s5 Stuck shots re-sent
+
+`review.mjs resubmit [--roots …] [--dry-run]` (`resubmit.mjs`) re-runs the normal CLIs against the console for
+every stuck item / screenshot and records what went in the worktree's `sent.json` (nothing deleted). An item the
+console already has (same name + branch) is recorded without a second copy; loose pictures identical to a stuck
+item's are skipped. Run on the VPS, 13 Nov 2026:
+
+| Worktree | What | Result |
+|---|---|---|
+| chrome-settings-actually-apply-toolbars | 1 review item (4 shots) + 4 screenshots | sent |
+| full-api-control | Console search palette (Ctrl+K) | already in UI Review (r-20261113-3lor001) |
+| github-client-plugin-see-control-every | GitHub client: PRs, batches, git log (6 shots) | sent |
+| new-project-wizard-name-linked-repo | New project wizard (10 shots) | sent (r-20261113-55a269bb) |
+| project-duplicate-boilerplate | Duplicate project, boilerplates (6 shots) | sent |
+| tab-groups-choose-how-many-rows-tabs | Tab group Rows (2 shots) | sent |
+| /root/axf-review-shots/github-client | 6 loose pictures | skipped: same pictures as the GitHub client item |
+
+9 sent, 0 failed. The scan is clean afterwards.

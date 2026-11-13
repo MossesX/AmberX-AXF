@@ -19,6 +19,7 @@
  *   node apps/console-web/plugins/ui-review/review.mjs migrate [--apply] [--report <file.md>]   older items → ui-review-item@1
  *   node apps/console-web/plugins/ui-review/review.mjs check        every stored item + screenshot conforms (exit 1 if not)
  *   node apps/console-web/plugins/ui-review/review.mjs kinds | paths
+ *   node apps/console-web/plugins/ui-review/review.mjs resubmit [--roots a,b] [--dry-run]   stuck build work → the console (resubmit.mjs)
  *
  * Every item is ui-review-item@1 (framework/core/ui-review-schema.mjs): a human name (--name; --title is the same),
  * a group (--group "<name>": ask Brett for it; none = '<session/build/source> - <YYYY-MM-DD HH:mm>'), app, screen,
@@ -190,6 +191,15 @@ export async function main(argv = process.argv.slice(2)) {
   // own data folder is never seen by Brett and is deleted with the worktree. --local keeps it here on purpose.
   const remote = flags.local ? false : !!flags.console || (isWorktree() && !process.env.AXF_UI_REVIEW_DIR && !!(process.env.AXF_CONSOLE_URL && process.env.AXF_TOKEN));
   const out = (v, text) => console.log(json ? JSON.stringify(v) : text);
+  if (cmd === 'resubmit') {
+    const rs = await import('./resubmit.mjs');
+    const roots = val(flags.roots) ? val(flags.roots).split(',').map((r) => r.trim()).filter(Boolean) : rs.DEFAULT_ROOTS;
+    const have = (await consoleCall('items')).items || [];  // what the console already has: never sent twice
+    const known = new Set(have.map((it) => rs.keyOf(it.name ?? it.title, it.branch)));
+    const r = rs.run(roots, { dryRun: !!flags['dry-run'], log: json ? () => {} : console.log, known });
+    if (r.failed.length) process.exitCode = 1;
+    return out({ ok: !r.failed.length, ...r }, `resubmit: ${r.sent.length} sent, ${r.failed.length} failed, ${r.skipped.length} skipped${r.cleared.length ? `, ${r.cleared.length} failure marker(s) cleared` : ''}`);
+  }
   if (cmd === 'submit') {
     let files = shotFiles(flags); const fields = fieldsOf(flags);
     if (!core.isKind(fields.kind)) throw new Error(`--kind must be lowercase letters, digits and dashes (sections: ${kinds().map((k) => k.id).join(', ')})`);
