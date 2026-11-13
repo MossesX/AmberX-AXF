@@ -781,7 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 01:53 UTC · `projects-own-everything-per-project-claude-accounts-and-credentials-plus-clone` → pending, note (all) · reconciler
 - 2026-11-13 01:53 UTC · `server-every-failed-merge-alerts-brett-immediately-and-retries-by-itself-until` PR #539 (all) · builds-live
 - 2026-11-13 01:53 UTC · `server-every-failed-merge-alerts-brett-immediately-and-retries-by-itself-until` note (all) · orchestrator
 - 2026-11-13 01:53 UTC · `server-every-failed-merge-alerts-brett-immediately-and-retries-by-itself-until` s3 done, → built (all) · orchestrator
@@ -1181,6 +1180,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 10:51 UTC · `stop-the-molly-guide-from-popping-up-and-talking-every-time-the-console-loads-n` → running, note (all) · pipeline
 - 2026-11-13 10:51 UTC · `stop-the-molly-guide-from-popping-up-and-talking-every-time-the-console-loads-n` branch claude/stop-the-molly-guide-from-popping-up-and-talking-every-time-the-console-loads-n (all) · pipeline
 - 2026-11-13 10:51 UTC · `stop-the-molly-guide-from-popping-up-and-talking-every-time-the-console-loads-n` note (all) · orchestrator
+- 2026-11-13 10:52 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` s18 done (all) · orchestrator
 
 ## Token passes (log)
 
