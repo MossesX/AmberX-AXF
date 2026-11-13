@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T21:12:21.634Z",
+ "updatedAt": "2026-11-13T21:12:36.311Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -134683,15 +134683,15 @@
    "title": "HOTFIX: desktop console draws app menu, banners and nav twice",
    "category": "",
    "detail": "Right after per-toolbar-settings-fix-failing-chrome landed on main (merge ec579ee23, 20:44 Nov 13) and the console redeployed, Brett's DESKTOP console shows TWO app menus, TWO banners and TWO navigation menus (the phone looks fine). Keep the per-toolbar/per-instance settings feature: fix forward, don't revert it. Likely cause: the per-instance chrome (ChromeContext.tsx / Overlays.tsx / chrome-settings-rules) now renders a per-instance copy of each chrome element in addition to the default one on wide layouts, or the merge kept both sides of a render block. Find it, render exactly one of each chrome element, add an e2e/visual test that counts app menus, banners and nav menus on desktop and phone (must be 1 each), run all tests, then LAND it on main immediately and redeploy the console. Note: commit 237a293af was an accidental revert that only re-added 24 lines to one file; check it and drop it if it's wrong.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/hotfix-desktop-console-draws-app-menu",
-   "pr": "",
+   "pr": "#658",
    "priority": "P0",
    "createdAt": "2026-11-13T20:53:50.393Z",
-   "updatedAt": "2026-11-13T21:00:34.312Z",
+   "updatedAt": "2026-11-13T21:12:27.507Z",
    "builtAt": "",
    "notes": [
     {
@@ -134737,68 +134737,7 @@
     "from": "",
     "addenda": []
    },
-   "steps": [
-    {
-     "id": "s1",
-     "text": "Right after per-toolbar-settings-fix-failing-chrome landed on main (merge ec579ee23, 20:44 Nov 13) and the console redeployed, Brett's DESKTOP console shows TWO app menus, TWO banners and TWO navigation menus (the phone looks fine). Keep the per-toolbar/per-instance settings feature: fix forward, don't revert it. Likely cause: the per-instance chrome (ChromeContext.tsx / Overlays.tsx / chrome-settings-rules) now renders a per-instance copy of each chrome element in addition to the default one on wide layouts, or the merge kept both sides of a render block. Find it, render exactly one of each chrome element, add an e2e/visual test that counts app menus, banners and nav menus on desktop and phone (must be 1 each), run all tests, then LAND it on main immediately and redeploy the console. Note: commit 237a293af was an accidental revert that only re-added 24 lines to one file; check it and drop it if it's wrong.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwfghw11018fjl",
-     "createdAt": "2026-11-13T20:55:46.020Z"
-    },
-    {
-     "id": "s2",
-     "text": "there's two app menus, two banners, two navigation menus; I don't want to lose the toolbar settings",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwfghw1102xelt",
-     "createdAt": "2026-11-13T20:55:46.020Z"
-    },
-    {
-     "id": "s3",
-     "text": "Tests green, report _claude/builds/reports/hotfix-desktop-console-draws-app-menu.md, THREADS row, commit, push, PR",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "_claude/builds/reports/hotfix-desktop-console-draws-app-menu.md",
-      "_claude/THREADS.md"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwfghw11030mto",
-     "createdAt": "2026-11-13T20:55:46.020Z"
-    }
-   ]
+   "steps": []
   }
  ]
 }
