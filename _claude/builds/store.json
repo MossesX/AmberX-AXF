@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4041,
- "updatedAt": "2026-11-13T06:39:21.015Z",
+ "rev": 4042,
+ "updatedAt": "2026-11-13T06:41:04.975Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -176032,7 +176032,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-12T23:32:23.494Z",
-   "updatedAt": "2026-11-13T06:34:33.040Z",
+   "updatedAt": "2026-11-13T06:41:02.376Z",
    "builtAt": "",
    "notes": [
     {
@@ -176082,6 +176082,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-professional-skins-that-rebuild-the-whole-app-fa--sully-063028, own login copy)",
      "at": "2026-11-13T06:30:32.292Z"
+    },
+    {
+     "text": "Duplicate session stood down (Fable, 06:30 UTC launch). The dispatcher started a second Fable session of this build at 06:30:28 while the first (started 06:14:54, tmux axf-professional-skins-…-sully, pid 342270) was still live in the same worktree; deploy/claude-headless.sh:515 renames a clashing tmux session with a time suffix and launches anyway instead of refusing. The first session committed s1 (028c34e7a) and is working s2; the second session briefly overwrote framework/schemas/asset-types.json (06:36:58) and restored it to HEAD at 06:40 before stopping, nothing committed. Fix needed outside this build: pipeline.mjs / claude-headless.sh must refuse to launch a build whose session is still running (check tmux has-session / the meter file) rather than suffixing the name.",
+     "at": "2026-11-13T06:41:02.376Z"
     }
    ],
    "approvals": [],
@@ -176586,7 +176590,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
