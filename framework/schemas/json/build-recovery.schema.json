@@ -1,0 +1,54 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amberx.ai/axf/schemas/build-recovery.schema.json",
+  "title": "build-recovery@1 (the `recovery` field of a builds@1 record)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "attempts",
+    "lastAt",
+    "lastCause",
+    "lastExit",
+    "nextAt",
+    "parkedAt",
+    "events"
+  ],
+  "properties": {
+    "attempts": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "lastAt": {
+      "type": "string"
+    },
+    "lastCause": {
+      "enum": [
+        "no-session",
+        "killed",
+        "failed",
+        "stale-heartbeat",
+        "slot-leaked",
+        ""
+      ]
+    },
+    "lastExit": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "nextAt": {
+      "type": "string"
+    },
+    "parkedAt": {
+      "type": "string"
+    },
+    "events": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "$ref": "recovery-event.schema.json"
+      }
+    }
+  }
+}

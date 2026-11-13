@@ -1,0 +1,60 @@
+{
+  "schema": "build-recovery@1",
+  "record": "recovery-event@1",
+  "version": 1,
+  "states": [
+    "no-session",
+    "killed",
+    "failed",
+    "stale-heartbeat",
+    "slot-leaked"
+  ],
+  "actions": [
+    "requeue",
+    "retry",
+    "park",
+    "release-slot"
+  ],
+  "actionFor": {
+    "no-session": "requeue",
+    "killed": "retry",
+    "failed": "retry",
+    "stale-heartbeat": "retry",
+    "slot-leaked": "release-slot"
+  },
+  "statusAfter": {
+    "requeue": "queued",
+    "retry": "queued",
+    "park": "pending",
+    "release-slot": ""
+  },
+  "killedExits": [
+    143,
+    137
+  ],
+  "policy": {
+    "maxAttempts": 3,
+    "backoffMs": [
+      60000,
+      300000,
+      900000
+    ],
+    "graceMs": 300000,
+    "staleHeartbeatMs": 1200000,
+    "failedMaxAgeMs": 86400000,
+    "retryFailedBuilds": true,
+    "eventsKept": 20
+  },
+  "recovery": [
+    "attempts",
+    "lastAt",
+    "lastCause",
+    "lastExit",
+    "nextAt",
+    "parkedAt",
+    "events"
+  ],
+  "stepReset": {
+    "note": ""
+  }
+}

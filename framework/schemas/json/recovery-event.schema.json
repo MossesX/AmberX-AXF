@@ -1,0 +1,73 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amberx.ai/axf/schemas/recovery-event.schema.json",
+  "title": "recovery-event@1 (build-recovery@1 record: one automatic fix)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "action",
+    "at"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "recovery-event@1"
+    },
+    "id": {
+      "type": "string"
+    },
+    "build": {
+      "type": "string"
+    },
+    "phase": {
+      "type": "string"
+    },
+    "cause": {
+      "enum": [
+        "no-session",
+        "killed",
+        "failed",
+        "stale-heartbeat",
+        "slot-leaked",
+        ""
+      ]
+    },
+    "exit": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "action": {
+      "enum": [
+        "requeue",
+        "retry",
+        "park",
+        "release-slot",
+        "reset"
+      ]
+    },
+    "attempt": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "step": {
+      "type": "string"
+    },
+    "session": {
+      "type": "string"
+    },
+    "account": {
+      "type": "string"
+    },
+    "slot": {
+      "type": "string"
+    },
+    "line": {
+      "type": "string"
+    }
+  }
+}

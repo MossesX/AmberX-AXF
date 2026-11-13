@@ -166,6 +166,14 @@ stays in the Queue, the dispatcher skips it), the `archive` and `deleted` tabs i
 archived builds → archive; soft-deleted → deleted), and the action rules `isHeld`, `canHold`, `isLive`, `canArchive`,
 `canDelete`, `unarchivedStatus`, `actionsFor`, `BUILD_ACTIONS`. Same deferral: no Kotlin twin while Android is on hold.
 
+Nov 13 2026 (build `auto-recover-stuck-builds`): **build-recovery@1** (`framework/core/build-recovery.mjs`): the stuck
+states (`STATES`), the action per state (`ACTION_FOR`, `STATUS_AFTER`), the per-build `recovery` record on builds@1
+(`normRecovery`, `migrateRecovery`, `canLaunch`, `effectiveAttempts`, `applyToRecovery`, `resetRecovery`), the
+recovery-event@1 record (`normEvent`, `validateEvent`) and the pure `plan(builds, sessions, slots, now, policy)` /
+`assess()`. Golden fixtures: `spec/fixtures/build-recovery.json` (`check-build-recovery.mjs`). Same deferral: the
+dispatcher that applies the plan runs on the VPS host only; no Kotlin twin while Android is on hold. A port replays the
+fixture's `in` blocks and must answer `out`.
+
 ## Deferred: person-only actions, console refresh, UI choices (Nov 7 2026)
 
 Web only (Android on hold), Kotlin twins when the Android side resumes:

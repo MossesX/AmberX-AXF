@@ -22,6 +22,7 @@ import { REGISTRY as LEDGER_REGISTRY, jsonSchemas as ledgerJsonSchemas } from '.
 import { REGISTRY as DEPLOY_LOG_REGISTRY, jsonSchemas as deployLogJsonSchemas } from '../core/deploy-log.mjs';
 import { REGISTRY as BUILD_HOOK_REGISTRY, jsonSchemas as buildHookJsonSchemas } from '../core/build-hook.mjs';
 import { REGISTRY as SHIPPED_MANIFEST_REGISTRY, jsonSchemas as shippedManifestJsonSchemas } from '../core/shipped-manifest.mjs';
+import { REGISTRY as BUILD_RECOVERY_REGISTRY, jsonSchemas as buildRecoveryJsonSchemas } from '../core/build-recovery.mjs';
 import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 import { applyOptions, readOptions, resolveOptions } from './build-options.mjs';
@@ -898,6 +899,9 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
   // shipped-manifest@1: what the orchestrator sends Shipped features when a build lands
   for (const [n, schema] of Object.entries(shippedManifestJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
   const smreg = join(FRAMEWORK_DIR, 'schemas/shipped-manifest.json'); writeFileSync(smreg, JSON.stringify(SHIPPED_MANIFEST_REGISTRY, null, 2) + '\n'); written.push(smreg);
+  // build-recovery@1: how the orchestrator fixes a stuck build on its own (states, actions, retry cap, backoff, event record)
+  for (const [n, schema] of Object.entries(buildRecoveryJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
+  const rreg = join(FRAMEWORK_DIR, 'schemas/build-recovery.json'); writeFileSync(rreg, JSON.stringify(BUILD_RECOVERY_REGISTRY, null, 2) + '\n'); written.push(rreg);
   return written;
 }
 
