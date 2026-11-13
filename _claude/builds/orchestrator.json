@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T21:12:36.311Z",
+ "updatedAt": "2026-11-13T21:12:55.056Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -134691,12 +134691,16 @@
    "pr": "#658",
    "priority": "P0",
    "createdAt": "2026-11-13T20:53:50.393Z",
-   "updatedAt": "2026-11-13T21:12:27.507Z",
+   "updatedAt": "2026-11-13T21:12:30.801Z",
    "builtAt": "",
    "notes": [
     {
      "text": "UPDATE: Brett chose to PULL the per-toolbar landing out of main first (a reverse-patch commit of e5639b79f..ec579ee23, excluding _claude, pushed about 20:55). So this hotfix must: start from claude/per-toolbar-settings-fix-failing-chrome, merge current main (which includes the pull-out commit, so revert that pull-out commit on this branch), fix the double app menu/banner/nav on desktop, prove it with the count test, then land the fixed per-toolbar settings back on main and redeploy.",
      "at": "2026-11-13T20:53:59.483Z"
+    },
+    {
+     "text": "Stopped at s1: can't reproduce. The per-toolbar landing (ec579ee23) draws no chrome; the deployed console image (built 17:23) doesn't even contain it. Local and deployed show 1 app menu / 1 banner / 1 nav on desktop + phone. 237a293af is data-only, left in place. Added chrome-once e2e (PR #658). Need from Brett: a desktop screenshot and the URL he had open (suspects: desktop-only saved settings, or a Watch live window / host embedding a second console).",
+     "at": "2026-11-13T21:12:30.801Z"
     },
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"b8bbcc40-67ec-4a69-a6e1-9e75174f51f7\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
