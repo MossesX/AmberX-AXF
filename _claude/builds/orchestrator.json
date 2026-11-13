@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T07:56:41.002Z",
+ "updatedAt": "2026-11-13T07:57:02.529Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -117372,7 +117372,7 @@
    "pr": "#553",
    "priority": "P0",
    "createdAt": "2026-11-13T06:25:11.720Z",
-   "updatedAt": "2026-11-13T07:56:39.561Z",
+   "updatedAt": "2026-11-13T07:57:00.212Z",
    "builtAt": "2026-11-13T07:56:39.561Z",
    "notes": [
     {
@@ -117442,6 +117442,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-13T07:50:35.041Z"
+    },
+    {
+     "text": "Headless run axf-skins-plugin-its-own-removable-console-plugin-an--paulie: brief only · start 13.3K tokens ($0.07) · cost $19.40 · 287 turns · 6 tools, MCP none",
+     "at": "2026-11-13T07:57:00.212Z"
     }
    ],
    "approvals": [
