@@ -2164,6 +2164,18 @@
    "from": "",
    "addenda": []
   },
+  "console-app-part-2-native-floating-2": {
+   "said": "split the console wrapper so it runs on four slots at the same time",
+   "at": "2026-11-13T18:41:46.237Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "console-app-part-3-native-bridge-mic": {
    "said": "split the console wrapper so it runs on four slots at the same time",
    "at": "2026-11-13T18:41:27.359Z",

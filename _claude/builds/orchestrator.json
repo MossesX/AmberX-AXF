@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T18:41:37.653Z",
+ "updatedAt": "2026-11-13T18:41:52.464Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -126026,7 +126026,7 @@
    "pr": "#628",
    "priority": "P1",
    "createdAt": "2026-11-13T18:03:04.047Z",
-   "updatedAt": "2026-11-13T18:30:17.275Z",
+   "updatedAt": "2026-11-13T18:41:40.218Z",
    "builtAt": "",
    "notes": [
     {
@@ -126048,6 +126048,10 @@
     {
      "text": "Root cause found (Brett): --fx-opacity-glass / opacityGlass only applies where a component's customization has glass:true (framework/core/engines/customize.ts case 'glass'). Settings dialogs and most panels never set it, so the transparency token does nothing there. Fix: every dialog, settings interface, panel and floating surface gets a 'glass' token-driven background by default (surface mixed with opacityGlass + blur), controllable per surface type via tokens (e.g. glass on/off per surface, opacity per surface), and per instance in Quick settings. Rule: everything visual must be driven by a token; add a check that fails on hard-coded backgrounds/opacity in dialogs and settings.",
      "at": "2026-11-13T18:26:07.880Z"
+    },
+    {
+     "text": "Headless run axf-all-settings-interfaces-open-floating--gina: brief only · start 11.2K tokens ($0.03) · cost $8.59 · 121 turns · 6 tools, MCP none",
+     "at": "2026-11-13T18:41:40.218Z"
     }
    ],
    "approvals": [],
@@ -128491,6 +128495,43 @@
    "origin": {
     "said": "split the console wrapper so it runs on four slots at the same time; AmberX's banner was behind the camera, the clock and the notification panel",
     "at": "2026-11-13T18:41:32.589Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
+  },
+  {
+   "id": "console-app-part-2-native-floating-2",
+   "title": "Console app part 2: native floating overlay and approvals bar",
+   "category": "",
+   "detail": "Parallel part 2 of 4 of console-android-app-thin-webview-wrapper (parent). Builds only in the wrapper's Android module, following the shell contract (package, module layout, window.axfNative bridge names) from the parent build.\n- Draw-over-apps floating toolbar/bubble, ported from overlay-toolbar-v2. It keeps the app in front, expands to the full-screen console with the toolbar top-left, and pops up an approvals bar with a link to the approvals page.\n- Permission flow for 'display over other apps'.\n- Respects safe areas (status bar, cutout, nav bar).\n- Tests, help, Shipped features.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-13T18:41:46.237Z",
+   "updatedAt": "2026-11-13T18:41:49.462Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T18:41:49.462Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "split the console wrapper so it runs on four slots at the same time",
+    "at": "2026-11-13T18:41:46.237Z",
     "source": "",
     "session": "",
     "link": "",
