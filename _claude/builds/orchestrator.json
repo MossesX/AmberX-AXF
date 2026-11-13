@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T18:08:08.244Z",
+ "updatedAt": "2026-11-13T18:08:37.416Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -125706,10 +125706,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/per-instance-settings-window-picker",
-   "pr": "",
+   "pr": "#622",
    "priority": "P1",
    "createdAt": "2026-11-13T17:46:43.480Z",
-   "updatedAt": "2026-11-13T18:07:09.973Z",
+   "updatedAt": "2026-11-13T18:08:34.562Z",
    "builtAt": "",
    "notes": [
     {
