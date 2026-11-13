@@ -21,6 +21,7 @@ export const ASSET_TYPES = [
   'popup',
   'button',
   'slider',
+  'expander-picker',
   'container',
   'gauge',
   'meter',
@@ -67,7 +68,7 @@ export const ASSET_TYPES = [
 ] as const;
 
 /** Types that are optional: an app may ship none (the framework ships starters). Attachable ones live on a host (the banner). */
-export const OPTIONAL_TYPES: readonly AssetType[] = ['tab-group', 'gauge', 'meter', 'banner', 'clock', 'search-bar', 'logo', 'action-button', 'label', 'status', 'counter', 'progress', 'avatar', 'link', 'theme-switch', 'spacer', 'divider', 'badge', 'settings', 'dock-layout', 'xlayout', 'nav-style', 'behavior-theme', 'design-package', 'skin', 'style-package', 'logo-mark', 'animated-logo', 'icon-pack', 'branding', 'interface', 'typography', 'density', 'sizing', 'agent-card', 'job-type', 'card', 'help', 'demonstration', 'book', 'clip', 'docs'];
+export const OPTIONAL_TYPES: readonly AssetType[] = ['tab-group', 'expander-picker', 'gauge', 'meter', 'banner', 'clock', 'search-bar', 'logo', 'action-button', 'label', 'status', 'counter', 'progress', 'avatar', 'link', 'theme-switch', 'spacer', 'divider', 'badge', 'settings', 'dock-layout', 'xlayout', 'nav-style', 'behavior-theme', 'design-package', 'skin', 'style-package', 'logo-mark', 'animated-logo', 'icon-pack', 'branding', 'interface', 'typography', 'density', 'sizing', 'agent-card', 'job-type', 'card', 'help', 'demonstration', 'book', 'clip', 'docs'];
 
 export type AssetType = (typeof ASSET_TYPES)[number];
 
@@ -512,6 +513,33 @@ export interface TabGroupData {
   rememberLast?: boolean;
 }
 
+/**
+ * expander-picker@1 (Brett, Nov 13 2026, build new-asset-type-animated-expanding-row: "I don't want drop-down bars anymore.
+ * They are gonna be animated. It's gonna be a row with a name and a little arrow; when you press that arrow it expands a
+ * subgrid; you got to press it again to apply it and close it."): how every pick-one control looks and behaves. The
+ * framework SelectField draws one (no native <select> anywhere), so every dropdown in every app follows the active asset.
+ * Engine: normalizeExpanderPicker / expanderPickerStyle in engines/components.ts.
+ */
+export interface ExpanderPickerData {
+  /** how the options are drawn in the expanded grid: cards (title + text), chips (one line), list (full-width rows), swatches (colour / preview tiles) */
+  tiles: 'cards' | 'chips' | 'list' | 'swatches';
+  /** the little arrow on the row: chevron (default), caret (filled triangle), plus (turns into a minus), none */
+  arrow: 'chevron' | 'caret' | 'plus' | 'none';
+  /** grid columns of the expanded grid: auto (default, fills the width) or a fixed 1–4 */
+  columns?: 'auto' | '1' | '2' | '3' | '4';
+  density?: ChromeDensity;
+  /** how the grid opens: unfold (default, grows in place), fade, slide (drops in), none */
+  animation?: 'unfold' | 'fade' | 'slide' | 'none';
+  /** second-press (default, Brett's rule: first press highlights, pressing it again applies and closes) or first-press (one press applies) */
+  apply?: 'second-press' | 'first-press';
+  /** the highlighted option previews before it is applied where the host can (default true) */
+  preview?: boolean;
+  /** the collapsed row shows the current value next to the name (default true) */
+  showValue?: boolean;
+  /** a rule between the row and the open grid (default false) */
+  divider?: boolean;
+}
+
 export interface MeterData {
   shape: 'bar' | 'segments' | 'steps' | 'line';
   /** bar height in px, 2–24 */
@@ -603,6 +631,7 @@ export interface AssetDataMap {
   gauge: GaugeData;
   meter: MeterData;
   'tab-group': TabGroupData;
+  'expander-picker': ExpanderPickerData;
   container: ContainerData;
   banner: BannerData;
   clock: ClockData;
@@ -650,7 +679,7 @@ export type Asset<K extends AssetType> = AssetEnvelope<AssetDataMap[K]>;
 /** Active asset id per slot. Optional control types added after apps already shipped (gauge, meter, settings) may be absent from an app's manifest. */
 export type ActiveAssets = { [K in Exclude<AssetType, LateOptionalType>]: string } & { [K in LateOptionalType]?: string };
 /** Types added after apps shipped manifests: their defaults may be missing (the engines fall back to built-in defaults). */
-export type LateOptionalType = 'tab-group' | 'gauge' | 'meter' | 'settings' | 'dock-layout' | 'xlayout' | 'nav-style' | 'behavior-theme' | 'design-package' | 'skin' | 'style-package' | 'logo-mark' | 'animated-logo' | 'icon-pack' | 'branding' | 'interface' | 'typography' | 'density' | 'sizing' | 'agent-card' | 'job-type' | 'card' | 'help' | 'demonstration' | 'book' | 'clip' | 'docs';
+export type LateOptionalType = 'tab-group' | 'expander-picker' | 'gauge' | 'meter' | 'settings' | 'dock-layout' | 'xlayout' | 'nav-style' | 'behavior-theme' | 'design-package' | 'skin' | 'style-package' | 'logo-mark' | 'animated-logo' | 'icon-pack' | 'branding' | 'interface' | 'typography' | 'density' | 'sizing' | 'agent-card' | 'job-type' | 'card' | 'help' | 'demonstration' | 'book' | 'clip' | 'docs';
 
 export interface AxfManifest {
   $axf: 'manifest@1';

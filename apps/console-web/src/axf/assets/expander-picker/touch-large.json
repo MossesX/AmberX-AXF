@@ -1,0 +1,25 @@
+{
+  "$axf": "asset@1",
+  "type": "expander-picker",
+  "id": "touch-large",
+  "name": "Touch large",
+  "version": "1.0.0",
+  "description": "Roomy single-column list for fingers and kiosks; the row shows the value and a big chevron.",
+  "author": "AmberX AXF",
+  "tags": [
+    "touch",
+    "roomy",
+    "kiosk"
+  ],
+  "data": {
+    "tiles": "list",
+    "arrow": "chevron",
+    "columns": "1",
+    "density": "roomy",
+    "animation": "slide",
+    "apply": "second-press",
+    "preview": true,
+    "showValue": true,
+    "divider": true
+  }
+}

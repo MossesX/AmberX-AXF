@@ -1,0 +1,24 @@
+{
+  "$axf": "asset@1",
+  "type": "expander-picker",
+  "id": "chips-quick",
+  "name": "Quick chips",
+  "version": "1.0.0",
+  "description": "One-line chips in a tight grid; the first press applies, for short lists where a preview adds nothing.",
+  "author": "AmberX AXF",
+  "tags": [
+    "chips",
+    "quick"
+  ],
+  "data": {
+    "tiles": "chips",
+    "arrow": "chevron",
+    "columns": "auto",
+    "density": "compact",
+    "animation": "fade",
+    "apply": "first-press",
+    "preview": false,
+    "showValue": true,
+    "divider": false
+  }
+}

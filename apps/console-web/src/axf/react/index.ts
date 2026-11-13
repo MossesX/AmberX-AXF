@@ -50,6 +50,7 @@ export { WatchLiveLink, WatchLiveWindow, watchLiveSrc, type WatchLivePreview } f
 export { installTapConfirm, toolbarOf, toolbarElementId, tipTextOf, tapSurfaceOf, TAP_SURFACES, type TapConfirmHost, type TapSurface } from './tapConfirm';
 export { TapConfirmChoice } from './components/TapConfirmChoice';
 export { RefText, REFS_SETTING, addRefSource, refSourcesChanged, refIndexOf, openRef, refLink, type RefTextProps, type RefHow } from './components/RefText';
+export { ExpanderPicker, type ExpanderPickerProps, type ExpanderOption } from './components/ExpanderPicker';
 export { TabGroup, useTabGroupData, tabGroupDataFor, type TabDef, type TabGroupProps } from './components/TabGroup';
 export { ControlRegistry, ControlScope, controlRegistry, composeAddress, controlSlug, escapeSelector, installControlRegistry, settingTargetDef, targetKindLabel, useControlScope, useControlTarget, useControlTargets, useViewTargets, CONTROL_ACTION, CONTROL_ACTIONS, CONTROL_HIGHLIGHT_CLASS, CONTROL_TARGET_ATTR, CONTROL_SCOPE_ATTR, SETTINGS_VIEW_ADDRESS, SETTINGS_TAB_ROW, SETTINGS_SUBTAB_ROW, MAIN_SCROLL_ADDRESS, type ControlTargetDef, type ControlScroller, type ControlSearcher } from './controlTargets';
 export { BannerWidgetsPanel, BannerMore, bannerItemAttrs, bannerWidgetsDialog, useBannerOverflow } from './components/BannerWidgets';
