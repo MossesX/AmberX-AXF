@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T10:42:58.525Z",
+ "updatedAt": "2026-11-13T10:43:14.521Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -120542,12 +120542,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T10:39:51.656Z",
-   "updatedAt": "2026-11-13T10:39:54.138Z",
+   "updatedAt": "2026-11-13T10:43:00.026Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-13T10:39:54.138Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"0eea71b2-aaf2-45f5-b7e1-1fcea640a629\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-13T10:43:00.026Z"
     }
    ],
    "approvals": [],
@@ -120564,7 +120568,49 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Yo, every skin needs a light and dark.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mweulv7e03uwnu",
+     "createdAt": "2026-11-13T10:43:00.026Z"
+    },
+    {
+     "id": "s2",
+     "text": "Tests green, report _claude/builds/reports/every-skin-ships-a-light-and-a-dark-colour-theme.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/every-skin-ships-a-light-and-a-dark-colour-theme.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mweulv7e04h5kk",
+     "createdAt": "2026-11-13T10:43:00.026Z"
+    }
+   ]
   },
   {
    "id": "fix-merge-conflicts-on-pr-557-professional-skins",

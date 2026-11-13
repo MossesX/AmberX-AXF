@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4221,
- "updatedAt": "2026-11-13T10:42:58.525Z",
+ "rev": 4222,
+ "updatedAt": "2026-11-13T10:43:14.521Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -182991,12 +182991,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T10:39:51.656Z",
-   "updatedAt": "2026-11-13T10:39:54.138Z",
+   "updatedAt": "2026-11-13T10:43:00.026Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-13T10:39:54.138Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"0eea71b2-aaf2-45f5-b7e1-1fcea640a629\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-13T10:43:00.026Z"
     }
    ],
    "approvals": [],
@@ -183023,9 +183027,15 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
-    "split": null,
+    "split": {
+     "at": "2026-11-13T10:43:00.026Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 2,
+     "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"0eea71b2-aaf2-45f5-b7e1-1fcea640a629\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
+    },
     "splitRequested": "",
-    "note": "waiting for the split before it can start",
+    "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
     "planned": null,
@@ -183035,7 +183045,55 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mweulv7e03uwnu",
+     "title": "",
+     "text": "Yo, every skin needs a light and dark.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T10:43:00.026Z",
+     "updatedAt": "2026-11-13T10:43:00.026Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mweulv7e04h5kk",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/every-skin-ships-a-light-and-a-dark-colour-theme.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/every-skin-ships-a-light-and-a-dark-colour-theme.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T10:43:00.026Z",
+     "updatedAt": "2026-11-13T10:43:00.026Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -183044,12 +183102,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-13T10:43:00.026Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
