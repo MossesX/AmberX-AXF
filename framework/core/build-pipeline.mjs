@@ -51,6 +51,9 @@
  * settled and that carry no live claim; claimStep(build, stepId, { runId, slot, account, branch, model, now, ttlMs })
  * takes one (refused: not ready, another run's live claim, a model above the pin); releaseStep(build, stepId, { runId,
  * note }) gives it back; expiredClaims(build, now) lists the dead ones.
+ * Planner: planFill({ slots, accounts, running, queue, pending, settings }) fills every free slot: parallel-ready steps of
+ * running builds, then Queue builds by priority, then Pending builds when auto-queue is on; agent cap, VPS hard limit,
+ * memory floor, per-account model limits and the API budget cap respected; every launch and every wait says why.
  */
 
 export const SCHEMA = 'build-pipeline@1';
@@ -276,6 +279,117 @@ export function releaseStep(b, stepId, { runId = '', now = Date.now(), note = ''
   const next = { ...s, updatedAt: at, ...(note ? { note: `${s.note ? `${s.note}\n` : ''}${str(note, 400)}`.slice(0, 1000) } : {}) };
   delete next.claim;
   return { ok: true, build: { ...b, steps: b.steps.map((x) => (x === s ? next : x)), updatedAt: at }, released: s.claim };
+}
+
+// ------------------------------------------------------------------ fill every slot (Nov 13 2026)
+
+export const FILL_DEFAULTS = Object.freeze({
+  /** Parallel step sessions one running build may have at once (its main session not counted). */
+  maxParallelPerBuild: 3,
+  /** Launches one planning round may make, whatever the slots say (a runaway guard). */
+  maxLaunchesPerRound: 12,
+  /** Pending builds are queued and launched by the planner (the Claude setting builds.launchWithoutAsking). */
+  autoQueue: false,
+  /** Subscriptions first, then API accounts when every subscription account is full or out. */
+  apiOverflow: true,
+  /** Optional budget for API launches this round: { capUsd, spentUsd, perLaunchUsd }; null = no cap here (the account's own caps still hold). */
+  budget: null,
+});
+export const FILL_KINDS = ['step', 'build', 'pending'];
+const normFill = (s) => ({ ...FILL_DEFAULTS, ...(s && typeof s === 'object' ? s : {}), budget: s?.budget && typeof s.budget === 'object' ? s.budget : null });
+const list = (v) => (Array.isArray(v) ? v : []);
+const prioRank = (p) => { const n = parseInt(String(p ?? '').replace(/^P/, ''), 10); return Number.isInteger(n) ? n : 2; };
+
+/**
+ * The account that takes one launch on `model`, or null. Accounts are the pipeline's views ({ name, kind, usable, free,
+ * running, fable, order, api: { usable } }): subscriptions first (Brett's order, then fewest running, Opus kept off
+ * Fable accounts), then API accounts when `route` allows (override 'api', or overflow on). Fable only where fable is true.
+ */
+export function pickAccount(accounts, model, { route = '', settings = {} } = {}) {
+  const needFable = model === 'Fable';
+  const byOrder = (a, b) => (a.order == null ? 1 : 0) - (b.order == null ? 1 : 0) || ((a.order ?? 0) - (b.order ?? 0)) || (a.running ?? 0) - (b.running ?? 0);
+  const fits = (a) => a && a.free > 0 && (!needFable || a.fable);
+  const subs = route === 'api' ? [] : list(accounts).filter((a) => a.kind !== 'api' && a.usable && fits(a)).sort((a, b) => byOrder(a, b) || (needFable ? 0 : (a.fable ? 1 : 0) - (b.fable ? 1 : 0)));
+  if (subs[0]) return { account: subs[0], kind: 'subscription', rule: '' };
+  const apiOk = route === 'api' || (route !== 'subscription' && normFill(settings).apiOverflow);
+  const apis = apiOk ? list(accounts).filter((a) => a.kind === 'api' && (a.api?.usable ?? a.usable) && fits(a)).sort(byOrder) : [];
+  return apis[0] ? { account: apis[0], kind: 'api', rule: route === 'api' ? 'override' : 'overflow' } : null;
+}
+
+/** Why no account takes `model` now, in one line. */
+function noAccountLine(accounts, model) {
+  const acc = list(accounts);
+  if (!acc.length) return 'no Claude account';
+  const able = acc.filter((a) => (a.kind === 'api' ? (a.api?.usable ?? a.usable) : a.usable) && (model !== 'Fable' || a.fable));
+  if (!able.length) return model === 'Fable' ? 'no account with Fable' : 'no usable account';
+  return `every ${model === 'Fable' ? 'Fable ' : ''}account is full (${able.map((a) => `${a.name} ${a.running ?? 0}/${a.parallel ?? '?'}`).join(', ')})`;
+}
+
+/**
+ * Fill every free slot (Brett, Nov 13 2026: "Always fill every slot"). Pure. Inputs:
+ *   slots     agent-slots status: { free, used, cap, hard: { max, live, free }, memory: { availGb, floorGb } }
+ *   accounts  the pipeline's account views (pickAccount)                 settings  FILL_DEFAULTS overrides
+ *   running   builds@1 records in Building (running / waiting)          queue     queued builds (any order)
+ *   pending   pending builds (used only when settings.autoQueue)
+ * Order: 1. ready steps of running builds that carry an explicit `after` list (a parallel step; a step without one is
+ * sequential and belongs to the build's own session, as does the first ready step when no step is claimed yet);
+ * 2. Queue builds by priority, then queue time; 3. Pending builds when auto-queue is on. Every launch takes one agent
+ * slot and one account slot on the step's / phase's pinned model (Fable only to accounts with Fable). Nothing is launched
+ * under the memory floor, over the agent cap or the VPS hard limit, or past the API budget cap.
+ * Returns { launches: [{ kind, id, step, model, account, accountKind, rule, branch, why }], waits: [{ id, step?, why }],
+ *           free, blocked } where `blocked` is the one reason nothing more fits ('' when slots simply ran out).
+ */
+export function planFill({ slots = {}, accounts = [], running = [], queue = [], pending = [], settings = {}, now = Date.now(), priorityOf = (b) => b?.priority || 'P2' } = {}) {
+  const st = normFill(settings);
+  const acc = list(accounts).map((a) => ({ ...a, free: Math.max(0, Number(a.free) || 0), running: Number(a.running) || 0 }));
+  const launches = []; const waits = [];
+  let free = Math.max(0, Number(slots?.free) || 0);
+  if (slots?.hard?.max) free = Math.min(free, Math.max(0, Number(slots.hard.free) || 0));
+  const mem = slots?.memory;
+  let blocked = '';
+  if (mem && mem.availGb != null && Number(mem.floorGb) > 0 && Number(mem.availGb) < Number(mem.floorGb)) blocked = `memory under the floor (${mem.availGb} GB free, floor ${mem.floorGb} GB)`;
+  else if (free <= 0) blocked = slots?.hard?.max && Number(slots.hard.free) <= 0 ? `VPS hard build limit reached (${slots.hard.live ?? '?'}/${slots.hard.max} running)` : `no free agent slot (${slots?.used ?? '?'}/${slots?.cap ?? '?'} in use)`;
+  let apiSpent = Number(st.budget?.spentUsd) || 0;
+  const take = (model, route, item) => {
+    if (blocked) { waits.push({ ...item, why: blocked }); return false; }
+    if (launches.length >= st.maxLaunchesPerRound) { waits.push({ ...item, why: `round limit of ${st.maxLaunchesPerRound} launches reached` }); return false; }
+    const pick = pickAccount(acc, model, { route, settings: st });
+    if (!pick) { waits.push({ ...item, why: noAccountLine(acc, model) }); return false; }
+    if (pick.kind === 'api' && st.budget && Number(st.budget.capUsd) > 0 && apiSpent + (Number(st.budget.perLaunchUsd) || 0) > Number(st.budget.capUsd)) { waits.push({ ...item, why: `API budget cap reached ($${apiSpent.toFixed(2)} of $${Number(st.budget.capUsd).toFixed(2)})` }); return false; }
+    if (pick.kind === 'api') apiSpent += Number(st.budget?.perLaunchUsd) || 0;
+    pick.account.free -= 1; pick.account.running += 1; free -= 1;
+    if (free <= 0) blocked = 'every agent slot is filled';
+    launches.push({ ...item, model, account: pick.account.name, accountKind: pick.kind, rule: pick.rule });
+    return true;
+  };
+  // 1. parallel-ready steps of running builds
+  for (const b of list(running)) {
+    if (!b || b.deleted || !(b.status === 'running' || b.status === 'waiting')) continue;
+    const ready = readySteps(b, { now });
+    const claimed = (b.steps ?? []).filter((s) => claimLive(s.claim, now)).length;
+    const mainTaken = claimed > 0 ? 0 : 1; // no claim anywhere: the build's own session is on the first ready step
+    const parallel = ready.filter((s, i) => Array.isArray(s.after) && !(mainTaken && i === 0));
+    const liveParallel = Math.max(0, claimed - 1); // one live claim is the build's own session
+    let room = Math.max(0, st.maxParallelPerBuild - liveParallel);
+    for (const s of parallel) {
+      if (room <= 0) { waits.push({ id: b.id, step: s.id, why: `build at its parallel cap (${st.maxParallelPerBuild})` }); continue; }
+      if (take(s.model, b.pipeline?.route || '', { kind: 'step', id: b.id, step: s.id, branch: stepBranch(b, s, { parallel: true }), why: `ready step of a running build: ${dependsOn(b, s).length ? `after ${dependsOn(b, s).join(', ')}` : 'independent'}` })) room -= 1;
+    }
+  }
+  // 2. the Queue, by priority then queue time
+  const q = queueOrder(list(queue).filter((b) => b && !b.deleted), priorityOf);
+  for (const b of q) {
+    if (isHeld(b)) { waits.push({ id: b.id, why: `on hold${b.pipeline?.heldBy ? ` (${b.pipeline.heldBy})` : ''}` }); continue; }
+    if (!openSteps(b).length) { waits.push({ id: b.id, why: b.steps?.length ? 'every step is done' : 'no steps yet: waiting for the split' }); continue; }
+    take(nextModel(b), b.pipeline?.route || '', { kind: 'build', id: b.id, step: readySteps(b, { now })[0]?.id ?? openSteps(b)[0].id, branch: stepBranch(b, null), why: `next in the Queue (${priorityOf(b)})` });
+  }
+  // 3. Pending, only when auto-queue is on
+  if (st.autoQueue) {
+    const p = list(pending).filter((b) => b && !b.deleted && !b.hidden && b.status === 'pending' && openSteps(b).length)
+      .sort((a, b) => prioRank(priorityOf(a)) - prioRank(priorityOf(b)) || str(a.createdAt).localeCompare(str(b.createdAt)));
+    for (const b of p) take(nextModel(b), b.pipeline?.route || '', { kind: 'pending', id: b.id, step: readySteps(b, { now })[0]?.id ?? openSteps(b)[0].id, branch: stepBranch(b, null), why: `auto-queue: Pending build taken (${priorityOf(b)})` });
+  } else if (list(pending).length && !blocked && free > 0) blocked = `${list(pending).length} Pending build${list(pending).length === 1 ? '' : 's'} wait for Brett (auto-queue is off)`;
+  return { launches, waits, free, blocked, at: nowIso(now) };
 }
 
 /** The steps still to do (not done, not skipped). */
