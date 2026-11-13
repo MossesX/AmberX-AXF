@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4163,
- "updatedAt": "2026-11-13T07:57:02.529Z",
+ "rev": 4164,
+ "updatedAt": "2026-11-13T07:57:14.943Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -178526,7 +178526,7 @@
    "pr": "#553",
    "priority": "P0",
    "createdAt": "2026-11-13T06:25:11.720Z",
-   "updatedAt": "2026-11-13T07:57:00.212Z",
+   "updatedAt": "2026-11-13T07:57:03.048Z",
    "builtAt": "2026-11-13T07:56:39.561Z",
    "notes": [
     {
@@ -178600,6 +178600,10 @@
     {
      "text": "Headless run axf-skins-plugin-its-own-removable-console-plugin-an--paulie: brief only · start 13.3K tokens ($0.07) · cost $19.40 · 287 turns · 6 tools, MCP none",
      "at": "2026-11-13T07:57:00.212Z"
+    },
+    {
+     "text": "Session axf-skins-plugin-its-own-removable-console-plugin-an--paulie on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-13T07:57:03.048Z"
     }
    ],
    "approvals": [
@@ -178629,18 +178633,18 @@
     "queuedAt": "2026-11-13T06:25:16.919Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-skins-plugin-its-own-removable-console-plugin-an--paulie",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-13T07:08:11.318Z",
     "runs": 2,
     "lastRun": {
-     "at": "2026-11-13T06:53:04.095Z",
+     "at": "2026-11-13T07:57:02.406Z",
      "exit": 0,
-     "outcome": "returned",
-     "stepsLeft": 18,
+     "outcome": "finished",
+     "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-skins-plugin-its-own-removable-console-plugin-an--earl"
+     "session": "axf-skins-plugin-its-own-removable-console-plugin-an--paulie"
     },
     "split": {
      "at": "2026-11-13T06:39:04.188Z",
@@ -179172,7 +179176,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 93,
+   "rev": 94,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
