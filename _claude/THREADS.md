@@ -786,7 +786,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 12:25 UTC · `auto-recover-stuck-builds` s9 done (all) · orchestrator
 - 2026-11-13 12:25 UTC · `fix-toolbar-settings-doing-nothing` note (all) · mcp
 - 2026-11-13 12:25 UTC · `fix-toolbar-settings-doing-nothing` note (all) · console
 - 2026-11-13 12:25 UTC · `combine-merge-queue-into-one-pr` s7 done (all) · orchestrator
@@ -1186,6 +1185,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 18:47 UTC · `restore-asset-designer-plugin-merged-nov` note (all) · orchestrator
 - 2026-11-13 18:48 UTC · `change-to-one-to-do-notes-and-tasks-plugin-pr-527-brett-notes-tasks-and-to` → complete, merged, note (all) · reconciler
 - 2026-11-13 18:48 UTC · `transparency-token-works-every-dialog` s2 done (all) · orchestrator
+- 2026-11-13 18:48 UTC · `console-app-wake-word-voice-listener` note (all) · orchestrator
 
 ## Token passes (log)
 
