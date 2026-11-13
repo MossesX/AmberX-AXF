@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T12:40:25.112Z",
+ "updatedAt": "2026-11-13T12:40:43.046Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -124183,7 +124183,7 @@
    "title": "Fix toolbar settings doing nothing",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -124191,8 +124191,8 @@
    "pr": "#572",
    "priority": "P0",
    "createdAt": "2026-11-13T12:23:34.932Z",
-   "updatedAt": "2026-11-13T12:40:06.449Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-13T12:40:41.227Z",
+   "builtAt": "2026-11-13T12:40:41.227Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -124361,8 +124361,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T12:40:41.227Z",
      "note": "",
      "uid": "st-mweyawcq06hj8c",
      "createdAt": "2026-11-13T12:26:26.762Z"
