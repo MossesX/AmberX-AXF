@@ -782,8 +782,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 09:40 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` s5 done (all) · orchestrator
-- 2026-11-13 09:41 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` s6 done, → running (all) · orchestrator
 - 2026-11-13 09:42 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` s6 done (all) · orchestrator
 - 2026-11-13 09:42 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` s11 done (all) · orchestrator
 - 2026-11-13 09:43 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` s7 done (all) · orchestrator
@@ -1182,6 +1180,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 13:34 UTC · `ui-review-gate-switch-default-off` note (all) · pipeline
 - 2026-11-13 16:58 UTC · `axhub-raise-per-project-memory-file-cap-from-500-to-750` added (3 steps) (all) · Claude voice (Gizmo)
 - 2026-11-13 17:18 UTC · `test-sandbox-sample-shipped-build` added (3 steps) (test-sandbox) · project-seed
+- 2026-11-13 17:18 UTC · `test-sandbox-sample-shipped-build` added (3 steps) (test-sandbox) · foreign-write
+- 2026-11-13 17:18 UTC · `test-sandbox-sample-pending-build` added (3 steps) (test-sandbox) · foreign-write
 
 ## Token passes (log)
 

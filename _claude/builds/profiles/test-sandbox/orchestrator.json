@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T17:18:27.657Z",
+ "updatedAt": "2026-11-13T17:18:35.926Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -17,11 +17,11 @@
    "status": "complete",
    "hidden": false,
    "source": "project-seed",
-   "pendingId": "",
+   "pendingId": "test-sandbox-sample-shipped-build",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-13T17:18:25.933Z",
-   "updatedAt": "2026-11-13T17:18:25.933Z",
+   "updatedAt": "2026-11-13T17:18:27.485Z",
    "builtAt": "2026-11-13T17:18:25.934Z",
    "notes": [],
    "approvals": [],
@@ -43,7 +43,7 @@
      "done": true,
      "doneAt": "2026-11-13T17:18:25.170Z",
      "note": "",
-     "uid": "st-mwf8qebs04vsb3",
+     "uid": "st-mwf8qiq9011qu2",
      "createdAt": "2026-11-13T17:18:25.934Z"
     },
     {
@@ -62,7 +62,7 @@
      "done": true,
      "doneAt": "2026-11-13T17:18:25.170Z",
      "note": "",
-     "uid": "st-mwf8qebs05hlhg",
+     "uid": "st-mwf8qiq9029na8",
      "createdAt": "2026-11-13T17:18:25.934Z"
     },
     {
@@ -81,8 +81,85 @@
      "done": true,
      "doneAt": "2026-11-13T17:18:25.170Z",
      "note": "",
-     "uid": "st-mwf8qebs06onch",
+     "uid": "st-mwf8qiq903oojs",
      "createdAt": "2026-11-13T17:18:25.934Z"
+    }
+   ]
+  },
+  {
+   "id": "test-sandbox-sample-pending-build",
+   "title": "[TEST DATA] Sample pending build: contact form",
+   "category": "",
+   "detail": "TEST DATA for the Test Sandbox project (made by framework/cli/project-seed.mjs). Do not queue it: its steps have no estimates on purpose, so the pipeline never splits or launches it by itself.",
+   "status": "pending",
+   "hidden": false,
+   "source": "project-seed",
+   "pendingId": "test-sandbox-sample-pending-build",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-13T17:18:30.441Z",
+   "updatedAt": "2026-11-13T17:18:30.441Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Form fields and validation",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwf8qiq904pxkk",
+     "createdAt": "2026-11-13T17:18:30.442Z"
+    },
+    {
+     "id": "s2",
+     "text": "Send to the inbox",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwf8qiq9054t9g",
+     "createdAt": "2026-11-13T17:18:30.442Z"
+    },
+    {
+     "id": "s3",
+     "text": "Thank-you screen",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwf8qiqa06p8ct",
+     "createdAt": "2026-11-13T17:18:30.442Z"
     }
    ]
   }

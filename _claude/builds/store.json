@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4494,
- "updatedAt": "2026-11-13T17:18:27.657Z",
+ "rev": 4495,
+ "updatedAt": "2026-11-13T17:18:35.926Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -188874,11 +188874,11 @@
    "status": "complete",
    "hidden": false,
    "source": "project-seed",
-   "pendingId": "",
+   "pendingId": "test-sandbox-sample-shipped-build",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-13T17:18:25.933Z",
-   "updatedAt": "2026-11-13T17:18:25.933Z",
+   "updatedAt": "2026-11-13T17:18:27.485Z",
    "builtAt": "2026-11-13T17:18:25.934Z",
    "notes": [],
    "approvals": [],
@@ -188886,7 +188886,7 @@
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mwf8qebs04vsb3",
+     "uid": "st-mwf8qiq9011qu2",
      "title": "",
      "text": "Write the headline and intro",
      "model": "Opus",
@@ -188904,11 +188904,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-13T17:18:25.934Z",
-     "updatedAt": "2026-11-13T17:18:25.934Z"
+     "updatedAt": "2026-11-13T17:18:31.666Z"
     },
     {
      "id": "s2",
-     "uid": "st-mwf8qebs05hlhg",
+     "uid": "st-mwf8qiq9029na8",
      "title": "",
      "text": "Add the feature list",
      "model": "Opus",
@@ -188926,11 +188926,11 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-13T17:18:25.934Z",
-     "updatedAt": "2026-11-13T17:18:25.934Z"
+     "updatedAt": "2026-11-13T17:18:31.666Z"
     },
     {
      "id": "s3",
-     "uid": "st-mwf8qebs06onch",
+     "uid": "st-mwf8qiq903oojs",
      "title": "",
      "text": "Review and publish",
      "model": "Opus",
@@ -188948,7 +188948,7 @@
      "note": "",
      "rev": 1,
      "createdAt": "2026-11-13T17:18:25.934Z",
-     "updatedAt": "2026-11-13T17:18:25.934Z"
+     "updatedAt": "2026-11-13T17:18:31.666Z"
     }
    ],
    "profiles": [
@@ -188962,9 +188962,141 @@
    "rev": 1,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "complete",
+    "estimate": "",
+    "source": "project-seed",
+    "planId": "",
+    "createdAt": "2026-11-13T17:18:25.933Z",
+    "builtAt": "2026-11-13T17:18:25.934Z",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwf8qiq9011qu2": "2026-11-13T17:18:25.934Z",
+     "st-mwf8qiq9029na8": "2026-11-13T17:18:25.934Z",
+     "st-mwf8qiq903oojs": "2026-11-13T17:18:25.934Z"
+    }
+   },
    "queue": null,
-   "defaultAt": "2026-11-13T17:18:25.934Z",
+   "defaultAt": "2026-11-13T17:18:31.666Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "test-sandbox-sample-pending-build",
+   "title": "[TEST DATA] Sample pending build: contact form",
+   "category": "",
+   "detail": "TEST DATA for the Test Sandbox project (made by framework/cli/project-seed.mjs). Do not queue it: its steps have no estimates on purpose, so the pipeline never splits or launches it by itself.",
+   "status": "pending",
+   "hidden": false,
+   "source": "project-seed",
+   "pendingId": "test-sandbox-sample-pending-build",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-13T17:18:30.441Z",
+   "updatedAt": "2026-11-13T17:18:30.441Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwf8qiq904pxkk",
+     "title": "",
+     "text": "Form fields and validation",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T17:18:30.442Z",
+     "updatedAt": "2026-11-13T17:18:31.666Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwf8qiq9054t9g",
+     "title": "",
+     "text": "Send to the inbox",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T17:18:30.442Z",
+     "updatedAt": "2026-11-13T17:18:31.666Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwf8qiqa06p8ct",
+     "title": "",
+     "text": "Thank-you screen",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T17:18:30.442Z",
+     "updatedAt": "2026-11-13T17:18:31.666Z"
+    }
+   ],
+   "profiles": [
+    "test-sandbox"
+   ],
+   "order": {
+    "test-sandbox": 1
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "",
+    "source": "project-seed",
+    "planId": "",
+    "createdAt": "2026-11-13T17:18:30.441Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwf8qiq904pxkk": "2026-11-13T17:18:30.442Z",
+     "st-mwf8qiq9054t9g": "2026-11-13T17:18:30.442Z",
+     "st-mwf8qiqa06p8ct": "2026-11-13T17:18:30.442Z"
+    }
+   },
+   "queue": null,
+   "defaultAt": "2026-11-13T17:18:31.666Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
