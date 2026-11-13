@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5012,
- "updatedAt": "2026-11-13T21:01:00.037Z",
+ "rev": 5013,
+ "updatedAt": "2026-11-13T21:01:27.496Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -208118,7 +208118,7 @@
    "pr": "#655",
    "priority": "P0",
    "createdAt": "2026-11-13T20:45:58.911Z",
-   "updatedAt": "2026-11-13T20:59:27.633Z",
+   "updatedAt": "2026-11-13T21:00:29.189Z",
    "builtAt": "2026-11-13T20:59:27.633Z",
    "notes": [
     {
@@ -208144,6 +208144,10 @@
     {
      "text": "Landing audit: merge queue empty, main CI red (check-profiles test-sandbox folder; amberx-droid setVetoHost overlay types not on main; kernel ConformanceTest theme vars). Needs a main-CI fix build; then the queue lands the green PRs. #655 lands the voice control work.",
      "at": "2026-11-13T20:59:08.878Z"
+    },
+    {
+     "text": "Session axf-full-voice-control-resolve-inventory--paulie on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-13T21:00:29.189Z"
     }
    ],
    "approvals": [],
@@ -208164,12 +208168,19 @@
     "queuedAt": "2026-11-13T20:46:04.321Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-full-voice-control-resolve-inventory--paulie",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-13T20:50:31.267Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-13T21:00:24.464Z",
+     "exit": 0,
+     "outcome": "finished",
+     "stepsLeft": 0,
+     "account": "mossesx-max-",
+     "session": "axf-full-voice-control-resolve-inventory--paulie"
+    },
     "split": {
      "at": "2026-11-13T20:49:14.342Z",
      "by": "orchestrator",
@@ -208612,7 +208623,7 @@
    "title": "HOTFIX: desktop console draws app menu, banners and nav twice",
    "category": "",
    "detail": "Right after per-toolbar-settings-fix-failing-chrome landed on main (merge ec579ee23, 20:44 Nov 13) and the console redeployed, Brett's DESKTOP console shows TWO app menus, TWO banners and TWO navigation menus (the phone looks fine). Keep the per-toolbar/per-instance settings feature: fix forward, don't revert it. Likely cause: the per-instance chrome (ChromeContext.tsx / Overlays.tsx / chrome-settings-rules) now renders a per-instance copy of each chrome element in addition to the default one on wide layouts, or the merge kept both sides of a render block. Find it, render exactly one of each chrome element, add an e2e/visual test that counts app menus, banners and nav menus on desktop and phone (must be 1 each), run all tests, then LAND it on main immediately and redeploy the console. Note: commit 237a293af was an accidental revert that only re-added 24 lines to one file; check it and drop it if it's wrong.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -208620,7 +208631,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T20:53:50.393Z",
-   "updatedAt": "2026-11-13T20:58:20.400Z",
+   "updatedAt": "2026-11-13T21:00:34.312Z",
    "builtAt": "",
    "notes": [
     {
@@ -208646,6 +208657,10 @@
     {
      "text": "Brett: right-clicking a toolbar shows 'Toolbar settings' at the top and NO 'Console settings' entry. Rule (from context-menu-console-settings): 'Console settings' must be the FIRST entry of EVERY context menu in the console (toolbars, tab groups, nav, app menu, banners, grids, every plugin), with the element's own settings (Toolbar settings etc.) right below it. Fix whichever menus skip it, and add a test that walks every registered context menu zone and asserts entry 1 is Console settings.",
      "at": "2026-11-13T20:58:20.400Z"
+    },
+    {
+     "text": "Dispatch gate: hotfix-desktop-console-draws-app-menu still has axf-hotfix-desktop-console-draws-app-menu--lenny alive: not launched again, tracking that session.",
+     "at": "2026-11-13T21:00:34.312Z"
     }
    ],
    "approvals": [],
@@ -208666,7 +208681,7 @@
     "queuedAt": "",
     "queuedBy": "",
     "account": "",
-    "session": "",
+    "session": "axf-hotfix-desktop-console-draws-app-menu--lenny",
     "slot": "",
     "model": "",
     "launchedAt": "",
@@ -208775,7 +208790,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
