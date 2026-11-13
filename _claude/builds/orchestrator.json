@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T19:12:10.577Z",
+ "updatedAt": "2026-11-13T19:12:26.766Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -128231,7 +128231,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:38:53.122Z",
-   "updatedAt": "2026-11-13T19:10:54.649Z",
+   "updatedAt": "2026-11-13T19:11:19.374Z",
    "builtAt": "",
    "notes": [
     {
@@ -128301,6 +128301,10 @@
     {
      "text": "Headless run axf-console-android-app-thin-webview-wrapper--lenny: brief only · start 11.7K tokens ($0.03) · cost $6.74 · 135 turns · 6 tools, MCP none",
      "at": "2026-11-13T19:10:26.863Z"
+    },
+    {
+     "text": "Headless run axf-console-android-app-thin-webview-wrapper--sully: brief only · start 11.8K tokens ($0.03) · cost $1.22 · 33 turns · 6 tools, MCP none",
+     "at": "2026-11-13T19:11:19.374Z"
     },
     {
      "text": "Started run 2 on mossesx-max- (Opus, Phase 1): axf-console-android-app-thin-webview-wrapper--lenny-191049.",
@@ -128556,6 +128560,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-orchestrator-settings-collapsible-split--earl, own login copy)",
      "at": "2026-11-13T18:43:59.307Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-orchestrator-settings-collapsible-split--earl-191118, own login copy)",
+     "at": "2026-11-13T19:11:31.544Z"
     }
    ],
    "approvals": [],

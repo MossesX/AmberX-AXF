@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4764,
- "updatedAt": "2026-11-13T19:12:10.577Z",
+ "rev": 4765,
+ "updatedAt": "2026-11-13T19:12:26.766Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -27455,8 +27455,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -91164,8 +91163,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -98305,8 +98303,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -107518,8 +107515,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -120715,8 +120711,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-molly-native-expenses",
@@ -120986,8 +120981,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -121380,8 +121374,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -135068,8 +135061,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -137612,8 +137604,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -138016,8 +138007,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -143957,8 +143947,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -144385,8 +144374,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -144960,8 +144948,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -146328,8 +146315,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -148648,8 +148634,7 @@
     "pickedAt": "2026-11-13T10:38:25.274Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-orchestrator-hold-status-archive-tab-deleted-tab",
@@ -148783,8 +148768,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -150555,8 +150539,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -152763,8 +152746,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -152979,8 +152961,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-land-all-97-built-but-unmerged-builds-skins-firs",
@@ -153521,8 +153502,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -153708,8 +153688,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -153914,8 +153893,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -154124,8 +154102,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -154343,8 +154320,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -154565,8 +154541,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -154791,8 +154766,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -155018,8 +154992,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -155248,8 +155221,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -155478,8 +155450,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -155709,8 +155680,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -156364,8 +156334,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -157150,8 +157119,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -157333,8 +157301,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -157561,8 +157528,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -157802,8 +157768,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -157987,8 +157952,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -158187,8 +158151,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -158444,8 +158407,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -158633,8 +158595,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -158829,8 +158790,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -159014,8 +158974,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -159387,8 +159346,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -160161,8 +160119,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -160352,8 +160309,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -160567,8 +160523,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -160906,8 +160861,7 @@
     "pickedAt": "2026-11-13T10:37:52.173Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -161086,8 +161040,7 @@
     "pickedAt": "2026-11-13T10:43:09.520Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -161225,8 +161178,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -161317,8 +161269,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -161453,8 +161404,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -161645,8 +161595,7 @@
     "pickedAt": "2026-11-13T10:37:41.673Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -161765,8 +161714,7 @@
     "pickedAt": "2026-11-12T02:52:13.861Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -161924,8 +161872,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -162094,8 +162041,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -162207,8 +162153,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -168971,8 +168916,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -169145,8 +169089,7 @@
     "pickedAt": "2026-11-13T11:25:40.599Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -169258,8 +169201,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -169375,8 +169317,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -169525,8 +169466,7 @@
     "pickedAt": "2026-11-13T11:25:46.013Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -169680,8 +169620,7 @@
     "pickedAt": "2026-11-12T20:42:37.390Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -169757,8 +169696,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -169940,8 +169878,7 @@
     "pickedAt": "2026-11-13T00:46:14.486Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-amberx-approval-pop-up-not-showing-only-the-android-notification",
@@ -170116,8 +170053,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans",
@@ -170399,8 +170335,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -170471,8 +170406,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -170745,8 +170679,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-add-a-tap-to-confirm-option-to-every-settings-in",
@@ -170935,8 +170868,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -171179,8 +171111,7 @@
     "pickedAt": "2026-11-12T22:15:14.526Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -171282,8 +171213,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -171423,8 +171353,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -171575,8 +171504,7 @@
     "pickedAt": "2026-11-12T22:46:08.743Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -171740,8 +171668,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -171916,8 +171843,7 @@
     "pickedAt": "2026-11-13T01:52:11.782Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds",
@@ -172102,8 +172028,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx",
@@ -172353,8 +172278,7 @@
     "pickedAt": "2026-11-13T01:46:09.134Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -172512,8 +172436,7 @@
     "pickedAt": "2026-11-13T01:58:11.445Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -172681,8 +172604,7 @@
     "pickedAt": "2026-11-13T06:14:29.774Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o",
@@ -172845,8 +172767,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -172949,8 +172870,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -173082,8 +173002,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -173196,8 +173115,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-stop-the-molly-guide-from-popping-up-and-talking-every-time-the-console-loads-n",
@@ -173372,8 +173290,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -173520,8 +173437,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -173690,8 +173606,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -173869,8 +173784,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -174046,8 +173960,7 @@
     "pickedAt": "2026-11-13T06:14:47.983Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -174199,8 +174112,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the",
@@ -174397,8 +174309,7 @@
     "pickedAt": "2026-11-13T11:25:18.500Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -174512,8 +174423,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-change-to-one-to-do-notes-and-tasks-plugin-pr-527-brett-notes-tasks-and-to",
@@ -174733,8 +174643,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app",
@@ -174918,8 +174827,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less",
@@ -175208,8 +175116,7 @@
     "pickedAt": "2026-11-13T03:28:15.605Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -175395,8 +175302,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -175577,8 +175483,7 @@
     "pickedAt": "2026-11-13T07:08:11.318Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -175722,8 +175627,7 @@
     "pickedAt": "2026-11-13T06:56:46.988Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -175921,8 +175825,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -176020,8 +175923,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -176478,8 +176380,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu",
@@ -177381,8 +177282,7 @@
     "pickedAt": "2026-11-13T10:43:20.478Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -177463,8 +177363,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -177621,8 +177520,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -177746,8 +177644,7 @@
     "pickedAt": "2026-11-13T10:48:26.846Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -177865,8 +177762,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-android-approval-overlay-a-small-always-on-float",
@@ -178032,8 +177928,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -178719,8 +178614,7 @@
     "pickedAt": "2026-11-13T11:17:35.908Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -178861,8 +178755,7 @@
     "pickedAt": "2026-11-13T11:37:09.309Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-overlay-opens-pages-the-floating-toolbar-expands",
@@ -179065,8 +178958,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -179731,8 +179623,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -180238,8 +180129,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -180925,8 +180815,7 @@
     "pickedAt": "2026-11-13T12:17:15.710Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -181416,8 +181305,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -181678,8 +181566,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [],
    "profiles": [
@@ -181768,8 +181655,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -181972,8 +181858,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -182172,8 +182057,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -182287,8 +182171,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -182544,8 +182427,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -182819,8 +182701,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -183043,8 +182924,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -183323,8 +183203,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -184098,8 +183977,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -184389,8 +184267,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -184585,8 +184462,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -184774,8 +184650,7 @@
     "pickedAt": "2026-11-13T11:25:18.500Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -184997,8 +184872,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -185203,8 +185077,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -185439,8 +185312,7 @@
     "pickedAt": "2026-11-13T10:43:09.520Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -185723,8 +185595,7 @@
     "pickedAt": "2026-11-13T11:17:35.908Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -186344,8 +186215,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -186517,8 +186387,7 @@
     "pickedAt": "2026-11-13T10:43:20.478Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -186943,8 +186812,7 @@
     "pickedAt": "2026-11-13T10:48:26.846Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -187132,8 +187000,7 @@
     "pickedAt": "2026-11-12T20:42:37.390Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -187399,8 +187266,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -187664,8 +187530,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -187900,8 +187765,7 @@
     "pickedAt": "2026-11-12T22:46:08.743Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -188286,8 +188150,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -188861,8 +188724,7 @@
     "pickedAt": "2026-11-12T22:15:14.526Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -189350,8 +189212,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -189694,8 +189555,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -189899,8 +189759,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -190127,8 +189986,7 @@
     "pickedAt": "2026-11-13T10:38:25.274Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "shipped": {
     "id": "sm-orchestrator-hold-status-archive-tab-deleted-tab",
@@ -190369,8 +190227,7 @@
     "pickedAt": "2026-11-13T10:37:52.173Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -190553,8 +190410,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -190777,8 +190633,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -191021,8 +190876,7 @@
     "pickedAt": "2026-11-13T06:14:47.983Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -191607,8 +191461,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -191817,8 +191670,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -192060,8 +191912,7 @@
     "pickedAt": "2026-11-13T01:58:11.445Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -192250,8 +192101,7 @@
     "pickedAt": "2026-11-13T06:56:46.988Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -192702,8 +192552,7 @@
     "pickedAt": "2026-11-13T01:46:09.134Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -192903,8 +192752,7 @@
     "pickedAt": "2026-11-13T10:37:41.673Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -193190,8 +193038,7 @@
     "pickedAt": "2026-11-13T11:25:40.599Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -193466,8 +193313,7 @@
     "pickedAt": "2026-11-13T03:28:15.605Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -193885,8 +193731,7 @@
     "pickedAt": "2026-11-13T07:08:11.318Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -195110,8 +194955,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -195317,8 +195161,7 @@
     "pickedAt": "2026-11-13T11:25:46.013Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -195514,8 +195357,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -195687,8 +195529,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -195977,8 +195818,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -196204,8 +196044,7 @@
     "pickedAt": "2026-11-13T17:49:19.495Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -196384,8 +196223,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -196564,8 +196402,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -196832,8 +196669,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -197008,8 +196844,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -197320,8 +197155,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -197670,8 +197504,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -198013,8 +197846,7 @@
     "pickedAt": "2026-11-13T18:19:54.760Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -198305,8 +198137,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -198591,8 +198422,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -198887,8 +198717,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -199111,8 +198940,7 @@
     "pickedAt": "2026-11-13T18:36:14.104Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -199384,8 +199212,7 @@
     "pickedAt": "2026-11-13T19:10:27.865Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -199732,7 +199559,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:38:53.122Z",
-   "updatedAt": "2026-11-13T19:10:54.649Z",
+   "updatedAt": "2026-11-13T19:11:19.374Z",
    "builtAt": "",
    "notes": [
     {
@@ -199804,6 +199631,10 @@
      "at": "2026-11-13T19:10:26.863Z"
     },
     {
+     "text": "Headless run axf-console-android-app-thin-webview-wrapper--sully: brief only · start 11.8K tokens ($0.03) · cost $1.22 · 33 turns · 6 tools, MCP none",
+     "at": "2026-11-13T19:11:19.374Z"
+    },
+    {
      "text": "Started run 2 on mossesx-max- (Opus, Phase 1): axf-console-android-app-thin-webview-wrapper--lenny-191049.",
      "at": "2026-11-13T19:10:51.147Z"
     },
@@ -199833,12 +199664,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T18:38:55.070Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-console-android-app-thin-webview-wrapper--lenny-191049",
+    "account": "",
+    "session": "",
     "slot": "",
     "model": "Opus",
-    "launchedAt": "2026-11-13T19:10:49.391Z",
-    "runs": 2,
+    "launchedAt": "2026-11-13T18:39:57.071Z",
+    "runs": 1,
     "lastRun": {
      "at": "2026-11-13T18:41:03.640Z",
      "exit": 3,
@@ -199855,9 +199686,9 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"42523f40-ad67-40c7-a2c7-fbb1f4b209fc\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "released by the self-check (nothing ran): back in the Queue",
     "route": "",
-    "dispatchedAt": "2026-11-13T19:10:49.391Z",
+    "dispatchedAt": "2026-11-13T18:39:57.071Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -199866,11 +199697,10 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-13T19:10:49.391Z",
+    "pickedAt": "2026-11-13T18:39:57.071Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -200147,6 +199977,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-orchestrator-settings-collapsible-split--earl, own login copy)",
      "at": "2026-11-13T18:43:59.307Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-orchestrator-settings-collapsible-split--earl-191118, own login copy)",
+     "at": "2026-11-13T19:11:31.544Z"
     }
    ],
    "approvals": [],
@@ -200195,8 +200029,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -200387,7 +200220,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -200465,8 +200298,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -200740,8 +200572,7 @@
     "pickedAt": "2026-11-13T18:48:25.253Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -200992,8 +200823,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -201244,8 +201074,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -201496,8 +201325,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -201836,8 +201664,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -202174,8 +202001,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -202444,8 +202270,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -202608,8 +202433,7 @@
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {
@@ -202912,8 +202736,7 @@
     "pickedAt": "2026-11-13T19:08:08.553Z",
     "heldAt": "",
     "heldBy": "",
-    "heldWhy": "",
-    "parallel": null
+    "heldWhy": ""
    },
    "steps": [
     {

@@ -786,9 +786,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 17:18 UTC · `test-sandbox-sample-shipped-build` added (3 steps) (test-sandbox) · foreign-write
-- 2026-11-13 17:18 UTC · `test-sandbox-sample-pending-build` added (3 steps) (test-sandbox) · foreign-write
-- 2026-11-13 17:18 UTC · `test-sandbox-sample-shipped-build` merged (test-sandbox) · project-seed
 - 2026-11-13 17:18 UTC · `test-sandbox-sample-pending-build` added (3 steps) (test-sandbox) · project-seed
 - 2026-11-13 17:20 UTC · `test-sandbox-sample-shipped-build` note (test-sandbox) · foreign-write
 - 2026-11-13 17:20 UTC · `test-sandbox-sample-shipped-build` note (test-sandbox) · orchestrator
@@ -1186,6 +1183,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 19:10 UTC · `ui-manager-floating-window-to-select-any` note (all) · orchestrator
 - 2026-11-13 19:10 UTC · `console-android-app-thin-webview-wrapper` note (all) · pipeline
 - 2026-11-13 19:11 UTC · `orchestrator-settings-collapsible-split` PR #636 (all) · builds-live
+- 2026-11-13 19:11 UTC · `console-android-app-thin-webview-wrapper` note (all) · orchestrator
+- 2026-11-13 19:11 UTC · `orchestrator-settings-collapsible-split` → running, note (all) · pipeline
+- 2026-11-13 19:11 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
 
 ## Token passes (log)
 
