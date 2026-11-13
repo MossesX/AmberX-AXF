@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T17:38:12.810Z",
+ "updatedAt": "2026-11-13T17:38:26.946Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -111000,7 +111000,7 @@
    ]
   },
   {
-   "id": "show-commits-behind-main-on-every-build-table-an",
+   "id": "show-commits-behind-main-every-build",
    "title": "Show commits behind main on every build table and the orchestrator",
    "category": "",
    "detail": "Every build grid/table (All builds, Pending, Queued, Building, landing queue) and Build orchestrator cards show a 'behind main' count for the build's branch (git rev-list --count branch..origin/main), plus ahead count in the expanded row. Refresh on each main push and periodically; sortable/filterable column; highlight when far behind; expanded row links to the compare view and has a 'pull in main / rebuild' command. Expose via REST/MCP/CLI (build list includes behindMain). Builds with no branch show a dash.",
@@ -111008,10 +111008,10 @@
    "hidden": false,
    "source": "mcp",
    "pendingId": "show-commits-behind-main-on-every-build-table-an",
-   "branch": "claude/show-commits-behind-main-on-every-build-table-an",
-   "pr": "#567",
+   "branch": "claude/show-commits-behind-main-every-build",
+   "pr": "#611",
    "createdAt": "2026-11-12T10:39:34.736Z",
-   "updatedAt": "2026-11-13T11:31:04.877Z",
+   "updatedAt": "2026-11-13T17:38:02.873Z",
    "builtAt": "2026-11-13T11:31:04.877Z",
    "notes": [
     {
@@ -111077,6 +111077,10 @@
     {
      "text": "PR #567 is a draft. All tests pass. Headless capture could not reach axHub, so desktop and phone UI Review shots of All builds, the pipeline tabs, the Builds page and the merge queue are still needed before it can be marked ready.",
      "at": "2026-11-13T11:29:57.935Z"
+    },
+    {
+     "text": "Renamed from show-commits-behind-main-on-every-build-table-an (build names are at most 40 characters). By build-rename.",
+     "at": "2026-11-13T17:38:02.873Z"
     }
    ],
    "approvals": [],
@@ -117043,7 +117047,7 @@
    ]
   },
   {
-   "id": "skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change",
+   "id": "skin-configuration-panel-before-ai-makes",
    "title": "Skin configuration panel: before AI makes a skin, Brett picks what it may change. The current look is saved as the Default skin. A full tree of options in categories (colors, typography, layout and tab placement, buttons and actions, behaviors, context menus with how deep to build them, nav menu, ap",
    "category": "",
    "detail": "",
@@ -117051,11 +117055,11 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change",
-   "pr": "#547",
+   "branch": "claude/skin-configuration-panel-before-ai-makes",
+   "pr": "#612",
    "priority": "P0",
    "createdAt": "2026-11-13T01:13:53.464Z",
-   "updatedAt": "2026-11-13T06:56:09.733Z",
+   "updatedAt": "2026-11-13T17:38:14.716Z",
    "builtAt": "2026-11-13T06:56:03.335Z",
    "notes": [
     {
@@ -117133,6 +117137,10 @@
     {
      "text": "Headless run axf-skin-configuration-panel-before-ai-makes-a-skin---paulie: brief only · start 12.3K tokens ($0.04) · cost $10.11 · 177 turns · 6 tools, MCP none",
      "at": "2026-11-13T06:56:09.733Z"
+    },
+    {
+     "text": "Renamed from skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change (build names are at most 40 characters). By build-rename.",
+     "at": "2026-11-13T17:38:14.716Z"
     }
    ],
    "approvals": [
