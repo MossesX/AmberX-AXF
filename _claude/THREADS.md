@@ -788,7 +788,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 18:20 UTC · `full-voice-api-control-type-fields-press` s8 done, → built (all) · orchestrator
 - 2026-11-13 18:20 UTC · `decision-dialog-ui-review-other` note (all) · orchestrator
 - 2026-11-13 18:20 UTC · `decision-dialog-ui-review-other` note (all) · foreign-write
 - 2026-11-13 18:20 UTC · `toolbar-widgets-attach-any-banner-style` added (0 steps) (all) · console
@@ -1188,6 +1187,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 19:59 UTC · `skin-animations-swatches-skin-switch` → running, note (all) · pipeline
 - 2026-11-13 19:59 UTC · `skin-animations-swatches-skin-switch` branch claude/skin-animations-swatches-skin-switch (all) · pipeline
 - 2026-11-13 19:59 UTC · `skin-animations-swatches-skin-switch` note (all) · orchestrator
+- 2026-11-13 20:00 UTC · `own-token-sets-for-grids-and-tab-groups` note (all) · claude-voice
 
 ## Token passes (log)
 
