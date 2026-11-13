@@ -1,0 +1,311 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "prompt-engine-help",
+  "name": "Prompt engine help",
+  "version": "0.1.0",
+  "description": "Help mode entries (help@1) for the Prompt engine control panel.",
+  "author": "Brett",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:prompt-engine",
+    "entries": [
+      {
+        "target": "view:prompt-engine",
+        "title": "Prompt engine",
+        "text": "Rules that watch every event (builds, UI Review, held calls, merge clashes, the watchdog, schedules, voice, webhooks), ask you what to do, and run tools, macros and pipelines on your answer. Tabs: Events, Builder, Macros, Pipelines, Waiting, History, Registry.",
+        "kind": "screen"
+      },
+      {
+        "target": "new-rule",
+        "title": "New rule",
+        "text": "Opens the builder with an empty rule: pick an event on the left, set filters and conditions, say what to ask, then what runs on each answer."
+      },
+      {
+        "target": "from-template",
+        "title": "From a template",
+        "text": "Ready-made rules for the common cases (UI Review pop-up, build failed, held call veto, merge clash, model upgrade, watchdog, service down, daily digest, build shipped). Pick one, then tap Add; edit it afterwards like any rule."
+      },
+      {
+        "target": "add",
+        "title": "Add the template",
+        "text": "Creates a rule from the picked template, switched on."
+      },
+      {
+        "target": "run-tick",
+        "title": "Run tick",
+        "text": "Runs the once-a-minute tick now: prompts past their deadline time out (a veto runs, a pick takes its default) and schedules that are due fire."
+      },
+      {
+        "target": "refresh",
+        "title": "Refresh",
+        "text": "Reads the rules, macros, pipelines and waiting prompts again."
+      },
+      {
+        "target": "on",
+        "title": "Rule on / off",
+        "text": "A rule that is off stays here but never fires. Turn it on again any time."
+      },
+      {
+        "target": "edit",
+        "title": "Edit",
+        "text": "Opens this rule, macro or pipeline in its editor."
+      },
+      {
+        "target": "test",
+        "title": "Test (dry run)",
+        "text": "Fires the rule with a sample event, limits ignored, running nothing: tells you whether it fires, what it would ask and what would run on each answer. The details land in History."
+      },
+      {
+        "target": "delete",
+        "title": "Delete",
+        "text": "Removes the rule, macro or pipeline for good (the history stays)."
+      },
+      {
+        "target": "add-rule",
+        "title": "Add rule",
+        "text": "Saves the new rule. It is on right away unless you switch it off."
+      },
+      {
+        "target": "save",
+        "title": "Save",
+        "text": "Saves your changes to this rule."
+      },
+      {
+        "target": "test-dry-run",
+        "title": "Test (dry run)",
+        "text": "Saves nothing, runs nothing: shows whether the saved rule fires on a sample event and what it would ask."
+      },
+      {
+        "target": "cancel",
+        "title": "Cancel",
+        "text": "Leaves the editor without saving."
+      },
+      {
+        "target": "json",
+        "title": "JSON",
+        "text": "Shows the rule as prompt-event@1 JSON to edit by hand; Apply JSON puts it back into the form."
+      },
+      {
+        "target": "apply-json",
+        "title": "Apply JSON",
+        "text": "Reads the JSON into the form. Not valid JSON is refused with the reason."
+      },
+      {
+        "target": "add-filter",
+        "title": "Add filter",
+        "text": "A quick equality filter on one of the event's fields: the rule only fires when the field has that value."
+      },
+      {
+        "target": "add-condition",
+        "title": "Add condition",
+        "text": "A condition on a field: equal, not, one of, contains, matches, greater or less than (thresholds), present or missing. All conditions must hold."
+      },
+      {
+        "target": "add-option",
+        "title": "Add option",
+        "text": "Another option for a pick prompt; each option gets its own list of actions on the right."
+      },
+      {
+        "target": "add-action",
+        "title": "Add action",
+        "text": "Something to run on this answer: a tool (any plugin command), a console command, a macro, a pipeline, a build change, a notification, or another event. Inputs read the event with {{field}}."
+      },
+      {
+        "target": "remove",
+        "title": "Remove",
+        "text": "Takes this row off the rule."
+      },
+      {
+        "target": "new-macro",
+        "title": "New macro",
+        "text": "A macro is a saved sequence of actions with parameters; rules and pipelines run it by name."
+      },
+      {
+        "target": "save-macro",
+        "title": "Save macro",
+        "text": "Saves the macro; rules that run it pick up the change next time."
+      },
+      {
+        "target": "new-pipeline",
+        "title": "New pipeline",
+        "text": "A pipeline runs stages in order; a stage with a gate waits for your answer before it goes on."
+      },
+      {
+        "target": "add-stage",
+        "title": "Add stage",
+        "text": "Another stage at the end of the pipeline."
+      },
+      {
+        "target": "ask-brett-before-this-stage-runs-a-gate",
+        "title": "Gate",
+        "text": "When on, the pipeline stops here and asks you (approve, veto or text) before this stage runs."
+      },
+      {
+        "target": "save-pipeline",
+        "title": "Save pipeline",
+        "text": "Saves the pipeline."
+      },
+      {
+        "target": "how-to-run",
+        "title": "How to run",
+        "text": "A pipeline runs from a rule's action \"Run a pipeline\", from a macro, or from the API / CLI."
+      },
+      {
+        "target": "approve",
+        "title": "Approve",
+        "text": "Answers this prompt with approve: its approve actions run now."
+      },
+      {
+        "target": "deny",
+        "title": "Deny",
+        "text": "Answers with deny: its deny actions run (often nothing)."
+      },
+      {
+        "target": "later",
+        "title": "Later",
+        "text": "Shelves the prompt: it stays in the list without a deadline until you answer."
+      },
+      {
+        "target": "send",
+        "title": "Send",
+        "text": "Sends your text as the answer."
+      },
+      {
+        "target": "show",
+        "title": "Show",
+        "text": "Filters the history by what happened: fired, skipped (and why), asked, answered, expired, ran, failed, dry runs, keys needed."
+      },
+      {
+        "target": "open-the-control-panel",
+        "title": "Open the control panel",
+        "text": "Goes to Builds → Prompt engine."
+      },
+      {
+        "target": "prompts-waiting",
+        "title": "Prompts waiting",
+        "text": "Opens the Waiting tab: everything that still needs your answer."
+      },
+      {
+        "target": "prompt-engine",
+        "title": "Prompt engine settings",
+        "text": "Counts, the control panel link, and how the same commands are reached by REST, MCP, the CLI and voice; install and uninstall below."
+      },
+      {
+        "target": "action:prompt-engine.open",
+        "title": "Prompt engine",
+        "text": "Opens the Prompt engine control panel."
+      },
+      {
+        "target": "action:prompt-engine.waiting",
+        "title": "Prompts waiting…",
+        "text": "Opens the Waiting tab of the Prompt engine."
+      },
+      {
+        "target": "action:prompt-engine.new",
+        "title": "New prompt rule…",
+        "text": "Opens the Prompt engine builder with an empty rule."
+      },
+      {
+        "target": "rule-prompt-event",
+        "title": "Rule (prompt-event@1)",
+        "text": "The rule as prompt-event@1 JSON: trigger, when, limits, ask and on. Edit it here and tap Apply JSON to put it back into the form.",
+        "kind": "field"
+      },
+      {
+        "target": "is",
+        "title": "Is",
+        "text": "How the field is compared: equal, not, one of, contains, matches a pattern, greater or less than (a threshold), present or missing. Only the operators that fit the field type are offered.",
+        "kind": "field"
+      },
+      {
+        "target": "cooldown-s",
+        "title": "Cooldown (s)",
+        "text": "After the rule fires, nothing fires again for this many seconds, whatever comes in. 0 = no cooldown.",
+        "kind": "field"
+      },
+      {
+        "target": "dedupe-key",
+        "title": "Dedupe key",
+        "text": "A template such as {{build.id}}: the same key asks only once within the dedupe window, so one failing build makes one prompt.",
+        "kind": "field"
+      },
+      {
+        "target": "dedupe-window-s",
+        "title": "Dedupe window (s)",
+        "text": "How long a dedupe key is remembered, in seconds. 0 = a day.",
+        "kind": "field"
+      },
+      {
+        "target": "max-per-hour",
+        "title": "Max per hour",
+        "text": "At most this many fires an hour; the rest are skipped and show in History as rate. 0 = no cap.",
+        "kind": "field"
+      },
+      {
+        "target": "option-id",
+        "title": "Option id",
+        "text": "The short id of this option (letters, digits, dashes). Voice and the API pick by id, number or label; the actions on the right are listed under it.",
+        "kind": "field"
+      },
+      {
+        "target": "countdown-s",
+        "title": "Countdown (s)",
+        "text": "For a veto: seconds before it runs by itself unless you deny it (at least 5). For a pick: seconds before the default option is taken; 0 = no deadline.",
+        "kind": "field"
+      },
+      {
+        "target": "parameters",
+        "title": "Parameters",
+        "text": "Names the macro takes, comma separated. Steps read them as {{params.name}}; a rule or pipeline passes them when it runs the macro.",
+        "kind": "field"
+      },
+      {
+        "target": "stage-title",
+        "title": "Stage title",
+        "text": "What this stage is called in the pipeline list, the history and the gate prompt.",
+        "kind": "field"
+      },
+      {
+        "target": "gate-kind",
+        "title": "Gate kind",
+        "text": "How you are asked before this stage runs: approve / deny, a veto countdown that runs unless you stop it, or a text answer.",
+        "kind": "field"
+      },
+      {
+        "target": "gate-title",
+        "title": "Gate title",
+        "text": "The question you see when the pipeline reaches this stage; {{params.name}} reads the pipeline parameters.",
+        "kind": "field"
+      },
+      {
+        "target": "answer",
+        "title": "Answer",
+        "text": "Your text answer to this prompt; the rule reads it as {{answer.text}}.",
+        "kind": "field"
+      }
+    ],
+    "intros": [
+      {
+        "screen": "prompt-engine",
+        "title": "Prompt engine",
+        "steps": [
+          {
+            "say": "Events lists your rules: what fires them, what they ask, what runs on each answer.",
+            "target": ""
+          },
+          {
+            "say": "Start from a template, or tap New rule and pick an event on the left of the builder.",
+            "target": "new-rule"
+          },
+          {
+            "say": "Waiting holds every prompt that still needs you; you can also answer by voice: approve it, pick option 2.",
+            "target": ""
+          }
+        ]
+      }
+    ]
+  }
+}
