@@ -432,3 +432,13 @@ builds merge driver installed there (`builds-live.mjs install`). PR heads fetche
 - #562: pipeline.mjs row keeps main's `shipped` and adds #562's `stale`; plugin.json keeps the gate-log routes and
   adds `pipeline-live`. pipeline.test.mjs 54 checks pass.
 - #563, #564: only `framework/spec/PORTING.md` (each adds a Deferred section): kept all sections, no duplicates.
+- #566 (professional skins, skin@2 behaviour): tap-to-confirm gets #566's skin layer in the merged resolver (dialog
+  choice → toolbar key → skin pick `data-fx-bhv-<kind>-tap-confirm` → kind switch → labels; source `skin`), 4 new
+  checks (check-tapconfirm 115/115). Chrome.tsx: #566's `tbData` (skin behaviour) + main's `data-axf-labels` marks and
+  `data-fx-nav-mode` + labels on the nav. runtime.ts: #566's skin import (a superset) + main's skin-modes import; main's
+  `skin.mode` action next to #566's `skin.behaviour`, `skin.preview`, `skin.global`, `nav.drawer`. skins.mjs: both
+  command sets (main's `modes` / `mode` + #566's `axes`, `behaviour`, `compare`, `preview`, `gallery`), imports unioned,
+  `--system` kept out of the positional args. glossary terms.json: #566's expanded file + main's "Gizmo guide" rename.
+  Open: #566's new skins command, executive, field, studio-pro have no light/dark pair, which #563 makes required
+  (fixed in the checks step).
+- #568: only the baked copy `apps/console-web/src/axf/react/components/BannerSettings.tsx`: ours kept, rebaked in s12.
