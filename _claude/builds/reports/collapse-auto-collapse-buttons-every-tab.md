@@ -1,6 +1,6 @@
 # Collapse and auto-collapse buttons on every tab group, toolbar, nav menu and app menu
 
-Build `collapse-and-auto-collapse-buttons-on-every-tab`, Phase 1 (Opus). Branch `claude/collapse-and-auto-collapse-buttons-on-every-tab`.
+Build `collapse-auto-collapse-buttons-every-tab`, Phase 1 (Opus). Branch `claude/collapse-auto-collapse-buttons-every-tab`.
 
 ## Brett said (Nov 12 2026, 18:40)
 > All tab groups and toolbars and nav menus and application menus need a, auto collapse button or, and a collapsible button.
