@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T17:33:17.270Z",
+ "updatedAt": "2026-11-13T17:33:24.554Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -120865,7 +120865,7 @@
    ]
   },
   {
-   "id": "every-skin-ships-a-light-and-a-dark-colour-theme",
+   "id": "every-skin-ships-light-dark-colour-theme",
    "title": "Every skin ships a light and a dark colour theme (Studio Pro, Executive, Field, Command, Default and any future skin): quick light/dark switch per skin, follow-system option, coverage check fails if a skin lacks either; full API and voice",
    "category": "",
    "detail": "",
@@ -120873,11 +120873,11 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/every-skin-ships-a-light-and-a-dark-colour-theme",
-   "pr": "#563",
+   "branch": "claude/every-skin-ships-light-dark-colour-theme",
+   "pr": "#590",
    "priority": "P0",
    "createdAt": "2026-11-13T10:39:51.656Z",
-   "updatedAt": "2026-11-13T10:57:06.217Z",
+   "updatedAt": "2026-11-13T17:33:12.986Z",
    "builtAt": "2026-11-13T10:57:06.217Z",
    "notes": [
     {
@@ -120899,6 +120899,10 @@
     {
      "text": "Headless run axf-every-skin-ships-a-light-and-a-dark-colour-theme--sully: brief only · start 11.2K tokens ($0.03) · cost $1.98 · 55 turns · 6 tools, MCP none",
      "at": "2026-11-13T10:57:06.217Z"
+    },
+    {
+     "text": "Renamed from every-skin-ships-a-light-and-a-dark-colour-theme (build names are at most 40 characters). By build-rename.",
+     "at": "2026-11-13T17:33:12.986Z"
     }
    ],
    "approvals": [],

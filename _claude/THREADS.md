@@ -785,8 +785,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 10:38 UTC · `one-source-of-truth-console-shows-only-what-the-server-says-is-running` → running, note (all) · pipeline
-- 2026-11-13 10:38 UTC · `one-source-of-truth-console-shows-only-what-the-server-says-is-running` → running, note (all) · orchestrator
 - 2026-11-13 10:38 UTC · `orchestrator-hold-status-archive-tab-deleted-tab` → running, note (all) · pipeline
 - 2026-11-13 10:38 UTC · `orchestrator-hold-status-archive-tab-deleted-tab` note (all) · orchestrator
 - 2026-11-13 10:38 UTC · `console-and-axhub-retry-failed-calls-themselves-no-claude-needed` → running, note (all) · pipeline
@@ -1185,6 +1183,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 17:32 UTC · `console-and-axhub-retry-failed-calls-themselves-no-claude-needed` note, removed (all) · build-rename
 - 2026-11-13 17:32 UTC · `drag-anything-api-voice-after-pr-556` added (20 steps) (all) · build-rename
 - 2026-11-13 17:32 UTC · `drag-anything-by-api-and-voice-after-pr-556-land` note, removed (all) · build-rename
+- 2026-11-13 17:33 UTC · `every-skin-ships-light-dark-colour-theme` added (2 steps) (all) · build-rename
+- 2026-11-13 17:33 UTC · `every-skin-ships-a-light-and-a-dark-colour-theme` note, removed (all) · build-rename
 
 ## Token passes (log)
 
