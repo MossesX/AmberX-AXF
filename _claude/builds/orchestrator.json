@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T06:12:06.112Z",
+ "updatedAt": "2026-11-13T06:12:18.515Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -111475,7 +111475,7 @@
    "title": "Professional skins that rebuild the whole app (Fable, ultrathink, every step): each skin is a complete restyle AND rebehave of the entire console UI. Every asset (theme, layout, toolbars, tab groups and where tabs go, buttons and how they behave, context menus, nav menu, app menus, dialogs, tables, ",
    "category": "",
    "detail": "",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -111483,7 +111483,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-12T23:32:23.494Z",
-   "updatedAt": "2026-11-12T23:33:26.512Z",
+   "updatedAt": "2026-11-13T06:12:16.718Z",
    "builtAt": "",
    "notes": [
     {
@@ -111493,6 +111493,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
      "at": "2026-11-12T23:33:26.512Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T06:12:08.746Z"
+    },
+    {
+     "text": "Split asked for by console.",
+     "at": "2026-11-13T06:12:16.718Z"
     }
    ],
    "approvals": [],
@@ -112223,14 +112231,15 @@
    "title": "Skin configuration panel: before AI makes a skin, Brett picks what it may change. The current look is saved as the Default skin. A full tree of options in categories (colors, typography, layout and tab placement, buttons and actions, behaviors, context menus with how deep to build them, nav menu, ap",
    "category": "",
    "detail": "",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change",
    "pr": "#547",
+   "priority": "P0",
    "createdAt": "2026-11-13T01:13:53.464Z",
-   "updatedAt": "2026-11-13T04:20:35.047Z",
+   "updatedAt": "2026-11-13T06:12:09.990Z",
    "builtAt": "",
    "notes": [
     {
@@ -112280,6 +112289,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-13T04:20:35.047Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T06:12:06.969Z"
     }
    ],
    "approvals": [],

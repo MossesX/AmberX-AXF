@@ -778,9 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 20:41 UTC · `move-amberx-web-app-into-the-console-amberx-andr` note (all) · console
-- 2026-11-12 20:41 UTC · `move-amberx-web-app-into-the-console-amberx-andr` → queued, note (all) · console
-- 2026-11-12 20:41 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` → queued, note (all) · console
 - 2026-11-12 20:42 UTC · `fix-the-step-splitter-claude-exit-1-input-must-b` → queued, note (all) · builds-live
 - 2026-11-12 20:42 UTC · `move-amberx-web-app-into-the-console-amberx-andr` note (all) · builds-live
 - 2026-11-12 20:42 UTC · `move-amberx-web-app-into-the-console-amberx-andr` note (all) · orchestrator
@@ -1178,6 +1175,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 04:00 UTC · `change-to-move-amberx-web-app-into-the-console-amberx-andr-pr-528-brett-do` → pending, note (all) · reconciler
 - 2026-11-13 04:20 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` → pending, note (all) · reconciler
 - 2026-11-13 06:12 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` → queued, note (all) · console
+- 2026-11-13 06:12 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` → queued, note (all) · console
+- 2026-11-13 06:12 UTC · `professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e` → queued, note (all) · console
+- 2026-11-13 06:12 UTC · `professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e` note (all) · console
 
 ## Token passes (log)
 
