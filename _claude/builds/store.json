@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4536,
- "updatedAt": "2026-11-13T17:37:48.128Z",
+ "rev": 4537,
+ "updatedAt": "2026-11-13T17:38:00.986Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -161402,13 +161402,13 @@
    "category": "orchestrator",
    "detail": "URGENT, boss order from Brett, Nov 12. The dispatcher double/triple-launched builds: owner-recognized-everywhere ran 3 sessions and molly-gap-console-token-handoff ran 2, in the same worktree folders, clobbering each other and wasting slots. Add a SERVER GATE on the VPS, enforced by the server itself: only ONE live session per build ID and per worktree folder, ever. Every launch path (vps build_start, dispatcher, agent-slots, any claude -p/tmux axf-* launcher) takes an exclusive lock per build ID + folder (flock), and refuses a second launch while a session for that build is alive. A watchdog finds any duplicates that slip through, keeps the oldest, stops the rest, and logs it in 'Automatic fixes' with an AmberX FYI. Also fix the dispatcher's double-launch root cause (see pending dispatcher-a-worktree-store-write-can-erase-a-fr: store write erases the fresh launch record). Tests: second launch of the same build refused; duplicates reaped.",
    "status": "pending",
-   "hidden": false,
+   "hidden": true,
    "source": "console",
    "pendingId": "",
    "branch": "claude/server-gate-one-session-per-build-no-duplicate-launches",
    "pr": "#560",
    "createdAt": "2026-11-12T02:42:15.357Z",
-   "updatedAt": "2026-11-13T10:49:16.891Z",
+   "updatedAt": "2026-11-13T17:37:52.367Z",
    "builtAt": "",
    "notes": [
     {
@@ -161454,6 +161454,10 @@
     {
      "text": "Reconciler: PR #560",
      "at": "2026-11-13T10:49:16.891Z"
+    },
+    {
+     "text": "Renamed to server-gate-one-session-per-build-no: this record is kept as a tombstone, use server-gate-one-session-per-build-no.",
+     "at": "2026-11-13T17:37:52.367Z"
     }
    ],
    "approvals": [],
@@ -161505,118 +161509,7 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "steps": [
-    {
-     "id": "s1",
-     "uid": "st-mwcxzs0a042j2o",
-     "title": "",
-     "text": "Server gate: per-build-ID + per-worktree exclusive lock in every VPS launch path; a second launch of a build with a live session is refused, logged, AmberX FYI.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-12T02:55:05.110Z",
-     "note": "",
-     "rev": 2,
-     "createdAt": "2026-11-12T02:42:15.358Z",
-     "updatedAt": "2026-11-12T02:55:05.538Z"
-    },
-    {
-     "id": "s2",
-     "uid": "st-mwcxzs0a05df8e",
-     "title": "",
-     "text": "Fix the dispatcher double-launch root cause (store write erasing the fresh launch record); watchdog reaps any duplicate sessions, keeping the oldest.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-12T02:56:32.075Z",
-     "note": "",
-     "rev": 2,
-     "createdAt": "2026-11-12T02:42:15.358Z",
-     "updatedAt": "2026-11-12T02:56:32.256Z"
-    },
-    {
-     "id": "s4",
-     "uid": "st-mwcy0nd5013y31",
-     "title": "",
-     "text": "Server gate log: every time ANY server gate is hit (duplicate launch refused, duplicate reaped by watchdog, slot limit, orchestrator-ID gate, main gate), write an entry: time, which gate, which build, who/what tried it, what the gate did. Viewable in the console as a 'Server gate log' page with a count badge and filter by gate; also via REST/MCP/CLI and voice ('show the gate log'). Kept on the server, survives restarts.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "25 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-12T02:59:58.216Z",
-     "note": "",
-     "rev": 2,
-     "createdAt": "2026-11-12T02:42:56.083Z",
-     "updatedAt": "2026-11-12T02:59:58.373Z"
-    },
-    {
-     "id": "s5",
-     "uid": "st-mwcy1mba01ib96",
-     "title": "",
-     "text": "Server gate log banner widget (snappable asset) with count badge showing latest gate hits; tap opens the Server gate log page. Setting for where its entries show: its OWN banner (a strip across the top that only appears when there's something in it) OR any existing banner Brett picks (dropdown of all banners); switchable live; also via REST/MCP/CLI/voice.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "25 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": true,
-     "doneAt": "2026-11-12T03:05:08.452Z",
-     "note": "",
-     "rev": 3,
-     "createdAt": "2026-11-12T02:43:41.334Z",
-     "updatedAt": "2026-11-12T03:05:34.028Z"
-    },
-    {
-     "id": "s3",
-     "uid": "st-mwcxzs0a06xeu0",
-     "title": "",
-     "text": "Tests (second launch refused; duplicates reaped; dispatcher no longer double-launches), PR, land through the gate, AmberX FYI when live.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "20 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-12T02:42:15.358Z",
-     "updatedAt": "2026-11-12T02:42:15.358Z"
-    }
-   ],
+   "steps": [],
    "profiles": [
     "all"
    ],
@@ -161625,9 +161518,9 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
-   "deleted": false,
-   "deletedAt": "",
+   "rev": 38,
+   "deleted": true,
+   "deletedAt": "2026-11-13T17:37:52.367Z",
    "pending": {
     "model": "Opus",
     "status": "pending",
@@ -194174,6 +194067,266 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-12T21:53:13.015Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "server-gate-one-session-per-build-no",
+   "title": "Server gate: one session per build, no duplicate launches",
+   "category": "orchestrator",
+   "detail": "URGENT, boss order from Brett, Nov 12. The dispatcher double/triple-launched builds: owner-recognized-everywhere ran 3 sessions and molly-gap-console-token-handoff ran 2, in the same worktree folders, clobbering each other and wasting slots. Add a SERVER GATE on the VPS, enforced by the server itself: only ONE live session per build ID and per worktree folder, ever. Every launch path (vps build_start, dispatcher, agent-slots, any claude -p/tmux axf-* launcher) takes an exclusive lock per build ID + folder (flock), and refuses a second launch while a session for that build is alive. A watchdog finds any duplicates that slip through, keeps the oldest, stops the rest, and logs it in 'Automatic fixes' with an AmberX FYI. Also fix the dispatcher's double-launch root cause (see pending dispatcher-a-worktree-store-write-can-erase-a-fr: store write erases the fresh launch record). Tests: second launch of the same build refused; duplicates reaped.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/server-gate-one-session-per-build-no",
+   "pr": "#610",
+   "createdAt": "2026-11-12T02:42:15.357Z",
+   "updatedAt": "2026-11-13T17:37:52.367Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-12T02:42:22.383Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-server-gate-one-session-per-build-no-duplicate-l--lenny.",
+     "at": "2026-11-12T02:50:28.889Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-server-gate-one-session-per-build-no-duplicate-l--lenny, own login copy)",
+     "at": "2026-11-12T02:50:30.298Z"
+    },
+    {
+     "text": "Headless run axf-server-gate-one-session-per-build-no-duplicate-l--lenny: brief only · start 11.1K tokens ($0.03) · cost $6.86 · 125 turns · 6 tools, MCP none",
+     "at": "2026-11-12T03:12:39.099Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-12T03:40:41.113Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T10:35:14.147Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-server-gate-one-session-per-build-no-duplicate-l--sully.",
+     "at": "2026-11-13T10:37:42.055Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-server-gate-one-session-per-build-no-duplicate-l--sully, own login copy)",
+     "at": "2026-11-13T10:37:44.975Z"
+    },
+    {
+     "text": "Headless run axf-server-gate-one-session-per-build-no-duplicate-l--sully: brief only · start 11.3K tokens ($0.03) · cost $0.83 · 40 turns · 6 tools, MCP none",
+     "at": "2026-11-13T10:46:05.626Z"
+    },
+    {
+     "text": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
+     "at": "2026-11-13T10:46:07.776Z"
+    },
+    {
+     "text": "Reconciler: PR #560",
+     "at": "2026-11-13T10:49:16.891Z"
+    },
+    {
+     "text": "Renamed from server-gate-one-session-per-build-no-duplicate-launches (build names are at most 40 characters). By build-rename.",
+     "at": "2026-11-13T17:37:52.367Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "server-gate-one-session-per-build-no-duplicate-launches",
+    "brief": "# Build: server-gate-one-session-per-build-no-duplicate-launches\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"Server gate: one session per build, no duplicate launches\" (server-gate-one-session-per-build-no-duplicate-launches) [orchestrator] — Phase 1, model Opus.\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 30 min; read only the files listed; stop at the end of this phase.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (5 left, ~2.2 h):\n[ ] s1 (~30 min) Server gate: per-build-ID + per-worktree exclusive lock in every VPS launch path; a second launch of a build with a live session is refused, logged, AmberX FYI.\n[ ] s2 (~30 min) Fix the dispatcher double-launch root cause (store write erasing the fresh launch record); watchdog reaps any duplicate sessions, keeping the oldest.\n[ ] s4 (~25 min) Server gate log: every time ANY server gate is hit (duplicate launch refused, duplicate reaped by watchdog, slot limit, orchestrator-ID gate, main gate), write an entry: time, which gate, which build, who/what tried it, what the gate did. Viewable in the console as a 'Server gate log' page with a count badge and filter by gate; also via REST/MCP/CLI and voice ('show the gate log'). Kept on the server, survives restarts.\n[ ] s5 (~25 min) Server gate log banner widget (snappable asset) with count badge showing latest gate hits; tap opens the Server gate log page. Setting for where its entries show: its OWN banner (a strip across the top that only appears when there's something in it) OR any existing banner Brett picks (dropdown of all banners); switchable live; also via REST/MCP/CLI/voice.\n[ ] s3 (~20 min) Tests (second launch refused; duplicates reaped; dispatcher no longer double-launches), PR, land through the gate, AmberX FYI when live.\nTick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step server-gate-one-session-per-build-no-duplicate-launches <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link server-gate-one-session-per-build-no-duplicate-launches --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Tick every step as you finish it (orchestrator.mjs act step server-gate-one-session-per-build-no-duplicate-launches <stepId> done). When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note server-gate-one-session-per-build-no-duplicate-launches \"…\"); the build goes back to Pending for Brett.\n",
+    "verbatim": false,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "2026-11-13T10:35:13.717Z",
+    "queuedBy": "console",
+    "account": "mossesx-max-",
+    "session": "",
+    "slot": "",
+    "model": "Opus",
+    "launchedAt": "2026-11-13T10:37:41.673Z",
+    "runs": 1,
+    "lastRun": {
+     "at": "2026-11-13T10:46:04.955Z",
+     "exit": 0,
+     "outcome": "returned",
+     "stepsLeft": 1,
+     "account": "mossesx-max-",
+     "session": "axf-server-gate-one-session-per-build-no-duplicate-l--sully"
+    },
+    "split": null,
+    "splitRequested": "",
+    "note": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
+    "route": "",
+    "dispatchedAt": "2026-11-13T10:37:41.673Z",
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-12T19:43:03.226Z",
+     "why": "subscription account mossesx-max-"
+    },
+    "tried": [],
+    "pickedAt": "2026-11-13T10:37:41.673Z",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwcxzs0a042j2o",
+     "title": "",
+     "text": "Server gate: per-build-ID + per-worktree exclusive lock in every VPS launch path; a second launch of a build with a live session is refused, logged, AmberX FYI.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-12T02:55:05.110Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-12T02:42:15.358Z",
+     "updatedAt": "2026-11-12T02:55:05.538Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwcxzs0a05df8e",
+     "title": "",
+     "text": "Fix the dispatcher double-launch root cause (store write erasing the fresh launch record); watchdog reaps any duplicate sessions, keeping the oldest.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-12T02:56:32.075Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-12T02:42:15.358Z",
+     "updatedAt": "2026-11-12T02:56:32.256Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mwcy0nd5013y31",
+     "title": "",
+     "text": "Server gate log: every time ANY server gate is hit (duplicate launch refused, duplicate reaped by watchdog, slot limit, orchestrator-ID gate, main gate), write an entry: time, which gate, which build, who/what tried it, what the gate did. Viewable in the console as a 'Server gate log' page with a count badge and filter by gate; also via REST/MCP/CLI and voice ('show the gate log'). Kept on the server, survives restarts.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-12T02:59:58.216Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-12T02:42:56.083Z",
+     "updatedAt": "2026-11-12T02:59:58.373Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mwcy1mba01ib96",
+     "title": "",
+     "text": "Server gate log banner widget (snappable asset) with count badge showing latest gate hits; tap opens the Server gate log page. Setting for where its entries show: its OWN banner (a strip across the top that only appears when there's something in it) OR any existing banner Brett picks (dropdown of all banners); switchable live; also via REST/MCP/CLI/voice.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "25 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-12T03:05:08.452Z",
+     "note": "",
+     "rev": 3,
+     "createdAt": "2026-11-12T02:43:41.334Z",
+     "updatedAt": "2026-11-12T03:05:34.028Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwcxzs0a06xeu0",
+     "title": "",
+     "text": "Tests (second launch refused; duplicates reaped; dispatcher no longer double-launches), PR, land through the gate, AmberX FYI when live.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-12T02:42:15.358Z",
+     "updatedAt": "2026-11-12T02:42:15.358Z"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 723
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 37,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": {
+    "model": "Opus",
+    "status": "pending",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-12T02:42:15.357Z",
+    "builtAt": "",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwcxzs0a042j2o": "2026-11-12T02:42:15.358Z",
+     "st-mwcxzs0a05df8e": "2026-11-12T02:42:15.358Z",
+     "st-mwcy0nd5013y31": "2026-11-12T02:42:56.083Z",
+     "st-mwcy1mba01ib96": "2026-11-12T02:43:41.334Z",
+     "st-mwcxzs0a06xeu0": "2026-11-12T02:42:15.358Z"
+    }
+   },
+   "queue": null,
+   "defaultAt": "2026-11-12T02:42:15.358Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
