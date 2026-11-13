@@ -785,7 +785,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 11:33 UTC · `unlink-plan-studio-from-builds-delete-all-plan-s` note (all) · foreign-write
 - 2026-11-13 11:33 UTC · `badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad` s4 done, → complete, note (all) · foreign-write
 - 2026-11-13 11:33 UTC · `change-to-move-amberx-web-app-into-the-console-amberx-andr-pr-528-brett-do` note (all) · foreign-write
 - 2026-11-13 11:33 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` s26 done, note (all) · foreign-write
@@ -1185,6 +1184,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 18:20 UTC · `all-settings-interfaces-open-floating` s1 done, → running (all) · orchestrator
 - 2026-11-13 18:20 UTC · `decision-dialog-ui-review-other` note (all) · pipeline
 - 2026-11-13 18:21 UTC · `decision-dialog-ui-review-other` → running, note (all) · builds-live
+- 2026-11-13 18:21 UTC · `toolbar-widgets-attach-any-banner-style` note (all) · orchestrator
 
 ## Token passes (log)
 

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T18:21:15.936Z",
+ "updatedAt": "2026-11-13T18:21:43.927Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -127652,12 +127652,16 @@
    "pr": "",
    "priority": "P2",
    "createdAt": "2026-11-13T18:20:19.790Z",
-   "updatedAt": "2026-11-13T18:20:26.089Z",
+   "updatedAt": "2026-11-13T18:21:42.427Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-13T18:20:26.089Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"c1b8438b-1190-4f06-8b0a-509987186c99\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-13T18:21:42.427Z"
     }
    ],
    "approvals": [],
@@ -127674,7 +127678,68 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Let every toolbar (and tab group bar) host widgets the same way the banner does: use the same widget assets and registry as banner widgets (status badges, counters, CPU/disk, account, clocks, etc.). Add/remove/arrange widgets per toolbar instance from its right-click menu and its chrome settings (drag to arrange, like widgets.arrange). Widgets follow skins/tokens, collapse into an overflow when space is short, persist per instance. Reachable by REST/MCP/CLI/voice/control@1 ('add the CPU widget to the main toolbar'). Tests, help, Shipped features.",
+     "model": "Fable",
+     "why": "foundation words in the step",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfazrmj01ue10",
+     "createdAt": "2026-11-13T18:21:42.427Z"
+    },
+    {
+     "id": "s2",
+     "text": "I can attach widgets to the toolbar right, just like the banner widgets",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfazrmj025ju3",
+     "createdAt": "2026-11-13T18:21:42.427Z"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/toolbar-widgets-attach-any-banner-style.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/toolbar-widgets-attach-any-banner-style.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfazrmj03034s",
+     "createdAt": "2026-11-13T18:21:42.427Z"
+    }
+   ]
   }
  ]
 }
