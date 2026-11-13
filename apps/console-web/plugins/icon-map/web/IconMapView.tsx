@@ -69,6 +69,8 @@ function SlotPanel({ slotId, slots, onClose }: { slotId: string; slots: Slot[]; 
     void get<{ slot: Slot }>(`slot/${slotId.split('/').map(encodeURIComponent).join('/')}`).then((r) => { if (live) setDetail(r.slot); }, () => { if (live) setDetail(null); });
     return () => { live = false; };
   }, [slotId, slots]);
+  // the panel may sit far from the row that opened it (below the tree on a phone): bring it into view
+  useEffect(() => { document.querySelector('.axp-icon-map__panel')?.scrollIntoView({ block: 'nearest' }); }, [slotId]);
   const res = rt.iconResolution(detail?.glyph ?? '', slotId, detail?.role || undefined);
   const picked = rt.iconOverrides()[slotId];
   const words = find.trim().toLowerCase();

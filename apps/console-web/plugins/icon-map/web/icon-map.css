@@ -32,3 +32,4 @@
 .axp-icon-map__row--two { grid-template-columns: minmax(0, 1fr) auto }
 .axp-icon-map__swatch { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-2xs); padding: var(--fx-dens-gap-2xs) var(--fx-dens-gap-sm); border-radius: var(--fx-radius-sm); background: var(--fx-bg); color: var(--fx-text) }
 .axp-icon-map__swatch-glyph { display: inline-flex }
+:where([data-fx-narrow]) .axp-icon-map__split.has-panel > .axp-icon-map__panel { order: -1; position: static }

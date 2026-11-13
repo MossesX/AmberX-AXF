@@ -83,6 +83,8 @@ export const PLUGIN_HOMES = [
   { app: 'console-web', dir: 'apps/console-web/plugins' },
   { app: 'amberx-droid', dir: 'apps/amberx-droid/src/plugins' },
   { app: 'axhub-web', dir: 'apps/axhub-web/src/plugins' },
+  { app: 'molly', dir: 'apps/molly/plugins' },
+  { app: 'expenses', dir: 'apps/expenses/src/plugins' },
 ];
 
 /** Every owner's facts: the framework chrome, each web app's own UI and assets, each plugin. */
