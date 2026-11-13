@@ -225,6 +225,41 @@ public class AmberxNativePlugin extends Plugin {
         });
     }
 
+    /* ---------------------------------------------------------------- approval overlay (ApprovalOverlay) */
+
+    /** Changes the approval overlay's settings (any subset); resolves with its state. */
+    @PluginMethod
+    public void approvalOverlaySet(PluginCall call) {
+        WatchService.setApprovalOverlay(getContext(), call.getData());
+        call.resolve(js(WatchService.approvalOverlayState(getContext())));
+    }
+
+    /** The approval overlay's settings, whether it is shown or open, and what waits. */
+    @PluginMethod
+    public void approvalOverlayState(PluginCall call) { call.resolve(js(WatchService.approvalOverlayState(getContext()))); }
+
+    /**
+     * expand / collapse, a card action (approve, deny, shelve, approve-now, decline) on [id] or the card shown, or the
+     * browser window: {@code page} opens [url] (Brett's own sites; empty: the last page or the console) full screen,
+     * {@code close-page} closes it and leaves the floating toolbar.
+     */
+    @PluginMethod
+    public void approvalOverlayCommand(PluginCall call) {
+        String command = call.getString("command", "");
+        String arg = "page".equals(command) ? call.getString("url", call.getString("id", "")) : call.getString("id", "");
+        try {
+            boolean ok = WatchService.approvalOverlayCommand(getContext(), command, arg);
+            call.resolve(new JSObject().put("ok", ok));
+        } catch (IllegalArgumentException e) {
+            call.reject(e.getMessage());
+        }
+    }
+
+    static void approvalOverlayChanged(JSONObject state) {
+        AmberxNativePlugin p = current;
+        if (p != null) p.notifyListeners("approvalOverlay", js(state), true);
+    }
+
     /** The banner plugin's alarm settings (VetoAlarm). */
     @PluginMethod
     public void vetoAlarm(PluginCall call) {

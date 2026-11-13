@@ -130,6 +130,17 @@ export interface NativeApi {
   /** Ring the alarm once now with these settings (Settings → Test). */
   vetoAlarmTest(opts: Record<string, unknown>): Promise<void>;
   vetoAlarmStop(): Promise<void>;
+  /**
+   * The approval overlay (Java `ApprovalOverlay`): a small floating toolbar that opens into the approval card when an
+   * approval or held command arrives. Settings come from the banner plugin (`approvals-banner.overlay.*`); state and
+   * commands (expand, collapse, approve, deny, shelve, approve-now, decline) for the API and voice. `page` opens one of
+   * Brett's pages (`url`; empty: the last page or the console) in the overlay's full-screen browser window, and
+   * `close-page` closes it so it is just the floating toolbar again; the state's `page` says what is open.
+   * Browser: no overlay.
+   */
+  approvalOverlaySet(opts: Record<string, unknown>): Promise<Record<string, unknown>>;
+  approvalOverlayState(): Promise<Record<string, unknown>>;
+  approvalOverlayCommand(opts: { command: string; id?: string; url?: string }): Promise<{ ok: boolean }>;
   /** Gizmo talk mode as a foreground microphone service (Android `TalkService`): listens turn by turn with the screen
    * off, a notification with Stop, audio focus, one owner of the mic. The page keeps the conversation and speaks the
    * reply, telling the service its half of the turn with `talkPhase`. Browser: the same turns on Web Speech while the
@@ -448,6 +459,10 @@ const web: NativeApi = {
   async vetoAlarm() { /* the plugin rings in the page */ },
   async vetoAlarmTest() { /* the plugin rings in the page */ },
   async vetoAlarmStop() { /* nothing rings natively */ },
+  // The approval overlay floats over other apps: Android only. The browser shows the banner instead.
+  async approvalOverlaySet() { return {}; },
+  async approvalOverlayState() { return {}; },
+  async approvalOverlayCommand() { return { ok: false }; },
   async talkStart(opts) {
     if (micIsOff()) throw new Error('Mic off is on. Turn the mic back on to talk to Gizmo.');
     if (!Recognition) throw new Error('This browser has no speech recognition.');
@@ -578,6 +593,9 @@ export function installVetoHost(): void {
     testAlarm: (cfg) => { void native.vetoAlarmTest(cfg).catch(() => undefined); },
     stopAlarm: () => { void native.vetoAlarmStop().catch(() => undefined); },
     open: (url) => { void native.hubOpen({ url }).catch(() => undefined); },
+    overlay: (cfg) => { void native.approvalOverlaySet(cfg).catch(() => undefined); },
+    overlayCommand: async (command, id) => (await native.approvalOverlayCommand({ command, ...(id ? (command === 'page' ? { url: id } : { id }) : {}) }).catch(() => ({ ok: false }))).ok,
+    overlayState: async () => native.approvalOverlayState().catch(() => null),
     onEvent: (fn) => {
       const h = native.addListener('veto', (e) => {
         if (e.action === 'open') fn({ id: e.id, action: 'open' });

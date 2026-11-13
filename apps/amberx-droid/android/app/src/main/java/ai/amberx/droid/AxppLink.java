@@ -151,8 +151,17 @@ final class AxppLink {
     static JSONObject run(String tool, JSONObject args) throws Exception {
         Context c = app;
         switch (tool) {
-            case OpenUrlRules.OPEN:
-                return openUrl(c, OpenUrlRules.allowed(args.optString("url", "")), OpenUrlRules.browserOf(args));
+            case OpenUrlRules.OPEN: {
+                String url = OpenUrlRules.allowed(args.optString("url", ""));
+                // The floating toolbar becomes a full browser window when it can (draw over other apps works from the
+                // background); otherwise, or with where=browser, Chrome as before.
+                if (OverlayPageRules.inOverlay(WatchService.approvalOverlaySettings(c), args, WatchService.overlayPagesReady(c))
+                    && WatchService.openOverlayPage(c, url)) {
+                    return new JSONObject().put("url", url).put("browser", "overlay").put("opened", true)
+                        .put("notified", false).put("overlay", true).put("where", "overlay");
+                }
+                return openUrl(c, url, OpenUrlRules.browserOf(args)).put("where", "browser");
+            }
             case RecorderControl.START: {
                 RecorderControl.Session s = RecorderControl.sessionOf(args);
                 if (OutputRecordService.running) {

@@ -73,6 +73,7 @@ POLICY = ROOT / "apps" / "console-web" / "src" / "assets" / "uac-policy" / "cons
 STATUS = {"invalid": 400, "validation": 422, "denied": 403, "not_found": 404, "confirmation_required": 409, "not_implemented": 501, "unexpected": 500}
 CLIENT_RE = re.compile(r"^[A-Za-z0-9_-]{6,64}$")
 STALE_S = 45.0          # = CONSOLE_CLIENT_STALE_MS in core/engines/console-commands.mjs
+ACK_RESULT_MAX = 256_000  # bytes of a console-control answer kept from an ack (search hits, a long target list)
 KEEPALIVE_S = 15.0      # a comment down every stream this often (the client drops a stream silent for 45 s)
 LIVE_TRY_S = 3.5        # how long one live console gets to ack before the next live one is tried
 MAX_TRIES = 3           # live consoles tried in turn for one command
@@ -597,6 +598,8 @@ def run(command: dict[str, Any], grants: list[str] | None = None, by: str = "", 
     command = {k: v for k, v in (command or {}).items() if v not in (None, "")}
     grants = grants if grants is not None else ["*"]
     by = by or str(command.get("by") or "")
+    if command.get("target") == "console.control":
+        return control_target(command, grants, by, audience)
     command = focus_rewrite(command, audience)
     _late_prune()
     r = _runner(command, grants, by, ready_clients(audience))
@@ -704,6 +707,80 @@ async def _body(request: Request) -> dict[str, Any]:
         return b if isinstance(b, dict) else {}
     except Exception:  # noqa: BLE001 — an empty or non-JSON body = no fields
         return {}
+
+
+def control(command: dict[str, Any], by: str = "", audience: str = OWNER, to: str = "recent") -> dict[str, Any]:
+    """A console-control@1 command (spec/CONSOLE-CONTROL.md) for the open console: sent as console-command@1 op
+    `control`, answered with the console's own envelope (result + live state) and `client` / `delivery`. Nothing is
+    queued: no console open answers `unavailable` with `openUrl` (open the console, then send it again)."""
+    mid = "ctl-" + os.urandom(8).hex()
+    message = {"$axf": "console-command@1", "id": mid, "op": "control", "command": command, "by": by or "api", "at": _iso(_now())}
+    now = _now()
+    with _lock:
+        live = [c for c in _clients.values() if c["audience"] == audience and _ready(c) and _live(c, now)]
+    live.sort(key=lambda c: (c.get("front", True) is False, -float(c.get("lastUsed") or 0)))
+    no_console = {"$axf": "console-control@1", "ok": False, "code": "unavailable", "because": "no console open",
+                  "message": "no console open: open the console (openUrl), then send the command again", "openUrl": CONSOLE_URL + "/"}
+    if to == "all":
+        if not live:
+            return no_console
+        acks = deliver([c["id"] for c in live], message, audience)
+        results = [a.get("result") or {"ok": False, "code": "unavailable", "message": a.get("message") or "no answer", "client": a.get("client")} for a in acks]
+        return {"$axf": "console-control@1", "ok": any(r.get("ok") for r in results), "verb": command.get("verb"), "results": results, "delivery": {"how": "all", "clients": [c["id"] for c in live]}}
+    if to != "recent":
+        with _lock:
+            c = _clients.get(to)
+            ok = c is not None and c["audience"] == audience and c.get("queue") is not None
+        if not ok:
+            return {**no_console, "code": "not_found", "message": f"no open console {to} (GET /api/console/clients lists them)"}
+        order = [to]
+    else:
+        if not live:
+            return no_console
+        order = _turn_order(audience, live[0]["id"], str(live[0].get("app") or "console-web"))
+    tried, acks = try_in_turn(order, message, audience)
+    with _lock:
+        _late.pop(mid, None)  # a control command is never queued: a late ack has nothing to stop
+    who = next((c for c in tried if c in acks), "")
+    if not who:
+        return {**no_console, "message": f"no console answered (tried {', '.join(tried)}): open the console (openUrl), then send the command again", "tried": tried}
+    a = acks[who]
+    res = a.get("result") if isinstance(a.get("result"), dict) else {"$axf": "console-control@1", "ok": bool(a.get("ok")), **({} if a.get("ok") else {"code": "unexpected"}), "message": a.get("message") or ""}
+    out = {**res, "client": who, "delivery": {"how": "live" if who == tried[0] else "after retry", "tried": tried}}
+    _recent.appendleft({"at": _iso(_now()), "by": by or "api", "target": "console.control", "path": command.get("address") or "", "action": command.get("verb"), "ok": bool(out.get("ok")),
+                        "code": out.get("code", ""), "message": out.get("message", ""), "audience": audience, "how": out["delivery"]["how"], "delivered": [{"client": who, "ok": bool(out.get("ok")), "message": a.get("message", "")}]})
+    return out
+
+
+CONTROL_VERBS = ("open", "state", "press", "set", "scroll", "focus", "search", "list", "plugin.enable", "plugin.disable")
+
+
+def control_target(command: dict[str, Any], grants: list[str], by: str, audience: str) -> dict[str, Any]:
+    """control@1 `console.control` (core/engines/control-rules.mjs): list / get / act <verb> on a console-control@1 address,
+    through the console server's console-control guards (permission, policy tag, rate limit, audit)."""
+    import console_control_api as api  # the console server's /api/console-control half
+    op, path = str(command.get("op") or ""), str(command.get("path") or "")
+    inp = command.get("input") if isinstance(command.get("input"), dict) else {}
+    if op == "list":
+        sel = command.get("select") if isinstance(command.get("select"), dict) else {}
+        kinds = [k for k in str(sel.get("kinds") or "").split(",") if k] or None
+        r = api.targets(path, kinds, str(sel.get("source") or "auto"), by or "control", audience, set(grants))
+    elif op in ("get", "act"):
+        verb = "state" if op == "get" else str(command.get("action") or "")
+        if verb not in CONTROL_VERBS:
+            return {"$axf": "control@1", "ok": False, "code": "invalid", "message": f"console.control act takes one of {', '.join(CONTROL_VERBS)}"}
+        body = {"verb": verb, **({"address": path} if path else {}), **{k: inp[k] for k in ("value", "options", "scroll", "query", "reason") if k in inp}}
+        if inp.get("confirm") or command.get("confirm"):
+            body["confirm"] = True
+        r = api.command({**body, "to": str(inp.get("to") or "recent")}, by or "control", audience, set(grants))
+    else:
+        return {"$axf": "control@1", "ok": False, "code": "invalid", "message": "console.control takes list, get or act"}
+    out = {"$axf": "control@1", "ok": bool(r.get("ok")), "target": "console.control", "op": op, **({"path": path} if path else {}), "data": r}
+    if not r.get("ok"):
+        out.update({k: r[k] for k in ("code", "message", "openUrl") if k in r})
+    _recent.appendleft({"at": _iso(_now()), "by": by, "target": "console.control", "path": path, "action": command.get("action") or op, "ok": out["ok"],
+                        "code": out.get("code", ""), "message": out.get("message", ""), "audience": audience, "how": "control@1", "delivered": []})
+    return out
 
 
 def run_for(request: Request, command: dict[str, Any]) -> dict[str, Any]:
@@ -842,6 +919,9 @@ async def ack(request: Request) -> dict[str, Any]:
             return {"ok": True, "skipped": True}
         a = _acks.get(mid)
         res = {"client": cid, "ok": bool(b.get("ok")), "message": str(b.get("message") or "")[:300], "here": b.get("here") if isinstance(b.get("here"), dict) else {}}
+        # op control: the console-control@1 answer (result + live state), kept whole up to a size cap
+        if isinstance(b.get("result"), dict):
+            res["result"] = b["result"] if len(json.dumps(b["result"], default=str)) <= ACK_RESULT_MAX else {"ok": bool(b.get("ok")), "truncated": True, "message": res["message"]}
         if a is not None and cid in a["want"]:
             a["results"][cid] = res
             if a.get("any") or set(a["results"]) >= a["want"]:
@@ -975,6 +1055,10 @@ class ConsoleCommands:
 
     def run_for(self, request: Request, command: dict[str, Any]) -> dict[str, Any]:
         return run_for(request, command)
+
+    def control(self, command: dict[str, Any], by: str = "", audience: str = OWNER, to: str = "recent") -> dict[str, Any]:
+        """A console-control@1 command for the open console → its answer (result + live state), or unavailable + openUrl."""
+        return control(command, by, audience, to)
 
     def queue_for_owner(self, command: dict[str, Any], grants: list[str], by: str = "") -> dict[str, Any]:
         e = queue_for_owner(command, grants, by)

@@ -7,6 +7,7 @@ import { NewLibraryDialog } from './views/LibraryTemplates';
 import { ReprocessDialog, TokenDialog } from './views/BuildManager';
 import { HomeCardDialog } from './views/HomeCards';
 import type { CardData } from './axf/core/engines/card-rules.mjs';
+import { PALETTE_DIALOG, SearchPalette } from './control/SearchPalette';
 
 export const dialogs: DialogMap = {
   'build-reprocess': { title: 'Reprocess the build queue', icon: 'shuffle', render: (_p, close) => <ReprocessDialog close={close} /> },
@@ -19,5 +20,7 @@ export const dialogs: DialogMap = {
   uiimport: { title: 'Import UI library', icon: 'download', render: (p, close) => <UiImportWizardDialog sourceId={String(p.source ?? '')} close={close} /> },
   'home-card': { title: 'Card', icon: 'chart', render: (p, close) => <HomeCardDialog id={String(p.id ?? p.arg ?? '') || undefined} draft={p.draft as CardData | undefined} at={typeof p.at === 'number' ? p.at : undefined} close={close} /> },
   project: { title: 'Open project', icon: 'folder', render: (_p, close) => <OpenProjectDialog close={close} /> },
+  // console-control@1 search palette (Ctrl+K, console.control.search, ?axf-cmd=search&q=)
+  [PALETTE_DIALOG]: { title: 'Search the console', icon: 'search', render: (p, close) => <SearchPalette initial={String(p.q ?? p.arg ?? '')} close={close} /> },
   newapp: { title: 'Create app from boilerplate', icon: 'rocket', render: (p, close) => <NewAppDialog boilerplateId={String(p.boilerplate ?? '')} close={close} /> },
 };
