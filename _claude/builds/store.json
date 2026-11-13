@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3980,
- "updatedAt": "2026-11-13T03:33:50.182Z",
+ "rev": 3981,
+ "updatedAt": "2026-11-13T03:36:37.286Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -174931,7 +174931,7 @@
    "branch": "claude/badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad",
    "pr": "",
    "createdAt": "2026-11-12T23:14:26.317Z",
-   "updatedAt": "2026-11-13T03:30:09.470Z",
+   "updatedAt": "2026-11-13T03:36:35.592Z",
    "builtAt": "",
    "notes": [
     {
@@ -174968,12 +174968,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T03:28:18.975Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-badge-shape-picker-on-the-banners-screen-pill-te--gina",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-13T03:29:59.502Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T23:16:08.502Z",
@@ -174985,7 +174985,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-13T03:29:59.502Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -174994,7 +174994,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-13T03:29:59.502Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -175015,12 +175015,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T03:36:35.592Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T23:16:08.502Z",
-     "updatedAt": "2026-11-12T23:16:08.502Z"
+     "updatedAt": "2026-11-13T03:36:35.808Z"
     },
     {
      "id": "s2",
