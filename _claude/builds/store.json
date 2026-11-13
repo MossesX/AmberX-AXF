@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4316,
- "updatedAt": "2026-11-13T11:27:20.985Z",
+ "rev": 4317,
+ "updatedAt": "2026-11-13T11:27:37.717Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -177070,7 +177070,7 @@
    "branch": "claude/change-to-move-amberx-web-app-into-the-console-amberx-andr-pr-528-brett-do",
    "pr": "#546",
    "createdAt": "2026-11-13T00:39:39.304Z",
-   "updatedAt": "2026-11-13T11:27:19.108Z",
+   "updatedAt": "2026-11-13T11:27:29.582Z",
    "builtAt": "2026-11-13T11:25:24.180Z",
    "notes": [
     {
@@ -177112,6 +177112,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-change-to-move-amberx-web-app-into-the-console-a--paulie, own login copy)",
      "at": "2026-11-13T11:25:24.180Z"
+    },
+    {
+     "text": "Headless run axf-change-to-move-amberx-web-app-into-the-console-a--paulie: brief only · start 11.5K tokens ($0.03) · cost $0.13 · 4 turns · 6 tools, MCP none",
+     "at": "2026-11-13T11:27:29.582Z"
     }
    ],
    "approvals": [],
