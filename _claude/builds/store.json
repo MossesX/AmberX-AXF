@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5033,
- "updatedAt": "2026-11-13T21:16:33.684Z",
+ "rev": 5034,
+ "updatedAt": "2026-11-13T21:16:47.839Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -207366,7 +207366,7 @@
    "pr": "#659",
    "priority": "P1",
    "createdAt": "2026-11-13T20:14:18.034Z",
-   "updatedAt": "2026-11-13T21:15:22.997Z",
+   "updatedAt": "2026-11-13T21:15:55.434Z",
    "builtAt": "",
    "notes": [
     {
@@ -207382,16 +207382,20 @@
      "at": "2026-11-13T20:15:47.807Z"
     },
     {
-     "text": "s1 done on PR #659: plugin context-menus (hub one-true-source store, context-menu@1 Fable rules + fixture/check, Claude generation by level with preview before apply, full REST/MCP/CLI/actions/voice, tests in CI). UI Review not submitted: no screenshot capture possible from this session (no Playwright; preview needs a signed-in hub session). Page is in Watch live (console-web, route context-menus). Pre-existing on base: menu-reach window-switcher items, help coverage gizmo-guide.",
-     "at": "2026-11-13T21:15:10.280Z"
-    },
-    {
      "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-context-menus-plugin-one-true-source--gina.",
      "at": "2026-11-13T20:31:40.846Z"
     },
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-context-menus-plugin-one-true-source--gina, own login copy)",
      "at": "2026-11-13T20:31:47.158Z"
+    },
+    {
+     "text": "Headless run axf-context-menus-plugin-one-true-source--gina: brief only · start 12.9K tokens ($0.06) · cost $18.36 · 130 turns · 6 tools, MCP none",
+     "at": "2026-11-13T21:15:55.434Z"
+    },
+    {
+     "text": "s1 done on PR #659: plugin context-menus (hub one-true-source store, context-menu@1 Fable rules + fixture/check, Claude generation by level with preview before apply, full REST/MCP/CLI/actions/voice, tests in CI). UI Review not submitted: no screenshot capture possible from this session (no Playwright; preview needs a signed-in hub session). Page is in Watch live (console-web, route context-menus). Pre-existing on base: menu-reach window-switcher items, help coverage gizmo-guide.",
+     "at": "2026-11-13T21:15:10.280Z"
     }
    ],
    "approvals": [],
@@ -207411,12 +207415,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T20:14:20.134Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-context-menus-plugin-one-true-source--gina",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Fable",
+    "launchedAt": "2026-11-13T20:31:39.895Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T20:16:04.552Z",
@@ -207426,9 +207430,9 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"e779dc8d-8b62-458d-945b-c6275886b2ea\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-13T20:31:39.895Z",
     "planned": {
      "model": "Fable",
      "account": "mossesx-max-",
@@ -207437,7 +207441,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-13T20:31:39.895Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -207631,7 +207635,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

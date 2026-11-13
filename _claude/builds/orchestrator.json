@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T21:16:33.684Z",
+ "updatedAt": "2026-11-13T21:16:47.839Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -133808,7 +133808,7 @@
    "pr": "#659",
    "priority": "P1",
    "createdAt": "2026-11-13T20:14:18.034Z",
-   "updatedAt": "2026-11-13T21:15:22.997Z",
+   "updatedAt": "2026-11-13T21:15:55.434Z",
    "builtAt": "",
    "notes": [
     {
@@ -133824,16 +133824,20 @@
      "at": "2026-11-13T20:15:47.807Z"
     },
     {
-     "text": "s1 done on PR #659: plugin context-menus (hub one-true-source store, context-menu@1 Fable rules + fixture/check, Claude generation by level with preview before apply, full REST/MCP/CLI/actions/voice, tests in CI). UI Review not submitted: no screenshot capture possible from this session (no Playwright; preview needs a signed-in hub session). Page is in Watch live (console-web, route context-menus). Pre-existing on base: menu-reach window-switcher items, help coverage gizmo-guide.",
-     "at": "2026-11-13T21:15:10.280Z"
-    },
-    {
      "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-context-menus-plugin-one-true-source--gina.",
      "at": "2026-11-13T20:31:40.846Z"
     },
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-context-menus-plugin-one-true-source--gina, own login copy)",
      "at": "2026-11-13T20:31:47.158Z"
+    },
+    {
+     "text": "Headless run axf-context-menus-plugin-one-true-source--gina: brief only · start 12.9K tokens ($0.06) · cost $18.36 · 130 turns · 6 tools, MCP none",
+     "at": "2026-11-13T21:15:55.434Z"
+    },
+    {
+     "text": "s1 done on PR #659: plugin context-menus (hub one-true-source store, context-menu@1 Fable rules + fixture/check, Claude generation by level with preview before apply, full REST/MCP/CLI/actions/voice, tests in CI). UI Review not submitted: no screenshot capture possible from this session (no Playwright; preview needs a signed-in hub session). Page is in Watch live (console-web, route context-menus). Pre-existing on base: menu-reach window-switcher items, help coverage gizmo-guide.",
+     "at": "2026-11-13T21:15:10.280Z"
     }
    ],
    "approvals": [],
