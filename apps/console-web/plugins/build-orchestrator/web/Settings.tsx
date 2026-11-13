@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { Note, SelectField, Switch, useRuntime } from '@console/axf/react';
-import { useAccount } from '@console/account';
 import * as consoleApi from '@console/api';
 import { fillApi, type FillSettings } from './fill';
 import type { SlotsLayout } from './SlotsStrip';
@@ -20,12 +19,22 @@ export const FILL_ANCHOR = 'build-orchestrator-fill';
 export const SLOTS_LAYOUT_KEY = 'orch-slots-layout';
 export const readSlotsLayout = (): SlotsLayout => { const v = consoleApi.readLocal<string>(SLOTS_LAYOUT_KEY, 'chips'); return v === 'grid' || v === 'list' ? v : 'chips'; };
 const PARALLEL = Array.from({ length: 12 }, (_, i) => ({ value: String(i + 1), label: `${i + 1} step${i ? 's' : ''} beside the build's own session` }));
+/** Is this console Brett's own signed-in session (GET /api/me: an admin signed in by session)? Read once per panel. */
+function useOwnerSession(): boolean {
+  const [owner, setOwner] = useState(false);
+  useEffect(() => {
+    void fetch('/api/me', { cache: 'no-store', credentials: 'same-origin' })
+      .then((r) => (r.ok && (r.headers.get('content-type') ?? '').includes('json') ? r.json() : null))
+      .then((m: { admin?: boolean; user?: { via?: string } | null } | null) => setOwner(!!m?.admin && m.user?.via === 'session'))
+      .catch(() => setOwner(false));
+  }, []);
+  return owner;
+}
 const LAYOUTS = [{ value: 'chips', label: 'Chips in a row' }, { value: 'grid', label: 'Grid of slots' }, { value: 'list', label: 'List, one slot per line' }];
 
 export function FillSettingsPanel({ api }: { api: Api }) {
   const rt = useRuntime();
-  const me = useAccount();
-  const owner = !!me?.admin && me.user?.via === 'session';
+  const owner = useOwnerSession();
   const fill = fillApi(api);
   const [s, setS] = useState<FillSettings | null>(null);
   const [error, setError] = useState('');

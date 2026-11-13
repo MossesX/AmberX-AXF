@@ -1,0 +1,25 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "build-orchestrator-slots-list",
+  "name": "Slots strip: list, one slot per line",
+  "version": "1.0.0",
+  "description": "Each slot on its own line with the build and step spelled out; tallest, best when Brett wants the whole picture.",
+  "author": "Build orchestrator plugin",
+  "tags": [
+    "build-orchestrator",
+    "slots-strip",
+    "ui-choices:build-orchestrator-slots"
+  ],
+  "data": {
+    "toolbar": "build-orchestrator.slots",
+    "layout": "list",
+    "role": "toolbar",
+    "ariaLabel": "Agent slots",
+    "items": [
+      "slot-chips",
+      "fill-now"
+    ],
+    "summary": true
+  }
+}

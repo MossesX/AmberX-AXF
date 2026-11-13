@@ -1,0 +1,25 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "build-orchestrator-slots-chips",
+  "name": "Slots strip: chips in a row",
+  "version": "1.0.0",
+  "description": "One chip per agent slot in a single wrapping row above the build tabs (build \u00b7 step, or free), then Fill now. The default: smallest, reads at a glance on a phone.",
+  "author": "Build orchestrator plugin",
+  "tags": [
+    "build-orchestrator",
+    "slots-strip",
+    "ui-choices:build-orchestrator-slots"
+  ],
+  "data": {
+    "toolbar": "build-orchestrator.slots",
+    "layout": "chips",
+    "role": "toolbar",
+    "ariaLabel": "Agent slots",
+    "items": [
+      "slot-chips",
+      "fill-now"
+    ],
+    "summary": true
+  }
+}

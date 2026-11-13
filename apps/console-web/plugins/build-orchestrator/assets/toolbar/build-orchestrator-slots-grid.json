@@ -1,0 +1,25 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "build-orchestrator-slots-grid",
+  "name": "Slots strip: grid of slots",
+  "version": "1.0.0",
+  "description": "A grid of equal slot tiles (about 14 em wide each), so a full VPS (8-12 slots) lines up in rows; Fill now closes the grid.",
+  "author": "Build orchestrator plugin",
+  "tags": [
+    "build-orchestrator",
+    "slots-strip",
+    "ui-choices:build-orchestrator-slots"
+  ],
+  "data": {
+    "toolbar": "build-orchestrator.slots",
+    "layout": "grid",
+    "role": "toolbar",
+    "ariaLabel": "Agent slots",
+    "items": [
+      "slot-chips",
+      "fill-now"
+    ],
+    "summary": true
+  }
+}
