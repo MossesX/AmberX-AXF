@@ -1,0 +1,45 @@
+{
+  "$axf": "asset@1",
+  "type": "style-theme",
+  "id": "field",
+  "name": "Field",
+  "version": "1.0.0",
+  "description": "Field type and shapes: a humanist sans at 16 px, 10 / 14 / 18 px corners, a 9 px space unit, 2 px borders, soft shadows, calm motion. Everything is a big tap target.",
+  "author": "AmberX AXF",
+  "tags": [
+    "skin",
+    "field",
+    "touch",
+    "spacious"
+  ],
+  "data": {
+    "fontFamily": "'Nunito Sans', 'Segoe UI', system-ui, -apple-system, sans-serif",
+    "fontDisplay": "'Nunito Sans', 'Segoe UI', system-ui, sans-serif",
+    "fontMono": "'JetBrains Mono', ui-monospace, monospace",
+    "fontSize": 16,
+    "radius": {
+      "sm": 10,
+      "md": 14,
+      "lg": 18
+    },
+    "space": 9,
+    "borderWidth": 2,
+    "shadow": {
+      "sm": "0 1px 2px var(--fx-shadow)",
+      "md": "0 4px 12px var(--fx-shadow)",
+      "lg": "0 12px 32px var(--fx-shadow)"
+    },
+    "density": "spacious",
+    "motion": 180,
+    "blur": 10,
+    "headingWeight": 700,
+    "tracking": 0,
+    "opacityDisabled": 0.45,
+    "opacityMuted": 0.7,
+    "opacityHover": 0.08,
+    "opacityTint": 0.14,
+    "opacityScrim": 0.55,
+    "opacityGlass": 0.92,
+    "wrapGroups": false
+  }
+}
