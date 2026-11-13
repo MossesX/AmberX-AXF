@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4173,
- "updatedAt": "2026-11-13T08:44:04.569Z",
+ "rev": 4174,
+ "updatedAt": "2026-11-13T09:32:48.364Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -181381,7 +181381,7 @@
    "title": "Full API and voice control of the entire console: every tab, screen, setting, button, function and plugin (incl. enable/disable plugins); scroll up/down; bring any row or step of any table or grid into focus; search screens and everything loaded and pull it into focus",
    "category": "",
    "detail": "",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -181389,7 +181389,7 @@
    "pr": "#556",
    "priority": "P0",
    "createdAt": "2026-11-13T07:12:21.823Z",
-   "updatedAt": "2026-11-13T08:20:31.526Z",
+   "updatedAt": "2026-11-13T09:32:47.212Z",
    "builtAt": "",
    "notes": [
     {
@@ -181423,6 +181423,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-13T08:20:31.526Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T09:32:47.212Z"
     }
    ],
    "approvals": [],
@@ -181440,7 +181444,7 @@
     "addenda": []
    },
    "pipeline": {
-    "queuedAt": "2026-11-13T07:12:29.356Z",
+    "queuedAt": "2026-11-13T09:32:46.810Z",
     "queuedBy": "console",
     "account": "",
     "session": "",
@@ -182254,7 +182258,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
