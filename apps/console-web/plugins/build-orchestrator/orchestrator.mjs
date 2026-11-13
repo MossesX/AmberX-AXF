@@ -26,6 +26,7 @@
  * Claude session, a headless build or an agent. An `approver` inside a --json change is never trusted.
  *   … where                           the tracker file in use
  * Any <id> may be a build's alias (build-id@1): a build whose id is over 40 characters answers to a short one too.
+ * A build moved to a short id is still found by its old id (_claude/builds/renames.json, build-renames@1).
  *   --json on any command prints JSON (the console server uses this).
  */
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
@@ -40,7 +41,7 @@ import { briefBudget } from '../../../../framework/core/headless-context.mjs';
 
 loadUpgradePolicy(); // Fable upgrades need my approval (owner-only Claude setting, default off; Brett, Nov 4 2026)
 import { activeProfile } from '../../../../framework/cli/persist.mjs';
-import { storeFile, withStore, loadStore } from '../../../../framework/cli/builds-store.mjs';
+import { resolveBuildId, storeFile, withStore, loadStore } from '../../../../framework/cli/builds-store.mjs';
 import { absorbOrchestrator, projectOrchestrator } from '../../../../framework/plan/builds-store-core.mjs';
 
 const legacy = () => process.env.AXF_ORCH_FILE || '';
@@ -78,7 +79,10 @@ export function resolveId(store, id) {
 
 export function act(change, by = process.env.AXF_ACTOR || 'orchestrator') {
   change = withApprover(change);
-  if (!legacy() && change?.id && change.action !== 'add') change = { ...change, id: resolveId(loadStore(), change.id) };
+  if (change?.id && change.action !== 'add') {
+    const id = resolveBuildId(change.id); // an old id still works (build-renames@1)
+    change = { ...change, id: legacy() ? id : resolveId(loadStore(), id) }; // and so does an alias (build-id@1)
+  }
   if (change.approver) by = `${change.approver.by} (${change.approver.via})`;
   if (legacy()) { const r = core.apply(load(), change); save(r.state); return r; }
   let r;
@@ -114,7 +118,8 @@ async function main(argv) {
   const json = argv.includes('--json'); const args = argv.filter((a) => a !== '--json');
   const out = (o, text) => console.log(json ? JSON.stringify(o) : text);
   const [cmd = 'list', ...given] = args;
-  const rest = !legacy() && ['next', 'brief', 'request-upgrade'].includes(cmd) && given[0] ? [resolveId(loadStore(), given[0]), ...given.slice(1)] : given;
+  const byId = (id) => { const r = resolveBuildId(id); return legacy() ? r : resolveId(loadStore(), r); }; // renames (build-renames@1), then aliases (build-id@1)
+  const rest = ['next', 'brief', 'request-upgrade'].includes(cmd) && given[0] ? [byId(given[0]), ...given.slice(1)] : given;
   const s = load(['next', 'brief'].includes(cmd) ? rest[0] : '');
   if (cmd === 'where') return out({ ok: true, file: trackerFile() }, trackerFile());
   if (cmd === 'list' || cmd === 'state') return out({ ok: true, state: s, upgradePolicy: upgradePolicy() }, s.builds.filter((b) => !b.hidden && b.status !== 'archived').map((b) => line(b, s.rules)).join('\n') || 'No builds.');
