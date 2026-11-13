@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T10:45:03.954Z",
+ "updatedAt": "2026-11-13T10:45:35.190Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -120740,7 +120740,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T10:41:19.479Z",
-   "updatedAt": "2026-11-13T10:41:44.966Z",
+   "updatedAt": "2026-11-13T10:45:18.367Z",
    "builtAt": "",
    "notes": [
     {
@@ -120750,6 +120750,10 @@
     {
      "text": "Brett: the overlay uses the skin/interface system too (follows the active skin, light/dark), and he wants to fully configure it: look, size, position, what it shows, when it expands. Configurable from the console and the phone, full API and voice.",
      "at": "2026-11-13T10:41:44.966Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"60728966-2298-423c-8b7a-216f211f3a96\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-13T10:45:18.367Z"
     }
    ],
    "approvals": [],
@@ -120766,7 +120770,68 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Build me a overlay that expands with the approval every time one's sent.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mweuoty703d878",
+     "createdAt": "2026-11-13T10:45:18.367Z"
+    },
+    {
+     "id": "s2",
+     "text": "A little overlay, like a little toolbar, but it expands when I need an approval.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mweuoty704s4np",
+     "createdAt": "2026-11-13T10:45:18.367Z"
+    },
+    {
+     "id": "s3",
+     "text": "Tests green, report _claude/builds/reports/android-approval-overlay-a-small-always-on-float.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/android-approval-overlay-a-small-always-on-float.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mweuoty705wnq8",
+     "createdAt": "2026-11-13T10:45:18.367Z"
+    }
+   ]
   }
  ]
 }

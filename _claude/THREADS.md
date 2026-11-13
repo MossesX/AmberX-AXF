@@ -781,7 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 01:20 UTC · `10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less` note (all) · orchestrator
 - 2026-11-13 01:20 UTC · `10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less` s4 done, → built (all) · orchestrator
 - 2026-11-13 01:21 UTC · `claude-badge-can-claude-build-green-when-at-least-one-build-account-in-the-or` s1 done, → running (all) · orchestrator
 - 2026-11-13 01:21 UTC · `claude-badge-can-claude-build-green-when-at-least-one-build-account-in-the-or` s2 done (all) · orchestrator
@@ -1181,6 +1180,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 10:44 UTC · `fix-merge-conflicts-on-pr-557-professional-skins` note (all) · orchestrator
 - 2026-11-13 10:44 UTC · `fix-merge-conflicts-on-pr-557-professional-skins` note (all) · builds-live
 - 2026-11-13 10:44 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` s12 done (all) · orchestrator
+- 2026-11-13 10:45 UTC · `android-approval-overlay-a-small-always-on-float` note (all) · orchestrator
 
 ## Token passes (log)
 
