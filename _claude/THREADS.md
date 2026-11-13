@@ -785,11 +785,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 11:30 UTC · `badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad` PR #568 (all) · builds-live
-- 2026-11-13 11:30 UTC · `badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad` s4 done, → complete (all) · foreign-write
-- 2026-11-13 11:31 UTC · `show-commits-behind-main-on-every-build-table-an` → pending, note (all) · pipeline
-- 2026-11-13 11:31 UTC · `badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad` note (all) · orchestrator
-- 2026-11-13 11:30 UTC · `badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad` s4 done, → built (all) · orchestrator
 - 2026-11-13 11:30 UTC · `badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad` note (all) · orchestrator
 - 2026-11-13 11:32 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` note (all) · orchestrator
 - 2026-11-13 11:33 UTC · `show-commits-behind-main-on-every-build-table-an` s3 done, → complete, note (all) · foreign-write
@@ -1185,6 +1180,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 18:19 UTC · `decision-dialog-ui-review-other` branch claude/decision-dialog-ui-review-other (all) · pipeline
 - 2026-11-13 18:20 UTC · `full-voice-api-control-type-fields-press` PR #627 (all) · builds-live
 - 2026-11-13 18:20 UTC · `full-voice-api-control-type-fields-press` s8 done, → built (all) · orchestrator
+- 2026-11-13 18:20 UTC · `decision-dialog-ui-review-other` note (all) · orchestrator
+- 2026-11-13 18:20 UTC · `decision-dialog-ui-review-other` note (all) · foreign-write
+- 2026-11-13 18:20 UTC · `toolbar-widgets-attach-any-banner-style` added (0 steps) (all) · console
+- 2026-11-13 18:20 UTC · `toolbar-widgets-attach-any-banner-style` → queued, note (all) · console
+- 2026-11-13 18:20 UTC · `full-voice-api-control-type-fields-press` note (all) · orchestrator
 
 ## Token passes (log)
 

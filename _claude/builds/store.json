@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4627,
- "updatedAt": "2026-11-13T18:20:33.312Z",
+ "rev": 4628,
+ "updatedAt": "2026-11-13T18:20:46.963Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -195444,8 +195444,8 @@
    "pr": "#627",
    "priority": "P0",
    "createdAt": "2026-11-13T17:39:25.266Z",
-   "updatedAt": "2026-11-13T18:20:11.524Z",
-   "builtAt": "2026-11-13T18:20:11.524Z",
+   "updatedAt": "2026-11-13T18:20:33.121Z",
+   "builtAt": "2026-11-13T18:20:33.121Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -195462,6 +195462,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-full-voice-api-control-type-fields-press--joey, own login copy)",
      "at": "2026-11-13T17:41:29.457Z"
+    },
+    {
+     "text": "Headless run axf-full-voice-api-control-type-fields-press--joey: brief only · start 11.5K tokens ($0.03) · cost $7.18 · 125 turns · 6 tools, MCP none",
+     "at": "2026-11-13T18:20:33.121Z"
     }
    ],
    "approvals": [],
@@ -197682,7 +197686,7 @@
    "title": "Decision dialog: UI Review and other approvals pop up on any screen with approve/deny/pick",
    "category": "",
    "detail": "Generalise the approval popup into one 'decision dialog' type used for anything that needs Brett, starting with UI Review.\n- Whenever an item is submitted to UI Review, Brett gets a notification AND a dialog pops up on whatever console screen he is on (and on the phone overlay toolbar when built), without navigating away.\n- The dialog shows the item (title, build, screenshots/options side by side, desktop + phone), with buttons: pick option N / Approve, Reject, Request changes (with a note), Later, and 'Open in UI Review' (only navigates if tapped).\n- Same dialog type reused for other decisions: veto countdowns, confirms, model upgrade approvals, merge clashes, keys needed, passes. Each source registers its buttons; one queue so several waiting items stack with a counter.\n- Voice/MCP/API: list waiting decisions, answer one by id ('pick option 2', 'approve it').\n- Notification settings to choose which decision types pop up.\n- Tests, help entry, Shipped features.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -197690,7 +197694,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:14:45.988Z",
-   "updatedAt": "2026-11-13T18:19:55.254Z",
+   "updatedAt": "2026-11-13T18:19:59.855Z",
    "builtAt": "",
    "notes": [
     {
@@ -197700,6 +197704,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"a27086cb-22e6-40b0-8041-ff41f173ba0a\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-13T18:18:38.236Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-decision-dialog-ui-review-other--paulie, own login copy)",
+     "at": "2026-11-13T18:19:59.855Z"
     },
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-decision-dialog-ui-review-other--paulie.",
@@ -197723,12 +197731,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T18:14:48.668Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-decision-dialog-ui-review-other--paulie",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-13T18:19:54.760Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T18:18:38.236Z",
@@ -197738,18 +197746,18 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"a27086cb-22e6-40b0-8041-ff41f173ba0a\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "2026-11-13T18:19:54.760Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-13T18:19:45.091Z",
+     "at": "2026-11-13T18:20:16.525Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-13T18:19:54.760Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -198309,7 +198317,13 @@
     "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Fable",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-13T18:20:16.525Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -198527,12 +198541,89 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-13T18:19:43.693Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "toolbar-widgets-attach-any-banner-style",
+   "title": "Toolbar widgets: attach any banner-style widget to any toolbar",
+   "category": "",
+   "detail": "Let every toolbar (and tab group bar) host widgets the same way the banner does: use the same widget assets and registry as banner widgets (status badges, counters, CPU/disk, account, clocks, etc.). Add/remove/arrange widgets per toolbar instance from its right-click menu and its chrome settings (drag to arrange, like widgets.arrange). Widgets follow skins/tokens, collapse into an overflow when space is short, persist per instance. Reachable by REST/MCP/CLI/voice/control@1 ('add the CPU widget to the main toolbar'). Tests, help, Shipped features.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P2",
+   "createdAt": "2026-11-13T18:20:19.790Z",
+   "updatedAt": "2026-11-13T18:20:26.089Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T18:20:26.089Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I can attach widgets to the toolbar right, just like the banner widgets",
+    "at": "2026-11-13T18:20:19.790Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "2026-11-13T18:20:21.723Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 803
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 3,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

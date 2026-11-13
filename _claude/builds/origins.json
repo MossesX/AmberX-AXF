@@ -7627,6 +7627,18 @@
     }
    ]
   },
+  "toolbar-widgets-attach-any-banner-style": {
+   "said": "I can attach widgets to the toolbar right, just like the banner widgets",
+   "at": "2026-11-13T18:20:19.790Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "tools-plugin": {
    "said": "the Tools section is a plugin of its own, and Claude handoff depends on it.",
    "at": "2026-10-22",
