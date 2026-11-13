@@ -2200,6 +2200,18 @@
    "from": "",
    "addenda": []
   },
+  "console-app-wake-word-voice-listener": {
+   "said": "set a listener in the console Android app; say a trigger and approve, it lists everything needing approval one at a time and I say approve or deny, or approve all pending; change the veto timer to two hours by voice; every custom command the console could need in wizard format with an entry, pipelines, create a new project named Gizmo Johnson",
+   "at": "2026-11-13T18:44:52.063Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "console-approvals-in-place": {
    "said": "It does pop it up in my approval, but when I click it, it brings me to axHub. I don't want it to bring me to axHub.",
    "at": "2026-11-06",

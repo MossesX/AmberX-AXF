@@ -786,7 +786,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 12:22 UTC · `ui-review-gate-switch-default-off` s2 done (all) · orchestrator
 - 2026-11-13 12:22 UTC · `auto-recover-stuck-builds` s7 done (all) · orchestrator
 - 2026-11-13 12:23 UTC · `fix-toolbar-settings-doing-nothing` added (0 steps) (all) · console
 - 2026-11-13 12:23 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` s29 done (all) · orchestrator
@@ -1186,6 +1185,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 18:43 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
 - 2026-11-13 18:44 UTC · `orchestrator-settings-collapsible-split` → running, branch claude/orchestrator-settings-collapsible-split, note (all) · builds-live
 - 2026-11-13 18:44 UTC · `restore-asset-designer-plugin-merged-nov` branch claude/restore-asset-designer-plugin-merged-nov, PR #631 (all) · builds-live
+- 2026-11-13 18:44 UTC · `console-app-part-2-native-floating` note (all) · orchestrator
 
 ## Token passes (log)
 
