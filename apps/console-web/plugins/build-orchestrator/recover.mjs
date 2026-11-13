@@ -251,9 +251,41 @@ export function run(opts = {}) {
   return r;
 }
 
-// ------------------------------------------------------------------ FYI per fix (filled in by the notify step)
+// ------------------------------------------------------------------ FYI per fix (axf.notify@1 types in notify.json)
 
-export function notify() { return null; }
+/**
+ * The console alert for one applied action: notify types `build-recovered` (key pipeline:recovered:<build>) and
+ * `build-recovery-parked` (pipeline:recovery-parked:<build>). The console's alert hub delivers it through axf.notify@1
+ * (Notifications settings decide push / banner / quiet hours) to the AmberX app. Body = the one plain line.
+ */
+export function alertOf(a) {
+  const link = 'view:build-orchestrator';
+  // meta values are strings / numbers / booleans only (the alerts API refuses null)
+  const meta = { kind: a.action === 'park' ? 'recovery-parked' : 'recovered', build: a.build || '', cause: a.state, exit: a.exit == null ? '' : a.exit, action: a.action, attempt: a.attempt, account: a.account || '' };
+  if (a.action === 'park') return { source: 'pipeline', link, meta, key: `pipeline:recovery-parked:${a.build}`, severity: 'error', title: `Parked after ${a.attempt} retries: ${a.build}`, body: a.line };
+  return { source: 'pipeline', link, meta, key: `pipeline:recovered:${a.build || a.slot}:${a.attempt}`, severity: 'info', title: a.action === 'release-slot' ? 'Fixed: leaked agent slot released' : `Fixed: ${a.build}`, body: a.line };
+}
+
+/** POST an alert to the console: from the host through its container (docker exec), inside the console straight to it. */
+export function sendAlert(alert, env = process.env) {
+  if (env.AXF_PIPELINE_CONSOLE === 'off') return null;
+  const port = env.AXF_CONSOLE_PORT || 7090;
+  const cmd = `curl -s -m 20 -X POST -H "Authorization: Bearer $AXF_TOKEN" -H "Content-Type: application/json" --data-binary @- "http://127.0.0.1:${port}/api/alerts"`;
+  const inside = !!env.AXF_TOKEN && existsSync('/.dockerenv');
+  const r = inside ? spawnSync('sh', ['-c', cmd], { input: JSON.stringify(alert), encoding: 'utf8', timeout: 30e3 })
+    : spawnSync('docker', ['exec', '-i', env.AXF_PIPELINE_CONSOLE || 'axf-console', 'sh', '-c', cmd], { input: JSON.stringify(alert), encoding: 'utf8', timeout: 30e3 });
+  if (r.error || r.status !== 0) return null;
+  try { return JSON.parse(r.stdout); } catch { return null; }
+}
+
+/** The FYI for one fix: every parked build always (it needs Brett), every other fix while FYI per fix is on. */
+export function notify(a, { settings = loadRecoverySettings(), env = process.env, send = sendAlert } = {}) {
+  if (a.action !== 'park' && !settings.fyi) return null;
+  const alert = alertOf(a);
+  const r = send(alert, env);
+  logLine({ event: 'notified', key: alert.key, build: a.build, sent: !!r }, env);
+  return alert;
+}
 
 // ------------------------------------------------------------------ CLI
 

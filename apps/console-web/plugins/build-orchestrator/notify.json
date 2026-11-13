@@ -2,6 +2,35 @@
   "$axf": "notify-types@1",
   "types": [
     {
+      "id": "build-recovered",
+      "label": "Build fixed by itself",
+      "group": "builds",
+      "app": "console",
+      "source": "Build orchestrator auto-recovery",
+      "description": "Auto-recovery fixed a stuck build without anyone asking (one line per fix): what stuck (no live session, killed exit 143, failed exit 1, hung with no heartbeat, a leaked slot), the exit code, what was done (back in the Queue, slot released, moved to another worker) and the attempt number. Off with Recovery settings → FYI per fix.",
+      "match": {
+        "source": "pipeline",
+        "keyPrefix": "pipeline:recovered:"
+      },
+      "push": true,
+      "priority": "default"
+    },
+    {
+      "id": "build-recovery-parked",
+      "label": "Build parked after retries",
+      "group": "builds",
+      "app": "console",
+      "source": "Build orchestrator auto-recovery",
+      "description": "A build kept getting stuck and reached the retry cap: auto-recovery stopped retrying and parked it in Pending with the reason. Also a red Builds stuck item in the systems check banner until you retry or re-queue it.",
+      "match": {
+        "source": "pipeline",
+        "keyPrefix": "pipeline:recovery-parked:"
+      },
+      "setting": "notify.blocked",
+      "push": true,
+      "priority": "high"
+    },
+    {
       "id": "pipeline.idle",
       "label": "Nothing is building",
       "group": "builds",
