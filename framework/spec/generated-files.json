@@ -44,6 +44,7 @@
     { "match": "^framework/spec/fixtures/[^/]+\\.json$", "merge": "regen", "generator": "fixtures" },
     { "match": "^tracker\\.json$", "merge": "regen", "generator": "tracker" },
     { "match": "^framework/assets/help/[^/]+\\.json$", "merge": "union-json" },
+    { "match": "^apps/[^/]+/plugins/[^/]+/help\\.json$", "merge": "union-json" },
     { "match": "^framework/catalog/(status|libraries)\\.json$", "merge": "union-json" },
     { "match": "^framework/spec/PORTING\\.md$", "merge": "union-lines" },
     { "match": "^framework/plan/(build-queue|pending|plan)\\.json$", "merge": "main" },
