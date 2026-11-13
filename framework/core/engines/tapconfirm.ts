@@ -10,8 +10,19 @@
  * settings tab), read through `tapConfig`, so a per-toolbar override is a setting and never code.
  */
 
+/**
+ * Default link to label visibility (Brett, Nov 2026, build tap-to-confirm-follows-label-visibility): a toolbar, tab
+ * group, navigation menu or application menu that hides its labels (icons only) gets tap-to-confirm, because an icon
+ * alone doesn't say what it does; one that shows its labels doesn't. A manual setting always wins, most specific first:
+ *   1. the toolbar's own override `axf.toolbar.<id>.tapConfirm` (Settings → Plugins → Toolbars): on / off
+ *   2. the chrome instance field `tapConfirm` in `axf.chrome.<type>.<instance>` (its settings dialog): on / off
+ *   3. the global mode `axf.toolbars.tapConfirm`: 'on' / true = everywhere, 'off' / false = nowhere
+ *   4. otherwise (unset, 'labels', 'auto', 'inherit'): on exactly when the labels are hidden
+ */
+
 /** Settings keys. The per-toolbar override lives at `${TAP_KEYS.perToolbar}<toolbar id>.tapConfirm`. */
 export const TAP_KEYS = {
+  /** global mode: 'labels' (default) | 'on' | 'off'; the older booleans read as on / off */
   enabled: 'axf.toolbars.tapConfirm',
   armMs: 'axf.toolbars.armMs',
   perToolbar: 'axf.toolbar.',
@@ -24,10 +35,29 @@ export const TAP_ARM_RANGE: readonly [number, number] = [1000, 10000];
 export const TAP_OVERRIDES = ['inherit', 'on', 'off'] as const;
 export type TapOverride = (typeof TAP_OVERRIDES)[number];
 
+/** The global mode: follow label visibility (default), or force on / off everywhere. */
+export const TAP_MODES = ['labels', 'on', 'off'] as const;
+export type TapMode = (typeof TAP_MODES)[number];
+export const TAP_MODE_LABELS: Record<TapMode, string> = { labels: 'Follow labels', on: 'Always', off: 'Never' };
+
+/** The chrome kinds tap-to-confirm reaches, and the instance field (chrome-settings@1) that overrides it. */
+export const TAP_CHROME_TYPES = ['toolbar', 'tab-group', 'nav-menu', 'app-menu'] as const;
+export type TapChromeType = (typeof TAP_CHROME_TYPES)[number];
+export const TAP_FIELD = 'tapConfirm';
+/** The instance field's values: 'auto' follows the global mode / labels. */
+export const TAP_FIELD_OPTIONS = ['auto', 'on', 'off'] as const;
+export type TapFieldValue = (typeof TAP_FIELD_OPTIONS)[number];
+
+/** Which of the settings decided (shown next to the switch, and readable through the API). */
+export type TapSource = 'toolbar' | 'instance' | 'global' | 'labels';
+
 /** How the press that produced a click was made. Only `touch` arms. */
 export type TapPointer = 'touch' | 'mouse' | 'pen' | 'keyboard';
 
-export interface TapConfig { enabled: boolean; armMs: number }
+export interface TapConfig { enabled: boolean; armMs: number; source?: TapSource }
+
+/** Where a tap landed: the chrome kind + instance (for its settings field) and whether its labels are hidden. */
+export interface TapScope { type?: TapChromeType; instance?: string; labelsHidden?: boolean }
 
 export interface TapState {
   /** The armed button (toolbar id + button key), or null. */
@@ -52,12 +82,46 @@ export function tapArmMs(v: unknown): number {
   return Math.round(Math.min(TAP_ARM_RANGE[1], Math.max(TAP_ARM_RANGE[0], n)));
 }
 
-/** Global settings plus one toolbar's override → whether tap-to-confirm is on for that toolbar, and its window. */
-export function tapConfig(get: (key: string) => unknown, toolbarId: string): TapConfig {
-  const global = get(TAP_KEYS.enabled) !== false; // on unless switched off
-  const raw = get(`${TAP_KEYS.perToolbar}${toolbarId}.tapConfirm`);
-  const override: TapOverride = (TAP_OVERRIDES as readonly string[]).includes(raw as string) ? (raw as TapOverride) : 'inherit';
-  return { enabled: override === 'inherit' ? global : override === 'on', armMs: tapArmMs(get(TAP_KEYS.armMs)) };
+/** The global mode from its stored value: true / 'on' → on, false / 'off' → off, anything else → follow labels. */
+export function tapMode(v: unknown): TapMode {
+  if (v === true || v === 'on') return 'on';
+  if (v === false || v === 'off') return 'off';
+  return 'labels';
+}
+
+/** The settings key of a chrome instance's overrides (chrome-settings@1 CHROME_INSTANCE_KEY). */
+export const tapInstanceKey = (type: string, instance: string) => `axf.chrome.${type}.${instance}`;
+
+/** A chrome instance's manual tap-to-confirm field ('on' / 'off'), or null when it follows ('auto' / unset). */
+export function tapInstanceField(raw: unknown): 'on' | 'off' | null {
+  const v = raw && typeof raw === 'object' && !Array.isArray(raw) ? (raw as Record<string, unknown>)[TAP_FIELD] : undefined;
+  return v === 'on' || v === 'off' ? v : null;
+}
+
+/**
+ * Global settings, the chrome instance field, one toolbar's override and the scope's label visibility → whether
+ * tap-to-confirm is on there, its window, and which of them decided. `scope.labelsHidden` unset counts as shown.
+ */
+export function tapConfig(get: (key: string) => unknown, toolbarId: string, scope: TapScope = {}): TapConfig {
+  const armMs = tapArmMs(get(TAP_KEYS.armMs));
+  const raw = toolbarId ? get(`${TAP_KEYS.perToolbar}${toolbarId}.tapConfirm`) : null;
+  if (raw === 'on' || raw === 'off') return { enabled: raw === 'on', armMs, source: 'toolbar' };
+  if (scope.type && scope.instance) {
+    const f = tapInstanceField(get(tapInstanceKey(scope.type, scope.instance)));
+    if (f) return { enabled: f === 'on', armMs, source: 'instance' };
+  }
+  const mode = tapMode(get(TAP_KEYS.enabled));
+  if (mode !== 'labels') return { enabled: mode === 'on', armMs, source: 'global' };
+  return { enabled: scope.labelsHidden === true, armMs, source: 'labels' };
+}
+
+/** Whether a chrome kind's asset data hides its labels (icons only); the renderers mark this as data-axf-labels. */
+export function chromeLabelsHidden(type: string, data: Record<string, unknown> | null | undefined): boolean {
+  const d = data ?? {};
+  if (type === 'toolbar') return (d.variant ?? 'icons') === 'icons';
+  if (type === 'tab-group') return d.display === 'icons';
+  if (type === 'nav-menu') return d.showLabels === false;
+  return false; // the application menu bar always shows its words: it follows labels as "shown" (off) unless set
 }
 
 /**

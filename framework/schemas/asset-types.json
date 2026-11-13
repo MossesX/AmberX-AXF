@@ -222,7 +222,8 @@
         "density": "compact | regular (default) | roomy — menubar height",
         "surface": "flat (default) | raised | glass",
         "menus[].order": "number — placement of a menu created by a contribution (default 100; asset menus keep their order)",
-        "items[].provider|badge|checked|order|before|after": "see menuItems"
+        "items[].provider|badge|checked|order|before|after": "see menuItems",
+        "tapConfirm": "auto (default) | on | off — tap to confirm on touch (tapconfirm.ts): auto follows label visibility (on when icons only), on / off is a manual choice"
       },
       "hideable": true
     },
@@ -270,7 +271,8 @@
         "groups[].provider": "string — live list id: the group's buttons come from that provider (the app menu's registry: views, nav, toolbar, settings, windows, dialogs, chrome built in; apps and plugins register more with rt.registerAppMenuProvider), after any fixed items, refreshed as the app changes",
         "groups[].max": "number 1–24, default 8 — cap on provider buttons",
         "groups[].label": "string — group name for screen readers",
-        "groups[].items[].checked": "string — toggle binding drawn as a pressed button: setting:<key> | counter:<name> | slot:<type> | hidden:<type> (same as app-menu checked)"
+        "groups[].items[].checked": "string — toggle binding drawn as a pressed button: setting:<key> | counter:<name> | slot:<type> | hidden:<type> (same as app-menu checked)",
+        "tapConfirm": "auto (default) | on | off — tap to confirm on touch (tapconfirm.ts): auto follows label visibility (on when icons only), on / off is a manual choice"
       },
       "hideable": true,
       "widgets": {
@@ -312,7 +314,9 @@
         "indicator": "auto (default, per style) | bar | fill | none — active-item marker",
         "showIcons": "boolean, default true",
         "navStyle": "boolean, default false — opt in to nav-style@1: items with children (NavItem.items) open sub menus that slide open, styled, timed and arranged by the nav-style asset in force",
-        "items": "per item: items?: [NavItem] — children (a sub menu; nested levels allowed). Shown as a sub menu only when navStyle is true"
+        "items": "per item: items?: [NavItem] — children (a sub menu; nested levels allowed). Shown as a sub menu only when navStyle is true",
+        "tapConfirm": "auto (default) | on | off — tap to confirm on touch (tapconfirm.ts): auto follows label visibility (on when icons only), on / off is a manual choice",
+        "showLabels": "boolean, default true — false = icons only (labels hidden); tap to confirm follows it"
       },
       "hideable": true
     },
@@ -406,7 +410,8 @@
         "closable": "boolean, default true — tabs get a close button where the host allows closing (false hides it)",
         "reorderable": "boolean, default true — tabs can be dragged into another order where the host allows it (false turns it off)",
         "badges": "boolean, default true — count badges on tabs",
-        "rememberLast": "boolean, default false — the row reopens on the tab it was on last time (per device)"
+        "rememberLast": "boolean, default false — the row reopens on the tab it was on last time (per device)",
+        "tapConfirm": "auto (default) | on | off — tap to confirm on touch (tapconfirm.ts): auto follows label visibility (on when icons only), on / off is a manual choice"
       },
       "hideable": true,
       "optional": true

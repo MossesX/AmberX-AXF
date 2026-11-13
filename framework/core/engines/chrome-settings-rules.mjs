@@ -100,17 +100,19 @@ const SURFACE = ['flat', 'raised', 'glass'];
  * Every field the chrome settings dialog offers, per type: the asset type's own data fields a person may override
  * for one instance (the asset itself stays untouched; the override is a setting). `group` = the dialog tab, `level`
  * = settings-ui@1 level it shows from, `default` = the value the asset type's engine uses when the asset leaves the
- * field out (so a dialog always shows a value). Kinds: choice (options), toggle, number (min/max).
+ * field out (so a dialog always shows a value). Kinds: choice (options), toggle, number (min/max). `quick` = also in
+ * the quick-switches pane at the top of the dialog (label visibility and tap to confirm: tapconfirm.ts links the two).
  */
 export const CHROME_FIELDS = {
   'tab-group': [
     { key: 'style', label: 'Tab style', kind: 'choice', options: ['underline', 'pills', 'boxed', 'segmented', 'plain', 'chips'], default: "underline", group: 'look', level: 'simple' },
     { key: 'position', label: 'Position', kind: 'choice', options: ['top', 'bottom', 'left', 'right'], default: "top", group: 'look', level: 'simple' },
-    { key: 'display', label: 'Show', kind: 'choice', options: ['both', 'text', 'icons'], labels: { both: 'Icons + text', text: 'Text', icons: 'Icons' }, default: "both", group: 'look', level: 'simple' },
+    { key: 'display', label: 'Show', kind: 'choice', options: ['both', 'text', 'icons'], labels: { both: 'Icons + text', text: 'Text', icons: 'Icons' }, default: "both", group: 'look', level: 'simple', quick: true },
     { key: 'density', label: 'Size', kind: 'choice', options: DENSITY, default: 'regular', group: 'look', level: 'basic' },
     { key: 'align', label: 'Align', kind: 'choice', options: ['start', 'center', 'end', 'stretch'], default: "start", group: 'look', level: 'basic' },
     { key: 'divider', label: 'Rule under the row', kind: 'toggle', default: true, group: 'look', level: 'basic' },
     { key: 'badges', label: 'Count badges', kind: 'toggle', default: true, group: 'look', level: 'basic' },
+    { key: 'tapConfirm', label: 'Tap to confirm (touch)', kind: 'choice', options: ['auto', 'on', 'off'], labels: { auto: 'Follow labels', on: 'On', off: 'Off' }, default: 'auto', group: 'behaviour', level: 'simple', quick: true },
     { key: 'overflow', label: 'When tabs do not fit', kind: 'choice', options: ['scroll', 'wrap', 'more', 'dropdown'], labels: { scroll: 'Scroll', wrap: 'Wrap', more: 'More menu', dropdown: 'Dropdown' }, default: "scroll", group: 'behaviour', level: 'basic' },
     { key: 'sticky', label: 'Sticky', kind: 'toggle', default: false, group: 'behaviour', level: 'basic' },
     { key: 'collapsible', label: 'Collapsible', kind: 'toggle', default: false, group: 'behaviour', level: 'basic' },
@@ -119,11 +121,12 @@ export const CHROME_FIELDS = {
     { key: 'reorderable', label: 'Reorderable (where the host allows)', kind: 'toggle', default: true, group: 'behaviour', level: 'developer' },
   ],
   toolbar: [
-    { key: 'variant', label: 'Buttons', kind: 'choice', options: ['icons', 'icons-labels', 'labels'], labels: { icons: 'Icons', 'icons-labels': 'Icons + labels', labels: 'Labels' }, default: "icons", group: 'look', level: 'simple' },
+    { key: 'variant', label: 'Buttons', kind: 'choice', options: ['icons', 'icons-labels', 'labels'], labels: { icons: 'Icons', 'icons-labels': 'Icons + labels', labels: 'Labels' }, default: "icons", group: 'look', level: 'simple', quick: true },
     { key: 'align', label: 'Align', kind: 'choice', options: ['start', 'center', 'spread'], default: "start", group: 'look', level: 'basic' },
     { key: 'density', label: 'Size', kind: 'choice', options: DENSITY, default: 'regular', group: 'look', level: 'basic' },
     { key: 'surface', label: 'Surface', kind: 'choice', options: SURFACE, default: 'flat', group: 'look', level: 'basic' },
     { key: 'divider', label: 'Rule between groups', kind: 'toggle', default: true, group: 'look', level: 'basic' },
+    { key: 'tapConfirm', label: 'Tap to confirm (touch)', kind: 'choice', options: ['auto', 'on', 'off'], labels: { auto: 'Follow labels', on: 'On', off: 'Off' }, default: 'auto', group: 'behaviour', level: 'simple', quick: true },
     { key: 'showSearch', label: 'Search box', kind: 'toggle', default: false, group: 'behaviour', level: 'basic' },
     { key: 'collapsible', label: 'Collapsible', kind: 'toggle', default: false, group: 'behaviour', level: 'basic' },
   ],
@@ -137,11 +140,14 @@ export const CHROME_FIELDS = {
     { key: 'density', label: 'Size', kind: 'choice', options: DENSITY, default: 'regular', group: 'look', level: 'basic' },
     { key: 'indicator', label: 'Active mark', kind: 'choice', options: ['auto', 'bar', 'fill', 'none'], default: "auto", group: 'look', level: 'basic' },
     { key: 'showIcons', label: 'Icons', kind: 'toggle', default: true, group: 'look', level: 'basic' },
+    { key: 'showLabels', label: 'Labels', kind: 'toggle', default: true, group: 'look', level: 'simple', quick: true },
+    { key: 'tapConfirm', label: 'Tap to confirm (touch)', kind: 'choice', options: ['auto', 'on', 'off'], labels: { auto: 'Follow labels', on: 'On', off: 'Off' }, default: 'auto', group: 'behaviour', level: 'simple', quick: true },
     { key: 'navStyle', label: 'Sub menus (nav-style)', kind: 'toggle', default: false, group: 'behaviour', level: 'developer' },
   ],
   'app-menu': [
     { key: 'density', label: 'Size', kind: 'choice', options: DENSITY, default: 'regular', group: 'look', level: 'simple' },
     { key: 'surface', label: 'Surface', kind: 'choice', options: SURFACE, default: 'flat', group: 'look', level: 'basic' },
+    { key: 'tapConfirm', label: 'Tap to confirm (touch)', kind: 'choice', options: ['auto', 'on', 'off'], labels: { auto: 'Follow labels', on: 'On', off: 'Off' }, default: 'auto', group: 'behaviour', level: 'simple', quick: true },
   ],
   'context-menu': [
     { key: 'variant', label: 'Style', kind: 'choice', options: ['compact', 'roomy', 'glass'], default: "compact", group: 'look', level: 'simple' },

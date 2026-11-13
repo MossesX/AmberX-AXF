@@ -163,7 +163,8 @@
         },
         "default": "both",
         "group": "look",
-        "level": "simple"
+        "level": "simple",
+        "quick": true
       },
       {
         "key": "density",
@@ -207,6 +208,25 @@
         "default": true,
         "group": "look",
         "level": "basic"
+      },
+      {
+        "key": "tapConfirm",
+        "label": "Tap to confirm (touch)",
+        "kind": "choice",
+        "options": [
+          "auto",
+          "on",
+          "off"
+        ],
+        "labels": {
+          "auto": "Follow labels",
+          "on": "On",
+          "off": "Off"
+        },
+        "default": "auto",
+        "group": "behaviour",
+        "level": "simple",
+        "quick": true
       },
       {
         "key": "overflow",
@@ -286,7 +306,8 @@
         },
         "default": "icons",
         "group": "look",
-        "level": "simple"
+        "level": "simple",
+        "quick": true
       },
       {
         "key": "align",
@@ -334,6 +355,25 @@
         "default": true,
         "group": "look",
         "level": "basic"
+      },
+      {
+        "key": "tapConfirm",
+        "label": "Tap to confirm (touch)",
+        "kind": "choice",
+        "options": [
+          "auto",
+          "on",
+          "off"
+        ],
+        "labels": {
+          "auto": "Follow labels",
+          "on": "On",
+          "off": "Off"
+        },
+        "default": "auto",
+        "group": "behaviour",
+        "level": "simple",
+        "quick": true
       },
       {
         "key": "showSearch",
@@ -435,6 +475,34 @@
         "level": "basic"
       },
       {
+        "key": "showLabels",
+        "label": "Labels",
+        "kind": "toggle",
+        "default": true,
+        "group": "look",
+        "level": "simple",
+        "quick": true
+      },
+      {
+        "key": "tapConfirm",
+        "label": "Tap to confirm (touch)",
+        "kind": "choice",
+        "options": [
+          "auto",
+          "on",
+          "off"
+        ],
+        "labels": {
+          "auto": "Follow labels",
+          "on": "On",
+          "off": "Off"
+        },
+        "default": "auto",
+        "group": "behaviour",
+        "level": "simple",
+        "quick": true
+      },
+      {
         "key": "navStyle",
         "label": "Sub menus (nav-style)",
         "kind": "toggle",
@@ -469,6 +537,25 @@
         "default": "flat",
         "group": "look",
         "level": "basic"
+      },
+      {
+        "key": "tapConfirm",
+        "label": "Tap to confirm (touch)",
+        "kind": "choice",
+        "options": [
+          "auto",
+          "on",
+          "off"
+        ],
+        "labels": {
+          "auto": "Follow labels",
+          "on": "On",
+          "off": "Off"
+        },
+        "default": "auto",
+        "group": "behaviour",
+        "level": "simple",
+        "quick": true
       }
     ],
     "context-menu": [

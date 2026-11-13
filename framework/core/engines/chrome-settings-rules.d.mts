@@ -18,6 +18,8 @@ export interface ChromeField {
   default?: string | number | boolean;
   group: ChromeFieldGroup;
   level: ChromeLevel;
+  /** shown in the quick-switches pane at the top of the settings dialog (label visibility, tap to confirm, …) */
+  quick?: boolean;
 }
 export interface ChromeMove { positions: ChromePosition[]; via: 'instance' | 'layout' | 'none'; field: string }
 export interface ChromeSettingsTab { id: string; label: string; icon: string; order: number }

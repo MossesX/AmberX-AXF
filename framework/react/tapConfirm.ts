@@ -8,8 +8,13 @@
  * Mouse, pen and keyboard clicks pass untouched. A toolbar is left alone only when its settings switch it off
  * (Settings → Plugins → Toolbars, or that toolbar's own settings) or, in code, when it carries
  * `data-axf-tap-confirm="off"` with a `data-axf-tap-confirm-reason` (check-toolbars.mjs refuses one without a reason).
+ *
+ * The same reaches tab groups (role="tablist"), navigation menus (nav[data-axf-nav]) and the application menu bar
+ * (role="menubar"; its open drop-downs, role="menu", are left alone). By default it follows label visibility: on where
+ * the labels are hidden (`data-axf-labels="hidden"`, set by the renderers; a scope without the mark counts as hidden
+ * when none of its buttons carries any text), off where they show. Manual settings win (core/engines/tapconfirm.ts).
  */
-import { TAP_IDLE, tapConfig, tapDecide, tapPointer, toolbarIdOf, type TapState } from '../core/engines/tapconfirm';
+import { TAP_IDLE, tapConfig, tapDecide, tapPointer, toolbarIdOf, type TapChromeType, type TapScope, type TapState } from '../core/engines/tapconfirm';
 import { placeTip } from './placeTip';
 
 const BUTTONS = 'button, [role="button"], a[href]';
@@ -18,11 +23,44 @@ const PRESS_MS = 1500;
 
 export interface TapConfirmHost { dispose(): void }
 
-/** The toolbar element a button belongs to, or null when it isn't in one (or that toolbar opted out in code). */
+/** The chrome scopes tap-to-confirm reaches. */
+const SCOPES = '[role="toolbar"], [role="tablist"], [role="menubar"], nav[data-axf-nav]';
+
+/** The toolbar / tab group / nav / menu bar a button belongs to, or null when none (or it opted out in code). */
 export function toolbarOf(btn: Element): HTMLElement | null {
-  const bar = btn.closest<HTMLElement>('[role="toolbar"]');
+  const bar = btn.closest<HTMLElement>(SCOPES);
   if (!bar || bar.dataset.axfTapConfirm === 'off') return null;
+  // an open drop-down of the menu bar is a menu, not the bar: its items run on the first tap
+  const menu = btn.closest<HTMLElement>('[role="menu"]');
+  if (menu && bar.contains(menu)) return null;
   return bar;
+}
+
+/** Which chrome kind a scope element is. */
+export function scopeTypeOf(bar: HTMLElement): TapChromeType {
+  const role = bar.getAttribute('role');
+  if (role === 'tablist') return 'tab-group';
+  if (role === 'menubar') return 'app-menu';
+  if (role === 'toolbar') return 'toolbar';
+  return bar.dataset.axfNav !== undefined ? 'nav-menu' : 'toolbar';
+}
+
+/** Whether a scope hides its labels: `data-axf-labels`, else no button in it carries any text. */
+export function labelsHiddenOf(bar: HTMLElement): boolean {
+  const mark = bar.dataset.axfLabels;
+  if (mark === 'hidden') return true;
+  // the nav region folded to icons (nav style "collapsed") hides every label whatever the nav itself says
+  if (bar.dataset.axfNav !== undefined && bar.closest?.('[data-fx-navs-collapsed="on"]')) return true;
+  if (mark === 'shown') return false;
+  const buttons = Array.from((bar as unknown as { querySelectorAll?: (s: string) => ArrayLike<Element> }).querySelectorAll?.(BUTTONS) ?? []);
+  return buttons.length > 0 && buttons.every((b) => !(b.textContent ?? '').trim());
+}
+
+/** The scope a tap landed in: its kind, chrome instance (for its settings field) and label visibility. */
+export function scopeOf(bar: HTMLElement): TapScope & { id: string } {
+  const type = scopeTypeOf(bar);
+  const instance = type === 'tab-group' ? bar.dataset.axfTabGroup || '' : type === 'nav-menu' ? bar.dataset.axfNav || 'app' : type === 'app-menu' ? bar.dataset.fxCtxPayload || 'app' : bar.dataset.axfToolbar || '';
+  return { type, instance: instance || undefined, labelsHidden: labelsHiddenOf(bar), id: type === 'toolbar' ? toolbarElementId(bar) : '' };
 }
 
 /** The settings id of a toolbar element (`data-axf-toolbar`, `data-axf-toolbar-asset`, else its aria-label). */
@@ -89,7 +127,8 @@ export function installTapConfirm(doc: Document, get: (key: string) => unknown, 
     if (!bar) return;
     const fresh = press && now() - press.at <= PRESS_MS && press.target instanceof Node && btn.contains(press.target);
     const pointer = tapPointer(fresh && e.detail > 0 ? press!.type : '');
-    const cfg = tapConfig(get, toolbarElementId(bar));
+    const scope = scopeOf(bar);
+    const cfg = tapConfig(get, scope.id, scope);
     const d = tapDecide(state, { pointer, target: keyOf(btn), now: now() }, cfg);
     if (d.outcome === 'run') { clear(); return; }
     e.preventDefault();

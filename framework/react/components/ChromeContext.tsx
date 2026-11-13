@@ -74,7 +74,9 @@ export function setChromeField(rt: AxfRuntime, type: ChromeType, instance: strin
   const cur = normalizeInstanceOverride(type, rt.settings.get(k));
   const base = baseDataOf(rt, type, instance);
   const next: Record<string, string | number | boolean> = { ...cur };
-  if (value === null || (base && base[key] === value)) delete next[key]; else next[key] = value;
+  const fieldDefault = CHROME_FIELDS[type].find((f) => f.key === key)?.default;
+  const same = base && base[key] !== undefined && base[key] !== null ? base[key] === value : fieldDefault === value;
+  if (value === null || same) delete next[key]; else next[key] = value;
   const clean = normalizeInstanceOverride(type, next);
   if (Object.keys(clean).length) rt.settings.set(k, clean as never); else rt.settings.clear(k);
 }
