@@ -788,9 +788,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 18:19 UTC · `decision-dialog-ui-review-other` → running, note (all) · pipeline
-- 2026-11-13 18:19 UTC · `decision-dialog-ui-review-other` branch claude/decision-dialog-ui-review-other (all) · pipeline
-- 2026-11-13 18:20 UTC · `full-voice-api-control-type-fields-press` PR #627 (all) · builds-live
 - 2026-11-13 18:20 UTC · `full-voice-api-control-type-fields-press` s8 done, → built (all) · orchestrator
 - 2026-11-13 18:20 UTC · `decision-dialog-ui-review-other` note (all) · orchestrator
 - 2026-11-13 18:20 UTC · `decision-dialog-ui-review-other` note (all) · foreign-write
@@ -1188,6 +1185,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 19:59 UTC · `full-voice-control-merge-main-and-land` → running, note (all) · pipeline
 - 2026-11-13 19:59 UTC · `full-voice-control-merge-main-and-land` branch claude/full-voice-control-merge-main-and-land (all) · pipeline
 - 2026-11-13 19:59 UTC · `full-voice-control-merge-main-and-land` note (all) · orchestrator
+- 2026-11-13 19:59 UTC · `skin-animations-swatches-skin-switch` → running, note (all) · pipeline
+- 2026-11-13 19:59 UTC · `skin-animations-swatches-skin-switch` branch claude/skin-animations-swatches-skin-switch (all) · pipeline
+- 2026-11-13 19:59 UTC · `skin-animations-swatches-skin-switch` note (all) · orchestrator
 
 ## Token passes (log)
 
