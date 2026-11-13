@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5014,
- "updatedAt": "2026-11-13T21:01:49.244Z",
+ "rev": 5015,
+ "updatedAt": "2026-11-13T21:02:17.154Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -207951,11 +207951,11 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/per-instance-settings-small-live-preview",
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T20:45:51.589Z",
-   "updatedAt": "2026-11-13T21:01:27.350Z",
+   "updatedAt": "2026-11-13T21:01:35.753Z",
    "builtAt": "",
    "notes": [
     {
@@ -207969,6 +207969,10 @@
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-per-instance-settings-small-live-preview--gina.",
      "at": "2026-11-13T21:01:27.350Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-per-instance-settings-small-live-preview--gina, own login copy)",
+     "at": "2026-11-13T21:01:35.753Z"
     }
    ],
    "approvals": [],
@@ -208098,7 +208102,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
