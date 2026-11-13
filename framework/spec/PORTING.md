@@ -207,3 +207,12 @@ The 286 Kotlin findings stay on the baseline, Android on hold: 285 `.dp` spacing
 `Axf.shapes.*`) and one `Color(0x…)` literal (→ `Axf.colors.*`), in `framework/android` (230) and `apps/console` (56).
 `Axf.space` is a `@Composable` getter, so each call site needs a compiler to confirm it sits in a composable scope:
 do it with the Android build, then run `node framework/cli/check-theme.mjs --update-baseline` to empty the file.
+
+## Deferred: the guide's no-auto-open rule + Gizmo naming (Nov 13 2026)
+Web only (Android on hold, build `stop-the-molly-guide-from-popping-up-and-talking-every-time-the-console-loads-n`). The console's
+walkthrough guide (plugin code, `molly-guide/web/walkthrough.ts` `pollDecision`) never opens on load: the first read only learns the
+newest seq, auto-open is opt-in (`molly-guide.autoOpen`, default off) and never plays a walkthrough made before the page loaded.
+The guide asks agent `gizmo` (Molly is no longer an agent, Nov 3 decision; the `molly` add-on is only a fallback) and registers
+`gizmo.ask` / `gizmo.replay` / `gizmo.next` / `gizmo.prev` / `gizmo.close` with the `molly.*` names kept as hidden aliases.
+AmberX on Android runs the web app, so its texts follow already. A native Compose player of walkthrough@1, when the Android side
+resumes, replays the same rule: no auto-open on start, opt-in only, nothing older than the app's start, and the Gizmo names.
