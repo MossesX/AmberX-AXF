@@ -18,7 +18,7 @@
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { SETTINGS_ALL_DIALOG, SETTINGS_OPENS_AS_DEFAULT, SETTINGS_TAB_DIALOG, normalizeSettingsOpensAs, parseSettingsOpensAs, settingsOpenRoute } from '../core/engines/settingsopen';
+import { SETTINGS_ALL_DIALOG, SETTINGS_OPENS_AS_DEFAULT, SETTINGS_TAB_DIALOG, dialogSurface, isSettingsDialog, normalizeSettingsOpensAs, parseSettingsOpensAs, settingsOpenRoute } from '../core/engines/settingsopen';
 
 const ROOT = fileURLToPath(new URL('../..', import.meta.url));
 let pass = 0;
@@ -42,6 +42,12 @@ ok(r({ tab: 'x', ownerPlacement: 'main' }).via === 'dialog', "a plugin's main-ar
 ok(r({ tab: 'x' }).tab === 'x', 'the tab is carried');
 ok(normalizeSettingsOpensAs(undefined) === 'dialog' && normalizeSettingsOpensAs('page') === 'page', 'normalize');
 for (const [w, v] of [['as a page', 'page'], ['full page', 'page'], ['in a dialog', 'dialog'], ['dialogue', 'dialog'], ['floating', 'dialog'], ['pop up', 'dialog'], ['banana', null]] as const) ok(parseSettingsOpensAs(w) === v, `parse "${w}" → ${v}`);
+
+// settings dialogs built already and ones not built yet get the glass surface without asking
+for (const id of [SETTINGS_TAB_DIALOG, SETTINGS_ALL_DIALOG, 'axf.chrome.settings', 'window-settings', 'banner-settings', 'my-plugin.settings', 'plugins-menu:settings']) ok(isSettingsDialog(id) && dialogSurface(id, {}) === 'glass', `settings dialog ${id} → glass`);
+ok(isSettingsDialog('x.dialog', 'Plugin settings'), 'a title ending in settings counts');
+for (const id of ['asset-json', 'terminal', 'axf.settingsless', 'skin.picker']) ok(!isSettingsDialog(id) && dialogSurface(id, {}) === undefined, `${id} is not a settings dialog`);
+ok(dialogSurface('asset-json', { surface: 'glass' }) === 'glass', "a dialog's own surface pick wins");
 
 /* 2. library */
 const lib = readFileSync(join(ROOT, 'framework/libs/settings/index.tsx'), 'utf8');
@@ -73,6 +79,8 @@ const walk = (dir: string) => {
     if (!/\.(tsx?|mjs|js)$/.test(n) || rel === 'framework/spec/check-settings-open.mts') continue;
     scanned.push(rel);
     const src = readFileSync(p, 'utf8');
+    // a settings interface as a page of its own (a view `…settings`) instead of a Settings tab or a dialog
+    if (rel !== 'framework/libs/settings/index.tsx') for (const m of src.matchAll(/^\s*\[?['"`]?([a-z0-9._-]*settings)['"`]?\]?: \{ title: /gm)) if (/views\s*[:=]/.test(src.slice(Math.max(0, (m.index ?? 0) - 400), m.index)) && !/settings-open-ok/.test(m[0])) fails.push(`${rel}: view "${m[1]}" is a settings page of its own; add the settings as a Settings tab (settingsTabs / settings) or a dialog so they open in the dialog`);
     src.split('\n').forEach((line, i) => { if (BAD.test(line) && !/settings-open-ok/.test(line)) fails.push(`${rel}:${i + 1} opens settings by navigating to the page; use rt.dispatch('settings.open:<tab>') (or 'app.settings') so it opens in the dialog`); });
   }
 };
@@ -81,7 +89,7 @@ ok(scanned.length > 100, `source guard scanned files (${scanned.length})`);
 
 /* 4. dialog host + stylesheet */
 const ov = readFileSync(join(ROOT, 'framework/react/components/Overlays.tsx'), 'utf8');
-ok(/surface\?: 'glass'/.test(ov) && /data-fx-dialog-surface=\{def\.surface\}/.test(ov), 'dialog host passes surface');
+ok(/surface\?: 'glass'/.test(ov) && /data-fx-dialog-surface=\{dialogSurface\(state\.dialog\.id, def\)\}/.test(ov), 'dialog host gives settings dialogs glass by default');
 ok(/data-fx-dialog-size=\{def\.size\}/.test(ov), 'dialog host passes size');
 const css = readFileSync(join(ROOT, 'framework/ui/axf.css'), 'utf8');
 const glass = /\.fx-dialog\[data-fx-dialog-surface='glass'\] \{([^}]*)\}/.exec(css)?.[1] ?? '';

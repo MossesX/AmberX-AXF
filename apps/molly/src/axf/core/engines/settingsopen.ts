@@ -77,3 +77,17 @@ export function settingsOpenRoute(i: SettingsOpenInput): SettingsOpenRoute {
 }
 
 export const settingsOpensAsOptions = () => SETTINGS_OPENS_AS.map((value) => ({ value, label: SETTINGS_OPENS_AS_LABELS[value] }));
+
+/**
+ * Is this dialog a settings interface? (id `…settings…` as a word, or a title ending in "settings"). The dialog host
+ * gives every one the glass surface without the dialog asking, so settings dialogs added later look the same as the
+ * built ones (chrome settings, banner settings, window settings, plugin settings, a settings tab).
+ */
+export function isSettingsDialog(id: string, title?: string): boolean {
+  return /(^|[.:_-])settings($|[.:_-])/i.test(id) || /\bsettings$/i.test((title ?? '').trim());
+}
+
+/** The surface a dialog gets: its own pick, else glass for every settings dialog. */
+export function dialogSurface(id: string, def: { title?: string; surface?: 'glass' }): 'glass' | undefined {
+  return def.surface ?? (isSettingsDialog(id, def.title) ? 'glass' : undefined);
+}
