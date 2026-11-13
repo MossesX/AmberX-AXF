@@ -91,7 +91,7 @@ const RAW = [
       { id: 'pick', title: 'Pick a skin', view: 'theme-manager', say: 'We pick another skin. Nothing is rebuilt: the tokens are swapped while the app runs.', events: [
         ev(0.4, 'agent', 'theme-manager: apply skin "midnight-amber"'),
         ev(1.2, 'axhub', 'POST /api/control {set: skin, value: midnight-amber, reason: {title: "Skin swap demo"}} → 200'),
-        ev(2.0, 'agent', 'tokens: 214 swapped · --fx-accent #f5a524 · --fx-radius-md 10px'),
+        ev(2.0, 'agent', 'tokens: 214 swapped · accent, radius, type scale and density all from the new skin'),
       ] },
       { id: 'after', title: 'Every screen follows', view: 'builds', say: 'Every screen follows at once: builds, reviews, settings. That is why the checks forbid any colour written by hand.', live: ['theme-check'], events: [
         ev(0.4, 'focus', 'walk: builds → ui-review → settings'),

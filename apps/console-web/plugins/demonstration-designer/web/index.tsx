@@ -14,6 +14,16 @@ import { PLUGIN_ID, SETTINGS_TAB, VIEW, generate, getDemo, getModel, loadSetting
 import { DesignerPage } from './page';
 import { LifecyclePanel, SettingsPanel } from './settings';
 import { next, pause, play, prev, registerStage, resume, stop } from './stage';
+import { matchDemo, parsePipelineLink } from '../pipelines.mjs';
+import type { Dock } from '../pipelines.mjs';
+import { PipelineCover } from './cover';
+import { getPipelines, loadPipelines, openDesignerOnPipelines, pChapter, pDock, pMode, pNext, pPause, pPrev, pRestart, pResume, pSpeed, pStop, registerPipelines, runPipeline, setFollow, setKinds, setPanel, setQuery } from './pipeline-model';
+
+/** A demo by id or by the words of a phrase ("voice to app", "the approval flow"). */
+async function pipelineId(words: string): Promise<string> {
+  await loadPipelines();
+  return matchDemo(words, getPipelines().demos);
+}
 
 async function playDemo(id: string, record = false) {
   await loadSettings();
@@ -35,6 +45,40 @@ function register(rt: AxfRuntime) {
   rt.actions.register('pitch.next', () => next(), { label: 'Pitch: next step', searchable: false });
   rt.actions.register('pitch.prev', () => prev(), { label: 'Pitch: previous step', searchable: false });
   rt.actions.register('pitch.stop', () => void stop(), { label: 'Pitch: stop', searchable: false });
+  // Pipelines mode: "run the voice-to-app demo" → pipeline.run:voice to app; every player move is an action too
+  registerPipelines(rt);
+  const warn = (e: Error) => rt.toast(e.message, 'warning', 'Pipeline demos');
+  const runBy = (words: string | undefined, mode?: 'replay' | 'live') => {
+    if (!words) { openDesignerOnPipelines(); return; }
+    pipelineId(words).then((id) => { if (!id) { rt.toast(`No pipeline demo matches "${words}".`, 'warning', 'Pipeline demos'); return; } openDesignerOnPipelines(id); return runPipeline(id, { mode }); }).catch(warn);
+  };
+  rt.actions.register('pipeline.open', ([w]) => { if (!w) { openDesignerOnPipelines(); return; } pipelineId(w).then((id) => openDesignerOnPipelines(id), warn); }, { label: 'Open the pipeline demos (optionally on one)', params: true });
+  rt.actions.register('pipeline.run', ([w, mode]) => runBy(w, mode === 'live' ? 'live' : mode === 'replay' ? 'replay' : undefined), { label: 'Run a pipeline demo (say its name: voice to app, skin swap, approval flow…)', params: true });
+  rt.actions.register('pipeline.live', ([w]) => runBy(w, 'live'), { label: 'Run a pipeline demo live on the test-sandbox project', params: true });
+  rt.actions.register('pipeline.replay', ([w]) => runBy(w, 'replay'), { label: 'Replay a pipeline demo (recorded, offline)', params: true });
+  rt.actions.register('pipeline.pause', () => pPause(), { label: 'Pipeline demo: pause', searchable: false });
+  rt.actions.register('pipeline.resume', () => pResume(), { label: 'Pipeline demo: resume', searchable: false });
+  rt.actions.register('pipeline.next', () => pNext(), { label: 'Pipeline demo: skip to the next chapter', searchable: false });
+  rt.actions.register('pipeline.prev', () => pPrev(), { label: 'Pipeline demo: previous chapter', searchable: false });
+  rt.actions.register('pipeline.chapter', ([n]) => pChapter(Math.max(0, Number(n ?? 1) - 1)), { label: 'Pipeline demo: jump to chapter N', params: true, searchable: false });
+  rt.actions.register('pipeline.restart', () => pRestart(), { label: 'Pipeline demo: restart', searchable: false });
+  rt.actions.register('pipeline.stop', () => pStop(), { label: 'Pipeline demo: stop', searchable: false });
+  rt.actions.register('pipeline.speed', ([v]) => pSpeed(Number(v) || 1), { label: 'Pipeline demo: speed (0.5, 1, 1.5, 2, 4)', params: true, searchable: false });
+  rt.actions.register('pipeline.mode', ([v]) => pMode(v === 'live' ? 'live' : 'replay'), { label: 'Pipeline demo: replay or live', params: true, searchable: false });
+  rt.actions.register('pipeline.dock', ([v]) => pDock((['dock', 'float', 'full'].includes(v ?? '') ? v : 'dock') as Dock), { label: 'Behind the scenes: dock, float or full', params: true, searchable: false });
+  rt.actions.register('pipeline.panel', ([v]) => setPanel(v !== 'off' && v !== 'hide'), { label: 'Behind the scenes: show or hide (on / off)', params: true, searchable: false });
+  rt.actions.register('pipeline.filter', ([kinds, ...q]) => { setKinds(kinds && kinds !== 'all' ? kinds.split(',') : []); setQuery(q.join(':')); }, { label: 'Behind the scenes: filter (kinds comma separated, then words)', params: true, searchable: false });
+  rt.actions.register('pipeline.follow', ([v]) => setFollow(v !== 'off'), { label: 'Pipeline demo: console follows each chapter (on / off)', params: true, searchable: false });
+  // the pipelines deep link: ?axf-pipeline=<id>[&axf-autoplay=1][&axf-mode=live]; ?axf-pipeline=library opens the list
+  try {
+    const pl = parsePipelineLink(globalThis.location?.search ?? '');
+    if (pl) {
+      const u = new URL(globalThis.location.href); for (const k of ['axf-pipeline', 'axf-autoplay', 'axf-mode']) u.searchParams.delete(k); globalThis.history?.replaceState(null, '', u.toString());
+      const id = pl.id === 'library' ? '' : pl.id;
+      for (const ms of [0, 1500]) setTimeout(() => openDesignerOnPipelines(id), ms);
+      if (id && pl.play) setTimeout(() => void runPipeline(id, { mode: pl.mode }).catch(warn), 1800);
+    }
+  } catch { /* no address here */ }
   // the deep link: ?axf-demo=<id>[&axf-autoplay=1]; ?axf-demo=new opens the designer ready for a new pitch; ?axf-demo=settings its settings
   try {
     const link = parseDeepLink(globalThis.location?.search ?? '');
@@ -70,6 +114,7 @@ export const plugin: AxfWebLibrary = {
   register,
   views: { 'demonstration-designer': { title: 'Demonstration Designer', icon: 'play', render: () => <DesignerPage /> } },
   nav: { label: 'Demos', items: [{ id: 'demonstration-designer', label: 'Demonstration Designer', icon: 'play', view: 'demonstration-designer' }] },
+  slots: { 'app.frame.cover': [{ id: 'demonstration-designer.pipelines', order: 96, render: () => <PipelineCover /> }] },
   settingsTabs: [{ id: SETTINGS_TAB, label: 'Demonstration Designer', icon: 'play', order: 62, parent: 'plugins' }],
   settingsPanels: [
     { id: 'demonstration-designer.settings', tab: SETTINGS_TAB, title: 'Pitch, stage, music and export', icon: 'play', order: 10, render: () => <SettingsPanel /> },
