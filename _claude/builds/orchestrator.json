@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T13:23:47.819Z",
+ "updatedAt": "2026-11-13T13:23:58.242Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -122832,7 +122832,7 @@
    "pr": "#574",
    "priority": "P0",
    "createdAt": "2026-11-13T11:45:11.111Z",
-   "updatedAt": "2026-11-13T13:23:41.683Z",
+   "updatedAt": "2026-11-13T13:23:56.667Z",
    "builtAt": "2026-11-13T13:23:41.684Z",
    "notes": [
     {
@@ -122874,6 +122874,10 @@
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 2): axf-auto-recover-stuck-builds--gina.",
      "at": "2026-11-13T12:10:36.014Z"
+    },
+    {
+     "text": "Headless run axf-auto-recover-stuck-builds--gina: brief only · start 15.4K tokens ($0.05) · cost $20.73 · 283 turns · 6 tools, MCP none",
+     "at": "2026-11-13T13:23:56.667Z"
     }
    ],
    "approvals": [
