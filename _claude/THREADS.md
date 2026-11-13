@@ -790,7 +790,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 - 2026-11-13 18:31 UTC · `ui-manager-floating-window-to-select-any` note (all) · claude-voice
 - 2026-11-13 18:31 UTC · `ui-manager-floating-window-to-select-any` note (all) · claude-voice
-- 2026-11-13 18:31 UTC · `ui-manager-floating-window-to-select-any` note (all) · claude-voice
 - 2026-11-13 18:31 UTC · `ui-manager-floating-window-to-select-any` note (all) · orchestrator
 - 2026-11-13 18:31 UTC · `ui-manager-floating-window-to-select-any` → running, note (all) · pipeline
 - 2026-11-13 18:31 UTC · `ui-manager-floating-window-to-select-any` branch claude/ui-manager-floating-window-to-select-any (all) · pipeline
@@ -1188,6 +1187,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 20:09 UTC · `dispatcher-gate-never-launch-build` note (all) · builds-live
 - 2026-11-13 20:09 UTC · `per-toolbar-settings-fix-failing-chrome` note (all) · orchestrator
 - 2026-11-13 20:10 UTC · `skin-animations-swatches-skin-switch` s1 done, → running (all) · orchestrator
+- 2026-11-13 20:10 UTC · `skin-animations-swatches-skin-switch` s2 done (all) · orchestrator
 
 ## Token passes (log)
 
