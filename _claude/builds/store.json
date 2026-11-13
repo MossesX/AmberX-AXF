@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4073,
- "updatedAt": "2026-11-13T06:57:26.675Z",
+ "rev": 4074,
+ "updatedAt": "2026-11-13T06:57:43.657Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -180144,6 +180144,43 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-13T06:56:37.518Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu",
+   "title": "Always fill every slot: when slots are free, run independent steps of running builds in parallel across them, and auto-queue pending builds",
+   "category": "",
+   "detail": "",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-13T06:57:42.497Z",
+   "updatedAt": "2026-11-13T06:57:42.497Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 769
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

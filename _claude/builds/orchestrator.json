@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T06:57:26.675Z",
+ "updatedAt": "2026-11-13T06:57:43.657Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -118224,6 +118224,25 @@
      "createdAt": "2026-11-13T06:56:37.518Z"
     }
    ]
+  },
+  {
+   "id": "always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu",
+   "title": "Always fill every slot: when slots are free, run independent steps of running builds in parallel across them, and auto-queue pending builds",
+   "category": "",
+   "detail": "",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-13T06:57:42.497Z",
+   "updatedAt": "2026-11-13T06:57:42.497Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": []
   }
  ]
 }
