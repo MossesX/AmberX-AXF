@@ -778,10 +778,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 18:34 UTC · `add-a-tap-to-confirm-option-to-every-settings-in` note (all) · orchestrator
-- 2026-11-12 18:34 UTC · `new-project-start-fresh-with-its-own-builds-notes-to-dos-and-plans` s3 done (all) · orchestrator
-- 2026-11-12 18:34 UTC · `add-a-tap-to-confirm-option-to-every-settings-in` → running, note (all) · pipeline
-- 2026-11-12 18:34 UTC · `add-a-tap-to-confirm-option-to-every-settings-in` branch claude/add-a-tap-to-confirm-option-to-every-settings-in (all) · pipeline
 - 2026-11-12 18:35 UTC · `skins-as-packages-of-slices-every-section-its-ow` → queued, note (all) · console
 - 2026-11-12 18:36 UTC · `skins-as-packages-of-slices-every-section-its-ow` → running, note (all) · pipeline
 - 2026-11-12 18:36 UTC · `skins-as-packages-of-slices-every-section-its-ow` note (all) · orchestrator
@@ -1178,6 +1174,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 03:28 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` → running, note (all) · pipeline
 - 2026-11-13 03:28 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` branch claude/skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change (all) · pipeline
 - 2026-11-13 03:28 UTC · `badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad` → queued, note (all) · console
+- 2026-11-13 03:28 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` note (all) · orchestrator
+- 2026-11-13 03:28 UTC · `change-to-one-to-do-notes-and-tasks-plugin-pr-527-brett-notes-tasks-and-to` → running, note (all) · pipeline
+- 2026-11-13 03:28 UTC · `change-to-one-to-do-notes-and-tasks-plugin-pr-527-brett-notes-tasks-and-to` branch claude/change-to-one-to-do-notes-and-tasks-plugin-pr-527-brett-notes-tasks-and-to (all) · pipeline
+- 2026-11-13 03:28 UTC · `change-to-one-to-do-notes-and-tasks-plugin-pr-527-brett-notes-tasks-and-to` note (all) · orchestrator
 
 ## Token passes (log)
 
