@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T01:13:54.817Z",
+ "updatedAt": "2026-11-13T01:14:07.230Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -109884,7 +109884,7 @@
    "title": "One account picker: choose the single Claude account the console and VPS builds use",
    "category": "accounts",
    "detail": "Brett said: \"I need to be able to select in the console what account the console uses and the VPS uses for builds. I need to just be able to select one and that's it, just one.\"",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -109892,7 +109892,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-12T21:49:00.405Z",
-   "updatedAt": "2026-11-13T01:12:17.774Z",
+   "updatedAt": "2026-11-13T01:13:57.072Z",
    "builtAt": "",
    "notes": [
     {
@@ -109950,6 +109950,10 @@
     {
      "text": "Back to Pending (console).",
      "at": "2026-11-13T01:12:17.774Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T01:13:57.072Z"
     }
    ],
    "approvals": [],
@@ -111350,7 +111354,7 @@
    "title": "Everything on tokens before skins: fix the 27 open check-theme problems and the 1 check-controls finding (apps/player Home.tsx raw button), burn down all 1,209 frozen findings in framework/spec/conform-baseline.json (use framework/cli/scale-adopt.mjs, then hand-fix the rest) and empty the baseline, ",
    "category": "",
    "detail": "",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -111358,7 +111362,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-12T23:40:00.983Z",
-   "updatedAt": "2026-11-13T01:12:15.960Z",
+   "updatedAt": "2026-11-13T01:13:55.380Z",
    "builtAt": "",
    "notes": [
     {
@@ -111400,6 +111404,10 @@
     {
      "text": "Back to Pending (console).",
      "at": "2026-11-13T01:12:15.960Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T01:13:55.380Z"
     }
    ],
    "approvals": [],
@@ -111655,7 +111663,7 @@
    "title": "Full voice and AI control of EVERYTHING in the console, before the Android app: every action, setting, tab, dialog, menu, list, item and field gets an API (REST, MCP, CLI, voice). Add find-by-content deep links down to the item: 'jump to the plan about X, the step that mentions Y' searches inside pl",
    "category": "",
    "detail": "",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -111663,7 +111671,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T00:42:24.765Z",
-   "updatedAt": "2026-11-13T01:12:19.882Z",
+   "updatedAt": "2026-11-13T01:13:58.899Z",
    "builtAt": "",
    "notes": [
     {
@@ -111697,6 +111705,10 @@
     {
      "text": "Back to Pending (console).",
      "at": "2026-11-13T01:12:19.882Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T01:13:58.899Z"
     }
    ],
    "approvals": [],
@@ -111891,16 +111903,21 @@
    "title": "Skin configuration panel: before AI makes a skin, Brett picks what it may change. The current look is saved as the Default skin. A full tree of options in categories (colors, typography, layout and tab placement, buttons and actions, behaviors, context menus with how deep to build them, nav menu, ap",
    "category": "",
    "detail": "",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-13T01:13:53.464Z",
-   "updatedAt": "2026-11-13T01:13:53.464Z",
+   "updatedAt": "2026-11-13T01:14:04.839Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T01:14:04.839Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": []
