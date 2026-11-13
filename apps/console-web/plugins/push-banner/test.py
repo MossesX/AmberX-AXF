@@ -697,11 +697,20 @@ check(mod.PUSHES._code_behind(CmpGh(2, ["Fix it", live[0]], ["_claude/THREADS.md
 check(mod.PUSHES._code_behind(CmpGh(0, [], []), "MossesX/AmberX-AXF", "main", "abc123") == 0, "not behind = 0")
 
 cfg0 = mod.PUSHES.config()
-check(cfg0["autoLand"] is False and cfg0["landWaitUi"] is True, "auto-land is off by default (the merge queue merges), Wait for UI Review on")
+check(cfg0["autoLand"] is True and cfg0["landWaitUi"] is True, "auto-land is on by default for every build (Nov 13 2026), Wait for UI Review on")
 r = c.put("/p/config", json={"landWaitUi": False})
-check(r.status_code == 200 and r.json()["landWaitUi"] is False and r.json()["autoLand"] is False, "Wait for UI Review can be switched off")
+check(r.status_code == 200 and r.json()["landWaitUi"] is False and r.json()["autoLand"] is True, "Wait for UI Review can be switched off")
 check(c.put("/p/config", json={"autoLand": "yes"}).status_code == 400, "autoLand is true or false")
 c.put("/p/config", json={"landWaitUi": True})
+_cfgf = Path(os.environ["AXF_PUSH_BANNER_DIR"]) / "config.json"
+_cfg_before = _cfgf.read_text() if _cfgf.exists() else None
+_cfgf.write_text(json.dumps({"$axf": "push-banner-config@1", "autoLand": False}))
+check(mod.PUSHES.config()["autoLand"] is True, "an off written before autoLandRev 2 (the Nov 4 off) reads as on")
+r = c.put("/p/config", json={"autoLand": False})
+check(r.status_code == 200 and r.json()["autoLand"] is False and json.loads(_cfgf.read_text()).get("autoLandRev") == 2, "switching it off now is honoured (autoLandRev 2 written)")
+c.put("/p/config", json={"autoLand": True})
+if _cfg_before is not None:
+    _cfgf.write_text(_cfg_before)
 
 ddir = Path(os.environ["AXF_PUSH_BANNER_DIR"])
 (ddir / "land.json").write_text(json.dumps({"$axf": "auto-land@1", "at": "2026-11-03T18:00:00Z", "order": [18], "managed": [18],

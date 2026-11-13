@@ -11,6 +11,7 @@
  *   node apps/console-web/plugins/push-banner/land/land.mjs run [--dry-run] [--only <build>] [--json]   one round
  *   … list | blocked [--json]            what the last round found (landing order, PR, state, reason)
  *   … now <build> | hold <build> [--why "…"] | release <build> | after <build> <other>
+ *   … off <build> [--why "…"] | on <build>   the per-build switch (auto-land is on for every build unless switched off)
  *   … queue list | add <pr> | remove <pr> | move <pr> <index>   the merge queue (merge-queue.mjs; it runs in every round)
  *
  * One round, per finished build (land-core.mjs isCandidate), in dependency order:
@@ -29,8 +30,9 @@
  * child process: this folder imports only node built-ins). Sections `landing` (this round) and `merge-queue`
  * (merge-queue.mjs). Dropped while the chat is off; AXF_CREW_SAY=off for tests; never on a dry run.
  *
- * Settings (push banner config.json, Settings → Plugins → Push banner → Auto-land): autoLand (off since Nov 4 2026:
- * only the merge queue merges; Brett: "Stop merging these things one at a time"), landWaitUi (on).
+ * Settings (push banner config.json, Settings → Plugins → Push banner → Auto-land): autoLand (on by default for every
+ * build since Nov 13 2026, Brett: "what's it gonna take to get you to merge and land what's completed"; the merge queue
+ * still does the merging, one batch at a time), landWaitUi (on). Per build: `off <build>` / `on <build>` (land-control).
  * Environment: AXF_LAND_REPO (checkout to run git in; default this file's repo), AXF_PUSH_BANNER_DIR (data folder;
  * default <AXF_CONSOLE_ROOT or /opt/axf>/.axf-console/plugins/push-banner), AXF_LAND_REPO_SLUG (MossesX/AmberX-AXF),
  * AXF_LAND_CONSOLE (docker container of the console, axf-console; "off" = no console calls), AXF_LAND_ARCHIVE
@@ -145,10 +147,10 @@ export const reasonEvent = (kind) => (['held', 'ui', 'code'].includes(kind) ? 'w
 export const stateFile = (s) => join(s.dataDir, 'land.json');
 export const controlFile = (s) => join(s.dataDir, 'land-control.json');
 export const readState = (s) => readJson(stateFile(s), { $axf: core.LAND_FRAME, items: [] });
-export const readControl = (s) => readJson(controlFile(s), { $axf: core.CONTROL_FRAME, holds: {}, now: [], after: {} });
+export const readControl = (s) => readJson(controlFile(s), { $axf: core.CONTROL_FRAME, holds: {}, now: [], after: {}, off: {} });
 export function readConfig(s) {
   const c = readJson(join(s.dataDir, 'config.json'), {}) || {};
-  return { autoLand: c.autoLand === true, landWaitUi: c.landWaitUi !== false };
+  return { autoLand: core.autoLandOn(c), landWaitUi: c.landWaitUi !== false };
 }
 export function control(s, cmd, build, opts = {}) {
   const d = core.applyControl(readControl(s), cmd, build, opts);
@@ -318,6 +320,7 @@ export async function round({ s = settings(), git = makeGit(s.repo), gh = makeGi
     const b = candById.get(o.id);
     const it = { id: b.id, title: String(b.title || b.id).slice(0, 200), branch: b.branch, after: o.after, ...(b.alsoBuilds ? { alsoBuilds: b.alsoBuilds } : {}), pr: null, head: '', state: 'waiting', reason: null, since: '', checkedAt: at };
     const old = prevItems.get(b.id) || {};
+    if (!core.buildOn(ctl, b.id)) { it.state = 'off'; it.reason = { kind: 'off', text: `${b.id}: auto-land is switched off for this build (${String(ctl.off[b.id]?.why || 'by hand').slice(0, 160)}). Switch it on to land it.`, quiet: true }; it.since = old.since || at; items.push(it); continue; }
     const facts = { held: ctl.holds?.[b.id] ? ctl.holds[b.id].why || true : '', waitUi: cfg.landWaitUi };
     try {
       if (!facts.held) {
@@ -446,12 +449,12 @@ export async function main(argv) {
     const st = readState(s); const items = (st.items || []).filter((x) => cmd === 'list' || x.state === 'blocked');
     return print({ ...st, items }, items.map(line).join('\n') || (cmd === 'blocked' ? 'nothing blocked' : 'no finished builds to land'));
   }
-  if (known || cmd === 'after') {
+  if (known || ['after', 'off', 'on'].includes(cmd)) {
     const id = rest[0]; if (!id || id.startsWith('--')) throw new Error(`${cmd} <build>${cmd === 'after' ? ' <other>' : ''}`);
     const d = control(s, cmd, id, { why: opt('why'), after: rest[1] });
     return print({ ok: true, control: d }, `${cmd}: ${id}${cmd === 'after' ? ` after ${rest[1]}` : ''}`);
   }
-  throw new Error('usage: land.mjs run [--dry-run] [--only <build>] | list | blocked | now <build> | hold <build> [--why …] | release <build> | after <build> <other>');
+  throw new Error('usage: land.mjs run [--dry-run] [--only <build>] | list | blocked | now <build> | hold <build> [--why …] | release <build> | off <build> [--why …] | on <build> | after <build> <other>');
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

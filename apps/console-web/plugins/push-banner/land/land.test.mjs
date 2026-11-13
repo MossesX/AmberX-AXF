@@ -209,15 +209,25 @@ put('_claude/builds/store.json', store(merged.builds.map((b) => (b.id === 'clash
 await round({ s, git, gh, api, agentJob: () => ({ exit: 0 }) });
 check(!readState(s).items.some((x) => x.id === 'clash') && calls.api.some((c) => c.path === '/api/alerts/resolve' && c.body.keys.includes('land:clash')), 'merged: off the list, its alert resolved');
 // switched off: nothing happens
-writeFileSync(join(s.dataDir, 'config.json'), JSON.stringify({ autoLand: false }));
+writeFileSync(join(s.dataDir, 'config.json'), JSON.stringify({ autoLand: false, autoLandRev: core.AUTO_LAND_REV }));
 const n = calls.gh.length;
 const off = await round({ s, git, gh, api });
 check(off.on === false && calls.gh.length === n, 'Auto-land finished builds off = the runner does nothing');
 writeFileSync(join(s.dataDir, 'config.json'), JSON.stringify({}));
-const dflt = await round({ s, git, gh, api });
-check(dflt.on === false && calls.gh.length === n, 'Auto-land is off by default (Nov 4 2026: only the merge queue merges)');
+const dflt = await round({ s, git, gh, api, agentJob: () => ({ exit: 0 }) });
+check(dflt.on === true, 'Auto-land is on by default for every build (Nov 13 2026)');
+writeFileSync(join(s.dataDir, 'config.json'), JSON.stringify({ autoLand: false }));
+check((await round({ s, git, gh, api, agentJob: () => ({ exit: 0 }) })).on === true, 'an off written before autoLandRev 2 (the Nov 4 off) reads as on');
 
 rmSync(tmp, { recursive: true, force: true });
+console.log('per-build switch: on unless switched off');
+{
+  let d = core.applyControl({}, 'off', 'feat-x', { why: 'not yet', at: 't1' });
+  check(!core.buildOn(d, 'feat-x') && core.buildOn(d, 'feat-y') && d.off['feat-x'].why === 'not yet', 'off switches one build off, the rest stay on');
+  d = core.applyControl(d, 'on', 'feat-x');
+  check(core.buildOn(d, 'feat-x'), 'on switches it back on');
+  check(core.autoLandOn({}) && core.autoLandOn({ autoLand: false }) && !core.autoLandOn({ autoLand: false, autoLandRev: core.AUTO_LAND_REV }), 'autoLandOn: default on; only an off at rev 2 counts');
+}
 console.log('group chat: a landing reason is Brett\'s move, a code fix, or something in the way');
 check(['held', 'ui', 'code'].every((k) => reasonEvent(k) === 'waiting'), 'held, UI Review and uncommitted code wait for Brett');
 check(['conflict', 'ci', 'error'].every((k) => reasonEvent(k) === 'failed') && ['push', 'pr', 'dependency'].every((k) => reasonEvent(k) === 'blocked'), 'conflicts and red CI failed; push, PR and dependencies blocked');

@@ -14,8 +14,24 @@
 export const LAND_FRAME = 'auto-land@1';
 export const CONTROL_FRAME = 'auto-land-control@1';
 
-/** Settings (push banner config.json): on unless switched off. */
-export const LAND_DEFAULTS = Object.freeze({ autoLand: false, landWaitUi: true });
+/**
+ * Settings (push banner config.json): on unless switched off. Auto-land is the default for every build again (Brett,
+ * Nov 13 2026: "what's it gonna take to get you to merge and land what's completed"); one build is switched off with
+ * the per-build switch (land-control `off`). A config written before that (no `autoLandRev`, the Nov 4 "off") is read
+ * as on: the old off was the reason finished builds sat unlanded.
+ */
+export const LAND_DEFAULTS = Object.freeze({ autoLand: true, landWaitUi: true });
+/** The config revision from which an explicit `autoLand: false` is honoured. */
+export const AUTO_LAND_REV = 2;
+
+/** Is auto-land on, from the raw config.json object? */
+export function autoLandOn(cfg) {
+  const c = cfg && typeof cfg === 'object' ? cfg : {};
+  return c.autoLandRev === AUTO_LAND_REV ? c.autoLand !== false : true;
+}
+
+/** Is auto-land on for this one build (the per-build switch; on unless switched off)? */
+export const buildOn = (ctl, id) => !(ctl && ctl.off && typeof ctl.off === 'object' && ctl.off[id]);
 
 /** Commit messages of status-only commits on main (framework/cli/builds-live.mjs, the reconciler, the store). */
 export const STATUS_ONLY_MARK = '[skip ci]';
@@ -213,12 +229,14 @@ export const LAND_COMMANDS = Object.freeze([
 
 /** Apply one control command to the control document (holds, now, after). Returns the new document. */
 export function applyControl(doc, cmd, build, { why = '', at = new Date().toISOString(), after = '' } = {}) {
-  const d = { $axf: CONTROL_FRAME, holds: {}, now: [], after: {}, ...(doc && typeof doc === 'object' ? doc : {}) };
-  d.holds = { ...(d.holds || {}) }; d.now = [...(d.now || [])]; d.after = { ...(d.after || {}) };
+  const d = { $axf: CONTROL_FRAME, holds: {}, now: [], after: {}, off: {}, ...(doc && typeof doc === 'object' ? doc : {}) };
+  d.holds = { ...(d.holds || {}) }; d.now = [...(d.now || [])]; d.after = { ...(d.after || {}) }; d.off = { ...(d.off || {}) };
   if (!/^[a-z0-9][a-z0-9._-]{0,80}$/i.test(build || '')) throw new Error('send a build id');
   if (cmd === 'hold') d.holds[build] = { why: str(why, 200) || 'held by hand', at };
   else if (cmd === 'release') delete d.holds[build];
   else if (cmd === 'now') { delete d.holds[build]; d.now = [build, ...d.now.filter((x) => x !== build)].slice(0, 20); }
+  else if (cmd === 'off') d.off[build] = { why: str(why, 200) || 'auto-land switched off for this build', at };
+  else if (cmd === 'on') delete d.off[build];
   else if (cmd === 'after') { if (!after) throw new Error('after <build> <other>'); d.after[build] = [...new Set([...(d.after[build] || []), after])]; }
   else throw new Error(`unknown command ${cmd}`);
   d.updatedAt = at;
