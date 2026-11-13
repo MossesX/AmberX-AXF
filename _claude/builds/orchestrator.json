@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T12:40:54.989Z",
+ "updatedAt": "2026-11-13T12:41:01.571Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -124191,7 +124191,7 @@
    "pr": "#572",
    "priority": "P0",
    "createdAt": "2026-11-13T12:23:34.932Z",
-   "updatedAt": "2026-11-13T12:40:42.998Z",
+   "updatedAt": "2026-11-13T12:40:56.957Z",
    "builtAt": "2026-11-13T12:40:41.227Z",
    "notes": [
     {
@@ -124233,6 +124233,10 @@
     {
      "text": "Brett: on the Build orchestrator page, long-pressing the toolbars (Reload/Plan Studio/Swarm row, Select all/Archive/Unarchive/Delete row) shows NO 'Toolbar settings' in the context menu at all. Tab group settings there DO save and apply. So two bugs: (1) some toolbars aren't registered as framework toolbars, so they have no settings entry; (2) on Shipped features the settings open but don't apply. Every toolbar must offer Toolbar settings on long-press/right-click, and its settings must apply.",
      "at": "2026-11-13T12:29:20.398Z"
+    },
+    {
+     "text": "Headless run axf-fix-toolbar-settings-doing-nothing--earl: brief only · start 11.6K tokens ($0.03) · cost $4.20 · 92 turns · 6 tools, MCP none",
+     "at": "2026-11-13T12:40:56.957Z"
     },
     {
      "text": "PR #572 open, CI runs check-toolbar-settings (146 checks). UI Review not sent: no console token in the headless session; 6 shots in _claude/builds/reports/fix-toolbar-settings-doing-nothing/, submit command in the report.",
