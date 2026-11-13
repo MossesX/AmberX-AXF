@@ -785,8 +785,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 10:50 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` s13 done (all) · orchestrator
-- 2026-11-13 10:50 UTC · `android-approval-overlay-a-small-always-on-float` → running, note (all) · pipeline
 - 2026-11-13 10:50 UTC · `android-approval-overlay-a-small-always-on-float` branch claude/android-approval-overlay-a-small-always-on-float (all) · pipeline
 - 2026-11-13 10:50 UTC · `android-approval-overlay-a-small-always-on-float` note (all) · orchestrator
 - 2026-11-13 10:50 UTC · `one-source-of-truth-console-shows-only-what-the-server-says-is-running` note (all) · orchestrator
@@ -1185,6 +1183,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 17:39 UTC · `full-voice-api-control-type-fields-press` added (0 steps) (all) · console
 - 2026-11-13 17:39 UTC · `full-voice-api-control-type-fields-press` → queued, note (all) · console
 - 2026-11-13 17:41 UTC · `full-voice-api-control-type-fields-press` note (all) · orchestrator
+- 2026-11-13 17:41 UTC · `full-voice-api-control-type-fields-press` → running, note (all) · pipeline
+- 2026-11-13 17:41 UTC · `full-voice-api-control-type-fields-press` branch claude/full-voice-api-control-type-fields-press (all) · pipeline
 
 ## Token passes (log)
 

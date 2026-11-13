@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4547,
- "updatedAt": "2026-11-13T17:41:35.006Z",
+ "rev": 4548,
+ "updatedAt": "2026-11-13T17:41:45.274Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -195335,15 +195335,15 @@
    "title": "Full voice and API control: type into fields, press buttons, approve hands-free",
    "category": "",
    "detail": "Goal: Brett controls absolutely everything in the console by voice/API (Claude via axHub MCP), never touching the phone.\n1. control@1 console.fields: list the fields of the open screen/dialog (id, label, type, value, required, options), set a field's value, and press any button/control by id or label (submit, Create, Save, Approve, tabs, toggles, menu items). Works on every screen, dialog and plugin, including the New Project wizard.\n2. Read back what is on screen (current screen, open dialog, visible fields and buttons) so the AI can narrate and verify.\n3. Approvals hands-free: veto countdowns and confirms can be approved by voice from Brett's own session (owner-recognized voice/claude.ai sign-in), no tap needed.\n4. Every action audited (by, reason).\n5. Expose on REST, MCP, CLI and voice. Tests (drive the New Project wizard end to end via API). Shipped features entry.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/full-voice-api-control-type-fields-press",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T17:39:25.266Z",
-   "updatedAt": "2026-11-13T17:41:19.938Z",
+   "updatedAt": "2026-11-13T17:41:29.457Z",
    "builtAt": "",
    "notes": [
     {
@@ -195353,6 +195353,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"d14cd67b-0c7e-4f02-ae4b-6286b1941f6b\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-13T17:41:01.294Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-full-voice-api-control-type-fields-press--joey.",
+     "at": "2026-11-13T17:41:24.271Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-full-voice-api-control-type-fields-press--joey, own login copy)",
+     "at": "2026-11-13T17:41:29.457Z"
     }
    ],
    "approvals": [],
@@ -195372,12 +195380,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T17:39:27.549Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-full-voice-api-control-type-fields-press--joey",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-13T17:41:23.626Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T17:41:01.294Z",
@@ -195387,9 +195395,9 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"d14cd67b-0c7e-4f02-ae4b-6286b1941f6b\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-13T17:41:23.626Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -195398,7 +195406,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-13T17:41:23.626Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -195592,7 +195600,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
