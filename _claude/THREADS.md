@@ -788,7 +788,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 18:23 UTC · `vps-builds-get-console-token-ui-review` s3 done (all) · orchestrator
 - 2026-11-13 18:23 UTC · `all-settings-interfaces-open-floating` s2 done (all) · orchestrator
 - 2026-11-13 18:25 UTC · `decision-dialog-ui-review-other` note (all) · orchestrator
 - 2026-11-13 18:26 UTC · `decision-dialog-ui-review-other` → pending, note (all) · pipeline
@@ -1188,6 +1187,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 20:03 UTC · `console-app-wake-word-voice-listener` branch claude/console-app-wake-word-voice-listener, PR #643 (all) · builds-live
 - 2026-11-13 20:04 UTC · `token-registry-skin-editor-live-sandbox` added (0 steps) (all) · console
 - 2026-11-13 20:04 UTC · `token-registry-skin-editor-live-sandbox` → queued, note (all) · console
+- 2026-11-13 20:04 UTC · `orchestrator-custom-groups-custom-tabs` PR #644 (all) · builds-live
 
 ## Token passes (log)
 
