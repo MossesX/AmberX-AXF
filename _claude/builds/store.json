@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4961,
- "updatedAt": "2026-11-13T20:31:48.758Z",
+ "rev": 4962,
+ "updatedAt": "2026-11-13T20:32:15.832Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -199109,7 +199109,7 @@
    "title": "UI Manager: floating window to select any element in the console and edit all its tokens",
    "category": "",
    "detail": "UI Manager (console plugin), opens in a floating window.\n- Lets Brett select ANY UI element in the whole console (every screen, plugin, dialog, toolbar, tab group, banner, nav, widget, control).\n- Left: collapsible categorized tree of all elements. Top category 'On screen now' lists every element currently visible; these are references (like Windows shortcuts / symlinks) to the same element that also lives in its normal category - both point to one shared source, edit either and both change.\n- Selecting an element (or picking it on screen with an inspector/picker mode) opens it according to the chosen view (several views: expanding row, side panel, grid...). Default: an expanding row listing all its properties and every token it reads.\n- Each property/token is edited by choosing from predetermined, valid values supplied by the console/framework integration (token sets, skins, assets, enums, ranges) - never free text where a valid list exists; schema-validated; live preview; reset to skin/default; shows overrides.\n- Searchable, sortable, multi-filter lists everywhere (thousands of elements).\n- Full API: REST/MCP/CLI/voice/control@1 ('select the main toolbar, set its transparency to 80').\n- Elements register via the framework (manifest) so new plugins appear automatically.\n- Tests, help, Shipped features. Fable for the element registry/schema core, Opus for UI.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -199117,7 +199117,7 @@
    "pr": "#634",
    "priority": "P1",
    "createdAt": "2026-11-13T18:30:38.922Z",
-   "updatedAt": "2026-11-13T20:06:58.873Z",
+   "updatedAt": "2026-11-13T20:31:16.091Z",
    "builtAt": "",
    "notes": [
     {
@@ -199215,6 +199215,10 @@
     {
      "text": "Brett: in the UI Manager list of every UI element: (1) every row/entry has its own Reset/Restore button (Restore previous edit / Restore to default / Restore from axHub); (2) every row shows its PARENT: the page and the app/plugin/feature it belongs to, with a link to it, plus a column filter and group-by on parent; (3) cascading restore at four levels, each available from its row, the parent rows and the API: RESTORE APP (every page, interface, toolbar, tab group, menu and asset customisation in that app back to default), RESTORE PAGE (that screen/feature and everything in it), RESTORE INTERFACE (one toolbar, tab group, menu or dialog instance), and RESTORE ASSET (the asset itself). Before restoring, show what will be reset (count and list); every restore is snapshotted so it can be undone. Voice: 'restore the whole Build orchestrator', 'reset this toolbar'.",
      "at": "2026-11-13T20:06:58.873Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-13T20:31:16.091Z"
     }
    ],
    "approvals": [
@@ -199269,10 +199273,10 @@
     "route": "",
     "dispatchedAt": "2026-11-13T18:53:11.620Z",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-13T18:31:38.517Z",
+     "at": "2026-11-13T20:31:22.787Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -199602,7 +199606,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -204736,7 +204740,7 @@
    "pr": "#652",
    "priority": "P1",
    "createdAt": "2026-11-13T19:49:31.102Z",
-   "updatedAt": "2026-11-13T20:30:54.280Z",
+   "updatedAt": "2026-11-13T20:31:16.091Z",
    "builtAt": "",
    "notes": [
     {
@@ -204758,6 +204762,10 @@
     {
      "text": "Headless run axf-skin-animations-swatches-skin-switch--earl: brief only · start 11.3K tokens ($0.03) · cost $7.37 · 170 turns · 6 tools, MCP none",
      "at": "2026-11-13T20:30:54.280Z"
+    },
+    {
+     "text": "Reconciler: PR #652",
+     "at": "2026-11-13T20:31:16.091Z"
     }
    ],
    "approvals": [],
@@ -204997,7 +205005,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -206527,8 +206535,8 @@
    "pr": "#651",
    "priority": "P0",
    "createdAt": "2026-11-13T20:07:27.626Z",
-   "updatedAt": "2026-11-13T20:30:30.438Z",
-   "builtAt": "2026-11-13T20:30:17.178Z",
+   "updatedAt": "2026-11-13T20:31:16.091Z",
+   "builtAt": "2026-11-13T20:31:16.091Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -206557,6 +206565,18 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-dispatcher-gate-never-launch-build--paulie, own login copy)",
      "at": "2026-11-13T20:18:18.401Z"
+    },
+    {
+     "text": "Headless run axf-dispatcher-gate-never-launch-build--paulie: brief only · start 11.3K tokens ($0.03) · cost $2.34 · 53 turns · 6 tools, MCP none",
+     "at": "2026-11-13T20:31:08.704Z"
+    },
+    {
+     "text": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
+     "at": "2026-11-13T20:31:11.323Z"
+    },
+    {
+     "text": "Reconciler: PR #651",
+     "at": "2026-11-13T20:31:16.091Z"
     }
    ],
    "approvals": [],
@@ -206577,18 +206597,18 @@
     "queuedAt": "2026-11-13T20:07:30.376Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-dispatcher-gate-never-launch-build--paulie",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-13T20:18:14.562Z",
     "runs": 2,
     "lastRun": {
-     "at": "2026-11-13T20:17:07.061Z",
-     "exit": 3,
-     "outcome": "requeued",
-     "stepsLeft": 3,
+     "at": "2026-11-13T20:31:05.476Z",
+     "exit": 0,
+     "outcome": "returned",
+     "stepsLeft": 1,
      "account": "mossesx-max-",
-     "session": "axf-dispatcher-gate-never-launch-build--joey"
+     "session": "axf-dispatcher-gate-never-launch-build--paulie"
     },
     "split": {
      "at": "2026-11-13T20:08:53.774Z",
@@ -206598,7 +206618,7 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"1e700143-c0b8-4a7f-adbe-5b601ff47212\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "2026-11-13T20:18:14.562Z",
     "planned": {
@@ -206693,7 +206713,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -206709,7 +206729,7 @@
    "title": "Per-toolbar settings: fix failing chrome-settings check and land",
    "category": "",
    "detail": "Branch claude/per-instance-settings-picker-merge-main (worktree /root/axf-builds/per-instance-settings-picker-merge-main) now has origin/main merged (commit 617aa0a7d). The fixture clash in framework/spec/fixtures/chrome-settings.json was resolved by taking main's version and regenerating the fixtures, but framework/spec/check-chrome-settings.mts now fails with a deepStrictEqual. Find which expectation differs (likely the per-instance fields vs main's tab-rows fields), fix the rules or regenerate the fixtures so both features' expectations hold, run the full chrome-settings and theme/control checks, commit, push, then land on main. Feature: every individual toolbar, tab group, menu and dialog instance gets its own settings interface (including transparency) that changes only that instance.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -206717,7 +206737,7 @@
    "pr": "#650",
    "priority": "P0",
    "createdAt": "2026-11-13T20:08:02.821Z",
-   "updatedAt": "2026-11-13T20:30:35.656Z",
+   "updatedAt": "2026-11-13T20:31:20.161Z",
    "builtAt": "",
    "notes": [
     {
@@ -206735,6 +206755,18 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-per-toolbar-settings-fix-failing-chrome--sully, own login copy)",
      "at": "2026-11-13T20:18:36.592Z"
+    },
+    {
+     "text": "Headless run axf-per-toolbar-settings-fix-failing-chrome--sully: brief only · start 13.0K tokens ($0.06) · cost $2.73 · 42 turns · 6 tools, MCP none",
+     "at": "2026-11-13T20:31:06.272Z"
+    },
+    {
+     "text": "Reconciler: PR #650",
+     "at": "2026-11-13T20:31:16.091Z"
+    },
+    {
+     "text": "Session on mossesx-max- stopped on its own with 3 steps left: back in Pending for Brett.",
+     "at": "2026-11-13T20:31:20.161Z"
     }
    ],
    "approvals": [],
@@ -206755,12 +206787,19 @@
     "queuedAt": "2026-11-13T20:08:07.159Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-per-toolbar-settings-fix-failing-chrome--sully",
+    "session": "",
     "slot": "",
     "model": "Fable",
     "launchedAt": "2026-11-13T20:18:30.099Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-13T20:31:14.141Z",
+     "exit": 0,
+     "outcome": "returned",
+     "stepsLeft": 3,
+     "account": "mossesx-max-",
+     "session": "axf-per-toolbar-settings-fix-failing-chrome--sully"
+    },
     "split": {
      "at": "2026-11-13T20:09:48.693Z",
      "by": "orchestrator",
@@ -206769,7 +206808,7 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"10fa6368-1e76-4d56-842f-c7f4c7e9219d\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- stopped on its own with 3 steps left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "2026-11-13T20:18:30.099Z",
     "planned": {
@@ -206864,7 +206903,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

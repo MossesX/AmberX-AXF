@@ -788,14 +788,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 18:47 UTC · `restore-asset-designer-plugin-merged-nov` note (all) · orchestrator
-- 2026-11-13 18:48 UTC · `change-to-one-to-do-notes-and-tasks-plugin-pr-527-brett-notes-tasks-and-to` → complete, merged, note (all) · reconciler
-- 2026-11-13 18:48 UTC · `transparency-token-works-every-dialog` s2 done (all) · orchestrator
-- 2026-11-13 18:48 UTC · `console-app-wake-word-voice-listener` note (all) · orchestrator
-- 2026-11-13 18:48 UTC · `console-app-part-3-native-bridge-mic` → running, note (all) · pipeline
-- 2026-11-13 18:48 UTC · `console-app-part-3-native-bridge-mic` branch claude/console-app-part-3-native-bridge-mic (all) · pipeline
-- 2026-11-13 18:48 UTC · `change-to-one-to-do-notes-and-tasks-plugin-pr-527-brett-notes-tasks-and-to` note (all) · orchestrator
-- 2026-11-13 18:48 UTC · `console-app-part-3-native-bridge-mic` note (all) · orchestrator
 - 2026-11-13 18:48 UTC · `decision-dialog-ui-review-other` s4 done (all) · orchestrator
 - 2026-11-13 18:49 UTC · `decision-dialog-ui-review-other` s5 done (all) · orchestrator
 - 2026-11-13 18:50 UTC · `console-android-app-thin-webview-wrapper` s1 done, → running (all) · orchestrator
@@ -1188,6 +1180,14 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 20:30 UTC · `skin-animations-swatches-skin-switch` note (all) · orchestrator
 - 2026-11-13 20:30 UTC · `dispatcher-gate-never-launch-build` → built, PR #651 (all) · builds-live
 - 2026-11-13 20:30 UTC · `per-toolbar-settings-fix-failing-chrome` s1 done (all) · orchestrator
+- 2026-11-13 20:31 UTC · `per-toolbar-settings-fix-failing-chrome` note (all) · orchestrator
+- 2026-11-13 20:31 UTC · `dispatcher-gate-never-launch-build` note (all) · orchestrator
+- 2026-11-13 20:31 UTC · `dispatcher-gate-never-launch-build` → pending, note (all) · pipeline
+- 2026-11-13 20:31 UTC · `ui-manager-floating-window-to-select-any` → pending, note (all) · reconciler
+- 2026-11-13 20:31 UTC · `skin-animations-swatches-skin-switch` PR #652, note (all) · reconciler
+- 2026-11-13 20:31 UTC · `dispatcher-gate-never-launch-build` PR #651, note (all) · reconciler
+- 2026-11-13 20:31 UTC · `per-toolbar-settings-fix-failing-chrome` PR #650, note (all) · reconciler
+- 2026-11-13 20:31 UTC · `per-toolbar-settings-fix-failing-chrome` → pending, note (all) · pipeline
 
 ## Token passes (log)
 
