@@ -98,12 +98,6 @@
         "kind": "toggle"
       },
       {
-        "target": "wait-for-ui-review",
-        "title": "Wait for UI Review",
-        "text": "On: a PR waits until you approve its screenshots in UI Review, then merges by itself. Off: UI Review never holds a merge.",
-        "kind": "toggle"
-      },
-      {
         "target": "land-now",
         "title": "Land now",
         "text": "Lands this build at the next round (within 3 minutes), ahead of the others. Releases a hold.",

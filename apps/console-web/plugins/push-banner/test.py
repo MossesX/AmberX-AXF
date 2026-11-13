@@ -636,41 +636,29 @@ check(r["status"] == "error" and "AXHUB_TOKEN" in r["summary"], "health: no rout
 plugin_services.withdraw("fake-github")
 plugin_services.withdraw("fake-health")
 
-# UI Review holds the batch merge (ui-review s9): waiting / changes / rejected = skipped, the next PR gets its turn
+# UI Review is not a gate (Nov 13 2026): a PR whose review is waiting, rejected or has changes asked still merges
 class FakeReview:
     def __init__(self): self.st, self.asked = {}, []
     def state(self, branch="", pr=None):
         self.asked.append((branch, pr))
         s = self.st.get(branch) or self.st.get(pr) or "none"
-        return {"state": s, "holds": s not in ("none", "approved")}
+        return {"state": s, "holds": False}
 fr = FakeReview()
 plugin_services.provide("ui-review@1", fr, "fake-ui-review")
 os.environ["GITHUB_TOKEN"] = TOKEN
-check(mod.PUSHES.ui_hold("MossesX/AmberX-AXF", 18, "feat/a") == "" and fr.asked[-1] == ("feat/a", 18), "UI Review: nothing submitted = free")
 fr.st["feat/a"] = "waiting"
-check(mod.PUSHES.ui_hold("MossesX/AmberX-AXF", 18, "feat/a") == "waiting", "UI Review waiting = held")
-check(mod.PUSHES.ui_hold("MossesX/axHub", 18, "other") == "" and fr.asked[-1] == ("other", None), "other repos: matched by branch only (PR numbers are AmberX-AXF's)")
-r = c.post("/p/merge", json={"repo": "MossesX/AmberX-AXF", "number": 18, "confirm": "MossesX/AmberX-AXF#18"})
-check(r.status_code == 409 and "UI Review" in r.json()["detail"], "Merge refuses a PR held by UI Review")
-fr.st["feat/a"] = "rejected"
+check(mod.PUSHES.ui_hold("MossesX/AmberX-AXF", 18, "feat/a") == "", "UI Review waiting = free (not a gate)")
+check(c.get("/p/ui-hold", params={"branch": "feat/a", "pr": 18}).json() == {"hold": "", "reason": "UI Review is not a gate (Nov 2026)"}, "GET ui-hold answers free, with the reason")
 x18 = next(x for x in STATE["pulls"] if x["number"] == 18)
-STATE["checks"][x18["head"]["sha"]] = [{"status": "completed", "conclusion": "success", "name": "CI"}]  # green: only UI Review stops it
+STATE["checks"][x18["head"]["sha"]] = [{"status": "completed", "conclusion": "success", "name": "CI"}]
 STATE["behind"]["feat/a"] = 0
 n_merged = len(STATE["merged"])
 clock["t"] += 999
 res = mod.PUSHES.auto_merge()
-hit = [x for x in res if x.get("pr") == "MossesX/AmberX-AXF#18"]
-check(hit and hit[0].get("held") == "rejected" and len(STATE["merged"]) == n_merged, "auto-merge: a rejected PR is skipped, not merged")
-fr.st["feat/a"] = "approved"
-check(mod.PUSHES.ui_hold("MossesX/AmberX-AXF", 18, "feat/a") == "", "UI Review approved = free again")
-clock["t"] += 999
-res = mod.PUSHES.auto_merge()
-check(len(STATE["merged"]) == n_merged + 1 and STATE["merged"][-1][0] == R + "/pulls/18/merge", "auto-merge: approved in UI Review = merges")
-def boom(*a, **k): raise RuntimeError("broken")
-fr.state = boom
-check(mod.PUSHES.ui_hold("MossesX/AmberX-AXF", 18, "feat/a") == "unknown", "UI Review broken: held, never merged blind")
+check(len(STATE["merged"]) == n_merged + 1 and STATE["merged"][-1][0] == R + "/pulls/18/merge" and not any(x.get("held") for x in res),
+      "auto-merge: a PR whose UI Review is waiting still lands")
+check(fr.asked == [], "the merge never asks UI Review")
 plugin_services.withdraw("fake-ui-review")
-check(mod.PUSHES.ui_hold("MossesX/AmberX-AXF", 18, "feat/a") == "", "no UI Review plugin: nothing held")
 
 # ---------------------------------------------------------------- auto-land (Nov 3 2026)
 check(mod.ci_state([{"status": "completed", "conclusion": "skipped", "name": "CodeRabbit"}]) == "none", "a skipped CodeRabbit run alone is no CI result")
@@ -697,15 +685,14 @@ check(mod.PUSHES._code_behind(CmpGh(2, ["Fix it", live[0]], ["_claude/THREADS.md
 check(mod.PUSHES._code_behind(CmpGh(0, [], []), "MossesX/AmberX-AXF", "main", "abc123") == 0, "not behind = 0")
 
 cfg0 = mod.PUSHES.config()
-check(cfg0["autoLand"] is False and cfg0["landWaitUi"] is True, "auto-land is off by default (the merge queue merges), Wait for UI Review on")
-r = c.put("/p/config", json={"landWaitUi": False})
-check(r.status_code == 200 and r.json()["landWaitUi"] is False and r.json()["autoLand"] is False, "Wait for UI Review can be switched off")
+check(cfg0["autoLand"] is False and cfg0["landWaitUi"] is False, "auto-land is off by default (the merge queue merges); Wait for UI Review is retired")
+r = c.put("/p/config", json={"landWaitUi": True})
+check(r.status_code == 200 and r.json()["landWaitUi"] is False and r.json()["autoLand"] is False, "an old client switching Wait for UI Review on is accepted and ignored")
 check(c.put("/p/config", json={"autoLand": "yes"}).status_code == 400, "autoLand is true or false")
-c.put("/p/config", json={"landWaitUi": True})
 
 ddir = Path(os.environ["AXF_PUSH_BANNER_DIR"])
 (ddir / "land.json").write_text(json.dumps({"$axf": "auto-land@1", "at": "2026-11-03T18:00:00Z", "order": [18], "managed": [18],
-                                            "items": [{"id": "feat-a", "pr": 18, "state": "blocked", "reason": {"kind": "ui", "text": "feat-a: its screenshots are waiting in UI Review."}}]}))
+                                            "items": [{"id": "feat-a", "pr": 18, "state": "blocked", "reason": {"kind": "dependency", "text": "feat-a: waits for feat-b to land first."}}]}))
 r = c.get("/p/land")
 check(r.status_code == 200 and r.json()["items"][0]["id"] == "feat-a" and r.json()["order"] == [18], "GET /land: what the host runner wrote")
 check(c.get("/p/land/blocked").json()["items"][0]["state"] == "blocked", "GET /land/blocked: the blocked ones")
@@ -719,7 +706,7 @@ check(c.post("/p/land/hold", json={"build": "../x"}).status_code == 400, "a bad 
 mod.PUSHES._forget()
 st = mod.PUSHES.branches(force=True)
 p18 = next((x for x in st["repos"][0]["pulls"] if x["number"] == 18), None)
-check(p18 is not None and p18.get("land", {}).get("kind") == "ui" and "UI Review" in p18["land"]["why"], "the banner shows auto-land's reason on the PR")
+check(p18 is not None and p18.get("land", {}).get("kind") == "dependency" and "feat-b" in p18["land"]["why"], "the banner shows auto-land's reason on the PR")
 # Save compute (Nov 4 2026): a refresh re-asks GitHub only for branches whose commit changed
 STATE["bsha"] = {b: f"{b}-sha1" for b in STATE["branches"]}
 mod.PUSHES._mem = {"checks": {}, "branch": {}, "full": {}, "base": {}}

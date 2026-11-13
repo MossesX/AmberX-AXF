@@ -6,16 +6,16 @@
  *   clean its worktree (synced files committed on its own branch, scratch files skipped, untracked duplicates of hub
  *   files backed up) → merge origin/main in (builds files newer-wins, union files unioned, generated files taken from
  *   main and regenerated) → push → its PR is opened / linked → the push banner merges it once CI is green on that head
- *   and UI Review doesn't hold it, in dependency order, one per round.
+ *   in dependency order, one per round (UI Review is not a gate, Nov 13 2026).
  * Anything that needs judgement (a code conflict, CI red) is reported in plain words; only those two create an agent
- * job. Everything else waits by itself (CI running, UI Review waiting, a dependency not merged yet).
+ * job. Everything else waits by itself (CI running, a dependency not merged yet).
  */
 
 export const LAND_FRAME = 'auto-land@1';
 export const CONTROL_FRAME = 'auto-land-control@1';
 
 /** Settings (push banner config.json): on unless switched off. */
-export const LAND_DEFAULTS = Object.freeze({ autoLand: false, landWaitUi: true });
+export const LAND_DEFAULTS = Object.freeze({ autoLand: false });
 
 /** Commit messages of status-only commits on main (framework/cli/builds-live.mjs, the reconciler, the store). */
 export const STATUS_ONLY_MARK = '[skip ci]';
@@ -154,9 +154,9 @@ export function statusOnly(commits, files) {
 /**
  * Why a landing can't go on, in plain words, or null when nothing holds it. `s` is what the runner found:
  *   { code: [files], conflicts: [files], ci: 'success'|'failure'|'running'|'none', failing: [check names],
- *     ui: '' | 'waiting' | 'changes' | 'rejected' | 'unknown', waitUi, deps: [build ids not merged], held: why,
+ *     deps: [build ids not merged], held: why,
  *     pushError, prError }
- * kind = held | code | conflict | ci | ui | dependency | push | pr | running. `agent` = needs a code change (only
+ * kind = held | code | conflict | ci | dependency | push | pr | running. `agent` = needs a code change (only
  * conflict and ci): those, and only those, may create an agent job.
  */
 export function blockReason(id, s = {}) {
@@ -168,10 +168,7 @@ export function blockReason(id, s = {}) {
   if (s.prError) return r('pr', `its pull request couldn't be opened (${str(s.prError, 160)}).`);
   if (s.deps?.length) return r('dependency', `waits for ${s.deps.join(', ')} to land first.`);
   if (s.ci === 'failure') return r('ci', `CI is red${s.failing?.length ? ` (${s.failing.slice(0, 3).join(', ')})` : ''}. Needs a code fix.`, { checks: (s.failing || []).slice(0, 10) });
-  if (s.waitUi !== false && s.ui && s.ui !== '') {
-    const words = { waiting: 'its screenshots are waiting in UI Review. Approve them and it merges by itself.', changes: 'UI Review asked for changes.', rejected: 'UI Review rejected it.', unknown: "UI Review couldn't be read, so it waits." };
-    return r('ui', words[s.ui] || `UI Review holds it (${str(s.ui, 40)}).`);
-  }
+  // UI Review is not a gate (Nov 13 2026): its state never blocks a landing
   if (s.ci === 'running' || s.ci === 'none') return r('running', s.ci === 'running' ? 'CI is running on its head.' : 'CI has not run on its head yet; started it.', { quiet: true });
   return null;
 }
