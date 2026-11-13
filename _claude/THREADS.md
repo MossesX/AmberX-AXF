@@ -786,9 +786,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 17:48 UTC · `full-voice-api-control-type-fields-press` s1 done, → running (all) · orchestrator
-- 2026-11-13 17:48 UTC · `full-voice-api-control-type-fields-press` s2 done (all) · orchestrator
-- 2026-11-13 17:49 UTC · `per-instance-settings-window-picker` → running, note (all) · pipeline
 - 2026-11-13 17:49 UTC · `per-instance-settings-window-picker` branch claude/per-instance-settings-window-picker (all) · pipeline
 - 2026-11-13 17:49 UTC · `per-instance-settings-window-picker` note (all) · orchestrator
 - 2026-11-13 17:50 UTC · `per-instance-settings-window-picker` → queued, note (all) · pipeline
@@ -1186,6 +1183,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 19:41 UTC · `orchestrator-custom-groups-custom-tabs` s7 done (all) · orchestrator
 - 2026-11-13 19:42 UTC · `console-app-part-3-native-bridge-mic` note (all) · orchestrator
 - 2026-11-13 19:42 UTC · `skin-axhub-override-switch-greyed-out` s3 done (all) · orchestrator
+- 2026-11-13 19:42 UTC · `land-overlay-preview-ui-review-resolve` → running, note (all) · pipeline
+- 2026-11-13 19:42 UTC · `land-overlay-preview-ui-review-resolve` branch claude/land-overlay-preview-ui-review-resolve (all) · pipeline
+- 2026-11-13 19:42 UTC · `land-overlay-preview-ui-review-resolve` note (all) · orchestrator
 
 ## Token passes (log)
 
