@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4042,
- "updatedAt": "2026-11-13T06:41:04.975Z",
+ "rev": 4043,
+ "updatedAt": "2026-11-13T06:42:17.093Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -176032,7 +176032,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-12T23:32:23.494Z",
-   "updatedAt": "2026-11-13T06:41:02.376Z",
+   "updatedAt": "2026-11-13T06:42:15.326Z",
    "builtAt": "",
    "notes": [
     {
@@ -176086,6 +176086,10 @@
     {
      "text": "Duplicate session stood down (Fable, 06:30 UTC launch). The dispatcher started a second Fable session of this build at 06:30:28 while the first (started 06:14:54, tmux axf-professional-skins-…-sully, pid 342270) was still live in the same worktree; deploy/claude-headless.sh:515 renames a clashing tmux session with a time suffix and launches anyway instead of refusing. The first session committed s1 (028c34e7a) and is working s2; the second session briefly overwrote framework/schemas/asset-types.json (06:36:58) and restored it to HEAD at 06:40 before stopping, nothing committed. Fix needed outside this build: pipeline.mjs / claude-headless.sh must refuse to launch a build whose session is still running (check tmux has-session / the meter file) rather than suffixing the name.",
      "at": "2026-11-13T06:41:02.376Z"
+    },
+    {
+     "text": "Root cause of the duplicate (journal 2026-11-p6): pipeline:launch fired twice for this build, 06:14:48 (session …--sully) and 06:15:42 (…--lenny), with no check that the build already had a live session; the store keeps one pipeline.session per build, so the second launch overwrote it and the 06:14 sully session became invisible to checkEnds. When lenny exited at 06:30:11 (exit 1) the build was requeued and launched a third time (…--sully-063028, this session) while the 06:14 sully session was still working the branch. Fix for a follow-up build: pipeline.mjs launch() must refuse when tmux has a live session for the build (any name prefix) or pipeline.session is set and alive, and claude-headless.sh:515 should refuse a clashing session instead of suffixing it. The 06:14 session owns the branch; it has s1 committed (028c34e7a) and is on s2.",
+     "at": "2026-11-13T06:42:15.326Z"
     }
    ],
    "approvals": [],
@@ -176590,7 +176594,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
