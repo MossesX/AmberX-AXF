@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T00:43:26.895Z",
+ "updatedAt": "2026-11-13T00:43:33.692Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -111241,7 +111241,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-12T23:40:00.983Z",
-   "updatedAt": "2026-11-13T00:43:09.090Z",
+   "updatedAt": "2026-11-13T00:43:28.983Z",
    "builtAt": "",
    "notes": [
     {
@@ -111275,6 +111275,10 @@
     {
      "text": "Launch failed on mossesx-max-: launcher exit 2: claude-headless: --log is a plain file name",
      "at": "2026-11-13T00:43:09.090Z"
+    },
+    {
+     "text": "Launch failed on mossesx-max-: launcher exit 2: claude-headless: --log is a plain file name",
+     "at": "2026-11-13T00:43:28.983Z"
     }
    ],
    "approvals": [],
@@ -111538,7 +111542,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T00:42:24.765Z",
-   "updatedAt": "2026-11-13T00:43:14.216Z",
+   "updatedAt": "2026-11-13T00:43:29.937Z",
    "builtAt": "",
    "notes": [
     {
@@ -111552,6 +111556,14 @@
     {
      "text": "Launch failed on mossesx-max-: launcher exit 2: claude-headless: --log is a plain file name",
      "at": "2026-11-13T00:43:14.216Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
+     "at": "2026-11-13T00:43:27.498Z"
+    },
+    {
+     "text": "Launch failed on mossesx-max-: launcher exit 2: claude-headless: --log is a plain file name",
+     "at": "2026-11-13T00:43:29.937Z"
     }
    ],
    "approvals": [],
@@ -111573,7 +111585,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwe96e9601vf0e"
+     "uid": "st-mwe96umi01wpje"
     },
     {
      "id": "s2",
@@ -111591,7 +111603,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwe96e9602jtsm"
+     "uid": "st-mwe96umi02yplm"
     },
     {
      "id": "s3",
@@ -111612,7 +111624,7 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwe96e9603fjii"
+     "uid": "st-mwe96umi033k6u"
     }
    ]
   }
