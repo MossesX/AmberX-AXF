@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4791,
- "updatedAt": "2026-11-13T19:25:55.335Z",
+ "rev": 4792,
+ "updatedAt": "2026-11-13T19:26:17.712Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -200516,7 +200516,7 @@
    "title": "Console app part 3: native bridge, mic, recorder, open_url, wake",
    "category": "",
    "detail": "Parallel part 3 of 4 of console-android-app-thin-webview-wrapper (parent). Builds only in the wrapper's Android module, following the shell contract from the parent.\n- JS bridge window.axfNative exposing the native features to the console.\n- Migrates AmberX's axHub device service (amberx.open_url, recorder_start/stop/status, console wake, notifications) to the new app, with the same tool names or aliases so axHub keeps working.\n- Mic and permissions handling.\n- Full API parity: REST/MCP/CLI/voice. Tests, help, Shipped features.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -200524,7 +200524,7 @@
    "pr": "#633",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:27.359Z",
-   "updatedAt": "2026-11-13T19:24:42.613Z",
+   "updatedAt": "2026-11-13T19:26:08.185Z",
    "builtAt": "",
    "notes": [
     {
@@ -200570,6 +200570,10 @@
     {
      "text": "Self-check: console-app-part-3-native-bridge-mic was marked running on mossesx-max- with no session: released and back in the Queue.",
      "at": "2026-11-13T19:24:10.440Z"
+    },
+    {
+     "text": "Self-check: console-app-part-3-native-bridge-mic was marked running on mossesx-max- with no session: released and back in the Queue.",
+     "at": "2026-11-13T19:26:08.185Z"
     }
    ],
    "approvals": [
@@ -200598,7 +200602,7 @@
    "pipeline": {
     "queuedAt": "2026-11-13T18:41:29.660Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
+    "account": "",
     "session": "",
     "slot": "",
     "model": "Fable",
@@ -200620,7 +200624,7 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"416cb9dc-383f-4644-bf7c-965b5ba0e064\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "Session on mossesx-max- ended (exit 0) with 6 steps left: back in the Queue (run 1).",
+    "note": "released by the self-check (nothing ran): back in the Queue",
     "route": "",
     "dispatchedAt": "2026-11-13T18:48:25.253Z",
     "planned": {
@@ -200803,7 +200807,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
