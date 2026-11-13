@@ -7,7 +7,7 @@ Brett, Nov 13 2026: "make the console an Android app, just a wrapper for the web
 "split the console wrapper so it runs on four slots at the same time". Native code exists only where Android requires
 it: mic, recorder, open_url, console wake, notifications, permissions. Everything else is the web console, so each native
 piece is one **tool** with one name, reached the same way from the page, from axHub, from the console API, the CLI and
-voice. Code: `BridgeContract.java` (the pure rules, JUnit `BridgeContractTest`) and `NativeBridge.java` (the Android side).
+voice. Code: `BridgeContract.java` (the pure rules, JUnit `BridgeContractTest`) and `DeviceBridge.java` (the Android side).
 
 ## Who may call it
 
@@ -28,7 +28,7 @@ catch (e) { e.code /* 'permission' */; e.permissions /* ['mic'] */; }
 ```
 
 `call(tool, args)` returns a Promise. Under it, the page posts `{ id, tool, args }` to the host object
-(`window.axfNativeHost.call(json)`), and the shell answers with a `CustomEvent('axf-native')` on `window` whose
+(`window.axfBridgeHost.call(json)`), and the shell answers with a `CustomEvent('axf-native')` on `window` whose
 `detail` is one of:
 
 | Shape | Meaning |
@@ -40,6 +40,25 @@ catch (e) { e.code /* 'permission' */; e.permissions /* ['mic'] */; }
 Error codes: `unknown_tool`, `bad_args`, `denied` (not Brett's site, or the hub asked for a page-only tool),
 `permission`, `unavailable`, `not_implemented` (in the contract, code lands in a later step of this build).
 A call id is 1-64 of `A-Z a-z 0-9 _ . : -`; a call is at most 64 KB.
+The page side adds two codes of its own: `timeout` (no answer in 2 minutes) and `no_bridge` (not inside the app).
+
+### Who builds `window.axfNative`
+
+- **The console** builds it itself at load (`apps/console-web/src/native/bridgeClient.mjs`, `installBridge(window)` in
+  `main.tsx`), before any plugin runs; console code calls `nativeTool(window, tool, args)`, which rejects with
+  `no_bridge` in a desktop browser. Tested in Node against a fake host (`bridgeClient.test.mjs`, in CI), including a
+  check that its tool list, events and aliases are the ones in `BridgeContract.java`.
+- **Any other page on Brett's sites** gets the same object from `BridgeContract.script()`, which the shell runs on
+  `onPageFinished`; it does nothing where the console already built it (same `version`).
+
+### Living with part 1's object
+
+Part 1 of the console app (build `console-android-app-thin-webview-wrapper`) exposes its own synchronous host,
+`window.axfNativeHost`, one method per feature (`info()`, `overlay(verb)`, `insets()`, …), and assigns its own
+`window.axfNative`. This bridge's host is `window.axfBridgeHost` and its Java class is `DeviceBridge`, so the two never
+collide, and `installBridge` keeps one merged `window.axfNative` whichever lands first: a bridge tool (or alias) with an
+args object answers a Promise; part 1's method names (`LEGACY_METHODS`) with positional or no args keep their
+synchronous answer; `on(event, fn)` listens to both; the earlier object stays reachable as `axfNative.legacy`.
 
 ## Tools
 
@@ -85,7 +104,7 @@ console API, the CLI (`axf console …`) and voice can use their own spelling. T
 ## Wiring in `ConsoleActivity` (part 1's file; the integration step adds two lines)
 
 ```java
-bridge = NativeBridge.attach(this, web);      // in onCreate, after the WebView exists
+bridge = DeviceBridge.attach(this, web);      // in onCreate, after the WebView exists
 bridge.onPageFinished(view, url);             // in Client.onPageFinished
 bridge.detach();                              // in onDestroy
 ```

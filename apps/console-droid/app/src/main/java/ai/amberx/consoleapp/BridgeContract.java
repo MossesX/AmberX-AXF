@@ -22,7 +22,7 @@ import org.json.JSONObject;
  *       bridge tool, so the hub, its MCP tools, the console API, the CLI and voice all reach the same code.</li>
  * </ul>
  *
- * No Android imports: every rule here runs under plain JUnit ({@code BridgeContractTest}). {@code NativeBridge} is the
+ * No Android imports: every rule here runs under plain JUnit ({@code BridgeContractTest}). {@code DeviceBridge} is the
  * Android side (the JavascriptInterface and the dispatcher); the tools themselves (mic, recorder, open_url, wake,
  * notifications) register with it in the later steps of this build.
  */
@@ -32,7 +32,7 @@ final class BridgeContract {
     /** The page-side object: {@code window.axfNative}. */
     static final String NAME = "axfNative";
     /** The Java object the WebView exposes ({@code addJavascriptInterface}); the page never calls it directly. */
-    static final String HOST = "axfNativeHost";
+    static final String HOST = "axfBridgeHost";
     static final String VERSION = "native-bridge@1";
     /** The window event every answer and every native event arrives on: {@code detail} is the JSON below. */
     static final String EVENT = "axf-native";

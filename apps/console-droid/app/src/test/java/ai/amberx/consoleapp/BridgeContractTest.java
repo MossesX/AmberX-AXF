@@ -159,7 +159,7 @@ public class BridgeContractTest {
     @Test public void thePageSideScript() throws Exception {
         String js = BridgeContract.script();
         assertTrue(js.contains("window.axfNative="));
-        assertTrue(js.contains("window.axfNativeHost"));
+        assertTrue(js.contains("window.axfBridgeHost"));
         assertTrue(js.contains("\"native-bridge@1\""));
         assertTrue(js.contains("\"axf-native\""));
         assertTrue(js.contains("\"axf-native-ready\""));

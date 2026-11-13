@@ -23,14 +23,14 @@ import org.json.JSONObject;
  * page from Brett's sites; {@link #call} takes one call, runs the tool on the main thread and answers through the
  * {@link BridgeContract#EVENT} window event. The same dispatcher answers the hub ({@link #run}), so a tool is written once.
  *
- * Wiring (one line each in {@code ConsoleActivity}): {@code bridge = NativeBridge.attach(this, web)} after the WebView
+ * Wiring (one line each in {@code ConsoleActivity}): {@code bridge = DeviceBridge.attach(this, web)} after the WebView
  * exists, and {@code bridge.onPageFinished(view, url)} from the client's {@code onPageFinished}.
  *
  * The bridge itself answers {@code bridge.ping|info|capabilities} and {@code permissions.status}; mic, recorder,
  * open_url, wake and notifications {@link #register} themselves in the later steps of this build. A contract tool with
  * no code yet answers {@link BridgeContract#E_NOT_IMPLEMENTED}, never silence.
  */
-final class NativeBridge {
+final class DeviceBridge {
     /** One native tool: runs on the main thread, returns the data the caller gets, throws to answer an error. */
     interface Tool { JSONObject run(JSONObject args) throws Exception; }
 
@@ -39,16 +39,16 @@ final class NativeBridge {
     private final Handler main = new Handler(Looper.getMainLooper());
     private final Map<String, Tool> tools = new LinkedHashMap<>();
     /** The bridge on screen, for the hub link and the overlay (null when the activity is gone). */
-    static volatile NativeBridge current;
+    static volatile DeviceBridge current;
 
-    private NativeBridge(Activity activity, WebView web) {
+    private DeviceBridge(Activity activity, WebView web) {
         this.activity = activity;
         this.web = web;
     }
 
     /** Exposes the bridge to the WebView and registers the bridge's own tools. */
-    static NativeBridge attach(Activity activity, WebView web) {
-        NativeBridge b = new NativeBridge(activity, web);
+    static DeviceBridge attach(Activity activity, WebView web) {
+        DeviceBridge b = new DeviceBridge(activity, web);
         web.addJavascriptInterface(b, BridgeContract.HOST);
         b.register(BridgeContract.PING, args -> new JSONObject().put("pong", true).put("at", System.currentTimeMillis()));
         b.register(BridgeContract.INFO, args -> b.info());
@@ -77,7 +77,7 @@ final class NativeBridge {
 
     /* ------------------------------------------------------------------ from the page */
 
-    /** The page's one entry point ({@code axfNativeHost.call(json)}); runs on the WebView's bridge thread. */
+    /** The page's one entry point ({@code axfBridgeHost.call(json)}); runs on the WebView's bridge thread. */
     @JavascriptInterface
     public void call(String json) {
         main.post(() -> {
