@@ -14,6 +14,7 @@
  *   node apps/console-web/plugins/ui-review/review.mjs decision <id> --console     his pick, in priority order
  *   node apps/console-web/plugins/ui-review/review.mjs list [--kind K] [--status waiting|changes|rejected|approved|open]
  *        [--branch B] [--pr N] [--q text] [--console] [--json]
+ *   node apps/console-web/plugins/ui-review/review.mjs gate [--console] [--json]    is UI Review a gate? never: {gate: false, since, why}
  *   node apps/console-web/plugins/ui-review/review.mjs state [--branch B] [--pr N] [--exit-code] [--console] [--json]
  *   node apps/console-web/plugins/ui-review/review.mjs decide <id[,id…]> approve|changes|reject|reopen [--comment "…"] [--console]
  *   node apps/console-web/plugins/ui-review/review.mjs migrate [--apply] [--report <file.md>]   older items → ui-review-item@1
@@ -229,6 +230,10 @@ export async function main(argv = process.argv.slice(2)) {
     const items = remote ? (await consoleCall('items')).items.map(cf.storedToReview) : submitted(loadDoc());
     const rows = core.sortItems(core.filterItems(items, { kind: val(flags.kind), status: val(flags.status), branch: val(flags.branch), pr: val(flags.pr) || null, q: val(flags.q) }));
     return out({ ok: true, items: rows }, rows.length ? rows.map(line).join('\n') : 'nothing to review');
+  }
+  if (cmd === 'gate') {
+    const g = remote ? await consoleCall('gate') : { ...core.GATE };
+    return out(g, `UI Review is ${g.gate ? 'a gate' : 'not a gate'} (since ${g.since}): ${g.why}`);
   }
   if (cmd === 'state') {
     const branch = val(flags.branch), pr = val(flags.pr).replace(/^#/, '') || null;

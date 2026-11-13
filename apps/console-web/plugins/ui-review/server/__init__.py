@@ -9,6 +9,7 @@ Every UI a build makes is submitted here for Brett's approval (review-item@1), o
   POST remove  {ids: [..]}    take submitted items (and their screenshots) out
   GET  shot?path=r<n>/<file> | items/<id>/<file>    one screenshot (png/jpg/webp)
   GET  picks / PUT picks {picked: [ids]}             design-pack picks (the page allows 3)
+  GET  gate                  {gate: false, since, why}: UI Review is not a gate (Nov 13 2026), read-only
   GET  state?branch=&pr=      ui-review@1: the strictest status of that branch's / PR's items, for information only (holds is always false)
   …    settings, predicted, predict, predict/real, approve-look
   …    choices/*                  the options a build shipped, Brett's pick, option assets (ui-choices@1, choices.py)
@@ -597,6 +598,13 @@ async def post_remove(request: Request) -> dict:
     for x in ids:
         shutil.rmtree(data_dir() / "shots" / x, ignore_errors=True)
     return {"ok": True, "removed": ids}
+
+
+@router.get("/gate")
+def gate() -> dict:
+    """Is UI Review a gate? No (Nov 13 2026): {gate: false, since, why}. Read-only; the same object as review.mjs gate,
+    MCP ui_review_gate and the console action ui-review.gate."""
+    return dict(GATE)
 
 
 @router.get("/state")

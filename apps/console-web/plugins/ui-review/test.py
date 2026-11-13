@@ -147,6 +147,27 @@ check(c.get("/p/state").status_code == 400, "state needs a branch or PR")
 svc = plugin_services.get("ui-review@1")
 check(svc is not None and svc.holds("claude/t") is False and svc.isHeld("claude/t") is False, "capability ui-review@1 provided, never holds a branch")
 check(svc.hold("claude/t") == {"held": False, "reason": "UI Review is not a gate (Nov 2026)", "state": "waiting"}, "hold() answers not held, with the reason")
+
+# ---- the gate API: REST, MCP plugin command, CLI and console / voice action all answer the same object (s6)
+rest = c.get("/p/gate").json()
+check(rest == {"$axf": "ui-review-gate@1", "gate": False, "since": "2026-11-13", "why": "UI Review is not a gate (Nov 2026)"} and svc.gate() == rest, "GET gate: {gate: false, since, why}")
+cli_gate = subprocess.run(["node", str(HERE / "review.mjs"), "gate", "--json"], capture_output=True, text=True, timeout=60)
+check(cli_gate.returncode == 0 and json.loads(cli_gate.stdout) == rest, "CLI review.mjs gate answers the same object")
+probe = subprocess.run(["node", "--input-type=module", "-e", """
+const root = process.argv[1], here = process.argv[2];
+const pc = await import(new URL('framework/core/engines/plugin-commands.mjs', root));
+const reg = (await import(new URL('framework/cli/plugin-commands.mjs', root))).registry({ folders: ['ui-review'] });
+const p = reg.plugins.find((x) => x.folder === 'ui-review');
+const cmd = (id) => p.commands.find((x) => x.id === id) || p.reads?.find((x) => x.id === id);
+const g = cmd('gate'), a = cmd('action-gate');
+const core = await import(new URL('web/review-core.mjs', here));
+const src = (await import('node:fs')).readFileSync(new URL('web/index.tsx', here), 'utf8');
+console.log(JSON.stringify({ tool: pc.commandToolName('ui-review', g?.id), route: g?.run?.route, action: a?.run?.action,
+  registered: /actions\.register\('ui-review\.gate', \(\) => \(\{ \.\.\.core\.GATE \}\)/.test(src), gate: core.GATE }));
+""", (HERE.parents[3]).as_uri() + "/", HERE.as_uri() + "/"], capture_output=True, text=True, timeout=60)
+pj = json.loads(probe.stdout or "{}") if probe.returncode == 0 else {}
+check(pj.get("tool") == "ui_review_gate" and (pj.get("route") or {}).get("path") == "/gate", f"MCP ui_review_gate runs GET gate {probe.stderr[-300:]}")
+check(pj.get("action") == "ui-review.gate" and pj.get("registered") is True and pj.get("gate") == rest, "console / voice action ui-review.gate answers core.GATE, the same object")
 check(len(svc.items(branch="claude/t")) == 2, "capability lists a branch's items")
 
 # ---- decide (single, bulk, packs) + history

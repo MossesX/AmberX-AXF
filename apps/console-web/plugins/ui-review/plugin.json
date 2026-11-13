@@ -223,6 +223,21 @@
           ]
         },
         "output": "{ waitForLook }"
+      },
+      {
+        "id": "gate",
+        "route": "GET /gate",
+        "title": "Is UI Review a gate? (no)",
+        "description": "Read-only: UI Review is not a gate since Nov 13 2026. Answers {gate: false, since, why}; no PR is held, kept as a draft or asked for screenshots because of UI Review. The same object as review.mjs gate and the console action ui-review.gate.",
+        "readOnly": true,
+        "output": "{ $axf: 'ui-review-gate@1', gate: false, since, why }"
+      },
+      {
+        "id": "action-gate",
+        "action": "ui-review.gate",
+        "title": "Is UI Review a gate? (no)",
+        "description": "Read-only, in the open console (voice: AmberX says it): UI Review is not a gate. Answers {gate: false, since, why}.",
+        "readOnly": true
       }
     ]
   },
