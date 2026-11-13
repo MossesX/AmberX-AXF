@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4021,
- "updatedAt": "2026-11-13T06:27:24.842Z",
+ "rev": 4022,
+ "updatedAt": "2026-11-13T06:27:41.137Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -178366,15 +178366,15 @@
    "title": "Skins plugin: its own removable console plugin and screen for changing skins. Gallery of every skin with live preview (desktop and phone), one-tap Use skin, Back and Restore to Default with undo, per-scope switching (whole hub, one app, one screen, one plugin), a quick skin switcher on the banner an",
    "category": "",
    "detail": "",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T06:25:11.720Z",
-   "updatedAt": "2026-11-13T06:27:19.184Z",
+   "updatedAt": "2026-11-13T06:27:30.457Z",
    "builtAt": "",
    "notes": [
     {
@@ -178384,6 +178384,14 @@
     {
      "text": "Split by Claude into 20 steps (2 Fable).",
      "at": "2026-11-13T06:27:07.243Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-skins-plugin-its-own-removable-console-plugin-an--paulie.",
+     "at": "2026-11-13T06:27:24.652Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-skins-plugin-its-own-removable-console-plugin-an--paulie, own login copy)",
+     "at": "2026-11-13T06:27:30.457Z"
     }
    ],
    "approvals": [],
@@ -178403,12 +178411,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T06:25:16.919Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-skins-plugin-its-own-removable-console-plugin-an--paulie",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Fable",
+    "launchedAt": "2026-11-13T06:27:23.856Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T06:27:07.243Z",
@@ -178420,7 +178428,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-13T06:27:23.856Z",
     "planned": {
      "model": "Fable",
      "account": "mossesx-max-",
@@ -178429,7 +178437,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-13T06:27:23.856Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -178940,7 +178948,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
