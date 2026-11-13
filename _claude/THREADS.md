@@ -781,7 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-12 23:13 UTC · `banners-page-focus-scroll-to-and-highlight-any-banner-or-badge` branch claude/banners-page-focus-scroll-to-and-highlight-any-banner-or-badge (all) · pipeline
 - 2026-11-12 23:13 UTC · `banners-page-focus-scroll-to-and-highlight-any-banner-or-badge` note (all) · orchestrator
 - 2026-11-12 23:13 UTC · `move-amberx-web-app-into-the-console-amberx-andr` s13 done (all) · orchestrator
 - 2026-11-12 23:14 UTC · `badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad` added (0 steps) (all) · mcp
@@ -1181,6 +1180,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 07:20 UTC · `remove-ui-review-as-a-gate-no-screenshots-required-prs-never-held-as-draft-for` → pending, note (all) · pipeline
 - 2026-11-13 07:20 UTC · `remove-ui-review-as-a-gate-no-screenshots-required-prs-never-held-as-draft-for` note (all) · reconciler
 - 2026-11-13 07:20 UTC · `skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga` s13 done (all) · orchestrator
+- 2026-11-13 07:20 UTC · `skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga` s14 done (all) · orchestrator
 
 ## Token passes (log)
 
