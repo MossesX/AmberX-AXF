@@ -781,7 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 07:18 UTC · `skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga` s8 done (all) · foreign-write
 - 2026-11-13 07:18 UTC · `skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga` s12 done (all) · orchestrator
 - 2026-11-13 07:19 UTC · `professional-skins-that-rebuild-the-whole-app-fable-ultrathink-every-step-e` s6 done (all) · orchestrator
 - 2026-11-13 07:19 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` s1 done, → running (all) · orchestrator
@@ -1181,6 +1180,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 12:29 UTC · `auto-recover-stuck-builds` s10 done (all) · orchestrator
 - 2026-11-13 12:29 UTC · `fix-toolbar-settings-doing-nothing` note (all) · mcp
 - 2026-11-13 12:29 UTC · `combine-merge-queue-into-one-pr` s11 done (all) · orchestrator
+- 2026-11-13 12:29 UTC · `fix-toolbar-settings-doing-nothing` s1 done, → running (all) · orchestrator
 
 ## Token passes (log)
 
