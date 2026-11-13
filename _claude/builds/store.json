@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4328,
- "updatedAt": "2026-11-13T11:31:13.981Z",
+ "rev": 4329,
+ "updatedAt": "2026-11-13T11:31:31.481Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -175184,15 +175184,15 @@
    "title": "Badge shape picker on the Banners screen: pill (text), icon or dot for every badge, like Following AmberX. Shape already exists in code (types.ts, Banner.tsx), it just isn't shown. Android twin too.",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad",
    "pr": "#568",
    "createdAt": "2026-11-12T23:14:26.317Z",
-   "updatedAt": "2026-11-13T11:30:38.842Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-13T11:30:42.556Z",
+   "builtAt": "2026-11-13T11:30:42.556Z",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
@@ -175364,12 +175364,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T11:30:42.556Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T23:16:08.502Z",
-     "updatedAt": "2026-11-12T23:16:08.502Z"
+     "updatedAt": "2026-11-13T11:30:49.421Z"
     }
    ],
    "profiles": [
@@ -175383,7 +175383,22 @@
    "rev": 14,
    "deleted": false,
    "deletedAt": "",
-   "pending": null,
+   "pending": {
+    "model": "Opus",
+    "status": "complete",
+    "estimate": "",
+    "source": "console",
+    "planId": "",
+    "createdAt": "2026-11-12T23:14:26.317Z",
+    "builtAt": "2026-11-13T11:30:42.556Z",
+    "prefixSteps": true,
+    "stepAt": {
+     "st-mwe62k6v01dlm2": "2026-11-12T23:16:08.502Z",
+     "st-mwe62k6v02vb5e": "2026-11-12T23:16:08.502Z",
+     "st-mwe62k6v03q5y0": "2026-11-12T23:16:08.502Z",
+     "st-mwe62k6v04jam9": "2026-11-12T23:16:08.502Z"
+    }
+   },
    "queue": null,
    "defaultAt": "2026-11-12T23:16:08.502Z",
    "rearranged": false,

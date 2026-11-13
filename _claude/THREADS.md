@@ -781,7 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 06:24 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` note (all) · builds-live
 - 2026-11-13 06:23 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` → queued, note (all) · pipeline
 - 2026-11-13 06:23 UTC · `skin-configuration-panel-before-ai-makes-a-skin-brett-picks-what-it-may-change` → running (all) · mcp
 - 2026-11-13 06:25 UTC · `skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga` added (0 steps) (all) · mcp
@@ -1181,6 +1180,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 11:30 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` s26 done, note (all) · foreign-write
 - 2026-11-13 11:30 UTC · `overlay-opens-pages-the-floating-toolbar-expands` added (4 steps) (all) · foreign-write
 - 2026-11-13 11:30 UTC · `badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad` PR #568 (all) · builds-live
+- 2026-11-13 11:30 UTC · `badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad` s4 done, → complete (all) · foreign-write
 
 ## Token passes (log)
 
