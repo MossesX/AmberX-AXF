@@ -6,7 +6,9 @@ is off, never on the console MCP; hub users never reach it: the plugin isn't use
                                     entry (head → base, fork, CI, mergeable, ready = CI passed + mergeable + not a
                                     draft); cached ~2 min
     POST /pr     {repo, branch}     opens a PR into the default branch (or answers the one already open)
-    POST /merge  {repo, number, confirm: "<repo>#<number>"}
+    POST /merge  {repo, number, confirm: "<repo>#<number>", via?}   (through the server lander, server/lander.py)
+    GET  /lander | POST /lander/retry {repo, number} | /lander/forget {repo, number} | /lander/round
+                                    the server lander: every failed merge, its retry ladder and what is missing
                                     merges an open PR (merge commit) only when it isn't behind its base, GitHub says it
                                     can and every check on its head commit passed; the head commit is pinned so nothing
                                     newer slips in
@@ -89,6 +91,7 @@ import axf_framework  # noqa: F401 — framework/python on sys.path
 from axf_server import github, storage
 
 from . import claudefix
+from . import lander as lander_mod
 
 router = APIRouter()
 
@@ -964,7 +967,7 @@ class Pushes:
                     done.append({**line, "merged": False, "why": "ready: merges next round (one merge per round)"})
                     break
                 try:
-                    res = self.merge({"repo": repo, "number": p["number"], "confirm": key}, wait_ui=wait_ui)
+                    res = LANDER.attempt(repo, p["number"], "auto-merge", wait_ui=wait_ui)  # the one server lander
                     merged_one = bool(res.get("merged"))
                     done.append({**line, "merged": merged_one})
                 except HTTPException as e:
@@ -1210,6 +1213,28 @@ class Pushes:
 
 
 PUSHES = Pushes()
+# The one server lander (server/lander.py): every merge attempt goes through it; a failure alerts Brett at once and goes
+# on its retry ladder (pull main in, Claude Code resolves, re-run CI, merge again) until it merges or every way failed.
+LANDER = lander_mod.Lander(
+    PUSHES, read=lambda: storage.read_json(data_dir() / lander_mod.LANDER_FILE, {}),
+    write=lambda d: storage.write_json(data_dir() / lander_mod.LANDER_FILE, d),
+    alert=lambda a: cx.raise_alert(a), resolve=lambda keys: cx.resolve_alerts(keys), log=lambda t: cx.log("system", t, "info"),
+    queue_repo=UI_REVIEW_REPO, ci_state=ci_state)
+
+
+def lander_round() -> list[dict[str, Any]]:
+    """Queue kicks become lander failures (alerted once each), then one ladder pass. Never raises."""
+    try:
+        q = PUSHES.queue()
+        if q.get("on"):
+            LANDER.ingest_kicks(UI_REVIEW_REPO, q.get("kicked") or [])
+    except Exception:  # noqa: BLE001
+        pass
+    try:
+        out = LANDER.round()
+    except Exception as e:  # noqa: BLE001
+        out = [{"error": _text(str(e), 200)}]
+    return out
 
 
 class MergeQueueService:
@@ -1331,6 +1356,8 @@ def _auto_merge_loop() -> None:
             PUSHES.auto_merge()
         except Exception:  # noqa: BLE001 — never take the server down
             pass
+        if PUSHES.has_local():  # the retry ladder writes through the local token, like merging
+            lander_round()
 
 
 if os.environ.get("AXF_PUSH_AUTOMERGE", "").lower() != "off":
@@ -1376,9 +1403,55 @@ def open_pr(body: Any = Body(None)) -> dict[str, Any]:
     return _tracked("push", "Open pull request", body, PUSHES.open_pr)
 
 
+def _via(request: Request | None, body: Any) -> str:
+    """Who asked for a merge: body.via (cli, mcp, voice, github…) or an agent's axHub headers (claude), else the console."""
+    v = body.get("via") if isinstance(body, dict) else None
+    if isinstance(v, str) and v in lander_mod.VIAS:
+        return v
+    if request is not None and any(request.headers.get(h) for h in AGENT_HEADERS):
+        return "claude"
+    return "console"
+
+
 @router.post("/merge")
-def merge(body: Any = Body(None)) -> dict[str, Any]:
-    return _tracked("merge", "Merge", body, PUSHES.merge)
+def merge(request: Request, body: Any = Body(None)) -> dict[str, Any]:
+    """Every merge goes through the server lander: a failure alerts Brett at once and is retried by itself."""
+    via = _via(request, body)
+    b = {k: v for k, v in body.items() if k != "via"} if isinstance(body, dict) else body
+    if not isinstance(b, dict) or set(b) - {"repo", "number", "confirm"}:
+        raise HTTPException(400, "send {repo, number, confirm, via?}")
+    return _tracked("merge", "Merge", b, lambda x: LANDER.attempt(x.get("repo"), x.get("number"), via, confirm=x.get("confirm") or ""))
+
+
+def _pr_body(body: Any) -> tuple[str, int]:
+    if not isinstance(body, dict) or set(body) - {"repo", "number"} or body.get("repo") not in PUSHES.config()["repos"] \
+            or not isinstance(body.get("number"), int) or isinstance(body.get("number"), bool) or body["number"] <= 0:
+        raise HTTPException(400, "send {repo: <a watched repo>, number: <PR number>}")
+    return body["repo"], body["number"]
+
+
+@router.get("/lander")
+def lander_list() -> dict[str, Any]:
+    """The server lander: every PR whose merge failed, its state (retrying | blocked | stuck | merged | closed), each
+    attempt, what it does next and, when it stopped, exactly what is missing."""
+    return LANDER.state()
+
+
+@router.post("/lander/retry")
+def lander_retry(body: Any = Body(None)) -> dict[str, Any]:
+    repo, n = _pr_body(body)
+    return LANDER.retry(repo, n)
+
+
+@router.post("/lander/forget")
+def lander_forget(body: Any = Body(None)) -> dict[str, Any]:
+    repo, n = _pr_body(body)
+    return LANDER.forget(repo, n)
+
+
+@router.post("/lander/round")
+def lander_round_now() -> dict[str, Any]:
+    return {"results": lander_round(), **LANDER.state()}
 
 
 @router.post("/auto-merge")
