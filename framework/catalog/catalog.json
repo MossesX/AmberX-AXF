@@ -2504,6 +2504,10 @@
                 {
                   "id": "cx.buildengine.sectionowners",
                   "title": "Section owners: every section that acts on its own has one employee who posts its key events in the group chat (crew-sections@1, framework/cli/crew-say.mjs, CI owner check)"
+                },
+                {
+                  "id": "cx.buildengine.projectcreate",
+                  "title": "Create projects from MCP, API, CLI and voice: project_create (hub home, validated manifest, optional linked repo and skin, optional demo seed data), project_switch and project_delete; the console follows live"
                 }
               ]
             },

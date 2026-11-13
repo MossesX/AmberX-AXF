@@ -1,7 +1,7 @@
 {
   "$axf": "tracker@1",
   "frameworkVersion": "0.2.0",
-  "generatedAt": "2026-11-03T14:26:22.176Z",
+  "generatedAt": "2026-11-13T17:26:55.462Z",
   "summary": {
     "foundations": {
       "built": 68,
@@ -2121,7 +2121,7 @@
       "parent": "ui.windows",
       "title": "Persist window layouts per app",
       "tag": "suggested",
-      "status": "placeholder",
+      "status": "partial",
       "wave": 2,
       "module": "axf-ui",
       "notes": ""
@@ -3639,6 +3639,54 @@
       "wave": 2,
       "module": "app-console",
       "notes": ""
+    },
+    {
+      "id": "cx.buildengine.shipped",
+      "tab": "console",
+      "group": "console-plumbing",
+      "parent": "cx.buildengine",
+      "title": "Shipped manifests: every landed build's prompt, brief, models, steps, commit, files, tests and cost in Shipped features (shipped-manifest@1)",
+      "tag": "suggested",
+      "status": "built",
+      "wave": 1,
+      "module": "app-console",
+      "notes": "Orchestrator tick ships each landed build's manifest; ledger shows it per entry; API/MCP/CLI/voice/deep link; backfill --since. Kotlin twin deferred."
+    },
+    {
+      "id": "cx.buildengine.hardlimit",
+      "tab": "console",
+      "group": "console-plumbing",
+      "parent": "cx.buildengine",
+      "title": "VPS hard build limit: the host refuses the N+1st headless build, every build in a CPU/memory-capped systemd slice, docker test runs capped (build-limit@1)",
+      "tag": "suggested",
+      "status": "built",
+      "wave": 1,
+      "module": "app-console",
+      "notes": "framework/cli/build-limit.mjs: launch gate (exit 3 at the limit, default 8, one config file) in claude-headless.sh, inner run gate before claude -p, swarm runner; axf-builds.slice + 30 s enforcer timer (adopt strays, docker test-run limits); only Queued builds take slots; console/REST/MCP/CLI/voice read, Brett-only set. Host-only: no Kotlin twin."
+    },
+    {
+      "id": "cx.buildengine.sectionowners",
+      "tab": "console",
+      "group": "console-plumbing",
+      "parent": "cx.buildengine",
+      "title": "Section owners: every section that acts on its own has one employee who posts its key events in the group chat (crew-sections@1, framework/cli/crew-say.mjs, CI owner check)",
+      "tag": "suggested",
+      "status": "built",
+      "wave": 1,
+      "module": "app-console",
+      "notes": "11 sections (orchestrator, dispatcher, watchdog, shipped, account failover, landing, merge queue, nightly deploy, backups, health monitor, notification rules), one owner each from the crew; registry agents/sections.json, reassign in Settings → Agent swarm → Section owners; posts start/done/failed/blocked/waiting as the owner, respects the chat switch, deduped; crew-say.mjs check in CI. Kotlin twin deferred."
+    },
+    {
+      "id": "cx.buildengine.projectcreate",
+      "tab": "console",
+      "group": "console-plumbing",
+      "parent": "cx.buildengine",
+      "title": "Create projects from MCP, API, CLI and voice: project_create (hub home, validated manifest, optional linked repo and skin, optional demo seed data), project_switch and project_delete; the console follows live",
+      "tag": "suggested",
+      "status": "built",
+      "wave": 1,
+      "module": "app-console",
+      "notes": "Nov 13 2026 (Opus): project_create / project_switch / project_delete on the console MCP (axHub policy: create and switch allow, delete confirm), engine ops project-create/-switch/-delete, POST /api/projects and the Projects plugin's new command take repo, skin and seed, CLI projects.mjs new --seed demo --repo --skin (also axf projects). Every new project gets its hub home /projects/<id>/ (_claude/, _data/project.manifest.json passing the Standards rules); seed demo = lists 4 levels deep, 10 to-dos, 5 notes, 2 plans, 2 sample builds, all marked [Demo] / demo-data (framework/plan/project-seed-core.mjs). Open consoles follow project changes live (/api/events channel projects + a 60 s poll). Checks: spec/check-project-create.mjs, server/test_mcp_projects.py. Kotlin twin deferred."
     },
     {
       "id": "cx.ai",

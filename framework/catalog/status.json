@@ -2280,5 +2280,11 @@
     "wave": 1,
     "module": "app-console",
     "notes": "11 sections (orchestrator, dispatcher, watchdog, shipped, account failover, landing, merge queue, nightly deploy, backups, health monitor, notification rules), one owner each from the crew; registry agents/sections.json, reassign in Settings → Agent swarm → Section owners; posts start/done/failed/blocked/waiting as the owner, respects the chat switch, deduped; crew-say.mjs check in CI. Kotlin twin deferred."
+  },
+  "cx.buildengine.projectcreate": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "Nov 13 2026 (Opus): project_create / project_switch / project_delete on the console MCP (axHub policy: create and switch allow, delete confirm), engine ops project-create/-switch/-delete, POST /api/projects and the Projects plugin's new command take repo, skin and seed, CLI projects.mjs new --seed demo --repo --skin (also axf projects). Every new project gets its hub home /projects/<id>/ (_claude/, _data/project.manifest.json passing the Standards rules); seed demo = lists 4 levels deep, 10 to-dos, 5 notes, 2 plans, 2 sample builds, all marked [Demo] / demo-data (framework/plan/project-seed-core.mjs). Open consoles follow project changes live (/api/events channel projects + a 60 s poll). Checks: spec/check-project-create.mjs, server/test_mcp_projects.py. Kotlin twin deferred."
   }
 }
