@@ -17,3 +17,17 @@ Yes. Headless builds on the VPS start without `AXF_TOKEN` and `AXF_CONSOLE_URL`:
 - `axf shot` (shots.mjs) silently falls back to the worktree data folder when the env is missing.
 - Result: review items and screenshots stay in `/root/axf-builds/<build>/…`, Brett never sees them, and
   nothing tells him. When the worktree is removed they are gone.
+
+## s2 Launcher passes the console URL and token
+
+`deploy/claude-headless.sh` (every dispatcher, agent-slots and manual launch goes through it):
+
+- `AXF_CONSOLE_URL` goes into the tmux env: `AXF_CONSOLE_URL`, else `https://<DOMAIN>` from the console's
+  env file (`AXF_CONSOLE_ENV`, default `/opt/axf/.axf-console/env`), else `https://console.amberxai.com`.
+- `AXF_TOKEN` goes through the existing private secret file (0600, sourced and deleted by the inner run,
+  never on tmux's command line, never logged), from the env, else the console's env file.
+- Heavy steps via `agent-slots.mjs heavy` inherit the session env, so they get both too.
+- Test: `deploy/claude-login.test.mjs` end to end checks the fake claude sees both and that the token is
+  printed nowhere. (4 checks in that file already fail on main, unrelated: account switching mid-run.)
+- Scope: the console accepts one token today, so builds get the console token itself. A per-build scoped
+  token needs a console auth change (cross-app contract, Fable): recorded as a follow-up below.

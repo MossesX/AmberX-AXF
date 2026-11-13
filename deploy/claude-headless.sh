@@ -114,6 +114,13 @@ done
 [[ -z "$account" || "$account" =~ ^[a-z0-9][a-z0-9-]{0,31}$ ]] || { echo "claude-headless: --account is a saved account name (or active / live)" >&2; exit 2; }
 raw="${log%.log}.jsonl"
 HDIR="${AXF_HEADLESS_DIR:-/var/tmp/axf-headless}"
+CONSOLE_ENV="${AXF_CONSOLE_ENV:-/opt/axf/.axf-console/env}"
+# The console a build talks to: AXF_CONSOLE_URL, else https://<DOMAIN> from the console's env file, else the default.
+console_url() {
+  local u="${AXF_CONSOLE_URL:-}" d=""
+  if [[ -z "$u" && -r "$CONSOLE_ENV" ]]; then d="$(sed -n 's/^DOMAIN=//p' "$CONSOLE_ENV" | head -1 | tr -d '"'"'"'\r ')"; [[ -n "$d" ]] && u="https://$d"; fi
+  printf '%s' "${u:-https://console.amberxai.com}"
+}
 model="${AXF_MODEL:-}"
 if [[ -z "$model" ]]; then prev=""; for a in "$@"; do [[ "$prev" == --model ]] && model="$a"; [[ "$a" == --model=* ]] && model="${a#--model=}"; prev="$a"; done; fi
 agent="${agent:-$name}"
@@ -518,14 +525,21 @@ for v in PATH HOME AXF_BUILD_LIMIT AXF_BUILD_SLICE AXF_BUILD_LIMIT_ONLY AXF_BUIL
   [[ -n "${!v:-}" ]] && envs+=(-e "$v=${!v}")
 done
 envs+=(-e "AXF_BUILD_ID=${AXF_BUILD_ID:-}")   # always set: never the tmux server's stale value from an older launch
+envs+=(-e "AXF_CONSOLE_URL=$(console_url)")   # where UI Review, axf shot and activity post (not a secret; the token is below)
 # Secrets go through a private file, not tmux's command line: git auth (GIT_CONFIG_COUNT/KEY_n/VALUE_n, which tmux
 # never passed before, so pushes from a headless build failed) and the axHub token (env, else the console's env file).
 secret="$(umask 077; mktemp "${TMPDIR:-/tmp}/axf-headless-env-XXXXXX")"
 {
   for v in $(compgen -e | grep -E '^GIT_CONFIG_(COUNT|KEY_[0-9]+|VALUE_[0-9]+|PARAMETERS)$'); do printf 'export %s=%q\n' "$v" "${!v}"; done
   tok="${AXHUB_TOKEN:-}"
-  if [[ -z "$tok" && -r /opt/axf/.axf-console/env ]]; then tok="$(sed -n 's/^AXHUB_TOKEN=//p' /opt/axf/.axf-console/env | head -1 | tr -d '"'"'"'\r')"; fi
+  if [[ -z "$tok" && -r "$CONSOLE_ENV" ]]; then tok="$(sed -n 's/^AXHUB_TOKEN=//p' "$CONSOLE_ENV" | head -1 | tr -d '"'"'"'\r')"; fi
   [[ -n "$tok" ]] && printf 'export AXHUB_TOKEN=%q\n' "$tok"
+  # The console token, so `review.mjs submit --console` and `axf shot` reach UI Review instead of the worktree (without
+  # it every VPS build's review items and screenshots stayed stuck in /root/axf-builds/<build>, silently). Env, else the
+  # console's env file. Only ever written to this 0600 file, which the inner run sources and deletes; never logged.
+  ctok="${AXF_TOKEN:-}"
+  if [[ -z "$ctok" && -r "$CONSOLE_ENV" ]]; then ctok="$(sed -n 's/^AXF_TOKEN=//p' "$CONSOLE_ENV" | head -1 | tr -d '"'"'"'\r')"; fi
+  [[ -n "$ctok" ]] && printf 'export AXF_TOKEN=%q\n' "$ctok"
 } > "$secret"
 tmux new-session -d -s "$session" -x 200 -y 50 -c "$(pwd)" "${envs[@]}" \
   bash "$HERE/claude-headless.sh" --inner --name "$slug" --agent "$agent" ${account:+--account "$account"} --envfile "$secret" --brief "$brief" --log "$log" ${slot:+--slot "$slot"} ${priority:+--priority "$priority"} -- "$@"
