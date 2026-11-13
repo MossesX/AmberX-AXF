@@ -68,3 +68,27 @@ button has an icon; on the filter bar (checkboxes, chips) the other six settings
 
 Values: variant `icons | icons-labels | labels`, align `start | center | spread`, density `compact | regular | roomy`,
 surface `flat | raised | glass`, toggles `on | off`.
+
+## s5 Test
+
+`framework/spec/check-toolbar-settings.mts` (jsdom, real AppShell + AxfProvider; in CI next to Help mode): 146 checks.
+Right-click → Toolbar settings… → Icons is saved and drawn; every field × every value on each of the three Shipped
+features bars changes the rendered toolbar and unset puts it back; the stylesheet has a rule for every value;
+collapsible fold by click and by `toolbar.fold`; search box filters buttons, checkboxes and chips; the app toolbar
+draws its own Buttons setting; state reads back for the API; a new runtime on the same storage (reload) and a toolbar
+that appears later get the saved settings.
+
+## s6 Checks
+
+- `check-toolbar-settings.mts` 146/146, `check-tapconfirm.mts` 80/80, `check-chrome-settings.mts` 282, `check-help-mode.mts` 43
+- `check-theme`, `check-controls`, `check-toolbars`, `check-chrome-assets` green
+- console-web `tsc --noEmit` with the framework copied in as CI does: 0 errors
+- Shots (jsdom render of the shell with the three bars, in Chromium, desktop + phone): before, after (actions Icons +
+  Raised, view Spread, filters Collapsible + Search box + Rule + Roomy), folded.
+
+## Notes
+
+- Buttons Icons / Labels switches buttons that have an icon (and segmented options' icons); a checkbox or chip has no
+  icon to show, so on the filter bar the other settings are the visible ones.
+- No core engine or contract changed (chrome-settings@1 fields are as they were); no fixture or Kotlin twin needed.
+- Other baked apps (axHub web, AmberX, Molly, walkthrough-studio, demo) get it on their next rebake / CI copy.
