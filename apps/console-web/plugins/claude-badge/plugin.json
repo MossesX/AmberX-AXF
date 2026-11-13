@@ -124,5 +124,5 @@
     ]
   },
   "userGrantable": true,
-  "opens": false
+  "opens": "main"
 }
