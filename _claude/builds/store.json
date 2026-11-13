@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3966,
- "updatedAt": "2026-11-13T02:07:24.367Z",
+ "rev": 3967,
+ "updatedAt": "2026-11-13T02:10:57.359Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -173370,9 +173370,9 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/tap-to-confirm-follows-label-visibility-quick-switches-pane-at-top-of-every-ch",
-   "pr": "",
+   "pr": "#544",
    "createdAt": "2026-11-12T20:45:12.311Z",
-   "updatedAt": "2026-11-13T02:07:22.108Z",
+   "updatedAt": "2026-11-13T02:10:55.416Z",
    "builtAt": "",
    "notes": [
     {
@@ -173568,7 +173568,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
