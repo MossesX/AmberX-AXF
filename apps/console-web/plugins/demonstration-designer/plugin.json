@@ -35,7 +35,8 @@
       "_claude/memory/STATUS.md",
       ".github/workflows/android.yml",
       "apps/console-web/plugins/README.md",
-      "framework/spec/PORTING.md"
+      "framework/spec/PORTING.md",
+      "_claude/THREADS.md"
     ]
   },
   "commands": {
