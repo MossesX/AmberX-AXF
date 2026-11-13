@@ -368,6 +368,11 @@ path, body = STATE["merged"][-1]
 check(m["merged"] is True and path == R + "/pulls/18/merge", "green + mergeable: merged through the PR")
 check(body == {"merge_method": "merge", "sha": "aaa111"}, "merge commit, pinned to the head that passed CI")
 check(not any(s["method"] == "PUT" and "/git/refs" in s["path"] for s in SEEN), "main is never pushed to directly")
+MC["as"] = "pending-github-confirmation"
+g = c.post("/p/merge", json={"repo": "MossesX/AmberX-AXF", "number": 18, "confirm": "MossesX/AmberX-AXF#18"}).json()
+check(g.get("merged") is not True and g.get("state") == "pending-github-confirmation" and g.get("confirmId") == "mossesx/amberx-axf#18",
+      "merge gate: the merge API's 200 alone answers pending with a confirm id, never merged")
+MC["as"] = "merged"
 
 # ---------------------------------------------------------------- auto-merge (Oct 30 2026; 0.5.0 every change through a PR, up to date with main)
 import copy  # noqa: E402
@@ -415,6 +420,13 @@ check(c.post("/p/queue/move", json={"pr": 18, "to": 0}).status_code == 403, "Jum
 check(c.post("/p/queue/add", json={"pr": "x"}).status_code == 400, "queue commands take a PR number")
 check(c.post("/p/queue/remove", json={"pr": 18, "why": "test"}).json()["ok"] is True, "Remove from queue goes through merge-queue.mjs")
 c.put("/p/config", json={"mergeQueue": False})
+# merge-confirm@1: the merge API says merged, GitHub read back doesn't yet: the round reports pending, never merged
+MC["as"] = "pending-github-confirmation"; n_calls = len(STATE["merged"])
+r = AM()
+mine = [x for x in r if x.get("pr") == "MossesX/AmberX-AXF#18"]
+check(len(STATE["merged"]) == n_calls + 1 and not any(x.get("merged") for x in r), "auto-merge: the merge call alone reports nothing merged")
+check(mine and mine[0].get("state") == "pending-github-confirmation", "auto-merge: the PR reads Pending GitHub confirmation")
+MC["as"] = "merged"
 r = AM()
 check([x["pr"] for x in r if x.get("merged")] == ["MossesX/AmberX-AXF#18"], "auto-merge: the green, up-to-date PR merges; the fork and the draft don't")
 check(STATE["merged"][-1][1] == {"merge_method": "merge", "sha": "aaa111"}, "auto-merge: pinned to the head that passed CI")

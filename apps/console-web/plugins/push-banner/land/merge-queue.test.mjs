@@ -2,7 +2,7 @@
 // repo with a fake GitHub (no network, no model). Run: node apps/console-web/plugins/push-banner/land/merge-queue.test.mjs
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { mkdtempSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import * as q from './merge-queue-core.mjs';
@@ -151,10 +151,22 @@ await t('round 3: status-only main commits keep the stack; #3 green merges with 
   sh(repo, 'fetch', '-q', 'origin'); sh(repo, 'checkout', '-q', '--detach', 'origin/main');
   mkdirSync(join(repo, '_claude'), { recursive: true }); commit('_claude/store.json', '{}\n', 'Builds live [skip ci]'); sh(repo, 'push', '-q', 'origin', 'HEAD:main');
   const st0 = readQueue(s); const sha = st0.stack[0].sha; ciBySha[sha] = 'success';
+  // merge-confirm@1: the merge API answers merged: true, but GitHub, read back, hasn't confirmed it yet
+  confirmAs = 'pending-github-confirmation';
+  const pend = await queueRound({ s, git, gh, api });
+  assert.deepEqual(merges, [1, 3], 'the merge call was made');
+  assert.ok(!pend.merged.some((m) => m.pr === 3), 'not counted as merged before GitHub confirms');
+  assert.deepEqual(pend.awaiting.map((e) => [e.pr, e.confirm]), [[3, 'pending-github-confirmation']], "stays in the queue as 'awaiting GitHub'");
+  assert.ok(existsSync(join(data, 'queue-merging')), 'the one-per-stack redeploy waits for the confirmation');
+  // the next round reads it back: GitHub confirms, now it is merged and the redeploy may run
+  confirmAs = 'merged';
   const st = await queueRound({ s, git, gh, api });
-  assert.deepEqual(merges, [1, 3]);
+  assert.deepEqual(merges, [1, 3], 'no second merge call');
+  assert.equal(st.merged.at(-1).pr, 3);
   assert.equal(st.merged.at(-1).queueSha, sha, 'merged on the run that tested it');
+  assert.deepEqual(st.awaiting, []);
   assert.deepEqual(st.items, []);
+  assert.ok(!existsSync(join(data, 'queue-merging')), 'confirmed: the deploy hold is gone');
 });
 
 await t('remove + add + move go through the control file', async () => {

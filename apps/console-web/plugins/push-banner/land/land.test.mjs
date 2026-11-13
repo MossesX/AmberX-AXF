@@ -13,6 +13,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from './land-core.mjs';
 import { makeGit, round, control, readState, ciOf, reasonEvent } from './land.mjs';
+import { confirmAlerts, confirmAlertKey } from './merge-confirm-store.mjs';
 process.env.AXF_CREW_SAY = 'off'; // group-chat posts (crew-say.mjs) stay out of the real Breakroom
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -221,5 +222,15 @@ rmSync(tmp, { recursive: true, force: true });
 console.log('group chat: a landing reason is Brett\'s move, a code fix, or something in the way');
 check(['held', 'ui', 'code'].every((k) => reasonEvent(k) === 'waiting'), 'held, UI Review and uncommitted code wait for Brett');
 check(['conflict', 'ci', 'error'].every((k) => reasonEvent(k) === 'failed') && ['push', 'pr', 'dependency'].every((k) => reasonEvent(k) === 'blocked'), 'conflicts and red CI failed; push, PR and dependencies blocked');
+console.log('merge confirmations: one alert per merge GitHub hasn\'t confirmed, resolved once it does');
+{
+  const tk = { unconfirmed: ['o/r#5'], merged: ['o/r#6'], failed: ['o/r#7'], alert: [{ id: 'o/r#5', repo: 'o/r', pr: 5, path: 'merge-queue', why: 'PR still open on GitHub', url: 'u/5' }] };
+  const { post, resolve } = confirmAlerts(tk);
+  check(post.length === 1 && post[0].key === 'confirm:o/r#5' && post[0].source === 'push-banner' && /hasn't confirmed the merge of o\/r#5/.test(post[0].title) && /PR still open/.test(post[0].body) && /recheck o\/r 5/.test(post[0].body), 'a newly unconfirmed merge: one alert, key confirm:<repo>#<pr>, what to do in plain words');
+  check(resolve.join() === 'confirm:o/r#6,confirm:o/r#7' && confirmAlertKey('O/R#6') === 'confirm:o/r#6', 'confirmed or refused: its alert is resolved');
+  check(confirmAlerts({ unconfirmed: [], merged: [], failed: [], alert: [tk.alert[0]] }).post.length === 0, 'an old unconfirmed merge is not pushed again every round');
+  const notify = JSON.parse(readFileSync(join(PLUGIN, 'notify.json'), 'utf8'));
+  check(notify.types.some((x) => x.id === 'merge.unconfirmed' && x.match.keyPrefix === 'confirm:' && x.match.source === 'push-banner'), 'notify.json declares merge.unconfirmed for those alerts');
+}
 console.log(`auto-land: ${ok} checks passed${bad ? `, ${bad} FAILED` : ''}`);
 if (bad) process.exitCode = 1;
