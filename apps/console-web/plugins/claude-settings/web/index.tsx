@@ -19,7 +19,7 @@ const POLL_MS = 15000;
 type Value = boolean | string | number;
 interface Setting {
   key: string; group: string; label: string; kind: 'toggle' | 'choice' | 'number' | 'text' | 'time'; value: Value; default: Value;
-  owner: boolean | 'raise'; locked: boolean; who: string; description: string; level: string;
+  owner: boolean | 'raise'; locked: boolean; who: string; description: string; level: string; deprecated?: string;
   options?: { value: string; label: string }[]; min?: number; max?: number; step?: number; shared?: string;
   changed?: { at: string; by: string; via: string; why?: string };
 }
@@ -82,11 +82,12 @@ function SettingRow({ s }: { s: Setting }) {
   const [error, setError] = useState('');
   useEffect(() => { setDraft(String(s.value)); }, [s.value]);
   const put = (v: Value) => { setBusy(true); setError(''); save({ [s.key]: v }).catch((e: Error) => setError(e.message)).finally(() => setBusy(false)); };
-  const badge = s.locked ? <span className="fx-chip"><Icon name="lock" size={12} /> Locked</span>
+  const badge = s.deprecated ? <span className="fx-chip"><Icon name="lock" size={12} /> Deprecated</span>
+    : s.locked ? <span className="fx-chip"><Icon name="lock" size={12} /> Locked</span>
     : s.owner === true ? <span className="fx-chip fx-chip--warning"><Icon name="key" size={12} /> Owner only</span>
       : s.owner === 'raise' ? <span className="fx-chip"><Icon name="key" size={12} /> Only Brett raises</span>
         : s.shared ? <span className="fx-chip fx-chip--accent"><Icon name="layers" size={12} /> Shared with {s.shared}</span> : null;
-  const hint = <>{s.description}{s.changed ? <span className="axp-cs-row__when"> Last changed by {s.changed.by}{s.changed.why ? ` (${s.changed.why})` : ''}, {new Date(s.changed.at).toLocaleString()}.</span> : null}</>;
+  const hint = <>{s.deprecated ? `${s.deprecated} ` : ''}{s.description}{s.changed ? <span className="axp-cs-row__when"> Last changed by {s.changed.by}{s.changed.why ? ` (${s.changed.why})` : ''}, {new Date(s.changed.at).toLocaleString()}.</span> : null}</>;
   const disabled = busy || s.locked;
   let control;
   if (s.kind === 'toggle') control = <Switch label={s.label} checked={s.value === true} disabled={disabled} hint={hint} onChange={(v) => put(v)} />;
@@ -101,7 +102,7 @@ function SettingRow({ s }: { s: Setting }) {
     );
   }
   return (
-    <div className="axp-cs-row" data-key={s.key}>
+    <div className="axp-cs-row" data-key={s.key} data-deprecated={s.deprecated ? '' : undefined} aria-disabled={s.deprecated ? true : undefined}>
       <div className="axp-cs-row__control">{control}</div>
       {(badge || busy) && <div className="axp-cs-row__badge">{busy ? <span className="axp-cs-row__when" role="status">Saving…</span> : badge}</div>}
       {error && <Note tone="danger">{error}</Note>}
