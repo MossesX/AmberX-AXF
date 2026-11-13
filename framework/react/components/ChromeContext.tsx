@@ -22,6 +22,9 @@
  *   chrome.reset:<type>:<instance>               drop every override + the instance's own asset pick
  *   chrome.swap:<type>:<instance>:<asset|next>   use another asset (tab groups: for this row; the rest: the app's slot)
  *   chrome.interface:<type>:<settings id|default|custom|reset>   which settings interface the dialog uses
+ *   chrome.instance-interface:<type>:<instance>:<settings id|default|custom|inherit>   which settings interface THIS
+ *                                                one instance's dialog uses (inherit = the kind's pick; build
+ *                                                per-instance-settings-window-picker)
  *   chrome.unset:<type>:<instance>:<field>       reset one field: it inherits from the app's asset again
  *   chrome.edits                                 open Settings → Appearance at the "Assets with edits" list
  *   settings.controlled-colour:<warning|accent|info|success|danger>   the colour that marks overridden settings
@@ -30,7 +33,7 @@
  *   tapconfirm.window:<ms>                        how long an armed item waits for the second tap (1000–10000)
  */
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { CONTROLLED_COLORS, CONTROLLED_COLOR_KEY, chromeOverrideList, controlledColorOf, CHROME_FIELDS, CHROME_ICONS, CHROME_INSTANCE_ASSET_KEY, CHROME_INSTANCE_KEY, CHROME_LABELS, CHROME_MANY, CHROME_MOVES, CHROME_SETTINGS_PATCH_KEY, CHROME_SETTINGS_PICK_KEY, CHROME_SETTINGS_TABS, CHROME_TYPES, FRAMEWORK_MODULE, POSITION_LABELS, SETTINGS_LEVEL_KEY, SETTINGS_LEVELS, SETTINGS_LEVEL_LABEL, chromeFieldValue, chromeLabel, chromeSettingsChoices, chromeSettingsCustomId, chromeSettingsDefaultId, chromeSettingsPick, chromeTypeOfTarget, isChromeInstanceId, isChromeType, normalizeInstanceOverride, normalizeSettingsUi, resolveSettingsChain, settingsLevelOf, settingsLevelRank, type AssetType, type AxfRuntime, type ChromeField, type ChromeType, type SettingsLevel, type SettingsUi, type SettingSpec, type SettingValue } from '../../core';
+import { CONTROLLED_COLORS, CONTROLLED_COLOR_KEY, chromeOverrideList, controlledColorOf, CHROME_FIELDS, CHROME_ICONS, CHROME_INSTANCE_ASSET_KEY, CHROME_INSTANCE_INTERFACE_KEY, CHROME_INSTANCE_KEY, CHROME_LABELS, CHROME_MANY, CHROME_MOVES, CHROME_SETTINGS_PATCH_KEY, CHROME_SETTINGS_PICK_KEY, CHROME_SETTINGS_TABS, CHROME_TYPES, FRAMEWORK_MODULE, POSITION_LABELS, SETTINGS_LEVEL_KEY, SETTINGS_LEVELS, SETTINGS_LEVEL_LABEL, chromeFieldValue, chromeInstanceSettingsPick, chromeLabel, chromeSettingsChoices, chromeSettingsCustomId, chromeSettingsDefaultId, chromeSettingsPick, chromeTypeOfTarget, isChromeInstanceId, isChromeType, normalizeInstanceOverride, normalizeSettingsUi, resolveSettingsChain, settingsLevelOf, settingsLevelRank, type AssetType, type AxfRuntime, type ChromeField, type ChromeType, type SettingsLevel, type SettingsUi, type SettingSpec, type SettingValue } from '../../core';
 import { TAP_KEYS, TAP_KINDS, isTapKind, tapArmMs, tapKindKey } from '../../core/engines/tapconfirm';
 import { CHROME_TAP_FIELD, CHROME_TAP_OPTIONS } from '../../core/engines/chrome-settings-rules.mjs';
 import { CONTROL_TOKEN_SLOTS, withTokenOverride, withoutTokenOverride } from '../../core/engines/control-tokens.mjs';
@@ -52,18 +55,36 @@ const installed = new WeakSet<AxfRuntime>();
 
 const instanceOf = (type: ChromeType, payload: string | undefined): string => (CHROME_MANY[type] || (payload && isChromeInstanceId(payload)) ? (payload && isChromeInstanceId(payload) ? payload : '') : CHROME_APP_INSTANCE);
 
-/** The settings asset a type's dialog renders through, resolved (inherit@1) and normalized; null when the app ships none. */
-export function chromeSettingsUi(rt: AxfRuntime, type: ChromeType): { id: string; ui: SettingsUi; custom: boolean } | null {
+/**
+ * The settings asset a dialog renders through, resolved (inherit@1) and normalized; null when the app ships none.
+ * With an instance: that one's own pick first (axf.chrome.<type>.<instance>.interface), then the kind's, then the default.
+ */
+export function chromeSettingsUi(rt: AxfRuntime, type: ChromeType, instance?: string): { id: string; ui: SettingsUi; custom: boolean; source: 'instance' | 'type' | 'default' } | null {
   const assets = rt.registry.list('settings');
-  const id = chromeSettingsPick(rt.settings.get(CHROME_SETTINGS_PICK_KEY(type)), type, assets.map((a) => a.id));
-  if (!id) return null;
+  const pick = chromeInstanceSettingsPick(instance ? rt.settings.get(CHROME_INSTANCE_INTERFACE_KEY(type, instance)) : undefined, rt.settings.get(CHROME_SETTINGS_PICK_KEY(type)), type, assets.map((a) => a.id));
+  if (!pick) return null;
+  const { id, source } = pick;
   const patch = rt.settings.get(CHROME_SETTINGS_PATCH_KEY(type));
   const get = (x: string) => rt.registry.get('settings', x) ?? null;
   const data = resolveSettingsChain(get, id);
   if (!data) return null;
   const custom = id !== chromeSettingsDefaultId(type);
   const merged = custom && patch && typeof patch === 'object' && !Array.isArray(patch) ? { ...data, ...(patch as Record<string, unknown>) } : data;
-  return { id, ui: normalizeSettingsUi(merged), custom };
+  return { id, ui: normalizeSettingsUi(merged), custom, source };
+}
+
+/**
+ * Pick the settings interface ONE instance's dialog uses: `inherit` (or '') clears it so it follows the kind's pick,
+ * `default` / `custom` name the shared default / this app's copy, anything else a settings asset id for that type.
+ * Returns an error text, or '' when done.
+ */
+export function setChromeInterface(rt: AxfRuntime, type: ChromeType, instance: string, which: string): string {
+  const key = CHROME_INSTANCE_INTERFACE_KEY(type, instance);
+  if (!which || which === 'inherit') { rt.settings.clear(key); return ''; }
+  const id = which === 'default' ? chromeSettingsDefaultId(type) : which === 'custom' ? chromeSettingsCustomId(type, rt.manifest.app.id) : which;
+  if (!chromeSettingsChoices(type, rt.registry.list('settings') as never).some((c) => c.id === id)) return `No ${chromeLabel(type).toLowerCase()} settings interface "${id}".`;
+  rt.settings.set(key, id);
+  return '';
 }
 
 /** The data an instance renders with today (the active asset, or the row's own pick, plus its overrides). */
@@ -165,7 +186,7 @@ export function installChrome(rt: AxfRuntime): void {
       if (v === null) { rt.toast(`${chromeLabel(ty)} has no setting "${key}" with that value.`, 'warning', 'Chrome settings'); return; }
       setChromeField(rt, ty, inst(ty, instance, ctx), key, v);
     }, { label: 'Set one chrome setting (chrome.set:<type>:<instance>:<field>:<value>)', params: true, requires: 'assets.swap' });
-    rt.actions.register('chrome.reset', ([type, instance], ctx) => { const ty = t(type); if (!ty) return; const i = inst(ty, instance, ctx); rt.settings.clear(CHROME_INSTANCE_KEY(ty, i)); rt.settings.clear(CHROME_INSTANCE_ASSET_KEY(ty, i)); }, { label: 'Reset a chrome piece to its asset', params: true, requires: 'assets.swap' });
+    rt.actions.register('chrome.reset', ([type, instance], ctx) => { const ty = t(type); if (!ty) return; const i = inst(ty, instance, ctx); rt.settings.clear(CHROME_INSTANCE_KEY(ty, i)); rt.settings.clear(CHROME_INSTANCE_ASSET_KEY(ty, i)); rt.settings.clear(CHROME_INSTANCE_INTERFACE_KEY(ty, i)); }, { label: 'Reset a chrome piece to its asset', params: true, requires: 'assets.swap' });
     rt.actions.register('chrome.swap', ([type, instance, asset = 'next'], ctx) => { const ty = t(type); if (ty && !swapChrome(rt, ty, inst(ty, instance, ctx), asset)) rt.toast(`No ${chromeLabel(ty).toLowerCase()} asset "${asset}".`, 'warning', 'Change'); }, { label: 'Use another chrome asset (chrome.swap:<type>:<instance>:<asset|next>)', params: true, requires: 'assets.swap' });
     rt.actions.register('chrome.unset', ([type, instance, key = ''], ctx) => { const ty = t(type); if (ty && key) setChromeField(rt, ty, inst(ty, instance, ctx), key, null); }, { label: 'Reset one chrome setting to the app (chrome.unset:<type>:<instance>:<field>)', params: true, requires: 'assets.swap' });
     rt.actions.register('chrome.edits', () => rt.dispatch('settings.open:appearance'), { label: 'Assets with edits (Settings → Appearance)' });
@@ -178,6 +199,11 @@ export function installChrome(rt: AxfRuntime): void {
       if (!rt.registry.get('settings', id)) { rt.toast(`No settings interface "${id}".`, 'warning', 'Chrome settings'); return; }
       if (id === chromeSettingsDefaultId(ty)) rt.settings.clear(key); else rt.settings.set(key, id);
     }, { label: 'Pick which settings interface a chrome kind uses (default | custom | <id> | reset)', params: true });
+    rt.actions.register('chrome.instance-interface', ([type, instance, which = 'inherit'], ctx) => {
+      const ty = t(type); if (!ty) return;
+      const err = setChromeInterface(rt, ty, inst(ty, instance, ctx), which);
+      if (err) rt.toast(err, 'warning', 'Chrome settings');
+    }, { label: 'Pick the settings interface one tab group / toolbar / banner / nav / menu uses (chrome.instance-interface:<type>:<instance>:<id|default|custom|inherit>)', params: true });
     // Tap to confirm (build add-a-tap-to-confirm-option-to-every-settings-in): the same settings the dialogs edit.
     rt.actions.register('tapconfirm.item', ([type, instance, value = ''], ctx) => {
       const ty = t(type); if (!ty) return;
@@ -282,7 +308,36 @@ function InterfacePicker({ type }: { type: ChromeType }) {
           <TextField label="Hidden ids (comma-separated: a tab, group or field key)" value={ui.hide.join(', ')} onChange={(v) => setPatch('hide', v.split(',').map((s) => s.trim()).filter(Boolean))} />
         </Section>
       )}
+      <Note tone="info">This is the interface every {chromeLabel(type).toLowerCase()} uses. One of them can pick its own with "Settings interface for this one" at the top of its dialog.</Note>
       {!editing && <Note tone="info">The shared default is in use. Pick this app's copy to edit it; the default stays what every app starts from.</Note>}
+    </div>
+  );
+}
+
+/**
+ * The settings-interface picker every instance's dialog carries (build per-instance-settings-window-picker): which
+ * settings asset THIS tab group / toolbar / banner / nav / menu bar renders its dialog through. The first option
+ * follows the kind's pick (the shared default unless the app picked its copy), so the shared default is preselected.
+ * Shown whatever the interface hides, so an instance can always switch back.
+ */
+export function InstanceInterfacePicker({ type, instance }: { type: ChromeType; instance: string }) {
+  const rt = useRuntime();
+  useAxfState();
+  useSettingsTick(rt, [CHROME_INSTANCE_INTERFACE_KEY(type, instance), CHROME_SETTINGS_PICK_KEY(type)]);
+  const assets = rt.registry.list('settings');
+  const choices = chromeSettingsChoices(type, assets as never);
+  const own = rt.settings.get(CHROME_INSTANCE_INTERFACE_KEY(type, instance));
+  const kind = chromeSettingsPick(rt.settings.get(CHROME_SETTINGS_PICK_KEY(type)), type, assets.map((a) => a.id));
+  const kindName = choices.find((c) => c.id === kind)?.name ?? kind ?? 'none';
+  const value = typeof own === 'string' && choices.some((c) => c.id === own) ? own : 'inherit';
+  const customId = chromeSettingsCustomId(type, rt.manifest.app.id);
+  const options = [
+    { value: 'inherit', label: `Same as every ${chromeLabel(type).toLowerCase()} (${kindName})` },
+    ...choices.map((c) => ({ value: c.id, label: `${c.name}${c.custom ? (c.id === customId ? ' · this app' : ' · custom') : ' · shared default'}` })),
+  ];
+  return (
+    <div data-axf-instance-interface={`${type}:${instance}`}>
+      <SelectField label="Settings interface for this one" hint={value === 'inherit' ? undefined : 'Only this one uses it; the rest keep theirs.'} value={value} options={options} onChange={(v) => rt.dispatch(`chrome.instance-interface:${type}:${instance}:${v}`)} />
     </div>
   );
 }
@@ -310,8 +365,8 @@ function ExtraGroup({ group }: { group: { id: string; label: string; icon?: stri
 export function ChromeSettingsPanel({ type, instance }: { type: ChromeType; instance: string }) {
   const rt = useRuntime();
   useAxfState();
-  useSettingsTick(rt, [CHROME_INSTANCE_KEY(type, instance), CHROME_INSTANCE_ASSET_KEY(type, instance), CHROME_SETTINGS_PICK_KEY(type), CHROME_SETTINGS_PATCH_KEY(type), SETTINGS_LEVEL_KEY]);
-  const res = chromeSettingsUi(rt, type);
+  useSettingsTick(rt, [CHROME_INSTANCE_KEY(type, instance), CHROME_INSTANCE_ASSET_KEY(type, instance), CHROME_INSTANCE_INTERFACE_KEY(type, instance), CHROME_SETTINGS_PICK_KEY(type), CHROME_SETTINGS_PATCH_KEY(type), SETTINGS_LEVEL_KEY]);
+  const res = chromeSettingsUi(rt, type, instance);
   const ui = res?.ui ?? normalizeSettingsUi(null);
   const [query, setQuery] = useState('');
   const level: SettingsLevel = settingsLevelOf(rt.settings.get(SETTINGS_LEVEL_KEY)) ?? ui.defaultLevel;
@@ -349,19 +404,20 @@ export function ChromeSettingsPanel({ type, instance }: { type: ChromeType; inst
   };
   const header = ui.header === 'none' ? null : (
     <div className="fx-row fx-row--between">
-      <div><strong>{title}</strong>{ui.header === 'full' && <div className="fx-muted">{Object.keys(overrides).length ? `${Object.keys(overrides).length} setting(s) set for this one` : 'Follows its asset'}{res ? ` · interface ${res.id}` : ''}</div>}</div>
+      <div><strong>{title}</strong>{ui.header === 'full' && <div className="fx-muted">{Object.keys(overrides).length ? `${Object.keys(overrides).length} setting(s) set for this one` : 'Follows its asset'}{res ? ` · interface ${res.id}${res.source === 'instance' ? ' (its own)' : ''}` : ''}</div>}</div>
       <div className="fx-row">
         {Object.keys(overrides).length > 0 && <Button size="sm" icon="undo" onClick={() => rt.dispatch(`chrome.reset:${type}:${instance}`)}>Reset</Button>}
         {ui.levels && <Segmented<SettingsLevel> size="sm" label="Level" value={level} options={SETTINGS_LEVELS.map((l) => ({ value: l, label: SETTINGS_LEVEL_LABEL[l] }))} onChange={(l) => rt.settings.set(SETTINGS_LEVEL_KEY, l)} />}
       </div>
     </div>
   );
+  const picker = <InstanceInterfacePicker type={type} instance={instance} />;
   const search = ui.search ? <TextField label="Find a setting" value={query} onChange={setQuery} placeholder="style, position, badges…" /> : null;
-  if (!res) return <div className="fx-stack">{header}<Note tone="warning">This app ships no settings interface for {chromeLabel(type).toLowerCase()}s (chrome-settings@1: settings/{chromeSettingsDefaultId(type)}); showing the built-in layout.</Note>{search}<TabGroup id={`chrome.settings.${type}`} label={`${chromeLabel(type)} settings sections`} value={shownTab} onChange={setTab} tabs={tabsForRow}>{body(shownTab)}</TabGroup></div>;
-  if (ui.layout === 'list') return <div className="fx-stack fx-stack--lg">{header}{search}{tabs.map((t) => <Section key={t.id} title={t.label}>{body(t.id)}</Section>)}</div>;
+  if (!res) return <div className="fx-stack">{header}<Note tone="warning">This app ships no settings interface for {chromeLabel(type).toLowerCase()}s (chrome-settings@1: settings/{chromeSettingsDefaultId(type)}); showing the built-in layout.</Note>{picker}{search}<TabGroup id={`chrome.settings.${type}`} label={`${chromeLabel(type)} settings sections`} value={shownTab} onChange={setTab} tabs={tabsForRow}>{body(shownTab)}</TabGroup></div>;
+  if (ui.layout === 'list') return <div className="fx-stack fx-stack--lg">{header}{picker}{search}{tabs.map((t) => <Section key={t.id} title={t.label}>{body(t.id)}</Section>)}</div>;
   return (
     <div className="fx-stack">
-      {header}{search}
+      {header}{picker}{search}
       <TabGroup id={`chrome.settings.${type}`} label={`${chromeLabel(type)} settings sections`} value={shownTab} onChange={setTab} tabs={tabsForRow} asset={ui.layout === 'tabs-side' ? 'side-dock' : undefined}>
         <div className="fx-stack" style={{ paddingBlockStart: 'var(--fx-dens-gap-md)' }}>{body(shownTab)}</div>
       </TabGroup>
@@ -379,7 +435,7 @@ export const chromeDialogs: DialogMap = {
 };
 
 /** Every chrome type's settings reachable by voice: the catalog lists these ids (console.actions). */
-export const CHROME_ACTION_IDS = ['chrome.settings', 'chrome.pick', 'chrome.move', 'chrome.set', 'chrome.reset', 'chrome.swap', 'chrome.interface', 'chrome.unset', 'chrome.edits'] as const;
+export const CHROME_ACTION_IDS = ['chrome.settings', 'chrome.pick', 'chrome.move', 'chrome.set', 'chrome.reset', 'chrome.swap', 'chrome.interface', 'chrome.instance-interface', 'chrome.unset', 'chrome.edits'] as const;
 export { CHROME_TYPES as CHROME_SETTINGS_TYPES, CHROME_LABELS as CHROME_SETTINGS_LABELS };
 
 /**

@@ -8,7 +8,7 @@
     "tabs": 76,
     "settingsTabs": 67,
     "settings": 85,
-    "functions": 225,
+    "functions": 229,
     "buttons": 62,
     "plugins": 67
   },
@@ -3908,10 +3908,53 @@
       "file": "plugins/approvals-banner/web/index.tsx"
     },
     {
+      "address": "function:overlay.expand",
+      "kind": "function",
+      "id": "overlay.expand",
+      "label": "Expand the overlay",
+      "detail": "Action · Approvals banner",
+      "keywords": [
+        "overlay.expand",
+        "overlay",
+        "expand"
+      ],
+      "plugin": "ai.amberx.axf.console.approvals-banner",
+      "file": "plugins/approvals-banner/web/index.tsx"
+    },
+    {
+      "address": "function:overlay.collapse",
+      "kind": "function",
+      "id": "overlay.collapse",
+      "label": "Collapse the overlay",
+      "detail": "Action · Approvals banner",
+      "keywords": [
+        "overlay.collapse",
+        "overlay",
+        "collapse"
+      ],
+      "plugin": "ai.amberx.axf.console.approvals-banner",
+      "file": "plugins/approvals-banner/web/index.tsx"
+    },
+    {
+      "address": "function:overlay.open",
+      "kind": "function",
+      "id": "overlay.open",
+      "label": "Open a page in the overlay (overlay.open:<url>)",
+      "detail": "Action · Approvals banner",
+      "keywords": [
+        "overlay.open",
+        "overlay",
+        "open"
+      ],
+      "params": true,
+      "plugin": "ai.amberx.axf.console.approvals-banner",
+      "file": "plugins/approvals-banner/web/index.tsx"
+    },
+    {
       "address": "function:approvals.overlay",
       "kind": "function",
       "id": "approvals.overlay",
-      "label": "Approval overlay (phone): on/off, edge, top, size, expand, show, idle, opacity, shrink, pages; expand or collapse its card; page[:<url>] opens a page in its full browser window, close shrinks it back to the toolbar (approvals.overlay:<what>:<value>)",
+      "label": "Overlay (phone): on/off, edge, top, size, opens, show, opacity, shrink; expand, collapse, open:<url>; bar[:off] (approvals.overlay:<what>:<value>)",
       "detail": "Action · Approvals banner",
       "keywords": [
         "approvals.overlay",
@@ -6768,6 +6811,21 @@
       "file": "src/axf/react/components/ChromeContext.tsx"
     },
     {
+      "address": "function:chrome.instance-interface",
+      "kind": "function",
+      "id": "chrome.instance-interface",
+      "label": "Pick the settings interface one tab group / toolbar / banner / nav / menu uses (chrome.instance-interface:<type>:<instance>:<id|default|custom|inherit>)",
+      "detail": "Action",
+      "keywords": [
+        "chrome.instance-interface",
+        "chrome",
+        "instance",
+        "interface"
+      ],
+      "params": true,
+      "file": "src/axf/react/components/ChromeContext.tsx"
+    },
+    {
       "address": "function:tapconfirm.item",
       "kind": "function",
       "id": "tapconfirm.item",
@@ -7993,7 +8051,7 @@
       "id": "ai.amberx.axf.console.approvals-banner",
       "label": "Approvals banner",
       "folder": "approvals-banner",
-      "version": "0.7.0",
+      "version": "0.8.0",
       "detail": "Plugin · module",
       "keywords": [
         "approvals-banner",

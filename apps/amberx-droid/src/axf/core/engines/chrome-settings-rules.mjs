@@ -66,6 +66,10 @@ export const CHROME_SETTINGS_PATCH_KEY = (type) => `axf.chrome.settings.custom.$
 export const CHROME_INSTANCE_KEY = (type, instance) => `axf.chrome.${type}.${instance}`;
 /** The asset one tab group picked for itself (tab groups only; the other kinds swap the app's slot). */
 export const CHROME_INSTANCE_ASSET_KEY = (type, instance) => `axf.chrome.${type}.${instance}.asset`;
+/** The settings interface one instance picked for its own dialog (every kind; unset = the kind's pick, else the default). */
+export const CHROME_INSTANCE_INTERFACE_KEY = (type, instance) => `axf.chrome.${type}.${instance}.interface`;
+/** Suffixes of per-instance keys that are picks, not field overrides (never listed as "assets with edits"). */
+export const CHROME_INSTANCE_PICK_SUFFIXES = ['.asset', '.interface'];
 /** A tab group's remembered tab and fold state (per device). */
 export const TAB_GROUP_LAST_KEY = (instance) => `axf.tabs.${instance}.last`;
 export const TAB_GROUP_FOLD_KEY = (instance) => `axf.tabs.${instance}.folded`;
@@ -75,10 +79,21 @@ export const isChromeInstanceId = (id) => typeof id === 'string' && INSTANCE.tes
 
 /** data-fx-ctx-target names each chrome kind reports on right-click / long-press (several per kind: older names kept). */
 export const CHROME_TARGETS = { 'tab-group': ['tab-group'], toolbar: ['toolbar'], banner: ['banner', 'axf-banner'], 'nav-menu': ['nav', 'nav-item'], 'app-menu': ['app-menu', 'menubar'], 'context-menu': [] };
+/** Target prefixes that are a chrome kind too (a library's own toolbar target, `axf-ws-toolbar:<workspace>`). */
+export const CHROME_TARGET_PREFIXES = { toolbar: ['axf-ws-toolbar:'] };
 export function chromeTypeOfTarget(target) {
   if (typeof target !== 'string') return null;
   for (const t of CHROME_TYPES) if (CHROME_TARGETS[t].includes(target)) return t;
+  for (const t of CHROME_TYPES) if ((CHROME_TARGET_PREFIXES[t] ?? []).some((p) => target.startsWith(p) && target.length > p.length)) return t;
   return null;
+}
+
+/**
+ * The instance id of a toolbar / tab row / nav that names no target of its own: its settings id, else its accessible
+ * name, as a slug (the context menu and the All toolbars list use the same one, so both open the same dialog).
+ */
+export function chromeInstanceSlug(label) {
+  return typeof label === 'string' ? label.toLowerCase().replace(/[^a-z0-9._:/-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 120) : '';
 }
 
 /** Where a kind can be moved from its context menu, and the setting that does it. */
@@ -215,7 +230,7 @@ export function chromeOverrideList(saved) {
     const type = CHROME_TYPES.find((t) => rest.startsWith(`${t}.`));
     if (!type) continue;
     const instance = rest.slice(type.length + 1);
-    if (!isChromeInstanceId(instance) || instance.endsWith('.asset')) continue;
+    if (!isChromeInstanceId(instance) || CHROME_INSTANCE_PICK_SUFFIXES.some((x) => instance.endsWith(x))) continue;
     const fields = normalizeInstanceOverride(type, raw);
     if (Object.keys(fields).length) out.push({ type, instance, fields });
   }
@@ -270,6 +285,38 @@ export function chromeSettingsPick(saved, type, ids) {
   if (typeof saved === 'string' && list.includes(saved) && chromeTypeOfSettingsId(saved) === type) return saved;
   const d = chromeSettingsDefaultId(type);
   return list.includes(d) ? d : null;
+}
+
+/**
+ * The settings interface ONE instance's dialog renders through (build per-instance-settings-window-picker):
+ * `{ id, source }` where source is `instance` (its own pick), `type` (the kind's pick for the app) or `default` (the
+ * shared default); null when the app ships none. A pick whose asset is gone (another skin, a removed copy) falls
+ * through to the next level, so a dialog always opens.
+ */
+export function chromeInstanceSettingsPick(instanceSaved, typeSaved, type, ids) {
+  const list = Array.isArray(ids) ? ids : [];
+  if (typeof instanceSaved === 'string' && list.includes(instanceSaved) && chromeTypeOfSettingsId(instanceSaved) === type) return { id: instanceSaved, source: 'instance' };
+  const id = chromeSettingsPick(typeSaved, type, list);
+  if (!id) return null;
+  return { id, source: typeof typeSaved === 'string' && typeSaved === id && id !== chromeSettingsDefaultId(type) ? 'type' : 'default' };
+}
+
+/**
+ * Every instance that picked its own settings interface: `[{ type, instance, interface }]` from the saved settings,
+ * sorted like chromeOverrideList. The readable state behind chrome.instance-interface.
+ */
+export function chromeInstanceInterfaceList(saved) {
+  const out = [];
+  if (!isObj(saved)) return out;
+  for (const [key, raw] of Object.entries(saved)) {
+    if (!key.startsWith('axf.chrome.') || !key.endsWith('.interface') || typeof raw !== 'string' || !raw) continue;
+    const rest = key.slice('axf.chrome.'.length, -'.interface'.length);
+    const type = CHROME_TYPES.find((t) => rest.startsWith(`${t}.`));
+    if (!type) continue;
+    const instance = rest.slice(type.length + 1);
+    if (isChromeInstanceId(instance)) out.push({ type, instance, interface: raw });
+  }
+  return out.sort((a, b) => CHROME_TYPES.indexOf(a.type) - CHROME_TYPES.indexOf(b.type) || a.instance.localeCompare(b.instance));
 }
 
 /** The choices a picker offers for a chrome type: the shared default first, then every custom copy / other interface for it. */
