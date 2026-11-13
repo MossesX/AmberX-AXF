@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T06:42:17.093Z",
+ "updatedAt": "2026-11-13T06:42:34.060Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -115485,7 +115485,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-12T23:32:23.494Z",
-   "updatedAt": "2026-11-13T06:42:15.326Z",
+   "updatedAt": "2026-11-13T06:42:32.498Z",
    "builtAt": "",
    "notes": [
     {
@@ -115543,6 +115543,10 @@
     {
      "text": "Root cause of the duplicate (journal 2026-11-p6): pipeline:launch fired twice for this build, 06:14:48 (session …--sully) and 06:15:42 (…--lenny), with no check that the build already had a live session; the store keeps one pipeline.session per build, so the second launch overwrote it and the 06:14 sully session became invisible to checkEnds. When lenny exited at 06:30:11 (exit 1) the build was requeued and launched a third time (…--sully-063028, this session) while the 06:14 sully session was still working the branch. Fix for a follow-up build: pipeline.mjs launch() must refuse when tmux has a live session for the build (any name prefix) or pipeline.session is set and alive, and claude-headless.sh:515 should refuse a clashing session instead of suffixing it. The 06:14 session owns the branch; it has s1 committed (028c34e7a) and is on s2.",
      "at": "2026-11-13T06:42:15.326Z"
+    },
+    {
+     "text": "Headless run axf-professional-skins-that-rebuild-the-whole-app-fa--sully-063028: brief only · start 18.0K tokens ($0.13) · cost $4.99 · 42 turns · 6 tools, MCP none",
+     "at": "2026-11-13T06:42:32.498Z"
     }
    ],
    "approvals": [],
