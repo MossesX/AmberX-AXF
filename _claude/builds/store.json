@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4766,
- "updatedAt": "2026-11-13T19:12:53.355Z",
+ "rev": 4767,
+ "updatedAt": "2026-11-13T19:13:21.313Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -200499,7 +200499,7 @@
    "pr": "#633",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:27.359Z",
-   "updatedAt": "2026-11-13T19:12:47.687Z",
+   "updatedAt": "2026-11-13T19:12:54.637Z",
    "builtAt": "",
    "notes": [
     {
@@ -200527,6 +200527,10 @@
      "at": "2026-11-13T19:07:51.021Z"
     },
     {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-console-app-part-3-native-bridge-mic--paulie, own login copy)",
+     "at": "2026-11-13T19:12:54.636Z"
+    },
+    {
      "text": "Started run 2 on mossesx-max- (Opus, Phase 2): axf-console-app-part-3-native-bridge-mic--paulie.",
      "at": "2026-11-13T19:12:47.687Z"
     }
@@ -200549,11 +200553,11 @@
     "queuedAt": "2026-11-13T18:41:29.660Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-console-app-part-3-native-bridge-mic--paulie",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-13T19:12:45.564Z",
-    "runs": 2,
+    "model": "Fable",
+    "launchedAt": "2026-11-13T18:48:25.253Z",
+    "runs": 1,
     "lastRun": {
      "at": "2026-11-13T19:07:50.250Z",
      "exit": 0,
@@ -200570,9 +200574,9 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"416cb9dc-383f-4644-bf7c-965b5ba0e064\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- ended (exit 0) with 6 steps left: back in the Queue (run 1).",
     "route": "",
-    "dispatchedAt": "2026-11-13T19:12:45.564Z",
+    "dispatchedAt": "2026-11-13T18:48:25.253Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -200581,7 +200585,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-13T19:12:45.564Z",
+    "pickedAt": "2026-11-13T18:48:25.253Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
