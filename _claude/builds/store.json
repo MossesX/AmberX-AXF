@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3915,
- "updatedAt": "2026-11-13T01:26:05.211Z",
+ "rev": 3916,
+ "updatedAt": "2026-11-13T01:26:33.248Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -175555,15 +175555,15 @@
    "title": "Claude badge = can Claude build: green when at least one build account in the orchestrator's account health sweep can sign in and has credits (the same check the dispatcher uses), red when none can. Stop using the VPS root `claude auth status` / .active login. Tap shows which accounts are ready. And",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/claude-badge-can-claude-build-green-when-at-least-one-build-account-in-the-or",
    "pr": "#536",
    "createdAt": "2026-11-12T23:30:16.119Z",
-   "updatedAt": "2026-11-13T01:26:03.585Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-13T01:26:31.846Z",
+   "builtAt": "2026-11-13T01:26:31.846Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -175715,12 +175715,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T01:26:31.846Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T23:31:24.959Z",
-     "updatedAt": "2026-11-12T23:31:24.959Z"
+     "updatedAt": "2026-11-13T01:26:32.011Z"
     }
    ],
    "profiles": [
@@ -175731,7 +175731,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
