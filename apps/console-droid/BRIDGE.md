@@ -138,6 +138,32 @@ once: `granted: true` when it already was, else `asked: true`, and the prompt's 
 `callWithPermissions(window, tool, args)` runs a tool, asks for whatever a `permission` error lists, and tries once more
 (`bridgeClient.mjs`, tested).
 
+## Without the UI: REST, MCP, CLI, voice (s5)
+
+Every tool is a `device.*` console action (`apps/console-web/src/native/deviceApi.ts`, mapping in `deviceActions.mjs`,
+tested), so it is reached the same four ways as any console action; the bridge's state is on `panel:phone-bridge`.
+
+| Action | Tool |
+| --- | --- |
+| `device.state` | `bridge.info` |
+| `device.tool:<tool>[:<json args>]` | any tool or alias, e.g. `device.tool:amberx.open_url:{"url":"https://console.amberxai.com/"}` |
+| `device.mic[:on\|off\|status]` | `mic.set` / `mic.status` |
+| `device.permission[:mic\|notifications\|overlay\|status]` | `permissions.request` / `permissions.status` |
+| `device.open:[browser:]<https url>` | `browser.open` |
+| `device.wake[:<console address>]` | `console.wake` |
+| `device.notify:<title>[:<text>]` | `notify.show` |
+| `device.notify-cancel[:<id>]` | `notify.cancel` / `notify.status` |
+| `device.recorder[:start[:<session>]\|stop\|status]` | `recorder.*` |
+
+- REST: `POST /api/console/action {"action":"device.mic:off"}`; state: `/api/console/control` `state panel:phone-bridge`.
+- MCP: `console_action { action: "device.wake:panel:phone-app" }`, `console_control { verb: "state", address: "panel:phone-bridge" }`.
+- CLI: `axf console action device.recorder:status`, `axf console control state panel:phone-bridge`.
+- Voice: AmberX voice runs console actions through `console_action`, so every `device.*` id works there by name.
+- axHub: the hub's own `amberx.*` MCP tools reach the phone directly through the device link (while the console app is open).
+
+A tool that answers `permission` is asked for and retried once (`callWithPermissions`). Outside the app every action
+says the phone app isn't here. Part 1's `native.*` actions (overlay, safe area, update) stay as they are.
+
 ## Wiring in `ConsoleActivity` (part 1's file; the integration adds these lines)
 
 ```java
