@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3908,
- "updatedAt": "2026-11-13T01:20:27.156Z",
+ "rev": 3909,
+ "updatedAt": "2026-11-13T01:20:40.906Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -176591,10 +176591,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less",
-   "pr": "",
+   "pr": "#535",
    "priority": "P0",
    "createdAt": "2026-11-13T01:09:38.633Z",
-   "updatedAt": "2026-11-13T01:19:27.358Z",
+   "updatedAt": "2026-11-13T01:20:39.248Z",
    "builtAt": "",
    "notes": [
     {
@@ -176757,7 +176757,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
