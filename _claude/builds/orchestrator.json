@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T18:44:56.607Z",
+ "updatedAt": "2026-11-13T18:45:22.024Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -125828,7 +125828,7 @@
    "title": "Restore the Asset Designer plugin (merged Nov 10, now missing)",
    "category": "",
    "detail": "_claude/builds/shipped/asset-designer.json says the Asset Designer plugin (no-code; apps/console-web/plugins/asset-designer, id ai.amberx.axf.console.asset-designer) merged 2026-11-10T04:39Z, but the folder is not in main now and branch claude/asset-designer is deleted.\n1. Find it in git history (git log --all -- apps/console-web/plugins/asset-designer, reflog, any branch/PR/combine branch), find the commit that removed it and why.\n2. Restore it onto current main, update to current framework (tokens, chrome, skins, control@1), make it able to edit every asset type including the chrome settings interface for toolbars and tab groups (all its tokens), with the validation gate.\n3. If history is gone, rebuild from the shipped spec's steps.\n4. Installed and enabled by default, in nav and console.actions, REST/MCP/CLI/voice. Tests, Shipped features. Report what removed it so it doesn't happen again.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -125836,7 +125836,7 @@
    "pr": "#631",
    "priority": "P1",
    "createdAt": "2026-11-13T17:59:17.167Z",
-   "updatedAt": "2026-11-13T18:44:07.941Z",
+   "updatedAt": "2026-11-13T18:44:10.193Z",
    "builtAt": "",
    "notes": [
     {
@@ -125888,8 +125888,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T18:44:10.193Z",
      "note": "",
      "uid": "st-mwfaafgx01799m",
      "createdAt": "2026-11-13T18:02:00.272Z"
