@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4505,
- "updatedAt": "2026-11-13T17:23:09.103Z",
+ "rev": 4506,
+ "updatedAt": "2026-11-13T17:23:17.809Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -185179,7 +185179,7 @@
    "mergedAt": "2026-11-13T17:20:38Z",
    "priority": "P0",
    "createdAt": "2026-11-13T11:27:54.484Z",
-   "updatedAt": "2026-11-13T17:21:11.994Z",
+   "updatedAt": "2026-11-13T17:23:07Z",
    "builtAt": "2026-11-13T11:43:10.668Z",
    "notes": [
     {
@@ -185225,6 +185225,10 @@
     {
      "text": "Reconciler: PR #571 merged",
      "at": "2026-11-13T17:21:11.994Z"
+    },
+    {
+     "text": "Shipped manifest sm-overlay-opens-pages-the-floating-toolbar-expands rev 1 sent to Shipped features (orchestrator): landed 51c8440b5, 16 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-13T17:23:07Z"
     }
    ],
    "approvals": [],
@@ -185281,6 +185285,12 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "shipped": {
+    "id": "sm-overlay-opens-pages-the-floating-toolbar-expands",
+    "rev": 1,
+    "at": "2026-11-13T17:23:07Z",
+    "landedCommit": "51c8440b5937ad6f8b51e2eed533d5b87e30fd9e"
    },
    "steps": [
     {
@@ -185383,7 +185393,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": {
