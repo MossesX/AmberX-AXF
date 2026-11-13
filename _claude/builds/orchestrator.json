@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T00:50:29.627Z",
+ "updatedAt": "2026-11-13T00:50:38.977Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -107774,7 +107774,7 @@
    "title": "AmberX: approval pop-up not showing, only the Android notification",
    "category": "bug",
    "detail": "Brett said: \"Why isn't the approval thing popping up on my phone? Only the notification is. The Android notification.\"\n\nWhen axHub holds a vps.run call on the veto countdown, AmberX shows only the Android notification; the in-app approval pop-up (approve/deny with the command) does not appear. Find why (Follow Amber / approvals-banner relay, AXPP event, background start limits), fix it so the pop-up appears over any screen like before, keep the notification, add a test, and confirm on the phone.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -107783,7 +107783,7 @@
    "priority": "P0",
    "createdAt": "2026-11-12T15:33:08.904Z",
    "updatedAt": "2026-11-13T00:50:28.107Z",
-   "builtAt": "",
+   "builtAt": "2026-11-13T00:50:28.107Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -107848,8 +107848,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T00:50:19.246Z",
      "note": "",
      "uid": "st-mwdpj5k0042bdf"
     }
