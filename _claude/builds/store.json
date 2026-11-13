@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4131,
- "updatedAt": "2026-11-13T07:19:43.386Z",
+ "rev": 4132,
+ "updatedAt": "2026-11-13T07:19:55.535Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -179751,7 +179751,7 @@
    "pr": "#555",
    "priority": "P0",
    "createdAt": "2026-11-13T06:54:48.788Z",
-   "updatedAt": "2026-11-13T07:19:31.206Z",
+   "updatedAt": "2026-11-13T07:19:48.368Z",
    "builtAt": "",
    "notes": [
     {
@@ -179789,6 +179789,10 @@
     {
      "text": "Headless run axf-remove-ui-review-as-a-gate-no-screenshots-requir--lenny: brief only · start 15.7K tokens ($0.05) · cost $1.03 · 27 turns · 6 tools, MCP none",
      "at": "2026-11-13T06:59:37.742Z"
+    },
+    {
+     "text": "Headless run axf-remove-ui-review-as-a-gate-no-screenshots-requir--gina: brief only · start 15.6K tokens ($0.05) · cost $9.81 · 165 turns · 6 tools, MCP none",
+     "at": "2026-11-13T07:19:48.368Z"
     }
    ],
    "approvals": [],
