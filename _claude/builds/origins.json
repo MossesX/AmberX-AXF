@@ -2498,6 +2498,18 @@
    "from": "",
    "addenda": []
   },
+  "demo-pipelines-guided-walkthrough-live": {
+   "said": "a bunch of different types of pipelines for demonstration purposes, walked through so you can see what's going on behind the scenes; follow the console building stuff, and a terminal or scrolling window showing all the output you wouldn't normally see",
+   "at": "2026-11-13T19:01:19.839Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "demonstration-designer-plugin-new-standalone": {
    "said": "Make a new one. I want a, a, a demonstration designer plugin.",
    "at": "",
@@ -3751,6 +3763,18 @@
    "session": "",
    "link": "",
    "by": "Landin' Lenny",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "land-project-create-mcp-resolve-clash": {
+   "said": "land create projects by API",
+   "at": "2026-11-13T19:01:01.567Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
    "brief": "",
    "verbatim": true,
    "from": "",

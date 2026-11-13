@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4734,
- "updatedAt": "2026-11-13T19:00:57.402Z",
+ "rev": 4735,
+ "updatedAt": "2026-11-13T19:01:26.577Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -202093,6 +202093,56 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-13T18:57:42.948Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "land-project-create-mcp-resolve-clash",
+   "title": "Land project-create-mcp: resolve clash in status.json and PORTING.md",
+   "category": "",
+   "detail": "Branch claude/project-create-mcp clashed with main in framework/catalog/status.json and framework/spec/PORTING.md (merge aborted, main untouched). Merge origin/main into the branch, resolving by keeping both sides' entries (catalog/status and porting notes are additive), run tests, push, then land it on main. No feature changes.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-13T19:01:01.567Z",
+   "updatedAt": "2026-11-13T19:01:07.762Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "land create projects by API",
+    "at": "2026-11-13T19:01:01.567Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 814
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 2,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
