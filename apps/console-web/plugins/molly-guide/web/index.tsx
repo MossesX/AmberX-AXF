@@ -19,7 +19,7 @@ import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
-import { cleanWalkthrough, stepAt, targetSelector, type Walkthrough } from './walkthrough';
+import { cleanWalkthrough, pollDecision, stepAt, targetSelector, type Walkthrough } from './walkthrough';
 import './molly-guide.css';
 
 const ID = 'ai.amberx.axf.console.molly-guide';
@@ -28,6 +28,8 @@ const KIND = 'molly.walkthrough';
 const POLL_MS = 4000;
 const K = { speak: 'molly-guide.speak', auto: 'molly-guide.autoOpen', run: 'molly-guide.runSteps' } as const;
 const HIGHLIGHT = 'axp-molly-guide-target';
+/** when this page loaded: walkthroughs kept before it never open by themselves */
+const LOADED_AT = Date.now();
 
 interface State { walk: Walkthrough | null; at: number; asking: boolean; answer: string; error: string; lastSeq: number; windowId: string | null }
 let st: State = { walk: null, at: 0, asking: false, answer: '', error: '', lastSeq: -1, windowId: null };
@@ -179,12 +181,10 @@ async function poll() {
     if (!r.ok) return;
     const j = (await r.json()) as { walkthroughs?: unknown[] };
     const list = (j.walkthroughs ?? []).map(cleanWalkthrough).filter((w): w is Walkthrough => !!w);
-    const newest = list.sort((a, b) => (b.seq ?? 0) - (a.seq ?? 0))[0];
-    if (!newest) return;
-    // the first read only learns where we are; later ones open (unless switched off)
-    if (st.lastSeq < 0) { set({ lastSeq: newest.seq ?? 0 }); return; }
-    if (runtime.settings.get(K.auto) === false) { set({ lastSeq: newest.seq ?? st.lastSeq }); return; }
-    play(newest);
+    // never opens on load: the first read only learns where we are, and later ones open only with the opt-in switch on
+    const d = pollDecision(list, st.lastSeq < 0 && !list.length ? 0 : st.lastSeq, runtime.settings.get(K.auto), LOADED_AT);
+    if (d.lastSeq !== st.lastSeq) set({ lastSeq: d.lastSeq });
+    if (d.open) play(d.open);
   } catch { /* the agent manager isn't here: nothing to play */ }
 }
 function loop() {
@@ -207,7 +207,7 @@ export const plugin: AxfWebLibrary = {
     { id: 'molly-guide.main', label: 'Walkthroughs', icon: 'sparkles', tab: 'molly-guide', order: 10, settings: [
       { key: K.speak, label: 'Read each step out loud', kind: 'toggle', default: true },
       { key: K.run, label: 'Move the console to each step (run its action)', kind: 'toggle', default: true },
-      { key: K.auto, label: 'Open walkthroughs Molly makes from AmberX by themselves', kind: 'toggle', default: true },
+      { key: K.auto, label: 'Open walkthroughs asked for from AmberX by themselves (off: the guide opens only when you ask in the console)', kind: 'toggle', default: false },
     ] },
   ],
   settingsPanels: [

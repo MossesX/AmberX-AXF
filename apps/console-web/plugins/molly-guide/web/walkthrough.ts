@@ -46,6 +46,24 @@ export function targetSelector(target: string): string[] {
   return [`[data-axf-id="${esc}"]`, `[data-view="${esc}"]`, `[data-tab="${esc}"]`, `#${/^[a-z][\w-]*$/i.test(t) ? t : '__none__'}`, t];
 }
 
+/**
+ * What one poll of the kept walkthroughs does (Nov 13 2026: the guide must never pop up and talk on its own when the
+ * console loads; it opens only when asked). Pure.
+ * - `lastSeq` < 0 (the first read after a load): only learn the newest seq, never open.
+ * - `auto` must be exactly `true` (the setting is off by default): anything else only learns the seq.
+ * - Even with auto on, a walkthrough made before this page loaded (`at` older than `loadedAt` minus `skewMs`) or without
+ *   a time is not opened, so a reload, a second tab or a warm frame never replays an old one.
+ */
+export function pollDecision(list: Walkthrough[], lastSeq: number, auto: unknown, loadedAt: number, skewMs = 30_000): { lastSeq: number; open: Walkthrough | null } {
+  const newer = list.filter((w) => (w.seq ?? 0) > lastSeq).sort((a, b) => (b.seq ?? 0) - (a.seq ?? 0));
+  const newest = newer[0];
+  if (!newest) return { lastSeq, open: null };
+  const seq = Math.max(lastSeq, newest.seq ?? 0);
+  if (lastSeq < 0 || auto !== true) return { lastSeq: seq, open: null };
+  if (typeof newest.at !== 'number' || newest.at < loadedAt - skewMs) return { lastSeq: seq, open: null };
+  return { lastSeq: seq, open: newest };
+}
+
 /** Spoken commands in the window: next, back, repeat, stop. */
 export function voiceMove(heard: string): 'next' | 'prev' | 'repeat' | 'close' | null {
   const n = heard.toLowerCase().replace(/[^a-z ]/g, ' ').replace(/\s+/g, ' ').trim();
