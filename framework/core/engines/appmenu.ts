@@ -476,3 +476,6 @@ export function validateMenuItems(items: unknown, path: string, depth = 0): stri
   });
   return errors;
 }
+
+/** The context-menu target the compact application menu opens (skin@2 app-menu form button / palette / sheet): every menu of the app menu as a sub menu. */
+export const APP_MENU_CONTEXT_TARGET = 'app-menu-all';

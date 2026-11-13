@@ -214,7 +214,8 @@ export interface StyleThemeData {
 }
 
 export interface LayoutData {
-  nav: 'left' | 'right' | 'top';
+  /** the side the navigation menu takes; bottom = a strip under the main area on every screen size (skin@2 nav-menu mode bottom-tabs) */
+  nav: 'left' | 'right' | 'top' | 'bottom';
   navWidth: number;
   showMenubar: boolean;
   showToolbar: boolean;

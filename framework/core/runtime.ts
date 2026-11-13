@@ -10,7 +10,7 @@ import { announceWatchLiveRuntime } from './watch-live';
 import { ActionBus, FRAMEWORK_MODULE, STANDARD_ACTIONS, type ActionContext } from './engines/actions';
 import { colorThemeVars, scrollbarVars, styleThemeVars, type VarMap } from './engines/theme';
 import { scaleThemeVars } from './engines/scale';
-import { LAYOUT_VIEWPORTS, layoutViewports, layoutVars } from './engines/layout';
+import { LAYOUT_VIEWPORTS, layoutViewports, layoutVars, normalizeLayout } from './engines/layout';
 import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, gaugeStyle, meterStyle, navMenuStyle, popupStyle, sliderStyle, tabGroupStyle, tableStyle, toolbarStyle } from './engines/components';
 import { CUSTOM_KEY, customizableTypes, customizeSheet, effectiveCustom, normalizeCustomSlot, type CustomSlot, type CustomValues } from './engines/customize';
 import { CONTROL_TOKEN_SLOTS, applyTokenOverrides, effectiveTokenOverrides } from './engines/control-tokens.mjs';
@@ -133,6 +133,8 @@ export const SPACING_KEY = 'axf.appearance.spacing';
 export const APPEARANCE_LOCK_KEY = 'axf.lock.appearance';
 /** app-look@1 of an app without a hub source (engines/skin.ts). Not an appearance setting: it holds them. */
 export const APP_LOOK_KEY = 'axf.skin.look';
+/** The navigation drawer's open state (skin@2 nav-menu mode drawer), per device. */
+export const NAV_DRAWER_KEY = 'axf.nav.drawer';
 /** The app whose colours the shared document's palette follows (axHub's own pages draw with it). */
 const HUB_PALETTE_APP = 'axhub-web';
 export const LOCKED_APPEARANCE_PERMS: readonly string[] = ['assets.swap', 'assets.import'];
@@ -861,6 +863,29 @@ export class AxfRuntime {
   withBehaviour<T extends object>(type: string, data: T | null | undefined): T { return skinApplyBehaviour(type, data, this.behaviourPicks()); }
   /** The fields the behaviour in force sets on another type's asset (the layout: nav side, toolbar position). */
   behaviourFieldsOf(ofType: string): Record<string, BehaviourValue> { return skinBehaviourFieldsOf(ofType, this.behaviourPicks()); }
+  /**
+   * The layout the shell draws (skin@2): the layout asset with its token overrides, the behaviour fields that layer on
+   * it (toolbar placement, nav side), and what the skin's navigation and application-menu modes imply: top-bar / bottom-tabs
+   * move the nav to that edge, rail narrows it to the layout's own phone nav item width, a menu form other than the menu
+   * bar turns the menu bar row off (the compact menu button takes its place).
+   */
+  shellLayout(): LayoutData {
+    const base = { ...this.withTokenOverrides('tokens.layout', 'layout', this.asset('layout').data), ...(this.behaviourFieldsOf('layout') as Partial<LayoutData>) } as LayoutData;
+    const nav = this.behaviourOf('nav-menu');
+    const mode = String(nav.mode ?? 'sidebar');
+    const out: LayoutData = { ...base };
+    if (mode === 'top-bar') out.nav = 'top';
+    else if (mode === 'bottom-tabs') out.nav = 'bottom';
+    else if (out.nav === 'top' || out.nav === 'bottom') out.nav = nav.side === 'right' ? 'right' : 'left';
+    if (mode === 'rail') out.navWidth = (normalizeLayout(base) as { phoneNavItemMin: number }).phoneNavItemMin;
+    if (String(this.behaviour('app-menu', 'form') ?? 'menubar') !== 'menubar') out.showMenubar = false;
+    return out;
+  }
+  /** The navigation mode the skin gives this place (sidebar, rail, drawer, bottom-tabs, top-bar). */
+  navMode(): string { return String(this.behaviour('nav-menu', 'mode') ?? 'sidebar'); }
+  /** The navigation drawer (nav mode drawer): open or shut, per device. */
+  navDrawerOpen(): boolean { return this.settings.get(NAV_DRAWER_KEY) === true; }
+  setNavDrawer(open: boolean): void { if (open) this.settings.set(NAV_DRAWER_KEY, true); else this.settings.clear(NAV_DRAWER_KEY); }
   /**
    * Override one behaviour axis inside the skin in force (`value` null = back to the skin's); `key` = a ui: / plugin:
    * scope, or the app. The skin, its id and every other pick stay (the same rule as the colour theme).
@@ -2564,8 +2589,9 @@ export class AxfRuntime {
         density: this.withTokenOverrides('tokens.density', 'density' as AssetType, this.assetOrNull('density' as AssetType)?.data ?? (this.settings.get(CONTROL_TOKEN_SLOTS['tokens.density'].key) ? {} : undefined)),
         sizing: this.withTokenOverrides('tokens.sizing', 'sizing' as AssetType, this.assetOrNull('sizing' as AssetType)?.data ?? (this.settings.get(CONTROL_TOKEN_SLOTS['tokens.sizing'].key) ? {} : undefined)),
       }),
-      // the skin's behaviour may move the grid (nav side, toolbar position: axes `of: layout`) before the inspector and hidden slots apply
-      ...layoutVars(this.inspectorLayout({ ...this.withTokenOverrides('tokens.layout', 'layout', this.asset('layout').data), ...(this.behaviourFieldsOf('layout') as Partial<LayoutData>) } as LayoutData), this.hiddenSlots()),
+      // the skin's behaviour may move the grid (nav side and mode, toolbar position, menu bar: shellLayout) before the inspector and hidden slots apply;
+      // a drawer nav leaves the grid (it opens over the page)
+      ...layoutVars(this.inspectorLayout(this.shellLayout()), this.navMode() === 'drawer' ? [...this.hiddenSlots(), 'nav-menu'] : this.hiddenSlots()),
       ...bannerVars(this.assetOrNull('banner')?.data, this.slotHidden('banner')),
       // branding package (optional): palette slots as --fx-brand-1/2/3, the brand name, the accent when it asks for it
       ...brandingVars(this.assetOrNull('branding' as AssetType)?.data ?? { brand: { name: '' }, marks: {} }),
@@ -2960,6 +2986,8 @@ export class AxfRuntime {
       this.setSkinBehaviour(type, axis, v, scoped ? `${p[0]}:${p[1]}` : undefined);
     }, { label: 'Change one behaviour inside the skin', requires: 'assets.swap', params: true });
     a.register('skin.behaviour.reset', ([type]) => { this.backToSkinBehaviour(type || ''); }, { label: "Back to the skin's behaviour", requires: 'assets.swap', params: true });
+    // the navigation drawer (nav mode drawer): nav.drawer:open | close | toggle
+    a.register('nav.drawer', ([v]) => { this.setNavDrawer(v === 'open' ? true : v === 'close' ? false : !this.navDrawerOpen()); }, { label: 'Open or close the navigation drawer', params: true });
     a.register('skin.restore', () => this.restoreDefaultAppearance(), { label: 'Restore this app to its default look', requires: 'assets.swap' });
     a.register('skin.undo', () => { this.undoRestoreDefault(); }, { label: 'Undo Restore to default', requires: 'assets.swap' });
     // Scopes (skin-coverage@1): skin.inherit:on|off follows the hub-wide skin; skin.scope:<ui|plugin>:<id>:<on|off|inherit>[:<skin>] sets one level

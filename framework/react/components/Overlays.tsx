@@ -1,5 +1,6 @@
 /** Overlay engines: dialogs, toasts/popups, and the context menu. */
 import { useEffect, useRef, useState, type PointerEvent as ReactPointerEvent, type ReactNode } from 'react';
+import { APP_MENU_CONTEXT_TARGET } from '../../core';
 import { useAsset, useAxfState, useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
 import { BrandMark, BrandWatermark, brandHostProps } from './Brand';
@@ -209,7 +210,10 @@ export function ContextMenuHost() {
 
   // skin@2: the form the skin gives context menus here (a menu at the pointer, a bottom sheet, a searchable palette) and
   // whether sub menus fly out or sit inline
-  const form = String(rt.behaviour('context-menu', 'form') ?? 'menu');
+  const ctxForm = String(rt.behaviour('context-menu', 'form') ?? 'menu');
+  const menuForm = String(rt.behaviour('app-menu', 'form') ?? 'menubar');
+  // the compact application menu (skin@2 app-menu form) opens through this host: a palette or a sheet when the skin says so, else a menu
+  const form = state.context?.target === APP_MENU_CONTEXT_TARGET ? (menuForm === 'palette' ? 'palette' : menuForm === 'sheet' ? 'sheet' : 'menu') : ctxForm;
   const submenus = String(rt.behaviour('context-menu', 'submenus') ?? 'flyout');
   const [query, setQuery] = useState('');
   useEffect(() => { setQuery(''); }, [state.context]);

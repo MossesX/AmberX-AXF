@@ -1,6 +1,6 @@
 /** Shell chrome: application menu bar, toolbar, navigation menu, status bar. */
 import { useEffect, useRef, useState, type FormEvent, type KeyboardEvent, type ReactNode } from 'react';
-import { ASSET_TYPES, assetTypeSpecs, FRAMEWORK_VERSION, type NavItem } from '../../core';
+import { APP_MENU_CONTEXT_TARGET, ASSET_TYPES, assetTypeSpecs, FRAMEWORK_VERSION, type NavItem } from '../../core';
 import { useAsset, useAxfState, useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
 import { NavTree } from './NavTree';
@@ -16,7 +16,11 @@ import type { CompiledMenuItem } from '../../core/engines/appmenu';
 
 /* ---------------- MenuBar (app-menu asset) ---------------- */
 
-export function MenuBar() {
+/**
+ * The application menu. `compact` (skin@2 app-menu form button / palette / sheet): the menu bar row is off and one Menu
+ * button opens every menu through the context-menu host (as a menu, a searchable palette or a bottom sheet, as the skin says).
+ */
+export function MenuBar({ compact = false }: { compact?: boolean } = {}) {
   const rt = useRuntime();
   useAsset('app-menu');
   const state = useAxfState();
@@ -26,6 +30,12 @@ export function MenuBar() {
   const role = policy.roles.find((r) => r.id === state.role);
   // The compiled menu: the asset's menus + every contribution + live lists, gated for the current role (core/engines/appmenu.ts).
   const menus = rt.appMenu().menus;
+  // the compact form's items: every menu as a sub menu, read when the button is pressed (so live lists are fresh)
+  useEffect(() => {
+    if (!compact) return;
+    rt.contextExtras.set(APP_MENU_CONTEXT_TARGET, () => rt.appMenu().menus.map((m) => ({ id: m.id, label: m.label, icon: 'menu', items: m.items })) as never);
+    return () => { rt.contextExtras.delete(APP_MENU_CONTEXT_TARGET); };
+  }, [rt, compact]);
 
   useEffect(() => {
     if (!open) return;
@@ -45,6 +55,28 @@ export function MenuBar() {
     const next = menus[(i + (e.key === 'ArrowRight' ? 1 : -1) + menus.length) % menus.length];
     if (next) { e.preventDefault(); setOpen(next.id); }
   };
+
+  if (compact) {
+    return (
+      <div className="fx-menubar fx-menubar--compact" ref={ref} role="menubar" data-fx-ctx-target="app-menu" data-fx-ctx-payload="app">
+        <div className="fx-brand">
+          {menuMark?.svg ? <BrandMark slot="app-menu" height={18} /> : <span className="fx-brand__mark" aria-hidden="true" />}
+          <span className="fx-brand__name">{rt.manifest.app.name || rt.branding()?.name}</span>
+        </div>
+        <div className="fx-menubar__menus">
+          <button type="button" className="fx-menubar__btn" aria-haspopup="menu" data-axf-menu-btn="all" title="Menu"
+            onClick={(e) => { const r = e.currentTarget.getBoundingClientRect(); rt.openContext(Math.round(r.left), Math.round(r.bottom), APP_MENU_CONTEXT_TARGET); }}>
+            <Icon name="menu" size={14} /> Menu
+          </button>
+        </div>
+        <HelpModeButton />
+        <button type="button" className="fx-rolechip" onClick={() => rt.navigate('account')} title="User account control">
+          <Icon name="shield" size={13} />
+          {role?.label ?? state.role}
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="fx-menubar" ref={ref} role="menubar" onKeyDown={onKey} data-fx-ctx-target="app-menu" data-fx-ctx-payload="app">
@@ -283,15 +315,18 @@ function NavBadge({ badge }: { badge?: string }) {
 export function NavMenu({ views }: { views: ViewMap }) {
   const rt = useRuntime();
   const nav = useAsset('nav-menu');
-  const layout = useAsset('layout');
+  useAsset('layout');
   const state = useAxfState();
-  const orient = layout.data.nav === 'top' ? 'horizontal' : 'vertical';
+  // skin@2: the shell's layout (the skin's nav side and mode over the layout asset) decides the orientation
+  const layout = rt.shellLayout();
+  const mode = rt.navMode();
+  const orient = layout.nav === 'top' || layout.nav === 'bottom' ? 'horizontal' : 'vertical';
   // a nav-menu that opts in to nav-style@1 draws sub menus (NavTree); every other nav is drawn as it always was
   const navStyle = rt.navStyleData();
   if (navStyle) return <NavTree sections={mergeNavSections([...nav.data.sections, ...rt.navExtras])} views={views} style={navStyle} orient={orient} header={nav.data.header} />;
 
   return (
-    <nav className={`fx-nav fx-nav--${nav.data.style}`} data-orient={orient} aria-label="Main" data-axf-nav="app" data-fx-ctx-target="nav" data-fx-ctx-payload="app">
+    <nav className={`fx-nav fx-nav--${nav.data.style}`} data-orient={orient} data-fx-nav-mode={mode} aria-label="Main" data-axf-nav="app" data-fx-ctx-target="nav" data-fx-ctx-payload="app">
       {nav.data.header && orient === 'vertical' && <div className="fx-nav__header">{nav.data.header}</div>}
       {mergeNavSections([...nav.data.sections, ...rt.navExtras]).map((sec, i) => {
         const items = sec.items.filter((it) => views[it.view] && rt.gate(it.requires) !== 'hide' && !rt.takenByHost({ view: it.view }));
@@ -325,6 +360,22 @@ export function NavMenu({ views }: { views: ViewMap }) {
         );
       })}
     </nav>
+  );
+}
+
+/**
+ * The navigation drawer (skin@2 nav-menu mode drawer): the nav menu over the page from the side the layout names,
+ * opened by the shell's Menu button or the nav.drawer action; a tap on a view link or the backdrop shuts it.
+ */
+export function NavDrawer({ views, side, open, onClose }: { views: ViewMap; side: 'left' | 'right'; open: boolean; onClose: () => void }) {
+  if (!open) return null;
+  return (
+    <>
+      <div className="fx-nav-drawer__backdrop" onPointerDown={onClose} />
+      <aside className="fx-nav-drawer" data-side={side} role="dialog" aria-label="Navigation" onClick={(e) => { if ((e.target as Element).closest('[data-axf-view-link]')) onClose(); }}>
+        <NavMenu views={views} />
+      </aside>
+    </>
   );
 }
 

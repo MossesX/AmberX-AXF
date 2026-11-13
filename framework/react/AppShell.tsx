@@ -1,7 +1,10 @@
 import { useEffect, useState, type ReactNode } from 'react';
 import { compileSlots, regionAccepts } from '../core/engines/layout';
+import { APP_MENU_CONTEXT_TARGET } from '../core/engines/appmenu';
+import { NAV_DRAWER_KEY } from '../core/runtime';
 import { useAsset, useAxfState, useRuntime } from './AxfProvider';
-import { MenuBar, NavMenu, StatusBar, Toolbar } from './components/Chrome';
+import { MenuBar, NavDrawer, NavMenu, StatusBar, Toolbar } from './components/Chrome';
+import { IconButton } from './components/Controls';
 import { ContextMenuHost, DialogHost, ToastHost, type DialogMap } from './components/Overlays';
 import { SkinScope } from './components/SkinScope';
 import { Inspector } from './studio/Inspector';
@@ -51,12 +54,33 @@ export interface AppShellProps {
  * (CSS grid vars compiled from the active `layout` asset).
  */
 export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, inspector, tabs: declaredTabs = {}, keep = [] }: AppShellProps) {
-  const layout = useAsset('layout').data;
+  const rt = useRuntime();
+  useAsset('layout');
+  // skin@2: the layout the shell draws is the layout asset with the skin's behaviour over it (nav side and mode, toolbar
+  // placement, menu bar on or off), so a skin can move the whole layout (rt.shellLayout).
+  const layout = rt.shellLayout();
   const state = useAxfState();
   // Region slot contract: chrome mounts only where the layout's slot accepts its asset type.
   const slots = compileSlots(layout);
   // Hidden slots (Settings → Appearance → Assets → Hidden) drop out the same way.
-  const rt = useRuntime();
+  const navMode = rt.navMode();
+  const menuForm = String(rt.behaviour('app-menu', 'form') ?? 'menubar');
+  const bannerAt = String(rt.behaviour('banner', 'placement') ?? 'top');
+  // the navigation drawer's open state is a per-device setting (the nav.drawer action sets it too); redraw when it moves
+  const [, bumpDrawer] = useState(0);
+  useEffect(() => rt.settings.onChange(NAV_DRAWER_KEY, () => bumpDrawer((n) => n + 1)), [rt]);
+  const drawerOpen = rt.navDrawerOpen();
+  // a command-palette application menu (skin@2 app-menu form palette) also opens on Ctrl / Cmd+K
+  useEffect(() => {
+    if (menuForm !== 'palette') return;
+    const onKey = (e: KeyboardEvent) => {
+      if (!(e.ctrlKey || e.metaKey) || e.key.toLowerCase() !== 'k') return;
+      e.preventDefault();
+      rt.openContext(Math.round(window.innerWidth / 2), Math.round(window.innerHeight * 0.15), APP_MENU_CONTEXT_TARGET);
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [rt, menuForm]);
   // Inside a host that shows this app's banner strip, views its banner items open come here (components/BannerStrip.tsx).
   useBannerStripFollower();
   // Placed UIs (engines/placement.ts): a plugin's page shown in a dialog / window / tab group, or its dialog as a page.
@@ -64,9 +88,14 @@ export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, 
   const views = { ...placed.views, ...declaredViews };
   const dialogs = { ...placed.dialogs, ...declaredDialogs };
   const tabs = { ...placed.tabs, ...declaredTabs };
-  const showMenubar = layout.showMenubar && regionAccepts(slots, 'menubar', 'app-menu') && !rt.slotHidden('app-menu');
+  const menuAccepted = regionAccepts(slots, 'menubar', 'app-menu') && !rt.slotHidden('app-menu');
+  const showMenubar = layout.showMenubar && menuAccepted;
+  // a menu form other than the menu bar (button, palette, sheet): one compact Menu button where the bar would be
+  const showMenuButton = !layout.showMenubar && menuForm !== 'menubar' && menuAccepted;
   const showToolbar = layout.showToolbar && regionAccepts(slots, 'toolbar', 'toolbar') && !rt.slotHidden('toolbar');
   const showNav = regionAccepts(slots, 'nav', 'nav-menu') && !rt.slotHidden('nav-menu');
+  // a drawer nav opens over the page instead of taking a grid region
+  const navInGrid = showNav && navMode !== 'drawer';
   useWindowShortcuts();
   // chrome-settings@1: Settings / Change / Move on every tab group, toolbar, banner, nav and menu bar (once per runtime)
   installChrome(rt);
@@ -121,7 +150,7 @@ export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, 
   return (
     <TabRenderersProvider renderers={{ terminal: (t) => <OutputTerminalPane channel={t.payload || null} />, ...tabs }}>
     {/* data-axf-embed (embed@1): the host app this one runs inside, for styles and plugins that adapt to it; absent standalone. */}
-    <div className="fx-frame" data-axf-embed={rt.embedded?.host}>
+    <div className="fx-frame" data-axf-embed={rt.embedded?.host} data-fx-banner-placement={bannerAt}>
     {/* Banners sit above everything, so they stay visible whatever app.frame.top / app.frame.cover show (Brett, Oct 21 2026):
         the banner asset (thin permanent bar; hidden slot or no banner asset = nothing), then the application menu (Brett,
         Oct 22 2026: "application menus go above the live banners"), then the app.frame.banners slot (banners libraries
@@ -136,6 +165,11 @@ export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, 
         <MenuBar />
       </div>
     )}
+    {showMenuButton && (
+      <div className="fx-region fx-frame__menubar" data-fx-menu-form={menuForm}>
+        <MenuBar compact />
+      </div>
+    )}
     <FrameBanners />
     {/* Page-level extension points (AxfWebLibrary.slots): app.frame.head sits above the menu bar (app tabs), app.frame.top below the banners (a page-wide bar a plugin adds);
         app.frame.cover is rendered after the shell so a plugin can cover the page (it positions itself). Empty = nothing. */}
@@ -146,10 +180,16 @@ export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, 
           <Toolbar views={views} />
         </div>
       )}
-      {showNav && (
-        <div className="fx-region fx-region--nav" style={{ gridArea: 'nav' }} data-side={layout.nav}>
+      {navInGrid && (
+        <div className="fx-region fx-region--nav" style={{ gridArea: 'nav' }} data-side={layout.nav} data-fx-nav-mode={navMode}>
           <NavMenu views={views} />
         </div>
+      )}
+      {showNav && navMode === 'drawer' && (
+        <>
+          <IconButton className="fx-nav-drawer__toggle" icon="menu" label={drawerOpen ? 'Close the menu' : 'Menu'} size={18} aria-expanded={drawerOpen} data-side={layout.nav} onClick={() => rt.setNavDrawer(!drawerOpen)} />
+          <NavDrawer views={views} side={layout.nav === 'right' ? 'right' : 'left'} open={drawerOpen} onClose={() => rt.setNavDrawer(false)} />
+        </>
       )}
       <main className="fx-region fx-main" style={{ gridArea: 'main' }} data-fx-ctx-target="canvas">
         {/* every view root is a UI level of the skin chain (SkinScope kind="ui": a marker until Appearance names a skin for it) */}
