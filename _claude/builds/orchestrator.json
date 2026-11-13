@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T12:24:28.871Z",
+ "updatedAt": "2026-11-13T12:25:57.232Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -122824,7 +122824,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T11:45:11.111Z",
-   "updatedAt": "2026-11-13T12:23:49.879Z",
+   "updatedAt": "2026-11-13T12:25:26.465Z",
    "builtAt": "",
    "notes": [
     {
@@ -123084,8 +123084,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T12:25:26.465Z",
      "note": "",
      "uid": "st-mwewxu2m0u67fx",
      "createdAt": "2026-11-13T11:48:17.662Z"
@@ -123242,7 +123242,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T11:55:36.143Z",
-   "updatedAt": "2026-11-13T12:24:26.252Z",
+   "updatedAt": "2026-11-13T12:25:53.425Z",
    "builtAt": "",
    "notes": [
     {
@@ -123454,8 +123454,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T12:25:53.425Z",
      "note": "",
      "uid": "st-mwex9tpr07ho2r",
      "createdAt": "2026-11-13T11:57:37.071Z"
@@ -124183,12 +124183,32 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T12:23:34.932Z",
-   "updatedAt": "2026-11-13T12:23:37.247Z",
+   "updatedAt": "2026-11-13T12:25:47.282Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-13T12:23:37.247Z"
+    },
+    {
+     "text": "Brett: same bug on tab groups, not just toolbars. Fix and test settings applying on every toolbar AND every tab group (TabGroup). Also check the navigation menu settings.",
+     "at": "2026-11-13T12:24:32.190Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"d9093dd3-a080-4406-84d8-88197b2a18e3\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-13T12:25:03.279Z"
+    },
+    {
+     "text": "Brett confirmed: navigation menu settings are broken the same way (changes do nothing). Fix it, not just check it.",
+     "at": "2026-11-13T12:25:39.494Z"
+    },
+    {
+     "text": "Brett: probably app menus too. Check and fix settings on application menus as well (toolbars, tab groups, nav menu, app menus).",
+     "at": "2026-11-13T12:25:43.405Z"
+    },
+    {
+     "text": "Split asked for by console.",
+     "at": "2026-11-13T12:25:47.282Z"
     }
    ],
    "approvals": [],
@@ -124205,7 +124225,242 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Brett: when I long-press / right-click a toolbar and open toolbar settings, none of the settings change anything.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwey9bhd01l4ag",
+     "createdAt": "2026-11-13T12:25:12.925Z"
+    },
+    {
+     "id": "s2",
+     "text": "Selecting icons, text, collapsible etc. has no effect.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwey9bhd02ygxd",
+     "createdAt": "2026-11-13T12:25:12.925Z"
+    },
+    {
+     "id": "s3",
+     "text": "Seen on Shipped features (Sync/CSV/Markdown bar, group-by tabs, filter checkboxes, status chips, edit status).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwey9bhd03jlwc",
+     "createdAt": "2026-11-13T12:25:12.925Z"
+    },
+    {
+     "id": "s4",
+     "text": "Fix it so every toolbar setting actually applies live to that toolbar, on every toolbar in the console, persists, and is controllable by API (REST, MCP, CLI, voice).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwey9bhd045yd2",
+     "createdAt": "2026-11-13T12:25:12.925Z"
+    },
+    {
+     "id": "s5",
+     "text": "Add a test that changing each setting changes the rendered toolbar.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwey9bhd0599hz",
+     "createdAt": "2026-11-13T12:25:12.925Z"
+    },
+    {
+     "id": "s6",
+     "text": "Tests green, report _claude/builds/reports/fix-toolbar-settings-doing-nothing.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/fix-toolbar-settings-doing-nothing.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwey9bhd06k79r",
+     "createdAt": "2026-11-13T12:25:12.925Z"
+    },
+    {
+     "id": "s7-6",
+     "text": "Brett: when I long-press / right-click a toolbar and open toolbar settings, none of the settings change anything.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwey93xr015z37",
+     "createdAt": "2026-11-13T12:25:03.279Z"
+    },
+    {
+     "id": "s8-7",
+     "text": "Selecting icons, text, collapsible etc. has no effect.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwey93xr02jood",
+     "createdAt": "2026-11-13T12:25:03.279Z"
+    },
+    {
+     "id": "s9-8",
+     "text": "Seen on Shipped features (Sync/CSV/Markdown bar, group-by tabs, filter checkboxes, status chips, edit status).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwey93xr03unho",
+     "createdAt": "2026-11-13T12:25:03.279Z"
+    },
+    {
+     "id": "s10-9",
+     "text": "Fix it so every toolbar setting actually applies live to that toolbar, on every toolbar in the console, persists, and is controllable by API (REST, MCP, CLI, voice).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwey93xr04xiiq",
+     "createdAt": "2026-11-13T12:25:03.279Z"
+    },
+    {
+     "id": "s11-10",
+     "text": "Add a test that changing each setting changes the rendered toolbar.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwey93xr05au1r",
+     "createdAt": "2026-11-13T12:25:03.279Z"
+    },
+    {
+     "id": "s12-11",
+     "text": "Tests green, report _claude/builds/reports/fix-toolbar-settings-doing-nothing.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/fix-toolbar-settings-doing-nothing.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwey93xr06kw0f",
+     "createdAt": "2026-11-13T12:25:03.279Z"
+    }
+   ]
   }
  ]
 }
