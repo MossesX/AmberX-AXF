@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4342,
- "updatedAt": "2026-11-13T11:36:21.575Z",
+ "rev": 4343,
+ "updatedAt": "2026-11-13T11:37:05.062Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -185038,7 +185038,7 @@
    "title": "Overlay opens pages: the floating toolbar expands into a full browser window when Claude or Brett opens a page (open_url, console_show, voice), then shrinks back to the toolbar when the browser is closed; works from the background via draw-over-other-apps; follows the skin; full API and voice",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -185046,7 +185046,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T11:27:54.484Z",
-   "updatedAt": "2026-11-13T11:36:14.099Z",
+   "updatedAt": "2026-11-13T11:37:03.560Z",
    "builtAt": "",
    "notes": [
     {
@@ -185068,6 +185068,10 @@
     {
      "text": "Headless run axf-overlay-opens-pages-the-floating-toolbar-expands--lenny: brief only · start 11.3K tokens ($0.03) · cost $2.15 · 22 turns · 6 tools, MCP none",
      "at": "2026-11-13T11:36:14.099Z"
+    },
+    {
+     "text": "Session on mossesx-max- ended (exit 1) with 4 steps left: back in the Queue (run 1).",
+     "at": "2026-11-13T11:37:03.560Z"
     }
    ],
    "approvals": [],
@@ -185088,12 +185092,19 @@
     "queuedAt": "2026-11-13T11:27:56.125Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-overlay-opens-pages-the-floating-toolbar-expands--lenny",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-13T11:28:58.554Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-13T11:37:03.011Z",
+     "exit": 1,
+     "outcome": "requeued",
+     "stepsLeft": 4,
+     "account": "mossesx-max-",
+     "session": "axf-overlay-opens-pages-the-floating-toolbar-expands--lenny"
+    },
     "split": {
      "at": "2026-11-13T11:28:36.977Z",
      "by": "orchestrator",
@@ -185102,7 +185113,7 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"23ee8b1a-7144-48a0-a700-7381ced9156f\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- ended (exit 1) with 4 steps left: back in the Queue (run 1).",
     "route": "",
     "dispatchedAt": "2026-11-13T11:28:58.554Z",
     "planned": {
@@ -185219,7 +185230,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

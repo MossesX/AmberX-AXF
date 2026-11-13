@@ -781,7 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 06:32 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` note (all) · orchestrator
 - 2026-11-13 06:32 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` note (all) · orchestrator
 - 2026-11-13 06:33 UTC · `everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the` note (all) · orchestrator
 - 2026-11-13 06:33 UTC · `full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app` note (all) · orchestrator
@@ -1181,6 +1180,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 11:35 UTC · `unlink-plan-studio-from-builds-delete-all-plan-s` note (all) · orchestrator
 - 2026-11-13 11:36 UTC · `unlink-plan-studio-from-builds-delete-all-plan-s` note (all) · pipeline
 - 2026-11-13 11:36 UTC · `overlay-opens-pages-the-floating-toolbar-expands` note (all) · orchestrator
+- 2026-11-13 11:37 UTC · `overlay-opens-pages-the-floating-toolbar-expands` → queued, note (all) · pipeline
 
 ## Token passes (log)
 
