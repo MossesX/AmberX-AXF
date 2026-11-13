@@ -786,7 +786,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 12:15 UTC · `auto-recover-stuck-builds` s4 done (all) · orchestrator
 - 2026-11-13 12:17 UTC · `ui-review-gate-switch-default-off` note (all) · orchestrator
 - 2026-11-13 12:17 UTC · `ui-review-gate-switch-default-off` → running, note (all) · pipeline
 - 2026-11-13 12:17 UTC · `ui-review-gate-switch-default-off` branch claude/ui-review-gate-switch-default-off (all) · pipeline
@@ -1186,6 +1185,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 18:41 UTC · `console-android-app-thin-webview-wrapper` note (all) · claude-voice
 - 2026-11-13 18:42 UTC · `orchestrator-settings-collapsible-split` note (all) · orchestrator
 - 2026-11-13 18:42 UTC · `orchestrator-settings-collapsible-split` note (all) · builds-live
+- 2026-11-13 18:43 UTC · `console-app-part-3-native-bridge-mic` note (all) · orchestrator
 
 ## Token passes (log)
 
