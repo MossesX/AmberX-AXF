@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3930,
- "updatedAt": "2026-11-13T01:48:30.421Z",
+ "rev": 3931,
+ "updatedAt": "2026-11-13T01:48:41.654Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -175962,7 +175962,7 @@
    "title": "Everything on tokens before skins: fix the 27 open check-theme problems and the 1 check-controls finding (apps/player Home.tsx raw button), burn down all 1,209 frozen findings in framework/spec/conform-baseline.json (use framework/cli/scale-adopt.mjs, then hand-fix the rest) and empty the baseline, ",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -175970,8 +175970,8 @@
    "pr": "#538",
    "priority": "P0",
    "createdAt": "2026-11-12T23:40:00.983Z",
-   "updatedAt": "2026-11-13T01:48:12.173Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-13T01:48:14.815Z",
+   "builtAt": "2026-11-13T01:48:14.815Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -176117,12 +176117,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T01:48:14.815Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T23:41:19.671Z",
-     "updatedAt": "2026-11-12T23:41:19.671Z"
+     "updatedAt": "2026-11-13T01:48:15.131Z"
     }
    ],
    "profiles": [
@@ -176133,7 +176133,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

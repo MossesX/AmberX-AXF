@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T01:48:30.421Z",
+ "updatedAt": "2026-11-13T01:48:41.654Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -111442,7 +111442,7 @@
    "title": "Everything on tokens before skins: fix the 27 open check-theme problems and the 1 check-controls finding (apps/player Home.tsx raw button), burn down all 1,209 frozen findings in framework/spec/conform-baseline.json (use framework/cli/scale-adopt.mjs, then hand-fix the rest) and empty the baseline, ",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -111450,8 +111450,8 @@
    "pr": "#538",
    "priority": "P0",
    "createdAt": "2026-11-12T23:40:00.983Z",
-   "updatedAt": "2026-11-13T01:48:12.173Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-13T01:48:14.815Z",
+   "builtAt": "2026-11-13T01:48:14.815Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -111555,8 +111555,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T01:48:14.815Z",
      "note": "",
      "uid": "st-mwe6yy7r02hwo7"
     }
