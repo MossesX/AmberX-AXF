@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T20:31:10.389Z",
+ "updatedAt": "2026-11-13T20:31:31.182Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -133207,15 +133207,15 @@
    "title": "Dispatcher gate: never launch a build that already has a live session",
    "category": "",
    "detail": "Bug seen three times on Nov 13 (ui-manager-floating-window-to-select-any: Earl/Gina, Gina/Paulie, Lenny/Paulie): the orchestrator's dispatcher launched the same build phase twice on the same worktree, so two headless sessions wrote the same files at once. Also 'Self-check: marked running with no session' releases builds back to the Queue while a session is still alive. Fix: (1) a dispatch gate that refuses a launch while ANY live tmux/claude session exists for that build id or worktree (check tmux axf-<build>--*, claude -p pids and a lock file in the worktree); (2) the self-check must confirm a session is really dead (pid + tmux) before releasing; (3) a per-build lock file with heartbeat, where stale locks expire; (4) tests that simulate double dispatch. This must land BEFORE parallel split (orchestrator-settings-collapsible-split) goes live, since parallel sub-builds must each get their own worktree and branch and never share one.",
-   "status": "complete",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/dispatcher-gate-never-launch-build",
-   "pr": "",
+   "pr": "#651",
    "priority": "P0",
    "createdAt": "2026-11-13T20:07:27.626Z",
-   "updatedAt": "2026-11-13T20:30:17.178Z",
+   "updatedAt": "2026-11-13T20:30:30.438Z",
    "builtAt": "2026-11-13T20:30:17.178Z",
    "notes": [
     {
