@@ -792,7 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 19:15 UTC · `land-project-duplicate-boilerplate` branch claude/project-duplicate-boilerplate, PR #621 (all) · builds-live
 - 2026-11-13 19:15 UTC · `console-android-app-thin-webview-wrapper` → queued, note (all) · pipeline
 - 2026-11-13 19:15 UTC · `land-project-duplicate-boilerplate` s1 done, → running (all) · orchestrator
 - 2026-11-13 19:16 UTC · `land-project-duplicate-boilerplate` s1 done, → running (all) · foreign-write
@@ -1192,6 +1191,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 21:00 UTC · `auto-land-every-finished-build-lands` s6 done (all) · orchestrator
 - 2026-11-13 21:00 UTC · `full-voice-control-resolve-inventory` note (all) · pipeline
 - 2026-11-13 21:00 UTC · `hotfix-desktop-console-draws-app-menu` → running, note (all) · pipeline
+- 2026-11-13 21:01 UTC · `per-instance-settings-small-live-preview` → running, note (all) · pipeline
 
 ## Token passes (log)
 
