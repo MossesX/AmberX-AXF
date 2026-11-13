@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T11:57:14.736Z",
+ "updatedAt": "2026-11-13T11:57:38.346Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -123197,7 +123197,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T11:55:36.143Z",
-   "updatedAt": "2026-11-13T11:56:57.332Z",
+   "updatedAt": "2026-11-13T11:57:37.071Z",
    "builtAt": "",
    "notes": [
     {
@@ -123211,6 +123211,10 @@
     {
      "text": "Brett: one-time job for today's queue only. Do NOT change merge queue rules or ordering going forward.",
      "at": "2026-11-13T11:56:17.859Z"
+    },
+    {
+     "text": "Split by Claude into 22 steps (0 Fable).",
+     "at": "2026-11-13T11:57:37.071Z"
     }
    ],
    "approvals": [],
@@ -123227,7 +123231,511 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Inventory the queue: list every PR named (#560, #562, #563, #564, #566, #568, #570, #513, #515, #529, #539, #544, #545, #556) with state, head SHA, CI result, mergeable flag and files touched. Read `land.mjs queue list`. Mark #556 as in or out based on whether it is ready. Write the list to _claude/builds/reports/combine-merge-queue-into-one-pr/inventory.md and commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "6 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/land/land.mjs",
+      "_claude/builds/reports/combine-merge-queue-into-one-pr/inventory.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwex9tpr015ax8",
+     "createdAt": "2026-11-13T11:57:37.071Z"
+    },
+    {
+     "id": "s2",
+     "text": "Pause the merge queue's automatic run so it cannot land any listed PR one at a time while the combine runs. Set a hold note on each queued entry with `land.mjs queue` and do not remove anything yet. Record the hold in the inventory file and commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "4 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/land/merge-queue.mjs",
+      "_claude/builds/reports/combine-merge-queue-into-one-pr/inventory.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwex9tpr021aq0",
+     "createdAt": "2026-11-13T11:57:37.071Z"
+    },
+    {
+     "id": "s3",
+     "text": "Create branch combine/merge-queue-2026-11-13 from the latest origin/main in a fresh worktree. Link it to the build with `builds-live.mjs link combine-merge-queue-into-one-pr --branch combine/merge-queue-2026-11-13`.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "4 min",
+     "files": [
+      "framework/cli/builds-live.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwex9tpr03y07c",
+     "createdAt": "2026-11-13T11:57:37.071Z"
+    },
+    {
+     "id": "s4",
+     "text": "Merge #513 and #515 into the combined branch. Resolve conflicts: for _claude/builds/store.json, journal and origins.json, keep main's store and re-apply each PR's build changes through builds-store.mjs. Never hand-merge JSON. Commit each merge.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "_claude/builds/store.json",
+      "_claude/builds/origins.json",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwex9tpr042fga",
+     "createdAt": "2026-11-13T11:57:37.071Z"
+    },
+    {
+     "id": "s5",
+     "text": "Merge #529 and #539 into the combined branch. Resolve conflicts the same way and commit each merge.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "_claude/builds/store.json",
+      "_claude/THREADS.md",
+      "apps/console-web/plugins/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwex9tpr05s2mt",
+     "createdAt": "2026-11-13T11:57:37.071Z"
+    },
+    {
+     "id": "s6",
+     "text": "Merge #544 and #545 into the combined branch. Resolve conflicts and commit each merge.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "_claude/builds/store.json",
+      "_claude/THREADS.md",
+      "apps/console-web/plugins/",
+      "framework/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwex9tpr06u37t",
+     "createdAt": "2026-11-13T11:57:37.071Z"
+    },
+    {
+     "id": "s7",
+     "text": "Merge #560 and #562 into the combined branch. Resolve conflicts and commit each merge.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "_claude/builds/store.json",
+      "_claude/THREADS.md",
+      "apps/console-web/plugins/",
+      "framework/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwex9tpr07ho2r",
+     "createdAt": "2026-11-13T11:57:37.071Z"
+    },
+    {
+     "id": "s8",
+     "text": "Merge #563 and #564 into the combined branch. Resolve conflicts and commit each merge.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "_claude/builds/store.json",
+      "_claude/THREADS.md",
+      "apps/console-web/plugins/",
+      "framework/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwex9tpr08lrzs",
+     "createdAt": "2026-11-13T11:57:37.071Z"
+    },
+    {
+     "id": "s9",
+     "text": "Merge #566 and #568 into the combined branch. Resolve conflicts and commit each merge.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "_claude/builds/store.json",
+      "_claude/THREADS.md",
+      "apps/console-web/plugins/",
+      "framework/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwex9tpr094jsa",
+     "createdAt": "2026-11-13T11:57:37.071Z"
+    },
+    {
+     "id": "s10",
+     "text": "Merge #570, plus #556 if the inventory marked it ready, into the combined branch. Resolve conflicts and commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "_claude/builds/store.json",
+      "_claude/THREADS.md",
+      "apps/console-web/plugins/",
+      "framework/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwex9tpr0as4br",
+     "createdAt": "2026-11-13T11:57:37.071Z"
+    },
+    {
+     "id": "s11",
+     "text": "Pull the newest origin/main into the combined branch again and resolve any new conflicts. Run `builds-store.mjs verify` and `builds-reconcile.mjs --apply` so the store holds every PR's builds, then commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "6 min",
+     "files": [
+      "_claude/builds/store.json",
+      "framework/cli/builds-store.mjs",
+      "framework/cli/builds-reconcile.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwex9tpr0b96ak",
+     "createdAt": "2026-11-13T11:57:37.071Z"
+    },
+    {
+     "id": "s12",
+     "text": "Regenerate the derived files the merged PRs touch and commit them: tracker.json (`tracker.mjs`), JSON Schemas (`axf.mjs schemas`), fixtures if a reference engine changed (`gen-fixtures.mts`), the shared-assets bake and chrome-settings backfill, and the console re-bake (`rebake.mjs`). Commit the generated output.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "tracker.json",
+      "framework/schemas/json/",
+      "framework/spec/fixtures/",
+      "apps/console-web/src/axf/",
+      "apps/console-web/axf.lock.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwex9tpr0cg7aa",
+     "createdAt": "2026-11-13T11:57:37.071Z"
+    },
+    {
+     "id": "s13",
+     "text": "Run the static checks: `axf.mjs validate --framework`, `tracker.mjs --check`, `project.mjs validate --all`, check-theme, check-controls, check-toolbars, check-chrome-assets, check-skin-coverage, check-model-policy, the glossary `catalog.mjs --check` and plugin-lifecycle checks. Fix every failure and commit the fixes.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/cli/",
+      "framework/spec/",
+      "apps/console-web/plugins/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwex9tpr0d7uq5",
+     "createdAt": "2026-11-13T11:57:37.071Z"
+    },
+    {
+     "id": "s14",
+     "text": "Run the engine and store test suites: check-builds-store, check-build-steps, check-build-priority, check-widgets.mts, check-tab-group.mts, check-skin.mts and the plugin test.py files the merged PRs touched. Fix the failures and commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/spec/",
+      "apps/console-web/plugins/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwex9tpr0ewfcg",
+     "createdAt": "2026-11-13T11:57:37.071Z"
+    },
+    {
+     "id": "s15",
+     "text": "Build the console web app (`npm install && npm run build` in apps/console-web, wrapped in `agent-slots.mjs heavy`), plus apps/demo and any app a merged PR touched. Fix any type or build errors and commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/",
+      "apps/demo/",
+      "apps/expenses/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwex9tpr0f1yr8",
+     "createdAt": "2026-11-13T11:57:37.071Z"
+    },
+    {
+     "id": "s16",
+     "text": "Run the console server tests (FastAPI, mcp_server.py) and theme-swap.mjs on the built console. Fix the failures and commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/server/",
+      "apps/console-web/scripts/theme-swap.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwex9tpr0gcbbw",
+     "createdAt": "2026-11-13T11:57:37.071Z"
+    },
+    {
+     "id": "s17",
+     "text": "Push the combined branch with the github-token.mjs broker. Open one PR titled 'Combine merge queue: <list of PR numbers>' whose body lists every original PR, its builds and each conflict resolution, plus how each changed UI is reached through the API, as carried over from the original PRs. Link it with `builds-live.mjs link --pr <n>`. If no pull_request CI run starts, dispatch android.yml once.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "6 min",
+     "files": [
+      "framework/cli/github-token.mjs",
+      "framework/cli/builds-live.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwex9tpr0hpvp7",
+     "createdAt": "2026-11-13T11:57:37.071Z"
+    },
+    {
+     "id": "s18",
+     "text": "Swap the original queue entries for the single combined PR (`land.mjs queue remove` on each original, `queue add` on the combined PR). Release the hold and let the queue run it as one stack, as Brett ordered: one CI run, then merge. If CI goes red, fix it on the branch and push once more.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/land/land.mjs",
+      "apps/console-web/plugins/push-banner/land/merge-queue.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwex9tpr0iowtj",
+     "createdAt": "2026-11-13T11:57:37.071Z"
+    },
+    {
+     "id": "s19",
+     "text": "Confirm the merge on GitHub: the combined PR shows merged, main contains its merge commit, and main's CI is green. Record the merge SHA in the inventory file.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "4 min",
+     "files": [
+      "_claude/builds/reports/combine-merge-queue-into-one-pr/inventory.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwex9tpr0j3neo",
+     "createdAt": "2026-11-13T11:57:37.071Z"
+    },
+    {
+     "id": "s20",
+     "text": "Close every original PR with a comment 'Merged via combined PR #<n> (<sha>)'. Mark each original's build complete in the orchestrator with the combined PR and branch (`orchestrator.mjs act`, `builds-live.mjs`). Delete the original head branches only if they are fully contained in main.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "_claude/builds/store.json",
+      "apps/console-web/plugins/build-orchestrator/orchestrator.mjs",
+      "framework/cli/builds-live.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwex9tpr0kpgcb",
+     "createdAt": "2026-11-13T11:57:37.071Z"
+    },
+    {
+     "id": "s21",
+     "text": "Redeploy: confirm deploy.yml pushed the site branch for apps/demo, then redeploy the console container (Coolify / `axf console refresh --hard`) once for the whole stack. Check that the console answers and that health@1 is green. Log the deploy with axf_deploy_log.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "deploy/install-console.sh",
+      "framework/deploy/axf-deploy.sh"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwex9tpr0lgg3u",
+     "createdAt": "2026-11-13T11:57:37.071Z"
+    },
+    {
+     "id": "s22",
+     "text": "Final step: re-run builds-store verify and tracker --check on main. Write the report _claude/builds/reports/combine-merge-queue-into-one-pr.md: PRs combined, conflicts and fixes, checks before and after, merge SHA, closed PRs, deploy result. Update the _claude/THREADS.md row, mark the build complete, and close the Codebase changes entry with its result. This build has no UI of its own, so there is no API part.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "_claude/builds/reports/combine-merge-queue-into-one-pr.md",
+      "_claude/THREADS.md",
+      "_claude/builds/store.json",
+      "apps/console-web/plugins/codebase-changes/changes.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwex9tpr0msvlr",
+     "createdAt": "2026-11-13T11:57:37.071Z"
+    }
+   ]
   }
  ]
 }
