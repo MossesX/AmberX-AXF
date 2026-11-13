@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4878,
- "updatedAt": "2026-11-13T19:56:40.891Z",
+ "rev": 4879,
+ "updatedAt": "2026-11-13T19:56:59.333Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -203807,7 +203807,7 @@
    "title": "Per-instance settings picker: merge main and land",
    "category": "",
    "detail": "Branch claude/per-instance-settings-window-picker clashed with main in apps/console-web/axf.lock.json, apps/console-web/src/axf/react/components/Overlays.tsx and framework/react/components/Overlays.tsx (merge aborted, main untouched). Merge origin/main and keep both sides' Overlays changes; edit framework first and re-bake the console copy, then regenerate axf.lock.json. Brett: every instance of every tab group, application menu, navigation menu, toolbar and dialog gets its own settings interface (including its own transparency) that changes only that one. Run tests, push, land on main.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -203815,8 +203815,8 @@
    "pr": "#642",
    "priority": "P0",
    "createdAt": "2026-11-13T19:37:14.557Z",
-   "updatedAt": "2026-11-13T19:56:03.141Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-13T19:56:08.030Z",
+   "builtAt": "2026-11-13T19:56:08.030Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -203950,12 +203950,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T19:56:08.020Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T19:38:35.332Z",
-     "updatedAt": "2026-11-13T19:38:35.332Z"
+     "updatedAt": "2026-11-13T19:56:08.945Z"
     }
    ],
    "profiles": [
@@ -203966,7 +203966,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
