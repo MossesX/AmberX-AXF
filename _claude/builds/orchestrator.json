@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T06:32:09.944Z",
+ "updatedAt": "2026-11-13T06:32:23.951Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -113871,7 +113871,7 @@
    "mergedAt": "2026-11-13T06:14:22Z",
    "priority": "P0",
    "createdAt": "2026-11-12T21:49:00.405Z",
-   "updatedAt": "2026-11-13T06:31:06.529Z",
+   "updatedAt": "2026-11-13T06:32:08Z",
    "builtAt": "2026-11-13T02:06:04.112Z",
    "notes": [
     {
@@ -113957,6 +113957,10 @@
     {
      "text": "Reconciler: PR #543 merged",
      "at": "2026-11-13T06:31:06.529Z"
+    },
+    {
+     "text": "Shipped manifest sm-one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds rev 1 sent to Shipped features (orchestrator): PR #543, 20 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-13T06:32:08Z"
     }
    ],
    "approvals": [],
@@ -114473,7 +114477,7 @@
    "mergedAt": "2026-11-13T06:23:47Z",
    "priority": "P0",
    "createdAt": "2026-11-12T22:16:05.972Z",
-   "updatedAt": "2026-11-13T06:31:06.529Z",
+   "updatedAt": "2026-11-13T06:32:10Z",
    "builtAt": "",
    "notes": [
     {
@@ -114551,6 +114555,10 @@
     {
      "text": "Reconciler: PR #532 merged",
      "at": "2026-11-13T06:31:06.529Z"
+    },
+    {
+     "text": "Shipped manifest sm-fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o rev 1 sent to Shipped features (orchestrator): PR #532, 88 file(s), 0 test line(s), 1 open.",
+     "at": "2026-11-13T06:32:10Z"
     }
    ],
    "approvals": [],
