@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 3856,
- "updatedAt": "2026-11-13T00:22:05.290Z",
+ "rev": 3857,
+ "updatedAt": "2026-11-13T00:39:40.474Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -175883,6 +175883,43 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-12T23:41:19.671Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "change-to-move-amberx-web-app-into-the-console-amberx-andr-pr-528-brett-do",
+   "title": "CHANGE to move-amberx-web-app-into-the-console-amberx-andr (PR #528), Brett: do NOT bring AmberX features into the console. Plan Studio is already there. Only build the Console Android app with all notifications (text, approvals, alerts) going through the console. Drop the rest of the AmberX port. A",
+   "category": "",
+   "detail": "",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-13T00:39:39.304Z",
+   "updatedAt": "2026-11-13T00:39:39.304Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 761
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
