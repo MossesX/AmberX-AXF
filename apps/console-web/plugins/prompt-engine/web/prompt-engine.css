@@ -1,0 +1,28 @@
+/* Prompt engine control panel. Layout only, theme tokens only (axp-pe prefix); every control is a framework component. */
+.axp-pe { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); width: 100% }
+.axp-pe__tools { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm) }
+.axp-pe__tools > .axp-pe__grow { flex: 1 1 auto }
+.axp-pe__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm) }
+.axp-pe__row { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-md) var(--fx-dens-gap-lg); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface) }
+.axp-pe__row.is-off { color: var(--fx-muted) }
+.axp-pe__row.is-urgent { box-shadow: inset calc(var(--fx-border-w) * 3) 0 0 var(--fx-warning) }
+.axp-pe__head { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm) }
+.axp-pe__title { font-weight: 600; display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm) }
+.axp-pe__sum, .axp-pe__p { margin: 0 }
+.axp-pe__actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-sm) }
+.axp-pe__builder { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr) minmax(0, 1.6fr); gap: var(--fx-dens-gap-lg); align-items: start }
+:where([data-fx-narrow], [data-fx-small], [data-fx-tiny]) .axp-pe__builder { grid-template-columns: minmax(0, 1fr) }
+.axp-pe__tree { display: flex; flex-direction: column; gap: var(--fx-dens-gap-xs); align-items: stretch }
+.axp-pe__group { font-weight: 600; color: var(--fx-muted); margin: var(--fx-dens-gap-sm) 0 0 }
+.axp-pe__leaf { width: 100%; justify-content: flex-start; text-align: left }
+.axp-pe__leaf--sub { margin-left: var(--fx-dens-gap-lg); width: calc(100% - var(--fx-dens-gap-lg)) }
+.axp-pe__cond { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1.4fr) auto; gap: var(--fx-dens-gap-sm); align-items: end }
+.axp-pe__kv { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; gap: var(--fx-dens-gap-sm); align-items: end }
+.axp-pe__action { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm); padding: var(--fx-dens-gap-md); border: var(--fx-border-w) dashed var(--fx-border); border-radius: var(--fx-radius-md) }
+.axp-pe__inputs { display: grid; grid-template-columns: repeat(auto-fit, minmax(calc(var(--fx-font-size) * 12), 1fr)); gap: var(--fx-dens-gap-sm) }
+.axp-pe__branch { display: flex; flex-direction: column; gap: var(--fx-dens-gap-sm) }
+.axp-pe__options { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-sm) }
+.axp-pe__hist { width: 100%; border-collapse: collapse }
+.axp-pe__hist th, .axp-pe__hist td { text-align: left; padding: var(--fx-dens-gap-xs) var(--fx-dens-gap-sm); border-bottom: var(--fx-border-w) solid var(--fx-border); vertical-align: top }
+.axp-pe__hist td.axp-pe__detail { color: var(--fx-muted); word-break: break-word }
+.axp-pe__count { color: var(--fx-muted) }
