@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4226,
- "updatedAt": "2026-11-13T10:45:35.190Z",
+ "rev": 4227,
+ "updatedAt": "2026-11-13T10:45:48.829Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -182506,7 +182506,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T10:35:03.675Z",
-   "updatedAt": "2026-11-13T10:43:24.079Z",
+   "updatedAt": "2026-11-13T10:45:20.452Z",
    "builtAt": "",
    "notes": [
     {
@@ -182547,12 +182547,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T10:35:20.815Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-fix-a-build-whose-session-finishes-its-phase-e-g--paulie",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-13T10:43:20.478Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T10:37:10.223Z",
@@ -182564,7 +182564,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-13T10:43:20.478Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -182573,7 +182573,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-13T10:43:20.478Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -182599,12 +182599,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T10:45:20.452Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T10:37:10.223Z",
-     "updatedAt": "2026-11-13T10:37:10.223Z"
+     "updatedAt": "2026-11-13T10:45:21.319Z"
     },
     {
      "id": "s2",
