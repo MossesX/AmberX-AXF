@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4266,
- "updatedAt": "2026-11-13T11:04:11.504Z",
+ "rev": 4267,
+ "updatedAt": "2026-11-13T11:04:39.710Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -175348,7 +175348,7 @@
    "title": "Stop the Molly guide from popping up and talking every time the console loads: no auto-open, it only opens when Brett asks. Carry out the Nov 3 decision: Molly is no longer an agent, so swap the Molly guide, Ask Molly and walkthrough texts over to Gizmo. Android twin too.",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -175356,7 +175356,7 @@
    "pr": "#564",
    "createdAt": "2026-11-12T23:14:47.128Z",
    "updatedAt": "2026-11-13T11:03:51.335Z",
-   "builtAt": "",
+   "builtAt": "2026-11-13T11:03:51.335Z",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
@@ -175512,12 +175512,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T11:03:34.563Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T23:16:42.326Z",
-     "updatedAt": "2026-11-12T23:16:42.326Z"
+     "updatedAt": "2026-11-13T11:03:35.349Z"
     }
    ],
    "profiles": [
@@ -175528,7 +175528,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
