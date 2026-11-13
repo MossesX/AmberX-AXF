@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4562,
- "updatedAt": "2026-11-13T17:50:28.702Z",
+ "rev": 4563,
+ "updatedAt": "2026-11-13T17:51:26.896Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -196064,6 +196064,55 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-13T17:47:52.425Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "tab-groups-choose-how-many-rows-tabs",
+   "title": "Tab groups: choose how many rows of tabs (stack tabs instead of side-scrolling)",
+   "category": "",
+   "detail": "Add a 'Rows' setting to every tab group's chrome settings (per instance): 1 (default, today's behaviour), 2, 3, ... or Auto (as many rows as needed to fit). Tabs wrap evenly across that many rows so all tabs fit on the page without horizontal scrolling. Works on desktop and phone, follows skins/tokens, persists per instance, survives reload. Active tab stays visible; drag-reorder works across rows. Expose via REST/MCP/CLI/voice/control@1 ('make the settings tabs three rows'). Tests, help entry, Shipped features.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-13T17:51:25.212Z",
+   "updatedAt": "2026-11-13T17:51:25.212Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I want to be able to select how many rows it is so you can stack tab groups, so it fits on the page without scrolling to the right, you can say three and it will list three rows of tabs",
+    "at": "2026-11-13T17:51:25.212Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 794
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

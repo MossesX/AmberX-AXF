@@ -785,7 +785,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 10:56 UTC · `fix-merge-conflicts-on-pr-557-professional-skins` note (all) · orchestrator
 - 2026-11-13 10:56 UTC · `every-skin-ships-a-light-and-a-dark-colour-theme-studio-pro-executive-field` note (all) · orchestrator
 - 2026-11-13 10:57 UTC · `every-skin-ships-a-light-and-a-dark-colour-theme` note (all) · orchestrator
 - 2026-11-13 10:57 UTC · `android-approval-overlay-a-small-always-on-float` s1 done, → running (all) · orchestrator
@@ -1185,6 +1184,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 17:49 UTC · `per-instance-settings-window-picker` note (all) · orchestrator
 - 2026-11-13 17:50 UTC · `per-instance-settings-window-picker` → queued, note (all) · pipeline
 - 2026-11-13 17:50 UTC · `full-voice-api-control-type-fields-press` s3 done (all) · orchestrator
+- 2026-11-13 17:51 UTC · `tab-groups-choose-how-many-rows-tabs` added (0 steps) (all) · console
 
 ## Token passes (log)
 
