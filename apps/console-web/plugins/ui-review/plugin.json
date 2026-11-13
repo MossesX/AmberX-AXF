@@ -6,7 +6,7 @@
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "Every UI a build makes comes here for Brett's approval, one section per kind (open registry: Design packs, Whole apps / programs, Screens & pages, Settings interfaces, Dialogs & popups, Menus & toolbars, Banners & cards, Other). Each item carries its app, build, branch and PR, desktop + phone screenshots, notes, a status (waiting, approved, changes asked, rejected), his comment and its history. Views: tree, collapsible grid, grid with sub-grids, gallery and side-by-side compare, all with multi-select and bulk Approve / Ask changes / Reject. Builds submit through review.mjs, POST /api/plugins/ui-review/submit or rebuild-shots --submit; other plugins read the per-branch / per-PR state through the ui-review@1 capability. Design packs (formerly their own plugin) are one section: pick up to 3. Screenshots tab (ui-screenshot@1): ad-hoc pictures (check sessions, live captures, PR before/after, uploads) that never enter the approve / reject queue, saved with axf shot / POST shots / Upload; grid grouped by app, screen, source or day, thumbnails, full-screen viewer with before/after slider, copy link, delete, Send to review. Predicted looks (ui-prediction@1): when a build that changes UI is launched, framework/cli/ui-predict.mjs makes a mockup of each screen it will touch (framework controls, current theme, demo data) and files it here as 'Predicted - approve the look' next to the screen as it is now; Approve look / Ask changes (the comment goes to the build) / Reject (the build is held). Setting: wait for the look approval before UI builds start. The predicted pictures refresh while the build runs and the real after-shots replace them at the end (badge Real, predicted vs real compare).",
+  "description": "Every UI a build makes, filed for Brett to look at; a merge gate only while the switch 'UI Review is a merge gate' is on (default off since Nov 13 2026: uiReview.gate = Claude setting builds.uiReviewGate; GET/POST gate, release-held), one section per kind (open registry: Design packs, Whole apps / programs, Screens & pages, Settings interfaces, Dialogs & popups, Menus & toolbars, Banners & cards, Other). Each item carries its app, build, branch and PR, desktop + phone screenshots, notes, a status (waiting, approved, changes asked, rejected), his comment and its history. Views: tree, collapsible grid, grid with sub-grids, gallery and side-by-side compare, all with multi-select and bulk Approve / Ask changes / Reject. Builds submit through review.mjs, POST /api/plugins/ui-review/submit or rebuild-shots --submit; other plugins read the per-branch / per-PR state through the ui-review@1 capability. Design packs (formerly their own plugin) are one section: pick up to 3. Screenshots tab (ui-screenshot@1): ad-hoc pictures (check sessions, live captures, PR before/after, uploads) that never enter the approve / reject queue, saved with axf shot / POST shots / Upload; grid grouped by app, screen, source or day, thumbnails, full-screen viewer with before/after slider, copy link, delete, Send to review. Predicted looks (ui-prediction@1): when a build that changes UI is launched, framework/cli/ui-predict.mjs makes a mockup of each screen it will touch (framework controls, current theme, demo data) and files it here as 'Predicted - approve the look' next to the screen as it is now; Approve look / Ask changes (the comment goes to the build) / Reject. The predicted pictures refresh while the build runs and the real after-shots replace them at the end (badge Real, predicted vs real compare).",
   "targets": [
     "axf-console"
   ],
@@ -42,7 +42,8 @@
     "mentions": [
       "CLAUDE.md",
       "apps/console-web/plugins/README.md",
-      "_claude/shared/rules/RULES.md"
+      "_claude/shared/rules/RULES.md",
+      "_claude/THREADS.md"
     ]
   },
   "commands": {
@@ -201,16 +202,16 @@
       {
         "id": "settings",
         "route": "GET /settings",
-        "title": "Look approval setting",
-        "description": "'Wait for my look approval before UI builds start' (waitForLook, default off).",
+        "title": "Look approval setting (retired)",
+        "description": "'Wait for my look approval before UI builds start' (waitForLook). Retired Nov 13 2026: UI Review is not a gate, the launcher never waits for a look whatever it says.",
         "readOnly": true,
         "output": "{ waitForLook }"
       },
       {
         "id": "settings-set",
         "route": "PUT /settings",
-        "title": "Set the look approval setting",
-        "description": "Turn 'Wait for my look approval before UI builds start' on or off.",
+        "title": "Set the look approval setting (retired)",
+        "description": "Stores 'Wait for my look approval before UI builds start' for old clients. Retired Nov 13 2026: it has no effect, UI Review is not a gate.",
         "input": {
           "type": "object",
           "properties": {
@@ -223,6 +224,58 @@
           ]
         },
         "output": "{ waitForLook }"
+      },
+      {
+        "id": "gate-get",
+        "route": "GET /gate",
+        "title": "Is UI Review a merge gate? (default off)",
+        "description": "Reads the switch 'UI Review is a merge gate' (uiReview.gate = the Claude setting builds.uiReviewGate, default off): {on, heldPrs, openReviews, line}. Off: items are filed for Brett to look at, PRs never wait. The same object as review.mjs gate, the console action ui-review.gate and voice uireview.gate. Deep link: console_show target settings:plugins/ui-review#gate.",
+        "readOnly": true,
+        "output": "{ $axf: 'ui-review-gate@1', key, label, on, heldPrs: number[], openReviews: [{pr, branch, review, held}], line, who }"
+      },
+      {
+        "id": "gate-set",
+        "route": "POST /gate",
+        "title": "Turn 'UI Review is a merge gate' on or off",
+        "description": "Turns the switch off (open to everyone) or on (personOnly: only Brett's own click in the console, like the owner-only Claude setting; any other caller gets 403). Answers the gate object plus {changed}. Same as review.mjs gate on|off and voice uireview.gate on|off.",
+        "personOnly": "on",
+        "input": { "type": "object", "properties": { "on": { "type": "boolean" } }, "required": ["on"], "additionalProperties": false },
+        "output": "{ on, heldPrs, openReviews, line, changed }"
+      },
+      {
+        "id": "release",
+        "route": "POST /release",
+        "title": "Release PRs held for UI Review into the merge queue",
+        "description": "For each PR (prs, or all = every PR with an open review): its UI Review items become non-blocking (still filed for Brett to look at), a draft PR is marked ready for review, and the PR is added to the merge queue (queue add). Only through the merge queue: it never merges. dryRun says what it would do. Same as review.mjs release-held and voice uireview.release.",
+        "input": { "type": "object", "properties": { "prs": { "type": "array", "items": { "type": "integer" } }, "all": { "type": "boolean" }, "dryRun": { "type": "boolean" } }, "additionalProperties": false },
+        "output": "{ ok, dryRun, prs: [{ pr, items, draft, queue }] }"
+      },
+      {
+        "id": "release-items",
+        "route": "POST /release/items",
+        "title": "Mark PRs' UI Review items non-blocking (still filed)",
+        "description": "release-held's UI Review half only: the open review items of these PRs (or all) become non-blocking. They stay filed and keep their status; nothing is approved.",
+        "input": { "type": "object", "properties": { "prs": { "type": "array", "items": { "type": "integer" } }, "all": { "type": "boolean" }, "dryRun": { "type": "boolean" } }, "additionalProperties": false },
+        "output": "{ dryRun, prs: [{ pr, items: [ids], review }] }"
+      },
+      {
+        "id": "action-voice-release",
+        "action": "uireview.release",
+        "title": "Voice: release PRs held for UI Review",
+        "description": "AmberX voice name for release-held: 'uireview.release 557 553' or 'uireview.release all' runs POST release (items non-blocking, un-draft, merge queue add; never merges)."
+      },
+      {
+        "id": "action-gate",
+        "action": "ui-review.gate",
+        "title": "Is UI Review a merge gate?",
+        "description": "In the open console: reads GET gate ({on, heldPrs, line}); with 'on' or 'off' it sets the switch (on is Brett's own click only).",
+        "readOnly": true
+      },
+      {
+        "id": "action-voice-gate",
+        "action": "uireview.gate",
+        "title": "Voice: UI Review gate status, on or off",
+        "description": "AmberX voice name for the gate switch: 'uireview.gate' reads it, 'uireview.gate off' turns it off, 'uireview.gate on' turns it on only when Brett himself asks in the console."
       }
     ]
   },

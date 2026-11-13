@@ -14,7 +14,8 @@ import * as core from './web/review-core.mjs';
 import * as sc from './web/shots-core.mjs';
 import * as gc from './web/groups-core.mjs';
 import * as cf from './web/conform.mjs';
-import { caller, fieldsOf } from './review.mjs';
+import { caller, fieldsOf, releaseHeld, makeGitHub, queueAddRoute } from './review.mjs';
+import { createServer } from 'node:http';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 let n = 0; const t = (name: string, f: () => void) => { try { f(); n++; } catch (e) { console.error(`✗ ${name}`); throw e; } };
@@ -145,16 +146,22 @@ t('caller: source + sender from the Claude Code session, never guessed', () => {
   assert.equal(f.title, 'N'); assert.equal(f.source, 'manual'); assert.equal(f.submittedBy, 'user:brett');
 });
 
-t('ui-review@1 state: strictest wins, holds unless approved / none', () => {
-  assert.equal(core.reviewState(items, { branch: 'claude/x' }).state, 'changes');
-  assert.equal(core.reviewState(items, { pr: 9 }).state, 'waiting');
-  assert.equal(core.reviewState(items, { pr: 9 }).holds, true);
-  const s = core.reviewState(items, { branch: 'nope' }); assert.equal(s.state, 'none'); assert.equal(s.holds, false);
-  const ok = core.reviewState([core.decide(items[0], 'approve')], { pr: 9 }); assert.equal(ok.state, 'approved'); assert.equal(ok.holds, false);
-  assert.equal(core.reviewState([...items, mk({ id: 'r', branch: 'claude/x', status: 'rejected' })], { branch: 'claude/x' }).state, 'rejected');
+t('ui-review@1 state: strictest wins; holds only while the gate switch is on (default off)', () => {
+  assert.equal(core.GATE_DEFAULT, false); assert.equal(core.GATE_KEY, 'uiReview.gate');
+  assert.equal(core.reviewState(items, { branch: 'claude/x' }).review, 'changes');
+  const off = core.reviewState(items, { pr: 9 });
+  assert.equal(off.review, 'waiting'); assert.equal(off.state, 'filed (not a gate)'); assert.equal(off.holds, false); assert.equal(off.gate, false); assert.equal(off.reason, core.GATE_OFF_LINE);
+  const on = core.reviewState(items, { pr: 9, gate: true });
+  assert.equal(on.state, 'waiting'); assert.equal(on.holds, true);
+  assert.equal(core.reviewState(items.map((x) => ({ ...x, nonBlocking: true })), { pr: 9, gate: true }).holds, false, 'a released item is filed, never holds');
+  assert.equal(core.GATE.on, false); assert.deepEqual(core.GATE.heldPrs, []); assert.equal(core.GATE.line, 'Off: items are filed for you to look at, PRs never wait.');
+  assert.deepEqual(core.gateView(true, items).heldPrs, [9]); assert.deepEqual(core.gateView(false, items).heldPrs, []);
+  const s = core.reviewState(items, { branch: 'nope', gate: true }); assert.equal(s.state, 'none'); assert.equal(s.holds, false);
+  const ok = core.reviewState([core.decide(items[0], 'approve')], { pr: 9, gate: true }); assert.equal(ok.state, 'approved'); assert.equal(ok.holds, false);
+  assert.equal(core.reviewState([...items, mk({ id: 'r', branch: 'claude/x', status: 'rejected' })], { branch: 'claude/x', gate: true }).state, 'rejected');
 });
 
-t('CLI: submit → list → state (exit 3) → decide → state, kinds', () => {
+t('CLI: submit → list → state --exit-code in both gate states → decide → state, kinds', () => {
   const dir = mkdtempSync(join(tmpdir(), 'ui-review-test-'));
   const env = cleanEnv(dir);
   const cli = (...a) => spawnSync(process.execPath, [join(HERE, 'review.mjs'), ...a], { env, encoding: 'utf8' });
@@ -178,9 +185,15 @@ t('CLI: submit → list → state (exit 3) → decide → state, kinds', () => {
   const vs = JSON.parse(viaSession.stdout).item; assert.equal(vs.source, 'claude-code'); assert.deepEqual(vs.submittedBy, { type: 'session', id: 'sess-abc' }); assert.match(vs.group.name, /^session sess-abc - /);
   assert.equal(JSON.parse(cli('list', '--status', 'waiting', '--json').stdout).items.length, 2);
   assert.match(cli('check').stdout, /all ui-review-item@1/);
-  const held = cli('state', '--pr', '42', '--exit-code'); assert.equal(held.status, 3); assert.match(held.stdout, /waiting \(holds the merge\)/);
+  const waiting = cli('state', '--pr', '42', '--exit-code'); assert.equal(waiting.status, 0, 'gate off: a waiting review exits 0'); assert.match(waiting.stdout, /^filed \(not a gate\)/);
+  assert.equal(JSON.parse(cli('gate', '--json').stdout).on, false, 'gate status: off by default');
+  assert.notEqual(cli('gate', 'on').status, 0, 'gate on from the CLI is refused (Brett turns it on in the console)');
+  writeFileSync(join(dir, 'gate.json'), JSON.stringify({ on: true }));
+  const held = cli('state', '--pr', '42', '--exit-code'); assert.equal(held.status, 1, 'gate on: a waiting review exits 1'); assert.match(held.stdout, /^waiting \(holds\)/);
+  assert.deepEqual(JSON.parse(cli('gate', '--json').stdout).heldPrs, [42]);
+  assert.equal(cli('gate', 'off').status, 0, 'gate off is open to everyone'); assert.equal(cli('state', '--pr', '42', '--exit-code').status, 0);
   assert.equal(cli('decide', item.id, 'approve', '--comment', 'good').status, 0);
-  const st = JSON.parse(cli('state', '--branch', 'claude/t', '--json', '--exit-code').stdout); assert.equal(st.state, 'approved');
+  const st = JSON.parse(cli('state', '--branch', 'claude/t', '--json', '--exit-code').stdout); assert.equal(st.review, 'approved'); assert.equal(st.state, 'filed (not a gate)');
   assert.equal(cli('state', '--branch', 'claude/t', '--exit-code').status, 0);
   assert.equal(cli('decide', 'pack:graphite-pro', 'changes').status, 0, 'a design pack can be decided too');
   const doc = JSON.parse(readFileSync(join(dir, 'items.json'), 'utf8'));
@@ -447,5 +460,45 @@ t('sorting: every column sorts both ways', () => {
   assert.equal(core.sortItems(xs, 'title-desc')[0].title, 'b');
   assert.equal(core.sortItems(xs, 'waiting-desc')[0].status, 'approved');
 });
+
+// release-held against a fake GitHub and a fake console (s11): dry run changes nothing; the real run un-drafts the draft
+// PR, marks items through release/items and adds every open PR to the merge queue; a merged PR is skipped; never merges
+{
+  const gh = { calls: [] as string[], pulls: { 41: { state: 'open', draft: true, node_id: 'PR_41' }, 42: { state: 'open', draft: false, node_id: 'PR_42' }, 43: { state: 'closed', draft: false, merged_at: '2026-11-01', node_id: 'PR_43' } } as Record<number, { state: string; draft: boolean; node_id: string; merged_at?: string }> };
+  const srv = createServer((req, res) => {
+    let body = ''; req.on('data', (c) => { body += c; }); req.on('end', () => {
+      gh.calls.push(`${req.method} ${req.url}`);
+      const m = /\/repos\/[^/]+\/[^/]+\/pulls\/(\d+)$/.exec(req.url || '');
+      if (req.method === 'GET' && m) { res.setHeader('content-type', 'application/json'); res.end(JSON.stringify(gh.pulls[Number(m[1])] ?? {})); return; }
+      if (req.method === 'POST' && req.url === '/graphql') { const id = JSON.parse(body).variables.id; for (const p of Object.values(gh.pulls)) if (p.node_id === id) p.draft = false; res.setHeader('content-type', 'application/json'); res.end(JSON.stringify({ data: { markPullRequestReadyForReview: { pullRequest: { isDraft: false } } } })); return; }
+      res.statusCode = 404; res.end('{}');
+    });
+  });
+  await new Promise<void>((r) => srv.listen(0, '127.0.0.1', () => r()));
+  const port = (srv.address() as { port: number }).port;
+  const ghApi = makeGitHub({ AXF_GITHUB_API: `http://127.0.0.1:${port}`, GITHUB_TOKEN: 'test' } as NodeJS.ProcessEnv);
+  const consoleCalls: { method: string; path: string; body: unknown }[] = [];
+  const api = async (method: string, path: string, body?: { prs?: number[] }) => { consoleCalls.push({ method, path, body }); return path.endsWith('/release/items') ? { status: 200, json: { prs: (body?.prs ?? []).map((pr) => ({ pr, items: pr === 41 ? ['r-1', 'r-2'] : [] })) } } : { status: 200, json: { ok: true } }; };
+  const route = { method: 'POST', path: '/api/plugins/queue-owner/queue/add' };
+  const dry = await releaseHeld([41, 42, 43], { dryRun: true, deps: { api, gh: ghApi, queueRoute: route } });
+  t('release-held --dry-run: says what it would do, changes nothing', () => {
+    assert.equal(dry.dryRun, true);
+    assert.deepEqual(dry.prs.map((x) => x.draft), ['would mark ready for review', 'not a draft', 'PR is merged']);
+    assert.deepEqual(dry.prs.map((x) => x.queue), ['would add to the merge queue', 'would add to the merge queue', 'skipped (not open)']);
+    assert.ok(!gh.calls.some((c) => c.startsWith('POST')), 'no GitHub write'); assert.equal(gh.pulls[41].draft, true);
+    assert.ok(!consoleCalls.some((c) => c.path === route.path), 'no queue add'); assert.equal((consoleCalls[0].body as { dryRun: boolean }).dryRun, true);
+  });
+  consoleCalls.length = 0;
+  const real = await releaseHeld([41, 42, 43], { deps: { api, gh: ghApi, queueRoute: route } });
+  t('release-held: items non-blocking, draft un-drafted, queue add only (never merges)', () => {
+    assert.match(real.prs[0].items, /marked 2 non-blocking \(still filed\)/); assert.equal(real.prs[1].items, 'no open review item');
+    assert.equal(real.prs[0].draft, 'marked ready for review'); assert.equal(gh.pulls[41].draft, false);
+    assert.deepEqual(consoleCalls.filter((c) => c.path === route.path).map((c) => (c.body as { pr: number }).pr), [41, 42], 'queue add for the open PRs only');
+    assert.ok(!gh.calls.some((c) => /\/merge\b|PUT /.test(c)), 'never merges'); assert.ok(!consoleCalls.some((c) => /merge(?!-queue)|\/land\b/.test(c.path.replace(route.path, ''))), 'no merge call to the console');
+  });
+  srv.close();
+  const found = await queueAddRoute();
+  t('release-held finds the merge queue add by its command id, not by folder', () => { assert.equal(found?.method, 'POST'); assert.match(found?.path ?? '', /^\/api\/plugins\/[a-z0-9-]+\/queue\/add$/); });
+}
 
 console.log(`ui-review: ${n} checks ok`);

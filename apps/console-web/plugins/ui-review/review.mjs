@@ -14,7 +14,11 @@
  *   node apps/console-web/plugins/ui-review/review.mjs decision <id> --console     his pick, in priority order
  *   node apps/console-web/plugins/ui-review/review.mjs list [--kind K] [--status waiting|changes|rejected|approved|open]
  *        [--branch B] [--pr N] [--q text] [--console] [--json]
+ *   node apps/console-web/plugins/ui-review/review.mjs gate [on|off|status] [--console] [--json]   'UI Review is a merge gate' (default off)
  *   node apps/console-web/plugins/ui-review/review.mjs state [--branch B] [--pr N] [--exit-code] [--console] [--json]
+ *   node apps/console-web/plugins/ui-review/review.mjs release-held [--pr n[,n…]]… [--all] [--dry-run] [--json]
+ *        every PR still held for UI Review: its review items become non-blocking (still filed), the PR is un-drafted
+ *        and added to the merge queue (queue add). Only through the merge queue: it never merges.
  *   node apps/console-web/plugins/ui-review/review.mjs decide <id[,id…]> approve|changes|reject|reopen [--comment "…"] [--console]
  *   node apps/console-web/plugins/ui-review/review.mjs migrate [--apply] [--report <file.md>]   older items → ui-review-item@1
  *   node apps/console-web/plugins/ui-review/review.mjs check        every stored item + screenshot conforms (exit 1 if not)
@@ -29,8 +33,11 @@
  * Screenshots named …-phone.png / …-desktop.png get their device from the name. Default: writes the plugin's data
  * folder in this checkout (AXF_UI_REVIEW_DIR overrides). --console posts to the running console instead
  * (AXF_CONSOLE_URL + AXF_TOKEN), which is what a build on the VPS uses so Brett sees it at once.
- * state --exit-code exits 3 when the branch / PR is held (waiting, changes asked or rejected).
+ * gateOn() is the one gate decision (uiReview.gate = the Claude setting builds.uiReviewGate, default off; --console asks
+ * the console, else this checkout's copy in the data folder). state --exit-code exits 1 only while the gate is on and the
+ * PR is held; with the gate off it exits 0 and says 'filed (not a gate)'. gate on is Brett's own click in the console.
  */
+import { spawnSync } from 'node:child_process';
 import { copyFileSync, existsSync, mkdirSync, readdirSync, readFileSync, renameSync, statSync, writeFileSync } from 'node:fs';
 import { basename, dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -160,11 +167,108 @@ function writeOptionAssets({ choices, data }) {
 /* -------------------------------------------------------------- console API (--console) */
 async function consoleCall(path, body) {
   const url = process.env.AXF_CONSOLE_URL, tok = process.env.AXF_TOKEN;
-  if (!url || !tok) throw new Error('--console needs AXF_CONSOLE_URL and AXF_TOKEN');
+  if (!url || !tok) {
+    // on the VPS host (no console token): the console container's own API, as release-held reaches it
+    const r = process.env.AXF_LAND_CONSOLE === 'off' ? null : await consoleApi(body ? 'POST' : 'GET', `/api/plugins/ui-review/${path}`, body);
+    if (!r) throw new Error('--console needs AXF_CONSOLE_URL and AXF_TOKEN (or the console container on this host)');
+    if (r.status < 200 || r.status >= 300) throw new Error(`console ${r.status}: ${typeof r.json?.detail === 'string' ? r.json.detail : JSON.stringify(r.json?.detail ?? '').slice(0, 300)}`);
+    return r.json;
+  }
   const r = await fetch(`${url.replace(/\/$/, '')}/api/plugins/ui-review/${path}`, { method: body ? 'POST' : 'GET', headers: { Authorization: `Bearer ${tok}`, 'Content-Type': 'application/json' }, body: body ? JSON.stringify(body) : undefined });
   const j = await r.json().catch(() => ({}));
   if (!r.ok) throw new Error(`console ${r.status}: ${typeof j.detail === 'string' ? j.detail : r.statusText}`);
   return j;
+}
+
+/* -------------------------------------------------------------- the gate switch */
+const gateFile = () => join(dataDir(), 'gate.json');
+/** The gate decision: the console's answer with --console, else the copy in the data folder; missing = off. */
+export async function gateOn({ remote = false } = {}) {
+  if (remote) return (await consoleCall('gate')).on === true;
+  return readJson(gateFile(), {})?.on === true;
+}
+/** Local switch: off is open to everyone; on needs Brett's own click in the console, so it is refused here. */
+export function setGateLocal(on, by = 'cli') {
+  if (on) throw new Error(`'${core.GATE_LABEL}' is turned on only by Brett, with his own click in the console (Settings → Plugins → UI Review)`);
+  writeJson(gateFile(), { $axf: 'ui-review-gate@1', on: false, by, at: new Date().toISOString() });
+  return core.gateView(false, submitted(loadDoc()));
+}
+
+/* -------------------------------------------------------------- release-held */
+/**
+ * The console's API from wherever this runs: AXF_CONSOLE_URL + AXF_TOKEN, else (on the VPS host, which has no console
+ * token) docker exec + curl inside the console container (AXF_LAND_CONSOLE, default axf-console; "off" = none).
+ * Answers { status, json } or null when the console can't be reached.
+ */
+export async function consoleApi(method, path, body) {
+  const url = process.env.AXF_CONSOLE_URL, tok = process.env.AXF_TOKEN;
+  if (url && tok) {
+    const r = await fetch(`${url.replace(/\/$/, '')}${path}`, { method, headers: { Authorization: `Bearer ${tok}`, 'Content-Type': 'application/json' }, body: body ? JSON.stringify(body) : undefined }).catch(() => null);
+    return r ? { status: r.status, json: await r.json().catch(() => ({})) } : null;
+  }
+  const box = process.env.AXF_LAND_CONSOLE || 'axf-console';
+  if (box === 'off') return null;
+  const cmd = `curl -s -m 20 -o /dev/stdout -w '\\n%{http_code}' -X ${method} -H "Authorization: Bearer $AXF_TOKEN" -H "Content-Type: application/json" ${body ? '--data-binary @-' : ''} "http://127.0.0.1:7090${path}"`;
+  const r = spawnSync('docker', ['exec', '-i', box, 'sh', '-c', cmd], { input: body ? JSON.stringify(body) : undefined, encoding: 'utf8', timeout: 30000 });
+  if (r.status !== 0) return null;
+  const lines = (r.stdout || '').trimEnd().split('\n'); const status = Number(lines.pop()) || 0;
+  try { return { status, json: JSON.parse(lines.join('\n') || '{}') }; } catch { return { status, json: {} }; }
+}
+
+/** GitHub REST/GraphQL with the token broker's token (framework/cli/github-token.mjs); AXF_GITHUB_API for tests. */
+export function makeGitHub(env = process.env) {
+  const base = (env.AXF_GITHUB_API || 'https://api.github.com').replace(/\/$/, '');
+  let token = env.GITHUB_TOKEN || '';
+  const tok = () => {
+    if (!token) { const r = spawnSync(process.execPath, [join(ROOT, 'framework/cli/github-token.mjs'), 'token'], { encoding: 'utf8', timeout: 30000 }); token = r.status === 0 ? (r.stdout || '').trim() : ''; }
+    return token;
+  };
+  return async (method, path, body) => {
+    const r = await fetch(`${base}${path}`, { method, headers: { Authorization: `Bearer ${tok()}`, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json', 'User-Agent': 'axf-ui-review' }, body: body ? JSON.stringify(body) : undefined });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok || j?.errors?.length) throw new Error(`GitHub ${r.status}: ${String(j?.message || j?.errors?.[0]?.message || r.statusText).slice(0, 200)}`);
+    return j;
+  };
+}
+
+/** Where the merge queue's "add" lives: found by its command id in the plugin-commands registry (never by folder). */
+export async function queueAddRoute() {
+  const { registry } = await import('../../../../framework/cli/plugin-commands.mjs');
+  for (const p of registry({}).plugins) {
+    const c = [...(p.commands || []), ...(p.reads || [])].find((x) => x.id === 'mergequeue-add' && x.run?.route);
+    if (c) return { method: c.run.route.method, path: `/api/plugins/${p.folder}${c.run.route.path}` };
+  }
+  return null;
+}
+
+/**
+ * release-held: for each PR, (1) its open UI Review items become non-blocking, still filed (POST release/items); (2) a
+ * draft PR is marked ready for review; (3) the PR is added to the merge queue (queue add). Never merges: landing is
+ * the merge queue's. `deps` = { api, gh, queueRoute } for tests. Answers { dryRun, prs: [{ pr, items, draft, queue }] }.
+ */
+export async function releaseHeld(prs, { dryRun = false, repo = process.env.AXF_GITHUB_REPO || 'MossesX/AmberX-AXF', by = 'release-held', deps = {} } = {}) {
+  const api = deps.api || consoleApi; const gh = deps.gh || makeGitHub(); const route = deps.queueRoute !== undefined ? deps.queueRoute : await queueAddRoute();
+  const rel = await api('POST', '/api/plugins/ui-review/release/items', { prs, dryRun, by });
+  const relByPr = new Map((rel?.status === 200 ? rel.json.prs || [] : []).map((x) => [x.pr, x]));
+  const out = [];
+  for (const n of prs) {
+    const row = { pr: n, items: '', draft: '', queue: '' };
+    const r = relByPr.get(n);
+    row.items = !rel ? 'console unreachable: items not marked' : rel.status !== 200 ? `console answered ${rel.status} (older UI Review without release): items not marked` : r?.items?.length ? `${dryRun ? 'would mark' : 'marked'} ${r.items.length} non-blocking (still filed)` : 'no open review item';
+    try {
+      const p = await gh('GET', `/repos/${repo}/pulls/${n}`);
+      if (p.state !== 'open') row.draft = `PR is ${p.merged_at ? 'merged' : p.state}`;
+      else if (!p.draft) row.draft = 'not a draft';
+      else if (dryRun) row.draft = 'would mark ready for review';
+      else { await gh('POST', '/graphql', { query: 'mutation($id: ID!) { markPullRequestReadyForReview(input: { pullRequestId: $id }) { pullRequest { isDraft } } }', variables: { id: p.node_id } }); row.draft = 'marked ready for review'; }
+      if (p.state !== 'open') { row.queue = 'skipped (not open)'; out.push(row); continue; }
+    } catch (e) { row.draft = `GitHub: ${e.message}`; }
+    if (!route) row.queue = 'no merge queue (no plugin provides mergequeue-add)';
+    else if (dryRun) row.queue = 'would add to the merge queue';
+    else { const q = await api(route.method, route.path, { pr: n }); row.queue = !q ? 'console unreachable: not added' : q.status === 200 ? 'added to the merge queue' : `merge queue answered ${q.status}: ${String(q.json?.detail || q.json?.message || '').slice(0, 160)}`; }
+    out.push(row);
+  }
+  return { dryRun, prs: out };
 }
 
 /* -------------------------------------------------------------- CLI */
@@ -230,13 +334,33 @@ export async function main(argv = process.argv.slice(2)) {
     const rows = core.sortItems(core.filterItems(items, { kind: val(flags.kind), status: val(flags.status), branch: val(flags.branch), pr: val(flags.pr) || null, q: val(flags.q) }));
     return out({ ok: true, items: rows }, rows.length ? rows.map(line).join('\n') : 'nothing to review');
   }
+  if (cmd === 'gate') {
+    const sub = pos[1] || 'status';
+    if (!['on', 'off', 'status'].includes(sub)) throw new Error('usage: review.mjs gate [on|off|status] [--console]');
+    let g;
+    if (sub === 'status') g = remote ? await consoleCall('gate') : core.gateView(await gateOn(), submitted(loadDoc()));
+    else g = remote ? await consoleCall('gate', { on: sub === 'on', by: caller().session || 'cli' }) : setGateLocal(sub === 'on');
+    return out(g, `${core.GATE_LABEL}: ${g.on ? 'on' : 'off'}. ${g.line}${g.heldPrs.length ? ` Held: ${g.heldPrs.map((n) => `#${n}`).join(', ')}.` : ''}`);
+  }
   if (cmd === 'state') {
     const branch = val(flags.branch), pr = val(flags.pr).replace(/^#/, '') || null;
     if (!branch && !pr) throw new Error('state needs --branch and/or --pr');
-    const s = remote ? await consoleCall(`state?branch=${encodeURIComponent(branch)}&pr=${encodeURIComponent(pr ?? '')}`) : core.reviewState(submitted(loadDoc()), { branch, pr });
-    out(s, `${s.state}${s.holds ? ' (holds the merge)' : ''} · waiting ${s.counts.waiting} · changes ${s.counts.changes} · rejected ${s.counts.rejected} · approved ${s.counts.approved}`);
-    if (flags['exit-code'] && s.holds) process.exitCode = 3;
+    const s = remote ? await consoleCall(`state?branch=${encodeURIComponent(branch)}&pr=${encodeURIComponent(pr ?? '')}`) : core.reviewState(submitted(loadDoc()), { branch, pr, gate: await gateOn() });
+    out(s, `${s.state}${s.holds ? ' (holds)' : ''} · waiting ${s.counts.waiting} · changes ${s.counts.changes} · rejected ${s.counts.rejected} · approved ${s.counts.approved}`);
+    if (flags['exit-code'] && s.holds) process.exitCode = 1; // only while the gate is on (gateOn())
     return;
+  }
+  if (cmd === 'release-held') {
+    const raw = argv.flatMap((a, i) => (a === '--pr' && argv[i + 1] ? [argv[i + 1]] : [])).flatMap((x) => String(x).split(',')).map((x) => Number(String(x).replace(/^#/, ''))).filter((n) => Number.isInteger(n) && n > 0);
+    let prs = [...new Set(raw)];
+    if (flags.all) {
+      const g = await consoleApi('GET', '/api/plugins/ui-review/gate');
+      const open = g?.status === 200 ? g.json.openReviews || [] : core.heldPrs(submitted(loadDoc()), { gate: true });
+      prs = [...new Set([...prs, ...open.map((x) => x.pr)])];
+    }
+    if (!prs.length) throw new Error('release-held needs --pr <n> (repeat or comma-separate) or --all');
+    const r = await releaseHeld(prs, { dryRun: !!flags['dry-run'] });
+    return out(r, `${r.dryRun ? 'dry run: ' : ''}${r.prs.map((x) => `#${x.pr}: items ${x.items}; ${x.draft}; ${x.queue}`).join('\n')}`);
   }
   if (cmd === 'decide') {
     const ids = String(pos[1] ?? '').split(',').filter(Boolean); const decision = String(pos[2] ?? '');

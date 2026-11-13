@@ -1,5 +1,6 @@
 /**
- * UI Review console plugin (ai.amberx.axf.console.ui-review): every UI a build makes waits here for Brett's approval,
+ * UI Review console plugin (ai.amberx.axf.console.ui-review): optional feedback on every UI a build makes (not a gate
+ * since Nov 13 2026: nothing waits on it),
  * one section per kind (open registry), five views with multi-select and bulk decisions. Design packs (formerly their
  * own plugin) are its first section; View → Design packs opens straight onto it.
  */
@@ -12,7 +13,7 @@ import { appMenu } from './menu';
 import { FOLDER, GROUP_BYS, GROUP_PARAM, ID, KEYS, MOCKUP_VIEW, PACKS_VIEW, SHOT_PARAM, SHOTS_VIEW, VIEW, VIEWS } from './keys';
 import { MOCKUP_PARAM } from '../../../../../framework/core/ui-predict.mjs';
 import { MockupPage } from './mockup';
-import { LookApprovalPanel } from './look-settings';
+import { GatePanel } from './look-settings';
 import { UiReviewPage } from './ui';
 import { ASK_DIALOG, AskClient, AskDialog, ChoicesPanel } from './choices';
 
@@ -33,6 +34,23 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('ui-review.open', () => rt.navigate(VIEW), { label: 'Open UI Review' });
     rt.actions.register('ui-review.design-packs', () => rt.navigate(PACKS_VIEW), { label: 'Open Design packs' });
     rt.actions.register('ui-review.screenshots', () => rt.navigate(SHOTS_VIEW), { label: 'Open Screenshots' });
+    // 'UI Review is a merge gate' (default off): the same object as GET gate, MCP ui_review_gate_get and review.mjs gate
+    // with 'on' / 'off' it sets the switch (on: the server takes it only from Brett's own console session)
+    const gate = ([sub = 'status']: string[] = []) => {
+      const api = pluginApi(FOLDER, 'UI Review');
+      if (sub === 'on' || sub === 'off') return api.post<core.Gate>('gate', { on: sub === 'on' }).then((g) => { rt.toast(`${core.GATE_LABEL}: ${g.on ? 'on' : 'off'}`, 'success'); return g; }, (e: Error) => { rt.toast(e.message, 'danger'); return { ok: false, error: e.message }; });
+      return api.call<core.Gate>('gate').catch(() => ({ ...core.GATE }));
+    };
+    rt.actions.register('ui-review.gate', gate, { label: 'Is UI Review a merge gate?' });
+    rt.actions.register('uireview.gate', gate, { label: 'UI Review gate: status, on or off (voice)' });
+    // release-held (voice uireview.release 557 553 | all): items non-blocking, un-draft, merge queue add; never merges
+    const release = (args: string[] = []) => {
+      const all = args.includes('all'); const prs = args.flatMap((a) => a.split(/[ ,]+/)).map((a) => Number(a.replace(/^#/, ''))).filter((n) => Number.isInteger(n) && n > 0);
+      if (!all && !prs.length) { rt.toast('Say which PRs (uireview.release 557 553) or all.', 'info'); return undefined; }
+      return pluginApi(FOLDER, 'UI Review').post<{ prs: { pr: number; queue: string }[] }>('release', { prs, all }).then((r) => { rt.toast(r.prs.map((x) => `#${x.pr}: ${x.queue}`).join(' · '), 'success'); return r; }, (e: Error) => { rt.toast(e.message, 'danger'); return { ok: false, error: e.message }; });
+    };
+    rt.actions.register('ui-review.release', release, { label: 'Release PRs held for UI Review into the merge queue' });
+    rt.actions.register('uireview.release', release, { label: 'Release PRs held for UI Review (voice)' });
     // a copied screenshot link (?ui-shot=<id>) lands on the Screenshots tab, which opens that picture
     // AmberX's "ready for review" notification (?axf-review-group=<id>) lands on the queue, filtered to that group
     if (new URLSearchParams(globalThis.location?.search ?? '').get(GROUP_PARAM)) setTimeout(() => rt.navigate(VIEW), 0);
@@ -49,19 +67,19 @@ export const plugin: AxfWebLibrary = {
   slots: { 'app.frame.cover': [{ id: 'ui-review.ask', order: 97, render: () => <AskClient /> }] },
   dialogs: { [ASK_DIALOG]: { title: 'How many options?', icon: 'layers', render: (p) => <AskDialog ask={p.ask as Parameters<typeof AskDialog>[0]['ask']} /> } },
   nav: { label: 'Plugins', items: [{ id: 'ui-review', label: 'UI Review', icon: 'eye', view: 'ui-review' }, { id: 'design-packs', label: 'Design packs', icon: 'palette', view: 'design-packs' }, { id: 'ui-screenshots', label: 'Screenshots', icon: 'monitor', view: 'ui-screenshots' }] },
-  settingsTabs: [{ id: FOLDER, label: 'UI Review', icon: 'eye', parent: 'plugins', order: 46, description: 'Every UI a build makes, waiting for your approval.' }],
+  settingsTabs: [{ id: FOLDER, label: 'UI Review', icon: 'eye', parent: 'plugins', order: 46, level: 'simple', description: 'Feedback on the UI builds make. Not a merge gate unless you switch it on: items are filed, PRs never wait.' }],
   settings: [{
     id: 'ui-review.prefs', label: 'UI Review', icon: 'eye', tab: FOLDER, order: 10,
     settings: [
       { key: KEYS.view, label: 'View', kind: 'choice', default: 'grid', options: VIEWS.map((v) => ({ value: v.id, label: v.label })) },
       { key: KEYS.sort, label: 'Order', kind: 'choice', default: 'waiting', options: core.SORTS.map((s) => ({ value: s.id, label: s.label })) },
-      { key: KEYS.tab, label: 'Opens on', kind: 'choice', default: 'review', options: [{ value: 'review', label: 'Review (waiting for approval)' }, { value: 'shots', label: 'Screenshots' }] },
+      { key: KEYS.tab, label: 'Opens on', kind: 'choice', default: 'review', options: [{ value: 'review', label: 'Review (optional feedback)' }, { value: 'shots', label: 'Screenshots' }] },
       { key: KEYS.shotGroup, label: 'Screenshots group by', kind: 'choice', default: 'app', options: SHOT_GROUPS.map((g) => ({ value: g.id, label: g.label })) },
       { key: KEYS.groupBy, label: 'Sub-grids group by', kind: 'choice', default: 'kind', options: GROUP_BYS.map((g) => ({ value: g.id, label: g.label })) },
       { key: KEYS.thumbs, label: 'Show the screens list', kind: 'toggle', default: true, description: 'The list of screens beside (on a phone: above) the preview.' },
     ],
   }],
-  settingsPanels: [{ id: 'ui-review.look', tab: FOLDER, title: 'Predicted looks', icon: 'eye', order: 20, render: () => <LookApprovalPanel /> },
+  settingsPanels: [{ id: 'ui-review.gate', tab: FOLDER, title: 'Merge gate', icon: 'branch', order: 5, level: 'simple', render: () => <GatePanel /> },
     { id: 'ui-review.choices', tab: FOLDER, title: 'Choices', icon: 'layers', order: 15, render: () => <ChoicesPanel /> },
     { id: 'ui-review.lifecycle', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
 };

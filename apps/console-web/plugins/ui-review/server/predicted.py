@@ -1,8 +1,8 @@
 """Predicted looks (ui-prediction@1, framework/core/ui-predict.mjs): UI Review items whose after-shots are a mockup of
 what a build will probably look like, made before the build runs, so Brett approves the look before money is spent.
 
-  GET  settings                 {waitForLook}: "Wait for my look approval before UI builds start" (default off)
-  PUT  settings {waitForLook}
+  GET  settings                 {waitForLook, uiReview.gate}: look approval wait (retired) and "UI Review is a merge gate" (default off)
+  PUT  settings {waitForLook?, uiReview.gate?}   turning the gate on is Brett's own click only
   GET  predicted?build=         the predicted items (all, or one build's), each with its look gate verdict
   POST predict {build, name, app, screen, prediction, files: [{name, data}], …}
                                 make the build's predicted item, or refresh its pictures (same item, new shots)
@@ -167,17 +167,20 @@ def router_for(h: Any) -> APIRouter:
 
     @r.get("/settings")
     def settings() -> dict:
-        return get_settings()
+        # uiReview.gate is the Claude setting builds.uiReviewGate (server/gate.py): one value drives both
+        return {**get_settings(), "uiReview.gate": h.gate_on()}
 
     @r.put("/settings")
     async def put_settings(request: Request) -> dict:
         body = await h._json(request, 8192)
         if "waitForLook" in body and not isinstance(body["waitForLook"], bool):
             raise HTTPException(400, "waitForLook must be true or false")
+        if "uiReview.gate" in body:
+            h.set_gate(request, body["uiReview.gate"])  # on: Brett's own click only; off: anyone
         with h._lock:
             s = {**get_settings(), **{k: body[k] for k in ("waitForLook",) if k in body}, "updatedAt": h._now()}
             h._write(settings_path(), s)
-        return {k: v for k, v in s.items() if k != "updatedAt"} | {"updatedAt": s["updatedAt"]}
+        return {k: v for k, v in s.items() if k != "updatedAt"} | {"uiReview.gate": h.gate_on(), "updatedAt": s["updatedAt"]}
 
     @r.get("/predicted")
     def predicted(build: str = "", touches: bool = True) -> dict:

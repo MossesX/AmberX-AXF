@@ -142,27 +142,77 @@ check(stored_ok(), "items.json conforms after submits")
 
 # ---- state + capability
 s = c.get("/p/state", params={"pr": "42"}).json()
-check(s["state"] == "waiting" and s["holds"] and s["counts"]["waiting"] == 1, "state: waiting holds")
+check(s["state"] == "filed (not a gate)" and s["review"] == "waiting" and s["gate"] is False and s["holds"] is False and s["counts"]["waiting"] == 1, "gate off (default): state filed (not a gate), review waiting, never holds")
 check(c.get("/p/state").status_code == 400, "state needs a branch or PR")
 svc = plugin_services.get("ui-review@1")
-check(svc is not None and svc.holds("claude/t") is True, "capability ui-review@1 provided, holds the branch")
+check(svc is not None and svc.held("claude/t") is False and svc.holds("claude/t") is False and svc.isHeld("claude/t") is False and svc.gate_on() is False, "capability ui-review@1 provided; gate off: held() is False")
+check(svc.hold("claude/t") == {"held": False, "reason": "Off: items are filed for you to look at, PRs never wait.", "state": "filed (not a gate)", "review": "waiting", "gate": False}, "hold() answers not held, with the reason")
+
+# ---- the gate API: REST, MCP plugin command, CLI and console / voice action all answer the same object (s6)
+rest = c.get("/p/gate").json()
+check(rest["$axf"] == "ui-review-gate@1" and rest["on"] is False and rest["heldPrs"] == [] and any(x["pr"] == 42 and not x["held"] for x in rest["openReviews"]) and svc.gate() == rest, "GET gate: {on: false, heldPrs: []}, open reviews listed, not held")
+cli_gate = subprocess.run(["node", str(HERE / "review.mjs"), "gate", "--json"], capture_output=True, text=True, timeout=60)
+cg = json.loads(cli_gate.stdout or "{}") if cli_gate.returncode == 0 else {}
+check({k: cg.get(k) for k in ("$axf", "key", "on", "heldPrs", "line")} == {k: rest.get(k) for k in ("$axf", "key", "on", "heldPrs", "line")}, "CLI review.mjs gate answers the same object")
+probe = subprocess.run(["node", "--input-type=module", "-e", """
+const root = process.argv[1], here = process.argv[2];
+const pc = await import(new URL('framework/core/engines/plugin-commands.mjs', root));
+const reg = (await import(new URL('framework/cli/plugin-commands.mjs', root))).registry({ folders: ['ui-review'] });
+const p = reg.plugins.find((x) => x.folder === 'ui-review');
+const cmd = (id) => p.commands.find((x) => x.id === id) || p.reads?.find((x) => x.id === id);
+const g = cmd('gate-get'), gs = cmd('gate-set'), a = cmd('action-gate'), v = cmd('action-voice-gate');
+const core = await import(new URL('web/review-core.mjs', here));
+const src = (await import('node:fs')).readFileSync(new URL('web/index.tsx', here), 'utf8');
+console.log(JSON.stringify({ tool: pc.commandToolName('ui-review', g?.id), setTool: pc.commandToolName('ui-review', gs?.id), setRoute: gs?.run?.route, voice: v?.run?.action, route: g?.run?.route, action: a?.run?.action,
+  registered: /actions\.register\('ui-review\.gate', gate,/.test(src) && /actions\.register\('uireview\.gate', gate,/.test(src) && /api\.call<core\.Gate>\('gate'\)/.test(src) && /api\.post<core\.Gate>\('gate'/.test(src), gate: core.GATE }));
+""", (HERE.parents[3]).as_uri() + "/", HERE.as_uri() + "/"], capture_output=True, text=True, timeout=60)
+pj = json.loads(probe.stdout or "{}") if probe.returncode == 0 else {}
+check(pj.get("tool") == "ui_review_gate_get" and (pj.get("route") or {}).get("path") == "/gate", f"MCP ui_review_gate_get runs GET gate {probe.stderr[-300:]}")
+check(pj.get("setTool") == "ui_review_gate_set" and (pj.get("setRoute") or {}).get("method") == "POST" and pj.get("voice") == "uireview.gate", f"MCP ui_review_gate_set runs POST gate; voice action uireview.gate declared ({pj.get('setRoute')})")
+check(pj.get("action") == "ui-review.gate" and pj.get("registered") is True and {k: (pj.get("gate") or {}).get(k) for k in ("$axf", "key", "on", "line")} == {k: rest.get(k) for k in ("$axf", "key", "on", "line")}, "console / voice action ui-review.gate reads GET gate (default object = the same while off)")
 check(len(svc.items(branch="claude/t")) == 2, "capability lists a branch's items")
 
 # ---- decide (single, bulk, packs) + history
 r = c.post("/p/decide", json={"ids": [item["id"]], "decision": "changes", "comment": "tighter"}).json()
 check(r["changed"] == [item["id"]], "decide one")
-check(svc.state(pr=42)["state"] == "changes", "changes asked still holds")
+check(svc.state(pr=42)["review"] == "changes" and not svc.held(pr=42), "changes asked: filed, not held while the gate is off")
 r = c.post("/p/decide", json={"ids": [item["id"], r2["id"], "pack:graphite-pro", "nope"], "decision": "approve"}).json()
 check(sorted(r["changed"]) == sorted([item["id"], r2["id"], "pack:graphite-pro"]) and r["missing"] == ["nope"], "bulk decide incl. a design pack")
 s = svc.state("claude/t")
-check(s["state"] == "approved" and not s["holds"], "all approved: no hold")
+check(s["review"] == "approved" and not s["holds"], "all approved: no hold")
 got = {x["id"]: x for x in c.get("/p/items").json()["items"]}
 check([h["action"] for h in got[item["id"]]["history"]] == ["submitted", "changes", "approve"] and got[item["id"]]["status"] == "approved", "history kept")
 check(stored_ok(), "items.json conforms after decisions")
 check(c.get("/p/items").json()["overlay"]["pack:graphite-pro"]["status"] == "approved", "design-pack decision saved as overlay")
 check(c.post("/p/decide", json={"ids": [item["id"]], "decision": "maybe"}).status_code == 400, "unknown decision refused")
 c.post("/p/decide", json={"ids": [r2["id"]], "decision": "reject"})
-check(svc.state("claude/t")["state"] == "rejected", "rejected wins")
+check(svc.state("claude/t")["review"] == "rejected", "rejected wins")
+
+# ---- the gate switch (s5): on = rejected / changes / waiting hold, nonBlocking never; on is Brett's own click only
+gm = sys.modules[spec.name + ".gate"]
+check(c.post("/p/gate", json={"on": True}).status_code == 403, "POST gate {on: true} without Brett's console session: 403 (personOnly)")
+check(c.put("/p/settings", json={"uiReview.gate": True}).status_code == 403 and c.get("/p/settings").json()["uiReview.gate"] is False, "PUT settings uiReview.gate true refused the same way; settings read off")
+gm._write_mirror(mod.data_dir, True, "test"); gm._cache.update(at=0.0, on=None, source="")
+st = c.get("/p/state", params={"branch": "claude/t"}).json()
+check(mod.gate_on() is True and st["state"] == "rejected" and st["holds"] is True and svc.held("claude/t") is True, "gate on: rejected holds, held() is True")
+check(c.get("/p/gate").json()["on"] is True and c.get("/p/settings").json()["uiReview.gate"] is True, "GET gate and GET settings read on")
+r = c.post("/p/gate", json={"on": False})
+check(r.status_code == 200 and r.json()["on"] is False and r.json()["changed"] is True and not svc.held("claude/t"), "POST gate {on: false} is open to everyone; nothing holds again")
+
+# ---- release-held's UI Review half (s9/s11): dry run marks nothing; real marks open items nonBlocking, still filed
+it42 = [x for x in c.get("/p/items").json()["items"] if x.get("pr") == 42]
+c.post("/p/decide", json={"ids": [it42[0]["id"]], "decision": "reject"})
+check(c.post("/p/release/items", json={}).status_code == 400, "release/items needs prs or all")
+dr = c.post("/p/release/items", json={"prs": [42], "dryRun": True}).json()
+check(dr["dryRun"] is True and dr["prs"][0]["items"] == [it42[0]["id"]] and not any(x.get("nonBlocking") for x in c.get("/p/items").json()["items"] if x.get("pr") == 42), "release/items dry run: lists the open item, marks nothing")
+gm._write_mirror(mod.data_dir, True, "test"); gm._cache.update(at=0.0, on=None, source="")
+check(svc.held(pr=42) is True and 42 in c.get("/p/gate").json()["heldPrs"], "gate on: the rejected PR 42 is held before release")
+rl = c.post("/p/release/items", json={"prs": ["#42"]}).json()
+after = [x for x in c.get("/p/items").json()["items"] if x.get("id") == it42[0]["id"]][0]
+check(rl["prs"][0]["items"] == [it42[0]["id"]] and after.get("nonBlocking") is True and after["status"] == "rejected" and after["history"][-1]["action"] == "released", "release/items: nonBlocking, status kept (nothing approved), history line")
+check(svc.held(pr=42) is False and 42 not in c.get("/p/gate").json()["heldPrs"] and c.get("/p/state", params={"pr": "42"}).json()["review"] == "rejected", "released: PR 42 no longer held even with the gate on, still filed as rejected")
+check(c.post("/p/release/items", json={"all": True}).json()["prs"] == [] or all(not x["items"] or x["pr"] != 42 for x in c.post("/p/release/items", json={"all": True, "dryRun": True}).json()["prs"]), "release/items all: a released item is not released twice")
+gm._write_mirror(mod.data_dir, False, "test"); gm._cache.update(at=0.0, on=None, source="")
 
 # ---- picks + remove
 check(c.put("/p/picks", json={"picked": ["a", "b", "c"]}).json()["picked"] == ["a", "b", "c"], "picks saved")
@@ -225,7 +275,7 @@ pit = r.json()["items"][0]
 check(pit["status"] == "pending" and pit["name"] == "Breakroom home" and pit["fromShot"] == sa["id"] and pit["files"]["after"][0]["viewport"] == "phone" and pit["screen"] == "/breakroom/home", "Send to review makes a pending review item")
 check(pit["source"] == "console" and pit["submittedBy"]["type"] == "user" and pit["group"]["name"].startswith("sess-1 - "), "promoted: sent by the user, in a queue group named like the screenshot's")
 check(c.get("/p/shot", params={"path": pit["files"]["after"][0]["src"]}).status_code == 200, "promoted picture copied into the review item")
-check(c.get("/p/state", params={"pr": "77"}).json()["state"] == "waiting", "the promoted item holds its PR like any review item")
+check(c.get("/p/state", params={"pr": "77"}).json()["review"] == "waiting", "the promoted item counts for its PR like any review item")
 check(any(x["id"] == sa["id"] and x["promoted"] == [pit["id"]] for x in c.get("/p/shots").json()["shots"]), "screenshot stays, remembers the review item")
 check(c.post("/p/shots/promote", json={"ids": ["nope"]}).status_code == 404, "promote unknown refused")
 c.post("/p/remove", json={"ids": [pit["id"]]})
@@ -480,7 +530,7 @@ check(sets["multi"] is True and [o["id"] for o in sets["options"]] == ["a", "b",
 check(sum("opt-a--" in s["src"] or "opt-a--" in s.get("file", "") for s in ci["files"]["after"]) == 1 or "opt-a--" in json.dumps(ci["files"]), "an option's picture joins the item")
 got = c.get("/p/choices/assets?type=toolbar").json()["assets"]
 check(len(got) == 3 and not any(a["picked"] for a in got) and "ui-choice" in got[0]["tags"] and got[0]["data"] == {"density": "a"}, f"every option is an asset ({len(got)})")
-check(c.get(f"/p/state?branch=claude/c").json()["holds"] is True, "the build waits on the pick like any hold")
+check(c.get(f"/p/state?branch=claude/c").json()["holds"] is False, "a pick still to make never holds the build (UI Review is not a gate)")
 d = c.get(f"/p/choices/decision?id={ci['id']}").json()
 check(d["decided"] is False and d["status"] == "waiting", "no decision yet")
 check(c.post("/p/choices/choose", json={"id": ci["id"], "chosen": ["zz"]}).status_code == 400, "an unknown option refused")

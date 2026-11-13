@@ -71,13 +71,15 @@ check(ord2.map((o) => o.id).join() === 'base,top', 'a branch built on top of ano
 const cyc = core.landOrder([B('p', { builtAt: '1', notes: [{ text: 'land after q' }] }), B('q', { builtAt: '2', notes: [{ text: 'land after p' }] })], {});
 check(cyc.length === 2, 'a cycle still lands both (oldest first)');
 check(core.statusOnly(['Builds live: a [skip ci]'], ['_claude/builds/store.json']) && !core.statusOnly(['Fix [skip ci]'], ['framework/x.ts']) && !core.statusOnly(['Fix'], ['_claude/x']), 'status-only = all [skip ci] and all under _claude/');
-const kinds = [['held', { held: 'later' }], ['code', { code: ['a.ts'] }], ['conflict', { conflicts: ['a.ts'] }], ['push', { pushError: 'x' }], ['pr', { prError: 'x' }], ['dependency', { deps: ['y'] }], ['ci', { ci: 'failure', failing: ['Gradle'] }], ['ui', { ci: 'success', ui: 'waiting' }], ['running', { ci: 'running' }]];
+const kinds = [['held', { held: 'later' }], ['code', { code: ['a.ts'] }], ['conflict', { conflicts: ['a.ts'] }], ['push', { pushError: 'x' }], ['pr', { prError: 'x' }], ['dependency', { deps: ['y'] }], ['ci', { ci: 'failure', failing: ['Gradle'] }], ['running', { ci: 'running' }]];
 for (const [k, f] of kinds) check(core.blockReason('b', f)?.kind === k, `reason ${k}: ${core.blockReason('b', f)?.text}`);
-check(core.blockReason('b', { ci: 'success', ui: '' }) === null, 'green + UI free = nothing holds it');
-check(core.blockReason('b', { ci: 'success', ui: 'waiting', waitUi: false }) === null, 'Wait for UI Review off = UI Review does not hold it');
-check(core.blockReason('b', { conflicts: ['a'] }).agent && core.blockReason('b', { ci: 'failure' }).agent && !core.blockReason('b', { ui: 'waiting', ci: 'success' }).agent && !core.blockReason('b', { deps: ['y'] }).agent, 'only a code conflict or red CI asks for an agent');
-const r1 = core.blockReason('b', { ui: 'waiting', ci: 'success' });
-check(core.shouldPush(null, r1, 'h1') && !core.shouldPush({ kind: 'ui', head: 'h1' }, r1, 'h1') && core.shouldPush({ kind: 'ui', head: 'h1' }, r1, 'h2') && !core.shouldPush(null, core.blockReason('b', { ci: 'running' }), 'h'), 'one push per reason and head; never for a quiet wait');
+check(core.blockReason('b', { ci: 'success' }) === null, 'green = nothing holds it');
+for (const ui of ['waiting', 'changes', 'rejected', 'unknown']) check(core.blockReason('b', { ci: 'success', ui }) === null && core.blockReason('b', { ci: 'success', ui, waitUi: false }) === null, `gate off: UI Review ${ui} never holds a landing`);
+for (const ui of ['waiting', 'changes', 'rejected', 'unknown']) check(core.blockReason('b', { ci: 'success', ui, waitUi: true })?.kind === 'ui' && /merge gate/.test(core.blockReason('b', { ci: 'success', ui, waitUi: true }).text), `gate on: UI Review ${ui} holds a landing`);
+check(core.blockReason('b', { ci: 'success', ui: '', waitUi: true }) === null && reasonEvent('ui') === 'waiting', "gate on, nothing in UI Review: free; a UI hold is Brett's move");
+check(core.blockReason('b', { conflicts: ['a'] }).agent && core.blockReason('b', { ci: 'failure' }).agent && !core.blockReason('b', { held: 'x' }).agent && !core.blockReason('b', { deps: ['y'] }).agent, 'only a code conflict or red CI asks for an agent');
+const r1 = core.blockReason('b', { held: 'later' });
+check(core.shouldPush(null, r1, 'h1') && !core.shouldPush({ kind: 'held', head: 'h1' }, r1, 'h1') && core.shouldPush({ kind: 'held', head: 'h1' }, r1, 'h2') && !core.shouldPush(null, core.blockReason('b', { ci: 'running' }), 'h'), 'one push per reason and head; never for a quiet wait');
 const al = core.alertFor(core.blockReason('b', { ci: 'failure', failing: ['Gradle'] }), { pr: '#9' });
 check(al.key === 'land:b' && al.severity === 'error' && /CI is red \(Gradle\)/.test(al.title) && /PR #9/.test(al.body), 'the alert says what broke in plain words, one key per build');
 check(core.agentJobFor(B('b'), core.blockReason('b', { conflicts: ['a'] }))?.type === 'land-build' && core.agentJobFor(B('b'), r1) === null, 'agent job only for conflict / red CI');
@@ -151,7 +153,7 @@ const gh = async (method, path, body) => {
   calls.gh.push(`${method} ${path}`);
   if (method === 'GET' && path.includes('/pulls?state=open')) return pulls;
   if (method === 'GET' && /\/pulls\/\d+$/.test(path)) return { mergeable: true };
-  if (method === 'POST' && path.endsWith('/pulls')) { const n = 60 + pulls.length; const p = { number: n, head: { ref: body.head, repo: { full_name: 'MossesX/AmberX-AXF' } }, base: { ref: 'main' }, html_url: `u${n}` }; pulls.push(p); return p; }
+  if (method === 'POST' && path.endsWith('/pulls')) { if (body.draft) calls.draftPrs = (calls.draftPrs || 0) + 1; const n = 60 + pulls.length; const p = { number: n, head: { ref: body.head, repo: { full_name: 'MossesX/AmberX-AXF' } }, base: { ref: 'main' }, html_url: `u${n}` }; pulls.push(p); return p; }
   if (method === 'GET' && path.includes('/check-runs')) {
     const sha = path.split('/commits/')[1].split('/')[0];
     if (sha === headOf('claude/ui') || sha === headOf('claude/green')) return { check_runs: [{ name: 'CI', status: 'completed', conclusion: 'success' }] };
@@ -173,6 +175,7 @@ const by = Object.fromEntries(st.items.map((x) => [x.id, x]));
 check(!by.busy, 'a build with steps left is not landed');
 check(st.items.map((x) => x.id).indexOf('later') > st.items.map((x) => x.id).indexOf('ok'), 'landing order: `later` after `ok` (its note)');
 check(by.ok?.state === 'waiting' && by.ok.reason?.kind === 'running' && by.ok.pr && calls.gh.some((c) => c.startsWith('POST') && c.endsWith('/pulls')), 'ok: behind only by status data = no merge, PR opened, waiting on CI');
+check(!calls.draftPrs, 'auto-land opens PRs ready for review, never as drafts');
 check(calls.gh.some((c) => c.includes('/actions/workflows/android.yml/dispatches')) && by.ok.dispatched === headOf('claude/ok'), 'ok: no CI on its head (CodeRabbit skipped only) = CI started once');
 check(by.clash?.state === 'blocked' && by.clash.reason.kind === 'conflict' && by.clash.reason.files.join() === 'shared.ts', 'clash: a code conflict blocks it, file named');
 check(calls.jobs.some((j) => j.input.build === 'clash' && j.type === 'land-build') && by.clash.agent, 'clash: one agent job for the code conflict');
@@ -182,8 +185,17 @@ check(by.logs?.mergedMain && /logs thread/.test(logsThreads) && /main thread/.te
 check(sh(['show', 'origin/claude/logs:shared.ts'], repo).includes('main'), 'logs: it now has main\'s code');
 check(by.later?.reason?.kind === 'dependency' && /waits for ok/.test(by.later.reason.text), 'later: waits for its dependency (before its red CI is even looked at)');
 check(by.held?.reason?.kind === 'held' && /Brett wants to look first/.test(by.held.reason.text) && !calls.gh.some((c) => c.includes('claude%2Fheld')), 'held: held by hand, nothing done to it');
-check(by.ui?.state === 'blocked' && by.ui.reason.kind === 'ui' && by.ui.pr === 51, 'ui: CI green, UI Review waiting = held, says so');
-check(by.green?.state === 'ready' && by.green.reason === null && by.green.pr === 52, 'green: CI green, UI free = ready (the push banner merges it)');
+check(by.ui?.state === 'ready' && by.ui.reason === null && by.ui.pr === 51, 'ui: CI green, UI Review waiting, gate off = still lands');
+check(calls.api.filter((c) => c.path === '/api/plugins/push-banner/ui-hold').length === 1 && !calls.api.some((c) => c.path.includes('/ui-hold?')), 'gate off: auto-land asks the gate once a round and never asks UI Review about a PR');
+{
+  // the same round with UI Review's switch 'UI Review is a merge gate' on: the waiting review holds the ui build
+  const asked = [];
+  const apiOn = async (method, path, body) => { asked.push(path); if (path === '/api/plugins/push-banner/ui-hold') return { hold: '', gate: true }; if (path.includes('/ui-hold')) return path.includes('claude%2Fui') ? { hold: 'waiting', gate: true } : { hold: '', gate: true }; return api(method, path, body); };
+  const on = await round({ s, git, gh, api: apiOn, dry: true, only: 'ui', agentJob: () => ({ exit: 0 }) });
+  const u = on.items.find((x) => x.id === 'ui');
+  check(u?.reason?.kind === 'ui' && /merge gate/.test(u.reason.text) && on.waitUi === true && asked.some((p) => p.includes('/ui-hold?branch=claude%2Fui')), 'gate on: auto-land asks UI Review per PR and a waiting review holds the landing');
+}
+check(by.green?.state === 'ready' && by.green.reason === null && by.green.pr === 52, 'green: CI green = ready (the push banner merges it)');
 check(st.order[0] && st.managed.includes(52), 'land.json gives the push banner the order and the PRs it manages');
 check(!existsSync(join(wtDir, '_claude/dropped.md')) && readFileSync(join(s.archive, 'wt/_claude/dropped.md'), 'utf8') === 'hub copy\n', 'wt: claude-sync\'s copy backed up to the archive and removed');
 check(existsSync(join(wtDir, '.brief.md')) && sh(['log', '--name-only', '--format=', '-5', 'origin/claude/wt'], repo).includes('_claude/memory/docs/wt.md'), 'wt: the report it left was committed on its branch and pushed; .brief.md skipped');
@@ -219,7 +231,7 @@ check(dflt.on === false && calls.gh.length === n, 'Auto-land is off by default (
 
 rmSync(tmp, { recursive: true, force: true });
 console.log('group chat: a landing reason is Brett\'s move, a code fix, or something in the way');
-check(['held', 'ui', 'code'].every((k) => reasonEvent(k) === 'waiting'), 'held, UI Review and uncommitted code wait for Brett');
+check(['held', 'code'].every((k) => reasonEvent(k) === 'waiting'), 'held and uncommitted code wait for Brett');
 check(['conflict', 'ci', 'error'].every((k) => reasonEvent(k) === 'failed') && ['push', 'pr', 'dependency'].every((k) => reasonEvent(k) === 'blocked'), 'conflicts and red CI failed; push, PR and dependencies blocked');
 console.log(`auto-land: ${ok} checks passed${bad ? `, ${bad} FAILED` : ''}`);
 if (bad) process.exitCode = 1;

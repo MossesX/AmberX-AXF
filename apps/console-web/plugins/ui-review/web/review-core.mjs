@@ -12,7 +12,7 @@ export const SCHEMA = 'review-item@1';
 export const MAX_PICKS = 3;
 export const DESIGN_KIND = 'design-pack';
 
-/** Statuses in waiting-first order. `holds` = a PR carrying it should not merge yet. */
+/** Statuses in waiting-first order. `holds` = holds a PR while the gate switch is on (gateOn(), default off). */
 export const STATUSES = [
   { id: 'waiting', label: 'Waiting', icon: 'clock', tone: 'accent', holds: true },
   { id: 'changes', label: 'Changes asked', icon: 'edit', tone: 'warning', holds: true },
@@ -192,17 +192,58 @@ export function togglePick(picked, id, max = MAX_PICKS) {
 }
 
 /**
- * ui-review@1 state for a branch and/or PR: the strictest status of its items.
- * rejected > changes > waiting > approved; 'none' when nothing was submitted. `holds` = keep the PR from merging.
+ * The gate switch (Brett, Nov 13 2026: "UI Review must not be a gate. Add an on/off switch in UI Review settings,
+ * 'UI Review is a merge gate', default OFF"). uiReview.gate is the Claude setting builds.uiReviewGate; a missing value
+ * is off. Off: items are still filed for Brett to look at and no PR waits. On: a PR whose review is waiting, has
+ * changes asked or is rejected is held, unless its items were released (nonBlocking). server/gate.py is the twin.
  */
-export function reviewState(items, { branch = '', pr = null } = {}) {
+export const GATE_KEY = 'uiReview.gate';
+export const GATE_LABEL = 'UI Review is a merge gate';
+export const GATE_DEFAULT = false;
+export const NOT_A_GATE = 'filed (not a gate)';
+export const GATE_OFF_LINE = 'Off: items are filed for you to look at, PRs never wait.';
+export const GATE_ON_LINE = 'On: a PR whose UI Review is waiting, has changes asked or is rejected waits in the merge queue.';
+export const gateLine = (on) => (on ? GATE_ON_LINE : GATE_OFF_LINE);
+const HOLDING = new Set(['waiting', 'pending', 'changes', 'rejected']);
+
+/**
+ * ui-review@1 state for a branch and/or PR: the strictest status of its items (`review`), rejected > changes > waiting >
+ * approved, 'none' when nothing was submitted. `state` is that status while the gate is on and 'filed (not a gate)'
+ * while it is off; `holds` only while it is on and an item that wasn't released still waits, has changes or is rejected.
+ */
+export function reviewState(items, { branch = '', pr = null, gate = GATE_DEFAULT } = {}) {
+  const on = gate === true;
   // a predicted look (ui-prediction@1) is approved for the look, not for merging: only real screens count
   const mine = items.filter((it) => ((branch && it.branch === branch) || (pr && Number(it.pr) === Number(pr))) && it.prediction?.state !== 'predicted');
   const c = { waiting: 0, changes: 0, rejected: 0, approved: 0 };
   for (const it of mine) if (it.status in c) c[it.status]++;
-  const state = !mine.length ? 'none' : c.rejected ? 'rejected' : c.changes ? 'changes' : c.waiting ? 'waiting' : 'approved';
-  return { $axf: 'ui-review@1', branch, pr: pr ? Number(pr) : null, state, holds: state !== 'none' && state !== 'approved', counts: c, items: mine.map((it) => ({ id: it.id, title: it.title, kind: it.kind, status: it.status })) };
+  const review = !mine.length ? 'none' : c.rejected ? 'rejected' : c.changes ? 'changes' : c.waiting ? 'waiting' : 'approved';
+  const holds = on && mine.some((it) => HOLDING.has(it.status) && !it.nonBlocking);
+  const state = on || review === 'none' ? review : NOT_A_GATE;
+  const reason = holds ? `UI Review is a merge gate and this is ${review}` : on ? 'UI Review is a merge gate; nothing here holds' : GATE_OFF_LINE;
+  return { $axf: 'ui-review@1', branch, pr: pr ? Number(pr) : null, state, review, gate: on, holds, reason, counts: c, items: mine.map((it) => ({ id: it.id, title: it.title, kind: it.kind, status: it.status, ...(it.nonBlocking ? { nonBlocking: true } : {}) })) };
 }
+
+/** PRs with an open review ([{pr, branch, review, held}]); `held` only while the gate is on. */
+export function heldPrs(items, { gate = GATE_DEFAULT } = {}) {
+  const out = new Map();
+  for (const it of items) {
+    const n = Number(it.pr);
+    if (!Number.isInteger(n) || n <= 0 || out.has(n)) continue;
+    const st = reviewState(items, { pr: n, gate });
+    if (['waiting', 'changes', 'rejected'].includes(st.review)) out.set(n, { pr: n, branch: it.branch || '', review: st.review, held: st.holds });
+  }
+  return [...out.values()].sort((a, b) => a.pr - b.pr);
+}
+
+/** ui-review-gate@1: the same object on REST (GET gate), MCP (ui_review_gate_get), the CLI (review.mjs gate) and voice. */
+export function gateView(on, items = [], source = 'ui-review') {
+  const prs = heldPrs(items, { gate: on === true });
+  return { $axf: 'ui-review-gate@1', key: GATE_KEY, label: GATE_LABEL, on: on === true, gate: on === true, source, heldPrs: prs.filter((p) => p.held).map((p) => p.pr), openReviews: prs, line: gateLine(on === true), who: 'Anyone may turn it off; only Brett turns it on, with his own click in the console.' };
+}
+
+/** Default-off gate object, for a client that hasn't read the switch yet. */
+export const GATE = Object.freeze(gateView(false));
 
 /** Distinct apps in a list (filter menu). */
 export const apps = (items) => [...new Set(items.map((it) => it.app).filter(Boolean))].sort((a, b) => a.localeCompare(b));

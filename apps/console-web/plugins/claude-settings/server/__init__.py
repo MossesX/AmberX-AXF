@@ -178,13 +178,16 @@ def _clock() -> None:
 
 class ClaudeSettings:
     """axf.claude-settings@1 for other plugins: get() → every setting (claude-settings@1 view), set() → change ones
-    that aren't owner-only (never with the owner's approval: an owner-only key is refused like any session's)."""
+    that aren't owner-only; an owner-only change goes through only with the owner approval control@1 derived from
+    Brett's own request (UI Review's gate switch hands it over), never one a caller made up."""
 
     def get(self) -> dict[str, Any]:
         return cli("get")
 
-    def set(self, values: dict[str, Any], by: str) -> dict[str, Any]:
-        return cli("owner-set", stdin={"patch": values, "owner": None, "by": by})
+    def set(self, values: dict[str, Any], by: str, owner: dict[str, Any] | None = None) -> dict[str, Any]:
+        """`owner` only as control@1's owner(request) handed over by the calling route (Brett's signed-in console
+        session); core.mjs still refuses it inside a Claude session."""
+        return cli("owner-set", stdin={"patch": values, "owner": owner, "by": by})
 
 
 plugin_services.provide("axf.claude-settings@1", ClaudeSettings(), FOLDER)

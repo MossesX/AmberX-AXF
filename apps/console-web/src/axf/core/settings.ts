@@ -60,6 +60,8 @@ export interface SettingsTab {
   order: number;
   description?: string;
   parent?: string;
+  /** the lowest settings level that shows the tab (simple | basic | developer | administrator); the asset's levelOf wins */
+  level?: string;
   /** contributing module (filled in by installLibraries) */
   module?: string;
   /** the plugin whose UI this tab is: its content carries data-axf-plugin="<id>" (plugin theme override, libs/plugintheme) */
@@ -74,6 +76,8 @@ export interface SettingsPanel {
   icon?: string;
   order?: number;
   module?: string;
+  /** the lowest settings level that shows it (simple | basic | developer | administrator); the asset's levelOf wins */
+  level?: string;
   render: () => unknown;
 }
 

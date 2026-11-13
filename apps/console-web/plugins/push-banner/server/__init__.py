@@ -46,18 +46,18 @@ one round every 3 minutes (settings autoMerge + autoPr, both on by default):
   1. autoPr: every branch ahead of main without an open PR gets one (main, site, go-pass, gh-pages and hidden ones never);
   2. ready PRs go oldest first, one at a time per repo: a PR behind its base gets the base pulled in (head pinned) and
      waits for CI on its new head; it merges only when it is 0 behind, mergeable, not a draft and CI passed on the
-     pinned head, and its UI Review (ui-review@1) isn't waiting, asking for changes or rejected (a held PR is skipped,
-     the next one gets its turn; Merge refuses it too). At most one merge per round, so the next PR is brought up to
+     pinned head, and while UI Review's switch 'UI Review is a merge gate' is on (default off since Nov 13 2026) its
+     UI Review isn't waiting, asking for changes or rejected. At most one merge per round, so the next PR is brought up to
      date with the new main first. A pull
      that conflicts lands in "Pull failed" (and Fix with Claude when that is on) and is skipped until it is retried;
   3. branch protection on main (require a PR, branches up to date, the CI checks every PR runs) is set where the token
      may and never loosened; where it can't, the systems check shows why with an Auto fix that tries again.
 
-Auto-land (Nov 3 2026, Brett: "zero tokens for merging"; settings autoLand (off since Nov 4 2026: the merge queue merges) + landWaitUi (on)): land/land.mjs runs
+Auto-land (Nov 3 2026, Brett: "zero tokens for merging"; setting autoLand, off since Nov 4 2026: the merge queue merges): land/land.mjs runs
 on the VPS host and lands every finished build with plain scripts (worktree cleaned, main merged in with the builds files
 newer-wins, PR opened, CI started), and writes land.json. Auto-merge reads it: finished builds' PRs go first in its
-dependency order, their main pull-ins are left to the host (GitHub's update would conflict on the builds store), and
-"Wait for UI Review" off lets them merge without UI Review. Commits on main that are only status data (`[skip ci]`,
+dependency order and their main pull-ins are left to the host (GitHub's update would conflict on the builds store).
+landWaitUi ("Wait for UI Review") is retired: always false, an old value is read and ignored. Commits on main that are only status data (`[skip ci]`,
 files under _claude/, builds-live.mjs) never make a PR "behind". A skipped or neutral check run is not CI.
 
 main is never pushed to: a branch reaches main only through its PR. GitHub is reached through `axf.github@1` (the
@@ -112,7 +112,7 @@ QUEUE_MODES = ("batch", "stack")  # land/merge-queue-core.mjs QUEUE_MODES
 BATCH_SIZE_MAX = 20  # land/merge-queue-core.mjs BATCH_SIZE_MAX
 AGENT_HEADERS = ("x-axhub-session", "x-axhub-source")
 LAND_ID = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]{0,80}\Z")
-UI_REVIEW_CAP = "ui-review@1"  # PRs whose UI is waiting, has changes asked or is rejected in UI Review don't merge
+UI_REVIEW_CAP = "ui-review@1"  # while its gate switch is on, PRs whose UI is waiting, has changes asked or is rejected don't merge
 UI_REVIEW_REPO = os.environ.get("AXF_GITHUB_REPO") or "MossesX/AmberX-AXF"  # the repo UI Review's PR numbers belong to
 NO_ROUTE = "the console can't reach GitHub: neither axHub (AXHUB_TOKEN) nor GITHUB_TOKEN is set on the console server"
 MAX_REPOS = 10
@@ -221,8 +221,8 @@ class Pushes:
                 # Auto-land (Nov 3 2026, Brett: "zero tokens for merging"): land/land.mjs lands finished builds. Off unless
                 # switched on (Nov 4 2026, Brett: "Stop merging these things one at a time"): only the merge queue merges.
                 "autoLand": raw.get("autoLand") is True,
-                # UI Review stays the gate: a held PR waits and merges by itself once Brett approves. On unless off.
-                "landWaitUi": raw.get("landWaitUi") is not False,
+                # Retired (Nov 13 2026): UI Review is not a gate. Always false; an old saved value is ignored.
+                "landWaitUi": False,
                 # Merge queue (Nov 4 2026, Brett: "We're paying to do these CI checks twice."): each ready PR is tested
                 # once on top of main + the PRs ahead of it and merges with no retest. On unless switched off.
                 "mergeQueue": raw.get("mergeQueue") is not False,
@@ -251,7 +251,7 @@ class Pushes:
                     raise HTTPException(400, f"hidden entries look like owner/name:branch[@sha] ({_text(e, 80)!r})")
             hidden = list(dict.fromkeys(h))
         flags = {}
-        for k in ("claudeOnFail", "claudeShell", "autoMerge", "autoPr", "autoLand", "landWaitUi", "mergeQueue"):
+        for k in ("claudeOnFail", "claudeShell", "autoMerge", "autoPr", "autoLand", "mergeQueue"):
             if k in body and not isinstance(body[k], bool):
                 raise HTTPException(400, f"{k} is true or false")
             flags[k] = body[k] if k in body else cur[k]
@@ -790,7 +790,7 @@ class Pushes:
             last = head.get("commit") or {}
             title = _text(str(last.get("message") or "").split("\n")[0], 120) or branch
             p = gh.json("POST", github.repo_path(repo, "pulls"), {
-                "title": title, "head": branch, "base": base,
+                "title": title, "head": branch, "base": base, "draft": False,  # ready for review, never a draft for UI Review
                 "body": f"Opened from the Dev Console's Push banner: `{branch}` is {cmp.get('ahead_by', '?')} commit(s) ahead of `{base}`.",
             })
         except github.GitHubError as e:
@@ -798,20 +798,29 @@ class Pushes:
         self._forget()
         return {"number": p.get("number") if isinstance(p, dict) else None, "url": _safe_url(p.get("html_url")) if isinstance(p, dict) else "", "existing": False}
 
-    def ui_hold(self, repo: str, number: int, branch: str) -> str:
-        """The UI Review state that holds this PR ('' = free to merge). ui-review@1 items carry a branch and a PR number
-        but no repo, so PR numbers count only for the console's own repo; other repos match by branch. Without the
-        UI Review plugin nothing is held."""
+    def ui_gate(self) -> bool:
+        """Is UI Review a merge gate right now (ui-review@1 gate_on(), its switch 'UI Review is a merge gate', default
+        off)? Without the UI Review plugin, or an older one without the switch, it is not."""
         svc = claudefix.plugin_services.get(UI_REVIEW_CAP)
-        if svc is None or not (branch or number):
+        try:
+            return bool(svc is not None and hasattr(svc, "gate_on") and svc.gate_on())
+        except Exception:  # noqa: BLE001 — the switch unreadable: its default, off
+            return False
+
+    def ui_hold(self, repo: str, number: int, branch: str) -> str:
+        """The UI Review state that holds this PR ('' = free to merge). Only while UI Review's gate switch is on (default
+        off, Brett Nov 13 2026); off, nothing is held and items are only filed. ui-review@1 items carry a branch and a PR
+        number but no repo, so PR numbers count only for the console's own repo; other repos match by branch."""
+        svc = claudefix.plugin_services.get(UI_REVIEW_CAP)
+        if svc is None or not (branch or number) or not self.ui_gate():
             return ""
         try:
             st = svc.state(branch, number if repo == UI_REVIEW_REPO else None)
-        except Exception:  # noqa: BLE001 — UI Review broken: don't merge blind
+        except Exception:  # noqa: BLE001 — UI Review broken while it is a gate: don't merge blind
             return "unknown"
-        return str(st.get("state") or "waiting") if st.get("holds") else ""
+        return str(st.get("review") or st.get("state") or "waiting") if st.get("holds") else ""
 
-    def merge(self, body: Any, wait_ui: bool = True) -> dict[str, Any]:
+    def merge(self, body: Any) -> dict[str, Any]:
         if not isinstance(body, dict) or set(body) - {"repo", "number", "confirm"}:
             raise HTTPException(400, "send {repo, number, confirm}")
         repo, number = body.get("repo"), body.get("number")
@@ -834,9 +843,10 @@ class Pushes:
                 raise HTTPException(409, "that PR isn't open")
             if p.get("draft") is True:
                 raise HTTPException(409, "that PR is a draft")
-            held = self.ui_hold(repo, number, _text((p.get("head") or {}).get("ref") if isinstance(p.get("head"), dict) else "", 200)) if wait_ui else ""
+            # held only while UI Review's switch 'UI Review is a merge gate' is on (default off); ui_hold asks gate_on()
+            held = self.ui_hold(repo, number, _text((p.get("head") or {}).get("ref") if isinstance(p.get("head"), dict) else "", 200))
             if held:
-                raise HTTPException(409, f"held by UI Review ({held}): Brett approves its screenshots in UI Review first")
+                raise HTTPException(409, f"held by UI Review ({held}): UI Review is a merge gate right now, so Brett approves its screenshots first")
             task = self._task(repo, p, "merge", "merge it")
             sha = _text((p.get("head") or {}).get("sha"), 40)
             pbase = _text((p.get("base") or {}).get("ref") if isinstance(p.get("base"), dict) else "", 200) or "main"
@@ -906,10 +916,9 @@ class Pushes:
                         done.append({"branch": f"{r['repo']}:{name}", "opened": None, "why": _text(str(e), 200)})
         # a failed pull is skipped until its PR gets a new commit (a fix) or it is taken off Pull failed
         failed = {d["key"]: d.get("sha", "") for d in self.failed()}
-        land = self.land() if cfg["autoLand"] else {"order": [], "managed": [], "waitUi": True}
+        land = self.land() if cfg["autoLand"] else {"order": [], "managed": []}
         rank = {n: i for i, n in enumerate(land["order"])}
         managed = set(land["managed"])
-        wait_ui = land["waitUi"] is not False
         merged_one = False
         gh = self.gh()
         for r in state.get("repos", []):
@@ -929,8 +938,8 @@ class Pushes:
                 line = {"pr": key, "title": p.get("title", "")}
                 if p.get("ci") in ("failure", "none", "unknown"):
                     continue  # nothing to do until it is fixed (or, without CI, never)
-                held = self.ui_hold(repo, p["number"], p.get("head") or "") if wait_ui else ""
-                if held:  # waiting on Brett in UI Review: the next PR gets its turn
+                held = self.ui_hold(repo, p["number"], p.get("head") or "")  # '' while the gate switch is off
+                if held:  # UI Review is a merge gate and it waits on Brett: the next PR gets its turn
                     done.append({**line, "merged": False, "held": held, "why": f"held by UI Review ({held})"})
                     continue
                 try:
@@ -964,7 +973,7 @@ class Pushes:
                     done.append({**line, "merged": False, "why": "ready: merges next round (one merge per round)"})
                     break
                 try:
-                    res = self.merge({"repo": repo, "number": p["number"], "confirm": key}, wait_ui=wait_ui)
+                    res = self.merge({"repo": repo, "number": p["number"], "confirm": key})
                     merged_one = bool(res.get("merged"))
                     done.append({**line, "merged": merged_one})
                 except HTTPException as e:
@@ -1456,8 +1465,11 @@ def land_blocked() -> dict[str, Any]:
 
 @router.get("/ui-hold")
 def ui_hold(branch: str = "", pr: int = 0) -> dict[str, Any]:
-    """The UI Review state holding a PR for the auto-land script ('' = free), asked through ui-review@1."""
-    return {"hold": PUSHES.ui_hold(UI_REVIEW_REPO, pr, branch)}
+    """{hold, gate, reason}: hold = the UI Review state that holds this PR ('' = free), only while UI Review's switch
+    'UI Review is a merge gate' is on (default off). No branch or PR = just the gate (the merge queue asks once a round)."""
+    gate = PUSHES.ui_gate()
+    hold = PUSHES.ui_hold(UI_REVIEW_REPO, pr, branch) if gate and (branch or pr) else ""
+    return {"hold": hold, "gate": gate, "reason": "UI Review is a merge gate" if gate else "UI Review is not a merge gate (switch off): items are filed, PRs never wait"}
 
 
 @router.post("/land/now")

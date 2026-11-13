@@ -4,7 +4,7 @@ UI, Brett's pick in priority order, every option kept as an asset, and asking hi
   GET  choices/settings                     {minOptions, askOptions, askTimeoutMin}
   PUT  choices/settings {…}                 minOptions never goes under 3
   POST choices/choose {id, chosen: [ids], comment?}   his pick, in priority order; the item is approved and the build goes on
-  GET  choices/decision?id=<item>           {status, chosen, default, decided}; the build waits on it like any hold
+  GET  choices/decision?id=<item>           {status, chosen, default, decided} (optional feedback: nothing waits on it)
   GET  choices/assets?type=<asset type>     every saved option asset, each with picked true/false
   POST choices/ask {build, title?}          a build asks how many options to make; → {id, count?, default}
   GET  choices/asks                         what is waiting for his answer (the console's pop-up reads this)

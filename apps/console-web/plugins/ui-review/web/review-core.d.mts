@@ -16,7 +16,19 @@ export interface Filter { kind?: string; status?: string; app?: string; branch?:
 export interface Counts { total: number; waiting: number; changes: number; rejected: number; approved: number }
 export interface Group { id: string; label: string; items: Item[] }
 export interface TreeKind extends Group { apps: Group[] }
-export interface ReviewState { $axf: 'ui-review@1'; branch: string; pr: number | null; state: 'none' | Status; holds: boolean; counts: Omit<Counts, 'total'>; items: { id: string; title: string; kind: string; status: Status }[] }
+export interface GatePr { pr: number; branch: string; review: 'waiting' | 'changes' | 'rejected'; held: boolean }
+export interface Gate { $axf: 'ui-review-gate@1'; key: 'uiReview.gate'; label: string; on: boolean; gate: boolean; source: string; heldPrs: number[]; openReviews: GatePr[]; line: string; who: string }
+export const GATE: Readonly<Gate>;
+export const GATE_KEY: 'uiReview.gate';
+export const GATE_LABEL: string;
+export const GATE_DEFAULT: false;
+export const NOT_A_GATE: 'filed (not a gate)';
+export const GATE_OFF_LINE: string;
+export const GATE_ON_LINE: string;
+export function gateLine(on: boolean): string;
+export function heldPrs(items: Item[], opts?: { gate?: boolean }): GatePr[];
+export function gateView(on: boolean, items?: Item[], source?: string): Gate;
+export interface ReviewState { $axf: 'ui-review@1'; branch: string; pr: number | null; state: 'none' | Status | 'filed (not a gate)'; review: 'none' | Status; gate: boolean; /** only while the gate switch is on */ holds: boolean; reason: string; counts: Omit<Counts, 'total'>; items: { id: string; title: string; kind: string; status: Status; nonBlocking?: true }[] }
 
 export const SCHEMA: string;
 export const MAX_PICKS: number;
@@ -47,5 +59,5 @@ export function toggleId(sel: string[], id: string): string[];
 export function groupChecked(sel: string[], ids: string[]): 'all' | 'some' | 'none';
 export function setGroup(sel: string[], ids: string[], on: boolean): string[];
 export function togglePick(picked: string[], id: string, max?: number): { picked: string[]; error: string };
-export function reviewState(items: Item[], q?: { branch?: string; pr?: number | string | null }): ReviewState;
+export function reviewState(items: Item[], q?: { branch?: string; pr?: number | string | null; gate?: boolean }): ReviewState;
 export function apps(items: Item[]): string[];

@@ -3,6 +3,29 @@
 Brett, Oct 30 2026 (voice, driving): rename the Design packs plugin and make it one all-in-one UI approval plugin.
 Every UI a build makes goes there for his approval, separated by type, with design packs as one section.
 
+**The gate switch (Nov 13 2026, Brett: "UI Review must not be a gate. Add an on/off switch in UI Review settings, 'UI
+Review is a merge gate', default OFF"):** every item is filed so Brett can look, and the switch *UI Review is a merge
+gate* (`uiReview.gate`, Settings → Plugins → UI Review → Merge gate, Simple level) decides whether a review holds a PR.
+Its value is the Claude setting `builds.uiReviewGate` (one value for both; `server/gate.py` keeps a copy for when Claude
+settings is off; a missing value is off, and documents from before the switch migrate to off once). Anyone may turn it
+off; only Brett's own console click turns it on (any other caller gets 403).
+
+- **Off (default):** no PR waits or stays a draft for UI Review; `review.mjs state --pr N --exit-code` exits 0 with
+  state `filed (not a gate)`; `ui-review@1` `held()` is false; the merge queue, auto-land and Merge never ask per PR.
+- **On:** a PR whose items are waiting, have changes asked or are rejected is held (`--exit-code` exits 1, the merge
+  queue says "UI Review is a merge gate …"), unless its items were released.
+
+API, all the same object `{ $axf: 'ui-review-gate@1', on, heldPrs, openReviews, line, who }`:
+REST `GET|POST /api/plugins/ui-review/gate {on}` · MCP `ui_review_gate_get` / `ui_review_gate_set` · CLI
+`review.mjs gate [on|off|status]` · console / voice actions `ui-review.gate` / `uireview.gate [on|off]` · deep link
+`console_show` target `settings:plugins/ui-review`, highlight `#gate`.
+
+**release-held:** `review.mjs release-held [--pr n[,n…]]… [--all] [--dry-run]` = `POST release {prs|all, dryRun}` =
+MCP `ui_review_release` = voice `uireview.release 557 553 | all`. For each PR: its open items become `nonBlocking`
+(still filed, status kept, a history line; `POST release/items` is this half alone), a draft PR is marked ready for
+review, and the PR is added to the merge queue through the command `mergequeue-add` (found in the plugin-commands
+registry). It never merges.
+
 ## One schema: ui-review-item@1 (Nov 1 2026)
 
 Brett: "ANYTHING that goes into UI Review (the approve/reject queue AND Screenshots), from ANY source … MUST have a
@@ -142,11 +165,10 @@ an agent spends money. Core `framework/core/ui-predict.mjs` (pure; checks `frame
   **Approve look / Ask changes / Reject look** are the normal decisions; on a predicted item they decide the look too.
   An Ask changes comment becomes an addendum: the server runs `ui-predict.mjs addendum` (a note on the orchestrator
   build) and the launcher adds it to the brief. A predicted item carries no branch / PR and never holds a merge.
-- **Gate** (Settings → Plugins → UI Review → *Predicted looks*: **Wait for my look approval before UI builds start**,
-  default off, kept in `<data>/settings.json` so the host reads it): `deploy/claude-headless.sh` asks
-  `ui-predict.mjs gate` before a start. A UI build with no prediction gets one made in the background. Setting on +
-  look not approved = the launch queues (`.axf-look-wait.log`) and starts by itself once he approves; changes asked =
-  starts with the addendum; rejected = held (exit 3, never started, setting on or off). `AXF_LOOK_GATE=off` skips it.
+- **At launch** (no longer a gate since Nov 13 2026): `deploy/claude-headless.sh` runs `ui-predict.mjs gate`, which
+  always exits 0 and logs the look verdict; a UI build with no prediction gets one made in the background. The old
+  *Wait for my look approval before UI builds start* setting (`<data>/settings.json` `waitForLook`) is retired: the
+  switch is gone and the launcher ignores it. Ask changes still becomes an addendum. `AXF_LOOK_GATE=off` skips it.
 - **While running / at the end**: the launcher runs `ui-predict.mjs follow` next to the session: every 5 min it
   re-predicts (only when the spec changed, e.g. the diff grew; `prediction.refreshes`), and when the session ends it
   captures the real screens from the worktree and posts them (`predict/real`): badge **Real**, the item waits for the
@@ -159,15 +181,15 @@ an agent spends money. Core `framework/core/ui-predict.mjs` (pure; checks `frame
 
 ## State for other plugins (`ui-review@1`)
 
-`plugin_services.get("ui-review@1")` → `state(branch, pr)`, `holds(branch, pr)`, `items(branch, pr)`, `submit(fields,
-shots)`. HTTP: `GET /api/plugins/ui-review/state?branch=&pr=`. CLI: `review.mjs state --pr N --exit-code` (exit 3 =
-held). The state is the strictest of the branch's / PR's items: rejected > changes > waiting > approved; `none`
-when nothing was submitted. `holds` is true for waiting, changes and rejected.
+`plugin_services.get("ui-review@1")` → `state(branch, pr)`, `items(branch, pr)`, `submit(fields, shots)`, `gate()`,
+`gate_on()`, and `held` / `hold` / `holds` / `isHeld`, true only while the gate switch is on. HTTP:
+`GET /api/plugins/ui-review/state?branch=&pr=`. CLI: `review.mjs state --pr N` (`--exit-code` exits 1 only while the
+gate is on and the PR is held). The state is the strictest of the branch's / PR's items, for information: rejected > changes > waiting >
+approved; `none` when nothing was submitted. `holds` is always false.
 
-**Merges wait for UI Review (Nov 1 2026, orchestrator `ui-review` s9):** the push banner reads `ui-review@1` `state()`
-before every merge: a PR whose items are waiting, have changes asked or are rejected is skipped by auto-merge (the
-next PR gets its turn) and refused by Merge, until Brett approves it here. PR numbers count for AmberX-AXF only (items
-carry no repo); other repos match by branch. If this plugin errors, the PR is held, never merged blind.
+**Merges never wait for UI Review (Nov 13 2026; it held them Nov 1 – Nov 13):** the push banner, auto-land and the
+merge queue no longer ask UI Review; a PR whose items are waiting, have changes asked or are rejected lands like any
+other. The push banner's `ui-hold` route stays for old scripts and always answers `{hold: ""}`.
 
 ## Checks
 

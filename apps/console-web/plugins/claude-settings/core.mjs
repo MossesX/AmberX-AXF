@@ -10,7 +10,9 @@
  *
  * Who may change what: `owner: true` settings change only with an owner approval, which the transport derives from
  * Brett's signed-in console session (never from a request body, an MCP call, a CLI flag or the environment);
- * `owner: "raise"` numbers may be lowered by anyone and raised only by the owner; `locked` settings change for nobody.
+ * `owner: "raise"` numbers may be lowered by anyone and raised only by the owner, and `owner: "raise"` toggles may be
+ * turned off by anyone and on only by the owner; `locked` settings change for nobody.
+ * `deprecated: "<why>"` settings are retired: kept readable for old documents, always their default, changed by nobody.
  * The No wait switch itself does nothing here: the console server turns it into a standing all-scope veto pass
  * (control-pass@1, token-control) with the same owner approval, and revokes it when the switch goes off.
  */
@@ -66,6 +68,7 @@ function normEntry(e) {
     description: String(e.description || '').slice(0, 400), default: e.default, level: LEVELS.includes(e.level) ? e.level : 'basic',
     owner: e.owner === true ? true : e.owner === 'raise' ? 'raise' : false, locked: e.locked === true,
   };
+  if (typeof e.deprecated === 'string' && e.deprecated.trim()) { out.deprecated = e.deprecated.trim().slice(0, 300); out.locked = true; out.owner = false; }
   if (e.kind === 'choice') out.options = (Array.isArray(e.options) ? e.options : []).filter((o) => isObj(o) && typeof o.value === 'string').map((o) => ({ value: o.value, label: String(o.label || o.value) }));
   if (e.kind === 'number') for (const k of ['min', 'max', 'step']) if (typeof e[k] === 'number') out[k] = e[k];
   if (typeof e.shared === 'string') out.shared = e.shared;
@@ -111,11 +114,24 @@ export function coerce(spec, v) {
   return v;
 }
 
-export function emptyDoc() { return { $axf: FRAME, updatedAt: '', values: {}, changed: {} }; }
+export function emptyDoc() { return { $axf: FRAME, updatedAt: '', values: {}, changed: {}, migrated: [...MIGRATIONS.map((m) => m.id)] }; }
+/**
+ * One-time document migrations, applied on read (the next write keeps them). `ui-review-gate-off` (Brett, Nov 13 2026:
+ * "UI Review must not be a gate ... default OFF"): a UI Review gate stored before the switch existed goes back to off;
+ * once the document carries the marker, a value Brett sets afterwards stays.
+ */
+export const MIGRATIONS = Object.freeze([
+  { id: 'ui-review-gate-off', apply: (d) => { const values = { ...d.values }; delete values['builds.uiReviewGate']; const changed = { ...d.changed }; delete changed['builds.uiReviewGate']; return { ...d, values, changed }; } },
+]);
+export function migrateDoc(d) {
+  let out = { ...d, migrated: Array.isArray(d.migrated) ? d.migrated.filter((x) => typeof x === 'string') : [] };
+  for (const m of MIGRATIONS) if (!out.migrated.includes(m.id)) out = { ...m.apply(out), migrated: [...out.migrated, m.id] };
+  return out;
+}
 export function readDoc() {
   const { file } = storeFile();
   const d = readJson(file);
-  return isObj(d) && d.$axf === FRAME && isObj(d.values) ? { ...emptyDoc(), ...d, changed: isObj(d.changed) ? d.changed : {} } : emptyDoc();
+  return isObj(d) && d.$axf === FRAME && isObj(d.values) ? migrateDoc({ ...emptyDoc(), migrated: [], ...d, changed: isObj(d.changed) ? d.changed : {} }) : emptyDoc();
 }
 function writeDoc(d) {
   const { file } = storeFile();
@@ -137,9 +153,10 @@ export function valueOf(spec, doc) {
 
 /** Who may change it, in plain words. */
 export function whoSentence(spec) {
+  if (spec.deprecated) return `Deprecated: ${spec.deprecated}`;
   if (spec.locked) return 'Locked: nobody changes it.';
   if (spec.owner === true) return "Owner-only: changes only with Brett's own click in the console.";
-  if (spec.owner === 'raise') return 'Anyone may lower it; only Brett raises it.';
+  if (spec.owner === 'raise') return spec.kind === 'toggle' ? 'Anyone may turn it off; only Brett turns it on.' : 'Anyone may lower it; only Brett raises it.';
   return 'Any Claude session may change it (axHub veto).';
 }
 
@@ -149,7 +166,7 @@ export function view({ doc = readDoc(), registry = loadRegistry(), extras = {} }
   const settings = registry.settings.map((s) => ({
     key: s.key, group: s.group, label: s.label, kind: s.kind, value: valueOf(s, doc), default: s.default, level: s.level,
     owner: s.owner, locked: s.locked, who: whoSentence(s), description: s.description,
-    ...(s.options ? { options: s.options } : {}), ...(s.min !== undefined ? { min: s.min, max: s.max, step: s.step } : {}),
+    ...(s.deprecated ? { deprecated: s.deprecated } : {}), ...(s.options ? { options: s.options } : {}), ...(s.min !== undefined ? { min: s.min, max: s.max, step: s.step } : {}),
     ...(s.shared ? { shared: s.shared } : {}), ...(doc.changed[s.key] ? { changed: doc.changed[s.key] } : {}),
   }));
   const values = Object.fromEntries(settings.map((s) => [s.key, s.value]));
@@ -178,9 +195,11 @@ export function setSettings(patch, { owner = null, by = 'unknown', registry = lo
     const v = coerce(spec, raw);
     if (!valid(spec, v)) throw new SettingsError('invalid', `${key}: ${JSON.stringify(raw)} is not a valid ${spec.kind}${spec.options ? ` (${spec.options.map((o) => o.value).join(', ')})` : ''}${spec.min !== undefined ? ` (${spec.min}-${spec.max})` : ''}`);
     const before = valueOf(spec, doc);
+    if (spec.deprecated && v !== spec.default) throw new SettingsError('denied', `${key} is deprecated: ${spec.deprecated}`);
     if (spec.locked && v !== spec.default) throw new SettingsError('denied', `${key} is locked at ${JSON.stringify(spec.default)}`);
     if (spec.owner === true && !isOwner && v !== before) throw new SettingsError('denied', `${key} is owner-only: only Brett changes it, with his own click in the console (Settings → Plugins → Claude)`);
     if (spec.owner === 'raise' && !isOwner && typeof before === 'number' && v > before) throw new SettingsError('denied', `${key} can only be raised by Brett (console); lowering it is fine`);
+    if (spec.owner === 'raise' && !isOwner && before === false && v === true) throw new SettingsError('denied', `${key} can only be turned on by Brett, with his own click in the console; turning it off is fine`);
     if (v !== before) { next[key] = v; changed.push({ key, from: before, to: v }); }
   }
   if (!changed.length) return { changed: [], view: view({ doc, registry }) };
