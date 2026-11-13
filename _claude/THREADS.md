@@ -785,8 +785,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 11:56 UTC · `auto-recover-stuck-builds` note (all) · mcp
-- 2026-11-13 11:56 UTC · `auto-recover-stuck-builds` s1 done, → running (all) · orchestrator
 - 2026-11-13 11:56 UTC · `combine-merge-queue-into-one-pr` note (all) · mcp
 - 2026-11-13 11:56 UTC · `auto-recover-stuck-builds` branch claude/auto-recover-stuck-builds (all) · builds-live
 - 2026-11-13 11:56 UTC · `combine-merge-queue-into-one-pr` → pending, note (all) · console
@@ -1185,6 +1183,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 18:33 UTC · `decision-dialog-ui-review-other` s2 done (all) · orchestrator
 - 2026-11-13 18:32 UTC · `vps-builds-get-console-token-ui-review` s8 done (all) · orchestrator
 - 2026-11-13 18:34 UTC · `transparency-token-works-every-dialog` → queued, note (all) · pipeline
+- 2026-11-13 18:36 UTC · `transparency-token-works-every-dialog` → running, note (all) · pipeline
+- 2026-11-13 18:36 UTC · `transparency-token-works-every-dialog` note (all) · orchestrator
 
 ## Token passes (log)
 

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T18:36:11.103Z",
+ "updatedAt": "2026-11-13T18:36:29.996Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -127613,7 +127613,7 @@
    "title": "Transparency token works on every dialog and settings window",
    "category": "",
    "detail": "Root cause: --fx-opacity-glass / opacityGlass only applies where a component's customization has glass:true (framework/core/engines/customize.ts case 'glass'). Settings dialogs and most panels never set it, so the transparency token does nothing there.\nFix: every dialog, settings interface, panel, popover and floating surface uses a token-driven glass background by default (surface mixed with opacityGlass + blur). Add per-surface-type tokens (glass on/off and opacity per surface type: dialog, settings, panel, menu, toolbar, banner) in tokens.style, editable in Token Control and per instance in Quick settings. Rule: everything visual is driven by a token; add a check that fails on hard-coded backgrounds/opacity. Follows skins. Tests, Shipped features.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -127621,7 +127621,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:26:12.039Z",
-   "updatedAt": "2026-11-13T18:36:08.041Z",
+   "updatedAt": "2026-11-13T18:36:18.638Z",
    "builtAt": "",
    "notes": [
     {
@@ -127655,6 +127655,14 @@
     {
      "text": "Session on mossesx-max- ended (exit 0) with 3 steps left: back in the Queue (run 1).",
      "at": "2026-11-13T18:34:06.590Z"
+    },
+    {
+     "text": "Started run 2 on mossesx-max- (Opus, Phase 2): axf-transparency-token-works-every-dialog--sully.",
+     "at": "2026-11-13T18:36:15.025Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-transparency-token-works-every-dialog--sully, own login copy)",
+     "at": "2026-11-13T18:36:18.638Z"
     }
    ],
    "approvals": [],
