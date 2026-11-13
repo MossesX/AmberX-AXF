@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5040,
- "updatedAt": "2026-11-13T21:19:07.645Z",
+ "rev": 5041,
+ "updatedAt": "2026-11-13T21:19:27.021Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -198705,7 +198705,7 @@
    "pr": "#656",
    "priority": "P2",
    "createdAt": "2026-11-13T18:20:19.790Z",
-   "updatedAt": "2026-11-13T21:17:18.458Z",
+   "updatedAt": "2026-11-13T21:18:48.948Z",
    "builtAt": "",
    "notes": [
     {
@@ -198747,7 +198747,7 @@
     "queuedAt": "2026-11-13T18:20:21.723Z",
     "queuedBy": "console",
     "account": "",
-    "session": "axf-toolbar-widgets-attach-any-banner-style--joey",
+    "session": "",
     "slot": "",
     "model": "",
     "launchedAt": "",
@@ -198793,12 +198793,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T21:18:48.948Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T18:21:42.427Z",
-     "updatedAt": "2026-11-13T18:21:42.427Z"
+     "updatedAt": "2026-11-13T21:18:49.252Z"
     },
     {
      "id": "s2",
