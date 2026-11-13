@@ -49,6 +49,8 @@ def check(name: str, ok: bool, detail: object = "") -> None:
 
 r = c.get("/p/skins").json()
 check("list", r["ok"] and len(r["result"]) > 0, r)
+cov = r["result"][0].get("coverage", {})
+check("list carries coverage", cov.get("total", 0) > 0 and 0 <= cov.get("covered", -1) <= cov["total"], cov)
 skin = r["result"][0]["id"]
 other = r["result"][1]["id"]
 
@@ -86,6 +88,22 @@ check("bad scope refused", r.status_code == 400, r.text)
 r = c.post("/p/use", json={})
 check("use without skin refused", r.status_code == 400, r.text)
 
+r = c.post("/p/scope", json={"scope": "ui:home", "follow": False}).json()
+check("scope own pins the skin in force", r["result"]["state"]["use"] == "on" and r["result"]["inForce"]["from"] == "ui:home", r)
+r = c.post("/p/scope", json={"scope": "ui:home", "follow": True}).json()
+check("scope follow inherits again", r["result"]["state"]["use"] == "inherit" and r["result"]["inForce"]["from"] != "ui:home", r)
+r = c.post("/p/scope", json={"scope": "app", "follow": True}).json()
+check("app follows the hub", r["result"]["state"]["use"] == "inherit", r)
+c.post("/p/scope", json={"scope": "app", "follow": False})
+r = c.post("/p/scope", json={"scope": "hub", "follow": True})
+check("hub can't follow", r.status_code == 400, r.text)
+r = c.post("/p/scope", json={"scope": "elsewhere"})
+check("scope with a bad scope refused", r.status_code == 400, r.text)
+r = c.post("/p/use", json={"skin": skin, "scope": "ui:"})
+check("empty screen id refused", r.status_code == 400, r.text)
+
+r = c.get("/p/open", params={"skin": skin, "view": "phone"}).json()
+check("phone deep link", "view=phone" in r["result"]["link"], r)
 r = c.get("/p/open", params={"skin": skin, "scope": "hub"}).json()
 check("deep link", r["result"]["target"] == "skin-gallery" and f"skin={skin}" in r["result"]["link"], r)
 

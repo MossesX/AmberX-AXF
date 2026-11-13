@@ -94,18 +94,19 @@ export function run(action, { scope = 'app', skin = '', slot = '', app = DEFAULT
 
 /**
  * The Inherit / Follow hub switch of one scope. `follow` on: the app follows the hub-wide skin, a screen or plugin
- * follows its parent. Off: the app keeps its own skin; a screen or plugin pins the skin in force there now.
+ * follows its parent. Off: the scope pins the skin in force there now (or no skin when none is).
  */
 export function follow(scope, on, app = DEFAULT_APP) {
   const id = appOf(app);
   const sc = parseSwitchScope(scope);
   if (!sc || sc.kind === 'hub') throw Object.assign(new Error(`"${scope}" can't follow: pick app, ui:<view> or plugin:<id>`), { code: 'bad-scope' });
-  if (sc.kind === 'app') change('follow', id, on ? 'on' : 'off');
-  else if (on) change('inherit', id, sc.key);
-  else {
-    const now = state(scope, id).inForce.id;
-    if (now) change('use', id, now, sc.key); else change('off', id, '', sc.key);
-  }
+  const now = state(scope, id).inForce.id;
+  if (sc.kind === 'app') {
+    if (on) { change('off', id, ''); change('follow', id, 'on'); }
+    else { change('follow', id, 'off'); if (now) change('use', id, now); }
+  } else if (on) change('inherit', id, sc.key);
+  else if (now) change('use', id, now, sc.key);
+  else change('off', id, '', sc.key);
   return state(scope, id);
 }
 
