@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4296,
- "updatedAt": "2026-11-13T11:19:09.470Z",
+ "rev": 4297,
+ "updatedAt": "2026-11-13T11:19:24.361Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -184249,7 +184249,7 @@
    "title": "Drag anything by API and voice, after PR 556 lands: banner widgets, toolbar items, tabs, panes, grid rows and columns; move, reorder, add and remove",
    "category": "",
    "detail": "",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -184257,7 +184257,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T11:13:29.147Z",
-   "updatedAt": "2026-11-13T11:19:07.579Z",
+   "updatedAt": "2026-11-13T11:19:14.850Z",
    "builtAt": "",
    "notes": [
     {
@@ -184283,6 +184283,14 @@
     {
      "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-drag-anything-by-api-and-voice-after-pr-556-land--earl.",
      "at": "2026-11-13T11:18:12.751Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-drag-anything-by-api-and-voice-after-pr-556-land--joey.",
+     "at": "2026-11-13T11:19:11.460Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-drag-anything-by-api-and-voice-after-pr-556-land--joey, own login copy)",
+     "at": "2026-11-13T11:19:14.850Z"
     }
    ],
    "approvals": [],
@@ -184302,12 +184310,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T11:13:30.493Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-drag-anything-by-api-and-voice-after-pr-556-land--joey",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Fable",
+    "launchedAt": "2026-11-13T11:19:10.945Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T11:15:09.567Z",
@@ -184319,7 +184327,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-13T11:19:10.945Z",
     "planned": {
      "model": "Fable",
      "account": "mossesx-max-",
@@ -184328,7 +184336,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-13T11:19:10.945Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -184853,7 +184861,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

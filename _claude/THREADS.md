@@ -781,8 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 03:36 UTC · `badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad` s2 done (all) · orchestrator
-- 2026-11-13 03:36 UTC · `badge-shape-picker-on-the-banners-screen-pill-text-icon-or-dot-for-every-bad` s3 done (all) · orchestrator
 - 2026-11-13 03:36 UTC · `change-to-move-amberx-web-app-into-the-console-amberx-andr-pr-528-brett-do` s2 done (all) · orchestrator
 - 2026-11-13 03:36 UTC · `change-to-one-to-do-notes-and-tasks-plugin-pr-527-brett-notes-tasks-and-to` PR #545 (all) · builds-live
 - 2026-11-13 03:37 UTC · `change-to-one-to-do-notes-and-tasks-plugin-pr-527-brett-notes-tasks-and-to` note (all) · orchestrator
@@ -1181,6 +1179,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 11:18 UTC · `drag-anything-by-api-and-voice-after-pr-556-land` → running, note (all) · pipeline
 - 2026-11-13 11:18 UTC · `drag-anything-by-api-and-voice-after-pr-556-land` branch claude/drag-anything-by-api-and-voice-after-pr-556-land (all) · pipeline
 - 2026-11-13 11:18 UTC · `drag-anything-by-api-and-voice-after-pr-556-land` note (all) · orchestrator
+- 2026-11-13 11:19 UTC · `drag-anything-by-api-and-voice-after-pr-556-land` → running, note (all) · pipeline
+- 2026-11-13 11:19 UTC · `drag-anything-by-api-and-voice-after-pr-556-land` note (all) · orchestrator
 
 ## Token passes (log)
 
