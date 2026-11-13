@@ -1,8 +1,10 @@
 """Wake a closed console (console-wake, Nov 3 2026): ask Brett's AmberX phone, through axHub, to open the Dev Console.
 
 axHub's `amberx` device service relays `open_url` to the AmberX app over AXPP (axHub repo, packages/connectors/
-device-relay); the phone opens the URL in Chrome (or the default browser) and, where Android holds back a start from
-the background, posts a high-priority notification that opens it with one tap. The hub refuses any URL outside
+device-relay). The phone opens it in its always-on overlay (the toolbar expands into a full-screen browser, no tap
+needed); with the overlay off it goes to Chrome (or the default browser) and, where Android holds back a start from
+the background, a high-priority notification opens it with one tap. The same tool carries the overlay verbs
+(`?axf-overlay=expand|collapse`, console-commands `overlay`). The hub refuses any URL outside
 Brett's own domains (amberxai.com), and so does the phone.
 
 A "yes" from the phone is not proof a page opened: Android drops a blocked background start without raising anything,
@@ -71,6 +73,14 @@ def outcome(res: dict[str, Any]) -> dict[str, Any]:
     if a.get("held"):
         return {"ok": False, "opened": False, "notified": False, "message": "axHub is holding the request instead of sending it to the phone"}
     opened, notified = a.get("opened") is True, a.get("notified") is not False
+    if a.get("where") == "overlay":
+        # One overlay (Nov 13 2026): the always-on toolbar took it, no notification tap needed.
+        if a.get("verb") == "collapse":
+            ok = a.get("collapsed") is True
+            return {"ok": ok, "opened": False, "notified": False,
+                    "message": "AmberX collapsed the overlay to its toolbar" if ok else "the overlay isn't on screen on the phone"}
+        return {"ok": True, "opened": opened, "notified": False,
+                "message": "AmberX opened it full screen in its overlay" if opened else "AmberX's overlay couldn't open it"}
     if a.get("overlay") is False and not opened:
         message = "AmberX can't open pages on its own (Display over other apps is off): tap its notification"
     elif opened:
