@@ -785,9 +785,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 11:33 UTC · `change-to-move-amberx-web-app-into-the-console-amberx-andr-pr-528-brett-do` note (all) · foreign-write
-- 2026-11-13 11:33 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` s26 done, note (all) · foreign-write
-- 2026-11-13 11:33 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` note (all) · foreign-write
 - 2026-11-13 11:33 UTC · `overlay-opens-pages-the-floating-toolbar-expands` added (4 steps) (all) · foreign-write
 - 2026-11-13 11:33 UTC · `unlink-plan-studio-from-builds-delete-all-plan-s` s2 done, → running (all) · orchestrator
 - 2026-11-13 11:33 UTC · `unlink-plan-studio-from-builds-delete-all-plan-s` s2 done (all) · foreign-write
@@ -1185,6 +1182,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 18:21 UTC · `decision-dialog-ui-review-other` → running, note (all) · builds-live
 - 2026-11-13 18:21 UTC · `toolbar-widgets-attach-any-banner-style` note (all) · orchestrator
 - 2026-11-13 18:21 UTC · `vps-builds-get-console-token-ui-review` s2 done (all) · orchestrator
+- 2026-11-13 18:21 UTC · `prompting-engine-control-panel-events` → running, note (all) · pipeline
+- 2026-11-13 18:21 UTC · `prompting-engine-control-panel-events` branch claude/prompting-engine-control-panel-events (all) · pipeline
+- 2026-11-13 18:22 UTC · `prompting-engine-control-panel-events` note (all) · orchestrator
 
 ## Token passes (log)
 

@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T18:21:54.782Z",
+ "updatedAt": "2026-11-13T18:22:09.875Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -127424,15 +127424,15 @@
    "title": "Prompting engine with control panel (events, macros, pipelines)",
    "category": "",
    "detail": "A general prompting/rules engine with its own control panel (console plugin), built on the decision dialog (build decision-dialog-ui-review-other).\n- Create 'prompt events': a trigger (any console/axHub/build event: UI Review submitted, build failed, merge clash, approval held, schedule, voice phrase, webhook, custom), conditions, and what to ask Brett (approve/deny, veto countdown, pick from options, text input).\n- Actions on each answer: run tools (MCP/axHub/console commands), macros (saved sequences of commands), or orchestrator pipelines; chain events.\n- Control panel to list, create, edit, enable/disable, test-fire and see history of events; templates for common ones.\n- Reachable by REST/MCP/CLI/voice/control@1.\n- Schema + manifest for events/macros, conformance tests, audit log, Shipped features.\nMODEL: Brett wants Fable for the engine, event/macro schema and contract steps; Opus is fine for UI steps. Brett pre-approves the Fable upgrade for those steps.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/prompting-engine-control-panel-events",
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:16:04.183Z",
-   "updatedAt": "2026-11-13T18:19:43.693Z",
+   "updatedAt": "2026-11-13T18:22:00.455Z",
    "builtAt": "",
    "notes": [
     {
@@ -127446,6 +127446,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"91523ea0-0e04-4d79-bb01-27161bb8b423\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-13T18:19:43.693Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-prompting-engine-control-panel-events--joey.",
+     "at": "2026-11-13T18:21:55.430Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-prompting-engine-control-panel-events--joey, own login copy)",
+     "at": "2026-11-13T18:22:00.455Z"
     }
    ],
    "approvals": [],
@@ -127456,8 +127464,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "prompting-engine-control-panel-events",
+    "brief": "# Build: prompting-engine-control-panel-events\n\n## Brett said (verbatim)\nAt: 2026-11-13T18:16:04.183Z\n> a general prompting engine which will run set tools and maybe some macros or pipelines; we're gonna do that on Fable\n\n## What to build\nContinue build \"Prompting engine with control panel (events, macros, pipelines)\" (prompting-engine-control-panel-events) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-13 18:16):\n\"a general prompting engine which will run set tools and maybe some macros or pipelines; we're gonna do that on Fable\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (4 left, ~40 min):\n[ ] s1 (~10 min) A general prompting/rules engine with its own control panel (console plugin), built on the decision dialog (build decision-dialog-ui-review-other).\n[ ] s2 (~10 min) Schema + manifest for events/macros, conformance tests, audit log, Shipped features.\n[ ] s3 (~10 min) MODEL: Brett wants Fable for the engine, event/macro schema and contract steps; Opus is fine for UI steps. Brett pre-approves the Fable upgrade for those steps.\n[ ] s4 (~10 min) a general prompting engine which will run set tools and maybe some macros or pipelines; we're gonna do that on Fable\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step prompting-engine-control-panel-events <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link prompting-engine-control-panel-events --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step prompting-engine-control-panel-events <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note prompting-engine-control-panel-events \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
