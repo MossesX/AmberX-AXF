@@ -44,7 +44,301 @@
         "layoutTheme": {},
         "colorTheme": {},
         "styleTheme": {},
-        "assets": {}
+        "assets": {},
+        "iconPack": {
+          "type": "string",
+          "pattern": "^[a-z0-9][a-z0-9-]*$",
+          "description": "icon-pack asset id the skin draws with"
+        },
+        "parts": {
+          "type": "object",
+          "description": "asset type → style parts (customize tokens) for types with a style target",
+          "additionalProperties": {
+            "type": "object"
+          }
+        },
+        "preview": {
+          "type": "object",
+          "properties": {
+            "caption": {
+              "type": "string",
+              "maxLength": 200
+            },
+            "image": {
+              "type": "string",
+              "maxLength": 500
+            }
+          }
+        },
+        "extras": {
+          "type": "object",
+          "properties": {
+            "spacing": {
+              "enum": [
+                "tight",
+                "compact",
+                "regular"
+              ]
+            },
+            "hidden": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "boolean"
+              }
+            },
+            "settings": {
+              "type": "object"
+            }
+          }
+        },
+        "behaviour": {
+          "type": "object",
+          "additionalProperties": false,
+          "description": "skin@2: a behaviour pick per asset type with behaviour (axes declared on the registry entry; unset = the asset's field, else today's behaviour)",
+          "properties": {
+            "app-menu": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "form": {
+                  "enum": [
+                    "menubar",
+                    "button",
+                    "palette",
+                    "sheet"
+                  ],
+                  "description": "Application menu form (default \"menubar\")"
+                }
+              }
+            },
+            "toolbar": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "placement": {
+                  "enum": [
+                    "top",
+                    "bottom"
+                  ],
+                  "description": "Where the toolbar goes (default \"top\"; unset = the layout's toolbarPosition)"
+                },
+                "tapConfirm": {
+                  "enum": [
+                    "default",
+                    "on",
+                    "off"
+                  ],
+                  "description": "Tap to confirm (default \"default\")"
+                },
+                "labels": {
+                  "enum": [
+                    "icons",
+                    "icons-labels",
+                    "labels"
+                  ],
+                  "description": "Button labels (default \"icons\"; unset = the asset's variant)"
+                }
+              }
+            },
+            "nav-menu": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "mode": {
+                  "enum": [
+                    "sidebar",
+                    "rail",
+                    "drawer",
+                    "bottom-tabs",
+                    "top-bar"
+                  ],
+                  "description": "Navigation mode (default \"sidebar\")"
+                },
+                "side": {
+                  "enum": [
+                    "left",
+                    "right",
+                    "top"
+                  ],
+                  "description": "Navigation side (default \"left\"; unset = the layout's nav)"
+                }
+              }
+            },
+            "context-menu": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "form": {
+                  "enum": [
+                    "menu",
+                    "sheet",
+                    "palette"
+                  ],
+                  "description": "Menu form (default \"menu\")"
+                },
+                "submenus": {
+                  "enum": [
+                    "flyout",
+                    "inline"
+                  ],
+                  "description": "Sub menus (default \"flyout\")"
+                }
+              }
+            },
+            "tab-group": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "position": {
+                  "enum": [
+                    "top",
+                    "bottom",
+                    "left",
+                    "right"
+                  ],
+                  "description": "Where tab rows sit (default \"top\"; unset = the asset's position)"
+                },
+                "overflow": {
+                  "enum": [
+                    "scroll",
+                    "wrap",
+                    "more",
+                    "dropdown"
+                  ],
+                  "description": "When tabs do not fit (default \"scroll\"; unset = the asset's overflow)"
+                },
+                "style": {
+                  "enum": [
+                    "underline",
+                    "pills",
+                    "boxed",
+                    "segmented",
+                    "plain",
+                    "chips"
+                  ],
+                  "description": "Tab style (default \"underline\"; unset = the asset's style)"
+                },
+                "display": {
+                  "enum": [
+                    "both",
+                    "text",
+                    "icons"
+                  ],
+                  "description": "What a tab shows (default \"both\"; unset = the asset's display)"
+                }
+              }
+            },
+            "dialog": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "presentation": {
+                  "enum": [
+                    "modal",
+                    "sheet",
+                    "side-panel",
+                    "full-screen"
+                  ],
+                  "description": "How dialogs open (default \"modal\"; unset = the asset's variant)"
+                },
+                "panelSide": {
+                  "enum": [
+                    "right",
+                    "left"
+                  ],
+                  "description": "Side panel side (default \"right\")"
+                }
+              }
+            },
+            "button": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "press": {
+                  "enum": [
+                    "theme",
+                    "none",
+                    "shrink",
+                    "darken",
+                    "ripple"
+                  ],
+                  "description": "Press feedback (default \"theme\")"
+                },
+                "confirm": {
+                  "enum": [
+                    "destructive",
+                    "none",
+                    "all"
+                  ],
+                  "description": "Which buttons ask first (default \"destructive\")"
+                },
+                "confirmBy": {
+                  "enum": [
+                    "dialog",
+                    "inline",
+                    "hold",
+                    "tap-twice"
+                  ],
+                  "description": "How a button confirms (default \"dialog\")"
+                },
+                "holdMs": {
+                  "type": "number",
+                  "minimum": 300,
+                  "maximum": 2000,
+                  "description": "Hold time (default 600)"
+                }
+              }
+            },
+            "table": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "form": {
+                  "enum": [
+                    "grid",
+                    "cards",
+                    "terminal"
+                  ],
+                  "description": "Table form (default \"grid\"; unset = the asset's form)"
+                },
+                "density": {
+                  "enum": [
+                    "compact",
+                    "regular",
+                    "roomy"
+                  ],
+                  "description": "Density (default \"regular\"; unset = the asset's density)"
+                },
+                "rowActions": {
+                  "enum": [
+                    "hover",
+                    "always",
+                    "menu",
+                    "swipe"
+                  ],
+                  "description": "Row actions show (default \"hover\"; unset = the asset's rowActions)"
+                },
+                "stickyHeader": {
+                  "type": "boolean",
+                  "description": "Sticky header (default true; unset = the asset's stickyHeader)"
+                }
+              }
+            },
+            "banner": {
+              "type": "object",
+              "additionalProperties": false,
+              "properties": {
+                "placement": {
+                  "enum": [
+                    "top",
+                    "bottom"
+                  ],
+                  "description": "Banner placement (default \"top\")"
+                }
+              }
+            }
+          }
+        }
       }
     }
   }

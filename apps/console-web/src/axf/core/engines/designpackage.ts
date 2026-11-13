@@ -47,6 +47,7 @@ const PREFIXES: string[] = [
   'axf.look',             // Settings → Appearance → Sliders (one key, `axf.look`; Restore used to leave it behind)
   'axf.tokens.',          // control@1 token overrides (engines/control-tokens.mjs; the Token control plugin's API, MCP and CLI)
   'axf.icons.',           // icon packs per scope (engines/skin.ts SKIN_ICON_PACK_KEY; the icon-map engine reads the same keys)
+  'axf.behaviour.',       // skin@2 behaviour picks per axis (engines/skin-behaviour.mjs): composed from the skin in force, never an app's own pick
 ];
 export const APPEARANCE_SETTING_PREFIXES: readonly string[] = PREFIXES;
 

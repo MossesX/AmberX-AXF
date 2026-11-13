@@ -1,0 +1,32 @@
+{
+  "$axf": "asset@1",
+  "type": "layout",
+  "id": "executive",
+  "name": "Executive",
+  "version": "1.0.0",
+  "description": "The Executive grid: navigation across the top, a quiet top toolbar, no menu bar row, no side panels, no status bar; a centred reading column with generous paddings.",
+  "author": "AmberX AXF",
+  "tags": [
+    "skin",
+    "executive",
+    "minimal"
+  ],
+  "data": {
+    "nav": "top",
+    "navWidth": 240,
+    "showMenubar": false,
+    "showToolbar": true,
+    "toolbarPosition": "top",
+    "showStatusbar": false,
+    "inspector": "none",
+    "inspectorWidth": 300,
+    "contentMaxWidth": 1240,
+    "regionGap": 0,
+    "mainPadTop": 3.2,
+    "mainPadX": 5,
+    "mainPadBottom": 8,
+    "phoneMainPadTop": 2,
+    "phoneMainPadX": 2,
+    "phoneMainPadBottom": 5
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "$axf": "asset@1",
+  "type": "style-theme",
+  "id": "studio-pro",
+  "name": "Studio Pro",
+  "version": "1.0.0",
+  "description": "Studio Pro type and shapes: Inter at 13 px, 4 / 6 / 8 px corners, a 6 px space unit, hairline borders, flat shadows, fast motion, thin scrollbars. Dense like an IDE.",
+  "author": "AmberX AXF",
+  "tags": [
+    "skin",
+    "studio-pro",
+    "compact"
+  ],
+  "data": {
+    "fontFamily": "'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif",
+    "fontDisplay": "'Inter', system-ui, sans-serif",
+    "fontMono": "'JetBrains Mono', 'Fira Code', ui-monospace, monospace",
+    "fontSize": 13,
+    "radius": {
+      "sm": 4,
+      "md": 6,
+      "lg": 8
+    },
+    "space": 6,
+    "borderWidth": 1,
+    "shadow": {
+      "sm": "0 1px 1px var(--fx-shadow)",
+      "md": "0 2px 6px var(--fx-shadow)",
+      "lg": "0 8px 24px var(--fx-shadow)"
+    },
+    "density": "compact",
+    "motion": 100,
+    "blur": 6,
+    "headingWeight": 600,
+    "tracking": -0.01,
+    "opacityDisabled": 0.4,
+    "opacityMuted": 0.64,
+    "opacityHover": 0.07,
+    "opacityTint": 0.12,
+    "opacityScrim": 0.5,
+    "opacityGlass": 0.9,
+    "scrollbar": "thin",
+    "wrapGroups": false
+  }
+}

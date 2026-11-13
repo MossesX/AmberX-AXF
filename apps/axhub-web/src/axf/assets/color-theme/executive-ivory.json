@@ -1,0 +1,35 @@
+{
+  "$axf": "asset@1",
+  "type": "color-theme",
+  "id": "executive-ivory",
+  "name": "Executive Ivory",
+  "version": "1.0.0",
+  "description": "Executive colours: warm ivory surfaces, ink text, a deep navy accent and quiet status colours. Reads like paper in a boardroom.",
+  "author": "AmberX AXF",
+  "tags": [
+    "skin",
+    "executive",
+    "light"
+  ],
+  "data": {
+    "scheme": "light",
+    "tokens": {
+      "bg": "#f6f4ef",
+      "surface": "#fffdf9",
+      "surface2": "#f1eee7",
+      "surface3": "#e7e2d8",
+      "text": "#1c1f26",
+      "muted": "#646a76",
+      "border": "#dcd6ca",
+      "accent": "#1f3a68",
+      "accentText": "#ffffff",
+      "accentSoft": "rgba(31,58,104,0.10)",
+      "danger": "#b23a3a",
+      "success": "#2f7d4f",
+      "warning": "#a86b12",
+      "info": "#2b6cb0",
+      "focus": "#1f3a68",
+      "shadow": "rgba(30,30,40,0.10)"
+    }
+  }
+}

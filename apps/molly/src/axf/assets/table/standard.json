@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "table",
+  "id": "standard",
+  "name": "Standard table",
+  "version": "1.0.0",
+  "description": "The framework's own table: a grid of rows at regular density, row actions on hover, a sticky header, dividers between rows, no striping.",
+  "author": "AmberX AXF",
+  "tags": [
+    "table",
+    "default"
+  ],
+  "data": {
+    "form": "grid",
+    "density": "regular",
+    "rowActions": "hover",
+    "stickyHeader": true,
+    "zebra": false,
+    "dividers": true,
+    "headerCase": "normal"
+  }
+}

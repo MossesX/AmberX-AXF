@@ -116,6 +116,8 @@ export function compileLayout(raw: LayoutData, hidden: readonly string[] = []): 
   if (nav === 'left' || nav === 'right') regions.push('nav');
   if (l.inspector !== 'none') regions.push('inspector');
   if (toolbar && l.toolbarPosition === 'bottom') add('toolbar', span('toolbar'), 'auto');
+  // nav at the bottom (skin@2 nav-menu mode bottom-tabs): a strip under the main area, above the status bar, on every screen
+  if (nav === 'bottom') add('nav', span('nav'), 'auto');
   if (l.showStatusbar) add('status', span('status'), 'auto');
 
   // Phone: single column, nav becomes a bottom tab strip, inspector hidden.
@@ -133,7 +135,7 @@ export function compileLayout(raw: LayoutData, hidden: readonly string[] = []): 
     rows: rows.join(' '),
     mobileAreas: mAreas.join(' '),
     mobileRows: mRows.join(' '),
-    navOrientation: nav === 'top' ? 'horizontal' : 'vertical',
+    navOrientation: nav === 'top' || nav === 'bottom' ? 'horizontal' : 'vertical',
     slots,
     columnRegions: cols,
   };

@@ -79,12 +79,14 @@ const overrideOf = (raw: unknown): TapOverride => ((TAP_OVERRIDES as readonly st
 
 /**
  * One item's config: its own choice (the `tapConfirm` field of its chrome settings, `axf.chrome.<kind>.<instance>`;
- * a toolbar also honours its older `axf.toolbar.<id>.tapConfirm`), else the switch for its kind.
+ * a toolbar also honours its older `axf.toolbar.<id>.tapConfirm`), else the skin's pick for the kind (skin@2 behaviour
+ * axis `tapConfirm`: on / off; `default` or none = not the skin's business), else the switch for its kind.
  */
-export function tapConfigFor(get: (key: string) => unknown, kind: TapKind, instance: string): TapConfig {
+export function tapConfigFor(get: (key: string) => unknown, kind: TapKind, instance: string, skin?: unknown): TapConfig {
   const inst = get(CHROME_INSTANCE_KEY(kind, instance));
   let own = overrideOf(inst && typeof inst === 'object' ? (inst as Record<string, unknown>)[CHROME_TAP_FIELD] : undefined);
   if (own === 'inherit' && kind === 'toolbar') own = overrideOf(get(`${TAP_KEYS.perToolbar}${toolbarIdOf({ id: instance })}.tapConfirm`));
+  if (own === 'inherit') own = overrideOf(skin === 'on' || skin === 'off' ? skin : undefined);
   const global = get(tapKindKey(kind)) !== false;
   return { enabled: own === 'inherit' ? global : own === 'on', armMs: tapArmMs(get(TAP_KEYS.armMs)) };
 }

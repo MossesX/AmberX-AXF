@@ -58,6 +58,29 @@ function withColor(state, pick) {
   return pick ? { ...rest, colorTheme: pick } : rest;
 }
 
+/*
+ * skin@2 behaviour overrides (Nov 13 2026): a level may override single behaviour axes of the skin in force
+ * (`behaviour: { <type>: { <axis>: value } }`, like `overrides` for slots). Shape-checked here (ids and scalar values);
+ * the registry's axes and values are checked where the registry is known (skin-behaviour.mjs, the TS engine).
+ */
+const AXIS = /^[a-z][a-zA-Z0-9]{0,39}$/;
+function behaviourMap(raw) {
+  const out = {};
+  if (!isObj(raw)) return out;
+  for (const [t, picks] of Object.entries(raw)) {
+    if (!ID.test(t) || !isObj(picks)) continue;
+    const kept = {};
+    for (const [a, v] of Object.entries(picks)) if (AXIS.test(a) && (typeof v === 'string' || typeof v === 'number' || typeof v === 'boolean')) kept[a] = v;
+    if (Object.keys(kept).length) out[t] = kept;
+  }
+  return out;
+}
+/** `state` with the behaviour overrides on it; a state without any carries no `behaviour` field at all. */
+function withBehaviour(state, b) {
+  const { behaviour: _own, ...rest } = state;
+  return Object.keys(b).length ? { ...rest, behaviour: b } : rest;
+}
+
 /** Keep what a look holds: slots, spacing, chrome and look settings. */
 export function normalizeLookPart(raw) {
   const d = isObj(raw) ? raw : {};
@@ -71,15 +94,15 @@ export function normalizeLookPart(raw) {
 /** The app level: `use` (the Use skin switch), `inherit` (follow the hub-wide skin while off), the skin, its overrides and the colour theme picked inside it. */
 function normalizeSkinState(raw) {
   const d = isObj(raw) ? raw : {};
-  return withColor({ use: d.use === true, inherit: d.inherit === true, id: typeof d.id === 'string' && ID.test(d.id) ? d.id : '', overrides: idMap(d.overrides, NOT_OVERRIDES) }, colorPick(d));
+  return withBehaviour(withColor({ use: d.use === true, inherit: d.inherit === true, id: typeof d.id === 'string' && ID.test(d.id) ? d.id : '', overrides: idMap(d.overrides, NOT_OVERRIDES) }, colorPick(d)), behaviourMap(d.behaviour));
 }
-/** A UI / plugin level: on | off | inherit (default inherit), the skin, its overrides and the colour theme picked inside it. */
+/** A UI / plugin level: on | off | inherit (default inherit), the skin, its overrides, the colour theme picked inside it and its behaviour overrides. */
 export function normalizeScopeState(raw) {
   const d = isObj(raw) ? raw : {};
-  return withColor({ use: SKIN_USES.includes(d.use) ? d.use : 'inherit', id: typeof d.id === 'string' && ID.test(d.id) ? d.id : '', overrides: idMap(d.overrides, NOT_OVERRIDES) }, colorPick(d));
+  return withBehaviour(withColor({ use: SKIN_USES.includes(d.use) ? d.use : 'inherit', id: typeof d.id === 'string' && ID.test(d.id) ? d.id : '', overrides: idMap(d.overrides, NOT_OVERRIDES) }, colorPick(d)), behaviourMap(d.behaviour));
 }
 /** A sub scope that says nothing: it inherits and is not kept in the document. */
-const emptyScope = (st) => st.use === 'inherit' && !st.id && !Object.keys(st.overrides).length && !st.colorTheme;
+const emptyScope = (st) => st.use === 'inherit' && !st.id && !Object.keys(st.overrides).length && !st.colorTheme && !st.behaviour;
 function normalizeScopes(raw) {
   const out = {};
   if (isObj(raw)) for (const [k, v] of Object.entries(raw)) if (isSubScopeKey(k)) { const st = normalizeScopeState(v); if (!emptyScope(st)) out[k] = st; }
@@ -112,8 +135,45 @@ export function parseAppLook(text) {
 export function setUseSkin(look, on) { return { ...look, skin: { ...look.skin, use: on } }; }
 /** Follow the hub-wide skin while Use skin is off (Brett: "a switch to do it, but by default they're all their own"). */
 export function setInheritSkin(look, on) { return { ...look, skin: { ...look.skin, inherit: on } }; }
-/** Pick a skin: a different one starts with no overrides and its own colour theme; the same one keeps both. */
-export function pickSkin(look, id) { return id === look.skin.id ? look : { ...look, skin: { ...withColor(look.skin, ''), id, overrides: {} } }; }
+/** Pick a skin: a different one starts with no overrides, its own colour theme and its own behaviour; the same one keeps them. */
+export function pickSkin(look, id) { return id === look.skin.id ? look : { ...look, skin: { ...withBehaviour(withColor(look.skin, ''), {}), id, overrides: {} } }; }
+
+/* ---------------- skin@2: behaviour overrides inside the skin in force ---------------- */
+
+function levelState(look, key) {
+  if (key === SKIN_SCOPE_APP) return look.skin;
+  if (!isSubScopeKey(key)) throw new Error(`"${key}" is not a ui: or plugin: scope`);
+  return scopeState(look, key);
+}
+function withLevel(look, key, next) {
+  if (key === SKIN_SCOPE_APP) return { ...look, skin: next };
+  const scopes = { ...(look.scopes ?? {}) };
+  if (emptyScope(next)) delete scopes[key]; else scopes[key] = next;
+  return { ...look, scopes };
+}
+/**
+ * Override one behaviour axis of the skin in force at a level (`key` = app, default, or a ui: / plugin: scope): the
+ * skin, its id and every other pick stay. `value` null drops the override (back to the skin's own behaviour).
+ */
+export function setSkinBehaviour(look, type, axis, value, key = SKIN_SCOPE_APP) {
+  const cur = levelState(look, key);
+  const b = { ...(cur.behaviour ?? {}) };
+  const picks = { ...(b[type] ?? {}) };
+  if (value === null || value === undefined) delete picks[axis]; else picks[axis] = value;
+  if (Object.keys(picks).length) b[type] = picks; else delete b[type];
+  return withLevel(look, key, withBehaviour(cur, behaviourMap(b)));
+}
+/** Back to the skin's behaviour at a level: every override, or one type's. */
+export function backToSkinBehaviour(look, type = '', key = SKIN_SCOPE_APP) {
+  const cur = levelState(look, key);
+  const b = { ...(cur.behaviour ?? {}) };
+  if (type) delete b[type]; else for (const k of Object.keys(b)) delete b[k];
+  return withLevel(look, key, withBehaviour(cur, b));
+}
+/** The behaviour overrides saved at a level ({} when none). */
+export function skinBehaviourOverrides(look, key = SKIN_SCOPE_APP) {
+  return (key === SKIN_SCOPE_APP ? look?.skin : look?.scopes?.[key])?.behaviour ?? {};
+}
 /**
  * Switch the colour theme inside the skin: `id` = a colour theme, '' / null = the skin's own. `key` = `app` (default)
  * or a `ui:` / `plugin:` scope. Only the level's `colorTheme` changes: the skin, its id and every other pick stay, and
@@ -168,16 +228,16 @@ export function setLookSlot(look, slot, id, global = null) {
 
 /** The state of one scope key in a document (`app` = the app level, `ui:` / `plugin:` = a sub scope; `global` is not in the document). */
 export function scopeState(look, key) {
-  if (key === SKIN_SCOPE_APP) return withColor({ use: look.skin.use ? 'on' : look.skin.inherit ? 'inherit' : 'off', id: look.skin.id, overrides: look.skin.overrides }, look.skin.colorTheme);
+  if (key === SKIN_SCOPE_APP) return withBehaviour(withColor({ use: look.skin.use ? 'on' : look.skin.inherit ? 'inherit' : 'off', id: look.skin.id, overrides: look.skin.overrides }, look.skin.colorTheme), look.skin.behaviour ?? {});
   return isSubScopeKey(key) ? (look.scopes?.[key] ?? { use: 'inherit', id: '', overrides: {} }) : null;
 }
 
-/** Set a sub scope's skin: `use` on | off | inherit, `id` the skin (kept when omitted; a different one starts with no overrides and its own colour theme). Inherit with nothing else drops the entry. */
+/** Set a sub scope's skin: `use` on | off | inherit, `id` the skin (kept when omitted; a different one starts with no overrides, its own colour theme and its own behaviour). Inherit with nothing else drops the entry. */
 export function setScopeSkin(look, key, use, id) {
   if (!isSubScopeKey(key)) throw new Error(`"${key}" is not a ui: or plugin: scope`);
   const cur = scopeState(look, key);
   const other = !!id && id !== cur.id;
-  const next = normalizeScopeState({ use, id: id ?? cur.id, overrides: other ? {} : cur.overrides, colorTheme: other ? '' : cur.colorTheme });
+  const next = normalizeScopeState({ use, id: id ?? cur.id, overrides: other ? {} : cur.overrides, colorTheme: other ? '' : cur.colorTheme, behaviour: other ? {} : cur.behaviour });
   const scopes = { ...(look.scopes ?? {}) };
   if (emptyScope(next)) delete scopes[key]; else scopes[key] = next;
   return { ...look, scopes };
@@ -200,13 +260,14 @@ export function scopeEntries(look) {
 
 /**
  * The skin in force at a place: the chain plugin → ui → app → global over this document and the hub-wide skin
- * (`global` = `{ id, overrides, colorTheme? }` from the shared appearance document, or null). `{ id, overrides, from }`,
- * plus `colorTheme` when a level picked one inside the skin; an empty id means no skin there.
+ * (`global` = `{ id, overrides, colorTheme?, behaviour? }` from the shared appearance document, or null). `{ id, overrides, from }`,
+ * plus `colorTheme` when a level picked one inside the skin and `behaviour` when levels override axes (child over
+ * parent, axis by axis); an empty id means no skin there.
  */
 export function resolveLookSkin(look, global, scope) {
   const chain = skinScopeChain({ ...scope, app: look?.app ?? '' });
   return resolveSkinChain(chain, (key) => {
-    if (key === SKIN_SCOPE_GLOBAL) return global?.id ? withColor({ use: 'on', id: global.id, overrides: global.overrides ?? {} }, global.colorTheme) : { use: 'off', id: '', overrides: {} };
+    if (key === SKIN_SCOPE_GLOBAL) return global?.id ? withBehaviour(withColor({ use: 'on', id: global.id, overrides: global.overrides ?? {} }, global.colorTheme), behaviourMap(global.behaviour)) : { use: 'off', id: '', overrides: {} };
     return look ? scopeState(look, key) : { use: 'off', id: '', overrides: {} };
   });
 }

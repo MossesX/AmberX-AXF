@@ -1,0 +1,34 @@
+{
+  "$axf": "asset@1",
+  "type": "layout",
+  "id": "studio-pro",
+  "name": "Studio Pro",
+  "version": "1.0.0",
+  "description": "The Studio Pro grid: menu bar, top toolbar, a left rail, a right-side panel region and a status bar; tight paddings, no content width limit.",
+  "author": "AmberX AXF",
+  "tags": [
+    "skin",
+    "studio-pro",
+    "desktop",
+    "ide"
+  ],
+  "data": {
+    "nav": "left",
+    "navWidth": 220,
+    "showMenubar": true,
+    "showToolbar": true,
+    "toolbarPosition": "top",
+    "showStatusbar": true,
+    "inspector": "right",
+    "inspectorWidth": 300,
+    "contentMaxWidth": 0,
+    "statusHeight": 24,
+    "regionGap": 0,
+    "mainPadTop": 1.6,
+    "mainPadX": 2.4,
+    "mainPadBottom": 4,
+    "phoneMainPadTop": 1.2,
+    "phoneMainPadX": 1.2,
+    "phoneMainPadBottom": 3
+  }
+}

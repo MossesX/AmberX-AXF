@@ -4,7 +4,7 @@
  * document root. axf.css keys off these, so every Button, Slider, etc. in
  * every AmberX AXF app restyles the instant an asset is swapped.
  */
-import type { AppMenuData, ButtonData, ChromeDensity, ContainerData, ContextMenuData, DialogData, GaugeData, MeterData, NavMenuData, PopupData, SliderData, TabGroupData, ToolbarData } from '../types';
+import type { AppMenuData, ButtonData, ChromeDensity, ContainerData, ContextMenuData, DialogData, GaugeData, MeterData, NavMenuData, PopupData, SliderData, TabGroupData, TableData, ToolbarData } from '../types';
 import type { VarMap } from './theme';
 
 export interface StyleOutput {
@@ -149,6 +149,40 @@ export function popupStyle(p: PopupData): StyleOutput {
 
 export function contextMenuStyle(c: ContextMenuData): StyleOutput {
   return { vars: {}, attrs: { 'data-fx-ctx': c.variant } };
+}
+
+/* ---------- table: every table and data grid (table@1, build professional-skins Nov 13 2026) ---------- */
+
+export const TABLE_DEFAULT: Required<TableData> = { form: 'grid', density: 'regular', rowActions: 'hover', stickyHeader: true, zebra: false, dividers: true, headerCase: 'normal' };
+export const TABLE_FORMS = ['grid', 'cards', 'terminal'] as const;
+export const TABLE_ROW_ACTIONS = ['hover', 'always', 'menu', 'swipe'] as const;
+/** Cell padding per density, as multiples of the sizing asset's table padding (so the scale assets still rule the base). */
+const TABLE_PAD: Record<ChromeDensity, [number, number]> = { compact: [0.5, 0.75], regular: [1, 1], roomy: [1.6, 1.25] };
+
+/** Every field filled; a missing or bad value is the framework's own look (what every table drew before the type existed). */
+export function normalizeTable(t: Partial<TableData> | null | undefined): Required<TableData> {
+  const d = t ?? {};
+  const pick = <K extends keyof TableData>(k: K, ok: readonly string[]): Required<TableData>[K] => (ok.includes(d[k] as string) ? (d[k] as Required<TableData>[K]) : TABLE_DEFAULT[k]);
+  const flag = (k: 'stickyHeader' | 'zebra' | 'dividers') => (typeof d[k] === 'boolean' ? (d[k] as boolean) : TABLE_DEFAULT[k]);
+  return { form: pick('form', TABLE_FORMS), density: pick('density', ['compact', 'regular', 'roomy']), rowActions: pick('rowActions', TABLE_ROW_ACTIONS), stickyHeader: flag('stickyHeader'), zebra: flag('zebra'), dividers: flag('dividers'), headerCase: pick('headerCase', ['normal', 'upper']) };
+}
+
+/** Root vars + attributes every fx-table and data grid reads: cell padding by density, and one attribute per field. */
+export function tableStyle(t: Partial<TableData> | null | undefined): StyleOutput {
+  const n = normalizeTable(t);
+  const [py, px] = TABLE_PAD[n.density];
+  return {
+    vars: { '--fx-table-py': `calc(var(--fx-size-table-pad-y) * ${py})`, '--fx-table-px': `calc(var(--fx-size-table-pad-x) * ${px})` },
+    attrs: {
+      'data-fx-table': n.form,
+      'data-fx-table-density': n.density,
+      'data-fx-table-actions': n.rowActions,
+      'data-fx-table-sticky': n.stickyHeader ? 'on' : 'off',
+      'data-fx-table-zebra': n.zebra ? 'on' : 'off',
+      'data-fx-table-dividers': n.dividers ? 'on' : 'off',
+      'data-fx-table-header': n.headerCase,
+    },
+  };
 }
 
 /* ---------- tab-group: every tab row (page tabs + window tab bars) ---------- */
