@@ -33,7 +33,7 @@
  *              healthOf() reads one tiny call's answer; a fresh health record (own.health) decides usable / Fable,
  *              so the dispatcher never tests an account at launch time. healthDue() says when the next sweep runs.
  */
-import { DEFAULT_MAX_RUNS, STATUS_AFTER, dependsOn as resolvedDeps, isHeld, nextModel, openSteps, outcomeLine, outcomeOf, queueOrder } from '../../../../framework/core/build-pipeline.mjs';
+import { DEFAULT_MAX_RUNS, STATUS_AFTER, dependsOn as resolvedDeps, isHeld, releaseStep, stepFiles, nextModel, openSteps, outcomeLine, outcomeOf, queueOrder } from '../../../../framework/core/build-pipeline.mjs';
 import { effectivePriority, priorityLabel } from '../../../../framework/core/build-priority.mjs';
 import { FOUNDATION_MODEL, MODEL_LABELS, modelForWork, modelKey } from '../../../../framework/core/model-policy.mjs';
 import { API_RULE, estimateMinutes, maxStep, nextUp as orchNextUp, MODEL_GUIDE, STEP_MINUTES, stepLimit } from './web/orchestrator-core.mjs';
@@ -436,6 +436,37 @@ export function splitCycle(steps) {
   for (const x of b.steps) walk(x.id, []);
   return found;
 }
+
+// ------------------------------------------------------------------ parallel steps: merge back (Nov 13 2026)
+
+/** A step note line starting with this marks a step sent back by a merge conflict (the step itself stays open). */
+export const BLOCKED_PREFIX = 'blocked: ';
+
+/**
+ * A parallel step whose branch could not merge back into the build branch (BUILD-PARALLEL §4). Pure:
+ * the claim is released, the step stays open with a `blocked:` note naming the conflicting files, and it re-runs after
+ * the steps it clashed with (settled steps of the build sharing a conflicting file; the previous step when none is
+ * known) in the build's own session (`parallel: never`), so the retry starts from a build branch that holds their work.
+ * → { ok, build, after, note } or { ok: false, why }.
+ */
+export function conflictBack(b, stepId, { files = [], branch = '', now = Date.now() } = {}) {
+  const steps = list(b?.steps); const i = steps.findIndex((x) => x.id === stepId);
+  if (i < 0) return { ok: false, why: `no step ${stepId}` };
+  const conflict = list(files).map((f) => str(f, 300)).filter(Boolean);
+  const touches = (x, f) => stepFiles(x).some((g) => g === f || f.startsWith(`${g.replace(/\/$/, '')}/`) || g.startsWith(`${f.replace(/\/$/, '')}/`));
+  let after = steps.filter((x, j) => j !== i && (x.done || x.skip) && conflict.some((f) => touches(x, f))).map((x) => x.id);
+  if (!after.length && i > 0) after = [steps[i - 1].id];
+  const note = `${BLOCKED_PREFIX}merge conflict on ${branch || 'the step branch'}${conflict.length ? ` (${conflict.slice(0, 6).join(', ')}${conflict.length > 6 ? ', …' : ''})` : ''}: re-runs after ${after.join(', ') || 'the steps before it'} in the build's own session; the step branch is kept`;
+  const r = releaseStep(b, stepId, { now });
+  if (!r.ok) return r;
+  const at = new Date(typeof now === 'number' ? now : Date.parse(now) || Date.now()).toISOString();
+  const noted = (x) => `${x.note ? `${x.note}\n` : ''}${note}`.slice(-1000);
+  const build = { ...r.build, steps: r.build.steps.map((x) => (x.id === stepId ? { ...x, done: false, doneAt: '', after, parallel: 'never', note: noted(x), updatedAt: at } : x)) };
+  return { ok: true, build, after, note };
+}
+
+/** Is this step blocked by a merge conflict (its newest note line says so)? */
+export const isConflictBlocked = (step) => str(step?.note, 1000).split('\n').filter(Boolean).pop()?.startsWith(BLOCKED_PREFIX) === true && !step?.done;
 
 /**
  * Steps without a model: one per numbered line, bullet or sentence of the detail (and Brett's words when the detail

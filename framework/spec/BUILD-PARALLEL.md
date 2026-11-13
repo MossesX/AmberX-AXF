@@ -111,10 +111,14 @@ Launch record: `{ kind: step | build | pending, id, step, model, account, accoun
   (`/root/axf-builds/<build>--<stepId>`). A sequential step runs on the build branch in the build's own worktree.
 - The session commits on its step branch, ticks the step done (the tick releases the claim), and the dispatcher merges
   the step branch into the build branch (`git merge --no-ff` in the build's worktree, then push; never into main).
-- **Merge conflict**: the claim is released (`releaseStep` with the note `merge conflict on <step-branch>: sequential
-  retry`), the step is marked `done: false`, its `after` is replaced by the previous step's id so it becomes sequential
-  and runs again inside the build's own session once the steps before it are done, the step branch is kept for the
-  retry to read, and a build note says what conflicted. The conflicting branch is never force-pushed or deleted.
+- **Merge conflict** (`pipeline.mjs mergeStepBack`, pure `pipeline-core.mjs conflictBack`): the merge is aborted, the
+  claim is released, the step is marked `done: false` with the note `blocked: merge conflict on <step-branch> (<files>):
+  re-runs after <ids> …`, its `after` becomes the settled steps it clashed with (those sharing a conflicting file; the
+  previous step when none is known) and it gets `parallel: never`, so it runs again inside the build's own session from
+  a build branch that holds their work. The step branch is kept for the retry to read, a build note says what
+  conflicted, and the conflicting branch is never force-pushed or deleted.
+- The merge runs under the store lock, in the build's worktree, only when that worktree has no uncommitted tracked
+  changes (otherwise it is deferred to the next tick).
 - A merged step branch is deleted and its worktree removed. A claim that expires with the branch unmerged is treated
   like a conflict: release, note, sequential retry.
 - The builds files (`_claude/builds/**`) merge through the `axf-builds` driver as before; code conflicts are the only

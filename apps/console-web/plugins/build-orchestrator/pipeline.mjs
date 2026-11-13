@@ -54,7 +54,7 @@
  * with the console container): settings.json, accounts.json, state.json (what the last tick saw and did), log.jsonl.
  * Environment for tests: AXF_PIPELINE_LAUNCHER (instead of deploy/claude-headless.sh), AXF_PIPELINE_SPLITTER (a command that
  * reads the prompt on stdin and prints Claude's answer), AXF_PIPELINE_WORKTREES (root of build worktrees, default
- * /root/axf-builds), AXF_PIPELINE_WORKTREE_MODE=mkdir (no git), AXF_PIPELINE_CONSOLE=off | <container> (alerts),
+ * /root/axf-builds), AXF_PIPELINE_WORKTREE_MODE=mkdir (no git), AXF_PIPELINE_REPO (the repo step worktrees hang off), AXF_PIPELINE_CONSOLE=off | <container> (alerts),
  * AXF_PIPELINE_SETTINGS (a JSON patch over settings.json). Exit 0 ok, 2 usage / refused.
  */
 import { spawn, spawnSync } from 'node:child_process';
@@ -425,12 +425,104 @@ export function ensureWorktree(id, env = process.env) {
   let r = git(REPO_ROOT, 'worktree', 'add', '-B', `claude/${id}`, dir, base);
   if (r.status !== 0 && /already checked out|already exists/.test(r.stderr)) r = git(REPO_ROOT, 'worktree', 'add', '--detach', dir, base);
   if (r.status !== 0) throw new Error(`worktree for ${id}: ${(r.stderr || r.stdout).trim().slice(0, 300)}`);
-  // installed packages come from the main checkout: no install per build
+  linkModules(dir);
+  return { dir, made: true };
+}
+
+/** Installed packages come from the main checkout: no install per build or step worktree. */
+function linkModules(dir) {
   for (const rel of ['node_modules', 'apps/console-web/node_modules', 'apps/demo/node_modules', 'apps/expenses/node_modules', 'apps/axhub-web/node_modules', 'apps/molly/node_modules']) {
     const src = join(REPO_ROOT, rel); const dst = join(dir, rel);
     if (existsSync(src) && !existsSync(dst)) { try { mkdirSync(dirname(dst), { recursive: true }); symlinkSync(src, dst); } catch { /* optional */ } }
   }
-  return { dir, made: true };
+}
+
+// ------------------------------------------------------------------ parallel step worktrees (BUILD-PARALLEL §4)
+
+/** The repo the worktrees hang off (AXF_PIPELINE_REPO for tests: a scratch git repo with an origin). */
+const repoRoot = (env = process.env) => env.AXF_PIPELINE_REPO || REPO_ROOT;
+const gitMode = (env = process.env) => (env.AXF_PIPELINE_WORKTREE_MODE || 'git') !== 'mkdir';
+/** Where a parallel step works: /root/axf-builds/<build>--<stepId>. */
+export const stepWorktreeDir = (b, stepId, env = process.env) => join(worktreesRoot(env), `${b.id}--${stepId}`);
+
+/**
+ * A parallel step's worktree and branch `<build-branch>--<stepId>`, made from the build branch (origin's copy when it
+ * is there, so the step starts from everything already pushed). An existing step worktree is kept (a retry reads it).
+ * → { dir, branch, base, made }
+ */
+export function ensureStepWorktree(b, stepId, env = process.env) {
+  const step = (b.steps ?? []).find((x) => x.id === stepId);
+  if (!step) throw new Error(`${b.id} has no step ${stepId}`);
+  const dir = stepWorktreeDir(b, stepId, env);
+  const branch = BP.stepBranch(b, step, { parallel: true }); const buildBranch = BP.stepBranch(b, step);
+  if (existsSync(dir)) return { dir, branch, base: buildBranch, made: false };
+  if (!gitMode(env)) { mkdirSync(dir, { recursive: true }); return { dir, branch, base: buildBranch, made: true }; }
+  const root = repoRoot(env);
+  mkdirSync(worktreesRoot(env), { recursive: true });
+  git(root, 'fetch', '-q', 'origin', buildBranch);
+  const base = git(root, 'rev-parse', '--verify', '-q', `origin/${buildBranch}`).status === 0 ? `origin/${buildBranch}`
+    : git(root, 'rev-parse', '--verify', '-q', buildBranch).status === 0 ? buildBranch : '';
+  if (!base) throw new Error(`step worktree for ${b.id}/${stepId}: the build branch ${buildBranch} does not exist yet`);
+  // a kept branch (a retry after a conflict) is reused; otherwise a new one from the build branch
+  const keep = git(root, 'rev-parse', '--verify', '-q', branch).status === 0;
+  const r = keep ? git(root, 'worktree', 'add', dir, branch) : git(root, 'worktree', 'add', '-b', branch, dir, base);
+  if (r.status !== 0) throw new Error(`step worktree for ${b.id}/${stepId}: ${(r.stderr || r.stdout).trim().slice(0, 300)}`);
+  if (root === REPO_ROOT) linkModules(dir);
+  return { dir, branch, base, made: true };
+}
+
+/** Remove a merged step's worktree and branch (local and on origin). Best effort. */
+export function dropStepWorktree(b, stepId, env = process.env) {
+  const dir = stepWorktreeDir(b, stepId, env); const step = (b.steps ?? []).find((x) => x.id === stepId) ?? { id: stepId };
+  const branch = BP.stepBranch(b, step, { parallel: true });
+  if (!gitMode(env)) { rmSync(dir, { recursive: true, force: true }); return { dir, branch }; }
+  const root = repoRoot(env);
+  git(root, 'worktree', 'remove', '--force', dir);
+  git(root, 'branch', '-D', branch);
+  git(root, 'push', '-q', 'origin', '--delete', branch);
+  return { dir, branch };
+}
+
+/**
+ * Merge a finished parallel step back into the build branch, under the store lock (one merge at a time, and the store
+ * change lands with it). The merge runs in the build's own worktree (`git merge --no-ff`, then push; never main), and
+ * only when that worktree has no uncommitted tracked changes (else `deferred`: the next tick tries again).
+ * Merged: the step branch and worktree go. Conflict: the merge is aborted, the step goes back open as `blocked` with a
+ * note (conflictBack) and re-runs after the steps it clashed with; the branch is kept, never force-pushed or deleted.
+ * → { ok, merged, deferred, conflict, files, why }
+ */
+export function mergeStepBack(id, stepId, { env = process.env, by = 'dispatcher' } = {}) {
+  let out = { ok: false, merged: false, deferred: false, conflict: false, files: [], why: '' };
+  withStore((s) => {
+    const rec = storeCore.findBuild(s, id); const step = rec?.steps.find((x) => x.id === stepId);
+    if (!rec || !step) { out.why = `no step ${id}/${stepId}`; return s; }
+    const branch = BP.stepBranch(rec, step, { parallel: true }); const buildBranch = BP.stepBranch(rec, step);
+    if (gitMode(env)) {
+      const wt = join(worktreesRoot(env), rec.id);
+      if (!existsSync(wt)) { out.why = `no build worktree ${wt}`; out.deferred = true; return s; }
+      if (git(wt, 'status', '--porcelain', '-uno').stdout.trim()) { out = { ...out, deferred: true, why: 'the build worktree has uncommitted changes: merge on a later tick' }; return s; }
+      git(wt, 'fetch', '-q', 'origin', branch);
+      const src = git(wt, 'rev-parse', '--verify', '-q', `origin/${branch}`).status === 0 ? `origin/${branch}` : branch;
+      const m = git(wt, 'merge', '--no-ff', '--no-edit', '-m', `Merge ${branch} (${rec.id} ${stepId}) into ${buildBranch}`, src);
+      if (m.status !== 0) {
+        const files = git(wt, 'diff', '--name-only', '--diff-filter=U').stdout.split('\n').map((x) => x.trim()).filter(Boolean);
+        git(wt, 'merge', '--abort');
+        const c = P.conflictBack(rec, stepId, { files, branch });
+        if (c.ok) { Object.assign(rec, c.build); rec.notes.push({ text: `${stepId}: ${c.note}`, at: nowIso() }); }
+        out = { ...out, ok: true, conflict: true, files, why: c.ok ? c.note : c.why };
+        return s;
+      }
+      git(wt, 'push', '-q', 'origin', `HEAD:${buildBranch}`);
+    }
+    // merged: the claim goes and the step's merge is recorded on the build
+    const now = nowIso(); delete step.claim; step.updatedAt = now;
+    rec.notes.push({ text: `${stepId}: ${branch} merged into ${buildBranch}`, at: now }); rec.updatedAt = now;
+    out = { ...out, ok: true, merged: true };
+    return s;
+  }, { by, action: 'pipeline:step-merge', note: `${id}/${stepId}` });
+  if (out.merged) { try { dropStepWorktree(storeCore.findBuild(loadStore(), id), stepId, env); } catch { /* best effort */ } }
+  logLine({ event: 'step-merge', build: id, step: stepId, merged: out.merged, conflict: out.conflict, deferred: out.deferred, files: out.files, why: out.why });
+  return out;
 }
 
 /** The brief file: what Brett said first (build-origin@1 blocks), then the orchestrator's phase brief. */
