@@ -81,6 +81,10 @@ def outcome(res: dict[str, Any]) -> dict[str, Any]:
                     "message": "AmberX collapsed the overlay to its toolbar" if ok else "the overlay isn't on screen on the phone"}
         return {"ok": True, "opened": opened, "notified": False,
                 "message": "AmberX opened it full screen in its overlay" if opened else "AmberX's overlay couldn't open it"}
+    if a.get("where") == "app":
+        # The console app (apps/console-droid) with its overlay off: the app itself came to the front on the page.
+        return {"ok": True, "opened": opened, "notified": False,
+                "message": "The console app opened it full screen" if opened else "The console app couldn't open it"}
     if a.get("overlay") is False and not opened:
         message = "AmberX can't open pages on its own (Display over other apps is off): tap its notification"
     elif opened:

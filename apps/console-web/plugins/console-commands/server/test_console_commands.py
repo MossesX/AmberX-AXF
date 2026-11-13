@@ -348,6 +348,9 @@ o = said({"url": "u", "verb": "collapse", "where": "overlay", "collapsed": True,
 ok(o["ok"] and "collapsed" in o["message"], f"collapse verb answered ({o})")
 o = said({"url": "u", "verb": "collapse", "where": "overlay", "collapsed": False, "opened": False, "overlay": False})
 ok(not o["ok"], f"collapse with no toolbar on screen is not ok ({o})")
+# the console app (apps/console-droid) with its overlay off: the app itself opens the page
+o = said({"url": "u", "verb": "open", "where": "app", "opened": True, "notified": False, "overlay": False})
+ok(o["ok"] and o["opened"] and "console app" in o["message"] and "browser" not in o["message"], f"opened in the console app ({o})")
 
 # ======================================================================== the phone's overlay verbs (overlay.expand / collapse / open)
 WOKEN.clear()
