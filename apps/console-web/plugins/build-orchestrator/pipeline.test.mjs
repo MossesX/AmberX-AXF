@@ -532,6 +532,45 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     assert.equal(find('ghost').status, 'queued'); assert.equal(find('ghost').pipeline.account || '', '');
     json(pipe('unqueue', 'ghost', '--json'));
   });
+  t('e2e double dispatch (Nov 13 2026): a live session blocks a second launch and the self-check never releases it', () => {
+    const pipeWith = (extra, ...a) => { const r = spawnSync(process.execPath, [join(HERE, 'pipeline.mjs'), ...a], { cwd: ROOT, env: { ...env, ...extra }, encoding: 'utf8', timeout: 120000 }); if (r.status !== 0) throw new Error(`pipeline ${a.join(' ')} failed (${r.status}):\n${r.stdout}\n${r.stderr}`); return r; };
+    const launches = () => readFileSync(join(tmp, 'launches.log'), 'utf8').split('\n').filter((l) => /--name dup /.test(l)).length;
+    orch('act', JSON.stringify({ action: 'add', id: 'dup', title: 'Dup', steps: [{ text: 'one step', model: 'Opus', estimate: '10 min' }] }));
+    json(pipe('queue', 'dup', '--json'));
+    mkdirSync(join(wtRoot, 'dup'), { recursive: true });
+    const old = new Date(Date.now() - 3600e3).toISOString();
+    // (1) the self-check: marked running with no session on record, but tmux axf-dup--fake is alive → kept, session adopted
+    { const st = store(); const d = st.builds.find((b) => b.id === 'dup'); d.status = 'running'; d.pipeline = { ...d.pipeline, account: 'w-pro', session: '', slot: 'hl-gone', launchedAt: old }; writeFileSync(storeFile, JSON.stringify(st)); }
+    let r = json(pipeWith({ AXF_BUILD_LOCK_TMUX: 'axf-dup--fake' }, 'selfcheck', '--json'));
+    assert.ok(!r.fixes.some((f) => /requeued dup/.test(f)), r.fixes.join('; '));
+    assert.equal(find('dup').status, 'running'); assert.equal(find('dup').pipeline.session, 'axf-dup--fake');
+    // (2) released too early (back in the Queue) while a renamed duplicate session is alive → the tick refuses to launch it again
+    { const st = store(); const d = st.builds.find((b) => b.id === 'dup'); d.status = 'queued'; d.pipeline = { ...d.pipeline, account: '', session: '', slot: '' }; writeFileSync(storeFile, JSON.stringify(st)); }
+    const before = launches();
+    r = json(pipeWith({ AXF_BUILD_LOCK_TMUX: 'axf-dup--fake-201500,axf-dupe-other--x' }, 'tick', '--json'));
+    assert.ok(!r.launched.some((l) => l.id === 'dup'), 'no second launch'); assert.equal(launches(), before);
+    assert.ok(r.plan.waits.some((w) => w.id === 'dup' && /already has a live session: tmux axf-dup--fake-201500/.test(w.why)), JSON.stringify(r.plan.waits));
+    assert.ok(!r.failed.some((f) => f.id === 'dup'), 'a gated launch is not a launch failure');
+    assert.equal(find('dup').status, 'running', 'the live session is adopted'); assert.equal(find('dup').pipeline.session, 'axf-dup--fake-201500');
+    // (3) a fresh lock alone (a launch waiting in the agent-slots queue: no tmux yet) also blocks the launch
+    { const st = store(); const d = st.builds.find((b) => b.id === 'dup'); d.status = 'queued'; d.pipeline = { ...d.pipeline, session: '' }; writeFileSync(storeFile, JSON.stringify(st)); }
+    writeFileSync(join(wtRoot, 'dup', '.axf-build.lock'), JSON.stringify({ $axf: 'build-lock@1', build: 'dup', session: '', beat: new Date().toISOString() }));
+    r = json(pipe('tick', '--json'));
+    assert.ok(!r.launched.some((l) => l.id === 'dup')); assert.equal(launches(), before); assert.equal(find('dup').status, 'queued');
+    assert.ok(r.plan.waits.some((w) => w.id === 'dup' && /lock launching/.test(w.why)));
+    // (4) a stale lock expires: the dispatcher launches once and writes a fresh lock with the session name
+    writeFileSync(join(wtRoot, 'dup', '.axf-build.lock'), JSON.stringify({ $axf: 'build-lock@1', build: 'dup', session: 'axf-dup--old', beat: old }));
+    r = json(pipe('tick', '--json'));
+    assert.deepEqual(r.launched.filter((l) => l.id === 'dup').length, 1, JSON.stringify({ waits: r.plan.waits, failed: r.failed })); assert.equal(launches(), before + 1);
+    const lk = JSON.parse(readFileSync(join(wtRoot, 'dup', '.axf-build.lock'), 'utf8'));
+    assert.equal(lk.build, 'dup'); assert.equal(lk.session, 'axf-dup--fake'); assert.equal(lk.expired, old);
+    assert.equal(json(pipe('tick', '--json')).launched.filter((l) => l.id === 'dup').length, 0, 'the next tick never launches it twice');
+    // the session ends: the lock goes with it
+    writeFileSync(join(hdir, 'events.jsonl'), readFileSync(join(hdir, 'events.jsonl'), 'utf8') + JSON.stringify({ event: 'session-end', session: find('dup').pipeline.session, name: 'dup', exit: 0, at: new Date().toISOString() }) + '\n');
+    json(pipe('tick', '--json'));
+    assert.ok(!existsSync(join(wtRoot, 'dup', '.axf-build.lock')), 'lock released at session end');
+    if (find('dup').status === 'queued') json(pipe('unqueue', 'dup', '--json'));
+  });
   t('e2e hold / release / archive / delete / restore, one and many at once (bulk select)', () => {
     for (const id of ['h1', 'h2', 'h3']) { orch('act', JSON.stringify({ action: 'add', id, title: id.toUpperCase(), steps: [{ text: `do ${id}`, model: 'Opus', estimate: '20 min' }] })); json(pipe('queue', id, '--json')); }
     let r = json(pipe('hold', 'h1', 'h2', '--why', 'waiting on Brett', '--by', 'brett', '--json'));

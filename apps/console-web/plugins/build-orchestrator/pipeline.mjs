@@ -81,6 +81,7 @@ import { activeProject, readProjects } from '../../../../framework/cli/projects.
 import { loadUpgradePolicy, settingsFile as claudeSettingsFile } from '../../../../framework/cli/upgrade-policy.mjs';
 import * as slots from '../../../../framework/cli/agent-slots.mjs';
 import { issue as issueDispatch } from '../../../../framework/cli/dispatch-gate.mjs';
+import * as lock from '../../../../framework/cli/build-lock.mjs';
 import { shipLanded } from '../../../../framework/cli/shipped.mjs';
 import { crewSay } from '../../../../framework/cli/crew-say.mjs';
 import { normPriority } from '../../../../framework/core/build-priority.mjs';
@@ -415,6 +416,8 @@ export function intake({ max = MAX_SPLITS_PER_TICK, alert = () => {} } = {}) {
 // ------------------------------------------------------------------ launches
 
 const worktreesRoot = (env = process.env) => env.AXF_PIPELINE_WORKTREES || '/root/axf-builds';
+// tests that switch tmux off for agent slots (AXF_SLOTS_TMUX=off) switch it off for the build lock too
+const lockEnv = (env) => (env.AXF_SLOTS_TMUX === 'off' && env.AXF_BUILD_LOCK_TMUX == null ? { ...env, AXF_BUILD_LOCK_TMUX: 'off' } : env);
 function git(cwd, ...a) { return spawnSync('git', a, { cwd, encoding: 'utf8', timeout: 180e3 }); }
 
 /** The build's worktree (made when missing): its own branch claude/<id> from origin/main, node_modules linked from the main checkout. */
@@ -498,6 +501,9 @@ export function briefFor(b, rules, { account, model, kind = '' }) {
 /** Start one headless session for a queued build on an account. */
 export function launch(b, { account, model, kind = '' }, { rules, env = process.env, launcher = env.AXF_PIPELINE_LAUNCHER || join(REPO_ROOT, 'deploy', 'claude-headless.sh') } = {}) {
   const { dir } = ensureWorktree(b.id, env);
+  // the dispatch gate (build-lock@1): never a second session on a build or its worktree. Throws code 'live' (not a
+  // launch failure) while a tmux session, a claude pid or a fresh lock says the build is still running.
+  lock.acquire(b.id, { dir, account, by: 'dispatcher', env: lockEnv(env) });
   const briefFile = join(dir, '.axf-brief.md');
   writeFileSync(briefFile, `${briefFor(b, rules, { account, model, kind })}\n`);
   // the one way in: a dispatch token for this build only, spent by the launcher when the session starts
@@ -505,11 +511,17 @@ export function launch(b, { account, model, kind = '' }, { rules, env = process.
   const key = modelKey(model) || 'opus';
   const args = ['--name', b.id, '--account', account, '--brief', '.axf-brief.md', '--log', `${b.id}.log`, '--', '--model', MODEL_IDS[key], ...CLAUDE_ARGS];
   const e = { ...env, AXF_DISPATCH_TOKEN: token, AXF_SURFACE: 'pipeline', AXF_MODEL: key, AXF_BUILD_ID: b.id, AXF_CLAUDE_ACCOUNT: account, AXF_PRIORITY: slots.levelFor ? (['P0', 'P1', 'P2', 'P3'].includes(effectivePriority(b)) ? { P0: 'urgent', P1: 'high', P2: 'normal', P3: 'low' }[effectivePriority(b)] : 'normal') : 'normal' };
-  const r = spawnSync('bash', [launcher, ...args], { cwd: dir, encoding: 'utf8', timeout: 180e3, env: e });
+  let r;
+  try { r = spawnSync('bash', [launcher, ...args], { cwd: dir, encoding: 'utf8', timeout: 180e3, env: e }); }
+  catch (err) { lock.release(b.id, { dir }); throw err; }
   const text = `${r.stdout || ''}\n${r.stderr || ''}`;
   const session = /started (axf-\S+) in/.exec(text)?.[1] ?? /queued at position \d+ \((hl-[a-z0-9-]+)/.exec(text)?.[1] ?? '';
   const slot = /\((hl-[a-z0-9-]+)/.exec(text)?.[1] ?? '';
-  if (r.status !== 0 || (!session && !/queued at position|queued for look approval/.test(text))) throw new Error(`launcher exit ${r.status}: ${str(text.trim().split('\n').filter(Boolean).pop() || 'no output', 300)}`);
+  if (r.status !== 0 || (!session && !/queued at position|queued for look approval/.test(text))) {
+    lock.release(b.id, { dir });
+    throw new Error(`launcher exit ${r.status}: ${str(text.trim().split('\n').filter(Boolean).pop() || 'no output', 300)}`);
+  }
+  lock.beat(b.id, { dir, session });
   return { dir, session, slot, queuedInSlots: /queued at position/.test(text), lookWait: /queued for look approval/.test(text), out: text.trim().slice(-600) };
 }
 
@@ -524,6 +536,13 @@ function tmuxHas(name) {
   if (process.env.AXF_SLOTS_TMUX === 'off') return null;
   const r = spawnSync('tmux', ['has-session', '-t', `=${name}`], { encoding: 'utf8' });
   return r.error ? null : r.status === 0;
+}
+
+/** The build's worktree folder (where its lock lives). */
+export const worktreeOf = (id, env = process.env) => join(worktreesRoot(env), id);
+/** Anything alive for this build (build-lock@1: tmux axf-<id>*, claude pids in its worktree, a fresh lock). */
+export function buildLive(id, { env = process.env, useLock = true } = {}) {
+  return lock.liveness(id, { dir: worktreeOf(id, env), useLock, env: lockEnv(env) });
 }
 
 /** Running builds whose session ended: { id, outcome, status, exit }. */
@@ -542,12 +561,19 @@ export function checkEnds({ alert = () => {}, env = process.env } = {}) {
     else {
       // no end event: the session may have died with tmux (a reboot, a kill). After a grace period, gone = a crash.
       const alive = tmuxHas(b.pipeline.session);
-      if (alive !== false || Date.now() - Date.parse(b.pipeline.launchedAt || 0) < GONE_GRACE_MS) continue;
+      if (alive !== false || Date.now() - Date.parse(b.pipeline.launchedAt || 0) < GONE_GRACE_MS) {
+        if (alive) lock.beat(b.id, { dir: worktreeOf(b.id, env), session: b.pipeline.session });
+        continue;
+      }
+      // its own tmux name is gone: dead only when no other session (a renamed duplicate) or claude pid is alive either
+      const l = buildLive(b.id, { env, useLock: false });
+      if (l.live) { logLine({ event: 'still-alive', build: b.id, session: b.pipeline.session, sessions: l.sessions, pids: l.pids }); continue; }
       exit = 1;
     }
     const r = P.endOutcome(b, { exit, account: b.pipeline.account, session: b.pipeline.session }, settings);
     if (settled) { r.outcome = 'finished'; r.status = b.status; r.run = { ...r.run, outcome: 'finished' }; r.note = `Session ${b.pipeline.session} on ${b.pipeline.account || '?'} ended (exit ${exit}); the build was already ${b.status}.`; }
     setPipeline(b.id, { lastRun: r.run, session: '', slot: '', note: r.outcome === 'finished' ? '' : r.note }, { status: r.status, note: r.note, action: 'pipeline:end' });
+    lock.release(b.id, { dir: worktreeOf(b.id, env) });
     alert(r.outcome === 'failed' ? 'failed' : 'ended', { id: b.id, title: b.title, outcome: r.outcome, note: r.note, account: b.pipeline.account });
     logLine({ event: 'ended', build: b.id, outcome: r.outcome, exit, account: b.pipeline.account, session: b.pipeline.session });
     if (r.outcome === 'failed') crewSay('dispatcher', 'failed', `${b.id} failed: ${r.note}`, { ref: b.id });
@@ -578,7 +604,7 @@ export function makeConsole(env = process.env) {
  * running nor queued (a launch that never started, a slot that was cleared). After the grace period they go back to the
  * Queue (the dispatcher starts them again) and their account count drops. Builds with a session are checkEnds()'s.
  */
-export function reapBuilds({ sl = slotsNow(), now = Date.now() } = {}) {
+export function reapBuilds({ sl = slotsNow(), now = Date.now(), env = process.env } = {}) {
   if (sl.unavailable) return [];
   const held = new Set([...(sl.running ?? []), ...(sl.queue ?? [])].flatMap((x) => [x.id, x.session].filter(Boolean)));
   const out = [];
@@ -586,6 +612,14 @@ export function reapBuilds({ sl = slotsNow(), now = Date.now() } = {}) {
     const p = b.pipeline;
     if (!(b.status === 'running' || b.status === 'waiting') || !p?.account || p.session) continue;
     if ((p.slot && held.has(p.slot)) || now - Date.parse(p.launchedAt || p.dispatchedAt || b.updatedAt || 0) < GONE_GRACE_MS) continue;
+    // confirm it is really dead (tmux + claude pids, not the lock: a lock with no session behind it is what we reap)
+    const l = buildLive(b.id, { env, useLock: false });
+    if (l.live) {
+      if (l.sessions[0]) setPipeline(b.id, { session: l.sessions[0] }, { note: `Self-check: ${b.id} had no session on record but ${l.sessions[0]} is alive: kept running and tracking it.`, action: 'pipeline:adopt' });
+      logLine({ event: 'reap-skipped-alive', build: b.id, sessions: l.sessions, pids: l.pids });
+      continue;
+    }
+    lock.release(b.id, { dir: worktreeOf(b.id, env) });
     const note = `Self-check: ${b.id} was marked running on ${p.account} with no session${p.slot ? ` and agent slot ${p.slot} gone` : ''}: released and back in the Queue.`;
     setPipeline(b.id, { account: '', slot: '', session: '', note: 'released by the self-check (nothing ran): back in the Queue' }, { status: 'queued', note, action: 'pipeline:reap' });
     logLine({ event: 'reaped', build: b.id, account: p.account, slot: p.slot || '' });
@@ -620,7 +654,7 @@ export function selfCheck({ reason = 'on demand', by = 'pipeline', env = process
     for (const c of r.claims) fixes.push(`released ${c.account || '?'} slot held by ended session ${c.session}`);
     for (const n of r.limits) fixes.push(`cleared ${n}'s expired limit`);
   } catch (e) { logLine({ event: 'self-check-reap-failed', error: str(e.message, 300) }); }
-  for (const b of reapBuilds()) fixes.push(`requeued ${b.id} (marked running on ${b.account}, nothing ran)`);
+  for (const b of reapBuilds({ env })) fixes.push(`requeued ${b.id} (marked running on ${b.account}, nothing ran)`);
   const store = loadStore(); const settings = loadSettings();
   const read = accountsRead(store, settings, env);
   if (read.source === 'host') writeHostAccounts(read.rows, read.at || nowIso());
@@ -673,7 +707,18 @@ export function tick({ env = process.env } = {}) {
     for (const o of options) {
       l = o;
       try { r = launch(b, l, { rules, env }); break; }
-      catch (e) { lastErr = e; tried.push(l.account); logLine({ event: 'launch-refused', build: b.id, account: l.account, error: str(e.message, 300) }); }
+      catch (e) {
+        if (e.code === 'live') { lastErr = e; break; } // the build itself is busy: no other account may take it either
+        lastErr = e; tried.push(l.account); logLine({ event: 'launch-refused', build: b.id, account: l.account, error: str(e.message, 300) });
+      }
+    }
+    if (!r && lastErr?.code === 'live') {
+      const lv = lastErr.liveness ?? {};
+      plan.waits.push({ id: b.id, why: str(lastErr.message, 300) });
+      logLine({ event: 'launch-gated', build: b.id, sessions: lv.sessions ?? [], pids: lv.pids ?? [], lock: lv.lockFresh ? lv.lock?.session || 'launching' : '' });
+      // a Queued build with a live tmux session was released too early: put it back to running on that session
+      if (b.status === 'queued' && lv.sessions?.[0]) setPipeline(b.id, { session: lv.sessions[0] }, { status: 'running', note: `Dispatch gate: ${b.id} still has ${lv.sessions[0]} alive: not launched again, tracking that session.`, action: 'pipeline:adopt' });
+      continue;
     }
     try {
       if (!r) throw lastErr ?? new Error('no account accepted the launch');
