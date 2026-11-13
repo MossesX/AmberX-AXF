@@ -14,7 +14,8 @@
  *   memory caps; only Brett's own signed-in console can change it (the server answers canEdit). The banner chip and the
  *   queue title show "builds 7/8" next to the slots.
  *
- * Polls GET /api/plugins/agent-slots/status every 5 s while a consumer is on screen.
+ * Polls GET /api/plugins/agent-slots/status every 5 s while a consumer is on screen. The server judges `used` and
+ * `running` by the live truth (GET live, framework/cli/live-truth.mjs): only sessions a claude process really runs in.
  */
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import { Button, Chip, Container, Icon, PriorityTag, SelectField, TextField, useRuntime } from '@console/axf/react';
@@ -39,7 +40,9 @@ interface HardItem { kind: 'session' | 'claude' | 'setup' | 'reserved'; name: st
 interface HardLimit { max: number; live: number | null; free: number | null; source: string; at: string | null; items: HardItem[]; canEdit: boolean; error?: string
   limit: { maxBuilds: number; cpuQuotaPct: number; memoryMaxGb: number; memoryHighGb: number; tasksMax: number; dockerCpus: number; dockerMemoryGb: number; dockerImages: string; setBy?: string; setAt?: string }
   slice: { name: string; memoryGb?: number; memoryMaxGb?: number | null; cpuQuotaPct?: number | null; tasks?: number; active?: boolean } }
-interface Status { used: number; cap: number; free: number; queued: number; hard?: Hard; running: Entry[]; queue: Entry[]; heavy: { used: number; cap: number }; memory: { availGb: number | null; swapMb: number | null; floorGb: number }; guard: { tripsLastHour: number }; settings: Settings; error?: string }
+interface Status { used: number; cap: number; free: number; queued: number; hard?: Hard; running: Entry[]; queue: Entry[]; heavy: { used: number; cap: number }; memory: { availGb: number | null; swapMb: number | null; floorGb: number }; guard: { tripsLastHour: number }; settings: Settings; error?: string;
+  /** live-truth@1: `used` and `running` count only sessions a claude process really runs in; `stale` = slot entries without one */
+  live?: { seen: boolean; fresh: boolean; ageSec?: number | null }; stale?: Entry[] }
 
 const api = pluginApi(FOLDER, 'Agent cap', { unavailable: 'The Agent cap plugin is switched off or its server part is not running.' });
 
@@ -69,6 +72,9 @@ function useStatus() {
   return useSyncExternalStore(subscribe, snapshot);
 }
 
+/** " (as of 40s ago)" / " (VPS not seen)" when the live truth is not fresh; '' when it is. */
+const liveNote = (s: Status) => (!s.live || s.live.fresh ? '' : s.live.seen ? ` (as of ${s.live.ageSec ?? '?'}s ago)` : ' (VPS not seen)');
+
 const ago = (iso?: string) => {
   if (!iso) return '';
   const s = Math.max(0, Math.round((Date.now() - Date.parse(iso)) / 1000));
@@ -84,7 +90,7 @@ function SummaryChip() {
   const full = status.used >= status.cap || (hard != null && (hard.live ?? 0) >= hard.max);
   return (
     <span className={`axp-slots__summary${full ? ' is-full' : ''}`} title={`Headless agents: ${status.used} of ${status.cap} slots in use${status.queued ? `, ${status.queued} waiting` : ''}${hard ? `; VPS hard limit: ${hard.live} of ${hard.max} builds really running` : ''} (Settings → Plugins → Agent cap)`}>
-      · slots {status.used}/{status.cap}{hard ? ` · builds ${hard.live}/${hard.max}` : ''}{status.queued ? ` · ${status.queued} queued` : ''}
+      · slots {status.used}/{status.cap}{hard ? ` · builds ${hard.live}/${hard.max}` : ''}{status.queued ? ` · ${status.queued} queued` : ''}{liveNote(status)}
     </span>
   );
 }
@@ -104,14 +110,14 @@ function QueuePanel() {
   };
   const running = status?.running.filter((r) => r.state !== 'finished') ?? [];
   const hardLine = status?.hard?.max && status.hard.live != null ? ` · VPS limit ${status.hard.live}/${status.hard.max}` : '';
-  const title = status ? `Agent slots ${status.used}/${status.cap}${hardLine}${status.queued ? ` · ${status.queued} waiting` : ''}` : 'Agent slots';
+  const title = status ? `Agent slots ${status.used}/${status.cap}${hardLine}${status.queued ? ` · ${status.queued} waiting` : ''}${liveNote(status)}` : 'Agent slots';
   return (
     <Container title={title} icon="layers" className="axp-slots">
       {error && <p className="fx-small" role="alert"><Icon name="alert" size={14} /> {error}</p>}
       {status && (
         <>
           <p className="fx-small fx-muted axp-slots__meta">
-            Heavy steps {status.heavy.used}/{status.heavy.cap} · memory {status.memory.availGb ?? '?'} GB free (floor {status.memory.floorGb} GB){status.memory.swapMb ? ` · swap ${status.memory.swapMb} MB` : ''}
+            {status.stale?.length ? `${status.stale.length} slot entr${status.stale.length === 1 ? 'y' : 'ies'} with no live session (not counted) · ` : ''}Heavy steps {status.heavy.used}/{status.heavy.cap} · memory {status.memory.availGb ?? '?'} GB free (floor {status.memory.floorGb} GB){status.memory.swapMb ? ` · swap ${status.memory.swapMb} MB` : ''}
           </p>
           {status.queue.length ? (
             <ol className="axp-slots__list" aria-label="Waiting for a slot">

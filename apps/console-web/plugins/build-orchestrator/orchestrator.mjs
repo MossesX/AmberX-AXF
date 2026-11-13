@@ -28,6 +28,8 @@
  *   --json on any command prints JSON (the console server uses this).
  */
 import { existsSync, mkdirSync, readFileSync, renameSync, writeFileSync } from 'node:fs';
+import { read as readLiveTruth } from '../../../../framework/cli/live-truth.mjs';
+import { view as truthView } from '../../../../framework/plan/live-truth-core.mjs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from './web/orchestrator-core.mjs';
@@ -108,7 +110,12 @@ async function main(argv) {
   const [cmd = 'list', ...rest] = args;
   const s = load(['next', 'brief'].includes(cmd) ? rest[0] : '');
   if (cmd === 'where') return out({ ok: true, file: trackerFile() }, trackerFile());
-  if (cmd === 'list' || cmd === 'state') return out({ ok: true, state: s, upgradePolicy: upgradePolicy() }, s.builds.filter((b) => !b.hidden && b.status !== 'archived').map((b) => line(b, s.rules)).join('\n') || 'No builds.');
+  if (cmd === 'list' || cmd === 'state') {
+    // one source of truth (live-truth@1): a record that says running with no live session on the VPS shows as what it is
+    let lt = null; try { lt = readLiveTruth({ builds: s.builds }); } catch { lt = null; }
+    const shown = lt?.seen ? { ...s, builds: s.builds.map((b) => truthView(b, lt)) } : s;
+    return out({ ok: true, state: shown, upgradePolicy: upgradePolicy(), live: lt ? { seen: lt.seen, fresh: lt.fresh, count: lt.count, active: lt.builds.active, at: lt.at, ageSec: lt.ageSec } : null }, shown.builds.filter((b) => !b.hidden && b.status !== 'archived').map((b) => line(b, s.rules)).join('\n') || 'No builds.');
+  }
   if (cmd === 'next') {
     const b = rest[0] ? s.builds.find((x) => x.id === rest[0]) : s.builds.find((x) => !x.hidden && !['built', 'complete', 'archived'].includes(x.status));
     if (!b) return out({ ok: true, next: null }, 'Nothing left to build.');

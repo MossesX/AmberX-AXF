@@ -4,7 +4,7 @@ process.env.AXF_CREW_SAY ??= 'off'; // group-chat posts (crew-say.mjs) stay out 
 process.env.AXF_BUILD_LIMIT ??= 'off'; // the hard build limit counts the VPS's real builds: keep these tests off it (check-build-limit.mjs covers it)
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
+import { chmodSync, existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -503,6 +503,25 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     writeFileSync(join(tmp, 'plain.md'), 'Fix the thing.\n');
     const h3 = spawnSync('bash', [join(ROOT, 'deploy/claude-headless.sh'), '--name', 'build-feat-x', '--brief', join(tmp, 'plain.md'), '--log', 'x.log', '--', '-p'], { cwd: tmp, env, encoding: 'utf8', timeout: 60000 });
     assert.equal(h3.status, 3); assert.match(h3.stdout, /build launch outside the orchestrator/);
+  });
+  t('e2e live truth: a record marked running with no live session on the VPS is never in Active; slots count only live sessions', () => {
+    // the console container reads what the host published (live-truth@1): alpha runs, beta's session is gone
+    const f = join(slotsDir, 'live.json');
+    writeFileSync(f, JSON.stringify({ $axf: 'live-truth@1', at: new Date().toISOString(), host: 'vps', seen: true, count: 1,
+      sessions: [{ session: find('alpha').pipeline.session, build: 'alpha', state: 'running', startedAt: new Date().toISOString(), registered: true }],
+      builds: { running: [{ id: 'alpha', sessions: [find('alpha').pipeline.session] }], queued: [], starting: [], active: ['alpha'] },
+      stale: [{ id: 'beta', was: 'running', status: 'pending', why: 'no live session runs it (paused, worktree kept)' }], slots: { used: 1, cap: 8, queued: 0 } }));
+    try {
+      const active = json(pipe('tab', 'active', '--json')).rows.map((x) => x.id);
+      assert.deepEqual(active, ['alpha'], 'only the build a live session runs');
+      const s = json(pipe('status', '--json'));
+      assert.equal(s.slots.used, 1); assert.equal(s.live.count, 1); assert.deepEqual(s.live.stale.map((x) => x.id), ['beta']);
+      const beta = Object.values(s.tabs).flat().find((x) => x.id === 'beta'); assert.equal(beta.status, 'pending'); assert.equal(beta.stale.was, 'running');
+      assert.equal(find('beta').status, 'running', 'reads never write: the dispatcher settles it on the host');
+      assert.equal(json(pipe('live', '--json')).live.count, 1);
+      const o = json(orch('state', '--json')); assert.equal(o.state.builds.find((b) => b.id === 'beta').status, 'pending'); assert.deepEqual(o.live.active, ['alpha']);
+    } finally { rmSync(f, { force: true }); }
+    assert.deepEqual(json(pipe('tab', 'active', '--json')).rows.map((x) => x.id).sort(), ['alpha', 'beta'], 'no truth published: the records stand');
   });
   t('e2e request: every other path files a build with the orchestrator and queues it; route api is the per-build override', () => {
     const r = json(pipe('request', '--title', 'Fix the health check: mosh server', '--detail', 'Install mosh.', '--priority', 'P1', '--queue', '--by', 'health-check', '--json'));

@@ -5,7 +5,7 @@ framework/cli/agent-slots.mjs, so the VPS launcher (deploy/claude-headless.sh), 
 and one set of rules (the store is in the hub's shared data, mounted in this container at /projects). Nothing here
 starts a session: the queue starts itself on the VPS when a slot frees.
 
-Routes: GET status · GET/PUT settings · POST queue/{id}/up · POST queue/{id}/cancel · GET/PUT hard-limit.
+Routes: GET status (used / running judged by the live truth, framework/cli/live-truth.mjs) · GET live · GET/PUT settings · POST queue/{id}/up · POST queue/{id}/cancel · GET/PUT hard-limit.
 
 Hard build limit (build-limit@1, framework/cli/build-limit.mjs, Nov 12 2026): the VPS refuses the N+1st headless build
 whatever the queue thinks, and runs every build in axf-builds.slice (CPU / memory caps). GET hard-limit = the limit, live
@@ -38,6 +38,7 @@ ROOT = Path(__file__).resolve().parents[5]  # the repo root (/axf in the console
 CLI = ROOT / "framework" / "cli" / "agent-slots.mjs"
 LIMIT_CLI = ROOT / "framework" / "cli" / "build-limit.mjs"
 LIMIT_KEYS = {"maxBuilds", "cpuQuotaPct", "memoryMaxGb", "memoryHighGb", "tasksMax", "dockerCpus", "dockerMemoryGb", "dockerImages", "reserveSec", "setupSec"}
+TRUTH_CLI = ROOT / "framework" / "cli" / "live-truth.mjs"
 ID = re.compile(r"^[A-Za-z0-9-]{1,80}$")
 SETTING_KEYS = {"maxAgents", "maxHeavy", "minFreeGb", "closeFinishedAfterSec", "pollSec", "priorityRules", "guardWarnTrips", "swapWarnMb", "swapWarnMin"}
 CACHE_S = 3
@@ -50,8 +51,33 @@ def _run(*args: str, timeout: int = 20) -> tuple[int, str, str]:
     return p.returncode, p.stdout.strip(), p.stderr.strip()
 
 
+def live() -> dict[str, Any]:
+    """What really runs (live-truth@1): the host's published look at tmux + claude processes + agent slots."""
+    try:
+        p = subprocess.run(["node", str(TRUTH_CLI), "status", "--json"], cwd=str(ROOT), capture_output=True, text=True, timeout=20)
+        return json.loads(p.stdout) if p.returncode == 0 and p.stdout.strip() else {"seen": False, "error": (p.stderr or "no answer")[-400:]}
+    except (OSError, subprocess.TimeoutExpired, json.JSONDecodeError) as e:
+        return {"seen": False, "error": f"{type(e).__name__}: {e}"[:400]}
+
+
+def with_truth(value: dict[str, Any], truth: dict[str, Any]) -> dict[str, Any]:
+    """The slot meter counts only what the live truth says runs (Brett, Nov 12 2026: one source of truth). A slot entry
+    with no live session (killed, crashed, finished) leaves `running`; `stale` lists them. Unseen truth: unchanged."""
+    if "error" in value or not truth.get("seen"):
+        return {**value, "live": {"seen": False, "fresh": False}}
+    alive = {s.get("session") for s in truth.get("sessions", [])}
+    running = [r for r in value.get("running", []) if r.get("session") in alive]
+    stale = [r for r in value.get("running", []) if r.get("state") in ("running", "starting") and r.get("session") not in alive]
+    used = int(truth.get("count") or 0)
+    cap = int(value.get("cap") or 0)
+    summary = {k: truth.get(k) for k in ("seen", "fresh", "at", "ageSec", "count", "source")}
+    summary["sessions"] = truth.get("sessions", [])
+    return {**value, "used": used, "free": max(0, cap - used), "running": running, "stale": stale, "live": summary}
+
+
 def status(fresh: bool = False) -> dict[str, Any]:
-    """The cap, what holds a slot, the queue, the heavy lock, memory (cached 3 s: the banner polls every 4 s)."""
+    """The cap, what holds a slot (judged by the live truth), the queue, the heavy lock, memory (cached 3 s: the banner
+    polls every 4 s)."""
     with _lock:
         if not fresh and _cache["value"] is not None and time.time() - _cache["at"] < CACHE_S:
             return _cache["value"]
@@ -60,6 +86,7 @@ def status(fresh: bool = False) -> dict[str, Any]:
             value = json.loads(out) if code == 0 and out else {"error": (err or "no answer")[-400:]}
         except (OSError, subprocess.TimeoutExpired, json.JSONDecodeError) as e:
             value = {"error": f"{type(e).__name__}: {e}"[:400]}
+        value = with_truth(value, live())
         _cache.update(at=time.time(), value=value)
         return value
 
@@ -120,6 +147,12 @@ def ensure_health() -> bool:
 def get_status() -> dict[str, Any]:
     ensure_health()
     return status()
+
+
+@router.get("/live")
+def get_live() -> dict[str, Any]:
+    """live-truth@1: the sessions that really run, the builds they work on, the stale records."""
+    return live()
 
 
 @router.get("/settings")
@@ -222,6 +255,8 @@ class Service:
 
     def hard_limit(self) -> dict[str, Any]:
         return hard_limit()
+    def live(self) -> dict[str, Any]:
+        return live()
 
 
 plugin_services.provide(SELF, Service(), FOLDER)

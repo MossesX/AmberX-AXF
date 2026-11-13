@@ -34,6 +34,8 @@ type Account = { name: string; email: string; plan: string; role: string; kind?:
 type Status = {
   ok: boolean; at: string; table: { pending: Row[]; queued: Row[]; building: Row[] }; tabs?: Record<BuildTab, Row[]>; health?: Health; accounts: Account[];
   slots: { used: number; cap: number; free: number; queued: number; unavailable: boolean };
+  /** live-truth@1: what really runs on the VPS (tmux sessions with a claude process); every running count comes from it */
+  live?: { seen: boolean; fresh: boolean; line: string; count: number; ageSec: number | null; stale: { id: string; was: string; status: string; why: string }[] };
   plan: { launches: { id: string; account: string; model: string; phase: string; kind?: string; rule?: string }[]; waits: { id: string; why: string }[]; queue: string[]; idle: { reason: string; kind: string } | null };
   settings: { parallelPerAccount: number; autoQueue: boolean; splitProvider: string; idleAfterMin: number; maxRuns: number; apiOverflow?: boolean; healthEveryMin?: number };
   accountsFrom?: { source: 'host' | 'snapshot' | 'none'; at: string; ageMin: number | null; why: string };
@@ -129,7 +131,7 @@ export function PipelineTab({ api, log, view }: { api: Api; log: (t: string, l?:
     <div className="fx-stack fx-stack--lg">
       {error && <Note tone="warning">{error}</Note>}
       <div className="pl-strip">
-        <span className="pl-stat" title="Agent slots on the VPS (agent-slots@1): sessions running / the cap"><Icon name="layers" size={14} /><b>{s.slots.used}/{s.slots.cap}</b> slots{s.slots.unavailable ? ' (no slots store)' : ''}</span>
+        <span className="pl-stat" title={`Sessions really running on the VPS / the cap (live truth: ${s.live?.line ?? 'unavailable'})`}><Icon name="layers" size={14} /><b>{s.slots.used}/{s.slots.cap}</b> slots{s.slots.unavailable ? ' (no slots store)' : ''}{s.live && !s.live.fresh ? ` (${s.live.seen ? `as of ${s.live.ageSec}s ago` : 'VPS not seen'})` : ''}</span>
         <span className="pl-stat" title="Builds the dispatcher is running"><Icon name="play" size={14} /><b>{s.table.building.length}</b> building</span>
         <span className="pl-stat" title="Builds waiting in the Queue"><Icon name="list" size={14} /><b>{s.table.queued.length}</b> queued</span>
         <span className="pl-stat" title="Builds waiting in Pending for you"><Icon name="clock" size={14} /><b>{s.table.pending.length}</b> pending</span>
@@ -137,6 +139,7 @@ export function PipelineTab({ api, log, view }: { api: Api; log: (t: string, l?:
         {s.settings.autoQueue && <Chip tone="accent">Launch without asking: new builds queue by themselves</Chip>}
         <Switch label="Then any API" text="Subscriptions first; when every subscription account is full or out, an API-key account takes it (billed per token, under its caps)" checked={!!s.settings.apiOverflow} disabled={busy === 'pipeline/settings'} onChange={(on) => act('pipeline/settings', { apiOverflow: on }, `API overflow ${on ? 'on' : 'off'}`)} />
       </div>
+      {s.live?.seen && s.live.stale.length > 0 && <Note tone="info">{s.live.stale.length} record{s.live.stale.length === 1 ? '' : 's'} said running with no live session on the VPS: shown as {[...new Set(s.live.stale.map((x) => x.status))].join(' / ')} (the next dispatcher tick writes it): {s.live.stale.map((x) => x.id).join(', ')}.</Note>}
       {idle && <Note tone={idle.kind === 'stuck' ? 'warning' : 'info'}>{idle.reason}{(idle as { since?: string }).since ? ` (since ${fmtTime((idle as { since?: string }).since ?? '')})` : ''}</Note>}
       {s.plan.launches.length > 0 && <Note tone="success">Next tick starts {s.plan.launches.map((l) => `${l.id} on ${l.account} (${l.model}${l.phase ? `, ${l.phase}` : ''})`).join(', ')}.</Note>}
       {view === 'accounts' && <section className="fx-stack">
