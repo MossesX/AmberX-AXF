@@ -10,7 +10,9 @@ Every route runs the plugin's Node core (ui-manager.mjs --json), the same code t
   PUT  props/{element}/{prop}              body { value, by?, reason? }  set one property to one of its choices and save
   POST reset                               body { element?, prop?, by? }  one property / one element / everything
   POST preview                             body { pending? }  CSS + swaps + patches for a live preview, and the exit summary
+  POST validate                            body { pending }  every problem in a pending document (empty = valid), nothing saved
   POST apply                               body { pending, by?, reason? }  save a pending document as one change
+  GET  schemas                             JSON Schemas of ui-element@1, ui-overrides@1, ui-change@1
   GET  changes?limit=                      the change log (who, when, element, property, old → new)
   POST undo                                body { id, by? }  undo one change-log entry
   GET  catalog | overrides                 what the choices come from · the saved overrides
@@ -104,6 +106,19 @@ def _with_pending(cmd: str, b: dict[str, Any]) -> JSONResponse:
 @router.post("/preview")
 async def preview(request: Request) -> JSONResponse:
     return await run_in_threadpool(_with_pending, "preview", await _body(request))
+
+
+@router.post("/validate")
+async def validate(request: Request) -> JSONResponse:
+    b = await _body(request)
+    if not isinstance(b.get("pending"), dict):
+        return JSONResponse({"error": "validate needs { pending: ui-overrides@1 }", "code": "invalid"}, status_code=400)
+    return await run_in_threadpool(_with_pending, "validate", b)
+
+
+@router.get("/schemas")
+async def schemas() -> JSONResponse:
+    return await run_in_threadpool(_run, "schemas")
 
 
 @router.post("/apply")

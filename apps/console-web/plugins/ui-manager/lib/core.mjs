@@ -77,16 +77,11 @@ export function preview(pending = null, w = world()) {
 /** Apply a whole pending document (the floating window's Apply): one entry listing every change. */
 export function apply(pending, { by = 'brett', reason = '' } = {}, w = world()) {
   const doc = R.normalizeOverrides(pending);
+  const errors = R.overridesErrors(doc, w.elements, w.catalog);
+  if (errors.length) throw new UiManagerError('validation', errors.join('; '));
   for (const [id, props] of Object.entries(doc.elements)) {
-    const e = element(id, w);
-    const all = R.propsOf(e, w.catalog);
-    for (const [pid, v] of Object.entries(props)) {
-      const p = all.find((x) => x.id === pid);
-      if (!p) throw new UiManagerError('validation', `${e.id} has no property ${pid}`);
-      const ok = R.validateValue(p, v);
-      if (!ok.ok) throw new UiManagerError('validation', ok.error);
-      props[pid] = ok.value;
-    }
+    const all = R.propsOf(element(id, w), w.catalog);
+    for (const [pid, v] of Object.entries(props)) props[pid] = R.validateValue(all.find((x) => x.id === pid), v).value;
   }
   const summary = R.summarize(R.diffOverrides(readOverrides(), doc), w.elements, w.catalog);
   const saved = saveOverrides(doc, { by, note: reason });
@@ -100,6 +95,9 @@ export function undo(changeId, { by = 'brett' } = {}) {
   return { changed: true, entry: r.entry, remaining: R.overrideCount(r.doc) };
 }
 export const overrides = () => readOverrides();
+/** Every problem in a pending document (empty = valid), without saving anything. */
+export const validate = (pending, w = world()) => { const errors = R.overridesErrors(pending, w.elements, w.catalog); return { ok: !errors.length, errors }; };
+export const schemas = () => R.uiManagerSchemas();
 export const catalogInfo = (w = world()) => ({ types: Object.keys(w.catalog.types).length, assets: Object.fromEntries(Object.entries(w.catalog.assets).map(([t, a]) => [t, a.length])), active: w.catalog.active, skin: w.catalog.skin, tokenSets: Object.fromEntries(Object.entries(w.catalog.paths).map(([t, p]) => [t, p.length])) });
 
 /** The console's live target snapshot (console-control-targets@1) from a file, for "On screen now" without the UI. */

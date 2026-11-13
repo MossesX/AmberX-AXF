@@ -9,7 +9,9 @@
  *   … set <element> <prop> <value> [--by who] [--reason why]
  *   … reset [<element> [<prop>]] [--by who]           one property, one element, or everything
  *   … preview [--pending file.json]                   CSS + swaps + patches for a live preview, and the exit summary
+ *   … validate --pending file.json                    every problem in a pending document (empty = valid), nothing saved
  *   … apply --pending file.json [--by who]            save a whole pending document (one change-log entry)
+ *   … schemas                                         JSON Schemas of ui-element@1, ui-overrides@1, ui-change@1
  *   … changes [--limit n] | undo <change id>
  *   … catalog                                         what the choices come from
  *   add --json for one JSON result (the server drives it this way); exit 1 on an error with { error, code }.
@@ -45,7 +47,9 @@ try {
     case 'undo': if (!a) throw new core.UiManagerError('invalid', 'undo <change id>'); out(core.undo(a, { by })); break;
     case 'catalog': out(core.catalogInfo()); break;
     case 'overrides': out(core.overrides()); break;
-    default: throw new core.UiManagerError('invalid', 'commands: elements | tree | props | choices | set | reset | preview | apply | changes | undo | catalog | overrides');
+    case 'validate': if (typeof flags.pending !== 'string') throw new core.UiManagerError('invalid', 'validate --pending file.json'); out(core.validate(core.targetsFromFile(flags.pending))); break;
+    case 'schemas': out(core.schemas()); break;
+    default: throw new core.UiManagerError('invalid', 'commands: elements | tree | props | choices | set | reset | preview | validate | apply | changes | undo | catalog | overrides | schemas');
   }
 } catch (e) {
   const code = e instanceof core.UiManagerError ? e.code : 'unexpected';

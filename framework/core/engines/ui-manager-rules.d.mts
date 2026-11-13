@@ -42,7 +42,9 @@ export const ON_SCREEN: 'on-screen';
 export const CATEGORIES: Category[];
 export const CATEGORY_IDS: string[];
 export const TOKEN_TARGETS: Record<string, string>;
+export const TYPE_SELECTORS: Record<string, string>;
 export const ELEMENT_ID: RegExp;
+export function typeSelector(type: string): string;
 export function slug(v: unknown): string;
 export function hash(s: string): string;
 
@@ -64,7 +66,9 @@ export function validateValue(prop: Prop, value: unknown): Validation;
 export function normalizeOverrides(raw: unknown): Overrides;
 export function withOverride(raw: unknown, element: UiElement | string, prop: Prop, value: unknown, meta?: { by?: string; at?: string }): { doc: Overrides; value: Scalar } | { error: string; options?: Option[] };
 export function withoutOverride(raw: unknown, element?: UiElement | string, propId?: string): Overrides;
+export function overridesErrors(raw: unknown, elements: UiElement[], catalog: UiCatalog): string[];
 export function propertyRows(element: UiElement, raw: unknown, catalog: UiCatalog): PropRow[];
+export function uiManagerSchemas(): Record<'ui-element' | 'ui-overrides' | 'ui-change', Record<string, unknown>>;
 export function overrideCount(raw: unknown, elementId?: string): number;
 
 export function selectorOf(e: UiElement): string;

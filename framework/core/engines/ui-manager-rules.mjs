@@ -59,6 +59,11 @@ export const TOKEN_TARGETS = {
 const GROUP_CATEGORY = { Chrome: 'chrome', Navigation: 'chrome', Overlays: 'dialogs', Controls: 'controls', Widgets: 'widgets', Look: 'look', Brand: 'look', Layout: 'look' };
 const LOOK_TYPES = ['color-theme', 'style-theme', 'layout', 'typography', 'density', 'sizing', 'nav-style', 'skin', 'design-package', 'style-package', 'behavior-theme', 'icon-pack', 'branding', 'logo', 'logo-mark', 'animated-logo', 'dock-layout', 'xlayout', 'interface'];
 const WIDGET_TYPES = ['clock', 'search-bar', 'counter', 'badge', 'gauge', 'meter', 'progress', 'status', 'avatar', 'label', 'link', 'theme-switch', 'spacer', 'divider', 'action-button'];
+/** The root class the framework's React components render per asset slot type (axf.css), so a preview rule lands on the real thing. */
+export const TYPE_SELECTORS = {
+  toolbar: '.fx-toolbar', 'tab-group': '.fx-tabs', dialog: '.fx-dialog', popup: '.fx-dropdown', 'context-menu': '.fx-ctx', container: '.fx-card',
+  'nav-menu': '.fx-nav', 'app-menu': '.fx-menubar', slider: '.fx-slider', button: '.fx-btn', banner: '.fx-banner', 'search-bar': '.fx-search', status: '.fx-status', logo: '.fx-brand',
+};
 /** console-control@1 target kinds → category. */
 const TARGET_CATEGORY = { view: 'screens', tab: 'screens', subtab: 'screens', setting: 'settings', button: 'controls', function: 'controls', plugin: 'plugins', grid: 'screens', row: 'screens', step: 'screens', panel: 'screens', scroll: 'screens' };
 /** The --fx-* tokens a component kind reads beyond its own asset (components.ts, axf.css). Open list. */
@@ -87,6 +92,9 @@ const kebab = (p) => String(p).replace(/([a-z])([A-Z])/g, '$1-$2').replace(/\./g
 const uniq = (a) => [...new Set(a)];
 
 /* ================================================================== elements */
+
+/** The CSS selector of every rendered instance of an asset slot type: its component's root class, or the data marker a renderer sets. */
+export const typeSelector = (type) => (TYPE_SELECTORS[type] ? `${TYPE_SELECTORS[type]}, [data-fx-asset="${type}"]` : `[data-fx-asset="${type}"]`);
 
 /** The category an element of this kind belongs to (its own `category` wins when it names one that exists). */
 export function categoryOf(kind, types = {}, declared = '') {
@@ -122,7 +130,7 @@ export function frameworkElements(catalog) {
   for (const [type, spec] of Object.entries(catalog?.types ?? {})) {
     if (type === 'uac-policy' || type === 'help' || type === 'docs' || type === 'book' || type === 'clip' || type === 'demonstration' || type === 'job-type' || type === 'agent-card') continue;
     if (!(catalog.assets?.[type] ?? []).length) continue;
-    out.push(normalizeElement({ id: `asset:${type}`, label: spec.label || humanize(type), kind: type, assetType: type, selector: `[data-fx-asset="${type}"]`, app: 'console' }, catalog.types));
+    out.push(normalizeElement({ id: `asset:${type}`, label: spec.label || humanize(type), kind: type, assetType: type, selector: typeSelector(type), app: 'console' }, catalog.types));
   }
   return out.filter(Boolean);
 }
@@ -289,7 +297,9 @@ export function validateValue(prop, value) {
     return fail('on or off');
   }
   if (prop.kind === 'range') {
-    const n = typeof value === 'number' ? value : typeof value === 'string' && value.trim() !== '' ? Number(value.replace(/[%a-z ]+$/i, '')) : NaN;
+    // a number, or a number followed by its unit ("80 %", "1.5em"); words alone are never a number
+    const m = typeof value === 'string' ? /^\s*(-?\d+(?:\.\d+)?)\s*(%|[a-z]+)?\s*$/i.exec(value) : null;
+    const n = typeof value === 'number' ? value : m ? Number(m[1]) : NaN;
     if (!Number.isFinite(n)) return fail(`a number from ${prop.min} to ${prop.max}`);
     if (n < prop.min || n > prop.max) return fail(`out of range: ${prop.min} to ${prop.max}`);
     return pick(round(n, prop.step));
@@ -336,6 +346,31 @@ export function withoutOverride(raw, element = '', propId = '') {
   if (!propId) delete doc.elements[id];
   else { delete doc.elements[id][propId]; if (!Object.keys(doc.elements[id]).length) delete doc.elements[id]; }
   return doc;
+}
+
+/**
+ * Every problem in a whole overrides document against the elements and the catalog: an unknown element, a property the
+ * element does not have, a value outside its choices. Empty = the document is valid and can be applied as it is.
+ */
+export function overridesErrors(raw, elements, catalog) {
+  const errors = [];
+  if (raw !== null && raw !== undefined && !isObj(raw)) return ['overrides: not an object'];
+  if (isObj(raw) && raw.$axf !== undefined && raw.$axf !== OVERRIDES_FRAME) errors.push(`$axf: must be ${OVERRIDES_FRAME}`);
+  const src = isObj(raw?.elements) ? raw.elements : {};
+  for (const [id, props] of Object.entries(src)) {
+    if (!ELEMENT_ID.test(id)) { errors.push(`elements.${id}: not an element id`); continue; }
+    const e = resolveElement(id, elements);
+    if (!e) { errors.push(`elements.${id}: no such element`); continue; }
+    if (!isObj(props)) { errors.push(`elements.${id}: must be an object of property values`); continue; }
+    const all = propsOf(e, catalog);
+    for (const [pid, v] of Object.entries(props)) {
+      const p = all.find((x) => x.id === pid);
+      if (!p) { errors.push(`elements.${id}.${pid}: ${e.label} has no such property`); continue; }
+      const r = validateValue(p, v);
+      if (!r.ok) errors.push(`elements.${id}.${pid}: ${r.error}`);
+    }
+  }
+  return errors;
 }
 
 /**
@@ -424,6 +459,45 @@ export function undoChange(raw, entry) {
     else doc = withoutOverride(doc, c.element, c.prop);
   }
   return doc;
+}
+
+/* ================================================================== schemas */
+
+const SCALAR_SCHEMA = { oneOf: [{ type: 'string' }, { type: 'number' }, { type: 'boolean' }] };
+/** JSON Schemas (draft 2020-12) of the three frames, for the snapshot in framework/schemas/json and any other port's validator. */
+export function uiManagerSchemas() {
+  const id = (name) => `https://axf.amberx.ai/schemas/${name}.schema.json`;
+  const base = (name, frame, description) => ({ $schema: 'https://json-schema.org/draft/2020-12/schema', $id: id(name), title: frame, description, type: 'object', additionalProperties: false });
+  return {
+    'ui-element': {
+      ...base('ui-element', ELEMENT_FRAME, 'One UI element the UI Manager can select; an On screen now entry is a shortcut { ref } to one of these.'),
+      required: ['$axf', 'id', 'label', 'kind', 'category', 'tokens'],
+      properties: {
+        $axf: { const: ELEMENT_FRAME }, id: { type: 'string', pattern: ELEMENT_ID.source, maxLength: 200 }, label: { type: 'string', maxLength: 120 }, kind: { type: 'string', maxLength: 60 },
+        category: { type: 'string', enum: CATEGORY_IDS.filter((c) => c !== ON_SCREEN) }, assetType: { type: 'string', maxLength: 40 }, address: { type: 'string', maxLength: 400 },
+        selector: { type: 'string', maxLength: 300 }, plugin: { type: 'string', maxLength: 120 }, app: { type: 'string', maxLength: 40 }, screen: { type: 'string', maxLength: 120 },
+        tokens: { type: 'array', maxItems: 60, items: { type: 'string', pattern: '^tokens\\.[a-z]+:[A-Za-z0-9_.-]+$' } },
+      },
+    },
+    'ui-overrides': {
+      ...base('ui-overrides', OVERRIDES_FRAME, 'What was changed through the UI Manager: per element, per property, one value from its predetermined choices. Reset = the key is gone.'),
+      required: ['$axf', 'elements'],
+      properties: {
+        $axf: { const: OVERRIDES_FRAME },
+        elements: { type: 'object', propertyNames: { pattern: ELEMENT_ID.source }, additionalProperties: { type: 'object', propertyNames: { pattern: PROP_ID.source }, additionalProperties: SCALAR_SCHEMA } },
+        updatedAt: { type: 'string', format: 'date-time' }, updatedBy: { type: 'string', maxLength: 80 },
+      },
+    },
+    'ui-change': {
+      ...base('ui-change', CHANGE_FRAME, 'One applied change set of the UI Manager: who, when, and every element property that went from one value to another (a missing from / to = not set).'),
+      required: ['$axf', 'id', 'by', 'at', 'changes', 'undone'],
+      properties: {
+        $axf: { const: CHANGE_FRAME }, id: { type: 'string', pattern: '^ch-[0-9]{1,17}-[a-z0-9-]{1,12}-[a-z0-9]{7}$' }, by: { type: 'string', maxLength: 80 }, at: { type: 'string', format: 'date-time' }, note: { type: 'string', maxLength: 400 },
+        changes: { type: 'array', items: { type: 'object', additionalProperties: false, required: ['element', 'prop'], properties: { element: { type: 'string', pattern: ELEMENT_ID.source }, prop: { type: 'string', pattern: PROP_ID.source }, from: SCALAR_SCHEMA, to: SCALAR_SCHEMA } } },
+        undone: { type: 'boolean' }, undoes: { type: 'string' },
+      },
+    },
+  };
 }
 
 /** The exit summary lines (element label, property label, old → new), ready to show before Apply. */
