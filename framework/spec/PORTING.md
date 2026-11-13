@@ -166,6 +166,13 @@ stays in the Queue, the dispatcher skips it), the `archive` and `deleted` tabs i
 archived builds → archive; soft-deleted → deleted), and the action rules `isHeld`, `canHold`, `isLive`, `canArchive`,
 `canDelete`, `unarchivedStatus`, `actionsFor`, `BUILD_ACTIONS`. Same deferral: no Kotlin twin while Android is on hold.
 
+Nov 13 2026 (build `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu`): step dependencies
+and claims on builds@1 steps (`after`, `claim`; `normAfter`, `normClaim`, `claimLive`, `dependsOn`, `stepBranch`,
+`CLAIM_TTL_MS`), the engine `readySteps` / `expiredClaims` / `claimStep` / `releaseStep`, and the fill planner
+`planFill` / `pickAccount` / `FILL_DEFAULTS` (spec `BUILD-PARALLEL.md`, fixtures `fixtures/build-pipeline-fill.json`).
+Same deferral: the planner runs only in the VPS dispatcher; no Kotlin or Python twin while Android is on hold. A port
+replays the fixture's `ready`, `claims` and `fill` blocks.
+
 ## Deferred: person-only actions, console refresh, UI choices (Nov 7 2026)
 
 Web only (Android on hold), Kotlin twins when the Android side resumes:
