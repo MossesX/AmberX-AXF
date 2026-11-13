@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T21:13:46.666Z",
+ "updatedAt": "2026-11-13T21:14:04.282Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -134752,16 +134752,22 @@
    "title": "Main CI red: test-sandbox profile export leaks onto main",
    "category": "",
    "detail": "Main's CI is red, so the merge queue kicks out every PR with the same failure (\"Build engine sweep (Node)\" → framework/spec/check-profiles.mjs):\n\n  _claude/builds/profiles/test-sandbox/ exists but \"test-sandbox\" is not in framework/plan/profiles.json\n\nThe folder first reached main in 84c62e2e2 (Nov 13 17:18, \"Builds live: test-sandbox-sample-shipped-build added (3 steps) (test-sandbox) [skip ci]\"). project-seed.mjs made the sample build with profiles ['test-sandbox'], and every orchestrator write since then re-exports _claude/builds/profiles/test-sandbox/orchestrator.json, which builds-live publishes to main.\n\nFix: (1) orchestrator / builds-store exports write only registered profiles (framework/plan/profiles.json; test projects such as test-sandbox never get a repo export), (2) delete _claude/builds/profiles/test-sandbox/ from the repo, (3) make check-profiles.mjs say where the folder came from. Then run node framework/spec/check-profiles.mjs and the builds-store checks. Found by auto-land-every-finished-build-lands (s9).\n",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "auto-land",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P0",
    "createdAt": "2026-11-13T21:13:28.338Z",
-   "updatedAt": "2026-11-13T21:13:28.338Z",
+   "updatedAt": "2026-11-13T21:13:31.014Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by auto-land-every-finished-build-lands.",
+     "at": "2026-11-13T21:13:31.014Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": []
