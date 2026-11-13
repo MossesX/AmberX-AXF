@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4337,
- "updatedAt": "2026-11-13T11:34:54.248Z",
+ "rev": 4338,
+ "updatedAt": "2026-11-13T11:35:08.933Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -170144,15 +170144,15 @@
    "title": "Unlink Plan Studio from builds; delete all Plan Studio plans",
    "category": "",
    "detail": "1) Delete every Plan Studio plan (planner.plans), plus a delete action on plans via REST/MCP/CLI/voice (none exists today). 2) Builds must never create, sync or update Plan Studio plans: remove build-plan@1 per-build plans (plan-studio-backfill-12h), any build-todo-sync plan creation, the 'every build goes to Plan Studio' rule in briefs/RULES, and any sync hooks between the builds store and plans. Plan Studio stays as a standalone tool only. Tests: adding/finishing a build creates no plan.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "mcp",
    "pendingId": "unlink-plan-studio-from-builds-delete-all-plan-s",
    "branch": "claude/unlink-plan-studio-from-builds-delete-all-plan-s",
    "pr": "#570",
    "createdAt": "2026-11-12T10:49:12.963Z",
-   "updatedAt": "2026-11-13T11:34:52.972Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-13T11:34:55.593Z",
+   "builtAt": "2026-11-13T11:34:54.213Z",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
@@ -170185,6 +170185,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-unlink-plan-studio-from-builds-delete-all-plan-s--rhonda, own login copy)",
      "at": "2026-11-13T11:25:49.347Z"
+    },
+    {
+     "text": "PR #570. UI Review shots of the Plan Studio editor still owed: the branch is 866 commits behind main with 3 conflicts (plans.mjs, server, plan-core), so they should be taken after the merge queue resolves it. 3 plans Brett made after the wipe were kept.",
+     "at": "2026-11-13T11:34:55.593Z"
     }
    ],
    "approvals": [],
@@ -170204,12 +170208,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T11:24:27.918Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-unlink-plan-studio-from-builds-delete-all-plan-s--rhonda",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-13T11:25:46.013Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-12T10:50:36.976Z",
@@ -170221,7 +170225,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-13T11:25:46.013Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -170230,7 +170234,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-13T11:25:46.013Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -170298,12 +170302,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T11:34:54.213Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T10:50:36.976Z",
-     "updatedAt": "2026-11-12T10:50:36.976Z"
+     "updatedAt": "2026-11-13T11:35:05.724Z"
     }
    ],
    "profiles": [
@@ -170314,17 +170318,17 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": {
     "model": "Opus",
-    "status": "pending",
+    "status": "complete",
     "estimate": "1 h",
     "source": "mcp",
     "planId": "",
     "createdAt": "2026-11-12T10:49:12.963Z",
-    "builtAt": "",
+    "builtAt": "2026-11-13T11:34:54.213Z",
     "prefixSteps": false,
     "stepAt": {
      "st-mwdfft4g011xgy": "2026-11-12T10:50:36.976Z",

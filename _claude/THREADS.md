@@ -781,7 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 06:31 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` merged, note (all) · reconciler
 - 2026-11-13 06:31 UTC · `everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the` → complete, merged, note (all) · reconciler
 - 2026-11-13 06:31 UTC · `full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app` → complete, merged, note (all) · reconciler
 - 2026-11-13 06:31 UTC · `10-minute-steps-the-splitter-cuts-every-build-into-steps-of-10-minutes-or-less` → complete, merged, note (all) · reconciler
@@ -1181,6 +1180,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 11:33 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` → running, note (all) · orchestrator
 - 2026-11-13 11:34 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` note (all) · foreign-write
 - 2026-11-13 11:34 UTC · `unlink-plan-studio-from-builds-delete-all-plan-s` PR #570 (all) · builds-live
+- 2026-11-13 11:35 UTC · `unlink-plan-studio-from-builds-delete-all-plan-s` s3 done, → complete, note (all) · foreign-write
 
 ## Token passes (log)
 
