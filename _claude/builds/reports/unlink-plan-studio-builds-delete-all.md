@@ -1,6 +1,6 @@
 # Unlink Plan Studio from builds; delete all Plan Studio plans
 
-Build `unlink-plan-studio-from-builds-delete-all-plan-s` · Opus · branch `claude/unlink-plan-studio-from-builds-delete-all-plan-s`
+Build `unlink-plan-studio-builds-delete-all` · Opus · branch `claude/unlink-plan-studio-builds-delete-all`
 
 ## Brett said (verbatim)
 
