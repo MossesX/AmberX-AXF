@@ -792,10 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 18:57 UTC · `ui-manager-floating-window-to-select-any` s1 done (all) · orchestrator
-- 2026-11-13 18:57 UTC · `skin-axhub-override-switch-greyed-out` note (all) · orchestrator
-- 2026-11-13 18:57 UTC · `transparency-token-works-every-dialog` note (all) · pipeline
-- 2026-11-13 18:58 UTC · `console-android-app-thin-webview-wrapper` → queued, note (all) · pipeline
 - 2026-11-13 18:58 UTC · `skin-axhub-override-switch-greyed-out` note (all) · claude-voice
 - 2026-11-13 18:58 UTC · `skin-axhub-override-switch-greyed-out` note (all) · claude-voice
 - 2026-11-13 18:58 UTC · `console-android-app-thin-webview-wrapper` s3 done (all) · orchestrator
@@ -1192,6 +1188,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 20:46 UTC · `per-toolbar-settings-fix-failing-chrome` merged, note (all) · reconciler
 - 2026-11-13 20:46 UTC · `auto-land-every-finished-build-lands` note (all) · orchestrator
 - 2026-11-13 20:46 UTC · `landing-auto-resolves-generated-files-no` added (0 steps) (all) · console
+- 2026-11-13 20:46 UTC · `auto-land-every-finished-build-lands` → running, note (all) · pipeline
+- 2026-11-13 20:47 UTC · `auto-land-every-finished-build-lands` branch claude/auto-land-every-finished-build-lands (all) · pipeline
+- 2026-11-13 20:47 UTC · `auto-land-every-finished-build-lands` note (all) · orchestrator
+- 2026-11-13 20:47 UTC · `lander-regenerates-generated-files-clash` added (0 steps) (all) · console
 
 ## Token passes (log)
 
