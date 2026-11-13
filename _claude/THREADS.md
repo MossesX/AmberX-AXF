@@ -792,7 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 19:35 UTC · `land-per-instance-settings-picker` added (0 steps) (all) · console
 - 2026-11-13 19:35 UTC · `land-rename-long-builds-resolve-clash` branch claude/land-rename-long-builds-resolve-clash (all) · pipeline
 - 2026-11-13 19:35 UTC · `land-rename-long-builds-resolve-clash` note (all) · orchestrator
 - 2026-11-13 19:37 UTC · `console-app-part-4-console-side-safe` s3 done (all) · orchestrator
@@ -1192,6 +1191,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 22:20 UTC · `token-registry-skin-editor-live-sandbox` → pending, note (all) · reconciler
 - 2026-11-13 23:38 UTC · `auto-land-merge-main-land-land-mjs-clash` added (0 steps) (all) · console
 - 2026-11-13 23:38 UTC · `auto-land-merge-main-land-land-mjs-clash` → queued, note (all) · console
+- 2026-11-13 23:39 UTC · `auto-land-merge-main-land-land-mjs-clash` added (0 steps) (all) · builds-live
 
 ## Token passes (log)
 
