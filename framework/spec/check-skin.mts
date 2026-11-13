@@ -9,9 +9,10 @@
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
-import { backToSkin, composeLook, composeLookAt, coverageSummary, coverageTable, declarationErrors, globalSkinOf, lookAfterChange, newAppLook, normalizeAppLook, overriddenSlots, setLookSlot, setSkinColorTheme, skinColorOf, skinColorTheme, SKIN_COLOR_SLOT, normalizeSkin, normalizeSkinScope, partElements, partsErrors, partsTypes, resolveLookSkin, resolveSkinChain, scopeEntries, scopeState, setInheritSkin, setScopeOverride, setScopeSkin, skinCoverage, skinCoverageSummary, skinCovers, skinPartsTypes, skinScopeChain, skinScopeKey, skinScopeKind, skinScopeSelector, skinUncovered, uncoveredTypes, parseAppLook, pickSkin, restoreAppDefault, setUseSkin, skinErrors, skinFromDesignPackage, skinSlots, snapshotLook, undoRestore, type AppLookDocument, type AppLookStore } from '../core/engines/skin';
+import { backToSkin, composeLook, composeLookAt, coverageSummary, coverageTable, declarationErrors, globalSkinOf, hubOnlyLook, lookAfterChange, newAppLook, normalizeAppLook, overriddenSlots, setLookSlot, setSkinColorTheme, skinColorOf, skinColorTheme, SKIN_COLOR_SLOT, normalizeSkin, normalizeSkinScope, partElements, partsErrors, partsTypes, resolveLookSkin, resolveSkinChain, scopeEntries, scopeState, setInheritSkin, setScopeOverride, setScopeSkin, skinCoverage, skinCoverageSummary, skinCovers, skinPartsTypes, skinScopeChain, skinScopeKey, skinScopeKind, skinScopeSelector, skinUncovered, uncoveredTypes, parseAppLook, pickSkin, restoreAppDefault, setUseSkin, skinErrors, skinFromDesignPackage, skinSlots, snapshotLook, undoRestore, type AppLookDocument, type AppLookStore } from '../core/engines/skin';
 import { validateAsset } from '../core/validate';
-import { AxfRuntime, type AppearanceSource } from '../core/runtime';
+import { AxfRuntime, HUB_SKIN_ONLY_KEY, type AppearanceSource } from '../core/runtime';
+import { isAppearanceSetting } from '../core/engines/designpackage';
 import { mergeAppearance, parseAppearance, type AppearanceDocument, type AppearanceSourceState } from '../core/engines/appearance';
 import type { AxfManifest } from '../core/types';
 import * as engine from '../cli/build-engine.mjs';
@@ -447,6 +448,23 @@ console.log(`check-skin: ${n} checks passed`);
   eq(parsed?.skin, { id: 'aurora', overrides: { button: 'global-button' } }, 'appearance@1 keeps the hub-wide skin');
   eq(mergeAppearance(parsed, { skin: null }, 'test', 'now').skin, undefined, 'a null change clears it');
   eq(mergeAppearance(parsed, { skin: { id: 'windows' } }, 'test', 'now').skin, { id: 'windows' }, 'a pick replaces it');
+
+  // Skin from axHub only: the hub-wide skin alone is drawn; the app's own skin, override, colour pick and scopes stay stored
+  const mine = setScopeSkin(setSkinColorTheme(lookAfterChange(setUseSkin(pickSkin(look0, 'windows'), true), { slots: { button: 'terminal' } }, skinned), 'plum-noir'), 'plugin:notes', 'on', 'aurora');
+  const drawn = hubOnlyLook(mine);
+  eq(mine, sc.hubOnly.mine, 'hub only: the app look = fixture');
+  eq(drawn, sc.hubOnly.drawn, 'hub only: the drawn look = fixture');
+  eq(drawn.skin, { use: false, inherit: true, id: '', overrides: {} }, 'hub only: no skin of its own, follows the hub-wide skin');
+  eq([drawn.own, drawn.scopes, drawn.default], [{}, {}, mine.default], 'hub only: no own picks, no scopes, the default snapshot kept');
+  ok(mine.skin.use && mine.skin.id === 'windows' && mine.skin.overrides.button === 'terminal' && mine.skin.colorTheme === 'plum-noir' && !!mine.scopes['plugin:notes'], 'hub only: the stored look is untouched');
+  const hubComposed = composeLookAt(withGlobal as never, drawn, skinOf);
+  eq(hubComposed, sc.hubOnly.composed, 'hub only: composed = fixture');
+  eq([hubComposed.skin.id, hubComposed.skin.from, hubComposed.doc.slots!.button, hubComposed.doc.slots!['color-theme']], ['aurora', 'global', 'global-button', 'aurora-night'], "hub only: axHub's skin, its override and its colours");
+  eq(composeLookAt(withGlobal as never, drawn, skinOf, place), sc.hubOnly.inPlugin, 'hub only: a plugin scope of its own is not drawn either');
+  eq(composeLookAt(withGlobal as never, drawn, skinOf, place).skin.id, 'aurora', 'hub only: inside the plugin, the hub-wide skin');
+  eq(composeLookAt(shared as never, drawn, skinOf), sc.hubOnly.noHubSkin, 'hub only, no hub-wide skin = fixture');
+  eq(composeLookAt(shared as never, drawn, skinOf).doc.slots, composeLook(shared as never, look0, null).slots, 'hub only, no hub-wide skin: the default snapshot');
+  eq(hubOnlyLook(null), sc.hubOnly.none, 'hub only: no look stays none');
 }
 console.log(`check-skin (coverage + scopes): ${n} checks passed`);
 
@@ -517,3 +535,60 @@ console.log(`check-skin (coverage + scopes): ${n} checks passed`);
   eq(f.rt.skinIconPack(), '', 'skin off: no skin pack');
 }
 console.log(`check-skin (runtime scopes): ${n} checks passed`);
+
+/* ---- Skin from axHub only (build console-skin-axhub-only): the switch drives the lock, draws the hub-wide skin only ---- */
+{
+  const rt = new AxfRuntime({ manifest: manifest('app-h'), assets: assets as never, storageKey: 'skin-app-h' });
+  const store = new Store();
+  const src = new Source(store, { ...hubDoc, skin: { id: 'windows' } } as AppearanceDocument);
+  rt.attachAppearanceSource(src);
+  const active = () => ({ ...rt.getState().active }) as Record<string, string>;
+  ok(!rt.hubSkinOnly() && !rt.appearanceLocked() && rt.appearanceLockReason() === '', 'default off');
+  ok(!isAppearanceSetting(HUB_SKIN_ONLY_KEY), 'not an appearance setting: Restore and the hub document leave it');
+  // this app's own look: Use skin with a design package, an override, a UI scope
+  ok(rt.useSkin(true, 'hub-default'), 'own skin on');
+  rt.swap('button' as never, rt.registry.list('button' as never).find((a) => a.id !== active().button)!.id);
+  ok(rt.scopeSkin('ui:home', 'on', 'windows'), 'a UI scope of its own');
+  const own = active();
+  const ownDoc = JSON.stringify(store.doc);
+  ok(own['color-theme'] !== 'windows-light', "the app's own skin is drawn");
+
+  ok(rt.setHubSkinOnly(true), 'switch on');
+  ok(rt.hubSkinOnly() && rt.appearanceLocked() && rt.appearanceLockReason() === 'hub', 'on: drives the appearance lock (reason hub)');
+  eq(active()['color-theme'], 'windows-light', "on: axHub's skin is drawn");
+  eq(rt.skinInForce(), { id: 'windows', overrides: {}, from: 'global' }, 'on: the global level decides');
+  eq(rt.skinAt({ ui: 'home' }).from, 'global', 'on: the UI scope of its own is not drawn');
+  eq(rt.skinScoped('ui:home'), null, 'on: no scoped view for it');
+  ok(rt.customSheet().includes('.fx-widget-label'), "on: the hub skin's own parts still draw");
+  eq(JSON.stringify(store.doc), ownDoc, 'on: the own look is kept, not changed');
+  ok(rt.gate('assets.swap') === 'disable' && !rt.can('assets.swap'), 'on: look controls are locked');
+  ok(!rt.useSkin(false) && !rt.pickSkin('windows') && !rt.swap('color-theme' as never, 'arctic-daylight') && !rt.scopeSkin('ui:home', 'off'), 'on: local picks are refused');
+  ok(!rt.previewSkin('hub-default'), 'on: no preview');
+  eq(src.saved, [], 'on: nothing is written to axHub');
+
+  // a change made on axHub applies live
+  src.doc = { ...hubDoc, skin: { id: 'windows', colorTheme: 'aurora-night' } } as AppearanceDocument;
+  src.start();
+  eq(active()['color-theme'], 'aurora-night', 'on: a colour picked on axHub applies live');
+  src.doc = { ...hubDoc, skin: { id: 'hub-default' } } as AppearanceDocument;
+  src.start();
+  eq(rt.skinInForce().id, 'hub-default', 'on: another hub-wide skin applies live');
+
+  rt.dispatch('appearance.hubskin:off');
+  ok(!rt.hubSkinOnly() && !rt.appearanceLocked(), 'appearance.hubskin:off turns it off and unlocks');
+  eq(active(), own, "off: the app's own look is back, exactly");
+  rt.dispatch('appearance.hubskin:toggle');
+  ok(rt.hubSkinOnly(), 'appearance.hubskin:toggle turns it on');
+  rt.settings.set(HUB_SKIN_ONLY_KEY, false);
+  ok(!rt.appearanceLocked() && rt.skinInForce().id === 'hub-default' && rt.skinInForce().from === 'app', 'the setting itself (settings.set) switches it off and redraws');
+
+  // the lock and the switch are separate: one off leaves the other
+  rt.setHubSkinOnly(true);
+  ok(rt.setAppearanceLocked(true), 'the lock on as well');
+  rt.setHubSkinOnly(false);
+  ok(rt.appearanceLocked() && rt.appearanceLockReason() === 'lock', 'switch off: the lock set on its own stays');
+  rt.dispatch('appearance.lock:off');
+  ok(!rt.appearanceLocked(), 'and appearance.lock:off unlocks it');
+  ok(['appearance.hubskin', 'appearance.lock'].every((id) => rt.actions.list().some((x) => x.id === id)), 'both actions registered');
+}
+console.log(`check-skin (skin from axHub only): ${n} checks passed`);

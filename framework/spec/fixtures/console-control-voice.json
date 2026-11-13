@@ -189,6 +189,26 @@
       },
       "value": true
     },
+    "Lock the console to the axHub skin": {
+      "verb": "set",
+      "find": {
+        "q": "get my skin only from axhub",
+        "kinds": [
+          "setting"
+        ]
+      },
+      "value": true
+    },
+    "unlock the console from the axHub skin": {
+      "verb": "set",
+      "find": {
+        "q": "get my skin only from axhub",
+        "kinds": [
+          "setting"
+        ]
+      },
+      "value": false
+    },
     "what time is it": null,
     "": null
   },
@@ -306,6 +326,16 @@
       "verb": "set",
       "address": "view:build-orchestrator/grid:builds/row:b1",
       "value": true
+    },
+    "Lock the console to the axHub skin": {
+      "verb": "set",
+      "address": "view:build-orchestrator/grid:builds/row:b1",
+      "value": true
+    },
+    "unlock the console from the axHub skin": {
+      "verb": "set",
+      "address": "view:build-orchestrator/grid:builds/row:b1",
+      "value": false
     }
   },
   "replies": {
