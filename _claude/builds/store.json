@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4978,
- "updatedAt": "2026-11-13T20:47:30.699Z",
+ "rev": 4979,
+ "updatedAt": "2026-11-13T20:48:39.111Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -207898,12 +207898,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T20:45:51.589Z",
-   "updatedAt": "2026-11-13T20:45:55.511Z",
+   "updatedAt": "2026-11-13T20:48:36.828Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-13T20:45:55.511Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"e5e6c1b0-dcd5-4bee-949f-67fa1ae8fa4a\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-13T20:48:36.828Z"
     }
    ],
    "approvals": [],
@@ -207930,9 +207934,15 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
-    "split": null,
+    "split": {
+     "at": "2026-11-13T20:48:36.828Z",
+     "by": "orchestrator",
+     "provider": "rules",
+     "steps": 3,
+     "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"e5e6c1b0-dcd5-4bee-949f-67fa1ae8fa4a\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
+    },
     "splitRequested": "",
-    "note": "waiting for the split before it can start",
+    "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
     "planned": null,
@@ -207942,7 +207952,77 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwfg8ov101k886",
+     "title": "",
+     "text": "Follow-up to the landed per-toolbar settings (per-toolbar-settings-fix-failing-chrome). In the settings interface of every individual toolbar, nav menu, application menu and tab group (and dialog), add a small live preview pane at the top: a compact sample of that element type rendered with seed data (e.g. 2-3 toolbar icons with a badge, 2 tab groups of a few tabs with one active, a short nav menu with one selected item, an app menu with a submenu). It hot-renders every setting change in real time (style, colours, transparency, layout, density, hover/active states, with a hover/press demo toggle), before Apply. Collapsible, light/dark toggle, and it uses the real framework components and the instance's tokens. Full API. Tests, help, Shipped features.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T20:48:36.828Z",
+     "updatedAt": "2026-11-13T20:48:36.828Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwfg8ov1029rfu",
+     "title": "",
+     "text": "on the per toolbar, per nav menu, per application menu, per tab group settings I need a small preview pane, a couple of icons or two tab groups with some seed data, showing what the settings look like",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T20:48:36.828Z",
+     "updatedAt": "2026-11-13T20:48:36.828Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwfg8ov103880v",
+     "title": "",
+     "text": "Tests green, report _claude/builds/reports/per-instance-settings-small-live-preview.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/per-instance-settings-small-live-preview.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T20:48:36.828Z",
+     "updatedAt": "2026-11-13T20:48:36.828Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -207951,12 +208031,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
+   "rev": 4,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-13T20:48:36.828Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

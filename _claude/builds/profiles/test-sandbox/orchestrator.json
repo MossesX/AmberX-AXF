@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T20:47:30.699Z",
+ "updatedAt": "2026-11-13T20:48:39.111Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -10,12 +10,6 @@
  },
  "builds": [
   {
-   "notes": [
-    {
-     "text": "Shipped manifest sm-test-sandbox-sample-shipped-build rev 1 sent to Shipped features (orchestrator): PR #0, 0 file(s), 0 test line(s), 0 open.",
-     "at": "2026-11-13T17:20:26Z"
-    }
-   ],
    "id": "test-sandbox-sample-shipped-build",
    "title": "[TEST DATA] Sample shipped build: landing page copy",
    "category": "test data",
@@ -30,6 +24,12 @@
    "createdAt": "2026-11-13T17:18:25.933Z",
    "updatedAt": "2026-11-13T17:20:26Z",
    "builtAt": "2026-11-13T17:18:25.934Z",
+   "notes": [
+    {
+     "text": "Shipped manifest sm-test-sandbox-sample-shipped-build rev 1 sent to Shipped features (orchestrator): PR #0, 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-13T17:20:26Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -90,11 +90,9 @@
      "uid": "st-mwf8qebs06onch",
      "createdAt": "2026-11-13T17:18:25.934Z"
     }
-   ],
-   "rev": 0
+   ]
   },
   {
-   "notes": [],
    "id": "test-sandbox-sample-pending-build",
    "title": "[TEST DATA] Sample pending build: contact form",
    "category": "test data",
@@ -108,6 +106,7 @@
    "createdAt": "2026-11-13T17:18:30.441Z",
    "updatedAt": "2026-11-13T17:22:37.364Z",
    "builtAt": "",
+   "notes": [],
    "approvals": [],
    "upgradeRequests": [],
    "steps": [
@@ -168,8 +167,7 @@
      "uid": "st-mwf8qhsg06qnkm",
      "createdAt": "2026-11-13T17:18:30.442Z"
     }
-   ],
-   "rev": 0
+   ]
   }
  ]
 }
