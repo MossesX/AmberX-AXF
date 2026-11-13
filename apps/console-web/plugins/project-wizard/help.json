@@ -74,6 +74,126 @@
         "text": "Shows the “Project wizard” part of this screen. Part of Project wizard.",
         "kind": "tab",
         "draft": true
+      },
+      {
+        "target": "project-name",
+        "title": "Project name",
+        "text": "The name people see: the console workspace, the repo description and the Claude.ai project use it.",
+        "kind": "field"
+      },
+      {
+        "target": "project-id",
+        "title": "Project id",
+        "text": "Lowercase id from the name: the workspace id, the hub folder /projects/<id>/ and the default repo name.",
+        "kind": "field"
+      },
+      {
+        "target": "visibility-new-repos",
+        "title": "Visibility",
+        "text": "Whether a repo the wizard creates on GitHub is private or public.",
+        "kind": "field"
+      },
+      {
+        "target": "switch-into-the-new-project-when-it-is-made",
+        "title": "Switch into the new project",
+        "text": "When the project is made, it becomes the active project: builds, notes, to-dos and plans switch to it.",
+        "kind": "toggle"
+      },
+      {
+        "target": "use-selected",
+        "title": "Use selected",
+        "text": "Takes the ticked items in the grid and closes the dialog.",
+        "kind": "button"
+      },
+      {
+        "target": "boilerplate",
+        "title": "Boilerplate",
+        "text": "Ready-made app parts added on top of the template (optional).",
+        "kind": "field"
+      },
+      {
+        "target": "your-frameworks-name",
+        "title": "Your framework's name",
+        "text": "The name of the framework this project builds for itself. A framework/ folder is started in the repo.",
+        "kind": "field"
+      },
+      {
+        "target": "framework-repo-github-owner-name",
+        "title": "Framework repo",
+        "text": "A framework to import from GitHub, as owner/name.",
+        "kind": "field"
+      },
+      {
+        "target": "or-a-folder-on-the-server",
+        "title": "Framework folder",
+        "text": "A framework to import from a folder on the console server instead of GitHub.",
+        "kind": "field"
+      },
+      {
+        "target": "its-boilerplate-to-start-from-folder-inside-it",
+        "title": "Framework's boilerplate",
+        "text": "A folder inside the imported framework to copy as the starter code, when the starter is the framework's boilerplate.",
+        "kind": "field"
+      },
+      {
+        "target": "pick-libraries",
+        "title": "Pick libraries",
+        "text": "Opens a grid of the AXF shared libraries to tick the ones the project uses.",
+        "kind": "button"
+      },
+      {
+        "target": "skin",
+        "title": "Skin",
+        "text": "The look the new project starts with. Leave it on the default to use the console's own look.",
+        "kind": "field"
+      },
+      {
+        "target": "browse-skins",
+        "title": "Browse skins",
+        "text": "Opens every skin and design package as a grid with their descriptions.",
+        "kind": "button"
+      },
+      {
+        "target": "claude-account-for-its-builds",
+        "title": "Claude account",
+        "text": "The Claude account that runs this project's builds. Accounts come from the Claude accounts plugin.",
+        "kind": "field"
+      },
+      {
+        "target": "browse-accounts",
+        "title": "Browse accounts",
+        "text": "Opens the Claude accounts as a grid with their plans and which one is active.",
+        "kind": "button"
+      },
+      {
+        "target": "what-should-it-do-first-optional",
+        "title": "First plan",
+        "text": "What the project should do first. Saved as docs/FIRST_PLAN.md; the first Claude session starts from it. Type it or press Speak it.",
+        "kind": "field"
+      },
+      {
+        "target": "first-builds-one-per-line-optional",
+        "title": "First builds",
+        "text": "The first builds, one per line. They go into the first plan as a checklist.",
+        "kind": "field"
+      },
+      {
+        "target": "choose-something-else",
+        "title": "Choose something else",
+        "text": "Unticked, this step keeps the current project's value (grayed out). Tick it to pick something new.",
+        "kind": "toggle"
+      },
+      {
+        "target": "speak-it",
+        "title": "Speak it",
+        "text": "Listens and adds what you say to the first plan. Where the browser can't, use AmberX or type it.",
+        "kind": "button"
+      },
+      {
+        "target": "create-the-project",
+        "title": "Create the project",
+        "text": "Makes the repo, starter code, project files and Claude.ai kit, then the project's workspace, and switches into it.",
+        "kind": "button"
       }
     ],
     "intros": []
