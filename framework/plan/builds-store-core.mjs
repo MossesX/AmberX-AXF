@@ -59,7 +59,7 @@ export const MODELS = ['Fable', 'Opus'];
 export const STATUSES = ['pending', 'queued', 'running', 'waiting', 'blocked', 'failed', 'built', 'complete', 'archived'];
 /** Statuses that count as finished work (progress, Pending list). */
 export const FINISHED = ['built', 'complete'];
-export const DEFAULT_RULES = { sameSession: true, subAgents: false, approveModelSwitch: true, maxStepMinutes: 30 };
+export const DEFAULT_RULES = { sameSession: true, subAgents: false, approveModelSwitch: true, maxStepMinutes: 10 }; // ≤ 10 min (Nov 13 2026; was 30)
 /**
  * One work profile (Brett, Nov 7 2026: merge every build profile into one). The profiles below were folded into
  * `all`; a record that still names one of them (an older checkout, a live merge from a session on older code, a hub
@@ -427,7 +427,7 @@ export function storeSummary(store, profile) {
 
 // ------------------------------------------------------------------ orchestrator@1 projection
 
-const orchStep = (s) => { const o = {}; for (const k of ORCH_STEP_KEYS) o[k] = s[k]; o.uid = s.uid; if (s.title) o.title = s.title; return o; };
+const orchStep = (s) => { const o = {}; for (const k of ORCH_STEP_KEYS) o[k] = s[k]; o.uid = s.uid; if (s.title) o.title = s.title; if (s.createdAt) o.createdAt = s.createdAt; return o; };
 const orchBuild = (b) => { const o = {}; for (const k of ORCH_BUILD_KEYS) if (b[k] !== undefined) o[k] = k === 'steps' ? b.steps.map(orchStep) : clone(b[k]); return o; };
 
 export function projectOrchestrator(store, profile) {

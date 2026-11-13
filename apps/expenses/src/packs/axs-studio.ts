@@ -144,7 +144,9 @@ export const AXS_STUDIO_BRAND: BrandingPackage = {
  *
  * Converted, not copied — the staged file paints in the Artifact's own
  * `var(--accent)` / `var(--bg)` / `var(--ink)`, which resolve to NOTHING here,
+ * (theme-ok-begin: documentation)
  * plus bare `#fff` highlight strips that fail the no-bare-hex assertion. All
+ * (theme-ok-end)
  * five paints go through `brandRoleRef()` (accent → accent, bg → page,
  * ink → ink, the white highlights → ink at their original opacity). Its
  * gradient was `id="account-glow"` — a bare global DOM id lifted from the
@@ -152,9 +154,11 @@ export const AXS_STUDIO_BRAND: BrandingPackage = {
  * page would both point `url(#account-glow)` at whichever `<defs>` the browser
  * saw first.
  */
+// theme-ok-begin: brand-role fallbacks of a branding package (asset definition)
 const MARK_ACCENT = brandRoleRef("accent", "#ff7a1a");
 const MARK_PAGE = brandRoleRef("page", "#080706");
 const MARK_INK = brandRoleRef("ink", "#f7f2ea");
+// theme-ok-end
 
 const MARK_AMBERX: GlyphEntry = {
   id: "mark-amberx",

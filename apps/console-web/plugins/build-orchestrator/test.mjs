@@ -59,6 +59,18 @@ t('deny-upgrade needs Brett too', () => {
 s = c.apply(s, { action: 'step', id: 'demo-build', step: 's4' }).state;
 t('all done → complete with builtAt', () => { assert.equal(b().status, 'complete'); assert.ok(b().builtAt); });
 t('estimates', () => { assert.equal(c.estimateMinutes('2 h'), 120); assert.equal(c.estimateMinutes('1.5 d'), 720); assert.equal(c.estimateMinutes('x'), null); });
+t('10-minute steps: a ceiling the rule can lower, never raise; older steps keep 30', () => {
+  assert.equal(c.DEFAULT_RULES.maxStepMinutes, 10); assert.equal(c.maxStep({ maxStepMinutes: 30 }), 10); assert.equal(c.maxStep({ maxStepMinutes: 5 }), 5); assert.equal(c.maxStep({}), 10);
+  assert.equal(c.stepLimit({ createdAt: '2026-11-01T00:00:00.000Z' }, c.DEFAULT_RULES), 30); assert.equal(c.stepLimit({ createdAt: '2026-11-20T00:00:00.000Z' }, c.DEFAULT_RULES), 10); assert.equal(c.stepLimit({}, c.DEFAULT_RULES), 10);
+  const r = c.apply(c.emptyState(), { action: 'add', title: 'Mid', steps: [{ text: 'twelve', estimate: '12 min' }] }); assert.deepEqual(c.splitCheck(r.state.builds[0]).reasons, ['step 1 is 12 min (limit 10 min)']);
+  const kept = c.normalizeState({ builds: [{ id: 'old', title: 'Old', steps: [{ text: 'old step', estimate: '30 min', createdAt: '2026-11-01T00:00:00.000Z' }] }] }); assert.equal(c.splitCheck(kept.builds[0]).needsSplit, false, 'createdAt survives normalisation');
+  assert.equal(c.apply(c.emptyState(), { action: 'rules', rules: { maxStepMinutes: 30 } }).state.rules.maxStepMinutes, 10, 'the rule cannot raise the ceiling');
+  assert.equal(c.apply(c.emptyState(), { action: 'rules', rules: { maxStepMinutes: 6 } }).state.rules.maxStepMinutes, 6);
+});
+t('steps are checkpoints inside one session: the brief says commit + push + tick per step, no relaunch', () => {
+  const br = c.brief(c.apply(c.emptyState(), { action: 'add', title: 'Fresh', steps: [{ text: 'first', model: 'Opus', estimate: '10 min' }] }).state.builds[0]); assert.ok(br.includes(c.CHECKPOINT_RULE)); assert.match(br, /steps ≤ 10 min/); assert.match(br, /Tick each step right after its commit/);
+  assert.match(c.CHECKPOINT_RULE, /ONE session/); assert.match(c.CHECKPOINT_RULE, /commit it on your branch, push, then tick it done/); assert.match(c.CHECKPOINT_RULE, /Never ask for a new prompt or a relaunch per step/);
+});
 t('split check flags big steps', () => { const r = c.apply(c.emptyState(), { action: 'add', title: 'Big', steps: [{ text: 'all', estimate: '2 h' }] }); assert.equal(c.splitCheck(r.state.builds[0]).needsSplit, true); });
 t('import from pending keeps the model', () => { const r = c.apply(c.emptyState(), { action: 'import', item: { id: 'p1', title: 'P', model: 'Fable', subPrompts: [{ text: 'a', estimate: '10 min' }] } }); assert.equal(r.state.builds[0].steps[0].model, 'Fable'); assert.equal(r.state.builds[0].pendingId, 'p1'); });
 t('hide, archive, move, edit, remove step', () => {

@@ -2,7 +2,7 @@
  * Build orchestrator core (orchestrator@1). Pure: no fs, no DOM. Shared by the console page, the CLI
  * (../orchestrator.mjs), the server part and the tests.
  *
- * A build is a list of small steps (≤ 30 min), each pinned to Fable or Opus. Consecutive steps on the same model
+ * A build is a list of small steps (≤ 10 min, Brett, Nov 13 2026; was 30), each pinned to Fable or Opus. Consecutive steps on the same model
  * form a phase. A phase whose model differs from the phase before it is a model switch (framework/core/model-switch.mjs,
  * Brett, Nov 3 2026): a downgrade (Fable → Opus) passes by itself and is recorded; an UPGRADE (Opus → Fable) opens
  * behind Brett's approval (his signed-in console click or an axHub approval), which no session, agent, headless build
@@ -26,7 +26,29 @@ export const isFinished = (status) => status === 'built' || status === 'complete
 export const SORTS = ['status', 'added', 'built', 'left', 'next', 'category', 'title'];
 export const SORT_LABEL = { status: 'Status', added: 'Date added', built: 'Date built', left: 'Time left', next: 'Next model', category: 'Category', title: 'Title' };
 export const UNCATEGORISED = 'Uncategorised';
-export const DEFAULT_RULES = { sameSession: true, subAgents: false, approveModelSwitch: true, maxStepMinutes: 30 };
+export const DEFAULT_RULES = { sameSession: true, subAgents: false, approveModelSwitch: true, maxStepMinutes: 10 };
+/**
+ * Step size (Brett, Nov 13 2026: "the splitter cuts every build into steps of 10 minutes or less (was 30)"). 10 minutes
+ * is a ceiling: the Largest step rule can lower it, never raise it (a stored 30 reads as 10). Steps are checkpoints
+ * inside ONE session (CHECKPOINT_RULE), so a smaller step costs no extra prompt or launch.
+ * Steps written before the change (createdAt before TEN_MINUTE_STEPS_AT) keep the old 30-minute limit, so the queue
+ * is not flagged "needs split" all at once; a re-split makes them 10-minute steps.
+ */
+export const STEP_MINUTES = 10;
+export const LEGACY_STEP_MINUTES = 30;
+export const TEN_MINUTE_STEPS_AT = '2026-11-14T00:00:00.000Z';
+/** The largest step the rules allow: the rule, capped at STEP_MINUTES. */
+export const maxStep = (rules) => Math.max(1, Math.min(STEP_MINUTES, Number(rules?.maxStepMinutes) || STEP_MINUTES));
+/** The limit one step is held to: maxStep, or the old 30 for a step written before the change. */
+export const stepLimit = (step, rules) => {
+  const c = typeof step?.createdAt === 'string' ? step.createdAt : '';
+  return c && c < TEN_MINUTE_STEPS_AT ? Math.max(maxStep(rules), LEGACY_STEP_MINUTES) : maxStep(rules);
+};
+/**
+ * Steps are checkpoints, not launches (Brett, Nov 13 2026): one session works through every step of its phase, ticks
+ * each one done and commits + pushes as it goes, so nothing is lost if it dies, and no step gets its own prompt or relaunch.
+ */
+export const CHECKPOINT_RULE = 'Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.';
 /** When Fable is worth its price (shown on the page; the session picks a step's model from it). */
 export const MODEL_GUIDE = {
   Fable: 'Cross-port contracts, kernel/engine internals, schema + migration design, heavy refactors, anything that changes how GUIs work across apps.',
@@ -85,6 +107,7 @@ function normStep(s, i) {
     done: o.done === true,
     doneAt: o.done === true ? str(o.doneAt, 40) : '',
     note: str(o.note, 1000),
+    ...(str(o.createdAt, 40) ? { createdAt: str(o.createdAt, 40) } : {}), // which step-size limit the step is held to (stepLimit)
   };
 }
 
@@ -186,7 +209,7 @@ export function splitCheck(build, rules = DEFAULT_RULES) {
   build.steps.forEach((s, i) => {
     const m = estimateMinutes(s.estimate);
     if (m == null) reasons.push(`step ${i + 1} has no estimate`);
-    else if (m > (rules.maxStepMinutes || 30)) reasons.push(`step ${i + 1} is ${formatMinutes(m)}`);
+    else if (m > stepLimit(s, rules)) reasons.push(`step ${i + 1} is ${formatMinutes(m)} (limit ${formatMinutes(stepLimit(s, rules))})`);
   });
   if (!build.steps.length) reasons.push('no steps yet');
   // skipped steps (feature matrix) still have to be small: they may come back
@@ -236,7 +259,8 @@ export function brief(build, rules = DEFAULT_RULES) {
     p.gate && p.kind === 'downgrade' ? `This phase downgrades ${p.from} → ${p.model}: fine, no approval needed (it is recorded when you tick its first step).` : '',
     p.upgrade && !n.needsApproval && !build.approvals.some((a) => a.phase === p.index && a.to === p.model) ? `This phase upgrades ${p.from} → ${p.model}: no approval needed (Fable upgrades need my approval is off); it is recorded when you tick its first step.` : '',
     switchRule(),
-    `Rules: ${rules.sameSession ? 'stay in this one session' : 'new session allowed'}; ${rules.subAgents ? 'sub-agents allowed' : 'no sub-agents'}; steps ≤ ${rules.maxStepMinutes} min; read only the files listed; stop at the end of this phase.`,
+    `Rules: ${rules.sameSession ? 'stay in this one session' : 'new session allowed'}; ${rules.subAgents ? 'sub-agents allowed' : 'no sub-agents'}; steps ≤ ${maxStep(rules)} min; read only the files listed; stop at the end of this phase.`,
+    `Checkpoints: ${CHECKPOINT_RULE}`,
     `Look: ${ASSET_RULE}`,
     `API: ${API_RULE}`,
     build.branch ? `Branch: ${build.branch}${build.pr ? ` · PR ${build.pr}` : ''}` : '',
@@ -244,7 +268,7 @@ export function brief(build, rules = DEFAULT_RULES) {
     ...p.steps.map((s, i) => `${s.group && s.group !== p.steps[i - 1]?.group ? `— ${s.group} —\n` : ''}${s.done ? '[x]' : s.skip ? '[skip]' : '[ ]'} ${s.id} ${s.estimate ? `(~${s.estimate}) ` : ''}${s.text}${s.session === 'new' ? ' [needs a new session]' : ''}${s.agent ? ' [sub-agent allowed]' : ''}`),
     files.length ? `Read first: ${files.join(', ')}` : '',
     checks.length ? `Checks: ${checks.join(' · ')}` : '',
-    `Tick each step: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step ${build.id} <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link ${build.id} --branch <b> --pr <n>.`,
+    `Tick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step ${build.id} <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link ${build.id} --branch <b> --pr <n>.`,
     'Watch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note "…"` so the live preview follows you.',
     'Screenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name "…" --app … --screen … --group "<build name>" (UI Review → Screenshots; ui-review-item@1), never the review queue.',
   ];
@@ -332,7 +356,7 @@ export function apply(state, change) {
     case 'deny-upgrade': { b = find(); const who = needApprover(c, 'answering an upgrade request', false);
       const req = b.upgradeRequests.find((r) => r.phase === Number(c.phase) && r.state === 'open'); if (!req) throw new Error('no open upgrade request on that phase');
       req.state = 'denied'; log.push(`${b.id}: upgrade request ${req.id} denied by ${who.by}`); break; }
-    case 'rules': { for (const k of Object.keys(DEFAULT_RULES)) if (k in (c.rules ?? {})) s.rules[k] = typeof DEFAULT_RULES[k] === 'number' ? Math.max(5, Math.min(240, Number(c.rules[k]) || 30)) : c.rules[k] === true; log.push('rules saved'); break; }
+    case 'rules': { for (const k of Object.keys(DEFAULT_RULES)) if (k in (c.rules ?? {})) s.rules[k] = typeof DEFAULT_RULES[k] === 'number' ? (k === 'maxStepMinutes' ? Math.max(1, Math.min(STEP_MINUTES, Math.round(Number(c.rules[k])) || STEP_MINUTES)) : Math.max(1, Number(c.rules[k]) || DEFAULT_RULES[k])) : c.rules[k] === true; log.push('rules saved'); break; }
     default: throw new Error(`unknown action ${c.action}`);
   }
   if (b && s.builds.includes(b)) { b.updatedAt = now(); const st = derivedStatus(b, s.rules); if (st !== b.status && !(c.action === 'status')) { if (isFinished(st) && !b.builtAt) b.builtAt = now(); b.status = st; } }

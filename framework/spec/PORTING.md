@@ -189,5 +189,21 @@ Web only (Android on hold, build `console-commands-reliable`), Kotlin twins when
 - `followSse` options `idleTimeoutMs` and the follower's `reconnect()` / `idleMs()` / `open()` (`core/sse.ts`); the Kotlin `Sse`
   parser is unchanged, only an Android stream follower would need the idle watchdog.
 
+## Deferred: single settings as console fields (Nov 13 2026)
+Web only (Android on hold, build `full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app`), Kotlin twins when
+the Android side resumes: catalog kind `field` (`type`, `value`, `options`, `min`, `max`, `secret`), `consoleResolveField`,
+`consoleFieldValue`, `CONSOLE_FIELD_TYPES` (`core/engines/console-commands.mjs`), and a `settings.set:<key>:<value>` action in the
+Compose settings host. Plan Studio's find by content (`findInPlans`) is plugin code, no Kotlin side.
+
 ## Deferred: crew-sections@1 section owners (Nov 12 2026)
 Web and host only (Android on hold, build `employee-for-every-section`): the section-owner rules (`apps/console-web/plugins/agent-swarm/web/sections-core.mjs`: `normSections`, `owners`, `assign`, `sectionLine`, `sayKey`, `recentlySaid`, `checkUsages`) and `framework/cli/crew-say.mjs` have no Kotlin twin. Section lines are ordinary swarm-state@1 `report` messages (`jobId` = `<section>` or `<section>:<ref>`), so an Android chat reader shows them unchanged. <!-- axf-plugin:agent-swarm -->
+
+## Deferred: Kotlin asset conformance (Nov 13 2026)
+
+Build everything-on-tokens-before-skins emptied the web part of `framework/spec/conform-baseline.json` (the imported
+Expense app, 923 findings: now on the --fx-* tokens, its token defaults vendored by `framework/cli/vendor-tokens.mjs`).
+The 286 Kotlin findings stay on the baseline, Android on hold: 285 `.dp` spacing / radius literals in Compose
+`padding` / `spacedBy` / `RoundedCornerShape` / `border` calls (→ `Axf.space.x(n)`, `Axf.space.borderWidth`,
+`Axf.shapes.*`) and one `Color(0x…)` literal (→ `Axf.colors.*`), in `framework/android` (230) and `apps/console` (56).
+`Axf.space` is a `@Composable` getter, so each call site needs a compiler to confirm it sits in a composable scope:
+do it with the Android build, then run `node framework/cli/check-theme.mjs --update-baseline` to empty the file.

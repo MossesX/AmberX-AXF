@@ -29,7 +29,7 @@ import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
 import './console-commands.css';
-import { CONSOLE_HEARTBEAT_MS, consoleCatalogFrom, consoleMessageErrors, consoleMessageLate, type ConsoleHere, type ConsoleMessage } from '@console/axf/core/engines/console-commands.mjs';
+import { CONSOLE_FIELD_TYPES, CONSOLE_HEARTBEAT_MS, consoleCatalogFrom, consoleFieldValue, consoleMessageErrors, consoleMessageLate, type ConsoleHere, type ConsoleMessage } from '@console/axf/core/engines/console-commands.mjs';
 
 const FOLDER = 'console-commands';
 const ID = 'ai.amberx.axf.console.console-commands';
@@ -98,11 +98,40 @@ function hereOf(rt: AxfRuntime): ConsoleHere {
   return here;
 }
 
-/** What this console has: its search index's screens and dialogs, every settings tab (with its parent), every action. */
+/**
+ * Every single setting with a value, as a catalog `field` (key, tab, kind, current value, choices, range); secrets say
+ * they are secret and never send their value.
+ */
+function fieldsOf(rt: AxfRuntime) {
+  const out: { kind: 'field'; label: string; detail: string; icon?: string; keywords: string[]; requires?: string; focus: { tab: string; key: string }; field: Record<string, unknown> }[] = [];
+  for (const tab of rt.settings.listTabs()) {
+    for (const g of rt.settings.groupsIn(tab.id)) {
+      for (const spec of g.settings) {
+        if (!CONSOLE_FIELD_TYPES.includes(spec.kind)) continue;
+        const secret = spec.kind === 'secret';
+        out.push({
+          kind: 'field', label: spec.label, detail: `Settings › ${tab.label} › ${g.label}`, icon: spec.icon, keywords: [spec.description ?? '', spec.key],
+          ...(spec.requires ? { requires: spec.requires } : {}), focus: { tab: tab.id, key: spec.key },
+          field: { type: spec.kind, ...(secret ? { secret: true } : { value: rt.settings.get(spec.key) }), ...(spec.options ? { options: spec.options } : {}), ...(spec.min !== undefined ? { min: spec.min } : {}), ...(spec.max !== undefined ? { max: spec.max } : {}) },
+        });
+      }
+    }
+  }
+  return out;
+}
+
+/** What this console has: its search index's screens and dialogs, every settings tab (with its parent) and single setting, every action. */
 function catalogOf(rt: AxfRuntime) {
   const tabs = rt.settings.listTabs().map((t) => ({ kind: 'settings-tab', label: t.label, icon: t.icon, keywords: [t.description ?? '', t.parent ? `${t.parent} sub-tab` : ''], parent: t.parent, focus: { kind: 'setting', tab: t.id } }));
-  const entries = [...rt.search.entries().filter((e) => e.kind === 'view' || e.kind === 'dialog'), ...tabs];
+  const entries = [...rt.search.entries().filter((e) => e.kind === 'view' || e.kind === 'dialog'), ...tabs, ...fieldsOf(rt)];
   return consoleCatalogFrom(entries, rt.actions.list(), { app: 'console-web', here: hereOf(rt) });
+}
+
+/** A short hash of a text (FNV-1a), to tell when field values changed. */
+function hashText(t: string): string {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < t.length; i++) { h ^= t.charCodeAt(i); h = Math.imul(h, 0x01000193); }
+  return (h >>> 0).toString(36);
 }
 
 /**
@@ -144,6 +173,17 @@ function runMessage(rt: AxfRuntime, m: ConsoleMessage, history: string[]): [bool
     case 'run':
       // the catalog already leaves these out; a stale catalog or a crafted message stops here
       if (rt.actions.list().some((a) => a.meta.personOnly === true && a.id === m.spec!.split(':')[0])) return [false, `${m.label ?? m.spec} needs Brett's own tap`];
+      if (m.spec!.startsWith('settings.set:')) {
+        // say why a value is refused in the answer, not only in a toast on Brett's screen
+        const [, key = '', ...rest] = m.spec!.split(':');
+        const spec = rt.settings.spec(key);
+        if (!spec) return [false, `there is no setting "${key}"`];
+        if (spec.requires && !rt.can(spec.requires)) return [false, `changing ${spec.label} needs ${spec.requires}`];
+        const v = consoleFieldValue(spec, rest.join(':'), rt.settings.get(key));
+        if (v.error !== undefined) return [false, v.error];
+        rt.settings.set(key, v.value as never);
+        return [true, `set ${spec.label} to ${spec.kind === 'secret' ? '(hidden)' : JSON.stringify(v.value)}`];
+      }
       return rt.dispatch(m.spec!) ? [true, `ran ${m.label ?? m.spec}`] : [false, `${m.label ?? m.spec} didn't run here (no handler, or this role can't)`];
     case 'close': {
       const open = rt.getState().dialog;
@@ -190,7 +230,8 @@ function ConsoleCommandsClient() {
     }).catch(() => undefined);
     const announce = (used = false): Promise<unknown> => {
       const catalog = catalogOf(rt);
-      const key = `${catalog.items.length}:${catalog.items.map((i) => i.id).join(',').length}`;
+      // values count: a changed setting re-sends the catalog so `get` reads what the screen shows
+      const key = `${catalog.items.length}:${catalog.items.map((i) => i.id).join(',').length}:${hashText(JSON.stringify(catalog.items.filter((i) => i.kind === 'field').map((i) => i.value)))}`;
       if (key === catalogKey && !used) return seen({ here: catalog.here, ...where() });
       catalogKey = key;
       const body = { client: id, app, title: document.title, device: device(), catalog, here: catalog.here, ...where(), used: used || !!pick, ...(pick ? { pick } : {}) };
@@ -220,6 +261,9 @@ function ConsoleCommandsClient() {
     window.addEventListener('pageshow', onShow);
     document.addEventListener('visibilitychange', onVisible);
     const beat = setInterval(() => void announce(false), HEARTBEAT_MS);
+    // a setting changed (here or by a remote settings.set): send the catalog again soon, so a remote get reads the new value
+    let soon: ReturnType<typeof setTimeout> | undefined;
+    const offSettings = rt.settings.onAnyChange(() => { clearTimeout(soon); soon = setTimeout(() => void announce(false), 800); });
     // Only when the page really goes away (not into the back/forward cache, not a React re-render): a bye makes the
     // server stop sending here at once.
     const bye = (e: PageTransitionEvent) => { if (!e.persisted) void post('bye', { client: id }, true).catch(() => undefined); };
@@ -248,7 +292,7 @@ function ConsoleCommandsClient() {
       { maxDelayMs: 10_000, idleTimeoutMs: STREAM_IDLE_MS },
     );
     const stop = stream;
-    return () => { stop(); offState(); offFront(); clearInterval(beat); window.removeEventListener('focus', used); window.removeEventListener('online', onVisible); window.removeEventListener('pageshow', onShow); document.removeEventListener('visibilitychange', onVisible); window.removeEventListener('pagehide', bye); };
+    return () => { stop(); offState(); offFront(); offSettings(); clearTimeout(soon); clearInterval(beat); window.removeEventListener('focus', used); window.removeEventListener('online', onVisible); window.removeEventListener('pageshow', onShow); document.removeEventListener('visibilitychange', onVisible); window.removeEventListener('pagehide', bye); };
   }, [rt, on]);
   return null;
 }

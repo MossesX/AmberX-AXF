@@ -8,7 +8,7 @@
 import assert from 'node:assert/strict';
 import { controlGate } from '../core/engines/control-rules.mjs';
 import {
-  CONSOLE_CLIENT_STALE_MS, CONSOLE_LATE_MS, CONSOLE_TOOLS, consoleActionConfirm, consoleActionEffect, consoleActionNeeds, consoleCatalogFrom, consoleMessage, consoleMessageErrors,
+  CONSOLE_CLIENT_STALE_MS, CONSOLE_LATE_MS, CONSOLE_TOOLS, consoleActionConfirm, consoleActionEffect, consoleActionNeeds, consoleCatalogFrom, consoleFieldValue, consoleMessage, consoleMessageErrors,
   consoleMessageLate, consolePickClients, consoleResolve, consoleSearch, consoleSplitFocus, normalizeConsoleCatalog, runConsoleCommand,
 } from '../core/engines/console-commands.mjs';
 
@@ -30,6 +30,10 @@ const entries = [
   { kind: 'dialog', label: 'Asset JSON', focus: { kind: 'dialog', id: 'asset-json' } },
   { kind: 'setting', label: 'Compact mode', focus: { kind: 'setting', tab: 'appearance', anchor: 'setting:compact' } },
   { kind: 'action', label: 'Randomize assets', focus: { kind: 'action', spec: 'assets.random' } },
+  { kind: 'field', label: 'Text size', detail: 'Settings › Appearance › Display', keywords: ['axf.display.fontScale'], focus: { tab: 'appearance', key: 'axf.display.fontScale' }, field: { type: 'slider', value: 100, min: 80, max: 140 } },
+  { kind: 'field', label: 'Help mode', detail: 'Settings › Help', focus: { tab: 'help', key: 'axf.help.mode' }, field: { type: 'toggle', value: false } },
+  { kind: 'field', label: 'Hub token', detail: 'Settings › Token control', focus: { tab: 'token-control', key: 'axf.hub.token' }, field: { type: 'secret', secret: true, value: 'leak' } },
+  { kind: 'field', label: 'Layout', detail: 'Settings › Appearance', focus: { tab: 'appearance', key: 'axf.layout' }, field: { type: 'choice', value: 'tabs-top', options: [{ value: 'tabs-top', label: 'Top' }, { value: 'list', label: 'List' }] } },
 ];
 const actions = [
   { id: 'assets.random', meta: { label: 'Randomize assets', requires: 'assets.swap' } },
@@ -44,7 +48,12 @@ const cat = consoleCatalogFrom(entries, actions, { app: 'console-web', here: { s
 eq(cat.items.filter((i) => i.kind === 'screen').map((i) => i.id), ['plan-studio', 'build-orchestrator', 'builds', 'home', 'theme-manager', 'token-control'], 'views become screens');
 eq(cat.items.find((i) => i.kind === 'settings' && i.id === 'token-control')!.label, 'Token control', '" settings" dropped from tab labels');
 ok(!cat.items.some((i) => i.id === 'file.save'), 'stub actions are left out');
-ok(!cat.items.some((i) => i.label === 'Compact mode'), 'single settings are not catalog items (their tab is)');
+ok(!cat.items.some((i) => i.label === 'Compact mode'), 'search-index setting rows are not catalog items (fields come as kind field)');
+const fsz = cat.items.find((i) => i.kind === 'field' && i.id === 'axf.display.fontScale')!;
+eq([fsz.parent, fsz.type, fsz.value, fsz.min, fsz.max], ['appearance', 'slider', '100', 80, 140], 'a field keeps its tab, kind, value as text and range');
+const tok = cat.items.find((i) => i.id === 'axf.hub.token')!;
+ok(tok.secret === true && tok.value === undefined, 'a secret field never carries its value');
+eq(cat.items.find((i) => i.id === 'axf.layout')!.options, ['tabs-top', 'list'], 'choices by value');
 ok(cat.items.find((i) => i.id === 'nav')!.params === true, 'params kept');
 eq(cat.here, { screen: 'home' }, 'here kept');
 eq(normalizeConsoleCatalog({ items: [{ kind: 'screen', id: 'a' }, { kind: 'screen', id: 'a' }, { kind: 'bogus', id: 'b' }, { kind: 'dialog' }] }).items, [{ kind: 'screen', id: 'a', label: 'a' }], 'de-duplicated, unknown kinds and id-less items dropped');
@@ -172,6 +181,34 @@ eq(CONSOLE_TOOLS.length, 9, 'nine MCP shortcut tools');
   ok(b.ok && b.deliver?.message.focus === 'my-build', 'input.focus wins');
   const c = runConsoleCommand({ op: 'act', target: 'console.settings', path: 'appearance', action: 'open', input: { focus: 'x' } } as never, { clients: live, id: 'f2' });
   ok(c.ok && c.deliver?.message.focus === undefined, 'focus only on screens');
+}
+
+/* ---- single settings (fields): open, get, list, values ---- */
+{
+  const f1 = runConsoleCommand({ op: 'act', target: 'console.settings', path: 'text size', action: 'open' }, ctx);
+  ok(f1.ok && f1.deliver!.message.kind === 'settings' && f1.deliver!.message.target === 'appearance' && f1.deliver!.message.anchor === 'setting:axf.display.fontScale', 'a field by name opens its tab scrolled to it');
+  const f2 = runConsoleCommand({ op: 'act', target: 'console.settings', path: 'appearance', action: 'open' }, ctx);
+  ok(f2.ok && f2.deliver!.message.target === 'appearance' && !f2.deliver!.message.anchor, 'a tab name still opens the tab');
+  const f3 = runConsoleCommand({ op: 'get', target: 'console.settings', path: 'field:axf.help.mode' }, ctx);
+  ok(f3.ok && f3.data.value === 'false', 'get reads a field value');
+  const f4 = runConsoleCommand({ op: 'get', target: 'console.settings', path: 'token-control/axf.hub.token' }, ctx);
+  ok(f4.ok && f4.data.value === null, 'a secret reads as null');
+  const f5 = runConsoleCommand({ op: 'list', target: 'console.settings', select: { q: 'help' } }, ctx);
+  ok(f5.ok && (f5.data.items as { kind: string }[]).some((i) => i.kind === 'field'), 'a search lists fields after tabs');
+  const f6 = runConsoleCommand({ op: 'list', target: 'console.settings' }, ctx);
+  ok(f6.ok && !(f6.data.items as { kind: string }[]).some((i) => i.kind === 'field'), 'no search = tabs only');
+  ok(gated({ op: 'act', target: 'console.settings', path: 'text size', action: 'open' }, ['control.console.navigate']).ok, 'opening a field needs navigate only');
+  eq(consoleFieldValue({ type: 'toggle' }, 'on'), { value: true }, 'toggle on');
+  eq(consoleFieldValue({ type: 'toggle' }, 'toggle', true), { value: false }, 'toggle flips');
+  eq(consoleFieldValue({ type: 'slider', min: 80, max: 140 }, '120'), { value: 120 }, 'slider number');
+  ok(consoleFieldValue({ type: 'slider', min: 80, max: 140 }, '200').error, 'out of range refused');
+  eq(consoleFieldValue({ kind: 'choice', options: [{ value: 'tabs-top', label: 'Top' }] }, 'TABS-TOP'), { value: 'tabs-top' }, 'a choice by value, any case (SettingSpec shape)');
+  ok(consoleFieldValue({ type: 'choice', options: ['a'] }, 'b').error, 'unknown choice refused');
+  eq(consoleFieldValue({ type: 'multi_choice', options: ['a', 'b'] }, 'a, b'), { value: ['a', 'b'] }, 'multi choice');
+  eq(consoleFieldValue({ type: 'text' }, 'https://x:1'), { value: 'https://x:1' }, 'text as sent');
+  ok(consoleFieldValue({ type: 'action' }, 'x').error, 'an action row has no value');
+  const s1 = runConsoleCommand({ op: 'act', target: 'console.actions', path: 'settings.set', action: 'run', input: { args: ['axf.help.mode', 'on'] } }, { ...ctx, clients: [{ ...clients[0], catalog: consoleCatalogFrom(entries, [...actions, { id: 'settings.set', meta: { label: 'Change one setting', params: true, effect: 'write' } }]) }] });
+  ok(s1.ok && s1.deliver!.message.spec === 'settings.set:axf.help.mode:on', 'settings.set runs through console.actions');
 }
 
 /* ---- liveness + late commands ---- */

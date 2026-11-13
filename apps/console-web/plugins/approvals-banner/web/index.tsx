@@ -48,6 +48,7 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { WatchLiveFor } from '@console/watchLive';
 import './approvals-banner.css';
 import { appMenu, WAITING, WAITING_LIST } from './menu';
+import { nextPopup, POPUP_GONE_CLOSE_MS, vetoGone } from './popup';
 
 const ID = 'ai.amberx.axf.console.approvals-banner';
 const FOLDER = 'approvals-banner';
@@ -61,14 +62,18 @@ const save = (k: string, v: string) => { try { globalThis.localStorage?.setItem(
 export const autoOpenOn = () => load(AUTO_KEY) !== 'off';
 const opened = new Set<string>((load(OPENED_KEY) ?? '').split(',').filter(Boolean));
 let reviewing: string | null = null;
-/** Open each new request once, in the console, unless switched off or one is already on screen. */
-function autoOpen(pending: { id: string }[]) {
-  if (!runtime || !autoOpenOn() || reviewing) return;
-  const next = pending.find((p) => !opened.has(p.id));
+/**
+ * Open each new request once, in the app, unless switched off or one still waiting is already on screen. `live`: the
+ * ones that may pop up (in order); `allLive`: every call still waiting or held. A call on screen that was decided
+ * elsewhere (the phone's notification, the hub) no longer blocks the next one (popup.ts).
+ */
+function autoOpen(live: { id: string }[], allLive: { id: string }[]) {
+  if (!runtime || !autoOpenOn()) return;
+  const next = nextPopup(opened, reviewing, live.map((p) => p.id), allLive.map((p) => p.id));
   if (!next) return;
-  opened.add(next.id);
+  opened.add(next);
   save(OPENED_KEY, [...opened].slice(-50).join(','));
-  openReview(next.id);
+  openReview(next);
 }
 export function openReview(id: string) {
   // A held call opens the veto screen (Deny / Approve / Shelve), a call waiting for an approval its details here.
@@ -153,8 +158,8 @@ export async function checkNow(): Promise<void> {
     const status: Status = a.status === 'idle' ? 'unreachable' : a.status;
     set({ hub, status, count: ok ? Math.max(pending.length, a.count - held.length) : 0, pending, held, items, approvalsUrl: a.approvalsUrl, checkedAt: new Date().toISOString(), error: a.error });
     watch.update(held);
-    // Shelved calls wait quietly: they don't pop up again.
-    autoOpen([...held.filter((c) => !c.shelved && !c.approvedNow), ...pending]);
+    // Every held call on its countdown and every request pops up once; shelved calls wait quietly.
+    autoOpen([...held.filter((c) => !c.shelved && !c.approvedNow), ...pending], [...held, ...pending]);
   } finally {
     inflight = false;
   }
@@ -425,7 +430,15 @@ function ReviewDialog({ id }: { id: string }) {
 function VetoDialog({ id }: { id: string }) {
   const s = useApprovals();
   const c = s.held.find((x) => x.id === id) ?? null;
+  const [openedAt] = useState(() => Date.now());
   useEffect(() => { const t = setInterval(() => void checkNow(), 3_000); return () => { clearInterval(t); if (reviewing === id) reviewing = null; }; }, [id]);
+  // Decided elsewhere (the phone's notification, the hub) or ran: say so, then close, so the next held call pops up.
+  const gone = vetoGone({ held: !!c, status: s.status, checkedAt: s.checkedAt, openedAt });
+  useEffect(() => {
+    if (!gone) return;
+    const t = setTimeout(() => { if (reviewing === id) { reviewing = null; runtime?.closeDialog(); } }, POPUP_GONE_CLOSE_MS);
+    return () => clearTimeout(t);
+  }, [gone, id]);
   return <VetoScreen c={c} deps={deps} onClose={() => { if (reviewing === id) reviewing = null; runtime?.closeDialog(); }} />;
 }
 
@@ -469,7 +482,7 @@ function StatusPanel() {
 export const plugin: AxfWebLibrary = {
   id: ID, // equals plugin.json "id"
   label: 'Approvals banner',
-  version: '0.6.0',
+  version: '0.6.1',
   appMenu,
   appMenuProviders: {
     [WAITING_LIST]: {
