@@ -781,8 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 01:42 UTC · `everything-on-tokens-before-skins-fix-the-27-open-check-theme-problems-and-the` note (all) · orchestrator
-- 2026-11-13 01:44 UTC · `full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app` → running, note (all) · pipeline
 - 2026-11-13 01:44 UTC · `full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app` branch claude/full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app (all) · pipeline
 - 2026-11-13 01:44 UTC · `full-voice-and-ai-control-of-everything-in-the-console-before-the-android-app` note (all) · orchestrator
 - 2026-11-13 01:46 UTC · `server-every-failed-merge-alerts-brett-immediately-and-retries-by-itself-until` → running, note (all) · pipeline
@@ -1181,6 +1179,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 10:46 UTC · `merges-are-only-merged-once-github-confirms-every-merge-path-console-auto-me` s11 done (all) · orchestrator
 - 2026-11-13 10:47 UTC · `console-and-axhub-retry-failed-calls-themselves-no-claude-needed` PR #561 (all) · builds-live
 - 2026-11-13 10:47 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` s15 done (all) · orchestrator
+- 2026-11-13 10:47 UTC · `console-and-axhub-retry-failed-calls-themselves-no-claude-needed` s3 done, → built (all) · orchestrator
+- 2026-11-13 10:47 UTC · `console-and-axhub-retry-failed-calls-themselves-no-claude-needed` note (all) · orchestrator
 
 ## Token passes (log)
 

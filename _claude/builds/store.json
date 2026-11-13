@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4234,
- "updatedAt": "2026-11-13T10:47:35.511Z",
+ "rev": 4235,
+ "updatedAt": "2026-11-13T10:47:51.854Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -160984,7 +160984,7 @@
    "branch": "claude/console-and-axhub-retry-failed-calls-themselves-no-claude-needed",
    "pr": "#561",
    "createdAt": "2026-11-12T02:37:24.132Z",
-   "updatedAt": "2026-11-13T10:47:17.701Z",
+   "updatedAt": "2026-11-13T10:47:37.420Z",
    "builtAt": "",
    "notes": [
     {
@@ -161050,6 +161050,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-console-and-axhub-retry-failed-calls-themselves---joey, own login copy)",
      "at": "2026-11-13T10:43:12.156Z"
+    },
+    {
+     "text": "PR #510 had been closed and its branch deleted after the queue kicked it out (agent-slots help.json + help coverage 99.8%). Rebased the same commits on main, added the 3 missing help entries (coverage 100%), all retry tests re-run green. New PR #561; landing through the merge queue. Gaps: no UI Review shots (local console can't reach axHub from the build sandbox); AmberX FYI on live is left to the lander/deploy, not polled.",
+     "at": "2026-11-13T10:47:37.420Z"
     }
    ],
    "approvals": [],
@@ -161221,7 +161225,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 41,
+   "rev": 42,
    "deleted": false,
    "deletedAt": "",
    "pending": {
