@@ -96,7 +96,7 @@ class ControlError(Exception):
 
 
 def ok(verb: str, address: str | None = None, **data: Any) -> dict[str, Any]:
-    return {"$axf": FRAME, "ok": True, "verb": verb, **({"address": address} if address else {}), **data}
+    return {"$axf": FRAME, "ok": True, "verb": verb, **({"address": address} if address else {}), **{k: v for k, v in data.items() if v is not None}}
 
 
 # ---------------------------------------------------------------------- settings
@@ -255,3 +255,110 @@ def check_press(spec: dict[str, Any] | None, address: str, confirm: Any) -> None
         raise ControlError("denied", f"{label} is a decision only Brett makes with his own tap", requires="person", personOnly=True)
     if destructive and not confirm:
         raise ControlError("confirmation_required", f"{label} deletes or resets something: send it again with confirm", confirm="required")
+
+
+# ---------------------------------------------------------------------- plugins
+
+def _ctx() -> Any:
+    try:
+        import console_context  # the console's core context (plugin table, enable / disable)
+        return console_context
+    except Exception:  # noqa: BLE001
+        return None
+
+
+def plugin_spec(ref: str) -> dict[str, Any] | None:
+    """A plugin by address (`plugin:<id>`), manifest id, short id, folder or name (case-insensitive)."""
+    r = (ref or "").strip()
+    r = r.rsplit("/", 1)[-1]
+    r = r[7:] if r.startswith("plugin:") else r
+    low = r.lower()
+    for p in inventory().get("plugins", []) or []:
+        if p.get("id") == r or low == str(p.get("id", "")).lower() or low in [a.lower() for a in p.get("aliases") or []]:
+            return p
+    return None
+
+
+def plugin_enabled(p: dict[str, Any], is_enabled: Any = None) -> bool:
+    fn = is_enabled or getattr(_ctx(), "plugin_enabled", None)
+    if fn is None:
+        return p.get("enabledByDefault") is not False
+    try:
+        return bool(fn(p["folder"]))
+    except Exception:  # noqa: BLE001
+        return p.get("enabledByDefault") is not False
+
+
+def _services_of(p: dict[str, Any]) -> set[str]:
+    return {s[8:] for s in p.get("provides") or [] if s.startswith("service:")}
+
+
+def plugin_dependents(p: dict[str, Any], is_enabled: Any = None) -> list[dict[str, Any]]:
+    """Who needs this plugin: every other plugin that requires (or optionally uses) a service it provides or the plugin
+    itself (the same rule as the plugin inventory engine's dependents_of)."""
+    mine = _services_of(p)
+    out: list[dict[str, Any]] = []
+    for other in inventory().get("plugins", []) or []:
+        if other.get("id") == p.get("id"):
+            continue
+        for required, entries in ((True, other.get("requires") or []), (False, other.get("optional") or [])):
+            for e in entries:
+                svc = e[8:] if e.startswith("service:") else None
+                hit = svc if svc and svc in mine else (e if e == f"plugin:{p['id']}" else None)
+                if hit and not any(d["plugin"] == other["id"] and d["service"] == hit for d in out):
+                    out.append({"plugin": other["id"], "address": other["address"], "name": other["label"], "service": hit, "required": required, "enabled": plugin_enabled(other, is_enabled)})
+    return out
+
+
+def plugin_needs(p: dict[str, Any], is_enabled: Any = None) -> list[dict[str, Any]]:
+    """What this plugin needs that is off right now (a required service no enabled plugin provides)."""
+    out = []
+    plugins = inventory().get("plugins", []) or []
+    for e in p.get("requires") or []:
+        if not e.startswith("service:"):
+            continue
+        svc = e[8:]
+        providers = [x for x in plugins if svc in _services_of(x)]
+        if providers and not any(plugin_enabled(x, is_enabled) for x in providers):
+            out.append({"service": svc, "providers": [x["address"] for x in providers]})
+    return out
+
+
+def plugin_state(p: dict[str, Any], is_enabled: Any = None) -> dict[str, Any]:
+    deps = plugin_dependents(p, is_enabled)
+    return {"address": p["address"], "kind": "plugin", "label": p["label"], "id": p["id"], "version": p.get("version"), "enabled": plugin_enabled(p, is_enabled),
+            **({"core": True} if p.get("core") else {}), **({"view": p["view"]} if p.get("view") else {}), **({"settingsTab": p["settingsTab"]} if p.get("settingsTab") else {}),
+            "neededBy": [d for d in deps if d["required"]], "usedBy": [d for d in deps if not d["required"]], "needsOff": plugin_needs(p, is_enabled),
+            "can": ["open", "state", "focus", "plugin.enable", "plugin.disable"]}
+
+
+def toggle_plugin(ref: str, enabled: bool, by: str = "", force: bool = False, is_enabled: Any = None, set_enabled: Any = None) -> dict[str, Any]:
+    """plugin.enable / plugin.disable without a browser. A core plugin, or one an enabled plugin requires, refuses to
+    turn off (invalid, naming why); the answer reports the dependency effects either way."""
+    verb = "plugin.enable" if enabled else "plugin.disable"
+    p = plugin_spec(ref)
+    if p is None:
+        near = [x["address"] for x in inventory().get("plugins", []) if (ref or "").lower().split(":")[-1][:4] in x["label"].lower()][:5]
+        raise ControlError("not_found", f"no plugin {ref}", nearest=near)
+    deps = plugin_dependents(p, is_enabled)
+    needed_by = [d for d in deps if d["required"] and d["enabled"]]
+    if not enabled:
+        if p.get("core"):
+            raise ControlError("invalid", f"{p['label']} is a core plugin: the console needs it, so it can't be turned off", field="address", reason="core")
+        if needed_by and not force:
+            raise ControlError("invalid", f"{p['label']} can't be turned off: {', '.join(d['name'] for d in needed_by)} need{'s' if len(needed_by) == 1 else ''} it (turn {'that' if len(needed_by) == 1 else 'those'} off first, or send force)",
+                               field="address", reason="needed", neededBy=needed_by)
+    setter = set_enabled or getattr(_ctx(), "set_plugin_enabled", None)
+    if setter is None:
+        raise ControlError("unavailable", "the console server isn't running here", because="no server")
+    was = plugin_enabled(p, is_enabled)
+    setter(p["folder"], enabled)
+    effects: dict[str, Any] = {}
+    if not enabled:
+        effects["stopsWorking"] = needed_by
+        effects["loses"] = [d for d in deps if not d["required"] and d["enabled"]]
+    else:
+        effects["needsOff"] = plugin_needs(p, is_enabled)
+        effects["nowWorks"] = [d for d in deps if d["required"] and d["enabled"]]
+    return ok(verb, p["address"], plugin=p["id"], enabled=enabled, changed=[p["address"]] if was != enabled else [], effects=effects,
+              reload="the open console reloads its plugin list" if was != enabled else None, **({"by": by} if by else {}))

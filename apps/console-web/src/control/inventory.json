@@ -9,7 +9,8 @@
     "settingsTabs": 67,
     "settings": 85,
     "functions": 218,
-    "buttons": 62
+    "buttons": 62,
+    "plugins": 67
   },
   "views": [
     {
@@ -7600,6 +7601,1672 @@
       ],
       "icon": "info",
       "source": "app-menu/console"
+    }
+  ],
+  "plugins": [
+    {
+      "address": "plugin:ai.amberx.axf.console.activity",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.activity",
+      "label": "Activity banner",
+      "folder": "activity",
+      "version": "0.4.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "activity",
+        "Activity banner",
+        "A banner at the top of the console whenever anything is built, edited, deleted,"
+      ],
+      "aliases": [
+        "activity",
+        "activity banner"
+      ],
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=activity",
+      "provides": [
+        "service:axf.activity@1"
+      ],
+      "requires": [],
+      "optional": [
+        "service:axf.changes@1",
+        "service:axf.live-sessions@1",
+        "service:axf.syscheck@1"
+      ]
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.agent-manager",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.agent-manager",
+      "label": "Agent manager",
+      "folder": "agent-manager",
+      "version": "0.2.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "agent-manager",
+        "Agent manager",
+        "Create, edit, manage and orchestrate AI agents built from personas, lingo, skill"
+      ],
+      "aliases": [
+        "agent-manager",
+        "agent manager"
+      ],
+      "view": "view:agent-manager",
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=agent-manager",
+      "provides": [
+        "service:axf.agents@1"
+      ],
+      "requires": [],
+      "optional": [
+        "service:axf.llm@1",
+        "service:axf.containers@1",
+        "service:axf.snapshots@1"
+      ]
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.agent-slots",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.agent-slots",
+      "label": "Agent cap",
+      "folder": "agent-slots",
+      "version": "0.1.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "agent-slots",
+        "Agent cap",
+        "A configurable cap on how many headless Claude sessions and builds run at once o"
+      ],
+      "aliases": [
+        "agent-slots",
+        "agent cap"
+      ],
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=agent-slots",
+      "provides": [
+        "service:axf.agent-slots@1"
+      ],
+      "requires": [],
+      "optional": [
+        "service:axf.health@1"
+      ]
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.agent-swarm",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.agent-swarm",
+      "label": "Agent swarm",
+      "folder": "agent-swarm",
+      "version": "0.3.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "agent-swarm",
+        "Agent swarm",
+        "Headless specialist agents for the Build orchestrator"
+      ],
+      "aliases": [
+        "agent-swarm",
+        "agent swarm"
+      ],
+      "view": "view:agent-swarm",
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=agent-swarm",
+      "provides": [
+        "service:agent-jobs@1",
+        "service:axf.crew@1",
+        "service:axf.swarm-roster@1",
+        "service:crew-sections@1",
+        "service:axf.crew-sections@1"
+      ],
+      "requires": [],
+      "optional": []
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.agent-voice",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.agent-voice",
+      "label": "Agent voice",
+      "folder": "agent-voice",
+      "version": "0.1.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "agent-voice",
+        "Agent voice",
+        "Agents speak"
+      ],
+      "aliases": [
+        "agent-voice",
+        "agent voice"
+      ],
+      "view": "view:agent-voice",
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=agent-voice",
+      "provides": [
+        "service:axf.agent-voice@1",
+        "service:axf.speech@1"
+      ],
+      "requires": [],
+      "optional": [
+        "service:axf.agents@1"
+      ]
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.ai-assistant",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.ai-assistant",
+      "label": "AI assistant",
+      "folder": "ai-assistant",
+      "version": "0.3.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "ai-assistant",
+        "AI assistant",
+        "The framework's assistant (assistant@1) in the Dev Console"
+      ],
+      "aliases": [
+        "ai-assistant",
+        "ai assistant"
+      ],
+      "view": "view:ai-assistant",
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=ai-assistant",
+      "provides": [
+        "service:axf.llm@1",
+        "service:axf.live-sessions@1"
+      ],
+      "requires": [],
+      "optional": [
+        "service:axf.agents@1",
+        "service:axf.containers@1",
+        "service:axf.live-host@1"
+      ]
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.ai-keys",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.ai-keys",
+      "label": "AI keys",
+      "folder": "ai-keys",
+      "version": "0.5.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "ai-keys",
+        "AI keys",
+        "A dialog that keeps several Anthropic keys (API keys in any Anthropic format, sk"
+      ],
+      "aliases": [
+        "ai-keys",
+        "ai keys"
+      ],
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=ai-keys",
+      "provides": [
+        "service:axf.ai-keys@1"
+      ],
+      "requires": [],
+      "optional": [
+        "service:axf.llm@1",
+        "service:axf.vinny@1",
+        "service:axf.claude-accounts@1"
+      ]
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.alerts-bell",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.alerts-bell",
+      "label": "Alerts bell",
+      "folder": "alerts-bell",
+      "version": "0.1.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "alerts-bell",
+        "Alerts bell",
+        "The developer alerts bell on the banner (it used to sit on the toolbar)"
+      ],
+      "aliases": [
+        "alerts-bell",
+        "alerts bell"
+      ],
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=alerts-bell",
+      "provides": [],
+      "requires": [],
+      "optional": []
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.amberx-listeners",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.amberx-listeners",
+      "label": "AmberX listeners",
+      "folder": "amberx-listeners",
+      "version": "0.1.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "amberx-listeners",
+        "AmberX listeners",
+        "Every AmberX device's background listeners in the Dev Console (listener@1)"
+      ],
+      "aliases": [
+        "amberx-listeners",
+        "amberx listeners"
+      ],
+      "view": "view:amberx-listeners",
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=amberx-listeners",
+      "provides": [],
+      "requires": [],
+      "optional": []
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.approvals-banner",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.approvals-banner",
+      "label": "Approvals banner",
+      "folder": "approvals-banner",
+      "version": "0.6.1",
+      "detail": "Plugin · module",
+      "keywords": [
+        "approvals-banner",
+        "Approvals banner",
+        "The veto banner"
+      ],
+      "aliases": [
+        "approvals-banner",
+        "approvals banner"
+      ],
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=approvals-banner",
+      "provides": [],
+      "requires": [],
+      "optional": []
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.audio-extract",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.audio-extract",
+      "label": "Audio Extract",
+      "folder": "audio-extract",
+      "version": "0.1.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "audio-extract",
+        "Audio Extract",
+        "Pulls the audio out of videos on the phone into audio files (screen recordings f"
+      ],
+      "aliases": [
+        "audio-extract",
+        "audio extract"
+      ],
+      "enabledByDefault": false,
+      "view": "view:audio-extract",
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=audio-extract",
+      "provides": [],
+      "requires": [],
+      "optional": []
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.basic-filter",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.basic-filter",
+      "label": "Basic filter",
+      "folder": "basic-filter",
+      "version": "0.1.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "basic-filter",
+        "Basic filter",
+        "A sort & filter dialog (search, rules on any column, match all / any, multi-leve"
+      ],
+      "aliases": [
+        "basic-filter",
+        "basic filter"
+      ],
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=basic-filter",
+      "provides": [],
+      "requires": [],
+      "optional": []
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.brand-library",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.brand-library",
+      "label": "Brand library",
+      "folder": "brand-library",
+      "version": "0.1.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "brand-library",
+        "Brand library",
+        "Browse the framework's brand library"
+      ],
+      "aliases": [
+        "brand-library",
+        "brand library"
+      ],
+      "view": "view:brand-library",
+      "provides": [],
+      "requires": [],
+      "optional": []
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.build-breaker",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.build-breaker",
+      "label": "Build Breaker",
+      "folder": "build-breaker",
+      "version": "0.1.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "build-breaker",
+        "Build Breaker",
+        "Everything Brett ever asked for, in plain English (build-asks@1)"
+      ],
+      "aliases": [
+        "build-breaker",
+        "build breaker"
+      ],
+      "view": "view:build-breaker",
+      "provides": [],
+      "requires": [],
+      "optional": []
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.build-orchestrator",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.build-orchestrator",
+      "label": "Build orchestrator",
+      "folder": "build-orchestrator",
+      "version": "0.5.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "build-orchestrator",
+        "Build orchestrator",
+        "Breaks every build into small steps (10 min or less; checkpoints inside one sess"
+      ],
+      "aliases": [
+        "build-orchestrator",
+        "build orchestrator"
+      ],
+      "view": "view:build-orchestrator",
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=build-orchestrator",
+      "provides": [
+        "service:orchestrator@1",
+        "service:axf.build-dispatch@1"
+      ],
+      "requires": [],
+      "optional": [
+        "service:axf.agent-slots@1",
+        "service:axf.merge-queue@1",
+        "service:plans@1",
+        "service:ui-review@1"
+      ]
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.build-profiles",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.build-profiles",
+      "label": "Build profiles",
+      "folder": "build-profiles",
+      "version": "0.1.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "build-profiles",
+        "Build profiles",
+        "Pick and save the build profile the console works on"
+      ],
+      "aliases": [
+        "build-profiles",
+        "build profiles"
+      ],
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=build-profiles",
+      "provides": [],
+      "requires": [],
+      "optional": []
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.builds-page",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.builds-page",
+      "label": "Builds",
+      "folder": "builds-page",
+      "version": "0.1.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "builds-page",
+        "Builds",
+        "One Builds page over the one builds store (builds@1, owned by the Build orchestr"
+      ],
+      "aliases": [
+        "builds-page",
+        "builds"
+      ],
+      "view": "view:builds",
+      "provides": [],
+      "requires": [],
+      "optional": []
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.changes-grid",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.changes-grid",
+      "label": "Changes & features grid",
+      "folder": "changes-grid",
+      "version": "0.1.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "changes-grid",
+        "Changes & features grid",
+        "One grid of every change (the Codebase changes log, read through axf"
+      ],
+      "aliases": [
+        "changes-grid",
+        "changes & features grid"
+      ],
+      "view": "view:changes-grid",
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=changes-grid",
+      "provides": [],
+      "requires": [],
+      "optional": [
+        "service:axf.changes@1"
+      ]
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.chat-viewer",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.chat-viewer",
+      "label": "Chat viewer",
+      "folder": "chat-viewer",
+      "version": "0.1.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "chat-viewer",
+        "Chat viewer",
+        "Every session we have, stored as transcripts (session@1) in one searchable store"
+      ],
+      "aliases": [
+        "chat-viewer",
+        "chat viewer"
+      ],
+      "view": "view:chat-viewer",
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=chat-viewer",
+      "provides": [],
+      "requires": [],
+      "optional": []
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.claude-accounts",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.claude-accounts",
+      "label": "Claude accounts",
+      "folder": "claude-accounts",
+      "version": "0.4.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "claude-accounts",
+        "Claude accounts",
+        "Claude accounts on the VPS"
+      ],
+      "aliases": [
+        "claude-accounts",
+        "claude accounts"
+      ],
+      "view": "view:claude-accounts",
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-accounts",
+      "provides": [
+        "service:axf.claude-accounts@1"
+      ],
+      "requires": [
+        "service:axf.headless@1",
+        "service:axf.vinny@1"
+      ],
+      "optional": []
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.claude-badge",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.claude-badge",
+      "label": "Badges",
+      "folder": "claude-badge",
+      "version": "0.5.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "claude-badge",
+        "Badges",
+        "Five banner badges in one plugin"
+      ],
+      "aliases": [
+        "claude-badge",
+        "badges"
+      ],
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-badge",
+      "provides": [],
+      "requires": [],
+      "optional": [
+        "service:axf.llm@1",
+        "service:axf.claude-accounts@1",
+        "service:axf.ai-keys@1",
+        "service:axf.headless@1",
+        "service:axf.vinny@1"
+      ]
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.claude-handoff",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.claude-handoff",
+      "label": "Claude handoff banner",
+      "folder": "claude-handoff",
+      "version": "0.3.1",
+      "detail": "Plugin · module",
+      "keywords": [
+        "claude-handoff",
+        "Claude handoff banner",
+        "Moves AmberX AXF to a new Claude account"
+      ],
+      "aliases": [
+        "claude-handoff",
+        "claude handoff banner"
+      ],
+      "view": "view:claude-handoff",
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-handoff",
+      "provides": [],
+      "requires": [],
+      "optional": []
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.claude-session",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.claude-session",
+      "label": "Claude sessions",
+      "folder": "claude-session",
+      "version": "0.1.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "claude-session",
+        "Claude sessions",
+        "Every Claude session (voice and chat Amber, Claude Code, headless builds) works"
+      ],
+      "aliases": [
+        "claude-session",
+        "claude sessions"
+      ],
+      "provides": [],
+      "requires": [],
+      "optional": [
+        "service:axf.crew@1",
+        "service:axf.agent-slots@1"
+      ]
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.claude-settings",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.claude-settings",
+      "label": "Claude",
+      "folder": "claude-settings",
+      "version": "0.1.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "claude-settings",
+        "Claude",
+        "Claude settings (claude-settings@1)"
+      ],
+      "aliases": [
+        "claude-settings",
+        "claude"
+      ],
+      "view": "view:claude-settings",
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=claude-settings",
+      "provides": [
+        "service:axf.claude-settings@1"
+      ],
+      "requires": [
+        "service:control@1"
+      ],
+      "optional": []
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.codebase-changes",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.codebase-changes",
+      "label": "Codebase changes banner",
+      "folder": "codebase-changes",
+      "version": "0.1.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "codebase-changes",
+        "Codebase changes banner",
+        "Every time Claude is asked to build, edit, remove or fix something, an entry is"
+      ],
+      "aliases": [
+        "codebase-changes",
+        "codebase changes banner"
+      ],
+      "view": "view:codebase-changes",
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=codebase-changes",
+      "provides": [
+        "service:axf.changes@1"
+      ],
+      "requires": [],
+      "optional": []
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.console-commands",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.console-commands",
+      "label": "Console commands",
+      "folder": "console-commands",
+      "version": "0.2.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "console-commands",
+        "Console commands",
+        "Tell Amber (any Claude session) to load a screen and your open console goes ther"
+      ],
+      "aliases": [
+        "console-commands",
+        "console commands"
+      ],
+      "core": true,
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=console-commands",
+      "provides": [
+        "service:console-commands@1"
+      ],
+      "requires": [],
+      "optional": []
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.terminal",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.terminal",
+      "label": "Terminal",
+      "folder": "console-terminal",
+      "version": "0.5.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "terminal",
+        "Terminal",
+        "Windows-style terminal"
+      ],
+      "aliases": [
+        "terminal",
+        "console-terminal"
+      ],
+      "core": true,
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=terminal",
+      "provides": [
+        "service:axf.headless@1",
+        "service:axf.session-feed@1"
+      ],
+      "requires": [],
+      "optional": [
+        "service:axf.containers@1"
+      ]
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.container-access",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.container-access",
+      "label": "Container access",
+      "folder": "container-access",
+      "version": "0.1.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "container-access",
+        "Container access",
+        "The master switch for reaching other containers on the VPS"
+      ],
+      "aliases": [
+        "container-access",
+        "container access"
+      ],
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=container-access",
+      "provides": [
+        "service:axf.containers@1"
+      ],
+      "requires": [],
+      "optional": [
+        "service:axf.snapshots@1"
+      ]
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.context-menu-designer",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.context-menu-designer",
+      "label": "Context menu designer",
+      "folder": "context-menu-designer",
+      "version": "0.2.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "context-menu-designer",
+        "Context menu designer",
+        "Design context menus"
+      ],
+      "aliases": [
+        "context-menu-designer",
+        "context menu designer"
+      ],
+      "view": "view:context-menu-designer",
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=context-menu-designer",
+      "provides": [],
+      "requires": [],
+      "optional": []
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.crew-live",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.crew-live",
+      "label": "Crew",
+      "folder": "crew-live",
+      "version": "0.1.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "crew-live",
+        "Crew",
+        "Every agent working right now, live"
+      ],
+      "aliases": [
+        "crew-live",
+        "crew"
+      ],
+      "view": "view:crew",
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=crew-live",
+      "provides": [],
+      "requires": [],
+      "optional": [
+        "service:axf.headless@1",
+        "service:axf.swarm-roster@1"
+      ]
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.demonstration-designer",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.demonstration-designer",
+      "label": "Demonstration Designer",
+      "folder": "demonstration-designer",
+      "version": "0.1.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "demonstration-designer",
+        "Demonstration Designer",
+        "Pitch the product in three picks and one button"
+      ],
+      "aliases": [
+        "demonstration-designer",
+        "demonstration designer"
+      ],
+      "view": "view:demonstration-designer",
+      "provides": [
+        "service:demonstrations@1"
+      ],
+      "requires": [],
+      "optional": [
+        "axf.speech@1"
+      ]
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.fable-rebuilds",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.fable-rebuilds",
+      "label": "Fable rebuilds",
+      "folder": "fable-rebuilds",
+      "version": "0.1.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "fable-rebuilds",
+        "Fable rebuilds",
+        "Every build parked for Fable in one place"
+      ],
+      "aliases": [
+        "fable-rebuilds",
+        "fable rebuilds"
+      ],
+      "view": "view:fable-rebuilds",
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=fable-rebuilds",
+      "provides": [],
+      "requires": [],
+      "optional": []
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.feature-assist",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.feature-assist",
+      "label": "Feature assistant",
+      "folder": "feature-assist",
+      "version": "0.1.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "feature-assist",
+        "Feature assistant",
+        "Plain-English features for the Feature Planner"
+      ],
+      "aliases": [
+        "feature-assist",
+        "feature assistant"
+      ],
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=feature-assist",
+      "provides": [],
+      "requires": [],
+      "optional": [
+        "service:axf.llm@1",
+        "service:axf.agents@1",
+        "service:axf.containers@1",
+        "service:axf.snapshots@1"
+      ]
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.feature-matrix",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.feature-matrix",
+      "label": "Feature matrix",
+      "folder": "feature-matrix",
+      "version": "0.1.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "feature-matrix",
+        "Feature matrix",
+        "Every build gets a feature matrix (feature-matrix@1)"
+      ],
+      "aliases": [
+        "feature-matrix",
+        "feature matrix"
+      ],
+      "view": "view:feature-matrix",
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=feature-matrix",
+      "provides": [],
+      "requires": [],
+      "optional": [
+        "axf.changes@1"
+      ]
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.follow-amber",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.follow-amber",
+      "label": "Follow Amber",
+      "folder": "follow-amber",
+      "version": "0.1.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "follow-amber",
+        "Follow Amber",
+        "One switch"
+      ],
+      "aliases": [
+        "follow-amber",
+        "follow amber"
+      ],
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=follow-amber",
+      "provides": [
+        "service:follow-amber@1"
+      ],
+      "requires": [],
+      "optional": [
+        "service:console-commands@1"
+      ]
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.github-app",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.github-app",
+      "label": "GitHub",
+      "folder": "github-app",
+      "version": "0.1.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "github-app",
+        "GitHub",
+        "One-click GitHub App for the whole stack (github-app@1)"
+      ],
+      "aliases": [
+        "github-app",
+        "github"
+      ],
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=github-app",
+      "provides": [
+        "service:axf.github-app@1"
+      ],
+      "requires": [],
+      "optional": [
+        "service:axf.health@1"
+      ]
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.glossary-index",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.glossary-index",
+      "label": "Glossary, Index & Demos",
+      "folder": "glossary-index",
+      "version": "0.2.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "glossary-index",
+        "Glossary, Index & Demos",
+        "An encyclopedia of AmberX AXF and the demonstrations written from it"
+      ],
+      "aliases": [
+        "glossary-index",
+        "glossary, index & demos"
+      ],
+      "view": "view:glossary-index",
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=glossary-index",
+      "provides": [
+        "service:glossary@1"
+      ],
+      "requires": [],
+      "optional": []
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.hub-sync",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.hub-sync",
+      "label": "axHub sync",
+      "folder": "hub-sync",
+      "version": "0.1.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "hub-sync",
+        "axHub sync",
+        "Keeps the console's look, settings and (if picked) data on axHub, so every app a"
+      ],
+      "aliases": [
+        "hub-sync",
+        "axhub sync"
+      ],
+      "provides": [],
+      "requires": [],
+      "optional": []
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.main-build-status",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.main-build-status",
+      "label": "Main build status",
+      "folder": "main-build-status",
+      "version": "0.1.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "main-build-status",
+        "Main build status",
+        "A dot on the banner, next to the clock, with the last CI result of the main bran"
+      ],
+      "aliases": [
+        "main-build-status",
+        "main build status"
+      ],
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=main-build-status",
+      "provides": [],
+      "requires": [],
+      "optional": []
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.maintenance",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.maintenance",
+      "label": "Maintenance",
+      "folder": "maintenance",
+      "version": "0.2.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "maintenance",
+        "Maintenance",
+        "Server health and safe clean-up for the VPS (maintenance@1)"
+      ],
+      "aliases": [
+        "maintenance"
+      ],
+      "view": "view:maintenance",
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=maintenance",
+      "provides": [],
+      "requires": [],
+      "optional": [
+        "service:axf.health@1"
+      ]
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.mcp-client",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.mcp-client",
+      "label": "MCP client",
+      "folder": "mcp-client",
+      "version": "0.2.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "mcp-client",
+        "MCP client",
+        "Connect the console to other MCP servers (Streamable HTTP) through the framework"
+      ],
+      "aliases": [
+        "mcp-client",
+        "mcp client"
+      ],
+      "view": "view:mcp",
+      "provides": [],
+      "requires": [],
+      "optional": []
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.md-studio",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.md-studio",
+      "label": "MD Studio",
+      "folder": "md-studio",
+      "version": "0.1.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "md-studio",
+        "MD Studio",
+        "A Markdown browser and editor for every"
+      ],
+      "aliases": [
+        "md-studio",
+        "md studio"
+      ],
+      "view": "view:md-studio",
+      "provides": [],
+      "requires": [],
+      "optional": [
+        "service:axf.notes@1"
+      ]
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.molly-guide",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.molly-guide",
+      "label": "Molly guide",
+      "folder": "molly-guide",
+      "version": "0.1.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "molly-guide",
+        "Molly guide",
+        "Molly's narrated walkthroughs (walkthrough@1) in the console"
+      ],
+      "aliases": [
+        "molly-guide",
+        "molly guide"
+      ],
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=molly-guide",
+      "provides": [],
+      "requires": [],
+      "optional": []
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.notes-browser",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.notes-browser",
+      "label": "Notes",
+      "folder": "notes-browser",
+      "version": "0.1.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "notes-browser",
+        "Notes",
+        "Brett's saved notes in one place"
+      ],
+      "aliases": [
+        "notes-browser",
+        "notes"
+      ],
+      "view": "view:notes",
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=notes-browser",
+      "provides": [
+        "service:axf.notes@1"
+      ],
+      "requires": [],
+      "optional": []
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.notify-control",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.notify-control",
+      "label": "Notifications",
+      "folder": "notify-control",
+      "version": "0.2.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "notify-control",
+        "Notifications",
+        "The one Notifications control panel"
+      ],
+      "aliases": [
+        "notify-control",
+        "notifications"
+      ],
+      "view": "view:notify-control",
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=notify-control",
+      "provides": [
+        "service:axf.notify@1"
+      ],
+      "requires": [],
+      "optional": [
+        "service:control@1",
+        "service:axf.claude-settings@1"
+      ]
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.output-recorder",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.output-recorder",
+      "label": "Audio Output Recorder",
+      "folder": "output-recorder",
+      "version": "0.3.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "output-recorder",
+        "Audio Output Recorder",
+        "Records everything the phone plays while it is on (AudioPlaybackCapture; the mic"
+      ],
+      "aliases": [
+        "output-recorder",
+        "audio output recorder"
+      ],
+      "view": "view:output-recorder",
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=output-recorder",
+      "provides": [],
+      "requires": [],
+      "optional": []
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.plan-studio",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.plan-studio",
+      "label": "Plan Studio",
+      "folder": "plan-studio",
+      "version": "0.1.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "plan-studio",
+        "Plan Studio",
+        "Every plan in one place (plan@1"
+      ],
+      "aliases": [
+        "plan-studio",
+        "plan studio"
+      ],
+      "view": "view:plan-studio",
+      "provides": [
+        "service:plans@1"
+      ],
+      "requires": [],
+      "optional": [
+        "axf.llm@1",
+        "axf.agent-voice@1"
+      ]
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.plugin-commands",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.plugin-commands",
+      "label": "Plugin commands",
+      "folder": "plugin-commands",
+      "version": "0.1.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "plugin-commands",
+        "Plugin commands",
+        "Every plugin, existing and new, exposes all of its commands and reads automatica"
+      ],
+      "aliases": [
+        "plugin-commands",
+        "plugin commands"
+      ],
+      "view": "view:plugin-commands",
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=plugin-commands",
+      "provides": [
+        "service:plugin-commands@1"
+      ],
+      "requires": [],
+      "optional": [
+        "control@1",
+        "console-commands@1"
+      ]
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.plugin-manager",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.plugin-manager",
+      "label": "Plugin Manager",
+      "folder": "plugin-manager",
+      "version": "0.2.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "plugin-manager",
+        "Plugin Manager",
+        "Every console plugin in one place"
+      ],
+      "aliases": [
+        "plugin-manager",
+        "plugin manager"
+      ],
+      "core": true,
+      "view": "view:plugin-manager",
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=plugin-manager",
+      "provides": [],
+      "requires": [],
+      "optional": []
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.plugin-switches",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.plugin-switches",
+      "label": "Plugin switches",
+      "folder": "plugin-switches",
+      "version": "0.1.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "plugin-switches",
+        "Plugin switches",
+        "A pop-up dialog with a simple list of every plugin and a switch to turn each one"
+      ],
+      "aliases": [
+        "plugin-switches",
+        "plugin switches"
+      ],
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=plugin-switches",
+      "provides": [],
+      "requires": [],
+      "optional": []
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.plugin-update",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.plugin-update",
+      "label": "Plugin Update",
+      "folder": "plugin-update",
+      "version": "0.1.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "plugin-update",
+        "Plugin Update",
+        "Every installed plugin with the model that built it, when it was built and its v"
+      ],
+      "aliases": [
+        "plugin-update",
+        "plugin update"
+      ],
+      "view": "view:plugin-update",
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=plugin-update",
+      "provides": [],
+      "requires": [],
+      "optional": []
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.plugins-menu",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.plugins-menu",
+      "label": "Plugins menu",
+      "folder": "plugins-menu",
+      "version": "0.1.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "plugins-menu",
+        "Plugins menu",
+        "Right-click (or long-press) anywhere → Plugins"
+      ],
+      "aliases": [
+        "plugins-menu",
+        "plugins menu"
+      ],
+      "provides": [],
+      "requires": [],
+      "optional": []
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.project-switcher",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.project-switcher",
+      "label": "Project switcher",
+      "folder": "project-switcher",
+      "version": "0.1.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "project-switcher",
+        "Project switcher",
+        "Separate workspaces"
+      ],
+      "aliases": [
+        "project-switcher",
+        "project switcher"
+      ],
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=projects",
+      "provides": [],
+      "requires": [],
+      "optional": []
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.project-wizard",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.project-wizard",
+      "label": "Project wizard",
+      "folder": "project-wizard",
+      "version": "1.0.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "project-wizard",
+        "Project wizard",
+        "Turns a GitHub repo, a VPS repo, a folder or a new AXF app into a Claude project"
+      ],
+      "aliases": [
+        "project-wizard",
+        "project wizard"
+      ],
+      "view": "view:project-wizard",
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=project-wizard",
+      "provides": [],
+      "requires": [],
+      "optional": []
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.push-banner",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.push-banner",
+      "label": "Push banner",
+      "folder": "push-banner",
+      "version": "0.8.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "push-banner",
+        "Push banner",
+        "A banner listing every branch that isn't on main yet in AmberX-AXF and axHub (co"
+      ],
+      "aliases": [
+        "push-banner",
+        "push banner"
+      ],
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=push-banner",
+      "provides": [
+        "service:axf.merge-queue@1"
+      ],
+      "requires": [],
+      "optional": [
+        "service:axf.activity@1"
+      ]
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.ref-links",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.ref-links",
+      "label": "Reference links",
+      "folder": "ref-links",
+      "version": "0.1.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "ref-links",
+        "Reference links",
+        "Text in the banners (In progress, Ready to merge, Merged, Live, the build and st"
+      ],
+      "aliases": [
+        "ref-links",
+        "reference links"
+      ],
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=ref-links",
+      "provides": [
+        "service:ref-links@1"
+      ],
+      "requires": [],
+      "optional": [
+        "service:console-commands@1",
+        "service:ui-review@1",
+        "service:axf.agents@1"
+      ]
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.session-checkin",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.session-checkin",
+      "label": "Session check-in",
+      "folder": "session-checkin",
+      "version": "1.0.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "session-checkin",
+        "Session check-in",
+        "Every new Claude Code session opens with a short group of questions (location fi"
+      ],
+      "aliases": [
+        "session-checkin",
+        "session check-in"
+      ],
+      "view": "view:sessions",
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=session-checkin",
+      "provides": [],
+      "requires": [],
+      "optional": []
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.shipped-features",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.shipped-features",
+      "label": "Shipped features",
+      "folder": "shipped-features",
+      "version": "0.1.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "shipped-features",
+        "Shipped features",
+        "Every individual feature of AmberX-AXF and axHub in one sortable list, from the"
+      ],
+      "aliases": [
+        "shipped-features",
+        "shipped features"
+      ],
+      "view": "view:shipped-features",
+      "provides": [],
+      "requires": [],
+      "optional": []
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.snapshot-manager",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.snapshot-manager",
+      "label": "Snapshot Manager",
+      "folder": "snapshot-manager",
+      "version": "0.1.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "snapshot-manager",
+        "Snapshot Manager",
+        "Snapshots of container files, taken before every approved change and restorable"
+      ],
+      "aliases": [
+        "snapshot-manager",
+        "snapshot manager"
+      ],
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=snapshots",
+      "provides": [
+        "service:axf.snapshots@1"
+      ],
+      "requires": [
+        "service:axf.containers@1"
+      ],
+      "optional": []
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.systems-check",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.systems-check",
+      "label": "Systems check banner",
+      "folder": "systems-check",
+      "version": "0.4.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "systems-check",
+        "Systems check banner",
+        "The systems check, Keys and What's new banners at the top of every view"
+      ],
+      "aliases": [
+        "systems-check",
+        "systems check banner"
+      ],
+      "core": true,
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=systems-check",
+      "provides": [
+        "service:axf.syscheck@1",
+        "service:axf.health@1",
+        "service:axf.github@1"
+      ],
+      "requires": [],
+      "optional": [
+        "service:axf.llm@1",
+        "service:axf.agents@1"
+      ]
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.theme-editor",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.theme-editor",
+      "label": "Theme editor",
+      "folder": "theme-editor",
+      "version": "0.1.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "theme-editor",
+        "Theme editor",
+        "Edit colour and style themes token by token"
+      ],
+      "aliases": [
+        "theme-editor",
+        "theme editor"
+      ],
+      "view": "view:theme-editor",
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=theme-editor",
+      "provides": [],
+      "requires": [
+        "service:axf.token-tree@1"
+      ],
+      "optional": []
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.theme-manager",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.theme-manager",
+      "label": "Theme manager",
+      "folder": "theme-manager",
+      "version": "0.3.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "theme-manager",
+        "Theme manager",
+        "Roll colour themes, or every themeable part a skin leaves open (style, layout an"
+      ],
+      "aliases": [
+        "theme-manager",
+        "theme manager"
+      ],
+      "view": "view:theme-manager",
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=theme-manager",
+      "provides": [
+        "service:axf.token-tree@1"
+      ],
+      "requires": [],
+      "optional": []
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.todo-manager",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.todo-manager",
+      "label": "Todo manager",
+      "folder": "todo-manager",
+      "version": "0.1.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "todo-manager",
+        "Todo manager",
+        "Lists with nested groups holding notes, to-dos and tasks (subtasks, checklists,"
+      ],
+      "aliases": [
+        "todo-manager",
+        "todo manager"
+      ],
+      "view": "view:todo-manager",
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=todo-manager",
+      "provides": [],
+      "requires": [],
+      "optional": []
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.token-control",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.token-control",
+      "label": "Token control",
+      "folder": "token-control",
+      "version": "0.2.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "token-control",
+        "Token control",
+        "One API, MCP server and CLI for everything control@1 covers"
+      ],
+      "aliases": [
+        "token-control",
+        "token control"
+      ],
+      "view": "view:token-control",
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=token-control",
+      "provides": [
+        "service:control@1"
+      ],
+      "requires": [],
+      "optional": [
+        "plans@1"
+      ]
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.ui-review",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.ui-review",
+      "label": "UI Review",
+      "folder": "ui-review",
+      "version": "0.6.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "ui-review",
+        "UI Review",
+        "Every UI a build makes comes here for Brett's approval, one section per kind (op"
+      ],
+      "aliases": [
+        "ui-review",
+        "ui review"
+      ],
+      "view": "view:ui-review",
+      "provides": [
+        "service:ui-review@1",
+        "service:ui-screenshots@1"
+      ],
+      "requires": [],
+      "optional": []
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.voice-notes",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.voice-notes",
+      "label": "Voice notes",
+      "folder": "voice-notes",
+      "version": "0.2.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "voice-notes",
+        "Voice notes",
+        "Sets up a voice-activated notes pusher and shows the notes it saved"
+      ],
+      "aliases": [
+        "voice-notes",
+        "voice notes"
+      ],
+      "view": "view:voice-notes",
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=voice-notes",
+      "provides": [],
+      "requires": [],
+      "optional": []
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.whats-shipped",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.whats-shipped",
+      "label": "What's new",
+      "folder": "whats-shipped",
+      "version": "0.1.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "whats-shipped",
+        "What's new",
+        "A What's new widget on the banner"
+      ],
+      "aliases": [
+        "whats-shipped",
+        "what's new"
+      ],
+      "provides": [],
+      "requires": [],
+      "optional": []
     }
   ]
 }
