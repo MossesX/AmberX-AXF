@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T18:52:57.411Z",
+ "updatedAt": "2026-11-13T18:53:14.612Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -127800,7 +127800,7 @@
    "title": "UI Manager: floating window to select any element in the console and edit all its tokens",
    "category": "",
    "detail": "UI Manager (console plugin), opens in a floating window.\n- Lets Brett select ANY UI element in the whole console (every screen, plugin, dialog, toolbar, tab group, banner, nav, widget, control).\n- Left: collapsible categorized tree of all elements. Top category 'On screen now' lists every element currently visible; these are references (like Windows shortcuts / symlinks) to the same element that also lives in its normal category - both point to one shared source, edit either and both change.\n- Selecting an element (or picking it on screen with an inspector/picker mode) opens it according to the chosen view (several views: expanding row, side panel, grid...). Default: an expanding row listing all its properties and every token it reads.\n- Each property/token is edited by choosing from predetermined, valid values supplied by the console/framework integration (token sets, skins, assets, enums, ranges) - never free text where a valid list exists; schema-validated; live preview; reset to skin/default; shows overrides.\n- Searchable, sortable, multi-filter lists everywhere (thousands of elements).\n- Full API: REST/MCP/CLI/voice/control@1 ('select the main toolbar, set its transparency to 80').\n- Elements register via the framework (manifest) so new plugins appear automatically.\n- Tests, help, Shipped features. Fable for the element registry/schema core, Opus for UI.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -127808,7 +127808,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:30:38.922Z",
-   "updatedAt": "2026-11-13T18:52:22.088Z",
+   "updatedAt": "2026-11-13T18:53:12.406Z",
    "builtAt": "",
    "notes": [
     {
@@ -127858,6 +127858,10 @@
     {
      "text": "Headless run axf-ui-manager-floating-window-to-select-any--earl: brief only · start 13.0K tokens ($0.07) · cost $8.02 · 40 turns · 6 tools, MCP none",
      "at": "2026-11-13T18:52:22.088Z"
+    },
+    {
+     "text": "Started run 2 on mossesx-max- (Fable, Phase 1): axf-ui-manager-floating-window-to-select-any--paulie.",
+     "at": "2026-11-13T18:53:12.406Z"
     }
    ],
    "approvals": [],

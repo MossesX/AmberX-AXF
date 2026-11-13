@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4714,
- "updatedAt": "2026-11-13T18:52:57.411Z",
+ "rev": 4715,
+ "updatedAt": "2026-11-13T18:53:14.612Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -199020,7 +199020,7 @@
    "title": "UI Manager: floating window to select any element in the console and edit all its tokens",
    "category": "",
    "detail": "UI Manager (console plugin), opens in a floating window.\n- Lets Brett select ANY UI element in the whole console (every screen, plugin, dialog, toolbar, tab group, banner, nav, widget, control).\n- Left: collapsible categorized tree of all elements. Top category 'On screen now' lists every element currently visible; these are references (like Windows shortcuts / symlinks) to the same element that also lives in its normal category - both point to one shared source, edit either and both change.\n- Selecting an element (or picking it on screen with an inspector/picker mode) opens it according to the chosen view (several views: expanding row, side panel, grid...). Default: an expanding row listing all its properties and every token it reads.\n- Each property/token is edited by choosing from predetermined, valid values supplied by the console/framework integration (token sets, skins, assets, enums, ranges) - never free text where a valid list exists; schema-validated; live preview; reset to skin/default; shows overrides.\n- Searchable, sortable, multi-filter lists everywhere (thousands of elements).\n- Full API: REST/MCP/CLI/voice/control@1 ('select the main toolbar, set its transparency to 80').\n- Elements register via the framework (manifest) so new plugins appear automatically.\n- Tests, help, Shipped features. Fable for the element registry/schema core, Opus for UI.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -199028,7 +199028,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:30:38.922Z",
-   "updatedAt": "2026-11-13T18:52:22.088Z",
+   "updatedAt": "2026-11-13T18:53:12.406Z",
    "builtAt": "",
    "notes": [
     {
@@ -199078,6 +199078,10 @@
     {
      "text": "Headless run axf-ui-manager-floating-window-to-select-any--earl: brief only · start 13.0K tokens ($0.07) · cost $8.02 · 40 turns · 6 tools, MCP none",
      "at": "2026-11-13T18:52:22.088Z"
+    },
+    {
+     "text": "Started run 2 on mossesx-max- (Fable, Phase 1): axf-ui-manager-floating-window-to-select-any--paulie.",
+     "at": "2026-11-13T18:53:12.406Z"
     }
    ],
    "approvals": [],
@@ -199098,11 +199102,11 @@
     "queuedAt": "2026-11-13T18:30:41.004Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-ui-manager-floating-window-to-select-any--gina",
+    "session": "axf-ui-manager-floating-window-to-select-any--paulie",
     "slot": "",
     "model": "Fable",
-    "launchedAt": "2026-11-13T18:38:11.121Z",
-    "runs": 1,
+    "launchedAt": "2026-11-13T18:53:11.620Z",
+    "runs": 2,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T18:31:36.507Z",
@@ -199114,7 +199118,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-13T18:38:11.121Z",
+    "dispatchedAt": "2026-11-13T18:53:11.620Z",
     "planned": {
      "model": "Fable",
      "account": "mossesx-max-",
@@ -199123,7 +199127,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-13T18:38:11.121Z",
+    "pickedAt": "2026-11-13T18:53:11.620Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -199449,7 +199453,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
