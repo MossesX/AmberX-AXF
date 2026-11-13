@@ -1,11 +1,14 @@
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
-import { setPriorityHost, type PriorityHost } from '@console/axf/react';
+import { flashWhenReady, setPriorityHost, type PriorityHost } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import { FOLDER, OrchestratorPage, TABS, openTab } from './ui';
 import { focusBuild } from './focus';
 import { fillApi, fillSummary, parseDepsArg, parseSettingsArg } from './fill';
+import { FILL_ANCHOR, FillSettingsPanel } from './Settings';
+import { SLOTS_ANCHOR } from './SlotsStrip';
+import { stepsAnchor } from './StepDeps';
 import { BUILD_ACTIONS, type BuildAction } from '@console/axf/core/build-pipeline.mjs';
 
 const ACTION_LABEL: Record<BuildAction, string> = { unqueue: 'Back to Pending', hold: 'Hold (stays in the Queue)', release: 'Release from hold', archive: 'Move to the Archive', unarchive: 'Bring back from the Archive', delete: 'Delete (kept in Deleted)', restore: 'Restore' };
@@ -61,6 +64,10 @@ export const plugin: AxfWebLibrary = {
       let id = '';
       try { id = decodeURIComponent(arg).trim(); } catch { id = arg.trim(); }
       if (!id) return;
+      // fill every slot deep links: build-orchestrator/pipeline/slots and build-orchestrator/<build>/steps
+      if (/^(pipeline\/)?slots$/i.test(id)) { openTab('active'); flashWhenReady(() => document.getElementById(SLOTS_ANCHOR), 5000); return; }
+      const steps = /^(.+?)\/steps$/i.exec(id);
+      if (steps?.[1]) { await open(encodeURIComponent(steps[1])); flashWhenReady(() => document.getElementById(stepsAnchor(steps[1] ?? '')), 8000); return; }
       const tab = tabOf(id);
       if (tab) { openTab(tab); return; }
       // the build: its tab opens and the row there scrolls into view, expands and stays highlighted
@@ -85,6 +92,10 @@ export const plugin: AxfWebLibrary = {
       void open(build || 'active');
       void fill.status(build).then((f) => rt.toast(fillSummary(f), 'info')).catch(fail);
     }, { label: 'Fill every slot: what runs in each agent slot and what starts next (a build adds its steps)', params: true, effect: 'navigate' });
+    rt.actions.register('build-orchestrator.settings', ([arg]) => {
+      rt.dispatch('settings.open:build-orchestrator');
+      if (decodeURIComponent(arg ?? '').replace(/^#/, '') === 'fill') flashWhenReady(() => document.getElementById(FILL_ANCHOR), 5000);
+    }, { label: 'Build orchestrator settings (fill = Fill every slot)', params: true, effect: 'navigate' });
     rt.actions.register('build-orchestrator.pipeline-fill-run', () => {
       void fill.run().then((r) => rt.toast(r.ran ? `Round run: ${r.fill?.launched.length ?? 0} parallel step(s) started` : r.note ?? 'Filed: the dispatcher runs a round within a minute', 'success')).catch(fail);
     }, { label: 'Fill the slots now (one dispatcher round)' });
@@ -137,5 +148,6 @@ export const plugin: AxfWebLibrary = {
   contextMenu: [{ id: 'build-orchestrator.pending', target: 'axf-pending-item', items: [{ id: 'build-orchestrator.open', label: 'Open in Build orchestrator', icon: 'layers', action: 'build-orchestrator.open' }] },
     { id: 'build-orchestrator.default', target: 'default', order: 91, items: [{ id: 'build-orchestrator', label: 'Build orchestrator', icon: 'layers', action: 'nav:build-orchestrator' }] }],
   settingsTabs: [{ id: 'build-orchestrator', label: 'Build orchestrator', icon: 'layers', order: 90, parent: 'plugins' }],
-  settingsPanels: [{ id: 'build-orchestrator.lifecycle', tab: 'build-orchestrator', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
+  settingsPanels: [{ id: 'build-orchestrator.fill', tab: 'build-orchestrator', title: 'Fill every slot', icon: 'layers', order: 10, render: () => <FillSettingsPanel api={pipeApi} /> },
+    { id: 'build-orchestrator.lifecycle', tab: 'build-orchestrator', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> }],
 };

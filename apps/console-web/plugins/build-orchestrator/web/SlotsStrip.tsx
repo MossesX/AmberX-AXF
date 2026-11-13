@@ -18,7 +18,6 @@ const REFRESH_MS = 10_000;
 export const SLOTS_ANCHOR = 'builds-pipeline-slots';
 
 const label = (r: SlotRow) => (r.state === 'free' ? 'free' : `${r.build || r.name}${r.step ? ` · ${r.step}` : ''}`);
-const tone = (r: SlotRow): 'accent' | 'success' | undefined => (r.state === 'free' ? undefined : r.step ? 'accent' : 'success');
 
 export function SlotsStrip({ api, layout = 'chips', onData }: { api: Api; layout?: SlotsLayout; onData?: (f: FillStatus) => void }) {
   const rt = useRuntime();
