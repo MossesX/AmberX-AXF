@@ -1,7 +1,7 @@
 # Skins plugin: removable plugin and screen for changing skins
 
-Build `skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga` · branch
-`claude/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga` · PR #553.
+Build `skins-plugin-own-removable-console` · branch
+`claude/skins-plugin-own-removable-console` · PR #553.
 
 ## What landed
 
@@ -60,7 +60,7 @@ Both sets are waiting for Brett in UI Review (group "skins-plugin-…-ga - Nov 1
 - `r-20261113-142d30e7`: banner chip, 3 options (name = today's default, icon, scope).
 
 The option assets are in `apps/console-web/plugins/skin-gallery/assets/{container,badge}/`, and the choices JSON in `choices/`.
-Shots are in `_claude/builds/reports/skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga/shots/`.
+Shots are in `_claude/builds/reports/skins-plugin-own-removable-console/shots/`.
 They were taken on a local console with no hub (`AXF_APPEARANCE_HUB=off`), on scratch look documents.
 
 ## Gaps and choices made
