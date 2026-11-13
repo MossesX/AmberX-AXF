@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4444,
- "updatedAt": "2026-11-13T12:33:33.619Z",
+ "rev": 4445,
+ "updatedAt": "2026-11-13T12:33:40.417Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -188213,11 +188213,11 @@
     "all"
    ],
    "order": {
-    "all": 786
+    "all": 787
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -188233,28 +188233,59 @@
    "title": "Fix step splitter claude exit 1",
    "category": "",
    "detail": "",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-13T12:33:30.406Z",
-   "updatedAt": "2026-11-13T12:33:30.406Z",
+   "updatedAt": "2026-11-13T12:33:37.587Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Step splitter keeps failing with 'claude exit 1' (stop_sequence, 0 tokens) and falls back to one step per sentence. Seen today on fix-toolbar-settings-doing-nothing and assets-menu builds. PR #526 (pass split prompt on stdin) was kicked out of CI. Find the cause, fix it, replace/rebase #526 and get it green, add a test that a real split returns proper steps.",
+     "at": "2026-11-13T12:33:35.665Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T12:33:37.587Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
+   "pipeline": {
+    "queuedAt": "2026-11-13T12:33:37.189Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
    "steps": [],
    "profiles": [
     "all"
    ],
    "order": {
-    "all": 787
+    "all": 788
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

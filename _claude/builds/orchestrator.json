@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T12:33:33.619Z",
+ "updatedAt": "2026-11-13T12:33:40.417Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -124632,16 +124632,25 @@
    "title": "Fix step splitter claude exit 1",
    "category": "",
    "detail": "",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-13T12:33:30.406Z",
-   "updatedAt": "2026-11-13T12:33:30.406Z",
+   "updatedAt": "2026-11-13T12:33:37.587Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Step splitter keeps failing with 'claude exit 1' (stop_sequence, 0 tokens) and falls back to one step per sentence. Seen today on fix-toolbar-settings-doing-nothing and assets-menu builds. PR #526 (pass split prompt on stdin) was kicked out of CI. Find the cause, fix it, replace/rebase #526 and get it green, add a test that a real split returns proper steps.",
+     "at": "2026-11-13T12:33:35.665Z"
+    },
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T12:33:37.587Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "steps": []
