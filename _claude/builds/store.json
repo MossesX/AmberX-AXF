@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4641,
- "updatedAt": "2026-11-13T18:27:17.878Z",
+ "rev": 4642,
+ "updatedAt": "2026-11-13T18:27:39.932Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -198767,7 +198767,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:26:12.039Z",
-   "updatedAt": "2026-11-13T18:27:16.397Z",
+   "updatedAt": "2026-11-13T18:27:38.403Z",
    "builtAt": "",
    "notes": [
     {
@@ -198777,6 +198777,10 @@
     {
      "text": "Brett: every surface must READ the glass/transparency token (wired in everywhere, always), even if it doesn't apply it. Whether a surface actually goes see-through is its own per-surface/per-instance switch (on/off), not missing wiring.",
      "at": "2026-11-13T18:27:16.397Z"
+    },
+    {
+     "text": "CORRECTION from Brett (replaces the previous note): NO on/off switch. Every surface reads its own transparency token value; the default value is 100% (fully opaque/visible). To make a surface see-through you lower its value. Per surface type tokens in tokens.style, overridable per instance (Quick settings).",
+     "at": "2026-11-13T18:27:38.403Z"
     }
    ],
    "approvals": [],
@@ -198824,7 +198828,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
