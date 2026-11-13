@@ -781,7 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 01:58 UTC · `remove-the-no-new-android-or-kotlin-work-rule-build-android-twins-in-parallel` note (all) · orchestrator
 - 2026-11-13 01:58 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` s1 done (all) · orchestrator
 - 2026-11-13 01:58 UTC · `one-account-picker-choose-the-single-claude-account-the-console-and-vps-builds` s2 done (all) · orchestrator
 - 2026-11-13 02:00 UTC · `remove-the-no-new-android-or-kotlin-work-rule-build-android-twins-in-parallel` s1 done (all) · orchestrator
@@ -1181,6 +1180,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 10:56 UTC · `every-skin-ships-a-light-and-a-dark-colour-theme-studio-pro-executive-field` note (all) · orchestrator
 - 2026-11-13 10:57 UTC · `every-skin-ships-a-light-and-a-dark-colour-theme` note (all) · orchestrator
 - 2026-11-13 10:57 UTC · `android-approval-overlay-a-small-always-on-float` s1 done, → running (all) · orchestrator
+- 2026-11-13 10:58 UTC · `always-fill-every-slot-when-slots-are-free-run-independent-steps-of-running-bu` s17 done (all) · orchestrator
 
 ## Token passes (log)
 
