@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4443,
- "updatedAt": "2026-11-13T12:33:27.860Z",
+ "rev": 4444,
+ "updatedAt": "2026-11-13T12:33:33.619Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -188218,6 +188218,43 @@
    "kind": "build",
    "planRef": "",
    "rev": 2,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "fix-step-splitter-claude-exit-1",
+   "title": "Fix step splitter claude exit 1",
+   "category": "",
+   "detail": "",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-13T12:33:30.406Z",
+   "updatedAt": "2026-11-13T12:33:30.406Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 787
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
