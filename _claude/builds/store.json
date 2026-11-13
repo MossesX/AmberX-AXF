@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4983,
- "updatedAt": "2026-11-13T20:50:56.161Z",
+ "rev": 4984,
+ "updatedAt": "2026-11-13T20:51:21.952Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -203591,7 +203591,7 @@
    "pr": "#653",
    "priority": "P0",
    "createdAt": "2026-11-13T19:33:18.264Z",
-   "updatedAt": "2026-11-13T20:45:34.732Z",
+   "updatedAt": "2026-11-13T20:50:31.450Z",
    "builtAt": "2026-11-13T20:45:34.732Z",
    "notes": [
     {
@@ -203609,6 +203609,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-land-overlay-preview-ui-review-resolve--rhonda, own login copy)",
      "at": "2026-11-13T19:42:22.089Z"
+    },
+    {
+     "text": "Headless run axf-land-overlay-preview-ui-review-resolve--rhonda: brief only · start 11.1K tokens ($0.03) · cost $5.56 · 105 turns · 6 tools, MCP none",
+     "at": "2026-11-13T20:50:31.450Z"
     }
    ],
    "approvals": [],
@@ -203738,7 +203742,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -206799,7 +206803,7 @@
    "mergedAt": "2026-11-13T20:44:56Z",
    "priority": "P0",
    "createdAt": "2026-11-13T20:08:02.821Z",
-   "updatedAt": "2026-11-13T20:46:27.757Z",
+   "updatedAt": "2026-11-13T20:50:47Z",
    "builtAt": "",
    "notes": [
     {
@@ -206833,6 +206837,10 @@
     {
      "text": "Reconciler: PR #650 merged",
      "at": "2026-11-13T20:46:27.757Z"
+    },
+    {
+     "text": "Shipped manifest sm-per-toolbar-settings-fix-failing-chrome rev 1 sent to Shipped features (orchestrator): landed ec579ee23, 4 file(s), 0 test line(s), 2 open.",
+     "at": "2026-11-13T20:50:47Z"
     }
    ],
    "approvals": [],
@@ -206889,6 +206897,12 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "shipped": {
+    "id": "sm-per-toolbar-settings-fix-failing-chrome",
+    "rev": 1,
+    "at": "2026-11-13T20:50:47Z",
+    "landedCommit": "ec579ee23deea45177285e0bf73e8d4a5ab28c6a"
    },
    "steps": [
     {
@@ -206969,7 +206983,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -208053,15 +208067,15 @@
    "title": "Full voice control: resolve inventory.json and land",
    "category": "",
    "detail": "Branch claude/full-voice-control-merge-main-and-land clashed with main only in apps/console-web/src/control/inventory.json (generated control inventory). Merge origin/main, regenerate the inventory from the controls (or union both sides' entries), run the tests, push, then land on main right away.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/full-voice-control-resolve-inventory",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T20:45:58.911Z",
-   "updatedAt": "2026-11-13T20:50:18.024Z",
+   "updatedAt": "2026-11-13T20:50:40.364Z",
    "builtAt": "",
    "notes": [
     {
@@ -208071,6 +208085,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"36a2f5c4-2b04-4c90-b219-2d48a0040534\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-13T20:49:14.342Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-full-voice-control-resolve-inventory--paulie, own login copy)",
+     "at": "2026-11-13T20:50:38.071Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-full-voice-control-resolve-inventory--paulie.",
+     "at": "2026-11-13T20:50:40.364Z"
     }
    ],
    "approvals": [],
@@ -208090,12 +208112,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T20:46:04.321Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-full-voice-control-resolve-inventory--paulie",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-13T20:50:31.267Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T20:49:14.342Z",
@@ -208105,18 +208127,12 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"36a2f5c4-2b04-4c90-b219-2d48a0040534\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-13T20:49:54.173Z",
-     "why": "subscription account mossesx-max-"
-    },
+    "dispatchedAt": "2026-11-13T20:50:31.267Z",
+    "planned": null,
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-13T20:50:31.267Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -208200,7 +208216,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
