@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T06:59:54.057Z",
+ "updatedAt": "2026-11-13T07:00:14.244Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -117895,7 +117895,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T06:54:48.788Z",
-   "updatedAt": "2026-11-13T06:59:37.742Z",
+   "updatedAt": "2026-11-13T07:00:10.726Z",
    "builtAt": "",
    "notes": [
     {
@@ -117927,12 +117927,12 @@
      "at": "2026-11-13T06:57:12.905Z"
     },
     {
-     "text": "Headless run axf-remove-ui-review-as-a-gate-no-screenshots-requir--lenny: brief only · start 15.7K tokens ($0.05) · cost $1.03 · 27 turns · 6 tools, MCP none",
-     "at": "2026-11-13T06:59:37.742Z"
-    },
-    {
      "text": "Double launch: two headless sessions (Greenlight Gina, pid 658490, and Landin' Lenny, pid 661427) were started on mossesx-max- for this build in the same worktree within ~20 s. Gina started first and already committed s1 (879e57848). Lenny stopped without changing any files so the two would not overwrite each other; Gina carries on. Dispatcher should not launch a second session on a build whose worktree already has a live claude-headless run.",
      "at": "2026-11-13T06:59:23.740Z"
+    },
+    {
+     "text": "Headless run axf-remove-ui-review-as-a-gate-no-screenshots-requir--lenny: brief only · start 15.7K tokens ($0.05) · cost $1.03 · 27 turns · 6 tools, MCP none",
+     "at": "2026-11-13T06:59:37.742Z"
     }
    ],
    "approvals": [],
@@ -117994,8 +117994,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T07:00:10.726Z",
      "note": "",
      "uid": "st-mwemiqvi02z4pg",
      "createdAt": "2026-11-13T06:56:37.518Z"

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4084,
- "updatedAt": "2026-11-13T06:59:54.057Z",
+ "rev": 4085,
+ "updatedAt": "2026-11-13T07:00:14.244Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -179731,7 +179731,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T06:54:48.788Z",
-   "updatedAt": "2026-11-13T06:59:37.742Z",
+   "updatedAt": "2026-11-13T07:00:10.726Z",
    "builtAt": "",
    "notes": [
     {
@@ -179763,12 +179763,12 @@
      "at": "2026-11-13T06:57:12.905Z"
     },
     {
-     "text": "Headless run axf-remove-ui-review-as-a-gate-no-screenshots-requir--lenny: brief only · start 15.7K tokens ($0.05) · cost $1.03 · 27 turns · 6 tools, MCP none",
-     "at": "2026-11-13T06:59:37.742Z"
-    },
-    {
      "text": "Double launch: two headless sessions (Greenlight Gina, pid 658490, and Landin' Lenny, pid 661427) were started on mossesx-max- for this build in the same worktree within ~20 s. Gina started first and already committed s1 (879e57848). Lenny stopped without changing any files so the two would not overwrite each other; Gina carries on. Dispatcher should not launch a second session on a build whose worktree already has a live claude-headless run.",
      "at": "2026-11-13T06:59:23.740Z"
+    },
+    {
+     "text": "Headless run axf-remove-ui-review-as-a-gate-no-screenshots-requir--lenny: brief only · start 15.7K tokens ($0.05) · cost $1.03 · 27 turns · 6 tools, MCP none",
+     "at": "2026-11-13T06:59:37.742Z"
     }
    ],
    "approvals": [],
@@ -179869,12 +179869,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T07:00:10.726Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T06:56:37.518Z",
-     "updatedAt": "2026-11-13T06:56:37.518Z"
+     "updatedAt": "2026-11-13T07:00:11.062Z"
     },
     {
      "id": "s3",
@@ -180146,7 +180146,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
