@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4664,
- "updatedAt": "2026-11-13T18:33:20.666Z",
+ "rev": 4665,
+ "updatedAt": "2026-11-13T18:33:35.162Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -198764,7 +198764,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:26:12.039Z",
-   "updatedAt": "2026-11-13T18:32:40.012Z",
+   "updatedAt": "2026-11-13T18:33:12.495Z",
    "builtAt": "",
    "notes": [
     {
@@ -198790,6 +198790,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-transparency-token-works-every-dialog--paulie, own login copy)",
      "at": "2026-11-13T18:28:23.202Z"
+    },
+    {
+     "text": "Headless run axf-transparency-token-works-every-dialog--paulie: brief only · start 12.7K tokens ($0.06) · cost $1.79 · 30 turns · 6 tools, MCP none",
+     "at": "2026-11-13T18:33:12.495Z"
     }
    ],
    "approvals": [],
@@ -198809,12 +198813,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T18:26:13.772Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-transparency-token-works-every-dialog--paulie",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Fable",
+    "launchedAt": "2026-11-13T18:28:19.628Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T18:28:04.217Z",
@@ -198824,12 +198828,18 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"d911adcb-4f63-48f9-93a7-9befa9d2e8dc\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
-    "planned": null,
+    "dispatchedAt": "2026-11-13T18:28:19.628Z",
+    "planned": {
+     "model": "Fable",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-13T18:28:06.807Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-13T18:28:19.628Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -198931,11 +198941,11 @@
     "all"
    ],
    "order": {
-    "all": 804
+    "all": 803
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

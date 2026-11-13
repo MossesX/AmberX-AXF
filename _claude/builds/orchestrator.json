@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-13T18:33:20.666Z",
+ "updatedAt": "2026-11-13T18:33:35.162Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -127621,7 +127621,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:26:12.039Z",
-   "updatedAt": "2026-11-13T18:32:40.012Z",
+   "updatedAt": "2026-11-13T18:33:12.495Z",
    "builtAt": "",
    "notes": [
     {
@@ -127647,6 +127647,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-transparency-token-works-every-dialog--paulie, own login copy)",
      "at": "2026-11-13T18:28:23.202Z"
+    },
+    {
+     "text": "Headless run axf-transparency-token-works-every-dialog--paulie: brief only · start 12.7K tokens ($0.06) · cost $1.79 · 30 turns · 6 tools, MCP none",
+     "at": "2026-11-13T18:33:12.495Z"
     }
    ],
    "approvals": [],
