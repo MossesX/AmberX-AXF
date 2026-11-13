@@ -669,6 +669,7 @@ export function fillStatus({ env = process.env, build = '', now = Date.now() } =
   const store = loadStore(); const state = loadState(); const fill = fillSettings(env); const sl = slotsNow();
   const inputs = fillInputs({ store, state, env, fill, sl, now });
   const plan = BP.planFill(inputs);
+  plan.waits.push(...P.clashWaits(inputs.running, now));
   const sessions = stepRecs(state);
   const rows = (sl.running ?? []).map((r, i) => {
     const rec = Object.values(sessions).find((x) => (r.session && x.session === r.session) || (r.build && x.id === r.build && r.step && x.step === r.step));
@@ -855,7 +856,9 @@ export function fillRound({ state, env = process.env, alert = () => {}, rules, l
   const ended = checkStepEnds({ state, env, alert, now });
   if (!fill.fillSlots) return { launched: [], failed: [], plan: null, ended, settings: fill };
   const store = loadStore();
-  const plan = BP.planFill(fillInputs({ store, state, env, fill, launchedNow, now }));
+  const inputs = fillInputs({ store, state, env, fill, launchedNow, now });
+  const plan = BP.planFill(inputs);
+  plan.waits.push(...P.clashWaits(inputs.running, now));
   const launched = []; const failed = [];
   state.stepRuns = state.stepRuns && typeof state.stepRuns === 'object' ? state.stepRuns : {};
   for (const item of plan.launches.filter((l) => l.kind === 'step')) {

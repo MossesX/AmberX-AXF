@@ -147,6 +147,66 @@ try:
             code = e.status_code
         check(code == want, f"action {body}: {want}")
     check(set(srv.BUILD_ACTIONS) == {"unqueue", "hold", "release", "archive", "unarchive", "delete", "restore"} and "archive" in srv.PIPELINE_TABS and "deleted" in srv.PIPELINE_TABS, "no hard delete: actions and the Archive / Deleted tabs")
+    # ---- fill every slot (Nov 13 2026): GET /pipeline/fill, POST /pipeline/fill/run, steps/:step/deps, fill settings
+    srv.pipeline_fill()
+    check(_calls[-1][2:4] == ["fill", "status"] and _calls[-1][-1] == "--json", "GET /pipeline/fill runs pipeline.mjs fill status")
+    srv.pipeline_fill("dag")
+    check(_calls[-1][2:5] == ["fill", "status", "dag"], "?build=<id> adds the build")
+    try:
+        srv.pipeline_fill("../x")
+        check(False, "a bad build id is a 400")
+    except srv.HTTPException as e:
+        check(e.status_code == 400, "a bad build id is a 400")
+    asyncio.run(srv.pipeline_fill_run(_Req({}, True)))
+    check(_calls[-1][2:4] == ["fill", "run"] and _calls[-1][_calls[-1].index("--by") + 1] == "Brett", "POST /pipeline/fill/run: one round, by Brett")
+    asyncio.run(srv.step_deps("dag", "s4", _Req({"dependsOn": ["s1", "s2"]})))
+    check(_calls[-1][2:6] == ["fill", "deps", "dag", "s4"] and json.loads(_calls[-1][6]) == ["s1", "s2"], "deps: the list reaches the CLI as JSON")
+    asyncio.run(srv.step_deps("dag", "s4", _Req({"dependsOn": None})))
+    check(_calls[-1][6] == "sequential", "deps: null = sequential")
+    for step, body in (("S4!", {"dependsOn": []}), ("s4", {"dependsOn": "s1"}), ("s4", {"dependsOn": ["../x"]})):
+        try:
+            asyncio.run(srv.step_deps("dag", step, _Req(body)))
+            code = 200
+        except srv.HTTPException as e:
+            code = e.status_code
+        check(code == 400, f"deps {step} {body}: 400")
+
+    class _FakeSettings:
+        """axf.claude-settings@1 stand-in: owner from the request, owner-only refused for anyone else."""
+        def __init__(self) -> None:
+            self.sets: list[tuple[bool, dict]] = []
+
+        def set_for(self, request, values):  # noqa: ANN001
+            owner = srv.brett_click(request) != ""
+            self.sets.append((owner, values))
+            if not owner and (values.get("builds.fillSlots") is True or "builds.autoQueuePending" in values):
+                return {"ok": False, "code": "denied", "message": "owner-only"}
+            return {"ok": True, "changed": [{"key": k, "from": None, "to": v} for k, v in values.items()]}
+
+    fake = _FakeSettings()
+    _real_get = plugin_services.get
+    plugin_services.get = lambda cap: fake if cap == "axf.claude-settings@1" else _real_get(cap)  # type: ignore[assignment]
+    try:
+        for body, brett, want in (({"autoQueuePending": True}, False, 403), ({"autoQueuePending": False}, False, 403), ({"autoQueuePending": True}, True, 200),
+                                  ({"fillSlots": False}, False, 200), ({"fillSlots": True}, False, 403), ({"maxParallelPerBuild": 2}, False, 200),
+                                  ({"maxParallelPerBuild": 40}, True, 400), ({"fillSlots": "yes"}, True, 400), ({}, True, 400)):
+            try:
+                asyncio.run(srv.pipeline_fill_settings(_Req(body, brett)))
+                code = 200
+            except srv.HTTPException as e:
+                code = e.status_code
+            check(code == want, f"fill settings {body} by {'Brett' if brett else 'a session'}: {want}")
+        check(fake.sets[-1] == (False, {"builds.maxParallelPerBuild": 2}), "fill settings go to axf.claude-settings@1 under their Claude keys")
+        try:
+            asyncio.run(srv.pipeline_settings_set(_Req({"autoQueuePending": True})))
+            code = 200
+        except srv.HTTPException as e:
+            code = e.status_code
+        check(code == 403, "POST /pipeline/settings refuses autoQueuePending unless Brett's own session sends it")
+        r = asyncio.run(srv.pipeline_settings_set(_Req({"fillSlots": False, "maxRuns": 3})))
+        check("changed" in r and _calls[-1][2:4] == ["set", "maxRuns=3"], "POST /pipeline/settings: fill keys and pipeline keys in one call")
+    finally:
+        plugin_services.get = _real_get  # type: ignore[assignment]
 finally:
     srv.subprocess.run = _real_run
 

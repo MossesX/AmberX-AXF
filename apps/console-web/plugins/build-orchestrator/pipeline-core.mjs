@@ -485,6 +485,25 @@ export function withMainClaim(b, now = Date.now()) {
 }
 
 /**
+ * Parallel candidates of running builds held back by a file clash with a running step (readySteps leaves them out, so
+ * the planner never names them): [{ id, step, why: 'files clash with s2 (a.txt)' }] for the plan's waits.
+ */
+export function clashWaits(running, now = Date.now()) {
+  const out = [];
+  for (const b of list(running)) {
+    const steps = list(b.steps);
+    const settledId = (id) => { const x = steps.find((y) => y.id === id); return !!x && (x.done || x.skip); };
+    for (const st of steps) {
+      if (st.done || st.skip || !isParallelStep(st) || claimLive(st.claim, now)) continue;
+      if (!resolvedDeps(b, st).every(settledId)) continue;
+      const c = fileClashes(b, st, { now });
+      if (c.length) out.push({ id: b.id, step: st.id, why: `files clash with ${c.map((x) => `${x.step} (${x.files.join(', ')})`).join('; ')}` });
+    }
+  }
+  return out;
+}
+
+/**
  * Where a step runs now, for views and the API: { slot, session, account, branch, worktree, since, main } from its live
  * claim (a parallel step session) or null. `worktree` follows BUILD-PARALLEL §4 (<root>/<build>--<step>).
  */
