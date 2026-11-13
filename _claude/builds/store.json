@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 4010,
- "updatedAt": "2026-11-13T06:21:43.923Z",
+ "rev": 4011,
+ "updatedAt": "2026-11-13T06:22:19.966Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -174441,7 +174441,7 @@
    "pr": "#532",
    "priority": "P0",
    "createdAt": "2026-11-12T22:16:05.972Z",
-   "updatedAt": "2026-11-13T06:14:31.530Z",
+   "updatedAt": "2026-11-13T06:22:14.689Z",
    "builtAt": "",
    "notes": [
     {
@@ -174503,6 +174503,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-fix-conflicts-and-land-build-plan-1-skins-one-ro--joey, own login copy)",
      "at": "2026-11-13T06:14:31.530Z"
+    },
+    {
+     "text": "s2: merged main again (287 commits; 4 baked console-commands conflicts in axhub-web/molly, rebaked from framework), all light checks pass locally, pushed ddf66f7ed, PR #532 body updated. Not landed: PR stays draft because UI Review shots cannot be captured headless (127.0.0.1:18080 refused, axhub.amberxai.com 401). Needs Brett: start a local hub on 127.0.0.1:18080 or give the headless browser hub access, then take desktop+phone shots, submit them to UI Review, and mark #532 ready. Without that, s2 stays open.",
+     "at": "2026-11-13T06:22:14.689Z"
     }
    ],
    "approvals": [],
@@ -174601,7 +174605,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
