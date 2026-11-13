@@ -781,8 +781,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 00:45 UTC · `vps-badge-shows-shell-commands-work-banner-widgets-for-disk-cpu-load-and-memor` note (all) · pipeline
-- 2026-11-13 00:45 UTC · `amberx-approval-pop-up-not-showing-only-the-android-notification` → queued, note (all) · console
 - 2026-11-13 00:46 UTC · `amberx-approval-pop-up-not-showing-only-the-android-notification` → running, note (all) · pipeline
 - 2026-11-13 00:46 UTC · `amberx-approval-pop-up-not-showing-only-the-android-notification` branch claude/amberx-approval-pop-up-not-showing-only-the-android-notification (all) · pipeline
 - 2026-11-13 00:46 UTC · `server-every-failed-merge-alerts-brett-immediately-and-retries-by-itself-until` note (all) · pipeline
@@ -1181,6 +1179,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 10:35 UTC · `fix-a-build-whose-session-finishes-its-phase-e-g-the-fable-steps-with-steps` → queued, note (all) · console
 - 2026-11-13 10:35 UTC · `fix-a-build-whose-session-finishes-its-phase-e-g-the-fable-steps-with-steps` note (all) · console
 - 2026-11-13 10:37 UTC · `fix-a-build-whose-session-finishes-its-phase-e-g-the-fable-steps-with-steps` note (all) · orchestrator
+- 2026-11-13 10:37 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` → running, note (all) · pipeline
+- 2026-11-13 10:37 UTC · `full-api-and-voice-control-of-the-entire-console-every-tab-screen-setting-bu` note (all) · orchestrator
 
 ## Token passes (log)
 
