@@ -51,7 +51,8 @@
     "spacer": "gap",
     "divider": "rule",
     "badge": "new",
-    "settings": "standard"
+    "settings": "standard",
+    "picker": "standard"
   },
   "hidden": [
     "toolbar"

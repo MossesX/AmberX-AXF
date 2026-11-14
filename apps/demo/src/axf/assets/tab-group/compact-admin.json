@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "tab-group",
+  "id": "compact-admin",
+  "name": "Compact Admin tabs",
+  "version": "1.0.0",
+  "description": "Compact Admin: segmented tabs, start.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "compact",
+    "compact"
+  ],
+  "data": {
+    "style": "segmented",
+    "align": "start",
+    "position": "top",
+    "density": "compact",
+    "overflow": "scroll",
+    "showIcons": false,
+    "divider": true
+  }
+}

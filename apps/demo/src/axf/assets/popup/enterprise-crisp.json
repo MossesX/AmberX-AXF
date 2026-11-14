@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "popup",
+  "id": "enterprise-crisp",
+  "name": "Enterprise Crisp pop-ups",
+  "version": "1.0.0",
+  "description": "Enterprise Crisp: solid pop-ups at the top-right.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "crisp",
+    "enterprise"
+  ],
+  "data": {
+    "position": "top-right",
+    "variant": "solid",
+    "duration": 4000,
+    "showIcon": true,
+    "maxVisible": 4
+  }
+}

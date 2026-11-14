@@ -1,5 +1,10 @@
 import { createContext, useContext, useEffect, useLayoutEffect, useSyncExternalStore, type ReactNode } from 'react';
 import type { AssetType, AxfRuntime, MenuItem } from '../core';
+import { installTapConfirm } from './tapConfirm';
+import { installMenuFit } from './components/menuFit';
+import { installPickerSwap } from './pickerSwap';
+import { installControlRegistry } from './controlTargets';
+import { installScrollControl } from './scrollControl';
 
 export const AxfContext = createContext<AxfRuntime | null>(null);
 
@@ -77,9 +82,13 @@ export function AxfProvider({ runtime, children }: { runtime: AxfRuntime; childr
   const hidden = runtime.hiddenSlots().join(',');
   // The Spacing choice scales the style theme (core/engines/spacing.ts), so it re-applies too.
   const spacing = runtime.spacing();
+  // The viewport cut-offs (layout tokens) stamp data-fx-tiny / -small / -narrow / -medium / -large on the root; a width change re-applies them.
+  const viewport = runtime.viewportKey();
+  // Token overrides (control@1 axf.tokens.*) and the nav's per-device state (collapsed, dragged width) compile in too.
+  const styleKey = runtime.styleSettingsKey();
   useLayoutEffect(() => {
     runtime.applyTo(document.documentElement);
-  }, [runtime, state.active, hidden, spacing]);
+  }, [runtime, state.active, hidden, spacing, viewport, styleKey]);
 
   // Extra tokens per asset (Settings → Appearance → Assets; core/engines/customize.ts) as one sheet.
   const customSheet = runtime.customSheet();
@@ -93,6 +102,16 @@ export function AxfProvider({ runtime, children }: { runtime: AxfRuntime; childr
     }
     if (el.textContent !== customSheet) el.textContent = customSheet;
   }, [customSheet]);
+
+  // Menus that place themselves (plugins' ⋯ menus) stay on screen and scroll when too tall, like the framework's (menu-fit@1).
+  useEffect(() => installMenuFit(), []);
+  // Drop-downs open the themed picker while the picker swap is on (picker@1; the picker-dialog plugin switches it).
+  useEffect(() => installPickerSwap(), []);
+
+  // console-control@1 (controlTargets.ts): every control on the page is addressable; the verbs ride on console.actions.
+  useEffect(() => installControlRegistry(runtime), [runtime]);
+  // … and the scroll contract (scrollControl.ts): scroll up / down / page / top / bottom / to on the active or a named pane.
+  useEffect(() => installScrollControl(runtime), [runtime]);
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -117,6 +136,12 @@ export function AxfProvider({ runtime, children }: { runtime: AxfRuntime; childr
     document.addEventListener('pointerdown', leave, true);
     document.addEventListener('keydown', leave, true);
     return () => { window.removeEventListener('keydown', onKey); document.removeEventListener('pointerdown', leave, true); document.removeEventListener('keydown', leave, true); };
+  }, [runtime]);
+
+  // Tap-to-confirm on every toolbar (framework/react/tapConfirm.ts): touch arms first, a second tap runs; mouse clicks once.
+  useEffect(() => {
+    const host = installTapConfirm(document, (key) => runtime.settings.get(key));
+    return () => host.dispose();
   }, [runtime]);
 
   return <AxfContext.Provider value={runtime}>{children}</AxfContext.Provider>;

@@ -1,0 +1,49 @@
+{
+  "$axf": "asset@1",
+  "type": "behavior-theme",
+  "id": "fluid",
+  "name": "Fluid",
+  "version": "1.0.0",
+  "description": "Fluid and springy: pages scale in, frosted dialogs, toasts at the top.",
+  "author": "AmberX AXF",
+  "tags": [
+    "pairs:wrapper-tabs"
+  ],
+  "data": {
+    "motion": {
+      "speed": "normal",
+      "easing": "spring",
+      "reduced": "system",
+      "entrance": "scale"
+    },
+    "interaction": {
+      "hover": "lift",
+      "press": "shrink",
+      "focusRing": "auto",
+      "cursor": "pointer",
+      "longPressMs": 500,
+      "doubleTapMs": 280,
+      "dragThreshold": 8
+    },
+    "windows": {
+      "dialogOpen": "scale",
+      "backdrop": "blur",
+      "popupOpen": "scale",
+      "drawerOpen": "slide",
+      "snap": false,
+      "snapGrid": 8,
+      "stack": "cascade",
+      "minimize": "cursor",
+      "closeOnBackdrop": true,
+      "closeOnEscape": true
+    },
+    "feedback": {
+      "toastPosition": "top",
+      "toastMs": 4000,
+      "sound": "off",
+      "vibration": "light",
+      "confirmDelete": "risky",
+      "busyCursor": true
+    }
+  }
+}

@@ -10,8 +10,9 @@
 import { createContext, useContext, useEffect, useLayoutEffect, useRef, useSyncExternalStore, type ReactNode } from 'react';
 import { AxfContext, useRuntime } from '../AxfProvider';
 
-const PortalRootContext = createContext<HTMLElement | null>(null);
-const ScopeIdContext = createContext<string>('');
+/** Shared with <SkinScope> (components/SkinScope.tsx), which draws a skin level the same way. */
+export const PortalRootContext = createContext<HTMLElement | null>(null);
+export const ScopeIdContext = createContext<string>('');
 
 /** The interface scope this subtree is drawn in ('' = the app itself). Hosts draw only what belongs to their scope. */
 export function useScopeId(): string { return useContext(ScopeIdContext); }

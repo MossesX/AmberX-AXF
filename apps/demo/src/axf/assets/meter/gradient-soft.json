@@ -1,0 +1,19 @@
+{
+  "$axf": "asset@1",
+  "type": "meter",
+  "id": "gradient-soft",
+  "name": "Gradient Soft",
+  "version": "1.0.0",
+  "description": "Soft-cornered bar with an accent gradient, no stripes.",
+  "author": "AmberX AXF",
+  "tags": [],
+  "data": {
+    "shape": "bar",
+    "height": 10,
+    "radius": "soft",
+    "stripes": false,
+    "animated": true,
+    "fill": "gradient",
+    "segments": 20
+  }
+}

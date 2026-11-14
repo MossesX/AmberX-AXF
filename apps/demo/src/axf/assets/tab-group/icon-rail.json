@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "tab-group",
+  "id": "icon-rail",
+  "name": "Icon rail",
+  "version": "1.0.0",
+  "description": "A vertical rail of icons down the left of the panel; the label is the tooltip. Sticky, with badges.",
+  "author": "AmberX AXF",
+  "tags": ["rail", "icons", "left", "vertical"],
+  "data": {
+    "style": "pills",
+    "align": "start",
+    "position": "left",
+    "density": "compact",
+    "overflow": "scroll",
+    "display": "icons",
+    "divider": true,
+    "sticky": true,
+    "badges": true
+  }
+}

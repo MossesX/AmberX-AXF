@@ -40,7 +40,7 @@ export function AgentCard({ identity, stats, design, photo, badge, side = 'front
       className={`fx-idcard fx-idcard--${m.design} is-${m.orientation} is-surface-${m.surface} is-accent-${m.accent} is-finish-${m.finish} is-logo-${m.logo} is-photo-${m.photo} is-${face} ${className}`.trim()}
       aria-label={`${identity.name ?? 'Agent'} ID card, ${face}`}
     >
-      {m.logo === 'banner' && <header className="fx-idcard__banner">{logo}</header>}
+      {m.logo === 'banner' && <header className="fx-idcard__banner" data-axf-not-banner="the ID card's logo band (agent-card@1 logo: banner), not an app banner">{logo}</header>}
       {m.logo === 'watermark' && <span className="fx-idcard__watermark" aria-hidden="true">{logo}</span>}
       {m.logo === 'corner' && <span className="fx-idcard__corner">{logo}</span>}
       <div className="fx-idcard__body">

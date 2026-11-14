@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "container",
+  "id": "glass-air",
+  "name": "Glass Air container",
+  "version": "1.0.0",
+  "description": "Glass Air: glass with a plain header.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "glass",
+    "glass"
+  ],
+  "data": {
+    "variant": "glass",
+    "header": "plain",
+    "padding": "md",
+    "elevation": 2,
+    "collapsible": false
+  }
+}

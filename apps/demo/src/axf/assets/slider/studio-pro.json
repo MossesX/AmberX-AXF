@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "slider",
+  "id": "studio-pro",
+  "name": "Studio Pro slider",
+  "version": "1.0.0",
+  "description": "Studio Pro: circle thumb on a 4 px track.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "pro",
+    "creative"
+  ],
+  "data": {
+    "track": 4,
+    "thumb": "circle",
+    "thumbSize": 16,
+    "fill": "solid",
+    "showValue": "hover",
+    "ticks": false
+  }
+}

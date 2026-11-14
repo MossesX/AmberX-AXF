@@ -1,0 +1,18 @@
+{
+  "$axf": "asset@1",
+  "type": "logo",
+  "id": "mark",
+  "name": "Mark",
+  "version": "1.0.0",
+  "description": "A small icon logo (sparkles).",
+  "author": "AmberX AXF",
+  "tags": [
+    "logo"
+  ],
+  "data": {
+    "kind": "icon",
+    "text": "AmberX",
+    "icon": "sparkles",
+    "size": "regular"
+  }
+}

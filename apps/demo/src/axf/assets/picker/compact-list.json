@@ -1,0 +1,24 @@
+{
+  "$axf": "asset@1",
+  "type": "picker",
+  "id": "compact-list",
+  "name": "Compact list picker",
+  "version": "1.0.0",
+  "description": "A dialog of tight rows without descriptions, check marks at the start: dense admin forms with many small choices.",
+  "author": "AmberX AXF",
+  "tags": [
+    "compact",
+    "dense",
+    "admin",
+    "picker"
+  ],
+  "data": {
+    "variant": "dialog",
+    "search": "auto",
+    "searchThreshold": 10,
+    "checkmarks": "start",
+    "descriptions": false,
+    "density": "compact",
+    "doneButton": true
+  }
+}

@@ -11,7 +11,8 @@
  * a developer app does not run without the hub (Brett's decision, Oct 20 2026). Off by default: only an app that
  * calls `rt.attachAppearanceSource(new HubAppearanceSource({ hub }))` is a developer app.
  */
-import { APPEARANCE_PATH, APPEARANCE_PROJECT, appearanceRetryMs, mergeAppearance, parseAppearance, serializeAppearance, type AppearanceDocument, type AppearanceSource, type AppearanceSourceState, type Spacing } from '../core';
+import { HubAppLookStore } from './hubAppLook';
+import { APPEARANCE_PATH, APPEARANCE_PROJECT, appearanceRetryMs, combineAppearanceChanges, mergeAppearance, parseAppearance, serializeAppearance, type AppearanceDocument, type AppearanceSource, type AppearanceSourceState } from '../core';
 
 export interface HubAppearanceOptions {
   /** The hub's origin, https (http only for localhost while developing). */
@@ -27,6 +28,8 @@ export interface HubAppearanceOptions {
   fetchImpl?: typeof fetch;
   /** Test seam: EventSource constructor. */
   eventSource?: typeof EventSource;
+  /** Keep this app's own look document (default true); false = the shared document is this app's look. */
+  appLook?: boolean;
 }
 
 type Listener = Parameters<AppearanceSource['subscribe']>[0];
@@ -49,6 +52,8 @@ export class HubAppearanceSource implements AppearanceSource {
   private pending: Parameters<AppearanceSource['save']>[0] | null = null;
   private saving = false;
   private readonly f: typeof fetch;
+  /** This app's own look document (skin@1 + app-look@1). */
+  readonly appLook?: HubAppLookStore;
 
   constructor(private readonly opts: HubAppearanceOptions) {
     const u = new URL(opts.hub);
@@ -58,6 +63,9 @@ export class HubAppearanceSource implements AppearanceSource {
     this.project = opts.project ?? APPEARANCE_PROJECT;
     this.path = opts.path ?? APPEARANCE_PATH;
     this.f = opts.fetchImpl ?? ((input, init) => fetch(input, init));
+    if (opts.appLook !== false && this.project === APPEARANCE_PROJECT && this.path === APPEARANCE_PATH) {
+      this.appLook = new HubAppLookStore({ hub: this.hub, appId: opts.appId, fetchImpl: this.f, eventSource: opts.eventSource, live: opts.live });
+    }
   }
 
   /** The hub origin this source talks to. */
@@ -89,6 +97,7 @@ export class HubAppearanceSource implements AppearanceSource {
     this.timer = null;
     this.es?.close();
     this.es = null;
+    this.appLook?.stop();
     if (typeof globalThis.removeEventListener === 'function') {
       globalThis.removeEventListener('online', this.onOnline);
       globalThis.removeEventListener('focus', this.onFocus);
@@ -148,6 +157,7 @@ export class HubAppearanceSource implements AppearanceSource {
     this.attempt = 0;
     // Apply the look once per real change: an unchanged document (same version and body) while already ready is not
     // pushed again, so focus / live-event re-reads don't re-apply the look and re-render every view.
+    await this.appLook?.load(); // the first document is applied with this app's own look already in hand
     const unchanged = read === this.lastRead && this.st.status === 'ready';
     this.lastRead = read;
     this.emitState({ status: 'ready', version: this.version });
@@ -195,7 +205,7 @@ export class HubAppearanceSource implements AppearanceSource {
 
   /** Save: merge this app's keys into the latest document (last write wins per key) and PUT with If-Match. */
   save(change: Parameters<AppearanceSource['save']>[0]): void {
-    this.pending = this.pending ? { slots: { ...this.pending.slots, ...change.slots }, hidden: { ...this.pending.hidden, ...change.hidden }, ...(change.spacing ?? this.pending.spacing ? { spacing: (change.spacing ?? this.pending.spacing) as Spacing } : {}), ...(change.palette ?? this.pending.palette ? { palette: change.palette ?? this.pending.palette } : {}) } : change;
+    this.pending = combineAppearanceChanges(this.pending, change);
     void this.flush();
   }
 
@@ -211,13 +221,13 @@ export class HubAppearanceSource implements AppearanceSource {
       try {
         r = await this.f(this.documentUrl, { method: 'PUT', credentials: 'include', cache: 'no-store', redirect: 'error', headers, body: serializeAppearance(next) });
       } catch (e) {
-        this.pending = { ...change, ...(this.pending ?? {}) };
+        this.pending = this.pending ? combineAppearanceChanges(change, this.pending) : change;
         return this.failed(`Couldn't save to ${this.hub}: ${(e as Error).message}`);
       }
       if (r.status === 409 && !retried) {
         // someone else saved first: take their document, re-apply only our keys, try once more
         this.saving = false;
-        this.pending = { ...change, ...(this.pending ?? {}) };
+        this.pending = this.pending ? combineAppearanceChanges(change, this.pending) : change;
         await this.load();
         return this.flush(true);
       }

@@ -1,8 +1,17 @@
-import { useEffect, useId, useState, type ButtonHTMLAttributes, type MouseEvent, type ReactNode } from 'react';
+import { useEffect, useId, useRef, useState, type ButtonHTMLAttributes, type MouseEvent, type ReactNode } from 'react';
 import { useAsset, useGate, useRuntime } from '../AxfProvider';
 import { Icon } from './Icon';
 import { BrandMark, BrandWatermark, brandHostProps, useBrandPlace } from './Brand';
 import { containerCollapsible } from '../../core';
+import { controlSlug, useControlTarget } from '../controlTargets';
+
+/** The words a button shows or names itself by: aria-label, a text child, else its title. */
+function buttonLabel(children: ReactNode, rest: { 'aria-label'?: string; title?: string }): string {
+  if (typeof rest['aria-label'] === 'string' && rest['aria-label'].trim()) return rest['aria-label'].trim();
+  if (typeof children === 'string' || typeof children === 'number') return String(children).trim();
+  if (Array.isArray(children) && children.every((c) => typeof c === 'string' || typeof c === 'number')) return children.join('').trim();
+  return typeof rest.title === 'string' ? rest.title.trim() : '';
+}
 
 /* ---------------- Button (styled by the active `button` asset) ---------------- */
 
@@ -27,14 +36,26 @@ export function Button({ tone = 'neutral', size = 'md', icon, requires, confirm,
   const gate = useGate(requires);
   const rt = useRuntime();
   useEffect(() => { if (!busy) return; rt.setBusy(true); return () => rt.setBusy(false); }, [busy, rt]);
-  if (gate === 'hide') return null;
   const locked = gate === 'disable';
+  // console-control@1 (react/controlTargets.ts): every button with words is `button:<id or label slug>` on its screen;
+  // a remote press that already passed the confirm gate skips the browser's confirm dialog.
+  const el = useRef<HTMLButtonElement | null>(null);
+  const skipConfirm = useRef(false);
+  const words = buttonLabel(children, rest);
+  const targetId = rest.id || controlSlug(words);
+  const setTarget = useControlTarget(words && targetId ? {
+    address: `button:${targetId}`, kind: 'button', label: words, keywords: icon ? [icon] : undefined, requires, destructive: !!confirm, element: () => el.current,
+    invoke: () => { skipConfirm.current = !!confirm; try { el.current?.click(); } finally { skipConfirm.current = false; } },
+    isDisabled: () => !!(disabled || locked || busy),
+  } : null, [!!confirm, requires]);
+  if (gate === 'hide') return null;
   const click = (e: MouseEvent<HTMLButtonElement>) => {
-    if (confirm && rt.confirmDelete(undoable) && !globalThis.confirm?.(confirm)) return;
+    if (confirm && !skipConfirm.current && rt.confirmDelete(undoable) && !globalThis.confirm?.(confirm)) return;
     onClick?.(e);
   };
   return (
     <button
+      ref={(b) => { el.current = b; setTarget(b); }}
       type="button"
       className={`fx-btn fx-btn--${tone}${size === 'sm' ? ' fx-btn--sm' : ''}${busy ? ' is-busy' : ''} ${className ?? ''}`}
       disabled={disabled || locked || busy}
@@ -51,8 +72,11 @@ export function Button({ tone = 'neutral', size = 'md', icon, requires, confirm,
 
 /** An icon-only button (the framework's `fx-iconbtn`): a label is required, for screen readers and the tooltip. */
 export function IconButton({ icon, label, size = 14, className, ...rest }: Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'children'> & { icon: string; label: string; size?: number }) {
+  const el = useRef<HTMLButtonElement | null>(null);
+  const targetId = rest.id || controlSlug(label);
+  const setTarget = useControlTarget(targetId ? { address: `button:${targetId}`, kind: 'button', label, keywords: [icon], element: () => el.current, invoke: () => el.current?.click(), isDisabled: () => !!rest.disabled } : null);
   return (
-    <button type="button" className={`fx-iconbtn ${className ?? ''}`} aria-label={label} title={rest.title ?? label} {...rest}>
+    <button ref={(b) => { el.current = b; setTarget(b); }} type="button" className={`fx-iconbtn ${className ?? ''}`} aria-label={label} title={rest.title ?? label} {...rest}>
       <Icon name={icon} size={size} />
     </button>
   );

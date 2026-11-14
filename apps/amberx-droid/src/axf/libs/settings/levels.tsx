@@ -162,7 +162,7 @@ export const LEVELS_CSS = `
 .axf-levels__bar-actions{display:inline-flex;flex-wrap:wrap;gap:var(--fx-dens-gap-md);margin-left:auto}
 .axf-levels__hint{font-size:var(--fx-type-scale-md)}
 .axf-levels__cols{display:grid;grid-template-columns:1fr 1fr;gap:var(--fx-dens-gap-2xl);align-items:start}
-.axf-levels__col{min-width:0;border:var(--fx-border-w) solid var(--fx-border);border-radius:var(--fx-radius-md);background:var(--fx-surface2);padding:var(--fx-dens-gap-xl);max-height:52dvh;overflow:auto}
+.axf-levels__col{min-width:0;border:var(--fx-border-w) solid var(--fx-border);border-radius:var(--fx-radius-md);background:color-mix(in srgb, var(--fx-surface2) calc(var(--fx-opacity-panel) * 100%), transparent);padding:var(--fx-dens-gap-xl);max-height:52dvh;overflow:auto}
 .axf-levels__title{margin:0 0 var(--fx-dens-gap-lg);font-size:var(--fx-type-scale-md);display:flex;align-items:center;gap:var(--fx-dens-gap-md);flex-wrap:wrap}
 .axf-levels__list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:var(--fx-dens-gap-xs)}
 .axf-levels__node>.axf-levels__list{padding-left:var(--fx-dens-gap-2xl)}

@@ -2299,5 +2299,41 @@
     "wave": 1,
     "module": "app-console",
     "notes": "context-lead@1: rt.contextExtras keys '^:<name>' lead every context menu above one separator (core/engines/windows.ts withContextLead, react Overlays ContextMenuHost; any target, even contributions:false, right-click and long-press). The console registers Console settings (app.settings, folding the asset's own Settings in) plus console.settings.open for search, voice, MCP and CLI; help entries; checks spec/check-context-lead.mts + apps/console-web/scripts/console-settings-menu.mts. Kotlin twin deferred."
+  },
+  "ui.picker": {
+    "status": "partial",
+    "wave": 1,
+    "module": "axf-ui",
+    "notes": "Build picker-dialog-plugin-replaces-all (Nov 14 2026): framework picker + console plugin picker-dialog; Kotlin twin deferred (spec/PORTING.md)."
+  },
+  "ui.picker.engine": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-ui",
+    "notes": "framework/core/engines/picker.ts; spec/fixtures/picker.json; check-picker.mts."
+  },
+  "ui.picker.react": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-ui",
+    "notes": "framework/react/components/PickerField.tsx, PickerDialog.tsx, Forms.tsx Select; styles in framework/ui/axf.css (.fx-picker*)."
+  },
+  "ui.picker.swap": {
+    "status": "partial",
+    "wave": 1,
+    "module": "axf-ui",
+    "notes": "framework/react/pickerSwap.ts + pickerConfig.ts; console plugin picker-dialog switches it; listbox / combobox swap not built yet."
+  },
+  "ui.picker.api": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-ui",
+    "notes": "framework/react/pickerRegistry.ts; plugin picker-dialog: REST routes, plugin-commands items, picker.mjs, voice-intents@1:picker."
+  },
+  "ui.picker.gate": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-ui",
+    "notes": "framework/cli/check-pickers.mjs + framework/spec/picker-baseline.json, in CI."
   }
 }

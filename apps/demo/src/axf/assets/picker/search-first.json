@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "picker",
+  "id": "search-first",
+  "name": "Search-first picker",
+  "version": "1.0.0",
+  "description": "The search field is always there and focused first, so long lists (countries, fonts, agents) are typed into straight away.",
+  "author": "AmberX AXF",
+  "tags": [
+    "search",
+    "long-lists",
+    "picker"
+  ],
+  "data": {
+    "variant": "auto",
+    "search": "always",
+    "searchThreshold": 0,
+    "checkmarks": "end",
+    "descriptions": true,
+    "density": "regular",
+    "doneButton": true
+  }
+}

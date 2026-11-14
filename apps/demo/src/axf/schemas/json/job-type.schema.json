@@ -44,7 +44,7 @@
         "specialty": {
           "type": "string",
           "pattern": "^[a-z][a-z0-9-]{0,39}$",
-          "description": "the owning agent skill id (swarm roster)"
+          "description": "the home agent skill id (swarm roster): its skill page goes in the brief"
         },
         "budget": {
           "type": "object",
@@ -97,6 +97,15 @@
         "brief": {
           "type": "string",
           "maxLength": 4000
+        },
+        "skills": {
+          "type": "array",
+          "maxItems": 12,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,39}$"
+          },
+          "description": "the skills a run needs; any agent holding them all may take it (default: the specialty)"
         },
         "model": {
           "enum": [

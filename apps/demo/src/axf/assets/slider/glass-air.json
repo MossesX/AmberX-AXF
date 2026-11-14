@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "slider",
+  "id": "glass-air",
+  "name": "Glass Air slider",
+  "version": "1.0.0",
+  "description": "Glass Air: circle thumb on a 4 px track.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "glass",
+    "glass"
+  ],
+  "data": {
+    "track": 4,
+    "thumb": "circle",
+    "thumbSize": 18,
+    "fill": "gradient",
+    "showValue": "hover",
+    "ticks": false
+  }
+}

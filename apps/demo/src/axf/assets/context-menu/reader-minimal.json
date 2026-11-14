@@ -1,0 +1,58 @@
+{
+  "$axf": "asset@1",
+  "type": "context-menu",
+  "id": "reader-minimal",
+  "name": "Reader Minimal",
+  "version": "1.0.0",
+  "description": "Copy, spacing and help: a quiet menu for reading apps that stays out of the way.",
+  "author": "AmberX AXF",
+  "tags": [
+    "reading",
+    "minimal"
+  ],
+  "data": {
+    "variant": "roomy",
+    "showIcons": false,
+    "showShortcuts": false,
+    "targets": {
+      "default": [
+        {
+          "id": "copy",
+          "label": "Copy",
+          "icon": "copy",
+          "action": "edit.copy",
+          "shortcut": "Ctrl+C"
+        },
+        {
+          "id": "s1",
+          "separator": true
+        },
+        {
+          "id": "spacing-compact",
+          "label": "Compact spacing",
+          "icon": "list",
+          "action": "spacing:compact",
+          "requires": "assets.swap"
+        },
+        {
+          "id": "spacing-regular",
+          "label": "Regular spacing",
+          "icon": "grid",
+          "action": "spacing:regular",
+          "requires": "assets.swap"
+        },
+        {
+          "id": "s2",
+          "separator": true
+        },
+        {
+          "id": "docs",
+          "label": "Documentation",
+          "icon": "help",
+          "action": "help.docs",
+          "shortcut": "F1"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "dialog",
+  "id": "swiss-grid",
+  "name": "Swiss Grid dialog",
+  "version": "1.0.0",
+  "description": "Swiss Grid: modal, dim backdrop, fade in.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "editorial",
+    "editorial",
+    "flat"
+  ],
+  "data": {
+    "variant": "modal",
+    "width": 600,
+    "backdrop": "dim",
+    "animation": "fade",
+    "header": "accent-bar",
+    "closeOnBackdrop": true
+  }
+}

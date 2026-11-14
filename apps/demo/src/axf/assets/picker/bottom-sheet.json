@@ -1,0 +1,24 @@
+{
+  "$axf": "asset@1",
+  "type": "picker",
+  "id": "bottom-sheet",
+  "name": "Bottom sheet picker",
+  "version": "1.0.0",
+  "description": "Always a bottom sheet with a drag handle, roomy rows for thumbs, descriptions on. Touch-first apps.",
+  "author": "AmberX AXF",
+  "tags": [
+    "touch",
+    "sheet",
+    "phone",
+    "picker"
+  ],
+  "data": {
+    "variant": "sheet",
+    "search": "auto",
+    "searchThreshold": 12,
+    "checkmarks": "end",
+    "descriptions": true,
+    "density": "roomy",
+    "doneButton": true
+  }
+}

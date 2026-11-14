@@ -1,0 +1,47 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "gizmox-logo-040",
+  "name": "GizmoX wordmark · pill dots",
+  "version": "1.0.0",
+  "description": "Generated wordmark: a pill dots motif in a seeded bright palette (seed 1043).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "wordmark",
+    "pill",
+    "dots",
+    "gizmox",
+    "brand-library"
+  ],
+  "data": {
+    "form": "wordmark",
+    "brand": "GizmoX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#979914",
+      "brand2": "#383106",
+      "brand3": "#dddf9a"
+    },
+    "paths": [
+      {
+        "d": "M3 12a2 2 0 1 1 4 0a2 2 0 1 1-4 0Z",
+        "fill": "brand1"
+      }
+    ],
+    "text": {
+      "value": "GizmoX",
+      "weight": 800,
+      "tracking": 0.04,
+      "font": "mono",
+      "fill": "brand1"
+    },
+    "safeArea": 0.25,
+    "minSize": 80
+  }
+}

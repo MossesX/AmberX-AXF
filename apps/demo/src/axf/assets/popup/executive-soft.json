@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "popup",
+  "id": "executive-soft",
+  "name": "Executive Soft pop-ups",
+  "version": "1.0.0",
+  "description": "Executive Soft: outline pop-ups at the bottom-right.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "soft",
+    "enterprise",
+    "spacious"
+  ],
+  "data": {
+    "position": "bottom-right",
+    "variant": "outline",
+    "duration": 4500,
+    "showIcon": true,
+    "maxVisible": 3
+  }
+}

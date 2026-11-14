@@ -1,0 +1,128 @@
+{
+  "$axf": "asset@1",
+  "type": "context-menu",
+  "id": "asset-manager",
+  "name": "Asset Manager",
+  "version": "1.0.0",
+  "description": "For asset browsers: use, inspect, copy and import assets, plus stepping through the look.",
+  "author": "AmberX AXF",
+  "tags": [
+    "designer",
+    "assets"
+  ],
+  "data": {
+    "variant": "compact",
+    "showIcons": true,
+    "showShortcuts": true,
+    "targets": {
+      "default": [
+        {
+          "id": "import",
+          "label": "Import asset…",
+          "icon": "upload",
+          "action": "dialog:import-asset",
+          "requires": "assets.import"
+        },
+        {
+          "id": "s1",
+          "separator": true
+        },
+        {
+          "id": "next-package",
+          "label": "Next design package",
+          "icon": "package",
+          "action": "design.package:next",
+          "shortcut": "Alt+P",
+          "requires": "assets.swap"
+        },
+        {
+          "id": "next-color",
+          "label": "Next colour theme",
+          "icon": "palette",
+          "action": "swap:color-theme:next",
+          "shortcut": "Alt+C",
+          "requires": "assets.swap"
+        },
+        {
+          "id": "next-style",
+          "label": "Next style theme",
+          "icon": "type",
+          "action": "swap:style-theme:next",
+          "shortcut": "Alt+S",
+          "requires": "assets.swap"
+        },
+        {
+          "id": "next-layout",
+          "label": "Next layout",
+          "icon": "layout",
+          "action": "swap:layout:next",
+          "shortcut": "Alt+L",
+          "requires": "assets.swap"
+        },
+        {
+          "id": "s2",
+          "separator": true
+        },
+        {
+          "id": "random",
+          "label": "Randomize the look",
+          "icon": "shuffle",
+          "action": "assets.random",
+          "shortcut": "Alt+R",
+          "requires": "assets.swap"
+        },
+        {
+          "id": "reset",
+          "label": "Reset the look",
+          "icon": "refresh",
+          "action": "assets.reset",
+          "requires": "assets.swap"
+        }
+      ],
+      "asset-card": [
+        {
+          "id": "activate",
+          "label": "Use this",
+          "icon": "zap",
+          "action": "swap:{payload}",
+          "requires": "assets.swap"
+        },
+        {
+          "id": "s1",
+          "separator": true
+        },
+        {
+          "id": "json",
+          "label": "View JSON",
+          "icon": "code",
+          "action": "asset.json:{payload}"
+        },
+        {
+          "id": "copy-json",
+          "label": "Copy JSON",
+          "icon": "copy",
+          "action": "asset.copy:{payload}"
+        },
+        {
+          "id": "s2",
+          "separator": true
+        },
+        {
+          "id": "import",
+          "label": "Import asset…",
+          "icon": "upload",
+          "action": "dialog:import-asset",
+          "requires": "assets.import"
+        },
+        {
+          "id": "next-package",
+          "label": "Next design package",
+          "icon": "package",
+          "action": "design.package:next",
+          "shortcut": "Alt+P",
+          "requires": "assets.swap"
+        }
+      ]
+    }
+  }
+}

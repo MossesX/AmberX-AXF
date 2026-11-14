@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "slider",
+  "id": "calm-reader",
+  "name": "Calm Reader slider",
+  "version": "1.0.0",
+  "description": "Calm Reader: circle thumb on a 3 px track.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "calm",
+    "reading"
+  ],
+  "data": {
+    "track": 3,
+    "thumb": "circle",
+    "thumbSize": 14,
+    "fill": "solid",
+    "showValue": "never",
+    "ticks": false
+  }
+}

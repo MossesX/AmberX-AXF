@@ -1,0 +1,19 @@
+{
+  "$axf": "asset@1",
+  "type": "tab-group",
+  "id": "boxed",
+  "name": "Boxed",
+  "version": "1.0.0",
+  "description": "Folder-style tabs joined to the content below.",
+  "author": "AmberX AXF",
+  "tags": [],
+  "data": {
+    "style": "boxed",
+    "align": "start",
+    "position": "top",
+    "density": "regular",
+    "overflow": "scroll",
+    "showIcons": true,
+    "divider": true
+  }
+}

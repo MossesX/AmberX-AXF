@@ -1,0 +1,53 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "amberx-lockup",
+  "name": "AmberX lockup",
+  "version": "1.0.0",
+  "description": "Gem + name, for banners and splash screens.",
+  "author": "AmberX AXF",
+  "tags": [
+    "amberx",
+    "default"
+  ],
+  "data": {
+    "form": "lockup",
+    "brand": "AmberX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#f59e0b",
+      "brand2": "#b45309",
+      "brand3": "#fde68a"
+    },
+    "paths": [
+      {
+        "d": "M12 2.5 20.2 7.2 V16.8 L12 21.5 3.8 16.8 V7.2 Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M12 2.5 20.2 7.2 12 12 3.8 7.2 Z",
+        "fill": "brand3",
+        "opacity": 0.55
+      },
+      {
+        "d": "M8.2 8.6 15.8 15.4 M15.8 8.6 8.2 15.4",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2.2,
+        "round": true
+      }
+    ],
+    "text": {
+      "value": "AmberX",
+      "weight": 700,
+      "tracking": -0.02,
+      "font": "display",
+      "fill": "text"
+    }
+  }
+}

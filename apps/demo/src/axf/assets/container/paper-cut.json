@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "container",
+  "id": "paper-cut",
+  "name": "Paper Cut container",
+  "version": "1.0.0",
+  "description": "Paper Cut: outline with a plain header.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "paper",
+    "flat"
+  ],
+  "data": {
+    "variant": "outline",
+    "header": "plain",
+    "padding": "md",
+    "elevation": 0,
+    "collapsible": false
+  }
+}

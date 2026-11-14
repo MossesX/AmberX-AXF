@@ -342,9 +342,11 @@ export function consoleMessage(fields, { id, by = '', now = Date.now() } = {}) {
 export function consoleMessageErrors(m) {
   const errors = [];
   if (!isObj(m) || m.$axf !== CONSOLE_COMMAND_FRAME) return [`$axf must be ${CONSOLE_COMMAND_FRAME}`];
-  if (!['open', 'run', 'back', 'home', 'close', 'refresh'].includes(m.op)) errors.push('op must be open, run, back, home, close or refresh');
+  if (!['open', 'run', 'back', 'home', 'close', 'refresh', 'control'].includes(m.op)) errors.push('op must be open, run, back, home, close, refresh or control');
   if (m.op === 'open' && (!CONSOLE_ITEM_KINDS.includes(m.kind) || m.kind === 'action' || !m.target)) errors.push('open needs a kind (screen, dialog, settings) and a target');
   if (m.op === 'run' && !m.spec) errors.push('run needs an action spec');
+  // a console-control@1 command (spec/CONSOLE-CONTROL.md); the console's executor validates the command itself
+  if (m.op === 'control' && !isObj(m.command)) errors.push('control needs a console-control@1 command');
   return errors;
 }
 

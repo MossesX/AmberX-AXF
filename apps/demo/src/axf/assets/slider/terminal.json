@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "slider",
+  "id": "terminal",
+  "name": "Terminal slider",
+  "version": "1.0.0",
+  "description": "Terminal: bar thumb on a 2 px track.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "technical",
+    "developer"
+  ],
+  "data": {
+    "track": 2,
+    "thumb": "bar",
+    "thumbSize": 10,
+    "fill": "none",
+    "showValue": "always",
+    "ticks": true
+  }
+}

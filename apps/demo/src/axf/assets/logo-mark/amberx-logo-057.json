@@ -1,0 +1,54 @@
+{
+  "$axf": "asset@1",
+  "type": "logo-mark",
+  "id": "amberx-logo-057",
+  "name": "AmberX lockup · circle pulse",
+  "version": "1.0.0",
+  "description": "Generated lockup: a circle pulse motif in a seeded bright palette (seed 59).",
+  "author": "AmberX AXF brand-gen",
+  "tags": [
+    "generated",
+    "lockup",
+    "circle",
+    "pulse",
+    "amberx",
+    "brand-library"
+  ],
+  "data": {
+    "form": "lockup",
+    "brand": "AmberX",
+    "viewBox": [
+      0,
+      0,
+      24,
+      24
+    ],
+    "palette": {
+      "brand1": "#429e9e",
+      "brand2": "#1e524f",
+      "brand3": "#cedede"
+    },
+    "paths": [
+      {
+        "d": "M12 2a10 10 0 1 1 0 20a10 10 0 1 1 0-20Z",
+        "fill": "brand1"
+      },
+      {
+        "d": "M5 12h3l2-4 3 8 2-4h4",
+        "fill": "none",
+        "stroke": "bg",
+        "strokeWidth": 2.2,
+        "round": true
+      }
+    ],
+    "text": {
+      "value": "AmberX",
+      "weight": 800,
+      "tracking": 0.08,
+      "font": "mono",
+      "fill": "text"
+    },
+    "safeArea": 0.25,
+    "minSize": 80
+  }
+}

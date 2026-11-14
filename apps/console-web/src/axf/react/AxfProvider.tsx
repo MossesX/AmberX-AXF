@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useLayoutEffect, useSyncExternalS
 import type { AssetType, AxfRuntime, MenuItem } from '../core';
 import { installTapConfirm } from './tapConfirm';
 import { installMenuFit } from './components/menuFit';
+import { installPickerSwap } from './pickerSwap';
 import { installControlRegistry } from './controlTargets';
 import { installScrollControl } from './scrollControl';
 
@@ -104,6 +105,8 @@ export function AxfProvider({ runtime, children }: { runtime: AxfRuntime; childr
 
   // Menus that place themselves (plugins' ⋯ menus) stay on screen and scroll when too tall, like the framework's (menu-fit@1).
   useEffect(() => installMenuFit(), []);
+  // Drop-downs open the themed picker while the picker swap is on (picker@1; the picker-dialog plugin switches it).
+  useEffect(() => installPickerSwap(), []);
 
   // console-control@1 (controlTargets.ts): every control on the page is addressable; the verbs ride on console.actions.
   useEffect(() => installControlRegistry(runtime), [runtime]);

@@ -1,0 +1,27 @@
+{
+  "$axf": "asset@1",
+  "type": "style-package",
+  "id": "neon-edge",
+  "name": "Neon Edge",
+  "version": "1.0.0",
+  "description": "Uppercase gradient buttons, accent-edged outlines and boxed tabs for dark, vivid looks.",
+  "author": "AmberX AXF",
+  "tags": [
+    "neon",
+    "vivid",
+    "dark"
+  ],
+  "data": {
+    "slots": {
+      "button": "neon-edge",
+      "container": "neon-edge",
+      "slider": "neon-edge",
+      "dialog": "neon-edge",
+      "popup": "neon-edge",
+      "tab-group": "neon-edge",
+      "gauge": "digital",
+      "meter": "striped-pill"
+    },
+    "tone": "neon"
+  }
+}

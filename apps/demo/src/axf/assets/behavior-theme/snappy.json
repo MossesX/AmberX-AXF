@@ -1,0 +1,47 @@
+{
+  "$axf": "asset@1",
+  "type": "behavior-theme",
+  "id": "snappy",
+  "name": "Snappy",
+  "version": "1.0.0",
+  "description": "Fast and direct: quick motion, slides instead of fades, lift on hover, shrink on press, snapping windows, short toasts at the top right, light haptics.",
+  "author": "AmberX AXF",
+  "tags": [],
+  "data": {
+    "motion": {
+      "speed": "fast",
+      "easing": "emphasized",
+      "reduced": "system",
+      "entrance": "fade"
+    },
+    "interaction": {
+      "hover": "lift",
+      "press": "shrink",
+      "focusRing": "auto",
+      "cursor": "pointer",
+      "longPressMs": 380,
+      "doubleTapMs": 250,
+      "dragThreshold": 10
+    },
+    "windows": {
+      "dialogOpen": "slide-up",
+      "backdrop": "dim",
+      "popupOpen": "slide",
+      "drawerOpen": "slide",
+      "snap": true,
+      "snapGrid": 8,
+      "stack": "cascade",
+      "minimize": "cursor",
+      "closeOnBackdrop": true,
+      "closeOnEscape": true
+    },
+    "feedback": {
+      "toastPosition": "top-right",
+      "toastMs": 2500,
+      "sound": "off",
+      "vibration": "light",
+      "confirmDelete": "risky",
+      "busyCursor": true
+    }
+  }
+}

@@ -134,7 +134,7 @@ export interface Message {
   isError?: boolean;
   thinkingBlocks?: Record<string, unknown>[];
   meta?: {
-    step?: boolean; profile?: string; model?: string; latencyMs?: number; usage?: { input: number; output: number }; tools?: ToolLogEntry[];
+    step?: boolean; profile?: string; model?: string; latencyMs?: number; firstWordMs?: number; mode?: TurnMode; usage?: { input: number; output: number }; tools?: ToolLogEntry[];
     agentId?: string; agentName?: string; stopped?: boolean; interrupted?: boolean; thinking?: string; context?: ChatContext | null; batch?: string; lastRound?: string;
   };
 }
@@ -231,8 +231,20 @@ export function contextExtra(ctx: ChatContext | null | undefined, key: string): 
 export interface ConversationSettings {
   profileId?: string; model?: string; temperature?: number; max_tokens?: number; top_p?: number;
   systemPrompt?: string; agentId?: string; tools?: boolean; thinking?: boolean;
+  /** Optional. auto (default): tools load per turn when the message needs them; chat: never; tools: always. */
+  toolMode?: ToolMode;
 }
-export const CONVERSATION_SETTING_KEYS: (keyof ConversationSettings)[] = ['profileId', 'model', 'temperature', 'max_tokens', 'top_p', 'systemPrompt', 'agentId', 'tools', 'thinking'];
+export type ToolMode = 'auto' | 'chat' | 'tools';
+export const TOOL_MODES: ToolMode[] = ['auto', 'chat', 'tools'];
+/** How a turn ran: on `start` and `status` events and on the reply's meta. A turn may start in chat and move to tools once. */
+export interface TurnMode { mode: 'chat' | 'tools'; groups?: string[]; reason?: string; escalated?: boolean }
+/** The chip for a turn: "Chat", "Tools", or "Tools · builds, github". Pure. */
+export function turnModeLabel(m: TurnMode | null | undefined): string {
+  if (!m) return '';
+  if (m.mode === 'chat') return 'Chat';
+  return m.groups?.length ? `Tools · ${m.groups.join(', ')}` : 'Tools';
+}
+export const CONVERSATION_SETTING_KEYS: (keyof ConversationSettings)[] = ['profileId', 'model', 'temperature', 'max_tokens', 'top_p', 'systemPrompt', 'agentId', 'tools', 'thinking', 'toolMode'];
 
 export interface Conversation {
   $axf?: typeof CONVERSATION_CONTRACT;
@@ -259,8 +271,9 @@ export interface WriteMode { containers: string[]; snapshots: boolean }
 
 /** The events a host emits for one turn (owner kinds on the live session; never a reserved lifecycle kind). */
 export type TurnEvent =
-  | { event: 'start'; data: { turnId: string; agent: AgentRef | null } }
-  | { event: 'text' | 'thinking' | 'status'; data: { text: string } }
+  | { event: 'start'; data: { turnId: string; agent: AgentRef | null; mode?: TurnMode } }
+  | { event: 'text' | 'thinking'; data: { text: string } }
+  | { event: 'status'; data: { text: string; mode?: TurnMode } }
   | { event: 'tool'; data: { phase: 'call' | 'result'; id: string; name: string; input?: string; ok?: boolean; preview?: string } }
   | { event: 'error'; data: { message: string } }
   | { event: 'batch'; data: { batch: unknown } }
@@ -324,7 +337,7 @@ export function profileChain(settings: { profileId?: string } | undefined, agent
 /** Admins may set every conversation setting; users only what their hub permissions allow. */
 export function settingsAllowedFor(admin: boolean, can: (perm: string) => boolean): (keyof ConversationSettings)[] {
   if (admin) return [...CONVERSATION_SETTING_KEYS];
-  const keys: (keyof ConversationSettings)[] = ['temperature', 'top_p', 'systemPrompt', 'tools'];
+  const keys: (keyof ConversationSettings)[] = ['temperature', 'top_p', 'systemPrompt', 'tools', 'toolMode'];
   if (can('assistant.agents')) keys.push('agentId');
   if (can('assistant.models')) keys.push('profileId', 'model', 'max_tokens', 'thinking');
   return keys;
@@ -396,11 +409,17 @@ export async function readStreamEvents(body: ReadableStream<Uint8Array>, onEvent
 
 // ---------------------------------------------------------------- client (what an app's chat UI talks to)
 
-export interface TurnInput { content?: string; images?: ChatImage[]; context?: ChatContext; editMessageId?: string; regenerate?: boolean }
+export interface TurnInput {
+  content?: string; images?: ChatImage[]; context?: ChatContext; editMessageId?: string; regenerate?: boolean;
+  /** Optional, this turn only: for a host with its own default, which the server can't know. Unset = the chat's mode, then the server default. */
+  toolMode?: ToolMode;
+}
 export interface AssistantStatus {
   assistantName: string; setupComplete: boolean; needsSetup: boolean; defaultProfile: ProviderProfile | null; profiles: number; ready: number;
   cliInstalled: boolean; integrations: { agents: boolean; agentCount: number }; agents: AgentRef[]; defaultAgent: string; tokensToday: number; budget: number;
   suggestions: string[]; prompts: { id: string; title: string; shortcut: string; text: string }[]; showUsage: boolean; me?: { name: string; role: string; perms: string[] };
+  /** what a chat with no `toolMode` of its own does on this host */
+  defaultToolMode?: ToolMode;
 }
 
 /**
@@ -487,6 +506,8 @@ export class HttpAssistantClient implements AssistantClient {
 /** Rolling state of the reply being watched; a view renders it and nothing else. */
 export interface LiveReply {
   turnId: string; text: string; status: string; thinking: string; error: string; agent: string;
+  /** how this turn is running (absent until the host says) */
+  mode?: TurnMode;
   tools: { id: string; name: string; input?: string; ok?: boolean; preview?: string; done: boolean }[];
   /** newest seq seen, for reattaching */
   lastSeq: number;
@@ -501,10 +522,10 @@ export function emptyLiveReply(status = 'Connecting…', agent = ''): LiveReply 
 export function applyStreamEvent(r: LiveReply, e: StreamEvent): LiveReply {
   if (e.seq) r.lastSeq = Math.max(r.lastSeq, e.seq);
   switch (e.event) {
-    case 'start': r.turnId = e.data.turnId; if (e.data.agent) r.agent = e.data.agent.name; break;
+    case 'start': r.turnId = e.data.turnId; if (e.data.agent) r.agent = e.data.agent.name; if (e.data.mode) r.mode = e.data.mode; break;
     case 'text': r.text += e.data.text; break;
     case 'thinking': r.thinking += e.data.text; break;
-    case 'status': r.status = e.data.text; break;
+    case 'status': r.status = e.data.text; if (e.data.mode) r.mode = e.data.mode; break;
     case 'tool':
       if (e.data.phase === 'call') { if (r.text && !r.text.endsWith('\n')) r.text += '\n\n'; r.tools.push({ id: e.data.id, name: e.data.name, input: e.data.input, done: false }); }
       else { const t = r.tools.find((x) => x.id === e.data.id); if (t) Object.assign(t, { ok: e.data.ok, preview: e.data.preview, done: true }); }

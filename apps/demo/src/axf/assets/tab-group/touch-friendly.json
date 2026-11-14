@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "tab-group",
+  "id": "touch-friendly",
+  "name": "Touch Friendly tabs",
+  "version": "1.0.0",
+  "description": "Touch Friendly: segmented tabs, stretch.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "friendly",
+    "touch"
+  ],
+  "data": {
+    "style": "segmented",
+    "align": "stretch",
+    "position": "top",
+    "density": "roomy",
+    "overflow": "scroll",
+    "showIcons": true,
+    "divider": false
+  }
+}

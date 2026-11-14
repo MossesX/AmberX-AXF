@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "dock-layout",
+  "id": "single",
+  "name": "Single pane",
+  "version": "1.0.0",
+  "description": "Everything in one pane with tabs. One of the ten starter pane layouts every dock host offers (dock-layout@1).",
+  "author": "AmberX AXF",
+  "tags": [
+    "dock",
+    "preset",
+    "simple"
+  ],
+  "data": {
+    "panes": 1,
+    "tree": {
+      "kind": "leaf",
+      "pane": 1
+    },
+    "hint": "Everything in one pane with tabs.",
+    "main": 1
+  }
+}

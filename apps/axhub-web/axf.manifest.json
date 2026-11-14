@@ -52,7 +52,8 @@
     "branding": "amberx",
     "typography": "compact",
     "density": "compact",
-    "sizing": "compact"
+    "sizing": "compact",
+    "picker": "standard"
   },
   "hidden": [],
   "developer": {

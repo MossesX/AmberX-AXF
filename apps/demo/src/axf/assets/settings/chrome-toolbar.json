@@ -1,0 +1,57 @@
+{
+  "$axf": "asset@1",
+  "type": "settings",
+  "id": "chrome-toolbar",
+  "name": "Toolbar settings (default)",
+  "version": "1.0.0",
+  "description": "The shared default settings interface for every toolbar (chrome-settings@1): how the Settings dialog you reach by right-clicking one is laid out. The app toolbar and every plugin toolbar (lib-toolbars). Every app gets its own copy (chrome-toolbar-<app>) that follows this one until edited; this default is what the dialog uses unless an app picks its copy.",
+  "author": "AmberX AXF",
+  "tags": [
+    "default",
+    "chrome-settings",
+    "toolbar"
+  ],
+  "data": {
+    "for": "toolbar",
+    "layout": "tabs-top",
+    "header": "compact",
+    "search": false,
+    "descriptions": true,
+    "tabs": [
+      {
+        "id": "look",
+        "label": "Look",
+        "icon": "palette",
+        "order": 10
+      },
+      {
+        "id": "behaviour",
+        "label": "Behaviour",
+        "icon": "sliders",
+        "order": 20
+      },
+      {
+        "id": "asset",
+        "label": "Asset",
+        "icon": "layers",
+        "order": 30
+      },
+      {
+        "id": "interface",
+        "label": "Interface",
+        "icon": "settings",
+        "order": 40
+      }
+    ],
+    "hide": [],
+    "groups": [],
+    "levels": true,
+    "defaultLevel": "basic",
+    "levelOf": {
+      "look": "simple",
+      "behaviour": "basic",
+      "asset": "basic",
+      "interface": "developer"
+    }
+  }
+}

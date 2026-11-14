@@ -21,6 +21,7 @@ export const ASSET_TYPES = [
   'popup',
   'button',
   'slider',
+  'picker',
   'container',
   'gauge',
   'meter',
@@ -40,8 +41,12 @@ export const ASSET_TYPES = [
   'divider',
   'badge',
   'settings',
+  'dock-layout',
+  'xlayout',
+  'nav-style',
   'behavior-theme',
   'design-package',
+  'skin',
   'style-package',
   'interface',
   'logo-mark',
@@ -53,12 +58,17 @@ export const ASSET_TYPES = [
   'sizing',
   'agent-card',
   'job-type',
+  'card',
   'help',
+  'demonstration',
+  'book',
+  'clip',
+  'docs',
   'uac-policy',
 ] as const;
 
 /** Types that are optional: an app may ship none (the framework ships starters). Attachable ones live on a host (the banner). */
-export const OPTIONAL_TYPES: readonly AssetType[] = ['tab-group', 'gauge', 'meter', 'banner', 'clock', 'search-bar', 'logo', 'action-button', 'label', 'status', 'counter', 'progress', 'avatar', 'link', 'theme-switch', 'spacer', 'divider', 'badge', 'settings', 'behavior-theme', 'design-package', 'style-package', 'logo-mark', 'animated-logo', 'icon-pack', 'branding', 'interface', 'typography', 'density', 'sizing', 'agent-card', 'job-type', 'help'];
+export const OPTIONAL_TYPES: readonly AssetType[] = ['tab-group', 'picker', 'gauge', 'meter', 'banner', 'clock', 'search-bar', 'logo', 'action-button', 'label', 'status', 'counter', 'progress', 'avatar', 'link', 'theme-switch', 'spacer', 'divider', 'badge', 'settings', 'dock-layout', 'xlayout', 'nav-style', 'behavior-theme', 'design-package', 'skin', 'style-package', 'logo-mark', 'animated-logo', 'icon-pack', 'branding', 'interface', 'typography', 'density', 'sizing', 'agent-card', 'job-type', 'card', 'help', 'demonstration', 'book', 'clip', 'docs'];
 
 export type AssetType = (typeof ASSET_TYPES)[number];
 
@@ -196,9 +206,24 @@ export interface StyleThemeData {
   opacityScrim?: number;
   /** glass surfaces (how much of the surface colour a frosted panel keeps) */
   opacityGlass?: number;
+  /* ---- surface transparency (0..1, default 1 = opaque; engines/theme.ts SURFACE_KINDS). Lower = see-through + frosted. ---- */
+  /** dialogs (.fx-dialog) */
+  opacityDialog?: number;
+  /** floating windows: settings interfaces and tool windows (.fx-window) */
+  opacitySettings?: number;
+  /** panels, containers, groups (.fx-card) */
+  opacityPanel?: number;
+  /** popovers, dropdowns, context menus */
+  opacityMenu?: number;
+  /** toolbars and the app menubar */
+  opacityToolbar?: number;
+  /** the top banner */
+  opacityBanner?: number;
   /* ---- behaviour ---- */
   /** every section / group (Container) gets a collapse toggle top-right; build option --wrap-groups (default false) */
   wrapGroups?: boolean;
+  /** 'thin' = thin themed scrollbars; unset = the browser's own. */
+  scrollbar?: 'thin';
 }
 
 export interface LayoutData {
@@ -211,6 +236,29 @@ export interface LayoutData {
   inspector: 'left' | 'right' | 'none';
   inspectorWidth: number;
   contentMaxWidth: number;
+  /* Every layout parameter is a token (core/engines/layout-rules.mjs): the fields below default to the framework's own look. */
+  /** status bar height, px */
+  statusHeight?: number;
+  /** gap between the grid's regions, × --fx-space */
+  regionGap?: number;
+  /** the main area's padding on desktop, × --fx-space */
+  mainPadTop?: number;
+  mainPadX?: number;
+  mainPadBottom?: number;
+  /** the main area's padding on a phone, × --fx-space */
+  phoneMainPadTop?: number;
+  phoneMainPadX?: number;
+  phoneMainPadBottom?: number;
+  /** the least width of a nav item in the phone's bottom strip, px */
+  phoneNavItemMin?: number;
+  /** inset of dropdowns and toasts from the phone's edges, px */
+  phoneEdge?: number;
+  /** viewport cut-offs (max-width px; tiny < small < phone < medium < large) → root attributes data-fx-tiny / -small / -narrow / -medium / -large */
+  tinyMaxWidth?: number;
+  smallMaxWidth?: number;
+  phoneMaxWidth?: number;
+  mediumMaxWidth?: number;
+  largeMaxWidth?: number;
   /** region → asset types it accepts; overrides the defaults in asset-types.json (layout.slots.defaults) */
   slots?: Partial<Record<string, string[]>>;
   /** repeating slots: one item per entry of a data set the page declares (core/engines/repeat.ts) */
@@ -313,6 +361,12 @@ export interface NavItem {
   view: string;
   badge?: string;
   requires?: string;
+  /**
+   * Children: the item opens a sub menu that slides open (nested levels allowed). `view` may be '' for a pure group;
+   * a group with a view opens its page too. Only navs whose nav-menu asset sets `navStyle: true` draw them as sub
+   * menus; any other nav shows the item as it always did.
+   */
+  items?: NavItem[];
 }
 
 export interface NavMenuData {
@@ -323,6 +377,8 @@ export interface NavMenuData {
   indicator?: 'auto' | 'bar' | 'fill' | 'none';
   /** default true */
   showIcons?: boolean;
+  /** Opt in to nav-style@1 (core/engines/navstyle.ts): sub menus that slide open, styled and timed by the nav-style asset in force. Default false. */
+  navStyle?: boolean;
 }
 
 export interface ContextMenuData {
@@ -424,6 +480,26 @@ export interface SliderData {
   ticks: boolean;
 }
 
+/**
+ * Picker control asset (picker@1, spec/PICKER.md): the choices of the dialog that replaces every drop-down that are not a
+ * colour or a size. Every colour / size / spacing / radius / border is a --fx-picker-* token (engines/theme.ts
+ * PICKER_TOKENS, pickerVars). Optional: an app without one gets PICKER_ASSET_DEFAULT.
+ */
+export interface PickerAssetData {
+  /** auto = a centred dialog on desktop, a bottom sheet on phones */
+  variant: 'auto' | 'dialog' | 'sheet';
+  /** auto = the search field appears at searchThreshold options */
+  search: 'auto' | 'always' | 'never';
+  /** 0–200, default 8 */
+  searchThreshold: number;
+  checkmarks: 'end' | 'start' | 'none';
+  descriptions: boolean;
+  /** scales the option row padding */
+  density: 'compact' | 'regular' | 'roomy';
+  /** multiple-choice pickers end with a Done button and a count */
+  doneButton: boolean;
+}
+
 /** Gauge control asset: how every dial looks (engines/components.ts gaugeStyle). */
 export interface GaugeData {
   shape: 'arc' | 'ring' | 'bar' | 'digital';
@@ -438,14 +514,36 @@ export interface GaugeData {
 
 /** Progress meter control asset: how every progress bar looks (engines/components.ts meterStyle). */
 /** tab-group asset: how every tab row looks (page tabs + window tab bars). Engine tabGroupStyle (engines/components.ts). */
+/**
+ * tab-group@1 (Brett, Nov 4 2026, build tab-group-assets: "all tab groups are supposed to be assets"): how every tab
+ * row looks and behaves. Fields added Nov 4 2026 are all optional with the pre-existing look as their default, so
+ * every earlier asset renders unchanged. Engine: normalizeTabGroup / tabGroupStyle in engines/components.ts.
+ */
 export interface TabGroupData {
-  style: 'underline' | 'pills' | 'boxed' | 'segmented' | 'plain';
+  style: 'underline' | 'pills' | 'boxed' | 'segmented' | 'plain' | 'chips';
   align: 'start' | 'center' | 'end' | 'stretch';
-  position?: 'top' | 'bottom';
+  /** where the row sits against its panel: top (default) / bottom; left / right = a vertical rail */
+  position?: 'top' | 'bottom' | 'left' | 'right';
   density?: ChromeDensity;
-  overflow?: 'scroll' | 'wrap';
+  /** what a row does when its tabs don't fit: scroll (default) / wrap / more (the rest under a More menu) / dropdown (one button that opens the list) */
+  overflow?: 'scroll' | 'wrap' | 'more' | 'dropdown';
+  /** icons + text (both, default) / text only / icons only (text becomes the tooltip) */
+  display?: 'both' | 'text' | 'icons';
+  /** @deprecated use `display: 'text'`; kept for older assets (false = text only) */
   showIcons?: boolean;
   divider?: boolean;
+  /** the row stays at the top of its scrolling panel */
+  sticky?: boolean;
+  /** a fold button hides every tab but the active one (per device) */
+  collapsible?: boolean;
+  /** tabs show a close button where the host allows closing (default true; false hides it) */
+  closable?: boolean;
+  /** tabs can be dragged into another order where the host allows it (default true; false turns it off) */
+  reorderable?: boolean;
+  /** count badges on tabs (default true) */
+  badges?: boolean;
+  /** the row reopens on the tab it was on last time (per device) */
+  rememberLast?: boolean;
 }
 
 export interface MeterData {
@@ -536,6 +634,7 @@ export interface AssetDataMap {
   popup: PopupData;
   button: ButtonData;
   slider: SliderData;
+  picker: PickerAssetData;
   gauge: GaugeData;
   meter: MeterData;
   'tab-group': TabGroupData;
@@ -556,8 +655,12 @@ export interface AssetDataMap {
   divider: DividerData;
   badge: BadgeData;
   settings: SettingsData;
+  'dock-layout': import('./engines/dock').DockLayoutData;
+  xlayout: import('./engines/xlayout').XLayoutData;
+  'nav-style': import('./engines/navstyle-rules.mjs').NavStyleData;
   'behavior-theme': BehaviorThemeData;
   'design-package': DesignPackageData;
+  skin: import('./engines/skin').SkinData;
   'style-package': import('./engines/stylepackage').StylePackageData;
   interface: InterfaceData;
   'logo-mark': MarkData;
@@ -569,7 +672,12 @@ export interface AssetDataMap {
   sizing: import('./engines/scale').SizingData;
   'agent-card': import('./engines/agent-card-rules.mjs').AgentCardData;
   'job-type': import('./engines/job-type-rules.mjs').JobTypeData;
+  card: import('./engines/card-rules.mjs').CardData;
   help: import('./engines/help').HelpData;
+  demonstration: import('./engines/demo-rules.mjs').DemonstrationData;
+  book: import('./engines/demo-rules.mjs').BookData;
+  clip: import('./engines/demo-rules.mjs').ClipData;
+  docs: import('./engines/demo-rules.mjs').DocsData;
   'uac-policy': UACPolicyData;
 }
 
@@ -577,7 +685,7 @@ export type Asset<K extends AssetType> = AssetEnvelope<AssetDataMap[K]>;
 /** Active asset id per slot. Optional control types added after apps already shipped (gauge, meter, settings) may be absent from an app's manifest. */
 export type ActiveAssets = { [K in Exclude<AssetType, LateOptionalType>]: string } & { [K in LateOptionalType]?: string };
 /** Types added after apps shipped manifests: their defaults may be missing (the engines fall back to built-in defaults). */
-export type LateOptionalType = 'tab-group' | 'gauge' | 'meter' | 'settings' | 'behavior-theme' | 'design-package' | 'style-package' | 'logo-mark' | 'animated-logo' | 'icon-pack' | 'branding' | 'interface' | 'typography' | 'density' | 'sizing' | 'agent-card' | 'job-type' | 'help';
+export type LateOptionalType = 'tab-group' | 'gauge' | 'meter' | 'settings' | 'dock-layout' | 'xlayout' | 'nav-style' | 'behavior-theme' | 'design-package' | 'skin' | 'style-package' | 'logo-mark' | 'animated-logo' | 'icon-pack' | 'branding' | 'interface' | 'typography' | 'density' | 'sizing' | 'agent-card' | 'job-type' | 'card' | 'help' | 'demonstration' | 'book' | 'clip' | 'docs';
 
 export interface AxfManifest {
   $axf: 'manifest@1';

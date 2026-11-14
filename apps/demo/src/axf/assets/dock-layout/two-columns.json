@@ -1,0 +1,37 @@
+{
+  "$axf": "asset@1",
+  "type": "dock-layout",
+  "id": "two-columns",
+  "name": "Two columns",
+  "version": "1.0.0",
+  "description": "Two panes side by side. One of the ten starter pane layouts every dock host offers (dock-layout@1).",
+  "author": "AmberX AXF",
+  "tags": [
+    "dock",
+    "preset",
+    "columns"
+  ],
+  "data": {
+    "panes": 2,
+    "tree": {
+      "kind": "split",
+      "vertical": false,
+      "children": [
+        {
+          "kind": "leaf",
+          "pane": 1
+        },
+        {
+          "kind": "leaf",
+          "pane": 2
+        }
+      ],
+      "weights": [
+        1,
+        1
+      ]
+    },
+    "hint": "Two panes side by side.",
+    "main": 1
+  }
+}

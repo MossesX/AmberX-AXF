@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "dialog",
+  "id": "kiosk-bold",
+  "name": "Kiosk Bold dialog",
+  "version": "1.0.0",
+  "description": "Kiosk Bold: sheet, dim backdrop, slide in.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "bold",
+    "kiosk",
+    "touch"
+  ],
+  "data": {
+    "variant": "sheet",
+    "width": 720,
+    "backdrop": "dim",
+    "animation": "slide",
+    "header": "filled",
+    "closeOnBackdrop": true
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "slider",
+  "id": "lounge",
+  "name": "Lounge slider",
+  "version": "1.0.0",
+  "description": "Lounge: circle thumb on a 4 px track.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "relaxed",
+    "relaxed"
+  ],
+  "data": {
+    "track": 4,
+    "thumb": "circle",
+    "thumbSize": 20,
+    "fill": "gradient",
+    "showValue": "never",
+    "ticks": false
+  }
+}

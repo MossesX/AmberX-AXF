@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "tab-group",
+  "id": "data-pro",
+  "name": "Data Pro tabs",
+  "version": "1.0.0",
+  "description": "Data Pro: underline tabs, start.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "analytical",
+    "data"
+  ],
+  "data": {
+    "style": "underline",
+    "align": "start",
+    "position": "top",
+    "density": "compact",
+    "overflow": "scroll",
+    "showIcons": false,
+    "divider": true
+  }
+}

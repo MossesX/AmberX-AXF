@@ -71,6 +71,7 @@ const STYLE_FIELDS = {
   fontFamily: 'string', fontDisplay: 'string', fontMono: 'string', fontSize: 'number', space: 'number', borderWidth: 'number', motion: 'number', blur: 'number', headingWeight: 'number', tracking: 'number',
   density: 'enum:compact,comfortable,spacious', 'radius.sm': 'number', 'radius.md': 'number', 'radius.lg': 'number', 'shadow.sm': 'string', 'shadow.md': 'string', 'shadow.lg': 'string',
   wrapGroups: 'boolean', opacityDisabled: 'number', opacityMuted: 'number', opacityHover: 'number', opacityTint: 'number', opacityScrim: 'number', opacityGlass: 'number',
+  opacityDialog: 'number', opacitySettings: 'number', opacityPanel: 'number', opacityMenu: 'number', opacityToolbar: 'number', opacityBanner: 'number',
 };
 const ITEM_KINDS = ['note', 'todo', 'task'];
 const ITEM_FIELDS = { kind: `enum:${ITEM_KINDS.join(',')}`, list: 'string', title: 'string', text: 'string', summary: 'string', tags: 'string[]', pinned: 'boolean', starred: 'boolean', status: 'enum:open,doing,done', priority: 'enum:0,1,2,3', due: 'string', checklist: 'object[]', parent: 'string', order: 'number', url: 'string' };

@@ -1,0 +1,143 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "axf/agent.schema.json",
+  "title": "AmberX AXF swarm agent (agent@1)",
+  "description": "Generated from framework/core/engines/swarm-rules.mjs. One specialist agent on the swarm roster.",
+  "type": "object",
+  "required": [
+    "id",
+    "skill"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "agent@1"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]{0,39}$"
+    },
+    "name": {
+      "type": "string",
+      "maxLength": 60
+    },
+    "role": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "skill": {
+      "type": "string",
+      "maxLength": 40
+    },
+    "skills": {
+      "type": "array",
+      "maxItems": 60,
+      "items": {
+        "type": "string",
+        "maxLength": 40
+      }
+    },
+    "home": {
+      "type": "string",
+      "maxLength": 40
+    },
+    "jobsOnly": {
+      "type": "boolean"
+    },
+    "specialty": {
+      "type": "string",
+      "maxLength": 200
+    },
+    "keywords": {
+      "type": "array",
+      "maxItems": 40,
+      "items": {
+        "type": "string",
+        "maxLength": 40
+      }
+    },
+    "paths": {
+      "type": "array",
+      "maxItems": 40,
+      "items": {
+        "type": "string",
+        "maxLength": 200
+      }
+    },
+    "models": {
+      "type": "array",
+      "maxItems": 4,
+      "items": {
+        "enum": [
+          "opus",
+          "fable"
+        ]
+      }
+    },
+    "tools": {
+      "type": "array",
+      "maxItems": 30,
+      "items": {
+        "type": "string",
+        "maxLength": 120
+      }
+    },
+    "maxTurns": {
+      "type": "number",
+      "minimum": 1,
+      "maximum": 200
+    },
+    "tokenBudget": {
+      "type": "number",
+      "minimum": 1000,
+      "maximum": 10000000
+    },
+    "salary": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 10000
+    },
+    "hiredAt": {
+      "type": "string"
+    },
+    "avatar": {
+      "type": "object",
+      "properties": {
+        "face": {
+          "enum": [
+            "round",
+            "square",
+            "tall"
+          ]
+        },
+        "hair": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 5
+        },
+        "gear": {
+          "enum": [
+            "none",
+            "glasses",
+            "shades",
+            "cap",
+            "beanie",
+            "headphones"
+          ]
+        },
+        "hue": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 359
+        }
+      }
+    },
+    "catchphrase": {
+      "type": "string",
+      "maxLength": 160
+    },
+    "bio": {
+      "type": "string",
+      "maxLength": 600
+    }
+  }
+}

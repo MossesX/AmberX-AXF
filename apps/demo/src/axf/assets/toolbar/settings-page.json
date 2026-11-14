@@ -1,0 +1,35 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "settings-page",
+  "name": "Settings page",
+  "version": "1.0.0",
+  "description": "The settings interface's own toolbar: jump to a settings tab, restore the default look, and search every setting. Named by a settings asset's `toolbar` field.",
+  "author": "AmberX AXF",
+  "tags": ["settings"],
+  "roll": false,
+  "data": {
+    "variant": "icons-labels",
+    "align": "start",
+    "density": "compact",
+    "surface": "flat",
+    "showSearch": true,
+    "groups": [
+      {
+        "id": "tabs",
+        "items": [
+          { "id": "appearance", "icon": "palette", "label": "Appearance", "action": "settings.open:appearance" },
+          { "id": "account", "icon": "shield", "label": "Account", "action": "settings.open:account" },
+          { "id": "plugins", "icon": "package", "label": "Plugins", "action": "settings.open:plugins" },
+          { "id": "about", "icon": "info", "label": "About", "action": "settings.open:about" }
+        ]
+      },
+      {
+        "id": "look",
+        "items": [
+          { "id": "restore", "icon": "refresh", "label": "Restore look", "action": "appearance.restore", "requires": "assets.swap" }
+        ]
+      }
+    ]
+  }
+}

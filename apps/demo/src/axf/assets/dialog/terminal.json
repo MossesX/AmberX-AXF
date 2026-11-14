@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "dialog",
+  "id": "terminal",
+  "name": "Terminal dialog",
+  "version": "1.0.0",
+  "description": "Terminal: drawer, none backdrop, slide in.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "technical",
+    "developer"
+  ],
+  "data": {
+    "variant": "drawer",
+    "width": 480,
+    "backdrop": "none",
+    "animation": "slide",
+    "header": "plain",
+    "closeOnBackdrop": true
+  }
+}

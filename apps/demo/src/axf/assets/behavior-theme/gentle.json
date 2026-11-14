@@ -1,0 +1,49 @@
+{
+  "$axf": "asset@1",
+  "type": "behavior-theme",
+  "id": "gentle",
+  "name": "Gentle",
+  "version": "1.0.0",
+  "description": "Gentle browsing: pages rise in slowly, soft fades, nothing jumps.",
+  "author": "AmberX AXF",
+  "tags": [
+    "pairs:framework-browser"
+  ],
+  "data": {
+    "motion": {
+      "speed": "slow",
+      "easing": "standard",
+      "reduced": "system",
+      "entrance": "rise"
+    },
+    "interaction": {
+      "hover": "tint",
+      "press": "none",
+      "focusRing": "auto",
+      "cursor": "pointer",
+      "longPressMs": 650,
+      "doubleTapMs": 320,
+      "dragThreshold": 10
+    },
+    "windows": {
+      "dialogOpen": "fade",
+      "backdrop": "dim",
+      "popupOpen": "fade",
+      "drawerOpen": "slide",
+      "snap": false,
+      "snapGrid": 8,
+      "stack": "center",
+      "minimize": "cursor",
+      "closeOnBackdrop": true,
+      "closeOnEscape": true
+    },
+    "feedback": {
+      "toastPosition": "bottom",
+      "toastMs": 5000,
+      "sound": "off",
+      "vibration": "off",
+      "confirmDelete": "risky",
+      "busyCursor": true
+    }
+  }
+}

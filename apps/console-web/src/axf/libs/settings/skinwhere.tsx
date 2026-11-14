@@ -14,7 +14,7 @@ import { useSyncExternalStore } from 'react';
 import type { AxfRuntime } from '../../core/runtime';
 import type { NavItem, NavMenuData } from '../../core/types';
 import type { CoverageRow } from '../../core';
-import { Button, Chip, Container, Segmented, Switch, useAxfState, useRuntime } from '../../react';
+import { Button, Chip, Container, Segmented, Select, Switch, useAxfState, useRuntime } from '../../react';
 
 export const SKIN_WHERE_LAYOUT_KEY = 'axf.skin.whereLayout';
 export const SKIN_WHERE_DIALOG = 'axf.settings.skin-where';
@@ -94,9 +94,7 @@ function LevelRow({ keyId, locked }: { keyId: string; locked: boolean }) {
       <div className="axf-settings__control axf-skin__action">
         <Segmented size="sm" label={`${label}: skin`} value={state.use} disabled={locked} options={USES} onChange={(use) => rt.scopeSkin(keyId, use)} />
         {state.use === 'on' && (
-          <select className="axf-settings__field" aria-label={`${label}: which skin`} value={state.id} disabled={locked} onChange={(e) => rt.scopeSkin(keyId, 'on', e.target.value)}>
-            {skins.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
-          </select>
+          <Select className="axf-settings__field" label={`${label}: which skin`} value={state.id} disabled={locked} onChange={(v) => rt.scopeSkin(keyId, 'on', v)} options={skins.map((s) => ({ value: s.id, label: s.name }))} />
         )}
         {state.use !== 'inherit' && <Button size="sm" tone="quiet" icon="x" disabled={locked} title="Back to inherit" onClick={() => rt.scopeSkin(keyId, 'inherit')}>Inherit</Button>}
       </div>
@@ -124,11 +122,8 @@ function AddLevel({ locked }: { locked: boolean }) {
     <div className="axf-settings__row">
       <div className="axf-settings__label"><span>Add a screen or plugin</span><span className="fx-muted axf-settings__hint">Give one part of the app its own skin, or no skin.</span></div>
       <div className="axf-settings__control">
-        <select className="axf-settings__field" aria-label="Add a screen or plugin" value="" disabled={locked} onChange={(e) => { if (e.target.value) rt.scopeSkin(e.target.value, 'on'); }}>
-          <option value="">Choose…</option>
-          {screens.length > 0 && <optgroup label="Screens">{screens.map((s) => <option key={s.id} value={`ui:${s.id}`}>{s.label}</option>)}</optgroup>}
-          {plugins.length > 0 && <optgroup label="Plugins">{plugins.map((p) => <option key={p.id} value={`plugin:${p.id}`}>{p.label}</option>)}</optgroup>}
-        </select>
+        <Select className="axf-settings__field" label="Add a screen or plugin" value="" disabled={locked} empty="Choose…" onChange={(v) => { if (v) rt.scopeSkin(v, 'on'); }}
+          options={[...screens.map((s) => ({ value: `ui:${s.id}`, label: s.label, group: 'Screens' })), ...plugins.map((p) => ({ value: `plugin:${p.id}`, label: p.label, group: 'Plugins' }))]} />
       </div>
     </div>
   );
@@ -195,9 +190,7 @@ export function SkinWhere({ locked }: { locked: boolean }) {
     <div className="axf-settings__row">
       <div className="axf-settings__label"><p className="fx-eyebrow">Where the skin applies</p><span className="fx-muted axf-settings__hint">Hub-wide → this app → a screen → a plugin: the nearer level wins.</span></div>
       <div className="axf-settings__control axf-skin__action">
-        <select className="axf-settings__field" aria-label="How this section is shown" value={layout} onChange={(e) => rt.settings.set(SKIN_WHERE_LAYOUT_KEY, e.target.value)}>
-          {LAYOUTS.map((l) => <option key={l.value} value={l.value} title={l.title}>{l.label}</option>)}
-        </select>
+        <Select className="axf-settings__field" label="How this section is shown" value={layout} onChange={(v) => rt.settings.set(SKIN_WHERE_LAYOUT_KEY, v)} options={LAYOUTS} />
       </div>
     </div>
   );
@@ -234,7 +227,7 @@ export function SkinWhere({ locked }: { locked: boolean }) {
                   <td><span>{l.label}</span><span className="fx-muted axf-settings__hint"> {l.sub}</span></td>
                   <td data-label="Mode">{l.key === 'global' || l.key === 'app' ? l.mode : <Segmented size="sm" label={`${l.label}: skin`} value={(scopes.find((x) => x.key === l.key)?.use ?? 'inherit') as Use} disabled={locked} options={USES} onChange={(use) => rt.scopeSkin(l.key, use)} />}</td>
                   <td data-label="Skin">{l.key !== 'global' && l.key !== 'app' && scopes.find((x) => x.key === l.key)?.use === 'on'
-                    ? <select className="axf-settings__field" aria-label={`${l.label}: which skin`} value={scopes.find((x) => x.key === l.key)?.id ?? ''} disabled={locked} onChange={(e) => rt.scopeSkin(l.key, 'on', e.target.value)}>{skins.map((k) => <option key={k.id} value={k.id}>{k.name}</option>)}</select>
+                    ? <Select className="axf-settings__field" label={`${l.label}: which skin`} value={scopes.find((x) => x.key === l.key)?.id ?? ''} disabled={locked} onChange={(v) => rt.scopeSkin(l.key, 'on', v)} options={skins.map((k) => ({ value: k.id, label: k.name }))} />
                     : l.skin}</td>
                   <td data-label="Icon pack">{s?.data.iconPack ?? '—'}</td>
                   <td data-label="Parts">{s?.data.parts ? Object.keys(s.data.parts).length : 0}</td>

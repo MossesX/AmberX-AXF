@@ -1,8 +1,9 @@
-import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
+import { useEffect, useRef, useState, type ReactNode, type RefObject } from 'react';
 import { filterMenu, resolveChecked, type AssetType, type MenuItem } from '../../core';
 import { useRuntime, useAxfState } from '../AxfProvider';
 import { Icon } from './Icon';
 import { Kbd } from './Controls';
+import { scrollMenuBy, useMenuFit } from './menuFit';
 
 interface MenuListProps {
   items: MenuItem[];
@@ -14,40 +15,32 @@ interface MenuListProps {
 
 /**
  * A submenu's flyout box: opens to the right of its row and flips to the left only when it would run off the screen
- * (Brett, Oct 28 2026); a box taller than the room below moves up to fit. Used by context menus and the app menu.
+ * (Brett, Oct 28 2026); a box taller than the room moves up to fit, and one taller than the screen scrolls inside
+ * (menu-fit@1, Nov 3 2026). Placed inside its parent menu box (not its row), so a scrolling parent never clips it.
+ * Used by context menus and the app menu. Phones show submenus inline.
  */
 export function MenuSub({ children, role }: { children: ReactNode; role?: string }) {
   const ref = useRef<HTMLDivElement>(null);
-  const [flip, setFlip] = useState(false);
-  const [lift, setLift] = useState(0);
-  const [shift, setShift] = useState(0);
-  useLayoutEffect(() => {
-    const el = ref.current;
-    if (!el || getComputedStyle(el).position !== 'absolute') return; // phones show submenus inline
-    // measured again whenever the box changes size (a live list fills in after its loading row)
-    const fit = () => {
-      const parent = el.parentElement?.getBoundingClientRect();
-      if (!parent) return;
-      const w = el.offsetWidth, h = el.offsetHeight;
-      const vw = document.documentElement.clientWidth, vh = document.documentElement.clientHeight;
-      const rightEdge = parent.right + 2 + w;
-      const left = rightEdge > vw - 4 && parent.left - w >= 0; // flip only when the right has no room and the left has
-      setFlip(left);
-      setShift(!left && rightEdge > vw - 4 ? Math.min(parent.right + 2 - 4, rightEdge - vw + 4) : 0);
-      const top = parent.top - 4;
-      setLift(top + h > vh - 4 ? Math.min(top - 4, top + h - vh + 4) : 0);
-    };
-    fit();
-    const ro = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(fit);
-    ro?.observe(el);
-    return () => ro?.disconnect();
-  }, []);
-  const move = lift > 0 || shift > 0 ? { transform: `translate(${shift > 0 ? -shift : 0}px, ${lift > 0 ? -lift : 0}px)` } : undefined;
+  useMenuFit(ref, 'side', () => ref.current?.parentElement?.getBoundingClientRect());
   return (
-    <div ref={ref} className="fx-menu__sub fx-popover" role={role} data-fx-flip={flip ? 'left' : undefined}
-      style={move}>
-      {children}
+    <div ref={ref} className="fx-menu__sub fx-popover" role={role}>
+      <MenuScroll box={ref}>{children}</MenuScroll>
     </div>
+  );
+}
+
+/**
+ * A menu box's scrolling body plus its scroll hints: a fade and a chevron at the top / bottom while there is more
+ * that way (`data-fx-more` on the box, kept by useMenuFit). A tap on a hint scrolls most of a page.
+ */
+export function MenuScroll({ box, children }: { box: RefObject<HTMLElement | null>; children: ReactNode }) {
+  // the hints are zero-height rows on either side of the scroller (outside its fade mask), so rows never move
+  return (
+    <>
+      <span className="fx-menu__more fx-menu__more--up" aria-hidden="true" onPointerDown={(e) => { e.preventDefault(); scrollMenuBy(box.current, -1); }}><Icon name="chevron-up" size={14} /></span>
+      <div className="fx-menu__scroll">{children}</div>
+      <span className="fx-menu__more fx-menu__more--down" aria-hidden="true" onPointerDown={(e) => { e.preventDefault(); scrollMenuBy(box.current, 1); }}><Icon name="chevron-down" size={14} /></span>
+    </>
   );
 }
 

@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "dialog",
+  "id": "executive-soft",
+  "name": "Executive Soft dialog",
+  "version": "1.0.0",
+  "description": "Executive Soft: modal, blur backdrop, fade in.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "soft",
+    "enterprise",
+    "spacious"
+  ],
+  "data": {
+    "variant": "modal",
+    "width": 560,
+    "backdrop": "blur",
+    "animation": "fade",
+    "header": "filled",
+    "closeOnBackdrop": true
+  }
+}

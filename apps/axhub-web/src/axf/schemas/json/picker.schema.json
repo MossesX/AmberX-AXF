@@ -1,0 +1,89 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "axf/picker.schema.json",
+  "title": "AmberX AXF Picker asset",
+  "type": "object",
+  "required": [
+    "$axf",
+    "type",
+    "id",
+    "name",
+    "version",
+    "data"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "asset@1"
+    },
+    "type": {
+      "const": "picker"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{1,47}$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "data": {
+      "type": "object",
+      "required": [
+        "variant",
+        "search",
+        "searchThreshold",
+        "checkmarks",
+        "descriptions",
+        "density",
+        "doneButton"
+      ],
+      "properties": {
+        "variant": {
+          "enum": [
+            "auto",
+            "dialog",
+            "sheet"
+          ]
+        },
+        "search": {
+          "enum": [
+            "auto",
+            "always",
+            "never"
+          ]
+        },
+        "searchThreshold": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 200
+        },
+        "checkmarks": {
+          "enum": [
+            "end",
+            "start",
+            "none"
+          ]
+        },
+        "descriptions": {
+          "type": "boolean"
+        },
+        "density": {
+          "enum": [
+            "compact",
+            "regular",
+            "roomy"
+          ]
+        },
+        "doneButton": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

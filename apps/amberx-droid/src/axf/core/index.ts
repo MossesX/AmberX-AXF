@@ -41,6 +41,7 @@ export { WIDGET_TYPES, ATTACHABLE_ASSET_TYPES, TOOLBAR_SIDES, SEARCH_BAR_WIDTH, 
 export * from './engines/search';
 export * from './engines/appmenu';
 export * from './engines/menufit';
+export * from './engines/picker';
 export * from './engines/alerts';
 export * from './diagnostics';
 export * from './terminal';
@@ -56,3 +57,4 @@ export * from './engines/plugins';
 export * from './library';
 export * from './engines/work';
 export * from './engines/placement';
+export * from './engines/console-control';

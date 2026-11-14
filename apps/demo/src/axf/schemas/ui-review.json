@@ -76,7 +76,10 @@
     "comment",
     "history",
     "updatedAt",
-    "pairId"
+    "pairId",
+    "prediction",
+    "choices",
+    "singleOption"
   ],
   "groupOptional": [
     "submittedBy",

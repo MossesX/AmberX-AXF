@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "button",
+  "id": "enterprise-crisp",
+  "name": "Enterprise Crisp button",
+  "version": "1.0.0",
+  "description": "Enterprise Crisp: rounded solid buttons.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "crisp",
+    "enterprise"
+  ],
+  "data": {
+    "shape": "rounded",
+    "fill": "solid",
+    "weight": 600,
+    "uppercase": false,
+    "size": "md",
+    "elevation": false
+  }
+}

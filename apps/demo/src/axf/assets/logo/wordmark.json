@@ -1,0 +1,19 @@
+{
+  "$axf": "asset@1",
+  "type": "logo",
+  "id": "wordmark",
+  "name": "Wordmark",
+  "version": "1.0.0",
+  "description": "The app's name as a bold wordmark; tap opens Settings.",
+  "author": "AmberX AXF",
+  "tags": [
+    "logo"
+  ],
+  "data": {
+    "kind": "text",
+    "text": "AmberX",
+    "size": "regular",
+    "bold": true,
+    "link": "app.settings"
+  }
+}

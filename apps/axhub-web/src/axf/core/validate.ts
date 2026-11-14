@@ -18,6 +18,7 @@ import { behaviorErrors } from './engines/behavior';
 import { dockLayoutErrors } from './engines/dock';
 import { xlayoutErrors } from './engines/xlayout';
 import { navStyleErrors } from './engines/navstyle-rules.mjs';
+import { pickerAssetErrors } from './engines/theme';
 
 export interface ValidationResult {
   ok: boolean;
@@ -111,6 +112,8 @@ export function validateAsset(raw: unknown): ValidationResult {
   }
   if (raw.type === 'design-package') errors.push(...designPackageErrors(data));
   if (raw.type === 'skin') errors.push(...skinErrors(data));
+  // picker@1 (core/engines/theme.ts): threshold range + boolean fields; the enums and required fields come from the spec above
+  if (raw.type === 'picker') errors.push(...pickerAssetErrors(data));
   if (raw.type === 'style-package') errors.push(...stylePackageErrors(data));
   if (raw.type === 'interface') errors.push(...interfaceErrors(data));
   if (raw.type === 'behavior-theme') errors.push(...behaviorErrors(data));

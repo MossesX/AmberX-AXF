@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "popup",
+  "id": "compact-admin",
+  "name": "Compact Admin pop-ups",
+  "version": "1.0.0",
+  "description": "Compact Admin: solid pop-ups at the bottom-right.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "compact",
+    "compact"
+  ],
+  "data": {
+    "position": "bottom-right",
+    "variant": "solid",
+    "duration": 3500,
+    "showIcon": true,
+    "maxVisible": 4
+  }
+}

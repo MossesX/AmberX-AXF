@@ -8,7 +8,7 @@ import { SettingsRegistry, type SettingValue } from './settings';
 import { AssetRegistry, serializeAsset, type RegisteredAsset } from './registry';
 import { announceWatchLiveRuntime } from './watch-live';
 import { ActionBus, FRAMEWORK_MODULE, STANDARD_ACTIONS, type ActionContext } from './engines/actions';
-import { colorThemeVars, scrollbarVars, styleThemeVars, type VarMap } from './engines/theme';
+import { colorThemeVars, pickerStyle, scrollbarVars, styleThemeVars, type VarMap } from './engines/theme';
 import { scaleThemeVars } from './engines/scale';
 import { LAYOUT_VIEWPORTS, layoutViewports, layoutVars } from './engines/layout';
 import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, gaugeStyle, meterStyle, navMenuStyle, popupStyle, sliderStyle, tabGroupStyle, toolbarStyle } from './engines/components';
@@ -2599,6 +2599,8 @@ export class AxfRuntime {
       gaugeStyle(this.assetOrNull('gauge')?.data),
       meterStyle(this.assetOrNull('meter')?.data),
       tabGroupStyle(this.assetOrNull('tab-group')?.data, this.slotHidden('tab-group')),
+      // picker@1 (engines/theme.ts): the --fx-picker-* family + the asset's choices; an app without a picker asset gets today's drop-down look
+      pickerStyle(this.assetOrNull('picker' as AssetType)?.data as never),
     ];
     const vars: VarMap = {
       ...colorThemeVars(color),
@@ -3039,6 +3041,13 @@ export class AxfRuntime {
     a.register('windows.maximize', ([w]) => w && wm.toggleMaximize(w), { label: 'Maximize / restore window', params: true });
     a.register('windows.snap', ([w, zone = 'left']) => w && wm.snapTo(w, zone as import('./engines/windows').SnapZone), { label: 'Snap window to a zone', params: true });
     a.register('windows.focus', ([w]) => w && wm.focus(w), { label: 'Focus window', params: true });
+    // a window's own background transparency (0..1, or `theme` = follow the style theme's opacitySettings token)
+    a.register('windows.background', ([w, v = 'theme']) => {
+      const win = w ? wm.state.windows.find((x) => x.id === w) : undefined;
+      if (!win) return;
+      const n = Number(v);
+      wm.setSettings(win.id, { ...win.settings, surface: v === 'theme' || !Number.isFinite(n) ? null : Math.min(1, Math.max(0, n)) });
+    }, { label: 'Window background opacity', params: true });
     // dock@1 (Nov 3 2026): re-dock a floating window along a side of the main dock; lay the open tabs out on a preset
     a.register('windows.redockInto', ([w, side = 'right']) => w && wm.redockInto(w, { target: 'root', zone: (['left', 'right', 'top', 'bottom'].includes(side) ? side : 'right') as import('./engines/dock').DockSide }), { label: 'Redock window into the dock', params: true });
     a.register('windows.layout', ([preset = '', w = '']) => {

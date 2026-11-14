@@ -1,0 +1,34 @@
+{
+  "$axf": "asset@1",
+  "type": "color-theme",
+  "id": "midnight-ink",
+  "name": "Midnight Ink",
+  "version": "1.0.0",
+  "description": "Deep navy ink with a cyan accent for late sessions.",
+  "author": "AmberX AXF",
+  "tags": [
+    "dark",
+    "cool"
+  ],
+  "data": {
+    "scheme": "dark",
+    "tokens": {
+      "bg": "#0b1220",
+      "surface": "#111a2b",
+      "surface2": "#16213a",
+      "surface3": "#1d2a47",
+      "text": "#e4ebf7",
+      "muted": "#8d9bb3",
+      "border": "#24324f",
+      "accent": "#38c3e8",
+      "accentText": "#06202a",
+      "accentSoft": "rgba(56,195,232,0.14)",
+      "danger": "#f2667a",
+      "success": "#3fcf8e",
+      "warning": "#f0b44c",
+      "info": "#7aa7ff",
+      "focus": "#38c3e8",
+      "shadow": "rgba(0,0,0,0.5)"
+    }
+  }
+}

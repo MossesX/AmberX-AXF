@@ -9,8 +9,10 @@
  * choice cards are radio / checkbox buttons in a radiogroup / group, errors are announced through `aria-describedby`,
  * and keyboard focus shows through `:focus-visible` on the visible part.
  */
-import { useEffect, useId, useRef, type ReactNode } from 'react';
+import { useEffect, useId, useRef, type CSSProperties, type ReactNode } from 'react';
 import { Icon } from './Icon';
+import { PickerField } from './PickerField';
+import { swapActive, usePickerSwap } from '../pickerConfig';
 import { paramBool, paramDefaultText, paramError, type LibraryParam } from '../../core';
 
 /* ---------------- Switch ---------------- */
@@ -183,7 +185,7 @@ export function ColorField({ label, value, onChange, swatch, hint, error, disabl
   );
 }
 
-export interface SelectOption { value: string; label: string; disabled?: boolean }
+export interface SelectOption { value: string; label: string; disabled?: boolean; /** <optgroup> / picker section label */ group?: string; title?: string }
 
 export interface SelectFieldProps {
   label: ReactNode;
@@ -199,8 +201,15 @@ export interface SelectFieldProps {
   className?: string;
 }
 
-/** Native select inside a Field. */
+/**
+ * Native select inside a Field. While the picker swap is on (pickerConfig; the picker-dialog plugin), the same props
+ * render a PickerField: same label, hint, error and value strings, the themed dialog instead of the browser's list.
+ */
 export function SelectField({ label, value, options, onChange, hint, error, empty, required, disabled, className }: SelectFieldProps) {
+  const swap = usePickerSwap();
+  if (swapActive(swap) && swap.swapSelectFields) {
+    return <PickerField label={label} value={value} options={options} onChange={onChange} hint={hint} error={error} empty={empty} required={required} disabled={disabled} className={className} searchThreshold={swap.searchThreshold ?? undefined} />;
+  }
   return (
     <Field label={label} hint={hint} error={error} required={required} className={className}>
       {(id, describedBy) => (
@@ -210,6 +219,40 @@ export function SelectField({ label, value, options, onChange, hint, error, empt
         </select>
       )}
     </Field>
+  );
+}
+
+export interface SelectProps {
+  /** Accessible name (there is no visible label: the caller lays one out, or the row says it). */
+  label: string;
+  value: string;
+  options: SelectOption[];
+  onChange: (v: string) => void;
+  /** Label of an extra empty option ("" value) at the top. */
+  empty?: string;
+  disabled?: boolean;
+  title?: string;
+  className?: string;
+  /** Layout only (width); the look comes from the input / picker tokens. */
+  style?: CSSProperties;
+}
+
+/**
+ * A bare drop-down (no Field around it) for toolbars, table cells and inline rows: a native select, or the themed
+ * PickerField while the picker swap is on. Options with a `group` sit in <optgroup>s / picker sections.
+ */
+export function Select({ label, value, options, onChange, empty, disabled, title, className, style }: SelectProps) {
+  const swap = usePickerSwap();
+  if (swapActive(swap) && swap.swapSelectFields) {
+    return <span style={style}><PickerField bare label={label} labelText={label} value={value} options={options} onChange={onChange} empty={empty} disabled={disabled} className={className} searchThreshold={swap.searchThreshold ?? undefined} /></span>;
+  }
+  const groups = [...new Set(options.map((o) => o.group ?? ''))];
+  const row = (o: SelectOption) => <option key={o.value} value={o.value} disabled={o.disabled} title={o.title}>{o.label}</option>;
+  return (
+    <select className={`fx-input ${className ?? ''}`} style={style} aria-label={label} title={title} value={value} disabled={disabled} onChange={(e) => onChange(e.target.value)}>
+      {empty !== undefined && <option value="">{empty}</option>}
+      {groups.map((g) => g ? <optgroup key={g} label={g}>{options.filter((o) => o.group === g).map(row)}</optgroup> : options.filter((o) => !o.group).map(row))}
+    </select>
   );
 }
 

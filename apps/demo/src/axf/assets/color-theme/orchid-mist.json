@@ -1,0 +1,34 @@
+{
+  "$axf": "asset@1",
+  "type": "color-theme",
+  "id": "orchid-mist",
+  "name": "Orchid Mist",
+  "version": "1.0.0",
+  "description": "Lavender-tinted greys with a violet accent for design and creative suites.",
+  "author": "AmberX AXF",
+  "tags": [
+    "light",
+    "creative"
+  ],
+  "data": {
+    "scheme": "light",
+    "tokens": {
+      "bg": "#f6f4f8",
+      "surface": "#fefdfe",
+      "surface2": "#faf9fb",
+      "surface3": "#ece8ef",
+      "text": "#21162d",
+      "muted": "#705c84",
+      "border": "#ded8e4",
+      "accent": "#702dbe",
+      "accentText": "#ffffff",
+      "accentSoft": "rgba(112,45,190,0.1)",
+      "danger": "#ce2732",
+      "success": "#218c5a",
+      "warning": "#b87614",
+      "info": "#1686b6",
+      "focus": "#702dbe",
+      "shadow": "rgba(36,21,50,0.12)"
+    }
+  }
+}

@@ -15,7 +15,7 @@
  */
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react';
 import { MCP_PERMISSIONS, argumentSkeleton, callGate, contentText, mcpHasPermission, toolEffect, type McpPermissionSet, type McpToolEffect } from '../../core/engines/mcp';
-import { Button, Chip, Container, Icon, TabGroup, useAxfState, useRuntime } from '../../react';
+import { Button, Chip, Container, Icon, Select, TabGroup, useAxfState, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import type { McpConnected, McpPrompt, McpResource, McpTool } from './client';
 import { describe } from './client';
@@ -129,9 +129,7 @@ function McpView({ host, store, perms }: { host: McpHost; store: ServerStore; pe
         <>
           <div className={`${P}__bar`} role="toolbar" aria-label="MCP server">
             <label className={`${P}__field`}>Server
-              <select className="fx-input" value={sid} onChange={(e) => setSid(e.target.value)}>
-                {list.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
-              </select>
+              <Select label="Server" value={sid} onChange={setSid} options={list.map((s) => ({ value: s.id, label: s.name }))} />
             </label>
             <Button tone="primary" icon="zap" disabled={busy || !sid} onClick={connect}>{busy ? 'Connecting…' : conn ? 'Reconnect' : 'Connect'}</Button>
             {server && <span className={`fx-small fx-muted fx-mono ${P}__url`}>{server.url}</span>}
@@ -404,11 +402,11 @@ function ServersPanel({ host, store, envAuth, perms }: { host: McpHost; store: S
           <label className={`${P}__field`}>Streamable HTTP URL<input className="fx-input fx-mono" required type="url" value={draft.url} onChange={(e) => setDraft({ ...draft, url: e.target.value })} placeholder="https://axhub.amberxai.com/mcp" /></label>
           <label className={`${P}__field`}>Description<input className="fx-input" value={draft.description} onChange={(e) => setDraft({ ...draft, description: e.target.value })} /></label>
           <label className={`${P}__field`}>Authentication
-            <select className="fx-input" value={draft.auth} onChange={(e) => setDraft({ ...draft, auth: e.target.value as McpAuthKind })}>
-              {envAuth && <option value="env">Bearer token from an environment variable on the server (recommended)</option>}
-              <option value="token">Bearer token kept by {host.registry.label}</option>
-              <option value="none">None</option>
-            </select>
+            <Select label="Authentication" value={draft.auth} onChange={(v) => setDraft({ ...draft, auth: v as McpAuthKind })} options={[
+              ...(envAuth ? [{ value: 'env', label: 'Bearer token from an environment variable on the server (recommended)' }] : []),
+              { value: 'token', label: `Bearer token kept by ${host.registry.label}` },
+              { value: 'none', label: 'None' },
+            ]} />
           </label>
           {draft.auth === 'env' && <label className={`${P}__field`}>Environment variable<input className="fx-input fx-mono" required pattern="[A-Z_][A-Z0-9_]*" value={draft.tokenEnv} onChange={(e) => setDraft({ ...draft, tokenEnv: e.target.value.toUpperCase() })} placeholder="AXHUB_TOKEN" /></label>}
           {draft.auth === 'token' && <label className={`${P}__field`}>Token{draft.id ? ' (leave blank to keep the stored one)' : ''}<input className="fx-input" type="password" autoComplete="off" value={draft.token} onChange={(e) => setDraft({ ...draft, token: e.target.value })} /></label>}

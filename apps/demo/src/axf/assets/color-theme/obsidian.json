@@ -1,0 +1,35 @@
+{
+  "$axf": "asset@1",
+  "type": "color-theme",
+  "id": "obsidian",
+  "name": "Obsidian",
+  "version": "1.0.0",
+  "description": "Deep blue-black glass with an electric blue accent; the enterprise dark default.",
+  "author": "AmberX AXF",
+  "tags": [
+    "dark",
+    "cool",
+    "enterprise"
+  ],
+  "data": {
+    "scheme": "dark",
+    "tokens": {
+      "bg": "#0e0f14",
+      "surface": "#14161d",
+      "surface2": "#1a1c26",
+      "surface3": "#232632",
+      "text": "#e4e6ec",
+      "muted": "#8f95ae",
+      "border": "#2b2f3e",
+      "accent": "#6c92f9",
+      "accentText": "#091125",
+      "accentSoft": "rgba(108,146,249,0.14)",
+      "danger": "#ef6174",
+      "success": "#3ecc89",
+      "warning": "#f1b041",
+      "info": "#6caef9",
+      "focus": "#6c92f9",
+      "shadow": "rgba(0,0,0,0.55)"
+    }
+  }
+}

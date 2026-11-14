@@ -1,0 +1,24 @@
+{
+  "$axf": "asset@1",
+  "type": "layout",
+  "id": "signature-dock",
+  "name": "Signature Dock",
+  "version": "1.0.0",
+  "description": "A labelled list navigation on the left, properties on the right, the toolbar docked at the bottom and a status bar: the AmberX signature frame.",
+  "author": "AmberX AXF",
+  "tags": [
+    "brand",
+    "desktop"
+  ],
+  "data": {
+    "nav": "left",
+    "navWidth": 216,
+    "showMenubar": true,
+    "showToolbar": true,
+    "toolbarPosition": "bottom",
+    "showStatusbar": true,
+    "inspector": "right",
+    "inspectorWidth": 280,
+    "contentMaxWidth": 0
+  }
+}

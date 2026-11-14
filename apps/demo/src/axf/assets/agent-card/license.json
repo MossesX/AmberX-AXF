@@ -1,0 +1,40 @@
+{
+  "$axf": "asset@1",
+  "type": "agent-card",
+  "id": "license",
+  "name": "License",
+  "version": "1.0.0",
+  "description": "Horizontal licence card: small-type fields, the logo as a hologram watermark, ID number, issue date = hire date.",
+  "author": "AmberX AXF",
+  "tags": [
+    "id-card",
+    "horizontal"
+  ],
+  "data": {
+    "design": "license",
+    "orientation": "horizontal",
+    "logo": "watermark",
+    "surface": "raised",
+    "accent": "brand-1",
+    "finish": "hologram",
+    "photo": "small",
+    "code": "none",
+    "front": [
+      "name",
+      "employeeId",
+      "role",
+      "specialty",
+      "hiredAt",
+      "status",
+      "signature"
+    ],
+    "back": [
+      "email",
+      "catchphrase"
+    ],
+    "labels": {
+      "employeeId": "ID No.",
+      "hiredAt": "Issued"
+    }
+  }
+}

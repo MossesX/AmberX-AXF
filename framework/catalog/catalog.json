@@ -1725,6 +1725,35 @@
               "tag": "core",
               "recommended": true,
               "suggests": []
+            },
+            {
+              "id": "ui.picker",
+              "title": "Picker dialog: every drop-down opens a themed picker (dialog on desktop, bottom sheet on phones), --fx-picker-* tokens, skins restyle it (picker@1)",
+              "note": "",
+              "tag": "core",
+              "recommended": true,
+              "suggests": [
+                {
+                  "id": "ui.picker.engine",
+                  "title": "Picker engine: normalise, filter, group, choose, keyboard, voice matcher (core/engines/picker.ts, fixtures)"
+                },
+                {
+                  "id": "ui.picker.react",
+                  "title": "PickerField / PickerDialog / Select: search past a threshold, groups, icons, descriptions, multi with checkboxes, accessible"
+                },
+                {
+                  "id": "ui.picker.swap",
+                  "title": "Swap layer: SelectField / Select render the picker and native selects get a trigger while the picker-dialog plugin is on"
+                },
+                {
+                  "id": "ui.picker.api",
+                  "title": "Picker API: REST, MCP, CLI and voice open / choose / search / close any picker on screen; settings as control@1 targets"
+                },
+                {
+                  "id": "ui.picker.gate",
+                  "title": "check-pickers CI gate: no hand-made drop-downs, picker styles tokens only (ratchet baseline)"
+                }
+              ]
             }
           ]
         },

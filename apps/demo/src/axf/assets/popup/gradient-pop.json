@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "popup",
+  "id": "gradient-pop",
+  "name": "Gradient Pop pop-ups",
+  "version": "1.0.0",
+  "description": "Gradient Pop: solid pop-ups at the top-center.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "vivid",
+    "vivid"
+  ],
+  "data": {
+    "position": "top-center",
+    "variant": "solid",
+    "duration": 3800,
+    "showIcon": true,
+    "maxVisible": 3
+  }
+}

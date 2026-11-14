@@ -1,0 +1,47 @@
+{
+  "$axf": "asset@1",
+  "type": "behavior-theme",
+  "id": "playful",
+  "name": "Playful",
+  "version": "1.0.0",
+  "description": "Bouncy and lively: spring easing, things scale in, glow on hover, ripples on press, subtle sounds and light haptics.",
+  "author": "AmberX AXF",
+  "tags": [],
+  "data": {
+    "motion": {
+      "speed": "normal",
+      "easing": "spring",
+      "reduced": "system",
+      "entrance": "scale"
+    },
+    "interaction": {
+      "hover": "glow",
+      "press": "ripple",
+      "focusRing": "auto",
+      "cursor": "pointer",
+      "longPressMs": 500,
+      "doubleTapMs": 300,
+      "dragThreshold": 10
+    },
+    "windows": {
+      "dialogOpen": "scale",
+      "backdrop": "dim",
+      "popupOpen": "scale",
+      "drawerOpen": "slide",
+      "snap": false,
+      "snapGrid": 8,
+      "stack": "center",
+      "minimize": "cursor",
+      "closeOnBackdrop": true,
+      "closeOnEscape": true
+    },
+    "feedback": {
+      "toastPosition": "top",
+      "toastMs": 0,
+      "sound": "subtle",
+      "vibration": "light",
+      "confirmDelete": "risky",
+      "busyCursor": true
+    }
+  }
+}

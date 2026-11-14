@@ -1,0 +1,24 @@
+{
+  "$axf": "asset@1",
+  "type": "picker",
+  "id": "windows",
+  "name": "Windows picker",
+  "version": "1.0.0",
+  "description": "A dialog that reads like a Windows combo list: compact rows, check marks at the start, no descriptions, search from twelve options.",
+  "author": "AmberX AXF",
+  "tags": [
+    "windows",
+    "skin",
+    "compact",
+    "picker"
+  ],
+  "data": {
+    "variant": "dialog",
+    "search": "auto",
+    "searchThreshold": 12,
+    "checkmarks": "start",
+    "descriptions": false,
+    "density": "compact",
+    "doneButton": true
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "$axf": "asset@1",
+  "type": "theme-switch",
+  "id": "day-night",
+  "name": "Day / night",
+  "version": "1.0.0",
+  "description": "Switches between the arctic-daylight (light) and amber-ember (dark) color themes.",
+  "author": "AmberX AXF",
+  "tags": [
+    "theme-switch"
+  ],
+  "data": {
+    "light": "arctic-daylight",
+    "dark": "amber-ember",
+    "show": "icon",
+    "lightLabel": "Light",
+    "darkLabel": "Dark"
+  }
+}

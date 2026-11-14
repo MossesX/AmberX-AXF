@@ -1,0 +1,46 @@
+{
+  "$axf": "asset@1",
+  "type": "nav-style",
+  "id": "push",
+  "name": "Push",
+  "version": "0.1.0",
+  "description": "Sub menus push in from the side with a springy bounce, bold labels and roomy rows.",
+  "author": "AmberX AXF",
+  "tags": [
+    "navigation",
+    "bold"
+  ],
+  "data": {
+    "font": {
+      "weight": "700"
+    },
+    "icons": {
+      "show": true,
+      "size": "lg"
+    },
+    "layout": {
+      "density": "roomy",
+      "indent": 3
+    },
+    "colors": {
+      "active": "accent",
+      "activeText": "accentText"
+    },
+    "animation": {
+      "kind": "push",
+      "durationMs": 340,
+      "easing": "spring",
+      "staggerMs": 30,
+      "chevron": "rotate",
+      "reduced": "system"
+    },
+    "behavior": {
+      "single": true,
+      "openOn": "tap",
+      "autoCollapse": true,
+      "remember": true,
+      "followActive": true,
+      "swipe": true
+    }
+  }
+}

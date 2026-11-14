@@ -1,0 +1,153 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "axf/card.schema.json",
+  "title": "AmberX AXF Card asset",
+  "type": "object",
+  "required": [
+    "$axf",
+    "type",
+    "id",
+    "name",
+    "version",
+    "data"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "asset@1"
+    },
+    "type": {
+      "const": "card"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{1,47}$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "data": {
+      "type": "object",
+      "required": [
+        "source"
+      ],
+      "properties": {
+        "source": {
+          "type": "object",
+          "required": [
+            "kind"
+          ],
+          "properties": {
+            "kind": {
+              "enum": [
+                "command",
+                "console"
+              ]
+            },
+            "plugin": {
+              "type": "string"
+            },
+            "command": {
+              "type": "string"
+            },
+            "id": {
+              "type": "string"
+            }
+          }
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 60
+        },
+        "icon": {
+          "type": "string"
+        },
+        "args": {
+          "type": "object"
+        },
+        "path": {
+          "type": "string",
+          "maxLength": 200,
+          "description": "dotted path into the result; * maps over a list or object"
+        },
+        "where": {
+          "type": "object",
+          "description": "{ field: value } keeps the items whose field equals the value"
+        },
+        "reduce": {
+          "enum": [
+            "none",
+            "count",
+            "sum",
+            "avg",
+            "min",
+            "max",
+            "first",
+            "last"
+          ]
+        },
+        "view": {
+          "type": "string",
+          "description": "auto or a registered view (number, list, meter, chart, feed, table, status, panel, …)"
+        },
+        "chart": {
+          "enum": [
+            "line",
+            "bar",
+            "spark"
+          ]
+        },
+        "fields": {
+          "type": "object",
+          "description": "{ role: field path } for the view (title, subtitle, badge, label, value, max, x, y, at, state, columns)"
+        },
+        "refresh": {
+          "type": "object",
+          "properties": {
+            "kind": {
+              "enum": [
+                "live",
+                "every",
+                "manual"
+              ]
+            },
+            "every": {
+              "type": "number",
+              "minimum": 5,
+              "maximum": 86400
+            },
+            "channels": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "size": {
+          "enum": [
+            "s",
+            "m",
+            "l",
+            "wide"
+          ]
+        },
+        "limit": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 200
+        },
+        "unit": {
+          "type": "string",
+          "maxLength": 16
+        }
+      }
+    }
+  }
+}

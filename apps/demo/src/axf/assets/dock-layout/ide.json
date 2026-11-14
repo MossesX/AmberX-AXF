@@ -1,0 +1,59 @@
+{
+  "$axf": "asset@1",
+  "type": "dock-layout",
+  "id": "ide",
+  "name": "IDE",
+  "version": "1.0.0",
+  "description": "Tree on the left, editor over a terminal in the middle, inspector on the right. One of the ten starter pane layouts every dock host offers (dock-layout@1).",
+  "author": "AmberX AXF",
+  "tags": [
+    "dock",
+    "preset",
+    "ide",
+    "tree",
+    "terminal",
+    "inspector"
+  ],
+  "data": {
+    "panes": 4,
+    "tree": {
+      "kind": "split",
+      "vertical": false,
+      "children": [
+        {
+          "kind": "leaf",
+          "pane": 1
+        },
+        {
+          "kind": "split",
+          "vertical": true,
+          "children": [
+            {
+              "kind": "leaf",
+              "pane": 2
+            },
+            {
+              "kind": "leaf",
+              "pane": 3
+            }
+          ],
+          "weights": [
+            0.7,
+            0.3
+          ]
+        },
+        {
+          "kind": "leaf",
+          "pane": 4
+        }
+      ],
+      "weights": [
+        0.22,
+        0.56,
+        0.22
+      ]
+    },
+    "hint": "Tree on the left, editor over a terminal in the middle, inspector on the right.",
+    "main": 2
+  }
+}

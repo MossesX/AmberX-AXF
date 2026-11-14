@@ -1,0 +1,15 @@
+{
+  "$axf": "library@1",
+  "id": "ai.amberx.axf.claude-session",
+  "module": "lib-claude-session",
+  "name": "Claude session (shared session parts for the Terminal and the companion)",
+  "description": "The pure parts of a Claude session that more than one app shows: live meters (status, model name, money), the CLAUDE.md / rules context chain and its reveal pacing (harvested from the console Terminal's headless tabs), and what a companion chat adds on top of assistant@1: the companion's name (Gizmo), conversation ordering, search and day groups, the model-policy pick list (Opus, Fable; Sonnet and Haiku coerced up), budget caps, speakable text, sentence chunks for spoken replies, interrupt words and tool cards. No UI, no network, no dependencies. Built Nov 3 2026 (Opus), build gizmo-companion.",
+  "features": [],
+  "dependsOn": [],
+  "manifestKey": "libraries.claude-session",
+  "params": [],
+  "ports": { "web": { "status": "compiled", "dir": "libs/claude-session" } },
+  "placeholders": [
+    { "capability": "axf.claude-session.android", "note": "Kotlin twin of core.ts (Android on hold; recorded in framework/spec/PORTING.md)." }
+  ]
+}

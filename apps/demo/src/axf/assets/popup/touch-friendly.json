@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "popup",
+  "id": "touch-friendly",
+  "name": "Touch Friendly pop-ups",
+  "version": "1.0.0",
+  "description": "Touch Friendly: solid pop-ups at the bottom-center.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "friendly",
+    "touch"
+  ],
+  "data": {
+    "position": "bottom-center",
+    "variant": "solid",
+    "duration": 3500,
+    "showIcon": true,
+    "maxVisible": 2
+  }
+}

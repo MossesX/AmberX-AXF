@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "button",
+  "id": "terminal",
+  "name": "Terminal button",
+  "version": "1.0.0",
+  "description": "Terminal: square outline buttons.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "technical",
+    "developer"
+  ],
+  "data": {
+    "shape": "square",
+    "fill": "outline",
+    "weight": 500,
+    "uppercase": false,
+    "size": "sm",
+    "elevation": false
+  }
+}

@@ -15,7 +15,7 @@
 import { Fragment, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
 import type { SettingsPanel } from '../../core';
 import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, APPEARANCE_LOCK_KEY, ASSET_TYPES, assetTypeSpecs, hideable, PLACEMENT_LABELS, SKIN_COLOR_SLOT, arrangeSettingsTabs, filterSettingsGroup, normalizeSettingsUi, settingMatches, settingsShown, settingsUiGroups, SETTINGS_LEVEL_KEY, SETTINGS_LEVEL_BAR_KEY, SETTINGS_VISIBLE_KEY, SETTINGS_LEVEL_HINT, SETTINGS_LEVEL_LABEL, SETTINGS_LEVELS, settingsLevel, shownAtLevel, splitSettingsGroup, withSettingsVisible, hideableTypes, type SettingsLevel, type SettingsUi, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
-import { AssetsWithEdits, AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Chip, Container, ControlScope, Icon, IconButton, ModelBadge, setBannerOwnSettingsRenderer, settingTargetDef, Slider, Switch, useAsset, useAxfState, useControlTarget, useKnownBanners, useRuntime } from '../../react';
+import { AssetsWithEdits, AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Chip, Container, ControlScope, Icon, IconButton, ModelBadge, Select, setBannerOwnSettingsRenderer, settingTargetDef, Slider, Switch, useAsset, useAxfState, useControlTarget, useKnownBanners, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import { runtimeInventory } from '../../react/pluginRecords';
 import { TabGroup } from '../../react/components/TabGroup';
@@ -91,9 +91,8 @@ function SettingsLevelBar({ level, actions }: { level: SettingsLevel; actions?: 
     <div className="axf-settings__levelbar" role="toolbar" aria-label="Settings level" data-fx-ctx-target={SETTINGS_LEVEL_CTX} data-axf-anchor="settings-levelbar">
       <label className="axf-settings__levelpick">
         <span className="fx-muted">Level</span>
-        <select className="axf-settings__field axf-settings__field--sm" aria-label="Settings level" value={level} onChange={(e) => rt.settings.set(SETTINGS_LEVEL_KEY, e.target.value as SettingsLevel)}>
-          {SETTINGS_LEVELS.map((l) => <option key={l} value={l} title={SETTINGS_LEVEL_HINT[l]}>{SETTINGS_LEVEL_LABEL[l]}</option>)}
-        </select>
+        <Select className="axf-settings__field axf-settings__field--sm" label="Settings level" value={level} onChange={(v) => rt.settings.set(SETTINGS_LEVEL_KEY, v as SettingsLevel)}
+          options={SETTINGS_LEVELS.map((l) => ({ value: l, label: SETTINGS_LEVEL_LABEL[l], title: SETTINGS_LEVEL_HINT[l] }))} />
       </label>
       <span className="fx-muted fx-look__levelhint axf-settings__levelhint">{SETTINGS_LEVEL_HINT[level]}</span>
       <span className="axf-settings__levelbar-actions">
@@ -180,9 +179,7 @@ function SettingControl({ spec, off = false }: { spec: SettingSpec; off?: boolea
         break;
       }
       control = (
-        <select className="axf-settings__field" value={typeof value === 'string' ? value : ''} disabled={locked} onChange={(e) => set(e.target.value)}>
-          {(spec.options ?? []).map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-        </select>
+        <Select className="axf-settings__field" label={spec.label} value={typeof value === 'string' ? value : ''} disabled={locked} onChange={(v) => set(v)} options={spec.options ?? []} />
       );
       break;
     case 'multi_choice': {
@@ -234,10 +231,8 @@ function AssetSlotControl({ type, locked }: { type: AssetType; locked: boolean }
     if (v !== state.active[type]) rt.swap(type, v);
   };
   return (
-    <select className="axf-settings__field" value={hidden ? HIDDEN : state.active[type]} disabled={locked || options.length + (canHide ? 1 : 0) < 2} onChange={(e) => pick(e.target.value)}>
-      {options.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
-      {canHide && <option value={HIDDEN}>Hidden</option>}
-    </select>
+    <Select className="axf-settings__field" label={`${type} asset`} value={hidden ? HIDDEN : state.active[type] ?? ''} disabled={locked || options.length + (canHide ? 1 : 0) < 2} onChange={(v) => pick(v)}
+      options={[...options.map((a) => ({ value: a.id, label: a.name })), ...(canHide ? [{ value: HIDDEN, label: 'Hidden' }] : [])]} />
   );
 }
 
@@ -324,9 +319,7 @@ function RolePanel() {
       <div className="axf-settings__row">
         <div className="axf-settings__label"><span>Acting as</span><span className="fx-muted axf-settings__hint">Roles come from the active access policy ({policy.name}).</span></div>
         <div className="axf-settings__control">
-          <select className="axf-settings__field" value={state.role} onChange={(e) => rt.setRole(e.target.value)}>
-            {policy.data.roles.map((r) => <option key={r.id} value={r.id}>{r.label}</option>)}
-          </select>
+          <Select className="axf-settings__field" label="Role" value={state.role} onChange={(v) => rt.setRole(v)} options={policy.data.roles.map((r) => ({ value: r.id, label: r.label }))} />
         </div>
       </div>
     </div>
@@ -605,10 +598,7 @@ export function AppearancePanel() {
           {!!hint && <span className="fx-muted axf-settings__hint">{hint}</span>}
         </div>
         <div className="axf-settings__control">
-          <select className="axf-settings__field" aria-label={label} value={value} disabled={locked || !list.length} onChange={(e) => rt.swap(type as AssetType, e.target.value)}>
-            {!value && <option value="">—</option>}
-            {list.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
-          </select>
+          <Select className="axf-settings__field" label={label} value={value} disabled={locked || !list.length} onChange={(v) => rt.swap(type as AssetType, v)} empty={value ? undefined : '—'} options={list.map((a) => ({ value: a.id, label: a.name }))} />
           {isOver && <Button size="sm" tone="quiet" disabled={locked} onClick={() => rt.backToSkin(type)}>Back to skin</Button>}
           {isColour && colour.picked && <Button size="sm" tone="quiet" disabled={locked} title="Back to the colour theme this skin came with" onClick={() => rt.setSkinColorTheme(null)}>Skin's colours</Button>}
         </div>
@@ -687,9 +677,8 @@ function SkinPickerDialog() {
             <span className="fx-muted axf-settings__hint">{colour.picked ? 'Switched inside this skin; the skin itself is unchanged.' : "This skin's own colours. Switching keeps the skin and makes no new one."}</span>
           </div>
           <div className="axf-settings__control axf-skin__action">
-            <select className="axf-settings__field" aria-label="Colour theme inside this skin" value={colour.id} disabled={locked || picked !== applied || !colourThemes.length} onChange={(e) => rt.setSkinColorTheme(e.target.value)}>
-              {colourThemes.map((a) => <option key={a.id} value={a.id}>{a.name}{a.id === colour.own ? ' (skin\'s own)' : ''}</option>)}
-            </select>
+            <Select className="axf-settings__field" label="Colour theme inside this skin" value={colour.id} disabled={locked || picked !== applied || !colourThemes.length} onChange={(v) => rt.setSkinColorTheme(v)}
+              options={colourThemes.map((a) => ({ value: a.id, label: `${a.name}${a.id === colour.own ? ' (skin\'s own)' : ''}` }))} />
             {colour.picked && <Button size="sm" tone="quiet" disabled={locked || picked !== applied} onClick={() => rt.setSkinColorTheme(null)}>Skin's colours</Button>}
           </div>
         </div>
@@ -874,7 +863,7 @@ const CSS = `
 .axf-settings__listitem .axf-settings__hint{margin-left:var(--fx-dens-gap-xl)}
 .axf-settings__title,.axf-settings__tabtitle{margin:0}
 .axf-settings__search{max-width:420px}
-.axf-settings__levelbar{display:flex;flex-wrap:wrap;align-items:center;gap:var(--fx-dens-gap-md) var(--fx-dens-gap-xl);padding:var(--fx-dens-gap-md) var(--fx-dens-gap-xl);border-radius:var(--fx-radius-md);border:var(--fx-border-w) solid var(--fx-border);background:var(--fx-surface2)}
+.axf-settings__levelbar{display:flex;flex-wrap:wrap;align-items:center;gap:var(--fx-dens-gap-md) var(--fx-dens-gap-xl);padding:var(--fx-dens-gap-md) var(--fx-dens-gap-xl);border-radius:var(--fx-radius-md);border:var(--fx-border-w) solid var(--fx-border);background:color-mix(in srgb, var(--fx-surface2) calc(var(--fx-opacity-panel) * 100%), transparent)}
 .axf-settings__levelbar>*{min-width:0}
 .axf-settings__levelhint{flex:1 1 160px}
 .axf-settings__levelbar-actions{display:inline-flex;align-items:center;gap:var(--fx-dens-gap-md);margin-left:auto}
@@ -889,7 +878,7 @@ const CSS = `
 /* ---- compact settings (Oct 30 2026, Brett: short lists you tap into, dropdowns, tight spacing) ---- */
 .axf-settings{gap:var(--fx-dens-gap-2xl)!important}
 .axf-settings__title{font-size:var(--fx-type-scale-xl)}
-.axf-settings__navlist{display:flex;flex-direction:column;border:var(--fx-border-w) solid var(--fx-border);border-radius:var(--fx-radius-md);background:var(--fx-surface);overflow:hidden;min-width:0}
+.axf-settings__navlist{display:flex;flex-direction:column;border:var(--fx-border-w) solid var(--fx-border);border-radius:var(--fx-radius-md);background:color-mix(in srgb, var(--fx-surface) calc(var(--fx-opacity-panel) * 100%), transparent);overflow:hidden;min-width:0}
 .axf-settings__nav{all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:var(--fx-dens-gap-xl);padding:var(--fx-dens-gap-xl) var(--fx-dens-gap-2xl);min-width:0;color:var(--fx-text)}
 .axf-settings__nav+.axf-settings__nav{border-top:var(--fx-border-w) solid var(--fx-border)}
 .axf-settings__nav:hover{background:var(--fx-surface2)}
@@ -912,7 +901,7 @@ const CSS = `
 .axf-settings__gtoggle{all:unset;box-sizing:border-box;cursor:pointer;display:flex;align-items:center;gap:var(--fx-dens-gap-lg);font-size:var(--fx-type-scale-xs);font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--fx-muted);padding:var(--fx-dens-gap-xs)}
 .axf-settings__gtoggle:hover{color:var(--fx-text)}
 .axf-settings__gtitle{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.axf-settings__gbody{display:flex;flex-direction:column;border:var(--fx-border-w) solid var(--fx-border);border-radius:var(--fx-radius-md);background:var(--fx-surface);min-width:0}
+.axf-settings__gbody{display:flex;flex-direction:column;border:var(--fx-border-w) solid var(--fx-border);border-radius:var(--fx-radius-md);background:color-mix(in srgb, var(--fx-surface) calc(var(--fx-opacity-panel) * 100%), transparent);min-width:0}
 .axf-settings__nest>.axf-settings__gbody{border:0;background:transparent;gap:var(--fx-dens-gap-2xl)}
 .axf-settings__nested{display:flex;flex-direction:column;gap:var(--fx-dens-gap-2xl)}
 .axf-settings__gbody>.axf-settings__desc{margin:0;padding:var(--fx-dens-gap-lg) var(--fx-dens-gap-2xl) 0;font-size:var(--fx-type-scale-sm)}

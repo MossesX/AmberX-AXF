@@ -1,0 +1,53 @@
+{
+  "$axf": "asset@1",
+  "type": "uac-policy",
+  "id": "standard",
+  "name": "Standard",
+  "version": "1.0.0",
+  "description": "Guest, User and Admin with inheritance; locked items stay visible.",
+  "author": "AmberX AXF",
+  "tags": [],
+  "data": {
+    "defaultRole": "user",
+    "gating": "disable",
+    "permissions": {
+      "assets.swap": "Hot-swap UI assets",
+      "assets.import": "Import new assets",
+      "uac.manage": "Change the account control policy",
+      "files.write": "Save, export and delete files",
+      "dev.tools": "Build and open the developer console",
+      "dev.deploy": "Deploy the application"
+    },
+    "roles": [
+      {
+        "id": "guest",
+        "label": "Guest",
+        "description": "Look around and try themes.",
+        "permissions": [
+          "assets.swap"
+        ]
+      },
+      {
+        "id": "user",
+        "label": "User",
+        "description": "Everyday work: save files and import assets.",
+        "inherits": [
+          "guest"
+        ],
+        "permissions": [
+          "files.write",
+          "assets.import",
+          "dev.tools"
+        ]
+      },
+      {
+        "id": "admin",
+        "label": "Admin",
+        "description": "Everything, including policy and deploys.",
+        "permissions": [
+          "*"
+        ]
+      }
+    ]
+  }
+}

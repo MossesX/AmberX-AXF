@@ -1,0 +1,47 @@
+{
+  "$axf": "asset@1",
+  "type": "nav-menu",
+  "id": "wrapper-tabs",
+  "name": "Wrapper Tabs",
+  "version": "1.0.0",
+  "description": "Wrapper Tabs: app wrappers with tabs. Lists the pages it can; each app shows the ones it has. Pairs with the Fluid behaviour theme.",
+  "author": "AmberX AXF",
+  "tags": [
+    "pairs:fluid"
+  ],
+  "data": {
+    "style": "pills",
+    "sections": [
+      {
+        "items": [
+          {
+            "id": "console",
+            "label": "Console",
+            "icon": "terminal",
+            "view": "console"
+          },
+          {
+            "id": "pilot",
+            "label": "Pilot",
+            "icon": "sparkles",
+            "view": "pilot"
+          },
+          {
+            "id": "axhub",
+            "label": "axHub",
+            "icon": "cloud",
+            "view": "axhub"
+          },
+          {
+            "id": "settings",
+            "label": "Settings",
+            "icon": "settings",
+            "view": "settings"
+          }
+        ]
+      }
+    ],
+    "density": "compact",
+    "indicator": "fill"
+  }
+}

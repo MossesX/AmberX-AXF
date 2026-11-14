@@ -1,0 +1,49 @@
+{
+  "$axf": "asset@1",
+  "type": "behavior-theme",
+  "id": "steady",
+  "name": "Steady",
+  "version": "1.0.0",
+  "description": "Calm, deliberate administration: centred windows, long readable toasts with a subtle sound, always confirm deletes.",
+  "author": "AmberX AXF",
+  "tags": [
+    "pairs:hub-admin"
+  ],
+  "data": {
+    "motion": {
+      "speed": "normal",
+      "easing": "standard",
+      "reduced": "system",
+      "entrance": "fade"
+    },
+    "interaction": {
+      "hover": "tint",
+      "press": "darken",
+      "focusRing": "auto",
+      "cursor": "pointer",
+      "longPressMs": 600,
+      "doubleTapMs": 300,
+      "dragThreshold": 10
+    },
+    "windows": {
+      "dialogOpen": "fade",
+      "backdrop": "dim",
+      "popupOpen": "fade",
+      "drawerOpen": "slide",
+      "snap": false,
+      "snapGrid": 8,
+      "stack": "center",
+      "minimize": "dock",
+      "closeOnBackdrop": true,
+      "closeOnEscape": true
+    },
+    "feedback": {
+      "toastPosition": "top-right",
+      "toastMs": 6000,
+      "sound": "subtle",
+      "vibration": "off",
+      "confirmDelete": "always",
+      "busyCursor": true
+    }
+  }
+}

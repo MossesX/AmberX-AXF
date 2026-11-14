@@ -1,0 +1,110 @@
+{
+  "$axf": "asset@1",
+  "type": "context-menu",
+  "id": "glass-flyout",
+  "name": "Glass Flyout",
+  "version": "1.0.0",
+  "description": "Frosted glass flyout with icons only where they help: clipboard, look and settings.",
+  "author": "AmberX AXF",
+  "tags": [
+    "glass",
+    "modern"
+  ],
+  "data": {
+    "variant": "glass",
+    "showIcons": true,
+    "showShortcuts": false,
+    "targets": {
+      "default": [
+        {
+          "id": "cut",
+          "label": "Cut",
+          "icon": "cut",
+          "action": "edit.cut",
+          "shortcut": "Ctrl+X"
+        },
+        {
+          "id": "copy",
+          "label": "Copy",
+          "icon": "copy",
+          "action": "edit.copy",
+          "shortcut": "Ctrl+C"
+        },
+        {
+          "id": "paste",
+          "label": "Paste",
+          "icon": "paste",
+          "action": "edit.paste",
+          "shortcut": "Ctrl+V"
+        },
+        {
+          "id": "s1",
+          "separator": true
+        },
+        {
+          "id": "next-color",
+          "label": "Next colour theme",
+          "icon": "palette",
+          "action": "swap:color-theme:next",
+          "shortcut": "Alt+C",
+          "requires": "assets.swap"
+        },
+        {
+          "id": "next-layout",
+          "label": "Next layout",
+          "icon": "layout",
+          "action": "swap:layout:next",
+          "shortcut": "Alt+L",
+          "requires": "assets.swap"
+        },
+        {
+          "id": "s2",
+          "separator": true
+        },
+        {
+          "id": "settings",
+          "label": "Settings",
+          "icon": "settings",
+          "action": "app.settings",
+          "shortcut": "Ctrl+,"
+        }
+      ],
+      "asset-card": [
+        {
+          "id": "activate",
+          "label": "Use this",
+          "icon": "zap",
+          "action": "swap:{payload}",
+          "requires": "assets.swap"
+        },
+        {
+          "id": "s1",
+          "separator": true
+        },
+        {
+          "id": "json",
+          "label": "View JSON",
+          "icon": "code",
+          "action": "asset.json:{payload}"
+        },
+        {
+          "id": "copy-json",
+          "label": "Copy JSON",
+          "icon": "copy",
+          "action": "asset.copy:{payload}"
+        },
+        {
+          "id": "s2",
+          "separator": true
+        },
+        {
+          "id": "import",
+          "label": "Import asset…",
+          "icon": "upload",
+          "action": "dialog:import-asset",
+          "requires": "assets.import"
+        }
+      ]
+    }
+  }
+}

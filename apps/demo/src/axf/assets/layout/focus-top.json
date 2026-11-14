@@ -1,0 +1,21 @@
+{
+  "$axf": "asset@1",
+  "type": "layout",
+  "id": "focus-top",
+  "name": "Focus Top",
+  "version": "1.0.0",
+  "description": "Navigation as top tabs, no side panels — a calm reading column.",
+  "author": "AmberX AXF",
+  "tags": [],
+  "data": {
+    "nav": "top",
+    "navWidth": 0,
+    "showMenubar": true,
+    "showToolbar": false,
+    "toolbarPosition": "top",
+    "showStatusbar": false,
+    "inspector": "none",
+    "inspectorWidth": 0,
+    "contentMaxWidth": 920
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "amberx-signature",
+  "name": "AmberX Signature",
+  "version": "1.0.0",
+  "description": "The AmberX house toolbar: live pages, a live search, the day and night switch and the account, on glass; the brand draws its own mark here.",
+  "author": "AmberX AXF",
+  "tags": [
+    "brand",
+    "amber",
+    "glass"
+  ],
+  "data": {
+    "variant": "icons",
+    "align": "start",
+    "showSearch": true,
+    "search": {
+      "live": true,
+      "placeholder": "Search AmberX…  (Ctrl K)",
+      "maxResults": 12
+    },
+    "groups": [
+      {
+        "id": "pages",
+        "items": [
+          {
+            "id": "home",
+            "icon": "home",
+            "label": "Go home",
+            "action": "nav:home"
+          }
+        ],
+        "provider": "views",
+        "max": 6,
+        "label": "Pages"
+      },
+      {
+        "id": "app",
+        "items": [
+          {
+            "id": "settings",
+            "icon": "settings",
+            "label": "Settings",
+            "action": "app.settings"
+          }
+        ]
+      }
+    ],
+    "widgets": [
+      {
+        "type": "theme-switch",
+        "id": "day-night",
+        "at": "end",
+        "order": 10
+      },
+      {
+        "type": "avatar",
+        "id": "account",
+        "at": "end",
+        "order": 20
+      }
+    ],
+    "surface": "glass",
+    "collapsible": true
+  }
+}

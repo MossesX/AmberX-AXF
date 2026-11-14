@@ -1,0 +1,58 @@
+{
+  "$axf": "asset@1",
+  "type": "nav-menu",
+  "id": "learning-path",
+  "name": "Learning Path",
+  "version": "1.0.0",
+  "description": "Learning Path: onboarding and learning. Lists the pages it can; each app shows the ones it has. Pairs with the Guided behaviour theme.",
+  "author": "AmberX AXF",
+  "tags": [
+    "pairs:guided"
+  ],
+  "data": {
+    "style": "list",
+    "sections": [
+      {
+        "label": "Start",
+        "items": [
+          {
+            "id": "home",
+            "label": "Home",
+            "icon": "home",
+            "view": "home"
+          },
+          {
+            "id": "demos",
+            "label": "Demos",
+            "icon": "play",
+            "view": "demos"
+          }
+        ]
+      },
+      {
+        "label": "Learn",
+        "items": [
+          {
+            "id": "components",
+            "label": "Components",
+            "icon": "grid",
+            "view": "components"
+          },
+          {
+            "id": "catalog",
+            "label": "Features",
+            "icon": "check-circle",
+            "view": "catalog"
+          },
+          {
+            "id": "libraries",
+            "label": "Libraries",
+            "icon": "package",
+            "view": "libraries"
+          }
+        ]
+      }
+    ],
+    "density": "roomy"
+  }
+}

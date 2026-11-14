@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "dialog",
+  "id": "studio-pro",
+  "name": "Studio Pro dialog",
+  "version": "1.0.0",
+  "description": "Studio Pro: drawer, dim backdrop, slide in.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "pro",
+    "creative"
+  ],
+  "data": {
+    "variant": "drawer",
+    "width": 420,
+    "backdrop": "dim",
+    "animation": "slide",
+    "header": "accent-bar",
+    "closeOnBackdrop": true
+  }
+}

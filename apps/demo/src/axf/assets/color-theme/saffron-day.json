@@ -1,0 +1,35 @@
+{
+  "$axf": "asset@1",
+  "type": "color-theme",
+  "id": "saffron-day",
+  "name": "Saffron Day",
+  "version": "1.0.0",
+  "description": "AmberX gold on cream; the brand look in daylight.",
+  "author": "AmberX AXF",
+  "tags": [
+    "light",
+    "warm",
+    "amber"
+  ],
+  "data": {
+    "scheme": "light",
+    "tokens": {
+      "bg": "#f9f7f3",
+      "surface": "#fefefd",
+      "surface2": "#fbfbf8",
+      "surface3": "#f2efe6",
+      "text": "#2d2716",
+      "muted": "#7b7156",
+      "border": "#e6e0d1",
+      "accent": "#b06107",
+      "accentText": "#ffffff",
+      "accentSoft": "rgba(176,97,7,0.1)",
+      "danger": "#ce2732",
+      "success": "#218c5a",
+      "warning": "#b87614",
+      "info": "#1686b6",
+      "focus": "#b06107",
+      "shadow": "rgba(50,42,21,0.12)"
+    }
+  }
+}

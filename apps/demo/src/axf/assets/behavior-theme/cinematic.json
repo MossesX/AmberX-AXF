@@ -1,0 +1,49 @@
+{
+  "$axf": "asset@1",
+  "type": "behavior-theme",
+  "id": "cinematic",
+  "name": "Cinematic",
+  "version": "1.0.0",
+  "description": "Showcase motion: relaxed spring scaling, glow on hover, frosted backdrops.",
+  "author": "AmberX AXF",
+  "tags": [
+    "pairs:cinematic"
+  ],
+  "data": {
+    "motion": {
+      "speed": "relaxed",
+      "easing": "spring",
+      "reduced": "system",
+      "entrance": "scale"
+    },
+    "interaction": {
+      "hover": "glow",
+      "press": "shrink",
+      "focusRing": "auto",
+      "cursor": "pointer",
+      "longPressMs": 650,
+      "doubleTapMs": 320,
+      "dragThreshold": 10
+    },
+    "windows": {
+      "dialogOpen": "scale",
+      "backdrop": "blur",
+      "popupOpen": "scale",
+      "drawerOpen": "slide",
+      "snap": false,
+      "snapGrid": 8,
+      "stack": "center",
+      "minimize": "cursor",
+      "closeOnBackdrop": true,
+      "closeOnEscape": true
+    },
+    "feedback": {
+      "toastPosition": "bottom",
+      "toastMs": 5000,
+      "sound": "subtle",
+      "vibration": "light",
+      "confirmDelete": "risky",
+      "busyCursor": true
+    }
+  }
+}

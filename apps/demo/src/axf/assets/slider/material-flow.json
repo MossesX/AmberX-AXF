@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "slider",
+  "id": "material-flow",
+  "name": "Material Flow slider",
+  "version": "1.0.0",
+  "description": "Material Flow: circle thumb on a 4 px track.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "material",
+    "material"
+  ],
+  "data": {
+    "track": 4,
+    "thumb": "circle",
+    "thumbSize": 20,
+    "fill": "solid",
+    "showValue": "hover",
+    "ticks": false
+  }
+}

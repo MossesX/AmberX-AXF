@@ -1,0 +1,43 @@
+{
+  "$axf": "asset@1",
+  "type": "style-theme",
+  "id": "hub",
+  "name": "Hub",
+  "version": "1.0.0",
+  "description": "The default style every app inherits from axHub: Inter at 13 px, compact density, small corners, hairline borders, flat shadows, fast motion. Phone-first and tight.",
+  "author": "AmberX AXF",
+  "tags": [
+    "default",
+    "compact"
+  ],
+  "data": {
+    "fontFamily": "'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif",
+    "fontDisplay": "'Inter', system-ui, sans-serif",
+    "fontMono": "'JetBrains Mono', 'Fira Code', ui-monospace, monospace",
+    "fontSize": 13,
+    "radius": {
+      "sm": 4,
+      "md": 8,
+      "lg": 12
+    },
+    "space": 7,
+    "borderWidth": 1,
+    "shadow": {
+      "sm": "0 1px 1px var(--fx-shadow)",
+      "md": "0 1px 3px var(--fx-shadow), 0 4px 10px var(--fx-shadow)",
+      "lg": "0 10px 30px var(--fx-shadow)"
+    },
+    "density": "compact",
+    "motion": 120,
+    "blur": 8,
+    "headingWeight": 600,
+    "tracking": -0.01,
+    "opacityDisabled": 0.4,
+    "opacityMuted": 0.66,
+    "opacityHover": 0.06,
+    "opacityTint": 0.1,
+    "opacityScrim": 0.45,
+    "opacityGlass": 0.88,
+    "wrapGroups": true
+  }
+}

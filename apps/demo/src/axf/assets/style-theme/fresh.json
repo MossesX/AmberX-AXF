@@ -1,0 +1,40 @@
+{
+  "$axf": "asset@1",
+  "type": "style-theme",
+  "id": "fresh",
+  "name": "Fresh",
+  "version": "1.0.0",
+  "description": "Crisp and calm: Inter at 14 px, modest corners, hairline borders, soft low shadows, light blur, quick motion.",
+  "author": "AmberX AXF",
+  "tags": [],
+  "data": {
+    "fontFamily": "'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif",
+    "fontDisplay": "'Inter', system-ui, sans-serif",
+    "fontMono": "'JetBrains Mono', 'Fira Code', ui-monospace, monospace",
+    "fontSize": 14,
+    "radius": {
+      "sm": 6,
+      "md": 10,
+      "lg": 14
+    },
+    "space": 9,
+    "borderWidth": 1,
+    "shadow": {
+      "sm": "0 1px 2px var(--fx-shadow)",
+      "md": "0 2px 4px var(--fx-shadow), 0 6px 16px var(--fx-shadow)",
+      "lg": "0 12px 40px var(--fx-shadow)"
+    },
+    "density": "comfortable",
+    "motion": 160,
+    "blur": 10,
+    "headingWeight": 600,
+    "tracking": -0.011,
+    "opacityDisabled": 0.4,
+    "opacityMuted": 0.66,
+    "opacityHover": 0.06,
+    "opacityTint": 0.1,
+    "opacityScrim": 0.4,
+    "opacityGlass": 0.86,
+    "wrapGroups": true
+  }
+}

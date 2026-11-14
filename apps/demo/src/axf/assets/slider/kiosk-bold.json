@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "slider",
+  "id": "kiosk-bold",
+  "name": "Kiosk Bold slider",
+  "version": "1.0.0",
+  "description": "Kiosk Bold: circle thumb on a 10 px track.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "bold",
+    "kiosk",
+    "touch"
+  ],
+  "data": {
+    "track": 10,
+    "thumb": "circle",
+    "thumbSize": 28,
+    "fill": "solid",
+    "showValue": "always",
+    "ticks": false
+  }
+}

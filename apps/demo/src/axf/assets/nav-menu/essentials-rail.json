@@ -1,0 +1,44 @@
+{
+  "$axf": "asset@1",
+  "type": "nav-menu",
+  "id": "essentials-rail",
+  "name": "Essentials Rail",
+  "version": "1.0.0",
+  "description": "Essentials Rail: small apps, desktop. Lists the pages it can; each app shows the ones it has. Pairs with the snappy behaviour theme.",
+  "author": "AmberX AXF",
+  "tags": [
+    "pairs:snappy"
+  ],
+  "data": {
+    "style": "rail",
+    "sections": [
+      {
+        "items": [
+          {
+            "id": "home",
+            "label": "Home",
+            "icon": "home",
+            "view": "home"
+          }
+        ]
+      },
+      {
+        "items": [
+          {
+            "id": "settings",
+            "label": "Settings",
+            "icon": "settings",
+            "view": "settings"
+          },
+          {
+            "id": "account",
+            "label": "Account",
+            "icon": "user",
+            "view": "account"
+          }
+        ]
+      }
+    ],
+    "density": "compact"
+  }
+}

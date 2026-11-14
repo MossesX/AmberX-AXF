@@ -1,0 +1,24 @@
+{
+  "$axf": "asset@1",
+  "type": "picker",
+  "id": "standard",
+  "name": "Standard picker",
+  "version": "1.0.0",
+  "description": "A centred dialog on desktop and a bottom sheet on phones; the search field appears at eight options, check marks at the end, descriptions on, regular rows. The default look of every swapped drop-down.",
+  "author": "AmberX AXF",
+  "tags": [
+    "default",
+    "dialog",
+    "sheet",
+    "picker"
+  ],
+  "data": {
+    "variant": "auto",
+    "search": "auto",
+    "searchThreshold": 8,
+    "checkmarks": "end",
+    "descriptions": true,
+    "density": "regular",
+    "doneButton": true
+  }
+}

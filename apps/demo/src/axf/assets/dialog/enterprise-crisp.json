@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "dialog",
+  "id": "enterprise-crisp",
+  "name": "Enterprise Crisp dialog",
+  "version": "1.0.0",
+  "description": "Enterprise Crisp: modal, dim backdrop, scale in.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "crisp",
+    "enterprise"
+  ],
+  "data": {
+    "variant": "modal",
+    "width": 520,
+    "backdrop": "dim",
+    "animation": "scale",
+    "header": "plain",
+    "closeOnBackdrop": true
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "dialog",
+  "id": "field-rugged",
+  "name": "Field Rugged dialog",
+  "version": "1.0.0",
+  "description": "Field Rugged: sheet, dim backdrop, slide in.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "rugged",
+    "rugged",
+    "touch"
+  ],
+  "data": {
+    "variant": "sheet",
+    "width": 680,
+    "backdrop": "dim",
+    "animation": "slide",
+    "header": "accent-bar",
+    "closeOnBackdrop": true
+  }
+}

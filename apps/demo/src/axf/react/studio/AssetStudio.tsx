@@ -3,6 +3,7 @@ import { ASSET_TYPES, assetTypeSpecs, type AssetType } from '../../core';
 import { useAxfState, useRuntime } from '../AxfProvider';
 import { Button, Chip } from '../components/Controls';
 import { Icon } from '../components/Icon';
+import { TabGroup } from '../components/TabGroup';
 import { AssetPreview } from './AssetPreview';
 
 const GROUPS = [...new Set(ASSET_TYPES.map((t) => assetTypeSpecs[t].group))];
@@ -48,13 +49,7 @@ export function AssetStudio() {
         </div>
       </header>
 
-      <div className="fx-tabs" role="tablist">
-        {['all', ...GROUPS].map((g) => (
-          <button key={g} type="button" role="tab" aria-selected={filter === g} className={`fx-tab ${filter === g ? 'is-active' : ''}`} onClick={() => setFilter(g)}>
-            {g === 'all' ? 'All slots' : g}
-          </button>
-        ))}
-      </div>
+      <TabGroup id="asset-studio.groups" label="Asset groups" value={filter} onChange={setFilter} tabs={['all', ...GROUPS].map((g) => ({ value: g, label: g === 'all' ? 'All slots' : g }))} />
 
       {types.map((t) => (
         <Slot key={t} type={t} activeId={state.active[t] ?? ''} />

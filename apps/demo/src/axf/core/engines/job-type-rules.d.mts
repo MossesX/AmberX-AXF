@@ -4,6 +4,7 @@ export type JobTriggerKind = 'on-demand' | 'schedule' | 'event';
 export interface JobInput { id: string; label: string; required: boolean; default: string; about: string }
 export interface JobTypeData {
   specialty: string;
+  skills: string[];
   model: JobModel;
   budget: { tokens: number; maxTurns: number; usd: number };
   trigger: { kind: JobTriggerKind; every: string; at: string; event: string };
@@ -17,7 +18,7 @@ export interface JobTypeData {
 export const JOB_TYPE: 'job-type';
 export const JOB_ENUMS: { model: readonly JobModel[]; trigger: readonly JobTriggerKind[] };
 export const JOB_BUILTINS: readonly string[];
-export const JOB_LIMITS: { brief: number; inputs: number; tools: number; tokensMin: number; tokensMax: number; turnsMax: number; usdMax: number };
+export const JOB_LIMITS: { brief: number; skills: number; inputs: number; tools: number; tokensMin: number; tokensMax: number; turnsMax: number; usdMax: number };
 export const JOB_DEFAULTS: JobTypeData;
 export function placeholders(tpl: string): string[];
 export function jobTypeErrors(type: string, raw: unknown): string[];

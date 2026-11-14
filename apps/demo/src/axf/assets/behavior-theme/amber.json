@@ -1,0 +1,49 @@
+{
+  "$axf": "asset@1",
+  "type": "behavior-theme",
+  "id": "amber",
+  "name": "AmberX",
+  "version": "1.0.0",
+  "description": "The AmberX house feel: emphasized motion, lifting hovers, frosted dialogs, a subtle sound.",
+  "author": "AmberX AXF",
+  "tags": [
+    "pairs:amber-signature"
+  ],
+  "data": {
+    "motion": {
+      "speed": "normal",
+      "easing": "emphasized",
+      "reduced": "system",
+      "entrance": "rise"
+    },
+    "interaction": {
+      "hover": "lift",
+      "press": "shrink",
+      "focusRing": "auto",
+      "cursor": "pointer",
+      "longPressMs": 500,
+      "doubleTapMs": 280,
+      "dragThreshold": 8
+    },
+    "windows": {
+      "dialogOpen": "scale",
+      "backdrop": "blur",
+      "popupOpen": "scale",
+      "drawerOpen": "slide",
+      "snap": true,
+      "snapGrid": 8,
+      "stack": "cascade",
+      "minimize": "cursor",
+      "closeOnBackdrop": true,
+      "closeOnEscape": true
+    },
+    "feedback": {
+      "toastPosition": "top-right",
+      "toastMs": 4500,
+      "sound": "subtle",
+      "vibration": "light",
+      "confirmDelete": "risky",
+      "busyCursor": true
+    }
+  }
+}

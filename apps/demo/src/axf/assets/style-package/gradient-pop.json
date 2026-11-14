@@ -1,0 +1,26 @@
+{
+  "$axf": "asset@1",
+  "type": "style-package",
+  "id": "gradient-pop",
+  "name": "Gradient Pop",
+  "version": "1.0.0",
+  "description": "Gradient pills, raised accent cards and lively modals for consumer-facing apps.",
+  "author": "AmberX AXF",
+  "tags": [
+    "vivid",
+    "vivid"
+  ],
+  "data": {
+    "slots": {
+      "button": "gradient-pop",
+      "container": "gradient-pop",
+      "slider": "gradient-pop",
+      "dialog": "gradient-pop",
+      "popup": "gradient-pop",
+      "tab-group": "gradient-pop",
+      "gauge": "ring",
+      "meter": "striped-pill"
+    },
+    "tone": "vivid"
+  }
+}

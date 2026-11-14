@@ -6,8 +6,8 @@
  * `axf-grid-header:<grid id>`, payload = column id) hides and shows columns; drag uses lib-dnd.
  * Parts (installed config `libraries.datagrid.parts`): groups, column-menu {hidden}, sort, expand, drag {trash}, compact.
  */
-import { useEffect, useMemo, type CSSProperties, type ReactNode, type MouseEvent as RMouseEvent, type PointerEvent as RPointerEvent } from 'react';
-import { Icon, IconButton, Meter, Slot, useRuntime } from '../../react';
+import { useEffect, useMemo, useRef, type CSSProperties, type ReactNode, type MouseEvent as RMouseEvent, type PointerEvent as RPointerEvent } from 'react';
+import { ControlScope, Icon, IconButton, Meter, Slot, escapeSelector, useControlTarget, useControlTargets, useRuntime, type ControlTargetDef } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import { partOn, partParams, type LibraryPart } from '../../core/library';
 import { registerZone, startDrag, type DropPos } from '../dnd';
@@ -76,6 +76,11 @@ export interface DataGridProps<R> {
    */
   rowRef?: (r: R) => RowRef | null;
   compact?: boolean;
+  /**
+   * console-control@1 (react/controlTargets.ts): the grid is `grid:<id>`, every row `grid:<id>/row:<row id>`; `step` makes rows
+   * `step:<row id>` directly under the enclosing scope (a build's steps inside its row: `…/row:<build>/step:s3`).
+   */
+  rowKind?: 'row' | 'step';
   /** drag: what moved where (row / group, before / after / inside a group) */
   onMove?: (item: { kind: 'row' | 'group'; id: string }, target: { kind: 'row' | 'group'; id: string }, pos: DropPos) => void;
   onTrash?: (item: { kind: 'row' | 'group'; id: string; label: string }) => void;
@@ -156,12 +161,45 @@ export function DataGrid<R>(p: DataGridProps<R>) {
     for (const c of g.groups) walk(c, depth + 1);
   };
   p.groups.forEach((g) => walk(g, 0));
+
+  // console-control@1: the grid and every row are targets. Rows a collapsed group or a dataset filter hides are virtual:
+  // focus expands the group first. focus with select clicks the row (the app's own selection), expand opens its detail.
+  const gridRef = useRef<HTMLDivElement>(null);
+  const rowKind = p.rowKind ?? 'row';
+  const shownIds = new Set(lines.filter((l): l is { kind: 'row'; r: R; depth: number } => l.kind === 'row').map((l) => p.rowId(l.r)));
+  const rowEl = (id: string) => gridRef.current?.querySelector<HTMLElement>(`[data-axf-row="${escapeSelector(id)}"]`) ?? null;
+  const rowDefs: ControlTargetDef[] = [];
+  const collect = (g: GridGroup<R>, collapsed: string[]) => {
+    const folded = g.collapsed && config.groups ? [...collapsed, g.id] : collapsed;
+    for (const r of g.rows) {
+      const id = p.rowId(r);
+      const virtual = folded.length > 0 || !shownIds.has(id);
+      rowDefs.push({
+        address: rowKind === 'step' ? `step:${id}` : `grid:${p.id}/row:${id}`, kind: rowKind, label: p.rowLabel?.(r) ?? id, detail: p.label ?? p.id, keywords: [g.title, ...fields.map((f) => String(f.value(r) ?? '')).filter(Boolean)].slice(0, 12),
+        virtual, element: () => rowEl(id),
+        materialize: folded.length ? () => { for (const gid of folded) p.onToggleGroup?.(gid); } : undefined,
+        select: p.onRowClick ? () => rowEl(id)?.click() : undefined,
+        expand: config.expand && p.renderDetail && p.onToggleExpand ? () => { if (!p.expanded?.includes(id)) p.onToggleExpand!(id); } : undefined,
+        get: () => p.selected === id, isDisabled: () => false,
+        state: () => ({ group: g.title, expanded: !!p.expanded?.includes(id), selected: p.selected === id, shown: shownIds.has(id), fields: Object.fromEntries(fields.map((f) => [f.id, f.value(r) ?? null])) }),
+      });
+    }
+    for (const c of g.groups) collect(c, folded);
+  };
+  p.groups.forEach((g) => collect(g, []));
+  useControlTargets(rowDefs, `${rowKind}|${p.id}|${rowDefs.map((d) => `${d.address}:${d.virtual ? 'v' : ''}`).join('|')}`);
+  useControlTarget({
+    address: `grid:${p.id}`, kind: 'grid', label: p.label ?? p.id, keywords: ['grid', 'table', 'list'], element: () => gridRef.current,
+    get: () => p.selected ?? null,
+    set: (v) => { const id = String(v ?? ''); const el = rowEl(id); if (!el) return `no row ${id} in ${p.label ?? p.id}`; if (!p.onRowClick) return `${p.label ?? p.id} has no selection`; el.click(); return undefined; },
+    state: () => ({ rows: all.length, shown: shownIds.size, selected: p.selected ?? null, expanded: p.expanded ?? [], groups: p.groups.map((g) => ({ id: g.id, title: g.title, collapsed: !!g.collapsed, rows: g.rows.length })), columns: cols.map((c) => c.id), sort: p.sort ?? null }),
+  }, [p.id]);
   const dragFor = (kind: 'row' | 'group', id: string, label: string, icon: string) => (drag ? {
     onPointerDown: (e: RPointerEvent) => startDrag(e, { kind: `${zone}:${kind}`, id, label, icon, trashable: !!(drag.trash && p.onTrash), onTrash: p.onTrash ? () => p.onTrash!({ kind, id, label }) : undefined }),
   } : {});
 
   const grid = (
-    <div className={`axf-grid ${p.compact ? 'is-compact' : ''}`} style={template} role="grid" aria-label={p.label ?? 'Grid'} data-axf-dataset={dsId || undefined}>
+    <div ref={gridRef} className={`axf-grid ${p.compact ? 'is-compact' : ''}`} style={template} role="grid" aria-label={p.label ?? 'Grid'} data-axf-dataset={dsId || undefined} data-axf-grid={p.id}>
       <div className="axf-grid-head" role="row">
         <span />
         {cols.map((c) => (
@@ -203,17 +241,21 @@ function Row<R>({ p, r, depth, cols, dragProps, drop }: { p: DataGridProps<R>; r
   const ref = p.rowRef?.(r) ?? null;
   const ctx = p.rowCtx?.(r) ?? (ref ? { target: ROW_TARGET, payload: `${ref.kind}:${ref.id}` } : undefined);
   if (ref && ctx) noteDrawnRef(ctx.target, ctx.payload ?? '', ref, p.dataset === false ? undefined : p.dataset ?? p.id);
+  // the row's buttons and its detail (a nested grid, say) compose under the row's address (console-control@1)
+  const rowScope = (p.rowKind ?? 'row') === 'step' ? `step:${id}` : `grid:${p.id}/row:${id}`;
   const expand = config.expand && p.renderDetail ? <IconButton icon={open ? 'chevron-up' : 'chevron-down'} label={open ? 'Collapse row' : 'Expand row'} onClick={(e) => { e.stopPropagation(); p.onToggleExpand?.(id); }} /> : null;
   return (
     <>
       <div className={`axf-grid-row ${p.selected === id ? 'is-active' : ''} ${p.multi?.includes(id) ? 'is-multi' : ''} axf-grid-edge--${p.rowTone?.(r) ?? 'muted'}`} role="row" aria-selected={p.selected === id}
-        data-axf-drop={drop} data-axf-drop-id={`row:${id}`} data-fx-ctx-target={ctx?.target} data-fx-ctx-payload={ctx?.payload}
+        data-axf-drop={drop} data-axf-drop-id={`row:${id}`} data-axf-row={id} data-fx-ctx-target={ctx?.target} data-fx-ctx-payload={ctx?.payload}
         {...dragProps} onClick={(e) => p.onRowClick?.(r, e)} onDoubleClick={() => config.expand && p.onToggleExpand?.(id)}>
-        <span className="axf-dnd-grip" style={{ marginInlineStart: `calc(var(--fx-space) * ${depth * 2})` }}><Icon name="more" size={12} /></span>
-        {cols.map((c) => <span key={c.id} role="gridcell" className={`axf-grid-cell ${c.align === 'end' ? 'is-end' : ''}`}>{c.render(r)}</span>)}
-        {ref ? <span className="axf-grid-tail"><RowHookButtons rowRef={ref} dataset={p.dataset === false ? undefined : p.dataset ?? p.id} />{expand}</span> : expand ?? <span />}
+        <ControlScope address={rowScope}>
+          <span className="axf-dnd-grip" style={{ marginInlineStart: `calc(var(--fx-space) * ${depth * 2})` }}><Icon name="more" size={12} /></span>
+          {cols.map((c) => <span key={c.id} role="gridcell" className={`axf-grid-cell ${c.align === 'end' ? 'is-end' : ''}`}>{c.render(r)}</span>)}
+          {ref ? <span className="axf-grid-tail"><RowHookButtons rowRef={ref} dataset={p.dataset === false ? undefined : p.dataset ?? p.id} />{expand}</span> : expand ?? <span />}
+        </ControlScope>
       </div>
-      {open && p.renderDetail && <div className="axf-grid-detail" role="row">{p.renderDetail(r)}</div>}
+      {open && p.renderDetail && <div className="axf-grid-detail" role="row"><ControlScope address={rowScope}>{p.renderDetail(r)}</ControlScope></div>}
     </>
   );
 }

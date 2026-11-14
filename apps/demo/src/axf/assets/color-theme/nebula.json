@@ -1,0 +1,35 @@
+{
+  "$axf": "asset@1",
+  "type": "color-theme",
+  "id": "nebula",
+  "name": "Nebula",
+  "version": "1.0.0",
+  "description": "Violet nebula depths with a magenta accent; bold but legible.",
+  "author": "AmberX AXF",
+  "tags": [
+    "dark",
+    "vivid",
+    "creative"
+  ],
+  "data": {
+    "scheme": "dark",
+    "tokens": {
+      "bg": "#0f0b16",
+      "surface": "#161020",
+      "surface2": "#1d152b",
+      "surface3": "#261c38",
+      "text": "#e7e2ee",
+      "muted": "#9a8fae",
+      "border": "#34264d",
+      "accent": "#ed5ac1",
+      "accentText": "#25091c",
+      "accentSoft": "rgba(237,90,193,0.14)",
+      "danger": "#ef6174",
+      "success": "#3ecc89",
+      "warning": "#f1b041",
+      "info": "#6caef9",
+      "focus": "#ed5ac1",
+      "shadow": "rgba(0,0,0,0.55)"
+    }
+  }
+}

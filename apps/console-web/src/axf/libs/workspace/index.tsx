@@ -11,7 +11,7 @@
  * layouts {default}, floating-panes, maximise, toolbars {max, labels}, floating-toolbars, customizer, phone {breakpoint}.
  */
 import { useEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent as RPointerEvent, type ReactNode, type RefObject } from 'react';
-import { Button, Icon, IconButton, SelectField, Switch, TextField, WindowResizeHandles, useAxfState, useRuntime } from '../../react';
+import { Button, Icon, IconButton, Select, SelectField, Switch, TextField, WindowResizeHandles, useAxfState, useRuntime } from '../../react';
 import type { Rect, ResizeEdge, SnapZone } from '../../core/engines/windows';
 import type { AxfWebLibrary } from '../../react/library';
 import type { AxfRuntime, MenuEntry } from '../../core';
@@ -396,8 +396,8 @@ export function ToolbarCustomizer({ ws, catalog, describe, initial, close }: { w
         <h3 className="axf-ws-h">Every command <span className="axf-ws-count">{filtered.length}</span></h3>
         <div className="fx-search axf-ws-search"><Icon name="search" size={14} /><input className="fx-input" placeholder="Search" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Search commands" autoFocus /></div>
         <div className="fx-row">
-          <select className="fx-input axf-ws-filter" value={cat} onChange={(e) => setCat(e.target.value)} aria-label="Category"><option value="">Every category</option>{cats.map((c) => <option key={c}>{c}</option>)}</select>
-          <select className="fx-input axf-ws-sort" value={sort} onChange={(e) => setSort(e.target.value as typeof sort)} aria-label="Sort"><option value="tree">Tree</option><option value="az">A → Z</option><option value="za">Z → A</option></select>
+          <Select className="axf-ws-filter" label="Category" value={cat} onChange={setCat} empty="Every category" options={cats.map((c) => ({ value: c, label: c }))} />
+          <Select className="axf-ws-sort" label="Sort" value={sort} onChange={(v) => setSort(v as typeof sort)} options={[{ value: 'tree', label: 'Tree' }, { value: 'az', label: 'A → Z' }, { value: 'za', label: 'Z → A' }]} />
         </div>
         <ul className="axf-ws-cmdtree">{sorted ? sorted.map((it) => row(it, true)) : branch(treeOf(filtered), 0)}</ul>
       </section>

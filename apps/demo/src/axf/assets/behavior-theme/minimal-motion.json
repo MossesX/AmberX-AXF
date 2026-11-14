@@ -1,0 +1,49 @@
+{
+  "$axf": "asset@1",
+  "type": "behavior-theme",
+  "id": "minimal-motion",
+  "name": "Minimal motion",
+  "version": "1.0.0",
+  "description": "Nothing moves: no animation anywhere, no hover effects, a focus ring always shown, plain backdrop. Good for screen readers, slow devices and anyone who finds motion distracting.",
+  "author": "AmberX AXF",
+  "tags": [
+    "accessible"
+  ],
+  "data": {
+    "motion": {
+      "speed": "instant",
+      "easing": "standard",
+      "reduced": "always",
+      "entrance": "none"
+    },
+    "interaction": {
+      "hover": "none",
+      "press": "none",
+      "focusRing": "always",
+      "cursor": "pointer",
+      "longPressMs": 700,
+      "doubleTapMs": 300,
+      "dragThreshold": 10
+    },
+    "windows": {
+      "dialogOpen": "none",
+      "backdrop": "none",
+      "popupOpen": "none",
+      "drawerOpen": "none",
+      "snap": false,
+      "snapGrid": 8,
+      "stack": "cascade",
+      "minimize": "none",
+      "closeOnBackdrop": true,
+      "closeOnEscape": true
+    },
+    "feedback": {
+      "toastPosition": "bottom",
+      "toastMs": 0,
+      "sound": "off",
+      "vibration": "off",
+      "confirmDelete": "risky",
+      "busyCursor": true
+    }
+  }
+}

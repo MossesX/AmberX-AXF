@@ -1,0 +1,22 @@
+{
+  "$axf": "asset@1",
+  "type": "button",
+  "id": "compact-admin",
+  "name": "Compact Admin button",
+  "version": "1.0.0",
+  "description": "Compact Admin: rounded outline buttons.",
+  "author": "AmberX AXF",
+  "tags": [
+    "style-package",
+    "compact",
+    "compact"
+  ],
+  "data": {
+    "shape": "rounded",
+    "fill": "outline",
+    "weight": 600,
+    "uppercase": false,
+    "size": "sm",
+    "elevation": false
+  }
+}

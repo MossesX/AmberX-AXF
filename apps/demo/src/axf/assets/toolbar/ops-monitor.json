@@ -1,0 +1,64 @@
+{
+  "$axf": "asset@1",
+  "type": "toolbar",
+  "id": "ops-monitor",
+  "name": "Ops Monitor",
+  "version": "1.0.0",
+  "description": "A status board: connection, unread alerts, build progress and the clock, with settings and help at the start.",
+  "author": "AmberX AXF",
+  "tags": [
+    "ops",
+    "widgets"
+  ],
+  "data": {
+    "variant": "icons",
+    "align": "spread",
+    "showSearch": false,
+    "groups": [
+      {
+        "id": "app",
+        "items": [
+          {
+            "id": "settings",
+            "icon": "settings",
+            "label": "Settings",
+            "action": "app.settings"
+          },
+          {
+            "id": "docs",
+            "icon": "help",
+            "label": "Documentation",
+            "action": "help.docs"
+          }
+        ]
+      }
+    ],
+    "widgets": [
+      {
+        "type": "status",
+        "id": "online",
+        "at": "end",
+        "order": 10
+      },
+      {
+        "type": "counter",
+        "id": "alerts",
+        "at": "end",
+        "order": 20
+      },
+      {
+        "type": "progress",
+        "id": "build",
+        "at": "end",
+        "order": 30
+      },
+      {
+        "type": "clock",
+        "id": "digital-24h",
+        "at": "end",
+        "order": 40
+      }
+    ],
+    "surface": "raised"
+  }
+}

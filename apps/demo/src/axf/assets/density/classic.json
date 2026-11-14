@@ -1,0 +1,38 @@
+{
+  "$axf": "asset@1",
+  "type": "density",
+  "id": "classic",
+  "name": "Classic",
+  "version": "1.1.0",
+  "description": "The spacing before Oct 30 2026: roomier gaps and card padding, 3-space section gaps.",
+  "author": "AmberX AXF",
+  "tags": [
+    "classic"
+  ],
+  "data": {
+    "gap": {
+      "2xs": 0.15,
+      "xs": 0.3,
+      "sm": 0.45,
+      "md": 0.6,
+      "lg": 0.9,
+      "xl": 1.2,
+      "2xl": 1.75,
+      "3xl": 2.5,
+      "4xl": 3.5
+    },
+    "pad": {
+      "control": 1,
+      "card": 2,
+      "page": 2.5,
+      "row": 1,
+      "cell": 1
+    },
+    "row": {
+      "list": 3,
+      "table": 2.6,
+      "menu": 2.4,
+      "control": 2.4
+    }
+  }
+}
