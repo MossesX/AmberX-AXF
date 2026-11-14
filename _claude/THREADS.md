@@ -792,9 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 20:03 UTC · `console-app-wake-word-voice-listener` branch claude/console-app-wake-word-voice-listener, PR #643 (all) · builds-live
-- 2026-11-13 20:04 UTC · `token-registry-skin-editor-live-sandbox` added (0 steps) (all) · console
-- 2026-11-13 20:04 UTC · `token-registry-skin-editor-live-sandbox` → queued, note (all) · console
 - 2026-11-13 20:04 UTC · `orchestrator-custom-groups-custom-tabs` PR #644 (all) · builds-live
 - 2026-11-13 20:03 UTC · `console-app-wake-word-voice-listener` s1 done, → running (all) · orchestrator
 - 2026-11-13 20:03 UTC · `demo-pipelines-guided-walkthrough-live` s4 done (all) · orchestrator
@@ -1192,6 +1189,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 04:00 UTC · `demo-video-series-three-minute-browser` added (4 steps) (all) · voice
 - 2026-11-14 04:00 UTC · `launch-landing-page-waitlist-referral` → queued (all) · voice
 - 2026-11-14 04:00 UTC · `demo-video-series-three-minute-browser` → queued (all) · voice
+- 2026-11-14 04:02 UTC · `launch-landing-page-waitlist-referral` → running, note (all) · pipeline
+- 2026-11-14 04:02 UTC · `launch-landing-page-waitlist-referral` branch claude/launch-landing-page-waitlist-referral (all) · pipeline
+- 2026-11-14 04:02 UTC · `launch-landing-page-waitlist-referral` note (all) · orchestrator
 
 ## Token passes (log)
 

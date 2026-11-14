@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5189,
- "updatedAt": "2026-11-14T04:02:36.134Z",
+ "rev": 5190,
+ "updatedAt": "2026-11-14T04:03:07.306Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -211985,16 +211985,25 @@
    "title": "Launch landing page + waitlist with referral ranking",
    "category": "Launch",
    "detail": "Brett wants to launch AmberX. Public landing page leading with one hook ('talk and it builds your app'), 60-second demo video slot, waitlist signup with referral move-up-the-line ranking, Stripe-ready pricing section (free trial then $30/month), token-driven and themable. Deploy on the VPS via Coolify on the amberxai.com domain (confirm in Hostinger DNS).",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/launch-landing-page-waitlist-referral",
    "pr": "",
    "createdAt": "2026-11-14T04:00:27.661Z",
-   "updatedAt": "2026-11-14T04:02:27.417Z",
+   "updatedAt": "2026-11-14T04:02:46.663Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-launch-landing-page-waitlist-referral--sully.",
+     "at": "2026-11-14T04:02:41.451Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-launch-landing-page-waitlist-referral--sully, own login copy)",
+     "at": "2026-11-14T04:02:46.663Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -212012,18 +212021,18 @@
    "pipeline": {
     "queuedAt": "",
     "queuedBy": "",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-launch-landing-page-waitlist-referral--sully",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-14T04:02:38.525Z",
+    "runs": 1,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-14T04:02:38.525Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -212032,7 +212041,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-14T04:02:38.525Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -212113,7 +212122,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
