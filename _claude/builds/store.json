@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5331,
- "updatedAt": "2026-11-14T17:05:31.932Z",
+ "rev": 5332,
+ "updatedAt": "2026-11-14T17:07:45.867Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -214407,15 +214407,15 @@
    "title": "Builds share one Claude login and write refreshed tokens back",
    "category": "orchestrator",
    "detail": "Brett: 'they're supposed to, it's supposed to write the new refresh token to the same place in whatever account, whatever build uses the next updates the refresh token.' Right now each build gets its own saved copy of the account login (log shows 'own copy (saved)'), so when one copy refreshes, the rotated refresh token kills every other copy. demo-video-series-three-minute-browser died with 'OAuth session expired and could not be refreshed' on mossesx-max. Fix: every build uses the account's one shared credentials file, and any refreshed token is written back there under a lock. Phone alert on any auth failure; re-queue the failed build once login works.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/builds-share-one-claude-login-write",
    "pr": "",
    "createdAt": "2026-11-14T16:44:38.923Z",
-   "updatedAt": "2026-11-14T17:05:29.676Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-14T17:07:43.504Z",
+   "builtAt": "2026-11-14T17:07:43.504Z",
    "notes": [
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-builds-share-one-claude-login-write--earl.",
@@ -214594,12 +214594,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T17:07:43.504Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T16:45:50.814Z",
-     "updatedAt": "2026-11-14T16:45:50.980Z"
+     "updatedAt": "2026-11-14T17:07:43.807Z"
     }
    ],
    "profiles": [
@@ -214610,7 +214610,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
