@@ -1,0 +1,27 @@
+{
+  "$axf": "picker-baseline@1",
+  "note": "Hand-made drop-downs left over when check-pickers.mjs landed (Nov 14 2026; picker@1): per file, how many raw <select> / role=listbox findings it may still have. Counts only go down; a file not listed must be clean. Move one with node framework/cli/picker-migrate.mjs --write <file>, then regenerate: node framework/cli/check-pickers.mjs --write-baseline",
+  "files": {
+    "apps/console-web/plugins/agent-manager/web/forms.tsx": 3,
+    "apps/console-web/plugins/agent-swarm/web/ui.tsx": 2,
+    "apps/console-web/plugins/agent-voice/web/console.tsx": 1,
+    "apps/console-web/plugins/ai-assistant/web/chat.tsx": 2,
+    "apps/console-web/plugins/ai-assistant/web/settings.tsx": 4,
+    "apps/console-web/plugins/brand-library/web/BrandLibrary.tsx": 1,
+    "apps/console-web/plugins/claude-handoff/web/lookDialog.tsx": 1,
+    "apps/console-web/plugins/console-terminal/web/connections.tsx": 1,
+    "apps/console-web/plugins/feature-assist/web/ui.tsx": 1,
+    "apps/console-web/plugins/plan-studio/web/ui.tsx": 1,
+    "apps/console-web/plugins/project-wizard/web/index.tsx": 1,
+    "apps/console-web/plugins/session-checkin/web/index.tsx": 1,
+    "apps/console-web/plugins/theme-manager/web/ThemeManager.tsx": 1,
+    "apps/console-web/plugins/todo-manager/web/ui.tsx": 2,
+    "apps/console-web/plugins/ui-review/web/shots.tsx": 1,
+    "apps/console-web/src/control/SearchPalette.tsx": 1,
+    "apps/molly/plugins/xlayout/web/workspace.tsx": 1,
+    "apps/walkthrough-studio/src/studio/panes/capture.tsx": 1,
+    "apps/walkthrough-studio/src/studio/panes/outline.tsx": 2,
+    "apps/walkthrough-studio/src/studio/panes/writing.tsx": 1,
+    "framework/libs/settings/index.tsx": 1
+  }
+}
