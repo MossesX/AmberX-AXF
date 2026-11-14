@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T04:10:22.549Z",
+ "updatedAt": "2026-11-14T04:10:43.330Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -136998,7 +136998,7 @@
    "branch": "claude/banner-widget-shapes-more-than-circle",
    "pr": "",
    "createdAt": "2026-11-14T03:47:49.947Z",
-   "updatedAt": "2026-11-14T03:48:27.498Z",
+   "updatedAt": "2026-11-14T04:10:37.696Z",
    "builtAt": "",
    "notes": [
     {
@@ -137038,8 +137038,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T04:10:37.695Z",
      "note": "",
      "uid": "st-mwfv7ta9049lvh",
      "createdAt": "2026-11-14T03:47:49.949Z"
@@ -137062,25 +137062,6 @@
      "note": "",
      "uid": "st-mwfv7ta905xtyu",
      "createdAt": "2026-11-14T03:47:49.949Z"
-    },
-    {
-     "id": "s4",
-     "text": "Animated status icons for banner widgets: little animated logo-type icons whose colour shows their state (idle, active, working, error, offline) and which animate while active and stay static when idle. State colours and animations are tokens/assets, swappable by skin and icon pack, respect reduced-motion, with an on/off and speed setting.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "uid": "st-mwfv8kcd01ntvg",
-     "createdAt": "2026-11-14T03:48:24.857Z"
     },
     {
      "id": "s3",

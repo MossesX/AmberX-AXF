@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5201,
- "updatedAt": "2026-11-14T04:10:22.549Z",
+ "rev": 5202,
+ "updatedAt": "2026-11-14T04:10:43.330Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -211622,7 +211622,7 @@
    "branch": "claude/banner-widget-shapes-more-than-circle",
    "pr": "",
    "createdAt": "2026-11-14T03:47:49.947Z",
-   "updatedAt": "2026-11-14T03:48:27.498Z",
+   "updatedAt": "2026-11-14T04:10:37.696Z",
    "builtAt": "",
    "notes": [
     {
@@ -211648,34 +211648,6 @@
     "from": "",
     "addenda": []
    },
-   "pipeline": {
-    "queuedAt": "",
-    "queuedBy": "",
-    "account": "mossesx-max-",
-    "session": "axf-banner-widget-shapes-more-than-circle--joey",
-    "slot": "",
-    "model": "Fable",
-    "launchedAt": "2026-11-14T03:48:20.658Z",
-    "runs": 1,
-    "lastRun": null,
-    "split": null,
-    "splitRequested": "",
-    "note": "",
-    "route": "",
-    "dispatchedAt": "2026-11-14T03:48:20.658Z",
-    "planned": {
-     "model": "Fable",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-14T03:48:07.112Z",
-     "why": "subscription account mossesx-max-"
-    },
-    "tried": [],
-    "pickedAt": "2026-11-14T03:48:20.658Z",
-    "heldAt": "",
-    "heldBy": "",
-    "heldWhy": ""
-   },
    "steps": [
     {
      "id": "s1",
@@ -211692,12 +211664,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T04:10:37.695Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T03:47:49.949Z",
-     "updatedAt": "2026-11-14T03:47:49.949Z"
+     "updatedAt": "2026-11-14T04:10:38.852Z"
     },
     {
      "id": "s2",
@@ -211720,28 +211692,6 @@
      "rev": 1,
      "createdAt": "2026-11-14T03:47:49.949Z",
      "updatedAt": "2026-11-14T03:47:49.949Z"
-    },
-    {
-     "id": "s4",
-     "uid": "st-mwfv8kcd01ntvg",
-     "title": "",
-     "text": "Animated status icons for banner widgets: little animated logo-type icons whose colour shows their state (idle, active, working, error, offline) and which animate while active and stay static when idle. State colours and animations are tokens/assets, swappable by skin and icon pack, respect reduced-motion, with an on/off and speed setting.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "30 min",
-     "files": [],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-14T03:48:24.857Z",
-     "updatedAt": "2026-11-14T03:48:25.213Z"
     },
     {
      "id": "s3",
