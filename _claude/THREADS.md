@@ -796,7 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 04:23 UTC · `ui-directory-plugin-self-updating-data` note (all) · orchestrator
 - 2026-11-14 04:29 UTC · `ui-directory-plugin-self-updating-data` s2 done (all) · orchestrator
 - 2026-11-14 04:29 UTC · `demo-video-series-three-minute-browser` note (all) · voice
 - 2026-11-14 04:30 UTC · `ui-directory-plugin-self-updating-data` → queued, note (all) · pipeline
@@ -1196,6 +1195,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 23:13 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · orchestrator
 - 2026-11-14 23:13 UTC · `pass-approval-hook-deep-link-amberx-notification` PR #681 (all) · builds-live
 - 2026-11-14 23:13 UTC · `pass-approval-hook-deep-link-amberx-notification` s9 done, → built (all) · orchestrator
+- 2026-11-14 23:15 UTC · `merge-main-land-change-to-move-amberx` note (all) · orchestrator
 
 ## Token passes (log)
 
