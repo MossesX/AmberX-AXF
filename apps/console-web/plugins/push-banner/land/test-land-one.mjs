@@ -28,6 +28,7 @@ sh(['push', '-q', 'origin', 'HEAD:main'], work);
 // a clean build: adds its own file; a clashing build: edits a.txt one way
 sh(['checkout', '-qb', 'claude/clean'], work); commit('b.txt', 'b\n', 'b'); sh(['push', '-q', 'origin', 'claude/clean'], work);
 sh(['checkout', '-q', 'main'], work); sh(['checkout', '-qb', 'claude/clash'], work); commit('a.txt', 'branch side\n', 'a branch'); sh(['push', '-q', 'origin', 'claude/clash'], work);
+sh(['checkout', '-q', 'main'], work); sh(['checkout', '-qb', 'claude/clash2'], work); commit('a.txt', 'second branch side\n', 'a branch 2'); sh(['push', '-q', 'origin', 'claude/clash2'], work);
 // main moves on: a new file and a.txt the other way
 sh(['checkout', '-q', 'main'], work); commit('c.txt', 'c\n', 'c'); commit('a.txt', 'main side\n', 'a main'); sh(['push', '-q', 'origin', 'HEAD:main'], work);
 sh(['clone', '-q', origin, repo], root);
@@ -35,9 +36,13 @@ for (const [k, v] of [['user.name', 't'], ['user.email', 't@t']]) sh(['config', 
 const s = { repo, slug: 'o/r', dataDir: data, remote: 'origin', base: 'main', archive: join(root, 'archive') };
 const git = makeGit(repo, { retryWait: 10 });
 const at = new Date('2026-11-14T23:00:00Z');
+// the console and builds-live, faked: what the lander filed and recorded
+const filed = []; const recorded = [];
+const fakeApi = async (method, path, body) => { if (path.endsWith('/land/fix')) { filed.push(body); return { ok: true, id: `fix-${filed.length}`, status: 'queued' }; } return null; };
+const base = { api: fakeApi, record: (_s, run) => { recorded.push([run.build, run.outcome]); return { ok: true }; }, said: 'We need to make sure things are landing as soon as they\'re built' };
 
 await t('a clean build: main merged into its branch and pushed; the attempt is recorded as land-run@1, still going (CI next)', async () => {
-  const r = await landOne({ s, git, ci: false, build: { id: 'clean', branch: 'claude/clean', pr: 12 }, now: () => at });
+  const r = await landOne({ s, git, ...base, ci: false, build: { id: 'clean', branch: 'claude/clean', pr: 12 }, now: () => at });
   assert.equal(r.ran, true);
   assert.equal(r.run.build, 'clean'); assert.equal(r.run.pr, 12);
   assert.equal(r.run.base, sh(['rev-parse', 'origin/main'], repo));
@@ -51,7 +56,7 @@ await t('a clean build: main merged into its branch and pushed; the attempt is r
 
 await t('a code clash: nothing pushed, the attempt ends as clash with the file listed', async () => {
   const before = sh(['rev-parse', 'origin/claude/clash'], repo);
-  const r = await landOne({ s, git, ci: false, build: { id: 'clash', branch: 'claude/clash' }, now: () => at });
+  const r = await landOne({ s, git, ...base, ci: false, build: { id: 'clash', branch: 'claude/clash' }, now: () => at });
   assert.equal(r.run.outcome, 'clash'); assert.deepEqual(r.run.unresolved, ['a.txt']);
   assert.ok(lr.validateLandRun(r.run).ok, 'a valid land-run@1');
   sh(['fetch', '-q', 'origin'], repo);
@@ -59,7 +64,7 @@ await t('a code clash: nothing pushed, the attempt ends as clash with the file l
 });
 
 await t('a missing branch is an error attempt, never a crash', async () => {
-  const r = await landOne({ s, git, ci: false, build: { id: 'gone', branch: 'claude/gone' }, now: () => at });
+  const r = await landOne({ s, git, ...base, ci: false, build: { id: 'gone', branch: 'claude/gone' }, now: () => at });
   assert.equal(r.run.outcome, 'error'); assert.match(r.run.error, /not on origin/);
 });
 
@@ -68,7 +73,7 @@ await t('the host resolver settles a clash the JS rules call code; the merge the
   writeFileSync(fake, "import subprocess\nsubprocess.run(['git','checkout','--theirs','--','.'])\nsubprocess.run(['git','add','-A'])\n");
   process.env.AXF_LAND_RESOLVER = fake;
   try {
-    const r = await landOne({ s, git, ci: false, build: { id: 'clash', branch: 'claude/clash' }, now: () => at });
+    const r = await landOne({ s, git, ...base, ci: false, build: { id: 'clash', branch: 'claude/clash' }, now: () => at });
     assert.equal(r.run.outcome, ''); assert.ok(r.run.merged);
     sh(['fetch', '-q', 'origin'], repo);
     assert.equal(sh(['show', 'origin/claude/clash:a.txt'], repo), 'main side', "main's side taken by the resolver");
@@ -77,7 +82,7 @@ await t('the host resolver settles a clash the JS rules call code; the merge the
 
 await t('a red check after regenerating: outcome red, the failing generator named', async () => {
   const merge = () => ({ merged: false, conflicts: [], regenerated: ['tracker'], checkError: 'tracker regenerated but its check failed (node x): boom' });
-  const r = await landOne({ s, git, ci: false, build: { id: 'clean', branch: 'claude/clean' }, merge, now: () => at });
+  const r = await landOne({ s, git, ...base, ci: false, build: { id: 'clean', branch: 'claude/clean' }, merge, now: () => at });
   assert.equal(r.run.outcome, 'red'); assert.equal(r.run.check.ok, false); assert.deepEqual(r.run.check.failed, ['tracker']);
   assert.deepEqual(r.run.regenerated, ['tracker']);
   assert.ok(lr.validateLandRun(r.run).ok, 'valid: the note says why no fix build yet');
@@ -101,7 +106,7 @@ const fastCi = { sleep: async () => {}, pollMs: 0 };
 
 await t('CI green on the merged head: the PR is merged at that head with the App token, the build marked merged', async () => {
   const { gh, calls } = fakeGh([run1('success')]); const marked = [];
-  const r = await landOne({ s, git, gh, build: { id: 'clean', branch: 'claude/clean', pr: '#12' }, now: () => at, ciOpts: { ...fastCi, mark: (_s, b, o) => { marked.push([b.id, o.pr]); return { ok: true }; } } });
+  const r = await landOne({ s, git, ...base, gh, build: { id: 'clean', branch: 'claude/clean', pr: '#12' }, now: () => at, ciOpts: { ...fastCi, mark: (_s, b, o) => { marked.push([b.id, o.pr]); return { ok: true }; } } });
   assert.equal(r.run.outcome, 'landed'); assert.equal(r.run.ci.state, 'success');
   assert.equal(calls.merge.length, 1); assert.equal(calls.merge[0].body.sha, r.run.merged, 'merged at exactly the tested head');
   assert.match(calls.merge[0].path, /pulls\/12\/merge$/);
@@ -111,26 +116,26 @@ await t('CI green on the merged head: the PR is merged at that head with the App
 
 await t('a cancelled run is started again, never a failure; green after it lands', async () => {
   const { gh, calls } = fakeGh([run1('cancelled'), run1(null, 'in_progress'), run1('success')]);
-  const r = await landOne({ s, git, gh, build: { id: 'clean', branch: 'claude/clean', pr: 12 }, now: () => at, ciOpts: { ...fastCi, mark: () => ({ ok: true }) } });
+  const r = await landOne({ s, git, ...base, gh, build: { id: 'clean', branch: 'claude/clean', pr: 12 }, now: () => at, ciOpts: { ...fastCi, mark: () => ({ ok: true }) } });
   assert.equal(r.run.outcome, 'landed'); assert.equal(calls.dispatch, 1); assert.match(r.run.note, /1 cancelled run started again/);
 });
 
 await t('nothing ran on the head: CI is dispatched; red names the failing job and lands nothing', async () => {
   const { gh, calls } = fakeGh([[], run1(null, 'queued'), [{ name: 'Gradle', status: 'completed', conclusion: 'failure', app: { slug: 'github-actions' } }]]);
-  const r = await landOne({ s, git, gh, build: { id: 'clean', branch: 'claude/clean', pr: 12 }, now: () => at, ciOpts: fastCi });
+  const r = await landOne({ s, git, ...base, gh, build: { id: 'clean', branch: 'claude/clean', pr: 12 }, now: () => at, ciOpts: fastCi });
   assert.equal(calls.dispatch, 1); assert.equal(calls.merge.length, 0);
   assert.equal(r.run.outcome, 'red'); assert.deepEqual(r.run.check.failed, ['Gradle']);
 });
 
 await t('still running when the wait ends: the attempt stays open (no outcome), nothing merged', async () => {
   const { gh, calls } = fakeGh([run1(null, 'in_progress')]); let tnow = 0;
-  const r = await landOne({ s, git, gh, build: { id: 'clean', branch: 'claude/clean', pr: 12 }, now: () => at, ciOpts: { ...fastCi, waitMs: 100, clock: () => (tnow += 60) } });
+  const r = await landOne({ s, git, ...base, gh, build: { id: 'clean', branch: 'claude/clean', pr: 12 }, now: () => at, ciOpts: { ...fastCi, waitMs: 100, clock: () => (tnow += 60) } });
   assert.equal(r.run.outcome, ''); assert.equal(calls.merge.length, 0); assert.match(r.run.note, /next attempt/);
 });
 
 await t('no PR yet: one is opened, then merged', async () => {
   const { gh, calls } = fakeGh([run1('success')]);
-  const r = await landOne({ s, git, gh, build: { id: 'clean', branch: 'claude/clean' }, now: () => at, ciOpts: { ...fastCi, mark: () => ({ ok: true }) } });
+  const r = await landOne({ s, git, ...base, gh, build: { id: 'clean', branch: 'claude/clean' }, now: () => at, ciOpts: { ...fastCi, mark: () => ({ ok: true }) } });
   assert.equal(calls.opened, 1); assert.equal(r.run.pr, 99); assert.equal(r.run.outcome, 'landed');
 });
 
@@ -142,20 +147,42 @@ await t('green but main moved in code since the merge: not landed, merged again 
   assert.equal(calls.merge.length, 0); assert.match(run.note, /main moved/); assert.equal(lr.outcomeOf(run), '');
 });
 
+await t('red: a P0 fix build is filed with Brett\'s words first and the failing check; the attempt names it; the build goes red', async () => {
+  filed.length = 0; recorded.length = 0;
+  const { gh } = fakeGh([[{ name: 'Gradle', status: 'completed', conclusion: 'failure', app: { slug: 'github-actions' } }]]);
+  const r = await landOne({ s, git, ...base, gh, build: { id: 'clean', branch: 'claude/clean', pr: 12 }, now: () => at, ciOpts: fastCi });
+  assert.equal(r.run.outcome, 'red'); assert.equal(r.run.fixBuild, 'fix-1');
+  assert.equal(filed.length, 1); assert.equal(filed[0].priority, 'P0'); assert.equal(filed[0].build, 'clean'); assert.equal(filed[0].kind, 'ci');
+  assert.ok(filed[0].said.startsWith("We need to make sure things are landing as soon as they're built"), 'his words come first');
+  assert.match(filed[0].said, /Failing check after merging main into claude\/clean: Gradle/);
+  assert.deepEqual(recorded, [['clean', 'red']], 'the land record goes red (the line moves on)');
+  assert.ok(lr.validateLandRun(r.run).ok);
+  const pipe = await import('../../../../../framework/core/build-pipeline.mjs');
+  assert.equal(pipe.addLandAttempt(null, lr.attemptOf(r.run), at.toISOString()).landState, 'red', 'builds@1 state follows the outcome');
+});
+
+await t('landed and clash attempts go on the build too; a running one does not', async () => {
+  recorded.length = 0;
+  await landOne({ s, git, ...base, ci: false, build: { id: 'clash2', branch: 'claude/clash2' }, now: () => at });
+  const { gh } = fakeGh([run1(null, 'in_progress')]); let tn = 0;
+  await landOne({ s, git, ...base, gh, build: { id: 'clean', branch: 'claude/clean', pr: 12 }, now: () => at, ciOpts: { ...fastCi, waitMs: 10, clock: () => (tn += 20) } });
+  assert.deepEqual(recorded, [['clash2', 'clash']]);
+});
+
 await t('two at once: a second attempt is refused while the line is held, and runs once it is free', async () => {
   assert.equal(await takeLandLock({ who: 'other lander' }), true);
-  const r = await landOne({ s, git, ci: false, build: { id: 'clean', branch: 'claude/clean' }, now: () => at });
+  const r = await landOne({ s, git, ...base, ci: false, build: { id: 'clean', branch: 'claude/clean' }, now: () => at });
   assert.equal(r.ran, false); assert.match(r.owner, /other lander/);
   dropLandLock();
-  const r2 = await landOne({ s, git, ci: false, build: { id: 'clean', branch: 'claude/clean' }, now: () => at, dry: true });
+  const r2 = await landOne({ s, git, ...base, ci: false, build: { id: 'clean', branch: 'claude/clean' }, now: () => at, dry: true });
   assert.equal(r2.ran, true);
 });
 
 await t('two land-one calls started together: exactly one runs', async () => {
   const slow = (o) => { spawnSync('sleep', ['0.3']); return { merged: true, sha: sh(['rev-parse', 'origin/claude/clean'], repo), conflicts: [] }; };
   const [a, b] = await Promise.all([
-    landOne({ s, git, ci: false, build: { id: 'clean', branch: 'claude/clean' }, merge: slow, dry: true }),
-    landOne({ s, git, ci: false, build: { id: 'clean', branch: 'claude/clean' }, merge: slow, dry: true }),
+    landOne({ s, git, ...base, ci: false, build: { id: 'clean', branch: 'claude/clean' }, merge: slow, dry: true }),
+    landOne({ s, git, ...base, ci: false, build: { id: 'clean', branch: 'claude/clean' }, merge: slow, dry: true }),
   ]);
   assert.equal([a, b].filter((x) => x.ran).length, 1);
 });

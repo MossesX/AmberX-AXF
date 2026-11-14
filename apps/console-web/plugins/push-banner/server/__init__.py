@@ -426,7 +426,7 @@ class Pushes:
 
     def land_fix(self, body: Any) -> dict[str, Any]:
         if not isinstance(body, dict) or not isinstance(body.get("build"), str) or not LAND_ID.match(body["build"]):
-            raise HTTPException(400, "send {build, branch, title, detail, kind, attempt}")
+            raise HTTPException(400, "send {build, branch, title, detail, kind, attempt, said?}")
         if body.get("kind") not in ("conflict", "ci"):
             raise HTTPException(400, "kind is conflict or ci")
         title = _text(body.get("title"), 200).strip() or f"Merge main and land {body['build']}"
@@ -435,7 +435,9 @@ class Pushes:
         if not svc:
             raise HTTPException(503, "the Build orchestrator (axf.build-dispatch@1) is not installed")
         try:
-            r = svc.request(title, detail, by="auto-land", source="push-banner", priority="P0", queue=True)
+            # said: Brett's verbatim words from the build that went red, then the failing check (build-origin@1)
+            said = _text(body.get("said"), 4000).strip()
+            r = svc.request(title, detail, by="auto-land", source="push-banner", priority="P0", queue=True, **({"said": said} if said else {}))
         except Exception as e:  # noqa: BLE001 — the orchestrator's own refusal
             raise HTTPException(409, _text(f"the orchestrator did not take it: {getattr(e, 'detail', None) or e}", 300)) from None
         bid = str((r or {}).get("id") or "")

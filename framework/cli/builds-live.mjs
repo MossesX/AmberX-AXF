@@ -25,6 +25,8 @@
  *   … pull                                                    take main's newer builds into this checkout
  *   … sync                                                    flush, send builds newer here than on main, then pull (session start)
  *   … link <build> [--branch b] [--pr n|url] [--merged [iso]]  set a build's branch / PR / merged (live)
+ *   … land <build> [--state s] [--attempt '<json>'] [--behind n]  a build's land record (build-pipeline@1 `land`): its
+ *                                                             landing state, one land-run@1 attempt, commits behind main (live)
  *   … install                                                 git merge driver for the builds files (this clone)
  *   … merge-driver <base> <ours> <theirs> <path>              (git calls it) newer-wins merge of a builds file
  *   … heal <branch>                                           merge main into a branch whose PR conflicts only in builds files
@@ -40,6 +42,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from '../plan/builds-store-core.mjs';
 import * as merge from '../plan/builds-merge-core.mjs';
+import * as pipe from '../core/build-pipeline.mjs';
 import { REPO_ROOT } from './persist.mjs';
 import { gitAuthEnv, githubToken, scrub } from './github.mjs';
 import { adoptStore, adoptedChanges, journalDir, journalMax, mergeOriginsText, orchestratorExports, originsFile, readStoreNow, storeFile, storeText, withStore } from './builds-store.mjs';
@@ -412,6 +415,28 @@ export function linkBuild(id, { branch: br, pr, mergedAt } = {}, by = 'builds-li
   }, { by, action: 'link', note: id });
   return { build: r.store.builds.find((b) => b.id === found.id), changes: r.changes };
 }
+/**
+ * A build's land record (build-pipeline@1 `land`), live: `attempt` (land-run@1 attemptOf) is appended and sets the
+ * state from its outcome; `state` sets it outright (archived / flagged / red / waiting …); `behind` = commits behind main.
+ */
+export function landBuild(id, { state, attempt, behind } = {}, by = 'land') {
+  if (state !== undefined && !pipe.LAND_STATES.includes(state)) throw new Error(`landState is one of ${pipe.LAND_STATES.filter(Boolean).join(', ')}`);
+  let found = null;
+  const at = new Date().toISOString();
+  const r = withStore((s) => {
+    const b = core.findBuild(s, id); if (!b) throw new Error(`no build "${id}"`);
+    found = b;
+    let l = pipe.normLand(b.land);
+    if (attempt) l = pipe.addLandAttempt(l, attempt, at);
+    if (state !== undefined) l = pipe.normLand({ ...l, landState: state });
+    if (behind !== undefined) l = pipe.withBehind(l, behind, at);
+    if (l) b.land = l; else delete b.land;
+    b.updatedAt = at;
+    return s;
+  }, { by, action: 'land', note: `${id}${state ? ` ${state}` : ''}${attempt?.outcome ? ` ${attempt.outcome}` : ''}` });
+  return { build: r.store.builds.find((b) => b.id === found.id), changes: r.changes };
+}
+
 /** "#245", "245" and a PR URL all become "#245" (the form the orchestrator shows); other text is kept. */
 export function normPr(pr) {
   const t = String(pr).trim();
@@ -487,6 +512,12 @@ async function main(argv) {
     const merged = opt('merged');
     const r = linkBuild(id, { branch: typeof opt('branch') === 'string' ? opt('branch') : undefined, pr: typeof opt('pr') === 'string' ? opt('pr') : undefined, mergedAt: merged === true ? new Date().toISOString() : typeof merged === 'string' ? merged : undefined });
     return out({ ok: true, build: { id: r.build.id, status: r.build.status, branch: r.build.branch, pr: r.build.pr, mergedAt: r.build.mergedAt } }, `${r.build.id}: ${r.build.status} · branch ${r.build.branch || '-'} · PR ${r.build.pr || '-'}${r.build.mergedAt ? ` · merged ${r.build.mergedAt}` : ''}`);
+  }
+  if (cmd === 'land') {
+    const id = rest[0]; if (!id || id.startsWith('--')) throw new Error("land <build> [--state s] [--attempt '<json>'] [--behind n]");
+    const st = opt('state'); const at = opt('attempt'); const bh = opt('behind');
+    const r = landBuild(id, { state: typeof st === 'string' ? st : undefined, attempt: typeof at === 'string' ? JSON.parse(at) : undefined, behind: typeof bh === 'string' ? Number(bh) : undefined });
+    return out({ ok: true, build: r.build.id, land: r.build.land }, `${r.build.id}: ${r.build.land?.landState || '-'}${Number.isInteger(r.build.land?.behindMain) ? ` · ${r.build.land.behindMain} behind main` : ''} · ${r.build.land?.landAttempts?.length ?? 0} attempt(s)`);
   }
   if (cmd === 'install') { const r = install(); return out(r, r.ok ? `merge driver ${DRIVER} registered` : 'git config failed'); }
   if (cmd === 'merge-driver') {

@@ -21,6 +21,10 @@
  *      merged at exactly the tested head through the GitHub App's installation token (framework/cli/github-token.mjs
  *      installation), opened first when the build has none; the build is marked merged through builds-live (it reaches
  *      main at once and the builds store settles it complete).
+ *   6. red (a check after regenerating or CI on the merged head): a P0 fix build is filed in the orchestrator
+ *      (axf.build-dispatch@1 through POST /land/fix) whose `said` is Brett's verbatim words from the build plus the
+ *      failing check; the attempt names it (fixBuild). Every settled attempt goes on the build's land record through
+ *      builds-live (landState red / landed / flagged …), so the line moves on to the next build at once.
  *
  *   node apps/console-web/plugins/push-banner/land/land-one.mjs <build> [--dry-run] [--json]   one attempt now
  *   … runs [<build>] [--json]                                                                the recorded attempts
@@ -32,7 +36,8 @@ import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import * as lr from '../../../../../framework/core/land-run.mjs';
 import * as line from '../../../../../framework/core/landing-line.mjs';
-import { dropLandLock, lockOwner, makeGit, makeGitHub, mergeMain, settings, takeLandLock } from './land.mjs';
+import { dropLandLock, lockOwner, makeConsole, makeGit, makeGitHub, mergeMain, settings, takeLandLock } from './land.mjs';
+import { fixBuildFor } from './land-core.mjs';
 import { sameCodeFiles } from './merge-queue-core.mjs';
 
 export const runsFile = (s) => join(s.dataDir, 'land-runs.jsonl');
@@ -130,6 +135,32 @@ export async function checkAndLand({ s, git, gh, b, run, dry = false, mark = mar
   return run;
 }
 
+/** Brett's verbatim words that started a build (build-origin@1), '' when it has none. */
+export function originSaid(s, id) {
+  const r = spawnSync('node', [join(s.repo, 'framework/cli/build-origin.mjs'), 'get', id, '--json'], { cwd: s.repo, encoding: 'utf8', timeout: 30000 });
+  try { return String(JSON.parse(r.stdout || '{}').origin?.said || ''); } catch { return ''; }
+}
+
+/** The fix build's `said`: his words first (a paraphrase never replaces them), then what failed. */
+export function fixSaid(said, run) {
+  const failed = run.check?.failed?.length ? run.check.failed.join(', ') : 'CI on the merged head';
+  const why = run.check?.note || run.note || '';
+  return `${said ? `${said}\n\n` : ''}Failing check after merging main into ${run.branch || run.build}: ${failed}${why ? ` (${why.slice(0, 300)})` : ''}`;
+}
+
+/** File the P0 fix build for a red attempt; returns its builds@1 id or ''. */
+export async function fileFix({ s, api, b, run, said = '', attempt = 1 }) {
+  const fb = fixBuildFor(b, { kind: 'ci', checks: run.check?.failed?.length ? run.check.failed : ['CI'] }, { attempt, pr: run.pr || null });
+  const r = await api('POST', '/api/plugins/push-banner/land/fix', { ...fb, said: fixSaid(said, run) });
+  return r && r.ok && r.id ? String(r.id) : '';
+}
+
+/** builds-live: one settled attempt on the build's land record (its state follows the outcome). */
+export function recordOnBuild(s, run) {
+  const r = spawnSync('node', [join(s.repo, 'framework/cli/builds-live.mjs'), 'land', run.build, '--attempt', JSON.stringify(lr.attemptOf(run)), '--json'], { cwd: s.repo, encoding: 'utf8', timeout: 120000 });
+  return { ok: r.status === 0, text: `${r.stdout || ''}${r.stderr || ''}`.trim().slice(-300) };
+}
+
 /** The build record from main's builds store (the newest status is there), or null. */
 export function buildFromMain({ s, git, id }) {
   const t = git(['show', `${s.remote}/${s.base}:_claude/builds/store.json`]);
@@ -142,7 +173,7 @@ export function buildFromMain({ s, git, id }) {
  * Resolves { ran: false, owner } when the line is busy; otherwise { ran: true, run } with the recorded land-run@1.
  * The lock is always released. `merge` is land.mjs mergeMain (tests pass their own).
  */
-export async function landOne({ s = settings(), git = makeGit(s.repo), gh = null, build, dry = false, now = () => new Date(), merge = mergeMain, ci = true, ciOpts = {}, wait = 0, log = () => {} } = {}) {
+export async function landOne({ s = settings(), git = makeGit(s.repo), gh = null, api = null, build, dry = false, now = () => new Date(), merge = mergeMain, ci = true, ciOpts = {}, said = null, record = recordOnBuild, wait = 0, log = () => {} } = {}) {
   const at = now().toISOString();
   const id = typeof build === 'string' ? build : build?.id;
   if (!id) throw new Error('land-one: which build?');
@@ -164,7 +195,17 @@ export async function landOne({ s = settings(), git = makeGit(s.repo), gh = null
     else if (!m.merged) run.error = m.pushError || 'merge failed';
     else run.merged = m.sha;
     if (ci && run.merged) await checkAndLand({ s, git, gh: gh || appGitHub(s), b, run, dry, log, ...ciOpts });
-    return { ran: true, run: finish(s, run, dry, now) };
+    // red: the fix build is filed before the attempt is stored, so the record names it
+    const red = run.check?.ok === false || lr.ciState(run.ci?.status, run.ci?.conclusion) === 'failure';
+    if (red && !dry) {
+      const tries = readRuns(s, id).filter((x) => x.outcome === 'red').length + 1;
+      try { run.fixBuild = await fileFix({ s, api: api || makeConsole(s), b, run, said: said ?? originSaid(s, id), attempt: tries }); } catch (e) { log(`fix build: ${e.message}`); }
+      if (!run.fixBuild) run.note = `${run.note ? `${run.note} ` : ''}No fix build: the orchestrator did not take it.`.trim();
+      else run.note = `${run.note ? `${run.note} ` : ''}Fix build ${run.fixBuild} filed (P0).`;
+    }
+    const stored = finish(s, run, dry, now);
+    if (!dry && stored.outcome) { const r = record(s, stored); if (!r.ok) log(`land record: ${r.text}`); }
+    return { ran: true, run: stored };
   } finally { dropLandLock(); }
 }
 
