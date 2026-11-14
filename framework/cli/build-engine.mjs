@@ -9,6 +9,7 @@ import { isScaleType, scaleErrors, scaleSchemaProperties } from '../core/engines
 import { isLayoutType, layoutErrors, layoutSchemaProperties } from '../core/engines/layout-rules.mjs';
 import { helpErrors } from '../core/engines/help-rules.mjs';
 import { navStyleErrors, navStyleSchemaProperties } from '../core/engines/navstyle-rules.mjs';
+import { themedControlsErrors, themedControlsSchemaProperties } from '../core/engines/themed-controls-rules.mjs';
 import { AGENT_CARD_TYPE, agentCardErrors, agentCardSchemaProperties } from '../core/engines/agent-card-rules.mjs';
 import { JOB_TYPE, jobTypeErrors, jobTypeSchemaProperties } from '../core/engines/job-type-rules.mjs';
 import { CARD_TYPE, cardErrors, cardSchemaProperties } from '../core/engines/card-rules.mjs';
@@ -182,6 +183,8 @@ export function validateAsset(raw) {
   errors.push(...helpErrors(raw.type, raw.data));
   // nav-style@1: ONE validator shared with core and control@1 (core/engines/navstyle-rules.mjs)
   if (raw.type === 'nav-style') errors.push(...navStyleErrors(raw.data).map((e) => `data.${e}`));
+  // themed-controls@1: ONE validator shared with core and control@1 (core/engines/themed-controls-rules.mjs)
+  if (raw.type === 'themed-controls') errors.push(...themedControlsErrors(raw.data).map((e) => `data.${e}`));
   // agent-card@1: ONE validator shared with core (core/engines/agent-card-rules.mjs)
   errors.push(...agentCardErrors(raw.type, raw.data));
   // job-type@1: ONE validator shared with core (core/engines/job-type-rules.mjs)
@@ -846,6 +849,7 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
     // scale assets (typography, density, sizing): every group optional, fields typed + ranged from the shared registry
     if (isScaleType(type)) Object.assign(props, scaleSchemaProperties(type));
     if (type === 'nav-style') Object.assign(props, navStyleSchemaProperties());
+    if (type === 'themed-controls') Object.assign(props, themedControlsSchemaProperties());
     // layout: every token field typed + ranged from the shared registry (the required list stays the grid)
     if (isLayoutType(type)) Object.assign(props, layoutSchemaProperties());
     if (type === AGENT_CARD_TYPE) Object.assign(props, agentCardSchemaProperties());

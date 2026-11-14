@@ -28,6 +28,7 @@ export const CONTROL_TOKEN_SLOTS = {
   'tokens.density': { slot: 'density', key: `${CONTROL_TOKENS_PREFIX}density`, root: '' },
   'tokens.sizing': { slot: 'sizing', key: `${CONTROL_TOKENS_PREFIX}sizing`, root: '' },
   'tokens.nav': { slot: 'nav-style', key: `${CONTROL_TOKENS_PREFIX}nav`, root: '' },
+  'tokens.controls': { slot: 'themed-controls', key: `${CONTROL_TOKENS_PREFIX}controls`, root: '' },
 };
 
 const isObj = (v) => typeof v === 'object' && v !== null && !Array.isArray(v);

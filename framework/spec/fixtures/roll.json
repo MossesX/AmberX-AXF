@@ -34,6 +34,7 @@
     "dock-layout": false,
     "xlayout": false,
     "nav-style": true,
+    "themed-controls": true,
     "behavior-theme": true,
     "design-package": false,
     "skin": false,
@@ -414,6 +415,9 @@
           "soft-fade",
           "standard",
           "still"
+        ],
+        "themed-controls": [
+          "native"
         ],
         "behavior-theme": [
           "alert",
@@ -832,6 +836,9 @@
           "soft-fade",
           "standard",
           "still"
+        ],
+        "themed-controls": [
+          "native"
         ],
         "behavior-theme": [
           "alert",
@@ -1257,6 +1264,9 @@
           "standard",
           "still"
         ],
+        "themed-controls": [
+          "native"
+        ],
         "behavior-theme": [
           "alert",
           "amber",
@@ -1675,6 +1685,9 @@
           "standard",
           "still"
         ],
+        "themed-controls": [
+          "native"
+        ],
         "behavior-theme": [
           "alert",
           "amber",
@@ -2063,6 +2076,9 @@
           "soft-fade",
           "standard",
           "still"
+        ],
+        "themed-controls": [
+          "native"
         ],
         "behavior-theme": [
           "alert",
@@ -2481,6 +2497,9 @@
           "soft-fade",
           "standard",
           "still"
+        ],
+        "themed-controls": [
+          "native"
         ],
         "behavior-theme": [
           "alert",

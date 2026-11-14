@@ -1,0 +1,58 @@
+{
+  "$axf": "asset@1",
+  "type": "themed-controls",
+  "id": "native",
+  "name": "Native",
+  "version": "0.1.0",
+  "description": "Today's look, written out: an accent-coloured mark on a surface box with the theme border, the focus ring, an accent-soft hover wash, a surface3 track with an accent fill, the text field's borders and ring. Switching the plugin on changes behaviour, not the look.",
+  "author": "AmberX AXF",
+  "tags": [
+    "controls",
+    "default"
+  ],
+  "data": {
+    "checkbox": {
+      "size": 16,
+      "radius": "sm",
+      "rest": { "bg": "surface", "border": "border" },
+      "hover": { "border": "muted" },
+      "focus": { "border": "accent", "ring": "focus" },
+      "active": { "bg": "accentSoft", "border": "accent" },
+      "checked": { "bg": "accent", "border": "accent", "mark": "accentText" },
+      "invalid": { "border": "danger" }
+    },
+    "radio": {
+      "size": 16,
+      "dotScale": 50,
+      "rest": { "bg": "surface", "border": "border" },
+      "hover": { "border": "muted" },
+      "focus": { "border": "accent", "ring": "focus" },
+      "active": { "bg": "accentSoft", "border": "accent" },
+      "checked": { "bg": "surface", "border": "accent", "mark": "accent" },
+      "invalid": { "border": "danger" }
+    },
+    "range": {
+      "trackHeight": 4,
+      "thumbSize": 16,
+      "showValue": "drag",
+      "ticks": true,
+      "rest": { "track": "surface3", "fill": "accent", "thumb": "accent", "thumbBorder": "surface" },
+      "focus": { "ring": "focus" },
+      "active": { "thumb": "accent", "thumbBorder": "accentSoft" },
+      "disabled": { "fill": "muted", "thumb": "muted" },
+      "invalid": { "fill": "danger", "thumb": "danger" }
+    },
+    "number": {
+      "stepper": "ends",
+      "stepperWidth": 28,
+      "repeatDelayMs": 400,
+      "repeatMs": 80,
+      "rest": { "bg": "surface", "border": "border", "text": "text", "stepperBg": "surface2", "stepperIcon": "muted" },
+      "hover": { "border": "muted", "stepperBg": "surface3", "stepperIcon": "text" },
+      "focus": { "border": "accent", "ring": "accentSoft" },
+      "active": { "stepperBg": "accentSoft", "stepperIcon": "accent" },
+      "disabled": { "text": "muted" },
+      "invalid": { "border": "danger" }
+    }
+  }
+}

@@ -19,7 +19,7 @@
  * A command:
  *   { $axf: 'control@1', op, target, path?, value?, action?, select?, confirm?, by?, reason? }
  *   op      list | get | set | reset | add | remove | act
- *   target  tokens.theme | tokens.style | tokens.layout | tokens.typography | tokens.density | tokens.sizing | tokens.nav |
+ *   target  tokens.theme | tokens.style | tokens.layout | tokens.typography | tokens.density | tokens.sizing | tokens.nav | tokens.controls |
  *           tokens.look | tokens.custom | tokens.slots | amberx.items | amberx.lists | planner.plans | planner.builds |
  *           console.screens | console.dialogs | console.settings | console.actions | console.nav | console.clients |
  *           pass.scopes (timed veto passes, core/engines/control-pass.mjs) |
@@ -40,6 +40,7 @@
 import { SCALE_FIELDS, SCALE_ENUMS, scaleErrors } from './scale-rules.mjs';
 import { LAYOUT_ENUMS, LAYOUT_FIELDS, LAYOUT_SWITCHES, layoutErrors, layoutToken } from './layout-rules.mjs';
 import { NAV_ACCENT_PREFIX, navFieldErrors, navStyleTokens } from './navstyle-rules.mjs';
+import { tcFieldErrors, themedControlsTokens } from './themed-controls-rules.mjs';
 import { PASS_ACTS, PASS_SCOPES, PASS_SCOPE_IDS, PASS_TARGET, passGrantErrors } from './control-pass.mjs';
 
 export const CONTROL_FRAME = 'control@1';
@@ -121,6 +122,7 @@ export const CONTROL_TARGETS = {
     acts: { open: { options: 'object' }, focus: { options: 'object' }, press: { value: 'any', confirm: 'boolean' }, set: { value: 'any' }, scroll: { scroll: 'object' }, search: { query: 'object' }, state: {}, 'plugin.enable': {}, 'plugin.disable': { options: 'object' } },
     actEffect: { open: 'navigate', focus: 'navigate', scroll: 'navigate', search: 'read', state: 'read', press: 'write', set: 'write', 'plugin.enable': 'write', 'plugin.disable': 'write' },
     doc: `console-control@1 (spec/CONSOLE-CONTROL.md): one address for every screen, tab, setting, button, function, plugin, grid row and build step ("view:settings/tab:settings.tabs=plugins", "row:<build>/step:s3", "plugin:<id>"). path = the address (full or short); list = every target under it, get = its state (no path: where the console is), act <verb> runs it (open, focus, press, set, scroll, search, state, plugin.enable, plugin.disable). A plan's links[] entry or any item may carry { address } to point here. Same guards as /api/console-control: deciding presses refused, destructive ones need input.confirm. ${CONSOLE_DELIVERY}` },
+  'tokens.controls': { domain: 'tokens', label: 'Themed control tokens', asset: 'themed-controls', ops: TOKEN_OPS, paths: 'static', value: 'field', doc: 'themed-controls@1 (core/engines/themed-controls-rules.mjs, spec/THEMED-CONTROLS.md): the token families behind the browser controls the Themed controls plugin replaces: checkbox, radio, range, number, date / time, colour, dialogs, file, tooltip, scrollbar. path = <family>.<field> (a size, radius or timing) or <family>.<state>.<prop> (one colour of one state: rest, hover, focus, active, checked, disabled, invalid). Colours are colour-theme token ids, a light|dark pair of them, or theme. Which families are themed is a setting (axf.themedControls.on, axf.themedControls.<family>), not a token.' },
 };
 export const CONTROL_TARGET_IDS = Object.keys(CONTROL_TARGETS);
 
@@ -177,6 +179,7 @@ export function controlPaths(target) {
       ];
     }
     case 'tokens.nav': return navStyleTokens().map((t) => ({ ...t, token: `nav-style ${t.id}` }));
+    case 'tokens.controls': return themedControlsTokens().map((t) => ({ ...t, token: `--fx-tc-${t.id.split('.').map((s) => s.replace(/[A-Z]/g, (c) => `-${c.toLowerCase()}`)).join('-')}` }));
     case 'console.nav': return [{ id: 'here', kind: 'location' }];
     case PASS_TARGET: return PASS_SCOPE_IDS.map((id) => ({ id, kind: 'scope', label: PASS_SCOPES[id].label, targets: [...PASS_SCOPES[id].targets], ops: [...PASS_SCOPES[id].ops] }));
     default: return null;
@@ -235,6 +238,7 @@ export function controlValueErrors(target, path, value) {
     case 'tokens.layout': return layoutErrors('layout', { [path]: value });
     case 'tokens.typography': case 'tokens.density': case 'tokens.sizing': { const [g, f] = path.split('.'); return scaleErrors(target.slice('tokens.'.length), { [g]: { [f]: value } }); }
     case 'tokens.nav': return navFieldErrors(path, value);
+    case 'tokens.controls': return tcFieldErrors(path, value);
     default: return [];
   }
 }

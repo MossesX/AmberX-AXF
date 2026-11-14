@@ -1218,6 +1218,29 @@
       "hideable": false,
       "optional": true
     },
+    "themed-controls": {
+      "label": "Themed controls",
+      "group": "Controls",
+      "icon": "check-square",
+      "description": "The token families behind every browser-drawn control the Themed controls plugin swaps for a framework control (themed-controls@1, engine core/engines/themed-controls.ts, fields in themed-controls-rules.mjs, spec/THEMED-CONTROLS.md): checkbox, radio, range, number, date / time, colour, alert / confirm / prompt dialogs, file drop zone, tooltip and scrollbar. One group per family: its sizes, radii and timings, and one colour set per state (rest, hover, focus, active, checked, disabled, invalid …) as colour-theme token ids, light|dark pairs, or theme (the stylesheet's own rule). Compiles to --fx-tc-<family>-<state>-<prop>. Which families are themed is a setting (axf.themedControls.on, axf.themedControls.<family>), never asset data. Settings: Settings → Plugins → Themed controls; control@1 target tokens.controls.",
+      "required": [],
+      "optional_fields": {
+        "checkbox": "{ size 12..32 (px at 14), radius, borderWidth, markWeight 1..4, <state>: { bg, border, mark, ring (focus) } }",
+        "radio": "{ size, dotScale 30..80 %, borderWidth, <state>: { bg, border, mark, ring (focus) } }",
+        "range": "{ trackHeight 2..16, trackRadius, thumbSize 10..32, thumbRadius, showValue: always | drag | never, ticks, <state>: { track, fill, thumb, thumbBorder, ring (focus) } }",
+        "number": "{ stepper: ends | stacked | none, stepperWidth 20..48, radius, borderWidth, repeatDelayMs 200..1000, repeatMs 40..400, <state>: { bg, border, text, stepperBg, stepperIcon, ring (focus) } }",
+        "<state>": "rest | hover | focus | active | checked | disabled | invalid, as the family lists them (themed-controls-rules.mjs TC_STATES)",
+        "<colour>": "theme | a colour-theme token id | '<light token>|<dark token>'"
+      },
+      "hideable": false,
+      "optional": true,
+      "skinDefault": "native",
+      "tokens": {
+        "prefix": "tc",
+        "rules": "core/engines/themed-controls-rules.mjs",
+        "note": "Every field compiles to --fx-tc-<family>-<field> or --fx-tc-<family>-<state>-<prop> (colours as var(--fx-<token>) for the active scheme; theme compiles to nothing). skinDefault = the asset the skin upgrader writes into a skin that names none (today's look)."
+      }
+    },
     "behavior-theme": {
       "label": "Behaviour theme",
       "group": "Themes",
