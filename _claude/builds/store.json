@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5269,
- "updatedAt": "2026-11-14T04:45:19.291Z",
+ "rev": 5270,
+ "updatedAt": "2026-11-14T04:45:50.869Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -212750,7 +212750,7 @@
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-14T04:45:15.903Z",
+   "updatedAt": "2026-11-14T04:45:49.332Z",
    "builtAt": "",
    "notes": [
     {
@@ -212828,6 +212828,10 @@
     {
      "text": "Brett, library harvesting video (s24): don't show a count on screen. In the narration, just say there's a huge number of pre-built libraries ('a ton', 'a whole lot') and flash a quick montage of a bunch of them instead of listing them all. Don't state a specific number we can't back up.",
      "at": "2026-11-14T04:45:15.903Z"
+    },
+    {
+     "text": "Found the real session recall feature for s20: 'UI Review phone notifications + truthful wake + auto session recording and transcripts' (ui-review-notify-session-audio, PR #365, complete) and 'Live sessions plugin: every Claude session live, watch, voice, recording + playback' (live-sessions-plugin, PR #331). Use those in the session recall video instead of a mock-up.",
+     "at": "2026-11-14T04:45:49.332Z"
     }
    ],
    "approvals": [],
@@ -213417,7 +213421,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 46,
+   "rev": 47,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
