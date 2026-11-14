@@ -4440,6 +4440,30 @@
    "from": "",
    "addenda": []
   },
+  "merge-main-land-change-to-move-amberx": {
+   "said": "Merging main into claude/change-to-move-amberx-web-app-console clashes in code: apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/WatchService.java, apps/console-web/plugins/approvals-banner/plugin.json, apps/console-web/server/main.py",
+   "at": "2026-11-14T23:10:56.028Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "merge-main-land-move-amberx-web-app": {
+   "said": "Now what we're gonna end up doing is just moving everything over the console and making AmberX app read the console instead of AmberX.\n\nMerging main into claude/move-amberx-web-app-console-amberx-andr clashes in code: apps/console-web/plugins/approvals-banner/plugin.json, apps/console-web/server/main.py",
+   "at": "2026-11-14T23:10:38.526Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "merge-profiles-one": {
    "said": "combine every build profile into ONE new profile on main and delete the others.",
    "at": "2026-11-07",

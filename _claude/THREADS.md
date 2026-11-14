@@ -796,7 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 04:19 UTC · `ui-directory-plugin-self-updating-data` s1 done (all) · orchestrator
 - 2026-11-14 04:20 UTC · `launch-landing-page-waitlist-referral` note (all) · orchestrator
 - 2026-11-14 04:20 UTC · `ui-directory-plugin-self-updating-data` s1 done (all) · foreign-write
 - 2026-11-14 04:20 UTC · `ui-directory-plugin-self-updating-data` note (all) · orchestrator
@@ -1196,6 +1195,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 23:09 UTC · `always-fill-every-slot-when-slots-are` → pending, note (all) · pipeline
 - 2026-11-14 23:09 UTC · `themed-native-controls-plugin` s11 done (all) · orchestrator
 - 2026-11-14 23:10 UTC · `console-axhub-retry-failed-calls` → running, note (all) · pipeline
+- 2026-11-14 23:10 UTC · `merge-main-land-move-amberx-web-app` added (0 steps) (all) · land-finish-auto-land-live-clear-backlog
 
 ## Token passes (log)
 
