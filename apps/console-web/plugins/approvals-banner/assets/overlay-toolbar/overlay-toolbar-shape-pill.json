@@ -1,0 +1,43 @@
+{
+ "$axf": "asset@1",
+ "type": "overlay-toolbar",
+ "id": "overlay-toolbar-shape-pill",
+ "name": "overlay-toolbar-shape: A · Pill",
+ "version": "0.1.0",
+ "author": "UI Review choices",
+ "description": "Short horizontal pill on the right edge, 30 % down (grip, mic, approvals, page). Approval: a card drops from the pill, nearly full width. Expanded: the pill docks top-left in the browser bar, next to the address.",
+ "tags": [
+  "ui-choice",
+  "choice-set:overlay-toolbar-shape",
+  "choice-option:pill"
+ ],
+ "data": {
+  "buttons": [
+   "grip",
+   "mic",
+   "approvals (count badge)",
+   "page / expand"
+  ],
+  "approval": {
+   "shows": [
+    "title",
+    "why",
+    "command",
+    "countdown (mm:ss + bar, warning colour, danger under 30 s)",
+    "Deny",
+    "Approve",
+    "Open approvals page link"
+   ],
+   "placement": "card below the toolbar, 92 % wide"
+  },
+  "expanded": {
+   "browser": "full screen; address bar; \"Amber is …\" strip; the element Amber is about to tap ringed in the accent",
+   "toolbar": "docked top-left inside the browser bar, left of the address"
+  },
+  "colours": "active skin tokens",
+  "shape": "pill",
+  "orientation": "horizontal",
+  "edge": "end",
+  "top": 30
+ }
+}

@@ -14,6 +14,7 @@
   "provides": [
     "banner:approvals",
     "settings-tab:approvals-banner",
+    "settings-tab:approvals-overlay",
     "dialog:approvals.veto",
     "action:approvals.veto",
     "action:approvals.deny",

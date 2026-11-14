@@ -49,7 +49,8 @@ import { WatchLiveFor } from '@console/watchLive';
 import './approvals-banner.css';
 import { appMenu, WAITING, WAITING_LIST } from './menu';
 import { nextPopup, POPUP_GONE_CLOSE_MS, vetoGone } from './popup';
-import { EDGES, EXPANDS, IDLE_OPACITY_MIN, migrateOverlay, nativeOverlayConfig, OVERLAY_DEFAULTS, OVERLAY_KEYS, overlayBridge, overlayConfig, overlayUrlAllowed, parseOverlayChange, parseOverlayVerb, SHOWS, SIZES, type OverlayBarVerb, type OverlayVerb } from './overlay';
+import { EDGES, EXPANDS, IDLE_OPACITY_MIN, migrateOverlay, nativeOverlayConfig, OVERLAY_DEFAULTS, OVERLAY_KEYS, overlayBridge, overlayConfig, OVERLAY_TAB, overlayUrlAllowed, parseOverlayChange, parseOverlayVerb, SHOWS, SIZES, type OverlayBarVerb, type OverlayVerb } from './overlay';
+import { OverlayPreview } from './overlay-preview';
 
 const ID = 'ai.amberx.axf.console.approvals-banner';
 const FOLDER = 'approvals-banner';
@@ -515,7 +516,7 @@ function StatusPanel() {
 export const plugin: AxfWebLibrary = {
   id: ID, // equals plugin.json "id"
   label: 'Approvals banner',
-  version: '0.6.1',
+  version: '0.8.0',
   appMenu,
   appMenuProviders: {
     [WAITING_LIST]: {
@@ -660,7 +661,7 @@ export const plugin: AxfWebLibrary = {
       ],
     },
     {
-      id: 'approvals-banner.overlay', label: 'Overlay (phone)', icon: 'layers', tab: 'approvals-banner', order: 12,
+      id: 'approvals-banner.overlay', label: 'Overlay (phone)', icon: 'layers', tab: OVERLAY_TAB, order: 12,
       description: 'One overlay on the AmberX phone app: a floating toolbar always on screen over every app (drag it anywhere; it remembers where). When something waits for you it spawns the approval bar (what, countdown, Approve / Deny). Tap it, or let Amber open something, and it expands into a full-screen browser signed in like the app, with the toolbar docked top-left; one tap collapses it. Because the toolbar is always visible, AmberX can open pages from the background without a notification tap. Needs "Display over other apps".',
       settings: [
         { key: OVERLAY_KEYS.on, label: 'Overlay', kind: 'toggle', default: OVERLAY_DEFAULTS.on, description: 'The one switch. Off: no toolbar, and pages Amber opens go to Chrome with a tap-to-open notification.' },
@@ -674,9 +675,14 @@ export const plugin: AxfWebLibrary = {
       ],
     },
   ],
-  settingsTabs: [{ id: 'approvals-banner', label: 'Approvals banner', icon: 'shield', order: 8, parent: 'plugins' }],
+  settingsTabs: [
+    { id: 'approvals-banner', label: 'Approvals banner', icon: 'shield', order: 8, parent: 'plugins' },
+    // the phone overlay's own tab: its preview (three design options, every state) above its settings
+    { id: OVERLAY_TAB, label: 'Overlay', icon: 'layers', order: 8.5, parent: 'plugins' },
+  ],
   settingsPanels: [
     { id: 'approvals-banner.status', tab: 'approvals-banner', title: 'Approvals', icon: 'shield', order: 5, render: () => <StatusPanel /> },
+    { id: 'approvals-overlay.preview', tab: OVERLAY_TAB, title: 'Preview', icon: 'smartphone', order: 5, render: () => <OverlayPreview /> },
     { id: 'approvals-banner.alarm.panel', tab: 'approvals-banner', title: 'Alarm sound and test', icon: 'bell', order: 11, render: () => <AlarmPanel get={(k) => runtime?.settings.get(k)} set={(k, v) => runtime?.settings.set(k, v)} /> },
     { id: 'approvals-banner.lifecycle', tab: 'approvals-banner', title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],

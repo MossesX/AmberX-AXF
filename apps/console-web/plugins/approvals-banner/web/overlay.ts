@@ -11,6 +11,9 @@
  * the settings through the veto host (`VetoHost.overlay`); its colours follow the active skin.
  */
 
+/** Settings → Plugins → Overlay: the overlay's preview and settings. */
+export const OVERLAY_TAB = 'approvals-overlay';
+
 export const OVERLAY_KEYS = {
   on: 'approvals-banner.overlay.on',
   edge: 'approvals-banner.overlay.edge',
