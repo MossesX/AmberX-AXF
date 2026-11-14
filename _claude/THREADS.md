@@ -796,7 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 16:51 UTC · `ui-review-filter-and-search-by-pr` branch claude/ui-review-filter-and-search-by-pr (all) · pipeline
 - 2026-11-14 16:51 UTC · `ui-review-filter-and-search-by-pr` note (all) · orchestrator
 - 2026-11-14 16:52 UTC · `hotfix-toolbar-settings-still-change` → running, note (all) · pipeline
 - 2026-11-14 16:52 UTC · `hotfix-toolbar-settings-still-change` branch claude/hotfix-toolbar-settings-still-change (all) · pipeline
@@ -1196,6 +1195,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 23:23 UTC · `land-batch-merge-main-each-finished` → running, note (all) · pipeline
 - 2026-11-14 23:23 UTC · `land-batch-merge-main-each-finished` note (all) · orchestrator
 - 2026-11-14 23:23 UTC · `fix-build-whose-session-finishes-phase-e` s2 done, note (all) · foreign-write
+- 2026-11-14 23:24 UTC · `auto-land-merge-main-land-land-mjs-clash` note (all) · pipeline
 
 ## Token passes (log)
 

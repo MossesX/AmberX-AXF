@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5618,
- "updatedAt": "2026-11-14T23:24:15.256Z",
+ "rev": 5619,
+ "updatedAt": "2026-11-14T23:24:28.790Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -214090,8 +214090,8 @@
    "pr": "#660",
    "priority": "P0",
    "createdAt": "2026-11-13T23:38:56.061Z",
-   "updatedAt": "2026-11-14T23:23:36.850Z",
-   "builtAt": "2026-11-14T23:23:36.850Z",
+   "updatedAt": "2026-11-14T23:24:07.334Z",
+   "builtAt": "2026-11-14T23:24:07.334Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -214126,6 +214126,10 @@
      "at": "2026-11-14T23:23:31.073Z"
     },
     {
+     "text": "Self-check: auto-land-merge-main-land-land-mjs-clash had no session on record but axf-auto-land-merge-main-land-land-mjs-clash--joey is alive: kept running and tracking it.",
+     "at": "2026-11-14T23:24:07.334Z"
+    },
+    {
      "text": "Phase 1 done: PR #660 has main merged in (land.mjs clash resolved, both sides kept), sweeper regenerates generated-only clashes, sweeper status/pause/resume on all four channels; in the merge queue. Shared repo /opt/axf/.git lost objects to a git prune --expire=now at 23:44 UTC; finished in a fresh clone; fix: git fetch --refetch origin in /opt/axf.",
      "at": "2026-11-13T23:58:03.801Z"
     }
@@ -214148,7 +214152,7 @@
     "queuedAt": "2026-11-13T23:38:58.045Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "",
+    "session": "axf-auto-land-merge-main-land-land-mjs-clash--joey",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-13T23:41:19.408Z",
