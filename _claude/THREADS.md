@@ -792,7 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 19:44 UTC · `demo-pipelines-guided-walkthrough-live` → running, note (all) · pipeline
 - 2026-11-13 19:44 UTC · `demo-pipelines-guided-walkthrough-live` branch claude/demo-pipelines-guided-walkthrough-live (all) · pipeline
 - 2026-11-13 19:44 UTC · `demo-pipelines-guided-walkthrough-live` note (all) · orchestrator
 - 2026-11-13 19:43 UTC · `orchestrator-custom-groups-custom-tabs` s8 done (all) · orchestrator
@@ -1192,6 +1191,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 00:37 UTC · `land-batch-merge-main-each-finished` s6 done (all) · orchestrator
 - 2026-11-14 00:38 UTC · `land-batch-merge-main-each-finished` s7 done (all) · orchestrator
 - 2026-11-14 00:39 UTC · `land-batch-merge-main-each-finished` s8 done (all) · orchestrator
+- 2026-11-14 00:40 UTC · `land-batch-merge-main-each-finished` s9 done (all) · orchestrator
 
 ## Token passes (log)
 
