@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5250,
- "updatedAt": "2026-11-14T04:37:53.772Z",
+ "rev": 5251,
+ "updatedAt": "2026-11-14T04:38:07.813Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -212998,6 +212998,43 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-14T04:20:23.888Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "orchestrator-checks-shipped-features-2",
+   "title": "Orchestrator checks Shipped Features before assigning build IDs",
+   "category": "Orchestrator",
+   "detail": "Brett: before the orchestrator assigns an ID to any new order, check it against the Shipped Features page. If the feature already exists (or mostly exists), don't build a duplicate: raise a banner saying it already exists, link the shipped feature, and let Brett choose to extend it, build anyway, or cancel. Also run a break-check: compare what the new build will touch against shipped features and their checks/tests; if anything shipped could break, flag it in a banner before the build starts and add guard steps (regression checks for the affected shipped features) to the build. Full API control (console action, MCP, CLI, voice).",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-14T04:38:05.632Z",
+   "updatedAt": "2026-11-14T04:38:05.632Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 854
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

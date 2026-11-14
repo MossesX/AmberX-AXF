@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T04:37:53.772Z",
+ "updatedAt": "2026-11-14T04:38:07.813Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -137977,6 +137977,25 @@
      "createdAt": "2026-11-14T04:20:23.888Z"
     }
    ]
+  },
+  {
+   "id": "orchestrator-checks-shipped-features-2",
+   "title": "Orchestrator checks Shipped Features before assigning build IDs",
+   "category": "Orchestrator",
+   "detail": "Brett: before the orchestrator assigns an ID to any new order, check it against the Shipped Features page. If the feature already exists (or mostly exists), don't build a duplicate: raise a banner saying it already exists, link the shipped feature, and let Brett choose to extend it, build anyway, or cancel. Also run a break-check: compare what the new build will touch against shipped features and their checks/tests; if anything shipped could break, flag it in a banner before the build starts and add guard steps (regression checks for the affected shipped features) to the build. Full API control (console action, MCP, CLI, voice).",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-14T04:38:05.632Z",
+   "updatedAt": "2026-11-14T04:38:05.632Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": []
   }
  ]
 }
