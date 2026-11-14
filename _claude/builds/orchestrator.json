@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T18:45:18.303Z",
+ "updatedAt": "2026-11-14T18:45:53.970Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -140142,7 +140142,7 @@
    "pr": "#676",
    "priority": "P1",
    "createdAt": "2026-11-14T18:13:15.368Z",
-   "updatedAt": "2026-11-14T18:45:10.193Z",
+   "updatedAt": "2026-11-14T18:45:52.235Z",
    "builtAt": "",
    "notes": [
     {
@@ -140160,6 +140160,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-picker-dialog-plugin-replaces-all--gina, shared account login)",
      "at": "2026-11-14T18:19:45.564Z"
+    },
+    {
+     "text": "Phase 1 (Fable) done: s1–s5 landed on claude/picker-dialog-plugin-replaces-all, draft PR #676. picker@1 spec, engine, fixture (662 checks), picker asset type + --fx-picker-* registry (41 tokens, theme-compiled), picker style target + skin-upgrade@1 (all 6 skins touch the picker). Next phase (Opus): the Picker React dialog + the swap plugin (install/uninstall, Plugin Manager, settings sub-tab, console-control target picker:<id>, actions, voice), UI Review shots. Not done on purpose: picker not added to style-package members or the roller control list (would force every shipped style package to name one).",
+     "at": "2026-11-14T18:45:52.235Z"
     }
    ],
    "approvals": [],
