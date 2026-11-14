@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5495,
- "updatedAt": "2026-11-14T22:48:47.674Z",
+ "rev": 5496,
+ "updatedAt": "2026-11-14T22:49:19.647Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -151554,7 +151554,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T17:10:29.492Z",
-   "updatedAt": "2026-11-14T22:46:07.943Z",
+   "updatedAt": "2026-11-14T22:49:16.092Z",
    "builtAt": "",
    "notes": [
     {
@@ -151614,7 +151614,16 @@
      "at": "2026-11-14T22:46:07.943Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-14T22:49:16.092Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "I'm gonna need a link to the pass, a hook to it.",
@@ -151631,18 +151640,18 @@
    "pipeline": {
     "queuedAt": "",
     "queuedBy": "",
-    "account": "mossesx-max-",
-    "session": "axf-pass-approval-hook-deep-link-amberx-notification--lenny",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-14T22:45:57.712Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-14T22:45:57.712Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -151651,7 +151660,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-14T22:45:57.712Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -151700,12 +151709,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T22:49:16.092Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T18:03:26.974Z",
-     "updatedAt": "2026-11-10T18:03:26.974Z"
+     "updatedAt": "2026-11-14T22:49:16.531Z"
     },
     {
      "id": "s3",
