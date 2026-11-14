@@ -13,7 +13,14 @@
  *      `unresolved`. Then generated-files@1 regenerate: the generated files the merge changed on either side are
  *      regenerated on the merged tree, checked and committed on the branch (a red check = outcome red). Pushes the branch;
  *   3. writes the attempt to land-runs.jsonl in the push banner's data folder (append-only, one land-run@1 per line).
- * Later steps of the same attempt (checks, CI on the merged head, the merge to main) extend the same record.
+ *   4. CI on the merged head (checkAndLand): started (workflow_dispatch) when nothing ran on it, waited for up to
+ *      CI_WAIT_MS; a cancelled / superseded / stale run is dispatched again and never counts as a failure; red = outcome
+ *      red with the failing jobs named; still running at the end = the attempt stays open and the next land-one of
+ *      the build picks the same head up again (main unchanged = nothing to merge);
+ *   5. green: main must not have moved in code since the merge (else the next attempt merges it in again); the PR is
+ *      merged at exactly the tested head through the GitHub App's installation token (framework/cli/github-token.mjs
+ *      installation), opened first when the build has none; the build is marked merged through builds-live (it reaches
+ *      main at once and the builds store settles it complete).
  *
  *   node apps/console-web/plugins/push-banner/land/land-one.mjs <build> [--dry-run] [--json]   one attempt now
  *   … runs [<build>] [--json]                                                                the recorded attempts
@@ -22,8 +29,11 @@
 import { appendFileSync, existsSync, mkdirSync, readFileSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { spawnSync } from 'node:child_process';
 import * as lr from '../../../../../framework/core/land-run.mjs';
-import { dropLandLock, lockOwner, makeGit, mergeMain, settings, takeLandLock } from './land.mjs';
+import * as line from '../../../../../framework/core/landing-line.mjs';
+import { dropLandLock, lockOwner, makeGit, makeGitHub, mergeMain, settings, takeLandLock } from './land.mjs';
+import { sameCodeFiles } from './merge-queue-core.mjs';
 
 export const runsFile = (s) => join(s.dataDir, 'land-runs.jsonl');
 /** The host resolver vps.build_land uses too; it hands over to the checkout's framework/cli/land-resolve.py. */
@@ -48,6 +58,78 @@ export function recordRun(s, run, now = new Date().toISOString()) {
   return r;
 }
 
+export const CI_WAIT_MS = 40 * 60000;
+export const CI_POLL_MS = 30000;
+const sleepMs = (ms) => new Promise((r) => setTimeout(r, ms));
+
+/** GitHub as the App (installation token); never printed. */
+export function appGitHub(s) {
+  return makeGitHub(s, () => { const r = spawnSync('node', [join(s.repo, 'framework/cli/github-token.mjs'), 'installation'], { encoding: 'utf8', timeout: 30000 }); return r.status === 0 ? (r.stdout || '').trim() : ''; });
+}
+
+/** builds-live: the build's PR and merge time, straight to main (the store settles a merged build complete). */
+export function markLanded(s, b, { pr = 0, at = new Date().toISOString() } = {}) {
+  const r = spawnSync('node', [join(s.repo, 'framework/cli/builds-live.mjs'), 'link', b.id, ...(pr ? ['--pr', String(pr)] : []), '--merged', at, '--json'], { cwd: s.repo, encoding: 'utf8', timeout: 120000 });
+  return { ok: r.status === 0, text: `${r.stdout || ''}${r.stderr || ''}`.trim().slice(-300) };
+}
+
+/**
+ * CI on the merged head, then the merge to main. Mutates and returns `run` (land-run@1 fields: ci, outcome, note, pr).
+ * gh = GitHub REST (the App's token); mark = markLanded; sleep / clock injectable for tests.
+ */
+export async function checkAndLand({ s, git, gh, b, run, dry = false, mark = markLanded, sleep = sleepMs, waitMs = CI_WAIT_MS, pollMs = CI_POLL_MS, clock = Date.now, log = () => {} }) {
+  const head = run.merged; const until = clock() + waitMs;
+  let dispatched = 0; let retries = 0; let verdict = 'none'; let failing = [];
+  const dispatch = async (why) => {
+    log(`land-one ${b.id}: starting CI on ${head.slice(0, 8)} (${why})`);
+    if (dry) return;
+    try { await gh('POST', `/repos/${s.slug}/actions/workflows/${s.workflow}/dispatches`, { ref: b.branch }); dispatched++; } catch (e) { log(`dispatch: ${e.message}`); }
+  };
+  for (;;) {
+    let runs = [];
+    try { runs = (await gh('GET', `/repos/${s.slug}/commits/${head}/check-runs?per_page=100`))?.check_runs || []; } catch (e) { log(`check runs: ${e.message}`); }
+    ({ verdict, failing } = line.classifyCheckRuns(runs, { head }));
+    if (verdict === 'green' || verdict === 'red') break;
+    if (verdict === 'none' && !dispatched) await dispatch('nothing ran on it');
+    if (verdict === 'retry') { retries++; await dispatch('the last run was cancelled or superseded: not a failure'); }
+    if (dry || clock() >= until) break;
+    await sleep(pollMs);
+  }
+  const retryNote = retries ? ` ${retries} cancelled run${retries === 1 ? '' : 's'} started again.` : '';
+  if (verdict === 'red') {
+    run.ci = { run: '', status: 'completed', conclusion: 'failure' };
+    run.check = { ...run.check, failed: run.check.failed?.length ? run.check.failed : failing };
+    run.note = `CI failed on the merged head (${failing.join(', ') || 'see the run'}).${retryNote}`;
+    return run;
+  }
+  if (verdict !== 'green') { run.ci = { run: '', status: verdict === 'none' ? 'queued' : 'in_progress', conclusion: '' }; run.note = `CI ${verdict === 'none' ? 'queued' : 'running'} on ${head.slice(0, 7)}; the next attempt picks it up.${retryNote}`; return run; }
+  run.ci = { run: '', status: 'completed', conclusion: 'success' };
+  // main moved in code since the merge: what CI passed is not what would land
+  git(['fetch', '-q', s.remote, s.base], { timeout: 120000 });
+  const mainNow = git(['rev-parse', `${s.remote}/${s.base}`]).out;
+  const moved = mainNow !== run.base && !sameCodeFiles(git(['diff', '--name-only', run.base, mainNow]).out.split('\n'));
+  if (moved) { run.ci = { run: '', status: 'in_progress', conclusion: '' }; run.note = `Green, but main moved in code (${mainNow.slice(0, 7)}): merging main in again next.`; return run; }
+  if (dry) { run.note = `Green on ${head.slice(0, 7)}; would merge to main (dry run).`; run.ci = { run: '', status: 'in_progress', conclusion: '' }; return run; }
+  let pr = Number(String(b.pr || run.pr || '').replace(/\D/g, '')) || 0;
+  try {
+    if (!pr) {
+      const open = await gh('GET', `/repos/${s.slug}/pulls?state=open&head=${encodeURIComponent(`${s.slug.split('/')[0]}:${b.branch}`)}`);
+      pr = (Array.isArray(open) && open[0]?.number) || (await gh('POST', `/repos/${s.slug}/pulls`, { title: String(b.title || b.id).slice(0, 120), head: b.branch, base: s.base, body: `Build \`${b.id}\` is finished. Opened by the serial lander: main merged in, CI green on ${head.slice(0, 7)}, landing now.` }))?.number || 0;
+    }
+    await gh('PUT', `/repos/${s.slug}/pulls/${pr}/merge`, { sha: head, merge_method: 'merge', commit_title: `Land ${b.id} (#${pr}) — serial lander` });
+  } catch (e) {
+    // GitHub refused (head moved, main moved, not mergeable): not red; the next attempt merges main in again
+    run.ci = { run: '', status: 'in_progress', conclusion: '' }; run.pr = pr;
+    run.note = `Green, but GitHub refused the merge (${e.message.slice(0, 160)}): trying again next.`;
+    return run;
+  }
+  run.pr = pr;
+  const at = new Date(clock()).toISOString();
+  const m = mark(s, b, { pr, at });
+  run.note = `Landed on main as ${head.slice(0, 7)} (PR #${pr}).${retryNote}${m.ok ? '' : ` Marking it merged failed: ${m.text}`}`;
+  return run;
+}
+
 /** The build record from main's builds store (the newest status is there), or null. */
 export function buildFromMain({ s, git, id }) {
   const t = git(['show', `${s.remote}/${s.base}:_claude/builds/store.json`]);
@@ -60,7 +142,7 @@ export function buildFromMain({ s, git, id }) {
  * Resolves { ran: false, owner } when the line is busy; otherwise { ran: true, run } with the recorded land-run@1.
  * The lock is always released. `merge` is land.mjs mergeMain (tests pass their own).
  */
-export async function landOne({ s = settings(), git = makeGit(s.repo), build, dry = false, now = () => new Date(), merge = mergeMain, wait = 0, log = () => {} } = {}) {
+export async function landOne({ s = settings(), git = makeGit(s.repo), gh = null, build, dry = false, now = () => new Date(), merge = mergeMain, ci = true, ciOpts = {}, wait = 0, log = () => {} } = {}) {
   const at = now().toISOString();
   const id = typeof build === 'string' ? build : build?.id;
   if (!id) throw new Error('land-one: which build?');
@@ -81,6 +163,7 @@ export async function landOne({ s = settings(), git = makeGit(s.repo), build, dr
     else if (m.checkError) run.check = { ok: false, failed: [m.checkError.split(' ')[0]], note: m.checkError.slice(0, 400) };
     else if (!m.merged) run.error = m.pushError || 'merge failed';
     else run.merged = m.sha;
+    if (ci && run.merged) await checkAndLand({ s, git, gh: gh || appGitHub(s), b, run, dry, log, ...ciOpts });
     return { ran: true, run: finish(s, run, dry, now) };
   } finally { dropLandLock(); }
 }
@@ -88,10 +171,10 @@ export async function landOne({ s = settings(), git = makeGit(s.repo), build, dr
 /** A finished attempt (clash / error) is settled and stored; one still going (merged, CI next) is stored as it stands. */
 function finish(s, run, dry, now) {
   const at = now().toISOString();
-  const done = run.error || run.unresolved.length || run.check?.ok === false;
-  if (dry) return done ? lr.settleLandRun(run, at) : lr.normLandRun(run);
+  const done = run.error || run.unresolved.length || run.check?.ok === false || ['success', 'failure'].includes(lr.ciState(run.ci?.status, run.ci?.conclusion));
+  if (dry) return done ? lr.settleLandRun(run, at) : { ...lr.normLandRun(run), note: run.note || '' };
   if (done) return recordRun(s, run, at);
-  const r = lr.normLandRun(run); r.note = lr.landRunLine(r);
+  const r = lr.normLandRun(run); r.note ||= lr.landRunLine(r);
   mkdirSync(dirname(runsFile(s)), { recursive: true });
   appendFileSync(runsFile(s), `${JSON.stringify(r)}\n`);
   return r;
