@@ -796,7 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 23:50 UTC · `rebake-console` branch claude/rebake-console, note (all) · reconciler
 - 2026-11-13 23:50 UTC · `banner-one-line` branch claude/banner-one-line, note (all) · reconciler
 - 2026-11-13 23:50 UTC · `agent-jobs` branch claude/agent-jobs, note (all) · reconciler
 - 2026-11-13 23:50 UTC · `chat-viewer` branch claude/chat-viewer, note (all) · reconciler
@@ -1196,6 +1195,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 22:42 UTC · `themed-native-controls-plugin` → running, note (all) · pipeline
 - 2026-11-14 22:42 UTC · `themed-native-controls-plugin` note (all) · orchestrator
 - 2026-11-14 22:43 UTC · `console-look-becomes-default-axhub-skin` s1 done (all) · orchestrator
+- 2026-11-14 22:44 UTC · `approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc` → queued (all) · orchestrator
 
 ## Token passes (log)
 

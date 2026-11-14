@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T22:43:46.731Z",
+ "updatedAt": "2026-11-14T22:44:25.127Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -21077,14 +21077,14 @@
    "title": "Approvals: no window spam on Approve; veto only for VPS writes and account switches",
    "category": "Builds",
    "detail": "## Brett said (verbatim)\nSource: voice · At: 2026-11-06\n> when I click approve and the consoles pop up, I don't want it to launch a window of access. It's opening a thousand fucking windows. And also you only need to send the veto rules that ask for approval or deny if you are actually writing something to the VPS or if you are switching accounts.\n> All right, go ahead, build that shit.\n\nNotes: touches Follow Amber approval pop-up (console) and axHub tool policies (veto vs allow). Changing which calls are veto is a policy change in axHub and the shared rule 'It's a veto system'; update rules + decisions.md to match.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-06T13:08:05.609Z",
-   "updatedAt": "2026-11-07T04:49:27.594Z",
+   "updatedAt": "2026-11-14T22:44:23.172Z",
    "builtAt": "",
    "notes": [
     {
