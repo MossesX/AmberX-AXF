@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T23:52:33.329Z",
+ "updatedAt": "2026-11-14T23:52:55.915Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -145437,11 +145437,11 @@
    "hidden": false,
    "source": "land-finish-auto-land-live-clear-backlog",
    "pendingId": "",
-   "branch": "claude/merge-main-land-one-source-truth-console",
-   "pr": "",
+   "branch": "claude/one-source-truth-console-shows-only-what",
+   "pr": "#598",
    "priority": "P0",
    "createdAt": "2026-11-14T23:17:55.197Z",
-   "updatedAt": "2026-11-14T23:51:38.194Z",
+   "updatedAt": "2026-11-14T23:52:40.691Z",
    "builtAt": "",
    "notes": [
     {
@@ -145508,8 +145508,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:51:41.694Z",
      "note": "",
      "uid": "st-mwh1v5xp02elaw",
      "createdAt": "2026-11-14T23:41:43.500Z"
@@ -145527,8 +145527,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:51:45.341Z",
      "note": "",
      "uid": "st-mwh1v5xp03xsbh",
      "createdAt": "2026-11-14T23:41:43.500Z"
@@ -145546,8 +145546,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:51:51.906Z",
      "note": "",
      "uid": "st-mwh1v5xp04ze93",
      "createdAt": "2026-11-14T23:41:43.500Z"
@@ -145565,8 +145565,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:52:07.028Z",
      "note": "",
      "uid": "st-mwh1v5xp05edza",
      "createdAt": "2026-11-14T23:41:43.500Z"
@@ -145584,8 +145584,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:52:19.765Z",
      "note": "",
      "uid": "st-mwh1v5xp067odz",
      "createdAt": "2026-11-14T23:41:43.500Z"
@@ -145603,8 +145603,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:52:40.691Z",
      "note": "",
      "uid": "st-mwh1v5xp07yqoi",
      "createdAt": "2026-11-14T23:41:43.500Z"
