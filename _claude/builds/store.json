@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5204,
- "updatedAt": "2026-11-14T04:11:25.022Z",
+ "rev": 5205,
+ "updatedAt": "2026-11-14T04:11:43.752Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -212088,14 +212088,14 @@
    "title": "Demo video series: three-minute browser walkthroughs of AmberX",
    "category": "Launch",
    "detail": "Brett: a bunch of three-minute videos, each a real browser walkthrough with real data, showing different parts of the app: how voice control works, how the orchestrator uses agents to build everything, Plan Studio, skins and hot-swappable tokens, the UI designer, axHub. Themable player (skins switch between videos). One video shows a full app being built start to finish with the UI designer; parts that aren't built yet are mocked to show what they will look like, clearly staged. Narrated with adjustable TTS. Reuse the recorder, narration and player from the 2-hour walkthrough build (amberx-walkthrough-2-hour-indexed). Export MP4 for socials plus the HTML5 player; publish alongside the landing page.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-14T04:11:05.378Z",
+   "updatedAt": "2026-11-14T04:11:23.722Z",
    "builtAt": "",
    "notes": [
     {
@@ -212155,7 +212155,7 @@
     "launchedAt": "2026-11-14T04:03:16.135Z",
     "runs": 1,
     "lastRun": {
-     "at": "2026-11-14T04:11:03.908Z",
+     "at": "2026-11-14T04:09:08.606Z",
      "exit": 0,
      "outcome": "returned",
      "stepsLeft": 7,
@@ -212251,7 +212251,7 @@
      "id": "s8",
      "uid": "st-mwfw049i01bi4e",
      "title": "",
-     "text": "Third hero video, 'the boss texts': a guy gets a text from his boss: 'We're having an event, I need a public image gallery up right now for all the employees to share their pictures.' He's lying in bed, opens AmberX on his phone and says 'Amber, build me a gallery with user accounts and GPS tagging.' Show the cat-named agents in the group chat whipping it up and handing work off, approvals popping up, then the finished app: a login gate with user accounts, employees uploading geotagged photos, a map showing where each photo was taken, and a public gallery anyone can view. Location sharing is opt-in, with a clear consent prompt. Use real AXF libraries where they exist; label staged parts as a preview. Also cut a 60-second version.",
+     "text": "Third hero video, 'the boss texts': a guy gets a text from his boss: 'We're having an event, I need a public image gallery up right now for all the employees to share their pictures.' He's lying in bed, opens AmberX on his phone and says 'Amber, build me a gallery with user accounts and GPS tagging.' He taps approve on a couple of approval pop-ups, then says 'All right, I'm going to sleep now, get that done, I need it in the morning,' and falls asleep. Then the cat-named agents keep going in the group chat overnight, talking back and forth and joking around ('this guy's asleep and we're up all night working', 'here you go, finish that'), handing work off while they build it. Time-lapse night to morning. He wakes up, yawns, rolls over, and boom: the app is ready. Finished app: login gate with user accounts, employees uploading geotagged photos, a map of where each photo was taken, and a public gallery. Location sharing is opt-in with a clear consent prompt. Keep the banter funny but mostly clean so it works on every platform (an uncut version is fine as an extra). Use real AXF libraries where they exist; label staged parts as a preview. Also cut a 60-second version.",
      "model": "Opus",
      "why": "",
      "phase": "",
@@ -212265,9 +212265,9 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T04:09:50.514Z",
-     "updatedAt": "2026-11-14T04:09:50.742Z"
+     "updatedAt": "2026-11-14T04:11:12.201Z"
     },
     {
      "id": "s7",
@@ -212366,14 +212366,42 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-14T04:00:35.413Z",
    "rearranged": false,
-   "removedSteps": [],
+   "removedSteps": [
+    {
+     "step": {
+      "id": "s5-4",
+      "uid": "st-mwfw0iq901lbtl",
+      "title": "",
+      "text": "Third hero video, 'the boss texts': a guy gets a text from his boss: 'We're having an event, I need a public image gallery up right now for all the employees to share their pictures.' He's lying in bed, opens AmberX on his phone and says 'Amber, build me a gallery with user accounts and GPS tagging.' Show the cat-named agents in the group chat whipping it up and handing work off, approvals popping up, then the finished app: a login gate with user accounts, employees uploading geotagged photos, a map showing where each photo was taken, and a public gallery anyone can view. Location sharing is opt-in, with a clear consent prompt. Use real AXF libraries where they exist; label staged parts as a preview. Also cut a 60-second version.",
+      "model": "Opus",
+      "why": "",
+      "phase": "",
+      "group": "",
+      "estimate": "30 min",
+      "files": [],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": false,
+      "doneAt": "",
+      "note": "",
+      "rev": 1,
+      "createdAt": "2026-11-14T04:10:08.589Z",
+      "updatedAt": "2026-11-14T04:10:09.489Z"
+     },
+     "at": "2026-11-14T04:11:20.527Z",
+     "why": "removed in the orchestrator",
+     "by": "voice"
+    }
+   ],
    "legacy": [],
    "copies": []
   }
