@@ -7,7 +7,7 @@ copy /opt/axf-batch/resolve.py hands over to this file when the repo has it).
       --main   which side is main (default: found from origin/main: the side that is, or descends from, main's head)
 
 Rules, in order, per conflicted file (generated-files@1 manifest, framework/spec/generated-files.json, shared with
-the auto-land runner and the merge queue in apps/console-web/plugins/push-banner/land/):
+the auto-land runner and the merge queue, the push banner plugin's land/ folder):
   retired build profile   removed (the one build profile `all`, Brett Nov 7 2026)
   modify / delete         the preferred side
   regen                   main's copy, then its generator runs on the merged tree (control inventory, help bake,

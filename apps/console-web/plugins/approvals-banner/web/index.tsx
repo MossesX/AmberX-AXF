@@ -39,7 +39,7 @@ import { onVetoHost, setVetoHost, vetoHost, VETO_ACTIONS, type VetoAction, type 
 import { ALARM_KEYS, START_AT, TONES, VIBRATIONS, ALARM_DEFAULTS, NOTICE_DEFAULTS } from './alarm';
 import { act, actResult, AlarmPanel, syncNativeAlarm, VetoButtons, VetoScreen, watch, type VetoDeps } from './veto';
 import { approvalsHost, ApprovalDetailsPanel, ApprovalRow, setApprovalsHost } from '@console/axf/libs/approvals/react';
-import { pluginFetch } from '@console/plugins';
+import { bundledPlugins, pluginFetch } from '@console/plugins';
 import { relayHosts, type RelayPost } from './relay';
 import { approvalExpandKey, detailsOfItem, fetchApprovals, heldDecisions, registerApprovalsLookup, type ApprovalDecision, type ApprovalItem, type DecideResult } from '@console/axf/libs/approvals';
 import { decidedState, decisionButtons } from '@console/axf/libs/approvals/menu';
@@ -118,6 +118,8 @@ async function hubUrl(): Promise<string> {
  * instead of a button that silently falls back to "open it on axHub".
  */
 const RELAY_TIMEOUT_MS = 25_000;
+/** The capability service that relays overlay verbs to the phone's console (found by what a plugin provides, never by its folder). */
+const OVERLAY_RELAY_SERVICE = 'service:console-commands@1';
 const relayPost: RelayPost = async (body) => {
   const r = await pluginFetch(FOLDER, 'decide', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body), signal: AbortSignal.timeout(RELAY_TIMEOUT_MS) });
   return { status: r.status, json: await r.json().catch(() => null) };
@@ -158,8 +160,10 @@ async function runOverlay(verb: OverlayVerb | OverlayBarVerb, url?: string): Pro
     return { ok, message: ok ? done[verb]! : 'The overlay is off on this phone (or "Display over other apps" is not allowed).' };
   }
   if (verb === 'bar-open' || verb === 'bar-close') return { ok: false, message: 'The approval bar opens on its own on the phone when something waits.' };
+  const relay = bundledPlugins.find((p) => p.manifest.provides?.includes(OVERLAY_RELAY_SERVICE))?.folder;
+  if (!relay) return { ok: false, message: 'The overlay relay is not installed on this console.' };
   try {
-    const r = await pluginFetch('console-commands', 'overlay', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ verb, ...(url ? { url } : {}) }), signal: AbortSignal.timeout(RELAY_TIMEOUT_MS) });
+    const r = await pluginFetch(relay, 'overlay', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ verb, ...(url ? { url } : {}) }), signal: AbortSignal.timeout(RELAY_TIMEOUT_MS) });
     const j = (await r.json().catch(() => null)) as { ok?: boolean; message?: string; detail?: string } | null;
     return { ok: r.ok && j?.ok === true, message: j?.message ?? j?.detail ?? `the console answered ${r.status}` };
   } catch (e) {
