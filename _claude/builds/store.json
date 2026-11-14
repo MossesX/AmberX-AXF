@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5289,
- "updatedAt": "2026-11-14T12:26:00.265Z",
+ "rev": 5290,
+ "updatedAt": "2026-11-14T12:26:15.713Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -211972,14 +211972,14 @@
    "title": "HOTFIX: get main CI green (theme-swap opacity + plugin lifecycle stale refs)",
    "category": "bug fix",
    "detail": "Main's full CI is red, so the merge queue can't land any batch and builds stop early back to Pending. Fix: (1) scripts/theme-swap.mjs fails because every style theme shows the hub opacities (look pinned to axHub); make style themes use their own opacity values. (2) Plugin lifecycle check: stale refs in 7 plugins; fix them. Land #665 first. Then re-add the console app stack #637 #639 #633 #640 #643 and the land-batch PRs to the merge queue and redeploy the console.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/hotfix-get-main-ci-green-theme-swap",
    "pr": "#669",
    "createdAt": "2026-11-14T03:29:11.368Z",
-   "updatedAt": "2026-11-14T12:25:58.595Z",
+   "updatedAt": "2026-11-14T12:26:06.636Z",
    "builtAt": "",
    "notes": [
     {
@@ -212025,6 +212025,10 @@
     {
      "text": "s3 in flight, not done. Found a third main breakage: menu-reach (14 retired skin picks on shared toolbars, since #532). Fixed in the check (211f0e0, reached via Next/Previous skin); rest of the Web step passes locally. #665 was kicked for main's own failures: re-added to the queue; #669 moved to front (it contains #665). Waiting on #669 light checks, then the queue's full run and merge. Next session: confirm main green, re-queue waiting stacks, redeploy console, tick s3.",
      "at": "2026-11-14T12:25:45.674Z"
+    },
+    {
+     "text": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
+     "at": "2026-11-14T12:26:06.636Z"
     }
    ],
    "approvals": [],
@@ -212045,22 +212049,22 @@
     "queuedAt": "",
     "queuedBy": "",
     "account": "mossesx-max-",
-    "session": "axf-hotfix-get-main-ci-green-theme-swap--joey",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-14T12:17:09.669Z",
     "runs": 2,
     "lastRun": {
-     "at": "2026-11-14T06:19:06.878Z",
+     "at": "2026-11-14T12:26:06.137Z",
      "exit": 0,
      "outcome": "returned",
      "stepsLeft": 1,
      "account": "mossesx-max-",
-     "session": "axf-hotfix-get-main-ci-green-theme-swap--rhonda"
+     "session": "axf-hotfix-get-main-ci-green-theme-swap--joey"
     },
     "split": null,
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "2026-11-14T12:17:09.669Z",
     "planned": {
@@ -212152,7 +212156,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
