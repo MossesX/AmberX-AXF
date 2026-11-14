@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T04:30:48.152Z",
+ "updatedAt": "2026-11-14T04:31:12.548Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -137373,7 +137373,7 @@
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-14T04:30:46.327Z",
+   "updatedAt": "2026-11-14T04:31:10.253Z",
    "builtAt": "",
    "notes": [
     {
@@ -137709,6 +137709,25 @@
      "note": "",
      "uid": "st-mwfwr17r01mdxw",
      "createdAt": "2026-11-14T04:30:46.328Z"
+    },
+    {
+     "id": "s19",
+     "text": "Android app demo video: filmed from a real person's point of view using the AmberX Android app in everyday life. Show their hands and the phone screen as they talk to Amber, approve pop-ups, get notifications, open the console, chat with the agents, check builds and use the apps they built. Real phone screen recordings with real data; label staged parts as a preview. Also cut a 60-second version.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfwrjq201b877",
+     "createdAt": "2026-11-14T04:31:10.254Z"
     },
     {
      "id": "s7",

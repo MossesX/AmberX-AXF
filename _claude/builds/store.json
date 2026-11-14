@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5239,
- "updatedAt": "2026-11-14T04:30:48.152Z",
+ "rev": 5240,
+ "updatedAt": "2026-11-14T04:31:12.548Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -212196,7 +212196,7 @@
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-14T04:30:46.327Z",
+   "updatedAt": "2026-11-14T04:31:10.253Z",
    "builtAt": "",
    "notes": [
     {
@@ -212611,6 +212611,28 @@
      "updatedAt": "2026-11-14T04:30:46.503Z"
     },
     {
+     "id": "s19",
+     "uid": "st-mwfwrjq201b877",
+     "title": "",
+     "text": "Android app demo video: filmed from a real person's point of view using the AmberX Android app in everyday life. Show their hands and the phone screen as they talk to Amber, approve pop-ups, get notifications, open the console, chat with the agents, check builds and use the apps they built. Real phone screen recordings with real data; label staged parts as a preview. Also cut a 60-second version.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-14T04:31:10.254Z",
+     "updatedAt": "2026-11-14T04:31:10.490Z"
+    },
+    {
      "id": "s7",
      "uid": "st-mwfvsr6p0143q5",
      "title": "",
@@ -212707,7 +212729,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
