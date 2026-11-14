@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5218,
- "updatedAt": "2026-11-14T04:19:52.230Z",
+ "rev": 5219,
+ "updatedAt": "2026-11-14T04:20:15.530Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -211914,7 +211914,7 @@
    "branch": "claude/launch-landing-page-waitlist-referral",
    "pr": "#668",
    "createdAt": "2026-11-14T04:00:27.661Z",
-   "updatedAt": "2026-11-14T04:19:25.763Z",
+   "updatedAt": "2026-11-14T04:20:12.848Z",
    "builtAt": "",
    "notes": [
     {
@@ -211924,6 +211924,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-launch-landing-page-waitlist-referral--sully, own login copy)",
      "at": "2026-11-14T04:02:46.663Z"
+    },
+    {
+     "text": "s3 left open: site deployed on the VPS behind the Coolify proxy for join.amberxai.com and verified through the proxy (HTTPS redirect, page, health, admin auth). Public URL + certificate wait on one Hostinger DNS record (A join -> 31.97.13.252): no Hostinger or Coolify API token is available to agents. Apex amberxai.com not taken: the amberx-app web container owns it. Console needs AMBERX_SITE_URL + AMBERX_SITE_ADMIN_TOKEN (value in /opt/amberx-site/.env). Systems check item 'AmberX launch site is public' carries the steps and goes green by itself; Brett notified on his phone. PR #668, UI Review r-20261114-81221dff + r-20261114-1216c892.",
+     "at": "2026-11-14T04:20:12.848Z"
     }
    ],
    "approvals": [],
@@ -212044,7 +212048,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

@@ -792,7 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 20:10 UTC · `skin-animations-swatches-skin-switch` s2 done (all) · orchestrator
 - 2026-11-13 20:11 UTC · `context-menu-plugin-ai-generated-slim` added (0 steps) (all) · console
 - 2026-11-13 20:11 UTC · `context-menu-plugin-ai-generated-slim` → queued, note (all) · console
 - 2026-11-13 20:05 UTC · `full-voice-control-merge-main-and-land` PR #645 (all) · builds-live
@@ -1192,6 +1191,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 04:17 UTC · `hotfix-get-main-ci-green-theme-swap` s1 done (all) · orchestrator
 - 2026-11-14 04:19 UTC · `launch-landing-page-waitlist-referral` PR #668 (all) · builds-live
 - 2026-11-14 04:19 UTC · `ui-directory-plugin-self-updating-data` s1 done (all) · orchestrator
+- 2026-11-14 04:20 UTC · `launch-landing-page-waitlist-referral` note (all) · orchestrator
 
 ## Token passes (log)
 
