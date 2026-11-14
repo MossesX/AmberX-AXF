@@ -147,6 +147,8 @@ jobs:
         run: node apps/console-web/plugins/project-wizard/test.mjs
       - name: Token control plugin (control@1 runner — tokens in the look, AmberX, planner, gate, confirm, CLI, client forms)  # axf-plugin:token-control
         run: node apps/console-web/plugins/token-control/test.mjs  # axf-plugin:token-control
+      - name: pass-approval@1 shared contract (links, action tokens, push payload; cases.json)
+        run: node packages/shared/pass-approval/test.mjs
       - name: Console commands plugin (control@1 console domain — CLI words, runner gate + resolve + deliver, confirm, send to a console)  # axf-plugin:console-commands
         run: node apps/console-web/plugins/console-commands/test.mjs  # axf-plugin:console-commands
       - name: Reference links plugin (ref@1 runner — builds store + plugin targets, find, explicit touches, ambiguous, missing, resolve, CLI)  # axf-plugin:ref-links
@@ -359,6 +361,7 @@ jobs:
             python apps/console-web/server/test_projects.py          # projects@1: the server's mirror agrees with framework/cli/projects.mjs
             python apps/console-web/server/test_readcache.py         # shared read cache (single-flight, stale-while-revalidate, file-change) + node spawn cap
             python apps/console-web/server/test_previews.py          # Watch live: registry, signed keys, /preview proxy auth (HTTP + HMR WebSocket)
+            python apps/console-web/plugins/token-control/server/test_pass_approval.py  # pass-approval@1: /api/passes REST, signed pass/action, pass:<id> focus, push + actions, voice, MCP parity  # axf-plugin:token-control
             python apps/console-web/plugins/console-commands/server/test_console_commands.py  # console commands: consoles announce + stream, resolve, deliver + ack, per-user mailbox, confirm, liveness, failover to the next live console, wake, late acks, build focus  # axf-plugin:console-commands
             python apps/console-web/plugins/output-recorder/test_transcripts.py  # axf-plugin:output-recorder
             python apps/console-web/plugins/claude-session/test.py  # axf-plugin:claude-session

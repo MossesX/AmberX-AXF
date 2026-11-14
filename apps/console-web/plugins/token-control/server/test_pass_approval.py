@@ -193,6 +193,29 @@ v = cca.voice("approve the pass", extra={"token": toks4["approve"]})
 eq((v["ok"], v["pass"]["state"], v["pass"]["approvedVia"]), (True, "active", "push"), "with the notification's token it approves")
 eq(cca.voice("scroll down")["intent"]["verb"], "scroll", "the console's own phrases still work")
 
+# s8 MCP parity: the same service answers; pass_approve / pass_deny never decide
+import asyncio  # noqa: E402
+import mcp_server  # noqa: E402
+
+srv = mcp_server.build_server(lambda op, **a: {}, terminal=lambda since: [], control=lambda cmd: {"ok": True})
+pid5 = grant(10)
+
+
+def tool(name, args):  # type: ignore[no-untyped-def]
+    r = asyncio.run(srv.call_tool(name, args))
+    if getattr(r, "structuredContent", None):
+        return r.structuredContent.get("result", r.structuredContent) if set(r.structuredContent) == {"result"} else r.structuredContent
+    blocks = getattr(r, "content", None) or (r[0] if isinstance(r, tuple) else r)
+    return json.loads(blocks[0].text)
+
+
+eq([x["id"] for x in tool("pass_list_pending", {})["items"]], [pid5], "MCP pass_list_pending = GET /api/passes/pending")
+eq(tool("pass_get", {"id": f"pass:{pid5}"})["pass"]["deep_link"], c.get(f"/api/passes/{pid5}").json()["pass"]["deep_link"], "MCP pass_get = GET /api/passes/<id>")
+a = tool("pass_approve", {"id": pid5})
+eq((a["code"], a["url"]), ("approval_required", f"https://console.amberxai.com/#/pass/{pid5}/approve"), "MCP pass_approve answers the link")
+eq(tool("pass_deny", {"id": pid5})["url"], f"https://console.amberxai.com/#/pass/{pid5}/deny", "MCP pass_deny too")
+eq(c.get(f"/api/passes/{pid5}").json()["pass"]["state"], "pending", "and nothing was decided")
+
 # the push flag: an approval reaches a set-up phone channel below its minimum severity; a plain warning doesn't
 hub = alerts_hub.AlertHub(Path(tempfile.mkdtemp(prefix="axf-pass-alerts-")))
 hub.set_config({"webpush": {"enabled": True}})

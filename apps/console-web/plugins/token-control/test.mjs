@@ -394,5 +394,57 @@ await test('pass all: everything by default, ordinary deletes skip the confirm, 
   await runControl({ op: 'reset', target: 'tokens.theme' });
 });
 
+/* ---- pass-approval@1 (lib/pass-approval.mjs): one pass by id, owner or signed token, idempotent */
+const pa = await import('./lib/pass-approval.mjs');
+const { mintActionTokens } = await import('../../../../packages/shared/pass-approval/node.mjs');
+const request = async (now) => (await runControl({ op: 'act', target: 'pass.scopes', path: 'all', action: 'grant', input: { minutes: 10 }, by: 'claude' }, { now })).item;
+
+await test('pass-approval: a token decides once, its replay answers already, the other token is refused', async () => {
+  const t0 = Date.now();
+  const p = await request(t0);
+  const tk = pa.tokensFor(p.id, t0);
+  assert.match(tk.approve, /^pa1\./);
+  const r = await pa.decidePass('', '', { token: tk.approve }, runControl, t0 + 1000);
+  assert.equal(r.ok, true); assert.equal(r.already, false); assert.equal(r.pass.state, 'active'); assert.equal(r.pass.approvedVia, 'push');
+  const again = await pa.decidePass('', '', { token: tk.approve }, runControl, t0 + 2000);
+  assert.equal(again.ok, true); assert.equal(again.already, true, 'replay is idempotent');
+  assert.equal((await pa.decidePass('', '', { token: tk.deny }, runControl, t0 + 3000)).code, 'decided');
+  assert.equal(JSON.parse(readFileSync(join(process.env.AXF_CONTROL_DATA_DIR, 'passes.json'), 'utf8')).passes.find((x) => x.id === p.id).decidedBy.nonce.length, 16, 'the deciding nonce is recorded');
+  await runControl({ op: 'act', target: 'pass.scopes', path: 'all', action: 'revoke', by: 'test' });
+});
+
+await test('pass-approval: expiry, wrong pass, forged signature, owner path', async () => {
+  const t0 = Date.now();
+  const a = await request(t0);
+  const ta = pa.tokensFor(a.id, t0);
+  assert.equal((await pa.decidePass(a.id, 'approve', { token: ta.approve }, runControl, t0 + 15 * 60 * 1000)).code, 'expired', 'a token stops at 15 min');
+  const b = await request(t0 + 1000); // replaces a (one request per scope)
+  const tb = pa.tokensFor(b.id, t0 + 1000);
+  assert.equal((await pa.decidePass(b.id, 'approve', { token: ta.approve }, runControl, t0 + 2000)).code, 'wrong_pass', 'a token for another pass');
+  const forged = mintActionTokens({ ...b, state: 'pending' }, { now: t0 + 1000, secret: 'not-the-secret' }).approve;
+  assert.equal((await pa.decidePass(b.id, 'approve', { token: forged }, runControl, t0 + 2000)).code, 'bad_signature');
+  assert.equal((await pa.decidePass(b.id, 'approve', {}, runControl, t0 + 2000)).code, 'owner_required', 'no owner, no token: refused');
+  assert.equal(pa.getPass(b.id, t0 + 2000).pass.state, 'pending');
+  const d = await pa.decidePass(b.id, 'deny', { approver: BRETT }, runControl, t0 + 3000);
+  assert.equal(d.ok, true); assert.equal(d.pass.state, 'denied');
+  assert.equal((await pa.decidePass(b.id, 'deny', { approver: BRETT }, runControl, t0 + 4000)).already, true, 'owner deny twice: already');
+  assert.equal((await pa.decidePass(b.id, 'approve', { token: tb.approve }, runControl, t0 + 4000)).code, 'decided');
+  assert.equal(pa.listPending(t0 + 5000).total, 0);
+  const audits = readFileSync(join(process.env.AXF_CONTROL_DATA_DIR, 'audit.jsonl'), 'utf8').split('\n').filter((l) => l.includes('"pass-approval"'));
+  assert.ok(audits.some((l) => l.includes('"expired"')) && audits.some((l) => l.includes('"bad_signature"')) && audits.some((l) => l.includes('"owner_required"')), 'refusals are audit-logged');
+});
+
+await test('pass-approval: CLI parity (axf pass list | show | link | approve)', async () => {
+  const p = await request(Date.now());
+  const lines = []; const log = console.log; console.log = (s) => lines.push(String(s));
+  let codes;
+  try { codes = [await main(['pass', 'list']), await main(['pass', 'show', p.id]), await main(['pass', 'link', `pass:${p.id}`]), await main(['pass', 'approve', p.id]), await main(['pass', 'list', '--json'])]; } finally { console.log = log; }
+  assert.deepEqual(codes, [0, 0, 0, 1, 0], 'approve off a terminal is refused');
+  const out = lines.join('\n');
+  assert.ok(out.includes(`https://console.amberxai.com/#/pass/${p.id}`)); assert.ok(out.includes(`approve  https://console.amberxai.com/#/pass/${p.id}/approve`)); assert.match(out, /owner_required/);
+  assert.equal(JSON.parse(lines[lines.length - 1]).items[0].id, p.id, '--json = the REST answer');
+  await runControl({ op: 'act', target: 'pass.scopes', path: 'all', action: 'revoke', by: 'test' });
+});
+
 rmSync(T, { recursive: true, force: true });
 console.log(`${process.exitCode ? '✗' : '✓'} token-control: ${n} tests passed`);
