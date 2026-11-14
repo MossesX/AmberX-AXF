@@ -792,9 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 20:42 UTC · `token-registry-skin-editor-live-sandbox` branch claude/token-registry-skin-editor-live-sandbox (all) · builds-live
-- 2026-11-13 20:44 UTC · `auto-land-every-finished-build-lands` added (0 steps) (all) · console
-- 2026-11-13 20:44 UTC · `auto-land-every-finished-build-lands` → queued, note (all) · console
 - 2026-11-13 20:44 UTC · `land-overlay-preview-ui-review-resolve` s2 done (all) · orchestrator
 - 2026-11-13 20:45 UTC · `auto-land-every-finished-build-lands` → queued, note (all) · foreign-write
 - 2026-11-13 20:45 UTC · `land-overlay-preview-ui-review-resolve` PR #653 (all) · builds-live
@@ -1192,6 +1189,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 13:11 UTC · `hotfix-get-main-ci-green-theme-swap` note (all) · pipeline
 - 2026-11-14 16:44 UTC · `builds-share-one-claude-login-write` added (4 steps) (all) · claude-voice
 - 2026-11-14 16:45 UTC · `builds-share-one-claude-login-write` → queued (all) · claude-voice
+- 2026-11-14 16:46 UTC · `builds-share-one-claude-login-write` → running, note (all) · pipeline
+- 2026-11-14 16:46 UTC · `builds-share-one-claude-login-write` branch claude/builds-share-one-claude-login-write (all) · pipeline
+- 2026-11-14 16:46 UTC · `builds-share-one-claude-login-write` note (all) · orchestrator
 
 ## Token passes (log)
 
