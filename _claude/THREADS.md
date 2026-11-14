@@ -796,8 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 04:38 UTC · `ui-directory-plugin-self-updating-data` → queued, note (all) · pipeline
-- 2026-11-14 04:38 UTC · `ui-directory-plugin-self-updating-data` note (all) · pipeline
 - 2026-11-14 04:38 UTC · `ui-directory-plugin-self-updating-data` note (all) · orchestrator
 - 2026-11-14 04:37 UTC · `ui-directory-plugin-self-updating-data` s3 done, → built (all) · orchestrator
 - 2026-11-14 04:38 UTC · `orchestrator-checks-shipped-features-2` → archived (all) · voice
@@ -1196,6 +1194,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 23:15 UTC · `console-axhub-retry-failed-calls` s3 done, → built (all) · orchestrator
 - 2026-11-14 23:16 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` s2 undone, → pending (all) · builds-live
 - 2026-11-14 23:17 UTC · `console-axhub-retry-failed-calls` → pending, note (all) · pipeline
+- 2026-11-14 23:17 UTC · `per-toolbar-settings-fix-failing-chrome` → running, note (all) · pipeline
+- 2026-11-14 23:17 UTC · `per-toolbar-settings-fix-failing-chrome` note (all) · orchestrator
 
 ## Token passes (log)
 
