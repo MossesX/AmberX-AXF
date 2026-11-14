@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T18:26:40.232Z",
+ "updatedAt": "2026-11-14T18:31:19.957Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -140142,7 +140142,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-14T18:13:15.368Z",
-   "updatedAt": "2026-11-14T18:24:57.548Z",
+   "updatedAt": "2026-11-14T18:28:51.555Z",
    "builtAt": "",
    "notes": [
     {
@@ -140215,8 +140215,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T18:28:51.555Z",
      "note": "",
      "uid": "st-mwgq79uk02j9vb",
      "createdAt": "2026-11-14T18:15:13.052Z"
@@ -140687,7 +140687,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-14T18:14:25.063Z",
-   "updatedAt": "2026-11-14T18:20:05.411Z",
+   "updatedAt": "2026-11-14T18:27:18.474Z",
    "builtAt": "",
    "notes": [
     {
@@ -140738,8 +140738,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T18:27:16.658Z",
      "note": "",
      "uid": "st-mwgqau1u01yddv",
      "createdAt": "2026-11-14T18:17:59.202Z"
@@ -141408,7 +141408,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-14T18:15:01.485Z",
-   "updatedAt": "2026-11-14T18:26:38.077Z",
+   "updatedAt": "2026-11-14T18:31:17.556Z",
    "builtAt": "",
    "notes": [
     {
@@ -141596,8 +141596,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T18:27:20.847Z",
      "note": "",
      "uid": "st-mwgqcckn119u3y",
      "createdAt": "2026-11-14T18:19:09.863Z"
@@ -141619,8 +141619,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T18:31:17.556Z",
      "note": "",
      "uid": "st-mwgqcckn12spor",
      "createdAt": "2026-11-14T18:19:09.863Z"
