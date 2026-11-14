@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T23:43:28.103Z",
+ "updatedAt": "2026-11-14T23:43:43.413Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -144465,7 +144465,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-14T23:10:38.526Z",
-   "updatedAt": "2026-11-14T23:42:08.870Z",
+   "updatedAt": "2026-11-14T23:43:31.736Z",
    "builtAt": "",
    "notes": [
     {
@@ -144475,6 +144475,10 @@
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"ab887448-35b7-4f92-8938-ef85459b3044\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-14T23:12:50.235Z"
+    },
+    {
+     "text": "Headless run axf-merge-main-land-move-amberx-web-app--earl: brief only · start 11.8K tokens ($0.03) · cost $0.40 · 18 turns · 6 tools, MCP none",
+     "at": "2026-11-14T23:43:31.736Z"
     }
    ],
    "approvals": [],

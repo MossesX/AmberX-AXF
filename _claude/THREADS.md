@@ -797,7 +797,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 18:48 UTC · `skin-configuration-panel-before-ai-makes` → complete (all) · orchestrator
 - 2026-11-14 18:49 UTC · `skin-configuration-panel-before-ai-makes` note (all) · orchestrator
 - 2026-11-14 18:49 UTC · `skins-plugin-own-removable-console` note (all) · orchestrator
 - 2026-11-14 19:10 UTC · `picker-dialog-plugin-replaces-all` → pending, note (all) · reconciler
@@ -1197,6 +1196,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 23:42 UTC · `merge-main-land-change-to-move-amberx` s1 done, → running (all) · orchestrator
 - 2026-11-14 23:42 UTC · `merge-main-land-server-gate-one-session` note (all) · orchestrator
 - 2026-11-14 23:43 UTC · `land-finish-auto-land-live-clear-backlog` s18 done, → running (all) · orchestrator
+- 2026-11-14 23:43 UTC · `merge-main-land-move-amberx-web-app` note (all) · orchestrator
 
 ## Token passes (log)
 
