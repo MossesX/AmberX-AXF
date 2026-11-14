@@ -800,8 +800,9 @@
     "src/axf/react/editorSync.ts": "4d2dfe9847350acb",
     "src/axf/react/hubAppLook.ts": "5e9a996b10ea76a0",
     "src/axf/react/hubAppearance.ts": "355ca539e1bed83b",
-    "src/axf/react/index.ts": "26e51f32a5048ab3",
+    "src/axf/react/index.ts": "01b7a406efeb2c25",
     "src/axf/react/library.ts": "a1e3ee41389eca00",
+    "src/axf/react/nativeDialogs.ts": "bf7fb4d7fd92a309",
     "src/axf/react/placeTip.ts": "72554dc0b42e13a3",
     "src/axf/react/placement.tsx": "e50243526c856169",
     "src/axf/react/pluginRecords.ts": "b0165b309076c3d3",
@@ -928,6 +929,6 @@
     "src/axf/schemas/shipped-manifest.json": "b0ed855f1141e630",
     "src/axf/schemas/swarm.json": "35dd72b97f7a4a89",
     "src/axf/schemas/ui-review.json": "0a34b5e29eb76cca",
-    "src/axf/ui/axf.css": "df6a0c5ef24fd786"
+    "src/axf/ui/axf.css": "7d6a8665f1768816"
   }
 }

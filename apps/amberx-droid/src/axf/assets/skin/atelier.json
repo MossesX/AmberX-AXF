@@ -29,7 +29,8 @@
       "container": "frosted-glass",
       "typography": "standard",
       "density": "roomy",
-      "sizing": "standard"
+      "sizing": "standard",
+      "themed-controls": "native"
     },
     "preview": {
       "caption": "Canvas studio, soft glass, fluid motion."
