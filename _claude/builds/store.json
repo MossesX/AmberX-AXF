@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5505,
- "updatedAt": "2026-11-14T22:52:21.339Z",
+ "rev": 5506,
+ "updatedAt": "2026-11-14T22:52:34.133Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -213543,7 +213543,7 @@
    "title": "HOTFIX: desktop console draws app menu, banners and nav twice",
    "category": "",
    "detail": "Right after per-toolbar-settings-fix-failing-chrome landed on main (merge ec579ee23, 20:44 Nov 13) and the console redeployed, Brett's DESKTOP console shows TWO app menus, TWO banners and TWO navigation menus (the phone looks fine). Keep the per-toolbar/per-instance settings feature: fix forward, don't revert it. Likely cause: the per-instance chrome (ChromeContext.tsx / Overlays.tsx / chrome-settings-rules) now renders a per-instance copy of each chrome element in addition to the default one on wide layouts, or the merge kept both sides of a render block. Find it, render exactly one of each chrome element, add an e2e/visual test that counts app menus, banners and nav menus on desktop and phone (must be 1 each), run all tests, then LAND it on main immediately and redeploy the console. Note: commit 237a293af was an accidental revert that only re-added 24 lines to one file; check it and drop it if it's wrong.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -213551,7 +213551,7 @@
    "pr": "#658",
    "priority": "P0",
    "createdAt": "2026-11-13T20:53:50.393Z",
-   "updatedAt": "2026-11-14T22:52:18.934Z",
+   "updatedAt": "2026-11-14T22:52:21.321Z",
    "builtAt": "",
    "notes": [
     {
@@ -213603,6 +213603,10 @@
      "at": "2026-11-13T21:16:23.568Z"
     },
     {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-hotfix-desktop-console-draws-app-menu--joey, shared account login)",
+     "at": "2026-11-14T22:52:21.321Z"
+    },
+    {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-hotfix-desktop-console-draws-app-menu--joey.",
      "at": "2026-11-14T22:52:18.934Z"
     }
@@ -213624,12 +213628,12 @@
    "pipeline": {
     "queuedAt": "",
     "queuedBy": "",
-    "account": "mossesx-max-",
-    "session": "axf-hotfix-desktop-console-draws-app-menu--joey",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-14T22:52:18.360Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": {
      "at": "2026-11-13T21:16:22.820Z",
      "exit": 0,
@@ -213646,9 +213650,9 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"b91717a9-c832-49af-9ac7-5fd5a4873a0a\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session stopped on its own with 3 steps left: back in Pending for Brett.",
     "route": "",
-    "dispatchedAt": "2026-11-14T22:52:18.360Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -213657,7 +213661,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-14T22:52:18.360Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -219813,7 +219817,7 @@
    "title": "Hotfix: toolbar settings still change nothing (live console)",
    "category": "hotfix",
    "detail": "Brett (Nov 14): 'the toolbar settings still don't work. When I click the toolbar and go to its settings, the settings don't change anything.' Earlier builds touched this (fix-toolbar-settings-doing-nothing, chrome-settings-actually-apply-toolbars, per-toolbar-settings PR #650, per-instance picker #642/#622) but it's still broken on the live console. Reproduce on the LIVE console first (open a toolbar's settings, change each setting, confirm whether the stored value changes and whether the toolbar re-renders). Find which of those PRs never landed vs. what's genuinely broken, land or fix, and verify on the live console after redeploy.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -219821,7 +219825,7 @@
    "pr": "#673",
    "mergedAt": "2026-11-14T17:36:16Z",
    "createdAt": "2026-11-14T16:51:14.645Z",
-   "updatedAt": "2026-11-14T22:46:49.567Z",
+   "updatedAt": "2026-11-14T22:52:30.774Z",
    "builtAt": "",
    "notes": [
     {
@@ -219855,6 +219859,14 @@
     {
      "text": "Shipped manifest sm-hotfix-toolbar-settings-still-change rev 1 sent to Shipped features (orchestrator): landed c3e5b59d7, 20 file(s), 0 test line(s), 1 open.",
      "at": "2026-11-14T17:41:05Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-hotfix-toolbar-settings-still-change--gina.",
+     "at": "2026-11-14T22:52:28.017Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-hotfix-toolbar-settings-still-change--gina, shared account login)",
+     "at": "2026-11-14T22:52:30.774Z"
     }
    ],
    "approvals": [],
@@ -219866,7 +219878,7 @@
     "session": "",
     "link": "",
     "by": "hotfix-toolbar-settings-still-change",
-    "brief": "# Build: hotfix-toolbar-settings-still-change\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"Hotfix: toolbar settings still change nothing (live console)\" (hotfix-toolbar-settings-still-change) [hotfix] — Phase 1, model Opus.\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (4 left, ~1.2 h):\n[ ] s1 (~15 min) Reproduce on the live console: open a toolbar's settings, change each one, log whether the value saves and whether the toolbar redraws\n[ ] s2 (~15 min) Check which earlier toolbar-settings PRs (#650, #642, #622, chrome-settings-actually-apply-toolbars) landed; find the real break\n[ ] s3 (~25 min) Fix so every toolbar setting applies live to that toolbar; add a test that changes each setting and checks the toolbar changed\n[ ] s4 (~15 min) Land through the queue, confirm on the live console after redeploy, phone alert to Brett when verified\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step hotfix-toolbar-settings-still-change <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link hotfix-toolbar-settings-still-change --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step hotfix-toolbar-settings-still-change <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note hotfix-toolbar-settings-still-change \"…\"); the build goes back to Pending for Brett.\n",
+    "brief": "# Build: hotfix-toolbar-settings-still-change\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"Hotfix: toolbar settings still change nothing (live console)\" (hotfix-toolbar-settings-still-change) [hotfix] — Phase 1, model Opus.\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/hotfix-toolbar-settings-still-change · PR #673\nSteps in this phase (1 left, ~15 min):\n[x] s1 (~15 min) Reproduce on the live console: open a toolbar's settings, change each one, log whether the value saves and whether the toolbar redraws\n[x] s2 (~15 min) Check which earlier toolbar-settings PRs (#650, #642, #622, chrome-settings-actually-apply-toolbars) landed; find the real break\n[x] s3 (~25 min) Fix so every toolbar setting applies live to that toolbar; add a test that changes each setting and checks the toolbar changed\n[ ] s4 (~15 min) Land through the queue, confirm on the live console after redeploy, phone alert to Brett when verified\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step hotfix-toolbar-settings-still-change <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link hotfix-toolbar-settings-still-change --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step hotfix-toolbar-settings-still-change <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note hotfix-toolbar-settings-still-change \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": false,
     "from": "",
     "addenda": []
@@ -219874,18 +219886,18 @@
    "pipeline": {
     "queuedAt": "",
     "queuedBy": "",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-hotfix-toolbar-settings-still-change--gina",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-14T22:52:27.458Z",
+    "runs": 1,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-14T22:52:27.458Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -219894,7 +219906,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-14T22:52:27.458Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -220003,7 +220015,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
