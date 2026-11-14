@@ -82,4 +82,59 @@ cat = json.loads(real.stdout.strip().splitlines()[-1])
 all_tools = ct.tools_from_catalog(cat["entries"])
 check(len(all_tools) > 100 and len({t["name"] for t in all_tools}) == len(all_tools) and not any(ct.DECIDING_RE.search(t["id"]) for t in all_tools), f"the real catalog converts: {len(all_tools)} tools, unique names, no deciding command")
 
+# ---------------------------------------------------------------- the understand route (s4, s5)
+
+import console_context as cx  # noqa: E402
+import plugin_services  # noqa: E402
+
+cx.set_context(ROOT=REPO)
+sys.modules.setdefault("axf_console_plugins", types.ModuleType("axf_console_plugins")).__path__ = []
+spec = importlib.util.spec_from_file_location("axf_console_plugins.wake_listener_test", HERE / "server" / "__init__.py", submodule_search_locations=[str(HERE / "server")])
+mod = importlib.util.module_from_spec(spec)
+sys.modules[spec.name] = mod
+spec.loader.exec_module(mod)
+ci = mod.claude_intent
+
+from fastapi import FastAPI  # noqa: E402
+from fastapi.testclient import TestClient  # noqa: E402
+
+app = FastAPI()
+app.include_router(mod.router, prefix="/p")
+c = TestClient(app)
+
+
+class FakeLlm:
+    """Answers with a scripted reply; records every call (so a test can prove nothing was sent)."""
+
+    def __init__(self):
+        self.calls: list = []
+        self.reply: dict = {}
+        self.delay = 0.0
+        self.error = ""
+        self.model = "claude-opus-5-5"
+
+    def complete(self, messages, system=None, profile=None, model=None, tools=None, params=None):
+        self.calls.append({"messages": messages, "system": system, "tools": tools})
+        if self.delay:
+            time.sleep(self.delay)
+        if self.error:
+            raise RuntimeError(self.error)
+        return {"text": "", "tool_calls": [], "model": self.model, **self.reply}
+
+
+def call(name, args):
+    return {"tool_calls": [{"id": "t1", "name": name, "arguments": args}]}
+
+
+llm = FakeLlm()
+plugin_services.provide("axf.llm@1", llm, "fake-assistant")
+mod.claude_status().data.update(failedAt=0)
+
+llm.reply = call("project-wizard__run", {"name": "Gizmo Johnson", "kind": "app"})
+r = c.post("/p/understand", json={"text": "make me a project called Gizmo Johnson"}).json()
+check(r["mode"] == "claude" and r["command"] == "project-wizard/run" and r["args"] == {"name": "Gizmo Johnson", "kind": "app"}, "understand: Claude picks a command and fills its fields")
+check(len(llm.calls) == 1 and llm.calls[0]["system"] == ci.SYSTEM and any(t["name"] == "project-wizard__run" for t in llm.calls[0]["tools"]), "understand: one call through axf.llm@1 with the system prompt and the tools")
+check(not any(ct.DECIDING_RE.search(t["name"]) for t in llm.calls[0]["tools"]), "understand: no approve / deny tool is offered")
+check(c.post("/p/understand", json={}).status_code == 400, "understand: no text → 400")
+
 print(f"{ok} checks passed")

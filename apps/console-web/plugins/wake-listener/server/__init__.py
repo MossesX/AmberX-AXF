@@ -14,6 +14,10 @@ plugin's data folder through the plugin's Node core (listener.mjs → core.mjs),
   GET  catalog [?q=]         the voice command catalog (every console action, plugin command, control@1 target and
                              pipeline command with its spoken forms and fields)
   POST match {text}          dry run: which catalog entry a phrase lands on, the fields it filled and the ones a wizard asks
+  POST understand {text, context?, pending?}
+                             Claude mode (claude_intent.py): Claude picks the command through axf.llm@1 and fills its
+                             fields → {mode:'claude', command, args, ask?, confirm?, run, pending?}; the setting off,
+                             approve / deny words, no Claude, a timeout or an error → {mode:'offline', reason}
 
 Running a phrase in the open console (hear a command, review approvals, answer a wizard, start one) is the plugin's web
 action `wake-listener.heard:<text>` and its siblings: plugin-commands dispatches those to the open console.
@@ -21,7 +25,10 @@ action `wake-listener.heard:<text>` and its siblings: plugin-commands dispatches
 from __future__ import annotations
 
 import json
+import os
 import subprocess
+import threading
+import time
 from pathlib import Path
 from typing import Any
 
@@ -29,12 +36,54 @@ from fastapi import APIRouter, Request
 from fastapi.concurrency import run_in_threadpool
 from fastapi.responses import JSONResponse
 
+import plugin_services
+
+from . import claude_intent
+
 router = APIRouter()
 FOLDER = Path(__file__).resolve().parents[1].name
 CLI = Path(__file__).resolve().parents[1] / "listener.mjs"
 ROOT = Path(__file__).resolve().parents[5]
 STATUS = {"invalid": 400, "not_found": 404, "unavailable": 503}
 MAX_BODY = 32 * 1024
+CATALOG_TTL_S = 60
+DATA_DIR = Path(os.environ.get("AXF_WAKE_LISTENER_DATA_DIR") or (ROOT / ".axf-console" / "plugins" / FOLDER))
+STATUS_FILE = DATA_DIR / "claude.json"
+_status: claude_intent.Status | None = None
+_catalog: dict[str, Any] = {"at": 0.0, "entries": []}
+_catalog_lock = threading.Lock()
+
+
+def claude_status() -> claude_intent.Status:
+    global _status
+    if _status is None:
+        _status = claude_intent.Status(STATUS_FILE)
+    return _status
+
+
+def catalog_entries() -> list[dict[str, Any]]:
+    """The voice command catalog, cached for a minute (the Node CLI builds it from the registry)."""
+    with _catalog_lock:
+        if time.time() - _catalog["at"] < CATALOG_TTL_S and _catalog["entries"]:
+            return _catalog["entries"]
+    r = cli("catalog", timeout=60)
+    entries = r.get("entries") if r.get("ok") and isinstance(r.get("entries"), list) else []
+    with _catalog_lock:
+        if entries:
+            _catalog.update(at=time.time(), entries=entries)
+        return entries or _catalog["entries"]
+
+
+def run_understand(text: str, context: dict[str, Any] | None = None, pending: dict[str, Any] | None = None) -> dict[str, Any]:
+    """One understand call with the stored settings (the switch, the timeout) and the live axf.llm@1 service."""
+    s = cli("settings")
+    settings = s.get("settings") if s.get("ok") else {}
+    use_claude = bool((settings or {}).get("useClaude", True))
+    timeout_s = float((settings or {}).get("claudeTimeoutSec", 8))
+    if not use_claude:
+        return claude_intent.offline("off")  # nothing is sent to Claude
+    return claude_intent.understand(text, llm=plugin_services.get("axf.llm@1"), entries=catalog_entries(), status=claude_status(),
+                                    use_claude=use_claude, timeout_s=timeout_s, context=context, pending=pending)
 
 
 def cli(*args: str, stdin: str | None = None, timeout: int = 30) -> dict[str, Any]:
@@ -133,3 +182,14 @@ async def match(request: Request) -> JSONResponse:
     if not isinstance(text, str) or not text.strip():
         return answer({"ok": False, "code": "invalid", "message": "send { text }"})
     return answer(await run_in_threadpool(cli, "match", text[:500], timeout=60))
+
+
+@router.post("/understand")
+async def understand(request: Request) -> JSONResponse:
+    body = await _body(request)
+    text = body.get("text")
+    if not isinstance(text, str) or not text.strip():
+        return answer({"ok": False, "code": "invalid", "message": "send { text, context?, pending? }"})
+    ctx = body.get("context") if isinstance(body.get("context"), dict) else None
+    pending = body.get("pending") if isinstance(body.get("pending"), dict) else None
+    return answer(await run_in_threadpool(run_understand, text[:500], ctx, pending))
