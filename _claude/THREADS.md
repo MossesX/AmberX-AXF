@@ -796,7 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 04:45 UTC · `demo-video-series-three-minute-browser` note (all) · voice
 - 2026-11-14 04:46 UTC · `launch-landing-page-waitlist-referral` → pending, note (all) · reconciler
 - 2026-11-14 04:47 UTC · `banner-widget-shapes-more-than-circle` note (all) · orchestrator
 - 2026-11-14 04:48 UTC · `group-chat-audio-hear-agents-talk-while` PR #671 (all) · builds-live
@@ -1196,6 +1195,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 23:17 UTC · `pass-approval-hook-deep-link-amberx-notification` s2 undone, s3 undone, s4 undone, s5 undone, s6 undone, s7 undone, s8 undone, s9 undone, → pending (all) · builds-live
 - 2026-11-14 23:17 UTC · `one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx` → pending (all) · builds-live
 - 2026-11-14 23:17 UTC · `themed-native-controls-plugin` s13 done (all) · orchestrator
+- 2026-11-14 23:18 UTC · `picker-dialog-plugin-replaces-all` s15 done (all) · orchestrator
 
 ## Token passes (log)
 
