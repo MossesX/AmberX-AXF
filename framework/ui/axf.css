@@ -2043,3 +2043,43 @@ html[data-axf-help='on'] button[data-axf-help-id], html[data-axf-help='on'] [rol
 .fx-tc-pop--datetime .fx-tc-picker:has(.fx-tc-cal):has(.fx-tc-time) { display: grid; grid-template-columns: auto auto; align-items: start; }
 .fx-tc-pop--datetime .fx-tc-picker:has(.fx-tc-cal):has(.fx-tc-time) .fx-tc-picker__foot { grid-column: 1 / -1; }
 :where([data-fx-narrow]) .fx-tc-pop--datetime .fx-tc-picker:has(.fx-tc-cal):has(.fx-tc-time) { display: flex; }
+
+/* colour field + picker (.fx-tc-color, .fx-tc-colorpick); --tc-color / --tc-hue are the picked colour, set by the control */
+.fx-tc-color { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-2xs); vertical-align: middle; }
+.fx-tc-color__chip, .fx-tc-colorpick__preview {
+  display: block; inline-size: var(--fx-tc-color-swatch-size, calc(var(--fx-font-size) * 24 / 14)); block-size: var(--fx-tc-color-swatch-size, calc(var(--fx-font-size) * 24 / 14));
+  border-radius: var(--fx-tc-color-swatch-radius, var(--fx-radius-sm)); background: var(--tc-color); border: var(--fx-border-w) solid var(--fx-tc-color-rest-swatch-border, var(--fx-border));
+}
+.fx-tc-color__hex { inline-size: calc(var(--fx-space) * 11); font-family: var(--fx-font-mono); }
+.fx-tc-color[data-invalid] .fx-tc-color__hex { border-color: var(--fx-tc-color-invalid-border, var(--fx-danger)); }
+.fx-tc-color[data-disabled] { opacity: var(--fx-opacity-disabled); }
+.fx-tc-pop--color { border-radius: var(--fx-tc-color-surface-radius, var(--fx-radius-md)); border-color: var(--fx-tc-color-rest-border, var(--fx-border)); }
+.fx-tc-colorpick { inline-size: calc(var(--fx-space) * 31); color: var(--fx-tc-color-rest-text, var(--fx-text)); }
+.fx-tc-backdrop--sheet .fx-tc-colorpick { inline-size: 100%; align-items: stretch; }
+.fx-tc-colorpick__area {
+  position: relative; block-size: var(--fx-tc-color-area-height, calc(var(--fx-font-size) * 140 / 14)); border-radius: var(--fx-radius-sm); cursor: crosshair; touch-action: none;
+  background: linear-gradient(to top, black, transparent), linear-gradient(to right, white, var(--tc-hue)); /* theme-ok: the saturation / brightness ramps are pure white and black by definition */
+}
+.fx-tc-colorpick__dot, .fx-tc-colorpick__hue-thumb {
+  position: absolute; inline-size: calc(var(--fx-space) * 1.75); block-size: calc(var(--fx-space) * 1.75); border-radius: 999px; transform: translate(-50%, -50%);
+  border: calc(var(--fx-border-w) * 2) solid var(--fx-surface); box-shadow: var(--fx-shadow-sm); background: var(--tc-color); pointer-events: none;
+}
+.fx-tc-colorpick__dot { inset-inline-start: calc(var(--tc-s) * 100%); inset-block-start: calc((1 - var(--tc-v)) * 100%); }
+.fx-tc-colorpick__hue {
+  position: relative; block-size: calc(var(--fx-space) * 1.5); border-radius: 999px; cursor: pointer; touch-action: none;
+  background: linear-gradient(to right, red, yellow, lime, cyan, blue, magenta, red); /* theme-ok: the hue wheel is the spectrum by definition */
+}
+.fx-tc-colorpick__hue-thumb { inset-block-start: 50%; inset-inline-start: calc(var(--tc-h) * 100%); background: var(--tc-hue); }
+.fx-tc-colorpick__area:focus-visible, .fx-tc-colorpick__hue:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-tc-color-focus-ring, var(--fx-focus)); outline-offset: 2px; }
+.fx-tc-colorpick__row { display: flex; align-items: center; gap: var(--fx-dens-gap-xs); }
+.fx-tc-colorpick__hex { flex: 1; min-inline-size: 0; font-family: var(--fx-font-mono); }
+.fx-tc-colorpick__hex[aria-invalid] { border-color: var(--fx-tc-color-invalid-border, var(--fx-danger)); }
+.fx-tc-swatches { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-2xs); }
+.fx-tc-swatch {
+  inline-size: var(--fx-tc-color-swatch-size, calc(var(--fx-font-size) * 24 / 14)); block-size: var(--fx-tc-color-swatch-size, calc(var(--fx-font-size) * 24 / 14));
+  border-radius: var(--fx-tc-color-swatch-radius, var(--fx-radius-sm)); background: var(--tc-color); cursor: pointer; outline: none;
+  border: var(--fx-border-w) solid var(--fx-tc-color-rest-swatch-border, var(--fx-border));
+}
+.fx-tc-swatch:hover { border-color: var(--fx-tc-color-hover-swatch-border, var(--fx-muted)); }
+.fx-tc-swatch:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-tc-color-focus-ring, var(--fx-focus)); outline-offset: 2px; }
+.fx-tc-swatch[aria-selected='true'] { border-color: var(--fx-tc-color-selected-swatch-border, var(--fx-accent)); box-shadow: inset 0 0 0 calc(var(--fx-border-w) * 2) var(--fx-tc-color-selected-check, var(--fx-accent-text)); }
