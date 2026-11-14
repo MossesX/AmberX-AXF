@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5235,
- "updatedAt": "2026-11-14T04:29:15.424Z",
+ "rev": 5236,
+ "updatedAt": "2026-11-14T04:29:41.308Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -212188,7 +212188,7 @@
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-14T04:28:59.117Z",
+   "updatedAt": "2026-11-14T04:29:39.804Z",
    "builtAt": "",
    "notes": [
     {
@@ -212238,6 +212238,10 @@
     {
      "text": "Self-check: demo-video-series-three-minute-browser was marked running on mossesx-max- with no session: released and back in the Queue.",
      "at": "2026-11-14T04:20:37.431Z"
+    },
+    {
+     "text": "Brett, for the console Android app video (s17) and the orchestrator video: every Claude Code session, in every container, always gets its own live, viewable output window in the console's terminal. Show several sessions' output streaming side by side in real time, and tapping into any one from the phone.",
+     "at": "2026-11-14T04:29:39.804Z"
     }
    ],
    "approvals": [],
@@ -212673,7 +212677,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

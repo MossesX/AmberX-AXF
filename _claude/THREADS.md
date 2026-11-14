@@ -792,7 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 20:17 UTC · `dispatcher-gate-never-launch-build` → queued, note (all) · pipeline
 - 2026-11-13 20:17 UTC · `skin-animations-swatches-skin-switch` s5 done (all) · orchestrator
 - 2026-11-13 20:17 UTC · `skin-config-panel-merge-main-and-land` PR #648 (all) · builds-live
 - 2026-11-13 20:17 UTC · `skin-config-panel-merge-main-and-land` note (all) · orchestrator
@@ -1192,6 +1191,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 04:23 UTC · `ui-directory-plugin-self-updating-data` → running, note (all) · pipeline
 - 2026-11-14 04:23 UTC · `ui-directory-plugin-self-updating-data` note (all) · orchestrator
 - 2026-11-14 04:29 UTC · `ui-directory-plugin-self-updating-data` s2 done (all) · orchestrator
+- 2026-11-14 04:29 UTC · `demo-video-series-three-minute-browser` note (all) · voice
 
 ## Token passes (log)
 
