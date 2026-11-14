@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T04:34:41.660Z",
+ "updatedAt": "2026-11-14T04:34:56.252Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -137373,7 +137373,7 @@
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-14T04:34:19.031Z",
+   "updatedAt": "2026-11-14T04:34:54.597Z",
    "builtAt": "",
    "notes": [
     {
@@ -137435,6 +137435,10 @@
     {
      "text": "Brett, story for the Android app demo (s19): the person had a busy day, fell asleep early and never did the data analysis due this morning. They wake up late and rush out the door. On the drive, hands-free with the phone mounted, they tell Amber 'build me an agent that analyzes all this data and writes up the report.' The agents build the analysis agent, it crunches the real data and produces the charts and summary, and Amber reads the results out loud ('boom, done'). They walk into work on time with the analysis finished. Show the urgency with the clock, traffic and narration, never with speeding or touching the phone while driving.",
      "at": "2026-11-14T04:32:35.166Z"
+    },
+    {
+     "text": "Brett, session recall video (s20): the feature is already built (audio recording of every session, transcripts, search and playback). Find it in the repo or console and use the real thing. If you can't find it, shoot a mock-up for now, labelled as a preview.",
+     "at": "2026-11-14T04:34:54.597Z"
     }
    ],
    "approvals": [],
