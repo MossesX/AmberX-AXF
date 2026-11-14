@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5329,
- "updatedAt": "2026-11-14T17:01:25.746Z",
+ "rev": 5330,
+ "updatedAt": "2026-11-14T17:01:38.806Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -214633,7 +214633,7 @@
    "branch": "claude/ui-review-filter-and-search-by-pr",
    "pr": "",
    "createdAt": "2026-11-14T16:50:06.080Z",
-   "updatedAt": "2026-11-14T16:57:06.062Z",
+   "updatedAt": "2026-11-14T17:01:25.904Z",
    "builtAt": "",
    "notes": [
     {
@@ -214725,12 +214725,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T17:01:25.903Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T16:50:06.081Z",
-     "updatedAt": "2026-11-14T16:50:06.081Z"
+     "updatedAt": "2026-11-14T17:01:26.212Z"
     },
     {
      "id": "s3",
@@ -214763,7 +214763,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
