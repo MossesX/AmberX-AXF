@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5598,
- "updatedAt": "2026-11-14T23:18:15.594Z",
+ "rev": 5599,
+ "updatedAt": "2026-11-14T23:18:30.514Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -101113,7 +101113,7 @@
    "title": "Approvals: no window spam on Approve; veto only for VPS writes and account switches",
    "category": "Builds",
    "detail": "## Brett said (verbatim)\nSource: voice · At: 2026-11-06\n> when I click approve and the consoles pop up, I don't want it to launch a window of access. It's opening a thousand fucking windows. And also you only need to send the veto rules that ask for approval or deny if you are actually writing something to the VPS or if you are switching accounts.\n> All right, go ahead, build that shit.\n\nNotes: touches Follow Amber approval pop-up (console) and axHub tool policies (veto vs allow). Changing which calls are veto is a policy change in axHub and the shared rule 'It's a veto system'; update rules + decisions.md to match.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -101317,7 +101317,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 74,
+   "rev": 75,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -101579,7 +101579,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 51,
+   "rev": 52,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -106256,7 +106256,7 @@
    },
    "kind": "build",
    "planRef": "headless-session-efficiency-shared-chain-control",
-   "rev": 61,
+   "rev": 62,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -113143,7 +113143,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -121345,7 +121345,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -122164,7 +122164,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 41,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -128397,7 +128397,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -130354,7 +130354,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -130689,7 +130689,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -134232,7 +134232,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 71,
+   "rev": 72,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -134565,7 +134565,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 98,
+   "rev": 99,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -134870,7 +134870,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 50,
+   "rev": 51,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -135026,7 +135026,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -135186,7 +135186,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -135346,7 +135346,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -135578,7 +135578,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 56,
+   "rev": 57,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -135846,7 +135846,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 61,
+   "rev": 62,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -136629,7 +136629,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 60,
+   "rev": 61,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -137114,7 +137114,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 49,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -137322,7 +137322,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 46,
+   "rev": 47,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -137530,7 +137530,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 46,
+   "rev": 47,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -137754,7 +137754,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 52,
+   "rev": 53,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -138050,7 +138050,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 92,
+   "rev": 93,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -138263,7 +138263,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 48,
+   "rev": 49,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -138434,7 +138434,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -138672,7 +138672,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 52,
+   "rev": 53,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -138832,7 +138832,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -138996,7 +138996,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -139156,7 +139156,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -139615,7 +139615,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 35,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -139853,7 +139853,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 44,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -140203,7 +140203,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -140363,7 +140363,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -140742,7 +140742,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 35,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -140981,7 +140981,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 85,
+   "rev": 86,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -142129,7 +142129,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -142289,7 +142289,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -142453,7 +142453,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -142617,7 +142617,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 35,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -142957,7 +142957,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 35,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -143121,7 +143121,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 35,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -143314,7 +143314,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 64,
+   "rev": 65,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -144475,7 +144475,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -144631,7 +144631,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -145290,7 +145290,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -146755,7 +146755,7 @@
    "title": "Orchestrator assigns builds/steps to employee agents via group chat, with match % dialog and 90 s veto",
    "category": "",
    "detail": "1) When the orchestrator assigns a build or step, it posts in the group chat asking which employee has the skills/tools/capabilities. 2) The first agent to claim it opens a dialog listing all matching agents with a percentage for how likely each is the best choice. 3) 90-second veto: if Brett doesn't pick, the orchestrator assigns the highest-probability agent by default. 4) The chosen employee uses its own brief set and its training data in the brief, and sends its briefs back to the orchestrator. Builds on orchestrator-table-columns (assigned employee) and the Brownie/Molly group chat handoffs; reuse. Full API/CLI control.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -147111,7 +147111,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 75,
+   "rev": 76,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -147716,7 +147716,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 93,
+   "rev": 94,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -147760,7 +147760,7 @@
    "title": "Agent Manager: training wizard for employee agents (data sources, processing, RAG, auto-built tools, skills, persona, vocabulary)",
    "category": "",
    "detail": "1) A training hook on every employee agent. 2) Training wizard in the Agent Manager: pick data sources (a website or parts of one, specific product types, code such as React or TypeScript, files, etc.), how to fetch them, how to process and store them (RAG/vector index, summaries, etc.). 3) Training by category/type produces for the agent: tools, skills, a persona, and an index of categorized vocabulary. Auto-attach already generated vocabulary files, pairs, tools, skills and personality assets that match. 4) Ties into the agent profile schema build (agent-skill@1 / persona templates) and 'train employees on website data'; reuse, don't duplicate. Full API/CLI control.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -148117,7 +148117,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 73,
+   "rev": 74,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -148588,7 +148588,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 81,
+   "rev": 82,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -149087,7 +149087,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 80,
+   "rev": 81,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -149127,7 +149127,7 @@
    "title": "Inline edit plugin: install in console, Molly and AmberX web (not Android); Molly never renders a plugin twice",
    "category": "",
    "detail": "Amends the inline element editing build. 1) Install the plugin in the console, Molly and AmberX web. Not the AmberX Android app. 2) Molly rule for every plugin: when a console page is open inside Molly, render the console's plugin only if Molly doesn't already have that plugin, so nothing ever renders twice.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -149475,7 +149475,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 77,
+   "rev": 78,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -149642,7 +149642,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -150593,7 +150593,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -150749,7 +150749,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -150905,7 +150905,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -151065,7 +151065,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -151225,7 +151225,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 32,
+   "rev": 33,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -151381,7 +151381,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 38,
+   "rev": 39,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -152381,7 +152381,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 75,
+   "rev": 76,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -153649,7 +153649,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 81,
+   "rev": 82,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -155553,7 +155553,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -155745,7 +155745,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 36,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -155966,7 +155966,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 66,
+   "rev": 67,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -156116,7 +156116,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -156276,7 +156276,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -156501,7 +156501,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 53,
+   "rev": 54,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -156687,7 +156687,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 48,
+   "rev": 49,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -156892,7 +156892,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 53,
+   "rev": 54,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -157101,7 +157101,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 50,
+   "rev": 51,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -157319,7 +157319,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 50,
+   "rev": 51,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -157540,7 +157540,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 52,
+   "rev": 53,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -157765,7 +157765,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 48,
+   "rev": 49,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -157991,7 +157991,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 51,
+   "rev": 52,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -158220,7 +158220,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 56,
+   "rev": 57,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -158449,7 +158449,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 58,
+   "rev": 59,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -158679,7 +158679,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 56,
+   "rev": 57,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -159333,7 +159333,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 52,
+   "rev": 53,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -160951,7 +160951,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -161150,7 +161150,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 36,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -161406,7 +161406,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 49,
+   "rev": 50,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -161594,7 +161594,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 35,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -161789,7 +161789,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 35,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -161973,7 +161973,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -163117,7 +163117,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -163307,7 +163307,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -163609,7 +163609,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 46,
+   "rev": 47,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -172732,7 +172732,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -173525,7 +173525,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -174932,7 +174932,7 @@
    "title": "One to-do, notes and tasks plugin in the console; take it out of AmberX",
    "category": "one-app",
    "detail": "Brett said: \"take the to-do manager and everything and the notes from AmberX and move it to the console and remove all the notes things from the console. I want just one to-do, note and task management plugin to be in the console. Take it out of AmberX.\" First slice of the one-app merge. Keep all existing data; AmberX Android reads it from the console.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -175145,7 +175145,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -176376,7 +176376,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -176559,7 +176559,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -176721,7 +176721,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -179268,7 +179268,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 25,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -180519,7 +180519,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -181579,7 +181579,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -182638,7 +182638,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -185569,7 +185569,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": {
