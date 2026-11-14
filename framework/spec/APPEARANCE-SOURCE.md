@@ -82,6 +82,57 @@ asks are listed, a slot over a limit reverts), `skinConfigBrief` (the AI's plain
 `schemas/skin-config.json`, JSON Schema `schemas/json/skin-config.schema.json` (`axf schemas`); fixture
 `spec/fixtures/skin-config.json`, check `spec/check-skin-config.mjs`.
 
+### The hub default skin: `defaultSkin` (build console-look-becomes-default-axhub-skin, Nov 14 2026)
+
+> Brett (Nov 14 2026): "Keep the design, all the style, the way the console looks right now, and make it the default
+> axHub look, and then make all the apps inherit it right now."
+
+**The pointer.** The shared appearance@1 document gets a second skin pointer beside the hub-wide `skin`:
+`defaultSkin: { id, overrides?, colorTheme? }` (same shape, `normalizeHubSkin`; `HubSkinPointer`). `id` is a skin@1
+asset (or a design package read as one). The hub-wide `skin` is a level an app opts into with Follow; the hub default
+is the **floor every app stands on without opting in**. Set, cleared and merged like the other fields
+(`AppearanceChange.defaultSkin`, null clears it; `mergeAppearance`; `serializeAppearance` now writes both pointers, so a
+save from the web source no longer drops the hub-wide skin). Absent = no floor: every app draws its own saved look, as
+before this build.
+
+**Resolve order** (`resolveLookSkin(look, global, scope, hubDefault)`; the chain is now `plugin → ui → app → global →
+default`, `SKIN_SCOPE_DEFAULT`, `skinScopeChain` ends in it):
+
+| level | with a hub default |
+| --- | --- |
+| `default` | the hub default skin, always on (`from: 'default'`) |
+| `app` | Use skin on = the app's own skin, as before. Use skin off and not following = *nothing picked here*: the app inherits the floor, never the hub-wide skin (that still takes Follow). The colour theme kept beside its switched-off skin stays with that skin. |
+| `global` | the hub-wide skin while the app follows it; with none to follow, the floor |
+| `ui:` / `plugin:` | as before: on = its own skin, inherit = the parent, off = no skin inside it (an explicit choice: that place stands on the app's saved look, below the floor) |
+
+**Composition with the floor in force** (`composeLookAt`, s5): hub default skin (its sections, assets, parts, icon pack,
+extras, chrome) → hub-level `overrides` and `colorTheme` on the pointer → **the app's own picks** (`own.slots`,
+`own.spacing`, `own.hidden`, `own.settings`: the edits, per the skin-axhub-override rule that only what was edited is
+kept) → `ui:` overrides → `plugin:` overrides. So an app with no edits is the console look exactly; an app with edits
+differs only in what it edited. The app's `default` snapshot only fills slots the hub default skin leaves unnamed. With
+Use skin on, the app's own skin composes exactly as today (the floor is not consulted). `lookAfterChange` and
+`setLookSlot` are unchanged: with Use skin off a pick is the app's own, which is what an edit over the floor is.
+
+**Chrome in the skin: `chrome`** (skin@1, `SkinChrome`, `normalizeSkinChrome` / `skinChromeErrors` /
+`skinChromeSettings` in `skin-rules.mjs`, the build engine validates the same lines): `chrome: { <kind>: { interface?,
+instances? } }` for the chrome-settings@1 kinds (tab-group, toolbar, banner, nav-menu, app-menu, context-menu).
+`interface` = the settings interface the kind's dialog renders through (`axf.chrome.settings.<kind>`); `instances` =
+field overrides per instance over the active asset (`axf.chrome.<kind>.<instance>`, only that kind's `CHROME_FIELDS`,
+cleaned as the dialog saves them). It lands in the composed look's settings after `extras.settings`. Where a chrome
+piece is (toolbar bottom, nav left) stays a layout token (`axf.tokens.layout` in `extras.settings`), as today.
+
+**Backups per app: `backups`** (app-look@1, `LookBackup`, `normalizeLookBackup`, `LOOK_BACKUPS_MAX` = 5): before an
+app is moved onto the hub default, what it drew is kept in its own look document as
+`backups: [{ id, at, by, reason, own, skin, scopes }]`, newest first, capped (the oldest falls off). It is the same three
+parts the undo record keeps, so a restore is one move: own picks, skin state and scopes back as they were, the backup
+kept, one undo left (`restore-backup`, s5). `normalizeAppLook` keeps the list through every writer; a document without
+one has no `backups` field.
+
+**Not changed:** `skin-switch@1` (its scopes stay hub / app / ui / plugin; the hub default is set through the shared
+document, s7+ gives it CLI, REST, MCP and voice), the Default skin of skin-config@1 (`default-<app>`: each app's own saved
+look, still what Restore to default goes back to), hub-only mode (`hubOnlyLook` follows the hub-wide skin and, with none,
+now the floor).
+
 An app without a hub source keeps the same document in a setting (`axf.skin.look`), so a new app from a template gets the
 same Settings → Appearance. The sections below describe the shared document, which stays the transport and the source
 of the shared token overrides.

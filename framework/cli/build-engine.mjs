@@ -13,6 +13,7 @@ import { AGENT_CARD_TYPE, agentCardErrors, agentCardSchemaProperties } from '../
 import { JOB_TYPE, jobTypeErrors, jobTypeSchemaProperties } from '../core/engines/job-type-rules.mjs';
 import { CARD_TYPE, cardErrors, cardSchemaProperties } from '../core/engines/card-rules.mjs';
 import { partsErrors as skinPartsErrors } from '../core/engines/skin-coverage.mjs';
+import { skinChromeErrors } from '../core/engines/skin-rules.mjs';
 import { DEMO_TYPES, demoAssetErrors, demoSchemaProperties } from '../core/engines/demo-rules.mjs';
 import { jsonSchemas as uiReviewJsonSchemas, REGISTRY as UI_REVIEW_REGISTRY } from '../core/ui-review-schema.mjs';
 import { jsonSchemas as sessionJsonSchemas, REGISTRY as SESSION_REGISTRY } from '../core/session-schema.mjs';
@@ -228,6 +229,7 @@ export function skinErrors(d) {
       if ('settings' in x && !isO(x.settings)) errors.push('data.extras.settings must be an object');
     }
   }
+  errors.push(...skinChromeErrors(d.chrome));
   return errors;
 }
 

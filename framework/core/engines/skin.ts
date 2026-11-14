@@ -36,11 +36,11 @@ import type { DesignPackageData } from '../types';
 import { spacingOf } from './spacing';
 import { CUSTOM_TARGETS, customizable, normalizeCustomValues, type CustomValues } from './customize';
 import spec from '../../schemas/asset-types.json';
-import { SKIN_COLOR_SLOT, SKIN_NEVER, normalizeLookPart, resolveLookSkin, setSkinColorTheme, type AppLookDocument, type GlobalSkin, type LookPart, skinSlotMap } from './skin-rules.mjs';
+import { SKIN_COLOR_SLOT, SKIN_NEVER, normalizeLookPart, normalizeSkinChrome, resolveLookSkin, setSkinColorTheme, skinChromeErrors, type AppLookDocument, type GlobalSkin, type LookPart, type SkinChrome, skinSlotMap } from './skin-rules.mjs';
 import { coverageSummary, coverageTable, partsErrors, partsTypes, skinScopeKey, uncoveredTypes, type CoverageRow, type CoverageSummary, type ResolvedSkin, type SkinScope, type TypeSpecs } from './skin-coverage.mjs';
 
-export { APP_LOOK_FRAME, APP_LOOK_MAX_BYTES, APP_LOOK_PROJECT, SKIN_COLOR_SLOT, SKIN_NEVER, SKIN_USES, appLookPath, backToSkin, hubOnlyLook, newAppLook, normalizeAppLook, normalizeScopeState, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, scopeState, setInheritSkin, setLookSlot, setScopeOverride, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorTheme, undoRestore, RETIRED_PACKAGE_TYPES, SKIN_SCALE_TYPES, SKIN_SECTIONS, SKIN_SECTION_FIELDS, SKIN_SWAPPABLE_SECTION, isSkinSectionType, sectionOfType, skinSlotMap } from './skin-rules.mjs';
-export type { AppLookDocument, AppSkinState, GlobalSkin, LookPart, LegacyLook, LookMigrated, LookUndo, SkinSection } from './skin-rules.mjs';
+export { APP_LOOK_FRAME, APP_LOOK_MAX_BYTES, APP_LOOK_PROJECT, LOOK_BACKUPS_MAX, SKIN_COLOR_SLOT, SKIN_NEVER, SKIN_USES, appLookPath, backToSkin, hubOnlyLook, newAppLook, normalizeAppLook, normalizeLookBackup, normalizeScopeState, normalizeSkinChrome, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, scopeState, setInheritSkin, setLookSlot, setScopeOverride, setScopeSkin, setSkinColorTheme, setUseSkin, skinChromeErrors, skinChromeSettings, skinColorTheme, undoRestore, RETIRED_PACKAGE_TYPES, SKIN_SCALE_TYPES, SKIN_SECTIONS, SKIN_SECTION_FIELDS, SKIN_SWAPPABLE_SECTION, isSkinSectionType, sectionOfType, skinSlotMap } from './skin-rules.mjs';
+export type { AppLookDocument, AppSkinState, GlobalSkin, LookBackup, LookPart, LegacyLook, LookMigrated, LookUndo, SkinChrome, SkinChromeKind, SkinSection } from './skin-rules.mjs';
 // skin-switch@1 (Nov 13 2026): use / back-to-skin / restore-default / undo per scope (hub, app:<id>, ui:<view>, plugin:<id>), one undo record in the look document
 export { SKIN_SWITCH_ACTIONS, SKIN_SWITCH_CONTRACT, SKIN_SWITCH_ERRORS, SKIN_SWITCH_HUB, SKIN_SWITCH_SCOPES, normalizeSkinSwitch, parseSwitchScope, skinSwitch, skinSwitchState, switchScopeOf, switchScopeState, switchScopes } from './skin-switch.mjs';
 export type { SkinSwitchAction, SkinSwitchCommand, SkinSwitchContext, SkinSwitchError, SkinSwitchProblem, SkinSwitchResult, SkinSwitchScopeKind, SkinSwitchState, SkinSwitchView, SwitchScope } from './skin-switch.mjs';
@@ -75,6 +75,12 @@ export interface SkinData {
   preview?: { caption?: string; image?: string };
   /** Spacing and chrome the skin needs shown or hidden. */
   extras?: SkinExtras;
+  /**
+   * Chrome settings per chrome kind (chrome-settings@1: tab-group, toolbar, banner, nav-menu, app-menu, context-menu):
+   * the settings interface its dialog renders through and field overrides per instance (skin-rules.mjs `SkinChrome`).
+   * Lands in the composed look's settings after `extras.settings`.
+   */
+  chrome?: SkinChrome;
 }
 /** Where an app's app-look document is kept: the hub, or a setting without one. `failed` = unreadable: nothing is written. */
 export interface AppLookStore {
@@ -144,6 +150,8 @@ export function normalizeSkin(raw: unknown): SkinData {
     if (isObj(d.extras.settings)) x.settings = { ...d.extras.settings };
     out.extras = x;
   }
+  const chrome = normalizeSkinChrome(d.chrome);
+  if (Object.keys(chrome).length) out.chrome = chrome;
   return out;
 }
 
@@ -170,6 +178,7 @@ export function skinErrors(raw: unknown): string[] {
       if ('settings' in x && !isObj(x.settings)) errors.push('data.extras.settings must be an object');
     }
   }
+  errors.push(...skinChromeErrors(raw.chrome));
   return errors;
 }
 

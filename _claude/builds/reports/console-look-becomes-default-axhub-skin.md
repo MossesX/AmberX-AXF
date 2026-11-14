@@ -25,3 +25,12 @@ Brett (2026-11-14 22:19): "Keep the design, all the style, the way the console l
 - Dark = the same look with colour theme `fresh-dark` (the day/night switch's dark side), because `arctic-calm` has no dark pair.
 - The "after" run must use the same `shots-before.json` steps (only the seed changes to the new default skin) so the diff compares like with like.
 - The Settings → Appearance search shows a "did not render, so it cannot be focused" toast on some shots. It is the same on both runs, so it does not affect the diff, but it is a bug in global search to look at.
+
+## Contract (s4, Fable)
+Spec: `framework/spec/APPEARANCE-SOURCE.md` → "The hub default skin: `defaultSkin`".
+- appearance@1 gets `defaultSkin: { id, overrides?, colorTheme? }` beside the hub-wide `skin` (same shape, `normalizeHubSkin`, `HubSkinPointer`; `AppearanceChange.defaultSkin`, null clears). The hub-wide skin needs Follow; the hub default is the floor every app stands on without opting in.
+- Chain is now `plugin → ui → app → global → default` (`SKIN_SCOPE_DEFAULT`, `skinScopeChain`, `SKIN_SCOPE_KINDS`). `resolveLookSkin(look, global, scope, hubDefault)`: Use skin off and not following = inherit the floor (never the hub-wide skin); a `ui:` / `plugin:` scope's explicit off still means no skin there. Without a hub default nothing changes (every existing check passes unchanged).
+- Composition order with the floor in force (implemented in s5): hub default skin → the pointer's overrides and colour theme → the app's own picks (the edits, skin-axhub-override rule) → ui overrides → plugin overrides. Writers (`lookAfterChange`, `setLookSlot`) are unchanged: with Use skin off a pick is already the app's own.
+- skin@1 gets `chrome: { <chrome-settings@1 kind>: { interface?, instances? } }` (`normalizeSkinChrome`, `skinChromeErrors`, `skinChromeSettings` in skin-rules.mjs; the build engine validates the same lines; registry `optional_fields.chrome`). Lands in settings as `axf.chrome.settings.<kind>` and `axf.chrome.<kind>.<instance>`.
+- app-look@1 gets `backups: [{ id, at, by, reason, own, skin, scopes }]`, newest first, `LOOK_BACKUPS_MAX` 5 (`normalizeLookBackup`; kept through `normalizeAppLook`).
+- Bug found and fixed on the way: `serializeAppearance` never wrote `skin`, so every save from the web source (`hubAppearance.ts` PUTs `serializeAppearance(next)`) dropped the hub-wide skin. It now writes `skin` and `defaultSkin`.

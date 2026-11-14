@@ -59,10 +59,22 @@ export interface AppearanceDocument {
    * `colorTheme` = the colour theme picked inside that skin (absent = the skin's own): switching it never changes `id`.
    */
   skin?: { id: string; overrides?: Record<string, string>; colorTheme?: string };
+  /**
+   * The hub default skin (build console-look-becomes-default-axhub-skin, Nov 14 2026, Brett: "make it the default axHub
+   * look, and then make all the apps inherit it right now"): the `default` level at the root of the skin chain
+   * (plugin → ui → app → global → default). Every app stands on it: an app with no skin of its own draws it, and its
+   * own picks (slots, spacing, hidden chrome, look settings) are the only edits on top. Unlike `skin`, no app has to
+   * opt in. `overrides` are hub-level picks over that skin, `colorTheme` the colour theme picked inside it. Absent =
+   * no floor: an app without a skin draws its own saved look, as before.
+   */
+  defaultSkin?: { id: string; overrides?: Record<string, string>; colorTheme?: string };
   /** who saved it last (app id), when; informational */
   updatedBy?: string;
   updatedAt?: string;
 }
+
+/** The hub-wide skin and the hub default skin share one shape: a skin id, hub-level overrides, the colour theme picked inside. */
+export type HubSkinPointer = NonNullable<AppearanceDocument['skin']>;
 
 /** What `resolveAppearance` returns: only values the app can apply, plus what it skipped and why. */
 export interface ResolvedAppearance {
@@ -88,6 +100,24 @@ export function parseAppearance(text: string | null | undefined, maxBytes = APPE
   let raw: unknown;
   try { raw = JSON.parse(text); } catch { return null; }
   return normalizeAppearance(raw);
+}
+
+/**
+ * A skin pointer on the shared document (`skin`, `defaultSkin`): `{ id, overrides?, colorTheme? }` with only ids that
+ * pass; null when there is no usable id. The colour theme picked inside the skin is its own field, never an override
+ * (engines/skin-rules.mjs): a document saved before that rule kept it among the overrides, so it is read from there.
+ */
+export function normalizeHubSkin(raw: unknown): HubSkinPointer | null {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
+  const s = raw as Record<string, unknown>;
+  if (typeof s.id !== 'string' || !ID.test(s.id)) return null;
+  const overrides: Record<string, string> = {};
+  if (s.overrides && typeof s.overrides === 'object' && !Array.isArray(s.overrides)) {
+    for (const [t, id] of Object.entries(s.overrides as Record<string, unknown>)) if (ID.test(t) && typeof id === 'string' && ID.test(id) && !APPEARANCE_NEVER.includes(t)) overrides[t] = id;
+  }
+  const colorTheme = typeof s.colorTheme === 'string' && ID.test(s.colorTheme) ? s.colorTheme : overrides['color-theme'] ?? '';
+  delete overrides['color-theme'];
+  return { id: s.id, ...(Object.keys(overrides).length ? { overrides } : {}), ...(colorTheme ? { colorTheme } : {}) };
 }
 
 /** Same as parseAppearance, from an already-parsed value. */
@@ -126,19 +156,11 @@ export function normalizeAppearance(raw: unknown): AppearanceDocument | null {
     }
     doc.settings = settings; // kept even when empty: an empty map still says "the hub owns the look settings"
   }
-  if (o.skin && typeof o.skin === 'object' && !Array.isArray(o.skin)) {
-    const s = o.skin as Record<string, unknown>;
-    if (typeof s.id === 'string' && ID.test(s.id)) {
-      const overrides: Record<string, string> = {};
-      if (s.overrides && typeof s.overrides === 'object' && !Array.isArray(s.overrides)) {
-        for (const [t, id] of Object.entries(s.overrides as Record<string, unknown>)) if (ID.test(t) && typeof id === 'string' && ID.test(id) && !APPEARANCE_NEVER.includes(t)) overrides[t] = id;
-      }
-      // the colour theme picked inside the hub-wide skin is its own field, never an override (engines/skin-rules.mjs)
-      const colorTheme = typeof s.colorTheme === 'string' && ID.test(s.colorTheme) ? s.colorTheme : overrides['color-theme'] ?? '';
-      delete overrides['color-theme'];
-      doc.skin = { id: s.id, ...(Object.keys(overrides).length ? { overrides } : {}), ...(colorTheme ? { colorTheme } : {}) };
-    }
-  }
+  // the hub-wide skin (`skin`, the global level) and the hub default skin (`defaultSkin`, the root level) read the same way
+  const skin = normalizeHubSkin(o.skin);
+  if (skin) doc.skin = skin;
+  const defaultSkin = normalizeHubSkin(o.defaultSkin);
+  if (defaultSkin) doc.defaultSkin = defaultSkin;
   if (typeof o.updatedBy === 'string' && o.updatedBy.length <= 80) doc.updatedBy = o.updatedBy;
   if (typeof o.updatedAt === 'string' && o.updatedAt.length <= 40) doc.updatedAt = o.updatedAt;
   return doc;
@@ -187,6 +209,8 @@ export interface AppearanceChange {
   settings?: Record<string, unknown>;
   /** The hub-wide skin: a pick, or null to clear it. */
   skin?: AppearanceDocument['skin'] | null;
+  /** The hub default skin: a pick, or null to clear it (apps go back to their own saved looks). */
+  defaultSkin?: AppearanceDocument['defaultSkin'] | null;
 }
 
 /** Fold a later change into an earlier pending one (per key, the later wins). */
@@ -199,6 +223,7 @@ export function combineAppearanceChanges(a: AppearanceChange | null, b: Appearan
   const spacing = b.spacing ?? a.spacing; if (spacing) out.spacing = spacing;
   const palette = b.palette ?? a.palette; if (palette) out.palette = palette;
   if (b.skin !== undefined) out.skin = b.skin; else if (a.skin !== undefined) out.skin = a.skin;
+  if (b.defaultSkin !== undefined) out.defaultSkin = b.defaultSkin; else if (a.defaultSkin !== undefined) out.defaultSkin = a.defaultSkin;
   return out;
 }
 
@@ -218,6 +243,7 @@ export function mergeAppearance(base: AppearanceDocument | null, change: Appeara
   }
   if (change.palette) doc.palette = change.palette;
   if (change.skin === null) delete doc.skin; else if (change.skin) doc.skin = change.skin;
+  if (change.defaultSkin === null) delete doc.defaultSkin; else if (change.defaultSkin) doc.defaultSkin = change.defaultSkin;
   if (change.settings) {
     const before = doc.settings;
     const settings = { ...(before ?? {}) };
@@ -239,6 +265,9 @@ export function serializeAppearance(doc: AppearanceDocument): string {
   if (doc.hidden) ordered.hidden = Object.fromEntries(Object.entries(doc.hidden).sort(([a], [b]) => a.localeCompare(b)));
   if (doc.palette) ordered.palette = doc.palette;
   if (doc.settings) ordered.settings = Object.fromEntries(Object.entries(doc.settings).sort(([a], [b]) => a.localeCompare(b)));
+  // the two skin pointers ride the text too: a writer that serialized without them lost the hub-wide skin on every save
+  if (doc.skin) ordered.skin = doc.skin;
+  if (doc.defaultSkin) ordered.defaultSkin = doc.defaultSkin;
   if (doc.updatedBy) ordered.updatedBy = doc.updatedBy;
   if (doc.updatedAt) ordered.updatedAt = doc.updatedAt;
   return JSON.stringify(ordered, null, 2);

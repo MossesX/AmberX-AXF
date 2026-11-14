@@ -390,8 +390,8 @@ console.log(`check-skin: ${n} checks passed`);
   // scopes: plugin → ui → app → global, the child overrides the parent
   const sc = fx.scopes;
   const place = { app: 'app', ui: 'home', plugin: 'notes' };
-  eq(skinScopeChain(place), ['plugin:notes', 'ui:home', 'app', 'global'], 'chain from the leaf');
-  eq(skinScopeChain({ app: 'app' }), ['app', 'global'], 'the app chain');
+  eq(skinScopeChain(place), ['plugin:notes', 'ui:home', 'app', 'global', 'default'], 'chain from the leaf (the hub default skin is the root)');
+  eq(skinScopeChain({ app: 'app' }), ['app', 'global', 'default'], 'the app chain');
   eq([skinScopeKey(place), skinScopeKey({ app: 'app', ui: 'home' }), skinScopeKey({ app: 'app' })], ['plugin:notes', 'ui:home', 'app'], 'keys');
   eq(['global', 'app', 'ui:home', 'plugin:notes'].map(skinScopeKind), ['global', 'app', 'ui', 'plugin'], 'kinds');
   eq(skinScopeSelector('plugin:ai.amberx.notes'), '[data-fx-scope="skin-plugin-ai-amberx-notes"]', 'a plugin scope is drawn under its scope root');

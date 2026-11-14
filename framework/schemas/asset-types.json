@@ -1312,7 +1312,7 @@
       "label": "Skin",
       "group": "System",
       "icon": "palette",
-      "description": "A skin (skin@1, engine core/engines/skin.ts) is a whole look for one place: a layout theme, a colour theme, a style theme, the assets that fill the other slots, an optional icon pack and style parts for any drawn type. Apps keep their own look unless Use skin is on (Settings → Appearance); a skin applies hub-wide, per app, per UI / screen or per plugin (the chain plugin → ui → app → global, the child overrides the parent). How a skin reaches every registered type is worked out from this registry (skin-coverage@1, core/engines/skin-coverage.mjs): a type declares `skin: { by: slot | parts | reference | bundle | none, via?, why? }` only when its flags do not say (widgets and attachables are styled through their style target in schemas/customize.json; everything else is a slot); CI fails on a type a skin cannot reach.",
+      "description": "A skin (skin@1, engine core/engines/skin.ts) is a whole look for one place: a layout theme, a colour theme, a style theme, the assets that fill the other slots, an optional icon pack and style parts for any drawn type. Apps keep their own look unless Use skin is on (Settings → Appearance); a skin applies hub-wide, per app, per UI / screen or per plugin (the chain plugin → ui → app → global → default, the child overrides the parent). The `default` level is the hub default skin (`defaultSkin` on the shared appearance@1 document, Nov 14 2026): every app stands on it without opting in, and an app's own picks are the edits drawn over it. How a skin reaches every registered type is worked out from this registry (skin-coverage@1, core/engines/skin-coverage.mjs): a type declares `skin: { by: slot | parts | reference | bundle | none, via?, why? }` only when its flags do not say (widgets and attachables are styled through their style target in schemas/customize.json; everything else is a slot); CI fails on a type a skin cannot reach.",
       "required": [
         "layoutTheme",
         "colorTheme",
@@ -1323,7 +1323,8 @@
         "preview": "{ caption, image }: what the picker shows",
         "extras": "{ spacing: tight | compact | regular, hidden: asset type → true / false, settings: appearance settings key → value }",
         "iconPack": "icon-pack asset id — the icon pack the skin draws with (sets axf.icons.pack.<scope>); absent = the branding's",
-        "parts": "{ <asset type>: { <customize token>: value } } — style parts for any type with a style target (schemas/customize.json): the type's box, text, icon and items under this skin"
+        "parts": "{ <asset type>: { <customize token>: value } } — style parts for any type with a style target (schemas/customize.json): the type's box, text, icon and items under this skin",
+        "chrome": "{ <chrome kind>: { interface?: settings asset id, instances?: { <instance>: { <field>: value } } } } — chrome settings per chrome-settings@1 kind (tab-group, toolbar, banner, nav-menu, app-menu, context-menu): the settings interface its dialog renders through (axf.chrome.settings.<kind>) and field overrides per instance (axf.chrome.<kind>.<instance>, the kind's CHROME_FIELDS only); lands in the composed look's settings after extras.settings"
       },
       "roll": {
         "slot": false,
