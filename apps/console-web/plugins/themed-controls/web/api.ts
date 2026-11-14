@@ -8,6 +8,8 @@
  *   themed-controls.family:<family>:on|off       one family
  *   themed-controls.sheet:on|off                 bottom sheet on a phone
  *   themed-controls.state                        say what is on (toast); the full state is `panel:themed-controls`
+ *   themed-controls.set:<ref>:<value>            set one themed control (ref = element id, name or label words)
+ *   themed-controls.get:<ref>                    say one themed control's value (toast); `setting:field.<ref>` reads it
  */
 import type { AxfRuntime } from '@console/axf/core';
 import { controlRegistry } from '@console/axf/react';
@@ -58,6 +60,15 @@ export function registerApi(rt: AxfRuntime): () => void {
   }, 'Turn one themed control family on or off', true);
   reg('themed-controls.sheet', ([v]) => rt.settings.set(TC_KEYS.sheet, switchArg(v, rt.settings.get(TC_KEYS.sheet) !== false)), 'Bottom sheet on a phone on or off', true);
   reg('themed-controls.state', () => rt.toast(sayState(rt), 'info', 'Themed controls'), 'Are themed controls on');
+  reg('themed-controls.set', ([ref, ...rest]) => {
+    const r = liveHost()?.find(ref ?? '');
+    if (!r?.swap.set) { rt.toast(`No themed control "${ref ?? ''}" on this screen.`, 'warning', 'Themed controls'); return; }
+    void r.swap.set(rest.join(':'));
+  }, 'Set a themed control', true);
+  reg('themed-controls.get', ([ref]) => {
+    const r = liveHost()?.find(ref ?? '');
+    rt.toast(r ? `${ref}: ${JSON.stringify(r.swap.state?.() ?? { value: r.input.value })}` : `No themed control "${ref ?? ''}" on this screen.`, r ? 'info' : 'warning', 'Themed controls');
+  }, 'Read a themed control', true);
   offs.push(controlRegistry(rt).register({
     address: 'panel:themed-controls', kind: 'panel', label: 'Themed controls', detail: 'Plugin · switches and live themed controls', icon: 'sliders',
     keywords: ['themed', 'controls', 'native', 'checkbox', 'slider', 'picker', 'tooltip', 'scrollbar'],

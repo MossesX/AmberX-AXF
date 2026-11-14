@@ -204,3 +204,29 @@ async def report(request: Request) -> dict[str, Any]:
     if live is not None:
         _write("live.json", {**live, "at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())})
     return {"ok": True, "rev": settings()["rev"], **out}
+
+
+def _live() -> dict[str, Any]:
+    live = _read("live.json", {})
+    return live if isinstance(live, dict) else {}
+
+
+@router.get("/controls")
+def controls(family: str = "") -> dict[str, Any]:
+    """The themed controls on the open console's screen (ref, family, label, value, console-control address)."""
+    live = _live()
+    items = [c for c in live.get("controls") or [] if not family or c.get("family") == family]
+    return {"controls": items, "at": live.get("at"), "note": "as the open console last reported it (every few seconds)"}
+
+
+@router.post("/set")
+async def set_control(request: Request) -> dict[str, Any]:
+    """Set one themed control in the open console like a person would: {ref, value}. ref = element id, name or label words."""
+    b = await _body(request)
+    ref = str(b.get("ref") or "").strip()
+    if not ref:
+        raise HTTPException(422, "ref is required (the control's id, name or label)")
+    value = b.get("value")
+    if isinstance(value, bool):
+        value = "on" if value else "off"
+    return run_in_console("themed-controls.set", f"{ref}:{'' if value is None else value}", _by(request))

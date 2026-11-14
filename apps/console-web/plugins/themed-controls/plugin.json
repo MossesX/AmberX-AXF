@@ -100,6 +100,44 @@
         }
       },
       {
+        "route": "GET /controls",
+        "id": "controls",
+        "title": "Themed controls on screen",
+        "readOnly": true,
+        "description": "The themed controls on the open console's screen: ref, family, label, value and console-control address, as the console last reported them.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "family": {
+              "type": "string",
+              "description": "only this family"
+            }
+          }
+        }
+      },
+      {
+        "route": "POST /set",
+        "id": "set",
+        "title": "Set a themed control",
+        "description": "Set one themed control in the open console like a person would (the form sees input and change): a checkbox on/off, a radio group's value, a slider or number, a date, a colour.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "ref": {
+              "type": "string",
+              "description": "the control's element id, name or label words"
+            },
+            "value": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "ref",
+            "value"
+          ]
+        }
+      },
+      {
         "route": "POST /report",
         "skip": "the open console's own report of its switches and live state, not a command"
       }

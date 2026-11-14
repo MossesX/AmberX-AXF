@@ -13,6 +13,7 @@ import {
   THEMED_FAMILIES, activeFamilies, controlProps, familyOf, shouldTheme, surfaceFor, themedControlsConfig,
   type NativeAttrs, type TcProps, type TcSurface, type TcViewport, type ThemedControlsConfig, type ThemedFamily,
 } from '@console/axf/core/engines/themed-controls';
+import { controlList, registerSwapTarget } from './targets';
 
 export interface LiveHost {
   counts(): Record<string, number>;
@@ -152,12 +153,15 @@ export function startHost(rt: AxfRuntime, families: { elements: ElementFamily[];
       }
       const g: Record<string, unknown> = {};
       for (const [f, fam] of globals) if (running.has(f) && fam.report) g[f] = fam.report();
-      return { active: [...active], counts: host.counts(), open, globals: g, surface: isPhone() ? 'phone' : 'wide' };
+      return { active: [...active], counts: host.counts(), open, globals: g, surface: isPhone() ? 'phone' : 'wide', controls: controlList([...swaps.values()]) };
     },
     swaps: () => [...swaps.values()],
     find(ref: string) {
-      const r = ref.replace(/^(field|setting):/, '').replace(/^tc\.field\./, '');
+      const r = ref.replace(/^setting:/, '').replace(/^field[.:]/, '');
       for (const s of swaps.values()) if (s.ref === r || s.input.id === r || s.input.name === r) return s;
+      // words: the control whose label says it ("the start date")
+      const w = r.toLowerCase().replace(/^the\s+/, '');
+      for (const s of swaps.values()) { const l = (s.input.labels?.[0]?.textContent ?? s.input.getAttribute('aria-label') ?? '').toLowerCase().trim(); if (l && (l === w || l.includes(w))) return s; }
       return null;
     },
     global<T>(family: ThemedFamily) { return running.has(family) ? ((globals.get(family)?.api?.() as T) ?? null) : null; },
@@ -270,6 +274,9 @@ export function startHost(rt: AxfRuntime, families: { elements: ElementFamily[];
     };
     swaps.set(input, rec);
     swap.sync(ctx.props());
+    const offTarget = registerSwapTarget(rt, rec);
+    const undo = rec.undo;
+    rec.undo = () => { offTarget(); undo(); };
   }
 
   function selectorFor(): string {
