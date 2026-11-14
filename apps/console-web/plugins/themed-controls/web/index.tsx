@@ -5,9 +5,11 @@
  * every element is the browser's own again.
  */
 import type { AxfWebLibrary } from '@console/axf/react/library';
-import { TC_KEYS } from '@console/axf/core/engines/themed-controls';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
+import { registerApi } from './api';
+import { liveHost } from './host';
+import { startSync } from './sync';
 import { FOLDER, FamiliesPanel, TAB, settingsGroups } from './settings';
 
 export const plugin: AxfWebLibrary = {
@@ -16,8 +18,8 @@ export const plugin: AxfWebLibrary = {
   version: '0.1.0',
   appMenu,
   register(rt) {
-    rt.actions.register('themed-controls.open', () => rt.dispatch(`settings.open:${TAB}`), { label: 'Themed controls settings' });
-    rt.actions.register('themed-controls.toggle', () => rt.settings.set(TC_KEYS.on, rt.settings.get(TC_KEYS.on) === false), { label: 'Turn themed controls on or off' });
+    registerApi(rt);
+    startSync(rt, () => liveHost()?.report() ?? {});
   },
   settingsTabs: [{ id: TAB, label: 'Themed controls', icon: 'sliders', order: 60, parent: 'plugins', description: 'Swap the checkboxes, sliders, pickers, dialogs, tooltips and scrollbars the browser draws for themed ones; one switch per family.' }],
   settings: settingsGroups(),

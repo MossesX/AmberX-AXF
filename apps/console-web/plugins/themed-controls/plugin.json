@@ -26,8 +26,89 @@
     "env": [],
     "mentions": []
   },
-  "commands": { "$axf": "plugin-commands@1", "auto": true },
-  "builtWith": { "model": "opus", "builtAt": "2026-11-14" },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      {
+        "route": "GET /state",
+        "id": "state",
+        "title": "Themed controls state",
+        "readOnly": true,
+        "description": "The master switch, the phone bottom sheet, each family's switch, the active families and what the open console last reported (themed controls per family, open pickers and dialogs)."
+      },
+      {
+        "route": "POST /on",
+        "id": "on",
+        "title": "Turn themed controls on",
+        "description": "Master switch on: every family whose own switch is on is themed again."
+      },
+      {
+        "route": "POST /off",
+        "id": "off",
+        "title": "Turn themed controls off",
+        "description": "Master switch off: every control is the browser's own again; nothing a form holds is lost."
+      },
+      {
+        "route": "POST /family",
+        "id": "family",
+        "title": "Turn one family on or off",
+        "description": "One control family themed (on) or native (off).",
+        "input": {
+          "type": "object",
+          "properties": {
+            "family": {
+              "type": "string",
+              "enum": [
+                "checkbox",
+                "radio",
+                "range",
+                "number",
+                "datetime",
+                "color",
+                "dialogs",
+                "file",
+                "tooltip",
+                "scrollbar"
+              ]
+            },
+            "on": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "family",
+            "on"
+          ]
+        }
+      },
+      {
+        "route": "POST /sheet",
+        "id": "sheet",
+        "title": "Bottom sheet on a phone",
+        "description": "Pickers and dialogs open as a bottom sheet on a phone-sized screen (on) or a pop-over everywhere (off).",
+        "input": {
+          "type": "object",
+          "properties": {
+            "on": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "on"
+          ]
+        }
+      },
+      {
+        "route": "POST /report",
+        "skip": "the open console's own report of its switches and live state, not a command"
+      }
+    ]
+  },
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-11-14"
+  },
   "help": "help.json",
   "opens": "main"
 }

@@ -40,7 +40,7 @@ export function settingsGroups(): SettingsGroup[] {
     {
       id: 'themed-controls.families', label: 'Control families', icon: 'layers', tab: TAB, order: 2,
       description: 'One switch per kind of browser element. A family works only while the master switch is on.',
-      settings: THEMED_FAMILIES.map((f) => ({ key: TC_KEYS.family(f), label: THEMED_FAMILY_LABELS[f], kind: 'toggle' as const, default: true, description: FAMILY_HINT[f] })),
+      settings: THEMED_FAMILIES.map((f) => ({ key: TC_KEYS.family(f), label: `Themed ${THEMED_FAMILY_LABELS[f].toLowerCase()}`, kind: 'toggle' as const, default: true, description: FAMILY_HINT[f] })),
     },
   ];
 }
