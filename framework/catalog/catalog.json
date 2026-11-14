@@ -1368,6 +1368,14 @@
               "suggests": []
             },
             {
+              "id": "ui.opacity.surfaces",
+              "title": "Surface transparency tokens: every dialog, settings window, panel, menu, toolbar and banner reads its own opacity",
+              "note": "",
+              "tag": "core",
+              "recommended": true,
+              "suggests": []
+            },
+            {
               "id": "ui.icons",
               "title": "Icon registry (Material Symbols + custom packs, swappable as an asset)",
               "note": "",

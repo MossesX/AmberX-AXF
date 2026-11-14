@@ -8,7 +8,7 @@
     "tabs": 76,
     "settingsTabs": 67,
     "settings": 87,
-    "functions": 228,
+    "functions": 230,
     "buttons": 62,
     "plugins": 67
   },
@@ -6839,6 +6839,21 @@
       "file": "src/axf/react/components/ChromeContext.tsx"
     },
     {
+      "address": "function:chrome.instance-interface",
+      "kind": "function",
+      "id": "chrome.instance-interface",
+      "label": "Pick the settings interface one tab group / toolbar / banner / nav / menu uses (chrome.instance-interface:<type>:<instance>:<id|default|custom|inherit>)",
+      "detail": "Action",
+      "keywords": [
+        "chrome.instance-interface",
+        "chrome",
+        "instance",
+        "interface"
+      ],
+      "params": true,
+      "file": "src/axf/react/components/ChromeContext.tsx"
+    },
+    {
       "address": "function:tapconfirm.item",
       "kind": "function",
       "id": "tapconfirm.item",
@@ -6862,6 +6877,20 @@
         "tapconfirm.kind",
         "tapconfirm",
         "kind"
+      ],
+      "params": true,
+      "file": "src/axf/react/components/ChromeContext.tsx"
+    },
+    {
+      "address": "function:tabs.rows",
+      "kind": "function",
+      "id": "tabs.rows",
+      "label": "How many rows a tab group stacks its tabs on (tabs.rows:<tab group id or name>:<1-6|auto>)",
+      "detail": "Action",
+      "keywords": [
+        "tabs.rows",
+        "tabs",
+        "rows"
       ],
       "params": true,
       "file": "src/axf/react/components/ChromeContext.tsx"
