@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5613,
- "updatedAt": "2026-11-14T23:22:59.536Z",
+ "rev": 5614,
+ "updatedAt": "2026-11-14T23:23:12.438Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -207466,7 +207466,7 @@
    "pr": "#621",
    "priority": "P0",
    "createdAt": "2026-11-13T19:03:35.763Z",
-   "updatedAt": "2026-11-14T23:21:03.162Z",
+   "updatedAt": "2026-11-14T23:22:08.954Z",
    "builtAt": "2026-11-14T23:21:03.162Z",
    "notes": [
     {
@@ -207504,6 +207504,10 @@
     {
      "text": "Headless run axf-land-project-duplicate-boilerplate--rhonda: brief only · start 11.2K tokens ($0.03) · cost $0.36 · 16 turns · 6 tools, MCP none",
      "at": "2026-11-14T23:21:03.162Z"
+    },
+    {
+     "text": "Session axf-land-project-duplicate-boilerplate--rhonda on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-14T23:22:08.954Z"
     }
    ],
    "approvals": [
@@ -207533,12 +207537,19 @@
     "queuedAt": "2026-11-13T19:03:39.310Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-land-project-duplicate-boilerplate--rhonda",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-14T23:15:54.090Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-14T23:22:08.088Z",
+     "exit": 0,
+     "outcome": "finished",
+     "stepsLeft": 0,
+     "account": "mossesx-max-",
+     "session": "axf-land-project-duplicate-boilerplate--rhonda"
+    },
     "split": {
      "at": "2026-11-13T19:07:47.374Z",
      "by": "orchestrator",
@@ -207642,7 +207653,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -208679,7 +208690,7 @@
    "title": "Skin config panel: merge main and land",
    "category": "",
    "detail": "Branch claude/skin-configuration-panel-before-ai-makes (800 behind) clashed with main in 10 files: .github/workflows/android.yml, settings libs (framework/libs/settings plus the amberx-droid, axhub-web, console-web and molly copies), the theme-manager plugin.json and web/index.tsx, framework/cli/build-engine.mjs and framework/spec/PORTING.md. Merge origin/main and keep main's newer code plus this branch's skin configuration panel (Brett picks what the AI may change before it makes a skin). Edit framework first and re-bake the app copies. Run tests, push, land on main.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -208688,7 +208699,7 @@
    "mergedAt": "2026-11-14T20:15:18Z",
    "priority": "P0",
    "createdAt": "2026-11-13T19:47:38.941Z",
-   "updatedAt": "2026-11-14T23:20:26.601Z",
+   "updatedAt": "2026-11-14T23:22:12.021Z",
    "builtAt": "",
    "notes": [
     {
@@ -208746,6 +208757,10 @@
     {
      "text": "Headless run axf-skin-config-panel-merge-main-and-land--paulie: brief only · start 11.0K tokens ($0.03) · cost $0.33 · 17 turns · 6 tools, MCP none",
      "at": "2026-11-14T23:20:26.601Z"
+    },
+    {
+     "text": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
+     "at": "2026-11-14T23:22:12.021Z"
     }
    ],
    "approvals": [],
@@ -208766,18 +208781,18 @@
     "queuedAt": "2026-11-13T19:47:41.154Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-skin-config-panel-merge-main-and-land--paulie",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-14T23:16:24.845Z",
     "runs": 3,
     "lastRun": {
-     "at": "2026-11-13T20:18:06.250Z",
+     "at": "2026-11-14T23:22:10.506Z",
      "exit": 0,
      "outcome": "returned",
-     "stepsLeft": 3,
+     "stepsLeft": 1,
      "account": "mossesx-max-",
-     "session": "axf-skin-config-panel-merge-main-and-land--sully"
+     "session": "axf-skin-config-panel-merge-main-and-land--paulie"
     },
     "split": {
      "at": "2026-11-13T19:48:39.672Z",
@@ -208787,7 +208802,7 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"6d008a2d-8493-4cf1-91ca-c1f98f086a78\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "2026-11-14T23:16:24.845Z",
     "planned": {
@@ -208888,7 +208903,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -211776,8 +211791,8 @@
    "mergedAt": "2026-11-13T20:44:56Z",
    "priority": "P0",
    "createdAt": "2026-11-13T20:08:02.821Z",
-   "updatedAt": "2026-11-14T23:20:31.439Z",
-   "builtAt": "2026-11-14T23:20:31.439Z",
+   "updatedAt": "2026-11-14T23:22:15.080Z",
+   "builtAt": "2026-11-14T23:22:15.080Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -211826,6 +211841,10 @@
     {
      "text": "Headless run axf-per-toolbar-settings-fix-failing-chrome--sully: brief only · start 13.0K tokens ($0.06) · cost $3.03 · 58 turns · 6 tools, MCP none",
      "at": "2026-11-14T23:20:31.439Z"
+    },
+    {
+     "text": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
+     "at": "2026-11-14T23:22:15.080Z"
     }
    ],
    "approvals": [
@@ -211855,16 +211874,16 @@
     "queuedAt": "2026-11-13T20:08:07.159Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-per-toolbar-settings-fix-failing-chrome--sully",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-14T23:17:21.049Z",
     "runs": 2,
     "lastRun": {
-     "at": "2026-11-13T20:31:14.141Z",
+     "at": "2026-11-14T23:22:13.966Z",
      "exit": 0,
      "outcome": "returned",
-     "stepsLeft": 3,
+     "stepsLeft": 1,
      "account": "mossesx-max-",
      "session": "axf-per-toolbar-settings-fix-failing-chrome--sully"
     },
@@ -211876,7 +211895,7 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"10fa6368-1e76-4d56-842f-c7f4c7e9219d\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "2026-11-14T23:17:21.049Z",
     "planned": {
@@ -213561,7 +213580,7 @@
    "mergedAt": "2026-11-13T23:38:48Z",
    "priority": "P0",
    "createdAt": "2026-11-13T20:47:11.569Z",
-   "updatedAt": "2026-11-14T22:46:24.029Z",
+   "updatedAt": "2026-11-14T23:22:25.705Z",
    "builtAt": "",
    "notes": [
     {
@@ -213607,6 +213626,10 @@
     {
      "text": "Shipped manifest sm-lander-regenerates-generated-files-clash rev 1 sent to Shipped features (orchestrator): PR #661, 0 file(s), 0 test line(s), 2 open.",
      "at": "2026-11-13T23:52:38Z"
+    },
+    {
+     "text": "Launch failed on mossesx-max-: launcher exit 3: claude-headless: refused: the VPS hard build limit is reached (8/8 builds running). Nothing started. Running: axf-fix-build-whose-session-finishes-phase-e--gina, axf-limittest-368316-a, axf-land-finish-auto-land-live-clear-backlog--gina, axf-picker-dialog-plugin-replaces-all--paulie, axf-themed-nati",
+     "at": "2026-11-14T23:22:25.705Z"
     }
    ],
    "approvals": [],
@@ -213618,7 +213641,7 @@
     "session": "",
     "link": "",
     "by": "lander-regenerates-generated-files-clash",
-    "brief": "# Build: lander-regenerates-generated-files-clash\n\n## Brett said (verbatim)\nAt: 2026-11-13T20:47:11.569Z\n> the voice control still isn't done; land what's completed\n\n## What to build\nContinue build \"Lander regenerates generated files on clash\" (lander-regenerates-generated-files-clash) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-13 20:47):\n\"the voice control still isn't done; land what's completed\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (1 left, ~10 min):\n[ ] s1 (~10 min) Most Nov 13 land failures were clashes only in GENERATED or additive files: apps/console-web/src/control/inventory.json, framework/assets/help/framework.json and its baked copies in apps/*, framework/catalog/status.json, framework/spec/PORTING.md, framework/spec/fixtures/*.json, apps/*/axf.lock.json, and the baked framework copies under apps/*/src/axf/. Fix the land path (/opt/axf-batch/resolve.py used by vps.build_land, and the orchestrator lander): (1) list generated files in one manifest; (2) on a clash in a generated file, take main's side, then run the matching generator (control inventory, help bake, fixtures, lock, framework re-bake) on the merged tree and commit; (3) union-merge additive docs/catalogs (PORTING.md, catalog status.json) by key; (4) only real source clashes stop the land; (5) run tests after regenerating. Then re-land: full-voice-control-merge-main-and-land, skin-config-panel-merge-main-and-land, skins-plugin-merge-main-and-land, project-create-mcp, project-duplicate-boilerplate, drive-live-console-first, rename-long-builds, overlay-preview-ui-review. Must land before auto-land-every-finished-build-lands.\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step lander-regenerates-generated-files-clash <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link lander-regenerates-generated-files-clash --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step lander-regenerates-generated-files-clash <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note lander-regenerates-generated-files-clash \"…\"); the build goes back to Pending for Brett.\n",
+    "brief": "# Build: lander-regenerates-generated-files-clash\n\n## Brett said (verbatim)\nAt: 2026-11-13T20:47:11.569Z\n> the voice control still isn't done; land what's completed\n\n## What to build\nContinue build \"Lander regenerates generated files on clash\" (lander-regenerates-generated-files-clash) — Phase 2, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-13 20:47):\n\"the voice control still isn't done; land what's completed\"\nThis phase downgrades Fable → Opus: fine, no approval needed (it is recorded when you tick its first step).\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/lander-regenerates-generated-files-clash · PR #661\nSteps in this phase (2 left, ~20 min):\n[ ] s2 (~10 min) the voice control still isn't done; land what's completed\n[ ] s3 (~10 min) Tests green, report _claude/builds/reports/lander-regenerates-generated-files-clash.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/lander-regenerates-generated-files-clash.md, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step lander-regenerates-generated-files-clash <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link lander-regenerates-generated-files-clash --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step lander-regenerates-generated-files-clash <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note lander-regenerates-generated-files-clash \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -213641,7 +213664,7 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"012c709a-352c-4b9f-94c7-cc8af2ff3246\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "launch failed: launcher exit 3: claude-headless: refused: the VPS hard build limit is reached (8/8 builds running). Nothing started. Running: axf-fix-build-whose-session-finishes-phase-e--gina, axf-limittest-368316-a, axf-land-finish-auto-land-live-clear-backlog--gina, axf-picker-dialog-plugin-replaces-all--paulie",
     "route": "",
     "dispatchedAt": "",
     "planned": {
@@ -213651,7 +213674,9 @@
      "at": "2026-11-13T21:51:04.188Z",
      "why": "subscription account mossesx-max-"
     },
-    "tried": [],
+    "tried": [
+     "mossesx-max-"
+    ],
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
@@ -213742,7 +213767,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -226162,7 +226187,13 @@
     "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-14T23:22:17.105Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -226402,7 +226433,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -226473,7 +226504,13 @@
     "note": "steps made by rules: review them",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-14T23:22:17.105Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -226713,7 +226750,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
