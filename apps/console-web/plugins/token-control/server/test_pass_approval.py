@@ -20,6 +20,7 @@ os.environ["AXF_CONTROL_DATA_DIR"] = tempfile.mkdtemp(prefix="axf-pass-approval-
 os.environ["AXF_THREADS_FILE"] = ""
 os.environ["AXF_PASS_SECRET"] = "test-pass-secret"
 os.environ["AXF_NO_TTY_APPROVAL"] = "1"
+os.environ["AXF_PASS_WATCH"] = "0"  # the test ticks the watcher itself
 os.environ.pop("AXF_CONSOLE_URL", None)
 
 from fastapi import FastAPI, Request  # noqa: E402
@@ -141,6 +142,46 @@ focus = [p for p in plugin_services.get_all("console-focus@1") if hasattr(p, "SC
 eq(focus.resolve(f"pass:{pid}"), {"screen": "token-control", "focus": f"pass:{pid}", "explicit": True}, "pass:<id> resolves")
 eq(focus.resolve(pid)["focus"], f"pass:{pid}", "a bare pass id too")
 eq(focus.resolve("build:foo"), None, "anything else is not a pass")
+
+# s7: a request raises one alert that pushes (Approve / Deny ride only in the delivery), the outcome replaces it
+import console_context as cx  # noqa: E402
+import alerts as alerts_hub  # noqa: E402
+
+raised: list[dict] = []
+resolved: list[list[str]] = []
+cx.set_context(raise_alert=lambda inp: raised.append(inp) or inp, resolve_alerts=lambda keys: resolved.append(keys))
+w = tc.PassWatcher()
+w.tick()
+eq(raised, [], "first look announces nothing")
+pid3 = grant(10)
+w.tick()
+eq([(a["key"], a["source"], a["severity"], a.get("push")) for a in raised], [(f"pass:{pid3}", "pass", "warning", True)], "a new request raises one pushing alert")
+eq(raised[0]["link"], f"https://console.amberxai.com/#/pass/{pid3}", "its tap opens the deep link")
+ok("pa1." not in json.dumps(raised), "the stored alert carries no token")
+acts = alerts_hub.delivery_actions(raised[0])
+eq([a["id"] for a in acts], ["pass.approve", "pass.deny", "pass.open"], "alert-actions@1 gives the delivery Approve / Deny / Open")
+ok(acts[0]["post"] == "/api/passes/action" and acts[0]["body"]["token"].startswith("pa1."), "Approve posts a token to /api/passes/action")
+payload = json.loads(alerts_hub._push_payload({**raised[0], "key": raised[0]["key"]}, raised[0]["link"], acts))
+eq([a["id"] for a in payload["actions"]], ["pass.approve", "pass.deny", "pass.open"], "the web push payload carries them")
+nt = alerts_hub.ntfy_actions(acts, "https://console.example")
+eq([(a["action"], a["label"]) for a in nt], [("http", "Approve"), ("http", "Deny"), ("view", "Open")], "ntfy: background http actions + view")
+eq(json.loads(nt[0]["body"])["token"], acts[0]["body"]["token"], "ntfy body = the token")
+eq(alerts_hub.ntfy_actions(acts, ""), [{"action": "view", "label": "Open", "url": raised[0]["link"]}], "no public URL: only Open")
+r = c2.post("/api/passes/action", json=acts[0]["body"]).json()
+eq((r["ok"], r["pass"]["state"]), (True, "active"), "the notification's Approve decides")
+w.tick()
+eq((raised[-1]["key"], raised[-1]["severity"], raised[-1].get("push")), (f"pass:{pid3}", "success", True), "the outcome replaces the ask on the phone")
+ok("approved from the notification" in raised[-1]["title"], f"and says so ({raised[-1]['title']})")
+eq(resolved[-1], [f"pass:{pid3}"], "then it is resolved")
+eq(alerts_hub.delivery_actions(raised[-1]), [], "no buttons once the pass stopped waiting")
+
+# the push flag: an approval reaches a set-up phone channel below its minimum severity; a plain warning doesn't
+hub = alerts_hub.AlertHub(Path(tempfile.mkdtemp(prefix="axf-pass-alerts-")))
+hub.set_config({"webpush": {"enabled": True}})
+_, _, t_plain = hub.raise_alert({"source": "pass", "severity": "warning", "key": "pass:x1", "title": "plain"}, deliver=False)
+_, _, t_push = hub.raise_alert({"source": "pass", "severity": "warning", "key": "pass:x2", "title": "ask", "push": True}, deliver=False)
+eq(("webpush" in t_plain, "webpush" in t_push), (False, True), "push: True reaches web push whatever the minimum")
+eq("push" in hub.items[-1], False, "the flag is not stored on the alert")
 
 subprocess.run(["rm", "-rf", os.environ["AXF_CONTROL_DATA_DIR"]], check=False)
 print(f"✓ pass-approval REST — {checks} checks", flush=True)

@@ -45,6 +45,7 @@ import os
 import re
 import subprocess
 import sys
+import threading
 from pathlib import Path
 from typing import Any
 
@@ -550,5 +551,115 @@ class PassFocus:
         return {"screen": self.SCREEN, "focus": f"pass:{pid}", "explicit": True}
 
 
+class PassAlertActions:
+    """alert-actions@1: a pass request's push gets Approve / Deny (a background POST to /api/passes/action with a token
+    minted for that one delivery) and Open (the deep link). Nothing once the pass stopped waiting."""
+
+    def actions(self, alert: dict[str, Any]) -> list[dict[str, Any]] | None:
+        key = str(alert.get("key") or "")
+        if alert.get("source") != "pass" or not key.startswith("pass:"):
+            return None
+        pid = key[5:]
+        toks = push_tokens(pid)
+        if not toks:
+            return None
+        link = str(alert.get("link") or "")
+        return [
+            {"id": "pass.approve", "label": "Approve", "post": "/api/passes/action", "body": {"token": toks["approve"]}},
+            {"id": "pass.deny", "label": "Deny", "post": "/api/passes/action", "body": {"token": toks["deny"]}},
+            *([{"id": "pass.open", "label": "Open", "url": link}] if link.startswith("https://") else []),
+        ]
+
+
+# ---------------------------------------------------------------------- pass request → push (pass-approval@1 pass-push@1)
+# A watcher reads the pass store (whoever filed the request: REST, MCP, CLI, axHub) and raises one alert per request
+# (key pass:<id>, push: an approval reaches the phone channels that are set up; the notify gate has the last word). When
+# the pass stops waiting the same key is raised again with the outcome and resolved: the phone's notice is replaced.
+
+DATA_DIR = Path(os.environ.get("AXF_CONTROL_DATA_DIR") or ROOT / ".axf-console" / "plugins" / FOLDER)
+WATCH_S = 2.0
+
+
+def _pending_ids(now_ms: int) -> set[str]:
+    try:
+        d = json.loads((DATA_DIR / "passes.json").read_text())
+    except (OSError, ValueError):
+        return set()
+    out = set()
+    for p in d.get("passes") or []:
+        if not isinstance(p, dict) or p.get("state") != "pending":
+            continue
+        try:
+            from datetime import datetime
+            at = int(datetime.fromisoformat(str(p.get("requestedAt")).replace("Z", "+00:00")).timestamp() * 1000)
+        except ValueError:
+            continue
+        if now_ms < at + 15 * 60 * 1000:
+            out.add(str(p.get("id")))
+    return out
+
+
+def pass_alert(pass_id: str) -> dict[str, Any] | None:
+    r = _node_json(["pass-alert", pass_id])
+    return r if r.get("key") else None
+
+
+def notify_pending(pass_id: str) -> None:
+    import console_context as cx
+    a = pass_alert(pass_id)
+    if not a or a.get("phase") != "pending":
+        return
+    cx.raise_alert({k: a[k] for k in ("source", "severity", "title", "body", "key", "link", "meta") if k in a} | {"push": True})
+
+
+def notify_cleared(pass_id: str) -> None:
+    import console_context as cx
+    a = pass_alert(pass_id)
+    key = f"pass:{pass_id}"
+    if a and a.get("phase") == "cleared":
+        cx.resolve_alerts([key])  # resolved first, so the outcome reopens it and reaches the phone (replacing the ask)
+        cx.raise_alert({k: a[k] for k in ("source", "severity", "title", "body", "key", "link", "meta") if k in a} | {"push": True})
+    cx.resolve_alerts([key])
+
+
+class PassWatcher:
+    def __init__(self) -> None:
+        self.seen: set[str] | None = None
+        self.mtime = -1.0
+        self.stop = threading.Event()
+
+    def tick(self) -> None:
+        import time as _t
+        f = DATA_DIR / "passes.json"
+        try:
+            mt = f.stat().st_mtime
+        except OSError:
+            mt = 0.0
+        now_ms = int(_t.time() * 1000)
+        if mt == self.mtime and self.seen is not None and not self.seen:
+            return  # nothing waiting and nothing written: no work
+        self.mtime = mt
+        now = _pending_ids(now_ms)
+        before, self.seen = self.seen, now
+        if before is None:
+            return  # first look: what already waits was announced before a restart
+        for pid in sorted(now - before):
+            notify_pending(pid)
+        for pid in sorted(before - now):
+            notify_cleared(pid)
+
+    def run(self) -> None:
+        while not self.stop.wait(WATCH_S):
+            try:
+                self.tick()
+            except Exception:  # noqa: BLE001 — the watcher never dies on one bad read
+                pass
+
+
+WATCHER = PassWatcher()
+if os.environ.get("AXF_PASS_WATCH", "1") != "0":
+    threading.Thread(target=WATCHER.run, name="pass-watch", daemon=True).start()
+
 plugin_services.provide("pass-approval@1", PassApproval(), folder=FOLDER)
+plugin_services.provide("alert-actions@1/pass", PassAlertActions(), folder=FOLDER)
 plugin_services.provide("console-focus@1/pass", PassFocus(), folder=FOLDER)

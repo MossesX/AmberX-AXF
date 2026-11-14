@@ -12,7 +12,7 @@
  * leaves an audit row (op `pass-approval`).
  */
 import {
-  PASS_APPROVED_VIA_PUSH, PASS_DECISIONS, actionProblem, actionResult, isDecision, isPassId, parseActionToken, passGrantResultFields, passTarget,
+  PASS_APPROVED_VIA_PUSH, PASS_DECISIONS, actionProblem, actionResult, isDecision, isPassId, parseActionToken, passAlertInput, passGrantResultFields, passTarget,
 } from '../../../../../packages/shared/pass-approval/index.mjs';
 import { mintActionTokens, verifyActionToken } from '../../../../../packages/shared/pass-approval/node.mjs';
 import { passPending, passPublic, passStateAt } from '../../../../../framework/core/engines/control-pass.mjs';
@@ -47,6 +47,21 @@ export function getPass(id, now = Date.now()) {
 export function listPending(now = Date.now()) {
   const items = loadPasses(now).passes.filter((p) => passPending(p, now)).map((p) => passView(p, now));
   return { ok: true, $axf: 'pass-approval@1', items, total: items.length, text: items.length ? items.map((x) => `${x.id}: ${x.text}`).join(' ') : 'No pass is waiting for Brett.' };
+}
+
+/**
+ * The alert@1 input for a pass (pass-approval@1 passAlertInput: source pass, key pass:<id>, link = deep link, no token)
+ * and, once it is no longer waiting, the follow-up words: approved / denied / lapsed. null = no such pass.
+ */
+export function alertFor(id, now = Date.now()) {
+  const p = findPass(id, now);
+  if (!p) return null;
+  const v = passView(p, now);
+  const base = passAlertInput(v, linkOpts());
+  if (v.state === 'pending') return { ...base, phase: 'pending', state: v.state };
+  const word = { active: 'approved', denied: 'denied', lapsed: 'lapsed (not approved in time)', revoked: 'withdrawn', expired: 'ended' }[v.state] ?? v.state;
+  const how = v.approvedVia === 'push' ? ' from the notification' : v.approvedBy ? ` by ${v.approvedBy}` : '';
+  return { ...base, phase: 'cleared', state: v.state, severity: v.state === 'active' ? 'success' : 'info', title: `Pass ${word}${v.state === 'active' ? how : ''}: ${v.label} for ${v.minutes} min`.slice(0, 200), body: v.text };
 }
 
 /** The tokens for a device delivery of a pending pass (only ever put into a push, never into an API answer). */

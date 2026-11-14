@@ -10,7 +10,7 @@
  *   node control.mjs <op> <target> [path] …     list | get | set | reset | add | remove | act (see `help`)
  *   node control.mjs targets | tools | routes | schema | registry | audit [n] | where | help
  *   node control.mjs pass-publication | pass-check <target> [op] | pass-settings [json]   (veto passes: lib/pass.mjs)
- *   node control.mjs pass-pending | pass-get <id> | pass-decide <json> | pass-tokens <id>     (pass-approval@1)
+ *   node control.mjs pass-pending | pass-get <id> | pass-decide <json> | pass-tokens <id> | pass-alert <id>   (pass-approval@1)
  *   --remote [url]   send it to a console instead (AXF_CONSOLE_URL, default https://console.amberxai.com; AXF_TOKEN)
  *   --json           print the raw answer
  *
@@ -28,7 +28,7 @@ import { appearanceFile, runTokens } from './lib/tokens.mjs';
 import { notesDir, runAmberx } from './lib/amberx.mjs';
 import { runPlanner } from './lib/planner.mjs';
 import { coveringCall, coveringPass, passSettings, publication, recordPassChanges, recordPassCommand, runPass, savePassSettings } from './lib/pass.mjs';
-import { decidePass, getPass, listPending, tokensFor } from './lib/pass-approval.mjs';
+import { alertFor, decidePass, getPass, listPending, tokensFor } from './lib/pass-approval.mjs';
 import { PASS_DEFAULT_SCOPE, PASS_SCOPE_IDS, PASS_TARGET, passScopeId, passScopeOf, passScopeWord } from '../../../../framework/core/engines/control-pass.mjs';
 
 /** The token rows a write may change, by id (what a covered write records as before / after). */
@@ -330,6 +330,7 @@ export async function main(argv) {
     console.log(JSON.stringify(r));
     return r.ok ? 0 : 1;
   }
+  if (cmd === 'pass-alert') { console.log(JSON.stringify(alertFor(argv[1]) ?? { ok: false, code: 'unknown_pass' })); return 0; }
   if (cmd === 'pass-tokens') { console.log(JSON.stringify(tokensFor(argv[1]) ?? { ok: false, code: 'not_pending' })); return 0; }
   if (cmd === 'pass-settings') { const s = argv[1] && argv[1].startsWith('{') ? savePassSettings(JSON.parse(argv[1])) : passSettings(); out({ ok: true, ...s }, `max ${s.maxMinutes} min · ${s.timeZone}`); return 0; }
   if (cmd === 'where') { out({ appearance: appearanceFile(), amberx: notesDir() }, `look: ${appearanceFile()}\nAmberX notes: ${notesDir()}`); return 0; }
