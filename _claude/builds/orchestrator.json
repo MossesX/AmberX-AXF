@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T03:54:44.135Z",
+ "updatedAt": "2026-11-14T04:00:34.544Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -137240,6 +137240,83 @@
      "note": "",
      "uid": "st-mwfvbirg06yfzt",
      "createdAt": "2026-11-14T03:50:42.414Z"
+    }
+   ]
+  },
+  {
+   "id": "launch-landing-page-waitlist-referral",
+   "title": "Launch landing page + waitlist with referral ranking",
+   "category": "Launch",
+   "detail": "Brett wants to launch AmberX. Public landing page leading with one hook ('talk and it builds your app'), 60-second demo video slot, waitlist signup with referral move-up-the-line ranking, Stripe-ready pricing section (free trial then $30/month), token-driven and themable. Deploy on the VPS via Coolify on the amberxai.com domain (confirm in Hostinger DNS).",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-14T04:00:27.661Z",
+   "updatedAt": "2026-11-14T04:00:27.661Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Landing page: hook, demo video slot, feature highlights, pricing section; token-driven, themable",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfvo26s04gd22",
+     "createdAt": "2026-11-14T04:00:27.662Z"
+    },
+    {
+     "id": "s2",
+     "text": "Waitlist signup with referral links and ranking, admin view, export",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfvo26s05aj36",
+     "createdAt": "2026-11-14T04:00:27.662Z"
+    },
+    {
+     "id": "s3",
+     "text": "Deploy via Coolify, DNS + TLS, verify public URL, notify Brett on his phone",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfvo26s067rye",
+     "createdAt": "2026-11-14T04:00:27.662Z"
     }
    ]
   }
