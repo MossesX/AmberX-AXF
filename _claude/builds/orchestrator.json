@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T04:42:14.460Z",
+ "updatedAt": "2026-11-14T04:42:42.552Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -137970,7 +137970,7 @@
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-14T04:41:37.124Z",
+   "updatedAt": "2026-11-14T04:42:40.862Z",
    "builtAt": "",
    "notes": [
     {
@@ -138402,6 +138402,25 @@
      "note": "",
      "uid": "st-mwfwzqtx019vvf",
      "createdAt": "2026-11-14T04:37:32.731Z"
+    },
+    {
+     "id": "s23",
+     "text": "Four more videos (video content only). (1) First five minutes: a brand-new user signs up, connects, and has their first app running in five minutes, real clock on screen. (2) Old way vs AmberX: side-by-side of a traditional build (weeks, team, cost, code) against the same app built by voice in minutes by assembling AXF libraries; keep any numbers honest and sourced or clearly labelled as estimates. (3) Library matrix tour: walk through all the pre-built AXF libraries and features you can snap together, front end and back end, with a quick example of each. (4) Publishing: taking a finished app from built to live: Android APK and Play Store submission, and a web app deployed live via Coolify on your own domain. Use real screens and data; label staged parts as a preview. Also cut 60-second versions.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfx6ck801fevf",
+     "createdAt": "2026-11-14T04:42:40.864Z"
     },
     {
      "id": "s7",
