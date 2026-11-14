@@ -30,3 +30,37 @@ Audited against `origin/main` on Nov 14 2026.
 - What goes: merge-queue@1 stacking and batching (`merge-queue.mjs` stacks, `queue/pr-*` refs) behind the serial path.
   The auto-land sweeper currently hands green builds to the merge queue "as one batch"; that hand-off is replaced by
   the serial lander.
+
+## Dispatcher: why queued builds left slots empty (s12)
+
+Read from the live store, `pipeline.mjs status`, `agent-slots.mjs status` and `/var/log/axf-pipeline.log` (Nov 8 to
+Nov 14). Nothing was launched to do this: `status` is read-only. Right now (Nov 14 23:00) all 8 slots are really in use
+(7 build sessions + 1 in setup), so the gaps came earlier. Wait reasons on ticks that launched nothing:
+
+| Reason on idle ticks | Nov 13 | Nov 14 |
+|---|---|---|
+| launch failed 3 times in the last hour: waiting | 605 | 90 |
+| VPS hard build limit reached (8/8 or more) | 340 | 114 |
+| mossesx-max- 5/5: every account is at its parallel cap | 137 | 0 |
+| no free agent slot (0/8, 1/8, 2/8 in use) | 47 | 0 |
+
+**Cause 1 (the main one): parked and failed launches take a slot in the plan and give it back to nobody.**
+`pipeline-core plan()` hands one free slot to each queued build in order. The tick then skips the ones that failed to
+launch 3 times in the last hour (`LAUNCH_FAILS_PER_HOUR`). It also loses the slot of any launch that fails this tick.
+The slot is already spent in the plan, so the builds behind are told "no free agent slot (0/8 in use)" with every slot
+empty. On Nov 13 00:45 the launcher refused every build (`claude-headless: --log is a plain file name`). The failed
+builds sat at the top of the Queue, so each tick spent its 8 slots on them: 2 to 6 slots stayed empty for an hour at a
+time, while builds that could have run waited behind.
+
+**Cause 2: one usable account with a parallel cap below the slot cap.** On Nov 13 only `mossesx-max-` was usable
+(account-3 can't sign in; the two API accounts take builds only when routed). Its cap was 5 against 8 slots, so 3 slots
+could never fill. It is 8 now (override), so this no longer limits, but nothing warns when the usable accounts' caps
+add up to less than the slots.
+
+**Cause 3 (counting, smaller): the hard limit counts sessions the dispatcher didn't start.** `hard.live` counts every
+`axf-*` tmux session plus launches still in setup. On Nov 13 it read 9/8 and 10/8, and agent-job sessions
+(`axf-rhonda-ci-fix`, from the console container) hold a soft slot too. These are real sessions, so this is correct,
+but it is why the count can exceed 8.
+
+Fix (s13): planning skips parked builds without spending their slot, and a failed launch hands its slot to the next
+queued build in the same tick. The tick keeps launching until the slots or the accounts run out.
