@@ -130,6 +130,44 @@ const drops = readdirSync(join(K, 'rotations'));
 ok(drops.length === 1 && drops[0].startsWith('to-console-') && !drops[0].includes('fake'), 'AI keys holds the spent token: it gets a drop file');
 release({ dir: build, session: 's7' });
 
+console.log('the token lock: parallel builds never clobber each other');
+reset();
+const { LOCK, withTokenLock } = await import('./claude-token-save.mjs');
+s = snapshot({ dir: build, session: 's8', env });
+const s9 = snapshot({ dir: join(tmp, 'b2'), session: 's9', env });
+ok(s9.config === s.config, 'two builds on one account: one shared config dir');
+ok(withTokenLock(A, () => existsSync(join(A, LOCK))) === true && !existsSync(join(A, LOCK)), 'held while the write runs, gone after');
+ok(withTokenLock(A, () => withTokenLock(A, () => 7)) === 7, 're-entrant within one process');
+// another process holds the lock: a save-back waits for it instead of writing in between
+const holder = spawn(process.execPath, [join(HERE, 'claude-token-save.mjs'), 'hold-lock', '--accounts', A, '--ms', '600'], { env, stdio: ['ignore', 'pipe', 'ignore'] });
+await new Promise((r) => holder.stdout.once('data', r));
+rotate(s.config, 'r1', 2000);
+const t0 = Date.now(); saveBack(s.dir); const waited = Date.now() - t0;
+ok(waited >= 300 && refresh(saved('mine')) === 'fake-refresh-r1', `a save-back waits for the lock another process holds (${waited} ms), then writes`);
+await new Promise((r) => (holder.exitCode !== null ? r() : holder.once('exit', r)));
+// a holder that died leaves its lock behind: taken over at once
+mkdirSync(join(A, LOCK)); writeFileSync(join(A, LOCK, 'pid'), '999999');
+const t1 = Date.now(); withTokenLock(A, () => 0);
+ok(Date.now() - t1 < 2000 && !existsSync(join(A, LOCK)), 'a dead holder\'s lock is taken over at once');
+// eight save-backs at once from separate processes (two builds' watchers + the sweep), while the token rotates
+const many = async (k) => Promise.all(Array.from({ length: k }, (_, i) => new Promise((r) => spawn(process.execPath, [join(HERE, 'claude-token-save.mjs'), i % 4 === 3 ? 'sweep' : 'save-back', '--copy', i % 2 ? s9.dir : s.dir], { env, stdio: 'ignore' }).on('exit', r))));
+rotate(s.config, 'r2', 3000);
+const burst = many(8);
+rotate(s.config, 'r3', 4000);
+await burst; saveBack(s.dir);
+const chainNow = get(join(s.config, 'token-chain.json')).chain;
+ok(refresh(saved('mine')) === 'fake-refresh-r3' && refresh(LIVE) === 'fake-refresh-r3', 'parallel save-backs end on the newest token everywhere');
+ok(['r0', 'r1', 'r3'].every((r) => chainNow.includes(tokenHash(`fake-refresh-${r}`))), 'the chain lost no token it held');
+ok(!readdirSync(join(A, 'mine')).some((f) => f.endsWith('.tmp')) && !existsSync(join(A, LOCK)), 'no temp file or lock left behind');
+// a saved login older than the shared one is never copied back over it
+put(saved('mine'), 'r1', 2000);
+snapshot({ dir: join(tmp, 'b3'), session: 's10', env });
+ok(refresh(join(s.config, '.credentials.json')) === 'fake-refresh-r3', 'a spent saved token never replaces the shared one');
+rmSync(LIVE); put(saved('mine'), 'relogin', 9000);   // signed in again on the account's own folder (the live login moved on)
+snapshot({ dir: join(tmp, 'b3'), session: 's10', env });
+ok(refresh(join(s.config, '.credentials.json')) === 'fake-refresh-relogin', 'a fresh sign-in on the account is taken up by the shared login');
+for (const [d, n2] of [[build, 's8'], [join(tmp, 'b2'), 's9'], [join(tmp, 'b3'), 's10']]) release({ dir: d, session: n2 });
+
 rmSync(tmp, { recursive: true, force: true });
 console.log(failed ? `\nFAILED ${failed}/${n}` : `\nOK: ${n} checks`);
 process.exit(failed ? 1 : 0);

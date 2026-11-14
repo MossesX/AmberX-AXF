@@ -20,7 +20,8 @@
  *   to-console-<hash>.json  written here, only when a saved pair really holds the spent token; AI keys absorbs it
  *   to-host-<hash>.json     written by AI keys when it renews a pair; the sweep applies it here and deletes it
  *
- * Writes are atomic and 0600, keep every other field of the target (mcpOAuth…), and never print a credential.
+ * Every store write runs under the host's one token lock (<accounts>/.token.lock, withTokenLock), so parallel builds
+ * renewing the same account never clobber each other. Writes are atomic and 0600, keep every other field of the target (mcpOAuth…), and never print a credential.
  * token-chain.json in a copy holds sha256 prefixes only. Paths: AXF_CLAUDE_ACCOUNTS, AXF_CLAUDE_HOME, AXF_AI_KEYS_HOST_DIR.
  */
 import { spawn } from 'node:child_process';
@@ -43,6 +44,40 @@ function writeAtomic(file, doc) {
   writeFileSync(tmp, JSON.stringify(doc), { mode: 0o600 });
   chmodSync(tmp, 0o600);
   renameSync(tmp, file);
+}
+
+function alive(pid) { try { process.kill(pid, 0); return true; } catch (e) { return e.code === 'EPERM'; } }
+
+export const LOCK = '.token.lock';
+const LOCK_STALE_MS = 30e3;
+const LOCK_WAIT_MS = 20e3;
+const nap = (ms) => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
+
+/**
+ * Run `fn` holding the host's one token lock (<accounts>/.token.lock, a directory: mkdir is atomic). Every write of a
+ * login store goes through it (save-back, the sweep, seeding a shared login), so parallel builds renewing the same
+ * account never interleave a read-modify-write. A lock whose holder is gone, or older than 30 s, is taken over; after
+ * 20 s of waiting the lock is taken over too (a stuck holder never blocks a build). No accounts folder = no lock.
+ */
+let lockDepth = 0;
+export function withTokenLock(accountsDir, fn, { waitMs = LOCK_WAIT_MS } = {}) {
+  if (!accountsDir || !existsSync(accountsDir) || lockDepth > 0) return fn();   // re-entrant within one process
+  const dir = join(accountsDir, LOCK);
+  const until = Date.now() + waitMs;
+  let held = false;
+  while (!held) {
+    try { mkdirSync(dir, { mode: 0o700 }); held = true; break; } catch (e) { if (e.code !== 'EEXIST') return fn(); }
+    let stale = false;
+    try {
+      const pid = Number(readFileSync(join(dir, 'pid'), 'utf8')) || 0;
+      stale = (pid > 0 && pid !== process.pid && !alive(pid)) || Date.now() - statSync(dir).mtimeMs > LOCK_STALE_MS;
+    } catch { stale = (() => { try { return Date.now() - statSync(dir).mtimeMs > 2000; } catch { return false; } })(); }
+    if (stale || Date.now() > until) { try { rmSync(dir, { recursive: true, force: true }); } catch { /* raced */ } continue; }
+    nap(25 + Math.floor(Math.random() * 50));
+  }
+  try { writeFileSync(join(dir, 'pid'), String(process.pid)); } catch { /* the lock itself is what counts */ }
+  lockDepth++;
+  try { return fn(); } finally { lockDepth--; try { rmSync(dir, { recursive: true, force: true }); } catch { /* gone */ } }
 }
 
 /** Where this host keeps logins. */
@@ -118,6 +153,12 @@ export function beginChain(copyDir, p) {
  */
 export function saveBack(dir) {
   const copyDir = loginHome(dir);
+  const first = readJson(join(copyDir, CHAIN));
+  if (first?.$axf !== 'token-chain@1') return [];
+  return withTokenLock(first.places?.accounts, () => saveBackLocked(copyDir));
+}
+
+function saveBackLocked(copyDir) {
   const file = join(copyDir, CHAIN);
   const state = readJson(file);
   if (state?.$axf !== 'token-chain@1') return [];
@@ -134,7 +175,6 @@ export function saveBack(dir) {
   return written;
 }
 
-const alive = (pid) => { try { process.kill(pid, 0); return true; } catch { return false; } };
 
 /** Save a copy back until it is released or the run that owns it exits (one last pass then). */
 export async function watch(copyDir, { parent = 0, every = 3000 } = {}) {
@@ -155,6 +195,10 @@ export function watchCopy(copyDir, parent = process.pid) {
 /** One pass on the host: AI keys' renewals come in, and the live login's own renewals go out to the saved copies. */
 export function sweep(env = process.env) {
   const p = places(env);
+  return withTokenLock(p.accounts, () => sweepLocked(p));
+}
+
+function sweepLocked(p) {
   const out = { fromAiKeys: 0, fromLive: 0 };
   const inbox = p.aiKeys ? join(p.aiKeys, 'rotations') : '';
   let files = []; try { files = readdirSync(inbox).filter((n) => /^to-host-[a-f0-9]+\.json$/.test(n)); } catch { /* no inbox */ }
@@ -180,6 +224,10 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const flag = (n, d = '') => { const i = rest.indexOf(`--${n}`); return i >= 0 && rest[i + 1] !== undefined ? rest[i + 1] : d; };
   if (cmd === 'watch' && flag('copy')) {
     await watch(flag('copy'), { parent: Number(flag('parent', '0')) || 0, every: Number(flag('every', '3000')) || 3000 });
+  } else if (cmd === 'hold-lock' && flag('accounts')) {   // tests: hold the token lock for --ms
+    withTokenLock(flag('accounts'), () => { console.log('held'); nap(Number(flag('ms', '500')) || 500); });
+  } else if (cmd === 'save-back' && flag('copy')) {   // tests: one save-back pass from its own process
+    saveBack(flag('copy'));
   } else if (cmd === 'sweep') {
     const r = sweep();
     if (r.fromAiKeys || r.fromLive) console.log(`${new Date().toISOString()} saved rotated tokens: ${r.fromLive} from the live login, ${r.fromAiKeys} from AI keys`);

@@ -52,7 +52,7 @@ import { chmodSync, copyFileSync, existsSync, lstatSync, mkdirSync, readFileSync
 import { homedir } from 'node:os';
 import { basename, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { CHAIN, beginChain, places as tokenPlaces, saveBack, tokenHash, watchCopy } from './claude-token-save.mjs';
+import { CHAIN, beginChain, places as tokenPlaces, saveBack, tokenHash, watchCopy, withTokenLock } from './claude-token-save.mjs';
 
 export { watchCopy };
 export const MARKER = 'build-login.json';
@@ -217,7 +217,8 @@ export function shareHome(p, choice, env = process.env) {
   const home = sharedHome(p, choice.account);
   mkdirSync(root, { recursive: true, mode: 0o700 }); chmodSync(root, 0o700);
   mkdirSync(home, { recursive: true, mode: 0o700 }); chmodSync(home, 0o700);
-  seedShared(home, choice.creds, { live: join(p.shared, '.credentials.json'), accounts: p.accounts, aiKeys: tokenPlaces(env).aiKeys });
+  const places = { live: join(p.shared, '.credentials.json'), accounts: p.accounts, aiKeys: tokenPlaces(env).aiKeys };
+  withTokenLock(p.accounts, () => seedShared(home, choice.creds, places));   // never between another build's read and write
   if (!existsSync(join(home, '.claude.json'))) writeGlobal(p, home, env);   // Claude Code keeps it up to date from here on
   linkShared(p, home);
   writeFileSync(join(home, SHARED_MARKER), JSON.stringify({ $axf: 'shared-login@1', account: choice.account, email: choice.email, at: new Date().toISOString() }, null, 2) + '\n', { mode: 0o600 });
