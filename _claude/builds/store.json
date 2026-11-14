@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5308,
- "updatedAt": "2026-11-14T16:46:33.947Z",
+ "rev": 5309,
+ "updatedAt": "2026-11-14T16:47:14.217Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -204822,7 +204822,7 @@
    "title": "Skin animations: swatches, skin-switch sweep, picker",
    "category": "",
    "detail": "Cool animations for skins, all token-driven (duration, easing, intensity tokens) and respecting reduced-motion:\n- Skins gallery (Skins plugin and the built-in skins panel): each skin card shows a row of animated colour swatches that ripple/wave on hover or tap.\n- Switching skins: the new colours sweep or ripple across the screen from where you tapped, instead of snapping.\n- Colour pickers in token editors, UI Manager and Quick settings: swatches pop and fan out into their shades when picked, with a smooth morph to the new colour.\n- Animations are assets, so they're swappable and per-skin, with an Animations section in settings (on/off per animation, speed).\n- Full API: REST/MCP/CLI/voice. Tests, help, Shipped features.",
-   "status": "pending",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -204830,7 +204830,7 @@
    "pr": "#652",
    "priority": "P1",
    "createdAt": "2026-11-13T19:49:31.102Z",
-   "updatedAt": "2026-11-13T21:14:33.106Z",
+   "updatedAt": "2026-11-14T16:47:12.222Z",
    "builtAt": "",
    "notes": [
     {
@@ -204860,6 +204860,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-13T21:14:33.106Z"
+    },
+    {
+     "text": "Brett (voice, Nov 14): skip the screenshots. No UI Review shots needed for this build; land it without them.",
+     "at": "2026-11-14T16:47:12.222Z"
     }
    ],
    "approvals": [],
@@ -205099,7 +205103,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
