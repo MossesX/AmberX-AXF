@@ -175,6 +175,8 @@ jobs:
         run: node apps/console-web/plugins/push-banner/land/test-land-one.mjs  # axf-plugin:push-banner
       - name: Drift keeper (push banner) — running builds get main merged in their worktree, dirty or session-held ones wait, behind main recorded; real git  # axf-plugin:push-banner
         run: node apps/console-web/plugins/push-banner/land/test-keep-fresh.mjs  # axf-plugin:push-banner
+      - name: Supersede check (push banner) — git cherry + file level, superseded kept as archive tags and closed, unique flagged; real git  # axf-plugin:push-banner
+        run: node apps/console-web/plugins/push-banner/land/test-supersede.mjs  # axf-plugin:push-banner
       - name: CI scope — path filters per job, light PR checks while the merge queue is on, main skips what the queue already ran
         run: node framework/spec/check-ci-scope.mjs
       - name: Deploy helpers (framework/deploy) — bash -n, shellcheck, self-test; installers that source them
