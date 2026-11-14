@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T17:49:44.272Z",
+ "updatedAt": "2026-11-14T17:49:57.546Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -139595,7 +139595,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-14T17:45:54.293Z",
-   "updatedAt": "2026-11-14T17:49:33.646Z",
+   "updatedAt": "2026-11-14T17:49:54.851Z",
    "builtAt": "",
    "notes": [
     {
@@ -140060,6 +140060,25 @@
      "note": "",
      "uid": "st-mwgp95h301bwsu",
      "createdAt": "2026-11-14T17:48:40.127Z"
+    },
+    {
+     "id": "s43",
+     "text": "Gates tab in the Watchdog panel: lists every existing gate on the VPS (test gate on landing, UI Review gate, merge approval, budget caps, etc.) as expandable rows with on/off, what it blocks, last triggered; plus 'Add gate' using the same zero-typing wizard (pre-built things to check, AND/OR conditions, pre-built block/notify actions).",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgpar6q018b7v",
+     "createdAt": "2026-11-14T17:49:54.851Z"
     }
    ]
   }
