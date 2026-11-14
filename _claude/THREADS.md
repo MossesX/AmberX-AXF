@@ -797,10 +797,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 20:22 UTC · `every-skin-ships-light-dark-colour-theme` note (all) · orchestrator
-- 2026-11-14 20:22 UTC · `skin-axhub-override-switch-greyed-out` note (all) · orchestrator
-- 2026-11-14 20:22 UTC · `skin-config-panel-merge-main-and-land` note (all) · orchestrator
-- 2026-11-14 20:23 UTC · `skins-plugin-merge-main-and-land` note (all) · orchestrator
 - 2026-11-14 21:00 UTC · `skin-animations-swatches-skin-switch` merged, note (all) · reconciler
 - 2026-11-14 21:01 UTC · `skin-animations-swatches-skin-switch` note (all) · orchestrator
 - 2026-11-14 21:41 UTC · `token-registry-skin-editor-live-sandbox` merged, note (all) · reconciler
@@ -1197,6 +1193,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 23:43 UTC · `merge-main-land-change-to-move-amberx` s7 done (all) · orchestrator
 - 2026-11-14 23:43 UTC · `merge-main-land-change-to-move-amberx` s8 done (all) · orchestrator
 - 2026-11-14 23:44 UTC · `merge-main-land-change-to-move-amberx` s9 done (all) · orchestrator
+- 2026-11-14 23:44 UTC · `merge-main-land-console-app-part-3` → running, note (all) · pipeline
+- 2026-11-14 23:44 UTC · `merge-main-land-console-app-part-3` branch claude/merge-main-land-console-app-part-3 (all) · pipeline
+- 2026-11-14 23:44 UTC · `merge-main-land-console-app-part-3` note (all) · orchestrator
+- 2026-11-14 23:44 UTC · `merge-main-land-change-to-move-amberx` note (all) · orchestrator
 
 ## Token passes (log)
 

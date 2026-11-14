@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5674,
- "updatedAt": "2026-11-14T23:44:36.880Z",
+ "rev": 5675,
+ "updatedAt": "2026-11-14T23:44:51.368Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -226081,8 +226081,8 @@
    "pr": "#586",
    "priority": "P0",
    "createdAt": "2026-11-14T23:10:56.028Z",
-   "updatedAt": "2026-11-14T23:44:14.057Z",
-   "builtAt": "2026-11-14T23:44:14.057Z",
+   "updatedAt": "2026-11-14T23:44:33.747Z",
+   "builtAt": "2026-11-14T23:44:33.747Z",
    "notes": [
     {
      "text": "Queued by land-finish-auto-land-live-clear-backlog.",
@@ -226099,6 +226099,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-merge-main-land-change-to-move-amberx--lenny, shared account login)",
      "at": "2026-11-14T23:39:01.366Z"
+    },
+    {
+     "text": "Headless run axf-merge-main-land-change-to-move-amberx--lenny: brief only · start 11.8K tokens ($0.03) · cost $0.55 · 28 turns · 6 tools, MCP none",
+     "at": "2026-11-14T23:44:33.747Z"
     }
    ],
    "approvals": [],
@@ -226376,15 +226380,15 @@
    "title": "Merge main and land console-app-part-3-native-bridge-mic",
    "category": "",
    "detail": "Auto-land could not land `console-app-part-3-native-bridge-mic` (console-app-part-3-native-bridge-mic): merging main into it clashes in code: framework/ui/axf.css.\n\nWork on its own branch `claude/console-app-part-3-native-bridge-mic` (PR #633); do not open a new PR.\n1. git fetch origin && git checkout claude/console-app-part-3-native-bridge-mic && git merge origin/main\n2. Resolve every conflict keeping both sides' intent (builds files: newer wins; THREADS / STATUS / decisions: keep both).\n3. Make the tests the clash touches pass, plus node framework/cli/tracker.mjs --check.\n4. Commit and push to claude/console-app-part-3-native-bridge-mic. Auto-land and the merge queue land it by themselves.\n\nAttempt 1. Auto-land retries until it lands; Brett gets an FYI for each attempt.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "land-finish-auto-land-live-clear-backlog",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/merge-main-land-console-app-part-3",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-14T23:16:22.160Z",
-   "updatedAt": "2026-11-14T23:44:20.248Z",
+   "updatedAt": "2026-11-14T23:44:31.035Z",
    "builtAt": "",
    "notes": [
     {
@@ -226394,6 +226398,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"28105bb8-84e7-415b-a167-aa257dc2c5b8\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-14T23:20:49.007Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-merge-main-land-console-app-part-3--joey.",
+     "at": "2026-11-14T23:44:26.797Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-merge-main-land-console-app-part-3--joey, shared account login)",
+     "at": "2026-11-14T23:44:31.035Z"
     }
    ],
    "approvals": [],
@@ -226413,12 +226425,12 @@
    "pipeline": {
     "queuedAt": "2026-11-14T23:16:27.988Z",
     "queuedBy": "land-finish-auto-land-live-clear-backlog",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-merge-main-land-console-app-part-3--joey",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-14T23:44:25.691Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-14T23:20:49.007Z",
@@ -226428,9 +226440,9 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"28105bb8-84e7-415b-a167-aa257dc2c5b8\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-14T23:44:25.691Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -226439,7 +226451,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-14T23:44:25.691Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -226677,7 +226689,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
