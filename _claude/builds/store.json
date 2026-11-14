@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5278,
- "updatedAt": "2026-11-14T05:10:56.751Z",
+ "rev": 5279,
+ "updatedAt": "2026-11-14T05:48:25.721Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -211979,7 +211979,7 @@
    "branch": "claude/hotfix-get-main-ci-green-theme-swap",
    "pr": "#669",
    "createdAt": "2026-11-14T03:29:11.368Z",
-   "updatedAt": "2026-11-14T04:43:15.590Z",
+   "updatedAt": "2026-11-14T05:48:23.711Z",
    "builtAt": "",
    "notes": [
     {
@@ -211989,6 +211989,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-hotfix-get-main-ci-green-theme-swap--rhonda, own login copy)",
      "at": "2026-11-14T03:45:29.639Z"
+    },
+    {
+     "text": "s3 open. #669 (stacked on #665; landing it lands #665 too) fixes theme-swap, plugin lifecycle (all 7), the live-store step-size test, the AmberX build, the jsdom control scanner and baked help drift. Main's full CI is still red on apps/console-web/scripts/menu-reach.mts (red on clean main too): 14 toolbar items (Next style theme / Next layout / Next design package / spacing) have no app-menu item. Brett: decide whether to add View items to the console app menu or drop those toolbar items under skins; then #669 lands from the queue by itself. Not done: re-adding the console stack #637 #639 #633 #640 #643 (waits for green main); the merge queue redeploys the console when #669 lands.",
+     "at": "2026-11-14T05:48:23.711Z"
     }
    ],
    "approvals": [],
@@ -212109,7 +212113,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
