@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T23:12:14.053Z",
+ "updatedAt": "2026-11-14T23:12:26.444Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -109653,7 +109653,7 @@
    "branch": "claude/owner-recognized-everywhere-veto",
    "pr": "#601",
    "createdAt": "2026-11-12T02:04:11.564Z",
-   "updatedAt": "2026-11-14T23:11:32.391Z",
+   "updatedAt": "2026-11-14T23:11:54.848Z",
    "builtAt": "",
    "notes": [
     {
@@ -109743,6 +109743,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-owner-recognized-everywhere-veto--earl, shared account login)",
      "at": "2026-11-14T23:06:23.782Z"
+    },
+    {
+     "text": "Headless run axf-owner-recognized-everywhere-veto--earl: brief only · start 11.2K tokens ($0.03) · cost $0.86 · 42 turns · 6 tools, MCP none",
+     "at": "2026-11-14T23:11:54.848Z"
     },
     {
      "text": "s3: tests added and pushed (c5dd6d7b4), PR #601 ready for the merge queue. Still open: axHub PR MossesX/axHub#43 (GET/PUT /auth/api/policy) isn't merged, live route answers 404. Once it lands and the hub redeploys, the Approvals & veto tab shows the live table. The live policy (s2: veto only on shell commands) is already in force. AmberX FYI waits for the land.",
@@ -110191,8 +110195,8 @@
    "branch": "claude/one-source-truth-console-shows-only-what",
    "pr": "#598",
    "createdAt": "2026-11-12T02:37:57.927Z",
-   "updatedAt": "2026-11-14T23:11:07.506Z",
-   "builtAt": "2026-11-14T23:11:07.506Z",
+   "updatedAt": "2026-11-14T23:11:39.997Z",
+   "builtAt": "2026-11-14T23:11:39.997Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -110245,6 +110249,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-one-source-truth-console-shows-only-what--lenny, shared account login)",
      "at": "2026-11-14T23:08:21.804Z"
+    },
+    {
+     "text": "Headless run axf-one-source-truth-console-shows-only-what--lenny: brief only · start 11.1K tokens ($0.03) · cost $0.18 · 10 turns · 6 tools, MCP none",
+     "at": "2026-11-14T23:11:39.997Z"
     }
    ],
    "approvals": [],
