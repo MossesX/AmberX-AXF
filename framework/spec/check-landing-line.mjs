@@ -446,6 +446,32 @@ t('validateLine catches two in flight, a terminal entry in the line, a non-termi
   assert.ok(L.validateLine(hist).errors.some((x) => x.startsWith('history.state')));
   assert.equal(L.validateLine({ $axf: 'nope' }).ok, false);
 });
+t('sequences: any run of events either applies cleanly or throws; the line is never left corrupt', () => {
+  // a small deterministic generator (LCG) over the whole event vocabulary, 400 steps x 12 seeds
+  const ids = ['pr-701', 'pr-702', 'pr-703', 'pr-704', 'pr-999'];
+  const conclusions = ['success', 'failure', 'cancelled', 'stale', 'timed_out', 'neutral', 'skipped'];
+  let applied = 0; let refused = 0;
+  for (let seed = 1; seed <= 12; seed++) {
+    let r = seed * 2654435761 % 4294967296;
+    const rnd = (k) => { r = (r * 1664525 + 1013904223) % 4294967296; return r % k; };
+    let l = fresh(); let k = 0;
+    for (let step = 0; step < 400; step++) {
+      const type = L.EVENTS[rnd(L.EVENTS.length)]; const id = ids[rnd(ids.length)]; k += 1;
+      const at = `2026-11-15T${String(Math.floor(k / 60) % 24).padStart(2, '0')}:${String(k % 60).padStart(2, '0')}:00Z`;
+      const head = sha('b', rnd(10));
+      const ev = { type, id, at, by: 'fuzz', why: 'fuzz', to: rnd(5), head, sha: head, mainSha: sha('f', rnd(10)), files: rnd(2) ? ['a.css'] : [],
+        entry: { pr: 700 + rnd(6), build: `b${rnd(6)}`, head, title: 'Fuzz' }, runs: [run(conclusions[rnd(conclusions.length)], rnd(3) ? (L.findEntry(l, id)?.head || head) : sha('z'))] };
+      let next;
+      try { next = L.transition(l, ev); applied += 1; } catch (e) { refused += 1; assert.ok(e instanceof Error && e.message, 'a refusal is an Error with words'); continue; }
+      const v = L.validateLine(next);
+      assert.deepEqual(v.errors, [], `seed ${seed} step ${step} ${type} ${id}: ${v.errors.join('; ')}`);
+      assert.ok(L.liveEntries(next).length === next.entries.length, 'the line holds live entries only');
+      assert.ok(!(L.next(next) && L.inFlight(next)), 'next is null while one is in flight');
+      l = next;
+    }
+  }
+  assert.ok(applied > 500 && refused > 500, `the generator reached both outcomes (${applied} applied, ${refused} refused)`);
+});
 t('commands: every hand action the line offers is declared once, with a REST path and a CLI word', () => {
   const ids = L.LINE_COMMANDS.map((c) => c.id);
   assert.deepEqual(ids, ['landing-list', 'landing-add', 'landing-pause', 'landing-resume', 'landing-skip', 'landing-move', 'landing-move-up', 'landing-on']);
