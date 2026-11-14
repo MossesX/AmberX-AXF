@@ -61,7 +61,7 @@ export function controlList(records: SwapRecord[], max = 200): Record<string, un
     if (seen.has(ref)) continue;
     seen.add(ref);
     const st = r.swap.state?.() ?? {};
-    out.push({ ref, family: r.family, label: labelOf(r), address: fieldAddress(ref), ...(r.family === 'radio' ? { value: st.selected ?? null } : 'value' in st ? { value: st.value } : {}), ...('checked' in st && r.family === 'checkbox' ? { checked: st.checked } : {}), ...(r.input.disabled ? { disabled: true } : {}) });
+    out.push({ ref, family: r.family, label: labelOf(r), address: fieldAddress(ref), ...(r.family === 'radio' ? { value: st.selected ?? null } : 'value' in st ? { value: st.value } : {}), ...('checked' in st && r.family === 'checkbox' ? { checked: st.checked } : {}), ...(r.family === 'file' ? { files: st.files } : {}), ...(r.input.disabled ? { disabled: true } : {}) });
     if (out.length >= max) break;
   }
   return out;

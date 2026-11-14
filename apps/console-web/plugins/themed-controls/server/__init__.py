@@ -304,3 +304,23 @@ async def answer(request: Request) -> dict[str, Any]:
     if b.get("confirm") is True or str(b.get("confirm")).lower() in TRUE_WORDS:
         body["confirm"] = True
     return api.run(api.normalize(body), _by(request), api.OWNER)
+
+
+@router.get("/files")
+def get_files() -> dict[str, Any]:
+    """The file drop zones on the open console's screen: their chosen files (name, size, type) and upload progress."""
+    live = _live()
+    return {"zones": [c for c in live.get("controls") or [] if c.get("family") == "file"], "at": live.get("at")}
+
+
+@router.post("/files")
+async def file_action(request: Request) -> dict[str, Any]:
+    """Clear a file drop zone or cancel its uploads: {ref, action: clear|cancel, name?} (cancel without a name = every upload)."""
+    b = await _body(request)
+    ref = str(b.get("ref") or "").strip()
+    action = str(b.get("action") or "clear").strip().lower()
+    if not ref:
+        raise HTTPException(422, "ref (the file control's id, name or label) is required")
+    if action not in ("clear", "cancel"):
+        raise HTTPException(422, "action must be clear or cancel")
+    return run_in_console("themed-controls.files", ":".join([ref, action] + ([str(b["name"])] if b.get("name") else [])), _by(request))

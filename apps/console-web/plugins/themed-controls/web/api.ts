@@ -13,6 +13,7 @@
  *   themed-controls.open:[<family>:]<ref>        open the picker of a date / time / colour control (the deep link)
  *   themed-controls.close[:<ref>]                close the open picker (or that control's)
  *   themed-controls.pick:<value>                 set the open picker's control and close it
+ *   themed-controls.files:<ref>:clear|cancel[:<file name>]   clear a file drop zone or cancel its uploads
  *   themed-controls.answer:ok|cancel[:<text>]    answer the open themed alert / confirm / prompt (OK on a destructive
  *                                                confirm is refused here: press button:themed-controls.dialog.ok with confirm)
  * The open dialog: `panel:themed-controls.dialogs` (state: open dialog + waiting; set: the prompt's text),
@@ -133,6 +134,11 @@ export function registerApi(rt: AxfRuntime): () => void {
       },
     }));
   }
+  reg('themed-controls.files', ([ref, what = 'clear', ...name]) => {
+    const r = liveHost()?.find(ref ?? '');
+    if (!r || r.family !== 'file') { rt.toast(`No file drop zone "${ref ?? ''}" on this screen.`, 'warning', 'Themed controls'); return; }
+    try { void r.swap.set?.(what === 'cancel' ? `cancel:${name.join(':')}` : 'clear'); } catch (e) { rt.toast((e as Error).message, 'warning', 'Themed controls'); }
+  }, 'Clear a file drop zone or cancel its uploads', true);
   // the themed alert / confirm / prompt
   type DialogsApi = { openDialogs: () => { open: Record<string, unknown> | null; waiting: number }; currentDialog: () => { destructive: boolean; kind: string; answer(ok: boolean, text?: string): void } | null };
   const dlg = () => liveHost()?.global<DialogsApi>('dialogs') ?? null;

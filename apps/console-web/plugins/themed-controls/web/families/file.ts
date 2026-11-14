@@ -4,13 +4,15 @@
  * The files go into the original input (DataTransfer) and fire input + change, so forms and upload code see a normal
  * pick. Upload progress is the page's to report: dispatch `axf:file-progress` on the input with
  * `{ name, loaded, total, failed? }` (or `{ name, done: true }`) and the file's bar follows.
+ * Cancelling (the API's `cancel`) dispatches `axf:file-cancel` with `{ name }` (no name = every file) for the page
+ * to abort its upload, and marks the bar cancelled.
  * File inputs the page hides itself (a custom "Upload" button that clicks a hidden input) are left alone.
  */
 import type { ElementFamily, Swap, SwapCtx } from '../host';
 import { aria, h } from './dom';
 import { icon, iconButton } from './surface';
 
-export interface FileProgress { loaded: number; total: number; failed?: boolean; done?: boolean }
+export interface FileProgress { loaded: number; total: number; failed?: boolean; done?: boolean; cancelled?: boolean }
 
 const units = ['B', 'KB', 'MB', 'GB'];
 export function size(n: number): string {
@@ -126,9 +128,22 @@ export const fileFamily: ElementFamily = {
       destroy() { ctx.input.removeEventListener('axf:file-progress', onProgress); },
       state: () => ({ files: files().map((f) => ({ name: f.name, size: f.size, type: f.type, progress: progress.get(f.name) ?? null })), accept: accept(), multiple: !!p.multiple }),
       set(v) {
+        const cmd = /^cancel(?::(.*))?$/i.exec(String(v ?? '').trim());
+        if (cmd) {
+          const name = cmd[1]?.trim() || '';
+          const targets = files().filter((f) => !name || f.name === name);
+          if (!targets.length) throw new Error(name ? `no file ${name} in this control` : 'no files to cancel');
+          for (const f of targets) {
+            ctx.input.dispatchEvent(new CustomEvent('axf:file-cancel', { detail: { name: f.name }, bubbles: true }));
+            progress.set(f.name, { ...(progress.get(f.name) ?? { loaded: 0, total: 1 }), failed: true, cancelled: true });
+          }
+          draw();
+          say(`${targets.length === 1 ? targets[0]!.name : `${targets.length} uploads`} cancelled.`);
+          return;
+        }
         // the API can only clear (a browser never lets a script pick files from disk)
         const s = String(v ?? '').trim().toLowerCase();
-        if (s === '' || s === 'clear' || s === 'none') { progress.clear(); put([]); say('Files cleared.'); return; }
+        if (s === '' || s === 'clear' || s === 'none' || s === 'clear:') { progress.clear(); put([]); say('Files cleared.'); return; }
         const keep = files().filter((f) => f.name.toLowerCase() !== s);
         if (keep.length === files().length) throw new Error('a file control can only be cleared (value "clear") or have one file removed by name');
         progress.delete(String(v));

@@ -241,6 +241,43 @@
         }
       },
       {
+        "route": "GET /files",
+        "id": "files",
+        "title": "File drop zones",
+        "readOnly": true,
+        "description": "The file drop zones on the open console's screen with their chosen files (name, size, type) and each file's upload progress."
+      },
+      {
+        "route": "POST /files",
+        "id": "files-action",
+        "title": "Clear or cancel files",
+        "description": "Clear a file drop zone (the files leave the form) or cancel its uploads (the page is told to abort; the bar shows cancelled).",
+        "input": {
+          "type": "object",
+          "properties": {
+            "ref": {
+              "type": "string",
+              "description": "the file control's id, name or label"
+            },
+            "action": {
+              "type": "string",
+              "enum": [
+                "clear",
+                "cancel"
+              ]
+            },
+            "name": {
+              "type": "string",
+              "description": "cancel only this file"
+            }
+          },
+          "required": [
+            "ref",
+            "action"
+          ]
+        }
+      },
+      {
         "route": "POST /report",
         "skip": "the open console's own report of its switches and live state, not a command"
       }
