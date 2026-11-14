@@ -796,11 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 12:17 UTC · `hotfix-get-main-ci-green-theme-swap` → running, note (all) · pipeline
-- 2026-11-14 12:17 UTC · `hotfix-get-main-ci-green-theme-swap` note (all) · orchestrator
-- 2026-11-14 12:17 UTC · `demo-video-series-three-minute-browser` → running, note (all) · pipeline
-- 2026-11-14 12:17 UTC · `demo-video-series-three-minute-browser` → running, note (all) · orchestrator
-- 2026-11-14 12:18 UTC · `demo-video-series-three-minute-browser` note (all) · orchestrator
 - 2026-11-14 12:25 UTC · `hotfix-get-main-ci-green-theme-swap` note (all) · orchestrator
 - 2026-11-14 12:26 UTC · `hotfix-get-main-ci-green-theme-swap` → pending, note (all) · pipeline
 - 2026-11-14 12:27 UTC · `hotfix-get-main-ci-green-theme-swap` → queued (all) · voice
@@ -1196,6 +1191,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 23:21 UTC · `per-toolbar-settings-fix-failing-chrome` note (all) · builds-live
 - 2026-11-14 23:21 UTC · `merge-main-land-console-app-part-3` note (all) · builds-live
 - 2026-11-14 23:20 UTC · `per-toolbar-settings-fix-failing-chrome` s3 done, → complete (all) · orchestrator
+- 2026-11-14 23:20 UTC · `skin-config-panel-merge-main-and-land` note (all) · orchestrator
+- 2026-11-14 23:20 UTC · `per-toolbar-settings-fix-failing-chrome` note (all) · orchestrator
+- 2026-11-14 23:20 UTC · `merge-main-land-console-app-part-3` note (all) · orchestrator
+- 2026-11-14 23:21 UTC · `land-project-duplicate-boilerplate` note (all) · orchestrator
+- 2026-11-14 23:22 UTC · `merge-main-land-console-app-part-4` note (all) · orchestrator
 
 ## Token passes (log)
 
