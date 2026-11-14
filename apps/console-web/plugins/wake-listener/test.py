@@ -137,4 +137,78 @@ check(len(llm.calls) == 1 and llm.calls[0]["system"] == ci.SYSTEM and any(t["nam
 check(not any(ct.DECIDING_RE.search(t["name"]) for t in llm.calls[0]["tools"]), "understand: no approve / deny tool is offered")
 check(c.post("/p/understand", json={}).status_code == 400, "understand: no text → 400")
 
+# asks for a missing field, then the follow-up fills only that one
+llm.calls.clear()
+llm.reply = call("build-orchestrator__pipeline-build-action", {"action": "hold"})
+r = c.post("/p/understand", json={"text": "pause that build"}).json()
+check(r["mode"] == "claude" and r["missing"] == ["id"] and r["ask"] and not r["run"] and r["pending"]["args"] == {"action": "hold"}, "missing field: Claude's pick asks for it, nothing runs")
+llm.reply = call("build-orchestrator__pipeline-build-action", {"id": "gizmo-rebuild"})
+r2 = c.post("/p/understand", json={"text": "gizmo rebuild", "pending": r["pending"]}).json()
+check(len(llm.calls) == 2 and [t["name"] for t in llm.calls[1]["tools"]] == ["build-orchestrator__pipeline-build-action"], "follow-up: only the pending command's tool is offered")
+check("Brett answered" in llm.calls[1]["messages"][0]["content"] and "pause that build" in llm.calls[1]["messages"][0]["content"], "follow-up: the first phrase, the question and the answer go back")
+check(r2["args"] == {"action": "hold", "id": "gizmo-rebuild"} and r2["missing"] == [] and r2["confirm"] and not r2["run"], "follow-up: keeps what it had, fills the missing field, then asks to confirm")
+
+# the confirm gate: only a spoken yes runs it, read here without a Claude call
+n = len(llm.calls)
+r3 = c.post("/p/understand", json={"text": "hmm maybe", "pending": r2["pending"]}).json()
+check(r3["confirm"] and not r3["run"] and r3["prompt"].startswith("Yes or no?"), "confirm gate: anything but yes / no asks again")
+r4 = c.post("/p/understand", json={"text": "no", "pending": r2["pending"]}).json()
+check(r4.get("cancelled") and not r4["run"], "confirm gate: no cancels")
+r5 = c.post("/p/understand", json={"text": "yes", "pending": r2["pending"]}).json()
+check(r5["run"] and r5.get("confirmed") and r5["args"]["id"] == "gizmo-rebuild", "confirm gate: yes runs it")
+check(len(llm.calls) == n, "confirm gate: the yes / no never goes to Claude")
+
+# a destructive command always confirms
+llm.reply = call("weather__today", {})
+entries = mod.catalog_entries()
+dest = next(e for e in entries if e.get("effect") == "destructive" and not ct.is_person_only(e) and not [f for f in e.get("fields") or [] if not f.get("optional")])
+dt = ct.to_tool(dest)
+res = ci.answer_for(dt, dest, {}, "x")
+check(res["confirm"] and not res["run"] and res["destructive"], f"destructive command ({dest['id']}) returns confirm:true")
+
+# a read with nothing missing runs at once
+llm.reply = call("listener_help", {})
+r = c.post("/p/understand", json={"text": "what are you able to do"}).json()
+check(r["mode"] == "claude" and r["run"] and r["command"] == "listener.help", "a command with nothing missing and no confirm runs at once")
+
+# timeout → offline, then the cooldown skips Claude without waiting
+c.post("/p/settings", json={"claudeTimeoutSec": 2})
+llm.delay = 3.0
+t0 = time.time()
+r = c.post("/p/understand", json={"text": "what can i say"}).json()
+check(r["mode"] == "offline" and r["reason"] == "timeout" and time.time() - t0 < 2.9, "timeout: falls back to offline after the timeout setting")
+n = len(llm.calls)
+r = c.post("/p/understand", json={"text": "what can i say"}).json()
+check(r["reason"] == "cooldown" and len(llm.calls) == n, "after a failure the cooldown goes straight to scripted (no call)")
+llm.delay = 0.0
+mod.claude_status().data.update(failedAt=0)
+
+# errors, credits, a non-Claude model, no service
+llm.error = "boom 500"
+check(c.post("/p/understand", json={"text": "help"}).json()["reason"] == "error", "an error falls back (error)")
+mod.claude_status().data.update(failedAt=0)
+llm.error = "Your credit balance is too low"
+check(c.post("/p/understand", json={"text": "help"}).json()["reason"] == "no-credit", "out of credits falls back (no-credit)")
+mod.claude_status().data.update(failedAt=0)
+llm.error = ""
+llm.model = "gpt-5"
+check(c.post("/p/understand", json={"text": "help"}).json()["reason"] == "not-claude", "a non-Claude model is not 'Claude connected' (not-claude)")
+mod.claude_status().data.update(failedAt=0)
+llm.model = "claude-opus-5-5"
+llm.reply = {"text": "I am not sure."}
+check(c.post("/p/understand", json={"text": "blah"}).json()["reason"] == "no-command", "no tool picked → offline (no-command)")
+llm.reply = {"text": 'Sure: {"command": "listener_help", "args": {}, "ask": ""}'}
+check(c.post("/p/understand", json={"text": "help me"}).json()["command"] == "listener.help", "a JSON line works when the provider has no tools (Claude Code CLI)")
+plugin_services.provide("axf.llm@1", None, "fake-assistant")
+check(c.post("/p/understand", json={"text": "help"}).json()["reason"] == "no-llm", "no axf.llm@1 → offline (no-llm)")
+plugin_services.provide("axf.llm@1", llm, "fake-assistant")
+
+# Brett: the switch is a real off: with Claude connected and the switch off, nothing is sent to Claude
+mod.claude_status().ok("claude-opus-5-5")
+c.post("/p/settings", json={"useClaude": False})
+n = len(llm.calls)
+r = c.post("/p/understand", json={"text": "create a new project named Gizmo Johnson"}).json()
+check(r["mode"] == "offline" and r["reason"] == "off" and len(llm.calls) == n, "switch off: offline, no Claude request at all (even while connected)")
+c.post("/p/settings", json={"useClaude": True})
+
 print(f"{ok} checks passed")
