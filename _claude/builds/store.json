@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5695,
- "updatedAt": "2026-11-14T23:52:55.915Z",
+ "rev": 5696,
+ "updatedAt": "2026-11-14T23:53:14.553Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -226728,7 +226728,7 @@
    "title": "Merge main and land console-app-part-4-console-side-safe",
    "category": "",
    "detail": "Auto-land could not land `console-app-part-4-console-side-safe` (console-app-part-4-console-side-safe): merging main into it clashes in code: framework/ui/axf.css.\n\nWork on its own branch `claude/console-app-part-4-console-side-safe` (PR #640); do not open a new PR.\n1. git fetch origin && git checkout claude/console-app-part-4-console-side-safe && git merge origin/main\n2. Resolve every conflict keeping both sides' intent (builds files: newer wins; THREADS / STATUS / decisions: keep both).\n3. Make the tests the clash touches pass, plus node framework/cli/tracker.mjs --check.\n4. Commit and push to claude/console-app-part-4-console-side-safe. Auto-land and the merge queue land it by themselves.\n\nAttempt 1. Auto-land retries until it lands; Brett gets an FYI for each attempt.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "land-finish-auto-land-live-clear-backlog",
    "pendingId": "",
@@ -226736,8 +226736,8 @@
    "pr": "#640",
    "priority": "P0",
    "createdAt": "2026-11-14T23:16:42.547Z",
-   "updatedAt": "2026-11-14T23:52:17.747Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-14T23:52:28.363Z",
+   "builtAt": "2026-11-14T23:52:28.364Z",
    "notes": [
     {
      "text": "Queued by land-finish-auto-land-live-clear-backlog.",
@@ -227021,12 +227021,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:52:28.363Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T23:22:06.089Z",
-     "updatedAt": "2026-11-14T23:22:06.089Z"
+     "updatedAt": "2026-11-14T23:52:29.284Z"
     }
    ],
    "profiles": [
@@ -227037,7 +227037,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

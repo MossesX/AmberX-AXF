@@ -797,7 +797,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 22:33 UTC · `land-all-skin-builds` s20 done, → running (all) · orchestrator
 - 2026-11-14 22:34 UTC · `land-all-skin-builds` s21 done (all) · orchestrator
 - 2026-11-14 22:34 UTC · `land-all-skin-builds` s22 done (all) · orchestrator
 - 2026-11-14 22:34 UTC · `land-finish-auto-land-live-clear-backlog` s2 done (all) · orchestrator
@@ -1197,6 +1196,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 23:52 UTC · `merge-main-land-one-source-truth-console` s6 done (all) · orchestrator
 - 2026-11-14 23:52 UTC · `merge-main-land-one-source-truth-console` branch claude/one-source-truth-console-shows-only-what, PR #598 (all) · builds-live
 - 2026-11-14 23:52 UTC · `merge-main-land-one-source-truth-console` s7 done (all) · orchestrator
+- 2026-11-14 23:52 UTC · `merge-main-land-console-app-part-4` s10 done, → built (all) · orchestrator
 
 ## Token passes (log)
 
