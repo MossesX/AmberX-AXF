@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5570,
- "updatedAt": "2026-11-14T23:11:21.898Z",
+ "rev": 5571,
+ "updatedAt": "2026-11-14T23:11:48.211Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -225384,16 +225384,22 @@
    "title": "Merge main and land move-amberx-web-app-console-amberx-andr",
    "category": "",
    "detail": "Auto-land could not land `move-amberx-web-app-console-amberx-andr` (move-amberx-web-app-console-amberx-andr): merging main into it clashes in code: apps/console-web/plugins/approvals-banner/plugin.json, apps/console-web/server/main.py.\n\nWork on its own branch `claude/move-amberx-web-app-console-amberx-andr` (PR #596); do not open a new PR.\n1. git fetch origin && git checkout claude/move-amberx-web-app-console-amberx-andr && git merge origin/main\n2. Resolve every conflict keeping both sides' intent (builds files: newer wins; THREADS / STATUS / decisions: keep both).\n3. Make the tests the clash touches pass, plus node framework/cli/tracker.mjs --check.\n4. Commit and push to claude/move-amberx-web-app-console-amberx-andr. Auto-land and the merge queue land it by themselves.\n\nAttempt 1. Auto-land retries until it lands; Brett gets an FYI for each attempt.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "land-finish-auto-land-live-clear-backlog",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P0",
    "createdAt": "2026-11-14T23:10:38.526Z",
-   "updatedAt": "2026-11-14T23:10:38.526Z",
+   "updatedAt": "2026-11-14T23:10:51.701Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by land-finish-auto-land-live-clear-backlog.",
+     "at": "2026-11-14T23:10:51.701Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -225408,6 +225414,28 @@
     "from": "",
     "addenda": []
    },
+   "pipeline": {
+    "queuedAt": "2026-11-14T23:10:48.063Z",
+    "queuedBy": "land-finish-auto-land-live-clear-backlog",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
    "steps": [],
    "profiles": [
     "all"
@@ -225417,7 +225445,84 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "merge-main-land-change-to-move-amberx",
+   "title": "Merge main and land change-to-move-amberx-web-app-console",
+   "category": "",
+   "detail": "Auto-land could not land `change-to-move-amberx-web-app-console` (change-to-move-amberx-web-app-console): merging main into it clashes in code: apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/WatchService.java, apps/console-web/plugins/approvals-banner/plugin.json, apps/console-web/server/main.py.\n\nWork on its own branch `claude/change-to-move-amberx-web-app-console` (PR #586); do not open a new PR.\n1. git fetch origin && git checkout claude/change-to-move-amberx-web-app-console && git merge origin/main\n2. Resolve every conflict keeping both sides' intent (builds files: newer wins; THREADS / STATUS / decisions: keep both).\n3. Make the tests the clash touches pass, plus node framework/cli/tracker.mjs --check.\n4. Commit and push to claude/change-to-move-amberx-web-app-console. Auto-land and the merge queue land it by themselves.\n\nAttempt 1. Auto-land retries until it lands; Brett gets an FYI for each attempt.",
+   "status": "queued",
+   "hidden": false,
+   "source": "land-finish-auto-land-live-clear-backlog",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-14T23:10:56.028Z",
+   "updatedAt": "2026-11-14T23:11:08.057Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by land-finish-auto-land-live-clear-backlog.",
+     "at": "2026-11-14T23:11:08.057Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "Merging main into claude/change-to-move-amberx-web-app-console clashes in code: apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/WatchService.java, apps/console-web/plugins/approvals-banner/plugin.json, apps/console-web/server/main.py",
+    "at": "2026-11-14T23:10:56.028Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "2026-11-14T23:11:03.594Z",
+    "queuedBy": "land-finish-auto-land-live-clear-backlog",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 866
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
