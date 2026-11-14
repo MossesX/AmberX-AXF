@@ -2,6 +2,10 @@
 
 Survey taken 2026-11-14 after `git fetch origin` (main at `1169074ab`). Ahead/behind are counted against `origin/main`.
 
+## Result
+
+All 8 skin builds are on main and live on the console. Order: #647, #648, #590, #618, #641, #652, #657, #654 (merge commits below). They stacked in that order, each merging the previous tip and then origin/main. Two superseded branches are archived. Two (#604, #591, the professional-skins work) stay open because their work never reached main. They need their own Fable build. Deploy: `7de17c4`, logged as deploy@1. Brett was notified on AmberX. Still open: a visual check of the Skins panel in a signed-in browser (see the deploy check).
+
 ## Branches to land (in order)
 
 | # | Branch (`claude/…`) | Behind main | Ahead of main | Last commit | Open PR | Builds-store record |
