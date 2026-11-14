@@ -179,6 +179,27 @@ object replaying `skin-config.json` (tree, modes, limits, report, merge, Default
 spec-driven `AssetTypeRegistry` (it accepts the field as it is today), and an Android reader of the two hub documents, for
 when an Android app makes or applies AI skins.
 
+## Deferred: the hub default skin (Nov 14 2026)
+
+Build `console-look-becomes-default-axhub-skin` (Fable; Brett: "make it the default axHub look, and then make all the
+apps inherit it right now"). Web / Node only; the Kotlin twin is deferred (no new Android or Kotlin work):
+- appearance@1 `defaultSkin: { id, overrides?, colorTheme? }` (`normalizeHubSkin`, `HubSkinPointer`; `AppearanceChange.
+  defaultSkin`, `mergeAppearance`, `serializeAppearance` writes `skin` and `defaultSkin`). Kotlin `AppearanceEngine` keeps
+  neither pointer today: a port reads both, and the `appearance.json` fixture rows that carry them.
+- The chain `plugin → ui → app → global → default` (`SKIN_SCOPE_DEFAULT`, `SKIN_SCOPE_KINDS`, `skinScopeChain`),
+  `resolveLookSkin(look, global, scope, hubDefault)` (Use skin off and not following = inherit the floor, never the
+  hub-wide skin; a `ui:` / `plugin:` `off` stays below the floor), `hubDefaultOf`, and `composeLookAt`'s floor-first order
+  (hub default skin → pointer overrides and colour → the app's own picks → ui / plugin overrides and colour).
+- skin@1 `chrome` (`SkinChrome`, `normalizeSkinChrome`, `skinChromeErrors`, `skinChromeSettings`: chrome-settings@1
+  kinds, `axf.chrome.settings.<kind>` and `axf.chrome.<kind>.<instance>`); the spec-driven `AssetTypeRegistry` accepts the
+  field as it is today, a Compose skin reader would have to apply those settings.
+- app-look@1 `backups` (`LookBackup`, `LOOK_BACKUPS_MAX`, `normalizeLookBackup`) and the moves `adoptHubDefault`,
+  `backupLook`, `lookBackup`, `restoreLookBackup` (undo actions `adopt-default`, `restore-backup`).
+A port replays the `hubDefault` block of `spec/fixtures/skin.json` (no override, partial override, plugin override,
+own skin over the floor, adopt, adopt twice, undo, restore from backup, round trip, the chrome block, the shared
+document) through the same functions. Until then an Android app keeps reading `appearance@1` directly and shows no skin,
+so it does not take the hub default either.
+
 ## Deferred: skin-switch@1 (Nov 13 2026)
 
 Build skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga (Fable): `framework/core/engines/

@@ -431,7 +431,8 @@ export function resolveLookSkin(look, global, scope, hubDefault = null) {
       if (global?.id && (follows || !floor)) return pointer(global);
       return floor ? { use: 'inherit' } : off();
     }
-    if (!look) return floor && key === SKIN_SCOPE_APP ? { use: 'inherit' } : off();
+    // no look document yet: with a floor every level of the app inherits it; without one, nothing is drawn (as before)
+    if (!look) return floor ? { use: 'inherit' } : off();
     const st = scopeState(look, key);
     if (key === SKIN_SCOPE_APP && st.use === 'off' && floor) return { use: 'inherit' };
     return st;

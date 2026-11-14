@@ -6,7 +6,7 @@
 import { readdirSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { colorThemeVars, styleThemeVars } from '../core/engines/theme';
-import { backToSkin, composeLook, composeLookAt, coverageSummary, coverageTable, declarationErrors, globalSkinOf, hubOnlyLook, lookAfterChange, newAppLook, normalizeAppLook, normalizeSkin, normalizeSkinScope, overriddenSlots, parseAppLook, partElements, partsErrors, partsTypes, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, scopeState, setInheritSkin, setLookSlot, setScopeOverride, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorOf, skinCovers, skinErrors, skinFromDesignPackage, skinScopeChain, skinScopeKey, skinScopeKind, skinScopeSelector, skinSlots, snapshotLook, uncoveredTypes, undoRestore } from '../core/engines/skin';
+import { adoptHubDefault, backToSkin, backupLook, composeLook, composeLookAt, coverageSummary, coverageTable, declarationErrors, globalSkinOf, hubDefaultOf, hubOnlyLook, lookAfterChange, lookBackup, newAppLook, normalizeAppLook, normalizeSkin, normalizeSkinScope, overriddenSlots, parseAppLook, partElements, partsErrors, partsTypes, pickSkin, resolveLookSkin, restoreAppDefault, restoreLookBackup, scopeEntries, scopeState, setInheritSkin, setLookSlot, setScopeOverride, setScopeSkin, setSkinColorTheme, setUseSkin, skinChromeErrors, skinChromeSettings, skinColorOf, skinCovers, skinErrors, skinFromDesignPackage, skinScopeChain, skinScopeKey, skinScopeKind, skinScopeSelector, skinSlots, snapshotLook, uncoveredTypes, undoRestore } from '../core/engines/skin';
 import { foldLegacyPicks, legacyPicks, lookNeedsMigration, migrateLook, migrateLookSettings, parseLegacyLook, settingsNeedMigration } from '../core/engines/look-migration.mjs';
 import { SKIN_SWITCH_ACTIONS, SKIN_SWITCH_CONTRACT, SKIN_SWITCH_ERRORS, SKIN_SWITCH_HUB, SKIN_SWITCH_SCOPES, normalizeSkinSwitch, parseSwitchScope, skinSwitch, skinSwitchState, switchScopeOf, switchScopes } from '../core/engines/skin-switch.mjs';
 import { SCALE_TYPES, normalizeScale, scaleErrors, scaleThemeVars, scaleVars } from '../core/engines/scale';
@@ -23,7 +23,8 @@ import { rollPlan, rollSlotDefault } from '../core/engines/roll';
 import { defaultHidden, hiddenSlots, hideableTypes } from '../core/engines/hide';
 import { EMBED_TAKE_UA_TOKEN, detectEmbedFull, embedFromQueryFull, embedFromUserAgentFull, embedLinkOk, embedLockNote, embedLockedBy, embedPage, embedPageView, embedTakeIds, embedTakenBy, embedTakenProvider, embedTakenView, embedTakes, embedUrlFull, parseEmbedMessage, settingsTabOf, userAgentSuffixFull, DEFAULT_HIDDEN, EMBED_UA_TOKEN, detectEmbed, embedFromQuery, embedFromUserAgent, embedHidden, embedHost, embedUrl, userAgentSuffix } from '../core/engines/embed';
 import { SPACING_DEFAULT, SPACINGS, spacingOf } from '../core/engines/spacing';
-import { appearanceRetryMs, appearanceSlotTypes, mergeAppearance, paletteFromColorTheme, parseAppearance, resolveAppearance, serializeAppearance } from '../core/engines/appearance';
+import { appearanceRetryMs, appearanceSlotTypes, combineAppearanceChanges, mergeAppearance, paletteFromColorTheme, parseAppearance, resolveAppearance, serializeAppearance } from '../core/engines/appearance';
+import { LOOK_BACKUPS_MAX } from '../core/engines/skin-rules.mjs';
 import { ATTACHABLE_ASSET_TYPES, AVATAR_SIZE, LOGO_SIZE, PROGRESS_WIDTH, SEARCH_BAR_WIDTH, SPACER_UNITS, TOOLBAR_SIDES, WIDGET_TONES, WIDGET_TYPES, avatarInitials, counterText, hostSpecs, imageSrc, linkHref, placeToolbarWidgets, progressPercent, searchBarConfig, statusOn, themeSwitchNext, validateHostAttachments, widgetTone } from '../core/engines/widgets';
 import { ATTACHABLE_TYPES, BADGE_TONE_TOKEN, BANNER_SIDES, bannerVars, formatClock, placeAttachments } from '../core/engines/banner';
 import { scoreEntry } from '../core/engines/search';
@@ -2161,6 +2162,71 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
         },
         restored: { doc: restoreAppDefault(picked, '2026-11-09T00:00:00Z'), undone: undoRestore(restoreAppDefault(picked, '2026-11-09T00:00:00Z')).skin },
         roundTrip: parseAppLook(JSON.stringify(pluginSkin)),
+      };
+    })(),
+    // The hub default skin (build console-look-becomes-default-axhub-skin, Nov 14 2026, Brett: "make it the default axHub
+    // look, and then make all the apps inherit it right now"): the `default` root of the chain, the floor every app stands
+    // on; its own picks are the edits over it; adopt / backup / restore; the skin's chrome block; the shared document.
+    hubDefault: (() => {
+      const consoleSkin = normalizeSkin({ layoutTheme: 'classic-ide', colorTheme: 'arctic-daylight', styleTheme: 'soft-studio', assets: { button: 'rounded-solid', 'nav-menu': 'amber-signature', toolbar: 'standard-icons' }, extras: { spacing: 'tight', hidden: { toolbar: false }, settings: { 'axf.tokens.layout': { '*': { toolbarPosition: 'bottom' } } } }, chrome: { toolbar: { interface: 'chrome-toolbar', instances: { main: { bogus: 1 } } }, 'tab-group': { instances: { builds: { style: 'pills', position: 'left' }, 'Bad Id!': { style: 'pills' } } }, nope: { interface: 'x' } } });
+      const windows = normalizeSkin(skin);
+      const skins: Record<string, typeof windows> = { console: consoleSkin, windows, aurora: normalizeSkin({ ...skin, colorTheme: 'aurora-night' }) };
+      const skinOf = (id: string) => skins[id] ?? null;
+      const withDefault = { ...shared, defaultSkin: { id: 'console', overrides: { dialog: 'hub-dialog' } } };
+      const withGlobal = { ...withDefault, skin: { id: 'aurora' } };
+      const hubDefault = hubDefaultOf(withDefault as never);
+      const place = { app: 'app', ui: 'home', plugin: 'notes' };
+      const edited = lookAfterChange(look0, { slots: { button: 'terminal' }, hidden: { toolbar: true } }, null);
+      const pluginOver = setScopeOverride(edited, 'plugin:notes', 'button', 'plugin-button');
+      const pluginOff = setScopeSkin(look0, 'plugin:notes', 'off');
+      const ownOn = setUseSkin(pickSkin(look0, 'windows'), true);
+      const following = setInheritSkin(look0, true);
+      const mine = setScopeSkin(setSkinColorTheme(lookAfterChange(ownOn, { slots: { dialog: 'my-dialog' } }, windows), 'plum-noir'), 'plugin:notes', 'on', 'aurora');
+      const adopted = adoptHubDefault(mine, { at: '2026-11-14T23:00:00Z', by: 'skins-cli', reason: 'console look becomes the hub default' });
+      const restored = restoreLookBackup(adopted, '', '2026-11-14T23:30:00Z');
+      const backedTwice = backupLook(backupLook(adopted, { at: 'b2', reason: 'twice' }), { at: 'b3', reason: 'a twin of the newest' });
+      let capped = adopted;
+      for (let i = 0; i < LOOK_BACKUPS_MAX + 2; i++) capped = backupLook(lookAfterChange(capped, { slots: { button: `b${i}` } }, null), { at: `t${i}` });
+      const chromeBad = { toolbar: { interface: 'Bad Id', instances: { main: { bogus: 1 }, 'Bad Id!': { variant: 'icons' } } }, 'tab-group': { instances: 7 }, nope: {} };
+      return {
+        chain: skinScopeChain(place),
+        pointer: { good: hubDefault, none: hubDefaultOf(shared as never), junk: hubDefaultOf({ $axf: 'appearance@1', defaultSkin: { id: 'Bad Id' } } as never), legacyColour: hubDefaultOf({ ...shared, defaultSkin: { id: 'console', overrides: { 'color-theme': 'harbor', dialog: 'd' } } } as never) },
+        chrome: { normalized: consoleSkin.chrome, errors: skinChromeErrors(chromeBad), skinErrors: skinErrors({ ...skin, chrome: chromeBad }), settings: skinChromeSettings(consoleSkin.chrome) },
+        resolve: {
+          noOverride: resolveLookSkin(look0, null, place, hubDefault),
+          noDefault: resolveLookSkin(look0, null, place, null),
+          ownSkinOn: resolveLookSkin(ownOn, null, place, hubDefault),
+          pluginOff: resolveLookSkin(pluginOff, null, place, hubDefault),
+          pluginOverride: resolveLookSkin(pluginOver, null, place, hubDefault),
+          followingHub: resolveLookSkin(following, globalSkinOf(withGlobal as never), place, hubDefault),
+          followingNoHub: resolveLookSkin(following, null, place, hubDefault),
+          notFollowingHub: resolveLookSkin(look0, globalSkinOf(withGlobal as never), place, hubDefault),
+          noDocument: resolveLookSkin(null, null, place, hubDefault),
+          offSkinColourStays: resolveLookSkin(setSkinColorTheme(look0, 'plum-noir'), null, place, hubDefault),
+        },
+        composed: {
+          noOverride: composeLookAt(withDefault as never, look0, skinOf),
+          partialOverride: composeLookAt(withDefault as never, edited, skinOf),
+          pluginOverride: composeLookAt(withDefault as never, pluginOver, skinOf, place),
+          pluginOff: composeLookAt(withDefault as never, pluginOff, skinOf, place),
+          ownSkinOn: composeLookAt(withDefault as never, ownOn, skinOf),
+          followingHub: composeLookAt(withGlobal as never, following, skinOf),
+          unknownDefault: composeLookAt({ ...shared, defaultSkin: { id: 'gone' } } as never, look0, skinOf),
+          hubOnly: composeLookAt(withDefault as never, hubOnlyLook(mine), skinOf),
+        },
+        adopt: {
+          mine, adopted, adoptedTwice: adoptHubDefault(adopted, { at: '2026-11-14T23:05:00Z', by: 'skins-cli' }), alreadyOnFloor: adoptHubDefault(look0, { at: '2026-11-14T23:05:00Z' }),
+          composed: composeLookAt(withDefault as never, adopted, skinOf).doc.slots, undone: undoRestore(adopted),
+          restored, restoredUndone: undoRestore(restored), nothingToRestore: restoreLookBackup(look0, '', '2026-11-14T23:30:00Z'), roundTrip: parseAppLook(JSON.stringify(adopted)),
+          backups: { twice: backedTwice.backups, cap: capped.backups!.map((b) => b.id), newest: lookBackup(adopted), byId: lookBackup(backedTwice, 'b2'), missing: lookBackup(adopted, 'nope') },
+        },
+        shared: {
+          parsed: parseAppearance(JSON.stringify(withDefault)),
+          merged: mergeAppearance(parseAppearance(JSON.stringify(withGlobal)), { defaultSkin: { id: 'windows' } }, 'skins-cli', '2026-11-14T23:00:00Z'),
+          cleared: mergeAppearance(parseAppearance(JSON.stringify(withDefault)), { defaultSkin: null }, 'skins-cli', '2026-11-14T23:00:00Z'),
+          serialized: serializeAppearance(parseAppearance(JSON.stringify(withGlobal))!),
+          combined: combineAppearanceChanges({ defaultSkin: { id: 'a' } }, { skin: null }),
+        },
       };
     })(),
   });
