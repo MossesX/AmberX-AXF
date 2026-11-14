@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T18:02:08.145Z",
+ "updatedAt": "2026-11-14T18:13:17.086Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -140128,6 +140128,37 @@
      "createdAt": "2026-11-14T17:52:20.336Z"
     }
    ]
+  },
+  {
+   "id": "picker-dialog-plugin-replaces-all",
+   "title": "Picker dialog plugin replaces all dropdowns",
+   "category": "",
+   "detail": "New removable plugin: replaces EVERY dropdown/select in the console and framework (native <select>, custom dropdowns, comboboxes) with a tap-to-open picker dialog. The field shows the current value; tapping opens a themed dialog listing the options (search box when many, grouped sections, icons/descriptions if available, multi-select with checkboxes where the select is multiple, keyboard and screen-reader accessible). Fully token-driven: register its own token family (dialog surface, backdrop, option row, selected, hover, focus, search, header, every state, light and dark) in the token registry; no literal colours/sizes (CI gate); every skin can style it and the skin upgrader adds defaults matching today's look. One shared component used everywhere; plugin off = original dropdowns come back. Works on desktop and phone (bottom sheet style on phone). Full API and voice control (open picker, choose option by name). Tests desktop and phone, help entry, Shipped features.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-14T18:13:15.368Z",
+   "updatedAt": "2026-11-14T18:13:15.368Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I want a plugin that replaces all drop down select boxes with a themable dialogue that matches the theme; skins have to touch them; they must conform to the token system",
+    "at": "2026-11-14T18:13:15.368Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }
