@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5276,
- "updatedAt": "2026-11-14T04:49:50.807Z",
+ "rev": 5277,
+ "updatedAt": "2026-11-14T04:50:06.964Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -214091,8 +214091,8 @@
    "branch": "claude/group-chat-audio-hear-agents-talk-while",
    "pr": "#671",
    "createdAt": "2026-11-14T04:20:23.886Z",
-   "updatedAt": "2026-11-14T04:49:37.473Z",
-   "builtAt": "2026-11-14T04:49:37.473Z",
+   "updatedAt": "2026-11-14T04:49:52.705Z",
+   "builtAt": "2026-11-14T04:49:52.705Z",
    "notes": [
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-group-chat-audio-hear-agents-talk-while--lenny.",
@@ -214105,6 +214105,10 @@
     {
      "text": "PR #671. UI Review item r-20261114-x2wn801 (desktop + phone shots) could not be uploaded: this headless session has no AXF_CONSOLE_URL/AXF_TOKEN, so it is in the worktree only. Re-submit with --console before calling the PR ready.",
      "at": "2026-11-14T04:49:30.855Z"
+    },
+    {
+     "text": "Headless run axf-group-chat-audio-hear-agents-talk-while--lenny: brief only · start 10.9K tokens ($0.03) · cost $8.55 · 169 turns · 6 tools, MCP none",
+     "at": "2026-11-14T04:49:52.705Z"
     }
    ],
    "approvals": [],
