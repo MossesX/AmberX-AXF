@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5565,
- "updatedAt": "2026-11-14T23:09:57.132Z",
+ "rev": 5566,
+ "updatedAt": "2026-11-14T23:10:10.474Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -187971,7 +187971,7 @@
    "branch": "claude/change-to-move-amberx-web-app-console",
    "pr": "#586",
    "createdAt": "2026-11-13T00:39:39.304Z",
-   "updatedAt": "2026-11-13T17:32:08.163Z",
+   "updatedAt": "2026-11-14T23:09:58.588Z",
    "builtAt": "2026-11-13T11:25:24.180Z",
    "notes": [
     {
@@ -188081,6 +188081,23 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "flagged",
+    "landAttempts": [
+     {
+      "at": "2026-11-14T23:09:46.159Z",
+      "run": "lr-change-to-move-amberx-web-app-console-20261114T230946",
+      "base": "ef7335f232827523bba54dbe2ce1e6610cb98b42",
+      "merged": "",
+      "outcome": "clash",
+      "ci": "",
+      "note": "Source clash a person has to settle: apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/WatchService.java, apps/console-web/plugins/approvals-banner/plugin.json, apps/console-web/server/main.py. No fix build: the orchestrator did not take it."
+     }
+    ]
    },
    "steps": [
     {
@@ -188205,7 +188222,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": {
