@@ -796,7 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 01:12 UTC · `voice-listener-use-claude-when-connected` note (all) · orchestrator
 - 2026-11-14 01:15 UTC · `console-app-land-parts-1-4-build-apk` note (all) · orchestrator
 - 2026-11-14 01:27 UTC · `land-batch-merge-main-each-finished` note (all) · orchestrator
 - 2026-11-14 01:30 UTC · `console-app-wake-word-voice-listener` → pending, note (all) · reconciler
@@ -1196,6 +1195,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 22:52 UTC · `hotfix-desktop-console-draws-app-menu` note (all) · orchestrator
 - 2026-11-14 22:52 UTC · `hotfix-toolbar-settings-still-change` → running, note (all) · pipeline
 - 2026-11-14 22:52 UTC · `hotfix-toolbar-settings-still-change` note (all) · orchestrator
+- 2026-11-14 22:53 UTC · `pass-approval-hook-deep-link-amberx-notification` s3 done (all) · orchestrator
 
 ## Token passes (log)
 
