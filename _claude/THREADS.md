@@ -792,9 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 20:15 UTC · `context-menus-plugin-one-true-source` note (all) · claude-voice
-- 2026-11-13 20:16 UTC · `context-menus-plugin-one-true-source` note (all) · orchestrator
-- 2026-11-13 20:16 UTC · `full-voice-control-merge-main-and-land` note (all) · pipeline
 - 2026-11-13 20:16 UTC · `dispatcher-gate-never-launch-build` → running, note (all) · pipeline
 - 2026-11-13 20:16 UTC · `dispatcher-gate-never-launch-build` branch claude/dispatcher-gate-never-launch-build (all) · pipeline
 - 2026-11-13 20:16 UTC · `dispatcher-gate-never-launch-build` note (all) · orchestrator
@@ -1192,6 +1189,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 04:22 UTC · `ui-directory-plugin-self-updating-data` → queued, note (all) · pipeline
 - 2026-11-14 04:22 UTC · `ui-directory-plugin-self-updating-data` note (all) · pipeline
 - 2026-11-14 04:22 UTC · `hotfix-get-main-ci-green-theme-swap` s2 done (all) · orchestrator
+- 2026-11-14 04:22 UTC · `group-chat-audio-hear-agents-talk-while` → running, note (all) · pipeline
+- 2026-11-14 04:22 UTC · `group-chat-audio-hear-agents-talk-while` branch claude/group-chat-audio-hear-agents-talk-while (all) · pipeline
+- 2026-11-14 04:22 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · orchestrator
 
 ## Token passes (log)
 
