@@ -62,6 +62,21 @@
       "priority": "high"
     },
     {
+      "id": "pipeline.oauth",
+      "label": "Build stopped on a Claude login failure",
+      "group": "builds",
+      "app": "console",
+      "source": "Build orchestrator dispatcher",
+      "description": "A build's run stopped on an OAuth / sign-in failure: which account, which build, the exact error. The build is held in Pending and goes back to the Queue by itself, once, when the account's health check signs in again (a second alert says so).",
+      "match": {
+        "source": "pipeline",
+        "keyPrefix": "pipeline:oauth:"
+      },
+      "setting": "notify.blocked",
+      "push": true,
+      "priority": "high"
+    },
+    {
       "id": "pipeline.split",
       "label": "Build split into steps",
       "group": "builds",
