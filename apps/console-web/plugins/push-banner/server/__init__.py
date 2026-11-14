@@ -1675,6 +1675,114 @@ def land_fix(body: Any = Body(None)) -> dict[str, Any]:
     return PUSHES.land_fix(body)
 
 
+# ------------------------------------------------------------------ the serial lander (build land-finish-auto-land-live-clear-backlog)
+# One implementation each: land/land-one.mjs, land/backlog.mjs (the host CLI, MCP plugin commands, axf land and voice call
+# these same routes). What needs the host's git and token (archive, flag, keep-fresh) is a request the host lander
+# carries out at its next run (land-requests.jsonl), like the sweeper's "sweep now".
+LAND_DIR = Path(__file__).resolve().parent.parent / "land"
+LAND_REQ = ("archive", "flag", "fresh", "one")
+
+
+def _land_node(script: str, *args: str, timeout: int = 60) -> Any:
+    try:
+        r = subprocess.run(["node", str(LAND_DIR / script), *args, "--json"], capture_output=True, text=True, timeout=timeout,
+                           env={**os.environ, "AXF_PUSH_BANNER_DIR": str(data_dir()), "AXF_LAND_REPO": str(REPO_ROOT)})
+    except (OSError, subprocess.TimeoutExpired) as e:
+        raise HTTPException(502, _text(str(e))) from None
+    if r.returncode != 0:
+        raise HTTPException(400, _text(r.stderr.strip() or r.stdout.strip() or f"{script} failed"))
+    try:
+        return json.loads(r.stdout)
+    except ValueError:
+        raise HTTPException(502, _text(r.stdout[-300:])) from None
+
+
+def _tail_jsonl(name: str, n: int) -> list[dict[str, Any]]:
+    try:
+        lines = (data_dir() / name).read_text().strip().splitlines()[-n:]
+    except OSError:
+        return []
+    out = []
+    for ln in lines:
+        try:
+            out.append(json.loads(ln))
+        except ValueError:
+            pass
+    return out
+
+
+def land_request(cmd: str, body: Any) -> dict[str, Any]:
+    if cmd not in LAND_REQ:
+        raise HTTPException(400, "unknown lander request")
+    b = body if isinstance(body, dict) else {}
+    if set(b) - {"build", "why", "by"}:
+        raise HTTPException(400, "send {build, why?, by?}")
+    bid = b.get("build")
+    if cmd != "fresh" and (not isinstance(bid, str) or not LAND_ID.match(bid)):
+        raise HTTPException(400, "send {build: <build id>}")
+    if cmd == "one":
+        e = _land_node("land-one.mjs", "enqueue", bid, "--front", "--from-store")
+        return {"ok": True, "command": "one", "build": bid, "entry": e, "note": "First in the landing line: the lander takes it within 3 minutes."}
+    rec = {"cmd": cmd, "build": bid or "", "why": _text(b.get("why"), 300), "by": _text(b.get("by"), 80) or "console", "at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())}
+    with (data_dir() / "land-requests.jsonl").open("a") as f:
+        f.write(json.dumps(rec) + "\n")
+    return {"ok": True, "command": cmd, "build": rec["build"], "requested": rec["at"], "note": "The lander does it at its next run (within 3 minutes)."}
+
+
+@router.get("/land/lander")
+def land_lander() -> dict[str, Any]:
+    """The serial lander: the landing line, the last attempts (land-run@1), the last batch and pending requests."""
+    return {"$axf": "land-lander@1", "line": _land_node("land-one.mjs", "show"), "runs": _tail_jsonl("land-runs.jsonl", 20),
+            "batch": (_tail_jsonl("land-batches.jsonl", 1) or [None])[0], "requests": _tail_jsonl("land-requests.jsonl", 20),
+            "fresh": _read_json_file(data_dir() / "keep-fresh.json")}
+
+
+def _read_json_file(p: Path) -> Any:
+    try:
+        return json.loads(p.read_text())
+    except (OSError, ValueError):
+        return None
+
+
+@router.get("/land/backlog")
+def land_backlog(limit: int = 0) -> dict[str, Any]:
+    """Every finished build not on main: behind main, priority, age, landing state; Brett's named builds first."""
+    args = ["--from-store"] + (["--limit", str(int(limit))] if limit and limit > 0 else [])
+    return _land_node("backlog.mjs", *args)
+
+
+@router.post("/land/one")
+def land_one(body: Any = Body(None)) -> dict[str, Any]:
+    return land_request("one", body)
+
+
+@router.post("/land/archive")
+def land_archive(body: Any = Body(None)) -> dict[str, Any]:
+    """{build, why?}: keep its branch head as tag archive/<build>, close its PR, mark it archived (at the lander's next run)."""
+    return land_request("archive", body)
+
+
+@router.post("/land/flag")
+def land_flag(body: Any = Body(None)) -> dict[str, Any]:
+    """{build, why?}: mark it flagged (it needs a person before it lands)."""
+    return land_request("flag", body)
+
+
+@router.post("/land/fresh")
+def land_fresh(body: Any = Body(None)) -> dict[str, Any]:
+    """The drift keeper now: every running build gets main merged in at the lander's next run, whatever its clock says."""
+    return land_request("fresh", body)
+
+
+@router.get("/land/dispatcher")
+def land_dispatcher() -> dict[str, Any]:
+    """The orchestrator's dispatcher (axf.build-dispatch@1 status): slots, what launches next, why the rest wait."""
+    svc = claudefix.plugin_services.get(claudefix.DISPATCH)
+    if not svc or not hasattr(svc, "status"):
+        raise HTTPException(503, "the Build orchestrator (axf.build-dispatch@1) is not installed")
+    return {"$axf": "land-dispatcher@1", **svc.status()}
+
+
 @router.get("/land/line")
 def land_line() -> dict[str, Any]:
     st = PUSHES.land()

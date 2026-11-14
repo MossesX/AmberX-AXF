@@ -626,13 +626,20 @@ async def pipeline_request(request: Request) -> dict[str, Any]:
 
 class DispatchService:
     """axf.build-dispatch@1: the one way for other plugins to start a build. request(title, detail, by=…, source=…,
-    priority=…, queue=True) → {ok, id, status}; queue(id, by) puts an existing build in the Queue; build(id) reads one."""
+    priority=…, queue=True) → {ok, id, status}; queue(id, by) puts an existing build in the Queue; build(id) reads one;
+    status() is the dispatcher's state (slots, launches, waits with their reasons, idle)."""
 
     def request(self, title: str, detail: str = "", **kw: Any) -> dict[str, Any]:
         return request_build(title, detail, **kw)
 
     def queue(self, build_id: str, by: str = "console") -> dict[str, Any]:
         return _pipeline("queue", _build_id(build_id), "--by", by[:80])
+
+    def status(self) -> dict[str, Any]:
+        """The dispatcher's state: slots (soft + VPS hard limit), what the next tick launches and why the rest wait, idle."""
+        st = _pipeline("status")
+        return {"at": st.get("at"), "slots": st.get("slots"), "plan": st.get("plan"), "idle": (st.get("state") or {}).get("idle"),
+                "accounts": [{k: a.get(k) for k in ("name", "parallel", "running", "usable", "why")} for a in st.get("accounts") or [] if isinstance(a, dict)]}
 
     def build(self, build_id: str) -> dict[str, Any]:
         """{id, status, steps, pipeline…} of one build (so a caller can follow what it asked for)."""

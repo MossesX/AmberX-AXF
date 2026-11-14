@@ -78,7 +78,7 @@ export function markBuild(s, id, state, note = '') {
  * Check builds (backlog rows or { id, branch, pr }) and, with `apply`, act on them. `gh` closes PRs (null = skip);
  * `mark` writes the land state. Returns { at, rows: [{ id, verdict: superseded | unique | missing, files, why, tag?, closed? }] }.
  */
-export async function supersede({ s = settings(), git = makeGit(s.repo), gh = null, rows, apply = false, mark = markBuild, log = () => {} }) {
+export async function supersede({ s = settings(), git = makeGit(s.repo), gh = null, rows, apply = false, mark = markBuild, force = false, why: handWhy = '', log = () => {} }) {
   const main = `${s.remote}/${s.base}`;
   const out = [];
   for (const b of rows) {
@@ -89,6 +89,8 @@ export async function supersede({ s = settings(), git = makeGit(s.repo), gh = nu
       const ref = `refs/remotes/${s.remote}/pr/${prN}`;
       if (git(['fetch', '-q', s.remote, `+refs/pull/${prN}/head:${ref}`], { timeout: 120000 }).code === 0) { w = uniqueWork({ git, ref, main }); w.viaPr = true; }
     }
+    // force (archive by hand: POST /land/archive): archived whatever it holds, with the reason given
+    if (force && !w.missing) { w.unique = false; w.why = handWhy || `archived by hand${w.files.length ? ` (it still held ${w.files.length} file(s) main lacks)` : ''}`; }
     const r = { id: b.id, branch: b.branch, pr: b.pr || '', verdict: w.missing ? 'missing' : w.unique ? 'unique' : 'superseded', files: w.files, commits: w.plus.length, why: w.why, ...(w.viaPr ? { from: `pull/${prN}/head (branch deleted)` } : {}) };
     if (apply && r.verdict === 'superseded') {
       const tag = `archive/${b.id}`;
@@ -98,7 +100,7 @@ export async function supersede({ s = settings(), git = makeGit(s.repo), gh = nu
       const n = Number(String(b.pr || '').replace(/\D/g, '')) || 0;
       if (n && gh) {
         try {
-          await gh('POST', `/repos/${s.slug}/issues/${n}/comments`, { body: `Superseded: everything in this branch is already on main (${w.why}). The head is kept as tag \`${tag}\`; closing.` });
+          await gh('POST', `/repos/${s.slug}/issues/${n}/comments`, { body: `${force ? `Archived by hand: ${w.why}` : `Superseded: everything in this branch is already on main (${w.why})`}. The head is kept as tag \`${tag}\`; closing.` });
           await gh('PATCH', `/repos/${s.slug}/pulls/${n}`, { state: 'closed' }); r.closed = n;
         } catch (e) { r.error = `PR: ${e.message.slice(0, 160)}`; }
       }

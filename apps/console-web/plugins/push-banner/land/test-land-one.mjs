@@ -11,7 +11,7 @@ process.env.AXF_LAND_LOCK = join(root, 'lock.d');
 process.env.AXF_CREW_SAY = 'off';
 process.env.AXF_LAND_RESOLVER = '';
 process.env.AXF_CONSOLE_UPDATE = ''; // never the real redeploy from a test
-const { landOne, readRuns, checkAndLand, enqueue, runLine, readLine, afterBatch } = await import('./land-one.mjs');
+const { landOne, readRuns, checkAndLand, enqueue, runLine, readLine, afterBatch, processRequests } = await import('./land-one.mjs');
 const chrome = await import('./check-chrome-once.mjs');
 const { makeGit, takeLandLock, dropLandLock } = await import('./land.mjs');
 const lr = await import('../../../../../framework/core/land-run.mjs');
@@ -237,6 +237,18 @@ await t('chrome verdicts: one of each ok, two banners or menu bars doubled, a si
   assert.equal(chrome.verdict({ banners: 1, menubars: 2 }).verdict, 'doubled');
   assert.equal(chrome.verdict({ blocked: 'the axHub sign-in wall' }).verdict, 'unknown');
   assert.equal(chrome.overall({ desktop: { banners: 1, menubars: 1 }, phone: { banners: 2, menubars: 1 } }).verdict, 'doubled');
+});
+
+await t('console requests (archive, flag, fresh) run once at the start of the next lander run', async () => {
+  const sR = { ...s, dataDir: join(root, 'req') }; mkdirSync(sR.dataDir, { recursive: true });
+  writeFileSync(join(sR.dataDir, 'land-requests.jsonl'), ['{"cmd":"archive","build":"old","why":"done elsewhere","by":"Brett"}', '{"cmd":"flag","build":"odd","by":"voice"}', '{"cmd":"fresh","build":"","by":"cli"}'].join('\n') + '\n');
+  const did = [];
+  const acts = { git: () => ({ code: 0, out: '' }), archive: async (id, why) => { did.push(['archive', id, why]); return 'archived'; }, flag: async (id) => { did.push(['flag', id]); return 'flagged'; }, fresh: async () => { did.push(['fresh']); return '0 merged'; } };
+  const done = await processRequests({ s: sR, acts });
+  assert.deepEqual(did, [['archive', 'old', 'done elsewhere'], ['flag', 'odd'], ['fresh']]);
+  assert.equal(done.length, 3);
+  assert.equal(readFileSync(join(sR.dataDir, 'land-requests.jsonl'), 'utf8'), '', 'each request runs once');
+  assert.equal((await processRequests({ s: sR, acts })).length, 0);
 });
 
 await t('two at once: a second attempt is refused while the line is held, and runs once it is free', async () => {

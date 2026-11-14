@@ -10,10 +10,11 @@
  * Every build the builds store says is `built` and not merged, and that is not archived or already landed by the lander
  * (build-pipeline@1 needsLanding plus flagged ones, which still need a person).
  *
- *   node apps/console-web/plugins/push-banner/land/backlog.mjs [--count] [--json] [--limit n]
+ *   node apps/console-web/plugins/push-banner/land/backlog.mjs [--count] [--from-store] [--json] [--limit n]
  *     --count   count commits behind main from git now (else the land record's last count)
  */
-import { resolve } from 'node:path';
+import { readFileSync } from 'node:fs';
+import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as pipe from '../../../../../framework/core/build-pipeline.mjs';
 import { makeGit, settings } from './land.mjs';
@@ -73,8 +74,10 @@ export async function main(argv) {
   const s = settings(); const git = makeGit(s.repo); const json = argv.includes('--json');
   const i = argv.indexOf('--limit'); const limit = i >= 0 ? Number(argv[i + 1]) || 0 : 0;
   if (argv.includes('--count')) git(['fetch', '-q', '--prune', s.remote], { timeout: 180000 });
-  else git(['fetch', '-q', s.remote, s.base], { timeout: 120000 });
-  const rows = backlog(storeBuilds(s, git), { behind: argv.includes('--count') ? gitBehind(s, git) : null });
+  else if (!argv.includes('--from-store')) git(['fetch', '-q', s.remote, s.base], { timeout: 120000 });
+  // --from-store: this checkout's builds store (the console container, which follows main through builds-live)
+  const local = () => { try { return JSON.parse(readFileSync(join(s.repo, '_claude/builds/store.json'), 'utf8')).builds || []; } catch { return []; } };
+  const rows = backlog(argv.includes('--from-store') ? local() : storeBuilds(s, git), { behind: argv.includes('--count') ? gitBehind(s, git) : null });
   const shown = limit ? rows.slice(0, limit) : rows;
   if (json) { console.log(JSON.stringify({ $axf: FRAME, at: new Date().toISOString(), total: rows.length, rows: shown }, null, 1)); return 0; }
   console.log(`${rows.length} finished build(s) not on main${limit && rows.length > limit ? ` (first ${limit})` : ''}`);

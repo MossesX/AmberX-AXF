@@ -1,6 +1,6 @@
 /** Push banner UI: the banner (open pull requests + branches not on main, grouped by what's ready) and the settings panel. Theme tokens only. */
 import { useEffect, useState, type ReactNode } from 'react';
-import { Button, Icon, RefText, SelectField, Switch, useAxfState, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
+import { Button, Icon, RefText, SelectField, Switch, useAxfState, useBannerLaunchOpen, useControlTarget, useRuntime, BannerIcon } from '@console/axf/react';
 import { MergeQueueChip, MergeQueueView } from './queue';
 import { LandingChip, LandingView } from './landing';
 import { ago, bannerOn, doneKeys, doneRows, failedKeys, failedRows, fixWithClaude, jobOf, REPAIR_ALL, removeFailed, repair, repairAll, load, loadDetail, mergePr, needsPull, openPr, PULL_ALL, pullAll, pullMain, pullRows, removeDone, rows, saveClaude, setHidden, useStore, api, type Done, type Failed, type PullRow, type Row } from './store';
@@ -332,6 +332,12 @@ export function PushBanner() {
   const [open, setOpen] = useBannerLaunchOpen();
   const [queueOpen, setQueueOpen] = useState(false);
   const [lineOpen, setLineOpen] = useState(false);
+  // deep link (console_show / console_open view:landing-line): opens the banner on the landing line and the backlog in it;
+  // the same data is GET /land/line, /land/backlog and /land/lander (REST, MCP, axf land, voice)
+  const setLineTarget = useControlTarget({
+    address: 'view:landing-line', kind: 'view', label: 'Landing line and backlog', keywords: ['landing', 'backlog', 'unlanded', 'behind main', 'serial lander'],
+    open: () => { setOpen(true); setLineOpen(true); }, can: ['open', 'state', 'focus'], state: () => ({ open: lineOpen }),
+  }, [lineOpen]);
   if (!bannerOn((k) => rt.settings.get(k))) return null;
   const finished = doneRows(s.answer);
   const fails = failedRows(s.answer).filter((f) => !doneKeys(s.answer).has(f.key));
@@ -373,7 +379,7 @@ export function PushBanner() {
       </div>
       {open && (
         <div className="axp-push-banner__body">
-          {lineOpen && <section className="axp-push-banner__group" aria-label="Landing line"><h4 className="axp-push-banner__group-title">Landing line</h4><LandingView /></section>}
+          {lineOpen && <section ref={setLineTarget} className="axp-push-banner__group" aria-label="Landing line"><h4 className="axp-push-banner__group-title">Landing line</h4><LandingView /></section>}
           {queueOpen && <section className="axp-push-banner__group" aria-label="Merge queue"><h4 className="axp-push-banner__group-title">Merge queue</h4><MergeQueueView compact /></section>}
           <Group title="Done" count={finished.length}>{finished.map((d) => <DoneItem key={d.key} d={d} sha={d.kind === 'pulled' ? headOf(d.key) : undefined} />)}</Group>
           <Group title="Pull failed" tone="warning" count={fails.length} action={<RepairAllButton list={fails} />}>{fails.map((f) => <FailedItem key={f.key} f={f} base={baseOf(f.key)} />)}</Group>

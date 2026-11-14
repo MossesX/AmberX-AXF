@@ -807,4 +807,17 @@ check(mod.unlanded([_bs[0]], _now)["status"] == "ok", "unlanded: nothing over 15
 _nt = json.loads((Path(mod.__file__).resolve().parent.parent / "notify.json").read_text())
 check(any(t["id"] == "land.unlanded" and t["match"]["keyPrefix"] == "system:land-unlanded" for t in _nt["types"]), "notify.json declares land.unlanded for the systems check's push (axf.notify@1)")
 
+# the serial lander's REST routes (build land-finish-auto-land-live-clear-backlog): requests the host lander carries out
+for _cmd in ("archive", "flag"):
+    _r = c.post(f"/p/land/{_cmd}", json={"build": "some-build", "why": "test"})
+    check(_r.status_code == 200 and _r.json()["command"] == _cmd and _r.json()["requested"], f"POST /land/{_cmd} records a request for the host lander")
+check(c.post("/p/land/fresh", json={}).status_code == 200, "POST /land/fresh: the drift keeper at the next run")
+check(c.post("/p/land/archive", json={"build": "bad id!"}).status_code == 400 and c.post("/p/land/flag", json={"nope": 1}).status_code == 400, "lander requests: a build id, why and by only")
+_reqs = [json.loads(l) for l in (Path(os.environ["AXF_PUSH_BANNER_DIR"]) / "land-requests.jsonl").read_text().splitlines() if l.strip()]
+check([r["cmd"] for r in _reqs][-3:] == ["archive", "flag", "fresh"] and _reqs[-3]["why"] == "test", "the requests file the lander reads (land-requests.jsonl)")
+_lr = c.get("/p/land/lander")
+check(_lr.status_code == 200 and "line" in _lr.json() and isinstance(_lr.json()["requests"], list), "GET /land/lander: the line, last attempts, last batch, requests")
+_bl = c.get("/p/land/backlog")
+check(_bl.status_code == 200 and _bl.json().get("$axf") == "land-backlog@1", "GET /land/backlog: the backlog from this checkout's builds store")
+
 print(f"push-banner: {ok} checks passed")

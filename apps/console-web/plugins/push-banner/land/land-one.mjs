@@ -333,7 +333,47 @@ export async function afterBatch({ s, ran, archived = [], api = null, redeploy =
   return rec;
 }
 
-export async function runLine({ s = settings(), max = 20, dry = false, land = landOne, now = () => new Date(), budgetMs = 50 * 60000, batch = afterBatch, log = () => {}, ...opts } = {}) {
+export const requestsFile = (s) => join(s.dataDir, 'land-requests.jsonl');
+
+/**
+ * What the console asked the host to do (POST /land/archive | flag | fresh, the same through MCP, axf land and voice):
+ * archive = keep the head as tag archive/<build>, close its PR, mark it archived; flag = mark it flagged; fresh = the
+ * drift keeper now. Each request runs once; the file is emptied. `acts` injectable for tests.
+ */
+export async function processRequests({ s, dry = false, acts = {}, log = () => {} }) {
+  let text = '';
+  try { text = readFileSync(requestsFile(s), 'utf8'); } catch { return []; }
+  const reqs = text.split('\n').filter(Boolean).map((l) => { try { return JSON.parse(l); } catch { return null; } }).filter(Boolean);
+  if (!reqs.length || dry) return [];
+  writeFileSync(requestsFile(s), '');
+  const done = [];
+  const git = acts.git || makeGit(s.repo);
+  for (const r of reqs) {
+    try {
+      if (r.cmd === 'archive') {
+        const archive = acts.archive || (async (id, why) => {
+          const { supersede, markBuild } = await import('./supersede.mjs');
+          const b = buildFromMain({ s, git, id }); if (!b?.branch) return 'no branch on record';
+          const res = await supersede({ s, git, gh: appGitHub(s), rows: [{ id, branch: b.branch, pr: b.pr }], apply: true, mark: markBuild, force: true, why });
+          return res.rows[0]?.error || `archived as ${res.rows[0]?.tag || 'tag'}`;
+        });
+        done.push({ ...r, result: await archive(r.build, r.why) });
+      } else if (r.cmd === 'flag') {
+        const flag = acts.flag || (async (id, why) => { const { markBuild } = await import('./supersede.mjs'); const m = markBuild(s, id, 'flagged', why || `Flagged by ${r.by}`); return m.ok ? 'flagged' : m.text; });
+        done.push({ ...r, result: await flag(r.build, r.why) });
+      } else if (r.cmd === 'fresh') {
+        const fresh = acts.fresh || (async () => { const k = await import('./keep-fresh.mjs'); const st = k.keepFresh({ s, git, builds: k.storeBuilds(s, git), force: true, log }); return `${Object.values(st.builds).filter((x) => x.state === 'merged').length} merged`; });
+        done.push({ ...r, result: await fresh() });
+      }
+    } catch (e) { done.push({ ...r, result: `failed: ${e.message.slice(0, 200)}` }); }
+    log(`request ${r.cmd} ${r.build || ''}: ${done.at(-1)?.result}`);
+  }
+  appendFileSync(join(s.dataDir, 'land-requests-done.jsonl'), done.map((d) => `${JSON.stringify({ ...d, doneAt: new Date().toISOString() })}\n`).join(''));
+  return done;
+}
+
+export async function runLine({ s = settings(), max = 20, dry = false, land = landOne, now = () => new Date(), budgetMs = 50 * 60000, batch = afterBatch, requests = processRequests, log = () => {}, ...opts } = {}) {
+  if (requests) { try { await requests({ s, dry, log }); } catch (e) { log(`requests: ${e.message}`); } }
   const ran = []; const tried = new Set(); const t0 = Date.now(); const paused = [];
   while (ran.length < max && Date.now() - t0 < budgetMs) {
     let l = readLine(s);

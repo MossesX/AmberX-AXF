@@ -278,6 +278,108 @@
             }
           }
         }
+      },
+      {
+        "id": "land-lander",
+        "title": "Lander: status",
+        "description": "The serial lander: the landing line in order (what is in flight, waiting, red with its fix build, flagged), the last attempts (land-run@1), the last batch (landed, archived, flagged, red, redeploy, chrome check) and pending requests.",
+        "route": "GET /land/lander",
+        "readOnly": true
+      },
+      {
+        "id": "land-backlog",
+        "title": "Lander: backlog",
+        "description": "Every finished build not on main yet: commits behind main, priority, age and landing state, Brett's named builds first, then the most wanted, then the newest.",
+        "route": "GET /land/backlog",
+        "readOnly": true
+      },
+      {
+        "id": "land-one",
+        "title": "Lander: land one build now",
+        "description": "Put one finished build first in the landing line: the lander merges main in, regenerates, runs CI once and merges it on green (within 3 minutes).",
+        "route": "POST /land/one",
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "build id"
+            },
+            "why": {
+              "type": "string",
+              "description": "optional reason"
+            }
+          },
+          "required": [
+            "build"
+          ]
+        }
+      },
+      {
+        "id": "land-archive",
+        "title": "Lander: archive a build",
+        "description": "Keep the build's branch head as tag archive/<build>, close its PR with a note and mark it archived (its work is on main or no longer wanted). Nothing is deleted.",
+        "route": "POST /land/archive",
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "build id"
+            },
+            "why": {
+              "type": "string",
+              "description": "optional reason"
+            }
+          },
+          "required": [
+            "build"
+          ]
+        }
+      },
+      {
+        "id": "land-flag",
+        "title": "Lander: flag a build",
+        "description": "Mark a finished build flagged: it needs a person before it lands.",
+        "route": "POST /land/flag",
+        "input": {
+          "type": "object",
+          "properties": {
+            "build": {
+              "type": "string",
+              "description": "build id"
+            },
+            "why": {
+              "type": "string",
+              "description": "optional reason"
+            }
+          },
+          "required": [
+            "build"
+          ]
+        }
+      },
+      {
+        "id": "land-fresh",
+        "title": "Lander: keep running builds fresh now",
+        "description": "Run the drift keeper at the lander's next run: every running build gets main merged into its branch (skipping a dirty or session-held worktree), generated files regenerated, behind-main recorded.",
+        "route": "POST /land/fresh",
+        "input": {
+          "type": "object",
+          "properties": {
+            "why": {
+              "type": "string",
+              "description": "optional reason"
+            }
+          }
+        }
+      },
+      {
+        "id": "land-dispatcher",
+        "title": "Lander: dispatcher state",
+        "description": "The orchestrator's dispatcher: agent slots and the VPS hard limit, what the next tick launches, and why each queued build waits.",
+        "route": "GET /land/dispatcher",
+        "readOnly": true
       }
     ]
   },
@@ -303,7 +405,8 @@
       "_claude/shared/rules/RULES.md",
       "_claude/THREADS.md",
       "deploy/install-console.sh",
-      ".github/workflows/android.yml"
+      ".github/workflows/android.yml",
+      "_claude/memory/decisions.md"
     ]
   },
   "opens": false
