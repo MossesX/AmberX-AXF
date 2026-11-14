@@ -796,7 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 00:38 UTC · `land-batch-merge-main-each-finished` s7 done (all) · orchestrator
 - 2026-11-14 00:39 UTC · `land-batch-merge-main-each-finished` s8 done (all) · orchestrator
 - 2026-11-14 00:40 UTC · `land-batch-merge-main-each-finished` s9 done (all) · orchestrator
 - 2026-11-14 00:40 UTC · `land-batch-merge-main-each-finished` branch claude/land-batch-merge-main-each-finished, note (all) · reconciler
@@ -1196,6 +1195,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 22:44 UTC · `projects-own-everything-per-project` → queued (all) · orchestrator
 - 2026-11-14 22:44 UTC · `one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx` → queued (all) · orchestrator
 - 2026-11-14 22:44 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` → queued (all) · orchestrator
+- 2026-11-14 22:45 UTC · `console-look-becomes-default-axhub-skin` s2 done (all) · orchestrator
 
 ## Token passes (log)
 
