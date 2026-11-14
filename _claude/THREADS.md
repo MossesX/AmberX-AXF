@@ -796,8 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 04:11 UTC · `demo-video-series-three-minute-browser` → queued (all) · voice
-- 2026-11-14 04:10 UTC · `banner-widget-shapes-more-than-circle` branch claude/banner-widget-shapes-more-than-circle (all) · builds-live
 - 2026-11-14 04:11 UTC · `banner-widget-shapes-more-than-circle` note (all) · orchestrator
 - 2026-11-14 04:12 UTC · `demo-video-series-three-minute-browser` note (all) · voice
 - 2026-11-14 04:14 UTC · `icon-map-icon-packs-every-icon-badge-app` note (all) · orchestrator
@@ -1196,6 +1194,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 23:07 UTC · `land-finish-auto-land-live-clear-backlog` s15 done (all) · foreign-write
 - 2026-11-14 23:07 UTC · `themed-native-controls-plugin` s10 done (all) · orchestrator
 - 2026-11-14 23:08 UTC · `server-gate-one-session-per-build-no` note (all) · pipeline
+- 2026-11-13 10:50 UTC · `one-source-of-truth-console-shows-only-what-the-server-says-is-running` s3 done, → built (all) · orchestrator
+- 2026-11-13 10:50 UTC · `one-source-of-truth-console-shows-only-what-the-server-says-is-running` note (all) · orchestrator
 
 ## Token passes (log)
 
