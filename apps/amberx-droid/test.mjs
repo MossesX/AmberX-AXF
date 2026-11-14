@@ -625,6 +625,7 @@ eq(sharedCheck(here0), [], 'ships every shareable asset, no own copy of a shared
   eq(acts.map((c) => c.action), ['app.settings', 'notes.export', 'my.thing'].sort((a, b) => ({ 'app.settings': 'axf.framework', 'notes.export': 'ai.amberx.amberx.notes', 'my.thing': 'app' })[a].localeCompare(({ 'app.settings': 'axf.framework', 'notes.export': 'ai.amberx.amberx.notes', 'my.thing': 'app' })[b])), 'argument-free labelled actions only, grouped by owner');
   eq(acts.find((c) => c.action === 'app.settings').defaultOn, true, 'curated actions start on');
   eq(acts.find((c) => c.action === 'notes.export').defaultOn, false, 'other actions start off');
+  eq([...voice.CURATED_ACTIONS].filter((a) => a.startsWith('overlay.')), ['overlay.expand', 'overlay.collapse'], 'the overlay expands and collapses by voice out of the box');
   eq(acts.find((c) => c.action === 'my.thing').phrases, ['my thing'], 'the phrase is the label, normalised');
   eq(acts.find((c) => c.action === 'my.thing').owner, 'app', "an action without a module is the app's");
 

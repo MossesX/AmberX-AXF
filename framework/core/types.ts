@@ -205,9 +205,27 @@ export interface StyleThemeData {
   opacityScrim?: number;
   /** glass surfaces (how much of the surface colour a frosted panel keeps) */
   opacityGlass?: number;
+  /* ---- surface transparency (0..1, default 1 = opaque; engines/theme.ts SURFACE_KINDS). Lower = see-through + frosted. ---- */
+  /** dialogs (.fx-dialog) */
+  opacityDialog?: number;
+  /** floating windows: settings interfaces and tool windows (.fx-window) */
+  opacitySettings?: number;
+  /** panels, containers, groups (.fx-card) */
+  opacityPanel?: number;
+  /** popovers, dropdowns, context menus */
+  opacityMenu?: number;
+  /** toolbars and the app menubar */
+  opacityToolbar?: number;
+  /** the top banner */
+  opacityBanner?: number;
   /* ---- behaviour ---- */
   /** every section / group (Container) gets a collapse toggle top-right; build option --wrap-groups (default false) */
   wrapGroups?: boolean;
+  /* ---- component-tokens@1 (engines/component-tokens.mjs): the grid and tab-group token families, optional ---- */
+  /** grid / table tokens by key (headerBg, hoverBg, selectedBg, lineColor, radius, opacity, …) → --fx-grid-*; a colour-theme token name, a CSS value or a number */
+  grid?: Record<string, string | number>;
+  /** tab-group tokens by key (barBg, text, hoverText, activeText, indicator, pillsActiveBg, radiusPills, opacity, …) → --fx-tab-* */
+  tabs?: Record<string, string | number>;
   /** 'thin' = thin themed scrollbars; unset = the browser's own. */
   scrollbar?: 'thin';
 }
@@ -537,7 +555,7 @@ export interface ContainerData {
 /** Settings interface asset: the settings page as data, shared by every app that loads it (engines/settingsui.ts). */
 /** behavior-theme@1 (engines/behavior.ts): how an app behaves. Every field has a default, so any subset is valid. */
 export interface BehaviorThemeData {
-  motion: { speed: string; easing: string; reduced: string; entrance: string };
+  motion: { speed: string; easing: string; reduced: string; entrance: string; swatches: string; skinSwitch: string; picker: string; animSpeed: number; animIntensity: number };
   interaction: { hover: string; press: string; focusRing: string; cursor: string; longPressMs: number; doubleTapMs: number; dragThreshold: number };
   windows: { dialogOpen: string; backdrop: string; popupOpen: string; drawerOpen: string; snap: boolean; snapGrid: number; stack: string; minimize: string; closeOnBackdrop: boolean; closeOnEscape: boolean };
   feedback: { toastPosition: string; toastMs: number; sound: string; vibration: string; confirmDelete: string; busyCursor: boolean };

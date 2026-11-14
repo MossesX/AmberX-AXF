@@ -237,6 +237,23 @@ async function main() {
   check(mainStore().builds.find((b) => b.id === 'x').steps.length === cur.steps.length, 'the bad record did not');
   check(JSON.parse(run(A, LIVE, ['status', '--json']).stdout).skipped?.join() === 'x', 'status names what was left out');
 
+  // 13. a profile registered only on the hub (a project's, e.g. test-sandbox from project-seed) never gets a repo export:
+  // its build reaches main in the store, its orchestrator.json stays in its shared-data folder, and the repo export an
+  // older version wrote is swept (Nov 13 2026, main-ci-red-test-sandbox-profile-export: check-profiles.mjs failed on main)
+  const hub = join(T, 'hub'); mkdirSync(join(hub, 'framework/plan'), { recursive: true });
+  writeFileSync(join(hub, 'framework/plan/profiles.json'), JSON.stringify({ $axf: 'build-profiles@1', active: 'all', profiles: [{ id: 'all', name: 'All builds' }, { id: 'hub-only', name: 'Hub only' }] }));
+  const leaked = join(hub, '_claude/builds/profiles/hub-only/orchestrator.json');
+  mkdirSync(dirname(leaked), { recursive: true }); writeFileSync(leaked, '{"$export":"old","$axf":"orchestrator@1","builds":[]}\n');
+  const hubEnv = { AXF_DATA_DIR: hub, AXF_BUILD_PROFILE: 'hub-only', AXF_BUILDS_EXPORT: '1' };
+  r = run(A, ORCH, ['act', JSON.stringify({ action: 'add', id: 'z', title: 'Build z', steps: [{ id: 's1', text: 'one', model: 'Opus' }] })], hubEnv);
+  check(r.status === 0, `add z in the hub-only profile: ${r.stderr}`);
+  fetchA();
+  check(mainStore().builds.find((b) => b.id === 'z')?.profiles.includes('hub-only'), 'the hub-only build itself reached main in the store');
+  check(gitTry(A, 'cat-file', '-e', 'origin/main:_claude/builds/profiles/hub-only/orchestrator.json').status !== 0, 'no repo export on main for a profile the repo registry does not list');
+  check(existsSync(join(hub, 'framework/plan/profiles/hub-only/_claude/builds/orchestrator.json')), 'the hub-only export lives in the profile\'s shared-data folder');
+  check(!existsSync(leaked), 'a repo export of a hub-only profile from an older version is swept');
+  check(!existsSync(join(ROOT, '_claude/builds/profiles/hub-only')), 'nothing was written into the real repo');
+
   console.log(`${fail ? '✗' : '✓'} builds-live: ${pass} passed, ${fail} failed`);
   rmSync(T, { recursive: true, force: true });
   process.exitCode = fail ? 1 : 0;

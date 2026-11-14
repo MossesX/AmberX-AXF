@@ -226,7 +226,7 @@ function Row({ p, sel, pick, onOpen }: { p: Plan; sel: Set<string>; pick: (id: s
   const st = statusInfo(p.status);
   const t = pc.totals(p);
   return (
-    <li className={`axp-plan-studio__row${open ? ' is-open' : ''}`}>
+    <li data-axf-target={`row:${p.id}`} className={`axp-plan-studio__row${open ? ' is-open' : ''}`}>
       <div className="axp-plan-studio__rline">
         <input type="checkbox" className="fx-check" checked={sel.has(p.id)} onChange={() => pick(p.id)} aria-label={`Select ${p.title}`} />
         <button type="button" data-fx-row className="axp-plan-studio__rmain" aria-expanded={open} onClick={() => setOpen(!open)}>
@@ -313,7 +313,7 @@ function TreeView({ plans, sel, pick, onOpen, onCategory }: { plans: Plan[]; sel
 function TreeLeaf({ p, sel, pick, onOpen }: { p: Plan; sel: Set<string>; pick: (id: string) => void; onOpen: (p: Plan) => void }) {
   const st = statusInfo(p.status);
   return (
-    <li className="axp-plan-studio__tleaf" role="treeitem" aria-selected={sel.has(p.id)}>
+    <li data-axf-target={`row:${p.id}`} className="axp-plan-studio__tleaf" role="treeitem" aria-selected={sel.has(p.id)}>
       <input type="checkbox" className="fx-check" checked={sel.has(p.id)} onChange={() => pick(p.id)} aria-label={`Select ${p.title}`} />
       <button type="button" data-fx-row className="axp-plan-studio__tname" onClick={() => onOpen(p)}><span className={`axp-plan-studio__prio is-${p.priority.toLowerCase()}`}>{p.priority}</span>{p.title}</button>
       <Chip tone={st.tone || undefined}>{st.label}</Chip>
@@ -341,7 +341,7 @@ function Board({ plans, onOpen }: { plans: Plan[]; onOpen: (p: Plan) => void }) 
           <section key={s.id} role="listitem" className={`axp-plan-studio__col${over === s.id ? ' is-over' : ''}`} onDragOver={(e) => { e.preventDefault(); setOver(s.id); }} onDragLeave={() => setOver('')} onDrop={(e) => void drop(e, s.id)} aria-label={s.label}>
             <h3><Icon name={s.icon} size={12} />{s.label}<span className="axp-plan-studio__n">{col.length}</span></h3>
             {col.map((p) => (
-              <button key={p.id} type="button" data-fx-row draggable className="axp-plan-studio__card" onDragStart={(e) => e.dataTransfer.setData('text/plain', p.id)} onClick={() => onOpen(p)}>
+              <button key={p.id} type="button" data-axf-target={`row:${p.id}`} data-fx-row draggable className="axp-plan-studio__card" onDragStart={(e) => e.dataTransfer.setData('text/plain', p.id)} onClick={() => onOpen(p)}>
                 <span className={`axp-plan-studio__prio is-${p.priority.toLowerCase()}`}>{p.priority}</span>
                 <span className="axp-plan-studio__ctitle">{p.title}</span>
                 <span className="fx-muted axp-plan-studio__n">{[p.category, pc.fmtMinutes(p.effort.left)].filter(Boolean).join(' · ')}</span>
@@ -365,7 +365,7 @@ function Roadmap({ plans, onOpen }: { plans: Plan[]; onOpen: (p: Plan) => void }
           <ul>{l.plans.map((p) => {
             const t = pc.totals(p);
             return (
-              <li key={p.id}><button type="button" data-fx-row className="axp-plan-studio__rmain" onClick={() => onOpen(p)}>
+              <li key={p.id} data-axf-target={`row:${p.id}`} ><button type="button" data-fx-row className="axp-plan-studio__rmain" onClick={() => onOpen(p)}>
                 <span className="axp-plan-studio__rdate">{p.targetDate ? fmtDay(p.targetDate) : '—'}</span>
                 <span className="axp-plan-studio__rtitle">{p.title}</span>
                 <span className="axp-plan-studio__bar" aria-label={`${t.progress}% done`}><span style={{ width: `${t.progress}%` }} /></span>

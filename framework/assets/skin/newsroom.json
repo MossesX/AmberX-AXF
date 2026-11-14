@@ -16,6 +16,10 @@
   "data": {
     "layoutTheme": "document-reader",
     "colorTheme": "mono-paper",
+    "colorThemes": {
+      "light": "mono-paper",
+      "dark": "midnight-ink"
+    },
     "styleTheme": "swiss",
     "behaviorTheme": "quiet",
     "assets": {

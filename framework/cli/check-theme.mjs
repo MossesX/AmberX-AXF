@@ -18,6 +18,10 @@
  *    (> 3.5 space, > 2.3× text: icons, empty states) and 1em are left alone, as scale-adopt leaves them.
  *  - fonts: a literal font-family stack instead of --fx-font / --fx-font-mono / --fx-font-display
  *  - rem sizes and em spacing (font-size / padding / margin / gap / border-radius)
+ *  - surface (build transparency-token-works-every-dialog, Nov 13 2026): a CSS rule that sets the background of a
+ *    surface root (.fx-dialog, .fx-window, .fx-window__title, .fx-popover, .fx-dropdown, .fx-ctx, .fx-card, .fx-toolbar,
+ *    .fx-menubar, .fx-banner) without reading a transparency token (--fx-opacity-*): every surface's see-through is a
+ *    token (opacityDialog … opacityBanner, engines/theme.ts SURFACE_KINDS); `transparent` / `none` / `inherit` are fine
  *  - layout (token-control s2, Nov 2026): a px breakpoint in a media query; the layout asset's viewport cut-offs
  *    (tinyMaxWidth … largeMaxWidth) are root attributes data-fx-tiny / -small / -narrow / -medium / -large, so
  *    select on `:where([data-fx-narrow]) …` (`node framework/cli/layout-adopt.mjs <path>` rewrites it; `layout-ok`
@@ -44,6 +48,7 @@ import { fileURLToPath } from 'node:url';
 import { SCALE_TYPES, scaleVars } from '../core/engines/scale-rules.mjs';
 import { layoutToken, layoutTokenVars } from '../core/engines/layout-rules.mjs';
 import { adoptLine } from './scale-adopt.mjs';
+import { SURFACE_MSG, surfaceFindings } from './surface-rule.mjs';
 import { writeFileSync } from 'node:fs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..');
@@ -198,7 +203,9 @@ for (const { path, profile: base } of scans) {
     if (/[\\/](vite|next|tailwind|postcss|eslint)\.config\.|[\\/](server|deploy|scripts)[\\/]/.test(f) && relative(ROOT, f).startsWith('..')) continue; // a generated app's build config / server
     files += 1;
     const profile = DEFINITION_FILES.has(relative(ROOT, f)) ? 'definition' : base;
-    const lines = readFileSync(f, 'utf8').split('\n');
+    const text = readFileSync(f, 'utf8');
+    const lines = text.split('\n');
+    if (f.endsWith('.css')) for (const [i] of surfaceFindings(text)) if (!/theme-ok/.test(lines[i])) found(f, i, lines[i], SURFACE_MSG);
     let okBlock = false;
     lines.forEach((line, i) => {
       // theme-ok-begin … theme-ok-end: a whole block is a deliberate exception (a standalone exported document's baked stylesheet)

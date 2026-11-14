@@ -14,6 +14,8 @@ const eq = (a, b, msg) => { if (JSON.stringify(a) !== JSON.stringify(b)) problem
 const saved = {
   'axf.chrome.tab-group.settings.main': { style: 'pills', bogus: 1 },
   'axf.chrome.tab-group.settings.main.asset': 'pills-tabs',
+  'axf.chrome.tab-group.settings.main.interface': 'chrome-tab-group-axf-console',
+  'axf.chrome.toolbar.app.interface': 'chrome-toolbar',
   'axf.chrome.toolbar.app': { variant: 'labels', density: 'nope' },
   'axf.chrome.banner.app': { height: 99 },
   'axf.chrome.nav-menu.app': { style: 'nope' },

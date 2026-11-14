@@ -17,7 +17,7 @@ function Row({ it, kind = true }: { it: Item; kind?: boolean }) {
   const r = useReview(); const isOpen = r.open.includes(it.id);
   const first = (r.device ? it.shots.find((s) => s.device === r.device) : null) ?? it.shots[0];
   return (
-    <div role="listitem" className={`axp-ui-review__item ${isOpen ? 'is-open' : ''} ${r.sel.includes(it.id) ? 'is-sel' : ''}`}>
+    <div role="listitem" data-axf-target={`row:${it.id}`} className={`axp-ui-review__item ${isOpen ? 'is-open' : ''} ${r.sel.includes(it.id) ? 'is-sel' : ''}`}>
       <div className="axp-ui-review__row">
         <Pick id={it.id} label={it.title} />
         <button type="button" data-fx-row className="axp-ui-review__hit" aria-expanded={isOpen} onClick={() => r.toggleOpen(it.id)}>
@@ -133,7 +133,7 @@ export function GalleryView({ items }: { items: Item[] }) {
         const isOpen = r.open.includes(it.id);
         const first = (r.device ? it.shots.find((s) => s.device === r.device) : null) ?? it.shots.find((s) => s.device === 'phone') ?? it.shots[0];
         return (
-          <div key={it.id} role="listitem" className={`axp-ui-review__card ${isOpen ? 'is-open' : ''} ${r.sel.includes(it.id) ? 'is-sel' : ''}`}>
+          <div key={it.id} role="listitem" data-axf-target={`row:${it.id}`} className={`axp-ui-review__card ${isOpen ? 'is-open' : ''} ${r.sel.includes(it.id) ? 'is-sel' : ''}`}>
             {isOpen ? (
               <>
                 <div className="axp-ui-review__row">
@@ -182,7 +182,7 @@ export function CompareView({ items }: { items: Item[] }) {
       </div>
       <div className="axp-ui-review__cols" style={{ ['--cols' as string]: String(cols.length) }}>
         {cols.map((it) => (
-          <div key={it.id} className="axp-ui-review__col">
+          <div key={it.id} data-axf-target={`row:${it.id}`} className="axp-ui-review__col">
             <div className="axp-ui-review__row">
               <Pick id={it.id} label={it.title} />
               <span className="axp-ui-review__title"><b>{it.title}</b><Meta it={it} /></span>

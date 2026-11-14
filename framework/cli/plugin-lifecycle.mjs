@@ -58,6 +58,7 @@ const SNAPSHOT_FIXTURE = /^framework\/spec\/fixtures\/(shipped-manifest|demo)\.j
 const BUILD_EXPORT = /^framework\/plan\/(profiles\/[^/]+\/framework\/plan\/)?(pending|build-queue)\.json$/;
 const HANDOFF_NOTE = /^_claude\/(memory|shared\/notes\/handoffs)\/handoff-[0-9-]+\.md$/; // dated account-switch handoff notes (own or shared): snapshots of a day, history
 const SKIP_DIRS = new Set(['.git', 'node_modules', 'dist', 'dist-single', '.axf-console', '__pycache__', 'build', '.gradle']);
+const CODE_EXT = /\.(mjs|js|cjs|ts|tsx|py|kt|kts|sh)$/i;
 const TEXT_EXT = /\.(md|mjs|js|cjs|ts|tsx|json|py|css|html|ya?ml|kt|kts|sh|txt|toml)$/i;
 
 /* ------------------------------------------------------------------ manifest + footprint */
@@ -146,12 +147,16 @@ export function scanReferences(p) {
     if (file.startsWith(REBUILDS_DIR + '/') || file.startsWith(HARVEST_DIR + '/') || file.startsWith(CHANGES_DIR + '/') || file.startsWith(HANDOFF_DIR + '/') || file.startsWith(BUILDS_DIR + '/') || file.startsWith(SESSIONS_DIR + '/') || HANDOFF_NOTE.test(relative(ROOT, file)) || BUILD_EXPORT.test(relative(ROOT, file)) || RATCHET_BASELINE.test(relative(ROOT, file)) || SNAPSHOT_FIXTURE.test(relative(ROOT, file))) continue;
     // The console's public/data is generated from the builds store and is git-ignored: build notes there are history too.
     if (file.startsWith(join(CONSOLE_APP_DIR, 'public/data') + '/')) continue;
+    // The console-control inventory is generated from the installed plugins (scripts/control-inventory.mjs, run by every
+    // dev and build), so a removed plugin drops out of it on the next build: data, not a reference.
+    if (file === join(CONSOLE_APP_DIR, 'src/control/inventory.json')) continue;
     // An app's baked framework (apps/<app>/src/axf) is a copy: `framework/` is the file checked, and a re-bake refreshes the copy.
     if (file.startsWith(APPS_DIR + '/') && file.slice(APPS_DIR.length).split('/').slice(2, 4).join('/') === 'src/axf') continue;
     // Another plugin's own tests may name plugins as data (e.g. the rebuild tracker's fixtures); only its runtime
     // code is held to "never by folder name".
     // Generated bundles (*.gen.mjs) copy an app's own code, so its folder names there are data, not plugin references.
-    const inOtherPlugin = file.startsWith(PLUGINS_DIR + '/') && !/^test[._]/.test(file.split('/').pop()) && !/\.gen\.m?js$/.test(file);
+    // Only code counts: a bare quoted name in another plugin's data (a JSON schema enum, a doc) is a value, not a reference.
+    const inOtherPlugin = file.startsWith(PLUGINS_DIR + '/') && !/^test[._]/.test(file.split('/').pop()) && !/\.gen\.m?js$/.test(file) && CODE_EXT.test(file);
     // Another app's own plugin tree (apps/<app>/src/plugins/<folder>, or `./plugins/<folder>/…` imported from inside
     // that app, e.g. Expenses' own plugin-manager) is that app's code, not a reference to a console plugin that happens
     // to share the name: only a path that reaches the console's plugins folder counts there.

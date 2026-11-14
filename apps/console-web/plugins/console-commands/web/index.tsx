@@ -27,6 +27,7 @@ import type { AxfRuntime } from '@console/axf/core';
 import { followSse, sseJson } from '@console/axf/core/sse';
 import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
+import { executeControl, describeAnswer } from '@console/control/executor';
 import { appMenu } from './menu';
 import './console-commands.css';
 import { CONSOLE_FIELD_TYPES, CONSOLE_HEARTBEAT_MS, consoleCatalogFrom, consoleFieldValue, consoleMessageErrors, consoleMessageLate, type ConsoleHere, type ConsoleMessage } from '@console/axf/core/engines/console-commands.mjs';
@@ -72,7 +73,7 @@ function pickedCommand(): string {
   try {
     const u = new URL(window.location.href);
     const id = u.searchParams.get('axf-cmd') ?? '';
-    if (!id) return '';
+    if (!id || id === 'search') return ''; // ?axf-cmd=search&q= is the console's search palette deep link, not a queued command
     u.searchParams.delete('axf-cmd');
     window.history.replaceState(window.history.state, '', u.toString());
     return /^[A-Za-z0-9_-]{1,40}$/.test(id) ? id : '';
@@ -276,11 +277,21 @@ function ConsoleCommandsClient() {
         if (m?.$axf === 'console-hello@1') { catalogKey = ''; void announce(document.visibilityState === 'visible'); return; }
         if (!m || !('id' in m) || !m.id) return;
         const again = doneOf(m.id);
-        if (again) { void post('ack', { client: id, id: m.id, ok: again[0], message: again[1], here: hereOf(rt) }).catch(() => undefined); return; }
+        if (again) { void post('ack', { client: id, id: m.id, ok: again[0], message: again[1], here: hereOf(rt), ...(m.op === 'control' ? { repeated: true } : {}) }).catch(() => undefined); return; }
         // this tab was asleep when it was sent: the server has moved on (another console or a wake), so don't run it twice
         if (consoleMessageLate(m)) { markDone(m.id, [false, 'skipped: arrived too late']); void post('ack', { client: id, id: m.id, ok: false, skipped: true, message: 'arrived too late (the tab was asleep)', here: hereOf(rt) }).catch(() => undefined); return; }
         // inside a host, bring this console's frame to the front first, so Brett sees the command happen
         if (host && !rt.inFront()) rt.bringToFront(`${who(m.by)}: ${m.label ?? m.target ?? m.op}`);
+        // a console-control@1 command: the executor answers with its result and the live state (screen, tabs, scroll, focus)
+        if (m.op === 'control') {
+          void executeControl(rt, m.command).then((answer) => {
+            const line = describeAnswer(answer);
+            markDone(m.id, [answer.ok, line]);
+            if (answer.ok && answer.verb !== 'state' && answer.verb !== 'search' && answer.verb !== 'list' && rt.settings.get(KEYS.toast) !== false) rt.toast(`${who(m.by)}: ${line}`, 'info', 'Console control');
+            void post('ack', { client: id, id: m.id, ok: answer.ok, message: line, result: answer, here: hereOf(rt), ...where() }).catch(() => undefined);
+          });
+          return;
+        }
         let res: [boolean, string];
         try { res = runMessage(rt, m, history); } catch (e) { res = [false, String((e as Error)?.message ?? e)]; }
         markDone(m.id, res);
