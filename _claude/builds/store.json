@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5563,
- "updatedAt": "2026-11-14T23:09:24.015Z",
+ "rev": 5564,
+ "updatedAt": "2026-11-14T23:09:47.050Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -192130,7 +192130,7 @@
    "pr": "#596",
    "priority": "P2",
    "createdAt": "2026-11-12T19:46:41.501Z",
-   "updatedAt": "2026-11-13T17:34:42.809Z",
+   "updatedAt": "2026-11-14T23:09:44.694Z",
    "builtAt": "2026-11-12T23:17:54.369Z",
    "notes": [
     {
@@ -192339,6 +192339,23 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "flagged",
+    "landAttempts": [
+     {
+      "at": "2026-11-14T23:09:30.604Z",
+      "run": "lr-move-amberx-web-app-console-amberx-andr-20261114T230930",
+      "base": "ef7335f232827523bba54dbe2ce1e6610cb98b42",
+      "merged": "",
+      "outcome": "clash",
+      "ci": "",
+      "note": "Source clash a person has to settle: apps/console-web/plugins/approvals-banner/plugin.json, apps/console-web/server/main.py. No fix build: the orchestrator did not take it."
+     }
+    ]
    },
    "steps": [
     {
@@ -192735,7 +192752,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 63,
+   "rev": 64,
    "deleted": false,
    "deletedAt": "",
    "pending": {
