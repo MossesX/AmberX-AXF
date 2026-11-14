@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T23:05:21.900Z",
+ "updatedAt": "2026-11-14T23:05:55.392Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -139623,7 +139623,7 @@
    "pr": "#673",
    "mergedAt": "2026-11-14T17:36:16Z",
    "createdAt": "2026-11-14T16:51:14.645Z",
-   "updatedAt": "2026-11-14T23:02:08.642Z",
+   "updatedAt": "2026-11-14T23:05:52.963Z",
    "builtAt": "2026-11-14T23:02:03.463Z",
    "notes": [
     {
@@ -139669,6 +139669,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-hotfix-toolbar-settings-still-change--gina, shared account login)",
      "at": "2026-11-14T22:52:30.774Z"
+    },
+    {
+     "text": "Headless run axf-hotfix-toolbar-settings-still-change--gina: brief only · start 11.1K tokens ($0.03) · cost $2.36 · 60 turns · 6 tools, MCP none",
+     "at": "2026-11-14T23:05:52.963Z"
     }
    ],
    "approvals": [],
