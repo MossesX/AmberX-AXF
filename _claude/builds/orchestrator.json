@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T18:48:31.351Z",
+ "updatedAt": "2026-11-14T18:49:07.888Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -117096,7 +117096,7 @@
    "pr": "#612",
    "priority": "P0",
    "createdAt": "2026-11-13T01:13:53.464Z",
-   "updatedAt": "2026-11-14T18:48:24.069Z",
+   "updatedAt": "2026-11-14T18:49:05Z",
    "builtAt": "2026-11-13T06:56:03.335Z",
    "notes": [
     {
@@ -117182,6 +117182,10 @@
     {
      "text": "Superseded by skin-config-panel-merge-main-and-land (#648), which holds every commit of this branch. Branch archived as tag archive/skin-configuration-panel-before-ai-makes; PR #612 closed.",
      "at": "2026-11-14T18:48:21.910Z"
+    },
+    {
+     "text": "Shipped manifest sm-skin-configuration-panel-before-ai-makes rev 1 sent to Shipped features (orchestrator): PR #612, 51 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-14T18:49:05Z"
     }
    ],
    "approvals": [

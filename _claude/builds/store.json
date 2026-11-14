@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5408,
- "updatedAt": "2026-11-14T18:48:31.351Z",
+ "rev": 5409,
+ "updatedAt": "2026-11-14T18:49:07.888Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -196844,7 +196844,7 @@
    "pr": "#612",
    "priority": "P0",
    "createdAt": "2026-11-13T01:13:53.464Z",
-   "updatedAt": "2026-11-14T18:48:24.069Z",
+   "updatedAt": "2026-11-14T18:49:05Z",
    "builtAt": "2026-11-13T06:56:03.335Z",
    "notes": [
     {
@@ -196930,6 +196930,10 @@
     {
      "text": "Superseded by skin-config-panel-merge-main-and-land (#648), which holds every commit of this branch. Branch archived as tag archive/skin-configuration-panel-before-ai-makes; PR #612 closed.",
      "at": "2026-11-14T18:48:21.910Z"
+    },
+    {
+     "text": "Shipped manifest sm-skin-configuration-panel-before-ai-makes rev 1 sent to Shipped features (orchestrator): PR #612, 51 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-14T18:49:05Z"
     }
    ],
    "approvals": [
@@ -197005,6 +197009,12 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "shipped": {
+    "id": "sm-skin-configuration-panel-before-ai-makes",
+    "rev": 1,
+    "at": "2026-11-14T18:49:05Z",
+    "landedCommit": ""
    },
    "steps": [
     {
@@ -197252,7 +197262,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {

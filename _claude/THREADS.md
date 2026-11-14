@@ -792,7 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 21:15 UTC · `context-menus-plugin-one-true-source` s1 done, → running (all) · orchestrator
 - 2026-11-13 21:16 UTC · `auto-land-every-finished-build-lands` PR #660 (all) · builds-live
 - 2026-11-13 21:16 UTC · `main-ci-red-test-sandbox-profile-export` note (all) · orchestrator
 - 2026-11-13 21:16 UTC · `hotfix-desktop-console-draws-app-menu` → pending, note (all) · pipeline
@@ -1192,6 +1191,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 18:48 UTC · `skins-plugin-own-removable-console` → complete (all) · orchestrator
 - 2026-11-14 18:48 UTC · `skin-configuration-panel-before-ai-makes` note (all) · orchestrator
 - 2026-11-14 18:48 UTC · `skin-configuration-panel-before-ai-makes` → complete (all) · orchestrator
+- 2026-11-14 18:49 UTC · `skin-configuration-panel-before-ai-makes` note (all) · orchestrator
 
 ## Token passes (log)
 
