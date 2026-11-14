@@ -121,6 +121,36 @@ const prefixTargets = Object.fromEntries(['axf-ws-toolbar:main', 'axf-ws-toolbar
 const instanceSlugs = Object.fromEntries(['Tree search', 'ui-review.sections', '  MCP server!! ', ''].map((l) => [l || '(empty)', cs.chromeInstanceSlug(l)]));
 eq(f.prefixTargets, prefixTargets, 'prefix targets fixture');
 eq(f.instanceSlugs, instanceSlugs, 'instance slugs fixture');
+
+/* ---- live preview pane (build per-instance-settings-small-live-preview) ---- */
+{
+  const p = f.preview;
+  eq(p.keys, { open: cs.CHROME_PREVIEW_OPEN_KEY, scheme: cs.CHROME_PREVIEW_SCHEME_KEY, demo: cs.CHROME_PREVIEW_DEMO_KEY }, 'preview keys');
+  eq(p.schemes, cs.CHROME_PREVIEW_SCHEMES, 'preview schemes'); eq(p.demos, cs.CHROME_PREVIEW_DEMOS, 'preview demos'); eq(p.seed, cs.CHROME_PREVIEW_SEED, 'preview seed');
+  eq(p.states.unset, cs.chromePreviewState({}), 'preview state unset'); eq(p.states.unset, { open: true, scheme: 'app', demo: 'none' }, 'preview defaults: open, app colours, no demo');
+  eq(p.states.closed, cs.chromePreviewState({ [cs.CHROME_PREVIEW_OPEN_KEY]: false, [cs.CHROME_PREVIEW_SCHEME_KEY]: 'dark', [cs.CHROME_PREVIEW_DEMO_KEY]: 'press' }), 'preview state closed');
+  eq(p.states.junk, { open: true, scheme: 'app', demo: 'none' }, 'preview state ignores junk');
+  for (const [w, r] of Object.entries(p.changes)) eq(r, cs.chromePreviewChange(w, cs.chromePreviewState({})), `preview change ${w}`);
+  eq(p.changes.close, { key: cs.CHROME_PREVIEW_OPEN_KEY, value: false }, 'close saves open=false'); eq(p.changes.toggle, p.changes.close, 'toggle from open closes');
+  eq(p.toggleClosed, { key: cs.CHROME_PREVIEW_OPEN_KEY, value: null }, 'toggle from closed clears');
+  eq(p.changes['scheme:app'].value, null, 'scheme app clears'); eq(p.changes.dark, { key: cs.CHROME_PREVIEW_SCHEME_KEY, value: 'dark' }, 'bare dark');
+  eq(p.changes.off, { key: cs.CHROME_PREVIEW_DEMO_KEY, value: null }, 'off clears the demo');
+  for (const w of ['scheme:sepia', 'demo:wiggle', 'nonsense']) ok(typeof p.changes[w].error === 'string', `preview change ${w} is an error`);
+  eq(p.model, cs.chromePreviewModel('toolbar', { variant: 'labels', density: 'roomy' }, { density: 'compact', surface: 'glass' }), 'preview model');
+  eq([p.model.fields.variant, p.model.fields.density, p.model.fields.surface], ['labels', 'compact', 'glass'], 'preview model draws asset + overrides');
+  // every kind the pane draws has seed data, a demo item, and only icons the framework ships
+  const icons = readFileSync(join(root, 'react/components/Icon.tsx'), 'utf8');
+  for (const t of ['toolbar', 'tab-group', 'nav-menu', 'app-menu', 'context-menu']) {
+    const sd = cs.CHROME_PREVIEW_SEED[t];
+    ok(!!sd && typeof sd.demo === 'string' && sd.demo.length > 0, `${t} preview seed + demo item`);
+    const used = JSON.stringify(sd).match(/"icon":"([a-z-]+)"/g)?.map((m) => m.slice(8, -1)) ?? [];
+    for (const i of used) ok(new RegExp(`\\n\\s+'?${i}'?:`).test(icons), `${t} preview icon ${i} exists`);
+  }
+  ok(cs.CHROME_PREVIEW_SEED['tab-group'].groups!.length === 2 && cs.CHROME_PREVIEW_SEED['tab-group'].groups!.every((g) => g.tabs!.some((x) => x.value === g.active)), 'two seed tab groups, each with an active tab');
+  ok(cs.CHROME_PREVIEW_SEED['app-menu'].items!.some((i) => (i.submenu ?? []).length > 0), 'seed app menu has a submenu');
+  ok(cs.CHROME_PREVIEW_SEED['nav-menu'].items!.filter((i) => i.active).length === 1, 'seed nav has one selected item');
+  ok(cs.CHROME_PREVIEW_SEED.toolbar.groups!.some((g) => g.items!.some((i) => i.badge)), 'seed toolbar has a badge');
+}
 eq(prefixTargets['axf-ws-toolbar:main'], 'toolbar', 'a workspace toolbar opens toolbar settings');
 
 /* ---- instance overrides ---- */

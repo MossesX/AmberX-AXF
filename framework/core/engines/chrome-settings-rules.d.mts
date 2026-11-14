@@ -86,3 +86,24 @@ export function chromeSettingsChoices(type: ChromeType | string, assets: AssetLi
 export function customCopy(defaultAsset: AssetLike, app: string | { id: string; name?: string }): { $axf: 'asset@1'; type: 'settings'; id: string; name: string; version: string; description: string; author: string; tags: string[]; data: Record<string, unknown> };
 export function chromeSettingsPlan(appId: string): ChromeSettingsPlanEntry[];
 export function chromeSettingsMissing(appId: string, ids: string[]): string[];
+export const CHROME_PREVIEW_OPEN_KEY: string;
+export const CHROME_PREVIEW_SCHEME_KEY: string;
+export const CHROME_PREVIEW_DEMO_KEY: string;
+export type ChromePreviewScheme = 'app' | 'light' | 'dark';
+export type ChromePreviewDemo = 'none' | 'hover' | 'press';
+export const CHROME_PREVIEW_SCHEMES: ChromePreviewScheme[];
+export const CHROME_PREVIEW_DEMOS: ChromePreviewDemo[];
+export const CHROME_PREVIEW_LABELS: Record<string, string>;
+export interface ChromePreviewItem { id: string; icon?: string; label: string; badge?: string; shortcut?: string; on?: boolean; active?: boolean; open?: boolean; submenu?: { id: string; label: string }[] }
+export interface ChromePreviewSeed {
+  demo: string;
+  groups?: { id: string; label?: string; active?: string; items?: ChromePreviewItem[]; tabs?: { value: string; label: string; icon?: string; badge?: string }[] }[];
+  items?: ChromePreviewItem[];
+  menus?: { id: string; label: string; open?: boolean }[];
+  text?: string;
+}
+export const CHROME_PREVIEW_SEED: Record<string, ChromePreviewSeed>;
+export interface ChromePreviewState { open: boolean; scheme: ChromePreviewScheme; demo: ChromePreviewDemo }
+export function chromePreviewState(get: ((key: string) => unknown) | Record<string, unknown> | null | undefined): ChromePreviewState;
+export function chromePreviewChange(words: string, current?: ChromePreviewState): { key: string; value: string | false | null; error?: undefined } | { error: string; key?: undefined; value?: undefined };
+export function chromePreviewModel(type: string, base: unknown, override: unknown, state?: ChromePreviewState): ChromePreviewState & { type: string; seed: ChromePreviewSeed | null; fields: Record<string, unknown> };

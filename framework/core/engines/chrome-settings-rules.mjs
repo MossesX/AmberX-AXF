@@ -421,3 +421,92 @@ export function chromeSettingsMissing(appId, ids) {
   for (const p of chromeSettingsPlan(appId)) { if (!have.has(p.defaultId)) missing.push(p.defaultId); if (!have.has(p.customId)) missing.push(p.customId); }
   return missing;
 }
+
+/* ---------------- live preview pane (build per-instance-settings-small-live-preview) ---------------- */
+
+/**
+ * The small live preview at the top of every instance's settings dialog (Brett, Nov 13 2026: "on the per toolbar, per
+ * nav menu, per application menu, per tab group settings I need a small preview pane, a couple of icons or two tab
+ * groups with some seed data, showing what the settings look like"). The pane renders the real framework chrome with
+ * the instance's effective data (asset + overrides), so every field change shows at once. Its own three choices are
+ * device settings shared by every dialog: open (collapsed or not), scheme (the app's, or a light / dark sample) and a
+ * hover / press demo on the seed item that is not the active one.
+ */
+export const CHROME_PREVIEW_OPEN_KEY = 'axf.chrome.preview.open';
+export const CHROME_PREVIEW_SCHEME_KEY = 'axf.chrome.preview.scheme';
+export const CHROME_PREVIEW_DEMO_KEY = 'axf.chrome.preview.demo';
+export const CHROME_PREVIEW_SCHEMES = ['app', 'light', 'dark'];
+export const CHROME_PREVIEW_DEMOS = ['none', 'hover', 'press'];
+export const CHROME_PREVIEW_LABELS = { app: "App's", light: 'Light', dark: 'Dark', none: 'Off', hover: 'Hover', press: 'Press' };
+
+/** Seed data per kind: small, fixed, the same in every app and port (the pane never reads the app's real menus). */
+export const CHROME_PREVIEW_SEED = {
+  toolbar: {
+    groups: [
+      { id: 'file', items: [{ id: 'new', icon: 'plus', label: 'New' }, { id: 'open', icon: 'folder', label: 'Open', badge: '3' }] },
+      { id: 'view', items: [{ id: 'search', icon: 'search', label: 'Search', on: true }] },
+    ],
+    demo: 'new',
+  },
+  'tab-group': {
+    groups: [
+      { id: 'mail', label: 'Mail', active: 'inbox', tabs: [{ value: 'inbox', label: 'Inbox', icon: 'bell', badge: '4' }, { value: 'drafts', label: 'Drafts', icon: 'edit' }, { value: 'sent', label: 'Sent', icon: 'upload' }] },
+      { id: 'views', label: 'Views', active: 'list', tabs: [{ value: 'board', label: 'Board', icon: 'grid' }, { value: 'list', label: 'List', icon: 'list' }, { value: 'chart', label: 'Chart', icon: 'chart' }] },
+    ],
+    demo: 'drafts',
+  },
+  'nav-menu': {
+    items: [{ id: 'home', icon: 'home', label: 'Home' }, { id: 'projects', icon: 'folder', label: 'Projects', active: true }, { id: 'reports', icon: 'chart', label: 'Reports', badge: '2' }, { id: 'settings', icon: 'settings', label: 'Settings' }],
+    demo: 'home',
+  },
+  'app-menu': {
+    menus: [{ id: 'file', label: 'File', open: true }, { id: 'edit', label: 'Edit' }, { id: 'view', label: 'View' }],
+    items: [{ id: 'new', icon: 'plus', label: 'New', shortcut: 'Ctrl+N' }, { id: 'recent', icon: 'clock', label: 'Open recent', submenu: [{ id: 'a', label: 'Plan.md' }, { id: 'b', label: 'Budget.csv' }] }, { id: 'save', icon: 'save', label: 'Save', shortcut: 'Ctrl+S' }],
+    demo: 'edit',
+  },
+  banner: { text: 'Build 42 is live', demo: '' },
+  'context-menu': {
+    items: [{ id: 'cut', icon: 'cut', label: 'Cut', shortcut: 'Ctrl+X' }, { id: 'copy', icon: 'copy', label: 'Copy', shortcut: 'Ctrl+C' }, { id: 'paste', icon: 'paste', label: 'Paste', shortcut: 'Ctrl+V' }],
+    demo: 'copy',
+  },
+};
+
+/** The pane's state from the saved settings: open by default, the app's scheme, no demo. */
+export function chromePreviewState(get) {
+  const g = typeof get === 'function' ? get : (k) => (get && typeof get === 'object' ? get[k] : undefined);
+  const scheme = g(CHROME_PREVIEW_SCHEME_KEY);
+  const demo = g(CHROME_PREVIEW_DEMO_KEY);
+  return {
+    open: g(CHROME_PREVIEW_OPEN_KEY) !== false,
+    scheme: CHROME_PREVIEW_SCHEMES.includes(scheme) ? scheme : 'app',
+    demo: CHROME_PREVIEW_DEMOS.includes(demo) ? demo : 'none',
+  };
+}
+
+/**
+ * One preview change as the settings write it: `open|close|toggle`, `scheme:<app|light|dark>`, `demo:<none|hover|press>`
+ * (also bare `light` / `dark` / `hover` / `press` / `off`). Returns `{ key, value }` (value null = clear to the default)
+ * or `{ error }`. `current` = the state now (for toggle).
+ */
+export function chromePreviewChange(words, current) {
+  const parts = String(words ?? '').trim().toLowerCase().split(/[\s:]+/).filter(Boolean);
+  const [a = '', b = ''] = parts;
+  const cur = current ?? chromePreviewState(() => undefined);
+  if (a === 'open' || a === 'show' || a === 'on') return { key: CHROME_PREVIEW_OPEN_KEY, value: null };
+  if (a === 'close' || a === 'collapse' || a === 'hide') return { key: CHROME_PREVIEW_OPEN_KEY, value: false };
+  if (a === 'toggle') return { key: CHROME_PREVIEW_OPEN_KEY, value: cur.open ? false : null };
+  const scheme = a === 'scheme' ? b : CHROME_PREVIEW_SCHEMES.includes(a) ? a : '';
+  if (scheme) return CHROME_PREVIEW_SCHEMES.includes(scheme) ? { key: CHROME_PREVIEW_SCHEME_KEY, value: scheme === 'app' ? null : scheme } : { error: `Preview scheme takes ${CHROME_PREVIEW_SCHEMES.join(', ')} (not "${b}").` };
+  const demo = a === 'demo' ? (b === 'off' ? 'none' : b) : a === 'off' ? 'none' : CHROME_PREVIEW_DEMOS.includes(a) ? a : '';
+  if (demo || a === 'demo') return CHROME_PREVIEW_DEMOS.includes(demo) ? { key: CHROME_PREVIEW_DEMO_KEY, value: demo === 'none' ? null : demo } : { error: `Preview demo takes ${CHROME_PREVIEW_DEMOS.join(', ')} (not "${b}").` };
+  return { error: `Preview takes open, close, toggle, scheme:<${CHROME_PREVIEW_SCHEMES.join('|')}> or demo:<${CHROME_PREVIEW_DEMOS.join('|')}> (not "${words}").` };
+}
+
+/**
+ * What the pane shows for one instance, readable without the UI (console state, MCP, CLI): the kind, its seed, the
+ * effective field values it renders with, and the pane's own state.
+ */
+export function chromePreviewModel(type, base, override, state) {
+  const fields = Object.fromEntries((CHROME_FIELDS[type] ?? []).map((f) => [f.key, chromeFieldValue(type, base, override, f.key)]));
+  return { type, seed: CHROME_PREVIEW_SEED[type] ?? null, fields, ...(state ?? chromePreviewState(() => undefined)) };
+}

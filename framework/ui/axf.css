@@ -1857,3 +1857,54 @@ html[data-axf-help='on'] button[data-axf-help-id], html[data-axf-help='on'] [rol
 .axf-controlled--success { border-inline-start-color: var(--fx-success); }
 .axf-controlled--danger { border-inline-start-color: var(--fx-danger); }
 .axf-controlled__note { align-items: center; gap: var(--fx-dens-gap-xs); }
+
+/* ---------------- chrome settings live preview (components/ChromePreview.tsx) ----------------
+   The pane carries the instance's style-engine attrs + vars. The app's own attrs sit on the root too, so the rules a
+   root attr turns on are restated here, scoped to the pane, for every value: the pane always shows the instance. */
+.fx-chrome-preview { border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface2); }
+.fx-chrome-preview__bar { display: flex; align-items: center; flex-wrap: wrap; gap: var(--fx-dens-gap-lg); padding: var(--fx-dens-gap-md) var(--fx-dens-gap-xl); color: var(--fx-muted); }
+.fx-chrome-preview__spacer { flex: 1; }
+.fx-chrome-preview__stage {
+  display: flex; flex-direction: column; gap: var(--fx-dens-gap-xl); padding: var(--fx-dens-gap-xl);
+  background: var(--fx-bg); color: var(--fx-text); border-top: var(--fx-border-w) solid var(--fx-border);
+  border-radius: 0 0 var(--fx-radius-md) var(--fx-radius-md); overflow: hidden;
+}
+.fx-chrome-preview__note { padding: 0 var(--fx-dens-gap-xl) var(--fx-dens-gap-md); }
+.fx-chrome-preview__stage .fx-nav { height: auto; overflow: visible; padding: 0; max-width: calc(var(--fx-space) * 30); }
+.fx-chrome-preview__stage .fx-nav--rail { max-width: calc(var(--fx-space) * 10); }
+.fx-chrome-preview__menubar { display: flex; flex-direction: column; gap: 0; }
+.fx-chrome-preview__menu { position: relative; max-width: calc(var(--fx-space) * 32); padding: var(--fx-dens-gap-md); margin-left: var(--fx-dens-gap-2xl); }
+.fx-chrome-preview__menu .fx-menu__sub { position: static; box-shadow: none; border: 0; padding: 0 0 0 var(--fx-dens-gap-3xl); }
+/* toolbar */
+.fx-chrome-preview__stage[data-fx-toolbar-surface='flat'] .fx-toolbar { background: color-mix(in srgb, var(--fx-surface2) calc(var(--fx-opacity-toolbar) * 100%), transparent); box-shadow: none; backdrop-filter: var(--fx-backdrop-toolbar); -webkit-backdrop-filter: var(--fx-backdrop-toolbar); }
+.fx-chrome-preview__stage[data-fx-toolbar-surface='raised'] .fx-toolbar { background: color-mix(in srgb, var(--fx-surface) calc(var(--fx-opacity-toolbar) * 100%), transparent); box-shadow: var(--fx-shadow-sm); }
+.fx-chrome-preview__stage[data-fx-toolbar-surface='glass'] .fx-toolbar { background: color-mix(in srgb, var(--fx-surface) calc(var(--fx-opacity-glass) * 100%), transparent); box-shadow: none; backdrop-filter: blur(var(--fx-blur)); -webkit-backdrop-filter: blur(var(--fx-blur)); }
+.fx-chrome-preview__stage[data-fx-toolbar-divider='on'] .fx-toolbar__group { border-right: var(--fx-border-w) solid var(--fx-border); }
+.fx-chrome-preview__stage[data-fx-toolbar-divider='on'] .fx-toolbar__group:last-of-type, .fx-chrome-preview__stage[data-fx-toolbar-divider='off'] .fx-toolbar__group { border-right: 0; }
+/* application menu */
+.fx-chrome-preview__stage[data-fx-menubar='flat'] .fx-menubar { box-shadow: none; background: color-mix(in srgb, var(--fx-surface) calc(var(--fx-opacity-toolbar) * 100%), transparent); backdrop-filter: var(--fx-backdrop-toolbar); -webkit-backdrop-filter: var(--fx-backdrop-toolbar); }
+.fx-chrome-preview__stage[data-fx-menubar='raised'] .fx-menubar { box-shadow: var(--fx-shadow-sm); background: color-mix(in srgb, var(--fx-surface) calc(var(--fx-opacity-toolbar) * 100%), transparent); }
+.fx-chrome-preview__stage[data-fx-menubar='glass'] .fx-menubar { box-shadow: none; background: color-mix(in srgb, var(--fx-surface) calc(var(--fx-opacity-glass) * 100%), transparent); backdrop-filter: blur(var(--fx-blur)); -webkit-backdrop-filter: blur(var(--fx-blur)); }
+/* navigation menu: each style's own mark ('auto'), then the indicator choices */
+.fx-chrome-preview__stage[data-fx-nav-indicator] .fx-nav .fx-nav__item.is-active::before { display: none; }
+.fx-chrome-preview__stage[data-fx-nav-indicator='auto'] .fx-nav--list .fx-nav__item.is-active { background: var(--fx-surface3); color: var(--fx-text); }
+.fx-chrome-preview__stage[data-fx-nav-indicator='auto'] .fx-nav--list .fx-nav__item.is-active::before,
+.fx-chrome-preview__stage[data-fx-nav-indicator='bar'] .fx-nav .fx-nav__item.is-active::before { display: block; }
+.fx-chrome-preview__stage[data-fx-nav-indicator='auto'] .fx-nav--pills .fx-nav__item.is-active { background: var(--fx-accent); color: var(--fx-accent-text); }
+.fx-chrome-preview__stage[data-fx-nav-indicator='auto'] .fx-nav--rail .fx-nav__item.is-active { background: var(--fx-accent-soft); color: var(--fx-accent); }
+.fx-chrome-preview__stage[data-fx-nav-indicator='none'] .fx-nav .fx-nav__item.is-active { background: transparent; color: var(--fx-accent); }
+.fx-chrome-preview__stage[data-fx-nav-indicator='fill'] .fx-nav .fx-nav__item.is-active { background: var(--fx-accent); color: var(--fx-accent-text); }
+.fx-chrome-preview__stage[data-fx-nav-indicator='bar'] .fx-nav .fx-nav__item.is-active { background: var(--fx-surface3); color: var(--fx-text); }
+.fx-chrome-preview__stage[data-fx-nav-icons='on'] .fx-nav .fx-nav__item > svg:first-child { display: inline-block; }
+.fx-chrome-preview__stage[data-fx-nav-icons='off'] .fx-nav:not(.fx-nav--rail) .fx-nav__item > svg:first-child { display: none; }
+/* context menu */
+.fx-chrome-preview__stage[data-fx-ctx='compact'] .fx-ctx .fx-menu__item { padding: var(--fx-dens-gap-md) var(--fx-dens-gap-xl); font-size: var(--fx-type-scale-sm); }
+.fx-chrome-preview__stage[data-fx-ctx='roomy'] .fx-ctx .fx-menu__item { padding: var(--fx-dens-gap-xl) var(--fx-dens-gap-2xl); font-size: var(--fx-type-scale-md); }
+.fx-chrome-preview__stage[data-fx-ctx='glass'] .fx-ctx { background: color-mix(in srgb, var(--fx-surface) calc(var(--fx-opacity-glass) * 100%), transparent); backdrop-filter: blur(var(--fx-blur)); -webkit-backdrop-filter: blur(var(--fx-blur)); }
+.fx-chrome-preview__stage[data-fx-ctx='compact'] .fx-ctx, .fx-chrome-preview__stage[data-fx-ctx='roomy'] .fx-ctx { backdrop-filter: var(--fx-backdrop-menu); -webkit-backdrop-filter: var(--fx-backdrop-menu); }
+/* hover / press demo on the seed's demo item (the same looks the real :hover / pressed states use) */
+.fx-chrome-preview[data-demo='hover'] .fx-toolbtn[data-fx-demo], .fx-chrome-preview[data-demo='hover'] .fx-menubar__btn[data-fx-demo],
+.fx-chrome-preview[data-demo='hover'] .fx-nav__item[data-fx-demo] { background: var(--fx-surface3); color: var(--fx-text); }
+.fx-chrome-preview[data-demo='hover'] .fx-tab[data-fx-demo] { color: var(--fx-text); }
+.fx-chrome-preview[data-demo='press'] .fx-toolbtn[data-fx-demo], .fx-chrome-preview[data-demo='press'] .fx-menubar__btn[data-fx-demo],
+.fx-chrome-preview[data-demo='press'] .fx-nav__item[data-fx-demo], .fx-chrome-preview[data-demo='press'] .fx-tab[data-fx-demo] { background: var(--fx-accent-soft); color: var(--fx-accent); outline: var(--fx-border-w) solid var(--fx-focus); outline-offset: calc(var(--fx-border-w) * -1); }
