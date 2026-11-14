@@ -46,7 +46,8 @@ export function micLease(): MicLease {
 /* ------------------------------------------------------------------ what is here */
 
 interface NativeBridge { tools?: string[]; call(tool: string, args?: Record<string, unknown>): Promise<Record<string, unknown>>; on(event: string, fn: (data: Record<string, unknown>, event: string) => void): () => void }
-type Win = Window & { axfNative?: NativeBridge; SpeechRecognition?: new () => SpeechRecognitionLike; webkitSpeechRecognition?: new () => SpeechRecognitionLike };
+// Window minus the console's own axfNative typing (src/native): the listener reads only the bridge part it needs
+type Win = Omit<Window, 'axfNative'> & { axfNative?: NativeBridge; SpeechRecognition?: new () => SpeechRecognitionLike; webkitSpeechRecognition?: new () => SpeechRecognitionLike };
 interface SpeechRecognitionLike {
   continuous: boolean; interimResults: boolean; lang: string; maxAlternatives: number;
   start(): void; stop(): void; abort(): void;
