@@ -1,7 +1,7 @@
 {
   "$axf": "tracker@1",
   "frameworkVersion": "0.2.0",
-  "generatedAt": "2026-11-14T00:53:48.858Z",
+  "generatedAt": "2026-11-14T01:26:03.740Z",
   "summary": {
     "foundations": {
       "built": 68,
@@ -3865,6 +3865,7 @@
       "tab": "console",
       "group": "console-plumbing",
       "title": "Phone native bridge (native-bridge@1): window.axfNative in the Android console app for mic, permissions, notifications, open_url, console wake and the recorder, the axHub amberx device service moved from AmberX, and every tool reachable as device.* console actions (REST, MCP, CLI, voice)",
+      "tag": "",
       "status": "built",
       "wave": 1,
       "module": "app-console",

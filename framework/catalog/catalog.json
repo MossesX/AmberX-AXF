@@ -2608,7 +2608,11 @@
               },
               {
               "id": "cx.phonebridge",
-              "title": "Phone native bridge (native-bridge@1): window.axfNative in the Android console app for mic, permissions, notifications, open_url, console wake and the recorder, the axHub amberx device service moved from AmberX, and every tool reachable as device.* console actions (REST, MCP, CLI, voice)"
+              "title": "Phone native bridge (native-bridge@1): window.axfNative in the Android console app for mic, permissions, notifications, open_url, console wake and the recorder, the axHub amberx device service moved from AmberX, and every tool reachable as device.* console actions (REST, MCP, CLI, voice)",
+              "note": "apps/console-droid DeviceBridge (window.axfBridgeHost) + BridgeContract tool list, DeviceTools, MicTools (mic switch gates page audio); apps/console-web/src/native bridgeClient.mjs merges it with part 1's window.axfNativeHost into one window.axfNative; device.* console actions in deviceApi.ts, state on panel:phone-bridge.",
+              "tag": "",
+              "recommended": true,
+              "suggests": []
             }
           ]
         }
