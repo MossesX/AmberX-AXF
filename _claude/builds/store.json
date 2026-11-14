@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5296,
- "updatedAt": "2026-11-14T13:02:17.357Z",
+ "rev": 5297,
+ "updatedAt": "2026-11-14T13:10:20.700Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -211987,7 +211987,7 @@
    "title": "HOTFIX: get main CI green (theme-swap opacity + plugin lifecycle stale refs)",
    "category": "bug fix",
    "detail": "Main's full CI is red, so the merge queue can't land any batch and builds stop early back to Pending. Fix: (1) scripts/theme-swap.mjs fails because every style theme shows the hub opacities (look pinned to axHub); make style themes use their own opacity values. (2) Plugin lifecycle check: stale refs in 7 plugins; fix them. Land #665 first. Then re-add the console app stack #637 #639 #633 #640 #643 and the land-batch PRs to the merge queue and redeploy the console.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -211995,8 +211995,8 @@
    "pr": "#669",
    "mergedAt": "2026-11-14T12:57:14Z",
    "createdAt": "2026-11-14T03:29:11.368Z",
-   "updatedAt": "2026-11-14T13:02:10Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-14T13:10:18.478Z",
+   "builtAt": "2026-11-14T13:10:18.479Z",
    "notes": [
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-hotfix-get-main-ci-green-theme-swap--rhonda.",
@@ -212112,12 +212112,6 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "shipped": {
-    "id": "sm-hotfix-get-main-ci-green-theme-swap",
-    "rev": 1,
-    "at": "2026-11-14T13:02:10Z",
-    "landedCommit": "c0cceeccaa3264dac03c9d075bd785ea2b2d418b"
-   },
    "steps": [
     {
      "id": "s1",
@@ -212178,12 +212172,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T13:10:18.478Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-14T03:29:11.370Z",
-     "updatedAt": "2026-11-14T04:43:15.903Z"
+     "updatedAt": "2026-11-14T13:10:18.753Z"
     }
    ],
    "profiles": [
