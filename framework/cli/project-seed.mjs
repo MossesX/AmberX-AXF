@@ -40,7 +40,8 @@ export const SANDBOX = Object.freeze({
   description: 'TEST DATA: a throwaway workspace for trying projects (its own builds, notes, to-dos and plans). Safe to delete.',
 });
 const BY = 'project-seed';
-const ORCH = join(REPO_ROOT, 'apps/console-web/plugins/build-orchestrator/orchestrator.mjs');
+let ORCH = null; // the build orchestrator's CLI; null once that plugin is uninstalled
+ORCH = join(REPO_ROOT, 'apps/console-web/plugins/build-orchestrator/orchestrator.mjs'); // axf-plugin:build-orchestrator
 const STORES_PY = join(REPO_ROOT, 'framework/cli/project_seed_stores.py');
 export const BUILD_IDS = Object.freeze({ shipped: `${SANDBOX.id}-sample-shipped-build`, pending: `${SANDBOX.id}-sample-pending-build` });
 export const PLAN_IDS = Object.freeze([`${SANDBOX.id}-plan-website-relaunch`, `${SANDBOX.id}-plan-garden-season`]);
