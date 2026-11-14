@@ -115,3 +115,32 @@ listener now uses `Omit<Window, 'axfNative'>` and reads only the bridge part it 
 `npm run build` green (vite, 12 s). Part 4's head typechecks clean on its own too. Also passing: check-builds-store 40,
 console-commands 10, wake-listener 82/82, plus the checks listed under s8-s10. theme-swap needs Playwright, which this
 host does not have, so CI's run of it on the PRs is the result.
+
+## CI round 1 (s11-s12)
+
+PR CI here is the light check only (the full run with Gradle happens once, in the merge queue). Round 1 came back red on
+all five PRs. Fixes, in the order found:
+
+1. **Light check, all PRs: `approvals-banner` TS2339 `overlayCommand` / `overlay` on `VetoHost`.** CI copies `framework/`
+   over `apps/console-web/src/axf` before `tsc`. `framework/libs/hub/veto.ts` was missing the three overlay members that
+   only the console's copy had (main has the same drift). Fixed on part 1 (`framework/libs/hub/veto.ts` now matches the
+   console copy) and merged up the stack. Before: 3 TS errors. After: CI's exact light check (copy, bake, sync, tsc) is
+   clean locally, and the rest of the light list passes (validate, tracker, project, builds-store verify, theme,
+   controls, toolbars, console-commands 10, molly-guide 21 + 18, ci-scope 10).
+2. **Build-engine sweep: `plugins.mjs --check`, wake-listener manifest.** `"banner": true` and `"opens": "settings"` are
+   not valid any more. Changed to `banner: false` (the listener only puts a status light on a banner, it ships no banner)
+   and `opens: false` (settings tab only).
+3. **Gradle: `ConformanceTest > theme variables match the reference engine` (`--fx-opacity-dialog` expected 1, was
+   null).** This is already red on main: main's last run with Gradle (`240263ee9`) fails the same way, and
+   `framework/spec/PORTING.md` says the Kotlin test "will see the twelve new variables" until the Android twin of the
+   surface opacity tokens lands. It is not from this stack, but it stops the Gradle job before the console app step.
+   The Kotlin twin is kernel engine work (Fable, Android port on hold), so this Opus session did not write it.
+   Instead, on part 1 the console app step and its APK upload run `if: !cancelled()` (the app has no framework module
+   dependencies). The job still goes red, but the APK is built, tested and uploaded.
+   **Needs Brett:** while this test is red, the merge queue's full run for any batch that touches Android is red, so
+   the stack can't land. The fix is to port `SURFACE_KINDS` / `surfaceVars` into `StyleTheme` + `ThemeEngine.kt`
+   (6 fields, 12 vars), as a Fable step.
+
+One full android.yml run was dispatched on the top of the stack (wake branch) to compile parts 1-3's Java together and
+run the console app's JUnit before the queue (part 3's Java had never been compiled). The first run stopped at the
+kernel test. The second runs after fix 3.
