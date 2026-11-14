@@ -26,3 +26,13 @@ Host repair before the batch (Nov 13, 23:5x): `/opt/axf/.git` had lost the objec
 four batch worktrees icon-map, per-instance-settings, token-registry, lander-regenerates among them; `git fetch` and
 auto-gc failed with "bad object"). Every lost tip still matched GitHub, so nothing was lost; the objects were
 fetched back into the store.
+
+## The deployed resolver (s2)
+
+- Repo copy: `deploy/axf-batch/resolve.py`, installed as `/opt/axf-batch/resolve.py` by `bash deploy/axf-batch/install.sh`
+  (installed Nov 14, 00:0x; the previous host file is kept as `resolve.py.bak-2026-11-13-2358`).
+- It holds no merge rules any more: the legacy JSON / text merge copy is gone. It runs
+  `framework/cli/land-resolve.py` from the checkout being landed (cwd), else `$AXF_ROOT` (default `/opt/axf`), and
+  with neither it exits 1 with `UNRESOLVED: no resolver …` instead of guessing.
+- So a generated-file clash is regenerated from the merged sources and staged (rules above); a real source clash still
+  stops with `UNRESOLVED: <files>`.
