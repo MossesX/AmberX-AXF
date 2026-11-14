@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5680,
- "updatedAt": "2026-11-14T23:47:15.641Z",
+ "rev": 5681,
+ "updatedAt": "2026-11-14T23:47:31.925Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -225098,7 +225098,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-14T22:19:00.612Z",
-   "updatedAt": "2026-11-14T23:45:38.337Z",
+   "updatedAt": "2026-11-14T23:47:12.605Z",
    "builtAt": "",
    "notes": [
     {
@@ -225164,6 +225164,10 @@
     {
      "text": "Self-check: console-look-becomes-default-axhub-skin had no session on record but axf-console-look-becomes-default-axhub-skin--paulie is alive: kept running and tracking it.",
      "at": "2026-11-14T23:32:11.541Z"
+    },
+    {
+     "text": "Self-check: console-look-becomes-default-axhub-skin had no session on record but axf-console-look-becomes-default-axhub-skin--paulie is alive: kept running and tracking it.",
+     "at": "2026-11-14T23:47:12.605Z"
     }
    ],
    "approvals": [
@@ -225195,7 +225199,7 @@
     "queuedAt": "2026-11-14T22:19:03.857Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "",
+    "session": "axf-console-look-becomes-default-axhub-skin--paulie",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-14T22:42:12.388Z",
@@ -225751,7 +225755,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 25,
+   "rev": 26,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
