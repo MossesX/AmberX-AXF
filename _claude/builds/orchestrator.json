@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T23:03:47.401Z",
+ "updatedAt": "2026-11-14T23:04:00.655Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -96064,7 +96064,7 @@
    "title": "Orchestrator table columns (model, queue #, assigned employee) + auto-hire builders with approval + train employees on website data",
    "category": "",
    "detail": "Builds on the HR/employees build (assign-an-employee-to-every-role-action-type-and); upgrade that, don't duplicate. 1) Orchestrator and Build Manager tables get columns: model (Opus/Fable/etc.), queue position number, assigned employee (avatar + name, links to profile). Sortable and shown on the expandable root rows. 2) Every build must be assigned to an employee in the builder job category. 3) When there's no available builder, the orchestrator sends Brett an AmberX notification: 'Hire a new builder?' with Approve/Deny. On approve, HR hires one automatically: name, avatar, persona, voice, job category builder, tools and permissions from the builder role, added to the roster, and the waiting build is assigned. No hire without approval. 4) Training: any employee can be trained on website data. Add URLs or a site to crawl from their profile; the content is fetched, stored as that employee's knowledge, viewable and removable, and used in their sessions. Same controls via REST, MCP, CLI and voice. Verify on the live console, desktop and phone.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -96072,8 +96072,8 @@
    "pr": "#680",
    "priority": "P0",
    "createdAt": "2026-11-10T00:17:45.319Z",
-   "updatedAt": "2026-11-14T23:03:45.492Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-14T23:03:47.712Z",
+   "builtAt": "2026-11-14T23:03:47.712Z",
    "notes": [
     {
      "text": "Split by rules (Claude: claude exit 1: Error: Input must be provided either through stdin or as a prompt argument when using --print): one step per line of the request, review the steps.",
@@ -96181,8 +96181,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:03:47.712Z",
      "note": "",
      "uid": "st-mw9y0lof03dla8",
      "createdAt": "2026-11-10T00:19:35.487Z"
