@@ -1540,6 +1540,39 @@
         "text": "Lays the open tabs out on the layout you picked, spread evenly over its panes. The pane limit holds: a layout with more panes uses only its first ones."
       },
       {
+        "target": "token",
+        "title": "Token",
+        "text": "Which colour or style token of this one tab row (or grid) you are about to set: hover text, active background, the indicator line, a radius, the row's transparency… A dot marks the tokens this one already sets.",
+        "more": "component-tokens@1: every grid and tab group has its own token family (--fx-grid-*, --fx-tab-*). A skin sets them for every grid / tab row (Token control → Style theme tokens → grid.* / tabs.*); this panel sets them for this one only. Without the screen: control set tokens.instances tabs.<row id>.<token> <value>, or chrome.token:tabs:<row id>:<token>:<value>.",
+        "kind": "field"
+      },
+      {
+        "target": "value",
+        "title": "Value",
+        "text": "What the token becomes for this one: a colour-theme token name (accent, surface2, accentSoft), a CSS colour (#ff8800, rgb(), color-mix()), a length (8, 0.5em, radius.sm) or a number. The hint names what the token accepts; a value it refuses is explained, never saved.",
+        "kind": "field"
+      },
+      {
+        "target": "drop-this-token",
+        "title": "Drop this token",
+        "text": "Takes this one token back off this tab row (or grid), so it follows the skin again. The other tokens you set here stay.",
+        "kind": "button"
+      },
+      {
+        "target": "restore-previous-edit",
+        "title": "Restore previous edit",
+        "text": "Puts this tab row's (or grid's) tokens back to what they were before your last edit here. Press it again to redo.",
+        "more": "Only the last edit is kept, per tab row / grid. Also: control act tokens.instances tabs.<row id> restore-previous, or chrome.token-restore:tabs:<row id>.",
+        "kind": "button"
+      },
+      {
+        "target": "restore-from-axhub",
+        "title": "Restore from axHub",
+        "text": "Drops every token this one tab row (or grid) set for itself, history included, so it follows the shared look from axHub again: the skin's own grid / tab tokens and any Token control overrides.",
+        "more": "Also: control act tokens.instances tabs.<row id> restore-hub, or chrome.token-hub:tabs:<row id>.",
+        "kind": "button"
+      },
+      {
         "target": "action:animations.set",
         "title": "Set a skin animation",
         "text": "Changes one skin animation in this app: the colour swatches (wave, ripple, pop), the skin switch (ripple, sweep, fade), the colour picker (fan, pop), or speed (25 to 400 percent) and intensity (0 to 100). 'skin' puts the skin's own back.",

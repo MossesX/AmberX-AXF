@@ -8,7 +8,7 @@
     "tabs": 86,
     "settingsTabs": 70,
     "settings": 87,
-    "functions": 243,
+    "functions": 246,
     "buttons": 62,
     "plugins": 69
   },
@@ -7151,6 +7151,53 @@
         "chrome",
         "edits"
       ],
+      "file": "src/axf/react/components/ChromeContext.tsx"
+    },
+    {
+      "address": "function:chrome.token",
+      "kind": "function",
+      "id": "chrome.token",
+      "label": "Set one token of one tab row or grid (chrome.token:<tabs|grid>:<instance>:<token>:<value>; empty value = drop it)",
+      "detail": "Action",
+      "keywords": [
+        "chrome.token",
+        "chrome",
+        "token"
+      ],
+      "params": true,
+      "requires": "assets.swap",
+      "file": "src/axf/react/components/ChromeContext.tsx"
+    },
+    {
+      "address": "function:chrome.token-restore",
+      "kind": "function",
+      "id": "chrome.token-restore",
+      "label": "Restore previous edit of a tab row's / grid's tokens (chrome.token-restore:<tabs|grid>:<instance>)",
+      "detail": "Action",
+      "keywords": [
+        "chrome.token-restore",
+        "chrome",
+        "token",
+        "restore"
+      ],
+      "params": true,
+      "requires": "assets.swap",
+      "file": "src/axf/react/components/ChromeContext.tsx"
+    },
+    {
+      "address": "function:chrome.token-hub",
+      "kind": "function",
+      "id": "chrome.token-hub",
+      "label": "Restore a tab row's / grid's tokens from axHub (drop its own values; follow the shared look) (chrome.token-hub:<tabs|grid>:<instance>)",
+      "detail": "Action",
+      "keywords": [
+        "chrome.token-hub",
+        "chrome",
+        "token",
+        "hub"
+      ],
+      "params": true,
+      "requires": "assets.swap",
       "file": "src/axf/react/components/ChromeContext.tsx"
     },
     {

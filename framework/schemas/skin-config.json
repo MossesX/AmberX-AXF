@@ -23,7 +23,7 @@
   "summary": {
     "categories": 48,
     "groups": 289,
-    "options": 1145,
+    "options": 1147,
     "limits": 4,
     "sections": [
       "Themes",
@@ -104,7 +104,9 @@
             "motion",
             "blur",
             "tracking",
-            "scrollbar"
+            "scrollbar",
+            "grid",
+            "tabs"
           ]
         }
       ],
