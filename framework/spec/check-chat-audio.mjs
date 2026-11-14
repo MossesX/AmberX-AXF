@@ -2,7 +2,7 @@
 /**
  * chat-audio@1 + voice@1 (core/engines/chat-audio.mjs): the group chat read aloud. Computes every case below, replays
  * spec/fixtures/chat-audio.json (the contract a Kotlin twin replays), validates the shipped voice assets
- * (assets/voice/*.json) and the registry entry, and checks the voice cast covers the shipped crew.
+ * (assets/voice/*.json) and the registry entry. (The crew's own test checks the breakroom cast names every agent.)
  *
  *   node framework/spec/check-chat-audio.mjs [--write]
  */
@@ -86,13 +86,12 @@ test('pool voices are stable per id', () => { assert.deepEqual(A.voiceFor('rio',
 // shipped voice assets and the registry
 const types = read(join(ROOT, 'schemas/asset-types.json')).types;
 test('voice is a registered asset type', () => { assert.ok(types[A.VOICE_TYPE], 'asset-types.json has "voice"'); assert.deepEqual(types[A.VOICE_TYPE].required, ['default']); });
-const roster = read(join(ROOT, '../apps/console-web/plugins/agent-swarm/agents/roster.json'));
 for (const f of readdirSync(join(ROOT, 'assets/voice')).filter((x) => x.endsWith('.json'))) {
   test(`assets/voice/${f}`, () => {
     const a = read(join(ROOT, 'assets/voice', f));
     assert.deepEqual(A.castErrors(a), []);
     assert.equal(`${a.id}.json`, f);
-    if (a.id === 'breakroom') for (const ag of roster.agents) assert.ok(a.data.agents[ag.id], `breakroom names a voice for ${ag.id}`);
+    assert.ok(Object.keys(a.data.agents ?? {}).length || (a.data.pool ?? []).length, 'named voices or a pool');
   });
 }
 

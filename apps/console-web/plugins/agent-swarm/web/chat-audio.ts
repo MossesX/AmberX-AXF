@@ -6,8 +6,8 @@ import { api } from './ui-types';
 /*
  * Group chat audio player (one per device): polls the room for new lines (GET chat/heard), runs them through the
  * chat-audio@1 queue (core/engines/chat-audio.mjs: who is spoken, which voice, in order, never overlapping) and speaks
- * them. The speech engine is the platform's: AmberX's native TTS bridge when the app provides one (background audio,
- * earbuds), else the browser's speechSynthesis. The room's settings are shared (server, every surface); whether this
+ * them. The speech engine is the platform's: the phone's TTS when the page runs in the AmberX shell (screen off, earbuds),
+ * else the browser's speechSynthesis. The room's settings are shared (server, every surface); whether this
  * device plays is a device setting (KEYS.device).
  */
 
@@ -18,9 +18,28 @@ const SLOW = 15000;
 type Heard = { ok: boolean; error?: string; audio: AudioSettings; casts: unknown[]; cast: string; names: Record<string, string>; chatOn: boolean; last: string; messages: { id: string; from: string; kind: string; text: string }[] };
 export type PlayerStatus = { settings: AudioSettings; device: boolean; speaking: Utterance | null; waiting: number; dropped: number; paused: boolean; engine: 'native' | 'browser' | 'none'; error: string };
 
-/** The native bridge AmberX may expose (Capacitor plugin `AxfTts`): speak resolves when the line has been said. */
-type NativeTts = { speak(o: { text: string; lang: string; rate: number; pitch: number; volume: number; voice?: string }): Promise<void>; stop(): Promise<void>; voices?(): Promise<{ voices: { name: string; lang: string; gender?: string }[] }> };
-const native = (): NativeTts | null => (globalThis as { Capacitor?: { Plugins?: { AxfTts?: NativeTts } } }).Capacitor?.Plugins?.AxfTts ?? null;
+/**
+ * The phone's text-to-speech when the page runs inside the AmberX shell (its Capacitor bridge `AmberxNative`): speak
+ * returns at once and a `spoken` event with the line's id says when it has been said; Android keeps speaking with the
+ * screen off and routes to earbuds. Elsewhere: null, and the browser's speechSynthesis plays.
+ */
+type NativeTts = {
+  speak(o: { text: string; lang: string; rate: number; pitch: number; volume: number; voice?: string; id: string; queue?: boolean }): Promise<void>;
+  stopSpeaking(): Promise<void>;
+  ttsVoices?(): Promise<{ voices: { id?: string; name: string; lang: string }[] }>;
+  addListener?(event: 'spoken', fn: (e: { id: string }) => void): Promise<{ remove(): void }> | { remove(): void };
+};
+const native = (): NativeTts | null => {
+  const c = (globalThis as { Capacitor?: { isNativePlatform?: () => boolean; Plugins?: { AmberxNative?: NativeTts } } }).Capacitor;
+  return c?.isNativePlatform?.() && c.Plugins?.AmberxNative?.speak ? c.Plugins.AmberxNative : null;
+};
+const spokenWait = new Map<string, () => void>();
+let spokenBound = false;
+function bindSpoken(n: NativeTts) {
+  if (spokenBound || !n.addListener) return; spokenBound = true;
+  void Promise.resolve(n.addListener('spoken', ({ id }) => spokenWait.get(id)?.())).catch(() => { spokenBound = false; });
+}
+let lineN = 0;
 const synth = (): SpeechSynthesis | null => (typeof globalThis.speechSynthesis === 'object' ? globalThis.speechSynthesis : null);
 
 let queue: Queue = A.emptyQueue();
@@ -61,7 +80,17 @@ function deviceVoices(): { name: string; lang: string; gender?: string }[] {
 async function say(u: Utterance): Promise<void> {
   const voice = A.pickDeviceVoice(u.voice, deviceVoices());
   const n = native();
-  if (n) { await n.speak({ text: u.text, lang: u.voice.lang, rate: u.voice.rate, pitch: u.voice.pitch, volume: u.volume, ...(voice ? { voice } : {}) }); return; }
+  if (n) {
+    bindSpoken(n);
+    const id = `chat-audio-${++lineN}`;
+    // the line's end: the `spoken` event, or a fallback from its length when the event never comes
+    const done = new Promise<void>((res) => {
+      const t = setTimeout(() => { spokenWait.delete(id); res(); }, 2000 + (u.text.length * 90) / u.voice.rate);
+      spokenWait.set(id, () => { clearTimeout(t); spokenWait.delete(id); res(); });
+    });
+    await n.speak({ text: u.text, lang: u.voice.lang, rate: u.voice.rate, pitch: u.voice.pitch, volume: u.volume, id, ...(voice ? { voice } : {}) });
+    await done; return;
+  }
   const s = synth(); if (!s) throw new Error('This device has no speech engine.');
   await new Promise<void>((done) => {
     const line = new SpeechSynthesisUtterance(u.text);
@@ -100,7 +129,7 @@ let started = false;
 export function start(opts: { device: boolean; skinPick?: () => string }) {
   device = opts.device; if (opts.skinPick) skinPick = opts.skinPick;
   if (started) return; started = true;
-  void native()?.voices?.().then((r) => { nativeVoices = r.voices ?? []; }).catch(() => undefined);
+  void native()?.ttsVoices?.().then((r) => { nativeVoices = (r.voices ?? []).map((v) => ({ name: v.id ?? v.name, lang: v.lang })); }).catch(() => undefined);
   void poll();
 }
 /** Play (or not) on this device. */
@@ -108,9 +137,9 @@ export function setDevice(on: boolean) { device = on; if (!on) stop(); else void
 /** Fresh settings from a change made here (no wait for the next poll). */
 export function applySettings(s: AudioSettings) { settings = A.normSettings(s); queue = A.prune(queue, settings); if (!settings.enabled) stop(); emit(); void poll(); }
 /** Stop: the line being spoken and everything waiting. */
-export function stop() { queue = A.clearQueue(queue); try { synth()?.cancel(); } catch { /* fine */ } void native()?.stop().catch(() => undefined); emit(); }
+export function stop() { queue = A.clearQueue(queue); try { synth()?.cancel(); } catch { /* fine */ } void native()?.stopSpeaking().catch(() => undefined); emit(); }
 /** Skip the line being spoken; the next one plays. */
-export function skip() { try { synth()?.cancel(); } catch { /* fine */ } void native()?.stop().catch(() => undefined); }
+export function skip() { try { synth()?.cancel(); } catch { /* fine */ } void native()?.stopSpeaking().catch(() => undefined); }
 export function pause() { queue = { ...queue, paused: true }; try { synth()?.pause(); } catch { /* fine */ } emit(); }
 export function resume() { queue = { ...queue, paused: false }; try { synth()?.resume(); } catch { /* fine */ } pump(); }
 /** Say a sample line in an agent's voice (the settings' Try button, voice "how does Kat sound"). */

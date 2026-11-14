@@ -100,3 +100,6 @@
 .sw-sections__what { display: flex; flex-direction: column; gap: var(--fx-dens-gap-2xs); flex: 1 1 calc(var(--fx-space) * 40); min-width: 0 }
 .sw-sections__what strong { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-sm) }
 .sw-sections__history ul { margin: var(--fx-dens-gap-sm) 0 0; padding-left: var(--fx-dens-gap-lg) }
+/* group chat audio: the controls above the room */
+.sw-audio { padding: var(--fx-dens-gap-lg) var(--fx-dens-gap-xl); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md) }
+.sw-audio .sw-slider { flex: 1 1 calc(var(--fx-font-size) * 12); min-width: 0 }
