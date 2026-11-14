@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5636,
- "updatedAt": "2026-11-14T23:30:18.061Z",
+ "rev": 5637,
+ "updatedAt": "2026-11-14T23:30:39.210Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -213598,7 +213598,7 @@
    "title": "Lander regenerates generated files on clash",
    "category": "",
    "detail": "Most Nov 13 land failures were clashes only in GENERATED or additive files: apps/console-web/src/control/inventory.json, framework/assets/help/framework.json and its baked copies in apps/*, framework/catalog/status.json, framework/spec/PORTING.md, framework/spec/fixtures/*.json, apps/*/axf.lock.json, and the baked framework copies under apps/*/src/axf/. Fix the land path (/opt/axf-batch/resolve.py used by vps.build_land, and the orchestrator lander): (1) list generated files in one manifest; (2) on a clash in a generated file, take main's side, then run the matching generator (control inventory, help bake, fixtures, lock, framework re-bake) on the merged tree and commit; (3) union-merge additive docs/catalogs (PORTING.md, catalog status.json) by key; (4) only real source clashes stop the land; (5) run tests after regenerating. Then re-land: full-voice-control-merge-main-and-land, skin-config-panel-merge-main-and-land, skins-plugin-merge-main-and-land, project-create-mcp, project-duplicate-boilerplate, drive-live-console-first, rename-long-builds, overlay-preview-ui-review. Must land before auto-land-every-finished-build-lands.",
-   "status": "running",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -213608,7 +213608,7 @@
    "priority": "P0",
    "createdAt": "2026-11-13T20:47:11.569Z",
    "updatedAt": "2026-11-14T23:29:29.226Z",
-   "builtAt": "",
+   "builtAt": "2026-11-14T23:29:29.226Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -213669,6 +213669,10 @@
     {
      "text": "Headless run axf-lander-regenerates-generated-files-clash--lenny: brief only · start 11.8K tokens ($0.03) · cost $0.91 · 38 turns · 6 tools, MCP none",
      "at": "2026-11-14T23:29:29.226Z"
+    },
+    {
+     "text": "Voice control (#655) merged with current main on PR #686 (additive phrase clashes, both kept; fixture regenerated); light check, tsc, server 11/11 green. Supersedes #655/#645/#627: close them once #686 lands.",
+     "at": "2026-11-14T23:29:15.091Z"
     }
    ],
    "approvals": [
@@ -213797,12 +213801,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:29:12.085Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T20:52:05.784Z",
-     "updatedAt": "2026-11-13T20:52:05.784Z"
+     "updatedAt": "2026-11-14T23:29:12.353Z"
     }
    ],
    "profiles": [
@@ -213813,7 +213817,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 29,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
