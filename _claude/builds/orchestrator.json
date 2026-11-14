@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T23:17:09.480Z",
+ "updatedAt": "2026-11-14T23:17:24.884Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -109851,8 +109851,8 @@
    "branch": "claude/console-axhub-retry-failed-calls",
    "pr": "#589",
    "createdAt": "2026-11-12T02:37:24.132Z",
-   "updatedAt": "2026-11-14T23:16:01.438Z",
-   "builtAt": "2026-11-14T23:16:01.438Z",
+   "updatedAt": "2026-11-14T23:17:05.230Z",
+   "builtAt": "2026-11-14T23:17:05.230Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -109945,6 +109945,10 @@
     {
      "text": "Headless run axf-console-axhub-retry-failed-calls--joey: brief only · start 11.8K tokens ($0.03) · cost $0.79 · 28 turns · 6 tools, MCP none",
      "at": "2026-11-14T23:16:01.438Z"
+    },
+    {
+     "text": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
+     "at": "2026-11-14T23:17:05.230Z"
     },
     {
      "text": "s3: all retry tests pass on the branch head (locked store retried to success; caller gone mid-retry still completes). PR #589 is waiting for the merge queue, which handles landing and redeploy. The live FYI goes out after it lands. UI Review shots are still missing: the headless console can't reach axHub from a localhost origin (curl reaches it), so a session with hub access must capture and submit them.",
