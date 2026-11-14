@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5600,
- "updatedAt": "2026-11-14T23:18:58.439Z",
+ "rev": 5601,
+ "updatedAt": "2026-11-14T23:19:16.244Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -211759,7 +211759,7 @@
    "mergedAt": "2026-11-13T20:44:56Z",
    "priority": "P0",
    "createdAt": "2026-11-13T20:08:02.821Z",
-   "updatedAt": "2026-11-14T23:17:24.127Z",
+   "updatedAt": "2026-11-14T23:19:13.075Z",
    "builtAt": "",
    "notes": [
     {
@@ -211807,7 +211807,16 @@
      "at": "2026-11-14T23:17:24.127Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-14T23:19:13.075Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "land the per-toolbar, tab group and menu settings",
@@ -211906,12 +211915,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:19:13.075Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T20:09:48.693Z",
-     "updatedAt": "2026-11-13T20:09:48.693Z"
+     "updatedAt": "2026-11-14T23:19:13.544Z"
     },
     {
      "id": "s3",
@@ -211947,7 +211956,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 25,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
