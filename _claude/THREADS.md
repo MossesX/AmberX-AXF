@@ -796,8 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 04:12 UTC · `demo-video-series-three-minute-browser` note (all) · voice
-- 2026-11-14 04:14 UTC · `icon-map-icon-packs-every-icon-badge-app` note (all) · orchestrator
 - 2026-11-14 04:15 UTC · `icon-map-icon-packs-every-icon-badge-app` note (all) · pipeline
 - 2026-11-14 04:15 UTC · `launch-landing-page-waitlist-referral` s2 done (all) · orchestrator
 - 2026-11-14 04:17 UTC · `hotfix-get-main-ci-green-theme-swap` s1 done (all) · orchestrator
@@ -1196,6 +1194,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 10:50 UTC · `one-source-of-truth-console-shows-only-what-the-server-says-is-running` s3 done, → built (all) · orchestrator
 - 2026-11-13 10:50 UTC · `one-source-of-truth-console-shows-only-what-the-server-says-is-running` note (all) · orchestrator
 - 2026-11-14 23:08 UTC · `pass-approval-hook-deep-link-amberx-notification` s8 done (all) · orchestrator
+- 2026-11-14 23:08 UTC · `one-source-truth-console-shows-only-what` → running, note (all) · pipeline
+- 2026-11-14 23:08 UTC · `one-source-truth-console-shows-only-what` note (all) · orchestrator
 
 ## Token passes (log)
 
