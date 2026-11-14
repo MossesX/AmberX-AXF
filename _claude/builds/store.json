@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5629,
- "updatedAt": "2026-11-14T23:28:43.398Z",
+ "rev": 5630,
+ "updatedAt": "2026-11-14T23:28:58.279Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -175456,6 +175456,7 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
+   "alias": "fix-conflicts-land-build-plan-1-skins",
    "branch": "claude/fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o",
    "pr": "#532",
    "mergedAt": "2026-11-13T06:23:47Z",
@@ -177400,6 +177401,7 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
+   "alias": "change-to-one-to-do-notes-tasks-plugin",
    "branch": "claude/change-to-one-to-do-notes-and-tasks-plugin-pr-527-brett-notes-tasks-and-to",
    "pr": "#545",
    "mergedAt": "2026-11-13T18:42:37Z",
