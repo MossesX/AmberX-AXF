@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5182,
- "updatedAt": "2026-11-14T03:52:54.861Z",
+ "rev": 5183,
+ "updatedAt": "2026-11-14T03:53:11.735Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -211797,7 +211797,7 @@
    "branch": "claude/ui-directory-plugin-self-updating-data",
    "pr": "",
    "createdAt": "2026-11-14T03:50:42.413Z",
-   "updatedAt": "2026-11-14T03:52:07.713Z",
+   "updatedAt": "2026-11-14T03:53:01.224Z",
    "builtAt": "",
    "notes": [
     {
@@ -211807,6 +211807,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-ui-directory-plugin-self-updating-data--paulie, own login copy)",
      "at": "2026-11-14T03:51:32.429Z"
+    },
+    {
+     "text": "Brett: everything this build makes (the directory window, user-made toolbars and tab groups, drag/dock UI) must follow the token rule so skins restyle it. Reuse the existing toolbar and tab group token families so every skin already covers them; any NEW tokens go in the token registry with defaults pointing at today's tokens, and run the skin upgrader so every shipped skin covers them.",
+     "at": "2026-11-14T03:52:54.687Z"
     }
    ],
    "approvals": [],
@@ -211892,9 +211896,9 @@
     },
     {
      "id": "s4",
-     "uid": "st-mwfvdcap014csg",
+     "uid": "st-mwfvehpc017wvo",
      "title": "",
-     "text": "Brett: the UI Directory is a tree view of everything, with collapsible branches, categorized, sortable and filterable. It opens in a floating window with 'Create toolbar' and 'Create tab group' buttons. Creating one drops a new floating toolbar or tab group on whatever page you're on. Drag commands or screens from the tree onto it to add them, then dock it anywhere on the page (top, bottom, sides, or free-floating). Placement, contents and docking are saved per page as tokens/assets, with Restore previous edit and full API and voice ('make a toolbar with build and deploy').",
+     "text": "Brett: the UI Directory is a tree view of everything, with collapsible branches, categorized, sortable and filterable. It opens in a floating window with 'Create toolbar' and 'Create tab group' buttons. Creating one drops a new floating toolbar or tab group on whatever page you're on. Drag commands or screens from the tree onto it to add them, then dock it anywhere on the page (top, bottom, sides, or free-floating). Placement, contents and docking are saved per page as tokens/assets, with Restore previous edit and full API and voice ('make a toolbar with build and deploy'). All of it follows the token rule so skins restyle it.",
      "model": "Opus",
      "why": "",
      "phase": "",
@@ -211909,8 +211913,8 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-14T03:52:07.714Z",
-     "updatedAt": "2026-11-14T03:52:08.065Z"
+     "createdAt": "2026-11-14T03:53:01.225Z",
+     "updatedAt": "2026-11-14T03:53:01.728Z"
     },
     {
      "id": "s3",
@@ -211943,7 +211947,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
