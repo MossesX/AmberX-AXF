@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T22:59:30.821Z",
+ "updatedAt": "2026-11-14T22:59:40.162Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -114791,7 +114791,7 @@
    "mergedAt": "2026-11-13T06:23:47Z",
    "priority": "P0",
    "createdAt": "2026-11-12T22:16:05.972Z",
-   "updatedAt": "2026-11-14T22:57:24.235Z",
+   "updatedAt": "2026-11-14T22:59:31.613Z",
    "builtAt": "",
    "notes": [
     {
@@ -114881,6 +114881,10 @@
     {
      "text": "Started run 2 on mossesx-max- (Opus, Phase 1): axf-fix-conflicts-and-land-build-plan-1-skins-one-ro--rhonda.",
      "at": "2026-11-14T22:57:16.879Z"
+    },
+    {
+     "text": "PR #532 already merged to main as 60e76d149 (Nov 13); its code matches branch head ddf66f7ed except build-state files. Nothing left to land.",
+     "at": "2026-11-14T22:59:31.613Z"
     }
    ],
    "approvals": [],

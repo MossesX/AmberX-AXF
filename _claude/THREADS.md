@@ -796,7 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 03:44 UTC · `hotfix-get-main-ci-green-theme-swap` → queued (all) · voice
 - 2026-11-14 03:45 UTC · `hotfix-get-main-ci-green-theme-swap` → running, note (all) · pipeline
 - 2026-11-14 03:45 UTC · `hotfix-get-main-ci-green-theme-swap` note (all) · orchestrator
 - 2026-11-14 03:45 UTC · `hotfix-get-main-ci-green-theme-swap` branch claude/hotfix-get-main-ci-green-theme-swap (all) · pipeline
@@ -1196,6 +1195,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 22:58 UTC · `pass-approval-hook-deep-link-amberx-notification` s5 done (all) · orchestrator
 - 2026-11-14 22:58 UTC · `themed-native-controls-plugin` s8 done (all) · orchestrator
 - 2026-11-14 22:59 UTC · `picker-dialog-plugin-replaces-all` s11 done (all) · orchestrator
+- 2026-11-14 22:59 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` note (all) · orchestrator
 
 ## Token passes (log)
 
