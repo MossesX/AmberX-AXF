@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5448,
- "updatedAt": "2026-11-14T22:32:24.007Z",
+ "rev": 5449,
+ "updatedAt": "2026-11-14T22:32:31.312Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -222221,7 +222221,7 @@
    "title": "Land all skin builds",
    "category": "",
    "detail": "Land these one at a time, in order. For each: fetch its remote branch (pull --rebase or merge the remote branch first; build_land push was rejected as non-fast-forward), merge origin/main, resolve conflicts keeping both sides' features, regenerate generated files (generated-files@1), run tests, push, merge to main. Order: skins-plugin-merge-main-and-land (Skins plugin; installing it hides the built-in skins panel, removing it brings it back), skin-config-panel-merge-main-and-land, every-skin-ships-light-dark-colour-theme, console-skin-axhub-only, skin-axhub-override-switch-greyed-out, skin-animations-swatches-skin-switch, token-registry-skin-editor-live-sandbox, own-token-sets-for-grids-and-tab-groups. Archive superseded older branches (skins-plugin-own-removable-console, skin-configuration-panel-before-ai-makes, professional-skins-rebuild-whole-app, fix-merge-conflicts-pr-557-professional) after checking their commits are included. Then run /usr/local/bin/axf-console-update to redeploy, verify the console loads with no doubled chrome, and send Brett a phone notification through AmberX listing what landed.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -222229,7 +222229,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-14T18:15:01.485Z",
-   "updatedAt": "2026-11-14T22:32:10.934Z",
+   "updatedAt": "2026-11-14T22:32:19.498Z",
    "builtAt": "",
    "notes": [
     {
@@ -222255,6 +222255,14 @@
     {
      "text": "Brett (now): stop waiting on the stacked merge queue. Land the skin PRs one at a time directly, in order (#647, #648, #590, #618, #641, #652, #657, #654): merge origin/main into each, run its checks once, merge to main, then the next. Don't restack.",
      "at": "2026-11-14T22:15:53.636Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-land-all-skin-builds--joey.",
+     "at": "2026-11-14T22:32:15.213Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-land-all-skin-builds--joey, shared account login)",
+     "at": "2026-11-14T22:32:19.498Z"
     }
    ],
    "approvals": [],
@@ -222274,12 +222282,12 @@
    "pipeline": {
     "queuedAt": "2026-11-14T18:15:06.323Z",
     "queuedBy": "console",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-land-all-skin-builds--joey",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-14T22:32:14.495Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-14T18:19:09.863Z",
@@ -222291,7 +222299,7 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-14T22:32:14.495Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -222300,7 +222308,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-14T22:32:14.495Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -222948,7 +222956,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -223661,7 +223669,7 @@
    "title": "Land on finish: auto-land live, clear backlog",
    "category": "",
    "detail": "Root cause: the auto-land builds (auto-land-every-finished-build-lands, auto-land-merge-main-land-land-mjs-clash) finished but never landed, so nothing lands by itself; 87 finished builds sit unlanded, many 1,000-2,000 commits behind main. Do, in order: (1) Land the auto-land code first, combined with replace-merge-queue-one-time-landing: a serial lander that, the moment a build finishes, merges origin/main into it, regenerates generated files (generated-files@1, wire /opt/axf-batch/resolve.py too), runs its checks once and merges it to main; no stacking; a cancelled CI run never counts as a failure; on a red check it files a fix build and moves on. While a build is running, merge main into it every 30 min so it never drifts far behind. (2) Fix the dispatcher: 6 of 8 slots sit empty while builds are queued; find why queued builds don't launch and fix it, with a test. (3) Clear the backlog: land every finished build one at a time, newest and most-wanted first, starting with move-amberx-web-app-console-amberx-andr and change-to-move-amberx-web-app-console (AmberX web app into the console), the console app parts 1-4 and wake listener, and voice-listener-use-claude-when-connected. Builds that are fully superseded get archived (tag archive/<name>) after checking no unique work is lost; anything with unique work gets flagged. (4) Redeploy the console after each batch of landings (axf-console-update) and check no doubled chrome. (5) Show 'commits behind main' on every build row and alert Brett's phone through AmberX if any finished build sits unlanded more than 15 min. Send Brett a phone notification with a summary of what landed. Full API and voice, tests, help, Shipped features.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -223669,7 +223677,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-14T22:17:37.935Z",
-   "updatedAt": "2026-11-14T22:31:40.341Z",
+   "updatedAt": "2026-11-14T22:32:17.952Z",
    "builtAt": "",
    "notes": [
     {
@@ -223687,6 +223695,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-land-finish-auto-land-live-clear-backlog--earl, shared account login)",
      "at": "2026-11-14T22:21:26.370Z"
+    },
+    {
+     "text": "Dispatch gate: land-finish-auto-land-live-clear-backlog still has axf-land-finish-auto-land-live-clear-backlog--earl alive: not launched again, tracking that session.",
+     "at": "2026-11-14T22:32:17.952Z"
     }
    ],
    "approvals": [],
@@ -224449,7 +224461,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
