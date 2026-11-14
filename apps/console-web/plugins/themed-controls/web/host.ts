@@ -241,7 +241,7 @@ export function startHost(rt: AxfRuntime, families: { elements: ElementFamily[];
         set(v) { base.set!.call(this, v); resync(); },
       });
     }
-    const onEvent = () => resync();
+    const onEvent = () => { if (swaps.has(input)) swap.sync(ctx.props()); };
     const onFocus = () => { const f = swap.focusEl?.() ?? swap.el; if (f && f !== globalThis.document.activeElement) f.focus(); };
     const form = input.form;
     const onReset = () => globalThis.setTimeout(resync, 0);

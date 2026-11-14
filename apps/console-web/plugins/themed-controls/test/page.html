@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en" data-fx-scheme="light">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Themed controls harness</title>
+<link rel="stylesheet" href="axf.css">
+</head>
+<body class="fx-app">
+<main class="fx-stack" style="padding: var(--fx-dens-gap-md)">
+  <form id="f" class="fx-stack">
+    <label><input type="checkbox" id="cb1" name="cb1" checked> Send updates</label>
+    <label for="cb2">Mixed</label><input type="checkbox" id="cb2" name="cb2">
+    <label><input type="checkbox" id="cb3" name="cb3" disabled> Disabled</label>
+    <label data-axf-native><input type="checkbox" id="cbn" name="cbn"> Native kept</label>
+    <fieldset><legend>Size</legend>
+      <label><input type="radio" name="size" value="s" id="rs"> Small</label>
+      <label><input type="radio" name="size" value="m" id="rm" checked> Medium</label>
+      <label><input type="radio" name="size" value="l" id="rl"> Large</label>
+    </fieldset>
+    <label>Volume <input type="range" id="vol" name="vol" min="0" max="10" step="1" value="4"></label>
+    <label>Count <input type="number" id="num" name="num" min="0" max="5" step="1" value="2"></label>
+    <label>Price <input type="number" id="price" name="price" step="0.5" value="1.5"></label>
+    <label>Start <input type="date" id="d1" name="d1" value="2026-11-14" min="2026-11-02" max="2026-12-20"></label>
+    <label>At <input type="time" id="t1" name="t1" value="09:30"></label>
+    <label>When <input type="datetime-local" id="dt1" name="dt1" value="2026-11-14T18:15"></label>
+    <label>Colour <input type="color" id="c1" name="c1" value="#3366cc"></label>
+    <label>Files <input type="file" id="f1" name="f1" multiple accept=".png,.txt"></label>
+    <button type="button" class="fx-btn" id="tipbtn" title="Saves the form">Save</button>
+    <button type="reset" class="fx-btn" id="reset">Reset</button>
+  </form>
+  <div id="scroller" style="block-size: 120px; overflow: auto"><div style="block-size: 600px">Scroll me</div></div>
+</main>
+<script type="module" src="harness.js"></script>
+</body>
+</html>
