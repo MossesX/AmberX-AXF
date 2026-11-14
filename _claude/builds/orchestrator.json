@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T18:15:05.645Z",
+ "updatedAt": "2026-11-14T18:15:15.327Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -140142,12 +140142,16 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-14T18:13:15.368Z",
-   "updatedAt": "2026-11-14T18:13:17.913Z",
+   "updatedAt": "2026-11-14T18:15:13.052Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-14T18:13:17.913Z"
+    },
+    {
+     "text": "Split by Claude into 22 steps (5 Fable).",
+     "at": "2026-11-14T18:15:13.052Z"
     }
    ],
    "approvals": [],
@@ -140164,7 +140168,503 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Design picker@1 contract: picker-model engine spec (options, groups, icons, descriptions, multiple, search threshold, value/labels, open/choose/close state) and the swap contract that replaces native <select>, custom dropdowns and comboboxes, written in framework/spec/PICKER.md with the Kotlin twin recorded as a deferred gap in PORTING.md",
+     "model": "Fable",
+     "why": "Cross-port contract that changes how every select behaves across all apps",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/spec/PICKER.md",
+      "framework/spec/PORTING.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgq79uk01ntsv",
+     "createdAt": "2026-11-14T18:15:13.052Z"
+    },
+    {
+     "id": "s2",
+     "text": "Reference engine framework/core/engines/picker.ts: normalise options from a native select / option list, filter by search, group, toggle for single/multi, keyboard model (arrows, home/end, type-ahead, enter, escape), choose-by-name matcher for voice; export it from the core index",
+     "model": "Fable",
+     "why": "Engine internals shared by every app and the future Kotlin port",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/engines/picker.ts",
+      "framework/core/index.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgq79uk02j9vb",
+     "createdAt": "2026-11-14T18:15:13.052Z"
+    },
+    {
+     "id": "s3",
+     "text": "Golden fixture framework/spec/fixtures/picker.json plus generator and check entries (gen-fixtures.mts, framework/spec/check-picker.mts) covering filter, group, multi toggle, keyboard moves and name matching",
+     "model": "Fable",
+     "why": "Conformance fixture is the cross-port contract",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/spec/gen-fixtures.mts",
+      "framework/spec/fixtures/picker.json",
+      "framework/spec/check-picker.mts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgq79uk03f50m",
+     "createdAt": "2026-11-14T18:15:13.052Z"
+    },
+    {
+     "id": "s4",
+     "text": "Register the picker token family in the token registry (surface, backdrop, header, search, option row, hover, focus, selected, disabled, check, group label, sheet handle, radius, padding, gap, every state, light and dark) and make the theme/style engines compile them to --fx-picker-* defaults matching today's dropdown look",
+     "model": "Fable",
+     "why": "Schema change to the shared token registry and engine output",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/schemas/asset-types.json",
+      "framework/core/engines/theme.ts",
+      "framework/core/engines/style.ts",
+      "framework/assets/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgq79uk049jcc",
+     "createdAt": "2026-11-14T18:15:13.052Z"
+    },
+    {
+     "id": "s5",
+     "text": "Add a picker style target to framework/schemas/customize.json (parts box/text/icon/items) so skin-coverage@1 styles it; update the skin upgrader to add picker defaults to every existing skin; run check-skin-coverage.mjs and regenerate fixtures and JSON schemas",
+     "model": "Fable",
+     "why": "Skin coverage contract and migration of existing skins",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/schemas/customize.json",
+      "framework/core/engines/skin-coverage.mjs",
+      "framework/assets/skin/",
+      "framework/schemas/json/",
+      "framework/spec/fixtures/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgq79uk05w3y0",
+     "createdAt": "2026-11-14T18:15:13.052Z"
+    },
+    {
+     "id": "s6",
+     "text": "Shared React component framework/react/components/PickerField.tsx: field shows current value (and count for multi); tap opens the dialog",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/components/PickerField.tsx",
+      "framework/react/index.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgq79uk06u8dc",
+     "createdAt": "2026-11-14T18:15:13.052Z"
+    },
+    {
+     "id": "s7",
+     "text": "PickerDialog.tsx: themed dialog on desktop, bottom sheet on phone (layout breakpoint token); search box past the threshold, grouped sections, icons and descriptions, checkboxes for multi; tokens only, with styles in framework/ui/axf.css",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/components/PickerDialog.tsx",
+      "framework/ui/axf.css"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgq79uk07kscy",
+     "createdAt": "2026-11-14T18:15:13.052Z"
+    },
+    {
+     "id": "s8",
+     "text": "Accessibility pass on PickerField/PickerDialog: role=dialog/listbox/option, aria-selected/aria-multiselectable, focus trap and return focus, engine keyboard model wired, labels from the source select; framework controls only",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/components/PickerDialog.tsx",
+      "framework/react/components/PickerField.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgq79uk0868b7",
+     "createdAt": "2026-11-14T18:15:13.052Z"
+    },
+    {
+     "id": "s9",
+     "text": "Swap layer framework/react/pickerSwap.ts: when enabled, AxfProvider routes framework SelectField/Dropdown/Combobox to PickerField, and a MutationObserver enhances remaining native <select> elements (hidden select kept as the source of truth, change events fired); off restores the originals untouched",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/pickerSwap.ts",
+      "framework/react/AxfProvider.tsx",
+      "framework/react/components/SelectField.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgq79uk09c1qr",
+     "createdAt": "2026-11-14T18:15:13.052Z"
+    },
+    {
+     "id": "s10",
+     "text": "Removable plugin scaffold apps/console-web/plugins/picker-dialog: plugin.json (builtWith, description, lifecycle dataDir, web library that switches pickerSwap on), install.mjs, uninstall.mjs, README; plugin off = original dropdowns",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/picker-dialog/plugin.json",
+      "apps/console-web/plugins/picker-dialog/install.mjs",
+      "apps/console-web/plugins/picker-dialog/uninstall.mjs",
+      "apps/console-web/plugins/picker-dialog/README.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgq79uk0a7tng",
+     "createdAt": "2026-11-14T18:15:13.052Z"
+    },
+    {
+     "id": "s11",
+     "text": "Settings sub-tab under Settings → Plugins → Picker dialog (enable, search threshold, phone sheet on/off, per-app exclusions) with level toolbar, settings asset and control@1 targets registered for console control",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/picker-dialog/web/",
+      "apps/console-web/plugins/picker-dialog/assets/settings/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgq79uk0b5qsp",
+     "createdAt": "2026-11-14T18:15:13.052Z"
+    },
+    {
+     "id": "s12",
+     "text": "API: REST routes in the plugin server (state: enabled, open picker, its options and value; actions: open <target>, choose <option name>, close, settings get/set) with data-axf-target addresses on every picker",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/picker-dialog/server/routes.py",
+      "framework/react/components/PickerField.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgq79uk0cvxd4",
+     "createdAt": "2026-11-14T18:15:13.052Z"
+    },
+    {
+     "id": "s13",
+     "text": "API parity: MCP plugin commands, console actions picker.open / picker.choose / picker.close, axf CLI subcommand and AmberX voice phrases ('open the <field> picker', 'choose <option>'), all routed through the same handlers; console_show deep link to the settings tab",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/picker-dialog/commands.json",
+      "apps/console-web/plugins/picker-dialog/picker.mjs",
+      "framework/cli/axf.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgq79uk0dfm02",
+     "createdAt": "2026-11-14T18:15:13.052Z"
+    },
+    {
+     "id": "s14",
+     "text": "Migrate the framework's own selects (framework/react, framework/libs/settings) to SelectField so they swap cleanly; grep for raw <select> and custom dropdowns and list leftovers",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/",
+      "framework/libs/settings/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgq79uk0eq11r",
+     "createdAt": "2026-11-14T18:15:13.052Z"
+    },
+    {
+     "id": "s15",
+     "text": "Migrate the console's custom dropdowns and comboboxes in apps/console-web/src and plugins to SelectField / PickerField (first half: src/views)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgq79uk0fx48z",
+     "createdAt": "2026-11-14T18:15:13.052Z"
+    },
+    {
+     "id": "s16",
+     "text": "Migrate the remaining console plugin dropdowns (second half: apps/console-web/plugins/*/web) to SelectField / PickerField",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgq79uk0gktff",
+     "createdAt": "2026-11-14T18:15:13.052Z"
+    },
+    {
+     "id": "s17",
+     "text": "CI gate framework/cli/check-pickers.mjs: fails on hand-made dropdowns outside SelectField/PickerField, plus check-theme.mjs coverage of picker CSS (no literal colours/sizes); ratchet baseline; wire into CI",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/cli/check-pickers.mjs",
+      "framework/spec/picker-baseline.json",
+      ".github/workflows/android.yml"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgq79uk0hofqm",
+     "createdAt": "2026-11-14T18:15:13.052Z"
+    },
+    {
+     "id": "s18",
+     "text": "Re-bake shared assets and framework into console, axHub web, AmberX and demo (shared-assets.mjs bake, rebake.mjs); run tracker.mjs, schemas, validate --framework",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src/axf/",
+      "apps/*/src/axf/assets",
+      "tracker.json",
+      "framework/catalog/status.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgq79ul0id1vy",
+     "createdAt": "2026-11-14T18:15:13.052Z"
+    },
+    {
+     "id": "s19",
+     "text": "Tests: plugin test (enable/disable restores originals, REST/MCP/CLI/voice open+choose parity), Playwright desktop and phone (sheet, search, multi, keyboard), theme-swap.mjs and a skin swap restyle the picker",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/picker-dialog/test.mjs",
+      "apps/console-web/scripts/theme-swap.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgq79ul0j9pj5",
+     "createdAt": "2026-11-14T18:15:13.052Z"
+    },
+    {
+     "id": "s20",
+     "text": "Help entry and glossary description, Shipped features ledger rows, plugin-lifecycle check --after-uninstall",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/picker-dialog/help.md",
+      "apps/console-web/plugins/glossary-index/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgq79ul0kxvbn",
+     "createdAt": "2026-11-14T18:15:13.052Z"
+    },
+    {
+     "id": "s21",
+     "text": "UI Review: 3 picker look options as assets in plugins/picker-dialog/assets/picker/ with desktop + phone shots via review.mjs submit --choices",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/picker-dialog/assets/",
+      "apps/console-web/plugins/ui-review/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgq79ul0l632v",
+     "createdAt": "2026-11-14T18:15:13.052Z"
+    },
+    {
+     "id": "s22",
+     "text": "Run the full check sweep, write _claude/builds/reports/picker-dialog-plugin-replaces-all.md (how each feature is reached: deep link, REST, MCP, CLI, voice), THREADS row, push branch, open PR and link it with builds-live.mjs",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/picker-dialog-plugin-replaces-all.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgq79ul0m13pm",
+     "createdAt": "2026-11-14T18:15:13.052Z"
+    }
+   ]
   },
   {
    "id": "themed-native-controls-plugin",
@@ -140208,16 +140708,22 @@
    "title": "Land all skin builds",
    "category": "",
    "detail": "Land these one at a time, in order. For each: fetch its remote branch (pull --rebase or merge the remote branch first; build_land push was rejected as non-fast-forward), merge origin/main, resolve conflicts keeping both sides' features, regenerate generated files (generated-files@1), run tests, push, merge to main. Order: skins-plugin-merge-main-and-land (Skins plugin; installing it hides the built-in skins panel, removing it brings it back), skin-config-panel-merge-main-and-land, every-skin-ships-light-dark-colour-theme, console-skin-axhub-only, skin-axhub-override-switch-greyed-out, skin-animations-swatches-skin-switch, token-registry-skin-editor-live-sandbox, own-token-sets-for-grids-and-tab-groups. Archive superseded older branches (skins-plugin-own-removable-console, skin-configuration-panel-before-ai-makes, professional-skins-rebuild-whole-app, fix-merge-conflicts-pr-557-professional) after checking their commits are included. Then run /usr/local/bin/axf-console-update to redeploy, verify the console loads with no doubled chrome, and send Brett a phone notification through AmberX listing what landed.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P0",
    "createdAt": "2026-11-14T18:15:01.485Z",
-   "updatedAt": "2026-11-14T18:15:01.485Z",
+   "updatedAt": "2026-11-14T18:15:06.990Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-14T18:15:06.990Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
