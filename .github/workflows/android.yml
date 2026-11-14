@@ -353,6 +353,7 @@ jobs:
             python apps/console-web/plugins/output-recorder/test_transcripts.py  # axf-plugin:output-recorder
             python apps/console-web/plugins/claude-session/test.py  # axf-plugin:claude-session
             python apps/console-web/plugins/follow-amber/test.py  # axf-plugin:follow-amber
+            python apps/console-web/plugins/push-banner/test_lander.py  # server lander: every merge through one gate, failure alerts, retry ladder until merged or stuck  # axf-plugin:push-banner
             python apps/console-web/plugins/ref-links/server/test_ref_links.py  # reference links: targets (catalog, agents, UI Review), find, resolve, open → refs.<how> through console-commands@1  # axf-plugin:ref-links
             python apps/console-web/server/test_mcp_tools.py         # console MCP: read tools read-only, deletes destructive, veto pass tools
             python apps/console-web/server/tests/test_console_control.py  # console-control@1: REST routes, guards (person-only, confirm, rate, audit), plugin toggles, no-console error, voice twin, MCP tools
