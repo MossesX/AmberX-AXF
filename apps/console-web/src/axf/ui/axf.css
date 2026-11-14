@@ -2141,3 +2141,23 @@ html[data-axf-help='on'] button[data-axf-help-id], html[data-axf-help='on'] [rol
   font-size: var(--fx-type-scale-xs); line-height: 1.35; white-space: pre-line; overflow-wrap: anywhere; animation: fx-fade var(--fx-motion) ease both;
 }
 .fx-tc-tip[hidden] { display: none; }
+
+/* themed scrollbars: only under the root class fx-tc-scroll (desktop; touch keeps its overlay scrollbars) */
+.fx-tc-scroll { scrollbar-gutter: auto; }
+:root.fx-tc-scroll[data-fx-tc-scrollbar-gutter='stable'] { scrollbar-gutter: stable; }
+:root.fx-tc-scroll[data-fx-tc-scrollbar-gutter='both-edges'] { scrollbar-gutter: stable both-edges; }
+.fx-tc-scroll ::-webkit-scrollbar { inline-size: var(--fx-tc-scrollbar-width, 10px); block-size: var(--fx-tc-scrollbar-width, 10px); }
+.fx-tc-scroll ::-webkit-scrollbar-track { background: var(--fx-tc-scrollbar-track-bg, transparent); }
+.fx-tc-scroll ::-webkit-scrollbar-corner { background: var(--fx-tc-scrollbar-track-bg, transparent); }
+.fx-tc-scroll ::-webkit-scrollbar-thumb {
+  background-color: var(--fx-tc-scrollbar-thumb-bg, var(--fx-muted)); border-radius: var(--fx-tc-scrollbar-radius, 999px);
+  border: calc(var(--fx-border-w) * 2) solid transparent; background-clip: padding-box;
+}
+.fx-tc-scroll ::-webkit-scrollbar-thumb:hover { background-color: var(--fx-tc-scrollbar-thumb-hover-bg, var(--fx-text)); }
+.fx-tc-scroll ::-webkit-scrollbar-thumb:active { background-color: var(--fx-tc-scrollbar-thumb-active-bg, var(--fx-accent)); }
+.fx-tc-scroll.fx-tc-scroll--autohide :not(:hover)::-webkit-scrollbar-thumb { background-color: transparent; }
+@supports not selector(::-webkit-scrollbar) {
+  .fx-tc-scroll, .fx-tc-scroll * { scrollbar-color: var(--fx-tc-scrollbar-thumb-bg, var(--fx-muted)) var(--fx-tc-scrollbar-track-bg, transparent); }
+  .fx-tc-scroll.fx-tc-scroll--thin, .fx-tc-scroll.fx-tc-scroll--thin * { scrollbar-width: thin; }
+  .fx-tc-scroll.fx-tc-scroll--autohide :not(:hover) { scrollbar-color: transparent transparent; }
+}
