@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T06:18:42.901Z",
+ "updatedAt": "2026-11-14T06:18:57.346Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -137350,7 +137350,7 @@
    "branch": "claude/hotfix-get-main-ci-green-theme-swap",
    "pr": "#669",
    "createdAt": "2026-11-14T03:29:11.368Z",
-   "updatedAt": "2026-11-14T06:18:40.894Z",
+   "updatedAt": "2026-11-14T06:18:52.988Z",
    "builtAt": "",
    "notes": [
     {
@@ -137364,6 +137364,10 @@
     {
      "text": "s3 open. #669 (stacked on #665; landing it lands #665 too) fixes theme-swap, plugin lifecycle (all 7), the live-store step-size test, the AmberX build, the jsdom control scanner and baked help drift. Main's full CI is still red on apps/console-web/scripts/menu-reach.mts (red on clean main too): 14 toolbar items (Next style theme / Next layout / Next design package / spacing) have no app-menu item. Brett: decide whether to add View items to the console app menu or drop those toolbar items under skins; then #669 lands from the queue by itself. Not done: re-adding the console stack #637 #639 #633 #640 #643 (waits for green main); the merge queue redeploys the console when #669 lands.",
      "at": "2026-11-14T05:48:23.711Z"
+    },
+    {
+     "text": "Headless run axf-hotfix-get-main-ci-green-theme-swap--rhonda: brief only · start 10.9K tokens ($0.03) · cost $17.60 · 234 turns · 6 tools, MCP none",
+     "at": "2026-11-14T06:18:52.988Z"
     },
     {
      "text": "Third queue run (43564457424): everything green except menu-reach (14 problems, same as clean main). #669 is kicked out until the app-menu / toolbar decision lands; then push or re-add #669 and it merges.",
