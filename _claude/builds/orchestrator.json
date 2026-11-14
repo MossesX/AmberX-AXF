@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T18:19:54.684Z",
+ "updatedAt": "2026-11-14T18:20:12.136Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -140679,15 +140679,15 @@
    "title": "Themed native controls plugin",
    "category": "",
    "detail": "Companion to picker-dialog-plugin-replaces-all, same rules. A removable plugin that replaces every browser-native control in the console and framework with a themed, token-driven version: date/time/datetime pickers -> themed calendar/time dialog; color inputs -> swatch/picker dialog; window.alert/confirm/prompt -> themed dialogs (async API shim); checkboxes, radios, range sliders -> themed switches/radios/sliders; file inputs -> themed drop zone with progress; number inputs -> themed steppers; native title tooltips -> themed tooltips; scrollbars -> themed scrollbars. Each control gets its own token family (every state, light and dark) registered in the token registry; no literal values (CI gate); skins style them and the skin upgrader adds defaults matching today's look. Accessibility (keyboard, screen reader, focus) kept. Each control type can be toggled on/off in the plugin settings; plugin off restores native controls. Desktop and phone (bottom sheets on phone). Full API and voice control. Split into parallel parts per control family. Tests desktop and phone, help, Shipped features.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/themed-native-controls-plugin",
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-14T18:14:25.063Z",
-   "updatedAt": "2026-11-14T18:19:52.643Z",
+   "updatedAt": "2026-11-14T18:20:05.411Z",
    "builtAt": "",
    "notes": [
     {
@@ -140697,6 +140697,14 @@
     {
      "text": "Split by Claude into 30 steps (5 Fable).",
      "at": "2026-11-14T18:17:59.202Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-themed-native-controls-plugin--paulie.",
+     "at": "2026-11-14T18:19:58.873Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-themed-native-controls-plugin--paulie, shared account login)",
+     "at": "2026-11-14T18:20:05.411Z"
     }
    ],
    "approvals": [],
