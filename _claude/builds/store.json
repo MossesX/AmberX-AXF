@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5574,
- "updatedAt": "2026-11-14T23:12:26.444Z",
+ "rev": 5575,
+ "updatedAt": "2026-11-14T23:12:45.466Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -193685,7 +193685,7 @@
    "title": "Owner recognized everywhere + veto countdown only on shell commands",
    "category": "axhub",
    "detail": "URGENT, boss order from Brett, Nov 12. Two problems: 1) The console and axHub do not recognize Brett as the owner, so owner-only settings (Claude settings > Approvals & veto tab, policy changes) don't work for him. Fix owner detection so Brett's admin console login and his axHub session count as owner everywhere (check the earlier owner-only-settings-brett-s-admin-console-login-counts-as-owner build and claude-settings-tabs-veto s4, axHub owner-only policy API GET/PUT /auth/api/policy; finish whatever is missing). 2) Change the axHub approval policies: a veto countdown ONLY on shell commands that run on the VPS (vps.run and anything executing a shell). Everything in the console/orchestrator (axf-console control_add, control_set, control_act, build_orchestrator_pipeline_queue, priority_set, agent_slots settings, console_open/show, etc.) becomes allow, no countdown. Keep confirm on the few owner-only items that already need it (model upgrades). Repos: axHub and AmberX-AXF. Tests: Brett's session is owner; vps.run still held on veto; console/orchestrator tools run immediately. PR, land through the gate, redeploy, AmberX FYI when live. Don't stop to ask.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -193693,7 +193693,7 @@
    "pr": "#601",
    "createdAt": "2026-11-12T02:04:11.564Z",
    "updatedAt": "2026-11-14T23:11:54.848Z",
-   "builtAt": "",
+   "builtAt": "2026-11-14T23:11:54.848Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -193901,12 +193901,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:11:39.845Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-12T02:04:11.565Z",
-     "updatedAt": "2026-11-12T02:04:11.565Z"
+     "updatedAt": "2026-11-14T23:11:40.571Z"
     }
    ],
    "profiles": [
@@ -193917,7 +193917,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 42,
+   "rev": 43,
    "deleted": false,
    "deletedAt": "",
    "pending": {
