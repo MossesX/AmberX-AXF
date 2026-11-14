@@ -792,7 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 19:44 UTC · `land-drive-live-console-first-resolve` → queued, note (all) · pipeline
 - 2026-11-13 19:44 UTC · `land-drive-live-console-first-resolve` → running, note (all) · pipeline
 - 2026-11-13 19:44 UTC · `land-drive-live-console-first-resolve` note (all) · orchestrator
 - 2026-11-13 19:44 UTC · `demo-pipelines-guided-walkthrough-live` → running, note (all) · pipeline
@@ -1192,6 +1191,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 00:34 UTC · `land-batch-merge-main-each-finished` s3 done (all) · orchestrator
 - 2026-11-14 00:36 UTC · `land-batch-merge-main-each-finished` s4 done (all) · orchestrator
 - 2026-11-14 00:36 UTC · `land-batch-merge-main-each-finished` s5 done (all) · orchestrator
+- 2026-11-14 00:37 UTC · `land-batch-merge-main-each-finished` s6 done (all) · orchestrator
 
 ## Token passes (log)
 
