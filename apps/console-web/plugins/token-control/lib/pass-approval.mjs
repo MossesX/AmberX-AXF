@@ -17,10 +17,9 @@ import {
 import { mintActionTokens, verifyActionToken } from '../../../../../packages/shared/pass-approval/node.mjs';
 import { passPending, passPublic, passStateAt } from '../../../../../framework/core/engines/control-pass.mjs';
 import { audit } from './common.mjs';
-import { loadPasses, passSettings } from './pass.mjs';
+import { linkOpts, loadPasses, passSettings } from './pass.mjs';
 
-/** Base URLs the links are built on: the console's public URL and Molly's. */
-export const linkOpts = () => ({ consoleUrl: process.env.AXF_CONSOLE_URL || '', mollyUrl: process.env.AXF_MOLLY_URL || '' });
+export { linkOpts };
 
 const OWNER = () => process.env.AXF_OWNER || 'brett';
 

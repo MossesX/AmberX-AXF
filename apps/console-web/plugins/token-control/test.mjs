@@ -238,7 +238,13 @@ await test('pass engine: scopes, coverage, minutes, narrow scopes never cover de
 await test('pass: a grant is only a request until Brett approves it', async () => {
   const r = await grant('tokens.theme', 20);
   assert.equal(r.ok, true); assert.equal(r.item.state, 'pending'); assert.equal(r.approval.required, true);
-  const s = await runControl({ op: 'set', target: 'tokens.theme', path: 'accent', value: '#112233', by: 'claude' }); // theme-ok
+  // pass-approval@1 grant result fields: the hook to the pass, never a token
+  assert.equal(r.deep_link, `https://console.amberxai.com/#/pass/${r.item.id}`);
+  assert.equal(r.approve_url, `${r.deep_link}/approve`); assert.equal(r.deny_url, `${r.deep_link}/deny`);
+  assert.equal(r.molly_url, `https://molly.amberxai.com/#/console/pass/${r.item.id}`); assert.equal(r.target, `pass:${r.item.id}`);
+  assert.equal(r.hand_over, `Approve here: ${r.deep_link}`); assert.ok(r.text.endsWith(r.hand_over), 'the sentence carries the link');
+  assert.ok(!/pa1\./.test(JSON.stringify(r)), 'no action token in a grant answer');
+  const s =await runControl({ op: 'set', target: 'tokens.theme', path: 'accent', value: '#112233', by: 'claude' }); // theme-ok
   assert.equal(s.passScope, 'tokens.theme'); assert.equal(s.pass, undefined, 'a waiting request covers nothing');
   const self = await runControl({ op: 'act', target: 'pass.scopes', path: 'tokens.theme', action: 'approve', input: { request: r.item.id }, by: 'claude' });
   assert.equal(self.code, 'denied', 'no approver = an agent can never approve its own pass');

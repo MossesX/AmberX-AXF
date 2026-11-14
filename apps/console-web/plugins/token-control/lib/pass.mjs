@@ -16,7 +16,11 @@ import {
   passCoveringCall, passMinutes, passNotUndoable, passPending, passPublic, passPublication, passScopeOf, passSentence, passStateAt, passUndoPlan, passWithChange,
 } from '../../../../../framework/core/engines/control-pass.mjs';
 import { controlIrreversible } from '../../../../../framework/core/engines/control-rules.mjs';
+import { passGrantResultFields } from '../../../../../packages/shared/pass-approval/index.mjs';
 import { ControlError, DATA_DIR, ROOT, audit } from './common.mjs';
+
+/** Base URLs pass links are built on (pass-approval@1): the console's public URL and Molly's; empty = the defaults. */
+export const linkOpts = () => ({ consoleUrl: process.env.AXF_CONSOLE_URL || '', mollyUrl: process.env.AXF_MOLLY_URL || '' });
 
 const FILE = () => join(DATA_DIR, 'passes.json');
 const SETTINGS = () => join(DATA_DIR, 'pass-settings.json');
@@ -166,7 +170,8 @@ function activate(d, req, owner, now) {
 export function runPass(c, { approver = null, proof = null, now = Date.now(), runTokens, decidedBy = null } = {}) {
   const { maxMinutes, timeZone } = passSettings();
   const d = loadPasses(now);
-  const view = (p) => (p ? passPublic(p, now, timeZone) : null);
+  // every pass view carries its links (pass-approval@1: deep_link, approve_url, deny_url, molly_url, target; never a token)
+  const view = (p) => { if (!p) return null; const v = passPublic(p, now, timeZone); return { ...v, ...passGrantResultFields(v, linkOpts()) }; };
   const scopeRow = (id) => {
     const active = latest(d, id, ['active']);
     const pending = d.passes.find((p) => p.scope === id && passPending(p, now));
@@ -198,9 +203,11 @@ export function runPass(c, { approver = null, proof = null, now = Date.now(), ru
       }
       writeStore(d);
       logLine(req, `requested ${minutes} min${irr ? ' (irreversible included)' : ''} by ${by}, waiting for Brett${req.reason ? ` — ${req.reason}` : ''}`, { by, action: 'request' });
+      // pass-approval@1 grant result fields: the link Claude hands Brett (opens the pass with Approve / Deny; his session decides)
+      const links = passGrantResultFields(view(req), linkOpts());
       return {
-        changed: true, item: view(req), text: passSentence(req, now, timeZone),
-        approval: { required: true, request: req.id, expiresAt: new Date(now + PASS_REQUEST_TTL_MS).toISOString(), how: ['Brett taps Approve on the console banner (Token pass) or on Token control → Passes', 'or approves the held call in axHub (it signs the approval: framework/spec/CONTROL.md → Veto passes)'] },
+        changed: true, item: view(req), ...links, text: `${passSentence(req, now, timeZone)} ${links.hand_over}`,
+        approval: { required: true, request: req.id, expiresAt: new Date(now + PASS_REQUEST_TTL_MS).toISOString(), ...links, how: [`Brett opens ${links.deep_link} and taps Approve (or the console banner → Token pass, Token control → Passes, the AmberX notification)`, 'or approves the held call in axHub (it signs the approval: framework/spec/CONTROL.md → Veto passes)'] },
       };
     }
     case 'approve': case 'deny': {

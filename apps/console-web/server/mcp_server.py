@@ -891,8 +891,11 @@ def _register_control_tools(mcp: MCPServer, control: Callable[[dict[str, Any]], 
         theme / style / layout / tokens = only token set / reset there. Irreversible deletes (AmberX hard deletes, tools
         axHub marks irreversible) still confirm unless include_irreversible (all only). This only files a request:
         Brett approves it once (console banner → Pass, or axHub's approval), never this tool. Minutes 1-240 (default
-        30). Asking again for a scope with an active pass replaces it from the approval on. Tell Brett in one line that
-        it is waiting."""
+        30). Asking again for a scope with an active pass replaces it from the approval on. A waiting request's result
+        carries the hook to it (pass-approval@1): `deep_link` (opens the pass with Approve / Deny), `approve_url` /
+        `deny_url` (open it with that decision primed: Brett's own session decides, the link alone never does),
+        `molly_url`, `target` ("pass:<id>" for console_show) and `hand_over`. Hand Brett the link in one line ("Approve
+        here: <deep_link>") and console_show the target; his AmberX also gets a notification with Approve / Deny."""
         inp: dict[str, Any] = {"minutes": minutes, **({"reason": reason} if reason else {}), **({"include_irreversible": True} if include_irreversible else {})}
         return await go({"op": "act", "target": "pass.scopes", "path": PASS_SCOPE_IDS[scope], "action": "grant", "input": inp, "by": by, "reason": reason})
 
