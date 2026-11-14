@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5213,
- "updatedAt": "2026-11-14T04:16:24.370Z",
+ "rev": 5214,
+ "updatedAt": "2026-11-14T04:17:57.084Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -211477,7 +211477,7 @@
    "branch": "claude/hotfix-get-main-ci-green-theme-swap",
    "pr": "",
    "createdAt": "2026-11-14T03:29:11.368Z",
-   "updatedAt": "2026-11-14T03:45:29.639Z",
+   "updatedAt": "2026-11-14T04:17:54.512Z",
    "builtAt": "",
    "notes": [
     {
@@ -211547,12 +211547,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T04:17:54.512Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T03:29:11.370Z",
-     "updatedAt": "2026-11-14T03:29:11.370Z"
+     "updatedAt": "2026-11-14T04:17:54.778Z"
     },
     {
      "id": "s2",
@@ -211607,7 +211607,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 7,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
