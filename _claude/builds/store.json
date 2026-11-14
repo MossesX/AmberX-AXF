@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5703,
- "updatedAt": "2026-11-14T23:56:34.031Z",
+ "rev": 5704,
+ "updatedAt": "2026-11-14T23:57:06.027Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -162190,7 +162190,7 @@
    "title": "Fix axHub #36: pull main in failed",
    "category": "",
    "detail": "## Setup (run first, then work only in that folder)\n```\nmkdir -p '/root/axf-fixes/repos'\n[ -d '/root/axf-fixes/repos/MossesX-axHub' ] || git clone -q 'https://github.com/MossesX/axHub.git' '/root/axf-fixes/repos/MossesX-axHub'\ngit -C '/root/axf-fixes/repos/MossesX-axHub' fetch -q origin && git -C '/root/axf-fixes/repos/MossesX-axHub' worktree prune\nif [ -d '/root/axf-fixes/MossesX-axHub--claude-claude-sync-hold' ]; then git -C '/root/axf-fixes/MossesX-axHub--claude-claude-sync-hold' checkout -q -B 'claude/claude-sync-hold' 'origin/claude/claude-sync-hold'; else git -C '/root/axf-fixes/repos/MossesX-axHub' worktree add -q -B 'claude/claude-sync-hold' '/root/axf-fixes/MossesX-axHub--claude-claude-sync-hold' 'origin/claude/claude-sync-hold'; fi\ncd '/root/axf-fixes/MossesX-axHub--claude-claude-sync-hold'\n```\nDo no work in the orchestrator's own build folder: it only hosts this session. Tick the build's steps there when done.\n\n# Fix pull request #36 (claude-sync: leave a checkout with .claude-sync-hold alone) in MossesX/axHub so it can reach main\n\nThe Dev Console's push banner tried to pull main in and it failed: the banner's Pull all stopped at a failed pull and handed this repo's pulls to this session.\n\n- Repository: MossesX/axHub (the setup above makes a worktree of it, on branch `claude/claude-sync-hold`)\n- Base branch: `main`\n- Pull request: #36 https://github.com/MossesX/axHub/pull/36\n\nWhat to do:\n1. `git fetch origin`, then `git merge origin/main` into `claude/claude-sync-hold`.\n2. Resolve every conflict keeping both sides' intent; when unsure which side wins, keep both and say so in the commit.\n3. Run the repo's own fast checks for what you touched (its CLAUDE.md lists them).\n4. Commit, then `git push origin HEAD:claude/claude-sync-hold`. CI runs again on the PR by itself.\n\nThen finish the banner's Pull all: pull `main` into each of these branches too, one at a time:\n- `claude/amberx-open-url`\n- `go-pass`\nFor each: `git checkout -B <branch> origin/<branch>`, `git merge origin/main`, resolve, run the checks, `git push origin HEAD:<branch>`. If one can't be fixed, skip it, keep going, and list it at the end.\n\nRules:\n- Push only to `claude/claude-sync-hold`. Never push to `main` or any other branch, never force-push, never merge the PR.\n- Never print, copy or commit secrets (tokens, keys, .env files, .axf-console/).\n- If a conflict needs a decision only Brett can make, stop and say exactly what and why in your final message.\n- Record steps and the result on your change-log entry (the hooks do most of it).\n- Pushes may also go to those branches (each only to itself); the base-branch and force rules hold for all of them.\n- You can edit files and run git only; list any other command Brett should run at the end.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "push-banner",
    "pendingId": "",
@@ -162198,7 +162198,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-12T01:46:10.127Z",
-   "updatedAt": "2026-11-14T23:56:23.646Z",
+   "updatedAt": "2026-11-14T23:57:04.128Z",
    "builtAt": "",
    "notes": [
     {
@@ -162240,6 +162240,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-fix-axhub-36-pull-main-in-failed--rhonda, shared account login)",
      "at": "2026-11-14T23:56:23.646Z"
+    },
+    {
+     "text": "Session on mossesx-max- ended (exit 3) with 6 steps left: back in the Queue (run 1).",
+     "at": "2026-11-14T23:57:04.128Z"
     }
    ],
    "approvals": [],
@@ -162260,12 +162264,19 @@
     "queuedAt": "2026-11-12T01:46:12.403Z",
     "queuedBy": "push-banner",
     "account": "mossesx-max-",
-    "session": "axf-fix-axhub-36-pull-main-in-failed--rhonda",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-14T23:56:20.868Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-14T23:57:03.446Z",
+     "exit": 3,
+     "outcome": "requeued",
+     "stepsLeft": 6,
+     "account": "mossesx-max-",
+     "session": "axf-fix-axhub-36-pull-main-in-failed--rhonda"
+    },
     "split": {
      "at": "2026-11-12T11:07:46.715Z",
      "by": "fix-the-step-splitter",
@@ -162274,7 +162285,7 @@
      "note": "Split by Claude into 6 steps (0 Fable)."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- ended (exit 3) with 6 steps left: back in the Queue (run 1).",
     "route": "",
     "dispatchedAt": "2026-11-14T23:56:20.868Z",
     "planned": {
@@ -162803,7 +162814,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": {
