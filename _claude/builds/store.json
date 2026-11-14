@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5406,
- "updatedAt": "2026-11-14T18:47:04.615Z",
+ "rev": 5407,
+ "updatedAt": "2026-11-14T18:48:19.686Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -197292,7 +197292,7 @@
    "pr": "#613",
    "priority": "P0",
    "createdAt": "2026-11-13T06:25:11.720Z",
-   "updatedAt": "2026-11-13T17:38:26.299Z",
+   "updatedAt": "2026-11-14T18:48:17.716Z",
    "builtAt": "2026-11-13T07:56:39.561Z",
    "notes": [
     {
@@ -197374,6 +197374,10 @@
     {
      "text": "Renamed from skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga (build names are at most 40 characters). By build-rename.",
      "at": "2026-11-13T17:38:26.299Z"
+    },
+    {
+     "text": "Superseded by skins-plugin-merge-main-and-land (#647), which holds every commit of this branch. Branch archived as tag archive/skins-plugin-own-removable-console; PR #649 closed.",
+     "at": "2026-11-14T18:48:17.716Z"
     }
    ],
    "approvals": [
@@ -197946,7 +197950,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 101,
+   "rev": 102,
    "deleted": false,
    "deletedAt": "",
    "pending": {
