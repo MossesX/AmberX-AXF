@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T03:45:39.343Z",
+ "updatedAt": "2026-11-14T03:47:51.546Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -136969,6 +136969,83 @@
      "note": "",
      "uid": "st-mwfuju6v062y1r",
      "createdAt": "2026-11-14T03:29:11.370Z"
+    }
+   ]
+  },
+  {
+   "id": "banner-widget-shapes-more-than-circle",
+   "title": "Banner widget shapes: more than circle and pill, all token-driven",
+   "category": "Appearance",
+   "detail": "Brett: banner widgets can only be circles or pills. Add a shape token per banner widget (global, per skin, per instance): circle, pill, rounded square, square, squircle, hexagon, diamond, tag, plus custom radius per corner and custom SVG mask. Shapes are assets (shape@1), swappable by skin, editable in the skin editor, UI Manager and per-instance settings, with Restore previous edit. Full API: REST/MCP/CLI/voice ('make the banner widgets hexagons'). Tests desktop and phone.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-14T03:47:49.947Z",
+   "updatedAt": "2026-11-14T03:47:49.947Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Find where banner widget shape is hard-coded; add widget shape tokens and shape@1 asset type with defaults matching today's look",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfv7ta9049lvh",
+     "createdAt": "2026-11-14T03:47:49.949Z"
+    },
+    {
+     "id": "s2",
+     "text": "Ship the shape set (rounded square, square, squircle, hexagon, diamond, tag, per-corner radius, custom SVG mask); wire every banner widget to read it",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfv7ta905xtyu",
+     "createdAt": "2026-11-14T03:47:49.949Z"
+    },
+    {
+     "id": "s3",
+     "text": "Controls in skin editor, UI Manager and per-instance settings; full API + voice; tests desktop and phone; PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfv7ta9068pgf",
+     "createdAt": "2026-11-14T03:47:49.949Z"
     }
    ]
   }
