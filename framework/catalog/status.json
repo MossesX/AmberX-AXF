@@ -2323,5 +2323,11 @@
     "wave": 1,
     "module": "app-console",
     "notes": "Nov 13 2026 (build skin-axhub-override-switch-greyed-out): console Settings → Appearance → Override axHub, under Get my skin only from axHub (default off). One or the other whichever way either is set (runtime onChange: Override on clears axf.lock.hubskin, axHub-only on clears axf.lock.hubskin.override and the overridden marks). While axHub-only is on every skin and asset editor is disabled, not hidden (HubSkinLockArea: Theme manager rows, Theme editor, Asset studio, nav style, context menu designer; the Appearance panel, skin picker, every-asset picker and plugin themes through the lock), each under HubSkinLockNote with Brett's wording and a Click here to override link; the link and the switch ask one confirm. Edits under Override are recorded in axf.lock.hubskin.overridden and shown as Overridden chips. Reachable by the setting (search, console.settings, settings.set:axf.lock.hubskin.override), the appearance.hubskin.override action and voice (\"override the axHub skin\", Python twin). Kotlin twin deferred (PORTING.md)."
+  },
+  "cx.buildengine.autoland": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "Nov 13 2026 (auto-land-every-finished-build-lands): push-banner land/ autoLand on by default (autoLandRev 2; per-build off/on), build-hook@1 listener land/hook.mjs, serial landing lock (land.mjs serial / lock), P0 fix builds through axf.build-dispatch@1 (POST /land/fix) with FYI alerts, refreshRunning every 30 min, sweep every 10 min, GET /land/line + banner Landing chip. REST, MCP (plugin-commands@1), CLI land.mjs, voice through the same commands."
   }
 }

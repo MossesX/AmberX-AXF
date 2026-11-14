@@ -39,7 +39,6 @@ journalled.
 | `removedSteps` | steps taken out (removed, divided, harvested away) with why, when, by |
 | `legacy`, `copies` | where the record came from in the migration; other copies kept verbatim |
 | `alias` | optional: the short name of a build whose `id` is not a valid build name (made before build-id@1); `findBuild` and every orchestrator / pipeline command accept it |
-| `land` | optional (Nov 14 2026, build-pipeline@1 `normLand`): the auto-lander's record from the last tick to main: `behindMain` (commits behind main at the last check, null = never checked), `behindCheckedAt`, `finishedAt` (when the last open step was ticked), `landState` (`waiting \| landing \| landed \| red \| archived \| flagged`), `landAttempts[]` (one entry per land-run@1 attempt: `at, run, base, merged, outcome, ci, note`). Absent until the lander writes it; a merge never blanks it; `landStateOf()` reads older builds off their status. `builds-store.mjs land-migrate` puts a stored record in shape and leaves records without one untouched |
 
 **StepRecord** = orchestrator@1 step fields (`id`, `text`, `model`, `why`, `phase`, `group`, `estimate`, `files`, `checks`,
 `session`, `agent`, `skip`, `done`, `doneAt`, `note`) plus `uid` (never changes, also across a harvest), `title` (rename),
@@ -80,7 +79,7 @@ length limit; it is shown everywhere a build is named.
 
 Most Nov 13 2026 land failures were clashes only in generated or additive files. One manifest, `generated-files@1`
 (`framework/spec/generated-files.json`), now says which files a merge resolves by itself and how; every lander reads
-it: the auto-land runner and the merge queue (the push banner plugin's `land/land-core.mjs`
+it: the auto-land runner and the merge queue (their `land-core.mjs`
 `classifyPath` / `regenPlan` / `mergeJson3`, `land.mjs resolveConflicts`) and the `vps.build_land` resolver
 (`framework/cli/land-resolve.py`, which `/opt/axf-batch/resolve.py` hands over to).
 

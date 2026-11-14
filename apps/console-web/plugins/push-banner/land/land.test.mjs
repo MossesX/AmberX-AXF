@@ -12,7 +12,9 @@ import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as core from './land-core.mjs';
-import { makeGit, round, control, readState, ciOf, reasonEvent } from './land.mjs';
+import { makeGit, round, control, readState, readControl, ciOf, reasonEvent, badJson, takeLandLock, dropLandLock, serial, lockOwner, requestFix, refreshRunning, sweep, readFixes } from './land.mjs';
+import { finishedBy, onBuildEvents } from './hook.mjs';
+import * as mq from './merge-queue-core.mjs';
 process.env.AXF_CREW_SAY = 'off'; // group-chat posts (crew-say.mjs) stay out of the real Breakroom
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -238,15 +240,209 @@ put('_claude/builds/store.json', store(merged.builds.map((b) => (b.id === 'clash
 await round({ s, git, gh, api, agentJob: () => ({ exit: 0 }) });
 check(!readState(s).items.some((x) => x.id === 'clash') && calls.api.some((c) => c.path === '/api/alerts/resolve' && c.body.keys.includes('land:clash')), 'merged: off the list, its alert resolved');
 // switched off: nothing happens
-writeFileSync(join(s.dataDir, 'config.json'), JSON.stringify({ autoLand: false }));
+writeFileSync(join(s.dataDir, 'config.json'), JSON.stringify({ autoLand: false, autoLandRev: core.AUTO_LAND_REV }));
 const n = calls.gh.length;
 const off = await round({ s, git, gh, api });
 check(off.on === false && calls.gh.length === n, 'Auto-land finished builds off = the runner does nothing');
 writeFileSync(join(s.dataDir, 'config.json'), JSON.stringify({}));
-const dflt = await round({ s, git, gh, api });
-check(dflt.on === false && calls.gh.length === n, 'Auto-land is off by default (Nov 4 2026: only the merge queue merges)');
+const dflt = await round({ s, git, gh, api, agentJob: () => ({ exit: 0 }) });
+check(dflt.on === true, 'Auto-land is on by default for every build (Nov 13 2026)');
+writeFileSync(join(s.dataDir, 'config.json'), JSON.stringify({ autoLand: false }));
+check((await round({ s, git, gh, api, agentJob: () => ({ exit: 0 }) })).on === true, 'an off written before autoLandRev 2 (the Nov 4 off) reads as on');
 
+// running builds: main merged in every 30 minutes, in their own clean worktree
+{
+  sh(['checkout', '-q', 'main'], repo); sh(['pull', '-q', 'origin', 'main'], repo);
+  branch('run', () => put('run.ts', 'x\n'));
+  branch('dirty', () => put('dirty.ts', 'x\n'));
+  const runWt = join(tmp, 'wt-run'); const dirtyWt = join(tmp, 'wt-dirty');
+  sh(['worktree', 'add', '-q', runWt, 'claude/run'], repo); sh(['worktree', 'add', '-q', dirtyWt, 'claude/dirty'], repo);
+  put('dirty.ts', 'session mid-edit\n', dirtyWt);
+  put('main2.ts', 'new main code\n'); commit('main moves in code again'); sh(['push', '-q', 'origin', 'main'], repo);
+  git(['fetch', '-q', 'origin']);
+  const running = [{ id: 'run', status: 'running', branch: 'claude/run', steps: [{ id: 's1', done: true }, { id: 's2', done: false }] },
+    { id: 'dirty', status: 'running', branch: 'claude/dirty', steps: [{ id: 's1', done: false }] }];
+  check(core.refreshDue(running, {}, Date.now()).length === 2 && core.refreshDue(running, { run: { at: new Date().toISOString() } }, Date.now()).map((b) => b.id).join() === 'dirty', 'refresh due: never refreshed, or 30 min ago');
+  const r = refreshRunning({ s, git, builds: running });
+  check(r.builds.run?.state === 'merged' && existsSync(join(runWt, 'main2.ts')) && sh(['show', 'origin/claude/run:main2.ts'], repo) === 'new main code', 'run: main merged into its own worktree and pushed');
+  check(r.builds.dirty?.state === 'skipped' && /uncommitted/.test(r.builds.dirty.why) && !existsSync(join(dirtyWt, 'main2.ts')), 'dirty: a session mid-edit is left alone until next turn');
+  const r2 = refreshRunning({ s, git, builds: running });
+  check(r2.builds.run.at === r.builds.run.at, 'not again within 30 minutes');
+  const r3 = refreshRunning({ s, git, builds: [] });
+  check(!Object.keys(r3.builds).length, 'a build that stopped running is forgotten');
+}
 rmSync(tmp, { recursive: true, force: true });
+console.log('per-build switch: on unless switched off');
+{
+  let d = core.applyControl({}, 'off', 'feat-x', { why: 'not yet', at: 't1' });
+  check(!core.buildOn(d, 'feat-x') && core.buildOn(d, 'feat-y') && d.off['feat-x'].why === 'not yet', 'off switches one build off, the rest stay on');
+  d = core.applyControl(d, 'on', 'feat-x');
+  check(core.buildOn(d, 'feat-x'), 'on switches it back on');
+  check(core.autoLandOn({}) && core.autoLandOn({ autoLand: false }) && !core.autoLandOn({ autoLand: false, autoLandRev: core.AUTO_LAND_REV }), 'autoLandOn: default on; only an off at rev 2 counts');
+}
+console.log('finish hook: a build lands the moment it finishes');
+{
+  const steps = (d) => d.map((x, i) => ({ id: `s${i + 1}`, done: x }));
+  const builds = [{ id: 'fin', branch: 'claude/fin', status: 'running', steps: steps([true, true]) }, { id: 'half', branch: 'claude/half', status: 'running', steps: steps([true, false]) }, { id: 'nob', status: 'built', steps: [] }];
+  const ev = (event, id, extra = {}) => ({ event, build: { id, branch: builds.find((b) => b.id === id)?.branch }, ...extra });
+  check(JSON.stringify(finishedBy([ev('step-done', 'fin'), ev('step-done', 'half')], builds)) === '["fin"]', 'the step that leaves every step done finishes the build; one with steps left does not');
+  check(JSON.stringify(finishedBy([ev('status', 'half', { to: 'built' }), ev('status', 'nob', { to: 'built' })], builds)) === '["half"]', 'status → built finishes it; a build with no branch has nothing to land');
+  const dd = mkdtempSync(join(tmpdir(), 'axf-land-hook-'));
+  const was = process.env.AXF_PUSH_BANNER_DIR; process.env.AXF_PUSH_BANNER_DIR = dd;
+  const started = [];
+  const r1 = onBuildEvents([ev('status', 'half', { to: 'built' })], { env: { ...process.env }, builds, start: (id) => { started.push(id); return true; } });
+  check(r1.landing[0] === 'half' && started[0] === 'half' && readControl({ dataDir: dd }).now[0] === 'half', 'finished: first in the landing line (now) and a round started for it');
+  const r2 = onBuildEvents([ev('status', 'half', { to: 'built' })], { env: { ...process.env }, builds, start: (id) => { started.push(id); return true; } });
+  check(r2.landing.length === 0 && started.length === 1, 'a replayed event is not asked twice');
+  writeFileSync(join(dd, 'land-control.json'), JSON.stringify({ off: { half: { why: 'x' } } }));
+  check(readControl({ dataDir: dd }).off.half.why === 'x', 'per-build off is read by the hook');
+  writeFileSync(join(dd, 'config.json'), JSON.stringify({ autoLand: false, autoLandRev: core.AUTO_LAND_REV }));
+  check(onBuildEvents([ev('status', 'half', { to: 'built' })], { env: { ...process.env }, start: () => true }).off === true, 'auto-land off: the hook does nothing');
+  check(onBuildEvents([], { env: { AXF_LAND_HOOK: 'off' } }).landing.length === 0, 'AXF_LAND_HOOK=off: nothing');
+  if (was === undefined) delete process.env.AXF_PUSH_BANNER_DIR; else process.env.AXF_PUSH_BANNER_DIR = was;
+  mkdirSync(join(dd, 'j'), { recursive: true }); writeFileSync(join(dd, 'j/a.json'), '{"ok":1}'); writeFileSync(join(dd, 'j/b.json'), '{"ok":');
+  check(JSON.stringify(badJson(dd, ['j/a.json', 'j/b.json', 'j/c.md'])) === '["j/b.json"]', 'check JSON: a settled file that does not parse is found');
+  rmSync(dd, { recursive: true, force: true });
+}
+console.log('serial landing line: two landings never race');
+{
+  const ld = mkdtempSync(join(tmpdir(), 'axf-land-lock-'));
+  process.env.AXF_LAND_LOCK = join(ld, 'lock.d');
+  check(await takeLandLock({ who: 'first' }), 'the first landing takes the line');
+  check(!(await takeLandLock({ wait: 0 })) && lockOwner().includes('first'), 'a second one finds it busy and sees who lands');
+  const order = [];
+  const second = serial(async () => { order.push('second'); }, { wait: 3000, who: 'second' });
+  await new Promise((r) => setTimeout(r, 200)); order.push('first done'); dropLandLock();
+  const r = await second;
+  check(r.ran && order.join(',') === 'first done,second', 'a waiting landing goes once the line is free, never alongside');
+  check(!lockOwner(), 'the line is free again after it');
+  mkdirSync(process.env.AXF_LAND_LOCK);
+  check(await takeLandLock({ stale: 0 }), 'a lock left by a killed run is taken over');
+  dropLandLock();
+  check(core.REF_LOCK_ERR.test("error: cannot lock ref 'refs/remotes/origin/main': is at 1a2b but expected 3c4d") && !core.REF_LOCK_ERR.test('fatal: not a git repository'), 'a lost ref lock is recognised (retried, not reported)');
+  delete process.env.AXF_LAND_LOCK; rmSync(ld, { recursive: true, force: true });
+}
+console.log('fix builds: a clash or red tests gets a P0 "merge main and land" build, again until it lands');
+{
+  const B = { id: 'feat-z', title: 'Feat Z', branch: 'claude/feat-z' };
+  const clash = core.blockReason('feat-z', { conflicts: ['a.ts', 'b.py'] });
+  const fb = core.fixBuildFor(B, clash, { attempt: 2, pr: 77 });
+  check(fb.priority === 'P0' && /Merge main and land feat-z \(attempt 2\)/.test(fb.title) && /a\.ts, b\.py/.test(fb.detail) && /claude\/feat-z` \(PR #77\)/.test(fb.detail), 'the fix build: P0, names the files, works on the build\'s own branch and PR');
+  check(core.fixDue(null, clash, 'h1') && !core.fixDue({ attempt: 1, head: 'h1', at: new Date().toISOString() }, clash, 'h1'), 'first attempt at once; not again at the same head right away');
+  check(core.fixDue({ attempt: 1, head: 'h1', at: new Date().toISOString() }, clash, 'h2'), 'the head moved and it still clashes: next attempt');
+  check(core.fixDue({ attempt: 1, head: 'h1', at: new Date(Date.now() - core.FIX_RETRY_MS - 1000).toISOString() }, clash, 'h1') && !core.fixDue({ attempt: 3, head: 'h1', at: new Date(Date.now() - core.FIX_RETRY_MS * 2).toISOString() }, clash, 'h1'), 'a quiet attempt is retried after 90 min, backing off per attempt');
+  check(!core.fixDue(null, core.blockReason('feat-z', { ui: 'waiting', ci: 'success' }), 'h1'), 'only a clash or red tests get a fix build');
+  const fyi = core.fixFyi(B, clash, { attempt: 2, fixId: 'merge-main-and-land-feat-z' });
+  check(fyi.severity === 'info' && /^FYI:/.test(fyi.title) && /Nothing to do/.test(fyi.body), 'Brett gets an FYI, not a question');
+  const sent = []; const fapi = async (m, p, b) => { sent.push({ p, b }); return p.endsWith('/land/fix') ? { ok: true, id: 'merge-main-and-land-feat-z', status: 'queued' } : { ok: true }; };
+  const sd = { repo: process.cwd(), dataDir: tmpdir() };
+  const r = await requestFix({ s: sd, api: fapi, b: B, reason: clash, head: 'h1', pr: 77, prev: null, at: 't', agentJob: () => { throw new Error('no agent when the build is filed'); } });
+  check(r.via === 'build' && r.id === 'merge-main-and-land-feat-z' && r.attempt === 1 && sent[0].p === '/api/plugins/push-banner/land/fix' && sent[0].b.priority === 'P0', 'filed through the console as a P0 build');
+  check(sent.some((x) => x.p === '/api/alerts' && x.b.severity === 'info'), 'and an FYI alert went out');
+  const again = await requestFix({ s: sd, api: fapi, b: B, reason: clash, head: 'h1', pr: 77, prev: r, at: 't' });
+  check(again === null, 'not filed twice for the same head');
+  const jobs = []; const down = async () => null;
+  const fb2 = await requestFix({ s: sd, api: down, b: B, reason: clash, head: 'h2', pr: 77, prev: r, at: 't', agentJob: (j) => { jobs.push(j); return { exit: 0 }; } });
+  check(fb2.via === 'agent' && fb2.attempt === 2 && jobs[0].type === 'land-build', 'console down: the agent job takes attempt 2');
+}
+console.log('sweeper: every 10 minutes, each finished build not on main is landed or gets its fix build');
+{
+  const kr = core.kickReason('k', 'kicked out: PR 7001 conflicts with main in code (deploy/claude-workers.mjs, a.ts). Merge main in and fix them.');
+  check(kr.kind === 'conflict' && kr.files.join() === 'deploy/claude-workers.mjs,a.ts', 'kicked for a clash: the files are read back');
+  const kc = core.kickReason('k', 'kicked out: PR 7002 broke CI when tested on top of main (failed: Web Dev Console (React/TS) + Python API, Build engine sweep (Node)). Run: u');
+  check(kc.kind === 'ci' && kc.agent, 'kicked for red CI: a code fix');
+  check(core.kickReason('k', 'its PR checks are red') === null, 'not kicked: no kick reason');
+  const T = Date.parse('2026-11-13T20:00:00Z');
+  const items = [{ id: 'kicked', branch: 'claude/kicked', head: 'h', pr: 581, since: '2026-11-13T19:00:00Z', reason: { kind: 'running', quiet: true, text: 'kicked: CI' } },
+    { id: 'pushfail', branch: 'claude/pushfail', since: '2026-11-13T19:00:00Z', reason: { kind: 'push', text: 'pushfail: push failed' } },
+    { id: 'fresh', branch: 'claude/fresh', since: '2026-11-13T19:55:00Z', reason: { kind: 'push', text: 'fresh: push failed' } },
+    { id: 'uiwait', branch: 'claude/uiwait', since: '2026-11-13T18:00:00Z', state: 'blocked', reason: { kind: 'ui', text: 'uiwait: screenshots waiting' } }];
+  const waiting = [{ build: 'kicked', pr: 581, head: 'h', why: 'kicked out: PR 7001 conflicts with main in code (a.ts). Merge main in.' }];
+  const plan = core.sweepPlan(items, waiting, T);
+  check(plan.find((p) => p.id === 'kicked')?.act === 'fix' && plan.find((p) => p.id === 'pushfail')?.act === 'retry' && !plan.some((p) => p.id === 'fresh') && !plan.some((p) => p.id === 'uiwait'), 'plan: kicked → fix build; push failing 30 min → retry; fresh and UI waits left alone');
+  const stuck = core.stuckItems(items.map((x) => ({ ...x, state: 'blocked' })), T);
+  check(stuck.some((x) => x.id === 'uiwait') && !stuck.some((x) => x.id === 'fresh'), 'stuck over 30 minutes: listed for the banner');
+  const sd = { repo: process.cwd(), dataDir: mkdtempSync(join(tmpdir(), 'axf-sweep-')) };
+  writeFileSync(join(sd.dataDir, 'land.json'), JSON.stringify({ on: true, items }));
+  writeFileSync(join(sd.dataDir, 'merge-queue.json'), JSON.stringify({ waiting }));
+  writeFileSync(join(sd.dataDir, 'land.json.tmp-123'), ''); spawnSync('touch', ['-d', '2026-11-01T00:00:00Z', join(sd.dataDir, 'land.json.tmp-123')]);
+  const sent = []; const fapi = async (m, p, b) => { sent.push({ p, b }); return p.endsWith('/land/fix') ? { ok: true, id: 'merge-main-and-land-kicked' } : { ok: true }; };
+  const r = await sweep({ s: sd, api: fapi, nowMs: T });
+  check(r.acted.some((a) => a.id === 'kicked' && a.fix === 'merge-main-and-land-kicked') && readFixes(sd).kicked?.attempt === 1, 'sweep: the kicked build got its P0 fix build, recorded');
+  check(readControl(sd).now.includes('pushfail'), 'sweep: the stuck push is first in line again');
+  check(r.tmpCleared === 1 && !existsSync(join(sd.dataDir, 'land.json.tmp-123')), 'sweep: leftover .tmp files cleared');
+  check((await sweep({ s: sd, api: fapi, nowMs: T + 60000 })).skipped, 'not again within 10 minutes');
+  const again = await sweep({ s: sd, api: fapi, nowMs: T + core.SWEEP_MS, force: true });
+  check(!again.acted.some((a) => a.act === 'fix'), 'the same kick at the same head is not filed twice');
+  rmSync(sd.dataDir, { recursive: true, force: true });
+}
+console.log('sweeper + generated-files@1: a clash only in generated files is regenerated and lands; a code clash gets its fix build');
+{
+  check(core.regenFirst(core.blockReason('x', { conflicts: ['tracker.json', '_claude/THREADS.md'] }), 'h1', '') && !core.regenFirst(core.blockReason('x', { conflicts: ['tracker.json', 'src/a.ts'] }), 'h1', ''), 'regenFirst: only when every clashing file is generated or data');
+  check(!core.regenFirst(core.blockReason('x', { conflicts: ['tracker.json'] }), 'h1', 'h1') && !core.regenFirst(core.blockReason('x', { ci: 'failure' }), 'h1', ''), 'regenFirst: once per head, and never for red CI');
+  const t = mkdtempSync(join(tmpdir(), 'axf-sweep-regen-'));
+  const sh2 = (args, cwd) => { const r = spawnSync('git', args, { cwd, encoding: 'utf8' }); if (r.status) throw new Error(`git ${args.join(' ')}: ${r.stderr}`); return r.stdout.trim(); };
+  const o = join(t, 'origin.git'); const rp = join(t, 'repo');
+  sh2(['init', '-q', '--bare', '-b', 'main', o], t); sh2(['clone', '-q', o, rp], t);
+  const c2 = ['-c', 'user.name=t', '-c', 'user.email=t@t'];
+  const put2 = (p, x) => { mkdirSync(dirname(join(rp, p)), { recursive: true }); writeFileSync(join(rp, p), x); };
+  const commit2 = (m) => { sh2(['add', '-A'], rp); sh2([...c2, 'commit', '-q', '-m', m], rp); };
+  // stand-in generators at the manifest's paths: the tracker rebuilds tracker.json from status.txt; the land tests pass
+  put2('framework/cli/tracker.mjs', "import { readFileSync, writeFileSync } from 'node:fs';\nif (!process.argv.includes('--check')) writeFileSync('tracker.json', JSON.stringify({ regenerated: true, status: readFileSync('status.txt', 'utf8').trim() }) + '\\n');\n");
+  put2('apps/console-web/scripts/control-inventory.mjs', '\n'); put2('framework/spec/check-project-fixtures.mjs', '\n');
+  put2('status.txt', 'base\n'); put2('tracker.json', '{"v":"base"}\n'); put2('shared.ts', 'export const a = 1;\n');
+  commit2('base'); sh2(['push', '-q', 'origin', 'main'], rp);
+  const br = (id, fn) => { sh2(['checkout', '-q', '-b', `claude/${id}`, 'main'], rp); fn(); commit2(`${id} work`); sh2(['push', '-q', 'origin', `claude/${id}`], rp); sh2(['checkout', '-q', 'main'], rp); };
+  br('gen', () => { put2('tracker.json', '{"v":"gen branch"}\n'); put2('gen.ts', 'x\n'); });
+  br('src', () => { put2('shared.ts', 'export const a = 2; // src branch\n'); });
+  br('hidden', () => { put2('tracker.json', '{"v":"hidden branch"}\n'); put2('shared.ts', 'export const a = 4; // hidden\n'); });
+  put2('status.txt', 'main\n'); put2('tracker.json', '{"v":"main"}\n'); put2('shared.ts', 'export const a = 3; // main\n'); commit2('main moves'); sh2(['push', '-q', 'origin', 'main'], rp);
+  const g2 = makeGit(rp); g2(['fetch', '-q', 'origin']);
+  const s2 = { repo: rp, slug: 'MossesX/AmberX-AXF', dataDir: join(t, 'data'), console: 'off', remote: 'origin', base: 'main' };
+  mkdirSync(s2.dataDir, { recursive: true });
+  const T = Date.parse('2026-11-13T20:00:00Z');
+  const head = (b) => sh2(['rev-parse', `origin/claude/${b}`], rp);
+  const items = [
+    { id: 'gen', branch: 'claude/gen', head: head('gen'), pr: 701, state: 'blocked', since: '2026-11-13T19:00:00Z', reason: core.blockReason('gen', { conflicts: ['tracker.json'] }) },
+    { id: 'src', branch: 'claude/src', head: head('src'), pr: 702, state: 'blocked', since: '2026-11-13T19:00:00Z', reason: core.blockReason('src', { conflicts: ['shared.ts'] }) },
+    { id: 'hidden', branch: 'claude/hidden', head: head('hidden'), pr: 703, state: 'blocked', since: '2026-11-13T19:00:00Z', reason: core.blockReason('hidden', { conflicts: ['tracker.json'] }) },
+  ];
+  writeFileSync(join(s2.dataDir, 'land.json'), JSON.stringify({ on: true, items }));
+  const sent = []; const fapi = async (m, p, b) => { sent.push({ p, b }); return p.endsWith('/land/fix') ? { ok: true, id: `merge-main-and-land-${b.build || 'x'}` } : { ok: true }; };
+  const r = await sweep({ s: s2, api: fapi, git: g2, nowMs: T, force: true });
+  const act = (id) => r.acted.find((a) => a.id === id);
+  g2(['fetch', '-q', 'origin']);
+  const genTracker = JSON.parse(sh2(['show', 'origin/claude/gen:tracker.json'], rp));
+  check(act('gen')?.act === 'regen' && act('gen').regenerated.includes('tracker') && genTracker.regenerated && genTracker.status === 'main', '(a) a clash only in tracker.json: main merged in, tracker regenerated on the merged tree, pushed');
+  check(sh2(['show', 'origin/claude/gen:gen.ts'], rp) === 'x' && readControl(s2).now.includes('gen') && !sent.some((x) => x.p.endsWith('/land/fix') && x.b.build === 'gen'), '(a) the build keeps its own work, goes first in line to land, and no fix build is filed');
+  check(act('src')?.act === 'fix' && sent.some((x) => x.p.endsWith('/land/fix') && x.b.build === 'src') && reasonEvent(items[1].reason.kind) === 'failed', '(b) a real source clash: no regenerate, kicked to failed with a P0 fix build');
+  const hid = sent.find((x) => x.p.endsWith('/land/fix') && x.b.build === 'hidden');
+  check(act('hidden')?.act === 'fix' && hid && /shared\.ts/.test(hid.b.detail || '') && sh2(['rev-parse', 'origin/claude/hidden'], rp) === items[2].head, '(b) a clash that turns out to be in code too: nothing pushed, the fix build names the code file');
+  const again = await sweep({ s: s2, api: fapi, git: g2, nowMs: T + 60000, force: true });
+  check(!again.acted.some((a) => a.id === 'hidden' && a.act === 'regen'), 'the regenerate merge is tried once per head');
+  // pause: the timed sweep stands still; an asked-for one still runs
+  control(s2, 'pause', '', { why: 'test' });
+  check((await sweep({ s: s2, api: fapi, git: g2, nowMs: T + 3 * core.SWEEP_MS })).paused?.why === 'test', 'paused: the timed sweep does nothing');
+  writeFileSync(join(s2.dataDir, 'land-sweep.json'), JSON.stringify({ at: null, requested: new Date(T).toISOString() }));
+  check(!(await sweep({ s: s2, api: fapi, git: g2, nowMs: T + 4 * core.SWEEP_MS })).skipped, 'paused: a sweep asked for through REST / MCP still runs');
+  control(s2, 'resume', '');
+  check(!readControl(s2).sweepPaused, 'resume: the sweeper is on again');
+  rmSync(t, { recursive: true, force: true });
+}
+console.log('sweeper + merge queue: every finished build with a green PR goes in as one stack, never one at a time');
+{
+  const T = Date.parse('2026-11-13T20:00:00Z');
+  const ready = ['a', 'b', 'c', 'd'].map((id, i) => ({ id, branch: `claude/${id}`, head: `h${i}`, pr: 801 + i, state: 'ready', ci: 'success', reason: null, since: '2026-11-13T19:00:00Z' }));
+  const sd = { repo: process.cwd(), dataDir: mkdtempSync(join(tmpdir(), 'axf-sweep-stack-')) };
+  writeFileSync(join(sd.dataDir, 'land.json'), JSON.stringify({ on: true, order: ready.map((x) => x.pr), managed: ready.map((x) => x.pr), items: ready }));
+  const sent = []; const r = await sweep({ s: sd, api: async (m, p, b) => { sent.push(p); return { ok: true }; }, nowMs: T, force: true, merge: () => { throw new Error('the sweeper never merges a green build by itself'); } });
+  check(!r.acted.length && !sent.length && !(readControl(sd).now || []).length, 'the sweeper leaves green builds to the merge queue: no merge, no one-at-a-time push');
+  const prs = ready.map((x) => ({ number: x.pr, head: x.head, ci: x.ci, title: x.id, branch: x.branch, createdAt: '2026-11-13T19:00:00Z' }));
+  const order = mq.queueOrder(prs.filter((p) => !mq.notReady(p, {}, { waitUi: false, redJoins: true })), {}, Object.fromEntries(ready.map((x, i) => [x.pr, i])));
+  const batch = mq.batchMembers(order, { size: mq.QUEUE_DEFAULTS.batchSize });
+  check(batch.length === ready.length && batch.map((p) => p.number).join() === '801,802,803,804', 'every built build with a green PR joins one batch (one stack, one CI run), in landing order');
+  rmSync(sd.dataDir, { recursive: true, force: true });
+}
 console.log('group chat: a landing reason is Brett\'s move, a code fix, or something in the way');
 check(['held', 'ui', 'code'].every((k) => reasonEvent(k) === 'waiting'), 'held, UI Review and uncommitted code wait for Brett');
 check(['conflict', 'ci', 'error'].every((k) => reasonEvent(k) === 'failed') && ['push', 'pr', 'dependency'].every((k) => reasonEvent(k) === 'blocked'), 'conflicts and red CI failed; push, PR and dependencies blocked');

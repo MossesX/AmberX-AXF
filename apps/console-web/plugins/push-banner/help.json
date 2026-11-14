@@ -94,7 +94,7 @@
       {
         "target": "auto-land-finished-builds",
         "title": "Auto-land finished builds",
-        "text": "Builds with every step done land by themselves: a plain script merges main in, opens the PR and starts CI. No AI, no tokens.",
+        "text": "On for every build by default. A build lands the moment it finishes: its branch is pushed, main merged in (builds files newer wins, THREADS and logs kept from both sides), its PR opened and put in the merge queue. A code clash or red tests gets a P0 'merge main and land' fix build, retried until it lands, with an FYI to you each time. Running builds get main merged in every 30 minutes.",
         "kind": "toggle"
       },
       {
@@ -195,6 +195,30 @@
         "text": "Where you set “PRs in one batch”. Change it and the app uses the new value. Part of Push banner.",
         "kind": "field",
         "draft": true
+      },
+      {
+        "target": "auto-land",
+        "title": "Auto-land (one build)",
+        "text": "This build's own switch. On (the default): it lands by itself the moment it finishes. Off: it waits for you; every other build still lands.",
+        "kind": "toggle"
+      },
+      {
+        "target": "landing",
+        "title": "Landing chip",
+        "text": "How many finished builds are not on main yet, and how many have been stuck for over 30 minutes. Click it to open the landing line.",
+        "kind": "button"
+      },
+      {
+        "target": "action:push-banner.land",
+        "title": "Landing line",
+        "text": "Opens the landing line: every finished build not on main yet in landing order, the ones stuck for over 30 minutes with why and their fix build, and the last sweep.",
+        "kind": "menu-item"
+      },
+      {
+        "target": "sweep-now",
+        "title": "Sweep now",
+        "text": "Runs the sweeper at the next round (within 3 minutes): every finished build not on main is landed or gets its P0 fix build. It also runs by itself every 10 minutes.",
+        "kind": "button"
       }
     ],
     "intros": []
