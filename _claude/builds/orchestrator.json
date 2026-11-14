@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T18:19:38.278Z",
+ "updatedAt": "2026-11-14T18:19:54.684Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -140134,15 +140134,15 @@
    "title": "Picker dialog plugin replaces all dropdowns",
    "category": "",
    "detail": "New removable plugin: replaces EVERY dropdown/select in the console and framework (native <select>, custom dropdowns, comboboxes) with a tap-to-open picker dialog. The field shows the current value; tapping opens a themed dialog listing the options (search box when many, grouped sections, icons/descriptions if available, multi-select with checkboxes where the select is multiple, keyboard and screen-reader accessible). Fully token-driven: register its own token family (dialog surface, backdrop, option row, selected, hover, focus, search, header, every state, light and dark) in the token registry; no literal colours/sizes (CI gate); every skin can style it and the skin upgrader adds defaults matching today's look. One shared component used everywhere; plugin off = original dropdowns come back. Works on desktop and phone (bottom sheet style on phone). Full API and voice control (open picker, choose option by name). Tests desktop and phone, help entry, Shipped features.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/picker-dialog-plugin-replaces-all",
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-14T18:13:15.368Z",
-   "updatedAt": "2026-11-14T18:19:35.388Z",
+   "updatedAt": "2026-11-14T18:19:45.564Z",
    "builtAt": "",
    "notes": [
     {
@@ -140152,6 +140152,14 @@
     {
      "text": "Split by Claude into 22 steps (5 Fable).",
      "at": "2026-11-14T18:15:13.052Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-picker-dialog-plugin-replaces-all--gina.",
+     "at": "2026-11-14T18:19:40.914Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-picker-dialog-plugin-replaces-all--gina, shared account login)",
+     "at": "2026-11-14T18:19:45.564Z"
     }
    ],
    "approvals": [],
@@ -140679,7 +140687,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-14T18:14:25.063Z",
-   "updatedAt": "2026-11-14T18:17:59.202Z",
+   "updatedAt": "2026-11-14T18:19:52.643Z",
    "builtAt": "",
    "notes": [
     {
@@ -140699,8 +140707,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "themed-native-controls-plugin",
+    "brief": "# Build: themed-native-controls-plugin\n\n## Brett said (verbatim)\nAt: 2026-11-14T18:14:25.063Z\n> replace other browser elements like the dropdowns with themed ones\n\n## What to build\nContinue build \"Themed native controls plugin\" (themed-native-controls-plugin) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-14 18:14):\n\"replace other browser elements like the dropdowns with themed ones\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (5 left, ~50 min):\n[ ] s1 (~10 min) Design the themed-controls@1 contract: the list of control families (datetime, color, dialogs, checkbox, radio, range, file, number, tooltip, scrollbar), a per-family on/off setting, the native fallback when the plugin is off, and the phone rule (bottom sheet below the phone breakpoint). Write it in framework/spec/THEMED-CONTROLS.md and add a deferred Android twin note to framework/spec/PORTING.md\n[ ] s2 (~10 min) Add token families to the token registry for checkbox, radio, range and number (every state: rest, hover, focus, active, checked, disabled, invalid; light and dark), with defaults that match today's native look in the soft-studio theme\n[ ] s3 (~10 min) Add token families for the datetime calendar, color picker, themed dialogs (alert/confirm/prompt), file drop zone + progress, tooltip and scrollbar (every state, light and dark), with defaults that match today's look\n[ ] s4 (~10 min) Skin coverage: give each new token family a style target or skin declaration so check-skin-coverage passes, and add the skin upgrader rule that writes defaults matching today's look into existing skins. Run schemas, regenerate JSON Schemas and fixtures\n[ ] s5 (~10 min) Reference engine framework/core/engines/themed-controls.ts: resolve which families are active from settings (global switch + per family), pick the surface for a viewport (popover or bottom sheet), and turn a native element's attributes into control props. Add a fixture and a check-themed-controls.mts test\nRead first: framework/spec/THEMED-CONTROLS.md, framework/spec/PORTING.md, framework/schemas/asset-types.json, framework/schemas/customize.json, framework/assets/style-theme/, framework/core/engines/skin-coverage.mjs, framework/cli/skins.mjs, framework/schemas/json/, framework/spec/fixtures/, framework/core/engines/themed-controls.ts, framework/spec/fixtures/themed-controls.json, framework/spec/check-themed-controls.mts\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step themed-native-controls-plugin <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link themed-native-controls-plugin --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step themed-native-controls-plugin <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note themed-native-controls-plugin \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []

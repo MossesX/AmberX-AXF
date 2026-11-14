@@ -792,9 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 20:54 UTC · `auto-land-every-finished-build-lands` s3 done (all) · orchestrator
-- 2026-11-13 20:55 UTC · `full-voice-control-resolve-inventory` PR #655 (all) · builds-live
-- 2026-11-13 20:55 UTC · `hotfix-desktop-console-draws-app-menu` → queued (all) · claude-voice
 - 2026-11-13 20:55 UTC · `full-voice-control-resolve-inventory` s1 done (all) · orchestrator
 - 2026-11-13 20:55 UTC · `hotfix-desktop-console-draws-app-menu` note (all) · orchestrator
 - 2026-11-13 20:55 UTC · `icon-map-icon-packs-every-icon-badge-app` → queued, note (all) · pipeline
@@ -1192,6 +1189,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 18:19 UTC · `land-all-skin-builds` note (all) · orchestrator
 - 2026-11-14 18:19 UTC · `land-all-skin-builds` → running, note (all) · pipeline
 - 2026-11-14 18:19 UTC · `land-all-skin-builds` branch claude/land-all-skin-builds (all) · pipeline
+- 2026-11-14 18:19 UTC · `picker-dialog-plugin-replaces-all` → running, note (all) · pipeline
+- 2026-11-14 18:19 UTC · `picker-dialog-plugin-replaces-all` branch claude/picker-dialog-plugin-replaces-all (all) · pipeline
+- 2026-11-14 18:19 UTC · `picker-dialog-plugin-replaces-all` note (all) · orchestrator
 
 ## Token passes (log)
 
