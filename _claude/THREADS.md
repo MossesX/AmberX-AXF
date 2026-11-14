@@ -796,13 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 04:39 UTC · `ui-directory-plugin-self-updating-data` note (all) · pipeline
-- 2026-11-14 04:39 UTC · `group-chat-audio-hear-agents-talk-while` s2 done (all) · orchestrator
-- 2026-11-14 04:40 UTC · `demo-video-series-three-minute-browser` note (all) · voice
-- 2026-11-14 04:40 UTC · `banner-widget-shapes-more-than-circle` → pending, note (all) · reconciler
-- 2026-11-14 04:41 UTC · `demo-video-series-three-minute-browser` note (all) · voice
-- 2026-11-14 04:41 UTC · `amberx-walkthrough-2-hour-indexed` note (all) · orchestrator
-- 2026-11-14 04:43 UTC · `amberx-walkthrough-2-hour-indexed` note (all) · orchestrator
 - 2026-11-14 04:44 UTC · `banner-widget-shapes-more-than-circle` note (all) · hotfix-get-main-ci-green-theme-swap
 - 2026-11-14 04:45 UTC · `demo-video-series-three-minute-browser` note (all) · voice
 - 2026-11-14 04:46 UTC · `launch-landing-page-waitlist-referral` → pending, note (all) · reconciler
@@ -1196,6 +1189,13 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 23:16 UTC · `merge-main-land-console-app-part-3` → queued, note (all) · land-finish-auto-land-live-clear-backlog
 - 2026-11-14 23:16 UTC · `merge-main-land-console-app-part-4` added (0 steps) (all) · land-finish-auto-land-live-clear-backlog
 - 2026-11-14 23:16 UTC · `merge-main-land-console-app-part-4` → queued, note (all) · land-finish-auto-land-live-clear-backlog
+- 2026-11-14 23:17 UTC · `approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc` → pending (all) · builds-live
+- 2026-11-14 23:17 UTC · `orchestrator-table-columns-model-queue-assigned` s2 undone, s3 undone, → pending (all) · builds-live
+- 2026-11-14 23:17 UTC · `orchestrator-assigns-builds-steps-to-employee-ag` → pending (all) · builds-live
+- 2026-11-14 23:17 UTC · `agent-manager-training-wizard-for-employee-agent` → pending (all) · builds-live
+- 2026-11-14 23:17 UTC · `inline-edit-plugin-install-in-console-molly-and` → pending (all) · builds-live
+- 2026-11-14 23:17 UTC · `pass-approval-hook-deep-link-amberx-notification` s2 undone, s3 undone, s4 undone, s5 undone, s6 undone, s7 undone, s8 undone, s9 undone, → pending (all) · builds-live
+- 2026-11-14 23:17 UTC · `one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx` → pending (all) · builds-live
 
 ## Token passes (log)
 
