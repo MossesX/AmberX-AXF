@@ -796,7 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 18:22 UTC · `land-all-skin-builds` s4 done (all) · orchestrator
 - 2026-11-14 18:23 UTC · `land-all-skin-builds` s5 done (all) · orchestrator
 - 2026-11-14 18:24 UTC · `picker-dialog-plugin-replaces-all` s1 done, → running (all) · orchestrator
 - 2026-11-14 18:24 UTC · `picker-dialog-plugin-replaces-all` branch claude/picker-dialog-plugin-replaces-all (all) · builds-live
@@ -1196,6 +1195,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 23:34 UTC · `skin-axhub-override-switch-greyed-out` → queued, note (all) · pipeline
 - 2026-11-14 23:34 UTC · `skin-config-panel-merge-main-and-land` → queued, note (all) · pipeline
 - 2026-11-14 23:31 UTC · `themed-native-controls-plugin` s19 done (all) · orchestrator
+- 2026-11-14 23:34 UTC · `themed-native-controls-plugin` s20 done (all) · orchestrator
 
 ## Token passes (log)
 
