@@ -796,9 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 21:00 UTC · `hotfix-desktop-console-draws-app-menu` → running, note (all) · pipeline
-- 2026-11-13 21:01 UTC · `per-instance-settings-small-live-preview` → running, note (all) · pipeline
-- 2026-11-13 21:01 UTC · `per-instance-settings-small-live-preview` branch claude/per-instance-settings-small-live-preview (all) · pipeline
 - 2026-11-13 21:01 UTC · `per-instance-settings-small-live-preview` note (all) · orchestrator
 - 2026-11-13 21:06 UTC · `auto-land-every-finished-build-lands` s7 done (all) · orchestrator
 - 2026-11-13 21:08 UTC · `token-registry-skin-editor-live-sandbox` s2 done (all) · orchestrator
@@ -1196,6 +1193,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 18:32 UTC · `themed-native-controls-plugin` s2 done (all) · orchestrator
 - 2026-11-14 18:33 UTC · `picker-dialog-plugin-replaces-all` s3 done (all) · orchestrator
 - 2026-11-14 18:34 UTC · `land-all-skin-builds` s10 done (all) · orchestrator
+- 2026-11-14 18:34 UTC · `land-all-skin-builds` s11 done (all) · orchestrator
+- 2026-11-14 18:35 UTC · `themed-native-controls-plugin` s3 done (all) · orchestrator
+- 2026-11-14 18:36 UTC · `land-all-skin-builds` s12 done (all) · orchestrator
 
 ## Token passes (log)
 
