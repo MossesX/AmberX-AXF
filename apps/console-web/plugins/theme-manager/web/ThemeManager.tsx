@@ -4,7 +4,7 @@
  * a roll as a standard asset (asset@1) and manage saved ones. Works only with the existing asset types and engines.
  */
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
-import { Button, Chip, Icon, IconButton, Switch, useAxfState, useEditorSync, useRuntime } from '@console/axf/react';
+import { Button, Chip, HubSkinLockArea, Icon, IconButton, Switch, SwatchFan, useAxfState, useEditorSync, useRuntime } from '@console/axf/react';
 import { assetTypeSpecs, hideable } from '@console/axf/core';
 import type { AssetType, AxfRuntime } from '@console/axf/core';
 import { PRESETS, allLeafIds, buildTree, getAt, leaves, readability, rollType, setAt, toggle, triState, type Json, type Node, type TypeSpec } from './rollEngine';
@@ -145,6 +145,7 @@ export function ThemeManager() {
           )}
           {n.leaf && <button type="button" className={`fx-iconbtn ${P}__lock ${lockedLeaf ? 'is-active' : ''}`} title={lockedLeaf ? 'Locked: never rolled' : 'Lock (keep this value when rolling)'} aria-pressed={!!lockedLeaf} onClick={() => setLocked((l) => { const x = new Set(l); if (x.has(n.id)) x.delete(n.id); else x.add(n.id); return x; })}><Icon name="lock" size={12} /></button>}
           {!n.leaf && !narrow && <button type="button" className={`fx-chip ${P}__only`} title="Tick only this branch" onClick={() => setTicked(new Set(leaves(n).map((l) => l.id)))}>only</button>}
+          {top && !n.leaf && rt.isHubOverridden(n.type) && <Chip tone="warning">Overridden</Chip>}
           {top && !n.leaf && hideable(n.type) && (
             <Switch hideLabel className={`${P}__hide`} label={`Show ${n.label}`} text={off ? 'Hidden' : 'Shown'} title={off ? `${n.label} is hidden: it isn't drawn and rolls skip it` : `Hide ${n.label} from the screen`}
               checked={!off} disabled={rt.gate('assets.swap') !== 'allow'} onChange={(on) => rt.setSlotHidden(n.type as AssetType, !on)} />
@@ -159,6 +160,7 @@ export function ThemeManager() {
   const selNode = sel ? byId.get(sel) : null;
 
   return (
+    <HubSkinLockArea>
     <div className={`${P} fx-stack`}>
       {/* one toolbar: the two rolls used most, undo / redo / pin, the rest behind ⋯ (compact pages, Oct 30 2026) */}
       <div className={`${P}__bar ${P}__toolbar`} role="toolbar" aria-label="Roll">
@@ -223,6 +225,7 @@ export function ThemeManager() {
       </div>
       <SavedThemes onApply={(t, id) => { store.base = {}; store.history = []; store.index = -1; emit(); rt.swap(t as never, id); rememberApplied(t, id); }} />
     </div>
+    </HubSkinLockArea>
   );
 }
 
@@ -246,7 +249,7 @@ function ValueEditor({ node, value, onChange }: { node: Node; value: Json; onCha
       )}
       {f.kind === 'color' && (
         <div className={`${P}__bar`}>
-          {hex && <input type="color" value={hex} onChange={(e) => commit(e.target.value)} aria-label={`${node.label} colour`} />}
+          {hex && <SwatchFan value={hex} onChange={commit} label={`${node.label} colour`} />}
           <input className="fx-input fx-mono fx-grow" value={String(v ?? '')} onChange={(e) => setV(e.target.value)} onBlur={() => commit(String(v))} />
         </div>
       )}

@@ -16,7 +16,11 @@ export type SplitMode = 'vertical' | 'horizontal' | 'four' | 'grid';
 export const CORNERS: Corner[] = ['top-left', 'top-right', 'bottom-right', 'bottom-left'];
 export const nextCorner = (c: Corner): Corner => CORNERS[(CORNERS.indexOf(c) + 1) % CORNERS.length] ?? 'bottom-right';
 
-export interface WindowSettings { corner: Corner; mode: MinimizeMode; toolbarAsset?: string | null; alwaysOnTop: boolean; opacity: number }
+/**
+ * `opacity` fades the whole window, content included. `surface` is this window's own background transparency
+ * (0..1): it overrides the theme's opacitySettings token for this one window; absent / null = follow the theme.
+ */
+export interface WindowSettings { corner: Corner; mode: MinimizeMode; toolbarAsset?: string | null; alwaysOnTop: boolean; opacity: number; surface?: number | null }
 export const defaultSettings = (): WindowSettings => ({ corner: 'bottom-right', mode: 'stacked', toolbarAsset: null, alwaysOnTop: false, opacity: 1 });
 
 /** The window schema. `toolbarsAllowed` = whether a toolbar may attach; floating windows force `toolbarEnabled`. */

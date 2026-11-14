@@ -14,7 +14,12 @@
       "speed": "fast",
       "easing": "standard",
       "reduced": "system",
-      "entrance": "fade"
+      "entrance": "fade",
+      "swatches": "ripple",
+      "skinSwitch": "sweep",
+      "picker": "fan",
+      "animSpeed": 130,
+      "animIntensity": 40
     },
     "interaction": {
       "hover": "tint",
