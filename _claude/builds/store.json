@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5531,
- "updatedAt": "2026-11-14T23:02:07.040Z",
+ "rev": 5532,
+ "updatedAt": "2026-11-14T23:02:21.371Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -219855,7 +219855,7 @@
    "pr": "#673",
    "mergedAt": "2026-11-14T17:36:16Z",
    "createdAt": "2026-11-14T16:51:14.645Z",
-   "updatedAt": "2026-11-14T23:02:03.463Z",
+   "updatedAt": "2026-11-14T23:02:08.642Z",
    "builtAt": "2026-11-14T23:02:03.463Z",
    "notes": [
     {
@@ -219889,6 +219889,10 @@
     {
      "text": "Shipped manifest sm-hotfix-toolbar-settings-still-change rev 1 sent to Shipped features (orchestrator): landed c3e5b59d7, 20 file(s), 0 test line(s), 1 open.",
      "at": "2026-11-14T17:41:05Z"
+    },
+    {
+     "text": "s4: #673 merged (c3e5b59d7); live console runs d465d20c0 with the fix in its bundle; check-chrome-apply 174/174 on the deployed revision. No hands-on click-through: console needs an axHub login this runner lacks. Verified alert raised (pipeline:end:hotfix-toolbar-settings-still-change) but went to the bell only: alert rules push only error+ to the phone. Separate bug found: pipeline-core ALERT_LINK '#/build-orchestrator' is rejected by POST /api/alerts (400: link must be http(s)://, view: or settings:), so every dispatcher alert (idle, launched, ended, failed, selfcheck) is silently dropped. Fix: ALERT_LINK = 'view:build-orchestrator'. Needs its own build.",
+     "at": "2026-11-14T23:02:08.642Z"
     },
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-hotfix-toolbar-settings-still-change--gina.",
