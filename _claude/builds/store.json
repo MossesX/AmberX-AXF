@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5288,
- "updatedAt": "2026-11-14T12:25:47.392Z",
+ "rev": 5289,
+ "updatedAt": "2026-11-14T12:26:00.265Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -211979,7 +211979,7 @@
    "branch": "claude/hotfix-get-main-ci-green-theme-swap",
    "pr": "#669",
    "createdAt": "2026-11-14T03:29:11.368Z",
-   "updatedAt": "2026-11-14T12:25:45.674Z",
+   "updatedAt": "2026-11-14T12:25:58.595Z",
    "builtAt": "",
    "notes": [
     {
@@ -212017,6 +212017,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-hotfix-get-main-ci-green-theme-swap--joey, own login copy)",
      "at": "2026-11-14T12:17:15.422Z"
+    },
+    {
+     "text": "Headless run axf-hotfix-get-main-ci-green-theme-swap--joey: brief only · start 11.0K tokens ($0.03) · cost $1.38 · 58 turns · 6 tools, MCP none",
+     "at": "2026-11-14T12:25:58.595Z"
     },
     {
      "text": "s3 in flight, not done. Found a third main breakage: menu-reach (14 retired skin picks on shared toolbars, since #532). Fixed in the check (211f0e0, reached via Next/Previous skin); rest of the Web step passes locally. #665 was kicked for main's own failures: re-added to the queue; #669 moved to front (it contains #665). Waiting on #669 light checks, then the queue's full run and merge. Next session: confirm main green, re-queue waiting stacks, redeploy console, tick s3.",
