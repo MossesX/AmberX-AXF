@@ -144,3 +144,22 @@ all five PRs. Fixes, in the order found:
 One full android.yml run was dispatched on the top of the stack (wake branch) to compile parts 1-3's Java together and
 run the console app's JUnit before the queue (part 3's Java had never been compiled). The first run stopped at the
 kernel test. The second runs after fix 3.
+
+## CI rounds 2-4 and JUnit (s12)
+
+Full android.yml runs dispatched on the wake branch (top of the stack): 43538005890, 43539390288, 43540393732 and
+43541410908. Each one showed the next fault:
+
+| Run | Console app step | Fault | Fix (branch) |
+|---|---|---|---|
+| 2 | `mergeDebugResources` FAILED | `shell_tokens.xml` comment contained `--fx-*` (XML forbids `--` in comments): part 1's app had never built in CI | comment reworded; every app XML parses (part 1) |
+| 3 | `compileDebugJavaWithJavac` FAILED | `BridgeContract.permissionError` called `JSONArray.join` outside a try (Android's `org.json` throws checked `JSONException`). This was the only javac error across parts 1-3 | `String.join` over the keys, same message (part 3) |
+| 4 | **success** | — | — |
+| 3 | build-engine sweep red | glossary ratchet: main 389 / 388; the stack added 16 items with no description (15 wake-listener commands, `cx.phonebridge`) | notify-control `state` described (part 1), `cx.phonebridge` note (part 3), 15 wake command descriptions (wake). Back to 388 / 388 |
+| 3 | AmberX web build red | `wake-listener/web/flow.ts` imported `@console/api`, which AmberX (it installs plugins targeting `amberx-droid`) does not alias | the plugin makes the same localStorage token store from the framework's `createTokenStore` (wake). The AmberX build now passes locally exactly as CI runs it |
+
+**JUnit, before → after:** before, the console app never got as far as compiling (resource merge failed, then
+javac). After (run 43541410908): `:app:testDebugUnitTest :app:assembleDebug` BUILD SUCCESSFUL, all 62 tests in 10
+classes pass (BridgeContract 10, DeviceRules 5, HubLinkRules 6, InsetsCss 3, MicRules 5, OverlayContract 6,
+OverlayRules 9, ShellRules 6, SlotRules 7, UpdateRules 5).
+Still red in that run, and also red on main: the kernel theme conformance test (see CI round 1, item 3).
