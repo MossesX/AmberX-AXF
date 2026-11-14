@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5549,
- "updatedAt": "2026-11-14T23:06:36.620Z",
+ "rev": 5550,
+ "updatedAt": "2026-11-14T23:06:45.811Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -163636,6 +163636,10 @@
     {
      "text": "Renamed to owner-recognized-everywhere-veto: this record is kept as a tombstone, use owner-recognized-everywhere-veto.",
      "at": "2026-11-13T17:35:54.514Z"
+    },
+    {
+     "text": "s3: the Nov 12 branch had been deleted by a cleanup before its PR opened; it was restored unchanged from commit e3555e1 and merges cleanly with main. Tests re-run green (claude-settings 88+51, token-control 21, MCP 219, wall 65/65 with dist, axHub policy-web 7/7, theme/controls/toolbars/lifecycle checks). PRs: AmberX-AXF #559, axHub #43. Live hub policy verified (vps.run/launch veto, console tools allow, upgrade confirm). Left to the merge queue: land both; axHub redeploys on merge (Coolify) so GET/PUT /auth/api/policy goes live; AmberX FYI once it is live.",
+     "at": "2026-11-13T10:45:00.955Z"
     }
    ],
    "approvals": [],

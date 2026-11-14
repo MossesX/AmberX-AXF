@@ -796,9 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 04:07 UTC · `demo-video-series-three-minute-browser` note (all) · voice
-- 2026-11-14 04:08 UTC · `demo-video-series-three-minute-browser` note (all) · voice
-- 2026-11-14 04:08 UTC · `demo-video-series-three-minute-browser` branch claude/demo-video-series-three-minute-browser, PR #667 (all) · builds-live
 - 2026-11-14 04:08 UTC · `demo-video-series-three-minute-browser` note (all) · orchestrator
 - 2026-11-14 04:08 UTC · `demo-video-series-three-minute-browser` s1 done, → running (all) · orchestrator
 - 2026-11-14 04:09 UTC · `demo-video-series-three-minute-browser` → pending, note (all) · pipeline
@@ -1196,6 +1193,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 23:06 UTC · `land-finish-auto-land-live-clear-backlog` s14 done (all) · foreign-write
 - 2026-11-14 23:06 UTC · `owner-recognized-everywhere-veto` note (all) · orchestrator
 - 2026-11-14 23:06 UTC · `server-gate-one-session-per-build-no` s3 done, → built (all) · orchestrator
+- 2026-11-13 10:44 UTC · `owner-recognized-everywhere-veto-countdown-only-on-shell-commands` branch claude/owner-recognized-everywhere-veto-countdown-only-on-shell-commands, PR #559 (all) · builds-live
+- 2026-11-13 10:44 UTC · `owner-recognized-everywhere-veto-countdown-only-on-shell-commands` s3 done, → running (all) · orchestrator
+- 2026-11-13 10:45 UTC · `owner-recognized-everywhere-veto-countdown-only-on-shell-commands` note (all) · orchestrator
 
 ## Token passes (log)
 
