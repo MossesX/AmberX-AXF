@@ -85,3 +85,17 @@ method, field or JS name, and folding them together would have broken part 3's c
 Permission keys `mic` / `notifications` / `overlay` are the same in `Perms`, `BridgeContract` and `MicRules`, and the
 manifest declares `RECORD_AUDIO`, `MODIFY_AUDIO_SETTINGS`, `POST_NOTIFICATIONS` and `SYSTEM_ALERT_WINDOW`. Node tests:
 bridgeClient 10/10, deviceActions 5/5, nativeRules 7/7.
+
+**s8, part 4 on parts 1-3.** Clashes: `framework/catalog/catalog.json` (`cx.phoneweb` and `cx.phonebridge`, unioned)
+and the inventory (regenerated). These pass on the merged tree: check-safe-area (and its test), browserFallback 5,
+liveUpdate 4, nativeRules 7, bridgeClient 10/10, deviceActions 5/5, theme, controls, console-control, inventory
+`--check`, and help-coverage at the ratchet.
+
+**s9, part 4 API check.** Part 4 adds no new view, tab or button. Its one visible piece is the console's existing
+"new version" bar (`loader.markStale`), which it drives through `native.update` (`check` / `reload`), a console action:
+REST `/api/console/actions`, MCP console actions, `axf console`, and voice through console-commands. Phone state can be
+read from `panel:phone-app` (part 1, `native.state`) and `panel:phone-bridge` (part 3, `device.state`), using the
+`console_control` state verb. `check-console-control.mjs` passes (0 on every count except the frozen rawButtons
+baseline). Gap noted: the `native.*` actions are registered in a loop over `nativeRules.mjs`, so the static
+`control/inventory.json` scanner (literal ids only) doesn't list them. They are live at runtime and have help entries.
+The `device.*` actions are listed.
