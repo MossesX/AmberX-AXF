@@ -35,6 +35,48 @@
         "title": "Directory size",
         "text": "How many rows the directory holds, per kind (screens, tabs, dialogs, settings, panels, plugin UIs, banners, apps) and per app, and when it was built.",
         "kind": "field"
+      },
+      {
+        "target": "rebuild",
+        "title": "Rebuild",
+        "text": "Reads every registry again and redraws the directory with what moved. Builds do this by themselves.",
+        "kind": "button"
+      },
+      {
+        "target": "view:ui-directory",
+        "title": "UI Directory page",
+        "text": "Every screen, tab, dialog, settings interface, panel, plugin UI and banner of every app as one tree: app, then plugin or shell, then screen, then its tabs, dialogs and panels. Search it, filter by app, kind, status or token family; a row's open button opens that UI, the gear opens its settings, the info button shows the four ways to reach it without the UI (MCP, REST, CLI, voice). Also: axf ui-directory show --q <words>, the MCP tool ui_directory_show, or say \"open UI Directory\" (a row: \"open <its name>\").",
+        "kind": "screen"
+      },
+      {
+        "target": "search",
+        "title": "Search",
+        "text": "Words every row must match, over its name, id, keywords, plugin and address. Groups open by themselves while you search.",
+        "kind": "field"
+      },
+      {
+        "target": "app",
+        "title": "App",
+        "text": "Only the UIs of one app. Rows of another app show how to reach them there; only this console's rows open here.",
+        "kind": "field"
+      },
+      {
+        "target": "kind",
+        "title": "Kind",
+        "text": "Only one kind of UI: screens, tabs, dialogs, settings tabs, settings panels, plugin UIs, banners or apps.",
+        "kind": "field"
+      },
+      {
+        "target": "status",
+        "title": "Status",
+        "text": "Live: reachable by a deep link. Dynamic: drawn at run time. No deep link: nothing opens it yet. Off: its plugin is switched off.",
+        "kind": "field"
+      },
+      {
+        "target": "tokens",
+        "title": "Tokens",
+        "text": "Only UIs styled from one asset-token family (colour, type, spacing, radius, border and so on), read from their own code.",
+        "kind": "field"
       }
     ]
   }

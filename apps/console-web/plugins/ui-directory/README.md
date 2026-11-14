@@ -53,4 +53,30 @@ plugin-commands@1. Capability `ui-directory@1`: `rows`, `search`, `row`, `rebuil
 doors to its UI from one address: MCP tool + target, the REST `console-control/do open` call, the `axf console` line
 and the voice phrase.
 
-Settings → Plugins → UI Directory: size, last build, Rebuild now, install & uninstall. Self-test `test.mjs`.
+## The page
+
+Tools → UI Directory (view `ui-directory`, deep link `console_open ui-directory`): every row as a tree, app → plugin or
+shell → screen → tabs, dialogs and panels. Search, app / kind / status / token-family filters, expand and collapse all,
+Rebuild. A row's open button opens its UI here (console-control `open` on its address, else its deep link), the gear
+opens its settings interface, the info button shows its id, address, file, token families and the four doors to it.
+Rows of other apps show how to reach them there.
+
+Everything on the page works without it:
+
+| What | REST (`/api/plugins/ui-directory/`) | MCP | CLI | Voice |
+| --- | --- | --- | --- | --- |
+| open the page | `console-control/do open view:ui-directory` | `console_open ui-directory`, `ui_directory_open_page` | `axf ui-directory open-page` | "open UI Directory" |
+| read the page state | `GET page` | `ui_directory_page` | `axf ui-directory page` | AmberX: control@1 `plugins ui-directory page` |
+| search and filter | `POST show {q, app, kind, status, family}` | `ui_directory_show` | `axf ui-directory show --q … --kind …` | "find <words>" (console search), or AmberX: control@1 `plugins ui-directory show` |
+| clear, expand, collapse | actions `ui-directory.show-all` / `.expand` / `.collapse` | `ui_directory_show_all` / `_expand` / `_collapse` | `axf ui-directory show-all` … | "press UI Directory: expand every group" |
+| open a row / its settings | `POST open {id, settings?}` | `ui_directory_open` | `axf ui-directory open --id …` | "open <row name>" |
+| rebuild | `POST rebuild` | `ui_directory_rebuild` | `axf ui-directory rebuild` | AmberX: control@1 `plugins ui-directory rebuild` |
+
+The page reports its state (`POST page`, debounced) so `GET page` answers with what it shows. Its pure logic is
+`web/dir-core.mjs`.
+
+Settings → Plugins → UI Directory: size, last build, Rebuild now, install & uninstall.
+
+Tests: `node test.mjs` (contract, collector, store, hook, CI check, page logic, commands), `python3
+server/test_ui_directory.py` (page, show, open routes), `node e2e.mjs` (Playwright on the built console, desktop and
+phone; `UIDIR_E2E_SHOTS=<dir>` saves screenshots).

@@ -8,7 +8,7 @@
     "tabs": 76,
     "settingsTabs": 68,
     "settings": 85,
-    "functions": 230,
+    "functions": 237,
     "buttons": 62,
     "plugins": 68
   },
@@ -6191,6 +6191,121 @@
       ],
       "plugin": "ai.amberx.axf.console.todo-manager",
       "file": "plugins/todo-manager/web/index.tsx"
+    },
+    {
+      "address": "function:ui-directory.open",
+      "kind": "function",
+      "id": "ui-directory.open",
+      "label": "Open the UI Directory",
+      "detail": "Action · UI Directory",
+      "keywords": [
+        "ui-directory.open",
+        "ui",
+        "directory",
+        "open"
+      ],
+      "effect": "navigate",
+      "plugin": "ai.amberx.axf.console.ui-directory",
+      "file": "plugins/ui-directory/web/index.tsx"
+    },
+    {
+      "address": "function:ui-directory.show",
+      "kind": "function",
+      "id": "ui-directory.show",
+      "label": "UI Directory: search and filter (words, app=, kind=, status=, family=)",
+      "detail": "Action · UI Directory",
+      "keywords": [
+        "ui-directory.show",
+        "ui",
+        "directory",
+        "show"
+      ],
+      "effect": "navigate",
+      "params": true,
+      "plugin": "ai.amberx.axf.console.ui-directory",
+      "file": "plugins/ui-directory/web/index.tsx"
+    },
+    {
+      "address": "function:ui-directory.show-all",
+      "kind": "function",
+      "id": "ui-directory.show-all",
+      "label": "UI Directory: clear the filters",
+      "detail": "Action · UI Directory",
+      "keywords": [
+        "ui-directory.show-all",
+        "ui",
+        "directory",
+        "show",
+        "all"
+      ],
+      "plugin": "ai.amberx.axf.console.ui-directory",
+      "file": "plugins/ui-directory/web/index.tsx"
+    },
+    {
+      "address": "function:ui-directory.expand",
+      "kind": "function",
+      "id": "ui-directory.expand",
+      "label": "UI Directory: expand every group",
+      "detail": "Action · UI Directory",
+      "keywords": [
+        "ui-directory.expand",
+        "ui",
+        "directory",
+        "expand"
+      ],
+      "plugin": "ai.amberx.axf.console.ui-directory",
+      "file": "plugins/ui-directory/web/index.tsx"
+    },
+    {
+      "address": "function:ui-directory.collapse",
+      "kind": "function",
+      "id": "ui-directory.collapse",
+      "label": "UI Directory: collapse every group",
+      "detail": "Action · UI Directory",
+      "keywords": [
+        "ui-directory.collapse",
+        "ui",
+        "directory",
+        "collapse"
+      ],
+      "plugin": "ai.amberx.axf.console.ui-directory",
+      "file": "plugins/ui-directory/web/index.tsx"
+    },
+    {
+      "address": "function:ui-directory.open-row",
+      "kind": "function",
+      "id": "ui-directory.open-row",
+      "label": "Open a UI from the directory (its row id)",
+      "detail": "Action · UI Directory",
+      "keywords": [
+        "ui-directory.open-row",
+        "ui",
+        "directory",
+        "open",
+        "row"
+      ],
+      "effect": "navigate",
+      "params": true,
+      "plugin": "ai.amberx.axf.console.ui-directory",
+      "file": "plugins/ui-directory/web/index.tsx"
+    },
+    {
+      "address": "function:ui-directory.open-settings",
+      "kind": "function",
+      "id": "ui-directory.open-settings",
+      "label": "Open the settings of a UI from the directory (its row id)",
+      "detail": "Action · UI Directory",
+      "keywords": [
+        "ui-directory.open-settings",
+        "ui",
+        "directory",
+        "open",
+        "settings"
+      ],
+      "effect": "navigate",
+      "params": true,
+      "plugin": "ai.amberx.axf.console.ui-directory",
+      "file": "plugins/ui-directory/web/index.tsx"
     },
     {
       "address": "function:ui-review.open",

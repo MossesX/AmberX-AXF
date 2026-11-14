@@ -5,7 +5,9 @@ plugin's own Node collector (directory.mjs) from what the repo registers (the co
 manifests and web registrations, app manifests, UI registries) into the plugin's data folder, rebuilt whenever it is
 missing or a build lands (build-hook@1 listener). No model, no tokens.
 
-Routes: GET directory · GET stats · GET rows · GET search · GET row · GET tree · GET changes · GET check · POST rebuild.
+Routes: GET directory · GET stats · GET rows · GET search · GET row · GET tree · GET changes · GET check · POST rebuild ·
+GET/POST page (the directory page's live state: query, filters, open groups, rows shown) · POST show (open the page with
+filters in the open console) · POST open (open a row's UI or its settings in the open console).
 Capability ui-directory@1: rows(filters), search(q), row(id), rebuild(reason, build) for other plugins.
 """
 from __future__ import annotations
@@ -218,6 +220,90 @@ def get_check() -> dict[str, Any]:
 def post_rebuild(body: dict[str, Any] | None = None) -> dict[str, Any]:
     b = body or {}
     return rebuild(str(b.get("reason") or "console"), str(b.get("build") or ""))
+
+
+# ---------------- the page, without the UI ----------------
+
+PAGE_KEYS = ("q", "app", "kind", "status", "family")
+
+
+def _page_file() -> Path:
+    return data_dir() / "page.json"
+
+
+@router.get("/page")
+def get_page() -> dict[str, Any]:
+    """The directory page's state as the open console last reported it (empty filters when it was never opened)."""
+    try:
+        return json.loads(_page_file().read_text())
+    except (OSError, json.JSONDecodeError):
+        return {"q": "", "app": "", "kind": "", "status": "", "family": "", "open": [], "all": False, "shown": None, "total": None, "at": None}
+
+
+@router.post("/page")
+def post_page(body: dict[str, Any] | None = None) -> dict[str, Any]:
+    """The page reports its state here as it changes (what GET page and the MCP / CLI / voice reads answer)."""
+    b = body or {}
+    from datetime import datetime, timezone
+
+    page = {k: str(b.get(k) or "")[:200] for k in PAGE_KEYS}
+    page["open"] = [str(x)[:400] for x in (b.get("open") or [])][:500] if isinstance(b.get("open"), list) else []
+    page["all"] = bool(b.get("all"))
+    page["shown"] = int(b["shown"]) if isinstance(b.get("shown"), int) else None
+    page["total"] = int(b["total"]) if isinstance(b.get("total"), int) else None
+    page["at"] = datetime.now(timezone.utc).isoformat(timespec="seconds")
+    d = data_dir()
+    d.mkdir(parents=True, exist_ok=True)
+    tmp = d / "page.json.tmp"
+    tmp.write_text(json.dumps(page, indent=1))
+    tmp.replace(_page_file())
+    return page
+
+
+def _console_action(action: str, args: list[str], by: str = "", to: str = "") -> dict[str, Any]:
+    cc = None
+    try:
+        import plugin_services  # type: ignore
+
+        cc = plugin_services.get("console-commands@1")
+    except Exception:  # noqa: BLE001 - absent in unit tests
+        cc = None
+    if not cc:
+        return {"ok": False, "code": "not_found", "message": "Console commands is not installed, so nothing can open in the console"}
+    from urllib.parse import quote
+
+    cmd: dict[str, Any] = {"op": "act", "target": "console.actions", "path": action, "action": "run", "input": {"args": [quote(a, safe="=") for a in args]}}
+    if to:
+        cmd["input"]["to"] = to
+    if by:
+        cmd["by"] = by
+    return cc.run(cmd, by=by)
+
+
+@router.post("/show")
+def post_show(body: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Open the directory page in the open console with these filters (any left out are cleared)."""
+    b = body or {}
+    args = [f"{k}={str(b.get(k) or '')}" for k in PAGE_KEYS]
+    return _console_action("ui-directory.show", args, str(b.get("by") or ""), str(b.get("to") or ""))
+
+
+@router.post("/open")
+def post_open(body: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Open one row's UI (or, with settings true, its settings interface) in the open console."""
+    b = body or {}
+    rid = str(b.get("id") or "")
+    rows = _rows()
+    r = next((x for x in rows if x.get("id") == rid), None)
+    if not r:
+        raise HTTPException(404, f"no UI row {rid}")
+    if b.get("settings"):
+        s = _settings_of(rows, r)
+        if not s:
+            raise HTTPException(404, f"{r.get('name')} has no settings interface")
+        r = s
+    out = _console_action("ui-directory.open-row", [str(r["id"])], str(b.get("by") or ""), str(b.get("to") or ""))
+    return {**out, "row": {"id": r["id"], "name": r.get("name"), "kind": r.get("kind"), "app": r.get("app")}, "reach": _reach(r)}
 
 
 # ---------------- capability ui-directory@1 for other plugins ----------------

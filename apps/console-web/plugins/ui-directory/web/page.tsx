@@ -15,6 +15,8 @@ import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import { executeControl } from '@console/control/executor';
 import * as ud from '../../../../../framework/core/ui-directory.mjs';
 import type { Directory, Row, TreeNode } from '../../../../../framework/core/ui-directory.mjs';
+import { countUnder as count, EMPTY, filtering as isFiltering, filtersFromArgs, groupIds as ids, matches, visibleRows } from './dir-core.mjs';
+import type { DirState } from './dir-core.mjs';
 import './ui-directory.css';
 
 export const FOLDER = 'ui-directory';
@@ -24,8 +26,8 @@ export const HERE = 'console-web';
 
 // ------------------------------------------------------------------ page state (readable and settable without the UI)
 
-export interface DirState { q: string; app: string; kind: string; status: string; family: string; open: string[]; all: boolean }
-const EMPTY: DirState = { q: '', app: '', kind: '', status: '', family: '', open: [], all: false };
+export type { DirState };
+export { filtersFromArgs, visibleRows };
 let state: DirState = { ...EMPTY };
 const subs = new Set<() => void>();
 export const dirState = {
@@ -35,6 +37,16 @@ export const dirState = {
   subscribe(f: () => void) { subs.add(f); return () => { subs.delete(f); }; },
 };
 const useDirState = () => useSyncExternalStore(dirState.subscribe, dirState.get, dirState.get);
+
+
+/** The page tells the server its state (GET page answers with it), at most every half second. */
+let reportTimer: ReturnType<typeof setTimeout> | undefined;
+function reportPage(f: DirState, shown: number, total: number) {
+  clearTimeout(reportTimer);
+  reportTimer = setTimeout(() => {
+    void pluginFetch(FOLDER, 'page', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ...f, shown, total }) }).catch(() => undefined);
+  }, 500);
+}
 
 // ------------------------------------------------------------------ data
 
@@ -69,23 +81,7 @@ export async function openSettings(rt: AxfRuntime, rows: Row[], row: Row) {
   return s ? openRow(rt, s) : { ok: false, message: `${row.name} has no settings interface.` };
 }
 
-/** The rows the filters keep, plus the app and plugin rows that name their groups. */
-export function visibleRows(rows: Row[], f: DirState): Row[] {
-  const active = !!(f.q || f.app || f.kind || f.status || f.family);
-  if (!active) return rows;
-  const hit = ud.filterRows(rows, { q: f.q, app: f.app, kind: f.kind, status: f.status, family: f.family });
-  const keep = new Set(hit.map((r) => r.id));
-  const groups = new Set(hit.map((r) => `${r.app}/${r.plugin}`));
-  const apps = new Set(hit.map((r) => r.app));
-  for (const r of rows) {
-    if (r.kind === 'app' && apps.has(r.app)) keep.add(r.id);
-    if (r.kind === 'plugin' && groups.has(`${r.app}/${r.plugin}`)) keep.add(r.id);
-  }
-  return rows.filter((r) => keep.has(r.id));
-}
 
-const count = (n: TreeNode): number => n.children.reduce((s, c) => s + 1 + count(c), 0);
-const ids = (nodes: TreeNode[], out: string[] = []) => { for (const n of nodes) { if (n.children.length) { out.push(n.id); ids(n.children, out); } } return out; };
 const options = (rec: Record<string, number> | undefined, label: (k: string) => string = (k) => k) =>
   Object.entries(rec ?? {}).sort((a, b) => a[0].localeCompare(b[0])).map(([k, n]) => ({ value: k, label: `${label(k)} (${n})` }));
 
@@ -107,8 +103,9 @@ export function UiDirectoryPage() {
   const rows = useMemo(() => dir?.rows ?? [], [dir]);
   const shown = useMemo(() => visibleRows(rows, f), [rows, f]);
   const nodes = useMemo(() => ud.tree(shown), [shown]);
-  const filtering = !!(f.q || f.app || f.kind || f.status || f.family);
-  const hits = filtering ? shown.filter((r) => ud.filterRows([r], { q: f.q, app: f.app, kind: f.kind, status: f.status, family: f.family }).length).length : rows.length;
+  const filtering = isFiltering(f);
+  const hits = useMemo(() => matches(rows, f).length, [rows, f]);
+  useEffect(() => { if (dir) reportPage(f, hits, dir.total); }, [f, hits, dir]);
   const isOpen = (id: string) => f.all || filtering || f.open.includes(id);
   const toggle = (id: string) => {
     if (f.all || filtering) { const every = ids(nodes).filter((x) => x !== id); dirState.set({ all: false, open: every }); return; }
@@ -184,7 +181,7 @@ function Node({ n, depth, rows, info, setInfo, isOpen, toggle, open, settings }:
           <span className="axp-uidir__chev">{kids ? <Icon name={expanded ? 'chevron-down' : 'chevron-right'} size={12} /> : null}</span>
           <Icon name={row?.icon || KIND_ICON[n.kind] || 'box'} size={14} />
           <span className="axp-uidir__name">{label}</span>
-          <span className="axp-uidir__kind fx-muted">{ud.KIND_LABEL[n.kind] ?? n.kind}{kids ? ` · ${count(n)}` : ''}</span>
+          <span className="axp-uidir__kind fx-muted">{row ? (ud.KIND_LABEL[n.kind] ?? n.kind) : 'Group'}{kids ? ` · ${count(n)}` : ''}</span>
           {row && row.status !== 'live' ? <Chip tone={row.status === 'off' ? undefined : 'warning'}>{ud.STATUS_LABEL[row.status]}</Chip> : null}
         </button>
         <span className="axp-uidir__acts">

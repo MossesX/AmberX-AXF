@@ -14,6 +14,7 @@ process.env.AXF_UI_DIRECTORY_DIR = tmp;
 const dir = await import('./directory.mjs');
 const D = await import('../../../../framework/core/ui-directory.mjs');
 const hook = (await import('./build-hooks.mjs')).default;
+const core = await import('./web/dir-core.mjs');
 
 let n = 0; const t = (name, fn) => { try { fn(); n += 1; } catch (e) { console.error(`FAIL ${name}`); throw e; } };
 const ta = async (name, fn) => { try { await fn(); n += 1; } catch (e) { console.error(`FAIL ${name}`); throw e; } };
@@ -34,8 +35,8 @@ t('web registrations: this plugin declares exactly what its manifest provides', 
   const w = dir.webRegistrations(here);
   assert.deepEqual(w.settingsTabs.map((x) => x.id), ['ui-directory']);
   assert.deepEqual(w.settingsPanels.map((x) => x.id), ['ui-directory.status', 'ui-directory.lifecycle']);
-  assert.deepEqual(w.views, []); assert.deepEqual(w.dialogs, []);
-  const g = D.registrationGaps(['settings-tab:ui-directory'], JSON.parse(readFileSync(join(here, 'plugin.json'), 'utf8')).provides);
+  assert.deepEqual(w.views.map((x) => x.id), ['ui-directory']); assert.deepEqual(w.dialogs, []);
+  const g = D.registrationGaps(['view:ui-directory', 'settings-tab:ui-directory'], JSON.parse(readFileSync(join(here, 'plugin.json'), 'utf8')).provides);
   assert.deepEqual(g, { unregistered: [], phantom: [] });
 });
 
@@ -88,6 +89,39 @@ t('the CI check passes against the committed ratchet', () => {
 
 t('registration gaps are found (a view drawn but not provided; a provided dialog with no code)', () => {
   assert.deepEqual(D.registrationGaps(['view:a', 'dialog:b'], ['view:a', 'dialog:c', 'service:x@1']), { unregistered: ['dialog:b'], phantom: ['dialog:c'] });
+});
+
+t('the page: filters keep matches plus the rows that name their groups; the tree nests them', () => {
+  const rows = dir.buildFresh({ previous: null, now: '2026-11-14T04:00:00Z' }).directory.rows;
+  assert.ok(rows.some((r) => r.id === 'console-web:screen:ui-directory'), 'the directory page is itself in the directory');
+  assert.equal(core.visibleRows(rows, core.EMPTY), rows);
+  const f = { ...core.EMPTY, q: 'ui directory', kind: 'settings-panel' };
+  const hit = core.matches(rows, f);
+  assert.ok(hit.length >= 2 && hit.every((r) => r.kind === 'settings-panel'));
+  const shown = core.visibleRows(rows, f);
+  assert.ok(shown.some((r) => r.id === 'console-web:app:axf-console') && shown.some((r) => r.id === 'console-web:plugin:ui-directory'), 'app and plugin rows name the groups');
+  const tr = D.tree(shown);
+  const app = tr.find((a) => a.id === 'console-web:app:axf-console');
+  const plug = app.children.find((n) => n.id === 'console-web:plugin:ui-directory');
+  assert.ok(plug && core.countUnder(plug) >= 2, 'panels sit under their plugin');
+  assert.ok(core.groupIds(tr).includes(app.id));
+  assert.deepEqual(core.matches(rows, { ...core.EMPTY, q: 'zzzz-nothing' }), []);
+});
+
+t('the page: action args become filters (words, key=value, url-encoded)', () => {
+  assert.deepEqual(core.filtersFromArgs(['toolbar', 'kind=settings-tab']), { q: 'toolbar', app: '', kind: 'settings-tab', status: '', family: '' });
+  assert.deepEqual(core.filtersFromArgs('app%3Dconsole-web%20q%3Dbuilds'), { q: 'builds', app: 'console-web', kind: '', status: '', family: '' });
+  assert.deepEqual(core.filtersFromArgs(['q=', 'app=', 'kind=', 'status=', 'family=radius']), { q: '', app: '', kind: '', status: '', family: 'radius' });
+  assert.deepEqual(core.filtersFromArgs([]), { q: '', app: '', kind: '', status: '', family: '' });
+});
+
+t('every page action is a command or names the command it duplicates', () => {
+  const man = JSON.parse(readFileSync(join(here, 'plugin.json'), 'utf8'));
+  const web = readFileSync(join(here, 'web/index.tsx'), 'utf8');
+  const actions = [...web.matchAll(/rt\.actions\.register\('([\w.-]+)'/g)].map((m) => m[1]);
+  assert.ok(actions.length >= 7);
+  for (const a of actions) assert.ok(man.commands.items.some((i) => i.action === a), a);
+  for (const r of ['GET /page', 'POST /show', 'POST /open']) assert.ok(man.commands.items.some((i) => i.route === r), r);
 });
 
 rmSync(tmp, { recursive: true, force: true });

@@ -12,7 +12,7 @@ import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
-import { UiDirectoryPage, VIEW } from './page';
+import { dirState, filtersFromArgs, loadDirectory, openRow, openSettings, UiDirectoryPage, VIEW } from './page';
 
 /** The folder name under plugins/ — this plugin's server routes live at /api/plugins/<FOLDER>/. */
 const FOLDER = 'ui-directory';
@@ -62,6 +62,27 @@ export const plugin: AxfWebLibrary = {
   label: 'UI Directory',
   version: '0.1.0',
   appMenu,
+  register(rt) {
+    const idOf = (args: string[]) => decodeURIComponent(args.join(':'));
+    const run = async (args: string[], settings: boolean) => {
+      const id = idOf(args);
+      if (!id) { rt.toast('Which UI? Give its row id.', 'warning', 'UI Directory'); return; }
+      try {
+        const dir = await loadDirectory();
+        const row = dir.rows.find((r) => r.id === id);
+        if (!row) { rt.toast(`No UI row ${id}.`, 'warning', 'UI Directory'); return; }
+        const res = settings ? await openSettings(rt, dir.rows, row) : await openRow(rt, row);
+        if (!res.ok) rt.toast(res.message, 'warning', 'UI Directory');
+      } catch (e) { rt.toast((e as Error).message, 'warning', 'UI Directory'); }
+    };
+    rt.actions.register('ui-directory.open', () => rt.navigate(VIEW), { label: 'Open the UI Directory', effect: 'navigate' });
+    rt.actions.register('ui-directory.show', (args) => { dirState.set(filtersFromArgs(args)); rt.navigate(VIEW); }, { label: 'UI Directory: search and filter (words, app=, kind=, status=, family=)', params: true, effect: 'navigate' });
+    rt.actions.register('ui-directory.show-all', () => dirState.set({ q: '', app: '', kind: '', status: '', family: '' }), { label: 'UI Directory: clear the filters' });
+    rt.actions.register('ui-directory.expand', () => dirState.set({ all: true }), { label: 'UI Directory: expand every group' });
+    rt.actions.register('ui-directory.collapse', () => dirState.set({ all: false, open: [] }), { label: 'UI Directory: collapse every group' });
+    rt.actions.register('ui-directory.open-row', (args) => void run(args, false), { label: 'Open a UI from the directory (its row id)', params: true, effect: 'navigate' });
+    rt.actions.register('ui-directory.open-settings', (args) => void run(args, true), { label: 'Open the settings of a UI from the directory (its row id)', params: true, effect: 'navigate' });
+  },
   views: { [VIEW]: { title: 'UI Directory', icon: 'layers', keywords: ['ui directory', 'every screen', 'every page', 'settings', 'tabs', 'dialogs', 'find a screen', 'where is', 'deep link', 'map of the app'], render: () => <UiDirectoryPage /> } },
   nav: { label: 'Tools', items: [{ id: 'ui-directory', label: 'UI Directory', icon: 'layers', view: VIEW }] },
   // Plugins never ship their own settings screen: a sub-tab of Settings → Plugins with the shared lifecycle panel.
