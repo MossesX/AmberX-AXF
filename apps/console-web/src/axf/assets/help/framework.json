@@ -1442,6 +1442,11 @@
         "text": "Opens this on axHub."
       },
       {
+        "target": "click-here-to-override",
+        "title": "Click here to override",
+        "text": "Turns Override on after one confirm: this app stops taking its skin and assets from axHub, so you can edit them here. Edited assets are marked as overridden and no longer refresh from axHub. Turn 'Get my skin only from axHub' back on to follow axHub again."
+      },
+      {
         "target": "empty",
         "title": "Empty",
         "text": "Clears it out."
