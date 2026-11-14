@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T22:38:28.302Z",
+ "updatedAt": "2026-11-14T22:39:40.864Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -133044,9 +133044,10 @@
    "pendingId": "",
    "branch": "claude/own-token-sets-for-grids-and-tab-groups",
    "pr": "#654",
+   "mergedAt": "2026-11-14T22:33:15Z",
    "priority": "P1",
    "createdAt": "2026-11-13T19:57:42.157Z",
-   "updatedAt": "2026-11-13T21:21:16.380Z",
+   "updatedAt": "2026-11-14T22:39:39.198Z",
    "builtAt": "",
    "notes": [
     {
@@ -133100,6 +133101,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-13T21:21:16.380Z"
+    },
+    {
+     "text": "Reconciler: PR #654 merged; PR #654 names s1 done",
+     "at": "2026-11-14T22:39:39.198Z"
     }
    ],
    "approvals": [],
