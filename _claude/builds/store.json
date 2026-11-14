@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5171,
- "updatedAt": "2026-11-14T03:45:23.200Z",
+ "rev": 5172,
+ "updatedAt": "2026-11-14T03:45:39.343Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -211448,16 +211448,25 @@
    "title": "HOTFIX: get main CI green (theme-swap opacity + plugin lifecycle stale refs)",
    "category": "bug fix",
    "detail": "Main's full CI is red, so the merge queue can't land any batch and builds stop early back to Pending. Fix: (1) scripts/theme-swap.mjs fails because every style theme shows the hub opacities (look pinned to axHub); make style themes use their own opacity values. (2) Plugin lifecycle check: stale refs in 7 plugins; fix them. Land #665 first. Then re-add the console app stack #637 #639 #633 #640 #643 and the land-batch PRs to the merge queue and redeploy the console.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/hotfix-get-main-ci-green-theme-swap",
    "pr": "",
    "createdAt": "2026-11-14T03:29:11.368Z",
-   "updatedAt": "2026-11-14T03:45:21.157Z",
+   "updatedAt": "2026-11-14T03:45:29.639Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-hotfix-get-main-ci-green-theme-swap--rhonda.",
+     "at": "2026-11-14T03:45:26.243Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-hotfix-get-main-ci-green-theme-swap--rhonda, own login copy)",
+     "at": "2026-11-14T03:45:29.639Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -211475,18 +211484,18 @@
    "pipeline": {
     "queuedAt": "",
     "queuedBy": "",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-hotfix-get-main-ci-green-theme-swap--rhonda",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-14T03:45:25.020Z",
+    "runs": 1,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-14T03:45:25.020Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -211495,7 +211504,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-14T03:45:25.020Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -211576,7 +211585,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
