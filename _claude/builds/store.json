@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5655,
- "updatedAt": "2026-11-14T23:36:16.081Z",
+ "rev": 5656,
+ "updatedAt": "2026-11-14T23:36:36.161Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -214279,11 +214279,11 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/auto-land-merge-main-land-land-mjs-clash",
+   "branch": "claude/auto-land-every-finished-build-lands",
    "pr": "#660",
    "priority": "P0",
    "createdAt": "2026-11-13T23:38:56.061Z",
-   "updatedAt": "2026-11-14T23:35:44.101Z",
+   "updatedAt": "2026-11-14T23:36:09.274Z",
    "builtAt": "2026-11-14T23:24:07.334Z",
    "notes": [
     {
@@ -214576,11 +214576,11 @@
      "agent": false,
      "skip": false,
      "done": true,
-     "doneAt": "2026-11-13T23:56:15.255Z",
+     "doneAt": "2026-11-14T23:36:09.274Z",
      "note": "",
-     "rev": 2,
+     "rev": 3,
      "createdAt": "2026-11-13T23:40:57.282Z",
-     "updatedAt": "2026-11-13T23:56:15.533Z"
+     "updatedAt": "2026-11-14T23:36:09.803Z"
     },
     {
      "id": "s9",
@@ -214616,7 +214616,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": {
