@@ -796,9 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 00:49 UTC · `console-app-land-parts-1-4-build-apk` s4 done (all) · orchestrator
-- 2026-11-14 00:49 UTC · `console-app-land-parts-1-4-build-apk` s5 done (all) · orchestrator
-- 2026-11-14 00:50 UTC · `land-batch-merge-main-each-finished` s16 done (all) · orchestrator
 - 2026-11-14 00:50 UTC · `land-batch-merge-main-each-finished` PR #665 (all) · builds-live
 - 2026-11-14 00:51 UTC · `voice-listener-use-claude-when-connected` s2 done (all) · orchestrator
 - 2026-11-14 00:52 UTC · `voice-listener-use-claude-when-connected` s3 done (all) · orchestrator
@@ -1196,6 +1193,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 22:46 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · orchestrator
 - 2026-11-14 22:46 UTC · `token-registry-skin-editor-live-sandbox` → queued (all) · orchestrator
 - 2026-11-14 22:44 UTC · `land-finish-auto-land-live-clear-backlog` s5 done (all) · orchestrator
+- 2026-11-14 22:46 UTC · `per-toolbar-settings-fix-failing-chrome` → queued (all) · orchestrator
+- 2026-11-14 22:46 UTC · `context-menus-plugin-one-true-source` → queued (all) · orchestrator
+- 2026-11-14 22:46 UTC · `lander-regenerates-generated-files-clash` → queued (all) · orchestrator
 
 ## Token passes (log)
 
