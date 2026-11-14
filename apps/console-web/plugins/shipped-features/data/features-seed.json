@@ -1,6 +1,22 @@
 {
   "$axf": "feature-ledger@1",
   "note": "AI split of AmberX-AXF and axHub history into individual features, merged last by the importer (ledger.mjs import). Each entry is a feature@1 (name, description, type, app, plugin, repo, prs, builds, commits, plannedAt, mergedAt) or, under edits, a feature-edit@1. Empty until a model pass fills it: `node apps/console-web/plugins/shipped-features/ledger/ledger.mjs seed-draft` writes the input for that pass.",
-  "features": [],
+  "features": [
+    {
+      "id": "project-duplicate-boilerplate",
+      "name": "Duplicate a project, save projects as boilerplates",
+      "description": "Duplicate any project from the console (Projects → Duplicate, app menu, right-click), MCP (project_duplicate), REST (/api/projects duplicate), CLI (projects.mjs duplicate) or voice ('duplicate this project'): the copy gets the project's settings, build rules, skin, Claude accounts, plugin setup, manifest under the new name, rules and instructions, and its lists, to-dos, notes and plans as structure only (items and builds history optional). Save as boilerplate keeps any project as a named template shared across projects on the hub: list, rename, update from a project, delete (id typed, Brett can veto). The New project wizard asks Start from: blank, the current project, or a saved boilerplate, and its defaults follow that choice.",
+      "type": "new-feature",
+      "app": "console-web",
+      "repo": "amberx-axf",
+      "builds": [
+        "project-duplicate-boilerplate"
+      ],
+      "prs": [],
+      "commits": [],
+      "said": "Duplicate project + save as boilerplate + wizard defaults: duplicate this project; save as boilerplate on any project, shared across projects; the New project wizard gets a Start from choice: blank, the current project, or any saved boilerplate.",
+      "plannedAt": "2026-11-13T17:00:00.000Z"
+    }
+  ],
   "edits": []
 }

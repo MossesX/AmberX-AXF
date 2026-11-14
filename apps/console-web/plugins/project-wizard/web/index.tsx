@@ -1,10 +1,11 @@
 import { useEffect, useState, type ReactNode } from 'react';
-import { Button, Chip, Container, Icon, IconButton, useRuntime } from '@console/axf/react';
+import { Button, Checkbox, Chip, ChoiceGrid, Container, Icon, IconButton, Note, SelectField, TextField, useRuntime } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginFetch } from '@console/plugins';
 import './project-wizard.css';
 import { appMenu } from './menu';
 import { LoadingSkeleton, EmptyState } from '@console/emptyState';
+import { AccountsStep, FirstPlanStep, FrameworkStep, Locked, PICK_DIALOG, PickDialog, SkinStep, StartFromField, StarterStep, summary, type FirstPlan, type Lockable, type Options, type Setup, type StartFrom, type StartInfo } from './steps';
 
 /** Plugin folder: server routes live at /api/plugins/project-wizard/. */
 const FOLDER = 'project-wizard';
@@ -20,6 +21,8 @@ interface Home { mode: HomeMode; owner: string; name: string; path: string }
 interface Plan {
   source: Source; display: string; name: string; description: string; kind: string; visibility: 'private' | 'public';
   port: 'bake' | 'rebuild' | 'no'; homes: { github: Home; vps: Home; local: Home }; sync: boolean; commitAll: boolean;
+  starter: Setup['starter']; framework: Setup['framework']; skin: Setup['skin']; claude: Setup['claude']; firstPlan: FirstPlan;
+  inherit: Record<Lockable, boolean>; switchTo: boolean; startFrom: StartFrom;
 }
 interface Step { ok: boolean; note: string; at: string }
 interface Project { name: string; display: string; description?: string; dir: string; github?: string; vps?: string; claudeAi?: string; source: { kind: SourceKind; repo?: string; path?: string; template?: string }; steps: Record<string, Step>; kit?: { files: string[] }; failed?: string; updatedAt?: string }
@@ -29,13 +32,19 @@ interface Status {
   boilerplates: { id: string; name: string; category: string; description: string; status: string }[]; claudeNewProjectUrl: string; projects: Project[];
 }
 interface Inspect { kind: SourceKind; repo?: string; path?: string; state?: string; stack?: string[]; relation?: string; axfNote?: string; git?: boolean; empty?: boolean; hasManifest?: boolean; origin?: string; suggest: { display: string; name: string; description: string; owner?: string; repoName?: string; visibility?: 'private' | 'public' } }
-interface Check { ok: boolean; problems: string[]; warnings: string[]; plan: { name: string; dir: string; homes: { github?: { owner: string; name: string; state: string; isSource: boolean }; vps?: { path: string; state: string }; local: { path: string } } } }
+interface Check { ok: boolean; problems: string[]; warnings: string[]; plan: { name: string; dir: string; setup?: Setup; inherit?: Record<Lockable, boolean>; startFrom?: { kind: StartFrom['kind']; id: string; label: string }; homes: { github?: { owner: string; name: string; state: string; isSource: boolean }; vps?: { path: string; state: string }; local: { path: string } } } }
 interface KitFile { path: string; bytes: number; text: string }
-interface RunResult { ok: boolean; error?: string; log: string[]; project: Project; kit?: { files: KitFile[] } }
+interface RunResult { ok: boolean; error?: string; log: string[]; project: Project; kit?: { files: KitFile[] }; workspace?: { id: string; created: boolean; active: boolean; note: string } }
 interface Item { id: string; label: string; note: string }
 
 const empty = (mode: HomeMode = 'skip'): Home => ({ mode, owner: '', name: '', path: '' });
-const freshPlan = (): Plan => ({ source: { kind: 'github', repo: '', path: '', template: 'react-ts', boilerplate: 'blank' }, display: '', name: '', description: '', kind: 'app', visibility: 'private', port: 'no', homes: { github: empty('new'), vps: empty('skip'), local: empty('keep') }, sync: true, commitAll: false });
+const freshPlan = (): Plan => ({
+  source: { kind: 'new', repo: '', path: '', template: '', boilerplate: '' }, display: '', name: '', description: '', kind: 'app', visibility: 'private', port: 'no', homes: { github: empty('new'), vps: empty('skip'), local: empty('keep') }, sync: true, commitAll: false,
+  starter: { id: 'console-app', template: 'react-ts', boilerplate: '' }, framework: { mode: 'axf', libraries: [], privateLibraries: [], name: '', import: { repo: '', path: '', boilerplate: '' } }, skin: { id: '', color: '' },
+  claude: { account: '', ownAccount: true, models: { plan: 'fable', build: 'opus', review: 'opus' } }, firstPlan: { text: '', builds: [], spoken: false },
+  inherit: { starter: true, framework: true, skin: true, accounts: true }, switchTo: true,
+  startFrom: { kind: 'blank', id: '', carry: { items: 'structure', builds: false } },
+});
 /** "owner/name", a github.com link or a bare name (then the current owner) → [owner, name]. */
 function splitRepo(val: string, owner: string): [string, string] {
   const t = val.trim().replace(/\.git$/, '').replace(/\/+$/, '');
@@ -74,8 +83,6 @@ function download(name: string, text: string) {
 }
 
 /* ================================================================== main view */
-
-const STEPS = ['Source', 'Details', 'Homes', 'Claude project', 'Review'] as const;
 
 function ProjectWizardView() {
   const { st, err, reload } = useStatus();
@@ -116,10 +123,26 @@ function Readiness({ st }: { st: Status }) {
 
 /* ---------------- the wizard ---------------- */
 
+/** Deep link: console_open("project-wizard", focus="skin") runs project-wizard.focus:skin → that step. */
+let askedStep = '';
+const stepListeners = new Set<(s: string) => void>();
+export function focusStep(step: string) { askedStep = step; stepListeners.forEach((f) => f(step)); }
+
+const STEP_IDS = ['name', 'repo', 'starter', 'framework', 'skin', 'accounts', 'plan', 'review'] as const;
+const STEP_TITLES = ['Name', 'Repo', 'Starter', 'Framework', 'Skin', 'Claude', 'First plan', 'Review'];
+
+function useOptions() {
+  const [o, setO] = useState<Options | null>(null);
+  const [err, setErr] = useState('');
+  useEffect(() => { getJson<Options>('options').then(setO, (e: Error) => setErr(e.message)); }, []);
+  return { o, err };
+}
+
 function Wizard({ st, onDone }: { st: Status; onDone: () => void }) {
   const rt = useRuntime();
-  const [step, setStep] = useState(0);
-  const [plan, setPlan] = useState<Plan>(() => ({ ...freshPlan(), homes: { github: { ...empty(st.github.token ? 'new' : 'skip'), owner: st.github.login }, vps: empty('skip'), local: empty('keep') } }));
+  const { o, err: optErr } = useOptions();
+  const [step, setStep] = useState(() => Math.max(0, STEP_IDS.indexOf(askedStep as typeof STEP_IDS[number])));
+  const [plan, setPlan] = useState<Plan>(() => ({ ...freshPlan(), homes: { github: { ...empty(st.github.token ? 'new' : 'skip'), owner: st.github.login }, vps: empty(st.github.token ? 'skip' : st.vps.mode === 'off' ? 'skip' : 'new'), local: empty('keep') } }));
   const [info, setInfo] = useState<Inspect | null>(null);
   const [check, setCheck] = useState<Check | null>(null);
   const [busy, setBusy] = useState('');
@@ -128,8 +151,36 @@ function Wizard({ st, onDone }: { st: Status; onDone: () => void }) {
   const set = (p: Partial<Plan>) => setPlan((x) => ({ ...x, ...p }));
   const setSource = (p: Partial<Source>) => { setInfo(null); setPlan((x) => ({ ...x, source: { ...x.source, ...p } })); };
   const setHome = (k: keyof Plan['homes'], p: Partial<Home>) => setPlan((x) => ({ ...x, homes: { ...x.homes, [k]: { ...x.homes[k], ...p } } }));
+  useEffect(() => { const f = (s: string) => { const i = STEP_IDS.indexOf(s as typeof STEP_IDS[number]); if (i >= 0) setStep(i); }; stepListeners.add(f); return () => { stepListeners.delete(f); }; }, []);
+  // the optional steps start on the current project's values, or the values of what the project starts from
+  useEffect(() => { if (o) setPlan((x) => ({ ...x, ...o.current.values })); }, [o]);
+  const [start, setStart] = useState<StartInfo | null>(null);
+  const [suggested, setSuggested] = useState({ display: '', description: '' });
+  const cur = o ? { project: o.current.project, values: start?.values ?? o.current.values, label: start && start.kind !== 'blank' ? start.label : o.current.project.name } : null;
+  const lock = (k: Lockable, locked: boolean) => setPlan((x) => {
+    const key = k === 'accounts' ? 'claude' : k;
+    return { ...x, inherit: { ...x.inherit, [k]: locked }, ...(locked && cur ? { [key]: cur.values[key] } : {}) };
+  });
+  /** Start from: blank, the current project or a boilerplate. Its setup fills the locked steps; its name is suggested. */
+  const setStartFrom = async (sf: StartFrom) => {
+    setPlan((x) => ({ ...x, startFrom: sf }));
+    if (sf.kind === 'boilerplate' && !sf.id) return;
+    setErr('');
+    try {
+      const r = await post<StartInfo>('start', { startFrom: sf });
+      setStart(r);
+      setPlan((x) => {
+        const locked = Object.fromEntries((['starter', 'framework', 'skin', 'accounts'] as Lockable[]).filter((k) => x.inherit[k]).map((k) => (k === 'accounts' ? ['claude', r.values.claude] : [k, r.values[k]])));
+        const display = !x.display || x.display === suggested.display ? r.suggest.display : x.display;
+        const description = !x.description || x.description === suggested.description ? r.suggest.description : x.description;
+        return { ...x, ...locked, display, name: display === x.display ? x.name : '', description };
+      });
+      setSuggested(r.suggest);
+    } catch (e) { setErr((e as Error).message); }
+  };
 
-  const inspect = async () => {
+  const inspect = async (): Promise<boolean> => {
+    if (plan.source.kind === 'new') return true;
     setBusy('inspect'); setErr('');
     try {
       const r = await post<Inspect>('inspect', plan.source);
@@ -140,96 +191,102 @@ function Wizard({ st, onDone }: { st: Status; onDone: () => void }) {
         // a GitHub source stays its own GitHub home by default; a folder with a GitHub origin offers that repo
         if (r.kind === 'github') Object.assign(github, { mode: 'existing', owner: s.owner ?? github.owner, name: s.repoName ?? '' });
         else if (r.kind === 'folder' && s.owner) Object.assign(github, { mode: 'existing', owner: s.owner, name: s.repoName ?? '' });
+        else if (github.mode === 'new') github.mode = 'skip';
         const vps = r.kind === 'vps' ? { ...x.homes.vps, mode: 'existing' as HomeMode, name: s.repoName ?? '' } : x.homes.vps;
         return { ...x, display: x.display || s.display, name: x.name || s.name, description: x.description || s.description, visibility: s.visibility ?? x.visibility, homes: { ...x.homes, github, vps } };
       });
-      setStep(1);
-    } catch (e) { setErr((e as Error).message); }
-    setBusy('');
+      setBusy('');
+      return true;
+    } catch (e) { setErr((e as Error).message); setBusy(''); return false; }
   };
   const review = async () => {
     setBusy('check'); setErr('');
-    try { setCheck(await post<Check>('check', { plan })); setStep(4); } catch (e) { setErr((e as Error).message); }
+    try { setCheck(await post<Check>('check', { plan })); setStep(7); } catch (e) { setErr((e as Error).message); }
     setBusy('');
   };
-  const run = async () => {
+  const create = async () => {
     setBusy('run'); setErr(''); setResult(null);
     rt.terminal.log('project-wizard', `▶ making ${plan.display}`);
     try {
-      const r = await post<RunResult>('run', { plan });
+      const r = await post<RunResult>('create', { plan });
       setResult(r);
       rt.terminal.many?.('project-wizard', r.log);
-      if (r.ok) { rt.toast(`${plan.display} is a Claude project`, 'success'); onDone(); } else rt.toast(r.error ?? 'The run stopped', 'danger');
+      if (r.ok) { rt.toast(`${plan.display} is made${r.workspace?.active ? ' and is now the active project' : ''}`, 'success'); onDone(); } else rt.toast(r.error ?? 'The run stopped', 'danger');
     } catch (e) { setErr((e as Error).message); }
     setBusy('');
   };
-  const canNext = [!!info, plan.display.trim().length >= 2, true, true][step] ?? true;
+  const go = async (i: number) => {
+    if (i === 7) return void review();
+    if (step === 1 && i > 1 && !info && plan.source.kind !== 'new' && !(await inspect())) return;
+    setStep(i);
+  };
+  const nameOk = plan.display.trim().length >= 2;
+  const canNext = step === 0 ? nameOk : true;
+  const newRepo = plan.source.kind === 'new';
+  const lk = (k: Lockable) => plan.inherit[k];
+  const curName = cur?.label ?? 'the current project';
+  const sum = (k: Lockable) => (cur ? summary(k, cur.values, o) : '…');
 
   if (result?.ok) return <Done st={st} result={result} />;
   return (
     <div className="fx-stack">
-      <span className={`${P}__stepnow fx-small fx-muted`}>Step {step + 1} of {STEPS.length} · <strong>{STEPS[step]}</strong></span>
+      <span className={`${P}__stepnow fx-small fx-muted`}>Step {step + 1} of {STEP_IDS.length} · <strong>{STEP_TITLES[step]}</strong></span>
       <ol className={`${P}__steps`}>
-        {STEPS.map((s, i) => <li key={s} className={`${P}__step ${i === step ? 'is-active' : ''} ${i < step ? 'is-done' : ''}`}><button type="button" className={`fx-chip ${i === step ? 'is-on' : ''}`} disabled={!!busy || (i > 0 && !info)} onClick={() => (i === 4 ? void review() : setStep(i))}>{i + 1}. {s}</button></li>)}
+        {STEP_TITLES.map((s, i) => <li key={s} className={`${P}__step ${i === step ? 'is-active' : ''} ${i < step ? 'is-done' : ''}`}><button type="button" className={`fx-chip ${i === step ? 'is-on' : ''}`} aria-current={i === step ? 'step' : undefined} disabled={!!busy || (i > 0 && !nameOk)} onClick={() => void go(i)}>{i + 1}. {s}</button></li>)}
       </ol>
+      {optErr && <p className={`${P}__error`}>{optErr}</p>}
 
-      {step === 0 && <SourceStep st={st} plan={plan} setSource={setSource} info={info} />}
-      {step === 1 && <DetailsStep plan={plan} set={set} info={info} />}
-      {step === 2 && <HomesStep st={st} plan={plan} setHome={setHome} set={set} info={info} />}
-      {step === 3 && <ClaudeStep plan={plan} set={set} info={info} />}
-      {step === 4 && check && <ReviewStep plan={plan} check={check} />}
+      {step === 0 && <StartFromField o={o} v={plan.startFrom} info={start} onChange={(sf) => void setStartFrom(sf)} />}
+      {step === 0 && <NameStep plan={plan} set={set} info={info} />}
+      {step === 1 && <RepoStep st={st} plan={plan} setSource={setSource} setHome={setHome} set={set} info={info} />}
+      {step >= 2 && step <= 5 && !o && <LoadingSkeleton />}
+      {step === 2 && o && <Locked locked={lk('starter')} onLock={(v) => lock('starter', v)} current={curName} summary={sum('starter')}><StarterStep o={o} v={plan.starter} set={(starter) => set({ starter })} newRepo={newRepo} /></Locked>}
+      {step === 3 && o && <Locked locked={lk('framework')} onLock={(v) => lock('framework', v)} current={curName} summary={sum('framework')}><FrameworkStep o={o} v={plan.framework} set={(framework) => set({ framework })} /></Locked>}
+      {step === 4 && o && <Locked locked={lk('skin')} onLock={(v) => lock('skin', v)} current={curName} summary={sum('skin')}><SkinStep o={o} v={plan.skin} set={(skin) => set({ skin })} /></Locked>}
+      {step === 5 && o && <Locked locked={lk('accounts')} onLock={(v) => lock('accounts', v)} current={curName} summary={sum('accounts')}><AccountsStep o={o} v={plan.claude} set={(claude) => set({ claude })} /></Locked>}
+      {step === 6 && <FirstPlanStep v={plan.firstPlan} set={(firstPlan) => set({ firstPlan })} />}
+      {step === 7 && check && <ReviewStep plan={plan} set={set} check={check} o={o} info={info} start={start} />}
 
       {result && !result.ok && <RunLog result={result} />}
       {err && <p className={`${P}__error`}>{err}</p>}
       <div className="fx-row fx-row--wrap">
         {step > 0 && <Button icon="arrow-left" disabled={!!busy} onClick={() => setStep(step - 1)}>Back</Button>}
-        {step === 0 && <Button tone="primary" icon="search" disabled={!!busy} onClick={() => void inspect()}>{busy === 'inspect' ? 'Looking…' : 'Look at it'}</Button>}
-        {step > 0 && step < 3 && <Button tone="primary" icon="arrow-right" disabled={!!busy || !canNext} onClick={() => setStep(step + 1)}>Next</Button>}
-        {step === 3 && <Button tone="primary" icon="check" disabled={!!busy} onClick={() => void review()}>{busy === 'check' ? 'Checking…' : 'Review'}</Button>}
-        {step === 4 && <Button tone="primary" icon="rocket" disabled={!!busy || !check?.ok} onClick={() => void run()}>{busy === 'run' ? 'Making the project… (can take a few minutes)' : 'Make the project'}</Button>}
+        {step < 6 && <Button tone="primary" icon="arrow-right" disabled={!!busy || !canNext} onClick={() => void go(step + 1)}>{busy === 'inspect' ? 'Looking…' : 'Next'}</Button>}
+        {step === 6 && <Button tone="primary" icon="check" disabled={!!busy} onClick={() => void review()}>{busy === 'check' ? 'Checking…' : 'Review'}</Button>}
+        {step === 7 && <Button tone="primary" icon="rocket" disabled={!!busy || !check?.ok} onClick={() => void create()}>{busy === 'run' ? 'Making the project… (can take a few minutes)' : 'Create the project'}</Button>}
       </div>
     </div>
   );
 }
 
-const SOURCES: [SourceKind, string, string, string][] = [
-  ['github', 'GitHub repo', 'Clone a repo from GitHub into the workspace.', 'github'],
-  ['vps', 'VPS repo', 'A git repo on the VPS (/srv/git).', 'cloud'],
-  ['folder', 'Folder', 'A folder on the console server.', 'folder'],
-  ['new', 'New AXF app', 'axf init from a template and boilerplate.', 'sparkles'],
+/** The linked repo (required): a new GitHub repo, an existing GitHub or VPS repo, or a folder on the server. */
+const LINKS: { id: string; title: string; text: string; icon: string; kind: SourceKind }[] = [
+  { id: 'new', title: 'New repo', text: 'A new GitHub repo (or VPS repo) with the starter code.', icon: 'sparkles', kind: 'new' },
+  { id: 'github', title: 'Existing GitHub repo', text: 'Clone a repo from GitHub into the workspace.', icon: 'github', kind: 'github' },
+  { id: 'vps', title: 'Existing VPS repo', text: 'A git repo on the VPS (/srv/git).', icon: 'cloud', kind: 'vps' },
+  { id: 'folder', title: 'Server folder', text: 'A folder on the console server.', icon: 'folder', kind: 'folder' },
 ];
 
-function SourceStep({ st, plan, setSource, info }: { st: Status; plan: Plan; setSource: (p: Partial<Source>) => void; info: Inspect | null }) {
+function RepoStep({ st, plan, setSource, setHome, set, info }: { st: Status; plan: Plan; setSource: (p: Partial<Source>) => void; setHome: (k: keyof Plan['homes'], p: Partial<Home>) => void; set: (p: Partial<Plan>) => void; info: Inspect | null }) {
   const s = plan.source;
-  const off = (k: SourceKind) => (k === 'github' && !st.github.token) || (k === 'vps' && st.vps.mode === 'off');
+  const off = (k: SourceKind) => (k === 'github' && !st.github.token) || (k === 'vps' && st.vps.mode === 'off') || (k === 'new' && !st.github.token && st.vps.mode === 'off');
+  const pickLink = (k: SourceKind) => {
+    setSource({ kind: k });
+    if (k === 'new') { if (st.github.token) setHome('github', { mode: 'new' }); else setHome('vps', { mode: 'new' }); }
+  };
   return (
-    <fieldset className={`${P}__fieldset`}>
-      <legend>Where does the project come from?</legend>
-      <div className={`${P}__cards`} role="radiogroup" aria-label="Source">
-        {SOURCES.map(([k, label, help, icon]) => (
-          <button key={k} type="button" role="radio" aria-checked={s.kind === k} data-fx-row disabled={off(k)} title={off(k) ? 'not available here' : help} className={`${P}__card ${s.kind === k ? 'is-selected' : ''}`} onClick={() => setSource({ kind: k })}>
-            <Icon name={icon} /><strong>{label}</strong><span>{off(k) ? 'not available here' : help}</span>
-          </button>
-        ))}
-      </div>
+    <div className="fx-stack">
+      <ChoiceGrid label="Linked repo" choices={LINKS.map((l) => ({ id: l.kind, title: l.title, text: off(l.kind) ? 'not available here' : l.text, icon: l.icon, disabled: off(l.kind) }))} selected={[s.kind]} onToggle={(k) => pickLink(k as SourceKind)} />
       {s.kind === 'github' && <Picker location="github" label="Repository (owner/name or link)" value={s.repo} onChange={(v) => setSource({ repo: v })} placeholder="MossesX/my-app" />}
       {s.kind === 'vps' && <Picker location="vps" label={`Repository in ${st.vps.dir}`} value={s.repo} onChange={(v) => setSource({ repo: v })} placeholder="my-app" />}
       {s.kind === 'folder' && <Picker location="local" label="Folder on the console server" value={s.path} onChange={(v) => setSource({ path: v })} placeholder={`${st.workspace}/my-app`} hint={`Allowed under: ${st.roots.join(', ')}`} />}
-      {s.kind === 'new' && (
-        <div className={`${P}__grid`}>
-          <label className={`${P}__field`}>Template
-            <select className="fx-input" value={s.template} onChange={(e) => setSource({ template: e.target.value })}>{st.templates.map((t) => <option key={t.id} value={t.id}>{t.label}</option>)}</select>
-          </label>
-          <label className={`${P}__field`}>Boilerplate
-            <select className="fx-input" value={s.boilerplate} onChange={(e) => setSource({ boilerplate: e.target.value })}>
-              <option value="">none</option>
-              {st.boilerplates.map((b) => <option key={b.id} value={b.id}>{b.name}{b.status && b.status !== 'built' ? ` (${b.status})` : ''}</option>)}
-            </select>
-          </label>
-        </div>
-      )}
+      {s.kind === 'new' && plan.homes.github.mode !== 'new' && plan.homes.vps.mode !== 'new' && <Note tone="warning">A new project needs a repo: pick a new GitHub or VPS repo under Where it lives.</Note>}
       {info && <p className={`${P}__found`}><Icon name="check-circle" size={16} /> {foundText(info)}</p>}
-    </fieldset>
+      <details className={`${P}__details`} open={s.kind === 'new'}>
+        <summary>Where it lives: GitHub, VPS git and the folder on the server</summary>
+        <HomesStep st={st} plan={plan} setHome={setHome} set={set} info={info} />
+      </details>
+    </div>
   );
 }
 
@@ -279,26 +336,19 @@ function Picker({ location, label, value, onChange, placeholder, hint }: { locat
   );
 }
 
-function DetailsStep({ plan, set, info }: { plan: Plan; set: (p: Partial<Plan>) => void; info: Inspect | null }) {
+function NameStep({ plan, set, info }: { plan: Plan; set: (p: Partial<Plan>) => void; info: Inspect | null }) {
   const id = plan.name || slug(plan.display);
   return (
     <fieldset className={`${P}__fieldset`}>
       <legend>What is it?</legend>
-      <label className={`${P}__field`}>Project name<input className="fx-input" value={plan.display} onChange={(e) => set({ display: e.target.value })} placeholder="Notes Pad" autoFocus /></label>
-      <label className={`${P}__field`}>Project id
-        <input className="fx-input fx-mono" value={plan.name} onChange={(e) => set({ name: slug(e.target.value) })} placeholder={slug(plan.display) || 'notes-pad'} />
-        <span className="fx-small fx-muted">The hub folder /projects/{id || '<id>'}/ and the default repo name.</span>
-      </label>
-      <label className={`${P}__field`}>Description<textarea className="fx-input" rows={2} value={plan.description} onChange={(e) => set({ description: e.target.value })} placeholder="One sentence: what it is for" maxLength={300} /></label>
+      <TextField label="Project name" required value={plan.display} onChange={(display) => set({ display })} placeholder="Notes Pad" autoFocus />
+      <TextField label="Project id" mono value={plan.name} onChange={(v) => set({ name: slug(v) })} placeholder={slug(plan.display) || 'notes-pad'} hint={`Its workspace, the hub folder /projects/${id || '<id>'}/ and the default repo name.`} />
+      <TextField label="Description" rows={2} value={plan.description} onChange={(description) => set({ description: description.slice(0, 300) })} placeholder="One sentence: what it is for" />
       <div className={`${P}__grid`}>
-        <label className={`${P}__field`}>Kind
-          <select className="fx-input" value={plan.kind} onChange={(e) => set({ kind: e.target.value })}>{['app', 'library', 'service', 'tool', 'site', 'other'].map((k) => <option key={k}>{k}</option>)}</select>
-        </label>
-        <label className={`${P}__field`}>Visibility (new repos)
-          <select className="fx-input" value={plan.visibility} onChange={(e) => set({ visibility: e.target.value as Plan['visibility'] })}><option value="private">private</option><option value="public">public</option></select>
-        </label>
+        <SelectField label="Kind" value={plan.kind} options={['app', 'library', 'service', 'tool', 'site', 'other'].map((k) => ({ value: k, label: k }))} onChange={(kind) => set({ kind })} />
+        <SelectField label="Visibility (new repos)" value={plan.visibility} options={[{ value: 'private', label: 'private' }, { value: 'public', label: 'public' }]} onChange={(v) => set({ visibility: v as Plan['visibility'] })} />
       </div>
-      {info?.hasManifest && <p className="fx-small fx-muted" style={{ margin: 0 }}>It already has a project manifest: its name and id are kept unless you change them here.</p>}
+      {info?.hasManifest && <p className={`fx-small fx-muted ${P}__flat`}>It already has a project manifest: its name and id are kept unless you change them here.</p>}
     </fieldset>
   );
 }
@@ -390,24 +440,36 @@ function ClaudeStep({ plan, set, info }: { plan: Plan; set: (p: Partial<Plan>) =
   );
 }
 
-function ReviewStep({ plan, check }: { plan: Plan; check: Check }) {
+function ReviewStep({ plan, set, check, o, info, start }: { plan: Plan; set: (p: Partial<Plan>) => void; check: Check; o: Options | null; info: Inspect | null; start: StartInfo | null }) {
   const h = check.plan.homes;
   const row = (k: string, v: ReactNode) => <tr><th>{k}</th><td>{v}</td></tr>;
   const src = plan.source;
+  const setup = check.plan.setup;
+  const sf = check.plan.startFrom;
+  const from = sf && sf.kind !== 'blank' ? sf.label : o?.current.project.name ?? 'now';
+  const same = (k: Lockable) => (check.plan.inherit?.[k] ? <Chip>same as {from}</Chip> : null);
   return (
     <div className="fx-stack">
       <table className="fx-table"><tbody>
         {row('Project', <>{plan.display} <span className="fx-mono fx-muted">({check.plan.name})</span></>)}
         {plan.description && row('Description', plan.description)}
-        {row('Source', src.kind === 'new' ? `new AXF app: ${src.template}${src.boilerplate ? ` + ${src.boilerplate}` : ''}` : src.kind === 'folder' ? src.path : `${src.kind === 'github' ? 'GitHub' : 'VPS'} ${src.repo}`)}
+        {row('Start from', sf && sf.kind !== 'blank' ? <>{sf.kind === 'current' ? 'a copy of' : 'boilerplate'} <strong>{sf.label}</strong>{start?.holds ? <span className="fx-muted"> · {start.holds}</span> : null}</> : 'blank')}
+        {row('Linked repo', src.kind === 'new' ? 'a new repo' : src.kind === 'folder' ? src.path : `${src.kind === 'github' ? 'GitHub' : 'VPS'} ${src.repo}`)}
         {row('GitHub', h.github ? <>{h.github.owner}/{h.github.name} <Chip tone={h.github.state === 'free' ? 'accent' : h.github.isSource ? 'success' : 'warning'}>{h.github.state === 'free' ? 'will be created' : h.github.isSource ? 'the source' : h.github.state}</Chip></> : '—')}
         {row('VPS', h.vps ? <><span className="fx-mono">{h.vps.path}</span> <Chip tone={h.vps.state === 'free' ? 'accent' : 'warning'}>{h.vps.state === 'free' ? 'will be created' : h.vps.state}</Chip></> : '—')}
-        {row('Local', <span className="fx-mono">{h.local.path}</span>)}
+        {row('Folder', <span className="fx-mono">{h.local.path}</span>)}
+        {setup && row('Starter', <>{summary('starter', setup, o)} {same('starter')}</>)}
+        {setup && row('Framework', <>{summary('framework', setup, o)} {same('framework')}</>)}
+        {setup && row('Skin', <>{summary('skin', setup, o)} {same('skin')}</>)}
+        {setup && row('Claude', <>{summary('accounts', setup, o)}{setup.claude.ownAccount ? ' · own account' : ''} {same('accounts')}</>)}
+        {(plan.firstPlan.text || plan.firstPlan.builds.length > 0) && row('First plan', `${plan.firstPlan.text.slice(0, 120)}${plan.firstPlan.builds.length ? ` · ${plan.firstPlan.builds.length} builds` : ''}`)}
         {plan.port !== 'no' && row('Port to AXF', `${plan.port}, parked for Fable`)}
       </tbody></table>
+      <Checkbox label="Switch into the new project when it is made" checked={plan.switchTo} onChange={(switchTo) => set({ switchTo })} />
       {check.problems.map((p) => <p key={p} className={`${P}__problem`}><Icon name="x-circle" size={16} /> {p}</p>)}
       {check.warnings.map((w) => <p key={w} className={`${P}__warning`}><Icon name="alert" size={16} /> {w}</p>)}
-      {check.ok && <p className={`${P}__found`}><Icon name="check-circle" size={16} /> Ready. Nothing changes until you press Make the project.</p>}
+      {check.ok && <p className={`${P}__found`}><Icon name="check-circle" size={16} /> Ready. Nothing changes until you press Create the project.</p>}
+      <details className={`${P}__details`}><summary>What gets written into the repo</summary><ClaudeStep plan={plan} set={set} info={info} /></details>
     </div>
   );
 }
@@ -428,7 +490,8 @@ function Done({ st, result }: { st: Status; result: RunResult }) {
   const app = p.steps['claude-app'];
   return (
     <div className="fx-stack">
-      <p className={`${P}__found`}><Icon name="check-circle" size={16} /> <span><strong>{p.display}</strong> is a Claude project.</span></p>
+      <p className={`${P}__found`}><Icon name="check-circle" size={16} /> <span><strong>{p.display}</strong> is made{result.workspace?.active ? ' and is now the active project' : ''}.</span></p>
+      {result.workspace && <p className={`fx-small fx-muted ${P}__flat`}>Workspace: {result.workspace.note}.</p>}
       <table className="fx-table"><tbody>
         {p.github && <tr><th>GitHub</th><td><a href={p.github} target="_blank" rel="noreferrer">{p.github.replace('https://github.com/', '')}</a></td></tr>}
         {p.vps && <tr><th>VPS git</th><td className="fx-mono">{p.vps}</td></tr>}
@@ -560,8 +623,16 @@ function SettingsPanel() {
 export const plugin: AxfWebLibrary = {
   id: ID,
   label: 'Project wizard',
-  version: '1.0.0',
+  version: '1.1.0',
   appMenu,
+  register(rt) {
+    // deep links: console_open("project-wizard", focus="<step>") runs project-wizard.focus:<step>
+    rt.actions.register('project-wizard.focus', ([step]) => { rt.dispatch('nav:project-wizard'); if (step) focusStep(String(step)); }, { label: 'Open the New project wizard at a step (name, repo, starter, framework, skin, accounts, plan, review)' });
+    rt.actions.register('project-wizard.open', ([step]) => { rt.dispatch('nav:project-wizard'); if (step) focusStep(String(step)); }, { label: 'New project…' });
+  },
+  dialogs: {
+    [PICK_DIALOG]: { title: 'Pick', icon: 'grid', searchable: false, render: (props, close) => <PickDialog props={props} close={close} /> },
+  },
   views: { 'project-wizard': { title: 'New project', icon: 'rocket', render: () => <ProjectWizardView /> } },
   nav: { label: 'Plugins', items: [{ id: 'project-wizard', label: 'New project', icon: 'rocket', view: 'project-wizard' }] },
   settingsTabs: [{ id: 'project-wizard', label: 'Project wizard', icon: 'rocket', order: 37, description: 'What the New project wizard can reach from the console server: GitHub, VPS git, the workspace and allowed folders.' }],

@@ -10,6 +10,14 @@ and the console core serves it at GET/POST /api/projects too. These routes are n
     POST /switch       {project}       id or name                        POST /rename    {project, name?, description?}
     POST /archive      {project, confirm}  confirm = the project id     POST /unarchive {project}
     POST /delete       {project, confirm}  confirm = the project id; off the list, its data stays on disk
+    POST /duplicate    {project?, name?, id?, description?, items?, builds?, select?}  a copy of a project (default the active one)
+
+Boilerplates (project-boilerplates@1, framework/cli/project-templates.mjs): projects kept as named templates, shared
+across projects on the hub.
+
+    GET  /boilerplates                 every saved boilerplate     POST /boilerplates/save    {project?, name, description?, items?, builds?}
+    POST /boilerplates/update          {boilerplate, project?}     POST /boilerplates/rename  {boilerplate, name?, description?}
+    POST /boilerplates/delete          {boilerplate, confirm}      POST /boilerplates/use     {boilerplate, name?, id?, select?}
 """
 from __future__ import annotations
 
@@ -25,10 +33,10 @@ import console_context as cx
 router = APIRouter()
 
 
-def _cli(*args: str, actor: str = "console:projects") -> dict[str, Any]:
-    cli = cx.ROOT / "framework" / "cli" / "projects.mjs"
+def _cli(*args: str, actor: str = "console:projects", tool: str = "projects.mjs") -> dict[str, Any]:
+    cli = cx.ROOT / "framework" / "cli" / tool
     env = {**os.environ, "AXF_ACTOR": actor}
-    proc = subprocess.run(["node", str(cli), *args, "--json"], cwd=cx.ROOT, capture_output=True, text=True, timeout=60, env=env)
+    proc = subprocess.run(["node", str(cli), *args, "--json"], cwd=cx.ROOT, capture_output=True, text=True, timeout=180, env=env)
     out = proc.stdout.strip().splitlines()
     try:
         res = json.loads(out[-1]) if out else {"ok": False, "error": proc.stderr.strip()[-600:] or "no output"}
@@ -126,3 +134,101 @@ def unarchive(body: Any = Body(None)) -> dict[str, Any]:
 def delete(body: Any = Body(None)) -> dict[str, Any]:
     b = _body(body)
     return _change({"action": "delete", "id": _project(b), "confirm": _text(b.get("confirm"), 40)})
+
+
+ITEMS = ("structure", "all", "none")
+
+
+def _carry(b: dict[str, Any]) -> dict[str, Any]:
+    items = b.get("items", "structure")
+    if items not in ITEMS:
+        raise HTTPException(400, "items must be structure, all or none")
+    return {"items": items, "builds": b.get("builds") is True}
+
+
+def _templates(change: dict[str, Any]) -> dict[str, Any]:
+    res = _cli("act", json.dumps(change), tool="project-templates.mjs")
+    for line in res.get("log", []) or []:
+        cx.log("projects", str(line))
+    if not res.get("ok"):
+        raise HTTPException(400, res.get("error", "failed"))
+    return res
+
+
+@router.post("/duplicate")
+def duplicate(body: Any = Body(None)) -> dict[str, Any]:
+    b = _body(body)
+    change: dict[str, Any] = {"action": "duplicate", **_carry(b), "select": b.get("select") is not False}
+    for k, n in (("project", 80), ("name", 80), ("id", 40)):
+        if _text(b.get(k), n):
+            change["from" if k == "project" else k] = _text(b.get(k), n)
+    if isinstance(b.get("description"), str):
+        change["description"] = _text(b["description"])
+    return _change(change)
+
+
+@router.get("/boilerplates")
+def boilerplates() -> dict[str, Any]:
+    res = _cli("act", json.dumps({"action": "boilerplates"}), tool="project-templates.mjs")
+    if not res.get("ok"):
+        raise HTTPException(500, res.get("error", "failed"))
+    return res
+
+
+def _boilerplate(b: dict[str, Any]) -> str:
+    v = _text(b.get("boilerplate") or b.get("id"), 80)
+    if not v:
+        raise HTTPException(400, "boilerplate (its id or name) is needed")
+    return v
+
+
+@router.post("/boilerplates/save")
+def boilerplate_save(body: Any = Body(None)) -> dict[str, Any]:
+    b = _body(body)
+    name = _text(b.get("name"), 80)
+    if not name:
+        raise HTTPException(400, "a boilerplate needs a name")
+    change: dict[str, Any] = {"action": "boilerplate-save", "name": name, "description": _text(b.get("description")), **_carry(b)}
+    if _text(b.get("project"), 80):
+        change["from"] = _text(b.get("project"), 80)
+    return _templates(change)
+
+
+@router.post("/boilerplates/update")
+def boilerplate_update(body: Any = Body(None)) -> dict[str, Any]:
+    b = _body(body)
+    change: dict[str, Any] = {"action": "boilerplate-update", "id": _boilerplate(b)}
+    if _text(b.get("project"), 80):
+        change["from"] = _text(b.get("project"), 80)
+    if "items" in b or "builds" in b:
+        change.update(_carry(b))
+    return _templates(change)
+
+
+@router.post("/boilerplates/rename")
+def boilerplate_rename(body: Any = Body(None)) -> dict[str, Any]:
+    b = _body(body)
+    change: dict[str, Any] = {"action": "boilerplate-rename", "id": _boilerplate(b)}
+    if isinstance(b.get("name"), str):
+        change["name"] = _text(b["name"], 80)
+    if isinstance(b.get("description"), str):
+        change["description"] = _text(b["description"])
+    if len(change) == 2:
+        raise HTTPException(400, "rename needs a name or a description")
+    return _templates(change)
+
+
+@router.post("/boilerplates/delete")
+def boilerplate_delete(body: Any = Body(None)) -> dict[str, Any]:
+    b = _body(body)
+    return _templates({"action": "boilerplate-delete", "id": _boilerplate(b), "confirm": _text(b.get("confirm"), 40)})
+
+
+@router.post("/boilerplates/use")
+def boilerplate_use(body: Any = Body(None)) -> dict[str, Any]:
+    b = _body(body)
+    change: dict[str, Any] = {"action": "boilerplate-use", "boilerplate": _boilerplate(b), "select": b.get("select") is not False}
+    for k, n in (("name", 80), ("id", 40)):
+        if _text(b.get(k), n):
+            change[k] = _text(b.get(k), n)
+    return _templates(change)

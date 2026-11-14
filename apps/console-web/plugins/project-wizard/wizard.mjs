@@ -5,7 +5,14 @@
  * the terminal command and this wizard make projects the same way.
  *
  *   node wizard.mjs --json '{"action":"status"}'
- *   actions: status · inspect {source} · check {plan} · list {location} · run {plan} · kit {name} · link {name,url} · forget {name}
+ *   actions: status · options · current · draft {set?, reset?} · inspect {source} · check {plan | fromDraft} · list {location}
+ *            · run {plan | fromDraft} (alias create) · kit {name} · link {name,url} · forget {name}
+ *            · start {startFrom}: what "Start from" (blank, the current project, a saved boilerplate) fills in
+ *
+ * Start from (plan.startFrom = { kind: blank|current|boilerplate, id?, carry? }): the current project or a saved
+ * boilerplate is a project template (framework/cli/project-templates.mjs). Its setup is what the locked optional steps
+ * take; its rules, instructions and manifest settings go into the new repo; its lists, notes, plans and build rules
+ * go into the new workspace before it becomes the active project. Blank keeps the current project's setup as defaults.
  *
  * A run:
  *   1. gets a working folder from the source: a GitHub or VPS repo (cloned into the workspace), a folder on this
@@ -25,8 +32,8 @@
  * over SSH; without them /srv/git on this machine is used when it exists), AXF_VPS_GIT_DIR (default /srv/git).
  */
 import { spawnSync } from 'node:child_process';
-import { chmodSync, existsSync, lstatSync, mkdirSync, readdirSync, readFileSync, realpathSync, renameSync, statSync, writeFileSync } from 'node:fs';
-import { homedir } from 'node:os';
+import { chmodSync, cpSync, existsSync, lstatSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, realpathSync, renameSync, rmSync, statSync, writeFileSync } from 'node:fs';
+import { homedir, tmpdir } from 'node:os';
 import { basename, dirname, isAbsolute, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { apiBaseFromEnv, createGitHub, gitAuthEnv, githubToken, parseRepo, scrub, validName, validOwner } from '../../../../framework/cli/github.mjs';
@@ -82,8 +89,10 @@ export function safeFolder(p, { mustExist = true } = {}) {
   return target;
 }
 
-const STORE = () => process.env.AXF_WIZARD_STORE || join(REPO_ROOT, '.axf-console', 'project-wizard.json');
-export function loadStore() { return readJson(STORE()) ?? { $axf: 'project-wizard@1', projects: {} }; }
+// The plugin's data folder (plugin-lifecycle@1 dataDir); the list was kept at .axf-console/project-wizard.json before.
+const STORE = () => process.env.AXF_WIZARD_STORE || join(REPO_ROOT, '.axf-console', 'plugins', 'project-wizard', 'projects.json');
+const OLD_STORE = () => (process.env.AXF_WIZARD_STORE ? '' : join(REPO_ROOT, '.axf-console', 'project-wizard.json'));
+export function loadStore() { return readJson(STORE()) ?? (OLD_STORE() ? readJson(OLD_STORE()) : null) ?? { $axf: 'project-wizard@1', projects: {} }; }
 function saveStore(s) {
   mkdirSync(dirname(STORE()), { recursive: true });
   const tmp = `${STORE()}.${process.pid}.${Date.now()}.tmp`;
@@ -215,6 +224,292 @@ function listLocal() {
 
 const cp = () => import(join(CLI, 'claude-project.mjs'));
 const be = () => import(join(CLI, 'build-engine.mjs'));
+const projectsCli = () => import(join(CLI, 'projects.mjs'));
+
+/* ─── the wizard's steps and their choices ───────────────────────────────── */
+
+/** The steps, in order. `optional` steps start on the current project's value (grayed out) until unlocked. */
+export const STEPS = [
+  { id: 'name', title: 'Name and description', optional: false },
+  { id: 'repo', title: 'Linked repo', optional: false },
+  { id: 'starter', title: 'Starter code', optional: true },
+  { id: 'framework', title: 'Framework and libraries', optional: true },
+  { id: 'skin', title: 'Skin', optional: true },
+  { id: 'accounts', title: 'Claude account and models', optional: true },
+  { id: 'plan', title: 'First plan', optional: true },
+  { id: 'review', title: 'Review and create', optional: false },
+];
+export const OPTIONAL = STEPS.filter((s) => s.optional && s.id !== 'plan').map((s) => s.id);
+/** Step id → the plan field it sets. */
+const SETUP_KEY = { starter: 'starter', framework: 'framework', skin: 'skin', accounts: 'claude' };
+
+/** Starter code for a new repo. `console-app` is the default: an app shaped like the console. */
+export const STARTERS = [
+  {
+    id: 'console-app', label: 'Console-style app', template: 'web-fastapi-wall',
+    description: 'React + TypeScript + Python (FastAPI) like the console: user accounts, console login and axHub login wired in, and the Claude settings, Claude accounts and axHub plugins preinstalled in its Settings. It gets its own Claude account.',
+    features: ['user-accounts', 'console-login', 'axhub-login', 'own-claude-account'],
+    plugins: ['claude-settings', 'claude-accounts', 'axhub'],
+  },
+  { id: 'template', label: 'AXF template', description: 'Any AXF template, with an optional boilerplate.', features: [], plugins: [] },
+  { id: 'framework', label: "The framework's boilerplate", description: 'A boilerplate that ships with the framework picked in the Framework step (import a framework first).', features: [], plugins: [] },
+  { id: 'none', label: 'No starter code', description: 'An empty repo, or the linked repo exactly as it is.', features: [], plugins: [] },
+];
+export const FRAMEWORKS = [
+  { id: 'axf', label: 'AmberX AXF', description: 'The default: the AXF framework and its shared libraries, with private libraries on top if you want them.' },
+  { id: 'own', label: 'Your own framework', description: 'Start a framework of its own for this project (a framework/ folder in the repo, seeded empty).' },
+  { id: 'import', label: 'Import a framework', description: 'Another framework from a GitHub repo or a server folder; when it ships boilerplates, one can be the starter.' },
+];
+/** Models a project's builds may run on (Opus or Fable only). */
+export const MODELS = ['opus', 'fable'];
+export const MODEL_ROLES = [
+  { id: 'plan', label: 'Planning' },
+  { id: 'build', label: 'Builds' },
+  { id: 'review', label: 'Reviews and fixes' },
+];
+export const DEFAULT_MODELS = Object.freeze({ plan: 'fable', build: 'opus', review: 'opus' });
+
+const strList = (v, max = 40, each = 100) => (Array.isArray(v) ? [...new Set(v.map((x) => str(x, each)).filter(Boolean))].slice(0, max) : []);
+const pick = (v, ids, dflt) => (ids.includes(v) ? v : dflt);
+
+/** Normalise the optional parts of a plan (starter, framework, skin, claude, first plan); no IO. */
+export function normaliseSetup(raw = {}) {
+  const st = raw.starter ?? {};
+  const fw = raw.framework ?? {};
+  const imp = fw.import ?? {};
+  const cl = raw.claude ?? {};
+  const fp = raw.firstPlan ?? {};
+  const models = {};
+  for (const r of MODEL_ROLES) models[r.id] = pick(str(cl.models?.[r.id], 20).toLowerCase(), MODELS, DEFAULT_MODELS[r.id]);
+  const builds = (Array.isArray(fp.builds) ? fp.builds : []).map((b) => str(typeof b === 'string' ? b : b?.title, 140)).filter(Boolean).slice(0, 20);
+  return {
+    starter: { id: pick(st.id, STARTERS.map((s) => s.id), 'console-app'), template: str(st.template, 40) || 'react-ts', boilerplate: str(st.boilerplate, 60) },
+    framework: {
+      mode: pick(fw.mode, FRAMEWORKS.map((f) => f.id), 'axf'),
+      libraries: strList(fw.libraries),
+      privateLibraries: strList(fw.privateLibraries, 20, 300),
+      name: str(fw.name, 60),
+      import: { repo: str(imp.repo, 300), path: str(imp.path, 1000), boilerplate: str(imp.boilerplate, 200).replace(/^\/+|\/+$/g, '') },
+    },
+    skin: { id: str(raw.skin?.id, 80), color: str(raw.skin?.color, 80) },
+    claude: { account: str(cl.account, 80), ownAccount: cl.ownAccount !== false, models },
+    firstPlan: { text: str(fp.text, 8000), builds, spoken: fp.spoken === true },
+  };
+}
+
+/** The wizard's record of a console project (projects@1 entry): made here, or copied here from a template. */
+function recordOf(proj) {
+  const s = loadStore();
+  const rec = Object.values(s.projects).find((r) => r.workspace === proj.id) ?? s.projects[proj.id];
+  return { rec, copied: s.copies?.[proj.id] ?? null };
+}
+
+/** The folder holding a project's manifest and _claude/ files: its repo when made here, this repo for the base. */
+function folderOf(proj, rec) {
+  if (rec?.dir && existsSync(join(rec.dir, 'project.manifest.json'))) return rec.dir;
+  return proj.base ? REPO_ROOT : '';
+}
+
+/** The current (active) project and the values its optional steps start on. */
+export async function current() {
+  let proj = { id: 'amberx-axf', name: 'AmberX AXF', description: '', base: true };
+  try { const p = (await projectsCli()).activeProject(); proj = { id: p.id, name: p.name, description: p.description ?? '', base: !!p.base }; } catch { /* no registry: the base project */ }
+  return setupOf(proj);
+}
+
+/** A project's setup: the values the wizard's optional steps start on when this project is the starting point. */
+export async function setupOf(proj) {
+  const { rec, copied } = recordOf(proj);
+  let setup = rec?.setup ?? copied?.setup ?? null;
+  let repo = rec?.github || rec?.vps || rec?.dir || '';
+  if (!setup) {
+    // a project not made here (the base project): AXF, the console-style app, its manifest's repo, the hub-wide skin
+    const m = readJson(join(REPO_ROOT, 'project.manifest.json')) ?? {};
+    repo = repo || m.repo?.url || '';
+    let skin = '';
+    try { skin = (await import(join(CLI, 'skins.mjs'))).readGlobal()?.skin ?? ''; } catch { /* no hub */ }
+    setup = normaliseSetup({ starter: { id: 'console-app' }, framework: { mode: 'axf' }, skin: { id: m.x?.setup?.skin?.id ?? skin }, claude: m.x?.setup?.claude ?? {} });
+  }
+  const s = normaliseSetup(setup);
+  return { project: { ...proj, repo }, values: { starter: s.starter, framework: s.framework, skin: s.skin, claude: s.claude } };
+}
+
+/** Everything the steps offer (the Python side adds the Claude accounts from axf.claude-accounts@1). */
+export async function options() {
+  const b = await be();
+  let skins = [];
+  try { skins = (await import(join(CLI, 'skins.mjs'))).skinRows().map((x) => ({ id: x.id, name: x.name, kind: x.kind, description: String(x.description ?? '').slice(0, 240) })); } catch { /* none */ }
+  let libraries = [];
+  try { libraries = (await import(join(CLI, 'libraries.mjs'))).listLibraries().map((l) => ({ id: l.id, name: l.name ?? l.id, description: String(l.description ?? '').slice(0, 200) })); } catch { /* none */ }
+  return {
+    ok: true,
+    steps: STEPS,
+    starters: STARTERS,
+    frameworks: FRAMEWORKS,
+    models: MODELS,
+    modelRoles: MODEL_ROLES,
+    defaultModels: DEFAULT_MODELS,
+    templates: b.listTemplates().filter((t) => !String(t.kind ?? '').includes('module')).map((t) => ({ id: t.id, label: t.label ?? t.id })),
+    boilerplates: b.listBoilerplates().map((x) => ({ id: x.id, name: x.name, category: x.category, status: x.status ?? '' })),
+    skins,
+    libraries,
+    accounts: [],
+    current: await current(),
+    startFrom: { kinds: START_KINDS, boilerplates: (await templates()).listBoilerplates() },
+  };
+}
+
+/* ─── start from: blank, the current project, or a saved boilerplate (project-template@1) ── */
+
+const SELF = basename(PLUGIN_DIR);
+const templates = () => import(join(CLI, 'project-templates.mjs'));
+const templatesCore = () => import(join(REPO_ROOT, 'framework', 'plan', 'project-templates-core.mjs'));
+const START_KINDS = ['blank', 'current', 'boilerplate'];
+/** Manifest keys a copy never takes from its source: who the project is and where it lives. Its setup travels on its own. */
+const IDENTITY = ['$axf', 'name', 'displayName', 'description', 'repo', 'location', 'deploy'];
+const INSTRUCTION_DIRS = ['_claude/rules', '_claude/instructions'];
+const INSTRUCTION_BYTES = 64 * 1024;
+const INSTRUCTION_TOTAL = 512 * 1024;
+
+/** A project folder's own rules and instructions (Markdown under _claude/rules and _claude/instructions; READMEs are made fresh). */
+function readInstructions(dir) {
+  const files = {};
+  let total = 0;
+  for (const d of INSTRUCTION_DIRS) {
+    const abs = join(dir, d);
+    if (!existsSync(abs)) continue;
+    for (const n of readdirSync(abs).sort()) {
+      const f = join(abs, n);
+      if (!n.endsWith('.md') || n === 'README.md' || !lstatSync(f).isFile()) continue;
+      const size = statSync(f).size;
+      if (size > INSTRUCTION_BYTES || total + size > INSTRUCTION_TOTAL) continue;
+      files[`${d}/${n}`] = readFileSync(f, 'utf8');
+      total += size;
+    }
+  }
+  return files;
+}
+
+/** The wizard's part of a project copy: its setup (starter, framework, skin, Claude account and models), manifest and instructions. */
+export async function exportPart(proj) {
+  const { rec, copied } = recordOf(proj);
+  const { values } = await setupOf(proj);
+  const dir = folderOf(proj, rec);
+  let manifest = copied?.manifest ?? null;
+  let instructions = copied?.instructions ?? {};
+  if (dir) {
+    const m = readJson(join(dir, 'project.manifest.json'));
+    if (m) {
+      manifest = Object.fromEntries(Object.entries(m).filter(([k]) => !IDENTITY.includes(k)));
+      if (manifest.x?.setup) { const { setup, ...x } = manifest.x; manifest.x = x; }
+    }
+    instructions = readInstructions(dir);
+  }
+  return { setup: values, manifest, instructions };
+}
+
+/** Keep a copied project's part for its workspace (a project made by duplicating has no repo yet; the wizard links one later). */
+export function importPart(proj, data) {
+  const s = loadStore();
+  const { rec } = recordOf(proj);
+  s.copies = s.copies ?? {};
+  if (rec || s.copies[proj.id]) return { note: 'the project already has its setup: left as it is' };
+  const manifest = data?.manifest && typeof data.manifest === 'object' ? { ...data.manifest, name: proj.id, displayName: proj.name, ...(proj.description ? { description: proj.description } : {}) } : null;
+  const instructions = Object.fromEntries(Object.entries(data?.instructions ?? {}).filter(([k, v]) => INSTRUCTION_DIRS.some((d) => k.startsWith(`${d}/`)) && !k.split('/').includes('..') && typeof v === 'string'));
+  s.copies[proj.id] = { setup: normaliseSetup(data?.setup ?? {}), manifest, instructions, copiedAt: new Date().toISOString() };
+  saveStore(s);
+  const n = Object.keys(instructions).length;
+  return { note: `setup${manifest ? ', manifest' : ''}${n ? `, ${n} rules and instructions file(s)` : ''}` };
+}
+
+/** The template a plan starts from (null = blank) and what the steps take from it. */
+async function startTemplate(raw) {
+  const sf = raw && typeof raw === 'object' ? raw : {};
+  const kind = START_KINDS.includes(sf.kind) ? sf.kind : 'blank';
+  const T = await templates();
+  const carry = (await templatesCore()).normaliseCarry(sf.carry);
+  if (kind === 'current') {
+    const p = T.findProject();
+    const template = await T.capture(p, carry);
+    return { kind, id: p.id, label: p.name, carry: template.carry, template };
+  }
+  if (kind === 'boilerplate') {
+    if (!str(sf.id, 80)) fail('Start from: pick a boilerplate');
+    const b = T.getBoilerplate(sf.id);
+    return { kind, id: b.id, label: b.name, carry: b.template.carry, template: b.template };
+  }
+  return { kind: 'blank', id: '', label: '', carry: null, template: null };
+}
+
+/** What a "Start from" choice fills in: the optional steps' values, a name suggestion, and what it carries. */
+export async function start({ startFrom } = {}) {
+  const st = await startTemplate(startFrom);
+  const T = await templates();
+  const C = await templatesCore();
+  const cur = await current();
+  const part = st.template?.plugins?.[SELF]?.data;
+  const values = part?.setup ? (({ starter, framework, skin, claude }) => ({ starter, framework, skin, claude }))(normaliseSetup(part.setup)) : cur.values;
+  let display = '';
+  if (st.kind === 'current') {
+    try { display = C.copyName(st.label, (await projectsCli()).readProjects().projects.map((p) => p.name)); } catch { display = `${st.label} copy`; }
+  } else if (st.kind === 'boilerplate') display = st.label;
+  return {
+    ok: true, kind: st.kind, id: st.id, label: st.label || cur.project.name, carry: st.carry,
+    holds: st.template ? C.describeTemplate(st.template) : 'nothing: a blank project',
+    values, suggest: { display, description: st.template?.source?.description ?? '' },
+    boilerplates: T.listBoilerplates(),
+  };
+}
+
+/** Write the template's rules and instructions files and manifest keys into the new repo (only what isn't there). */
+function writeFromTemplate(dir, template) {
+  const part = template?.plugins?.[SELF]?.data;
+  if (!part) return [];
+  const written = [];
+  for (const [rel, text] of Object.entries(part.instructions ?? {})) {
+    if (!INSTRUCTION_DIRS.some((d) => rel.startsWith(`${d}/`)) || rel.split('/').includes('..') || typeof text !== 'string') continue;
+    const f = join(dir, rel);
+    insideOrThrow(dir, f);
+    if (existsSync(f)) continue;
+    mkdirSync(dirname(f), { recursive: true });
+    writeFileSync(f, text);
+    written.push(rel);
+  }
+  const mf = join(dir, 'project.manifest.json');
+  const m = readJson(mf);
+  if (m && isObj(part.manifest)) {
+    let added = 0;
+    for (const [k, v] of Object.entries(part.manifest)) {
+      if (IDENTITY.includes(k) || k in m) continue;
+      m[k] = v; added++;
+    }
+    if (added) { writeFileSync(mf, JSON.stringify(m, null, 2) + '\n'); written.push('project.manifest.json'); }
+  }
+  return written;
+}
+
+/* ─── the draft: build a plan step by step without the UI (REST, MCP, CLI, voice) ── */
+
+const DRAFT_KEYS = ['source', 'display', 'name', 'description', 'kind', 'visibility', 'homes', 'sync', 'commitAll', 'port', 'starter', 'framework', 'skin', 'claude', 'firstPlan', 'inherit', 'switchTo', 'startFrom'];
+const isObj = (v) => !!v && typeof v === 'object' && !Array.isArray(v);
+function merge(a, b) {
+  const out = { ...(isObj(a) ? a : {}) };
+  for (const [k, v] of Object.entries(b ?? {})) out[k] = isObj(v) && isObj(out[k]) ? merge(out[k], v) : v;
+  return out;
+}
+/** draft {} reads it; draft {set:{…}} merges fields in; draft {reset:true} starts again. Returns the draft and its check. */
+export async function draft({ set, reset } = {}) {
+  const s = loadStore();
+  let d = reset ? {} : (s.draft ?? {});
+  if (isObj(set)) {
+    const clean = Object.fromEntries(Object.entries(set).filter(([k]) => DRAFT_KEYS.includes(k)));
+    d = merge(d, clean);
+  }
+  if (reset || isObj(set)) { s.draft = { ...d, updatedAt: new Date().toISOString() }; saveStore(s); }
+  const { updatedAt, ...plan } = s.draft ?? d;
+  const c = Object.keys(plan).length ? await check(plan) : { ok: false, problems: ['The draft is empty'], warnings: [] };
+  return { ok: true, draft: plan, updatedAt: updatedAt ?? null, check: { ok: c.ok, problems: c.problems, warnings: c.warnings } };
+}
 
 /* ─── actions ────────────────────────────────────────────────────────────── */
 
@@ -357,21 +652,81 @@ async function normalise(plan = {}) {
     }
   }
   out.homes.local = { path: out.dir };
-  if (!out.homes.github && !out.homes.vps) warnings.push('Only the local folder: the project has no remote copy');
-  if (source.kind === 'new') {
-    try { const b = await be(); b.templateInfo(str(source.template, 40) || 'react-ts'); if (source.boilerplate) b.loadBoilerplate(str(source.boilerplate, 60)); } catch (e) { problems.push(e.message); }
+  // the linked repo is required: a GitHub or VPS repo (new or existing), or a git folder on this server
+  const linked = !!out.homes.github || !!out.homes.vps || ['github', 'vps', 'folder'].includes(source.kind);
+  if (!linked) problems.push('Link a repo: a new or existing GitHub repo, a VPS repo, or a folder on the server');
+  else if (!out.homes.github && !out.homes.vps) warnings.push('Only the folder on the server: the project has no remote copy');
+
+  // the optional steps: a step left locked (inherit) takes the current project's value
+  // a step the plan doesn't mention follows the current project (API and voice callers name only what changes)
+  const raw = { starter: plan.starter, framework: plan.framework, skin: plan.skin, claude: plan.accounts ?? plan.claude };
+  // older callers name the template on the source: that is the "AXF template" starter
+  if (raw.starter === undefined && source.kind === 'new' && str(source.template, 40)) raw.starter = { id: 'template', template: source.template, boilerplate: source.boilerplate };
+  const inherit = { ...Object.fromEntries(OPTIONAL.map((k) => [k, raw[SETUP_KEY[k]] === undefined])),...(isObj(plan.inherit) ? plan.inherit : {}) };
+  // start from: a template (the current project or a boilerplate) sets what a locked step takes, instead of the current project
+  let start = { kind: 'blank', id: '', label: '', carry: null, template: null };
+  try { start = await startTemplate(plan.startFrom); } catch (e) { problems.push(e.message); }
+  const startSetup = start.template?.plugins?.[SELF]?.data?.setup;
+  let cur = null;
+  if (OPTIONAL.some((k) => inherit[k] === true)) cur = startSetup ? normaliseSetup(startSetup) : (await current()).values;
+  const given = normaliseSetup({ ...raw, firstPlan: plan.firstPlan });
+  const setup = { ...given };
+  for (const k of OPTIONAL) {
+    const key = SETUP_KEY[k];
+    if (inherit[k] === true && cur?.[key]) setup[key] = normaliseSetup({ [key]: cur[key] })[key];
   }
-  return { plan: out, problems, warnings };
+  out.inherit = Object.fromEntries(OPTIONAL.map((k) => [k, inherit[k] === true]));
+  out.switchTo = plan.switchTo !== false;
+  out.setup = setup;
+  out.startFrom = { kind: start.kind, id: start.id, label: start.label, carry: start.carry };
+  if (start.template && !Object.keys(start.template.plugins ?? {}).length && !start.template.profile?.rules) warnings.push(`Start from: ${start.label} has nothing to carry over beyond its settings`);
+
+  // the starter only makes code for a new repo; an existing repo or folder is its own starter
+  if (source.kind === 'new') {
+    const st = setup.starter;
+    const fw = setup.framework;
+    if (st.id === 'console-app') { out.source = { ...source, template: STARTERS[0].template, boilerplate: '' }; }
+    else if (st.id === 'template') { out.source = { ...source, template: st.template, boilerplate: st.boilerplate }; }
+    else if (st.id === 'framework') {
+      out.source = { ...source, template: '', boilerplate: '' };
+      if (fw.mode !== 'import') problems.push("Starter: the framework's boilerplate needs an imported framework (Framework step)");
+      else if (!fw.import.boilerplate) problems.push("Starter: name the imported framework's boilerplate folder");
+    } else out.source = { ...source, template: '', boilerplate: '' };
+    if (out.source.template) {
+      try { const b = await be(); b.templateInfo(out.source.template); if (out.source.boilerplate) b.loadBoilerplate(out.source.boilerplate); } catch (e) { problems.push(e.message); }
+    }
+  } else if (setup.starter.id !== 'none') {
+    warnings.push(`Starter: ${source.kind === 'folder' ? 'the folder' : 'the linked repo'} keeps its own code; the ${STARTERS.find((s) => s.id === setup.starter.id)?.label ?? setup.starter.id} starter is only recorded`);
+  }
+  // framework: an import needs a GitHub repo or a server folder; boilerplate paths stay inside the framework
+  const fw = setup.framework;
+  if (fw.mode === 'import') {
+    if (!fw.import.repo && !fw.import.path) problems.push('Framework: give the framework to import (GitHub owner/name or a folder on the server)');
+    if (fw.import.repo && !parseGithub(fw.import.repo)) problems.push('Framework: the import repo must be owner/name or a GitHub link');
+    if (fw.import.path) { try { safeFolder(fw.import.path); } catch (e) { problems.push(`Framework: ${e.message}`); } }
+    if (fw.import.boilerplate && (fw.import.boilerplate.split('/').includes('..') || isAbsolute(fw.import.boilerplate))) problems.push('Framework: the boilerplate must be a folder inside the framework');
+  }
+  if (fw.mode === 'own' && fw.name && !NAME_RE.test(slugOf(fw.name))) problems.push('Framework: give your framework a name');
+  for (const lib of fw.privateLibraries) if (!parseGithub(lib) && !isAbsolute(lib)) problems.push(`Framework: private library "${lib}" must be a GitHub owner/name or a server folder`);
+  return { plan: out, problems, warnings, template: start.template };
+}
+
+/** The stored draft as a plan (run/check {fromDraft:true}). */
+function draftPlan() {
+  const d = loadStore().draft;
+  if (!d) fail('There is no draft: set its fields first (draft {set:{…}})');
+  const { updatedAt, ...plan } = d;
+  return { ...plan, fromDraft: true };
 }
 
 export async function check(plan) {
-  const r = await normalise(plan);
+  const { template, ...r } = await normalise(plan);
   return { ok: !r.problems.length, ...r };
 }
 
 /** Steps 1-3 (see the header). */
 export async function run(plan) {
-  const { plan: p, problems, warnings } = await normalise(plan);
+  const { plan: p, problems, warnings, template } = await normalise(plan);
   if (problems.length) fail(problems.join(' · '));
   const log = [];
   const say = (m) => log.push(String(m).replace(ANSI, ''));
@@ -393,6 +748,9 @@ export async function run(plan) {
       git(dirname(p.dir), ['clone', '-q', vpsUrl(name), p.dir]);
       git(p.dir, ['remote', 'rename', 'origin', 'vps']);
       step('source', `cloned VPS ${vpsPath(name)} into ${p.dir}`);
+    } else if (s.kind === 'new' && !s.template) {
+      startFolder(p, say);
+      step('source', p.setup.starter.id === 'framework' ? `starter: boilerplate ${p.setup.framework.import.boilerplate} from the imported framework` : `new empty repo in ${p.dir}`);
     } else if (s.kind === 'new') {
       const b = await be();
       const gh2 = p.homes.github;
@@ -422,18 +780,120 @@ export async function run(plan) {
     if (r.claudeApp && !r.claudeApp.ok) step('claude-app', `${r.claudeApp.why}: give it access at ${r.claudeApp.url}`, false);
     else if (r.github) step('claude-app', 'the Claude GitHub app can see the repo (Claude.ai can attach it)');
 
-    // 3. the Claude.ai project kit
+    // 3. the setup (starter, framework, skin, Claude account and models, first plan) and the Claude.ai project kit
+    const written = [...writeSetup(p.dir, p), ...writeFromTemplate(p.dir, template)];
+    if (template) step('start-from', `${p.startFrom.kind === 'current' ? 'a copy of' : 'boilerplate'} ${p.startFrom.label}: its rules, instructions and manifest settings`);
+    step('setup', `starter ${p.setup.starter.id}, framework ${p.setup.framework.mode}, skin ${p.setup.skin.id || 'default'}, models ${Object.values(p.setup.claude.models).join('/')}${p.setup.firstPlan.text || p.setup.firstPlan.builds.length ? ', first plan' : ''}`);
     const k = writeKit(p.dir, { github: rec.github, vps: rec.vps });
-    commitAndPush(p.dir, [KIT_DIR], `Add the Claude.ai project kit for ${p.display}`, { github: rec.github, vps: !!rec.vps });
+    commitAndPush(p.dir, [KIT_DIR, ...written], `Add the project setup and the Claude.ai project kit for ${p.display}`, { github: rec.github, vps: !!rec.vps });
     step('claude-ai-kit', `${k.files.length} files in ${KIT_DIR}/`);
     rec.kit = { dir: KIT_DIR, files: k.files.map((f) => f.path) };
+    rec.setup = p.setup;
+    rec.inherit = p.inherit;
+
+    // 4. its own workspace in the console (projects@1), and switch into it
+    const ws = await openWorkspace(p, template);
+    rec.workspace = ws.id;
+    step('workspace', ws.note);
+    if (template) {
+      rec.startFrom = p.startFrom;
+      for (const line of ws.carried ?? []) say(line);
+    }
     putProject(rec);
-    return { ok: true, project: rec, log, kit: k };
+    clearDraftIf(plan);
+    return { ok: true, project: rec, log, kit: k, workspace: ws };
   } catch (e) {
     step('error', e.message, false);
     if (rec.steps.source?.ok) putProject({ ...rec, failed: e.message });
     return { ok: false, error: e.message, log, project: rec };
   }
+}
+
+/* ─── run helpers: the starter folder, the setup files, the workspace ────── */
+
+/** A new repo without an AXF template: empty, or one boilerplate folder of the imported framework. */
+function startFolder(p, say) {
+  mkdirSync(p.dir, { recursive: true });
+  if (p.setup.starter.id !== 'framework') return;
+  const fw = p.setup.framework.import;
+  let from = '';
+  let tmp = '';
+  if (fw.path) from = safeFolder(fw.path);
+  else {
+    const r = parseGithub(fw.repo);
+    tmp = mkdtempSync(join(tmpdir(), 'axf-wizard-fw-'));
+    git(tmp, ['clone', '-q', '--depth', '1', `${GIT_BASE()}/${r.owner}/${r.name}.git`, 'fw'], { auth: GIT_BASE().startsWith('https://') });
+    from = join(tmp, 'fw');
+  }
+  try {
+    const src = join(from, fw.boilerplate);
+    insideOrThrow(from, src);
+    if (!existsSync(src) || !statSync(src).isDirectory()) fail(`The framework has no boilerplate folder ${fw.boilerplate}`);
+    cpSync(src, p.dir, { recursive: true, filter: (f) => basename(f) !== '.git' && !lstatSync(f).isSymbolicLink() });
+    say(`  copied ${fw.boilerplate} from ${fw.repo || fw.path}`);
+  } finally { if (tmp) rmSync(tmp, { recursive: true, force: true }); }
+}
+
+/** The project's setup in project.manifest.json (x.setup), plus framework/README.md (own framework) and docs/FIRST_PLAN.md. */
+export function writeSetup(dir, p) {
+  const written = [];
+  const put = (rel, text) => { const f = join(dir, rel); insideOrThrow(dir, f); if (existsSync(f)) return; mkdirSync(dirname(f), { recursive: true }); writeFileSync(f, text); written.push(rel); };
+  const s = p.setup;
+  const starter = STARTERS.find((x) => x.id === s.starter.id) ?? STARTERS[0];
+  if (s.framework.mode === 'own') put('framework/README.md', `# ${s.framework.name || `${p.display} framework`}\n\nThis project's own framework, started by the AXF project wizard. Engines, assets and libraries the app builds on go here.\n`);
+  const fp = s.firstPlan;
+  if (fp.text || fp.builds.length) {
+    put('docs/FIRST_PLAN.md', `# First plan: ${p.display}\n\n${fp.text ? `${fp.text}\n\n` : ''}${fp.builds.length ? `## Builds\n\n${fp.builds.map((b) => `- [ ] ${b}`).join('\n')}\n\n` : ''}${fp.spoken ? '_Spoken into the wizard._\n' : ''}`);
+  }
+  const mf = join(dir, 'project.manifest.json');
+  insideOrThrow(dir, mf);
+  const m = readJson(mf);
+  if (m) {
+    m.x = { ...(m.x ?? {}), setup: {
+      $axf: 'project-setup@1',
+      starter: { id: starter.id, ...(starter.id === 'template' ? { template: s.starter.template, boilerplate: s.starter.boilerplate } : {}), features: starter.features, plugins: starter.plugins },
+      framework: s.framework,
+      skin: s.skin,
+      claude: s.claude,
+      firstPlan: written.includes('docs/FIRST_PLAN.md') ? 'docs/FIRST_PLAN.md' : null,
+      inherited: Object.entries(p.inherit).filter(([, v]) => v).map(([k]) => k),
+      ...(p.startFrom && p.startFrom.kind !== 'blank' ? { startedFrom: { kind: p.startFrom.kind, id: p.startFrom.id, name: p.startFrom.label } } : {}),
+      madeBy: 'project-wizard',
+    } };
+    writeFileSync(mf, JSON.stringify(m, null, 2) + '\n');
+    written.push('project.manifest.json');
+  }
+  return written;
+}
+
+/**
+ * Create the project's console workspace (projects@1) and, unless told not to, make it the active project. With a
+ * template, the new workspace gets the template's lists, notes, plans and build rules before anyone switches to it.
+ */
+async function openWorkspace(p, template = null) {
+  const P = await projectsCli();
+  const id = p.name.slice(0, 40).replace(/-+$/, '');
+  const have = P.readProjects().projects.find((x) => x.id === id);
+  if (have) {
+    if (p.switchTo && have.status !== 'archived') await P.act({ action: 'select', id });
+    return { id, created: false, active: p.switchTo && have.status !== 'archived', note: `workspace ${id} already there${p.switchTo ? ', switched to it' : ''}${template ? '; its data was left as it is' : ''}` };
+  }
+  const made = await P.act({ action: 'create', id, name: p.display, description: p.description, select: p.switchTo && !template });
+  const carried = [];
+  if (template) {
+    // the wizard's own part (setup, manifest, instructions) went into the repo above
+    const r = await (await templates()).apply(made.project, template, { skip: [SELF], log: (m) => carried.push(m) });
+    for (const x of r.problems) carried.push(`! ${x}`);
+    if (p.switchTo) await P.act({ action: 'select', id });
+  }
+  return { id, created: true, active: p.switchTo, carried, note: `workspace ${id} created${template ? ` from ${p.startFrom.label}` : ''}${p.switchTo ? ' and made the active project' : ''}` };
+}
+
+/** A run made from the draft (or one equal to it) clears the draft. */
+function clearDraftIf(plan) {
+  const s = loadStore();
+  if (!s.draft) return;
+  if (plan?.fromDraft || (s.draft.name || slugOf(s.draft.display)) === (plan.name || slugOf(plan.display))) { delete s.draft; saveStore(s); }
 }
 
 /* ─── the Claude.ai project kit ──────────────────────────────────────────── */
@@ -617,8 +1077,12 @@ export async function handle(req = {}) {
   switch (req.action) {
     case 'status': return status();
     case 'inspect': return inspect(req.source);
-    case 'check': return check(req.plan);
-    case 'run': return run(req.plan);
+    case 'check': return check(req.fromDraft ? draftPlan() : req.plan);
+    case 'run': case 'create': return run(req.fromDraft ? draftPlan() : req.plan);
+    case 'options': return options();
+    case 'start': return start(req);
+    case 'current': return { ok: true, ...(await current()) };
+    case 'draft': return draft(req);
     case 'list': return list(req);
     case 'kit': return kit(req);
     case 'link': return link(req);

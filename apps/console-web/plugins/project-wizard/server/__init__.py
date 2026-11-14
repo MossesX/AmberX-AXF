@@ -21,6 +21,11 @@ from typing import Any, Literal
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 
+try:  # the console's capability registry (absent in a bare test import)
+    import plugin_services  # type: ignore
+except ImportError:  # pragma: no cover
+    plugin_services = None  # type: ignore
+
 router = APIRouter()
 
 _PLUGIN = Path(__file__).resolve().parents[1]
@@ -101,8 +106,101 @@ class Plan(BaseModel):
     commitAll: bool = False  # a folder that isn't a git repo yet: commit everything in it (the user checked it)
 
 
+class Starter(BaseModel):
+    id: Literal["console-app", "template", "framework", "none"] = "console-app"
+    template: str = Field(default="", max_length=40)
+    boilerplate: str = Field(default="", max_length=60)
+
+
+class FrameworkImport(BaseModel):
+    repo: str = Field(default="", max_length=300)
+    path: str = Field(default="", max_length=1000)
+    boilerplate: str = Field(default="", max_length=200)
+
+
+class Framework(BaseModel):
+    mode: Literal["axf", "own", "import"] = "axf"
+    libraries: list[str] = Field(default_factory=list, max_length=40)
+    privateLibraries: list[str] = Field(default_factory=list, max_length=20)
+    name: str = Field(default="", max_length=60)
+    import_: FrameworkImport = Field(default_factory=FrameworkImport, alias="import")
+
+    model_config = {"populate_by_name": True}
+
+
+class Skin(BaseModel):
+    id: str = Field(default="", max_length=80)
+    color: str = Field(default="", max_length=80)
+
+
+class Models(BaseModel):
+    plan: Literal["opus", "fable"] = "fable"
+    build: Literal["opus", "fable"] = "opus"
+    review: Literal["opus", "fable"] = "opus"
+
+
+class Claude(BaseModel):
+    account: str = Field(default="", max_length=80)
+    ownAccount: bool = True
+    models: Models = Field(default_factory=Models)
+
+
+class FirstPlan(BaseModel):
+    text: str = Field(default="", max_length=8000)
+    builds: list[str] = Field(default_factory=list, max_length=20)
+    spoken: bool = False
+
+
+class Inherit(BaseModel):
+    """A step left locked follows the current project's value (the grayed-out field in the wizard)."""
+    starter: bool | None = None
+    framework: bool | None = None
+    skin: bool | None = None
+    accounts: bool | None = None
+
+
+class Carry(BaseModel):
+    items: Literal["structure", "all", "none"] = "structure"
+    builds: bool = False
+
+
+class StartFrom(BaseModel):
+    """What the new project starts from: blank, a copy of the current project, or a saved boilerplate (by id)."""
+    kind: Literal["blank", "current", "boilerplate"] = "blank"
+    id: str = Field(default="", max_length=80)
+    carry: Carry = Field(default_factory=Carry)
+
+
+class StartReq(BaseModel):
+    startFrom: StartFrom = Field(default_factory=StartFrom)
+
+
+class FullPlan(Plan):
+    starter: Starter | None = None
+    framework: Framework | None = None
+    skin: Skin | None = None
+    claude: Claude | None = None
+    firstPlan: FirstPlan = Field(default_factory=FirstPlan)
+    inherit: Inherit = Field(default_factory=Inherit)
+    switchTo: bool = True  # make it the active project when it is made
+    startFrom: StartFrom | None = None
+
+
+def _plan(p: FullPlan) -> dict[str, Any]:
+    """The plan for the engine: unset steps stay out (they follow the current project), `import` keeps its name."""
+    d = p.model_dump(by_alias=True, exclude_none=True)
+    d["inherit"] = {k: v for k, v in (d.get("inherit") or {}).items() if v is not None}
+    return d
+
+
 class PlanReq(BaseModel):
-    plan: Plan
+    plan: FullPlan | None = None
+    fromDraft: bool = False  # use the stored draft (built step by step through /draft)
+
+
+class DraftReq(BaseModel):
+    set: dict[str, Any] | None = None
+    reset: bool = False
 
 
 class NameReq(BaseModel):
@@ -127,9 +225,17 @@ def inspect(src: Source) -> dict[str, Any]:
     return _ok(_engine({"action": "inspect", "source": src.model_dump()}, timeout=40))
 
 
+def _plan_req(req: PlanReq) -> dict[str, Any]:
+    if req.fromDraft:
+        return {"fromDraft": True}
+    if req.plan is None:
+        raise HTTPException(422, "give a plan, or fromDraft: true")
+    return {"plan": _plan(req.plan)}
+
+
 @router.post("/check")
 def check(req: PlanReq) -> dict[str, Any]:
-    r = _engine({"action": "check", "plan": req.plan.model_dump()}, timeout=60)
+    r = _engine({"action": "check", **_plan_req(req)}, timeout=60)
     if "problems" not in r:
         raise HTTPException(400, r.get("error", "could not check the plan"))
     return r
@@ -139,7 +245,58 @@ def check(req: PlanReq) -> dict[str, Any]:
 def run(req: PlanReq) -> dict[str, Any]:
     with _writing():
         # cloning, axf init, pushes and repo creation: give it time; failures come back with the log
-        return _engine({"action": "run", "plan": req.plan.model_dump()}, timeout=900)
+        return _engine({"action": "run", **_plan_req(req)}, timeout=900)
+
+
+@router.post("/create")
+def create(req: PlanReq) -> dict[str, Any]:
+    """Review and create in one call: the plan (or the draft), checked, made, and switched into."""
+    return run(req)
+
+
+def _accounts() -> list[dict[str, Any]]:
+    """The Claude accounts on the VPS through axf.claude-accounts@1: names, kinds and plans only, no credentials."""
+    svc = plugin_services.get("axf.claude-accounts@1") if plugin_services else None
+    if svc is None:
+        return []
+    try:
+        v = svc.view()
+    except Exception:  # noqa: BLE001 - the wizard works without it
+        return []
+    return [{"name": a.get("name", ""), "kind": a.get("kind", ""), "plan": a.get("plan", ""), "email": a.get("email", ""), "active": bool(a.get("active"))}
+            for a in v.get("accounts") or [] if a.get("name")]
+
+
+@router.get("/options")
+def options() -> dict[str, Any]:
+    """Every step's choices (starters, frameworks, libraries, skins, models, Claude accounts) and the current project's values."""
+    r = _ok(_engine({"action": "options"}, timeout=40))
+    r["accounts"] = _accounts()
+    return r
+
+
+@router.post("/start")
+def start(req: StartReq) -> dict[str, Any]:
+    """What a "Start from" choice fills in: the optional steps' values, a name suggestion, and what comes along."""
+    return _ok(_engine({"action": "start", "startFrom": req.startFrom.model_dump()}, timeout=60))
+
+
+@router.get("/current")
+def current() -> dict[str, Any]:
+    """The active project and the values the wizard's optional steps start on."""
+    return _ok(_engine({"action": "current"}, timeout=40))
+
+
+@router.get("/draft")
+def draft_get() -> dict[str, Any]:
+    return _ok(_engine({"action": "draft"}, timeout=60))
+
+
+@router.post("/draft")
+def draft_set(req: DraftReq) -> dict[str, Any]:
+    """Fill the wizard one step at a time without the UI (voice: 'call the new project Garden')."""
+    with _writing():
+        return _ok(_engine({"action": "draft", "set": req.set, "reset": req.reset}, timeout=60))
 
 
 @router.get("/list/{location}")
