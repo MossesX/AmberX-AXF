@@ -10,6 +10,8 @@ Every UI a build makes is submitted here for Brett's approval (review-item@1), o
   GET  shot?path=r<n>/<file> | items/<id>/<file>    one screenshot (png/jpg/webp)
   GET  picks / PUT picks {picked: [ids]}             design-pack picks (the page allows 3)
   GET  state?branch=&pr=      ui-review@1: the strictest status of that branch's / PR's items, holds = don't merge yet
+  GET  prs                    the PRs that have items, newest first (pr, total, waiting, open, title, build, branch)
+  GET  by-pr?pr=&status=      one PR's items (#647, 647 or a PR link), its ui-review@1 state and the deep link that opens them
   …    settings, predicted, predict, predict/real, approve-look
   …    choices/*                  the options a build shipped, Brett's pick, option assets (ui-choices@1, choices.py)
                               predicted looks (ui-prediction@1, predicted.py): a build's mockup waits here before it runs
@@ -590,6 +592,60 @@ def state(branch: str = "", pr: str = "") -> dict:
     if not branch and not p:
         raise HTTPException(400, "give a branch or a pr")
     return review_state(_submitted(_items_doc()), branch[:200], p)
+
+
+_PR_RE = re.compile(r"^(?:#|pr\s*#?\s*|pull/)?(\d{1,7})$")
+_PR_URL_RE = re.compile(r"/pull/(\d{1,7})(?:[/?#].*)?$")
+PR_PARAM = "ui-review-pr"
+
+
+def parse_pr(v: Any) -> int | None:
+    """A PR number from 647, "#647", "pr647", "PR 647", "pull/647" or a GitHub PR link (review-core.mjs parsePr)."""
+    if isinstance(v, bool):
+        return None
+    if isinstance(v, int):
+        return v if v > 0 else None
+    t = str(v or "").strip().lower()
+    m = _PR_RE.match(t) or _PR_URL_RE.search(t)
+    n = int(m.group(1)) if m else 0
+    return n if n > 0 else None
+
+
+def pr_list(items: list[dict]) -> list[dict]:
+    """The PRs that have items, newest PR first (review-core.mjs prList)."""
+    by: dict[int, dict] = {}
+    for it in items:
+        pr = parse_pr(it.get("pr")) if isinstance(it, dict) else None
+        if not pr:
+            continue
+        e = by.setdefault(pr, {"pr": pr, "total": 0, "waiting": 0, "open": 0, "title": "", "build": "", "branch": "", "at": ""})
+        e["total"] += 1
+        st = it.get("status", "waiting")
+        e["waiting"] += st == "waiting"
+        e["open"] += st != "approved"
+        at = str(it.get("updatedAt") or it.get("submittedAt") or "")
+        if not e["title"] or at > e["at"]:
+            e.update(title=it.get("title", ""), build=it.get("build", ""), branch=it.get("branch", ""), at=at)
+    return [{k: v for k, v in e.items() if k != "at"} for e in sorted(by.values(), key=lambda e: -e["pr"])]
+
+
+@router.get("/prs")
+def get_prs() -> dict:
+    prs = pr_list(_submitted(_items_doc()))
+    return {"prs": prs, "total": len(prs)}
+
+
+@router.get("/by-pr")
+def get_by_pr(pr: str = "", status: str = "") -> dict:
+    p = parse_pr(pr)
+    if not p:
+        raise HTTPException(400, "give a PR: 647, #647 or a PR link")
+    mine = [it for it in _submitted(_items_doc()) if parse_pr(it.get("pr")) == p]
+    if status:
+        mine = [it for it in mine if (it.get("status") != "approved" if status == "open" else it.get("status") == status)]
+    stored = {it["id"]: it for it in _stored_items(_items_doc())[0]["items"]}
+    return {"pr": p, "state": review_state(_submitted(_items_doc()), "", p), "items": [stored.get(it["id"], it) for it in mine],
+            "open": {"view": "ui-review", "action": "ui-review.pr", "args": [str(p)], "link": f"/?{PR_PARAM}={p}"}}
 
 
 def index() -> dict:

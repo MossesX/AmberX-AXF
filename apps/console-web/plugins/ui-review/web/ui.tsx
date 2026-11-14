@@ -1,5 +1,5 @@
-import { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { AgentAvatar, Button, Checkbox, Icon, IconButton, Segmented, SelectField, TabGroup, useRuntime } from '@console/axf/react';
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { AgentAvatar, Button, Checkbox, Icon, IconButton, Segmented, SelectField, TabGroup, useControlTarget, useRuntime } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import { OriginFor } from '@console/buildOrigin';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
@@ -221,6 +221,14 @@ export function UiReviewPage({ section, tab: tabProp }: { section?: string; tab?
   const appList = useMemo(() => core.apps(all), [all]);
   const prs = useMemo(() => core.prList(all), [all]);
   const rows = useMemo(() => core.sortItems(core.filterItems(all, { kind, status, app, q, group: groupId, pr }), sort), [all, kind, status, app, q, groupId, pr, sort]);
+  // console-control@1 `view:ui-review/setting:pr`: state = the PR shown + the PRs that have items; set = a PR (#42, 42, a PR link) or '' for every PR
+  const prEl = useRef<HTMLDivElement | null>(null);
+  const prTarget = useControlTarget({
+    address: 'view:ui-review/setting:pr', kind: 'setting', label: 'PR filter', detail: 'UI Review: show one PR\'s items', keywords: ['pr', 'pull request', 'filter', ...prs.slice(0, 20).map((x) => `#${x.pr}`)],
+    element: () => prEl.current, can: ['open', 'state', 'focus', 'set'], get: () => (pr ? `#${pr}` : ''),
+    set: (v) => { const t = String(v ?? '').trim(); if (!t || /^(all|every|none|any)( prs?)?$/i.test(t)) { setPr(null); return undefined; } const n = core.parsePr(t); if (!n) return `"${t}" is not a PR number`; setTabRaw('review'); setPr(n); return undefined; },
+    state: () => ({ pr, shown: rows.length, prs }),
+  }, [pr, prs, rows.length]);
   const groupName = groupId ? String(all.find((x) => x.group === groupId)?.groupName || 'this group') : '';
   const picked = data?.picks.picked ?? [];
 
@@ -285,7 +293,7 @@ export function UiReviewPage({ section, tab: tabProp }: { section?: string; tab?
           </div>
         )}
         {pr && (
-          <div className="fx-row fx-row--wrap" data-axf-target="view:ui-review/filter:pr">
+          <div className="fx-row fx-row--wrap">
             <span className="fx-small">Showing PR <b>#{pr}</b> ({rows.length}){prs.some((x) => x.pr === pr) ? '' : ' · no items for this PR yet'}</span>
             <Button size="sm" tone="quiet" onClick={() => setPr(null)}>Every PR</Button>
           </div>
@@ -294,9 +302,11 @@ export function UiReviewPage({ section, tab: tabProp }: { section?: string; tab?
           <input className="fx-input axp-ui-review__search" value={q} onChange={(e) => setQ(e.target.value)}
             onKeyDown={(e) => { const n = core.parsePr(q); if (e.key === 'Enter' && n && /^\s*(#|pr)/i.test(q)) { setPr(n); setQ(''); } }}
             placeholder="Search: title, app, branch, #PR (Enter on #PR filters to it)…" aria-label="Search" />
-          <SelectField label="PR" className="axp-ui-review__prpick" value={pr ? String(pr) : ''} empty={`Every PR (${prs.length})`}
+          <div ref={(d) => { prEl.current = d; prTarget(d); }} className="axp-ui-review__prpick">
+          <SelectField label="PR" value={pr ? String(pr) : ''} empty={`Every PR (${prs.length})`}
             options={[...(pr && !prs.some((x) => x.pr === pr) ? [{ value: String(pr), label: `#${pr} · no items` }] : []), ...prs.map((x) => ({ value: String(x.pr), label: core.prLabel(x) }))]}
             onChange={(v) => setPr(core.parsePr(v))} />
+          </div>
           <select className="fx-input axp-ui-review__sel" value={status} onChange={(e) => setStatus(e.target.value)} aria-label="Status">
             <option value="">Every status</option><option value="open">Not approved</option>
             {core.STATUSES.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}
