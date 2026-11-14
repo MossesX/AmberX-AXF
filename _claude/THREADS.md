@@ -796,7 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 02:10 UTC · `console-app-land-parts-1-4-build-apk` → pending, note (all) · pipeline
 - 2026-11-14 03:29 UTC · `hotfix-get-main-ci-green-theme-swap` added (3 steps) (all) · voice
 - 2026-11-14 03:33 UTC · `icon-map-icon-packs-every-icon-badge-app` → running, note (all) · voice
 - 2026-11-14 03:34 UTC · `icon-map-icon-packs-every-icon-badge-app` → queued, note (all) · pipeline
@@ -1196,6 +1195,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 22:56 UTC · `hotfix-desktop-console-draws-app-menu` note (all) · orchestrator
 - 2026-11-14 22:57 UTC · `hotfix-desktop-console-draws-app-menu` note (all) · pipeline
 - 2026-11-14 22:57 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` → running, note (all) · pipeline
+- 2026-11-14 22:57 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` → running, note (all) · orchestrator
 
 ## Token passes (log)
 

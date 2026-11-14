@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5517,
- "updatedAt": "2026-11-14T22:57:20.688Z",
+ "rev": 5518,
+ "updatedAt": "2026-11-14T22:57:34.145Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -175431,7 +175431,7 @@
    "mergedAt": "2026-11-13T06:23:47Z",
    "priority": "P0",
    "createdAt": "2026-11-12T22:16:05.972Z",
-   "updatedAt": "2026-11-14T22:57:16.879Z",
+   "updatedAt": "2026-11-14T22:57:24.235Z",
    "builtAt": "",
    "notes": [
     {
@@ -175515,6 +175515,10 @@
      "at": "2026-11-13T06:32:10Z"
     },
     {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-fix-conflicts-and-land-build-plan-1-skins-one-ro--rhonda, shared account login)",
+     "at": "2026-11-14T22:57:24.235Z"
+    },
+    {
      "text": "Started run 2 on mossesx-max- (Opus, Phase 1): axf-fix-conflicts-and-land-build-plan-1-skins-one-ro--rhonda.",
      "at": "2026-11-14T22:57:16.879Z"
     }
@@ -175537,11 +175541,11 @@
     "queuedAt": "2026-11-13T06:12:03.824Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-fix-conflicts-and-land-build-plan-1-skins-one-ro--rhonda",
+    "session": "",
     "slot": "",
     "model": "Opus",
-    "launchedAt": "2026-11-14T22:57:15.844Z",
-    "runs": 2,
+    "launchedAt": "2026-11-13T06:14:29.774Z",
+    "runs": 1,
     "lastRun": {
      "at": "2026-11-13T06:23:31.791Z",
      "exit": 0,
@@ -175552,9 +175556,9 @@
     },
     "split": null,
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
     "route": "",
-    "dispatchedAt": "2026-11-14T22:57:15.844Z",
+    "dispatchedAt": "2026-11-13T06:14:29.774Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -175563,7 +175567,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-14T22:57:15.844Z",
+    "pickedAt": "2026-11-13T06:14:29.774Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
