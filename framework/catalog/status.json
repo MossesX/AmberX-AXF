@@ -727,6 +727,12 @@
     "wave": 1,
     "module": "axf-ui"
   },
+  "ui.opacity.surfaces": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-ui",
+    "notes": "Style theme opacityDialog / opacitySettings / opacityPanel / opacityMenu / opacityToolbar / opacityBanner (default 1 = opaque; below 1 = see-through + frosted backdrop) → --fx-opacity-<kind> + --fx-backdrop-<kind> (engines/theme.ts SURFACE_KINDS); every surface root in axf.css reads its own; Token Control tokens.style + Element Explorer; per window: Window settings → Background (WindowSettings.surface); check-theme rule surface fails on a surface background without an --fx-opacity-* token. Kotlin twin deferred."
+  },
   "ui.a11y": {
     "status": "built",
     "wave": 1,
@@ -2287,6 +2293,12 @@
     "wave": 1,
     "module": "app-console",
     "notes": "framework/core/build-id.mjs: ids ≤ 40 chars (^[a-z0-9][a-z0-9-]{0,39}$), filler words dropped, cut at a dash, -2/-3 on a collision; used by request, orchestrator add/import/harvest, Pending and Plan Studio. Legacy long ids get an alias (pipeline.mjs aliases, the tick for live builds); land-alias links <worktrees>/<alias> and claude/<alias> for build_land. Kotlin twin deferred."
+  },
+  "cx.phonebridge": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "apps/console-droid (DeviceBridge, BridgeContract, HubLink, DeviceTools, MicTools; JUnit) + apps/console-web/src/native (bridgeClient.mjs window.axfNative, deviceApi.ts device.* actions, panel:phone-bridge state; Node tests in CI). Recorder stays in AmberX until its capture service moves (recorder@1 not advertised). Four console slots at once (SlotRules/SlotHost, slots.* tools, device.slots action, console-slots@1). Kotlin twin deferred."
   },
   "cx.contextmenu.consolesettings": {
     "status": "built",

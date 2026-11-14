@@ -49,7 +49,13 @@ final class WebHost {
         s.setUserAgentString(s.getUserAgentString() + " AXFConsoleApp/" + BuildConfigInfo.version(c));
         web.setWebViewClient(new Client());
         web.setWebChromeClient(new Chrome());
-        NativeBridge.install(web);
+        NativeBridge.install(web); // part 1: window.axfNativeHost (overlay, insets, info, …)
+        if (activity != null) {
+            // part 3: window.axfBridgeHost (native-bridge@1 tools); the page merges both into one window.axfNative
+            bridge = DeviceBridge.attach(activity, web);
+            DeviceTools.register(bridge, activity);
+            MicTools.register(bridge, activity);
+        }
         web.loadUrl(firstUrl == null ? ShellRules.HOME : firstUrl);
         ContentUpdate.start();
         DeviceLink.ensure(c); // axHub's amberx device service (amberx.open_url) answers from here
@@ -57,6 +63,9 @@ final class WebHost {
     }
 
     static WebView current() { return web; }
+
+    /** The native-bridge@1 dispatcher on the one WebView (null until the activity first creates it). */
+    static DeviceBridge bridge;
 
     /** Moves the WebView into {@code parent} (the activity's root or the overlay window), using its context for popups. */
     static void attach(ViewGroup parent, Context owner) {
@@ -122,6 +131,7 @@ final class WebHost {
             NativeBridge.currentUrl = url == null ? "" : url;
             Insets.push(); // the page gets the safe-area insets as soon as it can use them
             ContentUpdate.pageLoaded(view, url);
+            if (bridge != null) bridge.onPageFinished(view, url); // window.axfNative on Brett's other pages too
         }
     }
 
@@ -142,6 +152,8 @@ final class WebHost {
             String origin = req.getOrigin() == null ? "" : req.getOrigin().toString();
             if (!ShellRules.bridgeAllowed(origin)) { req.deny(); return; }
             for (String r : req.getResources()) {
+                // the phone's mic switch (mic.set) is off: the page gets no audio
+                if (PermissionRequest.RESOURCE_AUDIO_CAPTURE.equals(r) && !MicTools.webCaptureAllowed(view(req), origin)) { req.deny(); return; }
                 if (PermissionRequest.RESOURCE_AUDIO_CAPTURE.equals(r) && !Perms.has(view(req), Perms.MIC)) {
                     Perms.request(Perms.MIC, () -> { if (Perms.has(view(req), Perms.MIC)) req.grant(req.getResources()); else req.deny(); });
                     return;

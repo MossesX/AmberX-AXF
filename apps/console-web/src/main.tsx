@@ -6,6 +6,8 @@ import { AxfProvider } from './axf/react';
 import manifest from '../axf.manifest.json';
 import { registerActions } from './actions';
 import { App } from './App';
+import { installBridge } from './native/bridgeClient.mjs';
+import { installDeviceApi } from './native/deviceApi';
 import './axf/ui/axf.css';
 import './console.css';
 
@@ -25,6 +27,9 @@ const axf = createAxf({
   assets: Object.values(assetModules),
 });
 registerActions(axf);
+// Inside the Android console app: window.axfNative (native-bridge@1, apps/console-droid/BRIDGE.md); elsewhere a no-op.
+installBridge(window);
+installDeviceApi(axf);
 
 // One-time move to the new default toolbar for browsers that saved their choices before saves recorded the
 // app's defaults (newer saves carry them, and the runtime adopts a changed default by itself).

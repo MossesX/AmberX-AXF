@@ -1352,6 +1352,14 @@
               "suggests": []
             },
             {
+              "id": "ui.opacity.surfaces",
+              "title": "Surface transparency tokens: every dialog, settings window, panel, menu, toolbar and banner reads its own opacity",
+              "note": "",
+              "tag": "core",
+              "recommended": true,
+              "suggests": []
+            },
+            {
               "id": "ui.icons",
               "title": "Icon registry (Material Symbols + custom packs, swappable as an asset)",
               "note": "",
@@ -2597,6 +2605,10 @@
                   "title": "An open console follows the live deploy: index.html never cached, entry-bundle check on return and every 30 min, reload off screen in the app or the reload bar"
                 }
               ]
+              },
+              {
+              "id": "cx.phonebridge",
+              "title": "Phone native bridge (native-bridge@1): window.axfNative in the Android console app for mic, permissions, notifications, open_url, console wake and the recorder, the axHub amberx device service moved from AmberX, and every tool reachable as device.* console actions (REST, MCP, CLI, voice)"
             }
           ]
         }

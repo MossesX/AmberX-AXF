@@ -1026,6 +1026,56 @@
         "text": "Narrows the hits: everything, screens and tabs, settings, buttons, plugins, or the rows and steps loaded right now."
       },
       {
+        "target": "action:device.state",
+        "title": "Phone app state",
+        "text": "Shows the Android console app's version, the phone and which native tools it has. Outside the app it says the app isn't here."
+      },
+      {
+        "target": "action:device.tool",
+        "title": "Run a phone tool",
+        "text": "Runs any native tool on the phone by name, e.g. device.tool:bridge.capabilities or device.tool:amberx.open_url:{\"url\":\"…\"}."
+      },
+      {
+        "target": "action:device.mic",
+        "title": "Phone mic switch",
+        "text": "Turns the console's mic on or off on the phone, or says why it can't listen (switched off or no Android permission)."
+      },
+      {
+        "target": "action:device.permission",
+        "title": "Ask the phone for a permission",
+        "text": "Asks Android for the mic, notifications or the floating window; with status, lists what is allowed."
+      },
+      {
+        "target": "action:device.open",
+        "title": "Open a page on the phone",
+        "text": "Opens one of your own https pages in the console app, or in the phone's browser with device.open:browser:<url>."
+      },
+      {
+        "target": "action:device.wake",
+        "title": "Wake the console on the phone",
+        "text": "Brings the console app to the front and turns the screen on, at a console address when you give one."
+      },
+      {
+        "target": "action:device.notify",
+        "title": "Phone notification",
+        "text": "Shows a notification on the phone: device.notify:<title>:<text>."
+      },
+      {
+        "target": "action:device.notify-cancel",
+        "title": "Clear a phone notification",
+        "text": "Clears a notification by id, or lists the ones showing."
+      },
+      {
+        "target": "action:device.recorder",
+        "title": "Phone recorder",
+        "text": "Starts, stops or checks the phone recorder. AmberX still records until its capture service moves to the console app."
+      },
+      {
+        "target": "action:device.slots",
+        "title": "Console slots on the phone",
+        "text": "Runs up to four consoles side by side in the phone app: device.slots:open:<address>[:<slot>] opens one, close:<slot> and focus:<slot> manage them, status lists them. The focused slot has the keyboard and the mic."
+      },
+      {
         "target": "action:native.overlay",
         "title": "Phone: floating toolbar",
         "text": "Drives the console app's floating toolbar on the phone: expand it to the full-screen console, collapse it, toggle, show approvals or hide the approval bar.",

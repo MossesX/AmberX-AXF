@@ -15,10 +15,10 @@ import java.util.Map;
 final class OverlayRules {
     private OverlayRules() {}
 
-    /** The overlay's states: the small toolbar, the toolbar with the approval bar, the full-screen console. */
-    static final String TOOLBAR = "toolbar", APPROVALS = "approvals", EXPANDED = "expanded";
+    /** The overlay's states: the small toolbar, the toolbar with the approval bar, the full-screen console ({@link OverlayContract}). */
+    static final String TOOLBAR = OverlayContract.TOOLBAR, APPROVALS = OverlayContract.APPROVALS, EXPANDED = OverlayContract.EXPANDED;
     /** The console action that shows the approvals list (the bar's "Open approvals" link; also axf-console://open/approvals.view). */
-    static final String APPROVALS_PAGE = "approvals.view";
+    static final String APPROVALS_PAGE = OverlayContract.APPROVALS_TARGET;
 
     /** The settings the shell reads (keys of {@code approvals-banner.overlay.*}, without the prefix). */
     static final class Config {
@@ -35,7 +35,7 @@ final class OverlayRules {
         int idleOpacity = 85;
     }
 
-    static final String PREFIX = "approvals-banner.overlay.";
+    static final String PREFIX = OverlayContract.SETTING_PREFIX;
 
     /** A config from the page's settings (full keys or short keys; strings, numbers or booleans), clamped. */
     static Config config(Map<String, Object> raw) {

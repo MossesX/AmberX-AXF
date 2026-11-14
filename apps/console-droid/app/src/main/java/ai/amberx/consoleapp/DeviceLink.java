@@ -107,7 +107,7 @@ final class DeviceLink {
         JSONArray caps = new JSONArray();
         for (String c : DeviceRules.CAPABILITIES) caps.put(c);
         JSONObject p = new JSONObject().put("deviceId", id).put("name", (Build.MANUFACTURER + " " + Build.MODEL).trim())
-            .put("app", DeviceRules.APP).put("capabilities", caps).put("state", new JSONObject());
+            .put("app", DeviceRules.APP_ID).put("capabilities", caps).put("state", new JSONObject());
         return envelope("hello", null, p);
     }
 
