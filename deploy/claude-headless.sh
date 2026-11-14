@@ -146,28 +146,33 @@ start_watch_live() {   # $1 = session name; prints the watcher pid (empty when o
 LOGIN_JS="$HERE/claude-login.mjs"
 TOKEN_JS="$HERE/claude-token-save.mjs"
 ORCH_JS="$HERE/../apps/console-web/plugins/build-orchestrator/orchestrator.mjs"  # axf-plugin:build-orchestrator
-login_session="" login_dir="" login_account="" login_email="" login_source="" login_token="" login_kind=""
+login_session="" login_dir="" login_account="" login_email="" login_source="" login_token="" login_kind="" login_config=""
 own_login() {   # $1 = account (active | live | <saved name>): snapshot it for this run; never stops the run
   [[ "${AXF_OWN_LOGIN:-on}" == off ]] && return 0
   command -v node >/dev/null && [[ -f "$LOGIN_JS" ]] || { printf 'claude-login: not available; this run uses the shared login\n' >&2; return 0; }
   local out sh
   out="$(node "$LOGIN_JS" snapshot --dir "$(pwd)" --session "$login_session" --account "${1:-active}" --sh 2>&1)"
-  sh="$(grep -E "^login_dir='[^']+' login_account='[a-z0-9-]+' login_email='[^']*' login_source=(saved|live) login_token=[01]( login_kind=(api|subscription))?\$" <<<"$out" | tail -1)"
+  sh="$(grep -E "^login_dir='[^']+' login_account='[a-z0-9-]+' login_email='[^']*' login_source=(saved|live) login_token=[01]( login_kind=(api|subscription))?( login_config='[^']+')?\$" <<<"$out" | tail -1)"
   if [[ -z "$sh" ]]; then printf '\033[33mclaude-login: %s · this run uses the shared login\033[0m\n' "${out##*$'\n'}" >&2; return 0; fi
   eval "$sh"
   [[ -d "$login_dir" && -O "$login_dir" ]] || return 0
-  export CLAUDE_CONFIG_DIR="$login_dir"
+  # a saved subscription runs in its account's one shared config dir (every build on it shares one credentials file)
+  [[ -n "$login_config" && -d "$login_config" && -O "$login_config" ]] || login_config="$login_dir"
+  export CLAUDE_CONFIG_DIR="$login_config"
   # shellcheck disable=SC1091
   source "$login_dir/token.env"   # the account's saved token, else `unset CLAUDE_CODE_OAUTH_TOKEN`: the copy wins
   # a rotated token goes back to the saved login straight away; the watcher ends with the copy or this run
   [[ -f "$TOKEN_JS" ]] && { nohup node "$TOKEN_JS" watch --copy "$login_dir" ${inner:+--parent "$$"} >/dev/null 2>&1 & disown; }
-  login_line="# login ${login_account}${login_email:+ (${login_email})} · own copy (${login_source})${login_kind:+$([[ "$login_kind" == api ]] && echo ' · API key, billed per token')}"
+  local how='own copy'; [[ "$login_config" != "$login_dir" ]] && how='shared account login'
+  login_line="# login ${login_account}${login_email:+ (${login_email})} · ${how} (${login_source})${login_kind:+$([[ "$login_kind" == api ]] && echo ' · API key, billed per token')}"
   tmux set-option -t "=$(tmux display-message -p '#S' 2>/dev/null)" @axf_login "${login_account}${login_email:+ (${login_email})}" >/dev/null 2>&1 || true
   event session-login "$login_session"
+  # every sign-in is verified with Anthropic and reported to the phone (claude-login-notify.mjs); never delays the run
+  [[ -f "$HERE/claude-login-notify.mjs" ]] && { nohup node "$HERE/claude-login-notify.mjs" verify --dir "$(pwd)" --session "$login_session" --build "${name:-$login_session}" >/dev/null 2>&1 & disown; }
   local bid=""   # the orchestrator build this run belongs to: a note says which account it runs on
   read -r _ bid < <(node "$HERE/../framework/cli/build-priority.mjs" slot --name "$name" --brief "$brief" 2>/dev/null) || true
   [[ -n "$bid" && -f "$ORCH_JS" && "${AXF_LOGIN_NOTE:-on}" != off ]] && \
-    (node "$ORCH_JS" act note "$bid" "Claude account: ${login_account}${login_email:+ (${login_email})} (${login_session}, own login copy)" >/dev/null 2>&1 &)  # axf-plugin:build-orchestrator
+    (node "$ORCH_JS" act note "$bid" "Claude account: ${login_account}${login_email:+ (${login_email})} (${login_session}, ${how/own copy/own login copy})" >/dev/null 2>&1 &)  # axf-plugin:build-orchestrator
   return 0
 }
 WORKERS_JS="$HERE/claude-workers.mjs"
@@ -200,8 +205,8 @@ build_note() {   # one line on the orchestrator build this run belongs to
 }
 release_login() {
   [[ -n "$login_dir" && -f "$LOGIN_JS" ]] && node "$LOGIN_JS" release --dir "$(pwd)" --session "$login_session" >/dev/null 2>&1
-  [[ -n "$login_dir" && "${CLAUDE_CONFIG_DIR:-}" == "$login_dir" ]] && unset CLAUDE_CONFIG_DIR
-  login_dir="" login_line=""; return 0
+  [[ -n "$login_dir" && ( "${CLAUDE_CONFIG_DIR:-}" == "$login_dir" || "${CLAUDE_CONFIG_DIR:-}" == "$login_config" ) ]] && unset CLAUDE_CONFIG_DIR
+  login_dir="" login_config="" login_line=""; return 0
 }
 
 GATE="$HERE/../framework/cli/model-gate.mjs"

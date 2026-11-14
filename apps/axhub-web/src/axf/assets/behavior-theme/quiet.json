@@ -14,7 +14,12 @@
       "speed": "normal",
       "easing": "linear",
       "reduced": "system",
-      "entrance": "none"
+      "entrance": "none",
+      "swatches": "ripple",
+      "skinSwitch": "fade",
+      "picker": "pop",
+      "animSpeed": 90,
+      "animIntensity": 30
     },
     "interaction": {
       "hover": "underline",
