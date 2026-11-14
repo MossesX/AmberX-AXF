@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5438,
- "updatedAt": "2026-11-14T22:23:18.421Z",
+ "rev": 5439,
+ "updatedAt": "2026-11-14T22:24:48.736Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -222972,7 +222972,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-14T22:15:48.311Z",
-   "updatedAt": "2026-11-14T22:18:14.912Z",
+   "updatedAt": "2026-11-14T22:24:47.006Z",
    "builtAt": "",
    "notes": [
     {
@@ -223009,12 +223009,12 @@
    "pipeline": {
     "queuedAt": "2026-11-14T22:15:50.378Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-replace-merge-queue-one-time-landing--sully",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Fable",
-    "launchedAt": "2026-11-14T22:18:10.726Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-14T22:17:52.893Z",
@@ -223026,10 +223026,10 @@
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-14T22:18:10.726Z",
+    "dispatchedAt": "",
     "planned": null,
     "tried": [],
-    "pickedAt": "2026-11-14T22:18:10.726Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -223053,12 +223053,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T22:24:47.006Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T22:17:52.893Z",
-     "updatedAt": "2026-11-14T22:17:52.893Z"
+     "updatedAt": "2026-11-14T22:24:47.246Z"
     },
     {
      "id": "s2",
