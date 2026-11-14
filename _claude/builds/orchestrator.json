@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T00:46:19.193Z",
+ "updatedAt": "2026-11-14T00:46:34.345Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -136254,15 +136254,15 @@
    "title": "Voice listener: use Claude when connected (setting)",
    "category": "",
    "detail": "Follow-up to console-app-wake-word-voice-listener (scripted, offline command catalog plus spoken wizard). Add a setting 'Understand with Claude when connected' (default ON). When the Claude badge is green, the transcribed speech goes to Claude with the voice command catalog (from the API registry) as tools, so Brett can talk freely: Claude picks the command, fills fields from what he said, asks only for what's missing, and confirms destructive actions. When Claude isn't connected or times out, it falls back to the scripted matcher and wizard, with a small 'offline mode' indicator. Approvals still need an explicit spoken approve/deny. Show which mode handled each command in the history. Full API and voice ('use Claude for voice'). Tests, help, Shipped features.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/voice-listener-use-claude-when-connected",
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T23:42:29.374Z",
-   "updatedAt": "2026-11-14T00:46:17.435Z",
+   "updatedAt": "2026-11-14T00:46:25.549Z",
    "builtAt": "",
    "notes": [
     {
@@ -136276,6 +136276,14 @@
     {
      "text": "Split by Claude into 14 steps (0 Fable).",
      "at": "2026-11-13T23:52:35.076Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-voice-listener-use-claude-when-connected--earl.",
+     "at": "2026-11-14T00:46:21.608Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-voice-listener-use-claude-when-connected--earl, own login copy)",
+     "at": "2026-11-14T00:46:25.548Z"
     }
    ],
    "approvals": [],

@@ -792,9 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 19:47 UTC · `skin-config-panel-merge-main-and-land` added (0 steps) (all) · console
-- 2026-11-13 19:47 UTC · `skin-config-panel-merge-main-and-land` → queued, note (all) · console
-- 2026-11-13 19:47 UTC · `skins-plugin-merge-main-and-land` added (0 steps) (all) · console
 - 2026-11-13 19:47 UTC · `skins-plugin-merge-main-and-land` → queued, note (all) · console
 - 2026-11-13 19:48 UTC · `skin-config-panel-merge-main-and-land` → queued, note (all) · builds-live
 - 2026-11-13 19:48 UTC · `skins-plugin-merge-main-and-land` added (0 steps) (all) · builds-live
@@ -1192,6 +1189,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 00:45 UTC · `console-app-land-parts-1-4-build-apk` → running, note (all) · pipeline
 - 2026-11-14 00:45 UTC · `console-app-land-parts-1-4-build-apk` branch claude/console-app-land-parts-1-4-build-apk (all) · pipeline
 - 2026-11-14 00:45 UTC · `console-app-land-parts-1-4-build-apk` note (all) · orchestrator
+- 2026-11-14 00:46 UTC · `voice-listener-use-claude-when-connected` → running, note (all) · pipeline
+- 2026-11-14 00:46 UTC · `voice-listener-use-claude-when-connected` branch claude/voice-listener-use-claude-when-connected (all) · pipeline
+- 2026-11-14 00:46 UTC · `voice-listener-use-claude-when-connected` note (all) · orchestrator
 
 ## Token passes (log)
 
