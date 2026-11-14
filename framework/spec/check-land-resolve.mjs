@@ -86,6 +86,31 @@ writeFileSync(out, JSON.stringify({ generator: id, sources: readdirSync('sources
   }
   git('commit', '-q', '--no-edit');
 
+  // 1b. a help pack (union-json, entries keyed by "target"): one entry per target, the changing side's value kept
+  const PACK = 'framework/assets/help/framework.json';
+  const pack = (entries) => JSON.stringify({ $axf: 'asset@1', type: 'help', data: { entries } }, null, 2) + '\n';
+  const A = { target: 'animations', title: 'Animations', kind: 'field' };
+  put(PACK, pack([A, { target: 'b', title: 'B' }]));
+  commitAll('help base');
+  git('checkout', '-q', 'main'); git('merge', '-q', '--ff-only', 'feat');
+  git('checkout', '-q', '-b', 'feat3');
+  put(PACK, pack([{ ...A, kind: 'card' }, { target: 'b', title: 'B' }, { target: 'feat-only', title: 'F' }]));
+  commitAll('feat3');
+  git('checkout', '-q', 'main');
+  put(PACK, pack([A, { target: 'b', title: 'B' }, { target: 'main-only', title: 'M' }]));
+  commitAll('main3');
+  git('checkout', '-q', 'feat3');
+  const m3 = spawnSync('git', ['merge', '-q', '--no-edit', 'main'], { cwd: dir, encoding: 'utf8' });
+  const r3 = resolveRun();
+  let entries = [];
+  try { entries = JSON.parse(read(PACK)).data.entries; } catch { /* checked below */ }
+  const targets = entries.map((e) => e.target);
+  ok(m3.status !== 0 && r3.status === 0, `help pack clash resolves (exit ${r3.status}: ${r3.stdout.trim()})`);
+  ok(targets.length === new Set(targets).size && ['animations', 'b', 'feat-only', 'main-only'].every((t) => targets.includes(t)), `help pack keeps one entry per target from both sides (${targets.join(', ')})`);
+  ok(entries.find((e) => e.target === 'animations')?.kind === 'card', "the side that changed an entry wins it (kind card, not main's unchanged field)");
+  git('commit', '-q', '--no-edit');
+  git('checkout', '-q', 'main'); git('merge', '-q', '--ff-only', 'feat3');
+
   // 2. a real source clash next to a generated one: stop with the file list, run no generator
   git('checkout', '-q', '-b', 'feat2');
   put('src/app.mjs', 'export const side = "feat2";\n');
