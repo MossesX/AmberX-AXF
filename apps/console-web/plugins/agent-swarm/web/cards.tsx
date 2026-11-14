@@ -1,5 +1,5 @@
 import { createElement, useEffect, useState } from 'react';
-import { Button, Chip, Slot } from '@console/axf/react';
+import { Button, Chip, Slot, Select } from '@console/axf/react';
 import * as consoleApi from '@console/api';
 import * as core from './swarm-core.mjs';
 import { AgentChat } from './chat';
@@ -171,7 +171,7 @@ function Discipline({ a, state, act }: { a: Agent; state: SwarmState; act: Act }
       <p className="fx-muted">Failed jobs in a row: {as.failStreak} of {state.swarm.rules.rageQuitAfter} before a rage-quit.</p>
       {BENCHED.includes(as.status) ? <div className="sw-bar"><Button icon="refresh" onClick={() => void act({ action: 'rehire', agent: a.id })}>Rehire</Button><span className="fx-muted">{statusText(as, state.statuses)}{as.until ? ` until ${fmtTime(as.until)}` : ''}{as.note ? ` · ${as.note}` : ''}</span></div>
         : <form className="sw-bar" onSubmit={(e) => { e.preventDefault(); void act({ action: 'suspend', agent: a.id, until: new Date(Date.now() + hours * 3600e3).toISOString(), reason }).then((l) => { if (l) setReason(''); }); }}>
-          <select className="fx-input sw-bar__pick" aria-label="Suspend for" value={hours} onChange={(e) => setHours(Number(e.target.value))}>{DURATIONS.map((d) => <option key={d.h} value={d.h}>{d.label}</option>)}</select>
+          <Select label="Suspend for" value={String(hours)} onChange={(v) => setHours(Number(v))} className="sw-bar__pick" options={DURATIONS.map((d) => ({ value: String(d.h), label: String(d.label) }))} />
           <input className="fx-input sw-grow" aria-label="Reason" placeholder="Reason" value={reason} onChange={(e) => setReason(e.target.value)} />
           <Button type="submit" disabled={!reason.trim()}>Suspend</Button>
         </form>}

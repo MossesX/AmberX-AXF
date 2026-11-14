@@ -4,7 +4,7 @@
  * a roll as a standard asset (asset@1) and manage saved ones. Works only with the existing asset types and engines.
  */
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
-import { Button, Chip, Icon, IconButton, Switch, useAxfState, useEditorSync, useRuntime } from '@console/axf/react';
+import { Button, Chip, Icon, IconButton, Switch, useAxfState, useEditorSync, useRuntime, Select } from '@console/axf/react';
 import { assetTypeSpecs, hideable } from '@console/axf/core';
 import type { AssetType, AxfRuntime } from '@console/axf/core';
 import { PRESETS, allLeafIds, buildTree, getAt, leaves, readability, rollType, setAt, toggle, triState, type Json, type Node, type TypeSpec } from './rollEngine';
@@ -235,7 +235,7 @@ function ValueEditor({ node, value, onChange }: { node: Node; value: Json; onCha
   return (
     <div className="fx-stack">
       <strong>{node.label} <span className="fx-small fx-muted fx-mono">{node.type} · {f.path}</span></strong>
-      {f.kind === 'enum' && <select className="fx-input" value={String(v)} onChange={(e) => commit(e.target.value)}>{f.enum!.map((x) => <option key={x}>{x}</option>)}</select>}
+      {f.kind === 'enum' && <Select label="V" value={String(v)} onChange={(v) => commit(v)} options={f.enum!.map((x) => ({ value: String(x), label: String(x) }))} />}
       {f.kind === 'bool' && <label className={`${P}__opt`}><input type="checkbox" checked={!!v} onChange={(e) => commit(e.target.checked)} /> {v ? 'on' : 'off'}</label>}
       {f.kind === 'number' && (
         <>
@@ -253,7 +253,7 @@ function ValueEditor({ node, value, onChange }: { node: Node; value: Json; onCha
       {f.kind === 'string' && (
         <>
           <input className="fx-input" value={String(v ?? '')} onChange={(e) => setV(e.target.value)} onBlur={() => commit(String(v))} />
-          {!!f.values?.length && <select className="fx-input" value="" onChange={(e) => e.target.value && commit(JSON.parse(e.target.value) as Json)} aria-label="Values other themes use"><option value="">Values other themes use…</option>{f.values.map((x) => <option key={JSON.stringify(x)} value={JSON.stringify(x)}>{String(x).slice(0, 60)}</option>)}</select>}
+          {!!f.values?.length && <Select label="Values other themes use" value="" onChange={(v) => v && commit(JSON.parse(v) as Json)} empty={'Values other themes use…'} options={f.values.map((x) => ({ value: String(JSON.stringify(x)), label: String(x).slice(0, 60) }))} />}
         </>
       )}
     </div>

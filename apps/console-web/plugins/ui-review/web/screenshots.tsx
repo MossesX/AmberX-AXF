@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { Button, Icon, IconButton, Segmented, SelectField, Slider, TextField, usePortalRoot, useRuntime } from '@console/axf/react';
+import { Button, Icon, IconButton, Segmented, SelectField, Slider, TextField, usePortalRoot, useRuntime, Select } from '@console/axf/react';
 import { DataGrid, type GridColumn, type GridGroup, type GridSort } from '@console/axf/libs/datagrid';
 import { pluginApi, pluginFetch } from '@console/plugins';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
@@ -348,10 +348,10 @@ export function ScreenshotsTab({ onCount }: { onCount?: (n: number) => void }) {
       <GroupHead g={cur} groups={groupRows} picked={picked} selecting={selecting} onBack={() => openGroup(null)} onSelecting={setSelecting} onPick={setPicked} act={gact} />
       <div className="axp-ui-review__bar" role="toolbar" aria-label="Screenshots: filter and view">
         <input className="fx-input axp-ui-review__search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search: title, app, screen, session, #PR…" aria-label="Search screenshots" />
-        {apps.length > 0 && <select className="fx-input axp-ui-review__sel" value={app} onChange={(e) => setApp(e.target.value)} aria-label="App"><option value="">Every app</option>{apps.map((a) => <option key={a} value={a}>{a}</option>)}</select>}
-        <select className="fx-input axp-ui-review__sel" value={source} onChange={(e) => setSource(e.target.value)} aria-label="Source"><option value="">Every source</option>{sc.SOURCES.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}</select>
-        <select className="fx-input axp-ui-review__sel" value={viewport} onChange={(e) => setViewport(e.target.value)} aria-label="Device"><option value="">Phone + desktop</option><option value="phone">Phone</option><option value="desktop">Desktop</option></select>
-        <select className="fx-input axp-ui-review__sel" value={by} onChange={(e) => setBy(e.target.value as GroupBy)} aria-label="Group by">{sc.GROUPS.map((g) => <option key={g.id} value={g.id}>{g.id === 'none' ? g.label : `By ${g.label.toLowerCase()}`}</option>)}</select>
+        {apps.length > 0 && <Select label="App" value={app} onChange={(v) => setApp(v)} className="axp-ui-review__sel" empty={'Every app'} options={apps.map((a) => ({ value: String(a), label: String(a) }))} />}
+        <Select label="Source" value={source} onChange={(v) => setSource(v)} className="axp-ui-review__sel" empty={'Every source'} options={sc.SOURCES.map((s) => ({ value: String(s.id), label: String(s.label) }))} />
+        <Select label="Device" value={viewport} onChange={(v) => setViewport(v)} className="axp-ui-review__sel" empty={'Phone + desktop'} options={[{ value: 'phone', label: 'Phone' }, { value: 'desktop', label: 'Desktop' }]} />
+        <Select label="Group by" value={by} onChange={(v) => setBy(v as GroupBy)} className="axp-ui-review__sel" options={sc.GROUPS.map((g) => ({ value: String(g.id), label: `${g.id === 'none' ? g.label : `By $${g.label.toLowerCase()}`}` }))} />
         <Segmented<Mode> size="sm" label="Layout" value={mode} onChange={setMode} options={[{ value: 'grid', label: 'Grid', icon: 'list' }, { value: 'thumbs', label: 'Thumbnails', icon: 'grid' }]} />
         {picker}
         <Button size="sm" tone="primary" icon="upload" busy={busy} disabled={busy} aria-pressed={naming} onClick={startUpload}>Upload</Button>

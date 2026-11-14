@@ -9,7 +9,7 @@
  * Both read GET connections (server: every place a tab can go, with ready / why).
  */
 import { useEffect, useState, useSyncExternalStore } from 'react';
-import { Button, Icon, TabGroup, useRuntime } from '@console/axf/react';
+import { Button, Icon, TabGroup, useRuntime, Select } from '@console/axf/react';
 import { call, tabSessions, type Connection, type Open } from './api';
 import { addSession, ctl, host, hostIds, hostOf, patchSession, sessionId, snapshot, subscribe, titleFor, type HostSession } from './hosts';
 import { applyProfile, profilesFor, useProfiles } from './profiles';
@@ -96,9 +96,7 @@ export function ConnectDialog({ props, close }: { props: Record<string, unknown>
       <TabGroup id="terminal.connection-mode" label="What runs in the tab" value={mode} onChange={setMode} tabs={[{ value: 'claude', label: 'Claude Code', icon: 'sparkles' }, { value: 'shell', label: 'Shell', icon: 'terminal' }]} />
       {mode === 'claude' && profiles.items.length > 0 && (
         <label className="axp-terminal__field"><span>Profile</span>
-          <select className="fx-input" value={profile} onChange={(e) => setProfile(e.target.value)}>
-            {profiles.items.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
-          </select>
+          <Select label="Profile" value={profile} onChange={(v) => setProfile(v)} options={profiles.items.map((p) => ({ value: String(p.id), label: String(p.name) }))} />
         </label>
       )}
       <p className="fx-small fx-muted">{switching ? 'Move this tab to:' : mode === 'claude' ? 'Run Claude Code on:' : 'Open a shell on:'}</p>

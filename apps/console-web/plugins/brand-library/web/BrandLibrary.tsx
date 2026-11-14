@@ -8,7 +8,7 @@
  * (a multiple of --fx-space), measured once per resize from a probe element.
  */
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { BrandWatermark, Button, Icon, IconButton, TabGroup, useRuntime } from '@console/axf/react';
+import { BrandWatermark, Button, Icon, IconButton, TabGroup, useRuntime, Select } from '@console/axf/react';
 import { loadConfig, loadType, saveConfig } from './api';
 import { DEFAULT_CONFIG, FACET_OF, TABS, facetValues, filterItems, gridWindow, tabOf, type Config, type LibAsset, type TabId } from './model';
 import { TileArt, type MarkIndex } from './tiles';
@@ -80,7 +80,7 @@ export function BrandLibrary({ renderPreview }: { renderPreview?: (p: PreviewPro
       {/* one filter row: search, brand, facet and the count (compact pages, Oct 30 2026) */}
       <div className="axp-brand-library__filters" role="search">
         <input className="fx-input axp-brand-library__search" type="search" aria-label="Search" value={q} onChange={(e) => setQ(e.target.value)} placeholder={`Search ${items?.length ?? ''} ${tabOf(tab).noun}s`} title="By name, id or tag" />
-        {brands.length > 1 && <select className="fx-input axp-brand-library__pick" aria-label="Brand" value={brand} onChange={(e) => setBrand(e.target.value)}><option value="">Every brand</option>{brands.map((b) => <option key={b} value={b}>{b}</option>)}</select>}
+        {brands.length > 1 && <Select label="Brand" value={brand} onChange={(v) => setBrand(v)} className="axp-brand-library__pick" empty={'Every brand'} options={brands.map((b) => ({ value: String(b), label: String(b) }))} />}
         {facetDef && facets.length > 1 && <select className="fx-input axp-brand-library__pick" aria-label={facetDef.label} value={facet} onChange={(e) => setFacet(e.target.value)}><option value="">{`Any ${facetDef.label.toLowerCase()}`}</option>{facets.map((f) => <option key={f} value={f}>{f}</option>)}</select>}
         <span className="axp-brand-library__count" aria-live="polite">
           {items ? `${shown.length} of ${items.length}` : ''}

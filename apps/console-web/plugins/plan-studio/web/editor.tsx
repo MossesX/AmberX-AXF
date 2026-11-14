@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { Button, Checkbox, Chip, Icon, IconButton, Markdown, PriorityTag, SelectField, Segmented, TextField, useRuntime } from '@console/axf/react';
+import { Button, Checkbox, Chip, Icon, IconButton, Markdown, PriorityTag, SelectField, Segmented, TextField, useRuntime, Select } from '@console/axf/react';
 import * as pc from './plan-core.mjs';
 import type { History, ListId, Plan, Step, TextItem } from './plan-core.mjs';
 import { call, deletePlan, fmtWhen, getPlan, KEYS, restorePlan, savePlan, statusInfo, turnIntoBuild, useBusy, useStudio, type SaveResult } from './api';
@@ -225,7 +225,7 @@ function StepsEditor({ steps, onChange }: { steps: Step[]; onChange: (s: Step[])
             <input type="checkbox" className="fx-check" checked={s.done} onChange={(e) => upd(i, { done: e.target.checked, doneAt: e.target.checked ? new Date().toISOString() : '' })} aria-label={`${s.id} done`} />
             <span className="axp-plan-studio__sid">{s.id}</span>
             <input className="fx-input axp-plan-studio__stext" value={s.text} onChange={(e) => upd(i, { text: e.target.value })} aria-label={`${s.id} text`} />
-            <select className="fx-input axp-plan-studio__smodel" value={s.model} onChange={(e) => upd(i, { model: e.target.value as Step['model'] })} aria-label={`${s.id} model`}>{pc.MODELS.map((m) => <option key={m}>{m}</option>)}</select>
+            <Select label={`${s.id} model`} value={s.model} onChange={(v) => upd(i, { model: v as Step['model'] })} className="axp-plan-studio__smodel" options={pc.MODELS.map((m) => ({ value: String(m), label: String(m) }))} />
             <input className="fx-input axp-plan-studio__smin" inputMode="numeric" value={s.minutes || ''} onChange={(e) => upd(i, { minutes: pc.minutesOf(e.target.value) })} aria-label={`${s.id} minutes`} placeholder="min" />
             <input className="fx-input axp-plan-studio__sdep" value={s.dependsOn.join(',')} onChange={(e) => upd(i, { dependsOn: e.target.value.split(',').map((x) => x.trim()).filter(Boolean) })} aria-label={`${s.id} depends on`} placeholder="after…" />
             <span className="axp-plan-studio__sact">
@@ -294,9 +294,9 @@ function LinksEditor({ plan, plans, onChange, onOpen }: { plan: Plan; plans: Pla
       </ul>
       {back.length > 0 && <p className="fx-muted axp-plan-studio__hint">Linked from: {back.map((p) => <button key={p.id} type="button" className="fx-btn fx-btn--quiet fx-btn--sm" onClick={() => onOpen(p.id)}>{p.title}</button>)}</p>}
       <form className="axp-plan-studio__ladd" onSubmit={(e) => { e.preventDefault(); if (ref.trim()) { onChange([...plan.links, { kind, ref: ref.trim(), label: '' }]); setRef(''); } }}>
-        <select className="fx-input axp-plan-studio__smodel" value={kind} onChange={(e) => setKind(e.target.value)} aria-label="Link kind">{pc.LINK_KINDS.map((k) => <option key={k} value={k}>{k}</option>)}</select>
+        <Select label="Link kind" value={kind} onChange={(v) => setKind(v)} className="axp-plan-studio__smodel" options={pc.LINK_KINDS.map((k) => ({ value: String(k), label: String(k) }))} />
         {rel.includes(kind)
-          ? <select className="fx-input" value={ref} onChange={(e) => setRef(e.target.value)} aria-label="Plan"><option value="">Pick a plan…</option>{plans.filter((p) => p.id !== plan.id).map((p) => <option key={p.id} value={p.id}>{p.title}</option>)}</select>
+          ? <Select label="Plan" value={ref} onChange={(v) => setRef(v)} empty={'Pick a plan…'} options={plans.filter((p) => p.id !== plan.id).map((p) => ({ value: String(p.id), label: String(p.title) }))} />
           : <input className="fx-input" value={ref} onChange={(e) => setRef(e.target.value)} placeholder={kind === 'pr' ? '159' : kind === 'branch' ? 'claude/plans' : kind === 'build' ? 'angel:plan-studio' : 'https://…'} aria-label="Link" />}
         <IconButton icon="plus" label="Add link" type="submit" />
       </form>

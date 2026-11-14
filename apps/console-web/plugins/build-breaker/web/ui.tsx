@@ -1,5 +1,5 @@
 import { Fragment, useEffect, useMemo, useState } from 'react';
-import { Button, Chip, Container, Icon, IconButton, ModelBadge, TabGroup, useRuntime } from '@console/axf/react';
+import { Button, Chip, Container, Icon, IconButton, ModelBadge, TabGroup, useRuntime, Select } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import { registerRowRefTarget, rowHooks, useDataset, useDatasetsRevision } from '@console/axf/libs/datagrid';
@@ -113,19 +113,19 @@ export function BuildBreakerPage() {
           </label>
           <label className="fx-search axp-build-breaker__sel" title="Date range">
             <Icon name="calendar" size={12} />
-            <select aria-label="Date range" value={range} onChange={(e) => setRange(e.target.value)}>{bb.RANGES.map((r) => <option key={r.id} value={r.id}>{r.id === 'all' ? 'All time' : r.label}</option>)}</select>
+            <Select label="Date range" value={range} onChange={(v) => setRange(v)} options={bb.RANGES.map((r) => ({ value: String(r.id), label: String(r.id === 'all' ? 'All time' : r.label) }))} />
           </label>
           <label className="fx-search axp-build-breaker__sel" title="Model">
             <Icon name="sparkles" size={12} />
-            <select aria-label="Model" value={model} onChange={(e) => setModel(e.target.value)}><option value="any">Any model</option>{models.map((m) => <option key={m} value={m}>{m}</option>)}</select>
+            <Select label="Model" value={model} onChange={(v) => setModel(v)} options={[{ value: 'any', label: 'Any model' }, ...models.map((m) => ({ value: String(m), label: String(m) }))]} />
           </label>
           <label className="fx-search axp-build-breaker__sel" title="Sort">
             <Icon name="list" size={12} />
-            <select aria-label="Sort" value={sort} onChange={(e) => setSort(e.target.value)}>{bb.SORTS.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}</select>
+            <Select label="Sort" value={sort} onChange={(v) => setSort(v)} options={bb.SORTS.map((s) => ({ value: String(s.id), label: String(s.label) }))} />
           </label>
           <label className="fx-search axp-build-breaker__sel" title="Group by">
             <Icon name="layers" size={12} />
-            <select aria-label="Group by" value={group} onChange={(e) => setGroup(e.target.value)}>{bb.GROUPS.map((g) => <option key={g.id} value={g.id}>{g.id === 'none' ? 'No grouping' : `By ${g.label.toLowerCase()}`}</option>)}</select>
+            <Select label="Group by" value={group} onChange={(v) => setGroup(v)} options={bb.GROUPS.map((g) => ({ value: String(g.id), label: `${g.id === 'none' ? 'No grouping' : `By $${g.label.toLowerCase()}`}` }))} />
           </label>
           <span className="axp-build-breaker__fold">
             <IconButton icon="chevron-down" label="Expand all" title="Open every grid and every row" onClick={expandAll} />

@@ -3,7 +3,7 @@
  * the wizards reuse the same forms step by step, so there is exactly one way to edit each kind of thing.
  */
 import { useState, type ReactNode } from 'react';
-import { Button, Chip, Icon, ICON_NAMES } from '@console/axf/react';
+import { Button, Chip, Icon, ICON_NAMES, Select } from '@console/axf/react';
 import {
   KIND_HELP, MEMORY_HELP, RECORD_HELP, SOURCE_HELP, lines, unlines,
   type Agent, type Cache, type JsonSchema, type Lingo, type Persona, type Skill, type Source, type Status, type Step, type Tool, type Training, type Workflow,
@@ -166,7 +166,7 @@ export function ToolForm({ v, set, status, cache }: { v: Partial<Tool>; set: (p:
       {kind === 'http' && (
         <>
           <div className="axp-agent-manager__cols">
-            <Field label="Method"><select className="fx-input" value={String(cfg.method ?? 'GET')} onChange={(e) => setCfg({ method: e.target.value })}>{['GET', 'POST', 'PUT', 'PATCH', 'DELETE'].map((m) => <option key={m}>{m}</option>)}</select></Field>
+            <Field label="Method"><Select label="Method" value={String(cfg.method ?? 'GET')} onChange={(v) => setCfg({ method: v })} options={['GET', 'POST', 'PUT', 'PATCH', 'DELETE'].map((m) => ({ value: String(m), label: String(m) }))} /></Field>
             <Field label="URL" hint="Use {{param}} for arguments"><Text mono value={String(cfg.url ?? '')} onChange={(url) => setCfg({ url })} placeholder="https://api.example.com/items/{{id}}" /></Field>
           </div>
           <Field label="Headers" hint="Secrets: write env:MY_VAR and set it on the console server">
@@ -202,10 +202,10 @@ export function ToolForm({ v, set, status, cache }: { v: Partial<Tool>; set: (p:
         </>
       )}
       {kind === 'agent' && (
-        <Field label="Delegate to agent" hint="The tool takes a `task` argument"><select className="fx-input" value={String(cfg.agentId ?? '')} onChange={(e) => set({ ...v, config: { agentId: e.target.value }, parameters: toSchema([{ name: 'task', type: 'string', description: 'What to do', required: true }]) })}><option value="">Choose…</option>{cache?.agents.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}</select></Field>
+        <Field label="Delegate to agent" hint="The tool takes a `task` argument"><Select label="Agent Id" value={String(cfg.agentId ?? '')} onChange={(next) => set({ ...v, config: { agentId: next }, parameters: toSchema([{ name: 'task', type: 'string', description: 'What to do', required: true }]) })} empty={'Choose…'} options={(cache?.agents ?? []).map((a) => ({ value: String(a.id), label: String(a.name) }))} /></Field>
       )}
       {kind === 'workflow' && (
-        <Field label="Run workflow" hint="The tool takes an `input` argument"><select className="fx-input" value={String(cfg.workflowId ?? '')} onChange={(e) => set({ ...v, config: { workflowId: e.target.value }, parameters: toSchema([{ name: 'input', type: 'string', description: 'Input for the workflow', required: true }]) })}><option value="">Choose…</option>{cache?.workflows.map((w) => <option key={w.id} value={w.id}>{w.name}</option>)}</select></Field>
+        <Field label="Run workflow" hint="The tool takes an `input` argument"><Select label="Workflow Id" value={String(cfg.workflowId ?? '')} onChange={(next) => set({ ...v, config: { workflowId: next }, parameters: toSchema([{ name: 'input', type: 'string', description: 'Input for the workflow', required: true }]) })} empty={'Choose…'} options={(cache?.workflows ?? []).map((w) => ({ value: String(w.id), label: String(w.name) }))} /></Field>
       )}
       {kind !== 'builtin' && kind !== 'agent' && kind !== 'workflow' && (
         <Field label="Parameters" hint="What the model must pass; becomes the tool's JSON Schema">
@@ -213,7 +213,7 @@ export function ToolForm({ v, set, status, cache }: { v: Partial<Tool>; set: (p:
             {params.map((p, i) => (
               <div key={i} className="axp-agent-manager__row">
                 <input className="fx-input fx-mono" value={p.name} placeholder="name" aria-label="Parameter name" onChange={(e) => upd(params.map((x, j) => (j === i ? { ...x, name: e.target.value.replace(/[^a-zA-Z0-9_]/g, '_') } : x)))} />
-                <select className="fx-input" value={p.type} aria-label="Type" onChange={(e) => upd(params.map((x, j) => (j === i ? { ...x, type: e.target.value } : x)))}>{['string', 'number', 'integer', 'boolean', 'array', 'object'].map((t) => <option key={t}>{t}</option>)}</select>
+                <Select label="Type" value={p.type} onChange={(v) => upd(params.map((x, j) => (j === i ? { ...x, type: v } : x)))} options={['string', 'number', 'integer', 'boolean', 'array', 'object'].map((t) => ({ value: String(t), label: String(t) }))} />
                 <input className="fx-input fx-grow" value={p.description} placeholder="description" aria-label="Description" onChange={(e) => upd(params.map((x, j) => (j === i ? { ...x, description: e.target.value } : x)))} />
                 <label className="axp-agent-manager__toggle"><input type="checkbox" checked={p.required} onChange={(e) => upd(params.map((x, j) => (j === i ? { ...x, required: e.target.checked } : x)))} />req.</label>
                 <button type="button" className="fx-iconbtn" aria-label="Remove parameter" onClick={() => upd(params.filter((_, j) => j !== i))}><Icon name="minus" size={12} /></button>
@@ -246,7 +246,7 @@ export function AgentForm({ v, set, cache, status, only }: { v: Partial<Agent>; 
           <div className="axp-agent-manager__cols">
             <Field label="Name"><Text value={v.name} onChange={(name) => set({ ...v, name })} placeholder="Release manager" /></Field>
             <Field label="Icon">
-              <select className="fx-input" value={v.icon ?? 'user'} onChange={(e) => set({ ...v, icon: e.target.value })}>{ICONS.filter((i) => ICON_NAMES.includes(i)).map((i) => <option key={i}>{i}</option>)}</select>
+              <Select label="Icon" value={v.icon ?? 'user'} onChange={(next) => set({ ...v, icon: next })} options={ICONS.filter((i) => ICON_NAMES.includes(i)).map((i) => ({ value: String(i), label: String(i) }))} />
             </Field>
           </div>
           <Field label="Description" hint="Shown in pickers; also tells other agents when to delegate"><Text value={v.description} onChange={(description) => set({ ...v, description })} /></Field>
@@ -255,7 +255,7 @@ export function AgentForm({ v, set, cache, status, only }: { v: Partial<Agent>; 
       )}
       {show('persona') && (
         <Field label="Persona">
-          <select className="fx-input" value={v.personaId ?? ''} onChange={(e) => set({ ...v, personaId: e.target.value })}><option value="">None</option>{cache.personas.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}</select>
+          <Select label="Persona Id" value={v.personaId ?? ''} onChange={(next) => set({ ...v, personaId: next })} empty={'None'} options={cache.personas.map((p) => ({ value: String(p.id), label: String(p.name) }))} />
         </Field>
       )}
       {show('lingo') && <Field label="Lingo packs"><Pick items={cache.lingo} value={v.lingoIds} onChange={(lingoIds) => set({ ...v, lingoIds })} empty="No lingo packs yet." /></Field>}
@@ -272,7 +272,7 @@ export function AgentForm({ v, set, cache, status, only }: { v: Partial<Agent>; 
         <div className="axp-agent-manager__cols">
           {status?.llm.source === 'assistant' ? (
             <Field label="Provider" hint="From the AI assistant's profiles">
-              <select className="fx-input" value={m.profile ?? ''} onChange={(e) => setM({ profile: e.target.value })}><option value="">Assistant default</option>{status.llm.profiles.map((p) => <option key={p.id} value={p.id}>{p.label}</option>)}</select>
+              <Select label="Profile" value={m.profile ?? ''} onChange={(v) => setM({ profile: v })} empty={'Assistant default'} options={status.llm.profiles.map((p) => ({ value: String(p.id), label: String(p.label) }))} />
             </Field>
           ) : <Field label="Provider" hint="Settings → Plugins → Agent manager → Model"><input className="fx-input" disabled value={status?.llm.kind ?? 'own'} /></Field>}
           <Field label="Model"><Text mono value={m.model} onChange={(model) => setM({ model })} placeholder={status?.llm.profiles.find((p) => p.id === m.profile)?.defaultModel || status?.llm.model || 'default'} /></Field>
@@ -296,7 +296,7 @@ export function AgentForm({ v, set, cache, status, only }: { v: Partial<Agent>; 
               <Field label="Max items"><Num value={mem.maxItems} min={50} max={50000} onChange={(maxItems) => setMem({ maxItems })} placeholder="2000" /></Field>
               <Field label="Forget unused exchanges after (days)" hint="0 = never"><Num value={mem.decayDays} min={0} onChange={(decayDays) => setMem({ decayDays })} placeholder="0" /></Field>
               <Field label="Shared scope (optional)" hint="Agents with the same scope share one memory"><Text mono value={mem.scope} onChange={(scope) => setMem({ scope: scope.toLowerCase().replace(/[^a-z0-9._-]/g, '-') })} placeholder={v.id || 'own'} /></Field>
-              {status?.llm.source === 'assistant' && <Field label="Embeddings from"><select className="fx-input" value={mem.embedProfile ?? ''} onChange={(e) => setMem({ embedProfile: e.target.value })}><option value="">Assistant default</option>{status.llm.profiles.map((p) => <option key={p.id} value={p.id}>{p.label}</option>)}</select></Field>}
+              {status?.llm.source === 'assistant' && <Field label="Embeddings from"><Select label="Embed Profile" value={mem.embedProfile ?? ''} onChange={(v) => setMem({ embedProfile: v })} empty={'Assistant default'} options={status.llm.profiles.map((p) => ({ value: String(p.id), label: String(p.label) }))} /></Field>}
             </div>
           )}
         </div>
@@ -316,24 +316,19 @@ export function WorkflowForm({ v, set, cache }: { v: Partial<Workflow>; set: (p:
       <div className="axp-agent-manager__cols">
         <Field label="Name"><Text value={v.name} onChange={(name) => set({ ...v, name })} /></Field>
         <Field label="Mode">
-          <select className="fx-input" value={mode} onChange={(e) => set({ ...v, mode: e.target.value })}>
-            <option value="sequential">sequential — each step feeds the next</option>
-            <option value="parallel">parallel — all at once, optional merge</option>
-            <option value="router">router — an agent picks the step</option>
-            <option value="critic">critic — draft, review, revise</option>
-          </select>
+          <Select label="Mode" value={mode} onChange={(next) => set({ ...v, mode: next })} options={[{ value: 'sequential', label: 'sequential — each step feeds the next' }, { value: 'parallel', label: 'parallel — all at once, optional merge' }, { value: 'router', label: 'router — an agent picks the step' }, { value: 'critic', label: 'critic — draft, review, revise' }]} />
         </Field>
       </div>
       <Field label="Description"><Text value={v.description} onChange={(description) => set({ ...v, description })} /></Field>
-      {mode === 'router' && <Field label="Router agent"><select className="fx-input" value={v.routerAgentId ?? ''} onChange={(e) => set({ ...v, routerAgentId: e.target.value })}><option value="">Choose…</option>{cache.agents.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}</select></Field>}
-      {mode === 'parallel' && <Field label="Merge answers with (optional)"><select className="fx-input" value={v.synthAgentId ?? ''} onChange={(e) => set({ ...v, synthAgentId: e.target.value })}><option value="">Don't merge — show all</option>{cache.agents.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}</select></Field>}
+      {mode === 'router' && <Field label="Router agent"><Select label="Router Agent Id" value={v.routerAgentId ?? ''} onChange={(next) => set({ ...v, routerAgentId: next })} empty={'Choose…'} options={cache.agents.map((a) => ({ value: String(a.id), label: String(a.name) }))} /></Field>}
+      {mode === 'parallel' && <Field label="Merge answers with (optional)"><Select label="Synth Agent Id" value={v.synthAgentId ?? ''} onChange={(next) => set({ ...v, synthAgentId: next })} empty={'Don\'t merge — show all'} options={cache.agents.map((a) => ({ value: String(a.id), label: String(a.name) }))} /></Field>}
       {mode === 'critic' && <Field label="Max review rounds"><Num value={v.maxLoops} min={1} max={6} onChange={(maxLoops) => set({ ...v, maxLoops })} placeholder="3" /></Field>}
       <span className="fx-small fx-muted">Steps{mode === 'critic' ? ' — first writes, second reviews' : ''}. Prompts can use {'{{input}}'}, {'{{previous}}'} and {'{{steps.<id>}}'}.</span>
       {steps.map((s, i) => (
         <div key={i} className="axp-agent-manager__card fx-stack">
           <div className="axp-agent-manager__row">
             <input className="fx-input fx-mono" value={s.id} aria-label="Step id" onChange={(e) => up(i, { id: e.target.value.replace(/[^a-zA-Z0-9_-]/g, '') })} />
-            <select className="fx-input fx-grow" value={s.agentId} aria-label="Agent" onChange={(e) => up(i, { agentId: e.target.value })}><option value="">Agent…</option>{cache.agents.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}</select>
+            <Select label="Agent" value={s.agentId} onChange={(v) => up(i, { agentId: v })} className="fx-grow" empty={'Agent…'} options={cache.agents.map((a) => ({ value: String(a.id), label: String(a.name) }))} />
             <button type="button" className="fx-iconbtn" aria-label="Remove step" onClick={() => set({ ...v, steps: steps.filter((_, j) => j !== i) })}><Icon name="trash" size={12} /></button>
           </div>
           <textarea className="fx-input" rows={2} value={s.prompt ?? ''} placeholder={i === 0 ? '{{input}}' : '{{previous}}'} aria-label="Prompt" onChange={(e) => up(i, { prompt: e.target.value })} />
@@ -377,7 +372,7 @@ export function TrainingForm({ v, set, cache, status, lockAgent }: { v: Partial<
     <div className="fx-stack">
       <div className="axp-agent-manager__cols">
         <Field label="Name"><Text value={v.name} onChange={(name) => set({ ...v, name })} placeholder="Product docs" /></Field>
-        {!lockAgent && <Field label="Agent to train"><select className="fx-input" value={v.agentId ?? ''} onChange={(e) => set({ ...v, agentId: e.target.value })}><option value="">Choose…</option>{cache.agents.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}</select></Field>}
+        {!lockAgent && <Field label="Agent to train"><Select label="Agent Id" value={v.agentId ?? ''} onChange={(next) => set({ ...v, agentId: next })} empty={'Choose…'} options={cache.agents.map((a) => ({ value: String(a.id), label: String(a.name) }))} /></Field>}
       </div>
       <span className="fx-small fx-muted">Sources</span>
       {src.map((s, i) => <SourceEditor key={i} s={s} set={(n) => set({ ...v, sources: src.map((x, j) => (j === i ? n : x)) })} onRemove={() => set({ ...v, sources: src.filter((_, j) => j !== i) })} />)}
@@ -386,7 +381,7 @@ export function TrainingForm({ v, set, cache, status, lockAgent }: { v: Partial<
       </div>
       {needsFc && !status?.firecrawl && <div className="axp-agent-manager__note is-warn"><Icon name="alert" size={14} />Firecrawl sources need FIRECRAWL_API_KEY on the server or a key in Settings → Plugins → Agent manager → Training.</div>}
       <div className="axp-agent-manager__cols">
-        <Field label="Schedule"><select className="fx-input" value={v.schedule ?? 'manual'} onChange={(e) => set({ ...v, schedule: e.target.value })}>{['manual', 'hourly', 'daily', 'weekly'].map((s) => <option key={s}>{s}</option>)}</select></Field>
+        <Field label="Schedule"><Select label="Schedule" value={v.schedule ?? 'manual'} onChange={(next) => set({ ...v, schedule: next })} options={['manual', 'hourly', 'daily', 'weekly'].map((s) => ({ value: String(s), label: String(s) }))} /></Field>
         <Field label="Chunk size (characters)"><Num value={v.chunkSize} min={300} max={6000} onChange={(chunkSize) => set({ ...v, chunkSize })} placeholder="1200" /></Field>
         <Field label="Overlap"><Num value={v.overlap} min={0} max={1000} onChange={(overlap) => set({ ...v, overlap })} placeholder="120" /></Field>
         <Field label="Tags"><Lines value={v.tags} onChange={(tags) => set({ ...v, tags })} rows={1} /></Field>

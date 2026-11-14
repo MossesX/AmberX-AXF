@@ -1,7 +1,7 @@
 /* Feature assistant UI: the “Describe a feature” box (slot plan.top), the feature-detail buttons (slot plan.feature),
    the Build with Mosses dialog and the settings panels. Theme tokens only, axp-feature-assist prefix. */
 import { useEffect, useState, useSyncExternalStore } from 'react';
-import { Button, Chip, Icon, IconButton, useRuntime } from '@console/axf/react';
+import { Button, Chip, Icon, IconButton, useRuntime, Select } from '@console/axf/react';
 import { call, getStatus, onStatus, planChanged, post, refreshStatus, rememberFeatures, type BuildPlan, type Draft, type DraftResult, type Status } from './api';
 import { LoadingSkeleton } from '@console/emptyState';
 
@@ -16,8 +16,8 @@ function DraftEditor({ d, set, onRemove, depth = 0 }: { d: Draft; set: (d: Draft
     <div className={`${P}__draft ${depth ? 'is-sub' : ''}`}>
       <div className={`${P}__row`}>
         <input className="fx-input fx-grow" value={d.title} onChange={(e) => set({ ...d, title: e.target.value })} aria-label="Title" />
-        <select className={`fx-input ${P}__narrow`} value={d.kind} onChange={(e) => set({ ...d, kind: e.target.value as Draft['kind'] })} aria-label="Kind">{['epic', 'feature', 'task'].map((k) => <option key={k}>{k}</option>)}</select>
-        <select className={`fx-input ${P}__narrow`} value={d.priority} onChange={(e) => set({ ...d, priority: e.target.value })} aria-label="Priority">{['P0', 'P1', 'P2', 'P3'].map((k) => <option key={k}>{k}</option>)}</select>
+        <Select label="Kind" value={d.kind} onChange={(v) => set({ ...d, kind: v as Draft['kind'] })} className={`fx-input ${P}__narrow`} options={['epic', 'feature', 'task'].map((k) => ({ value: String(k), label: String(k) }))} />
+        <Select label="Priority" value={d.priority} onChange={(v) => set({ ...d, priority: v })} className={`fx-input ${P}__narrow`} options={['P0', 'P1', 'P2', 'P3'].map((k) => ({ value: String(k), label: String(k) }))} />
         <select className={`fx-input ${P}__narrow`} value={d.model} onChange={(e) => set({ ...d, model: e.target.value as Draft['model'] })} aria-label="Build with" title={d.modelReason}>{Object.entries(MODEL_LABEL).map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select>
         <IconButton icon="x" label="Remove" onClick={onRemove} />
       </div>

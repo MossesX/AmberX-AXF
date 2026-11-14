@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
-import { Button, Checkbox, Slider, useRuntime } from '@console/axf/react';
+import { Button, Checkbox, Slider, useRuntime, Select } from '@console/axf/react';
 import * as core from './swarm-core.mjs';
 import { Bubble } from './chat';
 import type { Act, ChatSettings, SwarmState } from './ui-types';
@@ -78,9 +78,7 @@ export function ChatSettingsTab({ state, act }: { state: SwarmState; act: Act })
         <h2 className="sw-wave">Color by vibe</h2>
         <div className="sw-bar">
           <Checkbox label="Color every message by its vibe score" checked={colorBy} onChange={(v) => rt.settings.set(KEYS.colorByVibe, v)} />
-          <select className="fx-input sw-bar__pick" aria-label="Base colour" value={base} onChange={(e) => rt.settings.set(KEYS.vibeColor, e.target.value)}>
-            {core.VIBE_COLORS.map((c) => <option key={c} value={c}>{c}</option>)}
-          </select>
+          <Select label="Base colour" value={base} onChange={(v) => rt.settings.set(KEYS.vibeColor, v)} className="sw-bar__pick" options={core.VIBE_COLORS.map((c) => ({ value: String(c), label: String(c) }))} />
           <span className={`sw-swatch is-${base}`} aria-hidden="true" />
         </div>
         <p className="fx-muted">Light near 1, darker as the score rises, darkest at the ceiling. Also in the chat window's right-click menu.</p>

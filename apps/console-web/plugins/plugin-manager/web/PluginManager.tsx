@@ -6,7 +6,7 @@
  * graph) is the framework's plugin inventory engine, shared with the Python server and the Kotlin kernel.
  */
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
-import { Button, Chip, Icon, IconButton, Segmented as FxSegmented, TabGroup, useRuntime } from '@console/axf/react';
+import { Button, Chip, Icon, IconButton, Segmented as FxSegmented, TabGroup, useRuntime, Select } from '@console/axf/react';
 import { hasSettings, hasUi, openSettings, openUi, setEnabled } from './actions';
 import { ConflictList, DetailPane, HealthChip, Monogram } from './Detail';
 import { HEALTH_LABEL, HEALTH_RANK, loadLogs, useInventory, type Inventory, type PluginRow } from './model';
@@ -66,9 +66,7 @@ function Search({ q, setQ, placeholder }: { q: string; setQ: (s: string) => void
 
 function SortSelect({ value, onChange }: { value: SortId; onChange: (v: SortId) => void }) {
   return (
-    <select className="fx-input axp-plugin-manager-select" value={value} onChange={(e) => onChange(e.target.value as SortId)} aria-label="Sort">
-      {SORTS.map((s) => <option key={s} value={s}>Sort: {SORT_LABEL[s]}</option>)}
-    </select>
+    <Select label="Sort" value={value} onChange={(v) => onChange(v as SortId)} className="axp-plugin-manager-select" options={SORTS.map((s) => ({ value: String(s), label: `Sort: ${SORT_LABEL[s]}` }))} />
   );
 }
 
@@ -131,9 +129,7 @@ function Studio(p: LayoutProps) {
             </button>
           ))}
         </nav>
-        <select className="fx-input axp-plugin-manager-select axp-plugin-manager-studio__filtersel" value={p.prefs.filter} onChange={(e) => p.set('filter', e.target.value as FilterId)} aria-label="Filter">
-          {FILTERS.map((f) => <option key={f} value={f}>{FILTER_LABEL[f]} ({p.inv.items.filter((r) => matches(r, f)).length})</option>)}
-        </select>
+        <Select label="Filter" value={p.prefs.filter} onChange={(v) => p.set('filter', v as FilterId)} className="axp-plugin-manager-select axp-plugin-manager-studio__filtersel" options={FILTERS.map((f) => ({ value: String(f), label: `${FILTER_LABEL[f]} (${p.inv.items.filter((r) => matches(r, f)).length})` }))} />
         <p className="axp-plugin-manager-eyebrow">Layout</p>
         <div className="axp-plugin-manager-studio__layouts">
           {LAYOUTS.map((l) => (

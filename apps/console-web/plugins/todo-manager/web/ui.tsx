@@ -5,7 +5,7 @@
  * Framework controls only (they follow the app's button, style theme and spacing); plugin CSS lays things out.
  */
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Chip, Container, Field, Icon, IconButton, Note, Section, Segmented, SelectField, Switch, TextField, useAxfState, useRuntime } from '@console/axf/react';
+import { Button, Chip, Container, Field, Icon, IconButton, Note, Section, Segmented, SelectField, Switch, TextField, useAxfState, useRuntime, Select } from '@console/axf/react';
 import {
   CORE_PARTS, DEFAULT_VIEW, FIELD_TYPES, KINDS, TONES, checklistText, childLists, dateInput, fromDateInput, groupEntries, listPaths, progress, readView, sortEntries, visible, words,
   type CorePart, type CoreRule, type Entry, type EntryKind, type FieldDef, type GroupBy, type ListView, type SortBy, type TodoList, type Tone, type TypeDef, type TypeSchema,
@@ -65,10 +65,7 @@ function ListsColumn() {
     <aside className="axp-todo__lists" aria-label="Lists">
       {/* phones: a drop-down instead of the column */}
       <div className="axp-todo__listpick">
-        <select className="fx-input" aria-label="List" value={String(s.openId ?? '')} onChange={(e) => void openList(e.target.value ? Number(e.target.value) : null)}>
-          <option value="">Pick a list</option>
-          {paths.map((p) => <option key={p.id} value={String(p.id)}>{p.path}</option>)}
-        </select>
+        <Select label="List" value={String(s.openId ?? '')} onChange={(v) => void openList(v ? Number(v) : null)} empty={'Pick a list'} options={paths.map((p) => ({ value: String(p.id), label: String(p.path) }))} />
         <IconButton icon="plus" label="New list" onClick={() => { const t = window.prompt('List name'); if (t?.trim()) void createList(t.trim()); }} />
       </div>
       <ul className="axp-todo__tree" role="tree">
@@ -183,10 +180,7 @@ function ListTitle({ l }: { l: TodoList }) {
 
 function ToneMenu({ l }: { l: TodoList }) {
   return (
-    <select className="fx-input axp-todo__tone" aria-label="List colour" value={l.tone} onChange={(e) => void updateList(l.id, { tone: e.target.value as Tone | '' })}>
-      <option value="">No colour</option>
-      {TONES.map((t) => <option key={t} value={t}>{words(t)}</option>)}
-    </select>
+    <Select label="List colour" value={l.tone} onChange={(v) => void updateList(l.id, { tone: v as Tone | '' })} className="axp-todo__tone" empty={'No colour'} options={TONES.map((t) => ({ value: String(t), label: String(words(t)) }))} />
   );
 }
 

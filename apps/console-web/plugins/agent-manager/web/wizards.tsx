@@ -8,7 +8,7 @@
  *   training  Training setup: agent → sources (Firecrawl, URLs, repo, text, MCP) → schedule → run
  */
 import { Fragment, useEffect, useState, useSyncExternalStore, type ReactNode } from 'react';
-import { Button, Chip, Icon, useRuntime } from '@console/axf/react';
+import { Button, Chip, Icon, useRuntime, Select } from '@console/axf/react';
 import { AgentForm, Field, LingoForm, PersonaForm, Pick, SKILL_TEMPLATES, SkillForm, ToolForm, TrainingForm } from './forms';
 import { LoadingSkeleton } from '@console/emptyState';
 import {
@@ -279,7 +279,7 @@ function TrainingWizard({ done, agentId }: { done: (msg: string) => void; agentI
       {step === 2 && (
         <div className="fx-stack">
           <p className="fx-small fx-muted">Scheduled jobs run in the background while the console runs (Settings → Plugins → Agent manager → scheduler).</p>
-          <Field label="Schedule"><select className="fx-input" value={j.schedule ?? 'manual'} onChange={(e) => setJ({ ...j, schedule: e.target.value })}>{['manual', 'hourly', 'daily', 'weekly'].map((s) => <option key={s}>{s}</option>)}</select></Field>
+          <Field label="Schedule"><Select label="Schedule" value={j.schedule ?? 'manual'} onChange={(v) => setJ({ ...j, schedule: v })} options={['manual', 'hourly', 'daily', 'weekly'].map((s) => ({ value: String(s), label: String(s) }))} /></Field>
           <label className="axp-agent-manager__toggle"><input type="checkbox" checked={runNow} onChange={(e) => setRunNow(e.target.checked)} /> Run it now</label>
         </div>
       )}

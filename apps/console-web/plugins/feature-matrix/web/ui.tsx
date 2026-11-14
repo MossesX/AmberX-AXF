@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { Button, Checkbox, Chip, Icon, IconButton, ModelBadge, Segmented, SelectField, TextField, useRuntime } from '@console/axf/react';
+import { Button, Checkbox, Chip, Icon, IconButton, ModelBadge, Segmented, SelectField, TextField, useRuntime, Select } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import { DataGrid, type GridColumn, type GridGroup, type GridSort } from '@console/axf/libs/datagrid';
@@ -126,7 +126,7 @@ function MatricesGrid({ data, busy, act, focus, lastReport }: { data: StateRes; 
     <>
       <div className="fx-row fx-row--wrap axp-feature-matrix__bar" role="toolbar" aria-label="Show">
         <Segmented size="sm" label="Show" value={show} onChange={setShow} options={[{ value: 'all', label: 'All' }, { value: 'dirty', label: 'Needs apply' }, { value: 'applied', label: 'Applied' }]} />
-        {data.profiles.length > 1 && <select className="fx-input axp-feature-matrix__profile" aria-label="Profile" value={profile} onChange={(e) => setProfile(e.target.value)}><option value="">Every profile</option>{data.profiles.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}</select>}
+        {data.profiles.length > 1 && <Select label="Profile" value={profile} onChange={(v) => setProfile(v)} className="axp-feature-matrix__profile" empty={'Every profile'} options={data.profiles.map((p) => ({ value: String(p.id), label: String(p.name) }))} />}
       </div>
       {missing && (
         <div className="pl-note axp-feature-matrix__missing">

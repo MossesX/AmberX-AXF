@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Chip, Icon } from '@console/axf/react';
+import { Chip, Icon, Select } from '@console/axf/react';
 import { api, fmtTime, type Res } from './ui-types';
 
 /*
@@ -45,9 +45,7 @@ export function SectionOwnersPanel() {
                 <div className="fx-small fx-muted">{s.about}</div>
                 <div className="fx-small fx-muted">Posts: {s.events.map((e) => EVENT_WORD[e] ?? e).join(', ')}{s.where ? ` · ${s.where}` : ''}</div>
               </div>
-              <select className="fx-input sw-bar__pick" aria-label={`Owner of ${s.label}`} value={s.current} disabled={busy === s.id} onChange={(e) => void assign(s.id, e.target.value)}>
-                {board.crew.map((a) => <option key={a.id} value={a.id}>{a.name}{a.id === s.owner ? ' (default)' : ''}</option>)}
-              </select>
+              <Select label={`Owner of ${s.label}`} value={s.current} onChange={(v) => void assign(s.id, v)} className="sw-bar__pick" disabled={busy === s.id} options={board.crew.map((a) => ({ value: String(a.id), label: `${a.name}${a.id === s.owner ? ' (default)' : ''}` }))} />
             </div>
           ))}
         </section>

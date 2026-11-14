@@ -1,6 +1,6 @@
 /* Settings → Plugins → Agent manager panels: wizards, model, training & Firecrawl, memory defaults, integration. */
 import { useEffect, useState } from 'react';
-import { Button, Chip, Icon, useRuntime } from '@console/axf/react';
+import { Button, Chip, Icon, useRuntime, Select } from '@console/axf/react';
 import { Field, Num, Text } from './forms';
 import { WIZARDS, useData } from './wizards';
 import { MEMORY_HELP, call, isDangerousTool, post, put, refresh, type Settings } from './api';
@@ -48,7 +48,7 @@ export function ModelPanel() {
       <label className="axp-agent-manager__toggle"><input type="checkbox" checked={s.preferAssistant} onChange={(e) => void saveS({ preferAssistant: e.target.checked })} /> Use the AI assistant's providers when it's installed (same keys, fallback chain and usage)</label>
       <p className="fx-small fx-muted">Own model settings are used when the assistant isn't installed (or the box above is off).</p>
       <div className="axp-agent-manager__cols">
-        <Field label="API style"><select className="fx-input" value={v.kind} onChange={(e) => setLlm({ ...llm, kind: e.target.value })}><option value="anthropic">Anthropic</option><option value="openai">OpenAI / compatible</option><option value="ollama">Ollama (OpenAI-compatible)</option></select></Field>
+        <Field label="API style"><Select label="Kind" value={v.kind} onChange={(v) => setLlm({ ...llm, kind: v })} options={[{ value: 'anthropic', label: 'Anthropic' }, { value: 'openai', label: 'OpenAI / compatible' }, { value: 'ollama', label: 'Ollama (OpenAI-compatible)' }]} /></Field>
         <Field label="Base URL (optional)"><Text mono value={v.baseUrl} onChange={(baseUrl) => setLlm({ ...llm, baseUrl })} placeholder={v.kind === 'anthropic' ? 'https://api.anthropic.com' : v.kind === 'ollama' ? 'http://localhost:11434/v1' : 'https://api.openai.com/v1'} /></Field>
         <Field label="Model"><Text mono value={v.model} onChange={(model) => setLlm({ ...llm, model })} /></Field>
         <Field label="Embedding model (optional)"><Text mono value={v.embedModel} onChange={(embedModel) => setLlm({ ...llm, embedModel })} placeholder="text-embedding-3-small" /></Field>
@@ -79,7 +79,7 @@ export function TrainingPanel() {
       <p className="fx-small fx-muted">Firecrawl turns websites into clean Markdown for training (scrape, crawl, search). URL, repo, text and MCP sources work without it.</p>
       <div className="axp-agent-manager__cols">
         <Field label="Firecrawl base URL" hint="Change for a self-hosted Firecrawl"><Text mono value={v.baseUrl} onChange={(baseUrl) => setFc({ ...fc, baseUrl })} /></Field>
-        <Field label="API version"><select className="fx-input" value={v.version} onChange={(e) => setFc({ ...fc, version: e.target.value })}><option value="v2">v2</option><option value="v1">v1</option></select></Field>
+        <Field label="API version"><Select label="Version" value={v.version} onChange={(v) => setFc({ ...fc, version: v })} options={[{ value: 'v2', label: 'v2' }, { value: 'v1', label: 'v1' }]} /></Field>
         <Field label="Key from env var"><Text mono value={v.keyEnv} onChange={(keyEnv) => setFc({ ...fc, keyEnv: keyEnv.toUpperCase() })} /></Field>
         <Field label={`Or store a key${s.firecrawl.hasKey ? ' (saved)' : ''}`}><input className="fx-input" type="password" autoComplete="off" value={key} onChange={(e) => setKey(e.target.value)} placeholder={s.firecrawl.hasKey ? 'leave blank to keep' : 'fc-…'} aria-label="Firecrawl key" /></Field>
       </div>
@@ -104,7 +104,7 @@ export function MemoryDefaultsPanel() {
     <div className="fx-stack">
       <p className="fx-small fx-muted">Used by agents that don't set their own memory options.</p>
       <div className="axp-agent-manager__cols">
-        <Field label="Memory type" hint={MEMORY_HELP[v.memoryType]}><select className="fx-input" value={v.memoryType} onChange={(e) => setD({ ...d, memoryType: e.target.value })}>{Object.keys(MEMORY_HELP).map((t) => <option key={t}>{t}</option>)}</select></Field>
+        <Field label="Memory type" hint={MEMORY_HELP[v.memoryType]}><Select label="Memory Type" value={v.memoryType} onChange={(v) => setD({ ...d, memoryType: v })} options={Object.keys(MEMORY_HELP).map((t) => ({ value: String(t), label: String(t) }))} /></Field>
         <Field label="Recall top K"><Num value={v.topK} min={1} max={30} onChange={(topK) => setD({ ...d, topK })} /></Field>
         <Field label="Recent exchanges"><Num value={v.window} min={1} max={50} onChange={(window) => setD({ ...d, window })} /></Field>
         <Field label="Max items per agent"><Num value={v.maxItems} min={50} max={50000} onChange={(maxItems) => setD({ ...d, maxItems })} /></Field>

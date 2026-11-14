@@ -6,7 +6,7 @@
  * so every app follows. The token tree is the Theme manager's (capability axf.token-tree@1, model.ts).
  */
 import { useEffect, useMemo, useState, type CSSProperties } from 'react';
-import { Button, Checkbox, Chip, ColorField, Container, Icon, IconButton, Note, Segmented, SelectField, Switch, TextField, useAxfState, useEditorSync, useRuntime } from '@console/axf/react';
+import { Button, Checkbox, Chip, ColorField, Container, Icon, IconButton, Note, Segmented, SelectField, Switch, TextField, useAxfState, useEditorSync, useRuntime, Select } from '@console/axf/react';
 import { assetTypeSpecs, colorThemeVars, styleThemeVars } from '@console/axf/core';
 import type { ColorThemeData, StyleThemeData } from '@console/axf/core';
 import { call, del, post, type SavedTheme } from './api';
@@ -318,10 +318,7 @@ function TokenValue({ token, value, onChange }: { token: Token; value: Json | un
           <div className={`${P}__withpick`}>
             <TextField label={label} mono value={String(v ?? '')} onChange={(x) => { setV(x); onChange(x); }} />
             {!!f.values?.length && f.values.length > 1 && (
-              <select className={`fx-input ${P}__pick`} value="" aria-label="Values other themes use" title="Values other themes use" onChange={(e) => e.target.value && onChange(JSON.parse(e.target.value) as Json)}>
-                <option value="">Others…</option>
-                {f.values.map((x) => <option key={JSON.stringify(x)} value={JSON.stringify(x)}>{String(x).slice(0, 60)}</option>)}
-              </select>
+              <Select label="Values other themes use" value="" onChange={(v) => v && onChange(JSON.parse(v) as Json)} className={`fx-input ${P}__pick`} title="Values other themes use" empty={'Others…'} options={f.values.map((x) => ({ value: String(JSON.stringify(x)), label: String(x).slice(0, 60) }))} />
             )}
           </div>
         </>

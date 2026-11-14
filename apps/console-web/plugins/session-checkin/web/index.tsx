@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { Button, Chip, Icon, IconButton, useRuntime } from '@console/axf/react';
+import { Button, Chip, Icon, IconButton, useRuntime, Select } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginFetch } from '@console/plugins';
 import './session-checkin.css';
@@ -302,7 +302,7 @@ function InstallWizard() {
           <Check on={cfg.allowSameAsLast} set={(v) => set({ allowSameAsLast: v })} label='Allow "same as last"' help="Reuses the previous answers for the same location; mismatches are still flagged." />
           <Check on={cfg.unattended === 'log'} set={(v) => set({ unattended: v ? 'log' : 'off' })} label="Log unattended runs" help="claude -p and scheduled runs are logged without asking." />
           <label className={`${P}__field`}>Default effort
-            <select className="fx-input" value={cfg.defaultEffort} onChange={(e) => set({ defaultEffort: e.target.value as Effort })}>{EFFORTS.map((x) => <option key={x}>{x}</option>)}</select>
+            <Select label="Default effort" value={cfg.defaultEffort} onChange={(v) => set({ defaultEffort: v as Effort })} options={EFFORTS.map((x) => ({ value: String(x), label: String(x) }))} />
           </label>
         </fieldset>
       )}

@@ -1,5 +1,5 @@
 import { useEffect, useState, type ReactNode } from 'react';
-import { Button, Chip, Container, Icon, IconButton, useRuntime } from '@console/axf/react';
+import { Button, Chip, Container, Icon, IconButton, useRuntime, Select } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginFetch } from '@console/plugins';
 import './project-wizard.css';
@@ -218,13 +218,10 @@ function SourceStep({ st, plan, setSource, info }: { st: Status; plan: Plan; set
       {s.kind === 'new' && (
         <div className={`${P}__grid`}>
           <label className={`${P}__field`}>Template
-            <select className="fx-input" value={s.template} onChange={(e) => setSource({ template: e.target.value })}>{st.templates.map((t) => <option key={t.id} value={t.id}>{t.label}</option>)}</select>
+            <Select label="Template" value={s.template} onChange={(v) => setSource({ template: v })} options={st.templates.map((t) => ({ value: String(t.id), label: String(t.label) }))} />
           </label>
           <label className={`${P}__field`}>Boilerplate
-            <select className="fx-input" value={s.boilerplate} onChange={(e) => setSource({ boilerplate: e.target.value })}>
-              <option value="">none</option>
-              {st.boilerplates.map((b) => <option key={b.id} value={b.id}>{b.name}{b.status && b.status !== 'built' ? ` (${b.status})` : ''}</option>)}
-            </select>
+            <Select label="Boilerplate" value={s.boilerplate} onChange={(v) => setSource({ boilerplate: v })} empty={'none'} options={st.boilerplates.map((b) => ({ value: String(b.id), label: `${b.name}${b.status && b.status !== 'built' ? ` ($${b.status})` : ''}` }))} />
           </label>
         </div>
       )}
@@ -292,10 +289,10 @@ function DetailsStep({ plan, set, info }: { plan: Plan; set: (p: Partial<Plan>) 
       <label className={`${P}__field`}>Description<textarea className="fx-input" rows={2} value={plan.description} onChange={(e) => set({ description: e.target.value })} placeholder="One sentence: what it is for" maxLength={300} /></label>
       <div className={`${P}__grid`}>
         <label className={`${P}__field`}>Kind
-          <select className="fx-input" value={plan.kind} onChange={(e) => set({ kind: e.target.value })}>{['app', 'library', 'service', 'tool', 'site', 'other'].map((k) => <option key={k}>{k}</option>)}</select>
+          <Select label="Kind" value={plan.kind} onChange={(v) => set({ kind: v })} options={['app', 'library', 'service', 'tool', 'site', 'other'].map((k) => ({ value: String(k), label: String(k) }))} />
         </label>
         <label className={`${P}__field`}>Visibility (new repos)
-          <select className="fx-input" value={plan.visibility} onChange={(e) => set({ visibility: e.target.value as Plan['visibility'] })}><option value="private">private</option><option value="public">public</option></select>
+          <Select label="Visibility (new repos)" value={plan.visibility} onChange={(v) => set({ visibility: v as Plan['visibility'] })} options={[{ value: 'private', label: 'private' }, { value: 'public', label: 'public' }]} />
         </label>
       </div>
       {info?.hasManifest && <p className="fx-small fx-muted" style={{ margin: 0 }}>It already has a project manifest: its name and id are kept unless you change them here.</p>}

@@ -1,6 +1,6 @@
 /* Codebase changes — the banner, the log browser and the settings summary. Theme tokens only (codebase-changes.css). */
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Button, Icon, IconButton, RefText, useBannerLaunchOpen, useRuntime, BannerIcon } from '@console/axf/react';
+import { Button, Icon, IconButton, RefText, useBannerLaunchOpen, useRuntime, BannerIcon, Select } from '@console/axf/react';
 import { MoreMenu } from './MoreMenu';
 import {
   CHANGED, KIND_ICON, NO_FILTERS, STATE_ICON, STATE_LABEL, VIEW, abandonEntry, ago, api, bannerOn, closeAll, closeEntry, isActive, NO_WORD_MS, quietMs, startedMs, stuckWhy, kindLabel, linkHref, loadEntry, loadOpen, loadResume,
@@ -305,9 +305,9 @@ export function ChangesView() {
       </div>
       {showFilters && (
         <div className="axp-codebase-changes__filters">
-          <select className="fx-input" aria-label="Kind" value={f.kind} onChange={(e) => up({ kind: e.target.value })}><option value="">Every kind</option>{kinds.map((k) => <option key={k} value={k}>{kindLabel(k)}{c?.byKind[k] ? ` (${c.byKind[k]})` : ''}</option>)}</select>
-          <select className="fx-input" aria-label="State" value={f.state} onChange={(e) => up({ state: e.target.value })}><option value="">Every state</option>{['running', 'done', 'partial', 'failed', 'cancelled'].map((k) => <option key={k} value={k}>{STATE_LABEL[k]}</option>)}</select>
-          <select className="fx-input" aria-label="Banner" value={f.open} onChange={(e) => up({ open: e.target.value as Filters['open'] })}><option value="">Open and closed</option><option value="open">In the banner</option><option value="closed">Closed</option></select>
+          <Select label="Kind" value={f.kind} onChange={(v) => up({ kind: v })} empty={'Every kind'} options={kinds.map((k) => ({ value: String(k), label: `${kindLabel(k)}${c?.byKind[k] ? ` ($${c.byKind[k]})` : ''}` }))} />
+          <Select label="State" value={f.state} onChange={(v) => up({ state: v })} empty={'Every state'} options={['running', 'done', 'partial', 'failed', 'cancelled'].map((k) => ({ value: String(k), label: String(STATE_LABEL[k]) }))} />
+          <Select label="Banner" value={f.open} onChange={(v) => up({ open: v as Filters['open'] })} empty={'Open and closed'} options={[{ value: 'open', label: 'In the banner' }, { value: 'closed', label: 'Closed' }]} />
           <input className="fx-input" placeholder="Repo (owner/name)" aria-label="Repo" value={f.repo} onChange={(e) => up({ repo: e.target.value })} />
           <label className="axp-codebase-changes__date"><span className="fx-small fx-muted">From</span><input className="fx-input" type="date" value={f.from} onChange={(e) => up({ from: e.target.value })} /></label>
           <label className="axp-codebase-changes__date"><span className="fx-small fx-muted">To</span><input className="fx-input" type="date" value={f.to} onChange={(e) => up({ to: e.target.value })} /></label>

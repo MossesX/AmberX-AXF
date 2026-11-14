@@ -5,7 +5,7 @@
  * installed from those apps. Any console plugin in this clone can be published to the catalog.
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, Chip, Icon, ModelBadge, Segmented, useRuntime } from '@console/axf/react';
+import { Button, Chip, Icon, ModelBadge, Segmented, useRuntime, Select } from '@console/axf/react';
 import { getToken, post } from '@console/api';
 import { PLUGINS_CHANGED } from '@console/plugins';
 import type { ViewProps } from './views';
@@ -162,10 +162,7 @@ export function InstallView({ inv, onChanged }: ViewProps) {
           <strong>Publish a plugin to the catalog</strong>
           <span className="fx-muted fx-small">Packs a plugin from this console (no data, no secrets) so other consoles can install it. A version can't change once published: raise the version in its plugin.json first.</span>
           <div className="fx-row fx-row--wrap">
-            <select className="fx-input axp-plugin-manager-select" value={share} onChange={(e) => setShare(e.target.value)} aria-label="Plugin to publish">
-              <option value="">Pick a plugin…</option>
-              {local.map((r) => <option key={r.folder} value={r.folder}>{r.name} ({r.version})</option>)}
-            </select>
+            <Select label="Plugin to publish" value={share} onChange={(v) => setShare(v)} className="axp-plugin-manager-select" empty={'Pick a plugin…'} options={local.map((r) => ({ value: String(r.folder), label: `${r.name} (${r.version})` }))} />
             <Button tone="primary" icon="upload" disabled={!share || !!busy || !cat?.reachable} onClick={() => void publish()}>{busy.startsWith('share:') ? 'Publishing…' : 'Publish'}</Button>
           </div>
         </section>

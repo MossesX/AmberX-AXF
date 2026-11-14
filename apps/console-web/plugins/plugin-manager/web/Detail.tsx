@@ -1,6 +1,6 @@
 /** One plugin, everything about it: overview, dependencies in detail, its UI and settings, logs, files, install. */
 import { useEffect, useMemo, useState, type ReactNode } from 'react';
-import { Button, Chip, Icon, ModelBadge, TabGroup, useRuntime } from '@console/axf/react';
+import { Button, Chip, Icon, ModelBadge, TabGroup, useRuntime, Select } from '@console/axf/react';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { hasSettings, hasUi, openSettings, openUi, setEnabled } from './actions';
 import { LoadingSkeleton } from '@console/emptyState';
@@ -239,9 +239,7 @@ function Logs({ row }: { row: PluginRow }) {
   return (
     <div className="fx-stack">
       <div className="fx-row fx-row--wrap">
-        <select className="fx-input axp-plugin-manager-select" value={level} onChange={(e) => setLevel(e.target.value)} aria-label="Log level">
-          <option value="">All levels</option><option value="info">info</option><option value="ok">ok</option><option value="warn">warn</option><option value="error">error</option>
-        </select>
+        <Select label="Log level" value={level} onChange={(v) => setLevel(v)} className="axp-plugin-manager-select" empty={'All levels'} options={[{ value: 'info', label: 'info' }, { value: 'ok', label: 'ok' }, { value: 'warn', label: 'warn' }, { value: 'error', label: 'error' }]} />
         <Button tone="ghost" icon="refresh" onClick={load}>Refresh</Button>
       </div>
       {lines === null && <LoadingSkeleton />}

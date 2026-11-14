@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState, type DragEvent } from 'react';
-import { Button, Checkbox, Chip, Icon, IconButton, Markdown, Segmented, TabGroup, useRuntime } from '@console/axf/react';
+import { Button, Checkbox, Chip, Icon, IconButton, Markdown, Segmented, TabGroup, useRuntime, Select } from '@console/axf/react';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import * as pc from './plan-core.mjs';
 import type { CatNode, Filter, Plan, SavedView } from './plan-core.mjs';
@@ -182,9 +182,9 @@ function PlansTab({ onOpen }: { onOpen: (p: Plan) => void }) {
       <div className="axp-plan-studio__tools" role="toolbar" aria-label="View, filter and sort">
         <label className="fx-search axp-plan-studio__search"><Icon name="search" size={13} /><input type="search" value={f.q ?? ''} onChange={(e) => setF({ ...f, q: e.target.value })} placeholder="Search every field…" aria-label="Search plans" /></label>
         <Segmented size="sm" label="Layout" value={layout} onChange={setLayout} options={LAYOUTS.map((l) => ({ value: l.value, label: l.label }))} />
-        <label className="fx-search axp-plan-studio__sel"><Icon name="list" size={12} /><select aria-label="Sort" value={sort} onChange={(e) => setSort(e.target.value)}>{pc.SORTS.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}</select></label>
-        {layout === 'groups' && <label className="fx-search axp-plan-studio__sel"><Icon name="layers" size={12} /><select aria-label="Group by" value={group} onChange={(e) => setGroup(e.target.value)}>{pc.GROUPS.map((g) => <option key={g.id} value={g.id}>By {g.label.toLowerCase()}</option>)}</select></label>}
-        {views.length > 0 && <label className="fx-search axp-plan-studio__sel"><Icon name="eye" size={12} /><select aria-label="Saved views" value="" onChange={(e) => { const v = views.find((x) => x.id === e.target.value); if (v) useView(v); }}><option value="">Saved views…</option>{views.map((v) => <option key={v.id} value={v.id}>{v.label}</option>)}</select></label>}
+        <label className="fx-search axp-plan-studio__sel"><Icon name="list" size={12} /><Select label="Sort" value={sort} onChange={(v) => setSort(v)} options={pc.SORTS.map((s) => ({ value: String(s.id), label: String(s.label) }))} /></label>
+        {layout === 'groups' && <label className="fx-search axp-plan-studio__sel"><Icon name="layers" size={12} /><Select label="Group by" value={group} onChange={(v) => setGroup(v)} options={pc.GROUPS.map((g) => ({ value: String(g.id), label: `By ${g.label.toLowerCase()}` }))} /></label>}
+        {views.length > 0 && <label className="fx-search axp-plan-studio__sel"><Icon name="eye" size={12} /><Select label="Saved views" value="" onChange={(next) => { const v = views.find((x) => x.id === next); if (v) useView(v); }} empty={'Saved views…'} options={views.map((v) => ({ value: String(v.id), label: String(v.label) }))} /></label>}
         <IconButton icon="save" label="Save this view" onClick={saveView} />
         <IconButton icon="download" label="Export (selected, or all) as Markdown" onClick={() => exportSel('md')} />
         <IconButton icon="code" label="Export as JSON" onClick={() => exportSel('json')} />
@@ -200,9 +200,9 @@ function PlansTab({ onOpen }: { onOpen: (p: Plan) => void }) {
       {sel.size > 0 && (
         <div className="axp-plan-studio__bulk" role="toolbar" aria-label="Bulk actions">
           <b>{sel.size} selected</b>
-          <label className="fx-search axp-plan-studio__sel"><select aria-label="Set status" value="" onChange={(e) => e.target.value && doBulk({ status: e.target.value })}><option value="">Status…</option>{pc.STATUSES.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}</select></label>
-          <label className="fx-search axp-plan-studio__sel"><select aria-label="Set priority" value="" onChange={(e) => e.target.value && doBulk({ priority: e.target.value })}><option value="">Priority…</option>{pc.PRIORITIES.map((p) => <option key={p}>{p}</option>)}</select></label>
-          <label className="fx-search axp-plan-studio__sel"><select aria-label="Move to category" value="" onChange={(e) => e.target.value && doBulk({ category: e.target.value === '-' ? '' : e.target.value })}><option value="">Category…</option><option value="-">Uncategorized</option>{(state?.categories.paths ?? []).map((p) => <option key={p} value={p}>{p}</option>)}</select></label>
+          <label className="fx-search axp-plan-studio__sel"><Select label="Set status" value="" onChange={(v) => v && doBulk({ status: v })} empty={'Status…'} options={pc.STATUSES.map((s) => ({ value: String(s.id), label: String(s.label) }))} /></label>
+          <label className="fx-search axp-plan-studio__sel"><Select label="Set priority" value="" onChange={(v) => v && doBulk({ priority: v })} empty={'Priority…'} options={pc.PRIORITIES.map((p) => ({ value: String(p), label: String(p) }))} /></label>
+          <label className="fx-search axp-plan-studio__sel"><Select label="Move to category" value="" onChange={(v) => v && doBulk({ category: v === '-' ? '' : v })} empty={'Category…'} options={[{ value: '-', label: 'Uncategorized' }, ...((state?.categories.paths ?? []) ?? []).map((p) => ({ value: String(p), label: String(p) }))]} /></label>
           <Button size="sm" icon="plus" onClick={() => { const t = window.prompt('Tag to add'); if (t) doBulk({ addTag: t }); }}>Tag</Button>
           <Button size="sm" tone="quiet" icon="x" onClick={() => setSel(new Set())}>Clear</Button>
           {busy && <span className="fx-muted">Working…</span>}

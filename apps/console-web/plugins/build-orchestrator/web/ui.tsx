@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { AgentAvatar, BuildOrigin, Button, ControlScope, Icon, PriorityTag, Segmented, Slot, TabGroup, flashWhenReady, originSubtitle, useControlTarget, useRuntime } from '@console/axf/react';
+import { AgentAvatar, BuildOrigin, Button, ControlScope, Icon, PriorityTag, Segmented, Slot, TabGroup, flashWhenReady, originSubtitle, useControlTarget, useRuntime, Select } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import * as consoleApi from '@console/api';
 import { WatchLiveFor } from '@console/watchLive';
@@ -135,18 +135,10 @@ function BuildsTab({ state, busy, act }: { state: State; busy: boolean; act: Act
       </div>
       <div className="oc-bar" role="toolbar" aria-label="Show">
         <Segmented size="sm" label="View" value={view} onChange={setView} options={[{ value: 'grid', label: 'Grid', icon: 'grid' }, { value: 'list', label: 'List', icon: 'list' }]} />
-        <select className="fx-input oc-bar__pick" aria-label="Category" value={cat} onChange={(e) => setCat(e.target.value)}>
-          <option value="">All categories</option>
-          {cats.map((c) => <option key={c.name} value={c.name}>{c.name} ({c.count})</option>)}
-        </select>
-        <select className="fx-input oc-bar__pick" aria-label="Next step on" value={model} onChange={(e) => setModel(e.target.value)}>
-          <option value="">Any model next</option>
-          {core.MODELS.map((m) => <option key={m} value={m}>Next on {m}</option>)}
-        </select>
+        <Select label="Category" value={cat} onChange={(v) => setCat(v)} className="oc-bar__pick" empty={'All categories'} options={cats.map((c) => ({ value: String(c.name), label: `${c.name} (${c.count})` }))} />
+        <Select label="Next step on" value={model} onChange={(v) => setModel(v)} className="oc-bar__pick" empty={'Any model next'} options={core.MODELS.map((m) => ({ value: String(m), label: `Next on ${m}` }))} />
         {view === 'list' && (
-          <select className="fx-input oc-bar__pick" aria-label="Sort by" value={`${sort}:${dir}`} onChange={(e) => { const [k, d] = e.target.value.split(':'); setSort(k!); setDir(d as 'asc' | 'desc'); }}>
-            {core.SORTS.flatMap((k) => (['asc', 'desc'] as const).map((d) => <option key={`${k}:${d}`} value={`${k}:${d}`}>{(core.SORT_LABEL as Record<string, string>)[k]} {d === 'asc' ? '↑' : '↓'}</option>))}
-          </select>
+          <Select label="Sort by" value={`${sort}:${dir}`} onChange={(v) => { const [k, d] = v.split(':'); setSort(k!); setDir(d as 'asc' | 'desc'); }} className="oc-bar__pick" options={core.SORTS.flatMap((k) => (['asc', 'desc'] as const).map((d) => ({ value: `${k}:${d}`, label: `${(core.SORT_LABEL as Record<string, string>)[k]} ${d === 'asc' ? '↑' : '↓'}` })))} />
         )}
         {hiddenCount > 0 && <button data-fx-row className="pd-sort" aria-pressed={showHidden} onClick={() => setShowHidden((v) => !v)}><Icon name={showHidden ? 'eye' : 'minimize'} size={13} />Hidden ({hiddenCount})</button>}
         {filter && <button data-fx-row className="pd-sort" onClick={() => setFilter('')}><Icon name="x" size={13} />{(core.STATUS_LABEL as Record<string, string>)[filter]} only</button>}
@@ -249,7 +241,7 @@ function BuildCard({ b, rules, busy, act, embedded }: { b: Build; rules: Rules; 
           <textarea className="fx-input" rows={3} autoFocus value={text} onChange={(e) => setText(e.target.value)} placeholder={mode === 'note' ? 'Add a note' : `Add a step (${core.STEP_MINUTES} min or less)`} />
           {mode === 'step' && (
             <div className="pd-two">
-              <label className="pd-field">Model<select className="fx-input" value={stepModel} onChange={(e) => setStepModel(e.target.value as 'Fable' | 'Opus')}>{core.MODELS.map((m) => <option key={m}>{m}</option>)}</select></label>
+              <label className="pd-field">Model<Select label="Model" value={stepModel} onChange={(v) => setStepModel(v as 'Fable' | 'Opus')} options={core.MODELS.map((m) => ({ value: String(m), label: String(m) }))} /></label>
               <label className="pd-field">Build time (e.g. 25 min)<input className="fx-input" value={stepEst} onChange={(e) => setStepEst(e.target.value)} /></label>
               <label className="pd-field">Group<input className="fx-input" value={stepGroup} onChange={(e) => setStepGroup(e.target.value)} /></label>
               <label className="pd-field">Phase<input className="fx-input" value={stepPhase} onChange={(e) => setStepPhase(e.target.value)} /></label>
@@ -418,7 +410,7 @@ function ImportForm({ busy, act, known }: { busy: boolean; act: Act; known: stri
       <summary>Import from Pending builds</summary>
       {!items ? <div className="fx-empty">Loading…</div> : left.length === 0 ? <div className="fx-empty">Every open pending build is already here.</div> : (
         <div className="fx-row fx-row--wrap">
-          <select className="fx-input" value={pick} onChange={(e) => setPick(e.target.value)}><option value="">Pick a pending build</option>{left.map((i) => <option key={i.id} value={i.id}>{i.title} ({i.model})</option>)}</select>
+          <Select label="Pick" value={pick} onChange={(v) => setPick(v)} empty={'Pick a pending build'} options={left.map((i) => ({ value: String(i.id), label: `${i.title} (${i.model})` }))} />
           <Button tone="primary" icon="download" disabled={busy || !pick} onClick={async () => { const it = left.find((i) => i.id === pick); if (it && (await act({ action: 'import', item: it }))) setPick(''); }}>Import</Button>
         </div>
       )}

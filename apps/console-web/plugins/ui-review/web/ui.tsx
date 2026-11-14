@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { AgentAvatar, Button, Checkbox, Icon, IconButton, Segmented, TabGroup, useRuntime } from '@console/axf/react';
+import { AgentAvatar, Button, Checkbox, Icon, IconButton, Segmented, TabGroup, useRuntime, Select } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import { OriginFor } from '@console/buildOrigin';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
@@ -280,15 +280,12 @@ export function UiReviewPage({ section, tab: tabProp }: { section?: string; tab?
         )}
         <div className="axp-ui-review__bar" role="toolbar" aria-label="Filter and view">
           <input className="fx-input axp-ui-review__search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search: title, app, branch, #PR…" aria-label="Search" />
-          <select className="fx-input axp-ui-review__sel" value={status} onChange={(e) => setStatus(e.target.value)} aria-label="Status">
-            <option value="">Every status</option><option value="open">Not approved</option>
-            {core.STATUSES.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}
-          </select>
-          {appList.length > 1 && <select className="fx-input axp-ui-review__sel" value={app} onChange={(e) => setApp(e.target.value)} aria-label="App"><option value="">Every app</option>{appList.map((a) => <option key={a} value={a}>{a}</option>)}</select>}
-          <select className="fx-input axp-ui-review__sel" value={device} onChange={(e) => setDevice(e.target.value)} aria-label="Screens"><option value="">Phone + desktop</option><option value="phone">Phone shots</option><option value="desktop">Desktop shots</option></select>
-          <select className="fx-input axp-ui-review__sel" value={sort} onChange={(e) => setSort(e.target.value)} aria-label="Order">{core.SORTS.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}</select>
-          <select className="fx-input axp-ui-review__sel axp-ui-review__viewsel" value={view} onChange={(e) => setView(e.target.value as ViewId)} aria-label="View">{VIEWS.map((v) => <option key={v.id} value={v.id}>{v.label} view</option>)}</select>
-          {view === 'groups' && <select className="fx-input axp-ui-review__sel" value={groupBy} onChange={(e) => setGroupBy(e.target.value as GroupBy)} aria-label="Group by">{GROUP_BYS.map((g) => <option key={g.id} value={g.id}>By {g.label.toLowerCase()}</option>)}</select>}
+          <Select label="Status" value={status} onChange={(v) => setStatus(v)} className="axp-ui-review__sel" empty={'Every status'} options={[{ value: 'open', label: 'Not approved' }, ...core.STATUSES.map((s) => ({ value: String(s.id), label: String(s.label) }))]} />
+          {appList.length > 1 && <Select label="App" value={app} onChange={(v) => setApp(v)} className="axp-ui-review__sel" empty={'Every app'} options={appList.map((a) => ({ value: String(a), label: String(a) }))} />}
+          <Select label="Screens" value={device} onChange={(v) => setDevice(v)} className="axp-ui-review__sel" empty={'Phone + desktop'} options={[{ value: 'phone', label: 'Phone shots' }, { value: 'desktop', label: 'Desktop shots' }]} />
+          <Select label="Order" value={sort} onChange={(v) => setSort(v)} className="axp-ui-review__sel" options={core.SORTS.map((s) => ({ value: String(s.id), label: String(s.label) }))} />
+          <Select label="View" value={view} onChange={(v) => setView(v as ViewId)} className="axp-ui-review__sel axp-ui-review__viewsel" options={VIEWS.map((v) => ({ value: String(v.id), label: `${v.label} view` }))} />
+          {view === 'groups' && <Select label="Group by" value={groupBy} onChange={(v) => setGroupBy(v as GroupBy)} className="axp-ui-review__sel" options={GROUP_BYS.map((g) => ({ value: String(g.id), label: `By ${g.label.toLowerCase()}` }))} />}
         </div>
 
         <div className="axp-ui-review__countline fx-small fx-muted">

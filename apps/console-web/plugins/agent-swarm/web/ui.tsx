@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Icon, TabGroup, useRuntime } from '@console/axf/react';
+import { Button, Icon, TabGroup, useRuntime, Select } from '@console/axf/react';
 import { DataGrid, type GridColumn, type GridSort } from '@console/axf/libs/datagrid';
 import * as consoleApi from '@console/api';
 import * as core from './swarm-core.mjs';
@@ -180,10 +180,7 @@ function JobsTab({ state }: { state: SwarmState }) {
   return (
     <div className="fx-stack">
       <div className="sw-bar">
-        <select className="fx-input sw-bar__pick" aria-label="Build" value={build} onChange={(e) => setBuild(e.target.value)}>
-          <option value="">Pick a build…</option>
-          {state.builds.map((b) => <option key={b.id} value={b.id}>{b.title} ({b.open} open)</option>)}
-        </select>
+        <Select label="Build" value={build} onChange={(v) => setBuild(v)} className="sw-bar__pick" empty={'Pick a build…'} options={state.builds.map((b) => ({ value: String(b.id), label: `${b.title} (${b.open} open)` }))} />
         {plan && <span className="fx-muted">{plan.jobs.length} jobs · {plan.waves.length} waves · budget up to {core.fmtUsd(total)}</span>}
       </div>
       {err && <div className="pl-note is-warn"><Icon name="alert" size={14} />{err}</div>}

@@ -4,7 +4,7 @@
  * Plus the settings panels (Settings → Plugins → Agent voice): microphone, cloud voices, global pronunciations.
  */
 import { useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
-import { Button, Chip, Container, Icon, IconButton, Note, Segmented, SelectField, Slider, Switch, TabGroup, TextField, useRuntime } from '@console/axf/react';
+import { Button, Chip, Container, Icon, IconButton, Note, Segmented, SelectField, Slider, Switch, TabGroup, TextField, useRuntime, Select } from '@console/axf/react';
 import {
   applyPreset, AUTO_SPEAK, CODE_MODES, DEFAULT_MIC, EMOJI_MODES, estimateMs, exportProfiles, INTERRUPT, LIGHT_LABEL, MIC_MODES, narrate, NUMBER_MODES, PRESETS,
   READ_MODES, URL_MODES, type MicSettings, type Narrator, type Pronunciation, type VoiceProfile,
@@ -111,14 +111,11 @@ function AgentActions({ agentId }: { agentId: string }) {
   return (
     <span className="axp-agent-voice__actions">
       {others.length > 0 && (
-        <select className="fx-input fx-input--sm" aria-label="Copy the voice of" value={from} onChange={(e) => {
-          const src = d.store.profiles[e.target.value];
+        <Select label="Copy the voice of" value={from} onChange={(v) => {
+          const src = d.store.profiles[v];
           if (src) patchProfile(agentId, () => ({ ...src, agentId, permissions: { ...src.permissions } }), true);
           setFrom('');
-        }}>
-          <option value="">Copy from…</option>
-          {others.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}
-        </select>
+        }} className="fx-input--sm" empty={'Copy from…'} options={others.map((a) => ({ value: String(a.id), label: String(a.name) }))} />
       )}
       <IconButton icon="refresh" label="Reset to defaults" onClick={() => { if (confirm(`Reset ${agentName(agentId)}'s voice to the defaults?`)) void removeProfile(agentId); }} />
     </span>

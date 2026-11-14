@@ -1,5 +1,5 @@
 import { useMemo, useState, type ReactNode } from 'react';
-import { AgentCard, Button, Chip, IconButton, useAxfState, useRuntime } from '@console/axf/react';
+import { AgentCard, Button, Chip, IconButton, useAxfState, useRuntime, Select } from '@console/axf/react';
 import { AGENT_CARD_SAMPLE, CARD_ENUMS, CARD_FIELDS, agentCardErrors, normalizeCard, type AgentCardData, type CardField, type CardStats } from '@console/axf/core/engines/agent-card-rules.mjs';
 import * as consoleApi from '@console/api';
 import * as core from './swarm-core.mjs';
@@ -53,9 +53,7 @@ export function CardsTab({ state, stats, act, photo }: { state: SwarmState; stat
       <p className="fx-muted">Every agent's ID card uses the default design unless you pick another one on their profile. Cards take their colours from the theme, so switching the theme rebrands them all.</p>
       <div className="sw-bar">
         <label className="fx-muted" htmlFor="sw-card-who">Show</label>
-        <select id="sw-card-who" className="fx-input sw-bar__pick" value={a?.id ?? ''} onChange={(e) => { setWho(e.target.value); consoleApi.writeLocal('swarm-card-sample', e.target.value); }}>
-          {state.roster.agents.map((x) => <option key={x.id} value={x.id}>{x.name}</option>)}
-        </select>
+        <Select label="Id" value={a?.id ?? ''} onChange={(v) => { setWho(v); consoleApi.writeLocal('swarm-card-sample', v); }} className="sw-bar__pick" options={state.roster.agents.map((x) => ({ value: String(x.id), label: String(x.name) }))} />
         <Button size="sm" icon="plus" onClick={() => setEditing(current)}>New design…</Button>
       </div>
       <div className="sw-idcards" role="list">
@@ -97,10 +95,7 @@ function SideEditor({ title, side, value, labels, onChange, onLabel }: { title: 
           <IconButton icon="x" label={`Take ${CARD_FIELDS[f]} off`} onClick={() => onChange(value.filter((x) => x !== f))} />
         </div>
       ))}
-      <select className="fx-input sw-bar__pick" aria-label={`Add a field to the ${side}`} value="" onChange={(e) => { if (e.target.value) onChange([...value, e.target.value as CardField]); }}>
-        <option value="">Add a field…</option>
-        {FIELD_IDS.filter((f) => !value.includes(f)).map((f) => <option key={f} value={f}>{CARD_FIELDS[f]}</option>)}
-      </select>
+      <Select label={`Add a field to the ${side}`} value="" onChange={(v) => { if (v) onChange([...value, v as CardField]); }} className="sw-bar__pick" empty={'Add a field…'} options={FIELD_IDS.filter((f) => !value.includes(f)).map((f) => ({ value: String(f), label: String(CARD_FIELDS[f]) }))} />
     </fieldset>
   );
 }
@@ -134,9 +129,7 @@ function Designer({ state, designs, base, act, onDone }: { state: SwarmState; de
             {(Object.keys(CARD_ENUMS) as (keyof typeof CARD_ENUMS)[]).map((k) => (
               <label key={k} className="fx-stack sw-enum">
                 <span className="fx-muted">{ENUM_LABELS[k]}</span>
-                <select className="fx-input" value={data[k] as string} onChange={(e) => set(k, e.target.value as never)}>
-                  {CARD_ENUMS[k].map((v) => <option key={v} value={v}>{v}</option>)}
-                </select>
+                <Select label="String" value={data[k] as string} onChange={(v) => set(k, v as never)} options={CARD_ENUMS[k].map((v) => ({ value: String(v), label: String(v) }))} />
               </label>
             ))}
           </div>
@@ -172,10 +165,7 @@ export function CardSection({ state, a, st, act, photo }: { state: SwarmState; a
           <AgentIdCard state={state} a={a} st={st} designs={designs} photo={photo} />
           <label className="fx-stack">
             <span className="fx-muted">Card design</span>
-            <select className="fx-input" value={as.card} onChange={(e) => void act({ action: 'card', agent: a.id, design: e.target.value })}>
-              <option value="">Default design</option>
-              {designs.map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}
-            </select>
+            <Select label="Card" value={as.card} onChange={(v) => void act({ action: 'card', agent: a.id, design: v })} empty={'Default design'} options={designs.map((d) => ({ value: String(d.id), label: String(d.name) }))} />
           </label>
         </div>
         <form className="fx-stack" onSubmit={(e) => { e.preventDefault(); void act({ action: 'identity', agent: a.id, fields }); }}>

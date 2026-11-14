@@ -13,7 +13,7 @@
  * Server part (archives, credentials, installs) in server/__init__.py; the pure part in web/core.ts.
  */
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Button, Checkbox, Chip, IconButton, Icon, ModelBadge, Note, Segmented, SelectField, Switch, TextField, useAxfState, useRuntime } from '@console/axf/react';
+import { Button, Checkbox, Chip, IconButton, Icon, ModelBadge, Note, Segmented, SelectField, Switch, TextField, useAxfState, useRuntime, Select } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import type { AxfRuntime } from '@console/axf/core/runtime';
 import { placementKey } from '@console/axf/core/engines/placement';
@@ -357,9 +357,7 @@ function Browse({ config }: { config: Config | null }) {
   return (
     <div className="fx-stack">
       <div className="axp-plugins-menu__filters">
-        <select className="fx-input" aria-label="Archive" value={archive} onChange={(e) => setArchive(e.target.value)}>
-          {[{ value: 'all', label: 'Every archive' }, ...archives.filter((a) => a.enabled).map((a) => ({ value: a.id, label: a.label }))].map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-        </select>
+        <Select label="Archive" value={archive} onChange={(v) => setArchive(v)} options={[{ value: 'all', label: 'Every archive' }, ...archives.filter((a) => a.enabled).map((a) => ({ value: a.id, label: a.label }))].map((o) => ({ value: String(o.value), label: String(o.label) }))} />
         <input className="fx-input" type="search" aria-label="Search" value={q} onChange={(e) => setQ(e.target.value)} onKeyDown={(e) => { if (e.key === 'Enter') void load(true); }} placeholder="Name, folder or words" />
         <Button size="sm" icon="refresh" onClick={() => void load(true)} disabled={loading}>{loading ? 'Reading…' : 'Search'}</Button>
       </div>

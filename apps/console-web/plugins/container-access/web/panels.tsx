@@ -1,6 +1,6 @@
 /* Settings → Plugins → Container access panels. Theme tokens only, axp-container-access prefix. */
 import { useEffect, useState } from 'react';
-import { Button, Chip, Icon, Segmented } from '@console/axf/react';
+import { Button, Chip, Icon, Segmented, Select } from '@console/axf/react';
 import { ChangeBatchCard, type Batch } from '@console/changeBatch';
 import { batchActions, call, kb, put, when, type AuditEntry, type Container, type Entry, type Settings, type Status } from './api';
 import { LoadingSkeleton } from '@console/emptyState';
@@ -196,9 +196,7 @@ export function AuditPanel() {
     <div className="fx-stack">
       <div className={`${P}__row`}>
         <input className={`fx-input ${P}__narrow`} placeholder="Container" value={q.container} onChange={(e) => setQ({ ...q, container: e.target.value })} />
-        <select className={`fx-input ${P}__narrow`} value={q.op} onChange={(e) => setQ({ ...q, op: e.target.value })}>
-          {['', 'write', 'delete', 'exec', 'restart', 'redeploy', 'restore', 'terminal', 'batch-approve', 'batch-reject', 'batch-undo', 'settings'].map((o) => <option key={o} value={o}>{o || 'every action'}</option>)}
-        </select>
+        <Select label="Op" value={q.op} onChange={(v) => setQ({ ...q, op: v })} className={`fx-input ${P}__narrow`} options={['', 'write', 'delete', 'exec', 'restart', 'redeploy', 'restore', 'terminal', 'batch-approve', 'batch-reject', 'batch-undo', 'settings'].map((o) => ({ value: String(o), label: String(o || 'every action') }))} />
         <span className="fx-grow" />
         <Button tone="ghost" icon="refresh" onClick={() => void load()}>Refresh</Button>
       </div>

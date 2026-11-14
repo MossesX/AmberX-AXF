@@ -6,7 +6,7 @@
  * expands to its details (a change's whole entry is fetched on first expand). Filter, search, sort. Stores nothing.
  */
 import { Fragment, useEffect, useMemo, useState } from 'react';
-import { Button, Chip, IconButton, ModelBadge, PriorityTag, Segmented } from '@console/axf/react';
+import { Button, Chip, IconButton, ModelBadge, PriorityTag, Segmented, Select } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import * as api from '@console/api';
 import { pluginFetch } from '@console/plugins';
@@ -114,9 +114,7 @@ function GridView() {
       <div className="axp-changes-grid__bar" role="toolbar" aria-label="Filter the grid">
         <input className="fx-input axp-changes-grid__search" type="search" placeholder="Search names, ids, status, model…" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Search" />
         <Segmented label="Show" size="sm" value={show} onChange={setShow} options={[{ value: 'all', label: 'Both' }, { value: 'changes', label: 'Changes' }, { value: 'features', label: 'Features' }]} />
-        <select className="fx-input axp-changes-grid__sort" value={sort} onChange={(e) => setSort(e.target.value as Sort)} aria-label="Sort">
-          <option value="newest">Newest</option><option value="oldest">Oldest</option><option value="title">Name</option>
-        </select>
+        <Select label="Sort" value={sort} onChange={(v) => setSort(v as Sort)} className="axp-changes-grid__sort" options={[{ value: 'newest', label: 'Newest' }, { value: 'oldest', label: 'Oldest' }, { value: 'title', label: 'Name' }]} />
         <IconButton icon="chevron-up" label="Collapse all" onClick={() => setOpen(new Set())} disabled={!open.size} />
       </div>
       {data && !data.changesOk ? <p className="fx-small fx-muted">The changes log isn’t available (Codebase changes plugin off or its log unreachable); showing features only.</p> : null}

@@ -3,7 +3,7 @@
  * providers, behaviour, prompts, usage). The plugin never ships its own settings screen — these are settings-tab panels.
  */
 import { useEffect, useState, useSyncExternalStore } from 'react';
-import { Button, Chip, Icon, useRuntime } from '@console/axf/react';
+import { Button, Chip, Icon, useRuntime, Select } from '@console/axf/react';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import {
   call, catalogStore, configStore, del, fmtNum, fmtTime, post, put, statusStore,
@@ -87,9 +87,7 @@ export function ChatSettingsDialog({ settings, onChange, onClose, onOpenFull }: 
         </Field>
         <Toggle label="Tools" hint="repo reading, time, calculator, web fetch, and the agent's tools" checked={settings.tools !== false} onChange={(v) => void onChange({ tools: v })} />
         <Field label="When this chat loads tools" hint="Auto answers plain talk fast and loads only what a message needs. Tools runs the full session every turn.">
-          <select className="fx-input" value={settings.toolMode ?? ''} onChange={(e) => void onChange({ toolMode: e.target.value as ConvSettings['toolMode'] })}>
-            <option value="">The default</option><option value="auto">Auto</option><option value="chat">Chat only</option><option value="tools">Tools every turn</option>
-          </select>
+          <Select label="Tool Mode" value={settings.toolMode ?? ''} onChange={(v) => void onChange({ toolMode: v as ConvSettings['toolMode'] })} empty={'The default'} options={[{ value: 'auto', label: 'Auto' }, { value: 'chat', label: 'Chat only' }, { value: 'tools', label: 'Tools every turn' }]} />
         </Field>
         <Toggle label="Extended thinking" hint="Anthropic models: reasons before answering" checked={settings.thinking ?? p?.thinking ?? false} onChange={(v) => void onChange({ thinking: v })} />
         <Field label="Instructions for this conversation">
@@ -155,11 +153,7 @@ export function ProfileForm({ kind, profile, onSaved, onCancel, compact }: { kin
       {!compact && <Field label="Name"><input className="fx-input" value={d.label} onChange={(e) => setD({ ...d, label: e.target.value })} /></Field>}
       {(needsUrl || !compact) && kind.protocol !== 'claude-cli' && <Field label="Base URL" hint={kind.local ? 'Where the server runs, as the console server sees it (on the VPS: often http://host.docker.internal:11434/v1 or the container name)' : undefined}><input className="fx-input fx-mono" value={d.baseUrl} onChange={(e) => setD({ ...d, baseUrl: e.target.value })} /></Field>}
       <Field label={kind.protocol === 'claude-cli' ? 'Claude Code token' : 'API key'}>
-        <select className="fx-input" value={d.keyMode} onChange={(e) => setD({ ...d, keyMode: e.target.value as Draft['keyMode'] })}>
-          <option value="stored">Paste it here (stored on the console server only, never sent back)</option>
-          <option value="env">Read it from a server environment variable</option>
-          <option value="none">No key (local servers)</option>
-        </select>
+        <Select label="Key Mode" value={d.keyMode} onChange={(v) => setD({ ...d, keyMode: v as Draft['keyMode'] })} options={[{ value: 'stored', label: 'Paste it here (stored on the console server only, never sent back)' }, { value: 'env', label: 'Read it from a server environment variable' }, { value: 'none', label: 'No key (local servers)' }]} />
       </Field>
       {d.keyMode === 'stored' && <input className="fx-input" type="password" autoComplete="off" value={d.key} placeholder={profile?.hasKey ? 'Saved — leave blank to keep it' : kind.protocol === 'claude-cli' ? 'sk-ant-oat01-… from `claude setup-token`' : 'Paste the key'} onChange={(e) => setD({ ...d, key: e.target.value })} aria-label="API key" />}
       {d.keyMode === 'env' && <input className="fx-input fx-mono" value={d.keyEnv} placeholder="OPENAI_API_KEY" onChange={(e) => setD({ ...d, keyEnv: e.target.value.toUpperCase() })} aria-label="Environment variable" />}
@@ -264,9 +258,7 @@ export function SetupWizard() {
         <div className="fx-stack">
           {ready.length === 0 && <div className="axp-ai-assistant__note is-warn"><Icon name="alert" size={14} />No provider is connected yet — go back to Connect and use “Save & test”.</div>}
           <Field label="Default provider">
-            <select className="fx-input" value={v.defaultProfile} onChange={(e) => setLocal({ ...local, defaultProfile: e.target.value })}>
-              {cfg.profiles.map((p) => <option key={p.id} value={p.id}>{p.label} · {p.defaultModel}{p.keyReady ? '' : ' (no key)'}</option>)}
-            </select>
+            <Select label="Default Profile" value={v.defaultProfile} onChange={(v) => setLocal({ ...local, defaultProfile: v })} options={cfg.profiles.map((p) => ({ value: String(p.id), label: `${p.label} · ${p.defaultModel}${p.keyReady ? '' : ' (no key)'}` }))} />
           </Field>
           <Field label="Fallback order" hint="If the default fails before answering, these are tried in order.">
             <div className="fx-stack">
@@ -285,7 +277,7 @@ export function SetupWizard() {
         <div className="fx-stack">
           <Field label="Assistant name"><input className="fx-input" value={v.assistantName} onChange={(e) => setLocal({ ...local, assistantName: e.target.value })} /></Field>
           <Field label="Personality">
-            <select className="fx-input" value={v.persona} onChange={(e) => setLocal({ ...local, persona: e.target.value })}>{cat.personas.map((p) => <option key={p} value={p}>{p}</option>)}</select>
+            <Select label="Persona" value={v.persona} onChange={(v) => setLocal({ ...local, persona: v })} options={cat.personas.map((p) => ({ value: String(p), label: String(p) }))} />
           </Field>
           <Field label="Standing instructions" hint="Added to every conversation (not used when chatting as an agent, which brings its own)."><textarea className="fx-input" rows={4} value={v.instructions} onChange={(e) => setLocal({ ...local, instructions: e.target.value })} placeholder="e.g. I work from my phone: keep answers short. Prefer TypeScript." /></Field>
           <span className="fx-small fx-muted">Tools</span>
@@ -411,7 +403,7 @@ export function BehaviorPanel() {
     <div className="fx-stack">
       <div className="axp-ai-assistant__cols">
         <Field label="Assistant name"><input className="fx-input" value={v.assistantName} onChange={(e) => set({ assistantName: e.target.value })} /></Field>
-        <Field label="Personality"><select className="fx-input" value={v.persona} onChange={(e) => set({ persona: e.target.value })}>{cat.personas.map((p) => <option key={p} value={p}>{p}</option>)}</select></Field>
+        <Field label="Personality"><Select label="Persona" value={v.persona} onChange={(v) => set({ persona: v })} options={cat.personas.map((p) => ({ value: String(p), label: String(p) }))} /></Field>
       </div>
       <Field label="Standing instructions"><textarea className="fx-input" rows={4} value={v.instructions} onChange={(e) => set({ instructions: e.target.value })} /></Field>
       <div className="axp-ai-assistant__cols">
@@ -420,7 +412,7 @@ export function BehaviorPanel() {
         <Field label="Turns of history sent"><input className="fx-input" type="number" min={2} max={400} value={v.contextMessages} onChange={(e) => set({ contextMessages: Number(e.target.value) })} /></Field>
         <Field label="Max tool rounds per reply"><input className="fx-input" type="number" min={1} max={50} value={v.maxToolRounds} onChange={(e) => set({ maxToolRounds: Number(e.target.value) })} /></Field>
         <Field label="Thinking budget (tokens)"><input className="fx-input" type="number" min={1024} value={v.params.thinking_budget} onChange={(e) => set({ params: { ...v.params, thinking_budget: Number(e.target.value) } })} /></Field>
-        <Field label="Reasoning effort (OpenAI-style)"><select className="fx-input" value={v.params.reasoning_effort} onChange={(e) => set({ params: { ...v.params, reasoning_effort: e.target.value } })}><option value="">default</option><option value="low">low</option><option value="medium">medium</option><option value="high">high</option></select></Field>
+        <Field label="Reasoning effort (OpenAI-style)"><Select label="Reasoning_effort" value={v.params.reasoning_effort} onChange={(next) => set({ params: { ...v.params, reasoning_effort: next } })} empty={'default'} options={[{ value: 'low', label: 'low' }, { value: 'medium', label: 'medium' }, { value: 'high', label: 'high' }]} /></Field>
         <Field label="Daily token budget" hint="0 = unlimited"><input className="fx-input" type="number" min={0} value={v.dailyTokenBudget} onChange={(e) => set({ dailyTokenBudget: Number(e.target.value) })} /></Field>
         <Field label="Daily tokens per hub user" hint="non-admins signed in through axHub; 0 = unlimited"><input className="fx-input" type="number" min={0} value={v.userDailyTokens ?? 50000} onChange={(e) => set({ userDailyTokens: Number(e.target.value) })} /></Field>
       </div>
@@ -428,8 +420,8 @@ export function BehaviorPanel() {
       {Object.entries(cat.toolGroups).map(([g, label]) => <Toggle key={g} label={label} checked={!!v.tools[g]} onChange={(c) => set({ tools: { ...v.tools, [g]: c } })} />)}
       <span className="fx-small fx-muted">Chat mode: plain talk loads no tools</span>
       <div className="axp-ai-assistant__cols">
-        <Field label="When tools load" hint="Each chat can change it"><select className="fx-input" value={v.chatMode.default} onChange={(e) => setChat({ default: e.target.value as Config['chatMode']['default'] })}><option value="auto">Auto: only when a message needs them</option><option value="chat">Chat: never</option><option value="tools">Tools: every turn (slow)</option></select></Field>
-        <Field label="Model for chat turns"><select className="fx-input" value={v.chatMode.model} onChange={(e) => setChat({ model: e.target.value as Config['chatMode']['model'] })}><option value="policy">The fastest the model policy allows</option><option value="conversation">The chat's own model</option></select></Field>
+        <Field label="When tools load" hint="Each chat can change it"><Select label="Default" value={v.chatMode.default} onChange={(v) => setChat({ default: v as Config['chatMode']['default'] })} options={[{ value: 'auto', label: 'Auto: only when a message needs them' }, { value: 'chat', label: 'Chat: never' }, { value: 'tools', label: 'Tools: every turn (slow)' }]} /></Field>
+        <Field label="Model for chat turns"><Select label="Model" value={v.chatMode.model} onChange={(v) => setChat({ model: v as Config['chatMode']['model'] })} options={[{ value: 'policy', label: 'The fastest the model policy allows' }, { value: 'conversation', label: 'The chat\'s own model' }]} /></Field>
         <Field label="Messages of history in a chat turn"><input className="fx-input" type="number" min={2} max={200} value={v.chatMode.historyMessages} onChange={(e) => setChat({ historyMessages: Number(e.target.value) })} /></Field>
         <Field label="Keep agent and memory for (seconds)" hint="0 = read them every turn"><input className="fx-input" type="number" min={0} value={v.chatMode.cacheSec} onChange={(e) => setChat({ cacheSec: Number(e.target.value) })} /></Field>
       </div>
@@ -447,7 +439,7 @@ export function BehaviorPanel() {
       {agents ? (
         <>
           <Toggle label="Use the agent manager" hint={`${agents.length} agents`} checked={v.agentIntegration} onChange={(c) => set({ agentIntegration: c })} />
-          <Field label="Default agent for new chats"><select className="fx-input" value={v.defaultAgent} onChange={(e) => set({ defaultAgent: e.target.value })}><option value="">None</option>{agents.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}</select></Field>
+          <Field label="Default agent for new chats"><Select label="Default Agent" value={v.defaultAgent} onChange={(v) => set({ defaultAgent: v })} empty={'None'} options={agents.map((a) => ({ value: String(a.id), label: String(a.name) }))} /></Field>
         </>
       ) : <p className="fx-small fx-muted">Not installed. When the agent manager plugin is installed and enabled, you can pick agents here and in every chat.</p>}
       <div className="fx-row fx-row--wrap"><Button tone="primary" icon="save" disabled={!Object.keys(d).length} onClick={() => void saveConfig(d).then(() => { setD({}); setSaved(true); })}>Save</Button>{saved && <Chip tone="success">saved</Chip>}</div>
@@ -533,9 +525,7 @@ export function SessionsPanel() {
       <p className="fx-muted fx-small">Every chat is a live session on its host. Closing the browser, the dialog or the app only detaches: the reply keeps going, and opening the chat again on any device catches up and follows it. A session ends only when you end it here or delete the conversation. A console restart mid-reply keeps the text that had arrived as an interrupted message.</p>
       {ci && <div className="fx-row fx-row--wrap"><Chip>{ci.liveSession}</Chip><Chip>{ci.assistant}</Chip>{ci.hosts.map((h) => <Chip key={h.id} tone={h.available ? 'success' : undefined}>{h.label}: {h.available ? 'available' : 'placeholder'}</Chip>)}</div>}
       <Field label="Session host" hint={d.hosts.find((h) => h.id === pick)?.note}>
-        <select className="fx-input" value={pick} onChange={(e) => void saveConfig({ sessionHost: e.target.value }).then(load)}>
-          {d.hosts.map((h) => <option key={h.id} value={h.id}>{h.label}{h.available ? '' : ' — not available yet'}</option>)}
-        </select>
+        <Select label="Pick" value={pick} onChange={(v) => void saveConfig({ sessionHost: v }).then(load)} options={d.hosts.map((h) => ({ value: String(h.id), label: `${h.label}${h.available ? '' : ' — not available yet'}` }))} />
       </Field>
       {pick !== d.active && <Chip tone="warning">Running on {d.hosts.find((h) => h.id === d.active)?.label ?? (d.active || 'no host')} until {d.hosts.find((h) => h.id === pick)?.label ?? pick} is available</Chip>}
       <p className="fx-small fx-muted">Hosts are an open registry: a plugin providing <code className="fx-mono">axf.live-host@1</code> (axHub's session workers, when built) takes over without any change here.</p>

@@ -1,6 +1,6 @@
 /* Settings → Plugins → Snapshots panels. Theme tokens only, axp-snapshot-manager prefix. */
 import { useEffect, useMemo, useState } from 'react';
-import { Button, Chip, Icon, useRuntime } from '@console/axf/react';
+import { Button, Chip, Icon, useRuntime, Select } from '@console/axf/react';
 import { call, del, getFocus, onFocus, post, put, size, when, type DiffEntry, type FileDiff, type Settings, type Snapshot, type Usage } from './api';
 import { LoadingSkeleton } from '@console/emptyState';
 
@@ -129,10 +129,7 @@ export function SnapshotsPanel() {
   return (
     <div className="fx-stack">
       <div className={`${P}__row`}>
-        <select className={`fx-input ${P}__narrow`} value={container} onChange={(e) => setContainer(e.target.value)} aria-label="Container">
-          <option value="">Every container</option>
-          {names.map((n) => <option key={n} value={n}>{n}</option>)}
-        </select>
+        <Select label="Container" value={container} onChange={(v) => setContainer(v)} className={`fx-input ${P}__narrow`} empty={'Every container'} options={names.map((n) => ({ value: String(n), label: String(n) }))} />
         <span className="fx-grow fx-small fx-muted">{usage ? `${usage.count} snapshots · ${size(usage.bytes)} of ${size(usage.capBytes)} · kept ${usage.keepDays} days` : ''}</span>
         <Button tone="ghost" icon="refresh" onClick={() => void load()}>Refresh</Button>
       </div>
@@ -180,9 +177,7 @@ export function TakePanel() {
   return (
     <div className="fx-stack">
       <label className={`${P}__field`}><span>Container</span>
-        <select className="fx-input" value={f.container} onChange={(e) => setF({ ...f, container: e.target.value })}>
-          <option value="">Choose…</option>{(cs ?? []).map((c) => <option key={c.name} value={c.name}>{c.name}</option>)}
-        </select>
+        <Select label="Container" value={f.container} onChange={(v) => setF({ ...f, container: v })} empty={'Choose…'} options={(cs ?? []).map((c) => ({ value: String(c.name), label: String(c.name) }))} />
       </label>
       <label className={`${P}__field`}><span>Paths (one per line, absolute)</span><textarea className="fx-input" rows={3} value={f.paths} onChange={(e) => setF({ ...f, paths: e.target.value })} placeholder="/app/src\n/app/package.json" /></label>
       <label className={`${P}__field`}><span>Why</span><input className="fx-input" value={f.reason} onChange={(e) => setF({ ...f, reason: e.target.value })} placeholder="before I try something" /></label>

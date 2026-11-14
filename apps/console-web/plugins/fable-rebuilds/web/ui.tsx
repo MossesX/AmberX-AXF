@@ -1,6 +1,6 @@
 /* Fable rebuilds — the view, the report dialog and the small hooks shown in other views. */
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
-import { Button, Container, Icon, IconButton, ModelBadge, useRuntime } from '@console/axf/react';
+import { Button, Container, Icon, IconButton, ModelBadge, useRuntime, Select } from '@console/axf/react';
 import { pendingPost } from '@console/api';
 import { call, getData, onData, park, refresh, setFocus, takeFocus, type Rebuild } from './api';
 import { LoadingSkeleton } from '@console/emptyState';
@@ -36,9 +36,7 @@ export function FableView() {
           <p className="fx-muted axp-fable__lede" title="Builds parked until Fable runs them: what each replaces, its branch, report and screenshots, and a brief to paste into a Fable session.">Builds parked until Fable runs them; tap one for its brief.</p>
         </div>
         <div className="fx-row axp-fable__acts">
-          <select className="fx-input axp-fable__filter" value={filter} onChange={(e) => setFilter(e.target.value)} aria-label="Status">
-            {['open', 'pending', 'unsafe', 'complete', 'all'].map((f) => <option key={f} value={f}>{f === 'open' ? 'Not rebuilt' : f === 'all' ? 'All' : STATUS[f]}</option>)}
-          </select>
+          <Select label="Status" value={filter} onChange={(v) => setFilter(v)} className="axp-fable__filter" options={['open', 'pending', 'unsafe', 'complete', 'all'].map((f) => ({ value: String(f), label: String(f === 'open' ? 'Not rebuilt' : f === 'all' ? 'All' : STATUS[f]) }))} />
           <IconButton icon="refresh" label="Refresh" onClick={() => void refresh()} />
           <IconButton icon="list" label="Pending builds" onClick={() => rt.navigate('pending')} />
         </div>

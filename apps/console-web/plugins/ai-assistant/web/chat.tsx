@@ -5,7 +5,7 @@
  * cards. Used full-page (view "ai-assistant") and inside the chat dialog ("ai-assistant.chat").
  */
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore, type ClipboardEvent, type DragEvent, type KeyboardEvent } from 'react';
-import { Button, Chip, Icon, Markdown, Slot, TabGroup, useAxfState, useRuntime, useSlotFilled } from '@console/axf/react';
+import { Button, Chip, Icon, Markdown, Slot, TabGroup, useAxfState, useRuntime, useSlotFilled, Select } from '@console/axf/react';
 import { ChangeBatchCard, readEventStream, type Batch } from '@console/changeBatch';
 import { pluginFetch } from '@console/plugins';
 import { ApprovalsBadge } from '@console/axf/libs/approvals/react';
@@ -343,7 +343,7 @@ export function ChatPanel({ compact = false, initialContext, onClose, start, ope
           <input className="fx-input" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search conversations" aria-label="Search conversations" />
           <TabGroup id="ai-assistant.chats" label="Conversations" className="axp-ai-assistant__tabs" value={archived ? 'archived' : 'chats'} onChange={(v) => setArchived(v === 'archived')} tabs={[{ value: 'chats', label: 'Chats' }, { value: 'archived', label: 'Archived' }]} />
           {tags.length > 0 && (
-            <select className="fx-input" value={tag} onChange={(e) => setTag(e.target.value)} aria-label="Filter by tag"><option value="">All tags</option>{tags.map((t) => <option key={t} value={t}>#{t}</option>)}</select>
+            <Select label="Filter by tag" value={tag} onChange={(v) => setTag(v)} empty={'All tags'} options={tags.map((t) => ({ value: String(t), label: `#${t}` }))} />
           )}
           <div className="axp-ai-assistant__convs">
             {list.length === 0 && <p className="fx-muted fx-small">{q || tag ? 'No matches.' : 'No conversations yet.'}</p>}
@@ -594,9 +594,7 @@ function CompareDialog({ initial, onClose }: { initial: string; onClose: () => v
         <textarea className="fx-input" rows={3} value={prompt} onChange={(e) => setPrompt(e.target.value)} placeholder="One prompt, answered by each model side by side" aria-label="Prompt" />
         {targets.map((t, i) => (
           <div key={i} className="fx-row fx-row--wrap">
-            <select className="fx-input" value={t.profileId} aria-label="Provider" onChange={(e) => setTargets((x) => x.map((y, j) => (j === i ? { profileId: e.target.value, model: profiles.find((p) => p.id === e.target.value)?.defaultModel ?? '' } : y)))}>
-              {profiles.map((p) => <option key={p.id} value={p.id}>{p.label}</option>)}
-            </select>
+            <Select label="Provider" value={t.profileId} onChange={(v) => setTargets((x) => x.map((y, j) => (j === i ? { profileId: v, model: profiles.find((p) => p.id === v)?.defaultModel ?? '' } : y)))} options={profiles.map((p) => ({ value: String(p.id), label: String(p.label) }))} />
             <input className="fx-input fx-mono" value={t.model} aria-label="Model" onChange={(e) => setTargets((x) => x.map((y, j) => (j === i ? { ...y, model: e.target.value } : y)))} />
             {targets.length > 2 && <button type="button" className="fx-iconbtn" aria-label="Remove" onClick={() => setTargets((x) => x.filter((_, j) => j !== i))}><Icon name="minus" size={12} /></button>}
           </div>

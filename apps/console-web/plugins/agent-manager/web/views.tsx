@@ -3,7 +3,7 @@
  * tools (with test), training jobs, workflows (with runs), memory browser, add-ons and run history.
  */
 import { useEffect, useMemo, useRef, useState, type ReactNode, type RefObject } from 'react';
-import { Button, Chip, Icon, TabGroup, useEditorSync, useRuntime } from '@console/axf/react';
+import { Button, Chip, Icon, TabGroup, useEditorSync, useRuntime, Select } from '@console/axf/react';
 import { MoreMenu } from './more';
 import { AgentForm, Field, LingoForm, OriginChip, PersonaForm, SkillForm, Text, ToolForm, TrainingForm, WorkflowForm } from './forms';
 import { useData, WIZARDS } from './wizards';
@@ -55,7 +55,7 @@ export function AgentManagerView() {
           <span className="fx-small fx-muted">{status.contract}</span>
         </div>
       )}
-      <select className="fx-input axp-agent-manager__tabpick" value={tab} onChange={(e) => setTab(e.target.value as Tab)} aria-label="Section">{TABS.map((t) => <option key={t.id} value={t.id}>{t.label}</option>)}</select>
+      <Select label="Section" value={tab} onChange={(v) => setTab(v as Tab)} className="axp-agent-manager__tabpick" options={TABS.map((t) => ({ value: String(t.id), label: String(t.label) }))} />
       <TabGroup id="agent-manager.tabs" label="Agent manager sections" className="axp-agent-manager__tabs" value={tab} onChange={setTab} tabs={TABS.map((t) => ({ value: t.id, label: t.label, icon: t.icon }))} />
       {!cache ? <LoadingSkeleton /> : (
         <>
@@ -122,7 +122,7 @@ function CollTab({ coll, cache, status, render, extra, wizardKind, blank = {} }:
         {describe && <DescribeIt coll={coll} onDraft={(it, warnings) => { setSel(''); setDraft(it); setMsg(warnings.length ? `Review before saving: ${warnings.join('; ')}` : ''); setDescribe(false); }} />}
         <div className="axp-agent-manager__row">
           <input className="fx-input fx-grow" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Filter" aria-label="Filter" />
-          {allTags.length > 0 && <select className="fx-input axp-agent-manager__narrow" value={tag} onChange={(e) => setTag(e.target.value)} aria-label="Tag"><option value="">all tags</option>{allTags.map((t) => <option key={t} value={t}>#{t}</option>)}</select>}
+          {allTags.length > 0 && <Select label="Tag" value={tag} onChange={(v) => setTag(v)} className="axp-agent-manager__narrow" empty={'all tags'} options={allTags.map((t) => ({ value: String(t), label: `#${t}` }))} />}
         </div>
         {shown.map((it) => (
           <button key={String(it.id)} type="button" data-fx-row className={`axp-agent-manager__item${sel === it.id ? ' is-active' : ''}`} onClick={() => open(it)}>
@@ -517,9 +517,9 @@ function MemoryTab({ cache }: { cache: Cache }) {
   return (
     <div className="fx-stack">
       <div className="fx-row fx-row--wrap">
-        <select className="fx-input axp-agent-manager__narrow" value={aid} onChange={(e) => setAid(e.target.value)} aria-label="Agent">{cache.agents.map((a) => <option key={a.id} value={a.id}>{a.name}</option>)}</select>
+        <Select label="Agent" value={aid} onChange={(v) => setAid(v)} className="axp-agent-manager__narrow" options={cache.agents.map((a) => ({ value: String(a.id), label: String(a.name) }))} />
         <input className="fx-input fx-grow" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search memory (keyword / semantic)" aria-label="Search memory" />
-        <select className="fx-input axp-agent-manager__narrow" value={kind} onChange={(e) => setKind(e.target.value)} aria-label="Kind"><option value="">all kinds</option>{['fact', 'knowledge', 'episode', 'note'].map((k) => <option key={k}>{k}</option>)}</select>
+        <Select label="Kind" value={kind} onChange={(v) => setKind(v)} className="axp-agent-manager__narrow" empty={'all kinds'} options={['fact', 'knowledge', 'episode', 'note'].map((k) => ({ value: String(k), label: String(k) }))} />
       </div>
       {err && <p className="axp-agent-manager__bad">{err}</p>}
       {data && (
@@ -536,7 +536,7 @@ function MemoryTab({ cache }: { cache: Cache }) {
           </details>
           <div className="axp-agent-manager__row">
             <input className="fx-input fx-grow" value={note} onChange={(e) => setNote(e.target.value)} placeholder="Add a fact or note the agent should remember" aria-label="New memory" />
-            <select className="fx-input axp-agent-manager__narrow" value={noteKind} onChange={(e) => setNoteKind(e.target.value)} aria-label="Kind of memory">{['fact', 'note', 'knowledge'].map((k) => <option key={k}>{k}</option>)}</select>
+            <Select label="Kind of memory" value={noteKind} onChange={(v) => setNoteKind(v)} className="axp-agent-manager__narrow" options={['fact', 'note', 'knowledge'].map((k) => ({ value: String(k), label: String(k) }))} />
             <Button icon="plus" disabled={!note.trim()} onClick={() => void post(`memory/${aid}`, { text: note, kind: noteKind }).then(() => { setNote(''); load(); })}>Remember</Button>
           </div>
           <div className="axp-agent-manager__mem">
@@ -640,7 +640,7 @@ function RunsTab({ cache }: { cache: Cache }) {
   const agentName = useMemo(() => Object.fromEntries(cache.agents.map((a) => [a.id, a.name])), [cache.agents]);
   return (
     <div className="fx-stack axp-agent-manager__flat">
-      <select className="fx-input axp-agent-manager__narrow" value={kind} onChange={(e) => setKind(e.target.value)} aria-label="Run kind"><option value="">all runs</option><option value="workflow">workflows</option><option value="training">training</option><option value="playground">playground</option></select>
+      <Select label="Run kind" value={kind} onChange={(v) => setKind(v)} className="axp-agent-manager__narrow" empty={'all runs'} options={[{ value: 'workflow', label: 'workflows' }, { value: 'training', label: 'training' }, { value: 'playground', label: 'playground' }]} />
       {items.map((r) => (
         <details key={r.id} className="axp-agent-manager__flatrow">
           <summary><Chip>{r.kind}</Chip> {r.name ?? agentName[r.agentId ?? ''] ?? r.workflowId ?? r.agentId} · <span className="fx-small fx-muted">{fmtTime(r.at)}{r.status ? ` · ${r.status}` : ''}{r.added !== undefined ? ` · ${r.added} chunks` : ''}</span></summary>
