@@ -18,14 +18,18 @@
  */
 import type { AxfRuntime } from '@console/axf/core';
 import { CONTROL_TARGETS } from '@console/axf/core/engines/control-rules.mjs';
-import { authHeaders } from '@console/axf/libs/apiclient';
+import { authHeaders, createTokenStore } from '@console/axf/libs/apiclient';
 import { fetchApprovals, lookupApproval, type ApprovalDecision, type ApprovalItem } from '@console/axf/libs/approvals';
 import { decideApproval } from '@console/axf/libs/approvals/host';
 import { HUB_DEFAULT, normalizeHub } from '@console/axf/libs/hub/hub';
-import { consoleTokens } from '@console/api';
 import { pluginFetch } from '@console/plugins';
 import { FOLDER } from '../core.mjs';
 import { NO, SKIP, YES, answerWizard, buildCatalog, helpLine, matchCommand, requestFor, searchCatalog, speakResult, startWizard, summaryOf, type Catalog, type CatalogEntry, type Wizard } from '../catalog.mjs';
+
+// The console token, read from the same browser storage as the console's own store (src/api.ts). Built here from the
+// framework's token store rather than imported from '@console/api', so the plugin also builds inside AmberX, which
+// installs console plugins with only the framework and @console/plugins helpers.
+const consoleTokens = createTokenStore({ key: 'axf-console:token', event: 'axf:token-changed' });
 
 export interface FlowResult { ok: boolean; say: string; done: boolean }
 export interface FlowHost {
