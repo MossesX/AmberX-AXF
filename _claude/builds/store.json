@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5691,
- "updatedAt": "2026-11-14T23:51:29.517Z",
+ "rev": 5692,
+ "updatedAt": "2026-11-14T23:51:48.063Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -225098,7 +225098,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-14T22:19:00.612Z",
-   "updatedAt": "2026-11-14T23:47:12.605Z",
+   "updatedAt": "2026-11-14T23:50:55.594Z",
    "builtAt": "",
    "notes": [
     {
@@ -225199,7 +225199,7 @@
     "queuedAt": "2026-11-14T22:19:03.857Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-console-look-becomes-default-axhub-skin--paulie",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-14T22:42:12.388Z",
@@ -225355,12 +225355,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:50:55.594Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T22:21:08.816Z",
-     "updatedAt": "2026-11-14T22:21:08.816Z"
+     "updatedAt": "2026-11-14T23:50:56.008Z"
     },
     {
      "id": "s6",
