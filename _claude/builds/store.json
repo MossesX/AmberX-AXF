@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5567,
- "updatedAt": "2026-11-14T23:10:24.178Z",
+ "rev": 5568,
+ "updatedAt": "2026-11-14T23:10:44.693Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -188649,14 +188649,14 @@
    "title": "Console and axHub retry failed calls themselves (no Claude needed)",
    "category": "orchestrator",
    "detail": "URGENT, boss order from Brett, Nov 12. When a call from Claude/MCP/voice/CLI fails for a transient reason (e.g. 'builds store is locked', timeout, console client asleep, rate limit, 5xx), the console and axHub must retry it THEMSELVES on the server, whether or not the Claude session is still connected. Retry with backoff until it succeeds (bounded, e.g. 10 tries over ~10 min), then the result is stored on the job so get_job shows success. Only permanent errors (validation, not found) fail, and those send Brett an AmberX FYI with what's missing. Fix the root cause of store.json.lock contention too (stale lock cleanup, short waits for the lock instead of failing). Applies to control_add/set/act, pipeline_queue, console_open/show and all axf-console write tools. Tests: locked store -> call waits/retries and succeeds; session disconnect mid-retry -> still completes.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/console-axhub-retry-failed-calls",
    "pr": "#589",
    "createdAt": "2026-11-12T02:37:24.132Z",
-   "updatedAt": "2026-11-14T23:10:20.826Z",
+   "updatedAt": "2026-11-14T23:10:34.706Z",
    "builtAt": "",
    "notes": [
     {
@@ -188738,6 +188738,10 @@
     {
      "text": "Renamed from console-and-axhub-retry-failed-calls-themselves-no-claude-needed (build names are at most 40 characters). By build-rename.",
      "at": "2026-11-13T17:32:55.349Z"
+    },
+    {
+     "text": "Started run 3 on mossesx-max- (Opus, Phase 1): axf-console-axhub-retry-failed-calls--joey.",
+     "at": "2026-11-14T23:10:34.706Z"
     }
    ],
    "approvals": [],
@@ -188758,11 +188762,11 @@
     "queuedAt": "2026-11-13T10:35:19.015Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "",
+    "session": "axf-console-axhub-retry-failed-calls--joey",
     "slot": "",
     "model": "Opus",
-    "launchedAt": "2026-11-13T10:43:09.520Z",
-    "runs": 2,
+    "launchedAt": "2026-11-14T23:10:32.487Z",
+    "runs": 3,
     "lastRun": {
      "at": "2026-11-13T10:48:02.765Z",
      "exit": 0,
@@ -188773,9 +188777,9 @@
     },
     "split": null,
     "splitRequested": "",
-    "note": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
+    "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-13T10:43:09.520Z",
+    "dispatchedAt": "2026-11-14T23:10:32.487Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -188784,7 +188788,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-13T10:43:09.520Z",
+    "pickedAt": "2026-11-14T23:10:32.487Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -188909,7 +188913,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 47,
+   "rev": 48,
    "deleted": false,
    "deletedAt": "",
    "pending": {
