@@ -796,7 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 23:44 UTC · `console-app-land-parts-1-4-build-apk` note (all) · orchestrator
 - 2026-11-13 23:44 UTC · `land-batch-merge-main-each-finished` → running, note (all) · pipeline
 - 2026-11-13 23:44 UTC · `land-batch-merge-main-each-finished` branch claude/land-batch-merge-main-each-finished (all) · pipeline
 - 2026-11-13 23:44 UTC · `console-app-land-parts-1-4-build-apk` note (all) · pipeline
@@ -1196,6 +1195,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 22:39 UTC · `own-token-sets-for-grids-and-tab-groups` merged, note (all) · reconciler
 - 2026-11-14 22:40 UTC · `own-token-sets-for-grids-and-tab-groups` note (all) · orchestrator
 - 2026-11-14 22:40 UTC · `land-finish-auto-land-live-clear-backlog` s3 done (all) · orchestrator
+- 2026-11-14 22:41 UTC · `picker-dialog-plugin-replaces-all` → queued (all) · mcp
 
 ## Token passes (log)
 
