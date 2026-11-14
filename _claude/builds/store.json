@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5208,
- "updatedAt": "2026-11-14T04:12:42.656Z",
+ "rev": 5209,
+ "updatedAt": "2026-11-14T04:14:41.074Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -205309,7 +205309,7 @@
    "pr": "#664",
    "priority": "P1",
    "createdAt": "2026-11-13T19:55:30.979Z",
-   "updatedAt": "2026-11-14T03:51:56.235Z",
+   "updatedAt": "2026-11-14T04:14:38.936Z",
    "builtAt": "2026-11-14T03:51:56.235Z",
    "notes": [
     {
@@ -205391,6 +205391,10 @@
     {
      "text": "Model switch: phase 3 Opus → Fable. Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself.",
      "at": "2026-11-14T03:51:56.235Z"
+    },
+    {
+     "text": "Headless run axf-icon-map-icon-packs-every-icon-badge-app--gina: brief only · start 13.1K tokens ($0.07) · cost $29.70 · 339 turns · 6 tools, MCP none",
+     "at": "2026-11-14T04:14:38.936Z"
     }
    ],
    "approvals": [
@@ -205678,7 +205682,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 36,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
