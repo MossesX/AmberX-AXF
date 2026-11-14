@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5657,
- "updatedAt": "2026-11-14T23:37:00.397Z",
+ "rev": 5658,
+ "updatedAt": "2026-11-14T23:37:25.697Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -214283,7 +214283,7 @@
    "pr": "#660",
    "priority": "P0",
    "createdAt": "2026-11-13T23:38:56.061Z",
-   "updatedAt": "2026-11-14T23:36:41.835Z",
+   "updatedAt": "2026-11-14T23:37:22.477Z",
    "builtAt": "2026-11-14T23:24:07.334Z",
    "notes": [
     {
@@ -214325,6 +214325,10 @@
     {
      "text": "Phase 1 done: PR #660 has main merged in (land.mjs clash resolved, both sides kept), sweeper regenerates generated-only clashes, sweeper status/pause/resume on all four channels; in the merge queue. Shared repo /opt/axf/.git lost objects to a git prune --expire=now at 23:44 UTC; finished in a fresh clone; fix: git fetch --refetch origin in /opt/axf.",
      "at": "2026-11-13T23:58:03.801Z"
+    },
+    {
+     "text": "Second pass done: main merged into PR #660 again (status.json clash, both kept), all land/orchestrator/store checks green, CI dispatched on 9a453ffd5, #660 added to the merge queue.",
+     "at": "2026-11-14T23:37:22.477Z"
     }
    ],
    "approvals": [],
@@ -214616,7 +214620,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
