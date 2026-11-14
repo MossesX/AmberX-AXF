@@ -66,7 +66,7 @@ DOM: callers pass `{ value, text, selected, disabled, group, data }` rows.
 
 ### Choosing
 
-- `choose(model, value)` — single: `value` becomes the only value; `''` (the empty row) clears it. Multiple: toggles the
+- `choosePicker(model, value)` — single: `value` becomes the only value; `''` (the empty row) clears it. Multiple: toggles the
   value; a toggle that would exceed `max` is refused (the model comes back unchanged, `changed: false`). A disabled or
   unknown value never changes anything.
 - `selectedLabels(model)` — the labels of the chosen values in option order; `triggerText(model)` = those joined with
