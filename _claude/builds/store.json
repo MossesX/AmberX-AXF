@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5192,
- "updatedAt": "2026-11-14T04:04:10.765Z",
+ "rev": 5193,
+ "updatedAt": "2026-11-14T04:04:28.037Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -212145,7 +212145,7 @@
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-14T04:04:06.168Z",
+   "updatedAt": "2026-11-14T04:04:10.310Z",
    "builtAt": "",
    "notes": [
     {
@@ -212155,6 +212155,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-demo-video-series-three-minute-browser--earl, own login copy)",
      "at": "2026-11-14T04:03:25.664Z"
+    },
+    {
+     "text": "Brett: the axHub explainer must also explain the AXF framework and the token system: every app is built on the framework, every colour, size, layout and behaviour is a token, tokens and assets live on axHub, and that's why merged apps in one shell always look the same and share assets.",
+     "at": "2026-11-14T04:04:10.310Z"
     }
    ],
    "approvals": [],
@@ -212363,7 +212367,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

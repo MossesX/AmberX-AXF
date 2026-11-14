@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T04:04:10.765Z",
+ "updatedAt": "2026-11-14T04:04:28.037Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -137353,7 +137353,7 @@
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-14T04:04:06.168Z",
+   "updatedAt": "2026-11-14T04:04:10.310Z",
    "builtAt": "",
    "notes": [
     {
@@ -137363,6 +137363,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-demo-video-series-three-minute-browser--earl, own login copy)",
      "at": "2026-11-14T04:03:25.664Z"
+    },
+    {
+     "text": "Brett: the axHub explainer must also explain the AXF framework and the token system: every app is built on the framework, every colour, size, layout and behaviour is a token, tokens and assets live on axHub, and that's why merged apps in one shell always look the same and share assets.",
+     "at": "2026-11-14T04:04:10.310Z"
     }
    ],
    "approvals": [],

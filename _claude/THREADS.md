@@ -792,7 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 20:04 UTC · `orchestrator-custom-groups-custom-tabs` s10 done, → built (all) · orchestrator
 - 2026-11-13 20:04 UTC · `orchestrator-custom-groups-custom-tabs` note (all) · orchestrator
 - 2026-11-13 20:05 UTC · `orchestrator-custom-groups-custom-tabs` note (all) · orchestrator
 - 2026-11-13 20:06 UTC · `token-registry-skin-editor-live-sandbox` note (all) · claude-voice
@@ -1192,6 +1191,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 04:03 UTC · `demo-video-series-three-minute-browser` → running, note (all) · pipeline
 - 2026-11-14 04:03 UTC · `demo-video-series-three-minute-browser` branch claude/demo-video-series-three-minute-browser (all) · pipeline
 - 2026-11-14 04:03 UTC · `demo-video-series-three-minute-browser` note (all) · orchestrator
+- 2026-11-14 04:04 UTC · `demo-video-series-three-minute-browser` note (all) · voice
 
 ## Token passes (log)
 
