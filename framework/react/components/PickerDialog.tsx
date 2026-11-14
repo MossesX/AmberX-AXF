@@ -22,6 +22,7 @@ import {
   PICKER_TYPEAHEAD_MS, choosePicker, closePicker, groupOptions, openPicker, pickerKey, searchShown, setQuery,
   type PickerKey, type PickerModel, type PickerState,
 } from '../../core/engines/picker';
+import { getPickerSwap, swapActive } from '../pickerConfig';
 
 export interface PickerDialogProps {
   model: PickerModel;
@@ -47,8 +48,10 @@ function engineKey(e: ReactKeyboardEvent): PickerKey | '' {
   return [...e.key].length === 1 ? e.key : '';
 }
 
-/** Is the picker asset's search setting forcing it (root attribute `data-fx-picker-search`: always | never | a number)? */
+/** The search threshold in force: the picker plugin's setting while the swap is on, else the picker asset's (root `data-fx-picker-search`: always | never | a number). */
 export function rootSearchThreshold(): number | undefined {
+  const c = getPickerSwap();
+  if (swapActive(c) && c.searchThreshold !== null) return c.searchThreshold;
   const v = typeof document === 'undefined' ? null : document.documentElement.getAttribute('data-fx-picker-search');
   if (v === 'always') return 0;
   if (v === 'never') return Infinity;

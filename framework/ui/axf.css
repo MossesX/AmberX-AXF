@@ -1876,7 +1876,7 @@ html[data-axf-help='on'] button[data-axf-help-id], html[data-axf-help='on'] [rol
   background: var(--fx-picker-selected-bg); color: var(--fx-picker-selected-text); font-size: var(--fx-picker-desc-font); text-align: center;
 }
 .fx-picker-trigger__chev { flex: none; display: inline-flex; color: var(--fx-picker-option-icon); }
-.fx-picker__native { position: absolute !important; width: var(--fx-border-w) !important; height: var(--fx-border-w) !important; opacity: 0 !important; pointer-events: none !important; overflow: hidden !important; clip-path: inset(50%) !important; }
+select[data-fx-picker-swapped], .fx-picker__native { position: absolute !important; width: var(--fx-border-w) !important; height: var(--fx-border-w) !important; opacity: 0 !important; pointer-events: none !important; overflow: hidden !important; clip-path: inset(50%) !important; }
 
 .fx-picker__scrim {
   position: fixed; inset: 0; z-index: 90; display: flex; align-items: center; justify-content: center;

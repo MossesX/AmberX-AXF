@@ -11,6 +11,8 @@
  */
 import { useEffect, useId, useRef, type ReactNode } from 'react';
 import { Icon } from './Icon';
+import { PickerField } from './PickerField';
+import { swapActive, usePickerSwap } from '../pickerConfig';
 import { paramBool, paramDefaultText, paramError, type LibraryParam } from '../../core';
 
 /* ---------------- Switch ---------------- */
@@ -199,8 +201,15 @@ export interface SelectFieldProps {
   className?: string;
 }
 
-/** Native select inside a Field. */
+/**
+ * Native select inside a Field. While the picker swap is on (pickerConfig; the picker-dialog plugin), the same props
+ * render a PickerField: same label, hint, error and value strings, the themed dialog instead of the browser's list.
+ */
 export function SelectField({ label, value, options, onChange, hint, error, empty, required, disabled, className }: SelectFieldProps) {
+  const swap = usePickerSwap();
+  if (swapActive(swap) && swap.swapSelectFields) {
+    return <PickerField label={label} value={value} options={options} onChange={onChange} hint={hint} error={error} empty={empty} required={required} disabled={disabled} className={className} searchThreshold={swap.searchThreshold ?? undefined} />;
+  }
   return (
     <Field label={label} hint={hint} error={error} required={required} className={className}>
       {(id, describedBy) => (
