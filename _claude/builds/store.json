@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5233,
- "updatedAt": "2026-11-14T04:26:59.709Z",
+ "rev": 5234,
+ "updatedAt": "2026-11-14T04:29:00.945Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -212179,7 +212179,7 @@
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-14T04:26:57.095Z",
+   "updatedAt": "2026-11-14T04:28:59.117Z",
    "builtAt": "",
    "notes": [
     {
@@ -212546,6 +212546,28 @@
      "updatedAt": "2026-11-14T04:26:57.321Z"
     },
     {
+     "id": "s17",
+     "uid": "st-mwfwoqh701zmj2",
+     "title": "",
+     "text": "Console Android app video: the agent chat window in the console app on a phone, the same kind of voice and chat interface Brett uses. Show building things just by talking to the agent there, with no laptop, no terminal and no Claude Code needed by hand. Then show the agent picker in that window: different agents with different permissions, each tied to its own Claude Code session and config in its own container. Demo several Claude Code sessions running in separate containers at once, each on its own build, so they never step on each other's work, with live status for each from the phone. Use the real console app, agent window and containers; label staged parts as a preview.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-14T04:28:59.118Z",
+     "updatedAt": "2026-11-14T04:28:59.275Z"
+    },
+    {
      "id": "s7",
      "uid": "st-mwfvsr6p0143q5",
      "title": "",
@@ -212642,7 +212664,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 31,
+   "rev": 32,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
