@@ -792,7 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 20:00 UTC · `own-token-sets-for-grids-and-tab-groups` note (all) · claude-voice
 - 2026-11-13 20:00 UTC · `own-token-sets-for-grids-and-tab-groups` note (all) · builds-live
 - 2026-11-13 20:01 UTC · `grids-get-their-own-full-token-set` note (all) · orchestrator
 - 2026-11-13 20:01 UTC · `own-token-sets-for-grids-and-tab-groups` note (all) · claude-voice
@@ -1192,6 +1191,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 03:48 UTC · `banner-widget-shapes-more-than-circle` → running, note (all) · pipeline
 - 2026-11-14 03:48 UTC · `banner-widget-shapes-more-than-circle` note (all) · orchestrator
 - 2026-11-14 03:48 UTC · `banner-widget-shapes-more-than-circle` branch claude/banner-widget-shapes-more-than-circle (all) · pipeline
+- 2026-11-14 03:50 UTC · `ui-directory-plugin-self-updating-data` added (3 steps) (all) · voice
 
 ## Token passes (log)
 
