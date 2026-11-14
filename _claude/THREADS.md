@@ -796,8 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 04:32 UTC · `demo-video-series-three-minute-browser` note (all) · voice
-- 2026-11-14 04:34 UTC · `group-chat-audio-hear-agents-talk-while` s1 done, → running (all) · orchestrator
 - 2026-11-14 04:34 UTC · `group-chat-audio-hear-agents-talk-while` branch claude/group-chat-audio-hear-agents-talk-while (all) · builds-live
 - 2026-11-14 04:34 UTC · `demo-video-series-three-minute-browser` note (all) · voice
 - 2026-11-14 04:37 UTC · `ui-directory-plugin-self-updating-data` PR #670 (all) · builds-live
@@ -1196,6 +1194,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 23:15 UTC · `land-project-duplicate-boilerplate` → running, note (all) · pipeline
 - 2026-11-14 23:16 UTC · `console-axhub-retry-failed-calls` note (all) · orchestrator
 - 2026-11-14 23:16 UTC · `land-project-duplicate-boilerplate` note (all) · orchestrator
+- 2026-11-14 23:16 UTC · `skin-config-panel-merge-main-and-land` → running, note (all) · pipeline
+- 2026-11-14 23:16 UTC · `themed-native-controls-plugin` s12 done (all) · foreign-write
 
 ## Token passes (log)
 
