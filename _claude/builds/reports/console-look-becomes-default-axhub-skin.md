@@ -18,3 +18,10 @@ Brett (2026-11-14 22:19): "Keep the design, all the style, the way the console l
 - Hub token override: `axf.tokens.style` `opacityGlass` 0.7 (soft-studio says 0.72). Font scale 80, spacing tight.
 - Chrome: toolbar `standard-icons`, banner `amberx-branded` with its widget arrangement, nav-style `accordion`, tab-group `underline`. No `axf.chrome.*` values are stored on the hub: every chrome element runs on its shared default.
 - Gap: `arctic-calm` has no light/dark pair, so `skin.mode dark` fails for the console today. The new default skin has to ship a dark theme (candidate: `fresh-dark`, the day/night switch's dark side).
+
+## Pixel baseline (s3)
+`console-look-becomes-default-axhub-skin/shots/before/`: 12 shots at the baseline commit, from `rebuild-shots.mjs --label before` with `shots-before.json`. Views: home, Builds, Settings → Appearance; light and dark; desktop (1366×860) and phone (412×915 @2x).
+- The shot run has no hub (`AXF_APPEARANCE_HUB=off`, scratch data). Each shot seeds the console's resolved look from `snapshot-before.json` into local storage first (the 45 resolved slots plus the console's look settings: `axf.tokens.style`, toolbar at the bottom, banner group, font scale 80, spacing tight), then reloads. So the shots show the live look's assets and tokens, but not hub data: the banner says "axHub off", and the hub's widgets and counters are empty.
+- Dark = the same look with colour theme `fresh-dark` (the day/night switch's dark side), because `arctic-calm` has no dark pair.
+- The "after" run must use the same `shots-before.json` steps (only the seed changes to the new default skin) so the diff compares like with like.
+- The Settings → Appearance search shows a "did not render, so it cannot be focused" toast on some shots. It is the same on both runs, so it does not affect the diff, but it is a bug in global search to look at.
