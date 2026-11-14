@@ -796,7 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 04:00 UTC · `demo-video-series-three-minute-browser` → queued (all) · voice
 - 2026-11-14 04:02 UTC · `launch-landing-page-waitlist-referral` → running, note (all) · pipeline
 - 2026-11-14 04:02 UTC · `launch-landing-page-waitlist-referral` branch claude/launch-landing-page-waitlist-referral (all) · pipeline
 - 2026-11-14 04:02 UTC · `launch-landing-page-waitlist-referral` note (all) · orchestrator
@@ -1196,6 +1195,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 23:04 UTC · `server-gate-one-session-per-build-no` → running, note (all) · pipeline
 - 2026-11-14 23:04 UTC · `server-gate-one-session-per-build-no` note (all) · orchestrator
 - 2026-11-14 23:04 UTC · `themed-native-controls-plugin` s9 done (all) · orchestrator
+- 2026-11-14 23:05 UTC · `pass-approval-hook-deep-link-amberx-notification` s7 done (all) · orchestrator
 
 ## Token passes (log)
 
