@@ -28,8 +28,7 @@
  *   node framework/cli/skins.mjs coverage                  how a skin reaches every registered asset type (CI: spec/check-skin-coverage.mjs)
  *   node framework/cli/skins.mjs covers <skin>             what one skin sets or styles, type by type
  *   node framework/cli/skins.mjs modes                     every skin's light and dark colour themes, and any skin missing one
- *   node framework/cli/skins.mjs mode <app> [light|dark|system] [--system light|dark] [--scope …]   read or switch the skin in force to
- *                                                          its light / dark colour theme, or follow the device (same skin, a colour pick)
+ *   node framework/cli/skins.mjs mode <app> [light|dark|system] [--system light|dark] [--scope …]   the skin's light / dark theme, or the device's
  *   add --json for machine output. An app is its id (axf-console) or its folder (console-web), or `console`, `axhub`, `amberx`, `molly`.
  *
  * Files are written where /projects is mounted (the hub's data folder), so open apps follow through the hub's change
