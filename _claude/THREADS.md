@@ -792,7 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 20:01 UTC · `own-token-sets-for-grids-and-tab-groups` note (all) · builds-live
 - 2026-11-13 20:02 UTC · `grid-token-set-colours-hover-selected` note (all) · orchestrator
 - 2026-11-13 20:02 UTC · `grid-token-set-colours-hover-selected` note (all) · builds-live
 - 2026-11-13 20:03 UTC · `own-token-sets-for-grids-and-tab-groups` note (all) · orchestrator
@@ -1192,6 +1191,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 03:51 UTC · `ui-directory-plugin-self-updating-data` → running, note (all) · pipeline
 - 2026-11-14 03:51 UTC · `ui-directory-plugin-self-updating-data` note (all) · orchestrator
 - 2026-11-14 03:51 UTC · `ui-directory-plugin-self-updating-data` branch claude/ui-directory-plugin-self-updating-data (all) · pipeline
+- 2026-11-14 03:51 UTC · `icon-map-icon-packs-every-icon-badge-app` s9 done, → built, note (all) · orchestrator
 
 ## Token passes (log)
 

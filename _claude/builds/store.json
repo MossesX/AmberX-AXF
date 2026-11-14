@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5180,
- "updatedAt": "2026-11-14T03:51:46.192Z",
+ "rev": 5181,
+ "updatedAt": "2026-11-14T03:52:08.551Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -205301,7 +205301,7 @@
    "title": "Icon map and icon packs: every icon and badge in the app, swappable",
    "category": "",
    "detail": "1. Icon map: a registry of EVERY icon, badge and logo slot in the whole app (every plugin, screen, dialog, menu, toolbar, tab, nav item, banner, widget and button that shows an icon). Each slot gets a stable id, its location and a role (e.g. 'save', 'approve', 'build-running'), and registers through the framework manifest so new plugins appear automatically. Add a CI check that fails on hard-coded icons not in the map.\n2. Icon map screen: a searchable, filterable, categorized tree of every slot with a live preview, where you click a slot to change its icon. Ties into the UI Manager.\n3. Icon pack template: one pack file maps every role to an icon. Applying a pack changes every icon in the app in one click. Per-slot overrides with Restore previous edit / Restore from axHub.\n4. Packs: ship a lot of packs (outline, filled, rounded, duotone, sharp, glyph, emoji-style, plus badge styles and app/plugin logos). Some are themable (follow skin tokens for colour and stroke), others are fixed-colour. Each pack declares whether it's themable. Licences must allow redistribution; prefer open icon sets.\n5. Packs are assets: swappable, per-skin defaults, shareable via the hub asset library, importable.\n6. Full API: REST/MCP/CLI/voice ('switch to the duotone icon pack'). Tests, help, Shipped features. Use Fable for the registry/schema and asset type.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -205309,8 +205309,8 @@
    "pr": "#664",
    "priority": "P1",
    "createdAt": "2026-11-13T19:55:30.979Z",
-   "updatedAt": "2026-11-14T03:35:20.347Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-14T03:51:56.235Z",
+   "builtAt": "2026-11-14T03:51:56.235Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -205387,6 +205387,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-icon-map-icon-packs-every-icon-badge-app--gina, own login copy)",
      "at": "2026-11-14T03:35:20.346Z"
+    },
+    {
+     "text": "Model switch: phase 3 Opus → Fable. Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself.",
+     "at": "2026-11-14T03:51:56.235Z"
     }
    ],
    "approvals": [
@@ -205397,6 +205401,16 @@
      "at": "2026-11-13T21:09:09.006Z",
      "by": "auto",
      "kind": "downgrade"
+    },
+    {
+     "phase": 2,
+     "from": "Opus",
+     "to": "Fable",
+     "at": "2026-11-14T03:51:56.235Z",
+     "by": "auto",
+     "via": "policy",
+     "kind": "upgrade",
+     "note": "Fable upgrades need my approval is off (Brett's standing order, Nov 4 2026): upgraded by itself"
     }
    ],
    "upgradeRequests": [],
@@ -205648,12 +205662,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T03:51:56.235Z",
      "note": "",
-     "rev": 3,
+     "rev": 4,
      "createdAt": "2026-11-13T21:20:31.599Z",
-     "updatedAt": "2026-11-13T21:55:20.973Z"
+     "updatedAt": "2026-11-14T03:51:56.513Z"
     }
    ],
    "profiles": [
@@ -205664,7 +205678,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 35,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
