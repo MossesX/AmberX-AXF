@@ -26,6 +26,12 @@ t('normPipeline: empty → null, fields in shape', () => {
   assert.equal(BP.normPipeline(null), null); assert.equal(BP.normPipeline({}), null);
   const p = BP.normPipeline({ queuedAt: now, queuedBy: 'brett', account: 'Bad Name', runs: 2.5, lastRun: { exit: 1, outcome: 'nope', stepsLeft: 3 }, split: { provider: 'claude', steps: 8 } });
   assert.equal(p.queuedAt, now); assert.equal(p.account, ''); assert.equal(p.runs, 0); assert.equal(p.lastRun.outcome, 'finished'); assert.equal(p.lastRun.stepsLeft, 3); assert.equal(p.split.provider, 'claude');
+  assert.equal(p.parallel, null);
+  const lead = BP.normPipeline({ parallel: { role: 'lead', parts: ['a-p1', 'a-p2', 'Bad Name'], of: 2, contractStep: 's1', integrationStep: 's2', lead: 'ignored', part: 3 } }).parallel;
+  assert.deepEqual(lead, { role: 'lead', lead: '', parts: ['a-p1', 'a-p2', 'Bad Name'], part: 0, of: 2, contractStep: 's1', integrationStep: 's2' });
+  const part = BP.normPipeline({ parallel: { role: 'part', lead: 'a', part: 2, of: 2, parts: ['x'], contractStep: 's1' } }).parallel;
+  assert.deepEqual(part, { role: 'part', lead: 'a', parts: [], part: 2, of: 2, contractStep: '', integrationStep: '' });
+  assert.equal(BP.normPipeline({ parallel: { role: 'boss' } }), null, 'an unknown role is no record');
 });
 t('table: pending / queued / building; built and failed are off the table', () => {
   assert.equal(BP.tableOf({ status: 'pending' }), 'pending'); assert.equal(BP.tableOf({ status: 'queued' }), 'queued'); assert.equal(BP.tableOf({ status: 'running' }), 'building'); assert.equal(BP.tableOf({ status: 'waiting' }), 'building'); assert.equal(BP.tableOf({ status: 'built' }), '');
@@ -145,6 +151,55 @@ t('splitPrompt carries the title, detail, his words and the JSON shape', () => {
   assert.match(p, /Icon browser/); assert.match(p, /icon browser, dude/); assert.match(p, /"steps"/); assert.match(p, /10 minutes or less/); assert.match(p, /checkpoints inside ONE session/); assert.match(p, /no step gets its own prompt or relaunch/); assert.match(p, /Fable ONLY for/);
   assert.match(P.splitPrompt(raw, { maxStepMinutes: 30 }), /every step 10 minutes or less/, 'a stored 30 reads as the 10-minute ceiling');
   assert.match(P.splitPrompt(raw, { maxStepMinutes: 5 }), /every step 5 minutes or less/, 'the rule can lower it');
+  assert.match(p, /Parallel split \(on, up to 4 parts\)/, 'ask is the default: the prompt asks for parts'); assert.match(p, /"parallel"/);
+  assert.doesNotMatch(P.splitPrompt(raw, undefined, P.normSettings({ parallelSplit: 'off' })), /Parallel split/, 'off: never proposed');
+  assert.match(P.splitPrompt(raw, undefined, P.normSettings({ parallelSplit: 'auto', parallelMax: 6 })), /up to 6 parts/);
+});
+const PARALLEL_ANSWER = JSON.stringify({ steps: [{ text: 'Write the shell', model: 'Opus', estimate: '10 min' }], parallel: {
+  contract: 'Write the bridge names and module layout first', integration: 'Merge the parts, test together, PR',
+  parts: [{ title: 'WebView shell', steps: [{ text: 'Shell module and WindowInsets', model: 'Opus', estimate: '10 min' }] }, { title: 'Native bridge', steps: [{ text: 'window.axfNative bridge', model: 'Fable', estimate: '8 min' }, { text: 'Mic and recorder', model: 'Opus', estimate: '9 min' }] }, { title: 'Console side', steps: [{ text: 'Safe-area padding', model: 'Opus', estimate: '10 min' }] }],
+} });
+t('parseSplit: the optional parallel block, capped at parallelMax, dropped when off or under two parts', () => {
+  const ok = P.parseSplit(PARALLEL_ANSWER);
+  assert.equal(ok.error, ''); assert.equal(ok.steps.length, 1); assert.equal(ok.parallel.parts.length, 3); assert.equal(ok.parallel.parts[1].steps.length, 2); assert.equal(ok.parallel.parts[1].steps[0].model, 'Fable'); assert.equal(ok.parallel.parts[1].steps[1].id, 's2'); assert.match(ok.parallel.contract, /bridge names/);
+  const capped = P.parseSplit(PARALLEL_ANSWER, undefined, P.normSettings({ parallelMax: 2 })); assert.equal(capped.parallel.parts.length, 2); assert.match(capped.parallel.note, /3 parts: capped at 2/);
+  assert.equal(P.parseSplit(PARALLEL_ANSWER, undefined, P.normSettings({ parallelSplit: 'off' })).parallel, null, 'off: the block is ignored');
+  const one = P.parseSplit('{"steps":[{"text":"Only step","model":"Opus","estimate":"5 min"}],"parallel":{"parts":[{"title":"A","steps":[{"text":"Part a work","model":"Opus","estimate":"5 min"}]}]}}');
+  assert.equal(one.parallel, null); assert.match(one.parallelError, /1 usable part \(2 needed\)/); assert.equal(one.error, '', 'a bad parallel block never fails the split');
+  assert.equal(P.parseSplit('{"steps":[{"text":"Plain split","model":"Opus","estimate":"5 min"}]}').parallel, null);
+});
+t('parallelSteps: the lead keeps contract (Fable, first) + integration (last, own phase); each part gets its steps and a closing PR step', () => {
+  const b = build('app', 'pending', [], { title: 'Console app' });
+  const parsed = P.parseSplit(PARALLEL_ANSWER).parallel;
+  const ps = P.parallelSteps(b, parsed, P.normSettings({}), undefined, ['app-p1', 'app-p2', 'app-p3']);
+  assert.equal(ps.lead.length, 2); assert.equal(ps.lead[0].model, 'Fable'); assert.equal(ps.lead[0].phase, 'Contract'); assert.match(ps.lead[0].text, /bridge names/); assert.equal(ps.lead[1].phase, 'Integration'); assert.match(ps.lead[1].text, /Merge the parts/);
+  assert.deepEqual(ps.parallel, { role: 'lead', parts: ['app-p1', 'app-p2', 'app-p3'], contractStep: 's1', integrationStep: 's2' });
+  assert.equal(ps.children.length, 3); assert.equal(ps.children[1].id, 'app-p2'); assert.match(ps.children[1].title, /part 2: Native bridge/); assert.equal(ps.children[1].steps.length, 3); assert.match(ps.children[1].steps[2].text, /part 2 of 3 of app/); assert.match(ps.children[1].detail, /shared contract the lead \(app, branch claude\/app\)/);
+  assert.deepEqual(ps.children[2].parallel, { role: 'part', lead: 'app', part: 3, of: 3 });
+  const bare = P.parallelSteps(b, parsed, P.normSettings({ parallelContract: false, parallelIntegrate: false }), undefined, ['x', 'y', 'z']);
+  assert.equal(bare.lead.length, 1); assert.match(bare.lead[0].text, /Close out/); assert.equal(bare.parallel.contractStep, ''); assert.equal(bare.parallel.integrationStep, 's1'); assert.match(bare.children[0].detail, /own PR/);
+});
+t('parallelWait + plan: a part waits for the lead\'s contract step; the lead\'s integration step waits for every part; endOutcome requeues the lead at the barrier', () => {
+  const lead = build('app', 'queued', [{ ...step('s1', 'Fable'), estimate: '10 min', phase: 'Contract' }, { ...step('s2', 'Opus'), estimate: '10 min', phase: 'Integration' }], { pipeline: BP.normPipeline({ queuedAt: now, parallel: { role: 'lead', parts: ['app-p1', 'app-p2'], contractStep: 's1', integrationStep: 's2' } }) });
+  const p1 = build('app-p1', 'queued', [{ ...step('s1', 'Opus'), estimate: '10 min' }], { pipeline: BP.normPipeline({ queuedAt: now, parallel: { role: 'part', lead: 'app', part: 1, of: 2 } }) });
+  const p2 = build('app-p2', 'queued', [{ ...step('s1', 'Opus'), estimate: '10 min' }], { pipeline: BP.normPipeline({ queuedAt: now, parallel: { role: 'part', lead: 'app', part: 2, of: 2 } }) });
+  assert.equal(P.parallelWait(lead, [lead, p1, p2]), '', 'the lead runs its contract step');
+  assert.match(P.parallelWait(p1, [lead, p1, p2]), /waits for the shared contract: app step s1/);
+  const leadDone1 = { ...lead, steps: [{ ...lead.steps[0], done: true }, lead.steps[1]] };
+  assert.equal(P.parallelWait(p1, [leadDone1, p1, p2]), '', 'contract done: the part may start');
+  assert.match(P.parallelWait(leadDone1, [leadDone1, p1, p2]), /integration waits for parts app-p1, app-p2/);
+  const p1Done = { ...p1, status: 'complete', steps: [{ ...p1.steps[0], done: true }] };
+  assert.match(P.parallelWait(leadDone1, [leadDone1, p1Done, p2]), /waits for part app-p2 to finish/);
+  assert.equal(P.parallelWait(leadDone1, [leadDone1, p1Done, { ...p2, status: 'built' }]), '', 'every part finished: integration runs');
+  assert.equal(P.parallelWait(build('plain', 'queued', [step('s1', 'Opus')]), []), '', 'no parallel record: nothing to wait for');
+  const acc = P.accountViews([{ name: 'w-max', role: 'worker', plan: 'max', limited: null, running: [] }], {}, { settings: P.normSettings({ parallelPerAccount: 4 }) });
+  const pl = P.plan({ builds: [lead, p1, p2], accounts: acc, slots: { free: 4, used: 0, cap: 4 }, settings: P.normSettings({}), rules: OC.DEFAULT_RULES });
+  assert.deepEqual(pl.launches.map((l) => l.id), ['app']); assert.equal(pl.waits.filter((w) => w.parallel).length, 2);
+  const pl2 = P.plan({ builds: [leadDone1, p1, p2], accounts: acc, slots: { free: 4, used: 0, cap: 4 }, settings: P.normSettings({}), rules: OC.DEFAULT_RULES });
+  assert.deepEqual(pl2.launches.map((l) => l.id).sort(), ['app-p1', 'app-p2'], 'contract done: both parts start at the same time'); assert.match(pl2.waits.find((w) => w.id === 'app').why, /integration waits/);
+  const end = P.endOutcome({ ...leadDone1, pipeline: { ...leadDone1.pipeline, model: 'Opus', runs: 1 } }, { exit: 0 });
+  assert.equal(end.outcome, 'requeued', 'a lead stopping at its integration step goes back to the Queue, not Pending');
+  assert.equal(P.endOutcome({ ...p1, pipeline: { ...p1.pipeline, model: 'Opus', runs: 1 } }, { exit: 0 }).outcome, 'returned', 'a part stopping early still returns to Pending');
 });
 t('parseSplit: JSON inside prose, models coerced, estimates checked', () => {
   const ok = P.parseSplit('Here you go:\n{"steps":[{"text":"Design the icon-pack schema","model":"fable","estimate":"10 min","why":"schema"},{"text":"Write the docs","model":"Opus","estimate":"8"},{"text":"Wire the route","model":"Opus 5.5","estimate":9}]}\nDone.');
@@ -206,6 +261,11 @@ t('alertFor: idle keyed once, per-build run keys, every kind has a title', () =>
 t('settings normalise and clamp', () => {
   const s = P.normSettings({ parallelPerAccount: 99, maxRuns: 0, fablePlans: ['Max', 'TEAM'], splitProvider: 'nope', autoQueue: 'yes' });
   assert.equal(s.parallelPerAccount, 12); assert.equal(s.maxRuns, 1); assert.deepEqual(s.fablePlans, ['max', 'team']); assert.equal(s.splitProvider, 'claude'); assert.equal(s.autoQueue, false);
+  // the Split section (Nov 13 2026): parallel split ask by default, 4 slots, contract + integration on
+  assert.equal(s.parallelSplit, 'ask'); assert.equal(s.parallelMax, 4); assert.equal(s.parallelContract, true); assert.equal(s.parallelIntegrate, true);
+  const par = P.normSettings({ parallelSplit: 'auto', parallelMax: 1, parallelContract: false, parallelIntegrate: 'no' });
+  assert.equal(par.parallelSplit, 'auto'); assert.equal(par.parallelMax, 2, 'at least two parts'); assert.equal(par.parallelContract, false); assert.equal(par.parallelIntegrate, false);
+  assert.equal(P.normSettings({ parallelSplit: 'maybe' }).parallelSplit, 'ask'); assert.equal(P.normSettings({ parallelMax: 40 }).parallelMax, 12);
 });
 
 // ---------------- API jobs (Brett, Nov 9 2026: "I'm also gonna be able to have the orchestrator send jobs to the API, right?")
@@ -608,6 +668,26 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     orch('act', JSON.stringify({ action: 'add', id: 'delta', title: 'Delta', detail: 'Add the delta screen.\nDesign the delta schema.' }));
     const r = json(pipe('intake', '--json')); assert.deepEqual(r.split.map((x) => x.id), ['delta']);
     assert.equal(find('delta').pipeline.split.provider, 'rules'); assert.ok(find('delta').steps.length >= 3); assert.match(find('delta').pipeline.note, /rules/);
+  });
+  t('e2e parallel split (ask): the lead keeps contract + integration, the parts are filed in Pending; queued, the parts wait for the contract step', () => {
+    writeFileSync(splitter, `#!/usr/bin/env bash\ncat > "${tmp}/split-prompt.txt"\necho '${PARALLEL_ANSWER}'\n`); chmodSync(splitter, 0o755);
+    const before = json(pipe('settings', '--json')).settings; assert.equal(before.parallelSplit, 'ask'); assert.equal(before.parallelMax, 4);
+    json(pipe('set', 'parallelMax=2', '--json'));
+    orch('act', JSON.stringify({ action: 'add', id: 'omega', title: 'Omega app', detail: 'A shell, a bridge and the console side.', said: 'make omega, in parallel' }));
+    const r = json(pipe('intake', '--json')); const g = r.split.find((x) => x.id === 'omega');
+    assert.deepEqual(g.parallel, ['omega-p1', 'omega-p2'], 'three parts answered, capped at parallelMax 2'); assert.match(g.note, /Parallel split by Claude: 2 parts/); assert.match(g.note, /wait in Pending/);
+    assert.match(readFileSync(join(tmp, 'split-prompt.txt'), 'utf8'), /Parallel split \(on, up to 2 parts\)/);
+    const lead = find('omega'); assert.equal(lead.status, 'pending'); assert.equal(lead.steps.length, 2); assert.equal(lead.steps[0].model, 'Fable'); assert.equal(lead.steps[0].phase, 'Contract'); assert.equal(lead.steps[1].phase, 'Integration');
+    assert.deepEqual(lead.pipeline.parallel, { role: 'lead', lead: '', parts: ['omega-p1', 'omega-p2'], part: 0, of: 0, contractStep: 's1', integrationStep: 's2' });
+    const p1 = find('omega-p1'); const p2 = find('omega-p2');
+    assert.equal(p1.status, 'pending', 'ask: the parts wait in Pending'); assert.match(p1.title, /part 1: WebView shell/); assert.equal(p1.steps.length, 2); assert.match(p1.steps[1].text, /part 1 of 2 of omega/); assert.equal(p1.origin.said, 'make omega, in parallel');
+    assert.deepEqual(p2.pipeline.parallel, { role: 'part', lead: 'omega', parts: [], part: 2, of: 2, contractStep: '', integrationStep: '' }); assert.equal(p2.steps[0].model, 'Fable');
+    assert.equal(json(pipe('intake', '--json')).split.length, 0, 'the parts came with their steps: nothing to split again');
+    pipe('queue', 'omega'); pipe('queue', 'omega-p1'); pipe('queue', 'omega-p2');
+    const st = json(pipe('status', '--json'));
+    assert.match(st.plan.waits.find((w) => w.id === 'omega-p1').why, /waits for the shared contract: omega step s1/); assert.match(st.plan.waits.find((w) => w.id === 'omega-p2').why, /shared contract/);
+    assert.match(pipe('status').stdout, /Split: claude · parallel ask \(up to 2 parts, contract first, integration last\)/);
+    json(pipe('set', 'parallelMax=4', '--json'));
   });
 }
 

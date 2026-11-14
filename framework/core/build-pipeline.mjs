@@ -30,6 +30,13 @@
  *   pickedAt   ISO of the final account decision (the moment the build's turn came in the Queue)
  *   heldAt, heldBy, heldWhy  On hold (Brett, Nov 10 2026: "Make a hold status … leave in queue on hold"): the build stays
  *              in the Queue, keeps its place, and the dispatcher skips it until it is released. '' = not held.
+ *   parallel   Parallel split (Brett, Nov 13 2026: "one option splits it so it runs multiple parallel builds
+ *              simultaneously to speed it up"): null, or { role, lead, parts, part, of, contractStep, integrationStep }.
+ *              role 'lead' = the build Brett filed; it keeps the shared contract step (runs first, so the parts don't
+ *              clash) and the integration step (last: merges and tests the parts together); `parts` are the sub-build
+ *              ids. role 'part' = one sub-build: `lead` is its lead, `part` its number out of `of`. The dispatcher holds
+ *              a part until the lead's contract step is done and holds the lead's integration step until every part is
+ *              finished (pipeline-core parallelWait()).
  *
  * The orchestrator's tabs (Brett, Nov 10 2026: "Tabs: pending, active, incomplete, complete, errors, queue"): tabOf().
  */
@@ -43,6 +50,8 @@ export const OUTCOMES = ['finished', 'requeued', 'returned', 'failed'];
 /** Where a build may run: auto, only API-key accounts, only subscriptions. */
 export const ROUTES = ['', 'api', 'subscription'];
 export const SPLIT_PROVIDERS = ['claude', 'rules', 'hand'];
+/** Parallel split roles: the lead (contract first, integration last) and its parts (independent sub-builds). */
+export const PARALLEL_ROLES = ['lead', 'part'];
 export const DEFAULT_MAX_RUNS = 3;
 
 const str = (v, max = 400) => (typeof v === 'string' ? v.slice(0, max) : v == null ? '' : String(v).slice(0, max));
@@ -52,7 +61,16 @@ const NAME_RE = /^[a-z0-9][a-z0-9-]{0,31}$/;
 export const accountName = (v) => (NAME_RE.test(str(v, 40)) ? str(v, 40) : '');
 
 export function emptyPipeline() {
-  return { queuedAt: '', queuedBy: '', account: '', session: '', slot: '', model: '', launchedAt: '', runs: 0, lastRun: null, split: null, splitRequested: '', note: '', route: '', dispatchedAt: '', planned: null, tried: [], pickedAt: '', heldAt: '', heldBy: '', heldWhy: '' };
+  return { queuedAt: '', queuedBy: '', account: '', session: '', slot: '', model: '', launchedAt: '', runs: 0, lastRun: null, split: null, splitRequested: '', note: '', route: '', dispatchedAt: '', planned: null, tried: [], pickedAt: '', heldAt: '', heldBy: '', heldWhy: '', parallel: null };
+}
+
+const buildRef = (v) => str(v, 80).trim();
+const count = (v) => (Number.isInteger(v) && v > 0 ? Math.min(v, 99) : 0);
+/** The parallel-split record in shape, or null when it names no role. */
+export function normParallel(p) {
+  if (!p || typeof p !== 'object' || !PARALLEL_ROLES.includes(p.role)) return null;
+  const parts = (Array.isArray(p.parts) ? p.parts : []).map(buildRef).filter(Boolean).slice(0, 12);
+  return { role: p.role, lead: p.role === 'part' ? buildRef(p.lead) : '', parts: p.role === 'lead' ? parts : [], part: p.role === 'part' ? count(p.part) : 0, of: count(p.of), contractStep: p.role === 'lead' ? str(p.contractStep, 40) : '', integrationStep: p.role === 'lead' ? str(p.integrationStep, 40) : '' };
 }
 
 /** The record, every field in shape; null for nothing (a build the pipeline never touched carries none). */
@@ -72,6 +90,7 @@ export function normPipeline(p) {
     planned: pl ? { model: str(pl.model, 20), account: accountName(pl.account), kind: pl.kind === 'api' ? 'api' : pl.kind === 'subscription' ? 'subscription' : '', at: iso(pl.at), why: str(pl.why, 300) } : null,
     tried: (Array.isArray(p.tried) ? p.tried : []).map(accountName).filter(Boolean).slice(0, 12), pickedAt: iso(p.pickedAt),
     heldAt: iso(p.heldAt), heldBy: iso(p.heldAt) ? str(p.heldBy, 80) : '', heldWhy: iso(p.heldAt) ? str(p.heldWhy, 300) : '',
+    parallel: normParallel(p.parallel),
   };
   const empty = emptyPipeline();
   return JSON.stringify(out) === JSON.stringify(empty) ? null : out;

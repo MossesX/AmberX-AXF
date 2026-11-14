@@ -62,8 +62,22 @@ export const DEFAULTS = Object.freeze({
   apiAccounts: [],
   /** The account health sweep runs this often (minutes; 0 = off). */
   healthEveryMin: 5,
+  /**
+   * Parallel split (Brett, Nov 13 2026: "one option splits it so it runs multiple parallel builds simultaneously to speed
+   * it up"): when a request falls into independent parts, the splitter cuts it into sub-builds that run at the same time
+   * in separate slots. auto = the parts are filed and queued by themselves; ask = the parts are filed in Pending and
+   * Brett queues them; off = never proposed (one build, one session).
+   */
+  parallelSplit: 'ask',
+  /** Most parts (slots) one request may be split into. */
+  parallelMax: 4,
+  /** A shared contract / interface step on the lead runs first (names, schemas, routes written and pushed) so the parts don't clash. */
+  parallelContract: true,
+  /** An integration step on the lead runs last: merges the parts and tests them together. */
+  parallelIntegrate: true,
 });
-const LIMITS = { parallelPerAccount: [1, 12], maxRuns: [1, 10], idleAfterMin: [0, 240], probeDays: [1, 90], healthEveryMin: [0, 120] };
+export const PARALLEL_MODES = ['auto', 'ask', 'off'];
+const LIMITS = { parallelPerAccount: [1, 12], maxRuns: [1, 10], idleAfterMin: [0, 240], probeDays: [1, 90], healthEveryMin: [0, 120], parallelMax: [2, 12] };
 /** A health record older than this many sweeps is stale: the account falls back to its probe / plan. */
 const HEALTH_STALE_SWEEPS = 4;
 
@@ -86,6 +100,10 @@ export function normSettings(raw = {}) {
     apiOverflow: o.apiOverflow === undefined ? DEFAULTS.apiOverflow : o.apiOverflow === true,
     healthEveryMin: o.healthEveryMin === undefined ? DEFAULTS.healthEveryMin : clamp('healthEveryMin', o.healthEveryMin),
     apiAccounts: [...new Set((typeof o.apiAccounts === 'string' ? o.apiAccounts.split(',') : list(o.apiAccounts)).map((n) => str(n, 32).toLowerCase()).filter((n) => /^[a-z0-9][a-z0-9-]{0,31}$/.test(n)))],
+    parallelSplit: PARALLEL_MODES.includes(o.parallelSplit) ? o.parallelSplit : DEFAULTS.parallelSplit,
+    parallelMax: o.parallelMax === undefined ? DEFAULTS.parallelMax : clamp('parallelMax', o.parallelMax),
+    parallelContract: o.parallelContract === undefined ? DEFAULTS.parallelContract : o.parallelContract === true,
+    parallelIntegrate: o.parallelIntegrate === undefined ? DEFAULTS.parallelIntegrate : o.parallelIntegrate === true,
   };
 }
 
@@ -321,6 +339,8 @@ export function plan({ builds, accounts, slots, settings = normSettings(), rules
     if (b.status !== 'queued') continue;
     if (isHeld(b)) { waits.push({ id: b.id, why: `on hold${b.pipeline.heldBy ? ` (${b.pipeline.heldBy})` : ''}: skipped until released`, held: true }); continue; }
     if (!openSteps(b).length) { waits.push({ id: b.id, why: b.steps?.length ? 'every step is done: nothing to run' : 'no steps yet: waiting for the split' }); continue; }
+    const pw = parallelWait(b, live);
+    if (pw) { waits.push({ id: b.id, why: pw, parallel: true }); continue; }
     const n = orchNextUp(b, rules);
     if (n.needsApproval) { waits.push({ id: b.id, why: `needs Brett's approval: upgrade ${n.phase.from} → ${n.phase.model}` }); continue; }
     const model = nextModel(b);
@@ -348,7 +368,10 @@ export function plan({ builds, accounts, slots, settings = normSettings(), rules
 export function endOutcome(b, { exit, account = '', session = '', now = new Date().toISOString() } = {}, settings = normSettings()) {
   const stepsLeft = openSteps(b).length;
   const runs = (b.pipeline?.runs ?? 0) || 1;
-  const phaseSwitch = stepsLeft > 0 && !!b.pipeline?.model && nextModel(b) !== b.pipeline.model;
+  // a parallel lead that stops at its integration step ended its phase on purpose too: it goes back to the Queue and
+  // waits there for its parts (parallelWait), never to Pending
+  const atBarrier = stepsLeft > 0 && b.pipeline?.parallel?.role === 'lead' && !!b.pipeline.parallel.integrationStep && openSteps(b)[0]?.id === b.pipeline.parallel.integrationStep;
+  const phaseSwitch = stepsLeft > 0 && ((!!b.pipeline?.model && nextModel(b) !== b.pipeline.model) || atBarrier);
   const outcome = outcomeOf({ exit, stepsLeft, runs, phaseSwitch }, settings.maxRuns);
   const run = { at: now, exit: Number.isInteger(exit) ? exit : null, outcome, stepsLeft, account: account || b.pipeline?.account || '', session: session || b.pipeline?.session || '' };
   let status = STATUS_AFTER[outcome];
@@ -359,10 +382,13 @@ export function endOutcome(b, { exit, account = '', session = '', now = new Date
 // ------------------------------------------------------------------ split
 
 /** The one-shot prompt the orchestrator sends to Claude to split a build. The answer must be JSON only. */
-export function splitPrompt(b, rules = { maxStepMinutes: STEP_MINUTES }) {
+export function splitPrompt(b, rules = { maxStepMinutes: STEP_MINUTES }, settings = normSettings()) {
   const max = maxStep(rules);
   const said = str(b.origin?.said, 6000).trim();
   const addenda = list(b.origin?.addenda).map((a, i) => `Addendum ${i + 1}: ${str(a.said, 2000)}`).join('\n');
+  const parallel = settings.parallelSplit !== 'off' ? [
+    `Parallel split (on, up to ${settings.parallelMax} parts): when the work falls into 2 to ${settings.parallelMax} independent parts that touch different files and can be built at the same time in separate sessions, ALSO answer a "parallel" object next to "steps": {"parallel":{"contract":"<one step: the shared contract or interface (names, schemas, routes, bridge names) written first and pushed, so the parts don't clash>","parts":[{"title":"<part>","steps":[<same step shape>]}],"integration":"<one step: merge every part's branch into the lead, test them together, fix clashes, report, PR>"}}. Every part's steps follow the same rules. Leave "parallel" out when the work is one thread or the parts would edit the same files.`,
+  ] : [];
   return [
     `You are the AmberX AXF build orchestrator. Split the build below into small steps a headless Claude Code session does one after another in one repo checkout.`,
     `Steps are checkpoints inside ONE session, not separate launches: the session works through them in order, commits and ticks each one as it finishes it, so nothing is lost if it dies; no step gets its own prompt or relaunch. Small steps cost nothing extra, so cut fine.`,
@@ -370,6 +396,7 @@ export function splitPrompt(b, rules = { maxStepMinutes: STEP_MINUTES }) {
     `API rule: ${API_RULE} So every step that adds or changes UI names its API part (deep link, state read, actions, settings; REST + MCP + CLI + voice) in the same step or the step right after it.`,
     `Model per step, Opus by default. Fable ONLY for: ${MODEL_GUIDE.Fable} Opus for: ${MODEL_GUIDE.Opus} Put Fable steps first when the work allows, so the build switches model at most once.`,
     `Answer with JSON only, no prose: {"steps":[{"text":"…","model":"Fable|Opus","estimate":"<n> min","why":"<one line when Fable>","files":["…"]}]}`,
+    ...parallel,
     '', `Build id: ${b.id}`, `Title: ${str(b.title, 300)}`, b.category ? `Category: ${str(b.category, 60)}` : '', b.detail ? `Details:\n${str(b.detail, 8000)}` : '',
     said ? `Brett said (verbatim):\n${said}` : '', addenda,
   ].filter(Boolean).join('\n');
@@ -377,27 +404,95 @@ export function splitPrompt(b, rules = { maxStepMinutes: STEP_MINUTES }) {
 
 const EST_RE = /^\s*(\d+(?:\.\d+)?)\s*(m|min|mins|minutes?|h|hr|hrs|hours?)?\s*$/i;
 /** Claude's answer → steps, or an error. Accepts the JSON object alone or inside other text; refuses steps over the limit. */
-export function parseSplit(text, rules = { maxStepMinutes: STEP_MINUTES }) {
+export function parseSplit(text, rules = { maxStepMinutes: STEP_MINUTES }, settings = normSettings()) {
   const max = maxStep(rules);
   const s = str(text, 200000);
   const start = s.indexOf('{'); const end = s.lastIndexOf('}');
-  if (start < 0 || end <= start) return { steps: [], error: 'no JSON object in the answer' };
+  if (start < 0 || end <= start) return { steps: [], parallel: null, error: 'no JSON object in the answer' };
   let j;
-  try { j = JSON.parse(s.slice(start, end + 1)); } catch (e) { return { steps: [], error: `not JSON: ${e.message}` }; }
+  try { j = JSON.parse(s.slice(start, end + 1)); } catch (e) { return { steps: [], parallel: null, error: `not JSON: ${e.message}` }; }
   const raw = list(j?.steps);
-  if (raw.length < 1) return { steps: [], error: 'no steps in the answer' };
-  if (raw.length > 60) return { steps: [], error: `${raw.length} steps: too many (60 at most)` };
-  const steps = []; const problems = [];
+  if (raw.length < 1) return { steps: [], parallel: null, error: 'no steps in the answer' };
+  if (raw.length > 60) return { steps: [], parallel: null, error: `${raw.length} steps: too many (60 at most)` };
+  const problems = [];
+  const steps = parseSteps(raw, max, problems, '');
+  // the parallel block is optional and never fails the split: a bad one is dropped with its reason in `parallelError`
+  let parallel = null; let parallelError = '';
+  const pr = j?.parallel;
+  if (pr && typeof pr === 'object' && settings.parallelSplit !== 'off') {
+    const partProblems = [];
+    const parts = list(pr.parts).slice(0, settings.parallelMax).map((p, i) => ({ title: str(p?.title ?? p?.name, 200).trim() || `Part ${i + 1}`, steps: parseSteps(list(p?.steps), max, partProblems, `part ${i + 1} `) })).filter((p) => p.steps.length);
+    if (list(pr.parts).length > settings.parallelMax) partProblems.push(`${list(pr.parts).length} parts: capped at ${settings.parallelMax}`);
+    if (parts.length < 2) parallelError = `parallel block has ${parts.length} usable part${parts.length === 1 ? '' : 's'} (2 needed)${partProblems.length ? `: ${partProblems.join('; ')}` : ''}`;
+    else parallel = { contract: str(pr.contract, 2000).trim(), integration: str(pr.integration, 2000).trim(), parts, note: partProblems.join('; ') };
+  }
+  return { steps, parallel, parallelError, error: problems.length ? problems.join('; ') : '' };
+}
+
+/** Raw step objects → steps; problems (no text, no estimate, too big) are pushed with `where` in front. */
+function parseSteps(raw, max, problems, where = '') {
+  const steps = [];
   raw.forEach((r, i) => {
     const text = str(r?.text ?? r?.title, 2000).trim();
-    if (text.length < 5) { problems.push(`step ${i + 1} has no text`); return; }
+    if (text.length < 5) { problems.push(`${where}step ${i + 1} has no text`); return; }
     const est = typeof r?.estimate === 'number' ? `${Math.round(r.estimate)} min` : str(r?.estimate, 20).trim();
     const m = EST_RE.exec(est); const minutes = m ? Math.round(Number(m[1]) * (/^h/i.test(m[2] || '') ? 60 : 1)) : null;
-    if (minutes == null) problems.push(`step ${i + 1} has no estimate`); else if (minutes > max) problems.push(`step ${i + 1} is ${minutes} min (limit ${max})`);
+    if (minutes == null) problems.push(`${where}step ${i + 1} has no estimate`); else if (minutes > max) problems.push(`${where}step ${i + 1} is ${minutes} min (limit ${max})`);
     const model = modelKey(r?.model) === FOUNDATION_MODEL ? 'Fable' : 'Opus';
-    steps.push({ id: `s${i + 1}`, text, model, estimate: minutes != null ? `${minutes} min` : '', why: str(r?.why, 300), files: list(r?.files).map((f) => str(f, 300)).filter(Boolean).slice(0, 30), checks: list(r?.checks).map((f) => str(f, 300)).filter(Boolean).slice(0, 20) });
+    steps.push({ id: `s${steps.length + 1}`, text, model, estimate: minutes != null ? `${minutes} min` : '', why: str(r?.why, 300), files: list(r?.files).map((f) => str(f, 300)).filter(Boolean).slice(0, 30), checks: list(r?.checks).map((f) => str(f, 300)).filter(Boolean).slice(0, 20) });
   });
-  return problems.length ? { steps, error: problems.join('; ') } : { steps, error: '' };
+  return steps;
+}
+
+// ------------------------------------------------------------------ parallel split
+
+const isOpenBuild = (b) => b && !b.deleted && !['built', 'complete', 'archived', 'failed'].includes(b.status);
+const stepOpen = (b, id) => { const s = list(b?.steps).find((x) => x.id === id); return !!s && !s.done && !s.skip; };
+
+/**
+ * The lead's steps and the parts' builds for a parallel split (pure). `parsed` = parseSplit().parallel. The lead keeps
+ * the shared contract step first (Fable: contracts are foundation work; its own phase, so the session stops after it
+ * and the parts may start) and the integration step last (its own phase: the dispatcher holds it until every part is
+ * finished). Each part gets its steps and a closing test + PR step. Ids are given by the caller (uniqueBuildId).
+ */
+export function parallelSteps(b, parsed, settings = normSettings(), rules = { maxStepMinutes: STEP_MINUTES }, partIds = []) {
+  const max = maxStep(rules); const est = `${max} min`;
+  const parts = list(parsed?.parts);
+  const ids = parts.map((_, i) => str(partIds[i], 80) || `${b.id}-p${i + 1}`);
+  const names = ids.join(', ');
+  const lead = [];
+  if (settings.parallelContract) lead.push({ id: 's1', text: parsed.contract || `Shared contract first: write and push the names, schemas, routes and interfaces every part builds against (parts: ${names}), so the parts don't clash. Commit it before anything else.`, model: 'Fable', estimate: est, why: 'shared contract / interface the parallel parts build against', files: [], checks: [], phase: 'Contract' });
+  const integration = settings.parallelIntegrate
+    ? parsed.integration || `Integration: merge every part's branch (${names}) into this one, run the tests together, fix what clashes, report _claude/builds/reports/${b.id}.md, THREADS row, PR.`
+    : `Close out: confirm every part (${names}) landed on its own PR, report _claude/builds/reports/${b.id}.md, THREADS row.`;
+  lead.push({ id: `s${lead.length + 1}`, text: integration, model: 'Opus', estimate: est, why: '', files: [`_claude/builds/reports/${b.id}.md`, '_claude/THREADS.md'], checks: [], phase: 'Integration' });
+  const children = parts.map((p, i) => {
+    const steps = p.steps.map((s, k) => ({ ...s, id: `s${k + 1}` }));
+    steps.push({ id: `s${steps.length + 1}`, text: `Tests green, commit, push, PR (part ${i + 1} of ${parts.length} of ${b.id})`, model: 'Opus', estimate: est, why: '', files: [], checks: [] });
+    const detail = [`Part ${i + 1} of ${parts.length} of build ${b.id} ("${str(b.title, 300)}"), split to run in parallel.`, `Scope: ${p.title}.`,
+      settings.parallelContract ? `Build against the shared contract the lead (${b.id}, branch claude/${b.id}) writes first; the dispatcher starts this part once that step is done. Touch only this part's files.` : 'Touch only this part\'s files.',
+      settings.parallelIntegrate ? `The lead's integration step merges and tests every part together at the end.` : 'This part lands on its own PR.'].join('\n');
+    return { id: ids[i], title: `${str(b.title, 240)} · part ${i + 1}: ${p.title}`, detail, steps, parallel: { role: 'part', lead: b.id, part: i + 1, of: parts.length } };
+  });
+  return { lead, children, parallel: { role: 'lead', parts: ids, contractStep: settings.parallelContract ? 's1' : '', integrationStep: `s${lead.length}` } };
+}
+
+/**
+ * Why a queued build of a parallel split stays put this tick, or ''. A part waits while its lead's contract step is
+ * open; a lead whose next open step is the integration step waits while any part is unfinished.
+ */
+export function parallelWait(b, builds) {
+  const p = b?.pipeline?.parallel; if (!p) return '';
+  const all = list(builds);
+  if (p.role === 'part') {
+    const lead = all.find((x) => x.id === p.lead);
+    if (lead && lead.pipeline?.parallel?.contractStep && isOpenBuild(lead) && stepOpen(lead, lead.pipeline.parallel.contractStep)) return `waits for the shared contract: ${lead.id} step ${lead.pipeline.parallel.contractStep} first`;
+    return '';
+  }
+  const next = openSteps(b)[0];
+  if (!next || !p.integrationStep || next.id !== p.integrationStep) return '';
+  const open = p.parts.filter((id) => { const x = all.find((y) => y.id === id); return x && isOpenBuild(x); });
+  return open.length ? `integration waits for ${open.length === 1 ? 'part' : 'parts'} ${open.join(', ')} to finish` : '';
 }
 
 /**

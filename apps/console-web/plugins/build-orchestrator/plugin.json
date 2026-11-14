@@ -488,14 +488,14 @@
         "route": "GET /pipeline/settings",
         "title": "Pipeline settings",
         "readOnly": true,
-        "description": "The dispatcher's settings, including the API overflow rule (apiOverflow) and which API accounts it may use.",
+        "description": "The dispatcher's settings: the API overflow rule (apiOverflow), which API accounts it may use, and the Split section (splitProvider; parallelSplit auto|ask|off, parallelMax, parallelContract, parallelIntegrate: a request that falls into independent parts is cut into sub-builds that run at the same time).",
         "output": "{ settings }"
       },
       {
         "id": "pipeline-settings-set",
         "route": "POST /pipeline/settings",
         "title": "Change pipeline settings",
-        "description": "Change dispatcher settings. apiOverflow = when every subscription account is full or out, send builds to an API-key account (off by default; turning it on is Brett's own click, anyone may turn it off).",
+        "description": "Change dispatcher settings. apiOverflow = when every subscription account is full or out, send builds to an API-key account (off by default; turning it on is Brett's own click, anyone may turn it off). Split section: splitProvider (claude | rules | off), parallelSplit (auto = parts filed and queued by themselves, ask = parts wait in Pending, off = never), parallelMax (most parts, 2-12, default 4), parallelContract (a shared contract step on the lead runs first), parallelIntegrate (an integration step on the lead merges and tests the parts together last).",
         "input": {
           "type": "object",
           "properties": {
@@ -524,6 +524,29 @@
                 "rules",
                 "off"
               ]
+            },
+            "parallelSplit": {
+              "type": "string",
+              "enum": [
+                "auto",
+                "ask",
+                "off"
+              ],
+              "description": "Parallel split: auto (parts filed and queued by themselves), ask (parts wait in Pending for Brett), off"
+            },
+            "parallelMax": {
+              "type": "integer",
+              "minimum": 2,
+              "maximum": 12,
+              "description": "Most parallel parts (slots) one request is split into; default 4"
+            },
+            "parallelContract": {
+              "type": "boolean",
+              "description": "A shared contract / interface step on the lead runs first so the parts don't clash"
+            },
+            "parallelIntegrate": {
+              "type": "boolean",
+              "description": "An integration step on the lead runs last: merges the parts and tests them together"
             }
           }
         },

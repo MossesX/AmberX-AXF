@@ -31,7 +31,9 @@
  *                                  login's stores; a login due to renew is not called, so no build's copy is left on a spent
  *                                  token). The dispatcher reads the answers and never tests an account at launch time.
  *   … tab <pending|queue|active|incomplete|complete|errors|archive|deleted> [--json]   one of the orchestrator's tabs
- *   … settings [--json] | set k=v…  pipeline settings (pipeline-settings@1; apiOverflow=true|false is the overflow rule)
+ *   … settings [--json] | set k=v…  pipeline settings (pipeline-settings@1; apiOverflow=true|false is the overflow rule;
+ *                                    splitProvider=claude|rules|off, parallelSplit=auto|ask|off, parallelMax=2..12,
+ *                                    parallelContract / parallelIntegrate=true|false are the Split section)
  *   … request --title T [--detail D | --detail-file F] [--said S] [--priority P0-P3] [--route api|subscription] [--queue] [--by who]
  *                                  file a build with the orchestrator (the id is assigned here) and, with --queue, put it in the
  *                                  Queue. Every former launch path (Build manager Start, Fix with Claude, feature assist) calls this.
@@ -358,13 +360,28 @@ export function splitBuild(id, { provider = '', by = 'orchestrator' } = {}) {
   const store = loadStore(); const settings = loadSettings(); const rules = rulesOf(store);
   const b = storeCore.findBuild(store, id); if (!b) throw Object.assign(new Error(`no build "${id}"`), { code: 2 });
   if (['built', 'complete', 'archived'].includes(b.status)) throw Object.assign(new Error(`${b.id} is ${b.status}: nothing to split`), { code: 2 });
-  let steps = []; let used = 'rules'; let note = ''; let error = '';
+  let steps = []; let used = 'rules'; let note = ''; let error = ''; let parsedParallel = null;
   if (provider !== 'rules') {
-    const a = askSplitter(P.splitPrompt(b, rules), settings);
-    if (!a.error) { const p = P.parseSplit(a.text, rules); if (!p.error && p.steps.length) { steps = p.steps; used = 'claude'; } else error = p.error || 'empty answer'; } else error = a.error;
+    const a = askSplitter(P.splitPrompt(b, rules, settings), settings);
+    if (!a.error) {
+      const p = P.parseSplit(a.text, rules, settings);
+      if (!p.error && p.steps.length) { steps = p.steps; used = 'claude'; parsedParallel = p.parallel; if (p.parallelError) logLine({ event: 'split-parallel-dropped', build: b.id, error: str(p.parallelError, 300) }); }
+      else error = p.error || 'empty answer';
+    } else error = a.error;
   }
   if (!steps.length) { steps = P.rulesSplit(b, rules); used = 'rules'; note = `Split by rules${error ? ` (Claude: ${str(error, 200)})` : ''}: one step per line of the request, review the steps.`; }
   else note = `Split by Claude into ${steps.length} steps (${steps.filter((s) => s.model === 'Fable').length} Fable).`;
+  // Parallel split (Brett, Nov 13 2026): the lead keeps the shared contract step and the integration step; every part
+  // becomes a build of its own that runs at the same time in its own slot. Never re-split a build that already is a part
+  // or a lead: its parts are filed once.
+  let parallel = null; let children = [];
+  if (parsedParallel && settings.parallelSplit !== 'off' && !b.pipeline?.parallel) {
+    const taken = new Set(loadStore().builds.flatMap(namesOf));
+    const ids = parsedParallel.parts.map((_, i) => { const id = uniqueBuildId(`${b.id.slice(0, 36)}-p${i + 1}`, taken); taken.add(id); return id; });
+    const ps = P.parallelSteps(b, parsedParallel, settings, rules, ids);
+    steps = ps.lead; parallel = ps.parallel; children = ps.children;
+    note = `Parallel split by Claude: ${children.length} parts (${ids.join(', ')}) run at the same time${settings.parallelContract ? ' once the shared contract step (s1) is done' : ''}${settings.parallelIntegrate ? '; the integration step then merges and tests them together' : ''}. ${settings.parallelSplit === 'auto' ? 'Parts queued by themselves (Parallel split: auto).' : 'Parts wait in Pending: queue them (Parallel split: ask).'}`;
+  }
   const done = new Map(b.steps.filter((s) => s.done).map((s) => [s.text.trim().toLowerCase(), s]));
   let out = null;
   withStore((s) => {
@@ -374,12 +391,24 @@ export function splitBuild(id, { provider = '', by = 'orchestrator' } = {}) {
     const kept = rec.steps.filter((x) => x.done && !next.some((n) => n.uid === x.uid)).map((x, i) => ({ ...x, id: `d${i + 1}` }));
     rec.steps = [...kept, ...next]; rec.steps.forEach((x, i) => { x.id = `s${i + 1}`; });
     if (!rec.rearranged) { rec.defaultSteps = rec.steps.map((x) => ({ ...x })); rec.defaultAt = now; }
-    rec.pipeline = BP.normPipeline({ ...(rec.pipeline ?? {}), split: { at: now, by, provider: used, steps: rec.steps.length, note: str(note, 400) }, splitRequested: '', note: used === 'rules' ? 'steps made by rules: review them' : '' });
+    const par = parallel ? { ...parallel, contractStep: parallel.contractStep ? rec.steps[kept.length]?.id ?? '' : '', integrationStep: rec.steps[rec.steps.length - 1]?.id ?? '' } : rec.pipeline?.parallel ?? null;
+    rec.pipeline = BP.normPipeline({ ...(rec.pipeline ?? {}), split: { at: now, by, provider: used, steps: rec.steps.length, note: str(note, 400) }, splitRequested: '', note: used === 'rules' ? 'steps made by rules: review them' : '', parallel: par });
     rec.notes.push({ text: note, at: now }); rec.updatedAt = now; out = rec;
     return s;
   }, { by, action: 'pipeline:split', note: b.id });
-  logLine({ event: 'split', build: b.id, provider: used, steps: out.steps.length, error });
-  return { id: b.id, provider: used, steps: out.steps.length, error, note };
+  const filed = [];
+  for (const c of children) {
+    try {
+      orchAct({ action: 'add', id: c.id, title: c.title, detail: c.detail, steps: c.steps, source: 'parallel-split', ...(b.origin?.said ? { said: b.origin.said } : {}) }, by);
+      withStore((s) => { const rec = storeCore.findBuild(s, c.id); if (rec) { rec.priority = b.priority || rec.priority; rec.pipeline = BP.normPipeline({ ...(rec.pipeline ?? {}), parallel: c.parallel, route: b.pipeline?.route || '' }); rec.notes.push({ text: `Part ${c.parallel.part} of ${c.parallel.of} of ${b.id} (parallel split).`, at: nowIso() }); rec.updatedAt = nowIso(); } return s; }, { by, action: 'pipeline:parallel-part', note: c.id });
+      if (settings.parallelSplit === 'auto') queue(c.id, { by: 'auto (parallel split)' });
+      filed.push(c.id);
+    } catch (e) { logLine({ event: 'parallel-part-failed', build: b.id, part: c.id, error: str(e.message, 300) }); }
+  }
+  // auto: the lead goes too, so the contract step runs and the parts can start
+  if (filed.length && settings.parallelSplit === 'auto' && out.status === 'pending') { try { queue(b.id, { by: 'auto (parallel split)' }); } catch { /* already queued or held */ } }
+  logLine({ event: 'split', build: b.id, provider: used, steps: out.steps.length, error, ...(filed.length ? { parallel: filed } : {}) });
+  return { id: b.id, provider: used, steps: out.steps.length, error, note, parallel: filed };
 }
 
 /** Every build that needs the orchestrator's split gets one (a few per round); auto-queue when the Claude setting says so. */
@@ -963,6 +992,7 @@ async function main(argv) {
       `Pipeline · ${s.at} · slots ${s.slots.used}/${s.slots.cap} (${s.slots.free} free)${s.slots.hard ? ` · VPS hard limit ${s.slots.hard.live ?? '?'}/${s.slots.hard.max}` : ''}${s.slots.unavailable ? ' (no slots store here)' : ''}`,
       `Accounts: ${s.accounts.map((a) => `${a.name}${a.kind === 'api' ? ' [API]' : ''} ${a.fable ? 'Fable' : 'Opus'} ${a.running}/${a.parallel}${a.kind === 'api' ? (a.api?.usable ? '' : ` (${a.api?.why})`) : a.usable ? '' : ` (${a.why})`}`).join(' · ') || 'none'}`,
       `API overflow: ${s.settings.apiOverflow ? 'on' : 'off'}`,
+      `Split: ${s.settings.splitProvider} · parallel ${s.settings.parallelSplit}${s.settings.parallelSplit === 'off' ? '' : ` (up to ${s.settings.parallelMax} parts${s.settings.parallelContract ? ', contract first' : ''}${s.settings.parallelIntegrate ? ', integration last' : ''})`}`,
       `Pending (${s.table.pending.length})`, ...s.table.pending.map(line),
       `Queue (${s.table.queued.length})`, ...s.table.queued.map(line),
       `Building (${s.table.building.length})`, ...s.table.building.map(line),
