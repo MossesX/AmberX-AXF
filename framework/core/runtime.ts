@@ -14,6 +14,7 @@ import { LAYOUT_VIEWPORTS, layoutViewports, layoutVars } from './engines/layout'
 import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, gaugeStyle, meterStyle, navMenuStyle, popupStyle, sliderStyle, tabGroupStyle, toolbarStyle } from './engines/components';
 import { CUSTOM_KEY, customizableTypes, customizeSheet, effectiveCustom, normalizeCustomSlot, type CustomSlot, type CustomValues } from './engines/customize';
 import { CONTROL_TOKEN_SLOTS, applyTokenOverrides, effectiveTokenOverrides } from './engines/control-tokens.mjs';
+import { shapeStyle } from './engines/shape-rules.mjs';
 import { gateFor, hasPermission, resolvePermissions } from './engines/uac';
 import { WindowManager } from './engines/windows';
 import { normalizeDockLayout } from './engines/dock';
@@ -2584,6 +2585,8 @@ export class AxfRuntime {
       gaugeStyle(this.assetOrNull('gauge')?.data),
       meterStyle(this.assetOrNull('meter')?.data),
       tabGroupStyle(this.assetOrNull('tab-group')?.data, this.slotHidden('tab-group')),
+      // shape@1 (core/engines/shape-rules.mjs): the shape every chip-like banner widget is cut to; no asset = the pill every widget drew before
+      shapeStyle(this.assetOrNull('shape')?.data),
     ];
     const vars: VarMap = {
       ...colorThemeVars(color),

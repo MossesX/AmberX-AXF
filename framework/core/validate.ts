@@ -18,6 +18,7 @@ import { behaviorErrors } from './engines/behavior';
 import { dockLayoutErrors } from './engines/dock';
 import { xlayoutErrors } from './engines/xlayout';
 import { navStyleErrors } from './engines/navstyle-rules.mjs';
+import { shapeErrors } from './engines/shape-rules.mjs';
 
 export interface ValidationResult {
   ok: boolean;
@@ -122,6 +123,8 @@ export function validateAsset(raw: unknown): ValidationResult {
   if (raw.type === 'nav-style') errors.push(...navStyleErrors(data));
   // typography@1 / density@1 / sizing@1: ONE validator shared with the build engine (core/engines/scale-rules.mjs)
   errors.push(...scaleErrors(raw.type, data));
+  // shape@1: ONE validator shared with the build engine (core/engines/shape-rules.mjs)
+  errors.push(...shapeErrors(raw.type, data));
   // help@1: ONE validator shared with the build engine (core/engines/help-rules.mjs)
   errors.push(...helpErrors(raw.type, data));
   // agent-card@1: ONE validator shared with the build engine (core/engines/agent-card-rules.mjs)

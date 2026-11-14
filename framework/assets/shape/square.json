@@ -1,0 +1,13 @@
+{
+  "$axf": "asset@1",
+  "type": "shape",
+  "id": "square",
+  "name": "Square",
+  "version": "1.0.0",
+  "description": "Sharp corners, no radius at all.",
+  "author": "AmberX AXF",
+  "tags": ["shape"],
+  "data": {
+    "kind": "square"
+  }
+}

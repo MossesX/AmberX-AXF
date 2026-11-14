@@ -15,6 +15,7 @@
     "container",
     "gauge",
     "meter",
+    "shape",
     "banner",
     "clock",
     "search-bar",

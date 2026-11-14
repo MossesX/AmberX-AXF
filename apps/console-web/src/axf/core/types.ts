@@ -24,6 +24,7 @@ export const ASSET_TYPES = [
   'container',
   'gauge',
   'meter',
+  'shape',
   'banner',
   'clock',
   'search-bar',
@@ -67,7 +68,7 @@ export const ASSET_TYPES = [
 ] as const;
 
 /** Types that are optional: an app may ship none (the framework ships starters). Attachable ones live on a host (the banner). */
-export const OPTIONAL_TYPES: readonly AssetType[] = ['tab-group', 'gauge', 'meter', 'banner', 'clock', 'search-bar', 'logo', 'action-button', 'label', 'status', 'counter', 'progress', 'avatar', 'link', 'theme-switch', 'spacer', 'divider', 'badge', 'settings', 'dock-layout', 'xlayout', 'nav-style', 'behavior-theme', 'design-package', 'skin', 'style-package', 'logo-mark', 'animated-logo', 'icon-pack', 'branding', 'interface', 'typography', 'density', 'sizing', 'agent-card', 'job-type', 'card', 'help', 'demonstration', 'book', 'clip', 'docs'];
+export const OPTIONAL_TYPES: readonly AssetType[] = ['tab-group', 'gauge', 'meter', 'shape', 'banner', 'clock', 'search-bar', 'logo', 'action-button', 'label', 'status', 'counter', 'progress', 'avatar', 'link', 'theme-switch', 'spacer', 'divider', 'badge', 'settings', 'dock-layout', 'xlayout', 'nav-style', 'behavior-theme', 'design-package', 'skin', 'style-package', 'logo-mark', 'animated-logo', 'icon-pack', 'branding', 'interface', 'typography', 'density', 'sizing', 'agent-card', 'job-type', 'card', 'help', 'demonstration', 'book', 'clip', 'docs'];
 
 export type AssetType = (typeof ASSET_TYPES)[number];
 
@@ -205,6 +206,19 @@ export interface StyleThemeData {
   opacityScrim?: number;
   /** glass surfaces (how much of the surface colour a frosted panel keeps) */
   opacityGlass?: number;
+  /* ---- surface transparency (0..1, default 1 = opaque; engines/theme.ts SURFACE_KINDS). Lower = see-through + frosted. ---- */
+  /** dialogs (.fx-dialog) */
+  opacityDialog?: number;
+  /** floating windows: settings interfaces and tool windows (.fx-window) */
+  opacitySettings?: number;
+  /** panels, containers, groups (.fx-card) */
+  opacityPanel?: number;
+  /** popovers, dropdowns, context menus */
+  opacityMenu?: number;
+  /** toolbars and the app menubar */
+  opacityToolbar?: number;
+  /** the top banner */
+  opacityBanner?: number;
   /* ---- behaviour ---- */
   /** every section / group (Container) gets a collapse toggle top-right; build option --wrap-groups (default false) */
   wrapGroups?: boolean;
@@ -524,6 +538,12 @@ export interface MeterData {
   segments?: number;
 }
 
+/**
+ * shape@1 (build banner-widget-shapes-more-than-circle, Nov 14 2026): the shape every chip-like banner widget is cut to.
+ * Rules, normalizer, validator and the --fx-widget-* tokens: engines/shape-rules.mjs. `pill` = today's look.
+ */
+export type { ShapeData } from './engines/shape-rules.mjs';
+
 export interface ContainerData {
   variant: 'card' | 'panel' | 'glass' | 'outline';
   header: 'plain' | 'divided' | 'accent';
@@ -602,6 +622,7 @@ export interface AssetDataMap {
   slider: SliderData;
   gauge: GaugeData;
   meter: MeterData;
+  shape: import('./engines/shape-rules.mjs').ShapeData;
   'tab-group': TabGroupData;
   container: ContainerData;
   banner: BannerData;
@@ -650,7 +671,7 @@ export type Asset<K extends AssetType> = AssetEnvelope<AssetDataMap[K]>;
 /** Active asset id per slot. Optional control types added after apps already shipped (gauge, meter, settings) may be absent from an app's manifest. */
 export type ActiveAssets = { [K in Exclude<AssetType, LateOptionalType>]: string } & { [K in LateOptionalType]?: string };
 /** Types added after apps shipped manifests: their defaults may be missing (the engines fall back to built-in defaults). */
-export type LateOptionalType = 'tab-group' | 'gauge' | 'meter' | 'settings' | 'dock-layout' | 'xlayout' | 'nav-style' | 'behavior-theme' | 'design-package' | 'skin' | 'style-package' | 'logo-mark' | 'animated-logo' | 'icon-pack' | 'branding' | 'interface' | 'typography' | 'density' | 'sizing' | 'agent-card' | 'job-type' | 'card' | 'help' | 'demonstration' | 'book' | 'clip' | 'docs';
+export type LateOptionalType = 'tab-group' | 'gauge' | 'meter' | 'shape' | 'settings' | 'dock-layout' | 'xlayout' | 'nav-style' | 'behavior-theme' | 'design-package' | 'skin' | 'style-package' | 'logo-mark' | 'animated-logo' | 'icon-pack' | 'branding' | 'interface' | 'typography' | 'density' | 'sizing' | 'agent-card' | 'job-type' | 'card' | 'help' | 'demonstration' | 'book' | 'clip' | 'docs';
 
 export interface AxfManifest {
   $axf: 'manifest@1';

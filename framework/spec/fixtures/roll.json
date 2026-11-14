@@ -15,6 +15,7 @@
     "container": true,
     "gauge": true,
     "meter": true,
+    "shape": true,
     "banner": true,
     "clock": false,
     "search-bar": false,
@@ -400,6 +401,12 @@
           "segments",
           "steps",
           "striped-pill"
+        ],
+        "shape": [
+          "circle",
+          "pill",
+          "rounded",
+          "square"
         ],
         "banner": [
           "amberx-accent",
@@ -818,6 +825,12 @@
           "segments",
           "steps",
           "striped-pill"
+        ],
+        "shape": [
+          "circle",
+          "pill",
+          "rounded",
+          "square"
         ],
         "banner": [
           "amberx-accent",
@@ -1243,6 +1256,12 @@
           "steps",
           "striped-pill"
         ],
+        "shape": [
+          "circle",
+          "pill",
+          "rounded",
+          "square"
+        ],
         "banner": [
           "amberx-accent",
           "amberx-branded",
@@ -1661,6 +1680,12 @@
           "steps",
           "striped-pill"
         ],
+        "shape": [
+          "circle",
+          "pill",
+          "rounded",
+          "square"
+        ],
         "banner": [
           "amberx-accent",
           "amberx-branded",
@@ -2049,6 +2074,12 @@
           "segments",
           "steps",
           "striped-pill"
+        ],
+        "shape": [
+          "circle",
+          "pill",
+          "rounded",
+          "square"
         ],
         "banner": [
           "amberx-accent",
@@ -2467,6 +2498,12 @@
           "segments",
           "steps",
           "striped-pill"
+        ],
+        "shape": [
+          "circle",
+          "pill",
+          "rounded",
+          "square"
         ],
         "banner": [
           "amberx-accent",

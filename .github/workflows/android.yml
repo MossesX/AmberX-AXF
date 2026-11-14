@@ -264,6 +264,7 @@ jobs:
             npx -y tsx framework/spec/check-chrome.mts                 # chrome@1: guests send chrome as data, the host merges under namespaces and routes picks back (chrome.json)
             npx -y tsx framework/spec/check-banner-strip.mts           # banner strip: a host shows an app's live banners as its one banner region (Molly)
             npx -y tsx framework/spec/check-meters.mts                 # gauge + meter control assets: fixture replay, starters, enums
+            npx -y tsx framework/spec/check-shape.mts                  # shape@1: banner widget shapes, fixture replay, starters, both validators agree, the pill default = today's look
             npx -y tsx framework/spec/check-customize.mts              # tab-group asset + per-asset appearance tokens, 100 icon sets, apply to all
             npx -y tsx framework/spec/check-tab-group.mts              # tab-group@1: position / display / overflow / sticky / collapsible / closable / badges / rememberLast, starters, fixture replay, stylesheet tokens only
             npx -y tsx framework/spec/check-chrome-settings.mts        # chrome-settings@1: one shared default settings interface per chrome type + a custom copy per app (extends), default selected, dialog fields = asset fields

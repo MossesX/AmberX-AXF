@@ -1,0 +1,509 @@
+{
+  "$axf": "shape@1",
+  "_doc": "shape@1 reference outputs (core/engines/shape-rules.mjs). Every port replays these: normalizeShape, shapeErrors, shapeRadius, shapeClip, shapeSquare, shapeStyle. Regenerate with `npx -y tsx framework/spec/check-shape.mts --write`.",
+  "cases": [
+    {
+      "fn": "normalizeShape",
+      "name": "nothing = the default pill",
+      "input": null,
+      "expected": {
+        "kind": "pill"
+      }
+    },
+    {
+      "fn": "normalizeShape",
+      "name": "unknown kind = the default",
+      "input": {
+        "kind": "blob"
+      },
+      "expected": {
+        "kind": "pill"
+      }
+    },
+    {
+      "fn": "normalizeShape",
+      "name": "unknown fields dropped",
+      "input": {
+        "kind": "hexagon",
+        "bogus": 1
+      },
+      "expected": {
+        "kind": "hexagon"
+      }
+    },
+    {
+      "fn": "normalizeShape",
+      "name": "bad corners dropped, good kept",
+      "input": {
+        "kind": "rounded",
+        "corners": {
+          "tl": "lg",
+          "tr": "huge",
+          "zz": "sm",
+          "bl": "none"
+        }
+      },
+      "expected": {
+        "kind": "rounded",
+        "corners": {
+          "tl": "lg",
+          "bl": "none"
+        }
+      }
+    },
+    {
+      "fn": "normalizeShape",
+      "name": "bad mask dropped",
+      "input": {
+        "kind": "custom",
+        "mask": "url(javascript:1)"
+      },
+      "expected": {
+        "kind": "custom"
+      }
+    },
+    {
+      "fn": "normalizeShape",
+      "name": "svg path mask kept and trimmed",
+      "input": {
+        "kind": "custom",
+        "mask": "  M50 0 L100 50 L50 100 L0 50 Z "
+      },
+      "expected": {
+        "kind": "custom",
+        "mask": "M50 0 L100 50 L50 100 L0 50 Z"
+      }
+    },
+    {
+      "fn": "normalizeShape",
+      "name": "square flag kept",
+      "input": {
+        "kind": "pill",
+        "square": true
+      },
+      "expected": {
+        "kind": "pill",
+        "square": true
+      }
+    },
+    {
+      "fn": "shapeErrors",
+      "name": "good",
+      "input": {
+        "kind": "tag"
+      },
+      "expected": []
+    },
+    {
+      "fn": "shapeErrors",
+      "name": "bad kind",
+      "input": {
+        "kind": "blob"
+      },
+      "expected": [
+        "data.kind must be one of: circle, pill, rounded, square, squircle, hexagon, diamond, tag, custom"
+      ]
+    },
+    {
+      "fn": "shapeErrors",
+      "name": "bad corners",
+      "input": {
+        "kind": "rounded",
+        "corners": {
+          "tl": "huge",
+          "zz": "sm"
+        }
+      },
+      "expected": [
+        "data.corners.tl must be one of: none, sm, md, lg, pill",
+        "data.corners.zz is not a corner (one of: tl, tr, br, bl)"
+      ]
+    },
+    {
+      "fn": "shapeErrors",
+      "name": "corners not an object",
+      "input": {
+        "kind": "rounded",
+        "corners": "sm"
+      },
+      "expected": [
+        "data.corners must be an object of tl, tr, br, bl"
+      ]
+    },
+    {
+      "fn": "shapeErrors",
+      "name": "bad mask",
+      "input": {
+        "kind": "custom",
+        "mask": "url(javascript:1)"
+      },
+      "expected": [
+        "data.mask must be a CSS basic shape (polygon(…), path('…'), inset(…)) or an SVG path (M … Z), at most 2000 characters"
+      ]
+    },
+    {
+      "fn": "shapeErrors",
+      "name": "custom with nothing",
+      "input": {
+        "kind": "custom"
+      },
+      "expected": [
+        "data.kind custom needs a mask or corners"
+      ]
+    },
+    {
+      "fn": "shapeErrors",
+      "name": "square not a boolean",
+      "input": {
+        "kind": "pill",
+        "square": "yes"
+      },
+      "expected": [
+        "data.square must be true or false"
+      ]
+    },
+    {
+      "fn": "shapeRadius",
+      "name": "pill",
+      "input": {
+        "kind": "pill"
+      },
+      "expected": "999px"
+    },
+    {
+      "fn": "shapeRadius",
+      "name": "circle",
+      "input": {
+        "kind": "circle"
+      },
+      "expected": "999px"
+    },
+    {
+      "fn": "shapeRadius",
+      "name": "rounded = the theme's medium radius",
+      "input": {
+        "kind": "rounded"
+      },
+      "expected": "var(--fx-radius-md)"
+    },
+    {
+      "fn": "shapeRadius",
+      "name": "square",
+      "input": {
+        "kind": "square"
+      },
+      "expected": "0"
+    },
+    {
+      "fn": "shapeRadius",
+      "name": "squircle = the theme's large radius",
+      "input": {
+        "kind": "squircle"
+      },
+      "expected": "var(--fx-radius-lg)"
+    },
+    {
+      "fn": "shapeRadius",
+      "name": "per-corner",
+      "input": {
+        "kind": "rounded",
+        "corners": {
+          "tl": "lg",
+          "br": "none"
+        }
+      },
+      "expected": "var(--fx-radius-lg) var(--fx-radius-md) 0 var(--fx-radius-md)"
+    },
+    {
+      "fn": "shapeRadius",
+      "name": "every corner the same folds to one value",
+      "input": {
+        "kind": "square",
+        "corners": {
+          "tl": "sm",
+          "tr": "sm",
+          "br": "sm",
+          "bl": "sm"
+        }
+      },
+      "expected": "var(--fx-radius-sm)"
+    },
+    {
+      "fn": "shapeClip",
+      "name": "pill has none",
+      "input": {
+        "kind": "pill"
+      },
+      "expected": "none"
+    },
+    {
+      "fn": "shapeClip",
+      "name": "hexagon",
+      "input": {
+        "kind": "hexagon"
+      },
+      "expected": "polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%)"
+    },
+    {
+      "fn": "shapeClip",
+      "name": "diamond",
+      "input": {
+        "kind": "diamond"
+      },
+      "expected": "polygon(50% 0, 100% 50%, 50% 100%, 0 50%)"
+    },
+    {
+      "fn": "shapeClip",
+      "name": "tag",
+      "input": {
+        "kind": "tag"
+      },
+      "expected": "polygon(0 0, calc(100% - 0.6em) 0, 100% 50%, calc(100% - 0.6em) 100%, 0 100%)"
+    },
+    {
+      "fn": "shapeClip",
+      "name": "custom basic shape as is",
+      "input": {
+        "kind": "custom",
+        "mask": "polygon(0 0, 100% 0, 50% 100%)"
+      },
+      "expected": "polygon(0 0, 100% 0, 50% 100%)"
+    },
+    {
+      "fn": "shapeClip",
+      "name": "custom svg path wrapped",
+      "input": {
+        "kind": "custom",
+        "mask": "M50 0 L100 50 L50 100 L0 50 Z"
+      },
+      "expected": "path('M50 0 L100 50 L50 100 L0 50 Z')"
+    },
+    {
+      "fn": "shapeClip",
+      "name": "custom with corners only has none",
+      "input": {
+        "kind": "custom",
+        "corners": {
+          "tl": "lg"
+        }
+      },
+      "expected": "none"
+    },
+    {
+      "fn": "shapeSquare",
+      "name": "circle keeps a square box",
+      "input": {
+        "kind": "circle"
+      },
+      "expected": true
+    },
+    {
+      "fn": "shapeSquare",
+      "name": "pill does not",
+      "input": {
+        "kind": "pill"
+      },
+      "expected": false
+    },
+    {
+      "fn": "shapeSquare",
+      "name": "hexagon does",
+      "input": {
+        "kind": "hexagon"
+      },
+      "expected": true
+    },
+    {
+      "fn": "shapeSquare",
+      "name": "the asset may say otherwise",
+      "input": {
+        "kind": "hexagon",
+        "square": false
+      },
+      "expected": false
+    },
+    {
+      "fn": "shapeStyle",
+      "name": "nothing = today's look",
+      "input": null,
+      "expected": {
+        "vars": {
+          "--fx-widget-radius": "999px",
+          "--fx-widget-clip": "none",
+          "--fx-widget-corner": "round",
+          "--fx-widget-aspect": "auto"
+        },
+        "attrs": {
+          "data-fx-shape": "pill"
+        }
+      }
+    },
+    {
+      "fn": "shapeStyle",
+      "name": "pill",
+      "input": {
+        "kind": "pill"
+      },
+      "expected": {
+        "vars": {
+          "--fx-widget-radius": "999px",
+          "--fx-widget-clip": "none",
+          "--fx-widget-corner": "round",
+          "--fx-widget-aspect": "auto"
+        },
+        "attrs": {
+          "data-fx-shape": "pill"
+        }
+      }
+    },
+    {
+      "fn": "shapeStyle",
+      "name": "circle",
+      "input": {
+        "kind": "circle"
+      },
+      "expected": {
+        "vars": {
+          "--fx-widget-radius": "999px",
+          "--fx-widget-clip": "none",
+          "--fx-widget-corner": "round",
+          "--fx-widget-aspect": "1"
+        },
+        "attrs": {
+          "data-fx-shape": "circle"
+        }
+      }
+    },
+    {
+      "fn": "shapeStyle",
+      "name": "rounded",
+      "input": {
+        "kind": "rounded"
+      },
+      "expected": {
+        "vars": {
+          "--fx-widget-radius": "var(--fx-radius-md)",
+          "--fx-widget-clip": "none",
+          "--fx-widget-corner": "round",
+          "--fx-widget-aspect": "auto"
+        },
+        "attrs": {
+          "data-fx-shape": "rounded"
+        }
+      }
+    },
+    {
+      "fn": "shapeStyle",
+      "name": "square",
+      "input": {
+        "kind": "square"
+      },
+      "expected": {
+        "vars": {
+          "--fx-widget-radius": "0",
+          "--fx-widget-clip": "none",
+          "--fx-widget-corner": "round",
+          "--fx-widget-aspect": "auto"
+        },
+        "attrs": {
+          "data-fx-shape": "square"
+        }
+      }
+    },
+    {
+      "fn": "shapeStyle",
+      "name": "squircle",
+      "input": {
+        "kind": "squircle"
+      },
+      "expected": {
+        "vars": {
+          "--fx-widget-radius": "var(--fx-radius-lg)",
+          "--fx-widget-clip": "none",
+          "--fx-widget-corner": "squircle",
+          "--fx-widget-aspect": "auto"
+        },
+        "attrs": {
+          "data-fx-shape": "squircle"
+        }
+      }
+    },
+    {
+      "fn": "shapeStyle",
+      "name": "hexagon",
+      "input": {
+        "kind": "hexagon"
+      },
+      "expected": {
+        "vars": {
+          "--fx-widget-radius": "0",
+          "--fx-widget-clip": "polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%)",
+          "--fx-widget-corner": "round",
+          "--fx-widget-aspect": "1"
+        },
+        "attrs": {
+          "data-fx-shape": "hexagon"
+        }
+      }
+    },
+    {
+      "fn": "shapeStyle",
+      "name": "diamond",
+      "input": {
+        "kind": "diamond"
+      },
+      "expected": {
+        "vars": {
+          "--fx-widget-radius": "0",
+          "--fx-widget-clip": "polygon(50% 0, 100% 50%, 50% 100%, 0 50%)",
+          "--fx-widget-corner": "round",
+          "--fx-widget-aspect": "1"
+        },
+        "attrs": {
+          "data-fx-shape": "diamond"
+        }
+      }
+    },
+    {
+      "fn": "shapeStyle",
+      "name": "tag",
+      "input": {
+        "kind": "tag"
+      },
+      "expected": {
+        "vars": {
+          "--fx-widget-radius": "0",
+          "--fx-widget-clip": "polygon(0 0, calc(100% - 0.6em) 0, 100% 50%, calc(100% - 0.6em) 100%, 0 100%)",
+          "--fx-widget-corner": "round",
+          "--fx-widget-aspect": "auto"
+        },
+        "attrs": {
+          "data-fx-shape": "tag"
+        }
+      }
+    },
+    {
+      "fn": "shapeStyle",
+      "name": "custom corners + mask",
+      "input": {
+        "kind": "custom",
+        "corners": {
+          "tl": "lg",
+          "tr": "lg"
+        },
+        "mask": "inset(0 round 20% 20% 0 0)"
+      },
+      "expected": {
+        "vars": {
+          "--fx-widget-radius": "var(--fx-radius-lg) var(--fx-radius-lg) var(--fx-radius-md) var(--fx-radius-md)",
+          "--fx-widget-clip": "inset(0 round 20% 20% 0 0)",
+          "--fx-widget-corner": "round",
+          "--fx-widget-aspect": "auto"
+        },
+        "attrs": {
+          "data-fx-shape": "custom"
+        }
+      }
+    }
+  ]
+}

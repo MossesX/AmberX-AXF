@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "axf/shape.schema.json",
+  "title": "AmberX AXF Widget shape asset",
+  "type": "object",
+  "required": [
+    "$axf",
+    "type",
+    "id",
+    "name",
+    "version",
+    "data"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "asset@1"
+    },
+    "type": {
+      "const": "shape"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{1,47}$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "data": {
+      "type": "object",
+      "required": [
+        "kind"
+      ],
+      "properties": {
+        "kind": {
+          "enum": [
+            "circle",
+            "pill",
+            "rounded",
+            "square",
+            "squircle",
+            "hexagon",
+            "diamond",
+            "tag",
+            "custom"
+          ]
+        },
+        "corners": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "tl": {
+              "enum": [
+                "none",
+                "sm",
+                "md",
+                "lg",
+                "pill"
+              ]
+            },
+            "tr": {
+              "enum": [
+                "none",
+                "sm",
+                "md",
+                "lg",
+                "pill"
+              ]
+            },
+            "br": {
+              "enum": [
+                "none",
+                "sm",
+                "md",
+                "lg",
+                "pill"
+              ]
+            },
+            "bl": {
+              "enum": [
+                "none",
+                "sm",
+                "md",
+                "lg",
+                "pill"
+              ]
+            }
+          }
+        },
+        "mask": {
+          "type": "string",
+          "maxLength": 2000,
+          "description": "A CSS basic shape (polygon(…), path('…'), inset(…)) or an SVG path (M … Z) in a 0–100 box"
+        },
+        "square": {
+          "type": "boolean",
+          "description": "Keep a 1:1 box (default: circle, diamond and hexagon do)"
+        }
+      }
+    }
+  }
+}

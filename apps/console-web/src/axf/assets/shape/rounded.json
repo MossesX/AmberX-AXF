@@ -1,0 +1,13 @@
+{
+  "$axf": "asset@1",
+  "type": "shape",
+  "id": "rounded",
+  "name": "Rounded square",
+  "version": "1.0.0",
+  "description": "Soft corners at the style theme's medium radius, so the shape follows the skin's corners.",
+  "author": "AmberX AXF",
+  "tags": ["shape"],
+  "data": {
+    "kind": "rounded"
+  }
+}

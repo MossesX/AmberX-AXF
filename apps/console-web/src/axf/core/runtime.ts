@@ -14,6 +14,7 @@ import { LAYOUT_VIEWPORTS, layoutViewports, layoutVars } from './engines/layout'
 import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, gaugeStyle, meterStyle, navMenuStyle, popupStyle, sliderStyle, tabGroupStyle, toolbarStyle } from './engines/components';
 import { CUSTOM_KEY, customizableTypes, customizeSheet, effectiveCustom, normalizeCustomSlot, type CustomSlot, type CustomValues } from './engines/customize';
 import { CONTROL_TOKEN_SLOTS, applyTokenOverrides, effectiveTokenOverrides } from './engines/control-tokens.mjs';
+import { shapeStyle } from './engines/shape-rules.mjs';
 import { gateFor, hasPermission, resolvePermissions } from './engines/uac';
 import { WindowManager } from './engines/windows';
 import { normalizeDockLayout } from './engines/dock';
@@ -2584,6 +2585,8 @@ export class AxfRuntime {
       gaugeStyle(this.assetOrNull('gauge')?.data),
       meterStyle(this.assetOrNull('meter')?.data),
       tabGroupStyle(this.assetOrNull('tab-group')?.data, this.slotHidden('tab-group')),
+      // shape@1 (core/engines/shape-rules.mjs): the shape every chip-like banner widget is cut to; no asset = the pill every widget drew before
+      shapeStyle(this.assetOrNull('shape')?.data),
     ];
     const vars: VarMap = {
       ...colorThemeVars(color),
@@ -3024,6 +3027,13 @@ export class AxfRuntime {
     a.register('windows.maximize', ([w]) => w && wm.toggleMaximize(w), { label: 'Maximize / restore window', params: true });
     a.register('windows.snap', ([w, zone = 'left']) => w && wm.snapTo(w, zone as import('./engines/windows').SnapZone), { label: 'Snap window to a zone', params: true });
     a.register('windows.focus', ([w]) => w && wm.focus(w), { label: 'Focus window', params: true });
+    // a window's own background transparency (0..1, or `theme` = follow the style theme's opacitySettings token)
+    a.register('windows.background', ([w, v = 'theme']) => {
+      const win = w ? wm.state.windows.find((x) => x.id === w) : undefined;
+      if (!win) return;
+      const n = Number(v);
+      wm.setSettings(win.id, { ...win.settings, surface: v === 'theme' || !Number.isFinite(n) ? null : Math.min(1, Math.max(0, n)) });
+    }, { label: 'Window background opacity', params: true });
     // dock@1 (Nov 3 2026): re-dock a floating window along a side of the main dock; lay the open tabs out on a preset
     a.register('windows.redockInto', ([w, side = 'right']) => w && wm.redockInto(w, { target: 'root', zone: (['left', 'right', 'top', 'bottom'].includes(side) ? side : 'right') as import('./engines/dock').DockSide }), { label: 'Redock window into the dock', params: true });
     a.register('windows.layout', ([preset = '', w = '']) => {

@@ -26,6 +26,8 @@ export const BANNER_WIDGET_MAX_WIDTH: Record<BannerWidthUnit, { min: number; max
 /** Widgets with their own fixed shape: they keep it until the person picks a size for them. */
 export const BANNER_FIXED_SHAPE: readonly string[] = ['clock', 'search-bar', 'logo', 'avatar', 'spacer', 'divider', 'progress', 'theme-switch'];
 const KEY = /^[a-z0-9-]{1,40}:[A-Za-z0-9._-]{1,80}$/;
+/** A shape asset id (shape@1, engines/shape-rules.mjs): the envelope id pattern. */
+const SHAPE_ID = /^[a-z0-9][a-z0-9-]{1,47}$/;
 /** Most entries the setting keeps (a damaged setting can't grow without bound). */
 export const BANNER_WIDGET_PREFS_MAX = 200;
 
@@ -46,6 +48,8 @@ export interface BannerWidgetHint {
   hidden?: boolean;
   /** extra words voice and search match it by ("ticker") */
   aliases?: string[];
+  /** a shape asset id (shape@1) this widget is cut to by default; absent = the app's active shape slot */
+  shape?: string;
 }
 
 /** A person's choices for one widget: only what they changed. */
@@ -58,6 +62,8 @@ export interface BannerWidgetPref {
   priority?: number;
   hideWhenEmpty?: boolean;
   overflow?: boolean;
+  /** a shape asset id (shape@1) the person picked for this one widget; absent = the hint's, else the active shape slot */
+  shape?: string;
 }
 export type BannerWidgetPrefs = Record<string, BannerWidgetPref>;
 
@@ -71,6 +77,8 @@ export interface BannerWidgetView {
   priority: number;
   hideWhenEmpty: boolean;
   overflow: boolean;
+  /** the shape asset id this widget is cut to, '' = the active shape slot (the app-wide / skin pick) */
+  shape: string;
 }
 
 const has = <T extends string>(list: readonly T[], v: unknown): v is T => (list as readonly unknown[]).includes(v);
@@ -93,6 +101,7 @@ export function normalizeBannerWidgetPref(raw: unknown): BannerWidgetPref {
   if (num(p.priority)) out.priority = clampInt(p.priority, BANNER_WIDGET_PRIORITY.min, BANNER_WIDGET_PRIORITY.max);
   if (typeof p.hideWhenEmpty === 'boolean') out.hideWhenEmpty = p.hideWhenEmpty;
   if (typeof p.overflow === 'boolean') out.overflow = p.overflow;
+  if (typeof p.shape === 'string' && SHAPE_ID.test(p.shape)) out.shape = p.shape;
   return out;
 }
 
@@ -133,7 +142,8 @@ export function bannerWidgetView(type: string, hint: BannerWidgetHint | null | u
   const spaces = fixed && !picked ? null : BANNER_WIDGET_WIDTH[size];
   const cap: BannerWidgetView['cap'] = num(p.maxWidth) && p.maxWidth > 0 ? { n: p.maxWidth, unit: p.maxUnit ?? 'px' } : spaces === null ? null : { n: spaces, unit: 'space' };
   const priority = num(p.priority) ? p.priority : num(h.priority) ? clampInt(h.priority, BANNER_WIDGET_PRIORITY.min, BANNER_WIDGET_PRIORITY.max) : BANNER_WIDGET_PRIORITY.default;
-  return { hidden: p.hidden ?? h.hidden ?? false, size, show, cap, priority, hideWhenEmpty: p.hideWhenEmpty ?? h.hideWhenEmpty ?? false, overflow: p.overflow ?? h.overflow ?? true };
+  const shape = typeof p.shape === 'string' && SHAPE_ID.test(p.shape) ? p.shape : typeof h.shape === 'string' && SHAPE_ID.test(h.shape) ? h.shape : '';
+  return { hidden: p.hidden ?? h.hidden ?? false, size, show, cap, priority, hideWhenEmpty: p.hideWhenEmpty ?? h.hideWhenEmpty ?? false, overflow: p.overflow ?? h.overflow ?? true, shape };
 }
 
 /** A width cap as a CSS length. */

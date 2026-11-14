@@ -26,6 +26,7 @@ export * from './engines/behavior';
 export * from './engines/tapconfirm';
 export * from './engines/chrome-settings-rules.mjs';
 export * from './engines/scale';
+export * from './engines/shape-rules.mjs';
 export * from './engines/agent-card-rules.mjs';
 export * from './engines/job-type-rules.mjs';
 export * from './engines/demo-rules.mjs';

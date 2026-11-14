@@ -627,6 +627,34 @@
       },
       "optional": true
     },
+    "shape": {
+      "label": "Widget shape",
+      "group": "Controls",
+      "icon": "box",
+      "description": "The shape every chip-like banner widget is cut to (shape@1, engine core/engines/shape-rules.mjs): badges, counters, the theme switch, avatars, dots, the progress bar and the ⋯ button. Kinds: circle, pill, rounded, square, squircle, hexagon, diamond, tag, or custom (per-corner radius steps and / or an SVG mask). Compiles to --fx-widget-radius / --fx-widget-clip / --fx-widget-corner / --fx-widget-aspect and data-fx-shape. The pill starter is today's look. Swaps with the skin; a banner widget may name its own shape (per instance).",
+      "required": [
+        "kind"
+      ],
+      "enums": {
+        "kind": [
+          "circle",
+          "pill",
+          "rounded",
+          "square",
+          "squircle",
+          "hexagon",
+          "diamond",
+          "tag",
+          "custom"
+        ]
+      },
+      "optional": true,
+      "optional_fields": {
+        "corners": "{ tl?, tr?, br?, bl? } — radius step per corner: none | sm | md | lg | pill (style-theme radii; default from the kind)",
+        "mask": "string — custom clip: a CSS basic shape (polygon(…), path('…'), inset(…)) or an SVG path (M … Z) in a 0–100 box; at most 2000 characters",
+        "square": "boolean — keep a 1:1 box (default: circle, diamond and hexagon do, the rest follow their content)"
+      }
+    },
     "banner": {
       "label": "Banner",
       "group": "Chrome",
