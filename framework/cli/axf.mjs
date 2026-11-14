@@ -82,7 +82,7 @@ if (CONTROL_WORDS.has(cmd) || (cmd === 'list' && CONTROL_LIST_WORDS.has(rest[0])
   process.exit(await main([cmd, ...rest]));
 }
 // console commands (control@1 console domain) go to the plugin that provides console-commands@1 (never by folder name).
-if (cmd === 'console' && ['do', 'state', 'targets', 'search', 'focus', 'scroll', 'plugin', 'voice'].includes(rest[0] ?? '')) {
+if (cmd === 'console' && (await import('./console-control.mjs')).CONTROL_SUBCOMMANDS.has(rest[0] ?? '')) {
   const { main } = await import('./console-control.mjs');
   process.exit(await main(rest));
 }

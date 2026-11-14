@@ -2297,7 +2297,10 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
 {
   const phrases = ['scroll down', 'Amber, scroll up a bit please', 'scroll down two pages', 'page down', 'go to the top', 'scroll to the bottom', 'open plugins settings', 'open the pipeline tab',
     'go to plan studio', 'open settings', 'find dark mode', 'search for snapshot', 'show step 3 of the console control build', 'step three of skins', 'disable plugin skins',
-    'turn off the skins plugin', 'turn the skins plugin off', 'enable voice notes plugin', 'press save', 'click the refresh button', 'Set font scale to 1.2.', 'turn help mode on', 'what time is it', ''];
+    'turn off the skins plugin', 'turn the skins plugin off', 'enable voice notes plugin', 'press save', 'click the refresh button', 'Set font scale to 1.2.', 'turn help mode on', 'what time is it', '',
+    // fields, the screen read back and decisions (build full-voice-api-control-type-fields-press)
+    'Amber, type My New App into the project name field', 'enter hello@example.com in email', 'fill description with A "fast" app.', "what's on the screen", 'where am I',
+    'read the dialog', 'what can I say', 'approve', 'approve the deploy', 'veto it', 'deny', 'next', 'yes confirm', 'create'];
   const intents = Object.fromEntries(phrases.map((p) => [p, voiceIntent(p)]));
   const hit = 'view:build-orchestrator/grid:builds/row:b1';
   write('console-control-voice.json', {
@@ -2314,6 +2317,9 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
       confirm: voiceReply({ verb: 'press' }, { ok: false, code: 'confirmation_required', message: 'x' }),
       noConsole: voiceReply({ verb: 'open' }, { ok: false, code: 'unavailable', message: 'x', openUrl: 'https://c/' }),
       failed: voiceReply({ verb: 'press' }, { ok: false, code: 'denied', message: 'needs Brett' }),
+      help: voiceReply({ verb: 'state', help: true }, { ok: true }),
+      decided: voiceReply({ verb: 'press', decision: 'approve' }, { ok: true }, 'Approve'),
+      screen: voiceReply({ verb: 'state', screen: true }, { ok: true, state: { report: { view: 'projects', title: 'Projects', dialog: { id: 'new-project', title: 'New project', address: 'view:projects/panel:dialog:new-project' }, fields: [{ label: 'Name', required: true, value: '' }, { label: 'Template', value: 'blank' }], buttons: [{ label: 'Create' }, { label: 'Cancel' }, { label: 'Off', disabled: true }] } } }),
     },
   });
 }

@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 import re
+import unicodedata
 from pathlib import Path
 from typing import Any
 
@@ -300,6 +301,13 @@ def set_server_setting(spec: dict[str, Any], value: Any, by: str) -> dict[str, A
 
 # ---------------------------------------------------------------------- functions and buttons
 
+def slug(text: str) -> str:
+    """A label as an address id (= controlSlug in framework/react/controlTargets.ts): "Restore defaults" → "restore-defaults"."""
+    t = unicodedata.normalize("NFKD", str(text or "").lower())
+    t = "".join(ch for ch in t if not unicodedata.combining(ch))
+    return re.sub(r"[^a-z0-9]+", "-", t).strip("-")[:80]
+
+
 DESTRUCTIVE_RE = re.compile(r"(^|[.:_-])(delete|remove|purge|wipe|reset|uninstall|drop|clear|discard|revoke|destroy|erase|kill|force-?push|hard-?delete)([.:_-]|$)", re.I)
 DECIDING_RE = re.compile(r"(^|[.:_-])(approve|deny|reject|veto|shelve|decide|sign-?off)([.:_-]|$)", re.I)
 
@@ -318,14 +326,15 @@ def press_spec(address: str) -> dict[str, Any] | None:
     return None
 
 
-def check_press(spec: dict[str, Any] | None, address: str, confirm: Any) -> None:
-    """Deciding actions are Brett's own tap; destructive ones need `confirm` (the same rule the open console applies)."""
+def check_press(spec: dict[str, Any] | None, address: str, confirm: Any, owner: bool = False) -> None:
+    """Deciding actions are Brett's own tap (or his own signed-in session's voice: `owner`); destructive ones need `confirm`
+    (the same rule the open console applies)."""
     leaf = (address or "").rsplit("/", 1)[-1]
     word = leaf.split(":", 1)[-1]
     person = bool(spec and spec.get("personOnly")) or bool(DECIDING_RE.search(word))
     destructive = bool(spec and spec.get("destructive")) or bool(DESTRUCTIVE_RE.search(word))
     label = (spec or {}).get("label") or word
-    if person:
+    if person and not owner:
         raise ControlError("denied", f"{label} is a decision only Brett makes with his own tap", requires="person", personOnly=True)
     if destructive and not confirm:
         raise ControlError("confirmation_required", f"{label} deletes or resets something: send it again with confirm", confirm="required")
@@ -464,11 +473,52 @@ def _num(w: str) -> int | None:
     return int(w) if w.isdigit() else VOICE_NUMBERS.get(w)
 
 
+VOICE_HELP = ("Say: what's on screen. Open plan studio. Type Garden planner into name. Set template to blank. Press create, or just next, save, "
+              "confirm. Approve or veto it, from your own session. Scroll down. Find a build. Show step 3 of a build. Turn a plugin off.")
+_WAKE = re.compile(r"^\s*(?:(?:hey|ok|okay)\s+)?(?:amberx|amber)\b[\s,]*", re.I)
+_POLITE = re.compile(r"^(?:please\s+|can you\s+|could you\s+|would you\s+)+", re.I)
+
+
+def _unquote(s: str) -> str:
+    return re.sub(r"^[\"“'‘]+|[\"”'’]+$", "", s.strip()).strip()
+
+
+def _field_words(s: str) -> str:
+    t = re.sub(r"[“”\"'’,!?;:.]+", " ", s.lower())
+    t = re.sub(r"\s+(?:field|box|input)$", "", re.sub(r"\s+", " ", t).strip())
+    return _strip(re.sub(r"\s+", " ", t).strip())
+
+
+def type_intent(text: Any) -> dict[str, Any] | None:
+    """"type <text> into <field>" on the raw words (the text keeps its case), else None (= typeIntent)."""
+    raw = _POLITE.sub("", _WAKE.sub("", str(text or ""))).strip()
+    raw = re.sub(r"[.!?]+$", "", raw)
+    if m := re.match(r"^(?:type|enter|write|put)\s+([\s\S]+?)\s+(?:into|in|as)\s+(?:the\s+)?(.+?)$", raw, re.I):
+        return {"verb": "set", "find": {"q": _field_words(m.group(2)), "kinds": ["setting"]}, "value": _unquote(m.group(1))}
+    if m := re.match(r"^fill(?:\s+in)?\s+(?:the\s+)?(.+?)\s+with\s+([\s\S]+)$", raw, re.I):
+        return {"verb": "set", "find": {"q": _field_words(m.group(1)), "kinds": ["setting"]}, "value": _unquote(m.group(2))}
+    return None
+
+
+_SCREEN_RE = re.compile(r"^(?:what(?: s| is)?|whats) (?:on|in front of me on) (?:the )?screen$|^(?:read|describe)(?: me)? (?:the |this )?(?:screen|page|dialog)$|^where am i$|^what can i (?:press|tap|fill(?: in)?|do here)$|^what(?: s| is)? open$")
+
+
 def voice_intent(text: Any) -> dict[str, Any] | None:
     """A phrase → an intent (same shape and rules as voiceIntent in console-control-voice.mjs), or None."""
     p = clean_phrase(text)
     if not p:
         return None
+    typed = type_intent(text)
+    if typed and typed["find"]["q"]:
+        return typed
+    if re.match(r"^(?:what can i say|what can you do|voice help|help with voice|what are the (?:voice )?commands)$", p):
+        return {"verb": "state", "help": True}
+    if _SCREEN_RE.match(p):
+        return {"verb": "state", "screen": True}
+    if m := re.match(r"^(approve|veto|deny|reject|sign off)(?: (?:it|this|that))?(?: (.+))?$", p):
+        return {"verb": "press", "find": {"q": _strip(" ".join([m.group(1), m.group(2) or ""]).strip()), "kinds": ["button", "function"]}, "decision": m.group(1)}
+    if m := re.match(r"^(?:yes )?(submit|next|create|save|continue|finish|done|confirm|cancel|back|close|ok|apply|send|start|retry)(?: it| this)?$", p):
+        return {"verb": "press", "find": {"q": m.group(1), "kinds": ["button", "function"]}}
     if m := re.match(r"^(?:scroll|go|jump)(?: all the way)?(?: to)?(?: the)? (top|bottom|start|end)(?: of(?: the)? (?:page|list|screen))?$", p):
         return {"verb": "scroll", "scroll": {"dir": "top" if m.group(1) in ("top", "start") else "bottom"}}
     if m := re.match(r"^page (up|down)$", p):
@@ -506,6 +556,8 @@ def voice_intent(text: Any) -> dict[str, Any] | None:
 
 def intent_command(intent: dict[str, Any], hit: str | None = None) -> dict[str, Any]:
     cmd: dict[str, Any] = {"verb": intent["verb"]}
+    if intent.get("screen") or intent.get("help"):
+        return cmd
     if intent["verb"] == "search":
         cmd["query"] = intent["query"]
     elif intent["verb"] == "scroll":
@@ -542,8 +594,12 @@ def voice_reply(intent: dict[str, Any], answer: dict[str, Any] | None, label: st
         return f"Opened {what}."
     if v == "focus":
         return f"Showing {what}."
+    if v == "state" and intent.get("help"):
+        return VOICE_HELP
+    if v == "state":
+        return screen_line((answer.get("state") or {}).get("report") or answer.get("screen")) if intent.get("screen") else "Done."
     if v == "press":
-        return f"Pressed {what}."
+        return f"{what or intent['decision']}: done, as your decision." if intent.get("decision") else f"Pressed {what}."
     if v == "set":
         val = answer.get("value", intent.get("value"))
         return f"Set {what} to {('on' if val else 'off') if isinstance(val, bool) else val}."
@@ -553,3 +609,21 @@ def voice_reply(intent: dict[str, Any], answer: dict[str, Any] | None, label: st
         loses = (answer.get("effects") or {}).get("loses") or []
         return f"{what} is off." + (f" {', '.join(d['name'] for d in loses)} lose{'s' if len(loses) == 1 else ''} a feature." if loses else "")
     return "Done."
+
+
+def screen_line(sc: dict[str, Any] | None) -> str:
+    """One or two plain lines for a screen report (= screenLine in console-control-voice.mjs)."""
+    if not sc:
+        return "I can not see the screen."
+    where = f"{sc['dialog'].get('title')} dialog on {sc.get('title')}" if sc.get("dialog") else str(sc.get("title") or sc.get("view") or "the console")
+    fields = sc.get("fields") or []
+    buttons = [b for b in sc.get("buttons") or [] if not b.get("disabled")]
+    parts = [f"You're on {where}."]
+    if fields:
+        def empty(f: dict[str, Any]) -> bool:
+            return f.get("value") in ("", None) or f.get("value") == []
+        shown = ", ".join(f"{f.get('label')}{' (required, empty)' if f.get('required') and empty(f) else ''}" for f in fields[:6])
+        parts.append(f"{len(fields)} field{'' if len(fields) == 1 else 's'}: {shown}{' and more' if len(fields) > 6 else ''}.")
+    if buttons:
+        parts.append(f"Buttons: {', '.join(str(b.get('label')) for b in buttons[:6])}{' and more' if len(buttons) > 6 else ''}.")
+    return " ".join(parts)
