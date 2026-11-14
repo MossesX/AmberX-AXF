@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5524,
- "updatedAt": "2026-11-14T22:59:40.162Z",
+ "rev": 5525,
+ "updatedAt": "2026-11-14T22:59:48.623Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -175334,12 +175334,13 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
+   "alias": "fix-conflicts-land-build-plan-1-skins",
    "branch": "claude/fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o",
    "pr": "#532",
    "mergedAt": "2026-11-13T06:23:47Z",
    "priority": "P0",
    "createdAt": "2026-11-12T22:16:05.972Z",
-   "updatedAt": "2026-11-14T22:59:31.613Z",
+   "updatedAt": "2026-11-14T22:59:46.687Z",
    "builtAt": "",
    "notes": [
     {
@@ -175429,6 +175430,10 @@
     {
      "text": "Started run 2 on mossesx-max- (Opus, Phase 1): axf-fix-conflicts-and-land-build-plan-1-skins-one-ro--rhonda.",
      "at": "2026-11-14T22:57:16.879Z"
+    },
+    {
+     "text": "Headless run axf-fix-conflicts-and-land-build-plan-1-skins-one-ro--rhonda: brief only · start 11.4K tokens ($0.03) · cost $0.15 · 6 turns · 6 tools, MCP none",
+     "at": "2026-11-14T22:59:46.687Z"
     },
     {
      "text": "PR #532 already merged to main as 60e76d149 (Nov 13); its code matches branch head ddf66f7ed except build-state files. Nothing left to land.",
