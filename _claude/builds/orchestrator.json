@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T23:13:36.298Z",
+ "updatedAt": "2026-11-14T23:13:53.349Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -101030,7 +101030,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T17:10:29.492Z",
-   "updatedAt": "2026-11-14T23:08:17.432Z",
+   "updatedAt": "2026-11-14T23:13:42.882Z",
    "builtAt": "",
    "notes": [
     {
@@ -101088,6 +101088,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-pass-approval-hook-deep-link-amberx-notification--lenny, shared account login)",
      "at": "2026-11-14T22:46:07.943Z"
+    },
+    {
+     "text": "Headless run axf-pass-approval-hook-deep-link-amberx-notification--lenny: brief only · start 12.3K tokens ($0.03) · cost $9.32 · 159 turns · 6 tools, MCP none",
+     "at": "2026-11-14T23:13:42.882Z"
     }
    ],
    "approvals": [
@@ -120743,7 +120747,7 @@
    "title": "Fix: a build whose session finishes its phase (e.g. the Fable steps) with steps left goes back to Pending instead of the Queue, so the next phase never starts and slots sit empty. Send it back to the Queue and launch the next phase automatically",
    "category": "",
    "detail": "",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -120751,7 +120755,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T10:35:03.675Z",
-   "updatedAt": "2026-11-14T23:13:08.570Z",
+   "updatedAt": "2026-11-14T23:13:23.574Z",
    "builtAt": "",
    "notes": [
     {
@@ -120785,6 +120789,14 @@
     {
      "text": "Renamed from fix-a-build-whose-session-finishes-its-phase-e-g-the-fable-steps-with-steps (build names are at most 40 characters). By build-rename.",
      "at": "2026-11-13T17:33:19.803Z"
+    },
+    {
+     "text": "Started run 2 on mossesx-max- (Fable, Phase 2): axf-fix-build-whose-session-finishes-phase-e--gina.",
+     "at": "2026-11-14T23:13:15.444Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-fix-build-whose-session-finishes-phase-e--gina, shared account login)",
+     "at": "2026-11-14T23:13:23.574Z"
     }
    ],
    "approvals": [],

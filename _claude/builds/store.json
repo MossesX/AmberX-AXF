@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5579,
- "updatedAt": "2026-11-14T23:13:36.298Z",
+ "rev": 5580,
+ "updatedAt": "2026-11-14T23:13:53.349Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -151569,7 +151569,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T17:10:29.492Z",
-   "updatedAt": "2026-11-14T23:08:17.432Z",
+   "updatedAt": "2026-11-14T23:13:42.882Z",
    "builtAt": "",
    "notes": [
     {
@@ -151627,6 +151627,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-pass-approval-hook-deep-link-amberx-notification--lenny, shared account login)",
      "at": "2026-11-14T22:46:07.943Z"
+    },
+    {
+     "text": "Headless run axf-pass-approval-hook-deep-link-amberx-notification--lenny: brief only · start 12.3K tokens ($0.03) · cost $9.32 · 159 turns · 6 tools, MCP none",
+     "at": "2026-11-14T23:13:42.882Z"
     }
    ],
    "approvals": [
@@ -151918,7 +151922,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 87,
+   "rev": 88,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -189832,7 +189836,7 @@
    "title": "Fix: a build whose session finishes its phase (e.g. the Fable steps) with steps left goes back to Pending instead of the Queue, so the next phase never starts and slots sit empty. Send it back to the Queue and launch the next phase automatically",
    "category": "",
    "detail": "",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -189840,7 +189844,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T10:35:03.675Z",
-   "updatedAt": "2026-11-14T23:13:08.570Z",
+   "updatedAt": "2026-11-14T23:13:23.574Z",
    "builtAt": "",
    "notes": [
     {
@@ -189874,6 +189878,14 @@
     {
      "text": "Renamed from fix-a-build-whose-session-finishes-its-phase-e-g-the-fable-steps-with-steps (build names are at most 40 characters). By build-rename.",
      "at": "2026-11-13T17:33:19.803Z"
+    },
+    {
+     "text": "Started run 2 on mossesx-max- (Fable, Phase 2): axf-fix-build-whose-session-finishes-phase-e--gina.",
+     "at": "2026-11-14T23:13:15.444Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-fix-build-whose-session-finishes-phase-e--gina, shared account login)",
+     "at": "2026-11-14T23:13:23.574Z"
     }
    ],
    "approvals": [],
@@ -189894,11 +189906,11 @@
     "queuedAt": "2026-11-13T10:35:20.815Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "",
+    "session": "axf-fix-build-whose-session-finishes-phase-e--gina",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-13T10:43:20.478Z",
-    "runs": 1,
+    "model": "Fable",
+    "launchedAt": "2026-11-14T23:13:13.126Z",
+    "runs": 2,
     "lastRun": {
      "at": "2026-11-13T10:46:09.181Z",
      "exit": 0,
@@ -189915,9 +189927,9 @@
      "note": "Split by Claude into 12 steps (2 Fable)."
     },
     "splitRequested": "",
-    "note": "Session on mossesx-max- stopped on its own with 12 steps left: back in Pending for Brett.",
+    "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-13T10:43:20.478Z",
+    "dispatchedAt": "2026-11-14T23:13:13.126Z",
     "planned": {
      "model": "Fable",
      "account": "mossesx-max-",
@@ -189926,7 +189938,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-13T10:43:20.478Z",
+    "pickedAt": "2026-11-14T23:13:13.126Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -190241,7 +190253,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": {

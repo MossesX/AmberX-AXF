@@ -796,9 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 04:22 UTC · `group-chat-audio-hear-agents-talk-while` branch claude/group-chat-audio-hear-agents-talk-while (all) · pipeline
-- 2026-11-14 04:22 UTC · `group-chat-audio-hear-agents-talk-while` note (all) · orchestrator
-- 2026-11-14 04:23 UTC · `hotfix-get-main-ci-green-theme-swap` PR #669 (all) · builds-live
 - 2026-11-14 04:23 UTC · `ui-directory-plugin-self-updating-data` → queued, note (all) · pipeline
 - 2026-11-14 04:23 UTC · `ui-directory-plugin-self-updating-data` → running, note (all) · pipeline
 - 2026-11-14 04:23 UTC · `ui-directory-plugin-self-updating-data` note (all) · orchestrator
@@ -1196,6 +1193,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 23:12 UTC · `one-source-truth-console-shows-only-what` note (all) · pipeline
 - 2026-11-14 23:12 UTC · `owner-recognized-everywhere-veto` → pending, note (all) · pipeline
 - 2026-11-14 23:12 UTC · `picker-dialog-plugin-replaces-all` s14 done (all) · orchestrator
+- 2026-11-14 23:13 UTC · `fix-build-whose-session-finishes-phase-e` → running, note (all) · pipeline
+- 2026-11-14 23:13 UTC · `fix-build-whose-session-finishes-phase-e` note (all) · orchestrator
+- 2026-11-14 23:13 UTC · `pass-approval-hook-deep-link-amberx-notification` note (all) · orchestrator
 
 ## Token passes (log)
 
