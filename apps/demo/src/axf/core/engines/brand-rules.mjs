@@ -26,7 +26,7 @@ export const ANIMATION_PRESETS = ['spin', 'pulse', 'draw', 'orbit', 'float', 'sh
 export const ANIMATION_LIMITS = { durationMs: [300, 20000], delayMs: [0, 10000] };
 
 export const ICON_STYLES = ['outline', 'filled', 'duotone', 'sharp', 'rounded'];
-export const ICON_LIMITS = { grid: [16, 48], stroke: [0.5, 4], glyphs: 600, pathChars: 2000, nameChars: 48 };
+export const ICON_LIMITS = { grid: [16, 48], stroke: [0.5, 4], glyphs: 600, pathChars: 2000, nameChars: 48, roles: 600, layers: 48, layerChars: 6000 };
 export const GLYPH_NAME = /^[a-z][a-z0-9-]*$/;
 
 /** Decoration places a branding package may style; an open list (apps and plugins may register more through `registerBrandSlot`). */
@@ -129,6 +129,29 @@ export function animatedLogoErrors(raw) {
 
 /* ---------------- icon-pack ---------------- */
 
+/**
+ * Colour layers of one glyph (s9, Nov 14 2026): `[{ d, color, opacity }]` drawn in order, each filled in its own colour,
+ * so a fixed-colour pack (`themable: false`: emoji-style art, badges in traffic-light colours, a brand mark in its own
+ * palette) keeps its colours under every skin. `color` is a theme token word, a brand palette slot or #hex (hex is what
+ * fixed-colour art uses; a themable pack may layer tokens). Bad layers are dropped; the glyph's `d` stays the
+ * one-colour fallback (what a port without layer support draws). Layers beyond the count or size cap are dropped.
+ */
+export function normalizeGlyphLayers(raw) {
+  if (!Array.isArray(raw)) return [];
+  const out = [];
+  let total = 0;
+  for (const l of raw) {
+    if (out.length >= ICON_LIMITS.layers) break;
+    const q = isObj(l) ? l : {};
+    const d = str(q.d, ICON_LIMITS.pathChars + 1);
+    if (!d || d.length > ICON_LIMITS.pathChars || !PATH_DATA.test(d)) continue;
+    if (total + d.length > ICON_LIMITS.layerChars) break;
+    total += d.length;
+    out.push({ d, color: colorOk(q.color) ? q.color : 'currentColor', opacity: num(q.opacity, 0, 1, 1) });
+  }
+  return out;
+}
+
 export function normalizeIconPack(raw) {
   const o = isObj(raw) ? raw : {};
   const glyphs = {};
@@ -138,9 +161,18 @@ export function normalizeIconPack(raw) {
       const q = isObj(g) ? g : typeof g === 'string' ? { d: g } : {};
       const d = str(q.d, ICON_LIMITS.pathChars);
       if (!d || !PATH_DATA.test(d)) continue;
-      glyphs[name] = { d, fill: q.fill === true, secondary: typeof q.secondary === 'string' && PATH_DATA.test(q.secondary) ? q.secondary.slice(0, ICON_LIMITS.pathChars) : '' };
+      glyphs[name] = { d, fill: q.fill === true, secondary: typeof q.secondary === 'string' && PATH_DATA.test(q.secondary) ? q.secondary.slice(0, ICON_LIMITS.pathChars) : '', layers: normalizeGlyphLayers(q.layers) };
     }
   }
+  // icon-map@1 (Nov 13 2026): role → glyph name, so applying the pack changes every slot of a role at once
+  const roles = {};
+  if (isObj(o.roles)) {
+    for (const [role, g] of Object.entries(o.roles).slice(0, ICON_LIMITS.roles)) {
+      if (!ROLE_NAME.test(role) || typeof g !== 'string' || !GLYPH_NAME.test(g)) continue;
+      roles[role] = g;
+    }
+  }
+  const license = isObj(o.license) ? { name: str(o.license.name, 80), url: str(o.license.url, 200) } : typeof o.license === 'string' ? { name: str(o.license, 80), url: '' } : { name: '', url: '' };
   return {
     style: ICON_STYLES.includes(o.style) ? o.style : 'outline',
     grid: num(o.grid, ICON_LIMITS.grid[0], ICON_LIMITS.grid[1], 24),
@@ -148,15 +180,37 @@ export function normalizeIconPack(raw) {
     linecap: ['round', 'square', 'butt'].includes(o.linecap) ? o.linecap : 'round',
     fallback: o.fallback === 'none' ? 'none' : 'framework',
     glyphs,
+    roles,
+    /** true (default) = glyphs take their colour and stroke from the skin's tokens (currentColor); false = fixed-colour art (emoji-style, brand logos) */
+    themable: o.themable !== false,
+    /** what the pack covers: icons, badges, logos (default icons) */
+    covers: Array.isArray(o.covers) ? ICON_COVERS.filter((c) => o.covers.includes(c)) : ['icons'],
+    license,
     tags: Array.isArray(o.tags) ? o.tags.filter((t) => typeof t === 'string').slice(0, 12) : [],
   };
 }
+
+export const ICON_COVERS = ['icons', 'badges', 'logos'];
+export const ROLE_NAME = /^[a-z][a-z0-9-]*$/;
 
 export function iconPackErrors(raw) {
   const e = [];
   if (!isObj(raw)) return ['data must be an object'];
   if (raw.style !== undefined && !ICON_STYLES.includes(raw.style)) e.push(`data.style must be one of: ${ICON_STYLES.join(', ')}`);
   if (raw.grid !== undefined && (typeof raw.grid !== 'number' || raw.grid < ICON_LIMITS.grid[0] || raw.grid > ICON_LIMITS.grid[1])) e.push(`data.grid must be ${ICON_LIMITS.grid[0]}–${ICON_LIMITS.grid[1]}`);
+  if (raw.roles !== undefined) {
+    if (!isObj(raw.roles)) e.push('data.roles must be an object of role → glyph name');
+    else {
+      if (Object.keys(raw.roles).length > ICON_LIMITS.roles) e.push(`data.roles: at most ${ICON_LIMITS.roles} roles`);
+      for (const [role, g] of Object.entries(raw.roles)) {
+        if (!ROLE_NAME.test(role)) e.push(`data.roles.${role}: role ids are lowercase words with dashes`);
+        if (typeof g !== 'string' || !GLYPH_NAME.test(g)) e.push(`data.roles.${role}: must name a glyph (lowercase words with dashes)`);
+      }
+    }
+  }
+  if (raw.themable !== undefined && typeof raw.themable !== 'boolean') e.push('data.themable must be true or false');
+  if (raw.covers !== undefined && (!Array.isArray(raw.covers) || raw.covers.some((c) => !ICON_COVERS.includes(c)))) e.push(`data.covers must list some of: ${ICON_COVERS.join(', ')}`);
+  if (raw.license !== undefined && typeof raw.license !== 'string' && !(isObj(raw.license) && typeof raw.license.name === 'string')) e.push('data.license must be a name or { name, url }');
   if (!isObj(raw.glyphs)) e.push('data.glyphs must be an object of name → path');
   else {
     const names = Object.keys(raw.glyphs);
@@ -169,8 +223,26 @@ export function iconPackErrors(raw) {
       if (typeof d !== 'string' || !d.trim()) e.push(`data.glyphs.${name}.d is required`);
       else if (!PATH_DATA.test(d)) e.push(`data.glyphs.${name}.d: path commands and numbers only`);
       else if (d.length > ICON_LIMITS.pathChars) e.push(`data.glyphs.${name}.d: at most ${ICON_LIMITS.pathChars} characters`);
+      if (isObj(g) && g.layers !== undefined) glyphLayerErrors(g.layers, `data.glyphs.${name}.layers`, e);
     }
   }
+  return e;
+}
+
+/** Errors of a glyph's colour layers (see normalizeGlyphLayers), pushed onto `e` under `at`. */
+export function glyphLayerErrors(layers, at, e = []) {
+  if (!Array.isArray(layers)) { e.push(`${at} must be an array of { d, color, opacity }`); return e; }
+  if (layers.length > ICON_LIMITS.layers) e.push(`${at}: at most ${ICON_LIMITS.layers} layers`);
+  let total = 0;
+  layers.forEach((l, i) => {
+    if (!isObj(l) || typeof l.d !== 'string' || !l.d.trim()) { e.push(`${at}[${i}].d is required`); return; }
+    if (!PATH_DATA.test(l.d)) e.push(`${at}[${i}].d: path commands and numbers only`);
+    else if (l.d.length > ICON_LIMITS.pathChars) e.push(`${at}[${i}].d: at most ${ICON_LIMITS.pathChars} characters`);
+    total += l.d.length;
+    if (l.color !== undefined && !colorOk(l.color)) e.push(`${at}[${i}].color: a colour token (${MARK_COLORS.join(', ')}) or #hex`);
+    if (l.opacity !== undefined && (typeof l.opacity !== 'number' || l.opacity < 0 || l.opacity > 1)) e.push(`${at}[${i}].opacity must be 0–1`);
+  });
+  if (total > ICON_LIMITS.layerChars) e.push(`${at}: at most ${ICON_LIMITS.layerChars} characters of path data in all`);
   return e;
 }
 

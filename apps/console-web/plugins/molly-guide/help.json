@@ -20,6 +20,12 @@
         "draft": true
       },
       {
+        "target": "gizmo-guide",
+        "title": "Gizmo guide",
+        "text": "The Gizmo guide as a tab in a host app: the same walkthrough, docked beside the app's own tabs.",
+        "kind": "tab"
+      },
+      {
         "target": "repeat",
         "title": "Repeat",
         "text": "Shows “Repeat”. Part of Gizmo guide.",

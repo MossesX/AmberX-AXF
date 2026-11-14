@@ -185,6 +185,35 @@ paths string literals so they can be read. `noReads: "<why>"` only when the plug
 lifecycle check and CI fail a plugin whose route or action can't be exposed, whose declaration names something gone, that
 skips without a reason, has no reads, or has no block: `node framework/cli/plugin-commands.mjs check [folder]`.
 
+## Icons (icon-map@1, Nov 13 2026) — every icon, badge and logo is a slot in one map
+
+Brett's rule (Nov 13 2026): "a map of every single icon and badge for the whole entire app, every plugin, every screen,
+every UI; a template so I can change every single one with a click". Every place that shows an icon is a **slot** with
+a stable id (`<app>/<plugin folder>/<surface>/<name>`), its location (file:line, screen, surface: nav, toolbar, tab,
+menu, dialog, banner, widget, button, badge, logo, settings, view, …) and a **role** (`save`, `approve`,
+`build-running`, …). The map is built from what a plugin already has (`framework/core/engines/icon-map-rules.mjs`):
+every `<Icon name="x">`, `icon: 'x'` and `icon="x"` in its code, the icons in its plugin.json, its badge assets. A new
+plugin is in the map the moment it draws an icon; nothing to register. Icon packs (icon-pack@1 `roles`) map roles to
+glyphs, so one pack changes every icon; a per-slot pick (`axf.icons.slot.<id>`) changes one place; `<Icon slot="…"
+role="…">` ties a place to both.
+
+Draw icons only with the framework `Icon` (or a control's `icon` prop) and a name the framework knows
+(`framework/core/engines/glyphs.mjs`; `node framework/cli/icon-map.mjs glyphs`). CI fails (`node
+framework/cli/check-icons.mjs`) on a name that is not in the map (it would draw the fallback box), on an inline `<svg>`
+or an emoji used as a glyph beyond the ratchet baseline (`framework/spec/icon-map-baseline.json`, only shrinks;
+`icon-ok` on the line allows a deliberate one), and on an `icons` block that does not validate. The optional block in
+plugin.json adds roles the plugin invents, pins a glyph name its code uses to the role it means, and declares slots
+that need a fixed id:
+
+```json
+"icons": { "$axf": "icon-map@1",
+  "roles": { "sync-now": { "glyph": "refresh", "group": "action", "label": "Sync now" } },
+  "pins":  { "refresh": "sync-now" },
+  "slots": [ { "name": "sync", "surface": "toolbar", "role": "sync-now", "glyph": "refresh", "label": "Sync" } ] }
+```
+
+`node framework/cli/icon-map.mjs list --owner <folder>` shows a plugin's slots; `… check` is what CI runs.
+
 ## Menus and UI editors
 
 - **Menu links are contributions, not asset edits:** `contextMenu: [{ id, target: 'default', items }]` on the `AxfWebLibrary` adds items to a context-menu target (`default` = right-click / long-press anywhere). They leave with the plugin (disabled or removed), so no asset ever names a plugin.

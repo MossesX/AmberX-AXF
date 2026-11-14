@@ -30,7 +30,12 @@ export function brandHostProps(place: BrandPlace | null): { className: string; '
   return { className: '', 'data-fx-brand-mode': place.mode };
 }
 
-/** The mark a slot draws (mark / wordmark / lockup / animated), or null. `height` is in px of the host's own scale. */
+/**
+ * The mark a slot draws (mark / wordmark / lockup / animated), or null. `height` is in px of the host's own scale.
+ * When the icon pack in force covers logos (icon-pack@1 `covers: ['logos']`, roles app-mark / app-logo), a mark or
+ * watermark place draws the pack's glyph instead of the logo-mark: the span then carries `fx-brand--pack` and
+ * `data-fx-brand-glyph`, so a logo pack reaches every logo slot of the icon map through the branding package.
+ */
 export function BrandMark({ slot, height = 20, className = '' }: { slot: string; height?: number; className?: string }) {
   const place = useBrandPlace(slot, height);
   if (!place || !place.svg) return null;
@@ -38,8 +43,9 @@ export function BrandMark({ slot, height = 20, className = '' }: { slot: string;
   const style = anim ? ({ ...anim.vars, animationName: anim.name, animationDuration: `${anim.durationMs}ms`, animationDelay: `${anim.delayMs}ms`, animationIterationCount: anim.iteration } as CSSProperties) : undefined;
   return (
     <span
-      className={`fx-brand fx-brand--${place.mode} ${anim?.className ?? ''} ${className}`.trim()}
+      className={`fx-brand fx-brand--${place.mode} ${place.glyph ? 'fx-brand--pack' : ''} ${anim?.className ?? ''} ${className}`.replace(/\s+/g, ' ').trim()}
       data-fx-brand-slot={slot}
+      data-fx-brand-glyph={place.glyph || undefined}
       style={style}
       aria-hidden={place.mode === 'mark' || place.mode === 'animated' ? 'true' : undefined}
       dangerouslySetInnerHTML={{ __html: place.svg }}

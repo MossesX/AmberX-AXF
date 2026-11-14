@@ -1,0 +1,97 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.icon-map",
+  "name": "Icon map",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Every icon, badge and logo slot in every app, plugin and screen (icon-map@1), with the icon pack in force and per-slot picks. The page lists and searches the map with a live preview; switching the pack changes every icon at once, a pick changes one place. Everything is on the API too: REST /api/plugins/icon-map (map, tree, roles, glyphs, packs, state, pack, slot, resolve, check), MCP icon-map_* tools and the CLI (axf icon-map …, node framework/cli/icon-map.mjs), and voice ('switch to the duotone icon pack'). State lives in the plugin's data folder; the open console follows it.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "view:icon-map",
+    "settings-tab:icon-map",
+    "service:axf.icon-map@1"
+  ],
+  "optional": [],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "banner": false,
+  "tabable": { "view": "icon-map", "label": "Icon map", "icon": "grid" },
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/icon-map",
+    "env": [
+      "AXF_ICON_MAP_DIR"
+    ],
+    "mentions": [
+      "apps/console-web/plugins/README.md",
+      ".github/workflows/android.yml"
+    ]
+  },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      { "route": "GET /map", "id": "map", "title": "The icon map", "description": "Every slot, or the ones matching q / app / owner / surface / kind / role / glyph (icon-map@1).", "readOnly": true, "input": { "type": "object", "properties": { "q": { "type": "string" }, "app": { "type": "string" }, "owner": { "type": "string" }, "surface": { "type": "string" }, "kind": { "type": "string" }, "role": { "type": "string" }, "glyph": { "type": "string" }, "limit": { "type": "integer" } } }, "output": "{ slots, total, counts }" },
+      { "route": "GET /tree", "id": "tree", "title": "The icon map as a tree", "description": "app → owner → surface → slots.", "readOnly": true },
+      { "route": "GET /roles", "id": "roles", "title": "Icon roles", "description": "Every role with its default glyph and group.", "readOnly": true },
+      { "route": "GET /glyphs", "id": "glyphs", "title": "Framework glyphs", "description": "The framework glyph names and aliases.", "readOnly": true },
+      { "route": "GET /packs", "id": "packs", "title": "Icon packs", "description": "Every icon-pack@1 asset: style, themable, covers, roles, glyphs, licence.", "readOnly": true },
+      { "route": "GET /state", "id": "state", "title": "Icon state", "description": "The icon pack in force and every per-slot pick.", "readOnly": true },
+      { "route": "GET /slot/{slot_id:path}", "id": "slot", "title": "One slot", "description": "A slot by id, with what it draws now and why.", "readOnly": true },
+      { "route": "GET /resolve", "id": "resolve", "title": "What a place draws", "description": "name / slot / role → the glyph and the step that decided it (override, pack role, pack glyph, framework, fallback).", "readOnly": true, "input": { "type": "object", "properties": { "name": { "type": "string" }, "slot": { "type": "string" }, "role": { "type": "string" } } } },
+      { "route": "GET /check", "id": "check", "title": "Icon map check", "description": "What CI runs: hard-coded icons not in the map, raw icons beyond the baseline.", "readOnly": true },
+      { "route": "PUT /pack", "id": "pack-set", "title": "Switch the icon pack", "description": "Use an icon pack (by id, name or style word, e.g. duotone) in every app that follows the console. Changes every icon at once.", "input": { "type": "object", "properties": { "pack": { "type": "string" }, "by": { "type": "string" }, "reason": { "type": "string" } }, "required": ["pack"] }, "output": "{ pack, applied }" },
+      { "route": "DELETE /pack", "id": "pack-clear", "title": "Back to the branding's icon pack", "description": "Drops the hand pick; the branding package's (or skin's) pack is in force again.", "destructive": false, "confirm": false },
+      { "route": "PUT /slot/{slot_id:path}", "id": "slot-set", "title": "Pick one slot's icon", "description": "Draw a glyph in one place (a slot id from the map).", "input": { "type": "object", "properties": { "glyph": { "type": "string" }, "by": { "type": "string" }, "reason": { "type": "string" } }, "required": ["glyph"] } },
+      { "route": "DELETE /slot/{slot_id:path}", "id": "slot-clear", "title": "Drop one slot's pick", "description": "Back to the pack's role mapping or the framework glyph for that place.", "destructive": false, "confirm": false },
+      { "route": "GET /template", "id": "template", "title": "Icon pack template", "description": "One icon-pack@1 file mapping every role in the map to a glyph (from a pack, else the role defaults). Edit a role to change every place of that role; apply the pack to change every icon at once.", "readOnly": true, "input": { "type": "object", "properties": { "from": { "type": "string" }, "id": { "type": "string" }, "name": { "type": "string" }, "style": { "type": "string" }, "fixed": { "type": "boolean" } } }, "output": "{ pack, roles }" },
+      { "route": "POST /slot/{slot_id:path}/restore", "id": "slot-restore", "title": "Restore one slot", "description": "Restore previous edit (from: previous) or Restore from axHub (from: hub, the icons as axHub had them when the console last loaded the look).", "input": { "type": "object", "properties": { "from": { "type": "string", "enum": ["previous", "hub"] }, "by": { "type": "string" }, "reason": { "type": "string" } } } },
+      { "route": "POST /pack/restore", "id": "pack-restore", "title": "Restore the icon pack", "description": "The pack before the last change (from: previous) or axHub's (from: hub).", "input": { "type": "object", "properties": { "from": { "type": "string", "enum": ["previous", "hub"] }, "by": { "type": "string" }, "reason": { "type": "string" } } } },
+      { "route": "PUT /hub-copy", "id": "hub-copy", "title": "Record axHub's icons", "description": "The open console sends the icons axHub's look document holds (pack + per-slot picks) when it loads; Restore from axHub reads this.", "input": { "type": "object", "properties": { "pack": { "type": "string" }, "slots": { "type": "object" } }, "required": ["pack", "slots"] } },
+      { "route": "GET /packs/imported", "id": "packs-imported", "title": "Imported icon packs", "description": "The icon packs imported into this console (whole icon-pack@1 assets, kept in the plugin's data folder).", "readOnly": true },
+      { "route": "POST /packs/import", "id": "pack-import", "title": "Import an icon pack", "description": "Validate an icon-pack@1 asset (e.g. an edited template) and keep it; it joins the pack list in every transport.", "input": { "type": "object", "properties": { "pack": { "type": "object" }, "replace": { "type": "boolean" }, "by": { "type": "string" }, "reason": { "type": "string" } }, "required": ["pack"] } },
+      { "route": "DELETE /packs/imported/{pack_id}", "id": "pack-remove", "title": "Remove an imported icon pack", "description": "Drops an imported pack (and any pick or skin default that used it).", "destructive": true, "confirm": false },
+      { "route": "GET /packs/{pack_id}/export", "id": "pack-export", "title": "Export an icon pack", "description": "One pack as its icon-pack@1 asset file, shipped or imported.", "readOnly": true },
+      { "route": "GET /skin-packs", "id": "skin-packs", "title": "Per-skin default icon packs", "description": "Every skin, the pack it names, the default set here and what it draws.", "readOnly": true },
+      { "route": "PUT /skin-packs/{skin_id}", "id": "skin-pack-set", "title": "Set a skin's default icon pack", "description": "The pack this skin draws while no pack is picked by hand.", "input": { "type": "object", "properties": { "pack": { "type": "string" }, "by": { "type": "string" }, "reason": { "type": "string" } }, "required": ["pack"] } },
+      { "route": "DELETE /skin-packs/{skin_id}", "id": "skin-pack-clear", "title": "Drop a skin's default icon pack", "description": "The skin draws the pack it names itself again.", "destructive": false, "confirm": false },
+      { "route": "GET /hub-packs", "id": "hub-packs", "title": "Icon packs shared on axHub", "description": "The shared icon-pack table on axHub, as the open console last read it (icon-map.hub.refresh reads again).", "readOnly": true },
+      { "route": "PUT /hub-packs", "id": "hub-packs-set", "title": "Record axHub's shared icon packs", "description": "The open console sends what it read from axHub's shared icon-pack table.", "input": { "type": "object", "properties": { "packs": { "type": "array" } }, "required": ["packs"] } },
+      { "action": "icon-map.open", "title": "Open the icon map", "navigate": true },
+      { "action": "icon-map.pack.use", "title": "Switch the icon pack (in the open console)", "description": "Argument: a pack id, name or style word.", "input": { "type": "object", "properties": { "value": { "type": "string" } }, "required": ["value"] } },
+      { "action": "icon-map.pack.clear", "title": "Back to the branding's icon pack (in the open console)" },
+      { "action": "icon-map.slot.set", "title": "Pick one slot's icon (in the open console)", "description": "Argument: <slot id>:<glyph>.", "input": { "type": "object", "properties": { "value": { "type": "string" } }, "required": ["value"] } },
+      { "action": "icon-map.slot.clear", "title": "Drop one slot's pick (in the open console)", "description": "Argument: the slot id." },
+      { "action": "icon-map.slot.open", "title": "Open one slot in the icon map", "description": "Argument: the slot id. Opens the page on that slot's panel: previews, why it draws what it draws, and the glyph grid to change it.", "navigate": true, "input": { "type": "object", "properties": { "value": { "type": "string" } }, "required": ["value"] } },
+      { "action": "icon-map.slot.restore", "title": "Restore one slot (in the open console)", "description": "Argument: <slot id>:previous or <slot id>:hub.", "input": { "type": "object", "properties": { "value": { "type": "string" } }, "required": ["value"] } },
+      { "action": "icon-map.pack.restore", "title": "Restore the icon pack (in the open console)", "description": "Argument: previous or hub." },
+      { "action": "icon-map.template", "title": "Download the icon pack template", "description": "Argument (optional): the pack to start from.", "readOnly": true },
+      { "action": "icon-map.pack.export", "title": "Export an icon pack (download, in the open console)", "description": "Argument: the pack id.", "readOnly": true },
+      { "action": "icon-map.pack.import", "title": "Import an icon pack (in the open console)", "description": "Argument: the pack JSON; none opens the page's import box." },
+      { "action": "icon-map.pack.remove", "title": "Remove an imported icon pack (in the open console)", "description": "Argument: the pack id." },
+      { "action": "icon-map.pack.share", "title": "Share an icon pack on axHub", "description": "Argument: the pack id. Puts it in axHub's shared icon-pack table for every app on the project (needs the axHub sign-in)." },
+      { "action": "icon-map.pack.fromhub", "title": "Take a shared icon pack from axHub", "description": "Argument: the shared pack id; it becomes an imported pack." },
+      { "action": "icon-map.hub.refresh", "title": "Read the icon packs shared on axHub", "readOnly": true },
+      { "action": "icon-map.skin.pack", "title": "Set a skin's default icon pack (in the open console)", "description": "Argument: <skin id>:<pack>." },
+      { "action": "icon-map.skin.clear", "title": "Drop a skin's default icon pack (in the open console)", "description": "Argument: the skin id." },
+      { "action": "icon-map.refresh", "title": "Reload the icon map", "readOnly": true }
+    ]
+  },
+  "builtWith": { "model": "fable", "builtAt": "2026-11-13" },
+  "help": "help.json",
+  "icons": {
+    "$axf": "icon-map@1",
+    "roles": {
+      "icon-map": { "glyph": "grid", "group": "place", "label": "Icon map" },
+      "icon-pack": { "glyph": "palette", "group": "object", "label": "Icon pack" }
+    },
+    "pins": { "grid": "icon-map", "palette": "icon-pack" }
+  },
+  "opens": "main"
+}

@@ -2297,7 +2297,10 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
 {
   const phrases = ['scroll down', 'Amber, scroll up a bit please', 'scroll down two pages', 'page down', 'go to the top', 'scroll to the bottom', 'open plugins settings', 'open the pipeline tab',
     'go to plan studio', 'open settings', 'find dark mode', 'search for snapshot', 'show step 3 of the console control build', 'step three of skins', 'disable plugin skins',
-    'turn off the skins plugin', 'turn the skins plugin off', 'enable voice notes plugin', 'press save', 'click the refresh button', 'Set font scale to 1.2.', 'turn help mode on', 'what time is it', ''];
+    'turn off the skins plugin', 'turn the skins plugin off', 'enable voice notes plugin', 'press save', 'click the refresh button', 'Set font scale to 1.2.', 'turn help mode on', 'what time is it', '',
+    // icon-map@1 (the Icon map plugin's actions)
+    'switch to the duotone icon pack', 'Amber, use the filled icons please', 'set the icon pack to amberx outline', 'back to the default icon pack', 'reset the icons', 'change the save icon to check circle',
+    'restore the previous icon pack', 'restore the icons from axhub', 'download the icon pack template', 'share the phosphor duotone icon pack', 'export the lucide icon pack'];
   const intents = Object.fromEntries(phrases.map((p) => [p, voiceIntent(p)]));
   const hit = 'view:build-orchestrator/grid:builds/row:b1';
   write('console-control-voice.json', {

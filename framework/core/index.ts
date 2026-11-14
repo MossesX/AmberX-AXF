@@ -31,6 +31,9 @@ export * from './engines/job-type-rules.mjs';
 export * from './engines/demo-rules.mjs';
 // card@1 + home-layout@1 as one namespace (its names would clash with agent-card's and layout's); import the engine directly for single names.
 export * as cardRules from './engines/card-rules.mjs';
+// icon-map@1: every icon, badge and logo slot; the framework glyph set (one list the Icon component and the CI check share)
+export * as iconMapRules from './engines/icon-map-rules.mjs';
+export * as glyphs from './engines/glyphs.mjs';
 export type { CardData, CardModel as DataCardModel, HomeLayout, HomeCard } from './engines/card-rules.mjs';
 export * from './engines/help';
 export * from './engines/appearance';

@@ -460,6 +460,11 @@ def _strip(s: str) -> str:
     return re.sub(r"\s+(screen|page|view)$", "", s).strip()
 
 
+def _slug(s: str) -> str:
+    """A glyph name from spoken words: "check circle" → check-circle (twin of slug in console-control-voice.mjs)."""
+    return re.sub(r"^-+|-+$", "", re.sub(r"[^a-z0-9]+", "-", _strip(s).lower()))
+
+
 def _num(w: str) -> int | None:
     return int(w) if w.isdigit() else VOICE_NUMBERS.get(w)
 
@@ -487,6 +492,22 @@ def voice_intent(text: Any) -> dict[str, Any] | None:
         return {"verb": "plugin.enable" if on else "plugin.disable", "find": {"q": _strip(m.group(2) or m.group(3)), "kinds": ["plugin"]}}
     if m := re.match(r"^(?:turn|switch)(?: the)? (.+?) plugin (on|off)$", p):
         return {"verb": "plugin.enable" if m.group(2) == "on" else "plugin.disable", "find": {"q": _strip(m.group(1)), "kinds": ["plugin"]}}
+    # icon packs (icon-map@1, the Icon map plugin's actions; twin of the rules in console-control-voice.mjs, before the generic set rule)
+    if re.match(r"^(?:restore|undo|bring back)(?: the)? (?:previous |last |old )?(?:icon pack|icons|icon set)(?: change)?(?: from (?:axhub|the hub))?$", p):
+        return {"verb": "press", "address": "function:icon-map.pack.restore", "value": "hub" if re.search(r"from (?:axhub|the hub)$", p) else "previous"}
+    if m := re.match(r"^(?:share|publish)(?: the)? (.+?) (?:icon pack|icons|icon set)(?: on (?:axhub|the hub))?$", p):
+        return {"verb": "press", "address": "function:icon-map.pack.share", "value": _slug(m.group(1))}
+    if (m := re.match(r"^(?:export|download|save)(?: the)? (.+?) (?:icon pack|icon set)$", p)) and not m.group(1).endswith("template"):
+        return {"verb": "press", "address": "function:icon-map.pack.export", "value": _slug(m.group(1))}
+    if re.match(r"^(?:download|get|make|give me)(?: the| an| a)? icon (?:pack )?template$", p):
+        return {"verb": "press", "address": "function:icon-map.template"}
+    if re.match(r"^(?:(?:switch|go|change|set) )?(?:back )?(?:to |use )?(?:the )?(?:default|original|normal|branding|standard|framework) (?:icon pack|icons|icon set)$", p) or re.match(r"^(?:reset|clear|drop) (?:the )?(?:icon pack|icons|icon set)$", p):
+        return {"verb": "press", "address": "function:icon-map.pack.clear"}
+    m = re.match(r"^(?:switch to|use|apply|turn on|put on|go to|change to|set)(?: the)? (.+?) (?:icon pack|icons|icon set)$", p) or re.match(r"^set (?:the )?icon pack (?:to|at) (.+)$", p) or re.match(r"^(?:switch|change) (?:the )?icon pack to (.+)$", p)
+    if m:
+        return {"verb": "press", "address": "function:icon-map.pack.use", "value": _strip(m.group(1))}
+    if m := re.match(r"^(?:change|set|make|switch) (?:the )?(.+?) icon (?:to|into|draw) (?:the |a |an )?(.+?)(?: icon| glyph)?$", p):
+        return {"verb": "press", "address": "function:icon-map.slot.set", "value": f"{_strip(m.group(1))}:{_slug(m.group(2))}"}
     if m := re.match(r"^set (?:the )?(.+?) (?:to|at) (.+)$", p):
         return {"verb": "set", "find": {"q": _strip(m.group(1)), "kinds": ["setting"]}, "value": m.group(2).strip()}
     if m := re.match(r"^(?:turn|switch) (?:the )?(.+?) (on|off)$", p):

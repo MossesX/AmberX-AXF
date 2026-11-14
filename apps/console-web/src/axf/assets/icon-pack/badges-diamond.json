@@ -1,0 +1,49 @@
+{
+ "$axf": "asset@1",
+ "type": "icon-pack",
+ "id": "badges-diamond",
+ "name": "Badges: diamond",
+ "version": "1.0.0",
+ "description": "Badges: diamond: 3 glyphs drawn for AXF; anything it lacks falls back to the framework's. Themable: takes its colour and stroke from the skin.",
+ "author": "icon-packs-import (framework/cli/icon-packs-import.mjs)",
+ "tags": [
+  "sharp",
+  "themable",
+  "badges",
+  "own"
+ ],
+ "data": {
+  "style": "sharp",
+  "grid": 24,
+  "stroke": 1.75,
+  "linecap": "round",
+  "fallback": "framework",
+  "themable": true,
+  "covers": [
+   "badges"
+  ],
+  "license": {
+   "name": "MIT (AmberX AXF)",
+   "url": "https://opensource.org/licenses/MIT"
+  },
+  "roles": {
+   "badge-status": "badge-dot",
+   "badge-count": "badge-pill",
+   "badge-new": "badge-new"
+  },
+  "glyphs": {
+   "badge-dot": {
+    "d": "M12 3l9 9-9 9-9-9Z",
+    "fill": true
+   },
+   "badge-pill": {
+    "d": "M3 12l4-5h10l4 5-4 5H7Z",
+    "fill": true
+   },
+   "badge-new": {
+    "d": "M12 2l3 7 7 3-7 3-3 7-3-7-7-3 7-3Z",
+    "fill": true
+   }
+  }
+ }
+}

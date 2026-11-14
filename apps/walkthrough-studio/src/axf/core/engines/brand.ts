@@ -6,19 +6,22 @@
  *   markBox(mark, height)          the width a mark takes at a height (for banner / title-bar layout)
  *   animationFor(anim, reduced)    the CSS animation a brand mark plays (none under reduced motion = the still frame)
  *   glyphFor(pack, name)           the glyph a name resolves to in an icon pack, or null = use the framework icon
+ *   glyphSvg(pack, name, size)     inline SVG for a glyph: stroke / fill per style, or its colour layers (fixed-colour art)
+ *   logoGlyph(pack, mode)          the glyph a logo pack draws at a mark / watermark brand place (roles app-mark / app-logo)
  *   resolveBranding(b, registry)   which asset each brand place uses, with every id checked against the registry
+ *   withLogoPack(resolved, id, p)  the same with the icon pack in force drawing the mark places it covers
  *   brandingVars(b)                root CSS vars: --fx-brand-1/2/3 from the palette, --fx-brand-name
  *
  * Pure; fixture-pinned by spec/fixtures/brand.json (check-brand.mts). The Kotlin twin is deferred (PORTING.md).
  */
 import {
   ANIMATION_PRESETS, BRAND_SLOTS, BRAND_SLOT_MODES, BRAND_TYPES, MARK_COLORS, registerBrandSlot, brandSlots, normalizeAnimatedLogo, normalizeBranding, normalizeIconPack, normalizeMark,
-  animatedLogoErrors, brandAssetErrors, brandingErrors, iconPackErrors, markErrors,
-  type AnimatedLogoData, type BrandingData, type Glyph, type IconPackData, type MarkData,
+  animatedLogoErrors, brandAssetErrors, brandingErrors, iconPackErrors, markErrors, normalizeGlyphLayers, glyphLayerErrors,
+  type AnimatedLogoData, type BrandingData, type Glyph, type GlyphLayer, type IconPackData, type MarkData,
 } from './brand-rules.mjs';
 
-export { ANIMATION_PRESETS, BRAND_SLOTS, BRAND_SLOT_MODES, BRAND_TYPES, MARK_COLORS, registerBrandSlot, brandSlots, normalizeAnimatedLogo, normalizeBranding, normalizeIconPack, normalizeMark, animatedLogoErrors, brandAssetErrors, brandingErrors, iconPackErrors, markErrors };
-export type { AnimatedLogoData, BrandingData, Glyph, IconPackData, MarkData };
+export { ANIMATION_PRESETS, BRAND_SLOTS, BRAND_SLOT_MODES, BRAND_TYPES, MARK_COLORS, registerBrandSlot, brandSlots, normalizeAnimatedLogo, normalizeBranding, normalizeIconPack, normalizeMark, animatedLogoErrors, brandAssetErrors, brandingErrors, iconPackErrors, markErrors, normalizeGlyphLayers, glyphLayerErrors };
+export type { AnimatedLogoData, BrandingData, Glyph, GlyphLayer, IconPackData, MarkData };
 
 /** A colour word → what goes in the SVG attribute (theme tokens become vars; the palette slots are vars the branding sets). */
 export function markColor(c: string, palette: Record<string, string> = {}): string {
@@ -109,7 +112,11 @@ export function splitGlyph(d: string): { closed: string; open: string } {
   return { closed: closed.join(''), open: open.join('') };
 }
 
-/** Inline SVG for one glyph of a pack at `size` px (stroke or fill per the pack's style). */
+/**
+ * Inline SVG for one glyph of a pack at `size` px (stroke or fill per the pack's style). A glyph with colour `layers`
+ * draws them in order, each filled in its own colour (tokens become vars, hex stays: that is how a `themable: false`
+ * pack keeps its colours under every skin); `d` is only the fallback for glyphs without layers.
+ */
 export function glyphSvg(raw: unknown, name: string, size = 16, title?: string): string | null {
   const pack = normalizeIconPack(raw);
   const g = pack.glyphs[name];
@@ -117,7 +124,8 @@ export function glyphSvg(raw: unknown, name: string, size = 16, title?: string):
   const filled = g.fill || pack.style === 'filled';
   const stroked = (d: string) => `<path d="${esc(d)}" fill="none" stroke="currentColor" stroke-width="${pack.stroke}" stroke-linecap="${pack.linecap}" stroke-linejoin="round"/>`;
   let main: string;
-  if (!filled) main = stroked(g.d);
+  if (g.layers.length) main = g.layers.map((l) => `<path d="${esc(l.d)}" fill="${markColor(l.color)}"${l.opacity < 1 ? ` opacity="${l.opacity}"` : ''}/>`).join('');
+  else if (!filled) main = stroked(g.d);
   else if (g.fill) main = `<path d="${esc(g.d)}" fill="currentColor"/>`; // the glyph's author asked for a fill
   else {
     // a filled pack fills closed shapes but keeps open lines stroked (a check mark, ×, +, a search handle), else
@@ -129,19 +137,58 @@ export function glyphSvg(raw: unknown, name: string, size = 16, title?: string):
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${pack.grid} ${pack.grid}" width="${size}" height="${size}" aria-hidden="${title ? 'false' : 'true'}"${title ? ` role="img" aria-label="${esc(title)}"` : ''}>${second}${main}</svg>`;
 }
 
+/* ---------------- logo packs ---------------- */
+
+/** Brand place modes a logo pack may draw: the plain mark form (no text, no motion preset). */
+export const LOGO_PACK_MODES = ['mark', 'watermark'];
+/** The icon-map roles a logo pack maps its mark to, in the order a place tries them. */
+export const LOGO_PACK_ROLES = ['app-mark', 'app-logo'];
+
+/**
+ * The glyph a pack gives a brand place in `mode`, or null: only packs that cover `logos` and map `app-mark` (or
+ * `app-logo`) to a glyph they have, and only for the mark / watermark modes (a wordmark or lockup needs the mark's text,
+ * an animated place its motion preset: those stay logo-marks).
+ */
+export function logoGlyph(raw: unknown, mode: string): string | null {
+  if (!LOGO_PACK_MODES.includes(mode)) return null;
+  const pack = normalizeIconPack(raw);
+  if (!pack.covers.includes('logos')) return null;
+  for (const role of LOGO_PACK_ROLES) { const g = pack.roles[role]; if (g && pack.glyphs[g]) return g; }
+  return null;
+}
+
 /* ---------------- branding ---------------- */
 
 export interface BrandRegistry { has(type: string, id: string): boolean }
+export type BrandPlaceType = 'logo-mark' | 'animated-logo' | 'icon-pack' | '';
+/** One brand place: `icon-pack` places carry the glyph the pack draws there (see withLogoPack). */
+export interface BrandPlaceRef { mode: string; asset: string; type: BrandPlaceType; glyph?: string }
 export interface ResolvedBrand {
   name: string; tagline: string;
   /** asset ids that exist, '' when missing (the UI then shows the brand name as text) */
   mark: string; wordmark: string; lockup: string; animated: string; iconPack: string;
   /** per brand slot: the mode to draw and the asset id it resolves to ('' = nothing) */
-  places: Record<string, { mode: string; asset: string; type: 'logo-mark' | 'animated-logo' | '' }>;
+  places: Record<string, BrandPlaceRef>;
   missing: string[];
 }
 
-const modeType = (mode: string): 'logo-mark' | 'animated-logo' | '' => mode === 'animated' ? 'animated-logo' : mode === 'mark' || mode === 'wordmark' || mode === 'lockup' || mode === 'watermark' ? 'logo-mark' : '';
+const modeType = (mode: string): BrandPlaceType => mode === 'animated' ? 'animated-logo' : mode === 'mark' || mode === 'wordmark' || mode === 'lockup' || mode === 'watermark' ? 'logo-mark' : '';
+
+/**
+ * The resolved branding with the icon pack in force laid over it (icon-map@1 s9): every place in a mode the pack covers
+ * (`logoGlyph`) becomes an `icon-pack` place drawing that glyph, including places whose logo-mark was missing. Other
+ * places, and every other field, are unchanged; a pack that covers no logos returns the input as is.
+ */
+export function withLogoPack(resolved: ResolvedBrand, packId: string, packRaw: unknown): ResolvedBrand {
+  if (!packId || !packRaw) return resolved;
+  const places: ResolvedBrand['places'] = {};
+  let changed = false;
+  for (const [slot, p] of Object.entries(resolved.places)) {
+    const glyph = p.mode === 'none' ? null : logoGlyph(packRaw, p.mode);
+    if (glyph) { places[slot] = { mode: p.mode, asset: packId, type: 'icon-pack', glyph }; changed = true; } else places[slot] = p;
+  }
+  return changed ? { ...resolved, places } : resolved;
+}
 
 /** Every brand place resolved: a missing wordmark / lockup falls back to the mark, a missing animated mark to the still mark. */
 export function resolveBranding(raw: unknown, registry: BrandRegistry): ResolvedBrand {
@@ -176,8 +223,8 @@ export function brandingVars(raw: unknown): Record<string, string> {
   return vars;
 }
 
-/** The decoration a UI piece should draw at `slot` (null = none). */
-export function decorationFor(resolved: ResolvedBrand, slot: string): { mode: string; asset: string; type: 'logo-mark' | 'animated-logo' } | null {
+/** The decoration a UI piece should draw at `slot` (null = none); an `icon-pack` decoration names its glyph. */
+export function decorationFor(resolved: ResolvedBrand, slot: string): { mode: string; asset: string; type: Exclude<BrandPlaceType, ''>; glyph?: string } | null {
   const p = resolved.places[slot];
-  return p && p.asset && p.type ? { mode: p.mode, asset: p.asset, type: p.type } : null;
+  return p && p.asset && p.type ? { mode: p.mode, asset: p.asset, type: p.type, ...(p.glyph ? { glyph: p.glyph } : {}) } : null;
 }

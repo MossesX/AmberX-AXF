@@ -1,0 +1,39 @@
+{
+ "$axf": "asset@1",
+ "type": "icon-pack",
+ "id": "logo-monogram",
+ "name": "Logo: monogram A",
+ "version": "1.0.0",
+ "description": "Logo: monogram A: 1 glyph drawn for AXF; anything it lacks falls back to the framework's. Themable: takes its colour and stroke from the skin.",
+ "author": "icon-packs-import (framework/cli/icon-packs-import.mjs)",
+ "tags": [
+  "outline",
+  "themable",
+  "logos",
+  "own"
+ ],
+ "data": {
+  "style": "outline",
+  "grid": 24,
+  "stroke": 1.75,
+  "linecap": "round",
+  "fallback": "framework",
+  "themable": true,
+  "covers": [
+   "logos"
+  ],
+  "license": {
+   "name": "MIT (AmberX AXF)",
+   "url": "https://opensource.org/licenses/MIT"
+  },
+  "roles": {
+   "app-logo": "logo-mark",
+   "app-mark": "logo-mark"
+  },
+  "glyphs": {
+   "logo-mark": {
+    "d": "M5 20 12 4l7 16M8.2 14h7.6"
+   }
+  }
+ }
+}

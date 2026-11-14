@@ -1,0 +1,49 @@
+{
+ "$axf": "asset@1",
+ "type": "icon-pack",
+ "id": "badges-shield",
+ "name": "Badges: shield",
+ "version": "1.0.0",
+ "description": "Badges: shield: 3 glyphs drawn for AXF; anything it lacks falls back to the framework's. Themable: takes its colour and stroke from the skin.",
+ "author": "icon-packs-import (framework/cli/icon-packs-import.mjs)",
+ "tags": [
+  "filled",
+  "themable",
+  "badges",
+  "own"
+ ],
+ "data": {
+  "style": "filled",
+  "grid": 24,
+  "stroke": 1.75,
+  "linecap": "round",
+  "fallback": "framework",
+  "themable": true,
+  "covers": [
+   "badges"
+  ],
+  "license": {
+   "name": "MIT (AmberX AXF)",
+   "url": "https://opensource.org/licenses/MIT"
+  },
+  "roles": {
+   "badge-status": "badge-dot",
+   "badge-count": "badge-pill",
+   "badge-new": "badge-new"
+  },
+  "glyphs": {
+   "badge-dot": {
+    "d": "M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6Z",
+    "fill": true
+   },
+   "badge-pill": {
+    "d": "M4 7h11l5 5-5 5H4Z",
+    "fill": true
+   },
+   "badge-new": {
+    "d": "M8 3h8v18l-4-3-4 3Z",
+    "fill": true
+   }
+  }
+ }
+}

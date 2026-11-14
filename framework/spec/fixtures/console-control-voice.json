@@ -190,7 +190,59 @@
       "value": true
     },
     "what time is it": null,
-    "": null
+    "": null,
+    "switch to the duotone icon pack": {
+      "verb": "press",
+      "address": "function:icon-map.pack.use",
+      "value": "duotone"
+    },
+    "Amber, use the filled icons please": {
+      "verb": "press",
+      "address": "function:icon-map.pack.use",
+      "value": "filled"
+    },
+    "set the icon pack to amberx outline": {
+      "verb": "press",
+      "address": "function:icon-map.pack.use",
+      "value": "amberx outline"
+    },
+    "back to the default icon pack": {
+      "verb": "press",
+      "address": "function:icon-map.pack.clear"
+    },
+    "reset the icons": {
+      "verb": "press",
+      "address": "function:icon-map.pack.clear"
+    },
+    "change the save icon to check circle": {
+      "verb": "press",
+      "address": "function:icon-map.slot.set",
+      "value": "save:check-circle"
+    },
+    "restore the previous icon pack": {
+      "verb": "press",
+      "address": "function:icon-map.pack.restore",
+      "value": "previous"
+    },
+    "restore the icons from axhub": {
+      "verb": "press",
+      "address": "function:icon-map.pack.restore",
+      "value": "hub"
+    },
+    "download the icon pack template": {
+      "verb": "press",
+      "address": "function:icon-map.template"
+    },
+    "share the phosphor duotone icon pack": {
+      "verb": "press",
+      "address": "function:icon-map.pack.share",
+      "value": "phosphor-duotone"
+    },
+    "export the lucide icon pack": {
+      "verb": "press",
+      "address": "function:icon-map.pack.export",
+      "value": "lucide"
+    }
   },
   "commands": {
     "scroll down": {
@@ -306,6 +358,58 @@
       "verb": "set",
       "address": "view:build-orchestrator/grid:builds/row:b1",
       "value": true
+    },
+    "switch to the duotone icon pack": {
+      "verb": "press",
+      "address": "function:icon-map.pack.use",
+      "value": "duotone"
+    },
+    "Amber, use the filled icons please": {
+      "verb": "press",
+      "address": "function:icon-map.pack.use",
+      "value": "filled"
+    },
+    "set the icon pack to amberx outline": {
+      "verb": "press",
+      "address": "function:icon-map.pack.use",
+      "value": "amberx outline"
+    },
+    "back to the default icon pack": {
+      "verb": "press",
+      "address": "function:icon-map.pack.clear"
+    },
+    "reset the icons": {
+      "verb": "press",
+      "address": "function:icon-map.pack.clear"
+    },
+    "change the save icon to check circle": {
+      "verb": "press",
+      "address": "function:icon-map.slot.set",
+      "value": "save:check-circle"
+    },
+    "restore the previous icon pack": {
+      "verb": "press",
+      "address": "function:icon-map.pack.restore",
+      "value": "previous"
+    },
+    "restore the icons from axhub": {
+      "verb": "press",
+      "address": "function:icon-map.pack.restore",
+      "value": "hub"
+    },
+    "download the icon pack template": {
+      "verb": "press",
+      "address": "function:icon-map.template"
+    },
+    "share the phosphor duotone icon pack": {
+      "verb": "press",
+      "address": "function:icon-map.pack.share",
+      "value": "phosphor-duotone"
+    },
+    "export the lucide icon pack": {
+      "verb": "press",
+      "address": "function:icon-map.pack.export",
+      "value": "lucide"
     }
   },
   "replies": {

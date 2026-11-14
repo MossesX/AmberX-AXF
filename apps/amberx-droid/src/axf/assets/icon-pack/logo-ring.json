@@ -1,0 +1,39 @@
+{
+ "$axf": "asset@1",
+ "type": "icon-pack",
+ "id": "logo-ring",
+ "name": "Logo: ring",
+ "version": "1.0.0",
+ "description": "Logo: ring: 1 glyph drawn for AXF; anything it lacks falls back to the framework's. Themable: takes its colour and stroke from the skin.",
+ "author": "icon-packs-import (framework/cli/icon-packs-import.mjs)",
+ "tags": [
+  "outline",
+  "themable",
+  "logos",
+  "own"
+ ],
+ "data": {
+  "style": "outline",
+  "grid": 24,
+  "stroke": 1.75,
+  "linecap": "round",
+  "fallback": "framework",
+  "themable": true,
+  "covers": [
+   "logos"
+  ],
+  "license": {
+   "name": "MIT (AmberX AXF)",
+   "url": "https://opensource.org/licenses/MIT"
+  },
+  "roles": {
+   "app-logo": "logo-mark",
+   "app-mark": "logo-mark"
+  },
+  "glyphs": {
+   "logo-mark": {
+    "d": "M2 12a10 10 0 1 0 20 0a10 10 0 1 0 -20 0ZM6 12a6 6 0 1 0 12 0a6 6 0 1 0 -12 0ZM10 12a2 2 0 1 0 4 0a2 2 0 1 0 -4 0Z"
+   }
+  }
+ }
+}

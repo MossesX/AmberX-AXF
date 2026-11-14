@@ -2584,6 +2584,38 @@
               "tag": "",
               "recommended": true,
               "suggests": []
+            },
+            {
+              "id": "cx.icons.map",
+              "title": "Icon map: every icon, badge and logo slot in every app, plugin and screen with a stable id, location and role; icon packs map roles to glyphs so one pick changes every icon; per-slot picks; REST / MCP / CLI / voice",
+              "note": "icon-map@1 (core/engines/icon-map-rules.mjs + glyphs.mjs); CI check framework/cli/check-icons.mjs; Icon map plugin (apps/console-web/plugins/icon-map).",
+              "tag": "",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "cx.icons.packs",
+              "title": "Icon packs: 41 icon-pack@1 assets (Lucide, Tabler, Feather, Iconoir, Heroicons, Phosphor x6, Bootstrap, Material x5, Octicons, Ionicons, Twemoji emoji-style, badge styles, logo marks, app and plugin tiles), each declaring themable and its licence",
+              "note": "Generated from open sets by framework/cli/icon-packs-import.mjs; own art for badges, logos and tiles. Fixed-colour layers draw a one-colour fallback until the colour-layer step.",
+              "tag": "",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "cx.icons.template",
+              "title": "Icon pack template: one file maps every role to a glyph; Restore previous edit / Restore from axHub per slot and for the pack",
+              "note": "framework/cli/icon-map.mjs template; Icon map plugin routes template, slot/{id}/restore, pack/restore, hub-copy.",
+              "tag": "",
+              "recommended": true,
+              "suggests": []
+            },
+            {
+              "id": "cx.icons.assets",
+              "title": "Icon packs as assets: pack library with previews, per-skin default packs, import / export, sharing through axHub",
+              "note": "Icon map plugin Packs tab; routes packs/import, packs/imported, packs/{id}/export, skin-packs, hub-packs; axHub shared table icon-packs/packs (hubstore).",
+              "tag": "",
+              "recommended": true,
+              "suggests": []
             }
           ]
         }

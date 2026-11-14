@@ -8,7 +8,7 @@ export const HEX: RegExp;
 export const ANIMATION_PRESETS: readonly string[];
 export const ANIMATION_LIMITS: { durationMs: readonly [number, number]; delayMs: readonly [number, number] };
 export const ICON_STYLES: readonly string[];
-export const ICON_LIMITS: { grid: readonly [number, number]; stroke: readonly [number, number]; glyphs: number; pathChars: number; nameChars: number };
+export const ICON_LIMITS: { grid: readonly [number, number]; stroke: readonly [number, number]; glyphs: number; pathChars: number; nameChars: number; roles: number; layers: number; layerChars: number };
 export const GLYPH_NAME: RegExp;
 export const BRAND_SLOTS: readonly string[];
 export const BRAND_SLOT_MODES: readonly string[];
@@ -19,8 +19,13 @@ export interface MarkPath { d: string; fill: string; stroke: string; strokeWidth
 export interface MarkText { value: string; weight: number; tracking: number; font: 'ui' | 'display' | 'mono'; fill: string }
 export interface MarkData { form: 'mark' | 'wordmark' | 'lockup'; brand: string; viewBox: number[]; paths: MarkPath[]; text: MarkText | null; palette: Record<string, string>; safeArea: number; minSize: number; tags: string[] }
 export interface AnimatedLogoData { mark: string; preset: string; durationMs: number; delayMs: number; loop: boolean | 'hover'; still: 'first' | 'last'; intensity: number; tags: string[] }
-export interface Glyph { d: string; fill: boolean; secondary: string }
-export interface IconPackData { style: string; grid: number; stroke: number; linecap: 'round' | 'square' | 'butt'; fallback: 'framework' | 'none'; glyphs: Record<string, Glyph>; tags: string[] }
+/** One colour layer of a glyph: a filled path in its own colour (a token word, a brand palette slot or #hex). */
+export interface GlyphLayer { d: string; color: string; opacity: number }
+/** `layers` (when present) draw the glyph in its own colours; `d` is the one-colour fallback. */
+export interface Glyph { d: string; fill: boolean; secondary: string; layers: GlyphLayer[] }
+export interface IconPackData { style: string; grid: number; stroke: number; linecap: 'round' | 'square' | 'butt'; fallback: 'framework' | 'none'; glyphs: Record<string, Glyph>; roles: Record<string, string>; themable: boolean; covers: string[]; license: { name: string; url: string }; tags: string[] }
+export const ICON_COVERS: readonly string[];
+export const ROLE_NAME: RegExp;
 export interface BrandingData { brand: { name: string; tagline: string }; marks: { mark: string; wordmark: string; lockup: string; animated: string }; iconPack: string; decorations: Record<string, string>; palette: Record<string, string>; accentFromBrand: boolean; tags: string[] }
 
 export function normalizeMark(raw: unknown): MarkData;
@@ -29,7 +34,9 @@ export function markErrors(raw: unknown): string[];
 export function normalizeAnimatedLogo(raw: unknown): AnimatedLogoData;
 export function animatedLogoErrors(raw: unknown): string[];
 export function normalizeIconPack(raw: unknown): IconPackData;
+export function normalizeGlyphLayers(raw: unknown): GlyphLayer[];
 export function iconPackErrors(raw: unknown): string[];
+export function glyphLayerErrors(layers: unknown, at: string, e?: string[]): string[];
 export function registerBrandSlot(slot: string): void;
 export function brandSlots(): string[];
 export function normalizeBranding(raw: unknown): BrandingData;

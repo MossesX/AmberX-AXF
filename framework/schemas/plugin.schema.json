@@ -232,6 +232,17 @@
       "type": "string",
       "description": "The plugin's help pack (help@1 data: { entries, intros }), a file in the plugin folder; default help.json. Loaded into Help mode while the plugin runs; counted by framework/cli/help-coverage.mjs."
     },
+    "icons": {
+      "type": "object",
+      "description": "icon-map@1 (framework/core/engines/icon-map-rules.mjs): optional. Every icon the plugin's code and manifest name is in the icon map automatically; this block adds roles the plugin invents (role → default glyph), declares slots that need a stable id or a role the scan cannot guess, and pins a glyph name the code uses to the role it means. Checked by node framework/cli/check-icons.mjs.",
+      "properties": {
+        "$axf": { "const": "icon-map@1" },
+        "roles": { "type": "object", "additionalProperties": { "type": "object", "properties": { "glyph": { "type": "string" }, "group": { "enum": ["action", "state", "place", "object", "brand", "badge", "glyph"] }, "label": { "type": "string" } }, "required": ["glyph"], "additionalProperties": false } },
+        "slots": { "type": "array", "items": { "type": "object", "properties": { "id": { "type": "string" }, "name": { "type": "string" }, "label": { "type": "string" }, "surface": { "type": "string" }, "kind": { "enum": ["icon", "badge", "logo"] }, "role": { "type": "string" }, "glyph": { "type": "string" }, "screen": { "type": "string" } }, "additionalProperties": false } },
+        "pins": { "type": "object", "additionalProperties": { "type": "string" } }
+      },
+      "additionalProperties": false
+    },
     "commands": {
       "type": "object",
       "description": "plugin-commands@1 (framework/core/engines/plugin-commands.mjs, CONTROL.md plugins domain): every command and read the plugin exposes on REST /api/control/<plugin>/<command>, MCP <plugin>_<command> and the CLI axf <plugin> <command>. Derived automatically from its server routes, registered actions and data folder; items add titles, input schemas, flags, extra commands and skips that say why.",

@@ -1,0 +1,292 @@
+{
+ "$axf": "fixture@1",
+ "engine": "icon-map@1",
+ "source": "framework/core/engines/icon-map-rules.mjs",
+ "note": "Inputs: a plugin's web source (scan.code), a raw-icon source (scan.raw), its plugin.json (derive.manifest) and a badge asset (derive.assets). Expected: scanIconLiterals → scan.literals, scanRawIcons → scan.raws, deriveSlots → derive.slots. Regenerate with `node framework/spec/check-icon-map.mjs --write` after a deliberate rule change. Kotlin twin deferred (PORTING.md).",
+ "scan": {
+  "code": "import { Button, Container, Icon } from '@console/axf/react';\n\nfunction ExampleView() {\n  return (\n    <div>\n      <Container title=\"Server says\" icon=\"cloud\"><Button icon=\"refresh\" onClick={() => void load()}>Ask again</Button></Container>\n      <p><Icon name=\"mystery\" /> unknown</p>\n      <span title=\"brand\"><Icon name=\"sparkles\" /></span> {/* icon-ok: decorative */}\n    </div>\n  );\n}\n\nexport const plugin = {\n  views: { example: { title: 'Example', icon: 'box', render: () => <ExampleView /> } },\n  nav: { label: 'Plugins', items: [{ id: 'example', label: 'Example', icon: 'box', view: 'example' }] },\n  settingsTabs: [{ id: 'example', label: 'Example', icon: 'sliders', order: 90, parent: 'plugins' }],\n};\n",
+  "raw": "// <svg> in a comment is fine\nexport function Mark() {\n  return <svg viewBox=\"0 0 24 24\"><path d=\"M0 0\" /></svg>;\n}\nconst msg = '✓ Saved';\nconst warn = `⚠ ${n} left`;\nconst okLine = <span>★</span>; // icon-ok: a rating star drawn as text\n",
+  "literals": [
+   {
+    "glyph": "cloud",
+    "line": 6,
+    "file": "web/index.tsx",
+    "surface": "card",
+    "name": "server-says",
+    "label": "Server says",
+    "ok": false,
+    "known": true
+   },
+   {
+    "glyph": "refresh",
+    "line": 6,
+    "file": "web/index.tsx",
+    "surface": "button",
+    "name": "ask-again",
+    "label": "Ask again",
+    "ok": false,
+    "known": true
+   },
+   {
+    "glyph": "mystery",
+    "line": 7,
+    "file": "web/index.tsx",
+    "surface": "inline",
+    "name": "",
+    "label": "",
+    "ok": false,
+    "known": false
+   },
+   {
+    "glyph": "sparkles",
+    "line": 8,
+    "file": "web/index.tsx",
+    "surface": "inline",
+    "name": "brand",
+    "label": "brand",
+    "ok": true,
+    "known": true
+   },
+   {
+    "glyph": "box",
+    "line": 14,
+    "file": "web/index.tsx",
+    "surface": "view",
+    "name": "example",
+    "label": "Example",
+    "ok": false,
+    "known": true
+   },
+   {
+    "glyph": "box",
+    "line": 15,
+    "file": "web/index.tsx",
+    "surface": "nav",
+    "name": "example",
+    "label": "",
+    "ok": false,
+    "known": true
+   },
+   {
+    "glyph": "sliders",
+    "line": 16,
+    "file": "web/index.tsx",
+    "surface": "settings",
+    "name": "example",
+    "label": "",
+    "ok": false,
+    "known": true
+   }
+  ],
+  "raws": [
+   {
+    "kind": "svg",
+    "line": 3,
+    "file": "web/raw.tsx",
+    "text": "return <svg viewBox=\"0 0 24 24\"><path d=\"M0 0\" /></svg>;"
+   },
+   {
+    "kind": "emoji",
+    "line": 5,
+    "file": "web/raw.tsx",
+    "text": "const msg = '✓ Saved';"
+   },
+   {
+    "kind": "emoji",
+    "line": 6,
+    "file": "web/raw.tsx",
+    "text": "const warn = `⚠ ${n} left`;"
+   }
+  ]
+ },
+ "derive": {
+  "manifest": {
+   "$axf": "plugin@1",
+   "id": "ai.amberx.axf.console.example",
+   "name": "Example",
+   "tabable": {
+    "view": "example",
+    "label": "Example",
+    "icon": "box"
+   },
+   "icons": {
+    "$axf": "icon-map@1",
+    "roles": {
+     "ask-again": {
+      "glyph": "refresh",
+      "group": "action",
+      "label": "Ask again"
+     },
+     "server-says": {
+      "glyph": "cloud",
+      "group": "object",
+      "label": "Server says"
+     }
+    },
+    "pins": {
+     "cloud": "server-says"
+    },
+    "slots": [
+     {
+      "name": "ask-again",
+      "surface": "button",
+      "role": "ask-again",
+      "glyph": "refresh",
+      "label": "Ask again"
+     }
+    ]
+   }
+  },
+  "assets": [
+   {
+    "type": "badge",
+    "id": "example-live",
+    "name": "Example live",
+    "data": {
+     "icon": "zap",
+     "label": "Live",
+     "tone": "success",
+     "shape": "pill"
+    },
+    "file": "apps/console-web/plugins/example/assets/badge/example-live.json"
+   }
+  ],
+  "slots": [
+   {
+    "id": "console-web/example/button/ask-again",
+    "kind": "icon",
+    "role": "ask-again",
+    "glyph": "refresh",
+    "surface": "button",
+    "label": "Ask again",
+    "app": "console-web",
+    "owner": "example",
+    "ownerKind": "plugin",
+    "screen": "",
+    "source": "manifest",
+    "file": "apps/console-web/plugins/example/web/index.tsx",
+    "line": 6
+   },
+   {
+    "id": "console-web/example/tab/example",
+    "kind": "icon",
+    "role": "box",
+    "glyph": "box",
+    "surface": "tab",
+    "label": "Example",
+    "app": "console-web",
+    "owner": "example",
+    "ownerKind": "plugin",
+    "screen": "",
+    "source": "manifest",
+    "file": "",
+    "line": 0
+   },
+   {
+    "id": "console-web/example/card/server-says",
+    "kind": "icon",
+    "role": "server-says",
+    "glyph": "cloud",
+    "surface": "card",
+    "label": "Server says",
+    "app": "console-web",
+    "owner": "example",
+    "ownerKind": "plugin",
+    "screen": "",
+    "source": "code",
+    "file": "apps/console-web/plugins/example/web/index.tsx",
+    "line": 6
+   },
+   {
+    "id": "console-web/example/inline/mystery",
+    "kind": "icon",
+    "role": "",
+    "glyph": "mystery",
+    "surface": "inline",
+    "label": "",
+    "app": "console-web",
+    "owner": "example",
+    "ownerKind": "plugin",
+    "screen": "",
+    "source": "code",
+    "file": "apps/console-web/plugins/example/web/index.tsx",
+    "line": 7
+   },
+   {
+    "id": "console-web/example/inline/brand",
+    "kind": "icon",
+    "role": "sparkles",
+    "glyph": "sparkles",
+    "surface": "inline",
+    "label": "brand",
+    "app": "console-web",
+    "owner": "example",
+    "ownerKind": "plugin",
+    "screen": "",
+    "source": "code",
+    "file": "apps/console-web/plugins/example/web/index.tsx",
+    "line": 8
+   },
+   {
+    "id": "console-web/example/view/example",
+    "kind": "icon",
+    "role": "box",
+    "glyph": "box",
+    "surface": "view",
+    "label": "Example",
+    "app": "console-web",
+    "owner": "example",
+    "ownerKind": "plugin",
+    "screen": "",
+    "source": "code",
+    "file": "apps/console-web/plugins/example/web/index.tsx",
+    "line": 14
+   },
+   {
+    "id": "console-web/example/nav/example",
+    "kind": "icon",
+    "role": "box",
+    "glyph": "box",
+    "surface": "nav",
+    "label": "",
+    "app": "console-web",
+    "owner": "example",
+    "ownerKind": "plugin",
+    "screen": "",
+    "source": "code",
+    "file": "apps/console-web/plugins/example/web/index.tsx",
+    "line": 15
+   },
+   {
+    "id": "console-web/example/settings/example",
+    "kind": "icon",
+    "role": "sliders",
+    "glyph": "sliders",
+    "surface": "settings",
+    "label": "",
+    "app": "console-web",
+    "owner": "example",
+    "ownerKind": "plugin",
+    "screen": "",
+    "source": "code",
+    "file": "apps/console-web/plugins/example/web/index.tsx",
+    "line": 16
+   },
+   {
+    "id": "console-web/example/badge/example-live",
+    "kind": "badge",
+    "role": "badge-status",
+    "glyph": "zap",
+    "surface": "badge",
+    "label": "Live",
+    "app": "console-web",
+    "owner": "example",
+    "ownerKind": "plugin",
+    "screen": "example-live",
+    "source": "asset",
+    "file": "apps/console-web/plugins/example/assets/badge/example-live.json",
+    "line": 0
+   }
+  ]
+ }
+}

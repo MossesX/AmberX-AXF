@@ -1,0 +1,60 @@
+{
+ "$axf": "asset@1",
+ "type": "icon-pack",
+ "id": "logo-amber-gem",
+ "name": "Logo: amber gem",
+ "version": "1.0.0",
+ "description": "Logo: amber gem: 1 glyph drawn for AXF; anything it lacks falls back to the framework's. Fixed-colour art: keeps its own colours.",
+ "author": "icon-packs-import (framework/cli/icon-packs-import.mjs)",
+ "tags": [
+  "filled",
+  "fixed-colour",
+  "logos",
+  "own",
+  "colour",
+  "amberx"
+ ],
+ "data": {
+  "style": "filled",
+  "grid": 24,
+  "stroke": 1.75,
+  "linecap": "round",
+  "fallback": "framework",
+  "themable": false,
+  "covers": [
+   "logos"
+  ],
+  "license": {
+   "name": "MIT (AmberX AXF)",
+   "url": "https://opensource.org/licenses/MIT"
+  },
+  "roles": {
+   "app-logo": "logo-mark",
+   "app-mark": "logo-mark"
+  },
+  "glyphs": {
+   "logo-mark": {
+    "d": "M12 2 4 9h16ZM4 9l8 13L9 9ZM9 9l3 13 3-13ZM15 9l-3 13 8-13Z",
+    "fill": true,
+    "layers": [
+     {
+      "d": "M12 2 4 9h16Z",
+      "color": "#fbbf24"
+     },
+     {
+      "d": "M4 9l8 13L9 9Z",
+      "color": "#f59e0b"
+     },
+     {
+      "d": "M9 9l3 13 3-13Z",
+      "color": "#d97706"
+     },
+     {
+      "d": "M15 9l-3 13 8-13Z",
+      "color": "#b45309"
+     }
+    ]
+   }
+  }
+ }
+}

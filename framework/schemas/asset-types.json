@@ -1447,7 +1447,12 @@
       "optional_fields": {
         "stroke": "number 0.5-4 (default 1.75)",
         "linecap": "round | square | butt",
-        "fallback": "framework (default) | none"
+        "fallback": "framework (default) | none",
+        "roles": "icon-map@1: role → glyph name (e.g. { \"save\": \"floppy\", \"build-running\": \"spinner\" }); applying the pack changes every slot of a role at once (framework/schemas/icon-map.json)",
+        "themable": "true (default) = glyphs take colour and stroke from the skin's tokens; false = fixed-colour art (emoji-style, brand logos) that stays as drawn",
+        "glyphs.<name>.layers": "colour layers [{ d, color, opacity }] drawn in order, each filled in its own colour (a colour token word, brand1-3 or #hex; opacity 0-1); what a themable:false pack draws in its own colours. At most 48 layers / 6000 path characters per glyph; d stays the one-colour fallback",
+        "covers": "what the pack covers: icons | badges | logos (default [icons]). A pack covering logos whose roles map app-mark (or app-logo) draws every brand place in mark / watermark mode (BrandMark) with that glyph instead of the branding's logo-mark",
+        "license": "the glyphs' licence: a name or { name, url }; must allow redistribution"
       },
       "skin": {
         "by": "reference",
