@@ -797,11 +797,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 18:44 UTC · `themed-native-controls-plugin` s5 done (all) · orchestrator
-- 2026-11-14 18:44 UTC · `themed-native-controls-plugin` note (all) · orchestrator
-- 2026-11-14 18:45 UTC · `picker-dialog-plugin-replaces-all` PR #676 (all) · builds-live
-- 2026-11-14 18:45 UTC · `themed-native-controls-plugin` note (all) · orchestrator
-- 2026-11-14 18:45 UTC · `picker-dialog-plugin-replaces-all` note (all) · orchestrator
 - 2026-11-14 18:46 UTC · `picker-dialog-plugin-replaces-all` note (all) · orchestrator
 - 2026-11-14 18:47 UTC · `land-all-skin-builds` s19 done (all) · orchestrator
 - 2026-11-14 18:48 UTC · `skins-plugin-own-removable-console` note (all) · orchestrator
@@ -1197,6 +1192,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 23:39 UTC · `hotfix-desktop-console-draws-app-menu` note (all) · orchestrator
 - 2026-11-14 23:41 UTC · `merge-main-land-move-amberx-web-app` s1 done, → running (all) · orchestrator
 - 2026-11-14 23:41 UTC · `themed-native-controls-plugin` s22 done (all) · orchestrator
+- 2026-11-14 23:41 UTC · `merge-main-land-move-amberx-web-app` s2 done (all) · orchestrator
+- 2026-11-14 23:41 UTC · `merge-main-land-move-amberx-web-app` s3 done (all) · orchestrator
+- 2026-11-14 23:41 UTC · `merge-main-land-move-amberx-web-app` s4 done (all) · orchestrator
+- 2026-11-14 23:41 UTC · `merge-main-land-move-amberx-web-app` s5 done (all) · orchestrator
+- 2026-11-14 23:42 UTC · `merge-main-land-move-amberx-web-app` s6 done (all) · orchestrator
 
 ## Token passes (log)
 
