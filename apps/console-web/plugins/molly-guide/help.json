@@ -95,6 +95,13 @@
         "text": "Shows “Re-record the AmberX walkthrough”. Part of Gizmo guide.",
         "kind": "button",
         "draft": true
+      },
+      {
+        "target": "gizmo-guide",
+        "title": "Gizmo guide",
+        "text": "Shows the “Gizmo guide” part of this screen. Part of Gizmo guide.",
+        "kind": "tab",
+        "draft": true
       }
     ],
     "intros": []

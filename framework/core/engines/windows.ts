@@ -16,7 +16,11 @@ export type SplitMode = 'vertical' | 'horizontal' | 'four' | 'grid';
 export const CORNERS: Corner[] = ['top-left', 'top-right', 'bottom-right', 'bottom-left'];
 export const nextCorner = (c: Corner): Corner => CORNERS[(CORNERS.indexOf(c) + 1) % CORNERS.length] ?? 'bottom-right';
 
-export interface WindowSettings { corner: Corner; mode: MinimizeMode; toolbarAsset?: string | null; alwaysOnTop: boolean; opacity: number }
+/**
+ * `opacity` fades the whole window, content included. `surface` is this window's own background transparency
+ * (0..1): it overrides the theme's opacitySettings token for this one window; absent / null = follow the theme.
+ */
+export interface WindowSettings { corner: Corner; mode: MinimizeMode; toolbarAsset?: string | null; alwaysOnTop: boolean; opacity: number; surface?: number | null }
 export const defaultSettings = (): WindowSettings => ({ corner: 'bottom-right', mode: 'stacked', toolbarAsset: null, alwaysOnTop: false, opacity: 1 });
 
 /** The window schema. `toolbarsAllowed` = whether a toolbar may attach; floating windows force `toolbarEnabled`. */
@@ -351,6 +355,34 @@ export interface WindowState { windows: WindowSpec[]; groups: Record<string, Tab
 
 /** `checked` = check-mark binding, same forms as MenuItem.checked (`setting:<key>` | `counter:<name>` | `slot:<type>` | `hidden:<type>`). */
 export interface MenuEntry { id: string; label?: string; icon?: string; action?: string; separator?: boolean; checked?: string; items?: MenuEntry[] }
+
+/**
+ * context-lead@1: `runtime.contextExtras` keys starting with this prefix give entries that lead every context menu
+ * (any target, any screen or plugin, even a target whose asset turns contributions off), e.g. the console's
+ * "Console settings".
+ */
+export const CONTEXT_LEAD_PREFIX = '^:';
+export const CONTEXT_LEAD_SEPARATOR_ID = 'ctx-lead-sep';
+
+/**
+ * A context menu with its lead entries on top: the lead, one separator, then the rest. Separators at the edges of
+ * either part and an entry of the rest whose id (or action) a lead entry already has are dropped, so a lead entry
+ * never shows twice and the menu never starts, ends or doubles up on a separator. No lead: the rest, unchanged.
+ */
+export function withContextLead<T extends MenuEntry>(lead: readonly T[], rest: readonly T[]): T[] {
+  const trim = (xs: readonly T[]) => {
+    let a = 0, b = xs.length;
+    while (a < b && xs[a]!.separator) a++;
+    while (b > a && xs[b - 1]!.separator) b--;
+    return xs.slice(a, b).filter((x, i, all) => !(x.separator && all[i - 1]?.separator));
+  };
+  const top = trim(lead);
+  if (!top.length) return [...rest];
+  const ids = new Set(top.map((x) => x.id));
+  const actions = new Set(top.map((x) => x.action).filter((a): a is string => !!a));
+  const body = trim(rest.filter((x) => !ids.has(x.id) && !(x.action && actions.has(x.action))));
+  return body.length ? [...top, { id: CONTEXT_LEAD_SEPARATOR_ID, separator: true } as T, ...body] : top;
+}
 
 /** Even distribution: the first `size % n` groups get one extra tab (5 → 3 + 2, 7 in four → 2,2,2,1). Empty parts are kept so the grid has every cell. */
 export function distribute<T>(items: T[], n: number): T[][] {

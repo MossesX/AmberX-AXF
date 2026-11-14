@@ -1,7 +1,7 @@
 name: Android framework + console
 
 # Builds everything the sandbox cannot (Maven + Android SDK): the kernel tests, every framework module,
-# the Dev Console APK, and the build-engine sweep. Artifacts: console-debug.apk + framework maven repo.
+# the Dev Console APK, the console app APK, and the build-engine sweep. Artifacts: console-debug.apk, console-app-debug.apk + framework maven repo.
 
 on:
   push:
@@ -99,6 +99,7 @@ jobs:
       - run: node framework/cli/crew-say.mjs check                 # crew-sections@1: every section that posts in the group chat has an owner on the crew (registry, events, literal ids)
       - run: node framework/spec/check-agent-slots.mjs              # agent-slots@1: cap, queue order, priority, auto-start, finished sessions closed, memory guard, hot reload, heavy lock, claude-headless.sh end to end
       - run: node framework/spec/check-build-limit.mjs              # build-limit@1: hard limit counts what really runs, N+1 refused (claude-headless.sh end to end), Brett-only set, docker/slice caps, only Queued builds take slots
+      - run: node framework/spec/check-build-lock.mjs               # build-lock@1: one live session per build: tmux axf-<id>*, claude pids in the worktree, a heartbeat lock that expires; double dispatch refused
       - run: node deploy/claude-token-save.test.mjs                 # rotated Claude tokens: saved back at once to every store of that login, never to another account
       - run: node deploy/claude-workers.test.mjs                    # worker accounts: routing, limits, failover, cost per account
       - run: node deploy/worker-routing.test.mjs                    # workers-api-routing: routing rules, per-account limits and queues, API spend caps, who may raise a cap
@@ -148,6 +149,8 @@ jobs:
         run: node apps/console-web/plugins/token-control/test.mjs  # axf-plugin:token-control
       - name: Console commands plugin (control@1 console domain — CLI words, runner gate + resolve + deliver, confirm, send to a console)  # axf-plugin:console-commands
         run: node apps/console-web/plugins/console-commands/test.mjs  # axf-plugin:console-commands
+      - name: Android console app, console side (deep links, native.* actions, bridge calls, tokens shared with the Java shell and axf.css)
+        run: node apps/console-web/src/native/nativeRules.test.mjs
       - name: Reference links plugin (ref@1 runner — builds store + plugin targets, find, explicit touches, ambiguous, missing, resolve, CLI)  # axf-plugin:ref-links
         run: node apps/console-web/plugins/ref-links/test.mjs  # axf-plugin:ref-links
       - name: Glossary & Index plugin (glossary-catalog@1 — every plugin, feature, screen, control, setting, command, asset and tool has an entry; undescribed items never grow)  # axf-plugin:glossary-index
@@ -306,6 +309,8 @@ jobs:
             npx -y tsx framework/spec/check-roller.mts                 # interface roller: every rolled asset validates, structure kept, reproducible
             npx -y tsx framework/spec/check-app-menu.mts                # app-menu engine: fixture replay, validators agree, runtime contributions + live lists
             npx -y tsx apps/console-web/scripts/menu-reach.mts          # console app menu reaches every nav entry, toolbar item and page (toolbar + nav hidden by default)
+            npx -y tsx framework/spec/check-context-lead.mts           # context-lead@1: lead entries start every context menu (right-click, toolbar, own-items asset, long-press) above one separator
+            npx -y tsx apps/console-web/scripts/console-settings-menu.mts # Console settings leads every console context menu, Settings folded in, reachable as console.settings.open
             npx -y tsx framework/spec/check-mcp.mts                    # MCP client: fixture replay + client against a fake Streamable HTTP server
             npx -y tsx framework/spec/check-appearance.mts             # appearance@1 document + runtime source + HubAppearanceSource against a fake hub
             npx -y tsx framework/spec/check-appearance-lock.mts        # look lock greys look controls + no opt-out from the axHub look + Sliders clamp
@@ -514,6 +519,9 @@ jobs:
       - name: Build the Dev Console
         working-directory: apps/console
         run: gradle :app:assembleDebug --no-daemon 2>&1 | tee /tmp/build-console.log; exit ${PIPESTATUS[0]}
+      - name: AXF Console for Android (WebView shell that replaces AmberX) — native unit tests + APK
+        working-directory: apps/console-droid
+        run: gradle :app:testDebugUnitTest :app:assembleDebug --no-daemon 2>&1 | tee /tmp/build-console-droid.log; exit ${PIPESTATUS[0]}
       - name: Library unit tests (lib-voice, lib-lock, lib-mcp, lib-hub, lib-notifications, lib-work)
         working-directory: framework/android
         run: gradle :lib-voice:testDebugUnitTest :lib-lock:testDebugUnitTest :lib-mcp:testDebugUnitTest :lib-hub:testDebugUnitTest :lib-notifications:testDebugUnitTest :lib-work:testDebugUnitTest --no-daemon --continue 2>&1 | tee /tmp/test-libs.log; exit ${PIPESTATUS[0]}
@@ -544,13 +552,17 @@ jobs:
         if: failure()
         env: { GH_TOKEN: '${{ github.token }}' }
         run: |
-          { echo "### ${{ github.sha }} — $(date -u +%FT%TZ)"; echo; echo '```'; grep -hE "^e: |error:|What went wrong|> Task .* FAILED|Could not resolve|Unresolved|Execution failed" /tmp/build-framework.log /tmp/build-console.log /tmp/test-libs.log /tmp/build-voicevault.log /tmp/build-axhub.log /tmp/build-apps.log 2>/dev/null | sed 's|/home/runner/work/AmberX-AXF/AmberX-AXF/||' | sort -u | head -300; echo '```'; } > /tmp/report.md
+          { echo "### ${{ github.sha }} — $(date -u +%FT%TZ)"; echo; echo '```'; grep -hE "^e: |error:|What went wrong|> Task .* FAILED|Could not resolve|Unresolved|Execution failed" /tmp/build-framework.log /tmp/build-console.log /tmp/build-console-droid.log /tmp/test-libs.log /tmp/build-voicevault.log /tmp/build-axhub.log /tmp/build-apps.log 2>/dev/null | sed 's|/home/runner/work/AmberX-AXF/AmberX-AXF/||' | sort -u | head -300; echo '```'; } > /tmp/report.md
           N=$(gh issue list --search "CI build errors in:title" --state open --json number --jq '.[0].number')
           if [ -z "$N" ]; then gh issue create --title "CI build errors" --body-file /tmp/report.md; else gh issue comment "$N" --body-file /tmp/report.md; fi
       - uses: actions/upload-artifact@v4
         with:
           name: console-debug.apk
           path: apps/console/app/build/outputs/apk/debug/*.apk
+      - uses: actions/upload-artifact@v4
+        with:
+          name: console-app-debug.apk   # AXF Console for Android (apps/console-droid), the WebView app that replaces AmberX
+          path: apps/console-droid/app/build/outputs/apk/debug/*.apk
       - uses: actions/upload-artifact@v4
         with:
           name: voicevault-debug.apk

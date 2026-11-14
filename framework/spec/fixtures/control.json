@@ -603,7 +603,13 @@
       "opacityHover",
       "opacityTint",
       "opacityScrim",
-      "opacityGlass"
+      "opacityGlass",
+      "opacityDialog",
+      "opacitySettings",
+      "opacityPanel",
+      "opacityMenu",
+      "opacityToolbar",
+      "opacityBanner"
     ],
     "tokens.layout": [
       "navWidth",
