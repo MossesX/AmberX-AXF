@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T23:31:45.009Z",
+ "updatedAt": "2026-11-14T23:31:56.563Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -143824,7 +143824,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-14T22:19:00.612Z",
-   "updatedAt": "2026-11-14T23:31:19.075Z",
+   "updatedAt": "2026-11-14T23:31:25.555Z",
    "builtAt": "",
    "notes": [
     {
@@ -143874,6 +143874,10 @@
     {
      "text": "Session on mossesx-max- ended (exit 0) with 17 steps left: back in the Queue (run 2).",
      "at": "2026-11-14T22:52:09.247Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-console-look-becomes-default-axhub-skin--paulie, shared account login)",
+     "at": "2026-11-14T23:31:25.555Z"
     },
     {
      "text": "Started run 3 on mossesx-max- (Fable, Phase 2): axf-console-look-becomes-default-axhub-skin--paulie.",
