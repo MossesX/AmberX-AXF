@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T04:43:32.919Z",
+ "updatedAt": "2026-11-14T04:43:51.784Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -137835,7 +137835,7 @@
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-14T04:42:40.862Z",
+   "updatedAt": "2026-11-14T04:43:50.174Z",
    "builtAt": "",
    "notes": [
     {
@@ -138286,6 +138286,25 @@
      "note": "",
      "uid": "st-mwfx6ck801fevf",
      "createdAt": "2026-11-14T04:42:40.864Z"
+    },
+    {
+     "id": "s24",
+     "text": "Single framework + library harvesting video (video content only). Explain why building everything on one framework with pre-built libraries matters: every piece fits together, looks the same and connects through axHub. Then show that when code does get written, whether Claude writes it or you write it yourself, AmberX automatically harvests libraries out of it: it decides where to split things, pulls the reusable parts into libraries and saves them for future apps. Message: no code ever has to be written twice, which is what makes it so fast, with no waiting hours, days or weeks to write and stitch code together. Those harvested libraries add to the libraries that already ship with the framework. Use the real library count from the repo; don't say 'thousands' unless the real number backs it up. Use real harvest examples from the git history where they exist; label staged parts as a preview. Also cut a 60-second version.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfx7u0s01jsk6",
+     "createdAt": "2026-11-14T04:43:50.175Z"
     },
     {
      "id": "s7",
