@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T04:15:32.129Z",
+ "updatedAt": "2026-11-14T04:16:24.370Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -137350,7 +137350,7 @@
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-14T04:14:48.212Z",
+   "updatedAt": "2026-11-14T04:16:22.549Z",
    "builtAt": "",
    "notes": [
     {
@@ -137502,7 +137502,7 @@
     },
     {
      "id": "s10",
-     "text": "Fifth hero video, 'the kid who builds everything': a teen keeps needing quick apps and just talks them into AmberX one after another: (1) an instant messaging chat with his buddy, (2) a little private social space for him and his friends to share pictures with a message board, invite-only, (3) a baseball practice schedule with alarms and notifications at set times, then more fun ones. Montage pace. Message: you can build unlimited apps, all assembled from pre-built libraries with no code, they all look the same and plug into each other automatically through axHub, and you can swap parts any time. Finale: one click changes the skin and every one of his apps connected through the hub instantly looks like a completely different app, look and behaviour. Keep it age-appropriate: friends-only spaces, no public profiles or location. Narration line: 'every app you build from now on connects automatically.' Label staged parts as a preview. Also cut a 60-second version.",
+     "text": "Fifth hero video, 'an app whenever you need one': told over days and weeks, not one sitting. A teen builds an app the moment he needs it: one day a chat with his buddy; the next, a friends-only picture board with a message board; later, a baseball practice schedule with alarms and notifications, built in a rush on his way out the door ('oh, I need this', boom, done in minutes). Every new app plugs straight into his other apps and his data sets on axHub immediately, with no waiting. Closing scene: a group of young adults sitting around before heading to a festival or amusement park: 'we'll want to keep track of each other', and on the spot they whip up a group app with location sharing and group messaging, everyone opting in, and use it at the park. Message: unlimited apps on demand, in minutes, no code, just assembly; they all look the same and connect through axHub. Finale: one click changes the skin and every connected app instantly looks like a completely different app. Keep the teen's apps friends-only with no public profiles or location; location sharing only in the adult festival scene and always opt-in. Narration line: 'every app you build from now on connects automatically.' Label staged parts as a preview. Also cut a 60-second version.",
      "model": "Opus",
      "why": "",
      "phase": "",
