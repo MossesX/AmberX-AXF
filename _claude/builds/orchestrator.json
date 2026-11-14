@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T04:22:25.280Z",
+ "updatedAt": "2026-11-14T04:22:38.001Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -136908,7 +136908,7 @@
    "branch": "claude/hotfix-get-main-ci-green-theme-swap",
    "pr": "",
    "createdAt": "2026-11-14T03:29:11.368Z",
-   "updatedAt": "2026-11-14T04:17:54.512Z",
+   "updatedAt": "2026-11-14T04:22:35.827Z",
    "builtAt": "",
    "notes": [
     {
@@ -136967,8 +136967,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T04:22:35.827Z",
      "note": "",
      "uid": "st-mwfuju6v05nml5",
      "createdAt": "2026-11-14T03:29:11.370Z"
