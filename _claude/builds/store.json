@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5299,
- "updatedAt": "2026-11-14T13:10:49.130Z",
+ "rev": 5300,
+ "updatedAt": "2026-11-14T13:10:59.517Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -211995,7 +211995,7 @@
    "pr": "#669",
    "mergedAt": "2026-11-14T12:57:14Z",
    "createdAt": "2026-11-14T03:29:11.368Z",
-   "updatedAt": "2026-11-14T13:10:32.699Z",
+   "updatedAt": "2026-11-14T13:10:46.680Z",
    "builtAt": "2026-11-14T13:10:32.699Z",
    "notes": [
     {
@@ -212065,6 +212065,10 @@
     {
      "text": "Headless run axf-hotfix-get-main-ci-green-theme-swap--sully: brief only · start 11.0K tokens ($0.03) · cost $1.32 · 60 turns · 6 tools, MCP none",
      "at": "2026-11-14T13:10:32.699Z"
+    },
+    {
+     "text": "Reconciler: PR #669 merged: complete",
+     "at": "2026-11-14T13:10:46.680Z"
     },
     {
      "text": "s3: #669 landed through the queue (carried #665, both merged); main full CI green on c0cceecca. Console stack #637/#639/#633/#640/#643 re-added to the queue. Console redeploy was broken on main since build-origin@1 (vite could not resolve ../core/build-id.mjs from the synced pending-core); fix in PR #672, the 5-minute update redeploys once it lands.",
@@ -212202,7 +212206,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
