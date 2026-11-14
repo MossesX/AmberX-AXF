@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5228,
- "updatedAt": "2026-11-14T04:23:08.493Z",
+ "rev": 5229,
+ "updatedAt": "2026-11-14T04:23:21.310Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -211756,14 +211756,14 @@
    "title": "UI Directory plugin: self-updating data set of every UI page and settings interface",
    "category": "Console",
    "detail": "Brett: a plugin that's just a data set of every single UI page and settings interface, that scales and grows on its own dynamically. Build a console plugin 'UI Directory': one live data set (ui-directory@1) of every screen, page, tab, dialog, settings interface, plugin UI and per-instance settings panel across every app. It populates itself from the framework manifests, the console-control inventory and plugin registrations, so any new UI or plugin appears automatically with no hand edits, and removed ones drop out. Each row: name, kind, app, parent plugin/page, deep link (console_show), its settings interface, token families it uses, status. Searchable, filterable, grouped tree, click to open. CI check fails if a UI isn't registered. Full API: REST/MCP/CLI/voice ('open the UI directory', 'find the toolbar settings'). Tests desktop and phone.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/ui-directory-plugin-self-updating-data",
    "pr": "",
    "createdAt": "2026-11-14T03:50:42.413Z",
-   "updatedAt": "2026-11-14T04:22:11.315Z",
+   "updatedAt": "2026-11-14T04:23:07.074Z",
    "builtAt": "",
    "notes": [
     {
@@ -211801,6 +211801,10 @@
     {
      "text": "Session on mossesx-max- ended (exit 0) with 2 steps left: back in the Queue (run 1).",
      "at": "2026-11-14T04:22:06.951Z"
+    },
+    {
+     "text": "Session on mossesx-max- ended (exit 0) with 2 steps left: back in the Queue (run 1).",
+     "at": "2026-11-14T04:23:07.074Z"
     }
    ],
    "approvals": [],
@@ -211821,13 +211825,13 @@
     "queuedAt": "",
     "queuedBy": "",
     "account": "mossesx-max-",
-    "session": "axf-ui-directory-plugin-self-updating-data--paulie",
+    "session": "",
     "slot": "",
     "model": "Fable",
     "launchedAt": "2026-11-14T03:51:29.271Z",
     "runs": 1,
     "lastRun": {
-     "at": "2026-11-14T04:20:16.414Z",
+     "at": "2026-11-14T04:23:05.639Z",
      "exit": 0,
      "outcome": "requeued",
      "stepsLeft": 2,
@@ -211928,7 +211932,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -212167,7 +212171,7 @@
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-14T04:21:17.129Z",
+   "updatedAt": "2026-11-14T04:22:59.088Z",
    "builtAt": "",
    "notes": [
     {
@@ -212468,6 +212472,28 @@
      "updatedAt": "2026-11-14T04:21:17.390Z"
     },
     {
+     "id": "s14",
+     "uid": "st-mwfwh0ol01uwy8",
+     "title": "",
+     "text": "Architecture video, how it all connects: walkthrough with real screens of every piece and how they connect through axHub: the Dev Console, the AmberX Android app, GitHub, the VPS, Hostinger, Coolify and the Claude connectors. Explain how Claude and the console call tools through MCP via axHub, plus AmberX's own protocols (AXPP to the phone, control@1, console-command@1), with approvals and the veto system along the way. For each piece: what it does, why it's needed, how it connects. Also cover the console shell and how you open it in any container. Real data and real tool calls; label staged parts as a preview.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-14T04:22:59.090Z",
+     "updatedAt": "2026-11-14T04:22:59.253Z"
+    },
+    {
      "id": "s7",
      "uid": "st-mwfvsr6p0143q5",
      "title": "",
@@ -212564,7 +212590,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
