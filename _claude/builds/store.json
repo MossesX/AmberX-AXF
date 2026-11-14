@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5298,
- "updatedAt": "2026-11-14T13:10:34.937Z",
+ "rev": 5299,
+ "updatedAt": "2026-11-14T13:10:49.130Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -212065,6 +212065,10 @@
     {
      "text": "Headless run axf-hotfix-get-main-ci-green-theme-swap--sully: brief only · start 11.0K tokens ($0.03) · cost $1.32 · 60 turns · 6 tools, MCP none",
      "at": "2026-11-14T13:10:32.699Z"
+    },
+    {
+     "text": "s3: #669 landed through the queue (carried #665, both merged); main full CI green on c0cceecca. Console stack #637/#639/#633/#640/#643 re-added to the queue. Console redeploy was broken on main since build-origin@1 (vite could not resolve ../core/build-id.mjs from the synced pending-core); fix in PR #672, the 5-minute update redeploys once it lands.",
+     "at": "2026-11-14T13:10:21.162Z"
     }
    ],
    "approvals": [],
