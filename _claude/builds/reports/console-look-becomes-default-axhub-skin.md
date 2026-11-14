@@ -10,3 +10,11 @@ Brett (2026-11-14 22:19): "Keep the design, all the style, the way the console l
   - #647 skins-plugin-merge-main-and-land, #648 skin-config-panel-merge-main-and-land, #590 every-skin-ships-light-dark-colour-theme, #618 console-skin-axhub-only: landed stacked, inside #641 (branch tips are ancestors of main).
   - #641 skin-axhub-override-switch-greyed-out (`2bb2c6a7d`), #652 skin-animations-swatches-skin-switch (`aee42bbe8`), #657 token-registry-skin-editor-live-sandbox (`c0d479286`), #654 own-token-sets-for-grids-and-tab-groups (`647b79e58`).
   - `land-all-skin-builds` is still `running`, but only on s23-s25 (redeploy, deploy log and phone note, wrap-up). The code this build depends on is merged; the live console may not be redeployed yet, so the pixel baseline is built from the baseline commit, not taken from the live server.
+
+## Look snapshot (s2)
+`console-look-becomes-default-axhub-skin/snapshot-before.json` (look-snapshot@1): the raw hub appearance@1 doc, the console's app-look@1 (`looks/axf-console.json`), its hub-settings values, and the look resolved to asset data.
+- Skin in force: `arctic-calm` (design package, app level, Use skin on, no hub-wide skin). Brings style-theme `soft-studio`, color-theme `arctic-daylight`, layout `classic-ide`, behavior-theme `calm`, typography / density / sizing `compact`.
+- Console's own picks on top: nav-menu `amber-signature`, toolbar at the bottom (`axf.tokens.layout`), banner group folded.
+- Hub token override: `axf.tokens.style` `opacityGlass` 0.7 (soft-studio says 0.72). Font scale 80, spacing tight.
+- Chrome: toolbar `standard-icons`, banner `amberx-branded` with its widget arrangement, nav-style `accordion`, tab-group `underline`. No `axf.chrome.*` values are stored on the hub: every chrome element runs on its shared default.
+- Gap: `arctic-calm` has no light/dark pair, so `skin.mode dark` fails for the console today. The new default skin has to ship a dark theme (candidate: `fresh-dark`, the day/night switch's dark side).
