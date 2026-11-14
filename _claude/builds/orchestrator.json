@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T22:20:14.227Z",
+ "updatedAt": "2026-11-14T22:21:11.282Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -143357,7 +143357,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-14T22:19:00.612Z",
-   "updatedAt": "2026-11-14T22:19:31.290Z",
+   "updatedAt": "2026-11-14T22:21:08.816Z",
    "builtAt": "",
    "notes": [
     {
@@ -143367,6 +143367,10 @@
     {
      "text": "Brett override: NO backups of each app's previous skin. Drop that. From now on every 'restore'/'reset to default' anywhere (skins, tokens, per-app, per-element, 'Restore from axHub') restores to this new 'Console (default)' look. It becomes the locked default skin that all resets point at.",
      "at": "2026-11-14T22:19:31.290Z"
+    },
+    {
+     "text": "Split by Claude into 20 steps (3 Fable).",
+     "at": "2026-11-14T22:21:08.816Z"
     }
    ],
    "approvals": [],
@@ -143383,7 +143387,457 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Wait gate: check land-all-skin-builds is complete/merged (builds-store get + git log origin/main for skins, skin-axhub-override, axHub-only look code); if not landed, stop and requeue with a note. Record the baseline commit in the report draft.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "5 min",
+     "files": [
+      "_claude/builds/store.json",
+      "_claude/builds/reports/console-look-becomes-default-axhub-skin.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgyzjgw0twfe0",
+     "createdAt": "2026-11-14T22:21:08.816Z"
+    },
+    {
+     "id": "s2",
+     "text": "Capture the live console look as data: read the hub appearance@1 doc and the console's app-look@1 (shared/settings/looks/console.json), the active skin, colour theme light+dark, style theme tokens (incl. opacityGlass 0.7), typography/scale, density, radius, behaviour/animation themes, and chrome settings (toolbar/banner/nav/tab-group axf.chrome.*). Write a raw snapshot JSON for the build.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/console-look-becomes-default-axhub-skin/snapshot-before.json",
+      "framework/cli/skins.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgyzjgw0urtfp",
+     "createdAt": "2026-11-14T22:21:08.816Z"
+    },
+    {
+     "id": "s3",
+     "text": "Before pixel baseline: shoot the live console (desktop + phone, light + dark, main views) with rebuild-shots.mjs at the baseline commit, stored as the pixel-diff reference.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/console-look-becomes-default-axhub-skin/shots/before/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgyzjgw0v3yhn",
+     "createdAt": "2026-11-14T22:21:08.816Z"
+    },
+    {
+     "id": "s4",
+     "text": "Contract design: define 'hub default skin' in skin@1 / appearance@1 (a `defaultSkin` pointer on the shared appearance document, skin `chrome` block for chrome settings, `backups` record shape per app) and the resolve order hub default → app override tokens → screen → plugin in resolveLookSkin; update asset-types.json and APPEARANCE-SOURCE.md.",
+     "model": "Fable",
+     "why": "Schema + cross-app contract change to how every app resolves its look",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/schemas/asset-types.json",
+      "framework/spec/APPEARANCE-SOURCE.md",
+      "framework/core/engines/skin-coverage.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgyzjgw0wzil7",
+     "createdAt": "2026-11-14T22:21:08.816Z"
+    },
+    {
+     "id": "s5",
+     "text": "Engine: implement hub-default resolution in the skin/look engine (apps with no override inherit the hub default; apps with edits keep only edited tokens per skin-axhub-override rules) plus the per-app backup/restore record; regenerate JSON schemas.",
+     "model": "Fable",
+     "why": "Engine internals of the cross-app look resolver",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/engines/",
+      "framework/schemas/json/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgyzjgw0xss4o",
+     "createdAt": "2026-11-14T22:21:08.816Z"
+    },
+    {
+     "id": "s6",
+     "text": "Fixtures + checks: add golden cases (no override, partial override, restore from backup) to framework/spec/fixtures and extend check-skin.mts / check-skin-coverage.mjs; regenerate fixtures; record the Kotlin twin as a deferred gap in PORTING.md.",
+     "model": "Fable",
+     "why": "Conformance contract for the cross-port engine",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/spec/fixtures/",
+      "framework/spec/check-skin.mts",
+      "framework/spec/gen-fixtures.mts",
+      "framework/spec/PORTING.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgyzjgw0yx2dc",
+     "createdAt": "2026-11-14T22:21:08.816Z"
+    },
+    {
+     "id": "s7",
+     "text": "Create the skin asset 'Console (default)' (framework/assets/skin/console-default.json) from the snapshot, exact values; validate with axf validate --framework and confirm a compile of it reproduces the snapshot tokens 1:1 (script diff, zero differences).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/assets/skin/console-default.json",
+      "framework/cli/skins.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgyzjgw0zf1gc",
+     "createdAt": "2026-11-14T22:21:08.816Z"
+    },
+    {
+     "id": "s8",
+     "text": "Bake the new skin into every shared-assets app (shared-assets.mjs bake) and re-bake console/AmberX/axHub web/Expenses src/axf via rebake.mjs; run shared-assets check and chrome-settings check.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/schemas/shared-assets.json",
+      "apps/console-web/src/axf/",
+      "apps/amberx-droid/",
+      "apps/axhub-web/",
+      "apps/expenses/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgyzjgw105m0h",
+     "createdAt": "2026-11-14T22:21:08.816Z"
+    },
+    {
+     "id": "s9",
+     "text": "CLI: skins.mjs `default set <skin>|get`, `backup <app>`, `restore <app>`, and `snapshot --from <app> --as <id>` (capture the current look as a skin); backups written to each app's app-look@1 before any switch.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/cli/skins.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgyzjgw110mbf",
+     "createdAt": "2026-11-14T22:21:08.816Z"
+    },
+    {
+     "id": "s10",
+     "text": "Server routes: theme-manager REST `GET/POST default-skin`, `POST snapshot`, `GET backups/<app>`, `POST restore/<app>`; MCP via plugin-commands; console actions `skin.default`, `skin.snapshot`, `skin.restoreBackup` with voice phrases ('make this the default look', 'restore my old look').",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/theme-manager/",
+      "apps/console-web/server/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgyzjgw12ijh2",
+     "createdAt": "2026-11-14T22:21:08.816Z"
+    },
+    {
+     "id": "s11",
+     "text": "UI: Settings → Appearance (AppearancePanel) gets 'Make this the default look' button (confirm), a 'Default: Console (default)' badge, and 'Restore previous skin' one-tap per app; framework controls/tokens only, control@1 targets registered.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/libs/settings/",
+      "apps/console-web/src/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgyzjgw1341m6",
+     "createdAt": "2026-11-14T22:21:08.816Z"
+    },
+    {
+     "id": "s12",
+     "text": "API parity for the UI: deep links (console_show view:settings/tab:appearance target default-skin, restore), state read (default skin + per-app inherit/override/backup), console-control registration; check-console-control.mjs passes.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/theme-manager/",
+      "framework/cli/check-console-control.mjs",
+      "_claude/memory/docs/console-control.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgyzjgw14t47i",
+     "createdAt": "2026-11-14T22:21:08.816Z"
+    },
+    {
+     "id": "s13",
+     "text": "Publish: back up every app's current skin/app-look on the hub, then set the hub's appearance defaultSkin to 'console-default' and switch each app to inherit (override-only apps keep only their edited tokens). Record the backups list in the report.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "/projects/_shared/_data/settings/appearance.json",
+      "/projects/_shared/_data/settings/looks/",
+      "_claude/builds/reports/console-look-becomes-default-axhub-skin.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgyzjgx1541c9",
+     "createdAt": "2026-11-14T22:21:08.816Z"
+    },
+    {
+     "id": "s14",
+     "text": "Android apps: ensure AmberX droid (allowed exception) reads the hub default through its web shell; record other Android apps' pickup as deferred per the Android hold, no new Kotlin.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "5 min",
+     "files": [
+      "apps/amberx-droid/",
+      "framework/spec/PORTING.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgyzjgx16du1v",
+     "createdAt": "2026-11-14T22:21:08.816Z"
+    },
+    {
+     "id": "s15",
+     "text": "Pixel-diff: shoot the console after (same views, desktop + phone, light + dark) and diff against the before set; must be identical (zero changed pixels beyond antialias threshold) — fix any token drift and repeat.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/console-look-becomes-default-axhub-skin/shots/after/",
+      "framework/cli/rebuild-shots.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgyzjgx177cin",
+     "createdAt": "2026-11-14T22:21:08.816Z"
+    },
+    {
+     "id": "s16",
+     "text": "Screenshot every app (console, AmberX web, axHub web, Molly, Expenses, demo) desktop + phone with axf shot into group 'console-look-becomes-default-axhub-skin - <date time>'; submit the new Appearance controls to UI Review with 3 options as assets (button placement variants).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/ui-review/",
+      "apps/console-web/plugins/theme-manager/assets/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgyzjgx180acq",
+     "createdAt": "2026-11-14T22:21:08.816Z"
+    },
+    {
+     "id": "s17",
+     "text": "Help + glossary + Shipped features: help entries for the default skin and restore, asset description, catalog.mjs --check, feature-ledger rows; update status.json and tracker.mjs.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/glossary-index/",
+      "apps/console-web/plugins/shipped-features/",
+      "framework/catalog/status.json",
+      "tracker.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgyzjgx19yyyz",
+     "createdAt": "2026-11-14T22:21:08.816Z"
+    },
+    {
+     "id": "s18",
+     "text": "Tests: unit tests for skins.mjs default/backup/restore, route tests for theme-manager, check-skin.mts, check-skin-coverage.mjs, check-theme.mjs, check-controls.mjs, check-toolbars.mjs, theme-swap.mjs; fix failures.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/theme-manager/",
+      "framework/spec/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgyzjgx1a8obb",
+     "createdAt": "2026-11-14T22:21:08.816Z"
+    },
+    {
+     "id": "s19",
+     "text": "Redeploy the console (axf console refresh / nightly deploy path), log with axf_deploy_log, then send Brett one phone notification through axf.notify@1 ('Console look is now the default axHub skin; every app inherits it').",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "5 min",
+     "files": [
+      "deploy/",
+      "apps/console-web/plugins/notify-control/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgyzjgx1b9hjk",
+     "createdAt": "2026-11-14T22:21:08.816Z"
+    },
+    {
+     "id": "s20",
+     "text": "Report _claude/builds/reports/console-look-becomes-default-axhub-skin.md (snapshot, contract changes, backups, pixel-diff result, shots, API/voice table of how each feature is reached), THREADS.md row, STATUS.md line, commit, push, open PR, link it with builds-live.mjs link and add to the merge queue.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/console-look-becomes-default-axhub-skin.md",
+      "_claude/THREADS.md",
+      "_claude/memory/STATUS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwgyzjgx1c34bs",
+     "createdAt": "2026-11-14T22:21:08.816Z"
+    }
+   ]
   }
  ]
 }
