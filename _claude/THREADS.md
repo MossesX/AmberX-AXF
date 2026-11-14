@@ -796,7 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 22:20 UTC · `icon-map-icon-packs-every-icon-badge-app` → pending, note (all) · reconciler
 - 2026-11-13 22:20 UTC · `token-registry-skin-editor-live-sandbox` → pending, note (all) · reconciler
 - 2026-11-13 23:38 UTC · `auto-land-merge-main-land-land-mjs-clash` added (0 steps) (all) · console
 - 2026-11-13 23:38 UTC · `auto-land-merge-main-land-land-mjs-clash` → queued, note (all) · console
@@ -1196,6 +1195,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 22:31 UTC · `land-all-skin-builds` → pending (all) · mcp
 - 2026-11-14 22:31 UTC · `land-finish-auto-land-live-clear-backlog` → pending (all) · mcp
 - 2026-11-14 22:31 UTC · `land-finish-auto-land-live-clear-backlog` → queued (all) · mcp
+- 2026-11-14 22:32 UTC · `replace-merge-queue-one-time-landing` PR #677 (all) · builds-live
 
 ## Token passes (log)
 
