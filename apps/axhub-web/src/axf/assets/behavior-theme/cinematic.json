@@ -14,7 +14,12 @@
       "speed": "relaxed",
       "easing": "spring",
       "reduced": "system",
-      "entrance": "scale"
+      "entrance": "scale",
+      "swatches": "wave",
+      "skinSwitch": "sweep",
+      "picker": "fan",
+      "animSpeed": 60,
+      "animIntensity": 80
     },
     "interaction": {
       "hover": "glow",

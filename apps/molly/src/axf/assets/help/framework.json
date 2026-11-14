@@ -1540,6 +1540,68 @@
         "text": "Lays the open tabs out on the layout you picked, spread evenly over its panes. The pane limit holds: a layout with more panes uses only its first ones."
       },
       {
+        "target": "action:animations.set",
+        "title": "Set a skin animation",
+        "text": "Changes one skin animation in this app: the colour swatches (wave, ripple, pop), the skin switch (ripple, sweep, fade), the colour picker (fan, pop), or speed (25 to 400 percent) and intensity (0 to 100). 'skin' puts the skin's own back.",
+        "more": "Every skin's behaviour theme carries its own animations; this only lays this app's picks over them. Reduced motion always wins: nothing moves while it is on.",
+        "tryIt": "animations.set:swatches:ripple",
+        "related": [
+          "action:animations.reset",
+          "action:animations.open"
+        ],
+        "kind": "control"
+      },
+      {
+        "target": "action:animations.off",
+        "title": "Turn skin animations off",
+        "text": "Turns one skin animation off (swatches, skinSwitch or picker), or all three when none is named.",
+        "related": [
+          "action:animations.set"
+        ],
+        "kind": "control"
+      },
+      {
+        "target": "action:animations.reset",
+        "title": "Animations back to the skin's",
+        "text": "Drops every animation pick this app made, so the skin's own animations play again.",
+        "related": [
+          "action:animations.set"
+        ],
+        "kind": "control"
+      },
+      {
+        "target": "action:animations.state",
+        "title": "Which animations are on",
+        "text": "Says which skin animations play here, their style, the speed and the intensity, and whether reduced motion has stopped them.",
+        "kind": "control"
+      },
+      {
+        "target": "action:animations.open",
+        "title": "Animations settings",
+        "text": "Opens Settings → Appearance, at the Animations section.",
+        "related": [
+          "view:settings"
+        ],
+        "kind": "control"
+      },
+      {
+        "target": "animation-speed",
+        "title": "Animation speed",
+        "text": "How fast the skin animations play, as a percent of normal: 25 is slow and dreamy, 400 is a quick flick. The skin sets its own; moving this makes it this app's pick.",
+        "kind": "slider"
+      },
+      {
+        "target": "animation-intensity",
+        "title": "Animation intensity",
+        "text": "How far the skin animations move: 0 keeps everything still, 100 is the full wave, ripple and fan. The skin sets its own; moving this makes it this app's pick.",
+        "kind": "slider"
+      },
+      {
+        "target": "settings-interface-for-this-one",
+        "title": "Settings interface for this one",
+        "text": "Picks which settings interface this one tab group, toolbar, banner, navigation menu or menu bar opens its settings in. Same as every … follows the kind's pick (the shared default unless the app picked its copy); any other choice is only for this one and is kept after a reload. Voice and API: chrome.instance-interface:<type>:<instance>:<id|default|custom|inherit>."
+      },
+      {
         "target": "this-app",
         "title": "This app",
         "text": "Sets what the AI may change when it makes a skin for this app only. Hub-wide is the other tab.",
@@ -1576,11 +1638,6 @@
         "title": "Find an option",
         "text": "Narrows the list to options whose name or group matches what you type.",
         "kind": "field"
-      },
-      {
-        "target": "settings-interface-for-this-one",
-        "title": "Settings interface for this one",
-        "text": "Picks which settings interface this one tab group, toolbar, banner, navigation menu or menu bar opens its settings in. Same as every … follows the kind's pick (the shared default unless the app picked its copy); any other choice is only for this one and is kept after a reload. Voice and API: chrome.instance-interface:<type>:<instance>:<id|default|custom|inherit>."
       }
     ],
     "intros": [
@@ -1607,7 +1664,7 @@
         "title": "Assets",
         "steps": [
           {
-            "say": "Everything you see is an asset: themes, layouts, menus, buttons. Pick one on the left to look at it.",
+            "say": "Activate swaps it in live. Nothing reloads, nothing is lost.",
             "target": ""
           },
           {
@@ -1621,7 +1678,7 @@
         "title": "Account",
         "steps": [
           {
-            "say": "Your role decides what you can do. Switch it here to see the app as someone else would.",
+            "say": "The buttons below test each permission for the role you picked.",
             "target": ""
           },
           {
