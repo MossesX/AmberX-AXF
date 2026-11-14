@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5210,
- "updatedAt": "2026-11-14T04:14:54.677Z",
+ "rev": 5211,
+ "updatedAt": "2026-11-14T04:15:14.152Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -205309,7 +205309,7 @@
    "pr": "#664",
    "priority": "P1",
    "createdAt": "2026-11-13T19:55:30.979Z",
-   "updatedAt": "2026-11-14T04:14:38.936Z",
+   "updatedAt": "2026-11-14T04:15:07.351Z",
    "builtAt": "2026-11-14T03:51:56.235Z",
    "notes": [
     {
@@ -205395,6 +205395,10 @@
     {
      "text": "Headless run axf-icon-map-icon-packs-every-icon-badge-app--gina: brief only · start 13.1K tokens ($0.07) · cost $29.70 · 339 turns · 6 tools, MCP none",
      "at": "2026-11-14T04:14:38.936Z"
+    },
+    {
+     "text": "Session axf-icon-map-icon-packs-every-icon-badge-app--gina on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-14T04:15:07.351Z"
     }
    ],
    "approvals": [
@@ -205434,16 +205438,16 @@
     "queuedAt": "2026-11-13T19:55:38.790Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-icon-map-icon-packs-every-icon-badge-app--gina",
+    "session": "",
     "slot": "",
     "model": "Fable",
     "launchedAt": "2026-11-14T03:35:14.704Z",
     "runs": 2,
     "lastRun": {
-     "at": "2026-11-13T20:55:47.964Z",
+     "at": "2026-11-14T04:15:03.598Z",
      "exit": 0,
-     "outcome": "requeued",
-     "stepsLeft": 6,
+     "outcome": "finished",
+     "stepsLeft": 0,
      "account": "mossesx-max-",
      "session": "axf-icon-map-icon-packs-every-icon-badge-app--gina"
     },
@@ -205682,7 +205686,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 37,
+   "rev": 38,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

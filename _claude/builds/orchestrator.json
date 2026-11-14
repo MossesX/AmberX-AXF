@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T04:14:54.677Z",
+ "updatedAt": "2026-11-14T04:15:14.152Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -132353,7 +132353,7 @@
    "pr": "#664",
    "priority": "P1",
    "createdAt": "2026-11-13T19:55:30.979Z",
-   "updatedAt": "2026-11-14T04:14:38.936Z",
+   "updatedAt": "2026-11-14T04:15:07.351Z",
    "builtAt": "2026-11-14T03:51:56.235Z",
    "notes": [
     {
@@ -132439,6 +132439,10 @@
     {
      "text": "Headless run axf-icon-map-icon-packs-every-icon-badge-app--gina: brief only · start 13.1K tokens ($0.07) · cost $29.70 · 339 turns · 6 tools, MCP none",
      "at": "2026-11-14T04:14:38.936Z"
+    },
+    {
+     "text": "Session axf-icon-map-icon-packs-every-icon-badge-app--gina on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-14T04:15:07.351Z"
     }
    ],
    "approvals": [
