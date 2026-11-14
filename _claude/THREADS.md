@@ -792,8 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 20:08 UTC · `per-toolbar-settings-fix-failing-chrome` → queued, note (all) · console
-- 2026-11-13 20:08 UTC · `per-toolbar-settings-fix-failing-chrome` added (0 steps) (all) · builds-live
 - 2026-11-13 20:06 UTC · `demo-pipelines-guided-walkthrough-live` s5 done (all) · orchestrator
 - 2026-11-13 20:06 UTC · `demo-pipelines-guided-walkthrough-live` s6 done (all) · orchestrator
 - 2026-11-13 20:08 UTC · `dispatcher-gate-never-launch-build` note (all) · orchestrator
@@ -1192,6 +1190,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 04:11 UTC · `demo-video-series-three-minute-browser` → pending, note (all) · pipeline
 - 2026-11-14 04:11 UTC · `launch-landing-page-waitlist-referral` s1 done, → running (all) · orchestrator
 - 2026-11-14 04:11 UTC · `demo-video-series-three-minute-browser` → queued (all) · voice
+- 2026-11-14 04:10 UTC · `banner-widget-shapes-more-than-circle` branch claude/banner-widget-shapes-more-than-circle (all) · builds-live
+- 2026-11-14 04:11 UTC · `banner-widget-shapes-more-than-circle` note (all) · orchestrator
 
 ## Token passes (log)
 

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5205,
- "updatedAt": "2026-11-14T04:11:43.752Z",
+ "rev": 5206,
+ "updatedAt": "2026-11-14T04:11:59.383Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -211622,7 +211622,7 @@
    "branch": "claude/banner-widget-shapes-more-than-circle",
    "pr": "",
    "createdAt": "2026-11-14T03:47:49.947Z",
-   "updatedAt": "2026-11-14T04:10:37.696Z",
+   "updatedAt": "2026-11-14T04:11:08.445Z",
    "builtAt": "",
    "notes": [
     {
@@ -211632,6 +211632,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-banner-widget-shapes-more-than-circle--joey, own login copy)",
      "at": "2026-11-14T03:48:27.498Z"
+    },
+    {
+     "text": "s1 done (Fable): shape@1 type + tokens + pill default landed on branch claude/banner-widget-shapes-more-than-circle. For s2/s3: the hard-coded shape inventory is in framework/spec/BANNER-WIDGETS.md → Shapes; the four kinds hexagon/diamond/tag/squircle/custom have engine output but no starter asset yet; axhub-web, amberx-droid and molly baked framework copies are 23 core files behind main and have no node_modules here, so only console-web was re-baked (their shared-assets check already fails on help/framework-drafts.json). console-web src/axf/libs/hub/veto.ts carries an overlay API the approvals-banner plugin uses that is not in framework/libs: baked copy kept, needs porting back to the framework.",
+     "at": "2026-11-14T04:11:08.445Z"
     }
    ],
    "approvals": [],
@@ -211724,7 +211728,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
