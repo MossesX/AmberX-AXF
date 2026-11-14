@@ -797,7 +797,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 18:32 UTC · `themed-native-controls-plugin` s2 done (all) · orchestrator
 - 2026-11-14 18:33 UTC · `picker-dialog-plugin-replaces-all` s3 done (all) · orchestrator
 - 2026-11-14 18:34 UTC · `land-all-skin-builds` s10 done (all) · orchestrator
 - 2026-11-14 18:34 UTC · `land-all-skin-builds` s11 done (all) · orchestrator
@@ -1197,6 +1196,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 23:18 UTC · `merge-main-land-server-gate-one-session` → queued, note (all) · land-finish-auto-land-live-clear-backlog
 - 2026-11-14 23:18 UTC · `land-finish-auto-land-live-clear-backlog` s17 done, → running (all) · orchestrator
 - 2026-11-14 23:37 UTC · `hotfix-desktop-console-draws-app-menu` merged (all) · builds-live
+- 2026-11-14 23:37 UTC · `themed-native-controls-plugin` s21 done (all) · orchestrator
 
 ## Token passes (log)
 

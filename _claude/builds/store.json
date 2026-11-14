@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5659,
- "updatedAt": "2026-11-14T23:37:46.733Z",
+ "rev": 5660,
+ "updatedAt": "2026-11-14T23:37:59.752Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -140503,23 +140503,6 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "waiting",
-    "landAttempts": [
-     {
-      "at": "2026-11-14T23:15:23.557Z",
-      "run": "lr-orchestrator-table-columns-model-queue-assigned-20261114T231523",
-      "base": "bde7da89bec5a52c5f74231ae582735f5cdeeeab",
-      "merged": "",
-      "outcome": "red",
-      "ci": "",
-      "note": "No fix build: the orchestrator did not take it."
-     }
-    ]
-   },
    "steps": [
     {
      "id": "s1",
@@ -151720,23 +151703,6 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
-   },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "waiting",
-    "landAttempts": [
-     {
-      "at": "2026-11-14T23:16:02.634Z",
-      "run": "lr-pass-approval-hook-deep-link-amberx-notification-20261114T231602",
-      "base": "66ff4bea69e42beb09fe373c96ca4ac4fa5d0d27",
-      "merged": "",
-      "outcome": "red",
-      "ci": "",
-      "note": "No fix build: the orchestrator did not take it."
-     }
-    ]
    },
    "steps": [
     {
@@ -194066,23 +194032,6 @@
     "heldBy": "",
     "heldWhy": ""
    },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "waiting",
-    "landAttempts": [
-     {
-      "at": "2026-11-14T23:13:42.082Z",
-      "run": "lr-owner-recognized-everywhere-veto-20261114T231342",
-      "base": "3710f37eec6e64b6d20bfba0a61b179ec4080c61",
-      "merged": "",
-      "outcome": "red",
-      "ci": "",
-      "note": "No fix build: the orchestrator did not take it."
-     }
-    ]
-   },
    "steps": [
     {
      "id": "s1",
@@ -221907,7 +221856,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-14T18:14:25.063Z",
-   "updatedAt": "2026-11-14T23:34:58.353Z",
+   "updatedAt": "2026-11-14T23:37:57.017Z",
    "builtAt": "",
    "notes": [
     {
@@ -222533,12 +222482,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:37:57.017Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T18:17:59.202Z",
-     "updatedAt": "2026-11-14T18:17:59.202Z"
+     "updatedAt": "2026-11-14T23:37:57.337Z"
     },
     {
      "id": "s22",
@@ -222775,7 +222724,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 34,
+   "rev": 35,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
