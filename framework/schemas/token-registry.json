@@ -1,0 +1,5728 @@
+{
+  "$axf": "token-registry@1",
+  "version": 1,
+  "updatedAt": "2026-11-14",
+  "tokens": [
+    {
+      "id": "--fx-accent",
+      "element": "palette",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "basic",
+      "description": "Accent colour: primary buttons, links, selection.",
+      "default": "#f5a524",
+      "source": "color-theme:amber-ember",
+      "sources": [
+        "color-theme:amber-ember",
+        "color-theme:arctic-daylight",
+        "color-theme:aurora-night",
+        "color-theme:carbon-amber",
+        "color-theme:coral-studio",
+        "color-theme:crimson-dusk",
+        "color-theme:deep-ocean",
+        "color-theme:forest-night",
+        "color-theme:fresh-dark",
+        "color-theme:fresh-light",
+        "color-theme:glacier",
+        "color-theme:graphite-lime",
+        "color-theme:graphite-mint",
+        "color-theme:harbor",
+        "color-theme:hub-night",
+        "color-theme:linen-slate",
+        "color-theme:meadow",
+        "color-theme:midnight-ink",
+        "color-theme:mono-paper",
+        "color-theme:nebula",
+        "color-theme:neon-tide",
+        "color-theme:obsidian",
+        "color-theme:orchid-mist",
+        "color-theme:plum-noir",
+        "color-theme:porcelain",
+        "color-theme:rosewood-light",
+        "color-theme:saffron-day",
+        "color-theme:sage-paper",
+        "color-theme:sandstone",
+        "color-theme:slate-steel",
+        "color-theme:windows-dark",
+        "color-theme:windows-light",
+        "engine:framework/core/engines/brand.ts",
+        "engine:framework/core/engines/swarm-rules.mjs",
+        "engine:framework/core/engines/token-registry.mjs",
+        "framework/ui/axf.css"
+      ],
+      "set": {
+        "target": "tokens.theme",
+        "path": "accent"
+      }
+    },
+    {
+      "id": "--fx-accent-soft",
+      "element": "palette",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "basic",
+      "description": "Soft accent wash behind selected rows and chips.",
+      "default": "rgba(245,165,36,.15)",
+      "source": "color-theme:amber-ember",
+      "sources": [
+        "color-theme:amber-ember",
+        "color-theme:arctic-daylight",
+        "color-theme:aurora-night",
+        "color-theme:carbon-amber",
+        "color-theme:coral-studio",
+        "color-theme:crimson-dusk",
+        "color-theme:deep-ocean",
+        "color-theme:forest-night",
+        "color-theme:fresh-dark",
+        "color-theme:fresh-light",
+        "color-theme:glacier",
+        "color-theme:graphite-lime",
+        "color-theme:graphite-mint",
+        "color-theme:harbor",
+        "color-theme:hub-night",
+        "color-theme:linen-slate",
+        "color-theme:meadow",
+        "color-theme:midnight-ink",
+        "color-theme:mono-paper",
+        "color-theme:nebula",
+        "color-theme:neon-tide",
+        "color-theme:obsidian",
+        "color-theme:orchid-mist",
+        "color-theme:plum-noir",
+        "color-theme:porcelain",
+        "color-theme:rosewood-light",
+        "color-theme:saffron-day",
+        "color-theme:sage-paper",
+        "color-theme:sandstone",
+        "color-theme:slate-steel",
+        "color-theme:windows-dark",
+        "color-theme:windows-light",
+        "engine:framework/core/engines/token-registry.mjs",
+        "framework/ui/axf.css"
+      ],
+      "set": {
+        "target": "tokens.theme",
+        "path": "accentSoft"
+      }
+    },
+    {
+      "id": "--fx-accent-text",
+      "element": "palette",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "basic",
+      "description": "Text drawn on the accent colour.",
+      "default": "#111",
+      "source": "color-theme:amber-ember",
+      "sources": [
+        "color-theme:amber-ember",
+        "color-theme:arctic-daylight",
+        "color-theme:aurora-night",
+        "color-theme:carbon-amber",
+        "color-theme:coral-studio",
+        "color-theme:crimson-dusk",
+        "color-theme:deep-ocean",
+        "color-theme:forest-night",
+        "color-theme:fresh-dark",
+        "color-theme:fresh-light",
+        "color-theme:glacier",
+        "color-theme:graphite-lime",
+        "color-theme:graphite-mint",
+        "color-theme:harbor",
+        "color-theme:hub-night",
+        "color-theme:linen-slate",
+        "color-theme:meadow",
+        "color-theme:midnight-ink",
+        "color-theme:mono-paper",
+        "color-theme:nebula",
+        "color-theme:neon-tide",
+        "color-theme:obsidian",
+        "color-theme:orchid-mist",
+        "color-theme:plum-noir",
+        "color-theme:porcelain",
+        "color-theme:rosewood-light",
+        "color-theme:saffron-day",
+        "color-theme:sage-paper",
+        "color-theme:sandstone",
+        "color-theme:slate-steel",
+        "color-theme:windows-dark",
+        "color-theme:windows-light",
+        "engine:framework/core/engines/token-registry.mjs",
+        "framework/ui/axf.css"
+      ],
+      "set": {
+        "target": "tokens.theme",
+        "path": "accentText"
+      }
+    },
+    {
+      "id": "--fx-anim-dur",
+      "element": "page",
+      "area": "behaviour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Page: anim dur.",
+      "default": "calc(var(--fx-motion) * 2.5)",
+      "source": "engine:framework/core/engines/behavior.ts",
+      "sources": [
+        "engine:framework/core/engines/behavior.ts",
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-anim-ease",
+      "element": "page",
+      "area": "behaviour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Page: anim easing.",
+      "default": "var(--fx-ease)",
+      "source": "engine:framework/core/engines/behavior.ts",
+      "sources": [
+        "engine:framework/core/engines/behavior.ts",
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-anim-intensity",
+      "element": "page",
+      "area": "behaviour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Page: anim intensity.",
+      "default": "0.6",
+      "source": "engine:framework/core/engines/behavior.ts",
+      "sources": [
+        "engine:framework/core/engines/behavior.ts",
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-anim-pop-ease",
+      "element": "page",
+      "area": "behaviour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Page: anim pop easing.",
+      "default": "cubic-bezier(0.34, 1.56, 0.64, 1)",
+      "source": "engine:framework/core/engines/behavior.ts",
+      "sources": [
+        "engine:framework/core/engines/behavior.ts",
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-anim-stagger",
+      "element": "page",
+      "area": "behaviour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Page: anim stagger.",
+      "default": "calc(var(--fx-motion) * 0.4)",
+      "source": "engine:framework/core/engines/behavior.ts",
+      "sources": [
+        "engine:framework/core/engines/behavior.ts",
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-anim-sweep-dur",
+      "element": "page",
+      "area": "behaviour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Page: anim sweep dur.",
+      "default": "calc(var(--fx-motion) * 4)",
+      "source": "engine:framework/core/engines/behavior.ts",
+      "sources": [
+        "engine:framework/core/engines/behavior.ts",
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-anim-sweep-r",
+      "element": "page",
+      "area": "behaviour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Page: anim sweep r.",
+      "default": "150vmax",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-anim-sweep-x",
+      "element": "page",
+      "area": "behaviour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Page: anim sweep x.",
+      "default": "50%",
+      "source": "engine:framework/core/runtime.ts",
+      "sources": [
+        "engine:framework/core/runtime.ts",
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-anim-sweep-y",
+      "element": "page",
+      "area": "behaviour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Page: anim sweep y.",
+      "default": "50%",
+      "source": "engine:framework/core/runtime.ts",
+      "sources": [
+        "engine:framework/core/runtime.ts",
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-backdrop-banner",
+      "element": "transparency",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Backdrop blur behind translucent banners.",
+      "default": "none",
+      "source": "engine:framework/core/engines/token-registry.mjs",
+      "sources": [
+        "engine:framework/core/engines/token-registry.mjs",
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-backdrop-dialog",
+      "element": "transparency",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Backdrop blur behind translucent dialogs.",
+      "default": "none",
+      "source": "engine:framework/core/engines/token-registry.mjs",
+      "sources": [
+        "engine:framework/core/engines/token-registry.mjs",
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-backdrop-menu",
+      "element": "transparency",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Backdrop blur behind translucent menus.",
+      "default": "none",
+      "source": "engine:framework/core/engines/token-registry.mjs",
+      "sources": [
+        "engine:framework/core/engines/token-registry.mjs",
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-backdrop-panel",
+      "element": "transparency",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Backdrop blur behind translucent panels.",
+      "default": "none",
+      "source": "engine:framework/core/engines/token-registry.mjs",
+      "sources": [
+        "engine:framework/core/engines/token-registry.mjs",
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-backdrop-settings",
+      "element": "transparency",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Backdrop blur behind translucent settings windows.",
+      "default": "none",
+      "source": "engine:framework/core/engines/token-registry.mjs",
+      "sources": [
+        "engine:framework/core/engines/token-registry.mjs",
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-backdrop-toolbar",
+      "element": "transparency",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Backdrop blur behind translucent toolbars.",
+      "default": "none",
+      "source": "engine:framework/core/engines/token-registry.mjs",
+      "sources": [
+        "engine:framework/core/engines/token-registry.mjs",
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-banner-h",
+      "element": "banner",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Banner: height.",
+      "default": "calc(var(--fx-font-size) * 2.2)",
+      "source": "engine:framework/core/engines/banner.ts",
+      "sources": [
+        "engine:framework/core/engines/banner.ts",
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-bg",
+      "element": "palette",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "basic",
+      "description": "Page background behind everything.",
+      "default": "#111",
+      "source": "color-theme:amber-ember",
+      "sources": [
+        "color-theme:amber-ember",
+        "color-theme:arctic-daylight",
+        "color-theme:aurora-night",
+        "color-theme:carbon-amber",
+        "color-theme:coral-studio",
+        "color-theme:crimson-dusk",
+        "color-theme:deep-ocean",
+        "color-theme:forest-night",
+        "color-theme:fresh-dark",
+        "color-theme:fresh-light",
+        "color-theme:glacier",
+        "color-theme:graphite-lime",
+        "color-theme:graphite-mint",
+        "color-theme:harbor",
+        "color-theme:hub-night",
+        "color-theme:linen-slate",
+        "color-theme:meadow",
+        "color-theme:midnight-ink",
+        "color-theme:mono-paper",
+        "color-theme:nebula",
+        "color-theme:neon-tide",
+        "color-theme:obsidian",
+        "color-theme:orchid-mist",
+        "color-theme:plum-noir",
+        "color-theme:porcelain",
+        "color-theme:rosewood-light",
+        "color-theme:saffron-day",
+        "color-theme:sage-paper",
+        "color-theme:sandstone",
+        "color-theme:slate-steel",
+        "color-theme:windows-dark",
+        "color-theme:windows-light",
+        "engine:framework/core/engines/token-registry.mjs",
+        "framework/ui/axf.css"
+      ],
+      "set": {
+        "target": "tokens.theme",
+        "path": "bg"
+      }
+    },
+    {
+      "id": "--fx-blur",
+      "element": "page",
+      "area": "behaviour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Blur behind translucent surfaces.",
+      "default": "12px",
+      "source": "engine:framework/core/engines/theme.ts",
+      "sources": [
+        "engine:framework/core/engines/theme.ts",
+        "engine:framework/core/engines/token-registry.mjs",
+        "framework/ui/axf.css"
+      ],
+      "set": {
+        "target": "tokens.style",
+        "path": "blur"
+      }
+    },
+    {
+      "id": "--fx-border",
+      "element": "palette",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "basic",
+      "description": "Border and divider colour.",
+      "default": "#333",
+      "source": "color-theme:amber-ember",
+      "sources": [
+        "color-theme:amber-ember",
+        "color-theme:arctic-daylight",
+        "color-theme:aurora-night",
+        "color-theme:carbon-amber",
+        "color-theme:coral-studio",
+        "color-theme:crimson-dusk",
+        "color-theme:deep-ocean",
+        "color-theme:forest-night",
+        "color-theme:fresh-dark",
+        "color-theme:fresh-light",
+        "color-theme:glacier",
+        "color-theme:graphite-lime",
+        "color-theme:graphite-mint",
+        "color-theme:harbor",
+        "color-theme:hub-night",
+        "color-theme:linen-slate",
+        "color-theme:meadow",
+        "color-theme:midnight-ink",
+        "color-theme:mono-paper",
+        "color-theme:nebula",
+        "color-theme:neon-tide",
+        "color-theme:obsidian",
+        "color-theme:orchid-mist",
+        "color-theme:plum-noir",
+        "color-theme:porcelain",
+        "color-theme:rosewood-light",
+        "color-theme:saffron-day",
+        "color-theme:sage-paper",
+        "color-theme:sandstone",
+        "color-theme:slate-steel",
+        "color-theme:windows-dark",
+        "color-theme:windows-light",
+        "engine:framework/core/engines/token-registry.mjs",
+        "framework/ui/axf.css"
+      ],
+      "set": {
+        "target": "tokens.theme",
+        "path": "border"
+      }
+    },
+    {
+      "id": "--fx-border-w",
+      "element": "palette",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "basic",
+      "description": "Border width of controls and frames.",
+      "default": "1px",
+      "source": "engine:framework/core/engines/theme.ts",
+      "sources": [
+        "engine:framework/core/engines/theme.ts",
+        "engine:framework/core/engines/token-registry.mjs",
+        "framework/ui/axf.css"
+      ],
+      "set": {
+        "target": "tokens.style",
+        "path": "borderWidth"
+      }
+    },
+    {
+      "id": "--fx-brand-1",
+      "element": "palette",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Colour palette: brand 1.",
+      "default": "var(--fx-accent)",
+      "source": "engine:framework/core/engines/agent-card-rules.mjs",
+      "sources": [
+        "engine:framework/core/engines/agent-card-rules.mjs",
+        "engine:framework/core/engines/swarm-rules.mjs",
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-brand-2",
+      "element": "palette",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Colour palette: brand 2.",
+      "default": "var(--fx-info)",
+      "source": "engine:framework/core/engines/swarm-rules.mjs",
+      "sources": [
+        "engine:framework/core/engines/swarm-rules.mjs",
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-brand-3",
+      "element": "palette",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Colour palette: brand 3.",
+      "default": "var(--fx-text)",
+      "source": "engine:framework/core/engines/swarm-rules.mjs",
+      "sources": [
+        "engine:framework/core/engines/swarm-rules.mjs",
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-brand-anim-delay",
+      "element": "palette",
+      "area": "behaviour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Colour palette: brand anim delay.",
+      "default": "",
+      "source": "engine:framework/core/engines/brand.ts",
+      "sources": [
+        "engine:framework/core/engines/brand.ts"
+      ]
+    },
+    {
+      "id": "--fx-brand-anim-k",
+      "element": "palette",
+      "area": "behaviour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Colour palette: brand anim factor.",
+      "default": "",
+      "source": "engine:framework/core/engines/brand.ts",
+      "sources": [
+        "engine:framework/core/engines/brand.ts"
+      ]
+    },
+    {
+      "id": "--fx-brand-anim-ms",
+      "element": "palette",
+      "area": "behaviour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Colour palette: brand anim ms.",
+      "default": "",
+      "source": "engine:framework/core/engines/brand.ts",
+      "sources": [
+        "engine:framework/core/engines/brand.ts"
+      ]
+    },
+    {
+      "id": "--fx-brand-name",
+      "element": "palette",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Colour palette: brand name.",
+      "default": "",
+      "source": "engine:framework/core/engines/brand.ts",
+      "sources": [
+        "engine:framework/core/engines/brand.ts"
+      ]
+    },
+    {
+      "id": "--fx-btn-case",
+      "element": "button",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Button: case.",
+      "default": "",
+      "source": "engine:framework/core/engines/components.ts",
+      "sources": [
+        "engine:framework/core/engines/components.ts"
+      ]
+    },
+    {
+      "id": "--fx-btn-px",
+      "element": "button",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Button: horizontal padding.",
+      "default": "",
+      "source": "engine:framework/core/engines/components.ts",
+      "sources": [
+        "engine:framework/core/engines/components.ts"
+      ]
+    },
+    {
+      "id": "--fx-btn-py",
+      "element": "button",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Button: vertical padding.",
+      "default": "",
+      "source": "engine:framework/core/engines/components.ts",
+      "sources": [
+        "engine:framework/core/engines/components.ts"
+      ]
+    },
+    {
+      "id": "--fx-btn-radius",
+      "element": "button",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Button: corner radius.",
+      "default": "",
+      "source": "engine:framework/core/engines/components.ts",
+      "sources": [
+        "engine:framework/core/engines/components.ts"
+      ]
+    },
+    {
+      "id": "--fx-btn-shadow",
+      "element": "button",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Button: shadow.",
+      "default": "",
+      "source": "engine:framework/core/engines/components.ts",
+      "sources": [
+        "engine:framework/core/engines/components.ts"
+      ]
+    },
+    {
+      "id": "--fx-btn-tracking",
+      "element": "button",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Button: letter spacing.",
+      "default": "",
+      "source": "engine:framework/core/engines/components.ts",
+      "sources": [
+        "engine:framework/core/engines/components.ts"
+      ]
+    },
+    {
+      "id": "--fx-btn-weight",
+      "element": "button",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Button: font weight.",
+      "default": "",
+      "source": "engine:framework/core/engines/components.ts",
+      "sources": [
+        "engine:framework/core/engines/components.ts"
+      ]
+    },
+    {
+      "id": "--fx-card-pad",
+      "element": "container",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Container: padding.",
+      "default": "var(--fx-size-card-pad)",
+      "source": "engine:framework/core/engines/components.ts",
+      "sources": [
+        "engine:framework/core/engines/components.ts",
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-card-shadow",
+      "element": "container",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Container: shadow.",
+      "default": "",
+      "source": "engine:framework/core/engines/components.ts",
+      "sources": [
+        "engine:framework/core/engines/components.ts"
+      ]
+    },
+    {
+      "id": "--fx-content-max",
+      "element": "page",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Maximum width of page content.",
+      "default": "",
+      "source": "engine:framework/core/engines/layout.ts",
+      "sources": [
+        "engine:framework/core/engines/layout.ts",
+        "engine:framework/core/engines/token-registry.mjs"
+      ]
+    },
+    {
+      "id": "--fx-danger",
+      "element": "palette",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "basic",
+      "description": "Danger colour for errors and destructive actions.",
+      "default": "var(--fx-accent)",
+      "source": "color-theme:amber-ember",
+      "sources": [
+        "color-theme:amber-ember",
+        "color-theme:arctic-daylight",
+        "color-theme:aurora-night",
+        "color-theme:carbon-amber",
+        "color-theme:coral-studio",
+        "color-theme:crimson-dusk",
+        "color-theme:deep-ocean",
+        "color-theme:forest-night",
+        "color-theme:fresh-dark",
+        "color-theme:fresh-light",
+        "color-theme:glacier",
+        "color-theme:graphite-lime",
+        "color-theme:graphite-mint",
+        "color-theme:harbor",
+        "color-theme:hub-night",
+        "color-theme:linen-slate",
+        "color-theme:meadow",
+        "color-theme:midnight-ink",
+        "color-theme:mono-paper",
+        "color-theme:nebula",
+        "color-theme:neon-tide",
+        "color-theme:obsidian",
+        "color-theme:orchid-mist",
+        "color-theme:plum-noir",
+        "color-theme:porcelain",
+        "color-theme:rosewood-light",
+        "color-theme:saffron-day",
+        "color-theme:sage-paper",
+        "color-theme:sandstone",
+        "color-theme:slate-steel",
+        "color-theme:windows-dark",
+        "color-theme:windows-light",
+        "engine:framework/core/engines/swarm-rules.mjs",
+        "engine:framework/core/engines/token-registry.mjs",
+        "framework/ui/axf.css"
+      ],
+      "set": {
+        "target": "tokens.theme",
+        "path": "danger"
+      }
+    },
+    {
+      "id": "--fx-dens-gap-2xl",
+      "element": "density",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Density: gap 2xl.",
+      "default": "calc(var(--fx-space) * 1.2)",
+      "source": "engine:density@1",
+      "sources": [
+        "engine:density@1"
+      ],
+      "set": {
+        "target": "tokens.density",
+        "path": "gap.2xl"
+      }
+    },
+    {
+      "id": "--fx-dens-gap-2xs",
+      "element": "density",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Density: gap 2xs.",
+      "default": "calc(var(--fx-space) * 0.1)",
+      "source": "engine:density@1",
+      "sources": [
+        "engine:density@1"
+      ],
+      "set": {
+        "target": "tokens.density",
+        "path": "gap.2xs"
+      }
+    },
+    {
+      "id": "--fx-dens-gap-3xl",
+      "element": "density",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Density: gap 3xl.",
+      "default": "calc(var(--fx-space) * 1.6)",
+      "source": "engine:density@1",
+      "sources": [
+        "engine:density@1"
+      ],
+      "set": {
+        "target": "tokens.density",
+        "path": "gap.3xl"
+      }
+    },
+    {
+      "id": "--fx-dens-gap-4xl",
+      "element": "density",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Density: gap 4xl.",
+      "default": "calc(var(--fx-space) * 2.4)",
+      "source": "engine:density@1",
+      "sources": [
+        "engine:density@1"
+      ],
+      "set": {
+        "target": "tokens.density",
+        "path": "gap.4xl"
+      }
+    },
+    {
+      "id": "--fx-dens-gap-lg",
+      "element": "density",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Density: gap large.",
+      "default": "calc(var(--fx-space) * 0.6)",
+      "source": "engine:density@1",
+      "sources": [
+        "engine:density@1"
+      ],
+      "set": {
+        "target": "tokens.density",
+        "path": "gap.lg"
+      }
+    },
+    {
+      "id": "--fx-dens-gap-md",
+      "element": "density",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Density: gap medium.",
+      "default": "calc(var(--fx-space) * 0.4)",
+      "source": "engine:density@1",
+      "sources": [
+        "engine:density@1"
+      ],
+      "set": {
+        "target": "tokens.density",
+        "path": "gap.md"
+      }
+    },
+    {
+      "id": "--fx-dens-gap-sm",
+      "element": "density",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Density: gap small.",
+      "default": "calc(var(--fx-space) * 0.3)",
+      "source": "engine:density@1",
+      "sources": [
+        "engine:density@1"
+      ],
+      "set": {
+        "target": "tokens.density",
+        "path": "gap.sm"
+      }
+    },
+    {
+      "id": "--fx-dens-gap-xl",
+      "element": "density",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Density: gap extra large.",
+      "default": "calc(var(--fx-space) * 0.8)",
+      "source": "engine:density@1",
+      "sources": [
+        "engine:density@1"
+      ],
+      "set": {
+        "target": "tokens.density",
+        "path": "gap.xl"
+      }
+    },
+    {
+      "id": "--fx-dens-gap-xs",
+      "element": "density",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Density: gap extra small.",
+      "default": "calc(var(--fx-space) * 0.2)",
+      "source": "engine:density@1",
+      "sources": [
+        "engine:density@1"
+      ],
+      "set": {
+        "target": "tokens.density",
+        "path": "gap.xs"
+      }
+    },
+    {
+      "id": "--fx-dens-pad-card",
+      "element": "density",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Density: padding card.",
+      "default": "calc(var(--fx-space) * 1.1)",
+      "source": "engine:density@1",
+      "sources": [
+        "engine:density@1"
+      ],
+      "set": {
+        "target": "tokens.density",
+        "path": "pad.card"
+      }
+    },
+    {
+      "id": "--fx-dens-pad-cell",
+      "element": "density",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Density: padding cell.",
+      "default": "calc(var(--fx-space) * 0.5)",
+      "source": "engine:density@1",
+      "sources": [
+        "engine:density@1"
+      ],
+      "set": {
+        "target": "tokens.density",
+        "path": "pad.cell"
+      }
+    },
+    {
+      "id": "--fx-dens-pad-control",
+      "element": "density",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Density: padding control.",
+      "default": "calc(var(--fx-space) * 0.45)",
+      "source": "engine:density@1",
+      "sources": [
+        "engine:density@1"
+      ],
+      "set": {
+        "target": "tokens.density",
+        "path": "pad.control"
+      }
+    },
+    {
+      "id": "--fx-dens-pad-page",
+      "element": "density",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Density: padding page.",
+      "default": "calc(var(--fx-space) * 1.25)",
+      "source": "engine:density@1",
+      "sources": [
+        "engine:density@1"
+      ],
+      "set": {
+        "target": "tokens.density",
+        "path": "pad.page"
+      }
+    },
+    {
+      "id": "--fx-dens-pad-row",
+      "element": "density",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Density: padding row.",
+      "default": "calc(var(--fx-space) * 0.55)",
+      "source": "engine:density@1",
+      "sources": [
+        "engine:density@1"
+      ],
+      "set": {
+        "target": "tokens.density",
+        "path": "pad.row"
+      }
+    },
+    {
+      "id": "--fx-dens-row-control",
+      "element": "density",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Density: row control.",
+      "default": "calc(var(--fx-font-size) * 2.1)",
+      "source": "engine:density@1",
+      "sources": [
+        "engine:density@1"
+      ],
+      "set": {
+        "target": "tokens.density",
+        "path": "row.control"
+      }
+    },
+    {
+      "id": "--fx-dens-row-list",
+      "element": "density",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Density: row list.",
+      "default": "calc(var(--fx-font-size) * 2.3)",
+      "source": "engine:density@1",
+      "sources": [
+        "engine:density@1",
+        "engine:framework/react/scrollControl.ts"
+      ],
+      "set": {
+        "target": "tokens.density",
+        "path": "row.list"
+      }
+    },
+    {
+      "id": "--fx-dens-row-menu",
+      "element": "density",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Density: row menu.",
+      "default": "calc(var(--fx-font-size) * 2)",
+      "source": "engine:density@1",
+      "sources": [
+        "engine:density@1"
+      ],
+      "set": {
+        "target": "tokens.density",
+        "path": "row.menu"
+      }
+    },
+    {
+      "id": "--fx-dens-row-table",
+      "element": "density",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Density: row table.",
+      "default": "calc(var(--fx-font-size) * 2.1)",
+      "source": "engine:density@1",
+      "sources": [
+        "engine:density@1"
+      ],
+      "set": {
+        "target": "tokens.density",
+        "path": "row.table"
+      }
+    },
+    {
+      "id": "--fx-density-k",
+      "element": "page",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Density factor the spacing and row heights multiply.",
+      "default": "",
+      "source": "engine:framework/core/engines/theme.ts",
+      "sources": [
+        "engine:framework/core/engines/theme.ts",
+        "engine:framework/core/engines/token-registry.mjs"
+      ]
+    },
+    {
+      "id": "--fx-dialog-w",
+      "element": "dialog",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Dialog: width.",
+      "default": "",
+      "source": "engine:framework/core/engines/components.ts",
+      "sources": [
+        "engine:framework/core/engines/components.ts"
+      ]
+    },
+    {
+      "id": "--fx-doubletap-ms",
+      "element": "page",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Page: doubletap ms.",
+      "default": "",
+      "source": "engine:framework/core/engines/behavior.ts",
+      "sources": [
+        "engine:framework/core/engines/behavior.ts"
+      ]
+    },
+    {
+      "id": "--fx-ease",
+      "element": "page",
+      "area": "behaviour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Easing curve of transitions.",
+      "default": "cubic-bezier(0.2, 0, 0, 1)",
+      "source": "engine:framework/core/engines/behavior.ts",
+      "sources": [
+        "engine:framework/core/engines/behavior.ts",
+        "engine:framework/core/engines/token-registry.mjs",
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-focus",
+      "element": "palette",
+      "area": "colour",
+      "state": "focus",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Focus ring colour.",
+      "default": "#f5a524",
+      "source": "color-theme:amber-ember",
+      "sources": [
+        "color-theme:amber-ember",
+        "color-theme:arctic-daylight",
+        "color-theme:aurora-night",
+        "color-theme:carbon-amber",
+        "color-theme:coral-studio",
+        "color-theme:crimson-dusk",
+        "color-theme:deep-ocean",
+        "color-theme:forest-night",
+        "color-theme:fresh-dark",
+        "color-theme:fresh-light",
+        "color-theme:glacier",
+        "color-theme:graphite-lime",
+        "color-theme:graphite-mint",
+        "color-theme:harbor",
+        "color-theme:hub-night",
+        "color-theme:linen-slate",
+        "color-theme:meadow",
+        "color-theme:midnight-ink",
+        "color-theme:mono-paper",
+        "color-theme:nebula",
+        "color-theme:neon-tide",
+        "color-theme:obsidian",
+        "color-theme:orchid-mist",
+        "color-theme:plum-noir",
+        "color-theme:porcelain",
+        "color-theme:rosewood-light",
+        "color-theme:saffron-day",
+        "color-theme:sage-paper",
+        "color-theme:sandstone",
+        "color-theme:slate-steel",
+        "color-theme:windows-dark",
+        "color-theme:windows-light",
+        "engine:framework/core/engines/token-registry.mjs",
+        "framework/ui/axf.css"
+      ],
+      "set": {
+        "target": "tokens.theme",
+        "path": "focus"
+      }
+    },
+    {
+      "id": "--fx-font",
+      "element": "typography",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "basic",
+      "description": "Body font family.",
+      "default": "system-ui, sans-serif",
+      "source": "engine:framework/core/engines/theme.ts",
+      "sources": [
+        "engine:framework/core/engines/theme.ts",
+        "engine:framework/core/engines/token-registry.mjs",
+        "framework/ui/axf.css"
+      ],
+      "set": {
+        "target": "tokens.style",
+        "path": "fontFamily"
+      }
+    },
+    {
+      "id": "--fx-font-display",
+      "element": "typography",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Display font for headings and brand text.",
+      "default": "var(--fx-font)",
+      "source": "engine:framework/core/engines/theme.ts",
+      "sources": [
+        "engine:framework/core/engines/theme.ts",
+        "engine:framework/core/engines/token-registry.mjs",
+        "framework/ui/axf.css"
+      ],
+      "set": {
+        "target": "tokens.style",
+        "path": "fontDisplay"
+      }
+    },
+    {
+      "id": "--fx-font-mono",
+      "element": "typography",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Monospace font for code and logs.",
+      "default": "ui-monospace, monospace",
+      "source": "engine:framework/core/engines/theme.ts",
+      "sources": [
+        "engine:framework/core/engines/theme.ts",
+        "engine:framework/core/engines/token-registry.mjs",
+        "framework/ui/axf.css"
+      ],
+      "set": {
+        "target": "tokens.style",
+        "path": "fontMono"
+      }
+    },
+    {
+      "id": "--fx-font-size",
+      "element": "typography",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "basic",
+      "description": "Base text size everything scales from.",
+      "default": "14px",
+      "source": "engine:framework/core/engines/theme.ts",
+      "sources": [
+        "engine:framework/core/engines/theme.ts",
+        "engine:framework/core/engines/token-registry.mjs",
+        "framework/ui/axf.css"
+      ],
+      "set": {
+        "target": "tokens.style",
+        "path": "fontSize"
+      }
+    },
+    {
+      "id": "--fx-gauge-cap",
+      "element": "gauge",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Gauge: cap.",
+      "default": "",
+      "source": "engine:framework/core/engines/components.ts",
+      "sources": [
+        "engine:framework/core/engines/components.ts"
+      ]
+    },
+    {
+      "id": "--fx-gauge-thickness",
+      "element": "gauge",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Gauge: thickness.",
+      "default": "",
+      "source": "engine:framework/core/engines/components.ts",
+      "sources": [
+        "engine:framework/core/engines/components.ts"
+      ]
+    },
+    {
+      "id": "--fx-grid-areas",
+      "element": "layout",
+      "area": "layout",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Layout grid areas of the app frame.",
+      "default": "",
+      "source": "engine:framework/core/engines/layout.ts",
+      "sources": [
+        "engine:framework/core/engines/layout.ts",
+        "engine:framework/core/engines/token-registry.mjs"
+      ]
+    },
+    {
+      "id": "--fx-grid-areas-m",
+      "element": "layout",
+      "area": "layout",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Layout grid areas of the app frame on a phone.",
+      "default": "",
+      "source": "engine:framework/core/engines/layout.ts",
+      "sources": [
+        "engine:framework/core/engines/layout.ts",
+        "engine:framework/core/engines/token-registry.mjs"
+      ]
+    },
+    {
+      "id": "--fx-grid-cell-pad-x",
+      "element": "grid",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: cell padding x.",
+      "default": "var(--fx-size-table-pad-x)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-cell-pad-y",
+      "element": "grid",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: cell padding y.",
+      "default": "var(--fx-size-table-pad-y)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-cols",
+      "element": "layout",
+      "area": "layout",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Layout grid columns of the app frame.",
+      "default": "",
+      "source": "engine:framework/core/engines/layout.ts",
+      "sources": [
+        "engine:framework/core/engines/layout.ts",
+        "engine:framework/core/engines/token-registry.mjs"
+      ]
+    },
+    {
+      "id": "--fx-grid-disabled-opacity",
+      "element": "grid",
+      "area": "style",
+      "state": "disabled",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: transparency when disabled.",
+      "default": "1",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-empty-text",
+      "element": "grid",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: empty text colour.",
+      "default": "var(--fx-muted)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-expanded-bg",
+      "element": "grid",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: expanded background.",
+      "default": "var(--fx-surface2)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-focus-ring",
+      "element": "grid",
+      "area": "colour",
+      "state": "focus",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: focus ring when focus.",
+      "default": "var(--fx-focus)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-group-header-bg",
+      "element": "grid",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: group header background.",
+      "default": "var(--fx-surface3)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-group-header-bg-deep",
+      "element": "grid",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: group header background deep.",
+      "default": "var(--fx-surface)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-group-header-bg-nested",
+      "element": "grid",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: group header background nested.",
+      "default": "var(--fx-surface2)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-group-header-text",
+      "element": "grid",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: group header text colour.",
+      "default": "inherit",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-group-summary-text",
+      "element": "grid",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: group summary text colour.",
+      "default": "var(--fx-muted)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-header-active-text",
+      "element": "grid",
+      "area": "colour",
+      "state": "active",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: header text colour when active.",
+      "default": "var(--fx-accent)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-header-bg",
+      "element": "grid",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: header background.",
+      "default": "var(--fx-surface2)",
+      "source": "engine:framework/core/engines/component-tokens.mjs",
+      "sources": [
+        "engine:framework/core/engines/component-tokens.mjs",
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-header-border",
+      "element": "grid",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: header border.",
+      "default": "var(--fx-border)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-header-text",
+      "element": "grid",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: header text colour.",
+      "default": "var(--fx-muted)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-header-weight",
+      "element": "grid",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: header font weight.",
+      "default": "600",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-hover-bg",
+      "element": "grid",
+      "area": "colour",
+      "state": "hover",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: background when hover.",
+      "default": "var(--fx-surface2)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-hover-text",
+      "element": "grid",
+      "area": "colour",
+      "state": "hover",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: text colour when hover.",
+      "default": "inherit",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-line-color",
+      "element": "grid",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: line colour.",
+      "default": "var(--fx-border)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-opacity",
+      "element": "grid",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: transparency.",
+      "default": "1",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-outer-border",
+      "element": "grid",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: outer border.",
+      "default": "transparent",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-radius",
+      "element": "grid",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: corner radius.",
+      "default": "0",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-row-alt-bg",
+      "element": "grid",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: row alt background.",
+      "default": "transparent",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-row-bg",
+      "element": "grid",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: row background.",
+      "default": "transparent",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-row-height",
+      "element": "grid",
+      "area": "layout",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: row height.",
+      "default": "auto",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-row-text",
+      "element": "grid",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: row text colour.",
+      "default": "inherit",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-rows",
+      "element": "layout",
+      "area": "layout",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Layout grid rows of the app frame.",
+      "default": "",
+      "source": "engine:framework/core/engines/layout.ts",
+      "sources": [
+        "engine:framework/core/engines/layout.ts",
+        "engine:framework/core/engines/token-registry.mjs"
+      ]
+    },
+    {
+      "id": "--fx-grid-rows-m",
+      "element": "layout",
+      "area": "layout",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Layout grid rows of the app frame on a phone.",
+      "default": "",
+      "source": "engine:framework/core/engines/layout.ts",
+      "sources": [
+        "engine:framework/core/engines/layout.ts",
+        "engine:framework/core/engines/token-registry.mjs"
+      ]
+    },
+    {
+      "id": "--fx-grid-selected-bg",
+      "element": "grid",
+      "area": "colour",
+      "state": "selected",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: background when selected.",
+      "default": "var(--fx-accent-soft)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-selected-border",
+      "element": "grid",
+      "area": "style",
+      "state": "selected",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: border when selected.",
+      "default": "var(--fx-accent)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-selected-text",
+      "element": "grid",
+      "area": "colour",
+      "state": "selected",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: text colour when selected.",
+      "default": "inherit",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-sort-arrow",
+      "element": "grid",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: sort arrow.",
+      "default": "currentColor",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-sticky-shadow",
+      "element": "grid",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: sticky shadow.",
+      "default": "none",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-grid-table-header-bg",
+      "element": "grid",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Grid: table header background.",
+      "default": "transparent",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-heading-weight",
+      "element": "typography",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Font weight of headings.",
+      "default": "600",
+      "source": "engine:framework/core/engines/theme.ts",
+      "sources": [
+        "engine:framework/core/engines/theme.ts",
+        "engine:framework/core/engines/token-registry.mjs"
+      ],
+      "set": {
+        "target": "tokens.style",
+        "path": "headingWeight"
+      }
+    },
+    {
+      "id": "--fx-idcard-accent",
+      "element": "page",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Page: idcard accent.",
+      "default": "var(--fx-accent)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-info",
+      "element": "palette",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "basic",
+      "description": "Information colour for neutral notices.",
+      "default": "var(--fx-accent)",
+      "source": "color-theme:amber-ember",
+      "sources": [
+        "color-theme:amber-ember",
+        "color-theme:arctic-daylight",
+        "color-theme:aurora-night",
+        "color-theme:carbon-amber",
+        "color-theme:coral-studio",
+        "color-theme:crimson-dusk",
+        "color-theme:deep-ocean",
+        "color-theme:forest-night",
+        "color-theme:fresh-dark",
+        "color-theme:fresh-light",
+        "color-theme:glacier",
+        "color-theme:graphite-lime",
+        "color-theme:graphite-mint",
+        "color-theme:harbor",
+        "color-theme:hub-night",
+        "color-theme:linen-slate",
+        "color-theme:meadow",
+        "color-theme:midnight-ink",
+        "color-theme:mono-paper",
+        "color-theme:nebula",
+        "color-theme:neon-tide",
+        "color-theme:obsidian",
+        "color-theme:orchid-mist",
+        "color-theme:plum-noir",
+        "color-theme:porcelain",
+        "color-theme:rosewood-light",
+        "color-theme:saffron-day",
+        "color-theme:sage-paper",
+        "color-theme:sandstone",
+        "color-theme:slate-steel",
+        "color-theme:windows-dark",
+        "color-theme:windows-light",
+        "engine:framework/core/engines/swarm-rules.mjs",
+        "engine:framework/core/engines/token-registry.mjs",
+        "framework/ui/axf.css"
+      ],
+      "set": {
+        "target": "tokens.theme",
+        "path": "info"
+      }
+    },
+    {
+      "id": "--fx-layout-content-max-width",
+      "element": "layout",
+      "area": "layout",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Layout: content maximum width.",
+      "default": "0px",
+      "source": "engine:layout@1",
+      "sources": [
+        "engine:layout@1"
+      ],
+      "set": {
+        "target": "tokens.layout",
+        "path": "contentMaxWidth"
+      }
+    },
+    {
+      "id": "--fx-layout-inspector",
+      "element": "layout",
+      "area": "layout",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Layout: inspector.",
+      "default": "none",
+      "source": "engine:layout@1",
+      "sources": [
+        "engine:layout@1"
+      ],
+      "set": {
+        "target": "tokens.layout",
+        "path": "inspector"
+      }
+    },
+    {
+      "id": "--fx-layout-inspector-width",
+      "element": "layout",
+      "area": "layout",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Layout: inspector width.",
+      "default": "280px",
+      "source": "engine:layout@1",
+      "sources": [
+        "engine:layout@1"
+      ],
+      "set": {
+        "target": "tokens.layout",
+        "path": "inspectorWidth"
+      }
+    },
+    {
+      "id": "--fx-layout-large-max-width",
+      "element": "layout",
+      "area": "layout",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Layout: large maximum width.",
+      "default": "1200px",
+      "source": "engine:layout@1",
+      "sources": [
+        "engine:layout@1"
+      ],
+      "set": {
+        "target": "tokens.layout",
+        "path": "largeMaxWidth"
+      }
+    },
+    {
+      "id": "--fx-layout-main-pad-bottom",
+      "element": "layout",
+      "area": "layout",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Layout: main padding bottom.",
+      "default": "calc(var(--fx-space) * 6)",
+      "source": "engine:layout@1",
+      "sources": [
+        "engine:layout@1"
+      ],
+      "set": {
+        "target": "tokens.layout",
+        "path": "mainPadBottom"
+      }
+    },
+    {
+      "id": "--fx-layout-main-pad-top",
+      "element": "layout",
+      "area": "layout",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Layout: main padding top.",
+      "default": "calc(var(--fx-space) * 2.4)",
+      "source": "engine:layout@1",
+      "sources": [
+        "engine:layout@1"
+      ],
+      "set": {
+        "target": "tokens.layout",
+        "path": "mainPadTop"
+      }
+    },
+    {
+      "id": "--fx-layout-main-pad-x",
+      "element": "layout",
+      "area": "layout",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Layout: main padding x.",
+      "default": "calc(var(--fx-space) * 4)",
+      "source": "engine:layout@1",
+      "sources": [
+        "engine:layout@1"
+      ],
+      "set": {
+        "target": "tokens.layout",
+        "path": "mainPadX"
+      }
+    },
+    {
+      "id": "--fx-layout-medium-max-width",
+      "element": "layout",
+      "area": "layout",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Layout: medium maximum width.",
+      "default": "900px",
+      "source": "engine:layout@1",
+      "sources": [
+        "engine:layout@1"
+      ],
+      "set": {
+        "target": "tokens.layout",
+        "path": "mediumMaxWidth"
+      }
+    },
+    {
+      "id": "--fx-layout-nav",
+      "element": "layout",
+      "area": "layout",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Layout: navigation.",
+      "default": "left",
+      "source": "engine:layout@1",
+      "sources": [
+        "engine:layout@1"
+      ],
+      "set": {
+        "target": "tokens.layout",
+        "path": "nav"
+      }
+    },
+    {
+      "id": "--fx-layout-nav-orientation",
+      "element": "layout",
+      "area": "layout",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Layout: navigation orientation.",
+      "default": "",
+      "source": "engine:layout@1",
+      "sources": [
+        "engine:layout@1"
+      ],
+      "set": {
+        "target": "tokens.layout",
+        "path": "navOrientation"
+      }
+    },
+    {
+      "id": "--fx-layout-nav-width",
+      "element": "layout",
+      "area": "layout",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Layout: navigation width.",
+      "default": "224px",
+      "source": "engine:framework/core/engines/navstyle.ts",
+      "sources": [
+        "engine:framework/core/engines/navstyle.ts",
+        "engine:layout@1"
+      ],
+      "set": {
+        "target": "tokens.layout",
+        "path": "navWidth"
+      }
+    },
+    {
+      "id": "--fx-layout-phone-edge",
+      "element": "layout",
+      "area": "layout",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Layout: phone edge.",
+      "default": "8px",
+      "source": "engine:layout@1",
+      "sources": [
+        "engine:layout@1"
+      ],
+      "set": {
+        "target": "tokens.layout",
+        "path": "phoneEdge"
+      }
+    },
+    {
+      "id": "--fx-layout-phone-main-pad-bottom",
+      "element": "layout",
+      "area": "layout",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Layout: phone main padding bottom.",
+      "default": "calc(var(--fx-space) * 4)",
+      "source": "engine:layout@1",
+      "sources": [
+        "engine:layout@1"
+      ],
+      "set": {
+        "target": "tokens.layout",
+        "path": "phoneMainPadBottom"
+      }
+    },
+    {
+      "id": "--fx-layout-phone-main-pad-top",
+      "element": "layout",
+      "area": "layout",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Layout: phone main padding top.",
+      "default": "calc(var(--fx-space) * 1.6)",
+      "source": "engine:layout@1",
+      "sources": [
+        "engine:layout@1"
+      ],
+      "set": {
+        "target": "tokens.layout",
+        "path": "phoneMainPadTop"
+      }
+    },
+    {
+      "id": "--fx-layout-phone-main-pad-x",
+      "element": "layout",
+      "area": "layout",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Layout: phone main padding x.",
+      "default": "calc(var(--fx-space) * 1.6)",
+      "source": "engine:layout@1",
+      "sources": [
+        "engine:layout@1"
+      ],
+      "set": {
+        "target": "tokens.layout",
+        "path": "phoneMainPadX"
+      }
+    },
+    {
+      "id": "--fx-layout-phone-max-width",
+      "element": "layout",
+      "area": "layout",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Layout: phone maximum width.",
+      "default": "760px",
+      "source": "engine:layout@1",
+      "sources": [
+        "engine:layout@1"
+      ],
+      "set": {
+        "target": "tokens.layout",
+        "path": "phoneMaxWidth"
+      }
+    },
+    {
+      "id": "--fx-layout-phone-nav-item-min",
+      "element": "layout",
+      "area": "layout",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Layout: phone navigation item minimum.",
+      "default": "64px",
+      "source": "engine:layout@1",
+      "sources": [
+        "engine:layout@1"
+      ],
+      "set": {
+        "target": "tokens.layout",
+        "path": "phoneNavItemMin"
+      }
+    },
+    {
+      "id": "--fx-layout-region-gap",
+      "element": "layout",
+      "area": "layout",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Layout: region gap.",
+      "default": "calc(var(--fx-space) * 0)",
+      "source": "engine:layout@1",
+      "sources": [
+        "engine:layout@1"
+      ],
+      "set": {
+        "target": "tokens.layout",
+        "path": "regionGap"
+      }
+    },
+    {
+      "id": "--fx-layout-show-menubar",
+      "element": "layout",
+      "area": "layout",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Layout: show menubar.",
+      "default": "1",
+      "source": "engine:layout@1",
+      "sources": [
+        "engine:layout@1"
+      ],
+      "set": {
+        "target": "tokens.layout",
+        "path": "showMenubar"
+      }
+    },
+    {
+      "id": "--fx-layout-show-statusbar",
+      "element": "layout",
+      "area": "layout",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Layout: show statusbar.",
+      "default": "1",
+      "source": "engine:layout@1",
+      "sources": [
+        "engine:layout@1"
+      ],
+      "set": {
+        "target": "tokens.layout",
+        "path": "showStatusbar"
+      }
+    },
+    {
+      "id": "--fx-layout-show-toolbar",
+      "element": "layout",
+      "area": "layout",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Layout: show toolbar.",
+      "default": "1",
+      "source": "engine:layout@1",
+      "sources": [
+        "engine:layout@1"
+      ],
+      "set": {
+        "target": "tokens.layout",
+        "path": "showToolbar"
+      }
+    },
+    {
+      "id": "--fx-layout-small-max-width",
+      "element": "layout",
+      "area": "layout",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Layout: small maximum width.",
+      "default": "640px",
+      "source": "engine:layout@1",
+      "sources": [
+        "engine:layout@1"
+      ],
+      "set": {
+        "target": "tokens.layout",
+        "path": "smallMaxWidth"
+      }
+    },
+    {
+      "id": "--fx-layout-status-height",
+      "element": "layout",
+      "area": "layout",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Layout: status height.",
+      "default": "26px",
+      "source": "engine:layout@1",
+      "sources": [
+        "engine:layout@1"
+      ],
+      "set": {
+        "target": "tokens.layout",
+        "path": "statusHeight"
+      }
+    },
+    {
+      "id": "--fx-layout-tiny-max-width",
+      "element": "layout",
+      "area": "layout",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Layout: tiny maximum width.",
+      "default": "480px",
+      "source": "engine:layout@1",
+      "sources": [
+        "engine:layout@1"
+      ],
+      "set": {
+        "target": "tokens.layout",
+        "path": "tinyMaxWidth"
+      }
+    },
+    {
+      "id": "--fx-layout-toolbar-position",
+      "element": "layout",
+      "area": "layout",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Layout: toolbar position.",
+      "default": "top",
+      "source": "engine:layout@1",
+      "sources": [
+        "engine:layout@1"
+      ],
+      "set": {
+        "target": "tokens.layout",
+        "path": "toolbarPosition"
+      }
+    },
+    {
+      "id": "--fx-longpress-ms",
+      "element": "page",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Page: longpress ms.",
+      "default": "",
+      "source": "engine:framework/core/engines/behavior.ts",
+      "sources": [
+        "engine:framework/core/engines/behavior.ts"
+      ]
+    },
+    {
+      "id": "--fx-menubar-h",
+      "element": "app-menu",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Menu bar: height.",
+      "default": "",
+      "source": "engine:framework/core/engines/components.ts",
+      "sources": [
+        "engine:framework/core/engines/components.ts"
+      ]
+    },
+    {
+      "id": "--fx-meter-h",
+      "element": "meter",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Meter: height.",
+      "default": "",
+      "source": "engine:framework/core/engines/components.ts",
+      "sources": [
+        "engine:framework/core/engines/components.ts"
+      ]
+    },
+    {
+      "id": "--fx-meter-radius",
+      "element": "meter",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Meter: corner radius.",
+      "default": "",
+      "source": "engine:framework/core/engines/components.ts",
+      "sources": [
+        "engine:framework/core/engines/components.ts"
+      ]
+    },
+    {
+      "id": "--fx-motion",
+      "element": "motion",
+      "area": "behaviour",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Duration of transitions and animations.",
+      "default": "160ms",
+      "source": "engine:framework/core/engines/behavior.ts",
+      "sources": [
+        "engine:framework/core/engines/behavior.ts",
+        "engine:framework/core/engines/customize.ts",
+        "engine:framework/core/engines/theme.ts",
+        "engine:framework/core/engines/token-registry.mjs",
+        "framework/ui/axf.css"
+      ],
+      "set": {
+        "target": "tokens.style",
+        "path": "motion"
+      }
+    },
+    {
+      "id": "--fx-muted",
+      "element": "palette",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "basic",
+      "description": "Secondary text: captions, hints, de-emphasised labels.",
+      "default": "#999",
+      "source": "color-theme:amber-ember",
+      "sources": [
+        "color-theme:amber-ember",
+        "color-theme:arctic-daylight",
+        "color-theme:aurora-night",
+        "color-theme:carbon-amber",
+        "color-theme:coral-studio",
+        "color-theme:crimson-dusk",
+        "color-theme:deep-ocean",
+        "color-theme:forest-night",
+        "color-theme:fresh-dark",
+        "color-theme:fresh-light",
+        "color-theme:glacier",
+        "color-theme:graphite-lime",
+        "color-theme:graphite-mint",
+        "color-theme:harbor",
+        "color-theme:hub-night",
+        "color-theme:linen-slate",
+        "color-theme:meadow",
+        "color-theme:midnight-ink",
+        "color-theme:mono-paper",
+        "color-theme:nebula",
+        "color-theme:neon-tide",
+        "color-theme:obsidian",
+        "color-theme:orchid-mist",
+        "color-theme:plum-noir",
+        "color-theme:porcelain",
+        "color-theme:rosewood-light",
+        "color-theme:saffron-day",
+        "color-theme:sage-paper",
+        "color-theme:sandstone",
+        "color-theme:slate-steel",
+        "color-theme:windows-dark",
+        "color-theme:windows-light",
+        "engine:framework/core/engines/token-registry.mjs",
+        "framework/ui/axf.css"
+      ],
+      "set": {
+        "target": "tokens.theme",
+        "path": "muted"
+      }
+    },
+    {
+      "id": "--fx-nav-item-py",
+      "element": "nav-menu",
+      "area": "layout",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Navigation: item vertical padding.",
+      "default": "",
+      "source": "engine:framework/core/engines/components.ts",
+      "sources": [
+        "engine:framework/core/engines/components.ts",
+        "engine:framework/core/engines/navstyle.ts"
+      ]
+    },
+    {
+      "id": "--fx-navs-accent",
+      "element": "nav-style",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Navigation style: accent.",
+      "default": "",
+      "source": "apps/amberx-droid/src/axf/ui/axf.css",
+      "sources": [
+        "apps/amberx-droid/src/axf/ui/axf.css",
+        "apps/axhub-web/src/axf/ui/axf.css",
+        "engine:prefix --fx-navs-",
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-navs-active",
+      "element": "nav-style",
+      "area": "style",
+      "state": "active",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Navigation style: navs when active.",
+      "default": "",
+      "source": "apps/amberx-droid/src/axf/ui/axf.css",
+      "sources": [
+        "apps/amberx-droid/src/axf/ui/axf.css",
+        "apps/axhub-web/src/axf/ui/axf.css",
+        "engine:prefix --fx-navs-",
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-navs-active-text",
+      "element": "nav-style",
+      "area": "colour",
+      "state": "active",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Navigation style: text colour when active.",
+      "default": "",
+      "source": "apps/amberx-droid/src/axf/ui/axf.css",
+      "sources": [
+        "apps/amberx-droid/src/axf/ui/axf.css",
+        "apps/axhub-web/src/axf/ui/axf.css",
+        "engine:prefix --fx-navs-",
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-navs-background",
+      "element": "nav-style",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Navigation style: background.",
+      "default": "",
+      "source": "apps/amberx-droid/src/axf/ui/axf.css",
+      "sources": [
+        "apps/amberx-droid/src/axf/ui/axf.css",
+        "apps/axhub-web/src/axf/ui/axf.css",
+        "engine:prefix --fx-navs-",
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-navs-dur",
+      "element": "nav-style",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Navigation style: dur.",
+      "default": "",
+      "source": "engine:framework/core/engines/navstyle.ts",
+      "sources": [
+        "engine:framework/core/engines/navstyle.ts"
+      ]
+    },
+    {
+      "id": "--fx-navs-ease",
+      "element": "nav-style",
+      "area": "behaviour",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Navigation style: easing.",
+      "default": "",
+      "source": "engine:framework/core/engines/navstyle.ts",
+      "sources": [
+        "engine:framework/core/engines/navstyle.ts"
+      ]
+    },
+    {
+      "id": "--fx-navs-hover",
+      "element": "nav-style",
+      "area": "style",
+      "state": "hover",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Navigation style: navs when hover.",
+      "default": "",
+      "source": "apps/amberx-droid/src/axf/ui/axf.css",
+      "sources": [
+        "apps/amberx-droid/src/axf/ui/axf.css",
+        "apps/axhub-web/src/axf/ui/axf.css",
+        "engine:prefix --fx-navs-",
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-navs-indent",
+      "element": "nav-style",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Navigation style: indent.",
+      "default": "",
+      "source": "engine:framework/core/engines/navstyle.ts",
+      "sources": [
+        "engine:framework/core/engines/navstyle.ts"
+      ]
+    },
+    {
+      "id": "--fx-navs-size",
+      "element": "nav-style",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Navigation style: size.",
+      "default": "",
+      "source": "engine:framework/core/engines/navstyle.ts",
+      "sources": [
+        "engine:framework/core/engines/navstyle.ts"
+      ]
+    },
+    {
+      "id": "--fx-navs-stagger",
+      "element": "nav-style",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Navigation style: stagger.",
+      "default": "",
+      "source": "engine:framework/core/engines/navstyle.ts",
+      "sources": [
+        "engine:framework/core/engines/navstyle.ts"
+      ]
+    },
+    {
+      "id": "--fx-navs-submenu",
+      "element": "nav-style",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Navigation style: submenu.",
+      "default": "",
+      "source": "apps/amberx-droid/src/axf/ui/axf.css",
+      "sources": [
+        "apps/amberx-droid/src/axf/ui/axf.css",
+        "apps/axhub-web/src/axf/ui/axf.css",
+        "engine:prefix --fx-navs-",
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-navs-text",
+      "element": "nav-style",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Navigation style: text colour.",
+      "default": "",
+      "source": "apps/amberx-droid/src/axf/ui/axf.css",
+      "sources": [
+        "apps/amberx-droid/src/axf/ui/axf.css",
+        "apps/axhub-web/src/axf/ui/axf.css",
+        "engine:prefix --fx-navs-",
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-navs-weight",
+      "element": "nav-style",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Navigation style: font weight.",
+      "default": "",
+      "source": "engine:framework/core/engines/navstyle.ts",
+      "sources": [
+        "engine:framework/core/engines/navstyle.ts"
+      ]
+    },
+    {
+      "id": "--fx-opacity-banner",
+      "element": "transparency",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Transparency of banners.",
+      "default": "1",
+      "source": "engine:framework/core/engines/theme.ts",
+      "sources": [
+        "engine:framework/core/engines/theme.ts",
+        "engine:framework/core/engines/token-registry.mjs",
+        "framework/ui/axf.css"
+      ],
+      "set": {
+        "target": "tokens.style",
+        "path": "opacityBanner"
+      }
+    },
+    {
+      "id": "--fx-opacity-dialog",
+      "element": "transparency",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Transparency of dialogs, drawers and sheets.",
+      "default": "1",
+      "source": "engine:framework/core/engines/theme.ts",
+      "sources": [
+        "engine:framework/core/engines/theme.ts",
+        "engine:framework/core/engines/token-registry.mjs",
+        "framework/ui/axf.css"
+      ],
+      "set": {
+        "target": "tokens.style",
+        "path": "opacityDialog"
+      }
+    },
+    {
+      "id": "--fx-opacity-disabled",
+      "element": "transparency",
+      "area": "colour",
+      "state": "disabled",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Transparency of disabled controls.",
+      "default": "0.38",
+      "source": "engine:framework/core/engines/theme.ts",
+      "sources": [
+        "engine:framework/core/engines/theme.ts",
+        "engine:framework/core/engines/token-registry.mjs",
+        "framework/ui/axf.css"
+      ],
+      "set": {
+        "target": "tokens.style",
+        "path": "opacityDisabled"
+      }
+    },
+    {
+      "id": "--fx-opacity-glass",
+      "element": "transparency",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "How much surface colour a glass panel keeps.",
+      "default": "0.72",
+      "source": "engine:framework/core/engines/theme.ts",
+      "sources": [
+        "engine:framework/core/engines/theme.ts",
+        "engine:framework/core/engines/token-registry.mjs",
+        "framework/ui/axf.css"
+      ],
+      "set": {
+        "target": "tokens.style",
+        "path": "opacityGlass"
+      }
+    },
+    {
+      "id": "--fx-opacity-hover",
+      "element": "transparency",
+      "area": "colour",
+      "state": "hover",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Strength of the hover wash over a surface.",
+      "default": "0.08",
+      "source": "engine:framework/core/engines/theme.ts",
+      "sources": [
+        "engine:framework/core/engines/theme.ts",
+        "engine:framework/core/engines/token-registry.mjs",
+        "framework/ui/axf.css"
+      ],
+      "set": {
+        "target": "tokens.style",
+        "path": "opacityHover"
+      }
+    },
+    {
+      "id": "--fx-opacity-menu",
+      "element": "transparency",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Transparency of menus and popovers.",
+      "default": "1",
+      "source": "engine:framework/core/engines/theme.ts",
+      "sources": [
+        "engine:framework/core/engines/theme.ts",
+        "engine:framework/core/engines/token-registry.mjs",
+        "framework/ui/axf.css"
+      ],
+      "set": {
+        "target": "tokens.style",
+        "path": "opacityMenu"
+      }
+    },
+    {
+      "id": "--fx-opacity-muted",
+      "element": "transparency",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Transparency of de-emphasised content.",
+      "default": "0.62",
+      "source": "engine:framework/core/engines/theme.ts",
+      "sources": [
+        "engine:framework/core/engines/theme.ts",
+        "engine:framework/core/engines/token-registry.mjs",
+        "framework/ui/axf.css"
+      ],
+      "set": {
+        "target": "tokens.style",
+        "path": "opacityMuted"
+      }
+    },
+    {
+      "id": "--fx-opacity-panel",
+      "element": "transparency",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Transparency of cards and panels.",
+      "default": "1",
+      "source": "engine:framework/core/engines/theme.ts",
+      "sources": [
+        "engine:framework/core/engines/theme.ts",
+        "engine:framework/core/engines/token-registry.mjs",
+        "framework/ui/axf.css"
+      ],
+      "set": {
+        "target": "tokens.style",
+        "path": "opacityPanel"
+      }
+    },
+    {
+      "id": "--fx-opacity-scrim",
+      "element": "transparency",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Darkness of the scrim behind dialogs.",
+      "default": "0.5",
+      "source": "engine:framework/core/engines/theme.ts",
+      "sources": [
+        "engine:framework/core/engines/theme.ts",
+        "engine:framework/core/engines/token-registry.mjs",
+        "framework/ui/axf.css"
+      ],
+      "set": {
+        "target": "tokens.style",
+        "path": "opacityScrim"
+      }
+    },
+    {
+      "id": "--fx-opacity-settings",
+      "element": "transparency",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Transparency of settings and tool windows.",
+      "default": "1",
+      "source": "engine:framework/core/engines/theme.ts",
+      "sources": [
+        "engine:framework/core/engines/theme.ts",
+        "engine:framework/core/engines/token-registry.mjs",
+        "framework/ui/axf.css"
+      ],
+      "set": {
+        "target": "tokens.style",
+        "path": "opacitySettings"
+      }
+    },
+    {
+      "id": "--fx-opacity-tint",
+      "element": "transparency",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Strength of soft status and accent backgrounds.",
+      "default": "0.14",
+      "source": "engine:framework/core/engines/theme.ts",
+      "sources": [
+        "engine:framework/core/engines/theme.ts",
+        "engine:framework/core/engines/token-registry.mjs",
+        "framework/ui/axf.css"
+      ],
+      "set": {
+        "target": "tokens.style",
+        "path": "opacityTint"
+      }
+    },
+    {
+      "id": "--fx-opacity-toolbar",
+      "element": "transparency",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Transparency of toolbars and the menu bar.",
+      "default": "1",
+      "source": "engine:framework/core/engines/theme.ts",
+      "sources": [
+        "engine:framework/core/engines/theme.ts",
+        "engine:framework/core/engines/token-registry.mjs",
+        "framework/ui/axf.css"
+      ],
+      "set": {
+        "target": "tokens.style",
+        "path": "opacityToolbar"
+      }
+    },
+    {
+      "id": "--fx-radius-lg",
+      "element": "surface",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Large corner radius: dialogs, windows.",
+      "default": "12px",
+      "source": "engine:framework/core/engines/theme.ts",
+      "sources": [
+        "engine:framework/core/engines/theme.ts",
+        "engine:framework/core/engines/token-registry.mjs",
+        "framework/ui/axf.css"
+      ],
+      "set": {
+        "target": "tokens.style",
+        "path": "radius.lg"
+      }
+    },
+    {
+      "id": "--fx-radius-md",
+      "element": "surface",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "basic",
+      "description": "Medium corner radius: buttons, cards.",
+      "default": "8px",
+      "source": "engine:framework/core/engines/theme.ts",
+      "sources": [
+        "engine:framework/core/engines/theme.ts",
+        "engine:framework/core/engines/token-registry.mjs",
+        "framework/ui/axf.css"
+      ],
+      "set": {
+        "target": "tokens.style",
+        "path": "radius.md"
+      }
+    },
+    {
+      "id": "--fx-radius-sm",
+      "element": "surface",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Small corner radius: chips, inputs, small buttons.",
+      "default": "4px",
+      "source": "engine:framework/core/engines/theme.ts",
+      "sources": [
+        "engine:framework/core/engines/theme.ts",
+        "engine:framework/core/engines/token-registry.mjs",
+        "framework/ui/axf.css"
+      ],
+      "set": {
+        "target": "tokens.style",
+        "path": "radius.sm"
+      }
+    },
+    {
+      "id": "--fx-repeat-cols",
+      "element": "page",
+      "area": "layout",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Page: repeat grid columns.",
+      "default": "",
+      "source": "engine:framework/core/engines/repeat.ts",
+      "sources": [
+        "engine:framework/core/engines/repeat.ts"
+      ]
+    },
+    {
+      "id": "--fx-row-h",
+      "element": "grid",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Height of list and table rows.",
+      "default": "34px",
+      "source": "engine:framework/core/engines/theme.ts",
+      "sources": [
+        "engine:framework/core/engines/theme.ts",
+        "engine:framework/core/engines/token-registry.mjs",
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-scrim",
+      "element": "transparency",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Dimming layer behind dialogs and sheets.",
+      "default": "color-mix(in srgb, #000 calc(var(--fx-opacity-scrim) * 100%), transparent)",
+      "source": "engine:framework/core/engines/token-registry.mjs",
+      "sources": [
+        "engine:framework/core/engines/token-registry.mjs",
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-scrollbar-color",
+      "element": "page",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Page: scrollbar colour.",
+      "default": "",
+      "source": "engine:framework/core/engines/theme.ts",
+      "sources": [
+        "engine:framework/core/engines/theme.ts"
+      ]
+    },
+    {
+      "id": "--fx-scrollbar-width",
+      "element": "page",
+      "area": "layout",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Page: scrollbar width.",
+      "default": "",
+      "source": "engine:framework/core/engines/theme.ts",
+      "sources": [
+        "engine:framework/core/engines/theme.ts"
+      ]
+    },
+    {
+      "id": "--fx-shadow",
+      "element": "palette",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Surface: shadow.",
+      "default": "rgba(0,0,0,.4)",
+      "source": "color-theme:amber-ember",
+      "sources": [
+        "color-theme:amber-ember",
+        "color-theme:arctic-daylight",
+        "color-theme:aurora-night",
+        "color-theme:carbon-amber",
+        "color-theme:coral-studio",
+        "color-theme:crimson-dusk",
+        "color-theme:deep-ocean",
+        "color-theme:forest-night",
+        "color-theme:fresh-dark",
+        "color-theme:fresh-light",
+        "color-theme:glacier",
+        "color-theme:graphite-lime",
+        "color-theme:graphite-mint",
+        "color-theme:harbor",
+        "color-theme:hub-night",
+        "color-theme:linen-slate",
+        "color-theme:meadow",
+        "color-theme:midnight-ink",
+        "color-theme:mono-paper",
+        "color-theme:nebula",
+        "color-theme:neon-tide",
+        "color-theme:obsidian",
+        "color-theme:orchid-mist",
+        "color-theme:plum-noir",
+        "color-theme:porcelain",
+        "color-theme:rosewood-light",
+        "color-theme:saffron-day",
+        "color-theme:sage-paper",
+        "color-theme:sandstone",
+        "color-theme:slate-steel",
+        "color-theme:windows-dark",
+        "color-theme:windows-light",
+        "framework/ui/axf.css"
+      ],
+      "set": {
+        "target": "tokens.theme",
+        "path": "shadow"
+      }
+    },
+    {
+      "id": "--fx-shadow-lg",
+      "element": "surface",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Large shadow under dialogs and windows.",
+      "default": "0 10px 30px var(--fx-shadow)",
+      "source": "engine:framework/core/engines/theme.ts",
+      "sources": [
+        "engine:framework/core/engines/theme.ts",
+        "engine:framework/core/engines/token-registry.mjs"
+      ],
+      "set": {
+        "target": "tokens.style",
+        "path": "shadow.lg"
+      }
+    },
+    {
+      "id": "--fx-shadow-md",
+      "element": "surface",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Medium shadow under cards and popovers.",
+      "default": "0 1px 3px var(--fx-shadow), 0 4px 10px var(--fx-shadow)",
+      "source": "engine:framework/core/engines/theme.ts",
+      "sources": [
+        "engine:framework/core/engines/theme.ts",
+        "engine:framework/core/engines/token-registry.mjs"
+      ],
+      "set": {
+        "target": "tokens.style",
+        "path": "shadow.md"
+      }
+    },
+    {
+      "id": "--fx-shadow-sm",
+      "element": "surface",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Small shadow under raised controls.",
+      "default": "0 1px 1px var(--fx-shadow)",
+      "source": "engine:framework/core/engines/theme.ts",
+      "sources": [
+        "engine:framework/core/engines/theme.ts",
+        "engine:framework/core/engines/token-registry.mjs"
+      ],
+      "set": {
+        "target": "tokens.style",
+        "path": "shadow.sm"
+      }
+    },
+    {
+      "id": "--fx-size-button-font",
+      "element": "sizing",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Sizing: button font.",
+      "default": "0.86em",
+      "source": "engine:sizing@1",
+      "sources": [
+        "engine:sizing@1"
+      ],
+      "set": {
+        "target": "tokens.sizing",
+        "path": "button.font"
+      }
+    },
+    {
+      "id": "--fx-size-button-height",
+      "element": "sizing",
+      "area": "layout",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Sizing: button height.",
+      "default": "calc(var(--fx-font-size) * 2.1)",
+      "source": "engine:sizing@1",
+      "sources": [
+        "engine:sizing@1"
+      ],
+      "set": {
+        "target": "tokens.sizing",
+        "path": "button.height"
+      }
+    },
+    {
+      "id": "--fx-size-button-icon",
+      "element": "sizing",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Sizing: button icon.",
+      "default": "1em",
+      "source": "engine:sizing@1",
+      "sources": [
+        "engine:sizing@1"
+      ],
+      "set": {
+        "target": "tokens.sizing",
+        "path": "button.icon"
+      }
+    },
+    {
+      "id": "--fx-size-button-pad-x",
+      "element": "sizing",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Sizing: button padding x.",
+      "default": "calc(var(--fx-space) * 0.9)",
+      "source": "engine:sizing@1",
+      "sources": [
+        "engine:sizing@1"
+      ],
+      "set": {
+        "target": "tokens.sizing",
+        "path": "button.padX"
+      }
+    },
+    {
+      "id": "--fx-size-card-head-font",
+      "element": "sizing",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Sizing: card head font.",
+      "default": "0.9em",
+      "source": "engine:sizing@1",
+      "sources": [
+        "engine:sizing@1"
+      ],
+      "set": {
+        "target": "tokens.sizing",
+        "path": "card.headFont"
+      }
+    },
+    {
+      "id": "--fx-size-card-pad",
+      "element": "sizing",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Sizing: card padding.",
+      "default": "calc(var(--fx-space) * 1.1)",
+      "source": "engine:sizing@1",
+      "sources": [
+        "engine:sizing@1"
+      ],
+      "set": {
+        "target": "tokens.sizing",
+        "path": "card.pad"
+      }
+    },
+    {
+      "id": "--fx-size-card-radius",
+      "element": "sizing",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Sizing: card corner radius.",
+      "default": "var(--fx-radius-md)",
+      "source": "engine:sizing@1",
+      "sources": [
+        "engine:sizing@1"
+      ],
+      "set": {
+        "target": "tokens.sizing",
+        "path": "card.radius"
+      }
+    },
+    {
+      "id": "--fx-size-chip-font",
+      "element": "sizing",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Sizing: chip font.",
+      "default": "0.74em",
+      "source": "engine:sizing@1",
+      "sources": [
+        "engine:sizing@1"
+      ],
+      "set": {
+        "target": "tokens.sizing",
+        "path": "chip.font"
+      }
+    },
+    {
+      "id": "--fx-size-chip-height",
+      "element": "sizing",
+      "area": "layout",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Sizing: chip height.",
+      "default": "calc(var(--fx-font-size) * 1.4)",
+      "source": "engine:sizing@1",
+      "sources": [
+        "engine:sizing@1"
+      ],
+      "set": {
+        "target": "tokens.sizing",
+        "path": "chip.height"
+      }
+    },
+    {
+      "id": "--fx-size-chip-pad-x",
+      "element": "sizing",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Sizing: chip padding x.",
+      "default": "calc(var(--fx-space) * 0.6)",
+      "source": "engine:sizing@1",
+      "sources": [
+        "engine:sizing@1"
+      ],
+      "set": {
+        "target": "tokens.sizing",
+        "path": "chip.padX"
+      }
+    },
+    {
+      "id": "--fx-size-chip-radius",
+      "element": "sizing",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Sizing: chip corner radius.",
+      "default": "var(--fx-radius-sm)",
+      "source": "engine:sizing@1",
+      "sources": [
+        "engine:sizing@1"
+      ],
+      "set": {
+        "target": "tokens.sizing",
+        "path": "chip.radius"
+      }
+    },
+    {
+      "id": "--fx-size-count-strip-label",
+      "element": "sizing",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Sizing: count strip label.",
+      "default": "0.68em",
+      "source": "engine:sizing@1",
+      "sources": [
+        "engine:sizing@1"
+      ],
+      "set": {
+        "target": "tokens.sizing",
+        "path": "countStrip.label"
+      }
+    },
+    {
+      "id": "--fx-size-count-strip-number",
+      "element": "sizing",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Sizing: count strip number.",
+      "default": "1em",
+      "source": "engine:sizing@1",
+      "sources": [
+        "engine:sizing@1"
+      ],
+      "set": {
+        "target": "tokens.sizing",
+        "path": "countStrip.number"
+      }
+    },
+    {
+      "id": "--fx-size-count-strip-pad",
+      "element": "sizing",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Sizing: count strip padding.",
+      "default": "calc(var(--fx-space) * 0.35)",
+      "source": "engine:sizing@1",
+      "sources": [
+        "engine:sizing@1"
+      ],
+      "set": {
+        "target": "tokens.sizing",
+        "path": "countStrip.pad"
+      }
+    },
+    {
+      "id": "--fx-size-field-font",
+      "element": "sizing",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Sizing: field font.",
+      "default": "0.9em",
+      "source": "engine:sizing@1",
+      "sources": [
+        "engine:sizing@1"
+      ],
+      "set": {
+        "target": "tokens.sizing",
+        "path": "field.font"
+      }
+    },
+    {
+      "id": "--fx-size-field-height",
+      "element": "sizing",
+      "area": "layout",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Sizing: field height.",
+      "default": "calc(var(--fx-font-size) * 2.1)",
+      "source": "engine:sizing@1",
+      "sources": [
+        "engine:sizing@1"
+      ],
+      "set": {
+        "target": "tokens.sizing",
+        "path": "field.height"
+      }
+    },
+    {
+      "id": "--fx-size-field-pad-x",
+      "element": "sizing",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Sizing: field padding x.",
+      "default": "calc(var(--fx-space) * 0.6)",
+      "source": "engine:sizing@1",
+      "sources": [
+        "engine:sizing@1"
+      ],
+      "set": {
+        "target": "tokens.sizing",
+        "path": "field.padX"
+      }
+    },
+    {
+      "id": "--fx-size-icon-button-size",
+      "element": "sizing",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Sizing: icon button.",
+      "default": "calc(var(--fx-font-size) * 1.75)",
+      "source": "engine:sizing@1",
+      "sources": [
+        "engine:sizing@1"
+      ],
+      "set": {
+        "target": "tokens.sizing",
+        "path": "iconButton.size"
+      }
+    },
+    {
+      "id": "--fx-size-list-row-meta-font",
+      "element": "sizing",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Sizing: list row meta font.",
+      "default": "0.8em",
+      "source": "engine:sizing@1",
+      "sources": [
+        "engine:sizing@1"
+      ],
+      "set": {
+        "target": "tokens.sizing",
+        "path": "listRow.metaFont"
+      }
+    },
+    {
+      "id": "--fx-size-list-row-min-height",
+      "element": "sizing",
+      "area": "layout",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Sizing: list row minimum height.",
+      "default": "calc(var(--fx-font-size) * 2.3)",
+      "source": "engine:sizing@1",
+      "sources": [
+        "engine:sizing@1"
+      ],
+      "set": {
+        "target": "tokens.sizing",
+        "path": "listRow.minHeight"
+      }
+    },
+    {
+      "id": "--fx-size-list-row-pad-x",
+      "element": "sizing",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Sizing: list row padding x.",
+      "default": "calc(var(--fx-space) * 0.85)",
+      "source": "engine:sizing@1",
+      "sources": [
+        "engine:sizing@1"
+      ],
+      "set": {
+        "target": "tokens.sizing",
+        "path": "listRow.padX"
+      }
+    },
+    {
+      "id": "--fx-size-page-head-description-font",
+      "element": "sizing",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Sizing: page head description font.",
+      "default": "0.88em",
+      "source": "engine:sizing@1",
+      "sources": [
+        "engine:sizing@1"
+      ],
+      "set": {
+        "target": "tokens.sizing",
+        "path": "pageHead.descriptionFont"
+      }
+    },
+    {
+      "id": "--fx-size-page-head-description-lines",
+      "element": "sizing",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Sizing: page head description lines.",
+      "default": "2",
+      "source": "engine:sizing@1",
+      "sources": [
+        "engine:sizing@1"
+      ],
+      "set": {
+        "target": "tokens.sizing",
+        "path": "pageHead.descriptionLines"
+      }
+    },
+    {
+      "id": "--fx-size-segment-font",
+      "element": "sizing",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Sizing: segment font.",
+      "default": "0.82em",
+      "source": "engine:sizing@1",
+      "sources": [
+        "engine:sizing@1"
+      ],
+      "set": {
+        "target": "tokens.sizing",
+        "path": "segment.font"
+      }
+    },
+    {
+      "id": "--fx-size-segment-pad-x",
+      "element": "sizing",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Sizing: segment padding x.",
+      "default": "calc(var(--fx-space) * 0.8)",
+      "source": "engine:sizing@1",
+      "sources": [
+        "engine:sizing@1"
+      ],
+      "set": {
+        "target": "tokens.sizing",
+        "path": "segment.padX"
+      }
+    },
+    {
+      "id": "--fx-size-segment-pad-y",
+      "element": "sizing",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Sizing: segment padding y.",
+      "default": "calc(var(--fx-space) * 0.3)",
+      "source": "engine:sizing@1",
+      "sources": [
+        "engine:sizing@1"
+      ],
+      "set": {
+        "target": "tokens.sizing",
+        "path": "segment.padY"
+      }
+    },
+    {
+      "id": "--fx-size-tab-font",
+      "element": "sizing",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Sizing: tab font.",
+      "default": "0.86em",
+      "source": "engine:sizing@1",
+      "sources": [
+        "engine:sizing@1"
+      ],
+      "set": {
+        "target": "tokens.sizing",
+        "path": "tab.font"
+      }
+    },
+    {
+      "id": "--fx-size-tab-pad-x",
+      "element": "sizing",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Sizing: tab padding x.",
+      "default": "calc(var(--fx-space) * 0.85)",
+      "source": "engine:sizing@1",
+      "sources": [
+        "engine:sizing@1"
+      ],
+      "set": {
+        "target": "tokens.sizing",
+        "path": "tab.padX"
+      }
+    },
+    {
+      "id": "--fx-size-tab-pad-y",
+      "element": "sizing",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Sizing: tab padding y.",
+      "default": "calc(var(--fx-space) * 0.5)",
+      "source": "engine:sizing@1",
+      "sources": [
+        "engine:sizing@1"
+      ],
+      "set": {
+        "target": "tokens.sizing",
+        "path": "tab.padY"
+      }
+    },
+    {
+      "id": "--fx-size-table-font",
+      "element": "sizing",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Sizing: table font.",
+      "default": "0.86em",
+      "source": "engine:sizing@1",
+      "sources": [
+        "engine:sizing@1"
+      ],
+      "set": {
+        "target": "tokens.sizing",
+        "path": "table.font"
+      }
+    },
+    {
+      "id": "--fx-size-table-pad-x",
+      "element": "sizing",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Sizing: table padding x.",
+      "default": "calc(var(--fx-space) * 0.75)",
+      "source": "engine:sizing@1",
+      "sources": [
+        "engine:sizing@1"
+      ],
+      "set": {
+        "target": "tokens.sizing",
+        "path": "table.padX"
+      }
+    },
+    {
+      "id": "--fx-size-table-pad-y",
+      "element": "sizing",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Sizing: table padding y.",
+      "default": "calc(var(--fx-space) * 0.45)",
+      "source": "engine:sizing@1",
+      "sources": [
+        "engine:sizing@1"
+      ],
+      "set": {
+        "target": "tokens.sizing",
+        "path": "table.padY"
+      }
+    },
+    {
+      "id": "--fx-slider-thumb",
+      "element": "slider",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Slider: thumb.",
+      "default": "",
+      "source": "engine:framework/core/engines/components.ts",
+      "sources": [
+        "engine:framework/core/engines/components.ts"
+      ]
+    },
+    {
+      "id": "--fx-slider-thumb-r",
+      "element": "slider",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Slider: thumb r.",
+      "default": "",
+      "source": "engine:framework/core/engines/components.ts",
+      "sources": [
+        "engine:framework/core/engines/components.ts"
+      ]
+    },
+    {
+      "id": "--fx-slider-thumb-w",
+      "element": "slider",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Slider: thumb width.",
+      "default": "",
+      "source": "engine:framework/core/engines/components.ts",
+      "sources": [
+        "engine:framework/core/engines/components.ts"
+      ]
+    },
+    {
+      "id": "--fx-slider-track",
+      "element": "slider",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Slider: track.",
+      "default": "",
+      "source": "engine:framework/core/engines/components.ts",
+      "sources": [
+        "engine:framework/core/engines/components.ts"
+      ]
+    },
+    {
+      "id": "--fx-snap-grid",
+      "element": "page",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Page: snap grid.",
+      "default": "",
+      "source": "engine:framework/core/engines/behavior.ts",
+      "sources": [
+        "engine:framework/core/engines/behavior.ts"
+      ]
+    },
+    {
+      "id": "--fx-space",
+      "element": "page",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "basic",
+      "description": "Spacing unit every gap and padding multiplies.",
+      "default": "8px",
+      "source": "engine:framework/core/engines/navstyle.ts",
+      "sources": [
+        "engine:framework/core/engines/navstyle.ts",
+        "engine:framework/core/engines/theme.ts",
+        "engine:framework/core/engines/token-registry.mjs",
+        "framework/ui/axf.css"
+      ],
+      "set": {
+        "target": "tokens.style",
+        "path": "space"
+      }
+    },
+    {
+      "id": "--fx-success",
+      "element": "palette",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "basic",
+      "description": "Success colour for done states and confirmations.",
+      "default": "var(--fx-accent)",
+      "source": "color-theme:amber-ember",
+      "sources": [
+        "color-theme:amber-ember",
+        "color-theme:arctic-daylight",
+        "color-theme:aurora-night",
+        "color-theme:carbon-amber",
+        "color-theme:coral-studio",
+        "color-theme:crimson-dusk",
+        "color-theme:deep-ocean",
+        "color-theme:forest-night",
+        "color-theme:fresh-dark",
+        "color-theme:fresh-light",
+        "color-theme:glacier",
+        "color-theme:graphite-lime",
+        "color-theme:graphite-mint",
+        "color-theme:harbor",
+        "color-theme:hub-night",
+        "color-theme:linen-slate",
+        "color-theme:meadow",
+        "color-theme:midnight-ink",
+        "color-theme:mono-paper",
+        "color-theme:nebula",
+        "color-theme:neon-tide",
+        "color-theme:obsidian",
+        "color-theme:orchid-mist",
+        "color-theme:plum-noir",
+        "color-theme:porcelain",
+        "color-theme:rosewood-light",
+        "color-theme:saffron-day",
+        "color-theme:sage-paper",
+        "color-theme:sandstone",
+        "color-theme:slate-steel",
+        "color-theme:windows-dark",
+        "color-theme:windows-light",
+        "engine:framework/core/engines/swarm-rules.mjs",
+        "engine:framework/core/engines/token-registry.mjs",
+        "framework/ui/axf.css"
+      ],
+      "set": {
+        "target": "tokens.theme",
+        "path": "success"
+      }
+    },
+    {
+      "id": "--fx-surface",
+      "element": "palette",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "basic",
+      "description": "Background of cards, panels and dialogs.",
+      "default": "#1a1a1a",
+      "source": "color-theme:amber-ember",
+      "sources": [
+        "color-theme:amber-ember",
+        "color-theme:arctic-daylight",
+        "color-theme:aurora-night",
+        "color-theme:carbon-amber",
+        "color-theme:coral-studio",
+        "color-theme:crimson-dusk",
+        "color-theme:deep-ocean",
+        "color-theme:forest-night",
+        "color-theme:fresh-dark",
+        "color-theme:fresh-light",
+        "color-theme:glacier",
+        "color-theme:graphite-lime",
+        "color-theme:graphite-mint",
+        "color-theme:harbor",
+        "color-theme:hub-night",
+        "color-theme:linen-slate",
+        "color-theme:meadow",
+        "color-theme:midnight-ink",
+        "color-theme:mono-paper",
+        "color-theme:nebula",
+        "color-theme:neon-tide",
+        "color-theme:obsidian",
+        "color-theme:orchid-mist",
+        "color-theme:plum-noir",
+        "color-theme:porcelain",
+        "color-theme:rosewood-light",
+        "color-theme:saffron-day",
+        "color-theme:sage-paper",
+        "color-theme:sandstone",
+        "color-theme:slate-steel",
+        "color-theme:windows-dark",
+        "color-theme:windows-light",
+        "engine:framework/core/engines/token-registry.mjs",
+        "framework/ui/axf.css"
+      ],
+      "set": {
+        "target": "tokens.theme",
+        "path": "surface"
+      }
+    },
+    {
+      "id": "--fx-surface2",
+      "element": "palette",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "basic",
+      "description": "Second surface level: raised rows, hover washes, inputs.",
+      "default": "#202020",
+      "source": "color-theme:amber-ember",
+      "sources": [
+        "color-theme:amber-ember",
+        "color-theme:arctic-daylight",
+        "color-theme:aurora-night",
+        "color-theme:carbon-amber",
+        "color-theme:coral-studio",
+        "color-theme:crimson-dusk",
+        "color-theme:deep-ocean",
+        "color-theme:forest-night",
+        "color-theme:fresh-dark",
+        "color-theme:fresh-light",
+        "color-theme:glacier",
+        "color-theme:graphite-lime",
+        "color-theme:graphite-mint",
+        "color-theme:harbor",
+        "color-theme:hub-night",
+        "color-theme:linen-slate",
+        "color-theme:meadow",
+        "color-theme:midnight-ink",
+        "color-theme:mono-paper",
+        "color-theme:nebula",
+        "color-theme:neon-tide",
+        "color-theme:obsidian",
+        "color-theme:orchid-mist",
+        "color-theme:plum-noir",
+        "color-theme:porcelain",
+        "color-theme:rosewood-light",
+        "color-theme:saffron-day",
+        "color-theme:sage-paper",
+        "color-theme:sandstone",
+        "color-theme:slate-steel",
+        "color-theme:windows-dark",
+        "color-theme:windows-light",
+        "engine:framework/core/engines/token-registry.mjs",
+        "framework/ui/axf.css"
+      ],
+      "set": {
+        "target": "tokens.theme",
+        "path": "surface2"
+      }
+    },
+    {
+      "id": "--fx-surface3",
+      "element": "palette",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "basic",
+      "description": "Third surface level: menus and popovers above the panels.",
+      "default": "#2a2a2a",
+      "source": "color-theme:amber-ember",
+      "sources": [
+        "color-theme:amber-ember",
+        "color-theme:arctic-daylight",
+        "color-theme:aurora-night",
+        "color-theme:carbon-amber",
+        "color-theme:coral-studio",
+        "color-theme:crimson-dusk",
+        "color-theme:deep-ocean",
+        "color-theme:forest-night",
+        "color-theme:fresh-dark",
+        "color-theme:fresh-light",
+        "color-theme:glacier",
+        "color-theme:graphite-lime",
+        "color-theme:graphite-mint",
+        "color-theme:harbor",
+        "color-theme:hub-night",
+        "color-theme:linen-slate",
+        "color-theme:meadow",
+        "color-theme:midnight-ink",
+        "color-theme:mono-paper",
+        "color-theme:nebula",
+        "color-theme:neon-tide",
+        "color-theme:obsidian",
+        "color-theme:orchid-mist",
+        "color-theme:plum-noir",
+        "color-theme:porcelain",
+        "color-theme:rosewood-light",
+        "color-theme:saffron-day",
+        "color-theme:sage-paper",
+        "color-theme:sandstone",
+        "color-theme:slate-steel",
+        "color-theme:windows-dark",
+        "color-theme:windows-light",
+        "engine:framework/core/engines/token-registry.mjs",
+        "framework/ui/axf.css"
+      ],
+      "set": {
+        "target": "tokens.theme",
+        "path": "surface3"
+      }
+    },
+    {
+      "id": "--fx-switch-h",
+      "element": "page",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Page: switch height.",
+      "default": "calc(var(--fx-font-size) * 1.45)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-switch-w",
+      "element": "page",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Page: switch width.",
+      "default": "calc(var(--fx-font-size) * 2.6)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-active-bg",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "active",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: background when active.",
+      "default": "transparent",
+      "source": "engine:framework/core/engines/component-tokens.mjs",
+      "sources": [
+        "engine:framework/core/engines/component-tokens.mjs",
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-active-border",
+      "element": "tab-group",
+      "area": "style",
+      "state": "active",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: border when active.",
+      "default": "transparent",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-active-text",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "active",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: text colour when active.",
+      "default": "var(--fx-text)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-active-weight",
+      "element": "tab-group",
+      "area": "style",
+      "state": "active",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: font weight when active.",
+      "default": "inherit",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-badge-active-bg",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "active",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: badge background when active.",
+      "default": "color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-badge-active-text",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "active",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: badge text colour when active.",
+      "default": "var(--fx-text)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-badge-bg",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: badge background.",
+      "default": "var(--fx-surface3)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-badge-text",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: badge text colour.",
+      "default": "var(--fx-muted)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-bar-bg",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: bar background.",
+      "default": "transparent",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-bar-border",
+      "element": "tab-group",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: bar border.",
+      "default": "var(--fx-border)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-bg",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: background.",
+      "default": "transparent",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-border",
+      "element": "tab-group",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: border.",
+      "default": "transparent",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-boxed-active-bg",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "active",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: boxed background when active.",
+      "default": "var(--fx-surface)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-boxed-active-border",
+      "element": "tab-group",
+      "area": "style",
+      "state": "active",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: boxed border when active.",
+      "default": "var(--fx-border)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-chips-active-bg",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "active",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: chips background when active.",
+      "default": "var(--fx-accent-soft)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-chips-active-border",
+      "element": "tab-group",
+      "area": "style",
+      "state": "active",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: chips border when active.",
+      "default": "var(--fx-accent)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-chips-bg",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: chips background.",
+      "default": "var(--fx-surface)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-chips-border",
+      "element": "tab-group",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: chips border.",
+      "default": "var(--fx-border)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-close-hover-bg",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "hover",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: close background when hover.",
+      "default": "var(--fx-surface3)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-close-hover-text",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "hover",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: close text colour when hover.",
+      "default": "var(--fx-danger)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-close-text",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: close text colour.",
+      "default": "var(--fx-muted)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-disabled-opacity",
+      "element": "tab-group",
+      "area": "style",
+      "state": "disabled",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: transparency when disabled.",
+      "default": "1",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-disabled-text",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "disabled",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: text colour when disabled.",
+      "default": "var(--fx-tab-text)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-focus-ring",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "focus",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: focus ring when focus.",
+      "default": "var(--fx-focus)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-fold-bg",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: fold background.",
+      "default": "var(--fx-surface)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-fold-border",
+      "element": "tab-group",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: fold border.",
+      "default": "var(--fx-border)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-fold-radius",
+      "element": "tab-group",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: fold corner radius.",
+      "default": "var(--fx-radius-sm)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-fold-text",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: fold text colour.",
+      "default": "var(--fx-text)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-gap",
+      "element": "tab-group",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: gap.",
+      "default": "var(--fx-dens-gap-md)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-hover-bg",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "hover",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: background when hover.",
+      "default": "transparent",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-hover-border",
+      "element": "tab-group",
+      "area": "style",
+      "state": "hover",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: border when hover.",
+      "default": "var(--fx-tab-border)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-hover-text",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "hover",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: text colour when hover.",
+      "default": "var(--fx-text)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-indicator",
+      "element": "tab-group",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: active indicator.",
+      "default": "var(--fx-accent)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-indicator-size",
+      "element": "tab-group",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: active indicator size.",
+      "default": "2px",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-opacity",
+      "element": "tab-group",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: transparency.",
+      "default": "1",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-pills-active-bg",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "active",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: pills background when active.",
+      "default": "var(--fx-accent)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-pills-active-text",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "active",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: pills text colour when active.",
+      "default": "var(--fx-accent-text)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-plain-active-text",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "active",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: plain text colour when active.",
+      "default": "var(--fx-accent)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-plain-active-weight",
+      "element": "tab-group",
+      "area": "style",
+      "state": "active",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: plain font weight when active.",
+      "default": "600",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-pressed-bg",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "pressed",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: background when pressed.",
+      "default": "var(--fx-tab-hover-bg)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-pressed-text",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "pressed",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: text colour when pressed.",
+      "default": "var(--fx-tab-hover-text)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-px",
+      "element": "tab-group",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: horizontal padding.",
+      "default": "",
+      "source": "engine:framework/core/engines/components.ts",
+      "sources": [
+        "engine:framework/core/engines/components.ts"
+      ]
+    },
+    {
+      "id": "--fx-tab-py",
+      "element": "tab-group",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: vertical padding.",
+      "default": "",
+      "source": "engine:framework/core/engines/components.ts",
+      "sources": [
+        "engine:framework/core/engines/components.ts"
+      ]
+    },
+    {
+      "id": "--fx-tab-radius-boxed",
+      "element": "tab-group",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: corner radius boxed.",
+      "default": "var(--fx-radius-sm)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-radius-chips",
+      "element": "tab-group",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: corner radius chips.",
+      "default": "999px",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-radius-pills",
+      "element": "tab-group",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: corner radius pills.",
+      "default": "999px",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-radius-plain",
+      "element": "tab-group",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: corner radius plain.",
+      "default": "0",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-radius-segmented",
+      "element": "tab-group",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: corner radius segmented.",
+      "default": "var(--fx-radius-sm)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-radius-underline",
+      "element": "tab-group",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: corner radius underline.",
+      "default": "0",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-radius-window",
+      "element": "tab-group",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: corner radius window.",
+      "default": "var(--fx-radius-sm)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-segmented-active-bg",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "active",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: segmented background when active.",
+      "default": "var(--fx-surface)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-segmented-active-shadow",
+      "element": "tab-group",
+      "area": "style",
+      "state": "active",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: segmented shadow when active.",
+      "default": "var(--fx-shadow-sm)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-segmented-bg",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: segmented background.",
+      "default": "var(--fx-surface2)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-segmented-border",
+      "element": "tab-group",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: segmented border.",
+      "default": "var(--fx-border)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-segmented-radius",
+      "element": "tab-group",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: segmented corner radius.",
+      "default": "var(--fx-radius-md)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-sticky-bg",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: sticky background.",
+      "default": "var(--fx-surface)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-text",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: text colour.",
+      "default": "var(--fx-muted)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-window-active-bg",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "active",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: window background when active.",
+      "default": "var(--fx-surface)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-window-active-shadow",
+      "element": "tab-group",
+      "area": "style",
+      "state": "active",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: window shadow when active.",
+      "default": "var(--fx-shadow-sm)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tab-window-bar-bg",
+      "element": "tab-group",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: window bar background.",
+      "default": "var(--fx-surface2)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-tabs-per-row",
+      "element": "tab-group",
+      "area": "layout",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Tab group: per row.",
+      "default": "",
+      "source": "engine:framework/core/engines/chrome-settings-rules.mjs",
+      "sources": [
+        "engine:framework/core/engines/chrome-settings-rules.mjs"
+      ]
+    },
+    {
+      "id": "--fx-tap-arm-ms",
+      "element": "page",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Page: tap arm ms.",
+      "default": "",
+      "source": "engine:framework/react/tapConfirm.ts",
+      "sources": [
+        "engine:framework/react/tapConfirm.ts"
+      ]
+    },
+    {
+      "id": "--fx-text",
+      "element": "palette",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "basic",
+      "description": "Main text colour.",
+      "default": "#eee",
+      "source": "color-theme:amber-ember",
+      "sources": [
+        "color-theme:amber-ember",
+        "color-theme:arctic-daylight",
+        "color-theme:aurora-night",
+        "color-theme:carbon-amber",
+        "color-theme:coral-studio",
+        "color-theme:crimson-dusk",
+        "color-theme:deep-ocean",
+        "color-theme:forest-night",
+        "color-theme:fresh-dark",
+        "color-theme:fresh-light",
+        "color-theme:glacier",
+        "color-theme:graphite-lime",
+        "color-theme:graphite-mint",
+        "color-theme:harbor",
+        "color-theme:hub-night",
+        "color-theme:linen-slate",
+        "color-theme:meadow",
+        "color-theme:midnight-ink",
+        "color-theme:mono-paper",
+        "color-theme:nebula",
+        "color-theme:neon-tide",
+        "color-theme:obsidian",
+        "color-theme:orchid-mist",
+        "color-theme:plum-noir",
+        "color-theme:porcelain",
+        "color-theme:rosewood-light",
+        "color-theme:saffron-day",
+        "color-theme:sage-paper",
+        "color-theme:sandstone",
+        "color-theme:slate-steel",
+        "color-theme:windows-dark",
+        "color-theme:windows-light",
+        "engine:framework/core/engines/token-registry.mjs",
+        "framework/ui/axf.css"
+      ],
+      "set": {
+        "target": "tokens.theme",
+        "path": "text"
+      }
+    },
+    {
+      "id": "--fx-toolbar-py",
+      "element": "toolbar",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Toolbar: vertical padding.",
+      "default": "",
+      "source": "engine:framework/core/engines/components.ts",
+      "sources": [
+        "engine:framework/core/engines/components.ts"
+      ]
+    },
+    {
+      "id": "--fx-toolbtn-h",
+      "element": "page",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Page: toolbtn height.",
+      "default": "",
+      "source": "engine:framework/core/engines/components.ts",
+      "sources": [
+        "engine:framework/core/engines/components.ts"
+      ]
+    },
+    {
+      "id": "--fx-tracking",
+      "element": "typography",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Letter spacing of text.",
+      "default": "-0.01",
+      "source": "engine:framework/core/engines/theme.ts",
+      "sources": [
+        "engine:framework/core/engines/theme.ts",
+        "engine:framework/core/engines/token-registry.mjs"
+      ],
+      "set": {
+        "target": "tokens.style",
+        "path": "tracking"
+      }
+    },
+    {
+      "id": "--fx-type-eyebrow-case",
+      "element": "typography",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Text: eyebrow case.",
+      "default": "uppercase",
+      "source": "engine:typography@1",
+      "sources": [
+        "engine:typography@1"
+      ],
+      "set": {
+        "target": "tokens.typography",
+        "path": "eyebrow.case"
+      }
+    },
+    {
+      "id": "--fx-type-eyebrow-size",
+      "element": "typography",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Text: eyebrow size.",
+      "default": "0.66em",
+      "source": "engine:typography@1",
+      "sources": [
+        "engine:typography@1"
+      ],
+      "set": {
+        "target": "tokens.typography",
+        "path": "eyebrow.size"
+      }
+    },
+    {
+      "id": "--fx-type-eyebrow-tracking",
+      "element": "typography",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Text: eyebrow letter spacing.",
+      "default": "0.06em",
+      "source": "engine:typography@1",
+      "sources": [
+        "engine:typography@1"
+      ],
+      "set": {
+        "target": "tokens.typography",
+        "path": "eyebrow.tracking"
+      }
+    },
+    {
+      "id": "--fx-type-eyebrow-weight",
+      "element": "typography",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Text: eyebrow font weight.",
+      "default": "600",
+      "source": "engine:typography@1",
+      "sources": [
+        "engine:typography@1"
+      ],
+      "set": {
+        "target": "tokens.typography",
+        "path": "eyebrow.weight"
+      }
+    },
+    {
+      "id": "--fx-type-headings-h1",
+      "element": "typography",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Text: headings h1.",
+      "default": "1.3em",
+      "source": "engine:typography@1",
+      "sources": [
+        "engine:typography@1"
+      ],
+      "set": {
+        "target": "tokens.typography",
+        "path": "headings.h1"
+      }
+    },
+    {
+      "id": "--fx-type-headings-h2",
+      "element": "typography",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Text: headings h2.",
+      "default": "1.12em",
+      "source": "engine:typography@1",
+      "sources": [
+        "engine:typography@1"
+      ],
+      "set": {
+        "target": "tokens.typography",
+        "path": "headings.h2"
+      }
+    },
+    {
+      "id": "--fx-type-headings-h3",
+      "element": "typography",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Text: headings h3.",
+      "default": "0.9em",
+      "source": "engine:typography@1",
+      "sources": [
+        "engine:typography@1"
+      ],
+      "set": {
+        "target": "tokens.typography",
+        "path": "headings.h3"
+      }
+    },
+    {
+      "id": "--fx-type-headings-h4",
+      "element": "typography",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Text: headings h4.",
+      "default": "0.84em",
+      "source": "engine:typography@1",
+      "sources": [
+        "engine:typography@1"
+      ],
+      "set": {
+        "target": "tokens.typography",
+        "path": "headings.h4"
+      }
+    },
+    {
+      "id": "--fx-type-headings-tracking",
+      "element": "typography",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Text: headings letter spacing.",
+      "default": "-0.02em",
+      "source": "engine:typography@1",
+      "sources": [
+        "engine:typography@1"
+      ],
+      "set": {
+        "target": "tokens.typography",
+        "path": "headings.tracking"
+      }
+    },
+    {
+      "id": "--fx-type-line-loose",
+      "element": "typography",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Text: line loose.",
+      "default": "1.6",
+      "source": "engine:typography@1",
+      "sources": [
+        "engine:typography@1"
+      ],
+      "set": {
+        "target": "tokens.typography",
+        "path": "line.loose"
+      }
+    },
+    {
+      "id": "--fx-type-line-normal",
+      "element": "typography",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Text: line normal.",
+      "default": "1.4",
+      "source": "engine:typography@1",
+      "sources": [
+        "engine:typography@1"
+      ],
+      "set": {
+        "target": "tokens.typography",
+        "path": "line.normal"
+      }
+    },
+    {
+      "id": "--fx-type-line-tight",
+      "element": "typography",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Text: line tight.",
+      "default": "1.2",
+      "source": "engine:typography@1",
+      "sources": [
+        "engine:typography@1"
+      ],
+      "set": {
+        "target": "tokens.typography",
+        "path": "line.tight"
+      }
+    },
+    {
+      "id": "--fx-type-mono-size",
+      "element": "typography",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Text: monospace font size.",
+      "default": "0.88em",
+      "source": "engine:typography@1",
+      "sources": [
+        "engine:typography@1"
+      ],
+      "set": {
+        "target": "tokens.typography",
+        "path": "mono.size"
+      }
+    },
+    {
+      "id": "--fx-type-root-2xl",
+      "element": "typography",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Text: root 2xl.",
+      "default": "calc(var(--fx-font-size) * 1.7)",
+      "source": "engine:typography@1",
+      "sources": [
+        "engine:typography@1"
+      ]
+    },
+    {
+      "id": "--fx-type-root-2xs",
+      "element": "typography",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Text: root 2xs.",
+      "default": "calc(var(--fx-font-size) * 0.66)",
+      "source": "engine:typography@1",
+      "sources": [
+        "engine:typography@1"
+      ]
+    },
+    {
+      "id": "--fx-type-root-lg",
+      "element": "typography",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Text: root large.",
+      "default": "calc(var(--fx-font-size) * 1.06)",
+      "source": "engine:typography@1",
+      "sources": [
+        "engine:typography@1"
+      ]
+    },
+    {
+      "id": "--fx-type-root-md",
+      "element": "typography",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Text: root medium.",
+      "default": "calc(var(--fx-font-size) * 0.9)",
+      "source": "engine:typography@1",
+      "sources": [
+        "engine:typography@1"
+      ]
+    },
+    {
+      "id": "--fx-type-root-sm",
+      "element": "typography",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Text: root small.",
+      "default": "calc(var(--fx-font-size) * 0.82)",
+      "source": "engine:typography@1",
+      "sources": [
+        "engine:typography@1"
+      ]
+    },
+    {
+      "id": "--fx-type-root-xl",
+      "element": "typography",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Text: root extra large.",
+      "default": "calc(var(--fx-font-size) * 1.26)",
+      "source": "engine:typography@1",
+      "sources": [
+        "engine:typography@1"
+      ]
+    },
+    {
+      "id": "--fx-type-root-xs",
+      "element": "typography",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Text: root extra small.",
+      "default": "calc(var(--fx-font-size) * 0.74)",
+      "source": "engine:typography@1",
+      "sources": [
+        "engine:typography@1"
+      ]
+    },
+    {
+      "id": "--fx-type-scale-2xl",
+      "element": "typography",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Text: scale 2xl.",
+      "default": "1.7em",
+      "source": "engine:typography@1",
+      "sources": [
+        "engine:typography@1"
+      ],
+      "set": {
+        "target": "tokens.typography",
+        "path": "scale.2xl"
+      }
+    },
+    {
+      "id": "--fx-type-scale-2xs",
+      "element": "typography",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Text: scale 2xs.",
+      "default": "0.66em",
+      "source": "engine:typography@1",
+      "sources": [
+        "engine:typography@1"
+      ],
+      "set": {
+        "target": "tokens.typography",
+        "path": "scale.2xs"
+      }
+    },
+    {
+      "id": "--fx-type-scale-lg",
+      "element": "typography",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Text: scale large.",
+      "default": "1.06em",
+      "source": "engine:typography@1",
+      "sources": [
+        "engine:typography@1"
+      ],
+      "set": {
+        "target": "tokens.typography",
+        "path": "scale.lg"
+      }
+    },
+    {
+      "id": "--fx-type-scale-md",
+      "element": "typography",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Text: scale medium.",
+      "default": "0.9em",
+      "source": "engine:typography@1",
+      "sources": [
+        "engine:typography@1"
+      ],
+      "set": {
+        "target": "tokens.typography",
+        "path": "scale.md"
+      }
+    },
+    {
+      "id": "--fx-type-scale-sm",
+      "element": "typography",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Text: scale small.",
+      "default": "0.82em",
+      "source": "engine:typography@1",
+      "sources": [
+        "engine:typography@1"
+      ],
+      "set": {
+        "target": "tokens.typography",
+        "path": "scale.sm"
+      }
+    },
+    {
+      "id": "--fx-type-scale-xl",
+      "element": "typography",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Text: scale extra large.",
+      "default": "1.26em",
+      "source": "engine:typography@1",
+      "sources": [
+        "engine:typography@1"
+      ],
+      "set": {
+        "target": "tokens.typography",
+        "path": "scale.xl"
+      }
+    },
+    {
+      "id": "--fx-type-scale-xs",
+      "element": "typography",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "advanced",
+      "description": "Text: scale extra small.",
+      "default": "0.74em",
+      "source": "engine:typography@1",
+      "sources": [
+        "engine:typography@1"
+      ],
+      "set": {
+        "target": "tokens.typography",
+        "path": "scale.xs"
+      }
+    },
+    {
+      "id": "--fx-type-weights-body",
+      "element": "typography",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Text: weights body.",
+      "default": "400",
+      "source": "engine:typography@1",
+      "sources": [
+        "engine:typography@1"
+      ],
+      "set": {
+        "target": "tokens.typography",
+        "path": "weights.body"
+      }
+    },
+    {
+      "id": "--fx-type-weights-medium",
+      "element": "typography",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Text: weights medium.",
+      "default": "550",
+      "source": "engine:typography@1",
+      "sources": [
+        "engine:typography@1"
+      ],
+      "set": {
+        "target": "tokens.typography",
+        "path": "weights.medium"
+      }
+    },
+    {
+      "id": "--fx-type-weights-strong",
+      "element": "typography",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Text: weights strong.",
+      "default": "600",
+      "source": "engine:typography@1",
+      "sources": [
+        "engine:typography@1"
+      ],
+      "set": {
+        "target": "tokens.typography",
+        "path": "weights.strong"
+      }
+    },
+    {
+      "id": "--fx-warning",
+      "element": "palette",
+      "area": "colour",
+      "state": "any",
+      "scheme": "both",
+      "level": "basic",
+      "description": "Warning colour for attention states.",
+      "default": "var(--fx-accent)",
+      "source": "color-theme:amber-ember",
+      "sources": [
+        "color-theme:amber-ember",
+        "color-theme:arctic-daylight",
+        "color-theme:aurora-night",
+        "color-theme:carbon-amber",
+        "color-theme:coral-studio",
+        "color-theme:crimson-dusk",
+        "color-theme:deep-ocean",
+        "color-theme:forest-night",
+        "color-theme:fresh-dark",
+        "color-theme:fresh-light",
+        "color-theme:glacier",
+        "color-theme:graphite-lime",
+        "color-theme:graphite-mint",
+        "color-theme:harbor",
+        "color-theme:hub-night",
+        "color-theme:linen-slate",
+        "color-theme:meadow",
+        "color-theme:midnight-ink",
+        "color-theme:mono-paper",
+        "color-theme:nebula",
+        "color-theme:neon-tide",
+        "color-theme:obsidian",
+        "color-theme:orchid-mist",
+        "color-theme:plum-noir",
+        "color-theme:porcelain",
+        "color-theme:rosewood-light",
+        "color-theme:saffron-day",
+        "color-theme:sage-paper",
+        "color-theme:sandstone",
+        "color-theme:slate-steel",
+        "color-theme:windows-dark",
+        "color-theme:windows-light",
+        "engine:framework/core/engines/swarm-rules.mjs",
+        "engine:framework/core/engines/token-registry.mjs",
+        "framework/ui/axf.css"
+      ],
+      "set": {
+        "target": "tokens.theme",
+        "path": "warning"
+      }
+    },
+    {
+      "id": "--fx-win-handle",
+      "element": "page",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Page: win handle.",
+      "default": "calc(var(--fx-space) * 3)",
+      "source": "framework/ui/axf.css",
+      "sources": [
+        "framework/ui/axf.css"
+      ]
+    },
+    {
+      "id": "--fx-wrap-groups",
+      "element": "page",
+      "area": "style",
+      "state": "any",
+      "scheme": "both",
+      "level": "pro",
+      "description": "Page: wrap groups.",
+      "default": "",
+      "source": "engine:framework/core/engines/theme.ts",
+      "sources": [
+        "engine:framework/core/engines/theme.ts"
+      ]
+    }
+  ]
+}

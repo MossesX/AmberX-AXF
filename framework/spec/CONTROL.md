@@ -27,7 +27,7 @@ what it needs, and what it answers are decided here once, so the docs, the tools
 | Field | Meaning |
 |---|---|
 | `op` | `list` · `get` · `set` · `reset` · `add` · `remove` · `act` |
-| `target` | `tokens.theme` · `tokens.style` · `tokens.layout` · `tokens.typography` · `tokens.density` · `tokens.sizing` · `tokens.look` · `tokens.custom` · `tokens.slots` · `tokens.nav` · `amberx.items` · `amberx.lists` · `planner.plans` · `planner.builds` · `console.screens` · `console.dialogs` · `console.settings` · `console.actions` · `console.nav` · `console.clients` · `pass.scopes` · `plugins.commands` · `plugins.reads` · `console.control` |
+| `target` | `tokens.theme` · `tokens.style` · `tokens.layout` · `tokens.typography` · `tokens.density` · `tokens.sizing` · `tokens.look` · `tokens.custom` · `tokens.slots` · `tokens.nav` · `tokens.instances` · `amberx.items` · `amberx.lists` · `planner.plans` · `planner.builds` · `console.screens` · `console.dialogs` · `console.settings` · `console.actions` · `console.nav` · `console.clients` · `pass.scopes` · `plugins.commands` · `plugins.reads` · `console.control` |
 | `path` | the token id (`navWidth`, `accent`, `scale.md`, `button.radius@amber`) or the record id; `get`/`set`/`remove`/`act` need it, `reset` without one resets the whole target |
 | `value` | what to set (a token value, or the fields to change on a record) · the new record for `add` |
 | `action` + `input` | the verb for `act` and what it wants (`done`, `move {list}`, `approve {phase}`, `step {step, done}` …) |
@@ -46,6 +46,11 @@ Effects: `list`/`get` read · `set`/`reset`/`add`/`act` write · `remove` destru
 and range. The static targets (theme, style, layout, typography, density, sizing) are listed by the registry itself; `look`,
 `custom` and `slots` are listed by the running app (look@1 ids, asset-customize@1 tokens, the appearance slot types).
 `tokens.slots` set = `runtime.swap(type, id)`, the hot-swap.
+`tokens.style` also carries the component token families (component-tokens@1, `core/engines/component-tokens.mjs`): `grid.<token>` and
+`tabs.<token>` rows with their CSS variable, level and description (`set tokens.style tabs.pillsActiveBg accent2`).
+`tokens.instances` (same build) is one tab row's or one grid's own values on top of them: path `<grid|tabs>.<instance>[.<token>]`;
+`set` a token, `reset` a token / a whole instance / everything, `act <family>.<instance> restore-previous` (the values before the
+last edit) or `restore-hub` (drop the instance's values so it follows the shared look). One setting, `axf.tokens.instances`.
 `tokens.nav` (nav-style@1, `core/engines/navstyle-rules.mjs`) tunes the navigation menu with sub menus: colours, font, icons,
 density, width, the sub-menu animation, behaviour, pinned / hidden / ordered items and `accents.<item id>`; only navs that opt in
 (nav-menu `navStyle: true`) read it.
