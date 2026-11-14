@@ -792,7 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 19:56 UTC · `per-instance-settings-picker-merge-main` PR #642 (all) · builds-live
 - 2026-11-13 19:54 UTC · `full-voice-control-merge-main-and-land` note (all) · orchestrator
 - 2026-11-13 19:55 UTC · `skin-axhub-override-switch-greyed-out` → pending, note (all) · pipeline
 - 2026-11-13 19:55 UTC · `land-drive-live-console-first-resolve` note (all) · pipeline
@@ -1192,6 +1191,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 01:10 UTC · `voice-listener-use-claude-when-connected` note (all) · orchestrator
 - 2026-11-14 01:10 UTC · `voice-listener-use-claude-when-connected` s13 done (all) · orchestrator
 - 2026-11-14 01:11 UTC · `voice-listener-use-claude-when-connected` PR #666 (all) · builds-live
+- 2026-11-14 01:11 UTC · `voice-listener-use-claude-when-connected` s14 done, → built (all) · orchestrator
 
 ## Token passes (log)
 
