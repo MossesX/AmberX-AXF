@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5418,
- "updatedAt": "2026-11-14T21:00:58.081Z",
+ "rev": 5419,
+ "updatedAt": "2026-11-14T21:01:10.247Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -209219,7 +209219,7 @@
    "mergedAt": "2026-11-14T20:51:15Z",
    "priority": "P1",
    "createdAt": "2026-11-13T19:49:31.102Z",
-   "updatedAt": "2026-11-14T21:00:56.113Z",
+   "updatedAt": "2026-11-14T21:01:04Z",
    "builtAt": "",
    "notes": [
     {
@@ -209261,6 +209261,10 @@
     {
      "text": "Reconciler: PR #652 merged",
      "at": "2026-11-14T21:00:56.113Z"
+    },
+    {
+     "text": "Shipped manifest sm-skin-animations-swatches-skin-switch rev 1 sent to Shipped features (orchestrator): landed aee42bbe8, 121 file(s), 10 test line(s), 5 open.",
+     "at": "2026-11-14T21:01:04Z"
     }
    ],
    "approvals": [],
@@ -209310,6 +209314,12 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "shipped": {
+    "id": "sm-skin-animations-swatches-skin-switch",
+    "rev": 1,
+    "at": "2026-11-14T21:01:04Z",
+    "landedCommit": "aee42bbe81ae9a1f36418bd747d96332e151e0fa"
    },
    "steps": [
     {
@@ -209500,7 +209510,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": {
