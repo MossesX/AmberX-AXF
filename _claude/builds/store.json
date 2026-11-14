@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5422,
- "updatedAt": "2026-11-14T22:15:50.040Z",
+ "rev": 5423,
+ "updatedAt": "2026-11-14T22:15:58.038Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -222229,7 +222229,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-14T18:15:01.485Z",
-   "updatedAt": "2026-11-14T20:07:36.471Z",
+   "updatedAt": "2026-11-14T22:15:53.636Z",
    "builtAt": "",
    "notes": [
     {
@@ -222251,6 +222251,10 @@
     {
      "text": "Brett asked for status on the skin landings.",
      "at": "2026-11-14T20:07:36.471Z"
+    },
+    {
+     "text": "Brett (now): stop waiting on the stacked merge queue. Land the skin PRs one at a time directly, in order (#647, #648, #590, #618, #641, #652, #657, #654): merge origin/main into each, run its checks once, merge to main, then the next. Don't restack.",
+     "at": "2026-11-14T22:15:53.636Z"
     }
    ],
    "approvals": [],
@@ -222944,7 +222948,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -222960,16 +222964,22 @@
    "title": "Replace merge queue with one-at-a-time landing",
    "category": "",
    "detail": "Brett overrides the Nov 4 'only the queue merges' rule. Remove the batched/stacked merge queue (push-banner land.mjs rounds) and replace it with a serial lander: take one finished build, merge origin/main into it, regenerate generated files (generated-files@1), run its checks once, merge it to main, then the next. No stacking builds on each other, so a fix to one never restarts the others' tests. A cancelled CI run (superseded by a push) is never counted as a failure. On a red check, auto-file a fix build and move on to the next build instead of blocking the line. Show the landing line and its current build in the console with full API and voice control (pause, skip, move up). Redeploy the console after each landing batch. Tests, help, Shipped features.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "",
    "pr": "",
+   "priority": "P0",
    "createdAt": "2026-11-14T22:15:48.311Z",
-   "updatedAt": "2026-11-14T22:15:48.311Z",
+   "updatedAt": "2026-11-14T22:15:50.980Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-14T22:15:50.980Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -222984,6 +222994,28 @@
     "from": "",
     "addenda": []
    },
+   "pipeline": {
+    "queuedAt": "2026-11-14T22:15:50.378Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
    "steps": [],
    "profiles": [
     "all"
@@ -222993,7 +223025,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
