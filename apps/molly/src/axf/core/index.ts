@@ -23,6 +23,7 @@ export * from './engines/brand';
 export * from './engines/interface';
 export * from './engines/roller';
 export * from './engines/behavior';
+export * from './engines/swatches';
 export * from './engines/tapconfirm';
 export * from './engines/chrome-settings-rules.mjs';
 export * from './engines/scale';

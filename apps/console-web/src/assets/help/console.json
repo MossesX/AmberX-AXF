@@ -538,6 +538,27 @@
         "kind": "toggle"
       },
       {
+        "target": "get-my-skin-only-from-axhub",
+        "title": "Get my skin only from axHub",
+        "text": "On: this console takes its skin, colour theme and every token from axHub's look only, and a change made on axHub shows up here live. Skin picks, overrides, rolls, packages and Token Control changes made only in this console are kept, not used; their controls are locked and say Following axHub. Off (the default): this console's own look.",
+        "more": "Voice: \"lock the console to the axHub skin\" / \"unlock the console from the axHub skin\". REST, MCP and the CLI: the action appearance.hubskin:on|off (axf console action appearance.hubskin on), or the setting itself through console.settings / settings.set:axf.lock.hubskin:on|off.",
+        "related": [
+          "follow-the-hub-wide-skin",
+          "override-axhub"
+        ],
+        "kind": "toggle"
+      },
+      {
+        "target": "override-axhub",
+        "title": "Override axHub",
+        "text": "The switch under Get my skin only from axHub. You only have one or the other: turning Override on turns axHub-only off, and turning axHub-only back on turns Override off. While axHub-only is on, every screen that would change the skin or an asset is greyed out with a note and a Click here to override link; the link and this switch ask once, then unlock editing. What you edit from then on is marked Overridden and no longer refreshes or inherits any of its data from axHub.",
+        "more": "Voice: \"override the axHub skin\" / \"stop overriding the axHub skin\". REST, MCP and the CLI: the action appearance.hubskin.override:on|off (axf console action appearance.hubskin.override on), or the setting through console.settings / settings.set:axf.lock.hubskin.override:on|off. The overridden parts are the setting axf.lock.hubskin.overridden.",
+        "related": [
+          "get-my-skin-only-from-axhub"
+        ],
+        "kind": "toggle"
+      },
+      {
         "target": "refresh-the-list-live-builds-and-history",
         "title": "Refresh",
         "text": "Reloads the list, the live builds and the history."

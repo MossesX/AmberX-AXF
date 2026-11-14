@@ -6,7 +6,7 @@
  * so every app follows. The token tree is the Theme manager's (capability axf.token-tree@1, model.ts).
  */
 import { useEffect, useMemo, useState, type CSSProperties } from 'react';
-import { Button, Checkbox, Chip, ColorField, Container, Icon, IconButton, Note, Segmented, SelectField, Switch, TextField, useAxfState, useEditorSync, useRuntime } from '@console/axf/react';
+import { Button, Checkbox, Chip, ColorField, Container, HubSkinLockArea, Icon, IconButton, Note, Segmented, SelectField, Switch, TextField, useAxfState, useEditorSync, useRuntime } from '@console/axf/react';
 import { assetTypeSpecs, colorThemeVars, styleThemeVars } from '@console/axf/core';
 import type { ColorThemeData, StyleThemeData } from '@console/axf/core';
 import { call, del, post, type SavedTheme } from './api';
@@ -126,6 +126,7 @@ function Editor({ tt }: { tt: TokenTree }) {
   const editor = (tk: Token) => <TokenValue key={tk.id} token={tk} value={value(tk)} onChange={(v) => edit(tk.type, tk.path, v)} />;
 
   return (
+    <HubSkinLockArea>
     <div className={`${P} fx-stack`}>
       <div className={`${P}__bar`} role="toolbar" aria-label="Theme editor">
         <Segmented label="View" size="sm" value={view} onChange={setView} options={VIEWS.map((v) => ({ value: v.value, label: v.label, icon: v.icon, title: v.title }))} />
@@ -196,6 +197,7 @@ function Editor({ tt }: { tt: TokenTree }) {
         </aside>
       </div>
     </div>
+    </HubSkinLockArea>
   );
 }
 

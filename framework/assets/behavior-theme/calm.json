@@ -12,7 +12,12 @@
       "speed": "slow",
       "easing": "standard",
       "reduced": "system",
-      "entrance": "rise"
+      "entrance": "rise",
+      "swatches": "wave",
+      "skinSwitch": "fade",
+      "picker": "fan",
+      "animSpeed": 70,
+      "animIntensity": 35
     },
     "interaction": {
       "hover": "tint",

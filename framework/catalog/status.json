@@ -139,6 +139,12 @@
     "wave": 1,
     "module": "axf-kernel"
   },
+  "f.tokenregistry": {
+    "status": "built",
+    "wave": 1,
+    "module": "axf-kernel",
+    "notes": "Build token-registry-skin-editor-live-sandbox (Nov 13 2026): framework/schemas/token-registry.json, spec/check-token-registry.mjs, console plugin skin-editor (web + Python twin), REST / MCP / CLI / voice. Kotlin twin deferred (PORTING.md)."
+  },
   "f.locals": {
     "status": "built",
     "wave": 1,
@@ -2299,5 +2305,23 @@
     "wave": 1,
     "module": "app-console",
     "notes": "context-lead@1: rt.contextExtras keys '^:<name>' lead every context menu above one separator (core/engines/windows.ts withContextLead, react Overlays ContextMenuHost; any target, even contributions:false, right-click and long-press). The console registers Console settings (app.settings, folding the asset's own Settings in) plus console.settings.open for search, voice, MCP and CLI; help entries; checks spec/check-context-lead.mts + apps/console-web/scripts/console-settings-menu.mts. Kotlin twin deferred."
+  },
+  "cx.skin.animations": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "Skin animations (build skin-animations-swatches-skin-switch): behaviour-theme motion.swatches / skinSwitch / picker / animSpeed / animIntensity (core/engines/animation-rules.mjs + behavior.ts) compiled to --fx-anim-* tokens, off under reduced motion; Swatches rows on skin cards, the skin-switch View Transition ripple / sweep / fade from the tap point, SwatchFan colour pickers (ColorField, colour settings, Theme manager, Explorer); per-skin sets in the behaviour themes; Settings → Appearance → Animations. API: rt.animations / setAnimation / resetAnimations, actions animations.set|off|reset|state|open (console.actions run: REST /api/control, MCP control, axf control, voice), CLI framework/cli/animations.mjs. Check spec/check-skin-animations.mts, fixture skin-animations.json. Kotlin twin deferred."
+  },
+  "f.appearance.hubskinonly": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "Nov 13 2026 (build console-skin-axhub-only): console Settings → Appearance → Get my skin only from axHub (default off). On: the look is composed from the hub-wide skin over the default snapshot only (skin-rules.mjs hubOnlyLook, fixture skin.json scopes.hubOnly); own skin, overrides, colour pick, UI/plugin scopes, device tweaks and plugin overrides are kept, not drawn; the switch drives the appearance lock (reason hub) so every look control is locked with \"Following axHub\"; hub changes apply live. Reachable by the setting (search, console.settings, settings.set:axf.lock.hubskin), the appearance.hubskin action and voice (\"lock the console to the axHub skin\", Python twin). Kotlin twin deferred (PORTING.md)."
+  },
+  "f.appearance.hubskinoverride": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "Nov 13 2026 (build skin-axhub-override-switch-greyed-out): console Settings → Appearance → Override axHub, under Get my skin only from axHub (default off). One or the other whichever way either is set (runtime onChange: Override on clears axf.lock.hubskin, axHub-only on clears axf.lock.hubskin.override and the overridden marks). While axHub-only is on every skin and asset editor is disabled, not hidden (HubSkinLockArea: Theme manager rows, Theme editor, Asset studio, nav style, context menu designer; the Appearance panel, skin picker, every-asset picker and plugin themes through the lock), each under HubSkinLockNote with Brett's wording and a Click here to override link; the link and the switch ask one confirm. Edits under Override are recorded in axf.lock.hubskin.overridden and shown as Overridden chips. Reachable by the setting (search, console.settings, settings.set:axf.lock.hubskin.override), the appearance.hubskin.override action and voice (\"override the axHub skin\", Python twin). Kotlin twin deferred (PORTING.md)."
   }
 }
