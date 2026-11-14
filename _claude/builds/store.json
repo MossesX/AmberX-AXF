@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5432,
- "updatedAt": "2026-11-14T22:21:11.282Z",
+ "rev": 5433,
+ "updatedAt": "2026-11-14T22:21:20.440Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -223716,7 +223716,13 @@
     "note": "",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Fable",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-14T22:21:10.904Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -224435,7 +224441,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 5,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -224510,7 +224516,13 @@
     "note": "",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-14T22:21:10.904Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
@@ -225036,7 +225048,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
