@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5535,
- "updatedAt": "2026-11-14T23:03:29.123Z",
+ "rev": 5536,
+ "updatedAt": "2026-11-14T23:03:47.401Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -140399,10 +140399,10 @@
    "pendingId": "",
    "alias": "orchestrator-table-columns-model-queue",
    "branch": "claude/orchestrator-table-columns-model-queue-assigned",
-   "pr": "",
+   "pr": "#680",
    "priority": "P0",
    "createdAt": "2026-11-10T00:17:45.319Z",
-   "updatedAt": "2026-11-14T23:02:28.836Z",
+   "updatedAt": "2026-11-14T23:03:45.492Z",
    "builtAt": "",
    "notes": [
     {
@@ -140563,7 +140563,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 74,
+   "rev": 75,
    "deleted": false,
    "deletedAt": "",
    "pending": {
