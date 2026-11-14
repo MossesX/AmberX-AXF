@@ -34,7 +34,7 @@ export interface PickerDialogProps {
   /** Engine state from outside (the API drives an open picker); omitted = the dialog keeps its own. */
   state?: PickerState;
   onState?: (s: PickerState) => void;
-  /** Console-control address of this picker (`picker:<id>`), stamped as data-axf-target. */
+  /** Console-control address of the picker this dialog belongs to (`button:picker-<id>`), stamped as data-fx-picker-for. */
   target?: string;
 }
 
@@ -144,7 +144,7 @@ export function PickerDialog({ model, onChange, onClose, returnFocus, state: out
     <div className="fx-picker__scrim" onPointerDown={(e) => { if (e.target === e.currentTarget) close(); }}>
       <div
         ref={panelRef} className="fx-picker" role="dialog" aria-modal="true" aria-labelledby={titleId}
-        data-axf-target={target} data-fx-picker-multiple={model.multiple ? 'on' : undefined}
+        data-fx-picker-for={target} data-fx-picker-multiple={model.multiple ? 'on' : undefined}
         style={pull ? { transform: `translateY(${pull}px)` } : undefined /* theme-ok: drag offset follows the finger */}
         onKeyDown={onKey}
       >

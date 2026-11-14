@@ -7,7 +7,7 @@
  * picker adds: groups, icons and descriptions on options, `multiple` (value is a string[]), `max`, `searchThreshold`.
  * Values never change shape: single mode hands back the same strings a <select> would ('' for the empty option).
  *
- * Every mounted PickerField registers itself as console-control target `picker:<id>` (pickerRegistry), so REST, MCP,
+ * Every mounted PickerField registers itself in the picker registry and carries the console-control address `button:picker-<id>`, so REST, MCP,
  * the CLI and voice open and choose in the same picker the user sees.
  */
 import { useCallback, useEffect, useId, useMemo, useRef, useState, type ReactNode } from 'react';
@@ -34,7 +34,7 @@ interface PickerFieldBase {
   disabled?: boolean;
   /** Options at which the search field shows (default: the picker asset's, else the engine's 8). */
   searchThreshold?: number;
-  /** API id (`picker:<id>`); default the label slugged. */
+  /** API id (`button:picker-<id>`); default the label slugged. */
   pickerId?: string;
   /** Draw only the trigger (the caller has its own label; `labelText` is the accessible name). */
   bare?: boolean;
@@ -125,7 +125,7 @@ export function PickerField(props: PickerFieldProps) {
       role="combobox" aria-haspopup="dialog" aria-expanded={st.open} aria-label={bare ? model.label || undefined : undefined}
       aria-describedby={[describedBy, extraDescribedBy].filter(Boolean).join(' ') || undefined}
       aria-invalid={error ? true : undefined} aria-required={required || undefined}
-      disabled={disabled} data-axf-target={pickerTarget(id)} data-fx-picker="field"
+      disabled={disabled} data-axf-target={pickerTarget(id)} data-fx-picker="field" data-fx-picker-id={id}
       onClick={() => (st.open ? close() : open())}
       onKeyDown={(e) => { if (['ArrowDown', 'ArrowUp'].includes(e.key) && !e.ctrlKey && !e.metaKey) { e.preventDefault(); open(); } }}
     >

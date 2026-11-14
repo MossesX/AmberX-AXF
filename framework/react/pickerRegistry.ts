@@ -1,6 +1,6 @@
 /**
- * Picker registry (picker@1, spec/PICKER.md § 2 "API"): every mounted picker registers a handle under its console-control
- * address `picker:<id>`, so the console API (REST), MCP, the CLI and voice reach the same picker the user sees: read its
+ * Picker registry (picker@1, spec/PICKER.md § 2 "API"): every mounted picker registers a handle under its id (console-control
+ * address `button:picker-<id>`), so the console API (REST), MCP, the CLI and voice reach the same picker the user sees: read its
  * model and state, open it, search, choose by value or spoken name, toggle, clear, close. One set of handlers for all
  * four doors; the picker-dialog plugin's bridge calls these and nothing else.
  *
@@ -10,7 +10,7 @@
 import { choosePicker, matchSpoken, setQuery, setValue, uniquePickerId, type PickerModel, type PickerState } from '../core/engines/picker';
 
 export interface PickerHandle {
-  /** `picker:<id>` without the prefix. */
+  /** The picker id (address `button:picker-<id>`). */
   id: string;
   model(): PickerModel;
   state(): PickerState;
@@ -31,8 +31,13 @@ const handles = new Map<string, PickerHandle>();
 const listeners = new Set<() => void>();
 const emit = () => { for (const l of listeners) l(); };
 
-export const pickerTarget = (id: string) => `picker:${id}`;
-const bare = (target: string) => target.replace(/^picker:/, '');
+/**
+ * The console-control@1 address of a picker: `button:picker-<id>` (a valid kind today: press opens it, state reads its
+ * text). spec/PICKER.md names a `picker:` kind; adding it to the console-control contract is deferred, and every
+ * function here accepts `picker:<id>`, `button:picker-<id>` and the bare id alike.
+ */
+export const pickerTarget = (id: string) => `button:picker-${id}`;
+const bare = (target: string) => target.trim().replace(/^.*\//, '').replace(/^picker:/, '').replace(/^button:picker-/, '');
 
 /** Register a handle; returns its unique id and the unregister function. */
 export function registerPicker(wanted: string, make: (id: string) => PickerHandle): { id: string; unregister: () => void } {
@@ -67,7 +72,7 @@ function find(target?: string | null): PickerHandle | null {
   const id = openPickerId();
   return id ? handles.get(id)! : null;
 }
-const miss = (target?: string | null): PickerResult => ({ ok: false, error: target ? `No picker ${pickerTarget(bare(target))} on this screen.` : 'No picker is open.' });
+const miss = (target?: string | null): PickerResult => ({ ok: false, error: target ? `No picker "${bare(target)}" on this screen (open pickers' ids: ${[...handles.keys()].join(', ') || 'none'}).` : 'No picker is open.' });
 const done = (h: PickerHandle): PickerResult => ({ ok: true, picker: snapshot(h) });
 
 export function pickerState(target?: string | null): PickerResult { const h = find(target); return h ? done(h) : miss(target); }

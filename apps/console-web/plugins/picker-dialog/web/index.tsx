@@ -12,6 +12,7 @@ import { useEffect } from 'react';
 import { setPickerSwap, useRuntime } from '@console/axf/react';
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
+import { registerPickerActions } from './actions';
 import { appMenu } from './menu';
 import { APPS, DEFAULTS, FOLDER, K, TAB, configFrom } from './settings';
 
@@ -35,6 +36,7 @@ export const plugin: AxfWebLibrary = {
   version: '0.1.0',
   builtWith: { model: 'claude-opus-5-5', builtAt: '2026-11-14' },
   appMenu,
+  register(rt) { registerPickerActions(rt); },
   slots: { 'app.frame.cover': [{ id: 'picker-dialog.swap', order: 1, render: () => <PickerSwapSwitch /> }] },
   // Settings → Plugins → Picker dialog. Every setting is a control@1 target (`setting:axf.picker.*`), so the console API,
   // MCP, the CLI and voice set the same values this tab shows; the app's settings level toolbar filters the groups.
