@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T04:21:02.847Z",
+ "updatedAt": "2026-11-14T04:21:21.256Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -137112,7 +137112,7 @@
    "branch": "claude/ui-directory-plugin-self-updating-data",
    "pr": "",
    "createdAt": "2026-11-14T03:50:42.413Z",
-   "updatedAt": "2026-11-14T04:20:34.939Z",
+   "updatedAt": "2026-11-14T04:21:09.356Z",
    "builtAt": "",
    "notes": [
     {
@@ -137134,6 +137134,10 @@
     {
      "text": "Session on mossesx-max- ended (exit 0) with 2 steps left: back in the Queue (run 1).",
      "at": "2026-11-14T04:20:20.931Z"
+    },
+    {
+     "text": "Dispatch gate: ui-directory-plugin-self-updating-data still has axf-ui-directory-plugin-self-updating-data--paulie alive: not launched again, tracking that session.",
+     "at": "2026-11-14T04:21:09.356Z"
     },
     {
      "text": "Dispatch gate: ui-directory-plugin-self-updating-data still has axf-ui-directory-plugin-self-updating-data--paulie alive: not launched again, tracking that session.",
@@ -137325,14 +137329,14 @@
    "title": "Demo video series: three-minute browser walkthroughs of AmberX",
    "category": "Launch",
    "detail": "Brett: a bunch of three-minute videos, each a real browser walkthrough with real data, showing different parts of the app: how voice control works, how the orchestrator uses agents to build everything, Plan Studio, skins and hot-swappable tokens, the UI designer, axHub. Themable player (skins switch between videos). One video shows a full app being built start to finish with the UI designer; parts that aren't built yet are mocked to show what they will look like, clearly staged. Narrated with adjustable TTS. Reuse the recorder, narration and player from the 2-hour walkthrough build (amberx-walkthrough-2-hour-indexed). Export MP4 for socials plus the HTML5 player; publish alongside the landing page.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-14T04:20:37.431Z",
+   "updatedAt": "2026-11-14T04:21:17.129Z",
    "builtAt": "",
    "notes": [
     {
@@ -137374,6 +137378,10 @@
     {
      "text": "Brett: in the videos, turn on group chat audio so viewers actually hear the cat-named agents talking to each other in their own voices while they build (especially the overnight gallery video). Feature is being built in group-chat-audio build.",
      "at": "2026-11-14T04:20:30.520Z"
+    },
+    {
+     "text": "Self-check: demo-video-series-three-minute-browser was marked running on mossesx-max- with no session: released and back in the Queue.",
+     "at": "2026-11-14T04:21:11.750Z"
     },
     {
      "text": "Self-check: demo-video-series-three-minute-browser was marked running on mossesx-max- with no session: released and back in the Queue.",
@@ -137546,6 +137554,25 @@
      "note": "",
      "uid": "st-mwfwcceg01rilu",
      "createdAt": "2026-11-14T04:19:20.979Z"
+    },
+    {
+     "id": "s13",
+     "text": "Employees video: a tour of all the cat-named agents (employees), what each one does and how they hand work to each other. Then show how you train an employee right from the console to be an expert on a subject: point the built-in console crawler at a site, docs or a data set, it crawls and builds a data set, and the employee is trained on it and becomes the expert you assign jobs to. Show a before and after: the same question answered before and after training. Use the real employee system and crawler where they exist, with real data; label staged parts as a preview.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfweu3201q1as",
+     "createdAt": "2026-11-14T04:21:17.130Z"
     },
     {
      "id": "s7",

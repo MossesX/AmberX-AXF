@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5221,
- "updatedAt": "2026-11-14T04:21:02.847Z",
+ "rev": 5222,
+ "updatedAt": "2026-11-14T04:21:21.256Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -211763,7 +211763,7 @@
    "branch": "claude/ui-directory-plugin-self-updating-data",
    "pr": "",
    "createdAt": "2026-11-14T03:50:42.413Z",
-   "updatedAt": "2026-11-14T04:20:34.939Z",
+   "updatedAt": "2026-11-14T04:21:09.356Z",
    "builtAt": "",
    "notes": [
     {
@@ -211785,6 +211785,10 @@
     {
      "text": "Session on mossesx-max- ended (exit 0) with 2 steps left: back in the Queue (run 1).",
      "at": "2026-11-14T04:20:20.931Z"
+    },
+    {
+     "text": "Dispatch gate: ui-directory-plugin-self-updating-data still has axf-ui-directory-plugin-self-updating-data--paulie alive: not launched again, tracking that session.",
+     "at": "2026-11-14T04:21:09.356Z"
     },
     {
      "text": "Dispatch gate: ui-directory-plugin-self-updating-data still has axf-ui-directory-plugin-self-updating-data--paulie alive: not launched again, tracking that session.",
@@ -212148,14 +212152,14 @@
    "title": "Demo video series: three-minute browser walkthroughs of AmberX",
    "category": "Launch",
    "detail": "Brett: a bunch of three-minute videos, each a real browser walkthrough with real data, showing different parts of the app: how voice control works, how the orchestrator uses agents to build everything, Plan Studio, skins and hot-swappable tokens, the UI designer, axHub. Themable player (skins switch between videos). One video shows a full app being built start to finish with the UI designer; parts that aren't built yet are mocked to show what they will look like, clearly staged. Narrated with adjustable TTS. Reuse the recorder, narration and player from the 2-hour walkthrough build (amberx-walkthrough-2-hour-indexed). Export MP4 for socials plus the HTML5 player; publish alongside the landing page.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-14T04:20:37.431Z",
+   "updatedAt": "2026-11-14T04:21:17.129Z",
    "builtAt": "",
    "notes": [
     {
@@ -212197,6 +212201,10 @@
     {
      "text": "Brett: in the videos, turn on group chat audio so viewers actually hear the cat-named agents talking to each other in their own voices while they build (especially the overnight gallery video). Feature is being built in group-chat-audio build.",
      "at": "2026-11-14T04:20:30.520Z"
+    },
+    {
+     "text": "Self-check: demo-video-series-three-minute-browser was marked running on mossesx-max- with no session: released and back in the Queue.",
+     "at": "2026-11-14T04:21:11.750Z"
     },
     {
      "text": "Self-check: demo-video-series-three-minute-browser was marked running on mossesx-max- with no session: released and back in the Queue.",
@@ -212430,6 +212438,28 @@
      "updatedAt": "2026-11-14T04:19:21.160Z"
     },
     {
+     "id": "s13",
+     "uid": "st-mwfweu3201q1as",
+     "title": "",
+     "text": "Employees video: a tour of all the cat-named agents (employees), what each one does and how they hand work to each other. Then show how you train an employee right from the console to be an expert on a subject: point the built-in console crawler at a site, docs or a data set, it crawls and builds a data set, and the employee is trained on it and becomes the expert you assign jobs to. Show a before and after: the same question answered before and after training. Use the real employee system and crawler where they exist, with real data; label staged parts as a preview.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-14T04:21:17.130Z",
+     "updatedAt": "2026-11-14T04:21:17.390Z"
+    },
+    {
      "id": "s7",
      "uid": "st-mwfvsr6p0143q5",
      "title": "",
@@ -212526,7 +212556,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 26,
+   "rev": 27,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -212582,6 +212612,34 @@
    "notes": [],
    "approvals": [],
    "upgradeRequests": [],
+   "pipeline": {
+    "queuedAt": "",
+    "queuedBy": "",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-14T04:21:06.942Z",
+     "why": "subscription account mossesx-max-"
+    },
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
    "steps": [
     {
      "id": "s1",
@@ -212658,7 +212716,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 1,
+   "rev": 2,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
