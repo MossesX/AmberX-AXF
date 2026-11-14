@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T12:40:58.061Z",
+ "updatedAt": "2026-11-14T13:01:48.650Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -135362,9 +135362,10 @@
    "pendingId": "",
    "branch": "claude/land-batch-merge-main-each-finished",
    "pr": "#665",
+   "mergedAt": "2026-11-14T12:57:15Z",
    "priority": "P0",
    "createdAt": "2026-11-13T23:39:26.785Z",
-   "updatedAt": "2026-11-14T01:50:46.933Z",
+   "updatedAt": "2026-11-14T13:01:41.606Z",
    "builtAt": "",
    "notes": [
     {
@@ -135394,6 +135395,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-14T01:50:46.933Z"
+    },
+    {
+     "text": "Reconciler: PR #665 merged",
+     "at": "2026-11-14T13:01:41.606Z"
     }
    ],
    "approvals": [],
@@ -137349,8 +137354,9 @@
    "pendingId": "",
    "branch": "claude/hotfix-get-main-ci-green-theme-swap",
    "pr": "#669",
+   "mergedAt": "2026-11-14T12:57:14Z",
    "createdAt": "2026-11-14T03:29:11.368Z",
-   "updatedAt": "2026-11-14T12:28:14.043Z",
+   "updatedAt": "2026-11-14T13:01:41.606Z",
    "builtAt": "",
    "notes": [
     {
@@ -137408,6 +137414,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-hotfix-get-main-ci-green-theme-swap--sully, own login copy)",
      "at": "2026-11-14T12:28:14.043Z"
+    },
+    {
+     "text": "Reconciler: PR #669 merged",
+     "at": "2026-11-14T13:01:41.606Z"
     }
    ],
    "approvals": [],
