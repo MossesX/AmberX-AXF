@@ -792,7 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 20:31 UTC · `per-toolbar-settings-fix-failing-chrome` → pending, note (all) · pipeline
 - 2026-11-13 20:30 UTC · `console-app-wake-word-voice-listener` note (all) · orchestrator
 - 2026-11-13 20:31 UTC · `context-menus-plugin-one-true-source` → running, note (all) · pipeline
 - 2026-11-13 20:31 UTC · `context-menus-plugin-one-true-source` branch claude/context-menus-plugin-one-true-source (all) · pipeline
@@ -1192,6 +1191,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 12:27 UTC · `hotfix-get-main-ci-green-theme-swap` → queued (all) · voice
 - 2026-11-14 12:28 UTC · `hotfix-get-main-ci-green-theme-swap` → running, note (all) · pipeline
 - 2026-11-14 12:28 UTC · `hotfix-get-main-ci-green-theme-swap` note (all) · orchestrator
+- 2026-11-14 12:40 UTC · `demo-video-series-three-minute-browser` → pending, note (all) · reconciler
 
 ## Token passes (log)
 
