@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5175,
- "updatedAt": "2026-11-14T03:48:21.772Z",
+ "rev": 5176,
+ "updatedAt": "2026-11-14T03:48:36.895Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -211601,16 +211601,25 @@
    "title": "Banner widget shapes: more than circle and pill, all token-driven",
    "category": "Appearance",
    "detail": "Brett: banner widgets can only be circles or pills. Add a shape token per banner widget (global, per skin, per instance): circle, pill, rounded square, square, squircle, hexagon, diamond, tag, plus custom radius per corner and custom SVG mask. Shapes are assets (shape@1), swappable by skin, editable in the skin editor, UI Manager and per-instance settings, with Restore previous edit. Full API: REST/MCP/CLI/voice ('make the banner widgets hexagons'). Tests desktop and phone.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/banner-widget-shapes-more-than-circle",
    "pr": "",
    "createdAt": "2026-11-14T03:47:49.947Z",
-   "updatedAt": "2026-11-14T03:48:16.780Z",
+   "updatedAt": "2026-11-14T03:48:27.498Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-banner-widget-shapes-more-than-circle--joey.",
+     "at": "2026-11-14T03:48:22.754Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-banner-widget-shapes-more-than-circle--joey, own login copy)",
+     "at": "2026-11-14T03:48:27.498Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -211628,18 +211637,18 @@
    "pipeline": {
     "queuedAt": "",
     "queuedBy": "",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-banner-widget-shapes-more-than-circle--joey",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Fable",
+    "launchedAt": "2026-11-14T03:48:20.658Z",
+    "runs": 1,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-14T03:48:20.658Z",
     "planned": {
      "model": "Fable",
      "account": "mossesx-max-",
@@ -211648,7 +211657,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-14T03:48:20.658Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -211699,6 +211708,28 @@
      "updatedAt": "2026-11-14T03:47:49.949Z"
     },
     {
+     "id": "s4",
+     "uid": "st-mwfv8kcd01ntvg",
+     "title": "",
+     "text": "Animated status icons for banner widgets: little animated logo-type icons whose colour shows their state (idle, active, working, error, offline) and which animate while active and stay static when idle. State colours and animations are tokens/assets, swappable by skin and icon pack, respect reduced-motion, with an on/off and speed setting.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-14T03:48:24.857Z",
+     "updatedAt": "2026-11-14T03:48:25.213Z"
+    },
+    {
      "id": "s3",
      "uid": "st-mwfv7ta9068pgf",
      "title": "",
@@ -211729,7 +211760,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 8,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

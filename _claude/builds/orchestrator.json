@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T03:48:21.772Z",
+ "updatedAt": "2026-11-14T03:48:36.895Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -136977,16 +136977,25 @@
    "title": "Banner widget shapes: more than circle and pill, all token-driven",
    "category": "Appearance",
    "detail": "Brett: banner widgets can only be circles or pills. Add a shape token per banner widget (global, per skin, per instance): circle, pill, rounded square, square, squircle, hexagon, diamond, tag, plus custom radius per corner and custom SVG mask. Shapes are assets (shape@1), swappable by skin, editable in the skin editor, UI Manager and per-instance settings, with Restore previous edit. Full API: REST/MCP/CLI/voice ('make the banner widgets hexagons'). Tests desktop and phone.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/banner-widget-shapes-more-than-circle",
    "pr": "",
    "createdAt": "2026-11-14T03:47:49.947Z",
-   "updatedAt": "2026-11-14T03:48:16.780Z",
+   "updatedAt": "2026-11-14T03:48:27.498Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-banner-widget-shapes-more-than-circle--joey.",
+     "at": "2026-11-14T03:48:22.754Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-banner-widget-shapes-more-than-circle--joey, own login copy)",
+     "at": "2026-11-14T03:48:27.498Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -137039,6 +137048,25 @@
      "note": "",
      "uid": "st-mwfv7ta905xtyu",
      "createdAt": "2026-11-14T03:47:49.949Z"
+    },
+    {
+     "id": "s4",
+     "text": "Animated status icons for banner widgets: little animated logo-type icons whose colour shows their state (idle, active, working, error, offline) and which animate while active and stay static when idle. State colours and animations are tokens/assets, swappable by skin and icon pack, respect reduced-motion, with an on/off and speed setting.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfv8kcd01ntvg",
+     "createdAt": "2026-11-14T03:48:24.857Z"
     },
     {
      "id": "s3",

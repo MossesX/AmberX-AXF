@@ -792,9 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 19:59 UTC · `skin-animations-swatches-skin-switch` → running, note (all) · pipeline
-- 2026-11-13 19:59 UTC · `skin-animations-swatches-skin-switch` branch claude/skin-animations-swatches-skin-switch (all) · pipeline
-- 2026-11-13 19:59 UTC · `skin-animations-swatches-skin-switch` note (all) · orchestrator
 - 2026-11-13 20:00 UTC · `own-token-sets-for-grids-and-tab-groups` note (all) · claude-voice
 - 2026-11-13 20:00 UTC · `own-token-sets-for-grids-and-tab-groups` note (all) · builds-live
 - 2026-11-13 20:01 UTC · `grids-get-their-own-full-token-set` note (all) · orchestrator
@@ -1192,6 +1189,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 03:45 UTC · `hotfix-get-main-ci-green-theme-swap` branch claude/hotfix-get-main-ci-green-theme-swap (all) · pipeline
 - 2026-11-14 03:47 UTC · `banner-widget-shapes-more-than-circle` added (3 steps) (all) · voice
 - 2026-11-14 03:47 UTC · `banner-widget-shapes-more-than-circle` → queued (all) · voice
+- 2026-11-14 03:48 UTC · `banner-widget-shapes-more-than-circle` → running, note (all) · pipeline
+- 2026-11-14 03:48 UTC · `banner-widget-shapes-more-than-circle` note (all) · orchestrator
+- 2026-11-14 03:48 UTC · `banner-widget-shapes-more-than-circle` branch claude/banner-widget-shapes-more-than-circle (all) · pipeline
 
 ## Token passes (log)
 
