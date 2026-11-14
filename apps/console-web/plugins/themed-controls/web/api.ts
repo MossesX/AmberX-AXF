@@ -13,11 +13,17 @@
  *   themed-controls.open:[<family>:]<ref>        open the picker of a date / time / colour control (the deep link)
  *   themed-controls.close[:<ref>]                close the open picker (or that control's)
  *   themed-controls.pick:<value>                 set the open picker's control and close it
+ *   themed-controls.answer:ok|cancel[:<text>]    answer the open themed alert / confirm / prompt (OK on a destructive
+ *                                                confirm is refused here: press button:themed-controls.dialog.ok with confirm)
+ * The open dialog: `panel:themed-controls.dialogs` (state: open dialog + waiting; set: the prompt's text),
+ * `button:themed-controls.dialog.ok` (press, value = prompt text; destructive while the open confirm is) and
+ * `button:themed-controls.dialog.cancel`.
  * Pop-up families are also targets `panel:themed-controls.<family>`: open (the first such control, or `value` = ref),
  * state (the open picker: ref, value, view), set (value, or `<ref>=<value>`), press ok | cancel.
  */
 import type { AxfRuntime } from '@console/axf/core';
 import { controlRegistry } from '@console/axf/react';
+import { ConsoleControlError, CONSOLE_CONTROL_WIRE } from '@console/axf/core/engines/console-control';
 import { TC_KEYS, THEMED_FAMILIES, THEMED_FAMILY_LABELS, activeFamilies, isThemedFamily, themedControlsConfig, type ThemedFamily } from '@console/axf/core/engines/themed-controls';
 import { TAB } from './settings';
 import { liveHost, type SwapRecord } from './host';
@@ -127,6 +133,43 @@ export function registerApi(rt: AxfRuntime): () => void {
       },
     }));
   }
+  // the themed alert / confirm / prompt
+  type DialogsApi = { openDialogs: () => { open: Record<string, unknown> | null; waiting: number }; currentDialog: () => { destructive: boolean; kind: string; answer(ok: boolean, text?: string): void } | null };
+  const dlg = () => liveHost()?.global<DialogsApi>('dialogs') ?? null;
+  const noDialog = () => new ConsoleControlError(CONSOLE_CONTROL_WIRE.UNAVAILABLE, 'no themed dialog is open', { because: 'none open' });
+  reg('themed-controls.answer', ([a, ...rest]) => {
+    const d = dlg()?.currentDialog();
+    if (!d) { rt.toast('No themed dialog is open.', 'warning', 'Themed controls'); return; }
+    const ok = /^(ok|yes|true|1|confirm)$/i.test(a ?? 'ok');
+    if (ok && d.destructive) { rt.toast('That confirm deletes or resets something: answer it on screen, or press button:themed-controls.dialog.ok with confirm.', 'warning', 'Themed controls'); return; }
+    d.answer(ok, rest.length ? rest.join(':') : undefined);
+  }, 'Answer the open themed dialog', true);
+  offs.push(controlRegistry(rt).register({
+    address: 'panel:themed-controls.dialogs', kind: 'panel', label: 'Themed dialog', detail: 'Themed controls · alert, confirm, prompt', icon: 'help',
+    keywords: ['dialog', 'alert', 'confirm', 'prompt', 'answer'], can: ['state', 'set'],
+    get: () => dlg()?.openDialogs() ?? { open: null, waiting: 0 },
+    state: () => ({ ...(dlg()?.openDialogs() ?? { open: null, waiting: 0 }) }),
+    set: (v) => {
+      const field = document.querySelector<HTMLInputElement>('.fx-tc-dlg__field');
+      if (!field) throw new ConsoleControlError(CONSOLE_CONTROL_WIRE.UNAVAILABLE, 'no themed prompt is open', { because: 'none open' });
+      field.value = String(v ?? '');
+    },
+  }));
+  offs.push(controlRegistry(rt).register({
+    address: 'button:themed-controls.dialog.ok', kind: 'button', label: 'OK (themed dialog)', icon: 'check', keywords: ['ok', 'yes', 'confirm', 'dialog'],
+    can: ['state', 'press'],
+    get destructive() { return dlg()?.currentDialog()?.destructive === true; },
+    element: () => document.querySelector('.fx-tc-dlg__ok'),
+    state: () => ({ open: !!dlg()?.currentDialog(), destructive: dlg()?.currentDialog()?.destructive === true }),
+    invoke: (v) => { const d = dlg()?.currentDialog(); if (!d) throw noDialog(); d.answer(true, v === undefined || v === null || v === '' ? undefined : String(v)); return true; },
+  }));
+  offs.push(controlRegistry(rt).register({
+    address: 'button:themed-controls.dialog.cancel', kind: 'button', label: 'Cancel (themed dialog)', icon: 'x', keywords: ['cancel', 'no', 'dialog'],
+    can: ['state', 'press'],
+    element: () => document.querySelector('.fx-tc-dlg__cancel'),
+    state: () => ({ open: !!dlg()?.currentDialog() }),
+    invoke: () => { const d = dlg()?.currentDialog(); if (!d) throw noDialog(); d.answer(false); return true; },
+  }));
   offs.push(controlRegistry(rt).register({
     address: 'panel:themed-controls', kind: 'panel', label: 'Themed controls', detail: 'Plugin · switches and live themed controls', icon: 'sliders',
     keywords: ['themed', 'controls', 'native', 'checkbox', 'slider', 'picker', 'tooltip', 'scrollbar'],

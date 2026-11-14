@@ -276,3 +276,31 @@ def colors() -> dict[str, Any]:
     return {"controls": [c for c in live.get("controls") or [] if c.get("family") == "color"],
             "open": next((o for o in live.get("open") or [] if o.get("family") == "color"), None),
             "recent": live.get("recentColors") or [], "at": live.get("at")}
+
+
+@router.get("/dialogs")
+def get_dialogs() -> dict[str, Any]:
+    """The themed alert / confirm / prompt open in the console (kind, title, message, destructive, prompt text) and how many wait."""
+    live = _live()
+    d = (live.get("globals") or {}).get("dialogs") or {"open": None, "waiting": 0}
+    return {**d, "at": live.get("at")}
+
+
+@router.post("/answer")
+async def answer(request: Request) -> dict[str, Any]:
+    """Answer the open themed dialog: {answer: ok|cancel, text?, confirm?}. OK on a destructive confirm answers
+    confirmation_required until it is sent again with confirm: true (tell Brett what it deletes first)."""
+    b = await _body(request)
+    a = str(b.get("answer") or "ok").strip().lower()
+    if a not in ("ok", "cancel"):
+        raise HTTPException(422, "answer must be ok or cancel")
+    try:
+        import console_control_api as api
+    except Exception:  # noqa: BLE001
+        return {"ok": False, "code": "unavailable", "message": "the console server is not running"}
+    body: dict[str, Any] = {"verb": "press", "address": f"button:themed-controls.dialog.{a}"}
+    if a == "ok" and b.get("text") not in (None, ""):
+        body["value"] = str(b.get("text"))
+    if b.get("confirm") is True or str(b.get("confirm")).lower() in TRUE_WORDS:
+        body["confirm"] = True
+    return api.run(api.normalize(body), _by(request), api.OWNER)

@@ -12,6 +12,7 @@
  *   … set <ref> <value>                set a themed control (a checkbox on/off, a date, a colour …)
  *   … color <ref> <colour>             the same for a colour control (#rrggbb, accent, red …)
  *   … open <ref> | close | pick <value>   open a date / time / colour picker, close it, pick in it
+ *   … dialogs | answer ok|cancel [text] [--confirm true]   read / answer the open themed alert, confirm or prompt
  *   … <command> [--field value]…       any other command of the plugin, as `axf themed-controls`
  * Needs the console (AXF_CONSOLE_URL, AXF_TOKEN) like every plugin command.
  */
@@ -31,6 +32,7 @@ export function toCommand(c, pos) {
   if (c === 'open' && pos.length) return ['open', '--ref', pos.join(' ')];
   if (c === 'close' && pos.length) return ['close', '--ref', pos.join(' ')];
   if (c === 'pick' && pos.length) return ['pick', '--value', pos.join(' ')];
+  if (c === 'answer' && pos.length) return ['answer', '--answer', pos[0], ...(pos.length > 1 ? ['--text', pos.slice(1).join(' ')] : [])];
   return null;
 }
 

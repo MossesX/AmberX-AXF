@@ -205,6 +205,42 @@
         "description": "The colour controls on the open console's screen with their values, the open colour picker and the recent colours. Set one with set {ref, value} (#rrggbb, a theme colour name such as accent, or a CSS colour name); open its picker with open {ref}."
       },
       {
+        "route": "GET /dialogs",
+        "id": "dialogs",
+        "title": "Open themed dialog",
+        "readOnly": true,
+        "description": "The themed alert, confirm or prompt open in the console (kind, title, message, whether it would delete something, the prompt's text) and how many are waiting."
+      },
+      {
+        "route": "POST /answer",
+        "id": "answer",
+        "title": "Answer the themed dialog",
+        "description": "Answer the open themed alert / confirm / prompt: OK (a prompt with text) or Cancel. OK on a confirm that deletes or resets something answers confirmation_required: tell Brett what it does, then send again with confirm.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "answer": {
+              "type": "string",
+              "enum": [
+                "ok",
+                "cancel"
+              ]
+            },
+            "text": {
+              "type": "string",
+              "description": "the prompt's answer"
+            },
+            "confirm": {
+              "type": "boolean",
+              "description": "needed for OK on a destructive confirm"
+            }
+          },
+          "required": [
+            "answer"
+          ]
+        }
+      },
+      {
         "route": "POST /report",
         "skip": "the open console's own report of its switches and live state, not a command"
       }
