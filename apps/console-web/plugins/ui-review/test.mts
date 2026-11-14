@@ -448,4 +448,31 @@ t('sorting: every column sorts both ways', () => {
   assert.equal(core.sortItems(xs, 'waiting-desc')[0].status, 'approved');
 });
 
+t('PR filter: parsePr reads #, pr, pull/ and PR links', () => {
+  for (const v of ['647', '#647', 'pr647', 'PR 647', 'pr#647', 'pull/647', 'https://github.com/o/r/pull/647', 'https://github.com/o/r/pull/647/files', 647]) assert.equal(core.parsePr(v), 647, String(v));
+  for (const v of ['', 'x', '#0', 0, -3, 'abc647', null, undefined, true]) assert.equal(core.parsePr(v), null, String(v));
+});
+t('PR filter: #N in the search is an exact PR match; prList lists PRs newest first with counts', () => {
+  const xs = [mk({ id: 'a', pr: 647, build: 'b-old', submittedAt: '2026-11-01T00:00:00Z' }), mk({ id: 'b', pr: 647, build: 'b-new', status: 'approved', submittedAt: '2026-11-02T00:00:00Z' }),
+    mk({ id: 'c', pr: 6470, title: 'other' }), mk({ id: 'd', title: 'no pr 647' })];
+  assert.deepEqual(core.filterItems(xs, { q: '#647' }).map((x) => x.id), ['a', 'b']);
+  assert.deepEqual(core.filterItems(xs, { q: 'pr647' }).map((x) => x.id), ['a', 'b']);
+  assert.deepEqual(core.filterItems(xs, { q: '647' }).map((x) => x.id).sort(), ['a', 'b', 'c', 'd'], 'a bare number stays free text');
+  assert.deepEqual(core.filterItems(xs, { pr: '#647' }).map((x) => x.id), ['a', 'b']);
+  const prs = core.prList(xs);
+  assert.deepEqual(prs.map((p) => p.pr), [6470, 647]);
+  assert.deepEqual({ ...prs[1] }, { pr: 647, total: 2, waiting: 1, open: 1, title: 'T', build: 'b-new', branch: '' });
+  assert.match(core.prLabel(prs[1]), /^#647 · b-new · 1 waiting \/ 2$/);
+});
+t('PR filter: review.mjs prs / open / list --pr', () => {
+  const dir = mkdtempSync(join(tmpdir(), 'axf-ui-review-pr-'));
+  writeFileSync(join(dir, 'p-desktop.png'), Buffer.from('89504e470d0a1a0a', 'hex'));
+  const run = (...a) => execFileSync(process.execPath, [join(HERE, 'review.mjs'), ...a], { env: cleanEnv(dir), encoding: 'utf8' });
+  run('submit', '--name', 'PR item', '--app', 'Console', '--screen', 'Home', '--kind', 'screen', '--pr', '#647', '--group', 'G', '--shots', join(dir, 'p-desktop.png'), ...WHO);
+  assert.deepEqual(JSON.parse(run('prs', '--json')).prs.map((p) => p.pr), [647]);
+  assert.equal(JSON.parse(run('list', '--pr', 'https://github.com/o/r/pull/647', '--json')).items.length, 1);
+  const o = JSON.parse(run('open', '--pr', '#647', '--json'));
+  assert.equal(o.pr, 647); assert.match(o.link, /\?ui-review-pr=647$/); assert.deepEqual(o.action, { id: 'ui-review.pr', args: ['647'] });
+});
+
 console.log(`ui-review: ${n} checks ok`);

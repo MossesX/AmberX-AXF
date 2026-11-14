@@ -14,6 +14,9 @@
  *   node apps/console-web/plugins/ui-review/review.mjs decision <id> --console     his pick, in priority order
  *   node apps/console-web/plugins/ui-review/review.mjs list [--kind K] [--status waiting|changes|rejected|approved|open]
  *        [--branch B] [--pr N] [--q text] [--console] [--json]
+ *   node apps/console-web/plugins/ui-review/review.mjs prs [--console] [--json]     the PRs that have items, newest first
+ *   node apps/console-web/plugins/ui-review/review.mjs open --pr N [--console]      UI Review on one PR's items: prints the
+ *        link (?ui-review-pr=N); with --console also opens it in Brett's console (console action ui-review.pr)
  *   node apps/console-web/plugins/ui-review/review.mjs state [--branch B] [--pr N] [--exit-code] [--console] [--json]
  *   node apps/console-web/plugins/ui-review/review.mjs decide <id[,id…]> approve|changes|reject|reopen [--comment "…"] [--console]
  *   node apps/console-web/plugins/ui-review/review.mjs migrate [--apply] [--report <file.md>]   older items → ui-review-item@1
@@ -227,11 +230,27 @@ export async function main(argv = process.argv.slice(2)) {
   }
   if (cmd === 'list') {
     const items = remote ? (await consoleCall('items')).items.map(cf.storedToReview) : submitted(loadDoc());
-    const rows = core.sortItems(core.filterItems(items, { kind: val(flags.kind), status: val(flags.status), branch: val(flags.branch), pr: val(flags.pr) || null, q: val(flags.q) }));
+    const rows = core.sortItems(core.filterItems(items, { kind: val(flags.kind), status: val(flags.status), branch: val(flags.branch), pr: core.parsePr(val(flags.pr)), q: val(flags.q) }));
     return out({ ok: true, items: rows }, rows.length ? rows.map(line).join('\n') : 'nothing to review');
   }
+  if (cmd === 'prs') {
+    const prs = remote ? (await consoleCall('prs')).prs : core.prList(submitted(loadDoc()));
+    return out({ ok: true, prs }, prs.length ? prs.map(core.prLabel).join('\n') : 'no PR has items');
+  }
+  if (cmd === 'open') {
+    const pr = core.parsePr(val(flags.pr) || pos[1]);
+    if (!pr) throw new Error('open needs --pr <n> (a number, #number or a PR link)');
+    const base = (process.env.AXF_CONSOLE_URL || 'https://console.amberxai.com').replace(/\/+$/, '');
+    const link = `${base}/?ui-review-pr=${pr}`;
+    if (remote) {
+      const { spawnSync } = await import('node:child_process');
+      const r = spawnSync(process.execPath, [join(ROOT, 'framework/cli/axf.mjs'), 'console', 'action', 'ui-review.pr', String(pr)], { stdio: 'inherit' });
+      if (r.status) process.exitCode = r.status;
+    }
+    return out({ ok: true, pr, link, action: { id: 'ui-review.pr', args: [String(pr)] } }, link);
+  }
   if (cmd === 'state') {
-    const branch = val(flags.branch), pr = val(flags.pr).replace(/^#/, '') || null;
+    const branch = val(flags.branch), pr = core.parsePr(val(flags.pr));
     if (!branch && !pr) throw new Error('state needs --branch and/or --pr');
     const s = remote ? await consoleCall(`state?branch=${encodeURIComponent(branch)}&pr=${encodeURIComponent(pr ?? '')}`) : core.reviewState(submitted(loadDoc()), { branch, pr });
     out(s, `${s.state}${s.holds ? ' (holds the merge)' : ''} · waiting ${s.counts.waiting} · changes ${s.counts.changes} · rejected ${s.counts.rejected} · approved ${s.counts.approved}`);

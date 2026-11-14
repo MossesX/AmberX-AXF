@@ -9,14 +9,15 @@ import { pluginApi } from '@console/plugins';
 import * as core from './review-core.mjs';
 import { GROUPS as SHOT_GROUPS } from './shots-core.mjs';
 import { appMenu } from './menu';
-import { FOLDER, GROUP_BYS, GROUP_PARAM, ID, KEYS, MOCKUP_VIEW, PACKS_VIEW, SHOT_PARAM, SHOTS_VIEW, VIEW, VIEWS } from './keys';
+import { FOLDER, GROUP_BYS, GROUP_PARAM, ID, PR_PARAM, KEYS, MOCKUP_VIEW, PACKS_VIEW, SHOT_PARAM, SHOTS_VIEW, VIEW, VIEWS } from './keys';
 import { MOCKUP_PARAM } from '../../../../../framework/core/ui-predict.mjs';
 import { MockupPage } from './mockup';
 import { LookApprovalPanel } from './look-settings';
 import { UiReviewPage } from './ui';
+import { requestPr } from './pr-focus';
 import { ASK_DIALOG, AskClient, AskDialog, ChoicesPanel } from './choices';
 
-const KEYWORDS = ['ui review', 'review', 'approve', 'approval', 'screenshots', 'shots', 'design', 'ui', 'reject', 'changes', 'waiting'];
+const KEYWORDS = ['pr', 'pull request', 'ui review', 'review', 'approve', 'approval', 'screenshots', 'shots', 'design', 'ui', 'reject', 'changes', 'waiting'];
 
 export const plugin: AxfWebLibrary = {
   id: ID, // equals plugin.json "id"
@@ -32,10 +33,14 @@ export const plugin: AxfWebLibrary = {
     }, () => undefined);
     rt.actions.register('ui-review.open', () => rt.navigate(VIEW), { label: 'Open UI Review' });
     rt.actions.register('ui-review.design-packs', () => rt.navigate(PACKS_VIEW), { label: 'Open Design packs' });
+    // one PR's items: `ui-review.pr 647` (also #42, a PR link; no argument = every PR). The console API, MCP console
+    // actions, the CLI (review.mjs open --pr) and AmberX voice run this same action.
+    rt.actions.register('ui-review.pr', (args) => { const a = Array.isArray(args) ? args[0] : args; requestPr(a ?? null); rt.navigate(VIEW); }, { label: 'Open UI Review on one PR', params: true });
     rt.actions.register('ui-review.screenshots', () => rt.navigate(SHOTS_VIEW), { label: 'Open Screenshots' });
     // a copied screenshot link (?ui-shot=<id>) lands on the Screenshots tab, which opens that picture
     // AmberX's "ready for review" notification (?axf-review-group=<id>) lands on the queue, filtered to that group
-    if (new URLSearchParams(globalThis.location?.search ?? '').get(GROUP_PARAM)) setTimeout(() => rt.navigate(VIEW), 0);
+    // a PR link (?ui-review-pr=647) lands on the queue, filtered to that PR's items
+    if (new URLSearchParams(globalThis.location?.search ?? '').get(GROUP_PARAM) || new URLSearchParams(globalThis.location?.search ?? '').get(PR_PARAM)) setTimeout(() => rt.navigate(VIEW), 0);
     if (new URLSearchParams(globalThis.location?.search ?? '').get(SHOT_PARAM)) setTimeout(() => rt.navigate(SHOTS_VIEW), 0);
     // a build's predicted look (?ui-mockup=<spec>, ui-predict.mjs) opens the mockup page
     if (new URLSearchParams(globalThis.location?.search ?? '').get(MOCKUP_PARAM)) setTimeout(() => rt.navigate(MOCKUP_VIEW), 0);

@@ -124,20 +124,58 @@ export function packItems(index, overlay = {}) {
   });
 }
 
-/** Free-text search: every word must appear somewhere in the item. */
+/**
+ * A PR number from what someone typed or said: 42, "#42", "pr42", "PR 42", "pull/42" or a GitHub PR link.
+ * Returns the number, or null when the text is not a PR reference.
+ */
+export function parsePr(v) {
+  if (typeof v === 'number') return Number.isInteger(v) && v > 0 ? v : null;
+  const s = String(v ?? '').trim().toLowerCase();
+  const m = /^(?:#|pr\s*#?\s*|pull\/)?(\d{1,7})$/.exec(s) ?? /\/pull\/(\d{1,7})(?:[/?#].*)?$/.exec(s);
+  const n = m ? Number(m[1]) : NaN;
+  return Number.isInteger(n) && n > 0 ? n : null;
+}
+
+/** A search word that names a PR exactly ("#42", "pr42"); a bare number stays free text (it may be in a title). */
+const prWord = (w) => (/^(#|pr#?)\d+$/.test(w) ? parsePr(w) : null);
+
+/** Free-text search: every word must appear somewhere in the item; a PR word ("#42") matches that PR only, not PR 420. */
 export function matches(it, q) {
   const words = String(q ?? '').toLowerCase().split(/\s+/).filter(Boolean);
   if (!words.length) return true;
   const hay = `${it.title} ${it.app} ${it.build} ${it.branch} ${it.pr ? `#${it.pr} pr${it.pr}` : ''} ${it.notes} ${it.comment} ${it.kind} ${statusInfo(it.status).label}`.toLowerCase();
-  return words.every((w) => hay.includes(w));
+  return words.every((w) => { const n = prWord(w); return n ? Number(it.pr) === n : hay.includes(w); });
 }
+
+/**
+ * The PRs that have items, newest PR first: { pr, total, waiting, open, title, build, branch } (title / build / branch of
+ * the PR's newest item). What the PR picker lists and what `prs` answers over the API.
+ */
+export function prList(items) {
+  const by = new Map();
+  for (const it of items ?? []) {
+    const pr = parsePr(it?.pr);
+    if (!pr) continue;
+    const e = by.get(pr) ?? { pr, total: 0, waiting: 0, open: 0, title: '', build: '', branch: '', at: '' };
+    e.total++;
+    if (it.status === 'waiting') e.waiting++;
+    if (it.status !== 'approved') e.open++;
+    const at = String(it.updatedAt || it.submittedAt || '');
+    if (!e.title || at > e.at) Object.assign(e, { title: it.title ?? '', build: it.build ?? '', branch: it.branch ?? '', at });
+    by.set(pr, e);
+  }
+  return [...by.values()].sort((a, b) => b.pr - a.pr).map(({ at, ...e }) => e);
+}
+
+/** "#42 · UI Review filter · 2 waiting / 5" — one PR picker line. */
+export const prLabel = (p) => `#${p.pr}${p.build || p.title ? ` · ${p.build || p.title}` : ''} · ${p.waiting ? `${p.waiting} waiting / ` : ''}${p.total}`;
 
 /** Filters: kind ('' = all), status ('' | id | 'open' = not approved), app, branch, pr, q. */
 export function filterItems(items, f = {}) {
   return items.filter((it) => (!f.kind || it.kind === f.kind) && (!f.group || it.group === f.group)
     && (!f.status || (f.status === 'open' ? it.status !== 'approved' : it.status === f.status))
     && (!f.app || it.app === f.app) && (!f.branch || it.branch === f.branch)
-    && (!f.pr || Number(it.pr) === Number(f.pr)) && matches(it, f.q));
+    && (!f.pr || Number(it.pr) === parsePr(f.pr)) && matches(it, f.q));
 }
 
 const rank = (s) => { const i = STATUS_IDS.indexOf(s); return i < 0 ? 99 : i; };
