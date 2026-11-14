@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5468,
- "updatedAt": "2026-11-14T22:41:38.247Z",
+ "rev": 5469,
+ "updatedAt": "2026-11-14T22:41:44.155Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -223696,7 +223696,7 @@
    "pr": "#678",
    "priority": "P0",
    "createdAt": "2026-11-14T22:17:37.935Z",
-   "updatedAt": "2026-11-14T22:41:35.844Z",
+   "updatedAt": "2026-11-14T22:41:42.413Z",
    "builtAt": "",
    "notes": [
     {
@@ -223761,7 +223761,7 @@
      "phase": 1,
      "from": "Fable",
      "to": "Opus",
-     "at": "2026-11-14T22:40:29.394Z",
+     "at": "2026-11-14T22:41:42.413Z",
      "by": "auto",
      "kind": "downgrade"
     }
@@ -223782,20 +223782,13 @@
    "pipeline": {
     "queuedAt": "2026-11-14T22:17:39.914Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
+    "account": "",
     "session": "",
     "slot": "",
-    "model": "Fable",
-    "launchedAt": "2026-11-14T22:21:23.430Z",
-    "runs": 1,
-    "lastRun": {
-     "at": "2026-11-14T22:38:03.794Z",
-     "exit": 0,
-     "outcome": "requeued",
-     "stepsLeft": 26,
-     "account": "mossesx-max-",
-     "session": "axf-land-finish-auto-land-live-clear-backlog--earl"
-    },
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
     "split": {
      "at": "2026-11-14T22:20:10.644Z",
      "by": "orchestrator",
@@ -223804,18 +223797,12 @@
      "note": "Split by Claude into 28 steps (2 Fable)."
     },
     "splitRequested": "",
-    "note": "Session on mossesx-max- ended (exit 0) with 26 steps left: back in the Queue (run 1).",
+    "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-14T22:21:23.430Z",
-    "planned": {
-     "model": "Opus",
-     "account": "mossesx-max-",
-     "kind": "subscription",
-     "at": "2026-11-14T22:36:08.140Z",
-     "why": "subscription account mossesx-max-"
-    },
+    "dispatchedAt": "",
+    "planned": null,
     "tried": [],
-    "pickedAt": "2026-11-14T22:21:23.430Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -223914,12 +223901,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T22:41:42.413Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T22:20:10.644Z",
-     "updatedAt": "2026-11-14T22:20:10.644Z"
+     "updatedAt": "2026-11-14T22:41:42.624Z"
     },
     {
      "id": "s5",

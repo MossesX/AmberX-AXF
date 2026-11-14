@@ -796,7 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 23:44 UTC · `land-batch-merge-main-each-finished` note (all) · orchestrator
 - 2026-11-13 23:45 UTC · `voice-listener-use-claude-when-connected` note (all) · orchestrator
 - 2026-11-13 23:45 UTC · `console-app-land-parts-1-4-build-apk` note (all) · pipeline
 - 2026-11-13 23:45 UTC · `voice-listener-use-claude-when-connected` note (all) · pipeline
@@ -1196,6 +1195,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 22:41 UTC · `themed-native-controls-plugin` → queued (all) · mcp
 - 2026-11-14 22:41 UTC · `console-look-becomes-default-axhub-skin` → queued (all) · mcp
 - 2026-11-14 22:41 UTC · `land-finish-auto-land-live-clear-backlog` note (all) · mcp
+- 2026-11-14 22:41 UTC · `land-finish-auto-land-live-clear-backlog` s4 done, → running (all) · orchestrator
 
 ## Token passes (log)
 
