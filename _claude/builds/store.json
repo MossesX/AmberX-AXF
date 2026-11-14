@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5268,
- "updatedAt": "2026-11-14T04:44:22.472Z",
+ "rev": 5269,
+ "updatedAt": "2026-11-14T04:45:19.291Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -212750,7 +212750,7 @@
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-14T04:43:50.174Z",
+   "updatedAt": "2026-11-14T04:45:15.903Z",
    "builtAt": "",
    "notes": [
     {
@@ -212824,6 +212824,10 @@
     {
      "text": "Brett, nested notes video (s21): each note can also hold a task, or several tasks, as well as nested notes and lists. Show notes with multiple tasks attached at different levels of the nesting.",
      "at": "2026-11-14T04:41:37.124Z"
+    },
+    {
+     "text": "Brett, library harvesting video (s24): don't show a count on screen. In the narration, just say there's a huge number of pre-built libraries ('a ton', 'a whole lot') and flash a quick montage of a bunch of them instead of listing them all. Don't state a specific number we can't back up.",
+     "at": "2026-11-14T04:45:15.903Z"
     }
    ],
    "approvals": [],
@@ -213413,7 +213417,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 45,
+   "rev": 46,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

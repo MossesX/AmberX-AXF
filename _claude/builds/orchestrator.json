@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T04:44:22.472Z",
+ "updatedAt": "2026-11-14T04:45:19.291Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -137839,7 +137839,7 @@
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-14T04:43:50.174Z",
+   "updatedAt": "2026-11-14T04:45:15.903Z",
    "builtAt": "",
    "notes": [
     {
@@ -137913,6 +137913,10 @@
     {
      "text": "Brett, nested notes video (s21): each note can also hold a task, or several tasks, as well as nested notes and lists. Show notes with multiple tasks attached at different levels of the nesting.",
      "at": "2026-11-14T04:41:37.124Z"
+    },
+    {
+     "text": "Brett, library harvesting video (s24): don't show a count on screen. In the narration, just say there's a huge number of pre-built libraries ('a ton', 'a whole lot') and flash a quick montage of a bunch of them instead of listing them all. Don't state a specific number we can't back up.",
+     "at": "2026-11-14T04:45:15.903Z"
     }
    ],
    "approvals": [],
