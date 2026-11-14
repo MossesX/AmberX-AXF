@@ -163,6 +163,35 @@ skin@1 and the `migrated` / `legacy` fields of app-look@1 have no Kotlin twin (A
 fold once per profile against `spec/fixtures/look-migration.json` (`fold`, `settings`, `combined` blocks) and keeps the
 two fields through its document rules. Until then an Android app keeps reading `appearance@1` directly.
 
+**skin-config@1 + the Default skin (build skin-configuration-panel, Fable, Nov 13 2026, web/Node only):**
+`core/engines/skin-config-rules.mjs` is the permission tree Brett sets before the AI makes a skin (category > group >
+option, each allow / lock / ask; categories derived from the registry and skin-coverage@1, the `extras` category and the
+per-type `skinConfig.limits` declared in `asset-types.json`: depth with `root`, `count:<field>`), the document
+`shared/settings/skin-config/<app>.json`, the moves (`setConfigMode`, `setConfigLimit`, `setConfigDefault`,
+`resetSkinConfig`), `effectiveConfig`, `measureAsset`, `skinChangeReport`, `mergeWithDefault`, `skinConfigBrief`,
+`skinConfigSchema`, and the Default skin (`defaultSkinOf`, `isDefaultSkin`, `skinDeleteError`, `defaultSkinMigration`:
+each app's saved look as the protected skin@1 asset `default-<app>` at `shared/settings/skins/<app>.json`, `default-global`
+for the hub-wide look). Fixture `spec/fixtures/skin-config.json` (its own small registry in `in`, so a port replays it
+without the real one), check `spec/check-skin-config.mjs`; snapshot `schemas/skin-config.json`, JSON Schema
+`schemas/json/skin-config.schema.json`. **Kotlin twin deferred** (no new Android or Kotlin work): a `SkinConfigRules`
+object replaying `skin-config.json` (tree, modes, limits, report, merge, Default skin), the `skinConfig` block read by the
+spec-driven `AssetTypeRegistry` (it accepts the field as it is today), and an Android reader of the two hub documents, for
+when an Android app makes or applies AI skins.
+
+## Deferred: skin-switch@1 (Nov 13 2026)
+
+Build skins-plugin-its-own-removable-console-plugin-and-screen-for-changing-skins-ga (Fable): `framework/core/engines/
+skin-switch.mjs`, the action contract of the Skins screen and every other entry point (gallery, banner switcher, console
+API, MCP, CLI, voice): `skinSwitch(state, command, ctx)` runs `use` / `back-to-skin` / `restore-default` / `undo` for one
+scope (`hub`, `app:<id>`, `ui:<view>`, `plugin:<id>`) over `{ look, global }` (the acting app's app-look@1 document and
+the hub-wide skin), `skinSwitchState` reads a scope (own state, the skin in force with the level that decided, the
+overridden slots, the undo on offer), `parseSwitchScope` / `switchScopeOf` / `switchScopes` / `normalizeSkinSwitch` read
+the command. The one undo record is the look document's `undo`, extended with `action`, `scope` and (hub switches) the
+`global` skin before; `normalizeAppLook` keeps the three fields. No Kotlin twin (Android on hold): a port replays
+`spec/fixtures/skin-switch.json` (`sequence` chains the steps and their edits, `views`, `parse`, `normalize`) through the
+same functions and keeps the extended undo record through its document rules. Until then an Android app keeps reading
+`appearance@1` directly and shows no skin.
+
 ## Deferred: build-pipeline@1 route + dispatch (Nov 9 2026)
 
 `framework/core/build-pipeline.mjs` gained `pipeline.route` ('' | api | subscription: the per-build override that lets
