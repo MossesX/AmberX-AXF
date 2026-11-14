@@ -60,3 +60,4 @@ host data copy of `framework/catalog/status.json` was missing `ui.opacity.surfac
 | Step | Branch | PR | Merge | Sweep | Pushed |
 | --- | --- | --- | --- | --- | --- |
 | s4 | toolbar-widgets-attach-any-banner-style | #656 | 174 behind; clash in console-web `axf.lock.json`, `control/inventory.json`: inventory regenerated, lock = main's (rebake refused, edited app) | all green + check-banner-widgets | `e6255aa433` |
+| s5 | icon-map-icon-packs-every-icon-badge-app | #664 | 235 behind; clash in `control/inventory.json`: regenerated | all green + icon-map, molly-guide tests | `c68e1c5607` |
