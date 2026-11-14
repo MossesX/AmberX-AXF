@@ -797,11 +797,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 22:17 UTC · `land-finish-auto-land-live-clear-backlog` added (0 steps) (all) · console
-- 2026-11-14 22:17 UTC · `land-finish-auto-land-live-clear-backlog` → queued, note (all) · console
-- 2026-11-14 22:17 UTC · `replace-merge-queue-one-time-landing` note (all) · orchestrator
-- 2026-11-14 22:18 UTC · `replace-merge-queue-one-time-landing` → running, note (all) · pipeline
-- 2026-11-14 22:18 UTC · `replace-merge-queue-one-time-landing` branch claude/replace-merge-queue-one-time-landing (all) · pipeline
 - 2026-11-14 22:18 UTC · `replace-merge-queue-one-time-landing` note (all) · orchestrator
 - 2026-11-14 22:19 UTC · `console-look-becomes-default-axhub-skin` added (0 steps) (all) · console
 - 2026-11-14 22:19 UTC · `console-look-becomes-default-axhub-skin` → queued, note (all) · console
@@ -1197,6 +1192,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 23:46 UTC · `merge-main-land-console-app-part-4` branch claude/merge-main-land-console-app-part-4 (all) · pipeline
 - 2026-11-14 23:46 UTC · `merge-main-land-console-app-part-4` note (all) · orchestrator
 - 2026-11-14 23:47 UTC · `console-look-becomes-default-axhub-skin` note (all) · pipeline
+- 2026-11-14 23:46 UTC · `merge-main-land-console-app-part-3` s1 done, → running (all) · orchestrator
+- 2026-11-14 23:46 UTC · `merge-main-land-console-app-part-3` s2 done (all) · orchestrator
+- 2026-11-14 23:47 UTC · `merge-main-land-console-app-part-3` s3 done (all) · orchestrator
+- 2026-11-14 23:47 UTC · `merge-main-land-console-app-part-3` s4 done (all) · orchestrator
+- 2026-11-14 23:47 UTC · `merge-main-land-console-app-part-3` s5 done (all) · orchestrator
 
 ## Token passes (log)
 

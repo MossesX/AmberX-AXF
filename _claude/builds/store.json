@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5681,
- "updatedAt": "2026-11-14T23:47:31.925Z",
+ "rev": 5682,
+ "updatedAt": "2026-11-14T23:47:44.518Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -226399,7 +226399,7 @@
    "title": "Merge main and land console-app-part-3-native-bridge-mic",
    "category": "",
    "detail": "Auto-land could not land `console-app-part-3-native-bridge-mic` (console-app-part-3-native-bridge-mic): merging main into it clashes in code: framework/ui/axf.css.\n\nWork on its own branch `claude/console-app-part-3-native-bridge-mic` (PR #633); do not open a new PR.\n1. git fetch origin && git checkout claude/console-app-part-3-native-bridge-mic && git merge origin/main\n2. Resolve every conflict keeping both sides' intent (builds files: newer wins; THREADS / STATUS / decisions: keep both).\n3. Make the tests the clash touches pass, plus node framework/cli/tracker.mjs --check.\n4. Commit and push to claude/console-app-part-3-native-bridge-mic. Auto-land and the merge queue land it by themselves.\n\nAttempt 1. Auto-land retries until it lands; Brett gets an FYI for each attempt.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "land-finish-auto-land-live-clear-backlog",
    "pendingId": "",
@@ -226407,7 +226407,7 @@
    "pr": "#633",
    "priority": "P0",
    "createdAt": "2026-11-14T23:16:22.160Z",
-   "updatedAt": "2026-11-14T23:46:49.851Z",
+   "updatedAt": "2026-11-14T23:47:19.395Z",
    "builtAt": "",
    "notes": [
     {
@@ -226491,12 +226491,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:46:54.377Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T23:20:49.007Z",
-     "updatedAt": "2026-11-14T23:20:49.007Z"
+     "updatedAt": "2026-11-14T23:46:55.162Z"
     },
     {
      "id": "s2",
@@ -226513,12 +226513,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:46:58.869Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T23:20:49.007Z",
-     "updatedAt": "2026-11-14T23:20:49.007Z"
+     "updatedAt": "2026-11-14T23:46:59.371Z"
     },
     {
      "id": "s3",
@@ -226535,12 +226535,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:47:07.152Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T23:20:49.007Z",
-     "updatedAt": "2026-11-14T23:20:49.007Z"
+     "updatedAt": "2026-11-14T23:47:07.692Z"
     },
     {
      "id": "s4",
@@ -226579,12 +226579,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:47:19.395Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T23:20:49.007Z",
-     "updatedAt": "2026-11-14T23:20:49.007Z"
+     "updatedAt": "2026-11-14T23:47:19.819Z"
     },
     {
      "id": "s6",
@@ -226708,7 +226708,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
