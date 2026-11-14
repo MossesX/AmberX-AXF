@@ -285,7 +285,7 @@ export function codeBehind({ s, git, br }) {
  * merge is not committed). Returns { resolved: [paths], regenerated: [generator ids] } when every file is resolved.
  * `dir` is a scratch folder for the merge-file inputs. Nothing here commits or aborts: the caller does.
  */
-export function resolveConflicts({ g, wt, dir, left, mainSide = 'theirs', buildsSide = 'theirs', log = () => {} }) {
+export function resolveConflicts({ g, wt, dir, left, mainSide = 'theirs', buildsSide = 'theirs', base = '', log = () => {} }) {
   const plan = core.planConflicts(left);
   if (plan.code.length) return { conflicts: plan.code };
   const resolved = [];
@@ -308,7 +308,7 @@ export function resolveConflicts({ g, wt, dir, left, mainSide = 'theirs', builds
   const still = g(['diff', '--name-only', '--diff-filter=U']).out.split('\n').filter(Boolean);
   if (still.length) return { conflicts: still };
   // the generators, each once, on the merged tree; their outputs join the merge commit
-  const r = regenerate({ g, wt, paths: plan.generated, tests: plan.generated.length || plan.unionJson.length, log });
+  const r = regenerate({ g, wt, paths: plan.generated, tests: plan.generated.length || plan.unionJson.length, base, log });
   return r.error ? r : { resolved, regenerated: r.regenerated, skipped: r.skipped };
 }
 
@@ -317,9 +317,32 @@ export function resolveConflicts({ g, wt, dir, left, mainSide = 'theirs', builds
  * run each generator's check and, when `tests`, the manifest's tests. Returns { regenerated: [ids], skipped: [ids] } or
  * { error }. Nothing here commits.
  */
-export function regenerate({ g, wt, paths, tests = true, log = () => {} }) {
+const mainChecks = new Map();
+/**
+ * Does `cmd` fail on main as well (a clean worktree of `base`, cached per main sha)? Then a red check after the merge
+ * is not this build's doing (Nov 14 2026: tracker --check read a host data copy that main's tree failed too) and the
+ * landing goes on; the check stays main's problem.
+ */
+export function failsOnMain({ g, base, cmd, timeout = 180000 }) {
+  if (!base) return false;
+  const sha = g(['rev-parse', base]).out; if (!sha) return false;
+  const key = `${sha}\n${cmd.join(' ')}`;
+  if (mainChecks.has(key)) return mainChecks.get(key);
+  const dir = mkdtempSync(join(tmpdir(), 'axf-land-main-')); const wt = join(dir, 'wt');
+  let fails = false;
+  try {
+    if (g(['worktree', 'add', '-q', '--detach', wt, sha]).code) return false;
+    const r = spawnSync(cmd[0], cmd.slice(1), { cwd: wt, encoding: 'utf8', timeout, maxBuffer: 16 << 20, env: { ...process.env, CI: '1' } });
+    fails = (r.status ?? 1) !== 0;
+  } finally { g(['worktree', 'remove', '--force', wt]); rmSync(dir, { recursive: true, force: true }); }
+  mainChecks.set(key, fails);
+  return fails;
+}
+
+export function regenerate({ g, wt, paths, tests = true, base = '', log = () => {} }) {
   const regenerated = []; const skipped = [];
   const run = (cmd, timeout) => { const r = spawnSync(cmd[0], cmd.slice(1), { cwd: wt, encoding: 'utf8', timeout, maxBuffer: 16 << 20, env: { ...process.env, CI: '1' } }); return { code: r.status ?? 1, text: `${r.stderr || ''}${r.stdout || ''}`.trim().slice(-400) }; };
+  const mainToo = (cmd) => { const f = failsOnMain({ g, base, cmd }); if (f) log(`${cmd.join(' ')} fails on main too: not this build's doing, landing goes on`); return f; };
   for (const gen of core.regenPlan(paths)) {
     const r = run(gen.run, gen.timeoutMs);
     if (r.code) {
@@ -329,10 +352,10 @@ export function regenerate({ g, wt, paths, tests = true, log = () => {} }) {
     }
     regenerated.push(gen.id);
     g(['add', '-A', '--', ...gen.outputs.filter((o) => existsSync(join(wt, o)))]);
-    if (gen.check) { const c = run(gen.check, gen.timeoutMs); if (c.code) return { error: `${gen.id} regenerated but its check failed (${gen.check.join(' ')}): ${c.text}` }; }
+    if (gen.check) { const c = run(gen.check, gen.timeoutMs); if (c.code && !mainToo(gen.check)) return { error: `${gen.id} regenerated but its check failed (${gen.check.join(' ')}): ${c.text}` }; }
   }
   if (tests) {
-    for (const t of core.landTests()) { const c = run(t, 180000); if (c.code) return { error: `tests after regenerating failed (${t.join(' ')}): ${c.text}` }; }
+    for (const t of core.landTests()) { const c = run(t, 180000); if (c.code && !mainToo(t)) return { error: `tests after regenerating failed (${t.join(' ')}): ${c.text}` }; }
   }
   if (regenerated.length) log(`regenerated ${regenerated.join(', ')} after the merge`);
   return { regenerated, skipped };
@@ -373,7 +396,7 @@ export function mergeMain({ s, git, b, dry, inPlace = '', regenAfter = false, re
       const left = g(['diff', '--name-only', '--diff-filter=U']).out.split('\n').filter(Boolean);
       if (!left.length) { g(['merge', '--abort']); return { merged: false, conflicts: [], pushError: `merge: ${m.err.slice(-200) || m.out.slice(-200)}` }; }
       // main is the side being merged in (theirs); its builds files win too (the newest status is on main)
-      let res = resolveConflicts({ g, wt, dir, left, mainSide: 'theirs', buildsSide: 'theirs', log });
+      let res = resolveConflicts({ g, wt, dir, left, mainSide: 'theirs', buildsSide: 'theirs', base: `${s.remote}/${s.base}`, log });
       // what these rules call code goes to the host resolver once (it knows more file kinds); still unsettled = a real clash
       if (res.conflicts && resolver) {
         const h = hostResolve({ wt, resolver });
@@ -400,7 +423,7 @@ export function mergeMain({ s, git, b, dry, inPlace = '', regenAfter = false, re
       const gen = changed.filter((p) => core.classifyPath(p) === 'generated').concat(g(['diff', '--name-only', `${s.remote}/${s.base}`, 'HEAD']).out.split('\n').filter((p) => p && core.classifyPath(p) === 'generated'));
       const todo = core.regenPlan(gen).filter((x) => !regenerated.includes(x.id));
       if (todo.length) {
-        const r = regenerate({ g, wt, paths: gen.filter((p) => todo.some((x) => core.regenPlan([p])[0]?.id === x.id)), tests: true, log });
+        const r = regenerate({ g, wt, paths: gen.filter((p) => todo.some((x) => core.regenPlan([p])[0]?.id === x.id)), tests: true, base: `${s.remote}/${s.base}`, log });
         if (r.error) { g(['reset', '-q', '--hard', 'HEAD']); return { merged: false, conflicts: [], resolved, regenerated, checkError: r.error }; }
         regenerated = [...regenerated, ...r.regenerated];
         if (g(['diff', '--cached', '--quiet']).code) {

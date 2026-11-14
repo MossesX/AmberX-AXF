@@ -262,6 +262,8 @@ export function applyRun(l, id, run, at = new Date().toISOString()) {
   const st = () => line.findEntry(l, id)?.state;
   if (st() === 'waiting') ev('start', { head: run.head });
   if (run.unresolved?.length) { if (['merging-main', 'regenerating'].includes(st())) ev('conflict', { files: run.unresolved }); return l; }
+  // a red check right after merging (nothing pushed): fix-filed, the line moves on
+  if (run.check?.ok === false && !run.merged) { if (['merging-main', 'regenerating'].includes(st())) ev('conflict', { why: run.check.note || `checks failed after the merge: ${run.check.failed.join(', ')}`, files: [] }); return l; }
   if (run.error || !run.merged) { if (line.LIVE.includes(st()) && st() !== 'paused') ev('pause', { why: `Landing broke: ${run.error || 'merge failed'}`, by: 'lander' }); return l; }
   if (st() === 'merging-main') ev('merged-main', { sha: run.merged });
   if (st() === 'regenerating') {

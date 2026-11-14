@@ -175,7 +175,7 @@ await t('landed and clash attempts go on the build too; a running one does not',
 
 await t('the line: builds land one at a time in order; red files its fix and the line moves on; a lander error waits for the next run', async () => {
   const sL = { ...s, dataDir: join(root, 'line') };
-  for (const id of ['one', 'two', 'three', 'four']) enqueue(sL, { id, branch: `claude/${id}` });
+  for (const id of ['one', 'two', 'three', 'four', 'five']) enqueue(sL, { id, branch: `claude/${id}` });
   enqueue(sL, { id: 'urgent', branch: 'claude/urgent' }, { front: true });
   const H = (c) => c.repeat(40);
   const outcome = {
@@ -184,20 +184,23 @@ await t('the line: builds land one at a time in order; red files its fix and the
     two: { error: 'network down', outcome: 'error' },
     three: { unresolved: ['src/x.ts'], outcome: 'clash' },
     four: { merged: H('c'), ci: { status: 'in_progress', conclusion: '' }, outcome: '' },
+    five: { check: { ok: false, failed: ['tracker'], note: 'tracker check failed' }, outcome: 'red' },
   };
   const order = []; let inside = 0; let overlap = false;
   const land = async ({ build }) => { inside++; if (inside > 1) overlap = true; order.push(build.id); await new Promise((r) => setTimeout(r, 5)); inside--; return { ran: true, run: { ...lr.emptyLandRun(), build: build.id, head: H('d'), check: { ok: null, failed: [], note: '' }, ...outcome[build.id], note: build.id } }; };
+  // five: a red check right after the merge goes fix-filed (never paused as a lander error); four is in flight, so five waits for the next run
   const r = await runLine({ s: sL, land });
   assert.deepEqual(order, ['urgent', 'one', 'two', 'three', 'four'], 'front first, then in order, each once');
   assert.equal(overlap, false, 'never two at once');
   const l = readLine(sL); const st = Object.fromEntries(l.entries.map((e) => [e.build, e.state]));
-  assert.deepEqual(st, { one: 'fix-filed', two: 'waiting', three: 'fix-filed', four: 'checking' });
+  assert.deepEqual(st, { one: 'fix-filed', two: 'waiting', three: 'fix-filed', four: 'checking', five: 'waiting' });
   assert.equal(l.history.find((e) => e.build === 'urgent')?.state, 'landed');
   assert.equal(r.ran.length, 5);
   // next run: the one in flight is resumed first, nothing else starts while it is still checking
   const order2 = []; outcome.four = { merged: H('c'), ci: { status: 'completed', conclusion: 'success' }, outcome: 'landed' };
   await runLine({ s: sL, land: async (o) => { order2.push(o.build.id); return land(o); } });
-  assert.deepEqual(order2, ['four', 'two'], 'in-flight first, then the waiting one');
+  assert.deepEqual(order2, ['four', 'two', 'five'], 'in-flight first, then the waiting ones');
+  assert.equal(readLine(sL).entries.find((e) => e.build === 'five').state, 'fix-filed', 'a red check after the merge is fix-filed, not paused');
 });
 
 await t('two at once: a second attempt is refused while the line is held, and runs once it is free', async () => {
