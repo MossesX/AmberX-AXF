@@ -58,7 +58,7 @@ export function SkinChip() {
           <ul className="fx-menu" role="menu" aria-label="Skins">
             {skins.map((s) => (
               <li key={s.id} className="fx-menu__li">
-                <button type="button" role="menuitemradio" aria-checked={s.id === here?.inForce.id} className="fx-menu__item" disabled={!!busy} onClick={() => void run('use', () => useSkinAt(s.id, scope))}>
+                <button type="button" data-axf-target={`skin:${s.id}`} role="menuitemradio" aria-checked={s.id === here?.inForce.id} className="fx-menu__item" disabled={!!busy} onClick={() => void run('use', () => useSkinAt(s.id, scope))}>
                   <span className="fx-menu__icon">{s.id === here?.inForce.id && <Icon name="check" size={14} />}</span><span className="fx-menu__label">{s.name}</span>
                 </button>
               </li>
