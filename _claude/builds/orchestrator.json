@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T23:16:46.414Z",
+ "updatedAt": "2026-11-14T23:16:57.049Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -109844,7 +109844,7 @@
    "title": "Console and axHub retry failed calls themselves (no Claude needed)",
    "category": "orchestrator",
    "detail": "URGENT, boss order from Brett, Nov 12. When a call from Claude/MCP/voice/CLI fails for a transient reason (e.g. 'builds store is locked', timeout, console client asleep, rate limit, 5xx), the console and axHub must retry it THEMSELVES on the server, whether or not the Claude session is still connected. Retry with backoff until it succeeds (bounded, e.g. 10 tries over ~10 min), then the result is stored on the job so get_job shows success. Only permanent errors (validation, not found) fail, and those send Brett an AmberX FYI with what's missing. Fix the root cause of store.json.lock contention too (stale lock cleanup, short waits for the lock instead of failing). Applies to control_add/set/act, pipeline_queue, console_open/show and all axf-console write tools. Tests: locked store -> call waits/retries and succeeds; session disconnect mid-retry -> still completes.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -109852,7 +109852,7 @@
    "pr": "#589",
    "createdAt": "2026-11-12T02:37:24.132Z",
    "updatedAt": "2026-11-14T23:16:01.438Z",
-   "builtAt": "",
+   "builtAt": "2026-11-14T23:16:01.438Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -109945,6 +109945,10 @@
     {
      "text": "Headless run axf-console-axhub-retry-failed-calls--joey: brief only · start 11.8K tokens ($0.03) · cost $0.79 · 28 turns · 6 tools, MCP none",
      "at": "2026-11-14T23:16:01.438Z"
+    },
+    {
+     "text": "s3: all retry tests pass on the branch head (locked store retried to success; caller gone mid-retry still completes). PR #589 is waiting for the merge queue, which handles landing and redeploy. The live FYI goes out after it lands. UI Review shots are still missing: the headless console can't reach axHub from a localhost origin (curl reaches it), so a session with hub access must capture and submit them.",
+     "at": "2026-11-14T23:15:35.277Z"
     }
    ],
    "approvals": [],
@@ -110051,8 +110055,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:15:42.169Z",
      "note": "",
      "uid": "st-mwcxtjcz06hcjc",
      "createdAt": "2026-11-12T02:37:24.132Z"
