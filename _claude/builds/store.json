@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5582,
- "updatedAt": "2026-11-14T23:14:19.674Z",
+ "rev": 5583,
+ "updatedAt": "2026-11-14T23:14:35.553Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -193814,7 +193814,7 @@
    "branch": "claude/owner-recognized-everywhere-veto",
    "pr": "#601",
    "createdAt": "2026-11-12T02:04:11.564Z",
-   "updatedAt": "2026-11-14T23:12:56.322Z",
+   "updatedAt": "2026-11-14T23:14:21.061Z",
    "builtAt": "2026-11-14T23:12:56.322Z",
    "notes": [
     {
@@ -193967,6 +193967,23 @@
     "heldBy": "",
     "heldWhy": ""
    },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "red",
+    "landAttempts": [
+     {
+      "at": "2026-11-14T23:13:42.082Z",
+      "run": "lr-owner-recognized-everywhere-veto-20261114T231342",
+      "base": "3710f37eec6e64b6d20bfba0a61b179ec4080c61",
+      "merged": "",
+      "outcome": "red",
+      "ci": "",
+      "note": "No fix build: the orchestrator did not take it."
+     }
+    ]
+   },
    "steps": [
     {
      "id": "s1",
@@ -194043,7 +194060,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 43,
+   "rev": 44,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -205262,7 +205279,7 @@
    "pr": "#640",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:32.589Z",
-   "updatedAt": "2026-11-13T20:19:48.032Z",
+   "updatedAt": "2026-11-14T23:13:32.453Z",
    "builtAt": "2026-11-13T20:19:48.032Z",
    "notes": [
     {
@@ -205337,6 +205354,23 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "flagged",
+    "landAttempts": [
+     {
+      "at": "2026-11-14T23:13:06.045Z",
+      "run": "lr-console-app-part-4-console-side-safe-20261114T231306",
+      "base": "d7d2eb1908e46c6d1d54e216b956610d3706ad5c",
+      "merged": "",
+      "outcome": "clash",
+      "ci": "",
+      "note": "Source clash a person has to settle: framework/ui/axf.css. No fix build: the orchestrator did not take it."
+     }
+    ]
    },
    "steps": [
     {
@@ -205505,7 +205539,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": {
