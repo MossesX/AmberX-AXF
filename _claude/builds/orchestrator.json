@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T04:09:14.812Z",
+ "updatedAt": "2026-11-14T04:09:35.844Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -137346,14 +137346,14 @@
    "title": "Demo video series: three-minute browser walkthroughs of AmberX",
    "category": "Launch",
    "detail": "Brett: a bunch of three-minute videos, each a real browser walkthrough with real data, showing different parts of the app: how voice control works, how the orchestrator uses agents to build everything, Plan Studio, skins and hot-swappable tokens, the UI designer, axHub. Themable player (skins switch between videos). One video shows a full app being built start to finish with the UI designer; parts that aren't built yet are mocked to show what they will look like, clearly staged. Narrated with adjustable TTS. Reuse the recorder, narration and player from the 2-hour walkthrough build (amberx-walkthrough-2-hour-indexed). Export MP4 for socials plus the HTML5 player; publish alongside the landing page.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-14T04:08:44.604Z",
+   "updatedAt": "2026-11-14T04:09:09.564Z",
    "builtAt": "",
    "notes": [
     {
@@ -137379,6 +137379,10 @@
     {
      "text": "Headless run axf-demo-video-series-three-minute-browser--earl: brief only · start 10.8K tokens ($0.02) · cost $1.13 · 28 turns · 6 tools, MCP none",
      "at": "2026-11-14T04:08:44.604Z"
+    },
+    {
+     "text": "Session on mossesx-max- stopped on its own with 7 steps left: back in Pending for Brett.",
+     "at": "2026-11-14T04:09:09.564Z"
     }
    ],
    "approvals": [],

@@ -792,7 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 20:06 UTC · `icon-map-icon-packs-every-icon-badge-app` branch claude/icon-map-icon-packs-every-icon-badge-app (all) · pipeline
 - 2026-11-13 20:06 UTC · `icon-map-icon-packs-every-icon-badge-app` note (all) · orchestrator
 - 2026-11-13 20:06 UTC · `ui-manager-floating-window-to-select-any` note (all) · claude-voice
 - 2026-11-13 20:07 UTC · `dispatcher-gate-never-launch-build` added (0 steps) (all) · console
@@ -1192,6 +1191,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 04:08 UTC · `demo-video-series-three-minute-browser` branch claude/demo-video-series-three-minute-browser, PR #667 (all) · builds-live
 - 2026-11-14 04:08 UTC · `demo-video-series-three-minute-browser` note (all) · orchestrator
 - 2026-11-14 04:08 UTC · `demo-video-series-three-minute-browser` s1 done, → running (all) · orchestrator
+- 2026-11-14 04:09 UTC · `demo-video-series-three-minute-browser` → pending, note (all) · pipeline
 
 ## Token passes (log)
 
