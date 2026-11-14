@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T03:53:11.735Z",
+ "updatedAt": "2026-11-14T03:53:58.648Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -137115,7 +137115,7 @@
    "branch": "claude/ui-directory-plugin-self-updating-data",
    "pr": "",
    "createdAt": "2026-11-14T03:50:42.413Z",
-   "updatedAt": "2026-11-14T03:53:01.224Z",
+   "updatedAt": "2026-11-14T03:53:57.006Z",
    "builtAt": "",
    "notes": [
     {
@@ -137202,6 +137202,25 @@
      "note": "",
      "uid": "st-mwfvehpc017wvo",
      "createdAt": "2026-11-14T03:53:01.225Z"
+    },
+    {
+     "id": "s5",
+     "text": "Brett: the directory also covers every other asset (skins, icon packs, icons, shapes, animations, branding templates, toolbars, tab groups, context menus, tokens) in the same tree, and you can view or hide any of them: a show/hide toggle per item and per branch, filter by visible/hidden, hidden ones restorable, saved per page and per user, full API and voice ('hide the deploy toolbar').",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfvfoij01ulvi",
+     "createdAt": "2026-11-14T03:53:57.008Z"
     },
     {
      "id": "s3",

@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5183,
- "updatedAt": "2026-11-14T03:53:11.735Z",
+ "rev": 5184,
+ "updatedAt": "2026-11-14T03:53:58.648Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -211797,7 +211797,7 @@
    "branch": "claude/ui-directory-plugin-self-updating-data",
    "pr": "",
    "createdAt": "2026-11-14T03:50:42.413Z",
-   "updatedAt": "2026-11-14T03:53:01.224Z",
+   "updatedAt": "2026-11-14T03:53:57.006Z",
    "builtAt": "",
    "notes": [
     {
@@ -211917,6 +211917,28 @@
      "updatedAt": "2026-11-14T03:53:01.728Z"
     },
     {
+     "id": "s5",
+     "uid": "st-mwfvfoij01ulvi",
+     "title": "",
+     "text": "Brett: the directory also covers every other asset (skins, icon packs, icons, shapes, animations, branding templates, toolbars, tab groups, context menus, tokens) in the same tree, and you can view or hide any of them: a show/hide toggle per item and per branch, filter by visible/hidden, hidden ones restorable, saved per page and per user, full API and voice ('hide the deploy toolbar').",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-14T03:53:57.008Z",
+     "updatedAt": "2026-11-14T03:53:57.211Z"
+    },
+    {
      "id": "s3",
      "uid": "st-mwfvbirg06yfzt",
      "title": "",
@@ -211947,7 +211969,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
