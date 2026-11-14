@@ -6,8 +6,9 @@
 import { readdirSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { colorThemeVars, styleThemeVars } from '../core/engines/theme';
-import { backToSkin, composeLook, composeLookAt, coverageSummary, coverageTable, declarationErrors, globalSkinOf, lookAfterChange, newAppLook, normalizeAppLook, normalizeSkin, normalizeSkinScope, overriddenSlots, parseAppLook, partElements, partsErrors, partsTypes, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, scopeState, setInheritSkin, setLookSlot, setScopeOverride, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorOf, skinCovers, skinErrors, skinFromDesignPackage, skinScopeChain, skinScopeKey, skinScopeKind, skinScopeSelector, skinSlots, snapshotLook, uncoveredTypes, undoRestore } from '../core/engines/skin';
+import { backToSkin, composeLook, composeLookAt, coverageSummary, coverageTable, declarationErrors, globalSkinOf, hubOnlyLook, lookAfterChange, newAppLook, normalizeAppLook, normalizeSkin, normalizeSkinScope, overriddenSlots, parseAppLook, partElements, partsErrors, partsTypes, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, scopeState, setInheritSkin, setLookSlot, setScopeOverride, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorOf, skinCovers, skinErrors, skinFromDesignPackage, skinScopeChain, skinScopeKey, skinScopeKind, skinScopeSelector, skinSlots, snapshotLook, uncoveredTypes, undoRestore } from '../core/engines/skin';
 import { foldLegacyPicks, legacyPicks, lookNeedsMigration, migrateLook, migrateLookSettings, parseLegacyLook, settingsNeedMigration } from '../core/engines/look-migration.mjs';
+import { SKIN_SWITCH_ACTIONS, SKIN_SWITCH_CONTRACT, SKIN_SWITCH_ERRORS, SKIN_SWITCH_HUB, SKIN_SWITCH_SCOPES, normalizeSkinSwitch, parseSwitchScope, skinSwitch, skinSwitchState, switchScopeOf, switchScopes } from '../core/engines/skin-switch.mjs';
 import { SCALE_TYPES, normalizeScale, scaleErrors, scaleThemeVars, scaleVars } from '../core/engines/scale';
 import { AGENT_CARD_SAMPLE, agentCardErrors, avatarColors, avatarModel, barcodeBars, cardModel, employeeId, normalizeCard } from '../core/engines/agent-card-rules.mjs';
 import { AVATAR_FACES, AVATAR_GEAR } from '../core/engines/swarm-rules.mjs';
@@ -49,6 +50,8 @@ import { navFieldErrors } from '../core/engines/navstyle-rules.mjs';
 import { CHROME_KINDS, DEFAULT_MERGE, DEFAULT_PRESETS, MERGE_MODES, OPEN_TARGETS, TOOLBAR_LOCATIONS, TOOLBAR_SLOT_COUNT, XLAYOUT_CONTRACT, XLAYOUT_LIMITS, dockRulesOf, guestHidden, guestTakes, guestUrl, guestUserAgent, idePresets, normalizeXLayout, nsId as xNsId, openTargetFor, parseToolbarItem, splitNs, stripNs, visibleToolbars, xlayoutErrors } from '../core/engines/xlayout';
 import { CHROME_CONTRACT, CHROME_LIMITS, WIDGET_TONES as CHROME_WIDGET_TONES, WIDGET_TYPES as CHROME_WIDGET_TYPES, activeNav, chromePicks, emptyChrome, mergeChrome, parseChromeBundle, routePick, type ChromeBundle } from '../core/engines/chrome';
 import { intentCommand, voiceIntent, voiceReply } from '../core/engines/console-control-voice.mjs';
+import { animationState, behaviorErrors, behaviorStyle, setAnimationPref, withAnimationPrefs } from '../core/engines/behavior';
+import { mixHex, shadesOf, skinSwatches, sweepOrigin } from '../core/engines/swatches';
 import { CONSOLE_CONTROL_CODES, CONSOLE_CONTROL_DEFAULT_CAN, CONSOLE_CONTROL_KINDS, CONSOLE_CONTROL_TARGETS_FRAME, CONSOLE_CONTROL_VERB_IDS, childAddress, consoleControlErrors, consoleControlFailure, consoleControlResult, failureOf, focusOptions, formatAddress, listTargets, nearestRegisteredParent, nearestTargets, normalizeConsoleControl, parseAddress, resolveAddress, resolveForVerb, scrollState, scrollStep, searchTargets, splitTabId, tabAddressId, type AddressSegment, type ConsoleControlScrollDir, type ConsoleControlVerb, type ScrollState, type TargetSnapshot } from '../core/engines/console-control';
 import { addonRisks, agentToAddon, bm25Rank, chunkText, composeSystemPrompt, fillToolTemplate, fillWorkflowTemplate, memoryTokens, parseRouterPick, resolveMemory, stripAddonRisks, trimMemory, validateAddon, validateAgentItem, type AddonBundle, type AgentCollection } from '../core/agents';
 
@@ -2058,6 +2061,13 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
         doc: { pluginOn, dropped: setScopeSkin(pluginOn, 'plugin:notes', 'inherit', ''), entries: scopeEntries(chainOver), state: scopeState(chainOver, 'plugin:notes'), appState: scopeState(inherit, 'app'), roundTrip: parseAppLook(JSON.stringify(chainOver)), restored: restoreAppDefault(chainOver, '2026-11-07T00:00:00Z').scopes, undone: undoRestore(restoreAppDefault(chainOver, '2026-11-07T00:00:00Z')).scopes },
         covers: skinCovers(skinned).filter((c) => ['button', 'label', 'icon-pack', 'uac-policy', 'skin', 'logo-mark', 'branding', 'toolbar'].includes(c.type)),
         globalSkin: { good: globalSkinOf(withGlobal as never), none: globalSkinOf(shared as never), junk: globalSkinOf({ $axf: 'appearance@1', skin: { id: 'Bad Id' } } as never) },
+        // Skin from axHub only (build console-skin-axhub-only): an app with its own skin, an override, a colour pick and a
+        // plugin scope draws the hub-wide skin alone; the stored document is untouched
+        hubOnly: (() => {
+          const mine = setScopeSkin(setSkinColorTheme(lookAfterChange(setUseSkin(pickSkin(look0, 'windows'), true), { slots: { button: 'terminal' } }, skinned), 'plum-noir'), 'plugin:notes', 'on', 'aurora');
+          const drawn = hubOnlyLook(mine);
+          return { mine, drawn, composed: composeLookAt(withGlobal as never, drawn, skinOf), inPlugin: composeLookAt(withGlobal as never, drawn, skinOf, place), noHubSkin: composeLookAt(shared as never, drawn, skinOf), none: hubOnlyLook(null) };
+        })(),
       };
     })(),
     // The colour theme inside a skin (Brett, Nov 9 2026): switched on its own, kept as `colorTheme` beside the skin,
@@ -2182,6 +2192,101 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
   });
 }
 
+/* ---- skin-switch@1 (Nov 13 2026): use / back-to-skin / restore-default / undo per scope, one undo record ---- */
+{
+  const skins: Record<string, unknown> = {
+    windows: { layoutTheme: 'windows-explorer', colorTheme: 'windows-light', styleTheme: 'windows', assets: { button: 'windows' }, extras: { spacing: 'compact' } },
+    aurora: { layoutTheme: 'focus-top', colorTheme: 'aurora-night', styleTheme: 'hub', assets: {} },
+  };
+  const ctx = { has: (id: string) => id in skins, now: '2026-11-13T00:00:00Z' };
+  const shared = { $axf: 'appearance@1', slots: { layout: 'focus-top', 'color-theme': 'arctic-daylight', 'style-theme': 'hub', button: 'rounded-solid' }, spacing: 'tight', hidden: { toolbar: true } };
+  const look0 = newAppLook('app', snapshotLook(shared as never));
+  // the edits a step may make between two commands (what the picker, control@1 or a scope override does), replayed by the check
+  const edits: Record<string, (look: AppLookDocument, ...args: string[]) => AppLookDocument> = {
+    setLookSlot: (look, slot, id) => setLookSlot(look, slot!, id!),
+    setSkinColorTheme: (look, id, key) => setSkinColorTheme(look, id!, key),
+    setScopeOverride: (look, key, slot, id) => setScopeOverride(look, key!, slot!, id!),
+    setInheritSkin: (look, on) => setInheritSkin(look, on === 'true'),
+  };
+  type Step = { name: string; edit?: { fn: string; args: string[] }[]; global?: Record<string, unknown> | null; command: Record<string, unknown> };
+  const steps: Step[] = [
+    { name: 'useApp', command: { action: 'use', scope: 'app:app', skin: 'windows' } },
+    { name: 'usePlugin', command: { action: 'use', scope: 'plugin:notes', skin: 'aurora' } },
+    { name: 'useHub', command: { action: 'use', scope: 'hub', skin: 'aurora' } },
+    { name: 'backSlot', edit: [{ fn: 'setLookSlot', args: ['button', 'terminal'] }, { fn: 'setLookSlot', args: ['dialog', 'app-dialog'] }, { fn: 'setSkinColorTheme', args: ['plum-noir'] }, { fn: 'setScopeOverride', args: ['plugin:notes', 'dialog', 'plugin-dialog'] }, { fn: 'setScopeOverride', args: ['ui:home', 'button', 'ui-button'] }], global: { id: 'aurora', overrides: { button: 'global-button' }, colorTheme: 'harbor' }, command: { action: 'back-to-skin', scope: 'app:app', slot: 'button' } },
+    { name: 'backColour', command: { action: 'back-to-skin', scope: 'app:app', slot: 'color-theme' } },
+    { name: 'backPluginAll', command: { action: 'back-to-skin', scope: 'plugin:notes' } },
+    { name: 'backHubSlot', command: { action: 'back-to-skin', scope: 'hub', slot: 'button' } },
+    { name: 'backHubAll', command: { action: 'back-to-skin', scope: 'hub' } },
+    { name: 'backAppAll', command: { action: 'back-to-skin', scope: 'app:app' } },
+    { name: 'restoreApp', command: { action: 'restore-default', scope: 'app:app' } },
+    { name: 'undoRestoreApp', command: { action: 'undo', scope: 'app:app' } },
+    { name: 'undoAgain', command: { action: 'undo', scope: 'app:app' } },
+    { name: 'restoreHub', command: { action: 'restore-default', scope: 'hub' } },
+    { name: 'undoRestoreHub', command: { action: 'undo', scope: 'hub' } },
+    { name: 'restorePlugin', command: { action: 'restore-default', scope: 'plugin:notes' } },
+    { name: 'undoRestorePlugin', command: { action: 'undo', scope: 'plugin:notes' } },
+    { name: 'restoreUi', command: { action: 'restore-default', scope: 'ui:home' } },
+    { name: 'useSameApp', command: { action: 'use', scope: 'app:app', skin: 'windows' } },
+    { name: 'useOtherApp', command: { action: 'use', scope: 'app:app', skin: 'aurora' } },
+    { name: 'undoUse', command: { action: 'undo', scope: 'app:app' } },
+    { name: 'unknownSkin', command: { action: 'use', scope: 'ui:home', skin: 'nope' } },
+    { name: 'noSkin', command: { action: 'use', scope: 'hub' } },
+    { name: 'otherApp', command: { action: 'use', scope: 'app:other', skin: 'windows' } },
+    { name: 'badScope', command: { action: 'use', scope: 'planet:mars', skin: 'windows' } },
+    { name: 'badAction', command: { action: 'flip', scope: 'hub' } },
+  ];
+  let cur: { look: AppLookDocument; global: Record<string, unknown> | null } = { look: look0, global: null };
+  const sequence = steps.map((s) => {
+    let look = cur.look;
+    for (const e of s.edit ?? []) look = edits[e.fn]!(look, ...e.args);
+    const before = { look, global: s.global === undefined ? cur.global : s.global };
+    const result = skinSwitch(before as never, s.command, ctx);
+    cur = { look: result.look!, global: result.global as never };
+    const scope = parseSwitchScope(s.command.scope)?.scope ?? '';
+    return { ...s, before, result, view: scope ? skinSwitchState(result.look, result.global, scope, ctx) : null, roundTrip: parseAppLook(JSON.stringify(result.look)) };
+  });
+  const after = (name: string) => sequence.find((s) => s.name === name)!.result;
+  const mixed = after('useHub');
+  const inherit = setInheritSkin(look0, true);
+  write('skin-switch.json', {
+    contract: SKIN_SWITCH_CONTRACT, actions: SKIN_SWITCH_ACTIONS, scopes: SKIN_SWITCH_SCOPES, errors: SKIN_SWITCH_ERRORS, hub: SKIN_SWITCH_HUB,
+    skins, shared, snapshot: look0,
+    parse: Object.fromEntries(['hub', 'global', 'app', 'app:notes', 'ui:home', 'plugin:ai.amberx.notes', 'nope', 'app:Bad Id', 'plugin:', '', 'ui:a/b'].map((s) => [s, parseSwitchScope(s)])),
+    scopeOf: { global: switchScopeOf('global', 'app'), app: switchScopeOf('app', 'app'), appNoId: switchScopeOf('app'), ui: switchScopeOf('ui:home', 'app'), plugin: switchScopeOf('plugin:notes'), junk: switchScopeOf('junk') },
+    scopesOf: { bare: switchScopes(look0), withPlugin: switchScopes(after('usePlugin').look!), none: switchScopes(null) },
+    normalize: {
+      good: normalizeSkinSwitch({ action: 'use', scope: 'app:app', skin: 'windows', slot: 'ignored', at: '2026-11-13T00:00:00Z' }),
+      back: normalizeSkinSwitch({ action: 'back-to-skin', scope: ' plugin:notes ', slot: 'button' }),
+      noSkin: normalizeSkinSwitch({ action: 'use', scope: 'hub' }),
+      badAll: normalizeSkinSwitch({ action: 'flip', scope: 'planet', skin: 'Bad Id', slot: 'Bad Slot' }),
+      junk: normalizeSkinSwitch(7),
+    },
+    sequence,
+    views: {
+      // after the hub-wide skin is set while the app has its own and the plugin its own: who decides where
+      hub: skinSwitchState(mixed.look, mixed.global, 'hub', ctx),
+      app: skinSwitchState(mixed.look, mixed.global, 'app:app', ctx),
+      appBare: skinSwitchState(mixed.look, mixed.global, 'app', ctx),
+      ui: skinSwitchState(mixed.look, mixed.global, 'ui:home', ctx),
+      plugin: skinSwitchState(mixed.look, mixed.global, 'plugin:notes', ctx),
+      otherApp: skinSwitchState(mixed.look, mixed.global, 'app:other', ctx),
+      badScope: skinSwitchState(mixed.look, mixed.global, 'nope', ctx),
+      // an app that follows the hub-wide skin
+      following: skinSwitchState(inherit, mixed.global, 'app:app', ctx),
+      followingPlugin: skinSwitchState(inherit, mixed.global, 'plugin:notes', ctx),
+      followingNoHub: skinSwitchState(inherit, null, 'app:app', ctx),
+      // a skin the app lacks
+      unknownInForce: skinSwitchState(setUseSkin(pickSkin(look0, 'gone'), true), null, 'app:app', ctx),
+      noDocument: skinSwitchState(null, mixed.global, 'app:app', ctx),
+      noDocumentHub: skinSwitchState(null, mixed.global, 'hub', ctx),
+    },
+    noDocument: skinSwitch({ look: null, global: null }, { action: 'use', scope: 'app:app', skin: 'windows' }, ctx),
+    // an older record (Restore before skin-switch@1) still undoes
+    legacyUndo: skinSwitch({ look: restoreAppDefault(after('useApp').look!, '2026-11-12T00:00:00Z'), global: null }, { action: 'undo', scope: 'app:app' }, ctx),
+  });
+}
+
 // console-control@1 (core/engines/console-control.ts; build full-api-and-voice-control, Nov 13 2026): address grammar (parse / format
 // round trips, every refused shape with its wire code), command errors, resolving against one target snapshot (full, trailing,
 // tab value, ambiguous, not_found with nearest, verb checks), search ranking, scroll maths and the answer envelopes.
@@ -2297,7 +2402,7 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
 {
   const phrases = ['scroll down', 'Amber, scroll up a bit please', 'scroll down two pages', 'page down', 'go to the top', 'scroll to the bottom', 'open plugins settings', 'open the pipeline tab',
     'go to plan studio', 'open settings', 'find dark mode', 'search for snapshot', 'show step 3 of the console control build', 'step three of skins', 'disable plugin skins',
-    'turn off the skins plugin', 'turn the skins plugin off', 'enable voice notes plugin', 'press save', 'click the refresh button', 'Set font scale to 1.2.', 'turn help mode on', 'what time is it', ''];
+    'turn off the skins plugin', 'turn the skins plugin off', 'enable voice notes plugin', 'press save', 'click the refresh button', 'Set font scale to 1.2.', 'turn help mode on', 'Lock the console to the axHub skin', 'unlock the console from the axHub skin', 'Override the axHub skin', 'stop overriding the axHub skin', 'what time is it', ''];
   const intents = Object.fromEntries(phrases.map((p) => [p, voiceIntent(p)]));
   const hit = 'view:build-orchestrator/grid:builds/row:b1';
   write('console-control-voice.json', {
@@ -2314,6 +2419,33 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
       confirm: voiceReply({ verb: 'press' }, { ok: false, code: 'confirmation_required', message: 'x' }),
       noConsole: voiceReply({ verb: 'open' }, { ok: false, code: 'unavailable', message: 'x', openUrl: 'https://c/' }),
       failed: voiceReply({ verb: 'press' }, { ok: false, code: 'denied', message: 'needs Brett' }),
+    },
+  });
+}
+
+// Skin animations (build skin-animations-swatches-skin-switch): behaviour-theme animation fields, the Animations
+// settings overlay, and the swatch / sweep colour maths.
+{
+  const fluid = { motion: { speed: 'normal', easing: 'spring', reduced: 'system', entrance: 'scale' } };
+  const ripple = { motion: { swatches: 'ripple', skinSwitch: 'sweep', picker: 'pop', animSpeed: 200, animIntensity: 30 } };
+  write('skin-animations.json', {
+    style: { default: behaviorStyle({}), fluid: behaviorStyle(fluid), ripple: behaviorStyle(ripple), reduced: behaviorStyle(fluid, true), still: behaviorStyle({ motion: { animIntensity: 0 } }) },
+    errors: { ok: behaviorErrors(ripple), bad: behaviorErrors({ motion: { swatches: 'spin', animSpeed: 9000, animIntensity: 'lots' } }) },
+    prefs: {
+      set: setAnimationPref({}, 'swatches', 'pop'),
+      speed: setAnimationPref({ swatches: 'pop' }, 'speed', '150'),
+      back: setAnimationPref({ swatches: 'pop', speed: 150 }, 'swatches', 'skin'),
+      bad: setAnimationPref({}, 'picker', 'spin'),
+      unknown: setAnimationPref({}, 'glow', 'on'),
+      clamp: setAnimationPref({}, 'intensity', 500),
+      overlay: withAnimationPrefs(ripple, { swatches: 'wave', intensity: 80 }).motion,
+    },
+    state: { default: animationState({}, {}), own: animationState(ripple, { picker: 'off', speed: 50 }), reduced: animationState(fluid, {}, true) },
+    colours: {
+      mixDark: mixHex('#3366cc', -0.5), mixLight: mixHex('#3366cc', 0.5), notHex: mixHex('var(--fx-accent)', 0.5),
+      shades5: shadesOf('#3366CC', 5), shades4: shadesOf('#3366cc', 4), shadesNotHex: shadesOf('red', 3),
+      skin: skinSwatches({ bg: '#101010', surface: '#202020', surface2: '#202020', accent: '#ff8800', text: '#eeeeee' }), none: skinSwatches(undefined),
+      sweepTap: sweepOrigin({ x: 900, y: 100 }, { w: 1000, h: 800 }), sweepNone: sweepOrigin(null, { w: 1000, h: 800 }), sweepOut: sweepOrigin({ x: -5, y: 2000 }, { w: 1000, h: 800 }),
     },
   });
 }
