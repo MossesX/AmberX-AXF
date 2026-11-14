@@ -1597,12 +1597,6 @@
         "kind": "slider"
       },
       {
-        "target": "animations",
-        "title": "Animations",
-        "text": "Off cuts down the motion.",
-        "kind": "field"
-      },
-      {
         "target": "settings-interface-for-this-one",
         "title": "Settings interface for this one",
         "text": "Picks which settings interface this one tab group, toolbar, banner, navigation menu or menu bar opens its settings in. Same as every … follows the kind's pick (the shared default unless the app picked its copy); any other choice is only for this one and is kept after a reload. Voice and API: chrome.instance-interface:<type>:<instance>:<id|default|custom|inherit>."
