@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T01:09:32.345Z",
+ "updatedAt": "2026-11-14T01:10:33.948Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -136266,7 +136266,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T23:42:29.374Z",
-   "updatedAt": "2026-11-14T01:09:30.874Z",
+   "updatedAt": "2026-11-14T01:10:31.585Z",
    "builtAt": "",
    "notes": [
     {
@@ -136288,6 +136288,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-voice-listener-use-claude-when-connected--earl, own login copy)",
      "at": "2026-11-14T00:46:25.548Z"
+    },
+    {
+     "text": "UI Review not submitted: this headless session has no console token (AXF_TOKEN), so no shots could be taken or uploaded (same as the wake-listener base build). The 3 offline-indicator options ship as ui-choices@1 status assets in plugins/wake-listener/assets/status/ (choices file plugins/wake-listener/review/offline-indicator-choices.json). To review: after the branch is live, take desktop + phone shots of Settings → Plugins → Wake listener (Claude mode group, the mode chip, Command history) and run: node apps/console-web/plugins/ui-review/review.mjs submit --kind settings --name 'Wake listener: Claude mode' --app console-web --screen settings/wake-listener --group 'voice-listener-use-claude-when-connected - Nov 14' --choices apps/console-web/plugins/wake-listener/review/offline-indicator-choices.json --shots <desktop.png>,<phone.png> --branch claude/voice-listener-use-claude-when-connected --console (AXF_CONSOLE_URL + AXF_TOKEN set).",
+     "at": "2026-11-14T01:10:31.585Z"
     }
    ],
    "approvals": [],
