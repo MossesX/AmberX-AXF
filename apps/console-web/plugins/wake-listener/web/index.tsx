@@ -318,6 +318,33 @@ export const plugin: AxfWebLibrary = {
       setHistoryFilter((m === 'claude' || m === 'scripted' ? m : '') as ModeFilter);
       rt.actions.dispatch(`settings.open:${FOLDER}`, { runtime: rt });
     }, { label: 'Voice command history (filter: claude or scripted)', params: true, effect: 'navigate' });
+    // Claude mode through the action bus (console actions, MCP wake-listener_use-claude / _understand-test, voice)
+    rt.actions.register('voice.useClaude', (args) => {
+      const a = (args[0] ?? 'toggle').trim().toLowerCase();
+      const on = a === 'on' ? true : a === 'off' ? false : !L.settings.useClaude;
+      void saveSettings({ useClaude: on }).then((e) => speak(e || (on ? 'Claude mode on: Claude understands your commands while it is connected.' : 'Claude mode off: the scripted matcher answers, nothing is sent to Claude.')));
+    }, { label: 'Claude mode for voice (on, off or toggle)', params: true, effect: 'write' });
+    rt.actions.register('voice.understand.test', (args) => {
+      const text = args.join(':').trim();
+      if (!text) return;
+      void pluginFetch(FOLDER, 'claude/test', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ text }) })
+        .then((r) => r.json())
+        .then((j: { mode?: string; command?: string; args?: Record<string, string>; ask?: string; confirm?: boolean; reason?: string; message?: string }) => {
+          const line = j.mode === 'claude' ? `Claude would pick ${j.command}${j.args && Object.keys(j.args).length ? ` with ${Object.entries(j.args).map(([k, v]) => `${k} ${v}`).join(', ')}` : ''}${j.ask ? `, and ask: ${j.ask}` : j.confirm ? ', and ask you to confirm' : ''}.` : `Offline: ${j.message || j.reason || 'no answer'}.`;
+          rt.toast(line, j.mode === 'claude' ? 'success' : 'warning', 'Claude mode test');
+          speak(line);
+        }).catch((e: Error) => rt.toast(e.message, 'danger', 'Claude mode test'));
+    }, { label: 'Test Claude mode on a phrase (dry run)', params: true, effect: 'read' });
+    // deep links: the Claude mode settings, the mode / offline indicator, the history (optionally filtered)
+    rt.actions.register('wake-listener.show', (args) => {
+      const [what = 'claude', mode = ''] = args.join(':').split(':').map((x) => x.trim());
+      if (what === 'history') setHistoryFilter((mode === 'claude' || mode === 'scripted' ? mode : '') as ModeFilter);
+      rt.actions.dispatch(`settings.open:${FOLDER}`, { runtime: rt });
+      const sel = what === 'mode' ? '[data-axf-target="wake-listener.mode"]' : what === 'history' ? '[data-axf-target="wake-listener.history"]' : `[data-axf-anchor="setting:${USE_CLAUDE_KEY}"]`;
+      let tries = 0;
+      const find = () => { const el = typeof document !== 'undefined' ? document.querySelector(sel) : null; if (el) el.scrollIntoView({ block: 'center' }); else if (++tries < 20) setTimeout(find, 100); };
+      setTimeout(find, 50);
+    }, { label: 'Open the wake listener at: claude, mode or history[:claude|scripted]', params: true, effect: 'navigate' });
     rt.actions.register('wake-listener.open', () => rt.actions.dispatch(`settings.open:${FOLDER}`, { runtime: rt }), { label: 'Wake listener settings', effect: 'navigate' });
     void loadSettings().then(() => { void loadClaude(); return syncEngine(); });
     L.poll = setInterval(() => { if (typeof document === 'undefined' || document.visibilityState === 'visible' || !L.settings.pauseHidden) { void loadSettings(); void loadClaude(); } }, SETTINGS_POLL_MS);

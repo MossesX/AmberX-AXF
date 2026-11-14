@@ -20,6 +20,11 @@ plugin's data folder through the plugin's Node core (listener.mjs → core.mjs),
                              recent commands, newest first: heard, command, reply, ok, mode (claude / scripted) and the
                              fallback reason of a scripted one; entries from before Claude mode read as scripted
   POST history {entry}       the open console records one (left out of the commands: the page's own)
+  GET  claude                Claude mode in one read: useClaude, claudeTimeoutSec and the state's Claude view (mode,
+                             claudeConnected, lastFallbackReason, offline, offlineReason)
+  POST claude {useClaude?, timeoutSec?} · POST claude/on · POST claude/off
+                             the switch and the timeout (the same store as POST settings)
+  POST claude/test {text}    dry run: what Claude would pick for a phrase (nothing runs, nothing is recorded)
   POST understand {text, context?, pending?}
                              Claude mode (claude_intent.py): Claude picks the command through axf.llm@1 and fills its
                              fields → {mode:'claude', command, args, ask?, confirm?, run, pending?}; the setting off,
@@ -80,17 +85,19 @@ def catalog_entries() -> list[dict[str, Any]]:
         return entries or _catalog["entries"]
 
 
-def run_understand(text: str, context: dict[str, Any] | None = None, pending: dict[str, Any] | None = None) -> dict[str, Any]:
+def run_understand(text: str, context: dict[str, Any] | None = None, pending: dict[str, Any] | None = None, record: bool = True) -> dict[str, Any]:
     """One understand call with the stored settings (the switch, the timeout) and the live axf.llm@1 service."""
     s = cli("settings")
     settings = s.get("settings") if s.get("ok") else {}
     use_claude = bool((settings or {}).get("useClaude", True))
     timeout_s = float((settings or {}).get("claudeTimeoutSec", 8))
     if not use_claude:
+        if record:
+            claude_status().handled("scripted", "off")
         return claude_intent.offline("off")  # nothing is sent to Claude
     res = claude_intent.understand(text, llm=plugin_services.get("axf.llm@1"), entries=catalog_entries(), status=claude_status(),
                                    use_claude=use_claude, timeout_s=timeout_s, context=context, pending=pending)
-    if res.get("ok"):
+    if res.get("ok") and record:
         claude_status().handled("claude" if res.get("mode") == "claude" else "scripted", str(res.get("reason") or ""))
     return res
 
@@ -239,3 +246,55 @@ async def record(request: Request) -> JSONResponse:
     body = await _body(request)
     entry = body.get("entry") if isinstance(body.get("entry"), dict) else body
     return answer(await run_in_threadpool(cli, "record", stdin=json.dumps(entry)))
+
+
+def claude_view() -> dict[str, Any]:
+    s = cli("settings")
+    if not s.get("ok"):
+        return s
+    st = read_state()
+    view = st.get("claude") if st.get("ok") else {}
+    return {"ok": True, "useClaude": s["settings"].get("useClaude", True), "claudeTimeoutSec": s["settings"].get("claudeTimeoutSec", 8), **(view or {})}
+
+
+def set_claude(patch: dict[str, Any], by: str) -> dict[str, Any]:
+    pairs = []
+    if isinstance(patch.get("useClaude"), bool):
+        pairs.append(f"useClaude={'true' if patch['useClaude'] else 'false'}")
+    t = patch.get("timeoutSec", patch.get("claudeTimeoutSec"))
+    if isinstance(t, (int, float)) and not isinstance(t, bool):
+        pairs.append(f"claudeTimeoutSec={int(t)}")
+    if not pairs:
+        return {"ok": False, "code": "invalid", "message": "send { useClaude?: boolean, timeoutSec?: 2..30 }"}
+    r = cli("set", *pairs, "--by", by)
+    return claude_view() if r.get("ok") else r
+
+
+@router.get("/claude")
+async def claude_get() -> JSONResponse:
+    return answer(await run_in_threadpool(claude_view))
+
+
+@router.post("/claude")
+async def claude_set(request: Request) -> JSONResponse:
+    return answer(await run_in_threadpool(set_claude, await _body(request), _who(request)))
+
+
+@router.post("/claude/on")
+async def claude_on(request: Request) -> JSONResponse:
+    return answer(await run_in_threadpool(set_claude, {"useClaude": True}, _who(request)))
+
+
+@router.post("/claude/off")
+async def claude_off(request: Request) -> JSONResponse:
+    return answer(await run_in_threadpool(set_claude, {"useClaude": False}, _who(request)))
+
+
+@router.post("/claude/test")
+async def claude_test(request: Request) -> JSONResponse:
+    body = await _body(request)
+    text = body.get("text")
+    if not isinstance(text, str) or not text.strip():
+        return answer({"ok": False, "code": "invalid", "message": "send { text }"})
+    r = await run_in_threadpool(run_understand, text[:500], None, None, False)
+    return answer({**r, "dryRun": True} if r.get("ok") else r)

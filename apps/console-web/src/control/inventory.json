@@ -8,7 +8,7 @@
     "tabs": 76,
     "settingsTabs": 68,
     "settings": 87,
-    "functions": 239,
+    "functions": 242,
     "buttons": 62,
     "plugins": 68
   },
@@ -6381,6 +6381,56 @@
         "wake",
         "listener",
         "history"
+      ],
+      "effect": "navigate",
+      "params": true,
+      "plugin": "ai.amberx.axf.console.wake-listener",
+      "file": "plugins/wake-listener/web/index.tsx"
+    },
+    {
+      "address": "function:voice.useClaude",
+      "kind": "function",
+      "id": "voice.useClaude",
+      "label": "Claude mode for voice (on, off or toggle)",
+      "detail": "Action · Wake listener",
+      "keywords": [
+        "voice.useClaude",
+        "voice",
+        "useClaude"
+      ],
+      "effect": "write",
+      "params": true,
+      "plugin": "ai.amberx.axf.console.wake-listener",
+      "file": "plugins/wake-listener/web/index.tsx"
+    },
+    {
+      "address": "function:voice.understand.test",
+      "kind": "function",
+      "id": "voice.understand.test",
+      "label": "Test Claude mode on a phrase (dry run)",
+      "detail": "Action · Wake listener",
+      "keywords": [
+        "voice.understand.test",
+        "voice",
+        "understand",
+        "test"
+      ],
+      "effect": "read",
+      "params": true,
+      "plugin": "ai.amberx.axf.console.wake-listener",
+      "file": "plugins/wake-listener/web/index.tsx"
+    },
+    {
+      "address": "function:wake-listener.show",
+      "kind": "function",
+      "id": "wake-listener.show",
+      "label": "Open the wake listener at: claude, mode or history[:claude|scripted]",
+      "detail": "Action · Wake listener",
+      "keywords": [
+        "wake-listener.show",
+        "wake",
+        "listener",
+        "show"
       ],
       "effect": "navigate",
       "params": true,

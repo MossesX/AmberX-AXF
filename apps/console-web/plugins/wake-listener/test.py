@@ -260,4 +260,19 @@ check([e["command"] for e in c.get("/p/history?mode=claude").json()["entries"]] 
 check(c.get("/p/history?mode=scripted").json()["entries"][0]["reason"] == "timeout", "scripted entries carry the fallback reason")
 check(c.get("/p/history?mode=bogus").status_code == 400, "a bad mode is refused")
 
+# ---------------------------------------------------------------- the Claude mode API (s10)
+
+v = c.get("/p/claude").json()
+check(v["ok"] and v["useClaude"] is True and v["claudeTimeoutSec"] >= 2 and "claudeConnected" in v and "lastFallbackReason" in v and "mode" in v, "GET claude: switch, timeout, connected, mode, last fallback")
+check(c.post("/p/claude/off").json()["useClaude"] is False and c.get("/p/settings").json()["settings"]["useClaude"] is False, "POST claude/off writes the shared setting")
+check(c.post("/p/claude/on").json()["useClaude"] is True, "POST claude/on")
+check(c.post("/p/claude", json={"timeoutSec": 12}).json()["claudeTimeoutSec"] == 12 and c.post("/p/claude", json={}).status_code == 400, "POST claude sets the timeout; an empty body is refused")
+c.post("/p/claude", json={"timeoutSec": 8})
+mod.claude_status().data.update(failedAt=0, lastMode="", lastFallbackReason="", lastAt=0)
+llm.reply = call("project-wizard__run", {"name": "Gizmo"})
+t = c.post("/p/claude/test", json={"text": "new project gizmo"}).json()
+check(t["dryRun"] and t["mode"] == "claude" and t["command"] == "project-wizard/run" and t["args"]["name"] == "Gizmo", "POST claude/test: what Claude would pick, a dry run")
+check(mod.claude_status().data["lastMode"] == "", "a dry run is not recorded as the last command")
+check(c.post("/p/claude/test", json={}).status_code == 400, "claude/test needs text")
+
 print(f"{ok} checks passed")
