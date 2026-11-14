@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5339,
- "updatedAt": "2026-11-14T17:10:55.706Z",
+ "rev": 5340,
+ "updatedAt": "2026-11-14T17:11:10.283Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -214652,7 +214652,7 @@
    "branch": "claude/ui-review-filter-and-search-by-pr",
    "pr": "#675",
    "createdAt": "2026-11-14T16:50:06.080Z",
-   "updatedAt": "2026-11-14T17:10:24.562Z",
+   "updatedAt": "2026-11-14T17:11:04.443Z",
    "builtAt": "2026-11-14T17:10:24.562Z",
    "notes": [
     {
@@ -214666,6 +214666,10 @@
     {
      "text": "Headless run axf-ui-review-filter-and-search-by-pr--rhonda: brief only · start 12.6K tokens ($0.03) · cost $3.69 · 100 turns · 6 tools, MCP none",
      "at": "2026-11-14T17:10:24.562Z"
+    },
+    {
+     "text": "Session axf-ui-review-filter-and-search-by-pr--rhonda on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-14T17:11:04.443Z"
     }
    ],
    "approvals": [],
@@ -214686,12 +214690,19 @@
     "queuedAt": "",
     "queuedBy": "",
     "account": "mossesx-max-",
-    "session": "axf-ui-review-filter-and-search-by-pr--rhonda",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-14T16:51:21.042Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-14T17:11:03.683Z",
+     "exit": 0,
+     "outcome": "finished",
+     "stepsLeft": 0,
+     "account": "mossesx-max-",
+     "session": "axf-ui-review-filter-and-search-by-pr--rhonda"
+    },
     "split": null,
     "splitRequested": "",
     "note": "",
@@ -214786,7 +214797,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
