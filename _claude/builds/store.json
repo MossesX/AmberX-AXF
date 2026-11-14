@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5639,
- "updatedAt": "2026-11-14T23:31:30.595Z",
+ "rev": 5640,
+ "updatedAt": "2026-11-14T23:31:45.009Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -224967,7 +224967,7 @@
    "title": "Console look becomes default axHub skin",
    "category": "",
    "detail": "Snapshot the live console's current look exactly as it is now (skin, colour theme light and dark, every token value including opacityGlass 0.7, typography, density, radius, behaviour/animation themes, toolbar/banner/nav chrome settings) into a new skin asset 'Console (default)' and publish it on axHub as THE default skin. Make every app (console, AmberX web, Android apps, any app built from the framework) inherit its skin from axHub's default right now: apps with no override pick it up immediately; apps with their own edits keep only their edited tokens (per the skin-axhub-override rules) and inherit the rest. Keep a backup of each app's previous skin so it can be restored in one tap. Run AFTER land-all-skin-builds finishes so it builds on the landed skins plugin/axHub-only/override code; if those aren't landed yet, wait for them. Verify with pixel-diff that the console looks identical before and after, and screenshot every app desktop and phone. Redeploy, then send Brett a phone notification. Full API and voice ('make this the default look'), tests, help, Shipped features.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -224975,7 +224975,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-14T22:19:00.612Z",
-   "updatedAt": "2026-11-14T23:30:57.038Z",
+   "updatedAt": "2026-11-14T23:31:19.075Z",
    "builtAt": "",
    "notes": [
     {
@@ -225025,6 +225025,10 @@
     {
      "text": "Session on mossesx-max- ended (exit 0) with 17 steps left: back in the Queue (run 2).",
      "at": "2026-11-14T22:52:09.247Z"
+    },
+    {
+     "text": "Started run 3 on mossesx-max- (Fable, Phase 2): axf-console-look-becomes-default-axhub-skin--paulie.",
+     "at": "2026-11-14T23:31:19.075Z"
     }
    ],
    "approvals": [],
@@ -225045,11 +225049,11 @@
     "queuedAt": "2026-11-14T22:19:03.857Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "",
+    "session": "axf-console-look-becomes-default-axhub-skin--paulie",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-14T22:42:12.388Z",
-    "runs": 2,
+    "model": "Fable",
+    "launchedAt": "2026-11-14T23:31:18.074Z",
+    "runs": 3,
     "lastRun": {
      "at": "2026-11-14T22:52:07.124Z",
      "exit": 0,
@@ -225066,9 +225070,9 @@
      "note": "Split by Claude into 20 steps (3 Fable)."
     },
     "splitRequested": "",
-    "note": "Session on mossesx-max- ended (exit 0) with 17 steps left: back in the Queue (run 2).",
+    "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-14T22:42:12.388Z",
+    "dispatchedAt": "2026-11-14T23:31:18.074Z",
     "planned": {
      "model": "Fable",
      "account": "mossesx-max-",
@@ -225077,7 +225081,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-14T22:42:12.388Z",
+    "pickedAt": "2026-11-14T23:31:18.074Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -225601,7 +225605,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
