@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5603,
- "updatedAt": "2026-11-14T23:20:11.128Z",
+ "rev": 5604,
+ "updatedAt": "2026-11-14T23:20:33.842Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -207466,7 +207466,7 @@
    "pr": "#621",
    "priority": "P0",
    "createdAt": "2026-11-13T19:03:35.763Z",
-   "updatedAt": "2026-11-14T23:16:06.577Z",
+   "updatedAt": "2026-11-14T23:19:54.143Z",
    "builtAt": "",
    "notes": [
     {
@@ -207502,7 +207502,16 @@
      "at": "2026-11-14T23:16:06.577Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-14T23:19:54.143Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "land duplicate projects and templates",
@@ -207588,12 +207597,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:19:54.143Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T19:07:47.374Z",
-     "updatedAt": "2026-11-13T19:07:47.374Z"
+     "updatedAt": "2026-11-14T23:19:54.811Z"
     },
     {
      "id": "s3",
@@ -207629,7 +207638,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 18,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": {
