@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T04:18:32.016Z",
+ "updatedAt": "2026-11-14T04:19:22.523Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -137350,7 +137350,7 @@
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-14T04:18:30.299Z",
+   "updatedAt": "2026-11-14T04:19:20.978Z",
    "builtAt": "",
    "notes": [
     {
@@ -137537,6 +137537,25 @@
      "note": "",
      "uid": "st-mwfwb9br01fubs",
      "createdAt": "2026-11-14T04:18:30.300Z"
+    },
+    {
+     "id": "s12",
+     "text": "Real demo video, 'built with itself' (no staging, real data only): show the AXF framework and the Dev Console being built using themselves. Use the real git history, builds store, PRs and orchestrator logs to show a feature asked for by voice, the orchestrator and agents building it inside the console, and the console updating itself live. Then show how the libraries were harvested from that work as it went: a feature built for the console becomes a reusable framework library in the library matrix, then gets dropped into a new app with no code. Include real numbers (builds, PRs, libraries, tokens) from the repo. Message: everything you assemble with was battle-tested building AmberX itself.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfwcceg01rilu",
+     "createdAt": "2026-11-14T04:19:20.979Z"
     },
     {
      "id": "s7",
