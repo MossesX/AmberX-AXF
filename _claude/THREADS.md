@@ -796,9 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 04:03 UTC · `demo-video-series-three-minute-browser` → running, note (all) · pipeline
-- 2026-11-14 04:03 UTC · `demo-video-series-three-minute-browser` branch claude/demo-video-series-three-minute-browser (all) · pipeline
-- 2026-11-14 04:03 UTC · `demo-video-series-three-minute-browser` note (all) · orchestrator
 - 2026-11-14 04:04 UTC · `demo-video-series-three-minute-browser` note (all) · voice
 - 2026-11-14 04:07 UTC · `demo-video-series-three-minute-browser` note (all) · voice
 - 2026-11-14 04:08 UTC · `demo-video-series-three-minute-browser` note (all) · voice
@@ -1196,6 +1193,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 23:05 UTC · `themed-native-controls-plugin` s9 done (all) · foreign-write
 - 2026-11-14 23:05 UTC · `hotfix-toolbar-settings-still-change` note (all) · orchestrator
 - 2026-11-14 23:05 UTC · `land-finish-auto-land-live-clear-backlog` s14 done (all) · orchestrator
+- 2026-11-14 23:06 UTC · `owner-recognized-everywhere-veto` → running, note (all) · pipeline
+- 2026-11-14 23:06 UTC · `land-finish-auto-land-live-clear-backlog` s14 done (all) · foreign-write
+- 2026-11-14 23:06 UTC · `owner-recognized-everywhere-veto` note (all) · orchestrator
 
 ## Token passes (log)
 
