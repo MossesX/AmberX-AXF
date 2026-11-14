@@ -233,18 +233,21 @@
         "route": "GET /skins",
         "id": "skins",
         "title": "Exported skins",
+        "description": "List every skin exported from the Skin editor.",
         "readOnly": true
       },
       {
         "route": "GET /skins/{id}",
         "id": "skin",
         "title": "One exported skin",
+        "description": "Read one exported skin by its id.",
         "readOnly": true
       },
       {
         "route": "DELETE /skins/{id}",
         "id": "delete-skin",
         "title": "Delete an exported skin",
+        "description": "Delete one exported skin. Asks for a confirm first.",
         "destructive": true,
         "confirm": true
       },
