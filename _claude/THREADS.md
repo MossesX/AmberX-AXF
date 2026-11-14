@@ -796,9 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 00:54 UTC · `voice-listener-use-claude-when-connected` s4 done (all) · orchestrator
-- 2026-11-14 00:55 UTC · `console-app-land-parts-1-4-build-apk` s9 done (all) · orchestrator
-- 2026-11-14 00:55 UTC · `voice-listener-use-claude-when-connected` s5 done (all) · orchestrator
 - 2026-11-14 00:56 UTC · `console-app-land-parts-1-4-build-apk` s10 done (all) · orchestrator
 - 2026-11-14 00:56 UTC · `console-app-land-parts-1-4-build-apk` branch claude/console-app-part-2-native-floating-2, PR #639 (all) · builds-live
 - 2026-11-14 00:56 UTC · `console-app-land-parts-1-4-build-apk` branch claude/console-app-part-3-native-bridge-mic, PR #633 (all) · builds-live
@@ -1196,6 +1193,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 22:46 UTC · `land-batch-merge-main-each-finished` → queued (all) · orchestrator
 - 2026-11-14 22:46 UTC · `console-app-land-parts-1-4-build-apk` → queued (all) · orchestrator
 - 2026-11-14 22:46 UTC · `banner-widget-shapes-more-than-circle` → queued (all) · orchestrator
+- 2026-11-14 22:46 UTC · `launch-landing-page-waitlist-referral` → queued (all) · orchestrator
+- 2026-11-14 22:46 UTC · `demo-video-series-three-minute-browser` → queued (all) · orchestrator
+- 2026-11-14 22:46 UTC · `hotfix-toolbar-settings-still-change` → queued (all) · orchestrator
 
 ## Token passes (log)
 
