@@ -796,9 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 21:28 UTC · `icon-map-icon-packs-every-icon-badge-app` s5 done (all) · orchestrator
-- 2026-11-13 21:30 UTC · `test-sandbox-sample-shipped-build` removed (test-sandbox) · orchestrator
-- 2026-11-13 21:30 UTC · `test-sandbox-sample-pending-build` removed (test-sandbox) · orchestrator
 - 2026-11-13 21:31 UTC · `main-ci-red-test-sandbox-profile-export` note (all) · orchestrator
 - 2026-11-13 21:32 UTC · `main-ci-red-test-sandbox-profile-export` note (all) · orchestrator
 - 2026-11-13 21:37 UTC · `icon-map-icon-packs-every-icon-badge-app` s6 done (all) · orchestrator
@@ -1196,6 +1193,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 22:20 UTC · `land-finish-auto-land-live-clear-backlog` note (all) · orchestrator
 - 2026-11-14 22:20 UTC · `land-finish-auto-land-live-clear-backlog` note (all) · builds-live
 - 2026-11-14 22:21 UTC · `console-look-becomes-default-axhub-skin` note (all) · orchestrator
+- 2026-11-14 22:21 UTC · `land-finish-auto-land-live-clear-backlog` → running, note (all) · pipeline
+- 2026-11-14 22:21 UTC · `land-finish-auto-land-live-clear-backlog` branch claude/land-finish-auto-land-live-clear-backlog (all) · pipeline
+- 2026-11-14 22:21 UTC · `land-finish-auto-land-live-clear-backlog` note (all) · orchestrator
 
 ## Token passes (log)
 
