@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5206,
- "updatedAt": "2026-11-14T04:11:59.383Z",
+ "rev": 5207,
+ "updatedAt": "2026-11-14T04:12:20.062Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -211622,7 +211622,7 @@
    "branch": "claude/banner-widget-shapes-more-than-circle",
    "pr": "",
    "createdAt": "2026-11-14T03:47:49.947Z",
-   "updatedAt": "2026-11-14T04:11:08.445Z",
+   "updatedAt": "2026-11-14T04:11:34.502Z",
    "builtAt": "",
    "notes": [
     {
@@ -211632,6 +211632,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-banner-widget-shapes-more-than-circle--joey, own login copy)",
      "at": "2026-11-14T03:48:27.498Z"
+    },
+    {
+     "text": "Headless run axf-banner-widget-shapes-more-than-circle--joey: brief only · start 12.6K tokens ($0.06) · cost $8.43 · 138 turns · 6 tools, MCP none",
+     "at": "2026-11-14T04:11:34.502Z"
     },
     {
      "text": "s1 done (Fable): shape@1 type + tokens + pill default landed on branch claude/banner-widget-shapes-more-than-circle. For s2/s3: the hard-coded shape inventory is in framework/spec/BANNER-WIDGETS.md → Shapes; the four kinds hexagon/diamond/tag/squircle/custom have engine output but no starter asset yet; axhub-web, amberx-droid and molly baked framework copies are 23 core files behind main and have no node_modules here, so only console-web was re-baked (their shared-assets check already fails on help/framework-drafts.json). console-web src/axf/libs/hub/veto.ts carries an overlay API the approvals-banner plugin uses that is not in framework/libs: baked copy kept, needs porting back to the framework.",
@@ -212099,7 +212103,7 @@
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-14T04:11:23.722Z",
+   "updatedAt": "2026-11-14T04:11:42.167Z",
    "builtAt": "",
    "notes": [
     {
@@ -212272,6 +212276,28 @@
      "rev": 2,
      "createdAt": "2026-11-14T04:09:50.514Z",
      "updatedAt": "2026-11-14T04:11:12.201Z"
+    },
+    {
+     "id": "s9",
+     "uid": "st-mwfw2iih01lrjz",
+     "title": "",
+     "text": "Fourth hero video: someone needs to whip up an internal, private messaging server for their team fast. They describe it by voice in AmberX ('a private chat server for my company, with logins, channels, direct messages and file sharing, only our people can get in'). Show the cat-named agents building it in the group chat, approval pop-ups, AmberX assembling pre-built AXF libraries, deploying on their own VPS so the data stays in-house, then team members logging in and chatting on desktop and the Android app. Label staged parts as a preview. Also cut a 60-second version.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-14T04:11:42.173Z",
+     "updatedAt": "2026-11-14T04:11:42.521Z"
     },
     {
      "id": "s7",
