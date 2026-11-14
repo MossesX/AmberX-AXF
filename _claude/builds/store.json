@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5361,
- "updatedAt": "2026-11-14T18:14:36.512Z",
+ "rev": 5362,
+ "updatedAt": "2026-11-14T18:15:05.645Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -220692,6 +220692,55 @@
    "kind": "build",
    "planRef": "",
    "rev": 3,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "land-all-skin-builds",
+   "title": "Land all skin builds",
+   "category": "",
+   "detail": "Land these one at a time, in order. For each: fetch its remote branch (pull --rebase or merge the remote branch first; build_land push was rejected as non-fast-forward), merge origin/main, resolve conflicts keeping both sides' features, regenerate generated files (generated-files@1), run tests, push, merge to main. Order: skins-plugin-merge-main-and-land (Skins plugin; installing it hides the built-in skins panel, removing it brings it back), skin-config-panel-merge-main-and-land, every-skin-ships-light-dark-colour-theme, console-skin-axhub-only, skin-axhub-override-switch-greyed-out, skin-animations-swatches-skin-switch, token-registry-skin-editor-live-sandbox, own-token-sets-for-grids-and-tab-groups. Archive superseded older branches (skins-plugin-own-removable-console, skin-configuration-panel-before-ai-makes, professional-skins-rebuild-whole-app, fix-merge-conflicts-pr-557-professional) after checking their commits are included. Then run /usr/local/bin/axf-console-update to redeploy, verify the console loads with no doubled chrome, and send Brett a phone notification through AmberX listing what landed.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-14T18:15:01.485Z",
+   "updatedAt": "2026-11-14T18:15:01.485Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "land the skin builds",
+    "at": "2026-11-14T18:15:01.485Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 861
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 1,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
