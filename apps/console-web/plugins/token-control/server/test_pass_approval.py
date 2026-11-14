@@ -175,6 +175,24 @@ ok("approved from the notification" in raised[-1]["title"], f"and says so ({rais
 eq(resolved[-1], [f"pass:{pid3}"], "then it is resolved")
 eq(alerts_hub.delivery_actions(raised[-1]), [], "no buttons once the pass stopped waiting")
 
+# s8 voice (AmberX → console-control voice → voice-intents@1): with the notification's token it decides; without, it opens
+import console_control_api as cca  # noqa: E402
+
+pid4 = grant(10)
+toks4 = svc.push_tokens(pid4)
+v = cca.voice("Amber, open the pending pass.")
+eq((v["ok"], v["openUrl"]), (True, f"https://console.amberxai.com/#/pass/{pid4}"), "open the pending pass → its deep link")
+v = cca.voice("what's waiting")
+ok(v["ok"] and v["items"][0]["id"] == pid4 and "asks for" in v["say"], "what's waiting lists it")
+v = cca.voice("approve the pass")
+eq((v["code"], v["openUrl"]), ("approval_required", f"https://console.amberxai.com/#/pass/{pid4}/approve"), "no token: opens it with Approve ready, never decides")
+eq(c.get(f"/api/passes/{pid4}").json()["pass"]["state"], "pending", "still waiting")
+v = cca.voice("deny the pass", extra={"token": toks4["approve"]})
+eq(v["ok"], False, "the approve token can't deny")
+v = cca.voice("approve the pass", extra={"token": toks4["approve"]})
+eq((v["ok"], v["pass"]["state"], v["pass"]["approvedVia"]), (True, "active", "push"), "with the notification's token it approves")
+eq(cca.voice("scroll down")["intent"]["verb"], "scroll", "the console's own phrases still work")
+
 # the push flag: an approval reaches a set-up phone channel below its minimum severity; a plain warning doesn't
 hub = alerts_hub.AlertHub(Path(tempfile.mkdtemp(prefix="axf-pass-alerts-")))
 hub.set_config({"webpush": {"enabled": True}})

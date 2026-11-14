@@ -248,6 +248,8 @@ function help() {
     '  axf pass grant 30 --scope theme   (only theme changes)',
     '  axf pass grant 30 --include-irreversible   (hard deletes too, no confirm)',
     '  axf pass status · axf pass revoke · axf pass undo   (undo lists what it can\'t roll back)',
+    '  axf pass list · axf pass show <id> · axf pass link <id>   (waiting passes, one pass, its links)',
+    '  axf pass approve <id> · axf pass deny <id>   (at a terminal; anywhere else it answers with the link)',
     '  axf token layout get navWidth',
     '  axf token theme set accent "#ff8800" --reason "warmer accent"',  // theme-ok: an example value in the help text
     '  axf token layout reset navWidth',
@@ -279,6 +281,47 @@ async function terminalApproval(command) {
     const typed = (await rl.question(`${command.action} the ${command.path === 'all' ? 'everything' : command.path}${irr} veto pass as Brett? Type "${word}" to confirm (anything else files a request): `)).trim().toLowerCase();
     return typed === word ? { via: 'cli-tty', name: process.env.AXF_OWNER || 'brett' } : null;
   } finally { rl.close(); }
+}
+
+/**
+ * axf pass list | show <id> | link <id> | approve <id> | deny <id>. Local: lib/pass-approval.mjs; --remote [url]: the
+ * console's /api/passes routes with AXF_TOKEN (a bearer token reads, and can only ask: approve / deny answer
+ * owner_required there). A local approve / deny decides only at a real terminal once Brett types the scope back.
+ */
+async function passCli(words, json, out) {
+  const remoteAt = words.indexOf('--remote');
+  const remote = remoteAt >= 0 ? (/^https?:/.test(words[remoteAt + 1] || '') ? words[remoteAt + 1] : process.env.AXF_CONSOLE_URL || 'https://console.amberxai.com') : '';
+  const [verb, rawId = ''] = words.filter((w, i) => w !== '--remote' && !(remoteAt >= 0 && i === remoteAt + 1 && /^https?:/.test(w)));
+  const id = rawId.replace(/^pass:/i, '');
+  const call = async (method, path) => {
+    const r = await fetch(`${remote.replace(/\/+$/, '')}/api/passes${path}`, { method, headers: { 'Content-Type': 'application/json', ...(process.env.AXF_TOKEN ? { Authorization: `Bearer ${process.env.AXF_TOKEN}` } : {}) }, ...(method === 'POST' ? { body: '{}' } : {}) });
+    return r.json().catch(() => ({ ok: false, code: 'unexpected', message: `HTTP ${r.status}` }));
+  };
+  if (verb === 'list' || verb === 'pending') {
+    const r = remote ? await call('GET', '/pending') : listPending();
+    out(r, r.ok ? (r.items?.length ? r.items.map((x) => `${x.id}  ${x.requestedBy} asks: ${x.label} for ${x.minutes} min\n  ${x.deep_link}`).join('\n') : r.text) : `${r.code}: ${r.message}`);
+    return r.ok ? 0 : 1;
+  }
+  if (!id) { console.error(`usage: axf pass ${verb} <pass id>   (axf pass list shows the waiting ones)`); return 2; }
+  if (verb === 'show' || verb === 'link') {
+    const r = remote ? await call('GET', `/${encodeURIComponent(id)}`) : getPass(id);
+    if (!r.ok) { out(r, `${r.code}: ${r.message}`); return 1; }
+    const p = r.pass;
+    out(verb === 'link' ? { ok: true, id: p.id, deep_link: p.deep_link, approve_url: p.approve_url, deny_url: p.deny_url, molly_url: p.molly_url, target: p.target } : r,
+      verb === 'link' ? [`open     ${p.deep_link}`, `approve  ${p.approve_url}`, `deny     ${p.deny_url}`, `molly    ${p.molly_url}`, `show     console_show ${p.target}`].join('\n')
+        : [`${p.id} · ${p.state} · ${p.label} for ${p.minutes} min${p.include_irreversible ? ' (irreversible included)' : ''}`, `requested by ${p.requestedBy} at ${p.requestedAt}${p.reason ? ` — ${p.reason}` : ''}`, p.text, p.deep_link].join('\n'));
+    return 0;
+  }
+  // approve | deny
+  let r;
+  if (remote) r = await call('POST', `/${encodeURIComponent(id)}/${verb}`);
+  else {
+    const g = getPass(id);
+    const approver = g.ok ? await terminalApproval({ target: PASS_TARGET, action: verb, path: g.pass.scope, input: { include_irreversible: g.pass.include_irreversible === true } }) : null;
+    r = await decidePass(id, verb, { approver, by: process.env.AXF_ACTOR || `cli:${process.env.USER || 'user'}` }, runControl);
+  }
+  out(r, r.ok ? r.text : `${r.code}: ${r.message}${r.pass?.deep_link ? `\nopen it: ${r.pass.deep_link}` : ''}`);
+  return r.ok ? 0 : 1;
 }
 
 /** Shell-quote a word for the "repeat this" line. */
@@ -335,6 +378,8 @@ export async function main(argv) {
   if (cmd === 'pass-settings') { const s = argv[1] && argv[1].startsWith('{') ? savePassSettings(JSON.parse(argv[1])) : passSettings(); out({ ok: true, ...s }, `max ${s.maxMinutes} min · ${s.timeZone}`); return 0; }
   if (cmd === 'where') { out({ appearance: appearanceFile(), amberx: notesDir() }, `look: ${appearanceFile()}\nAmberX notes: ${notesDir()}`); return 0; }
 
+  // pass-approval@1: axf pass list | show <id> | link <id> | approve <id> | deny <id> (one pass by id; scopes: axf pass status)
+  if (argv[0] === 'pass' && (['list', 'pending', 'show', 'link'].includes(argv[1]) || (['approve', 'deny'].includes(argv[1]) && /^pass[:-]/.test(argv[2] || '')))) return passCli(argv.slice(1).filter((a) => a !== '--json'), json, out);
   const parsed = commandFromArgv(argv);
   if (parsed.error) { console.error(parsed.error); return 2; }
   const { command, preset, remote } = parsed;

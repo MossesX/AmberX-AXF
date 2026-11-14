@@ -571,6 +571,63 @@ class PassAlertActions:
         ]
 
 
+class PassVoice:
+    """voice-intents@1 (AmberX through console-control voice): "approve the pass" / "deny the pass" decide with the
+    token the notification holds (`extra.token`); without one the pass opens with that button ready (a voice request is
+    no proof it is Brett). "open the pending pass" opens it (console + `openUrl` for the phone); "what's waiting" lists."""
+
+    DECIDE = re.compile(r"^(?:please )?(approve|allow|accept|deny|reject|decline)(?: the)?(?: veto)? pass(?: (pass-[0-9a-z]+-[0-9a-f]{6}))?$")
+    OPEN = re.compile(r"^(?:open|show(?: me)?|bring up)(?: the)?(?: (?:pending|waiting))?(?: veto)? pass(?: request)?$")
+    LIST = re.compile(r"^(?:what'?s waiting|what is waiting|any passes(?: waiting)?|(?:list|show)(?: the)?(?: pending| waiting)? passes)$")
+
+    @staticmethod
+    def _clean(text: str) -> str:
+        t = re.sub(r"[^\w\s'-]", " ", str(text or "").lower())
+        t = re.sub(r"\s+", " ", t).strip()
+        return re.sub(r"^(?:hey )?amber ", "", t)
+
+    @staticmethod
+    def _show(pid: str) -> None:
+        svc = plugin_services.get("console-commands@1")
+        if svc is None:
+            return
+        try:
+            svc.run({"op": "act", "target": "console.screens", "path": f"pass:{pid}", "action": "open"}, ["*"], "voice", wait=1.0)
+        except Exception:  # noqa: BLE001 — the phone still gets openUrl
+            pass
+
+    def handle(self, text: str, extra: dict[str, Any]) -> dict[str, Any] | None:
+        t = self._clean(text)
+        m = self.DECIDE.match(t)
+        if m:
+            decision = "approve" if m.group(1) in ("approve", "allow", "accept") else "deny"
+            token = str(extra.get("token") or "")
+            if token:
+                r = decide_pass(m.group(2) or "", decision, token=token, by="voice")
+                return {**r, "intent": {"verb": f"pass.{decision}"}, "say": r.get("text") if r.get("ok") else f"That didn't go through: {r.get('message', 'refused')}."}
+            items = (pending_passes().get("items") or [])
+            p = next((x for x in items if x.get("id") == m.group(2)), None) if m.group(2) else (items[0] if len(items) == 1 else None)
+            if p is None:
+                return {"ok": False, "code": "not_found" if not items else "ambiguous", "intent": {"verb": f"pass.{decision}"}, "items": items,
+                        "say": "No pass is waiting." if not items else f"{len(items)} passes are waiting: say which, or open them."}
+            self._show(str(p["id"]))
+            url = p.get("approve_url" if decision == "approve" else "deny_url") or p.get("deep_link")
+            return {"ok": False, "code": "approval_required", "intent": {"verb": f"pass.{decision}"}, "pass": p, "openUrl": url,
+                    "say": f"{p.get('requestedBy') or 'An agent'} asks for {p.get('label', 'a pass')} for {p.get('minutes')} minutes. It's open: tap {decision.title()}."}
+        if self.OPEN.match(t):
+            items = (pending_passes().get("items") or [])
+            if not items:
+                return {"ok": True, "intent": {"verb": "pass.open"}, "items": [], "say": "No pass is waiting."}
+            p = items[0]
+            self._show(str(p["id"]))
+            return {"ok": True, "intent": {"verb": "pass.open"}, "pass": p, "openUrl": p.get("deep_link"), "say": f"Opened the pass {p.get('requestedBy') or 'an agent'} asked for."}
+        if self.LIST.match(t):
+            items = (pending_passes().get("items") or [])
+            say = "No pass is waiting." if not items else " ".join(f"{x.get('requestedBy')} asks for {x.get('label')} for {x.get('minutes')} minutes." for x in items[:3])
+            return {"ok": True, "intent": {"verb": "pass.list"}, "items": items, "say": say}
+        return None
+
+
 # ---------------------------------------------------------------------- pass request → push (pass-approval@1 pass-push@1)
 # A watcher reads the pass store (whoever filed the request: REST, MCP, CLI, axHub) and raises one alert per request
 # (key pass:<id>, push: an approval reaches the phone channels that are set up; the notify gate has the last word). When
@@ -662,4 +719,5 @@ if os.environ.get("AXF_PASS_WATCH", "1") != "0":
 
 plugin_services.provide("pass-approval@1", PassApproval(), folder=FOLDER)
 plugin_services.provide("alert-actions@1/pass", PassAlertActions(), folder=FOLDER)
+plugin_services.provide("voice-intents@1/pass", PassVoice(), folder=FOLDER)
 plugin_services.provide("console-focus@1/pass", PassFocus(), folder=FOLDER)
