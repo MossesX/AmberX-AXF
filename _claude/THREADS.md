@@ -797,12 +797,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 18:27 UTC · `themed-native-controls-plugin` s1 done, → running (all) · orchestrator
-- 2026-11-14 18:27 UTC · `land-all-skin-builds` s7 done (all) · orchestrator
-- 2026-11-14 18:27 UTC · `themed-native-controls-plugin` branch claude/themed-native-controls-plugin (all) · builds-live
-- 2026-11-14 18:28 UTC · `picker-dialog-plugin-replaces-all` s2 done (all) · orchestrator
-- 2026-11-14 18:31 UTC · `land-all-skin-builds` s8 done (all) · orchestrator
-- 2026-11-14 18:32 UTC · `land-all-skin-builds` s9 done (all) · orchestrator
 - 2026-11-14 18:32 UTC · `themed-native-controls-plugin` s2 done (all) · orchestrator
 - 2026-11-14 18:33 UTC · `picker-dialog-plugin-replaces-all` s3 done (all) · orchestrator
 - 2026-11-14 18:34 UTC · `land-all-skin-builds` s10 done (all) · orchestrator
@@ -1197,6 +1191,12 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 23:35 UTC · `skin-config-panel-merge-main-and-land` note (all) · orchestrator
 - 2026-11-14 23:35 UTC · `auto-land-merge-main-land-land-mjs-clash` branch claude/auto-land-every-finished-build-lands (all) · builds-live
 - 2026-11-14 23:37 UTC · `auto-land-merge-main-land-land-mjs-clash` note (all) · orchestrator
+- 2026-11-14 23:17 UTC · `merge-main-land-one-source-truth-console` added (0 steps) (all) · land-finish-auto-land-live-clear-backlog
+- 2026-11-14 23:17 UTC · `merge-main-land-one-source-truth-console` → queued, note (all) · land-finish-auto-land-live-clear-backlog
+- 2026-11-14 23:18 UTC · `merge-main-land-server-gate-one-session` added (0 steps) (all) · land-finish-auto-land-live-clear-backlog
+- 2026-11-14 23:18 UTC · `merge-main-land-server-gate-one-session` → queued, note (all) · land-finish-auto-land-live-clear-backlog
+- 2026-11-14 23:18 UTC · `land-finish-auto-land-live-clear-backlog` s17 done, → running (all) · orchestrator
+- 2026-11-14 23:37 UTC · `hotfix-desktop-console-draws-app-menu` merged (all) · builds-live
 
 ## Token passes (log)
 

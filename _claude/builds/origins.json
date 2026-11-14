@@ -4488,6 +4488,30 @@
    "from": "",
    "addenda": []
   },
+  "merge-main-land-one-source-truth-console": {
+   "said": "Merging main into claude/one-source-truth-console-shows-only-what clashes in code: apps/console-web/plugins/build-orchestrator/pipeline.mjs",
+   "at": "2026-11-14T23:17:55.197Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "merge-main-land-server-gate-one-session": {
+   "said": "Merging main into claude/server-gate-one-session-per-build-no clashes in code: apps/console-web/plugins/build-orchestrator/pipeline.mjs, apps/console-web/plugins/build-orchestrator/server/__init__.py, apps/console-web/plugins/build-orchestrator/web/index.tsx, apps/console-web/plugins/push-banner/land/merge-queue.mjs, deploy/claude-headless.sh, framework/plan/builds-merge-core.mjs",
+   "at": "2026-11-14T23:18:06.781Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "merge-profiles-one": {
    "said": "combine every build profile into ONE new profile on main and delete the others.",
    "at": "2026-11-07",
