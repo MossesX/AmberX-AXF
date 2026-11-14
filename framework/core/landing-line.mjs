@@ -237,8 +237,8 @@ export function transition(line, ev) {
   const retire = (ne) => { L.entries.splice(i, 1); L.history = [...L.history, ne].slice(-HISTORY_MAX); return bump(L); };
   const red = (extra, why) => {
     const fix = fixRequest(e, { why, ...extra });
-    e = closeAttempt(e, at, extra.files?.length ? 'conflict' : 'red', { failing: list(extra.failing, 10), files: list(extra.files, 20), runUrl: str(extra.runUrl, 300), fix: fix.id });
-    return put(setState(e, 'fix-filed', at, { outcome: { kind: fix.kind, text: fix.text, at, fix: fix.id, runUrl: fix.runUrl }, fix }));
+    e = setState(e, 'fix-filed', at, { outcome: { kind: fix.kind, text: fix.text, at, fix: fix.id, runUrl: fix.runUrl }, fix });
+    return put(closeAttempt(e, at, extra.files?.length ? 'conflict' : 'red', { failing: list(extra.failing, 10), files: list(extra.files, 20), runUrl: str(extra.runUrl, 300), fix: fix.id }));
   };
 
   switch (type) {
@@ -280,7 +280,7 @@ export function transition(line, ev) {
         const a = openAttempt(e);
         const retries = [...(a?.retries || []), { at, why: c.retry }].slice(-10);
         if (a) e = { ...e, attempts: e.attempts.map((x) => (x === a ? { ...x, retries } : x)) };
-        return put(setState({ ...e, ci: { verdict: 'retry', at, why: c.retry, runUrl } }, 'checking', at));
+        return put({ ...e, ci: { verdict: 'retry', at, why: c.retry, runUrl } }); // still checking: the re-run is on the attempt, the clock stays
       }
       return put({ ...e, ci: { verdict: c.verdict, at, runUrl } }); // running | none: same state, no new `since`
     }
@@ -298,8 +298,8 @@ export function transition(line, ev) {
     case 'landed': {
       if (e.state !== 'landing') throw illegal(e, type);
       const landedSha = sha(ev.sha);
-      e = closeAttempt(e, at, 'landed', { landedSha });
-      return retire(setState(e, 'landed', at, { landedAt: at, landedSha, outcome: { kind: 'landed', text: `landed on main as ${landedSha.slice(0, 8) || 'a merge commit'}`, at } }));
+      e = setState(e, 'landed', at, { landedAt: at, landedSha, outcome: { kind: 'landed', text: `landed on main as ${landedSha.slice(0, 8) || 'a merge commit'}`, at } });
+      return retire(closeAttempt(e, at, 'landed', { landedSha }));
     }
     case 'land-rejected': {
       if (e.state !== 'landing') throw illegal(e, type);
@@ -309,8 +309,9 @@ export function transition(line, ev) {
     }
     case 'pause': {
       if (!LIVE.includes(e.state) || e.state === 'paused') throw illegal(e, type);
-      if (IN_FLIGHT.includes(e.state)) e = closeAttempt(e, at, 'aborted', { why: `paused while ${e.state}` });
-      return put(setState(e, 'paused', at, { pausedFrom: e.state, outcome: { kind: 'paused', text: str(ev.why, NOTE_MAX) || 'paused by hand', at, by: str(ev.by, 80) } }));
+      const from = e.state;
+      e = setState(e, 'paused', at, { pausedFrom: from, outcome: { kind: 'paused', text: str(ev.why, NOTE_MAX) || 'paused by hand', at, by: str(ev.by, 80) } });
+      return put(IN_FLIGHT.includes(from) ? closeAttempt(e, at, 'aborted', { why: `paused while ${from}` }) : e);
     }
     case 'resume': {
       if (e.state !== 'paused') throw illegal(e, type);
@@ -319,13 +320,15 @@ export function transition(line, ev) {
     }
     case 'skip': {
       if (!LIVE.includes(e.state)) throw illegal(e, type);
-      if (IN_FLIGHT.includes(e.state)) e = closeAttempt(e, at, 'aborted', { why: `skipped while ${e.state}` });
-      return retire(setState(e, 'skipped', at, { outcome: { kind: 'skipped', text: str(ev.why, NOTE_MAX) || 'skipped by hand', at, by: str(ev.by, 80) } }));
+      const from = e.state;
+      e = setState(e, 'skipped', at, { outcome: { kind: 'skipped', text: str(ev.why, NOTE_MAX) || 'skipped by hand', at, by: str(ev.by, 80) } });
+      return retire(IN_FLIGHT.includes(from) ? closeAttempt(e, at, 'aborted', { why: `skipped while ${from}` }) : e);
     }
     case 'remove': {
       if (!LIVE.includes(e.state)) throw illegal(e, type);
-      if (IN_FLIGHT.includes(e.state)) e = closeAttempt(e, at, 'aborted', { why: str(ev.why, 300) || 'removed' });
-      return retire(setState(e, 'skipped', at, { outcome: { kind: 'removed', text: str(ev.why, NOTE_MAX) || 'its PR closed or its build was cancelled', at } }));
+      const from = e.state;
+      e = setState(e, 'skipped', at, { outcome: { kind: 'removed', text: str(ev.why, NOTE_MAX) || 'its PR closed or its build was cancelled', at } });
+      return retire(IN_FLIGHT.includes(from) ? closeAttempt(e, at, 'aborted', { why: str(ev.why, 300) || 'removed' }) : e);
     }
     case 'rejoin': {
       if (e.state !== 'fix-filed') throw illegal(e, type);
@@ -417,6 +420,123 @@ export function chip(line) {
   const fixes = live.filter((e) => e.state === 'fix-filed').length;
   const flying = inFlight(line);
   return { label: `Landing: ${n}`, count: n, inFlight: flying?.id || '', fixes, paused: line?.on === false, tone: line?.on === false ? 'warning' : fixes ? 'warning' : flying ? 'info' : n ? 'muted' : 'muted' };
+}
+
+// ------------------------------------------------------------------ migration from merge-queue@1
+
+const LEGACY_FRAME = 'merge-queue@1';
+const LEGACY_QUEUE_PREFIX = 'queue/pr-';
+const LEGACY_BATCH_BRANCH = 'queue/batch';
+/** Stack / batch fields of a merge-queue@1 item that have no place in the line (one at a time, nothing stacked). */
+export const LEGACY_STACK_FIELDS = Object.freeze(['queueBranch', 'queueSha', 'ahead', 'inBatch', 'etaMin', 'ci', 'prCi', 'state', 'why', 'runUrl']);
+
+/**
+ * Convert the merge queue (merge-queue@1 state + merge-queue-control@1) into a landing-line@1. Pure; the runner writes
+ * the result and deletes what `drop` names. Order is kept: the queue's `items` (stack / batch members first, then the
+ * ones behind them) become the line in that order; then PRs the queue held back (kicked → fix-filed with the kick's
+ * words; removed by hand → paused; anything else → waiting with a hold). Merged PRs become landed history, kick-outs
+ * stay on the entry as its outcome and one red attempt. A run in progress on a stack or batch is logged as an aborted
+ * attempt: nothing it tested is reused, every entry gets its own run on the main it lands on.
+ *   queue:   { items, stack, batch, waiting, kicked, merged, mainSha, lastLanded }
+ *   control: { order, removed: { pr: { why, head, at } }, kicked: { pr: { why, head, at } }, added }
+ * Returns { line, drop: { branches, files, fields }, notes }.
+ */
+export function migrateMergeQueue(queue, control = {}, { at = new Date().toISOString(), on = true } = {}) {
+  const q = queue && typeof queue === 'object' ? queue : {};
+  const ctl = control && typeof control === 'object' ? control : {};
+  const notes = [];
+  const line = { ...emptyLine(at), on: on !== false, mainSha: sha(q.mainSha) };
+  const seen = new Set();
+  const legacyOf = (it) => {
+    const keep = {};
+    for (const k of ['state', 'why', 'ci', 'queueBranch', 'queueSha', 'ahead', 'inBatch', 'runUrl']) if (it[k] !== undefined && it[k] !== '' && !(Array.isArray(it[k]) && !it[k].length)) keep[k] = it[k];
+    return Object.keys(keep).length ? keep : undefined;
+  };
+  const base = (it) => {
+    const e = normEntry({ pr: it.pr, build: it.build, branch: it.branch, title: it.title, url: it.url, agent: it.agent, priority: it.priority, head: it.head, addedAt: str(it.addedAt, 40) || at, since: at }, at);
+    const legacy = legacyOf(it);
+    return legacy ? { ...e, legacy } : e;
+  };
+  const stackOf = new Map((q.stack || []).map((s) => [s.pr, s]));
+  const batchMember = (pr) => (q.batch?.members || []).some((m) => m.pr === pr);
+  const removed = ctl.removed && typeof ctl.removed === 'object' ? ctl.removed : {};
+  const kickedCtl = ctl.kicked && typeof ctl.kicked === 'object' ? ctl.kicked : {};
+  const kickedList = Array.isArray(q.kicked) ? q.kicked : [];
+
+  // 1. the line itself, in the queue's order
+  for (const it of Array.isArray(q.items) ? q.items : []) {
+    if (!num(it?.pr) && !it?.build) continue;
+    let e = base(it);
+    if (seen.has(e.id)) continue;
+    seen.add(e.id);
+    const s = stackOf.get(it.pr);
+    const tested = s || batchMember(it.pr) || ['testing', 'passed', 'merging'].includes(it.state);
+    if (tested) {
+      const on = s ? `${LEGACY_QUEUE_PREFIX}${it.pr}` : LEGACY_BATCH_BRANCH;
+      const startedAt = str(s?.startedAt || s?.builtAt || q.batch?.startedAt || q.batch?.builtAt, 40) || at;
+      e = { ...e, attempts: [{ $axf: ATTEMPT_FRAME, n: 1, startedAt, endedAt: at, head: e.head, steps: ['checking'], result: 'aborted', why: `merge queue retired: its run on ${on}${s?.sha || q.batch?.sha ? ` (${(s?.sha || q.batch.sha).slice(0, 8)})` : ''} is not reused; it gets its own run on main`.slice(0, 300), ...(s?.runUrl || q.batch?.runUrl ? { runUrl: str(s?.runUrl || q.batch.runUrl, 300) } : {}) }] };
+    }
+    if (it.why && !tested) e = { ...e, note: str(it.why, NOTE_MAX) };
+    line.entries.push(e);
+  }
+
+  // 2. what the queue held back: kicked → fix-filed, removed by hand → paused, else waiting with a hold
+  for (const it of Array.isArray(q.waiting) ? q.waiting : []) {
+    if (!num(it?.pr) && !it?.build) continue;
+    let e = base(it);
+    if (seen.has(e.id)) continue;
+    seen.add(e.id);
+    const k = kickedList.find((x) => x.pr === it.pr) || (kickedCtl[it.pr] ? { ...kickedCtl[it.pr], pr: it.pr } : null);
+    const rm = removed[it.pr];
+    if (k && (it.state === 'kicked' || str(it.why).startsWith('kicked out'))) {
+      const why = str(k.why, NOTE_MAX) || str(it.why, NOTE_MAX).replace(/^kicked out:\s*/, '');
+      const conflict = /conflicts? (with main )?in code/i.test(why);
+      const kAt = str(k.at, 40) || at;
+      const head = sha(k.head) || e.head;
+      const fix = fixRequest({ ...e, head }, { why, failing: list(k.failing, 10), runUrl: str(k.runUrl, 300), files: conflict ? list(k.files, 20) : [] });
+      e = {
+        ...e, head, state: 'fix-filed', since: kAt,
+        attempts: [{ $axf: ATTEMPT_FRAME, n: 1, startedAt: kAt, endedAt: kAt, head, steps: ['checking'], result: conflict ? 'conflict' : 'red', failing: list(k.failing, 10), files: conflict ? list(k.files, 20) : [], runUrl: str(k.runUrl, 300), fix: fix.id, note: 'kicked out of the merge queue' }],
+        outcome: { kind: conflict ? 'conflict' : 'ci', text: why, at: kAt, fix: fix.id, runUrl: str(k.runUrl, 300) }, fix,
+      };
+    } else if (rm) {
+      const rAt = str(rm.at, 40) || at;
+      e = { ...e, state: 'paused', since: rAt, pausedFrom: 'waiting', outcome: { kind: 'paused', text: str(rm.why, NOTE_MAX) || 'taken out of the merge queue by hand', at: rAt, by: 'hand' } };
+    } else {
+      e = { ...e, hold: str(it.why, 200) || 'not ready' };
+    }
+    line.entries.push(e);
+  }
+
+  // 3. kicked PRs the queue state no longer lists (closed meanwhile) are history, not the line: nothing to land
+  // 4. merged PRs → landed history, oldest first
+  const merged = (Array.isArray(q.merged) ? q.merged : []).filter((m) => num(m?.pr)).sort((a, b) => String(a.at || '').localeCompare(String(b.at || '')));
+  for (const m of merged) {
+    const id = entryId({ pr: m.pr });
+    if (line.history.some((h) => h.id === id && h.landedSha === sha(m.sha))) continue;
+    const mAt = str(m.at, 40) || at;
+    const e = normEntry({ pr: m.pr, title: m.title, agent: m.agent, branch: str(m.prBranch, 200), head: sha(m.head), addedAt: mAt, since: mAt, state: 'landed' }, at);
+    line.history.push({
+      ...e, landedAt: mAt, landedSha: sha(m.sha),
+      attempts: [{ $axf: ATTEMPT_FRAME, n: 1, startedAt: mAt, endedAt: mAt, head: e.head, steps: ['checking', 'landing', 'landed'], result: 'landed', landedSha: sha(m.sha), note: `landed by the merge queue${m.branch ? ` from ${str(m.branch, 60)}` : ''}${Array.isArray(m.batch) && m.batch.length > 1 ? ` in a batch of ${m.batch.length}` : ''}` }],
+      outcome: { kind: 'landed', text: `landed on main as ${sha(m.sha).slice(0, 8) || 'a merge commit'} (merge queue)`, at: mAt },
+      legacy: { queueSha: str(m.queueSha, 64), branch: str(m.branch, 60), ...(m.batch ? { batch: m.batch } : {}) },
+    });
+  }
+  line.history = line.history.slice(-HISTORY_MAX);
+
+  // what goes: every queue/pr-* ref and the batch branch, the two queue files, the stack fields
+  const branches = [...new Set([
+    ...(q.stack || []).map((s) => `${LEGACY_QUEUE_PREFIX}${s.pr}`),
+    ...(q.items || []).map((it) => it.queueBranch).filter((b) => typeof b === 'string' && b.startsWith(LEGACY_QUEUE_PREFIX)),
+    ...(q.batch?.members?.length || (q.items || []).some((it) => it.queueBranch === LEGACY_BATCH_BRANCH) ? [LEGACY_BATCH_BRANCH] : []),
+  ])];
+  if ((ctl.order || []).length) notes.push(`the manual order (${(ctl.order || []).length} PRs) is already the line's order; the control document goes`);
+  if ((ctl.added || []).length) notes.push(`${(ctl.added || []).length} "add back" marks dropped: an entry is in the line or it is not`);
+  if (q.split?.length) notes.push(`a batch bisection over ${q.split.length} PRs is dropped: each lands alone now`);
+  line.migratedFrom = { frame: LEGACY_FRAME, at, entries: line.entries.length, landed: line.history.length };
+  line.rev = 1;
+  return { line, drop: { branches, files: ['merge-queue.json', 'merge-queue-control.json'], fields: [...LEGACY_STACK_FIELDS] }, notes };
 }
 
 /** The commands, declared once: the CLI, the REST routes, MCP (plugin-commands@1) and voice say the same words. */
