@@ -10,6 +10,7 @@
  *   node control.mjs <op> <target> [path] …     list | get | set | reset | add | remove | act (see `help`)
  *   node control.mjs targets | tools | routes | schema | registry | audit [n] | where | help
  *   node control.mjs pass-publication | pass-check <target> [op] | pass-settings [json]   (veto passes: lib/pass.mjs)
+ *   node control.mjs pass-pending | pass-get <id> | pass-decide <json> | pass-tokens <id>     (pass-approval@1)
  *   --remote [url]   send it to a console instead (AXF_CONSOLE_URL, default https://console.amberxai.com; AXF_TOKEN)
  *   --json           print the raw answer
  *
@@ -27,6 +28,7 @@ import { appearanceFile, runTokens } from './lib/tokens.mjs';
 import { notesDir, runAmberx } from './lib/amberx.mjs';
 import { runPlanner } from './lib/planner.mjs';
 import { coveringCall, coveringPass, passSettings, publication, recordPassChanges, recordPassCommand, runPass, savePassSettings } from './lib/pass.mjs';
+import { decidePass, getPass, listPending, tokensFor } from './lib/pass-approval.mjs';
 import { PASS_DEFAULT_SCOPE, PASS_SCOPE_IDS, PASS_TARGET, passScopeId, passScopeOf, passScopeWord } from '../../../../framework/core/engines/control-pass.mjs';
 
 /** The token rows a write may change, by id (what a covered write records as before / after). */
@@ -53,7 +55,7 @@ function recordTitle(c) {
  * with before / after, for undo; every other command as a record undo lists). A delete an `all` pass covers runs
  * without the confirm token (`confirmSkipped`), except an irreversible one unless the pass includes irreversible.
  */
-export async function runControl(raw, { grants = ['*'], by = '', preset = null, now = Date.now(), approver = null, proof = null } = {}) {
+export async function runControl(raw, { grants = ['*'], by = '', preset = null, now = Date.now(), approver = null, proof = null, decidedBy = null } = {}) {
   const c = normalizeControl(raw);
   if (!c.by && by) c.by = by;
   // an alias preset (kind) is a filter on list and a default on add
@@ -77,7 +79,7 @@ export async function runControl(raw, { grants = ['*'], by = '', preset = null, 
     const tokenWrite = !!pass && domain === 'tokens' && ['set', 'reset'].includes(c.op);
     const before = tokenWrite ? tokenStateOrNull(c) : null;
     const title = pass && !before ? recordTitle(c) : '';
-    const data = domain === 'tokens' ? runTokens(c) : domain === 'amberx' ? runAmberx(c) : domain === 'pass' ? runPass(c, { approver, proof, now, runTokens }) : await runPlanner(c);
+    const data = domain === 'tokens' ? runTokens(c) : domain === 'amberx' ? runAmberx(c) : domain === 'pass' ? runPass(c, { approver, proof, now, runTokens, decidedBy }) : await runPlanner(c);
     const at = new Date(now).toISOString();
     if (pass && before) recordPassChanges(pass.id, c, before, tokenState(c), now);
     else if (pass) recordPassCommand(pass.id, c, `${c.op}${c.action ? ` ${c.action}` : ''} ${c.target}${c.path ? ` ${c.path}` : data?.item?.id ? ` ${data.item.id}` : ''}${title ? ` ("${title}")` : ''}`, now);
@@ -318,6 +320,17 @@ export async function main(argv) {
     out({ ok: true, target: c.target, op: c.op, scope, irreversible: irr, covered: !!p, ...(p ? { pass: { id: p.id, scope: p.scope, expiresAt: p.expiresAt } } : {}) }, p ? `covered by ${p.id} until ${p.expiresAt}` : scope ? `not covered (needs ${scope === 'all' ? 'an' : 'a'} ${scope} pass${irr ? ' with include_irreversible' : ''})` : 'no pass can cover this');
     return 0;
   }
+  // pass-approval@1 (lib/pass-approval.mjs): read and decide one pass by id. pass-decide reads {id, decision,
+  // approver?, token?, by?} on stdin: approver is set by the console server from the request, never by a body.
+  if (cmd === 'pass-pending') { const r = listPending(); out(r, r.items.length ? r.items.map((x) => `${x.id}  ${x.text}\n  ${x.deep_link}`).join('\n') : r.text); return 0; }
+  if (cmd === 'pass-get') { const r = getPass(argv[1]); out(r, r.ok ? `${r.pass.text}\n${r.pass.deep_link}` : `${r.code}: ${r.message}`); return r.ok ? 0 : 1; }
+  if (cmd === 'pass-decide') {
+    const b = JSON.parse(argv[1] && argv[1].startsWith('{') ? argv[1] : readFileSync(0, 'utf8'));
+    const r = await decidePass(b.id, b.decision, { approver: b.approver ?? null, token: b.token ?? '', by: b.by ?? '' }, runControl);
+    console.log(JSON.stringify(r));
+    return r.ok ? 0 : 1;
+  }
+  if (cmd === 'pass-tokens') { console.log(JSON.stringify(tokensFor(argv[1]) ?? { ok: false, code: 'not_pending' })); return 0; }
   if (cmd === 'pass-settings') { const s = argv[1] && argv[1].startsWith('{') ? savePassSettings(JSON.parse(argv[1])) : passSettings(); out({ ok: true, ...s }, `max ${s.maxMinutes} min · ${s.timeZone}`); return 0; }
   if (cmd === 'where') { out({ appearance: appearanceFile(), amberx: notesDir() }, `look: ${appearanceFile()}\nAmberX notes: ${notesDir()}`); return 0; }
 

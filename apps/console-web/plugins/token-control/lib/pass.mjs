@@ -163,7 +163,7 @@ function activate(d, req, owner, now) {
  * Run one pass.scopes command (already through the gate). `approver` / `proof` come from the transport only.
  * list → every scope with its pass now · get <scope> → that scope's pass · act grant | approve | deny | revoke | undo.
  */
-export function runPass(c, { approver = null, proof = null, now = Date.now(), runTokens } = {}) {
+export function runPass(c, { approver = null, proof = null, now = Date.now(), runTokens, decidedBy = null } = {}) {
   const { maxMinutes, timeZone } = passSettings();
   const d = loadPasses(now);
   const view = (p) => (p ? passPublic(p, now, timeZone) : null);
@@ -208,15 +208,17 @@ export function runPass(c, { approver = null, proof = null, now = Date.now(), ru
       if (!req || !passPending(req, now)) throw new ControlError('not_found', `no waiting pass request ${String(input.request)} for ${c.path}`);
       const owner = ownerOf(approver, proof, req, now);
       if (!owner) throw new ControlError('denied', `only Brett can ${c.action} a veto pass: from his console session (banner → Token pass) or with axHub's signed approval`);
+      // pass-approval@1: the action token that decided it (nonce + decision), so the same token again answers already
+      if (decidedBy && typeof decidedBy === 'object') req.decidedBy = { nonce: String(decidedBy.nonce || ''), decision: c.action };
       if (c.action === 'deny') {
         req.state = 'denied'; req.endedAt = new Date(now).toISOString(); req.endedBy = owner.name;
         writeStore(d);
-        logLine(req, `denied by ${owner.name}`, { by: owner.name, action: 'deny' });
+        logLine(req, `denied by ${owner.name} (${owner.via})${req.decidedBy ? ` with action token ${req.decidedBy.nonce}` : ''}`, { by: owner.name, action: 'deny' });
         return { changed: true, item: view(req), text: passSentence(req, now, timeZone) };
       }
       activate(d, req, owner, now);
       writeStore(d);
-      logLine(req, `approved ${req.minutes} min by ${owner.name} (${owner.via}), requested by ${req.requestedBy}${req.reason ? ` — ${req.reason}` : ''}`, { by: owner.name, action: 'approve' });
+      logLine(req, `approved ${req.minutes} min by ${owner.name} (${owner.via})${req.decidedBy ? ` with action token ${req.decidedBy.nonce}` : ''}, requested by ${req.requestedBy}${req.reason ? ` — ${req.reason}` : ''}`, { by: owner.name, action: 'approve' });
       return { changed: true, item: view(req), text: passSentence(req, now, timeZone) };
     }
     case 'revoke': {

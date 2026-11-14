@@ -66,7 +66,8 @@ export const PASS_SCOPE_WORDS = {
 /** The verbs of the pass.scopes target (control@1 `act`), with the input each one takes. */
 export const PASS_ACTS = { grant: { minutes: 'number', reason: 'string', include_irreversible: 'boolean' }, approve: { request: 'string' }, deny: { request: 'string' }, revoke: {}, undo: {} };
 /** How an owner approval arrived (the transport sets it; a command can't). */
-export const PASS_APPROVED_VIA = ['console', 'axhub', 'local', 'cli-tty'];
+/** How Brett's approval reached the pass. `push`: a signed pass action token from a device notification (pass-approval@1). */
+export const PASS_APPROVED_VIA = ['console', 'axhub', 'local', 'cli-tty', 'push'];
 
 export const PASS_STATES = ['pending', 'active', 'revoked', 'expired', 'lapsed', 'denied'];
 
