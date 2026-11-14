@@ -26,7 +26,7 @@
  *      failing check; the attempt names it (fixBuild). Every settled attempt goes on the build's land record through
  *      builds-live (landState red / landed / flagged …), so the line moves on to the next build at once.
  *
- *   node apps/console-web/plugins/push-banner/land/land-one.mjs <build> [--dry-run] [--json] [--wait-min n]   one attempt now
+ *   node apps/console-web/plugins/push-banner/land/land-one.mjs <build> [--dry-run] [--json] [--wait-min n] [--wait-lock n]   one attempt now (n minutes)
  *   … runs [<build>] [--json]                                                                the recorded attempts
  *   … lock                                                                                   who holds the line
  *   … enqueue <build> [--front]                     put a finished build in the landing line (the finish hook does this)
@@ -310,7 +310,7 @@ export async function runLine({ s = settings(), max = 20, dry = false, land = la
 
 export async function main(argv) {
   const s = settings(); const json = argv.includes('--json'); const dry = argv.includes('--dry-run');
-  const args = argv.filter((a, i) => !a.startsWith('--') && !['--wait-min', '--max'].includes(argv[i - 1]));
+  const args = argv.filter((a, i) => !a.startsWith('--') && !['--wait-min', '--max', '--wait-lock'].includes(argv[i - 1]));
   const out = (v, text) => console.log(json ? JSON.stringify(v, null, 1) : text);
   if (args[0] === 'lock') { const o = lockOwner(); out({ owner: o }, o || 'free'); return 0; }
   if (args[0] === 'runs') { const r = readRuns(s, args[1] || ''); out(r, r.map((x) => `${x.startedAt}  ${x.build}  ${x.outcome || 'going'}  ${x.note}`).join('\n') || 'no attempts yet'); return 0; }
@@ -329,7 +329,8 @@ export async function main(argv) {
   }
   if (!args[0]) throw new Error('usage: land-one.mjs <build> [--dry-run] [--json] | runs [<build>] | lock | enqueue <build> [--front] | line [--max n] | show');
   const w = argv.indexOf('--wait-min'); const ciOpts = w >= 0 ? { waitMs: Math.max(0, Number(argv[w + 1]) || 0) * 60000 } : {};
-  const r = await landOne({ s, build: args[0], dry, ciOpts, log: (m) => !json && console.error(m) });
+  const wl = argv.indexOf('--wait-lock'); const wait = wl >= 0 ? Math.max(0, Number(argv[wl + 1]) || 0) * 60000 : 0;
+  const r = await landOne({ s, build: args[0], dry, ciOpts, wait, log: (m) => !json && console.error(m) });
   if (!r.ran) { out(r, `the landing line is busy: ${r.owner}`); return 2; }
   out(r.run, `${r.run.build}: ${r.run.note}`);
   return ['error', 'clash', 'red'].includes(r.run.outcome) ? 1 : 0;

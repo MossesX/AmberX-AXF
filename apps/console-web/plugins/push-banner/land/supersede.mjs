@@ -3,6 +3,8 @@
  * Supersede check (build land-finish-auto-land-live-clear-backlog): for each finished build not on main, is there any
  * work in it that main doesn't already have? Plain git, no model calls.
  *
+ * A branch deleted on GitHub is read from its PR's head (refs/pull/<n>/head), which GitHub keeps.
+ *
  * Unique work = commits on the branch whose patch is not on main (`git cherry`: `+` lines; merge commits and commits
  * that touch only status files are left out), narrowed to the files those commits touch whose content on the branch
  * still differs from main's (file level: a change main took in another form, a squash or a re-do, is not unique).
@@ -48,10 +50,16 @@ export function uniqueWork({ git, ref, main }) {
     counted.push(c);
     for (const p of touched) files.add(p);
   }
-  // file level: what main already holds the same way is not unique
-  const still = [...files].filter((p) => git(['diff', '--quiet', main, ref, '--', p]).code !== 0).sort();
+  // file level: what main already holds the same way is not unique, and neither is a version main once had and has
+  // moved on from since (a batch or squash landed it under another commit; main edited the file after)
+  const onMainOnce = (p) => {
+    const blob = git(['rev-parse', '-q', '--verify', `${ref}:${p}`]);
+    if (blob.code) return git(['cat-file', '-e', `${main}:${p}`]).code !== 0; // deleted on the branch: unique only while main still has it
+    return !!git(['log', '-1', '--format=%H', `--find-object=${blob.out}`, main, '--', p], { timeout: 60000 }).out;
+  };
+  const still = [...files].filter((p) => git(['diff', '--quiet', main, ref, '--', p]).code !== 0 && !onMainOnce(p)).sort();
   const why = !counted.length ? (plus.length ? 'only merges and status files are missing from main' : 'every commit is on main')
-    : !still.length ? `main already has the same content in ${files.size} file(s)` : `${still.length} file(s) main does not have: ${still.slice(0, 6).join(', ')}${still.length > 6 ? ' …' : ''}`;
+    : !still.length ? `main has (or had) the same content in ${files.size} file(s)` : `${still.length} file(s) main does not have: ${still.slice(0, 6).join(', ')}${still.length > 6 ? ' …' : ''}`;
   return { head: head.out, plus: counted, files: still, unique: still.length > 0, why };
 }
 
@@ -71,8 +79,14 @@ export async function supersede({ s = settings(), git = makeGit(s.repo), gh = nu
   const main = `${s.remote}/${s.base}`;
   const out = [];
   for (const b of rows) {
-    const w = uniqueWork({ git, ref: `${s.remote}/${b.branch}`, main });
-    const r = { id: b.id, branch: b.branch, pr: b.pr || '', verdict: w.missing ? 'missing' : w.unique ? 'unique' : 'superseded', files: w.files, commits: w.plus.length, why: w.why };
+    let w = uniqueWork({ git, ref: `${s.remote}/${b.branch}`, main });
+    // the branch is gone (deleted after its PR closed): GitHub keeps the PR's head at refs/pull/<n>/head
+    const prN = Number(String(b.pr || '').replace(/\D/g, '')) || 0;
+    if (w.missing && prN) {
+      const ref = `refs/remotes/${s.remote}/pr/${prN}`;
+      if (git(['fetch', '-q', s.remote, `+refs/pull/${prN}/head:${ref}`], { timeout: 120000 }).code === 0) { w = uniqueWork({ git, ref, main }); w.viaPr = true; }
+    }
+    const r = { id: b.id, branch: b.branch, pr: b.pr || '', verdict: w.missing ? 'missing' : w.unique ? 'unique' : 'superseded', files: w.files, commits: w.plus.length, why: w.why, ...(w.viaPr ? { from: `pull/${prN}/head (branch deleted)` } : {}) };
     if (apply && r.verdict === 'superseded') {
       const tag = `archive/${b.id}`;
       const t = git(['push', '-q', s.remote, `${w.head}:refs/tags/${tag}`], { timeout: 90000 });

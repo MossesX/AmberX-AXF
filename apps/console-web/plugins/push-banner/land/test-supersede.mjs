@@ -28,9 +28,13 @@ const picked = branch('picked', { 'src/p.ts': 'p\n' }, 'p');
 branch('unique', { 'src/u.ts': 'u\n', '_claude/builds/store.json': '{"x":1}\n' }, 'u');
 branch('status-only', { '_claude/builds/store.json': '{"y":1}\n' }, 'status');
 branch('redone', { 'src/r.ts': 'r\n', 'src/a.ts': 'a2\n' }, 'r');
+branch('batched', { 'src/b.ts': 'b1\n' }, 'b');
 // main takes the picked commit as is, and redone's content in a different commit (a squash by hand)
 sh(['cherry-pick', picked], work);
 commit({ 'src/r.ts': 'r\n', 'src/a.ts': 'a2\n', 'src/other.ts': 'o\n' }, 'redone squashed with more');
+// batched: main took b.ts in a batch commit, then edited it again (the branch's version is in main's history only)
+commit({ 'src/b.ts': 'b1\n', 'src/z.ts': 'z\n' }, 'batch');
+commit({ 'src/b.ts': 'b2\n' }, 'b moved on');
 sh(['push', '-q', 'origin', 'HEAD:main'], work);
 sh(['clone', '-q', origin, repo], root);
 const s = { repo, slug: 'o/r', dataDir: data, remote: 'origin', base: 'main' };
@@ -47,6 +51,16 @@ await t('git cherry + file level: picked, status-only and re-done branches are s
   assert.equal(w('status-only').unique, false); assert.match(w('status-only').why, /status files/);
   assert.equal(w('redone').unique, false); assert.match(w('redone').why, /same content/);
   assert.deepEqual(w('unique').files, ['src/u.ts']);
+  assert.equal(w('batched').unique, false, 'a version main once had (batch landed, edited since) is not unique'); assert.match(w('batched').why, /or had/);
+});
+
+await t('a deleted branch is read from its PR head (refs/pull/<n>/head)', async () => {
+  const c = git(['rev-parse', 'origin/claude/unique']).out;
+  sh(['update-ref', 'refs/pull/77/head', c], origin); sh(['push', '-q', 'origin', '--delete', 'claude/unique'], work);
+  git(['fetch', '-q', '--prune', 'origin']);
+  const r = await supersede({ s, git, rows: [{ id: 'unique', branch: 'claude/unique', pr: '#77' }] });
+  assert.equal(r.rows[0].verdict, 'unique'); assert.match(r.rows[0].from, /pull\/77/); assert.deepEqual(r.rows[0].files, ['src/u.ts']);
+  sh(['push', '-q', 'origin', `${c}:refs/heads/claude/unique`], work); git(['fetch', '-q', 'origin']);
 });
 
 await t('dry run: verdicts only, nothing tagged, closed or marked', async () => {
