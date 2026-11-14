@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T22:45:18.460Z",
+ "updatedAt": "2026-11-14T22:45:25.669Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -118798,7 +118798,7 @@
    "title": "Always fill every slot: when slots are free, run independent steps of running builds in parallel across them, and auto-queue pending builds",
    "category": "",
    "detail": "",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -118806,7 +118806,7 @@
    "pr": "#582",
    "priority": "P0",
    "createdAt": "2026-11-13T06:57:42.497Z",
-   "updatedAt": "2026-11-13T17:31:10.315Z",
+   "updatedAt": "2026-11-14T22:45:02.136Z",
    "builtAt": "",
    "notes": [
     {
@@ -120614,7 +120614,7 @@
    "title": "Fix: a build whose session finishes its phase (e.g. the Fable steps) with steps left goes back to Pending instead of the Queue, so the next phase never starts and slots sit empty. Send it back to the Queue and launch the next phase automatically",
    "category": "",
    "detail": "",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -120622,7 +120622,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T10:35:03.675Z",
-   "updatedAt": "2026-11-13T17:33:19.803Z",
+   "updatedAt": "2026-11-14T22:45:07.626Z",
    "builtAt": "",
    "notes": [
     {
@@ -125896,7 +125896,7 @@
    "title": "Restore the Asset Designer plugin (merged Nov 10, now missing)",
    "category": "",
    "detail": "_claude/builds/shipped/asset-designer.json says the Asset Designer plugin (no-code; apps/console-web/plugins/asset-designer, id ai.amberx.axf.console.asset-designer) merged 2026-11-10T04:39Z, but the folder is not in main now and branch claude/asset-designer is deleted.\n1. Find it in git history (git log --all -- apps/console-web/plugins/asset-designer, reflog, any branch/PR/combine branch), find the commit that removed it and why.\n2. Restore it onto current main, update to current framework (tokens, chrome, skins, control@1), make it able to edit every asset type including the chrome settings interface for toolbars and tab groups (all its tokens), with the validation gate.\n3. If history is gone, rebuild from the shipped spec's steps.\n4. Installed and enabled by default, in nav and console.actions, REST/MCP/CLI/voice. Tests, Shipped features. Report what removed it so it doesn't happen again.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -125904,7 +125904,7 @@
    "pr": "#631",
    "priority": "P1",
    "createdAt": "2026-11-13T17:59:17.167Z",
-   "updatedAt": "2026-11-13T19:41:04.838Z",
+   "updatedAt": "2026-11-14T22:45:10.953Z",
    "builtAt": "",
    "notes": [
     {
@@ -126094,7 +126094,7 @@
    "title": "All settings interfaces open in a floating dialog by default",
    "category": "",
    "detail": "Every settings interface (console Settings sections, plugin settings, chrome settings for tab groups/toolbars/banners/nav/menu bar, and any future one) opens by default in a floating dialog over the current screen instead of navigating to the Settings page. Make it a framework default so new settings interfaces get it automatically (template + check that fails if a settings interface navigates away by default). Keep a per-user option to open it as a page instead, and a 'pop out to page' button in the dialog. Dialogs use the glass/transparency tokens (opacityGlass, blur). Deep links and voice/MCP/API still work. Tests, help entry, Shipped features.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -126102,7 +126102,7 @@
    "pr": "#628",
    "priority": "P1",
    "createdAt": "2026-11-13T18:03:04.047Z",
-   "updatedAt": "2026-11-13T19:41:04.838Z",
+   "updatedAt": "2026-11-14T22:45:14.180Z",
    "builtAt": "",
    "notes": [
     {
@@ -126216,7 +126216,7 @@
    "title": "Quick settings: pinned, collapsible pane at the top of every settings interface",
    "category": "",
    "detail": "Every settings interface (console Settings, plugin settings, chrome settings for tab groups/toolbars/banners/nav/menu bar, and future ones - framework default, enforced by a check) gets a 'Quick settings' pane at the very top:\n- Pinned: does not scroll; everything else scrolls underneath it.\n- Collapses vertically with a small handle/arrow button; the handle style is configurable in settings; collapsed state remembered.\n- Contents, in order: (1) Skin: shows the current skin; checkbox 'Override console skin' to apply a different skin to just this interface. (2) Default assets for this interface (navigation menu, toolbar, tab group, settings interface, etc.): shows the current asset for each; picker greyed out until 'Override console default' is ticked. (3) Override notice: when anything here overrides the skin or console defaults, show 'This is overriding the current skin/defaults' and reuse the existing 'N assets are controlled by their own settings' (chrome.edits) line that expands to list every override, each with reset.\n- Any picked asset must have a manifest and pass schema conformance before applying.\n- Reachable by REST/MCP/CLI/voice/control@1. Tests, help entries, Shipped features.\nWorks together with the 'all settings interfaces open in a floating dialog' and per-instance settings-window picker builds.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -126224,7 +126224,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T18:07:49.026Z",
-   "updatedAt": "2026-11-13T18:54:23.539Z",
+   "updatedAt": "2026-11-14T22:45:18.724Z",
    "builtAt": "",
    "notes": [
     {

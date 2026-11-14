@@ -796,11 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 00:39 UTC · `land-batch-merge-main-each-finished` s8 done (all) · orchestrator
-- 2026-11-14 00:40 UTC · `land-batch-merge-main-each-finished` s9 done (all) · orchestrator
-- 2026-11-14 00:40 UTC · `land-batch-merge-main-each-finished` branch claude/land-batch-merge-main-each-finished, note (all) · reconciler
-- 2026-11-14 00:42 UTC · `land-batch-merge-main-each-finished` s10 done (all) · orchestrator
-- 2026-11-14 00:43 UTC · `land-batch-merge-main-each-finished` s11 done (all) · orchestrator
 - 2026-11-14 00:43 UTC · `land-batch-merge-main-each-finished` s12 done (all) · orchestrator
 - 2026-11-14 00:44 UTC · `land-batch-merge-main-each-finished` s13 done (all) · orchestrator
 - 2026-11-14 00:45 UTC · `console-app-land-parts-1-4-build-apk` → running, note (all) · pipeline
@@ -1196,6 +1191,11 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 22:44 UTC · `one-to-do-notes-and-tasks-plugin-in-the-console-take-it-out-of-amberx` → queued (all) · orchestrator
 - 2026-11-14 22:44 UTC · `fix-conflicts-and-land-build-plan-1-skins-one-row-tables-backgrounds-asset-o` → queued (all) · orchestrator
 - 2026-11-14 22:45 UTC · `console-look-becomes-default-axhub-skin` s2 done (all) · orchestrator
+- 2026-11-14 22:45 UTC · `always-fill-every-slot-when-slots-are` → queued (all) · orchestrator
+- 2026-11-14 22:45 UTC · `fix-build-whose-session-finishes-phase-e` → queued (all) · orchestrator
+- 2026-11-14 22:45 UTC · `restore-asset-designer-plugin-merged-nov` → queued (all) · orchestrator
+- 2026-11-14 22:45 UTC · `all-settings-interfaces-open-floating` → queued (all) · orchestrator
+- 2026-11-14 22:45 UTC · `quick-settings-pinned-collapsible-pane` → queued (all) · orchestrator
 
 ## Token passes (log)
 
