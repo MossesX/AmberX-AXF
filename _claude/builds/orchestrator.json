@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T23:21:27.221Z",
+ "updatedAt": "2026-11-14T23:21:42.206Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -131773,12 +131773,12 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/skin-config-panel-land-report",
-   "pr": "#682",
+   "branch": "claude/skin-config-panel-merge-main-and-land",
+   "pr": "#648",
    "mergedAt": "2026-11-14T20:15:18Z",
    "priority": "P0",
    "createdAt": "2026-11-13T19:47:38.941Z",
-   "updatedAt": "2026-11-14T23:19:56.294Z",
+   "updatedAt": "2026-11-14T23:20:26.601Z",
    "builtAt": "",
    "notes": [
     {
@@ -131832,18 +131832,13 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-skin-config-panel-merge-main-and-land--paulie, shared account login)",
      "at": "2026-11-14T23:16:34.879Z"
-    }
-   ],
-   "approvals": [
+    },
     {
-     "phase": 1,
-     "from": "Fable",
-     "to": "Opus",
-     "at": "2026-11-14T23:19:56.294Z",
-     "by": "auto",
-     "kind": "downgrade"
+     "text": "Headless run axf-skin-config-panel-merge-main-and-land--paulie: brief only · start 11.0K tokens ($0.03) · cost $0.33 · 17 turns · 6 tools, MCP none",
+     "at": "2026-11-14T23:20:26.601Z"
     }
    ],
+   "approvals": [],
    "upgradeRequests": [],
    "origin": {
     "said": "land the skin config panel",
@@ -133857,11 +133852,11 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/per-toolbar-settings-fix-failing-chrome",
-   "pr": "#683",
+   "pr": "#650",
    "mergedAt": "2026-11-13T20:44:56Z",
    "priority": "P0",
    "createdAt": "2026-11-13T20:08:02.821Z",
-   "updatedAt": "2026-11-14T23:19:59.043Z",
+   "updatedAt": "2026-11-14T23:20:31.439Z",
    "builtAt": "",
    "notes": [
     {
@@ -133907,6 +133902,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-per-toolbar-settings-fix-failing-chrome--sully, shared account login)",
      "at": "2026-11-14T23:17:24.127Z"
+    },
+    {
+     "text": "Headless run axf-per-toolbar-settings-fix-failing-chrome--sully: brief only · start 13.0K tokens ($0.06) · cost $3.03 · 58 turns · 6 tools, MCP none",
+     "at": "2026-11-14T23:20:31.439Z"
     }
    ],
    "approvals": [
@@ -144695,12 +144694,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-14T23:16:22.160Z",
-   "updatedAt": "2026-11-14T23:16:28.914Z",
+   "updatedAt": "2026-11-14T23:20:49.007Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by land-finish-auto-land-live-clear-backlog.",
      "at": "2026-11-14T23:16:28.914Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"28105bb8-84e7-415b-a167-aa257dc2c5b8\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-14T23:20:49.007Z"
     }
    ],
    "approvals": [],
@@ -144717,7 +144720,201 @@
     "from": "",
     "addenda": []
    },
-   "steps": []
+   "steps": [
+    {
+     "id": "s1",
+     "text": "Auto-land could not land `console-app-part-3-native-bridge-mic` (console-app-part-3-native-bridge-mic): merging main into it clashes in code: framework/ui/axf.css.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwh149yn01qop8",
+     "createdAt": "2026-11-14T23:20:49.007Z"
+    },
+    {
+     "id": "s2",
+     "text": "Work on its own branch `claude/console-app-part-3-native-bridge-mic` (PR #633); do not open a new PR.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwh149yn02io56",
+     "createdAt": "2026-11-14T23:20:49.007Z"
+    },
+    {
+     "id": "s3",
+     "text": "git fetch origin && git checkout claude/console-app-part-3-native-bridge-mic && git merge origin/main",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwh149yn03jya5",
+     "createdAt": "2026-11-14T23:20:49.007Z"
+    },
+    {
+     "id": "s4",
+     "text": "Resolve every conflict keeping both sides' intent (builds files: newer wins; THREADS / STATUS / decisions: keep both).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwh149yn04vvpo",
+     "createdAt": "2026-11-14T23:20:49.007Z"
+    },
+    {
+     "id": "s5",
+     "text": "Make the tests the clash touches pass, plus node framework/cli/tracker.mjs --check.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwh149yn059hi9",
+     "createdAt": "2026-11-14T23:20:49.007Z"
+    },
+    {
+     "id": "s6",
+     "text": "Commit and push to claude/console-app-part-3-native-bridge-mic. Auto-land and the merge queue land it by themselves.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwh149yn066i41",
+     "createdAt": "2026-11-14T23:20:49.007Z"
+    },
+    {
+     "id": "s7",
+     "text": "Attempt 1. Auto-land retries until it lands; Brett gets an FYI for each attempt.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwh149yn073tk4",
+     "createdAt": "2026-11-14T23:20:49.007Z"
+    },
+    {
+     "id": "s8",
+     "text": "split the console wrapper so it runs on four slots at the same time",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwh149yn08r9rl",
+     "createdAt": "2026-11-14T23:20:49.007Z"
+    },
+    {
+     "id": "s9",
+     "text": "Merging main into claude/console-app-part-3-native-bridge-mic clashes in code: framework/ui/axf.css",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwh149yn09c1b1",
+     "createdAt": "2026-11-14T23:20:49.007Z"
+    },
+    {
+     "id": "s10",
+     "text": "Tests green, report _claude/builds/reports/merge-main-land-console-app-part-3.md, THREADS row, commit, push, PR",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/merge-main-land-console-app-part-3.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwh149yn0af805",
+     "createdAt": "2026-11-14T23:20:49.007Z"
+    }
+   ]
   },
   {
    "id": "merge-main-land-console-app-part-4",
