@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5159,
- "updatedAt": "2026-11-14T02:09:08.099Z",
+ "rev": 5160,
+ "updatedAt": "2026-11-14T02:09:38.018Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -210129,7 +210129,7 @@
    "pr": "#643",
    "priority": "P0",
    "createdAt": "2026-11-13T23:41:07.780Z",
-   "updatedAt": "2026-11-14T02:09:04.363Z",
+   "updatedAt": "2026-11-14T02:09:10.043Z",
    "builtAt": "",
    "notes": [
     {
@@ -210155,6 +210155,10 @@
     {
      "text": "Update: the kernel conformance blocker is fixed by #665 (skips the deferred opacity vars), in the same queue batch as #637/#639. Console app on the stack top: compiles, 62/62 JUnit, APK builds (run 43541410908).",
      "at": "2026-11-14T01:46:22.042Z"
+    },
+    {
+     "text": "Stopped early: s14-s16 and s18 blocked. Main is red on its own checks (Plugin lifecycle: stale refs in 7 plugins; Theme swap), so the queue can't land any batch. Stack ready and fixed: 62/62 JUnit, APK built (https://github.com/MossesX/AmberX-AXF/actions/runs/43541410908/artifacts/14092283770). PRs #637 #639 #633 #640 #643 removed from the queue to save CI; re-add in that order (land.mjs queue add) once main is green, then run s15-s18.",
+     "at": "2026-11-14T02:09:10.043Z"
     }
    ],
    "approvals": [],
@@ -210661,7 +210665,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 30,
+   "rev": 31,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
