@@ -38,3 +38,16 @@ The merged three only changed which dialog opens and what it saves. The renderer
 - Workspace (plugin) toolbars (`libs/workspace`, `axf-ws-toolbar:<workspace>`) read only their own `labels` flag; no
   PR ever wired them to their settings dialog.
 - Only `TabGroup.tsx` folds the instance override in, which is why tab-group settings work and toolbar settings don't.
+
+## s4 — Landed and verified on the live console
+
+- PR #673 merged through the queue Nov 14, 17:36 UTC (`c3e5b59d7`).
+- The live console (`axf-console`, restarted 22:38 UTC) runs `d465d20c0`, which contains the merge. Its served bundle
+  (`/opt/axf-console-dist`, built 22:37 UTC) carries the fix: `chromeData("toolbar")` and the other chrome kinds are
+  compiled in.
+- `framework/spec/check-chrome-apply.mts` run on the deployed revision `d465d20c0`: 174 checks pass. Every toolbar
+  settings value changes what the app toolbar, page toolbars and workspace toolbars draw, per instance, and survives
+  a reload.
+- Not done: a click-through in a real browser on console.amberxai.com. The console starts only after axHub answers
+  with a signed-in session, and this build runner has no axHub login (same 401 as s1). A headless browser against
+  the container's own port stops at "Waiting for axHub".
