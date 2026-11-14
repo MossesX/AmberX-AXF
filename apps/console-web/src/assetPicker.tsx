@@ -24,7 +24,7 @@ function AssetRow({ type }: { type: AssetType }) {
   const fallback = rt.manifest.defaults?.[type];
   const preview = () => { const was = active; if (rt.swap(type, chosen)) setUndo(was); };
   return (
-    <div className="fx-stack">
+    <div className="fx-stack" data-axf-anchor={`settings-slot:${type}`}>
       <SelectField label={assetTypeSpecs[type].label} value={chosen} options={list.map((a) => ({ value: a.id, label: `${a.name}${optionTag(a.tags)}` }))} onChange={setPick} hint={asset?.description} />
       <div className="fx-row fx-row--wrap">
         {undo

@@ -99,7 +99,7 @@
       {
         "target": "gizmo-guide",
         "title": "Gizmo guide",
-        "text": "Gizmo's narrated walkthroughs: whether steps are read out loud, whether the console moves to each step, and whether walkthroughs asked for from AmberX open by themselves.",
+        "text": "Settings for Gizmo guide: narrated walkthroughs in a floating window, only when you ask. Choose whether each step is read out loud, whether the console moves to each step, and whether walkthroughs asked for from AmberX open by themselves.",
         "kind": "tab"
       }
     ],
