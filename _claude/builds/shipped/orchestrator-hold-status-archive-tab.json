@@ -7,7 +7,7 @@
  "by": "backfill",
  "shippedAt": "2026-11-12T03:31:20Z",
  "build": {
-  "id": "orchestrator-hold-status-archive-tab-deleted-tab",
+  "id": "orchestrator-hold-status-archive-tab",
   "title": "Orchestrator: Hold status, Archive tab, Deleted tab (deleted builds kept forever)",
   "profile": "all",
   "category": "",

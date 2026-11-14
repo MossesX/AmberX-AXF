@@ -1,6 +1,6 @@
 # Orchestrator: Hold status, Archive tab, Deleted tab (deleted builds kept forever)
 
-Build `orchestrator-hold-status-archive-tab-deleted-tab`, Phase 1 (Opus), branch `claude/orchestrator-hold-status-archive-tab-deleted-tab`. Amends `retire-build-manager-the-orchestrator-is-the-onl` (its tabs).
+Build `orchestrator-hold-status-archive-tab`, Phase 1 (Opus), branch `claude/orchestrator-hold-status-archive-tab`. Amends `retire-build-manager-the-orchestrator-is-the-onl` (its tabs).
 
 ## Brett said (verbatim, 2026-11-10 17:07)
 > Make a hold status. Anything in the queue you can send back to pending, leave in queue on hold, move to the archive, or delete. All completed builds go to the archive, add an archive tab. A deleted tab where all deleted builds stay saved forever.
@@ -51,6 +51,11 @@ Build `orchestrator-hold-status-archive-tab-deleted-tab`, Phase 1 (Opus), branch
 - `tsc --noEmit` (console-web) is clean.
 - check-theme, check-controls, check-toolbars and check-chrome-assets pass. `check-help.mts`: 262 checks pass.
 - `plugin-lifecycle check build-orchestrator` still flags only the old references: `framework/cli/dispatch-gate.mjs`, plus this worktree's untracked brief files.
+
+## Status (Nov 13 2026, s3)
+- PR #463 merged on Nov 11 (merge commit `7c211d233`). The feature is live on main.
+- Re-run on current main: `pipeline.test.mjs` 46 passed, orchestrator `test.mjs` 35 passed, `test.py` 41 passed, `test_upgrade.py` 12 passed.
+- check-theme, check-controls, check-toolbars and check-chrome-assets pass.
 
 ## Gaps
 - **No screenshots, so no UI Review submission yet.**
