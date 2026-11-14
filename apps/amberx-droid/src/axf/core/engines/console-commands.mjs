@@ -9,10 +9,16 @@
  * a catalog built from its own search index (views, settings tabs, dialogs, actions — plugins' too), and resolving runs
  * against that, so a new plugin's screen can be opened the moment it is installed.
  *
- *   catalog  { $axf: 'console-catalog@1', app, items: [{ kind, id, label, detail?, icon?, keywords?, requires?, effect?, params?, parent? }], here? }
+ *   catalog  { $axf: 'console-catalog@1', app, items: [{ kind, id, label, detail?, icon?, keywords?, requires?, effect?, params?, parent?,
+ *            type?, value?, options?, min?, max?, secret? }], here? }
+ *            kind `field` (build full-voice-and-ai-control, Nov 13 2026): one single setting, id = its key, parent = its settings
+ *            tab, type = its setting kind, value = its current value as text (never for secrets), options = the choices.
+ *            `console.settings` opens it (its tab, scrolled to it), lists and reads it; `settings.set:<key>:<value>` sets it.
  *   client   { id, app, host?, front?, title, device, user, lastUsed, here, catalog }   (one per open console tab, kept by the server;
  *            app `molly/console-web` + host `molly` inside Molly; front = visible and shown by its host)
- *   message  { $axf: 'console-command@1', id, op: open|run|back|home|close|refresh, kind?, target?, label?, spec?, anchor?, arg?, hard?, by, at }
+ *   message  { $axf: 'console-command@1', id, op: open|run|back|home|close|refresh, kind?, target?, label?, spec?, anchor?, arg?, focus?, hard?, by, at }
+ *            focus = what to bring forward on the opened screen (a tab or an item: a build id on the Build orchestrator);
+ *            the console runs the screen's own `<screen>.focus:<focus>` action when it has one.
  *
  * Kotlin twin deferred (Android on hold, spec/PORTING.md).
  */
@@ -22,13 +28,23 @@ export const CONSOLE_CATALOG_FRAME = 'console-catalog@1';
 export const CONSOLE_COMMAND_FRAME = 'console-command@1';
 /** control@1 target → catalog kind. */
 export const CONSOLE_KINDS = { 'console.screens': 'screen', 'console.dialogs': 'dialog', 'console.settings': 'settings', 'console.actions': 'action' };
-export const CONSOLE_ITEM_KINDS = ['screen', 'dialog', 'settings', 'action'];
+export const CONSOLE_ITEM_KINDS = ['screen', 'dialog', 'settings', 'action', 'field'];
+/** Setting kinds a remote caller can set by value (actions, links, sections and custom rows have no value to set). */
+export const CONSOLE_FIELD_TYPES = ['toggle', 'text', 'secret', 'number', 'slider', 'choice', 'multi_choice', 'color', 'asset_slot'];
 /** Where a console command goes: the console used last (default), every open console of the caller, or one client id. */
 export const CONSOLE_DELIVERY = ['recent', 'all'];
 export const CONSOLE_CATALOG_MAX = 3000;
 export const CONSOLE_LIST_DEFAULT = 50;
-/** How long a console counts as open without a heartbeat (the client re-announces every 30 s and on focus). */
-export const CONSOLE_CLIENT_STALE_MS = 90_000;
+/**
+ * How long a console counts as open without a heartbeat. Only the console itself proves it is alive (its hello, seen,
+ * ack, or opening its stream); the server's own keep-alive on the stream never does, because a frozen phone tab keeps
+ * its socket open while it runs nothing (console-commands-reliable, Nov 11 2026). The client beats every
+ * CONSOLE_HEARTBEAT_MS and on every wake (visible, focus, online, page shown again).
+ */
+export const CONSOLE_CLIENT_STALE_MS = 45_000;
+export const CONSOLE_HEARTBEAT_MS = 15_000;
+/** A command a console receives later than this after it was sent live is skipped (it went to a tab that was asleep). */
+export const CONSOLE_LATE_MS = 30_000;
 /** The MCP shortcut tools every console MCP server publishes (names are a contract: Claude sessions call them through axHub). */
 export const CONSOLE_TOOLS = ['console_open', 'console_dialog', 'console_settings', 'console_action', 'console_back', 'console_where', 'console_list', 'console_clients', 'console_refresh'];
 
@@ -56,6 +72,14 @@ export function normalizeConsoleItem(raw) {
   if (Array.isArray(raw.keywords)) { const kw = raw.keywords.map((x) => str(x, 80)).filter(Boolean).slice(0, 12); if (kw.length) out.keywords = kw; }
   if (['navigate', 'read', 'write', 'destructive'].includes(raw.effect)) out.effect = raw.effect;
   if (raw.params === true) out.params = true;
+  if (out.kind === 'field') {
+    const t = str(raw.type, 40);
+    if (t) out.type = t;
+    if (raw.secret === true) out.secret = true;
+    else if (raw.value !== undefined && raw.value !== null) out.value = str(typeof raw.value === 'string' ? raw.value : JSON.stringify(raw.value), 400);
+    if (Array.isArray(raw.options)) { const o = raw.options.map((x) => str(isObj(x) ? x.value : x, 80)).filter(Boolean).slice(0, 50); if (o.length) out.options = o; }
+    for (const k of ['min', 'max']) if (Number.isFinite(raw[k])) out[k] = raw[k];
+  }
   return out;
 }
 
@@ -94,6 +118,7 @@ export function consoleCatalogFrom(entries, actions = [], extra = {}) {
     if (e.kind === 'view' && f.view) items.push({ ...base, kind: 'screen', id: f.view });
     else if (e.kind === 'settings-tab' && f.tab) items.push({ ...base, kind: 'settings', id: f.tab, ...(e.parent ? { parent: e.parent } : {}) });
     else if (e.kind === 'dialog' && f.id) items.push({ ...base, kind: 'dialog', id: f.id });
+    else if (e.kind === 'field' && f.tab && f.key) items.push({ ...base, label: String(e.label ?? ''), kind: 'field', id: f.key, parent: f.tab, ...(isObj(e.field) ? e.field : {}) });
   }
   for (const a of Array.isArray(actions) ? actions : []) {
     const m = isObj(a?.meta) ? a.meta : {};
@@ -159,12 +184,109 @@ export function consoleResolve(items, kind, path) {
   const phrase = foldWords(raw);
   hit = list.find((i) => foldWords(i.label) === phrase);
   if (hit) return { item: hit };
+  if (kind === 'screen') { const f = consoleSplitFocus(list, raw); if (f) return f; }
   const words = wordsOf(raw);
   if (!words.length) return { candidates: [] };
   const scored = list.map((i) => [i, scoreItem(i, words, words.join(' '))]).filter(([, s]) => s > 0).sort((a, b) => b[1] - a[1]);
   if (!scored.length) return { candidates: [] };
   if (scored.length === 1 || scored[0][1] - scored[1][1] >= 1) return { item: scored[0][0] };
   return { candidates: scored.slice(0, 6).map(([i]) => i), ambiguous: true };
+}
+
+/**
+ * A screen named by its exact id or title followed by what to focus on it: "build-orchestrator pending",
+ * "Build orchestrator / pending", "build-orchestrator:my-build" → { item, focus }. The longest screen name wins; null
+ * when the path doesn't start with one (or nothing follows it).
+ */
+export function consoleSplitFocus(screens, path) {
+  const raw = String(path ?? '').trim().replace(/^((open|show|go|to|the|my)\s+)+/i, '');
+  let best = null;
+  for (const i of Array.isArray(screens) ? screens : []) {
+    if (i?.kind !== 'screen') continue;
+    for (const name of [i.id, i.label]) {
+      const n = String(name ?? '').trim();
+      if (!n || raw.length <= n.length || raw.slice(0, n.length).toLowerCase() !== n.toLowerCase()) continue;
+      const m = /^(\s*[/:#>→]\s*|\s+)(.+)$/u.exec(raw.slice(n.length));
+      if (!m || !m[2].trim()) continue;
+      if (!best || n.length > best.len) best = { len: n.length, item: i, focus: m[2].trim() };
+    }
+  }
+  return best ? { item: best.item, focus: best.focus.slice(0, 200) } : null;
+}
+
+/**
+ * A single setting a settings path names, when it names one rather than a tab: `field:<key>`, `<tab>/<key>`, the exact key,
+ * or words that match a field clearly better than any tab ("text size", "help mode"). → { item } or {}.
+ */
+export function consoleResolveField(items, path) {
+  const list = (Array.isArray(items) ? items : []).filter((i) => i.kind === 'field');
+  if (!list.length) return {};
+  const raw = String(path ?? '').trim();
+  const low = raw.toLowerCase();
+  const byKey = (k) => list.find((i) => i.id.toLowerCase() === k);
+  if (low.startsWith('field:')) { const hit = byKey(low.slice(6)); return hit ? { item: hit } : {}; }
+  let hit = byKey(low);
+  if (hit) return { item: hit };
+  if (low.includes('/')) {
+    const tab = low.slice(0, low.indexOf('/'));
+    hit = list.find((i) => i.id.toLowerCase() === low.slice(low.lastIndexOf('/') + 1) && (!i.parent || i.parent.toLowerCase() === tab || tab === 'plugins'));
+    if (hit) return { item: hit };
+  }
+  // a tab of the same name wins: "appearance" opens the tab, never a field that mentions it
+  const tabs = consoleResolve(items, 'settings', raw);
+  if (tabs.item && (foldWords(tabs.item.label) === foldWords(raw) || tabs.item.id.toLowerCase() === low)) return {};
+  const phrase = foldWords(raw);
+  hit = list.find((i) => foldWords(i.label) === phrase);
+  if (hit) return { item: hit };
+  const words = wordsOf(raw);
+  if (!words.length) return {};
+  const scored = list.map((i) => [i, scoreItem(i, words, words.join(' '))]).filter(([, s]) => s > 0).sort((a, b) => b[1] - a[1]);
+  if (!scored.length) return {};
+  const tabScore = tabs.item ? scoreItem(tabs.item, words, words.join(' ')) : 0;
+  if (scored[0][1] > tabScore && (scored.length === 1 || scored[0][1] - scored[1][1] >= 1)) return { item: scored[0][0] };
+  return {};
+}
+
+/**
+ * The value a text from a remote caller sets on a field (what `settings.set:<key>:<value>` stores), or an error.
+ * field = { type, options?, min?, max? } (a catalog field item or a SettingSpec with `kind`). Toggle: on/off/true/false/yes/no/
+ * 1/0/toggle (toggle needs the current value); number/slider: a number inside min..max; choice: one of the options (case-
+ * insensitive, by value); multi_choice: a comma list of options; text/secret/color/asset_slot: the text as sent.
+ */
+export function consoleFieldValue(field, raw, current) {
+  const type = String(field?.type ?? field?.kind ?? '');
+  const text = String(raw ?? '').trim();
+  if (!CONSOLE_FIELD_TYPES.includes(type)) return { error: `${field?.label ?? field?.key ?? 'this setting'} has no value to set (${type || 'unknown kind'})` };
+  const opts = (Array.isArray(field.options) ? field.options : []).map((o) => String(isObj(o) ? o.value : o));
+  switch (type) {
+    case 'toggle': {
+      const t = text.toLowerCase();
+      if (['on', 'true', 'yes', '1', 'enable', 'enabled', 'show'].includes(t)) return { value: true };
+      if (['off', 'false', 'no', '0', 'disable', 'disabled', 'hide'].includes(t)) return { value: false };
+      if (t === 'toggle' || t === '') return { value: current !== true };
+      return { error: `"${text}" is not on or off` };
+    }
+    case 'number': case 'slider': {
+      const n = Number(text);
+      if (!text || !Number.isFinite(n)) return { error: `"${text}" is not a number` };
+      if (Number.isFinite(field.min) && n < field.min) return { error: `${n} is below ${field.min}` };
+      if (Number.isFinite(field.max) && n > field.max) return { error: `${n} is above ${field.max}` };
+      return { value: n };
+    }
+    case 'choice': {
+      if (!opts.length) return { value: text };
+      const hit = opts.find((o) => o.toLowerCase() === text.toLowerCase()) ?? opts.find((o) => foldWords(o) === foldWords(text));
+      return hit !== undefined ? { value: hit } : { error: `"${text}" is not one of ${opts.join(', ')}` };
+    }
+    case 'multi_choice': {
+      const parts = text.split(',').map((x) => x.trim()).filter(Boolean);
+      if (!opts.length) return { value: parts };
+      const out = [];
+      for (const p of parts) { const hit = opts.find((o) => o.toLowerCase() === p.toLowerCase()); if (hit === undefined) return { error: `"${p}" is not one of ${opts.join(', ')}` }; out.push(hit); }
+      return { value: out };
+    }
+    default: return { value: text };
+  }
 }
 
 /* ================================================================== action policy */
@@ -210,7 +332,7 @@ export const consoleClientSummary = (c) => ({ id: c.id, app: c.app ?? 'console-w
 export function consoleMessage(fields, { id, by = '', now = Date.now() } = {}) {
   const m = { $axf: CONSOLE_COMMAND_FRAME, id: String(id ?? ''), op: fields.op };
   if (fields.hard === true) m.hard = true;
-  for (const k of ['kind', 'target', 'label', 'spec', 'anchor', 'arg']) if (fields[k] !== undefined && fields[k] !== '') m[k] = String(fields[k]);
+  for (const k of ['kind', 'target', 'label', 'spec', 'anchor', 'arg', 'focus']) if (fields[k] !== undefined && fields[k] !== '') m[k] = String(fields[k]);
   m.by = by;
   m.at = new Date(now).toISOString();
   return m;
@@ -224,6 +346,17 @@ export function consoleMessageErrors(m) {
   if (m.op === 'open' && (!CONSOLE_ITEM_KINDS.includes(m.kind) || m.kind === 'action' || !m.target)) errors.push('open needs a kind (screen, dialog, settings) and a target');
   if (m.op === 'run' && !m.spec) errors.push('run needs an action spec');
   return errors;
+}
+
+/**
+ * Is a live command too late to run? A command sent live to a console (no `delivery`) that only reaches it more than
+ * CONSOLE_LATE_MS after it was sent went to a tab that was asleep; the server has moved on (another console or a wake),
+ * so running it now would open the screen twice. Queued commands (`delivery` set) are always run.
+ */
+export function consoleMessageLate(m, now = Date.now()) {
+  if (!isObj(m) || m.delivery) return false;
+  const at = Date.parse(String(m.at ?? ''));
+  return Number.isFinite(at) && now - at > CONSOLE_LATE_MS;
 }
 
 /* ================================================================== the console domain of control@1 */
@@ -271,8 +404,24 @@ export function runConsoleCommand(c, ctx = {}) {
     return send({ op: 'close', kind, target: d.item.id, label: d.item.label }, { item: d.item });
   }
   if (c.op === 'list') {
+    // console.settings: a search finds single fields (kind `field`, with their values) after the tabs; no search = the tabs
+    if (kind === 'settings') {
+      const q = str(select.q, 200);
+      const tabs = consoleSearch(catalog, 'settings', q, limit);
+      const fields = q ? consoleSearch(catalog, 'field', q, limit) : [];
+      const items = [...tabs, ...fields].slice(0, limit);
+      return { ok: true, data: { items, total: catalog.filter((i) => i.kind === 'settings' || i.kind === 'field').length, client: targets[0].id } };
+    }
     const items = consoleSearch(catalog, kind, str(select.q, 200), limit);
     return { ok: true, data: { items, total: catalog.filter((i) => i.kind === kind).length, client: targets[0].id } };
+  }
+  if (kind === 'settings') {
+    const f = consoleResolveField(catalog, c.path);
+    if (f.item) {
+      if (c.op === 'get') return { ok: true, data: { item: f.item, value: f.item.secret ? null : f.item.value ?? null } };
+      const tab = catalog.find((i) => i.kind === 'settings' && i.id === f.item.parent);
+      return send({ op: 'open', kind: 'settings', target: f.item.parent, label: `${tab?.label ?? f.item.parent} › ${f.item.label}`, anchor: `setting:${f.item.id}` }, { item: f.item });
+    }
   }
   const r = consoleResolve(catalog, kind, c.path);
   if (!r.item) {
@@ -299,7 +448,8 @@ export function runConsoleCommand(c, ctx = {}) {
     }
     return send({ op: 'run', kind: 'action', target: item.id, label: item.label, spec }, { item, effect });
   }
-  return send({ op: 'open', kind, target: item.id, label: item.label, anchor: str(input.anchor, 160), arg: str(input.arg, 400) }, { item });
+  const focus = kind === 'screen' ? str(input.focus, 200) || r.focus || '' : '';
+  return send({ op: 'open', kind, target: item.id, label: item.label, anchor: str(input.anchor, 160), arg: str(input.arg, 400), focus }, { item, ...(focus ? { focus } : {}) });
 }
 
 /** The confirm token a destructive console action needs (what the CLI prints, the check uses). */

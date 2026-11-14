@@ -139,6 +139,8 @@ final class HubRules {
         final boolean shelved, approvedNow;
         /** What the owner may do now (a hub before 104: Deny only). */
         final List<String> actions;
+        /** Why it was sent (the call's `reason.description`), "" when the hub didn't say. */
+        String why = "";
         Veto(String id, String jobId, String tool, String title, String command, String url, int secondsLeft, long readAt) {
             this(id, jobId, tool, title, command, url, secondsLeft, readAt, false, false, java.util.Collections.singletonList("deny"));
         }
@@ -205,8 +207,10 @@ final class HubRules {
         boolean approvedNow = v.optBoolean("approvedNow", false);
         JSONArray acts = v.optJSONArray("actions");
         if (acts == null) acts = p.optJSONArray("actions");
-        return new Veto(id, JOB_ID.matcher(job).matches() ? job : null, tool, cap(title.isEmpty() ? tool : title, 200), cap(command, 2000), url, left, now,
+        Veto out = new Veto(id, JOB_ID.matcher(job).matches() ? job : null, tool, cap(title.isEmpty() ? tool : title, 200), cap(command, 2000), url, left, now,
             shelved, approvedNow, vetoActionsOf(acts));
+        out.why = cap(reason != null ? reason.optString("description", "") : p.optString("why", ""), 600);
+        return out;
     }
 
     /** Every held call in a feed reply: `pending` entries with `status: "held"` + a `veto` object, and `held[]`. */

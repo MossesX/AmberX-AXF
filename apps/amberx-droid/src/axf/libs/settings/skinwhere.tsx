@@ -232,12 +232,12 @@ export function SkinWhere({ locked }: { locked: boolean }) {
               return (
                 <tr key={l.key} data-axf-skin-level={l.key}>
                   <td><span>{l.label}</span><span className="fx-muted axf-settings__hint"> {l.sub}</span></td>
-                  <td>{l.key === 'global' || l.key === 'app' ? l.mode : <Segmented size="sm" label={`${l.label}: skin`} value={(scopes.find((x) => x.key === l.key)?.use ?? 'inherit') as Use} disabled={locked} options={USES} onChange={(use) => rt.scopeSkin(l.key, use)} />}</td>
-                  <td>{l.key !== 'global' && l.key !== 'app' && scopes.find((x) => x.key === l.key)?.use === 'on'
+                  <td data-label="Mode">{l.key === 'global' || l.key === 'app' ? l.mode : <Segmented size="sm" label={`${l.label}: skin`} value={(scopes.find((x) => x.key === l.key)?.use ?? 'inherit') as Use} disabled={locked} options={USES} onChange={(use) => rt.scopeSkin(l.key, use)} />}</td>
+                  <td data-label="Skin">{l.key !== 'global' && l.key !== 'app' && scopes.find((x) => x.key === l.key)?.use === 'on'
                     ? <select className="axf-settings__field" aria-label={`${l.label}: which skin`} value={scopes.find((x) => x.key === l.key)?.id ?? ''} disabled={locked} onChange={(e) => rt.scopeSkin(l.key, 'on', e.target.value)}>{skins.map((k) => <option key={k.id} value={k.id}>{k.name}</option>)}</select>
                     : l.skin}</td>
-                  <td>{s?.data.iconPack ?? '—'}</td>
-                  <td>{s?.data.parts ? Object.keys(s.data.parts).length : 0}</td>
+                  <td data-label="Icon pack">{s?.data.iconPack ?? '—'}</td>
+                  <td data-label="Parts">{s?.data.parts ? Object.keys(s.data.parts).length : 0}</td>
                   <td>{l.key !== 'global' && l.key !== 'app' && <Button size="sm" tone="quiet" icon="x" disabled={locked} title="Back to inherit" onClick={() => rt.scopeSkin(l.key, 'inherit')}>Inherit</Button>}</td>
                 </tr>
               );
@@ -304,4 +304,5 @@ export const SKIN_WHERE_CSS = `
 [data-fx-small] .axf-skin__matrix tr{display:flex;flex-wrap:wrap;gap:var(--fx-dens-gap-sm);padding:var(--fx-dens-gap-sm) 0;border-bottom:var(--fx-border-w) solid var(--fx-border)}
 [data-fx-small] .axf-skin__matrix td{border:0;padding:0}
 [data-fx-small] .axf-skin__matrix td:first-child{flex:1 0 100%}
+[data-fx-small] .axf-skin__matrix td[data-label]::before{content:attr(data-label) ": ";color:var(--fx-muted);font-size:var(--fx-type-scale-xs)}
 `;

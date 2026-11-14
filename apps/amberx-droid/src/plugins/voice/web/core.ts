@@ -141,7 +141,7 @@ export function navigationCommands(views: readonly { id: string; title: string }
 }
 
 /** Actions a person would say out loud and that are safe to have on from the start. */
-export const CURATED_ACTIONS = new Set(['app.settings', 'axhub.check', 'monitor.start', 'monitor.stop', 'voice.listen', 'dictation.start', 'swap:color-theme:next', 'notes.new', 'tasks.new']);
+export const CURATED_ACTIONS = new Set(['app.settings', 'axhub.check', 'monitor.start', 'monitor.stop', 'voice.listen', 'dictation.start', 'swap:color-theme:next', 'notes.new', 'tasks.new', 'overlay.expand', 'overlay.collapse']);
 
 /**
  * One command per argument-free action with a label (stubs, actions that need arguments, `nav` itself and ones kept out

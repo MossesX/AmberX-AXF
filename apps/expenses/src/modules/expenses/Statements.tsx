@@ -46,8 +46,8 @@ import {
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <Paper variant="outlined" sx={{ p: 1.4, display: "grid", gap: 0.6 }}>
-      <Typography sx={{ fontSize: 10, letterSpacing: "0.12em", textTransform: "uppercase", color: token("dim") }}>
+    <Paper variant="outlined" sx={{ p: 1.4, display: "grid", gap: 'var(--fx-dens-gap-lg)' }}>
+      <Typography sx={{ fontSize: 'var(--fx-type-root-2xs)', letterSpacing: "0.12em", textTransform: "uppercase", color: token("dim") }}>
         {title}
       </Typography>
       {children}
@@ -91,7 +91,7 @@ export function Statements({ expenses }: { expenses: Expense[] }) {
     const w = window.open("", "_blank", "width=760,height=900");
     if (!w) return;
     const pre = w.document.createElement("pre");
-    pre.style.cssText = "font: 12px/1.5 monospace; white-space: pre-wrap; padding: 24px;";
+    pre.style.cssText = "font: var(--fx-type-root-sm)/1.5 monospace; white-space: pre-wrap; padding: var(--fx-dens-gap-4xl);";
     pre.textContent = statementMarkdown(statement);
     w.document.title = `Expense statement — ${statement.period.label}`;
     w.document.body.appendChild(pre);
@@ -100,7 +100,7 @@ export function Statements({ expenses }: { expenses: Expense[] }) {
 
   if (!expenses.length) {
     return (
-      <Typography sx={{ fontSize: 12, color: token("dim") }}>
+      <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>
         No expenses yet — statements are derived from the ledger, so add expenses on the Grid tab
         first.
       </Typography>
@@ -108,9 +108,9 @@ export function Statements({ expenses }: { expenses: Expense[] }) {
   }
 
   return (
-    <Box sx={{ display: "grid", gap: 1.2 }}>
+    <Box sx={{ display: "grid", gap: 'var(--fx-dens-gap-2xl)' }}>
       {/* ------------------------------------------------------- period picker */}
-      <Box sx={{ display: "flex", alignItems: "center", gap: 1, flexWrap: "wrap" }}>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 'var(--fx-dens-gap-xl)', flexWrap: "wrap" }}>
         <ToggleButtonGroup
           size="small"
           exclusive
@@ -135,7 +135,7 @@ export function Statements({ expenses }: { expenses: Expense[] }) {
         </Button>
       </Box>
 
-      <Box sx={{ display: "flex", gap: 0.6, flexWrap: "wrap" }}>
+      <Box sx={{ display: "flex", gap: 'var(--fx-dens-gap-lg)', flexWrap: "wrap" }}>
         {periods.map((p) => (
           <Chip
             key={p.key}
@@ -152,7 +152,7 @@ export function Statements({ expenses }: { expenses: Expense[] }) {
       {statement && (
         <>
           {/* -------------------------------------------------------- headline */}
-          <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
+          <Box sx={{ display: "flex", gap: 'var(--fx-dens-gap-xl)', flexWrap: "wrap" }}>
             <StatTile value={money(statement.opening)} label="opening" />
             <StatTile value={money(statement.subtotal)} label="subtotal" />
             <StatTile value={money(statement.tax)} label="tax" />
@@ -176,34 +176,34 @@ export function Statements({ expenses }: { expenses: Expense[] }) {
             )}
           </Box>
 
-          <Box sx={{ display: "grid", gap: 1.2, gridTemplateColumns: { xs: "1fr", lg: "1fr 1fr" }, alignItems: "start" }}>
+          <Box sx={{ display: "grid", gap: 'var(--fx-dens-gap-2xl)', gridTemplateColumns: { xs: "1fr", lg: "1fr 1fr" }, alignItems: "start" }}>
             {/* ------------------------------------------------ category split */}
             <Section title={`By category · ${statement.categories.length}`}>
               {statement.categories.map((c) => {
                 const color = categoryOf(c.key).color;
                 return (
-                  <Box key={c.key} sx={{ display: "flex", alignItems: "center", gap: 1, py: 0.3 }}>
+                  <Box key={c.key} sx={{ display: "flex", alignItems: "center", gap: 'var(--fx-dens-gap-xl)', py: 0.3 }}>
                     <Box sx={{ width: 8, height: 8, borderRadius: "50%", bgcolor: color, flexShrink: 0 }} />
-                    <Typography sx={{ fontSize: 12, minWidth: 150 }} noWrap>
+                    <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', minWidth: 150 }} noWrap>
                       {c.label}
                     </Typography>
-                    <Typography sx={{ fontSize: 10.5, color: token("dim") }}>{c.count}</Typography>
+                    <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim") }}>{c.count}</Typography>
                     <Box sx={{ flex: 1, minWidth: 40 }}>
                       <LinearProgress
                         variant="determinate"
                         value={Math.min(100, c.share)}
                         sx={{
                           height: 4,
-                          borderRadius: 2,
+                          borderRadius: 'var(--fx-radius-lg)',
                           backgroundColor: token("edge"),
                           "& .MuiLinearProgress-bar": { backgroundColor: color }
                         }}
                       />
                     </Box>
-                    <Typography sx={{ ...MONO, fontSize: 10.5, color: token("dim"), width: 44, textAlign: "right" }}>
+                    <Typography sx={{ ...MONO, fontSize: 'var(--fx-type-root-xs)', color: token("dim"), width: 44, textAlign: "right" }}>
                       {c.share}%
                     </Typography>
-                    <Typography sx={{ ...MONO, fontSize: 11.8, width: 96, textAlign: "right" }}>
+                    <Typography sx={{ ...MONO, fontSize: 'var(--fx-type-root-sm)', width: 96, textAlign: "right" }}>
                       {money(c.total)}
                     </Typography>
                   </Box>
@@ -212,21 +212,21 @@ export function Statements({ expenses }: { expenses: Expense[] }) {
             </Section>
 
             {/* -------------------------------------- variance + top merchants */}
-            <Box sx={{ display: "grid", gap: 1.2 }}>
+            <Box sx={{ display: "grid", gap: 'var(--fx-dens-gap-2xl)' }}>
               {statement.variance.length > 0 && (
                 <Section title="Budget variance (monthly budgets)">
                   {statement.variance.map((v) => (
-                    <Box key={v.categoryId} sx={{ display: "flex", alignItems: "center", gap: 1, py: 0.25 }}>
-                      <Typography sx={{ fontSize: 12, minWidth: 150 }} noWrap>
+                    <Box key={v.categoryId} sx={{ display: "flex", alignItems: "center", gap: 'var(--fx-dens-gap-xl)', py: 0.25 }}>
+                      <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', minWidth: 150 }} noWrap>
                         {v.label}
                       </Typography>
-                      <Typography sx={{ ...MONO, fontSize: 10.5, color: token("dim") }}>
+                      <Typography sx={{ ...MONO, fontSize: 'var(--fx-type-root-xs)', color: token("dim") }}>
                         {v.budget ? money(v.budget) : "untracked"}
                       </Typography>
                       <Box sx={{ flex: 1 }} />
                       {v.usedPct !== null && (
                         <Typography
-                          sx={{ ...MONO, fontSize: 10.5, color: v.usedPct > 100 ? token("err") : token("dim") }}
+                          sx={{ ...MONO, fontSize: 'var(--fx-type-root-xs)', color: v.usedPct > 100 ? token("err") : token("dim") }}
                         >
                           {v.usedPct}%
                         </Typography>
@@ -234,7 +234,7 @@ export function Statements({ expenses }: { expenses: Expense[] }) {
                       <Typography
                         sx={{
                           ...MONO,
-                          fontSize: 11.5,
+                          fontSize: 'var(--fx-type-root-sm)',
                           width: 96,
                           textAlign: "right",
                           color: v.delta > 0 && v.budget ? token("err") : token("ink")
@@ -249,16 +249,16 @@ export function Statements({ expenses }: { expenses: Expense[] }) {
 
               <Section title={`Top merchants · ${statement.merchants.length}`}>
                 {statement.merchants.map((m) => (
-                  <Box key={m.key} sx={{ display: "flex", alignItems: "center", gap: 1, py: 0.25 }}>
-                    <Typography sx={{ fontSize: 12, minWidth: 150 }} noWrap>
+                  <Box key={m.key} sx={{ display: "flex", alignItems: "center", gap: 'var(--fx-dens-gap-xl)', py: 0.25 }}>
+                    <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', minWidth: 150 }} noWrap>
                       {m.label}
                     </Typography>
-                    <Typography sx={{ fontSize: 10.5, color: token("dim") }}>{m.count}</Typography>
+                    <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim") }}>{m.count}</Typography>
                     <Box sx={{ flex: 1 }} />
-                    <Typography sx={{ ...MONO, fontSize: 10.5, color: token("dim"), width: 44, textAlign: "right" }}>
+                    <Typography sx={{ ...MONO, fontSize: 'var(--fx-type-root-xs)', color: token("dim"), width: 44, textAlign: "right" }}>
                       {m.share}%
                     </Typography>
-                    <Typography sx={{ ...MONO, fontSize: 11.8, width: 96, textAlign: "right" }}>
+                    <Typography sx={{ ...MONO, fontSize: 'var(--fx-type-root-sm)', width: 96, textAlign: "right" }}>
                       {money(m.total)}
                     </Typography>
                   </Box>
@@ -271,13 +271,13 @@ export function Statements({ expenses }: { expenses: Expense[] }) {
           {statement.unreconciled.length > 0 && (
             <Section title={`Unreconciled receipts · ${statement.unreconciled.length}`}>
               {statement.unreconciled.map((u) => (
-                <Box key={u.expense.id} sx={{ display: "flex", alignItems: "center", gap: 1, py: 0.25 }}>
-                  <Typography sx={{ ...MONO, fontSize: 11.5, color: token("dim") }}>{u.expense.date}</Typography>
-                  <Typography sx={{ fontSize: 12 }} noWrap>
+                <Box key={u.expense.id} sx={{ display: "flex", alignItems: "center", gap: 'var(--fx-dens-gap-xl)', py: 0.25 }}>
+                  <Typography sx={{ ...MONO, fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>{u.expense.date}</Typography>
+                  <Typography sx={{ fontSize: 'var(--fx-type-root-sm)' }} noWrap>
                     {u.expense.merchant}
                   </Typography>
                   <Box sx={{ flex: 1 }} />
-                  <Typography sx={{ ...MONO, fontSize: 11.5, color: token("warn") }}>
+                  <Typography sx={{ ...MONO, fontSize: 'var(--fx-type-root-sm)', color: token("warn") }}>
                     printed total differs by {u.delta > 0 ? "+" : ""}
                     {money(u.delta)}
                   </Typography>
@@ -295,15 +295,15 @@ export function Statements({ expenses }: { expenses: Expense[] }) {
                   data-axf-area="expenses.expense"
                   data-axf-expense={e.id}
                   data-axf-merchant={e.merchant}
-                  sx={{ display: "flex", alignItems: "center", gap: 1, py: 0.25 }}
+                  sx={{ display: "flex", alignItems: "center", gap: 'var(--fx-dens-gap-xl)', py: 0.25 }}
                 >
-                  <Typography sx={{ ...MONO, fontSize: 11.5, color: token("dim") }}>{e.date}</Typography>
-                  <Typography sx={{ fontSize: 12, textDecoration: e.disputed ? "line-through" : "none" }} noWrap>
+                  <Typography sx={{ ...MONO, fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>{e.date}</Typography>
+                  <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', textDecoration: e.disputed ? "line-through" : "none" }} noWrap>
                     {e.merchant}
                   </Typography>
-                  <Typography sx={{ fontSize: 10.5, color: token("dim") }}>{categoryOf(e.category).label}</Typography>
+                  <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim") }}>{categoryOf(e.category).label}</Typography>
                   <Box sx={{ flex: 1 }} />
-                  <Typography sx={{ ...MONO, fontSize: 11.8, color: isIncome(e) ? token("ok") : undefined }}>
+                  <Typography sx={{ ...MONO, fontSize: 'var(--fx-type-root-sm)', color: isIncome(e) ? token("ok") : undefined }}>
                     {isIncome(e) ? "+" : ""}
                     {money(effectiveTotal(e))}
                   </Typography>

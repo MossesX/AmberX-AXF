@@ -44,19 +44,19 @@ function TabLabel({
   const control = {
     width: 16,
     height: 16,
-    borderRadius: "3px",
-    fontSize: 11,
+    borderRadius: "var(--fx-radius-sm)",
+    fontSize: 'var(--fx-type-root-xs)',
     lineHeight: 1,
     color: token("dim"),
     flexShrink: 0,
-    "&:hover": { background: `color-mix(in srgb, ${token("accent")} 20%, transparent)`, color: token("ink") }
+    "&:hover": { background: `color-mix(in srgb, ${token("accent")} calc(var(--fx-opacity-tint) * 100%), transparent)`, color: token("ink") }
   } as const;
 
   return (
-    <Box sx={{ display: "flex", alignItems: "center", gap: 0.6, maxWidth: 260 }}>
+    <Box sx={{ display: "flex", alignItems: "center", gap: 'var(--fx-dens-gap-lg)', maxWidth: 260 }}>
       <Typography
         component="span"
-        sx={{ fontSize: 12.3, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
+        sx={{ fontSize: 'var(--fx-type-root-sm)', overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
       >
         {tab.title}
       </Typography>
@@ -119,8 +119,8 @@ export default function TabGroup({
       sx={{
         display: "flex",
         alignItems: "center",
-        gap: 1,
-        borderBottom: `1px solid ${token("edge")}`,
+        gap: 'var(--fx-dens-gap-xl)',
+        borderBottom: `var(--fx-border-w) solid ${token("edge")}`,
         minHeight: 34
       }}
     >
@@ -133,7 +133,7 @@ export default function TabGroup({
           minHeight: 32,
           flex: 1,
           "& .MuiTab-root": { minHeight: 32, py: 0, px: 1.1, textTransform: "none", minWidth: 0 },
-          "& .MuiTabs-flexContainer": { gap: 0.2 }
+          "& .MuiTabs-flexContainer": { gap: 'var(--fx-dens-gap-2xs)' }
         }}
       >
         {tabs.map((tab) => (
@@ -149,7 +149,7 @@ export default function TabGroup({
           />
         ))}
       </Tabs>
-      {trailing ? <Box sx={{ display: "flex", gap: 0.6, flexShrink: 0 }}>{trailing}</Box> : null}
+      {trailing ? <Box sx={{ display: "flex", gap: 'var(--fx-dens-gap-lg)', flexShrink: 0 }}>{trailing}</Box> : null}
     </Box>
   );
 }

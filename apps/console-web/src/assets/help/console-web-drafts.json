@@ -780,6 +780,20 @@
         "title": "Reload for the new version",
         "text": "The console was updated while this page was open. Reloads the page so the plugin loads from the new version.",
         "kind": "button"
+      },
+      {
+        "target": "action:skin.use:next",
+        "title": "Next skin",
+        "text": "Goes to the next skin.",
+        "kind": "menu-item",
+        "draft": true
+      },
+      {
+        "target": "action:skin.use:prev",
+        "title": "Previous skin",
+        "text": "Goes to the previous skin.",
+        "kind": "menu-item",
+        "draft": true
       }
     ],
     "intros": []

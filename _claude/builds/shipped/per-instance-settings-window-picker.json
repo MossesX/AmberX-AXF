@@ -1,0 +1,302 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-per-instance-settings-window-picker",
+ "rev": 1,
+ "source": "orchestrator",
+ "by": "orchestrator",
+ "shippedAt": "2026-11-13T20:47:03Z",
+ "build": {
+  "id": "per-instance-settings-window-picker",
+  "title": "Per-instance settings-window picker inside every tab group and toolbar's settings",
+  "profile": "all",
+  "category": "",
+  "priority": "P1",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "every tab group and toolbar has its own settings interface, and within it you can select our settings interface",
+  "verbatim": true,
+  "at": "2026-11-13T17:46:43.480Z",
+  "source": "",
+  "by": "per-instance-settings-window-picker",
+  "addenda": []
+ },
+ "brief": "# Build: per-instance-settings-window-picker\n\n## Brett said (verbatim)\nAt: 2026-11-13T17:46:43.480Z\n> every tab group and toolbar has its own settings interface, and within it you can select our settings interface\n\n## What to build\nContinue build \"Per-instance settings-window picker inside every tab group and toolbar's settings\" (per-instance-settings-window-picker) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-13 17:46):\n\"every tab group and toolbar has its own settings interface, and within it you can select our settings interface\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/per-instance-settings-window-picker\nSteps in this phase (2 left, ~20 min):\n[x] s1 (~10 min) Every chrome instance (tab group, toolbar, banner, nav, menu bar) has its own chrome settings dialog (framework ChromeContext.tsx / chrome-settings-rules.mjs). Today the settings asset is picked per type/app (axf.chrome.settings.<type>). Add, inside each instance's settings dialog, a picker to choose which settings interface (settings asset) THAT instance uses, per instance, with the shared default preselected. Changing it re-renders the dialog live. Persist per instance, survive reload, follow skins. Expose via REST/MCP/CLI/voice and control@1. Tests, help entry, Shipped features.\n[ ] s2 (~10 min) every tab group and toolbar has its own settings interface, and within it you can select our settings interface\n[ ] s3 (~10 min) Tests green, report _claude/builds/reports/per-instance-settings-window-picker.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/per-instance-settings-window-picker.md, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step per-instance-settings-window-picker <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link per-instance-settings-window-picker --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step per-instance-settings-window-picker <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note per-instance-settings-window-picker \"…\"); the build goes back to Pending for Brett.\n",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [
+  "mossesx-max-"
+ ],
+ "runs": [
+  {
+   "session": "axf-per-instance-settings-window-picker--gina",
+   "account": "mossesx-max-",
+   "model": "Opus",
+   "startedAt": "2026-11-13T17:49:19.479Z",
+   "endedAt": "2026-11-13T17:49:37.633Z",
+   "exit": 3,
+   "costUsd": 0
+  },
+  {
+   "session": "axf-per-instance-settings-window-picker--sully",
+   "account": "mossesx-max-",
+   "model": "Opus",
+   "startedAt": "2026-11-13T17:53:22.010Z",
+   "endedAt": "2026-11-13T18:09:01.939Z",
+   "exit": 0,
+   "costUsd": 2.8064
+  },
+  {
+   "session": "axf-per-instance-settings-window-picker--lenny",
+   "account": "mossesx-max-",
+   "model": "Opus",
+   "startedAt": "2026-11-13T18:04:44.662Z",
+   "endedAt": "2026-11-13T18:09:54.244Z",
+   "exit": 0,
+   "costUsd": 0.7049
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Every chrome instance (tab group, toolbar, banner, nav, menu bar) has its own chrome settings dialog (framework ChromeContext.tsx / chrome-settings-rules.mjs). Today the settings asset is picked per type/app (axf.chrome.settings.<type>). Add, inside each instance's settings dialog, a picker to choose which settings interface (settings asset) THAT instance uses, per instance, with the shared default preselected. Changing it re-renders the dialog live. Persist per instance, survive reload, follow skins. Expose via REST/MCP/CLI/voice and control@1. Tests, help entry, Shipped features.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-13T17:49:19.479Z",
+   "doneAt": "2026-11-13T18:00:20.043Z",
+   "actualMin": 11,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "every tab group and toolbar has its own settings interface, and within it you can select our settings interface",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-13T18:00:20.043Z",
+   "doneAt": "2026-11-13T18:07:09.973Z",
+   "actualMin": 7,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Tests green, report _claude/builds/reports/per-instance-settings-window-picker.md, THREADS row, commit, push, PR",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-13T18:07:09.973Z",
+   "doneAt": "2026-11-13T18:09:39.473Z",
+   "actualMin": 2,
+   "done": true
+  }
+ ],
+ "branch": "claude/per-instance-settings-window-picker",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 622,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/622"
+ },
+ "landedCommit": "9d806c2b6e2075236bc1b4d7017b883db8621556",
+ "commits": [
+  "0be6d199593e93b64db626f2991199de53e9e460",
+  "d28ff0666ece3eb3c29edb0f550f2d7e7cc50b65",
+  "a32ac5bfdc681d6833506f87ce3eb46c760817e9",
+  "f80d00e6ba40c54633a7cbab8199a3800fcf86a2",
+  "c12a06c6fe7320b7fb745226aa88b809ed9b00f2"
+ ],
+ "mergedAt": "2026-11-13T20:44:56Z",
+ "landedAt": "2026-11-13T19:51:42Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/reports/per-instance-settings-window-picker.md",
+  "apps/amberx-droid/axf.lock.json",
+  "apps/amberx-droid/src/axf/assets/help/framework.json",
+  "apps/amberx-droid/src/axf/core/engines/chrome-settings-rules.d.mts",
+  "apps/amberx-droid/src/axf/core/engines/chrome-settings-rules.mjs",
+  "apps/amberx-droid/src/axf/libs/toolbars/index.tsx",
+  "apps/amberx-droid/src/axf/react/components/ChromeContext.tsx",
+  "apps/amberx-droid/src/axf/react/components/Overlays.tsx",
+  "apps/axhub-web/axf.lock.json",
+  "apps/axhub-web/src/axf/assets/help/framework.json",
+  "apps/axhub-web/src/axf/core/engines/chrome-settings-rules.d.mts",
+  "apps/axhub-web/src/axf/core/engines/chrome-settings-rules.mjs",
+  "apps/axhub-web/src/axf/libs/toolbars/index.tsx",
+  "apps/axhub-web/src/axf/react/components/ChromeContext.tsx",
+  "apps/axhub-web/src/axf/react/components/Overlays.tsx",
+  "apps/console-web/axf.lock.json",
+  "apps/console-web/src/axf/assets/help/framework.json",
+  "apps/console-web/src/axf/core/engines/chrome-settings-rules.d.mts",
+  "apps/console-web/src/axf/core/engines/chrome-settings-rules.mjs",
+  "apps/console-web/src/axf/libs/toolbars/index.tsx",
+  "apps/console-web/src/axf/react/components/ChromeContext.tsx",
+  "apps/console-web/src/axf/react/components/Overlays.tsx",
+  "apps/console-web/src/control/inventory.json",
+  "apps/molly/axf.lock.json",
+  "apps/molly/src/axf/assets/help/framework.json",
+  "apps/molly/src/axf/core/engines/chrome-settings-rules.d.mts",
+  "apps/molly/src/axf/core/engines/chrome-settings-rules.mjs",
+  "apps/molly/src/axf/libs/toolbars/index.tsx",
+  "apps/molly/src/axf/react/components/ChromeContext.tsx",
+  "apps/molly/src/axf/react/components/Overlays.tsx",
+  "apps/walkthrough-studio/src/assets/help/framework.json",
+  "framework/assets/help/framework.json",
+  "framework/core/engines/chrome-settings-rules.d.mts",
+  "framework/core/engines/chrome-settings-rules.mjs",
+  "framework/libs/toolbars/index.tsx",
+  "framework/react/components/ChromeContext.tsx",
+  "framework/react/components/Overlays.tsx",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-asset-overrides.mjs",
+  "framework/spec/check-chrome-settings.mts",
+  "framework/spec/fixtures/chrome-settings.json"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/axf.lock.json",
+    "apps/console-web/src/axf/assets/help/framework.json",
+    "apps/console-web/src/axf/core/engines/chrome-settings-rules.d.mts",
+    "apps/console-web/src/axf/core/engines/chrome-settings-rules.mjs",
+    "apps/console-web/src/axf/libs/toolbars/index.tsx",
+    "apps/console-web/src/axf/react/components/ChromeContext.tsx",
+    "apps/console-web/src/axf/react/components/Overlays.tsx",
+    "apps/console-web/src/control/inventory.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/axf.lock.json",
+    "apps/amberx-droid/src/axf/assets/help/framework.json",
+    "apps/amberx-droid/src/axf/core/engines/chrome-settings-rules.d.mts",
+    "apps/amberx-droid/src/axf/core/engines/chrome-settings-rules.mjs",
+    "apps/amberx-droid/src/axf/libs/toolbars/index.tsx",
+    "apps/amberx-droid/src/axf/react/components/ChromeContext.tsx",
+    "apps/amberx-droid/src/axf/react/components/Overlays.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/axf.lock.json",
+    "apps/axhub-web/src/axf/assets/help/framework.json",
+    "apps/axhub-web/src/axf/core/engines/chrome-settings-rules.d.mts",
+    "apps/axhub-web/src/axf/core/engines/chrome-settings-rules.mjs",
+    "apps/axhub-web/src/axf/libs/toolbars/index.tsx",
+    "apps/axhub-web/src/axf/react/components/ChromeContext.tsx",
+    "apps/axhub-web/src/axf/react/components/Overlays.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "molly",
+   "files": [
+    "apps/molly/axf.lock.json",
+    "apps/molly/src/axf/assets/help/framework.json",
+    "apps/molly/src/axf/core/engines/chrome-settings-rules.d.mts",
+    "apps/molly/src/axf/core/engines/chrome-settings-rules.mjs",
+    "apps/molly/src/axf/libs/toolbars/index.tsx",
+    "apps/molly/src/axf/react/components/ChromeContext.tsx",
+    "apps/molly/src/axf/react/components/Overlays.tsx"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/PORTING.md",
+    "framework/spec/check-asset-overrides.mjs",
+    "framework/spec/check-chrome-settings.mts",
+    "framework/spec/fixtures/chrome-settings.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/engines/chrome-settings-rules.d.mts",
+    "framework/core/engines/chrome-settings-rules.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "react",
+   "files": [
+    "framework/react/components/ChromeContext.tsx",
+    "framework/react/components/Overlays.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "walkthrough-studio",
+   "files": [
+    "apps/walkthrough-studio/src/assets/help/framework.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "assets",
+   "files": [
+    "framework/assets/help/framework.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "libs",
+   "files": [
+    "framework/libs/toolbars/index.tsx"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/per-instance-settings-window-picker.md"
+   ]
+  }
+ ],
+ "tests": [
+  {
+   "name": "help-coverage --check: console-web at 99.6%. The 6 controls without help are in approvals-banner and molly-guide.",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  },
+  {
+   "name": "shared-assets check: the baked assets/help/framework-drafts.json in amberx-droid and molly is out of date and needs a re-bake.",
+   "command": "",
+   "result": "unknown",
+   "detail": ""
+  }
+ ],
+ "uiReview": [],
+ "cost": {
+  "usd": 3.5113,
+  "estimated": false,
+  "tokens": {
+   "input": 206,
+   "output": 1224,
+   "cacheRead": 6542802,
+   "cacheWrite": 150074
+  }
+ },
+ "report": "_claude/builds/reports/per-instance-settings-window-picker.md",
+ "open": [
+  "UI Review screenshots: Playwright is not installed on the VPS (`playwright not found`), so the capture tool could not take desktop or phone shots. Brett, or a session on a machine with Playwright, needs to run `rebuild-shots.mjs --submit` for the chrome settings dialog and Settings → Plugins → Toolbars → All toolbars.",
+  "Android twin deferred (Android port on hold), recorded in `framework/spec/PORTING.md`."
+ ]
+}

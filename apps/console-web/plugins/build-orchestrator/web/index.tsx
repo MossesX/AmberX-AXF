@@ -3,6 +3,7 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
 import { setPriorityHost, type PriorityHost } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
+import { addLoadedSource } from '@console/control/search';
 import { FOLDER, OrchestratorPage, TABS, openTab } from './ui';
 import { focusBuild } from './focus';
 import { BUILD_ACTIONS, type BuildAction } from '@console/axf/core/build-pipeline.mjs';
@@ -89,6 +90,12 @@ export const plugin: AxfWebLibrary = {
           .catch((e: Error) => rt.toast(e.message, 'danger'));
       }, { label: `Build orchestrator: ${ACTION_LABEL[action]} (one build or several, comma separated)` });
     }
+    // console-control@1: every loaded build is a search hit with its address (row:<id>, the orchestrator grid's row);
+    // focusing one that is not drawn opens its tab and expands it first, so row:<id>/step:s3 reaches its step too
+    addLoadedSource('build-orchestrator.builds', () => { if (Date.now() - loadedAt > 30_000) void loadRows().catch(() => undefined); return rows.map((r) => ({
+      address: `row:${r.id}`, kind: 'row' as const, label: r.title, icon: 'layers', detail: `Build · ${TAB_NAME[r.tab] ?? r.status}`, keywords: [r.id, r.status, r.tab, r.nextModel].filter(Boolean),
+      open: () => rt.dispatch(`build-orchestrator.focus:${encodeURIComponent(r.id)}`),
+    })); });
     rt.search.add('build-orchestrator.builds', () => {
       if (Date.now() - loadedAt > 30_000) void loadRows().catch(() => undefined);
       return rows.map((r) => ({

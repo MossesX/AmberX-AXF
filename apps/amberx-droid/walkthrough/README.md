@@ -12,7 +12,7 @@ NO_PUBLISH=1 bash …/rebuild.sh                              # record + check, 
 UI_CHECK=1 bash …/rebuild.sh                                # publish, then check the entry + player on the live app
 node apps/amberx-droid/walkthrough/check.mjs                # validate the script
 ```
-Console: Settings → Plugins → Molly guide → **Re-record the AmberX walkthrough** (a veto call on axHub that runs
+Console: Settings → Plugins → Gizmo guide → **Re-record the AmberX walkthrough** (a veto call on axHub that runs
 `rebuild.sh` on the VPS).
 
 ## More than one walkthrough, and editing the voice (Nov 1 2026)

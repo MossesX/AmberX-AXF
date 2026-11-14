@@ -383,6 +383,27 @@ await t('catalog: every plugin, app, library, module and axHub found by discover
   const pf = apiCall({ op: 'plan-feature', entry: 'plugin:build-breaker', feature: f.id, title: f.title }); assert.equal(pf.plan.features[0].entry, 'plugin:build-breaker'); assert.match(pf.plan.category, /^Console > Plugins > /);
   assert.equal(pc.filterCatalog(pc.overlayCatalog([{ key: 'x', kind: 'plugin', name: 'X', description: '', features: [{ id: 'a', title: 'A', state: 'have' }] }], []), { gaps: true }).length, 0);
 });
+const eq = (a, b, m) => assert.deepEqual(a, b, m);
+await t('find by content: the plan about X, the step that mentions Y (deep link down to the item)', () => {
+  eq(pc.parseFind('jump to the plan about voice control, the step that mentions MCP tools'), { plan: 'voice control', item: 'MCP tools', kind: 'step' });
+  eq(pc.parseFind('the plan about skins and the risk that mentions android'), { plan: 'skins', item: 'android', kind: 'risk' });
+  eq(pc.parseFind('voice control'), { plan: 'voice control', item: '', kind: '' });
+  const plans = [
+    pc.normalize({ id: 'voice-x', title: 'Voice control everywhere', steps: [{ text: 'Add MCP tools for settings' }, { text: 'Write docs' }], risks: ['Android lag'], comments: [{ text: 'check the MCP names', at: '1' }], body: 'Intro\n\nThe MCP server grows.' }),
+    pc.normalize({ id: 'skins', title: 'Skins', steps: ['MCP docs'] }),
+  ];
+  const a = pc.findInPlans(plans, { q: 'jump to the plan about voice, the step that mentions MCP' });
+  eq(a.hits.map((h) => h.focus), ['voice-x/s1'], 'only steps of the voice plan');
+  eq(pc.findInPlans(plans, { q: 'the plan about voice and the risk that mentions android' }).hits[0].focus, 'voice-x/risks:0');
+  eq(pc.findInPlans(plans, { plan: 'voice', item: 'mcp' }).hits.map((h) => h.item.kind).sort(), ['body', 'comment', 'step']);
+  eq(pc.findInPlans(plans, { item: 'mcp', kind: 'steps' }).hits.map((h) => h.focus).sort(), ['skins/s1', 'voice-x/s1'], 'no plan words = every plan');
+  eq(pc.findInPlans(plans, { q: 'skins' }).hits.map((h) => h.focus), ['skins'], 'plan only');
+  eq(pc.findInPlans(plans, { q: 'the plan about nothing like this' }).hits, []);
+  eq(pc.parseFocus('voice-x/s1', plans), { id: 'voice-x', ref: 's1' });
+  eq(pc.parseFocus('voice mcp', plans), { find: 'voice mcp' });
+  const r = apiCall({ op: 'find', q: 'the plan about docs website' });
+  assert.ok(r.ok && Array.isArray(r.hits));
+});
 await t('the repo and the hub were not written by any of this', () => {
   assert.equal(existsSync(join(repo, '.axf-console/plugins/plan-studio/plans/docs-website.json')), false);
   assert.ok(!readdirSync(env.AXF_DATA_DIR ?? scratch).includes('plan-studio'));

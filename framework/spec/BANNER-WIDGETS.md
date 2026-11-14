@@ -7,6 +7,10 @@ Right-click or long-press the top banner and pick **Widgets…** to choose what 
 - **Overflow:** when the bar runs out of room the lowest-priority widgets move into `⋯`, and come back when there is room. Priority 1 goes first. Widgets with *Move into the ⋯ menu* off stay.
 - **Saved** per app and per form factor (phone or computer) in `axf.banners.widgets.<app>.<phone|desktop>`, a look setting that syncs through axHub. Region and order stay in the host arrangement (`axf.widgets.arrange.banner`), shared with arrange mode. **Reset to default** clears both.
 
+## Skins
+
+Right-click the banner → **Skins**: every skin in the app, the one in force ticked; a pick applies it live (`skin.use:<id>`), plus **Skin off** and **Skin picker…**. The **Skins** widget (a chip that opens the skin picker) is hidden by default: tick it in **Widgets…**, or run `banner.widget:skins:show` (API / MCP `console_action("banner.widget", ["skins", "show"])`, CLI `console.mjs action banner.widget skins show`, voice "show the skins widget"). `skin.use:next` / `skin.use:prev` step through the skins.
+
 ## For plugins
 
 Every chip goes through `rt.attachToBanner`, which is the one registry. It then appears in the picker by itself. Add a hint so it has a good name and default:

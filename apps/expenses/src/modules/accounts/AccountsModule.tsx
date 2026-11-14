@@ -116,9 +116,9 @@ function RailToggle({ collapsed, onToggle }: { collapsed: boolean; onToggle: () 
         width: 34,
         height: 30,
         flexShrink: 0,
-        borderRadius: "6px",
+        borderRadius: "var(--fx-radius-md)",
         color: token("ink"),
-        "&:hover": { background: `color-mix(in srgb, ${token("accent")} 14%, transparent)` }
+        "&:hover": { background: `color-mix(in srgb, ${token("accent")} calc(var(--fx-opacity-tint) * 100%), transparent)` }
       }}
     >
       <Box
@@ -127,8 +127,8 @@ function RailToggle({ collapsed, onToggle }: { collapsed: boolean; onToggle: () 
         sx={{
           display: "flex",
           flexDirection: "column",
-          gap: "3px",
-          "& > span": { display: "block", width: 16, height: 2, borderRadius: 1, background: "currentColor" }
+          gap: "var(--fx-dens-gap-sm)",
+          "& > span": { display: "block", width: 16, height: 2, borderRadius: 'var(--fx-radius-md)', background: "currentColor" }
         }}
       >
         <span />
@@ -154,7 +154,7 @@ function RailLabel({
 }) {
   const icon = <Glyph id={glyph} size={15} />;
   const badged = badge ? (
-    <Badge badgeContent={badge} color="primary" sx={{ "& .MuiBadge-badge": { fontSize: 9 } }}>
+    <Badge badgeContent={badge} color="primary" sx={{ "& .MuiBadge-badge": { fontSize: 'var(--fx-type-root-2xs)' } }}>
       {icon}
     </Badge>
   ) : (
@@ -170,9 +170,9 @@ function RailLabel({
     );
   }
   return (
-    <Stack direction="row" sx={{ alignItems: "center", gap: 1.25, width: "100%" }}>
+    <Stack direction="row" sx={{ alignItems: "center", gap: 'var(--fx-dens-gap-2xl)', width: "100%" }}>
       {badged}
-      <Typography component="span" sx={{ fontSize: 12.5, textTransform: "none" }}>
+      <Typography component="span" sx={{ fontSize: 'var(--fx-type-root-md)', textTransform: "none" }}>
         {text}
       </Typography>
     </Stack>
@@ -208,8 +208,8 @@ function RailLink({
         px: collapsed ? 0 : "14px",
         justifyContent: collapsed ? "center" : "flex-start",
         color: token("ink"),
-        opacity: 0.85,
-        "&:hover": { opacity: 1, background: `color-mix(in srgb, ${token("accent")} 10%, transparent)` }
+        opacity: "var(--fx-opacity-glass)",
+        "&:hover": { opacity: 1, background: `color-mix(in srgb, ${token("accent")} calc(var(--fx-opacity-hover) * 100%), transparent)` }
       }}
     >
       <RailLabel glyph={glyph} text={text} collapsed={collapsed} />
@@ -291,28 +291,28 @@ export default function AccountsModule() {
           width: collapsed ? RAIL_WIDTH_COLLAPSED : RAIL_WIDTH,
           flexShrink: 0,
           minHeight: 0,
-          borderRight: `1px solid ${token("edge")}`,
+          borderRight: `var(--fx-border-w) solid ${token("edge")}`,
           transition: "width var(--axf-motion, 160ms) var(--axf-easing, ease)",
           overflow: "hidden"
         }}
       >
-        <Box sx={{ display: "flex", p: "6px 6px 0", justifyContent: collapsed ? "center" : "flex-start" }}>
+        <Box sx={{ display: "flex", p: "var(--fx-dens-gap-lg) var(--fx-dens-gap-lg) 0", justifyContent: collapsed ? "center" : "flex-start" }}>
           <RailToggle collapsed={collapsed} onToggle={toggleCollapsed} />
         </Box>
 
         {collapsed ? (
           <Tooltip title={`${me.screenname ?? me.username} · ${me.role}`} placement="right">
-            <Box sx={{ display: "flex", justifyContent: "center", p: "8px 0 6px" }}>
+            <Box sx={{ display: "flex", justifyContent: "center", p: "var(--fx-dens-gap-xl) 0 var(--fx-dens-gap-lg)" }}>
               <Glyph id="icon-account" size={20} />
             </Box>
           </Tooltip>
         ) : (
-          <Stack direction="row" sx={{ alignItems: "center", gap: 1.25, p: "6px 14px 8px" }}>
+          <Stack direction="row" sx={{ alignItems: "center", gap: 'var(--fx-dens-gap-2xl)', p: "var(--fx-dens-gap-lg) var(--fx-dens-gap-3xl) var(--fx-dens-gap-xl)" }}>
             <Glyph id="icon-account" size={20} />
             <Box sx={{ minWidth: 0, flex: 1 }}>
               <Typography
                 sx={{
-                  fontSize: 12.5,
+                  fontSize: 'var(--fx-type-root-md)',
                   fontWeight: 700,
                   overflow: "hidden",
                   textOverflow: "ellipsis",
@@ -321,7 +321,7 @@ export default function AccountsModule() {
               >
                 {me.screenname ?? me.username}
               </Typography>
-              <Typography sx={{ fontSize: 10.5, color: token("dim"), fontFamily: token("mono") }}>
+              <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim"), fontFamily: token("mono") }}>
                 {me.role}
               </Typography>
             </Box>
@@ -343,7 +343,7 @@ export default function AccountsModule() {
               minWidth: 0,
               alignItems: collapsed ? "center" : "flex-start",
               px: collapsed ? 0 : "14px",
-              opacity: 0.85,
+              opacity: "var(--fx-opacity-glass)",
             },
             "& .Mui-selected": { opacity: 1 },
           }}
@@ -365,7 +365,7 @@ export default function AccountsModule() {
             <ButtonBase
               aria-label="Sign out"
               onClick={() => void accountsStore.logout()}
-              sx={{ m: 1, height: 30, borderRadius: "6px", color: token("dim") }}
+              sx={{ m: 1, height: 30, borderRadius: "var(--fx-radius-md)", color: token("dim") }}
             >
               <Glyph id="icon-power" size={15} />
             </ButtonBase>
@@ -374,7 +374,7 @@ export default function AccountsModule() {
           <Button
             size="small"
             onClick={() => void accountsStore.logout()}
-            sx={{ m: 1, color: token("dim"), fontSize: 12, textTransform: "none" }}
+            sx={{ m: 1, color: token("dim"), fontSize: 'var(--fx-type-root-sm)', textTransform: "none" }}
           >
             Sign out
           </Button>

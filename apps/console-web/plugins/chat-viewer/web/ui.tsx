@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Button, Chip, Container, Icon, IconButton, Note, Segmented, SelectField, Switch, TextField } from '@console/axf/react';
+import { Button, Chip, Container, Icon, IconButton, Note, Segmented, SelectField, Switch, TextField, controlSlug } from '@console/axf/react';
 import { DataGrid, type GridColumn, type GridSort } from '@console/axf/libs/datagrid';
 import { pluginApi } from '@console/plugins';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
@@ -162,7 +162,7 @@ function Hits({ hits, q, onOpen }: { hits: Hit[]; q: string; onOpen: (h: Hit) =>
     <div className="fx-stack axp-chat-viewer-hits" role="list" aria-label="Search hits">
       <p className="fx-muted axp-chat-viewer-lede">{hits.length} hit{hits.length > 1 ? 's' : ''}{hits.length >= 100 ? ' (first 100)' : ''} — tap one to jump there</p>
       {hits.map((h) => (
-        <button key={`${h.sessionId}:${h.seq}`} type="button" role="listitem" data-fx-row className="axp-chat-viewer-hit" onClick={() => onOpen(h)}>
+        <button key={`${h.sessionId}:${h.seq}`} type="button" role="listitem" data-axf-target={`row:hit-${controlSlug(h.sessionId)}-${h.seq}`} data-fx-row className="axp-chat-viewer-hit" onClick={() => onOpen(h)}>
           <span className="axp-chat-viewer-hit__head"><SourceChip s={h.source} /><b className="axp-chat-viewer-title__text">{h.title}</b><span className="axp-chat-viewer-when">{core.fmtWhen(h.updatedAt)}</span></span>
           <span className="axp-chat-viewer-hit__snip">{h.seq < 0 ? 'in the title' : <Snippet s={h.snippet} />}</span>
         </button>
@@ -258,7 +258,7 @@ function SessionView({ id, seq, onBack }: { id: string; seq?: number; onBack: ()
 
 function Bubble({ seq, m, flash }: { seq: number; m: Message; flash: boolean }) {
   return (
-    <div id={`axp-cv-m-${seq}`} className={`axp-chat-viewer-msg is-${m.role === 'user' ? 'brett' : 'amber'}${flash ? ' is-active' : ''}`}>
+    <div id={`axp-cv-m-${seq}`} data-axf-target={`row:line-${seq}`} className={`axp-chat-viewer-msg is-${m.role === 'user' ? 'brett' : 'amber'}${flash ? ' is-active' : ''}`}>
       <div className="axp-chat-viewer-bubble">
         <span className="axp-chat-viewer-who">{core.WHO[m.role]}{m.kind === 'speech' && <Icon name="mic" size={11} />}{m.at && <time dateTime={m.at}>{core.fmtWhen(m.at)}</time>}</span>
         <div className="axp-chat-viewer-text">{m.text}</div>

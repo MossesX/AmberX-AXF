@@ -23,6 +23,7 @@
  *   node deploy/claude-workers.mjs config [--json]              the routing config (defaults filled in)
  *   node deploy/claude-workers.mjs set <key> <value>            interactiveTakesJobs on|off · building N · queue N
  *   node deploy/claude-workers.mjs worker <name> on|off         Make worker / Stop worker (subscription logins)
+ *   node deploy/claude-workers.mjs build-account [<name>|off]  the one account every build runs on (none = normal routing)
  *   node deploy/claude-workers.mjs label <name> <text>          a display name (Hulu, Moses X…)
  *   node deploy/claude-workers.mjs api add <name> --label L --daily N --weekly N [--alert 0.8]   an API worker slot
  *   node deploy/claude-workers.mjs api on|off|remove <name>     · api caps <name> --daily N --weekly N (lower only)
@@ -244,9 +245,25 @@ export function status(env = process.env, now = Date.now(), { forSession = '' } 
   // API worker slots set up before their key is saved still show (no key yet)
   for (const n of Object.keys(cfg.api)) if (!base.some((a) => a.name === n)) base.push({ name: n, kind: 'api', active: false, hasKey: false, email: '', plan: '', limited: null, running: [], ahead: 0, queued: 0, runsToday: 0, costToday: 0, costWeek: 0, recent: [] });
   const ro = roster(cfg, base);
-  const rows = base.map((a, i) => ({ ...a, label: ro[i].label, role: ro[i].role, building: ro[i].building, queue: ro[i].queue, spend: ro[i].spend, takesJobs: ro[i].takesJobs, canRun: ro[i].canRun, why: ro[i].why }));
+  // buildPick on every row: the dispatcher reads the rows (or the host's snapshot of them), never workers.json itself
+  const rows = base.map((a, i) => ({ ...a, label: ro[i].label, role: ro[i].role, building: ro[i].building, queue: ro[i].queue, spend: ro[i].spend, takesJobs: ro[i].takesJobs, canRun: ro[i].canRun, why: ro[i].why, buildAccount: ro[i].buildAccount, buildPick: cfg.buildAccount }));
   const free = ro.filter((r) => r.kind === 'subscription' && r.takesJobs && !r.limited).length;
-  return { $axf: SCHEMA, workers: rows.filter((r) => r.role === 'worker').map((r) => r.name), free, config: cfg, accounts: rows, alerts: routingAlerts(cfg, base), at: new Date(now).toISOString() };
+  return { $axf: SCHEMA, workers: rows.filter((r) => r.role === 'worker').map((r) => r.name), free, buildAccount: cfg.buildAccount, config: cfg, accounts: rows, alerts: routingAlerts(cfg, base), at: new Date(now).toISOString() };
+}
+
+/**
+ * The one account every build runs on ('' / 'off' / 'auto' = none: the normal routing). Only a saved subscription login
+ * can be it (an API key bills per token). Takes effect for the next job; running jobs keep their account.
+ */
+export function setBuildAccount(name, env = process.env) {
+  const n = ['', 'off', 'auto', 'none'].includes(String(name ?? '').trim()) ? '' : String(name).trim();
+  if (n) {
+    if (!NAME_RE.test(n)) throw Object.assign(new Error(`not an account name: ${n}`), { code: 2 });
+    const a = accounts(env).find((x) => x.name === n);
+    if (!a) throw Object.assign(new Error(`no saved account called ${n}`), { code: 2 });
+    if (a.kind === 'api') throw Object.assign(new Error(`${n} is an API key: the one build account is a subscription login`), { code: 2 });
+  }
+  return editConfig((x) => { x.buildAccount = n; }, env).buildAccount;
 }
 
 /** Rows as the router sees them for one job: queued-ahead jobs count as running. */
@@ -418,6 +435,9 @@ const main = async () => {
       if (row?.kind === 'api') throw Object.assign(new Error(`${n} is an API key: use "api on|off ${n}"`), { code: 2 });
       editConfig((x) => { x.excluded = on ? x.excluded.filter((y) => y !== n) : [...x.excluded, n]; if (on && !x.workers.includes(n)) x.workers.push(n); });
       out({ name: n, worker: on }, on ? `${n} takes headless jobs` : `${n} no longer takes headless jobs`);
+    } else if (cmd === 'build-account' || cmd === 'only') {
+      const n = rest[0] === undefined ? loadConfig().buildAccount : setBuildAccount(rest[0]);
+      out({ buildAccount: n }, rest[0] === undefined ? (n || 'off') : n ? `${n} takes every build from the next one on; every other account is off for builds` : 'one build account off: builds go to every worker again');
     } else if (cmd === 'label') {
       const n = nameOk(rest[0]); const label = rest.slice(1).join(' ').trim();
       editConfig((x) => { if (x.api[n]) x.api[n].label = label; else { x.perAccount[n] = { ...(x.perAccount[n] ?? {}), label }; } });
@@ -447,7 +467,7 @@ const main = async () => {
     } else if (cmd === 'signin') console.log(`started ${signin(rest[0])}: finish the sign-in in the console's Terminal`);
     else if (cmd === 'remove') console.log(`set aside in ${remove(rest[0])}`);
     else if (cmd === 'note') console.log(noteFor(rest[0]));
-    else { console.error('usage: claude-workers.mjs claim|release|route|test|status|alerts|config|rules|set|worker|label|api|rule|limit|hit|signin|remove|note (see the header)'); process.exit(2); }
+    else { console.error('usage: claude-workers.mjs claim|release|route|test|status|alerts|config|rules|set|worker|build-account|label|api|rule|limit|hit|signin|remove|note (see the header)'); process.exit(2); }
   } catch (e) { console.error(`claude-workers: ${e.message}`); process.exit(2); }
 };
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main();
