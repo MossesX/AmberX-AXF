@@ -1,0 +1,278 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.skin-gallery",
+  "name": "Skins",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "Change skins in one place: a gallery of every skin with a live desktop and phone preview, one-tap Use skin, Back to skin, Restore to Default and Undo, for the whole hub, one app, one screen or one plugin (skin-switch@1). Every action is the same through the screen, the REST API (/api/plugins/skin-gallery/), MCP plugin commands, the CLI (skin-gallery.mjs) and voice. Nav → Plugins → Skins; Settings → Plugins → Skins; deep links #/skin-gallery, #/skin-gallery/skin/<id>, #/skin-gallery/scope/<scope>, #/skin-gallery/preview/<id>?view=phone. Voice / console actions: skin.use, skin.back, skin.restore, skin.undo, skin.scope, skin.open.",
+  "targets": [
+    "axf-console"
+  ],
+  "provides": [
+    "view:skin-gallery",
+    "settings-tab:skin-gallery"
+  ],
+  "uiEditor": [
+    "theme"
+  ],
+  "scopes": [
+    "ROUTES"
+  ],
+  "enabledByDefault": true,
+  "optional": [],
+  "banner": false,
+  "tabable": false,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/skin-gallery",
+    "env": [],
+    "mentions": [
+      "apps/console-web/plugins/README.md"
+    ]
+  },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      {
+        "id": "list",
+        "route": "GET /skins",
+        "title": "List skins",
+        "description": "Every skin and design package for the gallery: name, kind, icon pack, parts it styles, coverage {covered, total} of the asset types, and the scopes it is in force at.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "app": {
+              "type": "string",
+              "description": "the acting app (default axf-console): its look document keeps the one undo record"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      {
+        "id": "apps",
+        "route": "GET /apps",
+        "title": "Apps with a look",
+        "description": "The apps whose skin can be switched, and whether each has its look document yet.",
+        "readOnly": true
+      },
+      {
+        "id": "scopes",
+        "route": "GET /scopes",
+        "title": "Skin scopes",
+        "description": "The scopes that can be switched for the acting app: hub, the app, and every ui:<view> / plugin:<id> its look document holds.",
+        "readOnly": true
+      },
+      {
+        "id": "state",
+        "route": "GET /state",
+        "title": "Skin state of a scope",
+        "description": "One scope: its own state (on / off / inherit), the skin in force and the level that decided it, the slots changed on top, and the undo on offer.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "scope": {
+              "type": "string",
+              "description": "hub | app | app:<id> | ui:<view> | plugin:<id> (default app)"
+            },
+            "app": {
+              "type": "string",
+              "description": "the acting app (default axf-console): its look document keeps the one undo record"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      {
+        "id": "use",
+        "route": "POST /use",
+        "title": "Use skin",
+        "description": "Switch a scope to a skin (skin-switch@1 use). Undo takes it back.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "skin": {
+              "type": "string",
+              "description": "the skin id (list shows them)"
+            },
+            "scope": {
+              "type": "string",
+              "description": "hub | app | app:<id> | ui:<view> | plugin:<id> (default app)"
+            },
+            "app": {
+              "type": "string",
+              "description": "the acting app (default axf-console): its look document keeps the one undo record"
+            }
+          },
+          "required": [
+            "skin"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "id": "back",
+        "route": "POST /back",
+        "title": "Back to skin",
+        "description": "Drop the changes made on top of the skin at a scope (all, or one slot). The skin stays. Undoable.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "scope": {
+              "type": "string",
+              "description": "hub | app | app:<id> | ui:<view> | plugin:<id> (default app)"
+            },
+            "slot": {
+              "type": "string",
+              "description": "one slot only (default all)"
+            },
+            "app": {
+              "type": "string",
+              "description": "the acting app (default axf-console): its look document keeps the one undo record"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      {
+        "id": "restore",
+        "route": "POST /restore",
+        "title": "Restore to Default",
+        "description": "Put a scope back to its default: no hub-wide skin, the app's saved look, or a screen / plugin following its parent. Undoable once.",
+        "confirm": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "scope": {
+              "type": "string",
+              "description": "hub | app | app:<id> | ui:<view> | plugin:<id> (default app)"
+            },
+            "app": {
+              "type": "string",
+              "description": "the acting app (default axf-console): its look document keeps the one undo record"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      {
+        "id": "undo",
+        "route": "POST /undo",
+        "title": "Undo skin change",
+        "description": "Take back the last Use, Back or Restore (one step).",
+        "input": {
+          "type": "object",
+          "properties": {
+            "app": {
+              "type": "string",
+              "description": "the acting app (default axf-console): its look document keeps the one undo record"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      {
+        "id": "scope",
+        "route": "POST /scope",
+        "title": "Inherit / Follow hub",
+        "description": "follow true: the app follows the hub-wide skin, a screen or plugin follows its parent. follow false: the scope pins the skin in force there now.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "scope": {
+              "type": "string",
+              "description": "app | ui:<view> | plugin:<id>"
+            },
+            "follow": {
+              "type": "boolean"
+            },
+            "app": {
+              "type": "string",
+              "description": "the acting app (default axf-console): its look document keeps the one undo record"
+            }
+          },
+          "required": [
+            "scope"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "id": "open",
+        "route": "GET /open",
+        "title": "Skins deep link",
+        "description": "The console_open target for the gallery, one skin, one scope, or the phone preview.",
+        "readOnly": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "skin": {
+              "type": "string"
+            },
+            "scope": {
+              "type": "string",
+              "description": "hub | app | app:<id> | ui:<view> | plugin:<id> (default app)"
+            },
+            "view": {
+              "type": "string",
+              "enum": [
+                "desktop",
+                "phone"
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      {
+        "id": "settings",
+        "route": "GET /settings",
+        "title": "Skins settings",
+        "description": "bannerChip (show the banner chip), defaultScope, undoSeconds (how long Undo stays offered), previewView (desktop | phone).",
+        "readOnly": true
+      },
+      {
+        "id": "set-settings",
+        "route": "POST /settings",
+        "title": "Change Skins settings",
+        "description": "Set one or more of bannerChip, defaultScope, undoSeconds (3 to 120), previewView.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "bannerChip": {
+              "type": "boolean"
+            },
+            "defaultScope": {
+              "type": "string"
+            },
+            "undoSeconds": {
+              "type": "integer",
+              "minimum": 3,
+              "maximum": 120
+            },
+            "previewView": {
+              "type": "string",
+              "enum": [
+                "desktop",
+                "phone"
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      }
+    ]
+  },
+  "builtWith": {
+    "model": "opus",
+    "builtAt": "2026-11-13"
+  },
+  "help": "help.json",
+  "userGrantable": true,
+  "opens": "main"
+}

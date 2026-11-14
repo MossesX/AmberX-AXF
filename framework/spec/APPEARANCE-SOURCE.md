@@ -47,6 +47,41 @@ Sections stay separate: the colour theme is one switchable part of the skin, the
 chrome assets, parts, icon pack) are the skin's until a pick overrides that one part. Pinned by `spec/fixtures/skin.json`
 (`colour`) and `spec/check-skin.mts` (engine, runtime, every entry point, legacy documents).
 
+### The Default skin and what the AI may change: skin-config@1 (build skin-configuration-panel, Nov 13 2026)
+
+> Brett: "before AI makes a skin, Brett picks what it may change. The current look is saved as the Default skin."
+
+**The Default skin.** Each app's saved look (`default` above: slots, spacing, hidden chrome, look settings and token
+overrides) is also a skin@1 asset, `default-<app>`, named *Default*, on the hub at `shared/settings/skins/<app>.json`;
+the hub-wide level's is `default-global`, made from the shared appearance@1 document. It is derived, never edited:
+`framework/cli/skins.mjs migrate [--all | <app> | global]` writes it when it is missing or stale and keeps it when it
+matches, so a second run changes nothing (`defaultSkinMigration` → create / update / keep / skip; an app with no look
+document is snapshotted first). It carries `protected: true` and `app`, and can't be deleted (`skinDeleteError`;
+`skins.mjs delete` refuses). **Restore to default stays pointed at it**: `restoreAppDefault` resets to `default`, the
+very look the Default skin is made from, and `skins.mjs restore` brings the skin up to date in the same move. The three
+themes come from the saved slots, else from the app's default design package (`hub-default`). `skins.mjs default <app>`
+shows it; `skins.mjs list` lists every Default skin first with `protected: true`. Engine: `defaultSkinOf`,
+`defaultSkinErrors`, `isDefaultSkin`, `canDeleteSkin` in `core/engines/skin-config-rules.mjs`.
+
+**skin-config@1** (`shared/settings/skin-config/<app>.json`, `global` for the hub-wide level): the permission tree
+Brett sets before the AI writes a skin. Category > group > option, each `allow` (the AI may change it), `lock` (stays as
+the Default skin has it) or `ask` (the AI proposes, Brett decides); the most specific setting wins (option > group >
+category > the document's `default`, which starts at allow). Categories are **every registered type a skin can reach**
+(skin-coverage@1: slot, parts and reference types, in registry order, the registry group as the section) plus the one
+`extras` category the registry declares (`skinConfig.extras`: spacing, look settings and token overrides); nothing names
+a type. A category's groups come from the type's entry and its coverage: `pick` (another asset of the type), `fields`
+(the fields of a new asset the AI may write, nested keys one option each), `parts.<group>` (its style parts per customize
+group), `chrome` (shown or hidden, hideable types). **Limits** are declared on the type's registry entry
+(`skinConfig.limits`): `depth` = how many menu levels the AI may build (1 = flat; `root` names the field whose lists are
+the first level, a context menu's `targets`), `count:<field>` = how many entries an array field may hold; the application
+menu, navigation menu and context menu declare depth 1–4 (default 2), the toolbar `groups` 1–8 (default 4). Engine:
+`skinConfigTree`, `normalizeSkinConfig` / `skinConfigErrors`, `optionMode` / `effectiveConfig`, the panel's moves
+`setConfigMode` / `setConfigLimit` / `setConfigDefault` / `resetSkinConfig`, `measureAsset`, `skinChangeReport` (a generated
+skin against the Default skin, every change with the option that governs it), `mergeWithDefault` (locked changes go back,
+asks are listed, a slot over a limit reverts), `skinConfigBrief` (the AI's plain lines), `skinConfigSchema`. Snapshot
+`schemas/skin-config.json`, JSON Schema `schemas/json/skin-config.schema.json` (`axf schemas`); fixture
+`spec/fixtures/skin-config.json`, check `spec/check-skin-config.mjs`.
+
 An app without a hub source keeps the same document in a setting (`axf.skin.look`), so a new app from a template gets the
 same Settings → Appearance. The sections below describe the shared document, which stays the transport and the source
 of the shared token overrides.
