@@ -78,6 +78,11 @@ All eight merge commits are ancestors of `origin/main`.
 
 ## Deploy check (s23)
 
-- `/usr/local/bin/axf-console-update` rebuilt the console at `2d818e949` (from `45ac36580`), which includes all 8 merge commits; state `done`. The deploy before it (21:44) stopped at #657, so #654 went live here.
+- `/usr/local/bin/axf-console-update` rebuilt the console (update status `45ac36580` → `2d818e949`; the installer's deploy@1 record `d-console-1794695935-7de17c4` has `7de17c4fa`, a later `_claude`-only commit), which includes all 8 merge commits; state `done`. The deploy before it (21:44) stopped at #657, so #654 went live here.
 - Console API healthy (`/api/health` ok). `skin-gallery` and `skin-editor` plugins load with no errors; `GET /api/plugins/skin-gallery/state` answers through `skin-switch@1` (console skin `arctic-calm`); `/open?skin=default` resolves to `/#/skin-gallery?skin=default`.
 - **Visual check not done:** a headless browser on the VPS can't render the console UI. Since #618 the console takes its look only from axHub, and axHub refuses the VPS origin (CORS) and needs a signed-in session, so the page stays on its "Waiting for axHub" screen by design. The desktop and phone shots in Screenshots, group "land-all-skin-builds - Nov 14 5:44 PM", show that screen. Checking for one banner and one Skins panel needs a signed-in browser on console.amberxai.com. On the branch, check-skin-switch and plugin-lifecycle (s3) cover the swap, where installing hides the built-in panel and uninstalling brings it back.
+
+## Deploy log and notification (s24)
+
+- deploy-log@1: the update wrote its own record, `d-console-1794695935-7de17c4` (target console, who update, state done, 2026-11-14 22:38 UTC). I added no second record, because it would log a deploy that never happened.
+- One notification went out through the console alert hub as registered type `builds.done` (source `builds`, key `built:land-all-skin-builds`, success). It lists the 8 PRs, the two archived branches, the two left open (#604, #591) and the visual check that is still open. It shows in AmberX's phone view (`/api/alerts?view=phone`) with nothing muted.
