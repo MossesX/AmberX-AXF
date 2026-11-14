@@ -792,7 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 20:56 UTC · `hotfix-desktop-console-draws-app-menu` note (all) · orchestrator
 - 2026-11-13 20:56 UTC · `hotfix-desktop-console-draws-app-menu` note (all) · claude-voice
 - 2026-11-13 20:56 UTC · `icon-map-icon-packs-every-icon-badge-app` → running, note (all) · pipeline
 - 2026-11-13 20:56 UTC · `icon-map-icon-packs-every-icon-badge-app` note (all) · orchestrator
@@ -1192,6 +1191,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 18:20 UTC · `themed-native-controls-plugin` note (all) · orchestrator
 - 2026-11-14 18:20 UTC · `land-all-skin-builds` s1 done, → running (all) · orchestrator
 - 2026-11-14 18:21 UTC · `land-all-skin-builds` s2 done (all) · orchestrator
+- 2026-11-14 18:22 UTC · `land-all-skin-builds` s3 done (all) · orchestrator
 
 ## Token passes (log)
 
