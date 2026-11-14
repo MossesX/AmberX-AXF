@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T22:35:29.837Z",
+ "updatedAt": "2026-11-14T22:35:51.037Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -142709,7 +142709,7 @@
    "pr": "#678",
    "priority": "P0",
    "createdAt": "2026-11-14T22:17:37.935Z",
-   "updatedAt": "2026-11-14T22:35:27.703Z",
+   "updatedAt": "2026-11-14T22:35:49.025Z",
    "builtAt": "",
    "notes": [
     {
@@ -142731,6 +142731,10 @@
     {
      "text": "Dispatch gate: land-finish-auto-land-live-clear-backlog still has axf-land-finish-auto-land-live-clear-backlog--earl alive: not launched again, tracking that session.",
      "at": "2026-11-14T22:32:17.952Z"
+    },
+    {
+     "text": "Headless run axf-land-finish-auto-land-live-clear-backlog--earl: brief only · start 13.1K tokens ($0.07) · cost $6.12 · 67 turns · 6 tools, MCP none",
+     "at": "2026-11-14T22:35:49.025Z"
     }
    ],
    "approvals": [],
