@@ -792,7 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 20:35 UTC · `icon-map-icon-packs-every-icon-badge-app` s1 done (all) · orchestrator
 - 2026-11-13 20:42 UTC · `token-registry-skin-editor-live-sandbox` s1 done, → running (all) · orchestrator
 - 2026-11-13 20:42 UTC · `token-registry-skin-editor-live-sandbox` branch claude/token-registry-skin-editor-live-sandbox (all) · builds-live
 - 2026-11-13 20:44 UTC · `auto-land-every-finished-build-lands` added (0 steps) (all) · console
@@ -1192,6 +1191,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 13:10 UTC · `hotfix-get-main-ci-green-theme-swap` note (all) · orchestrator
 - 2026-11-14 13:10 UTC · `hotfix-get-main-ci-green-theme-swap` note (all) · reconciler
 - 2026-11-14 13:11 UTC · `hotfix-get-main-ci-green-theme-swap` note (all) · pipeline
+- 2026-11-14 16:44 UTC · `builds-share-one-claude-login-write` added (4 steps) (all) · claude-voice
 
 ## Token passes (log)
 
