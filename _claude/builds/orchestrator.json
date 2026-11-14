@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T16:51:22.417Z",
+ "updatedAt": "2026-11-14T16:51:45.995Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -139328,16 +139328,25 @@
    "title": "UI Review: filter and search by PR",
    "category": "ui-review",
    "detail": "Brett: 'I need a filter in UI reviews to search by PR.' Add a PR filter/search to the UI Review screen: type or pick a PR number (e.g. #647) and see only that PR's review items. Also reachable by API/MCP/CLI/voice ('show UI Review for PR 647') and as a focus target so console_open can jump straight to a PR's items.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/ui-review-filter-and-search-by-pr",
    "pr": "",
    "createdAt": "2026-11-14T16:50:06.080Z",
-   "updatedAt": "2026-11-14T16:51:16.553Z",
+   "updatedAt": "2026-11-14T16:51:26.793Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-ui-review-filter-and-search-by-pr--rhonda.",
+     "at": "2026-11-14T16:51:22.179Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-ui-review-filter-and-search-by-pr--rhonda, own login copy)",
+     "at": "2026-11-14T16:51:26.793Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {

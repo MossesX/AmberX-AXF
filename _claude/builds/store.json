@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5313,
- "updatedAt": "2026-11-14T16:51:22.417Z",
+ "rev": 5314,
+ "updatedAt": "2026-11-14T16:51:45.995Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -214626,16 +214626,25 @@
    "title": "UI Review: filter and search by PR",
    "category": "ui-review",
    "detail": "Brett: 'I need a filter in UI reviews to search by PR.' Add a PR filter/search to the UI Review screen: type or pick a PR number (e.g. #647) and see only that PR's review items. Also reachable by API/MCP/CLI/voice ('show UI Review for PR 647') and as a focus target so console_open can jump straight to a PR's items.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/ui-review-filter-and-search-by-pr",
    "pr": "",
    "createdAt": "2026-11-14T16:50:06.080Z",
-   "updatedAt": "2026-11-14T16:51:16.553Z",
+   "updatedAt": "2026-11-14T16:51:26.793Z",
    "builtAt": "",
-   "notes": [],
+   "notes": [
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-ui-review-filter-and-search-by-pr--rhonda.",
+     "at": "2026-11-14T16:51:22.179Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-ui-review-filter-and-search-by-pr--rhonda, own login copy)",
+     "at": "2026-11-14T16:51:26.793Z"
+    }
+   ],
    "approvals": [],
    "upgradeRequests": [],
    "origin": {
@@ -214653,18 +214662,18 @@
    "pipeline": {
     "queuedAt": "",
     "queuedBy": "",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-ui-review-filter-and-search-by-pr--rhonda",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-14T16:51:21.042Z",
+    "runs": 1,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-14T16:51:21.042Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -214673,7 +214682,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-14T16:51:21.042Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -214754,7 +214763,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 7,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
