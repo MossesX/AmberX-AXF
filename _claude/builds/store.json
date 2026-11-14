@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5156,
- "updatedAt": "2026-11-14T01:49:38.832Z",
+ "rev": 5157,
+ "updatedAt": "2026-11-14T01:50:48.691Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -209498,7 +209498,7 @@
    "title": "Land batch: merge main into each finished build and land",
    "category": "",
    "detail": "vps.build_land still aborts on clashes in GENERATED files only (axf.lock.json, control/inventory.json, help framework.json): the new generated-files@1 logic landed in the repo, but /opt/axf-batch/resolve.py (used by vps.build_land on axHub's side) hasn't picked it up. 1) Wire /opt/axf-batch/resolve.py to call the repo's generated-files@1 resolver. 2) Then, one at a time, merge origin/main into each branch, regenerate generated files, run its tests, push, and land on main: toolbar-widgets-attach-any-banner-style, icon-map-icon-packs-every-icon-badge-app, token-registry-skin-editor-live-sandbox, per-instance-settings-small-live-preview, skin-axhub-override-switch-greyed-out, skin-animations-swatches-skin-switch, skin-config-panel-merge-main-and-land, skins-plugin-merge-main-and-land, full-voice-control-resolve-inventory, orchestrator-custom-groups-custom-tabs, demo-pipelines-guided-walkthrough-live, console-app-wake-word-voice-listener, hotfix-desktop-console-draws-app-menu (PR #658 regression test). Real source clashes: keep both sides and test. Report each result. Redeploy the console after the batch.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -209506,7 +209506,7 @@
    "pr": "#665",
    "priority": "P0",
    "createdAt": "2026-11-13T23:39:26.785Z",
-   "updatedAt": "2026-11-14T01:27:41.284Z",
+   "updatedAt": "2026-11-14T01:50:46.933Z",
    "builtAt": "",
    "notes": [
     {
@@ -209532,6 +209532,10 @@
     {
      "text": "Headless run axf-land-batch-merge-main-each-finished--sully: brief only · start 14.5K tokens ($0.04) · cost $9.32 · 221 turns · 6 tools, MCP none",
      "at": "2026-11-14T01:27:41.284Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-14T01:50:46.933Z"
     }
    ],
    "approvals": [],
@@ -210095,7 +210099,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 24,
+   "rev": 25,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
