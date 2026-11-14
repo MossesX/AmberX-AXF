@@ -796,9 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 23:50 UTC · `banner-one-line` branch claude/banner-one-line, note (all) · reconciler
-- 2026-11-13 23:50 UTC · `agent-jobs` branch claude/agent-jobs, note (all) · reconciler
-- 2026-11-13 23:50 UTC · `chat-viewer` branch claude/chat-viewer, note (all) · reconciler
 - 2026-11-13 23:50 UTC · `lander-regenerates-generated-files-clash` merged, note (all) · reconciler
 - 2026-11-13 23:50 UTC · `main-ci-red-test-sandbox-profile-export` → complete, merged, note (all) · reconciler
 - 2026-11-13 23:51 UTC · `console-app-land-parts-1-4-build-apk` note (all) · orchestrator
@@ -1196,6 +1193,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 22:42 UTC · `themed-native-controls-plugin` note (all) · orchestrator
 - 2026-11-14 22:43 UTC · `console-look-becomes-default-axhub-skin` s1 done (all) · orchestrator
 - 2026-11-14 22:44 UTC · `approvals-no-window-spam-on-approve-veto-only-for-vps-writes-and-account-switc` → queued (all) · orchestrator
+- 2026-11-14 22:44 UTC · `orchestrator-table-columns-model-queue-assigned` → queued (all) · orchestrator
+- 2026-11-14 22:44 UTC · `orchestrator-assigns-builds-steps-to-employee-ag` → queued (all) · orchestrator
+- 2026-11-14 22:44 UTC · `agent-manager-training-wizard-for-employee-agent` → queued (all) · orchestrator
 
 ## Token passes (log)
 

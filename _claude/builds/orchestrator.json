@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T22:44:25.127Z",
+ "updatedAt": "2026-11-14T22:44:33.027Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -92368,7 +92368,7 @@
    "title": "Orchestrator table columns (model, queue #, assigned employee) + auto-hire builders with approval + train employees on website data",
    "category": "",
    "detail": "Builds on the HR/employees build (assign-an-employee-to-every-role-action-type-and); upgrade that, don't duplicate. 1) Orchestrator and Build Manager tables get columns: model (Opus/Fable/etc.), queue position number, assigned employee (avatar + name, links to profile). Sortable and shown on the expandable root rows. 2) Every build must be assigned to an employee in the builder job category. 3) When there's no available builder, the orchestrator sends Brett an AmberX notification: 'Hire a new builder?' with Approve/Deny. On approve, HR hires one automatically: name, avatar, persona, voice, job category builder, tools and permissions from the builder role, added to the roster, and the waiting build is assigned. No hire without approval. 4) Training: any employee can be trained on website data. Add URLs or a site to crawl from their profile; the content is fetched, stored as that employee's knowledge, viewable and removable, and used in their sessions. Same controls via REST, MCP, CLI and voice. Verify on the live console, desktop and phone.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -92376,7 +92376,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T00:17:45.319Z",
-   "updatedAt": "2026-11-10T03:50:50.715Z",
+   "updatedAt": "2026-11-14T22:44:26.389Z",
    "builtAt": "",
    "notes": [
     {
@@ -97233,7 +97233,7 @@
    "title": "Orchestrator assigns builds/steps to employee agents via group chat, with match % dialog and 90 s veto",
    "category": "",
    "detail": "1) When the orchestrator assigns a build or step, it posts in the group chat asking which employee has the skills/tools/capabilities. 2) The first agent to claim it opens a dialog listing all matching agents with a percentage for how likely each is the best choice. 3) 90-second veto: if Brett doesn't pick, the orchestrator assigns the highest-probability agent by default. 4) The chosen employee uses its own brief set and its training data in the brief, and sends its briefs back to the orchestrator. Builds on orchestrator-table-columns (assigned employee) and the Brownie/Molly group chat handoffs; reuse. Full API/CLI control.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -97241,7 +97241,7 @@
    "pr": "#465",
    "priority": "P1",
    "createdAt": "2026-11-10T16:28:04.849Z",
-   "updatedAt": "2026-11-10T19:46:07.246Z",
+   "updatedAt": "2026-11-14T22:44:28.349Z",
    "builtAt": "",
    "notes": [
     {
@@ -98013,7 +98013,7 @@
    "title": "Agent Manager: training wizard for employee agents (data sources, processing, RAG, auto-built tools, skills, persona, vocabulary)",
    "category": "",
    "detail": "1) A training hook on every employee agent. 2) Training wizard in the Agent Manager: pick data sources (a website or parts of one, specific product types, code such as React or TypeScript, files, etc.), how to fetch them, how to process and store them (RAG/vector index, summaries, etc.). 3) Training by category/type produces for the agent: tools, skills, a persona, and an index of categorized vocabulary. Auto-attach already generated vocabulary files, pairs, tools, skills and personality assets that match. 4) Ties into the agent profile schema build (agent-skill@1 / persona templates) and 'train employees on website data'; reuse, don't duplicate. Full API/CLI control.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -98021,7 +98021,7 @@
    "pr": "#467",
    "priority": "P1",
    "createdAt": "2026-11-10T16:29:30.818Z",
-   "updatedAt": "2026-11-10T20:10:44.783Z",
+   "updatedAt": "2026-11-14T22:44:30.474Z",
    "builtAt": "",
    "notes": [
     {
