@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5667,
- "updatedAt": "2026-11-14T23:42:32.414Z",
+ "rev": 5668,
+ "updatedAt": "2026-11-14T23:42:54.593Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -226077,7 +226077,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-14T23:10:56.028Z",
-   "updatedAt": "2026-11-14T23:39:01.366Z",
+   "updatedAt": "2026-11-14T23:42:36.347Z",
    "builtAt": "",
    "notes": [
     {
@@ -226114,12 +226114,12 @@
    "pipeline": {
     "queuedAt": "2026-11-14T23:11:03.594Z",
     "queuedBy": "land-finish-auto-land-live-clear-backlog",
-    "account": "mossesx-max-",
-    "session": "axf-merge-main-land-change-to-move-amberx--lenny",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-14T23:38:54.969Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-14T23:15:00.410Z",
@@ -226129,9 +226129,9 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"36181a68-836b-4338-b02f-0477c8f4670d\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "2026-11-14T23:38:54.969Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -226140,7 +226140,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-14T23:38:54.969Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -226161,12 +226161,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:42:36.347Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T23:15:00.410Z",
-     "updatedAt": "2026-11-14T23:15:00.410Z"
+     "updatedAt": "2026-11-14T23:42:36.915Z"
     },
     {
      "id": "s2",
