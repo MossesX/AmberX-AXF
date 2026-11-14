@@ -27,8 +27,229 @@
     "env": [],
     "mentions": []
   },
-  "commands": { "$axf": "plugin-commands@1", "auto": true },
-  "builtWith": { "model": "claude-opus-5-5", "builtAt": "2026-11-14" },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      {
+        "route": "GET /state",
+        "id": "state",
+        "title": "Pickers on the open screen",
+        "readOnly": true,
+        "description": "Every picker on the open console screen (id, address, label, value, chosen labels, options), which one is open, its search and active row, and the last action's answer."
+      },
+      {
+        "route": "POST /state",
+        "skip": "the open console reports its pickers here; not a command"
+      },
+      {
+        "route": "POST /open",
+        "id": "open",
+        "title": "Open a picker",
+        "navigate": true,
+        "input": {
+          "type": "object",
+          "properties": {
+            "target": {
+              "type": "string",
+              "description": "the picker's id (data-fx-picker-id), button:picker-<id> or picker:<id>; omitted = the open picker"
+            }
+          },
+          "required": [
+            "target"
+          ]
+        }
+      },
+      {
+        "route": "POST /choose",
+        "id": "choose",
+        "title": "Choose an option in a picker",
+        "description": "By value, else by spoken name or position (\"the third one\"). Single choice closes the picker.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "target": {
+              "type": "string",
+              "description": "the picker's id (data-fx-picker-id), button:picker-<id> or picker:<id>; omitted = the open picker"
+            },
+            "option": {
+              "type": "string",
+              "description": "the option's name or value"
+            }
+          },
+          "required": [
+            "option"
+          ]
+        }
+      },
+      {
+        "route": "POST /toggle",
+        "id": "toggle",
+        "title": "Toggle an option in a multiple-choice picker",
+        "input": {
+          "type": "object",
+          "properties": {
+            "target": {
+              "type": "string",
+              "description": "the picker's id (data-fx-picker-id), button:picker-<id> or picker:<id>; omitted = the open picker"
+            },
+            "option": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "option"
+          ]
+        }
+      },
+      {
+        "route": "POST /search",
+        "id": "search",
+        "title": "Search in a picker",
+        "input": {
+          "type": "object",
+          "properties": {
+            "target": {
+              "type": "string",
+              "description": "the picker's id (data-fx-picker-id), button:picker-<id> or picker:<id>; omitted = the open picker"
+            },
+            "text": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "text"
+          ]
+        }
+      },
+      {
+        "route": "POST /clear",
+        "id": "clear",
+        "title": "Clear a picker's value",
+        "destructive": false,
+        "input": {
+          "type": "object",
+          "properties": {
+            "target": {
+              "type": "string",
+              "description": "the picker's id (data-fx-picker-id), button:picker-<id> or picker:<id>; omitted = the open picker"
+            }
+          },
+          "required": [
+            "target"
+          ]
+        }
+      },
+      {
+        "route": "POST /close",
+        "id": "close",
+        "title": "Close the picker",
+        "input": {
+          "type": "object",
+          "properties": {
+            "target": {
+              "type": "string",
+              "description": "the picker's id (data-fx-picker-id), button:picker-<id> or picker:<id>; omitted = the open picker"
+            }
+          }
+        }
+      },
+      {
+        "route": "POST /list",
+        "id": "list",
+        "title": "Refresh the list of pickers on the screen",
+        "readOnly": true
+      },
+      {
+        "route": "GET /settings",
+        "id": "settings",
+        "title": "Picker dialog settings",
+        "readOnly": true
+      },
+      {
+        "route": "POST /settings",
+        "id": "settings-set",
+        "title": "Change picker dialog settings",
+        "input": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "swapSelectFields": {
+              "type": "boolean"
+            },
+            "swapSelects": {
+              "type": "boolean"
+            },
+            "searchThreshold": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 200
+            },
+            "sheetOnPhone": {
+              "type": "boolean"
+            },
+            "excludeApps": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      {
+        "route": "POST /voice",
+        "id": "voice",
+        "title": "Run a picker voice phrase",
+        "description": "'open the <field> picker', 'choose <option> [in the <field> picker]', 'pick the third one', 'search the <field> picker for <text>', 'close the picker'. AmberX reaches the same phrases through /api/console-control/voice.",
+        "input": {
+          "type": "object",
+          "properties": {
+            "text": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "text"
+          ]
+        }
+      },
+      {
+        "action": "picker.open",
+        "skip": "same handler as POST /open (the route runs this action)"
+      },
+      {
+        "action": "picker.choose",
+        "skip": "same handler as POST /choose"
+      },
+      {
+        "action": "picker.toggle",
+        "skip": "same handler as POST /toggle"
+      },
+      {
+        "action": "picker.search",
+        "skip": "same handler as POST /search"
+      },
+      {
+        "action": "picker.clear",
+        "skip": "same handler as POST /clear"
+      },
+      {
+        "action": "picker.close",
+        "skip": "same handler as POST /close"
+      },
+      {
+        "action": "picker.list",
+        "skip": "same handler as POST /list"
+      }
+    ]
+  },
+  "builtWith": {
+    "model": "claude-opus-5-5",
+    "builtAt": "2026-11-14"
+  },
   "help": "help.json",
   "opens": "main"
 }

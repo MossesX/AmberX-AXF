@@ -7,7 +7,7 @@
  * Exposed on `window.__axfPickers` too, so the plugin's web library, Playwright tests and the console-control bridge can
  * call it without importing React.
  */
-import { choosePicker, matchSpoken, setQuery, setValue, uniquePickerId, type PickerModel, type PickerState } from '../core/engines/picker';
+import { choosePicker, foldText, matchSpoken, pickerIdOf, setQuery, setValue, uniquePickerId, type PickerModel, type PickerState } from '../core/engines/picker';
 
 export interface PickerHandle {
   /** The picker id (address `button:picker-<id>`). */
@@ -68,7 +68,18 @@ export const openPickerId = (): string | null => [...handles.values()].find((h) 
 
 /** The handle for a target, or the open one when no target is given. */
 function find(target?: string | null): PickerHandle | null {
-  if (target) return handles.get(bare(target)) ?? null;
+  if (target) {
+    const id = bare(target);
+    const exact = handles.get(id) ?? handles.get(pickerIdOf(id));
+    if (exact) return exact;
+    // a spoken / typed name: the picker whose label is it, else the one label that starts with it
+    const name = foldText(id);
+    const all = [...handles.values()];
+    const byLabel = all.filter((h) => foldText(h.model().label) === name);
+    if (byLabel.length === 1) return byLabel[0]!;
+    const starts = all.filter((h) => foldText(h.model().label).startsWith(name) || foldText(h.model().label).includes(` ${name}`));
+    return starts.length === 1 ? starts[0]! : null;
+  }
   const id = openPickerId();
   return id ? handles.get(id)! : null;
 }

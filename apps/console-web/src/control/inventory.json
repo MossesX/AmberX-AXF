@@ -6,11 +6,11 @@
     "nav": 16,
     "tabGroups": 22,
     "tabs": 76,
-    "settingsTabs": 67,
-    "settings": 85,
-    "functions": 230,
+    "settingsTabs": 68,
+    "settings": 91,
+    "functions": 237,
     "buttons": 62,
-    "plugins": 67
+    "plugins": 68
   },
   "views": [
     {
@@ -1928,6 +1928,13 @@
       "plugin": "ai.amberx.axf.console.output-recorder"
     },
     {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=picker-dialog",
+      "id": "picker-dialog",
+      "label": "Picker dialog",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.picker-dialog"
+    },
+    {
       "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=plugin-commands",
       "id": "plugin-commands",
       "label": "Plugin commands",
@@ -2382,6 +2389,98 @@
       "runs": "console",
       "plugin": "ai.amberx.axf.console.molly-guide",
       "file": "plugins/molly-guide/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=picker-dialog/setting:axf.picker.enabled",
+      "kind": "setting",
+      "label": "Open drop-downs in the picker dialog",
+      "key": "axf.picker.enabled",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Picker dialog",
+      "keywords": [
+        "axf.picker.enabled",
+        "Picker dialog"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.picker-dialog",
+      "file": "plugins/picker-dialog/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=picker-dialog/setting:axf.picker.searchThreshold",
+      "kind": "setting",
+      "label": "Show the search box from this many options",
+      "key": "axf.picker.searchThreshold",
+      "type": "number",
+      "min": 0,
+      "max": 200,
+      "detail": "Settings › Plugins › Picker dialog",
+      "keywords": [
+        "axf.picker.searchThreshold",
+        "Picker dialog"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.picker-dialog",
+      "file": "plugins/picker-dialog/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=picker-dialog/setting:axf.picker.sheetOnPhone",
+      "kind": "setting",
+      "label": "Bottom sheet on phones",
+      "key": "axf.picker.sheetOnPhone",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Picker dialog",
+      "keywords": [
+        "axf.picker.sheetOnPhone",
+        "Picker dialog"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.picker-dialog",
+      "file": "plugins/picker-dialog/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=picker-dialog/setting:axf.picker.swapSelectFields",
+      "kind": "setting",
+      "label": "Framework select fields",
+      "key": "axf.picker.swapSelectFields",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Picker dialog",
+      "keywords": [
+        "axf.picker.swapSelectFields",
+        "Picker dialog"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.picker-dialog",
+      "file": "plugins/picker-dialog/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=picker-dialog/setting:axf.picker.swapSelects",
+      "kind": "setting",
+      "label": "Every other drop-down on the page",
+      "key": "axf.picker.swapSelects",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Picker dialog",
+      "keywords": [
+        "axf.picker.swapSelects",
+        "Picker dialog"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.picker-dialog",
+      "file": "plugins/picker-dialog/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=picker-dialog/setting:axf.picker.excludeApps",
+      "kind": "setting",
+      "label": "Keep the original drop-downs in",
+      "key": "axf.picker.excludeApps",
+      "type": "multi_choice",
+      "detail": "Settings › Plugins › Picker dialog",
+      "keywords": [
+        "axf.picker.excludeApps",
+        "Picker dialog"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.picker-dialog",
+      "file": "plugins/picker-dialog/web/index.tsx"
     },
     {
       "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=ashes/setting:axf.ashes.on",
@@ -5597,6 +5696,105 @@
       ],
       "plugin": "ai.amberx.axf.console.output-recorder",
       "file": "plugins/output-recorder/web/index.tsx"
+    },
+    {
+      "address": "function:picker.open",
+      "kind": "function",
+      "id": "picker.open",
+      "label": "Open a picker",
+      "detail": "Action · Picker dialog",
+      "keywords": [
+        "picker.open",
+        "picker",
+        "open"
+      ],
+      "plugin": "ai.amberx.axf.console.picker-dialog",
+      "file": "plugins/picker-dialog/web/actions.ts"
+    },
+    {
+      "address": "function:picker.choose",
+      "kind": "function",
+      "id": "picker.choose",
+      "label": "Choose an option in a picker",
+      "detail": "Action · Picker dialog",
+      "keywords": [
+        "picker.choose",
+        "picker",
+        "choose"
+      ],
+      "plugin": "ai.amberx.axf.console.picker-dialog",
+      "file": "plugins/picker-dialog/web/actions.ts"
+    },
+    {
+      "address": "function:picker.toggle",
+      "kind": "function",
+      "id": "picker.toggle",
+      "label": "Toggle an option in a picker",
+      "detail": "Action · Picker dialog",
+      "keywords": [
+        "picker.toggle",
+        "picker",
+        "toggle"
+      ],
+      "plugin": "ai.amberx.axf.console.picker-dialog",
+      "file": "plugins/picker-dialog/web/actions.ts"
+    },
+    {
+      "address": "function:picker.search",
+      "kind": "function",
+      "id": "picker.search",
+      "label": "Search in a picker",
+      "detail": "Action · Picker dialog",
+      "keywords": [
+        "picker.search",
+        "picker",
+        "search"
+      ],
+      "plugin": "ai.amberx.axf.console.picker-dialog",
+      "file": "plugins/picker-dialog/web/actions.ts"
+    },
+    {
+      "address": "function:picker.clear",
+      "kind": "function",
+      "id": "picker.clear",
+      "label": "Clear a picker",
+      "detail": "Action · Picker dialog",
+      "keywords": [
+        "picker.clear",
+        "picker",
+        "clear"
+      ],
+      "destructive": true,
+      "plugin": "ai.amberx.axf.console.picker-dialog",
+      "file": "plugins/picker-dialog/web/actions.ts"
+    },
+    {
+      "address": "function:picker.close",
+      "kind": "function",
+      "id": "picker.close",
+      "label": "Close the picker",
+      "detail": "Action · Picker dialog",
+      "keywords": [
+        "picker.close",
+        "picker",
+        "close"
+      ],
+      "plugin": "ai.amberx.axf.console.picker-dialog",
+      "file": "plugins/picker-dialog/web/actions.ts"
+    },
+    {
+      "address": "function:picker.list",
+      "kind": "function",
+      "id": "picker.list",
+      "label": "List the pickers on this screen",
+      "detail": "Action · Picker dialog",
+      "keywords": [
+        "picker.list",
+        "picker",
+        "list"
+      ],
+      "plugin": "ai.amberx.axf.console.picker-dialog",
+      "file": "plugins/picker-dialog/web/actions.ts"
     },
     {
       "address": "function:plan-studio.open",
@@ -8962,6 +9160,28 @@
       ],
       "view": "view:output-recorder",
       "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=output-recorder",
+      "provides": [],
+      "requires": [],
+      "optional": []
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.picker-dialog",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.picker-dialog",
+      "label": "Picker dialog",
+      "folder": "picker-dialog",
+      "version": "0.1.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "picker-dialog",
+        "Picker dialog",
+        "Replaces every drop-down select box with the themed picker dialog (a bottom shee"
+      ],
+      "aliases": [
+        "picker-dialog",
+        "picker dialog"
+      ],
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=picker-dialog",
       "provides": [],
       "requires": [],
       "optional": []

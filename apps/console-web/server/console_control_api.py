@@ -318,10 +318,32 @@ def command(b: dict[str, Any], by: str = "", audience: str = OWNER, grants: set[
     return guarded(cmd, str(b.get("by") or by or "api")[:80], audience, grants if grants is not None else {"*"}, str(b.get("to") or "recent"))
 
 
+VOICE_CAPABILITY = "voice-intents@1:"
+
+
+def plugin_voice(text: str, by: str) -> dict[str, Any] | None:
+    """Phrases a plugin claims (capability `voice-intents@1:<name>`: `.voice(text, by)` → an answer with `say`, or None
+    when the phrase isn't its). Checked before the built-in phrases; no plugin is named here."""
+    try:
+        import plugin_services
+        names = [s["name"] for s in plugin_services.available() if s["name"].startswith(VOICE_CAPABILITY) and s["enabled"]]
+        for n in names:
+            impl = plugin_services.get(n)
+            r = impl.voice(text, by) if impl is not None and hasattr(impl, "voice") else None
+            if r is not None:
+                return {"$axf": cc.FRAME, **r, "heard": text}
+    except Exception:  # noqa: BLE001 — a broken provider never stops the built-in phrases
+        return None
+    return None
+
+
 def voice(text: str, by: str = "voice", audience: str = OWNER, grants: set[str] | None = None, to: str = "recent") -> dict[str, Any]:
     """A spoken phrase → its command (console_control.voice_intent), words resolved by the same search, then run with the
     same guards. The answer carries `heard`, `intent`, `command` and `say` (the line to speak back)."""
     g = grants if grants is not None else {"*"}
+    claimed = plugin_voice(text, by)
+    if claimed is not None:
+        return claimed
     intent = cc.voice_intent(text)
     if intent is None:
         return {"$axf": cc.FRAME, "ok": False, "code": "invalid", "message": "not a console command", "heard": text, "intent": None, "say": "That isn't a console command I know."}

@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import threading
 import time
 from pathlib import Path
@@ -206,26 +207,48 @@ async def post_state(request: Request) -> dict[str, Any]:
     return r
 
 
-def _verb_route(verb: str, arg_key: str | None = None):
-    async def handler(request: Request) -> JSONResponse:
-        b = await _body(request)
-        try:
-            spec = action_spec(verb, b.get("target") or b.get("id"), b.get(arg_key) if arg_key else None)
-        except ValueError as e:
-            return JSONResponse({"ok": False, "error": str(e)}, status_code=400)
-        by = str(b.get("by") or "rest")
-        return _answer(await run_in_threadpool(run_action, spec, by))
-    handler.__name__ = f"picker_{verb}"
-    return handler
+async def _verb(request: Request, verb: str, arg_key: str | None = None) -> JSONResponse:
+    b = await _body(request)
+    try:
+        spec = action_spec(verb, b.get("target") or b.get("id"), b.get(arg_key) if arg_key else None)
+    except ValueError as e:
+        return JSONResponse({"ok": False, "error": str(e)}, status_code=400)
+    return _answer(await run_in_threadpool(run_action, spec, str(b.get("by") or "rest")))
 
 
-router.add_api_route("/open", _verb_route("open"), methods=["POST"])
-router.add_api_route("/choose", _verb_route("choose", "option"), methods=["POST"])
-router.add_api_route("/toggle", _verb_route("toggle", "option"), methods=["POST"])
-router.add_api_route("/search", _verb_route("search", "text"), methods=["POST"])
-router.add_api_route("/clear", _verb_route("clear"), methods=["POST"])
-router.add_api_route("/close", _verb_route("close"), methods=["POST"])
-router.add_api_route("/list", _verb_route("list"), methods=["POST"])
+@router.post("/open")
+async def picker_open(request: Request) -> JSONResponse:
+    return await _verb(request, "open")
+
+
+@router.post("/choose")
+async def picker_choose(request: Request) -> JSONResponse:
+    return await _verb(request, "choose", "option")
+
+
+@router.post("/toggle")
+async def picker_toggle(request: Request) -> JSONResponse:
+    return await _verb(request, "toggle", "option")
+
+
+@router.post("/search")
+async def picker_search(request: Request) -> JSONResponse:
+    return await _verb(request, "search", "text")
+
+
+@router.post("/clear")
+async def picker_clear(request: Request) -> JSONResponse:
+    return await _verb(request, "clear")
+
+
+@router.post("/close")
+async def picker_close(request: Request) -> JSONResponse:
+    return await _verb(request, "close")
+
+
+@router.post("/list")
+async def picker_list(request: Request) -> JSONResponse:
+    return await _verb(request, "list")
 
 
 @router.get("/settings")
@@ -252,3 +275,91 @@ def save_snapshot() -> None:
         (d / "state.json").write_text(json.dumps(snapshot(), indent=2), encoding="utf-8")
     except OSError:
         pass
+
+
+# ---------------------------------------------------------------- voice (AmberX → /api/console-control/voice)
+
+_PICKER_WORDS = r"(?:picker|drop ?down|dropdown|select box|list)"
+
+
+def voice_intent(text: Any) -> dict[str, Any] | None:
+    """A spoken phrase → a picker action, or None when it isn't a picker phrase.
+
+    'open the <field> picker' · 'choose <option>' · 'pick the third one' · 'choose <option> in the <field> picker' ·
+    'search the <field> picker for <text>' · 'close the picker'
+    """
+    p = str(text or "").lower()
+    p = re.sub(r"[“”\"'’,!?;.]+", " ", p)
+    p = re.sub(r"^\s*(hey |ok |okay )?(amber|amberx)\b\s*", " ", p)
+    p = re.sub(r"\b(please|can you|could you|would you|for me)\b", " ", p)
+    p = re.sub(r"\s+", " ", p).strip()
+    if not p:
+        return None
+    if re.match(rf"^(?:close|cancel|dismiss|shut)(?: the)? {_PICKER_WORDS}$", p):
+        return {"verb": "close"}
+    if m := re.match(rf"^search(?: in)?(?: the)? (.+?) {_PICKER_WORDS} for (.+)$", p):
+        return {"verb": "search", "target": m.group(1).strip(), "arg": m.group(2).strip()}
+    if m := re.match(rf"^(?:open|show(?: me)?|bring up)(?: the)? (.+?) {_PICKER_WORDS}$", p):
+        return {"verb": "open", "target": m.group(1).strip()}
+    if m := re.match(rf"^(?:choose|pick|select)(?: the)? (.+?) (?:in|from|on)(?: the)? (.+?)(?: {_PICKER_WORDS})?$", p):
+        return {"verb": "choose", "target": m.group(2).strip(), "arg": m.group(1).strip()}
+    if m := re.match(r"^(?:choose|pick|select)(?: the)? (.+)$", p):
+        return {"verb": "choose", "arg": m.group(1).strip()}
+    return None
+
+
+def voice_say(intent: dict[str, Any], r: dict[str, Any]) -> str:
+    if not r.get("ok"):
+        if r.get("code") == "unavailable":
+            return "No console is open. Open it and ask again."
+        return f"Couldn't: {r.get('error') or r.get('message') or 'that did not work'}"
+    st = r.get("state") or {}
+    pick = next((x for x in st.get("pickers") or [] if x.get("open")), None)
+    if intent["verb"] == "open":
+        return f"Opened {(pick or {}).get('label') or intent.get('target')}. Say choose and the option."
+    if intent["verb"] == "close":
+        return "Closed the picker."
+    if intent["verb"] == "search":
+        return f"Searching for {intent.get('arg')}."
+    last = st.get("last") or {}
+    labels = ((last.get("picker") or {}).get("labels")) or []
+    return f"Chose {', '.join(labels)}." if labels else "Done."
+
+
+def voice(text: Any, by: str = "voice") -> dict[str, Any] | None:
+    """The picker phrases (capability voice-intents@1:picker): None = not a picker phrase."""
+    intent = voice_intent(text)
+    if intent is None:
+        return None
+    # a bare "choose / pick / select …" is a picker phrase only while a picker is open
+    if intent["verb"] == "choose" and not intent.get("target") and not snapshot().get("open"):
+        return None
+    try:
+        spec = action_spec(intent["verb"], intent.get("target"), intent.get("arg"))
+    except ValueError as e:
+        return {"ok": False, "code": "invalid", "message": str(e), "intent": intent, "say": f"Couldn't: {e}"}
+    r = run_action(spec, by)
+    return {**r, "intent": intent, "command": {"action": spec}, "say": voice_say(intent, r)}
+
+
+@router.post("/voice")
+async def picker_voice(request: Request) -> JSONResponse:
+    b = await _body(request)
+    r = await run_in_threadpool(voice, b.get("text"), str(b.get("by") or "voice"))
+    if r is None:
+        return JSONResponse({"ok": False, "error": "not a picker phrase", "say": "That isn't a picker command I know."}, status_code=400)
+    return _answer(r)
+
+
+class PickerVoice:
+    """voice-intents@1:picker for the console's voice door (console-control /voice, AmberX)."""
+
+    def voice(self, text: Any, by: str = "voice") -> dict[str, Any] | None:
+        return voice(text, by)
+
+
+try:
+    import plugin_services
+    plugin_services.provide("voice-intents@1:picker", PickerVoice(), folder=FOLDER)
+except Exception:  # noqa: BLE001 — tests without the console
+    pass
