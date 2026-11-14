@@ -4,6 +4,7 @@ import { checkboxFamily, numberFamily, radioFamily, rangeFamily } from './basic'
 import { datetimeFamily } from './datetime';
 import './time';
 import { colorFamily } from './color';
+import { dialogsFamily } from './dialogs';
 
 export const ELEMENT_FAMILIES: ElementFamily[] = [checkboxFamily, radioFamily, rangeFamily, numberFamily, datetimeFamily, colorFamily];
-export const GLOBAL_FAMILIES: GlobalFamily[] = [];
+export const GLOBAL_FAMILIES: GlobalFamily[] = [dialogsFamily];

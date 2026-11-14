@@ -26,3 +26,6 @@ const rt = {
 };
 const stop = startHost(rt as never, { elements: ELEMENT_FAMILIES, globals: GLOBAL_FAMILIES });
 (globalThis as Record<string, unknown>).tc = { rt, set: rt.settings.set, host: liveHost, stop, toasts };
+// the framework's async dialogs, for the tests (the console imports them from @console/axf/react)
+import { dialogs } from '@console/axf/react/nativeDialogs';
+(globalThis as Record<string, unknown>).tcDialogs = dialogs;

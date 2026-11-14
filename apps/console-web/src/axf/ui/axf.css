@@ -2083,3 +2083,21 @@ html[data-axf-help='on'] button[data-axf-help-id], html[data-axf-help='on'] [rol
 .fx-tc-swatch:hover { border-color: var(--fx-tc-color-hover-swatch-border, var(--fx-muted)); }
 .fx-tc-swatch:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-tc-color-focus-ring, var(--fx-focus)); outline-offset: 2px; }
 .fx-tc-swatch[aria-selected='true'] { border-color: var(--fx-tc-color-selected-swatch-border, var(--fx-accent)); box-shadow: inset 0 0 0 calc(var(--fx-border-w) * 2) var(--fx-tc-color-selected-check, var(--fx-accent-text)); }
+
+/* themed alert / confirm / prompt (.fx-tc-dlg inside the framework .fx-dialog surface) */
+.fx-tc-pop--dialogs {
+  inline-size: min(var(--fx-tc-dialogs-width, calc(var(--fx-font-size) * 420 / 14)), 100%); border-radius: var(--fx-tc-dialogs-radius, var(--fx-radius-lg));
+  border-color: var(--fx-tc-dialogs-surface-border, var(--fx-border)); color: var(--fx-tc-dialogs-surface-text, var(--fx-text));
+}
+.fx-tc-backdrop--modal { background: var(--fx-tc-dialogs-backdrop-bg, var(--fx-scrim)); }
+.fx-tc-backdrop--sheet:has(.fx-tc-pop--dialogs) { background: var(--fx-tc-dialogs-backdrop-bg, var(--fx-scrim)); }
+.fx-tc-backdrop--sheet .fx-tc-pop--dialogs { inline-size: 100%; border-radius: var(--fx-tc-dialogs-radius, var(--fx-radius-lg)) var(--fx-tc-dialogs-radius, var(--fx-radius-lg)) 0 0; }
+.fx-tc-dlg { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-2xl); }
+.fx-tc-dlg__title { display: flex; align-items: center; gap: var(--fx-dens-gap-sm); margin: 0; font-size: var(--fx-type-scale-lg); color: var(--fx-tc-dialogs-title-text, var(--fx-text)); }
+.fx-tc-dlg__title > .fx-tc-icon { color: var(--fx-tc-dialogs-title-icon, var(--fx-accent)); }
+.fx-tc-dlg__msg { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; color: var(--fx-tc-dialogs-message-text, var(--fx-muted)); max-block-size: 50dvh; overflow: auto; }
+.fx-tc-dlg__field { background: var(--fx-tc-dialogs-field-bg, var(--fx-surface)); border-color: var(--fx-tc-dialogs-field-border, var(--fx-border)); color: var(--fx-tc-dialogs-field-text, var(--fx-text)); }
+.fx-tc-dlg__field:focus { border-color: var(--fx-tc-dialogs-focus-border, var(--fx-accent)); }
+.fx-tc-dlg :focus-visible { outline-color: var(--fx-tc-dialogs-focus-ring, var(--fx-focus)); }
+.fx-tc-dlg__foot { display: flex; justify-content: flex-end; gap: var(--fx-dens-gap-sm); flex-wrap: wrap; }
+:where([data-fx-narrow]) .fx-tc-dlg__foot > .fx-btn { flex: 1; }
