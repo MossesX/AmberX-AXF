@@ -1,0 +1,5166 @@
+{
+  "contract": "picker@1",
+  "constants": {
+    "limits": {
+      "options": 2000,
+      "groups": 100,
+      "label": 160,
+      "description": 300,
+      "keywords": 24,
+      "keyword": 60,
+      "value": 400,
+      "id": 120
+    },
+    "searchThreshold": 8,
+    "typeaheadMs": 700,
+    "page": 10,
+    "triggerLabels": 3
+  },
+  "normalize": {
+    "themes": {
+      "raw": {
+        "id": "Colour theme",
+        "label": "Colour theme",
+        "options": [
+          {
+            "value": "fresh-light",
+            "label": "Fresh Light",
+            "group": "light",
+            "description": "The default day theme",
+            "icon": "sun"
+          },
+          {
+            "value": "fresh-dark",
+            "label": "Fresh Dark",
+            "group": "dark",
+            "icon": "moon"
+          },
+          "Aurora Night",
+          {
+            "value": "plum-noir",
+            "label": "Plum Noir",
+            "group": "dark",
+            "disabled": true
+          },
+          {
+            "value": "fresh-light",
+            "label": "a duplicate value is dropped"
+          },
+          {
+            "label": "Mono Paper",
+            "group": "light",
+            "keywords": "print, grey"
+          },
+          {
+            "value": "graphite-mint",
+            "label": "Graphite Mint",
+            "group": "dark",
+            "description": "Dark with a mint accent",
+            "keywords": [
+              "green"
+            ]
+          },
+          {
+            "value": "  Sandstone  ",
+            "label": "  Sandstone  ",
+            "group": "light"
+          }
+        ],
+        "groups": [
+          {
+            "id": "dark",
+            "label": "Dark"
+          },
+          "light",
+          "unused"
+        ],
+        "value": [
+          "plum-noir",
+          "fresh-dark",
+          "nope"
+        ]
+      },
+      "model": {
+        "id": "colour-theme",
+        "label": "Colour theme",
+        "options": [
+          {
+            "value": "fresh-light",
+            "label": "Fresh Light",
+            "description": "The default day theme",
+            "icon": "sun",
+            "group": "light"
+          },
+          {
+            "value": "fresh-dark",
+            "label": "Fresh Dark",
+            "icon": "moon",
+            "group": "dark"
+          },
+          {
+            "value": "Aurora Night",
+            "label": "Aurora Night"
+          },
+          {
+            "value": "plum-noir",
+            "label": "Plum Noir",
+            "group": "dark",
+            "disabled": true
+          },
+          {
+            "value": "Mono Paper",
+            "label": "Mono Paper",
+            "group": "light",
+            "keywords": [
+              "print",
+              "grey"
+            ]
+          },
+          {
+            "value": "graphite-mint",
+            "label": "Graphite Mint",
+            "description": "Dark with a mint accent",
+            "group": "dark",
+            "keywords": [
+              "green"
+            ]
+          },
+          {
+            "value": "Sandstone",
+            "label": "Sandstone",
+            "group": "light"
+          }
+        ],
+        "groups": [
+          {
+            "id": "dark",
+            "label": "Dark"
+          },
+          {
+            "id": "light",
+            "label": "light"
+          }
+        ],
+        "multiple": false,
+        "value": [
+          "fresh-dark"
+        ],
+        "searchThreshold": 8,
+        "placeholder": "",
+        "emptyLabel": "",
+        "max": 0
+      }
+    },
+    "multi": {
+      "raw": {
+        "id": "tags",
+        "label": "Tags",
+        "multiple": true,
+        "max": 2,
+        "searchThreshold": "always",
+        "placeholder": "Pick up to two",
+        "options": [
+          "Red",
+          "Green",
+          "Blue",
+          {
+            "value": "gold",
+            "label": "Gold",
+            "disabled": true
+          },
+          "Violet"
+        ],
+        "value": [
+          "Blue"
+        ]
+      },
+      "model": {
+        "id": "tags",
+        "label": "Tags",
+        "options": [
+          {
+            "value": "Red",
+            "label": "Red"
+          },
+          {
+            "value": "Green",
+            "label": "Green"
+          },
+          {
+            "value": "Blue",
+            "label": "Blue"
+          },
+          {
+            "value": "gold",
+            "label": "Gold",
+            "disabled": true
+          },
+          {
+            "value": "Violet",
+            "label": "Violet"
+          }
+        ],
+        "groups": [],
+        "multiple": true,
+        "value": [
+          "Blue"
+        ],
+        "searchThreshold": 0,
+        "placeholder": "Pick up to two",
+        "emptyLabel": "",
+        "max": 2
+      }
+    },
+    "strings": {
+      "raw": [
+        "One",
+        "Two",
+        "Two",
+        "",
+        3
+      ],
+      "model": {
+        "id": "picker",
+        "label": "",
+        "options": [
+          {
+            "value": "One",
+            "label": "One"
+          },
+          {
+            "value": "Two",
+            "label": "Two"
+          },
+          {
+            "value": "3",
+            "label": "3"
+          }
+        ],
+        "groups": [],
+        "multiple": false,
+        "value": [],
+        "searchThreshold": 8,
+        "placeholder": "",
+        "emptyLabel": "",
+        "max": 0
+      }
+    },
+    "junk": {
+      "raw": {
+        "id": "!!",
+        "options": [
+          null,
+          {},
+          {
+            "value": "x"
+          },
+          {
+            "label": "Only a label"
+          },
+          {
+            "value": "v",
+            "label": "L",
+            "disabled": "true",
+            "keywords": "a,b,,a",
+            "icon": 7
+          }
+        ],
+        "groups": [
+          {
+            "id": "g"
+          }
+        ],
+        "multiple": "yes",
+        "max": "3",
+        "searchThreshold": -4,
+        "value": "x"
+      },
+      "model": {
+        "id": "picker",
+        "label": "",
+        "options": [
+          {
+            "value": "x",
+            "label": "x"
+          },
+          {
+            "value": "Only a label",
+            "label": "Only a label"
+          },
+          {
+            "value": "v",
+            "label": "L",
+            "icon": "7",
+            "disabled": true,
+            "keywords": [
+              "a",
+              "b"
+            ]
+          }
+        ],
+        "groups": [],
+        "multiple": false,
+        "value": [
+          "x"
+        ],
+        "searchThreshold": 0,
+        "placeholder": "",
+        "emptyLabel": "",
+        "max": 0
+      }
+    },
+    "empty": {
+      "raw": null,
+      "model": {
+        "id": "picker",
+        "label": "",
+        "options": [],
+        "groups": [],
+        "multiple": false,
+        "value": [],
+        "searchThreshold": 8,
+        "placeholder": "",
+        "emptyLabel": "",
+        "max": 0
+      }
+    },
+    "never": {
+      "raw": {
+        "options": [
+          "a"
+        ],
+        "searchThreshold": "never"
+      },
+      "model": {
+        "id": "picker",
+        "label": "",
+        "options": [
+          {
+            "value": "a",
+            "label": "a"
+          }
+        ],
+        "groups": [],
+        "multiple": false,
+        "value": [],
+        "searchThreshold": null,
+        "placeholder": "",
+        "emptyLabel": "",
+        "max": 0
+      }
+    }
+  },
+  "native": {
+    "select": {
+      "raw": {
+        "id": "theme",
+        "label": "Theme",
+        "options": [
+          {
+            "value": "",
+            "text": "None"
+          },
+          {
+            "value": "a",
+            "text": "Alpha",
+            "selected": true,
+            "group": "Greek",
+            "data": {
+              "icon": "a",
+              "description": "First letter",
+              "keywords": "first, one"
+            }
+          },
+          {
+            "value": "b",
+            "text": "Beta",
+            "disabled": "",
+            "group": "Greek"
+          },
+          {
+            "text": "Gamma"
+          }
+        ]
+      },
+      "model": {
+        "id": "theme",
+        "label": "Theme",
+        "options": [
+          {
+            "value": "a",
+            "label": "Alpha",
+            "description": "First letter",
+            "icon": "a",
+            "group": "Greek",
+            "keywords": [
+              "first",
+              "one"
+            ]
+          },
+          {
+            "value": "b",
+            "label": "Beta",
+            "group": "Greek",
+            "disabled": true
+          },
+          {
+            "value": "Gamma",
+            "label": "Gamma"
+          }
+        ],
+        "groups": [
+          {
+            "id": "Greek",
+            "label": "Greek"
+          }
+        ],
+        "multiple": false,
+        "value": [
+          "a"
+        ],
+        "searchThreshold": 8,
+        "placeholder": "",
+        "emptyLabel": "None",
+        "max": 0
+      }
+    },
+    "multiple": {
+      "raw": {
+        "name": "tags[]",
+        "label": "Tags",
+        "multiple": true,
+        "options": [
+          {
+            "value": "r",
+            "text": "Red",
+            "selected": true
+          },
+          {
+            "value": "g",
+            "text": "Green",
+            "selected": true
+          },
+          {
+            "value": "b",
+            "text": "Blue"
+          }
+        ]
+      },
+      "model": {
+        "id": "tags",
+        "label": "Tags",
+        "options": [
+          {
+            "value": "r",
+            "label": "Red"
+          },
+          {
+            "value": "g",
+            "label": "Green"
+          },
+          {
+            "value": "b",
+            "label": "Blue"
+          }
+        ],
+        "groups": [],
+        "multiple": true,
+        "value": [
+          "r",
+          "g"
+        ],
+        "searchThreshold": 8,
+        "placeholder": "",
+        "emptyLabel": "",
+        "max": 0
+      }
+    },
+    "sized": {
+      "raw": {
+        "id": "s",
+        "options": [
+          {
+            "value": "a",
+            "text": "A"
+          }
+        ],
+        "size": 4
+      },
+      "model": {
+        "id": "s",
+        "label": "",
+        "options": [
+          {
+            "value": "a",
+            "label": "A"
+          }
+        ],
+        "groups": [],
+        "multiple": true,
+        "value": [],
+        "searchThreshold": 8,
+        "placeholder": "",
+        "emptyLabel": "",
+        "max": 0
+      }
+    },
+    "emptySelected": {
+      "raw": {
+        "id": "e",
+        "options": [
+          {
+            "value": "a",
+            "text": "A",
+            "selected": true
+          },
+          {
+            "value": "",
+            "text": "Any",
+            "selected": true
+          }
+        ]
+      },
+      "model": {
+        "id": "e",
+        "label": "",
+        "options": [
+          {
+            "value": "a",
+            "label": "A"
+          }
+        ],
+        "groups": [],
+        "multiple": false,
+        "value": [],
+        "searchThreshold": 8,
+        "placeholder": "",
+        "emptyLabel": "Any",
+        "max": 0
+      }
+    }
+  },
+  "filter": {
+    "": [
+      {
+        "value": "fresh-light",
+        "label": "Fresh Light",
+        "description": "The default day theme",
+        "icon": "sun",
+        "group": "light",
+        "score": 0
+      },
+      {
+        "value": "fresh-dark",
+        "label": "Fresh Dark",
+        "icon": "moon",
+        "group": "dark",
+        "score": 0
+      },
+      {
+        "value": "Aurora Night",
+        "label": "Aurora Night",
+        "score": 0
+      },
+      {
+        "value": "plum-noir",
+        "label": "Plum Noir",
+        "group": "dark",
+        "disabled": true,
+        "score": 0
+      },
+      {
+        "value": "Mono Paper",
+        "label": "Mono Paper",
+        "group": "light",
+        "keywords": [
+          "print",
+          "grey"
+        ],
+        "score": 0
+      },
+      {
+        "value": "graphite-mint",
+        "label": "Graphite Mint",
+        "description": "Dark with a mint accent",
+        "group": "dark",
+        "keywords": [
+          "green"
+        ],
+        "score": 0
+      },
+      {
+        "value": "Sandstone",
+        "label": "Sandstone",
+        "group": "light",
+        "score": 0
+      }
+    ],
+    "fre": [
+      {
+        "value": "fresh-dark",
+        "label": "Fresh Dark",
+        "icon": "moon",
+        "group": "dark",
+        "score": 59.833333
+      },
+      {
+        "value": "fresh-light",
+        "label": "Fresh Light",
+        "description": "The default day theme",
+        "icon": "sun",
+        "group": "light",
+        "score": 59.816667
+      }
+    ],
+    "fresh light": [
+      {
+        "value": "fresh-light",
+        "label": "Fresh Light",
+        "description": "The default day theme",
+        "icon": "sun",
+        "group": "light",
+        "score": 129.816667
+      }
+    ],
+    "dark": [
+      {
+        "value": "fresh-dark",
+        "label": "Fresh Dark",
+        "icon": "moon",
+        "group": "dark",
+        "score": 39.833333
+      },
+      {
+        "value": "plum-noir",
+        "label": "Plum Noir",
+        "group": "dark",
+        "disabled": true,
+        "score": 9.85
+      },
+      {
+        "value": "graphite-mint",
+        "label": "Graphite Mint",
+        "description": "Dark with a mint accent",
+        "group": "dark",
+        "keywords": [
+          "green"
+        ],
+        "score": 9.783333
+      }
+    ],
+    "grey": [
+      {
+        "value": "Mono Paper",
+        "label": "Mono Paper",
+        "group": "light",
+        "keywords": [
+          "print",
+          "grey"
+        ],
+        "score": 9.833333
+      }
+    ],
+    "green": [
+      {
+        "value": "graphite-mint",
+        "label": "Graphite Mint",
+        "description": "Dark with a mint accent",
+        "group": "dark",
+        "keywords": [
+          "green"
+        ],
+        "score": 9.783333
+      }
+    ],
+    "light": [
+      {
+        "value": "fresh-light",
+        "label": "Fresh Light",
+        "description": "The default day theme",
+        "icon": "sun",
+        "group": "light",
+        "score": 39.816667
+      },
+      {
+        "value": "Sandstone",
+        "label": "Sandstone",
+        "group": "light",
+        "score": 9.85
+      },
+      {
+        "value": "Mono Paper",
+        "label": "Mono Paper",
+        "group": "light",
+        "keywords": [
+          "print",
+          "grey"
+        ],
+        "score": 9.833333
+      }
+    ],
+    "Night": [
+      {
+        "value": "Aurora Night",
+        "label": "Aurora Night",
+        "score": 39.8
+      }
+    ],
+    "zzz": [],
+    "san": [
+      {
+        "value": "Sandstone",
+        "label": "Sandstone",
+        "group": "light",
+        "score": 59.85
+      }
+    ]
+  },
+  "grouped": {
+    "all": [
+      {
+        "group": null,
+        "options": [
+          {
+            "value": "Aurora Night",
+            "label": "Aurora Night",
+            "score": 0
+          }
+        ]
+      },
+      {
+        "group": {
+          "id": "dark",
+          "label": "Dark"
+        },
+        "options": [
+          {
+            "value": "fresh-dark",
+            "label": "Fresh Dark",
+            "icon": "moon",
+            "group": "dark",
+            "score": 0
+          },
+          {
+            "value": "plum-noir",
+            "label": "Plum Noir",
+            "group": "dark",
+            "disabled": true,
+            "score": 0
+          },
+          {
+            "value": "graphite-mint",
+            "label": "Graphite Mint",
+            "description": "Dark with a mint accent",
+            "group": "dark",
+            "keywords": [
+              "green"
+            ],
+            "score": 0
+          }
+        ]
+      },
+      {
+        "group": {
+          "id": "light",
+          "label": "light"
+        },
+        "options": [
+          {
+            "value": "fresh-light",
+            "label": "Fresh Light",
+            "description": "The default day theme",
+            "icon": "sun",
+            "group": "light",
+            "score": 0
+          },
+          {
+            "value": "Mono Paper",
+            "label": "Mono Paper",
+            "group": "light",
+            "keywords": [
+              "print",
+              "grey"
+            ],
+            "score": 0
+          },
+          {
+            "value": "Sandstone",
+            "label": "Sandstone",
+            "group": "light",
+            "score": 0
+          }
+        ]
+      }
+    ],
+    "query": "fre",
+    "filtered": [
+      {
+        "group": {
+          "id": "dark",
+          "label": "Dark"
+        },
+        "options": [
+          {
+            "value": "fresh-dark",
+            "label": "Fresh Dark",
+            "icon": "moon",
+            "group": "dark",
+            "score": 59.833333
+          }
+        ]
+      },
+      {
+        "group": {
+          "id": "light",
+          "label": "light"
+        },
+        "options": [
+          {
+            "value": "fresh-light",
+            "label": "Fresh Light",
+            "description": "The default day theme",
+            "icon": "sun",
+            "group": "light",
+            "score": 59.816667
+          }
+        ]
+      }
+    ]
+  },
+  "searchShown": {
+    "themes": false,
+    "multi": true,
+    "always": true,
+    "never": false
+  },
+  "choose": {
+    "single": {
+      "base": {
+        "id": "colour-theme",
+        "label": "Colour theme",
+        "options": [
+          {
+            "value": "fresh-light",
+            "label": "Fresh Light",
+            "description": "The default day theme",
+            "icon": "sun",
+            "group": "light"
+          },
+          {
+            "value": "fresh-dark",
+            "label": "Fresh Dark",
+            "icon": "moon",
+            "group": "dark"
+          },
+          {
+            "value": "Aurora Night",
+            "label": "Aurora Night"
+          },
+          {
+            "value": "plum-noir",
+            "label": "Plum Noir",
+            "group": "dark",
+            "disabled": true
+          },
+          {
+            "value": "Mono Paper",
+            "label": "Mono Paper",
+            "group": "light",
+            "keywords": [
+              "print",
+              "grey"
+            ]
+          },
+          {
+            "value": "graphite-mint",
+            "label": "Graphite Mint",
+            "description": "Dark with a mint accent",
+            "group": "dark",
+            "keywords": [
+              "green"
+            ]
+          },
+          {
+            "value": "Sandstone",
+            "label": "Sandstone",
+            "group": "light"
+          }
+        ],
+        "groups": [
+          {
+            "id": "dark",
+            "label": "Dark"
+          },
+          {
+            "id": "light",
+            "label": "light"
+          }
+        ],
+        "multiple": false,
+        "value": [
+          "fresh-dark"
+        ],
+        "searchThreshold": 8,
+        "placeholder": "",
+        "emptyLabel": "",
+        "max": 0
+      },
+      "value": "Aurora Night",
+      "out": {
+        "model": {
+          "id": "colour-theme",
+          "label": "Colour theme",
+          "options": [
+            {
+              "value": "fresh-light",
+              "label": "Fresh Light",
+              "description": "The default day theme",
+              "icon": "sun",
+              "group": "light"
+            },
+            {
+              "value": "fresh-dark",
+              "label": "Fresh Dark",
+              "icon": "moon",
+              "group": "dark"
+            },
+            {
+              "value": "Aurora Night",
+              "label": "Aurora Night"
+            },
+            {
+              "value": "plum-noir",
+              "label": "Plum Noir",
+              "group": "dark",
+              "disabled": true
+            },
+            {
+              "value": "Mono Paper",
+              "label": "Mono Paper",
+              "group": "light",
+              "keywords": [
+                "print",
+                "grey"
+              ]
+            },
+            {
+              "value": "graphite-mint",
+              "label": "Graphite Mint",
+              "description": "Dark with a mint accent",
+              "group": "dark",
+              "keywords": [
+                "green"
+              ]
+            },
+            {
+              "value": "Sandstone",
+              "label": "Sandstone",
+              "group": "light"
+            }
+          ],
+          "groups": [
+            {
+              "id": "dark",
+              "label": "Dark"
+            },
+            {
+              "id": "light",
+              "label": "light"
+            }
+          ],
+          "multiple": false,
+          "value": [
+            "Aurora Night"
+          ],
+          "searchThreshold": 8,
+          "placeholder": "",
+          "emptyLabel": "",
+          "max": 0
+        },
+        "changed": true
+      }
+    },
+    "same": {
+      "base": {
+        "id": "colour-theme",
+        "label": "Colour theme",
+        "options": [
+          {
+            "value": "fresh-light",
+            "label": "Fresh Light",
+            "description": "The default day theme",
+            "icon": "sun",
+            "group": "light"
+          },
+          {
+            "value": "fresh-dark",
+            "label": "Fresh Dark",
+            "icon": "moon",
+            "group": "dark"
+          },
+          {
+            "value": "Aurora Night",
+            "label": "Aurora Night"
+          },
+          {
+            "value": "plum-noir",
+            "label": "Plum Noir",
+            "group": "dark",
+            "disabled": true
+          },
+          {
+            "value": "Mono Paper",
+            "label": "Mono Paper",
+            "group": "light",
+            "keywords": [
+              "print",
+              "grey"
+            ]
+          },
+          {
+            "value": "graphite-mint",
+            "label": "Graphite Mint",
+            "description": "Dark with a mint accent",
+            "group": "dark",
+            "keywords": [
+              "green"
+            ]
+          },
+          {
+            "value": "Sandstone",
+            "label": "Sandstone",
+            "group": "light"
+          }
+        ],
+        "groups": [
+          {
+            "id": "dark",
+            "label": "Dark"
+          },
+          {
+            "id": "light",
+            "label": "light"
+          }
+        ],
+        "multiple": false,
+        "value": [
+          "fresh-dark"
+        ],
+        "searchThreshold": 8,
+        "placeholder": "",
+        "emptyLabel": "",
+        "max": 0
+      },
+      "value": "fresh-dark",
+      "out": {
+        "model": {
+          "id": "colour-theme",
+          "label": "Colour theme",
+          "options": [
+            {
+              "value": "fresh-light",
+              "label": "Fresh Light",
+              "description": "The default day theme",
+              "icon": "sun",
+              "group": "light"
+            },
+            {
+              "value": "fresh-dark",
+              "label": "Fresh Dark",
+              "icon": "moon",
+              "group": "dark"
+            },
+            {
+              "value": "Aurora Night",
+              "label": "Aurora Night"
+            },
+            {
+              "value": "plum-noir",
+              "label": "Plum Noir",
+              "group": "dark",
+              "disabled": true
+            },
+            {
+              "value": "Mono Paper",
+              "label": "Mono Paper",
+              "group": "light",
+              "keywords": [
+                "print",
+                "grey"
+              ]
+            },
+            {
+              "value": "graphite-mint",
+              "label": "Graphite Mint",
+              "description": "Dark with a mint accent",
+              "group": "dark",
+              "keywords": [
+                "green"
+              ]
+            },
+            {
+              "value": "Sandstone",
+              "label": "Sandstone",
+              "group": "light"
+            }
+          ],
+          "groups": [
+            {
+              "id": "dark",
+              "label": "Dark"
+            },
+            {
+              "id": "light",
+              "label": "light"
+            }
+          ],
+          "multiple": false,
+          "value": [
+            "fresh-dark"
+          ],
+          "searchThreshold": 8,
+          "placeholder": "",
+          "emptyLabel": "",
+          "max": 0
+        },
+        "changed": false
+      }
+    },
+    "clear": {
+      "base": {
+        "id": "colour-theme",
+        "label": "Colour theme",
+        "options": [
+          {
+            "value": "fresh-light",
+            "label": "Fresh Light",
+            "description": "The default day theme",
+            "icon": "sun",
+            "group": "light"
+          },
+          {
+            "value": "fresh-dark",
+            "label": "Fresh Dark",
+            "icon": "moon",
+            "group": "dark"
+          },
+          {
+            "value": "Aurora Night",
+            "label": "Aurora Night"
+          },
+          {
+            "value": "plum-noir",
+            "label": "Plum Noir",
+            "group": "dark",
+            "disabled": true
+          },
+          {
+            "value": "Mono Paper",
+            "label": "Mono Paper",
+            "group": "light",
+            "keywords": [
+              "print",
+              "grey"
+            ]
+          },
+          {
+            "value": "graphite-mint",
+            "label": "Graphite Mint",
+            "description": "Dark with a mint accent",
+            "group": "dark",
+            "keywords": [
+              "green"
+            ]
+          },
+          {
+            "value": "Sandstone",
+            "label": "Sandstone",
+            "group": "light"
+          }
+        ],
+        "groups": [
+          {
+            "id": "dark",
+            "label": "Dark"
+          },
+          {
+            "id": "light",
+            "label": "light"
+          }
+        ],
+        "multiple": false,
+        "value": [
+          "fresh-dark"
+        ],
+        "searchThreshold": 8,
+        "placeholder": "",
+        "emptyLabel": "",
+        "max": 0
+      },
+      "value": "",
+      "out": {
+        "model": {
+          "id": "colour-theme",
+          "label": "Colour theme",
+          "options": [
+            {
+              "value": "fresh-light",
+              "label": "Fresh Light",
+              "description": "The default day theme",
+              "icon": "sun",
+              "group": "light"
+            },
+            {
+              "value": "fresh-dark",
+              "label": "Fresh Dark",
+              "icon": "moon",
+              "group": "dark"
+            },
+            {
+              "value": "Aurora Night",
+              "label": "Aurora Night"
+            },
+            {
+              "value": "plum-noir",
+              "label": "Plum Noir",
+              "group": "dark",
+              "disabled": true
+            },
+            {
+              "value": "Mono Paper",
+              "label": "Mono Paper",
+              "group": "light",
+              "keywords": [
+                "print",
+                "grey"
+              ]
+            },
+            {
+              "value": "graphite-mint",
+              "label": "Graphite Mint",
+              "description": "Dark with a mint accent",
+              "group": "dark",
+              "keywords": [
+                "green"
+              ]
+            },
+            {
+              "value": "Sandstone",
+              "label": "Sandstone",
+              "group": "light"
+            }
+          ],
+          "groups": [
+            {
+              "id": "dark",
+              "label": "Dark"
+            },
+            {
+              "id": "light",
+              "label": "light"
+            }
+          ],
+          "multiple": false,
+          "value": [],
+          "searchThreshold": 8,
+          "placeholder": "",
+          "emptyLabel": "",
+          "max": 0
+        },
+        "changed": true
+      }
+    },
+    "disabled": {
+      "base": {
+        "id": "colour-theme",
+        "label": "Colour theme",
+        "options": [
+          {
+            "value": "fresh-light",
+            "label": "Fresh Light",
+            "description": "The default day theme",
+            "icon": "sun",
+            "group": "light"
+          },
+          {
+            "value": "fresh-dark",
+            "label": "Fresh Dark",
+            "icon": "moon",
+            "group": "dark"
+          },
+          {
+            "value": "Aurora Night",
+            "label": "Aurora Night"
+          },
+          {
+            "value": "plum-noir",
+            "label": "Plum Noir",
+            "group": "dark",
+            "disabled": true
+          },
+          {
+            "value": "Mono Paper",
+            "label": "Mono Paper",
+            "group": "light",
+            "keywords": [
+              "print",
+              "grey"
+            ]
+          },
+          {
+            "value": "graphite-mint",
+            "label": "Graphite Mint",
+            "description": "Dark with a mint accent",
+            "group": "dark",
+            "keywords": [
+              "green"
+            ]
+          },
+          {
+            "value": "Sandstone",
+            "label": "Sandstone",
+            "group": "light"
+          }
+        ],
+        "groups": [
+          {
+            "id": "dark",
+            "label": "Dark"
+          },
+          {
+            "id": "light",
+            "label": "light"
+          }
+        ],
+        "multiple": false,
+        "value": [
+          "fresh-dark"
+        ],
+        "searchThreshold": 8,
+        "placeholder": "",
+        "emptyLabel": "",
+        "max": 0
+      },
+      "value": "plum-noir",
+      "out": {
+        "model": {
+          "id": "colour-theme",
+          "label": "Colour theme",
+          "options": [
+            {
+              "value": "fresh-light",
+              "label": "Fresh Light",
+              "description": "The default day theme",
+              "icon": "sun",
+              "group": "light"
+            },
+            {
+              "value": "fresh-dark",
+              "label": "Fresh Dark",
+              "icon": "moon",
+              "group": "dark"
+            },
+            {
+              "value": "Aurora Night",
+              "label": "Aurora Night"
+            },
+            {
+              "value": "plum-noir",
+              "label": "Plum Noir",
+              "group": "dark",
+              "disabled": true
+            },
+            {
+              "value": "Mono Paper",
+              "label": "Mono Paper",
+              "group": "light",
+              "keywords": [
+                "print",
+                "grey"
+              ]
+            },
+            {
+              "value": "graphite-mint",
+              "label": "Graphite Mint",
+              "description": "Dark with a mint accent",
+              "group": "dark",
+              "keywords": [
+                "green"
+              ]
+            },
+            {
+              "value": "Sandstone",
+              "label": "Sandstone",
+              "group": "light"
+            }
+          ],
+          "groups": [
+            {
+              "id": "dark",
+              "label": "Dark"
+            },
+            {
+              "id": "light",
+              "label": "light"
+            }
+          ],
+          "multiple": false,
+          "value": [
+            "fresh-dark"
+          ],
+          "searchThreshold": 8,
+          "placeholder": "",
+          "emptyLabel": "",
+          "max": 0
+        },
+        "changed": false
+      }
+    },
+    "unknown": {
+      "base": {
+        "id": "colour-theme",
+        "label": "Colour theme",
+        "options": [
+          {
+            "value": "fresh-light",
+            "label": "Fresh Light",
+            "description": "The default day theme",
+            "icon": "sun",
+            "group": "light"
+          },
+          {
+            "value": "fresh-dark",
+            "label": "Fresh Dark",
+            "icon": "moon",
+            "group": "dark"
+          },
+          {
+            "value": "Aurora Night",
+            "label": "Aurora Night"
+          },
+          {
+            "value": "plum-noir",
+            "label": "Plum Noir",
+            "group": "dark",
+            "disabled": true
+          },
+          {
+            "value": "Mono Paper",
+            "label": "Mono Paper",
+            "group": "light",
+            "keywords": [
+              "print",
+              "grey"
+            ]
+          },
+          {
+            "value": "graphite-mint",
+            "label": "Graphite Mint",
+            "description": "Dark with a mint accent",
+            "group": "dark",
+            "keywords": [
+              "green"
+            ]
+          },
+          {
+            "value": "Sandstone",
+            "label": "Sandstone",
+            "group": "light"
+          }
+        ],
+        "groups": [
+          {
+            "id": "dark",
+            "label": "Dark"
+          },
+          {
+            "id": "light",
+            "label": "light"
+          }
+        ],
+        "multiple": false,
+        "value": [
+          "fresh-dark"
+        ],
+        "searchThreshold": 8,
+        "placeholder": "",
+        "emptyLabel": "",
+        "max": 0
+      },
+      "value": "nope",
+      "out": {
+        "model": {
+          "id": "colour-theme",
+          "label": "Colour theme",
+          "options": [
+            {
+              "value": "fresh-light",
+              "label": "Fresh Light",
+              "description": "The default day theme",
+              "icon": "sun",
+              "group": "light"
+            },
+            {
+              "value": "fresh-dark",
+              "label": "Fresh Dark",
+              "icon": "moon",
+              "group": "dark"
+            },
+            {
+              "value": "Aurora Night",
+              "label": "Aurora Night"
+            },
+            {
+              "value": "plum-noir",
+              "label": "Plum Noir",
+              "group": "dark",
+              "disabled": true
+            },
+            {
+              "value": "Mono Paper",
+              "label": "Mono Paper",
+              "group": "light",
+              "keywords": [
+                "print",
+                "grey"
+              ]
+            },
+            {
+              "value": "graphite-mint",
+              "label": "Graphite Mint",
+              "description": "Dark with a mint accent",
+              "group": "dark",
+              "keywords": [
+                "green"
+              ]
+            },
+            {
+              "value": "Sandstone",
+              "label": "Sandstone",
+              "group": "light"
+            }
+          ],
+          "groups": [
+            {
+              "id": "dark",
+              "label": "Dark"
+            },
+            {
+              "id": "light",
+              "label": "light"
+            }
+          ],
+          "multiple": false,
+          "value": [
+            "fresh-dark"
+          ],
+          "searchThreshold": 8,
+          "placeholder": "",
+          "emptyLabel": "",
+          "max": 0
+        },
+        "changed": false
+      }
+    },
+    "toggleOn": {
+      "base": {
+        "id": "tags",
+        "label": "Tags",
+        "options": [
+          {
+            "value": "Red",
+            "label": "Red"
+          },
+          {
+            "value": "Green",
+            "label": "Green"
+          },
+          {
+            "value": "Blue",
+            "label": "Blue"
+          },
+          {
+            "value": "gold",
+            "label": "Gold",
+            "disabled": true
+          },
+          {
+            "value": "Violet",
+            "label": "Violet"
+          }
+        ],
+        "groups": [],
+        "multiple": true,
+        "value": [
+          "Blue"
+        ],
+        "searchThreshold": 0,
+        "placeholder": "Pick up to two",
+        "emptyLabel": "",
+        "max": 2
+      },
+      "value": "Red",
+      "out": {
+        "model": {
+          "id": "tags",
+          "label": "Tags",
+          "options": [
+            {
+              "value": "Red",
+              "label": "Red"
+            },
+            {
+              "value": "Green",
+              "label": "Green"
+            },
+            {
+              "value": "Blue",
+              "label": "Blue"
+            },
+            {
+              "value": "gold",
+              "label": "Gold",
+              "disabled": true
+            },
+            {
+              "value": "Violet",
+              "label": "Violet"
+            }
+          ],
+          "groups": [],
+          "multiple": true,
+          "value": [
+            "Red",
+            "Blue"
+          ],
+          "searchThreshold": 0,
+          "placeholder": "Pick up to two",
+          "emptyLabel": "",
+          "max": 2
+        },
+        "changed": true
+      }
+    },
+    "toggleOff": {
+      "base": {
+        "id": "tags",
+        "label": "Tags",
+        "options": [
+          {
+            "value": "Red",
+            "label": "Red"
+          },
+          {
+            "value": "Green",
+            "label": "Green"
+          },
+          {
+            "value": "Blue",
+            "label": "Blue"
+          },
+          {
+            "value": "gold",
+            "label": "Gold",
+            "disabled": true
+          },
+          {
+            "value": "Violet",
+            "label": "Violet"
+          }
+        ],
+        "groups": [],
+        "multiple": true,
+        "value": [
+          "Blue"
+        ],
+        "searchThreshold": 0,
+        "placeholder": "Pick up to two",
+        "emptyLabel": "",
+        "max": 2
+      },
+      "value": "Blue",
+      "out": {
+        "model": {
+          "id": "tags",
+          "label": "Tags",
+          "options": [
+            {
+              "value": "Red",
+              "label": "Red"
+            },
+            {
+              "value": "Green",
+              "label": "Green"
+            },
+            {
+              "value": "Blue",
+              "label": "Blue"
+            },
+            {
+              "value": "gold",
+              "label": "Gold",
+              "disabled": true
+            },
+            {
+              "value": "Violet",
+              "label": "Violet"
+            }
+          ],
+          "groups": [],
+          "multiple": true,
+          "value": [],
+          "searchThreshold": 0,
+          "placeholder": "Pick up to two",
+          "emptyLabel": "",
+          "max": 2
+        },
+        "changed": true
+      }
+    },
+    "refused": {
+      "base": {
+        "id": "tags",
+        "label": "Tags",
+        "options": [
+          {
+            "value": "Red",
+            "label": "Red"
+          },
+          {
+            "value": "Green",
+            "label": "Green"
+          },
+          {
+            "value": "Blue",
+            "label": "Blue"
+          },
+          {
+            "value": "gold",
+            "label": "Gold",
+            "disabled": true
+          },
+          {
+            "value": "Violet",
+            "label": "Violet"
+          }
+        ],
+        "groups": [],
+        "multiple": true,
+        "value": [
+          "Red",
+          "Blue"
+        ],
+        "searchThreshold": 0,
+        "placeholder": "Pick up to two",
+        "emptyLabel": "",
+        "max": 2
+      },
+      "value": "Violet",
+      "out": {
+        "model": {
+          "id": "tags",
+          "label": "Tags",
+          "options": [
+            {
+              "value": "Red",
+              "label": "Red"
+            },
+            {
+              "value": "Green",
+              "label": "Green"
+            },
+            {
+              "value": "Blue",
+              "label": "Blue"
+            },
+            {
+              "value": "gold",
+              "label": "Gold",
+              "disabled": true
+            },
+            {
+              "value": "Violet",
+              "label": "Violet"
+            }
+          ],
+          "groups": [],
+          "multiple": true,
+          "value": [
+            "Red",
+            "Blue"
+          ],
+          "searchThreshold": 0,
+          "placeholder": "Pick up to two",
+          "emptyLabel": "",
+          "max": 2
+        },
+        "changed": false
+      }
+    },
+    "clearMulti": {
+      "base": {
+        "id": "tags",
+        "label": "Tags",
+        "options": [
+          {
+            "value": "Red",
+            "label": "Red"
+          },
+          {
+            "value": "Green",
+            "label": "Green"
+          },
+          {
+            "value": "Blue",
+            "label": "Blue"
+          },
+          {
+            "value": "gold",
+            "label": "Gold",
+            "disabled": true
+          },
+          {
+            "value": "Violet",
+            "label": "Violet"
+          }
+        ],
+        "groups": [],
+        "multiple": true,
+        "value": [
+          "Blue"
+        ],
+        "searchThreshold": 0,
+        "placeholder": "Pick up to two",
+        "emptyLabel": "",
+        "max": 2
+      },
+      "value": "",
+      "out": {
+        "model": {
+          "id": "tags",
+          "label": "Tags",
+          "options": [
+            {
+              "value": "Red",
+              "label": "Red"
+            },
+            {
+              "value": "Green",
+              "label": "Green"
+            },
+            {
+              "value": "Blue",
+              "label": "Blue"
+            },
+            {
+              "value": "gold",
+              "label": "Gold",
+              "disabled": true
+            },
+            {
+              "value": "Violet",
+              "label": "Violet"
+            }
+          ],
+          "groups": [],
+          "multiple": true,
+          "value": [],
+          "searchThreshold": 0,
+          "placeholder": "Pick up to two",
+          "emptyLabel": "",
+          "max": 2
+        },
+        "changed": true
+      }
+    }
+  },
+  "setValue": {
+    "single": {
+      "base": {
+        "id": "colour-theme",
+        "label": "Colour theme",
+        "options": [
+          {
+            "value": "fresh-light",
+            "label": "Fresh Light",
+            "description": "The default day theme",
+            "icon": "sun",
+            "group": "light"
+          },
+          {
+            "value": "fresh-dark",
+            "label": "Fresh Dark",
+            "icon": "moon",
+            "group": "dark"
+          },
+          {
+            "value": "Aurora Night",
+            "label": "Aurora Night"
+          },
+          {
+            "value": "plum-noir",
+            "label": "Plum Noir",
+            "group": "dark",
+            "disabled": true
+          },
+          {
+            "value": "Mono Paper",
+            "label": "Mono Paper",
+            "group": "light",
+            "keywords": [
+              "print",
+              "grey"
+            ]
+          },
+          {
+            "value": "graphite-mint",
+            "label": "Graphite Mint",
+            "description": "Dark with a mint accent",
+            "group": "dark",
+            "keywords": [
+              "green"
+            ]
+          },
+          {
+            "value": "Sandstone",
+            "label": "Sandstone",
+            "group": "light"
+          }
+        ],
+        "groups": [
+          {
+            "id": "dark",
+            "label": "Dark"
+          },
+          {
+            "id": "light",
+            "label": "light"
+          }
+        ],
+        "multiple": false,
+        "value": [
+          "fresh-dark"
+        ],
+        "searchThreshold": 8,
+        "placeholder": "",
+        "emptyLabel": "",
+        "max": 0
+      },
+      "value": [
+        "Aurora Night",
+        "fresh-light"
+      ],
+      "out": {
+        "model": {
+          "id": "colour-theme",
+          "label": "Colour theme",
+          "options": [
+            {
+              "value": "fresh-light",
+              "label": "Fresh Light",
+              "description": "The default day theme",
+              "icon": "sun",
+              "group": "light"
+            },
+            {
+              "value": "fresh-dark",
+              "label": "Fresh Dark",
+              "icon": "moon",
+              "group": "dark"
+            },
+            {
+              "value": "Aurora Night",
+              "label": "Aurora Night"
+            },
+            {
+              "value": "plum-noir",
+              "label": "Plum Noir",
+              "group": "dark",
+              "disabled": true
+            },
+            {
+              "value": "Mono Paper",
+              "label": "Mono Paper",
+              "group": "light",
+              "keywords": [
+                "print",
+                "grey"
+              ]
+            },
+            {
+              "value": "graphite-mint",
+              "label": "Graphite Mint",
+              "description": "Dark with a mint accent",
+              "group": "dark",
+              "keywords": [
+                "green"
+              ]
+            },
+            {
+              "value": "Sandstone",
+              "label": "Sandstone",
+              "group": "light"
+            }
+          ],
+          "groups": [
+            {
+              "id": "dark",
+              "label": "Dark"
+            },
+            {
+              "id": "light",
+              "label": "light"
+            }
+          ],
+          "multiple": false,
+          "value": [
+            "Aurora Night"
+          ],
+          "searchThreshold": 8,
+          "placeholder": "",
+          "emptyLabel": "",
+          "max": 0
+        },
+        "changed": true
+      }
+    },
+    "string": {
+      "base": {
+        "id": "colour-theme",
+        "label": "Colour theme",
+        "options": [
+          {
+            "value": "fresh-light",
+            "label": "Fresh Light",
+            "description": "The default day theme",
+            "icon": "sun",
+            "group": "light"
+          },
+          {
+            "value": "fresh-dark",
+            "label": "Fresh Dark",
+            "icon": "moon",
+            "group": "dark"
+          },
+          {
+            "value": "Aurora Night",
+            "label": "Aurora Night"
+          },
+          {
+            "value": "plum-noir",
+            "label": "Plum Noir",
+            "group": "dark",
+            "disabled": true
+          },
+          {
+            "value": "Mono Paper",
+            "label": "Mono Paper",
+            "group": "light",
+            "keywords": [
+              "print",
+              "grey"
+            ]
+          },
+          {
+            "value": "graphite-mint",
+            "label": "Graphite Mint",
+            "description": "Dark with a mint accent",
+            "group": "dark",
+            "keywords": [
+              "green"
+            ]
+          },
+          {
+            "value": "Sandstone",
+            "label": "Sandstone",
+            "group": "light"
+          }
+        ],
+        "groups": [
+          {
+            "id": "dark",
+            "label": "Dark"
+          },
+          {
+            "id": "light",
+            "label": "light"
+          }
+        ],
+        "multiple": false,
+        "value": [
+          "fresh-dark"
+        ],
+        "searchThreshold": 8,
+        "placeholder": "",
+        "emptyLabel": "",
+        "max": 0
+      },
+      "value": "fresh-dark",
+      "out": {
+        "model": {
+          "id": "colour-theme",
+          "label": "Colour theme",
+          "options": [
+            {
+              "value": "fresh-light",
+              "label": "Fresh Light",
+              "description": "The default day theme",
+              "icon": "sun",
+              "group": "light"
+            },
+            {
+              "value": "fresh-dark",
+              "label": "Fresh Dark",
+              "icon": "moon",
+              "group": "dark"
+            },
+            {
+              "value": "Aurora Night",
+              "label": "Aurora Night"
+            },
+            {
+              "value": "plum-noir",
+              "label": "Plum Noir",
+              "group": "dark",
+              "disabled": true
+            },
+            {
+              "value": "Mono Paper",
+              "label": "Mono Paper",
+              "group": "light",
+              "keywords": [
+                "print",
+                "grey"
+              ]
+            },
+            {
+              "value": "graphite-mint",
+              "label": "Graphite Mint",
+              "description": "Dark with a mint accent",
+              "group": "dark",
+              "keywords": [
+                "green"
+              ]
+            },
+            {
+              "value": "Sandstone",
+              "label": "Sandstone",
+              "group": "light"
+            }
+          ],
+          "groups": [
+            {
+              "id": "dark",
+              "label": "Dark"
+            },
+            {
+              "id": "light",
+              "label": "light"
+            }
+          ],
+          "multiple": false,
+          "value": [
+            "fresh-dark"
+          ],
+          "searchThreshold": 8,
+          "placeholder": "",
+          "emptyLabel": "",
+          "max": 0
+        },
+        "changed": false
+      }
+    },
+    "multi": {
+      "base": {
+        "id": "tags",
+        "label": "Tags",
+        "options": [
+          {
+            "value": "Red",
+            "label": "Red"
+          },
+          {
+            "value": "Green",
+            "label": "Green"
+          },
+          {
+            "value": "Blue",
+            "label": "Blue"
+          },
+          {
+            "value": "gold",
+            "label": "Gold",
+            "disabled": true
+          },
+          {
+            "value": "Violet",
+            "label": "Violet"
+          }
+        ],
+        "groups": [],
+        "multiple": true,
+        "value": [
+          "Blue"
+        ],
+        "searchThreshold": 0,
+        "placeholder": "Pick up to two",
+        "emptyLabel": "",
+        "max": 2
+      },
+      "value": [
+        "Violet",
+        "gold",
+        "Red",
+        "Green"
+      ],
+      "out": {
+        "model": {
+          "id": "tags",
+          "label": "Tags",
+          "options": [
+            {
+              "value": "Red",
+              "label": "Red"
+            },
+            {
+              "value": "Green",
+              "label": "Green"
+            },
+            {
+              "value": "Blue",
+              "label": "Blue"
+            },
+            {
+              "value": "gold",
+              "label": "Gold",
+              "disabled": true
+            },
+            {
+              "value": "Violet",
+              "label": "Violet"
+            }
+          ],
+          "groups": [],
+          "multiple": true,
+          "value": [
+            "Violet",
+            "Red"
+          ],
+          "searchThreshold": 0,
+          "placeholder": "Pick up to two",
+          "emptyLabel": "",
+          "max": 2
+        },
+        "changed": true
+      }
+    }
+  },
+  "trigger": {
+    "chosen": {
+      "model": {
+        "id": "colour-theme",
+        "label": "Colour theme",
+        "options": [
+          {
+            "value": "fresh-light",
+            "label": "Fresh Light",
+            "description": "The default day theme",
+            "icon": "sun",
+            "group": "light"
+          },
+          {
+            "value": "fresh-dark",
+            "label": "Fresh Dark",
+            "icon": "moon",
+            "group": "dark"
+          },
+          {
+            "value": "Aurora Night",
+            "label": "Aurora Night"
+          },
+          {
+            "value": "plum-noir",
+            "label": "Plum Noir",
+            "group": "dark",
+            "disabled": true
+          },
+          {
+            "value": "Mono Paper",
+            "label": "Mono Paper",
+            "group": "light",
+            "keywords": [
+              "print",
+              "grey"
+            ]
+          },
+          {
+            "value": "graphite-mint",
+            "label": "Graphite Mint",
+            "description": "Dark with a mint accent",
+            "group": "dark",
+            "keywords": [
+              "green"
+            ]
+          },
+          {
+            "value": "Sandstone",
+            "label": "Sandstone",
+            "group": "light"
+          }
+        ],
+        "groups": [
+          {
+            "id": "dark",
+            "label": "Dark"
+          },
+          {
+            "id": "light",
+            "label": "light"
+          }
+        ],
+        "multiple": false,
+        "value": [
+          "fresh-dark"
+        ],
+        "searchThreshold": 8,
+        "placeholder": "",
+        "emptyLabel": "",
+        "max": 0
+      },
+      "text": "Fresh Dark",
+      "labels": [
+        "Fresh Dark"
+      ]
+    },
+    "nothing": {
+      "model": {
+        "id": "colour-theme",
+        "label": "Colour theme",
+        "options": [
+          {
+            "value": "fresh-light",
+            "label": "Fresh Light",
+            "description": "The default day theme",
+            "icon": "sun",
+            "group": "light"
+          },
+          {
+            "value": "fresh-dark",
+            "label": "Fresh Dark",
+            "icon": "moon",
+            "group": "dark"
+          },
+          {
+            "value": "Aurora Night",
+            "label": "Aurora Night"
+          },
+          {
+            "value": "plum-noir",
+            "label": "Plum Noir",
+            "group": "dark",
+            "disabled": true
+          },
+          {
+            "value": "Mono Paper",
+            "label": "Mono Paper",
+            "group": "light",
+            "keywords": [
+              "print",
+              "grey"
+            ]
+          },
+          {
+            "value": "graphite-mint",
+            "label": "Graphite Mint",
+            "description": "Dark with a mint accent",
+            "group": "dark",
+            "keywords": [
+              "green"
+            ]
+          },
+          {
+            "value": "Sandstone",
+            "label": "Sandstone",
+            "group": "light"
+          }
+        ],
+        "groups": [
+          {
+            "id": "dark",
+            "label": "Dark"
+          },
+          {
+            "id": "light",
+            "label": "light"
+          }
+        ],
+        "multiple": false,
+        "value": [],
+        "searchThreshold": 8,
+        "placeholder": "",
+        "emptyLabel": "",
+        "max": 0
+      },
+      "text": "Fresh Light",
+      "labels": []
+    },
+    "emptyLabel": {
+      "model": {
+        "id": "colour-theme",
+        "label": "Colour theme",
+        "options": [
+          {
+            "value": "fresh-light",
+            "label": "Fresh Light",
+            "description": "The default day theme",
+            "icon": "sun",
+            "group": "light"
+          },
+          {
+            "value": "fresh-dark",
+            "label": "Fresh Dark",
+            "icon": "moon",
+            "group": "dark"
+          },
+          {
+            "value": "Aurora Night",
+            "label": "Aurora Night"
+          },
+          {
+            "value": "plum-noir",
+            "label": "Plum Noir",
+            "group": "dark",
+            "disabled": true
+          },
+          {
+            "value": "Mono Paper",
+            "label": "Mono Paper",
+            "group": "light",
+            "keywords": [
+              "print",
+              "grey"
+            ]
+          },
+          {
+            "value": "graphite-mint",
+            "label": "Graphite Mint",
+            "description": "Dark with a mint accent",
+            "group": "dark",
+            "keywords": [
+              "green"
+            ]
+          },
+          {
+            "value": "Sandstone",
+            "label": "Sandstone",
+            "group": "light"
+          }
+        ],
+        "groups": [
+          {
+            "id": "dark",
+            "label": "Dark"
+          },
+          {
+            "id": "light",
+            "label": "light"
+          }
+        ],
+        "multiple": false,
+        "value": [],
+        "searchThreshold": 8,
+        "placeholder": "",
+        "emptyLabel": "Theme default",
+        "max": 0
+      },
+      "text": "Theme default",
+      "labels": []
+    },
+    "placeholder": {
+      "model": {
+        "id": "colour-theme",
+        "label": "Colour theme",
+        "options": [
+          {
+            "value": "fresh-light",
+            "label": "Fresh Light",
+            "description": "The default day theme",
+            "icon": "sun",
+            "group": "light"
+          },
+          {
+            "value": "fresh-dark",
+            "label": "Fresh Dark",
+            "icon": "moon",
+            "group": "dark"
+          },
+          {
+            "value": "Aurora Night",
+            "label": "Aurora Night"
+          },
+          {
+            "value": "plum-noir",
+            "label": "Plum Noir",
+            "group": "dark",
+            "disabled": true
+          },
+          {
+            "value": "Mono Paper",
+            "label": "Mono Paper",
+            "group": "light",
+            "keywords": [
+              "print",
+              "grey"
+            ]
+          },
+          {
+            "value": "graphite-mint",
+            "label": "Graphite Mint",
+            "description": "Dark with a mint accent",
+            "group": "dark",
+            "keywords": [
+              "green"
+            ]
+          },
+          {
+            "value": "Sandstone",
+            "label": "Sandstone",
+            "group": "light"
+          }
+        ],
+        "groups": [
+          {
+            "id": "dark",
+            "label": "Dark"
+          },
+          {
+            "id": "light",
+            "label": "light"
+          }
+        ],
+        "multiple": false,
+        "value": [],
+        "searchThreshold": 8,
+        "placeholder": "Pick a theme",
+        "emptyLabel": "",
+        "max": 0
+      },
+      "text": "Pick a theme",
+      "labels": []
+    },
+    "multiOne": {
+      "model": {
+        "id": "tags",
+        "label": "Tags",
+        "options": [
+          {
+            "value": "Red",
+            "label": "Red"
+          },
+          {
+            "value": "Green",
+            "label": "Green"
+          },
+          {
+            "value": "Blue",
+            "label": "Blue"
+          },
+          {
+            "value": "gold",
+            "label": "Gold",
+            "disabled": true
+          },
+          {
+            "value": "Violet",
+            "label": "Violet"
+          }
+        ],
+        "groups": [],
+        "multiple": true,
+        "value": [
+          "Blue"
+        ],
+        "searchThreshold": 0,
+        "placeholder": "Pick up to two",
+        "emptyLabel": "",
+        "max": 2
+      },
+      "text": "Blue",
+      "labels": [
+        "Blue"
+      ]
+    },
+    "multiNone": {
+      "model": {
+        "id": "tags",
+        "label": "Tags",
+        "options": [
+          {
+            "value": "Red",
+            "label": "Red"
+          },
+          {
+            "value": "Green",
+            "label": "Green"
+          },
+          {
+            "value": "Blue",
+            "label": "Blue"
+          },
+          {
+            "value": "gold",
+            "label": "Gold",
+            "disabled": true
+          },
+          {
+            "value": "Violet",
+            "label": "Violet"
+          }
+        ],
+        "groups": [],
+        "multiple": true,
+        "value": [],
+        "searchThreshold": 0,
+        "placeholder": "Pick up to two",
+        "emptyLabel": "",
+        "max": 2
+      },
+      "text": "Pick up to two",
+      "labels": []
+    },
+    "multiMany": {
+      "model": {
+        "id": "picker",
+        "label": "",
+        "options": [
+          {
+            "value": "A",
+            "label": "A"
+          },
+          {
+            "value": "B",
+            "label": "B"
+          },
+          {
+            "value": "C",
+            "label": "C"
+          },
+          {
+            "value": "D",
+            "label": "D"
+          },
+          {
+            "value": "E",
+            "label": "E"
+          }
+        ],
+        "groups": [],
+        "multiple": true,
+        "value": [
+          "E",
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "searchThreshold": 8,
+        "placeholder": "",
+        "emptyLabel": "",
+        "max": 0
+      },
+      "text": "A, B, C +2",
+      "labels": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E"
+      ]
+    }
+  },
+  "state": {
+    "open": {
+      "open": true,
+      "query": "",
+      "active": 1,
+      "filtered": [
+        {
+          "value": "fresh-light",
+          "label": "Fresh Light",
+          "description": "The default day theme",
+          "icon": "sun",
+          "group": "light",
+          "score": 0
+        },
+        {
+          "value": "fresh-dark",
+          "label": "Fresh Dark",
+          "icon": "moon",
+          "group": "dark",
+          "score": 0
+        },
+        {
+          "value": "Aurora Night",
+          "label": "Aurora Night",
+          "score": 0
+        },
+        {
+          "value": "plum-noir",
+          "label": "Plum Noir",
+          "group": "dark",
+          "disabled": true,
+          "score": 0
+        },
+        {
+          "value": "Mono Paper",
+          "label": "Mono Paper",
+          "group": "light",
+          "keywords": [
+            "print",
+            "grey"
+          ],
+          "score": 0
+        },
+        {
+          "value": "graphite-mint",
+          "label": "Graphite Mint",
+          "description": "Dark with a mint accent",
+          "group": "dark",
+          "keywords": [
+            "green"
+          ],
+          "score": 0
+        },
+        {
+          "value": "Sandstone",
+          "label": "Sandstone",
+          "group": "light",
+          "score": 0
+        }
+      ],
+      "typeahead": ""
+    },
+    "closed": {
+      "open": false,
+      "query": "",
+      "active": -1,
+      "filtered": [],
+      "typeahead": ""
+    },
+    "queryText": "dark",
+    "query": {
+      "open": true,
+      "query": "dark",
+      "active": 0,
+      "filtered": [
+        {
+          "value": "fresh-dark",
+          "label": "Fresh Dark",
+          "icon": "moon",
+          "group": "dark",
+          "score": 39.833333
+        },
+        {
+          "value": "plum-noir",
+          "label": "Plum Noir",
+          "group": "dark",
+          "disabled": true,
+          "score": 9.85
+        },
+        {
+          "value": "graphite-mint",
+          "label": "Graphite Mint",
+          "description": "Dark with a mint accent",
+          "group": "dark",
+          "keywords": [
+            "green"
+          ],
+          "score": 9.783333
+        }
+      ],
+      "typeahead": ""
+    },
+    "keys": [
+      "ArrowDown",
+      "ArrowDown",
+      "ArrowDown",
+      "ArrowUp",
+      "Home",
+      "End",
+      "PageUp",
+      "PageDown",
+      "ArrowDown",
+      "Escape",
+      "ArrowDown"
+    ],
+    "trail": [
+      {
+        "key": "ArrowDown",
+        "active": 2,
+        "label": "Aurora Night",
+        "effect": "",
+        "value": [
+          "fresh-dark"
+        ]
+      },
+      {
+        "key": "ArrowDown",
+        "active": 4,
+        "label": "Mono Paper",
+        "effect": "",
+        "value": [
+          "fresh-dark"
+        ]
+      },
+      {
+        "key": "ArrowDown",
+        "active": 5,
+        "label": "Graphite Mint",
+        "effect": "",
+        "value": [
+          "fresh-dark"
+        ]
+      },
+      {
+        "key": "ArrowUp",
+        "active": 4,
+        "label": "Mono Paper",
+        "effect": "",
+        "value": [
+          "fresh-dark"
+        ]
+      },
+      {
+        "key": "Home",
+        "active": 0,
+        "label": "Fresh Light",
+        "effect": "",
+        "value": [
+          "fresh-dark"
+        ]
+      },
+      {
+        "key": "End",
+        "active": 6,
+        "label": "Sandstone",
+        "effect": "",
+        "value": [
+          "fresh-dark"
+        ]
+      },
+      {
+        "key": "PageUp",
+        "active": 0,
+        "label": "Fresh Light",
+        "effect": "",
+        "value": [
+          "fresh-dark"
+        ]
+      },
+      {
+        "key": "PageDown",
+        "active": 6,
+        "label": "Sandstone",
+        "effect": "",
+        "value": [
+          "fresh-dark"
+        ]
+      },
+      {
+        "key": "ArrowDown",
+        "active": 6,
+        "label": "Sandstone",
+        "effect": "",
+        "value": [
+          "fresh-dark"
+        ]
+      },
+      {
+        "key": "Escape",
+        "active": -1,
+        "label": null,
+        "effect": "close",
+        "value": [
+          "fresh-dark"
+        ]
+      },
+      {
+        "key": "ArrowDown",
+        "active": -1,
+        "label": null,
+        "effect": "",
+        "value": [
+          "fresh-dark"
+        ]
+      }
+    ],
+    "typeahead": {
+      "m": {
+        "open": true,
+        "query": "",
+        "active": 4,
+        "filtered": [
+          {
+            "value": "fresh-light",
+            "label": "Fresh Light",
+            "description": "The default day theme",
+            "icon": "sun",
+            "group": "light",
+            "score": 0
+          },
+          {
+            "value": "fresh-dark",
+            "label": "Fresh Dark",
+            "icon": "moon",
+            "group": "dark",
+            "score": 0
+          },
+          {
+            "value": "Aurora Night",
+            "label": "Aurora Night",
+            "score": 0
+          },
+          {
+            "value": "plum-noir",
+            "label": "Plum Noir",
+            "group": "dark",
+            "disabled": true,
+            "score": 0
+          },
+          {
+            "value": "Mono Paper",
+            "label": "Mono Paper",
+            "group": "light",
+            "keywords": [
+              "print",
+              "grey"
+            ],
+            "score": 0
+          },
+          {
+            "value": "graphite-mint",
+            "label": "Graphite Mint",
+            "description": "Dark with a mint accent",
+            "group": "dark",
+            "keywords": [
+              "green"
+            ],
+            "score": 0
+          },
+          {
+            "value": "Sandstone",
+            "label": "Sandstone",
+            "group": "light",
+            "score": 0
+          }
+        ],
+        "typeahead": "m"
+      },
+      "fr": {
+        "open": true,
+        "query": "",
+        "active": 0,
+        "filtered": [
+          {
+            "value": "fresh-light",
+            "label": "Fresh Light",
+            "description": "The default day theme",
+            "icon": "sun",
+            "group": "light",
+            "score": 0
+          },
+          {
+            "value": "fresh-dark",
+            "label": "Fresh Dark",
+            "icon": "moon",
+            "group": "dark",
+            "score": 0
+          },
+          {
+            "value": "Aurora Night",
+            "label": "Aurora Night",
+            "score": 0
+          },
+          {
+            "value": "plum-noir",
+            "label": "Plum Noir",
+            "group": "dark",
+            "disabled": true,
+            "score": 0
+          },
+          {
+            "value": "Mono Paper",
+            "label": "Mono Paper",
+            "group": "light",
+            "keywords": [
+              "print",
+              "grey"
+            ],
+            "score": 0
+          },
+          {
+            "value": "graphite-mint",
+            "label": "Graphite Mint",
+            "description": "Dark with a mint accent",
+            "group": "dark",
+            "keywords": [
+              "green"
+            ],
+            "score": 0
+          },
+          {
+            "value": "Sandstone",
+            "label": "Sandstone",
+            "group": "light",
+            "score": 0
+          }
+        ],
+        "typeahead": "fr"
+      }
+    },
+    "enterSingle": {
+      "state": {
+        "open": false,
+        "query": "",
+        "active": -1,
+        "filtered": [],
+        "typeahead": ""
+      },
+      "model": {
+        "id": "colour-theme",
+        "label": "Colour theme",
+        "options": [
+          {
+            "value": "fresh-light",
+            "label": "Fresh Light",
+            "description": "The default day theme",
+            "icon": "sun",
+            "group": "light"
+          },
+          {
+            "value": "fresh-dark",
+            "label": "Fresh Dark",
+            "icon": "moon",
+            "group": "dark"
+          },
+          {
+            "value": "Aurora Night",
+            "label": "Aurora Night"
+          },
+          {
+            "value": "plum-noir",
+            "label": "Plum Noir",
+            "group": "dark",
+            "disabled": true
+          },
+          {
+            "value": "Mono Paper",
+            "label": "Mono Paper",
+            "group": "light",
+            "keywords": [
+              "print",
+              "grey"
+            ]
+          },
+          {
+            "value": "graphite-mint",
+            "label": "Graphite Mint",
+            "description": "Dark with a mint accent",
+            "group": "dark",
+            "keywords": [
+              "green"
+            ]
+          },
+          {
+            "value": "Sandstone",
+            "label": "Sandstone",
+            "group": "light"
+          }
+        ],
+        "groups": [
+          {
+            "id": "dark",
+            "label": "Dark"
+          },
+          {
+            "id": "light",
+            "label": "light"
+          }
+        ],
+        "multiple": false,
+        "value": [
+          "fresh-dark"
+        ],
+        "searchThreshold": 8,
+        "placeholder": "",
+        "emptyLabel": "",
+        "max": 0
+      },
+      "effect": "close"
+    },
+    "enterMulti": {
+      "state": {
+        "open": true,
+        "query": "",
+        "active": 2,
+        "filtered": [
+          {
+            "value": "Red",
+            "label": "Red",
+            "score": 0
+          },
+          {
+            "value": "Green",
+            "label": "Green",
+            "score": 0
+          },
+          {
+            "value": "Blue",
+            "label": "Blue",
+            "score": 0
+          },
+          {
+            "value": "gold",
+            "label": "Gold",
+            "disabled": true,
+            "score": 0
+          },
+          {
+            "value": "Violet",
+            "label": "Violet",
+            "score": 0
+          }
+        ],
+        "typeahead": ""
+      },
+      "model": {
+        "id": "tags",
+        "label": "Tags",
+        "options": [
+          {
+            "value": "Red",
+            "label": "Red"
+          },
+          {
+            "value": "Green",
+            "label": "Green"
+          },
+          {
+            "value": "Blue",
+            "label": "Blue"
+          },
+          {
+            "value": "gold",
+            "label": "Gold",
+            "disabled": true
+          },
+          {
+            "value": "Violet",
+            "label": "Violet"
+          }
+        ],
+        "groups": [],
+        "multiple": true,
+        "value": [],
+        "searchThreshold": 0,
+        "placeholder": "Pick up to two",
+        "emptyLabel": "",
+        "max": 2
+      },
+      "effect": "choose"
+    },
+    "escape": {
+      "state": {
+        "open": false,
+        "query": "",
+        "active": -1,
+        "filtered": [],
+        "typeahead": ""
+      },
+      "model": {
+        "id": "colour-theme",
+        "label": "Colour theme",
+        "options": [
+          {
+            "value": "fresh-light",
+            "label": "Fresh Light",
+            "description": "The default day theme",
+            "icon": "sun",
+            "group": "light"
+          },
+          {
+            "value": "fresh-dark",
+            "label": "Fresh Dark",
+            "icon": "moon",
+            "group": "dark"
+          },
+          {
+            "value": "Aurora Night",
+            "label": "Aurora Night"
+          },
+          {
+            "value": "plum-noir",
+            "label": "Plum Noir",
+            "group": "dark",
+            "disabled": true
+          },
+          {
+            "value": "Mono Paper",
+            "label": "Mono Paper",
+            "group": "light",
+            "keywords": [
+              "print",
+              "grey"
+            ]
+          },
+          {
+            "value": "graphite-mint",
+            "label": "Graphite Mint",
+            "description": "Dark with a mint accent",
+            "group": "dark",
+            "keywords": [
+              "green"
+            ]
+          },
+          {
+            "value": "Sandstone",
+            "label": "Sandstone",
+            "group": "light"
+          }
+        ],
+        "groups": [
+          {
+            "id": "dark",
+            "label": "Dark"
+          },
+          {
+            "id": "light",
+            "label": "light"
+          }
+        ],
+        "multiple": false,
+        "value": [
+          "fresh-dark"
+        ],
+        "searchThreshold": 8,
+        "placeholder": "",
+        "emptyLabel": "",
+        "max": 0
+      },
+      "effect": "close"
+    },
+    "typeIntoSearch": {
+      "state": {
+        "open": true,
+        "query": "",
+        "active": 1,
+        "filtered": [
+          {
+            "value": "fresh-light",
+            "label": "Fresh Light",
+            "description": "The default day theme",
+            "icon": "sun",
+            "group": "light",
+            "score": 0
+          },
+          {
+            "value": "fresh-dark",
+            "label": "Fresh Dark",
+            "icon": "moon",
+            "group": "dark",
+            "score": 0
+          },
+          {
+            "value": "Aurora Night",
+            "label": "Aurora Night",
+            "score": 0
+          },
+          {
+            "value": "plum-noir",
+            "label": "Plum Noir",
+            "group": "dark",
+            "disabled": true,
+            "score": 0
+          },
+          {
+            "value": "Mono Paper",
+            "label": "Mono Paper",
+            "group": "light",
+            "keywords": [
+              "print",
+              "grey"
+            ],
+            "score": 0
+          },
+          {
+            "value": "graphite-mint",
+            "label": "Graphite Mint",
+            "description": "Dark with a mint accent",
+            "group": "dark",
+            "keywords": [
+              "green"
+            ],
+            "score": 0
+          },
+          {
+            "value": "Sandstone",
+            "label": "Sandstone",
+            "group": "light",
+            "score": 0
+          }
+        ],
+        "typeahead": ""
+      },
+      "model": {
+        "id": "colour-theme",
+        "label": "Colour theme",
+        "options": [
+          {
+            "value": "fresh-light",
+            "label": "Fresh Light",
+            "description": "The default day theme",
+            "icon": "sun",
+            "group": "light"
+          },
+          {
+            "value": "fresh-dark",
+            "label": "Fresh Dark",
+            "icon": "moon",
+            "group": "dark"
+          },
+          {
+            "value": "Aurora Night",
+            "label": "Aurora Night"
+          },
+          {
+            "value": "plum-noir",
+            "label": "Plum Noir",
+            "group": "dark",
+            "disabled": true
+          },
+          {
+            "value": "Mono Paper",
+            "label": "Mono Paper",
+            "group": "light",
+            "keywords": [
+              "print",
+              "grey"
+            ]
+          },
+          {
+            "value": "graphite-mint",
+            "label": "Graphite Mint",
+            "description": "Dark with a mint accent",
+            "group": "dark",
+            "keywords": [
+              "green"
+            ]
+          },
+          {
+            "value": "Sandstone",
+            "label": "Sandstone",
+            "group": "light"
+          }
+        ],
+        "groups": [
+          {
+            "id": "dark",
+            "label": "Dark"
+          },
+          {
+            "id": "light",
+            "label": "light"
+          }
+        ],
+        "multiple": false,
+        "value": [
+          "fresh-dark"
+        ],
+        "searchThreshold": 8,
+        "placeholder": "",
+        "emptyLabel": "",
+        "max": 0
+      },
+      "effect": "type"
+    }
+  },
+  "names": {
+    "fresh dark": {
+      "option": {
+        "value": "fresh-dark",
+        "label": "Fresh Dark",
+        "icon": "moon",
+        "group": "dark"
+      },
+      "confidence": 1,
+      "index": 1
+    },
+    "Fresh Dark!": {
+      "option": {
+        "value": "fresh-dark",
+        "label": "Fresh Dark",
+        "icon": "moon",
+        "group": "dark"
+      },
+      "confidence": 1,
+      "index": 1
+    },
+    "FRESH-DARK": {
+      "option": {
+        "value": "fresh-dark",
+        "label": "Fresh Dark",
+        "icon": "moon",
+        "group": "dark"
+      },
+      "confidence": 1,
+      "index": 1
+    },
+    "fresh": {
+      "option": null,
+      "confidence": 0,
+      "ambiguous": [
+        "Fresh Light",
+        "Fresh Dark"
+      ]
+    },
+    "aurora": {
+      "option": {
+        "value": "Aurora Night",
+        "label": "Aurora Night"
+      },
+      "confidence": 0.8,
+      "index": 2
+    },
+    "night": {
+      "option": {
+        "value": "Aurora Night",
+        "label": "Aurora Night"
+      },
+      "confidence": 0.7,
+      "index": 2
+    },
+    "print": {
+      "option": {
+        "value": "Mono Paper",
+        "label": "Mono Paper",
+        "group": "light",
+        "keywords": [
+          "print",
+          "grey"
+        ]
+      },
+      "confidence": 0.5,
+      "index": 4
+    },
+    "green": {
+      "option": {
+        "value": "graphite-mint",
+        "label": "Graphite Mint",
+        "description": "Dark with a mint accent",
+        "group": "dark",
+        "keywords": [
+          "green"
+        ]
+      },
+      "confidence": 0.5,
+      "index": 5
+    },
+    "mint accent": {
+      "option": {
+        "value": "graphite-mint",
+        "label": "Graphite Mint",
+        "description": "Dark with a mint accent",
+        "group": "dark",
+        "keywords": [
+          "green"
+        ]
+      },
+      "confidence": 0.5,
+      "index": 5
+    },
+    "plum noir": {
+      "option": null,
+      "confidence": 0,
+      "ambiguous": []
+    },
+    "sandstone": {
+      "option": {
+        "value": "Sandstone",
+        "label": "Sandstone",
+        "group": "light"
+      },
+      "confidence": 1,
+      "index": 6
+    },
+    "nothing here": {
+      "option": null,
+      "confidence": 0,
+      "ambiguous": []
+    },
+    "": {
+      "option": null,
+      "confidence": 0,
+      "ambiguous": []
+    }
+  },
+  "positions": {
+    "2": {
+      "option": {
+        "value": "fresh-dark",
+        "label": "Fresh Dark",
+        "icon": "moon",
+        "group": "dark"
+      },
+      "confidence": 0.9,
+      "index": 1
+    },
+    "the third one": {
+      "option": {
+        "value": "Aurora Night",
+        "label": "Aurora Night"
+      },
+      "confidence": 0.9,
+      "index": 2
+    },
+    "number 2": {
+      "option": {
+        "value": "fresh-dark",
+        "label": "Fresh Dark",
+        "icon": "moon",
+        "group": "dark"
+      },
+      "confidence": 0.9,
+      "index": 1
+    },
+    "one": {
+      "option": {
+        "value": "fresh-light",
+        "label": "Fresh Light",
+        "description": "The default day theme",
+        "icon": "sun",
+        "group": "light"
+      },
+      "confidence": 0.9,
+      "index": 0
+    },
+    "the last one": {
+      "option": {
+        "value": "Sandstone",
+        "label": "Sandstone",
+        "group": "light"
+      },
+      "confidence": 0.9,
+      "index": 6
+    },
+    "the ninety-ninth one": null,
+    "hello": null
+  },
+  "spokenQuery": "fre",
+  "spoken": {
+    "Fresh Light": {
+      "option": {
+        "value": "fresh-light",
+        "label": "Fresh Light",
+        "description": "The default day theme",
+        "icon": "sun",
+        "group": "light",
+        "score": 59.816667
+      },
+      "confidence": 1,
+      "index": 1
+    },
+    "the first one": {
+      "option": {
+        "value": "fresh-dark",
+        "label": "Fresh Dark",
+        "icon": "moon",
+        "group": "dark",
+        "score": 59.833333
+      },
+      "confidence": 0.9,
+      "index": 0
+    },
+    "the second one": {
+      "option": {
+        "value": "fresh-light",
+        "label": "Fresh Light",
+        "description": "The default day theme",
+        "icon": "sun",
+        "group": "light",
+        "score": 59.816667
+      },
+      "confidence": 0.9,
+      "index": 1
+    },
+    "dark": {
+      "option": {
+        "value": "fresh-dark",
+        "label": "Fresh Dark",
+        "icon": "moon",
+        "group": "dark",
+        "score": 59.833333
+      },
+      "confidence": 0.7,
+      "index": 0
+    }
+  },
+  "ids": {
+    "theme": "theme",
+    "Colour theme!": "colour-theme",
+    "  Émile’s pick  ": "emile-s-pick",
+    "tags[]": "tags",
+    "a.b:c-d_e": "a.b:c-d_e",
+    "": "picker",
+    "---": "picker"
+  },
+  "uniqueIds": [
+    "theme",
+    "theme-2",
+    "theme-3"
+  ],
+  "fold": {
+    "Fresh Dark!": "fresh dark",
+    "Émile’s  pick": "emile s pick",
+    "CAFÉ-noir": "cafe noir",
+    "  ": ""
+  },
+  "tokens": {
+    "registry": [
+      {
+        "name": "--fx-picker-surface",
+        "group": "surface",
+        "state": "rest",
+        "default": "var(--fx-surface)",
+        "draws": "the dialog / sheet background"
+      },
+      {
+        "name": "--fx-picker-text",
+        "group": "surface",
+        "state": "rest",
+        "default": "var(--fx-text)",
+        "draws": "its text"
+      },
+      {
+        "name": "--fx-picker-border",
+        "group": "surface",
+        "state": "rest",
+        "default": "var(--fx-border)",
+        "draws": "its border"
+      },
+      {
+        "name": "--fx-picker-shadow",
+        "group": "surface",
+        "state": "rest",
+        "default": "var(--fx-shadow-lg)",
+        "draws": "its shadow"
+      },
+      {
+        "name": "--fx-picker-backdrop",
+        "group": "surface",
+        "state": "rest",
+        "default": "color-mix(in srgb, var(--fx-shadow) calc(var(--fx-opacity-scrim) * 100%), transparent)",
+        "draws": "the scrim behind it"
+      },
+      {
+        "name": "--fx-picker-header-bg",
+        "group": "header",
+        "state": "rest",
+        "default": "var(--fx-surface2)",
+        "draws": "the header row"
+      },
+      {
+        "name": "--fx-picker-header-text",
+        "group": "header",
+        "state": "rest",
+        "default": "var(--fx-text)",
+        "draws": "the header label"
+      },
+      {
+        "name": "--fx-picker-search-bg",
+        "group": "search",
+        "state": "rest",
+        "default": "var(--fx-bg)",
+        "draws": "the search field"
+      },
+      {
+        "name": "--fx-picker-search-text",
+        "group": "search",
+        "state": "rest",
+        "default": "var(--fx-text)",
+        "draws": "its text"
+      },
+      {
+        "name": "--fx-picker-search-border",
+        "group": "search",
+        "state": "rest",
+        "default": "var(--fx-border)",
+        "draws": "its border"
+      },
+      {
+        "name": "--fx-picker-search-focus",
+        "group": "search",
+        "state": "focus",
+        "default": "var(--fx-accent)",
+        "draws": "its border when focused"
+      },
+      {
+        "name": "--fx-picker-option-bg",
+        "group": "option",
+        "state": "rest",
+        "default": "transparent",
+        "draws": "an option row"
+      },
+      {
+        "name": "--fx-picker-option-text",
+        "group": "option",
+        "state": "rest",
+        "default": "var(--fx-text)",
+        "draws": "its label"
+      },
+      {
+        "name": "--fx-picker-option-desc",
+        "group": "option",
+        "state": "rest",
+        "default": "var(--fx-muted)",
+        "draws": "its description"
+      },
+      {
+        "name": "--fx-picker-option-icon",
+        "group": "option",
+        "state": "rest",
+        "default": "var(--fx-muted)",
+        "draws": "its icon"
+      },
+      {
+        "name": "--fx-picker-hover-bg",
+        "group": "option",
+        "state": "hover",
+        "default": "var(--fx-accent-soft)",
+        "draws": "a hovered row"
+      },
+      {
+        "name": "--fx-picker-hover-text",
+        "group": "option",
+        "state": "hover",
+        "default": "var(--fx-text)",
+        "draws": "a hovered row's text"
+      },
+      {
+        "name": "--fx-picker-focus-ring",
+        "group": "option",
+        "state": "focus",
+        "default": "var(--fx-focus)",
+        "draws": "the active row's outline (keyboard)"
+      },
+      {
+        "name": "--fx-picker-selected-bg",
+        "group": "option",
+        "state": "selected",
+        "default": "var(--fx-accent-soft)",
+        "draws": "a chosen row"
+      },
+      {
+        "name": "--fx-picker-selected-text",
+        "group": "option",
+        "state": "selected",
+        "default": "var(--fx-text)",
+        "draws": "a chosen row's label"
+      },
+      {
+        "name": "--fx-picker-check",
+        "group": "option",
+        "state": "selected",
+        "default": "var(--fx-accent)",
+        "draws": "the check mark"
+      },
+      {
+        "name": "--fx-picker-disabled-opacity",
+        "group": "option",
+        "state": "disabled",
+        "default": "max(var(--fx-opacity-disabled), 0.45)",
+        "draws": "a disabled row"
+      },
+      {
+        "name": "--fx-picker-group-bg",
+        "group": "group",
+        "state": "rest",
+        "default": "var(--fx-picker-surface)",
+        "draws": "a sticky group label row"
+      },
+      {
+        "name": "--fx-picker-group-text",
+        "group": "group",
+        "state": "rest",
+        "default": "var(--fx-muted)",
+        "draws": "the group label"
+      },
+      {
+        "name": "--fx-picker-handle",
+        "group": "sheet",
+        "state": "rest",
+        "default": "var(--fx-border)",
+        "draws": "the sheet's drag handle"
+      },
+      {
+        "name": "--fx-picker-radius",
+        "group": "shape",
+        "state": "rest",
+        "default": "var(--fx-radius-lg)",
+        "draws": "the dialog / sheet corners"
+      },
+      {
+        "name": "--fx-picker-option-radius",
+        "group": "shape",
+        "state": "rest",
+        "default": "calc(var(--fx-radius-md) - var(--fx-dens-gap-sm))",
+        "draws": "row corners (today's menu item)"
+      },
+      {
+        "name": "--fx-picker-border-w",
+        "group": "shape",
+        "state": "rest",
+        "default": "var(--fx-border-w)",
+        "draws": "every border"
+      },
+      {
+        "name": "--fx-picker-pad",
+        "group": "spacing",
+        "state": "rest",
+        "default": "var(--fx-dens-gap-md)",
+        "draws": "padding around the list (today's .fx-dropdown)"
+      },
+      {
+        "name": "--fx-picker-gap",
+        "group": "spacing",
+        "state": "rest",
+        "default": "var(--fx-dens-gap-sm)",
+        "draws": "gap between rows and between header / search / list"
+      },
+      {
+        "name": "--fx-picker-option-pad-y",
+        "group": "spacing",
+        "state": "rest",
+        "default": "var(--fx-dens-gap-lg)",
+        "draws": "row padding, vertical (today's menu item; scaled by the asset's density)"
+      },
+      {
+        "name": "--fx-picker-option-pad-x",
+        "group": "spacing",
+        "state": "rest",
+        "default": "var(--fx-dens-gap-xl)",
+        "draws": "row padding, horizontal (scaled by the asset's density)"
+      },
+      {
+        "name": "--fx-picker-option-gap",
+        "group": "spacing",
+        "state": "rest",
+        "default": "var(--fx-dens-gap-2xl)",
+        "draws": "icon / label / check gap (today's menu item)"
+      },
+      {
+        "name": "--fx-picker-row-h",
+        "group": "size",
+        "state": "rest",
+        "default": "var(--fx-dens-row-menu)",
+        "draws": "row height"
+      },
+      {
+        "name": "--fx-picker-font",
+        "group": "type",
+        "state": "rest",
+        "default": "var(--fx-type-scale-md)",
+        "draws": "row text size (today's menu item)"
+      },
+      {
+        "name": "--fx-picker-desc-font",
+        "group": "type",
+        "state": "rest",
+        "default": "var(--fx-type-scale-sm)",
+        "draws": "description size"
+      },
+      {
+        "name": "--fx-picker-group-font",
+        "group": "type",
+        "state": "rest",
+        "default": "var(--fx-type-scale-xs)",
+        "draws": "group label size"
+      },
+      {
+        "name": "--fx-picker-width",
+        "group": "size",
+        "state": "rest",
+        "default": "min(calc(var(--fx-space) * 46), calc(100vw - var(--fx-dens-gap-2xl) * 2))",
+        "draws": "dialog width"
+      },
+      {
+        "name": "--fx-picker-max-h",
+        "group": "size",
+        "state": "rest",
+        "default": "min(70dvh, calc(var(--fx-picker-row-h) * 14))",
+        "draws": "dialog height cap (scrolls past it)"
+      },
+      {
+        "name": "--fx-picker-sheet-max-h",
+        "group": "size",
+        "state": "rest",
+        "default": "85dvh",
+        "draws": "sheet height cap"
+      },
+      {
+        "name": "--fx-picker-motion",
+        "group": "motion",
+        "state": "rest",
+        "default": "var(--fx-motion)",
+        "draws": "open / close duration"
+      }
+    ],
+    "states": [
+      "rest",
+      "hover",
+      "focus",
+      "selected",
+      "disabled"
+    ],
+    "assetDefault": {
+      "variant": "auto",
+      "search": "auto",
+      "searchThreshold": 8,
+      "checkmarks": "end",
+      "descriptions": true,
+      "density": "regular",
+      "doneButton": true
+    },
+    "defaults": {
+      "vars": {
+        "--fx-picker-surface": "var(--fx-surface)",
+        "--fx-picker-text": "var(--fx-text)",
+        "--fx-picker-border": "var(--fx-border)",
+        "--fx-picker-shadow": "var(--fx-shadow-lg)",
+        "--fx-picker-backdrop": "color-mix(in srgb, var(--fx-shadow) calc(var(--fx-opacity-scrim) * 100%), transparent)",
+        "--fx-picker-header-bg": "var(--fx-surface2)",
+        "--fx-picker-header-text": "var(--fx-text)",
+        "--fx-picker-search-bg": "var(--fx-bg)",
+        "--fx-picker-search-text": "var(--fx-text)",
+        "--fx-picker-search-border": "var(--fx-border)",
+        "--fx-picker-search-focus": "var(--fx-accent)",
+        "--fx-picker-option-bg": "transparent",
+        "--fx-picker-option-text": "var(--fx-text)",
+        "--fx-picker-option-desc": "var(--fx-muted)",
+        "--fx-picker-option-icon": "var(--fx-muted)",
+        "--fx-picker-hover-bg": "var(--fx-accent-soft)",
+        "--fx-picker-hover-text": "var(--fx-text)",
+        "--fx-picker-focus-ring": "var(--fx-focus)",
+        "--fx-picker-selected-bg": "var(--fx-accent-soft)",
+        "--fx-picker-selected-text": "var(--fx-text)",
+        "--fx-picker-check": "var(--fx-accent)",
+        "--fx-picker-disabled-opacity": "max(var(--fx-opacity-disabled), 0.45)",
+        "--fx-picker-group-bg": "var(--fx-picker-surface)",
+        "--fx-picker-group-text": "var(--fx-muted)",
+        "--fx-picker-handle": "var(--fx-border)",
+        "--fx-picker-radius": "var(--fx-radius-lg)",
+        "--fx-picker-option-radius": "calc(var(--fx-radius-md) - var(--fx-dens-gap-sm))",
+        "--fx-picker-border-w": "var(--fx-border-w)",
+        "--fx-picker-pad": "var(--fx-dens-gap-md)",
+        "--fx-picker-gap": "var(--fx-dens-gap-sm)",
+        "--fx-picker-option-pad-y": "var(--fx-dens-gap-lg)",
+        "--fx-picker-option-pad-x": "var(--fx-dens-gap-xl)",
+        "--fx-picker-option-gap": "var(--fx-dens-gap-2xl)",
+        "--fx-picker-row-h": "var(--fx-dens-row-menu)",
+        "--fx-picker-font": "var(--fx-type-scale-md)",
+        "--fx-picker-desc-font": "var(--fx-type-scale-sm)",
+        "--fx-picker-group-font": "var(--fx-type-scale-xs)",
+        "--fx-picker-width": "min(calc(var(--fx-space) * 46), calc(100vw - var(--fx-dens-gap-2xl) * 2))",
+        "--fx-picker-max-h": "min(70dvh, calc(var(--fx-picker-row-h) * 14))",
+        "--fx-picker-sheet-max-h": "85dvh",
+        "--fx-picker-motion": "var(--fx-motion)"
+      },
+      "attrs": {
+        "data-fx-picker-variant": "auto",
+        "data-fx-picker-search": "8",
+        "data-fx-picker-check": "end",
+        "data-fx-picker-desc": "on",
+        "data-fx-picker-done": "on",
+        "data-fx-picker-density": "regular"
+      }
+    },
+    "starters": {
+      "bottom-sheet": {
+        "data": {
+          "variant": "sheet",
+          "search": "auto",
+          "searchThreshold": 12,
+          "checkmarks": "end",
+          "descriptions": true,
+          "density": "roomy",
+          "doneButton": true
+        },
+        "style": {
+          "vars": {
+            "--fx-picker-surface": "var(--fx-surface)",
+            "--fx-picker-text": "var(--fx-text)",
+            "--fx-picker-border": "var(--fx-border)",
+            "--fx-picker-shadow": "var(--fx-shadow-lg)",
+            "--fx-picker-backdrop": "color-mix(in srgb, var(--fx-shadow) calc(var(--fx-opacity-scrim) * 100%), transparent)",
+            "--fx-picker-header-bg": "var(--fx-surface2)",
+            "--fx-picker-header-text": "var(--fx-text)",
+            "--fx-picker-search-bg": "var(--fx-bg)",
+            "--fx-picker-search-text": "var(--fx-text)",
+            "--fx-picker-search-border": "var(--fx-border)",
+            "--fx-picker-search-focus": "var(--fx-accent)",
+            "--fx-picker-option-bg": "transparent",
+            "--fx-picker-option-text": "var(--fx-text)",
+            "--fx-picker-option-desc": "var(--fx-muted)",
+            "--fx-picker-option-icon": "var(--fx-muted)",
+            "--fx-picker-hover-bg": "var(--fx-accent-soft)",
+            "--fx-picker-hover-text": "var(--fx-text)",
+            "--fx-picker-focus-ring": "var(--fx-focus)",
+            "--fx-picker-selected-bg": "var(--fx-accent-soft)",
+            "--fx-picker-selected-text": "var(--fx-text)",
+            "--fx-picker-check": "var(--fx-accent)",
+            "--fx-picker-disabled-opacity": "max(var(--fx-opacity-disabled), 0.45)",
+            "--fx-picker-group-bg": "var(--fx-picker-surface)",
+            "--fx-picker-group-text": "var(--fx-muted)",
+            "--fx-picker-handle": "var(--fx-border)",
+            "--fx-picker-radius": "var(--fx-radius-lg)",
+            "--fx-picker-option-radius": "calc(var(--fx-radius-md) - var(--fx-dens-gap-sm))",
+            "--fx-picker-border-w": "var(--fx-border-w)",
+            "--fx-picker-pad": "var(--fx-dens-gap-md)",
+            "--fx-picker-gap": "var(--fx-dens-gap-sm)",
+            "--fx-picker-option-pad-y": "var(--fx-dens-gap-xl)",
+            "--fx-picker-option-pad-x": "var(--fx-dens-gap-2xl)",
+            "--fx-picker-option-gap": "var(--fx-dens-gap-2xl)",
+            "--fx-picker-row-h": "var(--fx-dens-row-menu)",
+            "--fx-picker-font": "var(--fx-type-scale-md)",
+            "--fx-picker-desc-font": "var(--fx-type-scale-sm)",
+            "--fx-picker-group-font": "var(--fx-type-scale-xs)",
+            "--fx-picker-width": "min(calc(var(--fx-space) * 46), calc(100vw - var(--fx-dens-gap-2xl) * 2))",
+            "--fx-picker-max-h": "min(70dvh, calc(var(--fx-picker-row-h) * 14))",
+            "--fx-picker-sheet-max-h": "85dvh",
+            "--fx-picker-motion": "var(--fx-motion)"
+          },
+          "attrs": {
+            "data-fx-picker-variant": "sheet",
+            "data-fx-picker-search": "12",
+            "data-fx-picker-check": "end",
+            "data-fx-picker-desc": "on",
+            "data-fx-picker-done": "on",
+            "data-fx-picker-density": "roomy"
+          }
+        }
+      },
+      "compact-list": {
+        "data": {
+          "variant": "dialog",
+          "search": "auto",
+          "searchThreshold": 10,
+          "checkmarks": "start",
+          "descriptions": false,
+          "density": "compact",
+          "doneButton": true
+        },
+        "style": {
+          "vars": {
+            "--fx-picker-surface": "var(--fx-surface)",
+            "--fx-picker-text": "var(--fx-text)",
+            "--fx-picker-border": "var(--fx-border)",
+            "--fx-picker-shadow": "var(--fx-shadow-lg)",
+            "--fx-picker-backdrop": "color-mix(in srgb, var(--fx-shadow) calc(var(--fx-opacity-scrim) * 100%), transparent)",
+            "--fx-picker-header-bg": "var(--fx-surface2)",
+            "--fx-picker-header-text": "var(--fx-text)",
+            "--fx-picker-search-bg": "var(--fx-bg)",
+            "--fx-picker-search-text": "var(--fx-text)",
+            "--fx-picker-search-border": "var(--fx-border)",
+            "--fx-picker-search-focus": "var(--fx-accent)",
+            "--fx-picker-option-bg": "transparent",
+            "--fx-picker-option-text": "var(--fx-text)",
+            "--fx-picker-option-desc": "var(--fx-muted)",
+            "--fx-picker-option-icon": "var(--fx-muted)",
+            "--fx-picker-hover-bg": "var(--fx-accent-soft)",
+            "--fx-picker-hover-text": "var(--fx-text)",
+            "--fx-picker-focus-ring": "var(--fx-focus)",
+            "--fx-picker-selected-bg": "var(--fx-accent-soft)",
+            "--fx-picker-selected-text": "var(--fx-text)",
+            "--fx-picker-check": "var(--fx-accent)",
+            "--fx-picker-disabled-opacity": "max(var(--fx-opacity-disabled), 0.45)",
+            "--fx-picker-group-bg": "var(--fx-picker-surface)",
+            "--fx-picker-group-text": "var(--fx-muted)",
+            "--fx-picker-handle": "var(--fx-border)",
+            "--fx-picker-radius": "var(--fx-radius-lg)",
+            "--fx-picker-option-radius": "calc(var(--fx-radius-md) - var(--fx-dens-gap-sm))",
+            "--fx-picker-border-w": "var(--fx-border-w)",
+            "--fx-picker-pad": "var(--fx-dens-gap-md)",
+            "--fx-picker-gap": "var(--fx-dens-gap-sm)",
+            "--fx-picker-option-pad-y": "var(--fx-dens-gap-md)",
+            "--fx-picker-option-pad-x": "var(--fx-dens-gap-lg)",
+            "--fx-picker-option-gap": "var(--fx-dens-gap-2xl)",
+            "--fx-picker-row-h": "var(--fx-dens-row-menu)",
+            "--fx-picker-font": "var(--fx-type-scale-md)",
+            "--fx-picker-desc-font": "var(--fx-type-scale-sm)",
+            "--fx-picker-group-font": "var(--fx-type-scale-xs)",
+            "--fx-picker-width": "min(calc(var(--fx-space) * 46), calc(100vw - var(--fx-dens-gap-2xl) * 2))",
+            "--fx-picker-max-h": "min(70dvh, calc(var(--fx-picker-row-h) * 14))",
+            "--fx-picker-sheet-max-h": "85dvh",
+            "--fx-picker-motion": "var(--fx-motion)"
+          },
+          "attrs": {
+            "data-fx-picker-variant": "dialog",
+            "data-fx-picker-search": "10",
+            "data-fx-picker-check": "start",
+            "data-fx-picker-desc": "off",
+            "data-fx-picker-done": "on",
+            "data-fx-picker-density": "compact"
+          }
+        }
+      },
+      "plain-menu": {
+        "data": {
+          "variant": "dialog",
+          "search": "never",
+          "searchThreshold": 8,
+          "checkmarks": "none",
+          "descriptions": false,
+          "density": "regular",
+          "doneButton": false
+        },
+        "style": {
+          "vars": {
+            "--fx-picker-surface": "var(--fx-surface)",
+            "--fx-picker-text": "var(--fx-text)",
+            "--fx-picker-border": "var(--fx-border)",
+            "--fx-picker-shadow": "var(--fx-shadow-lg)",
+            "--fx-picker-backdrop": "color-mix(in srgb, var(--fx-shadow) calc(var(--fx-opacity-scrim) * 100%), transparent)",
+            "--fx-picker-header-bg": "var(--fx-surface2)",
+            "--fx-picker-header-text": "var(--fx-text)",
+            "--fx-picker-search-bg": "var(--fx-bg)",
+            "--fx-picker-search-text": "var(--fx-text)",
+            "--fx-picker-search-border": "var(--fx-border)",
+            "--fx-picker-search-focus": "var(--fx-accent)",
+            "--fx-picker-option-bg": "transparent",
+            "--fx-picker-option-text": "var(--fx-text)",
+            "--fx-picker-option-desc": "var(--fx-muted)",
+            "--fx-picker-option-icon": "var(--fx-muted)",
+            "--fx-picker-hover-bg": "var(--fx-accent-soft)",
+            "--fx-picker-hover-text": "var(--fx-text)",
+            "--fx-picker-focus-ring": "var(--fx-focus)",
+            "--fx-picker-selected-bg": "var(--fx-accent-soft)",
+            "--fx-picker-selected-text": "var(--fx-text)",
+            "--fx-picker-check": "var(--fx-accent)",
+            "--fx-picker-disabled-opacity": "max(var(--fx-opacity-disabled), 0.45)",
+            "--fx-picker-group-bg": "var(--fx-picker-surface)",
+            "--fx-picker-group-text": "var(--fx-muted)",
+            "--fx-picker-handle": "var(--fx-border)",
+            "--fx-picker-radius": "var(--fx-radius-lg)",
+            "--fx-picker-option-radius": "calc(var(--fx-radius-md) - var(--fx-dens-gap-sm))",
+            "--fx-picker-border-w": "var(--fx-border-w)",
+            "--fx-picker-pad": "var(--fx-dens-gap-md)",
+            "--fx-picker-gap": "var(--fx-dens-gap-sm)",
+            "--fx-picker-option-pad-y": "var(--fx-dens-gap-lg)",
+            "--fx-picker-option-pad-x": "var(--fx-dens-gap-xl)",
+            "--fx-picker-option-gap": "var(--fx-dens-gap-2xl)",
+            "--fx-picker-row-h": "var(--fx-dens-row-menu)",
+            "--fx-picker-font": "var(--fx-type-scale-md)",
+            "--fx-picker-desc-font": "var(--fx-type-scale-sm)",
+            "--fx-picker-group-font": "var(--fx-type-scale-xs)",
+            "--fx-picker-width": "min(calc(var(--fx-space) * 46), calc(100vw - var(--fx-dens-gap-2xl) * 2))",
+            "--fx-picker-max-h": "min(70dvh, calc(var(--fx-picker-row-h) * 14))",
+            "--fx-picker-sheet-max-h": "85dvh",
+            "--fx-picker-motion": "var(--fx-motion)"
+          },
+          "attrs": {
+            "data-fx-picker-variant": "dialog",
+            "data-fx-picker-search": "never",
+            "data-fx-picker-check": "none",
+            "data-fx-picker-desc": "off",
+            "data-fx-picker-done": "off",
+            "data-fx-picker-density": "regular"
+          }
+        }
+      },
+      "search-first": {
+        "data": {
+          "variant": "auto",
+          "search": "always",
+          "searchThreshold": 0,
+          "checkmarks": "end",
+          "descriptions": true,
+          "density": "regular",
+          "doneButton": true
+        },
+        "style": {
+          "vars": {
+            "--fx-picker-surface": "var(--fx-surface)",
+            "--fx-picker-text": "var(--fx-text)",
+            "--fx-picker-border": "var(--fx-border)",
+            "--fx-picker-shadow": "var(--fx-shadow-lg)",
+            "--fx-picker-backdrop": "color-mix(in srgb, var(--fx-shadow) calc(var(--fx-opacity-scrim) * 100%), transparent)",
+            "--fx-picker-header-bg": "var(--fx-surface2)",
+            "--fx-picker-header-text": "var(--fx-text)",
+            "--fx-picker-search-bg": "var(--fx-bg)",
+            "--fx-picker-search-text": "var(--fx-text)",
+            "--fx-picker-search-border": "var(--fx-border)",
+            "--fx-picker-search-focus": "var(--fx-accent)",
+            "--fx-picker-option-bg": "transparent",
+            "--fx-picker-option-text": "var(--fx-text)",
+            "--fx-picker-option-desc": "var(--fx-muted)",
+            "--fx-picker-option-icon": "var(--fx-muted)",
+            "--fx-picker-hover-bg": "var(--fx-accent-soft)",
+            "--fx-picker-hover-text": "var(--fx-text)",
+            "--fx-picker-focus-ring": "var(--fx-focus)",
+            "--fx-picker-selected-bg": "var(--fx-accent-soft)",
+            "--fx-picker-selected-text": "var(--fx-text)",
+            "--fx-picker-check": "var(--fx-accent)",
+            "--fx-picker-disabled-opacity": "max(var(--fx-opacity-disabled), 0.45)",
+            "--fx-picker-group-bg": "var(--fx-picker-surface)",
+            "--fx-picker-group-text": "var(--fx-muted)",
+            "--fx-picker-handle": "var(--fx-border)",
+            "--fx-picker-radius": "var(--fx-radius-lg)",
+            "--fx-picker-option-radius": "calc(var(--fx-radius-md) - var(--fx-dens-gap-sm))",
+            "--fx-picker-border-w": "var(--fx-border-w)",
+            "--fx-picker-pad": "var(--fx-dens-gap-md)",
+            "--fx-picker-gap": "var(--fx-dens-gap-sm)",
+            "--fx-picker-option-pad-y": "var(--fx-dens-gap-lg)",
+            "--fx-picker-option-pad-x": "var(--fx-dens-gap-xl)",
+            "--fx-picker-option-gap": "var(--fx-dens-gap-2xl)",
+            "--fx-picker-row-h": "var(--fx-dens-row-menu)",
+            "--fx-picker-font": "var(--fx-type-scale-md)",
+            "--fx-picker-desc-font": "var(--fx-type-scale-sm)",
+            "--fx-picker-group-font": "var(--fx-type-scale-xs)",
+            "--fx-picker-width": "min(calc(var(--fx-space) * 46), calc(100vw - var(--fx-dens-gap-2xl) * 2))",
+            "--fx-picker-max-h": "min(70dvh, calc(var(--fx-picker-row-h) * 14))",
+            "--fx-picker-sheet-max-h": "85dvh",
+            "--fx-picker-motion": "var(--fx-motion)"
+          },
+          "attrs": {
+            "data-fx-picker-variant": "auto",
+            "data-fx-picker-search": "always",
+            "data-fx-picker-check": "end",
+            "data-fx-picker-desc": "on",
+            "data-fx-picker-done": "on",
+            "data-fx-picker-density": "regular"
+          }
+        }
+      },
+      "standard": {
+        "data": {
+          "variant": "auto",
+          "search": "auto",
+          "searchThreshold": 8,
+          "checkmarks": "end",
+          "descriptions": true,
+          "density": "regular",
+          "doneButton": true
+        },
+        "style": {
+          "vars": {
+            "--fx-picker-surface": "var(--fx-surface)",
+            "--fx-picker-text": "var(--fx-text)",
+            "--fx-picker-border": "var(--fx-border)",
+            "--fx-picker-shadow": "var(--fx-shadow-lg)",
+            "--fx-picker-backdrop": "color-mix(in srgb, var(--fx-shadow) calc(var(--fx-opacity-scrim) * 100%), transparent)",
+            "--fx-picker-header-bg": "var(--fx-surface2)",
+            "--fx-picker-header-text": "var(--fx-text)",
+            "--fx-picker-search-bg": "var(--fx-bg)",
+            "--fx-picker-search-text": "var(--fx-text)",
+            "--fx-picker-search-border": "var(--fx-border)",
+            "--fx-picker-search-focus": "var(--fx-accent)",
+            "--fx-picker-option-bg": "transparent",
+            "--fx-picker-option-text": "var(--fx-text)",
+            "--fx-picker-option-desc": "var(--fx-muted)",
+            "--fx-picker-option-icon": "var(--fx-muted)",
+            "--fx-picker-hover-bg": "var(--fx-accent-soft)",
+            "--fx-picker-hover-text": "var(--fx-text)",
+            "--fx-picker-focus-ring": "var(--fx-focus)",
+            "--fx-picker-selected-bg": "var(--fx-accent-soft)",
+            "--fx-picker-selected-text": "var(--fx-text)",
+            "--fx-picker-check": "var(--fx-accent)",
+            "--fx-picker-disabled-opacity": "max(var(--fx-opacity-disabled), 0.45)",
+            "--fx-picker-group-bg": "var(--fx-picker-surface)",
+            "--fx-picker-group-text": "var(--fx-muted)",
+            "--fx-picker-handle": "var(--fx-border)",
+            "--fx-picker-radius": "var(--fx-radius-lg)",
+            "--fx-picker-option-radius": "calc(var(--fx-radius-md) - var(--fx-dens-gap-sm))",
+            "--fx-picker-border-w": "var(--fx-border-w)",
+            "--fx-picker-pad": "var(--fx-dens-gap-md)",
+            "--fx-picker-gap": "var(--fx-dens-gap-sm)",
+            "--fx-picker-option-pad-y": "var(--fx-dens-gap-lg)",
+            "--fx-picker-option-pad-x": "var(--fx-dens-gap-xl)",
+            "--fx-picker-option-gap": "var(--fx-dens-gap-2xl)",
+            "--fx-picker-row-h": "var(--fx-dens-row-menu)",
+            "--fx-picker-font": "var(--fx-type-scale-md)",
+            "--fx-picker-desc-font": "var(--fx-type-scale-sm)",
+            "--fx-picker-group-font": "var(--fx-type-scale-xs)",
+            "--fx-picker-width": "min(calc(var(--fx-space) * 46), calc(100vw - var(--fx-dens-gap-2xl) * 2))",
+            "--fx-picker-max-h": "min(70dvh, calc(var(--fx-picker-row-h) * 14))",
+            "--fx-picker-sheet-max-h": "85dvh",
+            "--fx-picker-motion": "var(--fx-motion)"
+          },
+          "attrs": {
+            "data-fx-picker-variant": "auto",
+            "data-fx-picker-search": "8",
+            "data-fx-picker-check": "end",
+            "data-fx-picker-desc": "on",
+            "data-fx-picker-done": "on",
+            "data-fx-picker-density": "regular"
+          }
+        }
+      },
+      "windows": {
+        "data": {
+          "variant": "dialog",
+          "search": "auto",
+          "searchThreshold": 12,
+          "checkmarks": "start",
+          "descriptions": false,
+          "density": "compact",
+          "doneButton": true
+        },
+        "style": {
+          "vars": {
+            "--fx-picker-surface": "var(--fx-surface)",
+            "--fx-picker-text": "var(--fx-text)",
+            "--fx-picker-border": "var(--fx-border)",
+            "--fx-picker-shadow": "var(--fx-shadow-lg)",
+            "--fx-picker-backdrop": "color-mix(in srgb, var(--fx-shadow) calc(var(--fx-opacity-scrim) * 100%), transparent)",
+            "--fx-picker-header-bg": "var(--fx-surface2)",
+            "--fx-picker-header-text": "var(--fx-text)",
+            "--fx-picker-search-bg": "var(--fx-bg)",
+            "--fx-picker-search-text": "var(--fx-text)",
+            "--fx-picker-search-border": "var(--fx-border)",
+            "--fx-picker-search-focus": "var(--fx-accent)",
+            "--fx-picker-option-bg": "transparent",
+            "--fx-picker-option-text": "var(--fx-text)",
+            "--fx-picker-option-desc": "var(--fx-muted)",
+            "--fx-picker-option-icon": "var(--fx-muted)",
+            "--fx-picker-hover-bg": "var(--fx-accent-soft)",
+            "--fx-picker-hover-text": "var(--fx-text)",
+            "--fx-picker-focus-ring": "var(--fx-focus)",
+            "--fx-picker-selected-bg": "var(--fx-accent-soft)",
+            "--fx-picker-selected-text": "var(--fx-text)",
+            "--fx-picker-check": "var(--fx-accent)",
+            "--fx-picker-disabled-opacity": "max(var(--fx-opacity-disabled), 0.45)",
+            "--fx-picker-group-bg": "var(--fx-picker-surface)",
+            "--fx-picker-group-text": "var(--fx-muted)",
+            "--fx-picker-handle": "var(--fx-border)",
+            "--fx-picker-radius": "var(--fx-radius-lg)",
+            "--fx-picker-option-radius": "calc(var(--fx-radius-md) - var(--fx-dens-gap-sm))",
+            "--fx-picker-border-w": "var(--fx-border-w)",
+            "--fx-picker-pad": "var(--fx-dens-gap-md)",
+            "--fx-picker-gap": "var(--fx-dens-gap-sm)",
+            "--fx-picker-option-pad-y": "var(--fx-dens-gap-md)",
+            "--fx-picker-option-pad-x": "var(--fx-dens-gap-lg)",
+            "--fx-picker-option-gap": "var(--fx-dens-gap-2xl)",
+            "--fx-picker-row-h": "var(--fx-dens-row-menu)",
+            "--fx-picker-font": "var(--fx-type-scale-md)",
+            "--fx-picker-desc-font": "var(--fx-type-scale-sm)",
+            "--fx-picker-group-font": "var(--fx-type-scale-xs)",
+            "--fx-picker-width": "min(calc(var(--fx-space) * 46), calc(100vw - var(--fx-dens-gap-2xl) * 2))",
+            "--fx-picker-max-h": "min(70dvh, calc(var(--fx-picker-row-h) * 14))",
+            "--fx-picker-sheet-max-h": "85dvh",
+            "--fx-picker-motion": "var(--fx-motion)"
+          },
+          "attrs": {
+            "data-fx-picker-variant": "dialog",
+            "data-fx-picker-search": "12",
+            "data-fx-picker-check": "start",
+            "data-fx-picker-desc": "off",
+            "data-fx-picker-done": "on",
+            "data-fx-picker-density": "compact"
+          }
+        }
+      }
+    },
+    "density": {
+      "compact": {
+        "--fx-picker-option-pad-y": "var(--fx-dens-gap-md)",
+        "--fx-picker-option-pad-x": "var(--fx-dens-gap-lg)"
+      },
+      "regular": {
+        "--fx-picker-option-pad-y": "var(--fx-dens-gap-lg)",
+        "--fx-picker-option-pad-x": "var(--fx-dens-gap-xl)"
+      },
+      "roomy": {
+        "--fx-picker-option-pad-y": "var(--fx-dens-gap-xl)",
+        "--fx-picker-option-pad-x": "var(--fx-dens-gap-2xl)"
+      }
+    },
+    "normalize": {
+      "junk": {
+        "variant": "auto",
+        "search": "auto",
+        "searchThreshold": 200,
+        "checkmarks": "end",
+        "descriptions": true,
+        "density": "regular",
+        "doneButton": true
+      },
+      "partial": {
+        "variant": "sheet",
+        "search": "auto",
+        "searchThreshold": 4,
+        "checkmarks": "end",
+        "descriptions": true,
+        "density": "regular",
+        "doneButton": true
+      },
+      "none": {
+        "variant": "auto",
+        "search": "auto",
+        "searchThreshold": 8,
+        "checkmarks": "end",
+        "descriptions": true,
+        "density": "regular",
+        "doneButton": true
+      }
+    },
+    "errors": {
+      "good": [],
+      "bad": [
+        "data.searchThreshold must be a number 0–200",
+        "data.descriptions must be true or false",
+        "data.doneButton must be true or false"
+      ],
+      "notObject": [
+        "data must be an object"
+      ]
+    }
+  },
+  "skinUpgrade": {
+    "contract": "skin-upgrade@1",
+    "starters": [
+      "bottom-sheet",
+      "compact-list",
+      "plain-menu",
+      "search-first",
+      "standard",
+      "windows"
+    ],
+    "defaultStarter": "standard",
+    "starterFor": {
+      "sheet": "bottom-sheet",
+      "compact": "compact-list",
+      "roomy": "bottom-sheet"
+    },
+    "partTokens": [
+      "fontSize",
+      "fontWeight",
+      "fontFamily",
+      "letterSpacing",
+      "textTransform",
+      "textColor",
+      "background",
+      "borderColor",
+      "radius",
+      "borderWidth",
+      "shadow",
+      "glass",
+      "itemPadding",
+      "gap",
+      "iconSet",
+      "iconSize",
+      "iconColor",
+      "showIcons",
+      "animation",
+      "animationSpeed",
+      "easing",
+      "hover",
+      "hoverColor",
+      "cursor",
+      "click",
+      "clickColor",
+      "focusRing"
+    ],
+    "partSources": [
+      "context-menu",
+      "app-menu",
+      "nav-menu",
+      "button"
+    ],
+    "cases": {
+      "plain": {
+        "skin": {
+          "layoutTheme": "l",
+          "colorTheme": "c",
+          "styleTheme": "s",
+          "assets": {
+            "button": "b",
+            "dialog": "glass-air",
+            "context-menu": "cm",
+            "density": "compact"
+          }
+        },
+        "ctx": {
+          "id": "plain",
+          "starters": [
+            "bottom-sheet",
+            "compact-list",
+            "plain-menu",
+            "search-first",
+            "standard",
+            "windows"
+          ],
+          "dialogVariant": "modal"
+        },
+        "pick": "compact-list",
+        "parts": null,
+        "gapsBefore": [
+          "assets.picker"
+        ],
+        "out": {
+          "data": {
+            "layoutTheme": "l",
+            "colorTheme": "c",
+            "styleTheme": "s",
+            "assets": {
+              "button": "b",
+              "dialog": "glass-air",
+              "picker": "compact-list",
+              "context-menu": "cm",
+              "density": "compact"
+            }
+          },
+          "changed": [
+            "assets.picker"
+          ]
+        },
+        "gapsAfter": []
+      },
+      "ownId": {
+        "skin": {
+          "layoutTheme": "l",
+          "colorTheme": "c",
+          "styleTheme": "s",
+          "assets": {
+            "button": "b",
+            "dialog": "glass-air",
+            "context-menu": "cm",
+            "density": "compact"
+          }
+        },
+        "ctx": {
+          "id": "windows",
+          "starters": [
+            "bottom-sheet",
+            "compact-list",
+            "plain-menu",
+            "search-first",
+            "standard",
+            "windows"
+          ],
+          "dialogVariant": "modal"
+        },
+        "pick": "windows",
+        "parts": null,
+        "gapsBefore": [
+          "assets.picker"
+        ],
+        "out": {
+          "data": {
+            "layoutTheme": "l",
+            "colorTheme": "c",
+            "styleTheme": "s",
+            "assets": {
+              "button": "b",
+              "dialog": "glass-air",
+              "picker": "windows",
+              "context-menu": "cm",
+              "density": "compact"
+            }
+          },
+          "changed": [
+            "assets.picker"
+          ]
+        },
+        "gapsAfter": []
+      },
+      "dialogId": {
+        "skin": {
+          "layoutTheme": "l",
+          "colorTheme": "c",
+          "styleTheme": "s",
+          "assets": {
+            "button": "b",
+            "dialog": "bottom-sheet",
+            "context-menu": "cm",
+            "density": "compact"
+          }
+        },
+        "ctx": {
+          "id": "x",
+          "starters": [
+            "bottom-sheet",
+            "compact-list",
+            "plain-menu",
+            "search-first",
+            "standard",
+            "windows"
+          ],
+          "dialogVariant": "sheet"
+        },
+        "pick": "bottom-sheet",
+        "parts": null,
+        "gapsBefore": [
+          "assets.picker"
+        ],
+        "out": {
+          "data": {
+            "layoutTheme": "l",
+            "colorTheme": "c",
+            "styleTheme": "s",
+            "assets": {
+              "button": "b",
+              "dialog": "bottom-sheet",
+              "picker": "bottom-sheet",
+              "context-menu": "cm",
+              "density": "compact"
+            }
+          },
+          "changed": [
+            "assets.picker"
+          ]
+        },
+        "gapsAfter": []
+      },
+      "sheet": {
+        "skin": {
+          "layoutTheme": "l",
+          "colorTheme": "c",
+          "styleTheme": "s",
+          "assets": {
+            "button": "b",
+            "dialog": "glass-air",
+            "context-menu": "cm",
+            "density": "regular"
+          }
+        },
+        "ctx": {
+          "id": "x",
+          "starters": [
+            "bottom-sheet",
+            "compact-list",
+            "plain-menu",
+            "search-first",
+            "standard",
+            "windows"
+          ],
+          "dialogVariant": "sheet"
+        },
+        "pick": "bottom-sheet",
+        "parts": null,
+        "gapsBefore": [
+          "assets.picker"
+        ],
+        "out": {
+          "data": {
+            "layoutTheme": "l",
+            "colorTheme": "c",
+            "styleTheme": "s",
+            "assets": {
+              "button": "b",
+              "dialog": "glass-air",
+              "picker": "bottom-sheet",
+              "context-menu": "cm",
+              "density": "regular"
+            }
+          },
+          "changed": [
+            "assets.picker"
+          ]
+        },
+        "gapsAfter": []
+      },
+      "roomy": {
+        "skin": {
+          "layoutTheme": "l",
+          "colorTheme": "c",
+          "styleTheme": "s",
+          "assets": {
+            "button": "b",
+            "dialog": "glass-air",
+            "context-menu": "cm",
+            "density": "roomy"
+          }
+        },
+        "ctx": {
+          "id": "x",
+          "starters": [
+            "bottom-sheet",
+            "compact-list",
+            "plain-menu",
+            "search-first",
+            "standard",
+            "windows"
+          ],
+          "dialogVariant": "modal"
+        },
+        "pick": "bottom-sheet",
+        "parts": null,
+        "gapsBefore": [
+          "assets.picker"
+        ],
+        "out": {
+          "data": {
+            "layoutTheme": "l",
+            "colorTheme": "c",
+            "styleTheme": "s",
+            "assets": {
+              "button": "b",
+              "dialog": "glass-air",
+              "picker": "bottom-sheet",
+              "context-menu": "cm",
+              "density": "roomy"
+            }
+          },
+          "changed": [
+            "assets.picker"
+          ]
+        },
+        "gapsAfter": []
+      },
+      "regular": {
+        "skin": {
+          "layoutTheme": "l",
+          "colorTheme": "c",
+          "styleTheme": "s",
+          "assets": {
+            "button": "b",
+            "dialog": "glass-air",
+            "context-menu": "cm",
+            "density": "regular"
+          }
+        },
+        "ctx": {
+          "id": "x",
+          "starters": [
+            "bottom-sheet",
+            "compact-list",
+            "plain-menu",
+            "search-first",
+            "standard",
+            "windows"
+          ],
+          "dialogVariant": "drawer"
+        },
+        "pick": "standard",
+        "parts": null,
+        "gapsBefore": [
+          "assets.picker"
+        ],
+        "out": {
+          "data": {
+            "layoutTheme": "l",
+            "colorTheme": "c",
+            "styleTheme": "s",
+            "assets": {
+              "button": "b",
+              "dialog": "glass-air",
+              "picker": "standard",
+              "context-menu": "cm",
+              "density": "regular"
+            }
+          },
+          "changed": [
+            "assets.picker"
+          ]
+        },
+        "gapsAfter": []
+      },
+      "noDialog": {
+        "skin": {
+          "layoutTheme": "l",
+          "colorTheme": "c",
+          "styleTheme": "s",
+          "assets": {
+            "button": "b"
+          }
+        },
+        "ctx": {
+          "id": "x",
+          "starters": [
+            "bottom-sheet",
+            "compact-list",
+            "plain-menu",
+            "search-first",
+            "standard",
+            "windows"
+          ]
+        },
+        "pick": "standard",
+        "parts": null,
+        "gapsBefore": [
+          "assets.picker"
+        ],
+        "out": {
+          "data": {
+            "layoutTheme": "l",
+            "colorTheme": "c",
+            "styleTheme": "s",
+            "assets": {
+              "button": "b",
+              "picker": "standard"
+            }
+          },
+          "changed": [
+            "assets.picker"
+          ]
+        },
+        "gapsAfter": []
+      },
+      "withParts": {
+        "skin": {
+          "layoutTheme": "l",
+          "colorTheme": "c",
+          "styleTheme": "s",
+          "assets": {
+            "button": "b",
+            "dialog": "glass-air",
+            "context-menu": "cm",
+            "density": "compact"
+          },
+          "parts": {
+            "context-menu": {
+              "radius": "sm",
+              "hover": "highlight",
+              "location": "pinned-top",
+              "bogus": 1
+            },
+            "button": {
+              "radius": "pill"
+            }
+          }
+        },
+        "ctx": {
+          "id": "x",
+          "starters": [
+            "bottom-sheet",
+            "compact-list",
+            "plain-menu",
+            "search-first",
+            "standard",
+            "windows"
+          ],
+          "dialogVariant": "modal"
+        },
+        "pick": "compact-list",
+        "parts": {
+          "radius": "sm",
+          "hover": "highlight"
+        },
+        "gapsBefore": [
+          "assets.picker"
+        ],
+        "out": {
+          "data": {
+            "layoutTheme": "l",
+            "colorTheme": "c",
+            "styleTheme": "s",
+            "assets": {
+              "button": "b",
+              "dialog": "glass-air",
+              "picker": "compact-list",
+              "context-menu": "cm",
+              "density": "compact"
+            },
+            "parts": {
+              "context-menu": {
+                "radius": "sm",
+                "hover": "highlight",
+                "location": "pinned-top",
+                "bogus": 1
+              },
+              "button": {
+                "radius": "pill"
+              },
+              "picker": {
+                "radius": "sm",
+                "hover": "highlight"
+              }
+            }
+          },
+          "changed": [
+            "assets.picker",
+            "parts.picker"
+          ]
+        },
+        "gapsAfter": []
+      },
+      "buttonParts": {
+        "skin": {
+          "layoutTheme": "l",
+          "colorTheme": "c",
+          "styleTheme": "s",
+          "assets": {
+            "button": "b",
+            "dialog": "glass-air",
+            "context-menu": "cm",
+            "density": "compact"
+          },
+          "parts": {
+            "button": {
+              "radius": "pill",
+              "fontWeight": "600"
+            }
+          }
+        },
+        "ctx": {
+          "id": "x",
+          "starters": [
+            "bottom-sheet",
+            "compact-list",
+            "plain-menu",
+            "search-first",
+            "standard",
+            "windows"
+          ]
+        },
+        "pick": "compact-list",
+        "parts": {
+          "fontWeight": "600",
+          "radius": "pill"
+        },
+        "gapsBefore": [
+          "assets.picker"
+        ],
+        "out": {
+          "data": {
+            "layoutTheme": "l",
+            "colorTheme": "c",
+            "styleTheme": "s",
+            "assets": {
+              "button": "b",
+              "dialog": "glass-air",
+              "picker": "compact-list",
+              "context-menu": "cm",
+              "density": "compact"
+            },
+            "parts": {
+              "button": {
+                "radius": "pill",
+                "fontWeight": "600"
+              },
+              "picker": {
+                "fontWeight": "600",
+                "radius": "pill"
+              }
+            }
+          },
+          "changed": [
+            "assets.picker",
+            "parts.picker"
+          ]
+        },
+        "gapsAfter": []
+      },
+      "already": {
+        "skin": {
+          "layoutTheme": "l",
+          "colorTheme": "c",
+          "styleTheme": "s",
+          "assets": {
+            "button": "b",
+            "dialog": "glass-air",
+            "context-menu": "cm",
+            "density": "compact",
+            "picker": "plain-menu"
+          },
+          "parts": {
+            "picker": {
+              "radius": "none"
+            },
+            "button": {
+              "radius": "pill"
+            }
+          }
+        },
+        "ctx": {
+          "id": "windows",
+          "starters": [
+            "bottom-sheet",
+            "compact-list",
+            "plain-menu",
+            "search-first",
+            "standard",
+            "windows"
+          ]
+        },
+        "pick": "windows",
+        "parts": {
+          "radius": "pill"
+        },
+        "gapsBefore": [],
+        "out": {
+          "data": {
+            "layoutTheme": "l",
+            "colorTheme": "c",
+            "styleTheme": "s",
+            "assets": {
+              "button": "b",
+              "dialog": "glass-air",
+              "context-menu": "cm",
+              "density": "compact",
+              "picker": "plain-menu"
+            },
+            "parts": {
+              "picker": {
+                "radius": "none"
+              },
+              "button": {
+                "radius": "pill"
+              }
+            }
+          },
+          "changed": []
+        },
+        "gapsAfter": []
+      },
+      "badPicker": {
+        "skin": {
+          "layoutTheme": "l",
+          "colorTheme": "c",
+          "styleTheme": "s",
+          "assets": {
+            "button": "b",
+            "dialog": "glass-air",
+            "context-menu": "cm",
+            "density": "compact",
+            "picker": "Not An Id"
+          }
+        },
+        "ctx": {
+          "id": "x",
+          "starters": [
+            "bottom-sheet",
+            "compact-list",
+            "plain-menu",
+            "search-first",
+            "standard",
+            "windows"
+          ]
+        },
+        "pick": "compact-list",
+        "parts": null,
+        "gapsBefore": [
+          "assets.picker"
+        ],
+        "out": {
+          "data": {
+            "layoutTheme": "l",
+            "colorTheme": "c",
+            "styleTheme": "s",
+            "assets": {
+              "button": "b",
+              "dialog": "glass-air",
+              "picker": "compact-list",
+              "context-menu": "cm",
+              "density": "compact"
+            }
+          },
+          "changed": [
+            "assets.picker"
+          ]
+        },
+        "gapsAfter": []
+      },
+      "noStarters": {
+        "skin": {
+          "layoutTheme": "l",
+          "colorTheme": "c",
+          "styleTheme": "s",
+          "assets": {
+            "button": "b",
+            "dialog": "glass-air",
+            "context-menu": "cm",
+            "density": "compact"
+          }
+        },
+        "ctx": {
+          "id": "x",
+          "starters": []
+        },
+        "pick": "standard",
+        "parts": null,
+        "gapsBefore": [
+          "assets.picker"
+        ],
+        "out": {
+          "data": {
+            "layoutTheme": "l",
+            "colorTheme": "c",
+            "styleTheme": "s",
+            "assets": {
+              "button": "b",
+              "dialog": "glass-air",
+              "picker": "standard",
+              "context-menu": "cm",
+              "density": "compact"
+            }
+          },
+          "changed": [
+            "assets.picker"
+          ]
+        },
+        "gapsAfter": []
+      },
+      "junk": {
+        "skin": null,
+        "ctx": {},
+        "pick": "standard",
+        "parts": null,
+        "gapsBefore": [
+          "assets.picker"
+        ],
+        "out": {
+          "data": {
+            "assets": {
+              "picker": "standard"
+            }
+          },
+          "changed": [
+            "assets.picker"
+          ]
+        },
+        "gapsAfter": []
+      }
+    },
+    "shipped": {
+      "atelier": {
+        "picker": "bottom-sheet",
+        "parts": null,
+        "gaps": [],
+        "unchanged": []
+      },
+      "clinic": {
+        "picker": "bottom-sheet",
+        "parts": null,
+        "gaps": [],
+        "unchanged": []
+      },
+      "control-room": {
+        "picker": "standard",
+        "parts": null,
+        "gaps": [],
+        "unchanged": []
+      },
+      "ledger": {
+        "picker": "compact-list",
+        "parts": null,
+        "gaps": [],
+        "unchanged": []
+      },
+      "newsroom": {
+        "picker": "standard",
+        "parts": null,
+        "gaps": [],
+        "unchanged": []
+      },
+      "windows": {
+        "picker": "windows",
+        "parts": {
+          "radius": "sm",
+          "hover": "highlight"
+        },
+        "gaps": [],
+        "unchanged": []
+      }
+    }
+  }
+}

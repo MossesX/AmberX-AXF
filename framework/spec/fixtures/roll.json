@@ -12,6 +12,7 @@
     "popup": true,
     "button": true,
     "slider": true,
+    "picker": true,
     "container": true,
     "gauge": true,
     "meter": true,
@@ -355,6 +356,14 @@
           "terminal",
           "touch-friendly",
           "warm-craft"
+        ],
+        "picker": [
+          "bottom-sheet",
+          "compact-list",
+          "plain-menu",
+          "search-first",
+          "standard",
+          "windows"
         ],
         "container": [
           "amber-signature",
@@ -773,6 +782,14 @@
           "terminal",
           "touch-friendly",
           "warm-craft"
+        ],
+        "picker": [
+          "bottom-sheet",
+          "compact-list",
+          "plain-menu",
+          "search-first",
+          "standard",
+          "windows"
         ],
         "container": [
           "amber-signature",
@@ -1198,6 +1215,14 @@
           "touch-friendly",
           "warm-craft"
         ],
+        "picker": [
+          "bottom-sheet",
+          "compact-list",
+          "plain-menu",
+          "search-first",
+          "standard",
+          "windows"
+        ],
         "container": [
           "amber-signature",
           "boardroom",
@@ -1616,6 +1641,14 @@
           "touch-friendly",
           "warm-craft"
         ],
+        "picker": [
+          "bottom-sheet",
+          "compact-list",
+          "plain-menu",
+          "search-first",
+          "standard",
+          "windows"
+        ],
         "container": [
           "amber-signature",
           "boardroom",
@@ -2004,6 +2037,14 @@
           "terminal",
           "touch-friendly",
           "warm-craft"
+        ],
+        "picker": [
+          "bottom-sheet",
+          "compact-list",
+          "plain-menu",
+          "search-first",
+          "standard",
+          "windows"
         ],
         "container": [
           "amber-signature",
@@ -2422,6 +2463,14 @@
           "terminal",
           "touch-friendly",
           "warm-craft"
+        ],
+        "picker": [
+          "bottom-sheet",
+          "compact-list",
+          "plain-menu",
+          "search-first",
+          "standard",
+          "windows"
         ],
         "container": [
           "amber-signature",

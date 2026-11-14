@@ -8,7 +8,7 @@ import { SettingsRegistry, type SettingValue } from './settings';
 import { AssetRegistry, serializeAsset, type RegisteredAsset } from './registry';
 import { announceWatchLiveRuntime } from './watch-live';
 import { ActionBus, FRAMEWORK_MODULE, STANDARD_ACTIONS, type ActionContext } from './engines/actions';
-import { colorThemeVars, scrollbarVars, styleThemeVars, type VarMap } from './engines/theme';
+import { colorThemeVars, pickerStyle, scrollbarVars, styleThemeVars, type VarMap } from './engines/theme';
 import { scaleThemeVars } from './engines/scale';
 import { LAYOUT_VIEWPORTS, layoutViewports, layoutVars } from './engines/layout';
 import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, gaugeStyle, meterStyle, navMenuStyle, popupStyle, sliderStyle, tabGroupStyle, toolbarStyle } from './engines/components';
@@ -2599,6 +2599,8 @@ export class AxfRuntime {
       gaugeStyle(this.assetOrNull('gauge')?.data),
       meterStyle(this.assetOrNull('meter')?.data),
       tabGroupStyle(this.assetOrNull('tab-group')?.data, this.slotHidden('tab-group')),
+      // picker@1 (engines/theme.ts): the --fx-picker-* family + the asset's choices; an app without a picker asset gets today's drop-down look
+      pickerStyle(this.assetOrNull('picker' as AssetType)?.data as never),
     ];
     const vars: VarMap = {
       ...colorThemeVars(color),

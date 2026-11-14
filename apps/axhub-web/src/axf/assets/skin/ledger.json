@@ -24,6 +24,7 @@
       "nav-menu": "sidebar-list",
       "button": "enterprise-crisp",
       "dialog": "enterprise-crisp",
+      "picker": "compact-list",
       "context-menu": "enterprise-standard",
       "toolbar": "data-grid-tools",
       "container": "enterprise-crisp",

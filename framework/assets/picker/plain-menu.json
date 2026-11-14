@@ -1,0 +1,24 @@
+{
+  "$axf": "asset@1",
+  "type": "picker",
+  "id": "plain-menu",
+  "name": "Plain menu picker",
+  "version": "1.0.0",
+  "description": "A quiet dialog that reads like a menu: no search, no check marks, no descriptions, tapping outside closes. Short lists.",
+  "author": "AmberX AXF",
+  "tags": [
+    "minimal",
+    "menu",
+    "short-lists",
+    "picker"
+  ],
+  "data": {
+    "variant": "dialog",
+    "search": "never",
+    "searchThreshold": 8,
+    "checkmarks": "none",
+    "descriptions": false,
+    "density": "regular",
+    "doneButton": false
+  }
+}

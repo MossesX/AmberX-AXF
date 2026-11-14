@@ -24,6 +24,7 @@
       "nav-menu": "ops-monitor",
       "button": "dense-ops",
       "dialog": "dense-ops",
+      "picker": "standard",
       "context-menu": "developer-tools",
       "toolbar": "ops-monitor",
       "container": "dense-ops",

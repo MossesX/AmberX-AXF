@@ -852,6 +852,10 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
     if (type === JOB_TYPE) Object.assign(props, jobTypeSchemaProperties());
     if (type === CARD_TYPE) Object.assign(props, cardSchemaProperties());
     if (DEMO_TYPES.includes(type)) Object.assign(props, demoSchemaProperties(type));
+    // skin@1: the optional behaviour section (a behavior-theme id), so a regenerated schema keeps it
+    if (type === 'skin') props.behaviorTheme = { type: 'string', pattern: '^[a-z0-9][a-z0-9-]*$' };
+    // picker@1 (core/engines/theme.ts pickerAssetErrors): threshold range + boolean fields typed; enums come from the registry above
+    if (type === 'picker') Object.assign(props, { searchThreshold: { type: 'number', minimum: 0, maximum: 200 }, descriptions: { type: 'boolean' }, doneButton: { type: 'boolean' } });
     const $defs = type === 'app-menu' || type === 'context-menu' ? { menuItem: menuItemSchema() } : undefined;
     const schema = {
       ...($defs ? { $defs } : {}),

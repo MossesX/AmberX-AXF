@@ -19,6 +19,7 @@
       "app-menu": "standard-desktop",
       "button": "windows",
       "dialog": "windows",
+      "picker": "windows",
       "context-menu": "windows",
       "toolbar": "windows",
       "container": "windows",
@@ -72,6 +73,10 @@
       },
       "search-bar": {
         "radius": "sm"
+      },
+      "picker": {
+        "radius": "sm",
+        "hover": "highlight"
       }
     }
   }

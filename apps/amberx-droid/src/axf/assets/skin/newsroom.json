@@ -24,6 +24,7 @@
       "nav-menu": "text-only",
       "button": "swiss-grid",
       "dialog": "side-drawer",
+      "picker": "standard",
       "context-menu": "reader-minimal",
       "toolbar": "review-flow",
       "container": "swiss-grid",

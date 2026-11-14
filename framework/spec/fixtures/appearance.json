@@ -12,6 +12,7 @@
     "popup",
     "button",
     "slider",
+    "picker",
     "container",
     "gauge",
     "meter",

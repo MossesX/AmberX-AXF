@@ -264,6 +264,7 @@ jobs:
             npx -y tsx framework/spec/check-dock.mts                   # dock engine (dock@1): pane tree, drop zones, pane limit, splitters, snapshots, dock-layout@1 presets (dock.json)
             npx -y tsx framework/spec/check-xlayout.mts                # xlayout@1 (Molly as one app): apps, merge modes, IDE block, toolbar slots, guest URLs (xlayout.json)
             npx -y tsx framework/spec/check-chrome.mts                 # chrome@1: guests send chrome as data, the host merges under namespaces and routes picks back (chrome.json)
+            npx -y tsx framework/spec/check-picker.mts                 # picker@1: one model for every drop-down: normalise, native select, filter, group, choose / toggle + max, keyboard, type-ahead, voice names (picker.json)
             npx -y tsx framework/spec/check-banner-strip.mts           # banner strip: a host shows an app's live banners as its one banner region (Molly)
             npx -y tsx framework/spec/check-meters.mts                 # gauge + meter control assets: fixture replay, starters, enums
             npx -y tsx framework/spec/check-customize.mts              # tab-group asset + per-asset appearance tokens, 100 icon sets, apply to all
@@ -274,6 +275,7 @@ jobs:
             node framework/cli/check-chrome-assets.mjs                 # every tab group, toolbar, banner and nav is framework chrome with the right-click settings; ratchet spec/chrome-baseline.json
             npx -y tsx framework/spec/check-skin.mts                   # skin@1 + app-look@1: one look per app, fixture replay, the Windows skin's assets, preview, apply, overrides, Restore + undo
             node framework/spec/check-skin-coverage.mjs                 # skin-coverage@1: every registered asset type has skin coverage (slot / parts / reference / bundle / none); fails on a type a skin cannot reach
+            node framework/cli/skin-upgrade.mjs --check                 # skin-upgrade@1: every shipped skin touches the picker (assets.picker + parts.picker, picker@1); `node framework/cli/skin-upgrade.mjs` adds the defaults
             node framework/spec/check-skin-colour-rule.mjs              # skin + colour theme rule: a colour pick switches inside the skin, never a new or forked skin
             node framework/spec/check-skin-sections.mjs                 # every shipped skin's look / layout / behaviour sections and asset slots ship; the professional skins set all four
             node framework/spec/check-asset-overrides.mjs               # asset overrides: the Assets with edits list (chrome-settings@1 instance overrides) and the controlled-item colour
