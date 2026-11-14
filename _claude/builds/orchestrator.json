@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T23:19:16.244Z",
+ "updatedAt": "2026-11-14T23:19:52.607Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -131764,12 +131764,12 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/skin-config-panel-merge-main-and-land",
-   "pr": "#648",
+   "branch": "claude/skin-config-panel-land-report",
+   "pr": "#682",
    "mergedAt": "2026-11-14T20:15:18Z",
    "priority": "P0",
    "createdAt": "2026-11-13T19:47:38.941Z",
-   "updatedAt": "2026-11-14T23:16:34.879Z",
+   "updatedAt": "2026-11-14T23:19:49.748Z",
    "builtAt": "",
    "notes": [
     {

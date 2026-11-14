@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5601,
- "updatedAt": "2026-11-14T23:19:16.244Z",
+ "rev": 5602,
+ "updatedAt": "2026-11-14T23:19:52.607Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -208670,12 +208670,12 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "claude/skin-config-panel-merge-main-and-land",
-   "pr": "#648",
+   "branch": "claude/skin-config-panel-land-report",
+   "pr": "#682",
    "mergedAt": "2026-11-14T20:15:18Z",
    "priority": "P0",
    "createdAt": "2026-11-13T19:47:38.941Z",
-   "updatedAt": "2026-11-14T23:16:34.879Z",
+   "updatedAt": "2026-11-14T23:19:49.748Z",
    "builtAt": "",
    "notes": [
     {
@@ -208871,7 +208871,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 21,
+   "rev": 22,
    "deleted": false,
    "deletedAt": "",
    "pending": {
