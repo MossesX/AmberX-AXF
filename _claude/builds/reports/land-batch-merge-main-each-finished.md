@@ -95,3 +95,38 @@ and Brett asked for what finished.
 - #643 console-app-wake-word: s3–s10 (Android voice, approvals by voice, …).
 
 Each one goes in with `land.mjs queue add <pr>` once its build is done.
+
+### Queue result so far
+
+- #665 went in first and was **kicked out**: its full run on top of main
+  (https://github.com/MossesX/AmberX-AXF/actions/runs/43538537626) hit three failures that are main's, not this
+  PR's. Two are fixed on #665 (`c533e2b0b`); a push rejoins it by itself.
+  1. Plugin lifecycle (`build-orchestrator`): four files outside the plugin named its folder with no managed marker
+     (`console-control.e2e.mjs`, `project-seed.mjs`, `check-build-limit.mjs`, `check-projects.mjs`). **Fixed**:
+     marked assignments that uninstall can strip, files listed in `lifecycle.mentions`. Check is clean locally.
+  2. Kotlin `ConformanceTest > theme variables match the reference engine`: the transparency build added twelve
+     `--fx-opacity-<kind>` / `--fx-backdrop-<kind>` variables with the Android twin deferred.
+     **Fixed**: the test skips exactly those (`DEFERRED_THEME_VAR`), and PORTING.md says so. Not run locally (no
+     Gradle on the host); the queue run will show it.
+  3. Web `scripts/theme-swap.mjs`: "transparency tokens did not change between style themes". Every style theme
+     reads the `hub` style's opacities (0.4 / 0.66 / 0.06 / 0.1 / 0.45 / 0.88), so the console is pinned to the
+     axHub look in the test and the style picker changes nothing. **Not fixed**: a look-lock / theme regression on
+     main that needs its own build. Until it's fixed, every full run in the queue fails, so nothing in this stack
+     can merge.
+- The other nine batch PRs sit outside the queue with red light checks. The only error is main's `VetoHost`
+  TS2339, which #665 fixes. Once #665 lands, merge main into each of them once more: fresh light checks go green
+  and they rejoin the stack.
+
+## Not done in this phase
+
+- s18 (redeploy the console after the stack merges): the stack hasn't merged. The merge queue redeploys the console
+  once per landing by itself; then confirm it answers.
+- s19: on main, `check-land-resolve`, `builds-store verify` and `tracker --check` all pass. Not done: marking the
+  landed builds complete and the THREADS.md row, because nothing has landed yet.
+
+## Host repair (for the record)
+
+`/opt/axf/.git` lost the objects behind 15 refs and some of main's blobs around 21:17 (pack files rewritten).
+Fixed by a fresh bare clone of main and copying its pack into the store (additive, no refs moved); the batch
+branches were fetched again and their local refs restored at the remote tips. Another session's own repair (a
+`--refetch` under a 15-minute timeout) was killed mid-index and left a truncated temp pack, which was removed.
