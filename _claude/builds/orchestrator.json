@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T13:10:20.700Z",
+ "updatedAt": "2026-11-14T13:10:34.937Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -137360,8 +137360,8 @@
    "pr": "#669",
    "mergedAt": "2026-11-14T12:57:14Z",
    "createdAt": "2026-11-14T03:29:11.368Z",
-   "updatedAt": "2026-11-14T13:10:18.478Z",
-   "builtAt": "2026-11-14T13:10:18.479Z",
+   "updatedAt": "2026-11-14T13:10:32.699Z",
+   "builtAt": "2026-11-14T13:10:32.699Z",
    "notes": [
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-hotfix-get-main-ci-green-theme-swap--rhonda.",
@@ -137426,6 +137426,10 @@
     {
      "text": "Shipped manifest sm-hotfix-get-main-ci-green-theme-swap rev 1 sent to Shipped features (orchestrator): landed c0cceecca, 34 file(s), 0 test line(s), 1 open.",
      "at": "2026-11-14T13:02:10Z"
+    },
+    {
+     "text": "Headless run axf-hotfix-get-main-ci-green-theme-swap--sully: brief only · start 11.0K tokens ($0.03) · cost $1.32 · 60 turns · 6 tools, MCP none",
+     "at": "2026-11-14T13:10:32.699Z"
     }
    ],
    "approvals": [],
