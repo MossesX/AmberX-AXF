@@ -46,3 +46,9 @@ Survey taken 2026-11-14 after `git fetch origin` (main at `1169074ab`). Ahead/be
 | fix-merge-conflicts-pr-557-professional (#591) | 23 of 23 | **real work missing, not archived** |
 
 **Flag:** the professional-skins work (PR #557 lineage) never reached main and none of the 8 builds carries it: skin@2 (behaviour axes per asset type, the table asset type, resolver and migration), the four skins Studio Pro, Executive, Field and Command, the app shell driven by the skin (nav mode/side, menu form, toolbar and banner placement), the skin gallery in Settings → Appearance, API parity and CI coverage: about 16k lines over 213 files against the stack tip. #591 is #604 plus its conflict-fix report (the only commit #591 lacks from #604 is the build rename). Both branches are left open. Landing it needs its own build: merge the stack tip into `fix-merge-conflicts-pr-557-professional`, reconcile skin@2 with skin-modes@1 / skin-switch@1 / skin-config@1 / the token registry, and give the four skins light + dark themes. That is schema and engine work, so Fable.
+
+## Archived (s22)
+
+- `claude/skins-plugin-own-removable-console` → tag `archive/skins-plugin-own-removable-console` (265b99ced), remote branch deleted, PR #649 closed as superseded by #647, build record complete with a superseded note.
+- `claude/skin-configuration-panel-before-ai-makes` → tag `archive/skin-configuration-panel-before-ai-makes` (71a2f361d), remote branch deleted, PR #612 closed as superseded by #648, build record complete with a superseded note.
+- Not archived (real work missing, see the flag above): `professional-skins-rebuild-whole-app` (#604), `fix-merge-conflicts-pr-557-professional` (#591).
