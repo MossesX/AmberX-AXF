@@ -33,7 +33,7 @@ import * as merge from '../plan/builds-merge-core.mjs';
 import { mergeOrigin } from '../core/build-origin.mjs';
 import { enqueueLive, flushLiveSoon } from './builds-live.mjs';
 import { emitChanges } from './build-hooks.mjs';
-import { BASE_PROFILE, REPO_ROOT, activeProfile, orchestratorPath, persistRoot, profileRel, readProfiles } from './persist.mjs';
+import { BASE_PROFILE, REPO_ROOT, activeProfile, hasRepoExport, orchestratorPath, persistRoot, profileRel, readProfiles } from './persist.mjs';
 
 export const STORE_REL = '_claude/builds/store.json';
 /** A scratch data folder (AXF_DATA_DIR set to a folder, as tests do): the store lives there too, seeded from the repo's. */
@@ -115,8 +115,10 @@ export const EXPORT_NOTE = 'builds@1 export (read-only): generated from _claude/
 function exportTargets() {
   const hub = persistRoot();
   const data = (id, r) => join(hub ?? REPO_ROOT, profileRel(id, r));
+  // the orchestrator export is a repo file only for a repo-registered profile (persist.mjs hasRepoExport); a hub-only
+  // profile's orchestratorPath is already inside the data root, so it is never moved under the scratch folder twice
   return readProfiles().profiles.flatMap((p) => [
-    { kind: 'orchestrator', profile: p.id, file: scratchDir() ? join(scratchDir(), rel(orchestratorPath(p.id))) : orchestratorPath(p.id) },
+    { kind: 'orchestrator', profile: p.id, file: scratchDir() && hasRepoExport(p.id) ? join(scratchDir(), rel(orchestratorPath(p.id))) : orchestratorPath(p.id) },
     { kind: 'pending', profile: p.id, file: data(p.id, 'framework/plan/pending.json') },
     { kind: 'queue', profile: p.id, file: data(p.id, 'framework/plan/build-queue.json') },
   ]);
@@ -156,9 +158,33 @@ export function exportText(store, kind, profile) {
   const doc = kind === 'orchestrator' ? core.projectOrchestrator(store, profile) : kind === 'pending' ? core.projectPending(store, profile) : core.projectQueue(store, profile);
   return doc ? { doc, text: `${JSON.stringify({ $export: EXPORT_NOTE, ...doc }, null, 1)}\n` } : null;
 }
-/** The orchestrator exports as repo-relative paths (the files main carries): [{ rel, text, builds }]. */
+/**
+ * The orchestrator exports as repo-relative paths (the files main carries): [{ rel, text, builds }]. Only profiles the
+ * repo registry lists (hasRepoExport): a hub-only profile's export is shared data, never a file on main.
+ */
 export function orchestratorExports(store) {
-  return readProfiles().profiles.map((p) => { const e = exportText(store, 'orchestrator', p.id); return { rel: rel(orchestratorPath(p.id)), text: e.text, builds: e.doc.builds.length }; });
+  return readProfiles().profiles.filter((p) => hasRepoExport(p.id)).map((p) => { const e = exportText(store, 'orchestrator', p.id); return { rel: rel(orchestratorPath(p.id)), text: e.text, builds: e.doc.builds.length }; });
+}
+/**
+ * Repo exports (_claude/builds/profiles/<id>/orchestrator.json) of profiles that are not repo-registered: our own
+ * projections an older version wrote (test-sandbox, Nov 13 2026) or a merge brought back. Removed, so the checkout
+ * stays clean and check-profiles.mjs passes; only files carrying the $export note are touched, never a hand-made one.
+ */
+function sweepStaleRepoExports(ex) {
+  const root = scratchDir() || REPO_ROOT;
+  const dir = join(root, '_claude/builds/profiles');
+  if (!existsSync(dir)) return [];
+  const removed = [];
+  for (const id of readdirSync(dir)) {
+    const f = join(dir, id, 'orchestrator.json');
+    if (hasRepoExport(id) || !existsSync(f)) continue;
+    if (!readJson(f)?.$export) continue;
+    rmSync(f, { force: true });
+    delete ex[f];
+    try { if (!readdirSync(join(dir, id)).length) rmSync(join(dir, id), { recursive: true }); } catch { /* not empty */ }
+    removed.push(rel(f));
+  }
+  return removed;
 }
 /** The store file's text (compact form), as saveStore writes it. */
 export const storeText = (store) => `${JSON.stringify(core.compactStore(store), null, 1)}\n`;
@@ -175,6 +201,7 @@ function exportAll(store) {
     if (old !== text) writeKeepingOwner(t.file, text);
     ex[t.file] = { sig: sig(t.file), kind: t.kind, profile: t.profile, rev: store.rev };
   }
+  sweepStaleRepoExports(ex);
   writeFileSync(exportsFile(), `${JSON.stringify(ex, null, 1)}\n`);
 }
 /**
