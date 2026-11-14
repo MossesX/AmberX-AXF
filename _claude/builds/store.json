@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5011,
- "updatedAt": "2026-11-13T21:00:29.478Z",
+ "rev": 5098,
+ "updatedAt": "2026-11-14T00:36:50.392Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -21739,10 +21739,10 @@
    "hidden": false,
    "source": "chat",
    "pendingId": "rebake-console",
-   "branch": "",
+   "branch": "claude/rebake-console",
    "pr": "",
    "createdAt": "2026-10-26T22:35:28.810Z",
-   "updatedAt": "2026-11-12T03:27:29Z",
+   "updatedAt": "2026-11-13T23:50:25.429Z",
    "builtAt": "2026-10-26T22:35:28.810Z",
    "notes": [
     {
@@ -21752,6 +21752,10 @@
     {
      "text": "Shipped manifest sm-rebake-console rev 1 sent to Shipped features (backfill): complete 2026-10-26 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
      "at": "2026-11-12T03:27:29Z"
+    },
+    {
+     "text": "Reconciler: branch claude/rebake-console (no PR yet)",
+     "at": "2026-11-13T23:50:25.429Z"
     }
    ],
    "approvals": [],
@@ -21771,7 +21775,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -22419,10 +22423,10 @@
    "hidden": false,
    "source": "chat",
    "pendingId": "banner-one-line",
-   "branch": "",
+   "branch": "claude/banner-one-line",
    "pr": "",
    "createdAt": "2026-10-26T23:31:24.422Z",
-   "updatedAt": "2026-11-12T03:27:36Z",
+   "updatedAt": "2026-11-13T23:50:25.429Z",
    "builtAt": "2026-10-26T23:31:24.422Z",
    "notes": [
     {
@@ -22432,6 +22436,10 @@
     {
      "text": "Shipped manifest sm-banner-one-line rev 1 sent to Shipped features (backfill): complete 2026-10-26 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
      "at": "2026-11-12T03:27:36Z"
+    },
+    {
+     "text": "Reconciler: branch claude/banner-one-line (no PR yet)",
+     "at": "2026-11-13T23:50:25.429Z"
     }
    ],
    "approvals": [],
@@ -22451,7 +22459,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -50866,10 +50874,10 @@
    "hidden": false,
    "source": "console",
    "pendingId": "agent-jobs",
-   "branch": "",
+   "branch": "claude/agent-jobs",
    "pr": "",
    "createdAt": "2026-11-01T06:45:35.923Z",
-   "updatedAt": "2026-11-12T03:28:45Z",
+   "updatedAt": "2026-11-13T23:50:25.429Z",
    "builtAt": "2026-11-01T07:20:52.680Z",
    "notes": [
     {
@@ -50883,6 +50891,10 @@
     {
      "text": "Shipped manifest sm-agent-jobs rev 1 sent to Shipped features (backfill): complete 2026-11-01 (date inferred: no commit or PR recorded), 0 file(s), 4 test line(s), 6 open.",
      "at": "2026-11-12T03:28:45Z"
+    },
+    {
+     "text": "Reconciler: branch claude/agent-jobs (no PR yet)",
+     "at": "2026-11-13T23:50:25.429Z"
     }
    ],
    "approvals": [],
@@ -51025,7 +51037,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -51302,10 +51314,10 @@
    "hidden": false,
    "source": "console",
    "pendingId": "chat-viewer",
-   "branch": "",
+   "branch": "claude/chat-viewer",
    "pr": "",
    "createdAt": "2026-11-01T06:50:37.079Z",
-   "updatedAt": "2026-11-12T03:28:47Z",
+   "updatedAt": "2026-11-13T23:50:25.429Z",
    "builtAt": "2026-11-01T07:36:47.161Z",
    "notes": [
     {
@@ -51319,6 +51331,10 @@
     {
      "text": "Shipped manifest sm-chat-viewer rev 1 sent to Shipped features (backfill): complete 2026-11-01 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 6 open.",
      "at": "2026-11-12T03:28:47Z"
+    },
+    {
+     "text": "Reconciler: branch claude/chat-viewer (no PR yet)",
+     "at": "2026-11-13T23:50:25.429Z"
     }
    ],
    "approvals": [],
@@ -51527,7 +51543,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 36,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -182359,9 +182375,9 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 3,
-   "deleted": false,
-   "deletedAt": "",
+   "rev": 4,
+   "deleted": true,
+   "deletedAt": "2026-11-13T21:30:23.078Z",
    "pending": {
     "model": "Opus",
     "status": "complete",
@@ -182501,13 +182517,13 @@
     "test-sandbox"
    ],
    "order": {
-    "test-sandbox": 1
+    "test-sandbox": 0
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
-   "deleted": false,
-   "deletedAt": "",
+   "rev": 7,
+   "deleted": true,
+   "deletedAt": "2026-11-13T21:30:25.310Z",
    "pending": {
     "model": "Opus",
     "status": "pending",
@@ -198697,7 +198713,7 @@
    "title": "Toolbar widgets: attach any banner-style widget to any toolbar",
    "category": "",
    "detail": "Let every toolbar (and tab group bar) host widgets the same way the banner does: use the same widget assets and registry as banner widgets (status badges, counters, CPU/disk, account, clocks, etc.). Add/remove/arrange widgets per toolbar instance from its right-click menu and its chrome settings (drag to arrange, like widgets.arrange). Widgets follow skins/tokens, collapse into an overflow when space is short, persist per instance. Reachable by REST/MCP/CLI/voice/control@1 ('add the CPU widget to the main toolbar'). Tests, help, Shipped features.",
-   "status": "queued",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -198705,7 +198721,7 @@
    "pr": "#656",
    "priority": "P2",
    "createdAt": "2026-11-13T18:20:19.790Z",
-   "updatedAt": "2026-11-13T20:56:45.086Z",
+   "updatedAt": "2026-11-13T21:40:41.939Z",
    "builtAt": "",
    "notes": [
     {
@@ -198723,6 +198739,18 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-toolbar-widgets-attach-any-banner-style--joey, own login copy)",
      "at": "2026-11-13T20:32:13.894Z"
+    },
+    {
+     "text": "Dispatch gate: toolbar-widgets-attach-any-banner-style still has axf-toolbar-widgets-attach-any-banner-style--joey alive: not launched again, tracking that session.",
+     "at": "2026-11-13T21:17:18.458Z"
+    },
+    {
+     "text": "Headless run axf-toolbar-widgets-attach-any-banner-style--joey: brief only · start 12.9K tokens ($0.06) · cost $16.70 · 174 turns · 6 tools, MCP none",
+     "at": "2026-11-13T21:19:53.032Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-13T21:40:41.939Z"
     }
    ],
    "approvals": [],
@@ -198761,10 +198789,10 @@
     "route": "",
     "dispatchedAt": "",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-13T18:21:45.269Z",
+     "at": "2026-11-13T21:41:03.496Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -198789,12 +198817,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T21:18:48.948Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T18:21:42.427Z",
-     "updatedAt": "2026-11-13T18:21:42.427Z"
+     "updatedAt": "2026-11-13T21:18:49.252Z"
     },
     {
      "id": "s2",
@@ -198852,7 +198880,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -201513,7 +201541,7 @@
    "title": "Console app: wake-word voice listener, voice approvals, every console command by voice",
    "category": "",
    "detail": "Voice control for the console Android app (wrapper, parts 1-4), working offline where possible.\n- Always-on wake-word listener, with a wake phrase Brett sets in Settings (several allowed). Runs on-device (offline engine, e.g. Vosk/whisper.cpp + a local intent matcher), with a mic-on indicator and an off switch.\n- After the wake phrase the app answers out loud ('What's up?') and listens for a command.\n- Voice approvals: 'approve' reads pending approvals one at a time (who asked, what it does); Brett says approve, deny, skip or details. 'Approve all pending' and 'deny all' ask for one spoken confirm. Works from the floating overlay and the lock screen.\n- Settings by voice, e.g. 'change the veto timer to two hours' (the axHub veto countdown, so he has that long to veto something before it runs/builds), with the value read back.\n- Command catalog: every console action, plugin command, control@1 target and pipeline gets a voice entry, built from the API registry so new plugins appear automatically. Multi-field actions run as a spoken wizard that asks for each missing field ('create a new project' -> 'name?' -> 'Gizmo Johnson' -> confirm). Covers projects, builds/pipelines (file, split, prioritise, land, stop), approvals, settings, tokens/skins, notes/tasks, navigation.\n- A Voice commands screen lists every command and its phrasings, searchable, with custom phrases Brett adds.\n- Destructive commands always need a spoken confirm.\n- Full API parity. Tests, help, Shipped features.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -201521,7 +201549,7 @@
    "pr": "#643",
    "priority": "P1",
    "createdAt": "2026-11-13T18:44:52.063Z",
-   "updatedAt": "2026-11-13T20:32:34.162Z",
+   "updatedAt": "2026-11-13T21:14:33.106Z",
    "builtAt": "",
    "notes": [
     {
@@ -201551,6 +201579,10 @@
     {
      "text": "UI Review: no shots from this headless session (no console token; a local preview is gated on axHub cross-origin). To review: open Settings → Plugins → Wake listener on the live console after the PR lands (desktop + phone) and the banner mic light; or run framework/cli/rebuild-shots.mjs with AXF_TOKEN against this branch.",
      "at": "2026-11-13T20:30:49.247Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-13T21:14:33.106Z"
     }
    ],
    "approvals": [],
@@ -201589,10 +201621,10 @@
     "route": "",
     "dispatchedAt": "",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-13T18:48:13.503Z",
+     "at": "2026-11-13T21:14:47.744Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -201856,7 +201888,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -204782,7 +204814,7 @@
    "title": "Skin animations: swatches, skin-switch sweep, picker",
    "category": "",
    "detail": "Cool animations for skins, all token-driven (duration, easing, intensity tokens) and respecting reduced-motion:\n- Skins gallery (Skins plugin and the built-in skins panel): each skin card shows a row of animated colour swatches that ripple/wave on hover or tap.\n- Switching skins: the new colours sweep or ripple across the screen from where you tapped, instead of snapping.\n- Colour pickers in token editors, UI Manager and Quick settings: swatches pop and fan out into their shades when picked, with a smooth morph to the new colour.\n- Animations are assets, so they're swappable and per-skin, with an Animations section in settings (on/off per animation, speed).\n- Full API: REST/MCP/CLI/voice. Tests, help, Shipped features.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -204790,7 +204822,7 @@
    "pr": "#652",
    "priority": "P1",
    "createdAt": "2026-11-13T19:49:31.102Z",
-   "updatedAt": "2026-11-13T20:31:16.091Z",
+   "updatedAt": "2026-11-13T21:14:33.106Z",
    "builtAt": "",
    "notes": [
     {
@@ -204816,6 +204848,10 @@
     {
      "text": "Reconciler: PR #652",
      "at": "2026-11-13T20:31:16.091Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-13T21:14:33.106Z"
     }
    ],
    "approvals": [],
@@ -205055,7 +205091,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -205257,15 +205293,15 @@
    "title": "Icon map and icon packs: every icon and badge in the app, swappable",
    "category": "",
    "detail": "1. Icon map: a registry of EVERY icon, badge and logo slot in the whole app (every plugin, screen, dialog, menu, toolbar, tab, nav item, banner, widget and button that shows an icon). Each slot gets a stable id, its location and a role (e.g. 'save', 'approve', 'build-running'), and registers through the framework manifest so new plugins appear automatically. Add a CI check that fails on hard-coded icons not in the map.\n2. Icon map screen: a searchable, filterable, categorized tree of every slot with a live preview, where you click a slot to change its icon. Ties into the UI Manager.\n3. Icon pack template: one pack file maps every role to an icon. Applying a pack changes every icon in the app in one click. Per-slot overrides with Restore previous edit / Restore from axHub.\n4. Packs: ship a lot of packs (outline, filled, rounded, duotone, sharp, glyph, emoji-style, plus badge styles and app/plugin logos). Some are themable (follow skin tokens for colour and stroke), others are fixed-colour. Each pack declares whether it's themable. Licences must allow redistribution; prefer open icon sets.\n5. Packs are assets: swappable, per-skin defaults, shareable via the hub asset library, importable.\n6. Full API: REST/MCP/CLI/voice ('switch to the duotone icon pack'). Tests, help, Shipped features. Use Fable for the registry/schema and asset type.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/icon-map-icon-packs-every-icon-badge-app",
-   "pr": "",
+   "pr": "#664",
    "priority": "P1",
    "createdAt": "2026-11-13T19:55:30.979Z",
-   "updatedAt": "2026-11-13T20:56:29.947Z",
+   "updatedAt": "2026-11-13T22:20:38.558Z",
    "builtAt": "",
    "notes": [
     {
@@ -205311,9 +205347,34 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-icon-map-icon-packs-every-icon-badge-app--earl, own login copy)",
      "at": "2026-11-13T20:56:29.947Z"
+    },
+    {
+     "text": "Self-check: icon-map-icon-packs-every-icon-badge-app had no session on record but axf-icon-map-icon-packs-every-icon-badge-app--earl is alive: kept running and tracking it.",
+     "at": "2026-11-13T21:10:18.379Z"
+    },
+    {
+     "text": "Self-check: icon-map-icon-packs-every-icon-badge-app had no session on record but axf-icon-map-icon-packs-every-icon-badge-app--earl is alive: kept running and tracking it.",
+     "at": "2026-11-13T21:20:21.541Z"
+    },
+    {
+     "text": "Headless run axf-icon-map-icon-packs-every-icon-badge-app--earl: brief only · start 11.7K tokens ($0.03) · cost $17.87 · 287 turns · 6 tools, MCP none",
+     "at": "2026-11-13T21:55:36.504Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-13T22:20:38.558Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-13T21:09:09.006Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "I need a shitload of icon packs, badges, logos, the works; a map of every single icon and badge for the whole entire app, every plugin, every screen, every UI; a template so I can change every single one with a click; some packs must be themable, others don't have to be; just need a lot of them",
@@ -205322,7 +205383,7 @@
     "session": "",
     "link": "",
     "by": "icon-map-icon-packs-every-icon-badge-app",
-    "brief": "# Build: icon-map-icon-packs-every-icon-badge-app\n\n## Brett said (verbatim)\nAt: 2026-11-13T19:55:30.979Z\n> I need a shitload of icon packs, badges, logos, the works; a map of every single icon and badge for the whole entire app, every plugin, every screen, every UI; a template so I can change every single one with a click; some packs must be themable, others don't have to be; just need a lot of them\n\n## What to build\nContinue build \"Icon map and icon packs: every icon and badge in the app, swappable\" (icon-map-icon-packs-every-icon-badge-app) — Phase 2, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-13 19:55):\n\"I need a shitload of icon packs, badges, logos, the works; a map of every single icon and badge for the whole entire app, every plugin, every screen, every UI; a template so I can change every single one with a click; some packs must be themable, others don't have to be; just need a lot of them\"\nThis phase downgrades Fable → Opus: fine, no approval needed (it is recorded when you tick its first step).\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nBranch: claude/icon-map-icon-packs-every-icon-badge-app\nSteps in this phase (6 left, ~1 h):\n[ ] s3 (~10 min) Icon map screen: a searchable, filterable, categorized tree of every slot with a live preview, where you click a slot to change its icon. Ties into the UI Manager.\n[ ] s4 (~10 min) Icon pack template: one pack file maps every role to an icon. Applying a pack changes every icon in the app in one click. Per-slot overrides with Restore previous edit / Restore from axHub.\n[ ] s5 (~10 min) Packs: ship a lot of packs (outline, filled, rounded, duotone, sharp, glyph, emoji-style, plus badge styles and app/plugin logos). Some are themable (follow skin tokens for colour and stroke), others are fixed-colour. Each pack declares whether it's themable. Licences must allow redistribution; prefer open icon sets.\n[ ] s6 (~10 min) Packs are assets: swappable, per-skin defaults, shareable via the hub asset library, importable.\n[ ] s7 (~10 min) I need a shitload of icon packs, badges, logos, the works; a map of every single icon and badge for the whole entire app, every plugin, every screen, every UI; a template so I can change every single one with a click; some packs must be themable, others don't have to be; just need a lot of them\n[ ] s8 (~10 min) Tests green, report _claude/builds/reports/icon-map-icon-packs-every-icon-badge-app.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/icon-map-icon-packs-every-icon-badge-app.md, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step icon-map-icon-packs-every-icon-badge-app <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link icon-map-icon-packs-every-icon-badge-app --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step icon-map-icon-packs-every-icon-badge-app <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note icon-map-icon-packs-every-icon-badge-app \"…\"); the build goes back to Pending for Brett.\n",
+    "brief": "# Build: icon-map-icon-packs-every-icon-badge-app\n\n## Brett said (verbatim)\nAt: 2026-11-13T19:55:30.979Z\n> I need a shitload of icon packs, badges, logos, the works; a map of every single icon and badge for the whole entire app, every plugin, every screen, every UI; a template so I can change every single one with a click; some packs must be themable, others don't have to be; just need a lot of them\n\n## What to build\nContinue build \"Icon map and icon packs: every icon and badge in the app, swappable\" (icon-map-icon-packs-every-icon-badge-app) — Phase 1, model Fable.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-13 19:55):\n\"I need a shitload of icon packs, badges, logos, the works; a map of every single icon and badge for the whole entire app, every plugin, every screen, every UI; a template so I can change every single one with a click; some packs must be themable, others don't have to be; just need a lot of them\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (2 left, ~20 min):\n[ ] s1 (~10 min) Icon map: a registry of EVERY icon, badge and logo slot in the whole app (every plugin, screen, dialog, menu, toolbar, tab, nav item, banner, widget and button that shows an icon). Each slot gets a stable id, its location and a role (e.g. 'save', 'approve', 'build-running'), and registers through the framework manifest so new plugins appear automatically. Add a CI check that fails on hard-coded icons not in the map.\n[ ] s2 (~10 min) Full API: REST/MCP/CLI/voice ('switch to the duotone icon pack'). Tests, help, Shipped features. Use Fable for the registry/schema and asset type.\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step icon-map-icon-packs-every-icon-badge-app <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link icon-map-icon-packs-every-icon-badge-app --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step icon-map-icon-packs-every-icon-badge-app <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note icon-map-icon-packs-every-icon-badge-app \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -205331,11 +205392,11 @@
     "queuedAt": "2026-11-13T19:55:38.790Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-icon-map-icon-packs-every-icon-badge-app--earl",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-13T20:56:23.280Z",
-    "runs": 2,
+    "model": "Fable",
+    "launchedAt": "2026-11-13T20:06:45.871Z",
+    "runs": 1,
     "lastRun": {
      "at": "2026-11-13T20:55:47.964Z",
      "exit": 0,
@@ -205352,18 +205413,18 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"391d2f97-0c8b-49cb-9814-002d6c66fd02\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- ended (exit 0) with 6 steps left: back in the Queue (run 1).",
     "route": "",
-    "dispatchedAt": "2026-11-13T20:56:23.280Z",
+    "dispatchedAt": "2026-11-13T20:06:45.871Z",
     "planned": {
-     "model": "Opus",
+     "model": "Fable",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-13T20:54:11.879Z",
+     "at": "2026-11-13T22:21:03.931Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-13T20:56:23.280Z",
+    "pickedAt": "2026-11-13T20:06:45.871Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -205428,12 +205489,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T21:09:09.006Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T19:58:41.893Z",
-     "updatedAt": "2026-11-13T19:58:41.893Z"
+     "updatedAt": "2026-11-13T21:09:10.061Z"
     },
     {
      "id": "s4",
@@ -205450,12 +205511,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T21:18:44.755Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T19:58:41.893Z",
-     "updatedAt": "2026-11-13T19:58:41.893Z"
+     "updatedAt": "2026-11-13T21:18:45.275Z"
     },
     {
      "id": "s5",
@@ -205472,12 +205533,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T21:28:54.436Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T19:58:41.893Z",
-     "updatedAt": "2026-11-13T19:58:41.893Z"
+     "updatedAt": "2026-11-13T21:28:54.737Z"
     },
     {
      "id": "s6",
@@ -205494,12 +205555,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T21:37:41.483Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T19:58:41.893Z",
-     "updatedAt": "2026-11-13T19:58:41.893Z"
+     "updatedAt": "2026-11-13T21:37:41.706Z"
     },
     {
      "id": "s7",
@@ -205516,12 +205577,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T21:49:41.505Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T19:58:41.893Z",
-     "updatedAt": "2026-11-13T19:58:41.893Z"
+     "updatedAt": "2026-11-13T21:49:41.729Z"
     },
     {
      "id": "s8",
@@ -205541,12 +205602,34 @@
      "session": "same",
      "agent": false,
      "skip": false,
+     "done": true,
+     "doneAt": "2026-11-13T21:55:12.052Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-13T19:58:41.893Z",
+     "updatedAt": "2026-11-13T21:55:12.420Z"
+    },
+    {
+     "id": "s9",
+     "uid": "st-mwfhdqyp01kax0",
+     "title": "",
+     "text": "icon-pack@1 colour layers + logo packs drive brand marks (Fable: schema + engine). (1) Glyphs may carry layers [{d, color, opacity}] so fixed-colour packs (themable:false: twemoji, badges-traffic, logo-amber-gem) draw in their own colours: normalizeIconPack + glyphSvg (brand-rules.mjs, brand.ts) + asset-types optional_fields + fixtures; the s5 packs already ship layers with a one-colour d fallback. (2) The 82 logo slots are brand marks (logo-mark assets via the branding package): when the icon pack in force covers logos and maps app-mark / app-logo, BrandMark in mark mode draws that glyph (brand.ts place resolution + react/components/Brand.tsx), then re-bake the apps",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
      "done": false,
      "doneAt": "",
      "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-13T19:58:41.893Z",
-     "updatedAt": "2026-11-13T19:58:41.893Z"
+     "rev": 3,
+     "createdAt": "2026-11-13T21:20:31.599Z",
+     "updatedAt": "2026-11-13T21:55:20.973Z"
     }
    ],
    "profiles": [
@@ -205557,7 +205640,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 30,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -206022,7 +206105,7 @@
    "title": "Own token sets for grids and tab groups",
    "category": "",
    "detail": "Today grids only have layout tokens (--fx-grid-areas/cols/rows and the -m mobile variants), and tab groups only have --fx-tab-py/--fx-tab-px padding and --fx-tabs-per-row. Both borrow the general colour tokens (--fx-surface, --fx-border, accent), so hover, selected and active states can't be styled on their own. Add dedicated token families in tokens.style, following skins and editable in Token Control, the UI Manager and per instance.\nGRID: header background/text/border/sort arrow/filter chip; row, alternate row, hover, selected, focused, expanded, disabled; grid lines, outer border, cell padding, row height, radius; group header, sticky column shadow, empty state; transparency (default 100%).\nTAB GROUP: bar background and border; tab text, background and border for idle, hover, active/selected, pressed, disabled and focus ring; active indicator (underline/pill) colour and thickness; badge on tab; fold/overflow button; gap; radius per style (underline, pills, boxed, segmented, plain, chips); transparency (default 100%).\nWire every grid/table and tab group to read them, and add a CI check against hard-coded colours. Per-instance overrides with Restore previous edit / Restore from axHub. Full API. Tests, help, Shipped features. Fable for the token schema.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -206030,7 +206113,7 @@
    "pr": "#654",
    "priority": "P1",
    "createdAt": "2026-11-13T19:57:42.157Z",
-   "updatedAt": "2026-11-13T20:54:32.696Z",
+   "updatedAt": "2026-11-13T21:21:16.380Z",
    "builtAt": "",
    "notes": [
     {
@@ -206080,6 +206163,10 @@
     {
      "text": "Headless run axf-own-token-sets-for-grids-and-tab-groups--rhonda: brief only · start 12.8K tokens ($0.06) · cost $15.53 · 129 turns · 6 tools, MCP none",
      "at": "2026-11-13T20:54:32.696Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-13T21:21:16.380Z"
     }
    ],
    "approvals": [],
@@ -206118,10 +206205,10 @@
     "route": "",
     "dispatchedAt": "",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-13T20:03:13.974Z",
+     "at": "2026-11-13T21:22:04.626Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -206275,7 +206362,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -206291,15 +206378,15 @@
    "title": "Token registry and Skin Editor: live sandbox preview, snapshot history",
    "category": "",
    "detail": "Runs after the token schema step of own-token-sets-for-grids-and-tab-groups (builds on its schema).\n1. TOKEN REGISTRY: one registry listing every token in the system, with element type, area (layout/style/colour/behaviour), state, light/dark, level (basic/pro/advanced), plain-English description, default and source. Every new UI, component or plugin MUST register its tokens through its manifest. A CI check fails any UI whose tokens aren't in the registry, and any registered token that nothing uses. Browsable and searchable, with full API.\n2. SKIN EDITOR (plugin and screen): pick any UI from the list (a screen, plugin, dialog, element), or pick it on screen, and it's loaded into a sandbox live-preview window with real components and sample data. Every edit hot-renders the preview in real time. The token list comes from the registry, with Basic/Pro/Advanced views. Inline element and asset editors work inside it.\n3. DEFAULT SKIN: there is always a built-in default skin that is locked.\n4. SNAPSHOTS: every edit to a skin automatically takes a snapshot (like a disk snapshot). A timeline shows the chain of edits, each with time, who/what made it, and a diff of exactly which tokens changed (old -> new). Click any snapshot to preview it, compare any two, or revert to it (a revert is itself a new snapshot, so nothing is ever lost). No breaking skins into separate style or colour groups: the skin is the only unit.\n5. EXPORT: at any point, 'Export current to new skin' saves the current state as a brand-new skin (name, thumbnail, to the hub library).\n6. Restore previous edit / Restore from axHub work through the snapshots.\n7. Full API: REST/MCP/CLI/voice ('revert the skin to 10 minutes ago', 'export this as a new skin called Midnight'). Tests, help, Shipped features. Fable for the registry and snapshot schema.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/token-registry-skin-editor-live-sandbox",
-   "pr": "",
+   "pr": "#657",
    "priority": "P1",
    "createdAt": "2026-11-13T20:04:16.679Z",
-   "updatedAt": "2026-11-13T20:42:08.378Z",
+   "updatedAt": "2026-11-13T22:20:38.558Z",
    "builtAt": "",
    "notes": [
     {
@@ -206321,6 +206408,18 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-token-registry-skin-editor-live-sandbox--lenny, own login copy)",
      "at": "2026-11-13T20:21:33.063Z"
+    },
+    {
+     "text": "Phase 1 done on Fable: PR #657. Token registry (223 tokens, token-registry@1, CI check, manifest tokens block), Skin editor plugin (sandbox hot render, Basic/Pro/Advanced, snapshot chain with revert, export as skin, REST/MCP/CLI/voice), console bake fixes (build-id, windows engine). UI Review r-20261113-5f636908 waiting for Brett. Note: own-token-sets-for-grids-and-tab-groups had not pushed its schema; the registry derives from the engines, so its families register on the next sync.",
+     "at": "2026-11-13T21:53:26.570Z"
+    },
+    {
+     "text": "Headless run axf-token-registry-skin-editor-live-sandbox--lenny: brief only · start 13.4K tokens ($0.07) · cost $35.59 · 241 turns · 6 tools, MCP none",
+     "at": "2026-11-13T21:55:24.444Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-13T22:20:38.558Z"
     }
    ],
    "approvals": [],
@@ -206359,10 +206458,10 @@
     "route": "",
     "dispatchedAt": "",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-13T20:06:23.674Z",
+     "at": "2026-11-13T22:21:03.931Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -206409,12 +206508,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T21:08:41.933Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T20:06:18.849Z",
-     "updatedAt": "2026-11-13T20:06:18.849Z"
+     "updatedAt": "2026-11-13T21:08:42.436Z"
     },
     {
      "id": "s3",
@@ -206431,12 +206530,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T21:08:47.373Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T20:06:18.849Z",
-     "updatedAt": "2026-11-13T20:06:18.849Z"
+     "updatedAt": "2026-11-13T21:08:47.985Z"
     },
     {
      "id": "s4",
@@ -206453,12 +206552,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T21:28:48.253Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T20:06:18.849Z",
-     "updatedAt": "2026-11-13T20:06:18.849Z"
+     "updatedAt": "2026-11-13T21:28:48.502Z"
     },
     {
      "id": "s5",
@@ -206475,12 +206574,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T21:53:24.810Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T20:06:18.849Z",
-     "updatedAt": "2026-11-13T20:06:18.849Z"
+     "updatedAt": "2026-11-13T21:53:25.036Z"
     },
     {
      "id": "s6",
@@ -206604,7 +206703,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -207337,15 +207436,15 @@
    "title": "Context menus plugin: one true source on axHub, Claude-generated by skill level",
    "category": "",
    "detail": "Replaces the archived context-menu-plugin-ai-generated-slim.\n- New console plugin 'Context menus', integrated with the UI Manager (its menus show there per element/zone).\n- ONE TRUE SOURCE: every context menu definition is stored on axHub (not local), as context-menu@1 assets, readable and writable by every plugin and app through the hub API. Plugins register the actions/hooks they offer; menus reference them.\n- The plugin lists every context menu in the app (per zone/element/page, with its parent app, plugin or page), searchable, with preview, edit and Restore per row, snapshots and restore like skins.\n- AI generation (needs Claude; greyed out with a clear error when the Claude badge isn't green): generate the context menus for the whole app at a chosen level. BEGINNER: a few big, obvious actions. AMATEUR: common actions. PRO: full working set grouped. ADVANCED CODER: meticulous map of every zone with deep actions (tokens, API, inspect, copy ids, run commands). Higher levels map the app more meticulously. Menus are slim by default (no wasted space, rarely used items folded away). The user picks the level, and it can differ per app/page.\n- Preview before applying. Full API and voice ('generate pro context menus'). Tests, help, Shipped features. Fable for the context-menu@1 schema and the hub source.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/context-menus-plugin-one-true-source",
-   "pr": "",
+   "pr": "#659",
    "priority": "P1",
    "createdAt": "2026-11-13T20:14:18.034Z",
-   "updatedAt": "2026-11-13T20:31:47.158Z",
+   "updatedAt": "2026-11-13T21:17:05.927Z",
    "builtAt": "",
    "notes": [
     {
@@ -207361,12 +207460,28 @@
      "at": "2026-11-13T20:15:47.807Z"
     },
     {
+     "text": "s1 done on PR #659: plugin context-menus (hub one-true-source store, context-menu@1 Fable rules + fixture/check, Claude generation by level with preview before apply, full REST/MCP/CLI/actions/voice, tests in CI). UI Review not submitted: no screenshot capture possible from this session (no Playwright; preview needs a signed-in hub session). Page is in Watch live (console-web, route context-menus). Pre-existing on base: menu-reach window-switcher items, help coverage gizmo-guide.",
+     "at": "2026-11-13T21:15:10.280Z"
+    },
+    {
      "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-context-menus-plugin-one-true-source--gina.",
      "at": "2026-11-13T20:31:40.846Z"
     },
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-context-menus-plugin-one-true-source--gina, own login copy)",
      "at": "2026-11-13T20:31:47.158Z"
+    },
+    {
+     "text": "Dispatch gate: context-menus-plugin-one-true-source still has axf-context-menus-plugin-one-true-source--gina alive: not launched again, tracking that session.",
+     "at": "2026-11-13T21:16:50.984Z"
+    },
+    {
+     "text": "Session stopped on its own with 7 steps left: back in Pending for Brett.",
+     "at": "2026-11-13T21:17:05.927Z"
+    },
+    {
+     "text": "Headless run axf-context-menus-plugin-one-true-source--gina: brief only · start 12.9K tokens ($0.06) · cost $18.36 · 130 turns · 6 tools, MCP none",
+     "at": "2026-11-13T21:15:55.434Z"
     }
    ],
    "approvals": [],
@@ -207386,13 +207501,20 @@
    "pipeline": {
     "queuedAt": "2026-11-13T20:14:20.134Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-context-menus-plugin-one-true-source--gina",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Fable",
-    "launchedAt": "2026-11-13T20:31:39.895Z",
-    "runs": 1,
-    "lastRun": null,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": {
+     "at": "2026-11-13T21:17:04.659Z",
+     "exit": 0,
+     "outcome": "returned",
+     "stepsLeft": 7,
+     "account": "",
+     "session": "axf-context-menus-plugin-one-true-source--gina"
+    },
     "split": {
      "at": "2026-11-13T20:16:04.552Z",
      "by": "orchestrator",
@@ -207401,18 +207523,18 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"e779dc8d-8b62-458d-945b-c6275886b2ea\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session stopped on its own with 7 steps left: back in Pending for Brett.",
     "route": "",
-    "dispatchedAt": "2026-11-13T20:31:39.895Z",
+    "dispatchedAt": "",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-13T20:17:10.655Z",
+     "at": "2026-11-13T21:17:08.385Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-13T20:31:39.895Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -207433,12 +207555,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T21:15:22.997Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T20:16:04.552Z",
-     "updatedAt": "2026-11-13T20:16:04.552Z"
+     "updatedAt": "2026-11-13T21:15:23.857Z"
     },
     {
      "id": "s2",
@@ -207606,7 +207728,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -207622,16 +207744,16 @@
    "title": "Auto-land: every finished build lands itself immediately",
    "category": "",
    "detail": "Brett is sick of finished builds sitting unlanded until they're thousands of commits behind. Make auto-land the DEFAULT for every build (the per-build switch stays, default ON):\n- The moment a build finishes and its tests pass, the server lands it on main (build_land logic: push, merge origin/main, union-merge THREADS/STATUS/decisions, settle orchestrator JSON, check JSON, push).\n- Lands go through ONE serial landing queue, so two lands never race (fixes 'cannot lock ref origin/main').\n- On a code clash or failing test, the server automatically queues a P0 'merge main and land' fix build for it and keeps retrying until it lands. Brett gets an FYI notification for each attempt, not a question.\n- A build that's still running gets main merged into its branch every 30 minutes, so it never falls far behind.\n- A sweeper runs every 10 minutes: any finished-but-unlanded build is landed or gets its fix build.\n- A banner/badge shows the landing queue and anything stuck for over 30 minutes.\n- Full API and voice. Tests, help, Shipped features.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/auto-land-every-finished-build-lands",
-   "pr": "",
+   "pr": "#660",
    "priority": "P0",
    "createdAt": "2026-11-13T20:44:39.782Z",
-   "updatedAt": "2026-11-13T20:58:58.400Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-13T21:17:09.699Z",
+   "builtAt": "2026-11-13T21:17:09.699Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -207648,6 +207770,14 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-auto-land-every-finished-build-lands--rhonda, own login copy)",
      "at": "2026-11-13T20:47:04.960Z"
+    },
+    {
+     "text": "Headless run axf-auto-land-every-finished-build-lands--rhonda: brief only · start 11.5K tokens ($0.03) · cost $7.27 · 139 turns · 6 tools, MCP none",
+     "at": "2026-11-13T21:17:09.699Z"
+    },
+    {
+     "text": "Phase 1 done, PR #660. Main CI is red (test-sandbox profile export); P0 main-ci-red-test-sandbox-profile-export queued, it must land first. Landing chip UI Review shots not submitted: the live console runs main, capture after deploy.",
+     "at": "2026-11-13T21:16:52.292Z"
     }
    ],
    "approvals": [],
@@ -207824,12 +207954,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T21:00:54.670Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T20:46:35.586Z",
-     "updatedAt": "2026-11-13T20:46:35.586Z"
+     "updatedAt": "2026-11-13T21:00:55.111Z"
     },
     {
      "id": "s7",
@@ -207846,12 +207976,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T21:06:25.541Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T20:46:35.586Z",
-     "updatedAt": "2026-11-13T20:46:35.586Z"
+     "updatedAt": "2026-11-13T21:06:26.304Z"
     },
     {
      "id": "s8",
@@ -207868,12 +207998,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T21:11:58.753Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T20:46:35.586Z",
-     "updatedAt": "2026-11-13T20:46:35.586Z"
+     "updatedAt": "2026-11-13T21:11:59.011Z"
     },
     {
      "id": "s9",
@@ -207890,12 +208020,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T21:13:59.824Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T20:46:35.586Z",
-     "updatedAt": "2026-11-13T20:46:35.586Z"
+     "updatedAt": "2026-11-13T21:14:00.466Z"
     },
     {
      "id": "s10",
@@ -207915,12 +208045,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T21:16:38.277Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T20:46:35.586Z",
-     "updatedAt": "2026-11-13T20:46:35.586Z"
+     "updatedAt": "2026-11-13T21:16:38.618Z"
     }
    ],
    "profiles": [
@@ -207931,7 +208061,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 19,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -207947,16 +208077,16 @@
    "title": "Per-instance settings: small live preview pane",
    "category": "",
    "detail": "Follow-up to the landed per-toolbar settings (per-toolbar-settings-fix-failing-chrome). In the settings interface of every individual toolbar, nav menu, application menu and tab group (and dialog), add a small live preview pane at the top: a compact sample of that element type rendered with seed data (e.g. 2-3 toolbar icons with a badge, 2 tab groups of a few tabs with one active, a short nav menu with one selected item, an app menu with a submenu). It hot-renders every setting change in real time (style, colours, transparency, layout, density, hover/active states, with a hover/press demo toggle), before Apply. Collapsible, light/dark toggle, and it uses the real framework components and the instance's tokens. Full API. Tests, help, Shipped features.",
-   "status": "queued",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
-   "branch": "",
-   "pr": "",
+   "branch": "claude/per-instance-settings-small-live-preview",
+   "pr": "#662",
    "priority": "P1",
    "createdAt": "2026-11-13T20:45:51.589Z",
-   "updatedAt": "2026-11-13T20:48:36.828Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-13T21:27:07.106Z",
+   "builtAt": "2026-11-13T21:27:07.106Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -207965,6 +208095,22 @@
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"e5e6c1b0-dcd5-4bee-949f-67fa1ae8fa4a\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-13T20:48:36.828Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-per-instance-settings-small-live-preview--gina.",
+     "at": "2026-11-13T21:01:27.350Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-per-instance-settings-small-live-preview--gina, own login copy)",
+     "at": "2026-11-13T21:01:35.753Z"
+    },
+    {
+     "text": "UI Review queue submit not done: review.mjs --console needs AXF_CONSOLE_URL + AXF_TOKEN (not in the headless env). To submit: node apps/console-web/plugins/ui-review/review.mjs submit --kind screen --name 'Chrome settings live preview pane' --app console-web --screen chrome-settings --group 'per-instance-settings-small-live-preview - Nov 13 9:40 PM' --shots <Screenshots group per-instance-settings-small-live-preview> --branch claude/per-instance-settings-small-live-preview --pr 662 --single-option 'one requested element' --console",
+     "at": "2026-11-13T21:26:43.210Z"
+    },
+    {
+     "text": "Headless run axf-per-instance-settings-small-live-preview--gina: brief only · start 11.3K tokens ($0.03) · cost $5.05 · 121 turns · 6 tools, MCP none",
+     "at": "2026-11-13T21:27:07.106Z"
     }
    ],
    "approvals": [],
@@ -207975,8 +208121,8 @@
     "source": "",
     "session": "",
     "link": "",
-    "by": "",
-    "brief": "",
+    "by": "per-instance-settings-small-live-preview",
+    "brief": "# Build: per-instance-settings-small-live-preview\n\n## Brett said (verbatim)\nAt: 2026-11-13T20:45:51.589Z\n> on the per toolbar, per nav menu, per application menu, per tab group settings I need a small preview pane, a couple of icons or two tab groups with some seed data, showing what the settings look like\n\n## What to build\nContinue build \"Per-instance settings: small live preview pane\" (per-instance-settings-small-live-preview) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-13 20:45):\n\"on the per toolbar, per nav menu, per application menu, per tab group settings I need a small preview pane, a couple of icons or two tab groups with some seed data, showing what the settings look like\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~30 min):\n[ ] s1 (~10 min) Follow-up to the landed per-toolbar settings (per-toolbar-settings-fix-failing-chrome). In the settings interface of every individual toolbar, nav menu, application menu and tab group (and dialog), add a small live preview pane at the top: a compact sample of that element type rendered with seed data (e.g. 2-3 toolbar icons with a badge, 2 tab groups of a few tabs with one active, a short nav menu with one selected item, an app menu with a submenu). It hot-renders every setting change in real time (style, colours, transparency, layout, density, hover/active states, with a hover/press demo toggle), before Apply. Collapsible, light/dark toggle, and it uses the real framework components and the instance's tokens. Full API. Tests, help, Shipped features.\n[ ] s2 (~10 min) on the per toolbar, per nav menu, per application menu, per tab group settings I need a small preview pane, a couple of icons or two tab groups with some seed data, showing what the settings look like\n[ ] s3 (~10 min) Tests green, report _claude/builds/reports/per-instance-settings-small-live-preview.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/per-instance-settings-small-live-preview.md, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step per-instance-settings-small-live-preview <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link per-instance-settings-small-live-preview --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step per-instance-settings-small-live-preview <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note per-instance-settings-small-live-preview \"…\"); the build goes back to Pending for Brett.\n",
     "verbatim": true,
     "from": "",
     "addenda": []
@@ -208031,12 +208177,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T21:17:47.401Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T20:48:36.828Z",
-     "updatedAt": "2026-11-13T20:48:36.828Z"
+     "updatedAt": "2026-11-13T21:17:47.763Z"
     },
     {
      "id": "s2",
@@ -208053,12 +208199,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T21:24:34.196Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T20:48:36.828Z",
-     "updatedAt": "2026-11-13T20:48:36.828Z"
+     "updatedAt": "2026-11-13T21:24:34.418Z"
     },
     {
      "id": "s3",
@@ -208078,12 +208224,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T21:26:45.962Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T20:48:36.828Z",
-     "updatedAt": "2026-11-13T20:48:36.828Z"
+     "updatedAt": "2026-11-13T21:26:46.234Z"
     }
    ],
    "profiles": [
@@ -208094,7 +208240,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -208118,7 +208264,7 @@
    "pr": "#655",
    "priority": "P0",
    "createdAt": "2026-11-13T20:45:58.911Z",
-   "updatedAt": "2026-11-13T20:59:27.633Z",
+   "updatedAt": "2026-11-13T21:00:29.189Z",
    "builtAt": "2026-11-13T20:59:27.633Z",
    "notes": [
     {
@@ -208144,6 +208290,10 @@
     {
      "text": "Landing audit: merge queue empty, main CI red (check-profiles test-sandbox folder; amberx-droid setVetoHost overlay types not on main; kernel ConformanceTest theme vars). Needs a main-CI fix build; then the queue lands the green PRs. #655 lands the voice control work.",
      "at": "2026-11-13T20:59:08.878Z"
+    },
+    {
+     "text": "Session axf-full-voice-control-resolve-inventory--paulie on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-13T21:00:29.189Z"
     }
    ],
    "approvals": [],
@@ -208164,12 +208314,19 @@
     "queuedAt": "2026-11-13T20:46:04.321Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-full-voice-control-resolve-inventory--paulie",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-13T20:50:31.267Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-13T21:00:24.464Z",
+     "exit": 0,
+     "outcome": "finished",
+     "stepsLeft": 0,
+     "account": "mossesx-max-",
+     "session": "axf-full-voice-control-resolve-inventory--paulie"
+    },
     "split": {
      "at": "2026-11-13T20:49:14.342Z",
      "by": "orchestrator",
@@ -208441,15 +208598,16 @@
    "title": "Lander regenerates generated files on clash",
    "category": "",
    "detail": "Most Nov 13 land failures were clashes only in GENERATED or additive files: apps/console-web/src/control/inventory.json, framework/assets/help/framework.json and its baked copies in apps/*, framework/catalog/status.json, framework/spec/PORTING.md, framework/spec/fixtures/*.json, apps/*/axf.lock.json, and the baked framework copies under apps/*/src/axf/. Fix the land path (/opt/axf-batch/resolve.py used by vps.build_land, and the orchestrator lander): (1) list generated files in one manifest; (2) on a clash in a generated file, take main's side, then run the matching generator (control inventory, help bake, fixtures, lock, framework re-bake) on the merged tree and commit; (3) union-merge additive docs/catalogs (PORTING.md, catalog status.json) by key; (4) only real source clashes stop the land; (5) run tests after regenerating. Then re-land: full-voice-control-merge-main-and-land, skin-config-panel-merge-main-and-land, skins-plugin-merge-main-and-land, project-create-mcp, project-duplicate-boilerplate, drive-live-console-first, rename-long-builds, overlay-preview-ui-review. Must land before auto-land-every-finished-build-lands.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/lander-regenerates-generated-files-clash",
-   "pr": "",
+   "pr": "#661",
+   "mergedAt": "2026-11-13T23:38:48Z",
    "priority": "P0",
    "createdAt": "2026-11-13T20:47:11.569Z",
-   "updatedAt": "2026-11-13T20:52:33.927Z",
+   "updatedAt": "2026-11-13T23:52:38Z",
    "builtAt": "",
    "notes": [
     {
@@ -208467,6 +208625,34 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-lander-regenerates-generated-files-clash--sully, own login copy)",
      "at": "2026-11-13T20:52:33.927Z"
+    },
+    {
+     "text": "Dispatch gate: lander-regenerates-generated-files-clash still has axf-lander-regenerates-generated-files-clash--sully alive: not launched again, tracking that session.",
+     "at": "2026-11-13T21:20:13.895Z"
+    },
+    {
+     "text": "Reconciler: PR #661 names s1 done",
+     "at": "2026-11-13T21:21:16.380Z"
+    },
+    {
+     "text": "Headless run axf-lander-regenerates-generated-files-clash--sully: brief only · start 13.1K tokens ($0.07) · cost $8.32 · 95 turns · 6 tools, MCP none",
+     "at": "2026-11-13T21:23:53.510Z"
+    },
+    {
+     "text": "Lander fix is on PR #661 (generated-files@1 manifest; auto-land, merge queue and /opt/axf-batch/resolve.py all regenerate on a clash). Re-lands done with land.mjs merge-main (main merged in, pushed): full-voice-control-merge-main-and-land #645 (inventory regenerated), skin-config-panel-merge-main-and-land #648 (inventory + help bake regenerated, help pack unioned), skins-plugin-merge-main-and-land #647, project-duplicate-boilerplate #621, drive-live-console-first #620, land-rename-long-builds-resolve-clash #638, land-overlay-preview-ui-review-resolve #653. Not re-landed, real code clashes: project-create-mcp #579 (framework/cli/project-seed.mjs add/add vs main; land-project-create-mcp-resolve-clash is the pending fix build), rename-long-builds #617 and overlay-preview-ui-review #626 (orchestrator.mjs / approvals-banner index.tsx; their resolve branches #638 / #653 carry them). Land order set: auto-land-every-finished-build-lands after this build.",
+     "at": "2026-11-13T21:23:27.174Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-13T21:50:42.153Z"
+    },
+    {
+     "text": "Reconciler: PR #661 merged; PR #661 names s1 done",
+     "at": "2026-11-13T23:50:25.429Z"
+    },
+    {
+     "text": "Shipped manifest sm-lander-regenerates-generated-files-clash rev 1 sent to Shipped features (orchestrator): PR #661, 0 file(s), 0 test line(s), 2 open.",
+     "at": "2026-11-13T23:52:38Z"
     }
    ],
    "approvals": [],
@@ -208486,12 +208672,12 @@
    "pipeline": {
     "queuedAt": "2026-11-13T20:47:20.965Z",
     "queuedBy": "console",
-    "account": "mossesx-max-",
-    "session": "axf-lander-regenerates-generated-files-clash--sully",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Fable",
-    "launchedAt": "2026-11-13T20:52:29.610Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-13T20:52:05.784Z",
@@ -208501,21 +208687,27 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"012c709a-352c-4b9f-94c7-cc8af2ff3246\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "2026-11-13T20:52:29.610Z",
+    "dispatchedAt": "",
     "planned": {
-     "model": "Fable",
+     "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-13T20:52:09.659Z",
+     "at": "2026-11-13T21:51:04.188Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-13T20:52:29.610Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "shipped": {
+    "id": "sm-lander-regenerates-generated-files-clash",
+    "rev": 1,
+    "at": "2026-11-13T23:52:38Z",
+    "landedCommit": ""
    },
    "steps": [
     {
@@ -208533,12 +208725,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T21:23:24.136Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T20:52:05.784Z",
-     "updatedAt": "2026-11-13T20:52:05.784Z"
+     "updatedAt": "2026-11-13T21:23:24.487Z"
     },
     {
      "id": "s2",
@@ -208596,7 +208788,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 8,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -208612,20 +208804,24 @@
    "title": "HOTFIX: desktop console draws app menu, banners and nav twice",
    "category": "",
    "detail": "Right after per-toolbar-settings-fix-failing-chrome landed on main (merge ec579ee23, 20:44 Nov 13) and the console redeployed, Brett's DESKTOP console shows TWO app menus, TWO banners and TWO navigation menus (the phone looks fine). Keep the per-toolbar/per-instance settings feature: fix forward, don't revert it. Likely cause: the per-instance chrome (ChromeContext.tsx / Overlays.tsx / chrome-settings-rules) now renders a per-instance copy of each chrome element in addition to the default one on wide layouts, or the merge kept both sides of a render block. Find it, render exactly one of each chrome element, add an e2e/visual test that counts app menus, banners and nav menus on desktop and phone (must be 1 each), run all tests, then LAND it on main immediately and redeploy the console. Note: commit 237a293af was an accidental revert that only re-added 24 lines to one file; check it and drop it if it's wrong.",
-   "status": "queued",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/hotfix-desktop-console-draws-app-menu",
-   "pr": "",
+   "pr": "#658",
    "priority": "P0",
    "createdAt": "2026-11-13T20:53:50.393Z",
-   "updatedAt": "2026-11-13T20:58:20.400Z",
+   "updatedAt": "2026-11-13T21:16:23.568Z",
    "builtAt": "",
    "notes": [
     {
      "text": "UPDATE: Brett chose to PULL the per-toolbar landing out of main first (a reverse-patch commit of e5639b79f..ec579ee23, excluding _claude, pushed about 20:55). So this hotfix must: start from claude/per-toolbar-settings-fix-failing-chrome, merge current main (which includes the pull-out commit, so revert that pull-out commit on this branch), fix the double app menu/banner/nav on desktop, prove it with the count test, then land the fixed per-toolbar settings back on main and redeploy.",
      "at": "2026-11-13T20:53:59.483Z"
+    },
+    {
+     "text": "Stopped at s1: can't reproduce. The per-toolbar landing (ec579ee23) draws no chrome; the deployed console image (built 17:23) doesn't even contain it. Local and deployed show 1 app menu / 1 banner / 1 nav on desktop + phone. 237a293af is data-only, left in place. Added chrome-once e2e (PR #658). Need from Brett: a desktop screenshot and the URL he had open (suspects: desktop-only saved settings, or a Watch live window / host embedding a second console).",
+     "at": "2026-11-13T21:12:30.801Z"
     },
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"b8bbcc40-67ec-4a69-a6e1-9e75174f51f7\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
@@ -208646,6 +208842,26 @@
     {
      "text": "Brett: right-clicking a toolbar shows 'Toolbar settings' at the top and NO 'Console settings' entry. Rule (from context-menu-console-settings): 'Console settings' must be the FIRST entry of EVERY context menu in the console (toolbars, tab groups, nav, app menu, banners, grids, every plugin), with the element's own settings (Toolbar settings etc.) right below it. Fix whichever menus skip it, and add a test that walks every registered context menu zone and asserts entry 1 is Console settings.",
      "at": "2026-11-13T20:58:20.400Z"
+    },
+    {
+     "text": "Dispatch gate: hotfix-desktop-console-draws-app-menu still has axf-hotfix-desktop-console-draws-app-menu--lenny alive: not launched again, tracking that session.",
+     "at": "2026-11-13T21:00:34.312Z"
+    },
+    {
+     "text": "Headless run axf-hotfix-desktop-console-draws-app-menu--lenny: brief only · start 11.4K tokens ($0.03) · cost $4.86 · 85 turns · 6 tools, MCP none",
+     "at": "2026-11-13T21:13:38.691Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"b91717a9-c832-49af-9ac7-5fd5a4873a0a\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-13T21:14:45.379Z"
+    },
+    {
+     "text": "Dispatch gate: hotfix-desktop-console-draws-app-menu still has axf-hotfix-desktop-console-draws-app-menu--lenny alive: not launched again, tracking that session.",
+     "at": "2026-11-13T21:14:49.474Z"
+    },
+    {
+     "text": "Session stopped on its own with 3 steps left: back in Pending for Brett.",
+     "at": "2026-11-13T21:16:23.568Z"
     }
    ],
    "approvals": [],
@@ -208671,23 +208887,30 @@
     "model": "",
     "launchedAt": "",
     "runs": 0,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-13T21:16:22.820Z",
+     "exit": 0,
+     "outcome": "returned",
+     "stepsLeft": 3,
+     "account": "",
+     "session": "axf-hotfix-desktop-console-draws-app-menu--lenny"
+    },
     "split": {
-     "at": "2026-11-13T20:55:46.020Z",
+     "at": "2026-11-13T21:14:45.379Z",
      "by": "orchestrator",
      "provider": "rules",
      "steps": 3,
-     "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"b8bbcc40-67ec-4a69-a6e1-9e75174f51f7\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
+     "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"b91717a9-c832-49af-9ac7-5fd5a4873a0a\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "Session stopped on its own with 3 steps left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
      "kind": "subscription",
-     "at": "2026-11-13T20:57:05.973Z",
+     "at": "2026-11-13T21:14:47.744Z",
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
@@ -208699,7 +208922,7 @@
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mwfghw11018fjl",
+     "uid": "st-mwfh6b5v01xt2m",
      "title": "",
      "text": "Right after per-toolbar-settings-fix-failing-chrome landed on main (merge ec579ee23, 20:44 Nov 13) and the console redeployed, Brett's DESKTOP console shows TWO app menus, TWO banners and TWO navigation menus (the phone looks fine). Keep the per-toolbar/per-instance settings feature: fix forward, don't revert it. Likely cause: the per-instance chrome (ChromeContext.tsx / Overlays.tsx / chrome-settings-rules) now renders a per-instance copy of each chrome element in addition to the default one on wide layouts, or the merge kept both sides of a render block. Find it, render exactly one of each chrome element, add an e2e/visual test that counts app menus, banners and nav menus on desktop and phone (must be 1 each), run all tests, then LAND it on main immediately and redeploy the console. Note: commit 237a293af was an accidental revert that only re-added 24 lines to one file; check it and drop it if it's wrong.",
      "model": "Opus",
@@ -208716,12 +208939,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-13T20:55:46.020Z",
-     "updatedAt": "2026-11-13T20:55:46.020Z"
+     "createdAt": "2026-11-13T21:14:45.379Z",
+     "updatedAt": "2026-11-13T21:14:45.379Z"
     },
     {
      "id": "s2",
-     "uid": "st-mwfghw1102xelt",
+     "uid": "st-mwfh6b5v02i90y",
      "title": "",
      "text": "there's two app menus, two banners, two navigation menus; I don't want to lose the toolbar settings",
      "model": "Opus",
@@ -208738,12 +208961,12 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-13T20:55:46.020Z",
-     "updatedAt": "2026-11-13T20:55:46.020Z"
+     "createdAt": "2026-11-13T21:14:45.379Z",
+     "updatedAt": "2026-11-13T21:14:45.379Z"
     },
     {
      "id": "s3",
-     "uid": "st-mwfghw11030mto",
+     "uid": "st-mwfh6b5v03nbza",
      "title": "",
      "text": "Tests green, report _claude/builds/reports/hotfix-desktop-console-draws-app-menu.md, THREADS row, commit, push, PR",
      "model": "Opus",
@@ -208763,8 +208986,8 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-13T20:55:46.020Z",
-     "updatedAt": "2026-11-13T20:55:46.020Z"
+     "createdAt": "2026-11-13T21:14:45.379Z",
+     "updatedAt": "2026-11-13T21:14:45.379Z"
     }
    ],
    "profiles": [
@@ -208775,12 +208998,2085 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 12,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "2026-11-13T20:55:46.020Z",
+   "defaultAt": "2026-11-13T21:14:45.379Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "main-ci-red-test-sandbox-profile-export",
+   "title": "Main CI red: test-sandbox profile export leaks onto main",
+   "category": "",
+   "detail": "Main's CI is red, so the merge queue kicks out every PR with the same failure (\"Build engine sweep (Node)\" → framework/spec/check-profiles.mjs):\n\n  _claude/builds/profiles/test-sandbox/ exists but \"test-sandbox\" is not in framework/plan/profiles.json\n\nThe folder first reached main in 84c62e2e2 (Nov 13 17:18, \"Builds live: test-sandbox-sample-shipped-build added (3 steps) (test-sandbox) [skip ci]\"). project-seed.mjs made the sample build with profiles ['test-sandbox'], and every orchestrator write since then re-exports _claude/builds/profiles/test-sandbox/orchestrator.json, which builds-live publishes to main.\n\nFix: (1) orchestrator / builds-store exports write only registered profiles (framework/plan/profiles.json; test projects such as test-sandbox never get a repo export), (2) delete _claude/builds/profiles/test-sandbox/ from the repo, (3) make check-profiles.mjs say where the folder came from. Then run node framework/spec/check-profiles.mjs and the builds-store checks. Found by auto-land-every-finished-build-lands (s9).\n",
+   "status": "complete",
+   "hidden": false,
+   "source": "auto-land",
+   "pendingId": "",
+   "branch": "claude/main-ci-red-test-sandbox-profile-export",
+   "pr": "#663",
+   "mergedAt": "2026-11-13T23:39:14Z",
+   "priority": "P0",
+   "createdAt": "2026-11-13T21:13:28.338Z",
+   "updatedAt": "2026-11-13T23:52:40Z",
+   "builtAt": "2026-11-13T21:27:16.800Z",
+   "notes": [
+    {
+     "text": "Queued by auto-land-every-finished-build-lands.",
+     "at": "2026-11-13T21:13:31.014Z"
+    },
+    {
+     "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"3887ca86-c7c6-4bd5-aad2-ab43b87f09c4\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
+     "at": "2026-11-13T21:16:20.570Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Fable, Phase 1): axf-main-ci-red-test-sandbox-profile-export--joey.",
+     "at": "2026-11-13T21:16:45.307Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-main-ci-red-test-sandbox-profile-export--joey, own login copy)",
+     "at": "2026-11-13T21:16:48.954Z"
+    },
+    {
+     "text": "s1 done, PR #663. Fix: repo orchestrator exports only for profiles in the repo's framework/plan/profiles.json; hub-only profiles export into their shared-data folder. To stop sessions still on the old code from re-adding _claude/builds/profiles/test-sandbox/ to main before the merge, the two test-sandbox sample builds (test data from project-seed) were soft-deleted: kept in the builds journal; after the merge 'node framework/cli/project-seed.mjs seed' puts them back.",
+     "at": "2026-11-13T21:31:35.885Z"
+    },
+    {
+     "text": "Headless run axf-main-ci-red-test-sandbox-profile-export--joey: brief only · start 12.7K tokens ($0.06) · cost $5.84 · 94 turns · 6 tools, MCP none",
+     "at": "2026-11-13T21:32:33.679Z"
+    },
+    {
+     "text": "Reconciler: PR #663 merged",
+     "at": "2026-11-13T23:50:25.429Z"
+    },
+    {
+     "text": "Shipped manifest sm-main-ci-red-test-sandbox-profile-export rev 1 sent to Shipped features (orchestrator): PR #663, 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-13T23:52:40Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "main-ci-red-test-sandbox-profile-export",
+    "brief": "# Build: main-ci-red-test-sandbox-profile-export\n\n## Brett said (verbatim)\n> \n\n## What to build\nContinue build \"Main CI red: test-sandbox profile export leaks onto main\" (main-ci-red-test-sandbox-profile-export) — Phase 1, model Fable.\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (1 left, ~10 min):\n[ ] s1 (~10 min) Main's CI is red, so the merge queue kicks out every PR with the same failure (\"Build engine sweep (Node)\" → framework/spec/check-profiles.mjs):\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step main-ci-red-test-sandbox-profile-export <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link main-ci-red-test-sandbox-profile-export --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Fable phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step main-ci-red-test-sandbox-profile-export <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note main-ci-red-test-sandbox-profile-export \"…\"); the build goes back to Pending for Brett.\n",
+    "verbatim": false,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "2026-11-13T21:13:30.340Z",
+    "queuedBy": "auto-land-every-finished-build-lands",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "shipped": {
+    "id": "sm-main-ci-red-test-sandbox-profile-export",
+    "rev": 1,
+    "at": "2026-11-13T23:52:40Z",
+    "landedCommit": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwfhmdio01b2aw",
+     "title": "",
+     "text": "Repo exports only for repo-registered profiles; remove _claude/builds/profiles/test-sandbox/; check-profiles.mjs names the folder origin; builds-store and builds-live checks green",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10m",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-13T21:27:16.800Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-13T21:27:14.676Z",
+     "updatedAt": "2026-11-13T21:27:17.023Z"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 842
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 15,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-13T21:27:14.676Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "auto-land-merge-main-land-land-mjs-clash",
+   "title": "Auto-land: merge main and land (land.mjs clash)",
+   "category": "",
+   "detail": "Branch claude/auto-land-every-finished-build-lands clashed with main in apps/console-web/plugins/push-banner/land/land.mjs, a real source clash with the just-landed lander-regenerates-generated-files-clash (generated-files@1). Merge origin/main, keep BOTH: main's regenerate-generated-files-on-clash logic and this branch's auto-land queue/sweeper. Run the push-banner and orchestrator tests, push, then land on main right away. After it lands, the sweeper should start landing every finished build by itself.",
+   "status": "pending",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "claude/auto-land-merge-main-land-land-mjs-clash",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-13T23:38:56.061Z",
+   "updatedAt": "2026-11-13T23:59:03.281Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T23:38:58.487Z"
+    },
+    {
+     "text": "Split by Claude into 9 steps (0 Fable).",
+     "at": "2026-11-13T23:40:57.282Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-auto-land-merge-main-land-land-mjs-clash--paulie.",
+     "at": "2026-11-13T23:41:20.018Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-auto-land-merge-main-land-land-mjs-clash--paulie, own login copy)",
+     "at": "2026-11-13T23:41:23.719Z"
+    },
+    {
+     "text": "Headless run axf-auto-land-merge-main-land-land-mjs-clash--paulie: brief only · start 13.4K tokens ($0.04) · cost $3.99 · 117 turns · 6 tools, MCP none",
+     "at": "2026-11-13T23:58:19.303Z"
+    },
+    {
+     "text": "Session on mossesx-max- stopped on its own with 7 steps left: back in Pending for Brett.",
+     "at": "2026-11-13T23:59:03.281Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "land what finished",
+    "at": "2026-11-13T23:38:56.061Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "auto-land-merge-main-land-land-mjs-clash",
+    "brief": "# Build: auto-land-merge-main-land-land-mjs-clash\n\n## Brett said (verbatim)\nAt: 2026-11-13T23:38:56.061Z\n> land what finished\n\n## What to build\nContinue build \"Auto-land: merge main and land (land.mjs clash)\" (auto-land-merge-main-land-land-mjs-clash) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-13 23:38):\n\"land what finished\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (9 left, ~1.2 h):\n[ ] s1 (~6 min) Check out claude/auto-land-every-finished-build-lands, fetch origin, run `git merge origin/main` and list the conflicted files (expect apps/console-web/plugins/push-banner/land/land.mjs). Read both sides: main's generated-files@1 regenerate-on-clash path and this branch's auto-land queue/sweeper. No commit yet, just a note of what each side adds.\n[ ] s2 (~10 min) Resolve land.mjs so it keeps both: main's regenerate-generated-files-on-clash logic (generated-files@1 call sites, imports) and the branch's auto-land queue + sweeper entry points. Keep imports to built-ins and land/ siblings only. Commit the merge resolution.\n[ ] s3 (~8 min) Settle the other files the merge touched: take main's copy for generated/status files (_claude/builds/store.json, journal, exports, THREADS.md live log) and regenerate them where a generator exists (tracker.mjs, builds-store verify) instead of hand-merging; check that no sweeper or regenerate helper in other push-banner/land files is now duplicated or orphaned. Commit.\n[ ] s4 (~8 min) Wire the sweeper to use the regenerate path: when the sweeper lands a finished build and the merge clashes only on generated files, call main's generated-files@1 regenerate step before giving up, so a finished build doesn't stall on a clash in generated files. Commit.\n[ ] s5 (~8 min) API parity check for the auto-land sweeper (no new UI, so this is read and wire only): confirm sweeper state is readable and run/pause works the same through REST (push-banner routes), MCP (push_banner_* plugin commands, read statically), CLI (`land.mjs sweep|status`) and voice (console action). Add whatever is missing to the plugin's routes and commands. Commit.\n[ ] s6 (~10 min) Tests: add or extend push-banner land tests covering (a) a clash only on generated files regenerates and lands, (b) a real source clash is kicked to Pull failed, (c) the sweeper picks up every `built` build with a green PR and queues it as a stack (never one at a time). Commit.\n[ ] s7 (~10 min) Run the push-banner and build-orchestrator test suites plus plugin-lifecycle check, check-builds-store.mjs, builds-store verify and tracker --check; fix whatever fails, then commit.\n[ ] s8 (~6 min) Push the branch, link it (`builds-live.mjs link auto-land-merge-main-land-land-mjs-clash --branch claude/auto-land-every-finished-build-lands --pr <n>`), make sure PR CI started (dispatch android.yml once if no pull_request run appeared), and add the PR to the merge queue (`land.mjs queue add <n>`); no direct merge.\n[ ] s9 (~8 min) Write _claude/builds/reports/auto-land-merge-main-land-land-mjs-clash.md (what clashed, how both sides were kept, tests before/after, how the sweeper is reached through REST/MCP/CLI/voice, and what happens after it lands: the sweeper lands every finished build by itself). Update the THREADS.md row (branch, PR, waiting on the queue), add Brett's verbatim words ('land what finished') to the PR body, commit, push.\nRead first: apps/console-web/plugins/push-banner/land/land.mjs, apps/console-web/plugins/push-banner/land/, _claude/builds/, tracker.json, apps/console-web/plugins/push-banner/server/, apps/console-web/plugins/push-banner/plugin.json, apps/console-web/plugins/push-banner/test/, apps/console-web/plugins/push-banner/, apps/console-web/plugins/build-orchestrator/, framework/spec/check-builds-store.mjs, _claude/builds/store.json, _claude/builds/reports/auto-land-merge-main-land-land-mjs-clash.md, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step auto-land-merge-main-land-land-mjs-clash <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link auto-land-merge-main-land-land-mjs-clash --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step auto-land-merge-main-land-land-mjs-clash <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note auto-land-merge-main-land-land-mjs-clash \"…\"); the build goes back to Pending for Brett.\n",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "2026-11-13T23:38:58.045Z",
+    "queuedBy": "console",
+    "account": "mossesx-max-",
+    "session": "",
+    "slot": "",
+    "model": "Opus",
+    "launchedAt": "2026-11-13T23:41:19.408Z",
+    "runs": 1,
+    "lastRun": {
+     "at": "2026-11-13T23:59:02.721Z",
+     "exit": 0,
+     "outcome": "returned",
+     "stepsLeft": 7,
+     "account": "mossesx-max-",
+     "session": "axf-auto-land-merge-main-land-land-mjs-clash--paulie"
+    },
+    "split": {
+     "at": "2026-11-13T23:40:57.282Z",
+     "by": "orchestrator",
+     "provider": "claude",
+     "steps": 9,
+     "note": "Split by Claude into 9 steps (0 Fable)."
+    },
+    "splitRequested": "",
+    "note": "Session on mossesx-max- stopped on its own with 7 steps left: back in Pending for Brett.",
+    "route": "",
+    "dispatchedAt": "2026-11-13T23:41:19.408Z",
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-13T23:40:58.904Z",
+     "why": "subscription account mossesx-max-"
+    },
+    "tried": [],
+    "pickedAt": "2026-11-13T23:41:19.408Z",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwfmeblu01g0aq",
+     "title": "",
+     "text": "Check out claude/auto-land-every-finished-build-lands, fetch origin, run `git merge origin/main` and list the conflicted files (expect apps/console-web/plugins/push-banner/land/land.mjs). Read both sides: main's generated-files@1 regenerate-on-clash path and this branch's auto-land queue/sweeper. No commit yet, just a note of what each side adds.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "6 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/land/land.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-13T23:42:40.133Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-13T23:40:57.282Z",
+     "updatedAt": "2026-11-13T23:42:40.544Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwfmeblu02c5eq",
+     "title": "",
+     "text": "Resolve land.mjs so it keeps both: main's regenerate-generated-files-on-clash logic (generated-files@1 call sites, imports) and the branch's auto-land queue + sweeper entry points. Keep imports to built-ins and land/ siblings only. Commit the merge resolution.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/land/land.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-13T23:43:26.533Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-13T23:40:57.282Z",
+     "updatedAt": "2026-11-13T23:43:26.799Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwfmeblu03635d",
+     "title": "",
+     "text": "Settle the other files the merge touched: take main's copy for generated/status files (_claude/builds/store.json, journal, exports, THREADS.md live log) and regenerate them where a generator exists (tracker.mjs, builds-store verify) instead of hand-merging; check that no sweeper or regenerate helper in other push-banner/land files is now duplicated or orphaned. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/land/",
+      "_claude/builds/",
+      "tracker.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:40:57.282Z",
+     "updatedAt": "2026-11-13T23:40:57.282Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mwfmeblu04ctui",
+     "title": "",
+     "text": "Wire the sweeper to use the regenerate path: when the sweeper lands a finished build and the merge clashes only on generated files, call main's generated-files@1 regenerate step before giving up, so a finished build doesn't stall on a clash in generated files. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/land/land.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:40:57.282Z",
+     "updatedAt": "2026-11-13T23:40:57.282Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mwfmeblu05tq05",
+     "title": "",
+     "text": "API parity check for the auto-land sweeper (no new UI, so this is read and wire only): confirm sweeper state is readable and run/pause works the same through REST (push-banner routes), MCP (push_banner_* plugin commands, read statically), CLI (`land.mjs sweep|status`) and voice (console action). Add whatever is missing to the plugin's routes and commands. Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/server/",
+      "apps/console-web/plugins/push-banner/plugin.json",
+      "apps/console-web/plugins/push-banner/land/land.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:40:57.282Z",
+     "updatedAt": "2026-11-13T23:40:57.282Z"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mwfmeblu06bc2e",
+     "title": "",
+     "text": "Tests: add or extend push-banner land tests covering (a) a clash only on generated files regenerates and lands, (b) a real source clash is kicked to Pull failed, (c) the sweeper picks up every `built` build with a green PR and queues it as a stack (never one at a time). Commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/land/",
+      "apps/console-web/plugins/push-banner/test/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:40:57.282Z",
+     "updatedAt": "2026-11-13T23:40:57.282Z"
+    },
+    {
+     "id": "s7",
+     "uid": "st-mwfmeblu07991h",
+     "title": "",
+     "text": "Run the push-banner and build-orchestrator test suites plus plugin-lifecycle check, check-builds-store.mjs, builds-store verify and tracker --check; fix whatever fails, then commit.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/",
+      "apps/console-web/plugins/build-orchestrator/",
+      "framework/spec/check-builds-store.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:40:57.282Z",
+     "updatedAt": "2026-11-13T23:40:57.282Z"
+    },
+    {
+     "id": "s8",
+     "uid": "st-mwfmeblu08vvwe",
+     "title": "",
+     "text": "Push the branch, link it (`builds-live.mjs link auto-land-merge-main-land-land-mjs-clash --branch claude/auto-land-every-finished-build-lands --pr <n>`), make sure PR CI started (dispatch android.yml once if no pull_request run appeared), and add the PR to the merge queue (`land.mjs queue add <n>`); no direct merge.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "6 min",
+     "files": [
+      "_claude/builds/store.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:40:57.282Z",
+     "updatedAt": "2026-11-13T23:40:57.282Z"
+    },
+    {
+     "id": "s9",
+     "uid": "st-mwfmeblu096m5z",
+     "title": "",
+     "text": "Write _claude/builds/reports/auto-land-merge-main-land-land-mjs-clash.md (what clashed, how both sides were kept, tests before/after, how the sweeper is reached through REST/MCP/CLI/voice, and what happens after it lands: the sweeper lands every finished build by itself). Update the THREADS.md row (branch, PR, waiting on the queue), add Brett's verbatim words ('land what finished') to the PR body, commit, push.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "_claude/builds/reports/auto-land-merge-main-land-land-mjs-clash.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:40:57.282Z",
+     "updatedAt": "2026-11-13T23:40:57.282Z"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 843
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 13,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-13T23:40:57.282Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "land-batch-merge-main-each-finished",
+   "title": "Land batch: merge main into each finished build and land",
+   "category": "",
+   "detail": "vps.build_land still aborts on clashes in GENERATED files only (axf.lock.json, control/inventory.json, help framework.json): the new generated-files@1 logic landed in the repo, but /opt/axf-batch/resolve.py (used by vps.build_land on axHub's side) hasn't picked it up. 1) Wire /opt/axf-batch/resolve.py to call the repo's generated-files@1 resolver. 2) Then, one at a time, merge origin/main into each branch, regenerate generated files, run its tests, push, and land on main: toolbar-widgets-attach-any-banner-style, icon-map-icon-packs-every-icon-badge-app, token-registry-skin-editor-live-sandbox, per-instance-settings-small-live-preview, skin-axhub-override-switch-greyed-out, skin-animations-swatches-skin-switch, skin-config-panel-merge-main-and-land, skins-plugin-merge-main-and-land, full-voice-control-resolve-inventory, orchestrator-custom-groups-custom-tabs, demo-pipelines-guided-walkthrough-live, console-app-wake-word-voice-listener, hotfix-desktop-console-draws-app-menu (PR #658 regression test). Real source clashes: keep both sides and test. Report each result. Redeploy the console after the batch.",
+   "status": "running",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-13T23:39:26.785Z",
+   "updatedAt": "2026-11-14T00:36:48.715Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T23:39:32.081Z"
+    },
+    {
+     "text": "Split by Claude into 19 steps (0 Fable).",
+     "at": "2026-11-13T23:43:15.961Z"
+    },
+    {
+     "text": "Dispatch gate: land-batch-merge-main-each-finished still has axf-land-batch-merge-main-each-finished--sully alive: not launched again, tracking that session.",
+     "at": "2026-11-13T23:50:13.460Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "what else finished; land it",
+    "at": "2026-11-13T23:39:26.785Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "2026-11-13T23:39:31.127Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-13T23:43:15.961Z",
+     "by": "orchestrator",
+     "provider": "claude",
+     "steps": 19,
+     "note": "Split by Claude into 19 steps (0 Fable)."
+    },
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwfmham201lnoa",
+     "title": "",
+     "text": "Read /opt/axf-batch/resolve.py and the repo's generated-files@1 resolver (framework/cli + framework/core generated-files logic). Write down the regenerate command for each generated file (axf.lock.json, control/inventory.json, help framework.json) in a notes block of _claude/builds/reports/land-batch-merge-main-each-finished.md, then commit it",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "/opt/axf-batch/resolve.py",
+      "framework/cli",
+      "framework/core",
+      "_claude/builds/reports/land-batch-merge-main-each-finished.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-14T00:33:50.961Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-13T23:43:15.961Z",
+     "updatedAt": "2026-11-14T00:33:51.160Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwfmham202bqmv",
+     "title": "",
+     "text": "Wire /opt/axf-batch/resolve.py to call the repo's generated-files@1 resolver from the checkout it is landing, and drop its own copy of the logic. A clash in a generated file is then regenerated from the merged sources and staged. A real source clash still stops with the file list. Commit the change to the repo copy that axHub deploys (deploy/ or a framework/cli wrapper) and note the path in the report",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "/opt/axf-batch/resolve.py",
+      "deploy",
+      "framework/cli"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-14T00:34:01.447Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-13T23:43:15.961Z",
+     "updatedAt": "2026-11-14T00:34:02.112Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwfmham2030u7e",
+     "title": "",
+     "text": "Test the resolver on a scratch worktree: make a clash in axf.lock.json, control/inventory.json and help framework.json and confirm all three are regenerated with no abort. Make a source-file clash and confirm it still stops. Add this as a check script under framework/spec, run it and commit",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/spec",
+      "/opt/axf-batch/resolve.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-14T00:34:12.856Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-13T23:43:15.961Z",
+     "updatedAt": "2026-11-14T00:34:13.077Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mwfmham204q2qd",
+     "title": "",
+     "text": "toolbar-widgets-attach-any-banner-style: merge origin/main into the branch and regenerate the generated files with the resolver. For a real source clash, keep both sides. Run the branch's tests and the CI sweep (validate, tracker --check, check-theme, check-controls, check-toolbars), push, link the PR with builds-live.mjs link, and record the result in the report",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "axf.lock.json",
+      "control/inventory.json",
+      "help",
+      "_claude/builds/reports/land-batch-merge-main-each-finished.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-14T00:36:05.715Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-13T23:43:15.961Z",
+     "updatedAt": "2026-11-14T00:36:06.085Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mwfmham205wzox",
+     "title": "",
+     "text": "icon-map-icon-packs-every-icon-badge-app: merge origin/main, regenerate generated files, keep both sides of any source clash, run tests and the CI sweep, push, link the PR, record the result",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "axf.lock.json",
+      "control/inventory.json",
+      "help",
+      "_claude/builds/reports/land-batch-merge-main-each-finished.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": true,
+     "doneAt": "2026-11-14T00:36:48.715Z",
+     "note": "",
+     "rev": 2,
+     "createdAt": "2026-11-13T23:43:15.961Z",
+     "updatedAt": "2026-11-14T00:36:48.919Z"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mwfmham206jzc5",
+     "title": "",
+     "text": "token-registry-skin-editor-live-sandbox: merge origin/main, regenerate generated files, keep both sides of any source clash, run tests and the CI sweep (including check-skin.mts and check-skin-coverage), push, link the PR, record the result",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "axf.lock.json",
+      "control/inventory.json",
+      "help",
+      "_claude/builds/reports/land-batch-merge-main-each-finished.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:43:15.961Z",
+     "updatedAt": "2026-11-13T23:43:15.961Z"
+    },
+    {
+     "id": "s7",
+     "uid": "st-mwfmham2075wop",
+     "title": "",
+     "text": "per-instance-settings-small-live-preview: merge origin/main, regenerate generated files, keep both sides of any source clash, run tests and the CI sweep, push, link the PR, record the result",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "axf.lock.json",
+      "control/inventory.json",
+      "help",
+      "_claude/builds/reports/land-batch-merge-main-each-finished.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:43:15.961Z",
+     "updatedAt": "2026-11-13T23:43:15.961Z"
+    },
+    {
+     "id": "s8",
+     "uid": "st-mwfmham20856wa",
+     "title": "",
+     "text": "skin-axhub-override-switch-greyed-out: merge origin/main, regenerate generated files, keep both sides of any source clash, run tests and the CI sweep with the skin checks, push, link the PR, record the result",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "axf.lock.json",
+      "control/inventory.json",
+      "help",
+      "_claude/builds/reports/land-batch-merge-main-each-finished.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:43:15.961Z",
+     "updatedAt": "2026-11-13T23:43:15.961Z"
+    },
+    {
+     "id": "s9",
+     "uid": "st-mwfmham209fn6m",
+     "title": "",
+     "text": "skin-animations-swatches-skin-switch: merge origin/main, regenerate generated files, keep both sides of any source clash, run tests and the CI sweep with the skin checks, push, link the PR, record the result",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "axf.lock.json",
+      "control/inventory.json",
+      "help",
+      "_claude/builds/reports/land-batch-merge-main-each-finished.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:43:15.961Z",
+     "updatedAt": "2026-11-13T23:43:15.961Z"
+    },
+    {
+     "id": "s10",
+     "uid": "st-mwfmham20ag61f",
+     "title": "",
+     "text": "skin-config-panel-merge-main-and-land: merge origin/main, regenerate generated files, keep both sides of any source clash, run tests and the CI sweep with the skin checks, push, link the PR, record the result",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "axf.lock.json",
+      "control/inventory.json",
+      "help",
+      "_claude/builds/reports/land-batch-merge-main-each-finished.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:43:15.961Z",
+     "updatedAt": "2026-11-13T23:43:15.961Z"
+    },
+    {
+     "id": "s11",
+     "uid": "st-mwfmham20bqnxc",
+     "title": "",
+     "text": "skins-plugin-merge-main-and-land: merge origin/main, regenerate generated files, keep both sides of any source clash, run tests, the CI sweep and the plugin-lifecycle check, push, link the PR, record the result",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "axf.lock.json",
+      "control/inventory.json",
+      "help",
+      "apps/console-web/plugins",
+      "_claude/builds/reports/land-batch-merge-main-each-finished.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:43:15.961Z",
+     "updatedAt": "2026-11-13T23:43:15.961Z"
+    },
+    {
+     "id": "s12",
+     "uid": "st-mwfmham20crgqr",
+     "title": "",
+     "text": "full-voice-control-resolve-inventory: merge origin/main, regenerate control/inventory.json and the other generated files, keep both sides of any source clash, run tests, the CI sweep and check-console-control.mjs, push, link the PR, record the result",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "control/inventory.json",
+      "axf.lock.json",
+      "help",
+      "_claude/builds/reports/land-batch-merge-main-each-finished.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:43:15.961Z",
+     "updatedAt": "2026-11-13T23:43:15.961Z"
+    },
+    {
+     "id": "s13",
+     "uid": "st-mwfmham20dqa61",
+     "title": "",
+     "text": "orchestrator-custom-groups-custom-tabs: merge origin/main, regenerate generated files, keep both sides of any source clash, run tests, the CI sweep, check-builds-store and check-chrome-assets, push, link the PR, record the result",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "axf.lock.json",
+      "control/inventory.json",
+      "help",
+      "apps/console-web/plugins/build-orchestrator",
+      "_claude/builds/reports/land-batch-merge-main-each-finished.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:43:15.961Z",
+     "updatedAt": "2026-11-13T23:43:15.961Z"
+    },
+    {
+     "id": "s14",
+     "uid": "st-mwfmham20eenmx",
+     "title": "",
+     "text": "demo-pipelines-guided-walkthrough-live: merge origin/main, regenerate generated files, keep both sides of any source clash, run tests, the CI sweep and the glossary-index catalog --check, push, link the PR, record the result",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "axf.lock.json",
+      "control/inventory.json",
+      "help",
+      "_claude/builds/reports/land-batch-merge-main-each-finished.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:43:15.961Z",
+     "updatedAt": "2026-11-13T23:43:15.961Z"
+    },
+    {
+     "id": "s15",
+     "uid": "st-mwfmham20fzmyg",
+     "title": "",
+     "text": "console-app-wake-word-voice-listener: merge origin/main, regenerate generated files, keep both sides of any source clash, run tests and the CI sweep, push, link the PR, record the result",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "axf.lock.json",
+      "control/inventory.json",
+      "help",
+      "_claude/builds/reports/land-batch-merge-main-each-finished.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:43:15.961Z",
+     "updatedAt": "2026-11-13T23:43:15.961Z"
+    },
+    {
+     "id": "s16",
+     "uid": "st-mwfmham20gcbcv",
+     "title": "",
+     "text": "hotfix-desktop-console-draws-app-menu: merge origin/main, regenerate generated files, keep both sides of any source clash, run the PR #658 regression test and the CI sweep, push, link the PR, record the result",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web",
+      "axf.lock.json",
+      "control/inventory.json",
+      "help",
+      "_claude/builds/reports/land-batch-merge-main-each-finished.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:43:15.961Z",
+     "updatedAt": "2026-11-13T23:43:15.961Z"
+    },
+    {
+     "id": "s17",
+     "uid": "st-mwfmham20h9sd6",
+     "title": "",
+     "text": "Land: put every green branch's PR into the merge queue as one stack in the order above (land.mjs queue add, or vps.build_land, which now uses the fixed resolver). Merge nothing by hand. If a PR's CI did not start, dispatch it once. Record each queued, merged or kicked-out PR in the report",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/push-banner/land",
+      "_claude/builds/reports/land-batch-merge-main-each-finished.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:43:15.961Z",
+     "updatedAt": "2026-11-13T23:43:15.961Z"
+    },
+    {
+     "id": "s18",
+     "uid": "st-mwfmham20ioz2v",
+     "title": "",
+     "text": "After the stack merges, redeploy the console once (axf console refresh --hard or the deploy script, logged with axf_deploy_log). Confirm the console answers and record that in the report",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "deploy",
+      "_claude/builds/reports/land-batch-merge-main-each-finished.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:43:15.961Z",
+     "updatedAt": "2026-11-13T23:43:15.961Z"
+    },
+    {
+     "id": "s19",
+     "uid": "st-mwfmham20jkb15",
+     "title": "",
+     "text": "Finish: run the resolver check, builds-store verify and tracker --check on main. Finish the report _claude/builds/reports/land-batch-merge-main-each-finished.md with each branch's result (landed, clash kept both sides, failed and why). Mark each landed build complete with its PR, update the THREADS.md row, and open the PR for the resolve.py wiring",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/land-batch-merge-main-each-finished.md",
+      "_claude/THREADS.md",
+      "_claude/builds/store.json",
+      "framework/spec"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:43:15.961Z",
+     "updatedAt": "2026-11-13T23:43:15.961Z"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 844
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 9,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-13T23:43:15.961Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "console-app-land-parts-1-4-build-apk",
+   "title": "Console app: land parts 1-4 and build the APK",
+   "category": "",
+   "detail": "Brett wants the new console Android app APK ready to download. Merge origin/main into each and land, in order: console-android-app-thin-webview-wrapper (part 1, shell), console-app-part-2-native-floating-2, console-app-part-3-native-bridge-mic (part 2 notes a NativeBridge.java clash with part 3: keep both and make them compile together), console-app-part-4-console-side-safe, then console-app-wake-word-voice-listener. Regenerate generated files on clash, and run the JUnit and web tests. Then trigger the Android CI build for the console app, put the APK download link in the report, and send Brett a phone notification through AmberX with the link.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-13T23:41:07.780Z",
+   "updatedAt": "2026-11-13T23:51:45.676Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T23:41:10.358Z"
+    },
+    {
+     "text": "Split by Claude into 18 steps (0 Fable).",
+     "at": "2026-11-13T23:51:45.676Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "is that new APK ready for download",
+    "at": "2026-11-13T23:41:07.780Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "2026-11-13T23:41:09.848Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-13T23:51:45.676Z",
+     "by": "orchestrator",
+     "provider": "claude",
+     "steps": 18,
+     "note": "Split by Claude into 18 steps (0 Fable)."
+    },
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-13T23:52:36.784Z",
+     "why": "subscription account mossesx-max-"
+    },
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwfms7ws010hxb",
+     "title": "",
+     "text": "Fetch origin and check the five branches (console-android-app-thin-webview-wrapper, console-app-part-2-native-floating-2, console-app-part-3-native-bridge-mic, console-app-part-4-console-side-safe, console-app-wake-word-voice-listener): list commits ahead of and behind main, the files each touches, and the open PRs; write the landing order and expected clashes to _claude/builds/reports/console-app-land-parts-1-4-build-apk.md (draft)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "6 min",
+     "files": [
+      "_claude/builds/reports/console-app-land-parts-1-4-build-apk.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:51:45.676Z",
+     "updatedAt": "2026-11-13T23:51:45.676Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwfms7ws029lzr",
+     "title": "",
+     "text": "Part 1 (console-android-app-thin-webview-wrapper): merge origin/main into it. Resolve clashes, regenerating generated files (tracker.json, schemas json/, fixtures, builds exports) rather than hand-merging them; commit the merge",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console/",
+      "tracker.json",
+      "framework/schemas/json/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:51:45.676Z",
+     "updatedAt": "2026-11-13T23:51:45.676Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwfms7ws03zp5t",
+     "title": "",
+     "text": "Part 1: run the web checks the branch touches (tracker.mjs --check, axf validate, project.mjs validate --all, check-theme/check-controls) and fix anything red; push the branch",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "7 min",
+     "files": [
+      "apps/console/",
+      "framework/cli/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:51:45.676Z",
+     "updatedAt": "2026-11-13T23:51:45.676Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mwfms7ws04hihc",
+     "title": "",
+     "text": "Part 1: put its PR in the merge queue (land.mjs queue add) as the first entry of one stack; link it with builds-live.mjs link; never merge it by hand",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "4 min",
+     "files": [
+      "_claude/builds/store.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:51:45.676Z",
+     "updatedAt": "2026-11-13T23:51:45.676Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mwfms7ws053o8x",
+     "title": "",
+     "text": "Part 2 (console-app-part-2-native-floating-2): rebase/merge it onto part 1 + origin/main, resolve clashes, regenerate generated files, commit",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console/",
+      "tracker.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:51:45.676Z",
+     "updatedAt": "2026-11-13T23:51:45.676Z"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mwfms7ws0603wk",
+     "title": "",
+     "text": "Part 3 (console-app-part-3-native-bridge-mic): merge it on top of part 2. Resolve the NativeBridge.java clash part 2 noted by keeping both sets of bridge methods (floating window + mic) in one class with no duplicate names, imports or fields; commit",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console/app/src/main/java/**/NativeBridge.java"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:51:45.676Z",
+     "updatedAt": "2026-11-13T23:51:45.676Z"
+    },
+    {
+     "id": "s7",
+     "uid": "st-mwfms7ws07440f",
+     "title": "",
+     "text": "Parts 2+3: check that the merged NativeBridge.java and the JS bridge callers match (method names, @JavascriptInterface, permissions in AndroidManifest.xml); fix and commit",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console/app/src/main/java/**/NativeBridge.java",
+      "apps/console/app/src/main/AndroidManifest.xml",
+      "apps/console-web/src/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:51:45.676Z",
+     "updatedAt": "2026-11-13T23:51:45.676Z"
+    },
+    {
+     "id": "s8",
+     "uid": "st-mwfms7ws08jgmq",
+     "title": "",
+     "text": "Part 4 (console-app-part-4-console-side-safe): merge on top, resolve console-web clashes, regenerate generated files (control@1 targets appended last, console tools pins, help ratchet), commit",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/",
+      "framework/spec/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:51:45.676Z",
+     "updatedAt": "2026-11-13T23:51:45.676Z"
+    },
+    {
+     "id": "s9",
+     "uid": "st-mwfms7ws09vn3w",
+     "title": "",
+     "text": "Part 4 API check: confirm every console-side UI it adds has a console_show deep link, readable state, and REST + MCP + CLI + voice actions (check-console-control.mjs passes); add any missing data-axf-target or route; commit",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "apps/console-web/",
+      "framework/cli/check-console-control.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:51:45.676Z",
+     "updatedAt": "2026-11-13T23:51:45.676Z"
+    },
+    {
+     "id": "s10",
+     "uid": "st-mwfms7ws0an01w",
+     "title": "",
+     "text": "Wake word (console-app-wake-word-voice-listener): merge on top, resolve clashes with part 3's mic bridge (one owner of the mic: listener and mic capture share one audio path), regenerate generated files, commit",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console/",
+      "apps/console-web/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:51:45.676Z",
+     "updatedAt": "2026-11-13T23:51:45.676Z"
+    },
+    {
+     "id": "s11",
+     "uid": "st-mwfms7ws0b5g78",
+     "title": "",
+     "text": "Push the stacked branches; check each PR's pull_request CI started (dispatch android.yml once on any branch that got no run); add parts 2, 3, 4 and wake word to the merge queue behind part 1 as one stack (land.mjs queue add/move); link each in the builds store",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "7 min",
+     "files": [
+      "_claude/builds/store.json",
+      "apps/console-web/plugins/push-banner/land/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:51:45.676Z",
+     "updatedAt": "2026-11-13T23:51:45.676Z"
+    },
+    {
+     "id": "s12",
+     "uid": "st-mwfms7ws0coyk0",
+     "title": "",
+     "text": "Run the JUnit tests for the console app (gradle :app:testDebugUnitTest through agent-slots heavy, or read CI's kernel-test-reports / 'CI build errors' issue where no SDK) and fix any failure on the right branch; commit",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console/app/src/test/",
+      "framework/android/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:51:45.676Z",
+     "updatedAt": "2026-11-13T23:51:45.676Z"
+    },
+    {
+     "id": "s13",
+     "uid": "st-mwfms7wt0dm1jy",
+     "title": "",
+     "text": "Run the web tests on the top of the stack (console-web npm run typecheck + build, theme-swap, check-toolbars, check-chrome-assets, check-builds-store, plugin tests the parts touch) under agent-slots heavy; fix anything red and commit",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/",
+      "framework/spec/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:51:45.676Z",
+     "updatedAt": "2026-11-13T23:51:45.676Z"
+    },
+    {
+     "id": "s14",
+     "uid": "st-mwfms7wt0e73u7",
+     "title": "",
+     "text": "Watch the merge queue land the stack (read queue list once per CI round, no re-runs); if one is kicked out, fix it on its branch and re-add it; record merged PR numbers in the report",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/console-app-land-parts-1-4-build-apk.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:51:45.676Z",
+     "updatedAt": "2026-11-13T23:51:45.676Z"
+    },
+    {
+     "id": "s15",
+     "uid": "st-mwfms7wt0fr8fa",
+     "title": "",
+     "text": "Trigger the Android CI build for the console app on main (workflow_dispatch android.yml via github-token.mjs); read the run id",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "5 min",
+     "files": [
+      ".github/workflows/android.yml"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:51:45.676Z",
+     "updatedAt": "2026-11-13T23:51:45.676Z"
+    },
+    {
+     "id": "s16",
+     "uid": "st-mwfms7wt0geeb9",
+     "title": "",
+     "text": "Wait for the run, read the 'CI build errors' issue on failure and fix it (a new PR through the queue); on success get the console-debug.apk artifact download link (run page + artifact URL) and write it into the report",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/console-app-land-parts-1-4-build-apk.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:51:45.676Z",
+     "updatedAt": "2026-11-13T23:51:45.676Z"
+    },
+    {
+     "id": "s17",
+     "uid": "st-mwfms7wt0hnwv3",
+     "title": "",
+     "text": "Send Brett a phone notification through AmberX with the APK link (axf.notify@1 / alert hub, declared notify type), and record that it went in the report",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "4 min",
+     "files": [
+      "_claude/builds/reports/console-app-land-parts-1-4-build-apk.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:51:45.676Z",
+     "updatedAt": "2026-11-13T23:51:45.676Z"
+    },
+    {
+     "id": "s18",
+     "uid": "st-mwfms7wt0iojso",
+     "title": "",
+     "text": "Finish: finalise the report (_claude/builds/reports/console-app-land-parts-1-4-build-apk.md: merged PRs, clashes and how they were resolved, test results before→after, APK link, how each API reaches the new UI), update the THREADS.md row, tick the build complete in the builds store, record the change-log result, and open the report PR into the merge queue",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "_claude/builds/reports/console-app-land-parts-1-4-build-apk.md",
+      "_claude/THREADS.md",
+      "_claude/builds/store.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:51:45.676Z",
+     "updatedAt": "2026-11-13T23:51:45.676Z"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 845
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 6,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-13T23:51:45.676Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "voice-listener-use-claude-when-connected",
+   "title": "Voice listener: use Claude when connected (setting)",
+   "category": "",
+   "detail": "Follow-up to console-app-wake-word-voice-listener (scripted, offline command catalog plus spoken wizard). Add a setting 'Understand with Claude when connected' (default ON). When the Claude badge is green, the transcribed speech goes to Claude with the voice command catalog (from the API registry) as tools, so Brett can talk freely: Claude picks the command, fills fields from what he said, asks only for what's missing, and confirms destructive actions. When Claude isn't connected or times out, it falls back to the scripted matcher and wizard, with a small 'offline mode' indicator. Approvals still need an explicit spoken approve/deny. Show which mode handled each command in the history. Full API and voice ('use Claude for voice'). Tests, help, Shipped features.",
+   "status": "queued",
+   "hidden": false,
+   "source": "console",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P1",
+   "createdAt": "2026-11-13T23:42:29.374Z",
+   "updatedAt": "2026-11-13T23:52:35.076Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by console.",
+     "at": "2026-11-13T23:42:33.211Z"
+    },
+    {
+     "text": "Brett: the setting must be a real on/off switch. OFF = always scripted/offline even while Claude is connected (no speech text sent to Claude at all). Add a test that proves it: with Claude connected and the switch off, a command is handled by the scripted matcher and no Claude request is made. Show the current mode on the listener UI.",
+     "at": "2026-11-13T23:42:55.748Z"
+    },
+    {
+     "text": "Split by Claude into 14 steps (0 Fable).",
+     "at": "2026-11-13T23:52:35.076Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "can we have a setting to make it use Claude if Claude's connected",
+    "at": "2026-11-13T23:42:29.374Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "2026-11-13T23:42:32.638Z",
+    "queuedBy": "console",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": {
+     "at": "2026-11-13T23:52:35.076Z",
+     "by": "orchestrator",
+     "provider": "claude",
+     "steps": 14,
+     "note": "Split by Claude into 14 steps (0 Fable)."
+    },
+    "splitRequested": "",
+    "note": "",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-13T23:52:36.784Z",
+     "why": "subscription account mossesx-max-"
+    },
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwfmta100ja8kf",
+     "title": "",
+     "text": "Read the console-app-wake-word-voice-listener plugin: its scripted matcher, spoken wizard, command catalog loader, history store and settings. Read how the Claude badge works out connected or not (claude-session and llm capability axf.llm@1). Write a short design note in the plugin folder: where the Claude path plugs in, which catalog fields become tool schemas, the timeout and the fallback. Commit it.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/<voice-listener plugin>/",
+      "apps/console-web/plugins/claude-session/",
+      "_claude/builds/reports/voice-listener-use-claude-when-connected.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:52:35.076Z",
+     "updatedAt": "2026-11-13T23:52:35.076Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwfmta100kor49",
+     "title": "",
+     "text": "Add the setting 'Understand with Claude when connected' (key axf.voice.useClaude, default ON) and a timeout setting (default 8 s) to the plugin's settings. Put both in its Settings → Plugins sub-tab at the Basic level, and register them as control@1 targets and console-control setting addresses.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/<voice-listener plugin>/plugin.json",
+      "apps/console-web/plugins/<voice-listener plugin>/web/",
+      "apps/console-web/plugins/<voice-listener plugin>/server/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:52:35.076Z",
+     "updatedAt": "2026-11-13T23:52:35.076Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwfmta100lh7qc",
+     "title": "",
+     "text": "Server: write the catalog-to-tools converter. It turns each voice command in the API registry catalog into a Claude tool (name, description, input schema from the command's fields, a destructive flag, a personOnly flag). Approve and deny actions are never offered as tools. Add unit tests for the converter.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/<voice-listener plugin>/server/claude_tools.py",
+      "apps/console-web/plugins/<voice-listener plugin>/test.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:52:35.076Z",
+     "updatedAt": "2026-11-13T23:52:35.076Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mwfmta100mhj80",
+     "title": "",
+     "text": "Server: write the Claude intent route (POST /api/plugins/<voice-listener>/understand). It takes the transcript and the session context, calls Claude through axf.llm@1 with the tools and a system prompt (pick one command, fill fields from what Brett said, ask only for what is missing, ask to confirm destructive actions), and returns {mode:'claude', command, args, ask?, confirm?}. Any error, timeout or badge-not-green returns {mode:'offline', reason}.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/<voice-listener plugin>/server/routes.py",
+      "apps/console-web/plugins/<voice-listener plugin>/server/claude_intent.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:52:35.076Z",
+     "updatedAt": "2026-11-13T23:52:35.076Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mwfmta100nqg8o",
+     "title": "",
+     "text": "Server: add a multi-turn follow-up to the understand route. A follow-up answer from Brett is sent with the pending tool call so Claude fills only the missing fields. A destructive command returns confirm:true and runs only after a spoken yes. Add tests with a fake LLM covering: picks a command, asks for a missing field, confirm gate, timeout falls back to offline.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/<voice-listener plugin>/server/claude_intent.py",
+      "apps/console-web/plugins/<voice-listener plugin>/test.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:52:35.076Z",
+     "updatedAt": "2026-11-13T23:52:35.076Z"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mwfmta100otksl",
+     "title": "",
+     "text": "Web listener: when the setting is on and the Claude badge is green, send the transcript to the understand route first. Speak Claude's question or confirm prompt and loop the answers back to it. On offline, timeout or error, hand the same transcript to the existing scripted matcher and wizard without losing it.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/<voice-listener plugin>/web/listener.ts",
+      "apps/console-web/plugins/<voice-listener plugin>/web/claudeMode.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:52:35.076Z",
+     "updatedAt": "2026-11-13T23:52:35.076Z"
+    },
+    {
+     "id": "s7",
+     "uid": "st-mwfmta100pfbob",
+     "title": "",
+     "text": "Approvals guard: make sure approve and deny never reach the Claude path. A spoken approval still needs the explicit 'approve' / 'deny' words and goes through the existing approvals-banner relay. Add a test that a Claude reply naming an approve tool is refused.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "6 min",
+     "files": [
+      "apps/console-web/plugins/<voice-listener plugin>/web/listener.ts",
+      "apps/console-web/plugins/<voice-listener plugin>/server/claude_tools.py",
+      "apps/console-web/plugins/<voice-listener plugin>/test.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:52:35.076Z",
+     "updatedAt": "2026-11-13T23:52:35.076Z"
+    },
+    {
+     "id": "s8",
+     "uid": "st-mwfmta100qxom2",
+     "title": "",
+     "text": "UI: add a small 'offline mode' indicator on the listener's chip and panel, shown when Claude mode is on but the fallback handled the last command or the badge is not green. Use framework controls (fx-chip, tokens only) and register it as data-axf-target. API part: its state is readable at GET /api/plugins/<voice-listener>/state (mode, claudeConnected, lastFallbackReason).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/<voice-listener plugin>/web/",
+      "apps/console-web/plugins/<voice-listener plugin>/server/routes.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:52:35.076Z",
+     "updatedAt": "2026-11-13T23:52:35.076Z"
+    },
+    {
+     "id": "s9",
+     "uid": "st-mwfmta100r0ygd",
+     "title": "",
+     "text": "History: record mode (claude or scripted) and, for scripted, the fallback reason on every history entry (with a migration default of scripted for old entries). Show a mode tag column in the history grid and add a filter by mode. API part: GET history returns mode, and it can be filtered by mode.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "apps/console-web/plugins/<voice-listener plugin>/server/history.py",
+      "apps/console-web/plugins/<voice-listener plugin>/web/History.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:52:35.076Z",
+     "updatedAt": "2026-11-13T23:52:35.076Z"
+    },
+    {
+     "id": "s10",
+     "uid": "st-mwfmta100so5ha",
+     "title": "",
+     "text": "Full API: add REST get/set for the useClaude setting and timeout, a test-understand action (dry run on a phrase, returns what Claude would pick), and the state and history reads. Expose all of them as MCP plugin commands and console actions (voice.useClaude on|off, voice.understand.test). Add console_show deep links for the setting, the indicator and the history mode filter.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/<voice-listener plugin>/server/routes.py",
+      "apps/console-web/plugins/<voice-listener plugin>/commands.json",
+      "apps/console-web/plugins/<voice-listener plugin>/plugin.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:52:35.076Z",
+     "updatedAt": "2026-11-13T23:52:35.076Z"
+    },
+    {
+     "id": "s11",
+     "uid": "st-mwfmta100tnzfl",
+     "title": "",
+     "text": "CLI and voice: add `axf voice claude on|off|status|test \"<phrase>\"` and the AmberX voice commands 'use Claude for voice' and 'stop using Claude for voice' to the voice command catalog, both mapped to the same actions as REST and MCP. Add a parity test across REST, MCP, CLI and voice.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "framework/cli/axf.mjs",
+      "apps/console-web/plugins/<voice-listener plugin>/cli.mjs",
+      "apps/console-web/plugins/<voice-listener plugin>/voice-commands.json",
+      "apps/console-web/plugins/<voice-listener plugin>/test.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:52:35.076Z",
+     "updatedAt": "2026-11-13T23:52:35.076Z"
+    },
+    {
+     "id": "s12",
+     "uid": "st-mwfmta100uh84o",
+     "title": "",
+     "text": "Help, Shipped features and catalogs: write the plugin help page section (Claude mode, fallback, offline indicator, history mode, approvals stay spoken). Give the new commands and settings descriptions so the glossary index and the shipped-features ledger pick them up. Run catalog.mjs --check, check-console-control.mjs and check-control.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/<voice-listener plugin>/help/",
+      "apps/console-web/plugins/<voice-listener plugin>/README.md",
+      "apps/console-web/plugins/glossary-index/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:52:35.076Z",
+     "updatedAt": "2026-11-13T23:52:35.076Z"
+    },
+    {
+     "id": "s13",
+     "uid": "st-mwfmta100v6dl5",
+     "title": "",
+     "text": "UI Review: take desktop and phone shots of the setting, the offline indicator and the history mode tag. Make 3 options for the indicator (ui-choices@1 assets in plugins/<voice-listener>/assets/), and submit with review.mjs submit --choices --group 'voice-listener-use-claude-when-connected - <Mon D h:mm AM/PM>'.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/<voice-listener plugin>/assets/",
+      "apps/console-web/plugins/ui-review/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:52:35.076Z",
+     "updatedAt": "2026-11-13T23:52:35.076Z"
+    },
+    {
+     "id": "s14",
+     "uid": "st-mwfmta100w6rdo",
+     "title": "",
+     "text": "Tests, report and PR: run the plugin's test.py, check-theme, check-controls, check-toolbars, check-chrome-assets, plugin-lifecycle check and the tracker check. Write _claude/builds/reports/voice-listener-use-claude-when-connected.md, including how each feature is reached through REST, MCP, CLI and voice. Update the THREADS.md row, push the branch, open the PR (saying UI Review is waiting), and link it with builds-live.mjs link.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/voice-listener-use-claude-when-connected.md",
+      "_claude/THREADS.md",
+      "apps/console-web/plugins/<voice-listener plugin>/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:52:35.076Z",
+     "updatedAt": "2026-11-13T23:52:35.076Z"
+    }
+   ],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 846
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 6,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "2026-11-13T23:52:35.076Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
