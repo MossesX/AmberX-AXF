@@ -64,3 +64,18 @@ but it is why the count can exceed 8.
 
 Fix (s13): planning skips parked builds without spending their slot, and a failed launch hands its slot to the next
 queued build in the same tick. The tick keeps launching until the slots or the accounts run out.
+
+## Landing log
+
+Each attempt is a land-run@1 in the push banner's data folder (`land-runs.jsonl`) and on the build's land record.
+`land-one.mjs runs <build>` shows them.
+
+| When (UTC) | Build | Behind main | Outcome | What happened |
+|---|---|---|---|---|
+| Nov 14 23:09 | move-amberx-web-app-console-amberx-andr (#596) | 2218 | clash, flagged | Merging main clashes in code: `apps/console-web/server/main.py`, `approvals-banner/plugin.json` (the host resolver couldn't settle main.py). P0 fix build `merge-main-land-move-amberx-web-app` filed and queued, with Brett's words + the files. |
+| Nov 14 23:09 | change-to-move-amberx-web-app-console (#586) | 1942 | clash, flagged | Clashes in `server/main.py`, `approvals-banner/plugin.json`, `amberx-droid/.../WatchService.java`. P0 fix build `merge-main-land-change-to-move-amberx` filed and queued. |
+
+Found while landing: the deployed console has no `POST /land/fix` yet (it ships with the auto-land branch merged here),
+so the lander couldn't file the fix builds itself. I filed them with `pipeline.mjs request`. Once this PR deploys, the
+lander files them through axf.build-dispatch@1. The VPS also has no GitHub App set up (`github-token.mjs status`:
+app not set up), so the lander uses the broker's old token until it is.

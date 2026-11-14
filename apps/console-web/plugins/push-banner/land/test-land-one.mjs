@@ -150,12 +150,12 @@ await t('green but main moved in code since the merge: not landed, merged again 
 await t('red: a P0 fix build is filed with Brett\'s words first and the failing check; the attempt names it; the build goes red', async () => {
   filed.length = 0; recorded.length = 0;
   const { gh } = fakeGh([[{ name: 'Gradle', status: 'completed', conclusion: 'failure', app: { slug: 'github-actions' } }]]);
-  const r = await landOne({ s, git, ...base, gh, build: { id: 'clean', branch: 'claude/clean', pr: 12 }, now: () => at, ciOpts: fastCi });
+  const r = await landOne({ s, git, ...base, gh, build: { id: 'clean-red', branch: 'claude/clean', pr: 12 }, now: () => at, ciOpts: fastCi });
   assert.equal(r.run.outcome, 'red'); assert.equal(r.run.fixBuild, 'fix-1');
-  assert.equal(filed.length, 1); assert.equal(filed[0].priority, 'P0'); assert.equal(filed[0].build, 'clean'); assert.equal(filed[0].kind, 'ci');
+  assert.equal(filed.length, 1); assert.equal(filed[0].priority, 'P0'); assert.equal(filed[0].build, 'clean-red'); assert.equal(filed[0].kind, 'ci');
   assert.ok(filed[0].said.startsWith("We need to make sure things are landing as soon as they're built"), 'his words come first');
   assert.match(filed[0].said, /Failing check after merging main into claude\/clean: Gradle/);
-  assert.deepEqual(recorded, [['clean', 'red']], 'the land record goes red (the line moves on)');
+  assert.deepEqual(recorded, [['clean-red', 'red']], 'the land record goes red (the line moves on)');
   assert.ok(lr.validateLandRun(r.run).ok);
   const pipe = await import('../../../../../framework/core/build-pipeline.mjs');
   assert.equal(pipe.addLandAttempt(null, lr.attemptOf(r.run), at.toISOString()).landState, 'red', 'builds@1 state follows the outcome');
@@ -167,6 +167,10 @@ await t('landed and clash attempts go on the build too; a running one does not',
   const { gh } = fakeGh([run1(null, 'in_progress')]); let tn = 0;
   await landOne({ s, git, ...base, gh, build: { id: 'clean', branch: 'claude/clean', pr: 12 }, now: () => at, ciOpts: { ...fastCi, waitMs: 10, clock: () => (tn += 20) } });
   assert.deepEqual(recorded, [['clash2', 'clash']]);
+  assert.equal(filed.at(-1).kind, 'conflict'); assert.match(filed.at(-1).said, /clashes in code: a\.txt/);
+  const again = filed.length;
+  const r2 = await landOne({ s, git, ...base, ci: false, build: { id: 'clash2', branch: 'claude/clash2' }, now: () => at });
+  assert.equal(filed.length, again, 'one fix build per head: the same clash is not filed twice'); assert.match(r2.run.note, /filed \(P0\) earlier/);
 });
 
 await t('the line: builds land one at a time in order; red files its fix and the line moves on; a lander error waits for the next run', async () => {

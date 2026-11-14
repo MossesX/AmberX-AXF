@@ -26,7 +26,7 @@
  *      failing check; the attempt names it (fixBuild). Every settled attempt goes on the build's land record through
  *      builds-live (landState red / landed / flagged …), so the line moves on to the next build at once.
  *
- *   node apps/console-web/plugins/push-banner/land/land-one.mjs <build> [--dry-run] [--json]   one attempt now
+ *   node apps/console-web/plugins/push-banner/land/land-one.mjs <build> [--dry-run] [--json] [--wait-min n]   one attempt now
  *   … runs [<build>] [--json]                                                                the recorded attempts
  *   … lock                                                                                   who holds the line
  *   … enqueue <build> [--front]                     put a finished build in the landing line (the finish hook does this)
@@ -76,9 +76,11 @@ export const CI_WAIT_MS = 40 * 60000;
 export const CI_POLL_MS = 30000;
 const sleepMs = (ms) => new Promise((r) => setTimeout(r, ms));
 
-/** GitHub as the App (installation token); never printed. */
+/** GitHub as the App (its installation token), else the broker's token (github-token.mjs token: the old GITHUB_TOKEN
+ *  while the App is not set up on this VPS). Never printed. */
 export function appGitHub(s) {
-  return makeGitHub(s, () => { const r = spawnSync('node', [join(s.repo, 'framework/cli/github-token.mjs'), 'installation'], { encoding: 'utf8', timeout: 30000 }); return r.status === 0 ? (r.stdout || '').trim() : ''; });
+  const tok = (cmd) => { const r = spawnSync('node', [join(s.repo, 'framework/cli/github-token.mjs'), cmd], { encoding: 'utf8', timeout: 30000 }); return r.status === 0 ? (r.stdout || '').trim() : ''; };
+  return makeGitHub(s, () => tok('installation') || tok('token'));
 }
 
 /** builds-live: the build's PR and merge time, straight to main (the store settles a merged build complete). */
@@ -152,6 +154,7 @@ export function originSaid(s, id) {
 
 /** The fix build's `said`: his words first (a paraphrase never replaces them), then what failed. */
 export function fixSaid(said, run) {
+  if (run.unresolved?.length) return `${said ? `${said}\n\n` : ''}Merging main into ${run.branch || run.build} clashes in code: ${run.unresolved.slice(0, 12).join(', ')}`;
   const failed = run.check?.failed?.length ? run.check.failed.join(', ') : 'CI on the merged head';
   const why = run.check?.note || run.note || '';
   return `${said ? `${said}\n\n` : ''}Failing check after merging main into ${run.branch || run.build}: ${failed}${why ? ` (${why.slice(0, 300)})` : ''}`;
@@ -159,7 +162,8 @@ export function fixSaid(said, run) {
 
 /** File the P0 fix build for a red attempt; returns its builds@1 id or ''. */
 export async function fileFix({ s, api, b, run, said = '', attempt = 1 }) {
-  const fb = fixBuildFor(b, { kind: 'ci', checks: run.check?.failed?.length ? run.check.failed : ['CI'] }, { attempt, pr: run.pr || null });
+  const reason = run.unresolved?.length ? { kind: 'conflict', files: run.unresolved } : { kind: 'ci', checks: run.check?.failed?.length ? run.check.failed : ['CI'] };
+  const fb = fixBuildFor(b, reason, { attempt, pr: run.pr || null });
   const r = await api('POST', '/api/plugins/push-banner/land/fix', { ...fb, said: fixSaid(said, run) });
   return r && r.ok && r.id ? String(r.id) : '';
 }
@@ -205,12 +209,18 @@ export async function landOne({ s = settings(), git = makeGit(s.repo), gh = null
     else run.merged = m.sha;
     if (ci && run.merged) await checkAndLand({ s, git, gh: gh || appGitHub(s), b, run, dry, log, ...ciOpts });
     // red: the fix build is filed before the attempt is stored, so the record names it
+    // red or a code clash: a P0 fix build, once per head (a clash keeps the id in its note: land-run@1 names fixBuild on red only)
     const red = run.check?.ok === false || lr.ciState(run.ci?.status, run.ci?.conclusion) === 'failure';
-    if (red && !dry) {
-      const tries = readRuns(s, id).filter((x) => x.outcome === 'red').length + 1;
-      try { run.fixBuild = await fileFix({ s, api: api || makeConsole(s), b, run, said: said ?? originSaid(s, id), attempt: tries }); } catch (e) { log(`fix build: ${e.message}`); }
-      if (!run.fixBuild) run.note = `${run.note ? `${run.note} ` : ''}No fix build: the orchestrator did not take it.`.trim();
-      else run.note = `${run.note ? `${run.note} ` : ''}Fix build ${run.fixBuild} filed (P0).`;
+    const clash = run.unresolved.length > 0;
+    if ((red || clash) && !dry) {
+      const prev = readRuns(s, id);
+      const filed = prev.find((x) => x.head === run.head && (x.fixBuild || /Fix build \S+ filed/.test(x.note)));
+      let fix = '';
+      if (filed) fix = filed.fixBuild || /Fix build (\S+) filed/.exec(filed.note)?.[1] || '';
+      else { try { fix = await fileFix({ s, api: api || makeConsole(s), b, run, said: said ?? originSaid(s, id), attempt: prev.filter((x) => ['red', 'clash'].includes(x.outcome)).length + 1 }); } catch (e) { log(`fix build: ${e.message}`); } }
+      if (red) run.fixBuild = fix;
+      const base = run.note || (clash ? `Source clash a person has to settle: ${run.unresolved.slice(0, 8).join(', ')}.` : '');
+      run.note = fix ? `${base} Fix build ${fix} filed (P0)${filed ? ' earlier' : ''}.`.trim() : `${base} No fix build: the orchestrator did not take it.`.trim();
     }
     const stored = finish(s, run, dry, now);
     if (!dry && stored.outcome) { const r = record(s, stored); if (!r.ok) log(`land record: ${r.text}`); }
@@ -298,7 +308,7 @@ export async function runLine({ s = settings(), max = 20, dry = false, land = la
 
 export async function main(argv) {
   const s = settings(); const json = argv.includes('--json'); const dry = argv.includes('--dry-run');
-  const args = argv.filter((a) => !a.startsWith('--'));
+  const args = argv.filter((a, i) => !a.startsWith('--') && !['--wait-min', '--max'].includes(argv[i - 1]));
   const out = (v, text) => console.log(json ? JSON.stringify(v, null, 1) : text);
   if (args[0] === 'lock') { const o = lockOwner(); out({ owner: o }, o || 'free'); return 0; }
   if (args[0] === 'runs') { const r = readRuns(s, args[1] || ''); out(r, r.map((x) => `${x.startedAt}  ${x.build}  ${x.outcome || 'going'}  ${x.note}`).join('\n') || 'no attempts yet'); return 0; }
@@ -316,7 +326,8 @@ export async function main(argv) {
     return 0;
   }
   if (!args[0]) throw new Error('usage: land-one.mjs <build> [--dry-run] [--json] | runs [<build>] | lock | enqueue <build> [--front] | line [--max n] | show');
-  const r = await landOne({ s, build: args[0], dry, log: (m) => !json && console.error(m) });
+  const w = argv.indexOf('--wait-min'); const ciOpts = w >= 0 ? { waitMs: Math.max(0, Number(argv[w + 1]) || 0) * 60000 } : {};
+  const r = await landOne({ s, build: args[0], dry, ciOpts, log: (m) => !json && console.error(m) });
   if (!r.ran) { out(r, `the landing line is busy: ${r.owner}`); return 2; }
   out(r.run, `${r.run.build}: ${r.run.note}`);
   return ['error', 'clash', 'red'].includes(r.run.outcome) ? 1 : 0;
