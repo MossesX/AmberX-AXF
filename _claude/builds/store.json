@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5707,
- "updatedAt": "2026-11-14T23:59:09.677Z",
+ "rev": 5708,
+ "updatedAt": "2026-11-14T23:59:25.654Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -225117,7 +225117,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-14T22:19:00.612Z",
-   "updatedAt": "2026-11-14T23:59:07.952Z",
+   "updatedAt": "2026-11-14T23:59:15.782Z",
    "builtAt": "",
    "notes": [
     {
@@ -225195,6 +225195,10 @@
     {
      "text": "Self-check: console-look-becomes-default-axhub-skin had no session on record but axf-console-look-becomes-default-axhub-skin--paulie is alive: kept running and tracking it.",
      "at": "2026-11-14T23:59:07.952Z"
+    },
+    {
+     "text": "Headless run axf-console-look-becomes-default-axhub-skin--paulie: brief only · start 13.4K tokens ($0.07) · cost $13.70 · 146 turns · 6 tools, MCP none",
+     "at": "2026-11-14T23:59:15.782Z"
     }
    ],
    "approvals": [
@@ -225782,7 +225786,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

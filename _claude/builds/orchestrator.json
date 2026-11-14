@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T23:59:09.677Z",
+ "updatedAt": "2026-11-14T23:59:25.654Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -143934,7 +143934,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-14T22:19:00.612Z",
-   "updatedAt": "2026-11-14T23:59:07.952Z",
+   "updatedAt": "2026-11-14T23:59:15.782Z",
    "builtAt": "",
    "notes": [
     {
@@ -144012,6 +144012,10 @@
     {
      "text": "Self-check: console-look-becomes-default-axhub-skin had no session on record but axf-console-look-becomes-default-axhub-skin--paulie is alive: kept running and tracking it.",
      "at": "2026-11-14T23:59:07.952Z"
+    },
+    {
+     "text": "Headless run axf-console-look-becomes-default-axhub-skin--paulie: brief only · start 13.4K tokens ($0.07) · cost $13.70 · 146 turns · 6 tools, MCP none",
+     "at": "2026-11-14T23:59:15.782Z"
     }
    ],
    "approvals": [
