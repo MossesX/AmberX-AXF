@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5604,
- "updatedAt": "2026-11-14T23:20:33.842Z",
+ "rev": 5605,
+ "updatedAt": "2026-11-14T23:20:55.399Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -208684,7 +208684,7 @@
    "mergedAt": "2026-11-14T20:15:18Z",
    "priority": "P0",
    "createdAt": "2026-11-13T19:47:38.941Z",
-   "updatedAt": "2026-11-14T23:19:49.748Z",
+   "updatedAt": "2026-11-14T23:19:56.294Z",
    "builtAt": "",
    "notes": [
     {
@@ -208740,7 +208740,16 @@
      "at": "2026-11-14T23:16:34.879Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-14T23:19:56.294Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "land the skin config panel",
@@ -208864,12 +208873,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:19:56.294Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T19:48:39.672Z",
-     "updatedAt": "2026-11-13T19:48:39.672Z"
+     "updatedAt": "2026-11-14T23:19:56.867Z"
     }
    ],
    "profiles": [
@@ -208880,7 +208889,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": {
