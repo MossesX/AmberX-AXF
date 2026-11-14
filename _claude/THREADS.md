@@ -796,8 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 21:31 UTC · `main-ci-red-test-sandbox-profile-export` note (all) · orchestrator
-- 2026-11-13 21:32 UTC · `main-ci-red-test-sandbox-profile-export` note (all) · orchestrator
 - 2026-11-13 21:37 UTC · `icon-map-icon-packs-every-icon-badge-app` s6 done (all) · orchestrator
 - 2026-11-13 21:40 UTC · `toolbar-widgets-attach-any-banner-style` → pending, note (all) · reconciler
 - 2026-11-13 21:49 UTC · `icon-map-icon-packs-every-icon-badge-app` s7 done (all) · orchestrator
@@ -1196,6 +1194,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 22:21 UTC · `land-finish-auto-land-live-clear-backlog` → running, note (all) · pipeline
 - 2026-11-14 22:21 UTC · `land-finish-auto-land-live-clear-backlog` branch claude/land-finish-auto-land-live-clear-backlog (all) · pipeline
 - 2026-11-14 22:21 UTC · `land-finish-auto-land-live-clear-backlog` note (all) · orchestrator
+- 2026-11-14 22:21 UTC · `console-look-becomes-default-axhub-skin` → running, note (all) · pipeline
+- 2026-11-14 22:21 UTC · `console-look-becomes-default-axhub-skin` branch claude/console-look-becomes-default-axhub-skin (all) · pipeline
 
 ## Token passes (log)
 
