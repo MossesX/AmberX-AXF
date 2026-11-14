@@ -167,6 +167,8 @@ own_login() {   # $1 = account (active | live | <saved name>): snapshot it for t
   login_line="# login ${login_account}${login_email:+ (${login_email})} · ${how} (${login_source})${login_kind:+$([[ "$login_kind" == api ]] && echo ' · API key, billed per token')}"
   tmux set-option -t "=$(tmux display-message -p '#S' 2>/dev/null)" @axf_login "${login_account}${login_email:+ (${login_email})}" >/dev/null 2>&1 || true
   event session-login "$login_session"
+  # every sign-in is verified with Anthropic and reported to the phone (claude-login-notify.mjs); never delays the run
+  [[ -f "$HERE/claude-login-notify.mjs" ]] && { nohup node "$HERE/claude-login-notify.mjs" verify --dir "$(pwd)" --session "$login_session" --build "${name:-$login_session}" >/dev/null 2>&1 & disown; }
   local bid=""   # the orchestrator build this run belongs to: a note says which account it runs on
   read -r _ bid < <(node "$HERE/../framework/cli/build-priority.mjs" slot --name "$name" --brief "$brief" 2>/dev/null) || true
   [[ -n "$bid" && -f "$ORCH_JS" && "${AXF_LOGIN_NOTE:-on}" != off ]] && \

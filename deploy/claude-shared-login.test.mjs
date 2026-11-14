@@ -35,6 +35,7 @@ const FAKE = join(tmp, 'fake-claude.mjs');
 writeFileSync(FAKE, String.raw`
 import { mkdirSync, readFileSync, renameSync, rmdirSync, statSync, writeFileSync, appendFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
+process.env.AXF_LOGIN_NOTIFY ??= 'off'; process.env.AXF_LOGIN_VERIFY ??= 'off'; // login events (claude-login-notify.mjs) never reach the real phone or Anthropic
 const cfg = process.env.CLAUDE_CONFIG_DIR, file = join(cfg, '.credentials.json'), server = process.env.FAKE_SERVER, out = join(process.cwd(), 'out.jsonl');
 const sleep = (ms) => Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, ms);
 const lock = (d) => { for (let i = 0; i < 400; i++) { try { mkdirSync(d); return; } catch { sleep(10); } } throw new Error('lock timeout'); };

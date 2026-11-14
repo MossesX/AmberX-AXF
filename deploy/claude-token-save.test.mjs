@@ -11,6 +11,7 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { release, snapshot } from './claude-login.mjs';
 import { saveBack, sweep, tokenHash } from './claude-token-save.mjs';
+process.env.AXF_LOGIN_NOTIFY ??= 'off'; process.env.AXF_LOGIN_VERIFY ??= 'off'; // login events (claude-login-notify.mjs) never reach the real phone or Anthropic
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 let n = 0; let failed = 0;

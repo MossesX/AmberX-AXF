@@ -13,6 +13,7 @@ import * as OC from './web/orchestrator-core.mjs';
 import { verdict as dispatchVerdict } from '../../../../framework/cli/dispatch-gate.mjs';
 import * as BP from '../../../../framework/core/build-pipeline.mjs';
 import { setUpgradePolicy } from '../../../../framework/core/model-switch.mjs';
+process.env.AXF_LOGIN_NOTIFY ??= 'off'; process.env.AXF_LOGIN_VERIFY ??= 'off'; // login events (claude-login-notify.mjs) never reach the real phone or Anthropic
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(HERE, '../../../..');

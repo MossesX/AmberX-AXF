@@ -31,6 +31,8 @@ import { homedir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { record as notifyLogin } from './claude-login-notify.mjs';
+
 export const CHAIN = 'token-chain.json';
 const CHAIN_MAX = 32;
 const STATE = '.token-state.json';
@@ -155,24 +157,40 @@ export function saveBack(dir) {
   const copyDir = loginHome(dir);
   const first = readJson(join(copyDir, CHAIN));
   if (first?.$axf !== 'token-chain@1') return [];
-  return withTokenLock(first.places?.accounts, () => saveBackLocked(copyDir));
+  return withTokenLock(first.places?.accounts, () => saveBackLocked(copyDir, dir));
 }
 
-function saveBackLocked(copyDir) {
+function saveBackLocked(copyDir, dir = copyDir) {
   const file = join(copyDir, CHAIN);
   const state = readJson(file);
   if (state?.$axf !== 'token-chain@1') return [];
   const fresh = readJson(join(copyDir, '.credentials.json'))?.claudeAiOauth;
   const cur = tokenHash(fresh?.refreshToken);
   if (!cur) return [];
-  if (!state.chain.includes(cur)) {
+  // a renewal this login has not seen yet: the one pass (under the lock) that writes it back also confirms it
+  const renewed = !state.chain.includes(cur);
+  if (renewed) {
     state.chain = [...state.chain, cur].slice(-CHAIN_MAX);
     writeFileSync(file, JSON.stringify(state), { mode: 0o600 });
   }
   const spent = new Set(state.chain.filter((h) => h !== cur));
-  const written = applyRotation(fresh, spent, state.places);
-  tellAiKeys(fresh, spent, state.places);
+  let written = []; let error = '';
+  try { written = applyRotation(fresh, spent, state.places); tellAiKeys(fresh, spent, state.places); }
+  catch (e) { error = String(e?.code || e?.message || e).slice(0, 200); }
+  if (renewed && state.chain.length > 1) confirmRenewal(copyDir, dir, cur, written, error);
+  if (error) throw new Error(`token save-back failed: ${error}`);
   return written;
+}
+
+/** Read the new token back from the login file and every store written, and tell the phone (claude-login-notify.mjs). */
+function confirmRenewal(copyDir, dir, cur, written, error) {
+  const bad = [join(copyDir, '.credentials.json'), ...written].filter((f) => tokenHash(readJson(f)?.claudeAiOauth?.refreshToken) !== cur);
+  const marker = readJson(join(dir, 'build-login.json')) || readJson(join(copyDir, 'build-login.json'));
+  const account = readJson(join(copyDir, 'shared-login.json'))?.account || marker?.account || '';
+  const build = marker?.session || '';
+  const ok = !error && !bad.length;
+  notifyLogin({ kind: 'refresh', account, build, result: ok ? 'ok' : 'failed', saved: written.filter((f) => f !== join(copyDir, '.credentials.json')).length,
+    detail: ok ? '' : error || `${bad.length} file${bad.length === 1 ? '' : 's'} did not read back the new token` });
 }
 
 
@@ -214,6 +232,7 @@ function sweepLocked(p) {
   const prev = readJson(stateFile)?.live || '';
   const spent = new Set(prev && prev !== cur ? [prev] : []);
   out.fromLive = applyRotation(fresh, spent, p).length;
+  if (out.fromLive) notifyLogin({ kind: 'refresh', account: 'live login', build: 'host sweep', result: 'ok', saved: out.fromLive });
   tellAiKeys(fresh, spent, p);
   if (prev !== cur && existsSync(p.accounts)) writeAtomic(stateFile, { live: cur, at: new Date().toISOString() });
   return out;

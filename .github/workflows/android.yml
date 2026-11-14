@@ -102,6 +102,7 @@ jobs:
       - run: node framework/spec/check-build-lock.mjs               # build-lock@1: one live session per build: tmux axf-<id>*, claude pids in the worktree, a heartbeat lock that expires; double dispatch refused
       - run: node deploy/claude-token-save.test.mjs                 # rotated Claude tokens: saved back at once to every store of that login, never to another account
       - run: node deploy/claude-shared-login.test.mjs               # two builds on one Claude account: a forced renewal in one, the other keeps working
+      - run: node deploy/claude-login-notify.test.mjs               # every Claude sign-in verified and every token refresh confirmed saved: one phone alert each, never a token
       - run: node deploy/claude-workers.test.mjs                    # worker accounts: routing, limits, failover, cost per account
       - run: node deploy/worker-routing.test.mjs                    # workers-api-routing: routing rules, per-account limits and queues, API spend caps, who may raise a cap
       - run: node deploy/claude-login.test.mjs                      # build-own-login: every headless build runs on its own Claude login copy (fake accounts + fake claude; logout/switch mid-run, refresh stays in the copy, no token printed)
