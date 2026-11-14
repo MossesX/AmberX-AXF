@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T16:54:32.993Z",
+ "updatedAt": "2026-11-14T16:54:45.217Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -139433,7 +139433,7 @@
    "branch": "claude/hotfix-toolbar-settings-still-change",
    "pr": "",
    "createdAt": "2026-11-14T16:51:14.645Z",
-   "updatedAt": "2026-11-14T16:53:07.541Z",
+   "updatedAt": "2026-11-14T16:54:33.179Z",
    "builtAt": "",
    "notes": [
     {
@@ -139477,8 +139477,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T16:54:33.179Z",
      "note": "",
      "uid": "st-mwgn7ac20552fu",
      "createdAt": "2026-11-14T16:51:14.646Z"

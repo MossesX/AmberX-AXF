@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5319,
- "updatedAt": "2026-11-14T16:54:32.993Z",
+ "rev": 5320,
+ "updatedAt": "2026-11-14T16:54:45.217Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -214786,7 +214786,7 @@
    "branch": "claude/hotfix-toolbar-settings-still-change",
    "pr": "",
    "createdAt": "2026-11-14T16:51:14.645Z",
-   "updatedAt": "2026-11-14T16:53:07.541Z",
+   "updatedAt": "2026-11-14T16:54:33.179Z",
    "builtAt": "",
    "notes": [
     {
@@ -214820,7 +214820,7 @@
     "queuedAt": "",
     "queuedBy": "",
     "account": "",
-    "session": "axf-hotfix-toolbar-settings-still-change--lenny",
+    "session": "",
     "slot": "",
     "model": "",
     "launchedAt": "",
@@ -214860,12 +214860,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T16:54:33.179Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T16:51:14.646Z",
-     "updatedAt": "2026-11-14T16:51:14.646Z"
+     "updatedAt": "2026-11-14T16:54:33.389Z"
     },
     {
      "id": "s2",
