@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T23:44:22.841Z",
+ "updatedAt": "2026-11-14T23:44:36.880Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -144696,16 +144696,16 @@
    "title": "Merge main and land change-to-move-amberx-web-app-console",
    "category": "",
    "detail": "Auto-land could not land `change-to-move-amberx-web-app-console` (change-to-move-amberx-web-app-console): merging main into it clashes in code: apps/amberx-droid/android/app/src/main/java/ai/amberx/droid/WatchService.java, apps/console-web/plugins/approvals-banner/plugin.json, apps/console-web/server/main.py.\n\nWork on its own branch `claude/change-to-move-amberx-web-app-console` (PR #586); do not open a new PR.\n1. git fetch origin && git checkout claude/change-to-move-amberx-web-app-console && git merge origin/main\n2. Resolve every conflict keeping both sides' intent (builds files: newer wins; THREADS / STATUS / decisions: keep both).\n3. Make the tests the clash touches pass, plus node framework/cli/tracker.mjs --check.\n4. Commit and push to claude/change-to-move-amberx-web-app-console. Auto-land and the merge queue land it by themselves.\n\nAttempt 1. Auto-land retries until it lands; Brett gets an FYI for each attempt.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "land-finish-auto-land-live-clear-backlog",
    "pendingId": "",
-   "branch": "claude/change-to-move-amberx-web-app-console",
+   "branch": "claude/merge-main-land-change-to-move-amberx",
    "pr": "#586",
    "priority": "P0",
    "createdAt": "2026-11-14T23:10:56.028Z",
-   "updatedAt": "2026-11-14T23:43:16.857Z",
-   "builtAt": "",
+   "updatedAt": "2026-11-14T23:44:14.057Z",
+   "builtAt": "2026-11-14T23:44:14.057Z",
    "notes": [
     {
      "text": "Queued by land-finish-auto-land-live-clear-backlog.",
@@ -144866,8 +144866,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:43:34.125Z",
      "note": "",
      "uid": "st-mwh0wszf07j8d0",
      "createdAt": "2026-11-14T23:15:00.410Z"
@@ -144885,8 +144885,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:43:38.316Z",
      "note": "",
      "uid": "st-mwh0wszf080y6g",
      "createdAt": "2026-11-14T23:15:00.410Z"
@@ -144907,8 +144907,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:44:14.057Z",
      "note": "",
      "uid": "st-mwh0wszf096f4y",
      "createdAt": "2026-11-14T23:15:00.410Z"
