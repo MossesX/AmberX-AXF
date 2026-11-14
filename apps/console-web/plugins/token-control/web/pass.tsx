@@ -11,6 +11,7 @@
 import { useEffect, useState, useSyncExternalStore } from 'react';
 import { Button, Container, Icon, Note, SelectField, Switch, TextField, useRuntime } from '@console/axf/react';
 import { pluginFetch } from '@console/plugins';
+import { PassApprovalView, openPass, usePassFocus } from './pass-approval';
 
 const FOLDER = 'token-control';
 const POLL_MS = 5_000;
@@ -109,6 +110,7 @@ const scopeWord = (p: { scope: string; label?: string }) => p.label ?? SCOPE_WOR
 const askWord = (p: PassView) => `${p.scope === 'all' ? 'everything' : `${scopeWord(p).toLowerCase()} changes`}${p.include_irreversible ? ' (irreversible deletes too)' : ''}`;
 
 export function PassBanner() {
+  const rt = useRuntime();
   const { status } = usePasses();
   const rows = status?.items ?? [];
   const active = rows.filter((r) => r.active).map((r) => r.active!);
@@ -138,6 +140,7 @@ export function PassBanner() {
             <span><b>{p.requestedBy}</b> asks: {askWord(p)} without veto for {p.minutes} min</span>
             <Button size="sm" tone="primary" icon="check" disabled={!!busy} onClick={() => void act(`a${p.id}`, () => passCalls.approve(p.scope, p.id))}>Approve</Button>
             <Button size="sm" tone="ghost" icon="x" disabled={!!busy} onClick={() => void act(`d${p.id}`, () => passCalls.deny(p.scope, p.id))}>Deny</Button>
+            <Button size="sm" tone="ghost" icon="shield" title="Open this pass (its own page: who asks, scope, veto window)" onClick={() => { openPass(p.id); rt.navigate('token-control'); }}>Open</Button>
           </span>
         ))}
       </div>
@@ -156,8 +159,10 @@ export function PassesTab() {
   const [minutes, setMinutes] = useState('30');
   const [reason, setReason] = useState('');
   const rows = status?.items ?? [];
+  const focus = usePassFocus();
   return (
     <div className="fx-stack">
+      {focus && <PassApprovalView key={`${focus.id}-${focus.at}`} id={focus.id} decision={focus.decision} />}
       {error && <Note tone="danger">{error}</Note>}
       <Note tone="info">A pass lets commands run without axHub's veto for a while ("allow everything for the next 30 minutes"). Everything is the default: every command through the API, MCP or CLI on every plugin, ordinary deletes included; a narrower scope covers only token changes there. Irreversible deletes still confirm unless the pass includes them. Brett approves each pass once. Everything done under a pass is logged; undo puts back what can be put back and names the rest.</Note>
       <Container title="Start a pass" icon="key">
@@ -176,6 +181,7 @@ export function PassesTab() {
             <td>{r.active ? <>{r.text} <span className="fx-mono">{countdown(r.active.expiresAt, now)}</span></> : r.text}</td>
             <td><div className="fx-row fx-row--tight fx-row--end">
               {r.pending && <Button size="sm" tone="primary" icon="check" disabled={!!busy} onClick={() => void act('a', () => passCalls.approve(r.id, r.pending!.id))}>Approve</Button>}
+              {r.pending && <Button size="sm" tone="ghost" icon="shield" onClick={() => openPass(r.pending!.id)}>Open</Button>}
               {r.active && <Button size="sm" tone="ghost" icon="undo" disabled={!!busy || !r.active.changes} onClick={() => void act('u', () => passCalls.undo(r.id))}>Undo {r.active.changes}</Button>}
               {(r.active || r.pending) && <Button size="sm" tone="ghost" icon="x" disabled={!!busy} onClick={() => void act('r', () => passCalls.revoke(r.id))}>Revoke</Button>}
             </div></td>
@@ -184,7 +190,7 @@ export function PassesTab() {
       </Container>
       {!!status?.recent?.length && (
         <Container title="Recent passes" icon="clock">
-          <table className="fx-table"><tbody>{status.recent.filter(Boolean).map((p) => <tr key={p!.id}><td className="fx-mono axf-tc-small">{p!.id}</td><td>{p!.scope}</td><td>{p!.state}</td><td className="fx-muted">{p!.text}</td></tr>)}</tbody></table>
+          <table className="fx-table"><tbody>{status.recent.filter(Boolean).map((p) => <tr key={p!.id}><td className="fx-mono axf-tc-small"><Button size="sm" tone="quiet" onClick={() => openPass(p!.id)}>{p!.id}</Button></td><td>{p!.scope}</td><td>{p!.state}</td><td className="fx-muted">{p!.text}</td></tr>)}</tbody></table>
         </Container>
       )}
     </div>
