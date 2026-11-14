@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5238,
- "updatedAt": "2026-11-14T04:30:30.447Z",
+ "rev": 5239,
+ "updatedAt": "2026-11-14T04:30:48.152Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -212196,7 +212196,7 @@
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-14T04:29:39.804Z",
+   "updatedAt": "2026-11-14T04:30:46.327Z",
    "builtAt": "",
    "notes": [
     {
@@ -212589,6 +212589,28 @@
      "updatedAt": "2026-11-14T04:28:59.275Z"
     },
     {
+     "id": "s18",
+     "uid": "st-mwfwr17r01mdxw",
+     "title": "",
+     "text": "Four more videos, one each: (1) Plan Studio: turning a spoken idea into a plan, steps and builds, with real data. (2) Voice control with AmberX: running the whole console and builds by voice from the phone. (3) Veto and approval system: held actions counting down unless vetoed, approval pop-ups on phone and console, permissions per agent. (4) UI directory: the floating window listing every page and settings screen, creating a floating toolbar or tab group on any page, dragging commands and screens onto it, docking it, and the Assets menu to hide and show anything. Use real screens and data; label staged parts as a preview.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-14T04:30:46.328Z",
+     "updatedAt": "2026-11-14T04:30:46.503Z"
+    },
+    {
      "id": "s7",
      "uid": "st-mwfvsr6p0143q5",
      "title": "",
@@ -212685,7 +212707,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 33,
+   "rev": 34,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
