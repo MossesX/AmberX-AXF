@@ -265,6 +265,25 @@ def skin_color_set(app: str, body: dict[str, Any] = Body(...)) -> Any:
     return _skins("color", app, str(body.get("theme") or "default"), *_scope_args(body.get("scope")))
 
 
+@router.get("/skins/modes")
+def skin_modes() -> Any:
+    """Every skin's light and dark colour themes, and any skin missing one (skin-modes@1: every skin ships both)."""
+    return _skins("modes")
+
+
+@router.get("/skins/{app}/mode")
+def skin_mode(app: str, scope: str | None = None) -> Any:
+    """Light, dark or system in an app (or one screen / plugin, scope=ui:<id> | plugin:<id>): the mode, the scheme showing and the skin's light and dark colour themes."""
+    return _skins("mode", app, *_scope_args(scope))
+
+
+@router.post("/skins/{app}/mode")
+def skin_mode_set(app: str, body: dict[str, Any] = Body(...)) -> Any:
+    """Switch the skin in force to its light or dark colour theme, or follow the system, body {mode: light|dark|system, system?: light|dark, scope?}: 'make the console dark'. The skin stays the same skin."""
+    extra = ["--system", str(body["system"])] if body.get("system") in ("light", "dark") else []
+    return _skins("mode", app, str(body.get("mode") or ""), *extra, *_scope_args(body.get("scope")))
+
+
 @router.post("/skins/{app}/restore")
 def skin_restore(app: str) -> Any:
     """Restore an app to its default look: 'restore AmberX to default'. Keeps one undo."""
@@ -275,3 +294,105 @@ def skin_restore(app: str) -> Any:
 def skin_undo(app: str) -> Any:
     """Undo the last restore of an app."""
     return _skins("undo", app)
+
+
+# ---- skin config (skin-config@1): what the AI may change when it makes a skin; one document per app on the hub ----
+# (framework/cli/skins.mjs config … is the one writer: settings/skin-config/<app>.json next to the looks)
+
+CONFIG_MODES = ("allow", "lock", "ask", "inherit")
+
+
+@router.get("/skin-config/tree")
+def skin_config_tree() -> Any:
+    """The permission tree (category > group > option, with limits), built from the asset registry."""
+    return _skins("config", "tree")
+
+
+@router.get("/skin-config/{app}")
+def skin_config_get(app: str) -> Any:
+    """An app's skin config (or `global`): the document, every option's mode and where it comes from, the limits, the Default skin."""
+    return _skins("config", "get", app)
+
+
+@router.put("/skin-config/{app}")
+def skin_config_put(app: str, body: dict[str, Any] = Body(...)) -> Any:
+    """Save the whole skin-config@1 document, body {config} (or the document itself); checked before it is written."""
+    doc = body.get("config") if isinstance(body.get("config"), dict) else body
+    raw = json.dumps({**doc, "$axf": "skin-config@1"})
+    if len(raw) > 64 * 1024:
+        raise HTTPException(413, "a skin config is at most 64 KB")
+    return _skins("config", "put", app, "--json-doc", raw)
+
+
+@router.post("/skin-config/{app}/set")
+def skin_config_set(app: str, body: dict[str, Any] = Body(...)) -> Any:
+    """Allow, lock or ask one category / group / option, body {path: type[/group[/option]], mode: allow|lock|ask|inherit}."""
+    m = str(body.get("mode") or "")
+    if m not in CONFIG_MODES:
+        raise HTTPException(400, f"mode must be one of {', '.join(CONFIG_MODES)}")
+    return _skins("config", m, app, str(body.get("path") or ""))
+
+
+@router.post("/skin-config/{app}/allow")
+def skin_config_allow(app: str, body: dict[str, Any] = Body(...)) -> Any:
+    """Let the AI change one category / group / option, body {path}: 'let the AI change the buttons'."""
+    return _skins("config", "allow", app, str(body.get("path") or ""))
+
+
+@router.post("/skin-config/{app}/lock")
+def skin_config_lock(app: str, body: dict[str, Any] = Body(...)) -> Any:
+    """Keep one category / group / option as the Default skin has it, body {path}: 'lock the colours'."""
+    return _skins("config", "lock", app, str(body.get("path") or ""))
+
+
+@router.post("/skin-config/{app}/depth")
+def skin_config_depth(app: str, body: dict[str, Any] = Body(...)) -> Any:
+    """Set a limit, body {type, value (int or 'default'), limit?}: 'context menus one level deep'."""
+    v = body.get("value")
+    return _skins("config", "depth", app, str(body.get("type") or ""), "default" if v in (None, "default") else str(v), *([str(body["limit"])] if body.get("limit") else []))
+
+
+@router.post("/skin-config/{app}/mode")
+def skin_config_mode(app: str, body: dict[str, Any] = Body(...)) -> Any:
+    """The mode of every option not set, body {mode: allow|lock|ask}."""
+    return _skins("config", "mode", app, str(body.get("mode") or ""))
+
+
+@router.post("/skin-config/{app}/reset")
+def skin_config_reset(app: str) -> Any:
+    """Everything back to allow and every limit to its default."""
+    return _skins("config", "reset", app)
+
+
+@router.post("/skin-config/{app}/default")
+def skin_config_default(app: str) -> Any:
+    """Save the app's current look as its Default skin (the skin the AI starts from and Restore to default goes back to)."""
+    return _skins("config", "default", app)
+
+
+@router.get("/skin-config/{app}/brief")
+def skin_config_brief(app: str, wish: str = "") -> Any:
+    """The generation brief the AI would get: only the allowed options and the limits, the Default skin, the ids it can pick."""
+    return _skins("config", "brief", app, "--wish", wish[:600])
+
+
+@router.get("/skin-config/{app}/made")
+def skin_config_made(app: str) -> Any:
+    """The skins the AI made for an app, newest first, with what was applied and what was dropped and why."""
+    return {"items": _skins("config", "made", app)}
+
+
+@router.post("/skin-config/{app}/make")
+def skin_config_make(app: str, body: dict[str, Any] | None = Body(None)) -> Any:
+    """Make a skin with AI under the config, body {wish?, dry?}. Runs in the background (minutes); the result lands in /made."""
+    b = body or {}
+    wish = str(b.get("wish") or "")[:600]
+    if b.get("dry"):
+        return _skins("config", "make", app, "--wish", wish, "--dry")
+    _skins("config", "get", app)  # an unknown app fails here, not in the background
+    try:
+        subprocess.Popen(["node", str(SKINS_CLI), "config", "make", app, "--wish", wish, "--json"], cwd=cx.ROOT,
+                         stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
+    except OSError as e:
+        raise HTTPException(502, f"skins: {e}") from e
+    return {"started": True, "app": app, "wish": wish, "results": f"/api/plugins/theme-manager/skin-config/{app}/made"}

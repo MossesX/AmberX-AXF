@@ -566,6 +566,17 @@
       "ok": "#3ecc89",
       "scheme": "dark"
     },
+    "windows-dark": {
+      "bg": "#202020",
+      "fg": "#ffffff",
+      "muted": "#c5c5c5",
+      "card": "#2b2b2b",
+      "line": "#3d3d3d",
+      "accent": "#4cc2ff",
+      "danger": "#ff99a4",
+      "ok": "#6ccb5f",
+      "scheme": "dark"
+    },
     "windows-light": {
       "bg": "#f3f3f3",
       "fg": "#1b1b1b",
