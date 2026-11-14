@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5223,
- "updatedAt": "2026-11-14T04:21:54.566Z",
+ "rev": 5224,
+ "updatedAt": "2026-11-14T04:22:10.645Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -211756,14 +211756,14 @@
    "title": "UI Directory plugin: self-updating data set of every UI page and settings interface",
    "category": "Console",
    "detail": "Brett: a plugin that's just a data set of every single UI page and settings interface, that scales and grows on its own dynamically. Build a console plugin 'UI Directory': one live data set (ui-directory@1) of every screen, page, tab, dialog, settings interface, plugin UI and per-instance settings panel across every app. It populates itself from the framework manifests, the console-control inventory and plugin registrations, so any new UI or plugin appears automatically with no hand edits, and removed ones drop out. Each row: name, kind, app, parent plugin/page, deep link (console_show), its settings interface, token families it uses, status. Searchable, filterable, grouped tree, click to open. CI check fails if a UI isn't registered. Full API: REST/MCP/CLI/voice ('open the UI directory', 'find the toolbar settings'). Tests desktop and phone.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/ui-directory-plugin-self-updating-data",
    "pr": "",
    "createdAt": "2026-11-14T03:50:42.413Z",
-   "updatedAt": "2026-11-14T04:21:09.356Z",
+   "updatedAt": "2026-11-14T04:22:06.951Z",
    "builtAt": "",
    "notes": [
     {
@@ -211793,6 +211793,10 @@
     {
      "text": "Dispatch gate: ui-directory-plugin-self-updating-data still has axf-ui-directory-plugin-self-updating-data--paulie alive: not launched again, tracking that session.",
      "at": "2026-11-14T04:20:34.939Z"
+    },
+    {
+     "text": "Session on mossesx-max- ended (exit 0) with 2 steps left: back in the Queue (run 1).",
+     "at": "2026-11-14T04:22:06.951Z"
     }
    ],
    "approvals": [],
@@ -211813,13 +211817,13 @@
     "queuedAt": "",
     "queuedBy": "",
     "account": "mossesx-max-",
-    "session": "axf-ui-directory-plugin-self-updating-data--paulie",
+    "session": "",
     "slot": "",
     "model": "Fable",
     "launchedAt": "2026-11-14T03:51:29.271Z",
     "runs": 1,
     "lastRun": {
-     "at": "2026-11-14T04:20:16.414Z",
+     "at": "2026-11-14T04:22:05.711Z",
      "exit": 0,
      "outcome": "requeued",
      "stepsLeft": 2,
@@ -211920,7 +211924,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
