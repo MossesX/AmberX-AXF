@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5248,
- "updatedAt": "2026-11-14T04:37:14.787Z",
+ "rev": 5249,
+ "updatedAt": "2026-11-14T04:37:34.639Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -212196,7 +212196,7 @@
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-14T04:36:28.840Z",
+   "updatedAt": "2026-11-14T04:37:32.730Z",
    "builtAt": "",
    "notes": [
     {
@@ -212689,6 +212689,28 @@
      "updatedAt": "2026-11-14T04:36:29.074Z"
     },
     {
+     "id": "s22",
+     "uid": "st-mwfwzqtx019vvf",
+     "title": "",
+     "text": "Shipped features video: tour the Shipped Features page. Then show the orchestrator checking every new order against it before it assigns a build ID: if the feature already exists, a banner tells you so instead of building a duplicate. Also show it checking that nothing in the new build will break anything that's already shipped, with the banner flagging any conflict. Use the real Shipped Features page, orchestrator and banners with real data; label staged parts as a preview.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-14T04:37:32.731Z",
+     "updatedAt": "2026-11-14T04:37:32.949Z"
+    },
+    {
      "id": "s7",
      "uid": "st-mwfvsr6p0143q5",
      "title": "",
@@ -212785,7 +212807,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 40,
+   "rev": 41,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

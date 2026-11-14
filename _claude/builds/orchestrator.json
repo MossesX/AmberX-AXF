@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T04:37:14.787Z",
+ "updatedAt": "2026-11-14T04:37:34.639Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -137373,7 +137373,7 @@
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-14T04:36:28.840Z",
+   "updatedAt": "2026-11-14T04:37:32.730Z",
    "builtAt": "",
    "notes": [
     {
@@ -137778,6 +137778,25 @@
      "note": "",
      "uid": "st-mwfwydjm01lv8x",
      "createdAt": "2026-11-14T04:36:28.841Z"
+    },
+    {
+     "id": "s22",
+     "text": "Shipped features video: tour the Shipped Features page. Then show the orchestrator checking every new order against it before it assigns a build ID: if the feature already exists, a banner tells you so instead of building a duplicate. Also show it checking that nothing in the new build will break anything that's already shipped, with the banner flagging any conflict. Use the real Shipped Features page, orchestrator and banners with real data; label staged parts as a preview.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfwzqtx019vvf",
+     "createdAt": "2026-11-14T04:37:32.731Z"
     },
     {
      "id": "s7",
