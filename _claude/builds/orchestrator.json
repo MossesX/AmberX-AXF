@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T04:12:20.062Z",
+ "updatedAt": "2026-11-14T04:12:42.656Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -137342,7 +137342,7 @@
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-14T04:11:42.167Z",
+   "updatedAt": "2026-11-14T04:12:40.734Z",
    "builtAt": "",
    "notes": [
     {
@@ -137376,6 +137376,10 @@
     {
      "text": "Session on mossesx-max- stopped on its own with 7 steps left: back in Pending for Brett.",
      "at": "2026-11-14T04:11:05.378Z"
+    },
+    {
+     "text": "Brett: in EVERY app video (time tracker, expense tracker, event gallery, private messaging server) the app is built purely by assembling pre-configured AXF libraries. No code is written and no code is shown on screen: just picking libraries and features, configuring them, plain-English instructions, and the framework snapping them together. Make 'no code, just assembly' a clear message in the narration and on screen.",
+     "at": "2026-11-14T04:12:40.734Z"
     }
    ],
    "approvals": [],
