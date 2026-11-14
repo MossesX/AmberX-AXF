@@ -6,7 +6,7 @@ export async function onUninstall(ctx) { ctx.log('removing the launch waitlist p
 export async function checks(ctx) {
   return [
     { id: 'data-folder', ok: existsSync(ctx.dataDir), detail: ctx.dataDir },
-    { id: 'site-url', ok: Boolean(process.env.AMBERX_SITE_URL), detail: process.env.AMBERX_SITE_URL || 'AMBERX_SITE_URL is not set (defaults to https://amberxai.com)' },
+    { id: 'site-url', ok: Boolean(process.env.AMBERX_SITE_URL), detail: process.env.AMBERX_SITE_URL || 'AMBERX_SITE_URL is not set (defaults to https://join.amberxai.com)' },
     { id: 'admin-token', ok: Boolean(process.env.AMBERX_SITE_ADMIN_TOKEN), detail: process.env.AMBERX_SITE_ADMIN_TOKEN ? 'set' : 'AMBERX_SITE_ADMIN_TOKEN is not set' },
   ];
 }

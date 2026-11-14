@@ -1,6 +1,6 @@
 # AmberX site
 
-The public AmberX launch page (amberxai.com): one hook, a 60-second demo video slot, feature highlights, a
+The public AmberX launch page (join.amberxai.com today; amberxai.com once the apex moves): one hook, a 60-second demo video slot, feature highlights, a
 Stripe-ready pricing section (free trial, then $30/month) and a waitlist where every referral moves you up the line.
 Zero dependencies: plain Node ≥ 20.
 
@@ -15,7 +15,7 @@ node --test apps/amberx-site/test/
 | `PORT` | `8080` | |
 | `DATA_DIR` | `apps/amberx-site/data` | `settings.json` + `waitlist.json` (mount a volume here) |
 | `SITE_ADMIN_TOKEN` | — | admin API and `/admin`; unset = admin API off |
-| `PUBLIC_URL` | request host | base of referral links, e.g. `https://amberxai.com` |
+| `PUBLIC_URL` | request host | base of referral links, e.g. `https://join.amberxai.com` |
 | `BAKED_DIR` | `apps/amberx-site/baked` | output of `bake.mjs` |
 
 ## Look

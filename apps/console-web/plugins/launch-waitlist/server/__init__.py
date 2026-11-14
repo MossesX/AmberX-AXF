@@ -3,7 +3,7 @@
 Mounted at /api/plugins/launch-waitlist/ (console token required). Every route proxies the site's admin API
 (apps/amberx-site, /api/admin/*), so the console view, REST, MCP tools (plugin-commands@1) and the CLI all drive the
 same data. Environment:
-    AMBERX_SITE_URL           the public site (default https://amberxai.com)
+    AMBERX_SITE_URL           the public site (default https://join.amberxai.com)
     AMBERX_SITE_ADMIN_TOKEN   the site's SITE_ADMIN_TOKEN
 
     GET    /status                    site reachable, public settings, waiting count
@@ -31,13 +31,17 @@ from typing import Any
 from fastapi import APIRouter, Body, HTTPException
 from fastapi.responses import PlainTextResponse
 
+import plugin_services
+
 router = APIRouter()
+
+VPS_IP = "31.97.13.252"
 
 CODE = re.compile(r"^[\w-]{4,32}$")
 
 
 def _site() -> str:
-    return (os.environ.get("AMBERX_SITE_URL") or "https://amberxai.com").rstrip("/")
+    return (os.environ.get("AMBERX_SITE_URL") or "https://join.amberxai.com").rstrip("/")
 
 
 def _call(method: str, path: str, body: Any = None, admin: bool = True, raw: bool = False) -> Any:
@@ -69,8 +73,50 @@ def _code(code: str) -> str:
     return code
 
 
+def site_check() -> dict[str, Any]:
+    """Systems check item: the public site answers over valid HTTPS, and the console can reach its admin API."""
+    host = urllib.parse.urlparse(_site()).hostname or ""
+    try:
+        with urllib.request.urlopen(urllib.request.Request(_site() + "/api/health", headers={"user-agent": "axf-console-launch-waitlist"}), timeout=10) as r:
+            ok = r.status == 200
+    except Exception as e:  # noqa: BLE001 - DNS, TLS or HTTP: all mean "not public yet"
+        return {"status": "error", "summary": f"{host} is not reachable over HTTPS yet ({getattr(e, 'reason', e)}).",
+                "details": [f"Add a DNS A record {host} -> {VPS_IP} in Hostinger (hPanel -> Domains -> amberxai.com -> DNS / Nameservers).",
+                            "The certificate is issued by the Coolify proxy within a minute of the record resolving."]}
+    if not ok:
+        return {"status": "error", "summary": f"{host} answered, but not with the AmberX site."}
+    if not os.environ.get("AMBERX_SITE_ADMIN_TOKEN"):
+        return {"status": "warn", "summary": f"{host} is live; the console can't manage the waitlist: AMBERX_SITE_ADMIN_TOKEN is not set."}
+    return {"status": "ok", "summary": f"{_site()} is live over HTTPS and the console manages its waitlist."}
+
+
+_registered = False
+
+
+def ensure_health() -> None:
+    """Registers the site check once the systems check provides axf.health@1 (plugins load in any order)."""
+    global _registered
+    reg = None if _registered else plugin_services.get("axf.health@1")
+    if reg is None:
+        return
+    try:
+        reg.register({"id": "launch-site", "label": "AmberX launch site is public", "service": "coolify", "order": 52, "interval": 900,
+                      "run": site_check,
+                      "breaks": "The AmberX landing page and waitlist aren't reachable on their public address, or the console can't manage the waitlist.",
+                      "instructions": [f"Hostinger hPanel -> Domains -> amberxai.com -> DNS: add an A record, name 'join', points to {VPS_IP}, TTL 300.",
+                                       "Console env: AMBERX_SITE_URL=https://join.amberxai.com and AMBERX_SITE_ADMIN_TOKEN = the SITE_ADMIN_TOKEN in /opt/amberx-site/.env on the VPS (root only), then restart the console.",
+                                       "To serve it on amberxai.com itself: see apps/amberx-site/DEPLOY.md (the apex is claimed by the amberx-app web container today)."]}, "launch-waitlist")
+        _registered = True
+    except Exception:  # noqa: BLE001 - the plugin works without its banner item
+        pass
+
+
+ensure_health()
+
+
 @router.get("/status")
 def status() -> dict[str, Any]:
+    ensure_health()
     pub = _call("GET", "/api/site", admin=False)
     return {"site": _site(), "adminToken": bool(os.environ.get("AMBERX_SITE_ADMIN_TOKEN")), "waiting": pub["waitlist"]["total"], "settings": pub["settings"]}
 
