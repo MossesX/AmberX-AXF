@@ -1147,6 +1147,65 @@ textarea.fx-input { resize: vertical; white-space: pre; }
 .fx-choice__title { flex: 1; min-width: 0; font-weight: 600; }
 .fx-choice__text { color: var(--fx-muted); font-size: var(--fx-type-root-sm); }
 .fx-choice__tag { align-self: flex-start; padding: 0 var(--fx-dens-gap-sm); border-radius: 999px; background: var(--fx-surface2); color: var(--fx-muted); font-size: var(--fx-type-root-xs); }
+
+/* expander-picker@1 (Nov 13 2026): the dropdown's replacement (.fx-pick, ExpanderPicker.tsx; Brett: "a row with a name and a little
+   arrow; when you press that arrow it expands a subgrid; you got to press it again to apply it and close it"). The row unfolds in
+   place into a grid of tiles and pushes what is below down; nothing floats. The element carries its own asset's attributes and
+   vars (expanderPickerStyle: --fx-pick-row-py, --fx-pick-tile-pad, --fx-pick-cols, --fx-pick-dur), so a picker with its own asset
+   keeps it; every size is a space / density / field token, every time the motion token, so reduced motion stops it. */
+.fx-pick { display: flex; flex-direction: column; min-width: 0; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface); color: var(--fx-text); transition: border-color var(--fx-motion) var(--fx-ease), box-shadow var(--fx-motion) var(--fx-ease); }
+.fx-pick:focus-within, .fx-pick[data-fx-pick-open='on'] { border-color: var(--fx-accent); }
+.fx-pick[data-fx-pick-open='on'] { box-shadow: 0 0 0 calc(var(--fx-border-w) * 3) var(--fx-accent-soft); }
+.fx-field.is-error .fx-pick { border-color: var(--fx-danger); }
+.fx-pick__row { display: flex; align-items: center; gap: var(--fx-dens-gap-md); width: 100%; min-height: var(--fx-size-field-height); padding: var(--fx-pick-row-py) var(--fx-size-field-pad-x); border: 0; border-radius: inherit; background: transparent; color: inherit; font: inherit; font-size: var(--fx-size-field-font); text-align: left; cursor: pointer; }
+.fx-pick__row:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: var(--fx-border-w); }
+.fx-pick__row:disabled { opacity: var(--fx-opacity-disabled); cursor: not-allowed; }
+.fx-pick__value { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fx-pick__value.is-empty { color: var(--fx-muted); }
+.fx-pick[data-fx-pick-value='off'] .fx-pick__value { opacity: 0; }
+.fx-pick__pending { color: var(--fx-accent); font-size: var(--fx-type-scale-sm); white-space: nowrap; }
+.fx-pick__arrow { display: inline-flex; align-items: center; justify-content: center; color: var(--fx-muted); transition: transform var(--fx-pick-dur) var(--fx-ease); }
+.fx-pick[data-fx-pick-open='on'] .fx-pick__arrow { transform: rotate(180deg); }
+.fx-pick[data-fx-pick-arrow='plus'] .fx-pick__arrow { transform: none; }
+.fx-pick[data-fx-pick-arrow='caret'] .fx-pick__arrow svg { display: none; }
+.fx-pick[data-fx-pick-arrow='caret'] .fx-pick__arrow::before { content: ''; border-left: calc(var(--fx-border-w) * 5) solid transparent; border-right: calc(var(--fx-border-w) * 5) solid transparent; border-top: calc(var(--fx-border-w) * 6) solid currentColor; }
+/* the unfold: a 0fr → 1fr grid row (the content's own height, no measuring), hidden to focus and readers while closed */
+.fx-pick__sub { display: grid; grid-template-rows: 0fr; visibility: hidden; transition: grid-template-rows var(--fx-pick-dur) var(--fx-ease), visibility 0s linear var(--fx-pick-dur); }
+.fx-pick[data-fx-pick-open='on'] > .fx-pick__sub { grid-template-rows: 1fr; visibility: visible; transition: grid-template-rows var(--fx-pick-dur) var(--fx-ease), visibility 0s; }
+.fx-pick[data-fx-pick-anim='fade'] > .fx-pick__sub, .fx-pick[data-fx-pick-anim='slide'] > .fx-pick__sub { transition-duration: 0s, 0s; transition-delay: 0s, var(--fx-pick-dur); }
+.fx-pick[data-fx-pick-anim='fade'][data-fx-pick-open='on'] > .fx-pick__sub, .fx-pick[data-fx-pick-anim='slide'][data-fx-pick-open='on'] > .fx-pick__sub { transition-delay: 0s, 0s; }
+.fx-pick__sub-inner { min-height: 0; overflow: hidden; }
+.fx-pick[data-fx-pick-divider='on'] > .fx-pick__sub > .fx-pick__sub-inner { border-top: var(--fx-border-w) solid var(--fx-border); }
+.fx-pick__grid { display: grid; grid-template-columns: var(--fx-pick-cols); gap: var(--fx-dens-gap-md); padding: var(--fx-dens-gap-md) var(--fx-size-field-pad-x) var(--fx-dens-gap-lg); opacity: 1; transform: none; transition: opacity var(--fx-pick-dur) var(--fx-ease), transform var(--fx-pick-dur) var(--fx-ease); }
+.fx-pick[data-fx-pick-open='off'] .fx-pick__grid { opacity: 0; }
+.fx-pick[data-fx-pick-anim='slide'][data-fx-pick-open='off'] .fx-pick__grid { transform: translateY(calc(var(--fx-space) * -1)); }
+.fx-pick__tile { display: flex; flex-direction: column; align-items: stretch; gap: var(--fx-dens-gap-xs); min-width: 0; padding: var(--fx-pick-tile-pad); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md); background: var(--fx-surface); color: var(--fx-text); font: inherit; text-align: left; cursor: pointer; transition: border-color var(--fx-motion) var(--fx-ease), box-shadow var(--fx-motion) var(--fx-ease), background var(--fx-motion) var(--fx-ease); }
+.fx-pick__tile:hover:not(:disabled) { border-color: var(--fx-accent); }
+.fx-pick__tile:focus-visible { outline: calc(var(--fx-border-w) * 2) solid var(--fx-focus); outline-offset: var(--fx-border-w); }
+.fx-pick__tile:disabled { opacity: var(--fx-opacity-disabled); cursor: not-allowed; }
+.fx-pick__tile[aria-selected='true'] { border-color: var(--fx-accent); background: var(--fx-accent-soft); }
+.fx-pick__tile[data-armed='on'] { border-color: var(--fx-accent); box-shadow: 0 0 0 calc(var(--fx-border-w) * 2) var(--fx-accent); }
+.fx-pick__tile-top { display: flex; align-items: center; gap: var(--fx-dens-gap-sm); min-width: 0; }
+.fx-pick__title { flex: 1; min-width: 0; font-weight: 600; }
+.fx-pick__text { color: var(--fx-muted); font-size: var(--fx-type-scale-sm); }
+.fx-pick__hint { color: var(--fx-accent); font-size: var(--fx-type-root-xs); }
+.fx-pick__swatch { display: block; width: 100%; aspect-ratio: 3 / 1; border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-sm); }
+/* tiles: chips (one line, pills), list (full-width rows), swatches (preview first, centred name) */
+.fx-pick[data-fx-pick='chips'] .fx-pick__tile { flex-direction: row; align-items: center; border-radius: 999px; padding-block: var(--fx-dens-gap-xs); }
+.fx-pick[data-fx-pick='chips'] .fx-pick__text, .fx-pick[data-fx-pick='chips'] .fx-pick__hint, .fx-pick[data-fx-pick='chips'] .fx-pick__swatch { display: none; }
+.fx-pick[data-fx-pick='chips'] .fx-pick__title { font-weight: 500; }
+.fx-pick[data-fx-pick='list'] .fx-pick__grid { grid-template-columns: minmax(0, 1fr); gap: 0; padding-inline: 0; }
+.fx-pick[data-fx-pick='list'] .fx-pick__tile { flex-direction: row; align-items: center; gap: var(--fx-dens-gap-md); padding-inline: var(--fx-size-field-pad-x); border-width: 0 0 var(--fx-border-w); border-radius: 0; background: transparent; }
+.fx-pick[data-fx-pick='list'] .fx-pick__tile:last-child { border-bottom-width: 0; }
+.fx-pick[data-fx-pick='list'] .fx-pick__tile[aria-selected='true'] { background: var(--fx-accent-soft); }
+.fx-pick[data-fx-pick='list'] .fx-pick__tile[data-armed='on'] { box-shadow: inset calc(var(--fx-border-w) * 3) 0 0 var(--fx-accent); }
+.fx-pick[data-fx-pick='list'] .fx-pick__tile-top { flex: 1; }
+.fx-pick[data-fx-pick='list'] .fx-pick__swatch { width: var(--fx-size-field-height); aspect-ratio: 1; }
+.fx-pick[data-fx-pick='swatches'] .fx-pick__tile { text-align: center; }
+.fx-pick[data-fx-pick='swatches'] .fx-pick__tile-top { justify-content: center; }
+.fx-pick[data-fx-pick='swatches'] .fx-pick__title { flex: 0 1 auto; font-weight: 500; }
+.fx-pick[data-fx-pick='swatches'] .fx-pick__text { display: none; }
+@media (prefers-reduced-motion: reduce) { .fx-pick, .fx-pick__sub, .fx-pick__grid, .fx-pick__arrow, .fx-pick__tile { transition-duration: 0s; transition-delay: 0s; } }
 /* Note: info / warning / danger / success callout */
 .fx-note { display: flex; gap: var(--fx-dens-gap-md); align-items: flex-start; padding: var(--fx-dens-gap-lg) var(--fx-dens-gap-lg); border-radius: var(--fx-radius-sm); font-size: var(--fx-type-root-md); background: color-mix(in srgb, var(--fx-accent) calc(var(--fx-opacity-tint) * 100%), transparent); }
 .fx-note > .fx-icon { margin-top: var(--fx-dens-gap-2xs); }

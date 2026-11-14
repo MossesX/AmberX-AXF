@@ -1,6 +1,6 @@
 /**
  * Form controls every AXF web app and plugin share (harvested Oct 21 2026 from an app's `ui.tsx` and
- * the console's hand-rolled switches): Switch, Field, TextField, SelectField, ChoiceGrid, Note, Section and
+ * the console's hand-rolled switches): Switch, Field, TextField, SelectField (an ExpanderPicker, no native select), ChoiceGrid, Note, Section and
  * LibraryParamField. Same names, props and behaviour as the Compose versions in `axf-ui/components/Forms.kt`.
  *
  * Styled only by `framework/ui/axf.css` (`.fx-switch`, `.fx-field`, `.fx-choice`, `.fx-note`, `.fx-section`), which reads
@@ -11,6 +11,8 @@
  */
 import { useEffect, useId, useRef, type ReactNode } from 'react';
 import { Icon } from './Icon';
+import { ExpanderPicker } from './ExpanderPicker';
+import type { ExpanderPickerData } from '../../core/types';
 import { paramBool, paramDefaultText, paramError, type LibraryParam } from '../../core';
 
 /* ---------------- Switch ---------------- */
@@ -183,7 +185,7 @@ export function ColorField({ label, value, onChange, swatch, hint, error, disabl
   );
 }
 
-export interface SelectOption { value: string; label: string; disabled?: boolean }
+export interface SelectOption { value: string; label: string; disabled?: boolean; /** a second line on cards and list rows */ text?: string; icon?: string; /** a colour drawn as the tile's preview */ swatch?: string }
 
 export interface SelectFieldProps {
   label: ReactNode;
@@ -197,20 +199,22 @@ export interface SelectFieldProps {
   required?: boolean;
   disabled?: boolean;
   className?: string;
+  /** the highlighted option before it is applied (null = highlight gone) */
+  onPreview?: (v: string | null) => void;
+  /** its own expander-picker asset data (else the app's active one) */
+  asset?: Partial<ExpanderPickerData> | null;
+  /** console-control address id (`setting:<address>`); default: the label's slug */
+  address?: string;
 }
 
-/** Native select inside a Field. */
-export function SelectField({ label, value, options, onChange, hint, error, empty, required, disabled, className }: SelectFieldProps) {
-  return (
-    <Field label={label} hint={hint} error={error} required={required} className={className}>
-      {(id, describedBy) => (
-        <select id={id} className="fx-input fx-field__input" value={value} disabled={disabled} required={required} aria-invalid={error ? true : undefined} aria-describedby={describedBy} onChange={(e) => onChange(e.target.value)}>
-          {empty !== undefined && <option value="">{empty}</option>}
-          {options.map((o) => <option key={o.value} value={o.value} disabled={o.disabled}>{o.label}</option>)}
-        </select>
-      )}
-    </Field>
-  );
+/**
+ * A pick-one field: an ExpanderPicker (expander-picker@1) inside a Field. No native select element: Brett, Nov 13 2026, "I don't
+ * want drop-down bars anymore" — the row with the name and the little arrow unfolds in place into the options, and pressing
+ * an option again (or the arrow) applies it. Same props as before, so every SelectField in every app changed look at once.
+ * `onPreview` lets a host preview the highlighted option before it is applied (themes, assets).
+ */
+export function SelectField({ label, value, options, onChange, onPreview, hint, error, empty, required, disabled, className, asset, address }: SelectFieldProps) {
+  return <ExpanderPicker label={label} value={value} options={options} onChange={onChange} onPreview={onPreview} hint={hint} error={error} empty={empty} required={required} disabled={disabled} className={className} asset={asset} address={address} />;
 }
 
 /* ---------------- ChoiceGrid ---------------- */

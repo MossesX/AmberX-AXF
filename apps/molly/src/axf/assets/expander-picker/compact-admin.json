@@ -1,0 +1,24 @@
+{
+  "$axf": "asset@1",
+  "type": "expander-picker",
+  "id": "compact-admin",
+  "name": "Compact admin",
+  "version": "1.0.0",
+  "description": "Dense two-column cards with a plus that turns into a minus; no value on the row, for packed admin forms.",
+  "author": "AmberX AXF",
+  "tags": [
+    "compact",
+    "admin"
+  ],
+  "data": {
+    "tiles": "cards",
+    "arrow": "plus",
+    "columns": "2",
+    "density": "compact",
+    "animation": "unfold",
+    "apply": "second-press",
+    "preview": false,
+    "showValue": false,
+    "divider": false
+  }
+}

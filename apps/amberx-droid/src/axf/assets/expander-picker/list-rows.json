@@ -1,0 +1,23 @@
+{
+  "$axf": "asset@1",
+  "type": "expander-picker",
+  "id": "list-rows",
+  "name": "List rows",
+  "version": "1.0.0",
+  "description": "Full-width rows under a caret, one per line, with a rule under the row; reads like a settings page.",
+  "author": "AmberX AXF",
+  "tags": [
+    "list"
+  ],
+  "data": {
+    "tiles": "list",
+    "arrow": "caret",
+    "columns": "1",
+    "density": "regular",
+    "animation": "slide",
+    "apply": "second-press",
+    "preview": true,
+    "showValue": true,
+    "divider": true
+  }
+}

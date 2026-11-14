@@ -1,0 +1,25 @@
+{
+  "$axf": "asset@1",
+  "type": "expander-picker",
+  "id": "swatch-tiles",
+  "name": "Swatch tiles",
+  "version": "1.0.0",
+  "description": "Four preview tiles per row for themes, colours and assets; the highlighted one previews live before it is applied.",
+  "author": "AmberX AXF",
+  "tags": [
+    "swatches",
+    "preview",
+    "themes"
+  ],
+  "data": {
+    "tiles": "swatches",
+    "arrow": "chevron",
+    "columns": "4",
+    "density": "regular",
+    "animation": "unfold",
+    "apply": "second-press",
+    "preview": true,
+    "showValue": true,
+    "divider": false
+  }
+}

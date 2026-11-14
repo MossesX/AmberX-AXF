@@ -15,7 +15,7 @@ import { buildHelpIndex, helpCoverage, helpErrors, helpTarget, introToShow, intr
 import { DEFAULT_LAYOUT, LAYOUT_FIELDS, compileLayout, layoutBreakpointAttr, layoutErrors, layoutTokenVars, layoutTokens, layoutVars, layoutViewportAttrs, layoutViewports, normalizeLayout } from '../core/engines/layout';
 import { CONTROL_TARGET_IDS, canonicalControl, controlConfirmToken, controlConfirmValid, controlErrors, controlGate, controlHash, controlPaths, controlRegistry, controlResult, controlFailure, normalizeControl } from '../core/engines/control-rules.mjs';
 import { compileRepeats, declaredDataSets, missingDataSets, repeatVars, REPEAT_DEFAULT_COLUMNS, REPEAT_DEFAULT_STYLE, REPEAT_MAX_COLUMNS, REPEAT_STYLES } from '../core/engines/repeat';
-import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, navMenuStyle, normalizeTabGroup, popupStyle, sliderStyle, tabGroupStyle, toolbarStyle } from '../core/engines/components';
+import { appMenuStyle, buttonStyle, containerStyle, contextMenuStyle, dialogStyle, expanderPickerStyle, navMenuStyle, normalizeExpanderPicker, normalizeTabGroup, popupStyle, sliderStyle, tabGroupStyle, toolbarStyle } from '../core/engines/components';
 import { filterMenu, gateFor, hasPermission, resolvePermissions } from '../core/engines/uac';
 import { ActionBus } from '../core/engines/actions';
 import { rollPlan, rollSlotDefault } from '../core/engines/roll';
@@ -748,6 +748,16 @@ write('components.json', {
     'unknown-values-fall-back': normalizeTabGroup({ style: 'x' as never, align: 'y' as never, position: 'z' as never, overflow: 'q' as never, display: 'w' as never, density: 'v' as never }),
     'left-rail': tabGroupStyle({ style: 'pills', align: 'start', position: 'left', display: 'icons', sticky: true, badges: false }),
     'every-flag-on': normalizeTabGroup({ style: 'boxed', align: 'stretch', sticky: true, collapsible: true, closable: true, reorderable: true, badges: true, rememberLast: true, overflow: 'more', position: 'bottom' }),
+  },
+  // expander-picker@1 (Nov 13 2026): every starter's compiled output + normalized data, and the edge cases a port must match
+  'expander-picker': Object.fromEntries(load('expander-picker').map((a) => [a.id, { normalized: normalizeExpanderPicker(a.data), ...expanderPickerStyle(a.data) }])),
+  'expander-picker-cases': {
+    missing: { normalized: normalizeExpanderPicker(null), ...expanderPickerStyle(null) },
+    'required-only': { normalized: normalizeExpanderPicker({ tiles: 'list', arrow: 'caret' }), ...expanderPickerStyle({ tiles: 'list', arrow: 'caret' }) },
+    'unknown-values-fall-back': normalizeExpanderPicker({ tiles: 'x' as never, arrow: 'y' as never, columns: '9' as never, density: 'huge' as never, animation: 'spin' as never, apply: 'never' as never, preview: 'yes' as never }),
+    'numeric-columns': normalizeExpanderPicker({ tiles: 'cards', arrow: 'chevron', columns: 3 as never }),
+    'no-animation': expanderPickerStyle({ tiles: 'chips', arrow: 'none', animation: 'none', density: 'compact', showValue: false }),
+    'first-press-divider': expanderPickerStyle({ tiles: 'swatches', arrow: 'plus', columns: '4', apply: 'first-press', preview: false, divider: true, density: 'roomy', animation: 'slide' }),
   },
   // style fields set explicitly (the starter assets mostly use defaults)
   'chrome-cases': {

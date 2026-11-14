@@ -13,6 +13,7 @@
   "popup": "corner-solid",
   "button": "rounded-solid",
   "slider": "classic-round",
+  "expander-picker": "unfold-cards",
   "container": "soft-card",
   "gauge": "classic-arc",
   "meter": "striped-pill",

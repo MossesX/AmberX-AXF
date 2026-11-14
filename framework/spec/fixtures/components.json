@@ -3720,6 +3720,358 @@
       "rememberLast": true
     }
   },
+  "expander-picker": {
+    "chips-quick": {
+      "normalized": {
+        "tiles": "chips",
+        "arrow": "chevron",
+        "columns": "auto",
+        "density": "compact",
+        "animation": "fade",
+        "apply": "first-press",
+        "preview": false,
+        "showValue": true,
+        "divider": false
+      },
+      "vars": {
+        "--fx-pick-row-py": "calc(var(--fx-space) * 0.5)",
+        "--fx-pick-tile-pad": "calc(var(--fx-space) * 0.75)",
+        "--fx-pick-dur": "calc(var(--fx-motion) * 1.2)",
+        "--fx-pick-cols": "repeat(auto-fill, minmax(min(100%, calc(var(--fx-font-size) * 11)), 1fr))"
+      },
+      "attrs": {
+        "data-fx-pick": "chips",
+        "data-fx-pick-arrow": "chevron",
+        "data-fx-pick-anim": "fade",
+        "data-fx-pick-apply": "first-press",
+        "data-fx-pick-density": "compact",
+        "data-fx-pick-preview": "off",
+        "data-fx-pick-value": "on",
+        "data-fx-pick-divider": "off"
+      }
+    },
+    "compact-admin": {
+      "normalized": {
+        "tiles": "cards",
+        "arrow": "plus",
+        "columns": "2",
+        "density": "compact",
+        "animation": "unfold",
+        "apply": "second-press",
+        "preview": false,
+        "showValue": false,
+        "divider": false
+      },
+      "vars": {
+        "--fx-pick-row-py": "calc(var(--fx-space) * 0.5)",
+        "--fx-pick-tile-pad": "calc(var(--fx-space) * 0.75)",
+        "--fx-pick-dur": "calc(var(--fx-motion) * 1.6)",
+        "--fx-pick-cols": "repeat(2, minmax(0, 1fr))"
+      },
+      "attrs": {
+        "data-fx-pick": "cards",
+        "data-fx-pick-arrow": "plus",
+        "data-fx-pick-anim": "unfold",
+        "data-fx-pick-apply": "second-press",
+        "data-fx-pick-density": "compact",
+        "data-fx-pick-preview": "off",
+        "data-fx-pick-value": "off",
+        "data-fx-pick-divider": "off"
+      }
+    },
+    "fade-cards": {
+      "normalized": {
+        "tiles": "cards",
+        "arrow": "chevron",
+        "columns": "3",
+        "density": "regular",
+        "animation": "fade",
+        "apply": "second-press",
+        "preview": true,
+        "showValue": true,
+        "divider": false
+      },
+      "vars": {
+        "--fx-pick-row-py": "calc(var(--fx-space) * 0.75)",
+        "--fx-pick-tile-pad": "calc(var(--fx-space) * 1)",
+        "--fx-pick-dur": "calc(var(--fx-motion) * 1.2)",
+        "--fx-pick-cols": "repeat(3, minmax(0, 1fr))"
+      },
+      "attrs": {
+        "data-fx-pick": "cards",
+        "data-fx-pick-arrow": "chevron",
+        "data-fx-pick-anim": "fade",
+        "data-fx-pick-apply": "second-press",
+        "data-fx-pick-density": "regular",
+        "data-fx-pick-preview": "on",
+        "data-fx-pick-value": "on",
+        "data-fx-pick-divider": "off"
+      }
+    },
+    "list-rows": {
+      "normalized": {
+        "tiles": "list",
+        "arrow": "caret",
+        "columns": "1",
+        "density": "regular",
+        "animation": "slide",
+        "apply": "second-press",
+        "preview": true,
+        "showValue": true,
+        "divider": true
+      },
+      "vars": {
+        "--fx-pick-row-py": "calc(var(--fx-space) * 0.75)",
+        "--fx-pick-tile-pad": "calc(var(--fx-space) * 1)",
+        "--fx-pick-dur": "calc(var(--fx-motion) * 1.4)",
+        "--fx-pick-cols": "repeat(1, minmax(0, 1fr))"
+      },
+      "attrs": {
+        "data-fx-pick": "list",
+        "data-fx-pick-arrow": "caret",
+        "data-fx-pick-anim": "slide",
+        "data-fx-pick-apply": "second-press",
+        "data-fx-pick-density": "regular",
+        "data-fx-pick-preview": "on",
+        "data-fx-pick-value": "on",
+        "data-fx-pick-divider": "on"
+      }
+    },
+    "plain-static": {
+      "normalized": {
+        "tiles": "chips",
+        "arrow": "none",
+        "columns": "auto",
+        "density": "compact",
+        "animation": "none",
+        "apply": "second-press",
+        "preview": false,
+        "showValue": true,
+        "divider": true
+      },
+      "vars": {
+        "--fx-pick-row-py": "calc(var(--fx-space) * 0.5)",
+        "--fx-pick-tile-pad": "calc(var(--fx-space) * 0.75)",
+        "--fx-pick-dur": "0ms",
+        "--fx-pick-cols": "repeat(auto-fill, minmax(min(100%, calc(var(--fx-font-size) * 11)), 1fr))"
+      },
+      "attrs": {
+        "data-fx-pick": "chips",
+        "data-fx-pick-arrow": "none",
+        "data-fx-pick-anim": "none",
+        "data-fx-pick-apply": "second-press",
+        "data-fx-pick-density": "compact",
+        "data-fx-pick-preview": "off",
+        "data-fx-pick-value": "on",
+        "data-fx-pick-divider": "on"
+      }
+    },
+    "swatch-tiles": {
+      "normalized": {
+        "tiles": "swatches",
+        "arrow": "chevron",
+        "columns": "4",
+        "density": "regular",
+        "animation": "unfold",
+        "apply": "second-press",
+        "preview": true,
+        "showValue": true,
+        "divider": false
+      },
+      "vars": {
+        "--fx-pick-row-py": "calc(var(--fx-space) * 0.75)",
+        "--fx-pick-tile-pad": "calc(var(--fx-space) * 1)",
+        "--fx-pick-dur": "calc(var(--fx-motion) * 1.6)",
+        "--fx-pick-cols": "repeat(4, minmax(0, 1fr))"
+      },
+      "attrs": {
+        "data-fx-pick": "swatches",
+        "data-fx-pick-arrow": "chevron",
+        "data-fx-pick-anim": "unfold",
+        "data-fx-pick-apply": "second-press",
+        "data-fx-pick-density": "regular",
+        "data-fx-pick-preview": "on",
+        "data-fx-pick-value": "on",
+        "data-fx-pick-divider": "off"
+      }
+    },
+    "touch-large": {
+      "normalized": {
+        "tiles": "list",
+        "arrow": "chevron",
+        "columns": "1",
+        "density": "roomy",
+        "animation": "slide",
+        "apply": "second-press",
+        "preview": true,
+        "showValue": true,
+        "divider": true
+      },
+      "vars": {
+        "--fx-pick-row-py": "calc(var(--fx-space) * 1.1)",
+        "--fx-pick-tile-pad": "calc(var(--fx-space) * 1.4)",
+        "--fx-pick-dur": "calc(var(--fx-motion) * 1.4)",
+        "--fx-pick-cols": "repeat(1, minmax(0, 1fr))"
+      },
+      "attrs": {
+        "data-fx-pick": "list",
+        "data-fx-pick-arrow": "chevron",
+        "data-fx-pick-anim": "slide",
+        "data-fx-pick-apply": "second-press",
+        "data-fx-pick-density": "roomy",
+        "data-fx-pick-preview": "on",
+        "data-fx-pick-value": "on",
+        "data-fx-pick-divider": "on"
+      }
+    },
+    "unfold-cards": {
+      "normalized": {
+        "tiles": "cards",
+        "arrow": "chevron",
+        "columns": "auto",
+        "density": "regular",
+        "animation": "unfold",
+        "apply": "second-press",
+        "preview": true,
+        "showValue": true,
+        "divider": false
+      },
+      "vars": {
+        "--fx-pick-row-py": "calc(var(--fx-space) * 0.75)",
+        "--fx-pick-tile-pad": "calc(var(--fx-space) * 1)",
+        "--fx-pick-dur": "calc(var(--fx-motion) * 1.6)",
+        "--fx-pick-cols": "repeat(auto-fill, minmax(min(100%, calc(var(--fx-font-size) * 11)), 1fr))"
+      },
+      "attrs": {
+        "data-fx-pick": "cards",
+        "data-fx-pick-arrow": "chevron",
+        "data-fx-pick-anim": "unfold",
+        "data-fx-pick-apply": "second-press",
+        "data-fx-pick-density": "regular",
+        "data-fx-pick-preview": "on",
+        "data-fx-pick-value": "on",
+        "data-fx-pick-divider": "off"
+      }
+    }
+  },
+  "expander-picker-cases": {
+    "missing": {
+      "normalized": {
+        "tiles": "cards",
+        "arrow": "chevron",
+        "columns": "auto",
+        "density": "regular",
+        "animation": "unfold",
+        "apply": "second-press",
+        "preview": true,
+        "showValue": true,
+        "divider": false
+      },
+      "vars": {
+        "--fx-pick-row-py": "calc(var(--fx-space) * 0.75)",
+        "--fx-pick-tile-pad": "calc(var(--fx-space) * 1)",
+        "--fx-pick-dur": "calc(var(--fx-motion) * 1.6)",
+        "--fx-pick-cols": "repeat(auto-fill, minmax(min(100%, calc(var(--fx-font-size) * 11)), 1fr))"
+      },
+      "attrs": {
+        "data-fx-pick": "cards",
+        "data-fx-pick-arrow": "chevron",
+        "data-fx-pick-anim": "unfold",
+        "data-fx-pick-apply": "second-press",
+        "data-fx-pick-density": "regular",
+        "data-fx-pick-preview": "on",
+        "data-fx-pick-value": "on",
+        "data-fx-pick-divider": "off"
+      }
+    },
+    "required-only": {
+      "normalized": {
+        "tiles": "list",
+        "arrow": "caret",
+        "columns": "auto",
+        "density": "regular",
+        "animation": "unfold",
+        "apply": "second-press",
+        "preview": true,
+        "showValue": true,
+        "divider": false
+      },
+      "vars": {
+        "--fx-pick-row-py": "calc(var(--fx-space) * 0.75)",
+        "--fx-pick-tile-pad": "calc(var(--fx-space) * 1)",
+        "--fx-pick-dur": "calc(var(--fx-motion) * 1.6)",
+        "--fx-pick-cols": "repeat(auto-fill, minmax(min(100%, calc(var(--fx-font-size) * 11)), 1fr))"
+      },
+      "attrs": {
+        "data-fx-pick": "list",
+        "data-fx-pick-arrow": "caret",
+        "data-fx-pick-anim": "unfold",
+        "data-fx-pick-apply": "second-press",
+        "data-fx-pick-density": "regular",
+        "data-fx-pick-preview": "on",
+        "data-fx-pick-value": "on",
+        "data-fx-pick-divider": "off"
+      }
+    },
+    "unknown-values-fall-back": {
+      "tiles": "cards",
+      "arrow": "chevron",
+      "columns": "auto",
+      "density": "regular",
+      "animation": "unfold",
+      "apply": "second-press",
+      "preview": true,
+      "showValue": true,
+      "divider": false
+    },
+    "numeric-columns": {
+      "tiles": "cards",
+      "arrow": "chevron",
+      "columns": "3",
+      "density": "regular",
+      "animation": "unfold",
+      "apply": "second-press",
+      "preview": true,
+      "showValue": true,
+      "divider": false
+    },
+    "no-animation": {
+      "vars": {
+        "--fx-pick-row-py": "calc(var(--fx-space) * 0.5)",
+        "--fx-pick-tile-pad": "calc(var(--fx-space) * 0.75)",
+        "--fx-pick-dur": "0ms",
+        "--fx-pick-cols": "repeat(auto-fill, minmax(min(100%, calc(var(--fx-font-size) * 11)), 1fr))"
+      },
+      "attrs": {
+        "data-fx-pick": "chips",
+        "data-fx-pick-arrow": "none",
+        "data-fx-pick-anim": "none",
+        "data-fx-pick-apply": "second-press",
+        "data-fx-pick-density": "compact",
+        "data-fx-pick-preview": "on",
+        "data-fx-pick-value": "off",
+        "data-fx-pick-divider": "off"
+      }
+    },
+    "first-press-divider": {
+      "vars": {
+        "--fx-pick-row-py": "calc(var(--fx-space) * 1.1)",
+        "--fx-pick-tile-pad": "calc(var(--fx-space) * 1.4)",
+        "--fx-pick-dur": "calc(var(--fx-motion) * 1.4)",
+        "--fx-pick-cols": "repeat(4, minmax(0, 1fr))"
+      },
+      "attrs": {
+        "data-fx-pick": "swatches",
+        "data-fx-pick-arrow": "plus",
+        "data-fx-pick-anim": "slide",
+        "data-fx-pick-apply": "first-press",
+        "data-fx-pick-density": "roomy",
+        "data-fx-pick-preview": "off",
+        "data-fx-pick-value": "on",
+        "data-fx-pick-divider": "on"
+      }
+    }
+  },
   "chrome-cases": {
     "toolbar-compact-glass": {
       "vars": {

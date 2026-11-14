@@ -585,6 +585,10 @@
     "slider": {
       "root": ".fx-slider"
     },
+    "expander-picker": {
+      "root": ".fx-pick",
+      "item": ".fx-pick__tile"
+    },
     "container": {
       "root": ".fx-card"
     },

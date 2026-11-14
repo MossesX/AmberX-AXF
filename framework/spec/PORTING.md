@@ -224,3 +224,14 @@ The guide asks agent `gizmo` (Molly is no longer an agent, Nov 3 decision; the `
 `gizmo.ask` / `gizmo.replay` / `gizmo.next` / `gizmo.prev` / `gizmo.close` with the `molly.*` names kept as hidden aliases.
 AmberX on Android runs the web app, so its texts follow already. A native Compose player of walkthrough@1, when the Android side
 resumes, replays the same rule: no auto-open on start, opt-in only, nothing older than the app's start, and the Gizmo names.
+
+## Deferred: expander-picker@1 Compose twin (Nov 13 2026)
+Web only (Android on hold, build `new-asset-type-animated-expanding-row`; Brett: "I don't want drop-down bars anymore. They are gonna be
+animated. It's gonna be a row with a name and a little arrow; when you press that arrow it expands a subgrid; you got to press it again to
+apply it and close it"). Reference engine `normalizeExpanderPicker` / `expanderPickerStyle` (`core/engines/components.ts`), fixture
+`spec/fixtures/components.json` → `expander-picker` + `expander-picker-cases` (checker `spec/check-expander-picker.mts`), starters
+`assets/expander-picker/`, web control `react/components/ExpanderPicker.tsx` (the framework `SelectField` draws one; no native `<select>`).
+Kotlin twins when the Android side resumes: `ExpanderPickerData` in the asset registry, `ComponentStyleEngine.expanderPicker` replaying the
+same fixture, and a Compose `ExpanderPicker` (an `AnimatedVisibility` grid under a row with the name, value and arrow; one tap highlights,
+a second tap on the same option or on the arrow applies and closes; `LocalReducedMotion` turns the animation off) replacing every
+`ExposedDropdownMenu` in `axf-ui/components/Forms.kt`.

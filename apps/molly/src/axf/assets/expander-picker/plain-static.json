@@ -1,0 +1,25 @@
+{
+  "$axf": "asset@1",
+  "type": "expander-picker",
+  "id": "plain-static",
+  "name": "Plain static",
+  "version": "1.0.0",
+  "description": "No arrow, no animation: the row and its grid simply appear; for reduced-motion skins and terminals.",
+  "author": "AmberX AXF",
+  "tags": [
+    "plain",
+    "terminal",
+    "static"
+  ],
+  "data": {
+    "tiles": "chips",
+    "arrow": "none",
+    "columns": "auto",
+    "density": "compact",
+    "animation": "none",
+    "apply": "second-press",
+    "preview": false,
+    "showValue": true,
+    "divider": true
+  }
+}

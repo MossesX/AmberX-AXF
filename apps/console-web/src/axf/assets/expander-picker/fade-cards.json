@@ -1,0 +1,24 @@
+{
+  "$axf": "asset@1",
+  "type": "expander-picker",
+  "id": "fade-cards",
+  "name": "Fade cards",
+  "version": "1.0.0",
+  "description": "Cards that fade in instead of unfolding, three across; a calmer open for reading apps.",
+  "author": "AmberX AXF",
+  "tags": [
+    "cards",
+    "calm"
+  ],
+  "data": {
+    "tiles": "cards",
+    "arrow": "chevron",
+    "columns": "3",
+    "density": "regular",
+    "animation": "fade",
+    "apply": "second-press",
+    "preview": true,
+    "showValue": true,
+    "divider": false
+  }
+}
