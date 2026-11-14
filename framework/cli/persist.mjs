@@ -198,10 +198,41 @@ export function dataPath(rel) {
   return p;
 }
 
-/** The orchestrator tracker of the active profile (a repo file). */
+/**
+ * Profile ids the repo's committed registry (framework/plan/profiles.json) lists; the base profile always counts.
+ * This is the file CI guards (framework/spec/check-profiles.mjs), not the hub's shared-data copy readProfiles reads.
+ */
+export function repoProfileIds() {
+  const ids = new Set([BASE_PROFILE]);
+  try {
+    const reg = JSON.parse(readFileSync(join(REPO_ROOT, PROFILES_REL), 'utf8'));
+    for (const p of Array.isArray(reg?.profiles) ? reg.profiles : []) if (p && PROFILE_ID.test(p.id)) ids.add(resolveProfile(p.id));
+  } catch { /* missing or damaged: only the base */ }
+  return ids;
+}
+
+/**
+ * Whether profile `id` has an orchestrator export inside the repo (_claude/builds/orchestrator.json for the base,
+ * _claude/builds/profiles/<id>/orchestrator.json otherwise). Only a profile the repo registry lists does (Nov 13 2026,
+ * main-ci-red-test-sandbox-profile-export): a profile registered only on the hub (a project's profile such as
+ * test-sandbox, made by project-seed) keeps its export in its shared-data folder, so builds-live never publishes a
+ * folder check-profiles.mjs rejects on main.
+ */
+export function hasRepoExport(id) {
+  id = resolveProfile(id);
+  return id === BASE_PROFILE || repoProfileIds().has(id);
+}
+
+/**
+ * The orchestrator tracker of a profile: a repo file for the base and every repo-registered profile; for a hub-only
+ * profile the same path inside its shared-data folder (framework/plan/profiles/<id>/_claude/builds/orchestrator.json
+ * under the data root), never committed.
+ */
 export function orchestratorPath(id = activeProfile().id) {
   id = resolveProfile(id);
-  return join(REPO_ROOT, id === BASE_PROFILE ? ORCHESTRATOR_REL : `_claude/builds/profiles/${id}/orchestrator.json`);
+  if (id === BASE_PROFILE) return join(REPO_ROOT, ORCHESTRATOR_REL);
+  if (hasRepoExport(id)) return join(REPO_ROOT, `_claude/builds/profiles/${id}/orchestrator.json`);
+  return join(persistRoot() ?? REPO_ROOT, profileRel(id, ORCHESTRATOR_REL));
 }
 
 function copy(from, to, force) {
