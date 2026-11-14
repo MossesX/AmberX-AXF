@@ -5,10 +5,10 @@
     "views": 61,
     "nav": 16,
     "tabGroups": 22,
-    "tabs": 76,
+    "tabs": 64,
     "settingsTabs": 67,
     "settings": 85,
-    "functions": 230,
+    "functions": 234,
     "buttons": 62,
     "plugins": 67
   },
@@ -363,13 +363,14 @@
         "hold",
         "on hold",
         "restore",
+        "groups",
+        "custom groups",
+        "custom tabs",
         "accounts",
         "health",
         "fable",
         "opus",
-        "steps",
-        "phases",
-        "approve model"
+        "steps"
       ],
       "source": "plugin",
       "plugin": "ai.amberx.axf.console.build-orchestrator"
@@ -1298,69 +1299,8 @@
       "view": "build-orchestrator",
       "plugin": "ai.amberx.axf.console.build-orchestrator",
       "file": "plugins/build-orchestrator/web/ui.tsx",
-      "line": 97,
-      "tabs": [
-        {
-          "address": "view:build-orchestrator/tab:build-orchestrator.tabs=pending",
-          "value": "pending",
-          "label": "Pending"
-        },
-        {
-          "address": "view:build-orchestrator/tab:build-orchestrator.tabs=queue",
-          "value": "queue",
-          "label": "Queue"
-        },
-        {
-          "address": "view:build-orchestrator/tab:build-orchestrator.tabs=active",
-          "value": "active",
-          "label": "Active"
-        },
-        {
-          "address": "view:build-orchestrator/tab:build-orchestrator.tabs=incomplete",
-          "value": "incomplete",
-          "label": "Incomplete"
-        },
-        {
-          "address": "view:build-orchestrator/tab:build-orchestrator.tabs=complete",
-          "value": "complete",
-          "label": "Complete"
-        },
-        {
-          "address": "view:build-orchestrator/tab:build-orchestrator.tabs=errors",
-          "value": "errors",
-          "label": "Errors"
-        },
-        {
-          "address": "view:build-orchestrator/tab:build-orchestrator.tabs=archive",
-          "value": "archive",
-          "label": "Archive"
-        },
-        {
-          "address": "view:build-orchestrator/tab:build-orchestrator.tabs=deleted",
-          "value": "deleted",
-          "label": "Deleted"
-        },
-        {
-          "address": "view:build-orchestrator/tab:build-orchestrator.tabs=accounts",
-          "value": "accounts",
-          "label": "Accounts"
-        },
-        {
-          "address": "view:build-orchestrator/tab:build-orchestrator.tabs=builds",
-          "value": "builds",
-          "label": "All builds"
-        },
-        {
-          "address": "view:build-orchestrator/tab:build-orchestrator.tabs=approvals",
-          "value": "approvals",
-          "label": "Approvals"
-        },
-        {
-          "address": "view:build-orchestrator/tab:build-orchestrator.tabs=rules",
-          "value": "rules",
-          "label": "Rules"
-        }
-      ]
+      "line": 115,
+      "tabs": []
     },
     {
       "address": "tab:terminal.panes",
@@ -4207,6 +4147,71 @@
         "tab"
       ],
       "effect": "navigate",
+      "plugin": "ai.amberx.axf.console.build-orchestrator",
+      "file": "plugins/build-orchestrator/web/index.tsx"
+    },
+    {
+      "address": "function:build-orchestrator.groups",
+      "kind": "function",
+      "id": "build-orchestrator.groups",
+      "label": "Build orchestrator: the Groups board, or one group's tab",
+      "detail": "Action · Build orchestrator",
+      "keywords": [
+        "build-orchestrator.groups",
+        "build",
+        "orchestrator",
+        "groups"
+      ],
+      "effect": "navigate",
+      "plugin": "ai.amberx.axf.console.build-orchestrator",
+      "file": "plugins/build-orchestrator/web/index.tsx"
+    },
+    {
+      "address": "function:build-orchestrator.group-add",
+      "kind": "function",
+      "id": "build-orchestrator.group-add",
+      "label": "Build orchestrator: put builds in a group (<group>|<build>,<build>)",
+      "detail": "Action · Build orchestrator",
+      "keywords": [
+        "build-orchestrator.group-add",
+        "build",
+        "orchestrator",
+        "group",
+        "add"
+      ],
+      "plugin": "ai.amberx.axf.console.build-orchestrator",
+      "file": "plugins/build-orchestrator/web/index.tsx"
+    },
+    {
+      "address": "function:build-orchestrator.group-remove",
+      "kind": "function",
+      "id": "build-orchestrator.group-remove",
+      "label": "Build orchestrator: take builds out of a group (<group>|<build>,<build>)",
+      "detail": "Action · Build orchestrator",
+      "keywords": [
+        "build-orchestrator.group-remove",
+        "build",
+        "orchestrator",
+        "group",
+        "remove"
+      ],
+      "destructive": true,
+      "plugin": "ai.amberx.axf.console.build-orchestrator",
+      "file": "plugins/build-orchestrator/web/index.tsx"
+    },
+    {
+      "address": "function:build-orchestrator.group-action",
+      "kind": "function",
+      "id": "build-orchestrator.group-action",
+      "label": "Build orchestrator: a group action (<group>|queue, land, archive or priority:P0)",
+      "detail": "Action · Build orchestrator",
+      "keywords": [
+        "build-orchestrator.group-action",
+        "build",
+        "orchestrator",
+        "group",
+        "action"
+      ],
       "plugin": "ai.amberx.axf.console.build-orchestrator",
       "file": "plugins/build-orchestrator/web/index.tsx"
     },
