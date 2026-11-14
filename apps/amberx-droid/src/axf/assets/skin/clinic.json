@@ -24,6 +24,7 @@
       "nav-menu": "essentials-list",
       "button": "touch-friendly",
       "dialog": "bottom-sheet",
+      "picker": "bottom-sheet",
       "context-menu": "touch-large",
       "toolbar": "touch-dock",
       "container": "soft-card",

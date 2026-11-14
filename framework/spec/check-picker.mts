@@ -12,6 +12,10 @@ import { join } from 'node:path';
 import { readdirSync } from 'node:fs';
 import { PICKER_ASSET_DEFAULT, PICKER_TOKENS, PICKER_TOKEN_STATES, normalizePickerAsset, pickerAssetErrors, pickerAttrs, pickerStyle, pickerVars, styleThemeVars, colorThemeVars } from '../core/engines/theme';
 import { ASSET_TYPES, OPTIONAL_TYPES } from '../core/types';
+import { PICKER_DEFAULT_STARTER, PICKER_PART_SOURCES, PICKER_PART_TOKENS, PICKER_STARTER_FOR, SKIN_UPGRADE_CONTRACT, pickPickerStarter, pickerPartsFor, skinUpgradeGaps, upgradeSkin } from '../core/engines/skin-upgrade.mjs';
+import { customizableTypes, customTokensFor } from '../core/engines/customize';
+import { partElements, skinPartsTypes, skinErrors, normalizeSkin } from '../core/engines/skin';
+import spec from '../schemas/customize.json';
 import { validateAsset } from '../core/validate';
 import { PICKER_CONTRACT, PICKER_LIMITS, PICKER_PAGE, PICKER_SEARCH_THRESHOLD, PICKER_TRIGGER_LABELS, PICKER_TYPEAHEAD_MS, choosePicker, cleanValue, closePicker, filterOptions, foldText, fromNativeOptions, groupOptions, matchByName, matchByPosition, matchSpoken, moveActive, normalizePicker, openPicker, pickerIdOf, pickerKey, searchShown, selectedLabels, setQuery, setValue, triggerText, typeAhead, uniquePickerId, type PickerKey, type PickerModel, type PickerState } from '../core/engines/picker';
 
@@ -93,6 +97,42 @@ eq(T.errors, { good: pickerAssetErrors(PICKER_ASSET_DEFAULT), bad: pickerAssetEr
   eq(pickerAttrs({ search: 'never' })['data-fx-picker-search'], 'never', 'never stays never');
   ok(validateAsset({ $axf: 'asset@1', type: 'picker', id: 'x', name: 'X', version: '1', data: { ...PICKER_ASSET_DEFAULT, variant: 'popover' } }).errors.length > 0, 'a bad enum is refused');
   ok(validateAsset({ $axf: 'asset@1', type: 'picker', id: 'x', name: 'X', version: '1', data: { ...PICKER_ASSET_DEFAULT, searchThreshold: 500 } }).errors.length > 0, 'a threshold past the cap is refused');
+}
+
+// ---- skin-upgrade@1 + the picker style target: fixture replay ----
+const U = f.skinUpgrade;
+eq(U.contract, SKIN_UPGRADE_CONTRACT, 'upgrade contract'); eq(U.defaultStarter, PICKER_DEFAULT_STARTER, 'default starter'); eq(U.starterFor, PICKER_STARTER_FOR, 'starter by trait'); eq(U.partTokens, PICKER_PART_TOKENS, 'part tokens'); eq(U.partSources, PICKER_PART_SOURCES, 'part sources');
+eq(U.starters, starterFiles.map((n) => n.slice(0, -5)).sort(), 'the starters the upgrader picks from ship');
+for (const [name, c] of Object.entries(U.cases as Record<string, { skin: unknown; ctx: unknown; pick: string; parts: unknown; gapsBefore: string[]; out: unknown; gapsAfter: string[] }>)) {
+  eq(pickPickerStarter(c.skin, c.ctx as never), c.pick, `upgrade ${name} pick`); eq(pickerPartsFor(c.skin), c.parts, `upgrade ${name} parts`);
+  eq(skinUpgradeGaps(c.skin), c.gapsBefore, `upgrade ${name} gaps before`); eq(upgradeSkin(c.skin, c.ctx as never), c.out, `upgrade ${name}`); eq(c.gapsAfter, [], `upgrade ${name} leaves no gap`);
+}
+for (const [id, s] of Object.entries(U.shipped as Record<string, { picker: string; parts: unknown; gaps: string[]; unchanged: string[] }>)) {
+  const a = JSON.parse(readFileSync(join(root, 'assets/skin', `${id}.json`), 'utf8'));
+  eq(a.data.assets?.picker ?? '', s.picker, `shipped skin ${id} names its picker`); eq(a.data.parts?.picker ?? null, s.parts, `shipped skin ${id} parts current`);
+  eq(s.gaps, [], `shipped skin ${id} has no gap`); eq(s.unchanged, [], `shipped skin ${id} is already upgraded (idempotent)`);
+  ok(starterFiles.includes(`${s.picker}.json`), `shipped skin ${id} names a picker that ships`); eq(skinErrors(a.data), [], `shipped skin ${id} validates with its picker parts`);
+}
+
+// ---- skin-upgrade@1 + style target: invariants ----
+{
+  // the picker style target: skin-coverage@1 reaches the picker's box / text / icon / items; itemPadding applies to it
+  const target = (spec as { targets: Record<string, unknown> }).targets.picker;
+  eq(partElements(target), ['box', 'text', 'icon', 'items'], 'picker style target reaches box, text, icon and items');
+  ok(customizableTypes().includes('picker') && skinPartsTypes().includes('picker'), 'picker is customizable and a skin may style its parts');
+  ok(customTokensFor('picker').some((t) => t.key === 'itemPadding') && customTokensFor('picker').some((t) => t.key === 'hover'), 'row padding and hover tokens reach the picker');
+  // the upgrader never changes what a skin already says, is idempotent, and every pick ships
+  for (const c of Object.values(U.cases as Record<string, { skin: unknown; ctx: unknown; out: { data: Record<string, unknown>; changed: string[] } }>)) {
+    const before = (c.skin ?? {}) as Record<string, unknown>;
+    for (const [k, v] of Object.entries(before)) if (k !== 'assets' && k !== 'parts') eq(c.out.data[k], v, 'other fields untouched');
+    for (const [k, v] of Object.entries((before.assets ?? {}) as Record<string, unknown>)) if (k !== 'picker' || /^[a-z0-9][a-z0-9-]{1,47}$/.test(String(v))) eq((c.out.data.assets as Record<string, unknown>)[k], v, `slot ${k} untouched`);
+    eq(upgradeSkin(c.out.data, c.ctx as never), { data: c.out.data, changed: [] }, 'idempotent');
+    ok(U.starters.includes((c.out.data.assets as Record<string, string>).picker) || !(c.ctx as { starters?: string[] }).starters?.length, 'the pick ships');
+    const parts = (c.out.data.parts as Record<string, Record<string, unknown>> | undefined)?.picker;
+    if (parts) ok(Object.keys(parts).every((k) => PICKER_PART_TOKENS.includes(k)), 'only row-safe tokens are carried over');
+    if (parts) eq(skinErrors({ layoutTheme: 'l', colorTheme: 'c', styleTheme: 's', assets: {}, parts: { picker: parts } }), [], 'carried parts validate');
+  }
+  ok(normalizeSkin({ layoutTheme: 'l', colorTheme: 'c', styleTheme: 's', assets: { picker: 'standard' } }).assets.picker === 'standard', 'picker is a skin slot');
 }
 
 // ---- invariants ----

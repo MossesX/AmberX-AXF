@@ -4423,5 +4423,744 @@
         "data must be an object"
       ]
     }
+  },
+  "skinUpgrade": {
+    "contract": "skin-upgrade@1",
+    "starters": [
+      "bottom-sheet",
+      "compact-list",
+      "plain-menu",
+      "search-first",
+      "standard",
+      "windows"
+    ],
+    "defaultStarter": "standard",
+    "starterFor": {
+      "sheet": "bottom-sheet",
+      "compact": "compact-list",
+      "roomy": "bottom-sheet"
+    },
+    "partTokens": [
+      "fontSize",
+      "fontWeight",
+      "fontFamily",
+      "letterSpacing",
+      "textTransform",
+      "textColor",
+      "background",
+      "borderColor",
+      "radius",
+      "borderWidth",
+      "shadow",
+      "glass",
+      "itemPadding",
+      "gap",
+      "iconSet",
+      "iconSize",
+      "iconColor",
+      "showIcons",
+      "animation",
+      "animationSpeed",
+      "easing",
+      "hover",
+      "hoverColor",
+      "cursor",
+      "click",
+      "clickColor",
+      "focusRing"
+    ],
+    "partSources": [
+      "context-menu",
+      "app-menu",
+      "nav-menu",
+      "button"
+    ],
+    "cases": {
+      "plain": {
+        "skin": {
+          "layoutTheme": "l",
+          "colorTheme": "c",
+          "styleTheme": "s",
+          "assets": {
+            "button": "b",
+            "dialog": "glass-air",
+            "context-menu": "cm",
+            "density": "compact"
+          }
+        },
+        "ctx": {
+          "id": "plain",
+          "starters": [
+            "bottom-sheet",
+            "compact-list",
+            "plain-menu",
+            "search-first",
+            "standard",
+            "windows"
+          ],
+          "dialogVariant": "modal"
+        },
+        "pick": "compact-list",
+        "parts": null,
+        "gapsBefore": [
+          "assets.picker"
+        ],
+        "out": {
+          "data": {
+            "layoutTheme": "l",
+            "colorTheme": "c",
+            "styleTheme": "s",
+            "assets": {
+              "button": "b",
+              "dialog": "glass-air",
+              "picker": "compact-list",
+              "context-menu": "cm",
+              "density": "compact"
+            }
+          },
+          "changed": [
+            "assets.picker"
+          ]
+        },
+        "gapsAfter": []
+      },
+      "ownId": {
+        "skin": {
+          "layoutTheme": "l",
+          "colorTheme": "c",
+          "styleTheme": "s",
+          "assets": {
+            "button": "b",
+            "dialog": "glass-air",
+            "context-menu": "cm",
+            "density": "compact"
+          }
+        },
+        "ctx": {
+          "id": "windows",
+          "starters": [
+            "bottom-sheet",
+            "compact-list",
+            "plain-menu",
+            "search-first",
+            "standard",
+            "windows"
+          ],
+          "dialogVariant": "modal"
+        },
+        "pick": "windows",
+        "parts": null,
+        "gapsBefore": [
+          "assets.picker"
+        ],
+        "out": {
+          "data": {
+            "layoutTheme": "l",
+            "colorTheme": "c",
+            "styleTheme": "s",
+            "assets": {
+              "button": "b",
+              "dialog": "glass-air",
+              "picker": "windows",
+              "context-menu": "cm",
+              "density": "compact"
+            }
+          },
+          "changed": [
+            "assets.picker"
+          ]
+        },
+        "gapsAfter": []
+      },
+      "dialogId": {
+        "skin": {
+          "layoutTheme": "l",
+          "colorTheme": "c",
+          "styleTheme": "s",
+          "assets": {
+            "button": "b",
+            "dialog": "bottom-sheet",
+            "context-menu": "cm",
+            "density": "compact"
+          }
+        },
+        "ctx": {
+          "id": "x",
+          "starters": [
+            "bottom-sheet",
+            "compact-list",
+            "plain-menu",
+            "search-first",
+            "standard",
+            "windows"
+          ],
+          "dialogVariant": "sheet"
+        },
+        "pick": "bottom-sheet",
+        "parts": null,
+        "gapsBefore": [
+          "assets.picker"
+        ],
+        "out": {
+          "data": {
+            "layoutTheme": "l",
+            "colorTheme": "c",
+            "styleTheme": "s",
+            "assets": {
+              "button": "b",
+              "dialog": "bottom-sheet",
+              "picker": "bottom-sheet",
+              "context-menu": "cm",
+              "density": "compact"
+            }
+          },
+          "changed": [
+            "assets.picker"
+          ]
+        },
+        "gapsAfter": []
+      },
+      "sheet": {
+        "skin": {
+          "layoutTheme": "l",
+          "colorTheme": "c",
+          "styleTheme": "s",
+          "assets": {
+            "button": "b",
+            "dialog": "glass-air",
+            "context-menu": "cm",
+            "density": "regular"
+          }
+        },
+        "ctx": {
+          "id": "x",
+          "starters": [
+            "bottom-sheet",
+            "compact-list",
+            "plain-menu",
+            "search-first",
+            "standard",
+            "windows"
+          ],
+          "dialogVariant": "sheet"
+        },
+        "pick": "bottom-sheet",
+        "parts": null,
+        "gapsBefore": [
+          "assets.picker"
+        ],
+        "out": {
+          "data": {
+            "layoutTheme": "l",
+            "colorTheme": "c",
+            "styleTheme": "s",
+            "assets": {
+              "button": "b",
+              "dialog": "glass-air",
+              "picker": "bottom-sheet",
+              "context-menu": "cm",
+              "density": "regular"
+            }
+          },
+          "changed": [
+            "assets.picker"
+          ]
+        },
+        "gapsAfter": []
+      },
+      "roomy": {
+        "skin": {
+          "layoutTheme": "l",
+          "colorTheme": "c",
+          "styleTheme": "s",
+          "assets": {
+            "button": "b",
+            "dialog": "glass-air",
+            "context-menu": "cm",
+            "density": "roomy"
+          }
+        },
+        "ctx": {
+          "id": "x",
+          "starters": [
+            "bottom-sheet",
+            "compact-list",
+            "plain-menu",
+            "search-first",
+            "standard",
+            "windows"
+          ],
+          "dialogVariant": "modal"
+        },
+        "pick": "bottom-sheet",
+        "parts": null,
+        "gapsBefore": [
+          "assets.picker"
+        ],
+        "out": {
+          "data": {
+            "layoutTheme": "l",
+            "colorTheme": "c",
+            "styleTheme": "s",
+            "assets": {
+              "button": "b",
+              "dialog": "glass-air",
+              "picker": "bottom-sheet",
+              "context-menu": "cm",
+              "density": "roomy"
+            }
+          },
+          "changed": [
+            "assets.picker"
+          ]
+        },
+        "gapsAfter": []
+      },
+      "regular": {
+        "skin": {
+          "layoutTheme": "l",
+          "colorTheme": "c",
+          "styleTheme": "s",
+          "assets": {
+            "button": "b",
+            "dialog": "glass-air",
+            "context-menu": "cm",
+            "density": "regular"
+          }
+        },
+        "ctx": {
+          "id": "x",
+          "starters": [
+            "bottom-sheet",
+            "compact-list",
+            "plain-menu",
+            "search-first",
+            "standard",
+            "windows"
+          ],
+          "dialogVariant": "drawer"
+        },
+        "pick": "standard",
+        "parts": null,
+        "gapsBefore": [
+          "assets.picker"
+        ],
+        "out": {
+          "data": {
+            "layoutTheme": "l",
+            "colorTheme": "c",
+            "styleTheme": "s",
+            "assets": {
+              "button": "b",
+              "dialog": "glass-air",
+              "picker": "standard",
+              "context-menu": "cm",
+              "density": "regular"
+            }
+          },
+          "changed": [
+            "assets.picker"
+          ]
+        },
+        "gapsAfter": []
+      },
+      "noDialog": {
+        "skin": {
+          "layoutTheme": "l",
+          "colorTheme": "c",
+          "styleTheme": "s",
+          "assets": {
+            "button": "b"
+          }
+        },
+        "ctx": {
+          "id": "x",
+          "starters": [
+            "bottom-sheet",
+            "compact-list",
+            "plain-menu",
+            "search-first",
+            "standard",
+            "windows"
+          ]
+        },
+        "pick": "standard",
+        "parts": null,
+        "gapsBefore": [
+          "assets.picker"
+        ],
+        "out": {
+          "data": {
+            "layoutTheme": "l",
+            "colorTheme": "c",
+            "styleTheme": "s",
+            "assets": {
+              "button": "b",
+              "picker": "standard"
+            }
+          },
+          "changed": [
+            "assets.picker"
+          ]
+        },
+        "gapsAfter": []
+      },
+      "withParts": {
+        "skin": {
+          "layoutTheme": "l",
+          "colorTheme": "c",
+          "styleTheme": "s",
+          "assets": {
+            "button": "b",
+            "dialog": "glass-air",
+            "context-menu": "cm",
+            "density": "compact"
+          },
+          "parts": {
+            "context-menu": {
+              "radius": "sm",
+              "hover": "highlight",
+              "location": "pinned-top",
+              "bogus": 1
+            },
+            "button": {
+              "radius": "pill"
+            }
+          }
+        },
+        "ctx": {
+          "id": "x",
+          "starters": [
+            "bottom-sheet",
+            "compact-list",
+            "plain-menu",
+            "search-first",
+            "standard",
+            "windows"
+          ],
+          "dialogVariant": "modal"
+        },
+        "pick": "compact-list",
+        "parts": {
+          "radius": "sm",
+          "hover": "highlight"
+        },
+        "gapsBefore": [
+          "assets.picker"
+        ],
+        "out": {
+          "data": {
+            "layoutTheme": "l",
+            "colorTheme": "c",
+            "styleTheme": "s",
+            "assets": {
+              "button": "b",
+              "dialog": "glass-air",
+              "picker": "compact-list",
+              "context-menu": "cm",
+              "density": "compact"
+            },
+            "parts": {
+              "context-menu": {
+                "radius": "sm",
+                "hover": "highlight",
+                "location": "pinned-top",
+                "bogus": 1
+              },
+              "button": {
+                "radius": "pill"
+              },
+              "picker": {
+                "radius": "sm",
+                "hover": "highlight"
+              }
+            }
+          },
+          "changed": [
+            "assets.picker",
+            "parts.picker"
+          ]
+        },
+        "gapsAfter": []
+      },
+      "buttonParts": {
+        "skin": {
+          "layoutTheme": "l",
+          "colorTheme": "c",
+          "styleTheme": "s",
+          "assets": {
+            "button": "b",
+            "dialog": "glass-air",
+            "context-menu": "cm",
+            "density": "compact"
+          },
+          "parts": {
+            "button": {
+              "radius": "pill",
+              "fontWeight": "600"
+            }
+          }
+        },
+        "ctx": {
+          "id": "x",
+          "starters": [
+            "bottom-sheet",
+            "compact-list",
+            "plain-menu",
+            "search-first",
+            "standard",
+            "windows"
+          ]
+        },
+        "pick": "compact-list",
+        "parts": {
+          "fontWeight": "600",
+          "radius": "pill"
+        },
+        "gapsBefore": [
+          "assets.picker"
+        ],
+        "out": {
+          "data": {
+            "layoutTheme": "l",
+            "colorTheme": "c",
+            "styleTheme": "s",
+            "assets": {
+              "button": "b",
+              "dialog": "glass-air",
+              "picker": "compact-list",
+              "context-menu": "cm",
+              "density": "compact"
+            },
+            "parts": {
+              "button": {
+                "radius": "pill",
+                "fontWeight": "600"
+              },
+              "picker": {
+                "fontWeight": "600",
+                "radius": "pill"
+              }
+            }
+          },
+          "changed": [
+            "assets.picker",
+            "parts.picker"
+          ]
+        },
+        "gapsAfter": []
+      },
+      "already": {
+        "skin": {
+          "layoutTheme": "l",
+          "colorTheme": "c",
+          "styleTheme": "s",
+          "assets": {
+            "button": "b",
+            "dialog": "glass-air",
+            "context-menu": "cm",
+            "density": "compact",
+            "picker": "plain-menu"
+          },
+          "parts": {
+            "picker": {
+              "radius": "none"
+            },
+            "button": {
+              "radius": "pill"
+            }
+          }
+        },
+        "ctx": {
+          "id": "windows",
+          "starters": [
+            "bottom-sheet",
+            "compact-list",
+            "plain-menu",
+            "search-first",
+            "standard",
+            "windows"
+          ]
+        },
+        "pick": "windows",
+        "parts": {
+          "radius": "pill"
+        },
+        "gapsBefore": [],
+        "out": {
+          "data": {
+            "layoutTheme": "l",
+            "colorTheme": "c",
+            "styleTheme": "s",
+            "assets": {
+              "button": "b",
+              "dialog": "glass-air",
+              "context-menu": "cm",
+              "density": "compact",
+              "picker": "plain-menu"
+            },
+            "parts": {
+              "picker": {
+                "radius": "none"
+              },
+              "button": {
+                "radius": "pill"
+              }
+            }
+          },
+          "changed": []
+        },
+        "gapsAfter": []
+      },
+      "badPicker": {
+        "skin": {
+          "layoutTheme": "l",
+          "colorTheme": "c",
+          "styleTheme": "s",
+          "assets": {
+            "button": "b",
+            "dialog": "glass-air",
+            "context-menu": "cm",
+            "density": "compact",
+            "picker": "Not An Id"
+          }
+        },
+        "ctx": {
+          "id": "x",
+          "starters": [
+            "bottom-sheet",
+            "compact-list",
+            "plain-menu",
+            "search-first",
+            "standard",
+            "windows"
+          ]
+        },
+        "pick": "compact-list",
+        "parts": null,
+        "gapsBefore": [
+          "assets.picker"
+        ],
+        "out": {
+          "data": {
+            "layoutTheme": "l",
+            "colorTheme": "c",
+            "styleTheme": "s",
+            "assets": {
+              "button": "b",
+              "dialog": "glass-air",
+              "picker": "compact-list",
+              "context-menu": "cm",
+              "density": "compact"
+            }
+          },
+          "changed": [
+            "assets.picker"
+          ]
+        },
+        "gapsAfter": []
+      },
+      "noStarters": {
+        "skin": {
+          "layoutTheme": "l",
+          "colorTheme": "c",
+          "styleTheme": "s",
+          "assets": {
+            "button": "b",
+            "dialog": "glass-air",
+            "context-menu": "cm",
+            "density": "compact"
+          }
+        },
+        "ctx": {
+          "id": "x",
+          "starters": []
+        },
+        "pick": "standard",
+        "parts": null,
+        "gapsBefore": [
+          "assets.picker"
+        ],
+        "out": {
+          "data": {
+            "layoutTheme": "l",
+            "colorTheme": "c",
+            "styleTheme": "s",
+            "assets": {
+              "button": "b",
+              "dialog": "glass-air",
+              "picker": "standard",
+              "context-menu": "cm",
+              "density": "compact"
+            }
+          },
+          "changed": [
+            "assets.picker"
+          ]
+        },
+        "gapsAfter": []
+      },
+      "junk": {
+        "skin": null,
+        "ctx": {},
+        "pick": "standard",
+        "parts": null,
+        "gapsBefore": [
+          "assets.picker"
+        ],
+        "out": {
+          "data": {
+            "assets": {
+              "picker": "standard"
+            }
+          },
+          "changed": [
+            "assets.picker"
+          ]
+        },
+        "gapsAfter": []
+      }
+    },
+    "shipped": {
+      "atelier": {
+        "picker": "bottom-sheet",
+        "parts": null,
+        "gaps": [],
+        "unchanged": []
+      },
+      "clinic": {
+        "picker": "bottom-sheet",
+        "parts": null,
+        "gaps": [],
+        "unchanged": []
+      },
+      "control-room": {
+        "picker": "standard",
+        "parts": null,
+        "gaps": [],
+        "unchanged": []
+      },
+      "ledger": {
+        "picker": "compact-list",
+        "parts": null,
+        "gaps": [],
+        "unchanged": []
+      },
+      "newsroom": {
+        "picker": "standard",
+        "parts": null,
+        "gaps": [],
+        "unchanged": []
+      },
+      "windows": {
+        "picker": "windows",
+        "parts": {
+          "radius": "sm",
+          "hover": "highlight"
+        },
+        "gaps": [],
+        "unchanged": []
+      }
+    }
   }
 }

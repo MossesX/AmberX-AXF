@@ -280,7 +280,8 @@
         "nav-menu",
         "context-menu",
         "tab-group",
-        "banner"
+        "banner",
+        "picker"
       ]
     },
     {
@@ -584,6 +585,10 @@
     },
     "slider": {
       "root": ".fx-slider"
+    },
+    "picker": {
+      "root": ".fx-picker",
+      "item": ".fx-picker__option"
     },
     "container": {
       "root": ".fx-card"

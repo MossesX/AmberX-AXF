@@ -200,7 +200,7 @@ reads an existing theme token, which is why the defaults match today's dropdown 
 | `--fx-picker-desc-font` | `var(--fx-type-scale-sm)` | description size |
 | `--fx-picker-group-font` | `var(--fx-type-scale-xs)` | group label size |
 | `--fx-picker-width` | `min(calc(var(--fx-space) * 46), calc(100vw - var(--fx-dens-gap-2xl) * 2))` | dialog width |
-| `--fx-picker-max-h` | `min(70dvh, calc(var(--fx-picker-row-h) * 12 + var(--fx-picker-row-h) * 2))` | dialog height cap (scrolls past it) |
+| `--fx-picker-max-h` | `min(70dvh, calc(var(--fx-picker-row-h) * 14))` | dialog height cap (scrolls past it) |
 | `--fx-picker-sheet-max-h` | `85dvh` | sheet height cap |
 | `--fx-picker-motion` | `var(--fx-motion)` | open / close duration |
 
@@ -214,7 +214,13 @@ as data attributes (`data-fx-picker-variant`, `-search`, `-check`).
 
 Skins: `data.parts.picker` with the customize tokens (fontSize, textColor, background, borderColor, radius, padding,
 itemPadding, gap, hover, hoverColor, iconSet …) lands on the `picker` style target: root `.fx-picker`, items
-`.fx-picker__option`. The skin upgrader gives every existing skin a `parts.picker` block that matches its menus.
+`.fx-picker__option`. Every skin names a picker in `assets.picker` (skin-upgrade@1, `core/engines/skin-upgrade.mjs`:
+`node framework/cli/skin-upgrade.mjs` gives every existing skin the starter that fits it — its own id, its dialog's
+variant, its density, else `standard` — and a `parts.picker` block carried over from the parts it gives its context
+menu, app menu, nav or buttons; `--check` fails CI on a skin that does not touch the picker). The registry itself:
+`PICKER_TOKENS` in `core/engines/theme.ts` (name, group, state, default, what it draws), `pickerVars` compiles it,
+`pickerAttrs` carries the asset's choices as `data-fx-picker-*` root attributes, `normalizePickerAsset` /
+`pickerAssetErrors` are the asset rules; fixture `picker.json` → `tokens`.
 
 Checks: `node framework/cli/check-theme.mjs` (no literal colours or sizes in picker CSS), `check-controls.mjs` (the
 picker uses framework controls: Button, TextField, Dialog), `npx -y tsx framework/spec/check-picker.mts`,

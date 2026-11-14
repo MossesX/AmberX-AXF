@@ -24,6 +24,7 @@
       "nav-menu": "design-studio",
       "button": "glass-air",
       "dialog": "glass-air",
+      "picker": "bottom-sheet",
       "context-menu": "glass-flyout",
       "toolbar": "minimal-glass",
       "container": "frosted-glass",

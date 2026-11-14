@@ -5,6 +5,7 @@
  */
 import { readdirSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
+import { PICKER_DEFAULT_STARTER, PICKER_PART_SOURCES, PICKER_PART_TOKENS, PICKER_STARTER_FOR, SKIN_UPGRADE_CONTRACT, pickPickerStarter, pickerPartsFor, skinUpgradeGaps, upgradeSkin } from '../core/engines/skin-upgrade.mjs';
 import { PICKER_ASSET_DEFAULT, PICKER_TOKENS, PICKER_TOKEN_STATES, colorThemeVars, normalizePickerAsset, pickerAssetErrors, pickerStyle, pickerVars, styleThemeVars } from '../core/engines/theme';
 import { backToSkin, composeLook, composeLookAt, coverageSummary, coverageTable, declarationErrors, globalSkinOf, lookAfterChange, newAppLook, normalizeAppLook, normalizeSkin, normalizeSkinScope, overriddenSlots, parseAppLook, partElements, partsErrors, partsTypes, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, scopeState, setInheritSkin, setLookSlot, setScopeOverride, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorOf, skinCovers, skinErrors, skinFromDesignPackage, skinScopeChain, skinScopeKey, skinScopeKind, skinScopeSelector, skinSlots, snapshotLook, uncoveredTypes, undoRestore } from '../core/engines/skin';
 import { foldLegacyPicks, legacyPicks, lookNeedsMigration, migrateLook, migrateLookSettings, parseLegacyLook, settingsNeedMigration } from '../core/engines/look-migration.mjs';
@@ -2410,5 +2411,30 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
       normalize: { junk: normalizePickerAsset({ variant: 'popover', search: 'maybe', searchThreshold: 999, checkmarks: 'middle', descriptions: 'yes', density: 'huge', doneButton: 0 }), partial: normalizePickerAsset({ variant: 'sheet', searchThreshold: 3.6 }), none: normalizePickerAsset(undefined) },
       errors: { good: pickerAssetErrors(PICKER_ASSET_DEFAULT), bad: pickerAssetErrors({ searchThreshold: -1, descriptions: 'yes', doneButton: 1 }), notObject: pickerAssetErrors([]) },
     },
+    // skin-upgrade@1 (core/engines/skin-upgrade.mjs): every existing skin gets assets.picker + parts.picker; nothing a skin says is changed
+    skinUpgrade: (() => {
+      const starters = load('picker').map((a) => a.id).sort();
+      const base = { layoutTheme: 'l', colorTheme: 'c', styleTheme: 's', assets: { button: 'b', dialog: 'glass-air', 'context-menu': 'cm', density: 'compact' } };
+      const cases: Record<string, { skin: unknown; ctx: unknown }> = {
+        plain: { skin: base, ctx: { id: 'plain', starters, dialogVariant: 'modal' } },
+        ownId: { skin: base, ctx: { id: 'windows', starters, dialogVariant: 'modal' } },
+        dialogId: { skin: { ...base, assets: { ...base.assets, dialog: 'bottom-sheet' } }, ctx: { id: 'x', starters, dialogVariant: 'sheet' } },
+        sheet: { skin: { ...base, assets: { ...base.assets, density: 'regular' } }, ctx: { id: 'x', starters, dialogVariant: 'sheet' } },
+        roomy: { skin: { ...base, assets: { ...base.assets, density: 'roomy' } }, ctx: { id: 'x', starters, dialogVariant: 'modal' } },
+        regular: { skin: { ...base, assets: { ...base.assets, density: 'regular' } }, ctx: { id: 'x', starters, dialogVariant: 'drawer' } },
+        noDialog: { skin: { ...base, assets: { button: 'b' } }, ctx: { id: 'x', starters } },
+        withParts: { skin: { ...base, parts: { 'context-menu': { radius: 'sm', hover: 'highlight', location: 'pinned-top', bogus: 1 }, button: { radius: 'pill' } } }, ctx: { id: 'x', starters, dialogVariant: 'modal' } },
+        buttonParts: { skin: { ...base, parts: { button: { radius: 'pill', fontWeight: '600' } } }, ctx: { id: 'x', starters } },
+        already: { skin: { ...base, assets: { ...base.assets, picker: 'plain-menu' }, parts: { picker: { radius: 'none' }, button: { radius: 'pill' } } }, ctx: { id: 'windows', starters } },
+        badPicker: { skin: { ...base, assets: { ...base.assets, picker: 'Not An Id' } }, ctx: { id: 'x', starters } },
+        noStarters: { skin: base, ctx: { id: 'x', starters: [] } },
+        junk: { skin: null, ctx: {} },
+      };
+      return {
+        contract: SKIN_UPGRADE_CONTRACT, starters, defaultStarter: PICKER_DEFAULT_STARTER, starterFor: PICKER_STARTER_FOR, partTokens: PICKER_PART_TOKENS, partSources: PICKER_PART_SOURCES,
+        cases: Object.fromEntries(Object.entries(cases).map(([k, c]) => [k, { ...c, pick: pickPickerStarter(c.skin, c.ctx), parts: pickerPartsFor(c.skin), gapsBefore: skinUpgradeGaps(c.skin), out: upgradeSkin(c.skin, c.ctx), gapsAfter: skinUpgradeGaps(upgradeSkin(c.skin, c.ctx).data) }])),
+        shipped: Object.fromEntries(load('skin').map((a) => [a.id, { picker: a.data.assets?.picker ?? '', parts: a.data.parts?.picker ?? null, gaps: skinUpgradeGaps(a.data), unchanged: upgradeSkin(a.data, { id: a.id, starters }).changed }])),
+      };
+    })(),
   });
 }
