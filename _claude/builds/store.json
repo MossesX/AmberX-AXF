@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5304,
- "updatedAt": "2026-11-14T16:45:24.218Z",
+ "rev": 5305,
+ "updatedAt": "2026-11-14T16:45:52.274Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -214410,7 +214410,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-14T16:44:38.923Z",
-   "updatedAt": "2026-11-14T16:45:19.484Z",
+   "updatedAt": "2026-11-14T16:45:50.813Z",
    "builtAt": "",
    "notes": [],
    "approvals": [],
@@ -214525,6 +214525,28 @@
      "rev": 1,
      "createdAt": "2026-11-14T16:45:19.485Z",
      "updatedAt": "2026-11-14T16:45:19.669Z"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mwgn0cg40106ty",
+     "title": "",
+     "text": "Any queued build that tries to launch and fails (any reason: auth, slot, crash, launcher error) sends an AmberX phone alert right away with the build name and the exact reason it failed. Brett: 'anytime something gets in the queue and it attempts to run and it fails, I want an alert and I want to know why.'",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "20 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-14T16:45:50.814Z",
+     "updatedAt": "2026-11-14T16:45:50.980Z"
     }
    ],
    "profiles": [
@@ -214535,7 +214557,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 2,
+   "rev": 3,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
