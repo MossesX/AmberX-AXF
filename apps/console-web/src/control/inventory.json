@@ -4,11 +4,11 @@
   "counts": {
     "views": 61,
     "nav": 16,
-    "tabGroups": 22,
-    "tabs": 76,
+    "tabGroups": 23,
+    "tabs": 78,
     "settingsTabs": 67,
     "settings": 85,
-    "functions": 230,
+    "functions": 247,
     "buttons": 62,
     "plugins": 67
   },
@@ -1390,6 +1390,27 @@
           "address": "tab:terminal.connection-mode=shell",
           "value": "shell",
           "label": "Shell"
+        }
+      ]
+    },
+    {
+      "address": "view:demonstration-designer/tab:demonstration-designer.mode",
+      "id": "demonstration-designer.mode",
+      "dynamic": false,
+      "view": "demonstration-designer",
+      "plugin": "ai.amberx.axf.console.demonstration-designer",
+      "file": "plugins/demonstration-designer/web/page.tsx",
+      "line": 345,
+      "tabs": [
+        {
+          "address": "view:demonstration-designer/tab:demonstration-designer.mode=pitch",
+          "value": "pitch",
+          "label": "Pitch"
+        },
+        {
+          "address": "view:demonstration-designer/tab:demonstration-designer.mode=pipelines",
+          "value": "pipelines",
+          "label": "Pipelines"
         }
       ]
     },
@@ -4932,6 +4953,255 @@
         "pitch",
         "stop"
       ],
+      "plugin": "ai.amberx.axf.console.demonstration-designer",
+      "file": "plugins/demonstration-designer/web/index.tsx"
+    },
+    {
+      "address": "function:pipeline.open",
+      "kind": "function",
+      "id": "pipeline.open",
+      "label": "Open the pipeline demos (optionally on one)",
+      "detail": "Action · Demonstration Designer",
+      "keywords": [
+        "pipeline.open",
+        "pipeline",
+        "open"
+      ],
+      "params": true,
+      "plugin": "ai.amberx.axf.console.demonstration-designer",
+      "file": "plugins/demonstration-designer/web/index.tsx"
+    },
+    {
+      "address": "function:pipeline.run",
+      "kind": "function",
+      "id": "pipeline.run",
+      "label": "Run a pipeline demo (say its name: voice to app, skin swap, approval flow…)",
+      "detail": "Action · Demonstration Designer",
+      "keywords": [
+        "pipeline.run",
+        "pipeline",
+        "run"
+      ],
+      "params": true,
+      "plugin": "ai.amberx.axf.console.demonstration-designer",
+      "file": "plugins/demonstration-designer/web/index.tsx"
+    },
+    {
+      "address": "function:pipeline.live",
+      "kind": "function",
+      "id": "pipeline.live",
+      "label": "Run a pipeline demo live on the test-sandbox project",
+      "detail": "Action · Demonstration Designer",
+      "keywords": [
+        "pipeline.live",
+        "pipeline",
+        "live"
+      ],
+      "params": true,
+      "plugin": "ai.amberx.axf.console.demonstration-designer",
+      "file": "plugins/demonstration-designer/web/index.tsx"
+    },
+    {
+      "address": "function:pipeline.replay",
+      "kind": "function",
+      "id": "pipeline.replay",
+      "label": "Replay a pipeline demo (recorded, offline)",
+      "detail": "Action · Demonstration Designer",
+      "keywords": [
+        "pipeline.replay",
+        "pipeline",
+        "replay"
+      ],
+      "params": true,
+      "plugin": "ai.amberx.axf.console.demonstration-designer",
+      "file": "plugins/demonstration-designer/web/index.tsx"
+    },
+    {
+      "address": "function:pipeline.pause",
+      "kind": "function",
+      "id": "pipeline.pause",
+      "label": "Pipeline demo: pause",
+      "detail": "Action · Demonstration Designer",
+      "keywords": [
+        "pipeline.pause",
+        "pipeline",
+        "pause"
+      ],
+      "plugin": "ai.amberx.axf.console.demonstration-designer",
+      "file": "plugins/demonstration-designer/web/index.tsx"
+    },
+    {
+      "address": "function:pipeline.resume",
+      "kind": "function",
+      "id": "pipeline.resume",
+      "label": "Pipeline demo: resume",
+      "detail": "Action · Demonstration Designer",
+      "keywords": [
+        "pipeline.resume",
+        "pipeline",
+        "resume"
+      ],
+      "plugin": "ai.amberx.axf.console.demonstration-designer",
+      "file": "plugins/demonstration-designer/web/index.tsx"
+    },
+    {
+      "address": "function:pipeline.next",
+      "kind": "function",
+      "id": "pipeline.next",
+      "label": "Pipeline demo: skip to the next chapter",
+      "detail": "Action · Demonstration Designer",
+      "keywords": [
+        "pipeline.next",
+        "pipeline",
+        "next"
+      ],
+      "plugin": "ai.amberx.axf.console.demonstration-designer",
+      "file": "plugins/demonstration-designer/web/index.tsx"
+    },
+    {
+      "address": "function:pipeline.prev",
+      "kind": "function",
+      "id": "pipeline.prev",
+      "label": "Pipeline demo: previous chapter",
+      "detail": "Action · Demonstration Designer",
+      "keywords": [
+        "pipeline.prev",
+        "pipeline",
+        "prev"
+      ],
+      "plugin": "ai.amberx.axf.console.demonstration-designer",
+      "file": "plugins/demonstration-designer/web/index.tsx"
+    },
+    {
+      "address": "function:pipeline.chapter",
+      "kind": "function",
+      "id": "pipeline.chapter",
+      "label": "Pipeline demo: jump to chapter N",
+      "detail": "Action · Demonstration Designer",
+      "keywords": [
+        "pipeline.chapter",
+        "pipeline",
+        "chapter"
+      ],
+      "params": true,
+      "plugin": "ai.amberx.axf.console.demonstration-designer",
+      "file": "plugins/demonstration-designer/web/index.tsx"
+    },
+    {
+      "address": "function:pipeline.restart",
+      "kind": "function",
+      "id": "pipeline.restart",
+      "label": "Pipeline demo: restart",
+      "detail": "Action · Demonstration Designer",
+      "keywords": [
+        "pipeline.restart",
+        "pipeline",
+        "restart"
+      ],
+      "plugin": "ai.amberx.axf.console.demonstration-designer",
+      "file": "plugins/demonstration-designer/web/index.tsx"
+    },
+    {
+      "address": "function:pipeline.stop",
+      "kind": "function",
+      "id": "pipeline.stop",
+      "label": "Pipeline demo: stop",
+      "detail": "Action · Demonstration Designer",
+      "keywords": [
+        "pipeline.stop",
+        "pipeline",
+        "stop"
+      ],
+      "plugin": "ai.amberx.axf.console.demonstration-designer",
+      "file": "plugins/demonstration-designer/web/index.tsx"
+    },
+    {
+      "address": "function:pipeline.speed",
+      "kind": "function",
+      "id": "pipeline.speed",
+      "label": "Pipeline demo: speed (0.5, 1, 1.5, 2, 4)",
+      "detail": "Action · Demonstration Designer",
+      "keywords": [
+        "pipeline.speed",
+        "pipeline",
+        "speed"
+      ],
+      "params": true,
+      "plugin": "ai.amberx.axf.console.demonstration-designer",
+      "file": "plugins/demonstration-designer/web/index.tsx"
+    },
+    {
+      "address": "function:pipeline.mode",
+      "kind": "function",
+      "id": "pipeline.mode",
+      "label": "Pipeline demo: replay or live",
+      "detail": "Action · Demonstration Designer",
+      "keywords": [
+        "pipeline.mode",
+        "pipeline",
+        "mode"
+      ],
+      "params": true,
+      "plugin": "ai.amberx.axf.console.demonstration-designer",
+      "file": "plugins/demonstration-designer/web/index.tsx"
+    },
+    {
+      "address": "function:pipeline.dock",
+      "kind": "function",
+      "id": "pipeline.dock",
+      "label": "Behind the scenes: dock, float or full",
+      "detail": "Action · Demonstration Designer",
+      "keywords": [
+        "pipeline.dock",
+        "pipeline",
+        "dock"
+      ],
+      "params": true,
+      "plugin": "ai.amberx.axf.console.demonstration-designer",
+      "file": "plugins/demonstration-designer/web/index.tsx"
+    },
+    {
+      "address": "function:pipeline.panel",
+      "kind": "function",
+      "id": "pipeline.panel",
+      "label": "Behind the scenes: show or hide (on / off)",
+      "detail": "Action · Demonstration Designer",
+      "keywords": [
+        "pipeline.panel",
+        "pipeline",
+        "panel"
+      ],
+      "params": true,
+      "plugin": "ai.amberx.axf.console.demonstration-designer",
+      "file": "plugins/demonstration-designer/web/index.tsx"
+    },
+    {
+      "address": "function:pipeline.filter",
+      "kind": "function",
+      "id": "pipeline.filter",
+      "label": "Behind the scenes: filter (kinds comma separated, then words)",
+      "detail": "Action · Demonstration Designer",
+      "keywords": [
+        "pipeline.filter",
+        "pipeline",
+        "filter"
+      ],
+      "params": true,
+      "plugin": "ai.amberx.axf.console.demonstration-designer",
+      "file": "plugins/demonstration-designer/web/index.tsx"
+    },
+    {
+      "address": "function:pipeline.follow",
+      "kind": "function",
+      "id": "pipeline.follow",
+      "label": "Pipeline demo: console follows each chapter (on / off)",
+      "detail": "Action · Demonstration Designer",
+      "keywords": [
+        "pipeline.follow",
+        "pipeline",
+        "follow"
+      ],
+      "params": true,
       "plugin": "ai.amberx.axf.console.demonstration-designer",
       "file": "plugins/demonstration-designer/web/index.tsx"
     },

@@ -34,6 +34,48 @@ share link** (`?axf-demo=<id>`, `&axf-autoplay=1` plays it), and **Tour** (chain
 **Advanced** (folded; a setting hides it): the step timeline (title, say, do, target, highlight, dwell; play one
 step) and **record by doing** (every screen you open and control you tap becomes a step with draft words).
 
+## Pipelines mode: demo pipelines, walked through live
+
+Brett, Nov 13 2026: "a bunch of different types of pipelines for demonstration purposes, walked through so you can see
+what's going on behind the scenes; follow the console building stuff, and a terminal or scrolling window showing all
+the output you wouldn't normally see". The designer page has two modes (a TabGroup): **Pitch** (above) and **Pipelines**.
+
+- **Library** (`pipeline-library.mjs`): one ready-made demo per pipeline type: voice to app, add a feature, skin swap
+  across the whole app, parallel split build, fix a failing build automatically, new project from a template, the
+  approval flow (veto, approve by voice). Each is a **pipeline-demo@1** (`pipelines.mjs`): chapters with narration,
+  the screen focus mode moves to (orchestrator, builds and steps, UI Review, Shipped features…), an optional element,
+  a length, the behind-the-scenes lines of the chapter and the live probes it runs.
+- **Guided walkthrough** (`web/cover.tsx`, slot `app.frame.cover`, so it stays up as the console moves): the chapter's
+  title and words (spoken by the device voice unless muted), chapter numbers to jump to, back / play-pause / skip /
+  restart / speed / stop. As each chapter starts the console navigates to its screen and scrolls to its element.
+- **Behind the scenes** (`web/bts.tsx`): a terminal-style scrolling window streaming orchestrator decisions, model
+  picks, step splits, agent log, git, tests, axHub calls, focus moves and errors, each kind its own colour, filterable
+  by kind and words, docked along the bottom, floated (resizable) or full screen; it follows the newest line unless
+  you scroll up; Copy copies the shown lines.
+- **Replay or live** (`pipeline-demos.mjs`): replay plays the recording of the last live run, else the script:
+  instant and offline. Live first runs each chapter's probes for real on the test-sandbox project and this checkout
+  (`git log`, `git status`, the test-sandbox builds through the orchestrator, `model-policy` on the chapter's words,
+  the rules split, this plugin's self-test, `check-theme`, `agent-slots status`, and the axHub payload a chapter's
+  call would carry, printed and never sent). Every probe is read-only: a demo never writes a build, a commit or a hub
+  record. The output is kept as a pipeline-recording@1, so the next replay shows what really ran. Speed 0.5× to 4×.
+- **Designer** (`web/pipelines.tsx`): New demo or Edit a copy of a built-in; pick the pipeline type, name, voice
+  phrases, then per chapter the narration, the screen, an element, seconds, the behind-the-scenes lines (`@seconds
+  kind: text`) and the live probes. A saved copy under a built-in's id shadows it; deleting it brings the built-in back.
+
+| what | UI | REST (`/api/plugins/demonstration-designer/…`) | MCP / CLI (plugin-commands) | voice / console actions |
+| --- | --- | --- | --- | --- |
+| list / one demo | library | `GET pipelines` · `GET pipeline?id=` | `demonstration_designer_pipelines`, `…_pipeline` · `axf demonstration-designer pipelines` | `pipeline.open[:<words>]` |
+| play (replay) | Play | `GET pipeline/timeline?id=&speed=&script=` (what plays) | `…_pipeline_timeline` | `pipeline.run:<words>` ("run the voice-to-app demo"), `pipeline.replay:<words>` |
+| run live | Live + Run live | `POST pipeline/live {id, chapter?}` · `GET pipeline/recording?id=` | `…_pipeline_live`, `…_pipeline_recording` | `pipeline.live:<words>`, `pipeline.run:<words>:live` |
+| player moves | walkthrough bar | `GET pipeline/state` (read) | `console_action pipeline.pause` … | `pipeline.pause`, `.resume`, `.next`, `.prev`, `.chapter:<n>`, `.restart`, `.speed:<x>`, `.mode:<replay/live>`, `.follow:<on/off>`, `.stop` |
+| behind the scenes | panel | `GET pipeline/lines?id=&kind=&q=` | `…_pipeline_lines` · `node pipeline-demos.mjs lines <id> --kind git` | `pipeline.panel:<on/off>`, `pipeline.dock:<dock/float/full>`, `pipeline.filter:<kinds>:<words>` |
+| design | designer | `POST pipeline {demo}` · `POST pipeline/copy {id, as}` · `DELETE pipeline?id=` · `GET pipeline/types` | `…_pipeline_save`, `…_pipeline_copy`, `…_pipeline_delete`, `…_pipeline_types` | — |
+| which demo a phrase names | — | `GET pipeline/match?q=` | `…_pipeline_match` | (used by `pipeline.run`) |
+| deep link | — | `GET pipeline/link?id=&play=&live=` | `…_pipeline_link` | `?axf-pipeline=<id>[&axf-autoplay=1][&axf-mode=live]`, `?axf-pipeline=library` |
+
+CLI without the console: `node apps/console-web/plugins/demonstration-designer/pipeline-demos.mjs …` (see its header).
+Data: `pipeline/<id>.json` (demos made in the designer) and `pipeline-recording/<id>.json` (live runs) in the dataDir.
+
 ## Files
 
 | file | what |
@@ -46,6 +88,10 @@ step) and **record by doing** (every screen you open and control you tap becomes
 | `web/stage.ts` | the player: overlay, zoom/pan, spotlight, captions, speech, music, logo cards, recording |
 | `web/settings.tsx` | Settings → Plugins → Demonstration Designer in collapsible sections; layout = a `settings` asset (three in `assets/settings/`, the UI Review options) |
 | `web/model.ts` | the web store and API calls |
+| `pipelines.mjs` (+ `.d.mts`) | Pipelines mode rules: pipeline-demo@1, timeline, the pure player, panel filter, voice match, probe lines, deep link |
+| `pipeline-library.mjs` | the built-in pipeline demos, one per type |
+| `pipeline-demos.mjs` | Pipelines store + live runner (read-only probes) + CLI |
+| `web/pipelines.tsx`, `web/pipeline-model.ts`, `web/cover.tsx`, `web/bts.tsx` | the Pipelines page and designer, its store and clock, the walkthrough bar, the behind-the-scenes panel |
 | `test.mjs` | the self-test (CI) |
 
 ## Every action and setting, four ways

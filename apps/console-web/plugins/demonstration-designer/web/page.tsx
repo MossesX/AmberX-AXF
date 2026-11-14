@@ -5,7 +5,7 @@
  * demos into a tour. Advanced work (the step timeline, record by doing) is folded away at the bottom.
  */
 import { useEffect, useMemo, useState, useSyncExternalStore } from 'react';
-import { Button, Chip, Container, Icon, Note, Segmented, SelectField, TextField, useRuntime } from '@console/axf/react';
+import { Button, Chip, Container, Icon, Note, Segmented, SelectField, TabGroup, TextField, useRuntime } from '@console/axf/react';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
 import * as E from '../engine.mjs';
 import type { PitchStep, Topic } from '../engine.mjs';
@@ -14,6 +14,8 @@ import threeUp from '../assets/settings/demonstration-designer-page-three-up.jso
 import wide from '../assets/settings/demonstration-designer-page-wide.json';
 import { type DemoRecord, type Summary, PAGE_VIEW_KEY, applyScript, deleteDemo, deviceVoices, fmtSeconds, generate, getDemo, loadDemos, loadNarrators, loadSettings, loadTopics, narratorOptions, saveDemo, setChain, shareOf, startRecording, stopRecording, takeWanted, uploadMedia, useModel, clearRecording } from './model';
 import { play, stop, useStage } from './stage';
+import { PipelinesPage } from './pipelines';
+import { setMode, usePipelines } from './pipeline-model';
 
 /** The page layout (a `settings` asset picked in UI Review): stacked, three-up or wide. */
 export const PAGE_ASSETS = [stacked, threeUp, wide] as const;
@@ -234,7 +236,7 @@ function Advanced({ demo, onChanged, onCreated }: { demo: DemoRecord | null; onC
 
 /* ---------------- the page ---------------- */
 
-export function DesignerPage() {
+function PitchPage() {
   const rt = useRuntime();
   const m = useModel();
   const stage = useStage();
@@ -330,6 +332,18 @@ export function DesignerPage() {
       </section>
       {m.settings.advanced.show && <Advanced demo={demo} onChanged={setDemo} onCreated={setDemo} />}
       <p className="fx-muted axp-demonstration-designer__note"><Icon name="info" size={12} /> Voice and API: say "play the pitch of …" to AmberX (actions pitch.play, pitch.pause, pitch.next, pitch.stop), or use <span className="fx-mono">axf demonstration-designer generate</span>. Settings: <button type="button" data-fx-row className="axp-demonstration-designer__link" onClick={() => rt.dispatch('settings.open:demonstration-designer')}>Demonstration Designer</button>.</p>
+    </div>
+  );
+}
+
+/* ---------------- the two modes: Pitch (a product pitch) and Pipelines (demo pipelines, walked through live) ---------------- */
+
+export function DesignerPage() {
+  const p = usePipelines();
+  return (
+    <div className="fx-stack fx-stack--lg axp-demonstration-designer__modes">
+      <TabGroup<'pitch' | 'pipelines'> id="demonstration-designer.mode" label="Demonstration mode" value={p.mode} onChange={setMode} tabs={[{ value: 'pitch', label: 'Pitch', icon: 'sparkles' }, { value: 'pipelines', label: 'Pipelines', icon: 'play', badge: p.demos.length || undefined }]} />
+      {p.mode === 'pipelines' ? <PipelinesPage /> : <PitchPage />}
     </div>
   );
 }

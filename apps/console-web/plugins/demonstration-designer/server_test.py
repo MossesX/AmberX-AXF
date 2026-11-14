@@ -75,4 +75,29 @@ check(c.post("/p/narrate", json={"narrator": "agent:../x", "text": "hi"}).status
 check(c.post("/p/narrate", json={"narrator": "agent:molly", "text": "  "}).status_code == 400, "empty text refused")
 plugin_services.withdraw("fake-speech")
 check(c.get("/p/narrators").json()["available"] is False, "provider removed: back to none")
+
+# pipeline demos: list, one, timeline, filtered lines, match, link, save / copy / delete, the player state round trip
+items = c.get("/p/pipelines").json()["items"]
+check(len(items) >= 7 and any(i["id"] == "voice-to-app" and i["builtIn"] for i in items), "pipelines: the built-in library is listed")
+check(c.get("/p/pipeline", params={"id": "skin-swap"}).json()["$axf"] == "pipeline-demo@1", "pipeline: one demo as pipeline-demo@1")
+check(c.get("/p/pipeline", params={"id": "no-such"}).status_code == 404, "pipeline: unknown id is 404")
+check(c.get("/p/pipeline", params={"id": "../x"}).status_code == 400, "pipeline: a bad id is 400")
+t = c.get("/p/pipeline/timeline", params={"id": "auto-fix", "speed": 2}).json()
+check(t["timeline"]["total"] > 0 and t["wallSeconds"] == t["timeline"]["total"] / 2 and t["demo"]["id"] == "auto-fix", "pipeline/timeline: the demo, its timeline and the length at speed")
+lines = c.get("/p/pipeline/lines", params={"id": "parallel-split", "kind": "git"}).json()["items"]
+check(lines and all(x["kind"] == "git" for x in lines), "pipeline/lines: filtered by kind")
+check(c.get("/p/pipeline/match", params={"q": "run the voice-to-app demo"}).json()["id"] == "voice-to-app", "pipeline/match: the phrase names the demo")
+check("axf-pipeline=auto-fix" in c.get("/p/pipeline/link", params={"id": "auto-fix", "play": True}).json()["url"], "pipeline/link: the deep link")
+d = c.post("/p/pipeline/copy", json={"id": "approval-flow"}).json()
+check(d["id"] == "approval-flow-copy" and not d["builtIn"], "pipeline/copy: an editable copy")
+d["name"] = "Approvals, my way"
+check(c.post("/p/pipeline", json={"demo": d}).json()["name"] == "Approvals, my way", "pipeline: save an edited demo")
+check(c.post("/p/pipeline", json={"demo": {"name": "", "chapters": []}}).status_code == 400, "pipeline: an invalid demo is refused")
+check(c.delete("/p/pipeline", params={"id": "approval-flow-copy"}).json()["removed"] == "approval-flow-copy", "pipeline: delete a saved demo")
+check(c.delete("/p/pipeline", params={"id": "approval-flow"}).status_code == 400, "pipeline: a built-in can't be deleted")
+types_ = c.get("/p/pipeline/types").json()
+check(len(types_["types"]) >= 8 and "git-log" in types_["probes"], "pipeline/types: types, screens and probes")
+c.post("/p/pipeline/state", json={"demo": "skin-swap", "status": "playing", "at": 3.5, "dock": "float", "secret": "x"})
+st = c.get("/p/pipeline/state").json()
+check(st["demo"] == "skin-swap" and st["dock"] == "float" and "secret" not in st and st["reportedAt"], "pipeline/state: the console's report is readable, unknown keys dropped")
 print(f"demonstration-designer server: {ok} checks passed")
