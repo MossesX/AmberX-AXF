@@ -278,8 +278,10 @@ class AccountsStore {
    * be the state every new user starts from, but nothing applied it: it was
    * read only by the factory reset and the State tab, so a brand-new account's
    * first sign-in landed on whatever the app's boot floor happened to be. The
+   * (theme-ok-begin: measured values, documentation)
    * P7 live probe measured it — computed `--axf-accent` came back `#ff7a1a`
    * (the identity floor) where the contract's seed says `#f9ae3d`.
+   * (theme-ok-end)
    *
    * It runs HERE, client-side after sign-in, rather than at boot on purpose.
    * The theme persists in `localStorage` — per BROWSER, not per user — so the

@@ -286,6 +286,28 @@
         "group": "behaviour",
         "level": "simple",
         "instanceOnly": true
+      },
+      {
+        "key": "rows",
+        "label": "Rows",
+        "kind": "choice",
+        "options": [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5",
+          "6",
+          "auto"
+        ],
+        "labels": {
+          "1": "1 (one row)",
+          "auto": "Auto (as many as fit)"
+        },
+        "default": "1",
+        "group": "look",
+        "level": "simple",
+        "instanceOnly": true
       }
     ],
     "toolbar": [
@@ -660,6 +682,7 @@
     "patch": "axf.chrome.settings.custom.tab-group",
     "instance": "axf.chrome.tab-group.ui-review.sections",
     "instanceAsset": "axf.chrome.tab-group.ui-review.sections.asset",
+    "instanceInterface": "axf.chrome.tab-group.ui-review.sections.interface",
     "last": "axf.tabs.ui-review.sections.last",
     "fold": "axf.tabs.ui-review.sections.folded"
   },
@@ -905,6 +928,56 @@
       "extends": "chrome-tab-group"
     }
   ],
+  "instancePicks": {
+    "unset": {
+      "id": "chrome-tab-group",
+      "source": "default"
+    },
+    "kind": {
+      "id": "chrome-tab-group-axf-console",
+      "source": "type"
+    },
+    "own": {
+      "id": "chrome-tab-group-edited",
+      "source": "instance"
+    },
+    "ownDefault": {
+      "id": "chrome-tab-group",
+      "source": "instance"
+    },
+    "gone": {
+      "id": "chrome-tab-group-axf-console",
+      "source": "type"
+    },
+    "wrongType": {
+      "id": "chrome-tab-group",
+      "source": "default"
+    },
+    "none": null
+  },
+  "instanceInterfaces": [
+    {
+      "type": "tab-group",
+      "instance": "settings.main",
+      "interface": "chrome-tab-group-x"
+    },
+    {
+      "type": "toolbar",
+      "instance": "app",
+      "interface": "chrome-toolbar-x"
+    }
+  ],
+  "prefixTargets": {
+    "axf-ws-toolbar:main": "toolbar",
+    "axf-ws-toolbar:": null,
+    "axf-ws-toolbarx": null
+  },
+  "instanceSlugs": {
+    "Tree search": "tree-search",
+    "ui-review.sections": "ui-review.sections",
+    "  MCP server!! ": "mcp-server",
+    "(empty)": ""
+  },
   "overrides": {
     "clean": {
       "style": "pills",
@@ -985,5 +1058,116 @@
     "chrome-app-menu-molly",
     "chrome-context-menu",
     "chrome-context-menu-molly"
-  ]
+  ],
+  "rows": {
+    "parse": {
+      "0": null,
+      "1": "1",
+      "3": "3",
+      "7": null,
+      "three": "3",
+      "3 rows": "3",
+      "Two": "2",
+      "auto": "auto",
+      "Automatic": "auto",
+      "many": null,
+      "(empty)": null
+    },
+    "parseNumbers": [
+      "1",
+      "3",
+      "6",
+      null,
+      null
+    ],
+    "override": {
+      "style": "pills",
+      "rows": "3"
+    },
+    "match": {
+      "settings": "settings.main",
+      "the settings tabs": "settings.main",
+      "ui-review.sections": "ui-review.sections",
+      "sections": "ui-review.sections",
+      "review": "ui-review.sections",
+      "nothing": null,
+      "(empty)": null
+    },
+    "layout": {
+      "10x1": {
+        "rows": 1,
+        "perRow": 10,
+        "wrap": false,
+        "vars": {},
+        "attrs": {}
+      },
+      "10x3": {
+        "rows": 3,
+        "perRow": 4,
+        "wrap": true,
+        "vars": {
+          "--fx-tabs-per-row": "4"
+        },
+        "attrs": {
+          "data-fx-tabs-rows": "3"
+        }
+      },
+      "10x2": {
+        "rows": 2,
+        "perRow": 5,
+        "wrap": true,
+        "vars": {
+          "--fx-tabs-per-row": "5"
+        },
+        "attrs": {
+          "data-fx-tabs-rows": "2"
+        }
+      },
+      "7x3": {
+        "rows": 3,
+        "perRow": 3,
+        "wrap": true,
+        "vars": {
+          "--fx-tabs-per-row": "3"
+        },
+        "attrs": {
+          "data-fx-tabs-rows": "3"
+        }
+      },
+      "2x3": {
+        "rows": 2,
+        "perRow": 1,
+        "wrap": true,
+        "vars": {
+          "--fx-tabs-per-row": "1"
+        },
+        "attrs": {
+          "data-fx-tabs-rows": "2"
+        }
+      },
+      "0x3": {
+        "rows": 1,
+        "perRow": 0,
+        "wrap": false,
+        "vars": {},
+        "attrs": {}
+      },
+      "10xauto": {
+        "rows": "auto",
+        "perRow": 0,
+        "wrap": true,
+        "vars": {},
+        "attrs": {
+          "data-fx-tabs-rows": "auto"
+        }
+      },
+      "10xbogus": {
+        "rows": 1,
+        "perRow": 10,
+        "wrap": false,
+        "vars": {},
+        "attrs": {}
+      }
+    }
+  }
 }

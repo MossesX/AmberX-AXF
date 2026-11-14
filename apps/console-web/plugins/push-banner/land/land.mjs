@@ -11,6 +11,7 @@
  *   node apps/console-web/plugins/push-banner/land/land.mjs run [--dry-run] [--only <build>] [--json]   one round
  *   … list | blocked [--json]            what the last round found (landing order, PR, state, reason)
  *   … now <build> | hold <build> [--why "…"] | release <build> | after <build> <other>
+ *   … merge-main <build|branch> [--dry-run] [--json]   merge main into one build's branch now (same rules as a round)
  *   … queue list | add <pr> | remove <pr> | move <pr> <index>   the merge queue (merge-queue.mjs; it runs in every round)
  *
  * One round, per finished build (land-core.mjs isCandidate), in dependency order:
@@ -19,7 +20,8 @@
  *      code changes never committed stop it (reason `code`); the branch is pushed when it is ahead of GitHub;
  *   2. main merged in (a temporary worktree, never the build's): only when main moved in code (status-only `[skip ci]`
  *      commits under _claude/ don't count) or GitHub says the PR conflicts. Builds files newer-wins (builds-live.mjs
- *      merge driver), THREADS / STATUS / decisions / logs unioned, generated files from main then regenerated, code
+ *      merge driver), THREADS / STATUS / decisions / logs / PORTING.md unioned, help packs and catalog status unioned by
+ *      key, generated files (framework/spec/generated-files.json) from main then regenerated and tested, only code
  *      conflicts abort (reason `conflict`, an agent job);
  *   3. its PR opened when it has none; CI started (workflow_dispatch) when nothing ran on the head;
  *   4. the reason it waits (land-core.mjs blockReason) written to land.json; a new reason is pushed to Brett once
@@ -231,10 +233,67 @@ export function codeBehind({ s, git, br }) {
 }
 
 /**
- * Merge main into the branch in a temporary worktree and push the merge commit. Data conflicts are resolved by
- * land-core's rules; any code conflict aborts. Returns { merged, sha, conflicts: [code files], resolved, pushError }.
+ * Resolve a stopped merge's conflicted files in worktree `wt` by land-core's rules (generated-files@1 manifest):
+ *   builds       the side `buildsSide` names (the builds-live merge driver did the rest)
+ *   union        both sides' lines (git merge-file --union): THREADS, STATUS, logs, PORTING.md
+ *   union-json   both sides' keys (land-core mergeJson3, main wins a scalar clash): help packs, catalog status
+ *   generated    main's side (`mainSide`), then every generator those files need runs once on the merged tree
+ *                (control inventory, help bake, framework re-bake + lock, fixtures, tracker) and its outputs are staged
+ *   code         a person's: nothing is touched and { conflicts } comes back
+ * After regenerating, the generators' checks and the manifest's tests run; a red one comes back as { error } (the
+ * merge is not committed). Returns { resolved: [paths], regenerated: [generator ids] } when every file is resolved.
+ * `dir` is a scratch folder for the merge-file inputs. Nothing here commits or aborts: the caller does.
  */
-export function mergeMain({ s, git, b, dry }) {
+export function resolveConflicts({ g, wt, dir, left, mainSide = 'theirs', buildsSide = 'theirs', log = () => {} }) {
+  const plan = core.planConflicts(left);
+  if (plan.code.length) return { conflicts: plan.code };
+  const resolved = [];
+  const stage = (p, n) => { const x = g(['show', `:${n}:${p}`]); return x.code ? '' : `${x.out}\n`; };
+  for (const p of plan.builds) { if (g(['checkout', `--${buildsSide}`, '--', p]).code === 0) { g(['add', '--', p]); resolved.push(p); } }
+  for (const p of plan.union) {
+    const f = (n, t) => { const q = join(dir, `${n}.txt`); writeFileSync(q, t); return q; };
+    const ours = f('ours', stage(p, 2)); const base = f('base', stage(p, 1)); const theirs = f('theirs', stage(p, 3));
+    g(['merge-file', '--union', ours, base, theirs]);
+    writeFileSync(join(wt, p), readFileSync(ours)); g(['add', '--', p]); resolved.push(p);
+  }
+  for (const p of plan.unionJson) {
+    const parse = (t) => { try { return t.trim() ? JSON.parse(t) : undefined; } catch { return undefined; } };
+    const o = parse(stage(p, 2)); const t = parse(stage(p, 3)); const b = parse(stage(p, 1));
+    if (o === undefined || t === undefined) { g(['checkout', `--${mainSide}`, '--', p]); log(`${p}: one side is not JSON; main's copy taken`); }
+    else writeFileSync(join(wt, p), `${JSON.stringify(core.mergeJson3(b, o, t, mainSide), null, 2)}\n`);
+    g(['add', '--', p]); resolved.push(p);
+  }
+  for (const p of plan.generated) { g(['checkout', `--${mainSide}`, '--', p]); g(['add', '--', p]); resolved.push(p); }
+  const still = g(['diff', '--name-only', '--diff-filter=U']).out.split('\n').filter(Boolean);
+  if (still.length) return { conflicts: still };
+  // the generators, each once, on the merged tree; their outputs join the merge commit
+  const regenerated = [];
+  const run = (cmd, timeout) => { const r = spawnSync(cmd[0], cmd.slice(1), { cwd: wt, encoding: 'utf8', timeout, maxBuffer: 16 << 20, env: { ...process.env, CI: '1' } }); return { code: r.status ?? 1, text: `${r.stderr || ''}${r.stdout || ''}`.trim().slice(-400) }; };
+  const skipped = [];
+  for (const gen of core.regenPlan(plan.generated)) {
+    const r = run(gen.run, gen.timeoutMs);
+    if (r.code) {
+      // an optional generator that refuses (rebake: the app's baked files were edited in place) leaves main's copy, which main's CI passed
+      if (gen.optional) { skipped.push(gen.id); log(`${gen.id} did not run (${r.text.split('\n').pop()}); main's copy stands`); continue; }
+      return { error: `${gen.id} failed to regenerate after the merge (${gen.run.join(' ')}): ${r.text}` };
+    }
+    regenerated.push(gen.id);
+    g(['add', '-A', '--', ...gen.outputs.filter((o) => existsSync(join(wt, o)))]);
+    if (gen.check) { const c = run(gen.check, gen.timeoutMs); if (c.code) return { error: `${gen.id} regenerated but its check failed (${gen.check.join(' ')}): ${c.text}` }; }
+  }
+  if (plan.generated.length || plan.unionJson.length) {
+    for (const t of core.landTests()) { const c = run(t, 180000); if (c.code) return { error: `tests after regenerating failed (${t.join(' ')}): ${c.text}` }; }
+  }
+  if (regenerated.length) log(`regenerated ${regenerated.join(', ')} after the merge`);
+  return { resolved, regenerated, skipped };
+}
+
+/**
+ * Merge main into the branch in a temporary worktree and push the merge commit. Data conflicts are resolved by
+ * land-core's rules (resolveConflicts); any code conflict aborts. Returns { merged, sha, conflicts: [code files],
+ * resolved, regenerated, pushError }.
+ */
+export function mergeMain({ s, git, b, dry, log = () => {} }) {
   const dir = mkdtempSync(join(tmpdir(), 'axf-land-')); const wt = join(dir, 'wt');
   const g = (a, o = {}) => git(a, { ...o, cwd: wt });
   const live = join(s.repo, 'framework/cli/builds-live.mjs');
@@ -242,31 +301,23 @@ export function mergeMain({ s, git, b, dry }) {
   try {
     let r = git(['worktree', 'add', '-q', '--detach', wt, `${s.remote}/${b.branch}`]);
     if (r.code) return { merged: false, conflicts: [], pushError: `worktree: ${r.err.slice(-200)}` };
-    const m = g([...drv, 'merge', '--no-edit', '-m', `Merge main into ${b.branch} (auto-land: builds files newer-wins, logs unioned)`, `${s.remote}/${s.base}`], { timeout: 180000 });
-    const resolved = [];
+    const m = g([...drv, 'merge', '--no-edit', '-m', `Merge main into ${b.branch} (auto-land: builds files newer-wins, logs unioned, generated files regenerated)`, `${s.remote}/${s.base}`], { timeout: 180000 });
+    let resolved = []; let regenerated = [];
     if (m.code) {
       const left = g(['diff', '--name-only', '--diff-filter=U']).out.split('\n').filter(Boolean);
       if (!left.length) { g(['merge', '--abort']); return { merged: false, conflicts: [], pushError: `merge: ${m.err.slice(-200) || m.out.slice(-200)}` }; }
-      const plan = core.planConflicts(left);
-      if (plan.code.length) { g(['merge', '--abort']); return { merged: false, conflicts: plan.code }; }
-      for (const p of plan.builds) { if (g(['checkout', '--theirs', '--', p]).code === 0) { g(['add', '--', p]); resolved.push(p); } }
-      for (const p of plan.union) {
-        const stage = (n) => { const x = g(['show', `:${n}:${p}`]); return x.code ? '' : `${x.out}\n`; };
-        const f = (n, t) => { const q = join(dir, `${n}.txt`); writeFileSync(q, t); return q; };
-        const ours = f('ours', stage(2)); const base = f('base', stage(1)); const theirs = f('theirs', stage(3));
-        g(['merge-file', '--union', ours, base, theirs]);
-        writeFileSync(join(wt, p), readFileSync(ours)); g(['add', '--', p]); resolved.push(p);
-      }
-      for (const p of plan.generated) { g(['checkout', '--theirs', '--', p]); const cmd = core.regenFor(p); if (cmd) spawnSync(cmd[0], cmd.slice(1), { cwd: wt, timeout: 120000 }); g(['add', '--', p]); resolved.push(p); }
-      const still = g(['diff', '--name-only', '--diff-filter=U']).out.split('\n').filter(Boolean);
-      if (still.length) { g(['merge', '--abort']); return { merged: false, conflicts: still }; }
+      // main is the side being merged in (theirs); its builds files win too (the newest status is on main)
+      const res = resolveConflicts({ g, wt, dir, left, mainSide: 'theirs', buildsSide: 'theirs', log });
+      if (res.conflicts) { g(['merge', '--abort']); return { merged: false, conflicts: res.conflicts }; }
+      if (res.error) { g(['merge', '--abort']); return { merged: false, conflicts: [], pushError: `merge: ${res.error.slice(-300)}` }; }
+      resolved = res.resolved; regenerated = res.regenerated;
       const c = g([...drv, 'commit', '-q', '--no-edit']);
       if (c.code) { g(['merge', '--abort']); return { merged: false, conflicts: [], pushError: `commit: ${c.err.slice(-200)}` }; }
     }
     const sha = g(['rev-parse', 'HEAD']).out;
-    if (dry) return { merged: true, sha, conflicts: [], resolved, dry: true };
+    if (dry) return { merged: true, sha, conflicts: [], resolved, regenerated, dry: true };
     const p = g(['push', '-q', s.remote, `HEAD:refs/heads/${b.branch}`], { timeout: 90000 });
-    return p.code ? { merged: false, conflicts: [], resolved, pushError: p.err.slice(-200) || 'push failed' } : { merged: true, sha, conflicts: [], resolved };
+    return p.code ? { merged: false, conflicts: [], resolved, regenerated, pushError: p.err.slice(-200) || 'push failed' } : { merged: true, sha, conflicts: [], resolved, regenerated };
   } finally { git(['worktree', 'remove', '--force', wt]); rmSync(dir, { recursive: true, force: true }); }
 }
 
@@ -348,7 +399,7 @@ export async function round({ s = settings(), git = makeGit(s.repo), gh = makeGi
             const m = mergeMain({ s, git, b, dry });
             if (m.conflicts?.length) facts.conflicts = m.conflicts;
             else if (m.pushError) facts.pushError = m.pushError;
-            else if (m.merged) { it.mergedMain = { sha: m.sha, resolved: m.resolved || [] }; git(['fetch', '-q', s.remote, `+refs/heads/${b.branch}:refs/remotes/${s.remote}/${b.branch}`]); }
+            else if (m.merged) { it.mergedMain = { sha: m.sha, resolved: m.resolved || [], regenerated: m.regenerated || [] }; git(['fetch', '-q', s.remote, `+refs/heads/${b.branch}:refs/remotes/${s.remote}/${b.branch}`]); }
           }
           if (!pr && !facts.conflicts && !dry) {
             try { pr = await gh('POST', `/repos/${s.slug}/pulls`, { title: it.title.slice(0, 120), head: b.branch, base: s.base, body: `Build \`${b.id}\` is finished (every step done). Opened by auto-land: it merges by itself once CI is green on its head and UI Review doesn't hold it.\n\n${String(b.detail || '').slice(0, 1500)}` }); if (pr?.number) crewSay('landing', 'start', `${b.id} is finished. Opened PR #${pr.number} and CI is on it.`, { ref: b.id, repo: s.repo }); }
@@ -442,6 +493,21 @@ export async function main(argv) {
     return print(st, st.on === false ? 'auto-land is off (Settings → Plugins → Push banner → Auto-land)' : st.items.map(line).join('\n') || 'no finished builds to land');
   }
   if (cmd === 'queue') return queueMain(argv.slice(argv.indexOf('queue') + 1));
+  if (cmd === 'merge-main') {
+    // one build (or branch) gets main merged in right now, by the round's rules: what a re-land after a lander fix needs
+    const id = rest[0]; if (!id || id.startsWith('--')) throw new Error('merge-main <build|branch> [--dry-run]');
+    const git = makeGit(s.repo);
+    const f = git(['fetch', '-q', '--prune', s.remote], { timeout: 180000 }); if (f.code) throw new Error(`fetch: ${f.err.slice(-200)}`);
+    const storeText = git(['show', `${s.remote}/${s.base}:_claude/builds/store.json`]);
+    const builds = storeText.code ? [] : (JSON.parse(storeText.out).builds || []);
+    const b = builds.find((x) => x.id === id && x.branch) || { id, branch: id.startsWith('claude/') || id.startsWith('refs/') ? id : `claude/${id}` };
+    if (git(['rev-parse', '-q', '--verify', `refs/remotes/${s.remote}/${b.branch}`]).code) throw new Error(`${b.branch} is not on ${s.remote}`);
+    const m = mergeMain({ s, git, b, dry, log: (t) => !json && console.error(t) });
+    const text = m.merged ? `${b.id}: main merged in${dry ? ' (dry run, not pushed)' : ''} at ${m.sha.slice(0, 8)}${m.resolved?.length ? `; resolved ${m.resolved.join(', ')}` : ''}${m.regenerated?.length ? `; regenerated ${m.regenerated.join(', ')}` : ''}`
+      : m.conflicts?.length ? `${b.id}: code conflicts with main in ${m.conflicts.join(', ')}` : `${b.id}: ${m.pushError || 'not merged'}`;
+    if (!m.merged) process.exitCode = 1;
+    return print({ build: b.id, branch: b.branch, ...m }, text);
+  }
   if (cmd === 'list' || cmd === 'blocked') {
     const st = readState(s); const items = (st.items || []).filter((x) => cmd === 'list' || x.state === 'blocked');
     return print({ ...st, items }, items.map(line).join('\n') || (cmd === 'blocked' ? 'nothing blocked' : 'no finished builds to land'));
@@ -451,7 +517,7 @@ export async function main(argv) {
     const d = control(s, cmd, id, { why: opt('why'), after: rest[1] });
     return print({ ok: true, control: d }, `${cmd}: ${id}${cmd === 'after' ? ` after ${rest[1]}` : ''}`);
   }
-  throw new Error('usage: land.mjs run [--dry-run] [--only <build>] | list | blocked | now <build> | hold <build> [--why …] | release <build> | after <build> <other>');
+  throw new Error('usage: land.mjs run [--dry-run] [--only <build>] | list | blocked | now <build> | hold <build> [--why …] | release <build> | after <build> <other> | merge-main <build> [--dry-run]');
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

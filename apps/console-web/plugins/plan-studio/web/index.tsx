@@ -9,7 +9,7 @@ import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { Button, useRuntime } from '@console/axf/react';
 import { appMenu } from './menu';
 import { CaptureDialog } from './capture';
-import { PlanStudioPage } from './ui';
+import { focusPlan, PlanStudioPage } from './ui';
 import { FOLDER, KEYS, VIEW } from './api';
 
 const ID = 'ai.amberx.axf.console.plan-studio';
@@ -30,6 +30,9 @@ export const plugin: AxfWebLibrary = {
   builtWith: { model: 'opus', builtAt: '2026-10-30' },
   register(rt) {
     rt.actions.register('plan-studio.open', () => rt.navigate(VIEW), { label: 'Open Plan Studio' });
+    // Deep links down to the item: `plan-studio.focus:<plan id>[/<item ref>]` or words ("the plan about X, the step that
+    // mentions Y"); console.screens act open plan-studio with input.focus runs it (REST, MCP console_open / console_show, CLI, voice).
+    rt.actions.register('plan-studio.focus', ([enc = '']) => { rt.navigate(VIEW); focusPlan(decodeURIComponent(enc)); }, { label: 'Open a plan, down to one step or item', params: true, effect: 'navigate' });
     rt.actions.register('plan-studio.capture', () => rt.openDialog(DIALOG), { label: 'New plan (quick capture)' });
     // the banner "+ Plan": the framework's action-button widget (opens quick capture; Settings → Plugins → Plan Studio hides it)
     const paint = () => {

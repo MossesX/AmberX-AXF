@@ -93,7 +93,7 @@ export async function resolveActor(
 
 /** Initials-disc palette — deterministic per username, so a member's default
  *  avatar is stable across machines without storing anything. */
-const AVATAR_COLORS = ["#e05d38", "#3a7bd5", "#2f9e6e", "#8e5bd0", "#c9a227", "#c04b76"];
+const AVATAR_COLORS = ["#e05d38", "#3a7bd5", "#2f9e6e", "#8e5bd0", "#c9a227", "#c04b76"]; // theme-ok: avatar colour choices are user data
 
 export function defaultAvatarFor(username: string): ProfileAvatar {
   let h = 0;
@@ -117,7 +117,7 @@ function synthesize(account: Account): Profile {
 
 /* -------------------------------- validation ----------------------------------- */
 
-// Keeps the colour a plain CSS value (hex / named / rgb(...)) — a profile file
+// Keeps the colour a plain CSS value (hex / named / rgb(...)) — a profile file (theme-ok: documentation)
 // is rendered into style attributes, so no quotes, braces or semicolons.
 const COLOR_RE = /^[#a-zA-Z0-9(),.%\s-]{1,48}$/;
 

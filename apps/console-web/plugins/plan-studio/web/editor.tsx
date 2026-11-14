@@ -221,7 +221,7 @@ function StepsEditor({ steps, onChange }: { steps: Step[]; onChange: (s: Step[])
       {big.length > 0 && <p className="fx-muted axp-plan-studio__hint"><Icon name="alert" size={11} /> {big.map((s) => s.id).join(', ')} {big.length === 1 ? 'is' : 'are'} over 30 minutes: split {big.length === 1 ? 'it' : 'them'} (small-steps rule).</p>}
       <ol>
         {steps.map((s, i) => (
-          <li key={s.id} className={s.done ? 'is-done' : ''}>
+          <li key={s.id} className={s.done ? 'is-done' : ''} data-plan-item={s.id}>
             <input type="checkbox" className="fx-check" checked={s.done} onChange={(e) => upd(i, { done: e.target.checked, doneAt: e.target.checked ? new Date().toISOString() : '' })} aria-label={`${s.id} done`} />
             <span className="axp-plan-studio__sid">{s.id}</span>
             <input className="fx-input axp-plan-studio__stext" value={s.text} onChange={(e) => upd(i, { text: e.target.value })} aria-label={`${s.id} text`} />
@@ -255,7 +255,7 @@ function ListEditor({ id, items, onChange }: { id: ListId; items: TextItem[]; on
       <h3>{meta.label} <span className="axp-plan-studio__n">{items.length}</span></h3>
       <ul>
         {items.map((x, i) => (
-          <li key={i}>
+          <li key={i} data-plan-item={`${id}:${i}`}>
             {meta.item === 'check' && <input type="checkbox" className="fx-check" checked={!!x.done} onChange={(e) => onChange(items.map((y, j) => (j === i ? { ...y, done: e.target.checked } : y)))} aria-label="Done" />}
             <input className="fx-input" value={x.text} onChange={(e) => onChange(items.map((y, j) => (j === i ? { ...y, text: e.target.value } : y)))} aria-label={meta.label} />
             {extra && <input className="fx-input" value={String(x[extra] ?? '')} placeholder={extra === 'answer' ? 'Answer' : 'Mitigation'} onChange={(e) => onChange(items.map((y, j) => (j === i ? { ...y, [extra]: e.target.value } : y)))} aria-label={extra} />}

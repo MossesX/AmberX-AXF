@@ -180,7 +180,7 @@ function NodeRow({
   const rowSx = {
     display: "flex",
     alignItems: "center",
-    gap: 0.7,
+    gap: 'var(--fx-dens-gap-lg)',
     pl: node.depth * 2.1 + 0.4,
     pr: 1,
     py: 0.35,
@@ -254,15 +254,15 @@ function rowContent(node: Node, isOpen: boolean, hasKids: boolean, leaf: boolean
           {node.label}
         </Typography>
         {node.count > 0 && node.depth < 3 && (
-          <Typography sx={{ fontSize: 10, color: token("dim") }}>
+          <Typography sx={{ fontSize: 'var(--fx-type-root-2xs)', color: token("dim") }}>
             {node.count} item{node.count === 1 ? "" : "s"}
           </Typography>
         )}
         {node.expense?.reimbursable && (
-          <Chip size="small" variant="outlined" label="reimbursable" sx={{ height: 16, fontSize: 9.5 }} />
+          <Chip size="small" variant="outlined" label="reimbursable" sx={{ height: 16, fontSize: 'var(--fx-type-root-2xs)' }} />
         )}
         {node.expense?.disputed && (
-          <Chip size="small" variant="outlined" label="disputed · $0" sx={{ height: 16, fontSize: 9.5, color: token("warn") }} />
+          <Chip size="small" variant="outlined" label="disputed · $0" sx={{ height: 16, fontSize: 'var(--fx-type-root-2xs)', color: token("warn") }} />
         )}
         <Box sx={{ flex: 1 }} />
         {node.share > 0 && node.depth < 3 && (
@@ -272,7 +272,7 @@ function rowContent(node: Node, isOpen: boolean, hasKids: boolean, leaf: boolean
               value={Math.min(100, node.share)}
               sx={{
                 height: 4,
-                borderRadius: 2,
+                borderRadius: 'var(--fx-radius-lg)',
                 backgroundColor: token("edge"),
                 "& .MuiLinearProgress-bar": { backgroundColor: node.color ?? token("accent") }
               }}
@@ -280,7 +280,7 @@ function rowContent(node: Node, isOpen: boolean, hasKids: boolean, leaf: boolean
           </Box>
         )}
         {node.share > 0 && node.depth < 3 && (
-          <Typography sx={{ ...MONO, fontSize: 10.5, color: token("dim"), width: 42, textAlign: "right" }}>
+          <Typography sx={{ ...MONO, fontSize: 'var(--fx-type-root-xs)', color: token("dim"), width: 42, textAlign: "right" }}>
             {node.share}%
           </Typography>
         )}
@@ -339,12 +339,12 @@ export function TreeView({ expenses: all }: { expenses: Expense[] }) {
 
   return (
     <Box>
-      <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 1, flexWrap: "wrap" }}>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 'var(--fx-dens-gap-xl)', mb: 1, flexWrap: "wrap" }}>
         <Button
           size="small"
           variant={axis === "time" ? "contained" : "outlined"}
           onClick={() => setAxis("time")}
-          sx={{ fontSize: 11.5 }}
+          sx={{ fontSize: 'var(--fx-type-root-sm)' }}
         >
           Year → month → category
         </Button>
@@ -352,23 +352,23 @@ export function TreeView({ expenses: all }: { expenses: Expense[] }) {
           size="small"
           variant={axis === "category" ? "contained" : "outlined"}
           onClick={() => setAxis("category")}
-          sx={{ fontSize: 11.5 }}
+          sx={{ fontSize: 'var(--fx-type-root-sm)' }}
         >
           Category → month
         </Button>
-        <Button size="small" onClick={() => expandAll(true)} sx={{ fontSize: 11.5 }}>
+        <Button size="small" onClick={() => expandAll(true)} sx={{ fontSize: 'var(--fx-type-root-sm)' }}>
           Expand all
         </Button>
-        <Button size="small" onClick={() => expandAll(false)} sx={{ fontSize: 11.5 }}>
+        <Button size="small" onClick={() => expandAll(false)} sx={{ fontSize: 'var(--fx-type-root-sm)' }}>
           Collapse all
         </Button>
         <Box sx={{ flex: 1 }} />
-        <Typography sx={{ fontSize: 11.5, color: token("dim") }}>
+        <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>
           {expenses.length} expenses · every node totals what is beneath it
         </Typography>
-        <Typography sx={{ ...MONO, fontSize: 13, fontWeight: 700 }}>{money(grandTotal)}</Typography>
+        <Typography sx={{ ...MONO, fontSize: 'var(--fx-type-root-md)', fontWeight: 700 }}>{money(grandTotal)}</Typography>
         {income > 0 && (
-          <Typography sx={{ ...MONO, fontSize: 11.5, color: token("ok") }} title="Income is kept out of the rollup">
+          <Typography sx={{ ...MONO, fontSize: 'var(--fx-type-root-sm)', color: token("ok") }} title="Income is kept out of the rollup">
             +{money(income)} in · net {netTotal > 0 ? "+" : ""}{money(netTotal)}
           </Typography>
         )}
@@ -379,7 +379,7 @@ export function TreeView({ expenses: all }: { expenses: Expense[] }) {
           <NodeRow key={n.key} node={n} open={open} onToggle={(k) => setOpen((o) => ({ ...o, [k]: !o[k] }))} />
         ))}
         {!tree.length && (
-          <Typography sx={{ fontSize: 12, color: token("dim"), p: 1.2 }}>
+          <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim"), p: 1.2 }}>
             Nothing to roll up yet — add an expense on the Grid tab.
           </Typography>
         )}

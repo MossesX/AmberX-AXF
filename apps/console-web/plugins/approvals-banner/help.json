@@ -93,6 +93,48 @@
         "text": "Where you set “Alert again at 30 s left and when it runs”. Change it and the app uses the new value. Part of Approvals banner.",
         "kind": "field",
         "draft": true
+      },
+      {
+        "target": "overlay",
+        "title": "Overlay",
+        "text": "The one switch for AmberX's floating toolbar on the phone. On: it stays on screen over every app, spawns the approval bar when something waits, and expands into a full-screen browser. Off: no toolbar, and pages Amber opens go to Chrome with a tap-to-open notification.",
+        "kind": "field"
+      },
+      {
+        "target": "approval-bar-opens-for",
+        "title": "Approval bar opens for",
+        "text": "Which waiting calls open the approval bar out of the toolbar by themselves: every approval, only held commands (they run on their own when the countdown ends), or never (tap ▸ on the toolbar).",
+        "kind": "field"
+      },
+      {
+        "target": "toolbar-shows",
+        "title": "Toolbar shows",
+        "text": "What the toolbar says while something waits: the next held command's countdown, or how many are waiting.",
+        "kind": "field"
+      },
+      {
+        "target": "side",
+        "title": "Side",
+        "text": "Which side of the screen the toolbar sits on. Dragging it on the phone sets this.",
+        "kind": "field"
+      },
+      {
+        "target": "height-on-screen-from-the-top",
+        "title": "Height on screen (% from the top)",
+        "text": "How far down the screen the toolbar sits. Dragging it on the phone sets this too.",
+        "kind": "field"
+      },
+      {
+        "target": "opacity-when-nothing-waits",
+        "title": "Opacity when nothing waits (%)",
+        "text": "How see-through the toolbar is while nothing waits. The approval bar and the browser are always solid.",
+        "kind": "field"
+      },
+      {
+        "target": "fold-the-approval-bar-after-seconds",
+        "title": "Fold the approval bar after (seconds)",
+        "text": "After the last approval goes, how long the approval bar stays open before folding back into the toolbar. 0 folds it at once.",
+        "kind": "field"
       }
     ],
     "intros": []

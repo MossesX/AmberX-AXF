@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://amberx.ai/axf/schemas/ledger-build.schema.json",
+  "title": "ledger-build@1 (feature-ledger@1)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "ledger-build@1"
+    },
+    "key": {
+      "type": "string"
+    },
+    "id": {
+      "type": "string"
+    },
+    "profile": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string"
+    },
+    "branch": {
+      "type": "string"
+    },
+    "pr": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "repo": {
+      "type": "string"
+    },
+    "mergedAt": {
+      "type": "string"
+    },
+    "builtAt": {
+      "type": "string"
+    },
+    "createdAt": {
+      "type": "string"
+    },
+    "model": {
+      "type": "string"
+    },
+    "thinking": {
+      "type": "string"
+    },
+    "agent": {
+      "type": "string"
+    },
+    "session": {
+      "type": "string"
+    },
+    "prompt": {
+      "type": "string"
+    },
+    "report": {
+      "type": "string"
+    },
+    "features": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

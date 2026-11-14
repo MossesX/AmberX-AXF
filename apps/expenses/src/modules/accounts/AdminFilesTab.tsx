@@ -183,7 +183,7 @@ function TreeRow({ depth, glyph, label, open, selected, busy, right, muted, onCl
       data-axf-file-kind={target?.kind}
       sx={{
         alignItems: "center",
-        gap: 0.75,
+        gap: 'var(--fx-dens-gap-lg)',
         pl: 0.5 + depth * 1.5,
         pr: 0.75,
         py: 0.35,
@@ -215,7 +215,7 @@ function TreeRow({ depth, glyph, label, open, selected, busy, right, muted, onCl
       </Box>
       <Typography
         sx={{
-          fontSize: 12,
+          fontSize: 'var(--fx-type-root-sm)',
           flex: 1,
           minWidth: 0,
           overflow: "hidden",
@@ -259,7 +259,7 @@ function PreviewPane({
 }) {
   if (!selection) {
     return (
-      <Typography sx={{ fontSize: 12, color: token("dim") }}>
+      <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>
         Pick a file on the left to read it here. Opening one records a view in the audit trail
         against your name and this member’s.
       </Typography>
@@ -269,12 +269,12 @@ function PreviewPane({
   const href = fileDownloadUrl(user, selection.rootId, selection.path);
 
   return (
-    <Stack sx={{ gap: 1, minHeight: 0 }}>
-      <Stack direction="row" sx={{ alignItems: "center", gap: 1, flexWrap: "wrap" }}>
-        <Typography sx={{ fontSize: 12.5, fontWeight: 700, fontFamily: token("mono") }}>
+    <Stack sx={{ gap: 'var(--fx-dens-gap-xl)', minHeight: 0 }}>
+      <Stack direction="row" sx={{ alignItems: "center", gap: 'var(--fx-dens-gap-xl)', flexWrap: "wrap" }}>
+        <Typography sx={{ fontSize: 'var(--fx-type-root-md)', fontWeight: 700, fontFamily: token("mono") }}>
           {baseName(selection.path)}
         </Typography>
-        <Typography sx={{ fontSize: 10.5, color: token("dim"), fontFamily: token("mono") }}>
+        <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim"), fontFamily: token("mono") }}>
           {selection.rootId}/{selection.path}
         </Typography>
         <Box sx={{ flex: 1 }} />
@@ -284,7 +284,7 @@ function PreviewPane({
             href={href}
             size="small"
             variant="outlined"
-            sx={{ fontSize: 11.5, textTransform: "none" }}
+            sx={{ fontSize: 'var(--fx-type-root-sm)', textTransform: "none" }}
           >
             Download
           </Button>
@@ -292,7 +292,7 @@ function PreviewPane({
       </Stack>
 
       {error && (
-        <Alert severity="error" variant="outlined" sx={{ fontSize: 12 }}>
+        <Alert severity="error" variant="outlined" sx={{ fontSize: 'var(--fx-type-root-sm)' }}>
           {error}
         </Alert>
       )}
@@ -301,25 +301,25 @@ function PreviewPane({
 
       {preview && !busy && (
         <>
-          <Stack direction="row" sx={{ gap: 1, flexWrap: "wrap", alignItems: "center" }}>
+          <Stack direction="row" sx={{ gap: 'var(--fx-dens-gap-xl)', flexWrap: "wrap", alignItems: "center" }}>
             <Chip
               size="small"
               variant="outlined"
               label={fmtBytes(preview.bytes)}
-              sx={{ height: 19, fontSize: 10.5 }}
+              sx={{ height: 19, fontSize: 'var(--fx-type-root-xs)' }}
             />
-            <Typography sx={{ fontSize: 10.5, color: token("dim") }}>
+            <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim") }}>
               modified {fmtWhen(preview.modifiedAt, "unknown")}
             </Typography>
             {preview.truncated && (
-              <Typography sx={{ fontSize: 10.5, color: token("warn") }}>
+              <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("warn") }}>
                 showing the head of the file only — download it for the rest
               </Typography>
             )}
           </Stack>
 
           {isImage(preview.path) ? (
-            <Stack sx={{ gap: 0.5 }}>
+            <Stack sx={{ gap: 'var(--fx-dens-gap-md)' }}>
               <Box
                 component="img"
                 src={href}
@@ -329,25 +329,25 @@ function PreviewPane({
                   maxHeight: 420,
                   objectFit: "contain",
                   alignSelf: "flex-start",
-                  border: `1px solid ${token("edge")}`,
+                  border: `var(--fx-border-w) solid ${token("edge")}`,
                   borderRadius: token("radius"),
                   background: token("panel2"),
                 }}
               />
-              <Typography sx={{ fontSize: 10.5, color: token("dim") }}>
+              <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim") }}>
                 Drawing it here moved the bytes, so the trail records a download as well as a view.
               </Typography>
             </Stack>
           ) : preview.binary || preview.text === null ? (
             <Box
               sx={{
-                border: `1px dashed ${token("edge")}`,
+                border: `var(--fx-border-w) dashed ${token("edge")}`,
                 borderRadius: token("radius"),
                 p: 2,
                 maxWidth: 520,
               }}
             >
-              <Typography sx={{ fontSize: 12.5 }}>
+              <Typography sx={{ fontSize: 'var(--fx-type-root-md)' }}>
                 Not text, and not a picture this can draw. Its size and timestamp are above; the
                 download button hands you the file itself.
               </Typography>
@@ -361,11 +361,11 @@ function PreviewPane({
                 flex: 1,
                 minHeight: 0,
                 overflow: "auto",
-                border: `1px solid ${token("edge")}`,
+                border: `var(--fx-border-w) solid ${token("edge")}`,
                 borderRadius: token("radius"),
                 background: token("panel2"),
                 fontFamily: token("mono"),
-                fontSize: 11.5,
+                fontSize: 'var(--fx-type-root-sm)',
                 lineHeight: 1.5,
                 whiteSpace: "pre-wrap",
                 wordBreak: "break-word",
@@ -530,7 +530,7 @@ export default function AdminFilesTab() {
     const error = dirErrors[key];
     if (error) {
       return (
-        <Typography key={`${key}!`} sx={{ fontSize: 11, color: token("err"), pl: 0.5 + depth * 1.5 }}>
+        <Typography key={`${key}!`} sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("err"), pl: 0.5 + depth * 1.5 }}>
           {error}
         </Typography>
       );
@@ -539,7 +539,7 @@ export default function AdminFilesTab() {
     if (entries === undefined) return null;
     if (entries.length === 0) {
       return (
-        <Typography key={`${key}~`} sx={{ fontSize: 11, color: token("dim"), pl: 1 + depth * 1.5 }}>
+        <Typography key={`${key}~`} sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim"), pl: 1 + depth * 1.5 }}>
           empty
         </Typography>
       );
@@ -563,7 +563,7 @@ export default function AdminFilesTab() {
             }
             right={
               entry.kind === "file" ? (
-                <Typography sx={{ fontSize: 10, color: token("dim"), fontFamily: token("mono") }}>
+                <Typography sx={{ fontSize: 'var(--fx-type-root-2xs)', color: token("dim"), fontFamily: token("mono") }}>
                   {fmtBytes(entry.bytes)}
                 </Typography>
               ) : undefined
@@ -581,7 +581,7 @@ export default function AdminFilesTab() {
 
   const treePane = (
     <Box sx={{ height: "100%", minHeight: 0, overflow: "auto", p: 1.25 }}>
-      <Stack sx={{ gap: 1 }}>
+      <Stack sx={{ gap: 'var(--fx-dens-gap-xl)' }}>
         <TextField
           select
           size="small"
@@ -604,30 +604,30 @@ export default function AdminFilesTab() {
               blank and warns. The member the tab is actually showing is always
               an option, whichever page they are on. */}
           {user && !names.includes(user) && (
-            <MenuItem key={user} value={user} sx={{ fontSize: 12.5 }}>
+            <MenuItem key={user} value={user} sx={{ fontSize: 'var(--fx-type-root-md)' }}>
               {user}
             </MenuItem>
           )}
           {names.map((n) => (
-            <MenuItem key={n} value={n} sx={{ fontSize: 12.5 }}>
+            <MenuItem key={n} value={n} sx={{ fontSize: 'var(--fx-type-root-md)' }}>
               {n}
             </MenuItem>
           ))}
         </TextField>
 
         {rosterError && (
-          <Alert severity="error" variant="outlined" sx={{ fontSize: 12 }}>
+          <Alert severity="error" variant="outlined" sx={{ fontSize: 'var(--fx-type-root-sm)' }}>
             {rosterError}
           </Alert>
         )}
         {rootsError && (
-          <Alert severity="error" variant="outlined" sx={{ fontSize: 12 }}>
+          <Alert severity="error" variant="outlined" sx={{ fontSize: 'var(--fx-type-root-sm)' }}>
             {rootsError}
           </Alert>
         )}
 
         {!user && (
-          <Typography sx={{ fontSize: 12, color: token("dim") }}>
+          <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>
             Pick a member and their registered data roots appear here. Nothing is read until you
             open something.
           </Typography>
@@ -648,19 +648,19 @@ export default function AdminFilesTab() {
                 open={root.present ? open : undefined}
                 busy={loading[key] === true}
                 right={
-                  <Stack direction="row" sx={{ gap: 0.5 }}>
+                  <Stack direction="row" sx={{ gap: 'var(--fx-dens-gap-md)' }}>
                     {root.shared && (
                       <Tooltip title="These bytes belong to other members too — only this member's entries are listed">
                         <Chip
                           size="small"
                           variant="outlined"
                           label="shared"
-                          sx={{ height: 17, fontSize: 9.5, color: token("warn"), borderColor: token("warn") }}
+                          sx={{ height: 17, fontSize: 'var(--fx-type-root-2xs)', color: token("warn"), borderColor: token("warn") }}
                         />
                       </Tooltip>
                     )}
                     {!root.present && (
-                      <Typography sx={{ fontSize: 10, color: token("dim") }}>nothing stored</Typography>
+                      <Typography sx={{ fontSize: 'var(--fx-type-root-2xs)', color: token("dim") }}>nothing stored</Typography>
                     )}
                   </Stack>
                 }
@@ -676,7 +676,7 @@ export default function AdminFilesTab() {
         })}
 
         {roots?.length === 0 && (
-          <Typography sx={{ fontSize: 12, color: token("dim") }}>
+          <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>
             No data roots are registered on this install.
           </Typography>
         )}
@@ -699,13 +699,13 @@ export default function AdminFilesTab() {
   );
 
   return (
-    <Stack sx={{ flex: 1, minWidth: 0, minHeight: 420, gap: 1, p: 1.5 }}>
+    <Stack sx={{ flex: 1, minWidth: 0, minHeight: 420, gap: 'var(--fx-dens-gap-xl)', p: 1.5 }}>
       {/* No close button, and it must not gain one — see the file header. */}
       <Alert
         severity="info"
         variant="outlined"
         icon={<Glyph id="icon-history" size={15} />}
-        sx={{ fontSize: 12, flexShrink: 0 }}
+        sx={{ fontSize: 'var(--fx-type-root-sm)', flexShrink: 0 }}
       >
         Every view and download here is written to the audit log — your name, this member’s name,
         the root and the path, before the bytes move. Reading is allowed; reading unrecorded is not.

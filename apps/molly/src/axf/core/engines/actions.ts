@@ -30,6 +30,11 @@ export interface ActionMeta {
   module?: string;
   /** What running it does, for remote callers (control@1 console domain): `navigate` needs only the navigate grant. */
   effect?: 'navigate' | 'read' | 'write' | 'destructive';
+  /**
+   * Only a person's own tap runs it (menus, buttons, shortcuts): never a remote caller. It stays out of the console
+   * catalog, so control@1 can't resolve it, and the console client refuses it (an approval decision, for one).
+   */
+  personOnly?: boolean;
 }
 
 /** The `module` of actions the framework itself registers. */

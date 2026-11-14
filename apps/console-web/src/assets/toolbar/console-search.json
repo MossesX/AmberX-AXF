@@ -56,14 +56,14 @@
           {
             "id": "color",
             "icon": "palette",
-            "label": "Next color theme",
+            "label": "Next colour theme",
             "action": "swap:color-theme:next"
           },
           {
-            "id": "layout",
-            "icon": "layout",
-            "label": "Next layout",
-            "action": "swap:layout:next"
+            "id": "skin",
+            "icon": "sparkles",
+            "label": "Next skin",
+            "action": "skin.use:next"
           },
           {
             "id": "random",

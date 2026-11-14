@@ -135,19 +135,19 @@ function Detail({ entry }: { entry: AuditEntryWire }) {
   return (
     <Box
       sx={{
-        border: `1px solid ${token("edge")}`,
+        border: `var(--fx-border-w) solid ${token("edge")}`,
         borderRadius: token("radius"),
         background: token("panel2"),
         p: 1.25,
         my: 0.75,
       }}
     >
-      <Stack sx={{ gap: 0.25 }}>
+      <Stack sx={{ gap: 'var(--fx-dens-gap-xs)' }}>
         {fields.map(([label, value]) => (
-          <Stack key={label} direction="row" sx={{ gap: 1, alignItems: "baseline" }}>
+          <Stack key={label} direction="row" sx={{ gap: 'var(--fx-dens-gap-xl)', alignItems: "baseline" }}>
             <Typography
               sx={{
-                fontSize: 10.5,
+                fontSize: 'var(--fx-type-root-xs)',
                 color: token("dim"),
                 textTransform: "uppercase",
                 letterSpacing: "0.06em",
@@ -157,7 +157,7 @@ function Detail({ entry }: { entry: AuditEntryWire }) {
             >
               {label}
             </Typography>
-            <Typography sx={{ fontSize: 11.5, fontFamily: token("mono"), wordBreak: "break-all" }}>
+            <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', fontFamily: token("mono"), wordBreak: "break-all" }}>
               {value}
             </Typography>
           </Stack>
@@ -254,9 +254,9 @@ export default function AdminAuditTab() {
   const entries = page?.entries ?? [];
 
   return (
-    <Stack sx={{ gap: 1.5, maxWidth: 1180 }}>
-      <Stack direction="row" sx={{ alignItems: "center", gap: 1 }}>
-        <Typography sx={{ fontSize: 13.5, fontWeight: 700, flex: 1 }}>Audit trail</Typography>
+    <Stack sx={{ gap: 'var(--fx-dens-gap-2xl)', maxWidth: 1180 }}>
+      <Stack direction="row" sx={{ alignItems: "center", gap: 'var(--fx-dens-gap-xl)' }}>
+        <Typography sx={{ fontSize: 'var(--fx-type-root-md)', fontWeight: 700, flex: 1 }}>Audit trail</Typography>
         <Tooltip title="Re-run the query">
           <span>
             <IconButton size="small" disabled={busy} onClick={() => void run(false)}>
@@ -267,7 +267,7 @@ export default function AdminAuditTab() {
       </Stack>
 
       {/* -------------------------------- filters ------------------------------ */}
-      <Stack direction="row" sx={{ gap: 1, flexWrap: "wrap", alignItems: "flex-start" }}>
+      <Stack direction="row" sx={{ gap: 'var(--fx-dens-gap-xl)', flexWrap: "wrap", alignItems: "flex-start" }}>
         <TextField
           select
           size="small"
@@ -279,11 +279,11 @@ export default function AdminAuditTab() {
           }}
           sx={{ minWidth: 150 }}
         >
-          <MenuItem value="" sx={{ fontSize: 12.5 }}>
+          <MenuItem value="" sx={{ fontSize: 'var(--fx-type-root-md)' }}>
             Anyone
           </MenuItem>
           {(facets?.actors ?? []).map((name) => (
-            <MenuItem key={name} value={name} sx={{ fontSize: 12.5 }}>
+            <MenuItem key={name} value={name} sx={{ fontSize: 'var(--fx-type-root-md)' }}>
               {name}
             </MenuItem>
           ))}
@@ -300,11 +300,11 @@ export default function AdminAuditTab() {
           }}
           sx={{ minWidth: 150 }}
         >
-          <MenuItem value="" sx={{ fontSize: 12.5 }}>
+          <MenuItem value="" sx={{ fontSize: 'var(--fx-type-root-md)' }}>
             Anyone
           </MenuItem>
           {(facets?.subjects ?? []).map((name) => (
-            <MenuItem key={name} value={name} sx={{ fontSize: 12.5 }}>
+            <MenuItem key={name} value={name} sx={{ fontSize: 'var(--fx-type-root-md)' }}>
               {name}
             </MenuItem>
           ))}
@@ -329,8 +329,8 @@ export default function AdminAuditTab() {
                   primary={verb}
                   secondary={VERB_LABEL[verb]}
                   slotProps={{
-                    primary: { sx: { fontSize: 12.5, fontFamily: token("mono") } },
-                    secondary: { sx: { fontSize: 10.5 } },
+                    primary: { sx: { fontSize: 'var(--fx-type-root-md)', fontFamily: token("mono") } },
+                    secondary: { sx: { fontSize: 'var(--fx-type-root-xs)' } },
                   }}
                 />
               </MenuItem>
@@ -376,20 +376,20 @@ export default function AdminAuditTab() {
           size="small"
           disabled={!filtered}
           onClick={clearAll}
-          sx={{ fontSize: 11.5, textTransform: "none", mt: 0.5 }}
+          sx={{ fontSize: 'var(--fx-type-root-sm)', textTransform: "none", mt: 0.5 }}
         >
           Clear
         </Button>
       </Stack>
 
       {error && (
-        <Alert severity="error" variant="outlined" sx={{ fontSize: 12 }}>
+        <Alert severity="error" variant="outlined" sx={{ fontSize: 'var(--fx-type-root-sm)' }}>
           {error}
         </Alert>
       )}
 
       {page?.truncated && (
-        <Alert severity="warning" variant="outlined" sx={{ fontSize: 12 }}>
+        <Alert severity="warning" variant="outlined" sx={{ fontSize: 'var(--fx-type-root-sm)' }}>
           The log has rotated at least once. Records older than this window may have been dropped —
           the trail cannot tell a first rotation (nothing lost) from a later one, so treat the
           earliest entry here as the earliest it can still see, not as the earliest that happened.
@@ -402,7 +402,7 @@ export default function AdminAuditTab() {
           <CircularProgress size={20} />
         ) : (
           !error && (
-            <Typography sx={{ fontSize: 12, color: token("dim") }}>
+            <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>
               The trail could not be read.
             </Typography>
           )
@@ -410,13 +410,13 @@ export default function AdminAuditTab() {
       ) : entries.length === 0 ? (
         <Box
           sx={{
-            border: `1px dashed ${token("edge")}`,
+            border: `var(--fx-border-w) dashed ${token("edge")}`,
             borderRadius: token("radius"),
             p: 2.5,
             maxWidth: 620,
           }}
         >
-          <Typography sx={{ fontSize: 12.5 }}>
+          <Typography sx={{ fontSize: 'var(--fx-type-root-md)' }}>
             {filtered
               ? "Nothing matches those filters. The trail itself may not be empty — clear them to see everything it holds."
               : "Nothing recorded. No administrator has browsed a member's files, moved a policy field, created an account or issued a credential since this log began."}
@@ -428,7 +428,7 @@ export default function AdminAuditTab() {
             <TableHead>
               <TableRow>
                 {["When", "Actor", "Did", "To", "What", ""].map((h) => (
-                  <TableCell key={h} sx={{ fontSize: 11.5, color: token("dim") }}>
+                  <TableCell key={h} sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>
                     {h}
                   </TableCell>
                 ))}
@@ -444,10 +444,10 @@ export default function AdminAuditTab() {
                       onClick={() => setOpen(expanded ? null : entry.id)}
                       sx={{ cursor: "pointer", "& td": { borderBottom: expanded ? "none" : undefined } }}
                     >
-                      <TableCell sx={{ fontSize: 11.5, color: token("dim"), whiteSpace: "nowrap" }}>
+                      <TableCell sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim"), whiteSpace: "nowrap" }}>
                         {fmtWhen(entry.at)}
                       </TableCell>
-                      <TableCell sx={{ fontSize: 12, fontFamily: token("mono") }}>
+                      <TableCell sx={{ fontSize: 'var(--fx-type-root-sm)', fontFamily: token("mono") }}>
                         {entry.actor}
                       </TableCell>
                       <TableCell>
@@ -457,18 +457,18 @@ export default function AdminAuditTab() {
                           label={VERB_LABEL[entry.verb] ?? entry.verb}
                           sx={{
                             height: 19,
-                            fontSize: 10.5,
+                            fontSize: 'var(--fx-type-root-xs)',
                             color: verbColor(entry.verb),
                             borderColor: verbColor(entry.verb),
                           }}
                         />
                       </TableCell>
-                      <TableCell sx={{ fontSize: 12, fontFamily: token("mono") }}>
+                      <TableCell sx={{ fontSize: 'var(--fx-type-root-sm)', fontFamily: token("mono") }}>
                         {entry.subject}
                       </TableCell>
                       <TableCell
                         sx={{
-                          fontSize: 11.5,
+                          fontSize: 'var(--fx-type-root-sm)',
                           fontFamily: token("mono"),
                           maxWidth: 340,
                           overflow: "hidden",
@@ -516,7 +516,7 @@ export default function AdminAuditTab() {
               setLimit(Number(e.target.value));
               setOffset(0);
             }}
-            sx={{ "& .MuiTablePagination-toolbar": { minHeight: 40 }, fontSize: 12 }}
+            sx={{ "& .MuiTablePagination-toolbar": { minHeight: 40 }, fontSize: 'var(--fx-type-root-sm)' }}
           />
         </>
       )}

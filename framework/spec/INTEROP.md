@@ -52,7 +52,8 @@ Kernel flag: `axf.interop` (default on) starts contributed adapters with the ker
 
 `invalid` · `not_implemented` · `denied` · `not_found` · `unavailable` (retryable) · `validation` ·
 `unexpected` (message never includes exception text). Reserved for adapters: `cancelled` · `timeout` ·
-`confirmation_required`. Unknown codes are read as `unexpected`. Codes never change meaning.
+`confirmation_required`. Added by console-control@1 (CONSOLE-CONTROL.md, Nov 13 2026): `ambiguous` (a short address names
+several targets; the answer lists the candidates). Unknown codes are read as `unexpected`. Codes never change meaning.
 
 ## `surface@1`
 

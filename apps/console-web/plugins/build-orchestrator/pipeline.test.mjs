@@ -13,6 +13,7 @@ import * as OC from './web/orchestrator-core.mjs';
 import { verdict as dispatchVerdict } from '../../../../framework/cli/dispatch-gate.mjs';
 import * as BP from '../../../../framework/core/build-pipeline.mjs';
 import { setUpgradePolicy } from '../../../../framework/core/model-switch.mjs';
+process.env.AXF_LOGIN_NOTIFY ??= 'off'; process.env.AXF_LOGIN_VERIFY ??= 'off'; // login events (claude-login-notify.mjs) never reach the real phone or Anthropic
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(HERE, '../../../..');
@@ -142,26 +143,32 @@ t('endOutcome: finished → built with a PR, complete without; crash requeues; c
 const raw = build('raw', 'pending', [], { title: 'Icon browser', detail: 'Add an icon browser plugin.\nList every icon pack.\nSearch by name.', origin: { said: 'I want an icon browser, dude.', addenda: [] } });
 t('splitPrompt carries the title, detail, his words and the JSON shape', () => {
   const p = P.splitPrompt(raw);
-  assert.match(p, /Icon browser/); assert.match(p, /icon browser, dude/); assert.match(p, /"steps"/); assert.match(p, /30 minutes or less/); assert.match(p, /Fable ONLY for/);
+  assert.match(p, /Icon browser/); assert.match(p, /icon browser, dude/); assert.match(p, /"steps"/); assert.match(p, /10 minutes or less/); assert.match(p, /checkpoints inside ONE session/); assert.match(p, /no step gets its own prompt or relaunch/); assert.match(p, /Fable ONLY for/);
+  assert.match(P.splitPrompt(raw, { maxStepMinutes: 30 }), /every step 10 minutes or less/, 'a stored 30 reads as the 10-minute ceiling');
+  assert.match(P.splitPrompt(raw, { maxStepMinutes: 5 }), /every step 5 minutes or less/, 'the rule can lower it');
 });
 t('parseSplit: JSON inside prose, models coerced, estimates checked', () => {
-  const ok = P.parseSplit('Here you go:\n{"steps":[{"text":"Design the icon-pack schema","model":"fable","estimate":"25 min","why":"schema"},{"text":"Wire the route","model":"Opus 5.5","estimate":20}]}\nDone.');
-  assert.equal(ok.error, ''); assert.equal(ok.steps.length, 2); assert.equal(ok.steps[0].model, 'Fable'); assert.equal(ok.steps[1].model, 'Opus'); assert.equal(ok.steps[1].estimate, '20 min'); assert.equal(ok.steps[0].id, 's1');
+  const ok = P.parseSplit('Here you go:\n{"steps":[{"text":"Design the icon-pack schema","model":"fable","estimate":"10 min","why":"schema"},{"text":"Write the docs","model":"Opus","estimate":"8"},{"text":"Wire the route","model":"Opus 5.5","estimate":9}]}\nDone.');
+  assert.equal(ok.error, ''); assert.equal(ok.steps.length, 3); ok.steps.splice(1, 1); assert.equal(ok.steps[0].model, 'Fable'); assert.equal(ok.steps[1].model, 'Opus'); assert.equal(ok.steps[1].estimate, '9 min'); assert.equal(ok.steps[0].id, 's1');
   assert.match(P.parseSplit('nothing here').error, /no JSON/);
   assert.match(P.parseSplit('{"steps":[]}').error, /no steps/);
-  assert.match(P.parseSplit('{"steps":[{"text":"Too big a step","model":"Opus","estimate":"2 h"}]}').error, /120 min \(limit 30\)/);
+  assert.match(P.parseSplit('{"steps":[{"text":"Too big a step","model":"Opus","estimate":"2 h"}]}').error, /120 min \(limit 10\)/);
+  assert.match(P.parseSplit('{"steps":[{"text":"Was fine before","model":"Opus","estimate":"25 min"}]}').error, /25 min \(limit 10\)/);
   assert.match(P.parseSplit('{"steps":[{"text":"No estimate","model":"Opus"}]}').error, /no estimate/);
   assert.equal(P.parseSplit('{"steps":[{"text":"Sonnet is never allowed","model":"Sonnet","estimate":"5 min"}]}').steps[0].model, 'Opus');
 });
 t('rulesSplit: one step per line, Fable for foundation words first, a closing test + PR step', () => {
   const s = P.rulesSplit(build('r', 'pending', [], { title: 'Thing', detail: 'Add the plugin UI.\nDesign the asset type schema for packs.\nWire the API route.' }));
   assert.equal(s.length, 4); assert.equal(s[0].model, 'Fable'); assert.match(s[0].text, /schema/); assert.equal(s[3].model, 'Opus'); assert.match(s[3].text, /report _claude\/builds\/reports\/r\.md/);
-  assert.ok(s.every((x) => (P.needsSplit({ status: 'pending', steps: [x] }) === false)));
+  assert.ok(s.every((x) => (P.needsSplit({ status: 'pending', steps: [x] }) === false))); assert.ok(s.every((x) => x.estimate === '10 min'));
   const bare = P.rulesSplit(build('b', 'pending', [], { title: 'Just a title' })); assert.equal(bare.length, 2); assert.equal(bare[0].text, 'Just a title');
 });
 t('needsSplit: no steps, a step over the limit or without an estimate; never a finished build', () => {
   assert.equal(P.needsSplit(raw), true);
-  assert.equal(P.needsSplit(build('x', 'pending', [step('s1', 'Opus')])), false);
+  assert.equal(P.needsSplit(build('x', 'pending', [{ ...step('s1', 'Opus'), estimate: '10 min' }])), false);
+  assert.equal(P.needsSplit(build('x', 'pending', [step('s1', 'Opus')])), true, '25 min is over the 10-minute limit');
+  assert.equal(P.needsSplit(build('x', 'pending', [{ ...step('s1', 'Opus'), createdAt: '2026-11-01T00:00:00.000Z' }])), false, 'a step written before the change keeps the 30-minute limit');
+  assert.equal(P.needsSplit(build('x', 'pending', [{ ...step('s1', 'Opus'), estimate: '40 min', createdAt: '2026-11-01T00:00:00.000Z' }])), true);
   assert.equal(P.needsSplit(build('x', 'pending', [{ ...step('s1', 'Opus'), estimate: '2 h' }])), true);
   assert.equal(P.needsSplit(build('x', 'pending', [{ ...step('s1', 'Opus'), estimate: '' }])), true);
   assert.equal(P.needsSplit(build('x', 'complete', [])), false);
@@ -196,6 +203,35 @@ t('alertFor: idle keyed once, per-build run keys, every kind has a title', () =>
   assert.equal(P.alertFor('failed', { id: 'b', title: 'B', note: 'n' }).severity, 'error'); assert.equal(P.alertFor('failed', { id: 'b' }).key, 'pipeline:end:b');
   assert.equal(P.alertFor('ended', { id: 'b', outcome: 'finished' }).severity, 'success');
   assert.throws(() => P.alertFor('bogus'), /unknown alert kind/);
+  const oa = P.alertFor('oauth', { id: 'b', title: 'B', account: 'w', error: 'OAuth token has expired', everyMin: 5 });
+  assert.equal(oa.key, 'pipeline:oauth:b'); assert.equal(oa.severity, 'error'); assert.match(oa.title, /login failed: w/); assert.match(oa.body, /OAuth token has expired[\s\S]*back to the Queue by itself/);
+  assert.equal(P.alertFor('oauth-ok', { id: 'b', account: 'w' }).key, 'pipeline:oauth:b', 'the recovery replaces the failure alert');
+});
+t('launch failures and crash reasons: the exact reason reaches the phone', () => {
+  const a = P.alertFor('launch-failed', { id: 'b', title: 'B', reasons: [{ account: 'w1', error: 'launcher exit 4: no Claude login to snapshot for "w1"' }, { account: 'w2', error: 'launcher exit 3: the VPS hard build limit is full' }], tries: 1, maxTries: 3 });
+  assert.match(a.key, /^pipeline:launch:b:\d+$/, 'each failed start is its own push'); assert.equal(a.severity, 'error'); assert.equal(a.title, "Couldn't start: B");
+  assert.match(a.body, /w1: launcher exit 4: no Claude login[\s\S]*w2: launcher exit 3: the VPS hard build limit is full[\s\S]*tried again next tick \(1\/3/);
+  assert.match(P.alertFor('launch-failed', { id: 'b', reasons: [{ account: 'w', error: 'x' }], tries: 3, maxTries: 3 }).body, /waits an hour/);
+  assert.equal(P.lastReasonOf('working\nError: ENOSPC: no space left on device, write\nmore output\n── finished (exit 1) · log: x ──'), 'Error: ENOSPC: no space left on device, write');
+  assert.equal(P.lastReasonOf('Not started: the VPS hard build limit stayed full for a day.\n'), 'Not started: the VPS hard build limit stayed full for a day.');
+  assert.equal(P.lastReasonOf('just stopped here\n# login w (a@b) · shared account login (saved)'), 'just stopped here', 'the launcher\'s own lines are not the reason');
+  assert.equal(P.lastReasonOf(''), '');
+});
+t('authFailureOf: Claude Code\'s sign-in errors at the end of a run log; talk about tokens or a usage limit is not one', () => {
+  assert.equal(P.authFailureOf('working…\nAPI Error: 401 {"type":"error","error":{"type":"authentication_error","message":"OAuth token has expired."}}\n── finished (exit 1) ──'), 'API Error: 401 {"type":"error","error":{"type":"authentication_error","message":"OAuth token has expired."}}');
+  assert.match(P.authFailureOf('Invalid API key · Please run /login'), /Please run \/login/);
+  assert.match(P.authFailureOf('\x1b[31mOAuth token has expired. Please obtain a new token or refresh your existing token.\x1b[0m'), /^OAuth token has expired/);
+  assert.equal(P.authFailureOf('I wrote the refresh-token save-back and the oauth alert.\nAll steps done.'), '', 'a build about tokens is not a login failure');
+  assert.equal(P.authFailureOf("You've hit your weekly limit · resets Mon"), '', 'a usage limit is not a login failure');
+  assert.equal(P.authFailureOf(['OAuth token has expired', ...Array(40).fill('later work')].join('\n')), '', 'only the end of the log counts');
+});
+t('authRecovered: a health answer newer than the failure that signs in; once', () => {
+  const w = { account: 'w', at: '2026-11-14T10:00:00Z', requeued: false };
+  assert.equal(P.authRecovered(w, { signedIn: true, at: '2026-11-14T10:05:00Z' }), true);
+  assert.equal(P.authRecovered(w, { signedIn: true, at: '2026-11-14T09:55:00Z' }), false, 'an answer from before the failure says nothing');
+  assert.equal(P.authRecovered(w, { signedIn: false, at: '2026-11-14T10:05:00Z' }), false);
+  assert.equal(P.authRecovered(w, { signedIn: true, at: '2026-11-14T10:05:00Z', skipped: true }), false, 'a skipped call proves nothing');
+  assert.equal(P.authRecovered({ ...w, requeued: true }, { signedIn: true, at: '2026-11-14T10:05:00Z' }), false, 're-queued once only');
 });
 t('settings normalise and clamp', () => {
   const s = P.normSettings({ parallelPerAccount: 99, maxRuns: 0, fablePlans: ['Max', 'TEAM'], splitProvider: 'nope', autoQueue: 'yes' });
@@ -288,6 +324,23 @@ t('actions: Queue → back to Pending / hold / archive / delete; live builds are
   assert.equal(BP.unarchivedStatus(build('x', 'archived', [step('s1', 'Opus', true)], { mergedAt: now })), 'complete');
   assert.equal(BP.unarchivedStatus(build('x', 'archived', [step('s1', 'Opus')])), 'pending');
 });
+t('one build account: only it takes builds, whatever its role; every other one (API too) is off, overflow included', () => {
+  const pick = (r) => ({ ...r, buildPick: 'console' });
+  const v = P.accountViews([...rows, apiRow('hulu-api')].map(pick), { console: { use: false } }, { settings });
+  const by = Object.fromEntries(v.map((a) => [a.name, a]));
+  assert.equal(P.buildPick(v.length ? [...rows, apiRow('hulu-api')].map(pick) : []), 'console');
+  assert.equal(by.console.usable, true, 'the pick wins over the pipeline\'s own off and over workers existing');
+  assert.equal(by.console.buildAccount, true);
+  for (const n of ['w-pro', 'w-max']) { assert.equal(by[n].usable, false); assert.match(by[n].why, /off for builds: console takes every build/); }
+  assert.equal(by['hulu-api'].api.usable, false, 'API accounts are off too');
+  assert.equal(P.routeFor(build('x', 'queued', []), v, 'Opus', P.normSettings({ apiOverflow: true })).account, 'console');
+  const busy = P.accountViews([...rows, apiRow('hulu-api')].map((r) => pick(r.name === 'console' ? { ...r, running: ['a', 'b'] } : r)), {}, { settings });
+  const r = P.routeFor(build('x', 'queued', []), busy, 'Opus', P.normSettings({ apiOverflow: true }));
+  assert.equal(r.account, '', 'the pick full = the build waits, no overflow');
+  const gone = P.accountViews(rows.map((x) => ({ ...x, buildPick: 'ghost' })), {}, { settings });
+  assert.ok(gone.every((a) => !a.usable)); assert.match(P.noAccountWhy(gone, 'Opus'), /one build account ghost is not saved/);
+  assert.equal(P.buildPick(rows), '', 'no pick = the normal routing');
+});
 t('routeOptions: every subscription in Brett\'s order, then every API account; route overrides respected', () => {
   const s = P.normSettings({});
   const rows = [{ name: 'b-sub', role: 'worker', plan: 'max', running: [] }, { name: 'a-sub', role: 'worker', plan: 'max', running: [] }, apiRow('hulu-api')];
@@ -369,7 +422,7 @@ echo "started axf-$name--fake in $(pwd)"
   const splitter = join(tmp, 'splitter.sh');
   writeFileSync(splitter, `#!/usr/bin/env bash
 cat > "${tmp}/split-prompt.txt"
-echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"20 min","why":"contract"},{"text":"Wire the UI and tests","model":"Opus","estimate":"25 min"}]}'
+echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"10 min","why":"contract"},{"text":"Wire the UI and tests","model":"Opus","estimate":"10 min"}]}'
 `); chmodSync(splitter, 0o755);
   const env = { ...process.env, AXF_BUILDS_STORE: storeFile, AXF_BUILD_HOOKS: 'off', AXF_BUILDS_LIVE: '0', AXF_SHIPPED: 'off', AXF_PIPELINE_DIR: pipeDir, AXF_SLOTS_DIR: slotsDir, AXF_SLOTS_TMUX: 'off', AXF_SLOTS_MEM_GB: '8', AXF_HEADLESS_DIR: hdir,
     AXF_CLAUDE_ACCOUNTS: accountsDir, AXF_CLAUDE_SEEN: join(workersDir, 'seen.json'), AXF_CLAUDE_WORKERS: workersDir, AXF_CLAUDE_HOME: join(tmp, 'claude-home'), AXF_CLAUDE_GLOBAL: join(tmp, 'claude.json'),
@@ -383,7 +436,7 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
   const find = (id) => store().builds.find((b) => b.id === id);
 
   orch('act', JSON.stringify({ action: 'add', id: 'alpha', title: 'Alpha feature', detail: 'Make the alpha thing.', said: 'build me alpha, kid' }));
-  orch('act', JSON.stringify({ action: 'add', id: 'beta', title: 'Beta feature', steps: [{ text: 'do beta', model: 'Opus', estimate: '20 min' }] }));
+  orch('act', JSON.stringify({ action: 'add', id: 'beta', title: 'Beta feature', steps: [{ text: 'do beta', model: 'Opus', estimate: '10 min' }] }));
   t('e2e intake: a new build with no steps is split by the orchestrator (fake Claude) and stays in Pending', () => {
     const r = json(pipe('intake', '--json'));
     assert.deepEqual(r.split.map((x) => x.id), ['alpha']);
@@ -413,6 +466,7 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     const a = find('alpha'); assert.equal(a.status, 'running'); assert.equal(a.pipeline.account, 'w-max'); assert.equal(a.pipeline.runs, 1); assert.match(a.pipeline.session, /^axf-alpha/); assert.equal(a.pipeline.model, 'Fable');
     assert.ok(existsSync(join(wtRoot, 'alpha', '.axf-brief.md')), 'a brief file is written in the worktree');
     const brief = readFileSync(join(wtRoot, 'alpha', '.axf-brief.md'), 'utf8'); assert.match(brief, /## Brett said \(verbatim\)/); assert.match(brief, /build me alpha, kid/); assert.match(brief, /Continue build "Alpha feature" \(alpha\)/);
+    assert.match(brief, /Checkpoints: Steps are checkpoints inside this ONE session/); assert.match(brief, /they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it/);
     assert.equal(json(pipe('tick', '--json')).launched.length, 0, 'nothing free: no second launch');
   });
   t('e2e one way to start builds: every dispatcher launch carries a token the gate accepts once; anything else is refused', () => {
@@ -472,6 +526,47 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     const st2 = JSON.parse(readFileSync(join(pipeDir, 'state.json'), 'utf8'));
     assert.equal(st2.idle, null); assert.ok(!st2.alerts.some((a) => a.key === 'pipeline:idle'), 'idle resolved once alpha runs');
   });
+  t('e2e login failure: the phone hears it, the build is held in Pending, and goes back to the Queue once the login works', () => {
+    const acct = find('alpha').pipeline.account; const runsBefore0 = find('alpha').pipeline.runs; const logFile = join(tmp, 'alpha-run.log');
+    writeFileSync(logFile, 'step 1…\nAPI Error: 401 {"type":"error","error":{"type":"authentication_error","message":"OAuth token has expired."}}\n── finished (exit 1) ──\n');
+    writeFileSync(join(hdir, 'events.jsonl'), readFileSync(join(hdir, 'events.jsonl'), 'utf8') + JSON.stringify({ event: 'session-end', session: find('alpha').pipeline.session, name: 'alpha', exit: 1, log: logFile, at: new Date().toISOString() }) + '\n');
+    let r = json(pipe('tick', '--json'));
+    const runsBefore = runsBefore0;
+    assert.deepEqual(r.ended.map((e) => [e.id, !!e.auth]), [['alpha', true]]);
+    assert.equal(find('alpha').pipeline.runs, runsBefore - 1, 'a run the login cut off does not count towards maxRuns');
+    assert.equal(find('alpha').status, 'pending', 'held: a relaunch would hit the same login'); assert.equal(r.launched.length, 0);
+    assert.ok(r.alertsSent.some((a) => a.key === 'pipeline:oauth:alpha'), 'phone alert sent'); assert.ok(!r.alertsSent.some((a) => a.key === 'pipeline:end:alpha'), 'one alert, the login one');
+    assert.match(find('alpha').notes.at(-1).text, /Claude login failure on .*OAuth token has expired/);
+    const waits = json(pipe('status', '--json')).state.authWaits; assert.equal(waits.alpha.account, acct); assert.equal(waits.alpha.requeued, false);
+    assert.ok(existsSync(join(pipeDir, 'health-request.json')), 'a health sweep is asked for at once');
+    r = json(pipe('tick', '--json')); assert.equal(find('alpha').status, 'pending', 'still held while the login is unproven'); assert.deepEqual(r.authRequeued, []);
+    // the health sweep: the account signs in again
+    const accFile = join(pipeDir, 'accounts.json'); const own = existsSync(accFile) ? JSON.parse(readFileSync(accFile, 'utf8')) : {};
+    own[acct] = { ...(own[acct] ?? {}), health: { signedIn: true, credits: true, fable: true, error: '', at: new Date().toISOString() } };
+    writeFileSync(accFile, JSON.stringify(own));
+    r = json(pipe('tick', '--json'));
+    assert.deepEqual(r.authRequeued, ['alpha']); assert.ok(r.alertsSent.some((a) => a.key === 'pipeline:oauth:alpha' && /works again/.test(a.title)), 'the phone hears it is back');
+    assert.ok(['queued', 'running'].includes(find('alpha').status), find('alpha').status);
+    assert.equal(json(pipe('status', '--json')).state.authWaits.alpha.requeued, true);
+    // the fake launcher reuses the session name, so the old end event closes the new run on the same login error:
+    // a second failure waits for a health answer newer than itself (no loop of re-queues on one sweep)
+    assert.deepEqual(json(pipe('tick', '--json')).authRequeued, [], 'one health answer re-queues once');
+  });
+  t('e2e a queued build that fails to start: the phone hears it at once with the exact reason', () => {
+    orch('act', JSON.stringify({ action: 'add', id: 'epsstart', title: 'Epsilon start', steps: [{ text: 'do epsstart', model: 'Opus', estimate: '10 min' }] }));
+    json(pipe('queue', 'epsstart', '--json'));
+    const bad = join(tmp, 'bad-launcher.sh');
+    writeFileSync(bad, '#!/usr/bin/env bash\necho "claude-login: no Claude login to snapshot for the account (log in, or save the account first)" >&2\nexit 4\n'); chmodSync(bad, 0o755);
+    const tk = spawnSync(process.execPath, [join(HERE, 'pipeline.mjs'), 'tick', '--json'], { cwd: ROOT, env: { ...env, AXF_PIPELINE_LAUNCHER: bad }, encoding: 'utf8', timeout: 120000 });
+    const r = json(tk);
+    const f = r.failed.find((x) => x.id === 'epsstart');
+    assert.ok(f, `epsstart was tried: ${JSON.stringify({ waits: r.plan.waits, launched: r.launched })}`);
+    const sentKey = r.alertsSent.find((a) => a.key.startsWith('pipeline:launch:epsstart:'));
+    assert.ok(sentKey, 'a launch-failed alert went out'); assert.equal(sentKey.title, "Couldn't start: Epsilon start");
+    assert.match(f.error, /launcher exit 4: claude-login: no Claude login to snapshot/, 'the exact reason, not a summary');
+    assert.equal(find('epsstart').status, 'queued', 'it stays in the Queue for the next try');
+    json(pipe('unqueue', 'epsstart', '--json'));
+  });
   t('e2e split request from the console is honoured on the next intake', () => {
     orch('act', JSON.stringify({ action: 'add', id: 'gamma', title: 'Gamma', steps: [{ text: 'big step', model: 'Opus', estimate: '3 h' }] }));
     json(pipe('split', 'gamma', '--request', '--json'));
@@ -507,6 +602,45 @@ echo 'Sure: {"steps":[{"text":"Design the contract","model":"Fable","estimate":"
     assert.ok(r.fixes.some((f) => /requeued ghost/.test(f)), r.fixes.join('; '));
     assert.equal(find('ghost').status, 'queued'); assert.equal(find('ghost').pipeline.account || '', '');
     json(pipe('unqueue', 'ghost', '--json'));
+  });
+  t('e2e double dispatch (Nov 13 2026): a live session blocks a second launch and the self-check never releases it', () => {
+    const pipeWith = (extra, ...a) => { const r = spawnSync(process.execPath, [join(HERE, 'pipeline.mjs'), ...a], { cwd: ROOT, env: { ...env, ...extra }, encoding: 'utf8', timeout: 120000 }); if (r.status !== 0) throw new Error(`pipeline ${a.join(' ')} failed (${r.status}):\n${r.stdout}\n${r.stderr}`); return r; };
+    const launches = () => readFileSync(join(tmp, 'launches.log'), 'utf8').split('\n').filter((l) => /--name dup /.test(l)).length;
+    orch('act', JSON.stringify({ action: 'add', id: 'dup', title: 'Dup', steps: [{ text: 'one step', model: 'Opus', estimate: '10 min' }] }));
+    json(pipe('queue', 'dup', '--json'));
+    mkdirSync(join(wtRoot, 'dup'), { recursive: true });
+    const old = new Date(Date.now() - 3600e3).toISOString();
+    // (1) the self-check: marked running with no session on record, but tmux axf-dup--fake is alive → kept, session adopted
+    { const st = store(); const d = st.builds.find((b) => b.id === 'dup'); d.status = 'running'; d.pipeline = { ...d.pipeline, account: 'w-pro', session: '', slot: 'hl-gone', launchedAt: old }; writeFileSync(storeFile, JSON.stringify(st)); }
+    let r = json(pipeWith({ AXF_BUILD_LOCK_TMUX: 'axf-dup--fake' }, 'selfcheck', '--json'));
+    assert.ok(!r.fixes.some((f) => /requeued dup/.test(f)), r.fixes.join('; '));
+    assert.equal(find('dup').status, 'running'); assert.equal(find('dup').pipeline.session, 'axf-dup--fake');
+    // (2) released too early (back in the Queue) while a renamed duplicate session is alive → the tick refuses to launch it again
+    { const st = store(); const d = st.builds.find((b) => b.id === 'dup'); d.status = 'queued'; d.pipeline = { ...d.pipeline, account: '', session: '', slot: '' }; writeFileSync(storeFile, JSON.stringify(st)); }
+    const before = launches();
+    r = json(pipeWith({ AXF_BUILD_LOCK_TMUX: 'axf-dup--fake-201500,axf-dupe-other--x' }, 'tick', '--json'));
+    assert.ok(!r.launched.some((l) => l.id === 'dup'), 'no second launch'); assert.equal(launches(), before);
+    assert.ok(r.plan.waits.some((w) => w.id === 'dup' && /already has a live session: tmux axf-dup--fake-201500/.test(w.why)), JSON.stringify(r.plan.waits));
+    assert.ok(!r.failed.some((f) => f.id === 'dup'), 'a gated launch is not a launch failure');
+    assert.equal(find('dup').status, 'running', 'the live session is adopted'); assert.equal(find('dup').pipeline.session, 'axf-dup--fake-201500');
+    // (3) a fresh lock alone (a launch waiting in the agent-slots queue: no tmux yet) also blocks the launch
+    { const st = store(); const d = st.builds.find((b) => b.id === 'dup'); d.status = 'queued'; d.pipeline = { ...d.pipeline, session: '' }; writeFileSync(storeFile, JSON.stringify(st)); }
+    writeFileSync(join(wtRoot, 'dup', '.axf-build.lock'), JSON.stringify({ $axf: 'build-lock@1', build: 'dup', session: '', beat: new Date().toISOString() }));
+    r = json(pipe('tick', '--json'));
+    assert.ok(!r.launched.some((l) => l.id === 'dup')); assert.equal(launches(), before); assert.equal(find('dup').status, 'queued');
+    assert.ok(r.plan.waits.some((w) => w.id === 'dup' && /lock launching/.test(w.why)));
+    // (4) a stale lock expires: the dispatcher launches once and writes a fresh lock with the session name
+    writeFileSync(join(wtRoot, 'dup', '.axf-build.lock'), JSON.stringify({ $axf: 'build-lock@1', build: 'dup', session: 'axf-dup--old', beat: old }));
+    r = json(pipe('tick', '--json'));
+    assert.deepEqual(r.launched.filter((l) => l.id === 'dup').length, 1, JSON.stringify({ waits: r.plan.waits, failed: r.failed })); assert.equal(launches(), before + 1);
+    const lk = JSON.parse(readFileSync(join(wtRoot, 'dup', '.axf-build.lock'), 'utf8'));
+    assert.equal(lk.build, 'dup'); assert.equal(lk.session, 'axf-dup--fake'); assert.equal(lk.expired, old);
+    assert.equal(json(pipe('tick', '--json')).launched.filter((l) => l.id === 'dup').length, 0, 'the next tick never launches it twice');
+    // the session ends: the lock goes with it
+    writeFileSync(join(hdir, 'events.jsonl'), readFileSync(join(hdir, 'events.jsonl'), 'utf8') + JSON.stringify({ event: 'session-end', session: find('dup').pipeline.session, name: 'dup', exit: 0, at: new Date().toISOString() }) + '\n');
+    json(pipe('tick', '--json'));
+    assert.ok(!existsSync(join(wtRoot, 'dup', '.axf-build.lock')), 'lock released at session end');
+    if (find('dup').status === 'queued') json(pipe('unqueue', 'dup', '--json'));
   });
   t('e2e hold / release / archive / delete / restore, one and many at once (bulk select)', () => {
     for (const id of ['h1', 'h2', 'h3']) { orch('act', JSON.stringify({ action: 'add', id, title: id.toUpperCase(), steps: [{ text: `do ${id}`, model: 'Opus', estimate: '20 min' }] })); json(pipe('queue', id, '--json')); }

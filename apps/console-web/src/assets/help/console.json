@@ -538,6 +538,27 @@
         "kind": "toggle"
       },
       {
+        "target": "get-my-skin-only-from-axhub",
+        "title": "Get my skin only from axHub",
+        "text": "On: this console takes its skin, colour theme and every token from axHub's look only, and a change made on axHub shows up here live. Skin picks, overrides, rolls, packages and Token Control changes made only in this console are kept, not used; their controls are locked and say Following axHub. Off (the default): this console's own look.",
+        "more": "Voice: \"lock the console to the axHub skin\" / \"unlock the console from the axHub skin\". REST, MCP and the CLI: the action appearance.hubskin:on|off (axf console action appearance.hubskin on), or the setting itself through console.settings / settings.set:axf.lock.hubskin:on|off.",
+        "related": [
+          "follow-the-hub-wide-skin",
+          "override-axhub"
+        ],
+        "kind": "toggle"
+      },
+      {
+        "target": "override-axhub",
+        "title": "Override axHub",
+        "text": "The switch under Get my skin only from axHub. You only have one or the other: turning Override on turns axHub-only off, and turning axHub-only back on turns Override off. While axHub-only is on, every screen that would change the skin or an asset is greyed out with a note and a Click here to override link; the link and this switch ask once, then unlock editing. What you edit from then on is marked Overridden and no longer refreshes or inherits any of its data from axHub.",
+        "more": "Voice: \"override the axHub skin\" / \"stop overriding the axHub skin\". REST, MCP and the CLI: the action appearance.hubskin.override:on|off (axf console action appearance.hubskin.override on), or the setting through console.settings / settings.set:axf.lock.hubskin.override:on|off. The overridden parts are the setting axf.lock.hubskin.overridden.",
+        "related": [
+          "get-my-skin-only-from-axhub"
+        ],
+        "kind": "toggle"
+      },
+      {
         "target": "refresh-the-list-live-builds-and-history",
         "title": "Refresh",
         "text": "Reloads the list, the live builds and the history."
@@ -955,6 +976,75 @@
         "target": "view:plan-studio.reader",
         "title": "Reader",
         "text": "Read a plan like a document."
+      },
+      {
+        "target": "action:console.control.search",
+        "title": "Search the console",
+        "kind": "control",
+        "text": "One search over every screen, tab, setting, button, plugin, help entry and what's loaded right now (build rows and steps, UI Review items, chat lines). Pick a hit and it's pulled into focus. Same thing without the console: REST /api/console-control, the console_control_* MCP tools, axf console, or say it to AmberX.",
+        "tryIt": "Ctrl+K, type a few words, Enter.",
+        "related": [
+          "action:console.control.focus",
+          "search-the-console"
+        ]
+      },
+      {
+        "target": "action:console.control.open",
+        "title": "Open by address",
+        "kind": "control",
+        "text": "Opens a place by its address: a screen (view:settings), a tab (view:settings/tab:settings.tabs=plugins), a setting, a build row or step. Opens every parent on the way. Same thing without the console: REST /api/console-control, the console_control_* MCP tools, axf console, or say it to AmberX."
+      },
+      {
+        "target": "action:console.control.focus",
+        "title": "Pull into focus",
+        "kind": "control",
+        "text": "Opens the place, scrolls it into view and highlights it. A build step on another tab works too: its tab opens and its row unfolds first. Same thing without the console: REST /api/console-control, the console_control_* MCP tools, axf console, or say it to AmberX.",
+        "related": [
+          "action:console.control.open"
+        ]
+      },
+      {
+        "target": "action:console.control.scroll",
+        "title": "Scroll",
+        "kind": "control",
+        "text": "Scrolls the active pane: up, down, page-up, page-down, top or bottom. The answer says where the pane ended up. Same thing without the console: REST /api/console-control, the console_control_* MCP tools, axf console, or say it to AmberX."
+      },
+      {
+        "target": "action:console.control.state",
+        "title": "Where the console is",
+        "kind": "control",
+        "text": "Reads the screen, its open tabs, the scroll, what's focused and any open dialog; with an address, that one thing's value and whether it can be pressed or set. Same thing without the console: REST /api/console-control, the console_control_* MCP tools, axf console, or say it to AmberX."
+      },
+      {
+        "target": "action:console.control.press",
+        "title": "Press by address",
+        "kind": "control",
+        "text": "Presses a button or runs a console function by address. Anything that deletes asks for confirm first; approve and deny are never pressed by a command, only by Brett. Same thing without the console: REST /api/console-control, the console_control_* MCP tools, axf console, or say it to AmberX."
+      },
+      {
+        "target": "action:console.control.set",
+        "title": "Set by address",
+        "kind": "control",
+        "text": "Sets a setting, tab or selection by address (address:value). The value is checked against the setting's type and range; owner-only Claude settings refuse. Same thing without the console: REST /api/console-control, the console_control_* MCP tools, axf console, or say it to AmberX."
+      },
+      {
+        "target": "action:console.control.plugin",
+        "title": "Turn a plugin on or off",
+        "kind": "control",
+        "text": "Turns a plugin on or off (plugin:on|off) and says what else loses a feature or stops working. Core plugins refuse with the reason. Same thing without the console: REST /api/console-control, the console_control_* MCP tools, axf console, or say it to AmberX."
+      },
+      {
+        "target": "search-the-console",
+        "title": "Search the console",
+        "kind": "field",
+        "text": "Type a few words: screens, tabs, settings, buttons, plugins, rows and steps that match are listed best first. Arrow keys move, Enter pulls the hit into focus, Esc closes.",
+        "tryIt": "Try “dark mode” or a build's name."
+      },
+      {
+        "target": "what-to-search",
+        "title": "What to search",
+        "kind": "tab",
+        "text": "Narrows the hits: everything, screens and tabs, settings, buttons, plugins, or the rows and steps loaded right now."
       }
     ],
     "intros": [

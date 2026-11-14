@@ -65,7 +65,7 @@ function replaceOverrides(next: ThemeValues): void {
 function Swatch({ color, title }: { color: string; title: string }) {
   return (
     <Tooltip title={`${title} ${color}`}>
-      <Box sx={{ width: 16, height: 16, borderRadius: "4px", background: color, border: `1px solid ${token("edge")}`, flexShrink: 0 }} />
+      <Box sx={{ width: 16, height: 16, borderRadius: "var(--fx-radius-sm)", background: color, border: `var(--fx-border-w) solid ${token("edge")}`, flexShrink: 0 }} />
     </Tooltip>
   );
 }
@@ -82,13 +82,13 @@ function Summary({ group, values }: { group: Group; values: ThemeValues }) {
   }
   if (group.id === "layout") {
     return (
-      <Typography sx={{ fontSize: 11.5, color: token("dim"), ...MONO }}>
+      <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim"), ...MONO }}>
         nav {String(values.navPlacement)} · {String(values.navStyle)} · density {String(values.density)} · pad {String(values.pagePad)}
       </Typography>
     );
   }
   return (
-    <Typography sx={{ fontSize: 11.5, color: token("dim"), ...MONO, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 320 }}>
+    <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim"), ...MONO, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", maxWidth: 320 }}>
       {String(values.sans).split(",")[0].replace(/["']/g, "")} · {String(values.sizeBody)}px · radius {String(values.radius)} · {String(values.motionMs)}ms
     </Typography>
   );
@@ -105,7 +105,7 @@ function DialEditor({ dial, value, onChange }: { dial: Dial; value: string | num
             value={String(value)}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => onChange(e.target.value)}
             aria-label={dial.label}
-            sx={{ width: 28, height: 22, p: 0, border: `1px solid ${token("edge")}`, borderRadius: "4px", background: "transparent", cursor: "pointer" }}
+            sx={{ width: 28, height: 22, p: 0, border: `var(--fx-border-w) solid ${token("edge")}`, borderRadius: "var(--fx-radius-sm)", background: "transparent", cursor: "pointer" }}
           />
           <TextField
             size="small"
@@ -114,7 +114,7 @@ function DialEditor({ dial, value, onChange }: { dial: Dial; value: string | num
               const v = e.target.value.trim();
               if (/^#[0-9a-fA-F]{6}$/.test(v)) onChange(v.toLowerCase());
             }}
-            slotProps={{ htmlInput: { style: { fontFamily: "var(--axf-mono)", fontSize: 12, width: 72, padding: "4px 8px" } } }}
+            slotProps={{ htmlInput: { style: { fontFamily: "var(--axf-mono)", fontSize: 'var(--fx-type-root-sm)', width: 72, padding: "var(--fx-dens-gap-md) var(--fx-dens-gap-xl)" } } }}
           />
         </Stack>
       );
@@ -129,16 +129,16 @@ function DialEditor({ dial, value, onChange }: { dial: Dial; value: string | num
               const n = Number(e.target.value);
               if (Number.isFinite(n)) onChange(Math.min(dial.max, Math.max(dial.min, n)));
             }}
-            slotProps={{ htmlInput: { min: dial.min, max: dial.max, step: dial.step, style: { fontFamily: "var(--axf-mono)", fontSize: 12, width: 64, padding: "4px 8px" } } }}
+            slotProps={{ htmlInput: { min: dial.min, max: dial.max, step: dial.step, style: { fontFamily: "var(--axf-mono)", fontSize: 'var(--fx-type-root-sm)', width: 64, padding: "var(--fx-dens-gap-md) var(--fx-dens-gap-xl)" } } }}
           />
-          {dial.unit && <Typography sx={{ fontSize: 11, color: token("dim") }}>{dial.unit}</Typography>}
+          {dial.unit && <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim") }}>{dial.unit}</Typography>}
         </Stack>
       );
     case "enum":
       return (
         <TextField select size="small" value={String(value)} onChange={(e) => onChange(e.target.value)} sx={{ minWidth: 140 }}>
           {dial.options.map((o) => (
-            <MenuItem key={o} value={o} sx={{ fontSize: 12.5 }}>
+            <MenuItem key={o} value={o} sx={{ fontSize: 'var(--fx-type-root-md)' }}>
               {o}
             </MenuItem>
           ))}
@@ -150,7 +150,7 @@ function DialEditor({ dial, value, onChange }: { dial: Dial; value: string | num
           size="small"
           value={String(value)}
           onChange={(e) => onChange(e.target.value)}
-          slotProps={{ htmlInput: { style: { fontFamily: "var(--axf-mono)", fontSize: 12, width: 220, padding: "4px 8px" } } }}
+          slotProps={{ htmlInput: { style: { fontFamily: "var(--axf-mono)", fontSize: 'var(--fx-type-root-sm)', width: 220, padding: "var(--fx-dens-gap-md) var(--fx-dens-gap-xl)" } } }}
         />
       );
   }
@@ -198,10 +198,10 @@ export default function ThemeTab() {
     <Stack spacing={1.4}>
       <Stack direction="row" spacing={1} useFlexGap sx={{ alignItems: "center", flexWrap: "wrap" }}>
         <Box sx={{ minWidth: 0 }}>
-          <Typography sx={{ fontSize: 13, fontWeight: 600 }}>
+          <Typography sx={{ fontSize: 'var(--fx-type-root-md)', fontWeight: 600 }}>
             {state.rolled ? state.rolled.name : "AmberX default"}
           </Typography>
-          <Typography sx={{ fontSize: 11.5, color: token("dim"), ...MONO }}>
+          <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim"), ...MONO }}>
             {state.seed ? `seed ${state.seed}` : "no roll applied"} · {Object.keys(state.overrides).length} override{Object.keys(state.overrides).length === 1 ? "" : "s"}
           </Typography>
         </Box>
@@ -214,8 +214,8 @@ export default function ThemeTab() {
             if (v) theme.setOptions({ mode: v });
           }}
         >
-          <ToggleButton value="dark" sx={{ textTransform: "none", fontSize: 12, py: 0.3 }}>Dark</ToggleButton>
-          <ToggleButton value="light" sx={{ textTransform: "none", fontSize: 12, py: 0.3 }}>Light</ToggleButton>
+          <ToggleButton value="dark" sx={{ textTransform: "none", fontSize: 'var(--fx-type-root-sm)', py: 0.3 }}>Dark</ToggleButton>
+          <ToggleButton value="light" sx={{ textTransform: "none", fontSize: 'var(--fx-type-root-sm)', py: 0.3 }}>Light</ToggleButton>
         </ToggleButtonGroup>
         <Tooltip title="A fresh theme — every group at once. Drops all overrides.">
           <Button size="small" variant="outlined" onClick={() => theme.roll()}>
@@ -229,10 +229,10 @@ export default function ThemeTab() {
         </Tooltip>
       </Stack>
 
-      <Box sx={{ border: `1px solid ${token("edge")}`, borderRadius: 1, overflow: "hidden" }}>
+      <Box sx={{ border: `var(--fx-border-w) solid ${token("edge")}`, borderRadius: 'var(--fx-radius-md)', overflow: "hidden" }}>
         <Table size="small">
           <TableHead>
-            <TableRow sx={{ "& th": { background: token("panel2"), fontSize: 11, letterSpacing: "0.06em", textTransform: "uppercase", color: token("dim") } }}>
+            <TableRow sx={{ "& th": { background: token("panel2"), fontSize: 'var(--fx-type-root-xs)', letterSpacing: "0.06em", textTransform: "uppercase", color: token("dim") } }}>
               <TableCell sx={{ width: 36 }} />
               <TableCell>Theme</TableCell>
               <TableCell>Current</TableCell>
@@ -255,14 +255,14 @@ export default function ThemeTab() {
                         disabled={!on}
                         aria-label={expanded ? "Collapse" : "Expand"}
                         onClick={() => setOpenRows((o) => ({ ...o, [g.id]: !(o[g.id] ?? true) }))}
-                        sx={{ transition: "transform 160ms", transform: expanded ? "rotate(90deg)" : "none", fontSize: 12 }}
+                        sx={{ transition: "transform 160ms", transform: expanded ? "rotate(90deg)" : "none", fontSize: 'var(--fx-type-root-sm)' }}
                       >
                         ▶
                       </IconButton>
                     </TableCell>
                     <TableCell sx={{ py: 0.6 }}>
-                      <Typography sx={{ fontSize: 13, fontWeight: 600 }}>{g.title}</Typography>
-                      <Typography sx={{ fontSize: 11, color: token("dim") }}>{g.blurb}</Typography>
+                      <Typography sx={{ fontSize: 'var(--fx-type-root-md)', fontWeight: 600 }}>{g.title}</Typography>
+                      <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim") }}>{g.blurb}</Typography>
                     </TableCell>
                     <TableCell sx={{ py: 0.6 }}>
                       <Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
@@ -290,22 +290,22 @@ export default function ThemeTab() {
                               {dials.map((d) => {
                                 const set = d.id in state.overrides;
                                 return (
-                                  <TableRow key={d.id} sx={{ "& td": { borderBottom: `1px solid ${token("edge")}`, py: 0.5 } }}>
+                                  <TableRow key={d.id} sx={{ "& td": { borderBottom: `var(--fx-border-w) solid ${token("edge")}`, py: 0.5 } }}>
                                     <TableCell sx={{ width: "34%" }}>
-                                      <Typography sx={{ fontSize: 12.5, fontWeight: 600 }}>{d.label}</Typography>
-                                      <Typography sx={{ fontSize: 10.5, color: token("dim"), ...MONO }}>
+                                      <Typography sx={{ fontSize: 'var(--fx-type-root-md)', fontWeight: 600 }}>{d.label}</Typography>
+                                      <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim"), ...MONO }}>
                                         {d.id} · {d.cssVar}
                                       </Typography>
                                     </TableCell>
                                     <TableCell sx={{ width: "36%" }}>
-                                      <Typography sx={{ fontSize: 11, color: token("dim") }}>{d.effect}</Typography>
+                                      <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim") }}>{d.effect}</Typography>
                                     </TableCell>
                                     <TableCell>
                                       <Stack direction="row" spacing={0.8} sx={{ alignItems: "center", justifyContent: "flex-end" }}>
                                         <DialEditor dial={d} value={state.values[d.id]} onChange={(v) => theme.setValue(d.id, v)} />
                                         <Tooltip title={set ? "Follow the rolled theme for this token" : "Following the rolled theme"}>
                                           <span>
-                                            <Button size="small" color="inherit" disabled={!set} onClick={() => resetDial(d.id)} sx={{ minWidth: 0, px: 0.8, color: token("dim"), fontSize: 11 }}>
+                                            <Button size="small" color="inherit" disabled={!set} onClick={() => resetDial(d.id)} sx={{ minWidth: 0, px: 0.8, color: token("dim"), fontSize: 'var(--fx-type-root-xs)' }}>
                                               ↺
                                             </Button>
                                           </span>
@@ -327,7 +327,7 @@ export default function ThemeTab() {
           </TableBody>
         </Table>
       </Box>
-      <Typography sx={{ fontSize: 11.5, color: token("dim") }}>
+      <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>
         The theme is kept per browser. Rolling a group pins its dials as overrides; “Roll everything” starts a fresh theme and drops them.
       </Typography>
     </Stack>

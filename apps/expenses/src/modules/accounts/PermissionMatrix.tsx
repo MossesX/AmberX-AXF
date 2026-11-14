@@ -133,19 +133,19 @@ export default function PermissionMatrix() {
     }
   };
 
-  const headCell = { fontSize: 11, color: token("dim"), whiteSpace: "nowrap" } as const;
+  const headCell = { fontSize: 'var(--fx-type-root-xs)', color: token("dim"), whiteSpace: "nowrap" } as const;
 
   return (
-    <Stack sx={{ gap: 1 }}>
-      <Typography sx={{ fontSize: 13.5, fontWeight: 700 }}>
+    <Stack sx={{ gap: 'var(--fx-dens-gap-xl)' }}>
+      <Typography sx={{ fontSize: 'var(--fx-type-root-md)', fontWeight: 700 }}>
         Permission matrix
-        <Typography component="span" sx={{ fontSize: 11.5, color: token("dim"), ml: 1 }}>
+        <Typography component="span" sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim"), ml: 1 }}>
           which registered modules each account may open
         </Typography>
       </Typography>
 
       {error && (
-        <Alert severity="error" variant="outlined" sx={{ fontSize: 12 }}>
+        <Alert severity="error" variant="outlined" sx={{ fontSize: 'var(--fx-type-root-sm)' }}>
           {error}
         </Alert>
       )}
@@ -181,10 +181,10 @@ export default function PermissionMatrix() {
                 return (
                   <TableRow key={u.username} hover>
                     <TableCell sx={{ whiteSpace: "nowrap" }}>
-                      <Typography sx={{ fontSize: 12.5, fontWeight: 600 }}>
+                      <Typography sx={{ fontSize: 'var(--fx-type-root-md)', fontWeight: 600 }}>
                         {u.screenname ?? u.username}
                       </Typography>
-                      <Typography sx={{ fontSize: 10.5, color: token("dim"), fontFamily: token("mono") }}>
+                      <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim"), fontFamily: token("mono") }}>
                         {u.username} · {u.role}
                       </Typography>
                     </TableCell>
@@ -256,16 +256,16 @@ export default function PermissionMatrix() {
 
                     <TableCell sx={{ whiteSpace: "nowrap" }}>
                       {admin ? (
-                        <Typography sx={{ fontSize: 11.5, color: token("dim") }}>always full</Typography>
+                        <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>always full</Typography>
                       ) : revoked > 0 ? (
-                        <Stack direction="row" sx={{ alignItems: "center", gap: 0.75 }}>
+                        <Stack direction="row" sx={{ alignItems: "center", gap: 'var(--fx-dens-gap-lg)' }}>
                           <Glyph id="icon-eye-off" size={13} />
-                          <Typography sx={{ fontSize: 11.5, color: token("warn") }}>
+                          <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("warn") }}>
                             {revoked} module{revoked === 1 ? "" : "s"} revoked
                           </Typography>
                         </Stack>
                       ) : (
-                        <Typography sx={{ fontSize: 11.5, color: token("dim") }}>full access</Typography>
+                        <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>full access</Typography>
                       )}
                     </TableCell>
                   </TableRow>

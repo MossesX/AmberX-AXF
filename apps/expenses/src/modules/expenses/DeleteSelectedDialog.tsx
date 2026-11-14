@@ -60,10 +60,10 @@ export default function DeleteSelectedDialog({
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-      <DialogTitle sx={{ fontSize: 15, fontWeight: 700, pb: 1 }}>
+      <DialogTitle sx={{ fontSize: 'var(--fx-type-root-lg)', fontWeight: 700, pb: 1 }}>
         Delete {rows.length} selected transaction{rows.length === 1 ? "" : "s"}?
       </DialogTitle>
-      <DialogContent dividers sx={{ display: "grid", gap: 1.2 }}>
+      <DialogContent dividers sx={{ display: "grid", gap: 'var(--fx-dens-gap-2xl)' }}>
         {rows.length === 0 ? (
           <Alert severity="info">Nothing is selected any more.</Alert>
         ) : (
@@ -71,7 +71,7 @@ export default function DeleteSelectedDialog({
             <Alert severity="warning" sx={{ py: 0 }}>
               There is no undo in this store. These rows are removed from the ledger the moment you confirm.
             </Alert>
-            <Box sx={{ overflow: "auto", maxHeight: 420, border: `1px solid ${token("edge")}`, borderRadius: 1 }}>
+            <Box sx={{ overflow: "auto", maxHeight: 420, border: `var(--fx-border-w) solid ${token("edge")}`, borderRadius: 'var(--fx-radius-md)' }}>
               <Table size="small" stickyHeader>
                 <TableHead>
                   <TableRow>
@@ -112,7 +112,7 @@ export default function DeleteSelectedDialog({
                 </TableBody>
               </Table>
             </Box>
-            <Typography sx={{ fontSize: 12, color: token("dim") }}>
+            <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>
               Removing <Box component="span" sx={{ ...MONO, color: token("ink") }}>{money(spent)}</Box> of spending
               {income > 0 && (
                 <>

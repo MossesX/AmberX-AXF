@@ -2,7 +2,7 @@
  * build-pipeline@1 — the pipeline record on a builds@1 build and the three table states (pure, IO-free).
  *
  * Brett, Nov 8 2026 ("You need to start the pipeline over from scratch"): everything he asks for becomes a build in the
- * orchestrator, which assigns the id, splits it into steps (≤ 30 min, Fable only where needed) and puts it in
+ * orchestrator, which assigns the id, splits it into steps (≤ 10 min, checkpoints inside one session; Fable only where needed) and puts it in
  * **Pending**. He moves builds from Pending to the **Queue**. A dispatcher on the VPS watches the connected Claude
  * accounts (which have Fable, how many may run in parallel) and the agent slots; when a slot is free it takes the next
  * Queue build and starts a headless session on an account that can run the next phase's model (**Building**).

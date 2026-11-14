@@ -58,7 +58,7 @@ function approvals() {
       {
         id: mk(2), tool: 'github.pulls/create', title: 'Open a pull request: landing page copy',
         summary: 'Opens PR "Landing page copy" on the demo repo.', createdAt: iso(4), expiresAt: new Date(now.getTime() + 3600_000).toISOString(),
-        url: `${hub}/auth/admin/approvals/${mk(2)}`, source: { kind: 'agent', who: 'Molly' },
+        url: `${hub}/auth/admin/approvals/${mk(2)}`, source: { kind: 'agent', who: 'Gizmo' },
       },
       {
         id: mk(3), tool: 'hub.memory_write', title: 'Save the weekly plan',

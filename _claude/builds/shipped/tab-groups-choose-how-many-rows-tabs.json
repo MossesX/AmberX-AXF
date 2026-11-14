@@ -1,0 +1,275 @@
+{
+ "$axf": "shipped-manifest@1",
+ "version": 1,
+ "id": "sm-tab-groups-choose-how-many-rows-tabs",
+ "rev": 1,
+ "source": "orchestrator",
+ "by": "orchestrator",
+ "shippedAt": "2026-11-13T20:21:26Z",
+ "build": {
+  "id": "tab-groups-choose-how-many-rows-tabs",
+  "title": "Tab groups: choose how many rows of tabs (stack tabs instead of side-scrolling)",
+  "profile": "all",
+  "category": "",
+  "priority": "P2",
+  "repo": "amberx-axf"
+ },
+ "said": {
+  "text": "I want to be able to select how many rows it is so you can stack tab groups, so it fits on the page without scrolling to the right, you can say three and it will list three rows of tabs",
+  "verbatim": true,
+  "at": "2026-11-13T17:51:25.212Z",
+  "source": "",
+  "by": "tab-groups-choose-how-many-rows-tabs",
+  "addenda": []
+ },
+ "brief": "# Build: tab-groups-choose-how-many-rows-tabs\n\n## Brett said (verbatim)\nAt: 2026-11-13T17:51:25.212Z\n> I want to be able to select how many rows it is so you can stack tab groups, so it fits on the page without scrolling to the right, you can say three and it will list three rows of tabs\n\n## What to build\nContinue build \"Tab groups: choose how many rows of tabs (stack tabs instead of side-scrolling)\" (tab-groups-choose-how-many-rows-tabs) — Phase 1, model Opus.\nWhat Brett asked for (build-origin@1, his words come first; a paraphrase never replaces them):\nBrett said (2026-11-13 17:51):\n\"I want to be able to select how many rows it is so you can stack tab groups, so it fits on the page without scrolling to the right, you can say three and it will list three rows of tabs\"\nModel switches: a downgrade (e.g. Fable → Opus) is fine. Fable upgrades need no approval right now (Brett, Nov 4 2026: \"If it needs Fable, set it to be Fable\"): a step that needs Fable (schemas, asset types, contracts, engines/kernel, cross-app protocols) is set to Fable and runs on Fable; the switch is recorded on the build. Never launch a step on a higher model than it is pinned to: raise the step first.\nRules: stay in this one session; no sub-agents; steps ≤ 10 min; read only the files listed; stop at the end of this phase.\nCheckpoints: Steps are checkpoints inside this ONE session, not separate tasks: work through them in order without stopping between them; when a step is finished, commit it on your branch, push, then tick it done before starting the next. Nothing is lost if the session dies: the next session picks up at the first open step on the same branch. Never ask for a new prompt or a relaunch per step.\nLook: UI code (handwritten or generated) conforms to the hot-swappable asset system: every colour, size, spacing, font, radius and border comes from asset tokens (--fx-* colour/style, --fx-type-* / --fx-dens-* / --fx-size-* scale, --fx-radius-*, --fx-border-w; Kotlin: Axf.colors / Axf.type / Axf.space / Axf.shapes), framework controls instead of raw ones, no var() fallbacks. `node framework/cli/check-theme.mjs` and `check-controls.mjs` must pass (CI fails otherwise); `node framework/cli/scale-adopt.mjs <path>` moves most literals onto the tokens.\nAPI: Everything comes with an API (Brett, Nov 8 2026): anything this build adds or changes that has a UI gets full API control: a deep link that opens it (console_show / console_open target), its state readable, and every action and setting it offers callable without the UI, through the console API (REST), MCP tools (console actions, plugin commands, control@1 for tokens and planner items), the CLI and voice (AmberX), all four the same. A UI-only feature is not done; say in the PR how each one is reached.\nSteps in this phase (3 left, ~30 min):\n[ ] s1 (~10 min) Add a 'Rows' setting to every tab group's chrome settings (per instance): 1 (default, today's behaviour), 2, 3, ... or Auto (as many rows as needed to fit). Tabs wrap evenly across that many rows so all tabs fit on the page without horizontal scrolling. Works on desktop and phone, follows skins/tokens, persists per instance, survives reload. Active tab stays visible; drag-reorder works across rows. Expose via REST/MCP/CLI/voice/control@1 ('make the settings tabs three rows'). Tests, help entry, Shipped features.\n[ ] s2 (~10 min) I want to be able to select how many rows it is so you can stack tab groups, so it fits on the page without scrolling to the right, you can say three and it will list three rows of tabs\n[ ] s3 (~10 min) Tests green, report _claude/builds/reports/tab-groups-choose-how-many-rows-tabs.md, THREADS row, commit, push, PR\nRead first: _claude/builds/reports/tab-groups-choose-how-many-rows-tabs.md, _claude/THREADS.md\nTick each step right after its commit: node apps/console-web/plugins/build-orchestrator/orchestrator.mjs act step tab-groups-choose-how-many-rows-tabs <stepId> done — it reaches main at once (builds-live). Link your branch / PR: node framework/cli/builds-live.mjs link tab-groups-choose-how-many-rows-tabs --branch <b> --pr <n>.\nWatch live: when you start on a screen, run `node framework/cli/axf.mjs focus <app> [route] [css-selector] --note \"…\"` so the live preview follows you.\nScreenshots that are not for approval (checking a screen, live captures, before/after): axf shot <file> --name \"…\" --app … --screen … --group \"<build name>\" (UI Review → Screenshots; ui-review-item@1), never the review queue.\n\n## Pipeline\nThis session was started by the orchestrator's dispatcher on Claude account mossesx-max- for the Opus phase. Work through every step of the phase in this one session: they are checkpoints, not separate tasks. As each step finishes, commit it on your branch, push, and tick it (orchestrator.mjs act step tab-groups-choose-how-many-rows-tabs <stepId> done), then go straight on to the next; nothing is lost if the session dies, the next one starts at the first open step on the same branch. When this phase's steps are done, stop: the dispatcher starts the next phase on the right account. If you must stop early with steps left, say why in a build note (orchestrator.mjs act note tab-groups-choose-how-many-rows-tabs \"…\"); the build goes back to Pending for Brett.\n",
+ "models": [
+  "Opus"
+ ],
+ "accounts": [
+  "mossesx-max-"
+ ],
+ "runs": [
+  {
+   "session": "axf-tab-groups-choose-how-many-rows-tabs--rhonda",
+   "account": "mossesx-max-",
+   "model": "Opus",
+   "startedAt": "2026-11-13T17:54:13.957Z",
+   "endedAt": "2026-11-13T18:12:59.762Z",
+   "exit": 0,
+   "costUsd": 4.1418
+  }
+ ],
+ "steps": [
+  {
+   "id": "s1",
+   "text": "Add a 'Rows' setting to every tab group's chrome settings (per instance): 1 (default, today's behaviour), 2, 3, ... or Auto (as many rows as needed to fit). Tabs wrap evenly across that many rows so all tabs fit on the page without horizontal scrolling. Works on desktop and phone, follows skins/tokens, persists per instance, survives reload. Active tab stays visible; drag-reorder works across rows. Expose via REST/MCP/CLI/voice/control@1 ('make the settings tabs three rows'). Tests, help entry, Shipped features.",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-13T17:54:13.957Z",
+   "doneAt": "2026-11-13T18:02:17.038Z",
+   "actualMin": 8,
+   "done": true
+  },
+  {
+   "id": "s2",
+   "text": "I want to be able to select how many rows it is so you can stack tab groups, so it fits on the page without scrolling to the right, you can say three and it will list three rows of tabs",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-13T18:02:17.038Z",
+   "doneAt": "2026-11-13T18:08:51.017Z",
+   "actualMin": 7,
+   "done": true
+  },
+  {
+   "id": "s3",
+   "text": "Tests green, report _claude/builds/reports/tab-groups-choose-how-many-rows-tabs.md, THREADS row, commit, push, PR",
+   "model": "Opus",
+   "estimate": "10 min",
+   "estimateMin": 10,
+   "startedAt": "2026-11-13T18:08:51.017Z",
+   "doneAt": "2026-11-13T18:12:28.097Z",
+   "actualMin": 4,
+   "done": true
+  }
+ ],
+ "branch": "claude/tab-groups-choose-how-many-rows-tabs",
+ "pr": {
+  "repo": "amberx-axf",
+  "number": 623,
+  "url": "https://github.com/MossesX/AmberX-AXF/pull/623"
+ },
+ "landedCommit": "240263ee909377d097cc888265f6faf6037040dc",
+ "commits": [
+  "c3121568a32ef82c1591267f63159296b3dbd06d",
+  "67b2e35b585cd251a6ef2a568ca92eed37bccf8e",
+  "b152b4b04eb707333e809b2c4807bab409fb5eae",
+  "4e50ec800b5778a9d9e77d95af8eb5b99fe3ae19"
+ ],
+ "mergedAt": "2026-11-13T19:53:40Z",
+ "landedAt": "2026-11-13T19:53:35Z",
+ "files": [
+  "_claude/THREADS.md",
+  "_claude/builds/reports/tab-groups-choose-how-many-rows-tabs.md",
+  "_claude/builds/reports/tab-groups-choose-how-many-rows-tabs/shots/desktop-rows-1-3-2-auto.png",
+  "_claude/builds/reports/tab-groups-choose-how-many-rows-tabs/shots/phone-rows-1-3-2-auto.png",
+  "apps/amberx-droid/src/axf/assets/help/framework.json",
+  "apps/amberx-droid/src/axf/core/engines/chrome-settings-rules.d.mts",
+  "apps/amberx-droid/src/axf/core/engines/chrome-settings-rules.mjs",
+  "apps/amberx-droid/src/axf/react/components/ChromeContext.tsx",
+  "apps/amberx-droid/src/axf/react/components/TabGroup.tsx",
+  "apps/amberx-droid/src/axf/ui/axf.css",
+  "apps/axhub-web/src/axf/assets/help/framework.json",
+  "apps/axhub-web/src/axf/core/engines/chrome-settings-rules.d.mts",
+  "apps/axhub-web/src/axf/core/engines/chrome-settings-rules.mjs",
+  "apps/axhub-web/src/axf/react/components/ChromeContext.tsx",
+  "apps/axhub-web/src/axf/react/components/TabGroup.tsx",
+  "apps/axhub-web/src/axf/ui/axf.css",
+  "apps/console-web/src/axf/assets/help/framework.json",
+  "apps/console-web/src/axf/core/engines/chrome-settings-rules.d.mts",
+  "apps/console-web/src/axf/core/engines/chrome-settings-rules.mjs",
+  "apps/console-web/src/axf/react/components/ChromeContext.tsx",
+  "apps/console-web/src/axf/react/components/TabGroup.tsx",
+  "apps/console-web/src/axf/ui/axf.css",
+  "apps/console-web/src/control/inventory.json",
+  "apps/molly/src/axf/assets/help/framework.json",
+  "apps/molly/src/axf/core/engines/chrome-settings-rules.d.mts",
+  "apps/molly/src/axf/core/engines/chrome-settings-rules.mjs",
+  "apps/molly/src/axf/react/components/ChromeContext.tsx",
+  "apps/molly/src/axf/react/components/TabGroup.tsx",
+  "apps/molly/src/axf/ui/axf.css",
+  "apps/walkthrough-studio/src/assets/help/framework.json",
+  "framework/assets/help/framework.json",
+  "framework/core/engines/chrome-settings-rules.d.mts",
+  "framework/core/engines/chrome-settings-rules.mjs",
+  "framework/react/components/ChromeContext.tsx",
+  "framework/react/components/TabGroup.tsx",
+  "framework/spec/PORTING.md",
+  "framework/spec/check-chrome-settings.mts",
+  "framework/spec/fixtures/chrome-settings.json",
+  "framework/spec/gen-fixtures.mts",
+  "framework/ui/axf.css"
+ ],
+ "areas": [
+  {
+   "kind": "app",
+   "id": "console-web",
+   "files": [
+    "apps/console-web/src/axf/assets/help/framework.json",
+    "apps/console-web/src/axf/core/engines/chrome-settings-rules.d.mts",
+    "apps/console-web/src/axf/core/engines/chrome-settings-rules.mjs",
+    "apps/console-web/src/axf/react/components/ChromeContext.tsx",
+    "apps/console-web/src/axf/react/components/TabGroup.tsx",
+    "apps/console-web/src/axf/ui/axf.css",
+    "apps/console-web/src/control/inventory.json"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "amberx-droid",
+   "files": [
+    "apps/amberx-droid/src/axf/assets/help/framework.json",
+    "apps/amberx-droid/src/axf/core/engines/chrome-settings-rules.d.mts",
+    "apps/amberx-droid/src/axf/core/engines/chrome-settings-rules.mjs",
+    "apps/amberx-droid/src/axf/react/components/ChromeContext.tsx",
+    "apps/amberx-droid/src/axf/react/components/TabGroup.tsx",
+    "apps/amberx-droid/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "axhub-web",
+   "files": [
+    "apps/axhub-web/src/axf/assets/help/framework.json",
+    "apps/axhub-web/src/axf/core/engines/chrome-settings-rules.d.mts",
+    "apps/axhub-web/src/axf/core/engines/chrome-settings-rules.mjs",
+    "apps/axhub-web/src/axf/react/components/ChromeContext.tsx",
+    "apps/axhub-web/src/axf/react/components/TabGroup.tsx",
+    "apps/axhub-web/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "molly",
+   "files": [
+    "apps/molly/src/axf/assets/help/framework.json",
+    "apps/molly/src/axf/core/engines/chrome-settings-rules.d.mts",
+    "apps/molly/src/axf/core/engines/chrome-settings-rules.mjs",
+    "apps/molly/src/axf/react/components/ChromeContext.tsx",
+    "apps/molly/src/axf/react/components/TabGroup.tsx",
+    "apps/molly/src/axf/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "spec",
+   "files": [
+    "framework/spec/PORTING.md",
+    "framework/spec/check-chrome-settings.mts",
+    "framework/spec/fixtures/chrome-settings.json",
+    "framework/spec/gen-fixtures.mts"
+   ]
+  },
+  {
+   "kind": "builds",
+   "id": "builds",
+   "files": [
+    "_claude/builds/reports/tab-groups-choose-how-many-rows-tabs.md",
+    "_claude/builds/reports/tab-groups-choose-how-many-rows-tabs/shots/desktop-rows-1-3-2-auto.png",
+    "_claude/builds/reports/tab-groups-choose-how-many-rows-tabs/shots/phone-rows-1-3-2-auto.png"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "core",
+   "files": [
+    "framework/core/engines/chrome-settings-rules.d.mts",
+    "framework/core/engines/chrome-settings-rules.mjs"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "react",
+   "files": [
+    "framework/react/components/ChromeContext.tsx",
+    "framework/react/components/TabGroup.tsx"
+   ]
+  },
+  {
+   "kind": "app",
+   "id": "walkthrough-studio",
+   "files": [
+    "apps/walkthrough-studio/src/assets/help/framework.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "assets",
+   "files": [
+    "framework/assets/help/framework.json"
+   ]
+  },
+  {
+   "kind": "framework",
+   "id": "ui",
+   "files": [
+    "framework/ui/axf.css"
+   ]
+  },
+  {
+   "kind": "docs",
+   "id": "docs",
+   "files": [
+    "_claude/THREADS.md"
+   ]
+  }
+ ],
+ "tests": [],
+ "uiReview": [
+  {
+   "id": "r-20261113-f5c73609",
+   "name": "Tab group Rows: 1 / 3 / 2 / Auto",
+   "status": "waiting",
+   "group": "g-20261113-adb8485d",
+   "url": "/review/r-20261113-f5c73609"
+  }
+ ],
+ "cost": {
+  "usd": 4.1418,
+  "estimated": false,
+  "tokens": {
+   "input": 224,
+   "output": 1948,
+   "cacheRead": 10390890,
+   "cacheWrite": 132009
+  }
+ },
+ "report": "_claude/builds/reports/tab-groups-choose-how-many-rows-tabs.md",
+ "open": [
+  "Kotlin twin deferred (PORTING.md).",
+  "The UI Review item is local only. This headless session has no `AXF_CONSOLE_URL` / `AXF_TOKEN`, so `review.mjs submit --console` couldn't upload the shots. To fix: give dispatched build sessions those two env vars, then re-run the submit command in the PR.",
+  "The shots come from a harness (the real runtime tokens, axf.css and engine output in TabGroup's markup), not the live console, because the console needs axHub sign-in."
+ ]
+}

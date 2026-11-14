@@ -282,12 +282,12 @@ export default function ExpensesModule() {
   return (
     <Box
       data-axf-area="expenses.surface"
-      sx={{ display: "flex", flexDirection: "column", gap: 1.2, p: 1.6, minHeight: "100%" }}
+      sx={{ display: "flex", flexDirection: "column", gap: 'var(--fx-dens-gap-2xl)', p: 1.6, minHeight: "100%" }}
     >
       {/* ------------------------------------------------------------ header */}
       <Stack direction="row" spacing={1.2} useFlexGap sx={{ alignItems: "center", flexWrap: "wrap" }}>
         <Glyph id="icon-book" size={22} />
-        <Typography sx={{ fontSize: 19, fontWeight: 700 }}>Expense Tracker</Typography>
+        <Typography sx={{ fontSize: 'var(--fx-type-root-xl)', fontWeight: 700 }}>Expense Tracker</Typography>
         <Chip size="small" variant="outlined" label={`${list.length - incomeCount} expenses`} sx={{ height: 20 }} />
         {incomeCount > 0 && (
           <Chip size="small" variant="outlined" label={`${incomeCount} income`} sx={{ height: 20, color: token("ok") }} />
@@ -305,9 +305,9 @@ export default function ExpensesModule() {
         )}
         <Tooltip title="Spent · income · net (income minus spent)">
           <Stack direction="row" spacing={1} sx={{ alignItems: "baseline" }}>
-            <Typography sx={{ ...MONO, fontSize: 14, fontWeight: 700 }}>{money(spent)}</Typography>
-            <Typography sx={{ ...MONO, fontSize: 12, color: token("ok") }}>+{money(income)}</Typography>
-            <Typography sx={{ ...MONO, fontSize: 13, fontWeight: 700, color: balance >= 0 ? token("ok") : token("warn") }}>
+            <Typography sx={{ ...MONO, fontSize: "var(--fx-font-size)", fontWeight: 700 }}>{money(spent)}</Typography>
+            <Typography sx={{ ...MONO, fontSize: 'var(--fx-type-root-sm)', color: token("ok") }}>+{money(income)}</Typography>
+            <Typography sx={{ ...MONO, fontSize: 'var(--fx-type-root-md)', fontWeight: 700, color: balance >= 0 ? token("ok") : token("warn") }}>
               {balance > 0 ? "+" : ""}
               {money(balance)}
             </Typography>
@@ -356,9 +356,9 @@ export default function ExpensesModule() {
           </Button>
         </Tooltip>
         <Menu open={Boolean(actionsAnchor)} anchorEl={actionsAnchor} onClose={() => setActionsAnchor(null)} slotProps={{ list: { dense: true, "data-axf-expenses-actions-menu": "" } as never }}>
-          <MenuItem onClick={() => { setActionsAnchor(null); expenseUi.openDupes(); }} sx={{ fontSize: 12.5, py: 0.4 }}>
+          <MenuItem onClick={() => { setActionsAnchor(null); expenseUi.openDupes(); }} sx={{ fontSize: 'var(--fx-type-root-md)', py: 0.4 }}>
             <ListItemIcon sx={{ minWidth: 28 }}><Glyph id="icon-search" size={14} /></ListItemIcon>
-            <ListItemText primary="Dupe — find possible duplicates…" secondary="Same price, other fields may differ · algorithm + Claude" slotProps={{ primary: { sx: { fontSize: 12.5 } }, secondary: { sx: { fontSize: 11 } } }} />
+            <ListItemText primary="Dupe — find possible duplicates…" secondary="Same price, other fields may differ · algorithm + Claude" slotProps={{ primary: { sx: { fontSize: 'var(--fx-type-root-md)' } }, secondary: { sx: { fontSize: 'var(--fx-type-root-xs)' } } }} />
           </MenuItem>
         </Menu>
         <Tooltip title={selected.size ? `Delete ${selected.size} selected — you will see them first` : "Select rows to delete them"}>
@@ -396,7 +396,7 @@ export default function ExpensesModule() {
             if (e.key === "Escape") expenseUi.setFilterText("");
           }}
           data-axf-expenses-filter
-          sx={{ width: { xs: "100%", sm: 360 }, "& input": { fontSize: 12.5, py: 0.7 } }}
+          sx={{ width: { xs: "100%", sm: 360 }, "& input": { fontSize: 'var(--fx-type-root-md)', py: 0.7 } }}
           slotProps={{
             input: {
               startAdornment: (
@@ -431,7 +431,7 @@ export default function ExpensesModule() {
           />
         )}
         {filtering && filterSpec.columns.length > 0 && (
-          <Typography sx={{ fontSize: 11, color: token("dim") }}>in {filterSpec.columns.join(", ")}</Typography>
+          <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim") }}>in {filterSpec.columns.join(", ")}</Typography>
         )}
       </Stack>
 
@@ -456,9 +456,9 @@ export default function ExpensesModule() {
         }
       />
 
-      {!ready && <Typography sx={{ fontSize: 12, color: token("dim") }}>Loading expenses…</Typography>}
+      {!ready && <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>Loading expenses…</Typography>}
       {error && (
-        <Typography sx={{ ...MONO, fontSize: 12, color: token("err") }}>
+        <Typography sx={{ ...MONO, fontSize: 'var(--fx-type-root-sm)', color: token("err") }}>
           Store unavailable: {error}
         </Typography>
       )}

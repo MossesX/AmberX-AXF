@@ -1,5 +1,5 @@
-import { useEffect, useMemo, useState } from 'react';
-import { AgentAvatar, BuildOrigin, Button, Icon, PriorityTag, Segmented, Slot, TabGroup, flashWhenReady, originSubtitle, useRuntime } from '@console/axf/react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import { AgentAvatar, BuildOrigin, Button, ControlScope, Icon, PriorityTag, Segmented, Slot, TabGroup, flashWhenReady, originSubtitle, useControlTarget, useRuntime } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import * as consoleApi from '@console/api';
 import { WatchLiveFor } from '@console/watchLive';
@@ -226,7 +226,7 @@ function BuildCard({ b, rules, busy, act, embedded }: { b: Build; rules: Rules; 
         </div>
       ) : b.detail && <p className="pd-detail">{b.detail}</p>}
       {!embedded && ps.map((ph) => (
-        <div key={ph.index} className="pd-thread">
+        <ControlScope key={ph.index} address={`panel:${b.id}`}><div className="pd-thread">
           <h3>{ph.name} · <span className={`oc-model is-${ph.model.toLowerCase()}`}>{ph.model}</span>{ph.gate && <span className="fx-muted fx-small"> · {switchNote(ph)}</span>}{ph.minutesLeft ? <span className="pd-est"> · {core.formatMinutes(ph.minutesLeft)} left</span> : null}</h3>
           {ph.groups.map((g, gi) => (
             <div key={gi} className="oc-group">
@@ -234,7 +234,7 @@ function BuildCard({ b, rules, busy, act, embedded }: { b: Build; rules: Rules; 
               {g.steps.map((s) => <StepRow key={s.id} b={b} s={s as Step & { index: number }} locked={!ph.approved} busy={busy} act={act} last={b.steps.length - 1} />)}
             </div>
           ))}
-        </div>
+        </div></ControlScope>
       ))}
       {headlessRuns(b).length > 0 && (
         <div className="pd-thread"><h3>Headless runs</h3>{headlessRuns(b).map((r, i) => (
@@ -246,7 +246,7 @@ function BuildCard({ b, rules, busy, act, embedded }: { b: Build; rules: Rules; 
       )}
       {(mode === 'note' || mode === 'step') && (
         <div className="fx-stack">
-          <textarea className="fx-input" rows={3} autoFocus value={text} onChange={(e) => setText(e.target.value)} placeholder={mode === 'note' ? 'Add a note' : 'Add a step (30 min or less)'} />
+          <textarea className="fx-input" rows={3} autoFocus value={text} onChange={(e) => setText(e.target.value)} placeholder={mode === 'note' ? 'Add a note' : `Add a step (${core.STEP_MINUTES} min or less)`} />
           {mode === 'step' && (
             <div className="pd-two">
               <label className="pd-field">Model<select className="fx-input" value={stepModel} onChange={(e) => setStepModel(e.target.value as 'Fable' | 'Opus')}>{core.MODELS.map((m) => <option key={m}>{m}</option>)}</select></label>
@@ -285,8 +285,17 @@ function BuildCard({ b, rules, busy, act, embedded }: { b: Build; rules: Rules; 
 
 function StepRow({ b, s, locked, busy, act, last }: { b: Build; s: Step & { index: number }; locked: boolean; busy: boolean; act: Act; last: number }) {
   const other = s.model === 'Fable' ? 'Opus' : 'Fable';
+  // console-control@1: `step:<id>` under the build's panel (focus scrolls to it and highlights it; set marks it done / not done)
+  const el = useRef<HTMLDivElement | null>(null);
+  const finished = core.isFinished(b.status);
+  const setTarget = useControlTarget({
+    address: `step:${s.id}`, kind: 'step', label: `${s.id} ${s.text}`.slice(0, 160), detail: b.title, keywords: [s.model, s.done ? 'done' : 'to do', b.id], element: () => el.current,
+    can: ['open', 'state', 'focus', 'set'], get: () => (s.done ? 'done' : 'to do'),
+    set: (v) => { const t = String(v ?? '').trim().toLowerCase(); const done = ['done', 'true', 'on', 'yes', '1'].includes(t) ? true : ['to do', 'todo', 'false', 'off', 'no', '0', 'undone'].includes(t) ? false : null; if (done === null) return `"${String(v)}" is not done or to do`; if (busy || finished || (locked && !s.done)) return locked ? 'approve the model switch first' : 'this build is finished'; void act({ action: 'step', id: b.id, step: s.id, done }); return undefined; },
+    isDisabled: () => busy || finished, state: () => ({ done: s.done, model: s.model, estimate: s.estimate ?? '', text: s.text, doneAt: s.doneAt ?? null, index: s.index }),
+  }, [s.done, s.model, busy, locked, finished]);
   return (
-    <div className={`pd-entry is-mono ${s.done ? 'is-done' : ''}`}>
+    <div ref={(d) => { el.current = d; setTarget(d); }} className={`pd-entry is-mono ${s.done ? 'is-done' : ''}`}>
       <input type="checkbox" className="pd-tick" checked={s.done} disabled={busy || core.isFinished(b.status) || (locked && !s.done)} onChange={(ev) => void act({ action: 'step', id: b.id, step: s.id, done: ev.target.checked })} aria-label={`Step ${s.id} done`} title={locked ? 'Approve the model switch first' : s.done && s.doneAt ? `Done ${fmtTime(s.doneAt)}` : 'Mark this step done'} />
       <time>{s.id}{s.estimate && <span className="pd-est"> · ~{s.estimate}</span>}</time>
       <p>{s.text}{s.why && <span className="fx-muted"> — {s.why}</span>}{s.session === 'new' && <span className="oc-flag"> new session</span>}{s.agent && <span className="oc-flag"> sub-agent ok</span>}</p>
@@ -357,7 +366,8 @@ function RulesTab({ rules, busy, act }: { rules: Rules; busy: boolean; act: Act 
         <label className="fx-row"><input type="checkbox" checked={r.sameSession} onChange={() => flip('sameSession')} />Stay in one session (a step can still ask for a new one)</label>
         <label className="fx-row"><input type="checkbox" checked={r.subAgents} onChange={() => flip('subAgents')} />Allow sub-agents (off = only steps marked “sub-agent ok”)</label>
         <p className="fx-small fx-muted">Model switches: an upgrade always waits for your approval; a downgrade goes on by itself (Nov 3 2026, not a setting).</p>
-        <label className="pd-field">Largest step (minutes)<input className="fx-input" type="number" min={5} max={240} value={r.maxStepMinutes} onChange={(e) => setR((x) => ({ ...x, maxStepMinutes: Number(e.target.value) }))} /></label>
+        <label className="pd-field">Largest step (minutes, {core.STEP_MINUTES} at most)<input className="fx-input" type="number" min={1} max={core.STEP_MINUTES} value={core.maxStep(r)} onChange={(e) => setR((x) => ({ ...x, maxStepMinutes: Number(e.target.value) }))} /></label>
+        <p className="fx-small fx-muted">Steps are checkpoints inside one session: it commits and ticks each one as it goes, with no new prompt or launch per step.</p>
         <div><Button tone="primary" icon="save" disabled={busy} onClick={() => act({ action: 'rules', rules: r })}>Save rules</Button></div>
       </article>
       <article className="pd-card">
@@ -542,10 +552,10 @@ function StepGrid({ b, rules, busy, act, hidden, setHidden }: { b: Build; rules:
         </span>
       ) },
   ];
-  if (!b.steps.length) return <p className="fx-small fx-muted">No steps yet. Add steps of {rules.maxStepMinutes} minutes or less below.</p>;
+  if (!b.steps.length) return <p className="fx-small fx-muted">No steps yet. Add steps of {core.maxStep(rules)} minutes or less below.</p>;
   return (
     <div className="oc-subgrid">
-      <DataGrid<GStep> id={`orch-steps-${b.id.replace(/[^a-z0-9-]/gi, '-')}`} label={`Steps of ${b.title}`} compact groups={groups} columns={cols}
+      <DataGrid<GStep> id={`orch-steps-${b.id.replace(/[^a-z0-9-]/gi, '-')}`} rowKind="step" label={`Steps of ${b.title}`} compact groups={groups} columns={cols}
         rowId={(s) => s.id} rowLabel={(s) => s.text}
         rowTone={(s) => (s.done ? 'success' : s.locked ? 'warning' : s.next ? 'accent' : 'muted')}
         hidden={hidden} onToggleColumn={(c, show) => setHidden((h) => toggleIn(h, c, show))} onShowAll={() => setHidden(() => [])}

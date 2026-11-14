@@ -79,11 +79,11 @@ import {
 /** A section heading — the mono/uppercase label the module's cards use. */
 function SectionLabel({ text, hint }: { text: string; hint?: string }) {
   return (
-    <Stack direction="row" sx={{ alignItems: "baseline", gap: 1 }}>
+    <Stack direction="row" sx={{ alignItems: "baseline", gap: 'var(--fx-dens-gap-xl)' }}>
       <Typography
         sx={{
           fontFamily: token("mono"),
-          fontSize: 10,
+          fontSize: 'var(--fx-type-root-2xs)',
           letterSpacing: "0.14em",
           textTransform: "uppercase",
           color: token("dim"),
@@ -91,7 +91,7 @@ function SectionLabel({ text, hint }: { text: string; hint?: string }) {
       >
         {text}
       </Typography>
-      {hint && <Typography sx={{ fontSize: 11, color: token("dim") }}>{hint}</Typography>}
+      {hint && <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim") }}>{hint}</Typography>}
     </Stack>
   );
 }
@@ -141,7 +141,7 @@ function ColorSwatchRow({
         // again; an avatar always has a colour, so that is a no-op, not a clear.
         if (next) onChange(next);
       }}
-      sx={{ flexWrap: "wrap", gap: 0.5, "& .MuiToggleButtonGroup-grouped": { border: 0, borderRadius: "50%" } }}
+      sx={{ flexWrap: "wrap", gap: 'var(--fx-dens-gap-md)', "& .MuiToggleButtonGroup-grouped": { border: 0, borderRadius: "50%" } }}
     >
       {swatches.map((c) => (
         <ToggleButton key={c} value={c} aria-label={c} sx={{ p: 0.5 }}>
@@ -151,7 +151,7 @@ function ColorSwatchRow({
               height: 20,
               borderRadius: "50%",
               background: c,
-              border: `2px solid ${c === value ? token("ink") : "transparent"}`,
+              border: `calc(var(--fx-border-w) * 2) solid ${c === value ? token("ink") : "transparent"}`,
             }}
           />
         </ToggleButton>
@@ -171,7 +171,7 @@ export default function ProfilePane() {
   const [load, setLoad] = React.useState<Load>({ kind: "loading" });
   const [screenname, setScreenname] = React.useState("");
   const [bio, setBio] = React.useState("");
-  const [avatar, setAvatar] = React.useState<ProfileAvatar>({ kind: "initials", color: "#3a7bd5" });
+  const [avatar, setAvatar] = React.useState<ProfileAvatar>({ kind: "initials", color: "#3a7bd5" }); // theme-ok: default avatar colour is user data
   const [fields, setFields] = React.useState<ProfileField[]>([]);
   const [saving, setSaving] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
@@ -215,8 +215,8 @@ export default function ProfilePane() {
   }
   if (load.kind === "error") {
     return (
-      <Stack sx={{ p: 3, gap: 1.5 }}>
-        <Alert severity="error" variant="outlined" sx={{ fontSize: 12.5 }}>
+      <Stack sx={{ p: 3, gap: 'var(--fx-dens-gap-2xl)' }}>
+        <Alert severity="error" variant="outlined" sx={{ fontSize: 'var(--fx-type-root-md)' }}>
           {load.message}
         </Alert>
         <Button
@@ -317,30 +317,30 @@ export default function ProfilePane() {
   const size = dense ? "small" : "medium";
 
   return (
-    <Stack sx={{ p: 2, gap: 2, minWidth: 0, maxWidth: 760 }}>
+    <Stack sx={{ p: 2, gap: 'var(--fx-dens-gap-3xl)', minWidth: 0, maxWidth: 760 }}>
       {/* ------------------------------- identity ------------------------------- */}
-      <Stack direction="row" sx={{ gap: 2, alignItems: "flex-start" }}>
+      <Stack direction="row" sx={{ gap: 'var(--fx-dens-gap-3xl)', alignItems: "flex-start" }}>
         <AvatarView
           avatar={avatar.kind === "initials" ? { ...avatar } : avatar}
           name={nameForInitials}
           size={84}
         />
-        <Stack sx={{ flex: 1, minWidth: 0, gap: 1 }}>
-          <Stack direction="row" sx={{ alignItems: "center", gap: 1 }}>
-            <Typography sx={{ fontSize: 15, fontWeight: 700 }}>My profile</Typography>
+        <Stack sx={{ flex: 1, minWidth: 0, gap: 'var(--fx-dens-gap-xl)' }}>
+          <Stack direction="row" sx={{ alignItems: "center", gap: 'var(--fx-dens-gap-xl)' }}>
+            <Typography sx={{ fontSize: 'var(--fx-type-root-lg)', fontWeight: 700 }}>My profile</Typography>
             <Chip
               label={session.role}
               size="small"
               variant="outlined"
               sx={{
-                fontSize: 11,
+                fontSize: 'var(--fx-type-root-xs)',
                 height: 20,
                 ...(session.role === "administrator"
                   ? { color: token("accent"), borderColor: token("accent") }
                   : { color: token("dim") }),
               }}
             />
-            <Typography sx={{ fontSize: 11.5, color: token("dim"), fontFamily: token("mono") }}>
+            <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim"), fontFamily: token("mono") }}>
               {session.username}
             </Typography>
           </Stack>
@@ -357,7 +357,7 @@ export default function ProfilePane() {
       </Stack>
 
       {!mayEdit && (
-        <Alert severity="info" variant="outlined" sx={{ fontSize: 12 }}>
+        <Alert severity="info" variant="outlined" sx={{ fontSize: 'var(--fx-type-root-sm)' }}>
           An administrator has switched profile editing off for your account. Your profile is
           shown as it stands and the controls are disabled — nothing has been lost.
         </Alert>
@@ -366,12 +366,12 @@ export default function ProfilePane() {
       <Divider />
 
       {/* -------------------------------- avatar -------------------------------- */}
-      <Stack sx={{ gap: 1 }}>
+      <Stack sx={{ gap: 'var(--fx-dens-gap-xl)' }}>
         <SectionLabel
           text="Avatar"
           hint={`initials are drawn from your screenname — “${initialsOf(nameForInitials)}”`}
         />
-        <Stack direction="row" sx={{ gap: 2, alignItems: "center", flexWrap: "wrap" }}>
+        <Stack direction="row" sx={{ gap: 'var(--fx-dens-gap-3xl)', alignItems: "center", flexWrap: "wrap" }}>
           <ToggleButtonGroup
             exclusive
             size="small"
@@ -385,13 +385,13 @@ export default function ProfilePane() {
               setAvatar((a) => (next === "image" ? { ...a, kind: "image" } : { kind: "initials", color: a.color }));
             }}
           >
-            <ToggleButton value="initials" sx={{ textTransform: "none", fontSize: 12.5, px: 1.5 }}>
+            <ToggleButton value="initials" sx={{ textTransform: "none", fontSize: 'var(--fx-type-root-md)', px: 1.5 }}>
               Initials
             </ToggleButton>
             <ToggleButton
               value="image"
               disabled={!avatar.imageDataUrl}
-              sx={{ textTransform: "none", fontSize: 12.5, px: 1.5 }}
+              sx={{ textTransform: "none", fontSize: 'var(--fx-type-root-md)', px: 1.5 }}
             >
               Image
             </ToggleButton>
@@ -403,7 +403,7 @@ export default function ProfilePane() {
             disabled={!mayEdit}
             startIcon={<Glyph id="icon-plus" size={12} />}
             onClick={() => fileRef.current?.click()}
-            sx={{ textTransform: "none", fontSize: 12.5 }}
+            sx={{ textTransform: "none", fontSize: 'var(--fx-type-root-md)' }}
           >
             {avatar.imageDataUrl ? "Replace image" : "Upload an image"}
           </Button>
@@ -426,15 +426,15 @@ export default function ProfilePane() {
             }}
           />
           {avatar.imageDataUrl && (
-            <Typography sx={{ fontSize: 11, color: token("dim") }}>
+            <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim") }}>
               {Math.round(avatar.imageDataUrl.length / 1024)} KB of{" "}
               {Math.floor(AVATAR_IMAGE_MAX / 1024)} KB
             </Typography>
           )}
         </Stack>
 
-        <Stack direction="row" sx={{ gap: 1.5, alignItems: "center", flexWrap: "wrap" }}>
-          <Typography sx={{ fontSize: 12, color: token("dim") }}>
+        <Stack direction="row" sx={{ gap: 'var(--fx-dens-gap-2xl)', alignItems: "center", flexWrap: "wrap" }}>
+          <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>
             {avatar.kind === "initials" ? "Disc colour" : "Ring colour"}
           </Typography>
           <ColorSwatchRow
@@ -448,7 +448,7 @@ export default function ProfilePane() {
       <Divider />
 
       {/* ---------------------------------- bio --------------------------------- */}
-      <Stack sx={{ gap: 1 }}>
+      <Stack sx={{ gap: 'var(--fx-dens-gap-xl)' }}>
         <SectionLabel text="Bio" hint={`${bio.length} / ${BIO_MAX}`} />
         <TextField
           multiline
@@ -466,14 +466,14 @@ export default function ProfilePane() {
       <Divider />
 
       {/* ------------------------------ custom fields --------------------------- */}
-      <Stack sx={{ gap: 1 }}>
+      <Stack sx={{ gap: 'var(--fx-dens-gap-xl)' }}>
         <SectionLabel
           text="Custom fields"
           hint={`${fields.length} of ${CUSTOM_FIELDS_MAX} — anything you want on your card`}
         />
         <Stack sx={{ gap: dense ? 0.5 : 1 }}>
           {fields.map((f, i) => (
-            <Stack key={i} direction="row" sx={{ gap: 1, alignItems: "center" }}>
+            <Stack key={i} direction="row" sx={{ gap: 'var(--fx-dens-gap-xl)', alignItems: "center" }}>
               <TextField
                 label={i === 0 ? "Label" : undefined}
                 placeholder="Location"
@@ -524,7 +524,7 @@ export default function ProfilePane() {
             </Stack>
           ))}
           {fields.length === 0 && (
-            <Typography sx={{ fontSize: 12.5, color: token("dim") }}>
+            <Typography sx={{ fontSize: 'var(--fx-type-root-md)', color: token("dim") }}>
               No custom fields yet — they are the rows on your profile card, like “Location: the
               garage” or “Timezone: UTC+1”.
             </Typography>
@@ -535,24 +535,24 @@ export default function ProfilePane() {
           startIcon={<Glyph id="icon-plus" size={12} />}
           disabled={!mayEdit || fields.length >= CUSTOM_FIELDS_MAX}
           onClick={() => setFields((f) => [...f, { label: "", value: "" }])}
-          sx={{ alignSelf: "flex-start", textTransform: "none", fontSize: 12.5 }}
+          sx={{ alignSelf: "flex-start", textTransform: "none", fontSize: 'var(--fx-type-root-md)' }}
         >
           {fields.length >= CUSTOM_FIELDS_MAX ? `${CUSTOM_FIELDS_MAX} is the limit` : "Add field"}
         </Button>
       </Stack>
 
       {error && (
-        <Alert severity="error" variant="outlined" sx={{ fontSize: 12 }}>
+        <Alert severity="error" variant="outlined" sx={{ fontSize: 'var(--fx-type-root-sm)' }}>
           {error}
         </Alert>
       )}
       {saved && !dirty && (
-        <Alert severity="success" variant="outlined" sx={{ fontSize: 12 }}>
+        <Alert severity="success" variant="outlined" sx={{ fontSize: 'var(--fx-type-root-sm)' }}>
           Profile saved — it is what every other member sees.
         </Alert>
       )}
 
-      <Stack direction="row" sx={{ gap: 1, alignItems: "center" }}>
+      <Stack direction="row" sx={{ gap: 'var(--fx-dens-gap-xl)', alignItems: "center" }}>
         <Button
           variant="contained"
           disabled={!mayEdit || !dirty || saving}
@@ -572,7 +572,7 @@ export default function ProfilePane() {
         >
           Discard changes
         </Button>
-        <Typography sx={{ fontSize: 11, color: token("dim") }}>
+        <Typography sx={{ fontSize: 'var(--fx-type-root-xs)', color: token("dim") }}>
           Last updated {new Date(profile.updatedAt).toLocaleString()}
         </Typography>
       </Stack>
@@ -617,7 +617,7 @@ export function ProfileViewerDialog({ username, onClose }: { username: string; o
 
   return (
     <Dialog open onClose={onClose} maxWidth="sm" fullWidth>
-      <DialogTitle sx={{ fontSize: 15 }}>Profile</DialogTitle>
+      <DialogTitle sx={{ fontSize: 'var(--fx-type-root-lg)' }}>Profile</DialogTitle>
       <DialogContent dividers>
         {load.kind === "loading" && (
           <Box sx={{ display: "grid", placeItems: "center", py: 4 }}>
@@ -625,23 +625,23 @@ export function ProfileViewerDialog({ username, onClose }: { username: string; o
           </Box>
         )}
         {load.kind === "error" && (
-          <Alert severity="warning" variant="outlined" sx={{ fontSize: 12.5 }}>
+          <Alert severity="warning" variant="outlined" sx={{ fontSize: 'var(--fx-type-root-md)' }}>
             {load.message}
           </Alert>
         )}
         {load.kind === "ready" && (
-          <Stack sx={{ gap: 2 }}>
-            <Stack direction="row" sx={{ gap: 2, alignItems: "center" }}>
+          <Stack sx={{ gap: 'var(--fx-dens-gap-3xl)' }}>
+            <Stack direction="row" sx={{ gap: 'var(--fx-dens-gap-3xl)', alignItems: "center" }}>
               <AvatarView avatar={load.profile.avatar} name={load.profile.screenname} size={72} />
-              <Stack sx={{ minWidth: 0, gap: 0.25 }}>
-                <Typography sx={{ fontSize: 17, fontWeight: 700 }}>
+              <Stack sx={{ minWidth: 0, gap: 'var(--fx-dens-gap-xs)' }}>
+                <Typography sx={{ fontSize: 'var(--fx-type-root-xl)', fontWeight: 700 }}>
                   {load.profile.screenname}
                 </Typography>
-                <Typography sx={{ fontSize: 11.5, color: token("dim"), fontFamily: token("mono") }}>
+                <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim"), fontFamily: token("mono") }}>
                   {load.profile.username}
                   {load.own && " · this is you"}
                 </Typography>
-                <Typography sx={{ fontSize: 11.5, color: load.online ? token("ok") : token("dim") }}>
+                <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: load.online ? token("ok") : token("dim") }}>
                   {load.online
                     ? "Online now"
                     : load.profile.lastSeenAt
@@ -651,11 +651,11 @@ export function ProfileViewerDialog({ username, onClose }: { username: string; o
               </Stack>
             </Stack>
 
-            <Stack sx={{ gap: 0.5 }}>
+            <Stack sx={{ gap: 'var(--fx-dens-gap-md)' }}>
               <SectionLabel text="Bio" />
               <Typography
                 sx={{
-                  fontSize: 12.5,
+                  fontSize: 'var(--fx-type-root-md)',
                   whiteSpace: "pre-wrap",
                   color: load.profile.bio ? token("ink") : token("dim"),
                   fontStyle: load.profile.bio ? "normal" : "italic",
@@ -666,14 +666,14 @@ export function ProfileViewerDialog({ username, onClose }: { username: string; o
             </Stack>
 
             {load.profile.customFields.length > 0 && (
-              <Stack sx={{ gap: 0.5 }}>
+              <Stack sx={{ gap: 'var(--fx-dens-gap-md)' }}>
                 <SectionLabel text="Details" />
                 {load.profile.customFields.map((f, i) => (
-                  <Stack key={i} direction="row" sx={{ gap: 1 }}>
-                    <Typography sx={{ fontSize: 12.5, color: token("dim"), width: 150, flexShrink: 0 }}>
+                  <Stack key={i} direction="row" sx={{ gap: 'var(--fx-dens-gap-xl)' }}>
+                    <Typography sx={{ fontSize: 'var(--fx-type-root-md)', color: token("dim"), width: 150, flexShrink: 0 }}>
                       {f.label}
                     </Typography>
-                    <Typography sx={{ fontSize: 12.5, whiteSpace: "pre-wrap", minWidth: 0 }}>
+                    <Typography sx={{ fontSize: 'var(--fx-type-root-md)', whiteSpace: "pre-wrap", minWidth: 0 }}>
                       {f.value}
                     </Typography>
                   </Stack>
@@ -682,7 +682,7 @@ export function ProfileViewerDialog({ username, onClose }: { username: string; o
             )}
 
             {load.own && (
-              <Typography sx={{ fontSize: 11.5, color: token("dim") }}>
+              <Typography sx={{ fontSize: 'var(--fx-type-root-sm)', color: token("dim") }}>
                 Edit this on the My profile tab.
               </Typography>
             )}

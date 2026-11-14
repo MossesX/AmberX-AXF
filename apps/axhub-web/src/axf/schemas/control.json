@@ -33,6 +33,7 @@
       "run": "write"
     },
     "console.nav": {
+      "refresh": "navigate",
       "back": "navigate",
       "home": "navigate",
       "close": "navigate"
@@ -1595,7 +1596,7 @@
       "actEffect": {
         "open": "navigate"
       },
-      "doc": "Every Settings tab and sub-tab (Settings → Plugins → <plugin> is a sub-tab: its id, \"plugins/<id>\" or its title); act open shows it, input.anchor scrolls to one setting or group. Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them)."
+      "doc": "Every Settings tab and sub-tab (Settings → Plugins → <plugin> is a sub-tab: its id, \"plugins/<id>\" or its title); act open shows it, input.anchor scrolls to one setting or group. Single settings are here too: path = a setting key, \"field:<key>\", \"<tab>/<key>\" or its name (\"text size\") opens its tab scrolled to it, get reads its current value (never a secret's), list with q finds them (kind field: type, value, options, min, max); console.actions run settings.set:<key>:<value> changes one. Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them)."
     },
     "console.actions": {
       "domain": "console",
@@ -1635,9 +1636,11 @@
       "acts": {
         "back": {},
         "home": {},
-        "close": {}
+        "close": {},
+        "refresh": {}
       },
       "actEffect": {
+        "refresh": "navigate",
         "back": "navigate",
         "home": "navigate",
         "close": "navigate"
@@ -3731,7 +3734,7 @@
         "paths": "host"
       },
       "console.settings": {
-        "description": "Every Settings tab and sub-tab (Settings → Plugins → <plugin> is a sub-tab: its id, \"plugins/<id>\" or its title); act open shows it, input.anchor scrolls to one setting or group. Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them).",
+        "description": "Every Settings tab and sub-tab (Settings → Plugins → <plugin> is a sub-tab: its id, \"plugins/<id>\" or its title); act open shows it, input.anchor scrolls to one setting or group. Single settings are here too: path = a setting key, \"field:<key>\", \"<tab>/<key>\" or its name (\"text size\") opens its tab scrolled to it, get reads its current value (never a secret's), list with q finds them (kind field: type, value, options, min, max); console.actions run settings.set:<key>:<value> changes one. Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them).",
         "ops": [
           "list",
           "get",
@@ -3785,7 +3788,8 @@
         "acts": {
           "back": {},
           "home": {},
-          "close": {}
+          "close": {},
+          "refresh": {}
         },
         "paths": [
           "here"
