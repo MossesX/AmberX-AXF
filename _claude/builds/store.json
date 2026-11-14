@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5557,
- "updatedAt": "2026-11-14T23:08:06.105Z",
+ "rev": 5558,
+ "updatedAt": "2026-11-14T23:08:17.583Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -196429,7 +196429,7 @@
    "branch": "claude/server-gate-one-session-per-build-no",
    "pr": "#610",
    "createdAt": "2026-11-12T02:42:15.357Z",
-   "updatedAt": "2026-11-14T23:07:22.436Z",
+   "updatedAt": "2026-11-14T23:08:06.478Z",
    "builtAt": "2026-11-14T23:06:34.786Z",
    "notes": [
     {
@@ -196495,6 +196495,10 @@
     {
      "text": "Headless run axf-server-gate-one-session-per-build-no--sully: brief only · start 11.3K tokens ($0.03) · cost $0.36 · 14 turns · 6 tools, MCP none",
      "at": "2026-11-14T23:07:22.436Z"
+    },
+    {
+     "text": "Session axf-server-gate-one-session-per-build-no--sully on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-14T23:08:06.478Z"
     }
    ],
    "approvals": [],
@@ -196515,18 +196519,18 @@
     "queuedAt": "2026-11-13T10:35:13.717Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-server-gate-one-session-per-build-no--sully",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-14T23:04:23.303Z",
     "runs": 2,
     "lastRun": {
-     "at": "2026-11-13T10:46:04.955Z",
+     "at": "2026-11-14T23:08:05.717Z",
      "exit": 0,
-     "outcome": "returned",
-     "stepsLeft": 1,
+     "outcome": "finished",
+     "stepsLeft": 0,
      "account": "mossesx-max-",
-     "session": "axf-server-gate-one-session-per-build-no-duplicate-l--sully"
+     "session": "axf-server-gate-one-session-per-build-no--sully"
     },
     "split": null,
     "splitRequested": "",
@@ -196666,7 +196670,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 43,
+   "rev": 44,
    "deleted": false,
    "deletedAt": "",
    "pending": {
