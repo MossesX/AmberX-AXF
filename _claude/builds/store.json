@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5267,
- "updatedAt": "2026-11-14T04:44:09.025Z",
+ "rev": 5268,
+ "updatedAt": "2026-11-14T04:44:22.472Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -212132,7 +212132,7 @@
    "branch": "claude/banner-widget-shapes-more-than-circle",
    "pr": "",
    "createdAt": "2026-11-14T03:47:49.947Z",
-   "updatedAt": "2026-11-14T04:40:59.199Z",
+   "updatedAt": "2026-11-14T04:44:20.672Z",
    "builtAt": "",
    "notes": [
     {
@@ -212154,6 +212154,10 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-14T04:40:59.199Z"
+    },
+    {
+     "text": "Split asked for by hotfix-get-main-ci-green-theme-swap.",
+     "at": "2026-11-14T04:44:20.672Z"
     }
    ],
    "approvals": [],
@@ -212181,7 +212185,7 @@
     "runs": 0,
     "lastRun": null,
     "split": null,
-    "splitRequested": "",
+    "splitRequested": "2026-11-14T04:44:18.905Z",
     "note": "",
     "route": "",
     "dispatchedAt": "",
@@ -212274,7 +212278,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
