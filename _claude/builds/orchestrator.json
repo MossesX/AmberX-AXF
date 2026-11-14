@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T17:41:09.554Z",
+ "updatedAt": "2026-11-14T17:45:57.208Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -115511,7 +115511,7 @@
   },
   {
    "id": "agent-swarm-group-chat-read-aloud-add-a-setting-off-by-default-with-quick-on",
-   "title": "Agent Swarm group chat read aloud: add a setting (off by default, with quick on/off) so new group chat messages are read out loud to Brett on his phone through AmberX, each in the speaking agent's voice. Include pause and skip, and choose which agents or chats get read. Full API, MCP, CLI and voice ",
+   "title": "Agent Swarm group chat read aloud: add a setting (off by default, with quick on/off) so new group chat messages are read out loud to Brett on his phone through AmberX, each in the speaking agent's voice. Include pause and skip, and choose which agents or chats get read. Full API, MCP, CLI and voice",
    "category": "",
    "detail": "",
    "status": "pending",
@@ -115836,7 +115836,7 @@
   },
   {
    "id": "professional-skins-rebuild-whole-app",
-   "title": "Professional skins that rebuild the whole app (Fable, ultrathink, every step): each skin is a complete restyle AND rebehave of the entire console UI. Every asset (theme, layout, toolbars, tab groups and where tabs go, buttons and how they behave, context menus, nav menu, app menus, dialogs, tables, ",
+   "title": "Professional skins that rebuild the whole app (Fable, ultrathink, every step): each skin is a complete restyle AND rebehave of the entire console UI. Every asset (theme, layout, toolbars, tab groups and where tabs go, buttons and how they behave, context menus, nav menu, app menus, dialogs, tables,",
    "category": "",
    "detail": "",
    "status": "built",
@@ -139582,6 +139582,37 @@
      "createdAt": "2026-11-14T16:51:14.646Z"
     }
    ]
+  },
+  {
+   "id": "orchestrator-stale-row-watchdog-vps",
+   "title": "Orchestrator stale-row watchdog on the VPS",
+   "category": "",
+   "detail": "A server-side watchdog on the VPS that runs every few minutes, checks every orchestrator table (pending, queued, building, merge queue, UI Review) for rows whose build has already landed on main or is otherwise done, and removes or marks them complete automatically. Logs each cleanup and sends an FYI to AmberX.",
+   "status": "pending",
+   "hidden": false,
+   "source": "mcp",
+   "pendingId": "orchestrator-stale-row-watchdog-vps",
+   "branch": "",
+   "pr": "",
+   "createdAt": "2026-11-14T17:45:54.293Z",
+   "updatedAt": "2026-11-14T17:45:54.293Z",
+   "builtAt": "",
+   "notes": [],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "I want a server fucking watchdog on the VPS to do that.",
+    "at": "",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "steps": []
   }
  ]
 }
