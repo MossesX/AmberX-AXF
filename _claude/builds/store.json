@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5437,
- "updatedAt": "2026-11-14T22:23:09.629Z",
+ "rev": 5438,
+ "updatedAt": "2026-11-14T22:23:18.421Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -224465,7 +224465,7 @@
    "title": "Console look becomes default axHub skin",
    "category": "",
    "detail": "Snapshot the live console's current look exactly as it is now (skin, colour theme light and dark, every token value including opacityGlass 0.7, typography, density, radius, behaviour/animation themes, toolbar/banner/nav chrome settings) into a new skin asset 'Console (default)' and publish it on axHub as THE default skin. Make every app (console, AmberX web, Android apps, any app built from the framework) inherit its skin from axHub's default right now: apps with no override pick it up immediately; apps with their own edits keep only their edited tokens (per the skin-axhub-override rules) and inherit the rest. Keep a backup of each app's previous skin so it can be restored in one tap. Run AFTER land-all-skin-builds finishes so it builds on the landed skins plugin/axHub-only/override code; if those aren't landed yet, wait for them. Verify with pixel-diff that the console looks identical before and after, and screenshot every app desktop and phone. Redeploy, then send Brett a phone notification. Full API and voice ('make this the default look'), tests, help, Shipped features.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -224473,7 +224473,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-14T22:19:00.612Z",
-   "updatedAt": "2026-11-14T22:23:07.427Z",
+   "updatedAt": "2026-11-14T22:23:10.770Z",
    "builtAt": "",
    "notes": [
     {
@@ -224501,6 +224501,10 @@
      "at": "2026-11-14T22:23:07.427Z"
     },
     {
+     "text": "Session on mossesx-max- stopped on its own with 20 steps left: back in Pending for Brett.",
+     "at": "2026-11-14T22:23:10.770Z"
+    },
+    {
      "text": "s1 wait gate not met, stopped before any work. On main: #647 skins plugin, #648 skin config panel, #590 light/dark per skin, #618 axHub-only lock, #641 axHub override, #652 animations/swatches, #657 token registry. Still open: #654 grid/tab-group token families. land-all-skin-builds is still running with s20-s25 open, including the redeploy (s23), so the live console isn't on the landed code yet. A snapshot and pixel baseline taken now would capture the wrong look. Requeue once land-all-skin-builds is complete, #654 is merged and the console is redeployed. Checked against origin/main 6b447e942.",
      "at": "2026-11-14T22:22:53.632Z"
     }
@@ -224523,12 +224527,19 @@
     "queuedAt": "2026-11-14T22:19:03.857Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-console-look-becomes-default-axhub-skin--lenny",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-14T22:21:38.052Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-14T22:23:07.434Z",
+     "exit": 0,
+     "outcome": "returned",
+     "stepsLeft": 20,
+     "account": "mossesx-max-",
+     "session": "axf-console-look-becomes-default-axhub-skin--lenny"
+    },
     "split": {
      "at": "2026-11-14T22:21:08.816Z",
      "by": "orchestrator",
@@ -224537,7 +224548,7 @@
      "note": "Split by Claude into 20 steps (3 Fable)."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- stopped on its own with 20 steps left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "2026-11-14T22:21:38.052Z",
     "planned": {
@@ -225072,7 +225083,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
