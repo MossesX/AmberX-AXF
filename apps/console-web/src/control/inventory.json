@@ -9,7 +9,7 @@
     "settingsTabs": 67,
     "settings": 85,
     "functions": 230,
-    "buttons": 62,
+    "buttons": 63,
     "plugins": 67
   },
   "views": [
@@ -7719,6 +7719,21 @@
       "keywords": [
         "banner-widgets",
         "banner.widgets",
+        "Console"
+      ],
+      "icon": "layers",
+      "source": "app-menu/console"
+    },
+    {
+      "address": "button:console.toolbar-widgets",
+      "kind": "button",
+      "id": "console.toolbar-widgets",
+      "label": "Toolbar widgets…",
+      "action": "toolbar.widgets:app",
+      "detail": "Menu · Console › View",
+      "keywords": [
+        "toolbar-widgets",
+        "toolbar.widgets:app",
         "Console"
       ],
       "icon": "layers",

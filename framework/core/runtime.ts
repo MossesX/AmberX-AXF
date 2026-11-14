@@ -26,7 +26,8 @@ import { detectEmbedFull, embedHostLabel, embedTakeSpec, embedLockedBy, embedLoc
 import { SPACING_DEFAULT as SPACING_DEFAULT_VALUE, spacingOf, type Spacing } from './engines/spacing';
 import { attachmentKey, bannerVars, placeAttachments, type BannerAttachment, type PlacedBanner } from './engines/banner';
 import { BANNER_FIXED_SHAPE, bannerWidgetEmpty, bannerWidgetView, findBannerWidget, normalizeBannerWidgetPrefs, patchBannerWidget, BANNER_WIDGET_SIZES, type BannerWidgetHint, type BannerWidgetPrefs, type BannerWidgetSize, type BannerWidgetView } from './engines/bannerwidgets';
-import { hostSpec, hostSpecs, moveOnHost, normalizeArrangement, placeHost, placeToolbarWidgets, type HostArrangement, type HostAttachment, type PlacedAttachment } from './engines/widgets';
+import { HOST_APP_INSTANCE, hostSpec, hostSpecs, instanceHost, moveOnHost, normalizeArrangement, placeHost, splitHost, type HostArrangement, type HostAttachment, type PlacedAttachment } from './engines/widgets';
+import { addHostWidget, emptyHostWidgetChoice, hostWidgetChoiceEmpty, hostWidgetsKey, matchHostInstance, normalizeHostWidgetChoice, parseHostWidgetArgs, patchHostWidget, removeHostWidget, type HostInstanceOnScreen, type HostWidgetChoice } from './engines/hostwidgets';
 import { rollAssetIncluded, rollAssetKey, rollNever, rollPlan, rollSlotIncluded, type RollRules } from './engines/roll';
 import { SearchIndex } from './engines/search';
 import { STYLE_PACKAGE_TYPE, stepPackage, stylePackageSlots, type StylePackageData } from './engines/stylepackage';
@@ -103,6 +104,8 @@ export const NAV_OPEN_KEY = 'axf.nav.open';
 export const ARRANGE_KEY = (host: string) => `axf.widgets.arrange.${host}`;
 /** Dialog id of the banner's Widgets picker (react/components/BannerWidgets.tsx). */
 export const BANNER_WIDGETS_DIALOG = 'axf.banner.widgets';
+/** The widgets picker of one toolbar or tab row (props: host, instance, key?). */
+export const HOST_WIDGETS_DIALOG = 'axf.host.widgets';
 
 /** One widget the banner knows about: on the bar now or not. */
 export interface BannerWidget {
@@ -1385,11 +1388,187 @@ export class AxfRuntime {
   /** Remove run-time toolbar widgets by key (`type:id`) or by origin (a module / plugin id). */
   detachFromToolbar(keyOrOrigin: string): void { this.detachFromHost('toolbar', keyOrOrigin); }
 
-  /** Widgets on the active toolbar (its own `widgets` plus run-time ones), start and end. */
-  toolbarWidgets(): Record<'start' | 'end', PlacedAttachment[]> {
-    const tb = this.slotHidden('toolbar') ? null : (this.asset('toolbar')?.data as { widgets?: HostAttachment[] } | undefined) ?? null;
-    return placeToolbarWidgets(tb, this.hostExtra.get('toolbar') ?? [], (t, id) => this.registry.has(t as AssetType, id), this.hostArrangement('toolbar'));
+  /** Widgets drawn on a toolbar (its own `widgets`, run-time ones and the person's), start and end. `instance`: `app` (default), a page toolbar's asset id or a workspace toolbar's id. */
+  toolbarWidgets(instance: string = HOST_APP_INSTANCE): Record<'start' | 'end', PlacedAttachment[]> {
+    return this.hostInstanceWidgets('toolbar', instance) as Record<'start' | 'end', PlacedAttachment[]>;
   }
+
+  /* ---------------- host widgets (core/engines/hostwidgets.ts): any banner-style widget on any toolbar or tab row ---------------- */
+
+  /** The widget under the last right-click or long-press on a toolbar or tab row (`type:id`), set by the context menu host. */
+  contextHostWidget: string | null = null;
+
+  /** The setting holding a host instance's widget choice: one per app, form factor and instance. A look setting, so it syncs through axHub. */
+  hostWidgetsKey(host: string, instance: string): string {
+    const g = globalThis as { matchMedia?: (q: string) => { matches: boolean } };
+    return hostWidgetsKey(host, this.manifest.app.id, g.matchMedia?.('(max-width: 640px)').matches ? 'phone' : 'desktop', instance);
+  }
+
+  /** What the person added to a host instance and chose for its widgets. */
+  hostWidgetChoice(host: string, instance: string): HostWidgetChoice {
+    const h = hostSpec(host);
+    if (!h) return emptyHostWidgetChoice();
+    return normalizeHostWidgetChoice(this.settings.get(this.hostWidgetsKey(host, instance)), h.types, h.sides);
+  }
+
+  private saveHostWidgetChoice(host: string, instance: string, c: HostWidgetChoice): void {
+    const key = this.hostWidgetsKey(host, instance);
+    if (hostWidgetChoiceEmpty(c)) this.settings.clear(key); else this.settings.set(key, c as never);
+    this.set({});
+  }
+
+  /** The host asset an instance draws from: the app's active one for `app`, else the asset with that id (a page toolbar), else none. */
+  private hostInstanceData(host: string, instance: string): Record<string, unknown> | null {
+    if (!(ASSET_TYPES as readonly string[]).includes(host)) return null;
+    if (instance === HOST_APP_INSTANCE) return this.slotHidden(host as AssetType) ? null : (this.assetOrNull(host as AssetType)?.data as Record<string, unknown> | undefined) ?? null;
+    return (this.registry.get(host as AssetType, instance)?.data as Record<string, unknown> | undefined) ?? {};
+  }
+
+  /**
+   * Every widget placed on a host instance, side by side: the asset's own, what modules attached (the app instance only;
+   * a module attaches to the app toolbar) and what the person added, under the instance's arrangement. `all` keeps the
+   * ones the person hid or that hide when empty; without it only what is drawn.
+   */
+  hostInstanceWidgets(host: string, instance: string, opts?: { all?: boolean }): Record<string, PlacedAttachment[]> {
+    const h = hostSpec(host);
+    if (!h) return {};
+    const data = this.hostInstanceData(host, instance);
+    const choice = this.hostWidgetChoice(host, instance);
+    // a tab row has no asset of its own to hide, so what the person added always counts; a hidden app toolbar shows nothing
+    const requireHost = host === 'toolbar';
+    const extra = [...(instance === HOST_APP_INSTANCE ? this.hostExtra.get(host) ?? [] : []), ...choice.attach];
+    const placed = placeHost(host, data, extra, (t, id) => this.registry.has(t as AssetType, id), requireHost, this.hostArrangement(instanceHost(host, instance)));
+    if (opts?.all) return placed;
+    return Object.fromEntries(Object.entries(placed).map(([s, list]) => [s, list.filter((p) => this.hostWidgetShown(host, instance, p.key))]));
+  }
+
+  /** A widget's hint on a host instance: the attach entry's own, else what the banner registry knows about it. */
+  private hostWidgetHint(host: string, instance: string, key: string): BannerWidgetHint | undefined {
+    const h = hostSpec(host);
+    const own = h ? (this.hostInstanceData(host, instance)?.[h.field] as HostAttachment[] | undefined) : undefined;
+    const fromOwn = Array.isArray(own) ? own.find((a) => attachmentKey(a.type, a.id) === key)?.widget : undefined;
+    const fromExtra = (this.hostExtra.get(host) ?? []).find((a) => attachmentKey(a.type, a.id) === key)?.widget;
+    return fromOwn ?? fromExtra ?? this.bannerWidgetHint(key);
+  }
+
+  /** How one widget is drawn on a host instance (`type:id`): the banner's rules over the instance's choices. */
+  hostWidgetView(host: string, instance: string, key: string): BannerWidgetView {
+    return bannerWidgetView(key.split(':')[0] ?? '', this.hostWidgetHint(host, instance, key), this.hostWidgetChoice(host, instance).prefs[key]);
+  }
+
+  /** Does a widget get drawn on a host instance: not hidden, and not empty with hide-when-empty on? */
+  hostWidgetShown(host: string, instance: string, key: string): boolean {
+    const v = this.hostWidgetView(host, instance, key);
+    if (v.hidden) return false;
+    if (!v.hideWhenEmpty) return true;
+    const i = key.indexOf(':');
+    const data = (this.registry.get(key.slice(0, i) as AssetType, key.slice(i + 1)) as { data: unknown } | undefined)?.data;
+    return !bannerWidgetEmpty(key.slice(0, i), data, (c) => this.badge(c));
+  }
+
+  /**
+   * Every widget a host instance could show: the one registry the banner uses (every widget asset, every chip a plugin
+   * attached to the banner, with its hint), as rows for the picker. `attached` = on this instance now.
+   */
+  hostWidgets(host: string, instance: string): BannerWidget[] {
+    const h = hostSpec(host);
+    if (!h) return [];
+    const rows: BannerWidget[] = [];
+    const row = (key: string, type: string, id: string, origin: string, at: string, order: number, attached: boolean): BannerWidget => {
+      const asset = this.registry.get(type as AssetType, id) as { name?: string; data?: { label?: string; icon?: string } } | undefined;
+      const hint = this.hostWidgetHint(host, instance, key);
+      return {
+        key, type, id, origin, at, order, attached,
+        label: hint?.label || (type === 'clock' ? 'Clock' : asset?.name || asset?.data?.label || id),
+        ...(hint?.icon || asset?.data?.icon ? { icon: hint?.icon || asset?.data?.icon } : {}),
+        aliases: [...(hint?.aliases ?? []), ...(BANNER_FIXED_SHAPE.includes(type) ? [type.replace(/-/g, ' ')] : [])],
+        shown: attached && this.hostWidgetShown(host, instance, key),
+        view: this.hostWidgetView(host, instance, key),
+      };
+    };
+    const placed = this.hostInstanceWidgets(host, instance, { all: true });
+    for (const side of h.sides) for (const p of placed[side] ?? []) rows.push(row(p.key, p.type, p.id, p.origin, p.at, p.order, true));
+    const seen = new Set(rows.map((r) => r.key));
+    // the banner's registry first (plugin chips carry their names), then every other widget asset the host takes
+    for (const w of this.bannerWidgets()) if (!seen.has(w.key) && h.types.includes(w.type)) { seen.add(w.key); rows.push(row(w.key, w.type, w.id, w.origin, h.sides[h.sides.length - 1]!, 0, false)); }
+    for (const t of h.types) for (const a of this.registry.list(t as AssetType)) { const key = attachmentKey(t, a.id); if (!seen.has(key)) { seen.add(key); rows.push(row(key, t, a.id, 'asset', h.sides[h.sides.length - 1]!, 0, false)); } }
+    return rows;
+  }
+
+  /** Find a widget for a host instance from what someone said ("CPU", "clock") or its key: the ones on it first. */
+  findHostWidget(host: string, instance: string, query: string): BannerWidget | null {
+    const rows = this.hostWidgets(host, instance);
+    return findBannerWidget(rows.filter((r) => r.attached), query) ?? findBannerWidget(rows, query);
+  }
+
+  /** Put a widget on a host instance (at its end unless a side is given). Saved at once, drawn at once. */
+  addHostWidget(host: string, instance: string, type: string, id: string, at?: string): boolean {
+    const h = hostSpec(host);
+    if (!h) return false;
+    if (!this.canArrange()) { this.toast('Your account can\'t change the look.', 'warning', 'Widgets'); return false; }
+    if (!h.types.includes(type)) { this.toast(`A ${host.replace(/-/g, ' ')} doesn't take ${type} widgets.`, 'warning', 'Widgets'); return false; }
+    if (!this.registry.has(type as AssetType, id)) { this.toast(`No ${type} widget "${id}".`, 'warning', 'Widgets'); return false; }
+    const side = at && h.sides.includes(at) ? at : h.sides[h.sides.length - 1]!;
+    const before = this.hostWidgetChoice(host, instance);
+    const key = attachmentKey(type, id);
+    const placed = this.hostInstanceWidgets(host, instance, { all: true });
+    const alreadyThere = h.sides.some((s) => (placed[s] ?? []).some((p) => p.key === key));
+    // a widget the host or a module already put there: make sure it shows (and moves to the side asked for)
+    const next = alreadyThere && !before.attach.some((a) => attachmentKey(a.type, a.id) === key) ? patchHostWidget(before, key, { hidden: null }) : addHostWidget(before, type, id, side, h.types, h.sides);
+    this.saveHostWidgetChoice(host, instance, next);
+    if (at && alreadyThere) this.moveHostItem(instanceHost(host, instance), key, side, 999);
+    this.terminal.ok('widgets', `${instanceHost(host, instance)}: + ${key} (${side})`);
+    return true;
+  }
+
+  /** Take a widget the person added off a host instance; one the host or a module put there is hidden instead. */
+  removeHostWidget(host: string, instance: string, key: string): boolean {
+    if (!hostSpec(host)) return false;
+    if (!this.canArrange()) { this.toast('Your account can\'t change the look.', 'warning', 'Widgets'); return false; }
+    const c = this.hostWidgetChoice(host, instance);
+    const mine = c.attach.some((a) => attachmentKey(a.type, a.id) === key);
+    this.saveHostWidgetChoice(host, instance, mine ? removeHostWidget(c, key) : patchHostWidget(c, key, { hidden: true }));
+    this.terminal.ok('widgets', `${instanceHost(host, instance)}: - ${key}${mine ? '' : ' (hidden)'}`);
+    return true;
+  }
+
+  /** Change one widget's choices on a host instance; a field set to null goes back to its default. */
+  setHostWidget(host: string, instance: string, key: string, patch: Record<string, unknown>): boolean {
+    if (!hostSpec(host)) return false;
+    if (!this.canArrange()) { this.toast('Your account can\'t change the look.', 'warning', 'Widgets'); return false; }
+    this.saveHostWidgetChoice(host, instance, patchHostWidget(this.hostWidgetChoice(host, instance), key, patch));
+    this.terminal.ok('widgets', `${instanceHost(host, instance)}: ${key} ${JSON.stringify(patch)}`);
+    return true;
+  }
+
+  /** Everything the person added to and chose for a host instance, and its arrangement, back to the defaults. */
+  resetHostWidgets(host: string, instance: string): void {
+    if (!hostSpec(host) || !this.canArrange()) return;
+    this.settings.clear(this.hostWidgetsKey(host, instance));
+    this.resetHostArrangement(instanceHost(host, instance));
+  }
+
+  /** The host instances on screen now (a browser; nothing elsewhere): toolbars by their settings id, tab rows by their id. */
+  hostInstancesOnScreen(host: string): HostInstanceOnScreen[] {
+    if (typeof document === 'undefined') return [];
+    const out = new Map<string, HostInstanceOnScreen>();
+    const slug = (s: string | null) => (s ? s.toLowerCase().replace(/[^a-z0-9._:/-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 120) : '');
+    if (host === 'toolbar') {
+      for (const el of Array.from(document.querySelectorAll<HTMLElement>('[role="toolbar"]'))) {
+        const id = el.getAttribute('data-axf-toolbar') ?? el.getAttribute('data-axf-toolbar-asset') ?? slug(el.getAttribute('aria-label'));
+        if (id && !out.has(id)) out.set(id, { id, label: el.getAttribute('aria-label') || id });
+      }
+    } else if (host === 'tab-group') {
+      for (const el of Array.from(document.querySelectorAll<HTMLElement>('[data-axf-tab-group]'))) {
+        const id = el.getAttribute('data-axf-tab-group') ?? '';
+        if (id && !out.has(id)) out.set(id, { id, label: el.getAttribute('aria-label') || id });
+      }
+    }
+    return [...out.values()];
+  }
+
+  /** Which host instance a person means ("the main toolbar", "settings"); null when nothing on screen matches. */
+  resolveHostInstance(host: string, words: string): string | null { return matchHostInstance(this.hostInstancesOnScreen(host), words); }
 
   /* ---------------- arranging widgets on hosts (drag + snap; core/engines/widgets.ts) ---------------- */
 
@@ -1404,10 +1583,11 @@ export class AxfRuntime {
     try { return normalizeArrangement(JSON.parse(raw), h.sides); } catch { return {}; }
   }
 
-  /** Every attachment of a host where it is drawn now (banner and toolbar use their own rules; other hosts the generic one). */
+  /** Every attachment of a host where it is drawn now (the banner, toolbars and tab rows use their own rules; other hosts the generic one). */
   hostPlaced(host: string): Record<string, PlacedAttachment[]> {
     if (host === 'banner') return this.banner({ all: true }).placed;
-    if (host === 'toolbar') return this.toolbarWidgets();
+    const split = splitHost(host);
+    if (split.host === 'toolbar' || split.host === 'tab-group') return this.hostInstanceWidgets(split.host, split.instance, { all: true });
     const data = (this.registry.has(host as AssetType, this.state.active[host as AssetType] ?? '') ? this.assetOrNull(host as AssetType)?.data : null) as Record<string, unknown> | null;
     return placeHost(host, data ?? null, this.hostExtra.get(host) ?? [], (t, id) => this.registry.has(t as AssetType, id), true, this.hostArrangement(host));
   }
@@ -2944,6 +3124,37 @@ export class AxfRuntime {
       else if (what === 'reset') this.setBannerWidget(w.key, { hidden: null, size: null, show: null, maxWidth: null, maxUnit: null, priority: null, hideWhenEmpty: null, overflow: null });
       else this.toast(`"${what}": use hide, show, reset or a size (${BANNER_WIDGET_SIZES.join(', ')})`, 'warning', 'Banner widgets');
     }, { label: 'Change a banner widget', requires: 'assets.swap', params: true, searchable: false });
+    // Host widgets (engines/hostwidgets.ts): any banner-style widget on any toolbar (`toolbar.*`) or tab row (`tabs.*`).
+    //   toolbar.widgets[:<instance>[:<key>]]            the picker for one toolbar (right-click it → Widgets…); `app` = the app toolbar
+    //   toolbar.widget:[<instance>:]<name>:<op>          op: add | remove | hide | show | reset | icon | compact | normal | wide | start | end
+    //   toolbar.widgets.reset[:<instance>]               the person's widgets and choices off that toolbar
+    // The instance is its settings id ("app", a page toolbar's asset id, "axf-ws-toolbar:x") or words ("main", "settings").
+    for (const [prefix, host, what] of [['toolbar', 'toolbar', 'toolbar'], ['tabs', 'tab-group', 'tab row']] as const) {
+      const inst = (words: string | undefined, ctx?: { payload?: unknown }): string | null => {
+        const w = words || (typeof ctx?.payload === 'string' ? ctx.payload : '');
+        return this.resolveHostInstance(host, w);
+      };
+      a.register(`${prefix}.widgets`, ([instance, ...key], ctx) => {
+        const i = inst(instance, ctx);
+        if (!i) { this.toast(`No ${what} called "${instance}" on this screen.`, 'warning', 'Widgets'); return; }
+        this.openDialog(HOST_WIDGETS_DIALOG, { host, instance: i, ...(key.length ? { key: key.join(':') } : {}) });
+      }, { label: `${what[0]!.toUpperCase()}${what.slice(1)} widgets…`, requires: 'assets.swap', params: true });
+      a.register(`${prefix}.widgets.reset`, ([instance], ctx) => { const i = inst(instance, ctx); if (i) this.resetHostWidgets(host, i); }, { label: `Reset the ${what}'s widgets`, requires: 'assets.swap', params: true });
+      a.register(`${prefix}.widget`, (args, ctx) => {
+        const p = parseHostWidgetArgs(args);
+        if (!p) { this.toast(`Use ${prefix}.widget:<${what}>:<widget>:<add|remove|hide|show|reset|icon|compact|normal|wide|start|end>.`, 'warning', 'Widgets'); return; }
+        const i = inst(p.instance === 'app' && args.length === 2 ? undefined : p.instance, ctx);
+        if (!i) { this.toast(`No ${what} called "${p.instance}" on this screen.`, 'warning', 'Widgets'); return; }
+        const w = this.findHostWidget(host, i, p.name);
+        if (!w) { this.toast(`No widget "${p.name}".`, 'warning', 'Widgets'); return; }
+        if (p.op === 'add') this.addHostWidget(host, i, w.type, w.id);
+        else if (p.op === 'remove') this.removeHostWidget(host, i, w.key);
+        else if (p.op === 'hide' || p.op === 'show') { if (!w.attached && p.op === 'show') this.addHostWidget(host, i, w.type, w.id); else this.setHostWidget(host, i, w.key, { hidden: p.op === 'hide' }); }
+        else if (p.op === 'start' || p.op === 'end') { if (w.attached) this.moveHostItem(instanceHost(host, i), w.key, p.op, 999); else this.addHostWidget(host, i, w.type, w.id, p.op); }
+        else if (p.op === 'reset') this.setHostWidget(host, i, w.key, { hidden: null, size: null, show: null, maxWidth: null, maxUnit: null, priority: null, hideWhenEmpty: null, overflow: null });
+        else this.setHostWidget(host, i, w.key, { size: p.op });
+      }, { label: `Add, remove or change a widget on a ${what}`, requires: 'assets.swap', params: true, searchable: false });
+    }
     a.register('assets.reset', () => this.reset(), { label: 'Reset to defaults' });
     // design.package:<id> · design.package:next|prev|random steps through the registered packages and applies one
     // (swap:design-package:next would only move the slot, never apply the package's themes).
@@ -3042,10 +3253,15 @@ export class AxfRuntime {
     a.register('windows.openFloating', ([kind = 'placeholder', title = 'Window', payload = '']) => wm.openFloating([{ id: `tab-${Date.now()}`, title, kind, payload }], title), { label: 'Open floating window', searchable: false });
     a.register('terminal.open', ([channel = '']) => wm.openFloating([{ id: `terminal-${Date.now()}`, title: 'Output', kind: 'terminal', payload: channel, icon: 'terminal' }], 'Output terminal', 'floating', 520, 320), { label: 'Open output terminal' });
     a.register('terminal.dialog', ([channel = '']) => this.openDialog('terminal', { channel }), { label: 'Output terminal (dialog)' });
-    // Right-click a widget host (banner, toolbar): arrange its widgets (drag + snap) or put them back.
-    this.contextExtras.set('*:widgets', (target) => {
-      const host = target && hostSpec(target) ? target : null;
-      if (!host || !this.canArrange() || !Object.values(this.hostPlaced(host)).some((l) => l.length)) return [];
+    // Right-click a widget host (banner, a toolbar, a tab row): its Widgets… picker, arrange its widgets (drag + snap) or put them back.
+    this.contextExtras.set('*:widgets', (target, payload) => {
+      const base = target && hostSpec(target) ? target : null;
+      if (!base || !this.canArrange()) return [];
+      // a toolbar or tab row is one instance (its payload, else the app's); its host id carries the instance
+      const instance = base === 'toolbar' || base === 'tab-group' ? (typeof payload === 'string' && payload ? payload : HOST_APP_INSTANCE) : null;
+      const host = instance ? instanceHost(base, instance) : base;
+      const hasAny = Object.values(this.hostPlaced(host)).some((l) => l.length);
+      if (!instance && !hasAny) return [];
       const items: import('./engines/windows').MenuEntry[] = [];
       if (host === 'banner') {
         items.push({ id: 'banner-widgets', label: 'Widgets…', icon: 'layers', action: 'banner.widgets' });
@@ -3054,6 +3270,15 @@ export class AxfRuntime {
           { id: 'banner-widget-settings', label: `Widget settings: ${hit.label}`, icon: 'settings', action: `banner.widgets:${hit.key}` },
           { id: 'banner-widget-hide', label: `Hide ${hit.label}`, icon: 'eye', action: `banner.widget:${hit.key}:hide` },
         );
+      } else if (instance) {
+        const prefix = base === 'toolbar' ? 'toolbar' : 'tabs';
+        items.push({ id: `${prefix}-widgets`, label: 'Widgets…', icon: 'layers', action: `${prefix}.widgets:${instance}` });
+        const hit = this.contextHostWidget ? this.hostWidgets(base, instance).find((w) => w.key === this.contextHostWidget && w.attached) : null;
+        if (hit) items.push(
+          { id: `${prefix}-widget-settings`, label: `Widget settings: ${hit.label}`, icon: 'settings', action: `${prefix}.widgets:${instance}:${hit.key}` },
+          { id: `${prefix}-widget-remove`, label: `${hit.origin === 'person' ? 'Remove' : 'Hide'} ${hit.label}`, icon: hit.origin === 'person' ? 'x' : 'eye', action: `${prefix}.widget:${instance}:${hit.key}:remove` },
+        );
+        if (!hasAny) return items;
       }
       items.push({ id: `widgets-arrange-${host}`, label: this.arranging(host) ? 'Done arranging widgets' : 'Arrange widgets…', icon: 'move', action: `widgets.arrange:${host}` });
       if (Object.keys(this.hostArrangement(host)).length) items.push({ id: `widgets-reset-${host}`, label: 'Put widgets back', icon: 'undo', action: `widgets.reset:${host}` });

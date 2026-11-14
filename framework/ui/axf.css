@@ -233,7 +233,13 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 .fx-banner .fx-widget-search .fx-search input { height: 100%; font-size: 1em; }
 .fx-toolbar__widget { display: inline-flex; align-items: center; min-width: 0; flex: none; }
 .fx-toolbar__widgets { display: inline-flex; align-items: center; gap: var(--fx-dens-gap-xl); min-width: 0; flex: none; }
-.fx-toolbar.is-arranging .fx-toolbar__widgets { min-width: calc(var(--fx-space) * 6); min-height: calc(var(--fx-space) * 3); border: var(--fx-border-w) dashed var(--fx-border); border-radius: var(--fx-radius-sm); padding: 0 var(--fx-dens-gap-md); }
+.fx-toolbar.is-arranging .fx-toolbar__widgets, .fx-tabs.is-arranging .fx-toolbar__widgets { min-width: calc(var(--fx-space) * 6); min-height: calc(var(--fx-space) * 3); border: var(--fx-border-w) dashed var(--fx-border); border-radius: var(--fx-radius-sm); padding: 0 var(--fx-dens-gap-md); }
+/* widgets on toolbars and tab rows (react/components/HostWidgets.tsx): the ⋯ button for what doesn't fit, the arrange bar under the bar */
+.fx-toolbar__more-btn { position: relative; }
+.fx-tabs > .fx-toolbar__widgets { flex: none; align-self: center; gap: var(--fx-dens-gap-lg); padding-inline: var(--fx-dens-gap-sm); font-size: var(--fx-type-root-sm); }
+.fx-tabs > .fx-toolbar__widgets .fx-banner__clock { color: var(--fx-muted); }
+.fx-toolbar > .fx-arrange__bar, .fx-tabs > .fx-arrange__bar { position: absolute; top: calc(100% + 4px); left: 50%; transform: translateX(-50%); z-index: 41; white-space: nowrap; }
+.fx-toolbar.is-arranging, .fx-tabs.is-arranging { position: relative; overflow: visible; }
 
 /* ---------------- arrange mode: drag widgets on a host, they snap between the others (react/components/Arrange.tsx) ---------------- */
 .fx-banner.is-arranging .fx-banner__side { overflow: visible; outline: var(--fx-border-w) dashed var(--fx-border); outline-offset: -2px; border-radius: var(--fx-radius-sm); min-height: 70%; }

@@ -216,4 +216,112 @@ const eq = (a: unknown, b: unknown, msg: string) => { assert.deepEqual(a, b, msg
   eq(rt.settings.get('axf.widgets.arrange.banner'), null, 'arrange rt: Reset to defaults clears arrangements');
 }
 
+// host widgets (core/engines/hostwidgets.ts, Nov 13 2026): any banner-style widget on any toolbar or tab row
+{
+  const hw = await import('../core/engines/hostwidgets');
+  const { instanceHost, splitHost, hostSpec, HOST_APP_INSTANCE } = await import('../core/engines/widgets');
+  // host instances: the app's own is the bare type; others carry their id; the type's spec answers for every instance
+  eq(instanceHost('toolbar', 'app'), 'toolbar', 'host: app instance is the bare type');
+  eq(instanceHost('toolbar', 'settings-toolbar'), 'toolbar@settings-toolbar', 'host: instance id');
+  eq(splitHost('tab-group@ui-review.sections'), { host: 'tab-group', instance: 'ui-review.sections' }, 'host: split');
+  eq(splitHost('toolbar'), { host: 'toolbar', instance: HOST_APP_INSTANCE }, 'host: split bare');
+  eq(hostSpec('toolbar@x')?.host, 'toolbar', 'host: instance spec is the type spec');
+  eq(hostSpec('tab-group')?.sides, ['start', 'end'], 'host: a tab row is a host (asset-types.json)');
+  ok(hostSpec('tab-group')!.types.includes('status') && !hostSpec('tab-group')!.types.includes('badge'), 'host: a tab row takes widgets, not badges');
+  const types = hostSpec('toolbar')!.types, sides = hostSpec('toolbar')!.sides;
+  // the saved choice is cleaned, never trusted
+  const c = hw.normalizeHostWidgetChoice({ attach: [{ type: 'status', id: 'cpu', at: 'end' }, { type: 'badge', id: 'x', at: 'end' }, { type: 'clock', id: 'c', at: 'left' }, { type: 'status', id: 'cpu', at: 'start' }, 'junk'], prefs: { 'status:cpu': { size: 'wide', priority: 99 }, bad: 1 } }, types, sides);
+  eq(c.attach.map((a) => `${a.type}:${a.id}@${a.at}#${a.order}/${a.origin}`), ['status:cpu@end#2000/person'], 'host choice: only widget types on known sides, no doubles');
+  eq(c.prefs, { 'status:cpu': { size: 'wide', priority: 9 } }, 'host choice: prefs by the banner rules');
+  eq(hw.normalizeHostWidgetChoice(null, types, sides), { attach: [], prefs: {} }, 'host choice: junk is empty');
+  ok(hw.hostWidgetChoiceEmpty(hw.emptyHostWidgetChoice()) && !hw.hostWidgetChoiceEmpty(c), 'host choice: empty test');
+  // add / remove / patch
+  const added = hw.addHostWidget(hw.emptyHostWidgetChoice(), 'clock', 'digital-24h', 'start', types, sides);
+  eq(added.attach, [{ type: 'clock', id: 'digital-24h', at: 'start', order: 2000, origin: 'person' }], 'host add');
+  const two = hw.addHostWidget(added, 'status', 'cpu', 'end', types, sides);
+  eq(two.attach.map((a) => a.order), [2000, 2010], 'host add: after what is there');
+  eq(hw.addHostWidget(two, 'clock', 'digital-24h', 'end', types, sides).attach.map((a) => `${a.type}:${a.id}@${a.at}`), ['status:cpu@end', 'clock:digital-24h@end'], 'host add: again moves it');
+  eq(hw.addHostWidget(two, 'badge', 'new', 'end', types, sides).attach.length, 2, 'host add: a badge is refused on a toolbar');
+  eq(hw.addHostWidget(two, 'clock', 'c', 'middle', types, sides).attach.length, 2, 'host add: unknown side refused');
+  const hidden = hw.patchHostWidget(two, 'status:cpu', { hidden: true, size: 'icon' });
+  eq(hidden.prefs, { 'status:cpu': { hidden: true, size: 'icon' } }, 'host patch');
+  eq(hw.addHostWidget(hidden, 'status', 'cpu', 'end', types, sides).prefs, { 'status:cpu': { size: 'icon' } }, 'host add: a widget added back is shown again');
+  eq(hw.removeHostWidget(hidden, 'status:cpu'), { attach: added.attach, prefs: {} }, 'host remove: the widget and its prefs');
+  eq(hw.hostWidgetsKey('toolbar', 'Dev Console', 'desktop', 'app'), 'axf.widgets.on.toolbar.dev-console.desktop.app', 'host key');
+  // what an action says
+  eq(hw.parseHostWidgetArgs(['cpu', 'add']), { instance: 'app', name: 'cpu', op: 'add' }, 'host args: name + op');
+  eq(hw.parseHostWidgetArgs(['settings-toolbar', 'status', 'cpu', 'wide']), { instance: 'settings-toolbar', name: 'status:cpu', op: 'wide' }, 'host args: instance, key, size');
+  eq(hw.parseHostWidgetArgs(['cpu', 'bigger']), null, 'host args: unknown op');
+  eq(hw.parseHostWidgetArgs(['add']), null, 'host args: no name');
+  // which bar a person means
+  const bars = [{ id: 'app', label: 'Toolbar' }, { id: 'settings-toolbar', label: 'Settings toolbar' }, { id: 'axf-ws-toolbar:notes', label: 'Notes workspace toolbar' }];
+  eq(hw.matchHostInstance(bars, 'the main toolbar'), 'app', 'host match: main');
+  eq(hw.matchHostInstance(bars, ''), 'app', 'host match: nothing = app');
+  eq(hw.matchHostInstance(bars, 'settings'), 'settings-toolbar', 'host match: words');
+  eq(hw.matchHostInstance(bars, 'the notes toolbar'), 'axf-ws-toolbar:notes', 'host match: label words');
+  eq(hw.matchHostInstance(bars, 'axf-ws-toolbar:notes'), 'axf-ws-toolbar:notes', 'host match: exact id');
+  eq(hw.matchHostInstance([], 'my.page.tabs'), 'my.page.tabs', 'host match: a valid id with nothing on screen is taken as is');
+  eq(hw.matchHostInstance(bars, 'nothing like this'), null, 'host match: nothing');
+
+  // the runtime: add by voice-style action, persist per instance, draw, hide, move, remove, reset; the context menu
+  const assets = readdirSync(join(root, 'assets')).flatMap((t) => readdirSync(join(root, 'assets', t)).filter((n) => n.endsWith('.json')).map((n) => JSON.parse(readFileSync(join(root, 'assets', t, n), 'utf8'))));
+  const defaults = JSON.parse(readFileSync(join(root, 'defaults.json'), 'utf8'));
+  const rt = new AxfRuntime({ manifest: { app: { id: 'test', name: 'Test' }, defaults } as never, assets, storageKey: 'test:hostwidgets' });
+  const endKeys = (instance = 'app') => rt.toolbarWidgets(instance).end.map((p) => p.key);
+  const before = endKeys();
+  ok(rt.hostWidgets('toolbar', 'app').some((w) => w.key === 'clock:digital-24h' && !w.attached), 'host rt: the catalog lists every widget asset');
+  ok(rt.hostWidgets('toolbar', 'app').some((w) => w.key === 'theme-switch:day-night'), 'host rt: the banner registry is in the catalog');
+  ok(!rt.hostWidgets('toolbar', 'app').some((w) => w.type === 'badge'), 'host rt: no badges for a toolbar');
+  rt.dispatch('toolbar.widget:clock:add');
+  eq(rt.hostWidgetChoice('toolbar', 'app').attach.length, 1, 'host rt: "add the clock" (first match of the word) saved');
+  ok(endKeys().length === before.length + 1, 'host rt: drawn at the end');
+  const key = rt.hostWidgetChoice('toolbar', 'app').attach[0]!;
+  const k = `${key.type}:${key.id}`;
+  ok(typeof rt.settings.get(rt.hostWidgetsKey('toolbar', 'app')) === 'object', 'host rt: saved as a setting');
+  eq(endKeys('settings-toolbar').includes(k), false, 'host rt: another toolbar is untouched (per instance)');
+  rt.dispatch(`toolbar.widget:app:${k}:hide`);
+  eq(endKeys().includes(k), false, 'host rt: hidden is not drawn');
+  ok(rt.hostInstanceWidgets('toolbar', 'app', { all: true }).end.some((p) => p.key === k), 'host rt: but still placed (all)');
+  rt.dispatch(`toolbar.widget:app:${k}:show`);
+  rt.dispatch(`toolbar.widget:app:${k}:wide`);
+  eq(rt.hostWidgetView('toolbar', 'app', k).size, 'wide', 'host rt: size by action');
+  rt.dispatch(`toolbar.widget:app:${k}:start`);
+  ok(rt.toolbarWidgets().start.some((p) => p.key === k), 'host rt: moved to the start');
+  ok(typeof rt.settings.get('axf.widgets.arrange.toolbar') === 'string', 'host rt: the app toolbar keeps its arrangement key');
+  // a page toolbar is its own instance with its own arrangement key
+  ok(rt.addHostWidget('toolbar', 'settings-toolbar', 'clock', 'digital-24h', 'end'), 'host rt: add to a page toolbar');
+  eq(endKeys('settings-toolbar'), ['clock:digital-24h'], 'host rt: drawn on that toolbar only');
+  rt.moveHostItem('toolbar@settings-toolbar', 'clock:digital-24h', 'start', 0);
+  ok(typeof rt.settings.get('axf.widgets.arrange.toolbar@settings-toolbar') === 'string', 'host rt: per-instance arrangement');
+  eq(rt.hostPlaced('toolbar@settings-toolbar').start.map((p) => p.key), ['clock:digital-24h'], 'host rt: hostPlaced reads an instance host');
+  // a tab row hosts widgets too
+  ok(rt.addHostWidget('tab-group', 'ui-review.sections', 'clock', 'digital-24h'), 'host rt: add to a tab row');
+  eq(rt.hostInstanceWidgets('tab-group', 'ui-review.sections').end.map((p) => p.key), ['clock:digital-24h'], 'host rt: drawn on the row');
+  ok(!rt.addHostWidget('tab-group', 'ui-review.sections', 'badge', 'new'), 'host rt: a badge is refused');
+  // the context menu of a toolbar / tab row offers Widgets…, a hit widget's settings and remove, arrange + put back
+  rt.contextHostWidget = 'clock:digital-24h';
+  const menu = rt.contextExtras.get('*:widgets')!('toolbar', 'settings-toolbar');
+  ok(menu.some((m) => m.action === 'toolbar.widgets:settings-toolbar'), 'host rt: right-click offers Widgets…');
+  ok(menu.some((m) => m.action === 'toolbar.widgets:settings-toolbar:clock:digital-24h'), 'host rt: widget settings for the hit widget');
+  ok(menu.some((m) => m.action === 'toolbar.widget:settings-toolbar:clock:digital-24h:remove' && m.label === 'Remove Clock'), 'host rt: remove for a widget the person added');
+  ok(menu.some((m) => m.action === 'widgets.arrange:toolbar@settings-toolbar'), 'host rt: arrange this instance');
+  const tabMenu = rt.contextExtras.get('*:widgets')!('tab-group', 'ui-review.sections');
+  ok(tabMenu.some((m) => m.action === 'tabs.widgets:ui-review.sections'), 'host rt: a tab row offers Widgets…');
+  eq(rt.contextExtras.get('*:widgets')!('tab-group', 'empty.row').map((m) => m.action), ['tabs.widgets:empty.row'], 'host rt: an empty row still offers Widgets… (nothing to arrange)');
+  // remove and reset
+  rt.dispatch('toolbar.widget:settings-toolbar:clock:remove');
+  eq(endKeys('settings-toolbar').length + rt.toolbarWidgets('settings-toolbar').start.length, 0, 'host rt: removed');
+  rt.dispatch('toolbar.widgets.reset:app');
+  eq(rt.settings.get(rt.hostWidgetsKey('toolbar', 'app')), null, 'host rt: reset clears the choice');
+  eq(rt.settings.get('axf.widgets.arrange.toolbar'), null, 'host rt: reset clears the arrangement');
+  eq(endKeys(), before, 'host rt: back to the defaults');
+  // a module's widget is hidden, not removed
+  rt.attachToToolbar({ type: 'clock', id: 'digital-24h', at: 'end', origin: 'p9', widget: { label: 'Plugin clock' } });
+  ok(rt.hostWidgets('toolbar', 'app').some((w) => w.key === 'clock:digital-24h' && w.attached && w.label === 'Plugin clock'), 'host rt: a module widget with its hint');
+  rt.removeHostWidget('toolbar', 'app', 'clock:digital-24h');
+  ok(rt.hostWidgetView('toolbar', 'app', 'clock:digital-24h').hidden && rt.hostInstanceWidgets('toolbar', 'app', { all: true }).end.some((p) => p.key === 'clock:digital-24h'), 'host rt: hidden, still placed');
+  rt.dispatch('toolbar.widget:app:plugin clock:show');
+  ok(!rt.hostWidgetView('toolbar', 'app', 'clock:digital-24h').hidden, 'host rt: shown again by its name');
+}
+
 console.log(`check-widgets: ${checks} checks ok`);

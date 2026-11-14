@@ -25,6 +25,7 @@ import { CHROME_INSTANCE_ASSET_KEY, CHROME_INSTANCE_KEY, TAB_GROUP_FOLD_KEY, TAB
 import { useAxfState, useRuntime } from '../AxfProvider';
 import { ControlScope, escapeSelector, useControlScope, useControlTarget, useControlTargets } from '../controlTargets';
 import { Icon } from './Icon';
+import { useHostWidgets } from './HostWidgets';
 
 export interface TabDef<T extends string = string> {
   value: T;
@@ -135,7 +136,9 @@ export function TabGroup<T extends string = string>({ id, label, value, onChange
       if (btns.length === tabs.length && btns.every((b) => b.offsetWidth > 0)) widths.current = btns.map((b) => b.offsetWidth);
       const w = widths.current;
       if (w.length !== tabs.length) { setVisible(Infinity); return; }
-      const room = el.clientWidth - (extra ? MORE_ROOM * 2 : MORE_ROOM);
+      // widgets on the row keep their room (they fold into their own ⋯ menu when the row is short)
+      const widgets = Array.from(el.querySelectorAll<HTMLElement>(':scope > [data-axf-host-side]')).reduce((s, n) => s + n.offsetWidth, 0);
+      const room = el.clientWidth - (extra ? MORE_ROOM * 2 : MORE_ROOM) - widgets;
       let used = 0, n = 0;
       for (const x of w) { if (used + x > room) break; used += x; n++; }
       setVisible(n >= tabs.length ? Infinity : Math.max(1, n));
@@ -149,6 +152,8 @@ export function TabGroup<T extends string = string>({ id, label, value, onChange
 
   const folded = data.collapsible && rt.settings.get(TAB_GROUP_FOLD_KEY(id)) === true;
   const activeIndex = Math.max(0, tabs.findIndex((t) => t.value === value));
+  // widgets on the row (HostWidgets.tsx): the same widgets the banner and toolbars take, added per row from Widgets…
+  const hw = useHostWidgets('tab-group', id, rowRef);
 
   // console-control@1 (react/controlTargets.ts): the row is `tab:<id>` (state = the active tab, set = switch), every tab is
   // `tab:<id>=<value>` (open = switch to it, focus = scroll + highlight); a row inside another tab's panel is a `subtab`.
@@ -254,7 +259,8 @@ export function TabGroup<T extends string = string>({ id, label, value, onChange
   if (data.overflow === 'dropdown') {
     const cur = tabs[activeIndex];
     row = (
-      <div ref={rowRef} className={`${cls} fx-tabs--dropdown`} role="tablist" aria-label={label} data-axf-tab-group={id} data-fx-ctx-target="tab-group" data-fx-ctx-payload={id} style={style} {...attrs}>
+      <div ref={rowRef} className={`${cls} fx-tabs--dropdown${hw.on ? ' is-arranging' : ''}`} role="tablist" aria-label={label} data-axf-tab-group={id} data-fx-ctx-target="tab-group" data-fx-ctx-payload={id} style={style} {...attrs} {...hw.rootProps}>
+        {hw.start}
         <button type="button" className="fx-tabs__pick" aria-haspopup="menu" aria-expanded={menu} onClick={() => setMenu((m) => !m)}>
           {cur?.icon && data.display !== 'text' && <Icon name={cur.icon} size={14} />}
           {data.display !== 'icons' && <span className="fx-tab__text">{cur?.label ?? label}</span>}
@@ -262,12 +268,15 @@ export function TabGroup<T extends string = string>({ id, label, value, onChange
           <Icon name="chevron-down" size={12} />
         </button>
         {extra}
+        {hw.end}
+        {hw.bar}
         {menu && list(tabs.map((_, i) => i), () => setMenu(false))}
       </div>
     );
   } else {
     row = (
-      <div ref={rowRef} className={cls} role="tablist" aria-label={label} aria-orientation={vertical ? 'vertical' : 'horizontal'} data-axf-tab-group={id} data-fx-ctx-target="tab-group" data-fx-ctx-payload={id} style={style} {...attrs}>
+      <div ref={rowRef} className={`${cls}${hw.on ? ' is-arranging' : ''}`} role="tablist" aria-label={label} aria-orientation={vertical ? 'vertical' : 'horizontal'} data-axf-tab-group={id} data-fx-ctx-target="tab-group" data-fx-ctx-payload={id} style={style} {...attrs} {...hw.rootProps}>
+        {hw.start}
         {shown.map(tabEl)}
         {overflowed.length > 0 && (
           <button type="button" className="fx-tab fx-tabs__more" aria-haspopup="menu" aria-expanded={menu} aria-label={`${overflowed.length} more`} title={`${overflowed.length} more`} onClick={() => setMenu((m) => !m)}>
@@ -281,6 +290,8 @@ export function TabGroup<T extends string = string>({ id, label, value, onChange
           </button>
         )}
         {extra}
+        {hw.end}
+        {hw.bar}
         {menu && overflowed.length > 0 && list(overflowed, () => setMenu(false))}
       </div>
     );

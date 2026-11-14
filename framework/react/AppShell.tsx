@@ -8,6 +8,7 @@ import { Inspector } from './studio/Inspector';
 import { builtinDialogs } from './studio/builtinDialogs';
 import { bannerSettingsDialog } from './components/BannerSettings';
 import { bannerWidgetsDialog } from './components/BannerWidgets';
+import { hostWidgetsDialog } from './components/HostWidgets';
 import { chromeDialogs, installChrome } from './components/ChromeContext';
 import { priorityDialogs } from './components/PriorityTag';
 import { FloatingWindowsHost, TabRenderersProvider, windowDialogs, useWindowShortcuts, type TabRenderers } from './windows/WindowHost';
@@ -71,7 +72,7 @@ export function AppShell({ views: declaredViews, dialogs: declaredDialogs = {}, 
   useWindowShortcuts();
   // chrome-settings@1: Settings / Change / Move on every tab group, toolbar, banner, nav and menu bar (once per runtime)
   installChrome(rt);
-  const allDialogs: DialogMap = { ...builtinDialogs, ...bannerSettingsDialog, ...bannerWidgetsDialog, ...chromeDialogs, ...priorityDialogs, ...windowDialogs, ...terminalDialog, ...dialogs };
+  const allDialogs: DialogMap = { ...builtinDialogs, ...bannerSettingsDialog, ...bannerWidgetsDialog, ...hostWidgetsDialog, ...chromeDialogs, ...priorityDialogs, ...windowDialogs, ...terminalDialog, ...dialogs };
   // Live search: views, dialogs and page text go into the runtime's search index; picks are focused here.
   useSearchHost(declaredViews, allDialogs);
   // console-control@1: every view is an addressable target (`view:<id>`); what a view renders composes under it.
