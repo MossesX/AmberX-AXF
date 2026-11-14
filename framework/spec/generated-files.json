@@ -1,0 +1,58 @@
+{
+  "$axf": "generated-files@1",
+  "note": "One list of the files a merge never needs a person for (build lander-regenerates-generated-files-clash, Nov 13 2026). Read by the auto-land runner and the merge queue (apps/console-web/plugins/push-banner/land/land-core.mjs) and by the vps.build_land resolver (framework/cli/land-resolve.py, run as /opt/axf-batch/resolve.py). `files` are matched in order against the repo path of a conflicted file. merge = regen (main's copy, then the named generator runs on the merged tree), union-json (both sides' keys kept, 3-way by key, main wins a scalar clash), union-lines (git merge-file --union), main (main's copy is enough). A generator's `run` and `outputs` may use {app} for the app folder caught by the pattern's `app` group; an `optional` generator that refuses to run leaves main's copy in place instead of stopping the land. A generator's `check` runs after it; `tests` run whenever a generated or union file was resolved.",
+  "generators": {
+    "control-inventory": {
+      "title": "Console control inventory (console-control@1)",
+      "run": ["node", "apps/console-web/scripts/control-inventory.mjs"],
+      "check": ["node", "apps/console-web/scripts/control-inventory.mjs", "--check"],
+      "outputs": ["apps/console-web/src/control/inventory.json"]
+    },
+    "help-sync": {
+      "title": "Framework help packs copied into every app",
+      "run": ["node", "framework/cli/help-coverage.mjs", "--sync"],
+      "check": null,
+      "outputs": ["apps/console-web/src/assets/help", "apps/axhub-web/src/assets/help", "apps/amberx-droid/src/assets/help", "apps/walkthrough-studio/src/assets/help"]
+    },
+    "rebake": {
+      "title": "Baked framework copy of one app (src/axf + axf.lock.json)",
+      "run": ["node", "framework/cli/rebake.mjs", "apply", "apps/{app}"],
+      "check": null,
+      "outputs": ["apps/{app}/src/axf", "apps/{app}/axf.lock.json"],
+      "optional": true,
+      "optionalNote": "rebake refuses an app whose baked files were edited in place; main's copy of the clashed files then stands (what main's CI passed) and the refusal is logged, not fatal"
+    },
+    "fixtures": {
+      "title": "Port-conformance fixtures from the reference engines",
+      "run": ["npx", "-y", "tsx", "framework/spec/gen-fixtures.mts"],
+      "check": ["node", "framework/spec/check-project-fixtures.mjs"],
+      "outputs": ["framework/spec/fixtures"],
+      "timeoutMs": 300000
+    },
+    "tracker": {
+      "title": "Feature tracker (tracker.json) from the catalog and status map",
+      "run": ["node", "framework/cli/tracker.mjs"],
+      "check": ["node", "framework/cli/tracker.mjs", "--check"],
+      "outputs": ["tracker.json"]
+    }
+  },
+  "files": [
+    { "match": "^apps/console-web/src/control/inventory\\.json$", "merge": "regen", "generator": "control-inventory" },
+    { "match": "^apps/[^/]+/src/assets/help/[^/]+\\.json$", "merge": "regen", "generator": "help-sync" },
+    { "match": "^apps/([^/]+)/src/axf/.+", "merge": "regen", "generator": "rebake", "app": 1 },
+    { "match": "^apps/([^/]+)/axf\\.lock\\.json$", "merge": "regen", "generator": "rebake", "app": 1 },
+    { "match": "^framework/spec/fixtures/[^/]+\\.json$", "merge": "regen", "generator": "fixtures" },
+    { "match": "^tracker\\.json$", "merge": "regen", "generator": "tracker" },
+    { "match": "^framework/assets/help/[^/]+\\.json$", "merge": "union-json" },
+    { "match": "^apps/[^/]+/plugins/[^/]+/help\\.json$", "merge": "union-json" },
+    { "match": "^framework/catalog/(status|libraries)\\.json$", "merge": "union-json" },
+    { "match": "^framework/spec/PORTING\\.md$", "merge": "union-lines" },
+    { "match": "^framework/plan/(build-queue|pending|plan)\\.json$", "merge": "main" },
+    { "match": "^framework/plan/profiles/.+\\.json$", "merge": "main" },
+    { "match": "^(changes|sessions)/.+\\.json$", "merge": "main" }
+  ],
+  "tests": [
+    ["node", "apps/console-web/scripts/control-inventory.mjs", "--check"],
+    ["node", "framework/spec/check-project-fixtures.mjs"]
+  ]
+}
