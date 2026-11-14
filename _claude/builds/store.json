@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5584,
- "updatedAt": "2026-11-14T23:14:52.218Z",
+ "rev": 5585,
+ "updatedAt": "2026-11-14T23:15:07.001Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -193152,7 +193152,7 @@
    "branch": "claude/one-source-truth-console-shows-only-what",
    "pr": "#598",
    "createdAt": "2026-11-12T02:37:57.927Z",
-   "updatedAt": "2026-11-14T23:12:54.474Z",
+   "updatedAt": "2026-11-14T23:14:52.068Z",
    "builtAt": "2026-11-14T23:11:39.997Z",
    "notes": [
     {
@@ -193265,6 +193265,23 @@
     "heldBy": "",
     "heldWhy": ""
    },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "flagged",
+    "landAttempts": [
+     {
+      "at": "2026-11-14T23:14:24.883Z",
+      "run": "lr-one-source-truth-console-shows-only-what-20261114T231424",
+      "base": "115d2c4813047073fb46e480ec00290bf3ff0eee",
+      "merged": "",
+      "outcome": "clash",
+      "ci": "",
+      "note": "Source clash a person has to settle: apps/console-web/plugins/build-orchestrator/pipeline.mjs. No fix build: the orchestrator did not take it."
+     }
+    ]
+   },
    "steps": [
     {
      "id": "s1",
@@ -193341,7 +193358,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": {
