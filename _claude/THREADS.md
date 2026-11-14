@@ -796,12 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 00:43 UTC · `land-batch-merge-main-each-finished` s12 done (all) · orchestrator
-- 2026-11-14 00:44 UTC · `land-batch-merge-main-each-finished` s13 done (all) · orchestrator
-- 2026-11-14 00:45 UTC · `console-app-land-parts-1-4-build-apk` → running, note (all) · pipeline
-- 2026-11-14 00:45 UTC · `console-app-land-parts-1-4-build-apk` branch claude/console-app-land-parts-1-4-build-apk (all) · pipeline
-- 2026-11-14 00:45 UTC · `console-app-land-parts-1-4-build-apk` note (all) · orchestrator
-- 2026-11-14 00:46 UTC · `voice-listener-use-claude-when-connected` → running, note (all) · pipeline
 - 2026-11-14 00:46 UTC · `voice-listener-use-claude-when-connected` branch claude/voice-listener-use-claude-when-connected (all) · pipeline
 - 2026-11-14 00:46 UTC · `voice-listener-use-claude-when-connected` note (all) · orchestrator
 - 2026-11-14 00:47 UTC · `land-batch-merge-main-each-finished` s14 done (all) · orchestrator
@@ -1196,6 +1190,12 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 22:45 UTC · `restore-asset-designer-plugin-merged-nov` → queued (all) · orchestrator
 - 2026-11-14 22:45 UTC · `all-settings-interfaces-open-floating` → queued (all) · orchestrator
 - 2026-11-14 22:45 UTC · `quick-settings-pinned-collapsible-pane` → queued (all) · orchestrator
+- 2026-11-14 22:45 UTC · `new-asset-type-animated-expanding-row` → queued (all) · orchestrator
+- 2026-11-14 22:45 UTC · `prompting-engine-control-panel-events` → queued (all) · orchestrator
+- 2026-11-14 22:45 UTC · `ui-manager-floating-window-to-select-any` → queued (all) · orchestrator
+- 2026-11-14 22:45 UTC · `orchestrator-table-columns-model-queue-assigned` → running, note (all) · pipeline
+- 2026-11-14 22:45 UTC · `orchestrator-table-columns-model-queue-assigned` note (all) · orchestrator
+- 2026-11-14 22:45 UTC · `orchestrator-settings-collapsible-split` → queued (all) · orchestrator
 
 ## Token passes (log)
 
