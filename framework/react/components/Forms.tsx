@@ -185,7 +185,7 @@ export function ColorField({ label, value, onChange, swatch, hint, error, disabl
   );
 }
 
-export interface SelectOption { value: string; label: string; disabled?: boolean }
+export interface SelectOption { value: string; label: string; disabled?: boolean; /** <optgroup> / picker section label */ group?: string; title?: string }
 
 export interface SelectFieldProps {
   label: ReactNode;
@@ -219,6 +219,38 @@ export function SelectField({ label, value, options, onChange, hint, error, empt
         </select>
       )}
     </Field>
+  );
+}
+
+export interface SelectProps {
+  /** Accessible name (there is no visible label: the caller lays one out, or the row says it). */
+  label: string;
+  value: string;
+  options: SelectOption[];
+  onChange: (v: string) => void;
+  /** Label of an extra empty option ("" value) at the top. */
+  empty?: string;
+  disabled?: boolean;
+  title?: string;
+  className?: string;
+}
+
+/**
+ * A bare drop-down (no Field around it) for toolbars, table cells and inline rows: a native select, or the themed
+ * PickerField while the picker swap is on. Options with a `group` sit in <optgroup>s / picker sections.
+ */
+export function Select({ label, value, options, onChange, empty, disabled, title, className }: SelectProps) {
+  const swap = usePickerSwap();
+  if (swapActive(swap) && swap.swapSelectFields) {
+    return <PickerField bare label={label} labelText={label} value={value} options={options} onChange={onChange} empty={empty} disabled={disabled} className={className} searchThreshold={swap.searchThreshold ?? undefined} />;
+  }
+  const groups = [...new Set(options.map((o) => o.group ?? ''))];
+  const row = (o: SelectOption) => <option key={o.value} value={o.value} disabled={o.disabled} title={o.title}>{o.label}</option>;
+  return (
+    <select className={`fx-input ${className ?? ''}`} aria-label={label} title={title} value={value} disabled={disabled} onChange={(e) => onChange(e.target.value)}>
+      {empty !== undefined && <option value="">{empty}</option>}
+      {groups.map((g) => g ? <optgroup key={g} label={g}>{options.filter((o) => o.group === g).map(row)}</optgroup> : options.filter((o) => !o.group).map(row))}
+    </select>
   );
 }
 

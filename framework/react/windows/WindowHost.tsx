@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useLayoutEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type ReactNode } from 'react';
 import { useRuntime } from '../AxfProvider';
 import { Icon } from '../components/Icon';
+import { Select } from '../components/Forms';
 import { BrandMark, BrandWatermark, brandHostProps, useBrandPlace } from '../components/Brand';
 import { useScopeId } from '../components/InterfaceScope';
 import type { Pane, TabGroup, TabSpec, WindowManager, WindowSettings, WindowSpec, WindowState, Corner, DragPreview, ResizeEdge, WindowFrame } from '../../core/engines/windows';
@@ -440,8 +441,8 @@ export function WindowSettingsDialog({ windowId, close }: { windowId: string; cl
   if (!w) return <p>Window not found.</p>;
   return (
     <div className="fx-form">
-      <label>Minimize corner <select value={st.corner} onChange={(e) => setSt({ ...st, corner: e.target.value as Corner })}>{CORNERS.map((c) => <option key={c} value={c}>{c}</option>)}</select></label>
-      <label>Minimized title bars <select value={st.mode} onChange={(e) => setSt({ ...st, mode: e.target.value as 'stacked' | 'lined' })}><option value="stacked">Stacked</option><option value="lined">Lined up</option></select></label>
+      <label>Minimize corner <Select label="Minimize corner" value={st.corner} onChange={(v) => setSt({ ...st, corner: v as Corner })} options={CORNERS.map((c) => ({ value: c, label: c }))} /></label>
+      <label>Minimized title bars <Select label="Minimized title bars" value={st.mode} onChange={(v) => setSt({ ...st, mode: v as 'stacked' | 'lined' })} options={[{ value: 'stacked', label: 'Stacked' }, { value: 'lined', label: 'Lined up' }]} /></label>
       <label>Opacity <input type="range" min={0.3} max={1} step={0.05} value={st.opacity} onChange={(e) => setSt({ ...st, opacity: Number(e.target.value) })} /></label>
       <label><input type="checkbox" checked={typeof st.surface !== 'number'} onChange={(e) => setSt({ ...st, surface: e.target.checked ? null : 1 })} /> Background follows the theme (Window opacity token)</label>
       {typeof st.surface === 'number' && <label>Background <input type="range" min={0} max={1} step={0.05} value={st.surface} onChange={(e) => setSt({ ...st, surface: Number(e.target.value) })} aria-label="Window background opacity" /></label>}

@@ -19,7 +19,7 @@ import {
   ALERT_SEVERITIES, AlertCenter, DEFAULT_ALERT_RULES, diagnosticToAlert, sortAlerts, unreadCount,
   type Alert, type AlertInput, type AlertRules, type AlertSeverity, type AxfRuntime, type ChannelMin,
 } from '../../core';
-import { Button, Chip, Icon, useRuntime } from '../../react';
+import { Button, Chip, Icon, Select, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import './alerts.css';
 
@@ -219,10 +219,7 @@ function AlertsView() {
           {(['open', 'all'] as const).map((x) => <button key={x} type="button" className={`fx-chip ${P}__chip ${show === x ? 'is-on' : ''}`} aria-pressed={show === x} onClick={() => setShow(x)}>{x === 'open' ? 'Open' : 'Include resolved'}</button>)}
         </div>
         {sources.length > 1 && (
-          <select className="fx-input" value={source} onChange={(e) => setSource(e.target.value)} aria-label="Source">
-            <option value="all">All sources</option>
-            {sources.map((x) => <option key={x} value={x}>{x}</option>)}
-          </select>
+          <Select label="Source" value={source} onChange={setSource} options={[{ value: 'all', label: 'All sources' }, ...sources.map((x) => ({ value: x, label: x }))]} />
         )}
       </div>
       {!rows.length && <p className="fx-muted">{s.list.length ? 'No alerts match these filters.' : 'No alerts yet. Problems from CI, deploys, the systems check, builds, plugins, conflicts and crashes show up here.'}</p>}
@@ -315,9 +312,7 @@ function RulesPanel() {
 
 function MinSelect({ value, onChange, label, inherited }: { value: ChannelMin; onChange: (m: ChannelMin) => void; label: string; inherited?: boolean }) {
   return (
-    <select className={`fx-input ${P}__min ${inherited ? 'is-inherited' : ''}`} value={value} aria-label={label} onChange={(e) => onChange(e.target.value as ChannelMin)}>
-      {MINS.map((m) => <option key={m} value={m}>{m === 'off' ? 'off' : `${m}+`}</option>)}
-    </select>
+    <Select className={`${P}__min ${inherited ? 'is-inherited' : ''}`} value={value} label={label} onChange={(v) => onChange(v as ChannelMin)} options={MINS.map((m) => ({ value: m, label: m === 'off' ? 'off' : `${m}+` }))} />
   );
 }
 
