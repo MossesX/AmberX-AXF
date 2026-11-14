@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T18:01:22.750Z",
+ "updatedAt": "2026-11-14T18:02:08.145Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -139185,7 +139185,7 @@
    "pr": "#674",
    "mergedAt": "2026-11-14T17:57:14Z",
    "createdAt": "2026-11-14T16:44:38.923Z",
-   "updatedAt": "2026-11-14T18:01:20.436Z",
+   "updatedAt": "2026-11-14T18:02:04Z",
    "builtAt": "2026-11-14T17:07:43.504Z",
    "notes": [
     {
@@ -139207,6 +139207,10 @@
     {
      "text": "Reconciler: PR #674 merged",
      "at": "2026-11-14T18:01:20.436Z"
+    },
+    {
+     "text": "Shipped manifest sm-builds-share-one-claude-login-write rev 1 sent to Shipped features (orchestrator): landed 8b50fda7a, 16 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-14T18:02:04Z"
     }
    ],
    "approvals": [],

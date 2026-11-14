@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5356,
- "updatedAt": "2026-11-14T18:01:22.750Z",
+ "rev": 5357,
+ "updatedAt": "2026-11-14T18:02:08.145Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -219211,7 +219211,7 @@
    "pr": "#674",
    "mergedAt": "2026-11-14T17:57:14Z",
    "createdAt": "2026-11-14T16:44:38.923Z",
-   "updatedAt": "2026-11-14T18:01:20.436Z",
+   "updatedAt": "2026-11-14T18:02:04Z",
    "builtAt": "2026-11-14T17:07:43.504Z",
    "notes": [
     {
@@ -219233,6 +219233,10 @@
     {
      "text": "Reconciler: PR #674 merged",
      "at": "2026-11-14T18:01:20.436Z"
+    },
+    {
+     "text": "Shipped manifest sm-builds-share-one-claude-login-write rev 1 sent to Shipped features (orchestrator): landed 8b50fda7a, 16 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-14T18:02:04Z"
     }
    ],
    "approvals": [],
@@ -219283,6 +219287,12 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "shipped": {
+    "id": "sm-builds-share-one-claude-login-write",
+    "rev": 1,
+    "at": "2026-11-14T18:02:04Z",
+    "landedCommit": "8b50fda7a27c019886dd5dd6ebff9f2845d1ca35"
    },
    "steps": [
     {
@@ -219426,7 +219436,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": {
