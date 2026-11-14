@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T04:14:41.074Z",
+ "updatedAt": "2026-11-14T04:14:54.677Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -137346,7 +137346,7 @@
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-14T04:12:40.734Z",
+   "updatedAt": "2026-11-14T04:14:48.212Z",
    "builtAt": "",
    "notes": [
     {
@@ -137495,6 +137495,25 @@
      "note": "",
      "uid": "st-mwfw2iih01lrjz",
      "createdAt": "2026-11-14T04:11:42.173Z"
+    },
+    {
+     "id": "s10",
+     "text": "Fifth hero video, 'the kid who builds everything': a teen keeps needing quick apps and just talks them into AmberX one after another: (1) an instant messaging chat with his buddy, (2) a little private social space for him and his friends to share pictures with a message board, invite-only, (3) a baseball practice schedule with alarms and notifications at set times, then more fun ones. Montage pace. Message: you can build unlimited apps, all assembled from pre-built libraries with no code, they all look the same and plug into each other automatically through axHub, and you can swap parts any time. Finale: one click changes the skin and every one of his apps connected through the hub instantly looks like a completely different app, look and behaviour. Keep it age-appropriate: friends-only spaces, no public profiles or location. Narration line: 'every app you build from now on connects automatically.' Label staged parts as a preview. Also cut a 60-second version.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfw6hyo016iwo",
+     "createdAt": "2026-11-14T04:14:48.213Z"
     },
     {
      "id": "s7",
