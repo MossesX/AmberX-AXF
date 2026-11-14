@@ -792,30 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 19:40 UTC · `orchestrator-custom-groups-custom-tabs` s1 done, → running (all) · orchestrator
-- 2026-11-13 19:40 UTC · `land-rename-long-builds-resolve-clash` → pending, note (all) · pipeline
-- 2026-11-13 19:41 UTC · `restore-asset-designer-plugin-merged-nov` → pending, note (all) · reconciler
-- 2026-11-13 19:41 UTC · `all-settings-interfaces-open-floating` → pending, note (all) · reconciler
-- 2026-11-13 19:41 UTC · `console-app-part-3-native-bridge-mic` s7 done, → built, note (all) · reconciler
-- 2026-11-13 19:41 UTC · `land-project-duplicate-boilerplate` → pending, note (all) · reconciler
-- 2026-11-13 19:41 UTC · `land-rename-long-builds-resolve-clash` note (all) · reconciler
-- 2026-11-13 19:41 UTC · `land-drive-live-console-first-resolve` s1 done (all) · foreign-write
-- 2026-11-13 19:40 UTC · `orchestrator-custom-groups-custom-tabs` s2 done (all) · orchestrator
-- 2026-11-13 19:40 UTC · `orchestrator-custom-groups-custom-tabs` s3 done (all) · orchestrator
-- 2026-11-13 19:41 UTC · `orchestrator-custom-groups-custom-tabs` s4 done (all) · orchestrator
-- 2026-11-13 19:41 UTC · `orchestrator-custom-groups-custom-tabs` s5 done (all) · orchestrator
-- 2026-11-13 19:41 UTC · `orchestrator-custom-groups-custom-tabs` s6 done (all) · orchestrator
-- 2026-11-13 19:41 UTC · `orchestrator-custom-groups-custom-tabs` s7 done (all) · orchestrator
-- 2026-11-13 19:42 UTC · `console-app-part-3-native-bridge-mic` note (all) · orchestrator
-- 2026-11-13 19:42 UTC · `skin-axhub-override-switch-greyed-out` s3 done (all) · orchestrator
-- 2026-11-13 19:42 UTC · `land-overlay-preview-ui-review-resolve` → running, note (all) · pipeline
-- 2026-11-13 19:42 UTC · `land-overlay-preview-ui-review-resolve` branch claude/land-overlay-preview-ui-review-resolve (all) · pipeline
-- 2026-11-13 19:42 UTC · `land-overlay-preview-ui-review-resolve` note (all) · orchestrator
-- 2026-11-13 19:40 UTC · `console-app-part-4-console-side-safe` s4 done (all) · orchestrator
-- 2026-11-13 19:43 UTC · `console-app-part-3-native-bridge-mic` note (all) · pipeline
-- 2026-11-13 19:43 UTC · `console-app-part-2-native-floating-2` note (all) · orchestrator
-- 2026-11-13 19:43 UTC · `per-instance-settings-picker-merge-main` → running, note (all) · pipeline
-- 2026-11-13 19:43 UTC · `per-instance-settings-picker-merge-main` branch claude/per-instance-settings-picker-merge-main (all) · pipeline
 - 2026-11-13 19:43 UTC · `per-instance-settings-picker-merge-main` note (all) · orchestrator
 - 2026-11-13 19:42 UTC · `skin-axhub-override-switch-greyed-out` s4 done (all) · orchestrator
 - 2026-11-13 19:43 UTC · `land-drive-live-console-first-resolve` note (all) · orchestrator
@@ -1192,6 +1168,30 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-13 23:43 UTC · `voice-listener-use-claude-when-connected` → queued, note (all) · builds-live
 - 2026-11-13 23:43 UTC · `land-batch-merge-main-each-finished` note (all) · orchestrator
 - 2026-11-14 00:33 UTC · `land-batch-merge-main-each-finished` s1 done, → running (all) · orchestrator
+- 2026-11-13 23:44 UTC · `console-app-land-parts-1-4-build-apk` note (all) · orchestrator
+- 2026-11-13 23:44 UTC · `land-batch-merge-main-each-finished` → running, note (all) · pipeline
+- 2026-11-13 23:44 UTC · `land-batch-merge-main-each-finished` branch claude/land-batch-merge-main-each-finished (all) · pipeline
+- 2026-11-13 23:44 UTC · `console-app-land-parts-1-4-build-apk` note (all) · pipeline
+- 2026-11-13 23:44 UTC · `land-batch-merge-main-each-finished` note (all) · orchestrator
+- 2026-11-13 23:45 UTC · `voice-listener-use-claude-when-connected` note (all) · orchestrator
+- 2026-11-13 23:45 UTC · `console-app-land-parts-1-4-build-apk` note (all) · pipeline
+- 2026-11-13 23:45 UTC · `voice-listener-use-claude-when-connected` note (all) · pipeline
+- 2026-11-13 23:46 UTC · `console-app-land-parts-1-4-build-apk` note (all) · pipeline
+- 2026-11-13 23:46 UTC · `voice-listener-use-claude-when-connected` note (all) · pipeline
+- 2026-11-13 23:47 UTC · `voice-listener-use-claude-when-connected` note (all) · pipeline
+- 2026-11-13 23:50 UTC · `land-batch-merge-main-each-finished` → running, note (all) · pipeline
+- 2026-11-13 23:50 UTC · `rebake-console` branch claude/rebake-console, note (all) · reconciler
+- 2026-11-13 23:50 UTC · `banner-one-line` branch claude/banner-one-line, note (all) · reconciler
+- 2026-11-13 23:50 UTC · `agent-jobs` branch claude/agent-jobs, note (all) · reconciler
+- 2026-11-13 23:50 UTC · `chat-viewer` branch claude/chat-viewer, note (all) · reconciler
+- 2026-11-13 23:50 UTC · `lander-regenerates-generated-files-clash` merged, note (all) · reconciler
+- 2026-11-13 23:50 UTC · `main-ci-red-test-sandbox-profile-export` → complete, merged, note (all) · reconciler
+- 2026-11-13 23:51 UTC · `console-app-land-parts-1-4-build-apk` note (all) · orchestrator
+- 2026-11-13 23:52 UTC · `voice-listener-use-claude-when-connected` note (all) · orchestrator
+- 2026-11-13 23:52 UTC · `lander-regenerates-generated-files-clash` note (all) · orchestrator
+- 2026-11-13 23:52 UTC · `main-ci-red-test-sandbox-profile-export` note (all) · orchestrator
+- 2026-11-13 23:58 UTC · `auto-land-merge-main-land-land-mjs-clash` note (all) · orchestrator
+- 2026-11-13 23:59 UTC · `auto-land-merge-main-land-land-mjs-clash` → pending, note (all) · pipeline
 
 ## Token passes (log)
 

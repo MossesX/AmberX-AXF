@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5093,
- "updatedAt": "2026-11-14T00:33:52.626Z",
+ "rev": 5094,
+ "updatedAt": "2026-11-14T00:34:06.107Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -21739,10 +21739,10 @@
    "hidden": false,
    "source": "chat",
    "pendingId": "rebake-console",
-   "branch": "",
+   "branch": "claude/rebake-console",
    "pr": "",
    "createdAt": "2026-10-26T22:35:28.810Z",
-   "updatedAt": "2026-11-12T03:27:29Z",
+   "updatedAt": "2026-11-13T23:50:25.429Z",
    "builtAt": "2026-10-26T22:35:28.810Z",
    "notes": [
     {
@@ -21752,6 +21752,10 @@
     {
      "text": "Shipped manifest sm-rebake-console rev 1 sent to Shipped features (backfill): complete 2026-10-26 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
      "at": "2026-11-12T03:27:29Z"
+    },
+    {
+     "text": "Reconciler: branch claude/rebake-console (no PR yet)",
+     "at": "2026-11-13T23:50:25.429Z"
     }
    ],
    "approvals": [],
@@ -21771,7 +21775,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -22419,10 +22423,10 @@
    "hidden": false,
    "source": "chat",
    "pendingId": "banner-one-line",
-   "branch": "",
+   "branch": "claude/banner-one-line",
    "pr": "",
    "createdAt": "2026-10-26T23:31:24.422Z",
-   "updatedAt": "2026-11-12T03:27:36Z",
+   "updatedAt": "2026-11-13T23:50:25.429Z",
    "builtAt": "2026-10-26T23:31:24.422Z",
    "notes": [
     {
@@ -22432,6 +22436,10 @@
     {
      "text": "Shipped manifest sm-banner-one-line rev 1 sent to Shipped features (backfill): complete 2026-10-26 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 0 open.",
      "at": "2026-11-12T03:27:36Z"
+    },
+    {
+     "text": "Reconciler: branch claude/banner-one-line (no PR yet)",
+     "at": "2026-11-13T23:50:25.429Z"
     }
    ],
    "approvals": [],
@@ -22451,7 +22459,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -50866,10 +50874,10 @@
    "hidden": false,
    "source": "console",
    "pendingId": "agent-jobs",
-   "branch": "",
+   "branch": "claude/agent-jobs",
    "pr": "",
    "createdAt": "2026-11-01T06:45:35.923Z",
-   "updatedAt": "2026-11-12T03:28:45Z",
+   "updatedAt": "2026-11-13T23:50:25.429Z",
    "builtAt": "2026-11-01T07:20:52.680Z",
    "notes": [
     {
@@ -50883,6 +50891,10 @@
     {
      "text": "Shipped manifest sm-agent-jobs rev 1 sent to Shipped features (backfill): complete 2026-11-01 (date inferred: no commit or PR recorded), 0 file(s), 4 test line(s), 6 open.",
      "at": "2026-11-12T03:28:45Z"
+    },
+    {
+     "text": "Reconciler: branch claude/agent-jobs (no PR yet)",
+     "at": "2026-11-13T23:50:25.429Z"
     }
    ],
    "approvals": [],
@@ -51025,7 +51037,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 27,
+   "rev": 28,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -51302,10 +51314,10 @@
    "hidden": false,
    "source": "console",
    "pendingId": "chat-viewer",
-   "branch": "",
+   "branch": "claude/chat-viewer",
    "pr": "",
    "createdAt": "2026-11-01T06:50:37.079Z",
-   "updatedAt": "2026-11-12T03:28:47Z",
+   "updatedAt": "2026-11-13T23:50:25.429Z",
    "builtAt": "2026-11-01T07:36:47.161Z",
    "notes": [
     {
@@ -51319,6 +51331,10 @@
     {
      "text": "Shipped manifest sm-chat-viewer rev 1 sent to Shipped features (backfill): complete 2026-11-01 (date inferred: no commit or PR recorded), 0 file(s), 0 test line(s), 6 open.",
      "at": "2026-11-12T03:28:47Z"
+    },
+    {
+     "text": "Reconciler: branch claude/chat-viewer (no PR yet)",
+     "at": "2026-11-13T23:50:25.429Z"
     }
    ],
    "approvals": [],
@@ -51527,7 +51543,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 36,
+   "rev": 37,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -208588,9 +208604,10 @@
    "pendingId": "",
    "branch": "claude/lander-regenerates-generated-files-clash",
    "pr": "#661",
+   "mergedAt": "2026-11-13T23:38:48Z",
    "priority": "P0",
    "createdAt": "2026-11-13T20:47:11.569Z",
-   "updatedAt": "2026-11-13T21:50:42.153Z",
+   "updatedAt": "2026-11-13T23:52:38Z",
    "builtAt": "",
    "notes": [
     {
@@ -208628,6 +208645,14 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-13T21:50:42.153Z"
+    },
+    {
+     "text": "Reconciler: PR #661 merged; PR #661 names s1 done",
+     "at": "2026-11-13T23:50:25.429Z"
+    },
+    {
+     "text": "Shipped manifest sm-lander-regenerates-generated-files-clash rev 1 sent to Shipped features (orchestrator): PR #661, 0 file(s), 0 test line(s), 2 open.",
+     "at": "2026-11-13T23:52:38Z"
     }
    ],
    "approvals": [],
@@ -208677,6 +208702,12 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "shipped": {
+    "id": "sm-lander-regenerates-generated-files-clash",
+    "rev": 1,
+    "at": "2026-11-13T23:52:38Z",
+    "landedCommit": ""
    },
    "steps": [
     {
@@ -208757,7 +208788,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -208983,15 +209014,16 @@
    "title": "Main CI red: test-sandbox profile export leaks onto main",
    "category": "",
    "detail": "Main's CI is red, so the merge queue kicks out every PR with the same failure (\"Build engine sweep (Node)\" → framework/spec/check-profiles.mjs):\n\n  _claude/builds/profiles/test-sandbox/ exists but \"test-sandbox\" is not in framework/plan/profiles.json\n\nThe folder first reached main in 84c62e2e2 (Nov 13 17:18, \"Builds live: test-sandbox-sample-shipped-build added (3 steps) (test-sandbox) [skip ci]\"). project-seed.mjs made the sample build with profiles ['test-sandbox'], and every orchestrator write since then re-exports _claude/builds/profiles/test-sandbox/orchestrator.json, which builds-live publishes to main.\n\nFix: (1) orchestrator / builds-store exports write only registered profiles (framework/plan/profiles.json; test projects such as test-sandbox never get a repo export), (2) delete _claude/builds/profiles/test-sandbox/ from the repo, (3) make check-profiles.mjs say where the folder came from. Then run node framework/spec/check-profiles.mjs and the builds-store checks. Found by auto-land-every-finished-build-lands (s9).\n",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "auto-land",
    "pendingId": "",
    "branch": "claude/main-ci-red-test-sandbox-profile-export",
    "pr": "#663",
+   "mergedAt": "2026-11-13T23:39:14Z",
    "priority": "P0",
    "createdAt": "2026-11-13T21:13:28.338Z",
-   "updatedAt": "2026-11-13T21:32:33.679Z",
+   "updatedAt": "2026-11-13T23:52:40Z",
    "builtAt": "2026-11-13T21:27:16.800Z",
    "notes": [
     {
@@ -209017,6 +209049,14 @@
     {
      "text": "Headless run axf-main-ci-red-test-sandbox-profile-export--joey: brief only · start 12.7K tokens ($0.06) · cost $5.84 · 94 turns · 6 tools, MCP none",
      "at": "2026-11-13T21:32:33.679Z"
+    },
+    {
+     "text": "Reconciler: PR #663 merged",
+     "at": "2026-11-13T23:50:25.429Z"
+    },
+    {
+     "text": "Shipped manifest sm-main-ci-red-test-sandbox-profile-export rev 1 sent to Shipped features (orchestrator): PR #663, 0 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-13T23:52:40Z"
     }
    ],
    "approvals": [],
@@ -209055,6 +209095,12 @@
     "heldBy": "",
     "heldWhy": ""
    },
+   "shipped": {
+    "id": "sm-main-ci-red-test-sandbox-profile-export",
+    "rev": 1,
+    "at": "2026-11-13T23:52:40Z",
+    "landedCommit": ""
+   },
    "steps": [
     {
      "id": "s1",
@@ -209087,7 +209133,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -209103,7 +209149,7 @@
    "title": "Auto-land: merge main and land (land.mjs clash)",
    "category": "",
    "detail": "Branch claude/auto-land-every-finished-build-lands clashed with main in apps/console-web/plugins/push-banner/land/land.mjs, a real source clash with the just-landed lander-regenerates-generated-files-clash (generated-files@1). Merge origin/main, keep BOTH: main's regenerate-generated-files-on-clash logic and this branch's auto-land queue/sweeper. Run the push-banner and orchestrator tests, push, then land on main right away. After it lands, the sweeper should start landing every finished build by itself.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -209111,7 +209157,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T23:38:56.061Z",
-   "updatedAt": "2026-11-13T23:43:26.533Z",
+   "updatedAt": "2026-11-13T23:59:03.281Z",
    "builtAt": "",
    "notes": [
     {
@@ -209129,6 +209175,14 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-auto-land-merge-main-land-land-mjs-clash--paulie, own login copy)",
      "at": "2026-11-13T23:41:23.719Z"
+    },
+    {
+     "text": "Headless run axf-auto-land-merge-main-land-land-mjs-clash--paulie: brief only · start 13.4K tokens ($0.04) · cost $3.99 · 117 turns · 6 tools, MCP none",
+     "at": "2026-11-13T23:58:19.303Z"
+    },
+    {
+     "text": "Session on mossesx-max- stopped on its own with 7 steps left: back in Pending for Brett.",
+     "at": "2026-11-13T23:59:03.281Z"
     }
    ],
    "approvals": [],
@@ -209149,12 +209203,19 @@
     "queuedAt": "2026-11-13T23:38:58.045Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-auto-land-merge-main-land-land-mjs-clash--paulie",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-13T23:41:19.408Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-13T23:59:02.721Z",
+     "exit": 0,
+     "outcome": "returned",
+     "stepsLeft": 7,
+     "account": "mossesx-max-",
+     "session": "axf-auto-land-merge-main-land-land-mjs-clash--paulie"
+    },
     "split": {
      "at": "2026-11-13T23:40:57.282Z",
      "by": "orchestrator",
@@ -209163,7 +209224,7 @@
      "note": "Split by Claude into 9 steps (0 Fable)."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- stopped on its own with 7 steps left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "2026-11-13T23:41:19.408Z",
     "planned": {
@@ -209413,7 +209474,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 13,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -209447,6 +209508,10 @@
     {
      "text": "Split by Claude into 19 steps (0 Fable).",
      "at": "2026-11-13T23:43:15.961Z"
+    },
+    {
+     "text": "Dispatch gate: land-batch-merge-main-each-finished still has axf-land-batch-merge-main-each-finished--sully alive: not launched again, tracking that session.",
+     "at": "2026-11-13T23:50:13.460Z"
     }
    ],
    "approvals": [],
@@ -210010,7 +210075,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
@@ -210034,12 +210099,16 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-13T23:41:07.780Z",
-   "updatedAt": "2026-11-13T23:41:10.358Z",
+   "updatedAt": "2026-11-13T23:51:45.676Z",
    "builtAt": "",
    "notes": [
     {
      "text": "Queued by console.",
      "at": "2026-11-13T23:41:10.358Z"
+    },
+    {
+     "text": "Split by Claude into 18 steps (0 Fable).",
+     "at": "2026-11-13T23:51:45.676Z"
     }
    ],
    "approvals": [],
@@ -210066,19 +210135,478 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
-    "split": null,
+    "split": {
+     "at": "2026-11-13T23:51:45.676Z",
+     "by": "orchestrator",
+     "provider": "claude",
+     "steps": 18,
+     "note": "Split by Claude into 18 steps (0 Fable)."
+    },
     "splitRequested": "",
-    "note": "waiting for the split before it can start",
+    "note": "",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-13T23:52:36.784Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwfms7ws010hxb",
+     "title": "",
+     "text": "Fetch origin and check the five branches (console-android-app-thin-webview-wrapper, console-app-part-2-native-floating-2, console-app-part-3-native-bridge-mic, console-app-part-4-console-side-safe, console-app-wake-word-voice-listener): list commits ahead of and behind main, the files each touches, and the open PRs; write the landing order and expected clashes to _claude/builds/reports/console-app-land-parts-1-4-build-apk.md (draft)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "6 min",
+     "files": [
+      "_claude/builds/reports/console-app-land-parts-1-4-build-apk.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:51:45.676Z",
+     "updatedAt": "2026-11-13T23:51:45.676Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwfms7ws029lzr",
+     "title": "",
+     "text": "Part 1 (console-android-app-thin-webview-wrapper): merge origin/main into it. Resolve clashes, regenerating generated files (tracker.json, schemas json/, fixtures, builds exports) rather than hand-merging them; commit the merge",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console/",
+      "tracker.json",
+      "framework/schemas/json/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:51:45.676Z",
+     "updatedAt": "2026-11-13T23:51:45.676Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwfms7ws03zp5t",
+     "title": "",
+     "text": "Part 1: run the web checks the branch touches (tracker.mjs --check, axf validate, project.mjs validate --all, check-theme/check-controls) and fix anything red; push the branch",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "7 min",
+     "files": [
+      "apps/console/",
+      "framework/cli/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:51:45.676Z",
+     "updatedAt": "2026-11-13T23:51:45.676Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mwfms7ws04hihc",
+     "title": "",
+     "text": "Part 1: put its PR in the merge queue (land.mjs queue add) as the first entry of one stack; link it with builds-live.mjs link; never merge it by hand",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "4 min",
+     "files": [
+      "_claude/builds/store.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:51:45.676Z",
+     "updatedAt": "2026-11-13T23:51:45.676Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mwfms7ws053o8x",
+     "title": "",
+     "text": "Part 2 (console-app-part-2-native-floating-2): rebase/merge it onto part 1 + origin/main, resolve clashes, regenerate generated files, commit",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console/",
+      "tracker.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:51:45.676Z",
+     "updatedAt": "2026-11-13T23:51:45.676Z"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mwfms7ws0603wk",
+     "title": "",
+     "text": "Part 3 (console-app-part-3-native-bridge-mic): merge it on top of part 2. Resolve the NativeBridge.java clash part 2 noted by keeping both sets of bridge methods (floating window + mic) in one class with no duplicate names, imports or fields; commit",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console/app/src/main/java/**/NativeBridge.java"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:51:45.676Z",
+     "updatedAt": "2026-11-13T23:51:45.676Z"
+    },
+    {
+     "id": "s7",
+     "uid": "st-mwfms7ws07440f",
+     "title": "",
+     "text": "Parts 2+3: check that the merged NativeBridge.java and the JS bridge callers match (method names, @JavascriptInterface, permissions in AndroidManifest.xml); fix and commit",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console/app/src/main/java/**/NativeBridge.java",
+      "apps/console/app/src/main/AndroidManifest.xml",
+      "apps/console-web/src/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:51:45.676Z",
+     "updatedAt": "2026-11-13T23:51:45.676Z"
+    },
+    {
+     "id": "s8",
+     "uid": "st-mwfms7ws08jgmq",
+     "title": "",
+     "text": "Part 4 (console-app-part-4-console-side-safe): merge on top, resolve console-web clashes, regenerate generated files (control@1 targets appended last, console tools pins, help ratchet), commit",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/",
+      "framework/spec/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:51:45.676Z",
+     "updatedAt": "2026-11-13T23:51:45.676Z"
+    },
+    {
+     "id": "s9",
+     "uid": "st-mwfms7ws09vn3w",
+     "title": "",
+     "text": "Part 4 API check: confirm every console-side UI it adds has a console_show deep link, readable state, and REST + MCP + CLI + voice actions (check-console-control.mjs passes); add any missing data-axf-target or route; commit",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "apps/console-web/",
+      "framework/cli/check-console-control.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:51:45.676Z",
+     "updatedAt": "2026-11-13T23:51:45.676Z"
+    },
+    {
+     "id": "s10",
+     "uid": "st-mwfms7ws0an01w",
+     "title": "",
+     "text": "Wake word (console-app-wake-word-voice-listener): merge on top, resolve clashes with part 3's mic bridge (one owner of the mic: listener and mic capture share one audio path), regenerate generated files, commit",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console/",
+      "apps/console-web/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:51:45.676Z",
+     "updatedAt": "2026-11-13T23:51:45.676Z"
+    },
+    {
+     "id": "s11",
+     "uid": "st-mwfms7ws0b5g78",
+     "title": "",
+     "text": "Push the stacked branches; check each PR's pull_request CI started (dispatch android.yml once on any branch that got no run); add parts 2, 3, 4 and wake word to the merge queue behind part 1 as one stack (land.mjs queue add/move); link each in the builds store",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "7 min",
+     "files": [
+      "_claude/builds/store.json",
+      "apps/console-web/plugins/push-banner/land/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:51:45.676Z",
+     "updatedAt": "2026-11-13T23:51:45.676Z"
+    },
+    {
+     "id": "s12",
+     "uid": "st-mwfms7ws0coyk0",
+     "title": "",
+     "text": "Run the JUnit tests for the console app (gradle :app:testDebugUnitTest through agent-slots heavy, or read CI's kernel-test-reports / 'CI build errors' issue where no SDK) and fix any failure on the right branch; commit",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console/app/src/test/",
+      "framework/android/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:51:45.676Z",
+     "updatedAt": "2026-11-13T23:51:45.676Z"
+    },
+    {
+     "id": "s13",
+     "uid": "st-mwfms7wt0dm1jy",
+     "title": "",
+     "text": "Run the web tests on the top of the stack (console-web npm run typecheck + build, theme-swap, check-toolbars, check-chrome-assets, check-builds-store, plugin tests the parts touch) under agent-slots heavy; fix anything red and commit",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/",
+      "framework/spec/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:51:45.676Z",
+     "updatedAt": "2026-11-13T23:51:45.676Z"
+    },
+    {
+     "id": "s14",
+     "uid": "st-mwfms7wt0e73u7",
+     "title": "",
+     "text": "Watch the merge queue land the stack (read queue list once per CI round, no re-runs); if one is kicked out, fix it on its branch and re-add it; record merged PR numbers in the report",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/console-app-land-parts-1-4-build-apk.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:51:45.676Z",
+     "updatedAt": "2026-11-13T23:51:45.676Z"
+    },
+    {
+     "id": "s15",
+     "uid": "st-mwfms7wt0fr8fa",
+     "title": "",
+     "text": "Trigger the Android CI build for the console app on main (workflow_dispatch android.yml via github-token.mjs); read the run id",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "5 min",
+     "files": [
+      ".github/workflows/android.yml"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:51:45.676Z",
+     "updatedAt": "2026-11-13T23:51:45.676Z"
+    },
+    {
+     "id": "s16",
+     "uid": "st-mwfms7wt0geeb9",
+     "title": "",
+     "text": "Wait for the run, read the 'CI build errors' issue on failure and fix it (a new PR through the queue); on success get the console-debug.apk artifact download link (run page + artifact URL) and write it into the report",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/console-app-land-parts-1-4-build-apk.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:51:45.676Z",
+     "updatedAt": "2026-11-13T23:51:45.676Z"
+    },
+    {
+     "id": "s17",
+     "uid": "st-mwfms7wt0hnwv3",
+     "title": "",
+     "text": "Send Brett a phone notification through AmberX with the APK link (axf.notify@1 / alert hub, declared notify type), and record that it went in the report",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "4 min",
+     "files": [
+      "_claude/builds/reports/console-app-land-parts-1-4-build-apk.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:51:45.676Z",
+     "updatedAt": "2026-11-13T23:51:45.676Z"
+    },
+    {
+     "id": "s18",
+     "uid": "st-mwfms7wt0iojso",
+     "title": "",
+     "text": "Finish: finalise the report (_claude/builds/reports/console-app-land-parts-1-4-build-apk.md: merged PRs, clashes and how they were resolved, test results before→after, APK link, how each API reaches the new UI), update the THREADS.md row, tick the build complete in the builds store, record the change-log result, and open the report PR into the merge queue",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "_claude/builds/reports/console-app-land-parts-1-4-build-apk.md",
+      "_claude/THREADS.md",
+      "_claude/builds/store.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:51:45.676Z",
+     "updatedAt": "2026-11-13T23:51:45.676Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -210087,12 +210615,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-13T23:51:45.676Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
@@ -210111,7 +210639,7 @@
    "pr": "",
    "priority": "P1",
    "createdAt": "2026-11-13T23:42:29.374Z",
-   "updatedAt": "2026-11-13T23:42:55.748Z",
+   "updatedAt": "2026-11-13T23:52:35.076Z",
    "builtAt": "",
    "notes": [
     {
@@ -210121,6 +210649,10 @@
     {
      "text": "Brett: the setting must be a real on/off switch. OFF = always scripted/offline even while Claude is connected (no speech text sent to Claude at all). Add a test that proves it: with Claude connected and the switch off, a command is handled by the scripted matcher and no Claude request is made. Show the current mode on the listener UI.",
      "at": "2026-11-13T23:42:55.748Z"
+    },
+    {
+     "text": "Split by Claude into 14 steps (0 Fable).",
+     "at": "2026-11-13T23:52:35.076Z"
     }
    ],
    "approvals": [],
@@ -210147,19 +210679,390 @@
     "launchedAt": "",
     "runs": 0,
     "lastRun": null,
-    "split": null,
+    "split": {
+     "at": "2026-11-13T23:52:35.076Z",
+     "by": "orchestrator",
+     "provider": "claude",
+     "steps": 14,
+     "note": "Split by Claude into 14 steps (0 Fable)."
+    },
     "splitRequested": "",
-    "note": "waiting for the split before it can start",
+    "note": "",
     "route": "",
     "dispatchedAt": "",
-    "planned": null,
+    "planned": {
+     "model": "Opus",
+     "account": "mossesx-max-",
+     "kind": "subscription",
+     "at": "2026-11-13T23:52:36.784Z",
+     "why": "subscription account mossesx-max-"
+    },
     "tried": [],
     "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
    },
-   "steps": [],
+   "steps": [
+    {
+     "id": "s1",
+     "uid": "st-mwfmta100ja8kf",
+     "title": "",
+     "text": "Read the console-app-wake-word-voice-listener plugin: its scripted matcher, spoken wizard, command catalog loader, history store and settings. Read how the Claude badge works out connected or not (claude-session and llm capability axf.llm@1). Write a short design note in the plugin folder: where the Claude path plugs in, which catalog fields become tool schemas, the timeout and the fallback. Commit it.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/<voice-listener plugin>/",
+      "apps/console-web/plugins/claude-session/",
+      "_claude/builds/reports/voice-listener-use-claude-when-connected.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:52:35.076Z",
+     "updatedAt": "2026-11-13T23:52:35.076Z"
+    },
+    {
+     "id": "s2",
+     "uid": "st-mwfmta100kor49",
+     "title": "",
+     "text": "Add the setting 'Understand with Claude when connected' (key axf.voice.useClaude, default ON) and a timeout setting (default 8 s) to the plugin's settings. Put both in its Settings → Plugins sub-tab at the Basic level, and register them as control@1 targets and console-control setting addresses.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/<voice-listener plugin>/plugin.json",
+      "apps/console-web/plugins/<voice-listener plugin>/web/",
+      "apps/console-web/plugins/<voice-listener plugin>/server/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:52:35.076Z",
+     "updatedAt": "2026-11-13T23:52:35.076Z"
+    },
+    {
+     "id": "s3",
+     "uid": "st-mwfmta100lh7qc",
+     "title": "",
+     "text": "Server: write the catalog-to-tools converter. It turns each voice command in the API registry catalog into a Claude tool (name, description, input schema from the command's fields, a destructive flag, a personOnly flag). Approve and deny actions are never offered as tools. Add unit tests for the converter.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/<voice-listener plugin>/server/claude_tools.py",
+      "apps/console-web/plugins/<voice-listener plugin>/test.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:52:35.076Z",
+     "updatedAt": "2026-11-13T23:52:35.076Z"
+    },
+    {
+     "id": "s4",
+     "uid": "st-mwfmta100mhj80",
+     "title": "",
+     "text": "Server: write the Claude intent route (POST /api/plugins/<voice-listener>/understand). It takes the transcript and the session context, calls Claude through axf.llm@1 with the tools and a system prompt (pick one command, fill fields from what Brett said, ask only for what is missing, ask to confirm destructive actions), and returns {mode:'claude', command, args, ask?, confirm?}. Any error, timeout or badge-not-green returns {mode:'offline', reason}.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/<voice-listener plugin>/server/routes.py",
+      "apps/console-web/plugins/<voice-listener plugin>/server/claude_intent.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:52:35.076Z",
+     "updatedAt": "2026-11-13T23:52:35.076Z"
+    },
+    {
+     "id": "s5",
+     "uid": "st-mwfmta100nqg8o",
+     "title": "",
+     "text": "Server: add a multi-turn follow-up to the understand route. A follow-up answer from Brett is sent with the pending tool call so Claude fills only the missing fields. A destructive command returns confirm:true and runs only after a spoken yes. Add tests with a fake LLM covering: picks a command, asks for a missing field, confirm gate, timeout falls back to offline.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/<voice-listener plugin>/server/claude_intent.py",
+      "apps/console-web/plugins/<voice-listener plugin>/test.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:52:35.076Z",
+     "updatedAt": "2026-11-13T23:52:35.076Z"
+    },
+    {
+     "id": "s6",
+     "uid": "st-mwfmta100otksl",
+     "title": "",
+     "text": "Web listener: when the setting is on and the Claude badge is green, send the transcript to the understand route first. Speak Claude's question or confirm prompt and loop the answers back to it. On offline, timeout or error, hand the same transcript to the existing scripted matcher and wizard without losing it.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/<voice-listener plugin>/web/listener.ts",
+      "apps/console-web/plugins/<voice-listener plugin>/web/claudeMode.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:52:35.076Z",
+     "updatedAt": "2026-11-13T23:52:35.076Z"
+    },
+    {
+     "id": "s7",
+     "uid": "st-mwfmta100pfbob",
+     "title": "",
+     "text": "Approvals guard: make sure approve and deny never reach the Claude path. A spoken approval still needs the explicit 'approve' / 'deny' words and goes through the existing approvals-banner relay. Add a test that a Claude reply naming an approve tool is refused.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "6 min",
+     "files": [
+      "apps/console-web/plugins/<voice-listener plugin>/web/listener.ts",
+      "apps/console-web/plugins/<voice-listener plugin>/server/claude_tools.py",
+      "apps/console-web/plugins/<voice-listener plugin>/test.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:52:35.076Z",
+     "updatedAt": "2026-11-13T23:52:35.076Z"
+    },
+    {
+     "id": "s8",
+     "uid": "st-mwfmta100qxom2",
+     "title": "",
+     "text": "UI: add a small 'offline mode' indicator on the listener's chip and panel, shown when Claude mode is on but the fallback handled the last command or the badge is not green. Use framework controls (fx-chip, tokens only) and register it as data-axf-target. API part: its state is readable at GET /api/plugins/<voice-listener>/state (mode, claudeConnected, lastFallbackReason).",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/<voice-listener plugin>/web/",
+      "apps/console-web/plugins/<voice-listener plugin>/server/routes.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:52:35.076Z",
+     "updatedAt": "2026-11-13T23:52:35.076Z"
+    },
+    {
+     "id": "s9",
+     "uid": "st-mwfmta100r0ygd",
+     "title": "",
+     "text": "History: record mode (claude or scripted) and, for scripted, the fallback reason on every history entry (with a migration default of scripted for old entries). Show a mode tag column in the history grid and add a filter by mode. API part: GET history returns mode, and it can be filtered by mode.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "apps/console-web/plugins/<voice-listener plugin>/server/history.py",
+      "apps/console-web/plugins/<voice-listener plugin>/web/History.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:52:35.076Z",
+     "updatedAt": "2026-11-13T23:52:35.076Z"
+    },
+    {
+     "id": "s10",
+     "uid": "st-mwfmta100so5ha",
+     "title": "",
+     "text": "Full API: add REST get/set for the useClaude setting and timeout, a test-understand action (dry run on a phrase, returns what Claude would pick), and the state and history reads. Expose all of them as MCP plugin commands and console actions (voice.useClaude on|off, voice.understand.test). Add console_show deep links for the setting, the indicator and the history mode filter.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/<voice-listener plugin>/server/routes.py",
+      "apps/console-web/plugins/<voice-listener plugin>/commands.json",
+      "apps/console-web/plugins/<voice-listener plugin>/plugin.json"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:52:35.076Z",
+     "updatedAt": "2026-11-13T23:52:35.076Z"
+    },
+    {
+     "id": "s11",
+     "uid": "st-mwfmta100tnzfl",
+     "title": "",
+     "text": "CLI and voice: add `axf voice claude on|off|status|test \"<phrase>\"` and the AmberX voice commands 'use Claude for voice' and 'stop using Claude for voice' to the voice command catalog, both mapped to the same actions as REST and MCP. Add a parity test across REST, MCP, CLI and voice.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "9 min",
+     "files": [
+      "framework/cli/axf.mjs",
+      "apps/console-web/plugins/<voice-listener plugin>/cli.mjs",
+      "apps/console-web/plugins/<voice-listener plugin>/voice-commands.json",
+      "apps/console-web/plugins/<voice-listener plugin>/test.py"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:52:35.076Z",
+     "updatedAt": "2026-11-13T23:52:35.076Z"
+    },
+    {
+     "id": "s12",
+     "uid": "st-mwfmta100uh84o",
+     "title": "",
+     "text": "Help, Shipped features and catalogs: write the plugin help page section (Claude mode, fallback, offline indicator, history mode, approvals stay spoken). Give the new commands and settings descriptions so the glossary index and the shipped-features ledger pick them up. Run catalog.mjs --check, check-console-control.mjs and check-control.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/<voice-listener plugin>/help/",
+      "apps/console-web/plugins/<voice-listener plugin>/README.md",
+      "apps/console-web/plugins/glossary-index/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:52:35.076Z",
+     "updatedAt": "2026-11-13T23:52:35.076Z"
+    },
+    {
+     "id": "s13",
+     "uid": "st-mwfmta100v6dl5",
+     "title": "",
+     "text": "UI Review: take desktop and phone shots of the setting, the offline indicator and the history mode tag. Make 3 options for the indicator (ui-choices@1 assets in plugins/<voice-listener>/assets/), and submit with review.mjs submit --choices --group 'voice-listener-use-claude-when-connected - <Mon D h:mm AM/PM>'.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/<voice-listener plugin>/assets/",
+      "apps/console-web/plugins/ui-review/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:52:35.076Z",
+     "updatedAt": "2026-11-13T23:52:35.076Z"
+    },
+    {
+     "id": "s14",
+     "uid": "st-mwfmta100w6rdo",
+     "title": "",
+     "text": "Tests, report and PR: run the plugin's test.py, check-theme, check-controls, check-toolbars, check-chrome-assets, plugin-lifecycle check and the tracker check. Write _claude/builds/reports/voice-listener-use-claude-when-connected.md, including how each feature is reached through REST, MCP, CLI and voice. Update the THREADS.md row, push the branch, open the PR (saying UI Review is waiting), and link it with builds-live.mjs link.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/voice-listener-use-claude-when-connected.md",
+      "_claude/THREADS.md",
+      "apps/console-web/plugins/<voice-listener plugin>/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-13T23:52:35.076Z",
+     "updatedAt": "2026-11-13T23:52:35.076Z"
+    }
+   ],
    "profiles": [
     "all"
    ],
@@ -210168,12 +211071,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 4,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "",
+   "defaultAt": "2026-11-13T23:52:35.076Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],
