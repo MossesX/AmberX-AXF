@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5334,
- "updatedAt": "2026-11-14T17:08:37.728Z",
+ "rev": 5335,
+ "updatedAt": "2026-11-14T17:09:06.929Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -214414,7 +214414,7 @@
    "branch": "claude/builds-share-one-claude-login-write",
    "pr": "#674",
    "createdAt": "2026-11-14T16:44:38.923Z",
-   "updatedAt": "2026-11-14T17:08:35.665Z",
+   "updatedAt": "2026-11-14T17:09:04.593Z",
    "builtAt": "2026-11-14T17:07:43.504Z",
    "notes": [
     {
@@ -214428,6 +214428,10 @@
     {
      "text": "Headless run axf-builds-share-one-claude-login-write--earl: brief only · start 11.1K tokens ($0.03) · cost $5.70 · 97 turns · 6 tools, MCP none",
      "at": "2026-11-14T17:08:35.665Z"
+    },
+    {
+     "text": "Session axf-builds-share-one-claude-login-write--earl on mossesx-max- ended (exit 0); the build was already built.",
+     "at": "2026-11-14T17:09:04.593Z"
     }
    ],
    "approvals": [],
@@ -214448,12 +214452,19 @@
     "queuedAt": "",
     "queuedBy": "",
     "account": "mossesx-max-",
-    "session": "axf-builds-share-one-claude-login-write--earl",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-14T16:46:23.975Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-14T17:09:03.708Z",
+     "exit": 0,
+     "outcome": "finished",
+     "stepsLeft": 0,
+     "account": "mossesx-max-",
+     "session": "axf-builds-share-one-claude-login-write--earl"
+    },
     "split": null,
     "splitRequested": "",
     "note": "",
@@ -214614,7 +214625,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
