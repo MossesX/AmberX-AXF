@@ -38,6 +38,42 @@
         "text": "Previews brief. Part of Agent swarm.",
         "kind": "button",
         "draft": true
+      },
+      {
+        "target": "enable-audio",
+        "title": "Enable audio",
+        "text": "Reads new group chat messages aloud as they arrive, one voice at a time, each agent in its own voice. Also: `swarm.mjs audio on`, the agent-swarm chat-audio-run command, the action agent-swarm.audio.on, or say \"turn on group chat audio\" in AmberX.",
+        "kind": "toggle"
+      },
+      {
+        "target": "this-device",
+        "title": "This device",
+        "text": "Whether this browser or phone plays the audio. Turn it off to keep this device quiet while another one plays; the room setting stays on.",
+        "kind": "toggle"
+      },
+      {
+        "target": "voices",
+        "title": "Voices",
+        "text": "The voice cast every agent speaks with. \"From the skin\" uses the cast the active skin picks; otherwise the cast you choose here (a voice asset).",
+        "kind": "field"
+      },
+      {
+        "target": "unmute-all",
+        "title": "Unmute all",
+        "text": "Every agent is read aloud again. Mute one agent with its switch above, or say \"mute Kat\".",
+        "kind": "button"
+      },
+      {
+        "target": "try-s-voice",
+        "title": "Try the voice",
+        "text": "Says a sample line in this agent's voice on this device, with the speed and pitch below.",
+        "kind": "button"
+      },
+      {
+        "target": "use-the-casts-voice",
+        "title": "Use the cast's voice",
+        "text": "Drops this agent's own speed and pitch and goes back to the voice the cast gives it.",
+        "kind": "button"
       }
     ],
     "intros": []

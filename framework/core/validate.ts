@@ -12,6 +12,7 @@ import { layoutErrors } from './engines/layout-rules.mjs';
 import { helpErrors } from './engines/help-rules.mjs';
 import { agentCardErrors } from './engines/agent-card-rules.mjs';
 import { jobTypeErrors } from './engines/job-type-rules.mjs';
+import { voiceErrors } from './engines/chat-audio.mjs';
 import { cardErrors } from './engines/card-rules.mjs';
 import { demoAssetErrors } from './engines/demo-rules.mjs';
 import { behaviorErrors } from './engines/behavior';
@@ -128,6 +129,8 @@ export function validateAsset(raw: unknown): ValidationResult {
   errors.push(...agentCardErrors(raw.type, data));
   // job-type@1: ONE validator shared with the build engine (core/engines/job-type-rules.mjs)
   errors.push(...jobTypeErrors(raw.type, data));
+  // voice@1 cast: ONE validator shared with the build engine (core/engines/chat-audio.mjs)
+  errors.push(...voiceErrors(raw.type, data));
   // card@1: ONE validator shared with the build engine (core/engines/card-rules.mjs)
   errors.push(...cardErrors(raw.type, data));
   // demonstration@1 / book@1 / clip@1 / docs@1: ONE validator shared with the build engine (core/engines/demo-rules.mjs)

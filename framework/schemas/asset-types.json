@@ -1637,6 +1637,38 @@
         "why": "A job type is recurring work for a hired agent, not UI."
       }
     },
+    "voice": {
+      "label": "Voice cast",
+      "group": "Agents",
+      "icon": "mic",
+      "description": "How the agents sound when the group chat is read aloud (voice@1 entries, rules core/engines/chat-audio.mjs): a default voice, named voices per agent and a pool the other agents are dealt from by id. Each voice names the device voice to prefer (name hints, language, gender), speed, pitch and volume, plus an optional cloud voice. The active voice asset is an appearance slot, so a skin swaps every agent's voice at once; the room's chat-audio@1 settings may override one agent's voice.",
+      "required": [
+        "default"
+      ],
+      "enums": {
+        "gender": [
+          "any",
+          "female",
+          "male"
+        ]
+      },
+      "nested": {
+        "default": [
+          "rate",
+          "pitch"
+        ]
+      },
+      "optional": true,
+      "roll": {
+        "slot": false,
+        "asset": false
+      },
+      "optional_fields": {
+        "agents": "{ agentId: voice@1 } named voices; fields left out follow the default",
+        "pool": "[voice@1] voices dealt to agents with no named voice (stable per agent id, FNV-1a hash)",
+        "voice@1": "{ label, prefer: [device voice name hints], lang: BCP-47, gender: any|female|male, rate 0.5-2, pitch 0-2, volume 0-1, cloud: { provider: openai|elevenlabs, voice } | null }"
+      }
+    },
     "card": {
       "label": "Card",
       "group": "Widgets",

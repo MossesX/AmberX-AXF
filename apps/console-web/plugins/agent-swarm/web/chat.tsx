@@ -3,6 +3,7 @@ import { AgentAvatar, Button, Switch, TabGroup } from '@console/axf/react';
 import * as core from './swarm-core.mjs';
 import * as watch from './chat-watch.mjs';
 import { KEYS, useSetting } from './chat-settings';
+import { ChatAudioBar } from './chat-audio-bar';
 import { fmtTime, type Act, type Agent, type ChatMsg, type SwarmState } from './ui-types';
 
 /*
@@ -10,6 +11,7 @@ import { fmtTime, type Act, type Agent, type ChatMsg, type SwarmState } from './
  * their reports and handoffs, banter comes from the zero-token bank or one cheap batch. A switch turns the room
  * off for everyone (nothing posted, nothing spent), and one per agent. The filter shows only what the crew says about
  * Brett (chat-watch.mjs, same rules as `swarm.mjs mentions` and the hub mirror), with the negative ones marked.
+ * Enable audio (chat-audio-bar.tsx) reads new messages aloud in each agent's own voice.
  */
 
 const VIEWS = [{ id: 'all', label: 'Everyone' }, { id: 'brett', label: 'About Brett' }, { id: 'negative', label: 'Negative' }] as const;
@@ -48,8 +50,10 @@ export function ChatTab({ state, act }: { state: SwarmState; act: Act }) {
         <Switch label="Group chat" checked={on} onChange={(v) => void act({ action: 'chat', enabled: v })} hint={on ? 'On for every agent below that is switched on.' : 'Off: nothing is posted and no banter is paid for.'} />
       </div>
       <div className="sw-bar" role="group" aria-label="Agents in the chat">
+        <span className="fx-muted">In the chat:</span>
         {state.roster.agents.map((a) => <Switch key={a.id} label={a.name} checked={state.swarm.chat.agents[a.id] !== false} disabled={!on} onChange={(v) => void act({ action: 'chat', agent: a.id, on: v })} />)}
       </div>
+      <ChatAudioBar audio={state.audio} agents={state.roster.agents} act={act} />
       <div className="sw-bar">
         <TabGroup id="agent-swarm.chat-view" label="Show" size="sm" value={view} onChange={setView} tabs={VIEWS.map((v) => ({ value: v.id, label: v.label, badge: counts[v.id] }))} />
         {view !== 'all' && <span className="fx-muted">What the crew says about Brett, the boss or the owner. Secrets are redacted. Sessions read the same list on axHub: data path {watch.HUB_FOLDER}/mentions.json.</span>}

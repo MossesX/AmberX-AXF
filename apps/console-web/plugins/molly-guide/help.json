@@ -95,6 +95,12 @@
         "text": "Shows “Re-record the AmberX walkthrough”. Part of Gizmo guide.",
         "kind": "button",
         "draft": true
+      },
+      {
+        "target": "gizmo-guide",
+        "title": "Gizmo guide",
+        "text": "Gizmo's walkthrough settings: whether steps are read out loud, whether the console moves to each step, and what AmberX may open by itself.",
+        "kind": "tab"
       }
     ],
     "intros": []

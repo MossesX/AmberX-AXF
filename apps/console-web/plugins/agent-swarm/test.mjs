@@ -727,4 +727,39 @@ t('manifest: lifecycle, builtWith, page and settings tab', () => {
   });
 }
 
+// group chat audio (chat-audio@1): the CLI every surface shares, the device poll, the shipped voice cast
+{
+  const cli = new URL('./swarm.mjs', import.meta.url).pathname;
+  const d = mkdtempSync(join(tmpdir(), 'axf-audio-'));
+  const env = { ...process.env, AXF_SWARM_DIR: d, AXF_SWARM_CHATS_DIR: 'off' };
+  const run = (...a) => { const r = spawnSync(process.execPath, [cli, ...a, '--json'], { env, encoding: 'utf8' }); return JSON.parse(r.stdout.trim().split('\n').at(-1)); };
+  t('audio: off by default, switched on, names resolve, modes, voices, casts', () => {
+    assert.equal(run('audio').settings.enabled, false);
+    assert.equal(run('audio', 'on').audio.enabled, true);
+    assert.deepEqual(run('audio', 'mute', 'Kotlin', 'Kat').audio.muted, { kat: true });
+    assert.equal(run('audio', 'mode', 'summaries').audio.mode, 'summaries');
+    assert.equal(run('audio', 'volume', '300').audio.volume, 100);
+    assert.deepEqual(run('audio', 'voice', 'rio', '{"pitch":1.6,"junk":1}').audio.voices.rio, { pitch: 1.6 });
+    assert.equal(run('audio', 'cast', 'calm-narrators').audio.cast, 'calm-narrators');
+    assert.equal(run('audio', 'cast', 'skin').audio.cast, '');
+    assert.equal(run('act', '{"action":"audio","unmute":"all"}').state.audio.settings.muted.kat, undefined);
+    assert.match(run('audio', 'mute', 'Whiskers').error, /no agent/);
+    assert.match(run('audio', 'mode', 'loud').error, /mode is one of/);
+    assert.match(run('audio', 'cast', 'nope').error, /no voice asset/);
+    assert.equal(JSON.parse(readFileSync(join(d, 'audio.json'), 'utf8')).$axf, 'chat-audio@1');
+  });
+  t('audio: a device poll gets only lines after its last id, never history', () => {
+    run('act', 'chat', 'on'); run('act', 'say', 'first');
+    const h0 = run('heard', '-'); assert.deepEqual(h0.messages, []); assert.ok(h0.last); assert.ok(h0.names.kat);
+    run('act', 'say', 'second');
+    const h1 = run('heard', h0.last); assert.deepEqual(h1.messages.map((m) => m.text), ['second']); assert.equal(h1.audio.$axf, 'chat-audio@1');
+  });
+  t('audio: the breakroom voice cast names a voice for every agent on the crew', () => {
+    const v = run('voices');
+    const breakroom = JSON.parse(readFileSync(new URL('../../../../framework/assets/voice/breakroom.json', import.meta.url), 'utf8'));
+    for (const a of roster.agents) assert.ok(breakroom.data.agents[a.id], `no voice for ${a.id}`);
+    assert.ok(v.casts.some((x) => x.id === 'breakroom')); assert.ok(v.voices.boss);
+  });
+}
+
 console.log(`agent-swarm: ${n} checks passed`);

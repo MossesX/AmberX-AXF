@@ -4,7 +4,7 @@
   "counts": {
     "views": 61,
     "nav": 16,
-    "tabGroups": 22,
+    "tabGroups": 23,
     "tabs": 76,
     "settingsTabs": 67,
     "settings": 85,
@@ -1117,13 +1117,23 @@
       ]
     },
     {
+      "address": "view:agent-swarm/tab:agent-swarm.audio-mode",
+      "id": "agent-swarm.audio-mode",
+      "dynamic": false,
+      "view": "agent-swarm",
+      "plugin": "ai.amberx.axf.console.agent-swarm",
+      "file": "plugins/agent-swarm/web/chat-audio-bar.tsx",
+      "line": 40,
+      "tabs": []
+    },
+    {
       "address": "view:agent-swarm/tab:agent-swarm.chat-view",
       "id": "agent-swarm.chat-view",
       "dynamic": false,
       "view": "agent-swarm",
       "plugin": "ai.amberx.axf.console.agent-swarm",
       "file": "plugins/agent-swarm/web/chat.tsx",
-      "line": 54,
+      "line": 58,
       "tabs": [
         {
           "address": "view:agent-swarm/tab:agent-swarm.chat-view=all",
@@ -1149,7 +1159,7 @@
       "view": "agent-swarm",
       "plugin": "ai.amberx.axf.console.agent-swarm",
       "file": "plugins/agent-swarm/web/ui.tsx",
-      "line": 52,
+      "line": 55,
       "tabs": [
         {
           "address": "view:agent-swarm/tab:agent-swarm.tabs=crew",

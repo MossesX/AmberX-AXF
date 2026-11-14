@@ -102,6 +102,35 @@ async def act(request: Request) -> dict[str, Any]:
     return _run("act", json.dumps(change))
 
 
+@router.get("/chat/audio")
+def chat_audio() -> dict[str, Any]:
+    """Group chat audio (chat-audio@1): settings, the voice casts, the cast in force and every agent's voice."""
+    return _run("audio")
+
+
+@router.post("/chat/audio")
+async def chat_audio_set(request: Request) -> dict[str, Any]:
+    """One change to the room's audio: enabled, volume, mode, cast, mute / unmute (id, name or all), agent + voice."""
+    body = await request.body()
+    if len(body) > MAX_BODY:
+        raise HTTPException(413, "change too large")
+    try:
+        change = json.loads(body or b"{}")
+    except json.JSONDecodeError:
+        raise HTTPException(400, "not JSON")
+    if not isinstance(change, dict) or not change:
+        raise HTTPException(400, "a change is an object")
+    return _run("audio", json.dumps(change))
+
+
+@router.get("/chat/heard")
+def chat_heard(after: str = "", limit: int = 30) -> dict[str, Any]:
+    """New chat lines for a device's player: messages after `after` (none = the newest id only), the audio settings."""
+    if after and not ID.match(after):
+        raise HTTPException(400, "bad message id")
+    return _run("heard", after or "-", str(max(1, min(limit, 100))))
+
+
 INPUT_KEY = re.compile(r"^[a-z][a-zA-Z0-9]{0,29}$")
 
 

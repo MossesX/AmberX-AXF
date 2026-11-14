@@ -20,6 +20,11 @@
  *   … act chat on|off · act chat <agent> on|off · act say <text>
  *   … act suspend <agent> <hours> <reason> · act rehire <agent> · act rules <rage-quit N>
  *   … act preset business|crew|breakroom|rails · act vibe <1-500> · act --json '{"action":"chat-settings",…}'
+ *   … audio [on|off]                     group chat read aloud (chat-audio@1): status, or switch it
+ *   … audio volume <0-100> · audio mode all|mentions|summaries · audio mute|unmute <agent|name|all>
+ *   … audio voice <agent> '<voice json>'|reset · audio cast <voice asset id>|skin · audio --json '{…}'
+ *   … heard [afterId|-] [n]              a device player's poll: new lines, audio settings, voice casts
+ *   … voices                             the voice casts (voice assets) and the voice each agent speaks with
  *   … run <buildId> <stepId> [--dry-run] headless run of one job in its own worktree (swarm/<build>/<step>)
  *   … check <buildId> <stepId>           pre-push lease check of a job's worktree
  *   … merge <buildId> [--push]           batch merge of done, lease-clean jobs; Boss then ticks the tracker
@@ -32,6 +37,7 @@ import { fileURLToPath } from 'node:url';
 import * as core from './web/swarm-core.mjs';
 import { orchestratorPath, persistRoot } from '../../../../framework/cli/persist.mjs';
 import * as watch from './web/chat-watch.mjs';
+import * as audio from '../../../../framework/core/engines/chat-audio.mjs';
 import { spawnSync } from 'node:child_process';
 import { ownLogin, runJob, worktreeFor } from './runner.mjs';
 import { tmpdir } from 'node:os';
@@ -113,9 +119,60 @@ export function withState(fn) { const st = loadState(); const r = fn(st); st.upd
 /** Post to the group chat (dropped when it's off). */
 export const say = (msgs) => withState((st) => core.post(st, msgs, new Date().toISOString()));
 export function act(change) {
+  if (change?.action === 'audio') { const r = audioAct(change); return { state: loadState(), log: r.log, audio: r.audio }; }
   const r = core.applyChange(loadState(), change, loadRoster(), new Date().toISOString());
   writeState(r.state); return r;
 }
+/*
+ * Group chat audio (chat-audio@1, core/engines/chat-audio.mjs): the room's audio settings live in the data folder
+ * (audio.json); the voice casts are the framework's voice assets (framework/assets/voice). Playback is per device
+ * (the console page, AmberX); every surface changes the settings through the `audio` action.
+ */
+export const audioFile = () => join(dataDir(), 'audio.json');
+const VOICE_DIR = join(ROOT, 'framework/assets/voice');
+export function loadAudio(roster = loadRoster()) { return audio.normSettings(readJson(audioFile(), {}), roster.agents.map((a) => a.id)); }
+/** Every voice asset there is, valid ones only. */
+export function voiceCasts() {
+  if (!existsSync(VOICE_DIR)) return [];
+  return readdirSync(VOICE_DIR).filter((f) => f.endsWith('.json')).sort().map((f) => readJson(join(VOICE_DIR, f), null)).filter((a) => a && audio.castErrors(a).length === 0);
+}
+/** An agent by id or by name ("Whiskers", "kotlin kat", "kat"); `all` passes through. */
+export function agentRef(ref, roster = loadRoster()) {
+  const r = String(ref ?? '').trim().toLowerCase(); if (!r || r === 'all') return r;
+  const hit = roster.agents.find((a) => a.id === r) ?? roster.agents.find((a) => a.name.toLowerCase() === r) ?? roster.agents.find((a) => a.name.toLowerCase().split(/\s+/).includes(r));
+  if (!hit) throw new Error(`no agent "${ref}"`); return hit.id;
+}
+/** One change to the room's audio (applyAudio); agent names resolve to ids. Returns { audio, log }. */
+export function audioAct(change) {
+  const roster = loadRoster(); const c = { ...(change ?? {}) }; delete c.action;
+  for (const k of ['mute', 'unmute', 'agent']) if (c[k]) c[k] = agentRef(c[k], roster);
+  if (c.cast === 'skin') c.cast = '';
+  if (c.cast && !voiceCasts().some((a) => a.id === c.cast)) throw new Error(`no voice asset "${c.cast}"`);
+  const r = audio.applyAudio(loadAudio(roster), c, roster.agents.map((a) => a.id));
+  writeJson(audioFile(), r.settings); return { audio: r.settings, log: r.log };
+}
+/** What the room sounds like: settings, the casts, the cast in force and each agent's voice. */
+export function audioState(roster = loadRoster()) {
+  const settings = loadAudio(roster); const casts = voiceCasts();
+  const id = audio.castId(settings, '', casts.map((a) => a.id)); const cast = audio.normCast(casts.find((a) => a.id === id));
+  const names = Object.fromEntries(roster.agents.map((a) => [a.id, a.name]));
+  return { settings, casts, cast: id, voices: Object.fromEntries(['boss', ...roster.agents.map((a) => a.id)].map((a) => [a, audio.voiceFor(a, cast, settings)])), text: audio.describe(settings, names) };
+}
+const AUDIO_WORDS = (rest) => {
+  const [w, a, ...more] = rest;
+  if (w === 'on' || w === 'off') return { enabled: w === 'on' };
+  if (w === 'volume') return { volume: Number(a) };
+  if (w === 'mode') return { mode: a };
+  if (w === 'mute' || w === 'unmute') return { [w]: [a, ...more].join(' ') };
+  if (w === 'voice') return { agent: a, voice: more[0] === 'reset' ? null : JSON.parse(more.join(' ') || '{}') };
+  if (w === 'cast') return { cast: a ?? '' };
+  if (w === 'mine') return { speakMine: a === 'on' };
+  if (w === 'names') return { sayName: a !== 'off' };
+  if (w === 'queue') return { queueMax: Number(a) };
+  if (w === 'chars') return { maxChars: Number(a) };
+  throw new Error(`unknown audio setting "${w}"`);
+};
+
 /** Only agents whose status and pay let them work get jobs (broke = no new jobs till payday or a top-up). */
 export function eligibility(st = loadState()) {
   const at = new Date().toISOString(); const runs = loadRuns(); const table = priceTable();
@@ -333,7 +390,7 @@ export function state() {
   const at = new Date().toISOString();
   const spend = Object.fromEntries(roster.agents.map((a) => [a.id, core.spendOf(runs, a.id, table, at)]));
   const pay = Object.fromEntries(roster.agents.map((a) => [a.id, core.payOf(a, swarm.agents[a.id], runs, table, at)]));
-  return { swarm, spend, pay, banterToday: core.banterAllowed(swarm, at).today, statuses: core.STATUSES, pickable: core.PICKABLE, roster, skills: Object.fromEntries(Object.entries(sk).map(([k, v]) => [k, { id: v.id, title: v.title, body: v.body }])), problems: core.checkRoster(roster, sk),
+  return { audio: audioState(roster), swarm, spend, pay, banterToday: core.banterAllowed(swarm, at).today, statuses: core.STATUSES, pickable: core.PICKABLE, roster, skills: Object.fromEntries(Object.entries(sk).map(([k, v]) => [k, { id: v.id, title: v.title, body: v.body }])), problems: core.checkRoster(roster, sk),
     runs: runs.slice(-300), meter: core.meter(runs, table), prices: table, builds, tracker: trackerFile() };
 }
 /** Tokens every plain session loads before it starts (CLAUDE.md and the rules it pulls in, THREADS.md). */
@@ -408,6 +465,20 @@ export async function main(argv) {
     return out({ ok: true, terms: watch.MENTION_TERMS.map((t) => t.id), count: list.length, negative: list.filter((m) => m.tone === 'negative').length, mentions: list },
       list.map((m) => `${m.at.slice(0, 16).replace('T', ' ')} ${m.tone === 'negative' ? '!' : ' '} ${m.fromName.padEnd(14)} ${m.text}`).join('\n') || 'Nobody is talking about Brett.');
   }
+  if (cmd === 'audio') { // group chat read aloud: status, or one change
+    const words = rest.filter((a) => a !== '--json');
+    if (!words.length) { const a = audioState(); return out({ ok: true, ...a }, a.text); }
+    const r = audioAct(words[0].startsWith('{') ? JSON.parse(words[0]) : AUDIO_WORDS(words));
+    return out({ ok: true, audio: r.audio, log: r.log }, r.log.join('\n'));
+  }
+  if (cmd === 'heard') { // a device player's poll: lines after an id, the settings and the cast (small, cheap)
+    const [after = '-', n = '30'] = rest; const roster = loadRoster(); const st = loadState(); const msgs = st.messages;
+    const i = after === '-' ? msgs.length - 1 : msgs.findIndex((m) => m.id === after);
+    const list = after === '-' ? [] : (i < 0 ? msgs.slice(-1) : msgs.slice(i + 1)).slice(0, Math.max(1, Math.min(100, Number(n) || 30)));
+    const settings = loadAudio(roster); const casts = voiceCasts();
+    return out({ ok: true, audio: settings, casts, cast: audio.castId(settings, '', casts.map((c) => c.id)), names: Object.fromEntries(roster.agents.map((a) => [a.id, a.name])), chatOn: st.chat.enabled, last: msgs.at(-1)?.id ?? '', messages: list.map((m) => ({ id: m.id, at: m.at, from: m.from, kind: m.kind, text: m.text })) }, list.map((m) => `${m.from}: ${m.text}`).join('\n') || 'Nothing new.');
+  }
+  if (cmd === 'voices') { const a = audioState(); return out({ ok: true, casts: a.casts.map((c) => ({ id: c.id, name: c.name, description: c.description ?? '' })), cast: a.cast, voices: a.voices }, [`cast in force: ${a.cast}`, ...a.casts.map((c) => `${c.id === a.cast ? '*' : ' '} ${c.id.padEnd(16)} ${c.name}`), '', ...Object.entries(a.voices).map(([k, v]) => `${k.padEnd(8)} ${v.gender.padEnd(6)} rate ${v.rate} pitch ${v.pitch}${v.prefer.length ? ` · ${v.prefer.join(', ')}` : ''}`)].join('\n')); }
   if (cmd === 'chats-export') { const dir = mirrorChats(loadState(), { force: true }); return out({ ok: !!dir, dir }, dir ? `mirrored to ${dir}` : 'no hub data folder here (AXF_SWARM_CHATS_DIR to set one)'); }
   if (cmd === 'banter') { const r = await banter({ dry: args.includes('--dry-run') }); return out({ ok: true, ...r }, r.dry ? r.prompt : r.skipped ?? `posted ${r.posted} lines for ${core.fmtUsd(r.usd)}`); }
   if (cmd === 'plan') { if (!rest.length) throw new Error('plan needs a build id'); const p = plan(rest); return out({ ok: true, plan: p }, planText(p)); }

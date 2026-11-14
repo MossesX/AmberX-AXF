@@ -1,0 +1,375 @@
+{
+ "$axf": "fixture@1",
+ "about": "group chat audio (core/engines/chat-audio.mjs): voice@1, chat-audio@1, the playback queue; regenerate: node framework/spec/check-chat-audio.mjs --write",
+ "normVoice": [
+  {
+   "label": "",
+   "prefer": [],
+   "lang": "en-US",
+   "gender": "any",
+   "rate": 2,
+   "pitch": 0,
+   "volume": 0.5,
+   "cloud": {
+    "provider": "openai",
+    "voice": "alloy"
+   }
+  },
+  {
+   "label": "",
+   "prefer": [],
+   "lang": "en-US",
+   "gender": "any",
+   "rate": 1,
+   "pitch": 1,
+   "volume": 1,
+   "cloud": null
+  }
+ ],
+ "voiceFor": {
+  "kat": {
+   "label": "",
+   "prefer": [
+    "Samantha"
+   ],
+   "lang": "en-US",
+   "gender": "female",
+   "rate": 1.2,
+   "pitch": 1.3,
+   "volume": 1,
+   "cloud": null
+  },
+  "rio": {
+   "label": "",
+   "prefer": [],
+   "lang": "en-US",
+   "gender": "any",
+   "rate": 1,
+   "pitch": 1.1,
+   "volume": 1,
+   "cloud": null
+  },
+  "tex": {
+   "label": "",
+   "prefer": [],
+   "lang": "en-US",
+   "gender": "any",
+   "rate": 1,
+   "pitch": 0.9,
+   "volume": 1,
+   "cloud": null
+  },
+  "boss": {
+   "label": "",
+   "prefer": [],
+   "lang": "en-US",
+   "gender": "any",
+   "rate": 0.9,
+   "pitch": 0.8,
+   "volume": 1,
+   "cloud": null
+  }
+ },
+ "voiceForOverride": {
+  "label": "",
+  "prefer": [
+   "Samantha"
+  ],
+  "lang": "en-US",
+  "gender": "female",
+  "rate": 1.2,
+  "pitch": 0.5,
+  "volume": 1,
+  "cloud": null
+ },
+ "pickDeviceVoice": [
+  "Samantha",
+  "Kate",
+  null
+ ],
+ "settings": {
+  "$axf": "chat-audio@1",
+  "enabled": true,
+  "volume": 100,
+  "mode": "all",
+  "muted": {
+   "kat": true
+  },
+  "voices": {
+   "tex": {
+    "rate": 2
+   }
+  },
+  "cast": "",
+  "queueMax": 1,
+  "maxChars": 280,
+  "speakMine": false,
+  "sayName": true
+ },
+ "apply": [
+  {
+   "settings": {
+    "$axf": "chat-audio@1",
+    "enabled": true,
+    "volume": 40,
+    "mode": "summaries",
+    "muted": {},
+    "voices": {},
+    "cast": "",
+    "queueMax": 20,
+    "maxChars": 280,
+    "speakMine": false,
+    "sayName": true
+   },
+   "log": [
+    "group chat audio on",
+    "volume 40",
+    "mode: Summaries only"
+   ]
+  },
+  {
+   "settings": {
+    "$axf": "chat-audio@1",
+    "enabled": true,
+    "volume": 80,
+    "mode": "all",
+    "muted": {
+     "kat": true
+    },
+    "voices": {},
+    "cast": "",
+    "queueMax": 20,
+    "maxChars": 280,
+    "speakMine": false,
+    "sayName": true
+   },
+   "log": [
+    "kat muted"
+   ]
+  },
+  {
+   "settings": {
+    "$axf": "chat-audio@1",
+    "enabled": true,
+    "volume": 80,
+    "mode": "all",
+    "muted": {},
+    "voices": {},
+    "cast": "",
+    "queueMax": 20,
+    "maxChars": 280,
+    "speakMine": false,
+    "sayName": true
+   },
+   "log": [
+    "every agent unmuted"
+   ]
+  },
+  {
+   "settings": {
+    "$axf": "chat-audio@1",
+    "enabled": true,
+    "volume": 80,
+    "mode": "all",
+    "muted": {},
+    "voices": {
+     "rio": {
+      "pitch": 1.4
+     }
+    },
+    "cast": "",
+    "queueMax": 20,
+    "maxChars": 280,
+    "speakMine": false,
+    "sayName": true
+   },
+   "log": [
+    "rio: voice saved"
+   ]
+  },
+  {
+   "settings": {
+    "$axf": "chat-audio@1",
+    "enabled": true,
+    "volume": 80,
+    "mode": "all",
+    "muted": {},
+    "voices": {},
+    "cast": "",
+    "queueMax": 20,
+    "maxChars": 280,
+    "speakMine": false,
+    "sayName": true
+   },
+   "log": [
+    "rio: voice back to the cast"
+   ]
+  },
+  {
+   "settings": {
+    "$axf": "chat-audio@1",
+    "enabled": true,
+    "volume": 80,
+    "mode": "all",
+    "muted": {
+     "kat": true,
+     "rio": true,
+     "tex": true
+    },
+    "voices": {},
+    "cast": "",
+    "queueMax": 20,
+    "maxChars": 280,
+    "speakMine": false,
+    "sayName": true
+   },
+   "log": [
+    "every agent muted"
+   ]
+  }
+ ],
+ "skip": {
+  "all": [
+   "",
+   "",
+   "",
+   "mine",
+   "muted"
+  ],
+  "mentions": [
+   "not a mention",
+   "",
+   "not a mention",
+   "mine",
+   "muted"
+  ],
+  "summaries": [
+   "not a summary",
+   "not a summary",
+   "",
+   "mine",
+   "muted"
+  ]
+ },
+ "spoken": [
+  "Kat, you have s1 — see example.com",
+  "On it. Brett wants it by lunch.",
+  "Done: the switch is in. code block",
+  "Nice work",
+  "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa word word word word word word word word word word word word word word word word word, and so on."
+ ],
+ "utterance": {
+  "id": "m2",
+  "from": "kat",
+  "name": "Kotlin Kat",
+  "text": "Kotlin Kat: On it. Brett wants it by lunch.",
+  "voice": {
+   "label": "",
+   "prefer": [
+    "Samantha"
+   ],
+   "lang": "en-US",
+   "gender": "female",
+   "rate": 1.2,
+   "pitch": 1.3,
+   "volume": 1,
+   "cloud": null
+  },
+  "volume": 0.5
+ },
+ "queueFresh": {
+  "items": [],
+  "speaking": null,
+  "lastId": "m5",
+  "dropped": 0,
+  "paused": false
+ },
+ "queueBacklog": {
+  "items": [
+   {
+    "id": "m3",
+    "from": "rio",
+    "name": "Rio React",
+    "text": "Rio React: Done: the switch is in. code block",
+    "voice": {
+     "label": "",
+     "prefer": [],
+     "lang": "en-US",
+     "gender": "any",
+     "rate": 1,
+     "pitch": 1.1,
+     "volume": 1,
+     "cloud": null
+    },
+    "volume": 0.8
+   },
+   {
+    "id": "m5",
+    "from": "tex",
+    "name": "Tex Tester",
+    "text": "Tex Tester: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word, and so on.",
+    "voice": {
+     "label": "",
+     "prefer": [],
+     "lang": "en-US",
+     "gender": "any",
+     "rate": 1,
+     "pitch": 0.9,
+     "volume": 1,
+     "cloud": null
+    },
+    "volume": 0.8
+   }
+  ],
+  "speaking": null,
+  "lastId": "m5",
+  "dropped": 2,
+  "paused": false
+ },
+ "queueNew": {
+  "items": [
+   {
+    "id": "m3",
+    "from": "rio",
+    "name": "Rio React",
+    "text": "Rio React: Done: the switch is in. code block",
+    "voice": {
+     "label": "",
+     "prefer": [],
+     "lang": "en-US",
+     "gender": "any",
+     "rate": 1,
+     "pitch": 1.1,
+     "volume": 1,
+     "cloud": null
+    },
+    "volume": 0.8
+   },
+   {
+    "id": "m5",
+    "from": "tex",
+    "name": "Tex Tester",
+    "text": "Tex Tester: aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word word, and so on.",
+    "voice": {
+     "label": "",
+     "prefer": [],
+     "lang": "en-US",
+     "gender": "any",
+     "rate": 1,
+     "pitch": 0.9,
+     "volume": 1,
+     "cloud": null
+    },
+    "volume": 0.8
+   }
+  ],
+  "speaking": null,
+  "lastId": "m5",
+  "dropped": 0,
+  "paused": false
+ },
+ "describe": [
+  "Group chat audio is off.",
+  "Group chat audio is on at volume 80, only my mentions; muted: Kotlin Kat."
+ ]
+}
