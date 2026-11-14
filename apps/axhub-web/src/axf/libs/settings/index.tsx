@@ -14,8 +14,8 @@
  */
 import { Fragment, useEffect, useMemo, useState, useSyncExternalStore, type ReactNode } from 'react';
 import type { SettingsPanel } from '../../core';
-import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, APPEARANCE_LOCK_KEY, HUB_SKIN_ONLY_GROUP, ASSET_TYPES, assetTypeSpecs, hideable, PLACEMENT_LABELS, SKIN_COLOR_SLOT, arrangeSettingsTabs, filterSettingsGroup, normalizeSettingsUi, settingMatches, settingsShown, settingsUiGroups, SETTINGS_LEVEL_KEY, SETTINGS_LEVEL_BAR_KEY, SETTINGS_VISIBLE_KEY, SETTINGS_LEVEL_HINT, SETTINGS_LEVEL_LABEL, SETTINGS_LEVELS, settingsLevel, shownAtLevel, splitSettingsGroup, withSettingsVisible, hideableTypes, type SettingsLevel, type SettingsUi, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
-import { AssetsWithEdits, AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Chip, Container, ControlScope, HubSkinLockNote, Icon, IconButton, ModelBadge, Note, setBannerOwnSettingsRenderer, settingTargetDef, Slider, Switch, useAsset, useAxfState, useControlTarget, useKnownBanners, useRuntime } from '../../react';
+import { HELP_ACTIONS, HELP_INTROS_KEY, HELP_MODE_KEY, APPEARANCE_LOCK_KEY, HUB_SKIN_ONLY_GROUP, skinSwatches, ASSET_TYPES, assetTypeSpecs, hideable, PLACEMENT_LABELS, SKIN_COLOR_SLOT, arrangeSettingsTabs, filterSettingsGroup, normalizeSettingsUi, settingMatches, settingsShown, settingsUiGroups, SETTINGS_LEVEL_KEY, SETTINGS_LEVEL_BAR_KEY, SETTINGS_VISIBLE_KEY, SETTINGS_LEVEL_HINT, SETTINGS_LEVEL_LABEL, SETTINGS_LEVELS, settingsLevel, shownAtLevel, splitSettingsGroup, withSettingsVisible, hideableTypes, type SettingsLevel, type SettingsUi, type AssetType, type AxfRuntime, type SettingSpec, type SettingValue, type SettingsGroup } from '../../core';
+import { AssetsWithEdits, AssetToolbar, askBannerTab, BANNERS_VIEW, BannerSettingsPanel, bannerSettingsTabs, Button, Chip, Container, ControlScope, HubSkinLockNote, Icon, IconButton, ModelBadge, Note, setBannerOwnSettingsRenderer, SelectField, settingTargetDef, Slider, Switch, useAsset, useAxfState, useControlTarget, useKnownBanners, useRuntime } from '../../react';
 import type { AxfWebLibrary } from '../../react/library';
 import { runtimeInventory } from '../../react/pluginRecords';
 import { TabGroup } from '../../react/components/TabGroup';
@@ -24,6 +24,7 @@ import { FollowHubSwitch, SKIN_WHERE_CSS, SKIN_WHERE_DIALOG, SkinWhere, SkinWher
 import { hasSkinConfigProvider, SKIN_CONFIG_CSS, SKIN_CONFIG_TAB, SkinConfigPanel as SkinConfigView } from './SkinConfigPanel';
 export { SkinConfigPanel, hasSkinConfigProvider, SKIN_CONFIG_LAYOUT_KEY, SKIN_CONFIG_SERVICE, SKIN_CONFIG_TAB, skinConfigLayout, skinConfigService, type SkinConfigLayout, type SkinConfigService } from './SkinConfigPanel';
 import { SkinScope } from '../../react/components/SkinScope';
+import { SwatchFan, Swatches } from '../../react/components/Swatches';
 import { consoleFieldValue } from '../../core/engines/console-commands.mjs';
 
 export const SETTINGS_LIBRARY_ID = 'ai.amberx.axf.settings';
@@ -165,7 +166,7 @@ function SettingControl({ spec, off = false }: { spec: SettingSpec; off?: boolea
       control = <input className="axf-settings__field" type={spec.kind === 'secret' ? 'password' : 'text'} autoComplete="off" value={typeof value === 'string' ? value : ''} disabled={locked} onChange={(e) => set(e.target.value)} />;
       break;
     case 'color':
-      control = <input type="color" value={typeof value === 'string' ? value : '#000000' /* theme-ok: data value, not styling */} disabled={locked} onChange={(e) => set(e.target.value)} />;
+      control = <SwatchFan label={spec.label} value={typeof value === 'string' && /^#[0-9a-f]{6}$/i.test(value) ? value : '#000000' /* theme-ok: data value, not styling */} disabled={locked} onChange={(v) => set(v)} />;
       break;
     case 'choice':
       // Up to three options read better as a three-way switch (radio group) than a drop-down.
@@ -679,6 +680,7 @@ export function AppearancePanel() {
       ))}
       {row('Navigation menu', 'nav-menu')}
       <SkinWhere locked={locked} />
+      <AnimationsSection locked={locked} />
       <div className="axf-settings__row">
         <div className="axf-settings__label"><span>Restore to default</span><span className="fx-muted axf-settings__hint">Back to the look this app had when skins landed.</span></div>
         <div className="axf-settings__control axf-skin__action">
@@ -692,6 +694,56 @@ export function AppearancePanel() {
           <div className="axf-settings__control axf-skin__action">
             <Button size="sm" tone="quiet" icon="sliders" onClick={() => rt.dispatch(`settings.open:${SKIN_CONFIG_TAB}`)}>Open</Button>
           </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+const ANIM_OPTION_LABEL: Record<string, string> = { wave: 'Wave', ripple: 'Ripple', pop: 'Pop', sweep: 'Sweep', fade: 'Fade', fan: 'Fan out', off: 'Off' };
+const DEMO_SWATCHES = ['var(--fx-bg)', 'var(--fx-surface2)', 'var(--fx-accent)', 'var(--fx-info)', 'var(--fx-success)', 'var(--fx-text)'];
+
+/**
+ * Settings → Appearance → Animations (build skin-animations-swatches-skin-switch): the skin's animations (its behaviour
+ * theme's swatch wave, skin-switch ripple and colour-picker fan), each on or off and its style, plus speed and
+ * intensity, for this app only. "Skin's" keeps what the skin does; Back to skin drops every pick (rt.resetAnimations).
+ * The same picks are the animations.* actions, so the console API, MCP, the CLI and voice reach every one.
+ */
+function AnimationsSection({ locked }: { locked: boolean }) {
+  const rt = useRuntime();
+  useSettingsRevision(rt);
+  const st = rt.animations();
+  const own = Object.keys(st.prefs).length > 0;
+  return (
+    <div className="fx-stack axf-anim" data-axf-settings-section="animations" data-axf-animations="">
+      <p className="fx-eyebrow">Animations</p>
+      <div className="axf-settings__row" data-fx-swatch-host="">
+        <div className="axf-settings__label">
+          <span>Preview</span>
+          <span className="fx-muted axf-settings__hint">{st.reduced ? 'Reduced motion is on, so nothing moves.' : 'Hover or tap the swatches.'}</span>
+        </div>
+        <div className="axf-settings__control"><Swatches className="axf-anim__demo" colors={DEMO_SWATCHES} label="Animation preview" /></div>
+      </div>
+      {st.animations.map((a) => (
+        <div className="fx-stack axf-anim__item" key={a.key} data-axf-animation={a.key}>
+          <Switch label={a.label} hint={`${a.help}${a.own ? '' : " The skin's."}`} checked={a.value !== 'off'} disabled={locked} onChange={(on) => rt.setAnimation(a.key, on ? (a.skin !== 'off' ? 'skin' : a.options[0]) : 'off')} />
+          {a.value !== 'off' && (
+            <SelectField
+              label={`${a.label} style`}
+              value={a.own ? a.value : 'skin'}
+              disabled={locked}
+              options={[{ value: 'skin', label: `Skin's (${ANIM_OPTION_LABEL[a.skin] ?? a.skin})` }, ...a.options.filter((o) => o !== 'off').map((o) => ({ value: o, label: ANIM_OPTION_LABEL[o] ?? o }))]}
+              onChange={(v) => rt.setAnimation(a.key, v)}
+            />
+          )}
+        </div>
+      ))}
+      <Slider label="Animation speed" unit="%" min={25} max={400} step={5} value={st.speed} onChange={(v) => { if (!locked) rt.setAnimation('speed', v); }} />
+      <Slider label="Animation intensity" unit="%" min={0} max={100} step={5} value={st.intensity} onChange={(v) => { if (!locked) rt.setAnimation('intensity', v); }} />
+      {own && (
+        <div className="axf-settings__row">
+          <div className="axf-settings__label"><span>Back to the skin's animations</span><span className="fx-muted axf-settings__hint">Drops this app's animation picks.</span></div>
+          <div className="axf-settings__control axf-skin__action"><Button size="sm" tone="quiet" disabled={locked} onClick={() => rt.resetAnimations()}>Back to skin</Button></div>
         </div>
       )}
     </div>
@@ -721,15 +773,15 @@ function SkinPickerDialog() {
   const current = skins.find((s) => s.id === picked);
   const swatches = (colorTheme: string) => {
     const tokens = (rt.registry.get('color-theme', colorTheme)?.data as { tokens?: Record<string, string> } | undefined)?.tokens;
-    return tokens ? [tokens.bg, tokens.surface, tokens.accent, tokens.text] : [];
+    return skinSwatches(tokens); // engines/swatches.ts: background, surfaces, accents, text
   };
   return (
     <div className="fx-stack" data-axf-skin-picker="">
       {following && <FollowingAxHubNote />}
       <div className="axf-skin__grid" role="listbox" aria-label="Skin">
         {skins.map((s) => (
-          <Button key={s.id} tone="quiet" size="sm" className={`axf-skin__tile${s.id === picked ? ' is-picked' : ''}`} aria-selected={s.id === picked} role="option" title={s.description} onClick={() => tap(s.id)}>
-            <span className="axf-skin__swatches" aria-hidden="true">{swatches(s.data.colorTheme).map((c, i) => <span key={i} style={{ background: c }} />)}</span>
+          <Button key={s.id} tone="quiet" size="sm" className={`axf-skin__tile${s.id === picked ? ' is-picked' : ''}`} aria-selected={s.id === picked} role="option" title={s.description} data-fx-swatch-host="" onClick={() => tap(s.id)}>
+            <Swatches joined className="axf-skin__swatches" colors={swatches(s.data.colorTheme)} />
             <span className="axf-skin__name">{s.name}</span>
           </Button>
         ))}
@@ -902,8 +954,9 @@ const CSS = `
 .axf-skin__tile{height:auto;min-width:0;overflow:hidden;padding:var(--fx-dens-gap-sm)}
 .axf-skin__tile>span{display:flex;flex-direction:column;gap:var(--fx-dens-gap-xs);min-width:0;width:100%}
 .axf-skin__tile.is-picked{outline:calc(var(--fx-border-w)*2) solid var(--fx-accent);outline-offset:calc(var(--fx-border-w)*-2)}
-.axf-skin__swatches{display:flex;height:calc(var(--fx-space)*4);border-radius:var(--fx-radius-sm);overflow:hidden;border:var(--fx-border-w) solid var(--fx-border)}
-.axf-skin__swatches>span{flex:1}
+.axf-skin__swatches{height:calc(var(--fx-space)*4);margin-top:var(--fx-dens-gap-md)}
+.axf-anim__demo{width:calc(var(--fx-space)*24);height:calc(var(--fx-space)*4)}
+.axf-anim__item{gap:var(--fx-dens-gap-xs)}
 .axf-skin__name{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center;font-size:var(--fx-type-scale-xs)}
 .axf-settings__control.axf-skin__action{flex:0 0 auto;min-width:0;display:flex;gap:var(--fx-dens-gap-xs)}
 .axf-skin__dot{display:inline-block;width:calc(var(--fx-space)*.75);height:calc(var(--fx-space)*.75);margin-left:var(--fx-dens-gap-xs);border-radius:999px;background:var(--fx-accent)}

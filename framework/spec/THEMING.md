@@ -159,3 +159,28 @@ Names are how the engines, the designer and other plugins find a plugin's parts,
   (`ai.amberx.axf.console.hub`).
 - **Names are stable.** Renaming a part breaks themes and saved designer layouts, so treat part names like
   public API: add new ones, deprecate old ones, don't silently rename.
+
+## Skin animations: where they go (Nov 13 2026)
+
+Brett: "where can I put some cool animations, like color swatches". Animations are part of the skin, so they live in
+the **behaviour theme** a skin carries (`framework/assets/behavior-theme/<id>.json`, `data.motion`), never in a
+plugin's CSS:
+
+| Field | Values | Where it plays |
+|---|---|---|
+| `swatches` | `wave` · `ripple` · `pop` · `off` | every `Swatches` row (`react/components/Swatches.tsx`): skin cards in the skin picker, the Animations preview; a parent with `data-fx-swatch-host` plays its row on hover / focus / tap |
+| `skinSwitch` | `ripple` · `sweep` · `fade` · `off` | every look change (skin on / off, picker preview, Back to skin, colour theme inside a skin): the new colours grow out of the last tap (runtime `withSkinSwitchFx`, View Transitions) |
+| `picker` | `fan` · `pop` · `off` | every `SwatchFan` (ColorField, colour settings, Theme manager, Explorer): the pick pops and fans out into its shades |
+| `animSpeed` | 25 to 400 (percent) | all of them · `animIntensity` 0 to 100: how far they move (0 = still) |
+
+Rules: the engine (`core/engines/behavior.ts`, picks in `core/engines/animation-rules.mjs`) compiles these to
+`--fx-anim-dur`, `--fx-anim-sweep-dur`, `--fx-anim-stagger`, `--fx-anim-ease`, `--fx-anim-pop-ease`,
+`--fx-anim-intensity` and `data-fx-anim-*` attributes; `framework/ui/axf.css` (the "Skin animations" block) is the only
+place keyframes are drawn, and every duration and distance there is a token. Reduced motion (system or the skin's
+`reduced: always`) and intensity 0 turn every one off. Settings → Appearance → Animations lays this app's picks over the
+skin's (`axf.appearance.animations`, carried in the app's look document).
+
+To add a new animation: add its field to `ANIMATION_ENUMS` / `SKIN_ANIMATIONS` in animation-rules.mjs (and the copy in
+`cli/build-engine.mjs`), draw it in the axf.css block under its `data-fx-anim-<name>` attribute, give the shipped
+behaviour themes a value, regenerate `spec/fixtures/skin-animations.json` and extend `spec/check-skin-animations.mts`.
+To put an existing one somewhere new: render `Swatches` (a palette row) or `SwatchFan` (a colour pick); nothing else.
