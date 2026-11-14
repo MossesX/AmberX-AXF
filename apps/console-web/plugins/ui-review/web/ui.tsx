@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { AgentAvatar, Button, Checkbox, Icon, IconButton, Segmented, TabGroup, useRuntime } from '@console/axf/react';
+import { AgentAvatar, Button, Checkbox, Icon, IconButton, Segmented, SelectField, TabGroup, useRuntime } from '@console/axf/react';
 import { pluginApi } from '@console/plugins';
 import { OriginFor } from '@console/buildOrigin';
 import { EmptyState, LoadingSkeleton } from '@console/emptyState';
@@ -9,6 +9,7 @@ import * as P from '../../../../../framework/core/ui-predict.mjs';
 import type { Prediction } from '../../../../../framework/core/ui-predict.mjs';
 import type { Decision, Item, Kind } from './review-core.mjs';
 import { FOLDER, GROUP_BYS, GROUP_PARAM, KEYS, VIEWS, type GroupBy, type ViewId } from './keys';
+import { onPrRequest, pendingPr, requestPr } from './pr-focus';
 import { ShotBrowser } from './shots';
 import { ScreenshotsTab } from './screenshots';
 import { ChoicesTab, choicesOf } from './choices';
@@ -181,19 +182,23 @@ function BulkBar({ n, onClear }: { n: number; onClear: () => void }) {
 type Tab = 'review' | 'shots';
 export function UiReviewPage({ section, tab: tabProp }: { section?: string; tab?: Tab }) {
   const rt = useRuntime();
-  const [tab, setTabRaw] = useState<Tab>(() => (section ? 'review' : tabProp ?? (setting<string>(rt, KEYS.tab, 'review') === 'shots' ? 'shots' : 'review')));
+  const [tab, setTabRaw] = useState<Tab>(() => (section || pendingPr() ? 'review' : tabProp ?? (setting<string>(rt, KEYS.tab, 'review') === 'shots' ? 'shots' : 'review')));
   const [shotCount, setShotCount] = useState<number | null>(null);
   const [data, setData] = useState<Loaded | null>(null);
   const [error, setError] = useState('');
   const [groupId, setGroupId] = useState(() => new URLSearchParams(globalThis.location?.search ?? '').get(GROUP_PARAM) ?? '');
-  const [kind, setKindRaw] = useState<string>(() => section ?? (groupId ? '' : setting(rt, KEYS.section, '')));
+  const [kind, setKindRaw] = useState<string>(() => section ?? (groupId || pendingPr() ? '' : setting(rt, KEYS.section, '')));
   const [view, setViewRaw] = useState<ViewId>(() => setting(rt, KEYS.view, 'grid') as ViewId);
   const [sort, setSortRaw] = useState<string>(() => setting(rt, KEYS.sort, 'waiting'));
   const [groupBy, setGroupByRaw] = useState<GroupBy>(() => setting(rt, KEYS.groupBy, 'kind') as GroupBy);
-  const [status, setStatusRaw] = useState<string>(() => (groupId ? '' : setting(rt, KEYS.status, '')));
+  const [status, setStatusRaw] = useState<string>(() => (groupId || pendingPr() ? '' : setting(rt, KEYS.status, '')));
   const [device, setDeviceRaw] = useState<string>(() => setting(rt, KEYS.device, ''));
   const [app, setApp] = useState('');
   const [q, setQ] = useState('');
+  // the PR filter: the picker, a deep link (?ui-review-pr=647) or the ui-review.pr action (API / MCP / CLI / voice)
+  const [pr, setPrRaw] = useState<number | null>(() => pendingPr());
+  const setPr = (v: number | null) => { setPrRaw(v); requestPr(v, false); };
+  useEffect(() => onPrRequest((n) => { setPrRaw(n); if (n) { setTabRaw('review'); setKindRaw(''); setStatusRaw(''); } }), []);
   const [sel, setSel] = useState<string[]>([]);
   const [open, setOpen] = useState<string[]>([]);
   const remember = <T,>(k: string, f: (v: T) => void) => (v: T) => { f(v); save(rt, k, v); };
@@ -214,7 +219,8 @@ export function UiReviewPage({ section, tab: tabProp }: { section?: string; tab?
   const kinds = useMemo(() => (data ? core.mergeKinds(data.kinds.base, data.kinds.extra, all) : []), [data, all]);
   const counts = useMemo(() => core.counts(all), [all]);
   const appList = useMemo(() => core.apps(all), [all]);
-  const rows = useMemo(() => core.sortItems(core.filterItems(all, { kind, status, app, q, group: groupId }), sort), [all, kind, status, app, q, groupId, sort]);
+  const prs = useMemo(() => core.prList(all), [all]);
+  const rows = useMemo(() => core.sortItems(core.filterItems(all, { kind, status, app, q, group: groupId, pr }), sort), [all, kind, status, app, q, groupId, pr, sort]);
   const groupName = groupId ? String(all.find((x) => x.group === groupId)?.groupName || 'this group') : '';
   const picked = data?.picks.picked ?? [];
 
@@ -278,8 +284,19 @@ export function UiReviewPage({ section, tab: tabProp }: { section?: string; tab?
             <Button size="sm" tone="quiet" onClick={() => setGroupId('')}>Show everything</Button>
           </div>
         )}
+        {pr && (
+          <div className="fx-row fx-row--wrap" data-axf-target="view:ui-review/filter:pr">
+            <span className="fx-small">Showing PR <b>#{pr}</b> ({rows.length}){prs.some((x) => x.pr === pr) ? '' : ' · no items for this PR yet'}</span>
+            <Button size="sm" tone="quiet" onClick={() => setPr(null)}>Every PR</Button>
+          </div>
+        )}
         <div className="axp-ui-review__bar" role="toolbar" aria-label="Filter and view">
-          <input className="fx-input axp-ui-review__search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search: title, app, branch, #PR…" aria-label="Search" />
+          <input className="fx-input axp-ui-review__search" value={q} onChange={(e) => setQ(e.target.value)}
+            onKeyDown={(e) => { const n = core.parsePr(q); if (e.key === 'Enter' && n && /^\s*(#|pr)/i.test(q)) { setPr(n); setQ(''); } }}
+            placeholder="Search: title, app, branch, #PR (Enter on #PR filters to it)…" aria-label="Search" />
+          <SelectField label="PR" className="axp-ui-review__prpick" value={pr ? String(pr) : ''} empty={`Every PR (${prs.length})`}
+            options={[...(pr && !prs.some((x) => x.pr === pr) ? [{ value: String(pr), label: `#${pr} · no items` }] : []), ...prs.map((x) => ({ value: String(x.pr), label: core.prLabel(x) }))]}
+            onChange={(v) => setPr(core.parsePr(v))} />
           <select className="fx-input axp-ui-review__sel" value={status} onChange={(e) => setStatus(e.target.value)} aria-label="Status">
             <option value="">Every status</option><option value="open">Not approved</option>
             {core.STATUSES.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}
@@ -296,7 +313,7 @@ export function UiReviewPage({ section, tab: tabProp }: { section?: string; tab?
         </div>
 
         {rows.length === 0 ? (
-          <EmptyState icon="eye">{all.length ? 'Nothing matches. Clear the search or pick another section.' : 'Nothing to review yet. Builds submit their screenshots with review.mjs.'}</EmptyState>
+          <EmptyState icon="eye">{all.length ? pr ? `Nothing for PR #${pr} here. Pick Every PR or another section.` : 'Nothing matches. Clear the search or pick another section.' : 'Nothing to review yet. Builds submit their screenshots with review.mjs.'}</EmptyState>
         ) : view === 'tree' ? <TreeView items={rows} />
           : view === 'groups' ? <GroupsView items={rows} by={groupBy} />
           : view === 'gallery' ? <GalleryView items={rows} />

@@ -49,3 +49,7 @@ export function setGroup(sel: string[], ids: string[], on: boolean): string[];
 export function togglePick(picked: string[], id: string, max?: number): { picked: string[]; error: string };
 export function reviewState(items: Item[], q?: { branch?: string; pr?: number | string | null }): ReviewState;
 export function apps(items: Item[]): string[];
+export interface PrEntry { pr: number; total: number; waiting: number; open: number; title: string; build: string; branch: string }
+export function parsePr(v: unknown): number | null;
+export function prList(items: { pr?: unknown; status?: string; title?: string; build?: string; branch?: string; updatedAt?: string; submittedAt?: string }[]): PrEntry[];
+export function prLabel(p: PrEntry): string;
