@@ -792,7 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 19:57 UTC · `grid-token-set-colours-hover-selected` added (0 steps) (all) · console
 - 2026-11-13 19:57 UTC · `own-token-sets-for-grids-and-tab-groups` added (0 steps) (all) · console
 - 2026-11-13 19:57 UTC · `own-token-sets-for-grids-and-tab-groups` → queued, note (all) · console
 - 2026-11-13 19:58 UTC · `icon-map-icon-packs-every-icon-badge-app` note (all) · orchestrator
@@ -1192,6 +1191,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 02:10 UTC · `console-app-land-parts-1-4-build-apk` note (all) · foreign-write
 - 2026-11-14 02:10 UTC · `console-app-land-parts-1-4-build-apk` → pending, note (all) · pipeline
 - 2026-11-14 03:29 UTC · `hotfix-get-main-ci-green-theme-swap` added (3 steps) (all) · voice
+- 2026-11-14 03:33 UTC · `icon-map-icon-packs-every-icon-badge-app` → running, note (all) · voice
 
 ## Token passes (log)
 
