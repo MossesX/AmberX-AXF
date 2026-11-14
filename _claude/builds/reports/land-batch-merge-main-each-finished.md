@@ -110,9 +110,9 @@ Each one goes in with `land.mjs queue add <pr>` once its build is done.
      Gradle on the host); the queue run will show it.
   3. Web `scripts/theme-swap.mjs`: "transparency tokens did not change between style themes". Every style theme
      reads the `hub` style's opacities (0.4 / 0.66 / 0.06 / 0.1 / 0.45 / 0.88), so the console is pinned to the
-     axHub look in the test and the style picker changes nothing. **Not fixed**: a look-lock / theme regression on
-     main that needs its own build. Until it's fixed, every full run in the queue fails, so nothing in this stack
-     can merge.
+     axHub look in the test and the style picker changes nothing. Not fixed here. Main fixed it later in
+     `483230714` ("theme-swap: drive the real asset pickers so style themes keep their own opacities"). After
+     that, #665 went back into the queue and merged at 12:57.
 - The other nine batch PRs sit outside the queue with red light checks. The only error is main's `VetoHost`
   TS2339, which #665 fixes. Once #665 lands, merge main into each of them once more: fresh light checks go green
   and they rejoin the stack.
@@ -150,6 +150,31 @@ The update service redeployed the console after the landings: deploy `d-console-
 contains all five merge commits above. Container `axf-console` restarted at 23:17:16 UTC, and its `/api/health`
 returns `{"ok":true,"axf":"console-api@1",…}`. I didn't run a second `console refresh --hard`, because it would
 deploy the same tree. The five PRs still in flight each get the queue's own deploy when they land.
+
+## Finish (s19)
+
+On main + this report (`claude/land-batch-merge-main-each-finished-report`, PR #687):
+`node framework/spec/check-land-resolve.mjs` ok; `node framework/cli/builds-store.mjs verify` ok (912 records, 24241
+checks); `node framework/cli/tracker.mjs --check` exit 0.
+
+Each branch's result:
+
+| PR | Build | Result |
+| --- | --- | --- |
+| #665 | land-batch-merge-main-each-finished | **landed** 12:57 (resolver wiring + main's CI fixes) |
+| #641 | skin-axhub-override-switch-greyed-out | **landed** 20:15, build marked complete |
+| #648 | skin-config-panel-merge-main-and-land | **landed** 20:15, build marked complete |
+| #647 | skins-plugin-merge-main-and-land | **landed** 20:15, build marked complete |
+| #652 | skin-animations-swatches-skin-switch | **landed** 20:51 (help pack clash fixed by hand in s9), build marked complete |
+| #646 | demo-pipelines-guided-walkthrough-live | not landed yet: re-merged with main (inventory regenerated), green locally, light checks running, rejoins the queue on green |
+| #644 | orchestrator-custom-groups-custom-tabs | not landed yet: re-merged (inventory regenerated, JSON unioned), green locally, light checks running |
+| #655 | full-voice-control-resolve-inventory | not landed yet: re-merged, **source clash, kept both sides**, green locally, light checks running |
+| #662 | per-instance-settings-small-live-preview | not landed yet: re-merged, **source clash, kept both sides** (`TabGroup.tsx`), green locally, light checks running |
+| #658 | hotfix-desktop-console-draws-app-menu | not landed yet: auto-land merged main at 23:16, light checks running |
+| #656, #664, #657, #643 | toolbar-widgets, icon-map, token-registry, console-app-wake-word | held back on purpose: their builds still have open feature steps. #643 was also kicked out of the queue by its own full run (run 43602852062: Web Dev Console + Build engine sweep), which is for its own build to fix |
+
+The five still in flight are marked "Built · awaiting merge" on the board. The merge queue lands them with no further
+work from this build, and each landing marks its build merged (pr-merged).
 
 ## Host repair (for the record)
 
