@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5191,
- "updatedAt": "2026-11-14T04:03:36.366Z",
+ "rev": 5192,
+ "updatedAt": "2026-11-14T04:04:10.765Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -212145,7 +212145,7 @@
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-14T04:03:31.207Z",
+   "updatedAt": "2026-11-14T04:04:06.168Z",
    "builtAt": "",
    "notes": [
     {
@@ -212267,6 +212267,28 @@
      "updatedAt": "2026-11-14T04:03:31.699Z"
     },
     {
+     "id": "s7",
+     "uid": "st-mwfvsr6p0143q5",
+     "title": "",
+     "text": "axHub explainer video: show how every app sends its settings, data and assets to axHub, the one true source; how axHub stores them; and how that lets you merge several apps into one shell that always looks the same and shares skins, icons, tokens and assets. Demo: the time-tracker and expense tracker apps merged into one shell live, sharing a skin swap. Tie it into the two hero videos. Label any staged parts as a preview.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-14T04:04:06.169Z",
+     "updatedAt": "2026-11-14T04:04:07.203Z"
+    },
+    {
      "id": "s2",
      "uid": "st-mwfvo8cj06k1fr",
      "title": "",
@@ -212341,7 +212363,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
