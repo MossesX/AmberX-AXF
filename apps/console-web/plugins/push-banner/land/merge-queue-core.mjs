@@ -22,12 +22,17 @@
 export const QUEUE_FRAME = 'merge-queue@1';
 export const QUEUE_CONTROL_FRAME = 'merge-queue-control@1';
 /** Settings (push banner config.json): the queue is on unless switched off; `queueDepth` PRs are tested at once. */
-export const QUEUE_DEFAULTS = Object.freeze({ mergeQueue: true, queueDepth: 3, queueMode: 'batch', batchSize: 8 });
+export const QUEUE_DEFAULTS = Object.freeze({ mergeQueue: true, queueDepth: 3, queueMode: 'serial', batchSize: 8 });
 export const QUEUE_DEPTH_MAX = 6;
 /** Batch mode (Nov 10 2026, Brett: "Everything needs to go into the merge queue so we can make one build out of it
  *  before we send it to CI"): the ready PRs are combined into one commit on `queue/batch`, CI runs once on it, and a
- *  green batch lands on main as that one commit. `stack` keeps the Nov 4 per-PR stack. */
-export const QUEUE_MODES = Object.freeze(['batch', 'stack']);
+ *  green batch lands on main as that one commit. `stack` keeps the Nov 4 per-PR stack.
+ *  Serial (the default since Nov 14 2026, Brett: "We gotta get rid of that merge tier and start landing them one at a
+ *  time"; build land-finish-auto-land-live-clear-backlog): the queue builds no stack and no batch; finished builds wait
+ *  in the landing line (landing-line@1) and land-one.mjs lands them one after the other. `batch` and `stack` stay only as
+ *  settings behind it, never used unless picked by hand. */
+export const QUEUE_MODES = Object.freeze(['serial', 'batch', 'stack']);
+export const LINE_FILE = 'landing-line.json';
 export const BATCH_SIZE_MAX = 20;
 export const BATCH_BRANCH = 'queue/batch';
 /** Minutes a queue commit may sit with no CI run before the runner starts one itself (workflow_dispatch). */
@@ -222,7 +227,7 @@ export const QUEUE_COMMANDS = Object.freeze([
   { id: 'mergequeue-list', method: 'GET', path: '/queue', cli: 'list', title: 'Merge queue: the line', description: 'Every PR in the merge queue in order: title, agent, test state (waiting, testing, passed, kicked out and why), ETA; and the open PRs not in it, with why.', effect: 'read' },
   { id: 'mergequeue-add', method: 'POST', path: '/queue/add', cli: 'add', title: 'Merge queue: add a PR', description: 'Put a PR (back) in the merge queue: undoes Remove from queue or a kick-out at the same head. It still has to be ready (PR checks green, not held by UI Review).', effect: 'write', input: { pr: 'PR number' } },
   { id: 'mergequeue-remove', method: 'POST', path: '/queue/remove', cli: 'remove', title: 'Merge queue: remove a PR', description: 'Take a PR out of the merge queue until it gets a new commit or is added again; the ones behind it are retested without it.', effect: 'write', input: { pr: 'PR number', why: 'optional reason' } },
-  { id: 'mergequeue-settings', method: 'POST', path: '/queue/settings', cli: 'settings', title: 'Merge queue: settings', description: "Batch mode (one build, one CI run, lands as one commit) or the per-PR stack, the batch size, the queue on. Off is Brett's own click.", effect: 'write', input: { on: 'true | false', mode: 'batch | stack', batchSize: '1-20' } },
+  { id: 'mergequeue-settings', method: 'POST', path: '/queue/settings', cli: 'settings', title: 'Merge queue: settings', description: "Serial (the default: one build at a time through the landing line), batch (one build, one CI run) or the per-PR stack, the batch size, the queue on. Off is Brett's own click.", effect: 'write', input: { on: 'true | false', mode: 'serial | batch | stack', batchSize: '1-20' } },
   { id: 'mergequeue-move', method: 'POST', path: '/queue/move', cli: 'move', title: 'Merge queue: move a PR', description: "Move a PR to a place in the merge queue (0 = front). Jump to front from the console is Brett's own click.", effect: 'write', input: { pr: 'PR number', to: 'new index, 0 = front' } },
 ]);
 

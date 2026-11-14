@@ -14,7 +14,7 @@ export interface QueueItem { inBatch?: boolean; pr: number; title: string; url?:
 export interface QueueKick { pr: number; title: string; why: string; at: string; runUrl?: string }
 export interface QueueMerged { pr: number; title: string; at: string; agent?: string }
 export interface QueueBatch { prs: number[]; sha: string; ci: string; runUrl?: string; builtAt?: string; bisect?: boolean; why?: string }
-export interface QueueState { mode?: 'batch' | 'stack'; batchSize?: number; batch?: QueueBatch | null; split?: number[]; on: boolean; depth: number; at?: string; items: QueueItem[]; waiting: QueueItem[]; kicked: QueueKick[]; merged: QueueMerged[]; avgMin: number | null; variable?: string; variableError?: string; chip: { label: string; count: number; testing: number; kicked: number; tone: string } }
+export interface QueueState { mode?: 'serial' | 'batch' | 'stack'; batchSize?: number; batch?: QueueBatch | null; split?: number[]; on: boolean; depth: number; at?: string; items: QueueItem[]; waiting: QueueItem[]; kicked: QueueKick[]; merged: QueueMerged[]; avgMin: number | null; variable?: string; variableError?: string; chip: { label: string; count: number; testing: number; kicked: number; tone: string } }
 
 const POLL_MS = 60_000;
 let qstate: { data: QueueState | null; error: string; busy: number; note: string } = { data: null, error: '', busy: 0, note: '' };

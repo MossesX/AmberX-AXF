@@ -2,7 +2,7 @@
 // repo with a fake GitHub (no network, no model). Run: node apps/console-web/plugins/push-banner/land/merge-queue.test.mjs
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { mkdtempSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import * as q from './merge-queue-core.mjs';
@@ -207,6 +207,7 @@ await t('batch rules: members, holds, decide (land all / split in half / kick th
   const root2 = mkdtempSync(join(tmpdir(), 'mq-batch-'));
   const origin2 = join(root2, 'origin.git'); const repo2 = join(root2, 'repo'); const data2 = join(root2, 'data');
   mkdirSync(data2);
+  writeFileSync(join(data2, 'config.json'), JSON.stringify({ queueMode: 'batch' })); // batch is a setting behind serial now
   sh(root2, 'init', '-q', '--bare', '-b', 'main', origin2);
   sh(root2, 'clone', '-q', origin2, repo2);
   const commit2 = (file, text, msg) => { mkdirSync(join(repo2, file, '..'), { recursive: true }); writeFileSync(join(repo2, file), text); sh(repo2, 'add', file); sh(repo2, ...cfg, 'commit', '-q', '-m', msg); };
@@ -302,5 +303,22 @@ await t('batch rules: members, holds, decide (land all / split in half / kick th
   assert.deepEqual(chatLines({ batch: stuck.batch }, stuck), [], 'the same stuck batch is said once');
   n += 1; console.log('ok group chat lines: landed, kicked, started, stuck; nothing old said again');
 }
+
+
+await t('serial mode (the default): no stack, no batch; the old queue moves into the landing line once', async () => {
+  const root3 = mkdtempSync(join(tmpdir(), 'mq-serial-')); const data3 = join(root3, 'data'); mkdirSync(data3);
+  const s3 = { repo: root3, slug: 'o/r', dataDir: data3, remote: 'origin', base: 'main' };
+  writeFileSync(join(data3, 'merge-queue.json'), JSON.stringify({ $axf: 'merge-queue@1', mainSha: 'a'.repeat(40), items: [{ pr: 7, branch: 'claude/x', head: 'b'.repeat(40), title: 'X', state: 'testing', queueBranch: 'queue/pr-7' }, { pr: 8, branch: 'claude/y', head: 'c'.repeat(40), title: 'Y', state: 'waiting' }], stack: [{ pr: 7, sha: 'd'.repeat(40) }], waiting: [], kicked: [], merged: [] }));
+  const git3 = () => { throw new Error('serial mode builds no queue branches'); };
+  const gh3 = async () => { throw new Error('serial mode makes no GitHub calls in the queue round'); };
+  const st = await queueRound({ s: s3, git: git3, gh: gh3, api: async () => null });
+  assert.equal(st.mode, 'serial');
+  assert.deepEqual(st.stack, []); assert.equal(st.batch, null);
+  assert.deepEqual(st.items.map((x) => x.pr), [7, 8], 'old queue order kept');
+  const ln = JSON.parse(readFileSync(join(data3, 'landing-line.json'), 'utf8'));
+  assert.equal(ln.$axf, 'landing-line@1');
+  assert.ok(ln.entries.every((e) => e.state === 'waiting' || e.state === 'paused' || e.state === 'fix-filed'), 'nothing in flight after the migration');
+  rmSync(root3, { recursive: true, force: true });
+});
 
 console.log(`merge queue: ${n} checks passed`);

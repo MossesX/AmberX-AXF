@@ -379,8 +379,8 @@ STATE["checks"]["aaa111"] = [{"status": "completed", "conclusion": "success"}]
 # merge queue (on by default): the console never merges the queue's repo itself
 c.put("/p/config", json={"mergeQueue": True})
 cfgq = c.get("/p/config").json()
-check(cfgq["queueMode"] == "batch" and cfgq["batchSize"] == 8, "merge queue: batch mode by default, 8 PRs a batch")
-check(c.put("/p/config", json={"queueMode": "fast"}).status_code == 400 and c.put("/p/config", json={"batchSize": 21}).status_code == 400 and c.put("/p/config", json={"batchSize": 0}).status_code == 400, "queueMode is batch|stack, batchSize 1 to 20")
+check(cfgq["queueMode"] == "serial" and cfgq["batchSize"] == 8, "merge queue: serial (one at a time through the landing line) by default; batch size kept for the batch setting")
+check(c.put("/p/config", json={"queueMode": "fast"}).status_code == 400 and c.put("/p/config", json={"batchSize": 21}).status_code == 400 and c.put("/p/config", json={"batchSize": 0}).status_code == 400, "queueMode is serial|batch|stack, batchSize 1 to 20")
 n_merged_q = len(STATE["merged"])
 mq = c.post("/p/merge", json={"repo": "MossesX/AmberX-AXF", "number": 18, "confirm": "MossesX/AmberX-AXF#18"})
 check(mq.status_code == 200 and mq.json()["queued"] is True and mq.json()["merged"] is False and len(STATE["merged"]) == n_merged_q, "queue on: Merge puts the PR in the merge queue, never straight onto main")

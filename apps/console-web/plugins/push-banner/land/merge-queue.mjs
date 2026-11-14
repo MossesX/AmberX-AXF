@@ -7,7 +7,11 @@
  *
  *   node apps/console-web/plugins/push-banner/land/merge-queue.mjs run [--dry-run] [--json]   one round
  *   … list [--json] | add <pr> | remove <pr> [--why "…"] | move <pr> <index>                 (0 = front)
- *   … settings [--mode batch|stack] [--size n] [--on]                                      (off is Brett's click)
+ *   … settings [--mode serial|batch|stack] [--size n] [--on]                               (off is Brett's click)
+ *
+ * Serial mode (the default since Nov 14 2026): a round builds no stack and no batch. The open PRs and the queue's old
+ * stack / batch move into the landing line (landing-line@1, landing-line.json, migrateMergeQueue once) and land-one.mjs
+ * lands them one at a time. Everything below describes the batch and stack modes, kept only behind that setting.
  *
  * One round (batch mode, the default since Nov 10 2026: batchRound below): finished builds without a PR get one; the
  * open PRs line up; the batch on queue/batch is checked (green: main becomes that one commit; red: split in half, or the
@@ -33,6 +37,7 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import * as q from './merge-queue-core.mjs';
 import * as core from './land-core.mjs';
+import * as line from '../../../../../framework/core/landing-line.mjs';
 import { ciOf, crewSay, mergeMain, resolveConflicts, settings, makeGit, makeGitHub, makeConsole } from './land.mjs';
 
 const readJson = (f, d) => { try { return JSON.parse(readFileSync(f, 'utf8')); } catch { return d; } };
@@ -113,6 +118,28 @@ const agentOf = (b, pr) => {
   return by && !/^(backfill|brett|console|orchestrator)$/i.test(by) ? by : (pr?.user?.login || '');
 };
 
+export const lineFile = (s) => join(s.dataDir, q.LINE_FILE);
+export const readLine = (s) => readJson(lineFile(s), null);
+
+/**
+ * Serial mode: no queue branches are built. The first serial round moves the old stack / batch and the waiting PRs
+ * into the landing line in their old order (landing-line@1 migrateMergeQueue); later rounds only report the line.
+ * Landing itself is land-one.mjs, one build at a time.
+ */
+export function serialRound({ s, dry = false, at = new Date().toISOString(), base = {}, prev = readQueue(s), ctl = readQueueControl(s), log = () => {} }) {
+  let ln = readLine(s);
+  if (!ln) {
+    const m = line.migrateMergeQueue(prev, ctl, { at, on: base.on !== false });
+    ln = m.line || m;
+    log(`queue: serial mode; ${(ln.entries || []).length} entries moved into the landing line`);
+    if (!dry) writeJson(lineFile(s), ln);
+  }
+  const live = line.liveEntries(ln);
+  const st = { ...base, mode: 'serial', items: live.map((e) => ({ pr: e.pr, build: e.build, branch: e.branch, title: e.title, head: e.head, state: e.state })), stack: [], batch: null, waiting: [], kicked: [], merged: prev.merged || [], line: line.view(ln) };
+  if (!dry) writeJson(queueFile(s), st);
+  return st;
+}
+
 export async function queueRound(opts = {}) {
   const prev = readQueue(opts.s);
   const st = await roundOnce(opts);
@@ -147,6 +174,7 @@ async function roundOnce({ s, git, gh, api, dry = false, now = () => new Date(),
     if (!dry) writeJson(queueFile(s), st);
     return st;
   }
+  if (cfg.mode === 'serial') return serialRound({ s, dry, at, base, prev, ctl, log });
   if (!fetched) git(['fetch', '-q', '--prune', s.remote], { timeout: 180000 });
   git(['fetch', '-q', '--prune', s.remote, '+refs/heads/queue/*:refs/remotes/origin/queue/*'], { timeout: 120000 });
   const mainSha = git(['rev-parse', `${s.remote}/${s.base}`]).out;
@@ -529,7 +557,7 @@ export async function main(argv) {
     const cfg = readQueueConfig(s);
     return print(cfg, `merge queue ${cfg.mergeQueue ? 'on' : 'off'} · ${cfg.mode}${cfg.mode === 'batch' ? ` · up to ${cfg.batchSize} PRs a batch` : ` · ${cfg.depth} at a time`}`);
   }
-  throw new Error('usage: merge-queue.mjs run [--dry-run] | list | add <pr> | remove <pr> [--why …] | move <pr> <index> | settings [--mode batch|stack] [--size n] [--on]');
+  throw new Error('usage: merge-queue.mjs run [--dry-run] | list | add <pr> | remove <pr> [--why …] | move <pr> <index> | settings [--mode serial|batch|stack] [--size n] [--on]');
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

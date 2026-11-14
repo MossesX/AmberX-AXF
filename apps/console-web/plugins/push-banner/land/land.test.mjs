@@ -27,7 +27,10 @@ console.log('zero tokens: the merge pipeline never calls a model');
 const LLM = [/@anthropic-ai\//, /\banthropic\b/i, /\bopenai\b/i, /claude-agent-sdk/, /\bclaude\s+-p\b/, /['"]claude['"]\s*,/, /claude-headless\.sh/, /axf\.llm@1/, /\bllm\b.*\bimport\b|\bimport\b.*\bllm\b/i, /chat[-_]engine/, /swarm-chat/, /\bgenerativeai\b|\bmistral\b|\bollama\b|\bcohere\b/i];
 const landFiles = readdirSync(HERE).filter((f) => /\.(mjs|js|ts|py|sh)$/.test(f) && !/\.test\.mjs$/.test(f));
 // the generated-files manifest (generated-files@1) is data, not code: the one import from outside this folder
-const LOCAL = new Set(['./land-core.mjs', './land.mjs', './merge-queue-core.mjs', './merge-queue.mjs', '../../../../../framework/spec/generated-files.json']);
+// and the pure framework cores the serial lander follows (landing-line@1, land-run@1): each imports nothing at all
+const PURE_CORES = ['../../../../../framework/core/landing-line.mjs', '../../../../../framework/core/land-run.mjs'];
+const LOCAL = new Set([...readdirSync(HERE).filter((f) => f.endsWith('.mjs') && !f.endsWith('.test.mjs')).map((f) => `./${f}`), '../../../../../framework/spec/generated-files.json', ...PURE_CORES]);
+for (const c of PURE_CORES) check(!/^\s*import\s/m.test(readFileSync(join(HERE, c), 'utf8')), `${c.split('/').pop()}: a pure core with no imports, safe on the host`);
 for (const f of landFiles) {
   const text = readFileSync(join(HERE, f), 'utf8');
   const imports = [...text.matchAll(/^\s*import\s[^;]*?from\s+['"]([^'"]+)['"]|import\(\s*['"]([^'"]+)['"]\s*\)|require\(\s*['"]([^'"]+)['"]\s*\)/gm)].map((m) => m[1] || m[2] || m[3]);

@@ -109,7 +109,7 @@ LAND_SCRIPT = Path(__file__).resolve().parent.parent / "land" / "land.mjs"
 # merge queue (Nov 4 2026): land/merge-queue.mjs on the VPS host runs it every auto-land round; commands go through it too
 QUEUE_SCRIPT = Path(__file__).resolve().parent.parent / "land" / "merge-queue.mjs"
 QUEUE_DEPTH_MAX = 6
-QUEUE_MODES = ("batch", "stack")  # land/merge-queue-core.mjs QUEUE_MODES
+QUEUE_MODES = ("serial", "batch", "stack")  # land/merge-queue-core.mjs QUEUE_MODES
 BATCH_SIZE_MAX = 20  # land/merge-queue-core.mjs BATCH_SIZE_MAX
 AGENT_HEADERS = ("x-axhub-session", "x-axhub-source")
 LAND_ID = re.compile(r"[A-Za-z0-9][A-Za-z0-9._-]{0,80}\Z")
@@ -234,7 +234,7 @@ class Pushes:
                 # Batch mode (Nov 10 2026, Brett: "Everything needs to go into the merge queue so we can make one build out of
                 # it before we send it to CI"): the ready PRs are combined into one commit, CI runs once, it lands as one.
                 # "stack" keeps the Nov 4 per-PR stack (one run per PR).
-                "queueMode": raw["queueMode"] if raw.get("queueMode") in QUEUE_MODES else "batch",
+                "queueMode": raw["queueMode"] if raw.get("queueMode") in QUEUE_MODES else "serial",
                 "batchSize": raw["batchSize"] if isinstance(raw.get("batchSize"), int) and not isinstance(raw.get("batchSize"), bool) and 1 <= raw["batchSize"] <= BATCH_SIZE_MAX else 8}
 
     def save_config(self, body: Any) -> dict[str, Any]:

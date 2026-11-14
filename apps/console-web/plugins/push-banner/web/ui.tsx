@@ -433,7 +433,7 @@ export function PushSettings() {
 }
 
 type AutoLast = { pr?: string; branch?: string; merged?: boolean; opened?: number | null; pulled?: boolean; why?: string };
-type AutoState = { on: boolean; autoPr: boolean; mergeQueue?: boolean; queueMode?: 'batch' | 'stack'; batchSize?: number; batchSizeMax?: number; everyS: number; last: AutoLast[]; protection: Record<string, { base: string; state: string; error?: string; checks?: string[] }> };
+type AutoState = { on: boolean; autoPr: boolean; mergeQueue?: boolean; queueMode?: 'serial' | 'batch' | 'stack'; batchSize?: number; batchSizeMax?: number; everyS: number; last: AutoLast[]; protection: Record<string, { base: string; state: string; error?: string; checks?: string[] }> };
 
 /** Auto-merge (Oct 30 2026, Brett: "When stuff needs to merge automatic merge"; 0.5.0: "I want everything to need a PR
  * and to pull against main before it's merged"): every branch gets a PR, and ready PRs merge oldest first, one per round,
@@ -444,7 +444,7 @@ function AutoMergeSettings() {
   const read = () => api.call<AutoState>('auto-merge').then(setSt, (e: Error) => setErr(e.message));
   useEffect(() => { void read(); }, []);
   if (!st) return err ? <p className="fx-small axp-push-banner__note is-danger">{err}</p> : null;
-  const set = (patch: { autoMerge?: boolean; autoPr?: boolean; mergeQueue?: boolean; queueMode?: 'batch' | 'stack'; batchSize?: number }) => { setErr(''); api.put('config', patch).then(read, (e: Error) => setErr(e.message)); };
+  const set = (patch: { autoMerge?: boolean; autoPr?: boolean; mergeQueue?: boolean; queueMode?: 'serial' | 'batch' | 'stack'; batchSize?: number }) => { setErr(''); api.put('config', patch).then(read, (e: Error) => setErr(e.message)); };
   const said = (x: AutoLast) => x.branch ? (x.opened ? `PR #${x.opened}${x.why ? '' : ' open'}` : x.why || 'no PR') : x.merged ? 'merged' : x.why || 'not merged';
   const prot = Object.entries(st.protection ?? {});
   return (
@@ -458,9 +458,11 @@ function AutoMergeSettings() {
         hint="Every finished build gets a PR and goes into the queue; nothing reaches AmberX-AXF's main on its own (Merge puts a PR in the queue). While it is on, PRs run only the light checks. GitHub's own merge queue needs an organisation-owned repo, so this one is ours." />
       {st.mergeQueue !== false && (
         <>
-          <Switch label="Batch: one build, one CI run" checked={st.queueMode !== 'stack'} onChange={(v) => set({ queueMode: v ? 'batch' : 'stack' })}
-            hint="On: the ready PRs are combined into one build (queue/batch), conflicts between them resolved or held for the next batch, CI runs once on it, and a green batch lands on main as that one commit and redeploys once. A red batch is split in half until the PR that broke it is found and kicked out. Off: each PR is tested on its own queue/pr-<n> branch on top of the ones ahead (one run per PR)." />
-          {st.queueMode !== 'stack' && (
+          <Switch label="One at a time: the landing line" checked={(st.queueMode ?? 'serial') === 'serial'} onChange={(v) => set({ queueMode: v ? 'serial' : 'batch' })}
+            hint="On (the default): finished builds land one after the other, each with main merged in, generated files regenerated and CI run once on that head. Off: the older batch or per-PR stack below." />
+          {st.queueMode !== 'serial' && st.queueMode !== undefined && <Switch label="Batch: one build, one CI run" checked={st.queueMode !== 'stack'} onChange={(v) => set({ queueMode: v ? 'batch' : 'stack' })}
+            hint="On: the ready PRs are combined into one build (queue/batch), conflicts between them resolved or held for the next batch, CI runs once on it, and a green batch lands on main as that one commit and redeploys once. A red batch is split in half until the PR that broke it is found and kicked out. Off: each PR is tested on its own queue/pr-<n> branch on top of the ones ahead (one run per PR)." />}
+          {st.queueMode === 'batch' && (
             <SelectField label="PRs in one batch" value={String(st.batchSize ?? 8)}
               options={Array.from({ length: st.batchSizeMax ?? 20 }, (_, i) => ({ value: String(i + 1), label: String(i + 1) }))}
               hint="More in a batch means fewer CI runs; a red batch costs a few extra runs to find the PR that broke it."
