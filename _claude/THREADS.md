@@ -792,7 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 19:55 UTC · `land-drive-live-console-first-resolve` note (all) · pipeline
 - 2026-11-13 19:55 UTC · `icon-map-icon-packs-every-icon-badge-app` added (0 steps) (all) · console
 - 2026-11-13 19:55 UTC · `skin-config-panel-merge-main-and-land` → running, note (all) · pipeline
 - 2026-11-13 19:55 UTC · `icon-map-icon-packs-every-icon-badge-app` → queued, note (all) · console
@@ -1192,6 +1191,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 01:11 UTC · `voice-listener-use-claude-when-connected` s14 done, → built (all) · orchestrator
 - 2026-11-14 01:12 UTC · `voice-listener-use-claude-when-connected` note (all) · orchestrator
 - 2026-11-14 01:15 UTC · `console-app-land-parts-1-4-build-apk` note (all) · orchestrator
+- 2026-11-14 01:27 UTC · `land-batch-merge-main-each-finished` note (all) · orchestrator
 
 ## Token passes (log)
 
