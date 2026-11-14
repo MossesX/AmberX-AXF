@@ -57,7 +57,19 @@ export function places(env = process.env) {
 
 function stores(p) {
   let names = []; try { names = readdirSync(p.accounts); } catch { /* no saved accounts */ }
-  return [p.live, ...names.map((n) => join(p.accounts, n, '.credentials.json'))].filter(isFile);
+  // the accounts' shared config dirs (claude-login.mjs shareHome) are stores too: a renewal made elsewhere reaches
+  // the builds running there (Claude Code re-reads the file when it changes)
+  let homes = []; try { homes = readdirSync(join(p.accounts, '.shared')); } catch { /* none yet */ }
+  return [p.live, ...names.map((n) => join(p.accounts, n, '.credentials.json')), ...homes.map((n) => join(p.accounts, '.shared', n, '.credentials.json'))].filter(isFile);
+}
+
+/**
+ * Where a build's login really lives: a build folder whose build-login@1 marker names a shared config dir
+ * (claude-login.mjs) is saved back from that dir; an old-style private copy from itself.
+ */
+export function loginHome(copyDir) {
+  const config = readJson(join(copyDir, 'build-login.json'))?.config;
+  return typeof config === 'string' && config && existsSync(join(config, CHAIN)) ? config : copyDir;
 }
 
 /**
@@ -104,7 +116,8 @@ export function beginChain(copyDir, p) {
  * Save one login copy back. Safe to run at any time and from several processes: the same state always gives the same
  * writes. The paths come from the chain file, because a build's own CLAUDE_CONFIG_DIR points at the copy itself.
  */
-export function saveBack(copyDir) {
+export function saveBack(dir) {
+  const copyDir = loginHome(dir);
   const file = join(copyDir, CHAIN);
   const state = readJson(file);
   if (state?.$axf !== 'token-chain@1') return [];
@@ -126,7 +139,7 @@ const alive = (pid) => { try { process.kill(pid, 0); return true; } catch { retu
 /** Save a copy back until it is released or the run that owns it exits (one last pass then). */
 export async function watch(copyDir, { parent = 0, every = 3000 } = {}) {
   for (;;) {
-    if (!existsSync(join(copyDir, CHAIN))) return;
+    if (!existsSync(join(copyDir, CHAIN)) && !existsSync(join(copyDir, 'build-login.json'))) return;
     const going = parent > 0 && !alive(parent);
     try { saveBack(copyDir); } catch { /* the next pass tries again */ }
     if (going) return;

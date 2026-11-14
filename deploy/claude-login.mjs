@@ -9,6 +9,13 @@
  * verified on Claude Code 2.1.318). A token refresh during the build lands in that copy and is saved back at once to
  * every store of that login (deploy/claude-token-save.mjs), so the next run never starts on a spent token.
  *
+ * One login per account (builds-share-one-claude-login-write, Nov 14 2026): private copies of one account each spent
+ * the same rotating refresh token, so the first build to renew left every other build on that account on a dead token.
+ * Now every build on a saved subscription account runs with CLAUDE_CONFIG_DIR = that account's one shared config dir,
+ * <accounts>/.shared/<name>/ (0700). Claude Code takes its refresh lock in the config dir and re-reads
+ * .credentials.json after taking it (and whenever its mtime changes; verified on 2.1.322), so one build's renewal is
+ * picked up by the others. The build folder then holds only token.env and the build-login@1 marker (with `config`).
+ *
  *   node deploy/claude-login.mjs snapshot --dir <build folder> --session <name> [--account active|live|<saved name>] [--sh|--json]
  *   node deploy/claude-login.mjs release  --dir <build folder> --session <name>
  *   node deploy/claude-login.mjs who      --dir <build folder> --session <name>
@@ -41,15 +48,17 @@
  * <AXF_CLAUDE_HOME>/.claude.json when CLAUDE_CONFIG_DIR is set), AXF_CLAUDE_SEEN (emails last seen per account).
  * Exit 0 ok, 2 bad usage / unknown account, 4 no login to snapshot.
  */
-import { chmodSync, copyFileSync, existsSync, lstatSync, mkdirSync, readFileSync, readdirSync, realpathSync, rmSync, rmdirSync, statSync, symlinkSync, writeFileSync } from 'node:fs';
+import { chmodSync, copyFileSync, existsSync, lstatSync, mkdirSync, readFileSync, readdirSync, realpathSync, renameSync, rmSync, rmdirSync, statSync, symlinkSync, writeFileSync } from 'node:fs';
 import { homedir } from 'node:os';
 import { basename, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { beginChain, places as tokenPlaces, saveBack, tokenHash, watchCopy } from './claude-token-save.mjs';
+import { CHAIN, beginChain, places as tokenPlaces, saveBack, tokenHash, watchCopy } from './claude-token-save.mjs';
 
 export { watchCopy };
 export const MARKER = 'build-login.json';
 export const FOLDER = '.axf-claude';
+export const SHARED = '.shared';
+const SHARED_MARKER = 'shared-login.json';
 const NAME_RE = /^[a-z0-9][a-z0-9-]{0,31}$/;
 const SKIP = new Set(['.credentials.json', '.claude.json', MARKER, 'token.env', 'token-chain.json']);
 
@@ -143,25 +152,19 @@ export function snapshot({ dir, session, account = process.env.AXF_CLAUDE_ACCOUN
   try { saveBack(out); } catch { /* no earlier copy */ }   // a crashed run under this name may hold the newest token
   rmSync(out, { recursive: true, force: true });
   mkdirSync(out, { mode: 0o700 }); chmodSync(out, 0o700);
-  // the login itself: a real file, so Claude's refresh writes land here; saveBack carries them to the login's stores
-  if (choice.creds) {
-    copyFileSync(choice.creds, join(out, '.credentials.json')); chmodSync(join(out, '.credentials.json'), 0o600);
-    beginChain(out, { live: join(p.shared, '.credentials.json'), accounts: p.accounts, aiKeys: tokenPlaces(env).aiKeys });
-  }
-  // the global config: MCP servers, onboarding, trust. The cached account belongs to the live login only.
-  const g = readJson(p.global);
-  if (g && typeof g === 'object') {
-    if (accounts(env).length) delete g.oauthAccount;   // a cached identity that may belong to another account
-    writeFileSync(join(out, '.claude.json'), JSON.stringify(g, null, 2), { mode: 0o600 });
-  }
-  // everything else is shared, as before (settings + hooks, CLAUDE.md, transcripts, plugins…). Real paths, so a nested
-  // launch from inside a build never links to a copy that is deleted when that build ends.
-  let shared = p.shared; try { shared = realpathSync(p.shared); } catch { /* missing */ }
-  let names = []; try { names = readdirSync(shared); } catch { /* no shared dir */ }
-  for (const n of names) {
-    if (SKIP.has(n) || n === FOLDER) continue;
-    let target = join(shared, n); try { target = realpathSync(target); } catch { continue; }
-    try { symlinkSync(target, join(out, n)); } catch { /* raced or exists */ }
+  // A saved subscription login runs in its account's one shared config dir: every build on that account reads and
+  // renews the same credentials file, under Claude Code's own refresh lock (shareHome). Anything else (an unnamed live
+  // login, a token-only or API-key account) keeps a private copy in <out>, as before.
+  const shared = !!choice.creds && choice.kind !== 'api' && NAME_RE.test(choice.account) && env.AXF_SHARED_LOGIN !== 'off';
+  const config = shared ? shareHome(p, choice, env) : out;
+  if (!shared) {
+    // the login itself: a real file, so Claude's refresh writes land here; saveBack carries them to the login's stores
+    if (choice.creds) {
+      copyFileSync(choice.creds, join(out, '.credentials.json')); chmodSync(join(out, '.credentials.json'), 0o600);
+      beginChain(out, { live: join(p.shared, '.credentials.json'), accounts: p.accounts, aiKeys: tokenPlaces(env).aiKeys });
+    }
+    writeGlobal(p, out, env);
+    linkShared(p, out);
   }
   // An API-key account bills per token: only its key is exported. Every other account drops an inherited
   // ANTHROPIC_API_KEY, so a subscription run can never be billed to a key by accident.
@@ -170,11 +173,83 @@ export function snapshot({ dir, session, account = process.env.AXF_CLAUDE_ACCOUN
     : token ? `unset ANTHROPIC_API_KEY\nexport CLAUDE_CODE_OAUTH_TOKEN=${q(token)}\n` : 'unset CLAUDE_CODE_OAUTH_TOKEN ANTHROPIC_API_KEY\n';
   writeFileSync(join(out, 'token.env'), line, { mode: 0o600 });
   const kind = apiKey ? 'api' : 'subscription';
-  const rec = { $axf: 'build-login@1', account: choice.account, email: choice.email, source: choice.source, token: !!token, kind, session: slug(session), at: new Date().toISOString() };
+  const rec = { $axf: 'build-login@1', account: choice.account, email: choice.email, source: choice.source, token: !!token, kind, session: slug(session),
+    ...(shared ? { config } : {}), at: new Date().toISOString() };
   writeFileSync(join(out, MARKER), JSON.stringify(rec, null, 2) + '\n', { mode: 0o600 });
-  return { dir: out, account: rec.account, email: rec.email, source: rec.source, token: rec.token, kind,
-    env: { CLAUDE_CONFIG_DIR: out, ...(apiKey ? { ANTHROPIC_API_KEY: apiKey } : token ? { CLAUDE_CODE_OAUTH_TOKEN: token } : {}) },
+  return { dir: out, config, shared, account: rec.account, email: rec.email, source: rec.source, token: rec.token, kind,
+    env: { CLAUDE_CONFIG_DIR: config, ...(apiKey ? { ANTHROPIC_API_KEY: apiKey } : token ? { CLAUDE_CODE_OAUTH_TOKEN: token } : {}) },
     unset: apiKey ? ['CLAUDE_CODE_OAUTH_TOKEN'] : token ? ['ANTHROPIC_API_KEY'] : ['CLAUDE_CODE_OAUTH_TOKEN', 'ANTHROPIC_API_KEY'] };
+}
+
+/** The global config (MCP servers, onboarding, trust) for a config dir. The cached account belongs to the live login only. */
+function writeGlobal(p, to, env) {
+  const g = readJson(p.global);
+  if (!g || typeof g !== 'object') return;
+  if (accounts(env).length) delete g.oauthAccount;   // a cached identity that may belong to another account
+  writeFileSync(join(to, '.claude.json'), JSON.stringify(g, null, 2), { mode: 0o600 });
+}
+
+/**
+ * Everything else is shared, as before (settings + hooks, CLAUDE.md, transcripts, plugins…). Real paths, so a nested
+ * launch from inside a build never links to a copy that is deleted when that build ends. Existing entries are kept.
+ */
+function linkShared(p, to) {
+  let shared = p.shared; try { shared = realpathSync(p.shared); } catch { /* missing */ }
+  let names = []; try { names = readdirSync(shared); } catch { /* no shared dir */ }
+  for (const n of names) {
+    if (SKIP.has(n) || n === FOLDER || n === SHARED_MARKER) continue;
+    let target = join(shared, n); try { target = realpathSync(target); } catch { continue; }
+    try { symlinkSync(target, join(to, n)); } catch { /* raced or exists */ }
+  }
+}
+
+/** The one shared config dir of a saved account: <accounts>/.shared/<name> (a dot folder, so never an account name). */
+export const sharedHome = (p, account) => join(p.accounts, SHARED, account);
+
+/**
+ * Make (or refresh) an account's shared config dir and return it. Its .credentials.json is the one credentials file every
+ * build on that account runs on: Claude Code takes its refresh lock in the config dir and re-reads the file after taking
+ * it, so a renewal by one build is picked up by the others instead of leaving them on a spent refresh token. The saved
+ * login is copied in only when it is newer than what the shared file holds (seedShared).
+ */
+export function shareHome(p, choice, env = process.env) {
+  const root = join(p.accounts, SHARED);
+  const home = sharedHome(p, choice.account);
+  mkdirSync(root, { recursive: true, mode: 0o700 }); chmodSync(root, 0o700);
+  mkdirSync(home, { recursive: true, mode: 0o700 }); chmodSync(home, 0o700);
+  seedShared(home, choice.creds, { live: join(p.shared, '.credentials.json'), accounts: p.accounts, aiKeys: tokenPlaces(env).aiKeys });
+  if (!existsSync(join(home, '.claude.json'))) writeGlobal(p, home, env);   // Claude Code keeps it up to date from here on
+  linkShared(p, home);
+  writeFileSync(join(home, SHARED_MARKER), JSON.stringify({ $axf: 'shared-login@1', account: choice.account, email: choice.email, at: new Date().toISOString() }, null, 2) + '\n', { mode: 0o600 });
+  return home;
+}
+
+/**
+ * Copy a saved login into a shared credentials file when it is newer: the file is missing, holds the same refresh
+ * token with an older access token, or the saved one is a token this shared file never held (a fresh sign-in, or AI keys
+ * renewed it). A saved token the shared file has already spent is never copied back over the newer one.
+ * Returns 'seeded' | 'adopted' | 'kept'.
+ */
+export function seedShared(home, from, places) {
+  const dst = join(home, '.credentials.json');
+  const src = readJson(from); const s = src?.claudeAiOauth;
+  if (!s?.accessToken && !s?.refreshToken) return 'kept';
+  const cur = readJson(dst); const c = cur?.claudeAiOauth;
+  const chain = readJson(join(home, CHAIN));
+  const hs = tokenHash(s.refreshToken); const hc = tokenHash(c?.refreshToken);
+  const known = Array.isArray(chain?.chain) ? chain.chain : [];
+  const take = !c ? 'seeded' : !hc ? 'adopted' : hs === hc ? ((s.expiresAt || 0) > (c.expiresAt || 0) ? 'adopted' : '') : (hs && !known.includes(hs) ? 'adopted' : '');
+  if (!take) { if (chain?.$axf !== 'token-chain@1') beginChain(home, places); return 'kept'; }
+  writeAtomicJson(dst, { ...(cur && typeof cur === 'object' ? cur : {}), ...src });
+  if (chain?.$axf !== 'token-chain@1' || !hs) beginChain(home, places);
+  else if (!known.includes(hs)) writeFileSync(join(home, CHAIN), JSON.stringify({ ...chain, places, chain: [...known, hs].slice(-32) }), { mode: 0o600 });
+  return take;
+}
+
+function writeAtomicJson(file, doc) {
+  const tmp = `${file}.${process.pid}.tmp`;
+  writeFileSync(tmp, JSON.stringify(doc), { mode: 0o600 }); chmodSync(tmp, 0o600);
+  renameSync(tmp, file);
 }
 
 /** The environment for a node launcher: the parent's env with the snapshot applied (inherited token dropped). */
@@ -213,9 +288,9 @@ const main = () => {
   try {
     if (cmd === 'snapshot') {
       const s = snapshot({ dir, session, account: flag('account', process.env.AXF_CLAUDE_ACCOUNT || 'active') });
-      const pub = { dir: s.dir, account: s.account, email: s.email, source: s.source, token: s.token };
+      const pub = { dir: s.dir, config: s.config, shared: s.shared, account: s.account, email: s.email, source: s.source, token: s.token };
       if (has('json')) console.log(JSON.stringify(pub));
-      else if (has('sh')) console.log(`login_dir=${q(s.dir)} login_account=${q(s.account)} login_email=${q(s.email)} login_source=${s.source} login_token=${s.token ? 1 : 0} login_kind=${s.kind}`);
+      else if (has('sh')) console.log(`login_dir=${q(s.dir)} login_account=${q(s.account)} login_email=${q(s.email)} login_source=${s.source} login_token=${s.token ? 1 : 0} login_kind=${s.kind} login_config=${q(s.config)}`);
       else console.log(`build login: ${describe(s)} · ${s.source} copy in ${s.dir}`);
     } else if (cmd === 'release') {
       const r = release({ dir, session }); console.log(r.released ? 'released' : r.why);

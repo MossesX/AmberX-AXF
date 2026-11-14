@@ -866,7 +866,7 @@ export function callAccount(name, env = process.env, { session = 'probe' } = {})
   try {
     snap = snapshotLogin({ dir, session, account: name });
     if (snap.kind !== 'api' && !snap.token) {
-      const exp = Number(readJson(join(snap.dir, '.credentials.json'))?.claudeAiOauth?.expiresAt) || 0;
+      const exp = Number(readJson(join(snap.config || snap.dir, '.credentials.json'))?.claudeAiOauth?.expiresAt) || 0;
       if (exp && exp - Date.now() < RENEW_GUARD_MS) return { skipped: true, status: null, out: '', error: 'its login renews soon: not called, so no running build is left on a spent token' };
     }
     const e = childEnv(snap, env); e.PATH = `${join(homedir(), '.local', 'bin')}:${e.PATH || ''}`;
