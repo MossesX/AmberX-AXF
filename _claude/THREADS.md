@@ -792,7 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 21:16 UTC · `main-ci-red-test-sandbox-profile-export` → running, note (all) · pipeline
 - 2026-11-13 21:16 UTC · `main-ci-red-test-sandbox-profile-export` branch claude/main-ci-red-test-sandbox-profile-export (all) · pipeline
 - 2026-11-13 21:16 UTC · `context-menus-plugin-one-true-source` note (all) · pipeline
 - 2026-11-13 21:17 UTC · `context-menus-plugin-one-true-source` → pending, note (all) · pipeline
@@ -1192,6 +1191,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 18:49 UTC · `skins-plugin-own-removable-console` note (all) · orchestrator
 - 2026-11-14 19:10 UTC · `picker-dialog-plugin-replaces-all` → pending, note (all) · reconciler
 - 2026-11-14 19:10 UTC · `themed-native-controls-plugin` → pending, note (all) · reconciler
+- 2026-11-14 20:07 UTC · `land-all-skin-builds` note (all) · mcp
 
 ## Token passes (log)
 

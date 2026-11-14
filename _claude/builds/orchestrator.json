@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T19:11:07.841Z",
+ "updatedAt": "2026-11-14T20:07:38.241Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -141448,7 +141448,7 @@
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-14T18:15:01.485Z",
-   "updatedAt": "2026-11-14T18:47:01.904Z",
+   "updatedAt": "2026-11-14T20:07:36.471Z",
    "builtAt": "",
    "notes": [
     {
@@ -141466,6 +141466,10 @@
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-land-all-skin-builds--joey.",
      "at": "2026-11-14T18:19:24.683Z"
+    },
+    {
+     "text": "Brett asked for status on the skin landings.",
+     "at": "2026-11-14T20:07:36.471Z"
     }
    ],
    "approvals": [],
