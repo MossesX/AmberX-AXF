@@ -76,6 +76,23 @@ worktree under `/root/axf-builds` uses that object store. This build moved to a 
 (`/root/axf-builds/auto-land-clash-clone`) and pushed from there. The shared repo needs `git fetch --refetch origin`
 (or a fresh clone), and the job that prunes with `--expire=now` should stop doing that.
 
+## Second pass (Nov 14 2026)
+PR #660 never landed. Main moved 728 commits ahead, the branch clashed again, and its last light PR check had gone red.
+That red check was a TypeScript error in approvals-banner from main as it stood then, not this branch's code. The build
+was re-run and main was merged in once more (merge 0f6952fe7):
+- `framework/catalog/status.json`: both kept (`cx.buildengine.autoland` plus main's skin entries).
+- `framework/cli/land-resolve.py`, `framework/spec/BUILDS.md`, `framework/spec/generated-files.json`: the branch's
+  wording kept hunk by hunk, so framework docs still don't name the plugin folder. The rest of main's changes are kept.
+- `framework/catalog/libraries.json`: main's copy. `tracker.json` and `framework/plan/plan.json` were regenerated from
+  the repo copy (`AXF_DATA_DIR=off node framework/cli/tracker.mjs`).
+- `_claude/` builds data, journals and the THREADS live log: main's copy. The branch's THREADS table row is kept.
+
+Checks after the merge: land.test.mjs 186/186, merge-queue.test.mjs 18/18, push-banner test.py 196, build-orchestrator
+35 / 52 / 7, check-builds-store 40, builds-store verify ok, tracker --check ok. `plugin-lifecycle check push-banner` is
+clean; it only flags the untracked session brief in the worktree. Locally, the light PR check's console-web typecheck
+passes. Its later steps need Node 22, so CI runs them (android.yml dispatched once on 0f6952fe7). #660 is in the merge
+queue (`land.mjs queue add 660`).
+
 ## After it lands
 Auto-land stays on for every build. Each finished build is merged with main, regenerated where only generated files
 clash, given a PR and queued with the rest as one batch. The 10-minute sweeper picks up anything that stalls: kick-outs
