@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T23:23:42.610Z",
+ "updatedAt": "2026-11-14T23:23:57.362Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -135458,16 +135458,16 @@
    "title": "Auto-land: merge main and land (land.mjs clash)",
    "category": "",
    "detail": "Branch claude/auto-land-every-finished-build-lands clashed with main in apps/console-web/plugins/push-banner/land/land.mjs, a real source clash with the just-landed lander-regenerates-generated-files-clash (generated-files@1). Merge origin/main, keep BOTH: main's regenerate-generated-files-on-clash logic and this branch's auto-land queue/sweeper. Run the push-banner and orchestrator tests, push, then land on main right away. After it lands, the sweeper should start landing every finished build by itself.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/auto-land-merge-main-land-land-mjs-clash",
-   "pr": "",
+   "pr": "#660",
    "priority": "P0",
    "createdAt": "2026-11-13T23:38:56.061Z",
    "updatedAt": "2026-11-14T23:23:31.073Z",
-   "builtAt": "",
+   "builtAt": "2026-11-14T23:23:31.073Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -135496,6 +135496,10 @@
     {
      "text": "Started run 2 on mossesx-max- (Opus, Phase 1): axf-auto-land-merge-main-land-land-mjs-clash--joey.",
      "at": "2026-11-14T23:23:31.073Z"
+    },
+    {
+     "text": "Phase 1 done: PR #660 has main merged in (land.mjs clash resolved, both sides kept), sweeper regenerates generated-only clashes, sweeper status/pause/resume on all four channels; in the merge queue. Shared repo /opt/axf/.git lost objects to a git prune --expire=now at 23:44 UTC; finished in a fresh clone; fix: git fetch --refetch origin in /opt/axf.",
+     "at": "2026-11-13T23:58:03.801Z"
     }
    ],
    "approvals": [],
@@ -135572,8 +135576,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T23:44:31.941Z",
      "note": "",
      "uid": "st-mwfmeblu03635d",
      "createdAt": "2026-11-13T23:40:57.282Z"
@@ -135593,8 +135597,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T23:50:54.389Z",
      "note": "",
      "uid": "st-mwfmeblu04ctui",
      "createdAt": "2026-11-13T23:40:57.282Z"
@@ -135616,8 +135620,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T23:52:53.385Z",
      "note": "",
      "uid": "st-mwfmeblu05tq05",
      "createdAt": "2026-11-13T23:40:57.282Z"
@@ -135638,8 +135642,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T23:54:46.066Z",
      "note": "",
      "uid": "st-mwfmeblu06bc2e",
      "createdAt": "2026-11-13T23:40:57.282Z"
@@ -135661,8 +135665,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T23:55:54.507Z",
      "note": "",
      "uid": "st-mwfmeblu07991h",
      "createdAt": "2026-11-13T23:40:57.282Z"
@@ -135682,8 +135686,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T23:56:15.255Z",
      "note": "",
      "uid": "st-mwfmeblu08vvwe",
      "createdAt": "2026-11-13T23:40:57.282Z"
@@ -135704,8 +135708,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-13T23:57:45.072Z",
      "note": "",
      "uid": "st-mwfmeblu096m5z",
      "createdAt": "2026-11-13T23:40:57.282Z"

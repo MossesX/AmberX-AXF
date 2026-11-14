@@ -796,15 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 13:10 UTC · `hotfix-get-main-ci-green-theme-swap` note (all) · reconciler
-- 2026-11-14 13:11 UTC · `hotfix-get-main-ci-green-theme-swap` note (all) · pipeline
-- 2026-11-14 16:44 UTC · `builds-share-one-claude-login-write` added (4 steps) (all) · claude-voice
-- 2026-11-14 16:45 UTC · `builds-share-one-claude-login-write` → queued (all) · claude-voice
-- 2026-11-14 16:46 UTC · `builds-share-one-claude-login-write` → running, note (all) · pipeline
-- 2026-11-14 16:46 UTC · `builds-share-one-claude-login-write` branch claude/builds-share-one-claude-login-write (all) · pipeline
-- 2026-11-14 16:46 UTC · `builds-share-one-claude-login-write` note (all) · orchestrator
-- 2026-11-14 16:47 UTC · `skin-animations-swatches-skin-switch` → running, note (all) · claude-voice
-- 2026-11-14 16:50 UTC · `ui-review-filter-and-search-by-pr` added (3 steps) (all) · claude-voice
 - 2026-11-14 16:50 UTC · `ui-review-filter-and-search-by-pr` → queued (all) · claude-voice
 - 2026-11-14 16:51 UTC · `hotfix-toolbar-settings-still-change` added (4 steps) (all) · claude-voice
 - 2026-11-14 16:51 UTC · `hotfix-toolbar-settings-still-change` → queued (all) · claude-voice
@@ -1196,6 +1187,15 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 23:23 UTC · `lander-regenerates-generated-files-clash` → running, note (all) · pipeline
 - 2026-11-14 23:23 UTC · `lander-regenerates-generated-files-clash` note (all) · orchestrator
 - 2026-11-14 23:23 UTC · `auto-land-merge-main-land-land-mjs-clash` → running, note (all) · pipeline
+- 2026-11-13 23:44 UTC · `auto-land-merge-main-land-land-mjs-clash` s3 done (all) · orchestrator
+- 2026-11-13 23:50 UTC · `auto-land-merge-main-land-land-mjs-clash` s4 done (all) · orchestrator
+- 2026-11-13 23:52 UTC · `auto-land-merge-main-land-land-mjs-clash` s5 done (all) · orchestrator
+- 2026-11-13 23:54 UTC · `auto-land-merge-main-land-land-mjs-clash` s6 done (all) · orchestrator
+- 2026-11-13 23:55 UTC · `auto-land-merge-main-land-land-mjs-clash` s7 done (all) · orchestrator
+- 2026-11-13 23:56 UTC · `auto-land-merge-main-land-land-mjs-clash` branch claude/auto-land-every-finished-build-lands, PR #660 (all) · builds-live
+- 2026-11-13 23:56 UTC · `auto-land-merge-main-land-land-mjs-clash` s8 done (all) · orchestrator
+- 2026-11-13 23:57 UTC · `auto-land-merge-main-land-land-mjs-clash` s9 done, → built (all) · orchestrator
+- 2026-11-13 23:58 UTC · `auto-land-merge-main-land-land-mjs-clash` note (all) · orchestrator
 
 ## Token passes (log)
 
