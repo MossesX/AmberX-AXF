@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5496,
- "updatedAt": "2026-11-14T22:49:19.647Z",
+ "rev": 5497,
+ "updatedAt": "2026-11-14T22:50:06.469Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -222291,10 +222291,10 @@
    "source": "console",
    "pendingId": "",
    "branch": "claude/land-all-skin-builds",
-   "pr": "",
+   "pr": "#679",
    "priority": "P0",
    "createdAt": "2026-11-14T18:15:01.485Z",
-   "updatedAt": "2026-11-14T22:48:14.818Z",
+   "updatedAt": "2026-11-14T22:49:58.611Z",
    "builtAt": "",
    "notes": [
     {
@@ -223021,7 +223021,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 39,
+   "rev": 40,
    "deleted": false,
    "deletedAt": "",
    "pending": null,

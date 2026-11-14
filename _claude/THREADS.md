@@ -796,7 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 00:56 UTC · `console-app-land-parts-1-4-build-apk` s11 done (all) · orchestrator
 - 2026-11-14 00:58 UTC · `voice-listener-use-claude-when-connected` s6 done (all) · orchestrator
 - 2026-11-14 00:59 UTC · `voice-listener-use-claude-when-connected` s7 done (all) · orchestrator
 - 2026-11-14 01:01 UTC · `console-app-wake-word-voice-listener` s3 done, s4 done, s5 done, s6 done, s7 done, s8 done, s10 done, → running, note (all) · reconciler
@@ -1196,6 +1195,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 22:48 UTC · `land-all-skin-builds` s24 done (all) · orchestrator
 - 2026-11-14 22:48 UTC · `picker-dialog-plugin-replaces-all` s8 done (all) · orchestrator
 - 2026-11-14 22:49 UTC · `pass-approval-hook-deep-link-amberx-notification` s2 done, → running (all) · orchestrator
+- 2026-11-14 22:49 UTC · `land-all-skin-builds` PR #679 (all) · builds-live
 
 ## Token passes (log)
 
