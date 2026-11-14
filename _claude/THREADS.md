@@ -796,7 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 17:11 UTC · `ui-review-filter-and-search-by-pr` note (all) · pipeline
 - 2026-11-14 17:20 UTC · `hotfix-toolbar-settings-still-change` → pending, note (all) · reconciler
 - 2026-11-14 17:40 UTC · `hotfix-toolbar-settings-still-change` merged, note (all) · reconciler
 - 2026-11-14 17:41 UTC · `hotfix-toolbar-settings-still-change` note (all) · orchestrator
@@ -1196,6 +1195,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 23:29 UTC · `lander-regenerates-generated-files-clash` note (all) · orchestrator
 - 2026-11-14 23:29 UTC · `lander-regenerates-generated-files-clash` s3 done, → complete (all) · orchestrator
 - 2026-11-14 23:30 UTC · `fix-build-whose-session-finishes-phase-e` → pending, note (all) · pipeline
+- 2026-11-14 23:30 UTC · `lander-regenerates-generated-files-clash` note (all) · builds-live
 
 ## Token passes (log)
 
