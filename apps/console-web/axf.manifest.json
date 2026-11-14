@@ -53,7 +53,8 @@
     "typography": "compact",
     "density": "compact",
     "sizing": "compact",
-    "agent-card": "corporate-badge"
+    "agent-card": "corporate-badge",
+    "picker": "standard"
   },
   "hidden": [
     "toolbar",

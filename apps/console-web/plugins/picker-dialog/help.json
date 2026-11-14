@@ -1,0 +1,16 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "picker-dialog-help",
+  "name": "Picker dialog help",
+  "version": "0.1.0",
+  "description": "Help mode entries for the picker dialog plugin (help@1).",
+  "author": "Brett",
+  "tags": ["help"],
+  "data": {
+    "scope": "plugin:picker-dialog",
+    "entries": [
+      { "target": "picker-trigger", "title": "Drop-down", "text": "Tap to open the list as a picker: search it, scroll the groups, tap a choice. On a phone it opens as a sheet from the bottom." }
+    ]
+  }
+}

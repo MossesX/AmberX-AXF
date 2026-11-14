@@ -55,6 +55,7 @@
     "density": "compact",
     "sizing": "compact",
     "agent-card": "corporate-badge",
+    "picker": "standard",
     "help": "framework",
     "uac-policy": "standard",
     "xlayout": "molly"
