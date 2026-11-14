@@ -1,0 +1,104 @@
+/* AmberX public site: layout only. Every colour, size, spacing, font, radius and border is an --fx-* token
+   (theme.css is compiled from the framework's color-theme / style-theme / scale assets by bake.mjs). */
+
+.site {
+  min-height: 100dvh;
+  font-size: var(--fx-type-scale-lg);
+  line-height: var(--fx-type-line-loose);
+  background:
+    radial-gradient(ellipse at top, var(--fx-accent-soft), transparent 60%),
+    var(--fx-bg);
+}
+.site h1, .site h2, .site h3 {
+  font-family: var(--fx-font-display);
+  font-weight: var(--fx-heading-weight);
+  letter-spacing: var(--fx-type-headings-tracking);
+  line-height: var(--fx-type-line-tight);
+  margin: 0;
+}
+.site h2 { font-size: var(--fx-type-scale-2xl); text-align: center; }
+.site h3 { font-size: var(--fx-type-scale-lg); }
+.site p { margin: 0; }
+.site a:not(.fx-btn) { color: inherit; }
+.site a.fx-btn { text-decoration: none; }
+.site-muted { color: var(--fx-muted); }
+.site-center { text-align: center; }
+.site-grow { flex: 1 1 16ch; }
+.site-wide { width: 100%; }
+.site .fx-eyebrow { text-align: center; }
+
+/* header */
+.site-head {
+  position: sticky; top: 0; z-index: 2;
+  display: flex; flex-wrap: wrap; align-items: center; gap: var(--fx-dens-gap-lg) var(--fx-dens-gap-2xl);
+  padding: var(--fx-dens-gap-xl) var(--fx-dens-pad-page);
+  background: color-mix(in srgb, var(--fx-bg) calc(var(--fx-opacity-glass) * 100%), transparent);
+  backdrop-filter: blur(var(--fx-blur)); -webkit-backdrop-filter: blur(var(--fx-blur));
+  border-bottom: var(--fx-border-w) solid var(--fx-border);
+}
+.site-brand {
+  font-family: var(--fx-font-display); font-weight: var(--fx-type-weights-strong); font-size: var(--fx-type-scale-xl);
+  text-decoration: none; color: var(--fx-accent);
+}
+.site-nav { display: flex; gap: var(--fx-dens-gap-2xl); margin-left: auto; white-space: nowrap; }
+.site-nav a { text-decoration: none; color: var(--fx-muted); font-size: var(--fx-type-scale-sm); }
+.site-nav a:hover { color: var(--fx-text); }
+
+/* sections */
+main { padding: 0 var(--fx-dens-pad-page); }
+.site-hero, .site-section {
+  max-width: 1080px; margin: 0 auto;
+  display: flex; flex-direction: column; align-items: center; gap: var(--fx-dens-gap-2xl);
+  padding: var(--fx-dens-gap-4xl) 0;
+}
+.site-hero { text-align: center; padding-top: var(--fx-dens-gap-4xl); }
+.site-hero h1 { font-size: min(calc(var(--fx-type-scale-2xl) * 1.7), 11vw); max-width: 18ch; }
+.site-hero__sub { max-width: 46ch; color: var(--fx-muted); font-size: var(--fx-type-scale-lg); }
+.site-row { display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-lg); }
+.site-row--center { justify-content: center; }
+
+/* demo video slot: 16:9 */
+.site-demo { width: 100%; aspect-ratio: 16 / 9; overflow: hidden; display: grid; place-items: center; }
+.site-demo iframe, .site-demo video { width: 100%; height: 100%; border: 0; display: block; background: var(--fx-bg); }
+.site-demo__empty { display: grid; justify-items: center; gap: var(--fx-dens-gap-lg); color: var(--fx-muted); }
+
+/* features */
+.site-grid { width: 100%; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--fx-dens-gap-2xl); }
+.site-feature { display: flex; flex-direction: column; gap: var(--fx-dens-gap-md); padding: var(--fx-size-card-pad); }
+.site-feature p { color: var(--fx-muted); font-size: var(--fx-type-scale-md); }
+.site-feature__n { color: var(--fx-accent); font-family: var(--fx-font-mono); font-size: var(--fx-type-scale-sm); }
+
+/* pricing */
+.site-plan { width: 100%; max-width: 440px; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xl); padding: var(--fx-size-card-pad); border-color: var(--fx-accent); }
+.site-plan__price strong { font-size: var(--fx-type-scale-2xl); font-family: var(--fx-font-display); }
+.site-list { margin: 0; padding: 0; list-style: none; display: grid; gap: var(--fx-dens-gap-sm); }
+.site-list li::before { content: '✓'; color: var(--fx-success); margin-right: var(--fx-dens-gap-lg); }
+
+/* waitlist */
+.site-join { width: 100%; max-width: 560px; display: flex; flex-direction: column; gap: var(--fx-dens-gap-xl); padding: var(--fx-size-card-pad); }
+.site-form { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--fx-dens-gap-lg); }
+.site-status { display: flex; flex-direction: column; gap: var(--fx-dens-gap-lg); }
+.site-status[hidden], .site-join [hidden] { display: none; }
+.site-status__rank { font-size: var(--fx-type-scale-xl); }
+.site-status__rank strong { color: var(--fx-accent); }
+
+/* footer */
+.site-foot {
+  display: flex; flex-wrap: wrap; gap: var(--fx-dens-gap-2xl); justify-content: center;
+  padding: var(--fx-dens-gap-3xl) var(--fx-dens-pad-page);
+  border-top: var(--fx-border-w) solid var(--fx-border);
+  color: var(--fx-muted); font-size: var(--fx-type-scale-sm);
+}
+.site-foot a { text-decoration: none; }
+
+/* admin view (/admin) */
+.site-admin__main { max-width: 1180px; margin: 0 auto; padding: var(--fx-dens-gap-3xl) var(--fx-dens-pad-page); display: flex; flex-direction: column; gap: var(--fx-dens-gap-2xl); }
+.site-admin__body { display: flex; flex-direction: column; gap: var(--fx-dens-gap-2xl); }
+.site-admin__body[hidden], .site-admin [hidden] { display: none; }
+.site-admin__card { padding: var(--fx-size-card-pad); display: flex; flex-direction: column; gap: var(--fx-dens-gap-xl); }
+.site-admin__bar { align-items: center; }
+.site-admin .site-admin__settings h2 { text-align: left; font-size: var(--fx-type-scale-xl); }
+.site-admin__fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: var(--fx-dens-gap-xl); }
+.site-admin__wide { grid-column: 1 / -1; }
+.site-admin .fx-table { font-size: var(--fx-type-scale-sm); }
+.site-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
