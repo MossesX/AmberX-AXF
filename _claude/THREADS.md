@@ -796,7 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 00:34 UTC · `land-batch-merge-main-each-finished` s2 done (all) · orchestrator
 - 2026-11-14 00:34 UTC · `land-batch-merge-main-each-finished` s3 done (all) · orchestrator
 - 2026-11-14 00:36 UTC · `land-batch-merge-main-each-finished` s4 done (all) · orchestrator
 - 2026-11-14 00:36 UTC · `land-batch-merge-main-each-finished` s5 done (all) · orchestrator
@@ -1196,6 +1195,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 22:44 UTC · `owner-recognized-everywhere-veto` → queued (all) · orchestrator
 - 2026-11-14 22:44 UTC · `console-axhub-retry-failed-calls` → queued (all) · orchestrator
 - 2026-11-14 22:44 UTC · `one-source-truth-console-shows-only-what` → queued (all) · orchestrator
+- 2026-11-14 22:44 UTC · `land-all-skin-builds` s23 done (all) · orchestrator
 
 ## Token passes (log)
 
