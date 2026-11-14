@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T04:46:44.526Z",
+ "updatedAt": "2026-11-14T04:47:28.737Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -137448,7 +137448,7 @@
    "branch": "claude/banner-widget-shapes-more-than-circle",
    "pr": "",
    "createdAt": "2026-11-14T03:47:49.947Z",
-   "updatedAt": "2026-11-14T04:44:20.672Z",
+   "updatedAt": "2026-11-14T04:47:26.735Z",
    "builtAt": "",
    "notes": [
     {
@@ -137474,6 +137474,10 @@
     {
      "text": "Split asked for by hotfix-get-main-ci-green-theme-swap.",
      "at": "2026-11-14T04:44:20.672Z"
+    },
+    {
+     "text": "Split by Claude into 26 steps (6 Fable).",
+     "at": "2026-11-14T04:47:26.735Z"
     }
    ],
    "approvals": [],
@@ -137512,13 +137516,16 @@
     },
     {
      "id": "s2",
-     "text": "Ship the shape set (rounded square, square, squircle, hexagon, diamond, tag, per-corner radius, custom SVG mask); wire every banner widget to read it",
-     "model": "Opus",
-     "why": "",
+     "text": "Design the shape@1 contract: add the `shape` type to framework/schemas/asset-types.json (kind circle|pill|rounded|square|squircle|hexagon|diamond|tag|corners|mask; per-corner radii as tokens; SVG mask path with viewBox; skin declaration `by: slot`), placed before uac-policy; regenerate JSON Schemas with `node framework/cli/axf.mjs schemas`",
+     "model": "Fable",
+     "why": "New shared asset type and schema contract used across apps and ports",
      "phase": "",
      "group": "",
-     "estimate": "30 min",
-     "files": [],
+     "estimate": "10 min",
+     "files": [
+      "framework/schemas/asset-types.json",
+      "framework/schemas/json/"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -137526,18 +137533,22 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwfv7ta905xtyu",
-     "createdAt": "2026-11-14T03:47:49.949Z"
+     "uid": "st-mwfxch00014f89",
+     "createdAt": "2026-11-14T04:47:26.735Z"
     },
     {
      "id": "s3",
-     "text": "Controls in skin editor, UI Manager and per-instance settings; full API + voice; tests desktop and phone; PR",
-     "model": "Opus",
-     "why": "",
+     "text": "Write the shape@1 validator in framework/core (reference) and the .mjs project-check twin: reject unknown kinds, negative or non-token radii, SVG masks with script, external refs or no closed path; add a validator fixture with good and bad cases",
+     "model": "Fable",
+     "why": "Cross-port validator contract plus its fixture",
      "phase": "",
      "group": "",
-     "estimate": "30 min",
-     "files": [],
+     "estimate": "10 min",
+     "files": [
+      "framework/core/validate.ts",
+      "framework/core/project-check.mjs",
+      "framework/spec/fixtures/shape-validate.json"
+     ],
      "checks": [],
      "session": "same",
      "agent": false,
@@ -137545,8 +137556,534 @@
      "done": false,
      "doneAt": "",
      "note": "",
-     "uid": "st-mwfv7ta9068pgf",
-     "createdAt": "2026-11-14T03:47:49.949Z"
+     "uid": "st-mwfxch0002sxtn",
+     "createdAt": "2026-11-14T04:47:26.735Z"
+    },
+    {
+     "id": "s4",
+     "text": "Shape engine core: framework/core/engines/shape.ts compiles a shape asset to tokens (`--fx-shape-<slot>-radius` with four corners, `--fx-shape-<slot>-clip` as polygon()/path(), `--fx-shape-<slot>-mask` url) with built-in kinds as polygons (hexagon, diamond, tag) and squircle as a superellipse path; pure, no DOM",
+     "model": "Fable",
+     "why": "Engine internals compiling assets to tokens",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/engines/shape.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfxch0003n2ex",
+     "createdAt": "2026-11-14T04:47:26.735Z"
+    },
+    {
+     "id": "s5",
+     "text": "Shape resolution chain in the engine: global → skin → app → instance (`axf.banner.widget.<id>.shape`), child overrides parent, built on the same model as resolveLookSkin; export resolveShape(scopeChain) and keep an edit history (previous value per key) for Restore previous edit",
+     "model": "Fable",
+     "why": "Scope inheritance contract shared by every app's banners",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/engines/shape.ts",
+      "framework/core/engines/skin-coverage.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfxch000451f5",
+     "createdAt": "2026-11-14T04:47:26.735Z"
+    },
+    {
+     "id": "s6",
+     "text": "Generate golden fixtures for shape compile + resolve (every kind, per-corner radii, mask, all four scope levels, restore-previous) with `npx -y tsx framework/spec/gen-fixtures.mts`; add a framework/spec/check-shape.mts conformance check",
+     "model": "Fable",
+     "why": "Conformance contract for the engine across ports",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/spec/gen-fixtures.mts",
+      "framework/spec/fixtures/shape.json",
+      "framework/spec/check-shape.mts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfxch0005l3cn",
+     "createdAt": "2026-11-14T04:47:26.735Z"
+    },
+    {
+     "id": "s7",
+     "text": "Record the Kotlin ShapeEngine twin as a deferred gap in framework/spec/PORTING.md (Android on hold) and add the shape slot to skin@1 + customize.json style target for banner widgets so check-skin-coverage passes",
+     "model": "Fable",
+     "why": "Skin coverage and porting contract for a new asset type",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/spec/PORTING.md",
+      "framework/schemas/customize.json",
+      "framework/spec/check-skin-coverage.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfxch00067z6g",
+     "createdAt": "2026-11-14T04:47:26.735Z"
+    },
+    {
+     "id": "s8",
+     "text": "Ship the starter shape assets: framework/assets/shape/{circle,pill,rounded-square,square,squircle,hexagon,diamond,tag}.json plus a corners example and a mask example (star SVG), each with a description; run `node framework/cli/axf.mjs validate --framework`",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/assets/shape/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfxch0007n8rw",
+     "createdAt": "2026-11-14T04:47:26.735Z"
+    },
+    {
+     "id": "s9",
+     "text": "Default shape on the banner: add a `shape` field (default circle for icon widgets, pill for chips) to the banner/widget asset defaults and to existing skins in framework/assets/skin/ so nothing changes visually until picked",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/assets/banner/",
+      "framework/assets/skin/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfxch00085o60",
+     "createdAt": "2026-11-14T04:47:26.735Z"
+    },
+    {
+     "id": "s10",
+     "text": "Runtime wiring: register the shape engine in the framework runtime so `runtime.swap('shape', id)` and skin swaps recompile shape tokens; add the shape tokens to the compiled token set",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/runtime.ts",
+      "framework/core/engines/index.ts"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfxch0009nxtf",
+     "createdAt": "2026-11-14T04:47:26.735Z"
+    },
+    {
+     "id": "s11",
+     "text": "Banner CSS: replace the hard circle/pill radii on banner widgets in framework/ui/axf.css with `--fx-shape-*` radius, clip-path and mask tokens (no px literals, no var fallbacks); keep focus ring and hover tint visible inside clipped shapes",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/ui/axf.css"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfxch000aauos",
+     "createdAt": "2026-11-14T04:47:26.735Z"
+    },
+    {
+     "id": "s12",
+     "text": "Banner widget host in React: apply the per-instance resolved shape (data attribute + inline token vars) in the banner widget host and status chips; keep snapping/no-overlap rules for wider shapes like tag and pill",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/components/Banner.tsx",
+      "framework/react/components/BannerWidget.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfxch000b5ld3",
+     "createdAt": "2026-11-14T04:47:26.735Z"
+    },
+    {
+     "id": "s13",
+     "text": "Shape picker control: framework/react/components/ShapePicker.tsx built on framework controls (previews of every shape asset, per-corner radius sliders, SVG mask upload/paste field with validation errors), tokens only",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/react/components/ShapePicker.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfxch000c4og4",
+     "createdAt": "2026-11-14T04:47:26.735Z"
+    },
+    {
+     "id": "s14",
+     "text": "Per-instance settings: add Shape to the banner widget's right-click settings (chrome-banner settings asset) with ShapePicker, Inherit from skin, and Restore previous edit; update settings/chrome-banner defaults and run `node framework/cli/chrome-settings.mjs backfill`",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/assets/settings/chrome-banner.json",
+      "framework/react/components/ChromeContext.tsx",
+      "apps/*/src/assets/settings/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfxch000d4x8k",
+     "createdAt": "2026-11-14T04:47:26.735Z"
+    },
+    {
+     "id": "s15",
+     "text": "Skin editor: add a Shapes section (global banner widget shape for the skin, per-widget overrides, Restore previous edit) to the skin editor in the theme manager",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/theme-manager/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfxch000egpb9",
+     "createdAt": "2026-11-14T04:47:26.735Z"
+    },
+    {
+     "id": "s16",
+     "text": "UI Manager: list banner widgets with their resolved shape and where it comes from (global / skin / app / instance), editable inline with ShapePicker and a Restore previous edit button",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/ui-manager/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfxch000fqm7p",
+     "createdAt": "2026-11-14T04:47:26.735Z"
+    },
+    {
+     "id": "s17",
+     "text": "Global setting: Settings → Appearance gets a Banner widget shape picker (hub-wide default) in AppearancePanel; register its settings key and level",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/libs/settings/AppearancePanel.tsx"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfxch000grox5",
+     "createdAt": "2026-11-14T04:47:26.735Z"
+    },
+    {
+     "id": "s18",
+     "text": "control@1 targets: append shape targets (tokens.shape.global, tokens.shape.skin.<id>, tokens.shape.widget.<id>) at the end of the control registry; register console-control addresses / data-axf-target for every new section and button; run check-control and check-console-control",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/core/control.ts",
+      "framework/cli/check-console-control.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfxch000h4crt",
+     "createdAt": "2026-11-14T04:47:26.735Z"
+    },
+    {
+     "id": "s19",
+     "text": "REST API: theme-manager routes GET /shapes, GET /shapes/resolve?widget=…, PUT /shapes/{scope} (global|skin|app|widget), POST /shapes/{scope}/restore-previous, POST /shapes/assets (add custom corners/mask asset, validated)",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/theme-manager/server/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfxch000iesh9",
+     "createdAt": "2026-11-14T04:47:26.735Z"
+    },
+    {
+     "id": "s20",
+     "text": "MCP + console actions: plugin-commands for the shape routes (shape_list, shape_get, shape_set, shape_restore, shape_add) and console actions `shape.set|shape.restore|shape.pick`; deep links console_show targets for the skin editor Shapes section, UI Manager shapes and per-widget settings",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/theme-manager/plugin.json",
+      "apps/console-web/src/console/actions/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfxch000jjyu3",
+     "createdAt": "2026-11-14T04:47:26.735Z"
+    },
+    {
+     "id": "s21",
+     "text": "CLI: `node framework/cli/shapes.mjs list|get|set|restore|add|resolve` (and `axf shape …` alias) calling the same core, with --scope global|skin|app|widget and --corners / --mask options",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/cli/shapes.mjs",
+      "framework/cli/axf.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfxch000k32ai",
+     "createdAt": "2026-11-14T04:47:26.735Z"
+    },
+    {
+     "id": "s22",
+     "text": "Voice (AmberX): intent phrases for shapes (\"make the banner widgets hexagons\", \"make the clock widget a squircle\", \"undo the shape change\") mapped to shape.set / shape.restore console actions",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "apps/console-web/plugins/voice/",
+      "apps/amberx-droid/web/src/voice/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfxch000lhhhb",
+     "createdAt": "2026-11-14T04:47:26.735Z"
+    },
+    {
+     "id": "s23",
+     "text": "Re-bake the framework into the console and shared-asset apps (`node framework/cli/rebake.mjs apply console-web`, `shared-assets.mjs bake`) and run check-theme, check-controls, check-chrome-assets, check-toolbars",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/src/axf/",
+      "apps/*/src/axf/assets/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfxch000mi6kz",
+     "createdAt": "2026-11-14T04:47:26.735Z"
+    },
+    {
+     "id": "s24",
+     "text": "Tests: framework/spec/check-shape.mts vs fixtures, validator agreement, theme-manager route tests (set/resolve/restore, bad mask refused), CLI tests, and theme-swap.mjs over every shape so no hardcoded radius survives",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "framework/spec/check-shape.mts",
+      "apps/console-web/plugins/theme-manager/server/test_shapes.py",
+      "apps/console-web/scripts/theme-swap.mjs"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfxch000n3eg6",
+     "createdAt": "2026-11-14T04:47:26.735Z"
+    },
+    {
+     "id": "s25",
+     "text": "Desktop + phone shots: shoot the banner with every shape (console preview with hub look mocked) at desktop and phone, including touch long-press settings; build ≥3 UI Review options as shape assets in apps/console-web/plugins/theme-manager/assets/shape/ and submit with review.mjs --choices",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/console-web/plugins/theme-manager/assets/shape/",
+      "_claude/builds/reports/banner-widget-shapes-more-than-circle/shots/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfxch000okwow",
+     "createdAt": "2026-11-14T04:47:26.735Z"
+    },
+    {
+     "id": "s26",
+     "text": "Glossary/catalog + docs: descriptions for shape@1, shapes.mjs and the new commands, catalog --check, update framework/catalog/status.json and tracker.mjs, docs _claude/memory/docs/banner-widget-shapes.md",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "8 min",
+     "files": [
+      "framework/catalog/status.json",
+      "tracker.json",
+      "apps/console-web/plugins/glossary-index/",
+      "_claude/memory/docs/banner-widget-shapes.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfxch000pyax0",
+     "createdAt": "2026-11-14T04:47:26.735Z"
+    },
+    {
+     "id": "s27",
+     "text": "Final: run the full checks, write _claude/builds/reports/banner-widget-shapes-more-than-circle.md (what was added, API reach per feature: deep link / state / actions via REST, MCP, CLI, voice; Android gap), add the THREADS.md row, push the branch, link it with builds-live.mjs and open the PR noting the UI Review hold",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "_claude/builds/reports/banner-widget-shapes-more-than-circle.md",
+      "_claude/THREADS.md"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfxch000qspb1",
+     "createdAt": "2026-11-14T04:47:26.735Z"
     }
    ]
   },
