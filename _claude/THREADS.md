@@ -792,7 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 20:51 UTC · `full-voice-control-resolve-inventory` → running, branch claude/full-voice-control-resolve-inventory, note (all) · builds-live
 - 2026-11-13 20:52 UTC · `lander-regenerates-generated-files-clash` note (all) · orchestrator
 - 2026-11-13 20:52 UTC · `lander-regenerates-generated-files-clash` → running, note (all) · pipeline
 - 2026-11-13 20:52 UTC · `lander-regenerates-generated-files-clash` branch claude/lander-regenerates-generated-files-clash (all) · pipeline
@@ -1192,6 +1191,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 17:10 UTC · `skin-animations-swatches-skin-switch` → pending, note (all) · reconciler
 - 2026-11-14 17:11 UTC · `ui-review-filter-and-search-by-pr` note (all) · pipeline
 - 2026-11-14 17:20 UTC · `hotfix-toolbar-settings-still-change` → pending, note (all) · reconciler
+- 2026-11-14 17:40 UTC · `hotfix-toolbar-settings-still-change` merged, note (all) · reconciler
 
 ## Token passes (log)
 
