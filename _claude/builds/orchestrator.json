@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T04:37:34.639Z",
+ "updatedAt": "2026-11-14T04:37:53.772Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -137112,7 +137112,7 @@
    "branch": "claude/ui-directory-plugin-self-updating-data",
    "pr": "#670",
    "createdAt": "2026-11-14T03:50:42.413Z",
-   "updatedAt": "2026-11-14T04:37:13.005Z",
+   "updatedAt": "2026-11-14T04:37:51.896Z",
    "builtAt": "",
    "notes": [
     {
@@ -137170,6 +137170,10 @@
     {
      "text": "Dispatch gate: ui-directory-plugin-self-updating-data still has axf-ui-directory-plugin-self-updating-data--gina alive: not launched again, tracking that session.",
      "at": "2026-11-14T04:30:13.988Z"
+    },
+    {
+     "text": "PR #670 is open. The UI Review item r-20261114-9575v01 (desktop and phone shots of the UI Directory page) only exists in this worktree: this headless session has no AXF_CONSOLE_URL/AXF_TOKEN, so --console could not upload it. To resubmit with the same shots: cd apps/console-web && npm run build && UIDIR_E2E_SHOTS=/tmp/uidir-shots node plugins/ui-directory/e2e.mjs, then review.mjs submit ... --pr 670 --console with the console token set. Fix in the dispatcher: pass AXF_CONSOLE_URL and AXF_TOKEN to build sessions.",
+     "at": "2026-11-14T04:37:51.896Z"
     }
    ],
    "approvals": [
