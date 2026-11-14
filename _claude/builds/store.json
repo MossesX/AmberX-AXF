@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5559,
- "updatedAt": "2026-11-14T23:08:27.827Z",
+ "rev": 5560,
+ "updatedAt": "2026-11-14T23:08:39.778Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -151505,11 +151505,12 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
+   "alias": "pass-approval-hook-deep-link-amberx",
    "branch": "claude/pass-approval-hook-deep-link-amberx-notification",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-10T17:10:29.492Z",
-   "updatedAt": "2026-11-14T23:05:08.946Z",
+   "updatedAt": "2026-11-14T23:08:17.432Z",
    "builtAt": "",
    "notes": [
     {
@@ -151815,12 +151816,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:08:17.432Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-10T18:03:26.974Z",
-     "updatedAt": "2026-11-10T18:03:26.974Z"
+     "updatedAt": "2026-11-14T23:08:18.166Z"
     },
     {
      "id": "s9",
