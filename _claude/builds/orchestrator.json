@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T23:16:33.443Z",
+ "updatedAt": "2026-11-14T23:16:46.414Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -131761,7 +131761,7 @@
    "mergedAt": "2026-11-14T20:15:18Z",
    "priority": "P0",
    "createdAt": "2026-11-13T19:47:38.941Z",
-   "updatedAt": "2026-11-14T23:16:25.716Z",
+   "updatedAt": "2026-11-14T23:16:34.879Z",
    "builtAt": "",
    "notes": [
     {
@@ -131811,6 +131811,10 @@
     {
      "text": "Started run 3 on mossesx-max- (Opus, Phase 2): axf-skin-config-panel-merge-main-and-land--paulie.",
      "at": "2026-11-14T23:16:25.716Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-skin-config-panel-merge-main-and-land--paulie, shared account login)",
+     "at": "2026-11-14T23:16:34.879Z"
     }
    ],
    "approvals": [],
