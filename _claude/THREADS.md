@@ -792,7 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 20:45 UTC · `land-overlay-preview-ui-review-resolve` PR #653 (all) · builds-live
 - 2026-11-13 20:45 UTC · `land-overlay-preview-ui-review-resolve` s3 done, → built (all) · orchestrator
 - 2026-11-13 20:45 UTC · `per-instance-settings-small-live-preview` added (0 steps) (all) · console
 - 2026-11-13 20:45 UTC · `per-instance-settings-small-live-preview` → queued, note (all) · console
@@ -1192,6 +1191,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 16:46 UTC · `builds-share-one-claude-login-write` note (all) · orchestrator
 - 2026-11-14 16:47 UTC · `skin-animations-swatches-skin-switch` → running, note (all) · claude-voice
 - 2026-11-14 16:50 UTC · `ui-review-filter-and-search-by-pr` added (3 steps) (all) · claude-voice
+- 2026-11-14 16:50 UTC · `ui-review-filter-and-search-by-pr` → queued (all) · claude-voice
 
 ## Token passes (log)
 
