@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5409,
- "updatedAt": "2026-11-14T18:49:07.888Z",
+ "rev": 5410,
+ "updatedAt": "2026-11-14T18:49:16.303Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -197306,7 +197306,7 @@
    "pr": "#613",
    "priority": "P0",
    "createdAt": "2026-11-13T06:25:11.720Z",
-   "updatedAt": "2026-11-14T18:48:19.916Z",
+   "updatedAt": "2026-11-14T18:49:06Z",
    "builtAt": "2026-11-13T07:56:39.561Z",
    "notes": [
     {
@@ -197392,6 +197392,10 @@
     {
      "text": "Superseded by skins-plugin-merge-main-and-land (#647), which holds every commit of this branch. Branch archived as tag archive/skins-plugin-own-removable-console; PR #649 closed.",
      "at": "2026-11-14T18:48:17.716Z"
+    },
+    {
+     "text": "Shipped manifest sm-skins-plugin-own-removable-console rev 1 sent to Shipped features (orchestrator): PR #613, 476 file(s), 0 test line(s), 0 open.",
+     "at": "2026-11-14T18:49:06Z"
     }
    ],
    "approvals": [
@@ -197457,6 +197461,12 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "shipped": {
+    "id": "sm-skins-plugin-own-removable-console",
+    "rev": 1,
+    "at": "2026-11-14T18:49:06Z",
+    "landedCommit": ""
    },
    "steps": [
     {
@@ -197964,7 +197974,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 103,
+   "rev": 104,
    "deleted": false,
    "deletedAt": "",
    "pending": {
