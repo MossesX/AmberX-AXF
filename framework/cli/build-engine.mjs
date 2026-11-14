@@ -16,6 +16,7 @@ import { partsErrors as skinPartsErrors } from '../core/engines/skin-coverage.mj
 import { DEMO_TYPES, demoAssetErrors, demoSchemaProperties } from '../core/engines/demo-rules.mjs';
 import { jsonSchemas as uiReviewJsonSchemas, REGISTRY as UI_REVIEW_REGISTRY } from '../core/ui-review-schema.mjs';
 import { jsonSchemas as sessionJsonSchemas, REGISTRY as SESSION_REGISTRY } from '../core/session-schema.mjs';
+import { jsonSchemas as uiDirectoryJsonSchemas, REGISTRY as UI_DIRECTORY_REGISTRY } from '../core/ui-directory.mjs';
 import { MODEL_POLICY } from '../core/model-policy.mjs';
 import { SWARM, jsonSchemas as swarmJsonSchemas } from '../core/engines/swarm-rules.mjs';
 import { REGISTRY as LEDGER_REGISTRY, jsonSchemas as ledgerJsonSchemas } from '../core/feature-ledger.mjs';
@@ -882,6 +883,10 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
   for (const [n, schema] of Object.entries(sessionJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
   const sreg = join(FRAMEWORK_DIR, 'schemas/session.json');
   writeFileSync(sreg, JSON.stringify(SESSION_REGISTRY, null, 2) + '\n'); written.push(sreg);
+  // ui-directory@1 (UI Directory): JSON Schemas + the registry snapshot the plugin's server and CI check read
+  for (const [n, schema] of Object.entries(uiDirectoryJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
+  const udreg = join(FRAMEWORK_DIR, 'schemas/ui-directory.json');
+  writeFileSync(udreg, JSON.stringify(UI_DIRECTORY_REGISTRY, null, 2) + '\n'); written.push(udreg);
   // model-policy@1: which models work may run on (Opus or Fable, never Sonnet), the snapshot Python readers use
   const mreg = join(FRAMEWORK_DIR, 'schemas/model-policy.json');
   writeFileSync(mreg, JSON.stringify(MODEL_POLICY, null, 2) + '\n'); written.push(mreg);

@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "axf/ui-directory.schema.json",
+  "title": "AmberX AXF UI Directory (ui-directory@1)",
+  "description": "Generated from framework/core/ui-directory.mjs. The live data set of every UI surface across every app, rebuilt from the registries on every build.",
+  "type": "object",
+  "required": [
+    "$axf",
+    "generatedAt",
+    "hash",
+    "counts",
+    "total",
+    "rows"
+  ],
+  "properties": {
+    "$axf": {
+      "const": "ui-directory@1"
+    },
+    "version": {
+      "const": 1
+    },
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d{1,6})?)?(Z|[+-]\\d{2}:\\d{2})$"
+    },
+    "hash": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{16}$"
+    },
+    "counts": {
+      "type": "object",
+      "properties": {
+        "kinds": {
+          "type": "object"
+        },
+        "apps": {
+          "type": "object"
+        },
+        "statuses": {
+          "type": "object"
+        },
+        "sources": {
+          "type": "object"
+        },
+        "plugins": {
+          "type": "integer"
+        }
+      }
+    },
+    "total": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "dropped": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "rows": {
+      "type": "array",
+      "maxItems": 20000,
+      "items": {
+        "$ref": "axf/ui-directory-row.schema.json"
+      }
+    }
+  }
+}

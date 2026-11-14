@@ -76,6 +76,12 @@
         "draft": true
       },
       {
+        "target": "gizmo-guide",
+        "title": "Gizmo guide",
+        "text": "Settings for Gizmo's narrated walkthroughs: whether steps are read out loud, auto-open (off by default) and the floating window. Gizmo only speaks when you ask.",
+        "kind": "tab"
+      },
+      {
         "target": "action:gizmo.ask",
         "title": "Ask Gizmo to show me",
         "text": "Opens the guide window: ask Gizmo how to do something and he walks you through it, step by step. Part of Gizmo guide.",

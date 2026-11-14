@@ -151,6 +151,8 @@ jobs:
         run: node apps/console-web/plugins/ref-links/test.mjs  # axf-plugin:ref-links
       - name: Glossary & Index plugin (glossary-catalog@1 — every plugin, feature, screen, control, setting, command, asset and tool has an entry; undescribed items never grow)  # axf-plugin:glossary-index
         run: npx -y tsx apps/console-web/plugins/glossary-index/test.mts && node apps/console-web/plugins/glossary-index/catalog.mjs --check  # axf-plugin:glossary-index
+      - name: UI Directory plugin (ui-directory@1 — every screen, tab, dialog, settings interface, panel, plugin UI and banner of every app has a row; a UI a plugin draws but does not register, or one with no deep link, never grows)  # axf-plugin:ui-directory
+        run: node framework/spec/check-ui-directory.mjs && node apps/console-web/plugins/ui-directory/test.mjs && node apps/console-web/plugins/ui-directory/directory.mjs --check  # axf-plugin:ui-directory
       - name: Badges plugin banner guard (the console banner draws every connection badge by default; fails on zero)  # axf-plugin:claude-badge
         run: npx -y tsx apps/console-web/plugins/claude-badge/banner.test.mts  # axf-plugin:claude-badge
       - name: Demonstration Designer plugin (pitch-script@1 — benefit sentences, scripts fitted to their length, registry topics, store, chain, clips, settings, CLI)  # axf-plugin:demonstration-designer

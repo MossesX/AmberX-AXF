@@ -1,0 +1,89 @@
+{
+  "$id": "axf/ui-directory",
+  "schema": "ui-directory@1",
+  "row": "ui-directory-row@1",
+  "version": 1,
+  "kinds": [
+    "app",
+    "screen",
+    "tab",
+    "dialog",
+    "settings-tab",
+    "settings-panel",
+    "plugin",
+    "banner",
+    "window",
+    "element"
+  ],
+  "sources": [
+    "shell",
+    "framework",
+    "plugin",
+    "manifest",
+    "inventory",
+    "ui-registry",
+    "help"
+  ],
+  "statuses": [
+    "live",
+    "dynamic",
+    "unlinked",
+    "off"
+  ],
+  "tokenFamilies": [
+    "color",
+    "type",
+    "dens",
+    "size",
+    "space",
+    "radius",
+    "border",
+    "font",
+    "motion",
+    "shadow",
+    "opacity",
+    "component"
+  ],
+  "deepLinkTools": [
+    "console_open",
+    "console_settings",
+    "console_dialog"
+  ],
+  "idPattern": "^[a-z0-9][a-z0-9._%-]*(:[a-z0-9][a-z0-9._%=*-]*){1,4}$",
+  "appPattern": "^[a-z0-9][a-z0-9-]{0,47}$",
+  "maxName": 200,
+  "maxKeywords": 24,
+  "maxRows": 20000,
+  "rowRequired": [
+    "$axf",
+    "id",
+    "name",
+    "kind",
+    "app",
+    "status",
+    "source"
+  ],
+  "rowOptional": [
+    "parent",
+    "plugin",
+    "address",
+    "deepLink",
+    "settings",
+    "tokens",
+    "file",
+    "icon",
+    "detail",
+    "keywords",
+    "level",
+    "dynamic",
+    "firstSeen"
+  ],
+  "directoryRequired": [
+    "$axf",
+    "generatedAt",
+    "hash",
+    "counts",
+    "total",
+    "rows"
+  ]
+}
