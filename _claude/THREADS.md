@@ -796,9 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 21:08 UTC · `token-registry-skin-editor-live-sandbox` s3 done (all) · orchestrator
-- 2026-11-13 21:10 UTC · `icon-map-icon-packs-every-icon-badge-app` note (all) · pipeline
-- 2026-11-13 21:11 UTC · `auto-land-every-finished-build-lands` s8 done (all) · orchestrator
 - 2026-11-13 21:12 UTC · `token-registry-skin-editor-live-sandbox` PR #657 (all) · builds-live
 - 2026-11-13 21:12 UTC · `hotfix-desktop-console-draws-app-menu` branch claude/hotfix-desktop-console-draws-app-menu, PR #658 (all) · builds-live
 - 2026-11-13 21:12 UTC · `hotfix-desktop-console-draws-app-menu` note (all) · orchestrator
@@ -1196,6 +1193,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 18:37 UTC · `themed-native-controls-plugin` s4 done (all) · orchestrator
 - 2026-11-14 18:39 UTC · `picker-dialog-plugin-replaces-all` s4 done (all) · orchestrator
 - 2026-11-14 18:40 UTC · `land-all-skin-builds` s14 done (all) · orchestrator
+- 2026-11-14 18:41 UTC · `land-all-skin-builds` s15 done (all) · orchestrator
+- 2026-11-14 18:42 UTC · `land-all-skin-builds` s16 done (all) · orchestrator
+- 2026-11-14 18:44 UTC · `land-all-skin-builds` s17 done (all) · orchestrator
 
 ## Token passes (log)
 
