@@ -797,9 +797,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 21:42 UTC · `token-registry-skin-editor-live-sandbox` note (all) · orchestrator
-- 2026-11-14 22:15 UTC · `replace-merge-queue-one-time-landing` added (0 steps) (all) · console
-- 2026-11-14 22:15 UTC · `replace-merge-queue-one-time-landing` → queued, note (all) · console
 - 2026-11-14 22:15 UTC · `land-all-skin-builds` note (all) · mcp
 - 2026-11-14 22:17 UTC · `land-finish-auto-land-live-clear-backlog` added (0 steps) (all) · console
 - 2026-11-14 22:17 UTC · `land-finish-auto-land-live-clear-backlog` → queued, note (all) · console
@@ -1197,6 +1194,9 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 23:45 UTC · `console-look-becomes-default-axhub-skin` s4 done, → running, note (all) · orchestrator
 - 2026-11-14 23:45 UTC · `themed-native-controls-plugin` s23 done (all) · orchestrator
 - 2026-11-14 23:46 UTC · `merge-main-land-console-app-part-3` branch claude/console-app-part-3-native-bridge-mic, PR #633 (all) · builds-live
+- 2026-11-14 23:46 UTC · `merge-main-land-console-app-part-4` → running, note (all) · pipeline
+- 2026-11-14 23:46 UTC · `merge-main-land-console-app-part-4` branch claude/merge-main-land-console-app-part-4 (all) · pipeline
+- 2026-11-14 23:46 UTC · `merge-main-land-console-app-part-4` note (all) · orchestrator
 
 ## Token passes (log)
 

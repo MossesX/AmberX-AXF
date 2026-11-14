@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5679,
- "updatedAt": "2026-11-14T23:46:53.238Z",
+ "rev": 5680,
+ "updatedAt": "2026-11-14T23:47:15.641Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -226720,15 +226720,15 @@
    "title": "Merge main and land console-app-part-4-console-side-safe",
    "category": "",
    "detail": "Auto-land could not land `console-app-part-4-console-side-safe` (console-app-part-4-console-side-safe): merging main into it clashes in code: framework/ui/axf.css.\n\nWork on its own branch `claude/console-app-part-4-console-side-safe` (PR #640); do not open a new PR.\n1. git fetch origin && git checkout claude/console-app-part-4-console-side-safe && git merge origin/main\n2. Resolve every conflict keeping both sides' intent (builds files: newer wins; THREADS / STATUS / decisions: keep both).\n3. Make the tests the clash touches pass, plus node framework/cli/tracker.mjs --check.\n4. Commit and push to claude/console-app-part-4-console-side-safe. Auto-land and the merge queue land it by themselves.\n\nAttempt 1. Auto-land retries until it lands; Brett gets an FYI for each attempt.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "land-finish-auto-land-live-clear-backlog",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/merge-main-land-console-app-part-4",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-14T23:16:42.547Z",
-   "updatedAt": "2026-11-14T23:46:33.712Z",
+   "updatedAt": "2026-11-14T23:46:49.178Z",
    "builtAt": "",
    "notes": [
     {
@@ -226738,6 +226738,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"0578599e-aaac-41b7-8464-f4b4851e70e2\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-14T23:22:06.089Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-merge-main-land-console-app-part-4--paulie.",
+     "at": "2026-11-14T23:46:42.196Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-merge-main-land-console-app-part-4--paulie, shared account login)",
+     "at": "2026-11-14T23:46:49.178Z"
     }
    ],
    "approvals": [],
@@ -226757,12 +226765,12 @@
    "pipeline": {
     "queuedAt": "2026-11-14T23:16:47.356Z",
     "queuedBy": "land-finish-auto-land-live-clear-backlog",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-merge-main-land-console-app-part-4--paulie",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-14T23:46:40.547Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-14T23:22:06.089Z",
@@ -226772,9 +226780,9 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"0578599e-aaac-41b7-8464-f4b4851e70e2\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-14T23:46:40.547Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -226783,7 +226791,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-14T23:46:40.547Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -227021,7 +227029,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
