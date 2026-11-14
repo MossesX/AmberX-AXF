@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5689,
- "updatedAt": "2026-11-14T23:50:36.266Z",
+ "rev": 5690,
+ "updatedAt": "2026-11-14T23:51:03.781Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -205612,7 +205612,7 @@
    "pr": "#639",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:46.237Z",
-   "updatedAt": "2026-11-14T23:17:43.304Z",
+   "updatedAt": "2026-11-14T23:50:45.932Z",
    "builtAt": "2026-11-13T20:19:48.032Z",
    "notes": [
     {
@@ -205702,6 +205702,23 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "red",
+    "landAttempts": [
+     {
+      "at": "2026-11-14T23:38:09.250Z",
+      "run": "lr-console-app-part-2-native-floating-2-20261114T233809",
+      "base": "06cb21c5308768885b08e4eb633cd7ac472a4075",
+      "merged": "ec1d7c4d92405a8036cafed15647cdd813614547",
+      "outcome": "red",
+      "ci": "failure",
+      "note": "CI failed on the merged head (Web Dev Console (React/TS) + Python API). No fix build: the orchestrator did not take it."
+     }
+    ]
    },
    "steps": [
     {
@@ -205870,7 +205887,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": {
