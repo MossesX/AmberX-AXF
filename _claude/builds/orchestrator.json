@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T23:29:45.057Z",
+ "updatedAt": "2026-11-14T23:29:57.263Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -135080,7 +135080,7 @@
    "mergedAt": "2026-11-13T23:38:48Z",
    "priority": "P0",
    "createdAt": "2026-11-13T20:47:11.569Z",
-   "updatedAt": "2026-11-14T23:29:09.658Z",
+   "updatedAt": "2026-11-14T23:29:29.226Z",
    "builtAt": "",
    "notes": [
     {
@@ -135138,6 +135138,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-lander-regenerates-generated-files-clash--lenny, shared account login)",
      "at": "2026-11-14T23:23:28.411Z"
+    },
+    {
+     "text": "Headless run axf-lander-regenerates-generated-files-clash--lenny: brief only · start 11.8K tokens ($0.03) · cost $0.91 · 38 turns · 6 tools, MCP none",
+     "at": "2026-11-14T23:29:29.226Z"
     }
    ],
    "approvals": [
