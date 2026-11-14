@@ -2,7 +2,7 @@
  * Waitlist with referral ranking.
  *
  * Everyone gets a referral code. Each friend who joins with your link moves you `boost` places up the line:
- *   score = joinOrder − referrals × boost      (lower is earlier; ties go to whoever joined first)
+ *   score = joinOrder − referrals × boost   (lower is earlier; ties go to more referrals, then whoever joined first)
  * Only entries still `waiting` hold a place in line; `invited` ones have been let in.
  * Stored in <DATA_DIR>/waitlist.json. Emails are kept lower-cased; nothing else about the visitor is stored.
  */
@@ -30,7 +30,7 @@ export function createWaitlist(dataDir, { boost = () => 5, now = () => new Date(
     }
   };
   const score = (e) => e.order - e.referrals * boost();
-  const waitingRanked = () => db.entries.filter((e) => e.status === 'waiting').sort((a, b) => score(a) - score(b) || a.order - b.order);
+  const waitingRanked = () => db.entries.filter((e) => e.status === 'waiting').sort((a, b) => score(a) - score(b) || b.referrals - a.referrals || a.order - b.order);
 
   function limit(ip) {
     if (!ip) return;

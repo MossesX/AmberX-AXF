@@ -1,0 +1,84 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "launch-waitlist-help",
+  "name": "Launch waitlist help",
+  "version": "0.1.0",
+  "description": "Help mode entries for the Launch waitlist plugin.",
+  "author": "Brett",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:launch-waitlist",
+    "entries": [
+      {
+        "target": "view:launch-waitlist",
+        "title": "Launch waitlist",
+        "text": "The AmberX launch site's waitlist in line order and its landing page settings. Everything here also works through the console API, MCP tools and the CLI.",
+        "kind": "screen"
+      },
+      {
+        "target": "refresh",
+        "title": "Refresh",
+        "text": "Reads the line, the stats and the settings from the site again."
+      },
+      {
+        "target": "export",
+        "title": "Export CSV",
+        "text": "Downloads everyone on the waitlist as a spreadsheet, in line order, with each person's referral link."
+      },
+      {
+        "target": "open-site",
+        "title": "Open site",
+        "text": "Opens the public landing page in a new tab."
+      },
+      {
+        "target": "invite",
+        "title": "Invite",
+        "text": "Lets this person in. They leave the line and everyone behind them moves up."
+      },
+      {
+        "target": "requeue",
+        "title": "Back in line",
+        "text": "Puts an invited person back in the line at the place their join date and referrals give them."
+      },
+      {
+        "target": "remove",
+        "title": "Remove",
+        "text": "Deletes this person from the waitlist. Whoever referred them loses that referral."
+      },
+      {
+        "target": "site-settings",
+        "title": "Landing page",
+        "text": "The hook, demo video, theme, pricing and waitlist switches of the public page. Saved changes show on the site at once, no deploy needed."
+      },
+      {
+        "target": "save",
+        "title": "Save",
+        "text": "Saves the landing page settings to the site."
+      },
+      {
+        "target": "launch-waitlist",
+        "title": "Launch waitlist settings",
+        "text": "Install or remove this plugin. The site address and admin token come from AMBERX_SITE_URL and AMBERX_SITE_ADMIN_TOKEN on the console."
+      }
+    ],
+    "intros": [
+      {
+        "screen": "launch-waitlist",
+        "title": "Launch waitlist",
+        "steps": [
+          {
+            "say": "This is the AmberX launch waitlist: everyone in line, best referrers first.",
+            "target": ""
+          },
+          {
+            "say": "Invite people from the top, export the list, or change the landing page below.",
+            "target": ""
+          }
+        ]
+      }
+    ]
+  }
+}
