@@ -45,7 +45,7 @@ import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import * as lr from '../../../../../framework/core/land-run.mjs';
 import * as line from '../../../../../framework/core/landing-line.mjs';
-import { dropLandLock, lockOwner, makeConsole, makeGit, makeGitHub, mergeMain, settings, takeLandLock } from './land.mjs';
+import { dropLandLock, lockOwner, makeConsole, makeGit, makeGitHub, mergeMain, settings, takeLandLock, touchLandLock } from './land.mjs';
 import { fixBuildFor } from './land-core.mjs';
 import { sameCodeFiles } from './merge-queue-core.mjs';
 
@@ -109,6 +109,7 @@ export async function checkAndLand({ s, git, gh, b, run, dry = false, mark = mar
     if (verdict === 'none' && !dispatched) await dispatch('nothing ran on it');
     if (verdict === 'retry') { retries++; await dispatch('the last run was cancelled or superseded: not a failure'); }
     if (dry || clock() >= until) break;
+    touchLandLock(); // still ours: a long CI wait must not look like a dead lander
     await sleep(pollMs);
   }
   const retryNote = retries ? ` ${retries} cancelled run${retries === 1 ? '' : 's'} started again.` : '';
@@ -286,7 +287,34 @@ export function applyRun(l, id, run, at = new Date().toISOString()) {
  * Land the line, one build at a time, until it is empty, `max` attempts ran, or the clock runs out. Each entry is tried
  * at most once per run. Returns { ran: [{ id, outcome, note }], busy?: owner }.
  */
-export async function runLine({ s = settings(), max = 20, dry = false, land = landOne, now = () => new Date(), budgetMs = 50 * 60000, log = () => {}, ...opts } = {}) {
+export const batchesFile = (s) => join(s.dataDir, 'land-batches.jsonl');
+export const updaterPath = () => process.env.AXF_CONSOLE_UPDATE ?? '/usr/local/bin/axf-console-update';
+
+/**
+ * After a lander batch that landed something: the console is redeployed once (axf-console-update) and checked for
+ * doubled chrome (check-chrome-once.mjs: one banner, one menu bar on desktop and phone). A doubled console is an alert.
+ * The batch (what landed / went red / was flagged, the redeploy and the check) is appended to land-batches.jsonl.
+ */
+export async function afterBatch({ s, ran, api = null, redeploy = null, check = null, log = () => {} }) {
+  const landed = ran.filter((x) => x.outcome === 'landed').map((x) => x.build || x.id);
+  const rec = { at: new Date().toISOString(), landed, red: ran.filter((x) => x.outcome === 'red').map((x) => x.build || x.id), flagged: ran.filter((x) => x.outcome === 'clash').map((x) => x.build || x.id), redeploy: null, chrome: null };
+  if (landed.length) {
+    const up = redeploy || (() => { const u = updaterPath(); if (!u || !existsSync(u)) return { ok: false, why: 'no axf-console-update here' }; const r = spawnSync(u, [], { encoding: 'utf8', timeout: 15 * 60000 }); return { ok: r.status === 0, why: (r.stderr || r.stdout || '').trim().split('\n').pop()?.slice(0, 200) || '' }; });
+    rec.redeploy = up();
+    log(`batch: ${landed.length} landed; console redeployed: ${rec.redeploy.ok ? 'ok' : rec.redeploy.why}`);
+    const chk = check || (async () => (await import('./check-chrome-once.mjs')).checkChrome());
+    try { rec.chrome = await chk(); } catch (e) { rec.chrome = { verdict: 'unknown', why: e.message.slice(0, 200) }; }
+    log(`batch: chrome ${rec.chrome.verdict} (${rec.chrome.why})`);
+    if (rec.chrome.verdict === 'doubled') {
+      try { await (api || makeConsole(s))('POST', '/api/alerts', { source: 'push-banner', key: 'land:doubled-chrome', severity: 'warn', title: 'Console shows doubled chrome after landing', body: `After landing ${landed.join(', ')} the redeployed console shows ${rec.chrome.why}.`.slice(0, 600) }); } catch { /* the record says it */ }
+    }
+  }
+  mkdirSync(s.dataDir, { recursive: true });
+  appendFileSync(batchesFile(s), `${JSON.stringify(rec)}\n`);
+  return rec;
+}
+
+export async function runLine({ s = settings(), max = 20, dry = false, land = landOne, now = () => new Date(), budgetMs = 50 * 60000, batch = afterBatch, log = () => {}, ...opts } = {}) {
   const ran = []; const tried = new Set(); const t0 = Date.now(); const paused = [];
   while (ran.length < max && Date.now() - t0 < budgetMs) {
     let l = readLine(s);
@@ -305,7 +333,10 @@ export async function runLine({ s = settings(), max = 20, dry = false, land = la
   }
   // lander errors go back to waiting for the next run (never retried in a loop here)
   if (paused.length && !dry) { let l = readLine(s); for (const id of paused) { try { l = line.transition(l, { type: 'resume', id, by: 'lander' }); } catch { /* moved by hand */ } } writeLine(s, l); }
-  return { ran };
+  // the batch boundary: one redeploy and one chrome check for everything this run landed
+  const done = ran.filter((x) => x.outcome);
+  const b = !dry && done.length && batch ? await batch({ s, ran: done, log }) : null;
+  return { ran, batch: b };
 }
 
 export async function main(argv) {

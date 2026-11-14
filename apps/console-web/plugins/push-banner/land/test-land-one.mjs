@@ -2,7 +2,7 @@
 // land-one.mjs: one serial landing attempt on a temp git repo (origin bare + a checkout), recorded as land-run@1.
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -10,7 +10,9 @@ const root = mkdtempSync(join(tmpdir(), 'land-one-'));
 process.env.AXF_LAND_LOCK = join(root, 'lock.d');
 process.env.AXF_CREW_SAY = 'off';
 process.env.AXF_LAND_RESOLVER = '';
-const { landOne, readRuns, checkAndLand, enqueue, runLine, readLine } = await import('./land-one.mjs');
+process.env.AXF_CONSOLE_UPDATE = ''; // never the real redeploy from a test
+const { landOne, readRuns, checkAndLand, enqueue, runLine, readLine, afterBatch } = await import('./land-one.mjs');
+const chrome = await import('./check-chrome-once.mjs');
 const { makeGit, takeLandLock, dropLandLock } = await import('./land.mjs');
 const lr = await import('../../../../../framework/core/land-run.mjs');
 
@@ -189,7 +191,9 @@ await t('the line: builds land one at a time in order; red files its fix and the
   const order = []; let inside = 0; let overlap = false;
   const land = async ({ build }) => { inside++; if (inside > 1) overlap = true; order.push(build.id); await new Promise((r) => setTimeout(r, 5)); inside--; return { ran: true, run: { ...lr.emptyLandRun(), build: build.id, head: H('d'), check: { ok: null, failed: [], note: '' }, ...outcome[build.id], note: build.id } }; };
   // five: a red check right after the merge goes fix-filed (never paused as a lander error); four is in flight, so five waits for the next run
-  const r = await runLine({ s: sL, land });
+  const batches = [];
+  const r = await runLine({ s: sL, land, batch: async (o) => { batches.push(o.ran.map((x) => x.build)); return {}; } });
+  assert.deepEqual(batches, [['urgent', 'one', 'two', 'three']], 'one batch per run: the settled attempts (four is still checking)');
   assert.deepEqual(order, ['urgent', 'one', 'two', 'three', 'four'], 'front first, then in order, each once');
   assert.equal(overlap, false, 'never two at once');
   const l = readLine(sL); const st = Object.fromEntries(l.entries.map((e) => [e.build, e.state]));
@@ -198,9 +202,31 @@ await t('the line: builds land one at a time in order; red files its fix and the
   assert.equal(r.ran.length, 5);
   // next run: the one in flight is resumed first, nothing else starts while it is still checking
   const order2 = []; outcome.four = { merged: H('c'), ci: { status: 'completed', conclusion: 'success' }, outcome: 'landed' };
-  await runLine({ s: sL, land: async (o) => { order2.push(o.build.id); return land(o); } });
+  await runLine({ s: sL, batch: null, land: async (o) => { order2.push(o.build.id); return land(o); } });
   assert.deepEqual(order2, ['four', 'two', 'five'], 'in-flight first, then the waiting ones');
   assert.equal(readLine(sL).entries.find((e) => e.build === 'five').state, 'fix-filed', 'a red check after the merge is fix-filed, not paused');
+});
+
+await t('batch boundary: one redeploy + one chrome check when something landed; none when nothing did; doubled = alert', async () => {
+  const sB = { ...s, dataDir: join(root, 'batch') };
+  let ups = 0; let checks = 0; const alerts = [];
+  const api = async (m, p, body) => { alerts.push(body); return {}; };
+  const redeploy = () => { ups++; return { ok: true, why: '' }; };
+  const r1 = await afterBatch({ s: sB, ran: [{ build: 'a', outcome: 'landed' }, { build: 'b', outcome: 'landed' }, { build: 'c', outcome: 'red' }], api, redeploy, check: async () => { checks++; return { verdict: 'ok', why: 'one of each' }; } });
+  assert.equal(ups, 1); assert.equal(checks, 1); assert.deepEqual(r1.landed, ['a', 'b']); assert.deepEqual(r1.red, ['c']);
+  await afterBatch({ s: sB, ran: [{ build: 'd', outcome: 'red' }], api, redeploy, check: async () => { checks++; return {}; } });
+  assert.equal(ups, 1, 'nothing landed: no redeploy'); assert.equal(checks, 1);
+  await afterBatch({ s: sB, ran: [{ build: 'e', outcome: 'landed' }], api, redeploy, check: async () => ({ verdict: 'doubled', why: '2 banners' }) });
+  assert.equal(alerts.length, 1); assert.match(alerts[0].body, /2 banners/);
+  assert.equal(readFileSync(join(sB.dataDir, 'land-batches.jsonl'), 'utf8').trim().split('\n').length, 3);
+});
+
+await t('chrome verdicts: one of each ok, two banners or menu bars doubled, a sign-in wall unknown (never a pass)', async () => {
+  assert.equal(chrome.verdict({ banners: 1, menubars: 1 }).verdict, 'ok');
+  assert.equal(chrome.verdict({ banners: 2, menubars: 1 }).verdict, 'doubled');
+  assert.equal(chrome.verdict({ banners: 1, menubars: 2 }).verdict, 'doubled');
+  assert.equal(chrome.verdict({ blocked: 'the axHub sign-in wall' }).verdict, 'unknown');
+  assert.equal(chrome.overall({ desktop: { banners: 1, menubars: 1 }, phone: { banners: 2, menubars: 1 } }).verdict, 'doubled');
 });
 
 await t('two at once: a second attempt is refused while the line is held, and runs once it is free', async () => {
@@ -210,6 +236,17 @@ await t('two at once: a second attempt is refused while the line is held, and ru
   dropLandLock();
   const r2 = await landOne({ s, git, ...base, ci: false, build: { id: 'clean', branch: 'claude/clean' }, now: () => at, dry: true });
   assert.equal(r2.ran, true);
+});
+
+await t('a lander only drops its own lock; a waiting lander keeps it fresh', async () => {
+  const { lockDir, touchLandLock } = await import('./land.mjs');
+  mkdirSync(lockDir(), { recursive: true }); writeFileSync(join(lockDir(), 'owner'), '999999 2026-11-14T00:00:00Z someone else\n');
+  dropLandLock();
+  assert.ok(existsSync(lockDir()), "another lander's lock stays");
+  const { utimesSync, statSync } = await import('node:fs');
+  utimesSync(lockDir(), new Date(0), new Date(0)); touchLandLock();
+  assert.ok(Date.now() - statSync(lockDir()).mtimeMs < 5000, 'touched');
+  dropLandLock({ force: true }); assert.ok(!existsSync(lockDir()));
 });
 
 await t('two land-one calls started together: exactly one runs', async () => {

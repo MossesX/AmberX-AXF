@@ -46,7 +46,7 @@
  * (/root/archive/auto-land), AXF_LAND_GITHUB_API (https://api.github.com), AXF_LAND_WORKFLOW (android.yml).
  */
 import { spawnSync } from 'node:child_process';
-import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, renameSync, rmSync, statSync, writeFileSync, copyFileSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, readdirSync, renameSync, rmSync, statSync, utimesSync, writeFileSync, copyFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -105,7 +105,16 @@ export async function takeLandLock({ wait = 0, stale = core.LOCK_STALE_MS, who =
     await new Promise((r) => setTimeout(r, Math.min(5000, Math.max(50, until - Date.now()))));
   }
 }
-export const dropLandLock = () => { try { rmSync(lockDir(), { recursive: true, force: true }); } catch { /* gone */ } };
+/** Drop the line's lock, only when this process holds it (a lock taken over as stale belongs to someone else now). */
+export const dropLandLock = ({ force = false } = {}) => {
+  try {
+    const pid = Number(readFileSync(join(lockDir(), 'owner'), 'utf8').split(' ')[0]);
+    if (!force && pid && pid !== process.pid) return;
+    rmSync(lockDir(), { recursive: true, force: true });
+  } catch { /* gone */ }
+};
+/** Keep the lock fresh while a long wait runs (CI on the merged head can take longer than LOCK_STALE_MS). */
+export const touchLandLock = () => { try { const t = new Date(); utimesSync(lockDir(), t, t); } catch { /* not held */ } };
 /** Who holds the line right now ('' = free): "<pid> <since> <what>". */
 export const lockOwner = () => { try { return readFileSync(join(lockDir(), 'owner'), 'utf8').trim(); } catch { return ''; } };
 /** Run fn while holding the line. Resolves { ran: false } when the line stayed busy for `wait` ms. */
