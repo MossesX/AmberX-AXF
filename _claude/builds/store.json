@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5562,
- "updatedAt": "2026-11-14T23:09:12.244Z",
+ "rev": 5563,
+ "updatedAt": "2026-11-14T23:09:24.015Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -186356,7 +186356,7 @@
    "title": "Always fill every slot: when slots are free, run independent steps of running builds in parallel across them, and auto-queue pending builds",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -186364,7 +186364,7 @@
    "pr": "#582",
    "priority": "P0",
    "createdAt": "2026-11-13T06:57:42.497Z",
-   "updatedAt": "2026-11-14T23:00:46.084Z",
+   "updatedAt": "2026-11-14T23:09:13.297Z",
    "builtAt": "",
    "notes": [
     {
@@ -186478,6 +186478,14 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-always-fill-every-slot-when-slots-are--paulie, shared account login)",
      "at": "2026-11-14T23:00:46.084Z"
+    },
+    {
+     "text": "Headless run axf-always-fill-every-slot-when-slots-are--paulie: brief only · start 15.0K tokens ($0.05) · cost $1.08 · 35 turns · 6 tools, MCP none",
+     "at": "2026-11-14T23:09:11.839Z"
+    },
+    {
+     "text": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
+     "at": "2026-11-14T23:09:13.297Z"
     }
    ],
    "approvals": [
@@ -186507,12 +186515,19 @@
     "queuedAt": "2026-11-13T10:35:08.117Z",
     "queuedBy": "console",
     "account": "mossesx-max-",
-    "session": "axf-always-fill-every-slot-when-slots-are--paulie",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-14T23:00:36.515Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-14T23:09:11.352Z",
+     "exit": 0,
+     "outcome": "returned",
+     "stepsLeft": 1,
+     "account": "mossesx-max-",
+     "session": "axf-always-fill-every-slot-when-slots-are--paulie"
+    },
     "split": {
      "at": "2026-11-13T07:42:03.981Z",
      "by": "orchestrator",
@@ -186521,7 +186536,7 @@
      "note": "Split by Claude into 21 steps (3 Fable)."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "2026-11-14T23:00:36.515Z",
     "planned": {
@@ -187195,7 +187210,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 56,
+   "rev": 58,
    "deleted": false,
    "deletedAt": "",
    "pending": {

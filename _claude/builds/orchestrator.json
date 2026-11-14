@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T23:09:12.244Z",
+ "updatedAt": "2026-11-14T23:09:24.015Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -118883,7 +118883,7 @@
    "title": "Always fill every slot: when slots are free, run independent steps of running builds in parallel across them, and auto-queue pending builds",
    "category": "",
    "detail": "",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -118891,7 +118891,7 @@
    "pr": "#582",
    "priority": "P0",
    "createdAt": "2026-11-13T06:57:42.497Z",
-   "updatedAt": "2026-11-14T23:00:46.084Z",
+   "updatedAt": "2026-11-14T23:09:13.297Z",
    "builtAt": "",
    "notes": [
     {
@@ -119005,6 +119005,14 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-always-fill-every-slot-when-slots-are--paulie, shared account login)",
      "at": "2026-11-14T23:00:46.084Z"
+    },
+    {
+     "text": "Headless run axf-always-fill-every-slot-when-slots-are--paulie: brief only · start 15.0K tokens ($0.05) · cost $1.08 · 35 turns · 6 tools, MCP none",
+     "at": "2026-11-14T23:09:11.839Z"
+    },
+    {
+     "text": "Session on mossesx-max- stopped on its own with 1 step left: back in Pending for Brett.",
+     "at": "2026-11-14T23:09:13.297Z"
     }
    ],
    "approvals": [
