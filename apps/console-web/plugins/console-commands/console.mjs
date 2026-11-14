@@ -8,7 +8,7 @@
  *
  *   node console.mjs run      one command on stdin ({command, grants?, by?, clients}) → the answer as JSON (`deliver` = what to send)
  *   node console.mjs open <screen> [--focus <tab or build>] | dialog <id> | dialog close [id] | settings <tab> [--anchor a] | action <id> [args…] [--confirm t]
- *                    | back | home | close | refresh [--hard] [--all] | where | list [screens|dialogs|settings|actions|clients] [words] | clients
+ *                    | back | home | close | refresh [--hard] [--all] | open-url <url> [--live] | where | list [screens|dialogs|settings|actions|clients] [words] | clients
  *                    | overlay expand | overlay collapse | overlay open <url>   (AmberX's overlay on Brett's phone, POST /api/console/overlay)
  *        → sent to the console (AXF_CONSOLE_URL, default https://console.amberxai.com; AXF_TOKEN), which runs it
  *   --to recent|all|<client id>   which open console (default: the one used last)
@@ -67,14 +67,14 @@ function flags(argv) {
     const a = argv[i];
     if (!a.startsWith('--') || a === '--') { out._.push(a); continue; }
     const [k, inline] = a.slice(2).split(/=(.*)/s);
-    const takes = !['json', 'help'].includes(k);
+    const takes = !['json', 'help', 'live'].includes(k);
     out[k] = inline !== undefined ? inline : takes && argv[i + 1] !== undefined && !argv[i + 1].startsWith('--') ? argv[++i] : true;
   }
   return out;
 }
 
 const LIST_KINDS = { screens: 'console.screens', screen: 'console.screens', dialogs: 'console.dialogs', dialog: 'console.dialogs', settings: 'console.settings', actions: 'console.actions', action: 'console.actions', clients: 'console.clients', consoles: 'console.clients' };
-export const USAGE = 'usage: axf console open <screen> | dialog <id> | dialog close [id] | settings <tab> | action <id> [args…] | back | home | close | refresh [--hard] [--all] | where | list [screens|dialogs|settings|actions|clients] [words] | clients | overlay expand|collapse|open <url>   [--to recent|all|<client>]';
+export const USAGE = 'usage: axf console open <screen> | dialog <id> | dialog close [id] | settings <tab> | action <id> [args…] | back | home | close | refresh [--hard] [--all] | open-url <url> [--live] | where | list [screens|dialogs|settings|actions|clients] [words] | clients | overlay expand|collapse|open <url>   [--to recent|all|<client>]';
 export const OVERLAY_VERBS = ['expand', 'collapse', 'open'];
 
 /** `axf console …` words → a control@1 console command, or { error }. */
@@ -104,6 +104,7 @@ export function commandFromArgv(argv) {
     }
     case 'back': case 'home': case 'close': cmd = act('console.nav', verb, 'here'); break;
     case 'refresh': cmd = { ...act('console.nav', 'refresh', 'here'), input: { ...input, ...(f.hard ? { hard: true } : {}), ...(f.all ? { to: 'all' } : {}) } }; break;
+    case 'open-url': case 'url': cmd = rest[0] ? { op: 'act', target: 'console.nav', path: 'here', action: 'open_url', input: { ...input, url: rest[0], ...(f.live ? { live: true } : {}) } } : null; break;
     case 'where': case 'here': cmd = { op: 'get', target: 'console.nav', path: 'here' }; break;
     case 'clients': case 'consoles': cmd = { op: 'list', target: 'console.clients' }; break;
     case 'list': case 'ls': {

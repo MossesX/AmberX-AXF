@@ -2299,5 +2299,11 @@
     "wave": 1,
     "module": "app-console",
     "notes": "context-lead@1: rt.contextExtras keys '^:<name>' lead every context menu above one separator (core/engines/windows.ts withContextLead, react Overlays ContextMenuHost; any target, even contributions:false, right-click and long-press). The console registers Console settings (app.settings, folding the asset's own Settings in) plus console.settings.open for search, voice, MCP and CLI; help entries; checks spec/check-context-lead.mts + apps/console-web/scripts/console-settings-menu.mts. Kotlin twin deferred."
+  },
+  "cx.consolefirst": {
+    "status": "built",
+    "wave": 1,
+    "module": "app-console",
+    "notes": "Build drive-live-console-first (Nov 13 2026). control@1 console.nav act open_url + console-command@1 op url (consoleOwnUrl, consoleUrlRoute); MCP console_open_url, REST POST /api/console/open-url, CLI axf console open-url; input.live = never queued or woken. The console opens its own ?view / ?dialog / ?settings in place, axHub approval links in approvals.view / approvals.popup (Approve / Deny), anything else in a tab (a one-tap Open dialog when the browser blocks it). axHub PR #44: amberx.open_url tries the live console first; new approvals and held calls pop up there; needs AXHUB_CONSOLE_URL + AXHUB_CONSOLE_TOKEN. Kotlin twin deferred (PORTING.md)."
   }
 }

@@ -36,7 +36,8 @@
       "refresh": "navigate",
       "back": "navigate",
       "home": "navigate",
-      "close": "navigate"
+      "close": "navigate",
+      "open_url": "navigate"
     },
     "plugins.commands": {
       "run": "write"
@@ -1637,15 +1638,19 @@
         "back": {},
         "home": {},
         "close": {},
-        "refresh": {}
+        "refresh": {},
+        "open_url": {
+          "url": "string"
+        }
       },
       "actEffect": {
         "refresh": "navigate",
         "back": "navigate",
         "home": "navigate",
-        "close": "navigate"
+        "close": "navigate",
+        "open_url": "navigate"
       },
-      "doc": "Where the open console is (get here: screen, dialog, settings tab) and moving it: back (closes an open dialog first, else the screen before), home (the first screen), close (the open dialog). Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them)."
+      "doc": "Where the open console is (get here: screen, dialog, settings tab) and moving it: back (closes an open dialog first, else the screen before), home (the first screen), close (the open dialog), open_url (input.url: one of Brett's own https pages on amberxai.com, shown in the console: its own screens, dialogs and settings in place, an axHub approval in its approvals dialog, any other page in a new tab; input.live = only a console open now, never queued or woken). Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them)."
     },
     "console.clients": {
       "domain": "console",
@@ -3780,7 +3785,7 @@
         "paths": "host"
       },
       "console.nav": {
-        "description": "Where the open console is (get here: screen, dialog, settings tab) and moving it: back (closes an open dialog first, else the screen before), home (the first screen), close (the open dialog). Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them).",
+        "description": "Where the open console is (get here: screen, dialog, settings tab) and moving it: back (closes an open dialog first, else the screen before), home (the first screen), close (the open dialog), open_url (input.url: one of Brett's own https pages on amberxai.com, shown in the console: its own screens, dialogs and settings in place, an axHub approval in its approvals dialog, any other page in a new tab; input.live = only a console open now, never queued or woken). Every console act takes optional input.to: recent (default: the console used last), all (every open console of the caller) or a client id (console.clients lists them).",
         "ops": [
           "get",
           "act"
@@ -3789,7 +3794,12 @@
           "back": {},
           "home": {},
           "close": {},
-          "refresh": {}
+          "refresh": {},
+          "open_url": {
+            "url": {
+              "type": "string"
+            }
+          }
         },
         "paths": [
           "here"

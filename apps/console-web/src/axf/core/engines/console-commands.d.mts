@@ -7,7 +7,7 @@ export interface ConsoleItem { kind: ConsoleItemKind; id: string; label: string;
 export interface ConsoleHere { screen?: string; screenLabel?: string; dialog?: string; settings?: string }
 export interface ConsoleCatalog { $axf: 'console-catalog@1'; app: string; items: ConsoleItem[]; here: ConsoleHere }
 export interface ConsoleClient { id: string; app?: string; title?: string; device?: string; user?: string; lastUsed?: number; lastSeen?: number; here?: ConsoleHere; catalog?: ConsoleCatalog }
-export interface ConsoleMessage { $axf: 'console-command@1'; id: string; op: 'open' | 'run' | 'back' | 'home' | 'close' | 'refresh' | 'control'; /** op control: a console-control@1 command (spec/CONSOLE-CONTROL.md) */ command?: Record<string, unknown>; kind?: ConsoleItemKind; target?: string; label?: string; spec?: string; anchor?: string; arg?: string; /** a tab or an item to bring forward on the opened screen (runs `<screen>.focus:<focus>`) */ focus?: string; hard?: boolean; by: string; at: string; /** set by the console server on a queued command: `queued` (held until a console connected) or `woke` (AmberX opened the console for it) */ delivery?: 'queued' | 'woke' }
+export interface ConsoleMessage { $axf: 'console-command@1'; id: string; op: 'open' | 'run' | 'back' | 'home' | 'close' | 'refresh' | 'url' | 'control'; /** op control: a console-control@1 command (spec/CONSOLE-CONTROL.md) */ command?: Record<string, unknown>; kind?: ConsoleItemKind; target?: string; label?: string; spec?: string; anchor?: string; arg?: string; /** a tab or an item to bring forward on the opened screen (runs `<screen>.focus:<focus>`) */ focus?: string; hard?: boolean; /** op url: one of Brett's own https pages (consoleOwnUrl); arg `popup` = a new approval the hub pushed */ url?: string; by: string; at: string; /** set by the console server on a queued command: `queued` (held until a console connected) or `woke` (AmberX opened the console for it) */ delivery?: 'queued' | 'woke' }
 export type ConsoleRun =
   | { ok: true; data: Record<string, unknown>; deliver?: { to: string[]; message: ConsoleMessage } }
   | { ok: false; code: ControlWireCode; message: string; [k: string]: unknown };
@@ -24,6 +24,15 @@ export const CONSOLE_CLIENT_STALE_MS: number;
 export const CONSOLE_HEARTBEAT_MS: number;
 export const CONSOLE_LATE_MS: number;
 export const CONSOLE_TOOLS: readonly string[];
+export const CONSOLE_URL_DOMAINS: readonly string[];
+export const CONSOLE_URL_MAX: number;
+export const CONSOLE_MESSAGE_OPS: readonly ConsoleMessage['op'][];
+export type ConsoleOwnUrl = { url: string; host: string; path: string; query: string; hash: string; error?: undefined } | { error: string; url?: undefined };
+export function consoleOwnUrl(raw: unknown): ConsoleOwnUrl;
+export type ConsoleUrlRoute =
+  | { how: 'here' | 'screen' | 'dialog' | 'settings' | 'action' | 'tab'; url: string; label: string; target?: string; spec?: string; arg?: string; anchor?: string; error?: undefined }
+  | { error: string; how?: undefined };
+export function consoleUrlRoute(raw: unknown, ctx?: { console?: string; hub?: string }, opts?: { popup?: boolean }): ConsoleUrlRoute;
 export function foldWords(s: unknown): string;
 export function normalizeConsoleItem(raw: unknown): ConsoleItem | null;
 export function normalizeConsoleCatalog(raw: unknown): ConsoleCatalog;

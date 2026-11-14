@@ -19,6 +19,10 @@
  * decided the dialog says so and closes. "Open new approvals by themselves" can be switched off in its settings (per
  * browser).
  *
+ * Pushed by axHub (drive-live-console-first, Nov 13 2026): the hub sends each new request and held call to the live
+ * console as `approvals.popup:<id>` (console-commands op url), so it pops up within a moment of being made, with the
+ * tab in the background too, instead of on the next read.
+ *
  * Held commands (veto@1, Brett Oct 28 2026): a command Claude sends through Vinnie is held by the hub for a countdown
  * (90 s since axHub decision 104) and then run, unless Brett stops it. The feed lists those with `status: "held"`;
  * lib-hub's `veto.ts` splits them off. Held entries show a live countdown with **Deny**, **Approve** (run it now) and
@@ -624,13 +628,26 @@ export const plugin: AxfWebLibrary = {
     rt.actions.register('approvals.check', () => void checkNow(), { label: 'Check axHub approvals' });
     rt.actions.register('approvals.open', () => { globalThis.open(st.approvalsUrl, '_blank', 'noopener'); }, { label: 'Open axHub approvals' });
     // approvals.view:<id> — that call in the console (menus, console_show, notification taps); approvals.review is its
-    // older name. Only opens: a session may show it to him, the deciding stays his.
+    // older name. Only opens: a session may show it to him, the deciding stays his. An id the banner hasn't read yet
+    // (axHub sent it the moment it was made, before the next 5 s read) is read first.
+    const waiting = (id: string) => st.pending.some((x) => x.id === id) || st.held.some((x) => x.id === id);
+    const whenKnown = (id: string, then: () => void, gone: () => void) => {
+      if (waiting(id)) { then(); return; }
+      void checkNow().then(() => (waiting(id) ? then() : gone()));
+    };
     const view = ([id]: string[]) => {
-      if (id && (st.pending.some((x) => x.id === id) || st.held.some((x) => x.id === id))) openReview(id);
-      else rt.toast('That one is no longer waiting.', 'info', 'Approvals');
+      if (!id) return;
+      whenKnown(id, () => { opened.add(id); openReview(id); }, () => rt.toast('That one is no longer waiting.', 'info', 'Approvals'));
     };
     rt.actions.register('approvals.view', view, { label: 'Show an axHub approval', params: true, searchable: false, effect: 'navigate' });
     rt.actions.register('approvals.review', view, { label: 'Review an axHub approval', params: true, searchable: false, effect: 'navigate' });
+    // approvals.popup:<id> — a new request or held call axHub pushed to this console (drive-live-console-first, Nov 13
+    // 2026): pops up at once with Approve / Deny (the veto screen for a held call), once, unless "Open new approvals by
+    // themselves" is off here; the 5 s read stays the fallback.
+    rt.actions.register('approvals.popup', ([id]) => {
+      if (!id || !autoOpenOn() || opened.has(id)) return;
+      whenKnown(id, () => { if (opened.has(id)) return; opened.add(id); save(OPENED_KEY, [...opened].slice(-50).join(',')); openReview(id); }, () => undefined);
+    }, { label: 'Pop up a new axHub approval', params: true, searchable: false, effect: 'navigate' });
   },
   banners: [{ id: 'approvals', label: 'Approvals', icon: 'shield', settingsTab: 'approvals-banner', order: 5, render: () => <ApprovalsBanner /> }],
   dialogs: {

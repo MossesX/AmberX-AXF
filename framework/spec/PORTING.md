@@ -182,6 +182,15 @@ Web only (Android on hold), Kotlin twins when the Android side resumes:
 - `ui-choices@1` (`framework/core/ui-choices.mjs`): the `choices` and `singleOption` fields of ui-review-item@1.
 
 
+## Deferred: console first, open a URL in the console (Nov 13 2026)
+
+Build `drive-live-console-first`. Web only (Android on hold); the Kotlin twin is deferred:
+- `console.nav` act `open_url` (input `url`, `live?`, `popup?`), `console-command@1` op `url` (field `url`, `arg: popup`), and the
+  pure rules `consoleOwnUrl` (the amberxai.com allowlist, same as axHub's `ownUrl` and AmberX's `OpenUrlRules.java`) and
+  `consoleUrlRoute` (console ?view / ?dialog / ?settings in place, axHub approval links → `approvals.view` / `approvals.popup`,
+  else a tab). A port needs both functions and the same checks (`framework/spec/check-console-commands.mts`).
+- `CONSOLE_TOOLS` gains `console_open_url`.
+
 ## Deferred: skin stepping, banner Skins menu, asset overrides list (Nov 12 2026)
 
 Build `build-plan-1-skins-one-row-build-tables-backgrounds-asset-overrides`. Web only; the Kotlin twin is deferred (Android on hold):

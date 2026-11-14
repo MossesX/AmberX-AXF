@@ -42,6 +42,11 @@ Mounted twice: /api/plugins/console-commands/… (the plugin mount; the console 
   GET  settings · POST settings {wake, ttlS, browser}              queue + wake settings (the owner changes them)
   POST ""                                                          a whole control@1 command of the console domain
   POST open {screen} · dialog {id, arg?} (close: {"action": "close", id?}) · settings {tab, anchor?} · action {id, args?, confirm?} · back · home · close · refresh {hard?}   (each takes `to`)
+  POST open-url {url, live?, popup?, label?}                       one of Brett's own pages in the console (console.nav act open_url)
+
+Console first (build drive-live-console-first, Nov 13 2026): `input.live: true` on a command means "only a console open
+right now": no queue, no AmberX wake; nobody open (or nobody answering) answers at once with `noConsole: true`. axHub's
+`amberx.open_url` sends that first and launches the page on the phone only when it comes back that way.
   GET  where · GET list?kind=screens|dialogs|settings|actions&q=…&limit=…
 
 Capability console-commands@1: plugin_services.get("console-commands@1").run(command, grants=[…], by="…", audience="owner").
@@ -604,6 +609,10 @@ def run(command: dict[str, Any], grants: list[str] | None = None, by: str = "", 
     command = focus_rewrite(command, audience)
     _late_prune()
     r = _runner(command, grants, by, ready_clients(audience))
+    if _queueable(command, r) and _live_only(command):
+        out = _no_live_console(r)
+        _log(command, out, by, audience)
+        return out
     if _queueable(command, r):
         out = _run_queued(command, grants, by, audience, DELIVERY_WAIT_S if wait is None else wait)
         out["status"] = _status_of(out)
@@ -622,16 +631,32 @@ def run(command: dict[str, Any], grants: list[str] | None = None, by: str = "", 
             r["delivered"] = [acks[c] if c in acks else {"client": c, "ok": False, "pending": True, "message": "didn't answer (asleep?)"} for c in tried]
             who = next((c for c in tried if c in acks), "")
             r["delivery"] = {"how": "live" if who and who == tried[0] else "after retry" if who else "pending", "tried": tried, **({"client": who} if who else {})}
-            if not who:
+            if not who and _live_only(command):
+                r = _no_live_console(r, tried)
+            elif not who:
                 r = _nobody_answered(command, grants, by, audience, r, tried, message, RETRY_WAIT_S if wait is None else min(wait, RETRY_WAIT_S))
         else:
             r["delivered"] = deliver(to, message, audience)
             r["delivery"] = {"how": "after reconnect" if r["delivered"] and all(x.get("afterReconnect") for x in r["delivered"] if x.get("ok")) and any(x.get("ok") for x in r["delivered"]) else "live"}
+            if _live_only(command) and not any(x.get("ok") for x in r["delivered"]):
+                r = _no_live_console(r, to)
         r["status"] = _status_of(r)
         if r["status"] == "pending" and not r.get("queued"):
             r["message"] = r.get("message") or "sent, but no console answered yet"
     _log(command, r, by, audience)
     return r
+
+
+def _live_only(command: dict[str, Any]) -> bool:
+    """`input.live: true`: deliver to a console open now or not at all (axHub's console-first open_url)."""
+    inp = command.get("input")
+    return isinstance(inp, dict) and inp.get("live") is True
+
+
+def _no_live_console(r: dict[str, Any], tried: list[str] | None = None) -> dict[str, Any]:
+    msg = f"no open console answered (tried {', '.join(tried)})" if tried else "no console is open right now"
+    return {**r, "ok": False, "code": "not_found", "status": "failed", "noConsole": True, "message": f"{msg}; not queued (live only)",
+            "delivery": {"how": "none", **({"tried": tried} if tried else {})}}
 
 
 def _to_of(command: dict[str, Any]) -> str:
@@ -1029,6 +1054,28 @@ async def refresh(request: Request) -> JSONResponse:
     if b.get("hard") is True:
         cmd["input"] = {**(cmd.get("input") or {}), "hard": True}
     return await go(request, cmd)
+
+
+HUB_SEEN = "hub-console-first.json"  # the last time axHub reached this console (the systems check reads it: hooks.mjs)
+
+
+def _hub_seen() -> None:
+    try:
+        DATA_DIR.mkdir(parents=True, exist_ok=True)
+        (DATA_DIR / HUB_SEEN).write_text(json.dumps({"at": _iso(_now())}))
+    except OSError:
+        pass  # only the systems check reads it
+
+
+@router.post("/open-url")
+async def open_url(request: Request) -> JSONResponse:
+    """Open one of Brett's own pages in the console: {url, live?, popup?, label?, to?}. live = a console open now or nothing
+    (no queue, no wake); popup = a new axHub approval the hub pushed (pops up once, unless pop-ups are off there)."""
+    b = await _body(request)
+    if b.get("by") == "axhub":
+        _hub_seen()
+    flags = {k: True for k in ("live", "popup") if b.get(k) is True}
+    return await go(request, {"op": "act", "target": "console.nav", "path": "here", "action": "open_url", **_to(b, url=b.get("url"), label=b.get("label"), **flags), **_audit(b)})
 
 
 # ---------------------------------------------------------------------- routes: the phone's overlay

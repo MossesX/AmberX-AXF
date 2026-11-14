@@ -925,7 +925,7 @@ def _register_control_tools(mcp: MCPServer, control: Callable[[dict[str, Any]], 
 
 # ---------------------------------------------------------------------- console commands (control@1 console domain)
 
-CONSOLE_TOOLS = ("console_open", "console_dialog", "console_settings", "console_action", "console_back", "console_where", "console_list", "console_clients", "console_refresh")
+CONSOLE_TOOLS = ("console_open", "console_dialog", "console_settings", "console_action", "console_back", "console_where", "console_list", "console_clients", "console_refresh", "console_open_url")
 FOLLOW_TOOLS = ("console_show", "console_follow")  # Follow Amber plugin (follow-amber@1)
 # Opening and moving only navigate, so they are annotated read-only: axHub's recommended preset (decision #112) runs
 # read-only tools at once, and navigation never waits on a veto countdown (Brett, Nov 3 2026: Follow Amber).
@@ -1015,6 +1015,15 @@ def _register_console_tools(mcp: MCPServer, console: Callable[[dict[str, Any]], 
         """Reload the open console page, so it picks up a deploy or a stuck screen. hard=true clears its caches first.
         to="all" reloads every open console. Reloading loses nothing saved; an unsaved form on screen is gone."""
         return await go({"op": "act", "target": "console.nav", "path": "here", "action": "refresh", "input": inp(to, **({"hard": True} if hard else {}))})
+
+    @mcp.tool(annotations=NAVIGATE)
+    async def console_open_url(url: str, live: bool = False, to: Delivery = "recent") -> dict[str, Any]:
+        """Open one of Brett's own pages (https on amberxai.com) in his open Dev Console instead of on his phone: the
+        console's own screens (?view=, ?dialog=, ?settings=) in place, an axHub approval
+        (https://axhub.amberxai.com/auth/admin/approvals/<id>) in the console's approvals dialog with Approve / Deny,
+        any other page in a new tab from the console. Use this (not amberx.open_url) whenever Brett may be at the
+        console. live=true: only a console open right now (answers noConsole at once, never queued or woken)."""
+        return await go({"op": "act", "target": "console.nav", "path": "here", "action": "open_url", "input": inp(to, url=url, **({"live": True} if live else {}))})
 
     @mcp.tool(annotations=READ)
     async def console_where() -> dict[str, Any]:

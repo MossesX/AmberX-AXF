@@ -2537,6 +2537,13 @@
               ]
             },
             {
+              "id": "cx.consolefirst",
+              "title": "Console first: Amber opens pages and approvals in Brett's open web console (console.nav open_url, console_open_url, axHub amberx.open_url and new approvals pushed to the console), the phone only when no console answers",
+              "note": "",
+              "tag": "lib",
+              "recommended": true
+            },
+            {
               "id": "cx.github",
               "title": "GitHub: repo status, commits, Actions runs for the framework repo",
               "note": "",

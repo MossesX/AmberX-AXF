@@ -26,6 +26,9 @@ t('CLI words', () => {
   assert.deepEqual(commandFromArgv(['list', 'actions', 'theme']).command, { op: 'list', target: 'console.actions', select: { q: 'theme' } });
   assert.deepEqual(commandFromArgv(['list', 'plan']).command, { op: 'list', target: 'console.screens', select: { q: 'plan' } });
   assert.deepEqual(commandFromArgv(['clients']).command, { op: 'list', target: 'console.clients' });
+  assert.deepEqual(commandFromArgv(['open-url', '--live', 'https://axhub.amberxai.com/auth/admin/approvals/c1']).command, { op: 'act', target: 'console.nav', path: 'here', action: 'open_url', input: { url: 'https://axhub.amberxai.com/auth/admin/approvals/c1', live: true } });
+  assert.deepEqual(commandFromArgv(['url', 'https://amberxai.com/', '--to', 'all']).command, { op: 'act', target: 'console.nav', path: 'here', action: 'open_url', input: { to: 'all', url: 'https://amberxai.com/' } });
+  assert.ok(commandFromArgv(['open-url']).error, 'open-url without a url is a usage error');
   assert.ok(commandFromArgv(['open']).error, 'open without a screen is a usage error');
   assert.ok(commandFromArgv(['explode']).error, 'unknown verb');
 });
