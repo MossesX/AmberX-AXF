@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T13:01:48.650Z",
+ "updatedAt": "2026-11-14T13:02:17.357Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -135365,7 +135365,7 @@
    "mergedAt": "2026-11-14T12:57:15Z",
    "priority": "P0",
    "createdAt": "2026-11-13T23:39:26.785Z",
-   "updatedAt": "2026-11-14T13:01:41.606Z",
+   "updatedAt": "2026-11-14T13:02:07Z",
    "builtAt": "",
    "notes": [
     {
@@ -135399,6 +135399,10 @@
     {
      "text": "Reconciler: PR #665 merged",
      "at": "2026-11-14T13:01:41.606Z"
+    },
+    {
+     "text": "Shipped manifest sm-land-batch-merge-main-each-finished rev 1 sent to Shipped features (orchestrator): landed c0cceecca, 5 file(s), 0 test line(s), 4 open.",
+     "at": "2026-11-14T13:02:07Z"
     }
    ],
    "approvals": [],
@@ -137356,7 +137360,7 @@
    "pr": "#669",
    "mergedAt": "2026-11-14T12:57:14Z",
    "createdAt": "2026-11-14T03:29:11.368Z",
-   "updatedAt": "2026-11-14T13:01:41.606Z",
+   "updatedAt": "2026-11-14T13:02:10Z",
    "builtAt": "",
    "notes": [
     {
@@ -137418,6 +137422,10 @@
     {
      "text": "Reconciler: PR #669 merged",
      "at": "2026-11-14T13:01:41.606Z"
+    },
+    {
+     "text": "Shipped manifest sm-hotfix-get-main-ci-green-theme-swap rev 1 sent to Shipped features (orchestrator): landed c0cceecca, 34 file(s), 0 test line(s), 1 open.",
+     "at": "2026-11-14T13:02:10Z"
     }
    ],
    "approvals": [],

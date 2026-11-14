@@ -792,8 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 20:31 UTC · `context-menus-plugin-one-true-source` branch claude/context-menus-plugin-one-true-source (all) · pipeline
-- 2026-11-13 20:31 UTC · `context-menus-plugin-one-true-source` note (all) · orchestrator
 - 2026-11-13 20:31 UTC · `toolbar-widgets-attach-any-banner-style` → running, note (all) · pipeline
 - 2026-11-13 20:32 UTC · `toolbar-widgets-attach-any-banner-style` branch claude/toolbar-widgets-attach-any-banner-style (all) · pipeline
 - 2026-11-13 20:32 UTC · `toolbar-widgets-attach-any-banner-style` note (all) · orchestrator
@@ -1192,6 +1190,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 12:40 UTC · `demo-video-series-three-minute-browser` → pending, note (all) · reconciler
 - 2026-11-14 13:01 UTC · `land-batch-merge-main-each-finished` merged, note (all) · reconciler
 - 2026-11-14 13:01 UTC · `hotfix-get-main-ci-green-theme-swap` merged, note (all) · reconciler
+- 2026-11-14 13:02 UTC · `land-batch-merge-main-each-finished` note (all) · orchestrator
+- 2026-11-14 13:02 UTC · `hotfix-get-main-ci-green-theme-swap` note (all) · orchestrator
 
 ## Token passes (log)
 
