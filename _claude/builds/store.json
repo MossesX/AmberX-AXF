@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5193,
- "updatedAt": "2026-11-14T04:04:28.037Z",
+ "rev": 5194,
+ "updatedAt": "2026-11-14T04:07:45.635Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -212145,7 +212145,7 @@
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-14T04:04:10.310Z",
+   "updatedAt": "2026-11-14T04:07:43.206Z",
    "builtAt": "",
    "notes": [
     {
@@ -212159,6 +212159,10 @@
     {
      "text": "Brett: the axHub explainer must also explain the AXF framework and the token system: every app is built on the framework, every colour, size, layout and behaviour is a token, tokens and assets live on axHub, and that's why merged apps in one shell always look the same and share assets.",
      "at": "2026-11-14T04:04:10.310Z"
+    },
+    {
+     "text": "Brett: use the agents' group chat in the videos (especially the orchestrator and hero videos). Show the employees/agents talking to each other and handing work off: one posts a job, another says 'All right, I built this, here you go, finish that', the next picks it up, through to done. All the agents have cat names. Use the real employee system and group chat where it exists, with real build data; label staged parts as a preview.",
+     "at": "2026-11-14T04:07:43.206Z"
     }
    ],
    "approvals": [],
@@ -212367,7 +212371,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 11,
+   "rev": 12,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
