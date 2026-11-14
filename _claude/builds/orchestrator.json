@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T04:09:53.454Z",
+ "updatedAt": "2026-11-14T04:10:22.549Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -137475,6 +137475,25 @@
      "note": "",
      "uid": "st-mwfw049i01bi4e",
      "createdAt": "2026-11-14T04:09:50.514Z"
+    },
+    {
+     "id": "s5-4",
+     "text": "Third hero video, 'the boss texts': a guy gets a text from his boss: 'We're having an event, I need a public image gallery up right now for all the employees to share their pictures.' He's lying in bed, opens AmberX on his phone and says 'Amber, build me a gallery with user accounts and GPS tagging.' Show the cat-named agents in the group chat whipping it up and handing work off, approvals popping up, then the finished app: a login gate with user accounts, employees uploading geotagged photos, a map showing where each photo was taken, and a public gallery anyone can view. Location sharing is opt-in, with a clear consent prompt. Use real AXF libraries where they exist; label staged parts as a preview. Also cut a 60-second version.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfw0iq901lbtl",
+     "createdAt": "2026-11-14T04:10:08.589Z"
     },
     {
      "id": "s7",

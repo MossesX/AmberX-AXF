@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5200,
- "updatedAt": "2026-11-14T04:09:53.454Z",
+ "rev": 5201,
+ "updatedAt": "2026-11-14T04:10:22.549Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -212195,15 +212195,22 @@
     "queuedAt": "",
     "queuedBy": "",
     "account": "mossesx-max-",
-    "session": "axf-demo-video-series-three-minute-browser--earl",
+    "session": "",
     "slot": "",
     "model": "Opus",
     "launchedAt": "2026-11-14T04:03:16.135Z",
     "runs": 1,
-    "lastRun": null,
+    "lastRun": {
+     "at": "2026-11-14T04:09:08.606Z",
+     "exit": 0,
+     "outcome": "returned",
+     "stepsLeft": 7,
+     "account": "mossesx-max-",
+     "session": "axf-demo-video-series-three-minute-browser--earl"
+    },
     "split": null,
     "splitRequested": "",
-    "note": "",
+    "note": "Session on mossesx-max- stopped on its own with 7 steps left: back in Pending for Brett.",
     "route": "",
     "dispatchedAt": "2026-11-14T04:03:16.135Z",
     "planned": {
@@ -212309,6 +212316,28 @@
      "updatedAt": "2026-11-14T04:09:50.742Z"
     },
     {
+     "id": "s5-4",
+     "uid": "st-mwfw0iq901lbtl",
+     "title": "",
+     "text": "Third hero video, 'the boss texts': a guy gets a text from his boss: 'We're having an event, I need a public image gallery up right now for all the employees to share their pictures.' He's lying in bed, opens AmberX on his phone and says 'Amber, build me a gallery with user accounts and GPS tagging.' Show the cat-named agents in the group chat whipping it up and handing work off, approvals popping up, then the finished app: a login gate with user accounts, employees uploading geotagged photos, a map showing where each photo was taken, and a public gallery anyone can view. Location sharing is opt-in, with a clear consent prompt. Use real AXF libraries where they exist; label staged parts as a preview. Also cut a 60-second version.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-14T04:10:08.589Z",
+     "updatedAt": "2026-11-14T04:10:09.489Z"
+    },
+    {
      "id": "s7",
      "uid": "st-mwfvsr6p0143q5",
      "title": "",
@@ -212405,7 +212434,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 15,
+   "rev": 16,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
