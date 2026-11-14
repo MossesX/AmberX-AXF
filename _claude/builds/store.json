@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5465,
- "updatedAt": "2026-11-14T22:40:16.458Z",
+ "rev": 5466,
+ "updatedAt": "2026-11-14T22:40:31.831Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -223696,7 +223696,7 @@
    "pr": "#678",
    "priority": "P0",
    "createdAt": "2026-11-14T22:17:37.935Z",
-   "updatedAt": "2026-11-14T22:38:18.570Z",
+   "updatedAt": "2026-11-14T22:40:29.394Z",
    "builtAt": "",
    "notes": [
     {
@@ -223752,7 +223752,16 @@
      "at": "2026-11-14T22:38:13.238Z"
     }
    ],
-   "approvals": [],
+   "approvals": [
+    {
+     "phase": 1,
+     "from": "Fable",
+     "to": "Opus",
+     "at": "2026-11-14T22:40:29.394Z",
+     "by": "auto",
+     "kind": "downgrade"
+    }
+   ],
    "upgradeRequests": [],
    "origin": {
     "said": "We need to make sure things are landing as soon as they're built and merged as soon as they're built. I keep getting too many commits behind",
@@ -223877,12 +223886,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T22:40:29.394Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T22:20:10.644Z",
-     "updatedAt": "2026-11-14T22:20:10.644Z"
+     "updatedAt": "2026-11-14T22:40:29.722Z"
     },
     {
      "id": "s4",
@@ -224519,7 +224528,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
