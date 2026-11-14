@@ -36,3 +36,12 @@ fetched back into the store.
   with neither it exits 1 with `UNRESOLVED: no resolver …` instead of guessing.
 - So a generated-file clash is regenerated from the merged sources and staged (rules above); a real source clash still
   stops with `UNRESOLVED: <files>`.
+
+## Resolver check (s3)
+
+`node framework/spec/check-land-resolve.mjs`: a scratch repo (its own `git init`, nothing shared with `/opt/axf`,
+which was damaged at the time) with the deployed shim, the repo resolver and the real generated-files@1 file rules
+(generators stubbed to write from the merged sources). Clash in `apps/console-web/axf.lock.json`,
+`apps/console-web/src/control/inventory.json` and `apps/console-web/src/assets/help/framework.json`: all three
+regenerated from both sides' sources and staged, exit 0. Source clash in `src/app.mjs`: exit 1,
+`UNRESOLVED: src/app.mjs`, no generator run. Result: 13/13 ok.
