@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T04:34:56.252Z",
+ "updatedAt": "2026-11-14T04:36:31.284Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -137373,7 +137373,7 @@
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-14T04:34:54.597Z",
+   "updatedAt": "2026-11-14T04:36:28.840Z",
    "builtAt": "",
    "notes": [
     {
@@ -137759,6 +137759,25 @@
      "note": "",
      "uid": "st-mwfwvlfe01g27f",
      "createdAt": "2026-11-14T04:34:19.032Z"
+    },
+    {
+     "id": "s21",
+     "text": "Three more videos. (1) Live banners and GitHub: the banner widgets doing real work live: autofix running, the merge queue, merging, pulling main, repairs, 'add this key' prompts, each banner's status animating as it goes. Then open the shell into a container through tmux right from the console. (2) Notes, tasks and to-dos: endlessly nestable, so a list inside a note inside a task inside another note, as deep as you want; create, nest, check off and search them. (3) Menus and toolbars: every toolbar, tab group, nav menu, application menu and context menu can be regenerated randomly on its own. Every single item in them has its own settings: open several settings panels and show how a change you make overrides the default, and how to reset it back. Use real screens and data; label staged parts as a preview.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfwydjm01lv8x",
+     "createdAt": "2026-11-14T04:36:28.841Z"
     },
     {
      "id": "s7",
