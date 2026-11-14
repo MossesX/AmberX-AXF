@@ -187,6 +187,26 @@ Still red in that run, and also red on main: the kernel theme conformance test (
   Each branch is a superset of the one before.
 - Not merged by hand (queue-only rule).
 
+### Second attempt (Nov 14, after main went green)
+
+Main's red checks were fixed by #669 and its Android run is green again. The stack's last kick-out (runs 43597698681 to
+43602852062) had one cause, shown twice: on top of main, `molly-guide/help.json` carried the draft `gizmo-guide` entry
+that main had removed (`help-coverage --check` in the build-engine sweep, `check-help.mts` in the web job).
+
+- **Part 1:** main merged in. The draft help entry was dropped, leaving main's written one. `axf.css` (both copies) keeps
+  both blocks: part 1's `--fx-safe-*` insets and main's component-token block.
+- **Part 2:** part 1 merged in (no clash). The lander then merged main into it on its own.
+- **Part 3:** part 2 merged in. Generated files (tracker, plan, libraries, control inventory) regenerated.
+- **Part 4:** part 3 merged in. `axf.css` keeps part 4's safe-area layer rules and main's skin-animation rules.
+  `status.json` keeps both sets of keys. Generated files regenerated.
+- **Wake word:** part 4 merged in. `PORTING.md` keeps all three deferred sections. Generated files regenerated.
+- **Host gotcha:** on this VPS `tracker.mjs` reads `status.json` from the hub data folder unless `AXF_DATA_DIR=off`.
+  Part 3's first regeneration used it, so it was redone from the repo's own file (`bb1c29925`).
+- **Checks on the top of the stack (wake, `df3aa638e`):** CI's whole light list (`ci-scope.mjs light --run`, run here
+  with Node 22 for the strip-types tests) passes. `help-coverage --check`, `check-help.mts` (270), tracker, plugins,
+  `axf validate --framework`, theme, controls, console-control and safe-area also pass.
+- All five PRs re-added in order (`land.mjs queue add` 637, 639, 633, 640, 643). Their PR CI started on the new heads.
+
 ## Notification (s17)
 
 Console alert `built:console-app-land-parts-1-4-build-apk` (source `builds`, notify type `builds.done`) with the
