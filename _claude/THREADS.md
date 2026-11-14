@@ -796,7 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 21:53 UTC · `token-registry-skin-editor-live-sandbox` note (all) · orchestrator
 - 2026-11-13 21:54 UTC · `token-registry-skin-editor-live-sandbox` note (all) · foreign-write
 - 2026-11-13 21:55 UTC · `icon-map-icon-packs-every-icon-badge-app` s8 done (all) · orchestrator
 - 2026-11-13 21:55 UTC · `token-registry-skin-editor-live-sandbox` note (all) · orchestrator
@@ -1196,6 +1195,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 22:24 UTC · `replace-merge-queue-one-time-landing` s1 done, → running (all) · orchestrator
 - 2026-11-14 22:24 UTC · `replace-merge-queue-one-time-landing` branch claude/replace-merge-queue-one-time-landing (all) · builds-live
 - 2026-11-14 22:28 UTC · `land-finish-auto-land-live-clear-backlog` s1 done (all) · orchestrator
+- 2026-11-14 22:30 UTC · `replace-merge-queue-one-time-landing` s2 done (all) · orchestrator
 
 ## Token passes (log)
 
