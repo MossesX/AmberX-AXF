@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T23:50:08.432Z",
+ "updatedAt": "2026-11-14T23:50:36.266Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -145194,11 +145194,11 @@
    "hidden": false,
    "source": "land-finish-auto-land-live-clear-backlog",
    "pendingId": "",
-   "branch": "claude/merge-main-land-console-app-part-4",
-   "pr": "",
+   "branch": "claude/console-app-part-4-console-side-safe",
+   "pr": "#640",
    "priority": "P0",
    "createdAt": "2026-11-14T23:16:42.547Z",
-   "updatedAt": "2026-11-14T23:46:49.178Z",
+   "updatedAt": "2026-11-14T23:50:11.690Z",
    "builtAt": "",
    "notes": [
     {
