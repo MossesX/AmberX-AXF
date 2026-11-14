@@ -796,8 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 01:09 UTC · `voice-listener-use-claude-when-connected` s12 done (all) · orchestrator
-- 2026-11-14 01:10 UTC · `voice-listener-use-claude-when-connected` note (all) · orchestrator
 - 2026-11-14 01:10 UTC · `voice-listener-use-claude-when-connected` s13 done (all) · orchestrator
 - 2026-11-14 01:11 UTC · `voice-listener-use-claude-when-connected` PR #666 (all) · builds-live
 - 2026-11-14 01:11 UTC · `voice-listener-use-claude-when-connected` s14 done, → built (all) · orchestrator
@@ -1196,6 +1194,8 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 22:50 UTC · `land-all-skin-builds` → complete (all) · orchestrator
 - 2026-11-14 22:51 UTC · `console-look-becomes-default-axhub-skin` s3 done (all) · orchestrator
 - 2026-11-14 22:52 UTC · `console-look-becomes-default-axhub-skin` note (all) · orchestrator
+- 2026-11-14 22:52 UTC · `console-look-becomes-default-axhub-skin` → queued, note (all) · pipeline
+- 2026-11-14 22:52 UTC · `hotfix-desktop-console-draws-app-menu` → running, note (all) · pipeline
 
 ## Token passes (log)
 
