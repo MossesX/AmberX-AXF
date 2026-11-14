@@ -32,7 +32,7 @@ import { SearchIndex } from './engines/search';
 import { STYLE_PACKAGE_TYPE, stepPackage, stylePackageSlots, type StylePackageData } from './engines/stylepackage';
 import { appMenuSearchEntries, chromeToggleItems, compileAppMenu, compileProviderItems, mergeAppMenu, resolveChecked, type AppMenuContribution, type AppMenuEnv, type CompiledAppMenu, type CompiledMenuItem, type MergedAppMenu, type MenuSearchEntry, type ProviderOptions } from './engines/appmenu';
 import { isSkinMode, skinModeColor, skinModePair } from './engines/skin-modes.mjs';
-import { backToSkin, composeLookAt, globalSkinOf, isSubScopeKey, lookAfterChange, newAppLook, normalizeSkin, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, setInheritSkin, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorOf, skinCoverage, skinCovers, skinEntries, skinFromDesignPackage, skinScopeDomId, skinScopeOf, snapshotLook, undoRestore, SKIN_COLOR_SLOT, SKIN_ICON_PACK_KEY, SKIN_TYPE, type AppLookDocument, type AppLookStore, type ComposedLook, type CoverageRow, type ResolvedSkin, type SkinColor, type SkinData, type SkinEntry, type SkinScope, type SkinScopeState, foldLegacyPicks, isFoldedPickType, lookNeedsMigration, migrateLookSettings, parseLegacyLook, settingsNeedMigration, skinSlots, isRetiredLookKey, LEGACY_LOOK_KEY, SKIN_SWAPPABLE_SECTION } from './engines/skin';
+import { backToSkin, composeLookAt, globalSkinOf, hubOnlyLook, isSubScopeKey, lookAfterChange, newAppLook, normalizeSkin, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, setInheritSkin, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorOf, skinCoverage, skinCovers, skinEntries, skinFromDesignPackage, skinScopeDomId, skinScopeOf, snapshotLook, undoRestore, SKIN_COLOR_SLOT, SKIN_ICON_PACK_KEY, SKIN_TYPE, type AppLookDocument, type AppLookStore, type ComposedLook, type CoverageRow, type ResolvedSkin, type SkinColor, type SkinData, type SkinEntry, type SkinScope, type SkinScopeState, foldLegacyPicks, isFoldedPickType, lookNeedsMigration, migrateLookSettings, parseLegacyLook, settingsNeedMigration, skinSlots, isRetiredLookKey, LEGACY_LOOK_KEY, SKIN_SWAPPABLE_SECTION } from './engines/skin';
 import { DESIGN_APPLIED_KEY, DESIGN_OVERRIDABLE, DESIGN_OVERRIDES_KEY, DESIGN_PACKAGE_TYPE, PACKAGE_APPLIED_KEY, captureDesignPackage, designLookSlots, isRetiredLookSetting, designPackageSlots, isAppearanceSetting, normalizeDesignOverrides, normalizeDesignPackage, overrideAfterPick, packageSettingsPlan, type DesignOverrides } from './engines/designpackage';
 import { behaviorStyle, confirmBeforeDelete, normalizeBehavior, vibrationPattern } from './engines/behavior';
 import { navStyleOutput, normalizeNavStyle, type NavStyleData } from './engines/navstyle';
@@ -130,6 +130,15 @@ export const SPACING_KEY = 'axf.appearance.spacing';
  * aside, not deleted. The look from axHub still applies. Not an appearance setting itself, so Restore keeps it.
  */
 export const APPEARANCE_LOCK_KEY = 'axf.lock.appearance';
+/**
+ * Skin from axHub only (setting, true = on; Settings → Appearance → "Get my skin only from axHub"): the app draws the
+ * hub-wide skin and axHub's tokens only (engines/skin-rules.mjs `hubOnlyLook`). Its own skin picks, overrides, UI /
+ * plugin scopes and this device's tweaks are kept, not drawn, and it drives the appearance lock while on (every look
+ * control greyed with "Following axHub"). Off = the app's own look again. Not an appearance setting: Restore keeps it.
+ */
+export const HUB_SKIN_ONLY_KEY = 'axf.lock.hubskin';
+/** The settings group holding the switch; Settings → Appearance draws it first. */
+export const HUB_SKIN_ONLY_GROUP = 'axf.appearance.hubskin';
 /** app-look@1 of an app without a hub source (engines/skin.ts). Not an appearance setting: it holds them. */
 export const APP_LOOK_KEY = 'axf.skin.look';
 /** The app whose colours the shared document's palette follows (axHub's own pages draw with it). */
@@ -374,6 +383,8 @@ export class AxfRuntime {
     );
     // The Spacing choice recompiles the styles (the provider re-applies them on any state change it sees).
     this.settings.onChange(SPACING_KEY, () => { this.terminal.ok('hot-swap', `spacing: ${this.spacing()}`); });
+    // Skin from axHub only, however it was switched (the setting row, settings.set, an action): redraw from the hub now
+    this.settings.onChange(HUB_SKIN_ONLY_KEY, () => this.hubSkinOnlyChanged());
     // Look settings (Sliders, per-asset tokens, banner looks, rolls…) are shared through the axHub look like the slots
     // (Nov 1 2026, Brett: "Any theme change applies to all"): every local change goes to the hub document.
     this.settings.onAnyChange((key, value) => {
@@ -541,8 +552,9 @@ export class AxfRuntime {
   private applyAppearance(shared: AppearanceDocument | null): void {
     this.lastAppearance = shared;
     const saved = this.ensureLook();
-    const look = saved && this.lookPreview ? setUseSkin(pickSkin(saved, this.lookPreview), true) : saved;
-    // the app level of the chain: this app's own skin, or the hub-wide one while the app follows it (engines/skin.ts)
+    const look = this.hubSkinOnly() ? hubOnlyLook(saved) : saved && this.lookPreview ? setUseSkin(pickSkin(saved, this.lookPreview), true) : saved;
+    // the app level of the chain: this app's own skin, or the hub-wide one while the app follows it (engines/skin.ts);
+    // with Skin from axHub only, the hub-wide skin alone (this app's own picks are kept, not drawn)
     const composed = look ? composeLookAt(shared, look, (id) => this.skinData(id)) : null;
     this.lastComposed = composed;
     const doc = composed?.doc ?? shared;
@@ -775,6 +787,12 @@ export class AxfRuntime {
   /** This app's look document (null while it can't be read). */
   appLook(): AppLookDocument | null { return this.ensureLook(); }
 
+  /** The look document drawn: the saved one, or only the hub-wide skin over the default while Skin from axHub only is on. */
+  private lookInForce(): AppLookDocument | null {
+    const look = this.ensureLook();
+    return this.hubSkinOnly() ? hubOnlyLook(look) : look;
+  }
+
   /** The slots where a pick beats the skin. Never the colour theme: that is switched inside the skin (`skinColorTheme`). */
   skinOverrides(): string[] { return overriddenSlots(this.appLook()); }
 
@@ -923,7 +941,7 @@ export class AxfRuntime {
 
   /** The skin in force at a place in this app, hub-wide skin included: `{ id, overrides, from }` (from = the level that decided). */
   skinAt(scope?: Partial<SkinScope> | null): ResolvedSkin {
-    return resolveLookSkin(this.appLook(), this.globalSkin(), { ...scope, app: this.manifest.app.id });
+    return resolveLookSkin(this.lookInForce(), this.globalSkin(), { ...scope, app: this.manifest.app.id });
   }
 
   /** The skin in force at the app level (the one Settings → Appearance shows), '' = none. */
@@ -945,7 +963,7 @@ export class AxfRuntime {
    */
   skinScoped(key: string): AxfRuntime | null {
     if (!isSubScopeKey(key)) return null;
-    const look = this.appLook();
+    const look = this.lookInForce();
     if (!look) return null;
     const here = resolveLookSkin(look, this.globalSkin(), skinScopeOf(key, this.manifest.app.id));
     // the app level from the same document (not the last composed look, which a store without a change feed leaves behind
@@ -954,7 +972,7 @@ export class AxfRuntime {
     if (here.id === app.id && JSON.stringify(here.overrides) === JSON.stringify(app.overrides) && (here.colorTheme ?? '') === (app.colorTheme ?? '')) { this.dropScope(skinScopeDomId(key)); return null; }
     const scopeId = skinScopeDomId(key);
     const resolve = (): ResolvedInterface => {
-      const composed = composeLookAt(this.lastAppearance, this.appLook() ?? look, (id) => this.skinData(id), skinScopeOf(key, this.manifest.app.id));
+      const composed = composeLookAt(this.lastAppearance, this.lookInForce() ?? look, (id) => this.skinData(id), skinScopeOf(key, this.manifest.app.id));
       const has = (t: string, id: string) => this.registry.has(t as AssetType, id);
       const r = resolveAppearance(composed.doc, has);
       // the skin in force at this level composes its sections: nothing re-reads a design package here (skins only, Nov 10 2026)
@@ -2018,8 +2036,35 @@ export class AxfRuntime {
 
   /* ---------------- appearance lock ---------------- */
 
-  /** Is the look locked (every look control greyed, this device's own tweaks set aside)? */
-  appearanceLocked(): boolean { return this.settings.get(APPEARANCE_LOCK_KEY) === true; }
+  /**
+   * Is the look locked (every look control greyed, this device's own tweaks set aside)? By the lock itself, or by
+   * Skin from axHub only, which drives it while on (`appearanceLockReason`).
+   */
+  appearanceLocked(): boolean { return this.appearanceLockReason() !== ''; }
+
+  /** Why the look is locked: `hub` = Skin from axHub only, `lock` = Lock the look, '' = it isn't. */
+  appearanceLockReason(): '' | 'hub' | 'lock' {
+    return this.hubSkinOnly() ? 'hub' : this.settings.get(APPEARANCE_LOCK_KEY) === true ? 'lock' : '';
+  }
+
+  /** Does this app take its skin, colour theme and tokens from axHub only (Settings → Appearance, default off)? */
+  hubSkinOnly(): boolean { return this.settings.get(HUB_SKIN_ONLY_KEY) === true; }
+
+  /** Switch Skin from axHub only. Nothing is deleted either way: off draws this app's own look again. */
+  setHubSkinOnly(on: boolean): boolean {
+    if (on === this.hubSkinOnly()) return true;
+    if (on) this.settings.set(HUB_SKIN_ONLY_KEY, true); else this.settings.clear(HUB_SKIN_ONLY_KEY);
+    this.toast(on ? 'Following axHub: the skin, colours and tokens come from axHub only. Your own picks are kept.' : "This app's own look is back.", 'info', 'Appearance');
+    return true;
+  }
+
+  private hubSkinOnlyChanged(): void {
+    const on = this.hubSkinOnly();
+    this.lookPreview = null;
+    this.applyAppearance(this.lastAppearance);
+    this.bumpLook();
+    this.terminal.ok('appearance', on ? 'skin from axHub only: the hub-wide skin and tokens, own picks kept aside' : "skin from axHub only off: this app's own look");
+  }
 
   /** Does the lock (not the role) stop this permission right now? */
   lockedByAppearance(perm?: string): boolean {
@@ -2035,7 +2080,7 @@ export class AxfRuntime {
       this.toast('Your role cannot change the look, so it cannot lock or unlock it either.', 'danger', 'Permission denied');
       return false;
     }
-    if (on === this.appearanceLocked()) return true;
+    if (on === (this.settings.get(APPEARANCE_LOCK_KEY) === true)) return true;
     if (on) this.settings.set(APPEARANCE_LOCK_KEY, true); else this.settings.clear(APPEARANCE_LOCK_KEY);
     this.terminal.ok('appearance', on ? 'look locked' : 'look unlocked');
     this.toast(on ? 'Look locked: nothing can change it here until you unlock it.' : 'Look unlocked.', 'info', 'Appearance');
@@ -2043,7 +2088,8 @@ export class AxfRuntime {
   }
 
   private lockedToast(): void {
-    this.toast('The look is locked. Unlock it in Settings → Appearance to change it.', 'info', 'Appearance locked');
+    if (this.appearanceLockReason() === 'hub') this.toast('Following axHub: this app takes its skin from axHub only. Turn off "Get my skin only from axHub" in Settings → Appearance to change it here.', 'info', 'Following axHub');
+    else this.toast('The look is locked. Unlock it in Settings → Appearance to change it.', 'info', 'Appearance locked');
   }
 
   setRole(id: string) {
@@ -2887,13 +2933,14 @@ export class AxfRuntime {
 
   /** One CSS sheet: each customizable slot's values for its active asset (empty when nothing is customized). */
   customSheet(): string {
-    if (this.appearanceLocked()) return '';
-    // the skin in force here styles every type's parts first (skin@1 `parts`); a saved customize value sits on top
+    // the skin in force here styles every type's parts first (skin@1 `parts`); a saved customize value sits on top.
+    // Locked (or following axHub): this device's own values are set aside, the skin's parts still draw.
+    const locked = this.appearanceLocked();
     const parts = this.lastComposed?.parts ?? {};
     const per: Record<string, CustomValues> = {};
     for (const t of customizableTypes()) {
       const id = (this.getState().active as Record<string, string | undefined>)[t];
-      const own = effectiveCustom(this.customSlot(t as AssetType), id);
+      const own = locked ? {} : effectiveCustom(this.customSlot(t as AssetType), id);
       per[t] = parts[t] ? { ...parts[t], ...own } : own;
     }
     return customizeSheet(per);
@@ -3036,7 +3083,8 @@ export class AxfRuntime {
     a.register('appearance.restore', () => this.restoreDefaultAppearance(), { label: 'Restore default appearance', requires: 'assets.swap' });
     // No `requires`: these must work while the lock greys out every assets.swap control (setAppearanceLocked checks the role).
     const turn = (arg: string | undefined, cur: boolean) => (arg === 'on' ? true : arg === 'off' ? false : !cur);
-    a.register('appearance.lock', ([v]) => { this.setAppearanceLocked(turn(v, this.appearanceLocked())); }, { label: 'Lock the look', params: true });
+    a.register('appearance.lock', ([v]) => { this.setAppearanceLocked(turn(v, this.settings.get(APPEARANCE_LOCK_KEY) === true)); }, { label: 'Lock the look', params: true });
+    a.register('appearance.hubskin', ([v]) => { this.setHubSkinOnly(turn(v, this.hubSkinOnly())); }, { label: 'Get my skin only from axHub', params: true, effect: 'write' });
     a.register('inspector', ([v]) => { this.setInspectorShown(turn(v, this.inspectorShown())); }, { label: 'Active assets pane', params: true });
     a.register('asset.json', ([type, id]) => this.openDialog('asset-json', { type, id }), { label: 'View asset JSON', params: true });
     a.register('asset.copy', ([type, id]) => {

@@ -54,6 +54,8 @@ export function normalizeAppLook(raw: unknown): AppLookDocument | null;
 export function parseAppLook(text: string | null | undefined): AppLookDocument | null;
 export function setUseSkin(look: AppLookDocument, on: boolean): AppLookDocument;
 export function setInheritSkin(look: AppLookDocument, on: boolean): AppLookDocument;
+/** The look drawn while the app takes its skin from axHub only: the hub-wide skin over the default snapshot, nothing of its own. */
+export function hubOnlyLook<T extends AppLookDocument | null>(look: T): T;
 export function pickSkin(look: AppLookDocument, id: string): AppLookDocument;
 export function setSkinColorTheme(look: AppLookDocument, id: string | null, key?: string): AppLookDocument;
 export function skinColorTheme(look: AppLookDocument | null | undefined, key?: string): string;

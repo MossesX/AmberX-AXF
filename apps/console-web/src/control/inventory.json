@@ -7,7 +7,7 @@
     "tabGroups": 23,
     "tabs": 80,
     "settingsTabs": 69,
-    "settings": 85,
+    "settings": 86,
     "functions": 239,
     "buttons": 62,
     "plugins": 68
@@ -2140,6 +2140,20 @@
     }
   ],
   "settings": [
+    {
+      "address": "view:settings/tab:settings.tabs=appearance/setting:axf.lock.hubskin",
+      "kind": "setting",
+      "label": "Get my skin only from axHub",
+      "key": "axf.lock.hubskin",
+      "type": "toggle",
+      "detail": "Settings › Appearance",
+      "keywords": [
+        "axf.lock.hubskin",
+        "Appearance"
+      ],
+      "runs": "console",
+      "file": "src/hubAppearance.tsx"
+    },
     {
       "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=agent-voice/setting:agent-voice.banner",
       "kind": "setting",
