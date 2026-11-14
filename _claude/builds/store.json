@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5270,
- "updatedAt": "2026-11-14T04:45:50.869Z",
+ "rev": 5271,
+ "updatedAt": "2026-11-14T04:46:44.526Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -212582,14 +212582,14 @@
    "title": "Launch landing page + waitlist with referral ranking",
    "category": "Launch",
    "detail": "Brett wants to launch AmberX. Public landing page leading with one hook ('talk and it builds your app'), 60-second demo video slot, waitlist signup with referral move-up-the-line ranking, Stripe-ready pricing section (free trial then $30/month), token-driven and themable. Deploy on the VPS via Coolify on the amberxai.com domain (confirm in Hostinger DNS).",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/launch-landing-page-waitlist-referral",
    "pr": "#668",
    "createdAt": "2026-11-14T04:00:27.661Z",
-   "updatedAt": "2026-11-14T04:20:41.754Z",
+   "updatedAt": "2026-11-14T04:46:42.929Z",
    "builtAt": "",
    "notes": [
     {
@@ -212607,6 +212607,10 @@
     {
      "text": "s3 left open: site deployed on the VPS behind the Coolify proxy for join.amberxai.com and verified through the proxy (HTTPS redirect, page, health, admin auth). Public URL + certificate wait on one Hostinger DNS record (A join -> 31.97.13.252): no Hostinger or Coolify API token is available to agents. Apex amberxai.com not taken: the amberx-app web container owns it. Console needs AMBERX_SITE_URL + AMBERX_SITE_ADMIN_TOKEN (value in /opt/amberx-site/.env). Systems check item 'AmberX launch site is public' carries the steps and goes green by itself; Brett notified on his phone. PR #668, UI Review r-20261114-81221dff + r-20261114-1216c892.",
      "at": "2026-11-14T04:20:12.848Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-14T04:46:42.929Z"
     }
    ],
    "approvals": [],
@@ -212727,7 +212731,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
