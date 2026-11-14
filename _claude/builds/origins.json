@@ -4452,6 +4452,30 @@
    "from": "",
    "addenda": []
   },
+  "merge-main-land-console-app-part-3": {
+   "said": "split the console wrapper so it runs on four slots at the same time\n\nMerging main into claude/console-app-part-3-native-bridge-mic clashes in code: framework/ui/axf.css",
+   "at": "2026-11-14T23:16:22.160Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
+  "merge-main-land-console-app-part-4": {
+   "said": "split the console wrapper so it runs on four slots at the same time; AmberX's banner was behind the camera, the clock and the notification panel\n\nMerging main into claude/console-app-part-4-console-side-safe clashes in code: framework/ui/axf.css",
+   "at": "2026-11-14T23:16:42.547Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "merge-main-land-move-amberx-web-app": {
    "said": "Now what we're gonna end up doing is just moving everything over the console and making AmberX app read the console instead of AmberX.\n\nMerging main into claude/move-amberx-web-app-console-amberx-andr clashes in code: apps/console-web/plugins/approvals-banner/plugin.json, apps/console-web/server/main.py",
    "at": "2026-11-14T23:10:38.526Z",

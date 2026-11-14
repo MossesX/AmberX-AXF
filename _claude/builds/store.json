@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5595,
- "updatedAt": "2026-11-14T23:17:36.537Z",
+ "rev": 5596,
+ "updatedAt": "2026-11-14T23:17:47.277Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -140364,11 +140364,12 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
+   "alias": "orchestrator-table-columns-model-queue",
    "branch": "claude/orchestrator-table-columns-model-queue-assigned",
    "pr": "#680",
    "priority": "P0",
    "createdAt": "2026-11-10T00:17:45.319Z",
-   "updatedAt": "2026-11-14T23:04:07.600Z",
+   "updatedAt": "2026-11-14T23:15:59.085Z",
    "builtAt": "2026-11-14T23:04:07.600Z",
    "notes": [
     {
@@ -140465,6 +140466,23 @@
     "heldBy": "",
     "heldWhy": ""
    },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "red",
+    "landAttempts": [
+     {
+      "at": "2026-11-14T23:15:23.557Z",
+      "run": "lr-orchestrator-table-columns-model-queue-assigned-20261114T231523",
+      "base": "bde7da89bec5a52c5f74231ae582735f5cdeeeab",
+      "merged": "",
+      "outcome": "red",
+      "ci": "",
+      "note": "No fix build: the orchestrator did not take it."
+     }
+    ]
+   },
    "steps": [
     {
      "id": "s1",
@@ -140544,7 +140562,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 80,
+   "rev": 81,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -151505,11 +151523,12 @@
    "hidden": false,
    "source": "console",
    "pendingId": "",
+   "alias": "pass-approval-hook-deep-link-amberx",
    "branch": "claude/pass-approval-hook-deep-link-amberx-notification",
    "pr": "#681",
    "priority": "P0",
    "createdAt": "2026-11-10T17:10:29.492Z",
-   "updatedAt": "2026-11-14T23:13:42.882Z",
+   "updatedAt": "2026-11-14T23:16:37.472Z",
    "builtAt": "2026-11-14T23:13:42.882Z",
    "notes": [
     {
@@ -151627,6 +151646,23 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "red",
+    "landAttempts": [
+     {
+      "at": "2026-11-14T23:16:02.634Z",
+      "run": "lr-pass-approval-hook-deep-link-amberx-notification-20261114T231602",
+      "base": "66ff4bea69e42beb09fe373c96ca4ac4fa5d0d27",
+      "merged": "",
+      "outcome": "red",
+      "ci": "",
+      "note": "No fix build: the orchestrator did not take it."
+     }
+    ]
    },
    "steps": [
     {
@@ -151866,7 +151902,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 89,
+   "rev": 90,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -196422,7 +196458,7 @@
    "branch": "claude/server-gate-one-session-per-build-no",
    "pr": "#610",
    "createdAt": "2026-11-12T02:42:15.357Z",
-   "updatedAt": "2026-11-14T23:08:06.478Z",
+   "updatedAt": "2026-11-14T23:15:19.178Z",
    "builtAt": "2026-11-14T23:06:34.786Z",
    "notes": [
     {
@@ -196542,6 +196578,23 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "flagged",
+    "landAttempts": [
+     {
+      "at": "2026-11-14T23:14:55.526Z",
+      "run": "lr-server-gate-one-session-per-build-no-20261114T231455",
+      "base": "99d6fef8ca8027827e57a61a3c9b8418733180f0",
+      "merged": "",
+      "outcome": "clash",
+      "ci": "",
+      "note": "Source clash a person has to settle: apps/console-web/plugins/build-orchestrator/pipeline.mjs, apps/console-web/plugins/build-orchestrator/server/__init__.py, apps/console-web/plugins/build-orchestrator/web/index.tsx, apps/console-web/plugins/push-banner/land/merge-queue.mjs, deploy/claude-headless."
+     }
+    ]
    },
    "steps": [
     {
@@ -196663,7 +196716,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 44,
+   "rev": 45,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -205466,7 +205519,7 @@
    "pr": "#639",
    "priority": "P1",
    "createdAt": "2026-11-13T18:41:46.237Z",
-   "updatedAt": "2026-11-14T23:12:37.452Z",
+   "updatedAt": "2026-11-14T23:17:43.304Z",
    "builtAt": "2026-11-13T20:19:48.032Z",
    "notes": [
     {
@@ -205556,6 +205609,23 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "land": {
+    "behindMain": null,
+    "behindCheckedAt": "",
+    "finishedAt": "",
+    "landState": "waiting",
+    "landAttempts": [
+     {
+      "at": "2026-11-14T23:12:03.766Z",
+      "run": "lr-console-app-part-2-native-floating-2-20261114T231203",
+      "base": "c4a1bf4fdc9191be01e978b9577410647cd3a97d",
+      "merged": "",
+      "outcome": "red",
+      "ci": "",
+      "note": "No fix build: the orchestrator did not take it."
+     }
+    ]
    },
    "steps": [
     {
@@ -205724,7 +205794,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -225968,6 +226038,160 @@
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-14T23:15:00.410Z",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "merge-main-land-console-app-part-3",
+   "title": "Merge main and land console-app-part-3-native-bridge-mic",
+   "category": "",
+   "detail": "Auto-land could not land `console-app-part-3-native-bridge-mic` (console-app-part-3-native-bridge-mic): merging main into it clashes in code: framework/ui/axf.css.\n\nWork on its own branch `claude/console-app-part-3-native-bridge-mic` (PR #633); do not open a new PR.\n1. git fetch origin && git checkout claude/console-app-part-3-native-bridge-mic && git merge origin/main\n2. Resolve every conflict keeping both sides' intent (builds files: newer wins; THREADS / STATUS / decisions: keep both).\n3. Make the tests the clash touches pass, plus node framework/cli/tracker.mjs --check.\n4. Commit and push to claude/console-app-part-3-native-bridge-mic. Auto-land and the merge queue land it by themselves.\n\nAttempt 1. Auto-land retries until it lands; Brett gets an FYI for each attempt.",
+   "status": "queued",
+   "hidden": false,
+   "source": "land-finish-auto-land-live-clear-backlog",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-14T23:16:22.160Z",
+   "updatedAt": "2026-11-14T23:16:28.914Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by land-finish-auto-land-live-clear-backlog.",
+     "at": "2026-11-14T23:16:28.914Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "split the console wrapper so it runs on four slots at the same time\n\nMerging main into claude/console-app-part-3-native-bridge-mic clashes in code: framework/ui/axf.css",
+    "at": "2026-11-14T23:16:22.160Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "2026-11-14T23:16:27.988Z",
+    "queuedBy": "land-finish-auto-land-live-clear-backlog",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 867
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 3,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
+   "rearranged": false,
+   "removedSteps": [],
+   "legacy": [],
+   "copies": []
+  },
+  {
+   "id": "merge-main-land-console-app-part-4",
+   "title": "Merge main and land console-app-part-4-console-side-safe",
+   "category": "",
+   "detail": "Auto-land could not land `console-app-part-4-console-side-safe` (console-app-part-4-console-side-safe): merging main into it clashes in code: framework/ui/axf.css.\n\nWork on its own branch `claude/console-app-part-4-console-side-safe` (PR #640); do not open a new PR.\n1. git fetch origin && git checkout claude/console-app-part-4-console-side-safe && git merge origin/main\n2. Resolve every conflict keeping both sides' intent (builds files: newer wins; THREADS / STATUS / decisions: keep both).\n3. Make the tests the clash touches pass, plus node framework/cli/tracker.mjs --check.\n4. Commit and push to claude/console-app-part-4-console-side-safe. Auto-land and the merge queue land it by themselves.\n\nAttempt 1. Auto-land retries until it lands; Brett gets an FYI for each attempt.",
+   "status": "queued",
+   "hidden": false,
+   "source": "land-finish-auto-land-live-clear-backlog",
+   "pendingId": "",
+   "branch": "",
+   "pr": "",
+   "priority": "P0",
+   "createdAt": "2026-11-14T23:16:42.547Z",
+   "updatedAt": "2026-11-14T23:16:50.872Z",
+   "builtAt": "",
+   "notes": [
+    {
+     "text": "Queued by land-finish-auto-land-live-clear-backlog.",
+     "at": "2026-11-14T23:16:50.872Z"
+    }
+   ],
+   "approvals": [],
+   "upgradeRequests": [],
+   "origin": {
+    "said": "split the console wrapper so it runs on four slots at the same time; AmberX's banner was behind the camera, the clock and the notification panel\n\nMerging main into claude/console-app-part-4-console-side-safe clashes in code: framework/ui/axf.css",
+    "at": "2026-11-14T23:16:42.547Z",
+    "source": "",
+    "session": "",
+    "link": "",
+    "by": "",
+    "brief": "",
+    "verbatim": true,
+    "from": "",
+    "addenda": []
+   },
+   "pipeline": {
+    "queuedAt": "2026-11-14T23:16:47.356Z",
+    "queuedBy": "land-finish-auto-land-live-clear-backlog",
+    "account": "",
+    "session": "",
+    "slot": "",
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
+    "lastRun": null,
+    "split": null,
+    "splitRequested": "",
+    "note": "waiting for the split before it can start",
+    "route": "",
+    "dispatchedAt": "",
+    "planned": null,
+    "tried": [],
+    "pickedAt": "",
+    "heldAt": "",
+    "heldBy": "",
+    "heldWhy": ""
+   },
+   "steps": [],
+   "profiles": [
+    "all"
+   ],
+   "order": {
+    "all": 868
+   },
+   "kind": "build",
+   "planRef": "",
+   "rev": 3,
+   "deleted": false,
+   "deletedAt": "",
+   "pending": null,
+   "queue": null,
+   "defaultAt": "",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

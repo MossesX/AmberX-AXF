@@ -796,10 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 04:38 UTC · `ui-directory-plugin-self-updating-data` note (all) · orchestrator
-- 2026-11-14 04:37 UTC · `ui-directory-plugin-self-updating-data` s3 done, → built (all) · orchestrator
-- 2026-11-14 04:38 UTC · `orchestrator-checks-shipped-features-2` → archived (all) · voice
-- 2026-11-14 04:38 UTC · `amberx-walkthrough-2-hour-indexed` note (all) · hotfix-get-main-ci-green-theme-swap
 - 2026-11-14 04:39 UTC · `ui-directory-plugin-self-updating-data` note (all) · pipeline
 - 2026-11-14 04:39 UTC · `group-chat-audio-hear-agents-talk-while` s2 done (all) · orchestrator
 - 2026-11-14 04:40 UTC · `demo-video-series-three-minute-browser` note (all) · voice
@@ -1196,6 +1192,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 23:17 UTC · `console-axhub-retry-failed-calls` → pending, note (all) · pipeline
 - 2026-11-14 23:17 UTC · `per-toolbar-settings-fix-failing-chrome` → running, note (all) · pipeline
 - 2026-11-14 23:17 UTC · `per-toolbar-settings-fix-failing-chrome` note (all) · orchestrator
+- 2026-11-14 23:16 UTC · `merge-main-land-console-app-part-3` added (0 steps) (all) · land-finish-auto-land-live-clear-backlog
+- 2026-11-14 23:16 UTC · `merge-main-land-console-app-part-3` → queued, note (all) · land-finish-auto-land-live-clear-backlog
+- 2026-11-14 23:16 UTC · `merge-main-land-console-app-part-4` added (0 steps) (all) · land-finish-auto-land-live-clear-backlog
+- 2026-11-14 23:16 UTC · `merge-main-land-console-app-part-4` → queued, note (all) · land-finish-auto-land-live-clear-backlog
 
 ## Token passes (log)
 
