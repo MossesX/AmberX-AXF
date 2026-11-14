@@ -2,12 +2,15 @@
   "$axf": "plugin@1",
   "id": "ai.amberx.axf.console.wake-listener",
   "name": "Wake listener",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "kind": "module",
   "apiLevel": 1,
   "author": "Brett",
-  "description": "An always-on wake-word listener for the console and the console Android app: say a wake phrase Brett sets in Settings (several allowed), then a command. Runs on-device (the console app's offline recognizer through the native bridge; the browser's recognizer elsewhere) with a mic-on light on the banner and an off switch. Every console action, plugin command, control@1 target and pipeline command has a voice entry built from the API registry (new plugins appear by themselves); a command with missing fields runs as a spoken wizard ('create a new project' → 'name?' → 'Gizmo Johnson' → confirm). 'Approve' reviews everything waiting on axHub one at a time (approve / deny / skip / approve all pending). REST /api/plugins/wake-listener (settings, on, off, state, catalog, match), MCP wake-listener_*, CLI listener.mjs / axf wake-listener, voice.",
-  "targets": ["axf-console", "amberx-droid"],
+  "description": "An always-on wake-word listener for the console and the console Android app: say a wake phrase Brett sets in Settings (several allowed), then a command. Runs on-device (the console app's offline recognizer through the native bridge; the browser's recognizer elsewhere) with a mic-on light on the banner and an off switch. Every console action, plugin command, control@1 target and pipeline command has a voice entry built from the API registry (new plugins appear by themselves); a command with missing fields runs as a spoken wizard ('create a new project' → 'name?' → 'Gizmo Johnson' → confirm). 'Approve' reviews everything waiting on axHub one at a time (approve / deny / skip / approve all pending). Claude mode (setting Understand with Claude when connected, axf.voice.useClaude, default on): while Claude is connected Claude picks the command and fills its fields through axf.llm@1, asks only for what is missing and confirms destructive commands; off, offline, slow or failing it falls back to the scripted matcher with the same words; approvals always stay on the spoken approve / deny words; an offline-mode indicator and a command history with the mode. REST /api/plugins/wake-listener (settings, on, off, state, catalog, match, claude, understand, history), MCP wake-listener_*, CLI listener.mjs / axf voice / axf wake-listener, voice.",
+  "targets": [
+    "axf-console",
+    "amberx-droid"
+  ],
   "provides": [
     "settings-tab:wake-listener",
     "action:wake-listener.on",
@@ -24,52 +27,65 @@
     "action:voice.understand.test",
     "service:axf.wake-listener@1"
   ],
-  "optional": ["service:axf.speech@1"],
-  "scopes": ["ROUTES"],
+  "optional": [
+    "service:axf.speech@1"
+  ],
+  "scopes": [
+    "ROUTES"
+  ],
   "enabledByDefault": true,
   "banner": true,
   "tabable": false,
   "lifecycle": {
     "$axf": "plugin-lifecycle@1",
     "dataDir": ".axf-console/plugins/wake-listener",
-    "env": ["AXF_WAKE_LISTENER_DATA_DIR"],
-    "mentions": ["apps/console-web/plugins/README.md", "framework/spec/PORTING.md", "_claude/THREADS.md"]
+    "env": [
+      "AXF_WAKE_LISTENER_DATA_DIR"
+    ],
+    "mentions": [
+      "apps/console-web/plugins/README.md",
+      "framework/spec/PORTING.md",
+      "_claude/THREADS.md"
+    ]
   },
   "commands": {
     "$axf": "plugin-commands@1",
     "auto": true,
     "items": [
-      { "route": "GET /settings", "id": "settings", "title": "The wake listener's settings (on, wake phrases, engine, timings, replies, indicator, Claude mode and its timeout)", "readOnly": true },
-      { "route": "POST /settings", "id": "set", "title": "Change the wake listener's settings; addPhrase / removePhrase add or drop one wake phrase", "input": { "type": "object", "properties": { "on": { "type": "boolean" }, "phrases": { "type": "array", "items": { "type": "string" }, "description": "the wake phrases (replaces the list)" }, "addPhrase": { "type": "string" }, "removePhrase": { "type": "string" }, "engine": { "type": "string", "enum": ["auto", "native", "webspeech", "off"] }, "awakeSec": { "type": "integer", "minimum": 3, "maximum": 60 }, "answerSec": { "type": "integer", "minimum": 5, "maximum": 120 }, "speak": { "type": "boolean" }, "chime": { "type": "boolean" }, "indicator": { "type": "string", "enum": ["always", "listening", "never"] }, "pauseHidden": { "type": "boolean" }, "useClaude": { "type": "boolean", "description": "Claude mode: understand commands with Claude while Claude is connected (axf.voice.useClaude)" }, "claudeTimeoutSec": { "type": "integer", "minimum": 2, "maximum": 30, "description": "seconds to wait for Claude before the scripted matcher takes the command (axf.voice.claudeTimeoutSec)" } }, "additionalProperties": false } },
-      { "route": "POST /on", "id": "on", "title": "Switch the wake listener on (the open console starts listening)" },
-      { "route": "POST /off", "id": "off", "title": "Switch the wake listener off (the mic closes)" },
-      { "route": "GET /state", "id": "state", "title": "What the listener is doing now: phase, engine, mic open, last heard, last command, last reply; Claude mode: mode (claude / scripted), claudeConnected, lastFallbackReason, offline (the offline indicator) and why", "readOnly": true },
-      { "route": "POST /report", "skip": "the open console's own state report" },
-      { "route": "GET /catalog", "id": "catalog", "title": "The voice command catalog: every console action, plugin command, control@1 target and pipeline command with its spoken forms and fields", "readOnly": true },
-      { "route": "POST /match", "id": "match", "title": "Dry run a phrase against the catalog: the entry it lands on, the fields it filled, the ones a wizard would ask", "readOnly": true, "input": { "type": "object", "properties": { "text": { "type": "string" } }, "required": ["text"], "additionalProperties": false } },
-      { "route": "GET /history", "id": "history", "title": "Recent voice commands, newest first: what was heard, the command, the reply, who understood it (mode: claude or scripted) and why the scripted matcher took it; filter with mode", "readOnly": true, "input": { "type": "object", "properties": { "mode": { "type": "string", "enum": ["claude", "scripted"] }, "limit": { "type": "integer", "minimum": 1, "maximum": 500 } }, "additionalProperties": false } },
-      { "route": "POST /history", "skip": "the open console records its own commands" },
-      { "route": "GET /claude", "id": "claude", "title": "Claude mode: the switch (useClaude = axf.voice.useClaude), the timeout, whether Claude is connected, the mode now and the last fallback reason", "readOnly": true },
-      { "route": "POST /claude", "id": "claude-set", "title": "Set Claude mode: useClaude on / off and the timeout in seconds (2-30)", "input": { "type": "object", "properties": { "useClaude": { "type": "boolean" }, "timeoutSec": { "type": "integer", "minimum": 2, "maximum": 30 } }, "additionalProperties": false } },
-      { "route": "POST /claude/on", "id": "claude-on", "title": "Claude mode on: understand voice commands with Claude while Claude is connected" },
-      { "route": "POST /claude/off", "id": "claude-off", "title": "Claude mode off: always the scripted matcher, nothing is sent to Claude" },
-      { "route": "POST /claude/test", "id": "claude-test", "title": "Dry run Claude mode on a phrase: the command Claude would pick, its fields, what it would ask or confirm (nothing runs)", "readOnly": true, "input": { "type": "object", "properties": { "text": { "type": "string" } }, "required": ["text"], "additionalProperties": false } },
-      { "route": "POST /understand", "id": "understand", "title": "Claude mode: Claude picks the command for a phrase and fills its fields (never runs it). Answers {mode: claude, command, args, ask?, confirm?, run, pending?} or {mode: offline, reason}; send pending back with the next answer for a follow-up or a yes / no", "readOnly": true, "input": { "type": "object", "properties": { "text": { "type": "string" }, "context": { "type": "object" }, "pending": { "type": "object", "description": "what the last answer returned as pending (a follow-up question or a confirm)" } }, "required": ["text"], "additionalProperties": false } },
-      { "action": "wake-listener.heard", "id": "heard", "title": "Say a phrase to the open console as if the mic heard it (the wake phrase is optional): runs the command, answers a wizard or reviews approvals", "input": { "type": "object", "properties": { "args": { "type": "string", "description": "the phrase" }, "to": { "type": "string" } }, "required": ["args"], "additionalProperties": false } },
-      { "action": "wake-listener.approvals", "id": "approvals", "title": "Start the spoken approvals review in the open console: each call waiting on axHub, one at a time (approve / deny / skip / approve all pending)" },
-      { "action": "wake-listener.wizard", "id": "wizard", "title": "Start a spoken wizard for a catalog entry in the open console (args = the entry id, e.g. project-wizard/run)", "input": { "type": "object", "properties": { "args": { "type": "string", "description": "the catalog entry id" }, "to": { "type": "string" } }, "required": ["args"], "additionalProperties": false } },
-      { "action": "wake-listener.cancel", "id": "cancel", "title": "Stop the wizard or approvals review that has the floor" },
-      { "action": "wake-listener.on", "id": "action-on", "title": "Switch the listener on from the open console" },
-      { "action": "wake-listener.off", "id": "action-off", "title": "Switch the listener off from the open console" },
-      { "action": "wake-listener.toggle", "id": "toggle", "title": "Flip the listener switch" },
-      { "action": "wake-listener.history", "id": "history-open", "title": "Open the voice command history in the open console, filtered by mode (args = claude or scripted, empty = all)", "navigate": true, "input": { "type": "object", "properties": { "args": { "type": "string", "enum": ["", "claude", "scripted"] }, "to": { "type": "string" } }, "additionalProperties": false } },
-      { "action": "voice.useClaude", "id": "use-claude", "title": "Claude mode on, off or toggle from the open console (args = on, off or toggle)", "input": { "type": "object", "properties": { "args": { "type": "string", "enum": ["on", "off", "toggle"] }, "to": { "type": "string" } }, "required": ["args"], "additionalProperties": false } },
-      { "action": "voice.understand.test", "id": "understand-test", "title": "Dry run Claude mode on a phrase in the open console; the answer is spoken and shown (args = the phrase)", "input": { "type": "object", "properties": { "args": { "type": "string" }, "to": { "type": "string" } }, "required": ["args"], "additionalProperties": false } },
-      { "action": "wake-listener.show", "id": "show", "title": "Open the wake listener settings at one place: claude (the Claude mode settings), mode (the mode / offline indicator), history (args = claude, mode, history, history:claude or history:scripted)", "navigate": true, "input": { "type": "object", "properties": { "args": { "type": "string" }, "to": { "type": "string" } }, "additionalProperties": false } },
-      { "action": "wake-listener.open", "id": "open", "title": "Open the wake listener's settings tab", "navigate": true }
+      {"route": "GET /settings", "id": "settings", "title": "The wake listener's settings (on, wake phrases, engine, timings, replies, indicator, Claude mode and its timeout)", "readOnly": true, "description": "Reads every wake listener setting: the switch, the wake phrases, the recognizer, the timings, spoken replies, the mic light and Claude mode with its wait."},
+      {"route": "POST /settings", "id": "set", "title": "Change the wake listener's settings; addPhrase / removePhrase add or drop one wake phrase", "input": {"type": "object", "properties": {"on": {"type": "boolean"}, "phrases": {"type": "array", "items": {"type": "string"}, "description": "the wake phrases (replaces the list)"}, "addPhrase": {"type": "string"}, "removePhrase": {"type": "string"}, "engine": {"type": "string", "enum": ["auto", "native", "webspeech", "off"]}, "awakeSec": {"type": "integer", "minimum": 3, "maximum": 60}, "answerSec": {"type": "integer", "minimum": 5, "maximum": 120}, "speak": {"type": "boolean"}, "chime": {"type": "boolean"}, "indicator": {"type": "string", "enum": ["always", "listening", "never"]}, "pauseHidden": {"type": "boolean"}, "useClaude": {"type": "boolean", "description": "Claude mode: understand commands with Claude while Claude is connected (axf.voice.useClaude)"}, "claudeTimeoutSec": {"type": "integer", "minimum": 2, "maximum": 30, "description": "seconds to wait for Claude before the scripted matcher takes the command (axf.voice.claudeTimeoutSec)"}}, "additionalProperties": false}, "description": "Changes any wake listener setting, Claude mode (useClaude) and its wait (claudeTimeoutSec) included; addPhrase and removePhrase edit one wake phrase."},
+      {"route": "POST /on", "id": "on", "title": "Switch the wake listener on (the open console starts listening)", "description": "Switches the wake listener on; every open console starts listening for its wake phrase within a few seconds."},
+      {"route": "POST /off", "id": "off", "title": "Switch the wake listener off (the mic closes)", "description": "Switches the wake listener off; the microphone closes in every open console."},
+      {"route": "GET /state", "id": "state", "title": "What the listener is doing now: phase, engine, mic open, last heard, last command, last reply; Claude mode: mode (claude / scripted), claudeConnected, lastFallbackReason, offline (the offline indicator) and why", "readOnly": true, "description": "What the listener is doing now and how the last command was understood: Claude or scripted, whether Claude is connected, and why the offline indicator is on."},
+      {"route": "POST /report", "skip": "the open console's own state report"},
+      {"route": "GET /catalog", "id": "catalog", "title": "The voice command catalog: every console action, plugin command, control@1 target and pipeline command with its spoken forms and fields", "readOnly": true, "description": "Lists every voice command the listener knows, built from the API registry, with its spoken forms and the fields a wizard asks for."},
+      {"route": "POST /match", "id": "match", "title": "Dry run a phrase against the catalog: the entry it lands on, the fields it filled, the ones a wizard would ask", "readOnly": true, "input": {"type": "object", "properties": {"text": {"type": "string"}}, "required": ["text"], "additionalProperties": false}, "description": "Dry runs a phrase against the scripted matcher: the command it lands on, the fields it filled and the ones a wizard would ask."},
+      {"route": "GET /history", "id": "history", "title": "Recent voice commands, newest first: what was heard, the command, the reply, who understood it (mode: claude or scripted) and why the scripted matcher took it; filter with mode", "readOnly": true, "input": {"type": "object", "properties": {"mode": {"type": "string", "enum": ["claude", "scripted"]}, "limit": {"type": "integer", "minimum": 1, "maximum": 500}}, "additionalProperties": false}, "description": "Recent voice commands, newest first, with who understood each one (Claude or the scripted matcher) and why the scripted one took it; filter by mode."},
+      {"route": "POST /history", "skip": "the open console records its own commands"},
+      {"route": "GET /claude", "id": "claude", "title": "Claude mode: the switch (useClaude = axf.voice.useClaude), the timeout, whether Claude is connected, the mode now and the last fallback reason", "readOnly": true, "description": "Reads Claude mode: the switch, the wait, whether Claude is connected, the mode now and the last fallback reason."},
+      {"route": "POST /claude", "id": "claude-set", "title": "Set Claude mode: useClaude on / off and the timeout in seconds (2-30)", "input": {"type": "object", "properties": {"useClaude": {"type": "boolean"}, "timeoutSec": {"type": "integer", "minimum": 2, "maximum": 30}}, "additionalProperties": false}, "description": "Sets Claude mode on or off and how long to wait for Claude before the scripted matcher takes the command."},
+      {"route": "POST /claude/on", "id": "claude-on", "title": "Claude mode on: understand voice commands with Claude while Claude is connected", "description": "Turns Claude mode on: while Claude is connected, Claude understands voice commands and fills their fields."},
+      {"route": "POST /claude/off", "id": "claude-off", "title": "Claude mode off: always the scripted matcher, nothing is sent to Claude", "description": "Turns Claude mode off: the scripted matcher answers every voice command and nothing is sent to Claude."},
+      {"route": "POST /claude/test", "id": "claude-test", "title": "Dry run Claude mode on a phrase: the command Claude would pick, its fields, what it would ask or confirm (nothing runs)", "readOnly": true, "input": {"type": "object", "properties": {"text": {"type": "string"}}, "required": ["text"], "additionalProperties": false}, "description": "Shows which command Claude would pick for a phrase, the fields it would fill and what it would ask, without running anything."},
+      {"route": "POST /understand", "id": "understand", "title": "Claude mode: Claude picks the command for a phrase and fills its fields (never runs it). Answers {mode: claude, command, args, ask?, confirm?, run, pending?} or {mode: offline, reason}; send pending back with the next answer for a follow-up or a yes / no", "readOnly": true, "input": {"type": "object", "properties": {"text": {"type": "string"}, "context": {"type": "object"}, "pending": {"type": "object", "description": "what the last answer returned as pending (a follow-up question or a confirm)"}}, "required": ["text"], "additionalProperties": false}, "description": "The listener's Claude step: Claude picks one command for a phrase and fills its fields, or the answer says offline and why; follow-ups and confirms go back with pending."},
+      {"action": "wake-listener.heard", "id": "heard", "title": "Say a phrase to the open console as if the mic heard it (the wake phrase is optional): runs the command, answers a wizard or reviews approvals", "input": {"type": "object", "properties": {"args": {"type": "string", "description": "the phrase"}, "to": {"type": "string"}}, "required": ["args"], "additionalProperties": false}, "description": "Hands a phrase to the open console as if the microphone heard it: it runs the command, answers a wizard or reviews approvals."},
+      {"action": "wake-listener.approvals", "id": "approvals", "title": "Start the spoken approvals review in the open console: each call waiting on axHub, one at a time (approve / deny / skip / approve all pending)", "description": "Starts the spoken approvals review in the open console: each call waiting on axHub, one at a time, with approve, deny or skip."},
+      {"action": "wake-listener.wizard", "id": "wizard", "title": "Start a spoken wizard for a catalog entry in the open console (args = the entry id, e.g. project-wizard/run)", "input": {"type": "object", "properties": {"args": {"type": "string", "description": "the catalog entry id"}, "to": {"type": "string"}}, "required": ["args"], "additionalProperties": false}, "description": "Starts the spoken wizard for one catalog command in the open console: one question per missing field, then a confirm."},
+      {"action": "wake-listener.cancel", "id": "cancel", "title": "Stop the wizard or approvals review that has the floor", "description": "Stops the spoken wizard, Claude question or approvals review that is waiting for an answer."},
+      {"action": "wake-listener.on", "id": "action-on", "title": "Switch the listener on from the open console", "description": "Switches the listener on from the open console."},
+      {"action": "wake-listener.off", "id": "action-off", "title": "Switch the listener off from the open console", "description": "Switches the listener off from the open console."},
+      {"action": "wake-listener.toggle", "id": "toggle", "title": "Flip the listener switch", "description": "Flips the listener switch: the same as tapping the mic light on the banner."},
+      {"action": "wake-listener.history", "id": "history-open", "title": "Open the voice command history in the open console, filtered by mode (args = claude or scripted, empty = all)", "navigate": true, "input": {"type": "object", "properties": {"args": {"type": "string", "enum": ["", "claude", "scripted"]}, "to": {"type": "string"}}, "additionalProperties": false}, "description": "Opens the voice command history in the open console, filtered to Claude or scripted commands."},
+      {"action": "voice.useClaude", "id": "use-claude", "title": "Claude mode on, off or toggle from the open console (args = on, off or toggle)", "input": {"type": "object", "properties": {"args": {"type": "string", "enum": ["on", "off", "toggle"]}, "to": {"type": "string"}}, "required": ["args"], "additionalProperties": false}, "description": "Turns Claude mode on, off or flips it from the open console and says the result."},
+      {"action": "voice.understand.test", "id": "understand-test", "title": "Dry run Claude mode on a phrase in the open console; the answer is spoken and shown (args = the phrase)", "input": {"type": "object", "properties": {"args": {"type": "string"}, "to": {"type": "string"}}, "required": ["args"], "additionalProperties": false}, "description": "Dry runs Claude mode on a phrase in the open console; the pick is shown and spoken, nothing runs."},
+      {"action": "wake-listener.show", "id": "show", "title": "Open the wake listener settings at one place: claude (the Claude mode settings), mode (the mode / offline indicator), history (args = claude, mode, history, history:claude or history:scripted)", "navigate": true, "input": {"type": "object", "properties": {"args": {"type": "string"}, "to": {"type": "string"}}, "additionalProperties": false}, "description": "Opens the wake listener settings at the Claude mode settings, the mode indicator or the command history (optionally filtered by mode)."},
+      {"action": "wake-listener.open", "id": "open", "title": "Open the wake listener's settings tab", "navigate": true, "description": "Opens the wake listener's settings tab."}
     ]
   },
-  "builtWith": { "model": "fable", "builtAt": "2026-11-13" },
+  "builtWith": {
+    "model": "fable",
+    "builtAt": "2026-11-13"
+  },
   "help": "help.json",
   "opens": "settings"
 }

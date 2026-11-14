@@ -9699,7 +9699,7 @@
       "id": "ai.amberx.axf.console.wake-listener",
       "label": "Wake listener",
       "folder": "wake-listener",
-      "version": "0.1.0",
+      "version": "0.2.0",
       "detail": "Plugin · module",
       "keywords": [
         "wake-listener",
