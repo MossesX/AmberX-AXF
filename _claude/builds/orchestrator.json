@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T23:33:45.760Z",
+ "updatedAt": "2026-11-14T23:33:59.175Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -135807,8 +135807,8 @@
    "mergedAt": "2026-11-14T12:57:15Z",
    "priority": "P0",
    "createdAt": "2026-11-13T23:39:26.785Z",
-   "updatedAt": "2026-11-14T23:33:32.799Z",
-   "builtAt": "2026-11-14T23:33:32.799Z",
+   "updatedAt": "2026-11-14T23:33:56.379Z",
+   "builtAt": "2026-11-14T23:33:56.379Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -135857,6 +135857,10 @@
     {
      "text": "Reconciler: PR #665 merged: complete",
      "at": "2026-11-14T23:31:51.006Z"
+    },
+    {
+     "text": "Headless run axf-land-batch-merge-main-each-finished--gina: brief only · start 13.4K tokens ($0.04) · cost $1.76 · 73 turns · 6 tools, MCP none",
+     "at": "2026-11-14T23:33:56.379Z"
     }
    ],
    "approvals": [],
