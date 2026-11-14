@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5686,
- "updatedAt": "2026-11-14T23:49:21.447Z",
+ "rev": 5687,
+ "updatedAt": "2026-11-14T23:49:39.454Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -227053,15 +227053,15 @@
    "title": "Merge main and land one-source-truth-console-shows-only-what",
    "category": "",
    "detail": "Auto-land could not land `one-source-truth-console-shows-only-what` (one-source-truth-console-shows-only-what): merging main into it clashes in code: apps/console-web/plugins/build-orchestrator/pipeline.mjs.\n\nWork on its own branch `claude/one-source-truth-console-shows-only-what` (PR #598); do not open a new PR.\n1. git fetch origin && git checkout claude/one-source-truth-console-shows-only-what && git merge origin/main\n2. Resolve every conflict keeping both sides' intent (builds files: newer wins; THREADS / STATUS / decisions: keep both).\n3. Make the tests the clash touches pass, plus node framework/cli/tracker.mjs --check.\n4. Commit and push to claude/one-source-truth-console-shows-only-what. Auto-land and the merge queue land it by themselves.\n\nAttempt 1. Auto-land retries until it lands; Brett gets an FYI for each attempt.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "land-finish-auto-land-live-clear-backlog",
    "pendingId": "",
-   "branch": "",
+   "branch": "claude/merge-main-land-one-source-truth-console",
    "pr": "",
    "priority": "P0",
    "createdAt": "2026-11-14T23:17:55.197Z",
-   "updatedAt": "2026-11-14T23:49:19.259Z",
+   "updatedAt": "2026-11-14T23:49:28.198Z",
    "builtAt": "",
    "notes": [
     {
@@ -227071,6 +227071,14 @@
     {
      "text": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"4962fe9b-dcb5-4de6-924d-5194f2e6fced\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps.",
      "at": "2026-11-14T23:41:43.500Z"
+    },
+    {
+     "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-merge-main-land-one-source-truth-console--sully.",
+     "at": "2026-11-14T23:49:24.271Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-merge-main-land-one-source-truth-console--sully, shared account login)",
+     "at": "2026-11-14T23:49:28.198Z"
     }
    ],
    "approvals": [],
@@ -227090,12 +227098,12 @@
    "pipeline": {
     "queuedAt": "2026-11-14T23:17:58.195Z",
     "queuedBy": "land-finish-auto-land-live-clear-backlog",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-merge-main-land-one-source-truth-console--sully",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-14T23:49:23.295Z",
+    "runs": 1,
     "lastRun": null,
     "split": {
      "at": "2026-11-14T23:41:43.500Z",
@@ -227105,9 +227113,9 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"4962fe9b-dcb5-4de6-924d-5194f2e6fced\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "steps made by rules: review them",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-14T23:49:23.295Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -227116,7 +227124,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-14T23:49:23.295Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -227332,7 +227340,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 6,
+   "rev": 9,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
