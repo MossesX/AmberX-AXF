@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T16:52:52.233Z",
+ "updatedAt": "2026-11-14T16:53:10.809Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -139426,14 +139426,14 @@
    "title": "Hotfix: toolbar settings still change nothing (live console)",
    "category": "hotfix",
    "detail": "Brett (Nov 14): 'the toolbar settings still don't work. When I click the toolbar and go to its settings, the settings don't change anything.' Earlier builds touched this (fix-toolbar-settings-doing-nothing, chrome-settings-actually-apply-toolbars, per-toolbar-settings PR #650, per-instance picker #642/#622) but it's still broken on the live console. Reproduce on the LIVE console first (open a toolbar's settings, change each setting, confirm whether the stored value changes and whether the toolbar re-renders). Find which of those PRs never landed vs. what's genuinely broken, land or fix, and verify on the live console after redeploy.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/hotfix-toolbar-settings-still-change",
    "pr": "",
    "createdAt": "2026-11-14T16:51:14.645Z",
-   "updatedAt": "2026-11-14T16:52:28.592Z",
+   "updatedAt": "2026-11-14T16:53:07.541Z",
    "builtAt": "",
    "notes": [
     {
@@ -139443,6 +139443,10 @@
     {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-hotfix-toolbar-settings-still-change--lenny.",
      "at": "2026-11-14T16:52:19.825Z"
+    },
+    {
+     "text": "Dispatch gate: hotfix-toolbar-settings-still-change still has axf-hotfix-toolbar-settings-still-change--lenny alive: not launched again, tracking that session.",
+     "at": "2026-11-14T16:53:07.541Z"
     }
    ],
    "approvals": [],
