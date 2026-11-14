@@ -79,6 +79,14 @@ export function overriddenSlots(look: AppLookDocument | null): string[];
 export function restoreAppDefault(look: AppLookDocument, at: string): AppLookDocument;
 export function undoRestore(look: AppLookDocument): AppLookDocument;
 export function setLookSlot(look: AppLookDocument, slot: string, id: string | null, global?: GlobalSkin | null): AppLookDocument;
+/** Keep what the app draws now at the head of `backups` (capped; a twin of the newest is not added again). */
+export function backupLook(look: AppLookDocument, meta: { at: string; by?: string; reason?: string; id?: string }): AppLookDocument;
+/** The backup named `id`, or the newest; null when none. */
+export function lookBackup(look: AppLookDocument | null | undefined, id?: string): LookBackup | null;
+/** Move the app onto the hub default skin: back up, Use skin and Follow off, overrides and colour pick become own picks, scopes inherit, one undo. */
+export function adoptHubDefault(look: AppLookDocument, meta: { at: string; by?: string; reason?: string; id?: string }): AppLookDocument;
+/** Put a backup's own picks, skin state and scopes back (the newest when `id` is empty); backups kept, one undo. */
+export function restoreLookBackup(look: AppLookDocument, id: string | null | undefined, at: string): AppLookDocument;
 export function scopeState(look: AppLookDocument, key: string): SkinScopeState | null;
 export function setScopeSkin(look: AppLookDocument, key: string, use: 'on' | 'off' | 'inherit', id?: string): AppLookDocument;
 export function setScopeOverride(look: AppLookDocument, key: string, slot: string, id: string | null): AppLookDocument;

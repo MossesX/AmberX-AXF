@@ -14,6 +14,7 @@ import { JOB_TYPE, jobTypeErrors, jobTypeSchemaProperties } from '../core/engine
 import { CARD_TYPE, cardErrors, cardSchemaProperties } from '../core/engines/card-rules.mjs';
 import { partsErrors as skinPartsErrors } from '../core/engines/skin-coverage.mjs';
 import { skinChromeErrors } from '../core/engines/skin-rules.mjs';
+import { CHROME_FIELDS, CHROME_TYPES } from '../core/engines/chrome-settings-rules.mjs';
 import { DEMO_TYPES, demoAssetErrors, demoSchemaProperties } from '../core/engines/demo-rules.mjs';
 import { jsonSchemas as uiReviewJsonSchemas, REGISTRY as UI_REVIEW_REGISTRY } from '../core/ui-review-schema.mjs';
 import { jsonSchemas as sessionJsonSchemas, REGISTRY as SESSION_REGISTRY } from '../core/session-schema.mjs';
@@ -841,6 +842,17 @@ export function newAsset({ dir, type, id, from, name }) {
   return target;
 }
 
+/** skin@1 properties beyond the required list: the colour pair (skin-modes@1), behaviourTheme, and the chrome block (chrome-settings@1 kinds). */
+function skinSchemaProperties() {
+  const id = { type: 'string', pattern: '^[a-z0-9][a-z0-9-]*$' };
+  const fields = Object.fromEntries(CHROME_TYPES.map((kind) => [kind, { type: 'object', description: `${kind} under this skin: the settings interface its dialog renders through (axf.chrome.settings.${kind}) and field overrides per instance (axf.chrome.${kind}.<instance>, this kind's chrome-settings@1 fields only).`, properties: { interface: id, instances: { type: 'object', additionalProperties: { type: 'object', properties: Object.fromEntries((CHROME_FIELDS[kind] ?? []).map((f) => [f.key, f.kind === 'toggle' ? { type: 'boolean' } : f.kind === 'number' ? { type: 'number', ...(f.min !== undefined ? { minimum: f.min } : {}), ...(f.max !== undefined ? { maximum: f.max } : {}) } : Array.isArray(f.options) ? { enum: f.options } : {}])) } } }, additionalProperties: false }]));
+  return {
+    colorThemes: { type: 'object', description: "The skin's light and dark colour themes (skin-modes@1); colorTheme is one of the two.", required: ['light', 'dark'], properties: { light: id, dark: id } },
+    behaviorTheme: id,
+    chrome: { type: 'object', description: 'Chrome settings the skin puts in force per chrome-settings@1 kind; lands in the composed look\'s settings after extras.settings.', properties: fields, additionalProperties: false },
+  };
+}
+
 /** Emit JSON Schema files (for editor autocompletion) from the type spec. */
 export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
   mkdirSync(outDir, { recursive: true });
@@ -860,6 +872,9 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
     if (type === JOB_TYPE) Object.assign(props, jobTypeSchemaProperties());
     if (type === CARD_TYPE) Object.assign(props, cardSchemaProperties());
     if (DEMO_TYPES.includes(type)) Object.assign(props, demoSchemaProperties(type));
+    // skin@1: the light / dark pair every skin ships (skin-modes@1), the behaviour section, the chrome block (chrome-settings@1 kinds)
+    const required = type === 'skin' ? [...ts.required, 'colorThemes'] : ts.required;
+    if (type === 'skin') Object.assign(props, skinSchemaProperties());
     const $defs = type === 'app-menu' || type === 'context-menu' ? { menuItem: menuItemSchema() } : undefined;
     const schema = {
       ...($defs ? { $defs } : {}),
@@ -875,7 +890,7 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
         name: { type: 'string', minLength: 1 },
         version: { type: 'string' },
         description: { type: 'string' },
-        data: { type: 'object', required: ts.required, properties: props },
+        data: { type: 'object', required, properties: props },
       },
     };
     const f = join(outDir, `${type}.schema.json`);

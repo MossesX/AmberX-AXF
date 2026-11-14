@@ -32,7 +32,7 @@ import { SearchIndex } from './engines/search';
 import { STYLE_PACKAGE_TYPE, stepPackage, stylePackageSlots, type StylePackageData } from './engines/stylepackage';
 import { appMenuSearchEntries, chromeToggleItems, compileAppMenu, compileProviderItems, mergeAppMenu, resolveChecked, type AppMenuContribution, type AppMenuEnv, type CompiledAppMenu, type CompiledMenuItem, type MergedAppMenu, type MenuSearchEntry, type ProviderOptions } from './engines/appmenu';
 import { isSkinMode, skinModeColor, skinModePair } from './engines/skin-modes.mjs';
-import { backToSkin, composeLookAt, globalSkinOf, hubOnlyLook, isSubScopeKey, lookAfterChange, newAppLook, normalizeSkin, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, setInheritSkin, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorOf, skinCoverage, skinCovers, skinEntries, skinFromDesignPackage, skinScopeDomId, skinScopeOf, snapshotLook, undoRestore, SKIN_COLOR_SLOT, SKIN_ICON_PACK_KEY, SKIN_TYPE, type AppLookDocument, type AppLookStore, type ComposedLook, type CoverageRow, type ResolvedSkin, type SkinColor, type SkinData, type SkinEntry, type SkinScope, type SkinScopeState, foldLegacyPicks, isFoldedPickType, lookNeedsMigration, migrateLookSettings, parseLegacyLook, settingsNeedMigration, skinSlots, isRetiredLookKey, LEGACY_LOOK_KEY, SKIN_SWAPPABLE_SECTION } from './engines/skin';
+import { backToSkin, composeLookAt, globalSkinOf, hubDefaultOf, hubOnlyLook, isSubScopeKey, lookAfterChange, newAppLook, normalizeSkin, overriddenSlots, parseAppLook, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, setInheritSkin, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorOf, skinCoverage, skinCovers, skinEntries, skinFromDesignPackage, skinScopeDomId, skinScopeOf, snapshotLook, undoRestore, SKIN_COLOR_SLOT, SKIN_ICON_PACK_KEY, SKIN_TYPE, type AppLookDocument, type AppLookStore, type ComposedLook, type CoverageRow, type ResolvedSkin, type SkinColor, type SkinData, type SkinEntry, type SkinScope, type SkinScopeState, foldLegacyPicks, isFoldedPickType, lookNeedsMigration, migrateLookSettings, parseLegacyLook, settingsNeedMigration, skinSlots, isRetiredLookKey, LEGACY_LOOK_KEY, SKIN_SWAPPABLE_SECTION } from './engines/skin';
 import { DESIGN_APPLIED_KEY, DESIGN_OVERRIDABLE, DESIGN_OVERRIDES_KEY, DESIGN_PACKAGE_TYPE, PACKAGE_APPLIED_KEY, captureDesignPackage, designLookSlots, isRetiredLookSetting, designPackageSlots, isAppearanceSetting, normalizeDesignOverrides, normalizeDesignPackage, overrideAfterPick, packageSettingsPlan, type DesignOverrides } from './engines/designpackage';
 import { ANIMATION_PREFS_KEY, animationState, behaviorStyle, confirmBeforeDelete, normalizeBehavior, setAnimationPref, skinAnimationVars, vibrationPattern, withAnimationPrefs, type AnimationState } from './engines/behavior';
 import { sweepOrigin } from './engines/swatches';
@@ -694,7 +694,7 @@ export class AxfRuntime {
     const look = this.lookLayerOn() ? store.get() : null;
     if (look) {
       const global = globalSkinOf(this.lastAppearance);
-      const inForce = resolveLookSkin(look, global, null);
+      const inForce = resolveLookSkin(look, global, null, this.hubDefaultSkin());
       // a colour theme pick under a skin is switched inside that skin: the skin itself is never changed or copied
       this.saveLook(lookAfterChange(look, change, inForce.id ? this.skinData(inForce.id) : null, inForce.from === 'global' ? global?.colorTheme ?? '' : ''));
       // the hub's own pages take their colours from axHub's look, the one thing the shared document still carries
@@ -1032,6 +1032,9 @@ export class AxfRuntime {
   /** The hub-wide skin the shared document carries (null = none). */
   globalSkin(): { id: string; overrides?: Record<string, string> } | null { return globalSkinOf(this.lastAppearance); }
 
+  /** The hub default skin the shared document carries (`defaultSkin`; null = none): the floor every app stands on without opting in. */
+  hubDefaultSkin(): { id: string; overrides?: Record<string, string>; colorTheme?: string } | null { return hubDefaultOf(this.lastAppearance); }
+
   /**
    * A UI or plugin level of the chain: `key` = `ui:<id>` | `plugin:<id>`, `use` on (with `id`, else the skin already
    * picked there, else the app's), off (no skin inside it) or inherit (the parent decides, the default).
@@ -1051,7 +1054,7 @@ export class AxfRuntime {
 
   /** The skin in force at a place in this app, hub-wide skin included: `{ id, overrides, from }` (from = the level that decided). */
   skinAt(scope?: Partial<SkinScope> | null): ResolvedSkin {
-    return resolveLookSkin(this.lookInForce(), this.globalSkin(), { ...scope, app: this.manifest.app.id });
+    return resolveLookSkin(this.lookInForce(), this.globalSkin(), { ...scope, app: this.manifest.app.id }, this.hubDefaultSkin());
   }
 
   /** The skin in force at the app level (the one Settings → Appearance shows), '' = none. */
@@ -1075,10 +1078,10 @@ export class AxfRuntime {
     if (!isSubScopeKey(key)) return null;
     const look = this.lookInForce();
     if (!look) return null;
-    const here = resolveLookSkin(look, this.globalSkin(), skinScopeOf(key, this.manifest.app.id));
+    const here = resolveLookSkin(look, this.globalSkin(), skinScopeOf(key, this.manifest.app.id), this.hubDefaultSkin());
     // the app level from the same document (not the last composed look, which a store without a change feed leaves behind
     // for a moment after a pick): a colour theme switched inside the skin must not make every screen a scope of its own
-    const app = resolveLookSkin(look, this.globalSkin(), { app: this.manifest.app.id });
+    const app = resolveLookSkin(look, this.globalSkin(), { app: this.manifest.app.id }, this.hubDefaultSkin());
     if (here.id === app.id && JSON.stringify(here.overrides) === JSON.stringify(app.overrides) && (here.colorTheme ?? '') === (app.colorTheme ?? '')) { this.dropScope(skinScopeDomId(key)); return null; }
     const scopeId = skinScopeDomId(key);
     const resolve = (): ResolvedInterface => {

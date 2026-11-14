@@ -105,13 +105,23 @@ default`, `SKIN_SCOPE_DEFAULT`, `skinScopeChain` ends in it):
 | `global` | the hub-wide skin while the app follows it; with none to follow, the floor |
 | `ui:` / `plugin:` | as before: on = its own skin, inherit = the parent, off = no skin inside it (an explicit choice: that place stands on the app's saved look, below the floor) |
 
-**Composition with the floor in force** (`composeLookAt`, s5): hub default skin (its sections, assets, parts, icon pack,
-extras, chrome) → hub-level `overrides` and `colorTheme` on the pointer → **the app's own picks** (`own.slots`,
-`own.spacing`, `own.hidden`, `own.settings`: the edits, per the skin-axhub-override rule that only what was edited is
-kept) → `ui:` overrides → `plugin:` overrides. So an app with no edits is the console look exactly; an app with edits
-differs only in what it edited. The app's `default` snapshot only fills slots the hub default skin leaves unnamed. With
-Use skin on, the app's own skin composes exactly as today (the floor is not consulted). `lookAfterChange` and
-`setLookSlot` are unchanged: with Use skin off a pick is the app's own, which is what an edit over the floor is.
+**Composition with the floor in force** (`composeLookAt`, `hubDefaultOf(shared)`; `skin.from === 'default'`): hub
+default skin (its sections, assets, parts, icon pack, extras, chrome) → hub-level `overrides` and `colorTheme` on the
+pointer → **the app's own picks** (`own.slots`, `own.spacing`, `own.hidden`, `own.settings`: the edits, per the
+skin-axhub-override rule that only what was edited is kept) → `ui:` overrides → `plugin:` overrides (and the colour
+theme the nearest of those picked). So an app with no edits is the console look exactly; an app with edits differs only
+in what it edited. The app's `default` snapshot only fills slots the hub default skin leaves unnamed. With Use skin on,
+the app's own skin composes exactly as today (the floor is not consulted); a `ui:` / `plugin:` scope that is `off` is
+composed without a skin, as today. `lookAfterChange` and `setLookSlot` are unchanged: with Use skin off a pick is the
+app's own, which is what an edit over the floor is. The runtime passes the pointer everywhere it resolves
+(`rt.hubDefaultSkin()`, `skinAt`, `skinScoped`, `pushAppearance`).
+
+**Moving an app onto the floor** (`adoptHubDefault(look, { at, by?, reason?, id? })`, "make all the apps inherit it right
+now"): a backup is taken first (`backupLook`); then Use skin goes off (the picked skin id stays, so Use skin on brings it
+back), the overrides and the colour theme picked under that skin become own picks (they were edits), Follow goes off,
+every `ui:` / `plugin:` scope goes back to inherit, and one undo is left (`action: 'adopt-default'`). Own picks stay.
+An app that already stands on the floor with nothing to move is returned unchanged (no backup, no undo), so running
+it over every app twice is safe.
 
 **Chrome in the skin: `chrome`** (skin@1, `SkinChrome`, `normalizeSkinChrome` / `skinChromeErrors` /
 `skinChromeSettings` in `skin-rules.mjs`, the build engine validates the same lines): `chrome: { <kind>: { interface?,
@@ -123,10 +133,11 @@ piece is (toolbar bottom, nav left) stays a layout token (`axf.tokens.layout` in
 
 **Backups per app: `backups`** (app-look@1, `LookBackup`, `normalizeLookBackup`, `LOOK_BACKUPS_MAX` = 5): before an
 app is moved onto the hub default, what it drew is kept in its own look document as
-`backups: [{ id, at, by, reason, own, skin, scopes }]`, newest first, capped (the oldest falls off). It is the same three
-parts the undo record keeps, so a restore is one move: own picks, skin state and scopes back as they were, the backup
-kept, one undo left (`restore-backup`, s5). `normalizeAppLook` keeps the list through every writer; a document without
-one has no `backups` field.
+`backups: [{ id, at, by, reason, own, skin, scopes }]`, newest first, capped (the oldest falls off; a twin of the newest
+is not added again). It is the same three parts the undo record keeps, so a restore is one move
+(`restoreLookBackup(look, id, at)`, `id` empty = the newest, `lookBackup` reads one): own picks, skin state and scopes
+back as they were, the list kept, one undo left (`action: 'restore-backup'`). `normalizeAppLook` keeps the list through
+every writer; a document without one has no `backups` field.
 
 **Not changed:** `skin-switch@1` (its scopes stay hub / app / ui / plugin; the hub default is set through the shared
 document, s7+ gives it CLI, REST, MCP and voice), the Default skin of skin-config@1 (`default-<app>`: each app's own saved

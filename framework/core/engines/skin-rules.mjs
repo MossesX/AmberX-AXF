@@ -306,6 +306,68 @@ export function setLookSlot(look, slot, id, global = null) {
   return { ...look, own: { ...look.own, slots } };
 }
 
+/* ---------------- the hub default skin: adopt it, back up, restore from backup ---------------- */
+
+/** The three parts a backup (and the undo record) keeps. */
+const partsOf = (look) => ({ own: look.own, skin: look.skin, scopes: look.scopes ?? {} });
+const sameParts = (a, b) => JSON.stringify(partsOf(a)) === JSON.stringify(partsOf(b));
+
+/**
+ * Keep what the app draws now as a backup: `{ id, at, by, reason, own, skin, scopes }` at the head of `backups`,
+ * capped at LOOK_BACKUPS_MAX (the oldest falls off). `meta` = `{ at, by?, reason?, id? }` (`id` defaults to `at`).
+ * A backup identical to the newest one is not added twice.
+ */
+export function backupLook(look, meta) {
+  const at = String(meta?.at ?? '');
+  if (!at) throw new Error('backupLook needs the time (at)');
+  const rec = normalizeLookBackup({ id: meta?.id, at, by: meta?.by, reason: meta?.reason, ...partsOf(look) });
+  const cur = look.backups ?? [];
+  if (cur[0] && sameParts(cur[0], rec)) return look;
+  return { ...look, backups: [rec, ...cur].slice(0, LOOK_BACKUPS_MAX) };
+}
+
+/** The backup named `id`, or the newest when `id` is empty; null when there is none. */
+export function lookBackup(look, id = '') {
+  const all = look?.backups ?? [];
+  return (id ? all.find((b) => b.id === id) : all[0]) ?? null;
+}
+
+/**
+ * Move the app onto the hub default skin (Brett, Nov 14 2026: "make all the apps inherit it right now"), keeping only
+ * what was edited: a backup of what it drew is taken first; then Use skin goes off (the picked skin id stays, so Use
+ * skin on brings it back), the overrides and colour pick made under that skin become the app's own picks (they were
+ * edits: skin-axhub-override rule), Follow goes off, every UI / plugin scope goes back to inherit, and one undo is left
+ * (`adopt-default`). Own picks stay as they are: they are the edits drawn over the floor. An app that already stands on
+ * the floor with nothing to move is returned unchanged (no backup, no undo).
+ */
+export function adoptHubDefault(look, meta) {
+  const at = String(meta?.at ?? '');
+  if (!at) throw new Error('adoptHubDefault needs the time (at)');
+  const skin = look.skin;
+  const moving = skin.use || skin.inherit || Object.keys(look.scopes ?? {}).length > 0;
+  if (!moving) return look;
+  const slots = { ...(look.own.slots ?? {}) };
+  if (skin.use) {
+    Object.assign(slots, skin.overrides);
+    if (skin.colorTheme) slots[SKIN_COLOR_SLOT] = skin.colorTheme;
+  }
+  const own = Object.keys(slots).length ? { ...look.own, slots } : look.own;
+  const backed = backupLook(look, { at, by: meta?.by, reason: meta?.reason ?? 'before the hub default skin', id: meta?.id });
+  return { ...backed, own, skin: { use: false, inherit: false, id: skin.id, overrides: {} }, scopes: {}, undo: { ...partsOf(look), at, action: 'adopt-default', scope: `app:${look.app}` } };
+}
+
+/**
+ * Restore from backup: the backup named `id` (the newest when empty) puts its own picks, skin state and scopes back;
+ * the list of backups is kept and one undo is left (`restore-backup`). No such backup = unchanged.
+ */
+export function restoreLookBackup(look, id, at) {
+  const b = lookBackup(look, id);
+  if (!b) return look;
+  const stamp = String(at ?? '');
+  if (!stamp) throw new Error('restoreLookBackup needs the time (at)');
+  return { ...look, own: b.own, skin: b.skin, scopes: b.scopes ?? {}, undo: { ...partsOf(look), at: stamp, action: 'restore-backup', scope: `app:${look.app}` } };
+}
+
 /* ---------------- scopes: a skin per UI / plugin, the hub-wide skin ---------------- */
 
 /** The state of one scope key in a document (`app` = the app level, `ui:` / `plugin:` = a sub scope; `global` is not in the document). */
