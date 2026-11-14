@@ -70,13 +70,6 @@
       },
       {
         "target": "gizmo-guide",
-        "title": "Gizmo guide",
-        "text": "Shows the “Gizmo guide” part of this screen. Part of Gizmo guide.",
-        "kind": "tab",
-        "draft": true
-      },
-      {
-        "target": "gizmo-guide",
         "title": "Gizmo guide settings",
         "text": "Settings → Plugins → Gizmo guide: narrated walkthroughs from Gizmo in a floating window, only when you ask.",
         "kind": "tab"
