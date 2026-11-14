@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T22:36:08.310Z",
+ "updatedAt": "2026-11-14T22:36:20.040Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -142701,7 +142701,7 @@
    "title": "Land on finish: auto-land live, clear backlog",
    "category": "",
    "detail": "Root cause: the auto-land builds (auto-land-every-finished-build-lands, auto-land-merge-main-land-land-mjs-clash) finished but never landed, so nothing lands by itself; 87 finished builds sit unlanded, many 1,000-2,000 commits behind main. Do, in order: (1) Land the auto-land code first, combined with replace-merge-queue-one-time-landing: a serial lander that, the moment a build finishes, merges origin/main into it, regenerates generated files (generated-files@1, wire /opt/axf-batch/resolve.py too), runs its checks once and merges it to main; no stacking; a cancelled CI run never counts as a failure; on a red check it files a fix build and moves on. While a build is running, merge main into it every 30 min so it never drifts far behind. (2) Fix the dispatcher: 6 of 8 slots sit empty while builds are queued; find why queued builds don't launch and fix it, with a test. (3) Clear the backlog: land every finished build one at a time, newest and most-wanted first, starting with move-amberx-web-app-console-amberx-andr and change-to-move-amberx-web-app-console (AmberX web app into the console), the console app parts 1-4 and wake listener, and voice-listener-use-claude-when-connected. Builds that are fully superseded get archived (tag archive/<name>) after checking no unique work is lost; anything with unique work gets flagged. (4) Redeploy the console after each batch of landings (axf-console-update) and check no doubled chrome. (5) Show 'commits behind main' on every build row and alert Brett's phone through AmberX if any finished build sits unlanded more than 15 min. Send Brett a phone notification with a summary of what landed. Full API and voice, tests, help, Shipped features.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -142709,7 +142709,7 @@
    "pr": "#678",
    "priority": "P0",
    "createdAt": "2026-11-14T22:17:37.935Z",
-   "updatedAt": "2026-11-14T22:36:05.608Z",
+   "updatedAt": "2026-11-14T22:36:10.894Z",
    "builtAt": "",
    "notes": [
     {
@@ -142739,6 +142739,10 @@
     {
      "text": "Session on mossesx-max- ended (exit 0) with 26 steps left: back in the Queue (run 1).",
      "at": "2026-11-14T22:36:05.608Z"
+    },
+    {
+     "text": "Dispatch gate: land-finish-auto-land-live-clear-backlog still has axf-land-finish-auto-land-live-clear-backlog--earl alive: not launched again, tracking that session.",
+     "at": "2026-11-14T22:36:10.894Z"
     }
    ],
    "approvals": [],
