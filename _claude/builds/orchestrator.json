@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T23:37:59.752Z",
+ "updatedAt": "2026-11-14T23:38:15.705Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -109867,7 +109867,7 @@
    "branch": "claude/console-axhub-retry-failed-calls",
    "pr": "#589",
    "createdAt": "2026-11-12T02:37:24.132Z",
-   "updatedAt": "2026-11-14T23:17:05.230Z",
+   "updatedAt": "2026-11-14T23:38:07.453Z",
    "builtAt": "2026-11-14T23:17:05.230Z",
    "notes": [
     {
@@ -135308,8 +135308,8 @@
    "mergedAt": "2026-11-14T23:37:41.535Z",
    "priority": "P0",
    "createdAt": "2026-11-13T20:53:50.393Z",
-   "updatedAt": "2026-11-14T23:37:44.149Z",
-   "builtAt": "2026-11-14T23:37:44.149Z",
+   "updatedAt": "2026-11-14T23:37:45.133Z",
+   "builtAt": "2026-11-14T23:37:45.133Z",
    "notes": [
     {
      "text": "UPDATE: Brett chose to PULL the per-toolbar landing out of main first (a reverse-patch commit of e5639b79f..ec579ee23, excluding _claude, pushed about 20:55). So this hotfix must: start from claude/per-toolbar-settings-fix-failing-chrome, merge current main (which includes the pull-out commit, so revert that pull-out commit on this branch), fix the double app menu/banner/nav on desktop, prove it with the count test, then land the fixed per-toolbar settings back on main and redeploy.",
