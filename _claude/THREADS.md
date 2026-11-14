@@ -796,15 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 18:15 UTC · `picker-dialog-plugin-replaces-all` note (all) · orchestrator
-- 2026-11-14 18:17 UTC · `themed-native-controls-plugin` note (all) · orchestrator
-- 2026-11-14 18:18 UTC · `themed-native-controls-plugin` note (all) · builds-live
-- 2026-11-14 18:19 UTC · `land-all-skin-builds` note (all) · orchestrator
-- 2026-11-14 18:19 UTC · `land-all-skin-builds` → running, note (all) · pipeline
-- 2026-11-14 18:19 UTC · `land-all-skin-builds` branch claude/land-all-skin-builds (all) · pipeline
-- 2026-11-14 18:19 UTC · `picker-dialog-plugin-replaces-all` → running, note (all) · pipeline
-- 2026-11-14 18:19 UTC · `picker-dialog-plugin-replaces-all` branch claude/picker-dialog-plugin-replaces-all (all) · pipeline
-- 2026-11-14 18:19 UTC · `picker-dialog-plugin-replaces-all` note (all) · orchestrator
 - 2026-11-14 18:19 UTC · `themed-native-controls-plugin` → running, note (all) · pipeline
 - 2026-11-14 18:20 UTC · `themed-native-controls-plugin` branch claude/themed-native-controls-plugin (all) · pipeline
 - 2026-11-14 18:20 UTC · `themed-native-controls-plugin` note (all) · orchestrator
@@ -1196,6 +1187,15 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 23:32 UTC · `console-look-becomes-default-axhub-skin` note (all) · pipeline
 - 2026-11-14 23:32 UTC · `replace-merge-queue-one-time-landing` note (all) · orchestrator
 - 2026-11-14 23:31 UTC · `land-batch-merge-main-each-finished` branch claude/land-batch-merge-main-each-finished-report, PR #687 (all) · builds-live
+- 2026-11-14 23:31 UTC · `land-batch-merge-main-each-finished` s18 done (all) · orchestrator
+- 2026-11-14 23:32 UTC · `skin-axhub-override-switch-greyed-out` → complete (all) · orchestrator
+- 2026-11-14 23:32 UTC · `skin-config-panel-merge-main-and-land` → complete (all) · orchestrator
+- 2026-11-14 23:32 UTC · `skins-plugin-merge-main-and-land` → complete (all) · orchestrator
+- 2026-11-14 23:32 UTC · `skin-animations-swatches-skin-switch` → complete (all) · orchestrator
+- 2026-11-14 23:32 UTC · `skin-axhub-override-switch-greyed-out` → running, note (all) · orchestrator
+- 2026-11-14 23:32 UTC · `skin-config-panel-merge-main-and-land` → running, note (all) · orchestrator
+- 2026-11-14 23:32 UTC · `skins-plugin-merge-main-and-land` note (all) · orchestrator
+- 2026-11-14 23:32 UTC · `skin-animations-swatches-skin-switch` → running, note (all) · orchestrator
 
 ## Token passes (log)
 
