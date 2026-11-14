@@ -797,10 +797,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 18:40 UTC · `land-all-skin-builds` s14 done (all) · orchestrator
-- 2026-11-14 18:41 UTC · `land-all-skin-builds` s15 done (all) · orchestrator
-- 2026-11-14 18:42 UTC · `land-all-skin-builds` s16 done (all) · orchestrator
-- 2026-11-14 18:44 UTC · `land-all-skin-builds` s17 done (all) · orchestrator
 - 2026-11-14 18:44 UTC · `picker-dialog-plugin-replaces-all` s5 done (all) · orchestrator
 - 2026-11-14 18:44 UTC · `land-all-skin-builds` s18 done (all) · orchestrator
 - 2026-11-14 18:44 UTC · `themed-native-controls-plugin` s5 done (all) · orchestrator
@@ -1197,6 +1193,10 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 23:38 UTC · `merge-main-land-move-amberx-web-app` note (all) · orchestrator
 - 2026-11-14 23:38 UTC · `skin-config-panel-merge-main-and-land` → pending, note (all) · foreign-write
 - 2026-11-14 23:38 UTC · `auto-land-merge-main-land-land-mjs-clash` note (all) · foreign-write
+- 2026-11-14 23:38 UTC · `merge-main-land-change-to-move-amberx` → running, note (all) · pipeline
+- 2026-11-14 23:38 UTC · `merge-main-land-change-to-move-amberx` branch claude/merge-main-land-change-to-move-amberx (all) · pipeline
+- 2026-11-14 23:39 UTC · `merge-main-land-change-to-move-amberx` note (all) · orchestrator
+- 2026-11-14 23:39 UTC · `hotfix-desktop-console-draws-app-menu` note (all) · orchestrator
 
 ## Token passes (log)
 
