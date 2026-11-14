@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5698,
- "updatedAt": "2026-11-14T23:53:50.937Z",
+ "rev": 5699,
+ "updatedAt": "2026-11-14T23:54:06.174Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -226736,8 +226736,8 @@
    "pr": "#640",
    "priority": "P0",
    "createdAt": "2026-11-14T23:16:42.547Z",
-   "updatedAt": "2026-11-14T23:52:28.363Z",
-   "builtAt": "2026-11-14T23:52:28.364Z",
+   "updatedAt": "2026-11-14T23:52:58.815Z",
+   "builtAt": "2026-11-14T23:52:58.815Z",
    "notes": [
     {
      "text": "Queued by land-finish-auto-land-live-clear-backlog.",
@@ -226754,6 +226754,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-merge-main-land-console-app-part-4--paulie, shared account login)",
      "at": "2026-11-14T23:46:49.178Z"
+    },
+    {
+     "text": "Headless run axf-merge-main-land-console-app-part-4--paulie: brief only · start 11.6K tokens ($0.03) · cost $0.42 · 25 turns · 6 tools, MCP none",
+     "at": "2026-11-14T23:52:58.815Z"
     }
    ],
    "approvals": [],
