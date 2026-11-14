@@ -279,8 +279,13 @@ final class BridgeContract {
     /** A missing-permission error that also says what to ask for. */
     static JSONObject permissionError(String id, String tool, List<String> missing) {
         JSONArray keys = new JSONArray();
-        for (String p : missing) keys.put(permissionKey(p) == null ? p : permissionKey(p));
-        JSONObject e = error(id, tool, E_PERMISSION, "The console app needs permission first: " + keys.join(", ").replace("\"", "") + ".");
+        List<String> names = new java.util.ArrayList<>();
+        for (String p : missing) {
+            String k = permissionKey(p) == null ? p : permissionKey(p);
+            keys.put(k);
+            names.add(k);
+        }
+        JSONObject e = error(id, tool, E_PERMISSION, "The console app needs permission first: " + String.join(", ", names) + ".");
         try { e.getJSONObject("error").put("permissions", keys); } catch (Exception ignored) { /* the key exists */ }
         return e;
     }
