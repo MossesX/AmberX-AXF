@@ -16,6 +16,10 @@
   "data": {
     "layoutTheme": "canvas-studio",
     "colorTheme": "orchid-mist",
+    "colorThemes": {
+      "light": "orchid-mist",
+      "dark": "plum-noir"
+    },
     "styleTheme": "soft-studio",
     "behaviorTheme": "fluid",
     "assets": {
