@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T21:01:10.247Z",
+ "updatedAt": "2026-11-14T21:42:08.043Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -133247,9 +133247,10 @@
    "pendingId": "",
    "branch": "claude/token-registry-skin-editor-live-sandbox",
    "pr": "#657",
+   "mergedAt": "2026-11-14T21:33:25Z",
    "priority": "P1",
    "createdAt": "2026-11-13T20:04:16.679Z",
-   "updatedAt": "2026-11-13T22:20:38.558Z",
+   "updatedAt": "2026-11-14T21:42:04Z",
    "builtAt": "",
    "notes": [
     {
@@ -133283,6 +133284,14 @@
     {
      "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
      "at": "2026-11-13T22:20:38.558Z"
+    },
+    {
+     "text": "Reconciler: PR #657 merged",
+     "at": "2026-11-14T21:41:04.508Z"
+    },
+    {
+     "text": "Shipped manifest sm-token-registry-skin-editor-live-sandbox rev 1 sent to Shipped features (orchestrator): landed c0d479286, 56 file(s), 0 test line(s), 5 open.",
+     "at": "2026-11-14T21:42:04Z"
     }
    ],
    "approvals": [],
