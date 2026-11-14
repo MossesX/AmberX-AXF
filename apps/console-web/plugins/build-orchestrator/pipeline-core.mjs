@@ -33,10 +33,10 @@
  *              healthOf() reads one tiny call's answer; a fresh health record (own.health) decides usable / Fable,
  *              so the dispatcher never tests an account at launch time. healthDue() says when the next sweep runs.
  */
-import { DEFAULT_MAX_RUNS, STATUS_AFTER, isHeld, nextModel, openSteps, outcomeLine, outcomeOf, queueOrder } from '../../../../framework/core/build-pipeline.mjs';
+import { DEFAULT_MAX_RUNS, isHeld, nextModel, nextStatusOnExit, openSteps, outcomeLine, queueOrder } from '../../../../framework/core/build-pipeline.mjs';
 import { effectivePriority, priorityLabel } from '../../../../framework/core/build-priority.mjs';
 import { FOUNDATION_MODEL, MODEL_LABELS, modelForWork, modelKey } from '../../../../framework/core/model-policy.mjs';
-import { API_RULE, estimateMinutes, maxStep, nextUp as orchNextUp, MODEL_GUIDE, STEP_MINUTES, stepLimit } from './web/orchestrator-core.mjs';
+import { API_RULE, estimateMinutes, maxStep, nextUp as orchNextUp, phases as orchPhases, MODEL_GUIDE, STEP_MINUTES, stepLimit } from './web/orchestrator-core.mjs';
 
 export const SCHEMA = 'pipeline-settings@1';
 export const DEFAULTS = Object.freeze({
@@ -344,16 +344,40 @@ export function plan({ builds, accounts, slots, settings = normSettings(), rules
 
 // ------------------------------------------------------------------ session end
 
-/** A run ended: the build's new status, its lastRun record and a note line. */
-export function endOutcome(b, { exit, account = '', session = '', now = new Date().toISOString() } = {}, settings = normSettings()) {
+/**
+ * The phase a run was launched for: the one the dispatcher recorded (pipeline.phase), else the last phase holding a
+ * step ticked during the run (records from before phases were recorded). Null when nothing says.
+ */
+export function launchedPhase(b, ps = orchPhases({ ...b, steps: list(b?.steps) })) {
+  const p = b?.pipeline ?? {};
+  const since = Date.parse(p.launchedAt || '') || 0;
+  const touched = (ph) => ph.steps.some((s) => s.done && (Date.parse(s.doneAt || '') || 0) >= since);
+  if (p.phase) { const named = ps.filter((x) => x.name === p.phase); if (named.length) return named.find(touched) ?? named[0]; }
+  return [...ps].reverse().find(touched) ?? null;
+}
+
+/**
+ * A run ended: the build's new status, the reason, its lastRun record, the pipeline patch and a note line.
+ * Phase done = the launched phase has no open step left, or the next open step is on another model than the run
+ * started on (a session never runs the next model's steps). The crash limit counts crashes only (pipeline.crashes).
+ */
+export function endOutcome(b, { exit, account = '', session = '', now = new Date().toISOString(), needsBrett = false } = {}, settings = normSettings()) {
   const stepsLeft = openSteps(b).length;
   const runs = (b.pipeline?.runs ?? 0) || 1;
-  const phaseSwitch = stepsLeft > 0 && !!b.pipeline?.model && nextModel(b) !== b.pipeline.model;
-  const outcome = outcomeOf({ exit, stepsLeft, runs, phaseSwitch }, settings.maxRuns);
-  const run = { at: now, exit: Number.isInteger(exit) ? exit : null, outcome, stepsLeft, account: account || b.pipeline?.account || '', session: session || b.pipeline?.session || '' };
-  let status = STATUS_AFTER[outcome];
-  if (outcome === 'finished') status = b.pr && !b.mergedAt ? 'built' : 'complete';
-  return { outcome, status, run, note: outcomeLine({ ...b, pipeline: { ...(b.pipeline ?? {}), runs } }, run) };
+  const ps = orchPhases({ ...b, steps: list(b.steps) });
+  const launched = stepsLeft ? launchedPhase(b, ps) : null;
+  const modelSwitch = stepsLeft > 0 && !!b.pipeline?.model && nextModel(b) !== b.pipeline.model;
+  const phaseDone = stepsLeft > 0 && (!!launched?.done || modelSwitch);
+  const upgradeBlocked = stepsLeft > 0 && !!orchNextUp({ ...b, steps: list(b.steps) }).needsApproval;
+  const asked = !!needsBrett || b.status === 'waiting';
+  const r = nextStatusOnExit({ exit, stepsLeft, runs, crashes: Number.isInteger(b.pipeline?.crashes) ? b.pipeline.crashes : undefined, phaseDone, upgradeBlocked, needsBrett: asked }, settings.maxRuns);
+  const run = { at: now, exit: Number.isInteger(exit) ? exit : null, outcome: r.outcome, reason: r.reason, stepsLeft, account: account || b.pipeline?.account || '', session: session || b.pipeline?.session || '', phase: launched?.name ?? b.pipeline?.phase ?? '' };
+  let status = r.status;
+  if (r.outcome === 'finished') status = b.pr && !b.mergedAt ? 'built' : 'complete';
+  const note = outcomeLine({ ...b, pipeline: { ...(b.pipeline ?? {}), runs } }, run);
+  // the patch never touches queuedAt: a requeued build keeps its place in the Queue
+  const patch = { lastRun: run, crashes: r.crashes, session: '', slot: '', note: r.outcome === 'finished' ? '' : note };
+  return { outcome: r.outcome, status, reason: r.reason, run, crashes: r.crashes, keepQueue: r.keepQueue, patch, note };
 }
 
 // ------------------------------------------------------------------ split

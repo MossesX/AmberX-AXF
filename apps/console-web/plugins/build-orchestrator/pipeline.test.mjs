@@ -133,9 +133,36 @@ t('endOutcome: finished → built with a PR, complete without; crash requeues; c
   const stopped = P.endOutcome(build('s', 'running', [step('s1', 'Opus')], { pipeline: { runs: 1, model: 'Opus' } }), { exit: 0 });
   assert.equal(stopped.status, 'pending'); assert.match(stopped.note, /back in Pending for Brett/);
   const phase = P.endOutcome(build('p', 'running', [step('s1', 'Fable', true), step('s2', 'Opus')], { pipeline: { runs: 1, model: 'Fable' } }), { exit: 0 });
-  assert.equal(phase.status, 'queued', 'Fable phase done, Opus phase next: back in the Queue for an Opus account');
+  assert.equal(phase.status, 'queued', 'Fable phase done, Opus phase next: back in the Queue for an Opus account'); assert.equal(phase.reason, 'phase-done');
   const dead = P.endOutcome(build('f', 'running', [step('s1', 'Opus')], { pipeline: { runs: 3 } }), { exit: 137 });
-  assert.equal(dead.status, 'failed'); assert.match(dead.note, /failed/);
+  assert.equal(dead.status, 'pending', 'the crash limit: back in Pending for Brett'); assert.equal(dead.reason, 'crash-limit'); assert.match(dead.note, /crash limit/); assert.equal(BP.tabOf({ ...build('f', 'pending', [step('s1', 'Opus')]), pipeline: { lastRun: dead.run } }), 'errors');
+});
+t('endOutcome: a phase done with steps left goes back to the Queue whatever the models (same model, no model on the record, same model with a new label)', () => {
+  const ph = (id, phase, model, done = false) => ({ ...step(id, model, done), phase });
+  // B: Opus "Phase 1" → Opus "Phase 2"
+  const sameModel = P.endOutcome(build('b', 'running', [ph('s1', 'Phase 1', 'Opus', true), ph('s2', 'Phase 2', 'Opus')], { pipeline: { runs: 1, model: 'Opus', phase: 'Phase 1', launchedAt: '2026-11-08T00:30:00.000Z' } }), { exit: 0 });
+  assert.deepEqual([sameModel.status, sameModel.reason, sameModel.run.phase], ['queued', 'phase-done', 'Phase 1']); assert.match(sameModel.note, /finished phase Phase 1 .*back in the Queue at its place/);
+  // C: Fable → Opus with no model and no phase on the record (a run from before the dispatcher stored them)
+  const bare = P.endOutcome(build('c', 'running', [step('s1', 'Fable', true), step('s2', 'Opus')], { pipeline: { runs: 1 } }), { exit: 0 });
+  assert.deepEqual([bare.status, bare.reason], ['queued', 'phase-done']);
+  // D: Fable "Schema" → Fable "Engine"
+  const relabel = P.endOutcome(build('d', 'running', [ph('s1', 'Schema', 'Fable', true), ph('s2', 'Engine', 'Fable')], { pipeline: { runs: 1, model: 'Fable', phase: 'Schema' } }), { exit: 0 });
+  assert.deepEqual([relabel.status, relabel.reason], ['queued', 'phase-done']);
+  // the phase it was launched for is still open: a stop mid-phase, Pending (never a relaunch loop on a session that ticked nothing)
+  const idle = P.endOutcome(build('i', 'running', [ph('s1', 'Phase 1', 'Opus', true), ph('s2', 'Phase 2', 'Opus'), ph('s3', 'Phase 2', 'Opus')], { pipeline: { runs: 2, model: 'Opus', phase: 'Phase 2', launchedAt: '2026-11-08T02:00:00.000Z' } }), { exit: 0 });
+  assert.deepEqual([idle.status, idle.reason], ['pending', 'stopped']);
+  // a phase end never counts as a crash; the patch keeps the queue position
+  const crashedBefore = P.endOutcome(build('k', 'running', [step('s1', 'Fable', true), step('s2', 'Opus')], { pipeline: { runs: 3, crashes: 2, model: 'Fable', queuedAt: now } }), { exit: 0 });
+  assert.deepEqual([crashedBefore.status, crashedBefore.crashes, crashedBefore.keepQueue, 'queuedAt' in crashedBefore.patch], ['queued', 2, true, false]);
+  // Opus → Fable with "Fable upgrades need my approval" on and no approval: Pending; off: the Queue
+  const up = build('u', 'running', [step('s1', 'Opus', true), step('s2', 'Fable')], { pipeline: { runs: 1, model: 'Opus', phase: 'Phase 1' } });
+  setUpgradePolicy({ approvalRequired: true, source: 'test' });
+  const blocked = P.endOutcome(up, { exit: 0 }); assert.deepEqual([blocked.status, blocked.reason], ['pending', 'upgrade-blocked']); assert.match(blocked.note, /needs Brett's approval/);
+  const approved = P.endOutcome({ ...up, approvals: [{ phase: 1, from: 'Opus', to: 'Fable', at: now, by: 'brett' }] }, { exit: 0 }); assert.deepEqual([approved.status, approved.reason], ['queued', 'phase-done']);
+  setUpgradePolicy({ approvalRequired: false, source: 'test' });
+  const auto = P.endOutcome(up, { exit: 0 }); assert.deepEqual([auto.status, auto.reason], ['queued', 'phase-done']);
+  // the session said it needs Brett (a build left waiting): Pending even with its phase done
+  assert.deepEqual([P.endOutcome({ ...up, status: 'waiting' }, { exit: 0 }).reason, P.endOutcome(up, { exit: 0, needsBrett: true }).status], ['needs-brett', 'pending']);
 });
 
 // ---------------- split
