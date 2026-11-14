@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T23:06:45.811Z",
+ "updatedAt": "2026-11-14T23:06:56.222Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -106509,7 +106509,7 @@
    "branch": "claude/server-gate-one-session-per-build-no",
    "pr": "#610",
    "createdAt": "2026-11-12T02:42:15.357Z",
-   "updatedAt": "2026-11-14T23:06:34.786Z",
+   "updatedAt": "2026-11-14T23:06:50.309Z",
    "builtAt": "2026-11-14T23:06:34.786Z",
    "notes": [
     {
@@ -106567,6 +106567,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-server-gate-one-session-per-build-no--sully, shared account login)",
      "at": "2026-11-14T23:04:26.387Z"
+    },
+    {
+     "text": "s3 done: tests are on the branch (server-gate 10, pipeline 47, merge-queue 17 checks pass; theme/controls/toolbars/chrome checks pass). PR #610 conflicts with main in 6 files (pipeline.mjs, build-orchestrator server/__init__.py, web/index.tsx, merge-queue.mjs, claude-headless.sh, builds-merge-core.mjs); the lander's main-merge and conflict fixer handle it. UI Review shots for the Server gate log page and banner are still missing: the plugin pages did not load in a scratch console. They need capturing from the live console once deployed, or Brett can waive them. AmberX FYI goes out when it is live.",
+     "at": "2026-11-14T23:06:50.309Z"
     }
    ],
    "approvals": [],
