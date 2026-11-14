@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T03:52:08.551Z",
+ "updatedAt": "2026-11-14T03:52:54.861Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -137115,7 +137115,7 @@
    "branch": "claude/ui-directory-plugin-self-updating-data",
    "pr": "",
    "createdAt": "2026-11-14T03:50:42.413Z",
-   "updatedAt": "2026-11-14T03:51:32.429Z",
+   "updatedAt": "2026-11-14T03:52:07.713Z",
    "builtAt": "",
    "notes": [
     {
@@ -137179,6 +137179,25 @@
      "note": "",
      "uid": "st-mwfvbirg05279y",
      "createdAt": "2026-11-14T03:50:42.414Z"
+    },
+    {
+     "id": "s4",
+     "text": "Brett: the UI Directory is a tree view of everything, with collapsible branches, categorized, sortable and filterable. It opens in a floating window with 'Create toolbar' and 'Create tab group' buttons. Creating one drops a new floating toolbar or tab group on whatever page you're on. Drag commands or screens from the tree onto it to add them, then dock it anywhere on the page (top, bottom, sides, or free-floating). Placement, contents and docking are saved per page as tokens/assets, with Restore previous edit and full API and voice ('make a toolbar with build and deploy').",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "uid": "st-mwfvdcap014csg",
+     "createdAt": "2026-11-14T03:52:07.714Z"
     },
     {
      "id": "s3",
