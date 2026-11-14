@@ -1859,3 +1859,14 @@ html[data-axf-help='on'] button[data-axf-help-id], html[data-axf-help='on'] [rol
 .axf-controlled--success { border-inline-start-color: var(--fx-success); }
 .axf-controlled--danger { border-inline-start-color: var(--fx-danger); }
 .axf-controlled__note { align-items: center; gap: var(--fx-dens-gap-xs); }
+
+/* ---------------- themed controls (themed-controls@1, spec/THEMED-CONTROLS.md) ----------------
+ * The controls a host draws in place of browser-drawn elements. Every value reads the --fx-tc-* token the
+ * themed-controls asset compiles (engines/themed-controls.ts); a `theme` field compiles to nothing, so the fallback
+ * here (today's look from the colour / style theme) applies. The swapped original stays in the page, hidden. */
+[data-axf-themed] {
+  position: absolute !important; inline-size: 1px !important; block-size: 1px !important; margin: 0 !important;
+  overflow: hidden !important; clip-path: inset(50%) !important; pointer-events: none !important; white-space: nowrap;
+}
+.fx-tc { box-sizing: border-box; }
+.fx-tc :where(*, *::before, *::after) { box-sizing: border-box; }

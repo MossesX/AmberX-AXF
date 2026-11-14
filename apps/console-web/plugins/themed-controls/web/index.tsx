@@ -7,9 +7,7 @@
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
-import { registerApi } from './api';
-import { liveHost } from './host';
-import { startSync } from './sync';
+import { boot } from './boot';
 import { FOLDER, FamiliesPanel, TAB, settingsGroups } from './settings';
 
 export const plugin: AxfWebLibrary = {
@@ -17,10 +15,7 @@ export const plugin: AxfWebLibrary = {
   label: 'Themed controls',
   version: '0.1.0',
   appMenu,
-  register(rt) {
-    registerApi(rt);
-    startSync(rt, () => liveHost()?.report() ?? {});
-  },
+  register(rt) { boot(rt); },
   settingsTabs: [{ id: TAB, label: 'Themed controls', icon: 'sliders', order: 60, parent: 'plugins', description: 'Swap the checkboxes, sliders, pickers, dialogs, tooltips and scrollbars the browser draws for themed ones; one switch per family.' }],
   settings: settingsGroups(),
   settingsPanels: [
