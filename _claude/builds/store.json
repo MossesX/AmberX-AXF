@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5415,
- "updatedAt": "2026-11-14T20:22:07.019Z",
+ "rev": 5416,
+ "updatedAt": "2026-11-14T20:22:16.121Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -206427,7 +206427,7 @@
    "mergedAt": "2026-11-14T20:15:16Z",
    "priority": "P1",
    "createdAt": "2026-11-13T18:56:15.400Z",
-   "updatedAt": "2026-11-14T20:21:03.696Z",
+   "updatedAt": "2026-11-14T20:22:05Z",
    "builtAt": "",
    "notes": [
     {
@@ -206481,6 +206481,10 @@
     {
      "text": "Reconciler: PR #641 merged",
      "at": "2026-11-14T20:21:03.696Z"
+    },
+    {
+     "text": "Shipped manifest sm-skin-axhub-override-switch-greyed-out rev 1 sent to Shipped features (orchestrator): landed 2bb2c6a7d, 67 file(s), 6 test line(s), 5 open.",
+     "at": "2026-11-14T20:22:05Z"
     }
    ],
    "approvals": [],
@@ -206537,6 +206541,12 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "shipped": {
+    "id": "sm-skin-axhub-override-switch-greyed-out",
+    "rev": 1,
+    "at": "2026-11-14T20:22:05Z",
+    "landedCommit": "2bb2c6a7d8447d7912395e249ca39e942732f408"
    },
    "steps": [
     {
@@ -206727,7 +206737,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -208471,7 +208481,7 @@
    "mergedAt": "2026-11-14T20:15:18Z",
    "priority": "P0",
    "createdAt": "2026-11-13T19:47:38.941Z",
-   "updatedAt": "2026-11-14T20:21:03.696Z",
+   "updatedAt": "2026-11-14T20:22:07Z",
    "builtAt": "",
    "notes": [
     {
@@ -208513,6 +208523,10 @@
     {
      "text": "Reconciler: PR #648 merged",
      "at": "2026-11-14T20:21:03.696Z"
+    },
+    {
+     "text": "Shipped manifest sm-skin-config-panel-merge-main-and-land rev 1 sent to Shipped features (orchestrator): landed 42d28acfe, 0 file(s), 0 test line(s), 2 open.",
+     "at": "2026-11-14T20:22:07Z"
     }
    ],
    "approvals": [],
@@ -208569,6 +208583,12 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "shipped": {
+    "id": "sm-skin-config-panel-merge-main-and-land",
+    "rev": 1,
+    "at": "2026-11-14T20:22:07Z",
+    "landedCommit": "42d28acfe3cacfff269e1037b3733289a18598ae"
    },
    "steps": [
     {
@@ -208649,7 +208669,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 17,
+   "rev": 18,
    "deleted": false,
    "deletedAt": "",
    "pending": {
