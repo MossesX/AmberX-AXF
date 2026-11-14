@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T23:47:44.518Z",
+ "updatedAt": "2026-11-14T23:48:08.689Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -144951,7 +144951,7 @@
    "pr": "#633",
    "priority": "P0",
    "createdAt": "2026-11-14T23:16:22.160Z",
-   "updatedAt": "2026-11-14T23:47:19.395Z",
+   "updatedAt": "2026-11-14T23:48:04.289Z",
    "builtAt": "",
    "notes": [
     {
@@ -145094,8 +145094,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:47:23.268Z",
      "note": "",
      "uid": "st-mwh149yn066i41",
      "createdAt": "2026-11-14T23:20:49.007Z"
@@ -145113,8 +145113,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:47:29.242Z",
      "note": "",
      "uid": "st-mwh149yn073tk4",
      "createdAt": "2026-11-14T23:20:49.007Z"
@@ -145132,8 +145132,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:47:33.784Z",
      "note": "",
      "uid": "st-mwh149yn08r9rl",
      "createdAt": "2026-11-14T23:20:49.007Z"
@@ -145151,8 +145151,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:47:40.606Z",
      "note": "",
      "uid": "st-mwh149yn09c1b1",
      "createdAt": "2026-11-14T23:20:49.007Z"
@@ -145173,8 +145173,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:48:04.289Z",
      "note": "",
      "uid": "st-mwh149yn0af805",
      "createdAt": "2026-11-14T23:20:49.007Z"
