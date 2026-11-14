@@ -59,3 +59,19 @@ Survey taken 2026-11-14 after `git fetch origin` (main at `1169074ab`). Ahead/be
 - Then ran the CI Node sweep and the Web Dev Console job's checks on the stack tip, compared each failure with main and fixed every difference: glossary ratchet (#590: the merged skins CLI header passed the 4000 chars the glossary reads; #657: descriptions for the Skin editor's three exported-skin commands), check-plugin-pages (#657: one-sentence descriptions on the Skin editor and Token registry page heads), duplicate Gizmo guide help entry (#657/#654: kept the written one), check-toolbars asset-library drift (#652: the six behaviour themes' animations added to the asset-library seeds). Failures that also fail on main here (agent-slots, claude-login tests, shipped-features/session-checkin tests, tests needing `python`) are environment only.
 - Round 2: #641 was kicked again with a link to #647's run (43632200093), but every job in that run and in #641's own (43632177678) passed. The queue seems to count runs cancelled by a newer push as failures and to link the wrong run; re-added #641 with no code change. Worth a look in push-banner `land/merge-queue-core.mjs`.
 - Merged: #641 2bb2c6a7d (20:15 UTC), which carried #647 0c23f110d, #648 42d28acfe, #590 b7ddb2f23 and #618 c1a92b67b (GitHub marks each merged once its head is on main); #652 aee42bbe8 (20:51, after one "base branch was modified" retry); #657 c0d479286 (21:33).
+- Brett's override (22:15, "get rid of that merge tier and start landing them one at a time") came after round 2 had already started; by the time this step ran, all 8 had merged through the queue and `land.mjs queue list` was empty, so there was nothing to remove and no direct merge was needed.
+
+### Merge commits on main
+
+| # | PR | Branch (`claude/…`) | Merged (UTC) | Merge commit |
+|---|---|---|---|---|
+| 1 | #647 | skins-plugin-merge-main-and-land | 2026-11-14 20:15 | `0c23f110d` |
+| 2 | #648 | skin-config-panel-merge-main-and-land | 2026-11-14 20:15 | `42d28acfe` |
+| 3 | #590 | every-skin-ships-light-dark-colour-theme | 2026-11-14 20:15 | `b7ddb2f23` |
+| 4 | #618 | console-skin-axhub-only | 2026-11-14 20:15 | `c1a92b67b` |
+| 5 | #641 | skin-axhub-override-switch-greyed-out | 2026-11-14 20:15 | `2bb2c6a7d` |
+| 6 | #652 | skin-animations-swatches-skin-switch | 2026-11-14 20:51 | `aee42bbe8` |
+| 7 | #657 | token-registry-skin-editor-live-sandbox | 2026-11-14 21:33 | `c0d479286` |
+| 8 | #654 | own-token-sets-for-grids-and-tab-groups | 2026-11-14 22:33 | `647b79e58` |
+
+All eight merge commits are ancestors of `origin/main`.
