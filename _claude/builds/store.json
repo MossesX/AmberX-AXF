@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5509,
- "updatedAt": "2026-11-14T22:54:10.792Z",
+ "rev": 5510,
+ "updatedAt": "2026-11-14T22:54:18.296Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -213543,7 +213543,7 @@
    "title": "HOTFIX: desktop console draws app menu, banners and nav twice",
    "category": "",
    "detail": "Right after per-toolbar-settings-fix-failing-chrome landed on main (merge ec579ee23, 20:44 Nov 13) and the console redeployed, Brett's DESKTOP console shows TWO app menus, TWO banners and TWO navigation menus (the phone looks fine). Keep the per-toolbar/per-instance settings feature: fix forward, don't revert it. Likely cause: the per-instance chrome (ChromeContext.tsx / Overlays.tsx / chrome-settings-rules) now renders a per-instance copy of each chrome element in addition to the default one on wide layouts, or the merge kept both sides of a render block. Find it, render exactly one of each chrome element, add an e2e/visual test that counts app menus, banners and nav menus on desktop and phone (must be 1 each), run all tests, then LAND it on main immediately and redeploy the console. Note: commit 237a293af was an accidental revert that only re-added 24 lines to one file; check it and drop it if it's wrong.",
-   "status": "queued",
+   "status": "running",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -213551,7 +213551,7 @@
    "pr": "#658",
    "priority": "P0",
    "createdAt": "2026-11-13T20:53:50.393Z",
-   "updatedAt": "2026-11-14T22:52:21.321Z",
+   "updatedAt": "2026-11-14T22:54:15.837Z",
    "builtAt": "",
    "notes": [
     {
@@ -213603,12 +213603,12 @@
      "at": "2026-11-13T21:16:23.568Z"
     },
     {
-     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-hotfix-desktop-console-draws-app-menu--joey, shared account login)",
-     "at": "2026-11-14T22:52:21.321Z"
-    },
-    {
      "text": "Started run 1 on mossesx-max- (Opus, Phase 1): axf-hotfix-desktop-console-draws-app-menu--joey.",
      "at": "2026-11-14T22:52:18.934Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-hotfix-desktop-console-draws-app-menu--joey, shared account login)",
+     "at": "2026-11-14T22:52:21.321Z"
     }
    ],
    "approvals": [],
@@ -213628,12 +213628,12 @@
    "pipeline": {
     "queuedAt": "",
     "queuedBy": "",
-    "account": "",
-    "session": "",
+    "account": "mossesx-max-",
+    "session": "axf-hotfix-desktop-console-draws-app-menu--joey",
     "slot": "",
-    "model": "",
-    "launchedAt": "",
-    "runs": 0,
+    "model": "Opus",
+    "launchedAt": "2026-11-14T22:52:18.360Z",
+    "runs": 1,
     "lastRun": {
      "at": "2026-11-13T21:16:22.820Z",
      "exit": 0,
@@ -213650,9 +213650,9 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"b91717a9-c832-49af-9ac7-5fd5a4873a0a\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "Session stopped on its own with 3 steps left: back in Pending for Brett.",
+    "note": "",
     "route": "",
-    "dispatchedAt": "",
+    "dispatchedAt": "2026-11-14T22:52:18.360Z",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -213661,7 +213661,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "",
+    "pickedAt": "2026-11-14T22:52:18.360Z",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -213682,12 +213682,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T22:54:15.837Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-13T21:14:45.379Z",
-     "updatedAt": "2026-11-13T21:14:45.379Z"
+     "updatedAt": "2026-11-14T22:54:16.161Z"
     },
     {
      "id": "s2",
@@ -213745,7 +213745,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 22,
+   "rev": 23,
    "deleted": false,
    "deletedAt": "",
    "pending": {
