@@ -12,7 +12,13 @@ export const TC_RADII: readonly string[];
 export const TC_BORDER_WIDTHS: readonly string[];
 export const TC_SHOW_VALUE: readonly string[];
 export const TC_STEPPERS: readonly string[];
-export const TC_STATES: Record<string, readonly string[]>;
+export const TC_STATES: Record<ThemedFamily, readonly string[]>;
+export const TC_WEEK_STARTS: readonly string[];
+export const TC_HOUR_CYCLES: readonly string[];
+export const TC_BUTTON_TONES: readonly string[];
+export const TC_BORDER_STYLES: readonly string[];
+export const TC_PLACEMENTS: readonly string[];
+export const TC_GUTTERS: readonly string[];
 export const THEMED_CONTROL_FIELDS: Record<string, TcFieldSpec>;
 export const THEMED_CONTROL_GROUPS: string[];
 /** One state's colours: prop → `theme`, a colour token id or a `light|dark` pair. */

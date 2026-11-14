@@ -836,6 +836,922 @@
               }
             }
           }
+        },
+        "datetime": {
+          "type": "object",
+          "properties": {
+            "cellSize": {
+              "type": "number",
+              "minimum": 28,
+              "maximum": 48,
+              "default": 36
+            },
+            "cellRadius": {
+              "enum": [
+                "theme",
+                "none",
+                "sm",
+                "md",
+                "lg",
+                "pill"
+              ],
+              "default": "md"
+            },
+            "surfaceRadius": {
+              "enum": [
+                "theme",
+                "none",
+                "sm",
+                "md",
+                "lg",
+                "pill"
+              ],
+              "default": "md"
+            },
+            "weekStart": {
+              "enum": [
+                "locale",
+                "monday",
+                "sunday"
+              ],
+              "default": "locale"
+            },
+            "weekNumbers": {
+              "type": "boolean",
+              "default": false
+            },
+            "hourCycle": {
+              "enum": [
+                "locale",
+                "12",
+                "24"
+              ],
+              "default": "locale"
+            },
+            "minuteStep": {
+              "type": "number",
+              "minimum": 1,
+              "maximum": 30,
+              "default": 5
+            },
+            "rest": {
+              "type": "object",
+              "properties": {
+                "surface": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "surface"
+                },
+                "text": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "text"
+                },
+                "border": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "border"
+                },
+                "muted": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "muted"
+                },
+                "cellBg": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "theme"
+                },
+                "cellText": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "theme"
+                },
+                "cellBorder": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "theme"
+                }
+              }
+            },
+            "hover": {
+              "type": "object",
+              "properties": {
+                "cellBg": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "accentSoft"
+                },
+                "cellText": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "theme"
+                },
+                "cellBorder": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "theme"
+                }
+              }
+            },
+            "focus": {
+              "type": "object",
+              "properties": {
+                "cellBg": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "theme"
+                },
+                "cellText": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "theme"
+                },
+                "cellBorder": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "accent"
+                },
+                "ring": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "focus"
+                }
+              }
+            },
+            "selected": {
+              "type": "object",
+              "properties": {
+                "cellBg": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "accent"
+                },
+                "cellText": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "accentText"
+                },
+                "cellBorder": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "accent"
+                }
+              }
+            },
+            "today": {
+              "type": "object",
+              "properties": {
+                "cellBg": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "theme"
+                },
+                "cellText": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "accent"
+                },
+                "cellBorder": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "accent"
+                }
+              }
+            },
+            "disabled": {
+              "type": "object",
+              "properties": {
+                "cellBg": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "theme"
+                },
+                "cellText": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "muted"
+                },
+                "cellBorder": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "theme"
+                }
+              }
+            },
+            "invalid": {
+              "type": "object",
+              "properties": {
+                "surface": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "theme"
+                },
+                "text": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "theme"
+                },
+                "border": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "danger"
+                }
+              }
+            }
+          }
+        },
+        "color": {
+          "type": "object",
+          "properties": {
+            "swatchSize": {
+              "type": "number",
+              "minimum": 16,
+              "maximum": 40,
+              "default": 24
+            },
+            "swatchRadius": {
+              "enum": [
+                "theme",
+                "none",
+                "sm",
+                "md",
+                "lg",
+                "pill"
+              ],
+              "default": "sm"
+            },
+            "surfaceRadius": {
+              "enum": [
+                "theme",
+                "none",
+                "sm",
+                "md",
+                "lg",
+                "pill"
+              ],
+              "default": "md"
+            },
+            "recent": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 16,
+              "default": 8
+            },
+            "themeSwatches": {
+              "type": "boolean",
+              "default": true
+            },
+            "areaHeight": {
+              "type": "number",
+              "minimum": 80,
+              "maximum": 240,
+              "default": 140
+            },
+            "rest": {
+              "type": "object",
+              "properties": {
+                "surface": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "surface"
+                },
+                "text": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "text"
+                },
+                "border": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "border"
+                },
+                "swatchBorder": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "border"
+                }
+              }
+            },
+            "hover": {
+              "type": "object",
+              "properties": {
+                "swatchBorder": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "muted"
+                }
+              }
+            },
+            "focus": {
+              "type": "object",
+              "properties": {
+                "swatchBorder": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "accent"
+                },
+                "ring": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "focus"
+                }
+              }
+            },
+            "selected": {
+              "type": "object",
+              "properties": {
+                "swatchBorder": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "accent"
+                },
+                "check": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "accentText"
+                }
+              }
+            },
+            "disabled": {
+              "type": "object",
+              "properties": {
+                "swatchBorder": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "theme"
+                }
+              }
+            },
+            "invalid": {
+              "type": "object",
+              "properties": {
+                "surface": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "theme"
+                },
+                "text": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "theme"
+                },
+                "border": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "danger"
+                }
+              }
+            }
+          }
+        },
+        "dialogs": {
+          "type": "object",
+          "properties": {
+            "width": {
+              "type": "number",
+              "minimum": 280,
+              "maximum": 720,
+              "default": 420
+            },
+            "radius": {
+              "enum": [
+                "theme",
+                "none",
+                "sm",
+                "md",
+                "lg",
+                "pill"
+              ],
+              "default": "lg"
+            },
+            "okTone": {
+              "enum": [
+                "primary",
+                "neutral",
+                "danger",
+                "ghost",
+                "quiet"
+              ],
+              "default": "primary"
+            },
+            "cancelTone": {
+              "enum": [
+                "primary",
+                "neutral",
+                "danger",
+                "ghost",
+                "quiet"
+              ],
+              "default": "neutral"
+            },
+            "icon": {
+              "type": "boolean",
+              "default": true
+            },
+            "selectText": {
+              "type": "boolean",
+              "default": true
+            },
+            "surface": {
+              "type": "object",
+              "properties": {
+                "bg": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "surface"
+                },
+                "text": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "text"
+                },
+                "border": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "border"
+                }
+              }
+            },
+            "backdrop": {
+              "type": "object",
+              "properties": {
+                "bg": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "theme"
+                }
+              }
+            },
+            "title": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "text"
+                },
+                "icon": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "accent"
+                }
+              }
+            },
+            "message": {
+              "type": "object",
+              "properties": {
+                "text": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "muted"
+                }
+              }
+            },
+            "field": {
+              "type": "object",
+              "properties": {
+                "bg": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "surface"
+                },
+                "border": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "border"
+                },
+                "text": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "text"
+                }
+              }
+            },
+            "focus": {
+              "type": "object",
+              "properties": {
+                "ring": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "focus"
+                },
+                "border": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "accent"
+                }
+              }
+            }
+          }
+        },
+        "file": {
+          "type": "object",
+          "properties": {
+            "minHeight": {
+              "type": "number",
+              "minimum": 60,
+              "maximum": 240,
+              "default": 120
+            },
+            "radius": {
+              "enum": [
+                "theme",
+                "none",
+                "sm",
+                "md",
+                "lg",
+                "pill"
+              ],
+              "default": "md"
+            },
+            "borderStyle": {
+              "enum": [
+                "dashed",
+                "solid",
+                "none"
+              ],
+              "default": "dashed"
+            },
+            "borderWidth": {
+              "enum": [
+                "theme",
+                "0",
+                "1",
+                "2",
+                "3",
+                "4"
+              ],
+              "default": "2"
+            },
+            "progressHeight": {
+              "type": "number",
+              "minimum": 2,
+              "maximum": 12,
+              "default": 6
+            },
+            "showList": {
+              "type": "boolean",
+              "default": true
+            },
+            "rest": {
+              "type": "object",
+              "properties": {
+                "bg": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "surface2"
+                },
+                "border": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "border"
+                },
+                "text": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "muted"
+                },
+                "icon": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "muted"
+                }
+              }
+            },
+            "hover": {
+              "type": "object",
+              "properties": {
+                "bg": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "surface3"
+                },
+                "border": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "muted"
+                },
+                "text": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "text"
+                },
+                "icon": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "text"
+                }
+              }
+            },
+            "focus": {
+              "type": "object",
+              "properties": {
+                "bg": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "theme"
+                },
+                "border": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "accent"
+                },
+                "text": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "theme"
+                },
+                "icon": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "theme"
+                },
+                "ring": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "focus"
+                }
+              }
+            },
+            "active": {
+              "type": "object",
+              "properties": {
+                "bg": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "accentSoft"
+                },
+                "border": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "accent"
+                },
+                "text": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "theme"
+                },
+                "icon": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "theme"
+                }
+              }
+            },
+            "dragover": {
+              "type": "object",
+              "properties": {
+                "bg": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "accentSoft"
+                },
+                "border": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "accent"
+                },
+                "text": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "accent"
+                },
+                "icon": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "accent"
+                }
+              }
+            },
+            "disabled": {
+              "type": "object",
+              "properties": {
+                "bg": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "theme"
+                },
+                "border": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "theme"
+                },
+                "text": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "muted"
+                },
+                "icon": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "muted"
+                }
+              }
+            },
+            "invalid": {
+              "type": "object",
+              "properties": {
+                "bg": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "theme"
+                },
+                "border": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "danger"
+                },
+                "text": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "danger"
+                },
+                "icon": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "danger"
+                }
+              }
+            },
+            "progress": {
+              "type": "object",
+              "properties": {
+                "track": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "surface3"
+                },
+                "fill": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "accent"
+                },
+                "done": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "success"
+                },
+                "failed": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "danger"
+                }
+              }
+            }
+          }
+        },
+        "tooltip": {
+          "type": "object",
+          "properties": {
+            "delayMs": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 2000,
+              "default": 500
+            },
+            "hideMs": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1000,
+              "default": 100
+            },
+            "longPressMs": {
+              "type": "number",
+              "minimum": 200,
+              "maximum": 1200,
+              "default": 500
+            },
+            "maxWidth": {
+              "type": "number",
+              "minimum": 120,
+              "maximum": 480,
+              "default": 280
+            },
+            "radius": {
+              "enum": [
+                "theme",
+                "none",
+                "sm",
+                "md",
+                "lg",
+                "pill"
+              ],
+              "default": "md"
+            },
+            "placement": {
+              "enum": [
+                "top",
+                "bottom",
+                "start",
+                "end",
+                "auto"
+              ],
+              "default": "top"
+            },
+            "arrow": {
+              "type": "boolean",
+              "default": false
+            },
+            "rest": {
+              "type": "object",
+              "properties": {
+                "bg": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "surface"
+                },
+                "text": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "text"
+                },
+                "border": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "accent"
+                }
+              }
+            }
+          }
+        },
+        "scrollbar": {
+          "type": "object",
+          "properties": {
+            "width": {
+              "type": "number",
+              "minimum": 4,
+              "maximum": 20,
+              "default": 10
+            },
+            "radius": {
+              "enum": [
+                "theme",
+                "none",
+                "sm",
+                "md",
+                "lg",
+                "pill"
+              ],
+              "default": "pill"
+            },
+            "thin": {
+              "type": "boolean",
+              "default": false
+            },
+            "autoHide": {
+              "type": "boolean",
+              "default": false
+            },
+            "gutter": {
+              "enum": [
+                "auto",
+                "stable",
+                "both-edges"
+              ],
+              "default": "auto"
+            },
+            "track": {
+              "type": "object",
+              "properties": {
+                "bg": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "theme"
+                }
+              }
+            },
+            "thumb": {
+              "type": "object",
+              "properties": {
+                "bg": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "muted"
+                }
+              }
+            },
+            "thumbHover": {
+              "type": "object",
+              "properties": {
+                "bg": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "text"
+                }
+              }
+            },
+            "thumbActive": {
+              "type": "object",
+              "properties": {
+                "bg": {
+                  "type": "string",
+                  "pattern": "^(theme|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus)(\\|(bg|surface|surface2|surface3|text|muted|border|accent|accentText|accentSoft|danger|success|warning|info|focus))?)$",
+                  "default": "accent"
+                }
+              }
+            }
+          }
         }
       }
     }

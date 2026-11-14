@@ -48,7 +48,19 @@ export const TC_STATES = {
   radio: ['rest', 'hover', 'focus', 'active', 'checked', 'disabled', 'invalid'],
   range: ['rest', 'hover', 'focus', 'active', 'disabled', 'invalid'],
   number: ['rest', 'hover', 'focus', 'active', 'disabled', 'invalid'],
+  datetime: ['rest', 'hover', 'focus', 'selected', 'today', 'disabled', 'invalid'],
+  color: ['rest', 'hover', 'focus', 'selected', 'disabled', 'invalid'],
+  dialogs: ['surface', 'backdrop', 'title', 'message', 'field', 'focus'],
+  file: ['rest', 'hover', 'focus', 'active', 'dragover', 'disabled', 'invalid', 'progress'],
+  tooltip: ['rest'],
+  scrollbar: ['track', 'thumb', 'thumbHover', 'thumbActive'],
 };
+export const TC_WEEK_STARTS = ['locale', 'monday', 'sunday'];
+export const TC_HOUR_CYCLES = ['locale', '12', '24'];
+export const TC_BUTTON_TONES = ['primary', 'neutral', 'danger', 'ghost', 'quiet'];
+export const TC_BORDER_STYLES = ['dashed', 'solid', 'none'];
+export const TC_PLACEMENTS = ['top', 'bottom', 'start', 'end', 'auto'];
+export const TC_GUTTERS = ['auto', 'stable', 'both-edges'];
 
 const color = (dflt) => ({ kind: 'color', default: dflt });
 const choice = (options, dflt) => ({ kind: 'enum', options, default: dflt });
@@ -128,9 +140,96 @@ export const THEMED_CONTROL_FIELDS = {
     disabled: { bg: 'theme', border: 'theme', text: 'muted', stepperBg: 'theme', stepperIcon: 'theme' },
     invalid: { bg: 'theme', border: 'danger', text: 'theme', stepperBg: 'theme', stepperIcon: 'theme' },
   }),
+  // datetime: calendar grid + hour / minute columns on a popover (axf.css .fx-popover: surface, border, radius md, shadow lg)
+  'datetime.cellSize': num(28, 48, 36, 'px14'),
+  'datetime.cellRadius': choice(TC_RADII, 'md'),
+  'datetime.surfaceRadius': choice(TC_RADII, 'md'),
+  'datetime.weekStart': choice(TC_WEEK_STARTS, 'locale'),
+  'datetime.weekNumbers': bool(false),
+  'datetime.hourCycle': choice(TC_HOUR_CYCLES, 'locale'),
+  'datetime.minuteStep': num(1, 30, 5, 'min'),
+  ...states('datetime', {
+    rest: { surface: 'surface', text: 'text', border: 'border', muted: 'muted', cellBg: 'theme', cellText: 'theme', cellBorder: 'theme' },
+    hover: { cellBg: 'accentSoft', cellText: 'theme', cellBorder: 'theme' },
+    focus: { cellBg: 'theme', cellText: 'theme', cellBorder: 'accent', ring: 'focus' },
+    selected: { cellBg: 'accent', cellText: 'accentText', cellBorder: 'accent' },
+    today: { cellBg: 'theme', cellText: 'accent', cellBorder: 'accent' },
+    disabled: { cellBg: 'theme', cellText: 'muted', cellBorder: 'theme' },
+    invalid: { surface: 'theme', text: 'theme', border: 'danger' },
+  }),
+  // color: theme swatches, recent colours, a hue / saturation area and a hex field on the same popover
+  'color.swatchSize': num(16, 40, 24, 'px14'),
+  'color.swatchRadius': choice(TC_RADII, 'sm'),
+  'color.surfaceRadius': choice(TC_RADII, 'md'),
+  'color.recent': num(0, 16, 8, 'swatches'),
+  'color.themeSwatches': bool(true),
+  'color.areaHeight': num(80, 240, 140, 'px14'),
+  ...states('color', {
+    rest: { surface: 'surface', text: 'text', border: 'border', swatchBorder: 'border' },
+    hover: { swatchBorder: 'muted' },
+    focus: { swatchBorder: 'accent', ring: 'focus' },
+    selected: { swatchBorder: 'accent', check: 'accentText' },
+    disabled: { swatchBorder: 'theme' },
+    invalid: { surface: 'theme', text: 'theme', border: 'danger' },
+  }),
+  // dialogs: alert / confirm / prompt on the framework dialog (axf.css .fx-dialog: surface under the scrim, border, radius lg)
+  'dialogs.width': num(280, 720, 420, 'px14'),
+  'dialogs.radius': choice(TC_RADII, 'lg'),
+  'dialogs.okTone': choice(TC_BUTTON_TONES, 'primary'),
+  'dialogs.cancelTone': choice(TC_BUTTON_TONES, 'neutral'),
+  'dialogs.icon': bool(true),
+  'dialogs.selectText': bool(true),
+  ...states('dialogs', {
+    surface: { bg: 'surface', text: 'text', border: 'border' },
+    backdrop: { bg: 'theme' },
+    title: { text: 'text', icon: 'accent' },
+    message: { text: 'muted' },
+    field: { bg: 'surface', border: 'border', text: 'text' },
+    focus: { ring: 'focus', border: 'accent' },
+  }),
+  // file: a drop zone with a file list and per-file progress (today the browser's bare button)
+  'file.minHeight': num(60, 240, 120, 'px14'),
+  'file.radius': choice(TC_RADII, 'md'),
+  'file.borderStyle': choice(TC_BORDER_STYLES, 'dashed'),
+  'file.borderWidth': choice(TC_BORDER_WIDTHS, '2'),
+  'file.progressHeight': num(2, 12, 6, 'px14'),
+  'file.showList': bool(true),
+  ...states('file', {
+    rest: { bg: 'surface2', border: 'border', text: 'muted', icon: 'muted' },
+    hover: { bg: 'surface3', border: 'muted', text: 'text', icon: 'text' },
+    focus: { bg: 'theme', border: 'accent', text: 'theme', icon: 'theme', ring: 'focus' },
+    active: { bg: 'accentSoft', border: 'accent', text: 'theme', icon: 'theme' },
+    dragover: { bg: 'accentSoft', border: 'accent', text: 'accent', icon: 'accent' },
+    disabled: { bg: 'theme', border: 'theme', text: 'muted', icon: 'muted' },
+    invalid: { bg: 'theme', border: 'danger', text: 'danger', icon: 'danger' },
+    progress: { track: 'surface3', fill: 'accent', done: 'success', failed: 'danger' },
+  }),
+  // tooltip: today's tap tip (axf.css .fx-taptip: surface, text, accent border, radius md, shadow lg, small type)
+  'tooltip.delayMs': num(0, 2000, 500, 'ms'),
+  'tooltip.hideMs': num(0, 1000, 100, 'ms'),
+  'tooltip.longPressMs': num(200, 1200, 500, 'ms'),
+  'tooltip.maxWidth': num(120, 480, 280, 'px14'),
+  'tooltip.radius': choice(TC_RADII, 'md'),
+  'tooltip.placement': choice(TC_PLACEMENTS, 'top'),
+  'tooltip.arrow': bool(false),
+  ...states('tooltip', {
+    rest: { bg: 'surface', text: 'text', border: 'accent' },
+  }),
+  // scrollbar: today the browser's own unless the style theme says thin (theme.ts scrollbarVars: muted thumb, transparent track)
+  'scrollbar.width': num(4, 20, 10, 'px'),
+  'scrollbar.radius': choice(TC_RADII, 'pill'),
+  'scrollbar.thin': bool(false),
+  'scrollbar.autoHide': bool(false),
+  'scrollbar.gutter': choice(TC_GUTTERS, 'auto'),
+  ...states('scrollbar', {
+    track: { bg: 'theme' },
+    thumb: { bg: 'muted' },
+    thumbHover: { bg: 'text' },
+    thumbActive: { bg: 'accent' },
+  }),
 };
 
-/** The families the registry has fields for right now (every entry of THEMED_FAMILIES once s3 lands). */
+/** The families the registry has fields for (every entry of THEMED_FAMILIES, in that order). */
 export const THEMED_CONTROL_GROUPS = [...new Set(Object.keys(THEMED_CONTROL_FIELDS).map((p) => p.split('.')[0]))];
 
 const isObj = (v) => typeof v === 'object' && v !== null && !Array.isArray(v);
