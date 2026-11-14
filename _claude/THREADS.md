@@ -792,7 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 20:19 UTC · `console-app-part-2-native-floating-2` s1 done, s2 done, s3 done, s4 done, s5 done, s6 done, s7 done, → built, PR #639, note (all) · reconciler
 - 2026-11-13 20:19 UTC · `console-app-wake-word-voice-listener` s2 done, note (all) · reconciler
 - 2026-11-13 20:19 UTC · `skin-axhub-override-switch-greyed-out` PR #641, note (all) · reconciler
 - 2026-11-13 20:19 UTC · `skins-plugin-merge-main-and-land` PR #647, note (all) · reconciler
@@ -1192,6 +1191,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 04:39 UTC · `ui-directory-plugin-self-updating-data` note (all) · pipeline
 - 2026-11-14 04:39 UTC · `group-chat-audio-hear-agents-talk-while` s2 done (all) · orchestrator
 - 2026-11-14 04:40 UTC · `demo-video-series-three-minute-browser` note (all) · voice
+- 2026-11-14 04:40 UTC · `banner-widget-shapes-more-than-circle` → pending, note (all) · reconciler
 
 ## Token passes (log)
 

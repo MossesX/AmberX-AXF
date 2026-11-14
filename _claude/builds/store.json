@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5258,
- "updatedAt": "2026-11-14T04:40:50.936Z",
+ "rev": 5259,
+ "updatedAt": "2026-11-14T04:41:07.259Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -211628,14 +211628,14 @@
    "title": "Banner widget shapes: more than circle and pill, all token-driven",
    "category": "Appearance",
    "detail": "Brett: banner widgets can only be circles or pills. Add a shape token per banner widget (global, per skin, per instance): circle, pill, rounded square, square, squircle, hexagon, diamond, tag, plus custom radius per corner and custom SVG mask. Shapes are assets (shape@1), swappable by skin, editable in the skin editor, UI Manager and per-instance settings, with Restore previous edit. Full API: REST/MCP/CLI/voice ('make the banner widgets hexagons'). Tests desktop and phone.",
-   "status": "running",
+   "status": "pending",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/banner-widget-shapes-more-than-circle",
    "pr": "",
    "createdAt": "2026-11-14T03:47:49.947Z",
-   "updatedAt": "2026-11-14T04:11:34.502Z",
+   "updatedAt": "2026-11-14T04:40:59.199Z",
    "builtAt": "",
    "notes": [
     {
@@ -211653,6 +211653,10 @@
     {
      "text": "s1 done (Fable): shape@1 type + tokens + pill default landed on branch claude/banner-widget-shapes-more-than-circle. For s2/s3: the hard-coded shape inventory is in framework/spec/BANNER-WIDGETS.md → Shapes; the four kinds hexagon/diamond/tag/squircle/custom have engine output but no starter asset yet; axhub-web, amberx-droid and molly baked framework copies are 23 core files behind main and have no node_modules here, so only console-web was re-baked (their shared-assets check already fails on help/framework-drafts.json). console-web src/axf/libs/hub/veto.ts carries an overlay API the approvals-banner plugin uses that is not in framework/libs: baked copy kept, needs porting back to the framework.",
      "at": "2026-11-14T04:11:08.445Z"
+    },
+    {
+     "text": "Reconciler: paused: no live session or process runs it (worktree kept); was running",
+     "at": "2026-11-14T04:40:59.199Z"
     }
    ],
    "approvals": [],
@@ -211745,7 +211749,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
