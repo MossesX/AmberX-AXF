@@ -34,6 +34,14 @@ export function splitCheck(build: any, rules?: any): { needsSplit: boolean; reas
 export function derivedStatus(build: any, rules?: any): string;
 export function counts(builds: any[]): Record<string, number>;
 export function sortBuilds(list: any[], sort?: string, dir?: 'asc' | 'desc', rules?: any): any[];
+/** The run a build is on (read-only, from the pipeline): booked employee, launch model, account, queued time. */
+export interface Run { agent: string; model: '' | 'Fable' | 'Opus'; account: string; queuedAt: string }
+/** Model it is built on: the live run's while it runs, else the next open step's ('' when nothing is left). */
+export function modelOf(build: any): string;
+/** Employee (agent id) the build's run is booked on, '' when none yet. */
+export function agentOf(build: any): string;
+/** Queued builds' 1-based place in the dispatcher's start order. */
+export function queuePositions(builds: any[]): Map<string, number>;
 export const ASSET_RULE: string;
 export function brief(build: any, rules?: any): string;
 export interface UpgradePolicy { approvalRequired: boolean; source: string }

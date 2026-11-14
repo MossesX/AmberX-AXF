@@ -26,7 +26,7 @@ export const FOLDER = 'build-orchestrator';
 registerRowRefTarget('axf-orchestrator-build', (id) => (id ? { kind: 'orchestrator', id } : null));
 const api = pluginApi(FOLDER, 'Build orchestrator', { unavailable: 'The build orchestrator is switched off or its server part is not running.' });
 type Step = { id: string; text: string; model: 'Fable' | 'Opus'; why: string; phase: string; group: string; estimate: string; files: string[]; checks: string[]; session: 'same' | 'new'; agent: boolean; done: boolean; doneAt: string; note: string };
-type Build = { id: string; title: string; category: string; detail: string; status: string; hidden: boolean; source: string; pendingId: string; branch: string; pr: string; createdAt: string; updatedAt: string; builtAt: string; notes: { text: string; at: string }[]; approvals: { phase: number; from: string; to: string; at: string; by?: string; via?: string; kind?: string; selfApproved?: boolean }[]; upgradeRequests?: { id: string; phase: number; from: string; to: string; at: string; by: string; state: string }[]; origin?: unknown; steps: Step[] };
+type Build = { id: string; title: string; category: string; detail: string; status: string; hidden: boolean; source: string; pendingId: string; branch: string; pr: string; createdAt: string; updatedAt: string; builtAt: string; notes: { text: string; at: string }[]; approvals: { phase: number; from: string; to: string; at: string; by?: string; via?: string; kind?: string; selfApproved?: boolean }[]; upgradeRequests?: { id: string; phase: number; from: string; to: string; at: string; by: string; state: string }[]; origin?: unknown; run?: core.Run; priority?: string; steps: Step[] };
 type Rules = { sameSession: boolean; subAgents: boolean; approveModelSwitch: boolean; maxStepMinutes: number };
 type State = { updatedAt: string; rules: Rules; builds: Build[] };
 type Res = { ok: boolean; error?: string; state?: State; log?: string[]; brief?: string; upgradePolicy?: { approvalRequired: boolean; source: string } };
@@ -445,6 +445,7 @@ function figures(b: Build) {
 
 /** Grid: one row per build, grouped by category (columns like the Pending builds grid); a row expands to its steps as a subgrid plus the build's actions. */
 function BuildGrid({ builds, rules, busy, act }: { builds: Build[]; rules: Rules; busy: boolean; act: Act }) {
+  const rt = useRuntime();
   const [sort, setSort] = useState<GridSort>(() => consoleApi.readLocal<GridSort>('orch-grid-sort', null));
   const [hidden, setHidden] = useState<string[]>(() => consoleApi.readLocal<string[]>('orch-grid-hidden', ['left']));
   const [stepHidden, setStepHidden] = useState<string[]>(() => consoleApi.readLocal<string[]>('orch-step-hidden', ['doneAt']));
@@ -462,6 +463,7 @@ function BuildGrid({ builds, rules, busy, act }: { builds: Build[]; rules: Rules
   }, [listed, focusId]);
   useEffect(() => { consoleApi.writeLocal('orch-grid-sort', sort); consoleApi.writeLocal('orch-grid-hidden', hidden); consoleApi.writeLocal('orch-step-hidden', stepHidden); }, [sort, hidden, stepHidden]);
   const fig = useMemo(() => new Map(builds.map((b) => [b.id, figures(b)])), [builds]);
+  const queuePos = useMemo(() => core.queuePositions(builds), [builds]);
   const groups: GridGroup<Build>[] = useMemo(() => {
     const by = new Map<string, Build[]>();
     for (const b of builds) { const c = b.category || core.UNCATEGORISED; by.set(c, [...(by.get(c) ?? []), b]); }
@@ -479,6 +481,12 @@ function BuildGrid({ builds, rules, busy, act }: { builds: Build[]; rules: Rules
       render: (b) => <span className={`pd-badge oc-badge is-${b.status}`}>{(core.STATUS_LABEL as Record<string, string>)[b.status]}</span> },
     { id: 'next', label: 'Next', width: 'calc(var(--fx-font-size) * 6)', sortable: true, sortValue: (b) => core.nextUp(b, rules).step?.model ?? 'zz',
       render: (b) => { const n = core.nextUp(b, rules); return n.done ? <span className="fx-muted">—</span> : n.needsApproval ? <span className="oc-flag" title="The next phase upgrades the model: only you can approve it">your OK → {n.phase?.model}</span> : n.step ? <span className={`oc-model is-${n.step.model.toLowerCase()}`}>{n.step.model} {n.step.id}</span> : <span className="fx-muted">—</span>; } },
+    { id: 'model', label: 'Model', width: 'calc(var(--fx-font-size) * 5)', sortable: true, sortValue: (b) => core.modelOf(b) || 'zz',
+      render: (b) => { const m = core.modelOf(b); return m ? <span className={`oc-model is-${m.toLowerCase()}`} title={b.run?.model && (b.status === 'running' || b.status === 'waiting') ? `Running on ${m}${b.run.account ? ` · ${b.run.account}` : ''}` : `Next step runs on ${m}`}>{m}</span> : <span className="fx-muted">—</span>; } },
+    { id: 'queue', label: 'Queue #', width: 'calc(var(--fx-font-size) * 4.5)', align: 'end', sortable: true, sortValue: (b) => queuePos.get(b.id) ?? Number.MAX_SAFE_INTEGER,
+      render: (b) => { const n = queuePos.get(b.id); return n ? <span className="fx-small" title={`Number ${n} of ${queuePos.size} in the Queue`}>#{n}</span> : <span className="fx-muted">—</span>; } },
+    { id: 'agent', label: 'Employee', width: 'calc(var(--fx-font-size) * 9)', sortable: true, sortValue: (b) => core.agentOf(b) || '~',
+      render: (b) => { const a = core.agentOf(b); return a ? <Button size="sm" tone="ghost" className="oc-cell-agent" title="Open the employee card" disabled={!rt.actions.get('agent-swarm.profile')} onClick={(e) => { e.stopPropagation(); rt.actions.dispatch(`agent-swarm.profile:${a}`, { runtime: rt }); }}><AgentAvatar agent={a} size="small" label noMenu /></Button> : <span className="fx-muted" title="Booked on a builder when it starts">Unassigned</span>; } },
     { id: 'steps', label: 'Steps', width: 'calc(var(--fx-font-size) * 3.5)', align: 'end', sortable: true, sortValue: (b) => core.progress(b).total,
       render: (b) => { const p = core.progress(b); return <span className="fx-small" title={`${core.phases(b).length} phase(s)`}>{p.done}/{p.total}</span>; } },
     { id: 'time', label: 'Time', width: 'calc(var(--fx-font-size) * 4)', align: 'end', sortable: true, sortValue: (b) => fig.get(b.id)!.total,

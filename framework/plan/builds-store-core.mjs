@@ -47,7 +47,7 @@ import { normApproval, normRequest } from '../core/model-switch.mjs';
 import { mergeOrigin, normOrigin } from '../core/build-origin.mjs';
 import { effectivePriority, normPriority } from '../core/build-priority.mjs';
 import { normRef as normShippedRef } from '../core/shipped-manifest.mjs';
-import { normPipeline } from '../core/build-pipeline.mjs';
+import { normPipeline, queueOrder } from '../core/build-pipeline.mjs';
 import { isBuildId, namesOf, shortBuildId, uniqueBuildId } from '../core/build-id.mjs';
 
 export const SCHEMA = 'builds@1';
@@ -434,8 +434,25 @@ export function storeSummary(store, profile) {
 const orchStep = (s) => { const o = {}; for (const k of ORCH_STEP_KEYS) o[k] = s[k]; o.uid = s.uid; if (s.title) o.title = s.title; if (s.createdAt) o.createdAt = s.createdAt; return o; };
 const orchBuild = (b) => { const o = {}; for (const k of ORCH_BUILD_KEYS) if (b[k] !== undefined) o[k] = k === 'steps' ? b.steps.map(orchStep) : clone(b[k]); return o; };
 
+/**
+ * The run a build is on, read-only for the Orchestrator and Build Manager tables (Brett, Nov 10 2026: "see what model
+ * it's getting built on, show its number in the queue, show the agent it's assigned to"): the employee it is booked on
+ * (pipeline.agent, else the tmux session's `--<agent>` suffix), the model it was launched on, and when it was queued.
+ * Never written back: the pipeline owns these.
+ */
+export function runOf(b) {
+  const p = b?.pipeline ?? {};
+  const agent = str(p.agent, 40) || (str(p.session, 200).split('--')[1] ?? '').trim();
+  return { agent: agent.slice(0, 40), model: MODELS.includes(p.model) ? p.model : '', account: str(p.account, 80), queuedAt: str(p.queuedAt, 40) };
+}
+
+/** Queued builds' 1-based place in the dispatcher's start order (build-pipeline queueOrder: priority, then queued time). */
+export function queuePositionsOf(builds) {
+  return new Map(queueOrder(builds.filter((b) => !b.deleted), effectivePriority).map((b, i) => [b.id, i + 1]));
+}
+
 export function projectOrchestrator(store, profile) {
-  return { $axf: 'orchestrator@1', updatedAt: store.updatedAt, rules: { ...DEFAULT_RULES, ...(store.rules[profile] ?? {}) }, builds: buildsOf(store, profile).map(orchBuild) };
+  return { $axf: 'orchestrator@1', updatedAt: store.updatedAt, rules: { ...DEFAULT_RULES, ...(store.rules[profile] ?? {}) }, builds: buildsOf(store, profile).map((b) => ({ ...orchBuild(b), run: runOf(b) })) };
 }
 
 /** Steps of an updated build: matched to the old records by uid, else id, else text; unmatched old ones are kept as removed. */

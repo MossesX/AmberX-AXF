@@ -11,6 +11,8 @@
  */
 
 import { normOrigin, originText } from '../../../../../framework/core/build-origin.mjs';
+import { queueOrder } from '../../../../../framework/core/build-pipeline.mjs';
+import { effectivePriority } from '../../../../../framework/core/build-priority.mjs';
 import { isBuildId, namesOf, shortBuildId, slugWords, uniqueBuildId } from '../../../../../framework/core/build-id.mjs';
 import { AUTO_UPGRADE_NOTE, normApproval, normRequest, phaseApproved, setUpgradePolicy, switchKind, switchRule, upgradeLine, upgradeNeedsApproval, upgradePolicy, modelRank } from '../../../../../framework/core/model-switch.mjs';
 
@@ -24,8 +26,8 @@ export const STATUSES = ['pending', 'queued', 'running', 'waiting', 'blocked', '
 export const STATUS_LABEL = { pending: 'Pending', queued: 'Queued', running: 'Running', waiting: 'Needs approval', blocked: 'Blocked', failed: 'Failed', built: 'Built · awaiting merge', complete: 'Complete', archived: 'Archived' };
 /** Finished work: no steps left (built waits only on its PR). */
 export const isFinished = (status) => status === 'built' || status === 'complete';
-export const SORTS = ['status', 'added', 'built', 'left', 'next', 'category', 'title'];
-export const SORT_LABEL = { status: 'Status', added: 'Date added', built: 'Date built', left: 'Time left', next: 'Next model', category: 'Category', title: 'Title' };
+export const SORTS = ['status', 'added', 'built', 'left', 'next', 'model', 'queue', 'agent', 'category', 'title'];
+export const SORT_LABEL = { status: 'Status', added: 'Date added', built: 'Date built', left: 'Time left', next: 'Next model', model: 'Model', queue: 'Queue #', agent: 'Employee', category: 'Category', title: 'Title' };
 export const UNCATEGORISED = 'Uncategorised';
 export const DEFAULT_RULES = { sameSession: true, subAgents: false, approveModelSwitch: true, maxStepMinutes: 10 };
 /**
@@ -138,9 +140,26 @@ function normBuild(b) {
     approvals: (Array.isArray(o.approvals) ? o.approvals : []).map(normApproval),
     upgradeRequests: (Array.isArray(o.upgradeRequests) ? o.upgradeRequests : []).map(normRequest).filter((r) => r.id),
     ...(normOrigin(o.origin) ? { origin: normOrigin(o.origin) } : {}), // build-origin@1: what Brett said
+    ...(o.run && typeof o.run === 'object' ? { run: normRun(o.run) } : {}), // read-only: the pipeline's run (builds-store-core runOf)
     steps,
   };
 }
+
+const normRun = (r) => ({ agent: str(r.agent, 40), model: MODELS.includes(r.model) ? r.model : '', account: str(r.account, 80), queuedAt: str(r.queuedAt, 40) });
+
+/**
+ * The table columns Brett asked for (Nov 10 2026): the model a build is built on, its number in the Queue and the
+ * employee it is assigned to. Model = the model its live run was launched on while it runs, else the model of its next
+ * open step. Queue # = its place in the dispatcher's start order (framework/core/build-pipeline.mjs queueOrder:
+ * priority, then queued time), only for Queued builds. Employee = the agent its run is booked on.
+ */
+export const modelOf = (b) => ((b.status === 'running' || b.status === 'waiting') && b.run?.model) || b.steps.find((s) => !s.done && !s.skip)?.model || '';
+export const agentOf = (b) => b.run?.agent || '';
+export function queuePositions(builds) {
+  const order = queueOrder(builds.map((b) => ({ ...b, pipeline: { queuedAt: b.run?.queuedAt ?? '' } })), effectivePriority);
+  return new Map(order.map((b, i) => [b.id, i + 1]));
+}
+
 
 export function emptyState() { return { $axf: SCHEMA, updatedAt: now(), rules: { ...DEFAULT_RULES }, builds: [] }; }
 export function normalizeState(s) {
@@ -238,8 +257,9 @@ export function counts(builds) {
 
 const ORDER = Object.fromEntries(STATUSES.map((s, i) => [s, i]));
 export function sortBuilds(list, sort = 'status', dir = 'asc', rules) {
+  const pos = sort === 'queue' ? queuePositions(list) : null;
   const k = (b) => sort === 'category' ? (b.category || '~').toLowerCase() : sort === 'title' ? b.title.toLowerCase() : sort === 'added' ? b.createdAt : sort === 'built' ? (b.builtAt || '') : sort === 'left' ? progress(b).minutesLeft
-    : sort === 'next' ? (nextUp(b, rules).step?.model ?? 'z') : ORDER[b.status];
+    : sort === 'next' ? (nextUp(b, rules).step?.model ?? 'z') : sort === 'model' ? (modelOf(b) || 'z') : sort === 'queue' ? (pos.get(b.id) ?? Infinity) : sort === 'agent' ? (agentOf(b) || '~') : ORDER[b.status];
   const out = [...list].sort((a, b) => { const x = k(a); const y = k(b); return x < y ? -1 : x > y ? 1 : a.createdAt < b.createdAt ? -1 : 1; });
   return dir === 'desc' ? out.reverse() : out;
 }

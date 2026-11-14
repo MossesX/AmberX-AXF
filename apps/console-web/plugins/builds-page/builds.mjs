@@ -28,7 +28,7 @@ function stepView(s, b, i) {
   const kind = /\b(fix|bug|broken|repair|red ci|regression)\b/.test(t) ? 'fix' : /\b(remove|delete|retire|drop|uninstall)\b/.test(t) ? 'removal' : /\b(add|new|create|build|introduce|first)\b/.test(t) ? 'creation' : 'edit';
   return { ...s, index: i, build: b.id, buildTitle: b.title, buildSaid: subtitle(b.origin, 200), kind, target: s.files[0] || s.group || s.phase || '', next: false };
 }
-function buildView(b, profile) {
+function buildView(b, profile, queue = new Map()) {
   const p = core.buildProgress(b);
   const steps = b.steps.map((s, i) => stepView(s, b, i));
   const next = steps.find((s) => !s.done && !s.skip); if (next) next.next = true;
@@ -38,7 +38,14 @@ function buildView(b, profile) {
     profiles: b.profiles, order: b.order[profile] ?? 0, rev: b.rev, createdAt: b.createdAt, updatedAt: b.updatedAt, builtAt: b.builtAt,
     hidden: b.hidden, rearranged: b.rearranged, hasDefault: b.defaultSteps.length > 0, notes: b.notes.slice(-5), pendingStatus: core.pendingStatusOf(b),
     progress: p, minutesLeft, steps, origin: b.origin ?? null, // build-origin@1: what Brett said
+    // the table columns (Brett, Nov 10 2026): model it is built on, its number in the Queue, the employee it is assigned to
+    ...runColumns(b, queue),
   };
+}
+/** Model (the live run's while running, else the next open step's), Queue # (0 = not queued) and the booked employee. */
+export function runColumns(b, queue = new Map()) {
+  const run = core.runOf(b); const live = b.status === 'running' || b.status === 'waiting';
+  return { model: (live && run.model) || b.steps.find((s) => !s.done && !s.skip)?.model || '', queue: queue.get(b.id) ?? 0, agent: run.agent };
 }
 const estimateMin = (e) => { const m = /^\s*~?\s*(\d+(?:\.\d+)?)\s*(m|min|mins|minutes?|h|hr|hrs|hours?|d|days?)?\s*$/i.exec(String(e ?? '')); if (!m) return null; const n = Number(m[1]); const u = (m[2] || 'min').toLowerCase(); return Math.round(u.startsWith('h') ? n * 60 : u.startsWith('d') ? n * 480 : n); };
 
@@ -53,7 +60,7 @@ export function state(profileArg) {
     ok: true, rev: s.rev, profile, active: activeProfile().id,
     profiles: reg.profiles.map((p) => ({ id: p.id, name: shown?.profileName?.id === p.id ? shown.profileName.name : p.name, base: !!p.base, progress: core.profileProgress(s, p.id), builds: core.buildsOf(s, p.id).length })),
     progress: core.profileProgress(view, profile),
-    builds: core.buildsOf(view, profile).map((b) => buildView(b, profile)),
+    builds: (() => { const list = core.buildsOf(view, profile); const q = core.queuePositionsOf(list); return list.map((b) => buildView(b, profile, q)); })(),
     draft: { ops: d.ops, count: d.ops.length, updatedAt: d.updatedAt, by: d.by, log: shown?.log ?? [] },
   };
 }

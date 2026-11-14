@@ -182,4 +182,21 @@ t('approvals off: an open request filed while they were on is closed when the ph
   try { x = c.apply(x, { action: 'step', id: 'old', step: 's2' }).state; assert.equal(x.builds[0].upgradeRequests[0].state, 'approved'); }
   finally { c.setUpgradePolicy({ approvalRequired: true, source: 'test' }); }
 });
+// table columns (Brett, Nov 10 2026): model it is built on, number in the Queue, employee it is assigned to
+{
+  const st = c.normalizeState({ builds: [
+    { id: 'a', title: 'A', status: 'queued', priority: 'P2', createdAt: '2026-11-01T00:00:00Z', run: { queuedAt: '2026-11-02T00:00:00Z' }, steps: [{ text: 'x', model: 'Fable' }] },
+    { id: 'b', title: 'B', status: 'queued', priority: 'P0', createdAt: '2026-11-03T00:00:00Z', run: { queuedAt: '2026-11-04T00:00:00Z' }, steps: [{ text: 'x', model: 'Opus' }] },
+    { id: 'r', title: 'R', status: 'running', createdAt: '2026-11-01T00:00:00Z', run: { agent: 'rio', model: 'Opus', account: 'acc', queuedAt: '' }, steps: [{ text: 'x', model: 'Fable' }] },
+    { id: 'p', title: 'P', status: 'pending', createdAt: '2026-11-01T00:00:00Z', steps: [{ text: 'x', model: 'Fable', done: true }] },
+  ] });
+  const by = Object.fromEntries(st.builds.map((x) => [x.id, x]));
+  const q = c.queuePositions(st.builds);
+  assert.equal(q.get('b'), 1); assert.equal(q.get('a'), 2); assert.equal(q.has('r'), false); // P0 first, only Queued builds numbered
+  assert.equal(c.modelOf(by.r), 'Opus'); assert.equal(c.modelOf(by.a), 'Fable'); assert.equal(c.modelOf(by.p), ''); // live run's model, else next step's
+  assert.equal(c.agentOf(by.r), 'rio'); assert.equal(c.agentOf(by.a), '');
+  assert.deepEqual(c.sortBuilds(st.builds, 'queue').map((x) => x.id).slice(0, 2), ['b', 'a']);
+  assert.equal(c.sortBuilds(st.builds, 'agent')[0].id, 'r');
+  n += 1;
+}
 console.log(`build-orchestrator: ${n} checks passed`);
