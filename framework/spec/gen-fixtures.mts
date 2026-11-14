@@ -50,6 +50,7 @@ import { CHROME_KINDS, DEFAULT_MERGE, DEFAULT_PRESETS, MERGE_MODES, OPEN_TARGETS
 import { CHROME_CONTRACT, CHROME_LIMITS, WIDGET_TONES as CHROME_WIDGET_TONES, WIDGET_TYPES as CHROME_WIDGET_TYPES, activeNav, chromePicks, emptyChrome, mergeChrome, parseChromeBundle, routePick, type ChromeBundle } from '../core/engines/chrome';
 import { intentCommand, voiceIntent, voiceReply } from '../core/engines/console-control-voice.mjs';
 import { CONSOLE_CONTROL_CODES, CONSOLE_CONTROL_DEFAULT_CAN, CONSOLE_CONTROL_KINDS, CONSOLE_CONTROL_TARGETS_FRAME, CONSOLE_CONTROL_VERB_IDS, childAddress, consoleControlErrors, consoleControlFailure, consoleControlResult, failureOf, focusOptions, formatAddress, listTargets, nearestRegisteredParent, nearestTargets, normalizeConsoleControl, parseAddress, resolveAddress, resolveForVerb, scrollState, scrollStep, searchTargets, splitTabId, tabAddressId, type AddressSegment, type ConsoleControlScrollDir, type ConsoleControlVerb, type ScrollState, type TargetSnapshot } from '../core/engines/console-control';
+import { PICKER_CONTRACT, PICKER_LIMITS, PICKER_PAGE, PICKER_SEARCH_THRESHOLD, PICKER_TRIGGER_LABELS, PICKER_TYPEAHEAD_MS, choosePicker, closePicker, filterOptions, foldText, fromNativeOptions, groupOptions, matchByName, matchByPosition, matchSpoken, normalizePicker, openPicker, pickerIdOf, pickerKey, searchShown, selectedLabels, setQuery, setValue, triggerText, typeAhead, uniquePickerId, type PickerKey, type PickerModel } from '../core/engines/picker';
 import { addonRisks, agentToAddon, bm25Rank, chunkText, composeSystemPrompt, fillToolTemplate, fillWorkflowTemplate, memoryTokens, parseRouterPick, resolveMemory, stripAddonRisks, trimMemory, validateAddon, validateAgentItem, type AddonBundle, type AgentCollection } from '../core/agents';
 
 const root = new URL('..', import.meta.url).pathname;
@@ -2315,5 +2316,88 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
       noConsole: voiceReply({ verb: 'open' }, { ok: false, code: 'unavailable', message: 'x', openUrl: 'https://c/' }),
       failed: voiceReply({ verb: 'press' }, { ok: false, code: 'denied', message: 'needs Brett' }),
     },
+  });
+}
+
+// picker@1 (core/engines/picker.ts, spec/PICKER.md; checker spec/check-picker.mts): normalise, native select, filter, group, choose, keyboard, type-ahead, voice names
+{
+  const themesRaw = {
+    id: 'Colour theme', label: 'Colour theme',
+    options: [
+      { value: 'fresh-light', label: 'Fresh Light', group: 'light', description: 'The default day theme', icon: 'sun' },
+      { value: 'fresh-dark', label: 'Fresh Dark', group: 'dark', icon: 'moon' },
+      'Aurora Night',
+      { value: 'plum-noir', label: 'Plum Noir', group: 'dark', disabled: true },
+      { value: 'fresh-light', label: 'a duplicate value is dropped' },
+      { label: 'Mono Paper', group: 'light', keywords: 'print, grey' },
+      { value: 'graphite-mint', label: 'Graphite Mint', group: 'dark', description: 'Dark with a mint accent', keywords: ['green'] },
+      { value: '  Sandstone  ', label: '  Sandstone  ', group: 'light' },
+    ],
+    groups: [{ id: 'dark', label: 'Dark' }, 'light', 'unused'],
+    value: ['plum-noir', 'fresh-dark', 'nope'],
+  };
+  const multiRaw = { id: 'tags', label: 'Tags', multiple: true, max: 2, searchThreshold: 'always', placeholder: 'Pick up to two', options: ['Red', 'Green', 'Blue', { value: 'gold', label: 'Gold', disabled: true }, 'Violet'], value: ['Blue'] };
+  const M = normalizePicker(themesRaw);
+  const MULTI = normalizePicker(multiRaw);
+  const keys: PickerKey[] = ['ArrowDown', 'ArrowDown', 'ArrowDown', 'ArrowUp', 'Home', 'End', 'PageUp', 'PageDown', 'ArrowDown', 'Escape', 'ArrowDown'];
+  let s = openPicker(M); const trail: unknown[] = [];
+  for (const k of keys) { const r = pickerKey(M, s, k, false); s = r.state; trail.push({ key: k, active: s.active, label: s.filtered[s.active]?.label ?? null, effect: r.effect, value: r.model.value }); }
+  const names = ['fresh dark', 'Fresh Dark!', 'FRESH-DARK', 'fresh', 'aurora', 'night', 'print', 'green', 'mint accent', 'plum noir', 'sandstone', 'nothing here', ''];
+  const positions = ['the third one', 'number 2', '2', 'one', 'the last one', 'the ninety-ninth one', 'hello'];
+  const spoken = ['Fresh Light', 'the first one', 'the second one', 'dark'];
+  write('picker.json', {
+    contract: PICKER_CONTRACT,
+    constants: { limits: PICKER_LIMITS, searchThreshold: PICKER_SEARCH_THRESHOLD, typeaheadMs: PICKER_TYPEAHEAD_MS, page: PICKER_PAGE, triggerLabels: PICKER_TRIGGER_LABELS },
+    normalize: {
+      themes: { raw: themesRaw, model: M },
+      multi: { raw: multiRaw, model: MULTI },
+      strings: { raw: ['One', 'Two', 'Two', '', 3], model: normalizePicker(['One', 'Two', 'Two', '', 3]) },
+      junk: { raw: { id: '!!', options: [null, {}, { value: 'x' }, { label: 'Only a label' }, { value: 'v', label: 'L', disabled: 'true', keywords: 'a,b,,a', icon: 7 }], groups: [{ id: 'g' }], multiple: 'yes', max: '3', searchThreshold: -4, value: 'x' }, model: normalizePicker({ id: '!!', options: [null, {}, { value: 'x' }, { label: 'Only a label' }, { value: 'v', label: 'L', disabled: 'true', keywords: 'a,b,,a', icon: 7 }], groups: [{ id: 'g' }], multiple: 'yes', max: '3', searchThreshold: -4, value: 'x' }) },
+      empty: { raw: null, model: normalizePicker(null) },
+      never: { raw: { options: ['a'], searchThreshold: 'never' }, model: normalizePicker({ options: ['a'], searchThreshold: 'never' }) },
+    },
+    native: {
+      select: { raw: { id: 'theme', label: 'Theme', options: [{ value: '', text: 'None' }, { value: 'a', text: 'Alpha', selected: true, group: 'Greek', data: { icon: 'a', description: 'First letter', keywords: 'first, one' } }, { value: 'b', text: 'Beta', disabled: '', group: 'Greek' }, { text: 'Gamma' }] }, model: fromNativeOptions({ id: 'theme', label: 'Theme', options: [{ value: '', text: 'None' }, { value: 'a', text: 'Alpha', selected: true, group: 'Greek', data: { icon: 'a', description: 'First letter', keywords: 'first, one' } }, { value: 'b', text: 'Beta', disabled: '', group: 'Greek' }, { text: 'Gamma' }] }) },
+      multiple: { raw: { name: 'tags[]', label: 'Tags', multiple: true, options: [{ value: 'r', text: 'Red', selected: true }, { value: 'g', text: 'Green', selected: true }, { value: 'b', text: 'Blue' }] }, model: fromNativeOptions({ name: 'tags[]', label: 'Tags', multiple: true, options: [{ value: 'r', text: 'Red', selected: true }, { value: 'g', text: 'Green', selected: true }, { value: 'b', text: 'Blue' }] }) },
+      sized: { raw: { id: 's', options: [{ value: 'a', text: 'A' }], size: 4 }, model: fromNativeOptions({ id: 's', options: [{ value: 'a', text: 'A' }], size: 4 }) },
+      emptySelected: { raw: { id: 'e', options: [{ value: 'a', text: 'A', selected: true }, { value: '', text: 'Any', selected: true }] }, model: fromNativeOptions({ id: 'e', options: [{ value: 'a', text: 'A', selected: true }, { value: '', text: 'Any', selected: true }] }) },
+    },
+    filter: Object.fromEntries(['', 'fre', 'fresh light', 'dark', 'grey', 'green', 'light', 'Night', 'zzz', 'san'].map((q) => [q, filterOptions(M, q)])),
+    grouped: { all: groupOptions(M), query: 'fre', filtered: groupOptions(M, filterOptions(M, 'fre')) },
+    searchShown: { themes: searchShown(M), multi: searchShown(MULTI), always: searchShown(normalizePicker({ options: ['a'], searchThreshold: 0 })), never: searchShown(normalizePicker({ options: ['a', 'b'], searchThreshold: 'never' })) },
+    choose: {
+      single: { base: M, value: 'Aurora Night', out: choosePicker(M, 'Aurora Night') },
+      same: { base: M, value: 'fresh-dark', out: choosePicker(M, 'fresh-dark') },
+      clear: { base: M, value: '', out: choosePicker(M, '') },
+      disabled: { base: M, value: 'plum-noir', out: choosePicker(M, 'plum-noir') },
+      unknown: { base: M, value: 'nope', out: choosePicker(M, 'nope') },
+      toggleOn: { base: MULTI, value: 'Red', out: choosePicker(MULTI, 'Red') },
+      toggleOff: { base: MULTI, value: 'Blue', out: choosePicker(MULTI, 'Blue') },
+      refused: { base: choosePicker(MULTI, 'Red').model, value: 'Violet', out: choosePicker(choosePicker(MULTI, 'Red').model, 'Violet') },
+      clearMulti: { base: MULTI, value: '', out: choosePicker(MULTI, '') },
+    },
+    setValue: {
+      single: { base: M, value: ['Aurora Night', 'fresh-light'], out: setValue(M, ['Aurora Night', 'fresh-light']) },
+      string: { base: M, value: 'fresh-dark', out: setValue(M, 'fresh-dark') },
+      multi: { base: MULTI, value: ['Violet', 'gold', 'Red', 'Green'], out: setValue(MULTI, ['Violet', 'gold', 'Red', 'Green']) },
+    },
+    trigger: Object.fromEntries(([
+      ['chosen', M], ['nothing', { ...M, value: [] }], ['emptyLabel', { ...M, value: [], emptyLabel: 'Theme default' }], ['placeholder', { ...M, value: [], placeholder: 'Pick a theme' }],
+      ['multiOne', MULTI], ['multiNone', { ...MULTI, value: [] }], ['multiMany', normalizePicker({ options: ['A', 'B', 'C', 'D', 'E'], multiple: true, value: ['E', 'A', 'B', 'C', 'D'] })],
+    ] as [string, PickerModel][]).map(([k, m]) => [k, { model: m, text: triggerText(m), labels: selectedLabels(m) }])),
+    state: {
+      open: openPicker(M), closed: closePicker(openPicker(M)), queryText: 'dark', query: setQuery(M, openPicker(M), 'dark'),
+      keys, trail,
+      typeahead: { m: typeAhead(openPicker(M), 'm'), fr: typeAhead(typeAhead(openPicker(M), 'f'), 'r') },
+      enterSingle: pickerKey(M, openPicker(M), 'Enter', false), enterMulti: pickerKey(MULTI, openPicker(MULTI), 'Enter', false),
+      escape: pickerKey(M, openPicker(M), 'Escape', false), typeIntoSearch: pickerKey(M, openPicker(M), 'x', true),
+    },
+    names: Object.fromEntries(names.map((n) => [n, matchByName(M, n)])),
+    positions: Object.fromEntries(positions.map((p) => [p, matchByPosition(M.options, p)])),
+    spokenQuery: 'fre',
+    spoken: Object.fromEntries(spoken.map((p) => [p, matchSpoken(M, p, setQuery(M, openPicker(M), 'fre'))])),
+    ids: Object.fromEntries(['theme', 'Colour theme!', '  Émile’s pick  ', 'tags[]', 'a.b:c-d_e', '', '---'].map((r) => [r, pickerIdOf(r)])),
+    uniqueIds: ['theme', 'theme-2', 'theme-3'].map((_, i, all) => uniquePickerId('theme', all.slice(0, i))),
+    fold: Object.fromEntries(['Fresh Dark!', 'Émile’s  pick', 'CAFÉ-noir', '  '].map((k) => [k, foldText(k)])),
   });
 }

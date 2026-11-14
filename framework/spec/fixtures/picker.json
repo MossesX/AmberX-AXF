@@ -1,0 +1,3627 @@
+{
+  "contract": "picker@1",
+  "constants": {
+    "limits": {
+      "options": 2000,
+      "groups": 100,
+      "label": 160,
+      "description": 300,
+      "keywords": 24,
+      "keyword": 60,
+      "value": 400,
+      "id": 120
+    },
+    "searchThreshold": 8,
+    "typeaheadMs": 700,
+    "page": 10,
+    "triggerLabels": 3
+  },
+  "normalize": {
+    "themes": {
+      "raw": {
+        "id": "Colour theme",
+        "label": "Colour theme",
+        "options": [
+          {
+            "value": "fresh-light",
+            "label": "Fresh Light",
+            "group": "light",
+            "description": "The default day theme",
+            "icon": "sun"
+          },
+          {
+            "value": "fresh-dark",
+            "label": "Fresh Dark",
+            "group": "dark",
+            "icon": "moon"
+          },
+          "Aurora Night",
+          {
+            "value": "plum-noir",
+            "label": "Plum Noir",
+            "group": "dark",
+            "disabled": true
+          },
+          {
+            "value": "fresh-light",
+            "label": "a duplicate value is dropped"
+          },
+          {
+            "label": "Mono Paper",
+            "group": "light",
+            "keywords": "print, grey"
+          },
+          {
+            "value": "graphite-mint",
+            "label": "Graphite Mint",
+            "group": "dark",
+            "description": "Dark with a mint accent",
+            "keywords": [
+              "green"
+            ]
+          },
+          {
+            "value": "  Sandstone  ",
+            "label": "  Sandstone  ",
+            "group": "light"
+          }
+        ],
+        "groups": [
+          {
+            "id": "dark",
+            "label": "Dark"
+          },
+          "light",
+          "unused"
+        ],
+        "value": [
+          "plum-noir",
+          "fresh-dark",
+          "nope"
+        ]
+      },
+      "model": {
+        "id": "colour-theme",
+        "label": "Colour theme",
+        "options": [
+          {
+            "value": "fresh-light",
+            "label": "Fresh Light",
+            "description": "The default day theme",
+            "icon": "sun",
+            "group": "light"
+          },
+          {
+            "value": "fresh-dark",
+            "label": "Fresh Dark",
+            "icon": "moon",
+            "group": "dark"
+          },
+          {
+            "value": "Aurora Night",
+            "label": "Aurora Night"
+          },
+          {
+            "value": "plum-noir",
+            "label": "Plum Noir",
+            "group": "dark",
+            "disabled": true
+          },
+          {
+            "value": "Mono Paper",
+            "label": "Mono Paper",
+            "group": "light",
+            "keywords": [
+              "print",
+              "grey"
+            ]
+          },
+          {
+            "value": "graphite-mint",
+            "label": "Graphite Mint",
+            "description": "Dark with a mint accent",
+            "group": "dark",
+            "keywords": [
+              "green"
+            ]
+          },
+          {
+            "value": "Sandstone",
+            "label": "Sandstone",
+            "group": "light"
+          }
+        ],
+        "groups": [
+          {
+            "id": "dark",
+            "label": "Dark"
+          },
+          {
+            "id": "light",
+            "label": "light"
+          }
+        ],
+        "multiple": false,
+        "value": [
+          "fresh-dark"
+        ],
+        "searchThreshold": 8,
+        "placeholder": "",
+        "emptyLabel": "",
+        "max": 0
+      }
+    },
+    "multi": {
+      "raw": {
+        "id": "tags",
+        "label": "Tags",
+        "multiple": true,
+        "max": 2,
+        "searchThreshold": "always",
+        "placeholder": "Pick up to two",
+        "options": [
+          "Red",
+          "Green",
+          "Blue",
+          {
+            "value": "gold",
+            "label": "Gold",
+            "disabled": true
+          },
+          "Violet"
+        ],
+        "value": [
+          "Blue"
+        ]
+      },
+      "model": {
+        "id": "tags",
+        "label": "Tags",
+        "options": [
+          {
+            "value": "Red",
+            "label": "Red"
+          },
+          {
+            "value": "Green",
+            "label": "Green"
+          },
+          {
+            "value": "Blue",
+            "label": "Blue"
+          },
+          {
+            "value": "gold",
+            "label": "Gold",
+            "disabled": true
+          },
+          {
+            "value": "Violet",
+            "label": "Violet"
+          }
+        ],
+        "groups": [],
+        "multiple": true,
+        "value": [
+          "Blue"
+        ],
+        "searchThreshold": 0,
+        "placeholder": "Pick up to two",
+        "emptyLabel": "",
+        "max": 2
+      }
+    },
+    "strings": {
+      "raw": [
+        "One",
+        "Two",
+        "Two",
+        "",
+        3
+      ],
+      "model": {
+        "id": "picker",
+        "label": "",
+        "options": [
+          {
+            "value": "One",
+            "label": "One"
+          },
+          {
+            "value": "Two",
+            "label": "Two"
+          },
+          {
+            "value": "3",
+            "label": "3"
+          }
+        ],
+        "groups": [],
+        "multiple": false,
+        "value": [],
+        "searchThreshold": 8,
+        "placeholder": "",
+        "emptyLabel": "",
+        "max": 0
+      }
+    },
+    "junk": {
+      "raw": {
+        "id": "!!",
+        "options": [
+          null,
+          {},
+          {
+            "value": "x"
+          },
+          {
+            "label": "Only a label"
+          },
+          {
+            "value": "v",
+            "label": "L",
+            "disabled": "true",
+            "keywords": "a,b,,a",
+            "icon": 7
+          }
+        ],
+        "groups": [
+          {
+            "id": "g"
+          }
+        ],
+        "multiple": "yes",
+        "max": "3",
+        "searchThreshold": -4,
+        "value": "x"
+      },
+      "model": {
+        "id": "picker",
+        "label": "",
+        "options": [
+          {
+            "value": "x",
+            "label": "x"
+          },
+          {
+            "value": "Only a label",
+            "label": "Only a label"
+          },
+          {
+            "value": "v",
+            "label": "L",
+            "icon": "7",
+            "disabled": true,
+            "keywords": [
+              "a",
+              "b"
+            ]
+          }
+        ],
+        "groups": [],
+        "multiple": false,
+        "value": [
+          "x"
+        ],
+        "searchThreshold": 0,
+        "placeholder": "",
+        "emptyLabel": "",
+        "max": 0
+      }
+    },
+    "empty": {
+      "raw": null,
+      "model": {
+        "id": "picker",
+        "label": "",
+        "options": [],
+        "groups": [],
+        "multiple": false,
+        "value": [],
+        "searchThreshold": 8,
+        "placeholder": "",
+        "emptyLabel": "",
+        "max": 0
+      }
+    },
+    "never": {
+      "raw": {
+        "options": [
+          "a"
+        ],
+        "searchThreshold": "never"
+      },
+      "model": {
+        "id": "picker",
+        "label": "",
+        "options": [
+          {
+            "value": "a",
+            "label": "a"
+          }
+        ],
+        "groups": [],
+        "multiple": false,
+        "value": [],
+        "searchThreshold": null,
+        "placeholder": "",
+        "emptyLabel": "",
+        "max": 0
+      }
+    }
+  },
+  "native": {
+    "select": {
+      "raw": {
+        "id": "theme",
+        "label": "Theme",
+        "options": [
+          {
+            "value": "",
+            "text": "None"
+          },
+          {
+            "value": "a",
+            "text": "Alpha",
+            "selected": true,
+            "group": "Greek",
+            "data": {
+              "icon": "a",
+              "description": "First letter",
+              "keywords": "first, one"
+            }
+          },
+          {
+            "value": "b",
+            "text": "Beta",
+            "disabled": "",
+            "group": "Greek"
+          },
+          {
+            "text": "Gamma"
+          }
+        ]
+      },
+      "model": {
+        "id": "theme",
+        "label": "Theme",
+        "options": [
+          {
+            "value": "a",
+            "label": "Alpha",
+            "description": "First letter",
+            "icon": "a",
+            "group": "Greek",
+            "keywords": [
+              "first",
+              "one"
+            ]
+          },
+          {
+            "value": "b",
+            "label": "Beta",
+            "group": "Greek",
+            "disabled": true
+          },
+          {
+            "value": "Gamma",
+            "label": "Gamma"
+          }
+        ],
+        "groups": [
+          {
+            "id": "Greek",
+            "label": "Greek"
+          }
+        ],
+        "multiple": false,
+        "value": [
+          "a"
+        ],
+        "searchThreshold": 8,
+        "placeholder": "",
+        "emptyLabel": "None",
+        "max": 0
+      }
+    },
+    "multiple": {
+      "raw": {
+        "name": "tags[]",
+        "label": "Tags",
+        "multiple": true,
+        "options": [
+          {
+            "value": "r",
+            "text": "Red",
+            "selected": true
+          },
+          {
+            "value": "g",
+            "text": "Green",
+            "selected": true
+          },
+          {
+            "value": "b",
+            "text": "Blue"
+          }
+        ]
+      },
+      "model": {
+        "id": "tags",
+        "label": "Tags",
+        "options": [
+          {
+            "value": "r",
+            "label": "Red"
+          },
+          {
+            "value": "g",
+            "label": "Green"
+          },
+          {
+            "value": "b",
+            "label": "Blue"
+          }
+        ],
+        "groups": [],
+        "multiple": true,
+        "value": [
+          "r",
+          "g"
+        ],
+        "searchThreshold": 8,
+        "placeholder": "",
+        "emptyLabel": "",
+        "max": 0
+      }
+    },
+    "sized": {
+      "raw": {
+        "id": "s",
+        "options": [
+          {
+            "value": "a",
+            "text": "A"
+          }
+        ],
+        "size": 4
+      },
+      "model": {
+        "id": "s",
+        "label": "",
+        "options": [
+          {
+            "value": "a",
+            "label": "A"
+          }
+        ],
+        "groups": [],
+        "multiple": true,
+        "value": [],
+        "searchThreshold": 8,
+        "placeholder": "",
+        "emptyLabel": "",
+        "max": 0
+      }
+    },
+    "emptySelected": {
+      "raw": {
+        "id": "e",
+        "options": [
+          {
+            "value": "a",
+            "text": "A",
+            "selected": true
+          },
+          {
+            "value": "",
+            "text": "Any",
+            "selected": true
+          }
+        ]
+      },
+      "model": {
+        "id": "e",
+        "label": "",
+        "options": [
+          {
+            "value": "a",
+            "label": "A"
+          }
+        ],
+        "groups": [],
+        "multiple": false,
+        "value": [],
+        "searchThreshold": 8,
+        "placeholder": "",
+        "emptyLabel": "Any",
+        "max": 0
+      }
+    }
+  },
+  "filter": {
+    "": [
+      {
+        "value": "fresh-light",
+        "label": "Fresh Light",
+        "description": "The default day theme",
+        "icon": "sun",
+        "group": "light",
+        "score": 0
+      },
+      {
+        "value": "fresh-dark",
+        "label": "Fresh Dark",
+        "icon": "moon",
+        "group": "dark",
+        "score": 0
+      },
+      {
+        "value": "Aurora Night",
+        "label": "Aurora Night",
+        "score": 0
+      },
+      {
+        "value": "plum-noir",
+        "label": "Plum Noir",
+        "group": "dark",
+        "disabled": true,
+        "score": 0
+      },
+      {
+        "value": "Mono Paper",
+        "label": "Mono Paper",
+        "group": "light",
+        "keywords": [
+          "print",
+          "grey"
+        ],
+        "score": 0
+      },
+      {
+        "value": "graphite-mint",
+        "label": "Graphite Mint",
+        "description": "Dark with a mint accent",
+        "group": "dark",
+        "keywords": [
+          "green"
+        ],
+        "score": 0
+      },
+      {
+        "value": "Sandstone",
+        "label": "Sandstone",
+        "group": "light",
+        "score": 0
+      }
+    ],
+    "fre": [
+      {
+        "value": "fresh-dark",
+        "label": "Fresh Dark",
+        "icon": "moon",
+        "group": "dark",
+        "score": 59.833333
+      },
+      {
+        "value": "fresh-light",
+        "label": "Fresh Light",
+        "description": "The default day theme",
+        "icon": "sun",
+        "group": "light",
+        "score": 59.816667
+      }
+    ],
+    "fresh light": [
+      {
+        "value": "fresh-light",
+        "label": "Fresh Light",
+        "description": "The default day theme",
+        "icon": "sun",
+        "group": "light",
+        "score": 129.816667
+      }
+    ],
+    "dark": [
+      {
+        "value": "fresh-dark",
+        "label": "Fresh Dark",
+        "icon": "moon",
+        "group": "dark",
+        "score": 39.833333
+      },
+      {
+        "value": "plum-noir",
+        "label": "Plum Noir",
+        "group": "dark",
+        "disabled": true,
+        "score": 9.85
+      },
+      {
+        "value": "graphite-mint",
+        "label": "Graphite Mint",
+        "description": "Dark with a mint accent",
+        "group": "dark",
+        "keywords": [
+          "green"
+        ],
+        "score": 9.783333
+      }
+    ],
+    "grey": [
+      {
+        "value": "Mono Paper",
+        "label": "Mono Paper",
+        "group": "light",
+        "keywords": [
+          "print",
+          "grey"
+        ],
+        "score": 9.833333
+      }
+    ],
+    "green": [
+      {
+        "value": "graphite-mint",
+        "label": "Graphite Mint",
+        "description": "Dark with a mint accent",
+        "group": "dark",
+        "keywords": [
+          "green"
+        ],
+        "score": 9.783333
+      }
+    ],
+    "light": [
+      {
+        "value": "fresh-light",
+        "label": "Fresh Light",
+        "description": "The default day theme",
+        "icon": "sun",
+        "group": "light",
+        "score": 39.816667
+      },
+      {
+        "value": "Sandstone",
+        "label": "Sandstone",
+        "group": "light",
+        "score": 9.85
+      },
+      {
+        "value": "Mono Paper",
+        "label": "Mono Paper",
+        "group": "light",
+        "keywords": [
+          "print",
+          "grey"
+        ],
+        "score": 9.833333
+      }
+    ],
+    "Night": [
+      {
+        "value": "Aurora Night",
+        "label": "Aurora Night",
+        "score": 39.8
+      }
+    ],
+    "zzz": [],
+    "san": [
+      {
+        "value": "Sandstone",
+        "label": "Sandstone",
+        "group": "light",
+        "score": 59.85
+      }
+    ]
+  },
+  "grouped": {
+    "all": [
+      {
+        "group": null,
+        "options": [
+          {
+            "value": "Aurora Night",
+            "label": "Aurora Night",
+            "score": 0
+          }
+        ]
+      },
+      {
+        "group": {
+          "id": "dark",
+          "label": "Dark"
+        },
+        "options": [
+          {
+            "value": "fresh-dark",
+            "label": "Fresh Dark",
+            "icon": "moon",
+            "group": "dark",
+            "score": 0
+          },
+          {
+            "value": "plum-noir",
+            "label": "Plum Noir",
+            "group": "dark",
+            "disabled": true,
+            "score": 0
+          },
+          {
+            "value": "graphite-mint",
+            "label": "Graphite Mint",
+            "description": "Dark with a mint accent",
+            "group": "dark",
+            "keywords": [
+              "green"
+            ],
+            "score": 0
+          }
+        ]
+      },
+      {
+        "group": {
+          "id": "light",
+          "label": "light"
+        },
+        "options": [
+          {
+            "value": "fresh-light",
+            "label": "Fresh Light",
+            "description": "The default day theme",
+            "icon": "sun",
+            "group": "light",
+            "score": 0
+          },
+          {
+            "value": "Mono Paper",
+            "label": "Mono Paper",
+            "group": "light",
+            "keywords": [
+              "print",
+              "grey"
+            ],
+            "score": 0
+          },
+          {
+            "value": "Sandstone",
+            "label": "Sandstone",
+            "group": "light",
+            "score": 0
+          }
+        ]
+      }
+    ],
+    "query": "fre",
+    "filtered": [
+      {
+        "group": {
+          "id": "dark",
+          "label": "Dark"
+        },
+        "options": [
+          {
+            "value": "fresh-dark",
+            "label": "Fresh Dark",
+            "icon": "moon",
+            "group": "dark",
+            "score": 59.833333
+          }
+        ]
+      },
+      {
+        "group": {
+          "id": "light",
+          "label": "light"
+        },
+        "options": [
+          {
+            "value": "fresh-light",
+            "label": "Fresh Light",
+            "description": "The default day theme",
+            "icon": "sun",
+            "group": "light",
+            "score": 59.816667
+          }
+        ]
+      }
+    ]
+  },
+  "searchShown": {
+    "themes": false,
+    "multi": true,
+    "always": true,
+    "never": false
+  },
+  "choose": {
+    "single": {
+      "base": {
+        "id": "colour-theme",
+        "label": "Colour theme",
+        "options": [
+          {
+            "value": "fresh-light",
+            "label": "Fresh Light",
+            "description": "The default day theme",
+            "icon": "sun",
+            "group": "light"
+          },
+          {
+            "value": "fresh-dark",
+            "label": "Fresh Dark",
+            "icon": "moon",
+            "group": "dark"
+          },
+          {
+            "value": "Aurora Night",
+            "label": "Aurora Night"
+          },
+          {
+            "value": "plum-noir",
+            "label": "Plum Noir",
+            "group": "dark",
+            "disabled": true
+          },
+          {
+            "value": "Mono Paper",
+            "label": "Mono Paper",
+            "group": "light",
+            "keywords": [
+              "print",
+              "grey"
+            ]
+          },
+          {
+            "value": "graphite-mint",
+            "label": "Graphite Mint",
+            "description": "Dark with a mint accent",
+            "group": "dark",
+            "keywords": [
+              "green"
+            ]
+          },
+          {
+            "value": "Sandstone",
+            "label": "Sandstone",
+            "group": "light"
+          }
+        ],
+        "groups": [
+          {
+            "id": "dark",
+            "label": "Dark"
+          },
+          {
+            "id": "light",
+            "label": "light"
+          }
+        ],
+        "multiple": false,
+        "value": [
+          "fresh-dark"
+        ],
+        "searchThreshold": 8,
+        "placeholder": "",
+        "emptyLabel": "",
+        "max": 0
+      },
+      "value": "Aurora Night",
+      "out": {
+        "model": {
+          "id": "colour-theme",
+          "label": "Colour theme",
+          "options": [
+            {
+              "value": "fresh-light",
+              "label": "Fresh Light",
+              "description": "The default day theme",
+              "icon": "sun",
+              "group": "light"
+            },
+            {
+              "value": "fresh-dark",
+              "label": "Fresh Dark",
+              "icon": "moon",
+              "group": "dark"
+            },
+            {
+              "value": "Aurora Night",
+              "label": "Aurora Night"
+            },
+            {
+              "value": "plum-noir",
+              "label": "Plum Noir",
+              "group": "dark",
+              "disabled": true
+            },
+            {
+              "value": "Mono Paper",
+              "label": "Mono Paper",
+              "group": "light",
+              "keywords": [
+                "print",
+                "grey"
+              ]
+            },
+            {
+              "value": "graphite-mint",
+              "label": "Graphite Mint",
+              "description": "Dark with a mint accent",
+              "group": "dark",
+              "keywords": [
+                "green"
+              ]
+            },
+            {
+              "value": "Sandstone",
+              "label": "Sandstone",
+              "group": "light"
+            }
+          ],
+          "groups": [
+            {
+              "id": "dark",
+              "label": "Dark"
+            },
+            {
+              "id": "light",
+              "label": "light"
+            }
+          ],
+          "multiple": false,
+          "value": [
+            "Aurora Night"
+          ],
+          "searchThreshold": 8,
+          "placeholder": "",
+          "emptyLabel": "",
+          "max": 0
+        },
+        "changed": true
+      }
+    },
+    "same": {
+      "base": {
+        "id": "colour-theme",
+        "label": "Colour theme",
+        "options": [
+          {
+            "value": "fresh-light",
+            "label": "Fresh Light",
+            "description": "The default day theme",
+            "icon": "sun",
+            "group": "light"
+          },
+          {
+            "value": "fresh-dark",
+            "label": "Fresh Dark",
+            "icon": "moon",
+            "group": "dark"
+          },
+          {
+            "value": "Aurora Night",
+            "label": "Aurora Night"
+          },
+          {
+            "value": "plum-noir",
+            "label": "Plum Noir",
+            "group": "dark",
+            "disabled": true
+          },
+          {
+            "value": "Mono Paper",
+            "label": "Mono Paper",
+            "group": "light",
+            "keywords": [
+              "print",
+              "grey"
+            ]
+          },
+          {
+            "value": "graphite-mint",
+            "label": "Graphite Mint",
+            "description": "Dark with a mint accent",
+            "group": "dark",
+            "keywords": [
+              "green"
+            ]
+          },
+          {
+            "value": "Sandstone",
+            "label": "Sandstone",
+            "group": "light"
+          }
+        ],
+        "groups": [
+          {
+            "id": "dark",
+            "label": "Dark"
+          },
+          {
+            "id": "light",
+            "label": "light"
+          }
+        ],
+        "multiple": false,
+        "value": [
+          "fresh-dark"
+        ],
+        "searchThreshold": 8,
+        "placeholder": "",
+        "emptyLabel": "",
+        "max": 0
+      },
+      "value": "fresh-dark",
+      "out": {
+        "model": {
+          "id": "colour-theme",
+          "label": "Colour theme",
+          "options": [
+            {
+              "value": "fresh-light",
+              "label": "Fresh Light",
+              "description": "The default day theme",
+              "icon": "sun",
+              "group": "light"
+            },
+            {
+              "value": "fresh-dark",
+              "label": "Fresh Dark",
+              "icon": "moon",
+              "group": "dark"
+            },
+            {
+              "value": "Aurora Night",
+              "label": "Aurora Night"
+            },
+            {
+              "value": "plum-noir",
+              "label": "Plum Noir",
+              "group": "dark",
+              "disabled": true
+            },
+            {
+              "value": "Mono Paper",
+              "label": "Mono Paper",
+              "group": "light",
+              "keywords": [
+                "print",
+                "grey"
+              ]
+            },
+            {
+              "value": "graphite-mint",
+              "label": "Graphite Mint",
+              "description": "Dark with a mint accent",
+              "group": "dark",
+              "keywords": [
+                "green"
+              ]
+            },
+            {
+              "value": "Sandstone",
+              "label": "Sandstone",
+              "group": "light"
+            }
+          ],
+          "groups": [
+            {
+              "id": "dark",
+              "label": "Dark"
+            },
+            {
+              "id": "light",
+              "label": "light"
+            }
+          ],
+          "multiple": false,
+          "value": [
+            "fresh-dark"
+          ],
+          "searchThreshold": 8,
+          "placeholder": "",
+          "emptyLabel": "",
+          "max": 0
+        },
+        "changed": false
+      }
+    },
+    "clear": {
+      "base": {
+        "id": "colour-theme",
+        "label": "Colour theme",
+        "options": [
+          {
+            "value": "fresh-light",
+            "label": "Fresh Light",
+            "description": "The default day theme",
+            "icon": "sun",
+            "group": "light"
+          },
+          {
+            "value": "fresh-dark",
+            "label": "Fresh Dark",
+            "icon": "moon",
+            "group": "dark"
+          },
+          {
+            "value": "Aurora Night",
+            "label": "Aurora Night"
+          },
+          {
+            "value": "plum-noir",
+            "label": "Plum Noir",
+            "group": "dark",
+            "disabled": true
+          },
+          {
+            "value": "Mono Paper",
+            "label": "Mono Paper",
+            "group": "light",
+            "keywords": [
+              "print",
+              "grey"
+            ]
+          },
+          {
+            "value": "graphite-mint",
+            "label": "Graphite Mint",
+            "description": "Dark with a mint accent",
+            "group": "dark",
+            "keywords": [
+              "green"
+            ]
+          },
+          {
+            "value": "Sandstone",
+            "label": "Sandstone",
+            "group": "light"
+          }
+        ],
+        "groups": [
+          {
+            "id": "dark",
+            "label": "Dark"
+          },
+          {
+            "id": "light",
+            "label": "light"
+          }
+        ],
+        "multiple": false,
+        "value": [
+          "fresh-dark"
+        ],
+        "searchThreshold": 8,
+        "placeholder": "",
+        "emptyLabel": "",
+        "max": 0
+      },
+      "value": "",
+      "out": {
+        "model": {
+          "id": "colour-theme",
+          "label": "Colour theme",
+          "options": [
+            {
+              "value": "fresh-light",
+              "label": "Fresh Light",
+              "description": "The default day theme",
+              "icon": "sun",
+              "group": "light"
+            },
+            {
+              "value": "fresh-dark",
+              "label": "Fresh Dark",
+              "icon": "moon",
+              "group": "dark"
+            },
+            {
+              "value": "Aurora Night",
+              "label": "Aurora Night"
+            },
+            {
+              "value": "plum-noir",
+              "label": "Plum Noir",
+              "group": "dark",
+              "disabled": true
+            },
+            {
+              "value": "Mono Paper",
+              "label": "Mono Paper",
+              "group": "light",
+              "keywords": [
+                "print",
+                "grey"
+              ]
+            },
+            {
+              "value": "graphite-mint",
+              "label": "Graphite Mint",
+              "description": "Dark with a mint accent",
+              "group": "dark",
+              "keywords": [
+                "green"
+              ]
+            },
+            {
+              "value": "Sandstone",
+              "label": "Sandstone",
+              "group": "light"
+            }
+          ],
+          "groups": [
+            {
+              "id": "dark",
+              "label": "Dark"
+            },
+            {
+              "id": "light",
+              "label": "light"
+            }
+          ],
+          "multiple": false,
+          "value": [],
+          "searchThreshold": 8,
+          "placeholder": "",
+          "emptyLabel": "",
+          "max": 0
+        },
+        "changed": true
+      }
+    },
+    "disabled": {
+      "base": {
+        "id": "colour-theme",
+        "label": "Colour theme",
+        "options": [
+          {
+            "value": "fresh-light",
+            "label": "Fresh Light",
+            "description": "The default day theme",
+            "icon": "sun",
+            "group": "light"
+          },
+          {
+            "value": "fresh-dark",
+            "label": "Fresh Dark",
+            "icon": "moon",
+            "group": "dark"
+          },
+          {
+            "value": "Aurora Night",
+            "label": "Aurora Night"
+          },
+          {
+            "value": "plum-noir",
+            "label": "Plum Noir",
+            "group": "dark",
+            "disabled": true
+          },
+          {
+            "value": "Mono Paper",
+            "label": "Mono Paper",
+            "group": "light",
+            "keywords": [
+              "print",
+              "grey"
+            ]
+          },
+          {
+            "value": "graphite-mint",
+            "label": "Graphite Mint",
+            "description": "Dark with a mint accent",
+            "group": "dark",
+            "keywords": [
+              "green"
+            ]
+          },
+          {
+            "value": "Sandstone",
+            "label": "Sandstone",
+            "group": "light"
+          }
+        ],
+        "groups": [
+          {
+            "id": "dark",
+            "label": "Dark"
+          },
+          {
+            "id": "light",
+            "label": "light"
+          }
+        ],
+        "multiple": false,
+        "value": [
+          "fresh-dark"
+        ],
+        "searchThreshold": 8,
+        "placeholder": "",
+        "emptyLabel": "",
+        "max": 0
+      },
+      "value": "plum-noir",
+      "out": {
+        "model": {
+          "id": "colour-theme",
+          "label": "Colour theme",
+          "options": [
+            {
+              "value": "fresh-light",
+              "label": "Fresh Light",
+              "description": "The default day theme",
+              "icon": "sun",
+              "group": "light"
+            },
+            {
+              "value": "fresh-dark",
+              "label": "Fresh Dark",
+              "icon": "moon",
+              "group": "dark"
+            },
+            {
+              "value": "Aurora Night",
+              "label": "Aurora Night"
+            },
+            {
+              "value": "plum-noir",
+              "label": "Plum Noir",
+              "group": "dark",
+              "disabled": true
+            },
+            {
+              "value": "Mono Paper",
+              "label": "Mono Paper",
+              "group": "light",
+              "keywords": [
+                "print",
+                "grey"
+              ]
+            },
+            {
+              "value": "graphite-mint",
+              "label": "Graphite Mint",
+              "description": "Dark with a mint accent",
+              "group": "dark",
+              "keywords": [
+                "green"
+              ]
+            },
+            {
+              "value": "Sandstone",
+              "label": "Sandstone",
+              "group": "light"
+            }
+          ],
+          "groups": [
+            {
+              "id": "dark",
+              "label": "Dark"
+            },
+            {
+              "id": "light",
+              "label": "light"
+            }
+          ],
+          "multiple": false,
+          "value": [
+            "fresh-dark"
+          ],
+          "searchThreshold": 8,
+          "placeholder": "",
+          "emptyLabel": "",
+          "max": 0
+        },
+        "changed": false
+      }
+    },
+    "unknown": {
+      "base": {
+        "id": "colour-theme",
+        "label": "Colour theme",
+        "options": [
+          {
+            "value": "fresh-light",
+            "label": "Fresh Light",
+            "description": "The default day theme",
+            "icon": "sun",
+            "group": "light"
+          },
+          {
+            "value": "fresh-dark",
+            "label": "Fresh Dark",
+            "icon": "moon",
+            "group": "dark"
+          },
+          {
+            "value": "Aurora Night",
+            "label": "Aurora Night"
+          },
+          {
+            "value": "plum-noir",
+            "label": "Plum Noir",
+            "group": "dark",
+            "disabled": true
+          },
+          {
+            "value": "Mono Paper",
+            "label": "Mono Paper",
+            "group": "light",
+            "keywords": [
+              "print",
+              "grey"
+            ]
+          },
+          {
+            "value": "graphite-mint",
+            "label": "Graphite Mint",
+            "description": "Dark with a mint accent",
+            "group": "dark",
+            "keywords": [
+              "green"
+            ]
+          },
+          {
+            "value": "Sandstone",
+            "label": "Sandstone",
+            "group": "light"
+          }
+        ],
+        "groups": [
+          {
+            "id": "dark",
+            "label": "Dark"
+          },
+          {
+            "id": "light",
+            "label": "light"
+          }
+        ],
+        "multiple": false,
+        "value": [
+          "fresh-dark"
+        ],
+        "searchThreshold": 8,
+        "placeholder": "",
+        "emptyLabel": "",
+        "max": 0
+      },
+      "value": "nope",
+      "out": {
+        "model": {
+          "id": "colour-theme",
+          "label": "Colour theme",
+          "options": [
+            {
+              "value": "fresh-light",
+              "label": "Fresh Light",
+              "description": "The default day theme",
+              "icon": "sun",
+              "group": "light"
+            },
+            {
+              "value": "fresh-dark",
+              "label": "Fresh Dark",
+              "icon": "moon",
+              "group": "dark"
+            },
+            {
+              "value": "Aurora Night",
+              "label": "Aurora Night"
+            },
+            {
+              "value": "plum-noir",
+              "label": "Plum Noir",
+              "group": "dark",
+              "disabled": true
+            },
+            {
+              "value": "Mono Paper",
+              "label": "Mono Paper",
+              "group": "light",
+              "keywords": [
+                "print",
+                "grey"
+              ]
+            },
+            {
+              "value": "graphite-mint",
+              "label": "Graphite Mint",
+              "description": "Dark with a mint accent",
+              "group": "dark",
+              "keywords": [
+                "green"
+              ]
+            },
+            {
+              "value": "Sandstone",
+              "label": "Sandstone",
+              "group": "light"
+            }
+          ],
+          "groups": [
+            {
+              "id": "dark",
+              "label": "Dark"
+            },
+            {
+              "id": "light",
+              "label": "light"
+            }
+          ],
+          "multiple": false,
+          "value": [
+            "fresh-dark"
+          ],
+          "searchThreshold": 8,
+          "placeholder": "",
+          "emptyLabel": "",
+          "max": 0
+        },
+        "changed": false
+      }
+    },
+    "toggleOn": {
+      "base": {
+        "id": "tags",
+        "label": "Tags",
+        "options": [
+          {
+            "value": "Red",
+            "label": "Red"
+          },
+          {
+            "value": "Green",
+            "label": "Green"
+          },
+          {
+            "value": "Blue",
+            "label": "Blue"
+          },
+          {
+            "value": "gold",
+            "label": "Gold",
+            "disabled": true
+          },
+          {
+            "value": "Violet",
+            "label": "Violet"
+          }
+        ],
+        "groups": [],
+        "multiple": true,
+        "value": [
+          "Blue"
+        ],
+        "searchThreshold": 0,
+        "placeholder": "Pick up to two",
+        "emptyLabel": "",
+        "max": 2
+      },
+      "value": "Red",
+      "out": {
+        "model": {
+          "id": "tags",
+          "label": "Tags",
+          "options": [
+            {
+              "value": "Red",
+              "label": "Red"
+            },
+            {
+              "value": "Green",
+              "label": "Green"
+            },
+            {
+              "value": "Blue",
+              "label": "Blue"
+            },
+            {
+              "value": "gold",
+              "label": "Gold",
+              "disabled": true
+            },
+            {
+              "value": "Violet",
+              "label": "Violet"
+            }
+          ],
+          "groups": [],
+          "multiple": true,
+          "value": [
+            "Red",
+            "Blue"
+          ],
+          "searchThreshold": 0,
+          "placeholder": "Pick up to two",
+          "emptyLabel": "",
+          "max": 2
+        },
+        "changed": true
+      }
+    },
+    "toggleOff": {
+      "base": {
+        "id": "tags",
+        "label": "Tags",
+        "options": [
+          {
+            "value": "Red",
+            "label": "Red"
+          },
+          {
+            "value": "Green",
+            "label": "Green"
+          },
+          {
+            "value": "Blue",
+            "label": "Blue"
+          },
+          {
+            "value": "gold",
+            "label": "Gold",
+            "disabled": true
+          },
+          {
+            "value": "Violet",
+            "label": "Violet"
+          }
+        ],
+        "groups": [],
+        "multiple": true,
+        "value": [
+          "Blue"
+        ],
+        "searchThreshold": 0,
+        "placeholder": "Pick up to two",
+        "emptyLabel": "",
+        "max": 2
+      },
+      "value": "Blue",
+      "out": {
+        "model": {
+          "id": "tags",
+          "label": "Tags",
+          "options": [
+            {
+              "value": "Red",
+              "label": "Red"
+            },
+            {
+              "value": "Green",
+              "label": "Green"
+            },
+            {
+              "value": "Blue",
+              "label": "Blue"
+            },
+            {
+              "value": "gold",
+              "label": "Gold",
+              "disabled": true
+            },
+            {
+              "value": "Violet",
+              "label": "Violet"
+            }
+          ],
+          "groups": [],
+          "multiple": true,
+          "value": [],
+          "searchThreshold": 0,
+          "placeholder": "Pick up to two",
+          "emptyLabel": "",
+          "max": 2
+        },
+        "changed": true
+      }
+    },
+    "refused": {
+      "base": {
+        "id": "tags",
+        "label": "Tags",
+        "options": [
+          {
+            "value": "Red",
+            "label": "Red"
+          },
+          {
+            "value": "Green",
+            "label": "Green"
+          },
+          {
+            "value": "Blue",
+            "label": "Blue"
+          },
+          {
+            "value": "gold",
+            "label": "Gold",
+            "disabled": true
+          },
+          {
+            "value": "Violet",
+            "label": "Violet"
+          }
+        ],
+        "groups": [],
+        "multiple": true,
+        "value": [
+          "Red",
+          "Blue"
+        ],
+        "searchThreshold": 0,
+        "placeholder": "Pick up to two",
+        "emptyLabel": "",
+        "max": 2
+      },
+      "value": "Violet",
+      "out": {
+        "model": {
+          "id": "tags",
+          "label": "Tags",
+          "options": [
+            {
+              "value": "Red",
+              "label": "Red"
+            },
+            {
+              "value": "Green",
+              "label": "Green"
+            },
+            {
+              "value": "Blue",
+              "label": "Blue"
+            },
+            {
+              "value": "gold",
+              "label": "Gold",
+              "disabled": true
+            },
+            {
+              "value": "Violet",
+              "label": "Violet"
+            }
+          ],
+          "groups": [],
+          "multiple": true,
+          "value": [
+            "Red",
+            "Blue"
+          ],
+          "searchThreshold": 0,
+          "placeholder": "Pick up to two",
+          "emptyLabel": "",
+          "max": 2
+        },
+        "changed": false
+      }
+    },
+    "clearMulti": {
+      "base": {
+        "id": "tags",
+        "label": "Tags",
+        "options": [
+          {
+            "value": "Red",
+            "label": "Red"
+          },
+          {
+            "value": "Green",
+            "label": "Green"
+          },
+          {
+            "value": "Blue",
+            "label": "Blue"
+          },
+          {
+            "value": "gold",
+            "label": "Gold",
+            "disabled": true
+          },
+          {
+            "value": "Violet",
+            "label": "Violet"
+          }
+        ],
+        "groups": [],
+        "multiple": true,
+        "value": [
+          "Blue"
+        ],
+        "searchThreshold": 0,
+        "placeholder": "Pick up to two",
+        "emptyLabel": "",
+        "max": 2
+      },
+      "value": "",
+      "out": {
+        "model": {
+          "id": "tags",
+          "label": "Tags",
+          "options": [
+            {
+              "value": "Red",
+              "label": "Red"
+            },
+            {
+              "value": "Green",
+              "label": "Green"
+            },
+            {
+              "value": "Blue",
+              "label": "Blue"
+            },
+            {
+              "value": "gold",
+              "label": "Gold",
+              "disabled": true
+            },
+            {
+              "value": "Violet",
+              "label": "Violet"
+            }
+          ],
+          "groups": [],
+          "multiple": true,
+          "value": [],
+          "searchThreshold": 0,
+          "placeholder": "Pick up to two",
+          "emptyLabel": "",
+          "max": 2
+        },
+        "changed": true
+      }
+    }
+  },
+  "setValue": {
+    "single": {
+      "base": {
+        "id": "colour-theme",
+        "label": "Colour theme",
+        "options": [
+          {
+            "value": "fresh-light",
+            "label": "Fresh Light",
+            "description": "The default day theme",
+            "icon": "sun",
+            "group": "light"
+          },
+          {
+            "value": "fresh-dark",
+            "label": "Fresh Dark",
+            "icon": "moon",
+            "group": "dark"
+          },
+          {
+            "value": "Aurora Night",
+            "label": "Aurora Night"
+          },
+          {
+            "value": "plum-noir",
+            "label": "Plum Noir",
+            "group": "dark",
+            "disabled": true
+          },
+          {
+            "value": "Mono Paper",
+            "label": "Mono Paper",
+            "group": "light",
+            "keywords": [
+              "print",
+              "grey"
+            ]
+          },
+          {
+            "value": "graphite-mint",
+            "label": "Graphite Mint",
+            "description": "Dark with a mint accent",
+            "group": "dark",
+            "keywords": [
+              "green"
+            ]
+          },
+          {
+            "value": "Sandstone",
+            "label": "Sandstone",
+            "group": "light"
+          }
+        ],
+        "groups": [
+          {
+            "id": "dark",
+            "label": "Dark"
+          },
+          {
+            "id": "light",
+            "label": "light"
+          }
+        ],
+        "multiple": false,
+        "value": [
+          "fresh-dark"
+        ],
+        "searchThreshold": 8,
+        "placeholder": "",
+        "emptyLabel": "",
+        "max": 0
+      },
+      "value": [
+        "Aurora Night",
+        "fresh-light"
+      ],
+      "out": {
+        "model": {
+          "id": "colour-theme",
+          "label": "Colour theme",
+          "options": [
+            {
+              "value": "fresh-light",
+              "label": "Fresh Light",
+              "description": "The default day theme",
+              "icon": "sun",
+              "group": "light"
+            },
+            {
+              "value": "fresh-dark",
+              "label": "Fresh Dark",
+              "icon": "moon",
+              "group": "dark"
+            },
+            {
+              "value": "Aurora Night",
+              "label": "Aurora Night"
+            },
+            {
+              "value": "plum-noir",
+              "label": "Plum Noir",
+              "group": "dark",
+              "disabled": true
+            },
+            {
+              "value": "Mono Paper",
+              "label": "Mono Paper",
+              "group": "light",
+              "keywords": [
+                "print",
+                "grey"
+              ]
+            },
+            {
+              "value": "graphite-mint",
+              "label": "Graphite Mint",
+              "description": "Dark with a mint accent",
+              "group": "dark",
+              "keywords": [
+                "green"
+              ]
+            },
+            {
+              "value": "Sandstone",
+              "label": "Sandstone",
+              "group": "light"
+            }
+          ],
+          "groups": [
+            {
+              "id": "dark",
+              "label": "Dark"
+            },
+            {
+              "id": "light",
+              "label": "light"
+            }
+          ],
+          "multiple": false,
+          "value": [
+            "Aurora Night"
+          ],
+          "searchThreshold": 8,
+          "placeholder": "",
+          "emptyLabel": "",
+          "max": 0
+        },
+        "changed": true
+      }
+    },
+    "string": {
+      "base": {
+        "id": "colour-theme",
+        "label": "Colour theme",
+        "options": [
+          {
+            "value": "fresh-light",
+            "label": "Fresh Light",
+            "description": "The default day theme",
+            "icon": "sun",
+            "group": "light"
+          },
+          {
+            "value": "fresh-dark",
+            "label": "Fresh Dark",
+            "icon": "moon",
+            "group": "dark"
+          },
+          {
+            "value": "Aurora Night",
+            "label": "Aurora Night"
+          },
+          {
+            "value": "plum-noir",
+            "label": "Plum Noir",
+            "group": "dark",
+            "disabled": true
+          },
+          {
+            "value": "Mono Paper",
+            "label": "Mono Paper",
+            "group": "light",
+            "keywords": [
+              "print",
+              "grey"
+            ]
+          },
+          {
+            "value": "graphite-mint",
+            "label": "Graphite Mint",
+            "description": "Dark with a mint accent",
+            "group": "dark",
+            "keywords": [
+              "green"
+            ]
+          },
+          {
+            "value": "Sandstone",
+            "label": "Sandstone",
+            "group": "light"
+          }
+        ],
+        "groups": [
+          {
+            "id": "dark",
+            "label": "Dark"
+          },
+          {
+            "id": "light",
+            "label": "light"
+          }
+        ],
+        "multiple": false,
+        "value": [
+          "fresh-dark"
+        ],
+        "searchThreshold": 8,
+        "placeholder": "",
+        "emptyLabel": "",
+        "max": 0
+      },
+      "value": "fresh-dark",
+      "out": {
+        "model": {
+          "id": "colour-theme",
+          "label": "Colour theme",
+          "options": [
+            {
+              "value": "fresh-light",
+              "label": "Fresh Light",
+              "description": "The default day theme",
+              "icon": "sun",
+              "group": "light"
+            },
+            {
+              "value": "fresh-dark",
+              "label": "Fresh Dark",
+              "icon": "moon",
+              "group": "dark"
+            },
+            {
+              "value": "Aurora Night",
+              "label": "Aurora Night"
+            },
+            {
+              "value": "plum-noir",
+              "label": "Plum Noir",
+              "group": "dark",
+              "disabled": true
+            },
+            {
+              "value": "Mono Paper",
+              "label": "Mono Paper",
+              "group": "light",
+              "keywords": [
+                "print",
+                "grey"
+              ]
+            },
+            {
+              "value": "graphite-mint",
+              "label": "Graphite Mint",
+              "description": "Dark with a mint accent",
+              "group": "dark",
+              "keywords": [
+                "green"
+              ]
+            },
+            {
+              "value": "Sandstone",
+              "label": "Sandstone",
+              "group": "light"
+            }
+          ],
+          "groups": [
+            {
+              "id": "dark",
+              "label": "Dark"
+            },
+            {
+              "id": "light",
+              "label": "light"
+            }
+          ],
+          "multiple": false,
+          "value": [
+            "fresh-dark"
+          ],
+          "searchThreshold": 8,
+          "placeholder": "",
+          "emptyLabel": "",
+          "max": 0
+        },
+        "changed": false
+      }
+    },
+    "multi": {
+      "base": {
+        "id": "tags",
+        "label": "Tags",
+        "options": [
+          {
+            "value": "Red",
+            "label": "Red"
+          },
+          {
+            "value": "Green",
+            "label": "Green"
+          },
+          {
+            "value": "Blue",
+            "label": "Blue"
+          },
+          {
+            "value": "gold",
+            "label": "Gold",
+            "disabled": true
+          },
+          {
+            "value": "Violet",
+            "label": "Violet"
+          }
+        ],
+        "groups": [],
+        "multiple": true,
+        "value": [
+          "Blue"
+        ],
+        "searchThreshold": 0,
+        "placeholder": "Pick up to two",
+        "emptyLabel": "",
+        "max": 2
+      },
+      "value": [
+        "Violet",
+        "gold",
+        "Red",
+        "Green"
+      ],
+      "out": {
+        "model": {
+          "id": "tags",
+          "label": "Tags",
+          "options": [
+            {
+              "value": "Red",
+              "label": "Red"
+            },
+            {
+              "value": "Green",
+              "label": "Green"
+            },
+            {
+              "value": "Blue",
+              "label": "Blue"
+            },
+            {
+              "value": "gold",
+              "label": "Gold",
+              "disabled": true
+            },
+            {
+              "value": "Violet",
+              "label": "Violet"
+            }
+          ],
+          "groups": [],
+          "multiple": true,
+          "value": [
+            "Violet",
+            "Red"
+          ],
+          "searchThreshold": 0,
+          "placeholder": "Pick up to two",
+          "emptyLabel": "",
+          "max": 2
+        },
+        "changed": true
+      }
+    }
+  },
+  "trigger": {
+    "chosen": {
+      "model": {
+        "id": "colour-theme",
+        "label": "Colour theme",
+        "options": [
+          {
+            "value": "fresh-light",
+            "label": "Fresh Light",
+            "description": "The default day theme",
+            "icon": "sun",
+            "group": "light"
+          },
+          {
+            "value": "fresh-dark",
+            "label": "Fresh Dark",
+            "icon": "moon",
+            "group": "dark"
+          },
+          {
+            "value": "Aurora Night",
+            "label": "Aurora Night"
+          },
+          {
+            "value": "plum-noir",
+            "label": "Plum Noir",
+            "group": "dark",
+            "disabled": true
+          },
+          {
+            "value": "Mono Paper",
+            "label": "Mono Paper",
+            "group": "light",
+            "keywords": [
+              "print",
+              "grey"
+            ]
+          },
+          {
+            "value": "graphite-mint",
+            "label": "Graphite Mint",
+            "description": "Dark with a mint accent",
+            "group": "dark",
+            "keywords": [
+              "green"
+            ]
+          },
+          {
+            "value": "Sandstone",
+            "label": "Sandstone",
+            "group": "light"
+          }
+        ],
+        "groups": [
+          {
+            "id": "dark",
+            "label": "Dark"
+          },
+          {
+            "id": "light",
+            "label": "light"
+          }
+        ],
+        "multiple": false,
+        "value": [
+          "fresh-dark"
+        ],
+        "searchThreshold": 8,
+        "placeholder": "",
+        "emptyLabel": "",
+        "max": 0
+      },
+      "text": "Fresh Dark",
+      "labels": [
+        "Fresh Dark"
+      ]
+    },
+    "nothing": {
+      "model": {
+        "id": "colour-theme",
+        "label": "Colour theme",
+        "options": [
+          {
+            "value": "fresh-light",
+            "label": "Fresh Light",
+            "description": "The default day theme",
+            "icon": "sun",
+            "group": "light"
+          },
+          {
+            "value": "fresh-dark",
+            "label": "Fresh Dark",
+            "icon": "moon",
+            "group": "dark"
+          },
+          {
+            "value": "Aurora Night",
+            "label": "Aurora Night"
+          },
+          {
+            "value": "plum-noir",
+            "label": "Plum Noir",
+            "group": "dark",
+            "disabled": true
+          },
+          {
+            "value": "Mono Paper",
+            "label": "Mono Paper",
+            "group": "light",
+            "keywords": [
+              "print",
+              "grey"
+            ]
+          },
+          {
+            "value": "graphite-mint",
+            "label": "Graphite Mint",
+            "description": "Dark with a mint accent",
+            "group": "dark",
+            "keywords": [
+              "green"
+            ]
+          },
+          {
+            "value": "Sandstone",
+            "label": "Sandstone",
+            "group": "light"
+          }
+        ],
+        "groups": [
+          {
+            "id": "dark",
+            "label": "Dark"
+          },
+          {
+            "id": "light",
+            "label": "light"
+          }
+        ],
+        "multiple": false,
+        "value": [],
+        "searchThreshold": 8,
+        "placeholder": "",
+        "emptyLabel": "",
+        "max": 0
+      },
+      "text": "Fresh Light",
+      "labels": []
+    },
+    "emptyLabel": {
+      "model": {
+        "id": "colour-theme",
+        "label": "Colour theme",
+        "options": [
+          {
+            "value": "fresh-light",
+            "label": "Fresh Light",
+            "description": "The default day theme",
+            "icon": "sun",
+            "group": "light"
+          },
+          {
+            "value": "fresh-dark",
+            "label": "Fresh Dark",
+            "icon": "moon",
+            "group": "dark"
+          },
+          {
+            "value": "Aurora Night",
+            "label": "Aurora Night"
+          },
+          {
+            "value": "plum-noir",
+            "label": "Plum Noir",
+            "group": "dark",
+            "disabled": true
+          },
+          {
+            "value": "Mono Paper",
+            "label": "Mono Paper",
+            "group": "light",
+            "keywords": [
+              "print",
+              "grey"
+            ]
+          },
+          {
+            "value": "graphite-mint",
+            "label": "Graphite Mint",
+            "description": "Dark with a mint accent",
+            "group": "dark",
+            "keywords": [
+              "green"
+            ]
+          },
+          {
+            "value": "Sandstone",
+            "label": "Sandstone",
+            "group": "light"
+          }
+        ],
+        "groups": [
+          {
+            "id": "dark",
+            "label": "Dark"
+          },
+          {
+            "id": "light",
+            "label": "light"
+          }
+        ],
+        "multiple": false,
+        "value": [],
+        "searchThreshold": 8,
+        "placeholder": "",
+        "emptyLabel": "Theme default",
+        "max": 0
+      },
+      "text": "Theme default",
+      "labels": []
+    },
+    "placeholder": {
+      "model": {
+        "id": "colour-theme",
+        "label": "Colour theme",
+        "options": [
+          {
+            "value": "fresh-light",
+            "label": "Fresh Light",
+            "description": "The default day theme",
+            "icon": "sun",
+            "group": "light"
+          },
+          {
+            "value": "fresh-dark",
+            "label": "Fresh Dark",
+            "icon": "moon",
+            "group": "dark"
+          },
+          {
+            "value": "Aurora Night",
+            "label": "Aurora Night"
+          },
+          {
+            "value": "plum-noir",
+            "label": "Plum Noir",
+            "group": "dark",
+            "disabled": true
+          },
+          {
+            "value": "Mono Paper",
+            "label": "Mono Paper",
+            "group": "light",
+            "keywords": [
+              "print",
+              "grey"
+            ]
+          },
+          {
+            "value": "graphite-mint",
+            "label": "Graphite Mint",
+            "description": "Dark with a mint accent",
+            "group": "dark",
+            "keywords": [
+              "green"
+            ]
+          },
+          {
+            "value": "Sandstone",
+            "label": "Sandstone",
+            "group": "light"
+          }
+        ],
+        "groups": [
+          {
+            "id": "dark",
+            "label": "Dark"
+          },
+          {
+            "id": "light",
+            "label": "light"
+          }
+        ],
+        "multiple": false,
+        "value": [],
+        "searchThreshold": 8,
+        "placeholder": "Pick a theme",
+        "emptyLabel": "",
+        "max": 0
+      },
+      "text": "Pick a theme",
+      "labels": []
+    },
+    "multiOne": {
+      "model": {
+        "id": "tags",
+        "label": "Tags",
+        "options": [
+          {
+            "value": "Red",
+            "label": "Red"
+          },
+          {
+            "value": "Green",
+            "label": "Green"
+          },
+          {
+            "value": "Blue",
+            "label": "Blue"
+          },
+          {
+            "value": "gold",
+            "label": "Gold",
+            "disabled": true
+          },
+          {
+            "value": "Violet",
+            "label": "Violet"
+          }
+        ],
+        "groups": [],
+        "multiple": true,
+        "value": [
+          "Blue"
+        ],
+        "searchThreshold": 0,
+        "placeholder": "Pick up to two",
+        "emptyLabel": "",
+        "max": 2
+      },
+      "text": "Blue",
+      "labels": [
+        "Blue"
+      ]
+    },
+    "multiNone": {
+      "model": {
+        "id": "tags",
+        "label": "Tags",
+        "options": [
+          {
+            "value": "Red",
+            "label": "Red"
+          },
+          {
+            "value": "Green",
+            "label": "Green"
+          },
+          {
+            "value": "Blue",
+            "label": "Blue"
+          },
+          {
+            "value": "gold",
+            "label": "Gold",
+            "disabled": true
+          },
+          {
+            "value": "Violet",
+            "label": "Violet"
+          }
+        ],
+        "groups": [],
+        "multiple": true,
+        "value": [],
+        "searchThreshold": 0,
+        "placeholder": "Pick up to two",
+        "emptyLabel": "",
+        "max": 2
+      },
+      "text": "Pick up to two",
+      "labels": []
+    },
+    "multiMany": {
+      "model": {
+        "id": "picker",
+        "label": "",
+        "options": [
+          {
+            "value": "A",
+            "label": "A"
+          },
+          {
+            "value": "B",
+            "label": "B"
+          },
+          {
+            "value": "C",
+            "label": "C"
+          },
+          {
+            "value": "D",
+            "label": "D"
+          },
+          {
+            "value": "E",
+            "label": "E"
+          }
+        ],
+        "groups": [],
+        "multiple": true,
+        "value": [
+          "E",
+          "A",
+          "B",
+          "C",
+          "D"
+        ],
+        "searchThreshold": 8,
+        "placeholder": "",
+        "emptyLabel": "",
+        "max": 0
+      },
+      "text": "A, B, C +2",
+      "labels": [
+        "A",
+        "B",
+        "C",
+        "D",
+        "E"
+      ]
+    }
+  },
+  "state": {
+    "open": {
+      "open": true,
+      "query": "",
+      "active": 1,
+      "filtered": [
+        {
+          "value": "fresh-light",
+          "label": "Fresh Light",
+          "description": "The default day theme",
+          "icon": "sun",
+          "group": "light",
+          "score": 0
+        },
+        {
+          "value": "fresh-dark",
+          "label": "Fresh Dark",
+          "icon": "moon",
+          "group": "dark",
+          "score": 0
+        },
+        {
+          "value": "Aurora Night",
+          "label": "Aurora Night",
+          "score": 0
+        },
+        {
+          "value": "plum-noir",
+          "label": "Plum Noir",
+          "group": "dark",
+          "disabled": true,
+          "score": 0
+        },
+        {
+          "value": "Mono Paper",
+          "label": "Mono Paper",
+          "group": "light",
+          "keywords": [
+            "print",
+            "grey"
+          ],
+          "score": 0
+        },
+        {
+          "value": "graphite-mint",
+          "label": "Graphite Mint",
+          "description": "Dark with a mint accent",
+          "group": "dark",
+          "keywords": [
+            "green"
+          ],
+          "score": 0
+        },
+        {
+          "value": "Sandstone",
+          "label": "Sandstone",
+          "group": "light",
+          "score": 0
+        }
+      ],
+      "typeahead": ""
+    },
+    "closed": {
+      "open": false,
+      "query": "",
+      "active": -1,
+      "filtered": [],
+      "typeahead": ""
+    },
+    "queryText": "dark",
+    "query": {
+      "open": true,
+      "query": "dark",
+      "active": 0,
+      "filtered": [
+        {
+          "value": "fresh-dark",
+          "label": "Fresh Dark",
+          "icon": "moon",
+          "group": "dark",
+          "score": 39.833333
+        },
+        {
+          "value": "plum-noir",
+          "label": "Plum Noir",
+          "group": "dark",
+          "disabled": true,
+          "score": 9.85
+        },
+        {
+          "value": "graphite-mint",
+          "label": "Graphite Mint",
+          "description": "Dark with a mint accent",
+          "group": "dark",
+          "keywords": [
+            "green"
+          ],
+          "score": 9.783333
+        }
+      ],
+      "typeahead": ""
+    },
+    "keys": [
+      "ArrowDown",
+      "ArrowDown",
+      "ArrowDown",
+      "ArrowUp",
+      "Home",
+      "End",
+      "PageUp",
+      "PageDown",
+      "ArrowDown",
+      "Escape",
+      "ArrowDown"
+    ],
+    "trail": [
+      {
+        "key": "ArrowDown",
+        "active": 2,
+        "label": "Aurora Night",
+        "effect": "",
+        "value": [
+          "fresh-dark"
+        ]
+      },
+      {
+        "key": "ArrowDown",
+        "active": 4,
+        "label": "Mono Paper",
+        "effect": "",
+        "value": [
+          "fresh-dark"
+        ]
+      },
+      {
+        "key": "ArrowDown",
+        "active": 5,
+        "label": "Graphite Mint",
+        "effect": "",
+        "value": [
+          "fresh-dark"
+        ]
+      },
+      {
+        "key": "ArrowUp",
+        "active": 4,
+        "label": "Mono Paper",
+        "effect": "",
+        "value": [
+          "fresh-dark"
+        ]
+      },
+      {
+        "key": "Home",
+        "active": 0,
+        "label": "Fresh Light",
+        "effect": "",
+        "value": [
+          "fresh-dark"
+        ]
+      },
+      {
+        "key": "End",
+        "active": 6,
+        "label": "Sandstone",
+        "effect": "",
+        "value": [
+          "fresh-dark"
+        ]
+      },
+      {
+        "key": "PageUp",
+        "active": 0,
+        "label": "Fresh Light",
+        "effect": "",
+        "value": [
+          "fresh-dark"
+        ]
+      },
+      {
+        "key": "PageDown",
+        "active": 6,
+        "label": "Sandstone",
+        "effect": "",
+        "value": [
+          "fresh-dark"
+        ]
+      },
+      {
+        "key": "ArrowDown",
+        "active": 6,
+        "label": "Sandstone",
+        "effect": "",
+        "value": [
+          "fresh-dark"
+        ]
+      },
+      {
+        "key": "Escape",
+        "active": -1,
+        "label": null,
+        "effect": "close",
+        "value": [
+          "fresh-dark"
+        ]
+      },
+      {
+        "key": "ArrowDown",
+        "active": -1,
+        "label": null,
+        "effect": "",
+        "value": [
+          "fresh-dark"
+        ]
+      }
+    ],
+    "typeahead": {
+      "m": {
+        "open": true,
+        "query": "",
+        "active": 4,
+        "filtered": [
+          {
+            "value": "fresh-light",
+            "label": "Fresh Light",
+            "description": "The default day theme",
+            "icon": "sun",
+            "group": "light",
+            "score": 0
+          },
+          {
+            "value": "fresh-dark",
+            "label": "Fresh Dark",
+            "icon": "moon",
+            "group": "dark",
+            "score": 0
+          },
+          {
+            "value": "Aurora Night",
+            "label": "Aurora Night",
+            "score": 0
+          },
+          {
+            "value": "plum-noir",
+            "label": "Plum Noir",
+            "group": "dark",
+            "disabled": true,
+            "score": 0
+          },
+          {
+            "value": "Mono Paper",
+            "label": "Mono Paper",
+            "group": "light",
+            "keywords": [
+              "print",
+              "grey"
+            ],
+            "score": 0
+          },
+          {
+            "value": "graphite-mint",
+            "label": "Graphite Mint",
+            "description": "Dark with a mint accent",
+            "group": "dark",
+            "keywords": [
+              "green"
+            ],
+            "score": 0
+          },
+          {
+            "value": "Sandstone",
+            "label": "Sandstone",
+            "group": "light",
+            "score": 0
+          }
+        ],
+        "typeahead": "m"
+      },
+      "fr": {
+        "open": true,
+        "query": "",
+        "active": 0,
+        "filtered": [
+          {
+            "value": "fresh-light",
+            "label": "Fresh Light",
+            "description": "The default day theme",
+            "icon": "sun",
+            "group": "light",
+            "score": 0
+          },
+          {
+            "value": "fresh-dark",
+            "label": "Fresh Dark",
+            "icon": "moon",
+            "group": "dark",
+            "score": 0
+          },
+          {
+            "value": "Aurora Night",
+            "label": "Aurora Night",
+            "score": 0
+          },
+          {
+            "value": "plum-noir",
+            "label": "Plum Noir",
+            "group": "dark",
+            "disabled": true,
+            "score": 0
+          },
+          {
+            "value": "Mono Paper",
+            "label": "Mono Paper",
+            "group": "light",
+            "keywords": [
+              "print",
+              "grey"
+            ],
+            "score": 0
+          },
+          {
+            "value": "graphite-mint",
+            "label": "Graphite Mint",
+            "description": "Dark with a mint accent",
+            "group": "dark",
+            "keywords": [
+              "green"
+            ],
+            "score": 0
+          },
+          {
+            "value": "Sandstone",
+            "label": "Sandstone",
+            "group": "light",
+            "score": 0
+          }
+        ],
+        "typeahead": "fr"
+      }
+    },
+    "enterSingle": {
+      "state": {
+        "open": false,
+        "query": "",
+        "active": -1,
+        "filtered": [],
+        "typeahead": ""
+      },
+      "model": {
+        "id": "colour-theme",
+        "label": "Colour theme",
+        "options": [
+          {
+            "value": "fresh-light",
+            "label": "Fresh Light",
+            "description": "The default day theme",
+            "icon": "sun",
+            "group": "light"
+          },
+          {
+            "value": "fresh-dark",
+            "label": "Fresh Dark",
+            "icon": "moon",
+            "group": "dark"
+          },
+          {
+            "value": "Aurora Night",
+            "label": "Aurora Night"
+          },
+          {
+            "value": "plum-noir",
+            "label": "Plum Noir",
+            "group": "dark",
+            "disabled": true
+          },
+          {
+            "value": "Mono Paper",
+            "label": "Mono Paper",
+            "group": "light",
+            "keywords": [
+              "print",
+              "grey"
+            ]
+          },
+          {
+            "value": "graphite-mint",
+            "label": "Graphite Mint",
+            "description": "Dark with a mint accent",
+            "group": "dark",
+            "keywords": [
+              "green"
+            ]
+          },
+          {
+            "value": "Sandstone",
+            "label": "Sandstone",
+            "group": "light"
+          }
+        ],
+        "groups": [
+          {
+            "id": "dark",
+            "label": "Dark"
+          },
+          {
+            "id": "light",
+            "label": "light"
+          }
+        ],
+        "multiple": false,
+        "value": [
+          "fresh-dark"
+        ],
+        "searchThreshold": 8,
+        "placeholder": "",
+        "emptyLabel": "",
+        "max": 0
+      },
+      "effect": "close"
+    },
+    "enterMulti": {
+      "state": {
+        "open": true,
+        "query": "",
+        "active": 2,
+        "filtered": [
+          {
+            "value": "Red",
+            "label": "Red",
+            "score": 0
+          },
+          {
+            "value": "Green",
+            "label": "Green",
+            "score": 0
+          },
+          {
+            "value": "Blue",
+            "label": "Blue",
+            "score": 0
+          },
+          {
+            "value": "gold",
+            "label": "Gold",
+            "disabled": true,
+            "score": 0
+          },
+          {
+            "value": "Violet",
+            "label": "Violet",
+            "score": 0
+          }
+        ],
+        "typeahead": ""
+      },
+      "model": {
+        "id": "tags",
+        "label": "Tags",
+        "options": [
+          {
+            "value": "Red",
+            "label": "Red"
+          },
+          {
+            "value": "Green",
+            "label": "Green"
+          },
+          {
+            "value": "Blue",
+            "label": "Blue"
+          },
+          {
+            "value": "gold",
+            "label": "Gold",
+            "disabled": true
+          },
+          {
+            "value": "Violet",
+            "label": "Violet"
+          }
+        ],
+        "groups": [],
+        "multiple": true,
+        "value": [],
+        "searchThreshold": 0,
+        "placeholder": "Pick up to two",
+        "emptyLabel": "",
+        "max": 2
+      },
+      "effect": "choose"
+    },
+    "escape": {
+      "state": {
+        "open": false,
+        "query": "",
+        "active": -1,
+        "filtered": [],
+        "typeahead": ""
+      },
+      "model": {
+        "id": "colour-theme",
+        "label": "Colour theme",
+        "options": [
+          {
+            "value": "fresh-light",
+            "label": "Fresh Light",
+            "description": "The default day theme",
+            "icon": "sun",
+            "group": "light"
+          },
+          {
+            "value": "fresh-dark",
+            "label": "Fresh Dark",
+            "icon": "moon",
+            "group": "dark"
+          },
+          {
+            "value": "Aurora Night",
+            "label": "Aurora Night"
+          },
+          {
+            "value": "plum-noir",
+            "label": "Plum Noir",
+            "group": "dark",
+            "disabled": true
+          },
+          {
+            "value": "Mono Paper",
+            "label": "Mono Paper",
+            "group": "light",
+            "keywords": [
+              "print",
+              "grey"
+            ]
+          },
+          {
+            "value": "graphite-mint",
+            "label": "Graphite Mint",
+            "description": "Dark with a mint accent",
+            "group": "dark",
+            "keywords": [
+              "green"
+            ]
+          },
+          {
+            "value": "Sandstone",
+            "label": "Sandstone",
+            "group": "light"
+          }
+        ],
+        "groups": [
+          {
+            "id": "dark",
+            "label": "Dark"
+          },
+          {
+            "id": "light",
+            "label": "light"
+          }
+        ],
+        "multiple": false,
+        "value": [
+          "fresh-dark"
+        ],
+        "searchThreshold": 8,
+        "placeholder": "",
+        "emptyLabel": "",
+        "max": 0
+      },
+      "effect": "close"
+    },
+    "typeIntoSearch": {
+      "state": {
+        "open": true,
+        "query": "",
+        "active": 1,
+        "filtered": [
+          {
+            "value": "fresh-light",
+            "label": "Fresh Light",
+            "description": "The default day theme",
+            "icon": "sun",
+            "group": "light",
+            "score": 0
+          },
+          {
+            "value": "fresh-dark",
+            "label": "Fresh Dark",
+            "icon": "moon",
+            "group": "dark",
+            "score": 0
+          },
+          {
+            "value": "Aurora Night",
+            "label": "Aurora Night",
+            "score": 0
+          },
+          {
+            "value": "plum-noir",
+            "label": "Plum Noir",
+            "group": "dark",
+            "disabled": true,
+            "score": 0
+          },
+          {
+            "value": "Mono Paper",
+            "label": "Mono Paper",
+            "group": "light",
+            "keywords": [
+              "print",
+              "grey"
+            ],
+            "score": 0
+          },
+          {
+            "value": "graphite-mint",
+            "label": "Graphite Mint",
+            "description": "Dark with a mint accent",
+            "group": "dark",
+            "keywords": [
+              "green"
+            ],
+            "score": 0
+          },
+          {
+            "value": "Sandstone",
+            "label": "Sandstone",
+            "group": "light",
+            "score": 0
+          }
+        ],
+        "typeahead": ""
+      },
+      "model": {
+        "id": "colour-theme",
+        "label": "Colour theme",
+        "options": [
+          {
+            "value": "fresh-light",
+            "label": "Fresh Light",
+            "description": "The default day theme",
+            "icon": "sun",
+            "group": "light"
+          },
+          {
+            "value": "fresh-dark",
+            "label": "Fresh Dark",
+            "icon": "moon",
+            "group": "dark"
+          },
+          {
+            "value": "Aurora Night",
+            "label": "Aurora Night"
+          },
+          {
+            "value": "plum-noir",
+            "label": "Plum Noir",
+            "group": "dark",
+            "disabled": true
+          },
+          {
+            "value": "Mono Paper",
+            "label": "Mono Paper",
+            "group": "light",
+            "keywords": [
+              "print",
+              "grey"
+            ]
+          },
+          {
+            "value": "graphite-mint",
+            "label": "Graphite Mint",
+            "description": "Dark with a mint accent",
+            "group": "dark",
+            "keywords": [
+              "green"
+            ]
+          },
+          {
+            "value": "Sandstone",
+            "label": "Sandstone",
+            "group": "light"
+          }
+        ],
+        "groups": [
+          {
+            "id": "dark",
+            "label": "Dark"
+          },
+          {
+            "id": "light",
+            "label": "light"
+          }
+        ],
+        "multiple": false,
+        "value": [
+          "fresh-dark"
+        ],
+        "searchThreshold": 8,
+        "placeholder": "",
+        "emptyLabel": "",
+        "max": 0
+      },
+      "effect": "type"
+    }
+  },
+  "names": {
+    "fresh dark": {
+      "option": {
+        "value": "fresh-dark",
+        "label": "Fresh Dark",
+        "icon": "moon",
+        "group": "dark"
+      },
+      "confidence": 1,
+      "index": 1
+    },
+    "Fresh Dark!": {
+      "option": {
+        "value": "fresh-dark",
+        "label": "Fresh Dark",
+        "icon": "moon",
+        "group": "dark"
+      },
+      "confidence": 1,
+      "index": 1
+    },
+    "FRESH-DARK": {
+      "option": {
+        "value": "fresh-dark",
+        "label": "Fresh Dark",
+        "icon": "moon",
+        "group": "dark"
+      },
+      "confidence": 1,
+      "index": 1
+    },
+    "fresh": {
+      "option": null,
+      "confidence": 0,
+      "ambiguous": [
+        "Fresh Light",
+        "Fresh Dark"
+      ]
+    },
+    "aurora": {
+      "option": {
+        "value": "Aurora Night",
+        "label": "Aurora Night"
+      },
+      "confidence": 0.8,
+      "index": 2
+    },
+    "night": {
+      "option": {
+        "value": "Aurora Night",
+        "label": "Aurora Night"
+      },
+      "confidence": 0.7,
+      "index": 2
+    },
+    "print": {
+      "option": {
+        "value": "Mono Paper",
+        "label": "Mono Paper",
+        "group": "light",
+        "keywords": [
+          "print",
+          "grey"
+        ]
+      },
+      "confidence": 0.5,
+      "index": 4
+    },
+    "green": {
+      "option": {
+        "value": "graphite-mint",
+        "label": "Graphite Mint",
+        "description": "Dark with a mint accent",
+        "group": "dark",
+        "keywords": [
+          "green"
+        ]
+      },
+      "confidence": 0.5,
+      "index": 5
+    },
+    "mint accent": {
+      "option": {
+        "value": "graphite-mint",
+        "label": "Graphite Mint",
+        "description": "Dark with a mint accent",
+        "group": "dark",
+        "keywords": [
+          "green"
+        ]
+      },
+      "confidence": 0.5,
+      "index": 5
+    },
+    "plum noir": {
+      "option": null,
+      "confidence": 0,
+      "ambiguous": []
+    },
+    "sandstone": {
+      "option": {
+        "value": "Sandstone",
+        "label": "Sandstone",
+        "group": "light"
+      },
+      "confidence": 1,
+      "index": 6
+    },
+    "nothing here": {
+      "option": null,
+      "confidence": 0,
+      "ambiguous": []
+    },
+    "": {
+      "option": null,
+      "confidence": 0,
+      "ambiguous": []
+    }
+  },
+  "positions": {
+    "2": {
+      "option": {
+        "value": "fresh-dark",
+        "label": "Fresh Dark",
+        "icon": "moon",
+        "group": "dark"
+      },
+      "confidence": 0.9,
+      "index": 1
+    },
+    "the third one": {
+      "option": {
+        "value": "Aurora Night",
+        "label": "Aurora Night"
+      },
+      "confidence": 0.9,
+      "index": 2
+    },
+    "number 2": {
+      "option": {
+        "value": "fresh-dark",
+        "label": "Fresh Dark",
+        "icon": "moon",
+        "group": "dark"
+      },
+      "confidence": 0.9,
+      "index": 1
+    },
+    "one": {
+      "option": {
+        "value": "fresh-light",
+        "label": "Fresh Light",
+        "description": "The default day theme",
+        "icon": "sun",
+        "group": "light"
+      },
+      "confidence": 0.9,
+      "index": 0
+    },
+    "the last one": {
+      "option": {
+        "value": "Sandstone",
+        "label": "Sandstone",
+        "group": "light"
+      },
+      "confidence": 0.9,
+      "index": 6
+    },
+    "the ninety-ninth one": null,
+    "hello": null
+  },
+  "spokenQuery": "fre",
+  "spoken": {
+    "Fresh Light": {
+      "option": {
+        "value": "fresh-light",
+        "label": "Fresh Light",
+        "description": "The default day theme",
+        "icon": "sun",
+        "group": "light",
+        "score": 59.816667
+      },
+      "confidence": 1,
+      "index": 1
+    },
+    "the first one": {
+      "option": {
+        "value": "fresh-dark",
+        "label": "Fresh Dark",
+        "icon": "moon",
+        "group": "dark",
+        "score": 59.833333
+      },
+      "confidence": 0.9,
+      "index": 0
+    },
+    "the second one": {
+      "option": {
+        "value": "fresh-light",
+        "label": "Fresh Light",
+        "description": "The default day theme",
+        "icon": "sun",
+        "group": "light",
+        "score": 59.816667
+      },
+      "confidence": 0.9,
+      "index": 1
+    },
+    "dark": {
+      "option": {
+        "value": "fresh-dark",
+        "label": "Fresh Dark",
+        "icon": "moon",
+        "group": "dark",
+        "score": 59.833333
+      },
+      "confidence": 0.7,
+      "index": 0
+    }
+  },
+  "ids": {
+    "theme": "theme",
+    "Colour theme!": "colour-theme",
+    "  Émile’s pick  ": "emile-s-pick",
+    "tags[]": "tags",
+    "a.b:c-d_e": "a.b:c-d_e",
+    "": "picker",
+    "---": "picker"
+  },
+  "uniqueIds": [
+    "theme",
+    "theme-2",
+    "theme-3"
+  ],
+  "fold": {
+    "Fresh Dark!": "fresh dark",
+    "Émile’s  pick": "emile s pick",
+    "CAFÉ-noir": "cafe noir",
+    "  ": ""
+  }
+}
