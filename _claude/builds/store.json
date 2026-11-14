@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5420,
- "updatedAt": "2026-11-14T21:41:07.303Z",
+ "rev": 5421,
+ "updatedAt": "2026-11-14T21:42:08.043Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -210948,7 +210948,7 @@
    "mergedAt": "2026-11-14T21:33:25Z",
    "priority": "P1",
    "createdAt": "2026-11-13T20:04:16.679Z",
-   "updatedAt": "2026-11-14T21:41:04.508Z",
+   "updatedAt": "2026-11-14T21:42:04Z",
    "builtAt": "",
    "notes": [
     {
@@ -210986,6 +210986,10 @@
     {
      "text": "Reconciler: PR #657 merged",
      "at": "2026-11-14T21:41:04.508Z"
+    },
+    {
+     "text": "Shipped manifest sm-token-registry-skin-editor-live-sandbox rev 1 sent to Shipped features (orchestrator): landed c0d479286, 56 file(s), 0 test line(s), 5 open.",
+     "at": "2026-11-14T21:42:04Z"
     }
    ],
    "approvals": [],
@@ -211035,6 +211039,12 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
+   },
+   "shipped": {
+    "id": "sm-token-registry-skin-editor-live-sandbox",
+    "rev": 1,
+    "at": "2026-11-14T21:42:04Z",
+    "landedCommit": "c0d47928603d853c87c3d65125624ddfe184bf21"
    },
    "steps": [
     {
@@ -211269,7 +211279,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": {
