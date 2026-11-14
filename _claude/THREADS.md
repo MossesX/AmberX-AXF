@@ -792,7 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 20:29 UTC · `dispatcher-gate-never-launch-build` s2 done (all) · orchestrator
 - 2026-11-13 20:30 UTC · `skin-animations-swatches-skin-switch` PR #652 (all) · builds-live
 - 2026-11-13 20:30 UTC · `dispatcher-gate-never-launch-build` s3 done, → complete (all) · orchestrator
 - 2026-11-13 20:30 UTC · `per-toolbar-settings-fix-failing-chrome` PR #650 (all) · builds-live
@@ -1192,6 +1191,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 05:10 UTC · `demo-video-series-three-minute-browser` → pending, note (all) · reconciler
 - 2026-11-14 05:48 UTC · `hotfix-get-main-ci-green-theme-swap` note (all) · orchestrator
 - 2026-11-14 06:18 UTC · `hotfix-get-main-ci-green-theme-swap` note (all) · orchestrator
+- 2026-11-14 06:19 UTC · `hotfix-get-main-ci-green-theme-swap` → pending, note (all) · pipeline
 
 ## Token passes (log)
 
