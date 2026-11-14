@@ -5,7 +5,7 @@
  */
 import { readdirSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { colorThemeVars, styleThemeVars } from '../core/engines/theme';
+import { PICKER_ASSET_DEFAULT, PICKER_TOKENS, PICKER_TOKEN_STATES, colorThemeVars, normalizePickerAsset, pickerAssetErrors, pickerStyle, pickerVars, styleThemeVars } from '../core/engines/theme';
 import { backToSkin, composeLook, composeLookAt, coverageSummary, coverageTable, declarationErrors, globalSkinOf, lookAfterChange, newAppLook, normalizeAppLook, normalizeSkin, normalizeSkinScope, overriddenSlots, parseAppLook, partElements, partsErrors, partsTypes, pickSkin, resolveLookSkin, restoreAppDefault, scopeEntries, scopeState, setInheritSkin, setLookSlot, setScopeOverride, setScopeSkin, setSkinColorTheme, setUseSkin, skinColorOf, skinCovers, skinErrors, skinFromDesignPackage, skinScopeChain, skinScopeKey, skinScopeKind, skinScopeSelector, skinSlots, snapshotLook, uncoveredTypes, undoRestore } from '../core/engines/skin';
 import { foldLegacyPicks, legacyPicks, lookNeedsMigration, migrateLook, migrateLookSettings, parseLegacyLook, settingsNeedMigration } from '../core/engines/look-migration.mjs';
 import { SCALE_TYPES, normalizeScale, scaleErrors, scaleThemeVars, scaleVars } from '../core/engines/scale';
@@ -2399,5 +2399,16 @@ write('project-manifest.json', Object.fromEntries(Object.entries(projectCases).m
     ids: Object.fromEntries(['theme', 'Colour theme!', '  Émile’s pick  ', 'tags[]', 'a.b:c-d_e', '', '---'].map((r) => [r, pickerIdOf(r)])),
     uniqueIds: ['theme', 'theme-2', 'theme-3'].map((_, i, all) => uniquePickerId('theme', all.slice(0, i))),
     fold: Object.fromEntries(['Fresh Dark!', 'Émile’s  pick', 'CAFÉ-noir', '  '].map((k) => [k, foldText(k)])),
+    // § 3 the --fx-picker-* token family (core/engines/theme.ts): registry, defaults = today's drop-down, every starter, density, junk
+    tokens: {
+      registry: PICKER_TOKENS,
+      states: PICKER_TOKEN_STATES,
+      assetDefault: PICKER_ASSET_DEFAULT,
+      defaults: pickerStyle(null),
+      starters: Object.fromEntries(load('picker').map((a) => [a.id, { data: a.data, style: pickerStyle(a.data) }])),
+      density: Object.fromEntries((['compact', 'regular', 'roomy'] as const).map((d) => [d, Object.fromEntries(Object.entries(pickerVars({ density: d })).filter(([k]) => k.includes('option-pad')))])),
+      normalize: { junk: normalizePickerAsset({ variant: 'popover', search: 'maybe', searchThreshold: 999, checkmarks: 'middle', descriptions: 'yes', density: 'huge', doneButton: 0 }), partial: normalizePickerAsset({ variant: 'sheet', searchThreshold: 3.6 }), none: normalizePickerAsset(undefined) },
+      errors: { good: pickerAssetErrors(PICKER_ASSET_DEFAULT), bad: pickerAssetErrors({ searchThreshold: -1, descriptions: 'yes', doneButton: 1 }), notObject: pickerAssetErrors([]) },
+    },
   });
 }

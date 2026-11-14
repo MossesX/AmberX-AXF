@@ -21,6 +21,7 @@ export const ASSET_TYPES = [
   'popup',
   'button',
   'slider',
+  'picker',
   'container',
   'gauge',
   'meter',
@@ -67,7 +68,7 @@ export const ASSET_TYPES = [
 ] as const;
 
 /** Types that are optional: an app may ship none (the framework ships starters). Attachable ones live on a host (the banner). */
-export const OPTIONAL_TYPES: readonly AssetType[] = ['tab-group', 'gauge', 'meter', 'banner', 'clock', 'search-bar', 'logo', 'action-button', 'label', 'status', 'counter', 'progress', 'avatar', 'link', 'theme-switch', 'spacer', 'divider', 'badge', 'settings', 'dock-layout', 'xlayout', 'nav-style', 'behavior-theme', 'design-package', 'skin', 'style-package', 'logo-mark', 'animated-logo', 'icon-pack', 'branding', 'interface', 'typography', 'density', 'sizing', 'agent-card', 'job-type', 'card', 'help', 'demonstration', 'book', 'clip', 'docs'];
+export const OPTIONAL_TYPES: readonly AssetType[] = ['tab-group', 'picker', 'gauge', 'meter', 'banner', 'clock', 'search-bar', 'logo', 'action-button', 'label', 'status', 'counter', 'progress', 'avatar', 'link', 'theme-switch', 'spacer', 'divider', 'badge', 'settings', 'dock-layout', 'xlayout', 'nav-style', 'behavior-theme', 'design-package', 'skin', 'style-package', 'logo-mark', 'animated-logo', 'icon-pack', 'branding', 'interface', 'typography', 'density', 'sizing', 'agent-card', 'job-type', 'card', 'help', 'demonstration', 'book', 'clip', 'docs'];
 
 export type AssetType = (typeof ASSET_TYPES)[number];
 
@@ -479,6 +480,26 @@ export interface SliderData {
   ticks: boolean;
 }
 
+/**
+ * Picker control asset (picker@1, spec/PICKER.md): the choices of the dialog that replaces every drop-down that are not a
+ * colour or a size. Every colour / size / spacing / radius / border is a --fx-picker-* token (engines/theme.ts
+ * PICKER_TOKENS, pickerVars). Optional: an app without one gets PICKER_ASSET_DEFAULT.
+ */
+export interface PickerAssetData {
+  /** auto = a centred dialog on desktop, a bottom sheet on phones */
+  variant: 'auto' | 'dialog' | 'sheet';
+  /** auto = the search field appears at searchThreshold options */
+  search: 'auto' | 'always' | 'never';
+  /** 0–200, default 8 */
+  searchThreshold: number;
+  checkmarks: 'end' | 'start' | 'none';
+  descriptions: boolean;
+  /** scales the option row padding */
+  density: 'compact' | 'regular' | 'roomy';
+  /** multiple-choice pickers end with a Done button and a count */
+  doneButton: boolean;
+}
+
 /** Gauge control asset: how every dial looks (engines/components.ts gaugeStyle). */
 export interface GaugeData {
   shape: 'arc' | 'ring' | 'bar' | 'digital';
@@ -613,6 +634,7 @@ export interface AssetDataMap {
   popup: PopupData;
   button: ButtonData;
   slider: SliderData;
+  picker: PickerAssetData;
   gauge: GaugeData;
   meter: MeterData;
   'tab-group': TabGroupData;

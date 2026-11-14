@@ -9,6 +9,10 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { readdirSync } from 'node:fs';
+import { PICKER_ASSET_DEFAULT, PICKER_TOKENS, PICKER_TOKEN_STATES, normalizePickerAsset, pickerAssetErrors, pickerAttrs, pickerStyle, pickerVars, styleThemeVars, colorThemeVars } from '../core/engines/theme';
+import { ASSET_TYPES, OPTIONAL_TYPES } from '../core/types';
+import { validateAsset } from '../core/validate';
 import { PICKER_CONTRACT, PICKER_LIMITS, PICKER_PAGE, PICKER_SEARCH_THRESHOLD, PICKER_TRIGGER_LABELS, PICKER_TYPEAHEAD_MS, choosePicker, cleanValue, closePicker, filterOptions, foldText, fromNativeOptions, groupOptions, matchByName, matchByPosition, matchSpoken, moveActive, normalizePicker, openPicker, pickerIdOf, pickerKey, searchShown, selectedLabels, setQuery, setValue, triggerText, typeAhead, uniquePickerId, type PickerKey, type PickerModel, type PickerState } from '../core/engines/picker';
 
 const root = new URL('../', import.meta.url).pathname;
@@ -46,6 +50,50 @@ for (const [spoken, want] of Object.entries(f.spoken as Record<string, unknown>)
 for (const [raw, want] of Object.entries(f.ids as Record<string, string>)) eq(pickerIdOf(raw), want, `id ${raw}`);
 eq(f.uniqueIds, ['theme', 'theme-2', 'theme-3'].map((_, i, all) => uniquePickerId('theme', all.slice(0, i))), 'unique ids');
 eq(f.fold, Object.fromEntries(Object.keys(f.fold).map((k) => [k, foldText(k)])), 'fold');
+
+// ---- § 3 tokens: fixture replay ----
+const T = f.tokens;
+eq(T.registry, PICKER_TOKENS, 'token registry'); eq(T.states, PICKER_TOKEN_STATES, 'token states'); eq(T.assetDefault, PICKER_ASSET_DEFAULT, 'asset default');
+eq(T.defaults, pickerStyle(null), 'default vars + attrs (today\'s drop-down)');
+const starterFiles = readdirSync(join(root, 'assets/picker')).filter((n) => n.endsWith('.json'));
+eq(Object.keys(T.starters).sort(), starterFiles.map((n) => n.slice(0, -5)).sort(), 'every starter in the fixture');
+for (const [id, c] of Object.entries(T.starters as Record<string, { data: unknown; style: unknown }>)) {
+  const a = JSON.parse(readFileSync(join(root, 'assets/picker', `${id}.json`), 'utf8'));
+  eq(a.data, c.data, `starter ${id} data current`); eq(pickerStyle(a.data), c.style, `starter ${id} style`);
+  eq(validateAsset(a).errors, [], `starter ${id} validates`); eq(normalizePickerAsset(a.data), a.data, `starter ${id} is complete and canonical`);
+}
+for (const [d, want] of Object.entries(T.density as Record<string, unknown>)) eq(Object.fromEntries(Object.entries(pickerVars({ density: d as never })).filter(([k]) => k.includes('option-pad'))), want, `density ${d}`);
+eq(T.normalize, { junk: normalizePickerAsset({ variant: 'popover', search: 'maybe', searchThreshold: 999, checkmarks: 'middle', descriptions: 'yes', density: 'huge', doneButton: 0 }), partial: normalizePickerAsset({ variant: 'sheet', searchThreshold: 3.6 }), none: normalizePickerAsset(undefined) }, 'normalize asset');
+eq(T.errors, { good: pickerAssetErrors(PICKER_ASSET_DEFAULT), bad: pickerAssetErrors({ searchThreshold: -1, descriptions: 'yes', doneButton: 1 }), notObject: pickerAssetErrors([]) }, 'asset errors');
+
+// ---- § 3 tokens: invariants ----
+{
+  ok(ASSET_TYPES.includes('picker') && OPTIONAL_TYPES.includes('picker'), 'picker is a registered, optional asset type');
+  ok(ASSET_TYPES.indexOf('picker') === ASSET_TYPES.indexOf('slider') + 1, 'picker sits with the controls (after slider), same order as asset-types.json');
+  const names = PICKER_TOKENS.map((t) => t.name);
+  ok(new Set(names).size === names.length && names.every((n) => /^--fx-picker-[a-z0-9-]+$/.test(n)), 'token names unique, all --fx-picker-*');
+  eq(Object.keys(pickerVars(null)).sort(), [...names].sort(), 'pickerVars writes every registry token and nothing else');
+  for (const s of PICKER_TOKEN_STATES) ok(PICKER_TOKENS.some((t) => t.state === s), `a token draws the ${s} state`);
+  for (const g of ['surface', 'header', 'search', 'option', 'group', 'sheet', 'shape', 'spacing', 'type', 'size', 'motion']) ok(PICKER_TOKENS.some((t) => t.group === g), `the ${g} group has a token`);
+  // every default reads the token system: no literal colour, no px / em / rem / literal font, every var() it names exists
+  const known = new Set<string>([...names, ...Object.keys(styleThemeVars({ fontFamily: 'a', fontDisplay: 'a', fontMono: 'a', fontSize: 14, radius: { sm: 1, md: 2, lg: 3 }, space: 8, borderWidth: 1, shadow: { sm: 'a', md: 'b', lg: 'c' }, motion: 1, blur: 1, headingWeight: 1, tracking: 0, density: 'comfortable' } as never)), ...Object.keys(colorThemeVars({ tokens: { bg: '', surface: '', surface2: '', surface3: '', text: '', muted: '', border: '', accent: '', accentText: '', accentSoft: '', danger: '', success: '', warning: '', info: '', focus: '', shadow: '' } } as never))]);
+  for (const t of PICKER_TOKENS) {
+    ok(!/#[0-9a-f]{3,8}\b|rgba?\(|hsla?\(|\b(white|black|red|blue|gray|grey)\b/i.test(t.default), `${t.name} has no literal colour`);
+    ok(!/\d(px|em|rem)\b/.test(t.default), `${t.name} has no literal size`);
+    for (const m of t.default.matchAll(/var\((--fx-[a-z0-9-]+)\)/g)) ok(known.has(m[1]!) || /^--fx-(dens|type|size)-/.test(m[1]!), `${t.name} reads a known token (${m[1]})`);
+    ok(/var\(--fx-|transparent|dvh/.test(t.default), `${t.name} reads the token system`);
+  }
+  // density only moves the row padding; everything else is identical
+  const [c, r, ro] = (['compact', 'regular', 'roomy'] as const).map((d) => pickerVars({ density: d }));
+  for (const n of names) if (!n.includes('option-pad')) ok(c![n] === r![n] && r![n] === ro![n], `${n} does not change with density`);
+  ok(c!['--fx-picker-option-pad-y'] !== ro!['--fx-picker-option-pad-y'], 'density changes the row padding');
+  eq(pickerVars(null), pickerVars(PICKER_ASSET_DEFAULT), 'no asset = the default asset');
+  // the asset's choices land as root attributes the picker reads; search = the threshold in auto mode
+  eq(pickerAttrs({ search: 'auto', searchThreshold: 12 })['data-fx-picker-search'], '12', 'auto search carries the threshold');
+  eq(pickerAttrs({ search: 'never' })['data-fx-picker-search'], 'never', 'never stays never');
+  ok(validateAsset({ $axf: 'asset@1', type: 'picker', id: 'x', name: 'X', version: '1', data: { ...PICKER_ASSET_DEFAULT, variant: 'popover' } }).errors.length > 0, 'a bad enum is refused');
+  ok(validateAsset({ $axf: 'asset@1', type: 'picker', id: 'x', name: 'X', version: '1', data: { ...PICKER_ASSET_DEFAULT, searchThreshold: 500 } }).errors.length > 0, 'a threshold past the cap is refused');
+}
 
 // ---- invariants ----
 {

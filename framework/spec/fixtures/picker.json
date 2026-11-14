@@ -3623,5 +3623,805 @@
     "Émile’s  pick": "emile s pick",
     "CAFÉ-noir": "cafe noir",
     "  ": ""
+  },
+  "tokens": {
+    "registry": [
+      {
+        "name": "--fx-picker-surface",
+        "group": "surface",
+        "state": "rest",
+        "default": "var(--fx-surface)",
+        "draws": "the dialog / sheet background"
+      },
+      {
+        "name": "--fx-picker-text",
+        "group": "surface",
+        "state": "rest",
+        "default": "var(--fx-text)",
+        "draws": "its text"
+      },
+      {
+        "name": "--fx-picker-border",
+        "group": "surface",
+        "state": "rest",
+        "default": "var(--fx-border)",
+        "draws": "its border"
+      },
+      {
+        "name": "--fx-picker-shadow",
+        "group": "surface",
+        "state": "rest",
+        "default": "var(--fx-shadow-lg)",
+        "draws": "its shadow"
+      },
+      {
+        "name": "--fx-picker-backdrop",
+        "group": "surface",
+        "state": "rest",
+        "default": "color-mix(in srgb, var(--fx-shadow) calc(var(--fx-opacity-scrim) * 100%), transparent)",
+        "draws": "the scrim behind it"
+      },
+      {
+        "name": "--fx-picker-header-bg",
+        "group": "header",
+        "state": "rest",
+        "default": "var(--fx-surface2)",
+        "draws": "the header row"
+      },
+      {
+        "name": "--fx-picker-header-text",
+        "group": "header",
+        "state": "rest",
+        "default": "var(--fx-text)",
+        "draws": "the header label"
+      },
+      {
+        "name": "--fx-picker-search-bg",
+        "group": "search",
+        "state": "rest",
+        "default": "var(--fx-bg)",
+        "draws": "the search field"
+      },
+      {
+        "name": "--fx-picker-search-text",
+        "group": "search",
+        "state": "rest",
+        "default": "var(--fx-text)",
+        "draws": "its text"
+      },
+      {
+        "name": "--fx-picker-search-border",
+        "group": "search",
+        "state": "rest",
+        "default": "var(--fx-border)",
+        "draws": "its border"
+      },
+      {
+        "name": "--fx-picker-search-focus",
+        "group": "search",
+        "state": "focus",
+        "default": "var(--fx-accent)",
+        "draws": "its border when focused"
+      },
+      {
+        "name": "--fx-picker-option-bg",
+        "group": "option",
+        "state": "rest",
+        "default": "transparent",
+        "draws": "an option row"
+      },
+      {
+        "name": "--fx-picker-option-text",
+        "group": "option",
+        "state": "rest",
+        "default": "var(--fx-text)",
+        "draws": "its label"
+      },
+      {
+        "name": "--fx-picker-option-desc",
+        "group": "option",
+        "state": "rest",
+        "default": "var(--fx-muted)",
+        "draws": "its description"
+      },
+      {
+        "name": "--fx-picker-option-icon",
+        "group": "option",
+        "state": "rest",
+        "default": "var(--fx-muted)",
+        "draws": "its icon"
+      },
+      {
+        "name": "--fx-picker-hover-bg",
+        "group": "option",
+        "state": "hover",
+        "default": "var(--fx-accent-soft)",
+        "draws": "a hovered row"
+      },
+      {
+        "name": "--fx-picker-hover-text",
+        "group": "option",
+        "state": "hover",
+        "default": "var(--fx-text)",
+        "draws": "a hovered row's text"
+      },
+      {
+        "name": "--fx-picker-focus-ring",
+        "group": "option",
+        "state": "focus",
+        "default": "var(--fx-focus)",
+        "draws": "the active row's outline (keyboard)"
+      },
+      {
+        "name": "--fx-picker-selected-bg",
+        "group": "option",
+        "state": "selected",
+        "default": "var(--fx-accent-soft)",
+        "draws": "a chosen row"
+      },
+      {
+        "name": "--fx-picker-selected-text",
+        "group": "option",
+        "state": "selected",
+        "default": "var(--fx-text)",
+        "draws": "a chosen row's label"
+      },
+      {
+        "name": "--fx-picker-check",
+        "group": "option",
+        "state": "selected",
+        "default": "var(--fx-accent)",
+        "draws": "the check mark"
+      },
+      {
+        "name": "--fx-picker-disabled-opacity",
+        "group": "option",
+        "state": "disabled",
+        "default": "max(var(--fx-opacity-disabled), 0.45)",
+        "draws": "a disabled row"
+      },
+      {
+        "name": "--fx-picker-group-bg",
+        "group": "group",
+        "state": "rest",
+        "default": "var(--fx-picker-surface)",
+        "draws": "a sticky group label row"
+      },
+      {
+        "name": "--fx-picker-group-text",
+        "group": "group",
+        "state": "rest",
+        "default": "var(--fx-muted)",
+        "draws": "the group label"
+      },
+      {
+        "name": "--fx-picker-handle",
+        "group": "sheet",
+        "state": "rest",
+        "default": "var(--fx-border)",
+        "draws": "the sheet's drag handle"
+      },
+      {
+        "name": "--fx-picker-radius",
+        "group": "shape",
+        "state": "rest",
+        "default": "var(--fx-radius-lg)",
+        "draws": "the dialog / sheet corners"
+      },
+      {
+        "name": "--fx-picker-option-radius",
+        "group": "shape",
+        "state": "rest",
+        "default": "calc(var(--fx-radius-md) - var(--fx-dens-gap-sm))",
+        "draws": "row corners (today's menu item)"
+      },
+      {
+        "name": "--fx-picker-border-w",
+        "group": "shape",
+        "state": "rest",
+        "default": "var(--fx-border-w)",
+        "draws": "every border"
+      },
+      {
+        "name": "--fx-picker-pad",
+        "group": "spacing",
+        "state": "rest",
+        "default": "var(--fx-dens-gap-md)",
+        "draws": "padding around the list (today's .fx-dropdown)"
+      },
+      {
+        "name": "--fx-picker-gap",
+        "group": "spacing",
+        "state": "rest",
+        "default": "var(--fx-dens-gap-sm)",
+        "draws": "gap between rows and between header / search / list"
+      },
+      {
+        "name": "--fx-picker-option-pad-y",
+        "group": "spacing",
+        "state": "rest",
+        "default": "var(--fx-dens-gap-lg)",
+        "draws": "row padding, vertical (today's menu item; scaled by the asset's density)"
+      },
+      {
+        "name": "--fx-picker-option-pad-x",
+        "group": "spacing",
+        "state": "rest",
+        "default": "var(--fx-dens-gap-xl)",
+        "draws": "row padding, horizontal (scaled by the asset's density)"
+      },
+      {
+        "name": "--fx-picker-option-gap",
+        "group": "spacing",
+        "state": "rest",
+        "default": "var(--fx-dens-gap-2xl)",
+        "draws": "icon / label / check gap (today's menu item)"
+      },
+      {
+        "name": "--fx-picker-row-h",
+        "group": "size",
+        "state": "rest",
+        "default": "var(--fx-dens-row-menu)",
+        "draws": "row height"
+      },
+      {
+        "name": "--fx-picker-font",
+        "group": "type",
+        "state": "rest",
+        "default": "var(--fx-type-scale-md)",
+        "draws": "row text size (today's menu item)"
+      },
+      {
+        "name": "--fx-picker-desc-font",
+        "group": "type",
+        "state": "rest",
+        "default": "var(--fx-type-scale-sm)",
+        "draws": "description size"
+      },
+      {
+        "name": "--fx-picker-group-font",
+        "group": "type",
+        "state": "rest",
+        "default": "var(--fx-type-scale-xs)",
+        "draws": "group label size"
+      },
+      {
+        "name": "--fx-picker-width",
+        "group": "size",
+        "state": "rest",
+        "default": "min(calc(var(--fx-space) * 46), calc(100vw - var(--fx-dens-gap-2xl) * 2))",
+        "draws": "dialog width"
+      },
+      {
+        "name": "--fx-picker-max-h",
+        "group": "size",
+        "state": "rest",
+        "default": "min(70dvh, calc(var(--fx-picker-row-h) * 14))",
+        "draws": "dialog height cap (scrolls past it)"
+      },
+      {
+        "name": "--fx-picker-sheet-max-h",
+        "group": "size",
+        "state": "rest",
+        "default": "85dvh",
+        "draws": "sheet height cap"
+      },
+      {
+        "name": "--fx-picker-motion",
+        "group": "motion",
+        "state": "rest",
+        "default": "var(--fx-motion)",
+        "draws": "open / close duration"
+      }
+    ],
+    "states": [
+      "rest",
+      "hover",
+      "focus",
+      "selected",
+      "disabled"
+    ],
+    "assetDefault": {
+      "variant": "auto",
+      "search": "auto",
+      "searchThreshold": 8,
+      "checkmarks": "end",
+      "descriptions": true,
+      "density": "regular",
+      "doneButton": true
+    },
+    "defaults": {
+      "vars": {
+        "--fx-picker-surface": "var(--fx-surface)",
+        "--fx-picker-text": "var(--fx-text)",
+        "--fx-picker-border": "var(--fx-border)",
+        "--fx-picker-shadow": "var(--fx-shadow-lg)",
+        "--fx-picker-backdrop": "color-mix(in srgb, var(--fx-shadow) calc(var(--fx-opacity-scrim) * 100%), transparent)",
+        "--fx-picker-header-bg": "var(--fx-surface2)",
+        "--fx-picker-header-text": "var(--fx-text)",
+        "--fx-picker-search-bg": "var(--fx-bg)",
+        "--fx-picker-search-text": "var(--fx-text)",
+        "--fx-picker-search-border": "var(--fx-border)",
+        "--fx-picker-search-focus": "var(--fx-accent)",
+        "--fx-picker-option-bg": "transparent",
+        "--fx-picker-option-text": "var(--fx-text)",
+        "--fx-picker-option-desc": "var(--fx-muted)",
+        "--fx-picker-option-icon": "var(--fx-muted)",
+        "--fx-picker-hover-bg": "var(--fx-accent-soft)",
+        "--fx-picker-hover-text": "var(--fx-text)",
+        "--fx-picker-focus-ring": "var(--fx-focus)",
+        "--fx-picker-selected-bg": "var(--fx-accent-soft)",
+        "--fx-picker-selected-text": "var(--fx-text)",
+        "--fx-picker-check": "var(--fx-accent)",
+        "--fx-picker-disabled-opacity": "max(var(--fx-opacity-disabled), 0.45)",
+        "--fx-picker-group-bg": "var(--fx-picker-surface)",
+        "--fx-picker-group-text": "var(--fx-muted)",
+        "--fx-picker-handle": "var(--fx-border)",
+        "--fx-picker-radius": "var(--fx-radius-lg)",
+        "--fx-picker-option-radius": "calc(var(--fx-radius-md) - var(--fx-dens-gap-sm))",
+        "--fx-picker-border-w": "var(--fx-border-w)",
+        "--fx-picker-pad": "var(--fx-dens-gap-md)",
+        "--fx-picker-gap": "var(--fx-dens-gap-sm)",
+        "--fx-picker-option-pad-y": "var(--fx-dens-gap-lg)",
+        "--fx-picker-option-pad-x": "var(--fx-dens-gap-xl)",
+        "--fx-picker-option-gap": "var(--fx-dens-gap-2xl)",
+        "--fx-picker-row-h": "var(--fx-dens-row-menu)",
+        "--fx-picker-font": "var(--fx-type-scale-md)",
+        "--fx-picker-desc-font": "var(--fx-type-scale-sm)",
+        "--fx-picker-group-font": "var(--fx-type-scale-xs)",
+        "--fx-picker-width": "min(calc(var(--fx-space) * 46), calc(100vw - var(--fx-dens-gap-2xl) * 2))",
+        "--fx-picker-max-h": "min(70dvh, calc(var(--fx-picker-row-h) * 14))",
+        "--fx-picker-sheet-max-h": "85dvh",
+        "--fx-picker-motion": "var(--fx-motion)"
+      },
+      "attrs": {
+        "data-fx-picker-variant": "auto",
+        "data-fx-picker-search": "8",
+        "data-fx-picker-check": "end",
+        "data-fx-picker-desc": "on",
+        "data-fx-picker-done": "on",
+        "data-fx-picker-density": "regular"
+      }
+    },
+    "starters": {
+      "bottom-sheet": {
+        "data": {
+          "variant": "sheet",
+          "search": "auto",
+          "searchThreshold": 12,
+          "checkmarks": "end",
+          "descriptions": true,
+          "density": "roomy",
+          "doneButton": true
+        },
+        "style": {
+          "vars": {
+            "--fx-picker-surface": "var(--fx-surface)",
+            "--fx-picker-text": "var(--fx-text)",
+            "--fx-picker-border": "var(--fx-border)",
+            "--fx-picker-shadow": "var(--fx-shadow-lg)",
+            "--fx-picker-backdrop": "color-mix(in srgb, var(--fx-shadow) calc(var(--fx-opacity-scrim) * 100%), transparent)",
+            "--fx-picker-header-bg": "var(--fx-surface2)",
+            "--fx-picker-header-text": "var(--fx-text)",
+            "--fx-picker-search-bg": "var(--fx-bg)",
+            "--fx-picker-search-text": "var(--fx-text)",
+            "--fx-picker-search-border": "var(--fx-border)",
+            "--fx-picker-search-focus": "var(--fx-accent)",
+            "--fx-picker-option-bg": "transparent",
+            "--fx-picker-option-text": "var(--fx-text)",
+            "--fx-picker-option-desc": "var(--fx-muted)",
+            "--fx-picker-option-icon": "var(--fx-muted)",
+            "--fx-picker-hover-bg": "var(--fx-accent-soft)",
+            "--fx-picker-hover-text": "var(--fx-text)",
+            "--fx-picker-focus-ring": "var(--fx-focus)",
+            "--fx-picker-selected-bg": "var(--fx-accent-soft)",
+            "--fx-picker-selected-text": "var(--fx-text)",
+            "--fx-picker-check": "var(--fx-accent)",
+            "--fx-picker-disabled-opacity": "max(var(--fx-opacity-disabled), 0.45)",
+            "--fx-picker-group-bg": "var(--fx-picker-surface)",
+            "--fx-picker-group-text": "var(--fx-muted)",
+            "--fx-picker-handle": "var(--fx-border)",
+            "--fx-picker-radius": "var(--fx-radius-lg)",
+            "--fx-picker-option-radius": "calc(var(--fx-radius-md) - var(--fx-dens-gap-sm))",
+            "--fx-picker-border-w": "var(--fx-border-w)",
+            "--fx-picker-pad": "var(--fx-dens-gap-md)",
+            "--fx-picker-gap": "var(--fx-dens-gap-sm)",
+            "--fx-picker-option-pad-y": "var(--fx-dens-gap-xl)",
+            "--fx-picker-option-pad-x": "var(--fx-dens-gap-2xl)",
+            "--fx-picker-option-gap": "var(--fx-dens-gap-2xl)",
+            "--fx-picker-row-h": "var(--fx-dens-row-menu)",
+            "--fx-picker-font": "var(--fx-type-scale-md)",
+            "--fx-picker-desc-font": "var(--fx-type-scale-sm)",
+            "--fx-picker-group-font": "var(--fx-type-scale-xs)",
+            "--fx-picker-width": "min(calc(var(--fx-space) * 46), calc(100vw - var(--fx-dens-gap-2xl) * 2))",
+            "--fx-picker-max-h": "min(70dvh, calc(var(--fx-picker-row-h) * 14))",
+            "--fx-picker-sheet-max-h": "85dvh",
+            "--fx-picker-motion": "var(--fx-motion)"
+          },
+          "attrs": {
+            "data-fx-picker-variant": "sheet",
+            "data-fx-picker-search": "12",
+            "data-fx-picker-check": "end",
+            "data-fx-picker-desc": "on",
+            "data-fx-picker-done": "on",
+            "data-fx-picker-density": "roomy"
+          }
+        }
+      },
+      "compact-list": {
+        "data": {
+          "variant": "dialog",
+          "search": "auto",
+          "searchThreshold": 10,
+          "checkmarks": "start",
+          "descriptions": false,
+          "density": "compact",
+          "doneButton": true
+        },
+        "style": {
+          "vars": {
+            "--fx-picker-surface": "var(--fx-surface)",
+            "--fx-picker-text": "var(--fx-text)",
+            "--fx-picker-border": "var(--fx-border)",
+            "--fx-picker-shadow": "var(--fx-shadow-lg)",
+            "--fx-picker-backdrop": "color-mix(in srgb, var(--fx-shadow) calc(var(--fx-opacity-scrim) * 100%), transparent)",
+            "--fx-picker-header-bg": "var(--fx-surface2)",
+            "--fx-picker-header-text": "var(--fx-text)",
+            "--fx-picker-search-bg": "var(--fx-bg)",
+            "--fx-picker-search-text": "var(--fx-text)",
+            "--fx-picker-search-border": "var(--fx-border)",
+            "--fx-picker-search-focus": "var(--fx-accent)",
+            "--fx-picker-option-bg": "transparent",
+            "--fx-picker-option-text": "var(--fx-text)",
+            "--fx-picker-option-desc": "var(--fx-muted)",
+            "--fx-picker-option-icon": "var(--fx-muted)",
+            "--fx-picker-hover-bg": "var(--fx-accent-soft)",
+            "--fx-picker-hover-text": "var(--fx-text)",
+            "--fx-picker-focus-ring": "var(--fx-focus)",
+            "--fx-picker-selected-bg": "var(--fx-accent-soft)",
+            "--fx-picker-selected-text": "var(--fx-text)",
+            "--fx-picker-check": "var(--fx-accent)",
+            "--fx-picker-disabled-opacity": "max(var(--fx-opacity-disabled), 0.45)",
+            "--fx-picker-group-bg": "var(--fx-picker-surface)",
+            "--fx-picker-group-text": "var(--fx-muted)",
+            "--fx-picker-handle": "var(--fx-border)",
+            "--fx-picker-radius": "var(--fx-radius-lg)",
+            "--fx-picker-option-radius": "calc(var(--fx-radius-md) - var(--fx-dens-gap-sm))",
+            "--fx-picker-border-w": "var(--fx-border-w)",
+            "--fx-picker-pad": "var(--fx-dens-gap-md)",
+            "--fx-picker-gap": "var(--fx-dens-gap-sm)",
+            "--fx-picker-option-pad-y": "var(--fx-dens-gap-md)",
+            "--fx-picker-option-pad-x": "var(--fx-dens-gap-lg)",
+            "--fx-picker-option-gap": "var(--fx-dens-gap-2xl)",
+            "--fx-picker-row-h": "var(--fx-dens-row-menu)",
+            "--fx-picker-font": "var(--fx-type-scale-md)",
+            "--fx-picker-desc-font": "var(--fx-type-scale-sm)",
+            "--fx-picker-group-font": "var(--fx-type-scale-xs)",
+            "--fx-picker-width": "min(calc(var(--fx-space) * 46), calc(100vw - var(--fx-dens-gap-2xl) * 2))",
+            "--fx-picker-max-h": "min(70dvh, calc(var(--fx-picker-row-h) * 14))",
+            "--fx-picker-sheet-max-h": "85dvh",
+            "--fx-picker-motion": "var(--fx-motion)"
+          },
+          "attrs": {
+            "data-fx-picker-variant": "dialog",
+            "data-fx-picker-search": "10",
+            "data-fx-picker-check": "start",
+            "data-fx-picker-desc": "off",
+            "data-fx-picker-done": "on",
+            "data-fx-picker-density": "compact"
+          }
+        }
+      },
+      "plain-menu": {
+        "data": {
+          "variant": "dialog",
+          "search": "never",
+          "searchThreshold": 8,
+          "checkmarks": "none",
+          "descriptions": false,
+          "density": "regular",
+          "doneButton": false
+        },
+        "style": {
+          "vars": {
+            "--fx-picker-surface": "var(--fx-surface)",
+            "--fx-picker-text": "var(--fx-text)",
+            "--fx-picker-border": "var(--fx-border)",
+            "--fx-picker-shadow": "var(--fx-shadow-lg)",
+            "--fx-picker-backdrop": "color-mix(in srgb, var(--fx-shadow) calc(var(--fx-opacity-scrim) * 100%), transparent)",
+            "--fx-picker-header-bg": "var(--fx-surface2)",
+            "--fx-picker-header-text": "var(--fx-text)",
+            "--fx-picker-search-bg": "var(--fx-bg)",
+            "--fx-picker-search-text": "var(--fx-text)",
+            "--fx-picker-search-border": "var(--fx-border)",
+            "--fx-picker-search-focus": "var(--fx-accent)",
+            "--fx-picker-option-bg": "transparent",
+            "--fx-picker-option-text": "var(--fx-text)",
+            "--fx-picker-option-desc": "var(--fx-muted)",
+            "--fx-picker-option-icon": "var(--fx-muted)",
+            "--fx-picker-hover-bg": "var(--fx-accent-soft)",
+            "--fx-picker-hover-text": "var(--fx-text)",
+            "--fx-picker-focus-ring": "var(--fx-focus)",
+            "--fx-picker-selected-bg": "var(--fx-accent-soft)",
+            "--fx-picker-selected-text": "var(--fx-text)",
+            "--fx-picker-check": "var(--fx-accent)",
+            "--fx-picker-disabled-opacity": "max(var(--fx-opacity-disabled), 0.45)",
+            "--fx-picker-group-bg": "var(--fx-picker-surface)",
+            "--fx-picker-group-text": "var(--fx-muted)",
+            "--fx-picker-handle": "var(--fx-border)",
+            "--fx-picker-radius": "var(--fx-radius-lg)",
+            "--fx-picker-option-radius": "calc(var(--fx-radius-md) - var(--fx-dens-gap-sm))",
+            "--fx-picker-border-w": "var(--fx-border-w)",
+            "--fx-picker-pad": "var(--fx-dens-gap-md)",
+            "--fx-picker-gap": "var(--fx-dens-gap-sm)",
+            "--fx-picker-option-pad-y": "var(--fx-dens-gap-lg)",
+            "--fx-picker-option-pad-x": "var(--fx-dens-gap-xl)",
+            "--fx-picker-option-gap": "var(--fx-dens-gap-2xl)",
+            "--fx-picker-row-h": "var(--fx-dens-row-menu)",
+            "--fx-picker-font": "var(--fx-type-scale-md)",
+            "--fx-picker-desc-font": "var(--fx-type-scale-sm)",
+            "--fx-picker-group-font": "var(--fx-type-scale-xs)",
+            "--fx-picker-width": "min(calc(var(--fx-space) * 46), calc(100vw - var(--fx-dens-gap-2xl) * 2))",
+            "--fx-picker-max-h": "min(70dvh, calc(var(--fx-picker-row-h) * 14))",
+            "--fx-picker-sheet-max-h": "85dvh",
+            "--fx-picker-motion": "var(--fx-motion)"
+          },
+          "attrs": {
+            "data-fx-picker-variant": "dialog",
+            "data-fx-picker-search": "never",
+            "data-fx-picker-check": "none",
+            "data-fx-picker-desc": "off",
+            "data-fx-picker-done": "off",
+            "data-fx-picker-density": "regular"
+          }
+        }
+      },
+      "search-first": {
+        "data": {
+          "variant": "auto",
+          "search": "always",
+          "searchThreshold": 0,
+          "checkmarks": "end",
+          "descriptions": true,
+          "density": "regular",
+          "doneButton": true
+        },
+        "style": {
+          "vars": {
+            "--fx-picker-surface": "var(--fx-surface)",
+            "--fx-picker-text": "var(--fx-text)",
+            "--fx-picker-border": "var(--fx-border)",
+            "--fx-picker-shadow": "var(--fx-shadow-lg)",
+            "--fx-picker-backdrop": "color-mix(in srgb, var(--fx-shadow) calc(var(--fx-opacity-scrim) * 100%), transparent)",
+            "--fx-picker-header-bg": "var(--fx-surface2)",
+            "--fx-picker-header-text": "var(--fx-text)",
+            "--fx-picker-search-bg": "var(--fx-bg)",
+            "--fx-picker-search-text": "var(--fx-text)",
+            "--fx-picker-search-border": "var(--fx-border)",
+            "--fx-picker-search-focus": "var(--fx-accent)",
+            "--fx-picker-option-bg": "transparent",
+            "--fx-picker-option-text": "var(--fx-text)",
+            "--fx-picker-option-desc": "var(--fx-muted)",
+            "--fx-picker-option-icon": "var(--fx-muted)",
+            "--fx-picker-hover-bg": "var(--fx-accent-soft)",
+            "--fx-picker-hover-text": "var(--fx-text)",
+            "--fx-picker-focus-ring": "var(--fx-focus)",
+            "--fx-picker-selected-bg": "var(--fx-accent-soft)",
+            "--fx-picker-selected-text": "var(--fx-text)",
+            "--fx-picker-check": "var(--fx-accent)",
+            "--fx-picker-disabled-opacity": "max(var(--fx-opacity-disabled), 0.45)",
+            "--fx-picker-group-bg": "var(--fx-picker-surface)",
+            "--fx-picker-group-text": "var(--fx-muted)",
+            "--fx-picker-handle": "var(--fx-border)",
+            "--fx-picker-radius": "var(--fx-radius-lg)",
+            "--fx-picker-option-radius": "calc(var(--fx-radius-md) - var(--fx-dens-gap-sm))",
+            "--fx-picker-border-w": "var(--fx-border-w)",
+            "--fx-picker-pad": "var(--fx-dens-gap-md)",
+            "--fx-picker-gap": "var(--fx-dens-gap-sm)",
+            "--fx-picker-option-pad-y": "var(--fx-dens-gap-lg)",
+            "--fx-picker-option-pad-x": "var(--fx-dens-gap-xl)",
+            "--fx-picker-option-gap": "var(--fx-dens-gap-2xl)",
+            "--fx-picker-row-h": "var(--fx-dens-row-menu)",
+            "--fx-picker-font": "var(--fx-type-scale-md)",
+            "--fx-picker-desc-font": "var(--fx-type-scale-sm)",
+            "--fx-picker-group-font": "var(--fx-type-scale-xs)",
+            "--fx-picker-width": "min(calc(var(--fx-space) * 46), calc(100vw - var(--fx-dens-gap-2xl) * 2))",
+            "--fx-picker-max-h": "min(70dvh, calc(var(--fx-picker-row-h) * 14))",
+            "--fx-picker-sheet-max-h": "85dvh",
+            "--fx-picker-motion": "var(--fx-motion)"
+          },
+          "attrs": {
+            "data-fx-picker-variant": "auto",
+            "data-fx-picker-search": "always",
+            "data-fx-picker-check": "end",
+            "data-fx-picker-desc": "on",
+            "data-fx-picker-done": "on",
+            "data-fx-picker-density": "regular"
+          }
+        }
+      },
+      "standard": {
+        "data": {
+          "variant": "auto",
+          "search": "auto",
+          "searchThreshold": 8,
+          "checkmarks": "end",
+          "descriptions": true,
+          "density": "regular",
+          "doneButton": true
+        },
+        "style": {
+          "vars": {
+            "--fx-picker-surface": "var(--fx-surface)",
+            "--fx-picker-text": "var(--fx-text)",
+            "--fx-picker-border": "var(--fx-border)",
+            "--fx-picker-shadow": "var(--fx-shadow-lg)",
+            "--fx-picker-backdrop": "color-mix(in srgb, var(--fx-shadow) calc(var(--fx-opacity-scrim) * 100%), transparent)",
+            "--fx-picker-header-bg": "var(--fx-surface2)",
+            "--fx-picker-header-text": "var(--fx-text)",
+            "--fx-picker-search-bg": "var(--fx-bg)",
+            "--fx-picker-search-text": "var(--fx-text)",
+            "--fx-picker-search-border": "var(--fx-border)",
+            "--fx-picker-search-focus": "var(--fx-accent)",
+            "--fx-picker-option-bg": "transparent",
+            "--fx-picker-option-text": "var(--fx-text)",
+            "--fx-picker-option-desc": "var(--fx-muted)",
+            "--fx-picker-option-icon": "var(--fx-muted)",
+            "--fx-picker-hover-bg": "var(--fx-accent-soft)",
+            "--fx-picker-hover-text": "var(--fx-text)",
+            "--fx-picker-focus-ring": "var(--fx-focus)",
+            "--fx-picker-selected-bg": "var(--fx-accent-soft)",
+            "--fx-picker-selected-text": "var(--fx-text)",
+            "--fx-picker-check": "var(--fx-accent)",
+            "--fx-picker-disabled-opacity": "max(var(--fx-opacity-disabled), 0.45)",
+            "--fx-picker-group-bg": "var(--fx-picker-surface)",
+            "--fx-picker-group-text": "var(--fx-muted)",
+            "--fx-picker-handle": "var(--fx-border)",
+            "--fx-picker-radius": "var(--fx-radius-lg)",
+            "--fx-picker-option-radius": "calc(var(--fx-radius-md) - var(--fx-dens-gap-sm))",
+            "--fx-picker-border-w": "var(--fx-border-w)",
+            "--fx-picker-pad": "var(--fx-dens-gap-md)",
+            "--fx-picker-gap": "var(--fx-dens-gap-sm)",
+            "--fx-picker-option-pad-y": "var(--fx-dens-gap-lg)",
+            "--fx-picker-option-pad-x": "var(--fx-dens-gap-xl)",
+            "--fx-picker-option-gap": "var(--fx-dens-gap-2xl)",
+            "--fx-picker-row-h": "var(--fx-dens-row-menu)",
+            "--fx-picker-font": "var(--fx-type-scale-md)",
+            "--fx-picker-desc-font": "var(--fx-type-scale-sm)",
+            "--fx-picker-group-font": "var(--fx-type-scale-xs)",
+            "--fx-picker-width": "min(calc(var(--fx-space) * 46), calc(100vw - var(--fx-dens-gap-2xl) * 2))",
+            "--fx-picker-max-h": "min(70dvh, calc(var(--fx-picker-row-h) * 14))",
+            "--fx-picker-sheet-max-h": "85dvh",
+            "--fx-picker-motion": "var(--fx-motion)"
+          },
+          "attrs": {
+            "data-fx-picker-variant": "auto",
+            "data-fx-picker-search": "8",
+            "data-fx-picker-check": "end",
+            "data-fx-picker-desc": "on",
+            "data-fx-picker-done": "on",
+            "data-fx-picker-density": "regular"
+          }
+        }
+      },
+      "windows": {
+        "data": {
+          "variant": "dialog",
+          "search": "auto",
+          "searchThreshold": 12,
+          "checkmarks": "start",
+          "descriptions": false,
+          "density": "compact",
+          "doneButton": true
+        },
+        "style": {
+          "vars": {
+            "--fx-picker-surface": "var(--fx-surface)",
+            "--fx-picker-text": "var(--fx-text)",
+            "--fx-picker-border": "var(--fx-border)",
+            "--fx-picker-shadow": "var(--fx-shadow-lg)",
+            "--fx-picker-backdrop": "color-mix(in srgb, var(--fx-shadow) calc(var(--fx-opacity-scrim) * 100%), transparent)",
+            "--fx-picker-header-bg": "var(--fx-surface2)",
+            "--fx-picker-header-text": "var(--fx-text)",
+            "--fx-picker-search-bg": "var(--fx-bg)",
+            "--fx-picker-search-text": "var(--fx-text)",
+            "--fx-picker-search-border": "var(--fx-border)",
+            "--fx-picker-search-focus": "var(--fx-accent)",
+            "--fx-picker-option-bg": "transparent",
+            "--fx-picker-option-text": "var(--fx-text)",
+            "--fx-picker-option-desc": "var(--fx-muted)",
+            "--fx-picker-option-icon": "var(--fx-muted)",
+            "--fx-picker-hover-bg": "var(--fx-accent-soft)",
+            "--fx-picker-hover-text": "var(--fx-text)",
+            "--fx-picker-focus-ring": "var(--fx-focus)",
+            "--fx-picker-selected-bg": "var(--fx-accent-soft)",
+            "--fx-picker-selected-text": "var(--fx-text)",
+            "--fx-picker-check": "var(--fx-accent)",
+            "--fx-picker-disabled-opacity": "max(var(--fx-opacity-disabled), 0.45)",
+            "--fx-picker-group-bg": "var(--fx-picker-surface)",
+            "--fx-picker-group-text": "var(--fx-muted)",
+            "--fx-picker-handle": "var(--fx-border)",
+            "--fx-picker-radius": "var(--fx-radius-lg)",
+            "--fx-picker-option-radius": "calc(var(--fx-radius-md) - var(--fx-dens-gap-sm))",
+            "--fx-picker-border-w": "var(--fx-border-w)",
+            "--fx-picker-pad": "var(--fx-dens-gap-md)",
+            "--fx-picker-gap": "var(--fx-dens-gap-sm)",
+            "--fx-picker-option-pad-y": "var(--fx-dens-gap-md)",
+            "--fx-picker-option-pad-x": "var(--fx-dens-gap-lg)",
+            "--fx-picker-option-gap": "var(--fx-dens-gap-2xl)",
+            "--fx-picker-row-h": "var(--fx-dens-row-menu)",
+            "--fx-picker-font": "var(--fx-type-scale-md)",
+            "--fx-picker-desc-font": "var(--fx-type-scale-sm)",
+            "--fx-picker-group-font": "var(--fx-type-scale-xs)",
+            "--fx-picker-width": "min(calc(var(--fx-space) * 46), calc(100vw - var(--fx-dens-gap-2xl) * 2))",
+            "--fx-picker-max-h": "min(70dvh, calc(var(--fx-picker-row-h) * 14))",
+            "--fx-picker-sheet-max-h": "85dvh",
+            "--fx-picker-motion": "var(--fx-motion)"
+          },
+          "attrs": {
+            "data-fx-picker-variant": "dialog",
+            "data-fx-picker-search": "12",
+            "data-fx-picker-check": "start",
+            "data-fx-picker-desc": "off",
+            "data-fx-picker-done": "on",
+            "data-fx-picker-density": "compact"
+          }
+        }
+      }
+    },
+    "density": {
+      "compact": {
+        "--fx-picker-option-pad-y": "var(--fx-dens-gap-md)",
+        "--fx-picker-option-pad-x": "var(--fx-dens-gap-lg)"
+      },
+      "regular": {
+        "--fx-picker-option-pad-y": "var(--fx-dens-gap-lg)",
+        "--fx-picker-option-pad-x": "var(--fx-dens-gap-xl)"
+      },
+      "roomy": {
+        "--fx-picker-option-pad-y": "var(--fx-dens-gap-xl)",
+        "--fx-picker-option-pad-x": "var(--fx-dens-gap-2xl)"
+      }
+    },
+    "normalize": {
+      "junk": {
+        "variant": "auto",
+        "search": "auto",
+        "searchThreshold": 200,
+        "checkmarks": "end",
+        "descriptions": true,
+        "density": "regular",
+        "doneButton": true
+      },
+      "partial": {
+        "variant": "sheet",
+        "search": "auto",
+        "searchThreshold": 4,
+        "checkmarks": "end",
+        "descriptions": true,
+        "density": "regular",
+        "doneButton": true
+      },
+      "none": {
+        "variant": "auto",
+        "search": "auto",
+        "searchThreshold": 8,
+        "checkmarks": "end",
+        "descriptions": true,
+        "density": "regular",
+        "doneButton": true
+      }
+    },
+    "errors": {
+      "good": [],
+      "bad": [
+        "data.searchThreshold must be a number 0–200",
+        "data.descriptions must be true or false",
+        "data.doneButton must be true or false"
+      ],
+      "notObject": [
+        "data must be an object"
+      ]
+    }
   }
 }

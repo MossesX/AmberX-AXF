@@ -532,6 +532,53 @@
         ]
       }
     },
+    "picker": {
+      "label": "Picker",
+      "group": "Controls",
+      "icon": "list",
+      "description": "picker@1 (spec/PICKER.md, build picker-dialog-plugin-replaces-all, Nov 14 2026): how every drop-down opens once the picker plugin swaps native <select> boxes, SelectFields, listboxes and comboboxes for a themed dialog (desktop) or bottom sheet (phones). The asset holds the few choices that are not a colour or a size; every colour, size, spacing, radius and border of the dialog is a token of the --fx-picker-* family, compiled by pickerVars in core/engines/theme.ts from the active colour theme, style theme and this asset (PICKER_TOKENS is the registry: surface, backdrop, header, search, option row, hover, focus, selected, disabled, check, group label, sheet handle, radius, padding, gap, row height, fonts, width, heights, motion), so themes and skins restyle it like everything else. Skins style it through the `picker` style target (customize.json) and pick an asset of this type in `assets.picker`. Optional: an app without one gets the defaults (data-only). Engine for the choices themselves: core/engines/picker.ts (fixture spec/fixtures/picker.json).",
+      "required": [
+        "variant",
+        "search",
+        "searchThreshold",
+        "checkmarks",
+        "descriptions",
+        "density",
+        "doneButton"
+      ],
+      "enums": {
+        "variant": [
+          "auto",
+          "dialog",
+          "sheet"
+        ],
+        "search": [
+          "auto",
+          "always",
+          "never"
+        ],
+        "checkmarks": [
+          "end",
+          "start",
+          "none"
+        ],
+        "density": [
+          "compact",
+          "regular",
+          "roomy"
+        ]
+      },
+      "optional_fields": {
+        "variant": "auto (default: a centred dialog on desktop, a bottom sheet on phones) | dialog | sheet",
+        "search": "auto (the search field appears at searchThreshold options) | always | never",
+        "searchThreshold": "number, 0–200 (default 8): the option count from which the search field shows in auto mode",
+        "checkmarks": "end (default) | start | none — where the chosen row's check mark sits",
+        "descriptions": "boolean (default true): draw an option's description line under its label",
+        "density": "compact | regular (default) | roomy — scales the option row padding (--fx-picker-option-pad-*)",
+        "doneButton": "boolean (default true): multiple-choice pickers end with a Done button and a count; off = tapping outside closes"
+      },
+      "optional": true
+    },
     "container": {
       "label": "Container",
       "group": "Controls",
