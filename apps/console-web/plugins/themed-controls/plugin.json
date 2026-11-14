@@ -278,6 +278,62 @@
         }
       },
       {
+        "route": "GET /tokens",
+        "id": "tokens",
+        "title": "Tooltip and scrollbar settings",
+        "readOnly": true,
+        "description": "Tooltip delay, hide delay and long-press time (ms) and scrollbar width (px) in force, with their ranges. They are tokens of the themed-controls asset (control@1 tokens.controls)."
+      },
+      {
+        "route": "POST /tooltip",
+        "id": "tooltip",
+        "title": "Tooltip timing",
+        "description": "Set the tooltip delay, hide delay or long-press time in ms (or reset to the theme's value).",
+        "input": {
+          "type": "object",
+          "properties": {
+            "delayMs": {
+              "type": [
+                "number",
+                "string"
+              ]
+            },
+            "hideMs": {
+              "type": [
+                "number",
+                "string"
+              ]
+            },
+            "longPressMs": {
+              "type": [
+                "number",
+                "string"
+              ]
+            }
+          }
+        }
+      },
+      {
+        "route": "POST /scrollbar",
+        "id": "scrollbar",
+        "title": "Scrollbar width",
+        "description": "Set the themed scrollbar width in px, 4 to 20 (or reset to the theme's value).",
+        "input": {
+          "type": "object",
+          "properties": {
+            "width": {
+              "type": [
+                "number",
+                "string"
+              ]
+            }
+          },
+          "required": [
+            "width"
+          ]
+        }
+      },
+      {
         "route": "POST /report",
         "skip": "the open console's own report of its switches and live state, not a command"
       }

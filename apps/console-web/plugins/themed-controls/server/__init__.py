@@ -324,3 +324,44 @@ async def file_action(request: Request) -> dict[str, Any]:
     if action not in ("clear", "cancel"):
         raise HTTPException(422, "action must be clear or cancel")
     return run_in_console("themed-controls.files", ":".join([ref, action] + ([str(b["name"])] if b.get("name") else [])), _by(request))
+
+
+TOKENS = {"tooltip.delayMs": (0, 2000), "tooltip.hideMs": (0, 1000), "tooltip.longPressMs": (200, 1200), "scrollbar.width": (4, 20)}
+
+
+@router.get("/tokens")
+def get_tokens() -> dict[str, Any]:
+    """Tooltip delay / hide delay / long-press time and scrollbar width in force (as the open console last reported them)."""
+    live = _live()
+    return {"tokens": live.get("tokens") or {}, "ranges": {k: {"min": a, "max": b} for k, (a, b) in TOKENS.items()},
+            "also": "axf token controls set <path> <value> (control@1 tokens.controls)", "at": live.get("at")}
+
+
+def _token(path: str, key: str, v: Any, by: str) -> dict[str, Any]:
+    lo, hi = TOKENS[path]
+    if v in (None, "", "reset", "theme"):
+        return run_in_console("themed-controls.token", f"{path}:reset", by)
+    try:
+        n = float(v)
+    except (TypeError, ValueError):
+        raise HTTPException(422, f"{key} must be a number from {lo} to {hi}, or reset") from None
+    if not lo <= n <= hi:
+        raise HTTPException(422, f"{key} must be from {lo} to {hi}")
+    return run_in_console("themed-controls.token", f"{path}:{int(round(n))}", by)
+
+
+@router.post("/tooltip")
+async def set_tooltip(request: Request) -> dict[str, Any]:
+    """Tooltip timing: {delayMs?, hideMs?, longPressMs?} (each a number, or "reset" for the theme's value)."""
+    b = await _body(request)
+    out = {key: _token(f"tooltip.{key}", key, b[key], _by(request)) for key in ("delayMs", "hideMs", "longPressMs") if key in b}
+    if not out:
+        raise HTTPException(422, "send delayMs, hideMs or longPressMs")
+    return {"ok": all(r.get("ok") for r in out.values()), "results": out}
+
+
+@router.post("/scrollbar")
+async def set_scrollbar(request: Request) -> dict[str, Any]:
+    """Scrollbar width in px: {width} (4 to 20, or "reset")."""
+    b = await _body(request)
+    return _token("scrollbar.width", "width", b.get("width"), _by(request))

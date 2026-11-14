@@ -5,10 +5,11 @@
  * each family replaces and what is themed on this page right now.
  */
 import { useEffect, useState } from 'react';
-import { Chip, useRuntime } from '@console/axf/react';
+import { Button, Chip, Slider, useRuntime } from '@console/axf/react';
 import type { SettingsGroup } from '@console/axf/core';
 import { TC_KEYS, THEMED_FAMILIES, THEMED_FAMILY_LABELS, THEMED_FAMILY_NATIVE, activeFamilies, themedControlsConfig, type ThemedFamily } from '@console/axf/core/engines/themed-controls';
 import { liveHost } from './host';
+import { TOKEN_SETTINGS, setToken, tokenValue } from './tokens';
 
 export const FOLDER = 'themed-controls';
 export const TAB = 'themed-controls';
@@ -67,6 +68,22 @@ export function FamiliesPanel() {
           </li>
         ))}
       </ul>
+    </div>
+  );
+}
+
+/** Tooltip and scrollbar timing and size (tokens of the themed-controls asset, the control@1 override store). */
+export function TipScrollPanel() {
+  const rt = useRuntime();
+  return (
+    <div className="fx-stack" data-axf-target="panel:themed-controls.tokens">
+      {TOKEN_SETTINGS.map((t) => (
+        <Slider key={t.path} label={t.label} value={tokenValue(rt, t.path)} min={t.min} max={t.max} step={t.step} unit={` ${t.unit}`} onChange={(v) => setToken(rt, t.path, v)} />
+      ))}
+      <div className="fx-row fx-row--wrap">
+        <Button tone="ghost" icon="undo" onClick={() => { for (const t of TOKEN_SETTINGS) setToken(rt, t.path, null); }}>Back to the theme&apos;s values</Button>
+      </div>
+      <p className="fx-small fx-muted">These are tokens of the themed controls asset: <code>axf token controls set tooltip.delayMs 300</code> changes the same value.</p>
     </div>
   );
 }

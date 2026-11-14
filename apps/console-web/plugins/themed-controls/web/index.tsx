@@ -8,7 +8,7 @@ import type { AxfWebLibrary } from '@console/axf/react/library';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
 import { appMenu } from './menu';
 import { boot } from './boot';
-import { FOLDER, FamiliesPanel, TAB, settingsGroups } from './settings';
+import { FOLDER, FamiliesPanel, TAB, TipScrollPanel, settingsGroups } from './settings';
 
 export const plugin: AxfWebLibrary = {
   id: 'ai.amberx.axf.console.themed-controls',
@@ -19,6 +19,7 @@ export const plugin: AxfWebLibrary = {
   settingsTabs: [{ id: TAB, label: 'Themed controls', icon: 'sliders', order: 60, parent: 'plugins', description: 'Swap the checkboxes, sliders, pickers, dialogs, tooltips and scrollbars the browser draws for themed ones; one switch per family.' }],
   settings: settingsGroups(),
   settingsPanels: [
+    { id: 'themed-controls.tip-scroll', tab: TAB, title: 'Tooltips and scrollbars', icon: 'sliders', order: 5, render: () => <TipScrollPanel /> },
     { id: 'themed-controls.families-info', tab: TAB, title: 'What each switch replaces', icon: 'info', order: 10, render: () => <FamiliesPanel /> },
     { id: 'themed-controls.lifecycle', tab: TAB, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],

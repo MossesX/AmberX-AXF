@@ -14,6 +14,7 @@
  *   themed-controls.close[:<ref>]                close the open picker (or that control's)
  *   themed-controls.pick:<value>                 set the open picker's control and close it
  *   themed-controls.files:<ref>:clear|cancel[:<file name>]   clear a file drop zone or cancel its uploads
+ *   themed-controls.token:<path>:<value|reset>   tooltip.delayMs / hideMs / longPressMs, scrollbar.width (a token)
  *   themed-controls.answer:ok|cancel[:<text>]    answer the open themed alert / confirm / prompt (OK on a destructive
  *                                                confirm is refused here: press button:themed-controls.dialog.ok with confirm)
  * The open dialog: `panel:themed-controls.dialogs` (state: open dialog + waiting; set: the prompt's text),
@@ -27,6 +28,7 @@ import { controlRegistry } from '@console/axf/react';
 import { ConsoleControlError, CONSOLE_CONTROL_WIRE } from '@console/axf/core/engines/console-control';
 import { TC_KEYS, THEMED_FAMILIES, THEMED_FAMILY_LABELS, activeFamilies, isThemedFamily, themedControlsConfig, type ThemedFamily } from '@console/axf/core/engines/themed-controls';
 import { TAB } from './settings';
+import { TOKEN_SETTINGS, setToken, tokenSetting, tokenValue } from './tokens';
 import { liveHost, type SwapRecord } from './host';
 
 const ON = /^(on|true|1|yes|enable|enabled)$/i;
@@ -48,7 +50,8 @@ export function familyFrom(words: string | undefined): ThemedFamily | null {
 
 export function stateOf(rt: AxfRuntime): Record<string, unknown> {
   const cfg = themedControlsConfig((k) => rt.settings.get(k));
-  return { on: cfg.on, sheet: cfg.sheet, families: cfg.families, active: activeFamilies(cfg), live: liveHost()?.report() ?? null };
+  const tokens = Object.fromEntries(TOKEN_SETTINGS.map((t) => [t.path, tokenValue(rt, t.path)]));
+  return { on: cfg.on, sheet: cfg.sheet, families: cfg.families, active: activeFamilies(cfg), tokens, live: liveHost()?.report() ?? null };
 }
 
 export function sayState(rt: AxfRuntime): string {
@@ -139,6 +142,22 @@ export function registerApi(rt: AxfRuntime): () => void {
     if (!r || r.family !== 'file') { rt.toast(`No file drop zone "${ref ?? ''}" on this screen.`, 'warning', 'Themed controls'); return; }
     try { void r.swap.set?.(what === 'cancel' ? `cancel:${name.join(':')}` : 'clear'); } catch (e) { rt.toast((e as Error).message, 'warning', 'Themed controls'); }
   }, 'Clear a file drop zone or cancel its uploads', true);
+  // tooltip and scrollbar tokens: an action and one setting target each ("set the tooltip delay to 300")
+  reg('themed-controls.token', ([path, v]) => {
+    const t = tokenSetting(path ?? '');
+    if (!t) { rt.toast(`No such setting "${path ?? ''}": ${TOKEN_SETTINGS.map((x) => x.path).join(', ')}.`, 'warning', 'Themed controls'); return; }
+    try { setToken(rt, t.path, v === undefined || /^(reset|theme|default)$/i.test(v) ? null : Number(v)); } catch (e) { rt.toast((e as Error).message, 'warning', 'Themed controls'); }
+  }, 'Set a tooltip or scrollbar token', true);
+  for (const t of TOKEN_SETTINGS) {
+    offs.push(controlRegistry(rt).register({
+      address: `setting:themed-controls.${t.path}`, kind: 'setting', label: t.label, detail: `Themed controls · token ${t.path} (${t.min}–${t.max} ${t.unit})`, icon: 'sliders',
+      keywords: [t.path, 'tooltip', 'scrollbar', 'themed'], can: ['open', 'state', 'set'],
+      open: () => rt.dispatch(`settings.open:${TAB}`),
+      get: () => tokenValue(rt, t.path),
+      state: () => ({ value: tokenValue(rt, t.path), min: t.min, max: t.max, unit: t.unit, token: `tokens.controls ${t.path}` }),
+      set: (v) => { const s = String(v ?? '').trim(); return setToken(rt, t.path, /^(reset|theme|default)$/i.test(s) ? null : Number(s.replace(/[^\d.]/g, ''))); },
+    }));
+  }
   // the themed alert / confirm / prompt
   type DialogsApi = { openDialogs: () => { open: Record<string, unknown> | null; waiting: number }; currentDialog: () => { destructive: boolean; kind: string; answer(ok: boolean, text?: string): void } | null };
   const dlg = () => liveHost()?.global<DialogsApi>('dialogs') ?? null;
