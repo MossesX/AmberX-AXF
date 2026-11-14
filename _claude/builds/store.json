@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5413,
- "updatedAt": "2026-11-14T20:07:38.241Z",
+ "rev": 5414,
+ "updatedAt": "2026-11-14T20:21:05.781Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -189554,15 +189554,16 @@
    "title": "Every skin ships a light and a dark colour theme (Studio Pro, Executive, Field, Command, Default and any future skin): quick light/dark switch per skin, follow-system option, coverage check fails if a skin lacks either; full API and voice",
    "category": "",
    "detail": "",
-   "status": "built",
+   "status": "complete",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/every-skin-ships-light-dark-colour-theme",
    "pr": "#590",
+   "mergedAt": "2026-11-14T20:15:18Z",
    "priority": "P0",
    "createdAt": "2026-11-13T10:39:51.656Z",
-   "updatedAt": "2026-11-13T17:33:12.986Z",
+   "updatedAt": "2026-11-14T20:21:03.696Z",
    "builtAt": "2026-11-13T10:57:06.217Z",
    "notes": [
     {
@@ -189588,6 +189589,10 @@
     {
      "text": "Renamed from every-skin-ships-a-light-and-a-dark-colour-theme (build names are at most 40 characters). By build-rename.",
      "at": "2026-11-13T17:33:12.986Z"
+    },
+    {
+     "text": "Reconciler: PR #590 merged",
+     "at": "2026-11-14T20:21:03.696Z"
     }
    ],
    "approvals": [],
@@ -189695,7 +189700,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -206409,9 +206414,10 @@
    "pendingId": "",
    "branch": "claude/skin-axhub-override-switch-greyed-out",
    "pr": "#641",
+   "mergedAt": "2026-11-14T20:15:16Z",
    "priority": "P1",
    "createdAt": "2026-11-13T18:56:15.400Z",
-   "updatedAt": "2026-11-13T20:19:48.032Z",
+   "updatedAt": "2026-11-14T20:21:03.696Z",
    "builtAt": "",
    "notes": [
     {
@@ -206461,6 +206467,10 @@
     {
      "text": "Reconciler: PR #641",
      "at": "2026-11-13T20:19:48.032Z"
+    },
+    {
+     "text": "Reconciler: PR #641 merged",
+     "at": "2026-11-14T20:21:03.696Z"
     }
    ],
    "approvals": [],
@@ -206707,7 +206717,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 19,
+   "rev": 20,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -208448,9 +208458,10 @@
    "pendingId": "",
    "branch": "claude/skin-config-panel-merge-main-and-land",
    "pr": "#648",
+   "mergedAt": "2026-11-14T20:15:18Z",
    "priority": "P0",
    "createdAt": "2026-11-13T19:47:38.941Z",
-   "updatedAt": "2026-11-13T20:18:07.023Z",
+   "updatedAt": "2026-11-14T20:21:03.696Z",
    "builtAt": "",
    "notes": [
     {
@@ -208488,6 +208499,10 @@
     {
      "text": "Session on mossesx-max- stopped on its own with 3 steps left: back in Pending for Brett.",
      "at": "2026-11-13T20:18:07.023Z"
+    },
+    {
+     "text": "Reconciler: PR #648 merged",
+     "at": "2026-11-14T20:21:03.696Z"
     }
    ],
    "approvals": [],
@@ -208624,7 +208639,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 16,
+   "rev": 17,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -208660,9 +208675,10 @@
    "pendingId": "",
    "branch": "claude/skins-plugin-merge-main-and-land",
    "pr": "#647",
+   "mergedAt": "2026-11-14T20:15:18Z",
    "priority": "P0",
    "createdAt": "2026-11-13T19:47:44.815Z",
-   "updatedAt": "2026-11-13T20:19:48.032Z",
+   "updatedAt": "2026-11-14T20:21:03.696Z",
    "builtAt": "",
    "notes": [
     {
@@ -208696,6 +208712,10 @@
     {
      "text": "Reconciler: PR #647",
      "at": "2026-11-13T20:19:48.032Z"
+    },
+    {
+     "text": "Reconciler: PR #647 merged",
+     "at": "2026-11-14T20:21:03.696Z"
     }
    ],
    "approvals": [],
@@ -208832,7 +208852,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": {
