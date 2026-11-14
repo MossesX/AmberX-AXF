@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5242,
- "updatedAt": "2026-11-14T04:32:36.659Z",
+ "rev": 5243,
+ "updatedAt": "2026-11-14T04:34:10.088Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -212788,7 +212788,7 @@
    "branch": "claude/group-chat-audio-hear-agents-talk-while",
    "pr": "",
    "createdAt": "2026-11-14T04:20:23.886Z",
-   "updatedAt": "2026-11-14T04:22:28.061Z",
+   "updatedAt": "2026-11-14T04:34:06.633Z",
    "builtAt": "",
    "notes": [
     {
@@ -212817,18 +212817,18 @@
    "pipeline": {
     "queuedAt": "",
     "queuedBy": "",
-    "account": "mossesx-max-",
-    "session": "axf-group-chat-audio-hear-agents-talk-while--lenny",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-14T04:22:23.590Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": null,
     "splitRequested": "",
     "note": "",
     "route": "",
-    "dispatchedAt": "2026-11-14T04:22:23.590Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -212837,7 +212837,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-14T04:22:23.590Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
@@ -212858,12 +212858,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T04:34:06.633Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T04:20:23.888Z",
-     "updatedAt": "2026-11-14T04:20:23.888Z"
+     "updatedAt": "2026-11-14T04:34:07.150Z"
     },
     {
      "id": "s2",
