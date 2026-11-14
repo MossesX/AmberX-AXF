@@ -792,7 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 20:47 UTC · `lander-regenerates-generated-files-clash` → queued, note (all) · console
 - 2026-11-13 20:47 UTC · `dispatcher-gate-never-launch-build` note (all) · orchestrator
 - 2026-11-13 20:48 UTC · `per-instance-settings-small-live-preview` note (all) · orchestrator
 - 2026-11-13 20:48 UTC · `per-instance-settings-small-live-preview` note (all) · builds-live
@@ -1192,6 +1191,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 16:57 UTC · `builds-share-one-claude-login-write` s3 done (all) · orchestrator
 - 2026-11-14 16:59 UTC · `hotfix-toolbar-settings-still-change` PR #673 (all) · builds-live
 - 2026-11-14 16:59 UTC · `hotfix-toolbar-settings-still-change` s3 done (all) · orchestrator
+- 2026-11-14 16:59 UTC · `hotfix-toolbar-settings-still-change` note (all) · orchestrator
 
 ## Token passes (log)
 
