@@ -792,7 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 19:56 UTC · `per-instance-settings-picker-merge-main` note (all) · orchestrator
 - 2026-11-13 19:57 UTC · `grids-get-their-own-full-token-set` added (0 steps) (all) · console
 - 2026-11-13 19:57 UTC · `grid-token-set-colours-hover-selected` added (0 steps) (all) · console
 - 2026-11-13 19:57 UTC · `own-token-sets-for-grids-and-tab-groups` added (0 steps) (all) · console
@@ -1192,6 +1191,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 02:09 UTC · `console-app-land-parts-1-4-build-apk` s17 done (all) · orchestrator
 - 2026-11-14 02:09 UTC · `console-app-land-parts-1-4-build-apk` note (all) · orchestrator
 - 2026-11-14 02:10 UTC · `console-app-land-parts-1-4-build-apk` note (all) · foreign-write
+- 2026-11-14 02:10 UTC · `console-app-land-parts-1-4-build-apk` → pending, note (all) · pipeline
 
 ## Token passes (log)
 
