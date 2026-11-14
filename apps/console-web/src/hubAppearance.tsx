@@ -11,6 +11,7 @@ import { AssetPickerPanel } from './assetPicker';
 import { useEffect, useState } from 'react';
 import { Chip, HubAppearanceSource, DEFAULT_HUB, useAxfState, useRuntime } from './axf/react';
 import type { AxfWebLibrary } from './axf/react/library';
+import { HUB_SKIN_ONLY_GROUP } from './axf/core';
 import manifest from '../axf.manifest.json';
 
 let attachedHub = '';
@@ -91,6 +92,20 @@ export const hubAppearanceLibrary: AxfWebLibrary = {
   id: 'ai.amberx.axf.console.hub-appearance',
   label: 'Look from axHub',
   version: '1.0.0',
+  // Settings → Appearance, first thing on the tab (libs/settings draws this group on top). A real setting, so search,
+  // console.settings (control@1), `settings.set:axf.lock.hubskin:on|off` (REST, MCP, CLI) and voice reach it; the
+  // `appearance.hubskin:on|off` action does the same. The runtime does the rest (core/runtime.ts HUB_SKIN_ONLY_KEY).
+  settings: [{
+    id: HUB_SKIN_ONLY_GROUP,
+    tab: 'appearance',
+    label: 'Skin source',
+    icon: 'lock',
+    order: 0,
+    // the key is HUB_SKIN_ONLY_KEY, written out so the control inventory (scripts/control-inventory.mjs) indexes it
+    settings: [
+      { key: 'axf.lock.hubskin', label: 'Get my skin only from axHub', kind: 'toggle', default: false, scope: 'device', description: "On: this console's skin, colour theme and every token come from axHub's look only, and changes made on axHub show up here live. Skin picks, overrides, rolls, packages and Token Control changes made only in this console are kept, not used, and their controls are locked until you switch this off." },
+    ],
+  }],
   settingsPanels: [
     { id: 'console.appearance.hub', tab: 'appearance', title: 'Look from axHub', icon: 'layers', order: 5, render: () => <HubLookPanel /> },
     { id: 'console.appearance.assets', tab: 'appearance', title: 'Choose from every asset', icon: 'palette', order: 6, render: () => <AssetPickerPanel /> },

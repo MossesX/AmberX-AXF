@@ -318,6 +318,14 @@
               "tag": "lib",
               "recommended": false,
               "suggests": []
+            },
+            {
+              "id": "f.appearance.hubskinonly",
+              "title": "Skin from axHub only: Settings \u2192 Appearance \u2192 Get my skin only from axHub (console) draws the hub-wide skin and axHub's tokens alone, drives the appearance lock (controls locked, \"Following axHub\"), keeps the app's own picks for when it is off",
+              "note": "skin-rules.mjs hubOnlyLook, runtime HUB_SKIN_ONLY_KEY / appearance.hubskin; reachable by settings.set, console.settings, voice; default off; Kotlin twin deferred",
+              "tag": "lib",
+              "recommended": false,
+              "suggests": []
             }
           ]
         },
