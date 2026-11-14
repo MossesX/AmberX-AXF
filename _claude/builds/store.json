@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5219,
- "updatedAt": "2026-11-14T04:20:15.530Z",
+ "rev": 5220,
+ "updatedAt": "2026-11-14T04:20:38.575Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -211836,7 +211836,7 @@
      "note": "",
      "rev": 2,
      "createdAt": "2026-11-14T03:50:42.414Z",
-     "updatedAt": "2026-11-14T04:19:44.402Z"
+     "updatedAt": "2026-11-14T04:20:12.710Z"
     },
     {
      "id": "s2",
@@ -211891,14 +211891,69 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 10,
+   "rev": 11,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
    "defaultAt": "2026-11-14T03:50:42.414Z",
    "rearranged": false,
-   "removedSteps": [],
+   "removedSteps": [
+    {
+     "step": {
+      "id": "s4",
+      "uid": "st-mwfvehpc017wvo",
+      "title": "",
+      "text": "Brett: the UI Directory is a tree view of everything, with collapsible branches, categorized, sortable and filterable. It opens in a floating window with 'Create toolbar' and 'Create tab group' buttons. Creating one drops a new floating toolbar or tab group on whatever page you're on. Drag commands or screens from the tree onto it to add them, then dock it anywhere on the page (top, bottom, sides, or free-floating). Placement, contents and docking are saved per page as tokens/assets, with Restore previous edit and full API and voice ('make a toolbar with build and deploy'). All of it follows the token rule so skins restyle it.",
+      "model": "Opus",
+      "why": "",
+      "phase": "",
+      "group": "",
+      "estimate": "30 min",
+      "files": [],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": false,
+      "doneAt": "",
+      "note": "",
+      "rev": 1,
+      "createdAt": "2026-11-14T03:53:01.225Z",
+      "updatedAt": "2026-11-14T03:53:01.728Z"
+     },
+     "at": "2026-11-14T04:20:04.165Z",
+     "why": "removed in the orchestrator",
+     "by": "foreign-write"
+    },
+    {
+     "step": {
+      "id": "s5",
+      "uid": "st-mwfvfoij01ulvi",
+      "title": "",
+      "text": "Integrate with the existing Assets menu (assets-menu-hide-any-asset-visible, PR #583): don't build a second show/hide system. The directory tree reads the Assets menu's visible/hidden state and its toggles call the same API.",
+      "model": "Opus",
+      "why": "",
+      "phase": "",
+      "group": "",
+      "estimate": "30 min",
+      "files": [],
+      "checks": [],
+      "session": "same",
+      "agent": false,
+      "skip": false,
+      "done": false,
+      "doneAt": "",
+      "note": "",
+      "rev": 2,
+      "createdAt": "2026-11-14T03:53:57.008Z",
+      "updatedAt": "2026-11-14T03:54:42.953Z"
+     },
+     "at": "2026-11-14T04:20:04.165Z",
+     "why": "removed in the orchestrator",
+     "by": "foreign-write"
+    }
+   ],
    "legacy": [],
    "copies": []
   },
