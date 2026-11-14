@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5581,
- "updatedAt": "2026-11-14T23:14:05.220Z",
+ "rev": 5582,
+ "updatedAt": "2026-11-14T23:14:19.674Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -151566,7 +151566,7 @@
    "pendingId": "",
    "alias": "pass-approval-hook-deep-link-amberx",
    "branch": "claude/pass-approval-hook-deep-link-amberx-notification",
-   "pr": "",
+   "pr": "#681",
    "priority": "P0",
    "createdAt": "2026-11-10T17:10:29.492Z",
    "updatedAt": "2026-11-14T23:13:42.882Z",
@@ -205052,23 +205052,6 @@
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
-   },
-   "land": {
-    "behindMain": null,
-    "behindCheckedAt": "",
-    "finishedAt": "",
-    "landState": "flagged",
-    "landAttempts": [
-     {
-      "at": "2026-11-14T23:12:39.295Z",
-      "run": "lr-console-app-part-3-native-bridge-mic-20261114T231239",
-      "base": "83f718d8507e05b36ecb4169a6bb8f9d0237518b",
-      "merged": "",
-      "outcome": "clash",
-      "ci": "",
-      "note": "Source clash a person has to settle: framework/ui/axf.css. No fix build: the orchestrator did not take it."
-     }
-    ]
    },
    "steps": [
     {
