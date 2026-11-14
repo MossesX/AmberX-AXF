@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5330,
- "updatedAt": "2026-11-14T17:01:38.806Z",
+ "rev": 5331,
+ "updatedAt": "2026-11-14T17:05:31.932Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -214414,7 +214414,7 @@
    "branch": "claude/builds-share-one-claude-login-write",
    "pr": "",
    "createdAt": "2026-11-14T16:44:38.923Z",
-   "updatedAt": "2026-11-14T17:01:23.336Z",
+   "updatedAt": "2026-11-14T17:05:29.676Z",
    "builtAt": "",
    "notes": [
     {
@@ -214572,12 +214572,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T17:05:29.676Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T16:45:19.485Z",
-     "updatedAt": "2026-11-14T16:45:19.669Z"
+     "updatedAt": "2026-11-14T17:05:30.006Z"
     },
     {
      "id": "s6",
@@ -214610,7 +214610,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 13,
+   "rev": 14,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
