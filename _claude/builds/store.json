@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5240,
- "updatedAt": "2026-11-14T04:31:12.548Z",
+ "rev": 5241,
+ "updatedAt": "2026-11-14T04:31:55.300Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -212196,7 +212196,7 @@
    "branch": "claude/demo-video-series-three-minute-browser",
    "pr": "#667",
    "createdAt": "2026-11-14T04:00:35.405Z",
-   "updatedAt": "2026-11-14T04:31:10.253Z",
+   "updatedAt": "2026-11-14T04:31:53.547Z",
    "builtAt": "",
    "notes": [
     {
@@ -212250,6 +212250,10 @@
     {
      "text": "Brett, for the console Android app video (s17) and the orchestrator video: every Claude Code session, in every container, always gets its own live, viewable output window in the console's terminal. Show several sessions' output streaming side by side in real time, and tapping into any one from the phone.",
      "at": "2026-11-14T04:29:39.804Z"
+    },
+    {
+     "text": "Brett, for the Android app demo (s19) and the commute hero video (s5): the person is driving to work fully hands-free. The phone is mounted, they talk to Amber with eyes on the road and no touching or speeding, and Amber reads updates and approvals aloud and takes voice approval. Message: get stuff done on your way to work while staying safe. Any tapping happens only once they're parked.",
+     "at": "2026-11-14T04:31:53.547Z"
     }
    ],
    "approvals": [],
@@ -212729,7 +212733,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 35,
+   "rev": 36,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
