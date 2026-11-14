@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5274,
- "updatedAt": "2026-11-14T04:48:59.230Z",
+ "rev": 5275,
+ "updatedAt": "2026-11-14T04:49:32.724Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -214091,7 +214091,7 @@
    "branch": "claude/group-chat-audio-hear-agents-talk-while",
    "pr": "#671",
    "createdAt": "2026-11-14T04:20:23.886Z",
-   "updatedAt": "2026-11-14T04:48:57.707Z",
+   "updatedAt": "2026-11-14T04:49:30.855Z",
    "builtAt": "",
    "notes": [
     {
@@ -214101,6 +214101,10 @@
     {
      "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-group-chat-audio-hear-agents-talk-while--lenny, own login copy)",
      "at": "2026-11-14T04:22:28.061Z"
+    },
+    {
+     "text": "PR #671. UI Review item r-20261114-x2wn801 (desktop + phone shots) could not be uploaded: this headless session has no AXF_CONSOLE_URL/AXF_TOKEN, so it is in the worktree only. Re-submit with --console before calling the PR ready.",
+     "at": "2026-11-14T04:49:30.855Z"
     }
    ],
    "approvals": [],
@@ -214221,7 +214225,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
