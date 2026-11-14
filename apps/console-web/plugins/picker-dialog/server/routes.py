@@ -207,7 +207,7 @@ async def post_state(request: Request) -> dict[str, Any]:
     return r
 
 
-async def _verb(request: Request, verb: str, arg_key: str | None = None) -> JSONResponse:
+async def _verb_body(request: Request, verb: str, arg_key: str | None = None) -> JSONResponse:
     b = await _body(request)
     try:
         spec = action_spec(verb, b.get("target") or b.get("id"), b.get(arg_key) if arg_key else None)
@@ -218,37 +218,37 @@ async def _verb(request: Request, verb: str, arg_key: str | None = None) -> JSON
 
 @router.post("/open")
 async def picker_open(request: Request) -> JSONResponse:
-    return await _verb(request, "open")
+    return await _verb_body(request, "open")
 
 
 @router.post("/choose")
 async def picker_choose(request: Request) -> JSONResponse:
-    return await _verb(request, "choose", "option")
+    return await _verb_body(request, "choose", "option")
 
 
 @router.post("/toggle")
 async def picker_toggle(request: Request) -> JSONResponse:
-    return await _verb(request, "toggle", "option")
+    return await _verb_body(request, "toggle", "option")
 
 
 @router.post("/search")
 async def picker_search(request: Request) -> JSONResponse:
-    return await _verb(request, "search", "text")
+    return await _verb_body(request, "search", "text")
 
 
 @router.post("/clear")
 async def picker_clear(request: Request) -> JSONResponse:
-    return await _verb(request, "clear")
+    return await _verb_body(request, "clear")
 
 
 @router.post("/close")
 async def picker_close(request: Request) -> JSONResponse:
-    return await _verb(request, "close")
+    return await _verb_body(request, "close")
 
 
 @router.post("/list")
 async def picker_list(request: Request) -> JSONResponse:
-    return await _verb(request, "list")
+    return await _verb_body(request, "list")
 
 
 @router.get("/settings")

@@ -13,7 +13,7 @@
 import { useCallback, useEffect, useId, useMemo, useRef, useState, type ReactNode } from 'react';
 import { Field } from './Forms';
 import { Icon } from './Icon';
-import { PickerDialog, rootSearchThreshold } from './PickerDialog';
+import { PickerDialog, inDisplayOrder, rootSearchThreshold } from './PickerDialog';
 import { closedPicker, normalizePicker, openPicker, pickerIdOf, triggerText, type PickerGroup, type PickerModel, type PickerOption, type PickerState } from '../../core/engines/picker';
 import { pickerChanged, pickerTarget, registerPicker } from '../pickerRegistry';
 
@@ -75,7 +75,7 @@ export function pickerModelOf(p: Pick<PickerFieldProps, 'options' | 'groups' | '
   const options = single && p.empty !== undefined ? [{ value: '', label: p.empty || '—' }, ...p.options] : p.options;
   const value = Array.isArray(p.value) ? p.value : p.value ? [p.value] : [];
   return normalizePicker({
-    id: p.pickerId ?? pickerIdOf(label, 'picker'), label, options, groups: p.groups, multiple: !!p.multiple, max: p.max, value,
+    id: p.pickerId ?? pickerIdOf(label.toLowerCase(), 'picker'), label, options, groups: p.groups, multiple: !!p.multiple, max: p.max, value,
     searchThreshold: p.searchThreshold ?? rootSearchThreshold(), placeholder: p.placeholder, emptyLabel: single ? p.empty : undefined,
   });
 }
@@ -98,7 +98,7 @@ export function PickerField(props: PickerFieldProps) {
     if (p.multiple) p.onChange(value);
     else p.onChange(value[0] ?? '');
   }, []);
-  const open = useCallback(() => { if (!live.current.props.disabled) setSt(openPicker(live.current.model)); }, []);
+  const open = useCallback(() => { if (!live.current.props.disabled) setSt(inDisplayOrder(live.current.model, openPicker(live.current.model))); }, []);
   const close = useCallback(() => setSt(closedPicker()), []);
 
   useEffect(() => {
@@ -108,7 +108,7 @@ export function PickerField(props: PickerFieldProps) {
       state: () => live.current.st,
       open, close,
       apply: emit,
-      setState: (s) => setSt(s),
+      setState: (s) => setSt(inDisplayOrder(live.current.model, s)),
       element: () => triggerRef.current,
     }));
     setId(r.id);

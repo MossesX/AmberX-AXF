@@ -7,6 +7,7 @@
  * Exposed on `window.__axfPickers` too, so the plugin's web library, Playwright tests and the console-control bridge can
  * call it without importing React.
  */
+import { getPickerSwap, setPickerSwap, type PickerSwapConfig } from './pickerConfig';
 import { choosePicker, foldText, matchSpoken, pickerIdOf, setQuery, setValue, uniquePickerId, type PickerModel, type PickerState } from '../core/engines/picker';
 
 export interface PickerHandle {
@@ -135,5 +136,8 @@ export function pickerSet(target: string, value: string[] | string): PickerResul
 export const pickerClear = (target: string | null): PickerResult => { const h = find(target); if (!h) return miss(target); h.apply([]); return done(h); };
 
 /** What `window.__axfPickers` exposes. */
-export const pickerApi = { list: listPickers, state: pickerState, open: pickerOpen, close: pickerClose, search: pickerSearch, choose: pickerChoose, set: pickerSet, clear: pickerClear, openId: openPickerId, subscribe: onPickers };
+/** Read or change the swap switches (tests and the console bridge; the plugin settings write the same store). */
+export const pickerConfig = (patch?: Partial<PickerSwapConfig>): PickerSwapConfig => (patch ? setPickerSwap(patch) : getPickerSwap());
+
+export const pickerApi = { config: pickerConfig, list: listPickers, state: pickerState, open: pickerOpen, close: pickerClose, search: pickerSearch, choose: pickerChoose, set: pickerSet, clear: pickerClear, openId: openPickerId, subscribe: onPickers };
 if (typeof window !== 'undefined') (window as unknown as { __axfPickers?: typeof pickerApi }).__axfPickers = pickerApi;

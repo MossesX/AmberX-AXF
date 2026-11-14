@@ -17,7 +17,7 @@
 import { useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent, type PointerEvent as ReactPointerEvent } from 'react';
 import { createPortal } from 'react-dom';
 import { Icon } from './Icon';
-import { Button, IconButton } from './Controls';
+import { IconButton } from './Controls';
 import {
   PICKER_TYPEAHEAD_MS, choosePicker, closePicker, groupOptions, openPicker, pickerKey, searchShown, setQuery,
   type PickerKey, type PickerModel, type PickerState,
@@ -48,6 +48,18 @@ function engineKey(e: ReactKeyboardEvent): PickerKey | '' {
   return [...e.key].length === 1 ? e.key : '';
 }
 
+/**
+ * The state with `filtered` in the order the dialog draws it (ungrouped rows, then each group), so the active row,
+ * ArrowDown / Home / End, type-ahead and "the third one" all follow what is on screen. The active row keeps its option.
+ */
+export function inDisplayOrder(model: PickerModel, s: PickerState): PickerState {
+  if (!s.filtered.length || !model.groups.length) return s;
+  const order = groupOptions(model, s.filtered).flatMap((g) => g.options);
+  if (order.every((o, i) => o === s.filtered[i])) return s;
+  const activeValue = s.active >= 0 ? s.filtered[s.active]?.value : undefined;
+  return { ...s, filtered: order, active: activeValue === undefined ? s.active : order.findIndex((o) => o.value === activeValue) };
+}
+
 /** The search threshold in force: the picker plugin's setting while the swap is on, else the picker asset's (root `data-fx-picker-search`: always | never | a number). */
 export function rootSearchThreshold(): number | undefined {
   const c = getPickerSwap();
@@ -67,9 +79,9 @@ export function PickerDialog({ model, onChange, onClose, returnFocus, state: out
   const panelRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLInputElement>(null);
-  const [own, setOwn] = useState<PickerState>(() => openPicker(model));
+  const [own, setOwn] = useState<PickerState>(() => inDisplayOrder(model, openPicker(model)));
   const st = outer ?? own;
-  const setSt = useCallback((s: PickerState) => { if (outer) onState?.(s); else { setOwn(s); onState?.(s); } }, [outer, onState]);
+  const setSt = useCallback((raw: PickerState) => { const s = inDisplayOrder(model, raw); if (outer) onState?.(s); else { setOwn(s); onState?.(s); } }, [outer, onState, model]);
   const withSearch = searchShown(model);
   const typeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -198,8 +210,9 @@ export function PickerDialog({ model, onChange, onClose, returnFocus, state: out
         </div>
         {model.multiple && (
           <div className="fx-picker__foot">
-            {model.value.length > 0 && <Button onClick={() => onChange([])}>Clear</Button>}
-            <Button tone="primary" className="fx-picker__done" onClick={close}>Done ({model.value.length})</Button>
+            {/* the framework button markup (Button needs the app runtime; the swap layer's pickers render outside it) */}
+            {model.value.length > 0 && <button type="button" className="fx-btn fx-btn--neutral" onClick={() => onChange([])}><span>Clear</span></button>}
+            <button type="button" className="fx-btn fx-btn--primary fx-picker__done" onClick={close}><span>Done ({model.value.length})</span></button>
           </div>
         )}
       </div>
