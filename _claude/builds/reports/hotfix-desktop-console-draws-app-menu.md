@@ -9,6 +9,18 @@ Brett said (2026-11-13 20:53): "there's two app menus, two banners, two navigati
 Not reproduced, so nothing was changed in the chrome. The per-toolbar / per-instance settings feature is untouched (no revert).
 This branch adds a regression test that fails if any of the three chrome pieces is drawn twice.
 
+## Run 2 (Nov 14): verified on the live console
+
+- Brett's follow-up (build note, Nov 13 20:57): after a hard refresh his desktop looked fine, so the double chrome was
+  a stale cached bundle. The pull-out of the per-toolbar landing was never pushed: main still has the toolbar settings.
+- The console was redeployed at **22:38 UTC Nov 14**; its bundle (`index-d9Lp8F0a.js`) now contains the per-instance
+  settings (`chrome.instance-interface`), so the feature Brett wants to keep is live.
+- `chrome-once.e2e.mjs` against the deployed console (`CHROME_E2E_URL=http://<axf-console>:7090/`): **29 checks
+  passed**: desktop, desktop embedded, phone, phone embedded each show exactly one application menu, one banner and
+  one navigation menu, also after per-instance settings and with the chrome settings dialog open.
+- Nothing to land or redeploy for this build: no chrome code changed. The test is the only code on the branch.
+- Per-toolbar settings not applying (labels etc.) is tracked by its own build, `hotfix-toolbar-settings-still-change`.
+
 ## What was checked
 
 1. **The landing's code delta** (`e5639b79f..ec579ee23`, main before and after per-toolbar-settings-fix-failing-chrome).
