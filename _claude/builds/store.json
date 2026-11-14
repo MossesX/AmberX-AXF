@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5678,
- "updatedAt": "2026-11-14T23:46:36.551Z",
+ "rev": 5679,
+ "updatedAt": "2026-11-14T23:46:53.238Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -226395,15 +226395,15 @@
    "title": "Merge main and land console-app-part-3-native-bridge-mic",
    "category": "",
    "detail": "Auto-land could not land `console-app-part-3-native-bridge-mic` (console-app-part-3-native-bridge-mic): merging main into it clashes in code: framework/ui/axf.css.\n\nWork on its own branch `claude/console-app-part-3-native-bridge-mic` (PR #633); do not open a new PR.\n1. git fetch origin && git checkout claude/console-app-part-3-native-bridge-mic && git merge origin/main\n2. Resolve every conflict keeping both sides' intent (builds files: newer wins; THREADS / STATUS / decisions: keep both).\n3. Make the tests the clash touches pass, plus node framework/cli/tracker.mjs --check.\n4. Commit and push to claude/console-app-part-3-native-bridge-mic. Auto-land and the merge queue land it by themselves.\n\nAttempt 1. Auto-land retries until it lands; Brett gets an FYI for each attempt.",
-   "status": "running",
+   "status": "queued",
    "hidden": false,
    "source": "land-finish-auto-land-live-clear-backlog",
    "pendingId": "",
-   "branch": "claude/merge-main-land-console-app-part-3",
-   "pr": "",
+   "branch": "claude/console-app-part-3-native-bridge-mic",
+   "pr": "#633",
    "priority": "P0",
    "createdAt": "2026-11-14T23:16:22.160Z",
-   "updatedAt": "2026-11-14T23:44:31.035Z",
+   "updatedAt": "2026-11-14T23:46:49.851Z",
    "builtAt": "",
    "notes": [
     {
@@ -226440,12 +226440,12 @@
    "pipeline": {
     "queuedAt": "2026-11-14T23:16:27.988Z",
     "queuedBy": "land-finish-auto-land-live-clear-backlog",
-    "account": "mossesx-max-",
-    "session": "axf-merge-main-land-console-app-part-3--joey",
+    "account": "",
+    "session": "",
     "slot": "",
-    "model": "Opus",
-    "launchedAt": "2026-11-14T23:44:25.691Z",
-    "runs": 1,
+    "model": "",
+    "launchedAt": "",
+    "runs": 0,
     "lastRun": null,
     "split": {
      "at": "2026-11-14T23:20:49.007Z",
@@ -226455,9 +226455,9 @@
      "note": "Split by rules (Claude: claude exit 1: {\"duration_api_ms\":0,\"stop_reason\":\"stop_sequence\",\"session_id\":\"28105bb8-84e7-415b-a167-aa257dc2c5b8\",\"total_cost_usd\":0,\"usage\":{\"output_tokens_details\":{\"thinking_tokens\":0},\"input_t): one step per line of the request, review the steps."
     },
     "splitRequested": "",
-    "note": "",
+    "note": "steps made by rules: review them",
     "route": "",
-    "dispatchedAt": "2026-11-14T23:44:25.691Z",
+    "dispatchedAt": "",
     "planned": {
      "model": "Opus",
      "account": "mossesx-max-",
@@ -226466,7 +226466,7 @@
      "why": "subscription account mossesx-max-"
     },
     "tried": [],
-    "pickedAt": "2026-11-14T23:44:25.691Z",
+    "pickedAt": "",
     "heldAt": "",
     "heldBy": "",
     "heldWhy": ""
