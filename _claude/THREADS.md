@@ -792,7 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 20:19 UTC · `tab-groups-choose-how-many-rows-tabs` → complete, merged, note (all) · reconciler
 - 2026-11-13 20:19 UTC · `prompting-engine-control-panel-events` → pending, note (all) · reconciler
 - 2026-11-13 20:19 UTC · `transparency-token-works-every-dialog` → complete, merged, note (all) · reconciler
 - 2026-11-13 20:19 UTC · `orchestrator-settings-collapsible-split` → pending, note (all) · reconciler
@@ -1192,6 +1191,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 04:38 UTC · `ui-directory-plugin-self-updating-data` note (all) · pipeline
 - 2026-11-14 04:38 UTC · `ui-directory-plugin-self-updating-data` note (all) · orchestrator
 - 2026-11-14 04:37 UTC · `ui-directory-plugin-self-updating-data` s3 done, → built (all) · orchestrator
+- 2026-11-14 04:38 UTC · `orchestrator-checks-shipped-features-2` → archived (all) · voice
 
 ## Token passes (log)
 
