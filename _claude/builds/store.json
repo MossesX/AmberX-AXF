@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5325,
- "updatedAt": "2026-11-14T16:59:06.939Z",
+ "rev": 5326,
+ "updatedAt": "2026-11-14T16:59:23.160Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -214786,7 +214786,7 @@
    "branch": "claude/hotfix-toolbar-settings-still-change",
    "pr": "#673",
    "createdAt": "2026-11-14T16:51:14.645Z",
-   "updatedAt": "2026-11-14T16:59:05.393Z",
+   "updatedAt": "2026-11-14T16:59:07.191Z",
    "builtAt": "",
    "notes": [
     {
@@ -214904,12 +214904,12 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T16:59:07.191Z",
      "note": "",
-     "rev": 1,
+     "rev": 2,
      "createdAt": "2026-11-14T16:51:14.646Z",
-     "updatedAt": "2026-11-14T16:51:14.646Z"
+     "updatedAt": "2026-11-14T16:59:07.450Z"
     },
     {
      "id": "s4",
@@ -214942,7 +214942,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 9,
+   "rev": 10,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
