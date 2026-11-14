@@ -797,7 +797,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-14 22:38 UTC · `land-finish-auto-land-live-clear-backlog` → running, note (all) · pipeline
 - 2026-11-14 22:38 UTC · `land-finish-auto-land-live-clear-backlog` → running, note (all) · orchestrator
 - 2026-11-14 22:39 UTC · `own-token-sets-for-grids-and-tab-groups` merged, note (all) · reconciler
 - 2026-11-14 22:40 UTC · `own-token-sets-for-grids-and-tab-groups` note (all) · orchestrator
@@ -1197,6 +1196,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 23:53 UTC · `merge-main-land-server-gate-one-session` note (all) · orchestrator
 - 2026-11-14 23:53 UTC · `merge-main-land-one-source-truth-console` note (all) · orchestrator
 - 2026-11-14 23:54 UTC · `console-look-becomes-default-axhub-skin` note (all) · pipeline
+- 2026-11-14 23:55 UTC · `picker-dialog-plugin-replaces-all` s19 done (all) · orchestrator
 
 ## Token passes (log)
 
