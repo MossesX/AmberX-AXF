@@ -5,7 +5,7 @@
  * the MCP tools (wake-listener_*), `axf wake-listener …` and this CLI share one copy.
  *
  *   node listener.mjs settings                      the settings
- *   node listener.mjs set <key>=<value>…            change settings (on, phrases, engine, awakeSec, answerSec, speak, chime, indicator, pauseHidden)
+ *   node listener.mjs set <key>=<value>…            change settings (on, phrases, engine, awakeSec, answerSec, speak, chime, indicator, pauseHidden, useClaude, claudeTimeoutSec)
  *   node listener.mjs on | off                      the switch
  *   node listener.mjs phrases [add|remove <phrase>] the wake phrases
  *   node listener.mjs state                         the last state the console reported (phase, engine, mic, last heard)

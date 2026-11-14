@@ -35,7 +35,16 @@ export const DEFAULTS = Object.freeze({
   indicator: 'always',
   /** pause while the page is hidden (another app in front on the phone) */
   pauseHidden: false,
+  /** Claude mode: understand commands with Claude while Claude is connected (off = scripted only, nothing is sent to Claude) */
+  useClaude: true,
+  /** seconds Claude mode waits for Claude before the scripted matcher takes the command */
+  claudeTimeoutSec: 8,
 });
+
+/** The console-wide setting keys (Settings → Plugins → Wake listener, console-control addresses) → the store's keys. */
+export const SETTING_KEYS = Object.freeze({ 'axf.voice.useClaude': 'useClaude', 'axf.voice.claudeTimeoutSec': 'claudeTimeoutSec' });
+export const CLAUDE_TIMEOUT_MIN = 2;
+export const CLAUDE_TIMEOUT_MAX = 30;
 
 export class ListenerError extends Error {
   constructor(code, message) { super(message); this.code = code; }
@@ -75,6 +84,8 @@ export function normalizeSettings(raw) {
     chime: bool(r.chime, DEFAULTS.chime),
     indicator: r.indicator === 'listening' || r.indicator === 'never' ? r.indicator : DEFAULTS.indicator,
     pauseHidden: bool(r.pauseHidden, DEFAULTS.pauseHidden),
+    useClaude: bool(r.useClaude, DEFAULTS.useClaude),
+    claudeTimeoutSec: int(r.claudeTimeoutSec, DEFAULTS.claudeTimeoutSec, CLAUDE_TIMEOUT_MIN, CLAUDE_TIMEOUT_MAX),
   };
 }
 
@@ -83,11 +94,12 @@ export function applyPatch(settings, patch) {
   const s = normalizeSettings(settings);
   const p = patch && typeof patch === 'object' ? patch : {};
   const next = { ...s };
-  for (const [k, v] of Object.entries(p)) {
+  for (const [key, v] of Object.entries(p)) {
+    const k = SETTING_KEYS[key] ?? key;
     if (k === 'addPhrase') next.phrases = normalizePhrases([...s.phrases, ...normalizePhrases(v)]);
     else if (k === 'removePhrase') { const drop = normalizePhrases(v); next.phrases = s.phrases.filter((x) => !drop.includes(x)); }
     else if (k in DEFAULTS) next[k] = v;
-    else throw new ListenerError('invalid', `unknown setting ${k} (${Object.keys(DEFAULTS).join(', ')}, addPhrase, removePhrase)`);
+    else throw new ListenerError('invalid', `unknown setting ${key} (${Object.keys(DEFAULTS).join(', ')}, addPhrase, removePhrase)`);
   }
   return normalizeSettings(next);
 }

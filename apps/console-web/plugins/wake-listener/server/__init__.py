@@ -4,7 +4,8 @@ The settings (wake phrases, the off switch, the engine) and the last state the o
 plugin's data folder through the plugin's Node core (listener.mjs → core.mjs), so the console page, the MCP tools
 (plugin-commands@1: wake-listener_*), the CLI (`axf wake-listener …`) and this share one implementation.
 
-  GET  settings              the settings (on, phrases, engine, awakeSec, answerSec, speak, chime, indicator, pauseHidden)
+  GET  settings              the settings (on, phrases, engine, awakeSec, answerSec, speak, chime, indicator, pauseHidden,
+                             useClaude = axf.voice.useClaude, claudeTimeoutSec = axf.voice.claudeTimeoutSec)
   POST settings {patch}      change any of them; addPhrase / removePhrase add or drop one wake phrase
   POST on | POST off         the switch (the open console follows within a few seconds)
   GET  state                 the last state the console reported: phase (off / idle / awake / wizard), engine, mic open,
@@ -94,7 +95,7 @@ async def set_settings(request: Request) -> JSONResponse:
     patch = body.get("patch") if isinstance(body.get("patch"), dict) else body
     pairs = _pairs(patch)
     if not pairs:
-        return answer({"ok": False, "code": "invalid", "message": "send { on?, phrases?, engine?, awakeSec?, answerSec?, speak?, chime?, indicator?, pauseHidden?, addPhrase?, removePhrase? }"})
+        return answer({"ok": False, "code": "invalid", "message": "send { on?, phrases?, engine?, awakeSec?, answerSec?, speak?, chime?, indicator?, pauseHidden?, useClaude?, claudeTimeoutSec?, addPhrase?, removePhrase? }"})
     return answer(await run_in_threadpool(cli, "set", *pairs, "--by", _who(request)))
 
 

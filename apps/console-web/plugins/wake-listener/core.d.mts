@@ -20,8 +20,15 @@ export interface ListenerSettings {
   chime: boolean;
   indicator: 'always' | 'listening' | 'never';
   pauseHidden: boolean;
+  /** Claude mode: understand commands with Claude while Claude is connected */
+  useClaude: boolean;
+  /** seconds Claude mode waits before the scripted matcher takes the command */
+  claudeTimeoutSec: number;
 }
 export const DEFAULTS: Readonly<ListenerSettings>;
+export const SETTING_KEYS: Readonly<Record<'axf.voice.useClaude' | 'axf.voice.claudeTimeoutSec', 'useClaude' | 'claudeTimeoutSec'>>;
+export const CLAUDE_TIMEOUT_MIN: number;
+export const CLAUDE_TIMEOUT_MAX: number;
 
 export class ListenerError extends Error { code: string; constructor(code: string, message: string) }
 

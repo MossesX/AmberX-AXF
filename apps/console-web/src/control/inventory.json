@@ -6,8 +6,8 @@
     "nav": 16,
     "tabGroups": 22,
     "tabs": 76,
-    "settingsTabs": 67,
-    "settings": 85,
+    "settingsTabs": 68,
+    "settings": 87,
     "functions": 238,
     "buttons": 62,
     "plugins": 68
@@ -2040,6 +2040,13 @@
       "plugin": "ai.amberx.axf.console.voice-notes"
     },
     {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=wake-listener",
+      "id": "wake-listener",
+      "label": "Wake listener",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.wake-listener"
+    },
+    {
       "address": "view:settings/tab:settings.tabs=alerts",
       "id": "alerts",
       "label": "Alerts",
@@ -2382,6 +2389,36 @@
       "runs": "console",
       "plugin": "ai.amberx.axf.console.molly-guide",
       "file": "plugins/molly-guide/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=wake-listener/setting:axf.voice.useClaude",
+      "kind": "setting",
+      "label": "Understand with Claude when connected",
+      "key": "axf.voice.useClaude",
+      "type": "toggle",
+      "detail": "Settings › Plugins › Wake listener",
+      "keywords": [
+        "axf.voice.useClaude",
+        "Wake listener"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.wake-listener",
+      "file": "plugins/wake-listener/web/index.tsx"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=wake-listener/setting:axf.voice.claudeTimeoutSec",
+      "kind": "setting",
+      "label": "Wait for Claude (seconds)",
+      "key": "axf.voice.claudeTimeoutSec",
+      "type": "number",
+      "detail": "Settings › Plugins › Wake listener",
+      "keywords": [
+        "axf.voice.claudeTimeoutSec",
+        "Wake listener"
+      ],
+      "runs": "console",
+      "plugin": "ai.amberx.axf.console.wake-listener",
+      "file": "plugins/wake-listener/web/index.tsx"
     },
     {
       "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=ashes/setting:axf.ashes.on",
@@ -9606,6 +9643,7 @@
         "wake-listener",
         "wake listener"
       ],
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=wake-listener",
       "provides": [
         "service:axf.wake-listener@1"
       ],

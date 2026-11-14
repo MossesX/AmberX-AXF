@@ -21,7 +21,7 @@ import { Button, Chip, Container, Note, SelectField, Switch, TextField, useRunti
 import type { AxfWebLibrary } from '@console/axf/react/library';
 import { pluginFetch } from '@console/plugins';
 import { PluginLifecyclePanel } from '@console/pluginLifecycle';
-import { ENGINE_LABEL, FOLDER, hear, initialState, light, normalizeSettings, pickEngine, sleep, stateLine, switched, wizardOff, wizardOn, type ListenerSettings, type ListenerState } from '../core.mjs';
+import { CLAUDE_TIMEOUT_MAX, CLAUDE_TIMEOUT_MIN, DEFAULTS, ENGINE_LABEL, FOLDER, SETTING_KEYS, hear, initialState, light, normalizeSettings, pickEngine, sleep, stateLine, switched, wizardOff, wizardOn, type ListenerSettings, type ListenerState } from '../core.mjs';
 import { available, chime, createEngine, say, type Engine } from './engine';
 import { cancelFloor, floorLabel, handleCommand, hasFloor } from './flow';
 import { appMenu } from './menu';
@@ -31,6 +31,9 @@ const ID = 'ai.amberx.axf.console.wake-listener';
 const ASSET_ID = 'wake-listener';
 const COUNTER = 'wake-listener.live';
 const SETTINGS_POLL_MS = 6_000;
+/** Claude mode settings (console-wide keys; the plugin server's copy is the one every console, REST, MCP and the CLI share). */
+export const USE_CLAUDE_KEY = 'axf.voice.useClaude';
+export const CLAUDE_TIMEOUT_KEY = 'axf.voice.claudeTimeoutSec';
 const REPORT_MIN_MS = 2_000;
 
 /* ------------------------------------------------------------------ the one listener in this page */
@@ -52,6 +55,7 @@ function applySettings(s: ListenerSettings & { updatedAt?: string }) {
   const before = L.settings;
   L.settings = { ...normalizeSettings(s), updatedAt: s.updatedAt };
   const changed = JSON.stringify(before) !== JSON.stringify(L.settings);
+  mirrorClaudeSettings();
   if (L.state.on !== L.settings.on) setState(switched(L.state, L.settings.on));
   if (changed) void syncEngine();
   else tell();
@@ -62,6 +66,32 @@ async function saveSettings(patch: Record<string, unknown>): Promise<string> {
   if (!r.ok || !j.ok || !j.settings) return j.message || `The console answered ${r.status}.`;
   applySettings(j.settings);
   return '';
+}
+
+/* ------------------------------------------------------------------ Claude mode settings: server copy <-> settings keys */
+
+let mirroring = false;
+/** The server's values into the console settings keys (so the generated Basic-level switch shows them). */
+function mirrorClaudeSettings() {
+  const rt = L.rt;
+  if (!rt) return;
+  mirroring = true;
+  try {
+    for (const [key, field] of Object.entries(SETTING_KEYS)) {
+      const v = L.settings[field as 'useClaude' | 'claudeTimeoutSec'];
+      if (rt.settings.get(key) !== v) rt.settings.set(key, v);
+    }
+  } finally { mirroring = false; }
+}
+/** A change made through the console settings keys (the switch, settings.set:<key>, console-control) goes to the server. */
+function watchClaudeSettings(rt: AxfRuntime) {
+  for (const [key, field] of Object.entries(SETTING_KEYS)) {
+    rt.settings.onChange(key, (v) => {
+      if (mirroring || v === null || v === undefined) return;
+      if (L.settings[field as 'useClaude' | 'claudeTimeoutSec'] === v) return;
+      void saveSettings({ [field]: v });
+    });
+  }
 }
 
 function scheduleReport() {
@@ -234,13 +264,22 @@ export const plugin: AxfWebLibrary = {
   version: '0.1.0',
   builtWith: { model: 'fable', builtAt: '2026-11-13' },
   appMenu,
-  settingsTabs: [{ id: FOLDER, label: 'Wake listener', icon: 'mic', order: 94, parent: 'plugins', description: 'Wake phrases, the off switch, the recognizer, spoken replies' }],
+  settingsTabs: [{ id: 'wake-listener', label: 'Wake listener', icon: 'mic', order: 94, parent: 'plugins', description: 'Wake phrases, the off switch, the recognizer, spoken replies' }],
+  settings: [{
+    id: 'wake-listener.claude', label: 'Claude mode', icon: 'sparkles', tab: 'wake-listener', order: 5,
+    description: 'While Claude is connected, Claude understands what you say and picks the command; when it is not (or it is slow), the scripted matcher answers. Approvals always stay on the spoken approve / deny words.',
+    settings: [
+      { key: USE_CLAUDE_KEY, label: 'Understand with Claude when connected', kind: 'toggle', default: DEFAULTS.useClaude, scope: 'app', description: 'Off: always the scripted matcher, even while Claude is connected; nothing you say is sent to Claude.' },
+      { key: CLAUDE_TIMEOUT_KEY, label: 'Wait for Claude (seconds)', kind: 'number', default: DEFAULTS.claudeTimeoutSec, min: CLAUDE_TIMEOUT_MIN, max: CLAUDE_TIMEOUT_MAX, step: 1, scope: 'app', description: 'After this long the scripted matcher takes the same command.' },
+    ],
+  }],
   settingsPanels: [
     { id: 'wake-listener.panel', tab: FOLDER, title: 'Wake listener', icon: 'mic', order: 10, render: () => <WakeListenerPanel /> },
     { id: 'wake-listener.lifecycle', tab: FOLDER, title: 'Install & uninstall', icon: 'package', order: 90, render: () => <PluginLifecyclePanel folder={FOLDER} /> },
   ],
   register(rt) {
     L.rt = rt;
+    watchClaudeSettings(rt);
     rt.actions.register('wake-listener.on', () => { void saveSettings({ on: true }); }, { label: 'Wake listener on', effect: 'write' });
     rt.actions.register('wake-listener.off', () => { void saveSettings({ on: false }); }, { label: 'Wake listener off', effect: 'write' });
     rt.actions.register('wake-listener.toggle', () => { void saveSettings({ on: !L.settings.on }); }, { label: 'Wake listener on / off', effect: 'write' });

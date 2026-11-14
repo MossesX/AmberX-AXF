@@ -171,5 +171,11 @@ ok(searchCatalog(catalog, 'veto').some((e) => e.id === 'control:pass.scopes') &&
 ok(speakResult({ speak: '' }, { ok: false, message: 'nope' }) === 'That failed: nope.' && speakResult({ speak: '' }, { ok: true }) === 'Done.' && speakResult({ speak: 'items' }, { items: [] }) === 'Nothing open.', 'speakResult');
 ok(cli('match', 'create a new project named Gizmo Johnson').match.entry.id === 'project-wizard/run' && cli('catalog', 'veto').count >= 1, 'cli match / catalog');
 
+/* Claude mode settings (build voice-listener-use-claude-when-connected) */
+ok(d.useClaude === true && d.claudeTimeoutSec === 8, 'Claude mode: on by default, 8 s timeout');
+ok(applyPatch(d, { 'axf.voice.useClaude': false }).useClaude === false && applyPatch(d, { useClaude: 'false' }).useClaude === false, 'Claude mode: console key and store key both switch it');
+ok(applyPatch(d, { 'axf.voice.claudeTimeoutSec': 99 }).claudeTimeoutSec === 30 && applyPatch(d, { claudeTimeoutSec: 0 }).claudeTimeoutSec === 2, 'Claude timeout clamped 2..30');
+ok(cli('set', 'axf.voice.useClaude=false').settings.useClaude === false && cli('set', 'useClaude=true', 'claudeTimeoutSec=5').settings.claudeTimeoutSec === 5, 'cli set Claude mode');
+
 console.log(`${n - failed}/${n} wake-listener checks passed`);
 process.exit(failed ? 1 : 0);
