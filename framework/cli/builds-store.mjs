@@ -18,6 +18,9 @@
  *   … draft <profile> | apply <profile> | discard <profile>  the Steps view draft
  *   --json on any command prints JSON.
  *
+ *   _claude/builds/renames.json          build-renames@1: { old id: new id } for builds moved to a short id; every
+ *                                        lookup by an old id resolves through it (resolveBuildId)
+ *
  * AXF_BUILDS_STORE=<file> points at another store (tests); its journal goes next to it.
  * Live (Nov 3 2026, orch-live-sync): every write that changes a build is also queued for main (builds-live.mjs) and
  * published there at once as its own status-only commit, whatever branch this checkout is on. AXF_BUILDS_LIVE=0 = off.
@@ -31,6 +34,7 @@ import { fileURLToPath } from 'node:url';
 import * as core from '../plan/builds-store-core.mjs';
 import * as merge from '../plan/builds-merge-core.mjs';
 import { mergeOrigin } from '../core/build-origin.mjs';
+import { addRename, normRenames, renameInStore, renamesText, resolveRename } from '../core/build-renames.mjs';
 import { enqueueLive, flushLiveSoon } from './builds-live.mjs';
 import { emitChanges } from './build-hooks.mjs';
 import { BASE_PROFILE, REPO_ROOT, activeProfile, hasRepoExport, orchestratorPath, persistRoot, profileRel, readProfiles } from './persist.mjs';
@@ -79,6 +83,28 @@ function foldOrigins(store) {
   if (changed) { const f = originsFile(); const tmp = `${f}.tmp-${process.pid}`; writeFileSync(tmp, originsText(side)); renameSync(tmp, f); }
   return changed;
 }
+// ------------------------------------------------------------------ renames (build-renames@1)
+/*
+ * Builds moved to a short id keep their old id working: _claude/builds/renames.json maps old → new, and every command
+ * that takes a build id resolves it first (resolveBuildId). The store keeps the old record as a soft-deleted tombstone.
+ */
+export const RENAMES_REL = '_claude/builds/renames.json';
+export const renamesFile = () => (process.env.AXF_BUILDS_STORE ? storeFile().replace(/\.json$/, '') + '.renames.json' : join(dirname(storeFile()), 'renames.json'));
+export function readRenames() { try { return normRenames(JSON.parse(readFileSync(renamesFile(), 'utf8'))); } catch { return {}; } }
+/** The current id of a build: an old id from renames.json becomes the new one; anything else is returned as is. */
+export const resolveBuildId = (id) => (typeof id === 'string' && id ? resolveRename(readRenames(), id) : id);
+/**
+ * Move a build to a new id: the store (new record, old one kept as a tombstone, one journalled write) and renames.json.
+ * Returns { record }.
+ */
+export function renameBuildNow(from, to, { branch, pr, by = 'build-rename' } = {}) {
+  const map = addRename(readRenames(), from, to); // refuses a bad pair before the store is touched
+  let record = null;
+  withStore((s) => { record = renameInStore(s, from, to, { branch, pr, by }).record; return s; }, { by, action: 'rename', note: `${from} → ${to}` });
+  const f = renamesFile(); const tmp = `${f}.tmp-${process.pid}`; writeFileSync(tmp, renamesText(map)); renameSync(tmp, f);
+  return { record };
+}
+
 export const mergeOriginsText = (a, b) => { const pa = (() => { try { return JSON.parse(a || '{}').origins ?? {}; } catch { return {}; } })(); const pb = (() => { try { return JSON.parse(b || '{}').origins ?? {}; } catch { return {}; } })(); const out = { ...pa }; for (const [k, v] of Object.entries(pb)) out[k] = mergeOrigin(out[k], v); return originsText(out); };
 function readStore() {
   const f = storeFile();

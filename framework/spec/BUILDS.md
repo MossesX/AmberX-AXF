@@ -136,6 +136,22 @@ merge into their build or become records; repo and hub copies unioned, newer `up
 queue epics become `kind: epic`; items only in git history come in **archived** and tagged recovered).
 `verifyNothingLost(sources, store)` is the proof, run by the dry run, the real migration and `verify`.
 
+## Renames (`build-renames@1`)
+
+axHub's `vps.build_land` / `build_stop` / `build_clean` take only `^[a-z0-9][a-z0-9-]{0,39}$`. A build filed with a
+longer id is moved to a short one by `framework/cli/build-rename.mjs` (`plan`, `apply <old> [<new>] [--dry]`,
+`resolve <id>`): its branch's report, shipped manifest and THREADS rows are renamed in one commit on its branch, then
+the worktree folder and branch move, an open PR is reopened from the new branch (same title, body, base, draft state
+and labels; the old one is linked and closed, its branch deleted after), and the store takes the new id.
+
+- The store gets a new record under the new id (title, steps with their uids, notes, origin, PR); the old record stays as
+  a soft-deleted tombstone without steps and with a note naming the new id. Newer wins on merge, so a stale copy of the
+  old record in another checkout can never bring it back.
+- `_claude/builds/renames.json` is `{ old: new }`. The orchestrator CLI (`act`, `next`, `brief`), the pipeline CLI
+  (`queue`, `show`, `route`, `split`, the tab actions) and `builds-live.mjs link` resolve an old id through it
+  (`resolveBuildId`), following chains.
+- The title (display name) never changes. Builds with a live session are skipped; landed builds are left alone.
+
 ## Deferred
 
 - A `builds-store@1` JSON Schema under `schemas/json/` for editors (the validator above is the contract today).
