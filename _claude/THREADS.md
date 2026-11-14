@@ -792,7 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 21:14 UTC · `skin-animations-swatches-skin-switch` → pending, note (all) · reconciler
 - 2026-11-13 21:14 UTC · `context-menus-plugin-one-true-source` branch claude/context-menus-plugin-one-true-source, PR #659 (all) · builds-live
 - 2026-11-13 21:14 UTC · `hotfix-desktop-console-draws-app-menu` note (all) · orchestrator
 - 2026-11-13 21:14 UTC · `hotfix-desktop-console-draws-app-menu` → running, note (all) · pipeline
@@ -1192,6 +1191,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 18:45 UTC · `themed-native-controls-plugin` note (all) · orchestrator
 - 2026-11-14 18:45 UTC · `picker-dialog-plugin-replaces-all` note (all) · orchestrator
 - 2026-11-14 18:46 UTC · `picker-dialog-plugin-replaces-all` note (all) · orchestrator
+- 2026-11-14 18:47 UTC · `land-all-skin-builds` s19 done (all) · orchestrator
 
 ## Token passes (log)
 
