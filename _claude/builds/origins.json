@@ -4008,6 +4008,18 @@
    "from": "brief",
    "addenda": []
   },
+  "land-finish-auto-land-live-clear-backlog": {
+   "said": "We need to make sure things are landing as soon as they're built and merged as soon as they're built. I keep getting too many commits behind",
+   "at": "2026-11-14T22:17:37.935Z",
+   "source": "",
+   "session": "",
+   "link": "",
+   "by": "",
+   "brief": "",
+   "verbatim": true,
+   "from": "",
+   "addenda": []
+  },
   "land-merge-queue-first": {
    "said": "You gotta stop merging these one at a time or they're gonna have to run checks again. That's what happened last time. ... Land the queue first. Stop everything. Stop merging these things one at a time so they don't step on each other's toes. Save the compute.",
    "at": "2026-11-04T17:00:00Z",

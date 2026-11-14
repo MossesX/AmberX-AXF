@@ -796,7 +796,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 21:20 UTC · `icon-map-icon-packs-every-icon-badge-app` note (all) · pipeline
 - 2026-11-13 21:21 UTC · `own-token-sets-for-grids-and-tab-groups` → pending, note (all) · reconciler
 - 2026-11-13 21:21 UTC · `lander-regenerates-generated-files-clash` s1 done, note (all) · reconciler
 - 2026-11-13 21:23 UTC · `lander-regenerates-generated-files-clash` s1 done, → running (all) · orchestrator
@@ -1196,6 +1195,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 22:15 UTC · `replace-merge-queue-one-time-landing` added (0 steps) (all) · console
 - 2026-11-14 22:15 UTC · `replace-merge-queue-one-time-landing` → queued, note (all) · console
 - 2026-11-14 22:15 UTC · `land-all-skin-builds` note (all) · mcp
+- 2026-11-14 22:17 UTC · `land-finish-auto-land-live-clear-backlog` added (0 steps) (all) · console
 
 ## Token passes (log)
 
