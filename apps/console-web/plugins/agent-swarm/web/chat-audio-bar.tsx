@@ -35,8 +35,8 @@ export function ChatAudioBar({ audio, agents, act }: { audio: AudioState | undef
       </div>
       {s.enabled && (
         <>
+          <div className="sw-slider"><Slider label="Volume" value={vol} min={0} max={100} unit="%" onChange={moveVol} /></div>
           <div className="sw-bar">
-            <div className="sw-slider"><Slider label="Volume" value={vol} min={0} max={100} unit="%" onChange={moveVol} /></div>
             <TabGroup id="agent-swarm.audio-mode" label="Read" size="sm" value={s.mode} onChange={(v: Mode) => void set({ mode: v })} tabs={A.MODES.map((m) => ({ value: m, label: A.MODE_LABELS[m] }))} />
             <SelectField className="sw-bar__pick" label="Voices" value={s.cast} empty="From the skin" options={(audio?.casts ?? []).map((c) => ({ value: c.id, label: c.name }))} onChange={(v) => void set({ cast: v || 'skin' })} />
           </div>
@@ -47,6 +47,7 @@ export function ChatAudioBar({ audio, agents, act }: { audio: AudioState | undef
             <span className="fx-muted" aria-live="polite">{who}{p.waiting ? ` · ${p.waiting} waiting` : ''}{p.dropped ? ` · ${p.dropped} skipped (queue full)` : ''}{p.error ? ` · ${p.error}` : ''}</span>
           </div>
           <div className="sw-bar" role="group" aria-label="Who is read aloud">
+            <span className="fx-muted">Read aloud:</span>
             {agents.map((a) => <Switch key={a.id} label={a.name} checked={!s.muted[a.id]} onChange={(v) => void set(v ? { unmute: a.id } : { mute: a.id })} />)}
             <Button size="sm" onClick={() => void set({ unmute: 'all' })}>Unmute all</Button>
           </div>

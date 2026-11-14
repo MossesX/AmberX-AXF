@@ -102,4 +102,3 @@
 .sw-sections__history ul { margin: var(--fx-dens-gap-sm) 0 0; padding-left: var(--fx-dens-gap-lg) }
 /* group chat audio: the controls above the room */
 .sw-audio { padding: var(--fx-dens-gap-lg) var(--fx-dens-gap-xl); border: var(--fx-border-w) solid var(--fx-border); border-radius: var(--fx-radius-md) }
-.sw-audio .sw-slider { flex: 1 1 calc(var(--fx-font-size) * 12); min-width: 0 }

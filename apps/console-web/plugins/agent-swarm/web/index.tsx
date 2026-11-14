@@ -9,6 +9,7 @@ import { PROFILE_EVENT } from './cards';
 import { writeLocal } from '@console/api';
 import { SectionOwnersPanel } from './sections';
 import * as player from './chat-audio';
+import { registerAudioActions, registerAudioVoice } from './audio-actions';
 
 function Desks() {
   const filled = useSlotFilled('swarm.settings.desks');
@@ -32,6 +33,8 @@ export const plugin: AxfWebLibrary = {
     // group chat audio: this device's player (chat-audio.ts); the skin's voice cast is the active `voice` slot
     player.start({ device: rt.settings.get(player.AUDIO_KEYS.device) !== false, skinPick: () => String((rt.getState().active as Record<string, string>).voice ?? '') });
     rt.settings.onChange(player.AUDIO_KEYS.device, () => player.setDevice(rt.settings.get(player.AUDIO_KEYS.device) !== false));
+    registerAudioActions(rt);
+    void registerAudioVoice('ai.amberx.axf.console.agent-swarm');
     rt.actions.register(COLOR_BY_VIBE_ACTION, () => rt.settings.set(KEYS.colorByVibe, !rt.settings.get(KEYS.colorByVibe)), { label: 'Color chat messages by vibe' });
   },
   views: { 'agent-swarm': { title: 'Agent swarm', icon: 'user', keywords: ['swarm', 'agents', 'jobs', 'leases', 'cost', 'tokens', 'headless'], render: () => <SwarmPage /> } },

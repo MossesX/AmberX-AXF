@@ -10,6 +10,7 @@ import { ChatSettingsTab } from './chat-settings';
 import { JobTypesTab, useJobs } from './jobs';
 import { FOLDER, ModelChip, api, fmtTime, statusText, useSwarm, type Act, type Agent, type AgentState, type Job, type Pay, type Res, type Slot, type Spend, type StatusDef, type SwarmState } from './ui-types';
 import './swarm.css';
+import { TAB_EVENT } from './audio-actions';
 
 export { FOLDER };
 
@@ -35,6 +36,8 @@ export function SwarmPage() {
   const stats = useMemo(() => (state ? Object.fromEntries(state.roster.agents.map((a) => [a.id, core.agentStats(state.runs, a.id, state.prices)])) : {}), [state]);
   const doAct: Act = async (c) => { const l = await act(c); for (const x of l ?? []) rt.terminal.log('swarm', x, 'ok'); return l; };
   useEffect(() => { consoleApi.writeLocal('swarm-tab', tab); }, [tab]);
+  // a deep link (agent-swarm.chat-audio) picks the tab while the page is already open
+  useEffect(() => { const on = (e: Event) => { const t = (e as CustomEvent<string>).detail; if (TABS.some((x) => x.id === t)) setTab(t as Tab); }; window.addEventListener(TAB_EVENT, on); return () => window.removeEventListener(TAB_EVENT, on); }, []);
   useEffect(() => { const on = () => setTab('crew'); window.addEventListener(PROFILE_EVENT, on); return () => window.removeEventListener(PROFILE_EVENT, on); }, []);
   if (!state) return <div className="fx-empty">{error || 'Loading the agent swarm…'}</div>;
   return (
