@@ -792,7 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 20:31 UTC · `skin-animations-swatches-skin-switch` PR #652, note (all) · reconciler
 - 2026-11-13 20:31 UTC · `dispatcher-gate-never-launch-build` PR #651, note (all) · reconciler
 - 2026-11-13 20:31 UTC · `per-toolbar-settings-fix-failing-chrome` PR #650, note (all) · reconciler
 - 2026-11-13 20:31 UTC · `per-toolbar-settings-fix-failing-chrome` → pending, note (all) · pipeline
@@ -1192,6 +1191,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 12:18 UTC · `demo-video-series-three-minute-browser` note (all) · orchestrator
 - 2026-11-14 12:25 UTC · `hotfix-get-main-ci-green-theme-swap` note (all) · orchestrator
 - 2026-11-14 12:26 UTC · `hotfix-get-main-ci-green-theme-swap` → pending, note (all) · pipeline
+- 2026-11-14 12:27 UTC · `hotfix-get-main-ci-green-theme-swap` → queued (all) · voice
 
 ## Token passes (log)
 

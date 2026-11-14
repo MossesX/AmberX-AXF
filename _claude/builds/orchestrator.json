@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T12:26:15.713Z",
+ "updatedAt": "2026-11-14T12:27:36.326Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -137343,14 +137343,14 @@
    "title": "HOTFIX: get main CI green (theme-swap opacity + plugin lifecycle stale refs)",
    "category": "bug fix",
    "detail": "Main's full CI is red, so the merge queue can't land any batch and builds stop early back to Pending. Fix: (1) scripts/theme-swap.mjs fails because every style theme shows the hub opacities (look pinned to axHub); make style themes use their own opacity values. (2) Plugin lifecycle check: stale refs in 7 plugins; fix them. Land #665 first. Then re-add the console app stack #637 #639 #633 #640 #643 and the land-batch PRs to the merge queue and redeploy the console.",
-   "status": "pending",
+   "status": "queued",
    "hidden": false,
    "source": "console",
    "pendingId": "",
    "branch": "claude/hotfix-get-main-ci-green-theme-swap",
    "pr": "#669",
    "createdAt": "2026-11-14T03:29:11.368Z",
-   "updatedAt": "2026-11-14T12:26:06.636Z",
+   "updatedAt": "2026-11-14T12:27:35.035Z",
    "builtAt": "",
    "notes": [
     {
