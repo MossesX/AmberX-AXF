@@ -267,3 +267,12 @@ async def pick(request: Request) -> dict[str, Any]:
     if not v:
         raise HTTPException(422, "value is required")
     return run_in_console("themed-controls.pick", v, _by(request))
+
+
+@router.get("/colors")
+def colors() -> dict[str, Any]:
+    """The colour controls on the open console's screen (ref, label, value), the open colour picker and the recent colours."""
+    live = _live()
+    return {"controls": [c for c in live.get("controls") or [] if c.get("family") == "color"],
+            "open": next((o for o in live.get("open") or [] if o.get("family") == "color"), None),
+            "recent": live.get("recentColors") or [], "at": live.get("at")}

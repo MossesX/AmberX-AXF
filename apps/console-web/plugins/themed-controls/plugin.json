@@ -198,6 +198,13 @@
         }
       },
       {
+        "route": "GET /colors",
+        "id": "colors",
+        "title": "Colour controls",
+        "readOnly": true,
+        "description": "The colour controls on the open console's screen with their values, the open colour picker and the recent colours. Set one with set {ref, value} (#rrggbb, a theme colour name such as accent, or a CSS colour name); open its picker with open {ref}."
+      },
+      {
         "route": "POST /report",
         "skip": "the open console's own report of its switches and live state, not a command"
       }

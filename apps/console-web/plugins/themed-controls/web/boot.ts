@@ -9,13 +9,14 @@ import { registerApi } from './api';
 import { ELEMENT_FAMILIES, GLOBAL_FAMILIES } from './families';
 import { liveHost, startHost } from './host';
 import { startSync } from './sync';
+import { recentColors } from './families/color';
 
 let running: (() => void) | null = null;
 
 export function boot(rt: AxfRuntime): void {
   if (running || typeof document === 'undefined') return;
   const offApi = registerApi(rt);
-  const offSync = startSync(rt, () => liveHost()?.report() ?? {});
+  const offSync = startSync(rt, () => ({ ...(liveHost()?.report() ?? {}), recentColors: recentColors() }));
   let offHost: () => void = () => undefined;
   const stop = () => { offHost(); offSync(); offApi(); running = null; };
   running = stop;
