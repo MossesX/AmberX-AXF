@@ -75,3 +75,9 @@ Survey taken 2026-11-14 after `git fetch origin` (main at `1169074ab`). Ahead/be
 | 8 | #654 | own-token-sets-for-grids-and-tab-groups | 2026-11-14 22:33 | `647b79e58` |
 
 All eight merge commits are ancestors of `origin/main`.
+
+## Deploy check (s23)
+
+- `/usr/local/bin/axf-console-update` rebuilt the console at `2d818e949` (from `45ac36580`), which includes all 8 merge commits; state `done`. The deploy before it (21:44) stopped at #657, so #654 went live here.
+- Console API healthy (`/api/health` ok). `skin-gallery` and `skin-editor` plugins load with no errors; `GET /api/plugins/skin-gallery/state` answers through `skin-switch@1` (console skin `arctic-calm`); `/open?skin=default` resolves to `/#/skin-gallery?skin=default`.
+- **Visual check not done:** a headless browser on the VPS can't render the console UI. Since #618 the console takes its look only from axHub, and axHub refuses the VPS origin (CORS) and needs a signed-in session, so the page stays on its "Waiting for axHub" screen by design. The desktop and phone shots in Screenshots, group "land-all-skin-builds - Nov 14 5:44 PM", show that screen. Checking for one banner and one Skins panel needs a signed-in browser on console.amberxai.com. On the branch, check-skin-switch and plugin-lifecycle (s3) cover the swap, where installing hides the built-in panel and uninstalling brings it back.
