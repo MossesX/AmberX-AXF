@@ -1,7 +1,7 @@
 {
  "$export": "builds@1 export (read-only): generated from _claude/builds/store.json after every write. Change builds through the orchestrator, Pending builds, the build queue or the Builds page; a direct edit here is taken into the store, then this file is regenerated.",
  "$axf": "orchestrator@1",
- "updatedAt": "2026-11-14T23:14:35.553Z",
+ "updatedAt": "2026-11-14T23:14:52.218Z",
  "rules": {
   "sameSession": true,
   "subAgents": false,
@@ -101022,7 +101022,7 @@
    "title": "Pass approval hook: deep link + AmberX notification Approve button for veto passes",
    "category": "",
    "detail": "Today a pass request can only be approved from the console banner or Token control → Passes. Add: a deep link URL that opens straight to the pending pass with Approve/Deny (console + Molly), returned in pass_grant's result so Claude can hand it over; an AmberX push notification with Approve/Deny actions that work in the background (no navigation); API to approve from Brett's own session. Full API control.",
-   "status": "running",
+   "status": "built",
    "hidden": false,
    "source": "console",
    "pendingId": "",
@@ -101031,7 +101031,7 @@
    "priority": "P0",
    "createdAt": "2026-11-10T17:10:29.492Z",
    "updatedAt": "2026-11-14T23:13:42.882Z",
-   "builtAt": "",
+   "builtAt": "2026-11-14T23:13:42.882Z",
    "notes": [
     {
      "text": "Queued by console.",
@@ -101092,6 +101092,10 @@
     {
      "text": "Headless run axf-pass-approval-hook-deep-link-amberx-notification--lenny: brief only · start 12.3K tokens ($0.03) · cost $9.32 · 159 turns · 6 tools, MCP none",
      "at": "2026-11-14T23:13:42.882Z"
+    },
+    {
+     "text": "Phase 2 done, PR #681. UI Review shots not taken: rebuild-shots rendered blank (Chromium ERR_NETWORK_CHANGED on every module load in this session); the pass-approval view needs desktop + phone shots before the PR is ready. AmberX native Approve/Deny = PORTING.md deferred gap. ntfy http actions may need axHub to let POST /api/passes/action through.",
+     "at": "2026-11-14T23:13:19.519Z"
     }
    ],
    "approvals": [
@@ -101313,8 +101317,8 @@
      "session": "same",
      "agent": false,
      "skip": false,
-     "done": false,
-     "doneAt": "",
+     "done": true,
+     "doneAt": "2026-11-14T23:13:15.472Z",
      "note": "",
      "uid": "st-mwb00qda6oi0e8",
      "createdAt": "2026-11-10T18:03:26.974Z"
