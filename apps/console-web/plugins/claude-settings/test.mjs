@@ -141,6 +141,15 @@ ok(planned('axf-console.control_set')?.to === 'allow' && planned('axf-console.bu
 ok(planned('axf-console.orchestrator_upgrade_approve')?.to === 'confirm', 'a model upgrade keeps its confirm');
 ok(!planned('axf-console.control_remove'), 'a console delete keeps the hub rule');
 ok(P.defaultFor(T.services[0], { name: 'launch', policy: 'veto' }, rules).decision === 'veto', 'vps.launch holds: it runs a shell');
+ok(P.defaultFor(T.services[0], { name: 'run', policy: 'allow' }, rules).decision === 'veto', 'vps.run holds even if someone let it through');
+{
+  const con = T.services[3];
+  ok(['console_terminal_sessions_run', 'agent_manager_vinny_commands_by_cid_run'].every((n) => P.defaultFor(con, { name: n, policy: 'allow' }, rules).decision === 'veto'), "the console's terminal and Vinny command run hold: they execute a shell");
+  ok(['console_show', 'console_open', 'build_orchestrator_act_step', 'orchestrator_dispatch', 'control_act'].every((n) => P.defaultFor(con, { name: n, policy: 'veto' }, rules).decision === 'allow'), 'other console and orchestrator writes run at once');
+  const held = rules.hold.flatMap((h) => h.tools.map((t) => `${h.service}.${t}`)).sort().join();
+  ok(held === 'axf-console.agent_manager_vinny_commands_by_cid_run,axf-console.console_terminal_sessions_run,vps.launch,vps.run', 'the hold list is shell commands only');
+  ok(rules.holdMatch.length === 0 && rules.confirm.flatMap((h) => h.tools).join() === 'orchestrator_upgrade_approve', 'no pattern holds; the confirm list is the model upgrade only');
+}
 ok(P.planDefaults({ services: [{ namespace: 's', type: 'rest', enabled: true, defaultPolicy: 'deny', tools: [{ name: 'w', policy: 'deny' }] }] }, rules).length === 0, 'a service denied by default is not opened up');
 ok(P.onHoldList('x', 'y', { holdMatch: ['('] }) === '', 'a bad pattern holds nothing and does not throw');
 ok(P.groupDecision(T.services[1]) === 'mixed' && P.groupDecision({ tools: [{ policy: 'veto' }] }) === 'veto', 'a service shows one decision or Mixed');
