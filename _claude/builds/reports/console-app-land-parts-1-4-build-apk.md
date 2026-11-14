@@ -99,3 +99,11 @@ read from `panel:phone-app` (part 1, `native.state`) and `panel:phone-bridge` (p
 baseline). Gap noted: the `native.*` actions are registered in a loop over `nativeRules.mjs`, so the static
 `control/inventory.json` scanner (literal ids only) doesn't list them. They are live at runtime and have help entries.
 The `device.*` actions are listed.
+
+**s10, wake word on parts 1-4.** Only the inventory clashed (regenerated). Mic ownership: the phone has one audio path,
+the WebView's capture. `WebHost.onPermissionRequest` gates it with part 3's mic switch (`MicTools.webCaptureAllowed`)
+and then Android's `RECORD_AUDIO`. On the page, the listener takes `mic-lease@1` (the same lease the Assistant mic,
+dictation and voice notes use), so only one of them listens at a time. Part 3 has no native capture of its own. The
+native `listener.*` recognizer is still a deferred twin (`framework/spec/PORTING.md`), so in the app the listener uses
+the WebView's SpeechRecognition. Checks: wake-listener 82/82, plugin-lifecycle clean, theme, controls, console-control,
+toolbars, chrome assets and help-coverage all pass.
