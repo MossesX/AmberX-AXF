@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5569,
- "updatedAt": "2026-11-14T23:11:00.312Z",
+ "rev": 5570,
+ "updatedAt": "2026-11-14T23:11:21.898Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -188656,7 +188656,7 @@
    "branch": "claude/console-axhub-retry-failed-calls",
    "pr": "#589",
    "createdAt": "2026-11-12T02:37:24.132Z",
-   "updatedAt": "2026-11-14T23:10:34.706Z",
+   "updatedAt": "2026-11-14T23:10:46.036Z",
    "builtAt": "",
    "notes": [
     {
@@ -188742,6 +188742,10 @@
     {
      "text": "Started run 3 on mossesx-max- (Opus, Phase 1): axf-console-axhub-retry-failed-calls--joey.",
      "at": "2026-11-14T23:10:34.706Z"
+    },
+    {
+     "text": "Claude account: mossesx-max- (mossesx@gmail.com) (axf-console-axhub-retry-failed-calls--joey, shared account login)",
+     "at": "2026-11-14T23:10:46.036Z"
     }
    ],
    "approvals": [],
@@ -188913,7 +188917,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 48,
+   "rev": 49,
    "deleted": false,
    "deletedAt": "",
    "pending": {
