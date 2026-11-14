@@ -1,6 +1,6 @@
 {
  "$axf": "plan@1",
- "generatedAt": "2026-11-14T00:53:48.887Z",
+ "generatedAt": "2026-11-14T23:33:36.425Z",
  "statuses": [
   "built",
   "partial",
@@ -4359,6 +4359,90 @@
    "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
+   "id": "f.appearance.hubskinonly",
+   "title": "Skin from axHub only: Settings → Appearance → Get my skin only from axHub (console) draws the hub-wide skin and axHub's tokens alone, drives the appearance lock (controls locked, \"Following axHub\"), keeps the app's own picks for when it is off",
+   "area": "Foundations",
+   "group": "Modules, extension points, placeholders",
+   "kind": "feature",
+   "status": "built",
+   "priority": "P3",
+   "wave": 1,
+   "effort": "",
+   "summary": "skin-rules.mjs hubOnlyLook, runtime HUB_SKIN_ONLY_KEY / appearance.hubskin; reachable by settings.set, console.settings, voice; default off; Kotlin twin deferred",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "f.appearance.hubskinonly"
+   ],
+   "modules": [
+    "app-console"
+   ],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "foundations",
+    "lib"
+   ],
+   "notes": "Nov 13 2026 (build console-skin-axhub-only): console Settings → Appearance → Get my skin only from axHub (default off). On: the look is composed from the hub-wide skin over the default snapshot only (skin-rules.mjs hubOnlyLook, fixture skin.json scopes.hubOnly); own skin, overrides, colour pick, UI/plugin scopes, device tweaks and plugin overrides are kept, not drawn; the switch drives the appearance lock (reason hub) so every look control is locked with \"Following axHub\"; hub changes apply live. Reachable by the setting (search, console.settings, settings.set:axf.lock.hubskin), the appearance.hubskin action and voice (\"lock the console to the axHub skin\", Python twin). Kotlin twin deferred (PORTING.md).",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-11-14",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
+  },
+  {
+   "id": "f.appearance.hubskinoverride",
+   "title": "Override axHub: the switch under Get my skin only from axHub (one or the other); while axHub-only is on every skin and asset editor is greyed out under a lock note with a \"Click here to override\" link; one confirm unlocks editing and edited parts are marked Overridden",
+   "area": "Foundations",
+   "group": "Modules, extension points, placeholders",
+   "kind": "feature",
+   "status": "built",
+   "priority": "P3",
+   "wave": 1,
+   "effort": "",
+   "summary": "runtime HUB_SKIN_OVERRIDE_KEY / HUB_SKIN_OVERRIDDEN_KEY / appearance.hubskin.override; react HubSkinLockNote / HubSkinLockArea; reachable by settings.set, console.settings, the action, voice; default off; Kotlin twin deferred",
+   "ports": {},
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "f.appearance.hubskinoverride"
+   ],
+   "modules": [
+    "app-console"
+   ],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "foundations",
+    "lib"
+   ],
+   "notes": "Nov 13 2026 (build skin-axhub-override-switch-greyed-out): console Settings → Appearance → Override axHub, under Get my skin only from axHub (default off). One or the other whichever way either is set (runtime onChange: Override on clears axf.lock.hubskin, axHub-only on clears axf.lock.hubskin.override and the overridden marks). While axHub-only is on every skin and asset editor is disabled, not hidden (HubSkinLockArea: Theme manager rows, Theme editor, Asset studio, nav style, context menu designer; the Appearance panel, skin picker, every-asset picker and plugin themes through the lock), each under HubSkinLockNote with Brett's wording and a Click here to override link; the link and the switch ask one confirm. Edits under Override are recorded in axf.lock.hubskin.overridden and shown as Overridden chips. Reachable by the setting (search, console.settings, settings.set:axf.lock.hubskin.override), the appearance.hubskin.override action and voice (\"override the axHub skin\", Python twin). Kotlin twin deferred (PORTING.md).",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-11-14",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Default: Opus 5.5"
+  },
+  {
    "id": "f.tokens",
    "title": "Tokens are the only way to style: no literal colors/sizes/fonts in any framework component",
    "area": "Foundations",
@@ -4406,6 +4490,53 @@
    "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
   },
   {
+   "id": "f.tokenregistry",
+   "title": "Token registry and Skin editor: every token registered (element, area, state, scheme, level, description, default, source), new UIs register theirs in the manifest, CI fails unregistered or unread tokens; Skin editor sandboxes any UI with live hot render, snapshot chain with revert, export as a new skin; full API",
+   "area": "Foundations",
+   "group": "Theme, layout and UI contracts",
+   "kind": "feature",
+   "status": "built",
+   "priority": "P1",
+   "wave": 1,
+   "effort": "",
+   "summary": "token-registry@1 + skin-snapshot@1 (core/engines/token-registry.mjs), console plugin skin-editor",
+   "ports": {
+    "android": {
+     "status": "built",
+     "where": "axf-kernel"
+    }
+   },
+   "capabilities": [],
+   "dependsOn": [],
+   "catalog": [
+    "f.tokenregistry"
+   ],
+   "modules": [
+    "axf-kernel"
+   ],
+   "files": [],
+   "acceptance": [],
+   "warnings": [],
+   "recommendations": [],
+   "previews": [],
+   "screenshots": [],
+   "links": [],
+   "tags": [
+    "foundations",
+    "lock"
+   ],
+   "notes": "Build token-registry-skin-editor-live-sandbox (Nov 13 2026): framework/schemas/token-registry.json, spec/check-token-registry.mjs, console plugin skin-editor (web + Python twin), REST / MCP / CLI / voice. Kotlin twin deferred (PORTING.md).",
+   "source": "catalog",
+   "history": [
+    {
+     "at": "2026-11-14",
+     "text": "Imported from the feature catalog"
+    }
+   ],
+   "model": "opus",
+   "modelReason": "Security-adjacent (servers, shells, auth, deploy): Opus 5.5; Fable adds cybersecurity safeguards that slow this work down"
+  },
+  {
    "id": "f.tokenset",
    "title": "Complete token vocabulary fixed now (color, type, shape, space, elevation, motion, opacity, z-index, icon, breakpoints)",
    "area": "Foundations",
@@ -4441,7 +4572,7 @@
     "foundations",
     "lock"
    ],
-   "notes": "",
+   "notes": "component-tokens@1 (Nov 13 2026, build own-token-sets-for-grids-and-tab-groups): grids / tables (--fx-grid-*, 32 tokens) and tab groups (--fx-tab-*, 58 tokens) have their own token families (core/engines/component-tokens.mjs: kind, level, description, default = today's general token), set by the style theme (grid.* / tabs.*), control@1 tokens.style, and per instance (axf.tokens.instances, tokens.instances; Restore previous edit / Restore from axHub). CI spec/check-component-tokens.mjs. Kotlin twin deferred.",
    "source": "catalog",
    "history": [
     {
@@ -10135,7 +10266,7 @@
    "priority": "P1",
    "wave": 1,
    "effort": "",
-   "summary": "",
+   "summary": "Each kind of surface (dialog, settings window, panel, menu, toolbar, banner) has its own opacity token, so a skin or a person can make one see-through with a frosted backdrop without touching the others.",
    "ports": {
     "android": {
      "status": "built",
@@ -18216,10 +18347,10 @@
    "group": "Console plumbing",
    "kind": "feature",
    "status": "built",
-   "priority": "P3",
+   "priority": "P1",
    "wave": 1,
    "effort": "",
-   "summary": "",
+   "summary": "apps/console-droid DeviceBridge (window.axfBridgeHost) + BridgeContract tool list, DeviceTools, MicTools (mic switch gates page audio); apps/console-web/src/native bridgeClient.mjs merges it with part 1's window.axfNativeHost into one window.axfNative; device.* console actions in deviceApi.ts, state on panel:phone-bridge.",
    "ports": {},
    "capabilities": [],
    "dependsOn": [],

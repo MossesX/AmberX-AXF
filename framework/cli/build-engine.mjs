@@ -23,6 +23,7 @@ import { REGISTRY as DEPLOY_LOG_REGISTRY, jsonSchemas as deployLogJsonSchemas } 
 import { REGISTRY as BUILD_HOOK_REGISTRY, jsonSchemas as buildHookJsonSchemas } from '../core/build-hook.mjs';
 import { REGISTRY as SHIPPED_MANIFEST_REGISTRY, jsonSchemas as shippedManifestJsonSchemas } from '../core/shipped-manifest.mjs';
 import { consoleControlRegistry, jsonSchemas as consoleControlJsonSchemas } from '../core/engines/console-control-rules.mjs';
+import { skinConfigSchema, skinConfigSnapshot, skinConfigTree } from '../core/engines/skin-config-rules.mjs';
 import { createHash } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 import { applyOptions, readOptions, resolveOptions } from './build-options.mjs';
@@ -237,6 +238,9 @@ export const BEHAVIOR_ENUMS = {
   'motion.easing': ['standard', 'emphasized', 'linear', 'spring', 'bounce'],
   'motion.reduced': ['system', 'always', 'never'],
   'motion.entrance': ['theme', 'none', 'fade', 'rise', 'scale'],
+  'motion.swatches': ['wave', 'ripple', 'pop', 'off'],
+  'motion.skinSwitch': ['ripple', 'sweep', 'fade', 'off'],
+  'motion.picker': ['fan', 'pop', 'off'],
   'interaction.hover': ['theme', 'none', 'tint', 'lift', 'glow', 'underline'],
   'interaction.press': ['theme', 'none', 'shrink', 'darken', 'ripple'],
   'interaction.focusRing': ['auto', 'always', 'never'],
@@ -253,6 +257,8 @@ export const BEHAVIOR_ENUMS = {
   'feedback.confirmDelete': ['always', 'risky', 'never'],
 };
 export const BEHAVIOR_RANGES = {
+  'motion.animSpeed': [25, 400],
+  'motion.animIntensity': [0, 100],
   'interaction.longPressMs': [250, 1500],
   'interaction.doubleTapMs': [150, 700],
   'interaction.dragThreshold': [0, 24],
@@ -902,6 +908,11 @@ export function writeSchemas(outDir = join(FRAMEWORK_DIR, 'schemas/json')) {
   // console-control@1: one address + ten verbs for everything the console shows (address, command, result, targets) + the registry snapshot
   for (const [n, schema] of Object.entries(consoleControlJsonSchemas())) { const f = join(outDir, n); writeFileSync(f, JSON.stringify(schema, null, 2) + '\n'); written.push(f); }
   const ccreg = join(FRAMEWORK_DIR, 'schemas/console-control.json'); writeFileSync(ccreg, JSON.stringify(consoleControlRegistry(), null, 2) + '\n'); written.push(ccreg);
+  // skin-config@1: what the AI may change when it makes a skin. The tree comes from the shared registry (never the
+  // port extensions) and the style targets, so the schema enumerates every category, group, option and limit.
+  const skinTree = skinConfigTree(readJson(join(FRAMEWORK_DIR, 'schemas/asset-types.json')), customizeSpec, SKIN_NEVER);
+  const scf = join(outDir, 'skin-config.schema.json'); writeFileSync(scf, JSON.stringify(skinConfigSchema(skinTree), null, 2) + '\n'); written.push(scf);
+  const screg = join(FRAMEWORK_DIR, 'schemas/skin-config.json'); writeFileSync(screg, JSON.stringify(skinConfigSnapshot(skinTree), null, 2) + '\n'); written.push(screg);
   return written;
 }
 

@@ -72,6 +72,7 @@ node framework/spec/check-builds-store.mjs          # builds@1 store: migration 
 node framework/cli/builds-store.mjs [verify|history <id>|restore <id> <rev>]   # the one builds store
 node framework/cli/build-origin.mjs get <id> | addendum <id> --said "…" | missing   # what Brett said that started a build
 node framework/spec/check-build-priority.mjs        # priority tags: levels, backfill, waiting-on, agent queue order
+node framework/spec/check-landing-line.mjs          # landing-line@1: one-at-a-time landing, cancelled runs re-run, red files a fix, merge-queue migration (--write regenerates the fixture)
 node framework/cli/rebake.mjs [status|apply <app>]  # apps whose baked src/axf is behind the framework; re-bake one
 node framework/cli/watch-live.mjs targets|list      # Watch live: apps this checkout touches / live previews (axf focus <app> [route] [selector])
 node framework/cli/pending.mjs --steps | --check-steps        # pending builds with their steps; what still needs splitting
