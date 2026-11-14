@@ -153,7 +153,7 @@ function onHeard(text: string, opts: { direct?: boolean } = {}) {
   }).catch((e: Error) => { speak(`That failed: ${e.message}`); setState(wizardOff(L.state)); });
 }
 
-const flowHost = (rt: AxfRuntime) => ({ rt, say: speak, answerSec: L.settings.answerSec, floor: (busy: boolean) => setState(busy ? wizardOn(L.state) : wizardOff(L.state)) });
+const flowHost = (rt: AxfRuntime) => ({ rt, say: speak, answerSec: L.settings.answerSec, useClaude: L.settings.useClaude, claudeTimeoutSec: L.settings.claudeTimeoutSec, floor: (busy: boolean) => setState(busy ? wizardOn(L.state) : wizardOff(L.state)) });
 
 /* ------------------------------------------------------------------ the banner light */
 

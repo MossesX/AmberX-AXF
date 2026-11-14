@@ -177,5 +177,11 @@ ok(applyPatch(d, { 'axf.voice.useClaude': false }).useClaude === false && applyP
 ok(applyPatch(d, { 'axf.voice.claudeTimeoutSec': 99 }).claudeTimeoutSec === 30 && applyPatch(d, { claudeTimeoutSec: 0 }).claudeTimeoutSec === 2, 'Claude timeout clamped 2..30');
 ok(cli('set', 'axf.voice.useClaude=false').settings.useClaude === false && cli('set', 'useClaude=true', 'claudeTimeoutSec=5').settings.claudeTimeoutSec === 5, 'cli set Claude mode');
 
+ok(core.claudeGate({ useClaude: false }, 'create a new project named Gizmo Johnson').claude === false && core.claudeGate({ useClaude: false }, 'x').reason === 'off', 'Claude gate: switch off → scripted, never Claude');
+ok(core.claudeGate({ useClaude: true }, 'create a new project').claude === true, 'Claude gate: switch on → Claude first');
+ok(['approve', 'deny that one', 'approve all pending', 'set the veto timer to two hours', 'reject it'].every((t) => core.claudeGate({ useClaude: true }, t).reason === 'approvals'), 'Claude gate: approve / deny / veto words stay scripted');
+// the page's flow asks claudeGate before any understand call (web/flow.ts handleCommand)
+{ const flow = (await import('node:fs')).readFileSync(new URL('./web/flow.ts', import.meta.url), 'utf8'); const i = flow.indexOf('claudeGate({'); const j = flow.indexOf('await understand(t, '); ok(i > 0 && j > i && /if \(!gate\.claude\) reason = gate\.reason;\s*else \{/.test(flow), 'flow: understand is only called when the gate says Claude'); }
+
 console.log(`${n - failed}/${n} wake-listener checks passed`);
 process.exit(failed ? 1 : 0);

@@ -69,3 +69,6 @@ export function wizardOff(state: ListenerState, now?: number): ListenerState;
 export function switched(state: ListenerState, on: boolean, now?: number): ListenerState;
 export function light(state: ListenerState | null | undefined): { label: string; tone: string; lit: boolean };
 export function stateLine(state: ListenerState, settings: unknown): string;
+
+export const APPROVAL_WORDS: RegExp;
+export function claudeGate(settings: Partial<ListenerSettings> | null | undefined, text: string): { claude: boolean; reason: '' | 'off' | 'approvals' };

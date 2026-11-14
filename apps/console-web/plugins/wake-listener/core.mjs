@@ -104,6 +104,22 @@ export function applyPatch(settings, patch) {
   return normalizeSettings(next);
 }
 
+/* ------------------------------------------------------------------ Claude mode */
+
+/** Approve / deny / veto words: never sent to Claude (server/claude_tools.py APPROVAL_WORDS is the same list). */
+export const APPROVAL_WORDS = /\b(approve|approval|approvals|deny|denied|decline|reject|veto)\b/i;
+
+/**
+ * Does this command go to Claude first? → { claude: true } or { claude: false, reason }. Off = never (nothing is sent
+ * to Claude, Brett: "OFF = always scripted/offline even while Claude is connected"); approve / deny words = never.
+ */
+export function claudeGate(settings, text) {
+  const s = normalizeSettings(settings);
+  if (!s.useClaude) return { claude: false, reason: 'off' };
+  if (APPROVAL_WORDS.test(String(text ?? ''))) return { claude: false, reason: 'approvals' };
+  return { claude: true, reason: '' };
+}
+
 /* ------------------------------------------------------------------ the wake phrase */
 
 const LEAD = /^(?:(?:hey|hi|ok|okay|yo|hello)\s+)?/;

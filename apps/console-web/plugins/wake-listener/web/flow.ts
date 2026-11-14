@@ -12,6 +12,9 @@
  *     - the approvals review lists every call waiting on axHub one at a time: approve / deny / skip / approve all pending;
  *     - navigation, settings, scrolling, find and press go to the console's own voice intents (console-control@1).
  *  3. Nothing matched: the console's voice intents get a try; else "I don't know that one".
+ * Claude mode (build voice-listener-use-claude-when-connected): with the setting on, step 2 first asks the understand
+ * route (web/claudeMode.ts); its question or confirm prompt takes the floor (kind 'claude') and the answers go back to
+ * it. Offline, a timeout or an error: the same transcript goes on to step 2 unchanged. Approve / deny words never go.
  * Runs are the same requests the API makes: plugin routes through /api/plugins/<plugin>/…, control@1 through
  * /api/control, actions through the action bus, approvals through lib-approvals' deciding path (the banner's relay when
  * it is there, else the hub).
@@ -25,9 +28,14 @@ import { HUB_DEFAULT, normalizeHub } from '@console/axf/libs/hub/hub';
 import { consoleTokens } from '@console/api';
 import { pluginFetch } from '@console/plugins';
 import { FOLDER } from '../core.mjs';
+import { claudeGate, pageContext, understand, type ClaudeAnswer, type FallbackReason, type Mode, type Pending } from './claudeMode';
 import { NO, SKIP, YES, answerWizard, buildCatalog, helpLine, matchCommand, requestFor, searchCatalog, speakResult, startWizard, summaryOf, type Catalog, type CatalogEntry, type Wizard } from '../catalog.mjs';
 
-export interface FlowResult { ok: boolean; say: string; done: boolean }
+export interface FlowResult {
+  ok: boolean; say: string; done: boolean;
+  /** who understood the command: Claude, or the scripted matcher (with why, while Claude mode is on) */
+  mode?: Mode; reason?: FallbackReason; command?: string;
+}
 export interface FlowHost {
   rt: AxfRuntime;
   /** speaks a line now (the loop over approvals speaks as it goes) */
@@ -36,11 +44,15 @@ export interface FlowHost {
   answerSec?: number;
   /** the floor changed hands (something is waiting for an answer, or not) */
   floor?: (busy: boolean) => void;
+  /** Claude mode: the setting (axf.voice.useClaude) and how long to wait (axf.voice.claudeTimeoutSec) */
+  useClaude?: boolean;
+  claudeTimeoutSec?: number;
 }
 
 type Floor =
   | { kind: 'wizard'; w: Wizard }
   | { kind: 'approvals'; hub: string; items: ApprovalItem[]; i: number; decided: number }
+  | { kind: 'claude'; pending: Pending; entry: CatalogEntry }
   | null;
 
 let floor: Floor = null;
@@ -50,7 +62,7 @@ let catalogCache: { at: number; serverEntries: CatalogEntry[] } | null = null;
 const CATALOG_TTL_MS = 5 * 60_000;
 
 export function hasFloor(): boolean { return floor !== null; }
-export function floorLabel(): string { return floor?.kind === 'wizard' ? `Wizard: ${floor.w.entry.title}` : floor?.kind === 'approvals' ? 'Approvals review' : ''; }
+export function floorLabel(): string { return floor?.kind === 'wizard' ? `Wizard: ${floor.w.entry.title}` : floor?.kind === 'approvals' ? 'Approvals review' : floor?.kind === 'claude' ? `Claude: ${floor.entry.title}` : ''; }
 
 function setFloor(host: FlowHost, f: Floor) {
   floor = f;
@@ -62,7 +74,7 @@ function setFloor(host: FlowHost, f: Floor) {
 /** Gives up whatever has the floor; returns the line to say. */
 export function cancelFloor(): string {
   if (!floor) return '';
-  const what = floor.kind === 'wizard' ? floor.w.entry.title : 'the approvals review';
+  const what = floor.kind === 'wizard' ? floor.w.entry.title : floor.kind === 'claude' ? floor.entry.title : 'the approvals review';
   floor = null;
   if (floorTimer) { clearTimeout(floorTimer); floorTimer = null; }
   return `Cancelled ${what}.`;
@@ -214,6 +226,38 @@ async function builtin(host: FlowHost, what: string, slots: Record<string, strin
   }
 }
 
+/* ------------------------------------------------------------------ Claude mode */
+
+/** A Claude answer for a known entry → run it, or put its question / confirm on the floor. Null = go scripted. */
+async function claudeStep(host: FlowHost, a: ClaudeAnswer, cat: Catalog): Promise<FlowResult | null> {
+  if (a.mode !== 'claude') return null;
+  const entry = cat.entries.find((e) => e.id === a.command);
+  if (!entry || entry.group === 'approvals') return null; // unknown here, or an approvals entry: never through Claude
+  const base = { mode: 'claude' as const, command: entry.id };
+  if (a.cancelled) { setFloor(host, null); return { ok: true, say: a.prompt || 'Cancelled.', done: true, ...base }; }
+  if (a.run) {
+    setFloor(host, null);
+    if (entry.run.kind === 'builtin') return { ...(await builtin(host, entry.run.what, a.args ?? {}, cat)), ...base };
+    if (entry.run.kind === 'voice') return { ...voiceFallback(host, entry.say[0]?.replace(/\{(\w+)\}/g, (_, k: string) => a.args?.[k] ?? '') ?? entry.title), ...base };
+    return { ...(await runEntry(host, entry, a.args ?? {})), ...base };
+  }
+  if (a.pending && (a.ask || a.confirm)) { setFloor(host, { kind: 'claude', pending: a.pending, entry }); return { ok: true, say: a.prompt || a.ask || '', done: false, ...base }; }
+  return null;
+}
+
+/** The answer to a Claude question or confirm. Offline mid-way: the scripted wizard takes over with what is known. */
+async function answerClaude(host: FlowHost, f: Extract<Floor, { kind: 'claude' }>, text: string): Promise<FlowResult> {
+  const cat = await catalog(host.rt);
+  const a = await understand(text, { timeoutSec: host.claudeTimeoutSec ?? 8, pending: f.pending, context: pageContext() });
+  const r = await claudeStep(host, a, cat);
+  if (r) return r;
+  // offline (or an unknown pick) mid-way: the scripted wizard carries on from what Claude had, with this answer
+  const known = f.pending.args ?? {};
+  const w = f.pending.confirm ? { ...startWizard(f.entry, known), step: 'confirm' as const, prompt: `${summaryOf(f.entry, known)}. Yes or no?` } : startWizard(f.entry, known);
+  const res = await continueWizard(host, answerWizard(w, text));
+  return { ...res, mode: 'scripted', reason: (a.reason || 'unknown-command') as FallbackReason, command: f.entry.id };
+}
+
 /* ------------------------------------------------------------------ one command */
 
 function voiceFallback(host: FlowHost, text: string): FlowResult {
@@ -233,7 +277,26 @@ export async function handleCommand(host: FlowHost, text: string): Promise<FlowR
     if (NO.test(t.toLowerCase()) && f.w.step !== 'ask') { setFloor(host, null); return { ok: true, say: remember('Cancelled.'), done: true }; }
     const r = await continueWizard(host, answerWizard(f.w, t)); r.say = remember(r.say); return r;
   }
+  if (f?.kind === 'claude') { const r = await answerClaude(host, f, t); r.say = remember(r.say); return r; }
   const cat = await catalog(host.rt);
+  // Claude mode: the setting on → Claude first; approve / deny words never go (the scripted approvals path takes them)
+  let reason: FallbackReason = '';
+  const gate = claudeGate({ useClaude: !!host.useClaude }, t);
+  if (host.useClaude) {
+    if (!gate.claude) reason = gate.reason;
+    else {
+      const a = await understand(t, { timeoutSec: host.claudeTimeoutSec ?? 8, context: pageContext() });
+      const r = await claudeStep(host, a, cat);
+      if (r) { r.say = remember(r.say); return r; }
+      reason = (a.mode === 'claude' ? 'unknown-command' : a.reason || 'error') as FallbackReason;
+    }
+  }
+  const r = await scripted(host, t, cat);
+  return { ...r, mode: 'scripted', ...(host.useClaude ? { reason } : {}) };
+}
+
+/** The scripted matcher and wizard (catalog.mjs): the whole path when Claude mode is off, the fallback when it is on. */
+async function scripted(host: FlowHost, t: string, cat: Catalog): Promise<FlowResult> {
   const m = matchCommand(cat, t);
   if (!m) return voiceFallback(host, t);
   const { entry } = m;
