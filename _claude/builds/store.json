@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5149,
- "updatedAt": "2026-11-14T01:27:07.518Z",
+ "rev": 5150,
+ "updatedAt": "2026-11-14T01:27:43.038Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -209502,7 +209502,7 @@
    "pr": "#665",
    "priority": "P0",
    "createdAt": "2026-11-13T23:39:26.785Z",
-   "updatedAt": "2026-11-14T01:27:05.583Z",
+   "updatedAt": "2026-11-14T01:27:41.284Z",
    "builtAt": "",
    "notes": [
     {
@@ -209524,6 +209524,10 @@
     {
      "text": "Stopped at s18. Done: the resolver shim lives in the repo and is installed, the resolver check is in, all 13 branches are merged with main and pushed, and 10 PRs are queued (#665 first). Four builds with open feature steps are held back: #656, #664, #657, #643. Blocked: main's full CI is red. #665 fixes the light-check VetoHost type error, the build-orchestrator lifecycle references and the deferred Kotlin theme vars, but scripts/theme-swap.mjs still fails: every style theme shows the hub opacities (the look is pinned to axHub), so every queue run fails. That needs its own fix. Once #665 lands, merge main into the 9 batch PRs once more so their light checks go green. Report: _claude/builds/reports/land-batch-merge-main-each-finished.md",
      "at": "2026-11-14T01:27:05.583Z"
+    },
+    {
+     "text": "Headless run axf-land-batch-merge-main-each-finished--sully: brief only · start 14.5K tokens ($0.04) · cost $9.32 · 221 turns · 6 tools, MCP none",
+     "at": "2026-11-14T01:27:41.284Z"
     }
    ],
    "approvals": [],
@@ -210087,7 +210091,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 23,
+   "rev": 24,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
