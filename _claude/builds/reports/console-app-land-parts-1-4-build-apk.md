@@ -171,3 +171,24 @@ Still red in that run, and also red on main: the kernel theme conformance test (
   https://github.com/MossesX/AmberX-AXF/actions/runs/43541410908/artifacts/14092283770 (run page
   https://github.com/MossesX/AmberX-AXF/actions/runs/43541410908). It is signed with the default debug keystore, which
   CI fills from the `ANDROID_DEBUG_KEYSTORE` secret when that secret is set, so later builds install over it.
+
+## Merge queue (s14): blocked by main's own red checks
+
+- The kernel test blocker is fixed on the stack: part 1 carries #665's exact `ConformanceTest` change (skip the
+  deferred `--fx-opacity-*` / `--fx-backdrop-*` vars). #665 was kicked out for other reasons, but its own run proved
+  the change: Gradle green.
+- Still red **on main itself**, and therefore on every queue batch: **Plugin lifecycle** (stale cross-plugin
+  references in build-orchestrator, console-commands, notes-browser, plan-studio, push-banner, todo-manager and
+  voice-notes; the stack adds none) and **Theme swap** (red in #665's run on top of main; Playwright isn't on this host
+  to check it). The queue needs a fully green run, so nothing can land until these are fixed on main.
+- To save compute, #637 #639 #633 #640 #643 were taken out of the queue (`land.mjs queue remove`) rather than left to
+  be split and retested against a red main. **To land once main is green:**
+  `node apps/console-web/plugins/push-banner/land/land.mjs queue add 637` (then 639, 633, 640, 643, in that order).
+  Each branch is a superset of the one before.
+- Not merged by hand (queue-only rule).
+
+## Notification (s17)
+
+Console alert `built:console-app-land-parts-1-4-build-apk` (source `builds`, notify type `builds.done`) with the
+interim APK link. It was first raised at `info`, which reached only the bell, then re-raised at `error`, the level
+the activity plugin's `pushLevel` uses for completion pushes. Delivered to bell, ntfy and web push.
