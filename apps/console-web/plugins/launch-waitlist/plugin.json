@@ -1,0 +1,45 @@
+{
+  "$axf": "plugin@1",
+  "id": "ai.amberx.axf.console.launch-waitlist",
+  "name": "Launch waitlist",
+  "version": "0.1.0",
+  "kind": "module",
+  "apiLevel": 1,
+  "author": "Brett",
+  "description": "The AmberX launch site's waitlist and landing page from the console: the line in referral order, invite / remove, CSV export, and every landing page setting (hook, demo video, theme, pricing). Proxies the site's admin API (apps/amberx-site).",
+  "targets": ["axf-console"],
+  "provides": ["view:launch-waitlist", "settings-tab:launch-waitlist"],
+  "scopes": ["ROUTES"],
+  "enabledByDefault": true,
+  "optional": [],
+  "banner": false,
+  "tabable": false,
+  "lifecycle": {
+    "$axf": "plugin-lifecycle@1",
+    "dataDir": ".axf-console/plugins/launch-waitlist",
+    "env": ["AMBERX_SITE_URL", "AMBERX_SITE_ADMIN_TOKEN"],
+    "mentions": []
+  },
+  "commands": {
+    "$axf": "plugin-commands@1",
+    "auto": true,
+    "items": [
+      { "route": "GET /status", "title": "Site status", "description": "Is the AmberX site reachable, its public settings and how many are waiting.", "readOnly": true },
+      { "route": "GET /stats", "title": "Waitlist stats", "description": "Waiting, invited, joined today, joined via referral, places per referral, top of the line.", "readOnly": true },
+      { "route": "GET /entries", "title": "List the waitlist", "description": "Everyone in line order (waiting first, then invited). q filters by email or code.", "readOnly": true,
+        "input": { "type": "object", "properties": { "q": { "type": "string" }, "limit": { "type": "integer" } } } },
+      { "route": "GET /entries/{code}", "title": "One waitlist entry", "description": "Email, place in line, referrals and referral link for one code.", "readOnly": true },
+      { "route": "POST /entries/{code}/invite", "title": "Invite from the waitlist", "description": "Let this person in: they leave the line." },
+      { "route": "POST /entries/{code}/requeue", "title": "Put back in line", "description": "Move an invited entry back into the line." },
+      { "route": "DELETE /entries/{code}", "title": "Remove from the waitlist", "description": "Delete the entry; whoever referred them loses that referral.", "destructive": true, "confirm": true },
+      { "route": "GET /export", "title": "Export the waitlist", "description": "CSV of everyone in line order: position, email, code, referrals, referred_by, joined_at, status, referral_link.", "readOnly": true },
+      { "route": "GET /settings", "title": "Landing page settings", "description": "Every setting of the landing page plus the colour and style themes it can use.", "readOnly": true },
+      { "route": "PUT /settings", "title": "Change landing page settings", "description": "Partial update: brand, eyebrow, hook, sub, videoUrl, videoPoster, videoCaption, features[{title,text}], colorTheme, styleTheme, button, card, pricing{plan,trialDays,price,currency,interval,includes,stripePriceId,checkoutUrl}, waitlistOpen, referralBoost.",
+        "input": { "type": "object" } },
+      { "route": "POST /settings/reset", "title": "Reset landing page settings", "description": "Every landing page setting back to its default.", "destructive": true, "confirm": true }
+    ]
+  },
+  "builtWith": { "model": "claude-opus-5-5", "builtAt": "2026-11-14" },
+  "help": "help.json",
+  "opens": "main"
+}
