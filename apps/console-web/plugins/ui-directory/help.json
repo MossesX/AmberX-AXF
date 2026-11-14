@@ -1,0 +1,41 @@
+{
+  "$axf": "asset@1",
+  "type": "help",
+  "id": "ui-directory-help",
+  "name": "ui-directory help",
+  "version": "0.1.0",
+  "description": "Help mode entries for plugin:ui-directory.",
+  "author": "AmberX AXF",
+  "tags": [
+    "help"
+  ],
+  "data": {
+    "scope": "plugin:ui-directory",
+    "entries": [
+      {
+        "target": "ui-directory",
+        "title": "UI Directory",
+        "text": "One live list of every screen, tab, dialog, settings interface, settings panel, plugin UI and banner across every app, read from the registries so nothing is typed in by hand. This tab shows how big it is, when it was last built, a Rebuild now button and the install and uninstall panel.",
+        "kind": "tab"
+      },
+      {
+        "target": "rebuild-now",
+        "title": "Rebuild now",
+        "text": "Reads every registry again and rewrites the directory when anything moved. The change log keeps what was added, changed and removed. Builds do this by themselves; press it after a change you made by hand.",
+        "kind": "button"
+      },
+      {
+        "target": "refresh",
+        "title": "Refresh",
+        "text": "Reads the current size and build time of the directory again without rebuilding it.",
+        "kind": "button"
+      },
+      {
+        "target": "ui-directory.stats",
+        "title": "Directory size",
+        "text": "How many rows the directory holds, per kind (screens, tabs, dialogs, settings, panels, plugin UIs, banners, apps) and per app, and when it was built.",
+        "kind": "field"
+      }
+    ]
+  }
+}

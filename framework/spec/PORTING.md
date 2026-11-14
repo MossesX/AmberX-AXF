@@ -224,3 +224,6 @@ The guide asks agent `gizmo` (Molly is no longer an agent, Nov 3 decision; the `
 `gizmo.ask` / `gizmo.replay` / `gizmo.next` / `gizmo.prev` / `gizmo.close` with the `molly.*` names kept as hidden aliases.
 AmberX on Android runs the web app, so its texts follow already. A native Compose player of walkthrough@1, when the Android side
 resumes, replays the same rule: no auto-open on start, opt-in only, nothing older than the app's start, and the Gizmo names.
+
+## Deferred: ui-directory@1 (Nov 14 2026)
+Web and Node only (Android on hold, build `ui-directory-plugin-self-updating-data`): the UI Directory contract `framework/core/ui-directory.mjs` (row shape, kinds, ids, validation, FNV hash, add / remove diffs, history merge, token-family classifier, reach, tree / search / filter projections; registry `schemas/ui-directory.json`, JSON Schemas `schemas/json/ui-directory*.schema.json`, fixture `spec/fixtures/ui-directory.json`, check `spec/check-ui-directory.mjs`) has no Kotlin twin. The collector is console-plugin code (`directory.mjs`) reading the repo; an Android app only reads the data set over the plugin's REST routes. A Kotlin `UiDirectory` (validator + hash + projections replaying `ui-directory.json`) is only needed if an Android app ever builds or filters the directory itself. <!-- axf-plugin:ui-directory -->

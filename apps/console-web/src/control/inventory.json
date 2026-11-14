@@ -6,11 +6,11 @@
     "nav": 16,
     "tabGroups": 22,
     "tabs": 76,
-    "settingsTabs": 67,
+    "settingsTabs": 68,
     "settings": 85,
     "functions": 230,
     "buttons": 62,
-    "plugins": 67
+    "plugins": 68
   },
   "views": [
     {
@@ -2031,6 +2031,13 @@
       "label": "Token control",
       "parent": "plugins",
       "plugin": "ai.amberx.axf.console.token-control"
+    },
+    {
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=ui-directory",
+      "id": "ui-directory",
+      "label": "UI Directory",
+      "parent": "plugins",
+      "plugin": "ai.amberx.axf.console.ui-directory"
     },
     {
       "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=voice-notes",
@@ -9410,6 +9417,30 @@
       "optional": [
         "plans@1"
       ]
+    },
+    {
+      "address": "plugin:ai.amberx.axf.console.ui-directory",
+      "kind": "plugin",
+      "id": "ai.amberx.axf.console.ui-directory",
+      "label": "UI Directory",
+      "folder": "ui-directory",
+      "version": "0.1.0",
+      "detail": "Plugin · module",
+      "keywords": [
+        "ui-directory",
+        "UI Directory",
+        "One live data set (ui-directory@1) of every UI surface across every app"
+      ],
+      "aliases": [
+        "ui-directory",
+        "ui directory"
+      ],
+      "settingsTab": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=ui-directory",
+      "provides": [
+        "service:ui-directory@1"
+      ],
+      "requires": [],
+      "optional": []
     },
     {
       "address": "plugin:ai.amberx.axf.console.ui-review",

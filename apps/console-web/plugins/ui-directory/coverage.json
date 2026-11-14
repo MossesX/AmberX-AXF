@@ -1,0 +1,7 @@
+{
+  "$axf": "ui-directory-coverage@1",
+  "description": "UI rows with no deep link, UIs a plugin declares in code but not in its plugin.json, and provides entries with no code behind them. Only goes down: node directory.mjs --update-ratchet.",
+  "unlinked": 0,
+  "unregistered": 18,
+  "phantom": 9
+}

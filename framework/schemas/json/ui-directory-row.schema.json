@@ -1,0 +1,161 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "axf/ui-directory-row.schema.json",
+  "title": "AmberX AXF UI Directory row (ui-directory-row@1)",
+  "description": "Generated from framework/core/ui-directory.mjs. One UI surface: a screen, tab, dialog, settings interface, settings panel, plugin UI, banner, window or app.",
+  "type": "object",
+  "required": [
+    "$axf",
+    "id",
+    "name",
+    "kind",
+    "app",
+    "status",
+    "source"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "$axf": {
+      "const": "ui-directory-row@1"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._%-]*(:[a-z0-9][a-z0-9._%=*-]*){1,4}$",
+      "description": "<app>:<kind>:<path>"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "kind": {
+      "enum": [
+        "app",
+        "screen",
+        "tab",
+        "dialog",
+        "settings-tab",
+        "settings-panel",
+        "plugin",
+        "banner",
+        "window",
+        "element"
+      ]
+    },
+    "app": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9-]{0,47}$"
+    },
+    "parent": {
+      "type": "string",
+      "description": "the row this one sits in (a screen for a tab, a settings tab for a panel), or empty"
+    },
+    "plugin": {
+      "type": "string",
+      "description": "the plugin folder that owns it, or empty for the shell / framework"
+    },
+    "address": {
+      "type": "string",
+      "description": "its console-control@1 address, when known"
+    },
+    "deepLink": {
+      "anyOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "required": [
+            "tool",
+            "target"
+          ],
+          "additionalProperties": false,
+          "properties": {
+            "tool": {
+              "enum": [
+                "console_open",
+                "console_settings",
+                "console_dialog"
+              ]
+            },
+            "target": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      ]
+    },
+    "settings": {
+      "type": "string",
+      "description": "the row id of its settings interface, or empty"
+    },
+    "tokens": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "color",
+          "type",
+          "dens",
+          "size",
+          "space",
+          "radius",
+          "border",
+          "font",
+          "motion",
+          "shadow",
+          "opacity",
+          "component"
+        ]
+      }
+    },
+    "status": {
+      "enum": [
+        "live",
+        "dynamic",
+        "unlinked",
+        "off"
+      ]
+    },
+    "source": {
+      "enum": [
+        "shell",
+        "framework",
+        "plugin",
+        "manifest",
+        "inventory",
+        "ui-registry",
+        "help"
+      ]
+    },
+    "file": {
+      "type": "string"
+    },
+    "icon": {
+      "type": "string"
+    },
+    "detail": {
+      "type": "string"
+    },
+    "keywords": {
+      "type": "array",
+      "maxItems": 24,
+      "items": {
+        "type": "string"
+      }
+    },
+    "level": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "dynamic": {
+      "type": "boolean"
+    },
+    "firstSeen": {
+      "type": "string",
+      "format": "date-time",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}(:\\d{2}(\\.\\d{1,6})?)?(Z|[+-]\\d{2}:\\d{2})$"
+    }
+  }
+}

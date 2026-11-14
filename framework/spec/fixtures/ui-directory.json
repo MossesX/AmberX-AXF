@@ -1,0 +1,1621 @@
+{
+ "$about": "ui-directory@1 conformance: inputs (in) and the outputs framework/core/ui-directory.mjs produces for them (out). Regenerate with check-ui-directory.mjs --write only on purpose.",
+ "in": {
+  "rows": {
+   "app": {
+    "id": "console-web:app:axf-console",
+    "name": "GizmoX AI Studio",
+    "kind": "app",
+    "app": "console-web",
+    "source": "manifest",
+    "file": "apps/console-web/axf.manifest.json",
+    "keywords": [
+     "console-web",
+     "web"
+    ]
+   },
+   "screen": {
+    "id": "console-web:screen:builds",
+    "name": "Builds",
+    "kind": "screen",
+    "app": "console-web",
+    "address": "view:builds",
+    "source": "shell",
+    "file": "apps/console-web/src/App.tsx",
+    "icon": "play",
+    "keywords": [
+     "builds",
+     "Builds",
+     "Build"
+    ],
+    "tokens": [
+     "dens",
+     "color",
+     "type",
+     "component"
+    ]
+   },
+   "tabRow": {
+    "id": "console-web:tab:builds.tabs",
+    "name": "Builds tabs",
+    "kind": "tab",
+    "app": "console-web",
+    "parent": "console-web:screen:builds",
+    "address": "view:builds/tab:builds.tabs",
+    "source": "inventory",
+    "level": 0,
+    "detail": "2 tab(s)"
+   },
+   "tab": {
+    "id": "console-web:tab:builds.tabs:pipeline",
+    "name": "Pipeline",
+    "kind": "tab",
+    "app": "console-web",
+    "parent": "console-web:tab:builds.tabs",
+    "address": "view:builds/tab:builds.tabs=pipeline",
+    "deepLink": {
+     "tool": "console_open",
+     "target": "builds Pipeline"
+    },
+    "source": "inventory",
+    "level": 1,
+    "keywords": [
+     "pipeline"
+    ]
+   },
+   "dynamicTab": {
+    "id": "console-web:tab:crew.*",
+    "name": "Crew tabs",
+    "kind": "tab",
+    "app": "console-web",
+    "parent": "console-web:screen:builds",
+    "dynamic": true,
+    "plugin": "crew-live",
+    "source": "plugin",
+    "level": 0
+   },
+   "settingsScreen": {
+    "id": "console-web:screen:settings",
+    "name": "Settings",
+    "kind": "screen",
+    "app": "console-web",
+    "address": "view:settings",
+    "source": "framework"
+   },
+   "pluginsTab": {
+    "id": "console-web:settings-tab:plugins",
+    "name": "Plugins",
+    "kind": "settings-tab",
+    "app": "console-web",
+    "parent": "console-web:screen:settings",
+    "address": "view:settings/tab:settings.tabs=plugins",
+    "source": "inventory",
+    "level": 0
+   },
+   "settingsTab": {
+    "id": "console-web:settings-tab:crew-live",
+    "name": "Crew",
+    "kind": "settings-tab",
+    "app": "console-web",
+    "parent": "console-web:settings-tab:plugins",
+    "plugin": "crew-live",
+    "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=crew-live",
+    "source": "plugin",
+    "level": 1,
+    "keywords": [
+     "crew-live",
+     "settings"
+    ]
+   },
+   "panel": {
+    "id": "console-web:settings-panel:crew-live.lifecycle",
+    "name": "Install & uninstall",
+    "kind": "settings-panel",
+    "app": "console-web",
+    "parent": "console-web:settings-tab:crew-live",
+    "plugin": "crew-live",
+    "deepLink": {
+     "tool": "console_settings",
+     "target": "crew-live"
+    },
+    "source": "plugin"
+   },
+   "plugin": {
+    "id": "console-web:plugin:crew-live",
+    "name": "Crew",
+    "kind": "plugin",
+    "app": "console-web",
+    "plugin": "crew-live",
+    "address": "plugin:ai.amberx.axf.console.crew-live",
+    "deepLink": {
+     "tool": "console_open",
+     "target": "crew-live"
+    },
+    "settings": "console-web:settings-tab:crew-live",
+    "tokens": [
+     "color",
+     "dens"
+    ],
+    "source": "manifest"
+   },
+   "pluginScreen": {
+    "id": "console-web:screen:crew-live",
+    "name": "Crew",
+    "kind": "screen",
+    "app": "console-web",
+    "plugin": "crew-live",
+    "address": "view:crew-live",
+    "source": "plugin",
+    "tokens": [
+     "color",
+     "dens"
+    ]
+   },
+   "dialog": {
+    "id": "console-web:dialog:crew-live.stop",
+    "name": "Stop an agent",
+    "kind": "dialog",
+    "app": "console-web",
+    "plugin": "crew-live",
+    "parent": "console-web:screen:crew-live",
+    "deepLink": {
+     "tool": "console_dialog",
+     "target": "crew-live.stop"
+    },
+    "source": "plugin"
+   },
+   "offPlugin": {
+    "id": "console-web:plugin:parked",
+    "name": "Parked",
+    "kind": "plugin",
+    "app": "console-web",
+    "plugin": "parked",
+    "address": "plugin:x.parked",
+    "enabled": false,
+    "source": "manifest"
+   },
+   "unlinked": {
+    "id": "console-web:banner:parked",
+    "name": "Parked banner",
+    "kind": "banner",
+    "app": "console-web",
+    "plugin": "parked",
+    "source": "manifest"
+   },
+   "otherApp": {
+    "id": "axhub-web:screen:passes",
+    "name": "Passes",
+    "kind": "screen",
+    "app": "axhub-web",
+    "address": "view:passes",
+    "source": "shell",
+    "keywords": [
+     "pass",
+     "veto"
+    ]
+   },
+   "loose": {
+    "id": "Molly:Screen:Home",
+    "name": "  Home  ",
+    "kind": "screen",
+    "app": "MOLLY",
+    "address": "view:home",
+    "source": "shell",
+    "tokens": [
+     "color",
+     "bogus"
+    ],
+    "keywords": [
+     "a",
+     "a",
+     "",
+     "b"
+    ],
+    "status": "Live",
+    "firstSeen": "nope"
+   },
+   "orphan": {
+    "id": "console-web:tab:nowhere",
+    "name": "Nowhere",
+    "kind": "tab",
+    "app": "console-web",
+    "parent": "console-web:screen:gone",
+    "address": "view:gone/tab:x",
+    "source": "inventory"
+   },
+   "badKind": {
+    "id": "console-web:thing:x",
+    "name": "X",
+    "kind": "thing",
+    "app": "console-web",
+    "source": "shell"
+   },
+   "badId": {
+    "id": "Console Web:screen:x",
+    "name": "X",
+    "kind": "screen",
+    "app": "console-web",
+    "address": "view:x",
+    "source": "shell"
+   },
+   "mismatch": {
+    "id": "demo:screen:x",
+    "name": "X",
+    "kind": "screen",
+    "app": "console-web",
+    "address": "view:x",
+    "source": "shell"
+   },
+   "nameless": {
+    "id": "console-web:screen:y",
+    "kind": "screen",
+    "app": "console-web",
+    "address": "view:y",
+    "source": "shell"
+   },
+   "appWithLink": {
+    "$axf": "ui-directory-row@1",
+    "id": "demo:app:axf-demo",
+    "name": "Demo",
+    "kind": "app",
+    "app": "demo",
+    "status": "live",
+    "source": "manifest",
+    "deepLink": {
+     "tool": "console_open",
+     "target": "home"
+    }
+   },
+   "liveNoLink": {
+    "$axf": "ui-directory-row@1",
+    "id": "demo:screen:z",
+    "name": "Z",
+    "kind": "screen",
+    "app": "demo",
+    "status": "live",
+    "source": "shell"
+   },
+   "selfParent": {
+    "$axf": "ui-directory-row@1",
+    "id": "demo:screen:w",
+    "name": "W",
+    "kind": "screen",
+    "app": "demo",
+    "status": "unlinked",
+    "source": "shell",
+    "parent": "demo:screen:w"
+   },
+   "notObject": "nope"
+  },
+  "tokens": [
+   "--fx-type-sm",
+   "--fx-dens-2",
+   "--fx-size-md",
+   "--fx-space-3",
+   "--fx-radius-lg",
+   "--fx-border-w",
+   "--fx-font-ui",
+   "--fx-motion-fast",
+   "--fx-ease-out",
+   "--fx-shadow-2",
+   "--fx-blur-sm",
+   "--fx-opacity-muted",
+   "--fx-accent",
+   "--fx-surface-2",
+   "--fx-muted",
+   "--fx-text",
+   "--fx-danger",
+   "--fx-bg",
+   "--fx-btn-pad",
+   "--fx-win-frame",
+   "color: red",
+   "--fx-"
+  ],
+  "css": ".a{color:var(--fx-text);padding:var(--fx-dens-2) var(--fx-space-3);border-radius:var(--fx-radius-md);border:var(--fx-border-w) solid var(--fx-accent);font:var(--fx-type-sm)/1 var(--fx-font-ui);box-shadow:var(--fx-shadow-1)}",
+  "declared": [
+   "view:crew-live",
+   "dialog:crew-live.stop",
+   "settings-tab:crew-live",
+   "dialog:crew-live.help"
+  ],
+  "provided": [
+   "view:crew-live",
+   "dialog:crew-live.stop",
+   "settings-tab:crew-live",
+   "settings-tab:old",
+   "service:axf.crew@1",
+   "banner:top"
+  ]
+ },
+ "out": {
+  "norm": {
+   "app": {
+    "$axf": "ui-directory-row@1",
+    "id": "console-web:app:axf-console",
+    "name": "GizmoX AI Studio",
+    "kind": "app",
+    "app": "console-web",
+    "parent": "",
+    "plugin": "",
+    "address": "",
+    "deepLink": null,
+    "settings": "",
+    "tokens": [],
+    "status": "live",
+    "source": "manifest",
+    "file": "apps/console-web/axf.manifest.json",
+    "icon": "",
+    "detail": "",
+    "keywords": [
+     "console-web",
+     "web"
+    ],
+    "firstSeen": "2026-11-14T04:00:00Z"
+   },
+   "screen": {
+    "$axf": "ui-directory-row@1",
+    "id": "console-web:screen:builds",
+    "name": "Builds",
+    "kind": "screen",
+    "app": "console-web",
+    "parent": "",
+    "plugin": "",
+    "address": "view:builds",
+    "deepLink": {
+     "tool": "console_open",
+     "target": "view:builds"
+    },
+    "settings": "",
+    "tokens": [
+     "color",
+     "type",
+     "dens",
+     "component"
+    ],
+    "status": "live",
+    "source": "shell",
+    "file": "apps/console-web/src/App.tsx",
+    "icon": "play",
+    "detail": "",
+    "keywords": [
+     "builds",
+     "Builds",
+     "Build"
+    ],
+    "firstSeen": "2026-11-14T04:00:00Z"
+   },
+   "tabRow": {
+    "$axf": "ui-directory-row@1",
+    "id": "console-web:tab:builds.tabs",
+    "name": "Builds tabs",
+    "kind": "tab",
+    "app": "console-web",
+    "parent": "console-web:screen:builds",
+    "plugin": "",
+    "address": "view:builds/tab:builds.tabs",
+    "deepLink": {
+     "tool": "console_open",
+     "target": "view:builds/tab:builds.tabs"
+    },
+    "settings": "",
+    "tokens": [],
+    "status": "live",
+    "source": "inventory",
+    "file": "",
+    "icon": "",
+    "detail": "2 tab(s)",
+    "keywords": [],
+    "level": 0,
+    "firstSeen": "2026-11-14T04:00:00Z"
+   },
+   "tab": {
+    "$axf": "ui-directory-row@1",
+    "id": "console-web:tab:builds.tabs:pipeline",
+    "name": "Pipeline",
+    "kind": "tab",
+    "app": "console-web",
+    "parent": "console-web:tab:builds.tabs",
+    "plugin": "",
+    "address": "view:builds/tab:builds.tabs=pipeline",
+    "deepLink": {
+     "tool": "console_open",
+     "target": "builds Pipeline"
+    },
+    "settings": "",
+    "tokens": [],
+    "status": "live",
+    "source": "inventory",
+    "file": "",
+    "icon": "",
+    "detail": "",
+    "keywords": [
+     "pipeline"
+    ],
+    "level": 1,
+    "firstSeen": "2026-11-14T04:00:00Z"
+   },
+   "dynamicTab": {
+    "$axf": "ui-directory-row@1",
+    "id": "console-web:tab:crew.*",
+    "name": "Crew tabs",
+    "kind": "tab",
+    "app": "console-web",
+    "parent": "console-web:screen:builds",
+    "plugin": "crew-live",
+    "address": "",
+    "deepLink": null,
+    "settings": "",
+    "tokens": [],
+    "status": "dynamic",
+    "source": "plugin",
+    "file": "",
+    "icon": "",
+    "detail": "",
+    "keywords": [],
+    "level": 0,
+    "dynamic": true,
+    "firstSeen": "2026-11-14T04:00:00Z"
+   },
+   "settingsScreen": {
+    "$axf": "ui-directory-row@1",
+    "id": "console-web:screen:settings",
+    "name": "Settings",
+    "kind": "screen",
+    "app": "console-web",
+    "parent": "",
+    "plugin": "",
+    "address": "view:settings",
+    "deepLink": {
+     "tool": "console_open",
+     "target": "view:settings"
+    },
+    "settings": "",
+    "tokens": [],
+    "status": "live",
+    "source": "framework",
+    "file": "",
+    "icon": "",
+    "detail": "",
+    "keywords": [],
+    "firstSeen": "2026-11-14T04:00:00Z"
+   },
+   "pluginsTab": {
+    "$axf": "ui-directory-row@1",
+    "id": "console-web:settings-tab:plugins",
+    "name": "Plugins",
+    "kind": "settings-tab",
+    "app": "console-web",
+    "parent": "console-web:screen:settings",
+    "plugin": "",
+    "address": "view:settings/tab:settings.tabs=plugins",
+    "deepLink": {
+     "tool": "console_settings",
+     "target": "view:settings/tab:settings.tabs=plugins"
+    },
+    "settings": "",
+    "tokens": [],
+    "status": "live",
+    "source": "inventory",
+    "file": "",
+    "icon": "",
+    "detail": "",
+    "keywords": [],
+    "level": 0,
+    "firstSeen": "2026-11-14T04:00:00Z"
+   },
+   "settingsTab": {
+    "$axf": "ui-directory-row@1",
+    "id": "console-web:settings-tab:crew-live",
+    "name": "Crew",
+    "kind": "settings-tab",
+    "app": "console-web",
+    "parent": "console-web:settings-tab:plugins",
+    "plugin": "crew-live",
+    "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=crew-live",
+    "deepLink": {
+     "tool": "console_settings",
+     "target": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=crew-live"
+    },
+    "settings": "",
+    "tokens": [],
+    "status": "live",
+    "source": "plugin",
+    "file": "",
+    "icon": "",
+    "detail": "",
+    "keywords": [
+     "crew-live",
+     "settings"
+    ],
+    "level": 1,
+    "firstSeen": "2026-11-14T04:00:00Z"
+   },
+   "panel": {
+    "$axf": "ui-directory-row@1",
+    "id": "console-web:settings-panel:crew-live.lifecycle",
+    "name": "Install & uninstall",
+    "kind": "settings-panel",
+    "app": "console-web",
+    "parent": "console-web:settings-tab:crew-live",
+    "plugin": "crew-live",
+    "address": "",
+    "deepLink": {
+     "tool": "console_settings",
+     "target": "crew-live"
+    },
+    "settings": "",
+    "tokens": [],
+    "status": "live",
+    "source": "plugin",
+    "file": "",
+    "icon": "",
+    "detail": "",
+    "keywords": [],
+    "firstSeen": "2026-11-14T04:00:00Z"
+   },
+   "plugin": {
+    "$axf": "ui-directory-row@1",
+    "id": "console-web:plugin:crew-live",
+    "name": "Crew",
+    "kind": "plugin",
+    "app": "console-web",
+    "parent": "",
+    "plugin": "crew-live",
+    "address": "plugin:ai.amberx.axf.console.crew-live",
+    "deepLink": {
+     "tool": "console_open",
+     "target": "crew-live"
+    },
+    "settings": "console-web:settings-tab:crew-live",
+    "tokens": [
+     "color",
+     "dens"
+    ],
+    "status": "live",
+    "source": "manifest",
+    "file": "",
+    "icon": "",
+    "detail": "",
+    "keywords": [],
+    "firstSeen": "2026-11-14T04:00:00Z"
+   },
+   "pluginScreen": {
+    "$axf": "ui-directory-row@1",
+    "id": "console-web:screen:crew-live",
+    "name": "Crew",
+    "kind": "screen",
+    "app": "console-web",
+    "parent": "",
+    "plugin": "crew-live",
+    "address": "view:crew-live",
+    "deepLink": {
+     "tool": "console_open",
+     "target": "view:crew-live"
+    },
+    "settings": "",
+    "tokens": [
+     "color",
+     "dens"
+    ],
+    "status": "live",
+    "source": "plugin",
+    "file": "",
+    "icon": "",
+    "detail": "",
+    "keywords": [],
+    "firstSeen": "2026-11-14T04:00:00Z"
+   },
+   "dialog": {
+    "$axf": "ui-directory-row@1",
+    "id": "console-web:dialog:crew-live.stop",
+    "name": "Stop an agent",
+    "kind": "dialog",
+    "app": "console-web",
+    "parent": "console-web:screen:crew-live",
+    "plugin": "crew-live",
+    "address": "",
+    "deepLink": {
+     "tool": "console_dialog",
+     "target": "crew-live.stop"
+    },
+    "settings": "",
+    "tokens": [],
+    "status": "live",
+    "source": "plugin",
+    "file": "",
+    "icon": "",
+    "detail": "",
+    "keywords": [],
+    "firstSeen": "2026-11-14T04:00:00Z"
+   },
+   "offPlugin": {
+    "$axf": "ui-directory-row@1",
+    "id": "console-web:plugin:parked",
+    "name": "Parked",
+    "kind": "plugin",
+    "app": "console-web",
+    "parent": "",
+    "plugin": "parked",
+    "address": "plugin:x.parked",
+    "deepLink": {
+     "tool": "console_open",
+     "target": "plugin:x.parked"
+    },
+    "settings": "",
+    "tokens": [],
+    "status": "off",
+    "source": "manifest",
+    "file": "",
+    "icon": "",
+    "detail": "",
+    "keywords": [],
+    "firstSeen": "2026-11-14T04:00:00Z"
+   },
+   "unlinked": {
+    "$axf": "ui-directory-row@1",
+    "id": "console-web:banner:parked",
+    "name": "Parked banner",
+    "kind": "banner",
+    "app": "console-web",
+    "parent": "",
+    "plugin": "parked",
+    "address": "",
+    "deepLink": null,
+    "settings": "",
+    "tokens": [],
+    "status": "unlinked",
+    "source": "manifest",
+    "file": "",
+    "icon": "",
+    "detail": "",
+    "keywords": [],
+    "firstSeen": "2026-11-14T04:00:00Z"
+   },
+   "otherApp": {
+    "$axf": "ui-directory-row@1",
+    "id": "axhub-web:screen:passes",
+    "name": "Passes",
+    "kind": "screen",
+    "app": "axhub-web",
+    "parent": "",
+    "plugin": "",
+    "address": "view:passes",
+    "deepLink": {
+     "tool": "console_open",
+     "target": "view:passes"
+    },
+    "settings": "",
+    "tokens": [],
+    "status": "live",
+    "source": "shell",
+    "file": "",
+    "icon": "",
+    "detail": "",
+    "keywords": [
+     "pass",
+     "veto"
+    ],
+    "firstSeen": "2026-11-14T04:00:00Z"
+   },
+   "loose": {
+    "$axf": "ui-directory-row@1",
+    "id": "molly:screen:home",
+    "name": "Home",
+    "kind": "screen",
+    "app": "molly",
+    "parent": "",
+    "plugin": "",
+    "address": "view:home",
+    "deepLink": {
+     "tool": "console_open",
+     "target": "view:home"
+    },
+    "settings": "",
+    "tokens": [
+     "color"
+    ],
+    "status": "live",
+    "source": "shell",
+    "file": "",
+    "icon": "",
+    "detail": "",
+    "keywords": [
+     "a",
+     "b"
+    ],
+    "firstSeen": "2026-11-14T04:00:00Z"
+   },
+   "orphan": {
+    "$axf": "ui-directory-row@1",
+    "id": "console-web:tab:nowhere",
+    "name": "Nowhere",
+    "kind": "tab",
+    "app": "console-web",
+    "parent": "console-web:screen:gone",
+    "plugin": "",
+    "address": "view:gone/tab:x",
+    "deepLink": {
+     "tool": "console_open",
+     "target": "view:gone/tab:x"
+    },
+    "settings": "",
+    "tokens": [],
+    "status": "live",
+    "source": "inventory",
+    "file": "",
+    "icon": "",
+    "detail": "",
+    "keywords": [],
+    "firstSeen": "2026-11-14T04:00:00Z"
+   },
+   "badKind": {
+    "$axf": "ui-directory-row@1",
+    "id": "console-web:thing:x",
+    "name": "X",
+    "kind": "",
+    "app": "console-web",
+    "parent": "",
+    "plugin": "",
+    "address": "",
+    "deepLink": null,
+    "settings": "",
+    "tokens": [],
+    "status": "unlinked",
+    "source": "shell",
+    "file": "",
+    "icon": "",
+    "detail": "",
+    "keywords": [],
+    "firstSeen": "2026-11-14T04:00:00Z"
+   },
+   "badId": {
+    "$axf": "ui-directory-row@1",
+    "id": "console web:screen:x",
+    "name": "X",
+    "kind": "screen",
+    "app": "console-web",
+    "parent": "",
+    "plugin": "",
+    "address": "view:x",
+    "deepLink": {
+     "tool": "console_open",
+     "target": "view:x"
+    },
+    "settings": "",
+    "tokens": [],
+    "status": "live",
+    "source": "shell",
+    "file": "",
+    "icon": "",
+    "detail": "",
+    "keywords": [],
+    "firstSeen": "2026-11-14T04:00:00Z"
+   },
+   "mismatch": {
+    "$axf": "ui-directory-row@1",
+    "id": "demo:screen:x",
+    "name": "X",
+    "kind": "screen",
+    "app": "console-web",
+    "parent": "",
+    "plugin": "",
+    "address": "view:x",
+    "deepLink": {
+     "tool": "console_open",
+     "target": "view:x"
+    },
+    "settings": "",
+    "tokens": [],
+    "status": "live",
+    "source": "shell",
+    "file": "",
+    "icon": "",
+    "detail": "",
+    "keywords": [],
+    "firstSeen": "2026-11-14T04:00:00Z"
+   },
+   "nameless": {
+    "$axf": "ui-directory-row@1",
+    "id": "console-web:screen:y",
+    "name": "",
+    "kind": "screen",
+    "app": "console-web",
+    "parent": "",
+    "plugin": "",
+    "address": "view:y",
+    "deepLink": {
+     "tool": "console_open",
+     "target": "view:y"
+    },
+    "settings": "",
+    "tokens": [],
+    "status": "live",
+    "source": "shell",
+    "file": "",
+    "icon": "",
+    "detail": "",
+    "keywords": [],
+    "firstSeen": "2026-11-14T04:00:00Z"
+   },
+   "appWithLink": {
+    "$axf": "ui-directory-row@1",
+    "id": "demo:app:axf-demo",
+    "name": "Demo",
+    "kind": "app",
+    "app": "demo",
+    "parent": "",
+    "plugin": "",
+    "address": "",
+    "deepLink": null,
+    "settings": "",
+    "tokens": [],
+    "status": "live",
+    "source": "manifest",
+    "file": "",
+    "icon": "",
+    "detail": "",
+    "keywords": [],
+    "firstSeen": "2026-11-14T04:00:00Z"
+   },
+   "liveNoLink": {
+    "$axf": "ui-directory-row@1",
+    "id": "demo:screen:z",
+    "name": "Z",
+    "kind": "screen",
+    "app": "demo",
+    "parent": "",
+    "plugin": "",
+    "address": "",
+    "deepLink": null,
+    "settings": "",
+    "tokens": [],
+    "status": "live",
+    "source": "shell",
+    "file": "",
+    "icon": "",
+    "detail": "",
+    "keywords": [],
+    "firstSeen": "2026-11-14T04:00:00Z"
+   },
+   "selfParent": {
+    "$axf": "ui-directory-row@1",
+    "id": "demo:screen:w",
+    "name": "W",
+    "kind": "screen",
+    "app": "demo",
+    "parent": "demo:screen:w",
+    "plugin": "",
+    "address": "",
+    "deepLink": null,
+    "settings": "",
+    "tokens": [],
+    "status": "unlinked",
+    "source": "shell",
+    "file": "",
+    "icon": "",
+    "detail": "",
+    "keywords": [],
+    "firstSeen": "2026-11-14T04:00:00Z"
+   },
+   "notObject": {
+    "$axf": "ui-directory-row@1",
+    "id": "",
+    "name": "",
+    "kind": "",
+    "app": "",
+    "parent": "",
+    "plugin": "",
+    "address": "",
+    "deepLink": null,
+    "settings": "",
+    "tokens": [],
+    "status": "unlinked",
+    "source": "",
+    "file": "",
+    "icon": "",
+    "detail": "",
+    "keywords": [],
+    "firstSeen": "2026-11-14T04:00:00Z"
+   }
+  },
+  "validate": {
+   "app": {
+    "ok": true,
+    "errors": []
+   },
+   "screen": {
+    "ok": true,
+    "errors": []
+   },
+   "tabRow": {
+    "ok": true,
+    "errors": []
+   },
+   "tab": {
+    "ok": true,
+    "errors": []
+   },
+   "dynamicTab": {
+    "ok": true,
+    "errors": []
+   },
+   "settingsScreen": {
+    "ok": true,
+    "errors": []
+   },
+   "pluginsTab": {
+    "ok": true,
+    "errors": []
+   },
+   "settingsTab": {
+    "ok": true,
+    "errors": []
+   },
+   "panel": {
+    "ok": true,
+    "errors": []
+   },
+   "plugin": {
+    "ok": true,
+    "errors": []
+   },
+   "pluginScreen": {
+    "ok": true,
+    "errors": []
+   },
+   "dialog": {
+    "ok": true,
+    "errors": []
+   },
+   "offPlugin": {
+    "ok": true,
+    "errors": []
+   },
+   "unlinked": {
+    "ok": true,
+    "errors": []
+   },
+   "otherApp": {
+    "ok": true,
+    "errors": []
+   },
+   "loose": {
+    "ok": true,
+    "errors": []
+   },
+   "orphan": {
+    "ok": true,
+    "errors": []
+   },
+   "badKind": {
+    "ok": false,
+    "errors": [
+     "kind:missing",
+     "kind:enum"
+    ]
+   },
+   "badId": {
+    "ok": false,
+    "errors": [
+     "id:invalid",
+     "id:mismatch"
+    ]
+   },
+   "mismatch": {
+    "ok": false,
+    "errors": [
+     "id:mismatch"
+    ]
+   },
+   "nameless": {
+    "ok": false,
+    "errors": [
+     "name:missing",
+     "name:invalid"
+    ]
+   },
+   "appWithLink": {
+    "ok": true,
+    "errors": []
+   },
+   "liveNoLink": {
+    "ok": false,
+    "errors": [
+     "status:mismatch"
+    ]
+   },
+   "selfParent": {
+    "ok": false,
+    "errors": [
+     "parent:invalid"
+    ]
+   },
+   "notObject": {
+    "ok": false,
+    "errors": [
+     "id:missing",
+     "name:missing",
+     "kind:missing",
+     "app:missing",
+     "source:missing",
+     "id:invalid",
+     "name:invalid",
+     "kind:enum",
+     "app:invalid",
+     "source:enum"
+    ]
+   }
+  },
+  "validateRaw": {
+   "appWithLink": {
+    "ok": false,
+    "errors": [
+     "deepLink:invalid"
+    ]
+   },
+   "liveNoLink": {
+    "ok": false,
+    "errors": [
+     "status:mismatch"
+    ]
+   },
+   "selfParent": {
+    "ok": false,
+    "errors": [
+     "parent:invalid"
+    ]
+   },
+   "notObject": {
+    "ok": false,
+    "errors": [
+     "row:type"
+    ]
+   },
+   "badKind": {
+    "ok": false,
+    "errors": [
+     "$axf:missing",
+     "status:missing",
+     "kind:enum"
+    ]
+   },
+   "nameless": {
+    "ok": false,
+    "errors": [
+     "$axf:missing",
+     "name:missing",
+     "status:missing"
+    ]
+   }
+  },
+  "ids": {
+   "plain": "console-web:screen:builds",
+   "nested": "console-web:tab:builds.tabs:pipeline",
+   "slash": "molly:screen:expenses%2fledger",
+   "messy": "demo:dialog:ask-options"
+  },
+  "families": {
+   "each": {
+    "--fx-type-sm": "type",
+    "--fx-dens-2": "dens",
+    "--fx-size-md": "size",
+    "--fx-space-3": "space",
+    "--fx-radius-lg": "radius",
+    "--fx-border-w": "border",
+    "--fx-font-ui": "font",
+    "--fx-motion-fast": "motion",
+    "--fx-ease-out": "motion",
+    "--fx-shadow-2": "shadow",
+    "--fx-blur-sm": "shadow",
+    "--fx-opacity-muted": "opacity",
+    "--fx-accent": "color",
+    "--fx-surface-2": "color",
+    "--fx-muted": "color",
+    "--fx-text": "color",
+    "--fx-danger": "color",
+    "--fx-bg": "color",
+    "--fx-btn-pad": "component",
+    "--fx-win-frame": "component",
+    "color: red": "",
+    "--fx-": ""
+   },
+   "css": [
+    "color",
+    "type",
+    "dens",
+    "space",
+    "radius",
+    "border",
+    "font",
+    "shadow"
+   ],
+   "none": []
+  },
+  "status": {
+   "live": "live",
+   "link": "live",
+   "unlinked": "unlinked",
+   "dynamic": "dynamic",
+   "off": "off"
+  },
+  "reach": {
+   "app": null,
+   "screen": {
+    "mcp": {
+     "tool": "console_open",
+     "target": "view:builds"
+    },
+    "rest": {
+     "method": "POST",
+     "path": "/api/console-control/do",
+     "body": {
+      "verb": "open",
+      "address": "view:builds"
+     }
+    },
+    "cli": "axf console do open view:builds",
+    "voice": "open Builds"
+   },
+   "tab": {
+    "mcp": {
+     "tool": "console_open",
+     "target": "builds Pipeline"
+    },
+    "rest": {
+     "method": "POST",
+     "path": "/api/console-control/do",
+     "body": {
+      "verb": "open",
+      "address": "view:builds/tab:builds.tabs=pipeline"
+     }
+    },
+    "cli": "axf console do open view:builds/tab:builds.tabs=pipeline",
+    "voice": "open Pipeline"
+   },
+   "settingsTab": {
+    "mcp": {
+     "tool": "console_settings",
+     "target": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=crew-live"
+    },
+    "rest": {
+     "method": "POST",
+     "path": "/api/console-control/do",
+     "body": {
+      "verb": "open",
+      "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=crew-live"
+     }
+    },
+    "cli": "axf console do open view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=crew-live",
+    "voice": "open Crew"
+   },
+   "panel": {
+    "mcp": {
+     "tool": "console_settings",
+     "target": "crew-live"
+    },
+    "rest": {
+     "method": "POST",
+     "path": "/api/plugins/console-commands/settings",
+     "body": {
+      "tab": "crew-live"
+     }
+    },
+    "cli": "axf console-commands settings --tab crew-live",
+    "voice": "open Install & uninstall"
+   },
+   "dialog": {
+    "mcp": {
+     "tool": "console_dialog",
+     "target": "crew-live.stop"
+    },
+    "rest": {
+     "method": "POST",
+     "path": "/api/plugins/console-commands/dialog",
+     "body": {
+      "id": "crew-live.stop"
+     }
+    },
+    "cli": "axf console-commands dialog --id crew-live.stop",
+    "voice": "open Stop an agent"
+   },
+   "plugin": {
+    "mcp": {
+     "tool": "console_open",
+     "target": "crew-live"
+    },
+    "rest": {
+     "method": "POST",
+     "path": "/api/console-control/do",
+     "body": {
+      "verb": "open",
+      "address": "plugin:ai.amberx.axf.console.crew-live"
+     }
+    },
+    "cli": "axf console do open plugin:ai.amberx.axf.console.crew-live",
+    "voice": "open Crew"
+   },
+   "unlinked": null,
+   "dynamicTab": null
+  },
+  "first": {
+   "total": 18,
+   "dropped": 7,
+   "hash": "17bffea6f2bdbfa4",
+   "counts": {
+    "kinds": {
+     "screen": 5,
+     "app": 2,
+     "tab": 4,
+     "dialog": 1,
+     "settings-tab": 2,
+     "settings-panel": 1,
+     "plugin": 2,
+     "banner": 1
+    },
+    "apps": {
+     "axhub-web": 1,
+     "console-web": 15,
+     "demo": 1,
+     "molly": 1
+    },
+    "statuses": {
+     "live": 15,
+     "dynamic": 1,
+     "off": 1,
+     "unlinked": 1
+    },
+    "sources": {
+     "shell": 3,
+     "manifest": 5,
+     "plugin": 5,
+     "framework": 1,
+     "inventory": 4
+    },
+    "plugins": 2
+   },
+   "ids": [
+    "axhub-web:screen:passes",
+    "console-web:app:axf-console",
+    "console-web:screen:builds",
+    "console-web:screen:crew-live",
+    "console-web:screen:settings",
+    "console-web:tab:builds.tabs",
+    "console-web:tab:crew.*",
+    "console-web:tab:nowhere",
+    "console-web:tab:builds.tabs:pipeline",
+    "console-web:dialog:crew-live.stop",
+    "console-web:settings-tab:crew-live",
+    "console-web:settings-tab:plugins",
+    "console-web:settings-panel:crew-live.lifecycle",
+    "console-web:plugin:crew-live",
+    "console-web:plugin:parked",
+    "console-web:banner:parked",
+    "demo:app:axf-demo",
+    "molly:screen:home"
+   ],
+   "orphanParent": "",
+   "firstSeen": [
+    "2026-11-14T04:00:00Z"
+   ],
+   "validate": {
+    "ok": true,
+    "errors": []
+   }
+  },
+  "second": {
+   "total": 19,
+   "hash": "79bc437bcc1dbaf3",
+   "diff": {
+    "added": [
+     "console-web:tab:builds.tabs:queue",
+     "walkthrough-studio:app:walkthrough-studio"
+    ],
+    "removed": [
+     "console-web:dialog:crew-live.stop"
+    ],
+    "changed": [
+     "console-web:screen:crew-live"
+    ]
+   },
+   "firstSeen": {
+    "axhub-web:screen:passes": "2026-11-14T04:00:00Z",
+    "console-web:app:axf-console": "2026-11-14T04:00:00Z",
+    "console-web:screen:builds": "2026-11-14T04:00:00Z",
+    "console-web:screen:crew-live": "2026-11-14T04:00:00Z",
+    "console-web:screen:settings": "2026-11-14T04:00:00Z",
+    "console-web:tab:builds.tabs": "2026-11-14T04:00:00Z",
+    "console-web:tab:crew.*": "2026-11-14T04:00:00Z",
+    "console-web:tab:nowhere": "2026-11-14T04:00:00Z",
+    "console-web:tab:builds.tabs:pipeline": "2026-11-14T04:00:00Z",
+    "console-web:tab:builds.tabs:queue": "2026-11-15T04:00:00Z",
+    "console-web:settings-tab:crew-live": "2026-11-14T04:00:00Z",
+    "console-web:settings-tab:plugins": "2026-11-14T04:00:00Z",
+    "console-web:settings-panel:crew-live.lifecycle": "2026-11-14T04:00:00Z",
+    "console-web:plugin:crew-live": "2026-11-14T04:00:00Z",
+    "console-web:plugin:parked": "2026-11-14T04:00:00Z",
+    "console-web:banner:parked": "2026-11-14T04:00:00Z",
+    "demo:app:axf-demo": "2026-11-14T04:00:00Z",
+    "molly:screen:home": "2026-11-14T04:00:00Z",
+    "walkthrough-studio:app:walkthrough-studio": "2026-11-15T04:00:00Z"
+   },
+   "validate": {
+    "ok": true,
+    "errors": []
+   }
+  },
+  "filter": {
+   "plugin": [
+    "console-web:screen:crew-live",
+    "console-web:tab:crew.*",
+    "console-web:dialog:crew-live.stop",
+    "console-web:settings-tab:crew-live",
+    "console-web:settings-panel:crew-live.lifecycle",
+    "console-web:plugin:crew-live"
+   ],
+   "kinds": [
+    "console-web:settings-tab:crew-live",
+    "console-web:settings-tab:plugins",
+    "console-web:settings-panel:crew-live.lifecycle"
+   ],
+   "family": [
+    "console-web:screen:builds",
+    "console-web:screen:crew-live",
+    "console-web:plugin:crew-live"
+   ],
+   "status": [
+    "console-web:plugin:parked"
+   ],
+   "words": [
+    "console-web:settings-panel:crew-live.lifecycle"
+   ],
+   "app": [
+    "axhub-web:screen:passes"
+   ]
+  },
+  "search": {
+   "crew": [
+    {
+     "id": "console-web:screen:crew-live",
+     "name": "Crew",
+     "kind": "screen",
+     "app": "console-web",
+     "address": "view:crew-live",
+     "score": 10
+    },
+    {
+     "id": "console-web:settings-tab:crew-live",
+     "name": "Crew",
+     "kind": "settings-tab",
+     "app": "console-web",
+     "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=crew-live",
+     "score": 10
+    },
+    {
+     "id": "console-web:plugin:crew-live",
+     "name": "Crew",
+     "kind": "plugin",
+     "app": "console-web",
+     "address": "plugin:ai.amberx.axf.console.crew-live",
+     "score": 10
+    },
+    {
+     "id": "console-web:tab:crew.*",
+     "name": "Crew tabs",
+     "kind": "tab",
+     "app": "console-web",
+     "address": "",
+     "score": 6
+    },
+    {
+     "id": "console-web:settings-panel:crew-live.lifecycle",
+     "name": "Install & uninstall",
+     "kind": "settings-panel",
+     "app": "console-web",
+     "address": "",
+     "score": 1
+    },
+    {
+     "id": "console-web:dialog:crew-live.stop",
+     "name": "Stop an agent",
+     "kind": "dialog",
+     "app": "console-web",
+     "address": "",
+     "score": 1
+    }
+   ],
+   "pipeline": [
+    {
+     "id": "console-web:tab:builds.tabs:pipeline",
+     "name": "Pipeline",
+     "kind": "tab",
+     "app": "console-web",
+     "address": "view:builds/tab:builds.tabs=pipeline",
+     "score": 6
+    }
+   ],
+   "settings": [
+    {
+     "id": "console-web:settings-tab:crew-live",
+     "name": "Crew",
+     "kind": "settings-tab",
+     "app": "console-web",
+     "address": "view:settings/tab:settings.tabs=plugins/subtab:settings.subtabs=crew-live",
+     "score": 2
+    },
+    {
+     "id": "console-web:settings-tab:plugins",
+     "name": "Plugins",
+     "kind": "settings-tab",
+     "app": "console-web",
+     "address": "view:settings/tab:settings.tabs=plugins",
+     "score": 1
+    }
+   ],
+   "none": [],
+   "miss": []
+  },
+  "tree": [
+   {
+    "id": "axhub-web:app",
+    "kind": "app",
+    "children": [
+     {
+      "id": "axhub-web:group:shell",
+      "kind": "app",
+      "children": [
+       {
+        "id": "axhub-web:screen:passes",
+        "kind": "screen",
+        "children": []
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "id": "demo:app:axf-demo",
+    "kind": "app",
+    "children": []
+   },
+   {
+    "id": "console-web:app:axf-console",
+    "kind": "app",
+    "children": [
+     {
+      "id": "console-web:group:shell",
+      "kind": "app",
+      "children": [
+       {
+        "id": "console-web:screen:builds",
+        "kind": "screen",
+        "children": [
+         {
+          "id": "console-web:tab:builds.tabs",
+          "kind": "tab",
+          "children": [
+           {
+            "id": "console-web:tab:builds.tabs:pipeline",
+            "kind": "tab",
+            "children": []
+           }
+          ]
+         },
+         {
+          "id": "console-web:tab:crew.*",
+          "kind": "tab",
+          "children": []
+         }
+        ]
+       },
+       {
+        "id": "console-web:screen:settings",
+        "kind": "screen",
+        "children": [
+         {
+          "id": "console-web:settings-tab:plugins",
+          "kind": "settings-tab",
+          "children": [
+           {
+            "id": "console-web:settings-tab:crew-live",
+            "kind": "settings-tab",
+            "children": [
+             {
+              "id": "console-web:settings-panel:crew-live.lifecycle",
+              "kind": "settings-panel",
+              "children": []
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       },
+       {
+        "id": "console-web:tab:nowhere",
+        "kind": "tab",
+        "children": []
+       }
+      ]
+     },
+     {
+      "id": "console-web:plugin:crew-live",
+      "kind": "plugin",
+      "children": [
+       {
+        "id": "console-web:screen:crew-live",
+        "kind": "screen",
+        "children": [
+         {
+          "id": "console-web:dialog:crew-live.stop",
+          "kind": "dialog",
+          "children": []
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "id": "console-web:plugin:parked",
+      "kind": "plugin",
+      "children": [
+       {
+        "id": "console-web:banner:parked",
+        "kind": "banner",
+        "children": []
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "id": "molly:app",
+    "kind": "app",
+    "children": [
+     {
+      "id": "molly:group:shell",
+      "kind": "app",
+      "children": [
+       {
+        "id": "molly:screen:home",
+        "kind": "screen",
+        "children": []
+       }
+      ]
+     }
+    ]
+   }
+  ],
+  "settingsOf": {
+   "dialog": "console-web:settings-tab:crew-live",
+   "plugin": "console-web:settings-tab:crew-live",
+   "shell": null,
+   "missing": null
+  },
+  "gaps": {
+   "unregistered": [
+    "dialog:crew-live.help"
+   ],
+   "phantom": [
+    "settings-tab:old"
+   ]
+  },
+  "tone": {
+   "live": "ok",
+   "dynamic": "info",
+   "unlinked": "warn",
+   "off": "muted"
+  },
+  "kindLabel": {
+   "app": "App",
+   "screen": "Screen",
+   "tab": "Tab",
+   "dialog": "Dialog",
+   "settings-tab": "Settings",
+   "settings-panel": "Settings panel",
+   "plugin": "Plugin UI",
+   "banner": "Banner",
+   "window": "Window",
+   "element": "UI element"
+  }
+ }
+}
