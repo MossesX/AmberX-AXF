@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5353,
- "updatedAt": "2026-11-14T17:50:13.827Z",
+ "rev": 5354,
+ "updatedAt": "2026-11-14T17:50:39.718Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -67345,7 +67345,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 48,
+   "rev": 49,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -177153,7 +177153,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 28,
+   "rev": 29,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -177925,7 +177925,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 20,
+   "rev": 21,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -219849,7 +219849,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-14T17:45:54.293Z",
-   "updatedAt": "2026-11-14T17:49:54.851Z",
+   "updatedAt": "2026-11-14T17:50:36.725Z",
    "builtAt": "",
    "notes": [
     {
@@ -220433,6 +220433,28 @@
      "rev": 1,
      "createdAt": "2026-11-14T17:49:54.851Z",
      "updatedAt": "2026-11-14T17:49:55.874Z"
+    },
+    {
+     "id": "s45",
+     "uid": "st-mwgpbnm601a6vg",
+     "title": "",
+     "text": "Watchdog panel has exactly three tabs: 1) Watches (things being monitored + actions, incl. stale-row cleanup), 2) Gates (everything that blocks/holds work), 3) Rules (every standing rule the VPS enforces, e.g. account routing, auto-merge, rebuild-on-conflict, step splitting). Each tab: count in the tab label, expandable rows, on/off, and an Add button using the same zero-typing wizard.",
+     "model": "Fable",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "30 min",
+     "files": [],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-14T17:50:36.725Z",
+     "updatedAt": "2026-11-14T17:50:37.902Z"
     }
    ],
    "profiles": [
@@ -220443,7 +220465,7 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 14,
+   "rev": 15,
    "deleted": false,
    "deletedAt": "",
    "pending": {
@@ -220477,7 +220499,8 @@
      "st-mwgp922101206r": "2026-11-14T17:48:35.593Z",
      "st-mwgp93r201ob6m": "2026-11-14T17:48:37.949Z",
      "st-mwgp95h301bwsu": "2026-11-14T17:48:40.127Z",
-     "st-mwgpar6q018b7v": "2026-11-14T17:49:54.851Z"
+     "st-mwgpar6q018b7v": "2026-11-14T17:49:54.851Z",
+     "st-mwgpbnm601a6vg": "2026-11-14T17:50:36.725Z"
     }
    },
    "queue": null,
