@@ -1,7 +1,7 @@
 {
  "$axf": "builds@1",
- "rev": 5264,
- "updatedAt": "2026-11-14T04:43:17.776Z",
+ "rev": 5265,
+ "updatedAt": "2026-11-14T04:43:32.919Z",
  "migratedAt": "2026-10-31T23:41:15.585Z",
  "rules": {
   "all": {
@@ -211213,7 +211213,7 @@
    "branch": "",
    "pr": "",
    "createdAt": "2026-11-14T01:47:26.872Z",
-   "updatedAt": "2026-11-14T04:41:54.388Z",
+   "updatedAt": "2026-11-14T04:43:31.383Z",
    "builtAt": "",
    "notes": [
     {
@@ -211223,6 +211223,10 @@
     {
      "text": "Split by Claude into 34 steps (2 Fable).",
      "at": "2026-11-14T04:41:54.388Z"
+    },
+    {
+     "text": "Split by Claude into 27 steps (3 Fable).",
+     "at": "2026-11-14T04:43:31.383Z"
     }
    ],
    "approvals": [],
@@ -211238,11 +211242,11 @@
     "runs": 0,
     "lastRun": null,
     "split": {
-     "at": "2026-11-14T04:41:54.388Z",
+     "at": "2026-11-14T04:43:31.383Z",
      "by": "orchestrator",
      "provider": "claude",
-     "steps": 34,
-     "note": "Split by Claude into 34 steps (2 Fable)."
+     "steps": 27,
+     "note": "Split by Claude into 27 steps (3 Fable)."
     },
     "splitRequested": "",
     "note": "",
@@ -211264,18 +211268,18 @@
    "steps": [
     {
      "id": "s1",
-     "uid": "st-mwfx5ck4019c4a",
+     "uid": "st-mwfx7fef011bdi",
      "title": "",
-     "text": "Design the walkthrough@1 contract: a tour made of chapters (id, title, order, start/end timestamps, covered targets as console-control addresses, skin per chapter, narration ref), a glossary of terms (term, definition, chapter + timestamp links) and an index (target → timestamps). Build it on the existing demonstration@1, book@1, clip@1 and docs@1 shapes rather than copying them. Register it in framework/schemas/asset-types.json, regenerate the JSON Schemas (axf.mjs schemas) and add the validator rules in framework/core/engines/demo-rules.mjs.",
+     "text": "Define the walkthrough contracts in framework/schemas/asset-types.json: a walkthrough@1 manifest (chapters with id, title, start/end timestamps, glossary terms, index keys, the skin to switch to per chapter, the narration voice/speed/pitch defaults) and a book@1 extension for user-compiled chapter lists. Add skin coverage declarations, regenerate the JSON Schemas (axf.mjs schemas), and record the deferred Android twin in framework/spec/PORTING.md.",
      "model": "Fable",
-     "why": "New shared asset type + schema design used by the glossary, books and the player across apps",
+     "why": "New shared asset type and schema contract used across apps and exports",
      "phase": "",
      "group": "",
      "estimate": "10 min",
      "files": [
       "framework/schemas/asset-types.json",
       "framework/schemas/json/",
-      "framework/core/engines/demo-rules.mjs"
+      "framework/spec/PORTING.md"
      ],
      "checks": [],
      "session": "same",
@@ -211285,24 +211289,23 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-14T04:41:54.388Z",
-     "updatedAt": "2026-11-14T04:41:54.388Z"
+     "createdAt": "2026-11-14T04:43:31.383Z",
+     "updatedAt": "2026-11-14T04:43:31.383Z"
     },
     {
      "id": "s2",
-     "uid": "st-mwfx5ck702k1zo",
+     "uid": "st-mwfx7fef02vlmp",
      "title": "",
-     "text": "Add the walkthrough@1 fixture and the skin-coverage declaration for the new type, so the player can be skinned per chapter. Add the narration voice tokens (voice, rate, pitch) as tts settings tokens with defaults. Run check-skin-coverage, gen-fixtures and check-project-fixtures; record the Android twin as a deferred gap in PORTING.md.",
+     "text": "Write the walkthrough rules engine framework/core/engines/walkthrough-rules.mjs: validate the manifest, resolve timestamp from chapter id or glossary term, compile a book from selected chapters (order, total runtime), and pick the skin per chapter. Add fixture framework/spec/fixtures/walkthrough.json and its check script.",
      "model": "Fable",
-     "why": "Skin-coverage contract and fixtures are cross-port conformance work",
+     "why": "Engine internals plus the conformance fixture other ports and exports follow",
      "phase": "",
      "group": "",
      "estimate": "10 min",
      "files": [
+      "framework/core/engines/walkthrough-rules.mjs",
       "framework/spec/fixtures/walkthrough.json",
-      "framework/schemas/asset-types.json",
-      "framework/spec/PORTING.md",
-      "framework/spec/check-skin-coverage.mjs"
+      "framework/spec/check-walkthrough.mjs"
      ],
      "checks": [],
      "session": "same",
@@ -211312,21 +211315,22 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-14T04:41:54.388Z",
-     "updatedAt": "2026-11-14T04:41:54.388Z"
+     "createdAt": "2026-11-14T04:43:31.383Z",
+     "updatedAt": "2026-11-14T04:43:31.383Z"
     },
     {
      "id": "s3",
-     "uid": "st-mwfx5ck703zilv",
+     "uid": "st-mwfx7fef03tddz",
      "title": "",
-     "text": "Check the domain: read the amberxai.com zone through axHub's hostinger service (dns_records_list) and confirm that 'imberxai' means amberxai.com and that no walkthrough record exists yet. Write the finding to the DNS log (shared data dns/log.md). If the Hostinger connector is not authorised, raise a systems-check banner item with the exact steps to authorise it and go on.",
-     "model": "Opus",
-     "why": "",
+     "text": "Wire walkthrough@1 into the demo-rules / glossary-index registry so walkthrough chapters, glossary terms and books show up in the Glossary, Index & Demos catalog. Run catalog.mjs --check.",
+     "model": "Fable",
+     "why": "Changes the shared demo/book registry contract",
      "phase": "",
      "group": "",
-     "estimate": "5 min",
+     "estimate": "8 min",
      "files": [
-      "/projects/_shared/_data/dns/log.md"
+      "framework/core/engines/demo-rules.mjs",
+      "apps/console-web/plugins/glossary-index/"
      ],
      "checks": [],
      "session": "same",
@@ -211336,21 +211340,23 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-14T04:41:54.388Z",
-     "updatedAt": "2026-11-14T04:41:54.388Z"
+     "createdAt": "2026-11-14T04:43:31.383Z",
+     "updatedAt": "2026-11-14T04:43:31.383Z"
     },
     {
      "id": "s4",
-     "uid": "st-mwfx5ck7046hwc",
+     "uid": "st-mwfx7fef04s8u9",
      "title": "",
-     "text": "Write the tour outline: chapters with target minutes adding up to about 120, covering the console and every plugin, settings and buttons, axHub, AXPP, connectors, Plan Studio, AmberX, the Android app, the VPS, Coolify hosting, GitHub, the Claude Code integration, the employee/agent system, assets and hot-swap, and how it all ties together.",
+     "text": "Check the pending list, queue and plan for overlapping walkthrough, demo or book builds (pending.mjs, build-queue.mjs, plans.mjs) and note any that clash on this build. Scaffold apps/walkthrough (or reuse apps/walkthrough-studio if it fits) with a validated project.manifest.json and a Vite React-TS app on the baked framework (axf init, shared assets baked).",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "10 min",
      "files": [
-      "apps/walkthrough-studio/tour/outline.json"
+      "apps/walkthrough/",
+      "apps/walkthrough/project.manifest.json",
+      "framework/schemas/shared-assets.json"
      ],
      "checks": [],
      "session": "same",
@@ -211360,22 +211366,21 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-14T04:41:54.388Z",
-     "updatedAt": "2026-11-14T04:41:54.388Z"
+     "createdAt": "2026-11-14T04:43:31.383Z",
+     "updatedAt": "2026-11-14T04:43:31.383Z"
     },
     {
      "id": "s5",
-     "uid": "st-mwfx5ck705zbwk",
+     "uid": "st-mwfx7fef055a6n",
      "title": "",
-     "text": "Write a coverage generator that reads the glossary-index catalog (plugins, settings, commands, asset types, console-control addresses), maps every item to an outline chapter and fails when an item has no chapter. Output the glossary seed with each term's definition.",
+     "text": "Write the chapter script outline as walkthrough data: about 24 chapters adding up to roughly 120 minutes. Cover the console (every plugin, setting and button, one at a time), axHub, Plan Studio, AmberX web and the Android app, AXPP, connectors, the VPS, Coolify hosting, GitHub, the Claude Code integration, the employee/agent system, and how they all tie together.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "10 min",
      "files": [
-      "apps/walkthrough-studio/tour/coverage.mjs",
-      "apps/walkthrough-studio/tour/glossary.seed.json"
+      "apps/walkthrough/data/chapters.json"
      ],
      "checks": [],
      "session": "same",
@@ -211385,21 +211390,22 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-14T04:41:54.388Z",
-     "updatedAt": "2026-11-14T04:41:54.388Z"
+     "createdAt": "2026-11-14T04:43:31.383Z",
+     "updatedAt": "2026-11-14T04:43:31.383Z"
     },
     {
      "id": "s6",
-     "uid": "st-mwfx5ck706opx8",
+     "uid": "st-mwfx7fef06gpc4",
      "title": "",
-     "text": "Write the narration scripts for the console chapters: shell, banners, toolbars and tab groups, settings levels, and the Plugin Manager with every plugin one at a time (part 1, A-M).",
+     "text": "Generate the per-chapter step scripts (routes, click targets by console-control address, narration text) from the plugin manifests, help and the control@1 registry, so every plugin, setting and button gets a beat. Save them as recorder data scripts.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "10 min",
      "files": [
-      "apps/walkthrough-studio/tour/scripts/console-a.md"
+      "apps/walkthrough/data/scripts/",
+      "apps/console-web/plugins/walkthrough-recorder/"
      ],
      "checks": [],
      "session": "same",
@@ -211409,22 +211415,22 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-14T04:41:54.388Z",
-     "updatedAt": "2026-11-14T04:41:54.388Z"
+     "createdAt": "2026-11-14T04:43:31.383Z",
+     "updatedAt": "2026-11-14T04:43:31.383Z"
     },
     {
      "id": "s7",
-     "uid": "st-mwfx5ck707y02g",
+     "uid": "st-mwfx7fef07c38a",
      "title": "",
-     "text": "Write the narration scripts for the console plugins N-Z, and the assets chapter: hot-swap live, every token from text fields to behaviour, and skins at every scope.",
+     "text": "Build the glossary data (terms, definitions, chapter and timestamp anchors) from the glossary-index catalog, plus a theming chapter script that hot-swaps skins and assets live and shows token-driven text fields and behaviour.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "10 min",
+     "estimate": "8 min",
      "files": [
-      "apps/walkthrough-studio/tour/scripts/console-b.md",
-      "apps/walkthrough-studio/tour/scripts/assets.md"
+      "apps/walkthrough/data/glossary.json",
+      "apps/walkthrough/data/scripts/theming.json"
      ],
      "checks": [],
      "session": "same",
@@ -211434,21 +211440,22 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-14T04:41:54.388Z",
-     "updatedAt": "2026-11-14T04:41:54.388Z"
+     "createdAt": "2026-11-14T04:43:31.383Z",
+     "updatedAt": "2026-11-14T04:43:31.383Z"
     },
     {
      "id": "s8",
-     "uid": "st-mwfx5ck708wc0k",
+     "uid": "st-mwfx7fef08vmlz",
      "title": "",
-     "text": "Write the narration scripts for axHub, AXPP, connectors, veto/approvals and passes.",
+     "text": "TTS narration pipeline: a script that renders each chapter's narration with a selectable voice, speed and pitch (the existing TTS route on the VPS), caches the audio per chapter and voice settings, and writes durations back into chapters.json for timestamps.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "10 min",
      "files": [
-      "apps/walkthrough-studio/tour/scripts/axhub.md"
+      "apps/walkthrough/scripts/narrate.mjs",
+      "apps/walkthrough/data/chapters.json"
      ],
      "checks": [],
      "session": "same",
@@ -211458,21 +211465,22 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-14T04:41:54.388Z",
-     "updatedAt": "2026-11-14T04:41:54.388Z"
+     "createdAt": "2026-11-14T04:43:31.383Z",
+     "updatedAt": "2026-11-14T04:43:31.383Z"
     },
     {
      "id": "s9",
-     "uid": "st-mwfx5ck709mxei",
+     "uid": "st-mwfx7fef09u12e",
      "title": "",
-     "text": "Write the narration scripts for Plan Studio, the build orchestrator and pipeline, the merge queue, the Claude Code integration, and the employee system (agents, jobs, the Breakroom).",
+     "text": "Recorder: extend the browser walkthrough recorder with a visible cursor overlay (moves, click ripple) and deterministic frame capture, so chapters render faster than real time and line up with the narration audio. Smoke-test it on one short chapter.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "10 min",
      "files": [
-      "apps/walkthrough-studio/tour/scripts/builds.md"
+      "apps/console-web/plugins/walkthrough-recorder/",
+      "apps/walkthrough/scripts/record.mjs"
      ],
      "checks": [],
      "session": "same",
@@ -211482,21 +211490,22 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-14T04:41:54.388Z",
-     "updatedAt": "2026-11-14T04:41:54.388Z"
+     "createdAt": "2026-11-14T04:43:31.383Z",
+     "updatedAt": "2026-11-14T04:43:31.383Z"
     },
     {
      "id": "s10",
-     "uid": "st-mwfx5ck70afi97",
+     "uid": "st-mwfx7feg0aizba",
      "title": "",
-     "text": "Write the narration scripts for AmberX web and the Android app, the VPS, Coolify hosting, GitHub and the GitHub App, and a closing 'how it ties together' chapter.",
+     "text": "Record chapters 1-4 (console overview, banners, settings) under agent-slots heavy and commit the chapter manifests (media goes to ~/hub/data/walkthrough, not git).",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "10 min",
      "files": [
-      "apps/walkthrough-studio/tour/scripts/platform.md"
+      "apps/walkthrough/data/recorded/",
+      "~/hub/data/walkthrough/"
      ],
      "checks": [],
      "session": "same",
@@ -211506,22 +211515,22 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-14T04:41:54.388Z",
-     "updatedAt": "2026-11-14T04:41:54.388Z"
+     "createdAt": "2026-11-14T04:43:31.383Z",
+     "updatedAt": "2026-11-14T04:43:31.383Z"
     },
     {
      "id": "s11",
-     "uid": "st-mwfx5ck70b3hoi",
+     "uid": "st-mwfx7feg0bt6qr",
      "title": "",
-     "text": "Build the TTS narration engine: script to audio per chapter, taking voice, rate and pitch from the tts tokens and returning the timing of every line. Reuse the voice service already on the VPS. Unit-test it on one line.",
+     "text": "Record chapters 5-8 (plugins A-M, one at a time) and commit the manifests.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "10 min",
      "files": [
-      "apps/walkthrough-studio/tour/narrate.mjs",
-      "apps/walkthrough-studio/tour/narrate.test.mjs"
+      "apps/walkthrough/data/recorded/",
+      "~/hub/data/walkthrough/"
      ],
      "checks": [],
      "session": "same",
@@ -211531,21 +211540,22 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-14T04:41:54.388Z",
-     "updatedAt": "2026-11-14T04:41:54.388Z"
+     "createdAt": "2026-11-14T04:43:31.383Z",
+     "updatedAt": "2026-11-14T04:43:31.383Z"
     },
     {
      "id": "s12",
-     "uid": "st-mwfx5ck70co31i",
+     "uid": "st-mwfx7feg0cdv8a",
      "title": "",
-     "text": "Generate narration audio for all chapters (agent-slots heavy). Store the audio under ~/hub/data/walkthrough/audio/ and commit only the timing manifest.",
+     "text": "Record chapters 9-12 (plugins N-Z, the builds pipeline, the orchestrator) and commit the manifests.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "10 min",
      "files": [
-      "apps/walkthrough-studio/tour/timings.json"
+      "apps/walkthrough/data/recorded/",
+      "~/hub/data/walkthrough/"
      ],
      "checks": [],
      "session": "same",
@@ -211555,22 +211565,22 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-14T04:41:54.388Z",
-     "updatedAt": "2026-11-14T04:41:54.388Z"
+     "createdAt": "2026-11-14T04:43:31.383Z",
+     "updatedAt": "2026-11-14T04:43:31.383Z"
     },
     {
      "id": "s13",
-     "uid": "st-mwfx5ck70d8yci",
+     "uid": "st-mwfx7feg0d234u",
      "title": "",
-     "text": "Build the cursor-visible browser recorder: Playwright with a drawn cursor overlay and click ripple, driven by the console-control addresses (AXF.navigate, console_show) and paced by the narration timings. Test it on one short chapter.",
+     "text": "Record chapters 13-16 (axHub, connectors, AXPP, Plan Studio) and commit the manifests.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "10 min",
      "files": [
-      "apps/walkthrough-studio/tour/record.mjs",
-      "apps/walkthrough-studio/tour/cursor-overlay.js"
+      "apps/walkthrough/data/recorded/",
+      "~/hub/data/walkthrough/"
      ],
      "checks": [],
      "session": "same",
@@ -211580,22 +211590,22 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-14T04:41:54.388Z",
-     "updatedAt": "2026-11-14T04:41:54.388Z"
+     "createdAt": "2026-11-14T04:43:31.383Z",
+     "updatedAt": "2026-11-14T04:43:31.383Z"
     },
     {
      "id": "s14",
-     "uid": "st-mwfx5ck70e3g4n",
+     "uid": "st-mwfx7feg0eemfy",
      "title": "",
-     "text": "Write the recorder action scripts for the console chapters (the clicks, hovers, typing and skin swaps mid-chapter that show the token-driven look).",
+     "text": "Record chapters 17-20 (AmberX web, the Android app via emulator or phone screenshots, Claude Code integration, the employee/agent system) and commit the manifests.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "10 min",
      "files": [
-      "apps/walkthrough-studio/tour/actions/console.json",
-      "apps/walkthrough-studio/tour/actions/assets.json"
+      "apps/walkthrough/data/recorded/",
+      "~/hub/data/walkthrough/"
      ],
      "checks": [],
      "session": "same",
@@ -211605,23 +211615,22 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-14T04:41:54.388Z",
-     "updatedAt": "2026-11-14T04:41:54.388Z"
+     "createdAt": "2026-11-14T04:43:31.383Z",
+     "updatedAt": "2026-11-14T04:43:31.383Z"
     },
     {
      "id": "s15",
-     "uid": "st-mwfx5ck70fp6m5",
+     "uid": "st-mwfx7feg0f6c0q",
      "title": "",
-     "text": "Write the recorder action scripts for the axHub, Plan Studio/builds, AmberX, VPS/Coolify and GitHub chapters (Android shown through the AmberX web/Capacitor shell and screen captures).",
+     "text": "Record chapters 21-24 (VPS, Coolify hosting, GitHub and the merge queue, the theming/hot-swap chapter, how it all ties together) and commit the manifests.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "10 min",
      "files": [
-      "apps/walkthrough-studio/tour/actions/axhub.json",
-      "apps/walkthrough-studio/tour/actions/builds.json",
-      "apps/walkthrough-studio/tour/actions/platform.json"
+      "apps/walkthrough/data/recorded/",
+      "~/hub/data/walkthrough/"
      ],
      "checks": [],
      "session": "same",
@@ -211631,21 +211640,22 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-14T04:41:54.388Z",
-     "updatedAt": "2026-11-14T04:41:54.388Z"
+     "createdAt": "2026-11-14T04:43:31.383Z",
+     "updatedAt": "2026-11-14T04:43:31.383Z"
     },
     {
      "id": "s16",
-     "uid": "st-mwfx5ck70g71bt",
+     "uid": "st-mwfx7feg0gcknr",
      "title": "",
-     "text": "Recording batch 1: run 3 chapter recordings in parallel under agent-slots heavy, against seeded console data with the hub look mocked. Store the raw video in ~/hub/data/walkthrough/raw/ and commit the recorded-chapter manifest.",
+     "text": "Mux each chapter (video + narration + captions) and check the total runtime is about 2 hours. Fix the timestamps in chapters.json and re-render any chapter that drifts.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "10 min",
      "files": [
-      "apps/walkthrough-studio/tour/recorded.json"
+      "apps/walkthrough/scripts/mux.mjs",
+      "apps/walkthrough/data/chapters.json"
      ],
      "checks": [],
      "session": "same",
@@ -211655,21 +211665,23 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-14T04:41:54.388Z",
-     "updatedAt": "2026-11-14T04:41:54.388Z"
+     "createdAt": "2026-11-14T04:43:31.383Z",
+     "updatedAt": "2026-11-14T04:43:31.383Z"
     },
     {
      "id": "s17",
-     "uid": "st-mwfx5ck70hg931",
+     "uid": "st-mwfx7feg0h723i",
      "title": "",
-     "text": "Recording batch 2: the next 3 chapters, same method; update the manifest.",
+     "text": "Player UI: a framework VideoPlayer view in apps/walkthrough with a chapter list, a clickable index and glossary that jump to chapter and timestamp, and a skin switch per chapter through SkinScope. Tokens and framework controls only; the TabGroup for the side panels; the toolbar uses role=toolbar.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "10 min",
      "files": [
-      "apps/walkthrough-studio/tour/recorded.json"
+      "apps/walkthrough/src/views/Player.tsx",
+      "apps/walkthrough/src/views/Index.tsx",
+      "apps/walkthrough/src/views/Glossary.tsx"
      ],
      "checks": [],
      "session": "same",
@@ -211679,21 +211691,22 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-14T04:41:54.388Z",
-     "updatedAt": "2026-11-14T04:41:54.388Z"
+     "createdAt": "2026-11-14T04:43:31.383Z",
+     "updatedAt": "2026-11-14T04:43:31.383Z"
     },
     {
      "id": "s18",
-     "uid": "st-mwfx5ck70ijd4l",
+     "uid": "st-mwfx7feg0ikj89",
      "title": "",
-     "text": "Recording batch 3: the next 3 chapters; update the manifest.",
+     "text": "Player settings: TTS voice, speed and pitch pickers (re-narration on demand through the narrate route), the skin picker and auto-skin per chapter, on the settings interface with the level toolbar.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "10 min",
      "files": [
-      "apps/walkthrough-studio/tour/recorded.json"
+      "apps/walkthrough/src/views/Settings.tsx",
+      "apps/walkthrough/src/settings/"
      ],
      "checks": [],
      "session": "same",
@@ -211703,21 +211716,22 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-14T04:41:54.388Z",
-     "updatedAt": "2026-11-14T04:41:54.388Z"
+     "createdAt": "2026-11-14T04:43:31.383Z",
+     "updatedAt": "2026-11-14T04:43:31.383Z"
     },
     {
      "id": "s19",
-     "uid": "st-mwfx5ck70j31h2",
+     "uid": "st-mwfx7feg0j70sl",
      "title": "",
-     "text": "Recording batch 4: the next 3 chapters; update the manifest.",
+     "text": "Books UI: select chapters, order them and compile them into a book (book@1) through the walkthrough-rules engine, with save, list and delete.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "10 min",
      "files": [
-      "apps/walkthrough-studio/tour/recorded.json"
+      "apps/walkthrough/src/views/Books.tsx",
+      "apps/walkthrough/src/books.ts"
      ],
      "checks": [],
      "session": "same",
@@ -211727,21 +211741,22 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-14T04:41:54.388Z",
-     "updatedAt": "2026-11-14T04:41:54.388Z"
+     "createdAt": "2026-11-14T04:43:31.383Z",
+     "updatedAt": "2026-11-14T04:43:31.383Z"
     },
     {
      "id": "s20",
-     "uid": "st-mwfx5ck70k42l1",
+     "uid": "st-mwfx7feg0kw04u",
      "title": "",
-     "text": "Recording batch 5: the remaining chapters and any re-takes the manifest flags (bad frames, a chapter shorter than its narration); update the manifest.",
+     "text": "Exports: MP4 (ffmpeg concat of the chosen chapters or book), SVG (a chapter storyboard of SVG frames with the index), and an HTML5+JS playback bundle (a static player, media and manifest zipped).",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "10 min",
      "files": [
-      "apps/walkthrough-studio/tour/recorded.json"
+      "apps/walkthrough/scripts/export.mjs",
+      "apps/walkthrough/src/export/"
      ],
      "checks": [],
      "session": "same",
@@ -211751,22 +211766,22 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-14T04:41:54.388Z",
-     "updatedAt": "2026-11-14T04:41:54.388Z"
+     "createdAt": "2026-11-14T04:43:31.383Z",
+     "updatedAt": "2026-11-14T04:43:31.383Z"
     },
     {
      "id": "s21",
-     "uid": "st-mwfx5ck70ljd9x",
+     "uid": "st-mwfx7feg0lzauz",
      "title": "",
-     "text": "Mux each chapter: join video and narration with ffmpeg, burn in libass captions at token size, and write per-chapter MP4s plus a measured duration. Check that the total runtime is about 120 min and record the gap if it is not.",
+     "text": "API part 1: a FastAPI server for the walkthrough (GET state: chapters, glossary, current skin, voice settings, books; POST play/seek/chapter/skin/voice/book compile/export) and deep links (?chapter=, ?t=, ?term=, ?book=).",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "10 min",
      "files": [
-      "apps/walkthrough-studio/tour/mux.mjs",
-      "apps/walkthrough-studio/tour/durations.json"
+      "apps/walkthrough/server/main.py",
+      "apps/walkthrough/src/deeplink.ts"
      ],
      "checks": [],
      "session": "same",
@@ -211776,22 +211791,24 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-14T04:41:54.388Z",
-     "updatedAt": "2026-11-14T04:41:54.388Z"
+     "createdAt": "2026-11-14T04:43:31.383Z",
+     "updatedAt": "2026-11-14T04:43:31.383Z"
     },
     {
      "id": "s22",
-     "uid": "st-mwfx5ck70mb52a",
+     "uid": "st-mwfx7feg0mw8c3",
      "title": "",
-     "text": "Build the walkthrough@1 asset from the real timestamps: chapters, the glossary from glossary.seed with jump timestamps, and the index from target to timestamps. Validate it with axf.mjs validate and register it in the glossary-index catalog.",
+     "text": "API part 2: register console-control targets (data-axf-target), MCP tools and console actions (walkthrough_state, walkthrough_open, walkthrough_seek, walkthrough_skin, walkthrough_voice, walkthrough_book, walkthrough_export), the CLI `axf walkthrough …`, and AmberX voice intents, all on the same routes. Run check-console-control.mjs.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "10 min",
      "files": [
-      "framework/assets/walkthrough/amberx-tour.json",
-      "apps/console-web/plugins/glossary-index/"
+      "apps/console-web/server/mcp_server.py",
+      "framework/cli/walkthrough.mjs",
+      "apps/amberx-droid/",
+      "apps/walkthrough/src/"
      ],
      "checks": [],
      "session": "same",
@@ -211801,243 +211818,19 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-14T04:41:54.388Z",
-     "updatedAt": "2026-11-14T04:41:54.388Z"
+     "createdAt": "2026-11-14T04:43:31.383Z",
+     "updatedAt": "2026-11-14T04:43:31.383Z"
     },
     {
      "id": "s23",
-     "uid": "st-mwfx5ck80n0o9r",
+     "uid": "st-mwfx7feg0nhziq",
      "title": "",
-     "text": "Player shell: an HTML5+JS player on the framework (AxfProvider, TabGroup for Chapters / Glossary / Index, toolbar with role=toolbar), reading walkthrough@1, with every chapter, glossary term and index entry jumping to its timestamp.",
+     "text": "Confirm the domain in Hostinger DNS: amberxai.com, not 'imberxai' (the axHub hostinger service, or a banner item if the connector still needs authorizing). Add an A record for walkthrough → 31.97.13.252 with overwrite:false, read the zone back, and log it in /projects/_shared/_data/dns/log.md.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
-     "estimate": "10 min",
-     "files": [
-      "apps/walkthrough-studio/player/src/"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-14T04:41:54.388Z",
-     "updatedAt": "2026-11-14T04:41:54.388Z"
-    },
-    {
-     "id": "s24",
-     "uid": "st-mwfx5ck80ofl2m",
-     "title": "",
-     "text": "Player theming: a SkinScope per chapter that switches skin at chapter boundaries, a skin picker the user can override, and only tokens in the CSS. Run check-theme, check-controls, check-toolbars and check-chrome-assets.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "apps/walkthrough-studio/player/src/",
-      "apps/walkthrough-studio/player/src/player.css"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-14T04:41:54.388Z",
-     "updatedAt": "2026-11-14T04:41:54.388Z"
-    },
-    {
-     "id": "s25",
-     "uid": "st-mwfx5ck80psqrb",
-     "title": "",
-     "text": "Narration controls in the player: voice, speed and pitch settings (a settings interface with the level toolbar) that re-render narration through the TTS endpoint, with the pre-rendered default kept as a fallback.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "apps/walkthrough-studio/player/src/NarrationSettings.tsx",
-      "apps/walkthrough-studio/server/"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-14T04:41:54.388Z",
-     "updatedAt": "2026-11-14T04:41:54.388Z"
-    },
-    {
-     "id": "s26",
-     "uid": "st-mwfx5ck80qndmc",
-     "title": "",
-     "text": "Books: select chapters, order them and save them as a book@1, then play a book as one continuous tour. Uses the existing book@1 engine.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "apps/walkthrough-studio/player/src/Books.tsx",
-      "framework/core/engines/demo-rules.mjs"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-14T04:41:54.388Z",
-     "updatedAt": "2026-11-14T04:41:54.388Z"
-    },
-    {
-     "id": "s27",
-     "uid": "st-mwfx5ck80rl02x",
-     "title": "",
-     "text": "Exports: an MP4 of the whole tour or of a book (ffmpeg concat with chapter metadata), an SVG storyboard (chapter frames plus an index with links), and an HTML5+JS bundle (player + assets + media, zipped).",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "apps/walkthrough-studio/tour/export.mjs"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-14T04:41:54.388Z",
-     "updatedAt": "2026-11-14T04:41:54.388Z"
-    },
-    {
-     "id": "s28",
-     "uid": "st-mwfx5ck80s8wwz",
-     "title": "",
-     "text": "API, part 1: REST routes for the walkthrough (state, chapters, glossary, index, seek, skin, narration settings, books CRUD, export jobs), with plugin-commands MCP tools from the routes.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "apps/walkthrough-studio/server/routes.py",
-      "apps/console-web/plugins/glossary-index/"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-14T04:41:54.388Z",
-     "updatedAt": "2026-11-14T04:41:54.388Z"
-    },
-    {
-     "id": "s29",
-     "uid": "st-mwfx5ck80t8bx1",
-     "title": "",
-     "text": "API, part 2: CLI `axf walkthrough …` (open, seek, chapter, skin, voice, book, export), AmberX voice actions, console_show/console_open deep links with console-control targets (data-axf-target) for every player control. check-console-control passes.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "framework/cli/walkthrough.mjs",
-      "apps/walkthrough-studio/player/src/",
-      "framework/cli/check-console-control.mjs"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-14T04:41:54.388Z",
-     "updatedAt": "2026-11-14T04:41:54.388Z"
-    },
-    {
-     "id": "s30",
-     "uid": "st-mwfx5ck80uc7m1",
-     "title": "",
-     "text": "UI Review: 3 player skin/layout options as assets (ui-choices@1) with desktop and phone shots, submitted through review.mjs submit --choices.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "apps/walkthrough-studio/plugins/walkthrough/assets/",
-      "apps/walkthrough-studio/tour/choices.json"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-14T04:41:54.388Z",
-     "updatedAt": "2026-11-14T04:41:54.388Z"
-    },
-    {
-     "id": "s31",
-     "uid": "st-mwfx5ck80v6w39",
-     "title": "",
-     "text": "Deploy: a Dockerfile/static-server Coolify app for walkthrough.amberxai.com serving the player and media from ~/hub/data/walkthrough, through axHub vps.run as a veto call. Log the deploy with axf_deploy_log.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "10 min",
-     "files": [
-      "apps/walkthrough-studio/deploy/",
-      "deploy/"
-     ],
-     "checks": [],
-     "session": "same",
-     "agent": false,
-     "skip": false,
-     "done": false,
-     "doneAt": "",
-     "note": "",
-     "rev": 1,
-     "createdAt": "2026-11-14T04:41:54.388Z",
-     "updatedAt": "2026-11-14T04:41:54.388Z"
-    },
-    {
-     "id": "s32",
-     "uid": "st-mwfx5ck80w036o",
-     "title": "",
-     "text": "DNS: add an A record for walkthrough.amberxai.com pointing at the VPS via Hostinger (overwrite:false), read the zone back, write the DNS log line, and check that HTTPS answers through Traefik. If Hostinger is unauthorised, raise a banner item with the steps.",
-     "model": "Opus",
-     "why": "",
-     "phase": "",
-     "group": "",
-     "estimate": "5 min",
+     "estimate": "6 min",
      "files": [
       "/projects/_shared/_data/dns/log.md"
      ],
@@ -212049,22 +211842,22 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-14T04:41:54.388Z",
-     "updatedAt": "2026-11-14T04:41:54.388Z"
+     "createdAt": "2026-11-14T04:43:31.383Z",
+     "updatedAt": "2026-11-14T04:43:31.383Z"
     },
     {
-     "id": "s33",
-     "uid": "st-mwfx5ck80xdge6",
+     "id": "s24",
+     "uid": "st-mwfx7feg0ocuvw",
      "title": "",
-     "text": "Tests: coverage.mjs (every plugin/setting/button has a chapter), walkthrough@1 validation and fixtures, player tests for seek, glossary jump, skin swap and book play, export smoke tests (MP4/SVG/HTML), and API parity across REST, MCP, CLI and voice.",
+     "text": "Deploy: a Dockerfile and a Coolify app for walkthrough.amberxai.com (static player + API, media mounted from ~/hub/data/walkthrough), with a deploy script that logs through axf_deploy_log. Check that the public URL loads and plays.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "10 min",
      "files": [
-      "apps/walkthrough-studio/tour/*.test.mjs",
-      "apps/walkthrough-studio/player/test/"
+      "apps/walkthrough/Dockerfile",
+      "deploy/install-walkthrough.sh"
      ],
      "checks": [],
      "session": "same",
@@ -212074,20 +211867,71 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-14T04:41:54.388Z",
-     "updatedAt": "2026-11-14T04:41:54.388Z"
+     "createdAt": "2026-11-14T04:43:31.383Z",
+     "updatedAt": "2026-11-14T04:43:31.383Z"
     },
     {
-     "id": "s34",
-     "uid": "st-mwfx5ck80ywo32",
+     "id": "s25",
+     "uid": "st-mwfx7feg0pmd4w",
      "title": "",
-     "text": "Write the report _claude/builds/reports/amberx-walkthrough-2-hour-indexed.md (runtime, coverage, gaps, the domain confirmation, how each feature is reached through the API), add the THREADS row, update STATUS.md, then open the PR (the UI Review hold is noted) and link it with builds-live.mjs.",
+     "text": "Run the conformance checks: check-theme, check-controls, check-toolbars, check-chrome-assets, check-skin-coverage, catalog.mjs --check, project.mjs validate --all and the walkthrough fixture check. Fix whatever they flag.",
      "model": "Opus",
      "why": "",
      "phase": "",
      "group": "",
      "estimate": "10 min",
      "files": [
+      "apps/walkthrough/",
+      "framework/spec/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-14T04:43:31.383Z",
+     "updatedAt": "2026-11-14T04:43:31.383Z"
+    },
+    {
+     "id": "s26",
+     "uid": "st-mwfx7feg0qtubw",
+     "title": "",
+     "text": "UI Review: capture desktop and phone shots of the player, index, glossary, books and settings. Submit 3 player skin options as assets (review.mjs submit --choices) under plugins/<owner>/assets/skin/.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/walkthrough/assets/skin/",
+      "_claude/builds/reports/amberx-walkthrough-2-hour-indexed/shots/"
+     ],
+     "checks": [],
+     "session": "same",
+     "agent": false,
+     "skip": false,
+     "done": false,
+     "doneAt": "",
+     "note": "",
+     "rev": 1,
+     "createdAt": "2026-11-14T04:43:31.383Z",
+     "updatedAt": "2026-11-14T04:43:31.383Z"
+    },
+    {
+     "id": "s27",
+     "uid": "st-mwfx7feg0rch07",
+     "title": "",
+     "text": "Wrap up: write tests for the server routes and engine, then the report _claude/builds/reports/amberx-walkthrough-2-hour-indexed.md (runtime, chapters, how each feature is reached through REST/MCP/CLI/voice/deep link, DNS change, URL). Update the THREADS.md row and STATUS.md, then open the PR, link it with builds-live.mjs link, and add it to the merge queue.",
+     "model": "Opus",
+     "why": "",
+     "phase": "",
+     "group": "",
+     "estimate": "10 min",
+     "files": [
+      "apps/walkthrough/server/test_main.py",
       "_claude/builds/reports/amberx-walkthrough-2-hour-indexed.md",
       "_claude/THREADS.md",
       "_claude/memory/STATUS.md"
@@ -212100,8 +211944,8 @@
      "doneAt": "",
      "note": "",
      "rev": 1,
-     "createdAt": "2026-11-14T04:41:54.388Z",
-     "updatedAt": "2026-11-14T04:41:54.388Z"
+     "createdAt": "2026-11-14T04:43:31.383Z",
+     "updatedAt": "2026-11-14T04:43:31.383Z"
     }
    ],
    "profiles": [
@@ -212112,12 +211956,12 @@
    },
    "kind": "build",
    "planRef": "",
-   "rev": 5,
+   "rev": 6,
    "deleted": false,
    "deletedAt": "",
    "pending": null,
    "queue": null,
-   "defaultAt": "2026-11-14T04:41:54.388Z",
+   "defaultAt": "2026-11-14T04:43:31.383Z",
    "rearranged": false,
    "removedSteps": [],
    "legacy": [],

@@ -792,7 +792,6 @@ VPS). The session reads the rules and this file first, as usual.
 
 <!-- builds-live.mjs appends one line per build change as it reaches main (newest last, last 400 kept). Do not edit by hand. -->
 
-- 2026-11-13 20:19 UTC · `skins-plugin-merge-main-and-land` PR #647, note (all) · reconciler
 - 2026-11-13 20:20 UTC · `demo-pipelines-guided-walkthrough-live` note (all) · orchestrator
 - 2026-11-13 20:19 UTC · `demo-pipelines-guided-walkthrough-live` s9 done, → built (all) · orchestrator
 - 2026-11-13 20:21 UTC · `token-registry-skin-editor-live-sandbox` → running, note (all) · pipeline
@@ -1192,6 +1191,7 @@ VPS). The session reads the rules and this file first, as usual.
 - 2026-11-14 04:40 UTC · `banner-widget-shapes-more-than-circle` → pending, note (all) · reconciler
 - 2026-11-14 04:41 UTC · `demo-video-series-three-minute-browser` note (all) · voice
 - 2026-11-14 04:41 UTC · `amberx-walkthrough-2-hour-indexed` note (all) · orchestrator
+- 2026-11-14 04:43 UTC · `amberx-walkthrough-2-hour-indexed` note (all) · orchestrator
 
 ## Token passes (log)
 
