@@ -23,6 +23,11 @@
   --fx-brand-1: var(--fx-accent); --fx-brand-2: var(--fx-info); --fx-brand-3: var(--fx-text); /* theme-ok */
   /* derived like the Android ThemeEngine (black at opacityScrim); a colour theme that authors "scrim" overrides it */
   --fx-scrim: color-mix(in srgb, #000 calc(var(--fx-opacity-scrim) * 100%), transparent); /* theme-ok */
+  /* Safe area (console-android-app, Brett Nov 13 2026: "AmberX's banner was behind the camera, the clock and the
+     notification panel"): the browser's own insets, which the Android console shell (apps/console-droid) overrides
+     on <html> with the real status bar / cutout / navigation bar / keyboard sizes, so nothing is drawn under them. */
+  --fx-safe-top: env(safe-area-inset-top); --fx-safe-right: env(safe-area-inset-right); /* theme-ok: platform insets */
+  --fx-safe-bottom: env(safe-area-inset-bottom); --fx-safe-left: env(safe-area-inset-left); /* theme-ok: platform insets */
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -54,6 +59,9 @@ h1, h2, h3 { font-family: var(--fx-font-display); font-weight: var(--fx-heading-
 
 /* The frame stacks the banner (asset type `banner`, height from the banner engine) above the layout grid. */
 .fx-frame { height: 100%; display: flex; flex-direction: column; min-height: 0; }
+/* every top bar, banner, toolbar and side rail sits inside the safe area; the phone's bottom nav pads the bottom itself */
+.fx-frame { padding: var(--fx-safe-top) var(--fx-safe-right) 0 var(--fx-safe-left); }
+html:not([data-fx-narrow]) .fx-frame { padding-bottom: var(--fx-safe-bottom); }
 .fx-frame > .fx-shell { flex: 1 1 auto; height: auto; min-height: 0; }
 /* The application menu sits above the live banners (Oct 22 2026); its drop-downs open over them. */
 .fx-frame > .fx-frame__menubar { flex: none; position: relative; z-index: 44; }
@@ -485,7 +493,7 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 .fx-menu-probe {
   position: fixed; left: 0; top: 0; visibility: hidden; pointer-events: none; height: 0;
   width: var(--fx-layout-phone-edge); box-sizing: content-box;
-  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  padding: var(--fx-safe-top) var(--fx-safe-right) var(--fx-safe-bottom) var(--fx-safe-left);
 }
 .fx-menu__item:focus-visible { outline: 2px solid var(--fx-focus); outline-offset: -2px; }
 @media (prefers-reduced-motion: reduce) { .fx-menu__spinner { animation: none; border-top-color: var(--fx-border); } }
@@ -677,7 +685,7 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 .fx-nav[data-orient='horizontal'].fx-nav--list .fx-nav__item.is-active { box-shadow: inset 0 -2px 0 var(--fx-accent); border-radius: var(--fx-radius-sm) var(--fx-radius-sm) 0 0; }
 .fx-nav[data-orient='horizontal'].fx-nav--rail .fx-nav__item { flex-direction: row; font-size: var(--fx-type-scale-md); width: auto; padding: var(--fx-dens-gap-lg) var(--fx-dens-gap-2xl); }
 
-:where([data-fx-narrow]) .fx-nav, :where([data-fx-narrow]) .fx-nav[data-orient] { flex-direction: row; padding: var(--fx-dens-gap-md) var(--fx-dens-gap-lg) calc(var(--fx-dens-gap-md) + env(safe-area-inset-bottom)); gap: 0; overflow-x: auto; height: auto; }
+:where([data-fx-narrow]) .fx-nav, :where([data-fx-narrow]) .fx-nav[data-orient] { flex-direction: row; padding: var(--fx-dens-gap-md) var(--fx-dens-gap-lg) calc(var(--fx-dens-gap-md) + var(--fx-safe-bottom)); gap: 0; overflow-x: auto; height: auto; }
 :where([data-fx-narrow]) .fx-nav__header, :where([data-fx-narrow]) .fx-nav__label { display: none; }
 :where([data-fx-narrow]) .fx-nav__section { flex-direction: row; flex: 1 0 auto; gap: 0; }
 :where([data-fx-narrow]) .fx-nav .fx-nav__item, :where([data-fx-narrow]) .fx-nav--rail .fx-nav__item { flex: 1 0 var(--fx-layout-phone-nav-item-min); flex-direction: column; gap: var(--fx-dens-gap-xs); padding: var(--fx-dens-gap-lg) var(--fx-dens-gap-md); font-size: var(--fx-type-scale-2xs); border-radius: var(--fx-radius-md); justify-content: center; }
@@ -942,7 +950,7 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 [data-fx-dialog='drawer'] .fx-backdrop { justify-content: flex-end; align-items: stretch; padding: 0; }
 [data-fx-dialog='drawer'] .fx-dialog { height: 100dvh; max-height: none; border-radius: var(--fx-radius-lg) 0 0 var(--fx-radius-lg); border-right: 0; }
 [data-fx-dialog='sheet'] .fx-backdrop { align-items: flex-end; padding: 0; }
-[data-fx-dialog='sheet'] .fx-dialog { width: min(var(--fx-dialog-w), 100%); border-radius: var(--fx-radius-lg) var(--fx-radius-lg) 0 0; border-bottom: 0; padding-bottom: env(safe-area-inset-bottom); }
+[data-fx-dialog='sheet'] .fx-dialog { width: min(var(--fx-dialog-w), 100%); border-radius: var(--fx-radius-lg) var(--fx-radius-lg) 0 0; border-bottom: 0; padding-bottom: var(--fx-safe-bottom); }
 
 [data-fx-dialog-anim='scale'] .fx-dialog { animation: fx-scale calc(var(--fx-motion) * 1.4) cubic-bezier(.2, .9, .3, 1.2) both; }
 [data-fx-dialog-anim='fade'] .fx-dialog { animation: fx-fade calc(var(--fx-motion) * 1.6) ease both; }
@@ -961,7 +969,7 @@ button.fx-banner__badge:focus-visible { outline: 2px solid var(--fx-accent); out
 [data-fx-toast-pos='bottom-right'] .fx-toasts { bottom: 16px; right: 16px; flex-direction: column-reverse; }
 [data-fx-toast-pos='bottom-center'] .fx-toasts { bottom: 20px; left: 50%; transform: translateX(-50%); flex-direction: column-reverse; }
 [data-fx-toast-pos='top-center'] .fx-toasts { top: 16px; left: 50%; transform: translateX(-50%); }
-:where([data-fx-narrow]) [data-fx-toast-pos] .fx-toasts { bottom: auto; top: calc(var(--fx-layout-phone-edge) * 1.5); left: 50%; right: auto; transform: translateX(-50%); flex-direction: column; }
+:where([data-fx-narrow]) [data-fx-toast-pos] .fx-toasts { bottom: auto; top: calc(var(--fx-safe-top) + var(--fx-layout-phone-edge) * 1.5); left: 50%; right: auto; transform: translateX(-50%); flex-direction: column; }
 
 .fx-toast {
   --t: var(--fx-info);

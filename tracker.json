@@ -1,7 +1,7 @@
 {
   "$axf": "tracker@1",
   "frameworkVersion": "0.2.0",
-  "generatedAt": "2026-11-13T18:54:37.201Z",
+  "generatedAt": "2026-11-14T01:25:45.090Z",
   "summary": {
     "foundations": {
       "built": 68,
@@ -20,12 +20,12 @@
       "coverage": 45
     },
     "console": {
-      "built": 14,
+      "built": 15,
       "partial": 1,
       "placeholder": 3,
       "planned": 0,
-      "total": 18,
-      "coverage": 78
+      "total": 19,
+      "coverage": 79
     },
     "modules": {
       "built": 15,
@@ -2932,7 +2932,7 @@
       "status": "placeholder",
       "wave": 2,
       "module": "axf-platform-android",
-      "notes": ""
+      "notes": "AmberX shell (app code, not this framework module) has one always-on draw-over-apps overlay since Nov 13 2026: toolbar, approval bar, full-screen browser (ApprovalOverlay + ApprovalOverlayRules / OverlayPageRules, JUnit). The framework capability stays a placeholder (Android on hold)."
     },
     {
       "id": "dv.pip",
@@ -3812,6 +3812,17 @@
       "wave": 1,
       "module": "app-console",
       "notes": ""
+    },
+    {
+      "id": "cx.phonebridge",
+      "tab": "console",
+      "group": "console-plumbing",
+      "title": "Phone native bridge (native-bridge@1): window.axfNative in the Android console app for mic, permissions, notifications, open_url, console wake and the recorder, the axHub amberx device service moved from AmberX, and every tool reachable as device.* console actions (REST, MCP, CLI, voice)",
+      "tag": "",
+      "status": "built",
+      "wave": 1,
+      "module": "app-console",
+      "notes": "apps/console-droid (DeviceBridge, BridgeContract, HubLink, DeviceTools, MicTools; JUnit) + apps/console-web/src/native (bridgeClient.mjs window.axfNative, deviceApi.ts device.* actions, panel:phone-bridge state; Node tests in CI). Recorder stays in AmberX until its capture service moves (recorder@1 not advertised). Four console slots at once (SlotRules/SlotHost, slots.* tools, device.slots action, console-slots@1). Kotlin twin deferred."
     },
     {
       "id": "m.kernel",

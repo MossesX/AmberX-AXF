@@ -1,7 +1,7 @@
 name: Android framework + console
 
 # Builds everything the sandbox cannot (Maven + Android SDK): the kernel tests, every framework module,
-# the Dev Console APK, and the build-engine sweep. Artifacts: console-debug.apk + framework maven repo.
+# the Dev Console APK, the console app APK, and the build-engine sweep. Artifacts: console-debug.apk, console-app-debug.apk + framework maven repo.
 
 on:
   push:
@@ -106,6 +106,8 @@ jobs:
       - run: node deploy/claude-login.test.mjs                      # build-own-login: every headless build runs on its own Claude login copy (fake accounts + fake claude; logout/switch mid-run, refresh stays in the copy, no token printed)
       - run: node framework/spec/check-build-priority.mjs           # priority tags: levels, backfill, what waits on a build, the agent queue follows priority
       - run: node framework/spec/check-projects.mjs                 # projects@1: a new project starts empty, AmberX AXF keeps everything, archive/delete need the id
+      - run: node apps/console-web/src/native/bridgeClient.test.mjs   # native-bridge@1: window.axfNative in the Android console app (calls, aliases, errors, events, part 1 object kept), tool list = BridgeContract.java
+      - run: node apps/console-web/src/native/deviceActions.test.mjs   # device.* console actions: every phone tool reachable from REST, MCP, CLI and voice; bad input never reaches the phone
       - run: node apps/console-web/plugins/build-orchestrator/pipeline.test.mjs   # build pipeline: Pending → Queue → Building, accounts with Fable, slot-open launches, session ends, idle alert, split  # axf-plugin:build-orchestrator
       - run: node apps/console-web/plugins/build-orchestrator/build-id.test.mjs   # build-id@1: orchestrator ids fit 40 chars, titles kept, collisions suffixed, legacy aliases and land-alias  # axf-plugin:build-orchestrator
       - run: node framework/spec/check-model-policy.mjs             # model-policy@1: Opus or Fable only, never Sonnet; job types, roster, plan picker and the builds store read one registry
@@ -147,6 +149,8 @@ jobs:
         run: node apps/console-web/plugins/token-control/test.mjs  # axf-plugin:token-control
       - name: Console commands plugin (control@1 console domain — CLI words, runner gate + resolve + deliver, confirm, send to a console)  # axf-plugin:console-commands
         run: node apps/console-web/plugins/console-commands/test.mjs  # axf-plugin:console-commands
+      - name: Android console app, console side (deep links, native.* actions, bridge calls, tokens shared with the Java shell and axf.css)
+        run: node apps/console-web/src/native/nativeRules.test.mjs
       - name: Reference links plugin (ref@1 runner — builds store + plugin targets, find, explicit touches, ambiguous, missing, resolve, CLI)  # axf-plugin:ref-links
         run: node apps/console-web/plugins/ref-links/test.mjs  # axf-plugin:ref-links
       - name: Glossary & Index plugin (glossary-catalog@1 — every plugin, feature, screen, control, setting, command, asset and tool has an entry; undescribed items never grow)  # axf-plugin:glossary-index
@@ -515,6 +519,12 @@ jobs:
       - name: Build the Dev Console
         working-directory: apps/console
         run: gradle :app:assembleDebug --no-daemon 2>&1 | tee /tmp/build-console.log; exit ${PIPESTATUS[0]}
+      - name: AXF Console for Android (WebView shell that replaces AmberX) — native unit tests + APK
+        # standalone app (no framework module dependencies): it still builds when an earlier framework step is red,
+        # so the APK is there to download; the job stays red either way
+        if: ${{ !cancelled() }}
+        working-directory: apps/console-droid
+        run: gradle :app:testDebugUnitTest :app:assembleDebug --no-daemon 2>&1 | tee /tmp/build-console-droid.log; exit ${PIPESTATUS[0]}
       - name: Library unit tests (lib-voice, lib-lock, lib-mcp, lib-hub, lib-notifications, lib-work)
         working-directory: framework/android
         run: gradle :lib-voice:testDebugUnitTest :lib-lock:testDebugUnitTest :lib-mcp:testDebugUnitTest :lib-hub:testDebugUnitTest :lib-notifications:testDebugUnitTest :lib-work:testDebugUnitTest --no-daemon --continue 2>&1 | tee /tmp/test-libs.log; exit ${PIPESTATUS[0]}
@@ -545,13 +555,18 @@ jobs:
         if: failure()
         env: { GH_TOKEN: '${{ github.token }}' }
         run: |
-          { echo "### ${{ github.sha }} — $(date -u +%FT%TZ)"; echo; echo '```'; grep -hE "^e: |error:|What went wrong|> Task .* FAILED|Could not resolve|Unresolved|Execution failed" /tmp/build-framework.log /tmp/build-console.log /tmp/test-libs.log /tmp/build-voicevault.log /tmp/build-axhub.log /tmp/build-apps.log 2>/dev/null | sed 's|/home/runner/work/AmberX-AXF/AmberX-AXF/||' | sort -u | head -300; echo '```'; } > /tmp/report.md
+          { echo "### ${{ github.sha }} — $(date -u +%FT%TZ)"; echo; echo '```'; grep -hE "^e: |error:|What went wrong|> Task .* FAILED|Could not resolve|Unresolved|Execution failed" /tmp/build-framework.log /tmp/build-console.log /tmp/build-console-droid.log /tmp/test-libs.log /tmp/build-voicevault.log /tmp/build-axhub.log /tmp/build-apps.log 2>/dev/null | sed 's|/home/runner/work/AmberX-AXF/AmberX-AXF/||' | sort -u | head -300; echo '```'; } > /tmp/report.md
           N=$(gh issue list --search "CI build errors in:title" --state open --json number --jq '.[0].number')
           if [ -z "$N" ]; then gh issue create --title "CI build errors" --body-file /tmp/report.md; else gh issue comment "$N" --body-file /tmp/report.md; fi
       - uses: actions/upload-artifact@v4
         with:
           name: console-debug.apk
           path: apps/console/app/build/outputs/apk/debug/*.apk
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: console-app-debug.apk   # AXF Console for Android (apps/console-droid), the WebView app that replaces AmberX
+          path: apps/console-droid/app/build/outputs/apk/debug/*.apk
       - uses: actions/upload-artifact@v4
         with:
           name: voicevault-debug.apk

@@ -1024,6 +1024,109 @@
         "title": "What to search",
         "kind": "tab",
         "text": "Narrows the hits: everything, screens and tabs, settings, buttons, plugins, or the rows and steps loaded right now."
+      },
+      {
+        "target": "action:device.state",
+        "title": "Phone app state",
+        "text": "Shows the Android console app's version, the phone and which native tools it has. Outside the app it says the app isn't here."
+      },
+      {
+        "target": "action:device.tool",
+        "title": "Run a phone tool",
+        "text": "Runs any native tool on the phone by name, e.g. device.tool:bridge.capabilities or device.tool:amberx.open_url:{\"url\":\"…\"}."
+      },
+      {
+        "target": "action:device.mic",
+        "title": "Phone mic switch",
+        "text": "Turns the console's mic on or off on the phone, or says why it can't listen (switched off or no Android permission)."
+      },
+      {
+        "target": "action:device.permission",
+        "title": "Ask the phone for a permission",
+        "text": "Asks Android for the mic, notifications or the floating window; with status, lists what is allowed."
+      },
+      {
+        "target": "action:device.open",
+        "title": "Open a page on the phone",
+        "text": "Opens one of your own https pages in the console app, or in the phone's browser with device.open:browser:<url>."
+      },
+      {
+        "target": "action:device.wake",
+        "title": "Wake the console on the phone",
+        "text": "Brings the console app to the front and turns the screen on, at a console address when you give one."
+      },
+      {
+        "target": "action:device.notify",
+        "title": "Phone notification",
+        "text": "Shows a notification on the phone: device.notify:<title>:<text>."
+      },
+      {
+        "target": "action:device.notify-cancel",
+        "title": "Clear a phone notification",
+        "text": "Clears a notification by id, or lists the ones showing."
+      },
+      {
+        "target": "action:device.recorder",
+        "title": "Phone recorder",
+        "text": "Starts, stops or checks the phone recorder. AmberX still records until its capture service moves to the console app."
+      },
+      {
+        "target": "action:device.slots",
+        "title": "Console slots on the phone",
+        "text": "Runs up to four consoles side by side in the phone app: device.slots:open:<address>[:<slot>] opens one, close:<slot> and focus:<slot> manage them, status lists them. The focused slot has the keyboard and the mic."
+      },
+      {
+        "target": "action:native.overlay",
+        "title": "Phone: floating toolbar",
+        "text": "Drives the console app's floating toolbar on the phone: expand it to the full-screen console, collapse it, toggle, show approvals or hide the approval bar.",
+        "kind": "control",
+        "tryIt": "Say or run native.overlay:expand."
+      },
+      {
+        "target": "action:native.permission",
+        "title": "Phone: ask for a permission",
+        "text": "Asks the phone for the mic, notifications or \"Display over other apps\". Android shows its own prompt; you answer it on the phone.",
+        "kind": "control",
+        "tryIt": "Run native.permission:overlay if the toolbar never appears."
+      },
+      {
+        "target": "action:native.notify",
+        "title": "Phone: notification",
+        "text": "Puts a notification on the phone from the console app.",
+        "kind": "control",
+        "tryIt": "native.notify:Build done:PR merged"
+      },
+      {
+        "target": "action:native.open",
+        "title": "Phone: open a page",
+        "text": "Opens one of your own pages (amberxai.com) on the phone: in the app, in the floating overlay, or in the phone's browser.",
+        "kind": "control",
+        "tryIt": "native.open:https://console.amberxai.com/|overlay"
+      },
+      {
+        "target": "action:native.wake",
+        "title": "Phone: wake",
+        "text": "Brings the console app to the front and turns the screen on.",
+        "kind": "control"
+      },
+      {
+        "target": "action:native.recorder",
+        "title": "Phone: recorder",
+        "text": "The Audio Output Recorder. It still runs in AmberX until its capture service moves to the console app, so here it says the app can't record yet.",
+        "kind": "control"
+      },
+      {
+        "target": "action:native.update",
+        "title": "Phone: web content update",
+        "text": "The console app loads the live console, so a deploy reaches the phone without a new app. check looks for a newer console now, reload loads it now, state shows which version the page runs. Off screen, a newer console loads by itself; on screen you get the \"Reload for the new version\" bar.",
+        "kind": "control",
+        "tryIt": "native.update:check"
+      },
+      {
+        "target": "action:native.state",
+        "title": "Phone: app state",
+        "text": "Everything the console app knows: app version, permissions, the floating toolbar, the safe area (status bar, camera cutout, navigation bar, keyboard), web content updates and the axHub device link. The same answer is panel:phone-app's state over REST, MCP and the CLI.",
+        "kind": "control"
       }
     ],
     "intros": [
